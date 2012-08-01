@@ -1,7 +1,7 @@
 majordomo
 =========
 
-Home automation platform
+Home automation platform.
 
 Web-site: http://majordomohome.com/ (international)
 
