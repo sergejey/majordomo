@@ -1,0 +1,4 @@
+majordomo
+=========
+
+Home automation platform
