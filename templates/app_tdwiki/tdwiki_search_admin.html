@@ -1,0 +1,56 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- table tdwiki search -->
+<p align=center>
+<b>
+<a href="?view_mode=edit_tdwiki">><#LANG_ADD_NEW_RECORD#><</a>
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_tdwiki" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 align=center>
+[#begin RESULT#]
+<tr>
+ <td align=center>
+  <a href="?view_mode=view_tdwiki&id=[#ID#]">[#ID#]</a>
+ </td>
+ <td
+  >
+  <b><a href="?view_mode=view_tdwiki&id=[#ID#]">
+   [#NAME#]
+  </a></b>
+ </td>
+ <td>
+  <table border=0>
+   <td align=center>
+    <b><a href="?view_mode=view_tdwiki&id=[#ID#]"><#LANG_MORE_INFO#></a></b>
+   </td>
+  [#if "<#ACTION#>"=="admin"#]
+   <td align=center>
+    <b><a href="?view_mode=edit_tdwiki&id=[#ID#]"><#LANG_EDIT#></a></b>
+   </td>
+   <td align=center>
+    <a href="?view_mode=delete_tdwiki&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_tdwiki">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

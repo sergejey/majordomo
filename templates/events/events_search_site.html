@@ -1,0 +1,226 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- table events search -->
+[#if MODE="search_events"#]
+<!-- search form -->
+<table border=0>
+<tr>
+ <td colspan=10><b><#LANG_SEARCH#></b></td>
+</tr>
+<form action="?" method="post" name="frmSearch">
+ <tr>
+  <td colspan=2>
+   <input type="submit" name="submit" value="<#LANG_SEARCH#>">
+   //
+   <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+  </td>
+ </tr>
+<input type="hidden" name="mode" value="search_events">
+</form>
+</table>
+<!-- / search form -->
+[#endif MODE#]
+<p align=center>
+<b>
+[#if MODE!="search_events"#]<a href="?mode=search_events"><#LANG_SEARCH#></a> 
+&nbsp;&nbsp;&nbsp;
+[#endif#]
+//
+&nbsp;&nbsp;&nbsp;
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_events" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<tr>
+ <td colspan=20 align=right bgcolor="#FFFFFF">
+ <input type="submit" name="delete" value="Delete selected" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">
+ </td>
+</tr>
+<tr>
+ <td align=center bgcolor="#AAAAAA"><b><a href="#" onClick="return selectAll_events();"><#LANG_ALL#></a></b>
+ <script language="javascript">
+  function selectAll_events() {
+   var chkbox = document.forms['frmList_events'].elements['ids[]'];   
+   var cnt = chkbox.length;
+   for (i=0; i<cnt; i++) {
+    if (chkbox[i].checked) {
+     chkbox[i].checked = false;
+    } else {
+     chkbox[i].checked = true;
+    }
+   }
+   return false;
+  }
+ </script>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_TYPE#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_TERMINAL_FROM#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_TERMINAL_TO#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_USER_FROM#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_USER_TO#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_WINDOW#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_DETAILS#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_ADDED#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_EXPIRE#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_PROCESSED#></b>
+ </td>
+<td bgcolor="#AAAAAA">&nbsp;</td>
+</tr>
+[#begin RESULT#]
+<tr >
+ <td align=center bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+ <input type="checkbox" name="ids[]" value="[#ID#]">
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   [#EVENT_TYPE#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if TERMINAL_FROM!=""#]
+   [#TERMINAL_FROM#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if TERMINAL_TO!=""#]
+   [#TERMINAL_TO#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if USER_FROM!=""#]
+   [#USER_FROM#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if USER_TO!=""#]
+   [#USER_TO#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if WINDOW!=""#]
+   [#WINDOW#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if DETAILS!=""#]
+   [#DETAILS#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if ADDED!=""#]
+   [#ADDED#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if EXPIRE!=""#]
+   [#EXPIRE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if PROCESSED!=""#]
+   [#PROCESSED#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  <table border=0>
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_events">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

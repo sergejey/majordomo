@@ -1,0 +1,49 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- table settings search -->
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_settings" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 align=center>
+[#begin RESULT#]
+<tr>
+ <td align=center>
+  [#ID#]
+ </td>
+ <td
+  >
+  <b>
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td
+   align=center
+  >
+  [#if VALUE!=""#]
+   [#VALUE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td>
+  <table border=0>
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_settings">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

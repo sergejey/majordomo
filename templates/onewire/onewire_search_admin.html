@@ -1,0 +1,87 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+[#if "<#ONEWIRE_SERVER#>"==""#]
+<p>
+<font color="red"><b>Please set up <a href="http://owfs.org" target=_blank>OWFS</a> server details in /config.php</b></font>
+<br>For example:<br>
+Define('ONEWIRE_SERVER', 'tcp://localhost:1234');
+</p>
+[#endif#]
+
+<p align=center>
+<b>
+[ <a href="?view_mode=scan"><#LANG_RESCAN_DEVICES#></a> ]  
+[#if "<#ONEWIRE_SERVER#>"!=""#]
+(<#ONEWIRE_SERVER#>)
+[#endif#]
+</b>
+</p>
+
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_onewire" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 align=center>
+[#begin RESULT#]
+<tr >
+ <td
+   >
+   <big>[#TITLE#]</big> ([#UDID#])
+   <br>
+   Last check: [#CHECK_LATEST#]<br>
+   Next check: [#CHECK_NEXT#]
+ </td>
+ <td >
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td  align=center>
+    <b><a href="?view_mode=edit_onewire&id=[#ID#]"><#LANG_EDIT#></a></b>
+   </td>
+   <td  align=center>
+    <a href="?view_mode=delete_onewire&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_onewire">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_DEVICES_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

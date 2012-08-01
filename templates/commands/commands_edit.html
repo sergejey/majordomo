@@ -1,0 +1,355 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+<!-- Table 'commands' edit -->
+
+<p>
+ <a href="?"><#LANG_HOME#></a>
+[#if HISTORY#]
+[#begin HISTORY#]
+&gt; <a href="?view_mode=edit_commands&id=[#ID#]">[#TITLE#]</a> 
+[#end HISTORY#]
+[#endif HISTORY#]
+[#if ID!=""#]
+&gt; [#TITLE#]
+[#endif#]
+</p>
+
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#else ID#]
+<tr>
+ <td align=right>ID:</td>
+ <td><b>[#ID#]</b></td>
+</tr>
+
+[#endif ID#]
+<tr>
+ <td align=right><#LANG_PARENT_MENU_ITEM#>:</td>
+ <td><select name="parent_id">
+ <option value="0">ROOT
+ [#begin PARENTS#]
+ <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
+ [#end PARENTS#]
+ </select></td>
+</tr>
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]" size="50">
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ <#LANG_PRIORITY#>:
+ </td>
+ <td>
+  <input type="text" name="priority" value="[#PRIORITY#]" size="5">
+ </td>
+</tr>
+
+<tr>
+ <td valign="top" align="right"><#LANG_TYPE#>:</td>
+ <td valign="top"><select name="type">
+  <option value="">none
+  <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
+  <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
+  <option value="url"[#if TYPE="url"#] selected[#endif#]><#LANG_URL#>
+  <option value="command"[#if TYPE="command"#] selected[#endif#]><#LANG_JS_COMMAND#>
+  <option value="button"[#if TYPE="button"#] selected[#endif#]><#LANG_BUTTON#>
+  <option value="switch"[#if TYPE="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
+  <option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#>
+  <option value="sliderbox"[#if TYPE="sliderbox"#] selected[#endif#]><#LANG_SLIDER_BOX#>
+  <option value="plusminus"[#if TYPE="plusminus"#] selected[#endif#]><#LANG_PLUS_MINUS_BOX#>
+  <option value="timebox"[#if TYPE="timebox"#] selected[#endif#]><#LANG_TIME_PICKER#>
+  <option value="textbox"[#if TYPE="textbox"#] selected[#endif#]><#LANG_TEXT_BOX#>
+  <!--#
+  <option value="datebox"[#if TYPE="datebox"#] selected[#endif#]>(n/a) Date Picker
+  #-->
+  <option value="custom"[#if TYPE="custom"#] selected[#endif#]><#LANG_CUSTOM_HTML_BOX#>
+ </select></td>
+</tr>
+
+<tr>
+ <td valign="top" align="right"><#LANG_ICON#>:</td>
+ <td valign="top">
+ [#if ICON!=""#]
+ <input type="checkbox" name="delete_icon" value="1"> <#LANG_DELETE#><br>
+ <img src="/cms/icons/[#ICON#]" border="0">
+ [#ICON#]<br>
+ [#endif#]
+ <input type="file" name="icon">
+ </td>
+</tr>
+
+[#if TYPE=="plusminus" || TYPE=="sliderbox"#]
+<tr>
+ <td align=right>
+ <#LANG_MIN_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="min_value" value="[#MIN_VALUE#]" size="20">
+ </td>
+</tr>
+<tr>
+ <td align=right>
+ <#LANG_MAX_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="max_value" value="[#MAX_VALUE#]" size="20">
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ <#LANG_STEP_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="step_value" value="[#STEP_VALUE#]" size="20">
+ </td>
+</tr>
+[#endif TYPE#]
+
+[#if TYPE=="selectbox" || TYPE=="custom"#]
+<tr>
+ <td align=right valign="top">
+ <#LANG_DATA#>:
+ </td>
+ <td valign="top">
+  <textarea name="data" cols="50" rows="5">[#DATA#]</textarea>
+ </td>
+</tr>
+
+[#endif TYPE#]
+
+<tr>
+ <td align=right>
+ <#LANG_AUTO_UPDATE_PERIOD#>:
+ </td>
+ <td>
+  <input type="text" name="auto_update" value="[#AUTO_UPDATE#]" size="10"> (seconds)
+ </td>
+</tr> 
+
+
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
+<tr>
+ <td align=right>
+ <#LANG_CURRENT_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="cur_value" value="" size="20"> (<b>[#CUR_VALUE#]</b>)
+ </td>
+</tr>
+[#endif TYPE#]
+
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="textbox"#]
+<tr>
+ <td align=right>
+ <#LINKED_OBJECT#>.<#LANG_PROPERTY#>:
+ </td>
+ <td>
+  <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">
+  .
+  <input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
+ </td>
+</tr>
+[#endif TYPE#]
+
+[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
+<tr>
+ <td align=right>
+ <#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>:
+ </td>
+ <td>
+  <input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]" size="20">
+  .
+  <input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]" size="20">
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ <#LANG_ONCHANGE_SCRIPT#>:
+ </td>
+ <td>
+   <select name="script_id">
+    <option value="0">
+    [#begin SCRIPTS#]
+        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+        [#end SCRIPTS#]
+   </select> 
+ </td>
+</tr>
+
+<tr>
+ <td align=right valign="top">
+ [#if ERR_CODE#]<font color="red">[#endif#]<#LANG_ONCHANGE_CODE#>:
+ </td>
+ <td>
+ [#ERRORS#]
+  <textarea name="code" rows="5" cols="50">[#CODE#]</textarea>
+ </td>
+</tr>
+
+
+
+[#endif TYPE#]
+
+[#if TYPE="command"#]
+<!-- COMMAND (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_COMMAND#]<b><font color="red">[#endif#]
+ <#LANG_COMMAND#>:
+ </td>
+ <td>
+  <input type="text" name="command" value="[#COMMAND#]" size="50">
+ </td>
+</tr>
+[#endif TYPE#]
+
+[#if TYPE=="window" || TYPE=="url" || TYPE==""#]
+<!-- URL (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_URL#]<b><font color="red">[#endif#]
+ <#LANG_URL#>:
+ </td>
+ <td>
+  <input type="text" name="url" value="[#URL#]" size="50">
+ </td>
+</tr>
+[#if TYPE!="url"#]
+<tr>
+ <td align=right>
+ <#LANG_TARGET_WINDOW#>:
+ </td>
+ <td>
+  <input type="text" name="window" value="[#WINDOW#]" size="50">
+ </td>
+</tr>
+<!-- WIDTH (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_WIDTH#]<b><font color="red">[#endif#]
+ <#LANG_WIDTH#>:
+ </td>
+ <td>
+  <input type="text" name="width" value="[#WIDTH#]">
+ </td>
+</tr>
+<!-- HEIGHT (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_HEIGHT#]<b><font color="red">[#endif#]
+ <#LANG_HEIGHT#>:
+ </td>
+ <td>
+  <input type="text" name="height" value="[#HEIGHT#]">
+ </td>
+</tr>
+[#endif TYPE#]
+[#endif TYPE#]
+
+<!--#
+<tr>
+ <td valign="top">&nbsp;</td>
+ <td valign="top">
+  <label><input type="checkbox" name="autostart" value="1"[#if AUTOSTART="1"#] checked[#endif#]> AUTOSTART</label>
+ </td>
+</tr>
+#-->
+
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>
+
+[#if ID!=""#]
+&nbsp;<br>
+<hr size="1">
+&nbsp;<br>
+
+<table width="100%" border="0">
+ <tr>
+  <td valign="top">
+   <b><#LANG_ON_THE_SAME_LEVEL#>:</b>
+   <ul>
+   [#begin SAME_LEVEL#]
+    <li>
+    [#if ID!="<#ID#>"#]
+    [#TITLE#] ([#if TYPE!=""#][#TYPE#],[#endif#] [#PRIORITY#]) [ <a href="?view_mode=edit_commands&id=[#ID#]"><#LANG_EDIT#></a> ]
+    [#else#]
+    <b>[#TITLE#] ([#if TYPE!=""#][#TYPE#],[#endif#] [#PRIORITY#])</b>
+    [#endif#]
+    </li>
+   [#end SAME_LEVEL#]
+   </ul>
+   [ <a href="?view_mode=edit_commands&parent_id=<#PARENT_ID#>&id="><#LANG_ADD#></a> ]
+  </td>
+  <td valign="top">
+   <b><#LANG_CHILD_ITEMS#>:</b>
+   [#if CHILDREN#]
+   <ul>
+   [#begin CHILDREN#]
+    <li>
+    [#TITLE#] ([#if TYPE!=""#][#TYPE#],[#endif#] [#PRIORITY#]) [ <a href="?view_mode=edit_commands&id=[#ID#]"><#LANG_EDIT#></a> ]
+    </li>
+   [#end CHILDREN#]
+   </ul>
+   [#else CHILDREN#]
+   <br>n/a
+   <br>
+   [#endif CHILDREN#]
+   [ <a href="?view_mode=edit_commands&parent_id=<#ID#>&id="><#LANG_ADD#></a> ]
+  </td>
+ </tr>
+</table>
+
+<!--#
+&nbsp;<br>
+HTML code for templates:<br>
+<b>[<span></span>#module name="commands" id="[#ID#]" action=""#<span></span>]</b>
+#-->
+
+
+
+[#endif#]

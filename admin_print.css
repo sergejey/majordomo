@@ -1,0 +1,79 @@
+/*
+* @version 0.1 (auto-set)
+*/
+body			{font-family: Arial, Tahoma, Verdana; font-size : 11px; color: #3d3d3d}
+td			{font-family: Arial, Tahoma, Verdana; font-size : 11px; color: #3d3d3d}
+select,input,textarea	{font-family: Verdana, Tahoma; font-size : 10px; color: #3d3d3d}
+h1,big			{font-family: "Trebuchet Ms"; font-size : 15px; font-weight: bold; color: #465A6C}
+h2				{font-family: Arial; font-size : 12px; font-weight: bold; color: #000000}
+h3				{font-family: Arial; font-size : 12px; font-weight: bold; color: #0C529A; margin: 0 0 4 0}
+h4				{font-family: Arial; font-size : 12px; font-weight: bold; color: #444444; margin: 0 0 4 0}
+u				{text-decoration: none}
+a				{color: #932D00}
+A:hover			{color: #0057AF}
+A.mn:hover		{color: #ffffff}
+A.mnb:hover		{color: #ffffff}
+A.mnc:hover		{color: #ffffff}
+
+A.mns:hover		{color: #ffcc00}
+
+A.th			{color: #ffffff}
+A.th:hover		{color: #C6FF00}
+A.sm			{color: #932D00}
+A.sm:hover		{color: #789416}
+A.smw:hover		{color: #ffc600}
+
+A.short {color:#647483;text-decoration:none}
+
+.tit	{color: #ffffff; font-family: "Arial"; font-size: 11px; font-weight: bold; background-image: url(img/admin/mn2.gif)}
+.txt	{font-size: x-small; text-align: justify; font-family: Arial, Tahoma, Verdana}
+
+.mn		{color: #848484; font-family: Arial; text-decoration: none; font-size: 11px; font-weight: bold}
+.sm		{color: #000000; font-family: Verdana; font-size: 10px}
+.smw	{color: #ffffff; font-family: Verdana; font-size: 10px; text-decoration: none}
+.xsm	{color: #000000; font-family: Tahoma; font-size: 10px}
+.sl		{text-decoration: none; font-weight: bold}
+
+.xpad	{padding: 3 10 3 10; color: #000000; font-family: Tahoma; font-size: 10px}
+
+.tda	{color: #ffffff; font-family: Verdana; font-size: 10px; font-weight: bold; background-image: url(img/admin/tda.gif)}
+.tdb	{color: #000000; font-family: Verdana; font-size: 10px; background-color: #ffffff}
+.tdc	{color: #000000; font-family: Verdana; font-size: 10px; background-color: #F2F3F7}
+.tdd	{color: #000000; font-family: Verdana; font-size: 10px; background-color: #FFF2BB}
+.tde	{color: #000000; font-family: Verdana; font-size: 10px; background-color: #A3E0FF}
+.tdf	{color: #ffffff; font-family: Tahoma; font-size: 12px; font-weight: bold; background-image: url(img/admin/tdf.gif)}
+
+.mna	{color: #BFBFBF; font-family: Tahoma; font-size: 11px; font-weight: bold; background-image: url(img/admin/bg_mntit.gif); vertical-align: top; height: 40px}
+.mnal	{color: #BFBFBF; font-family: Tahoma; font-size: 11px; font-weight: bold; background-image: url(img/admin/bg_mntitl.gif); vertical-align: top; height: 40px}
+.mnb	{color: #BCC3CA; font-family: Tahoma; font-size: 11px; text-decoration: none}
+.mnc	{background-image: url(img/admin/bg_mnba.gif)}
+
+li {list-style-type : square; list-style-image : url(img/admin/li.gif)} 
+#q {list-style-type : circle; list-style-image : url(img/admin/_dot.gif); margin: 3 0 3 0} 
+#u {margin: 0 0 0 20} 
+
+#inxx		{width: 35px; font-family: verdana; font-size: 10px}
+#inx		{width: 50px; font-family: verdana; font-size: 10px}
+#in			{width: 100px; font-family: verdana; font-size: 10px}
+#xin		{width: 150px; font-family: verdana; font-size: 10px}
+#xxin		{width: 200px; font-family: Verdana; font-size: 10px}
+#xxxin		{width: 250px; font-family: Verdana; font-size: 10px}
+
+#rad		{width: 12px; height: 12px}
+
+#non	{text-decoration: none}
+
+
+#w		{color: #ffffff}
+#lt		{color: #bbbbbb}
+#rd		{color: #900000}
+#or		{color: #ffcc00}
+#bu		{color: #0057AF}
+#bl		{color: #000000}
+#nv		{color: #0057AF}
+#nt		{color: #647483}
+#gr		{color: #5A5A5A}
+#gn		{color: #466E19}
+
+.error {color:red;text-align:center;font-weight:bold;}
+.ok {color:green;text-align:center;font-weight:bold;}  

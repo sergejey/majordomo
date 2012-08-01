@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table pinghosts search -->
+ [#if VIEW_MODE="search_pinghosts" || VIEW_MODE=""#]
+  [#inc pinghosts_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pinghosts search -->
+ <!-- table pinghosts edit -->
+ [#if VIEW_MODE="edit_pinghosts"#]
+   [#inc pinghosts_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pinghosts edit -->
+ <!-- table pinghosts view --> 
+ [#if VIEW_MODE="view_pinghosts"#]
+   [#inc pinghosts_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pinghosts view -->

@@ -1,0 +1,77 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- Table 'pvalues' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- PROPERTY_ID (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_PROPERTY_ID#]<b><font color="red">[#endif#]
+ Property ID:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="property_id" value="[#PROPERTY_ID#]">
+ </td>
+</tr>
+<!-- OBJECT_ID (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_OBJECT_ID#]<b><font color="red">[#endif#]
+ Object ID:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="object_id" value="[#OBJECT_ID#]">
+ </td>
+</tr>
+<!-- VALUE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_VALUE#]<b><font color="red">[#endif#]
+ Value:
+ </td>
+ <td>
+  <input type="text" name="value" value="[#VALUE#]">
+ </td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>

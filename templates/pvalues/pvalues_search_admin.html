@@ -1,0 +1,123 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- table pvalues search -->
+[#if MODE="search_pvalues"#]
+<!-- search form -->
+<table border=0>
+<tr>
+ <td colspan=10><b><#LANG_SEARCH#></b></td>
+</tr>
+<form action="?" method="post" name="frmSearch">
+ <tr>
+  <td colspan=2>
+   <input type="submit" name="submit" value="<#LANG_SEARCH#>">
+   //
+   <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+  </td>
+ </tr>
+<input type="hidden" name="mode" value="search_pvalues">
+</form>
+</table>
+<!-- / search form -->
+[#endif MODE#]
+<p align=center>
+<b>
+[#if MODE!="search_pvalues"#]<a href="?mode=search_pvalues"><#LANG_SEARCH#></a> 
+&nbsp;&nbsp;&nbsp;
+[#endif#]
+//
+&nbsp;&nbsp;&nbsp;
+<a href="?view_mode=edit_pvalues">><#LANG_ADD_NEW_RECORD#><</a>
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_pvalues" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<tr>
+ <td align=center bgcolor="#AAAAAA">
+ <b>Property ID</b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b>Object ID</b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b>Value</b>
+ </td>
+<td bgcolor="#AAAAAA">&nbsp;</td>
+</tr>
+[#begin RESULT#]
+<tr >
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   [#PROPERTY_ID#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   [#OBJECT_ID#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if VALUE!=""#]
+   [#VALUE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <b><a href="?view_mode=edit_pvalues&id=[#ID#]"><#LANG_EDIT#></a></b>
+   </td>
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <a href="?view_mode=delete_pvalues&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_pvalues">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

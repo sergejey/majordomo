@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table methods search -->
+ [#if VIEW_MODE="search_methods" || VIEW_MODE=""#]
+  [#inc methods_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table methods search -->
+ <!-- table methods edit -->
+ [#if VIEW_MODE="edit_methods"#]
+   [#inc methods_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table methods edit -->
+ <!-- table methods view --> 
+ [#if VIEW_MODE="view_methods"#]
+   [#inc methods_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table methods view -->

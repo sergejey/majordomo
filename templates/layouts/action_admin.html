@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table layouts search -->
+ [#if VIEW_MODE="search_layouts" || VIEW_MODE=""#]
+  [#inc layouts_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table layouts search -->
+ <!-- table layouts edit -->
+ [#if VIEW_MODE="edit_layouts"#]
+   [#inc layouts_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table layouts edit -->
+ <!-- table layouts view --> 
+ [#if VIEW_MODE="view_layouts"#]
+   [#inc layouts_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table layouts view -->

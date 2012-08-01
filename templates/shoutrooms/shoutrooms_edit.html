@@ -1,0 +1,62 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<!-- Table 'shoutrooms' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_STRING_BACK#></a>
+</p>
+<script type="text/javascript">
+	$(document).ready(function(){
+		[#if OK#]
+		showAccept('<#LANG_STRING_SUCCESS#>');
+		[#endif OK#]
+		[#if ERR#]
+		showError('<#LANG_STRING_ERROR#>');
+		[#endif ERR#]
+	});
+</script>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_STRING_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_SHOUTROOMS_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]">
+ </td>
+</tr>
+<!-- PRIORITY (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_PRIORITY#]<b><font color="red">[#endif#]
+ <#LANG_SHOUTROOMS_PRIORITY#>:
+ </td>
+ <td>
+  <input type="text" name="priority" value="[#PRIORITY#]">
+ </td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_FORM_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_FORM_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_FORM_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>

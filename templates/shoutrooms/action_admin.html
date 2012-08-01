@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<big><#LANG_SHOUTROOMS_STRING_SHOUTROOMS#></big>
+ <!-- action usual -->
+ <!-- table shoutrooms search -->
+ [#if VIEW_MODE="search_shoutrooms" || VIEW_MODE=""#]
+  [#inc shoutrooms_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shoutrooms search -->
+ <!-- table shoutrooms edit -->
+ [#if VIEW_MODE="edit_shoutrooms"#]
+   [#inc shoutrooms_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shoutrooms edit -->
+ <!-- table shoutrooms view --> 
+ [#if VIEW_MODE="view_shoutrooms"#]
+   [#inc shoutrooms_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shoutrooms view -->

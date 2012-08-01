@@ -1,0 +1,20 @@
+<!-- results -->
+[#if RESULT#]
+
+<ul data-role="listview">
+[#begin RESULT#]
+ <li>
+  [#if TYPE="html"#]
+  <a href="/page/[#ID#].html" target=_blank>[#TITLE#]</a>
+  [#endif TYPE#]
+  [#if TYPE="url"#]
+  <a href="[#URL#]" target=_blank>[#TITLE#]</a>
+  [#endif TYPE#]
+  [#if TYPE="app"#]
+  <a href="/popup/[#APP#].html" target=_blank>[#TITLE#]</a>
+  [#endif TYPE#]
+  </li>
+[#end RESULT#]
+</ul>
+
+[#endif RESULT#]

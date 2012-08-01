@@ -1,0 +1,99 @@
+<!--#
+ @version 0.4 (auto-set)
+#-->
+&nbsp;
+[#if OVERWRITE=""#]
+<table border="0">
+ [#begin METHODS#]
+ <tr>
+  <td valign="top">[#CLASS_TITLE#]</td>
+  <td valign="top">-&gt;</td>
+  <td valign="top"><b>[#TITLE#]</b>
+  [#if CUSTOMIZED="1"#]<font color="red">*</font>[#endif#]
+  </td>
+  <td valign="top">[ <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&overwrite=1&method_id=[#ID#]"><#LANG_SETUP#></a> ]</td>
+ </tr>
+ [#end METHODS#]
+</table>
+[#else OVERWRITE#]
+
+[#if OK#]
+<p><font color="green"><#LANG_DATA_SAVED#>!</font></p>
+[#endif#]
+
+<form action="?" method="post">
+<table border="0">
+ <tr>
+  <td valign="top">Method: 
+        <b><a href="?view_mode=edit_objects&id=<#ID#>&tab=methods"><#LANG_ALL#></a></b>
+        -&gt;
+        <b> <a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#METHOD_CLASS_ID#]&tab=methods">[#METHOD_CLASS_TITLE#]</a> -&gt; [#METHOD_TITLE#]</b></td>
+ </tr>
+
+ <tr>
+  <td valign="top">
+   [#if ERR_CODE#]<font color='red'>[#endif#]<#LANG_EXECUTE#>:<br>
+   <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
+   <select name="script_id">
+    <option value="0">
+    [#begin SCRIPTS#]
+        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+        [#end SCRIPTS#]
+   </select>
+    
+   <br>
+   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
+   [#if ERRORS#][#ERRORS#][#endif ERRORS#]
+ <script language="javascript" type="text/javascript" src="/js/edit_area/edit_area_full.js"></script>
+<script language="javascript" type="text/javascript">
+editAreaLoader.init({
+        id : "mCode"               // textarea id
+        ,syntax: "php"                  // syntax to be uses for highgliting
+        ,start_highlight: true          // to display with highlight mode on start-up
+});
+</script>
+
+   <textarea name="code" rows="20" cols="120" id="mCode">[#CODE#]</textarea>
+
+
+  </td>
+ </tr>
+ <tr>
+  <td valign="top">
+  <#LANG_CALL_PARENT_METHOD#>:<br>
+  <label><input type="radio" name="call_parent" value="1"[#if CALL_PARENT="1"#] checked[#endif#]> <#LANG_BEFORE_CODE_EXECUTION#></label><br>
+  <label><input type="radio" name="call_parent" value="2"[#if CALL_PARENT="2"#] checked[#endif#]> <#LANG_AFTER_CODE_EXECUTION#></label><br>
+  <label><input type="radio" name="call_parent" value="0"[#if CALL_PARENT="0"#] checked[#endif#]> <#LANG_NEVER#></label>
+  </td>
+ </tr> 
+ <tr>
+  <td valign="top">
+  <input type="submit" name="submit" value="<#LANG_UPDATE#>">
+  &nbsp;
+  <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>"><#LANG_CANCEL#></a>
+  &nbsp;&nbsp;&nbsp;
+  ( <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_meth=<#METHOD_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a> )
+  </td>
+ </tr>
+</table>
+ <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+ <input type="hidden" name="id" value="<#ID#>">
+ <input type="hidden" name="tab" value="<#TAB#>">
+ <input type="hidden" name="overwrite" value="1">
+ <input type="hidden" name="method_id" value="<#METHOD_ID#>">
+ <input type="hidden" name="mode" value="update">
+ </form>
+
+
+<hr size="1">
+<p>
+        <#LANG_CALL_METHOD#>:<br>
+        <#LANG_BY_URL#>:<br>
+        <input type="text" size="90" id="debugURL" value="<#BASE_URL#>/objects/?object=<#OBJECT_TITLE_URL#>&op=m&m=<#METHOD_TITLE_URL#>&">
+        <a href="#" onClick="this.href=document.getElementById('debugURL').value" target=_blank><#LANG_TEST#></a>
+        <br>
+        <#LANG_COMMAND_LINE#>:<br>
+        <input type="text" size="90" value="<#DOC_ROOT#>\obj.bat <#OBJECT_TITLE#>.<#METHOD_TITLE#>">
+        </p>
+
+[#endif OVERWRITE#]

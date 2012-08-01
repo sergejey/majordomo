@@ -1,0 +1,49 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+<p>
+Media: [#BASEFILE#]
+</p>
+
+[#if LIST_MODE="foto"#]
+<p align="center">
+<a href="/modules/thumb/thumb.php?img=<#FULLFILE#>" target=_blank>[#module name="thumb" src="<#FULLFILE#>" width="700"#]</a>
+</p>
+[#endif LIST_MODE#]
+
+<script language="javascript">
+ var mediaFolder='[#FULLFILE#]';
+</script>
+
+[#if SHOWPLAYER="1"#]
+ [#module name="app_player" action="" play="<#FULLFILE_S#>" terminal_id="<#TERMINAL_ID#>"#]
+[#endif#]
+
+[#if COVER!=""#]
+<div style="padding:5px">
+<img src="/modules/thumb/thumb.php?img=[#COVER_PATH#]&w=280" border="0">
+</div>
+[#endif#]
+
+
+<!--#
+<p>Play on:</p>
+
+
+<table border="0" cellpadding="5">
+ <tr>
+  [#begin TERMINALS#]
+  <td valign="top"><div id="terminal[#ID#]"><a href="#" onClick="playThis(mediaFolder, 0, '[#NAME#]');">[#TITLE#]</a></div></td>
+  [#end TERMINALS#]
+ </tr>
+</table>
+[#if TERMINALS_TOTAL="1"#]
+[#if SHOWPLAYER!="1"#]
+<script language="javascript">
+ [#begin TERMINALS#]
+ playThis(mediaFolder, 0, '[#NAME#]');
+ [#end TERMINALS#]
+</script>
+[#endif#]
+[#endif#]
+#-->

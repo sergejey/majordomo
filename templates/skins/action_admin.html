@@ -1,0 +1,59 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<big><#LANG_MODULE_SKINS#></big>
+
+[#if INSTALLED#]
+<p align="center">
+<font color="green"><b><#LANG_NEW_SKIN_INSTALLED#></b></font>
+</p>
+&nbsp;
+[#endif#]
+
+[#if MODE="upload"#]
+<p>
+[#if ERR_FORMAT#]<font color="red"><#LANG_INCORRECT_FILE_FORMAT#></font>[#endif ERR_FORMAT#]
+[#if ERR_MKDIR#]<font color="red"><#LANG_CANNOT_CREATE_FOLDER#> '<#ROOT#>skins/[#BASENAME#]'!</font>[#endif ERR_FORMAT#]
+[#if ERR_EXISTS#]<font color="red"><#LANG_SKIN_ALREADY_EXISTS#> ([#BASENAME#])</font>[#endif ERR_FORMAT#]
+</p>
+[#endif MODE#]
+
+<table border=0>
+ <form action="?" method="post" enctype="multipart/form-data">
+ <tr>
+  <td><#LANG_UPLOAD_NEW_SKIN#>:</td>
+  <td><input type="file" name="file"></td>
+  <td><input type="submit" name="submit" value="<#LANG_SUBMIT#>"></td>
+ </tr>
+ <input type="hidden" name="mode" value="upload">
+ </form>
+</table>
+
+&nbsp;
+
+[#if SKINS#]
+<table border=0 cellpadding=5>
+ [#begin SKINS#]
+ <tr>
+  <td valign=top align="center">
+   [#if PREVIEW!=""#]
+   <img src="[#PREVIEW#]" border=1>
+   [#else#]
+   No preview available
+   [#endif#]
+  </td>
+  <td valign=top>
+  <big>[#TITLE#]</big><br><br>
+  [ <b><a href="?install=[#TITLE_URL#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_INSTALL_SKIN#></a></b> ]
+  &nbsp;&nbsp;&nbsp;
+  [ <a href="?delete=[#TITLE_URL#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a> ]
+  </td>
+ </tr>
+ [#end SKINS#]
+</table>
+[#else SKINS#]
+<p align="center">
+<#LANG_NO_ADDITIONAL_SKINS_INSTALLED#>
+</p>
+[#endif SKINS#]
+

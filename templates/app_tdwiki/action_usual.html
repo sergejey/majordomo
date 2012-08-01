@@ -1,0 +1,19 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+ <!-- action usual -->
+ <!-- table tdwiki search -->
+ [#if VIEW_MODE="search_tdwiki"#]
+  [#inc tdwiki_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table tdwiki search -->
+ <!-- table tdwiki edit -->
+ [#if VIEW_MODE="edit_tdwiki" || VIEW_MODE=""#]
+   [#inc tdwiki_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table tdwiki edit -->
+ <!-- table tdwiki view --> 
+ [#if VIEW_MODE="view_tdwiki"#]
+   [#inc tdwiki_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table tdwiki view -->

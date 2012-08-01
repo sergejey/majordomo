@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table pvalues search -->
+ [#if VIEW_MODE="search_pvalues" || VIEW_MODE=""#]
+  [#inc pvalues_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pvalues search -->
+ <!-- table pvalues edit -->
+ [#if VIEW_MODE="edit_pvalues"#]
+   [#inc pvalues_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pvalues edit -->
+ <!-- table pvalues view --> 
+ [#if VIEW_MODE="view_pvalues"#]
+   [#inc pvalues_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pvalues view -->

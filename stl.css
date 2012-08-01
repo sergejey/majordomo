@@ -1,0 +1,214 @@
+/*
+* @version 0.2 (auto-set)
+*/
+/*main styles*/
+body{
+        font:12px Arial, Helvetica, sans-serif;
+        color:white;
+        background-color:black;
+}
+table,div{
+        font:12px Arial, Helvetica, sans-serif;
+        color:white;
+}
+img{
+        border:0;
+}
+input,select,textarea{
+   font:12px Arial, Helvetica, sans-serif;
+   color:#000;
+   border:1px solid #000;
+}
+input.button{
+        background-color:#b2e029;
+        border:1px solid #E5E5E5;
+        color:#fff;
+        font-weight:bold;
+        padding-top:2px;
+        padding-bottom:3px;
+}
+input.checkbox{
+        border: none;
+        vertical-align: middle;
+        margin: 0 0.25em;
+}
+td{
+/*        vertical-align:top;*/
+}
+p{
+        margin:0 0 15px 0;
+}
+/*default styles*/
+a{
+        color:white;
+        text-decoration:underline;
+}
+a:hover{
+        color:#9ECF15;
+}
+h1{
+        font:24px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    color:white;
+    padding:0;
+    margin:0 0 5px 0;
+    letter-spacing:-1px;
+}
+h2{
+        font:20px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    color:white;
+    padding:0;
+    margin:0 0 5px 0;
+    letter-spacing:-1px;
+}
+h3{
+        font:18px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    color:white;
+    padding:0;
+    margin:0 0 5px 0;
+}
+h4{
+        font:bold 16px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    color:white;
+    padding:0;
+    margin:0 0 5px 0;
+}
+h5{
+        font:bold 14px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    color:white;
+    padding:0;
+    margin:0 0 5px 0;
+}
+ul{
+  margin:3px 0 15px 5px;
+  padding:0 0 0 0;
+  list-style-position:outside;
+  list-style-type:none;
+}
+ol{
+  margin:3px 0 15px 23px;
+  padding:0 0 0 0;
+  list-style-position:outside;
+  list-style-type:decimal;
+}
+li ul, li ol{
+  margin-top:5px;
+  margin-bottom:10px;
+  list-style-type:none;
+  font-size:12px;
+}
+li ul li{
+        background:none;
+}
+li{
+  margin-bottom:2px;
+}
+.img_right{
+        float:right;
+        margin:4px 0 10px 15px;
+        border:1px solid red;
+}
+.img_left{
+        float:left;
+        margin:4px 15px 10px 0;
+        border:1px solid red;
+}
+/*format styles*/
+.main{
+        border:8px solid #E5E5E5;
+        margin-top:20px;
+}
+.maintd{
+        border:1px solid #fff;
+        background-color:#fff;
+}
+.head{
+        background-image:url(img/top_bg.jpg);
+        background-repeat:repeat-x;
+        background-position:top;
+        padding:10px 15px 20px 15px;
+}
+.head .menu{
+        margin-top:5px;
+}
+.head .menu .bord{
+        border-bottom:2px solid #AADC1E;
+}
+.head .menu a{
+        color:#000;
+        font-size:16px;
+        font-weight:bold;
+        text-decoration:none;
+        display:block;
+        border-bottom:2px solid #AADC1E;
+        padding:5px 15px 6px 15px;
+        letter-spacing:-1px;
+        text-align:center;
+}
+.head .menu a span{
+        display:block;
+        color:#858585;
+        font-size:11px;
+        font-weight:normal;
+        line-height:12px;
+        letter-spacing:normal;
+}
+.head .menu a:hover{
+        border-left:2px solid #AADC1E;
+        border-right:2px solid #AADC1E;
+        border-top:2px solid #AADC1E;
+        border-bottom:0;
+        padding:3px 13px 6px 13px;
+        background-color:#fff;
+}
+.head .menu a.act{
+        border-left:2px solid #AADC1E;
+        border-right:2px solid #AADC1E;
+        border-top:2px solid #AADC1E;
+        border-bottom:0;
+        padding:3px 13px 6px 13px;
+        background-color:#fff;
+}
+.content{
+        padding:0 15px 15px 15px;
+}
+.content .tab{
+        border-left:1px solid #858585;
+        border-top:1px solid #858585;
+}
+.content .tab th{
+        background-color:#858585;
+        color:#fff;
+        padding:2px 10px 3px 10px;
+        text-align:left;
+}
+.content .tab td{
+        background-color:#EEEEEE;
+        border-bottom:1px solid #858585;
+        border-right:1px solid #858585;
+        padding:2px 10px 3px 10px;
+}
+.text{
+        font-size:12px;
+        border:1px solid #bae349;
+        background-color:#ecf7cc;
+        padding:7px 10px 7px 10px;
+        margin-bottom:15px;
+}
+.footer{
+        background-image:url(img/bottom_bg.jpg);
+        background-repeat:repeat-x;
+        background-position:top;
+        color:#fff;
+        font-size:11px;
+}
+.footer td{
+        padding:108px 0 0 20px;
+}
+
+.small table, div, p {
+ font:11px Arial, Helvetica, sans-serif;
+}
+
+.footer a{
+        color:#fff;
+}

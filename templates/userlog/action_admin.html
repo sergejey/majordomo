@@ -1,0 +1,23 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<p>
+The User Log allows you to see what IP addresses and users have logged into the control panel.  You can also use the calendar on the left to search by month. 
+</p>
+
+ <!-- action usual -->
+ <!-- table userlog search -->
+ [#if VIEW_MODE="search_userlog" || VIEW_MODE=""#]
+  [#inc userlog_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table userlog search -->
+ <!-- table userlog edit -->
+ [#if VIEW_MODE="edit_userlog"#]
+   [#inc userlog_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table userlog edit -->
+ <!-- table userlog view --> 
+ [#if VIEW_MODE="view_userlog"#]
+   [#inc userlog_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table userlog view -->

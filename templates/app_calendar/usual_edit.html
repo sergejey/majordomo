@@ -1,0 +1,238 @@
+<table width="100%" border="0">
+ <form action="?" method="post">
+ <tr>
+  <td valign="top"><#LANG_TITLE#>:</td>
+  <td valign="top"><input type="text" name="title" value="[#TITLE#]" size="50">
+  [#if SYSTEM!=""#]<br>(<#LANG_SYSTEM_NAME#>: [#SYSTEM#])[#endif#]
+  </td>
+ </tr>
+
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top">
+   <label><input type="radio" name="is_task" id="is_event" value="0"[#if IS_TASK!="1"#] checked[#endif#]> <#LANG_EVENT#></label>
+   &nbsp;&nbsp;
+   <label><input type="radio" name="is_task" id="is_task" value="1"[#if IS_TASK="1"#] checked[#endif#]> <#LANG_TASK#></label>
+   <span id="task_done_block"[#if IS_TASK!="1"#] style="display:none"[#endif#]>
+   <b><label><input type="checkbox" name="is_done" value="1"[#if IS_DONE="1"#] checked[#endif#]> <#LANG_DONE#></label></b>
+   </span>
+  </td>
+ </tr>
+
+ <tr>
+  <td><#LANG_DATE#>:</td>
+  <td>
+  <span id="due_block"[#if IS_NO_DATE="1"#] style="display:none"[#endif#]><input type="text" name="due" id="due" value="[#DUE#]"></span>
+<label><input type="checkbox" name="is_nodate" id="is_nodate" value="1"[#if IS_NODATE="1"#] checked[#endif#]>
+   <#LANG_NO_DUE_DATE#></label>
+
+<label><input type="checkbox" name="is_repeating" id="is_repeating" value="1"[#if IS_REPEATING="1"#] checked[#endif#]>
+   <#LANG_IS_REPEATING#></label>
+
+  </td>
+<script language="javascript">
+
+ $('#is_task').click (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.is(':checked')) {
+   $('#task_done_block').show();
+  } else {
+   $('#task_done_block').hide();
+  }
+ }
+ );
+
+ $('#is_event').click (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.is(':checked')) {
+   $('#task_done_block').hide();
+  } else {
+   $('#task_done_block').show();
+  }
+ }
+ );
+
+ $('#is_nodate').click (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.is(':checked')) {
+   $('#due_block').hide();
+  } else {
+   $('#due_block').show();
+  }
+ }
+ );
+
+ $('#due').DatePicker({
+        format:'Y-m-d',
+        date: $('#due').val(),
+        current: $('#due').val(),
+        starts: 1,
+        position: 'r',
+        onBeforeShow: function(){
+                $('#due').DatePickerSetDate($('#due').val(), true);
+        },
+        onChange: function(formated, dates){
+                $('#due').val(formated);
+                $('#due').DatePickerHide();
+        }
+});
+</script>
+ </tr>
+
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top">
+   <div id="repeat_type_block"[#if IS_REPEATING!="1"#] style="display:none"[#endif#]>
+   <select name="repeat_type" id="repeat_type">
+    <option value="1"[#if REPEAT_TYPE=="1"#] selected[#endif#]><#LANG_YEARLY#>
+    <option value="2"[#if REPEAT_TYPE=="2"#] selected[#endif#]><#LANG_MONTHLY#>
+    <option value="3"[#if REPEAT_TYPE=="3"#] selected[#endif#]><#LANG_WEEKLY#>
+    <option value="9"[#if REPEAT_TYPE=="9"#] selected[#endif#]><#LANG_OTHER#>
+   </select>
+
+   <div id="restore_in_block" [#if REPEAT_TYPE!="9"#] style="display:none"[#endif#]>
+   <#LANG_RESTORE_IN#> <input type="text" size="5" name="repeat_in" value="[#REPEAT_IN#][#if REPEAT_IN=""#]3[#endif#]"> <#LANG_IN_DAYS#>
+
+   <label><input type="checkbox" name="is_repeating_after" value="1"[#if IS_REPEATING_AFTER="1"#] checked[#endif#]>
+   <#LANG_AFTER_COMPLETION#></label>
+   </div>
+   </div>
+
+<script language="javascript">
+
+ $('#is_repeating').click (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.is(':checked')) {
+   $('#repeat_type_block').show();
+  } else {
+   $('#repeat_type_block').hide();
+  }
+ }
+ );
+
+ $('#repeat_type').change (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.val()=='9') {
+   $('#restore_in_block').show();
+  } else {
+   $('#restore_in_block').hide();
+  }
+ }
+ );
+
+
+</script>
+
+  </td>
+ </tr>
+
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top">
+  <label><input type="checkbox" name="advanced" id="advanced" value="1"> <#LANG_MORE_DETAILS#></label>
+  </td>
+ </tr>
+
+<script language="javascript">
+  $('#advanced').click (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.is(':checked')) {
+   $('#advanced_detais').show();
+  } else {
+   $('#advanced_detais').hide();
+  }
+ }
+ );
+</script>
+
+ <tr>
+  <td valign="top" colspan="2">
+   <div id="advanced_detais" style="display:none">
+<table width="100%" border="0">
+<tr>
+
+ <tr>
+  <td valign="top"><#LANG_NOTES#>:</td>
+  <td valign="top">
+  <textarea name="notes" cols="40" rows="3">[#NOTES#]</textarea>
+  </td>
+ </tr>
+
+  <td valign="top"><#LANG_USER#>:</td>
+  <td valign="top">
+  <select name="user_id">
+   <option value="0"><#LANG_ANY_USER#>
+   [#begin USERS#]
+   <option value="[#ID#]"[#if ID="<#USER_ID#>"#] selected[#endif#]>[#NAME#]
+   [#end USERS#]
+  </select>
+  </td>
+ </tr>
+
+ <tr>
+  <td valign="top"><#LANG_LOCATION#>:</td>
+  <td valign="top">
+  <select name="location_id">
+   <option value="0"><#LANG_ANY_LOCATION#>
+   [#begin LOCATIONS#]
+   <option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td><#LANG_RUN_SCRIPT#>:</td>
+  <td>
+   <select name="done_script_id">
+    <option value="0">
+    [#begin SCRIPTS#]
+    <option value="[#ID#]"[#if ID="<#DONE_SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+    [#end SCRIPTS#]
+   </select>
+   (<#LANG_WHEN_TASK_WILL_BE_DONE#>)
+  </td>
+ </tr>
+
+
+</table>
+   </div>
+  </td>
+ </tr>
+
+
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_SUBMIT#>">
+  <a href="?"><#LANG_CANCEL#></a>
+  [#if ID!=""#]
+  <br><Br>
+  <small><a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&mode=delete" onClick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_DELETE#></a></small>
+  [#endif ID#]
+  </td>
+ </tr>
+ <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+ <input type="hidden" name="mode" value="update">
+ <input type="hidden" name="id" value="<#ID#>">
+ </form>
+</table>
+
+[#if OTHERS#]
+&nbsp;
+<h1><#LANG_SIMILAR_ITEMS#></h1>
+<table width="100%" border="0">
+ [#begin OTHERS#]
+ <tr>
+  <td width="90%">[#if IS_DONE="1"#]<strike>[#endif#][#TITLE#]</td>
+  <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
+ </tr>
+ [#end OTHERS#]
+</table>
+[#endif OTHERS#]

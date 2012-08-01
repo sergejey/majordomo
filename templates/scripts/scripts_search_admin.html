@@ -1,0 +1,91 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+
+<script language="javascript">
+ function showHide(id) {
+  //var elem=document.getElementById('sub[#ID#]');elem.style.display='block';return false;
+  if ($('#sub'+id).is(":visible")) {
+   $('#sub'+id).hide();
+   $('#link'+id).html('[ + ]');
+   $.cookie("script_categories_item"+id, null);
+  } else {
+   $.cookie("script_categories_item"+id, "1");
+   $('#sub'+id).show();
+   $('#link'+id).html('[ - ]');
+  }
+  return false;
+ }
+</script>
+
+
+<!-- table scripts search -->
+<p align=center>
+<b>
+<a href="?view_mode=edit_scripts"><#LANG_ADD_NEW_SCRIPT#></a>
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<table border=0 cellpadding=5 cellspacing=1 width="100%">
+[#begin RESULT#]
+[#if NEW_CATEGORY#]
+</table>
+</div>
+&nbsp;<br>
+<a href="#" id="link[#CATEGORY_ID#]" style="text-decoration:none" onClick="return showHide([#CATEGORY_ID#]);">[ + ]</a>
+<big>[#CATEGORY#]</big>
+<div id='sub[#CATEGORY_ID#]' style="display:none">
+<table border=0 cellpadding=5 cellspacing=1 width="100%">
+[#endif#]
+<tr>
+ <td width="70%">
+  <b>
+  [#if TITLE!=""#]
+   <a href="?view_mode=edit_scripts&id=[#ID#]">[#TITLE#]</a>
+  [#else#]
+   &nbsp;
+  [#endif#]
+  </a></b>
+ </td>
+ <td width="30%">
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td align=center>
+    <b><a href="?view_mode=edit_scripts&id=[#ID#]"><#LANG_EDIT#></a></b>
+   </td>
+   <td align=center>
+    <a href="?view_mode=run_script&id=[#ID#]" target="_blank" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_EXECUTE#></a>
+   </td>   
+   <td align=center>
+    <a href="?view_mode=delete_scripts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#if LAST#]
+</table>
+</div>
+[#endif#]
+[#end RESULT#]
+<!-- / search results (list) -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>
+
+<script language="javascript">
+[#begin RESULT#]
+ if ($.cookie("script_categories_item[#CATEGORY_ID#]") || (<#TOTAL_CATEGORIES#>==1)) {
+  $('#sub[#CATEGORY_ID#]').show();
+  $('#link[#CATEGORY_ID#]').html('[ - ]');
+ }
+[#end RESULT#]
+</script>

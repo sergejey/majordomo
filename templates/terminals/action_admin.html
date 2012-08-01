@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table terminals search -->
+ [#if VIEW_MODE="search_terminals" || VIEW_MODE=""#]
+  [#inc terminals_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table terminals search -->
+ <!-- table terminals edit -->
+ [#if VIEW_MODE="edit_terminals"#]
+   [#inc terminals_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table terminals edit -->
+ <!-- table terminals view --> 
+ [#if VIEW_MODE="view_terminals"#]
+   [#inc terminals_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table terminals view -->

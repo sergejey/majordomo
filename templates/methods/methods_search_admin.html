@@ -1,0 +1,82 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+﻿<!-- table methods search -->
+
+<p align=center>
+<b>
+[ <a href="?view_mode=edit_methods"><#LANG_ADD_METHOD#></a> ]
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_methods" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<tr>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_TITLE#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_DESCRIPTION#></b>
+ </td>
+<td bgcolor="#AAAAAA">&nbsp;</td>
+</tr>
+[#begin RESULT#]
+<tr >
+
+ <td
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  <b>
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if DESCRIPTION!=""#]
+   [#DESCRIPTION#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <b><a href="?view_mode=edit_methods&id=[#ID#]"><#LANG_EDIT#></a></b>
+   </td>
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <a href="?view_mode=delete_methods&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_methods">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>
+[#if PARENT_METHODS#]
+<big><#LANG_PARENT_METHODS#>:</big>
+<table border="0">
+ [#begin PARENT_METHODS#]
+ <tr>
+  <td valign="top"><b><a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=methods">[#CLASS_TITLE#]</a>.
+  	<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,id=[#CLASS_ID#]})&md=methods&view_mode=edit_methods&id=[#ID#]&tab=methods">[#TITLE#]</a></b></td>
+  <td valign="top">[#DESCRIPTION#]</td>
+  <td valign="top">[ <a href="?view_mode=edit_methods&overwrite=[#ID#]"><#LANG_OVERWRITE#></a> ]</td>
+ </tr>
+ [#end PARENT_METHODS#]
+</table>
+[#endif#]

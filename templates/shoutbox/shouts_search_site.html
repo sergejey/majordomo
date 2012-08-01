@@ -1,0 +1,68 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+<!-- table shouts search -->
+<!-- results -->
+
+
+
+<!-- search results (list) -->
+<div id="shoutboxContent">
+<#LANG_LOADING#>...
+</div>
+<!-- / search results (list) -->
+<!-- / results -->
+
+[#if NOT_LOGGED#]
+[#if MOBILE!="1"#]
+<p>
+<#LANG_PLEASE_LOGIN#>
+</p>
+[#endif MOBILE#]
+[#else#]
+<form action="?" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit='return sendShoutMessage()'>
+<table border=0>
+<td valign="bottom"><#LANG_COMMAND#>:</td>
+<td valign="bottom"><input type="text" name="message" size=35></td>
+<td valign="bottom"><input type="submit" name="submit" value="<#LANG_SEND#>" class="btn"></td>
+</table>
+</form>
+[#endif#]
+
+<script language="javascript">
+
+var shoutTimer;
+
+ function updatedShoutContent(param, data) {
+  var elem=document.getElementById('shoutboxContent');
+  elem.innerHTML=data;
+ }
+
+ function updateShoutContent(param, data) {
+  clearTimeout(shoutTimer);
+
+  var url="?";
+  if (data!='') {
+   updatedShoutContent(param, data);
+  } else {
+   AJAXRequest(url+'&limit=<#LIMIT#>&getdata=1', 'updatedShoutContent');
+  }
+  [#if (NOT_LOGGED!="1") || (MOBILE=="1")#]
+  shoutTimer=setTimeout("updateShoutContent('', '');", 10000);
+  [#endif NOT_LOGGED#]
+ }
+
+ function sendShoutMessage() {
+  if (document.frmShoutBoxMsg.message.value == '') return false; 
+  var msg=URLencode(document.frmShoutBoxMsg.message.value);
+  document.frmShoutBoxMsg.message.value='';
+  var url="?";
+  AJAXRequest(url+'&limit=<#LIMIT#>&msg='+msg, 'updateShoutContent');
+  return false;
+ }
+</script>
+
+
+<script language="javascript">
+ updateShoutContent('', '');
+</script>

@@ -1,0 +1,41 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+ <!-- table products search -->
+ [#if VIEW_MODE="search_products" || VIEW_MODE=""#]
+  [#inc products_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table products search -->
+ <!-- table products edit -->
+ [#if VIEW_MODE="edit_products"#]
+   [#if ID!=""#]
+   <p align="center">
+   <a href="?category_id=<#CATEGORY_ID#>">&lt;&lt;&lt; <#LANG_BACK#></a>
+   <h1 align="center">[#TITLE#]</h1>
+   </p>
+   
+   <table border=0 cellpadding=3 cellspacing=1 align="Center">
+   <tr>
+    <td align=center><b>[#if TAB!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">[#endif TAB#]<#LANG_DETAILS#></a></td>
+    <td align=center><b>[#if TAB!="codes"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=codes">[#endif TAB#]<#LANG_CODES#></a></td>
+    <td align=center><b>[#if TAB!="history"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=history">[#endif TAB#]<#LANG_HISTORY#></a></td>
+   </tr>
+   </table>
+   [#endif ID#]
+   [#if TAB=""#]
+    [#inc products_edit_default.html#]
+   [#endif TAB#]
+   [#if TAB="codes"#]
+    [#inc products_edit_codes.html#]
+   [#endif TAB#]
+   [#if TAB="history"#]
+    [#inc products_edit_history.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table products edit -->
+ <!-- table products view --> 
+ [#if VIEW_MODE="view_products"#]
+   [#if TAB=""#]
+    [#inc products_view_default.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]

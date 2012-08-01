@@ -1,0 +1,241 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<html>
+<head>
+<title><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+[#if PRINT!="1"#]
+<link rel="stylesheet" href="<#ROOTHTML#>admin.css" type="text/css">
+[#else PRINT#]
+<link rel="stylesheet" href="<#ROOTHTML#>admin_print.css" type="text/css">
+[#endif PRINT#]
+
+  <link rel="stylesheet" href="<#ROOTHTML#>jquery.autocomplete.css" type="text/css">
+  <link rel="stylesheet" href="<#ROOTHTML#>jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="<#ROOTHTML#>jquery.betterTooltip.css" type="text/css">
+
+
+
+[#inc scripts.js#]
+<script language="javascript" src="/js/scripts.js"></script>
+<script language="javascript" src="/js/jquery-1.4.2.min.js"></script>
+<script language="javascript" src="/js/system.js"></script>
+
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+ 
+
+
+</head>
+
+<body bgcolor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
+
+[#if AUTHORIZED#]
+
+<script language="javascript">
+
+         function showHideLayer(id) {
+          var layer=document.getElementById('sub_'+id);
+          var layer2=document.getElementById('plus_'+id);
+          if (layer.style.display=='none') {
+           layer.style.display='block';
+           layer2.innerHTML='[-]';
+           setCookie('sub_'+id, 'on');
+          } else {
+           layer.style.display='none';
+           layer2.innerHTML='[+]';
+           setCookie('sub_'+id, 'off');
+          }
+          return false;
+         }
+
+         function checkLayer(id) {
+          var vl=getCookie('sub_'+id);
+          if (vl=='off') {
+           showHideLayer(id);
+          }
+         }
+
+ function filterModules() {
+  var title=document.frmFilterModules.filter_modules.value;
+  var moduleTitle='';
+  var sectionTitle='';
+  var elem;
+
+  setCookie('panelFilter', title);
+
+  title=title.toLowerCase();
+
+  var found=0;
+  var i=0;
+
+  [#begin SUB_MODULES#]
+
+  [#if !DENIED#]
+   moduleTitle="[#TITLE#]";
+   moduleTitle=moduleTitle.toLowerCase();
+   sectionTitle="[#CATEGORY#]";
+   sectionTitle=sectionTitle.toLowerCase();
+   elem=document.getElementById('module_[#NAME#]_link');
+   if (title=='' || moduleTitle.indexOf(title)!=-1 || sectionTitle.indexOf(title)!=-1) {
+    elem.style.display='block';
+    found++;
+   } else {
+    elem.style.display='none';
+   }
+   i++;
+  [#endif DENIED#]
+
+  [#if LAST_IN_CATEGORY#]
+   //alert('z');
+   elem=document.getElementById('row_[#CATEGORY#]');
+   if (found>0) {
+    elem.style.display='block';
+   } else {
+    elem.style.display='none';
+   }
+   //alert(elem.id+': '+elem.style.display);
+   found=0;
+  [#endif LAST_IN_CATEGORY#]
+
+  [#end SUB_MODULES#]
+ }
+</script>
+
+
+[#if PRINT!="1"#]
+<!--# top  #-->
+<div align="center">
+        <div class="top">
+                <div class="logo"><h1><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></h1></div>
+                <div class="top-menu"><a href="<#ROOTHTML#>" target=_blank class=smw><#LANG_FRONTEND#></a> | <a href="<#ROOTHTML#>menu.html" target=_blank class=smw><#LANG_CONTROL_MENU#></a> | <a href="<#LANG_WIKI_URL#>" target=_blank  class=smw>MajorDoMo Project</a> | <a href="?md=control_access&mode=logoff" class=smw><#LANG_LOGOFF#></a></div>
+                
+        </div>
+</div>
+<!--# .top  #-->
+
+<!--# date  #-->
+<div align="center">
+        <div class="date-bot">
+                <div class="cd">[#TODAY#]</div>
+        </div>
+</div>
+<!--# .date  #-->
+
+<!--/head-->
+[#endif PRINT#]
+[#if PRINT!="1"#]
+<div align="center">
+        <div class="date">
+        
+        <div class="cd">
+        
+        <#LANG_YOU_ARE_HERE#>:
+        <a href="?"><#LANG_CONTROL_PANEL#></a>
+        [#if ACTION!=""#]&raquo; <b><#ACTION#></b>[#endif#]
+        <span style="floating:right;text-align:right;margin-left:500px">[ <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a> ]</span>
+        </div>
+        
+        </div>
+</div>
+[#endif PRINT#]
+<!--main-->
+<table cellpadding=0 cellspacing=0 border=0 width=967 align="center"><tr>
+
+[#if PRINT!="1"#]
+<td valign=top  bgcolor="#f4f4f4" height=400><!--left_main-->
+
+<form action="?" name="frmFilterModules" style="padding:10 0 0 5"><input type="text" name="filter_modules" style="width:147px" onKeyUp="filterModules();"></form>
+
+        <!--[menu]-->
+<div><table cellpadding=2 cellspacing=0 border=0 width=100%>
+<tr><td><div>
+   [#begin SUB_MODULES#]
+   [#if NEW_CATEGORY#]
+   </div></td></tr></table></div>
+   <div id="row_[#CATEGORY#]">
+   <table cellpadding=2 cellspacing=0 border=0 width=100%>
+   <tr><td class=mna><img src="<#ROOTHTML#>img/admin/0.gif" width=1 height=4><br>&nbsp; &nbsp; [#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]&nbsp;[#endif CATEGORY#]
+   <a href="#" style="text-decoration:none;" onClick="return showHideLayer('[#CATEGORY#]')"><span id="plus_[#CATEGORY#]" style="color:#BFBFBF">[-]</span></a>
+   </td></tr>
+   <tr><td>
+   <div id="sub_[#CATEGORY#]">
+   <script language='javascript'>
+    checkLayer('[#CATEGORY#]');
+   </script>
+   [#endif NEW_CATEGORY#]
+   [#if !DENIED#]
+   <div id="module_[#NAME#]_link" style="padding-bottom:2px">[#if ICON_SM!=""#]<a href="?action=[#NAME#]"><img src="[#ICON_SM#]" border=0 width=16 height=16 align="absmiddle"></a>[#endif#]
+   &nbsp;<a href="?action=[#NAME#]" style="text-decoration:none">[#if SELECTED#]<font color="#333333" style="text-decoration:underline ">[#endif#][#TITLE#][#if SELECTED#]</font>[#endif#]</a></div>
+   [#endif DENIED#]
+   [#end SUB_MODULES#]
+
+   </div>
+   </td>
+   </tr>
+   </table>
+   </div>
+
+
+
+<!--
+        <table cellpadding=2 cellspacing=0 border=0 width=100% >
+   [#begin SUB_MODULES#]
+   [#if NEW_CATEGORY#]
+   <tr><td class=mna>&nbsp;[#CATEGORY#]</td></tr>
+   [#endif NEW_CATEGORY#]
+   [#if !DENIED#]
+   <tr><td nowrap>&nbsp;
+   [#if ICON_SM!=""#]<a href="?action=[#NAME#]"><img src="[#ICON_SM#]" border=0 width=16 height=16 align="absmiddle"></a>[#endif#]
+   &nbsp;<a href="?action=[#NAME#]" class=mnb>[#if SELECTED#]<font color="#333333" style="text-decoration:underline ">[#endif#][#TITLE#]</a></td></tr>
+   [#endif DENIED#]
+   [#end SUB_MODULES#]
+
+        </table>
+        -->
+        <!--[/menu]-->
+<img src="<#ROOTHTML#>img/admin/bg_lt.gif" alt="" width="157" height="1" border="0"><!--/left_main--></td>
+[#endif PRINT#]
+
+<td style="background:url(img/admin/sep_v.gif) repeat-y 9px 0 "><img src="<#ROOTHTML#>img/0.gif" width="19" height="1"></td>
+<td width=100% height=100% valign=top bgcolor="#ffffff" style=" border-right:1px solid #e4e4e4">
+<!--right_main-->
+<!--# [#if PRINT!="1"#]
+        <table cellpadding=10 cellspacing=0 border=0 width=100%><tr>
+        <td width=100% bgcolor="#E3E6E9" class=sm>You are here:
+        <a href="?">Control Panel</a>
+        [#if ACTION!=""#]&raquo; <b><#ACTION#></b>[#endif#]
+        </td></tr></table>
+[#endif PRINT#] #-->
+        <table cellpadding=0 cellspacing=12 border=0 width=100% height=100%><tr>
+        <td width=100% valign=top>
+
+   [#if ACTION!=""#]
+    [#module name="<#ACTION#>" action="admin" instance="adm"#]
+   [#else ACTION#]
+    [#module name="control_access" action="logged" instance="auth"#]
+   [#endif ACTION#]
+
+
+        <!--[/main]-->
+        </td></tr></table>
+
+</td></tr>
+
+</table>
+
+ [#else AUTHORIZED#]
+
+ [#module name="control_access" action="enter" instance="auth"#]
+
+ [#endif AUTHORIZED#]
+
+<br><br>
+</body>
+</html>

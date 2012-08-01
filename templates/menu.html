@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" href="/jquerymobile/jquery.mobile-1.1.0.css" />
+<script type="text/javascript" src="/jquerymobile/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/jquerymobile/custom-scripting.js"></script>               
+<script type="text/javascript" src="/jquerymobile/jquery.mobile-1.1.0.min.js"></script>
+<script type="text/javascript" src="/js/jquery.jplayer.min.js"></script>
+
+<title><#LANG_CONTROL_MENU#></title>
+<script language="javascript" src="/js/scripts.js"></script>
+</head>
+<body>
+<div data-role="page" id="mainPage" data-theme="a">
+        [#module name="commands" action="" pda="1"#]
+</div>
+
+<!--#
+<div id='sound'></div>
+<script language="javascript">
+ var noteMP3Latest='';
+ var noteMP3Timer;
+ function getLatestNoteMenuReceived(id, data) {
+  if (noteMP3Latest!=data) {
+    document.getElementById("sound").innerHTML="<embed src='"+data+"' hidden=true autostart=true loop=false>";
+   noteMP3Latest=data;
+  }
+ }
+
+ function getLatestNoteMenu() {
+  clearTimeout(noteMP3Timer);
+  noteMP3Timer=window.setTimeout ('getLatestNoteMenu();', 5000);
+  AJAXRequest('/getlatestmp3.html', 'getLatestNoteMenuReceived', '');
+  return false;
+ }
+
+
+ $(document).ready(function(){
+  if (window.parent.location == window.location) {
+   getLatestNoteMenu();
+  }
+ });
+</script>
+#-->
+
+</body>
+</html>

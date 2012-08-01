@@ -1,0 +1,35 @@
+DirectoryIndex index.html index.htm index.php default.html
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteBase /
+
+ReWriteCond %{REQUEST_URI} pda$
+RewriteRule .* /popup/pda.html [R,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+ReWriteCond %{REQUEST_URI} \.html$
+ReWriteCond %{REQUEST_URI} !index\.html$
+ReWriteCond %{REQUEST_URI} !fckeditor
+ReWriteCond %{REQUEST_URI} !banner\.html$
+ReWriteCond %{REQUEST_URI} !flashcoms
+ReWriteCond %{REQUEST_URI} !google
+RewriteRule .* /nf.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+ReWriteCond %{REQUEST_URI} \.xml$
+ReWriteCond %{REQUEST_URI} !fck
+ReWriteCond %{REQUEST_URI} !flashcoms
+RewriteRule .* /nf.php
+
+</IfModule>
+
+<FILES config.php>
+deny from all
+</FILES>
+
+<FILES debmes.txt>
+deny from all
+</FILES>

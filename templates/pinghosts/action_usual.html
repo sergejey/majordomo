@@ -1,0 +1,22 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table pinghosts search -->
+ [#if VIEW_MODE="search_pinghosts" || VIEW_MODE=""#]
+  [#if MOBILE="1"#]
+  [#inc pinghosts_search_site_mobile.html#]
+  [#endif MOBILE#]
+ [#endif VIEW_MODE#]
+ <!-- / table pinghosts search -->
+ <!-- table pinghosts edit -->
+ [#if VIEW_MODE="edit_pinghosts"#]
+   [#inc pinghosts_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pinghosts edit -->
+ <!-- table pinghosts view --> 
+ [#if VIEW_MODE="view_pinghosts"#]
+   [#inc pinghosts_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table pinghosts view -->

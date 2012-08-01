@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table watchfolders search -->
+ [#if VIEW_MODE="search_watchfolders" || VIEW_MODE=""#]
+  [#inc watchfolders_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table watchfolders search -->
+ <!-- table watchfolders edit -->
+ [#if VIEW_MODE="edit_watchfolders"#]
+   [#inc watchfolders_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table watchfolders edit -->
+ <!-- table watchfolders view --> 
+ [#if VIEW_MODE="view_watchfolders"#]
+   [#inc watchfolders_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table watchfolders view -->

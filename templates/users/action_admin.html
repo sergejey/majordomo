@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table users search -->
+ [#if VIEW_MODE="search_users" || VIEW_MODE=""#]
+  [#inc users_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table users search -->
+ <!-- table users edit -->
+ [#if VIEW_MODE="edit_users"#]
+   [#inc users_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table users edit -->
+ <!-- table users view --> 
+ [#if VIEW_MODE="view_users"#]
+   [#inc users_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table users view -->

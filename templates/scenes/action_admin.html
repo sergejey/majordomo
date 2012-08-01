@@ -1,0 +1,83 @@
+
+[#if SET_DATASOURCE!="1"#]
+&nbsp;
+<!-- source select -->
+<!-- / source select -->
+[#endif SET_DATASOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="scenes" || DATA_SOURCE=""#]
+ <!-- table scenes search -->
+ [#if VIEW_MODE="search_scenes" || VIEW_MODE=""#]
+  [#inc scenes_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scenes search -->
+ <!-- table scenes edit -->
+ [#if VIEW_MODE="edit_scenes"#]
+   [#if ID!=""#]
+
+   <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+
+   <br>&nbsp;<br>
+
+   <big>[#TITLE#]</big>
+   <br>&nbsp;
+
+   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
+   <tr>
+    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">[#endif TAB#]<#LANG_DETAILS#></a></td>
+    <td align=center[#if TAB="elements"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="elements"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements">[#endif TAB#]<#LANG_ELEMENTS#></a></td>
+   </tr>
+   </table>
+   [#endif ID#]
+   [#if TAB=""#]
+    [#inc scenes_edit_default.html#]
+   [#endif TAB#]
+   [#if TAB="elements"#]
+    [#inc scenes_edit_elements.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table scenes edit -->
+ <!-- table scenes view --> 
+ [#if VIEW_MODE="view_scenes"#]
+   [#if TAB=""#]
+    [#inc scenes_view_default.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table scenes view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="elements"#]
+ <!-- table elements search -->
+ [#if VIEW_MODE="search_elements" || VIEW_MODE=""#]
+  [#inc elements_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table elements search -->
+ <!-- table elements edit -->
+ [#if VIEW_MODE="edit_elements"#]
+   [#inc elements_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table elements edit -->
+ <!-- table elements view --> 
+ [#if VIEW_MODE="view_elements"#]
+   [#inc elements_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table elements view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="elm_states"#]
+ <!-- table elm_states search -->
+ [#if VIEW_MODE="search_elm_states" || VIEW_MODE=""#]
+  [#inc elm_states_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table elm_states search -->
+ <!-- table elm_states edit -->
+ [#if VIEW_MODE="edit_elm_states"#]
+   [#inc elm_states_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table elm_states edit -->
+ <!-- table elm_states view --> 
+ [#if VIEW_MODE="view_elm_states"#]
+   [#inc elm_states_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table elm_states view -->
+ [#endif DATA_SOURCE#]

@@ -1,0 +1,50 @@
+<div align="center">
+<div align="left" style="width:300px;padding-top:150px">
+<h1>Hello, world! :)</h1>
+&nbsp;<br>&nbsp;<br>
+<form action="?" method="get">
+Time zone:<br>
+<select name='timezone' id='timezone' style='width:350px'>
+[#begin ZONELIST#]
+ <option value="[#OFFSET#]">[#TITLE#] (GMT [#OFFSET_TEXT#])
+[#end ZONELIST#]
+</select>
+<Br>&nbsp;
+<Br>
+Language:<Br>
+[#begin LANGUAGES#]
+<label><input type="radio" name="language" value="[#TITLE#]">
+<img src="/img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" align="absmiddle"> [#TITLE#]
+</label><br>
+[#end LANGUAGES#]
+
+<br>
+<br>
+<input type="submit" name="submit" value="Continue &gt;&gt;&gt;">
+<input type="hidden" name="timezone_title" id="timezone_title" value="">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="action" value="<#ACTION#>">
+
+</form>
+
+<script language="javascript">
+                $(document).ready(function(){   
+                  var d = new Date()
+                  var offset= -d.getTimezoneOffset()/60;
+                  $('#timezone').val(offset);
+                  $('#timezone_title').val($('#timezone :selected').html());
+                });     
+
+
+$('#timezone').change(function()
+{
+   $('#timezone_title').val($('#timezone :selected').html());
+});
+
+ 
+</script>
+
+
+
+</div>
+</div>

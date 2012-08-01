@@ -1,0 +1,44 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<table border="0">
+ <form action="?" method="post">
+ <tr>
+  <td valign="top"><#LANG_TITLE#>:</td>
+  <td valign="top"><input type="text" name="title"></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_COMMAND#>:</td>
+  <td valign="top"><input type="text" name="commands"></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_RUN_IN#>:</td>
+  <td valign="top">
+   <input type="text" name="runin" value="0" size="10">
+   <select name="runtype">
+    <option value="s"><#LANG_SECONDS#>
+    <option value="m"><#LANG_MINUTES#>
+    <option value="h"><#LANG_HOURS#>
+   </select>
+  </td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_ADD#>"></td>
+ </tr>
+ <input type="hidden" name="mode" value="add">
+ </form>
+</table>
+[#if JOBS#]
+<hr size="1">
+<table border="1" cellpadding=5>
+ [#begin JOBS#]
+ <tr>
+  <td valign="top"><b>[#TITLE#]</b></td>
+  <td valign="top">[#COMMANDS#]</td>
+  <td valign="top">[#if PROCESSED="1"#]<#LANG_PROCESSED#> ([#STARTED#])[#else#]<#LANG_IN_QUEUE#> ([#RUNTIME#])[#endif#]</td>
+  <td valign="top"><a href="?id=[#ID#]&mode=cancel" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_CANCEL#></a></td>
+ </tr>
+ [#end JOBS#]
+</table>
+[#endif JOBS#]

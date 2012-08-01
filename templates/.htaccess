@@ -1,0 +1,3 @@
+<FILES *.html>
+deny from all
+</FILES>

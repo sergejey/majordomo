@@ -1,0 +1,65 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<table border=0 width=100 cellpadding=1 cellspacing=1 bgcolor="#000000">
+<td bgcolor="#FFFFFF">    
+    <table width=100% border=0 cellspacing=1>
+     <tr>
+      <td colspan=10 align=center><b>Date / Time</b></td>
+     </tr>
+     <tr>
+      <td colspan=10 align=center>
+       <table width=100% border=0>
+       <td>
+        <a href="?data_source=<#DATA_SOURCE#>&added_from=[#ADDED_PREV_MONTH#]&added_to=[#ADDED_PREV_MONTH_TO#]">&lt;</a>
+       </td>
+       <td align=center>
+       <a href="?data_source=<#DATA_SOURCE#>&added_from=[#ADDED_THIS_MONTH#]&added_to=[#ADDED_THIS_MONTH_TO#]">[#ADDED_MONTH#]</a>
+       </td>
+       <td align=right>
+        <a href="?data_source=<#DATA_SOURCE#>&added_from=[#ADDED_NEXT_MONTH#]&added_to=[#ADDED_NEXT_MONTH_TO#]">&gt;</a>
+       </td>
+       </table>
+      </td>
+     </tr>
+     <tr>
+      [#begin ADDED_WDAYS#]
+      <td align=center class=plain><small>[#TITLE#]</td>
+      [#end ADDED_WDAYS#]
+     </tr>
+     <tr>
+     [#begin ADDED_DAYS#]
+      [#if DAY!=""#]
+      <td width=20 align=center class=plain
+       [#if SELECTED#]
+       bgcolor="99FF99"
+       [#else SELECTED#]
+       [#if (WEEKDAY="0") || (WEEKDAY="6")#] bgcolor="pink"[#else WEEKEND#]
+       [#if TODAY#]
+       bgcolor="#9999FF"
+       [#else TODAY#]
+       bgcolor="#DDDDDD"
+       [#endif TODAY#]
+       [#endif WEEKEND#]
+       [#endif SELECTED#]
+       >[#if EVENTS#]<b>[#endif EVENTS#]
+       <a href="?data_source=<#DATA_SOURCE#>&added_from=[#DATE#]&added_to=[#DATE#]">[#DAY#]</a></b>
+      </td>
+      [#else DAY#]
+      <td>&nbsp;</td>
+      [#endif DAY#]
+      [#if WEEKDAY="6"#]
+      </tr>
+      <tr>
+      [#endif WEEKDAY#]
+     [#end ADDED_DAYS#]
+     </tr>
+     [#if ADDED_FROM!=""#]
+     <tr>
+      <td colspan=10 align=center>
+       <a href="?data_source=<#DATA_SOURCE#>">Show all</a>
+      </td>
+     </tr>
+     [#endif ADDED_FROM#]
+    </table>
+</td></table>

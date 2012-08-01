@@ -1,0 +1,174 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- Table 'gpslog' edit -->
+<p align=center>
+ <a href="?data_source=<#DATA_SOURCE#>">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- ADDED (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_ADDED#]<b><font color="red">[#endif#]
+ <#LANG_ADDED#>:
+ </td>
+ <td>
+ <input type="text" name="added_date" value="[#ADDED_DATE#]" maxlength=10 size=12>
+ [#module name="dateselect" field="added_date" form="frmEdit"#]
+ &nbsp;&nbsp;&nbsp;
+ <select name="added_hours">
+ [#begin ADDED_HOURS#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end ADDED_HOURS#]
+ </select>
+ :
+ <select name="added_minutes">
+ [#begin ADDED_MINUTES#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end ADDED_MINUTES#]
+ </select>
+ </td>
+</tr>
+<!-- LAT (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_LAT#]<b><font color="red">[#endif#]
+ <#LANG_LATITUDE#>:
+ </td>
+ <td>
+  <input type="text" name="lat" value="[#LAT#]">
+ </td>
+</tr>
+<!-- LON (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_LON#]<b><font color="red">[#endif#]
+ <#LANG_LONGITUDE#>:
+ </td>
+ <td>
+  <input type="text" name="lon" value="[#LON#]">
+ </td>
+</tr>
+<!-- ALT (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_ALT#]<b><font color="red">[#endif#]
+ <#LANG_ALTITUDE#>:
+ </td>
+ <td>
+  <input type="text" name="alt" value="[#ALT#]">
+ </td>
+</tr>
+<!-- PROVIDER (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_PROVIDER#]<b><font color="red">[#endif#]
+ <#LANG_PROVIDER#>:
+ </td>
+ <td>
+  <input type="text" name="provider" value="[#PROVIDER#]">
+ </td>
+</tr>
+<!-- SPEED (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_SPEED#]<b><font color="red">[#endif#]
+ <#LANG_SPEED#>:
+ </td>
+ <td>
+  <input type="text" name="speed" value="[#SPEED#]">
+ </td>
+</tr>
+<!-- BATTLEVEL (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_BATTLEVEL#]<b><font color="red">[#endif#]
+ <#LANG_BATTERY_LEVEL#>:
+ </td>
+ <td>
+  <input type="text" name="battlevel" value="[#BATTLEVEL#]">
+ </td>
+</tr>
+<!-- CHARGING (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_CHARGING#]<b><font color="red">[#endif#]
+ <#LANG_CHARGING#>:
+ </td>
+ <td>
+  <input type="text" name="charging" value="[#CHARGING#]">
+ </td>
+</tr>
+<!-- DEVICEID (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_DEVICEID#]<b><font color="red">[#endif#]
+ <#LANG_DEVICE#>:
+ </td>
+ <td>
+  <input type="text" name="deviceid" value="[#DEVICEID#]">
+ </td>
+</tr>
+<!-- DEVICE_ID (int) -->
+[#if !IS_SET_DEVICE_ID#]
+<tr>
+ <td align=right>
+ [#if ERR_DEVICE_ID#]<b><font color="red">[#endif#]
+ <#LANG_DEVICE#>:
+ </td>
+ <td>
+  <input type="text" name="device_id" value="[#DEVICE_ID#]">
+ </td>
+</tr>
+[#endif IS_SET_DEVICE_ID#]
+<!-- LOCATION_ID (int) -->
+[#if !IS_SET_LOCATION_ID#]
+<tr>
+ <td align=right>
+ [#if ERR_LOCATION_ID#]<b><font color="red">[#endif#]
+ <#LANG_LOCATION#>:
+ </td>
+ <td>
+  <input type="text" name="location_id" value="[#LOCATION_ID#]">
+ </td>
+</tr>
+[#endif IS_SET_LOCATION_ID#]
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+</form>
+</table>

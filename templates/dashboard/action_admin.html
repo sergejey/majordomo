@@ -1,0 +1,81 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<p align="center">
+<big><#SETTINGS_SITE_TITLE#> Management Dash Board</big>
+<br>
+[#if VIEW_MODE=""#]
+[ <a href="?view_mode=settings">Settings</a> ]
+[#endif#]
+</p>
+
+[#if VIEW_MODE="settings"#]
+<a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+
+<br>&nbsp;
+[#if OK#]
+<p style="color:green"><#LANG_DATA_SAVED#>.</p>
+[#endif#]
+<table border="0">
+<form action="?" method="post">
+ <tr>
+  <td valign="top" colspan="2"><label><input type="checkbox" name="cpanel_stats" value="1"[#if CPANEL_STATS="1"#] checked[#endif#]> Show cPanel statistics</label></td>
+ </tr>
+ <tr>
+  <td valign="top" align="right">cPanel username:</td>
+  <td valign="top"><input type="text" name="cpanel_username" value="[#CPANEL_USERNAME#]" size="50"></td>
+ </tr>
+ <tr>
+  <td valign="top" align="right">cPanel password:</td>
+  <td valign="top"><input type="text" name="cpanel_password" value="[#CPANEL_PASSWORD#]" size="50"></td>
+ </tr>
+ <tr>
+  <td valign="top" align="right">cPanel site domain:</td>
+  <td valign="top"><input type="text" name="cpanel_domain" value="[#CPANEL_DOMAIN#]" size="50"> (ex.: mydomain.com)</td>
+ </tr>
+ <tr>
+  <td valign="top" align="right">cPanel URL:</td>
+  <td valign="top"><input type="text" name="cpanel_url" value="[#CPANEL_URL#][#if CPANEL_URL=""#]http://[#endif#]" size="50"> (ex.: http://mydmain.com/cpanel)</td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_SUBMIT#>"></td>
+ </tr>
+ <input type="hidden" name="view_mode" value="settings">
+ <input type="hidden" name="mode" value="update">
+</form>
+</table>
+
+[#endif#]
+
+[#if VIEW_MODE=""#]
+<style>.td_sm {background-color: #FFF;  padding: 1px; text-align: center}
+.currentday {font-weight: bold}</style>
+
+<table width="100%" border="0" cellpadding="7">
+ <tr>
+  <td valign="top" width="30%">
+   &nbsp;
+  </td>
+  <td valign="top" width="30%">
+   &nbsp;
+  </td>
+  <td valign="top" width="30%">
+
+  [#if CPANEL_STATS="1"#]
+   <table width="100%" border="0" bgcolor="#666666" cellspacing="1" cellpadding="5">
+    <tr>
+     <td valign="top" colspan="4" bgcolor="#EEEEEE" align="center"><b>Visits (cPanel)</b></td>
+    </tr>
+    <tr><td class="td_sm">Day</td><td class="td_sm">Visits</td><td class="td_sm">Pages</td><td class="td_sm">Hits</td></tr>
+    [#begin MONTH_STATS#]
+    <tr><td class="td_sm">[#DAY#]</td><td class="td_sm">[#VISITS#]</td><td class="td_sm">[#PAGES#]</td><td class="td_sm">[#HITS#]</td></tr>
+    [#end MONTH_STATS#]
+   </table>
+  [#endif#]
+
+   &nbsp;
+  </td>
+ </tr>
+</table>
+[#endif#]

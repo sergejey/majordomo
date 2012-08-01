@@ -1,0 +1,74 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+[#if !LOADED#]
+<STYLE>
+.dynCalendar_header{
+        font-family: Arial, Verdana, Helvetica, Sans-Serif;
+        font-size: 10pt;
+        font-weight: bold;
+}
+.dynCalendar_dayname {
+        background-color: #eeeeee;
+        border: 1px solid #c0c0c0;
+        font-family: Arial, Verdana, Helvetica, Sans-Serif;
+        font-size: 8pt;
+        text-align: center;
+}
+
+.dynCalendar_day {
+        background-color: #eeeeee;
+        color: #000000;
+        font-family: Arial, Verdana, Helvetica, Sans-Serif;
+        font-size: 8pt;
+}
+
+.dynCalendar_today {
+        background-color: #ffffff;
+        border: 1px solid #c0c0c0;
+        font-family: Arial, Verdana, Helvetica, Sans-Serif;
+        font-size: 8pt;
+}
+
+.dynCalendar {
+        background-color: #c0c0c0;
+        border: 2px outset white;
+        visibility: hidden;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+}
+</STYLE>
+<script language="JavaScript" type="text/javascript">
+[#inc dynCalendar.js#]
+</script>
+[#endif LOADED#]
+    <script language="JavaScript" type="text/javascript">
+        function calendar[#UID#]Callback(date, month, year)
+        {
+            [#if FORMAT="en"#]
+            document.[#FORM#].[#FIELD#].value = month+ '/' + date + '/' + year;
+            [#endif#]
+            [#if FORMAT="ru"#]
+            document.[#FORM#].[#FIELD#].value = date+ '.' + month + '.' + year;
+            [#endif#]
+        }
+        calendar[#UID#] = new dynCalendar('calendar[#UID#]', 'calendar[#UID#]Callback');
+        calendar[#UID#].setMonthCombo(false);
+        calendar[#UID#].setYearCombo(false);
+        [#if FORMAT="en"#]
+        tmp=(document.[#FORM#].[#FIELD#].value.split('/'));
+        if (tmp[0]>0) {
+         calendar[#UID#].setCurrentMonth(tmp[0]-1);
+        }
+        [#endif#]
+        [#if FORMAT="ru"#]
+        tmp=(document.[#FORM#].[#FIELD#].value.split('.'));
+        if (tmp[0]>0) {
+         calendar[#UID#].setCurrentMonth(tmp[1]-1);
+        }
+        [#endif#]
+        if (tmp[2]>0) {
+         calendar[#UID#].setCurrentYear(tmp[2]);
+        }
+    </script>

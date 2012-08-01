@@ -1,0 +1,15 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+[#if ACTION=""#]
+<!-- Frontend -->
+<style>
+a {font-size:12px}
+p, div {font-size:13px}
+</style>
+ [#inc action_usual.html#]
+[#endif#]
+[#if ACTION="admin"#]
+<!-- Control Panel -->
+ [#inc action_admin.html#]
+[#endif#]

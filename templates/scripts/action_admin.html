@@ -1,0 +1,44 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+<table border="0" align="center">
+ <tr>
+  <td valign="top" align="center">
+  [#if DATA_SOURCE=="" || DATA_SOURCE=="scripts"#]<b>[#endif#]
+   <a href="?data_source=scripts"><#LANG_MODULE_SCRIPTS#></a>
+  </td>
+  <td valign="top" align="center">
+  [#if DATA_SOURCE=="categories"#]<b>[#endif#]
+   <a href="?data_source=categories"><#LANG_CATEGORIES#></a>
+  </td>
+ </tr>
+</table>
+
+[#if DATA_SOURCE=="" || DATA_SOURCE=="scripts"#]
+ <!-- action usual -->
+ <!-- table scripts search -->
+ [#if VIEW_MODE="search_scripts" || VIEW_MODE=""#]
+  [#inc scripts_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts search -->
+ <!-- table scripts edit -->
+ [#if VIEW_MODE="edit_scripts"#]
+   [#inc scripts_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts edit -->
+[#endif DATA_SOURCE#]
+
+[#if DATA_SOURCE=="categories"#]
+ <!-- action usual -->
+ <!-- table scripts search -->
+ [#if VIEW_MODE="search_categories" || VIEW_MODE=""#]
+  [#inc categories_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts search -->
+ <!-- table scripts edit -->
+ [#if VIEW_MODE="edit_categories"#]
+   [#inc categories_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts edit -->
+[#endif DATA_SOURCE#]

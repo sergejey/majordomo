@@ -1,0 +1,17 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<table width="100%" border="0">
+<tr>
+[#begin FILES#]
+ <td class=plain valign=top align="center" width="25%">
+ [#if IS_FOTO#]
+  <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="/modules/thumb/thumb.php?w=180&img=[#FULL_PATH#]" border="0"></a>
+ [#endif#]
+  <br><small><a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play">[#TITLE_SHORT#]</a></small>
+ </td>
+ [#if NEWROW#]</tr><tr>[#endif#]
+ [#end FILES#]
+</tr>
+
+</table>

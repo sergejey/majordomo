@@ -1,0 +1,110 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<embed type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" version="VideoLAN.VLCPlugin.2"
+    width="360"
+    height="25"
+    id="vlc" name="vlc">
+</embed> <a href="#" onClick="testVLC()">zzz</a>
+<div id="vlcdebugdiv">debug...</div>
+
+<script language="Javascript">
+
+
+/*
+function getVLC(name) {
+ return document.getElementById(name);
+} */
+
+function vlc_debug(msg) {
+ var elem=document.getElementById('vlcdebugdiv');
+ elem.innerHTML=msg;
+ return false;
+}
+
+function testVLC() {
+ var vlc = getVLC("vlc");
+ vlc_debug(vlc.versioninfo());
+ return false;
+}
+
+
+
+function registerVLCEvent(event, handler)
+{
+   var vlc = getVLC("vlc");
+   if (vlc) {
+       if (vlc.attachEvent) {
+           // Microsoft
+           vlc.attachEvent (event, handler);
+       } else if (vlc.addEventListener) {
+           // Mozilla: DOM level 2
+           vlc.addEventListener (event, handler, false);
+       } else {
+           // DOM level 0
+           eval("vlc.on" + event + " = handler");
+       }
+   }
+}
+// stop listening to event
+function unregisterVLCEvent(event, handler)
+{
+   var vlc = getVLC("vlc");
+   if (vlc) {
+       if (vlc.detachEvent) {
+           // Microsoft
+           vlc.detachEvent (event, handler);
+       } else if (vlc.removeEventListener) {
+           // Mozilla: DOM level 2
+           vlc.removeEventListener (event, handler, false);
+       } else {
+           // DOM level 0
+           eval("vlc.on" + event + " = null");
+       }
+   }
+}
+// event callback function for testing
+function handleEvents(event)
+{
+   if (!event)
+       event = window.event; // IE
+   if (event.target) {
+       // Netscape based browser
+       targ = event.target;
+   } else if (event.srcElement) {
+       // ActiveX
+       targ = event.srcElement;
+   } else {
+       // No event object, just the value
+       alert("Event value" + event );
+       return;
+   }
+   if (targ.nodeType == 3) // defeat Safari bug
+       targ = targ.parentNode;
+   vlcdebug("Event " + event.type + " has fired from " + targ );
+}
+// handle mouse grab event from video filter
+function handleMouseGrab(event,X,Y)
+{
+   if (!event)
+       event = window.event; // IE
+   vlcdebug("new position (" + X + "," + Y + ")");
+}
+// Register a bunch of callbacks.
+/*
+registerVLCEvent('MediaPlayerNothingSpecial', handleEvents);
+registerVLCEvent('MediaPlayerOpening', handleEvents);
+registerVLCEvent('MediaPlayerBuffering', handleEvents);
+registerVLCEvent('MediaPlayerPlaying', handleEvents);
+registerVLCEvent('MediaPlayerPaused', handleEvents);
+registerVLCEvent('MediaPlayerForward', handleEvents);
+registerVLCEvent('MediaPlayerBackward', handleEvents);
+registerVLCEvent('MediaPlayerEncounteredError', handleEvents);
+registerVLCEvent('MediaPlayerEndReached', handleEvents);
+registerVLCEvent('MediaPlayerTimeChanged', handleEvents);
+registerVLCEvent('MediaPlayerPositionChanged', handleEvents);
+registerVLCEvent('MediaPlayerSeekableChanged', handleEvents);
+registerVLCEvent('MediaPlayerPausableChanged', handleEvents);
+registerVLCEvent('MediaPlayerMouseGrab', handleMouseGrab);
+*/
+</script>

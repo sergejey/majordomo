@@ -1,0 +1,46 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<script language="javascript" type="text/javascript">
+ function tip_[#ID#]_show(e) {
+   var elem=document.getElementById('tip_[#ID#]');
+   var tempX;
+   var tempY;
+   if (IE4) {
+    tempX=(e.clientX + document.body.scrollLeft+document.documentElement.scrollLeft);
+    tempY=(e.clientY + document.body.scrollTop+document.documentElement.scrollTop);
+   } else {
+    tempX=e.pageX;
+    tempY=e.pageY;
+   }
+
+//   if (e.clientX>300) {
+//    tempX-=200;
+//    tempX-=10;
+//   } else {
+    tempX+=10;
+//   }
+
+//   if (e.clientY>100) {
+//    tempY-=100;
+//    tempY-=10;
+//   } else {
+    tempY+=10;
+//   }   
+   elem.style.left=(tempX)+'px';
+   elem.style.top=(tempY)+'px';
+   elem.style.visibility = "visible";
+ }
+ function tip_[#ID#]_hide() {
+  var elem=document.getElementById('tip_[#ID#]');
+  elem.style.visibility = "hidden";
+ }
+</script>
+
+[#if TITLE!=""#]
+<a href="#" onClick="return false;" onMouseOver="tip_[#ID#]_show(event)" onMouseOut="tip_[#ID#]_hide()" style="text-decoration:none">[#TITLE#]</a>
+[#endif TITLE#]
+
+<div id='tip_[#ID#]' style="visibility:hidden;position: absolute; background-color:white; border:solid 1px black; left: 580px; top: 40px; width: 300px;padding:5px" align="left">
+[#...#]
+</div>

@@ -1,0 +1,47 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- Table 'products' edit -->
+<table border=0 align=center cellpadding=3>
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+</table>
+&nbsp;
+<table border="0" align="center">
+ <form action="?">
+ <tr>
+  <td valign="top"><#LANG_CODE#>:</td>
+  <td valign="top"><input type="text" name="new_code"></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_TITLE#>:</td>
+  <td valign="top"><input type="text" name="new_title"></td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_ADD#>"></td>
+ </tr>
+
+ <input type="hidden" name="mode" value="update">
+ <input type="hidden" name="id" value="<#ID#>">
+ <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+ <input type="hidden" name="tab" value="<#TAB#>">
+ </form>
+</table>
+
+[#if CODES#]
+&nbsp;
+ <table border="1" align="center" cellpadding="5">
+  [#begin CODES#]
+  <tr>
+   <td valign="top">[#CODE#]&nbsp;</td>
+   <td valign="top">[#TITLE#]&nbsp;</td>
+   <td valign="top"><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&delete_code=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a></td>
+  </tr>
+ [#end CODES#]
+ </table>
+[#endif CODES#]

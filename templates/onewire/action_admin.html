@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table onewire search -->
+ [#if VIEW_MODE="search_onewire" || VIEW_MODE=""#]
+  [#inc onewire_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table onewire search -->
+ <!-- table onewire edit -->
+ [#if VIEW_MODE="edit_onewire"#]
+   [#inc onewire_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table onewire edit -->
+ <!-- table onewire view --> 
+ [#if VIEW_MODE="view_onewire"#]
+   [#inc onewire_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table onewire view -->

@@ -1,0 +1,135 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- Table 'history' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b></b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- ADDED (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_ADDED#]<b><font color="red">[#endif#]
+ <#LANG_ADDED#>:
+ </td>
+ <td>
+ <input type="text" name="added_date" value="[#ADDED_DATE#]" maxlength=10 size=12>
+ [#module name="dateselect" field="added_date" form="frmEdit"#]
+ &nbsp;&nbsp;&nbsp;
+ <select name="added_hours">
+ [#begin ADDED_HOURS#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end ADDED_HOURS#]
+ </select>
+ :
+ <select name="added_minutes">
+ [#begin ADDED_MINUTES#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end ADDED_MINUTES#]
+ </select>
+ </td>
+</tr>
+<!-- OBJECT_ID (int) -->
+[#if !IS_SET_OBJECT_ID#]
+<tr>
+ <td align=right>
+ [#if ERR_OBJECT_ID#]<b><font color="red">[#endif#]
+ <#LANG_OBJECT#>:
+ </td>
+ <td>
+  <input type="text" name="object_id" value="[#OBJECT_ID#]">
+ </td>
+</tr>
+[#endif IS_SET_OBJECT_ID#]
+<!-- METHOD_ID (int) -->
+[#if !IS_SET_METHOD_ID#]
+<tr>
+ <td align=right>
+ [#if ERR_METHOD_ID#]<b><font color="red">[#endif#]
+ <#LANG_METHOD#>:
+ </td>
+ <td>
+  <input type="text" name="method_id" value="[#METHOD_ID#]">
+ </td>
+</tr>
+[#endif IS_SET_METHOD_ID#]
+<!-- VALUE_ID (int) -->
+[#if !IS_SET_VALUE_ID#]
+<tr>
+ <td align=right>
+ [#if ERR_VALUE_ID#]<b><font color="red">[#endif#]
+ <#LANG_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="value_id" value="[#VALUE_ID#]">
+ </td>
+</tr>
+[#endif IS_SET_VALUE_ID#]
+<!-- OLD_VALUE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_OLD_VALUE#]<b><font color="red">[#endif#]
+ <#LANG_OLD_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="old_value" value="[#OLD_VALUE#]">
+ </td>
+</tr>
+<!-- NEW_VALUE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_NEW_VALUE#]<b><font color="red">[#endif#]
+ <#LANG_NEW_VALUE#>:
+ </td>
+ <td>
+  <input type="text" name="new_value" value="[#NEW_VALUE#]">
+ </td>
+</tr>
+<!-- DETAILS (text) -->
+<tr>
+ <td valign=top align=right>
+ [#if ERR_DETAILS#]<b><font color="red">[#endif#]
+ <#LANG_DETAILS#>
+ :
+ </td>
+ <td valign=top>
+ <textarea name="details" rows=12 cols=100>[#DETAILS#]</textarea>
+ </td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>

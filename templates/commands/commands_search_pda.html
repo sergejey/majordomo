@@ -1,0 +1,314 @@
+<!--#
+ @version 0.4 (auto-set)
+#-->
+        <div id="home" class="current">
+[#if ONE_ITEM_MODE!="1"#]
+            <div data-role="header">
+                <h1 id="label_[#PARENT_ID#]">[#if PARENT_TITLE!=""#][#PARENT_TITLE#][#else#]MajorDoMo[#endif#]</h1>
+                [#if PARENT_ID!=""#]
+                <a class="back" href="[#if PARENT_PARENT_ID!="0"#]/menu/[#PARENT_PARENT_ID#][#else#]/menu[#endif#].html"><#LANG_BACK#></a>
+                [#endif#]
+                <!--#
+                <a class="button slideup" id="infoButton" href="#about">info</a>
+                #-->
+            </div>
+
+[#if PARENT_ID!=""#]
+[#if PARENT_AUTO_UPDATE!="0"#]
+<script language="javascript">
+ var label[#PARENT_ID#]_timer;
+ function updateLabel[#PARENT_ID#]_Ready(id, data) {
+  var elem=document.getElementById('label_[#PARENT_ID#]');
+  elem.innerHTML=data;
+  return false;
+ }
+ function updateLabel[#PARENT_ID#]() {
+  clearTimeout(label[#PARENT_ID#]_timer);
+  var url="?ajax=1&op=get_label";
+  AJAXRequest(url+'&item_id=[#PARENT_ID#]', 'updateLabel[#PARENT_ID#]_Ready', '');
+  label[#PARENT_ID#]_timer=setTimeout('updateLabel[#PARENT_ID#]()', ([#PARENT_AUTO_UPDATE#]*1000));
+  return false;
+ }
+ label[#PARENT_ID#]_timer=setTimeout('updateLabel[#PARENT_ID#]()', ([#PARENT_AUTO_UPDATE#]*1000));
+</script>
+[#endif AUTO_UPDATE#]
+[#endif PARENT_ID#]
+
+[#endif ONE_ITEM_MODE#]
+
+<div data-role="content">
+
+[#if RESULT#]
+
+<!-- search results (list) -->
+[#if ONE_ITEM_MODE!="1"#]
+<ul data-role="listview" data-inset="true">
+[#endif ONE_ITEM_MODE#]
+
+[#begin RESULT#]
+
+[#if TYPE=="" || TYPE=="command" || TYPE=="window" || TYPE=="url"#]
+<li>
+<a
+ [#if !RESULT#]
+ href="#" 
+ onClick="return menuClicked('[#ID#]', '[#PARENT_ID#]', '[#SUB_LIST#]', '[#WINDOW#]', '[#TITLE#]', '[#COMMAND#]', '[#URL#]'[#if TYPE="window"#], '[#WIDTH#]', '[#HEIGHT#]'[#else#],0,0[#endif TYPE#]);"
+ [#else RESULT#]
+ href="/menu/[#ID#].html"
+ [#endif RESULT#]
+>
+<!--#[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" alt="" class="ui-li-icon">[#endif#]#-->
+<span id="label_[#ID#]">[#TITLE#]</span></a>
+[#if RESULT#]
+<span class="ui-li-count">[#RESULT#]</span>
+[#endif#]
+
+</li>
+[#endif TYPE#]
+
+[#if TYPE=="switch"#]
+<li data-role="fieldcontain">
+
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#]() {
+  clearTimeout(item[#ID#]_timer);
+  var elem=document.getElementById('menu[#ID#]_v');
+  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+
+
+        <label for="menu[#ID#]_v"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
+        <select name="menu[#ID#]_v" id="menu[#ID#]_v" data-role="slider"  onChange="changedValue[#ID#]();">
+                <option value="0"[#if CUR_VALUE!="1"#] selected[#endif#]><#LANG_OFF#></option>
+                <option value="1"[#if CUR_VALUE="1"#] selected[#endif#]><#LANG_ON#></option>
+        </select> 
+
+        <!--#
+<span style="float:right">
+<a href="#" style="display:inline;width:30px;" onClick="return switchValue[#ID#]();"><img src="/img/switch_[#if CUR_VALUE="1"#]on[#else#]off[#endif#].png" id="img[#ID#]" border="0"></a>
+</span>
+<input type="hidden" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]">
+#-->
+</li>
+[#endif TYPE#]
+
+[#if TYPE=="custom"#]
+<li data-role="fieldcontain">
+<div id="label_[#ID#]">[#DATA#]</div>
+</li>
+[#endif#]
+
+[#if TYPE=="selectbox"#]
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#]() {
+  clearTimeout(item[#ID#]_timer);
+  var elem=document.getElementById('menu[#ID#]_v');
+  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain">
+<label for="menu[#ID#]_v" class="select"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
+
+<select name="menu[#ID#]_v" id="menu[#ID#]_v" onChange="changedValue[#ID#]();">
+ [#begin OPTIONS#]
+ <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+ [#end OPTIONS#]
+</select>
+</li>
+[#endif TYPE#]
+
+
+[#if TYPE=="timebox"#]
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#]() {
+  clearTimeout(item[#ID#]_timer);
+  var elem1=document.getElementById('menu[#ID#]_v1');
+  var elem2=document.getElementById('menu[#ID#]_v2');
+  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem1.value+':'+elem2.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain">
+<label for="menu[#ID#]_v" class="select"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
+<fieldset data-role="controlgroup" data-type="horizontal"> 
+<select name="menu[#ID#]_v1" id="menu[#ID#]_v1" onChange="changedValue[#ID#]();">
+ [#begin OPTIONS1#]
+ <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#VALUE#]
+ [#end OPTIONS1#]
+</select>
+<select name="menu[#ID#]_v2" id="menu[#ID#]_v2" onChange="changedValue[#ID#]();">
+ [#begin OPTIONS2#]
+ <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#VALUE#]
+ [#end OPTIONS2#]
+</select>
+</fieldset>
+
+
+</li>
+[#endif TYPE#]
+
+[#if TYPE=="plusminus"#]
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function increaseValue[#ID#]() {
+  var elem=document.getElementById('menu[#ID#]_v');
+  var v=parseInt(elem.value);
+  if ((v+[#STEP_VALUE#])<=[#MAX_VALUE#]) {
+   elem.value=v+[#STEP_VALUE#];
+   clearTimeout(item[#ID#]_timer);
+   item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  }
+  return false;
+ }
+ function decreaseValue[#ID#]() {
+  var elem=document.getElementById('menu[#ID#]_v');
+  var v=parseInt(elem.value);
+  if ((v-[#STEP_VALUE#])>=[#MIN_VALUE#]) {
+   elem.value=v-[#STEP_VALUE#];
+   clearTimeout(item[#ID#]_timer);
+   item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  }
+  return false;
+ }
+</script>
+<li data-role="fieldcontain">
+<span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
+
+<div data-inline="true" data-role="fieldcontain">
+ <a href="#" data-role="button" onClick="return decreaseValue[#ID#]();" data-inline="true">-</a>
+ <input type="text" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]" size="5" data-inline="true" style="width:50px">
+ <a href="#" data-role="button" onClick="return increaseValue[#ID#]();" data-inline="true">+</a>
+</div>
+</li>
+[#endif TYPE#]
+
+[#if TYPE=="sliderbox"#]
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#]() {
+  clearTimeout(item[#ID#]_timer);
+  var elem=document.getElementById('menu[#ID#]_v');
+  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain">
+<span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
+
+<div data-inline="true" data-role="fieldcontain">
+ <input type="range" id="menu[#ID#]_v" data-inline="true" name="menu[#ID#]_value" value="[#CUR_VALUE#]" min="[#MIN_VALUE#]" max="[#MAX_VALUE#]" step="[#STEP_VALUE#]"  onChange="changedValue[#ID#]();"/>
+</div>
+</li>
+[#endif TYPE#]
+
+
+[#if TYPE=="textbox"#]
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#]_delay() {
+  clearTimeout(item[#ID#]_timer);
+  var elem=document.getElementById('menu[#ID#]_v');
+  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain">
+<span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
+
+<div data-inline="true" data-role="fieldcontain">
+ <input type="text" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]" data-inline="true" onChange="changedValue[#ID#]_delay()" onKeyUp="changedValue[#ID#]_delay();">
+</div>
+</li>
+
+[#endif TYPE#]
+
+
+[#if TYPE="label"#]
+<li data-role="list-divider">
+<!--#
+[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" border="0">[#endif#]
+#-->
+<span id="label_[#ID#]">[#TITLE#]</span>
+</li>
+[#endif TYPE#]
+
+[#if TYPE="button"#]
+<a href="#" onClick="return itemValueChanged('[#ID#]', 'clicked');" data-role="button"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></a>
+<!--#
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+ <tr>
+  <td><img src="/img/blackBtn_left.png" border="0"></td>
+  [#if ICON!=""#]
+  <td background="/img/blackBtn_center.png"><img src="/cms/icons/[#ICON#]" border="0" style="float:left;margin-right:10px;padding:0px"></td>
+  [#endif#]
+  <td  width="100%" background="/img/blackBtn_center.png">
+  <a href="#" onClick="return itemValueChanged('[#ID#]', 'clicked');" style="font-weight:bold" id="label_[#ID#]">[#TITLE#]</a></td>
+  <td><img src="/img/blackBtn_right.png" border="0"></td>
+ </tr>
+</table>
+#-->
+[#endif TYPE#]
+
+
+[#if AUTO_UPDATE!="0"#]
+<script language="javascript">
+ var label[#ID#]_timer;
+ function updateLabel[#ID#]_Ready(id, data) {
+  var elem=document.getElementById('label_[#ID#]');
+  elem.innerHTML=data;
+  return false;
+ }
+
+ function updateValue[#ID#]_Ready(id, data) {
+ [#if TYPE=="textbox"#]
+  if ($('#menu[#ID#]_v').val()!=data) {
+   $('#menu[#ID#]_v').val(data);
+  }
+  [#endif TYPE#]
+
+  [#if TYPE=="switch" || TYPE=="sliderbox"#]
+   if ($('#menu[#ID#]_v').val()!=data) {
+    $('#menu[#ID#]_v').val(data);
+    $('#menu[#ID#]_v').slider('refresh');
+   }
+  [#endif TYPE#]
+
+  return false;
+ }
+
+
+ function updateLabel[#ID#]() {
+  clearTimeout(label[#ID#]_timer);
+  var url="?ajax=1&op=get_label";
+  AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
+
+  [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox"#]
+  var url2="?ajax=1&op=get_value";
+  AJAXRequest(url2+'&item_id=[#ID#]', 'updateValue[#ID#]_Ready', '');
+  [#endif TYPE#]
+
+  label[#ID#]_timer=setTimeout('updateLabel[#ID#]()', ([#AUTO_UPDATE#]*1000));
+  return false;
+ }
+ label[#ID#]_timer=setTimeout('updateLabel[#ID#]()', ([#AUTO_UPDATE#]*1000));
+</script>
+[#endif AUTO_UPDATE#]
+
+[#end RESULT#]
+[#if ONE_ITEM_MODE!="1"#]
+</ul>
+[#endif#]
+<!-- / search results (list) -->
+[#else RESULT#]
+<p>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+
+</div>

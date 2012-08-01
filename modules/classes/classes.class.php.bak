@@ -1,0 +1,278 @@
+<?
+/**
+* Classes 
+*
+* Classes
+*
+* @package project
+* @author Serge J. <info@atmatic.com>
+* @copyright http://www.activeunit.com/ (c)
+* @version 0.1 (wizard, 12:05:56 [May 22, 2009])
+*/
+//
+//
+class classes extends module {
+/**
+* classes
+*
+* Module class constructor
+*
+* @access private
+*/
+function classes() {
+  $this->name="classes";
+  $this->title="Classes";
+  $this->module_category="CMS";
+  $this->checkInstalled();
+}
+/**
+* saveParams
+*
+* Saving module parameters
+*
+* @access public
+*/
+function saveParams() {
+ $p=array();
+ if (IsSet($this->id)) {
+  $p["id"]=$this->id;
+ }
+ if (IsSet($this->view_mode)) {
+  $p["view_mode"]=$this->view_mode;
+ }
+ if (IsSet($this->edit_mode)) {
+  $p["edit_mode"]=$this->edit_mode;
+ }
+ if (IsSet($this->tab)) {
+  $p["tab"]=$this->tab;
+ }
+ return parent::saveParams($p);
+}
+/**
+* getParams
+*
+* Getting module parameters from query string
+*
+* @access public
+*/
+function getParams() {
+  global $id;
+  global $mode;
+  global $view_mode;
+  global $edit_mode;
+  global $tab;
+  if (isset($id)) {
+   $this->id=$id;
+  }
+  if (isset($mode)) {
+   $this->mode=$mode;
+  }
+  if (isset($view_mode)) {
+   $this->view_mode=$view_mode;
+  }
+  if (isset($edit_mode)) {
+   $this->edit_mode=$edit_mode;
+  }
+  if (isset($tab)) {
+   $this->tab=$tab;
+  }
+}
+/**
+* Run
+*
+* Description
+*
+* @access public
+*/
+function run() {
+ global $session;
+  $out=array();
+  if ($this->action=='admin') {
+   $this->admin($out);
+  } else {
+   $this->usual($out);
+  }
+  if (IsSet($this->owner->action)) {
+   $out['PARENT_ACTION']=$this->owner->action;
+  }
+  if (IsSet($this->owner->name)) {
+   $out['PARENT_NAME']=$this->owner->name;
+  }
+  $out['VIEW_MODE']=$this->view_mode;
+  $out['EDIT_MODE']=$this->edit_mode;
+  $out['MODE']=$this->mode;
+  $out['ACTION']=$this->action;
+  $out['TAB']=$this->tab;
+  if ($this->single_rec) {
+   $out['SINGLE_REC']=1;
+  }
+  $this->data=$out;
+  $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
+  $this->result=$p->result;
+}
+/**
+* BackEnd
+*
+* Module backend
+*
+* @access public
+*/
+function admin(&$out) {
+ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+  $out['SET_DATASOURCE']=1;
+ }
+ if ($this->data_source=='classes' || $this->data_source=='') {
+  if ($this->view_mode=='' || $this->view_mode=='search_classes') {
+   $this->search_classes($out);
+  }
+  if ($this->view_mode=='edit_classes') {
+   $this->edit_classes($out, $this->id);
+  }
+  if ($this->view_mode=='delete_classes') {
+   $this->delete_classes($this->id);
+   $this->redirect("?");
+  }
+ }
+}
+/**
+* FrontEnd
+*
+* Module frontend
+*
+* @access public
+*/
+function usual(&$out) {
+ $this->admin($out);
+}
+/**
+* classes search
+*
+* @access public
+*/
+ function search_classes(&$out) {
+  require(DIR_MODULES.$this->name.'/classes_search.inc.php');
+ }
+/**
+* classes edit/add
+*
+* @access public
+*/
+ function edit_classes(&$out, $id) {
+  require(DIR_MODULES.$this->name.'/classes_edit.inc.php');
+ }
+/**
+* classes delete record
+*
+* @access public
+*/
+ function delete_classes($id) {
+  $rec=SQLSelectOne("SELECT * FROM classes WHERE ID='$id'");
+  // some action for related tables
+  if ($rec['SUB_LIST']!='' && $rec['SUB_LIST']!=$rec['ID']) {
+   return;
+  }
+  SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
+ }
+/**
+* classes build tree
+*
+* @access private
+*/
+ function buildTree_classes($res, $parent_id=0, $level=0) {
+  $total=count($res);
+  $res2=array();
+  for($i=0;$i<$total;$i++) {
+   if ($res[$i]['PARENT_ID']==$parent_id) {
+    $res[$i]['LEVEL']=$level;
+    $res[$i]['RESULT']=$this->buildTree_classes($res, $res[$i]['ID'], ($level+1));
+    $res2[]=$res[$i];
+   }
+  }
+  $total2=count($res2);
+  if ($total2) {
+   return $res2;
+  }
+ }
+/**
+* classes update tree
+*
+* @access private
+*/
+ function updateTree_classes($parent_id=0, $parent_list='') {
+  $table='classes';
+  if (!is_array($parent_list)) {
+   $parent_list=array();
+  }
+  $sub_list=array();
+  $res=SQLSelect("SELECT * FROM $table WHERE PARENT_ID='$parent_id'");
+  $total=count($res);
+  for($i=0;$i<$total;$i++) {
+   if ($parent_list[0]) {
+    $res[$i]['PARENT_LIST']=implode(',', $parent_list);
+   } else {
+    $res[$i]['PARENT_LIST']='0';
+   }
+   $sub_list[]=$res[$i]['ID'];
+   $tmp_parent=$parent_list;
+   $tmp_parent[]=$res[$i]['ID'];
+   $sub_this=$this->updateTree_classes($res[$i]['ID'], $tmp_parent);
+   if ($sub_this[0]) {
+    $res[$i]['SUB_LIST']=implode(',', $sub_this);
+   } else {
+    $res[$i]['SUB_LIST']=$res[$i]['ID'];
+   }
+   SQLUpdate($table, $res[$i]);
+   $sub_list=array_merge($sub_list, $sub_this);
+  }
+  return $sub_list;
+ }
+/**
+* Install
+*
+* Module installation routine
+*
+* @access private
+*/
+ function install() {
+  parent::install();
+ }
+/**
+* Uninstall
+*
+* Module uninstall routine
+*
+* @access public
+*/
+ function uninstall() {
+  SQLExec('DROP TABLE IF EXISTS classes');
+  parent::uninstall();
+ }
+/**
+* dbInstall
+*
+* Database installation routine
+*
+* @access private
+*/
+ function dbInstall() {
+/*
+classes - Classes
+*/
+  $data = <<<EOD
+ classes: ID int(10) unsigned NOT NULL auto_increment
+ classes: TITLE varchar(255) NOT NULL DEFAULT ''
+ classes: PARENT_ID int(10) NOT NULL DEFAULT '0'
+ classes: PARENT_ID int(10) NOT NULL DEFAULT '0'
+ classes: SUB_LIST text
+ classes: PARENT_LIST text
+EOD;
+  parent::dbInstall($data);
+ }
+// --------------------------------------------------------------------
+}
+/*
+*
+* TW9kdWxlIGNyZWF0ZWQgTWF5IDIyLCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
+*
+*/
+?>

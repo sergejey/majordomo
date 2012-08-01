@@ -1,0 +1,33 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- Table 'products' edit -->
+<table border=0 align=center cellpadding=3>
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+</table>
+&nbsp;
+[#if LOGS#]
+ <table align="center" border="1" cellpadding="4">
+  <tr>
+   <td valign="top"><b><#LANG_DATE#></td>
+   <td valign="top"><b><#LANG_TITLE#></td>
+   <td valign="top"><b><#LANG_CODE#></td>
+   <td valign="top"><b><#LANG_QUANTITY#></td>
+   <td valign="top"><b><#LANG_ACTION#></td>
+  </tr>
+  [#begin LOGS#]
+  <tr>
+   <td valign="top">[#UPDATED#]</td>
+   <td valign="top">[#if CODE_TITLE!=""#][#CODE_TITLE#][#else#][#TITLE#][#endif#]&nbsp;</td>
+   <td valign="top">[#CODE#]&nbsp;</td>
+   <td valign="top">[#QTY#]</td>
+   <td valign="top">[#ACTION#]</td>
+  </tr>
+  [#end LOGS#]
+ </table>
+[#endif LOGS#]

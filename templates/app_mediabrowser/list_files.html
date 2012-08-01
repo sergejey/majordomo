@@ -1,0 +1,40 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+<table width="100%" border="0">
+[#begin FILES#]
+<tr>
+
+ <td class=plain valign=top align="right" nowrap>
+  <!--#
+  [ <a href="#" onClick="return playThis('<#CURRENT_DIR#>[#TITLE#]', 0, 0);">Play</a> ]
+  #-->
+  <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="/img/btn/btn_play.png" border="0"></a>
+  <!--#
+  <a href="#" onClick="return playThis('<#MEDIA_PATH#><#CURRENT_DIR#>[#TITLE#]', 0, 0);">Now</a>
+  #-->
+  <!--#
+  [ <a href="?enq=<#CURRENT_DIR#>[#TITLE#]">+</a> ]
+  #-->
+ </td>
+ <td class=plain>
+ <!--#
+ <nobr><a href="[#PATH#]" title="[#TITLE#]"></b></a>
+ #-->
+ <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play">[#TITLE_SHORT#]</a>
+ </td>
+
+ <!--#
+ <td class=plain width=1% valign=top bgcolor="#EEEEEE">
+  <a href="javascript:describeIt('[#TITLE#]', '[#DESCR#]')" align=center><img src="<#ROOTHTML#>img/notes.gif" alt="Описать" border=0></a>
+ </td>
+ <td class=plain width=1% valign=top bgcolor="#EEEEEE">
+  <a href="file:<#SHARE#><#CURRENT_DIR#>[#TITLE#]"><img src="<#ROOTHTML#>img/explore.gif" alt="Перейти" border=0></a>
+ </td>
+ <td class=plain width=10% valign=top bgcolor="#EEEEEE">
+ <nobr>[#SIZE#]
+ </td>
+  #-->
+</tr>
+ [#end FILES#]
+</table>

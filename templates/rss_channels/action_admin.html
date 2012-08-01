@@ -1,0 +1,73 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+
+[#if SET_DATASOURCE!="1"#]
+&nbsp;
+<!-- source select -->
+<table border=0 width=100% cellspacing=1 cellpadding=4 bgcolor="#222222">
+<tr>
+ <td align=center bgcolor="[#if DATA_SOURCE!="rss_channels" && DATA_SOURCE!=""#]#DDDDDD[#else#]#FFFFFF[#endif#]">
+  <b>
+  [#if DATA_SOURCE!="rss_channels" && DATA_SOURCE!=""#]<a href="?data_source=rss_channels"><#LANG_RSS_CHANNELS#></a>
+  [#else#]
+   <#LANG_RSS_CHANNELS#>
+  [#endif#]
+  </b>
+ </td>
+ <td align=center bgcolor="[#if DATA_SOURCE!="rss_items"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
+  <b>
+  [#if DATA_SOURCE!="rss_items"#]<a href="?data_source=rss_items"><#LANG_RSS_NEWS#></a>
+  [#else#]
+   <#LANG_RSS_NEWS#>
+  [#endif#]
+  </b>
+ </td>
+</tr>
+</table>
+<!-- / source select -->
+[#endif SET_DATASOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="rss_channels" || DATA_SOURCE=""#]
+ <!-- table rss_channels search -->
+ [#if VIEW_MODE="search_rss_channels" || VIEW_MODE=""#]
+  [#inc rss_channels_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table rss_channels search -->
+ <!-- table rss_channels edit -->
+ [#if VIEW_MODE="edit_rss_channels"#]
+
+   [#if TAB=""#]
+    [#inc rss_channels_edit_default.html#]
+   [#endif TAB#]
+   [#if TAB="items"#]
+    [#inc rss_channels_edit_items.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table rss_channels edit -->
+ <!-- table rss_channels view --> 
+ [#if VIEW_MODE="view_rss_channels"#]
+   [#if TAB=""#]
+    [#inc rss_channels_view_default.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table rss_channels view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="rss_items"#]
+ <!-- table rss_items search -->
+ [#if VIEW_MODE="search_rss_items" || VIEW_MODE=""#]
+  [#inc rss_items_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table rss_items search -->
+ <!-- table rss_items edit -->
+ [#if VIEW_MODE="edit_rss_items"#]
+   [#inc rss_items_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table rss_items edit -->
+ <!-- table rss_items view --> 
+ [#if VIEW_MODE="view_rss_items"#]
+   [#inc rss_items_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table rss_items view -->
+ [#endif DATA_SOURCE#]

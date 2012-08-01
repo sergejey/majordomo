@@ -1,0 +1,136 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- Table 'layouts' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]">
+ </td>
+</tr>
+<!-- PRIORITY (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_PRIORITY#]<b><font color="red">[#endif#]
+ <#LANG_PRIORITY#>:
+ </td>
+ <td>
+  <input type="text" name="priority" value="[#PRIORITY#]">
+ </td>
+</tr>
+<!-- TYPE (select) -->
+<tr>
+ <td align=right valign=top>
+ [#if ERR_TYPE#]<b><font color="red">[#endif#]
+ <#LANG_TYPE#>: 
+ </td>
+ <td>                                           
+ <select name="type">
+  <option value="">select
+  [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+  [#end TYPE_OPTIONS#]
+ </select>
+ </td>
+</tr>
+<!-- CODE (text) -->
+[#if TYPE="html"#]
+<tr>
+ <td valign=top align=right>
+ [#if ERR_CODE#]<b><font color="red">[#endif#]
+ <#LANG_CODE#>
+ :
+ </td>
+ <td valign=top>
+ <textarea name="code" rows=12 cols=80>[#CODE#]</textarea>
+ </td>
+</tr>
+[#endif TYPE#]
+[#if TYPE="app"#]
+<!-- APP (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_APP#]<b><font color="red">[#endif#]
+ <#LANG_APP#>:
+ </td>
+ <td>
+  <input type="text" name="appname" value="[#APP#]">
+ </td>
+</tr>
+[#endif TYPE#]
+[#if TYPE="url"#]
+<!-- URL (url) -->
+<tr>
+ <td align=right>
+ [#if ERR_URL#]<b><font color="red">[#endif#]
+ <#LANG_URL#>:
+ </td>
+ <td>
+  <input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
+ </td>
+</tr>
+[#endif TYPE#]
+
+[#if ID!=""#]
+<tr>
+ <td valign="top" align="right"><#LANG_URL#> (preview):</td>
+ <td valign="top">
+ [#if TYPE="html"#]
+  <a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
+  [#endif TYPE#]
+  [#if TYPE="url"#]
+  <a href="[#URL#]" target=_blank>[#URL#]</a>
+  [#endif TYPE#]
+  [#if TYPE="app"#]
+  <a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
+  [#endif TYPE#]
+</td>
+</tr>
+[#endif#]
+
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>

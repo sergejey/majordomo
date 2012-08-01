@@ -1,0 +1,112 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<!-- table shouts search -->
+<p align=center>
+<b>
+<a href="?clear=1"><#LANG_SHOUTBOX_STRING_DELETE_ALL#></a>
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_STRING_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_shouts" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<tr>
+ <td align=center bgcolor="#AAAAAA">
+  <a href="?sortby=ID&save_qry=1"><b>REF#</b></a><nobr>
+ [#if SORTBY="ID"#](+)[#endif#]
+ [#if SORTBY="ID DESC"#](-)[#endif#]</nobr>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_MEMBERS_MEMBER#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_SHOUTBOX_MESSAGE#></b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_SHOUTBOX_ADDED#></b>
+ </td>
+<td bgcolor="#AAAAAA">&nbsp;</td>
+</tr>
+[#begin RESULT#]
+<tr >
+ <td align=center bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#ID#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if MEMBER_ID!=""#]
+   [#MEMBER_ID#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if MESSAGE!=""#]
+   [#MESSAGE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if ADDED!=""#]
+   [#ADDED#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <a href="?view_mode=delete_shouts&id=[#ID#]" onClick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>')"><#LANG_STRING_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_shouts">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_STRING_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_STRING_NOT_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

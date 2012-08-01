@@ -1,0 +1,80 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- table product_categories search -->
+[#if MODE="search_product_categories"#]
+<!-- search form -->
+<table border=0>
+<tr>
+ <td colspan=10><b><#LANG_SEARCH#></b></td>
+</tr>
+<form action="?" method="post" name="frmSearch">
+ <tr>
+  <td align=right><#LANG_TITLE#>:</td>
+  <td><!-- varchar -->
+<input type="text" name="title" value="[#TITLE#]">
+</td>
+ </tr>
+ <tr>
+  <td colspan=2>
+   <input type="submit" name="submit" value="<#LANG_SEARCH#>">
+   //
+   <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+  </td>
+ </tr>
+<input type="hidden" name="mode" value="search_product_categories">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+</form>
+</table>
+<!-- / search form -->
+[#endif MODE#]
+<p align=center>
+<b>
+[#if MODE!="search_product_categories"#]<a href="?mode=search_product_categories&data_source=<#DATA_SOURCE#>"><#LANG_SEARCH#></a> 
+&nbsp;&nbsp;&nbsp;
+[#endif#]
+//
+&nbsp;&nbsp;&nbsp;
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_product_categories" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 align=center>
+[#begin RESULT#]
+<tr>
+ <td
+  >
+  <b>
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td>
+  <table border=0>
+  </table>
+ </td>
+</tr>
+[#if RESULT#]
+ <tr><td colspan=100 style="padding-left:20px" bgcolor="#FFFFFF">
+  <table border=0 cellpadding=5 cellspacing=1 align=center>
+   [#tree RESULT#]
+  </table>
+ </td></tr>
+[#endif RESULT#]
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_product_categories">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

@@ -1,0 +1,19 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+<table border=0 cellpadding=2 cellspacing=0>
+[#begin RESULT#]
+<tr >
+ <td>
+  [#if STATUS="0"#]unknown[#endif#]
+  [#if STATUS="1"#]<font color="green">Online</font>[#endif#]
+  [#if STATUS="2"#]<font color="red">Offline</font>[#endif#]
+ </td>
+ <td
+   >
+   [#if TITLE!=""#][#TITLE#][#endif#]
+   
+ </td>
+</tr>
+[#end RESULT#]
+</table>

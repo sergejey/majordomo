@@ -1,0 +1,173 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- Table 'events' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- EVENT_TYPE (char) -->
+<tr>
+ <td align=right>
+ [#if ERR_EVENT_TYPE#]<b><font color="red">[#endif#]
+ <#LANG_TYPE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="event_type" value="[#EVENT_TYPE#]">
+ </td>
+</tr>
+<!-- TERMINAL_FROM (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TERMINAL_FROM#]<b><font color="red">[#endif#]
+ <#LANG_TERMINAL_FROM#>:
+ </td>
+ <td>
+  <input type="text" name="terminal_from" value="[#TERMINAL_FROM#]">
+ </td>
+</tr>
+<!-- TERMINAL_TO (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TERMINAL_TO#]<b><font color="red">[#endif#]
+ <#LANG_TERMINAL_TO#>:
+ </td>
+ <td>
+  <input type="text" name="terminal_to" value="[#TERMINAL_TO#]">
+ </td>
+</tr>
+<!-- USER_FROM (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_USER_FROM#]<b><font color="red">[#endif#]
+ <#LANG_USER_FROM#>:
+ </td>
+ <td>
+  <input type="text" name="user_from" value="[#USER_FROM#]">
+ </td>
+</tr>
+<!-- USER_TO (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_USER_TO#]<b><font color="red">[#endif#]
+ <#LANG_USER_TO#>:
+ </td>
+ <td>
+  <input type="text" name="user_to" value="[#USER_TO#]">
+ </td>
+</tr>
+<!-- WINDOW (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_WINDOW#]<b><font color="red">[#endif#]
+ <#LANG_WINDOW#>:
+ </td>
+ <td>
+  <input type="text" name="window" value="[#WINDOW#]">
+ </td>
+</tr>
+<!-- DETAILS (text) -->
+<tr>
+ <td valign=top align=right>
+ [#if ERR_DETAILS#]<b><font color="red">[#endif#]
+ <#LANG_DETAILS#>
+ :
+ </td>
+ <td valign=top>
+ <textarea name="details" rows=12 cols=100>[#DETAILS#]</textarea>
+ </td>
+</tr>
+<!-- ADDED (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_ADDED#]<b><font color="red">[#endif#]
+ <#LANG_ADDED#>:
+ </td>
+ <td>
+ <input type="text" name="added_date" value="[#ADDED_DATE#]" maxlength=10 size=12>
+ [#module name="dateselect" field="added_date" form="frmEdit"#]
+ &nbsp;&nbsp;&nbsp;
+ <select name="added_hours">
+ [#begin ADDED_HOURS#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end ADDED_HOURS#]
+ </select>
+ :
+ <select name="added_minutes">
+ [#begin ADDED_MINUTES#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end ADDED_MINUTES#]
+ </select>
+ </td>
+</tr>
+<!-- EXPIRE (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_EXPIRE#]<b><font color="red">[#endif#]
+ <#LANG_EXPIRE#>:
+ </td>
+ <td>
+ <input type="text" name="expire_date" value="[#EXPIRE_DATE#]" maxlength=10 size=12>
+ [#module name="dateselect" field="expire_date" form="frmEdit"#]
+ &nbsp;&nbsp;&nbsp;
+ <select name="expire_hours">
+ [#begin EXPIRE_HOURS#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end EXPIRE_HOURS#]
+ </select>
+ :
+ <select name="expire_minutes">
+ [#begin EXPIRE_MINUTES#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end EXPIRE_MINUTES#]
+ </select>
+ </td>
+</tr>
+<!-- PROCESSED (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_PROCESSED#]<b><font color="red">[#endif#]
+ <#LANG_PROCESSED#>:
+ </td>
+ <td>
+  <input type="text" name="processed" value="[#PROCESSED#]">
+ </td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>

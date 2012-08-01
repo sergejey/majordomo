@@ -1,0 +1,219 @@
+<!--#
+ @version 0.4 (auto-set)
+ <#LANG_WIKI_URL#>
+#-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><#SETTINGS_SITE_TITLE#></title>
+<meta name="keywords" content="{#if CMS_KEYWORDS!=""#}{#CMS_KEYWORDS#}{#endif#}">
+<meta name="description" content="{#if CMS_DESCRIPTION!=""#}{#CMS_DESCRIPTION#}{#endif#}">
+[#if POPUP="1"#]
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+[#endif#]
+<link href="<#ROOTHTML#>stl.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/css/ui-darkness/jquery-ui-1.8.6.custom.css"/>
+<link type="text/css" rel="stylesheet" href="/js/jquery.windows-engine.css"/>
+<link rel="stylesheet" type="text/css" href="/css/jquery.gritter.css" />
+<script type="text/javascript" src="/jquerymobile/jquery-1.7.1.min.js"></script>
+[#if POPUP="1"#]
+<!--#
+<link rel="stylesheet" href="/jquerymobile/jquery.mobile-1.0a4.min.css" />             
+<script type="text/javascript" src="/jquerymobile/custom-scripting.js"></script>               
+<script type="text/javascript" src="/jquerymobile/jquery.mobile-1.0a4.min.js"></script>
+#-->
+[#else POPUP#]
+[#endif POPUP#]
+<script language="javascript" src="/js/scripts.js"></script>
+<script language="javascript" type="text/javascript" src="/js/jquery.windows-engine.js"></script>
+<script language="javascript" type="text/javascript" src="/js/jquery-ui-1.8.6.custom.min.js"></script>
+<script type="text/javascript" src="/js/jquery.gritter.js"></script>
+<style>
+#container {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  z-index:0;
+}  
+.ui-tabs .ui-tabs-panel {
+    padding: 0;
+}
+</style>
+
+</head>
+<body style="background-color:black">
+[#if POPUP="1"#]
+[#inc actions.html#]
+[#else POPUP#]
+<script language="javascript">
+
+ var eventState='';
+ var eventLatest='';
+ var eventTimer;
+ var noteTimer;
+ var noteLatest='';
+
+ // ----------------------------------------------------------------------
+ function processCommand(event_id, event_type, event_window, event_details) {
+
+     if (event_type=='newwindow') {
+      openTWindow(event_window, 'Event '+event_id, event_details, 500, 500);
+     }
+
+     if (event_type=='maximize') {
+      if ($(event_window)!=null) {
+       Windows.focus(event_window);
+       var win=Windows.getFocusedWindow();
+       win.maximize();
+      }
+     }
+
+  return false;
+ }
+
+ // ----------------------------------------------------------------------
+ function getNextEventReceived(id, data) {
+  if (eventLatest!=data) {
+     eventLatest=data;
+     eventState='processing';
+     var elem=document.getElementById('debugInfo');
+     elem.innerHTML=elem.innerHTML+'<br>'+data;
+     // processing
+     var d=data.split('|');
+     var event_id=d[0];
+     var event_type=d[1];
+     var event_window=d[2];
+     var event_details=d[3];
+     processCommand(event_id, event_type, event_window, event_details);
+  }
+  eventState='';
+  return false;
+ }
+
+ // ----------------------------------------------------------------------
+ function getNextEvent() {
+  if (eventState!='') return;
+  clearTimeout(eventTimer);
+  eventTimer=window.setTimeout ('getNextEvent();', 5000);
+  eventState='requesting';
+  AJAXRequest('/getnextevent.html', 'getNextEventReceived', '');
+  return false;
+ }
+
+ /*
+ function getLatestNoteMP3Received(id, data) {
+    document.getElementById("sound").innerHTML="<embed src='"+data+"' hidden=true autostart=true loop=false>";
+ }
+ */
+
+ function getLatestNoteReceived(id, data) {
+  if (noteLatest!=data) {
+   if (noteLatest!='') {
+    $.gritter.add({
+        title: 'Alice',
+        text: data, 
+        sticky: false, 
+        time: 8000
+     });
+     //AJAXRequest('/getlatestmp3.html', 'getLatestNoteMP3Received', '');
+   }
+   noteLatest=data;
+  }
+ }
+
+ function getLatestNote() {
+  clearTimeout(noteTimer);
+  noteTimer=window.setTimeout ('getLatestNote();', 5000);
+  AJAXRequest('/getlatestnote.html', 'getLatestNoteReceived', '');
+  return false;
+ }
+
+ // ----------------------------------------------------------------------
+ function addEventProcessed(id, data) {
+  return false;
+ }
+
+ // ----------------------------------------------------------------------
+ function addEvent(type, win, details, terminal_to, user_to) {
+  var url='/popup/addevent.html?mode=update&type='+URLencode(type)+'&window='+URLencode(win)+'&details='+URLencode(details)+'&terminal_to='+URLencode(terminal_to)+'&user_to='+URLencode(user_to);
+  AJAXRequest(url, 'addEventProcessed', '');
+  return false;
+ }
+
+ var totalLayouts=[#TOTAL_LAYOUTS#];
+
+ function openNewTab(winTitle, pageURL) {
+  //alert(winTitle+' '+pageURL);
+  //$("#tabs").tabs("add", pageURL, winTitle);
+  iFrameHeight=$(window).height()-110;
+  $("#tablast_title").html(winTitle);
+  $("#tabs-last").html('<iframe src="'+pageURL+'" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+  $("#tabs").tabs("select", totalLayouts);
+  return false;
+ }
+
+ // ----------------------------------------------------------------------
+ function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
+ /*
+  if ($(winId)!=null) {
+   Windows.focus(winId);
+   var win=Windows.getFocusedWindow();
+   win.toFront();
+   if (win.isMinimized()) {
+    win.minimize();
+   }
+   var url=win.getURL();
+   win.setURL(pageURL);
+   //win.refresh();
+  } else {
+   var win = new Window({id: winId, className: "darkX", title: winTitle, top:10, left:10, width:wdth, height:hdth, url: pageURL, parent:$('container'), showEffectOptions: {duration:0.2}}) 
+   win.setDestroyOnClose(); 
+   win.showCenter();
+   win.setConstraint(true, {left:0, right:0, top: 40, bottom:0});
+   win.toFront();
+  }
+  */
+  $.newWindow({id:winId,posx:100,posy:50,width:wdth,height:hdth,title:winTitle, type:"iframe"});
+  $.updateWindowContent(winId,'<iframe src="'+pageURL+'" width="'+wdth+'" height="'+hdth+'" />');
+
+
+  return false;
+ }
+
+ function playMedia(path, rnd, terminal_name) {
+  //alert(path);
+  //alert(terminal_id);
+  //alert('zz');
+  //alert($("#frmPlayerControl"));
+  $("#hidPlayPath").val(path);
+  $("#selPlayTerminal").val(terminal_name);
+  playerCommand("refresh");
+  /*
+  if (terminal_id>0) {
+   openTWindow('mediaPlayer', 'Player', '/popup/player.html?rnd='+rnd+'&terminal_id='+terminal_id+'&play='+URLencode(path), 500, 80);
+  } else {
+   openTWindow('mediaPlayer', 'Player', '/popup/player.html?rnd='+rnd+'&play='+URLencode(path), 500, 80);
+  }
+  */
+  return true;
+ }
+
+</script>
+
+<body>
+
+<div id="container">[#inc actions.html#]</div><div id='sound'></div>
+
+<script language="javascript">
+ getNextEvent();
+ getLatestNote();
+</script>
+[#endif POPUP#]
+
+</body>
+</html>

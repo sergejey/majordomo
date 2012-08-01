@@ -1,0 +1,81 @@
+<table border="0" align="center">
+ <form action="?" method="get">
+ <tr>
+  <td valign="top"><input type="text" name="title" size="40"></td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_ADD#>"></td>
+ </tr>
+ <input type="hidden" name="view_mode" value="edit">
+ </form>
+</table>
+
+[#if EVENTS_PAST#]
+<h1><#LANG_PAST_DUE#></h1>
+<table width="300" border="0">
+ [#begin EVENTS_PAST#]
+ <tr>
+  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span> ([#AGE#])</td>
+  <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
+ </tr>
+ [#end EVENTS_PAST#]
+</table>
+[#endif EVENTS_PAST#]
+
+<h1><#LANG_TODAY#></h1>
+<table  width="300" border="0">
+ [#if EVENTS_TODAY#]
+ [#begin EVENTS_TODAY#]
+ <tr>
+  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span></td>
+  <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
+ </tr>
+ [#end EVENTS_TODAY#]
+ [#else EVENTS_TODAY#]
+ <tr>
+  <td colspan="3"><#LANG_NOTHING_TO_DO#></td>
+ </tr>
+ [#endif EVENTS_TODAY#]
+</table>
+
+[#if EVENTS_SOON#]
+<h1><#LANG_SOON#></h1>
+<table width="300" border="0">
+ [#begin EVENTS_SOON#]
+ <tr>
+  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span> ([#AGE#])</td>
+  <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
+ </tr>
+ [#end EVENTS_SOON#]
+</table>
+[#endif EVENTS_SOON#]
+
+[#if RECENTLY_DONE#]
+<h1><#LANG_DONE_RECENTLY#></h1>
+<table width="300" border="0">
+ [#begin RECENTLY_DONE#]
+ <tr>
+  <td width="90%"><span id="task_title[#ID#]" style="text-decoration:line-through">[#TITLE#]</span></td>
+  <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
+ </tr>
+ [#end RECENTLY_DONE#]
+</table>
+[#endif RECENTLY_DONE#]
+
+<script language="javascript">
+ $('.tasks').click (function ()
+  {
+  var thisCheck = $(this);
+  if (thisCheck.is(':checked')) {
+   $('#task_title'+thisCheck.val()).css('text-decoration', 'line-through');
+   var url="?mode=is_done&id=";
+   window.location=url+thisCheck.val();
+  } else {
+   $('#task_title'+thisCheck.val()).css('text-decoration','none');
+   var url="?mode=reset_done&id=";
+   window.location=url+thisCheck.val();
+  }
+ }
+ );
+</script>

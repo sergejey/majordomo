@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table webvars search -->
+ [#if VIEW_MODE="search_webvars" || VIEW_MODE=""#]
+  [#inc webvars_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table webvars search -->
+ <!-- table webvars edit -->
+ [#if VIEW_MODE="edit_webvars"#]
+   [#inc webvars_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table webvars edit -->
+ <!-- table webvars view --> 
+ [#if VIEW_MODE="view_webvars"#]
+   [#inc webvars_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table webvars view -->

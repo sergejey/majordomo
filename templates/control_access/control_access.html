@@ -1,0 +1,228 @@
+<!--#
+ @version 0.4 (08/27/2010)
+#-->
+  [#if ACTION="enter"#]
+
+  <!--------------------------- ENTER FORM ------------------------>
+   &nbsp;
+   <table width=160 cellspacing=0 cellpadding=0 border=0 align=center>
+
+    <tr>
+     <form action="" method="post" name=frmEnter>
+      <td valign="top" id="m">
+       <p>
+       <big><#PROJECT_TITLE#></big><br>
+       <b>Control Panel</b>
+       </p>
+       [#if ERRMESS#]
+        <p align="center">
+         <small>
+          <font color="red">Enter correct username and/or password!</font>
+         </small>
+        </p>
+       [#endif ERRMESS#]
+       <b>Username:</b><br> <input type="text" name="login" class=form>
+       <br>
+       <b>Password:</b><br> <input type="password" name="psw" class=form>
+       <p>
+        <input type="hidden" name="mode" value="check">
+        <input type="hidden" name="action" value="enter">
+        <input type="image" name="image" src="<#ROOTHTML#>img/btn/btn_go.gif" border="0">
+       </p>
+       &nbsp;
+      </td>
+     </form>
+    </tr>
+    <script language="javascript">
+     document.frmEnter.login.focus();
+    </script>
+   </table>
+
+
+  [#endif ACTION#]
+
+  [#if ACTION="logged"#]
+  <!--------------------------- LOGGED ------------------------>
+
+
+  <h1 align="center">Welcome to the <#SETTINGS_SITE_TITLE#> Control System</h1>
+
+  [#if CHECK_UPDATES="1"#]
+  <div id="updates_avail" style="display:none"><b>Note:</b> <a href="?(panel:{action=saverestore})&md=saverestore&mode=checkupdates">Updates available</a></div>
+  <div id="updates_div" style="display:none">Checking updates...</div>
+  <script language="javascript">
+   function checkUpdatesProcessed(code, data) {
+    var elem=document.getElementById('updates_div');
+    var elem2=document.getElementById('updates_avail');
+    if (data!='no') {
+     elem.innerHTML=data;
+     elem2.style.display='block';
+    } else {
+     elem.innerHTML='';
+    }
+    return false;
+   }
+   var url="?";
+   AJAXRequest(url+'check=1&ajax=1', 'checkUpdatesProcessed', 0);
+  </script>
+  [#endif#]
+
+  <table border=0>
+  <td>
+  <table border=0>
+   <tr>
+  [#begin MODULES#]
+  [#if NEWCATEGORY#]
+  </tr>
+  </table>
+  <table border=0>
+  <tr>
+  <td colspan=10>
+   <big>&nbsp;</big>
+  </td>
+  </tr>
+  <tr>
+  [#endif#]
+  <td align=center width=80 valign=top>
+   [#if ICON!=""#]<a href="?(panel:{action=[#NAME#]})"><img src="[#ICON#]" alt="[#TITLE#]" border=0 width=50 height=50></a><br>[#endif#]
+   <a href="?(panel:{action=[#NAME#]})" class="short">[#TITLE#]</a><br>&nbsp;
+  </td>
+  [#if NEWROW#]
+  </tr>
+  <tr>
+  [#endif#]
+  [#end MODULES#]
+   </tr>
+  </table>
+  </td></table>
+
+
+
+  [#endif ACTION#]
+
+
+  [#if ACTION="admin" || ACTION="control_access"#]
+
+  [#if !MASTER#]
+<p>
+This section allows you to set up subordinate users to the control panel and select what sections they have access to.
+</p>
+  [#endif#]
+
+  <!--------------------------- ADMIN ------------------------>
+  <table width=100% border=0>
+  <tr>
+
+  [#if !MASTER#]
+
+  <td valign=top width=30%>
+   Users:
+  <table width="100%" border="0" align="center">
+   [#begin USERS#]
+   [#if ID!="1"#]
+   <tr>
+    <td>[#if ID="<#ID#>"#]<b>[#NAME#]</b>[#else ID#]<a href="?action=<#ACTION#>&mode=edit&id=[#ID#]">[#NAME#]</a>[#endif ID#]</td>
+    <td>[<a href="?action=<#ACTION#>&mode=delete&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>]</td>
+   </tr>
+   [#endif ID#]
+   [#end USERS#]
+   <tr>
+    <td colspan=2>[ <a href="?action=<#ACTION#>&mode=edit"><b>Add new user</a> ]</td>
+   </tr>
+  </table>
+  </td>
+  [#endif#]
+
+  <td valign=top width=70%>
+  [#if MODE="edit"#]
+  [#if OK#]
+  <p class="ok">
+  <#LANG_DATA_SAVED#>
+  </p>
+  [#endif OK#]
+  [#if ID!=""#]<b>[#NAME#]</b>[#endif ID#]
+  <table border="0" align="center" width=100%>
+   <form action="?" method="get">
+   [#if ERR_NAME#]
+   <tr><td colspan=2 class=error>Enter Name</td></tr>
+   [#endif ERR_NAME#]
+   <tr>
+    <td><b>Name:</td>
+    <td><input type="text" name="name" value="[#NAME#]" class=form></td>
+   </tr>
+   [#if ERR_LOGIN#]
+   <tr><td colspan=2 class=error>Enter Username</td></tr>
+   [#endif ERR_LOGIN#]
+   <tr>
+    <td><b>Username:</td>
+    <td><input type="text" name="login" value="[#LOGIN#]" class=form></td>
+   </tr>
+   [#if ERR_PASSWORD#]
+   <tr><td colspan=2 class=error>Enter password</td></tr>
+   [#endif ERR_PASSWORD#]
+   <tr>
+    <td><b>Password:</td>
+    <td><input type="password" name="password" value="" class=form></td>
+   </tr>
+   <tr>
+    <td><b>E-mail:</td>
+    <td><input type="text" name="email" value="[#EMAIL#]" class=form></td>
+   </tr>
+   <!--
+   <tr>
+    <td>Access Level:</td>
+    <td><input type="text" name="private" value="[#PRIVATE#]" class=form2></td>
+   </tr>
+   <tr>
+    <td>Notes:</td>
+    <td><input type="text" name="comments" value="[#COMMENTS#]" class=form></td>
+   </tr>
+   -->
+
+   [#if ID!="1"#]
+   <tr>
+    <td colspan=2>
+    Permissions:<br>
+    <table width=100%>
+    <tr>
+    [#begin MODULES#]
+     <td valign=top><small><input type="checkbox" name="sel[]" value="[#NAME#]"[#if SELECTED#] checked[#endif SELECTED#]>[#TITLE#]</small></td>
+     [#if NEWR#]</tr><tr>[#endif#]
+    [#end MODULES#]
+    </tr>
+    [#endif ID#]
+    </table>
+    </td>
+   </tr>
+   <tr>
+    <td colspan=2 align=center>
+    <input type="submit" name="submit" value="<#LANG_SUBMIT#>" class=form2>
+    <input type="reset" name="reset" value="Reset" class=form2>
+    </td>
+   </tr>
+   <input type="hidden" name="id" value="[#ID#]">
+   <input type="hidden" name="action" value="<#ACTION#>">
+   <input type="hidden" name="mode" value="<#MODE#>">
+   <input type="hidden" name="mode2" value="update">
+   </form>
+   </table>
+
+   [#if ID!="" && ID!="1"#]
+   <big>User Log</big><br>&nbsp;
+   [#module name="userlog" user_id="<#ID#>"#]
+   [#endif#]
+
+   <p align=center>
+   <a href="?action=<#ACTION#>">&lt;&lt;&lt; <#LANG_BACK#></a>
+   </p>
+  [#else#]
+
+        [#if LDAP_ON==1#]
+                [#module name="ldap_users" mode="searchldapusers"#]
+        [#endif#]
+
+  [#endif MODE#]
+  </td>
+  </tr>
+  </table>
+  [#endif ACTION#]

@@ -1,0 +1,81 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<big><#LANG_MODULE_BT_DEVICES#></big>
+[#if VIEW_MODE=""#]
+[#if DEVICES#]
+<p align="center"><a href="?mode=delete_unknown" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_DELETE_ALL_UNKNOWN_DEVICES#></a>
+<a href="?mode=delete_once" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_DELETE_FOUND_ONCE#></a>
+</p>
+<table border="1" cellpadding="3">
+ <tr>
+  <td valign="top" align="center"><b><#LANG_TITLE#></b></td>
+  <td valign="top" align="center"><b><#LANG_CODE#></b></td>
+  <td valign="top" align="center"><b><#LANG_FOUND_FIRST#></b></td>
+  <td valign="top" align="center"><b><#LANG_FOUND_LAST#></b></td>
+  <td valign="top" align="center"><b><#LANG_USER#></b></td>
+  <td valign="top">&nbsp;</td>
+ </tr>
+ [#begin DEVICES#]
+ <tr>
+  <td valign="top">[#TITLE#]</td>
+  <td valign="top">[#MAC#]</td>
+  <td valign="top">[#FIRST_FOUND#]</td>
+  <td valign="top">[#LAST_FOUND#]</td>
+  <td valign="top">[#NAME#]&nbsp;</td>
+  <td valign="top"><a href="?view_mode=edit_btdevices&id=[#ID#]"><#LANG_EDIT#></a>
+  <a href="?view_mode=delete_btdevices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+  </td>
+ </tr>
+ [#end DEVICES#]
+</table>
+[#else DEVICES#]
+<p>No devices discovered yet</p>
+[#endif DEVICES#]
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="edit_btdevices"#]
+<p align="center"><a href="?"><#LANG_BACK#></a></p>
+<table border="0" align="center">
+ <form action="?" method="post">
+ <tr>
+  <td align="right"><#LANG_TITLE#>:</td>
+  <td><input type="text" name="title" value="[#TITLE#]"></td>
+ </tr>
+ <tr>
+  <td align="right"><#LANG_USER#>:</td>
+  <td><select name="user_id">
+   <option value="0">n/a
+   [#begin USERS#]
+   <option value="[#ID#]"[#if ID="<#USER_ID#>"#] selected[#endif SELECTED#]>[#NAME#]
+   [#end USERS#]
+  </select></td>
+ </tr>
+ <tr>
+  <td align="right"><#LANG_CODE#>:</td>
+  <td>[#MAC#]</td>
+ </tr>
+ <tr>
+  <td align="right"><#LANG_FOUND_FIRST#>:</td>
+  <td>[#FIRST_FOUND#]</td>
+ </tr>
+ <tr>
+  <td align="right"><#LANG_FOUND_LAST#>:</td>
+  <td>[#LAST_FOUND#]</td>
+ </tr>
+ <tr>
+  <td align="right"><#LANG_HISTORY#>:</td>
+  <td>[#LOG#]</td>
+ </tr>
+
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_UPDATE#>"></td>
+ </tr>
+ <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+ <input type="hidden" name="id" value="[#ID#]">
+ <input type="hidden" name="mode" value="update">
+ </form>
+
+</table>
+[#endif VIEW_MODE#]

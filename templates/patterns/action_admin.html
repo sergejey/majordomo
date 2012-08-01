@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table patterns search -->
+ [#if VIEW_MODE="search_patterns" || VIEW_MODE=""#]
+  [#inc patterns_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table patterns search -->
+ <!-- table patterns edit -->
+ [#if VIEW_MODE="edit_patterns"#]
+   [#inc patterns_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table patterns edit -->
+ <!-- table patterns view --> 
+ [#if VIEW_MODE="view_patterns"#]
+   [#inc patterns_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table patterns view -->

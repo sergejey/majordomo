@@ -1,0 +1,94 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table commands search -->
+ [#if VIEW_MODE="search_commands" || VIEW_MODE=""#]
+
+[#if MENU_LOADED!="1"#]
+
+[#if ONE_ITEM_MODE#]
+<!--#        <style type="text/css" media="screen">@import "/jqtouch/jqtouch_one_item.css";</style>#-->
+<!--#               <style type="text/css" media="screen">@import "/themes/jqt/theme_one_item.css";</style>#-->
+
+[#endif#]
+
+<script language="javascript">
+ function menuClicked(id, parent_id, sub_list, win, winTitle, command, url, width, height) {
+  if (sub_list!=id) {
+   //$('sub'+parent_id).style.display='none';
+   if ($('sub'+id).style.display=='none') {
+    //$('sub'+id).style.display='block';
+    Effect.BlindDown('sub'+id, { duration: 0.5 });
+   } else {
+    //Effect.SwitchOff('sub'+id');
+    Effect.BlindUp('sub'+id, { duration: 0.5 });
+    //$('sub'+id).style.display='none';
+   }
+  } else {
+
+  if (parent.location == window.location) {
+   if (url!='') {
+    window.location=url;
+    //openTWindow(win, winTitle, url, width, height);
+   }
+  } else {
+
+   //command
+   if (command!='') {
+    //alert(command);
+    parent.eval(command);
+   }
+   if (url!='') {
+    if (width==0 && height==0) {
+     parent.openNewTab(winTitle, url);
+    } else {
+     parent.openTWindow(win, winTitle, url, width, height);
+    }
+   }
+
+  }
+
+  }
+  return false;
+ }
+
+ function itemValueChangedProcessed(data, v) {
+  //alert(data);
+  if ($('#processing_'+data).length) {
+   $('#processing_'+data).html(' - OK');
+  }
+  return false;
+ }
+
+ function itemValueChanged(id, new_value) {
+  //alert(id+': '+new_value);
+  var url="?ajax=1&op=value_changed";
+  if ($('#processing_'+id).length) {
+   $('#processing_'+id).html(' - ...');
+  }
+  AJAXRequest(url+'&item_id='+id+'&new_value='+new_value, 'itemValueChangedProcessed', id);
+  return false;
+ }
+
+</script>
+[#endif MENU_LOADED#]
+
+  [#if PDA="1"#]
+  [#inc commands_search_pda.html#]
+  [#else PDA#]
+  [#inc commands_search_site.html#]
+  [#endif PDA#]
+ [#endif VIEW_MODE#]
+ <!-- / table commands search -->
+ <!-- table commands edit -->
+ [#if VIEW_MODE="edit_commands"#]
+   [#inc commands_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table commands edit -->
+ <!-- table commands view --> 
+ [#if VIEW_MODE="view_commands"#]
+   [#inc commands_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table commands view -->

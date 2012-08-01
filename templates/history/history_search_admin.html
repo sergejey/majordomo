@@ -1,0 +1,137 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+﻿<big><#LANG_MODULE_OBJECTS_HISTORY#></big>
+<p align=center>
+[ <a href="?mode=clear_history" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_CLEAR_LOG#></a> ]
+</p>
+
+[#if OBJECTS#]
+<form action="?" method="get">
+	<p align="center">
+	Filter by Object:
+	<select name="object_id" onChange="this.form.submit();">
+		 <option value="">all
+		 	[#begin OBJECTS#]
+		 	<option value="[#ID#]"[#if ID="<#OBJECT_ID#>"#] selected[#endif#]>[#TITLE#]
+		 	[#end OBJECTS#]
+	</select>
+	
+	</p>
+</form>
+[#endif OBJECTS#]
+
+
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&object_id=<#OBJECT_ID#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+	<td>
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&object_id=<#OBJECT_ID#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
+[#end PAGES#]
+</td>
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&object_id=<#OBJECT_ID#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+&nbsp;
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_history" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<tr>
+ <td align=center bgcolor="#AAAAAA">
+ <b>Date/Time</b>
+ </td>
+[#if !IS_SET_OBJECT_ID#]
+ <td align=center bgcolor="#AAAAAA">
+ <b><#LANG_OBJECT#></b>
+ </td>
+[#endif IS_SET_OBJECT_ID#]
+[#if !IS_SET_METHOD_ID#]
+ <td align=center bgcolor="#AAAAAA">
+ <b>Method</b>
+ </td>
+[#endif IS_SET_METHOD_ID#]
+
+<td bgcolor="#AAAAAA">&nbsp;</td>
+</tr>
+[#begin RESULT#]
+<tr >
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if ADDED!=""#]
+   [#ADDED#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+[#if "<#IS_SET_OBJECT_ID#>"!="1"#]
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if OBJECT_ID!=""#]
+   <a href="?(panel:{action=objects})&md=objects&id=[#OBJECT_ID#]&view_mode=edit_objects">[#OBJECT_TITLE#]</a>
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+[#endif IS_SET_OBJECT_ID#]
+[#if "<#IS_SET_METHOD_ID#>"!="1"#]
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  [#if METHOD_ID!=""#]
+   <a href="?(panel:{action=objects})&md=objects&id=[#OBJECT_ID#]&view_mode=edit_objects&tab=methods&overwrite=1&method_id=[#METHOD_ID#]">[#METHOD_TITLE#]</a>
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+[#endif IS_SET_METHOD_ID#]
+
+ <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <b><a href="?view_mode=edit_history&id=[#ID#]"><#LANG_DETAILS#></a></b>
+   </td>
+   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
+    <a href="?view_mode=delete_history&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_history">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&object_id=<#OBJECT_ID#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+	<td>
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&object_id=<#OBJECT_ID#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
+[#end PAGES#]
+</td>
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&object_id=<#OBJECT_ID#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<font color="red">No data</font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

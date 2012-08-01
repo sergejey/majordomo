@@ -1,0 +1,42 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<big><#LANG_APP_MEDIA_BROWSER#></big>
+<hr size="1">
+
+[#if VIEW_MODE="edit"#]
+<table border="0" align="center">
+<form action="?" method="post">
+ <tr>
+  <td valign="top"><b><#LANG_TITLE#>:</b></td>
+  <td valign="top"><input type="text" name="title" value="[#TITLE#]"></td>
+ </tr>
+ <tr>
+  <td valign="top"><b><#LANG_PATH#>:</b></td>
+  <td valign="top"><input type="text" name="path" value="[#PATH#]"></td>
+ </tr>
+<tr>
+ <td valign="top">&nbsp;</td>
+ <td valign="top"><input type="submit" name="submit" value="<#LANG_SUBMIT#>"></td>
+</tr>
+<input type="hidden" name="id" value="[#ID#]">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="mode" value="update_collection">
+</form>
+</table>
+[#endif#]
+
+<p align="center">
+<a href="?view_mode=edit"><#LANG_ADD_NEW_COLLECTION#></a>
+</p>
+
+<table border="0" align="center">
+ [#begin COLLECTIONS#]
+ <tr>
+  <td><big>[#TITLE#]</big></td>
+  <td>[#PATH#]</td>
+  <td>[ <a href="?id=[#ID#]&view_mode=edit"><#LANG_EDIT#></a> ]</td>
+  <td>[ <a href="?id=[#ID#]&view_mode=delete" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a> ]</td>
+ </tr>
+ [#end COLLECTIONS#]
+</table>

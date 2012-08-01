@@ -1,0 +1,101 @@
+[#inc style.html#]
+
+        <script type="text/javascript" src="/js/easySlider1.7.js"></script>
+        <script type="text/javascript">
+
+
+        function switchScene(scene_id) {
+         [#begin RESULT#]
+         if (scene_id=='[#ID#]') {
+           $('#controls[#NUMP#] a').click();
+         }
+         [#end RESULT#]
+         return false;
+        }
+
+        function stateClicked(id) {
+         var url="?ajax=1&op=click";
+         url+='&id='+id;
+         $.ajax({
+          url: url,
+          }).done(function(data) { 
+           //
+          });
+         return false;
+        }
+
+        var firstRun=1;
+        var checkTimer;
+        function checkAllStates() {
+         clearTimeout(checkTimer);
+         var url="?ajax=1&op=checkAllStates";
+         $.ajax({
+          url: url,
+          }).done(function(data) { 
+           var obj=jQuery.parseJSON(data);
+           if (obj.length) {
+            for(var i=0;i<obj.length;i++) {
+             var elem=$('#state_'+obj[i].ID);
+             if (obj[i].TYPE=='html' && obj[i].HTML!=elem.html()) {
+              elem.html(obj[i].HTML);
+             }
+
+             if (obj[i].STATE=='1' && !elem.is(':visible')) {
+              elem.show();
+              if (firstRun!=1 && obj[i].SWITCH_SCENE=='1') {
+               switchScene(obj[i].SCENE_ID);
+              }
+             }
+             if (obj[i].STATE!='1' && elem.is(':visible')) {
+              elem.hide();
+             }
+            }
+            firstRun=0;
+            checkTimer=setTimeout('checkAllStates();', 3000);
+           }
+          });
+         return false;
+        }
+
+                $(document).ready(function(){   
+                        $("#slider").easySlider({
+                                auto: false, 
+                                numeric: true,
+                                continuous: false
+                        });
+                        checkAllStates();
+                });     
+
+
+        </script>
+
+
+
+<table  border="0" align="center">
+ <tr>
+  <td valign="top">
+<div style="width:<#SETTINGS_SCENES_WIDTH#>px">
+<div id="slider" style="border:1px solid grey">
+<ul>
+[#begin RESULT#]
+<li id='scene_[#ID#]'>
+[#if BACKGROUND!=""#]
+ <div id="scene_background" style="position:relative;">
+ [#begin ELEMENTS#]
+ <!-- element [#ID#] -->
+ [#begin STATES#]
+  <div id="state_[#ID#]"[#if SCRIPT_ID!="0"#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif#][#if SCRIPT_ID!="0"#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
+ [#end STATES#]
+ <!-- /element [#ID#] -->
+ [#end ELEMENTS#]
+ <img src="[#BACKGROUND#]" border="0">
+ </div>
+[#endif#]
+ </li>
+[#end RESULT#]
+</ul>
+</div>
+</div>
+</td>
+ </tr>
+</table>

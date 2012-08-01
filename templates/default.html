@@ -1,0 +1,156 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<table width="100%" border="0">
+ <tr>
+  <td valign="top" colspan=2>
+  
+<table border="0" align="right">
+ 
+ <tr>
+        <td>
+                <a href="/"><img src="/img/icons/home.png" border="0"></a>
+                </td>
+                                <td width="90%" align="right">
+                                <!--#[#inc vlc_object.html#]#-->
+                                [#module name="app_player"#]
+                                
+  
+                                </td>
+  <!--#
+  <td valign="top" nowrap>
+  [ <a href="#" onClick="return openTWindow('addEventWin', 'Add Event', '/popup/addevent.html', 500, 230)">Add Event</a> ]
+  </td>
+  #-->
+  <td valign="top" nowrap>
+
+  <table border="0" align="right">
+   <tr>
+    <td valign="top" nowrap>[ <a href="/admin.php"><#LANG_CONTROL_PANEL#></a> ]</td>
+  <form action="/" method="get" name="frmSettings">
+  [#if HIDE_TERMINALS!="1"#]
+  <td valign="top" nowrap>
+   <#LANG_TERMINAL#>:
+   <select name="terminal" onChange="document.frmSettings.submit();">
+    <option value=""><#LANG_SELECT#>
+    [#begin TERMINALS#]
+    <option value="[#NAME#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]
+    [#end TERMINALS#]
+   </select>
+  </td>
+  [#endif#]
+  [#if HIDE_USERS!="1"#]
+  <td valign="top" nowrap>
+   <#LANG_USER#>:
+   <select name="username" onChange="document.frmSettings.submit();">
+    <option value=""><#LANG_SELECT#>
+    [#begin USERS#]
+    <option value="[#USERNAME#]"[#if SELECTED="1"#] selected[#endif#]>[#NAME#]
+    [#end USERS#]
+   </select>
+  </td>
+  [#endif#]
+  </form>
+   </tr>
+   <tr>
+    <td valign="top" colspan="3" align="right">
+    <a href="<#LANG_WIKI_URL#>" target=_blank style="font:12px Arial,Helvetica,sans-serif">MajorDoMo Project</a>
+    </td>
+   </tr>
+  </table>
+
+
+  </td>
+ </tr>
+ <tr>
+  <td valign="top" colspan="3">
+   <div id="debugInfo"></div>
+  </td>
+ </tr>
+</table>
+  
+  </td>
+ </tr>
+ <tr>
+  <td valign="top" width="350">
+  <iframe src="/menu.html" width="350" height="450" id="navFrame" border="0" frameborder=0 framespacing=0></iframe>
+  <!--#<iframe src="/demos/main/index.html" width="350" height="400" border="0" frameborder=0 framespacing=0 scrolling="auto"></iframe>#-->
+  <!--#
+  <img src="/img/0.gif" border="0" width="300" height="1">
+  <div id="alertsLog" class="small">
+   [#module name="shoutbox" limit="5"#]
+  </div>
+  #-->
+  </td>
+  <td valign="top" width="100%">
+
+
+
+
+<div id="tabs">
+
+<ul>
+[#begin LAYOUTS#]
+<li><a href="#tabs-[#ID#]">[#TITLE#]</a></li>
+[#end LAYOUTS#]
+  <li><a href="#tabs-last"><span id='tablast_title'>***</span></a></li>
+</ul>
+
+[#begin LAYOUTS#]
+<div id="tabs-[#ID#]">...</div>
+[#end LAYOUTS#]
+
+<div id="tabs-last">
+  ...
+</div> 
+
+</div>
+
+  </td>
+ </tr>
+</table>
+
+<script language="javascript">
+
+var iFrameHeight=500;
+
+$(document).ready(function() {
+  // Handler for .ready() called.
+  iFrameHeight=$(window).height()-110;
+  $('#navFrame').height(iFrameHeight+57);
+  [#begin LAYOUTS#]
+  $('#htmlTab[#NUM#]').height(iFrameHeight);
+  [#end LAYOUTS#]
+  //alert($('#defaultFrame').height());
+});
+
+        $( "#tabs" ).tabs({
+        show: function(event, ui) { 
+         iFrameHeight=$(window).height()-110;
+         var selected = $( "#tabs" ).tabs( "option", "selected" );
+         //alert(selected);
+         [#begin LAYOUTS#]
+         if (selected == [#NUM#]) {
+          [#if TYPE="app"#]
+           if ($('#tabs-[#ID#]').html()=='...') {
+            $('#tabs-[#ID#]').html('<iframe src="/popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+           }
+          [#endif TYPE#]
+          [#if TYPE="url"#]
+           if ($('#tabs-[#ID#]').html()=='...') {
+            $('#tabs-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+           }
+          [#endif TYPE#]
+          [#if TYPE="html"#]
+           if ($('#tabs-[#ID#]').html()=='...') {
+            $('#tabs-[#ID#]').html('<iframe src="/page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+           }
+          [#endif TYPE#]
+         }
+         [#end LAYOUTS#]
+        }});
+
+
+
+
+</script>

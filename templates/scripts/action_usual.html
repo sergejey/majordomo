@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table scripts search -->
+ [#if VIEW_MODE="search_scripts" || VIEW_MODE=""#]
+  [#inc scripts_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts search -->
+ <!-- table scripts edit -->
+ [#if VIEW_MODE="edit_scripts"#]
+   [#inc scripts_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts edit -->
+ <!-- table scripts view --> 
+ [#if VIEW_MODE="view_scripts"#]
+   [#inc scripts_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table scripts view -->

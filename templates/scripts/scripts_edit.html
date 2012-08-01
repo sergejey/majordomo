@@ -1,0 +1,152 @@
+<!--#
+ @version 0.4 (auto-set)
+#-->
+
+<!-- Table 'scripts' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit">
+<table border=0 align=center cellpadding=3>
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_SCRIPT#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]" size="50">
+ </td>
+</tr>
+
+<tr>
+ <td valign="top" align="right"><#LANG_CATEGORY#>:</td>
+ <td valign="top">
+  <select name="category_id">
+   <option value="0">
+   [#begin CATEGORIES#]
+   <option value="[#ID#]" [#if ID="<#CATEGORY_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end CATEGORIES#]
+  </select>
+ </td>
+</tr>
+
+
+<tr>
+ <td valign="top" align="right"><#LANG_TYPE#>:</td>
+ <td valign="top">
+ <label><input type="radio" name="type" class="script_type" value="0"[#if TYPE!="1"#] checked[#endif#]> PHP</label>
+ <label><input type="radio" name="type" class="script_type" value="1"[#if TYPE="1"#] checked[#endif#]> Blockly</label>
+ [#if ERRORS!=""#]<br><font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
+ </td>
+</tr>
+
+<script language="javascript">
+  $('.script_type').click (function ()
+  {
+  var thisCheck = $(this);
+   if (thisCheck.val()==1) {
+    $('#xml_row').show();
+    $('#code_row').hide();
+   } else {
+    $('#xml_row').hide();
+    $('#code_row').show();
+   }
+  }
+  );
+
+  function editBlockly() {
+   var blockly=window.open('<#ROOTHTML#>blocky/demos/code/index.html','Blockly','width=100%,height=100%');
+   return false;
+  }
+
+</script>
+
+<tr id="xml_row"[#if TYPE!="1"#] style="display:none"[#endif#]>
+ <td valign="top">&nbsp;</td>
+ <td valign="top" width="536">
+ <a href="#" onClick="return editBlockly();"><#LANG_EDIT#></a>
+ <textarea name="xml" id="xml_code" rows="5" cols="60" style="display:none">[#XML#]</textarea>
+ <textarea name="blockly_code" id="blockly_code" rows="5" cols="60" style="display:none"></textarea>
+ </td>
+</tr>
+
+<!-- CODE (text) -->
+<tr id="code_row"[#if TYPE="1"#] style="display:none"[#endif#]>
+ <td valign=top align=right>
+
+[#if TYPE!="1"#]
+ <script language="javascript" type="text/javascript" src="/js/edit_area/edit_area_full.js"></script>
+<script language="javascript" type="text/javascript">
+editAreaLoader.init({
+        id : "code"               // textarea id
+        ,syntax: "php"                  // syntax to be uses for highgliting
+        ,start_highlight: true          // to display with highlight mode on start-up
+});
+</script>
+[#endif TYPE#]
+
+ [#if ERR_CODE#]<b><font color="red">[#endif#]
+  <#LANG_CODE#> (PHP)
+ :
+ </td>
+ <td valign=top>
+ <textarea name="code" id="code" rows=30 cols=100>[#CODE#]</textarea>
+ </td>
+</tr>
+<tr>
+ <td valign=top align=right>
+ &nbsp;
+ </td>
+ <td valign=top>
+ <input type="checkbox" name="edit_run" id="chkRun" value="1"> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#>
+ </td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+[#if ID!=""#]
+<tr>
+ <td valign="top" align="right"><#LANG_RUN_BY_URL#>:</td>
+ <td valign="top"><#BASE_URL#>/objects/?script=[#TITLE#]</td>
+</tr>
+<tr>
+ <td valign="top" align="right"><#LANG_COMMAND_LINE#>:</td>
+ <td valign="top"><#DOC_ROOT#>\obj.bat script:[#TITLE#]</td>
+</tr>
+
+[#endif#]
+</table>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+

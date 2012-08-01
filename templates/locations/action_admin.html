@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table locations search -->
+ [#if VIEW_MODE="search_locations" || VIEW_MODE=""#]
+  [#inc locations_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table locations search -->
+ <!-- table locations edit -->
+ [#if VIEW_MODE="edit_locations"#]
+   [#inc locations_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table locations edit -->
+ <!-- table locations view --> 
+ [#if VIEW_MODE="view_locations"#]
+   [#inc locations_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table locations view -->

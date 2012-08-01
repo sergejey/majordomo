@@ -1,0 +1,59 @@
+<!--#
+ @version 0.3
+#-->
+<script language="javascript">
+ function playerCommandProcessed(id, data) {
+  var elem=document.getElementById('playerStatus');
+  elem.innerHTML=data;  
+  return false;
+ }
+ function playerCommand(pcmd) {
+  if ($("#selPlayTerminal").val()=='') return false;
+  if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
+  var elem=document.getElementById('playerStatus');
+  elem.innerHTML=pcmd+'...';
+  var url="?ajax=1";
+  url+='&command='+pcmd;
+  url+='&play_terminal='+$("#selPlayTerminal").val();
+  url+='&play='+URLencode($("#hidPlayPath").val());
+  url+='&rnd='+URLencode($("#hidPlayerRnd").val());
+  //prompt(url, url);
+  AJAXRequest(url, 'playerCommandProcessed', '');
+  return false;
+ }
+</script>
+<table border="0" cellpadding="0" cellspacing="0">
+ <tr>
+  <form action="?" method="get" name="frmPlayerControl" id="frmPlayerControl">
+  <td align="right" style="vertical-align:middle">
+  <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
+   <select name="play_terminal" id="selPlayTerminal">
+    <option value="">
+    [#begin TERMINALS#]
+    <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+    [#end TERMINALS#]
+   </select>
+  </div>
+   <div id='playerStatus'[#if MODE="menu"#] style="color:white"[#endif#]></div>
+<!--#
+[#if PLAY!=""#]
+<script language="javascript">
+ playerCommand("refresh");
+</script>
+[#endif#]
+#-->
+  </td>
+  [#if MODE="menu"#]</tr><tr>[#endif MODE#]
+  <td valign="top">
+   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_pause.png" border="0"></a></div>
+   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("prev");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_prev.png" border="0"></a></div>
+   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("refresh");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_play.png" border="0"></a></div> 
+   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("next");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_next.png" border="0"></a></div>
+   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("fullscreen");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/eye.png" border="0"></a></div>
+   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("close");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/delete.png" border="0"></a></div>
+  </td>
+ </tr>
+ <input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
+ <input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
+ </form>
+</table>

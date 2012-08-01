@@ -1,0 +1,73 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+﻿
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_CLASS#></b></td>
+</tr>
+[#endif ID#]
+<tr>
+ <td align=right><#LANG_PARENT_CLASS#>:</td>
+ <td><select name="parent_id">
+ <option value="0">- no -
+ [#begin PARENTS#]
+ <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
+ [#end PARENTS#]
+ </select></td>
+</tr>
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]">
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+&nbsp;
+ </td>
+ <td>
+  <input type="checkbox" name="nolog" value="1"[#if NOLOG="1"#] checked[#endif#]> <#LANG_DO_NOT_SAVE_CLASS_ACTIVITY#>
+ </td>
+</tr>
+
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="tab" value="<#TAB#>">
+</form>
+</table>

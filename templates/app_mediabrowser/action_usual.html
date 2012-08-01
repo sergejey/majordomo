@@ -1,0 +1,215 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+[#if COLLECTION_ID#]
+
+<style>
+#mTerminals {
+    
+    left: 10px;
+    position: absolute;
+    <!--#
+    width: 400px;
+    height: 50px;
+    #-->
+    background-color: #EEEEEE;
+}
+
+</style>
+
+<!--#
+<div id="mTerminals">
+<table border="0">
+ <tr>
+  [#begin TERMINALS#]
+  <td valign="top"><div id="terminal[#ID#]" style="padding:10px;border:1px solid black;">[#TITLE#]</div></td>
+  [#end TERMINALS#]
+ </tr>
+</table>
+</div>
+#-->
+
+<script type="text/javascript" language="javascript">          
+    Event.observe(window,'load',function(evt){
+        //$('mTerminals').hide();
+        //Event.observe('showme','click',showDiv);
+        Event.observe(window,'scroll', function(evt){
+            $('mTerminals').setStyle({ top: 8 + document.viewport.getScrollOffsets().top + 'px' });
+        });
+    });
+    /*
+    function showDiv(evt){
+        $('mTerminals').show();
+    }
+    */
+</script>
+
+
+
+<script language="javascript">
+
+function gup( name )
+{
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+
+ function playThis(path, rnd, terminal_id) {
+  if (parent.location == window.location) {
+   var url="?mode=play&showplayer=1&collection_id="+gup('collection_id')+"&folder="+gup('folder')+"&file="+gup('file')+"&rnd="+rnd+"&terminal_id="+terminal_id;
+   window.location=url;
+  } else {
+   var res=parent.playMedia(path, rnd, terminal_id);
+  }
+  return false;
+ }
+</script>
+
+
+<script language="javascript">
+
+ function removeFromFavorites_processed(id, data) {
+  var elem1=document.getElementById('favorites_add');
+  var elem2=document.getElementById('favorites_remove');
+  elem1.style.display='block';
+  elem2.style.display='none'; 
+  return false;
+ }
+
+ function removeFromFavorites(dir, title) {
+  var url="?media_ajax=1";
+  url+='&op=favorite_remove&collection_id=<#COLLECTION_ID#>&dir='+dir+'&title='+title;
+  AJAXRequest(url, 'removeFromFavorites_processed', 0)
+  return false;
+ }
+
+
+ function addToFavorites_processed(id, data) {
+  var elem1=document.getElementById('favorites_add');
+  var elem2=document.getElementById('favorites_remove');
+  elem1.style.display='none';
+  elem2.style.display='block';
+  return false;
+ }
+
+ function addToFavorites(dir, title) {
+  var url="?media_ajax=1";
+  url+='&op=favorite_add&collection_id=<#COLLECTION_ID#>&dir='+dir+'&title='+title;
+  AJAXRequest(url, 'addToFavorites_processed', 0)
+  return false;
+ }
+
+ var mediaFolder='';
+
+ function mediaDropped(terminal_id) {
+  //$('terminal'+terminal_id).highlight()
+  //alert('media "'+mediaFolder+'" dropped to '+terminal_id);
+  playThis(mediaFolder, 0, terminal_id);
+  return false;
+ }
+[#begin TERMINALS#]
+ Droppables.add('terminal[#ID#]', {
+  accept: 'media',
+  onDrop: function() { mediaDropped('[#ID#]'); }
+  });
+[#end TERMINALS#]
+</script>
+
+ [#if COLLECTIONS_TOTAL!="1"#]
+ <table border="0">
+ <form action="?" method="get" name="frmCollection">
+  <tr>
+   <td valign="top">Collection:</td>
+   <td valign="top"><select name="collection_id" onChange="document.frmCollection.submit();">
+    [#begin COLLECTIONS#]
+    <option value="[#ID#]"[#if ID="<#COLLECTION_ID#>"#] selected[#endif#]>[#TITLE#]
+    [#end COLLECTIONS#]
+   </select></td>
+  </tr>
+ </form>
+ </table>
+ <hr size="1">
+ [#endif#]
+
+
+[#if CURRENT_DIR!="./"#]
+<table border="0">
+ <tr>
+ <td class=plain colspan="2">
+ <!--#
+ [ <a href="?collection_id=<#COLLECTION_ID#>"><b>Beginning</b></a> ]
+ [ <a href="#" onClick='history.go(-1);'><b>Back</b></a> ]
+ <br><br>
+ <b><a href="?collection_id=<#COLLECTION_ID#>&folder=<#CURRENT_DIR_HTML#>">[#CURRENT_DIR#]</a></b>
+ #-->
+
+ [#if HISTORY#]
+ <p>
+ <small>
+ [#begin HISTORY#]
+ / <a href="?collection_id=<#COLLECTION_ID#>&folder=[#PATH#]">[#TITLE#]</a>
+ [#end HISTORY#]
+ </small>
+ </p>
+ [#endif HISTORY#]
+
+ </td>
+</tr>
+</table>
+
+<table border="0" cellpadding="4">
+ <tr>
+  <td><a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="/img/btn/btn_play.png" border="0"></a></td>
+  <td><h1 style="font-weight:bold">[#CURRENT_DIR_TITLE#]</h1></td>
+  <td>
+   <div id="favorites_add"[#if FAVORITE=="1"#] style="display:none"[#endif#]>
+   <a href="#" onClick="return addToFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="/img/btn/notfavorite.png" border="0"></a>
+   </div>
+   <div id="favorites_remove"[#if FAVORITE!="1"#] style="display:none"[#endif#]>
+    <a href="#" onClick="return removeFromFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="/img/btn/favorite.png" border="0"></a>
+   </div>
+  </td>
+ </tr>
+</table>
+[#else CURRENT_DIR#]
+
+<a href="/menu.html"><img src="/img/icons/home.png" border="0"></a>
+
+[#if FAVORITES#]
+<table border="0">
+ [#begin FAVORITES#]
+ <tr>
+  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="/img/btn/btn_play.png" border="0"></a></td>
+  <td><img src="/img/btn/favorite.png" border="0"></td>
+  <td><a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]">[#TITLE#]</a></td>
+ </tr>
+ [#end FAVORITES#]
+</table>
+[#endif FAVORITES#]
+
+[#endif CURRENT_DIR#]
+
+[#if MODE=""#]
+[#inc files.html#]
+[#endif#]
+[#if MODE="play"#]
+[#inc play.html#]
+[#endif#]
+
+[#else COLLECTION_ID#]
+
+ <table border="0">
+  [#begin COLLECTIONS#]
+  <tr>
+   <td><a href="?collection_id=[#ID#]">[#TITLE#]</a></td>
+  </tr>
+  [#end COLLECTIONS#]
+ </table>
+[#endif#]
+

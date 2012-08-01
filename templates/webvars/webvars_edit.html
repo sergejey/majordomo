@@ -1,0 +1,206 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+
+<!-- Table 'webvars' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]" size="80">
+ </td>
+</tr>
+
+
+<!-- HOSTNAME (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_HOSTNAME#]<b><font color="red">[#endif#]
+ <#LANG_URL#>:
+ </td>
+ <td>
+  <input type="text" name="hostname" value="[#HOSTNAME#]" size="80">
+ </td>
+</tr>
+
+<tr>
+ <td align="right">&nbsp;</td>
+ <td><input type="checkbox" name="auth" id="chkAuth" value="1" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#>
+ <div [#if AUTH!="1"#]style="display:none"[#endif#] id="authCredentials">
+  <table border="0">
+   <tr>
+    <td><#LANG_USERNAME#>:</td>
+    <td><input type="text" name="username" value="[#USERNAME#]"></td>
+   </tr>
+   <tr>
+    <td><#LANG_PASSWORD#>:</td>
+    <td><input type="text" name="password" value="[#PASSWORD#]"></td>
+   </tr>
+  </table>
+ </div>
+ </td>
+</tr>
+
+<script language="javascript">
+ $('#chkAuth').click (function ()
+ {
+  var thisCheck = $(this);
+  if (thisCheck.is (':checked'))
+  {
+   $('#authCredentials').show();
+  } else {
+  $('#authCredentials').hide();
+  }
+ });
+</script>
+
+<tr>
+ <td align=right>
+ <#LANG_SOURCE_PAGE_ENCODING#>:
+ </td>
+ <td>
+  <input type="text" name="encoding" value="[#ENCODING#]" size="30"> (<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)
+ </td>
+</tr>
+
+
+<!-- SEARCH_WORD (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_SEARCH_PATTERN#]<b><font color="red">[#endif#]
+ <#LANG_SEARCH_PATTERN#>:
+ </td>
+ <td>
+  <input type="text" name="search_pattern" value="[#SEARCH_PATTERN#]" size="80">
+ </td>
+</tr>
+
+<!--#
+<tr>
+ <td align=right>
+ [#if ERR_SEARCH_PATTERN#]<b><font color="red">[#endif#]
+ CHECK_PATTERN (optional):
+ </td>
+ <td>
+  <input type="text" name="check_pattern" value="[#CHECK_PATTERN#]" size="80">
+ </td>
+</tr>
+#-->
+
+
+<!-- SCRIPT_ID_ONLINE (int) -->
+<tr>
+ <td align=right valign="top">
+ [#if ERR_SCRIPT_ID#]<b><font color="red">[#endif#]
+ <#LANG_ONCHANGE_ACTION#>:
+ </td>
+ <td>
+
+ <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
+   <select name="script_id">
+    <option value="0">
+    [#begin SCRIPTS#]
+        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+        [#end SCRIPTS#]
+   </select>    
+   <br>
+   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID_OFFLINE="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
+ [#if ERRORS!=""#]
+ <font color='red'>[#ERRORS#]</font><br>
+ [#endif ERRORS#]   
+ <textarea name="code" rows=12 cols=100>[#CODE#]</textarea>
+
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ <#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:
+ </td>
+ <td>
+  <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">
+  .
+  <input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
+ </td>
+</tr>
+
+
+
+
+<!-- ONLINE_INTERVAL (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_ONLINE_INTERVAL#]<b><font color="red">[#endif#]
+ <#LANG_CHECK_INTERVAL#>:
+ </td>
+ <td>
+  <input type="text" name="online_interval" value="[#ONLINE_INTERVAL#]" size="10"> <#LANG_SECONDS#> (0 to use default)
+ </td>
+</tr>
+
+<tr>
+ <td align=right valign="top">
+  <#LANG_LATEST_VALUE#>:
+ </td>
+ <td valign="top">
+  [#LATEST_VALUE#]
+ </td>
+</tr>
+
+
+<tr>
+ <td valign="top">&nbsp;</td>
+ <td>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+
+<tr>
+ <td align=right valign="top">
+  <#LANG_LOG#>:
+ </td>
+ <td valign="top">
+  [#LOG#]
+ </td>
+</tr>
+
+
+</table>

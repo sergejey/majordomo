@@ -1,0 +1,107 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- Table 'gpslocations' edit -->
+<p align=center>
+ <a href="?data_source=<#DATA_SOURCE#>">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]">
+ </td>
+</tr>
+<!-- LAT (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_LAT#]<b><font color="red">[#endif#]
+ <#LANG_LATITUDE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="lat" value="[#LAT#]">
+ </td>
+</tr>
+<!-- LON (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_LON#]<b><font color="red">[#endif#]
+ <#LANG_LONGITUDE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="lon" value="[#LON#]">
+ </td>
+</tr>
+<!-- RANGE (float) -->
+<tr>
+ <td align=right>
+ [#if ERR_RANGE#]<b><font color="red">[#endif#]
+ <#LANG_RANGE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="range" value="[#RANGE#]">
+ </td>
+</tr>
+<!-- VIRTUAL_USER_ID (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_VIRTUAL_USER_ID#]<b><font color="red">[#endif#]
+ <#LANG_VIRTUAL_USER#>:
+ </td>
+ <td>
+  <input type="text" name="virtual_user_id" value="[#VIRTUAL_USER_ID#]">
+ </td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+</form>
+</table>
+
+[#if ID!=""#]
+<p align="center">
+<img src="http://maps.googleapis.com/maps/api/staticmap?center=[#LAT#],[#LON#]&size=512x512&maptype=hybrid&sensor=false&zoom=14&markers=[#LAT#],[#LON#]" border="0">
+</p>
+[#endif ID#]

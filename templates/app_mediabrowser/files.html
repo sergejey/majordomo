@@ -1,0 +1,98 @@
+<!--#
+ @version 0.4 (auto-set)
+#-->
+<!--#
+[#if CURRENT_DIR!="./"#]
+<div class=plain>
+<a href="<#SHARE_HTML#>">Начало</a>
+[#begin HISTORY#]
+&gt; <a href="<#SHARE_HTML#>[#PATH#]">[#TITLE#]</a>
+[#end HISTORY#]
+</div>
+&nbsp;
+[#endif CURRENT_DIR#]
+#-->
+
+<table border=0 cellspacing=1 cellpadding=3>
+
+
+[#if DIRS#]
+ [#begin DIRS#]
+<tr>
+ <td class=plain valign=top nowrap align="right">
+ <a href="?collection_id=<#COLLECTION_ID#>&mode=play&folder=[#PATH#]&file=[#PATH#]"><img src="/img/btn/btn_play.png" border="0"></a>
+ <!--#
+ <a href="#" onClick="return playThis('<#MEDIA_PATH#><#CURRENT_DIR#>[#TITLE#]', 0, 0);">Now</a>
+ #-->
+  <!--#
+  [ <a href="?enq=<#CURRENT_DIR#>[#TITLE#]">+</a> ]
+  #-->
+ </td>
+
+ <td class=plain>
+ <nobr><a href="?collection_id=<#COLLECTION_ID#>&folder=[#PATH#]"><b>[#TITLE_SHORT#]</b></a>
+ </td>
+ <!--#
+ <td class=plain width=1% valign=top bgcolor="#DDDDDD" align=center>
+  <a href="javascript:describeIt('[#TITLE#]', '[#DESCR#]')"><img src="<#ROOTHTML#>img/notes.gif" alt="Описать" border=0></a>
+ </td>
+ <td class=plain width=1% valign=top bgcolor="#DDDDDD">
+  <a href="file:<#SHARE#><#CURRENT_DIR#>[#TITLE#]" target=_blank><img src="<#ROOTHTML#>img/explore.gif" alt="Перейти" border=0></a>
+ </td>
+#-->
+</tr>
+ [#end DIRS#]
+
+[#endif DIRS#]
+</table>
+
+[#if FILES#]
+
+[#if LIST_MODE!="foto"#]
+[#if COVER!=""#]
+<div style="padding:5px" align="center">
+<img src="/modules/thumb/thumb.php?img=[#COVER_PATH#]&w=280" border="0">
+</div>
+[#endif#]
+[#endif#]
+
+<table border=0 cellpadding=0>
+<tr>
+ <td colspan=10><hr size=1>
+ 
+ [#if LIST_MODE=""#][#inc list_files.html#][#endif LIST_MODE#]
+ [#if LIST_MODE="foto"#][#inc list_foto.html#][#endif LIST_MODE#]
+
+ </td>
+</tr>
+
+</tr>
+
+</table>
+[#endif FILES#]
+
+<!--#
+<table border=0 cellspacing=1 cellpadding=3 align="Center">
+[#if CURRENT_DIR!="./"#]
+<tr>
+ <td class=plain colspan="2" align="center">
+ <b>
+ Set alarm:
+  [ <a href="?save=[#CURRENT_DIR#]" onClick="return confirm('Изменить текущий будильник?');">Папку</a> ]
+  [ <a href="?save=[#CURRENT_DIR#]&random=1" onClick="return confirm('Изменить текущий будильник?');">Случайно</a> ]
+ </b>
+ </td>
+</tr>
+[#endif CURRENT_DIR#]
+#-->
+
+
+<!--#
+<p align=right>
+ Директорий: <b>[#TOTAL_DIRS#]</b><br>
+ Файлов: <b>[#TOTAL_FILES#]</b><br>
+ Общий размер файлов в каталоге: <b>[#TOTAL_SIZE#]</b>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+#-->

@@ -1,0 +1,144 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- table userlog search -->
+<table border=0><tr>
+<td valign=top>
+[#inc userlog_calendar_added.html#]
+&nbsp;
+</td>
+<td valign=top width=99%>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0 width=100%>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_userlog" style="padding:0px">
+<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" width=100%>
+<tr>
+ <td colspan=20 align=right bgcolor="#FFFFFF">
+ <input type="submit" name="export" value="Export selected">
+ <input type="submit" name="delete" value="Delete selected" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">
+ </td>
+</tr>
+<tr>
+ <td align=center bgcolor="#AAAAAA"><b><a href="#" onClick="return selectAll_userlog();">All</a></b>
+ <script language="javascript">
+  function selectAll_userlog() {
+   var chkbox = document.forms['frmList_userlog'].elements['ids[]'];   
+   var cnt = chkbox.length;
+   for (i=0; i<cnt; i++) {
+    if (chkbox[i].checked) {
+     chkbox[i].checked = false;
+    } else {
+     chkbox[i].checked = true;
+    }
+   }
+   return false;
+  }
+ </script>
+ </td>
+[#if !IS_SET_USER_ID#]
+ <td align=center bgcolor="#AAAAAA">
+ <b>User ID</b>
+ </td>
+[#endif IS_SET_USER_ID#]
+ <td align=center bgcolor="#AAAAAA">
+ <b>Details</b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b>IP</b>
+ </td>
+ <td align=center bgcolor="#AAAAAA">
+ <b>Date / Time</b>
+ </td>
+<td bgcolor="#AAAAAA">&nbsp;</td>
+</tr>
+[#begin RESULT#]
+<tr >
+ <td align=center bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]">
+ <input type="checkbox" name="ids[]" value="[#ID#]">
+ </td>
+[#if "<#IS_SET_USER_ID#>"!="1"#]
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]">
+  [#if USER_ID!=""#]
+   <a href="?(panel:{action=control_access})&md=control_access&mode=edit&id=[#USER_ID#]">[#NAME#]</a>
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+[#endif IS_SET_USER_ID#]
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]">
+  [#if MESSAGE!=""#]
+   [#MESSAGE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]">
+  [#if IP!=""#]
+   [#IP#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td
+   align=center
+   bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]">
+  [#if ADDED!=""#]
+   [#ADDED#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]">
+  <table border=0>
+  [#if "<#ACTION#>"=="admin"#]
+   <td bgcolor="[#if NEW_COLOR#]#E5E5E5[#else#]#FFFFFF[#endif#]" align=center>
+    <a href="?view_mode=delete_userlog&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
+   </td>
+  [#endif ACTION#]
+  </table>
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_userlog">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0 align=center width=100%>
+<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+[#begin PAGES#]
+<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#end PAGES#]
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

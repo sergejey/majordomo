@@ -1,0 +1,23 @@
+/*
+* @version 0.1 (auto-set)
+*/
+
+/* Default styles and styles for single-select */
+
+.sbrWrap{position:absolute;background:#fff url(itembg.gif) top left repeat-x;border:1px solid #aaa}
+.sbrWrapInner{margin:1px -1px;border:1px solid #aaa;overflow:auto;padding-right:1px;display:none;max-height:300px;_height:expression(this.scrollHeight > 400 ? "400px" : "auto")}
+.sbrTitle{margin:0;padding:0 4px 0 4px;cursor:pointer;background:url(arrow.gif) center right no-repeat;white-space:nowrap}
+.sbrTitle span{display:block;margin-right:18px;overflow:hidden}
+.sbrList{list-style:none;margin:0 -1px;padding:0;}
+.sbrList li{padding:4px;background:#fff}
+.sbrList li.hover{background:#48b;color:#fff}
+.sbrList li.act{background:#ccc;color:#333}
+
+/* Styles for multi-select */
+
+.sbrWrapMultiple{position:absolute;border:1px solid #d7d7d7;overflow:auto}
+.sbrListMultiple{list-style:none;margin:0;padding:0;border:1px solid #d7d7d7}
+.sbrListMultiple li{padding:4px;margin:0;color:#666;font:11px Arial, Helvetica, sans-serif;background:#fff;border-bottom:1px dashed #d7d7d7;position:relative}
+.sbrListMultiple li.hover{background:#ececec;color:#000}
+.sbrListMultiple li.act{background:#ececec;color:#000}
+.sbrListMultiple li span{position:absolute;right:2px;top:2px}

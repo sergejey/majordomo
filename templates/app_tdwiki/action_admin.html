@@ -1,0 +1,20 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<p>[ <a href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET#></a> ]</p>
+ <!-- action usual -->
+ <!-- table tdwiki search -->
+ [#if VIEW_MODE="search_tdwiki"#]
+  [#inc tdwiki_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table tdwiki search -->
+ <!-- table tdwiki edit -->
+ [#if VIEW_MODE="edit_tdwiki" || VIEW_MODE=""#]
+   [#inc tdwiki_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table tdwiki edit -->
+ <!-- table tdwiki view --> 
+ [#if VIEW_MODE="view_tdwiki"#]
+   [#inc tdwiki_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table tdwiki view -->

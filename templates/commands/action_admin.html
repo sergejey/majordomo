@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table commands search -->
+ [#if VIEW_MODE="search_commands" || VIEW_MODE=""#]
+  [#inc commands_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table commands search -->
+ <!-- table commands edit -->
+ [#if VIEW_MODE="edit_commands"#]
+   [#inc commands_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table commands edit -->
+ <!-- table commands view --> 
+ [#if VIEW_MODE="view_commands"#]
+   [#inc commands_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table commands view -->

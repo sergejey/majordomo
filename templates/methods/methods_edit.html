@@ -1,0 +1,113 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- Table 'methods' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<table border=0 align=center cellpadding=3>
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_METHOD#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]" size="50">
+ </td>
+</tr>
+<!-- DESCRIPTION (text) -->
+<tr>
+ <td valign=top align=right>
+ [#if ERR_DESCRIPTION#]<b><font color="red">[#endif#]
+ <#LANG_DESCRIPTION#>
+ :
+ </td>
+ <td valign=top>
+ <textarea name="description" rows=3 cols=100>[#DESCRIPTION#]</textarea>
+ </td>
+</tr>
+<!-- CODE (text) -->
+<tr>
+ <td valign=top align=right>
+ [#if ERR_CODE#]<b><font color="red">[#endif#]
+ <#LANG_EXECUTE#>
+ :
+
+ </td>
+ <td valign=top>
+ <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
+   <select name="script_id">
+    <option value="0">
+    [#begin SCRIPTS#]
+        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+        [#end SCRIPTS#]
+   </select>    
+   <br>
+   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
+ [#if ERRORS!=""#]
+ <font color='red'>[#ERRORS#]</font><br>
+ [#endif ERRORS#]   
+ <script language="javascript" type="text/javascript" src="/js/edit_area/edit_area_full.js"></script>
+<script language="javascript" type="text/javascript">
+editAreaLoader.init({
+        id : "code"               // textarea id
+        ,syntax: "php"                  // syntax to be uses for highgliting
+        ,start_highlight: true          // to display with highlight mode on start-up
+});
+</script>
+
+ <textarea name="code" id="code" rows=12 cols=100>[#CODE#]</textarea>
+ </td>
+</tr>
+<!--#
+<tr>
+         <td>&nbsp;</td>
+         <td valign=top>
+  Вызывать метод родительского класса:<br>
+  <label><input type="radio" name="call_parent" value="1"[#if CALL_PARENT="1"#] checked[#endif#]> перед исполнением кода</label><br>
+  <label><input type="radio" name="call_parent" value="2"[#if CALL_PARENT="2"#] checked[#endif#]> после исполнения кода</label><br>
+  <label><input type="radio" name="call_parent" value="0"[#if CALL_PARENT="0"#] checked[#endif#]> не вызывать</label>
+                
+                </td>
+</tr>
+#-->
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+</table>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+

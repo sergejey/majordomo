@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table shouts search -->
+ [#if VIEW_MODE="search_shouts" || VIEW_MODE=""#]
+  [#inc shouts_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shouts search -->
+ <!-- table shouts edit -->
+ [#if VIEW_MODE="edit_shouts"#]
+   [#inc shouts_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shouts edit -->
+ <!-- table shouts view --> 
+ [#if VIEW_MODE="view_shouts"#]
+   [#inc shouts_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shouts view -->

@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table settings search -->
+ [#if VIEW_MODE="search_settings" || VIEW_MODE=""#]
+  [#inc settings_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table settings search -->
+ <!-- table settings edit -->
+ [#if VIEW_MODE="edit_settings"#]
+   [#inc settings_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table settings edit -->
+ <!-- table settings view --> 
+ [#if VIEW_MODE="view_settings"#]
+   [#inc settings_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table settings view -->

@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table events search -->
+ [#if VIEW_MODE="search_events" || VIEW_MODE=""#]
+  [#inc events_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table events search -->
+ <!-- table events edit -->
+ [#if VIEW_MODE="edit_events"#]
+   [#inc events_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table events edit -->
+ <!-- table events view --> 
+ [#if VIEW_MODE="view_events"#]
+   [#inc events_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table events view -->

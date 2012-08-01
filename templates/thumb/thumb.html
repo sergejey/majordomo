@@ -1,0 +1,28 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+[#if SRC!=""#]
+[#if ENLARGE!="1"#]
+<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]">
+[#else#]
+<script language="javascript">
+ function enlarge[#UNIQ#]() {
+  [#if REAL_WIDTH!="" && REAL_HEIGHT!=""#]
+   wdth=[#REAL_WIDTH#];
+   hgth=[#REAL_HEIGHT#];
+  [#else#]
+   wdth=400;
+   hgth=400;
+  [#endif#]
+  [#if CLOSE!=""#]hgth+=20;[#endif#]
+  LeftPosition=(screen.width)?(screen.width-wdth)/2:100;
+  TopPosition=(screen.height)?(screen.height-hgth)/2:100;
+  settings='width='+ wdth + ',height='+ hgth + ',top=' + TopPosition + ',left=' + LeftPosition + ',location=no,directories=no,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,dependent=no';
+  wnd=window.open("<#ROOTHTML#>modules/thumb/enlarge.php?img=[#SRC_REAL#]&color=[#COLOR#]&close=[#CLOSE#]&bgcolor=[#BGCOLOR#]", "img[#UNIQ#]", settings);
+ }
+</script>
+<a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]" border=0></a>
+[#endif#]
+[#else SRC#]
+image not found ([#REQUESTED#])
+[#endif SRC#]

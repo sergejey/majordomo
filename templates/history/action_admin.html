@@ -1,0 +1,20 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table history search -->
+ [#if VIEW_MODE="search_history" || VIEW_MODE=""#]
+  [#inc history_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table history search -->
+ <!-- table history edit -->
+ [#if VIEW_MODE="edit_history"#]
+   [#inc history_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table history edit -->
+ <!-- table history view --> 
+ [#if VIEW_MODE="view_history"#]
+   [#inc history_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table history view -->

@@ -1,0 +1,47 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<script language="javascript">
+ function addEvent() {
+  parent.addEvent(document.frmAddEvent.type.value, document.frmAddEvent.window.value, document.frmAddEvent.details.value, document.frmAddEvent.terminal_to.options[document.frmAddEvent.terminal_to.selectedIndex].value, document.frmAddEvent.user_to.options[document.frmAddEvent.user_to.selectedIndex].value);
+  return false;
+ }
+</script>
+<table width="100%" border="0">
+ <form name="frmAddEvent">
+ <tr>
+  <td valign="top"><#LANG_TYPE#>:</td>
+  <td valign="top"><input type="text" name="type"></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_WINDOW#>:</td>
+  <td valign="top"><input type="text" name="window"></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_DETAILS#>:</td>
+  <td valign="top"><textarea name="details" rows=3 cols="50"></textarea></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_TERMINAL_TO#>:</td>
+  <td valign="top"><select name="terminal_to">
+  <option value="*">*
+   [#begin TERMINALS#]
+   <option value="[#NAME#]">[#TITLE#]
+   [#end TERMINALS#]
+  </select></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_USER_TO#>:</td>
+  <td valign="top"><select name="user_to">
+   <option value="*">*
+   [#begin USERS#]
+   <option value="[#USERNAME#]">[#NAME#]
+   [#end USERS#]
+  </select></td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="button" value="<#LANG_ADD#>" onClick="return addEvent();"></td>
+ </tr>
+ </form>
+</table>
