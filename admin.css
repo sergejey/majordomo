@@ -18,3 +18,26 @@ table#content {
 	line-height: 22px;
 	padding: 6px 1px;
 }
+.grid-item {
+	float: left;
+	width: 75px;
+	padding: 10px;
+	text-align: center;
+	height: 80px;
+	word-wrap: break-word;
+}
+.grid-item:hover {
+	background-color: #F5F5F5;
+	padding: 9px;
+	border: 1px solid rgba(0, 0, 0, 0.047);
+	border-radius: 4px;
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.047);
+}
+
+.grid-item  img{
+	display: block;
+	margin: 0 auto;
+}
+#main-content {
+	padding: 0 40px;
+}

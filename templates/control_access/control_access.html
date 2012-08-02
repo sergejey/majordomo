@@ -73,36 +73,15 @@ document.frmEnter.login.focus();
   </script>
   [#endif#]
 
-  <table border=0>
-  <td>
-  <table border=0>
-   <tr>
   [#begin MODULES#]
-  [#if NEWCATEGORY#]
-  </tr>
-  </table>
-  <table border=0>
-  <tr>
-  <td colspan=10>
-   <big>&nbsp;</big>
-  </td>
-  </tr>
-  <tr>
-  [#endif#]
-  <td align=center width=80 valign=top>
-   [#if ICON!=""#]<a href="?(panel:{action=[#NAME#]})"><img src="[#ICON#]" alt="[#TITLE#]" border=0 width=50 height=50></a><br>[#endif#]
-   <a href="?(panel:{action=[#NAME#]})" class="short">[#TITLE#]</a><br>&nbsp;
-  </td>
-  [#if NEWROW#]
-  </tr>
-  <tr>
-  [#endif#]
+   <div class="grid-item">
+   [#if ICON!=""#]
+   <a href="?(panel:{action=[#NAME#]})"><img src="[#ICON#]" alt="[#TITLE#]" border=0 width=50 height=50></a>
+   [#endif#]
+   <a href="?(panel:{action=[#NAME#]})" class="short">[#TITLE#]</a>
+   </div>
   [#end MODULES#]
-   </tr>
-  </table>
-  </td></table>
-
-
+  <div class="clearfix">&nbsp;</div>
 
   [#endif ACTION#]
 
