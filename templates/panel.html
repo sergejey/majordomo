@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--#
  @version 0.2 (auto-set)
 #-->
@@ -8,6 +9,7 @@
 <meta name="description" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 [#if PRINT!="1"#]
+<link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="<#ROOTHTML#>admin.css" type="text/css">
 [#else PRINT#]
 <link rel="stylesheet" href="<#ROOTHTML#>admin_print.css" type="text/css">
@@ -18,23 +20,23 @@
   <link rel="stylesheet" href="<#ROOTHTML#>jquery.betterTooltip.css" type="text/css">
 
 
-
 [#inc scripts.js#]
 <script language="javascript" src="/js/scripts.js"></script>
-<script language="javascript" src="/js/jquery-1.4.2.min.js"></script>
+<script language="javascript" src="/js/jquery.js"></script>
 <script language="javascript" src="/js/system.js"></script>
+<script language="javascript" src="/js/admin.js"></script>
 
+  <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
-  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
- 
+
 
 
 </head>
 
-<body bgcolor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
+<body>
 
 [#if AUTHORIZED#]
 
@@ -111,77 +113,105 @@
 
 [#if PRINT!="1"#]
 <!--# top  #-->
-<div align="center">
-        <div class="top">
-                <div class="logo"><h1><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></h1></div>
-                <div class="top-menu"><a href="<#ROOTHTML#>" target=_blank class=smw><#LANG_FRONTEND#></a> | <a href="<#ROOTHTML#>menu.html" target=_blank class=smw><#LANG_CONTROL_MENU#></a> | <a href="<#LANG_WIKI_URL#>" target=_blank  class=smw>MajorDoMo Project</a> | <a href="?md=control_access&mode=logoff" class=smw><#LANG_LOGOFF#></a></div>
-                
-        </div>
+<style>
+body {
+max-width: 1200px;
+margin: 0 auto;
+}
+div#content {
+margin: 35px 10px;
+padding: 20px 40px;
+}
+p, .btn, h1 {
+margin: 10px 0;
+}
+.navbar-fixed-top .container, .navbar-fixed-bottom .container {
+	width: 1100px;
+}
+</style>
+<div id="content" class="content">
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+		<a class="brand" href="/"><#SETTINGS_SITE_TITLE#> // <span class="color-white"><#LANG_CONTROL_PANEL#></span></a>
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+			<div class="nav-collapse">
+				<ul class="nav">
+					<li>
+						<a href="<#ROOTHTML#>" target=_blank class=smw><#LANG_FRONTEND#></a>
+					</li>
+					<li>
+						<a href="<#ROOTHTML#>menu.html" target=_blank class=smw><#LANG_CONTROL_MENU#></a>
+					</li>
+					<li>
+						<a href="<#LANG_WIKI_URL#>" target=_blank  class=smw>MajorDoMo Project</a>
+					</li>
+					<li>
+						<a href="?md=control_access&mode=logoff" class=smw><#LANG_LOGOFF#></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>
-<!--# .top  #-->
 
-<!--# date  #-->
-<div align="center">
-        <div class="date-bot">
-                <div class="cd">[#TODAY#]</div>
-        </div>
-</div>
-<!--# .date  #-->
+<!--# .top  #-->
 
 <!--/head-->
 [#endif PRINT#]
 [#if PRINT!="1"#]
-<div align="center">
-        <div class="date">
-        
-        <div class="cd">
-        
-        <#LANG_YOU_ARE_HERE#>:
-        <a href="?"><#LANG_CONTROL_PANEL#></a>
-        [#if ACTION!=""#]&raquo; <b><#ACTION#></b>[#endif#]
-        <span style="floating:right;text-align:right;margin-left:500px">[ <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a> ]</span>
-        </div>
-        
-        </div>
-</div>
+
+<ul class="breadcrumb">
+    <li>
+    <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>[#if ACTION!=""#]<span class="divider">/</span>[#endif#]
+    </li>
+    [#if ACTION!=""#]
+	<li class="active"><#ACTION#></li>
+	[#endif#]
+	
+	<div class="float-right">
+	<!--# date  #-->
+	[#TODAY#]
+	<!--# .date  #-->
+	<span class="divider">/</span>
+	<a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+	</div>
+</ul>
+
 [#endif PRINT#]
 <!--main-->
-<table cellpadding=0 cellspacing=0 border=0 width=967 align="center"><tr>
-
+<table id="content">
+<tr>
 [#if PRINT!="1"#]
-<td valign=top  bgcolor="#f4f4f4" height=400><!--left_main-->
+<td class="well sidebar-left"><!--left_main-->
 
-<form action="?" name="frmFilterModules" style="padding:10 0 0 5"><input type="text" name="filter_modules" style="width:147px" onKeyUp="filterModules();"></form>
+<form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-prepend"><span class="add-on"><i class="icon-search"> </i></span><input type="text" name="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
 
         <!--[menu]-->
-<div><table cellpadding=2 cellspacing=0 border=0 width=100%>
-<tr><td><div>
+
+<ul class="nav nav-list">
    [#begin SUB_MODULES#]
    [#if NEW_CATEGORY#]
-   </div></td></tr></table></div>
-   <div id="row_[#CATEGORY#]">
-   <table cellpadding=2 cellspacing=0 border=0 width=100%>
-   <tr><td class=mna><img src="<#ROOTHTML#>img/admin/0.gif" width=1 height=4><br>&nbsp; &nbsp; [#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]&nbsp;[#endif CATEGORY#]
-   <a href="#" style="text-decoration:none;" onClick="return showHideLayer('[#CATEGORY#]')"><span id="plus_[#CATEGORY#]" style="color:#BFBFBF">[-]</span></a>
-   </td></tr>
-   <tr><td>
-   <div id="sub_[#CATEGORY#]">
+   </ul>
+   <ul class="nav nav-list" id="row_[#CATEGORY#]">
+   [#if CATEGORY!=""#]
+   <li class="nav-header">
+   [#CATEGORY#]
+   </li>
+   [#else CATEGORY#]&nbsp;[#endif CATEGORY#]
    <script language='javascript'>
     checkLayer('[#CATEGORY#]');
    </script>
    [#endif NEW_CATEGORY#]
    [#if !DENIED#]
-   <div id="module_[#NAME#]_link" style="padding-bottom:2px">[#if ICON_SM!=""#]<a href="?action=[#NAME#]"><img src="[#ICON_SM#]" border=0 width=16 height=16 align="absmiddle"></a>[#endif#]
-   &nbsp;<a href="?action=[#NAME#]" style="text-decoration:none">[#if SELECTED#]<font color="#333333" style="text-decoration:underline ">[#endif#][#TITLE#][#if SELECTED#]</font>[#endif#]</a></div>
+   [#if SELECTED#]
+		<li class="active" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
+   [#else#]
+		<li id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
+   [#endif#]
    [#endif DENIED#]
    [#end SUB_MODULES#]
-
-   </div>
-   </td>
-   </tr>
-   </table>
-   </div>
-
+</ul>
 
 
 <!--
@@ -200,11 +230,10 @@
         </table>
         -->
         <!--[/menu]-->
-<img src="<#ROOTHTML#>img/admin/bg_lt.gif" alt="" width="157" height="1" border="0"><!--/left_main--></td>
-[#endif PRINT#]
 
-<td style="background:url(img/admin/sep_v.gif) repeat-y 9px 0 "><img src="<#ROOTHTML#>img/0.gif" width="19" height="1"></td>
-<td width=100% height=100% valign=top bgcolor="#ffffff" style=" border-right:1px solid #e4e4e4">
+		<!--/left_main--></td>
+[#endif PRINT#]
+<td height=100% valign=top class="" id="main-content">
 <!--right_main-->
 <!--# [#if PRINT!="1"#]
         <table cellpadding=10 cellspacing=0 border=0 width=100%><tr>
@@ -213,7 +242,7 @@
         [#if ACTION!=""#]&raquo; <b><#ACTION#></b>[#endif#]
         </td></tr></table>
 [#endif PRINT#] #-->
-        <table cellpadding=0 cellspacing=12 border=0 width=100% height=100%><tr>
+        <table width=100% height=100%><tr>
         <td width=100% valign=top>
 
    [#if ACTION!=""#]
@@ -229,13 +258,11 @@
 </td></tr>
 
 </table>
-
  [#else AUTHORIZED#]
 
  [#module name="control_access" action="enter" instance="auth"#]
 
  [#endif AUTHORIZED#]
-
-<br><br>
+</div>
 </body>
 </html>
