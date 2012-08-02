@@ -39,5 +39,46 @@ table#content {
 	margin: 0 auto;
 }
 #main-content {
-	padding: 0 40px;
+	padding: 0 0 0 40px;
+}
+.row {
+	position: relative; 
+	padding: 0;
+	margin: 0;
+}
+.span-50 {
+	width: 50%;
+	margin: 0;
+}
+span.divider {
+	padding: 0px 5px;
+	color: rgb(153, 153, 153);
+}
+i.icon-50 {
+	opacity: 0.7;
+}
+.form-horizontal .control-label { 
+	float: left;
+	padding: 5px 10px 0px 0px;
+	text-align: right;
+	width: 240px;
+}
+.form-horizontal .controls { 
+	margin-left: 250px;
+}
+.form-horizontal .form-actions {
+    padding-left: 250px;
+}
+.action-list-icon {
+	width: auto;
+	height: 24px;
+}
+.btn.expand {
+	margin: 0;
+}
+table td.command-actions {
+	width: 280px;
+}
+table.table-inner td.command-actions {
+	width: 271px;
 }
