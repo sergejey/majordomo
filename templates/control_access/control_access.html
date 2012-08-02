@@ -5,38 +5,44 @@
 
   <!--------------------------- ENTER FORM ------------------------>
    &nbsp;
-   <table width=160 cellspacing=0 cellpadding=0 border=0 align=center>
 
-    <tr>
-     <form action="" method="post" name=frmEnter>
-      <td valign="top" id="m">
-       <p>
-       <big><#PROJECT_TITLE#></big><br>
-       <b>Control Panel</b>
-       </p>
-       [#if ERRMESS#]
-        <p align="center">
-         <small>
-          <font color="red">Enter correct username and/or password!</font>
-         </small>
-        </p>
-       [#endif ERRMESS#]
-       <b>Username:</b><br> <input type="text" name="login" class=form>
-       <br>
-       <b>Password:</b><br> <input type="password" name="psw" class=form>
-       <p>
-        <input type="hidden" name="mode" value="check">
-        <input type="hidden" name="action" value="enter">
-        <input type="image" name="image" src="<#ROOTHTML#>img/btn/btn_go.gif" border="0">
-       </p>
-       &nbsp;
-      </td>
-     </form>
-    </tr>
-    <script language="javascript">
-     document.frmEnter.login.focus();
-    </script>
-   </table>
+<div style="width: 400px;" class="container well">
+<style>
+#frmEnter input {
+	width: 100%;
+}
+hr {
+	margin: 5px 0;
+}
+h3 {
+	margin: 5px 0;
+}
+</style>
+<h1><#PROJECT_TITLE#></h1>
+<hr />
+<h3>Control Panel</h3>
+[#if ERRMESS#]
+<div class="alert alert-error">
+<a class="close" data-dismiss="alert" href="#">&times;</a>
+Enter correct username and/or password!
+</div>
+[#endif ERRMESS#]
+<form action="" method="post" id="frmEnter" name=frmEnter>
+<label>Username: </label>
+<input type="text" name="login" class=form />
+<label>Password: </label>
+<input type="password" name="psw" class=form />
+<input type="hidden" name="mode" value="check" />
+<input type="hidden" name="action" value="enter" />
+<div><button type="submit" class="btn btn-large btn-success">Login</button></div>
+</form>
+
+<script language="javascript">
+document.frmEnter.login.focus();
+</script>
+
+</div>
+
 
 
   [#endif ACTION#]
@@ -67,36 +73,15 @@
   </script>
   [#endif#]
 
-  <table border=0>
-  <td>
-  <table border=0>
-   <tr>
   [#begin MODULES#]
-  [#if NEWCATEGORY#]
-  </tr>
-  </table>
-  <table border=0>
-  <tr>
-  <td colspan=10>
-   <big>&nbsp;</big>
-  </td>
-  </tr>
-  <tr>
-  [#endif#]
-  <td align=center width=80 valign=top>
-   [#if ICON!=""#]<a href="?(panel:{action=[#NAME#]})"><img src="[#ICON#]" alt="[#TITLE#]" border=0 width=50 height=50></a><br>[#endif#]
-   <a href="?(panel:{action=[#NAME#]})" class="short">[#TITLE#]</a><br>&nbsp;
-  </td>
-  [#if NEWROW#]
-  </tr>
-  <tr>
-  [#endif#]
+   <div class="grid-item">
+   [#if ICON!=""#]
+   <a href="?(panel:{action=[#NAME#]})"><img src="[#ICON#]" alt="[#TITLE#]" border=0 width=50 height=50></a>
+   [#endif#]
+   <a href="?(panel:{action=[#NAME#]})" class="short">[#TITLE#]</a>
+   </div>
   [#end MODULES#]
-   </tr>
-  </table>
-  </td></table>
-
-
+  <div class="clearfix">&nbsp;</div>
 
   [#endif ACTION#]
 
