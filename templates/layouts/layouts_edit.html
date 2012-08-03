@@ -91,10 +91,30 @@
 
 [#endif TYPE#]
 
-<div class="form-actions">
 [#if ID!=""#]
+<div class="control-group">
+	<label class="control-label"><#LANG_URL#> (preview):</label>
+	<div class="controls">
+
+[#if TYPE="html"#]
+<a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
+[#endif TYPE#]
+
+[#if TYPE="url"#]
+<a href="[#URL#]" target=_blank>[#URL#]</a>
+[#endif TYPE#]
+
+[#if TYPE="app"#]
+<a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
+[#endif TYPE#]
+	
+	</div>
+</div>
+
+<div class="form-actions">
 <button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
 [#else ID#]
+<div class="form-actions">
 <button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
 [#endif ID#]
 

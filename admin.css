@@ -82,3 +82,7 @@ table td.command-actions {
 table.table-inner td.command-actions {
 	width: 271px;
 }
+.controls a {
+	padding: 5px 0 0 0;
+	display: block;
+}
