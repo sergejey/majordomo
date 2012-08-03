@@ -1,53 +1,40 @@
 
 <!-- table scenes search -->
-<p align=center>
-<b>
-<a href="?view_mode=edit_scenes&data_source=<#DATA_SOURCE#>"><#LANG_ADD_NEW_SCENE#></a>
-|
-<a href="/popup/scenes.html" target=_blank><#LANG_PREVIEW#></a>
-</b>
-</p>
-<table width=100% border=0><tr>
-<td valign=top>
+
+<a class="btn btn-success" href="?view_mode=edit_scenes&data_source=<#DATA_SOURCE#>"><i class="icon-white icon-plus-sign"></i> <#LANG_ADD_NEW_SCENE#></a>
+<a class="btn" href="/popup/scenes.html" target=_blank><#LANG_PREVIEW#></a>
+
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
-<form action="?" method="post" name="frmList_scenes" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 align=center>
+
+<form action="?" method="post" name="frmList_scenes">
 [#begin RESULT#]
-<tr>
- <td valign="top">
- <b>
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]">[#TITLE#]</a>
-  </a></b>
- [#if BACKGROUND!=""#]
-<br>
-<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#BACKGROUND#]" border="0" width="300" border=0></a>
- [#endif#]
- </td>
- <td valign="top">
-  <table border=0>
-  [#if "<#ACTION#>"=="admin"#]
-   <td align=center>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
-  [#endif ACTION#]
-  </table>
- </td>
-</tr>
+<div class="well relative">
+<span class="scene-title">[#TITLE#]</span>
+<div class="btn-group pull-right">
+	<a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="icon-pencil"></i> <#LANG_EDIT#></a>
+	[#if "<#ACTION#>"=="admin"#]
+	<a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i> <#LANG_DELETE#></a>
+	[#endif ACTION#]
+</div>
+
+[#if BACKGROUND!=""#]
+<img class="scene-thumbail" src="[#BACKGROUND#]">
+[#endif#]
+</div>
 [#end RESULT#]
-</table>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_scenes">
 </form>
+
 <!-- / search results (list) -->
 [#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
+<div class="alert alert-error">
+<#LANG_NO_RECORDS_FOUND#>
+</div>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
 
 <hr size="1">
 [#module name="settings" action="admin" filter_name="SCENES"#]

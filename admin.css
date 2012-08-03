@@ -86,3 +86,21 @@ table.table-inner td.command-actions {
 	padding: 5px 0 0 0;
 	display: block;
 }
+.relative {
+	position: relative;
+}
+img.scene-thumbail {
+	display: block;
+	padding: 4px;
+	border: 1px solid rgb(221, 221, 221);
+	border-radius: 4px 4px 4px 4px;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+	border: 1px solid #DDDDDD;
+	box-sizing: border-box;
+	width: 100%;
+}
+span.scene-title {
+	display: inline-block;
+	font-size: 20px;
+	margin: 16px 0px 0px;
+}
