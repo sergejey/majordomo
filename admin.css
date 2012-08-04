@@ -104,3 +104,7 @@ span.scene-title {
 	font-size: 20px;
 	margin: 16px 0px 0px;
 }
+.edit-notes acronym {
+	text-decoration: none;
+	border: 0;
+}
