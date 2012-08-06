@@ -203,7 +203,7 @@
    $out['STATE_ID']=$state_id;
   }
 
-  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$rec['ID']."'");
+  $elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."'");
   $out['ELEMENTS']=$elements;
 
 

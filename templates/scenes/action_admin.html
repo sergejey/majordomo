@@ -14,20 +14,17 @@
  <!-- table scenes edit -->
  [#if VIEW_MODE="edit_scenes"#]
    [#if ID!=""#]
+   <h3>[#TITLE#]</h3>
+	
+	<ul class="nav nav-tabs">
+	<li[#if TAB=""#] class="active"[#endif#]>
+	<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a>
+	</li>
+	<li[#if TAB="elements"#] class="active"[#endif#]>
+	<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements"><#LANG_ELEMENTS#></a>
+	</li>
+	</ul>
 
-   <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-
-   <br>&nbsp;<br>
-
-   <big>[#TITLE#]</big>
-   <br>&nbsp;
-
-   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
-   <tr>
-    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">[#endif TAB#]<#LANG_DETAILS#></a></td>
-    <td align=center[#if TAB="elements"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="elements"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements">[#endif TAB#]<#LANG_ELEMENTS#></a></td>
-   </tr>
-   </table>
    [#endif ID#]
    [#if TAB=""#]
     [#inc scenes_edit_default.html#]
