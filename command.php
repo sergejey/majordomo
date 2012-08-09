@@ -4,7 +4,7 @@
 *
 * @package MajorDoMo
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
-* @version 1.1
+* @version 1.2
 */
 
 
@@ -65,7 +65,7 @@ if ($qry!='') {
     
    }
 
-   Header("Location:command.php");exit;
+   //Header("Location:command.php");exit;
 
 }
 
