@@ -110,7 +110,7 @@ editAreaLoader.init({
  :
  </td>
  <td valign=top>
- <textarea name="code" id="code" rows=30 cols=100>[#CODE#]</textarea>
+ <textarea name="code" id="code" rows=30 cols=100 class="field span8">[#CODE#]</textarea>
  </td>
 </tr>
 <tr>
@@ -124,9 +124,9 @@ editAreaLoader.init({
 <tr>
  <td colspan=2 align=center>
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ <input type="submit" name="subm" value="<#LANG_UPDATE#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn">
  [#endif ID#]
  &nbsp;
  <a href="?"><#LANG_CANCEL#></a>
