@@ -6,12 +6,30 @@ $(function() {
 			$(this).css({
 				top: dd.offsetY,
 				left: dd.offsetX
-			})
+			});
 		},
 		{
-			"relative": true
+			relative: true,
+			not: ".resize-handler"
 		}
-	);
+	)
+	.drag("start", function() {
+		$(this).addClass("drag-active");
+	})
+	.drag("end", function() {
+		$(this).removeClass("drag-active");
+	});
+	$(".resize-handler").drag(
+		function(ev,dd){
+			var e = $(this).parent();
+			e[0].style.height = dd.initialHeight + dd.deltaY + 'px';
+			e[0].style.width = dd.initialWidth + dd.deltaX + 'px';
+		}
+	)
+	.drag("start", function(ev, dd) {
+		dd.initialHeight = $(this).parent().innerHeight();
+		dd.initialWidth = $(this).parent().innerWidth();
+	});
 });
 </script>
 <!-- Table 'scenes' edit -->
@@ -76,6 +94,7 @@ $(function() {
 <div id="element_[#ID#]" class="well element-preview" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;width:[#WIDTH#]px;height:[#HEIGHT#]px;">
 [#TITLE#] (HTML)<span class="divider">-</span><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]"><i class="icon-pencil"></i></a><span class="divider">-</span><a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i></a>
 <div class="drag-to-move"><i></i>Drag to move</div>
+<div class="resize-handler"></div>
 </div>
 [#endif#]
 [#end ELEMENTS#]
