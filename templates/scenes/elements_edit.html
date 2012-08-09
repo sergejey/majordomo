@@ -1,16 +1,12 @@
 
 <!-- Table 'elements' edit -->
-<p align=center>
- <a href="?tab=elements&id=<#ID#>&view_mode=edit_scenes">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
 
 <table width="100%" border="0">
  <tr>
   <td valign="top" width="50%">
 
-<p><big>Element details</big></p>
+<h3>Element details</h3>
 
 <table border=0 align=center cellpadding=3>
 [#if OK#]
@@ -117,7 +113,7 @@
 [#if ELEMENT_ID!=""#]
 <td valign="top">
 
-<p><big><#LANG_STATES#></big></p>
+<h3><#LANG_STATES#></h3>
 
 <p>
 [#begin STATES#]
@@ -186,7 +182,6 @@
   <label><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="1"[#if STATE_IS_DYNAMIC="1"#] checked[#endif#]> <#LANG_SIMPLE#></label><br>
   <label><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="2"[#if STATE_IS_DYNAMIC="2"#] checked[#endif#]> <#LANG_ADVANCED#></label><br>
   <script language="javascript">
-
  $('.is_dynamic_new').click (function ()
   {
   var thisCheck = $(this);
@@ -205,7 +200,6 @@
   }
  }
  );
-  
   </script>
   <div id="condition_block_new"[#if STATE_IS_DYNAMIC!="1"#] style="display:none"[#endif#]>
    <table width="100%" border="0">

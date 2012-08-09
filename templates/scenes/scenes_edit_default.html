@@ -29,11 +29,26 @@ $(function() {
 	.drag("start", function(ev, dd) {
 		dd.initialHeight = $(this).parent().innerHeight();
 		dd.initialWidth = $(this).parent().innerWidth();
+	})
+	$("form#frmEdit").submit(function() {
+		var e = [];
+		$("div.element-preview").each(function(index, element) {
+			var t = element.style;
+			e.push({
+				WIDTH: t.width,
+				HEIGHT: t.height,
+				TOP: t.top,
+				LEFT: t.left,
+				ID: $(element).data('id')
+			});
+		});
+		e = JSON.stringify(e);
+		$(this).find("input[name=elements]").val(e);
 	});
 });
 </script>
 <!-- Table 'scenes' edit -->
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit" class="form-horizontal">
 [#if OK#]
 <div class="alert alert-success">
 <#LANG_DATA_SAVED#>
@@ -86,12 +101,12 @@ $(function() {
 <div id="scene_background" style="position:relative;">
 [#begin ELEMENTS#]
 [#if TYPE="img"#]
-<div id="element_[#ID#]" class="well element-preview element-preview-image" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;">
+<div id="element_[#ID#]" class="well element-preview element-preview-image" data-id="[#ID#]" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;">
 <div class="inner-bar">[#TITLE#]<span class="divider">-</span><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]"><i class="icon-pencil"></i></a><span class="divider">-</span><a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i></a></div>
 <img src="[#IMAGE#]">
 </div>
 [#else#]
-<div id="element_[#ID#]" class="well element-preview" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;width:[#WIDTH#]px;height:[#HEIGHT#]px;">
+<div id="element_[#ID#]" class="well element-preview" data-id="[#ID#]" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;width:[#WIDTH#]px;height:[#HEIGHT#]px;">
 [#TITLE#] (HTML)<span class="divider">-</span><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]"><i class="icon-pencil"></i></a><span class="divider">-</span><a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i></a>
 <div class="drag-to-move"><i></i>Drag to move</div>
 <div class="resize-handler"></div>
@@ -117,4 +132,6 @@ $(function() {
 <input type="hidden" name="mode" value="update">
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="tab" value="<#TAB#>">
+<input type="hidden" name="elements" value="">
 </form>
+<form>

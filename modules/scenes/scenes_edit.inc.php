@@ -35,11 +35,18 @@
   //updating 'PRIORITY' (int)
    global $priority;
    $rec['PRIORITY']=(int)$priority;
+  // updating elements array
+   global $elements;
+   $elements = json_decode($elements, true);
+   $elements = ($elements == null) ? array() : $elements;
   }
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
+	 foreach ($elements as $value) {
+		SQLUpdate('elements', $value);
+	 }
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
@@ -167,11 +174,9 @@
       $state_id=$state_rec['ID'];
      }
      
-    }                           
-
-
+    }
    }
-
+	
    if (is_array($state_rec)) {
     foreach($state_rec as $k=>$v) {
      $out['STATE_'.$k]=$v;
