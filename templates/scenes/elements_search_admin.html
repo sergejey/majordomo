@@ -1,36 +1,26 @@
 
 <!-- table elements search -->
-<p align=center>
-<b>
-<a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements"><#LANG_ADD_NEW_ELEMENT#></a>
-</b>
-</p>
-<table width=100% border=0><tr>
-<td valign=top>
+<a class="btn btn-success" href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements"><i class="icon-white icon-plus-sign"></i><#LANG_ADD_NEW_ELEMENT#></a>
+
+
 <!-- results -->
 [#if ELEMENTS#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_elements" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<table class="table table-bordered">
 [#begin ELEMENTS#]
-<tr >
- <td
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <b>
+<tr>
+ <td>
    [#TITLE#]
-  </a></b>
  </td>
- <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <table border=0>
+ <td>
+  <div class="pull-right">
   [#if "<#ACTION#>"=="admin"#]
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <b><a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]"><#LANG_EDIT#></a>
+   <span class="separator">/</span>
+   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
   [#endif ACTION#]
-  </table>
+  </div>
  </td>
 </tr>
 [#end ELEMENTS#]
@@ -40,9 +30,8 @@
 </form>
 <!-- / search results (list) -->
 [#else ELEMENTS#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
+<div class="alert alert-error">
+<#LANG_NO_RECORDS_FOUND#>
+</div>
 [#endif ELEMENTS#]
 <!-- / results -->
-</td></tr></table>
