@@ -3,134 +3,125 @@
 #-->
 
 <!-- Table 'layouts' edit -->
-<p align=center>
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+
+<div class="alert alert-success">
+<#LANG_DATA_SAVED#>
+</div>
+
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+
+<div class="alert alert-error">
+<#LANG_FILLOUT_REQURED#>
+</div>
+
 [#endif ERR#]
 [#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
+
+<#LANG_NEW_RECORD#>
+
 [#endif ID#]
 <!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- (*)
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_TITLE#>(*)</label>
+	<div class="controls">
+		<input type="text" name="title" value="[#TITLE#]" required>
+	</div>
+</div>
+
 <!-- PRIORITY (int) -->
-<tr>
- <td align=right>
- [#if ERR_PRIORITY#]<b><font color="red">[#endif#]
- <#LANG_PRIORITY#>:
- </td>
- <td>
-  <input type="text" name="priority" value="[#PRIORITY#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_PRIORITY#></label>
+	<div class="controls">
+		<input type="text" name="priority" value="[#PRIORITY#]">
+	</div>
+</div>
+
 <!-- TYPE (select) -->
-<tr>
- <td align=right valign=top>
- [#if ERR_TYPE#]<b><font color="red">[#endif#]
- <#LANG_TYPE#>: 
- </td>
- <td>                                           
- <select name="type">
-  <option value="">select
-  [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
-  [#end TYPE_OPTIONS#]
- </select>
- </td>
-</tr>
+
+
+
+<div class="control-group">
+	<label class="control-label"><#LANG_TYPE#></label>
+	<div class="controls">
+		<select name="type">
+		<option value="">select
+		[#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+		[#end TYPE_OPTIONS#]
+		</select>
+	</div>
+</div>
+
 <!-- CODE (text) -->
 [#if TYPE="html"#]
-<tr>
- <td valign=top align=right>
- [#if ERR_CODE#]<b><font color="red">[#endif#]
- <#LANG_CODE#>
- :
- </td>
- <td valign=top>
- <textarea name="code" rows=12 cols=80 class="field span8">[#CODE#]</textarea>
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_CODE#></label>
+	<div class="controls">
+		<textarea name="code" rows=12 cols=100>[#CODE#]</textarea>
+	</div>
+</div>
+
 [#endif TYPE#]
 [#if TYPE="app"#]
 <!-- APP (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_APP#]<b><font color="red">[#endif#]
- <#LANG_APP#>:
- </td>
- <td>
-  <input type="text" name="appname" value="[#APP#]">
- </td>
-</tr>
+
+
+<div class="control-group">
+	<label class="control-label"><#LANG_APP#></label>
+	<div class="controls">
+		<input type="text" name="appname" value="[#APP#]">
+	</div>
+</div>
+
 [#endif TYPE#]
 [#if TYPE="url"#]
-<!-- URL (url) -->
-<tr>
- <td align=right>
- [#if ERR_URL#]<b><font color="red">[#endif#]
- <#LANG_URL#>:
- </td>
- <td>
-  <input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_URL#></label>
+	<div class="controls">
+		<input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
+	</div>
+</div>
+
 [#endif TYPE#]
 
 [#if ID!=""#]
-<tr>
- <td valign="top" align="right"><#LANG_URL#> (preview):</td>
- <td valign="top">
- [#if TYPE="html"#]
-  <a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
-  [#endif TYPE#]
-  [#if TYPE="url"#]
-  <a href="[#URL#]" target=_blank>[#URL#]</a>
-  [#endif TYPE#]
-  [#if TYPE="app"#]
-  <a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
-  [#endif TYPE#]
-</td>
-</tr>
-[#endif#]
+<div class="control-group">
+	<label class="control-label"><#LANG_URL#> (preview):</label>
+	<div class="controls">
 
-<tr>
- <td colspan=2 align=center>
- [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
- [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
- [#endif ID#]
- &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
- </td>
-</tr>
+[#if TYPE="html"#]
+<a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
+[#endif TYPE#]
+
+[#if TYPE="url"#]
+<a href="[#URL#]" target=_blank>[#URL#]</a>
+[#endif TYPE#]
+
+[#if TYPE="app"#]
+<a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
+[#endif TYPE#]
+	
+	</div>
+</div>
+
+<div class="form-actions">
+<button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+[#else ID#]
+<div class="form-actions">
+<button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
+[#endif ID#]
+
+<a class="btn" href="?"><#LANG_CANCEL#></a>
+</div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 </form>
-</table>

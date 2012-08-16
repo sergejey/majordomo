@@ -1,98 +1,137 @@
-&nbsp;
-
+<script src="/js/jquery.event.drag-2.2.js"></script>
+<script>
+$(function() {
+	$("div.element-preview").drag(
+		function(ev,dd){
+			$(this).css({
+				top: dd.offsetY,
+				left: dd.offsetX
+			});
+		},
+		{
+			relative: true,
+			not: ".resize-handler"
+		}
+	)
+	.drag("start", function() {
+		$(this).addClass("drag-active");
+	})
+	.drag("end", function() {
+		$(this).removeClass("drag-active");
+	});
+	$(".resize-handler").drag(
+		function(ev,dd){
+			var e = $(this).parent();
+			e[0].style.height = dd.initialHeight + dd.deltaY + 'px';
+			e[0].style.width = dd.initialWidth + dd.deltaX + 'px';
+		}
+	)
+	.drag("start", function(ev, dd) {
+		dd.initialHeight = $(this).parent().innerHeight();
+		dd.initialWidth = $(this).parent().innerWidth();
+	})
+	$("form#frmEdit").submit(function() {
+		var e = [];
+		$("div.element-preview").each(function(index, element) {
+			var t = element.style;
+			e.push({
+				WIDTH: t.width,
+				HEIGHT: t.height,
+				TOP: t.top,
+				LEFT: t.left,
+				ID: $(element).data('id')
+			});
+		});
+		e = JSON.stringify(e);
+		$(this).find("input[name=elements]").val(e);
+	});
+});
+</script>
 <!-- Table 'scenes' edit -->
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit" class="form-horizontal">
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+<div class="alert alert-success">
+<#LANG_DATA_SAVED#>
+</div>
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+<div class="alert alert-error">
+<#LANG_FILLOUT_REQURED#>
+</div>
 [#endif ERR#]
 [#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
+<h3>
+<#LANG_NEW_RECORD#>
+</h3>
 [#endif ID#]
 <!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- (*)
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_TITLE#> (*)</label>
+	<div class="controls">
+		<input type="text" name="title" value="[#TITLE#]" required>
+	</div>
+</div>
 
 <!-- PRIORITY (int) -->
-<tr>
- <td align=right>
- [#if ERR_PRIORITY#]<b><font color="red">[#endif#]
- <#LANG_PRIORITY#>:
- </td>
- <td>
-  <input type="text" name="priority" value="[#PRIORITY#]">
- </td>
-</tr>
 
+<div class="control-group">
+	<label class="control-label"><#LANG_PRIORITY#></label>
+	<div class="controls">
+		<input type="text" name="priority" value="[#PRIORITY#]">
+	</div>
+</div>
 
 <!-- BACKGROUND (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_BACKGROUND#]<b><font color="red">[#endif#]
- <#LANG_BACKGROUND#>:
- </td>
- <td>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_BACKGROUND#></label>
+	<div class="controls">
+		<input type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
+	</div>
+</div>
 <script type="text/javascript">
      function openFileBrowser(id){
           fileBrowserlink = "/pdw/index.php?editor=standalone&returnID=" + id;
           window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
      }
 </script>
-  <input type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
- </td>
-</tr>
 
 [#if BACKGROUND!=""#]
-<tr>
- <td valign="top" colspan=2 align="left">
- <div id="scene_background" style="position:relative;">
- [#begin ELEMENTS#]
-  <div id="element_[#ID#]" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;"><b><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]">[#TITLE#]</a></b></div>
- [#end ELEMENTS#]
- <img src="[#BACKGROUND#]" border="0"></div>
- </td>
-</tr>
+<div id="scene_background" style="position:relative;">
+[#begin ELEMENTS#]
+[#if TYPE="img"#]
+<div id="element_[#ID#]" class="well element-preview element-preview-image" data-id="[#ID#]" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;">
+<div class="inner-bar">[#TITLE#]<span class="divider">-</span><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]"><i class="icon-pencil"></i></a><span class="divider">-</span><a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i></a></div>
+<img src="[#IMAGE#]">
+</div>
+[#else#]
+<div id="element_[#ID#]" class="well element-preview" data-id="[#ID#]" style="position:absolute;left:[#LEFT#]px;top:[#TOP#]px;width:[#WIDTH#]px;height:[#HEIGHT#]px;">
+[#TITLE#] (HTML)<span class="divider">-</span><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]"><i class="icon-pencil"></i></a><span class="divider">-</span><a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i></a>
+<div class="drag-to-move"><i></i>Drag to move</div>
+<div class="resize-handler"></div>
+</div>
+[#endif#]
+[#end ELEMENTS#]
+<img src="[#BACKGROUND#]" border="0"></div>
 [#endif#]
 
-<tr>
- <td colspan=2 align=center>
- [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
- [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
- [#endif ID#]
- &nbsp;
- <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
- </td>
-</tr>
+
+<div class="form-actions">
+[#if ID!=""#]
+<button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+[#else ID#]
+<button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
+[#endif ID#]
+<a class="btn" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+</div>
+
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="tab" value="<#TAB#>">
+<input type="hidden" name="elements" value="">
 </form>
-</table>
-
-
+<form>

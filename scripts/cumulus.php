@@ -26,6 +26,8 @@
   'windDirectionAverage'=>51,
   'tempInside'=>22,
   'relHumInside'=>23,
+  'updatedTime'=>1,
+  'updatedDate'=>0,
  );
 
  $data=explode(' ', $_POST['data']);
@@ -53,15 +55,18 @@
    $class_rec['ID']=SQLInsert('classes', $class_rec);
    $object_rec['CLASS_ID']=$class_rec['ID'];
    SQLUpdate('objects', $object_rec);
+  }
 
-   foreach($known_fields as $k=>$v) {
-    $prop_rec=array();
-    $prop_rec['CLASS_ID']=$class_rec['ID'];
+  foreach($known_fields as $k=>$v) {
+   $prop_rec=SQLSelectOne("SELECT * FROM properties WHERE TITLE LIKE '".DBSafe($k)."' AND CLASS_ID='".$object_rec['CLASS_ID']."'");
+   if (!$prop_rec['ID']) {
+    $prop_rec['CLASS_ID']=$object_rec['CLASS_ID'];
     $prop_rec['TITLE']=$k;
     $prop_rec['KEEP_HISTORY']=7;
     $prop_rec['ID']=SQLInsert('properties', $prop_rec);
    }
   }
+
 
  $res='';
  foreach($known_fields as $k=>$v) {

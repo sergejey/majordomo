@@ -1,52 +1,34 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-<p align=center>
-<b>
-<a href="?view_mode=edit_layouts"><#LANG_NEW_PAGE#></a>
-</b>
-</p>
-<table width=100% border=0><tr>
-<td valign=top>
+
+<a class="btn btn-success" href="?view_mode=edit_layouts"><i class="icon-white icon-plus-sign"></i> <#LANG_NEW_PAGE#></a>
+
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
-<form action="?" method="post" name="frmList_layouts" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<form action="?" method="post" name="frmList_layouts">
+<table class="table-bordered table table-striped">
 <tr>
- <td align=center bgcolor="#AAAAAA">
- <a href="?sortby=TITLE&save_qry=1"><b><#LANG_TITLE#></b></a><nobr>
+ <th>
+ <a href="?sortby=TITLE&save_qry=1"><#LANG_TITLE#></a>
  [#if SORTBY="TITLE"#](+)[#endif#]
- [#if SORTBY="TITLE DESC"#](-)[#endif#]</nobr>
- </td>
- <td align=center bgcolor="#AAAAAA">
- <b><#LANG_PRIORITY#></b>
- </td>
- <td align=center bgcolor="#AAAAAA">
- <b><#LANG_TYPE#></b>
- </td>
-<td bgcolor="#AAAAAA">&nbsp;</td>
+ [#if SORTBY="TITLE DESC"#](-)[#endif#]
+ </th>
+ <th>
+ <#LANG_PRIORITY#>
+ </th>
+ <th>
+ <#LANG_TYPE#>
+ </th>
+<th>&nbsp;</th>
 </tr>
 [#begin RESULT#]
 <tr >
  <td
    bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <b>
-   [#TITLE#]
-  </a></b>
-  <br>
-  <small>
-  [#if TYPE="html"#]
-  <a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
-  [#endif TYPE#]
-  [#if TYPE="url"#]
-  <a href="[#URL#]" target=_blank>[#URL#]</a>
-  [#endif TYPE#]
-  [#if TYPE="app"#]
-  <a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
-  [#endif TYPE#]
-  </small>
- </td>
+   [#TITLE#]<span class="divider">/</span>[#if TYPE="html"#]<a href="/page/[#ID#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="url"#]<a href="[#URL#]" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="app"#]<a href="/popup/[#APP#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#]
+</td>
  <td
    align=center
    bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
@@ -66,16 +48,10 @@
   [#endif#]
  </td>
  <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <table border=0>
   [#if "<#ACTION#>"=="admin"#]
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <b><a href="?view_mode=edit_layouts&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <a href="?view_mode=delete_layouts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+<a href="?view_mode=edit_layouts&id=[#ID#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_layouts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
    </td>
   [#endif ACTION#]
-  </table>
  </td>
 </tr>
 [#end RESULT#]
@@ -85,9 +61,8 @@
 </form>
 <!-- / search results (list) -->
 [#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
+<div class="alert alert-error">
+<#LANG_NO_RECORDS_FOUND#>
+</div>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>

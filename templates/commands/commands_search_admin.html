@@ -3,58 +3,56 @@
 #-->
 
 <script language="javascript">
- function showHide(id) {
-  //var elem=document.getElementById('sub[#ID#]');elem.style.display='block';return false;
+$(function () {
+        $("a.show-hide-link").click(function() {
+                var id = $(this).data('id');//'#sub' + 
+                //$(id).toggle();
+
   if ($('#sub'+id).is(":visible")) {
    $('#sub'+id).hide();
-   $('#link'+id).html('[ + ]');
+   $('#link'+id).html(' + ');
    $.cookie("commands_item"+id, null);
   } else {
    $.cookie("commands_item"+id, "1");
    $('#sub'+id).show();
-   $('#link'+id).html('[ - ]');
+   $('#link'+id).html(' - ');
   }
-  return false;
- }
+
+
+        });
+});
 </script>
 
-<big><#LANG_MODULE_CONTROL_MENU#></big>
-<p>
-<b>
-[ <a href="?view_mode=edit_commands"><#LANG_ADD_NEW_SECTION#></a> ]
-</b>
-</p>
-<table width=100% border=0><tr>
-<td valign=top>
+<h3><#LANG_MODULE_CONTROL_MENU#></h3>
+<a href="?view_mode=edit_commands" class="btn btn-success"><i class="icon-white icon-plus-sign"></i> <#LANG_ADD_NEW_SECTION#></a>
+
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
-<form action="?" method="post" name="frmList_commands" style="padding:0px">
-<table border=1 cellpadding=5 cellspacing=1 width="100%">
+<form action="?" method="post" name="frmList_commands">
+<table class="table table-bordered">
 [#begin RESULT#]
 <tr>
  <td>
-  <b>
    [#if RESULT#]
-   <a href="#" onClick="showHide([#ID#])" style="text-decoration:none" id="link[#ID#]">[ + ]</a>
+   <a href="#" id="link[#ID#]" class="show-hide-link btn btn-mini expand" data-id="[#ID#]"> + </a>
    [#endif#]
-   [#if ICON!=""#]<img src="/cms/icons/[#ICON#]" border="0" align="absmiddle">[#endif#]
-   [#if PARENT_ID="0"#]<big>[#endif#]
+   [#if ICON!=""#]<img src="/cms/icons/[#ICON#]" class="action-list-icon" align="absmiddle">[#endif#]
    <a href="?view_mode=edit_commands&id=[#ID#]">[#TITLE#]</a>
-   </b>
-   [#if TYPE!=""#][[#TYPE#]][#endif TYPE#]
-  ([#PRIORITY#])
+   <span class="divider">/</span>
+   [#if TYPE!=""#][#TYPE#]<span class="divider">/</span>[#endif TYPE#]
+  [#PRIORITY#]
  </td>
- <td valign="top" nowrap>
-  <b><a href="?view_mode=edit_commands&parent_id=[#ID#]"><#LANG_EXPAND#></a></b>
+ <td class="command-actions">
+  <a href="?view_mode=edit_commands&parent_id=[#ID#]"><#LANG_EXPAND#></a>
   [#if !RESULT#]
     <a href="?view_mode=delete_commands&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
   [#endif RESULT#]
 </tr>
 [#if RESULT#]
- <tr><td colspan=2 style="padding-left:20px" bgcolor="#FFFFFF">
+ <tr><td colspan=2>
   <div id="sub[#ID#]" style="display:none">
-  <table border=0 cellpadding=3 cellspacing=1>
+  <table class="table table-bordered table-inner">
    [#tree RESULT#]
   </table>
   </div>
@@ -66,24 +64,23 @@
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_commands">
 </form>
-<!-- / search results (list) -->
-[#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
-[#endif RESULT#]
-<!-- / results -->
-</td></tr></table>
 
 <script language="javascript">
 [#begin RESULT#]
  if ($.cookie("commands_item[#ID#]")) {
   $('#sub[#ID#]').show();
-  $('#link[#ID#]').html('[ - ]');
+  $('#link[#ID#]').html(' - ');
  }
  [#if RESULT#]
  [#tree RESULT#]
  [#endif RESULT#]
 [#end RESULT#]
-
 </script>
+
+<!-- / search results (list) -->
+[#else RESULT#]
+<div class="alert alert-error">
+<#LANG_NO_RECORDS_FOUND#>
+</div>
+[#endif RESULT#]
+<!-- / results -->

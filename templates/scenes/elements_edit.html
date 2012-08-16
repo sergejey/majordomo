@@ -1,103 +1,83 @@
 
 <!-- Table 'elements' edit -->
-<p align=center>
- <a href="?tab=elements&id=<#ID#>&view_mode=edit_scenes">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
-
-<table width="100%" border="0">
- <tr>
-  <td valign="top" width="50%">
-
-<p><big>Element details</big></p>
-
-<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<h3>Element details</h3>
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+<div class="alert alert-success">
+<#LANG_DATA_SAVED#>
+</div>
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+<div class="alert alert-error">
+<#LANG_FILLOUT_REQURED#>
+</div>
 [#endif ERR#]
 [#if ELEMENT_ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
+<h4>
+<#LANG_NEW_RECORD#>
+</h4>
 [#endif ELEMENT_ID#]
 <!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- (*)
- </td>
- <td>
-  <input type="text" name="title" value="[#ELEMENT_TITLE#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_TITLE#> (*)</label>
+	<div class="controls">
+		<input type="text" name="title" value="[#ELEMENT_TITLE#]" required>
+	</div>
+</div>
+
 <!-- TYPE (select) -->
-<tr>
- <td align=right valign=top>
- [#if ERR_TYPE#]<b><font color="red">[#endif#]
- <#LANG_TYPE#>: 
- </td>
- <td>                                           
- <select name="type">
-  <option value="">select
-  <option value="img"[#if ELEMENT_TYPE=="img"#] selected[#endif#]><#LANG_IMAGE#>
-  <option value="html"[#if ELEMENT_TYPE=="html"#] selected[#endif#]>HTML
- </select>
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_TYPE#></label>
+	<div class="controls">
+		<select name="type" required>
+			<option value="" disabled selected>select
+			<option value="img"[#if ELEMENT_TYPE=="img"#] selected[#endif#]><#LANG_IMAGE#>
+			<option value="html"[#if ELEMENT_TYPE=="html"#] selected[#endif#]>HTML
+		</select>
+	</div>
+</div>
+
 <!-- TOP (int) -->
-<tr>
- <td align=right>
- [#if ERR_TOP#]<b><font color="red">[#endif#]
- <#LANG_TOP#>:
- </td>
- <td>
-  <input type="text" name="top" value="[#ELEMENT_TOP#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_TOP#></label>
+	<div class="controls">
+		<input type="text" name="top" value="[#ELEMENT_TOP#]">
+	</div>
+</div>
+
+
 <!-- LEFT (int) -->
-<tr>
- <td align=right>
- [#if ERR_LEFT#]<b><font color="red">[#endif#]
- <#LANG_LEFT#>:
- </td>
- <td>
-  <input type="text" name="left" value="[#ELEMENT_LEFT#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_LEFT#></label>
+	<div class="controls">
+		<input type="text" name="left" value="[#ELEMENT_LEFT#]">
+	</div>
+</div>
+
+
 [#if ELEMENT_TYPE="html"#]
 <!-- WIDTH (int) -->
-<tr>
- <td align=right>
- [#if ERR_WIDTH#]<b><font color="red">[#endif#]
- <#LANG_WIDTH#>:
- </td>
- <td>
-  <input type="text" name="width" value="[#ELEMENT_WIDTH#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_WIDTH#></label>
+	<div class="controls">
+		<input type="text" name="width" value="[#ELEMENT_WIDTH#]">
+	</div>
+</div>
+
 <!-- HEIGHT (int) -->
-<tr>
- <td align=right>
- [#if ERR_HEIGHT#]<b><font color="red">[#endif#]
- <#LANG_HEIGHT#>:
- </td>
- <td>
-  <input type="text" name="height" value="[#ELEMENT_HEIGHT#]">
- </td>
-</tr>
+
+<div class="control-group">
+	<label class="control-label"><#LANG_HEIGHT#></label>
+	<div class="controls">
+		<input type="text" name="height" value="[#ELEMENT_HEIGHT#]">
+	</div>
+</div>
+
 [#endif ELEMENT_TYPE#]
 <!-- CROSS_SCENE (int) -->
 <!--#
@@ -111,82 +91,92 @@
 </tr>
 #-->
 
-</table>
-
-</td>
 [#if ELEMENT_ID!=""#]
-<td valign="top">
 
-<p><big><#LANG_STATES#></big></p>
-
-<p>
+<h3><#LANG_STATES#></h3>
+<ul>
 [#begin STATES#]
-<a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#TITLE#]</b></a>;
+<li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#TITLE#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>
 [#end STATES#]
-</p>
+</ul>
 
 [#if STATE_ID=""#]
-<p><b><#LANG_ADD_NEW_STATE#>:</b></p>
+<h4><#LANG_ADD_NEW_STATE#></h4>
 [#else STATE_ID#]
-<p>
-<a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=new"><#LANG_ADD_NEW_STATE#></a>
-</p>
+<a class="btn btn-mini" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=new"><i class="icon-plus-sign"></i> <#LANG_ADD_NEW_STATE#></a>
 [#endif STATE_ID#]
 
-<table width="100%" border="0">
- <tr>
-  <td width="15%" align="right">State <#LANG_TITLE#>:</td>
-  <td width="85%"><input type="text" name="state_title_new" value="[#STATE_TITLE#]">
-  [#if STATE_ID!=""#]
-  <label><input type="checkbox" name="state_delete" value="1"> <#LANG_DELETE#></label>
-  [#endif#]
-  </td>
- </tr>
- [#if "<#ELEMENT_TYPE#>"=="html"#]
- <tr>
-  <td align="right" valign="top"><#LANG_CODE#>:</td>
-  <td><textarea name="html_new" rows="5" cols="41">[#STATE_HTML#]</textarea></td>
- </tr>
- [#endif#]
- [#if "<#ELEMENT_TYPE#>"=="img"#]
- <tr>
-  <td align="right" valign="top"><#LANG_IMAGE#>:</td>
-  <td>
+<div class="control-group">
+	<label class="control-label">State <#LANG_TITLE#></label>
+	<div class="controls">
+		<input type="text" name="state_title_new" value="[#STATE_TITLE#]">
+	</div>
+</div>
+
+[#if STATE_ID!=""#]
+<div class="control-group">
+	<label class="control-label">&nbsp;</label>
+	<div class="controls">
+		<label class="checkbox"><input type="checkbox" name="state_delete" value="1"> <#LANG_DELETE#></label>
+	</div>
+</div>
+[#endif#]
+
+
+[#if "<#ELEMENT_TYPE#>"=="html"#]
+<div class="control-group">
+	<label class="control-label"><#LANG_CODE#></label>
+	<div class="controls">
+		<textarea name="html_new" rows="5" cols="41">[#STATE_HTML#]</textarea>
+	</div>
+</div>
+[#endif#]
+
+[#if "<#ELEMENT_TYPE#>"=="img"#]
+
+<div class="control-group">
+	<label class="control-label"><#LANG_IMAGE#></label>
+	<div class="controls">
+		<input type="text" name="image_new" id="image_new" value="[#STATE_IMAGE#]" onclick="openFileBrowser('image_new');" size="40">
+		<p class="help-block">
+		[#if STATE_IMAGE!=""#]
+		<img src="[#STATE_IMAGE#]" border="0">
+		[#endif#]
+		</p>
+	</div>
+</div>
+
 <script type="text/javascript">
      function openFileBrowser(id){
           fileBrowserlink = "/pdw/index.php?editor=standalone&returnID=" + id;
           window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
      }
 </script>
-  <input type="text" name="image_new" id="image_new" value="[#STATE_IMAGE#]" onclick="openFileBrowser('image_new');" size="40">
-  [#if STATE_IMAGE!=""#]
-  <div><img src="[#STATE_IMAGE#]" border="0"></div>
-  [#endif#]
-  </td>
- </tr>
- [#endif#]
 
- <tr>
-  <td align="right"><#LANG_RUN_SCCRIPT_ON_CLICK#>:</td>
-  <td>
-  <select name="script_id_new">
-   <option value="0">
-   [#begin SCRIPTS#]
-   <option value="[#ID#]"[#if ID="<#STATE_SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
-   [#end SCRIPTS#]
-  </select>
-  </td>
- </tr>
+[#endif#]
 
+<div class="control-group">
+	<label class="control-label"><#LANG_RUN_SCCRIPT_ON_CLICK#></label>
+	<div class="controls">
+		<select name="script_id_new">
+		<option value="0">
+		[#begin SCRIPTS#]
+		<option value="[#ID#]"[#if ID="<#STATE_SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+		[#end SCRIPTS#]
+		</select>
+	</div>
+</div>
 
- <tr>
-  <td valign="top"><#LANG_DISPLAY_CONDITION#>:</td>
-  <td valign="top">
-  <label><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="0"[#if STATE_IS_DYNAMIC="0" || STATE_IS_DYNAMIC=""#] checked[#endif#]> n/a (<#LANG_ALWAYS_VISIBLE#>)</label><br>
-  <label><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="1"[#if STATE_IS_DYNAMIC="1"#] checked[#endif#]> <#LANG_SIMPLE#></label><br>
-  <label><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="2"[#if STATE_IS_DYNAMIC="2"#] checked[#endif#]> <#LANG_ADVANCED#></label><br>
-  <script language="javascript">
+<div class="control-group">
+	<label class="control-label"><#LANG_DISPLAY_CONDITION#></label>
+	<div class="controls">
+		<label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="0"[#if STATE_IS_DYNAMIC="0" || STATE_IS_DYNAMIC=""#] checked[#endif#]> n/a (<#LANG_ALWAYS_VISIBLE#>)</label>
+		<label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="1"[#if STATE_IS_DYNAMIC="1"#] checked[#endif#]> <#LANG_SIMPLE#></label>
+		<label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="2"[#if STATE_IS_DYNAMIC="2"#] checked[#endif#]> <#LANG_ADVANCED#></label>
+	</div>
+</div>
 
+<script language="javascript">
  $('.is_dynamic_new').click (function ()
   {
   var thisCheck = $(this);
@@ -205,63 +195,82 @@
   }
  }
  );
-  
-  </script>
+</script>
   <div id="condition_block_new"[#if STATE_IS_DYNAMIC!="1"#] style="display:none"[#endif#]>
-   <table width="100%" border="0">
-    <tr>
-     <td valign="top">
-     <input type="text" name="linked_object_new" size="10" value="[#STATE_LINKED_OBJECT#]">
-     </td>
-     <td valign="top">
-     <input type="text" name="linked_property_new" size="10" value="[#STATE_LINKED_PROPERTY#]">
-     </td>
-     <td valign="top">
-     <select name="condition_new">
+   <div class="control-group">
+	<label class="control-label">Object</label>
+	<div class="controls">
+		<input type="text" name="linked_object_new" size="10" value="[#STATE_LINKED_OBJECT#]">
+	</div>
+	</div>
+     
+	<div class="control-group">
+	<label class="control-label">Property</label>
+	<div class="controls">
+		 <input type="text" name="linked_property_new" size="10" value="[#STATE_LINKED_PROPERTY#]">
+	</div>
+	</div>
+	
+    <div class="control-group">
+	<label class="control-label">Condition</label>
+	<div class="controls">
+	 <select name="condition_new">
       <option value="1"[#if STATE_CONDITION="1"#] selected[#endif#]>=
       <option value="2"[#if STATE_CONDITION="2"#] selected[#endif#]>&gt;
       <option value="3"[#if STATE_CONDITION="3"#] selected[#endif#]>&lt;
       <option value="4"[#if STATE_CONDITION="4"#] selected[#endif#]>&lt;&gt;
      </select>
-     </td>
-     <td valign="top"><input type="text" name="condition_value_new" size="10" value="[#STATE_CONDITION_VALUE#]"></td>
-    </tr>
-   </table>
+	</div>
+	</div>
+
+    <div class="control-group">
+	<label class="control-label">Value</label>
+	<div class="controls">
+		 <input type="text" name="condition_value_new" size="10" value="[#STATE_CONDITION_VALUE#]">
+	</div>
+	</div>
+  
    
   </div>
   <div id="condition_advanced_block_new"[#if STATE_IS_DYNAMIC!="2"#] style="display:none"[#endif#]>
-   <textarea name="condition_advanced_new" rows="5" cols="40">[#STATE_CONDITION_ADVANCED#]</textarea>
-   <br><#LANG_EXAMPLE#>:<pre>
-    if ($a>$b) {
-     $display=1;
-    } else {
-     $display=0;
-    }
-   </pre>
+   <div class="control-group">
+	<label class="control-label">Advanced condition</label>
+	<div class="controls">
+		<textarea name="condition_advanced_new" rows="5" cols="40">[#STATE_CONDITION_ADVANCED#]</textarea>
+		<p class="help-block">
+		<p><i><#LANG_EXAMPLE#>:</i></p>
+<pre>if ($a>$b) {
+	$display=1;
+} else {
+	$display=0;
+}</pre>
+		</p>
+		</div>
+	</div>
   </div>
   <div id="switch_scene_block" [#if STATE_IS_DYNAMIC="0"#] style="display:none"[#endif#]>
-   <input type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#>
+    <div class="control-group">
+	<label class="control-label">&nbsp;</label>
+	<div class="controls">
+		<label class="checkbox"><input type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#></label>
+	</div>
+	</div>
   </div>
-  </td>
- </tr>
-</table>
-<input type="hidden" name="state_id" value="[#STATE_ID#]">
 
-</td>
+<input type="hidden" name="state_id" value="[#STATE_ID#]">
+</div>
 [#endif ID#]
 
-<tr>
- <td colspan=2 align=center>
- &nbsp;<br>
+<div class="form-actions">
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ <button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
  [#endif ID#]
- &nbsp;
- <a href="?tab=elements&id=<#ID#>&view_mode=edit_scenes"><#LANG_CANCEL#></a>
- </td>
-</tr>
+
+ <a class="btn" href="?tab=elements&id=<#ID#>&view_mode=edit_scenes"><#LANG_CANCEL#></a>
+</div>
+ 
 <input type="hidden" name="element_id" value="<#ELEMENT_ID#>">
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
@@ -271,6 +280,4 @@
 <input type="hidden" name="tab" value="<#TAB#>">
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 
-
-</table>
 </form>

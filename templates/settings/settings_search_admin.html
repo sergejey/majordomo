@@ -2,139 +2,103 @@
  @version 0.2 (auto-set)
 #-->
 [#if FILTER_NAME=""#]
-<p align="center"><big><#LANG_GENERAL_SETTINGS#></big></p>
+<h2><#LANG_GENERAL_SETTINGS#></h2>
 [#endif#]
 [#if SECTION_TITLE!=""#]
-<p align="center"><big>[#SECTION_TITLE#]</big></p>
+<h3>[#SECTION_TITLE#]</h3>
 [#endif SECTION_TITLE#]
 <!-- table settings search -->
 [#if UPDATED#]
-<p align=center>
-<b>
- <font color="green"><#LANG_SETTINGS_UPDATED#></font>
-</b>
-</p>
+<div class="alert alert-success">
+<#LANG_SETTINGS_UPDATED#>
+</div>
 [#endif UPDATED#]
-<table width=100% border=0><tr>
-<td valign=top>
 <!-- results -->
 [#if RESULT#]
 
 <script language="javascript">
- function editNotes(id) {
-  var elem=document.getElementById('notes_'+id);
-  if (elem.style.display=='none') {
-   elem.style.display='block';
-   hideNotes(id);
-  } else {
-   elem.style.display='none';
-  }
-
-  return false;
- }
-
- function viewNotes(e, id) {
-  var elem=document.getElementById('notes_tip_'+id);
-  var elem2=document.getElementById('notes_'+id);
-
-  if (elem2.style.display!='none') return false;
-  if (elem.innerHTML=='') return false;
-
-  elem.style.left=e.clientX + document.body.scrollLeft+20;
-  elem.style.top=e.clientY + document.body.scrollTop+10;
-  elem.style.visibility = "visible";
-
-  return false;
- }
-
- function hideNotes(id) {
-  var elem=document.getElementById('notes_tip_'+id);
-  elem.style.visibility='hidden';
-  return false;
- }
-
-
+$(function() {
+	$(".edit-notes").click(function() {
+		var id = $(this).data('id');
+		$('#notes_' + id).show();
+		$(this).remove();
+	});
+});
 </script>
 
 <!-- search results (list) -->
-<form action="?" method="post" name="frmList_settings" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 width=100%>
+<form action="?" method="post" name="frmList_settings" class="form-horizontal">
 [#begin RESULT#]
 [#if HR="1"#]
-<tr>
- <td colspan="2"><hr size="1"></td>
-</tr>
+<hr>
 [#endif#]
-<tr>
- <td align="right" valign=top width=50%>
-  <b>
-   <a href="#" onClick="return editNotes([#ID#]);" style="[#if NOTES!=""#]border-bottom: dashed 1px blue;[#endif#]text-decoration:none;color:black;cursor:default" onMouseOver="viewNotes(event, [#ID#])" onMouseOut="hideNotes([#ID#])">[#TITLE#]</a>
-  </a></b>
+<div class="control-group">
+	<label class="control-label">[#TITLE#]</label>
+	<div class="controls">
+		[#if TYPE="text"#]
+		<input type="text" name="value_[#ID#]" value="[#VALUE#]" size=50>
+		[#endif TYPE#]
+
+		[#if TYPE="onoff"#]
+		<label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>On</label>
+		<label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Off</label>
+		[#endif TYPE#]
+
+		[#if TYPE="yesno"#]
+		<label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Yes</label>
+		<label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>No</label>
+		[#endif TYPE#]
+
+		[#if TYPE="enable"#]
+		<label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Enable</label>
+		<label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>
+		[#endif TYPE#]
+		<p class="help-block">
+		[#if TYPE="text"#]
+		[#if DEFAULTVALUE!=""#]
+		<#LANG_DEFAULT_VALUE#>: [#DEFAULTVALUE#]
+		[#endif#]
+		[#endif TYPE#]
+		[#if TYPE="onoff"#]
+		<#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]On[#else#]Off[#endif#]
+		[#endif TYPE#]
+		[#if TYPE="yesno"#]
+		[#if DEFAULTVALUE!=""#]
+		<#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Yes[#else#]No[#endif#]
+		[#endif#]
+		[#endif TYPE#]
+		[#if TYPE="enable"#]
+		[#if DEFAULTVALUE!=""#]
+		<#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Enable[#else#]Disable[#endif#]
+		[#endif#]
+		[#endif TYPE#]
+		</p>
+		[#if URL_TITLE!=""#]<p class="help-block"><a href="[#URL#]" target=_blank>[#URL_TITLE#]</a></p>[#endif#]
+		[#if NOTES!=""#]
+		<p class="help-block edit-notes" data-id="[#ID#]"><acronym title="Click to edit">[#NOTES#]</acronym></p>
+		<div id="notes_[#ID#]" style="display:none;">
+		<p><i>Edit configuration help tip</i></p>
+		<textarea name="notes_[#ID#]" cols=45 rows=3 id="edit_notes_area_[#ID#]">[#NOTES#]</textarea>
+		[#endif#]
+		</div>
+	</div>
+</div>
   <!--#
   <br>&lt;#SETTINGS_[#NAME#]#&gt;
   #-->
-  <div id="notes_tip_[#ID#]" align="left" style="visibility:hidden;position: absolute; left: 580px; top: 40px; height: 25px; width: 200px;padding:5px;border:solid 1px;background-color:white">[#NOTES#]</div>
-
- </td>
- <td valign=top width=50%>
-  [#if TYPE="text"#]
-  <input type="text" name="value_[#ID#]" value="[#VALUE#]" size=50>
-  [#if DEFAULTVALUE!=""#]
-  <br><small><#LANG_DEFAULT_VALUE#>: [#DEFAULTVALUE#]</small>
-  [#endif#]
-  [#endif TYPE#]
-
-  [#if TYPE="onoff"#]
-  <label><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>On</label>
-  <label><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Off</label>
-   <br><small><#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]On[#else#]Off[#endif#]</small>
-  [#endif TYPE#]
-
-  [#if TYPE="yesno"#]
-  <label><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Yes</label>
-  <label><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>No</label>
-  [#if DEFAULTVALUE!=""#]
-   <br><small><#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Yes[#else#]No[#endif#]</small>
-  [#endif#]
-  [#endif TYPE#]
-
-
-  [#if TYPE="enable"#]
-  <label><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Enable</label>
-  <label><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>
-  [#if DEFAULTVALUE!=""#]
-   <br><small><#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Enable[#else#]Disable[#endif#]</small>
-  [#endif#]
-  [#endif TYPE#]
-
-  [#if URL_TITLE!=""#]
-  <br> [ <a href="[#URL#]" target=_blank>[#URL_TITLE#]</a> ]
-  [#endif#]
-
   
-
-  <div id="notes_[#ID#]" style="display:none;">
-  <i>Edit configuration help tip</i>:<br>
-  <textarea name="notes_[#ID#]" cols=45 rows=3 id="edit_notes_area_[#ID#]" class="field span6">[#NOTES#]</textarea>
-  </div>
-
- </td>
-</tr>
 [#end RESULT#]
-<tr>
-<td colspan="10" align="center">
-<input type="submit" name="submit" value="<#LANG_SUBMIT#>">
-<p>&nbsp;</p>
-[ <a href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a> ]
-</tr>
-</table>
-<input type="hidden" name="mode" value="update">
+
+<div class="form-actions">
+	<button class="btn" type="submit" name="submit"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+	<a class="btn" href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
+	<input type="hidden" name="mode" value="update">
+</div>
 </form>
 <!-- / search results (list) -->
 [#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
+<div class="alert alert-error">
+<#LANG_NO_RECORDS_FOUND#>
+</div>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
