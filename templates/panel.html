@@ -10,14 +10,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 [#if PRINT!="1"#]
 <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="<#ROOTHTML#>admin.css" type="text/css">
+<link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
 [#else PRINT#]
-<link rel="stylesheet" href="<#ROOTHTML#>admin_print.css" type="text/css">
+<link rel="stylesheet" href="<#ROOTHTML#>css/admin_print.css" type="text/css">
 [#endif PRINT#]
 
-  <link rel="stylesheet" href="<#ROOTHTML#>jquery.autocomplete.css" type="text/css">
-  <link rel="stylesheet" href="<#ROOTHTML#>jquery.fancybox.css" type="text/css">
-  <link rel="stylesheet" href="<#ROOTHTML#>jquery.betterTooltip.css" type="text/css">
+  <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
+  <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
 
 
 [#inc scripts.js#]
@@ -213,24 +213,6 @@ margin: 10px 0;
    [#endif DENIED#]
    [#end SUB_MODULES#]
 </ul>
-
-
-<!--
-        <table cellpadding=2 cellspacing=0 border=0 width=100% >
-   [#begin SUB_MODULES#]
-   [#if NEW_CATEGORY#]
-   <tr><td class=mna>&nbsp;[#CATEGORY#]</td></tr>
-   [#endif NEW_CATEGORY#]
-   [#if !DENIED#]
-   <tr><td nowrap>&nbsp;
-   [#if ICON_SM!=""#]<a href="?action=[#NAME#]"><img src="[#ICON_SM#]" border=0 width=16 height=16 align="absmiddle"></a>[#endif#]
-   &nbsp;<a href="?action=[#NAME#]" class=mnb>[#if SELECTED#]<font color="#333333" style="text-decoration:underline ">[#endif#][#TITLE#]</a></td></tr>
-   [#endif DENIED#]
-   [#end SUB_MODULES#]
-
-        </table>
-        -->
-        <!--[/menu]-->
 
 		<!--/left_main--></td>
 [#endif PRINT#]
