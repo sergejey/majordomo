@@ -21,6 +21,7 @@
   'rainfallHour'=>9,
   'rainfall24'=>19,
   'pressure'=>10,
+  'pressureRt'=>-1,
   'pressureTrend'=>18,
   'windDirection'=>11,
   'windDirectionAverage'=>51,
@@ -70,12 +71,17 @@
 
  $res='';
  foreach($known_fields as $k=>$v) {
+  if ($v<0) {
+   continue;
+  }
   $res.=$k.' = '.$data[(int)$v]."\n";
   $old_value=getGlobal('ws.'.$k);
   if ($old_value!=$data[(int)$v]) {
    setGlobal('ws.'.$k, $data[(int)$v]);
   }
  }
+
+ setGlobal('ws.pressureRt', round(((float)getGlobal('ws.pressure'))/1.33), 1);
 
 
  echo "OK";

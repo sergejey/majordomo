@@ -3,6 +3,7 @@
         <script type="text/javascript" src="/js/easySlider1.7.js"></script>
         <script type="text/javascript">
 
+        var codeHash=new Object();
 
         function switchScene(scene_id) {
          [#begin RESULT#]
@@ -36,8 +37,9 @@
            if (obj.length) {
             for(var i=0;i<obj.length;i++) {
              var elem=$('#state_'+obj[i].ID);
-             if (obj[i].TYPE=='html' && obj[i].HTML!=elem.html()) {
+             if (obj[i].TYPE=='html' && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
               elem.html(obj[i].HTML);
+              codeHash['code'+obj[i].ID]=obj[i].HTML;
              }
 
              if (obj[i].STATE=='1' && !elem.is(':visible')) {
