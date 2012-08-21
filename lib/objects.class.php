@@ -104,12 +104,12 @@
   function processTitle($title, $object=0) {
 
    $title=preg_replace('/%rand%/is', rand(), $title);
-   if (preg_match_all('/%(.+?)\.(.+?)%/is', $title, $m)) {
+   if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/is', $title, $m)) {
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
      $title=str_replace($m[0][$i], getGlobal($m[1][$i].'.'.$m[2][$i]), $title);
     }
-   } elseif (preg_match_all('/%(.+?)%/is', $title, $m)) {
+   } elseif (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m)) {
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
      $title=str_replace($m[0][$i], getGlobal($m[1][$i]), $title);

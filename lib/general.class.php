@@ -16,6 +16,7 @@
 
 if (Defined('HOME_NETWORK') && HOME_NETWORK!='' && !$argv[0] && 
     !preg_match('/\/gps.php/is', $_SERVER['REQUEST_URI']) &&
+//    !preg_match('/\/command.php/is', $_SERVER['REQUEST_URI']) &&
     !preg_match('/\/rss.php/is', $_SERVER['REQUEST_URI']) &&
     1) {
  $p=preg_quote(HOME_NETWORK);

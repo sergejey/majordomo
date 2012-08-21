@@ -4,10 +4,29 @@
 
 <script language="javascript">
 $(function () {
+<<<<<<< HEAD
 	$("a.show-hide-link").click(function() {
 		var id = '#sub' + $(this).data('id');
 		$(id).toggle();
 	});
+=======
+        $("a.show-hide-link").click(function() {
+                var id = $(this).data('id');//'#sub' + 
+                //$(id).toggle();
+
+  if ($('#sub'+id).is(":visible")) {
+   $('#sub'+id).hide();
+   $('#link'+id).html(' + ');
+   $.cookie("commands_item"+id, null);
+  } else {
+   $.cookie("commands_item"+id, "1");
+   $('#sub'+id).show();
+   $('#link'+id).html(' - ');
+  }
+
+
+        });
+>>>>>>> sergejey/master
 });
 </script>
 
@@ -23,7 +42,11 @@ $(function () {
 <tr>
  <td>
    [#if RESULT#]
+<<<<<<< HEAD
    <a href="#" class="show-hide-link btn btn-mini expand" data-id="[#ID#]"> + </a>
+=======
+   <a href="#" id="link[#ID#]" class="show-hide-link btn btn-mini expand" data-id="[#ID#]"> + </a>
+>>>>>>> sergejey/master
    [#endif#]
    [#if ICON!=""#]<img src="/cms/icons/[#ICON#]" class="action-list-icon" align="absmiddle">[#endif#]
    <a href="?view_mode=edit_commands&id=[#ID#]">[#TITLE#]</a>
@@ -52,6 +75,22 @@ $(function () {
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_commands">
 </form>
+<<<<<<< HEAD
+=======
+
+<script language="javascript">
+[#begin RESULT#]
+ if ($.cookie("commands_item[#ID#]")) {
+  $('#sub[#ID#]').show();
+  $('#link[#ID#]').html(' - ');
+ }
+ [#if RESULT#]
+ [#tree RESULT#]
+ [#endif RESULT#]
+[#end RESULT#]
+</script>
+
+>>>>>>> sergejey/master
 <!-- / search results (list) -->
 [#else RESULT#]
 <div class="alert alert-error">
