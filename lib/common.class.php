@@ -600,4 +600,20 @@
  }
 
 
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function isOnline($host) {
+  $rec=SQLSelectOne("SELECT * FROM pinghosts WHERE HOSTNAME LIKE '".DBSafe($host)."' OR TITLE LIKE '".DBSafe($host)."'");
+  if (!$rec['STATUS'] || $rec['STATUS']==2) {
+   return 0;
+  } else {
+   return 1;
+  }
+ }
+
 ?>

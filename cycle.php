@@ -173,6 +173,21 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
    $onw->updateDevices(); // check all 1wire devices
   }
 
+ // check main system states
+ $objects=getObjectsByClass('systemStates');
+ $total=count($objects);
+ for($i=0;$i<$total;$i++) {
+  $old_state=getGlobal($objects[$i]['TITLE'].'.stateColor');
+  //echo "Running ".$objects[$i]['TITLE'].'.checkState'."\n";
+  callMethod($objects[$i]['TITLE'].'.checkState');
+  $new_state=getGlobal($objects[$i]['TITLE'].'.stateColor');
+  if ($new_state!=$old_state) {
+   echo $objects[$i]['TITLE']." state changed to ".$new_state."\n";
+   $params=array('STATE'=>$new_state);
+   callMethod($objects[$i]['TITLE'].'.stateChanged', $params);
+  }
+ }
+
 
   if (file_exists('./reboot') || ((time()-$start_time)>7*24*60*60)) {
    $db->Disconnect();

@@ -31,6 +31,47 @@
 *
 * @access public
 */
+ function getObjectsByClass($class_name) {
+  $class_record=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe(trim($class_name))."'");
+  if (!$class_record['ID']) {
+   return 0;
+  }
+
+  $objects=SQLSelect("SELECT ID, TITLE FROM objects WHERE CLASS_ID='".$class_record['ID']."'");
+
+  $sub_classes=SQLSelect("SELECT ID, TITLE FROM classes WHERE PARENT_ID='".$class_record['ID']."'");
+  if ($sub_classes[0]['ID']) {
+   $total=count($sub_classes);
+   for($i=0;$i<$total;$i++) {
+    $sub_objects=getObjectsByClass($sub_classes[$i]['TITLE']);
+    if ($sub_objects[0]['ID']) {
+     foreach($sub_objects as $obj) {
+      $objects[]=$obj;
+     }
+    }
+   }
+  }
+
+  /*
+  $total=count($objects);
+  for($i=0;$i<$total;$i++) {
+   $objects[$i]=getObject($objects[$i]['TITLE'])
+  }
+  */
+
+  return $objects;
+
+
+ }
+
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
  function getGlobal($varname) {
   $tmp=explode('.', $varname);
   if ($tmp[1]) {
