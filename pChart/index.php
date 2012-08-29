@@ -41,7 +41,32 @@
    exit;
   }
 
-  if (preg_match('/(\d+)h/', $type, $m)) {
+  if (preg_match('/(\d+)d/', $type, $m)) {
+
+   $total=(int)$m[1]*24;
+   for($i=0;$i<$total;$i+=3) {
+    $dt=time()+($i-($total-1))*60*60;
+    $new_dt=mktime(date('H', $dt), 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt));
+    $dt=$new_dt;
+    $h=date('H', $dt);
+
+    //for($t=0;$t<60;$t+=60) {
+
+     $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $dt)."') ORDER BY ADDED DESC");
+     if ($ph['ID']) {
+      $values[]=$ph['VALUE'];
+     } else {
+      $values[]=0;
+     }
+     $hours[]=$h;
+     $h='';
+    //}
+   }
+
+   $DataSet->AddPoint($values,"Serie1");  
+   $DataSet->AddPoint($hours,"Serie3");  
+
+ } elseif (preg_match('/(\d+)h/', $type, $m)) {
    $total=(int)$m[1];
    for($i=0;$i<$total;$i++) {
     $dt=time()+($i-($total-1))*60*60;
@@ -62,10 +87,6 @@
     }
 
    }
-
-
-
-
 
    $DataSet->AddPoint($values,"Serie1");  
    $DataSet->AddPoint($hours,"Serie3");  
@@ -94,11 +115,10 @@
    $DataSet->AddPoint($minutes,"Serie3");  
 
   } else {
+
    $DataSet->AddPoint(0,"Serie1");
    $DataSet->AddPoint(0,"Serie3");
 
-//   $DataSet->AddPoint(array(1,4,-3,2,-3,3,2,1,0,7,4,-3,2,-3,3,5,1,0,7),"Serie1");
- //  $DataSet->AddPoint(array(2,5,7,5,1,5,6,4,8,4,0,2,5,6,4,5,6,7,6),"Serie3");
   }
 
 
