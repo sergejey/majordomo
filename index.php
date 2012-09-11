@@ -4,7 +4,7 @@
 *
 * @package MajorDoMo
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
-* @version 1.1
+* @version 1.2
 */
 
 
@@ -130,7 +130,7 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
  // GLOBALS
    $result=preg_replace('/%rand%/is', rand(), $result);
-   if (preg_match_all('/%(\w{3,}?)\.(\w{2,}?)%/is', $result, $m)) {
+   if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/is', $result, $m)) {
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
      $result=str_replace($m[0][$i], getGlobal($m[1][$i].'.'.$m[2][$i]), $result);
