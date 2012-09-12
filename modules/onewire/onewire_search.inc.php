@@ -44,5 +44,8 @@
     // some action for every record if required
    }
    $out['RESULT']=$res;
+   
   }
+  $res=SQLSelect("SELECT * FROM owdisplays");
+  $out['DISPLAY']=$res;
 ?>
