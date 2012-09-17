@@ -46,105 +46,112 @@
 
 [#else ID#]
 <div class="control-group">
-	<label class="control-label">ID</label>
-	<div class="controls">
-		<input type="text" value="[#ID#]" disabled>
-	</div>
+        <label class="control-label">ID</label>
+        <div class="controls">
+                <input type="text" value="[#ID#]" disabled>
+
+[#if TYPE="button"#]
+Action URL:
+<a href="/menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank>Run</a>
+[#endif#]
+
+
+        </div>
 </div>
 
 [#endif ID#]
 <div class="control-group">
-	<label class="control-label"><#LANG_PARENT_MENU_ITEM#></label>
-	<div class="controls">
-		<select name="parent_id">
-		<option value="0">ROOT
-		[#begin PARENTS#]
-		<option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
-		[#end PARENTS#]
-		</select>
-	</div>
+        <label class="control-label"><#LANG_PARENT_MENU_ITEM#></label>
+        <div class="controls">
+                <select name="parent_id">
+                <option value="0">ROOT
+                [#begin PARENTS#]
+                <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
+                [#end PARENTS#]
+                </select>
+        </div>
 </div>
 
 <!-- TITLE (varchar) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_TITLE#> (*)</label>
-	<div class="controls">
-		<input type="text" name="title" value="[#TITLE#]" size="50" required="true">
-	</div>
+        <label class="control-label"><#LANG_TITLE#> (*)</label>
+        <div class="controls">
+                <input type="text" name="title" value="[#TITLE#]" size="50" required="true">
+        </div>
 </div>
 
 
 
 <div class="control-group">
-	<label class="control-label"><#LANG_PRIORITY#></label>
-	<div class="controls">
-		<input type="text" name="priority" value="[#PRIORITY#]" size="5">
-	</div>
+        <label class="control-label"><#LANG_PRIORITY#></label>
+        <div class="controls">
+                <input type="text" name="priority" value="[#PRIORITY#]" size="5">
+        </div>
 </div>
 
 <div class="control-group">
-	<label class="control-label"><#LANG_TYPE#></label>
-	<div class="controls">
-		<select name="type">
-			<option value="">—
-			<option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
-			<option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
-			<option value="url"[#if TYPE="url"#] selected[#endif#]><#LANG_URL#>
-			<option value="command"[#if TYPE="command"#] selected[#endif#]><#LANG_JS_COMMAND#>
-			<option value="button"[#if TYPE="button"#] selected[#endif#]><#LANG_BUTTON#>
-			<option value="switch"[#if TYPE="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
-			<option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#>
-			<option value="sliderbox"[#if TYPE="sliderbox"#] selected[#endif#]><#LANG_SLIDER_BOX#>
-			<option value="plusminus"[#if TYPE="plusminus"#] selected[#endif#]><#LANG_PLUS_MINUS_BOX#>
-			<option value="timebox"[#if TYPE="timebox"#] selected[#endif#]><#LANG_TIME_PICKER#>
-			<option value="textbox"[#if TYPE="textbox"#] selected[#endif#]><#LANG_TEXT_BOX#>
-			<!--#
-			<option value="datebox"[#if TYPE="datebox"#] selected[#endif#]>(n/a) Date Picker
-			#-->
-			<option value="custom"[#if TYPE="custom"#] selected[#endif#]><#LANG_CUSTOM_HTML_BOX#>
-		</select>
-	</div>
+        <label class="control-label"><#LANG_TYPE#></label>
+        <div class="controls">
+                <select name="type">
+                        <option value="">select
+                        <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
+                        <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
+                        <option value="url"[#if TYPE="url"#] selected[#endif#]><#LANG_URL#>
+                        <option value="command"[#if TYPE="command"#] selected[#endif#]><#LANG_JS_COMMAND#>
+                        <option value="button"[#if TYPE="button"#] selected[#endif#]><#LANG_BUTTON#>
+                        <option value="switch"[#if TYPE="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
+                        <option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#>
+                        <option value="sliderbox"[#if TYPE="sliderbox"#] selected[#endif#]><#LANG_SLIDER_BOX#>
+                        <option value="plusminus"[#if TYPE="plusminus"#] selected[#endif#]><#LANG_PLUS_MINUS_BOX#>
+                        <option value="timebox"[#if TYPE="timebox"#] selected[#endif#]><#LANG_TIME_PICKER#>
+                        <option value="textbox"[#if TYPE="textbox"#] selected[#endif#]><#LANG_TEXT_BOX#>
+                        <!--#
+                        <option value="datebox"[#if TYPE="datebox"#] selected[#endif#]>(n/a) Date Picker
+                        #-->
+                        <option value="custom"[#if TYPE="custom"#] selected[#endif#]><#LANG_CUSTOM_HTML_BOX#>
+                </select>
+        </div>
 </div>
 
 
 <div class="control-group">
-	<label class="control-label"><#LANG_ICON#></label>
-	<div class="controls">
-		<input type="file" name="icon">
-	<p class="help-block">
-		[#if ICON!=""#]
-		<label class="checkbox">
-		<input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
-		</label>
-		<img src="/cms/icons/[#ICON#]" border="0">
-		[#ICON#]<br>
-		[#endif#]
-	</p>
-	</div>
+        <label class="control-label"><#LANG_ICON#></label>
+        <div class="controls">
+                <input type="file" name="icon">
+        <p class="help-block">
+                [#if ICON!=""#]
+                <label class="checkbox">
+                <input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
+                </label>
+                <img src="/cms/icons/[#ICON#]" border="0">
+                [#ICON#]<br>
+                [#endif#]
+        </p>
+        </div>
 </div>
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox"#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_MIN_VALUE#></label>
-	<div class="controls">
-		<input type="text" name="min_value" value="[#MIN_VALUE#]" size="20">
-	</div>
+        <label class="control-label"><#LANG_MIN_VALUE#></label>
+        <div class="controls">
+                <input type="text" name="min_value" value="[#MIN_VALUE#]" size="20">
+        </div>
 </div>
 
 <div class="control-group">
-	<label class="control-label"><#LANG_MAX_VALUE#></label>
-	<div class="controls">
-		<input type="text" name="max_value" value="[#MAX_VALUE#]" size="20">
-	</div>
+        <label class="control-label"><#LANG_MAX_VALUE#></label>
+        <div class="controls">
+                <input type="text" name="max_value" value="[#MAX_VALUE#]" size="20">
+        </div>
 </div>
 
 <div class="control-group">
-	<label class="control-label"><#LANG_STEP_VALUE#></label>
-	<div class="controls">
-		<input type="text" name="step_value" value="[#STEP_VALUE#]" size="20">
-	</div>
+        <label class="control-label"><#LANG_STEP_VALUE#></label>
+        <div class="controls">
+                <input type="text" name="step_value" value="[#STEP_VALUE#]" size="20">
+        </div>
 </div>
 
 [#endif TYPE#]
@@ -152,28 +159,28 @@
 [#if TYPE=="selectbox" || TYPE=="custom"#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_DATA#></label>
-	<div class="controls">
-		<textarea name="data" cols="50" rows="5">[#DATA#]</textarea>
-	</div>
+        <label class="control-label"><#LANG_DATA#></label>
+        <div class="controls">
+                <textarea name="data" cols="50" rows="5">[#DATA#]</textarea>
+        </div>
 </div>
 
 [#endif TYPE#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#></label>
-	<div class="controls">
-		<input type="text" name="auto_update" value="[#AUTO_UPDATE#]" size="10"> (seconds) 
-	</div>
+        <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#></label>
+        <div class="controls">
+                <input type="text" name="auto_update" value="[#AUTO_UPDATE#]" size="10"> (seconds) 
+        </div>
 </div>
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_CURRENT_VALUE#></label>
-	<div class="controls">
-		<input type="text" name="cur_value" value="" size="20"> (<b>[#CUR_VALUE#]</b>)
-	</div>
+        <label class="control-label"><#LANG_CURRENT_VALUE#></label>
+        <div class="controls">
+                <input type="text" name="cur_value" value="" size="20"> (<b>[#CUR_VALUE#]</b>)
+        </div>
 </div>
 
 [#endif TYPE#]
@@ -181,10 +188,10 @@
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="textbox"#]
 
 <div class="control-group">
-	<label class="control-label"><#LINKED_OBJECT#>.<#LANG_PROPERTY#></label>
-	<div class="controls">
-		<input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
-	</div>
+        <label class="control-label"><#LINKED_OBJECT#>.<#LANG_PROPERTY#></label>
+        <div class="controls">
+                <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
+        </div>
 </div>
 
 [#endif TYPE#]
@@ -192,29 +199,29 @@
 [#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
-	<div class="controls">
-		<input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]" size="20">.<input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]" size="20">
-	</div>
+        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
+        <div class="controls">
+                <input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]" size="20">.<input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]" size="20">
+        </div>
 </div>
 
 <div class="control-group">
-	<label class="control-label"><#LANG_ONCHANGE_SCRIPT#></label>
-	<div class="controls">
+        <label class="control-label"><#LANG_ONCHANGE_SCRIPT#></label>
+        <div class="controls">
 <select name="script_id">
    <option value="0">
    [#begin SCRIPTS#]
        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
        [#end SCRIPTS#]
 </select> 
-	</div>
+        </div>
 </div>
 
 <div class="control-group">
-	<label class="control-label"><#LANG_ONCHANGE_CODE#> [#ERRORS#]</label>
-	<div class="controls">
-		<textarea name="code" rows="5" cols="50">[#CODE#]</textarea>
-	</div>
+        <label class="control-label"><#LANG_ONCHANGE_CODE#> [#ERRORS#]</label>
+        <div class="controls">
+                <textarea name="code" rows="5" cols="50">[#CODE#]</textarea>
+        </div>
 </div>
 
 [#endif TYPE#]
@@ -232,36 +239,36 @@
 <!-- URL (varchar) -->
 
 <div class="control-group">
-	<label class="control-label"> <#LANG_URL#></label>
-	<div class="controls">
-		<input type="text" name="url" value="[#URL#]" size="50">
-	</div>
+        <label class="control-label"> <#LANG_URL#></label>
+        <div class="controls">
+                <input type="text" name="url" value="[#URL#]" size="50">
+        </div>
 </div>
 
 [#if TYPE!="url"#]
 <div class="control-group">
-	<label class="control-label"><#LANG_TARGET_WINDOW#></label>
-	<div class="controls">
-		<input type="text" name="window" value="[#WINDOW#]" size="50">
-	</div>
+        <label class="control-label"><#LANG_TARGET_WINDOW#></label>
+        <div class="controls">
+                <input type="text" name="window" value="[#WINDOW#]" size="50">
+        </div>
 </div>
 
 <!-- WIDTH (int) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_WIDTH#></label>
-	<div class="controls">
-		<input type="text" name="width" value="[#WIDTH#]">
-	</div>
+        <label class="control-label"><#LANG_WIDTH#></label>
+        <div class="controls">
+                <input type="text" name="width" value="[#WIDTH#]">
+        </div>
 </div>
 
 <!-- HEIGHT (int) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_HEIGHT#></label>
-	<div class="controls">
-		<input type="text" name="height" value="[#HEIGHT#]">
-	</div>
+        <label class="control-label"><#LANG_HEIGHT#></label>
+        <div class="controls">
+                <input type="text" name="height" value="[#HEIGHT#]">
+        </div>
 </div>
 
 [#endif TYPE#]
@@ -295,6 +302,7 @@
 
 [#if ID!=""#]
 <hr>
+
 
 <div class="row">
 <div class="span-50">

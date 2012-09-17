@@ -43,6 +43,7 @@
  SQLExec("DELETE FROM phistory WHERE ADDED>NOW()");
  SQLExec("DELETE FROM history WHERE ADDED>NOW()");
  SQLExec("DELETE FROM shouts WHERE ADDED>NOW()");
+ SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW())-TO_DAYS(ADDED))>=5");
 
 
 ?>

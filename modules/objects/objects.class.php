@@ -303,8 +303,8 @@ curl_close($ch);
 
    if ($code!='') {
 
-   $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
-    
+    /*
+    $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
     if (!$class_object['NOLOG']) {
 
      $prevLog=SQLSelectOne("SELECT ID, UNIX_TIMESTAMP(ADDED) as UNX FROM history WHERE OBJECT_ID='".$this->id."' AND METHOD_ID='".$method['ID']."' ORDER BY ID DESC LIMIT 1");
@@ -324,10 +324,10 @@ curl_close($ch);
      $h['DETAILS'].="\n".'code: '."\n".$code;
      SQLInsert('history', $h);
     }
-    //DebMes("params:".serialize($params)."\n\ncode executing:\n".$code);
+    */
+
+
     eval($code);
-   } else {
-    //DebMes("no code found");
    }
 
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
