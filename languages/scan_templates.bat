@@ -1,1 +1,0 @@
-C:\_majordomo\server\php\php.exe scan_templates.php

@@ -1,21 +1,5 @@
 <?
 
- // --------------------------------------------------------------------------------
-  function tcp1w_getTemp($host, $port) {
-   $command=chr(0xbb).chr(0x80).chr(0x00).chr(0xff);
-   $res=tcp1w_command($host, $port, $command);
-   $ar=array();
-   if ($res[3]) {
-    $total=$res[3];
-    for($i=0;$i<$total;$i++) {
-     $temp=round(($res[4+$i*2]*256+$res[4+$i*2+1])*0.0625, 2);
-     $ar[]=$temp;
-    }
-    return $ar;
-   } else {
-    return 0;
-   }
-  }
 
   function tcp1w_command($host, $port, $command) {
 
@@ -51,6 +35,45 @@
    return $ar;
 
   }
+
+ // --------------------------------------------------------------------------------
+  function tcp1w_getTemp($host, $port) {
+   $command=chr(0xbb).chr(0x80).chr(0x00).chr(0xff);
+   $res=tcp1w_command($host, $port, $command);
+   $ar=array();
+   if ($res[3]) {
+    $total=$res[3];
+    for($i=0;$i<$total;$i++) {
+     $temp=round(($res[4+$i*2]*256+$res[4+$i*2+1])*0.0625, 2);
+     $ar[]=$temp;
+    }
+    return $ar;
+   } else {
+    return 0;
+   }
+  }
+
+
+ // --------------------------------------------------------------------------------
+  function tcp1w_turnRelayOn($host, $port) {
+   $command=chr(0xbb).chr(0x83).chr(0x02).chr(0x01).chr(0x01).chr(0xff);
+   $res=tcp1w_command($host, $port, $command);
+  }
+
+ // --------------------------------------------------------------------------------
+  function tcp1w_turnRelayOff($host, $port) {
+   $command=chr(0xbb).chr(0x83).chr(0x02).chr(0x01).chr(0x00).chr(0xff);
+   $res=tcp1w_command($host, $port, $command);
+  }
+
+ // --------------------------------------------------------------------------------
+  function tcp1w_getRelayState($host, $port) {
+   $command=chr(0xbb).chr(0x80).chr(0x03).chr(0xff);
+   $res=tcp1w_command($host, $port, $command);
+   return $res[4];
+  }
+
+
 
 
 ?>
