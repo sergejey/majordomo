@@ -50,18 +50,17 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
  sleep(1); // 1 second sleep
 
 
- $cycles=array(
-  './scripts/cycle_main.php',
-  './scripts/cycle_execs.php',
-  './scripts/cycle_onewire.php',
-  './scripts/cycle_onewire_starred.php',
-  './scripts/cycle_ping.php',
-  './scripts/cycle_rss.php',
-  './scripts/cycle_scheduler.php', 
-  './scripts/cycle_states.php', 
-  './scripts/cycle_watchfolders.php', 
-  './scripts/cycle_webvars.php'
- );
+ // getting list of /scripts/cycle_*.php files to run each in separate thread
+ $cycles=array();
+ if ($lib_dir = @opendir("./scripts")) {
+  while (($lib_file = readdir($lib_dir)) !== false) {
+    if ((preg_match("/^cycle_.+?\.php$/", $lib_file))) {
+     $cycles[]='./scripts/'.$lib_file;
+    }
+  }
+  closedir($lib_dir);
+ }
+
 
  $threads = new Threads;
 
@@ -69,13 +68,18 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
  foreach($cycles as $path) {
   if (file_exists($path)) {
+   DebMes("Starting ".$path." ... ");
    echo "Starting ".$path." ... ";
-   $threads->newThread($path);
+   $pipe_id=$threads->newThread($path);
+   $pipes[$pipe_id]=$path;
    echo "OK\n";
   }
  }
 
+ echo "ALL CYCLES STARTED\n";
+
  while (false !== ($result = $threads->iteration())) {
+
      if (!empty($result)) {
          echo $result."\r\n";
      }

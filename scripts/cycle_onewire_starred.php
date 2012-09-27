@@ -24,8 +24,6 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
  ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
 }
 
- DebMes("Running cycle: ".basename(__FILE__));
-
  include_once(DIR_MODULES."control_modules/control_modules.class.php");
  $ctl=new control_modules();
 
@@ -39,6 +37,14 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
  while(1) {
 
+  echo date("H:i:s")." running ".basename(__FILE__)."\n";
+
+  if (!$updated_time || (time()-$updated_time)>1*60*60) {
+   //Log activity every hour
+   DebMes("Cycle running OK: ".basename(__FILE__));
+   $updated_time=time();
+  }
+
 
   $onw->updateStarred(); // check starred 1wire properties
 
@@ -51,5 +57,7 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
 
  }
+
+ DebMes("Unexpected close of cycle: ".basename(__FILE__));
 
 ?>

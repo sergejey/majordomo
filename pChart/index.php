@@ -22,6 +22,14 @@
  // Standard inclusions      
  include("./pChart/pData.class");   
  include("./pChart/pChart.class");   
+
+
+  if (!$width) {
+   $w=610;
+  } else {
+   $w=(int)$width;
+  }
+
   
   // Dataset definition   
   $DataSet = new pData;
@@ -41,84 +49,81 @@
    exit;
   }
 
-  if (preg_match('/(\d+)d/', $type, $m)) {
+   $end_time=time();
 
-   $total=(int)$m[1]*24;
-   for($i=0;$i<$total;$i+=3) {
-    $dt=time()+($i-($total-1))*60*60;
-    $new_dt=mktime(date('H', $dt), 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt));
-    $dt=$new_dt;
-    $h=date('H', $dt);
-
-    //for($t=0;$t<60;$t+=60) {
-
-     $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $dt)."') ORDER BY ADDED DESC");
-     if ($ph['ID']) {
-      $values[]=$ph['VALUE'];
-     } else {
-      $values[]=0;
-     }
-     $hours[]=$h;
-     $h='';
-    //}
+   if ($_GET['px']) {
+    $px_per_point=(int)$_GET['px'];
+   } else {
+    $px_per_point=6;
    }
+   
 
-   $DataSet->AddPoint($values,"Serie1");  
-   $DataSet->AddPoint($hours,"Serie3");  
+ if (preg_match('/(\d+)d/', $type, $m)) {
+
+   $total=(int)$m[1];
+   $period=round(($total*24*60*60)/(($w-80)/$px_per_point)); // seconds
+   $start_time=$end_time-$total*24*60*60;
+
 
  } elseif (preg_match('/(\d+)h/', $type, $m)) {
+
    $total=(int)$m[1];
-   for($i=0;$i<$total;$i++) {
-    $dt=time()+($i-($total-1))*60*60;
-    $new_dt=mktime(date('H', $dt), 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt));
-    $dt=$new_dt;
-    $h=date('H', $dt);
-
-    for($t=0;$t<60;$t+=10) {
-
-     $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $dt+$t*60)."') ORDER BY ADDED DESC");
-     if ($ph['ID']) {
-      $values[]=$ph['VALUE'];
-     } else {
-      $values[]=0;
-     }
-     $hours[]=$h;
-     $h='';
-    }
-
-   }
-
-   $DataSet->AddPoint($values,"Serie1");  
-   $DataSet->AddPoint($hours,"Serie3");  
+   $period=round(($total*60*60)/(($w-80)/$px_per_point)); // seconds
+   $start_time=$end_time-$total*60*60;
 
   } elseif (preg_match('/(\d+)m/', $type, $m)) {
 
    $total=(int)$m[1];
-   for($i=0;$i<$total;$i++) {
-    $dt=time()+($i-($total-2))*60;
-    $new_dt=mktime(date('H', $dt), date('i', $dt), 0, date('m', $dt), date('d', $dt), date('Y', $dt));
-    $dt=$new_dt;
-    if (($i+1)%10==0) {
-     $m=date('h:i', $dt);
-    } else {
-     $m='';
-    }
-    $minutes[]=$m;
-    $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $dt)."') ORDER BY ADDED DESC");
-    if ($ph['ID']) {
-     $values[]=$ph['VALUE'];
-    } else {
-     $values[]=0;
-    }
+   $period=round(($total*31*24*60*60)/(($w-80)/$px_per_point)); // seconds
+   $start_time=$end_time-$total*31*24*60*60;
+
+  }
+
+
+  if ($total>0) {
+
+   $px=0;
+   $px_passed=0;
+
+   $dt=date('Y-m-d', $start_time);
+
+   while($start_time<$end_time) {
+
+     $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $start_time)."') ORDER BY ADDED DESC LIMIT 1");
+     if ($ph['ID']) {
+      $values[]=$ph['VALUE'];
+     } else {
+      $values[]=0;
+     }
+
+     if ($px_passed>30) {
+      if (date('Y-m-d', $start_time)!=$dt) {
+       $hours[]=date('d/m', $start_time);
+       $dt=date('Y-m-d', $start_time);
+      } else {
+       $hours[]=date('H:i', $start_time);
+      }
+      $px_passed=0;
+     } else {
+      $hours[]='';
+     }
+
+
+     $start_time+=$period;
+     $px+=$px_per_point;
+     $px_passed+=$px_per_point;
+
    }
+
    $DataSet->AddPoint($values,"Serie1");  
-   $DataSet->AddPoint($minutes,"Serie3");  
+   $DataSet->AddPoint($hours,"Serie3");  
+
 
   } else {
 
    $DataSet->AddPoint(0,"Serie1");
    $DataSet->AddPoint(0,"Serie3");
-
+  
   }
 
 
@@ -128,7 +133,9 @@
 
   $DataSet->SetSerieName("24 hours","Serie1");  
 
-  $DataSet->SetYAxisName($p);  
+  //$DataSet->SetYAxisName($p);  
+
+  
   if ($unit) {
    $DataSet->SetYAxisUnit($unit);
   } else {
@@ -138,11 +145,6 @@
    
   // Initialise the graph  
 
-  if (!$width) {
-   $w=610;
-  } else {
-   $w=(int)$width;
-  }
 
   if (!$height) {
    $h=210;
@@ -155,20 +157,36 @@
   $Test->setColorPalette(0,255,255,255);
 
   $Test->drawGraphAreaGradient(132,153,172,50,TARGET_BACKGROUND);  
+
+  $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",10);  
+  if ($_GET['title']) {
+   $Test->drawTitle(60,15,$_GET['title'],250,250,250);
+  } else {
+   $Test->drawTitle(60,15,$p,250,250,250);
+  }
+
+
   $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",8);  
   $Test->setGraphArea(60,20,$w-25,$h-30);  
   $Test->drawGraphArea(213,217,221,FALSE);  
   $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,213,217,221,TRUE,0,2);  
   $Test->drawGraphAreaGradient(162,183,202,50);  
-
-  if (count($values)<=30) {
-   $Test->drawGrid(4,TRUE,230,230,230,20);  
-  }
+  //$Test->drawGrid(4,TRUE,230,230,230,50); 
 
      
   // Draw the line chart  
-  $Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());  
-  //$Test->drawPlotGraph($DataSet->GetData(),$DataSet->GetDataDescription(),2);  
+  $Test->drawPlotGraph($DataSet->GetData(),$DataSet->GetDataDescription(),2);  
+
+  if ($_GET['gtype']=='curve') {
+   $Test->drawCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription());
+  } elseif ($_GET['gtype']=='bar') {
+   $Test->drawBarGraph($DataSet->GetData(),$DataSet->GetDataDescription(),TRUE);
+  } else {
+   $Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());  
+  }
+  //
+  
+
    
    
   // Render the picture  

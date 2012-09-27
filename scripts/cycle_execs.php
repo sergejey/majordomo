@@ -28,9 +28,15 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
  $ctl=new control_modules();
 
 
- DebMes("Running cycle: ".basename(__FILE__));
-
  while(1) {
+
+  echo date("H:i:s")." running ".basename(__FILE__)."\n";
+
+  if (!$updated_time || (time()-$updated_time)>1*60*60) {
+   //Log activity every hour
+   DebMes("Cycle running OK: ".basename(__FILE__));
+   $updated_time=time();
+  }
 
 
   SQLExec("DELETE FROM safe_execs WHERE ADDED<'".date('Y-m-d H:i:s', time()-180)."'");
@@ -66,5 +72,7 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
 
  }
+
+ DebMes("Unexpected close of cycle: ".basename(__FILE__));
 
 ?>
