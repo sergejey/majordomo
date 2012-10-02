@@ -49,6 +49,10 @@
    exit;
   }
 
+  if ($_GET['op']=='value') {
+   echo $pvalue['VALUE'];exit;
+  }
+
    $end_time=time();
 
    if ($_GET['px']) {
@@ -77,6 +81,10 @@
    $period=round(($total*31*24*60*60)/(($w-80)/$px_per_point)); // seconds
    $start_time=$end_time-$total*31*24*60*60;
 
+  } elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['start'], $m) && $_GET['interval']) {
+   $period=(int)$_GET['interval']; //seconds
+   $start_time=mktime(0, 0, 0, $m[2], $m[3], $m[1]);
+   $total=1;
   }
 
 
@@ -91,7 +99,7 @@
 
      $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $start_time)."') ORDER BY ADDED DESC LIMIT 1");
      if ($ph['ID']) {
-      $values[]=$ph['VALUE'];
+      $values[]=(float)$ph['VALUE'];
      } else {
       $values[]=0;
      }
@@ -124,6 +132,22 @@
    $DataSet->AddPoint(0,"Serie1");
    $DataSet->AddPoint(0,"Serie3");
   
+  }
+
+
+  if ($_GET['op']=='values') {
+   echo json_encode($values);
+   exit;
+  }
+
+
+  if ($_GET['op']=='json') {
+   //header("Content-type: text/json");
+   $ret = array();
+   $ret['VALUES']=$values;
+   $ret['TIME']=$hours;
+   echo json_encode($ret);
+   exit;
   }
 
 
