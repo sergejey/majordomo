@@ -13,6 +13,11 @@
    [#inc onewire_edit.html#]
  [#endif VIEW_MODE#]
  <!-- / table onewire edit -->
+ <!-- table onewire edit -->
+ [#if VIEW_MODE="edit_display"#]
+   [#inc display_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table onewire edit -->
  <!-- table onewire view --> 
  [#if VIEW_MODE="view_onewire"#]
    [#inc onewire_view.html#]

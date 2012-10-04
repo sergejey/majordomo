@@ -55,7 +55,7 @@ Define('ONEWIRE_SERVER', 'tcp://localhost:1234');
 </table>
 
 <h3>Дисплеи</h3>
-<a href="#" class="btn btn-success btn-mini"><i class="icon-white icon-plus-sign"></i> <#LANG_ADD#></a>
+<a href="?view_mode=edit_display" class="btn btn-success btn-mini"><i class="icon-white icon-plus-sign"></i> <#LANG_ADD#></a>
 [#if DISPLAY#]
 <table class="table table-bordered table-rounded">
 [#begin DISPLAY#]
@@ -66,7 +66,7 @@ Define('ONEWIRE_SERVER', 'tcp://localhost:1234');
  </td>
  <td >
   [#if "<#ACTION#>"=="admin"#]
-    <a href="?view_mode=edit_onewire&id=[#ID#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_onewire&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+    <a href="?view_mode=edit_display&id=[#ID#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_display&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
   [#endif ACTION#]
  </td>
 </tr>
