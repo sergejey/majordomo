@@ -4,7 +4,7 @@
 *
 * @package MajorDoMo
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
-* @version 1.0
+* @version 1.1
 */
 
 
@@ -134,9 +134,11 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
   header ('Content-Type: text/html; charset=utf-8');
  }
 
- echo "OK";
- if ($tmp['MESSAGE']!='') {
-  echo ' '.$tmp['DAT'].' '.transliterate($tmp['MESSAGE']);
+ if (defined('BTRACED')) {
+  echo "OK";
+  if ($tmp['MESSAGE']!='') {
+   echo ' '.$tmp['DAT'].' '.transliterate($tmp['MESSAGE']);
+  }
  }
 
 
