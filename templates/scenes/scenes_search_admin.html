@@ -13,14 +13,14 @@
 <div class="well relative">
 <span class="scene-title">[#TITLE#]</span>
 <div class="btn-group pull-right">
-	<a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="icon-pencil"></i> <#LANG_EDIT#></a>
-	[#if "<#ACTION#>"=="admin"#]
-	<a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i> <#LANG_DELETE#></a>
-	[#endif ACTION#]
+        <a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="icon-pencil"></i> <#LANG_EDIT#></a>
+        [#if "<#ACTION#>"=="admin"#]
+        <a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i> <#LANG_DELETE#></a>
+        [#endif ACTION#]
 </div>
 
 [#if BACKGROUND!=""#]
-<img class="scene-thumbail" src="[#BACKGROUND#]">
+<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img class="scene-thumbail" src="[#BACKGROUND#]"></a>
 [#endif#]
 </div>
 [#end RESULT#]

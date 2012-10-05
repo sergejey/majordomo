@@ -1,50 +1,51 @@
+
 <script src="/js/jquery.event.drag-2.2.js"></script>
 <script>
 $(function() {
-	$("div.element-preview").drag(
-		function(ev,dd){
-			$(this).css({
-				top: dd.offsetY,
-				left: dd.offsetX
-			});
-		},
-		{
-			relative: true,
-			not: ".resize-handler"
-		}
-	)
-	.drag("start", function() {
-		$(this).addClass("drag-active");
-	})
-	.drag("end", function() {
-		$(this).removeClass("drag-active");
-	});
-	$(".resize-handler").drag(
-		function(ev,dd){
-			var e = $(this).parent();
-			e[0].style.height = dd.initialHeight + dd.deltaY + 'px';
-			e[0].style.width = dd.initialWidth + dd.deltaX + 'px';
-		}
-	)
-	.drag("start", function(ev, dd) {
-		dd.initialHeight = $(this).parent().innerHeight();
-		dd.initialWidth = $(this).parent().innerWidth();
-	})
-	$("form#frmEdit").submit(function() {
-		var e = [];
-		$("div.element-preview").each(function(index, element) {
-			var t = element.style;
-			e.push({
-				WIDTH: t.width,
-				HEIGHT: t.height,
-				TOP: t.top,
-				LEFT: t.left,
-				ID: $(element).data('id')
-			});
-		});
-		e = JSON.stringify(e);
-		$(this).find("input[name=elements]").val(e);
-	});
+        $("div.element-preview").drag(
+                function(ev,dd){
+                        $(this).css({
+                                top: dd.offsetY,
+                                left: dd.offsetX
+                        });
+                },
+                {
+                        relative: true,
+                        not: ".resize-handler"
+                }
+        )
+        .drag("start", function() {
+                $(this).addClass("drag-active");
+        })
+        .drag("end", function() {
+                $(this).removeClass("drag-active");
+        });
+        $(".resize-handler").drag(
+                function(ev,dd){
+                        var e = $(this).parent();
+                        e[0].style.height = dd.initialHeight + dd.deltaY + 'px';
+                        e[0].style.width = dd.initialWidth + dd.deltaX + 'px';
+                }
+        )
+        .drag("start", function(ev, dd) {
+                dd.initialHeight = $(this).parent().innerHeight();
+                dd.initialWidth = $(this).parent().innerWidth();
+        })
+        $("form#frmEdit").submit(function() {
+                var e = [];
+                $("div.element-preview").each(function(index, element) {
+                        var t = element.style;
+                        e.push({
+                                WIDTH: t.width,
+                                HEIGHT: t.height,
+                                TOP: t.top,
+                                LEFT: t.left,
+                                ID: $(element).data('id')
+                        });
+                });
+                e = JSON.stringify(e);
+                $(this).find("input[name=elements]").val(e);
+        });
 });
 </script>
 <!-- Table 'scenes' edit -->
@@ -67,28 +68,28 @@ $(function() {
 <!-- TITLE (varchar) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_TITLE#> (*)</label>
-	<div class="controls">
-		<input type="text" name="title" value="[#TITLE#]" required>
-	</div>
+        <label class="control-label"><#LANG_TITLE#> (*)</label>
+        <div class="controls">
+                <input type="text" name="title" value="[#TITLE#]" required>
+        </div>
 </div>
 
 <!-- PRIORITY (int) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_PRIORITY#></label>
-	<div class="controls">
-		<input type="text" name="priority" value="[#PRIORITY#]">
-	</div>
+        <label class="control-label"><#LANG_PRIORITY#></label>
+        <div class="controls">
+                <input type="text" name="priority" value="[#PRIORITY#]">
+        </div>
 </div>
 
 <!-- BACKGROUND (varchar) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_BACKGROUND#></label>
-	<div class="controls">
-		<input type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
-	</div>
+        <label class="control-label"><#LANG_BACKGROUND#></label>
+        <div class="controls">
+                <input type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
+        </div>
 </div>
 <script type="text/javascript">
      function openFileBrowser(id){

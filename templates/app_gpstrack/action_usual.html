@@ -1,0 +1,112 @@
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript" src="/js/gmaps.js"></script>
+
+<script type="text/javascript" language="javascript">
+
+var updateTimeOut;
+
+function checkMarkerExists(temp_id) {
+  for (var i=0, marker; marker=map.markers[i]; i++){
+   if (marker.temp_id==temp_id) return true;
+  }
+  return false;
+}
+
+function getMarkerIndex(temp_id) {
+  for (var i=0, marker; marker=map.markers[i]; i++){
+   if (marker.temp_id==temp_id) return i;
+  }
+ return false;
+}
+
+
+function updateMarkers() {
+ var url="?";
+ url+='&ajax=1&op=getmarkers';
+ $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+   var markers=obj.MARKERS;
+
+   for(var i=0;i<markers.length;i++) {
+     var marker=markers[i];
+     var temp_id=marker.ID;
+     if (!checkMarkerExists(temp_id)) {
+
+
+     map.addMarker({
+       temp_id:temp_id,
+       lat: marker.LAT,
+       lng: marker.LON,
+       title: marker.NAME,
+       infoWindow: {
+        content: marker.HTML
+       },
+      });
+
+     } else {
+
+      mk=getMarkerIndex(temp_id);
+      var marker_obj=map.markers[mk];
+      var lat = parseFloat(marker.LAT);
+      var lng = parseFloat(marker.LON);
+      var oldLatLng = marker_obj.getPosition();
+      var newLatLng = new google.maps.LatLng(lat, lng);
+      marker_obj.setPosition(newLatLng);
+
+      if ((oldLatLng.lng()!=newLatLng.lng()) || (oldLatLng.lat()!=newLatLng.lat())) {
+       // marker moved
+       map.setCenter(newLatLng.lat(), newLatLng.lng());
+      }
+
+     }
+   }
+   updateTimeOut=setTimeout('updateMarkers();', 3000);
+
+  });
+ return false;
+}
+
+
+
+    var map;
+
+
+    $(document).ready(function(){
+      map = new GMaps({
+        div: '#map',
+        lat: [#LATEST_LAT#],
+        lng: [#LATEST_LON#],
+        zoom: 18,
+      });
+
+
+[#if LATEST_LAT=""#]
+GMaps.geolocate({
+  success: function(position) {
+    map.setCenter(position.coords.latitude, position.coords.longitude, function() {centerChanged();});
+  },
+  error: function(error) {
+    //alert('Geolocation failed: '+error.message);
+  },
+  not_supported: function() {
+    //alert("Your browser does not support geolocation");
+  },
+  always: function() {
+    //alert("Done!");
+  }
+});
+[#endif#]
+
+updateMarkers();
+
+//
+
+    });
+
+
+
+</script>
+
+<div id="map" style="width: 100%; height: 620px;"></div>

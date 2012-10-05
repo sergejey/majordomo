@@ -213,7 +213,7 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
- $this->admin($out);
+ require(DIR_MODULES.$this->name.'/usual.inc.php');
 }
 /**
 * gpslog search

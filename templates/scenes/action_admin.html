@@ -13,17 +13,31 @@
  <!-- / table scenes search -->
  <!-- table scenes edit -->
  [#if VIEW_MODE="edit_scenes"#]
+
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+[#if ID!=""#]
+<span class="divider">/</span>
+<li class="active">
+[#TITLE#]
+</li>
+[#endif#]
+</ul>
+
+
    [#if ID!=""#]
    <h3>[#TITLE#]</h3>
-	
-	<ul class="nav nav-tabs">
-	<li[#if TAB=""#] class="active"[#endif#]>
-	<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a>
-	</li>
-	<li[#if TAB="elements"#] class="active"[#endif#]>
-	<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements"><#LANG_ELEMENTS#></a>
-	</li>
-	</ul>
+        
+        <ul class="nav nav-tabs">
+        <li[#if TAB=""#] class="active"[#endif#]>
+        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a>
+        </li>
+        <li[#if TAB="elements"#] class="active"[#endif#]>
+        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements"><#LANG_ELEMENTS#></a>
+        </li>
+        </ul>
 
    [#endif ID#]
    [#if TAB=""#]
