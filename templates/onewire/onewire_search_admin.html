@@ -3,41 +3,39 @@
 #-->
 
 [#if "<#ONEWIRE_SERVER#>"==""#]
-<p>
-<font color="red"><b>Please set up <a href="http://owfs.org" target=_blank>OWFS</a> server details in /config.php</b></font>
-<br>For example:<br>
+<div class="alert alert-error">
+<p>Please set up <a href="http://owfs.org" target=_blank>OWFS</a> server details in /config.php</p>
+<p>For example:</p>
+<pre>
 Define('ONEWIRE_SERVER', 'tcp://localhost:1234');
-</p>
+</pre>
+</div>
 [#endif#]
 
-<p align=center>
-<b>
-[ <a href="?view_mode=scan"><#LANG_RESCAN_DEVICES#></a> ]  
+<a class="btn" href="?view_mode=scan"><#LANG_RESCAN_DEVICES#>
 [#if "<#ONEWIRE_SERVER#>"!=""#]
 (<#ONEWIRE_SERVER#>)
 [#endif#]
-</b>
-</p>
+</a>
 
-<table width=100% border=0><tr>
-<td valign=top>
 <!-- results -->
 [#if RESULT#]
+
 <!-- paging -->
 [#if PAGES#]
-<table border=0 align=center>
-<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+<#LANG_PAGES#>:&nbsp;
+[#begin PREVPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a>[#end PREVPAGE#]
 [#begin PAGES#]
-<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]
 [#end PAGES#]
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
+[#begin NEXTPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a>[#end NEXTPAGE#]
 [#endif PAGES#]
 <!-- / paging -->
+
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_onewire" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 align=center>
+<h3>Устройства</h3>
+<table class="table table-bordered table-rounded">
 [#begin RESULT#]
 <tr >
  <td
@@ -48,40 +46,53 @@ Define('ONEWIRE_SERVER', 'tcp://localhost:1234');
    Next check: [#CHECK_NEXT#]
  </td>
  <td >
-  <table border=0>
   [#if "<#ACTION#>"=="admin"#]
-   <td  align=center>
-    <b><a href="?view_mode=edit_onewire&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td  align=center>
-    <a href="?view_mode=delete_onewire&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+    <a href="?view_mode=edit_onewire&id=[#ID#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_onewire&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
   [#endif ACTION#]
-  </table>
  </td>
 </tr>
 [#end RESULT#]
 </table>
+
+<h3>Дисплеи</h3>
+<a href="?view_mode=edit_display" class="btn btn-success btn-mini"><i class="icon-white icon-plus-sign"></i> <#LANG_ADD#></a>
+[#if DISPLAY#]
+<table class="table table-bordered table-rounded">
+[#begin DISPLAY#]
+<tr >
+ <td
+   >
+   [#TITLE#] ([#ROWS#]×[#COLS#])
+ </td>
+ <td >
+  [#if "<#ACTION#>"=="admin"#]
+    <a href="?view_mode=edit_display&id=[#ID#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_display&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+  [#endif ACTION#]
+ </td>
+</tr>
+[#end DISPLAY#]
+</table>
+[#endif DISPLAY#]
+
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_onewire">
 </form>
 <!-- / search results (list) -->
+
 <!-- paging -->
 [#if PAGES#]
-<table border=0 align=center>
-<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+<#LANG_PAGES#>:&nbsp;
+[#begin PREVPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a>[#end PREVPAGE#]
 [#begin PAGES#]
-<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]
 [#end PAGES#]
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
+[#begin NEXTPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a>[#end NEXTPAGE#]
 [#endif PAGES#]
 <!-- / paging -->
+
+
+
 [#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_DEVICES_FOUND#></font>
-</p>
+<div class="alert alert-error"><#LANG_NO_DEVICES_FOUND#></div>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>

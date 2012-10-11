@@ -1,0 +1,89 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<!-- Table 'pinghosts' edit -->
+
+[#if OK#]
+<div class="alert alert-success">
+<#LANG_DATA_SAVED#>
+</div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error">
+<#LANG_FILLOUT_REQURED#>
+</div>
+[#endif ERR#]
+[#if ID=""#]
+<h3>
+<#LANG_NEW_RECORD#>
+</h3>
+[#endif ID#]
+
+<form class="form-horizontal" action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+
+<div class="control-group">
+<label class="control-label"><#LANG_TITLE#></label>
+<div class="controls"><input type="text" name="title" value="[#TITLE#]" required></div>
+</div>
+
+[#if ID=""#]
+<div class="control-group">
+<label class="control-label">UDID</label>
+<div class="controls">
+<select name="udid">
+<option disabled>Select...</option>
+[#begin DEVICES#]
+<option value="[#UDID#]">[#UDID#]</option>
+[#end DEVICES#]
+</select>
+</div>
+</div>
+[#else#]
+<div class="control-group">
+<label class="control-label"><#LANG_ID#></label>
+<div class="controls"><input type="text" name="udid" class="uneditable-input" disabled value="[#UDID#]"></div>
+</div>
+[#endif ID#]
+
+<div class="control-group">
+<label class="control-label"><#LANG_CHECK_INTERVAL#></label>
+<div class="controls">
+<div class="input-append">
+<input type="text" name="update_interval" value="[#UPDATE_INTERVAL#]" size="10"><span class="add-on">c.</span>
+</div>
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label"><#LANG_ROWS#></label>
+<div class="controls"><input type="text" name="rows" value="[#ROWS#]" required></div>
+</div>
+
+<div class="control-group">
+<label class="control-label"><#LANG_COLS#></label>
+<div class="controls"><input type="text" name="cols" value="[#COLS#]" required></div>
+</div>
+
+<div class="control-group">
+<label class="control-label"><#LANG_VALUE#></label>
+<div class="controls">
+<textarea class="ow-display-text" name="value" cols="[#COLS#]" rows="[#ROWS#]" spellcheck="false">
+[#VALUE#]
+</textarea>
+</div>
+</div>
+
+<div class="form-actions">
+ [#if ID!=""#]
+ <button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button class="btn" type="submit" name="subm"><i class="icon-plus-sign"/></i> <#LANG_ADD#></button>
+ [#endif ID#]
+ <a class="btn" href="?"><#LANG_CANCEL#></a>
+</div>
+
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>

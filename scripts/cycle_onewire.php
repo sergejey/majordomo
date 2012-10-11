@@ -47,7 +47,8 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
 
   $onw->updateDevices(); // check all 1wire devices
-
+  $onw->updateDisplays();
+  
   if (file_exists('./reboot')) {
    $db->Disconnect();
    exit;
