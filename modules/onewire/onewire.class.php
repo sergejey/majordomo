@@ -275,6 +275,15 @@ function usual(&$out) {
   }
  }
 
+ function initDisplays() {
+  $displays=SQLSelect("SELECT UDID FROM owdisplays");
+  $total=count($displays);
+  $ow=new OWNet(ONEWIRE_SERVER);
+  for($i=0;$i<$total;$i++) {
+   $ow->set($displays[$i]['UDID']."/LCD_H/message", str_pad("Starting...", 40));
+  }
+ }
+ 
  function updateDisplays($force=0, $display_id=0) {
   $sql=1;
   if (!$force) {
@@ -454,6 +463,7 @@ function updateDisplay($id) {
  
   for ($i = 1; $i <= $rec['ROWS']; $i++) {
 	$line = $i.",1:".$text[$i-1];
+	$line = processTitle($line);
     $ow->set($device."/LCD_H/screenyx", str_pad($line, 40));
   }
   
@@ -512,7 +522,7 @@ function updateDisplay($id) {
      $prec['VALUE']=$value;
      $prec['UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('owproperties', $prec);
-     $rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
+     //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
      SQLUpdate('owdevices', $rec);
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
       sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
