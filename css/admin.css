@@ -222,3 +222,8 @@ div.resize-handler {
 	height: 16px;
 	cursor: nw-resize;
 }
+
+textarea.ow-display-text {
+	font-family: 'Courier New', Monospace;
+	height: 75px;
+}

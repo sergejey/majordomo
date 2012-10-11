@@ -159,8 +159,18 @@ function admin(&$out) {
   if ($this->view_mode=='edit_onewire') {
    $this->edit_onewire($out, $this->id);
   }
+  
+  if ($this->view_mode=='edit_display') {
+   $this->edit_display($out, $this->id);
+  }
+  
   if ($this->view_mode=='delete_onewire') {
    $this->delete_onewire($this->id);
+   $this->redirect("?");
+  }
+  
+  if ($this->view_mode=='delete_display') {
+   $this->delete_display($this->id);
    $this->redirect("?");
   }
  }
@@ -183,6 +193,16 @@ function usual(&$out) {
  function search_onewire(&$out) {
   require(DIR_MODULES.$this->name.'/onewire_search.inc.php');
  }
+ 
+ /**
+* display edit/add
+*
+* @access public
+*/
+ function edit_display(&$out, $id) {
+  require(DIR_MODULES.$this->name.'/display_edit.inc.php');
+ }
+ 
 /**
 * onewire edit/add
 *
@@ -191,6 +211,16 @@ function usual(&$out) {
  function edit_onewire(&$out, $id) {
   require(DIR_MODULES.$this->name.'/onewire_edit.inc.php');
  }
+ 
+/**
+* onewire delete display
+*
+* @access public
+*/
+ function delete_display($id) {
+  SQLExec("DELETE FROM owdisplays WHERE ID='".$id."'");
+ }
+ 
 /**
 * onewire delete record
 *
@@ -245,6 +275,31 @@ function usual(&$out) {
   }
  }
 
+ function initDisplays() {
+  $displays=SQLSelect("SELECT UDID FROM owdisplays");
+  $total=count($displays);
+  $ow=new OWNet(ONEWIRE_SERVER);
+  for($i=0;$i<$total;$i++) {
+   $ow->set($displays[$i]['UDID']."/LCD_H/message", str_pad("Starting...", 40));
+  }
+ }
+ 
+ function updateDisplays($force=0, $display_id=0) {
+  $sql=1;
+  if (!$force) {
+   $sql.=" AND UPDATE_NEXT<='".time()."'";
+  }
+  if ($display_id) {
+   $sql.=" AND ID='".(int)$device_id."'";
+  }
+  $displays=SQLSelect("SELECT ID, TITLE FROM owdisplays WHERE ".$sql." ORDER BY UPDATE_NEXT");
+  $total=count($displays);
+  for($i=0;$i<$total;$i++) {
+   echo "Updating display: ".$displays[$i]['TITLE']."\n";
+   $this->updateDisplay($displays[$i]['ID']);
+  }
+ }
+ 
 /**
 * Title
 *
@@ -388,6 +443,33 @@ function usual(&$out) {
 *
 * @access public
 */
+function updateDisplay($id) {
+  if (!defined('ONEWIRE_SERVER')) {
+   return 0;
+  }
+
+  $rec=SQLSelectOne("SELECT * FROM owdisplays WHERE ID='".$id."'");
+  if (!$rec['ID']) {
+   return 0;
+  }
+
+  $ow=new OWNet(ONEWIRE_SERVER);
+  $device='/'.$rec['UDID'];
+
+  $rec['UPDATE_LATEST']=time();
+  $rec['UPDATE_NEXT']=time()+(int)$rec['UPDATE_INTERVAL'];
+  
+  $text = split("(\r\n)", $rec['VALUE']);
+ 
+  for ($i = 1; $i <= $rec['ROWS']; $i++) {
+	$line = $i.",1:".$text[$i-1];
+	$line = processTitle($line);
+    $ow->set($device."/LCD_H/screenyx", str_pad($line, 40));
+  }
+  
+  SQLUpdate('owdisplays', $rec);
+}
+
  function updateDevice($id) {
 
   if (!defined('ONEWIRE_SERVER')) {
@@ -440,7 +522,7 @@ function usual(&$out) {
      $prec['VALUE']=$value;
      $prec['UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('owproperties', $prec);
-     $rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
+     //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
      SQLUpdate('owdevices', $rec);
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
       sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
