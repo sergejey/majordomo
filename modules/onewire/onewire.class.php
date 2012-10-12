@@ -400,13 +400,13 @@ function usual(&$out) {
     if (!$value) {
      $device='/'.$prec['UDID'];
      $tmp=$ow->get($device,OWNET_MSG_DIR,false);
-     if (!$tmp) {
+     if (!is_null($tmp)) {
       continue;
      }
     }
 
 
-    if ($value!=$old_value) {
+    if (!is_null($value) && $value!=$old_value) {
      $prec['VALUE']=$value;
      $prec['UPDATED']=date('Y-m-d H:i:s');
 
@@ -515,7 +515,7 @@ function updateDisplay($id) {
     }
     $old_value=$prec['VALUE'];
     $value=$ow->get($properties[$ip],OWNET_MSG_READ,false);
-    if ($old_value!=$value) {
+    if (!is_null($value) && $old_value!=$value) {
      // value updated
      $changed=1;
      $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
