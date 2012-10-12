@@ -462,8 +462,8 @@ function updateDisplay($id) {
   $text = split("(\r\n)", $rec['VALUE']);
  
   for ($i = 1; $i <= $rec['ROWS']; $i++) {
-	$line = $i.",1:".$text[$i-1];
-	$line = processTitle($line);
+        $line = $i.",1:".$text[$i-1];
+        $line = processTitle($line);
     $ow->set($device."/LCD_H/screenyx", str_pad($line, 40));
   }
   
@@ -586,6 +586,15 @@ onewire - onewire
  owproperties: STARRED int(3) unsigned NOT NULL DEFAULT '0'
  owproperties: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  owproperties: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+
+ owdisplays: ID int(10) unsigned NOT NULL auto_increment
+ owdisplays: UDID int(10) unsigned NOT NULL DEFAULT '0'
+ owdisplays: ROWS int(3) unsigned NOT NULL DEFAULT '0'
+ owdisplays: COLS int(3) unsigned NOT NULL DEFAULT '0'
+ owdisplays: UPDATE_INTERVAL int(10) unsigned NOT NULL DEFAULT '0'
+ owdisplays: VALUE text
+ owdisplays: UPDATE_LATEST int(10) unsigned NOT NULL DEFAULT '0'
+ owdisplays: UPDATE_NEXT int(10) unsigned NOT NULL DEFAULT '0'
 
 
 

@@ -47,7 +47,18 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 
  }
 }
- 
+
+$blocked=array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS', '_FILES', '_REQUEST', '_ENV');
+if ($_SERVER['REQUEST_METHOD']=="POST") {
+ $blocked[]='_GET';
+} else {
+ $blocked[]='_POST';
+}
+foreach($blocked as $b) {
+ unset($_GET[$b]);
+ unset($_POST[$b]);
+ unset($_REQUEST[$b]);
+} 
 
 
 function stripit(&$a)
