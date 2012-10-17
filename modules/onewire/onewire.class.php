@@ -589,6 +589,7 @@ onewire - onewire
 
  owdisplays: ID int(10) unsigned NOT NULL auto_increment
  owdisplays: UDID int(10) unsigned NOT NULL DEFAULT '0'
+ owdisplays: TITLE varchar(255) NOT NULL DEFAULT ''
  owdisplays: ROWS int(3) unsigned NOT NULL DEFAULT '0'
  owdisplays: COLS int(3) unsigned NOT NULL DEFAULT '0'
  owdisplays: UPDATE_INTERVAL int(10) unsigned NOT NULL DEFAULT '0'
