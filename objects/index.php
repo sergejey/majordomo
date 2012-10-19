@@ -41,9 +41,9 @@
 
  // ---------------------------------------------------------------------------
  // NORMAL HANDLER
+ chdir(dirname(__FILE__).'/..');
 
- include_once("../config.php");
- chdir(DOC_ROOT);
+ include_once("./config.php");
  include_once("./lib/loader.php");
 
 
@@ -58,6 +58,15 @@
  for($i=0;$i<$total;$i++) {
   Define('SETTINGS_'.$settings[$i]['NAME'], $settings[$i]['VALUE']);
  }
+
+// language selection by settings
+if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php')) include_once (ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
+include_once (ROOT . 'languages/default.php');
+
+if (defined('SETTINGS_SITE_TIMEZONE')) {
+ ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
+}
+
 
  if ($argv[1]!='') {
   //echo date('Y-m-d H:i:s')." command line call: ".$argv[1]."\n";

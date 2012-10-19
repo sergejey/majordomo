@@ -6,6 +6,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 1.4
 */
+ chdir(dirname(__FILE__));
 
  include_once("./config.php");
  include_once("./lib/loader.php");

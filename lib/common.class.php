@@ -448,7 +448,7 @@
    if (substr(php_uname(), 0, 7) == "Windows") {
     safe_exec(DOC_ROOT.'/rc/madplay.exe '.$filename, $exclusive, $priority);
    } else {
-    safe_exec('mpg321 '.$filename, $exclusive, $priority);
+    safe_exec('mplayer '.$filename, $exclusive, $priority);
    }
   }
  }
