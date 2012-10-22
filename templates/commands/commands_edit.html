@@ -292,6 +292,10 @@ Action URL:
 
 <a class="btn" href="?"><#LANG_CANCEL#></a>
 
+ [#if ID!=""#]
+ <a class="btn" href="?id=<#ID#>&view_mode=clone_commands" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ [#endif ID#]
+
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">

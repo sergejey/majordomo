@@ -29,6 +29,19 @@
         </div>
 </div>
 
+<div class="control-group">
+        <label class="control-label"><#LANG_SCENE#></label>
+        <div class="controls">
+                <select name="scene_id" required>
+                        <option value="" disabled selected>select
+                        [#begin SCENES#]
+                        <option value="[#ID#]"[#if ID="<#ELEMENT_SCENE_ID#>"#] selected[#endif#]>[#TITLE#]
+                        [#end SCENES#]
+                </select>
+        </div>
+</div>
+
+
 <!-- TYPE (select) -->
 
 <div class="control-group">
@@ -274,6 +287,11 @@
  [#endif ID#]
 
  <a class="btn" href="?tab=elements&id=<#ID#>&view_mode=edit_scenes"><#LANG_CANCEL#></a>
+
+ [#if ID!=""#]
+ <a class="btn" href="?tab=elements&id=<#ID#>&view_mode=<#VIEW_MODE#>&edit_mode=<#EDIT_MODE#>&view_mode2=clone_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ [#endif ID#]
+
 </div>
  
 <input type="hidden" name="element_id" value="<#ELEMENT_ID#>">

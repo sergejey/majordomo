@@ -44,9 +44,9 @@
    if ($ok) {
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
-	 foreach ($elements as $value) {
-		SQLUpdate('elements', $value);
-	 }
+         foreach ($elements as $value) {
+                SQLUpdate('elements', $value);
+         }
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
@@ -58,6 +58,25 @@
   }
 
   }
+
+  if ($view_mode2=='clone_elements') {
+   global $element_id;
+   $element=SQLSelectOne("SELECT * FROM elements WHERE ID='".(int)$element_id."'");
+   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."'");
+   unset($element['ID']);
+   $element['TITLE']=$element['TITLE'].' (copy)';
+   $element['ID']=SQLInsert('elements', $element);
+
+   $total=count($states);
+   for($i=0;$i<$total;$i++) {
+    unset($states[$i]['ID']);
+    $states[$i]['ELEMENT_ID']=$element['ID'];
+    SQLInsert('elm_states', $states[$i]);
+   }
+
+   $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab);
+  }
+
 
   if ($view_mode2=='delete_elements') {
    global $element_id;
@@ -101,6 +120,9 @@
     global $type;
     $element['TYPE']=$type;
 
+    global $scene_id;
+    $element['SCENE_ID']=$scene_id;
+
     global $height;
     $element['HEIGHT']=(int)$height;
 
@@ -110,7 +132,7 @@
     global $cross_scene;
     $element['CROSS_SCENE']=(int)$cross_scene;
 
-    $element['SCENE_ID']=$rec['ID'];
+    //$element['SCENE_ID']=$rec['ID'];
 
     if ($ok) {
      $out['OK']=1;
@@ -176,7 +198,7 @@
      
     }
    }
-	
+        
    if (is_array($state_rec)) {
     foreach($state_rec as $k=>$v) {
      $out['STATE_'.$k]=$v;
@@ -210,6 +232,8 @@
 
   $elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."'");
   $out['ELEMENTS']=$elements;
+
+  $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
 
 
 ?>

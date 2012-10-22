@@ -199,6 +199,15 @@ function admin(&$out) {
   if ($this->view_mode=='edit_commands') {
    $this->edit_commands($out, $this->id);
   }
+
+  if ($this->view_mode=='clone_commands') {
+   $rec=SQLSelectOne("SELECT * FROM commands WHERE ID='".$this->id."'");
+   unset($rec['ID']);
+   $rec['TITLE']=$rec['TITLE'].' (copy)';
+   $rec['ID']=SQLInsert('commands', $rec);
+   $this->redirect("?id=".$rec['ID']."&view_mode=edit_commands");
+  }
+
   if ($this->view_mode=='delete_commands') {
    $this->delete_commands($this->id);
    $this->redirect("?");
@@ -241,12 +250,11 @@ function usual(&$out) {
  function delete_commands($id) {
   $rec=SQLSelectOne("SELECT * FROM commands WHERE ID='$id'");
   // some action for related tables
-  if ($rec['SUB_LIST']) {
-   $tmp=SQLSelect("SELECT ID FROM commands WHERE ID IN (".$rec['SUB_LIST'].") AND ID!='".$rec['ID']."'");
-   if ($tmp[0]['ID']) {
+   $tmp=SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID=".$rec['ID']);
+   if ($tmp['ID']) {
     return;
    }
-  }
+
   SQLExec("DELETE FROM commands WHERE ID='".$rec['ID']."'");
  }
 /**
