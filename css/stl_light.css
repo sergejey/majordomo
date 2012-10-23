@@ -4,7 +4,7 @@
 /*main styles*/
 table,div{
         font:12px Arial, Helvetica, sans-serif;
-        color:white;
+        color:black;
 }
 img{
         border:0;
@@ -35,7 +35,7 @@ p{
 }
 /*default styles*/
 a{
-        color:white;
+        color:black;
         text-decoration:underline;
 }
 a:hover{
@@ -43,33 +43,33 @@ a:hover{
 }
 h1{
         font:24px 'Trebuchet MS', Arial, Helvetica, sans-serif;
-    color:white;
+    color:black;
     padding:0;
     margin:0 0 5px 0;
     letter-spacing:-1px;
 }
 h2{
         font:20px 'Trebuchet MS', Arial, Helvetica, sans-serif;
-    color:white;
+    color:black;
     padding:0;
     margin:0 0 5px 0;
     letter-spacing:-1px;
 }
 h3{
         font:18px 'Trebuchet MS', Arial, Helvetica, sans-serif;
-    color:white;
+    color:black;
     padding:0;
     margin:0 0 5px 0;
 }
 h4{
         font:bold 16px 'Trebuchet MS', Arial, Helvetica, sans-serif;
-    color:white;
+    color:black;
     padding:0;
     margin:0 0 5px 0;
 }
 h5{
         font:bold 14px 'Trebuchet MS', Arial, Helvetica, sans-serif;
-    color:white;
+    color:black;
     padding:0;
     margin:0 0 5px 0;
 }

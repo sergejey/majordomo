@@ -13,11 +13,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 [#endif#]
-<link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css" />
-<link type="text/css" rel="stylesheet" href="/css/ui-darkness/jquery-ui-1.8.6.custom.css"/>
+<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.8.6.custom.css"/>
 <link type="text/css" rel="stylesheet" href="/js/jquery.windows-engine.css"/>
 <link rel="stylesheet" type="text/css" href="/css/jquery.gritter.css" />
 <script type="text/javascript" src="/jquerymobile/jquery-1.7.1.min.js"></script>
+<link rel="stylesheet" href="/jquerymobile/jquery.mobile-1.1.0.css" />
 [#if POPUP="1"#]
 <!--#
 <link rel="stylesheet" href="/jquerymobile/jquery.mobile-1.0a4.min.css" />             
@@ -46,9 +47,15 @@
 </style>
 
 </head>
-<body style="background-color:black">
+<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]>
 [#if POPUP="1"#]
-[#inc actions.html#]
+<div class="ui-widget">
+ <div  class="ui-widget-content">[#inc actions.html#]
+  <br>&nbsp;<br>&nbsp;
+ </div>
+
+</div>
+
 [#else POPUP#]
 <script language="javascript">
 
@@ -205,9 +212,9 @@
 
 </script>
 
-<body>
+<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]>
 
-<div id="container">[#inc actions.html#]</div><div id='sound'></div>
+<div id="container" class="ui-widget">[#inc actions.html#]</div><div id='sound'></div>
 
 <script language="javascript">
  getNextEvent();

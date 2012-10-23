@@ -75,6 +75,11 @@ for($i=0;$i<$total;$i++) {
  if ($mode=='update') {
 
   global $language;
+  global $theme;
+
+  if (!$theme) {
+   $theme='dark';
+  }
 
   if (!$language) {
    $language='en';
@@ -101,6 +106,13 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'text',
     'DEFAULT'=>'Europe/Moscow',
     'VALUE'=>$tz
+   ),
+   array(
+    'NAME'=>'THEME', 
+    'TITLE'=>'Color theme', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'dark',
+    'VALUE'=>$theme
    )
    );
 
