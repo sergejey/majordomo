@@ -90,7 +90,8 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
   } elseif (file_exists(DIR_TEMPLATES.$fake_doc.".html")) {
    $app->action=$fake_doc;
   } else {
-   $tmp1=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME='404'");
+   //$tmp1=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME='404'");
+   $tmp1=array();
    if ($tmp1['ID']) {
     $app->action="docs";
     $app->doc=$tmp1['ID'];
