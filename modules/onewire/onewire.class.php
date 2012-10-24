@@ -459,7 +459,9 @@ function updateDisplay($id) {
   $rec['UPDATE_LATEST']=time();
   $rec['UPDATE_NEXT']=time()+(int)$rec['UPDATE_INTERVAL'];
   
-  $text = split("(\r\n)", $rec['VALUE']);
+  $rec['VALUE']=str_replace("\r", '', $rec['VALUE']);
+  $text = explode("\n", $rec['VALUE']);
+
  
   for ($i = 1; $i <= $rec['ROWS']; $i++) {
         $line = $i.",1:".$text[$i-1];
