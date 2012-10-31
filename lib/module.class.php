@@ -361,16 +361,18 @@ Define("EQ_DELIMITER", "qz_");
  function install($parent_name="") {
   $this->dbInstall("");
   $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
+  $rec["NAME"]=$this->name;
+  if (!IsSet($this->title)) {
+   $this->title=$this->name;
+  }
+  $rec["TITLE"]=$this->title;
+  if (IsSet($this->module_category)) {
+   $rec["CATEGORY"]=$this->module_category;
+  }
   if (!IsSet($rec["ID"])) {
-   $rec["NAME"]=$this->name;
-   if (!IsSet($this->title)) {
-    $this->title=$this->name;
-   }
-   $rec["TITLE"]=$this->title;
-   if (IsSet($this->module_category)) {
-    $rec["CATEGORY"]=$this->module_category;
-   }
    $rec["ID"]=SQLInsert("project_modules", $rec);
+  } else {
+   SQLUpdate("project_modules", $rec);
   }
   if (!file_exists(DIR_MODULES.$this->name."/installed")) {
    SaveFile(DIR_MODULES.$this->name."/installed", date("H:m d.M.Y"));

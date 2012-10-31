@@ -136,9 +136,8 @@ if (defined('SETTINGS_SITE_TIMEZONE')) {
 
  if (defined('BTRACED')) {
   echo "OK";
-  if ($tmp['MESSAGE']!='') {
-   echo ' '.$tmp['DAT'].' '.transliterate($tmp['MESSAGE']);
-  }
+ } elseif ($tmp['MESSAGE']!='') {
+  echo ' '.$tmp['DAT'].' '.transliterate($tmp['MESSAGE']);
  }
 
 
