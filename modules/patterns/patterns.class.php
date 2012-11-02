@@ -193,6 +193,12 @@ function usual(&$out) {
   if ($pattern=='') {
    return 0;
   }
+
+  if ($rec['EXECUTED']>0 && $rec['TIME_LIMIT'] && (time()-$rec['EXECUTED'])<=$rec['TIME_LIMIT']) {
+   return 0;
+  }
+
+
   $lines_pattern=explode("\n", $pattern);
   $total_lines=count($lines_pattern);
   if (!$rec['TIME_LIMIT']) {
@@ -202,6 +208,7 @@ function usual(&$out) {
    $start_from=time()-$rec['TIME_LIMIT'];
    $messages=SQLSelect("SELECT MESSAGE FROM shouts WHERE ADDED>=('".date('Y-m-d H:i:s', $start_from)."') ORDER BY ADDED");
   }
+
 
   $total=count($messages);
   if (!$total) {
@@ -217,6 +224,7 @@ function usual(&$out) {
 
   if (preg_match('/'.$check.'/is', $history, $matches)) {
    $rec['LOG']=date('Y-m-d H:i:s').' Pattern matched'."\n".$rec['LOG'];
+   $rec['EXECUTED']=time();
    SQLUpdate('patterns', $rec);
 
    global $noPatternMode;
@@ -279,7 +287,8 @@ patterns - Patterns
  patterns: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  patterns: SCRIPT text
  patterns: LOG text
- patterns: TIME_LIMIT int(245) NOT NULL DEFAULT '0'
+ patterns: TIME_LIMIT int(10) NOT NULL DEFAULT '0'
+ patterns: EXECUTED int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }
