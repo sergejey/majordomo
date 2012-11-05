@@ -81,7 +81,7 @@
    $item=$res[$i];
 
    if ($item['LINKED_PROPERTY']!='') {
-    $lprop=getObject($item['LINKED_OBJECT'])->getProperty($item['LINKED_PROPERTY']);
+    $lprop=getGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
     if ($item['TYPE']=='custom') {
      $field='DATA';
     } else {
