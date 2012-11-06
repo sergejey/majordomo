@@ -7,7 +7,7 @@
 
 
 <!-- search results (list) -->
-<div id="shoutboxContent">
+<div id="shoutboxContent" class="ui-widget-content">
 <#LANG_LOADING#>...
 </div>
 <!-- / search results (list) -->
@@ -20,11 +20,11 @@
 </p>
 [#endif MOBILE#]
 [#else#]
-<form action="?" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit='return sendShoutMessage()'>
+<form action="?" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit='return false;'>
 <table border=0>
-<td valign="bottom"><#LANG_COMMAND#>:</td>
-<td valign="bottom"><input type="text" name="message" size=35></td>
-<td valign="bottom"><input type="submit" name="submit" value="<#LANG_SEND#>" class="btn"></td>
+<td><#LANG_COMMAND#>:</td>
+<td><input type="text" name="message"></td>
+<td><input type="submit" name="submit" value="<#LANG_SEND#>" onClick="return sendShoutMessage();"></td>
 </table>
 </form>
 [#endif#]
@@ -33,20 +33,18 @@
 
 var shoutTimer;
 
- function updatedShoutContent(param, data) {
-  var elem=document.getElementById('shoutboxContent');
-  elem.innerHTML=data;
- }
-
- function updateShoutContent(param, data) {
+ function updateShoutContent() {
   clearTimeout(shoutTimer);
 
   var url="?";
-  if (data!='') {
-   updatedShoutContent(param, data);
-  } else {
-   AJAXRequest(url+'&limit=<#LIMIT#>&getdata=1', 'updatedShoutContent');
-  }
+
+   url=url+'&limit=<#LIMIT#>&getdata=1';
+   $.ajax({
+    url: url,
+    }).done(function(data) { 
+     $('#shoutboxContent').html(data);
+    });
+
   [#if (NOT_LOGGED!="1") || (MOBILE=="1")#]
   shoutTimer=setTimeout("updateShoutContent('', '');", 10000);
   [#endif NOT_LOGGED#]
@@ -57,12 +55,17 @@ var shoutTimer;
   var msg=URLencode(document.frmShoutBoxMsg.message.value);
   document.frmShoutBoxMsg.message.value='';
   var url="?";
-  AJAXRequest(url+'&limit=<#LIMIT#>&msg='+msg, 'updateShoutContent');
+  url=url+'&limit=<#LIMIT#>&msg='+msg;
+  $.ajax({
+   url: url,
+   }).done(function(data) { 
+    $('#shoutboxContent').html(data);
+   });
   return false;
  }
 </script>
 
 
 <script language="javascript">
- updateShoutContent('', '');
+ updateShoutContent();
 </script>

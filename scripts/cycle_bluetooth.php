@@ -3,23 +3,28 @@
 * @version 0.4 (06.09.2011 bug fixed)
 */
 
+ chdir(dirname(__FILE__).'/../');
+
  include_once("./config.php");
  include_once("./lib/loader.php");
+ include_once("./lib/threads.php");
 
  set_time_limit(0);
- $connected=0;
- while(!$connected) {
-  $connected=@mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-  sleep(5);
- }
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
  include_once("./load_settings.php");
 
- echo "CONNECTED TO DB\n";
+ include_once(DIR_MODULES."control_modules/control_modules.class.php");
+ $ctl=new control_modules();
+
+ if (!Defined('SETTINGS_BLUETOOTH_CYCLE') || SETTINGS_BLUETOOTH_CYCLE==0) {
+  exit;
+ }
+
 
  $bt_devices=array();
  $devices_file=SERVER_ROOT."/apps/bluetoothview/devices.txt";
+
 
  $first_run=1;
  while(1) {

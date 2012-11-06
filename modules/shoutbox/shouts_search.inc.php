@@ -126,7 +126,7 @@
     if ($res[$i]['MEMBER_ID']==0) {
      $res[$i]['NAME']='Alice';
     }
-    $txtdata.="<table border=0 cellspacing=0 cellpadding=0><td valign='top' nowrap>".$res[$i]['DAT']." <b>".$res[$i]['NAME']."</b>:</td><td valign='top'>".nl2br($res[$i]['MESSAGE'])."</td></tr></table>";
+    $txtdata.="".$res[$i]['DAT']." <b>".$res[$i]['NAME']."</b>: ".nl2br($res[$i]['MESSAGE'])."<br>";
    }
    $out['RESULT']=$res;
   } else {

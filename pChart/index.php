@@ -174,24 +174,69 @@
 
   $Test = new pChart($w,$h);  
 
-  $Test->setColorPalette(0,255,255,255);
+  if ($_GET['gcolor']=='red') {
+   $Test->setColorPalette(0,220,50,50);
+  } elseif ($_GET['gcolor']=='brown') {
+   $Test->setColorPalette(0,220,140,100);
+  } elseif ($_GET['gcolor']=='blue') {
+   $Test->setColorPalette(0,100,140,220);
+  } elseif ($_GET['gcolor']=='green') {
+   $Test->setColorPalette(0,100,220,140);
+  } elseif ($_GET['gcolor']=='orange') {
+   $Test->setColorPalette(0,220,190,50);
+  } else {
 
-  $Test->drawGraphAreaGradient(132,153,172,50,TARGET_BACKGROUND);  
+   if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
+    $Test->setColorPalette(0,150,150,150);
+   } else {
+    $Test->setColorPalette(0,255,255,255);
+   }
+  }
+
+
+
+  if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
+   //$Test->drawGraphAreaGradient(132,153,172,50,TARGET_BACKGROUND);  
+  } else {
+   $Test->drawGraphAreaGradient(132,153,172,50,TARGET_BACKGROUND);  
+  }
+
 
   $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",10);  
-  if ($_GET['title']) {
-   $Test->drawTitle(60,15,$_GET['title'],250,250,250);
+
+  if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
+   if ($_GET['title']) {
+    $Test->drawTitle(60,15,$_GET['title'],55,55,55);
+   } else {
+    $Test->drawTitle(60,15,$p,55,55,55);
+   }
   } else {
-   $Test->drawTitle(60,15,$p,250,250,250);
+   if ($_GET['title']) {
+    $Test->drawTitle(60,15,$_GET['title'],250,250,250);
+   } else {
+    $Test->drawTitle(60,15,$p,250,250,250);
+   }
+  }
+
+
+  if ($_GET['scale']=='zero') {
+   $scale=SCALE_START0;
+  } else {
+   $scale=SCALE_NORMAL;
   }
 
 
   $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",8);  
   $Test->setGraphArea(60,20,$w-25,$h-30);  
-  $Test->drawGraphArea(213,217,221,FALSE);  
-  $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,213,217,221,TRUE,0,2);  
-  $Test->drawGraphAreaGradient(162,183,202,50);  
-  //$Test->drawGrid(4,TRUE,230,230,230,50); 
+
+  if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
+   $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,100,100,100,TRUE,0,2);
+   $Test->drawGraphAreaGradient(240,240,240,5);
+  } else {
+   $Test->drawGraphArea(213,217,221,FALSE);  
+   $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,213,217,221,TRUE,0,2);  
+   $Test->drawGraphAreaGradient(162,183,202,50);  
+  }
 
      
   // Draw the line chart  
@@ -209,8 +254,14 @@
 
    
    
-  // Render the picture  
+ // Render the picture  
+ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
+  $Test->AddBorder(1, 200,200,200); 
+ } else {
   $Test->AddBorder(1); 
+ }
+
+
 
  Header("Content-type:image/png");
  imagepng($Test->Picture);

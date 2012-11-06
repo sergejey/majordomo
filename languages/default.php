@@ -11,7 +11,7 @@
 $dictionary=array(
 
 /* general */
-'WIKI_URL'=>'http://smartliving.ru/',
+'WIKI_URL'=>'http://majordomohome.com/',
 'WELCOME_GREETING'=>'Welcome!',
 'WELCOME_TEXT'=>'Thank you for using MajorDoMo -- an open-source home automation platform. <br/><br/>Read more about it and join our community: <a href="<#LANG_WIKI_URL#>" target=_blank>Web-site</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forum</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook page</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. You can customize or delete this page using <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Control Panel</a> (login/password: admin / admin)</small>',
 'CONTROL_PANEL'=>'Control Panel',

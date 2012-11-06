@@ -7,14 +7,23 @@
 * @version 1.1
 */
 
- set_time_limit(0);
+ chdir(dirname(__FILE__).'/../');
 
  include_once("./config.php");
  include_once("./lib/loader.php");
+ include_once("./lib/threads.php");
+
+ set_time_limit(0);
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
  include_once("./load_settings.php");
 
+ include_once(DIR_MODULES."control_modules/control_modules.class.php");
+ $ctl=new control_modules();
+ 
+ if (!Defined('SETTINGS_SKYPE_CYCLE') || SETTINGS_SKYPE_CYCLE==0) {
+  exit;
+ }
 
 include_once(DIR_MODULES.'patterns/patterns.class.php');
 $pt=new patterns();

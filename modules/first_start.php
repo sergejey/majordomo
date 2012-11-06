@@ -108,6 +108,20 @@ for($i=0;$i<$total;$i++) {
     'VALUE'=>$tz
    ),
    array(
+    'NAME'=>'BLUETOOTH_CYCLE', 
+    'TITLE'=>'Run bluetooth scanner', 
+    'TYPE'=>'onoff',
+    'DEFAULT'=>'0',
+    'PRIORITY'=>'50'
+   ),
+   array(
+    'NAME'=>'SKYPE_CYCLE', 
+    'TITLE'=>'Run Skype script', 
+    'TYPE'=>'onoff',
+    'DEFAULT'=>'0',
+    'PRIORITY'=>'50'
+   ),
+   array(
     'NAME'=>'THEME', 
     'TITLE'=>'Color theme', 
     'TYPE'=>'text',
@@ -125,8 +139,9 @@ for($i=0;$i<$total;$i++) {
      $rec['DEFAULTVALUE']=$v['DEFAULT'];
      $rec['TITLE']=$v['TITLE'];
      $rec['TYPE']=$v['TYPE'];
+     $rec['PRIORITY']=(int)$v['PRIORITY'];
      $rec['ID']=SQLInsert('settings', $rec);
-    } else {
+    } elseif (isset($v['VALUE'])) {
      $rec['VALUE']=$v['VALUE'];
      SQLUpdate('settings', $rec);
     }

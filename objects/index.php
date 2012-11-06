@@ -108,6 +108,7 @@
     foreach($_GET as $k=>$v) {
      $params[$k]=${$k};
     }
+    //DebMes("Calling method: ".$m.' '.serialize($params));
     //print_r($params);
     $obj->callMethod($m, $params);
    }
