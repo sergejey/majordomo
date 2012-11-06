@@ -21,8 +21,8 @@ class watchfolders extends module {
 */
 function watchfolders() {
   $this->name="watchfolders";
-  $this->title="Watchfolders";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_WATCHFOLDERS#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

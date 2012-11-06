@@ -20,8 +20,8 @@ class master extends module {
 */
 function master() {
   $this->name="master";
-  $this->title="Master Login Setup";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_MASTER_LOGIN#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

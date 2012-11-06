@@ -20,8 +20,8 @@ class commands extends module {
 */
 function commands() {
   $this->name="commands";
-  $this->title="Commands";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_CONTROL_MENU#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

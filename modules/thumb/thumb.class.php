@@ -16,8 +16,8 @@ function thumb() {
 
   // setting module name
   $this->name="thumb";
-  $this->title="Thumbnailer";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_THUMB#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
 
   $this->checkInstalled();
 

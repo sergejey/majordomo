@@ -21,8 +21,8 @@ class webvars extends module {
 */
 function webvars() {
   $this->name="webvars";
-  $this->title="webvars";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_WEBVARS#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

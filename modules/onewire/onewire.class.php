@@ -41,8 +41,8 @@ class onewire extends module {
 */
 function onewire() {
   $this->name="onewire";
-  $this->title="1Wire";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_ONEWIRE#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

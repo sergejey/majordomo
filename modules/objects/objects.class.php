@@ -20,8 +20,8 @@ class objects extends module {
 */
 function objects() {
   $this->name="objects";
-  $this->title="Objects";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_OBJECT_INSTANCES#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

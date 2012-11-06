@@ -21,8 +21,8 @@ class patterns extends module {
 */
 function patterns() {
   $this->name="patterns";
-  $this->title="Patterns";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_PATTERNS#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

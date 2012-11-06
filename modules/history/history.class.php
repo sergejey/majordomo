@@ -20,8 +20,8 @@ class history extends module {
 */
 function history() {
   $this->name="history";
-  $this->title="History";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_OBJECTS_HISTORY#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

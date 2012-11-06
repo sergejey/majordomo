@@ -20,8 +20,8 @@ class settings extends module {
 */
  function settings() {
   $this->name="settings";
-  $this->title="General Settings";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_SETTINGS#>";
+  $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
 }
 /**

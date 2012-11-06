@@ -20,8 +20,8 @@ class skins extends module {
 */
  function skins() {
   $this->name="skins";
-  $this->title="Design Skins";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_SKINS#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

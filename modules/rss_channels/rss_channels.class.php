@@ -20,8 +20,8 @@ class rss_channels extends module {
 */
 function rss_channels() {
   $this->name="rss_channels";
-  $this->title="RSS Channels";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_RSS_CHANNELS#>";
+  $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
 }
 /**

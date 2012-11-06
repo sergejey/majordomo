@@ -20,8 +20,8 @@ class terminals extends module {
 */
 function terminals() {
   $this->name="terminals";
-  $this->title="Terminals";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_TERMINALS#>";
+  $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
 }
 /**

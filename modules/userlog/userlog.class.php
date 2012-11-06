@@ -20,8 +20,8 @@ class userlog extends module {
 */
 function userlog() {
   $this->name="userlog";
-  $this->title="User Log";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_USERLOG#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

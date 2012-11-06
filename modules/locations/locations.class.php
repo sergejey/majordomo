@@ -20,8 +20,8 @@ class locations extends module {
 */
 function locations() {
   $this->name="locations";
-  $this->title="Locations";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_LOCATIONS#>";
+  $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
 }
 /**

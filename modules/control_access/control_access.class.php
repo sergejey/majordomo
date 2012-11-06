@@ -15,7 +15,7 @@ class control_access extends module {
   // setting module name
   $this->name="control_access";
   $this->title="Control Access";
-  $this->module_category="System";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
  }
 
@@ -178,10 +178,10 @@ function getParams() {
      $new[$i]['NEWROW']=1;
     }
 
-    if (file_exists(ROOT.'img/admin/icons/ico_'.$new[$i]['NAME'].'.png')) {
-     $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_'.$new[$i]['NAME'].'.png';
+    if (file_exists(ROOT.'img/admin/icons/ico_'.$new[$i]['NAME'].'.gif')) {
+     $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_'.$new[$i]['NAME'].'.gif';
     } else {
-     $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_default.png';
+     $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_default.gif';
     }
 
    }

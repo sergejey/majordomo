@@ -20,8 +20,8 @@ class shoutbox extends module {
 */
 function shoutbox() {
   $this->name="shoutbox";
-  $this->title="Shoutbox";
-  $this->module_category="Dating";
+  $this->title="<#LANG_MODULE_SHOUTBOX#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

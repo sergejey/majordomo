@@ -20,8 +20,8 @@ class users extends module {
 */
 function users() {
   $this->name="users";
-  $this->title="Users";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_USERS#>";
+  $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
 }
 /**

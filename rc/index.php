@@ -5,6 +5,7 @@ chdir('../');
 include_once("./config.php");
 include_once("./lib/loader.php");
 $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
+include_once("./load_settings.php");
 
 DebMes($_SERVER['REQUEST_URI']);
 

@@ -20,8 +20,8 @@ class events extends module {
 */
 function events() {
   $this->name="events";
-  $this->title="Events";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_EVENTS#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

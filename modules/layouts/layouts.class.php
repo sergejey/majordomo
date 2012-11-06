@@ -21,8 +21,8 @@ class layouts extends module {
 */
 function layouts() {
   $this->name="layouts";
-  $this->title="Layouts";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_LAYOUTS#>";
+  $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
 }
 /**

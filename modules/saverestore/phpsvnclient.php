@@ -960,6 +960,7 @@ class phpsvnclient {
      */
     private function Request($args, &$headers, &$body) {
         $args['RequestURI'] = str_replace(' ', '%20', $args['RequestURI']); //Hack to make filenames with spaces work.
+        //DebMes("Request: ".serialize($args));
         $http = & $this->_http;
         $http->Open($args);
         $http->SendRequest($args);

@@ -20,7 +20,7 @@ class classes extends module {
 */
 function classes() {
   $this->name="classes";
-  $this->title="<#LANG_OBJECTS#>";
+  $this->title="<#LANG_MODULE_OBJECTS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
 
   $this->checkInstalled();

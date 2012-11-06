@@ -23,8 +23,8 @@ class saverestore extends module {
 */
 function saverestore() {
   $this->name="saverestore";
-  $this->title="Save/Restore";
-  $this->module_category="General";
+  $this->title="<#LANG_MODULE_SAVERESTORE#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

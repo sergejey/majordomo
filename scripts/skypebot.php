@@ -13,8 +13,8 @@
  include_once("./lib/loader.php");
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
+ include_once("./load_settings.php");
 
-//error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 include_once(DIR_MODULES.'patterns/patterns.class.php');
 $pt=new patterns();

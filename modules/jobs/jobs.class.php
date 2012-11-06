@@ -20,8 +20,8 @@ class jobs extends module {
 */
 function jobs() {
   $this->name="jobs";
-  $this->title="jobs";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_JOBS#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

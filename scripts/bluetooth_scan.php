@@ -14,6 +14,7 @@
  }
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
+ include_once("./load_settings.php");
 
  echo "CONNECTED TO DB\n";
 

@@ -20,8 +20,8 @@ class methods extends module {
 */
 function methods() {
   $this->name="methods";
-  $this->title="Methods";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_METHODS#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

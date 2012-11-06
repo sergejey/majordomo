@@ -21,8 +21,8 @@ class pinghosts extends module {
 */
 function pinghosts() {
   $this->name="pinghosts";
-  $this->title="Pinghosts";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_PINGHOSTS#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

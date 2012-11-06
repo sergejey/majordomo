@@ -20,8 +20,8 @@ class shoutrooms extends module {
 */
 function shoutrooms() {
   $this->name="shoutrooms";
-  $this->title="Shoutrooms";
-  $this->module_category="Dating";
+  $this->title="<#LANG_MODULE_SHOUTROOMS#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

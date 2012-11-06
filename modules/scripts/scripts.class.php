@@ -20,8 +20,8 @@ class scripts extends module {
 */
 function scripts() {
   $this->name="scripts";
-  $this->title="Scripts";
-  $this->module_category="Settings";
+  $this->title="<#LANG_MODULE_SCRIPTS#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

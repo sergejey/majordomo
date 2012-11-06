@@ -7,7 +7,7 @@
 
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
-
+ include_once("./load_settings.php");
 
  $res='';
 
@@ -19,7 +19,7 @@
   'windAverage'=>5,
   'rainfallRate'=>8,
   'rainfallHour'=>9,
-  'rainfall24'=>19,
+  'rainfall24'=>47,
   'pressure'=>10,
   'pressureRt'=>-1,
   'pressureTrend'=>18,

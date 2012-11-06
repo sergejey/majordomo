@@ -20,8 +20,8 @@ class properties extends module {
 */
 function properties() {
   $this->name="properties";
-  $this->title="Properties";
-  $this->module_category="CMS";
+  $this->title="<#LANG_MODULE_PROPERTIES#>";
+  $this->module_category="<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**
