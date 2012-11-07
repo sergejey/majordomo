@@ -14,10 +14,14 @@
 
  function postToTwitter($message) {
 
-      $consumerKey    = '9kE3stDLoA2ZW0bL3YQ9AA';
-      $consumerSecret = 'jDbMLTIANNB6eGMLhiUuPiOK40FtBqbPk4fkxpGD7tE';
-      $oAuthToken     = '434920820-MwfMlFa9oO9oXAqjYYQPC6kYOECZXCL1S3ZaiSG6';
-      $oAuthSecret    = 'VcyildUk8gjUilFqy6Cd6g1JvL2ZKoVUwLnGNamHQ';
+      if (!defined('SETTINGS_TWITTER_CKEY')) {
+       return 0;
+      }
+
+      $consumerKey    = SETTINGS_TWITTER_CKEY;
+      $consumerSecret = SETTINGS_TWITTER_CSECRET;
+      $oAuthToken     = SETTINGS_TWITTER_ATOKEN;
+      $oAuthSecret    = SETTINGS_TWITTER_ASECRET;
 
       if ($consumerKey=='' || $consumerSecret=='' || $oAuthSecret=='' || $oAuthToken=='') {
        return 0;

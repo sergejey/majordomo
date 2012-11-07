@@ -1,1 +1,7 @@
 <div id="htmlTab[#NUM#]">[#inc ../../cms/layouts/<#ID#>.html#]</div>
+[#if REFRESH!="0"#]
+<script language="javascript">
+ var tm;
+ tm=setTimeout('window.location.href=window.location.href;', [#REFRESH#]*1000);
+</script>
+[#endif#]

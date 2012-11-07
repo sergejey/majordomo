@@ -303,28 +303,28 @@ curl_close($ch);
 
    if ($code!='') {
 
-    /*
-    $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
-    if (!$class_object['NOLOG']) {
+    if (defined('SETTINGS_DEBUG_HISTORY') && SETTINGS_DEBUG_HISTORY==1) {
+     $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
+     if (!$class_object['NOLOG']) {
 
-     $prevLog=SQLSelectOne("SELECT ID, UNIX_TIMESTAMP(ADDED) as UNX FROM history WHERE OBJECT_ID='".$this->id."' AND METHOD_ID='".$method['ID']."' ORDER BY ID DESC LIMIT 1");
-     if ($prevLog['ID']) {
-      $prevRun=$prevLog['UNX'];
-      $prevRunPassed=time()-$prevLog['UNX'];
-     }
+      $prevLog=SQLSelectOne("SELECT ID, UNIX_TIMESTAMP(ADDED) as UNX FROM history WHERE OBJECT_ID='".$this->id."' AND METHOD_ID='".$method['ID']."' ORDER BY ID DESC LIMIT 1");
+      if ($prevLog['ID']) {
+       $prevRun=$prevLog['UNX'];
+       $prevRunPassed=time()-$prevLog['UNX'];
+      }
 
-     $h=array();
-     $h['ADDED']=date('Y-m-d H:i:s');
-     $h['OBJECT_ID']=$this->id;
-     $h['METHOD_ID']=$method['ID'];
-     $h['DETAILS']=serialize($params);
-     if ($parent) {
-      $h['DETAILS']='(parent method) '.$h['DETAILS'];
+      $h=array();
+      $h['ADDED']=date('Y-m-d H:i:s');
+      $h['OBJECT_ID']=$this->id;
+      $h['METHOD_ID']=$method['ID'];
+      $h['DETAILS']=serialize($params);
+      if ($parent) {
+       $h['DETAILS']='(parent method) '.$h['DETAILS'];
+      }
+      $h['DETAILS'].="\n".'code: '."\n".$code;
+      SQLInsert('history', $h);
      }
-     $h['DETAILS'].="\n".'code: '."\n".$code;
-     SQLInsert('history', $h);
     }
-    */
 
 
     eval($code);

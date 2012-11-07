@@ -32,6 +32,10 @@
   //updating 'URL' (url)
    global $url;
    $rec['URL']=$url;
+
+   global $refresh;
+   $rec['REFRESH']=(int)$refresh;
+
   //updating 'DETAILS' (text)
   /*
    global $details;

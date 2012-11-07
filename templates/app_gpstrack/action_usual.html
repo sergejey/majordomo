@@ -78,11 +78,23 @@ function updateMarkers() {
     var map;
 
 
+    [#if LATEST_LAT!=""#]
+    var startLat=[#LATEST_LAT#];
+    [#else#]
+    var startLat=53.901506;
+    [#endif#]
+
+    [#if LATEST_LON!=""#]
+    var startLon=[#LATEST_LON#];
+    [#else#]
+    var startLon=27.565269;
+    [#endif#]
+    
     $(document).ready(function(){
       map = new GMaps({
         div: '#map',
-        lat: [#LATEST_LAT#],
-        lng: [#LATEST_LON#],
+        lat: startLat,
+        lng: startLon,
         zoom: 18,
       });
 

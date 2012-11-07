@@ -30,11 +30,9 @@
   $rec['ADDED']=date('Y-m-d H:i:s');
   $rec['ROOM_ID']=0;
   $rec['MEMBER_ID']=0;
-
   if ($level>0) {
    $rec['IMPORTANCE']=$level;
   }
-
   SQLInsert('shouts', $rec);
 
   if ($level>=(int)getGlobal('minMsgLevel')) { //$voicemode!='off' && 
@@ -47,16 +45,19 @@
     $lang=SETTINGS_VOICE_LANGUAGE;
    }
 
-   $google_file=GoogleTTS($ph, $lang);
+   if (!defined('SETTINGS_TTS_GOOGLE') || SETTINGS_TTS_GOOGLE) {
+    $google_file=GoogleTTS($ph, $lang);
+   } else {
+    $google_file=false;
+   }
+
    if ($google_file) {
     @touch($google_file);
     playSound($google_file, 1, $level);
    } else {
-    //getObject("alice")->raiseEvent("say", array("say"=>$ph));
     safe_exec('cscript '.DOC_ROOT.'/rc/sapi.js '.$ph, 1, $level);
    }
   }
-  postToTwitter($ph);
 
   global $noPatternMode;
   if (!$noPatternMode) {
@@ -64,6 +65,9 @@
    $pt=new patterns();
    $pt->checkAllPatterns();
   }
+
+  postToTwitter($ph);
+
  }
 
 /**

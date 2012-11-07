@@ -236,6 +236,7 @@ layouts - Layouts
  layouts: CODE text
  layouts: APP varchar(255) NOT NULL DEFAULT ''
  layouts: URL char(255) NOT NULL DEFAULT ''
+ layouts: REFRESH int(10) NOT NULL DEFAULT '0'
  layouts: DETAILS text
 EOD;
   parent::dbInstall($data);

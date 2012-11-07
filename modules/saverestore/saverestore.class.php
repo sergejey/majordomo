@@ -1068,10 +1068,10 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
        exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
        exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
        //@unlink('../'.str_replace('.tgz', '.tar', $file));
-
        } else {
         exec('tar xzvf ../../'.$file, $output, $res);
        }
+       @unlink(ROOT.'saverestore/temp'.$folder.'/config.php');
 
        //print_r($output);exit;
 
@@ -1081,8 +1081,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
         if ($this->method=='direct') {
   
-  // UPDATING FILES DIRECTLY
-  $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
+         // UPDATING FILES DIRECTLY
+         $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
 
 
         } elseif ($this->method=='ftp') {

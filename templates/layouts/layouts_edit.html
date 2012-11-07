@@ -27,44 +27,50 @@
 <!-- TITLE (varchar) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_TITLE#>(*)</label>
-	<div class="controls">
-		<input type="text" name="title" value="[#TITLE#]" required>
-	</div>
+        <label class="control-label"><#LANG_TITLE#>(*)</label>
+        <div class="controls">
+                <input type="text" name="title" value="[#TITLE#]" required>
+        </div>
 </div>
 
 <!-- PRIORITY (int) -->
 
 <div class="control-group">
-	<label class="control-label"><#LANG_PRIORITY#></label>
-	<div class="controls">
-		<input type="text" name="priority" value="[#PRIORITY#]">
-	</div>
+        <label class="control-label"><#LANG_PRIORITY#></label>
+        <div class="controls">
+                <input type="text" name="priority" value="[#PRIORITY#]">
+        </div>
 </div>
 
 <!-- TYPE (select) -->
 
+<div class="control-group">
+        <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#></label>
+        <div class="controls">
+                <input type="text" name="refresh" value="[#REFRESH#]">
+        </div>
+</div>
 
 
 <div class="control-group">
-	<label class="control-label"><#LANG_TYPE#></label>
-	<div class="controls">
-		<select name="type">
-		<option value="">select
-		[#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
-		[#end TYPE_OPTIONS#]
-		</select>
-	</div>
+        <label class="control-label"><#LANG_TYPE#></label>
+        <div class="controls">
+                <select name="type">
+                <option value="">select
+                [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+                [#end TYPE_OPTIONS#]
+                </select>
+        </div>
 </div>
 
 <!-- CODE (text) -->
 [#if TYPE="html"#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_CODE#></label>
-	<div class="controls">
-		<textarea name="code" rows=12 cols=100>[#CODE#]</textarea>
-	</div>
+        <label class="control-label"><#LANG_CODE#></label>
+        <div class="controls">
+                <textarea name="code" rows=12 cols=100>[#CODE#]</textarea>
+        </div>
 </div>
 
 [#endif TYPE#]
@@ -73,28 +79,28 @@
 
 
 <div class="control-group">
-	<label class="control-label"><#LANG_APP#></label>
-	<div class="controls">
-		<input type="text" name="appname" value="[#APP#]">
-	</div>
+        <label class="control-label"><#LANG_APP#></label>
+        <div class="controls">
+                <input type="text" name="appname" value="[#APP#]">
+        </div>
 </div>
 
 [#endif TYPE#]
 [#if TYPE="url"#]
 
 <div class="control-group">
-	<label class="control-label"><#LANG_URL#></label>
-	<div class="controls">
-		<input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
-	</div>
+        <label class="control-label"><#LANG_URL#></label>
+        <div class="controls">
+                <input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
+        </div>
 </div>
 
 [#endif TYPE#]
 
 [#if ID!=""#]
 <div class="control-group">
-	<label class="control-label"><#LANG_URL#> (preview):</label>
-	<div class="controls">
+        <label class="control-label"><#LANG_URL#> (preview):</label>
+        <div class="controls">
 
 [#if TYPE="html"#]
 <a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
@@ -107,8 +113,8 @@
 [#if TYPE="app"#]
 <a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
 [#endif TYPE#]
-	
-	</div>
+        
+        </div>
 </div>
 
 <div class="form-actions">

@@ -109,14 +109,14 @@ for($i=0;$i<$total;$i++) {
    ),
    array(
     'NAME'=>'BLUETOOTH_CYCLE', 
-    'TITLE'=>'Run bluetooth scanner', 
+    'TITLE'=>'Run bluetooth scanner on startup', 
     'TYPE'=>'onoff',
     'DEFAULT'=>'0',
-    'PRIORITY'=>'50'
+    'PRIORITY'=>'51'
    ),
    array(
     'NAME'=>'SKYPE_CYCLE', 
-    'TITLE'=>'Run Skype script', 
+    'TITLE'=>'Run Skype script on startup', 
     'TYPE'=>'onoff',
     'DEFAULT'=>'0',
     'PRIORITY'=>'50'
@@ -127,6 +127,48 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'text',
     'DEFAULT'=>'dark',
     'VALUE'=>$theme
+   )   ,
+   array(
+    'NAME'=>'TWITTER_CKEY', 
+    'TITLE'=>'Twitter Consumer key', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'30'
+   )   ,
+   array(
+    'NAME'=>'TWITTER_CSECRET', 
+    'TITLE'=>'Twitter Consumer secret', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'29'
+   )   ,
+   array(
+    'NAME'=>'TWITTER_ATOKEN', 
+    'TITLE'=>'Twitter Access token', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'28'
+   ),
+   array(
+    'NAME'=>'TWITTER_ASECRET', 
+    'TITLE'=>'Twitter Access token secret', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'27'
+   ),
+    array(
+    'NAME'=>'DEBUG_HISTORY', 
+    'TITLE'=>'Save debug information to history', 
+    'TYPE'=>'onoff',
+    'DEFAULT'=>'0',
+    'PRIORITY'=>'0'
+   ),
+    array(
+    'NAME'=>'TTS_GOOGLE',
+    'TITLE'=>'Use Google Text-to-Speech engine', 
+    'TYPE'=>'onoff',
+    'DEFAULT'=>'1',
+    'PRIORITY'=>'60'
    )
    );
 
