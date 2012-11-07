@@ -257,6 +257,10 @@ function admin(&$out) {
   $this->redirect("?");
  }
 
+ if ($this->mode=='getlatest') {
+  $this->getLatest($out);
+ }
+
 
   $source=ROOT.'saverestore';
   if ($dir = @opendir($source)) { 
@@ -273,6 +277,55 @@ function admin(&$out) {
 
 
 }
+
+
+ /**
+ * Title
+ *
+ * Description
+ *
+ * @access public
+ */
+  function getLatest(&$out) {
+
+   $url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+
+   set_time_limit(0);
+
+    $filename=ROOT.'saverestore/master.tgz';
+    $f = fopen($filename, 'wb');
+    if ($f == FALSE){
+      $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
+    } 
+   $ch = curl_init();
+   curl_setopt($ch, CURLOPT_URL, $url);
+   curl_setopt($ch, CURLOPT_TIMEOUT, 600);
+   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     
+   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+   curl_setopt($ch, CURLOPT_FILE, $f); 
+   $incoming = curl_exec($ch);
+
+   curl_close($ch);
+   @fclose($f);
+
+   if (file_exists($filename)) {
+
+    global $code;
+    global $data;
+    global $design;
+    $code=1;
+    $data=0;
+    $design=1;
+    $out['BACKUP']=1;
+    $this->dump($out);
+    $this->removeTree(ROOT.'saverestore/temp');
+    $this->redirect("?mode=upload&restore=".urlencode('master.tgz')."&folder=".urlencode('majordomo-master'));
+   } else {
+    $this->redirect("?err_msg=".urlencode("Cannot download ".$url));
+   }
+  }
+
 
 /**
 * Title
@@ -982,32 +1035,44 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 */
  function upload(&$out) {
 
+  set_time_limit(0);
   global $restore;
   global $file;
   global $file_name;
+  global $folder;
+
+  if (!$folder) {
+   $folder='/.';
+  } else {
+   $folder='/'.$folder;
+  }
 
   if ($restore!='') {
-   $file=ROOT.'saverestore/'.$restore;
+   //$file=ROOT.'saverestore/'.$restore;
+   $file=$restore;
   } elseif ($file!='') {
    copy($file, ROOT.'saverestore/'.$file_name);
-   $file=ROOT.'saverestore/'.$file_name;
+   //$file=ROOT.'saverestore/'.$file_name;
+   $file=$file_name;
   }
 
   umask(0);
   @mkdir(ROOT.'saverestore/temp', 0777);
 
-  if ($file!='' && file_exists($file)) { // && mkdir(ROOT.'saverestore/temp', 0777)
+  if ($file!='') { // && mkdir(ROOT.'saverestore/temp', 0777)
 
        chdir(ROOT.'saverestore/temp');
 
        if (substr(php_uname(), 0, 7) == "Windows") {
        // for windows only
-       @exec(DOC_ROOT.'/gunzip ../../'.$file, $output, $res);
-       @exec(DOC_ROOT.'/tar xvf ../../'.str_replace('.tgz', '.tar', $file), $output, $res);
-       @unlink('../../'.str_replace('.tgz', '.tar', $file));
+       exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
+       exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
+       //@unlink('../'.str_replace('.tgz', '.tar', $file));
+
        } else {
         exec('tar xzvf ../../'.$file, $output, $res);
        }
+
        //print_r($output);exit;
 
        if (1) {
@@ -1017,7 +1082,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
         if ($this->method=='direct') {
   
   // UPDATING FILES DIRECTLY
-  $this->copyTree(ROOT.'saverestore/temp', ROOT, 1); // restore all files
+  $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
 
 
         } elseif ($this->method=='ftp') {
@@ -1038,12 +1103,12 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
      @ftp_chdir($conn_id, $this->config['FTP_FOLDER']);
      // ok, we're in. updating!
         $log='';
-        $files=$this->getLocalFilesTree(ROOT.'saverestore/temp', '.+', 'installed', $log, 0);
+        $files=$this->getLocalFilesTree(ROOT.'saverestore/temp'.$folder, '.+', 'installed', $log, 0);
         $total=count($files);
         $modules_processed=array();
         for($i=0;$i<$total;$i++) {
           $file=$files[$i];
-          $file['REMOTE_FILENAME']=preg_replace('/^'.preg_quote(ROOT.'saverestore/temp/', '/').'/is', $this->config['FTP_FOLDER'], $file['FILENAME']);
+          $file['REMOTE_FILENAME']=preg_replace('/^'.preg_quote(ROOT.'saverestore/temp/'.$folder, '/').'/is', $this->config['FTP_FOLDER'], $file['FILENAME']);
           $file['REMOTE_FILENAME']=str_replace('//', '/', $file['REMOTE_FILENAME']);
           $res_f=$this->ftpput( $conn_id, $file['REMOTE_FILENAME'], $file['FILENAME'], FTP_BINARY);
 
@@ -1053,8 +1118,6 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
            @ftp_site($conn_id,"CHMOD 0777 ".dirname($file['REMOTE_FILENAME']));
            @ftp_delete($conn_id, dirname($file['REMOTE_FILENAME']).'/installed');
           }
-
-          //echo "putting from ".$file['FILENAME']." to ".$file['REMOTE_FILENAME']."<br>";
         }
 
 
@@ -1077,24 +1140,25 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
         }
 
-        if (is_dir(ROOT.'saverestore/temp/modules')) {
-
+        //if (is_dir(ROOT.'saverestore/temp/'.$folder.'modules')) {
         // code restore
-        $source=ROOT.'saverestore/temp/modules';
+        $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 
-           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..') && !file_exists($source."/".$file."/installed")) {
+           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
             @unlink(ROOT."modules/".$file."/installed");
            }
           }
          }
          @unlink(ROOT."modules/control_modules/installed");
 
-        }
+        //}
 
-        if (file_exists(ROOT.'saverestore/temp/dump.sql')) {
+
+
+        if (file_exists(ROOT.'saverestore/temp'.$folder.'/dump.sql')) {
          // data restore
-         $this->restoredatabase(ROOT.'saverestore/temp/dump.sql');
+         $this->restoredatabase(ROOT.'saverestore/temp'.$folder.'/dump.sql');
         }
 
         $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));

@@ -16,9 +16,20 @@
 
    [#if CLEAR_FIRST!="1"#]
 
+
    <big><#LANG_UPDATES#></big>
    <br>
 
+   <form action="?" method="post" enctype="multipart/form-data">
+   [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
+
+   <p><#LANG_LONG_OPERATION_WARNING#></p>
+
+   <input type="submit" name="submit" value="Update to the latest code &gt;&gt;&gt;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">
+   <input type="hidden" name="mode" value="getlatest">
+   </form>
+
+   <!--#
    <form action="?" method="post" enctype="multipart/form-data">
    [#if OK_CHECK#]
 
@@ -52,6 +63,7 @@
    <input type="hidden" name="mode" value="checkupdates">
    [#endif#]
    </form>
+   #-->
 
    <!--#
    <form action="?" method="post" enctype="multipart/form-data">
