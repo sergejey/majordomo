@@ -12,6 +12,7 @@ include_once (ROOT . 'languages/default.php');
 
 if (defined('SETTINGS_SITE_TIMEZONE')) {
  ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
+ date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 }
 
 

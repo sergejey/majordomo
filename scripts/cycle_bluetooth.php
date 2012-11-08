@@ -27,13 +27,17 @@
 
 
  $first_run=1;
+ $skip_counter=0;
  while(1) {
-  @unlink($devices_file);
-  echo "Running bluetoothview\n";
-  exec(SERVER_ROOT.'/apps/bluetoothview/bluetoothview.exe /stab '.$devices_file);
-  sleep(30);
-  $last_scan=time();
-  if (file_exists($devices_file)) {
+  $skip_counter++;
+  if ($skip_counter>=30) {
+   $skip_counter=0;
+   @unlink($devices_file);
+   echo "Running bluetoothview\n";
+   exec(SERVER_ROOT.'/apps/bluetoothview/bluetoothview.exe /stab '.$devices_file);
+   sleep(5);
+   $last_scan=time();
+   if (file_exists($devices_file)) {
    $data=(LoadFile($devices_file));
    $data=str_replace(chr(0), '', $data);
    $data=str_replace("\r", '', $data);
@@ -103,10 +107,19 @@
     }
    }
 
+  }
   } else {
-   sleep(30);
+   echo "Running Bluetooth monitor.";
   }
   $first_run=0;
+  
+  if (file_exists('./reboot')) {
+   $db->Disconnect();
+   exit;
+  }
+  
+  
+  sleep(1);
  }
 
  $db->Disconnect(); // closing database connection

@@ -71,6 +71,8 @@ if ($sink->attached) {
   while(!$sink->terminated) {
     com_message_pump(10);
 
+    echo "Running skypebot...\n";
+
     $tmp=SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ADDED DESC");
     $latest_message=$tmp['MESSAGE']; //.' ('.$tmp['IMPORTANCE'].')'
 
@@ -85,6 +87,12 @@ if ($sink->attached) {
        }
       }
     }
+
+  if (file_exists('./reboot')) {
+   $db->Disconnect();
+   exit;
+  }
+
     
   }
 }

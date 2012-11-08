@@ -9,10 +9,6 @@
 * @version 1.3
 */
 
- if (defined('TIME_ZONE')) {
-  ini_set('date.timezone', TIME_ZONE);
- }
-
 
 if (Defined('HOME_NETWORK') && HOME_NETWORK!='' && !$argv[0] && 
     !preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) &&
@@ -27,7 +23,7 @@ if (Defined('HOME_NETWORK') && HOME_NETWORK!='' && !$argv[0] &&
  if (!preg_match('/'.$p.'/is', $remoteAddr) && $remoteAddr!='127.0.0.1') {
   // password required
   //echo "password required for ".$remoteAddr;exit;
-  DebMes("checking access for ".$remoteAddr);
+  //DebMes("checking access for ".$remoteAddr);
 
 if (!isset($_SERVER['PHP_AUTH_USER'])) {
     header("WWW-Authenticate: Basic realm=\"".PROJECT_TITLE."\"");

@@ -177,7 +177,11 @@ for($i=0;$i<$total;$i++) {
     $rec=SQLSelectOne("SELECT * FROM settings WHERE NAME='".$v['NAME']."'");
     if (!$rec['ID']) {
      $rec['NAME']=$v['NAME'];
-     $rec['VALUE']=$v['VALUE'];
+     if (isset($v['VALUE'])) {
+      $rec['VALUE']=$v['DEFAULT'];
+     } else {
+      $rec['VALUE']=$v['VALUE'];
+     }
      $rec['DEFAULTVALUE']=$v['DEFAULT'];
      $rec['TITLE']=$v['TITLE'];
      $rec['TYPE']=$v['TYPE'];
