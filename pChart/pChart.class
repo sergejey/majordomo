@@ -507,8 +507,8 @@
      $DataRange = $this->VMax - $this->VMin;
      if ( $DataRange == 0 ) { $DataRange = .1; }
 
-     $this->DivisionHeight = ( $this->GArea_Y2 - $this->GArea_Y1 ) / $Divisions;
-     $this->DivisionRatio  = ( $this->GArea_Y2 - $this->GArea_Y1 ) / $DataRange;
+     @$this->DivisionHeight = ( $this->GArea_Y2 - $this->GArea_Y1 ) / $Divisions;
+     @$this->DivisionRatio  = ( $this->GArea_Y2 - $this->GArea_Y1 ) / $DataRange;
 
      $this->GAreaXOffset  = 0;
      if ( count($Data) > 1 )
@@ -540,8 +540,8 @@
        else
         $this->drawLine($this->GArea_X1,$YPos,$this->GArea_X1-5,$YPos,$R,$G,$B);
 
-       $Value     = $this->VMin + ($i-1) * (( $this->VMax - $this->VMin ) / $Divisions);
-       $Value     = round($Value * pow(10,$Decimals)) / pow(10,$Decimals);
+       @$Value     = $this->VMin + ($i-1) * (( $this->VMax - $this->VMin ) / $Divisions);
+       @$Value     = round($Value * pow(10,$Decimals)) / pow(10,$Decimals);
        if ( $DataDescription["Format"]["Y"] == "number" )
         $Value = $Value.$DataDescription["Unit"]["Y"];
        if ( $DataDescription["Format"]["Y"] == "time" )

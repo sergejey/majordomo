@@ -1,5 +1,6 @@
 <?php   
  chdir('../');
+ set_time_limit(0);
  /*
      Example1 : A simple line chart
  */
@@ -263,8 +264,27 @@
 
 
 
+ $path_to_file='./cached/'.md5($_SERVER['REQUEST_URI']).'.png';
+ imagepng($Test->Picture, $path_to_file);
+
  Header("Content-type:image/png");
- imagepng($Test->Picture);
+
+    $fsize=filesize($path_to_file);
+    header("Content-Length:".(string)$fsize);
+    $buff_length=200*1024;
+    if ($buff_length>$fsize) {
+     $buff_length=$fsize;
+    }
+    if ($buff_length>0) {
+     $fd=fopen($path_to_file,'rb');
+     if ($fd) {
+      while(!feof($fd)) {
+       print fread($fd, $buff_length);
+      }
+      fclose($fd);
+     }
+    }
+
  //$Test->Render();
 
 
