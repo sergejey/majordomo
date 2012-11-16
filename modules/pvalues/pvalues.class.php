@@ -206,6 +206,7 @@ pvalues - Pvalues
  pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
  pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
  pvalues: VALUE text NOT NULL DEFAULT ''
+ pvalues: UPDATED datetime
 EOD;
   parent::dbInstall($data);
  }
