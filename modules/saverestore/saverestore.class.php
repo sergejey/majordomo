@@ -1156,6 +1156,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
           }
          }
          @unlink(ROOT."modules/control_modules/installed");
+         @SaveFile(ROOT.'reboot', 'updated');
 
         //}
 
