@@ -71,6 +71,7 @@ function getParams() {
     SQLUpdate('project_modules', $rec);
     $this->redirect("?");
    } elseif ($mode2=="install") {
+    $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$name."'");
     SQLExec("DELETE FROM project_modules WHERE NAME='".$name."'");
     @unlink(DIR_MODULES.$name."/installed");
     include_once(DIR_MODULES.$name."/".$name.".class.php");
@@ -88,6 +89,7 @@ function getParams() {
      }
      SQLUpdate('admin_users', $user);
     }
+    SQLExec("UPDATE project_modules SET HIDDEN='".(int)$rec['HIDDEN']."' WHERE NAME='".$name."'");
     // redirect to edit
     $this->redirect("?name=$name&mode=edit");
    } elseif ($mode2=='uninstall') {
@@ -159,6 +161,10 @@ function getParams() {
   $code="";
   for($i=0;$i<count($lst);$i++) {
    if (file_exists(DIR_MODULES.$lst[$i]['FILENAME']."/".$lst[$i]['FILENAME'].".class.php")) {
+    if ($lst[$i]['FILENAME']=='control_modules') {
+     continue;
+    }
+    @unlink(DIR_MODULES.$lst[$i]['FILENAME']."/installed");
     include_once(DIR_MODULES.$lst[$i]['FILENAME']."/".$lst[$i]['FILENAME'].".class.php");
     $obj="\$object$i";
     $code.="$obj=new ".$lst[$i]['FILENAME'].";\n";

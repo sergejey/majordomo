@@ -127,6 +127,11 @@ function run() {
  function runScript($id, $params='') {
   $rec=SQLSelectOne("SELECT * FROM scripts WHERE ID='".(int)$id."' OR TITLE LIKE '".DBSafe($id)."'");
   if ($rec['ID']) {
+   $rec['EXECUTED']=date('Y-m-d H:i:s');
+   if ($params) {
+    $rec['EXECUTED_PARAMS']=serialize($params);
+   }
+   SQLUpdate('scripts', $rec);
    eval($rec['CODE']);
   }
  }
@@ -266,6 +271,8 @@ scripts - Scripts
  scripts: TYPE int(3) unsigned NOT NULL DEFAULT 0
  scripts: CATEGORY_ID int(10) unsigned NOT NULL DEFAULT 0
  scripts: XML text
+ scripts: EXECUTED datetime
+ scripts: EXECUTED_PARAMS varchar(255)
 
  script_categories: ID int(10) unsigned NOT NULL auto_increment
  script_categories: TITLE varchar(255) NOT NULL DEFAULT ''

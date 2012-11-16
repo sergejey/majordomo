@@ -123,7 +123,7 @@ function getParams() {
     $session->data['TERMINAL']=$terminal;
    }
 
-   if (preg_match('/^app_\w+$/is', $this->action)) {
+   if (preg_match('/^app_\w+$/is', $this->action) || $this->action=='xray') {
     $out['APP_ACTION']=1;
    }
 

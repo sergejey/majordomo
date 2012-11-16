@@ -293,9 +293,18 @@ curl_close($ch);
     $this->callMethod($name, $params, 1);
    }
 
+   $method['EXECUTED']=date('Y-m-d H:i:s');
+   if ($params) {
+    $method['EXECUTED_PARAMS']=serialize($params);
+   }
+   SQLUpdate('methods', $method);
+
    if ($method['SCRIPT_ID']) {
+   /*
     $script=SQLSelectOne("SELECT * FROM scripts WHERE ID='".$method['SCRIPT_ID']."'");
     $code=$script['CODE'];
+   */
+    runScript($method['SCRIPT_ID']);
    } else {
     $code=$method['CODE'];
    }
@@ -325,7 +334,6 @@ curl_close($ch);
       SQLInsert('history', $h);
      }
     }
-
 
     eval($code);
    }
@@ -400,11 +408,13 @@ curl_close($ch);
    $old_value=$v['VALUE'];
    $v['VALUE']=$value;
    if ($v['ID']) {
+    $v['UPDATED']=date('Y-m-d H:i:s');
     SQLUpdate('pvalues', $v);
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
     $v['VALUE']=$value;
+    $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
    }
    //DebMes(" $id to $value ");
@@ -417,6 +427,7 @@ curl_close($ch);
     $v['PROPERTY_ID']=$prop['ID'];
     $v['OBJECT_ID']=$this->id;
     $v['VALUE']=$value;
+    $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
   }
 

@@ -216,6 +216,8 @@ methods - Methods
  methods: DESCRIPTION text
  methods: CODE text
  methods: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
+ methods: EXECUTED datetime
+ methods: EXECUTED_PARAMS varchar(255)
 EOD;
   parent::dbInstall($data);
  }

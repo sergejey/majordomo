@@ -1,0 +1,28 @@
+<table border="1" align="center" cellspacing="3" cellpadding="5" width="100%">
+ <tr>
+  <td valign="top" width="33%"[#if VIEW_MODE!=""#] bgcolor="#AAAAAA"[#endif#]><a href="?">Properties</a></td>
+  <td valign="top" width="33%"[#if VIEW_MODE!="methods"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=methods">Methods</a></td>
+  <td valign="top" width="33%"[#if VIEW_MODE!="scripts"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=scripts">Scripts</a></td>
+ </tr>
+ <tr>
+  <td valign="top" colspan=3>
+  <div id="xrayContent">Loading...</div>
+  </td>
+ </tr>
+</table>
+<script language="javascript">
+        var checkTimer;
+        function checkAllStates() {
+         clearTimeout(checkTimer);
+         var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>";
+         $.ajax({
+          url: url,
+          }).done(function(data) { 
+          $('#xrayContent').html(data);
+          checkTimer=setTimeout('checkAllStates()', 5000);
+         });
+  return false;
+ }
+
+ checkAllStates();
+</script>

@@ -292,6 +292,11 @@ function admin(&$out) {
 
    set_time_limit(0);
 
+   if (!is_dir(ROOT.'saverestore')) {
+    @umask(0);
+    @mkdir(ROOT.'saverestore', 0777);
+   }
+
     $filename=ROOT.'saverestore/master.tgz';
     $f = fopen($filename, 'wb');
     if ($f == FALSE){
