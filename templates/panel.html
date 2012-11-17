@@ -127,33 +127,36 @@ p, .btn, h1 {
 margin: 10px 0;
 }
 .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-	width: 1100px;
+        width: 1100px;
 }
 </style>
 <div id="content" class="content">
 <div class="navbar navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container">
-		<a class="brand" href="/"><#SETTINGS_SITE_TITLE#> // <span class="color-white"><#LANG_CONTROL_PANEL#></span></a>
-			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
-			<div class="nav-collapse">
-				<ul class="nav">
-					<li>
-						<a href="<#ROOTHTML#>" target=_blank class=smw><#LANG_FRONTEND#></a>
-					</li>
-					<li>
-						<a href="<#ROOTHTML#>menu.html" target=_blank class=smw><#LANG_CONTROL_MENU#></a>
-					</li>
-					<li>
-						<a href="<#LANG_WIKI_URL#>" target=_blank  class=smw>MajorDoMo Project</a>
-					</li>
-					<li>
-						<a href="?md=control_access&mode=logoff" class=smw><#LANG_LOGOFF#></a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+        <div class="navbar-inner">
+                <div class="container">
+                <a class="brand" href="/"><#SETTINGS_SITE_TITLE#> // <span class="color-white"><#LANG_CONTROL_PANEL#></span></a>
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+                        <div class="nav-collapse">
+                                <ul class="nav">
+                                        <li>
+                                                <a href="<#ROOTHTML#>" target=_blank class=smw><#LANG_FRONTEND#></a>
+                                        </li>
+                                        <li>
+                                                <a href="<#ROOTHTML#>menu.html" target=_blank class=smw><#LANG_CONTROL_MENU#></a>
+                                        </li>
+                                        <li>
+                                                <a href="?action=xray" target=_blank class=smw>X-Ray</a>
+                                        </li>
+                                        <li>
+                                                <a href="<#LANG_WIKI_URL#>" target=_blank  class=smw>MajorDoMo Project</a>
+                                        </li>
+                                        <li>
+                                                <a href="?md=control_access&mode=logoff" class=smw><#LANG_LOGOFF#></a>
+                                        </li>
+                                </ul>
+                        </div>
+                </div>
+        </div>
 </div>
 
 <!--# .top  #-->
@@ -167,16 +170,16 @@ margin: 10px 0;
     <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>[#if ACTION!=""#]<span class="divider">/</span>[#endif#]
     </li>
     [#if ACTION!=""#]
-	<li class="active"><#ACTION#></li>
-	[#endif#]
-	
-	<div class="float-right">
-	<!--# date  #-->
-	[#TODAY#]
-	<!--# .date  #-->
-	<span class="divider">/</span>
-	<a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
-	</div>
+        <li class="active"><#ACTION#></li>
+        [#endif#]
+        
+        <div class="float-right">
+        <!--# date  #-->
+        [#TODAY#]
+        <!--# .date  #-->
+        <span class="divider">/</span>
+        <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+        </div>
 </ul>
 
 [#endif PRINT#]
@@ -206,15 +209,15 @@ margin: 10px 0;
    [#endif NEW_CATEGORY#]
    [#if !DENIED#]
    [#if SELECTED#]
-		<li class="active" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
+                <li class="active" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
    [#else#]
-		<li id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
+                <li id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
    [#endif#]
    [#endif DENIED#]
    [#end SUB_MODULES#]
 </ul>
 
-		<!--/left_main--></td>
+                <!--/left_main--></td>
 [#endif PRINT#]
 <td height=100% valign=top class="" id="main-content">
 <!--right_main-->

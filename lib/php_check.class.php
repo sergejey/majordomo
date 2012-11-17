@@ -24,6 +24,8 @@ function php_syntax_error($code) {
  unlink(DOC_ROOT.'/cached/'.$filename);
  if (preg_match('/no syntax errors detected/is', $out[0])) {
   return false;
+ } elseif (!trim(implode("\n", $out))) {
+  return false;
  } else {
   $res=implode("\n", $out);
   $res=preg_replace('/Errors parsing.+/is', '', $res);

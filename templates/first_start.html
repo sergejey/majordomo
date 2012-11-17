@@ -6,14 +6,14 @@
 Time zone:<br>
 <select name='timezone' id='timezone' style='width:350px'>
 [#begin ZONELIST#]
- <option value="[#OFFSET#]">[#TITLE#] (GMT [#OFFSET_TEXT#])
+ <option value="[#OFFSET#]"[#if TITLE="<#SETTINGS_SITE_TIMEZONE#>"#] selected[#endif#]>[#TITLE#] (GMT [#OFFSET_TEXT#])
 [#end ZONELIST#]
 </select>
 <Br>&nbsp;
 <Br>
 Language:<Br>
 [#begin LANGUAGES#]
-<label><input type="radio" name="language" value="[#TITLE#]">
+<label><input type="radio" name="language" value="[#TITLE#]"[#if TITLE="<#SETTINGS_SITE_LANGUAGE#>"#] checked[#endif#]>
 <img src="/img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" align="absmiddle"> [#TITLE#]
 </label><br>
 [#end LANGUAGES#]
@@ -33,13 +33,14 @@ Color theme:
 </form>
 
 <script language="javascript">
+[#if "<#SETTINGS_SITE_TIMEZONE#>"==""#]
                 $(document).ready(function(){   
                   var d = new Date()
                   var offset= -d.getTimezoneOffset()/60;
                   $('#timezone').val(offset);
                   $('#timezone_title').val($('#timezone :selected').html());
                 });     
-
+[#endif#]
 
 $('#timezone').change(function()
 {
@@ -48,6 +49,7 @@ $('#timezone').change(function()
 
  
 </script>
+
 
 
 

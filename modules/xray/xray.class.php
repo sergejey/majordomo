@@ -192,6 +192,54 @@ function admin(&$out) {
       echo '</tr>';
      }
      echo '</table>';     
+    } elseif ($this->view_mode=='timers') {
+     $res=SQLSelect("SELECT jobs.* FROM jobs WHERE EXPIRED!=1 AND PROCESSED!=1 ORDER BY jobs.RUNTIME");
+     $total=count($res);
+     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+      echo '<tr>';
+      echo '<td><b>TIMER</b></td>';
+      echo '<td><b>COMMAND</b></td>';
+      echo '<td><b>SCHEDULED</b></td>';
+      echo '</tr>';
+     for($i=0;$i<$total;$i++) {
+      echo '<tr>';
+      echo '<td>';
+      echo $res[$i]['TITLE'];
+      echo '</td>';
+      echo '<td>';
+      echo $res[$i]['COMMANDS'];
+      echo '</td>';
+      echo '<td>';
+      echo $res[$i]['RUNTIME'].'&nbsp;';
+      echo '</td>';
+      echo '</tr>';
+     }
+     echo '</table>';     
+    } elseif ($this->view_mode=='events') {
+
+     $res=SQLSelect("SELECT events.* FROM events WHERE 1 ORDER BY events.ADDED DESC LIMIT 30");
+     $total=count($res);
+     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+      echo '<tr>';
+      echo '<td><b>EVENT</b></td>';
+      echo '<td><b>DETAILS</b></td>';
+      echo '<td><b>ADDED</b></td>';
+      echo '</tr>';
+     for($i=0;$i<$total;$i++) {
+      echo '<tr>';
+      echo '<td>';
+      echo $res[$i]['EVENT_NAME'].'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      echo $res[$i]['DETAILS'].'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      echo $res[$i]['ADDED'].'&nbsp;';
+      echo '</td>';
+      echo '</tr>';
+     }
+     echo '</table>';     
+
     }
   exit;
  }

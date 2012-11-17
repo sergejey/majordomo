@@ -25,6 +25,23 @@ $dictionary=array(
 'LOGOFF'=>'Logoff',
 'MODULE_DESCRIPTION'=>'Module Description on the Web',
 
+'GENERAL_SENSORS'=>'Sensors',
+'GENERAL_OPERATIONAL_MODES'=>'Operational modes',
+'GENERAL_ENERGY_SAVING_MODE'=>'Energy saving mode',
+'GENERAL_SECURITY_MODE'=>'Security mode',
+'GENERAL_NOBODYS_HOME_MODE'=>'Nobody\'s home',
+'GENERAL_WE_HAVE_GUESTS_MODE'=>'We have guests',
+
+'GENERAL_CLIMATE'=>'Climate',
+'GENERAL_WEATHER_FORECAST'=>'Weather forecast',
+'GENERAL_TEMPERATURE_OUTSIDE'=>'Temperature outside',
+'GENERAL_GRAPHICS'=>'Graphics',
+
+'GENERAL_SECURITY_CAMERA'=>'Security camera',
+'GENERAL_EVENTS_LOG'=>'Events log',
+
+'GENERAL_SERVICE'=>'Service',
+
 'SECTION_OBJECTS'=>'Objects',
 'SECTION_APPLICATIONS'=>'Applications',
 'SECTION_SETTINGS'=>'Settings',

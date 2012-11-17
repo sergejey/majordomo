@@ -194,6 +194,7 @@ for($i=0;$i<$total;$i++) {
     Define('SETTINGS_'.$rec['NAME'], $v['VALUE']);
    }
 
+   @unlink(ROOT.'modules/control_modules/installed');
    SaveFile(ROOT.'reboot', '1');
 
    $this->redirect("/");

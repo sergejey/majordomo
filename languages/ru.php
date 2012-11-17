@@ -25,6 +25,23 @@ $dictionary=array(
 'LOGOFF'=>'Выйти',
 'MODULE_DESCRIPTION'=>'Описание модуля',
 
+'GENERAL_SENSORS'=>'Сенсоры',
+'GENERAL_OPERATIONAL_MODES'=>'Режимы работы',
+'GENERAL_ENERGY_SAVING_MODE'=>'Энергосбережение',
+'GENERAL_SECURITY_MODE'=>'Безопасность',
+'GENERAL_NOBODYS_HOME_MODE'=>'Никого нет дома',
+'GENERAL_WE_HAVE_GUESTS_MODE'=>'У нас гости',
+
+'GENERAL_CLIMATE'=>'Климат',
+'GENERAL_WEATHER_FORECAST'=>'Прогноз погоды',
+'GENERAL_TEMPERATURE_OUTSIDE'=>'Температура за окном',
+'GENERAL_GRAPHICS'=>'Графики',
+
+'GENERAL_SECURITY_CAMERA'=>'Камеры наблюдения',
+'GENERAL_EVENTS_LOG'=>'История событий',
+
+'GENERAL_SERVICE'=>'Сервис',
+
 'SECTION_OBJECTS'=>'Объекты',
 'SECTION_APPLICATIONS'=>'Приложения',
 'SECTION_SETTINGS'=>'Настройки',
