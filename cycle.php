@@ -52,7 +52,11 @@
 
  $threads = new Threads;
 
- $threads->phpPath = '..\server\php\php.exe';
+ if (substr(php_uname(), 0, 7) == "Windows") {
+  $threads->phpPath = '..\server\php\php.exe';
+ } else {
+  $threads->phpPath = 'php';
+ }
 
  foreach($cycles as $path) {
   if (file_exists($path)) {

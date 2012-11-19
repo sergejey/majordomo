@@ -15,7 +15,7 @@
    if ($class['SUB_LIST']!='') {
     $qry.=" AND (CLASS_ID IN (".$class['SUB_LIST'].") OR CLASS_ID=".$class['ID'].")";
    } else {
-    $qry.=" AND 0";
+    $qry.=" AND CLASS_ID='".$class['ID']."'";
    }
   }
 
