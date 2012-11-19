@@ -202,9 +202,10 @@ function admin(&$out) {
   $method='ftp';
   if( function_exists('getmyuid') && function_exists('fileowner') ){
   $temp_file = tempnam ("./saverestore/", "FOO");
-  if ( getmyuid() == fileowner($temp_file) )
+  if (file_exists($temp_file)) {
    $method = 'direct';
    unlink($temp_file);
+  }
   }
   $out['METHOD']=$method;
   $this->method=$method;
