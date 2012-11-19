@@ -71,7 +71,9 @@
    if (preg_match('/^(.+?)[:=](.*?)$/is', $argv[$i], $matches)) {
     $_GET[$matches[1]]=trim(win2utf($matches[2]));
     ${$matches[1]}=trim(win2utf($matches[2]));
-   }        
+   } else {
+    //echo "Arg: ".$argv[$i]."\n";
+   }
   }
  }
 
@@ -83,7 +85,13 @@
   $request=implode(' ', $argv);
  }
 
+ //echo "object: $object op: $op m: $m status: $status ";exit;
+
+ if (!$commandLine) {
+  header ('Content-Type: text/html; charset=utf-8');
+ }
  echo "\nRequest: ".$request;
+ //exit;
 
  //DebMes("Request: ".$request);
 
@@ -92,9 +100,6 @@
   $obj=getObject($object);
   if ($obj) {
    //DebMes("object [".$object."] FOUND");
-   if (!$commandLine) {
-    header ('Content-Type: text/html; charset=utf-8');
-   }
    if ($op=='get') {
     $value=$obj->getProperty($p);
     echo $value;
