@@ -169,6 +169,13 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'onoff',
     'DEFAULT'=>'1',
     'PRIORITY'=>'60'
+   ),
+    array(
+    'NAME'=>'SPEAK_SIGNAL',
+    'TITLE'=>'Play sound signal before speaking', 
+    'TYPE'=>'onoff',
+    'DEFAULT'=>'1',
+    'PRIORITY'=>'0'
    )
    );
 
@@ -177,7 +184,7 @@ for($i=0;$i<$total;$i++) {
     $rec=SQLSelectOne("SELECT * FROM settings WHERE NAME='".$v['NAME']."'");
     if (!$rec['ID']) {
      $rec['NAME']=$v['NAME'];
-     if (isset($v['VALUE'])) {
+     if (!isset($v['VALUE'])) {
       $rec['VALUE']=$v['DEFAULT'];
      } else {
       $rec['VALUE']=$v['VALUE'];

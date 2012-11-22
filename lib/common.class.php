@@ -51,6 +51,10 @@
     $google_file=false;
    }
 
+   if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL=='1') {
+    playSound('dingdong', 1, $level);
+   }
+
    if ($google_file) {
     @touch($google_file);
     playSound($google_file, 1, $level);
