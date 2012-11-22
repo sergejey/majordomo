@@ -1,7 +1,7 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-<table width="100%" border="0" class="ui-widget-content">
+<table width="100%" border="0">
  <tr>
   <td valign="top" colspan=2>
   
@@ -21,7 +21,7 @@
   [ <a href="#" onClick="return openTWindow('addEventWin', 'Add Event', '/popup/addevent.html', 500, 230)">Add Event</a> ]
   </td>
   #-->
-  <td valign="top" nowrap class="ui-widget-content">
+  <td valign="top" nowrap>
 
   <table border="0" align="right">
    <tr>
@@ -85,9 +85,6 @@
   </td>
   <td valign="top" width="100%">
 
-
-
-
 <div id="tabs">
 
 <ul>
@@ -117,7 +114,8 @@ var iFrameHeight=500;
 
 $(document).ready(function() {
   // Handler for .ready() called.
-  iFrameHeight=$(window).height()-110;
+  iFrameHeight=$(document).height()-110;
+  //alert($(document).height());
   $('#navFrame').height(iFrameHeight+57);
   [#begin LAYOUTS#]
   $('#htmlTab[#NUM#]').height(iFrameHeight);
@@ -125,9 +123,9 @@ $(document).ready(function() {
   //alert($('#defaultFrame').height());
 });
 
-        $( "#tabs" ).tabs({
+        $("#tabs").tabs({
         show: function(event, ui) { 
-         iFrameHeight=$(window).height()-110;
+         iFrameHeight=$(document).height()-110;
          var selected = $( "#tabs" ).tabs( "option", "selected" );
          //alert(selected);
          [#begin LAYOUTS#]
