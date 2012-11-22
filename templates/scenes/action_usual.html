@@ -86,8 +86,13 @@
  [#begin ELEMENTS#]
  <!-- element [#ID#] -->
  [#begin STATES#]
-  <div id="state_[#ID#]"[#if SCRIPT_ID!="0"#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif#][#if SCRIPT_ID!="0"#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
+  <div id="state_[#ID#]"[#if SCRIPT_ID!="0"#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#if "<#ELEMENTS.BACKGROUND#>"=="1"#]border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif BACKGROUND#][#endif#][#if SCRIPT_ID!="0"#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
  [#end STATES#]
+ [#if JAVASCRIPT!=""#]
+ <script language="javascript">
+  [#JAVASCRIPT#]
+ </script>
+ [#endif#]
  <!-- /element [#ID#] -->
  [#end ELEMENTS#]
  <img src="[#BACKGROUND#]" border="0">

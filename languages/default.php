@@ -786,6 +786,11 @@ $dictionary=array(
 
 'STARRED'=>'Starred',
 
+'USE_BACKGROUND'=>'Use background',
+'YES'=>'Yes',
+'NO'=>'No',
+'USE_JAVASCRIPT'=>'Use JavaScript',
+
 'TEST'=>'test'
 
 

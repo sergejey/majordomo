@@ -775,6 +775,12 @@ $dictionary=array(
 
 'STARRED'=>'Избранное',
 
+'USE_BACKGROUND'=>'Использовать фон',
+'YES'=>'Да',
+'NO'=>'Нет',
+
+'USE_JAVASCRIPT'=>'Использовать JavaScript',
+
 'TEST'=>'test'
 
 

@@ -129,6 +129,21 @@
     global $width;
     $element['WIDTH']=(int)$width;
 
+   if ($element['WIDTH']) {
+    global $background;
+    $element['BACKGROUND']=(int)$background;
+
+    global $use_javascript;
+    if ($use_javascript) {
+     global $javascript;
+     $element['JAVASCRIPT']=$javascript;
+    } else {
+     $element['JAVASCRIPT']='';
+    }
+
+   }
+
+
     global $cross_scene;
     $element['CROSS_SCENE']=(int)$cross_scene;
 
@@ -201,14 +216,14 @@
         
    if (is_array($state_rec)) {
     foreach($state_rec as $k=>$v) {
-     $out['STATE_'.$k]=$v;
+     $out['STATE_'.$k]=htmlspecialchars($v);
     }
    }
 
 
    if (is_array($element)) {
     foreach ($element as $k=>$v) {
-     $out['ELEMENT_'.$k]=$v;
+     $out['ELEMENT_'.$k]=htmlspecialchars($v);
     }
    }
 

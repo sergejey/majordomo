@@ -94,6 +94,25 @@
         </div>
 </div>
 
+<div class="control-group">
+        <label class="control-label"><#LANG_USE_BACKGROUND#></label>
+        <div class="controls">
+                <input type="radio" name="background" value="1"[#if ELEMENT_BACKGROUND=="1"#]checked[#endif#]> <#LANG_YES#>
+                <br>
+                <input type="radio" name="background" value="0"[#if ELEMENT_BACKGROUND!="1"#]checked[#endif#]> <#LANG_NO#>
+        </div>
+</div>
+
+<div class="control-group">
+        <label class="control-label"><#LANG_USE_JAVASCRIPT#></label>
+        <div class="controls">
+        <input type="checkbox" name="use_javascript" value="1"[#if ELEMENT_JAVASCRIPT!=""#] checked[#endif#] onClick='$("#element_javascript").toggle();'> <#LANG_YES#>
+        <div id="element_javascript"[#if ELEMENT_JAVASCRIPT=""#] style="display:none"[#endif#]>
+        <textarea name="javascript" rows="6" class="field span6">[#ELEMENT_JAVASCRIPT#]</textarea>
+        </div>
+        </div>
+</div>
+
 [#endif ELEMENT_TYPE#]
 <!-- CROSS_SCENE (int) -->
 <!--#
@@ -143,7 +162,7 @@
 <div class="control-group">
         <label class="control-label"><#LANG_CODE#></label>
         <div class="controls">
-                <textarea name="html_new" rows="5" cols="41">[#STATE_HTML#]</textarea>
+                <textarea name="html_new" rows="5" cols="41" class="field span6">[#STATE_HTML#]</textarea>
         </div>
 </div>
 [#endif#]
