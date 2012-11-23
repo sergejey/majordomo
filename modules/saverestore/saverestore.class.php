@@ -299,6 +299,10 @@ function admin(&$out) {
    }
 
     $filename=ROOT.'saverestore/master.tgz';
+
+    @unlink(ROOT.'saverestore/master.tgz');
+    @unlink(ROOT.'saverestore/master.tar');
+
     $f = fopen($filename, 'wb');
     if ($f == FALSE){
       $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
