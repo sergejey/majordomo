@@ -193,6 +193,7 @@ for($i=0;$i<$total;$i++) {
      $rec['TITLE']=$v['TITLE'];
      $rec['TYPE']=$v['TYPE'];
      $rec['PRIORITY']=(int)$v['PRIORITY'];
+     $rec['NOTES']='';
      $rec['ID']=SQLInsert('settings', $rec);
     } elseif (isset($v['VALUE'])) {
      $rec['VALUE']=$v['VALUE'];
