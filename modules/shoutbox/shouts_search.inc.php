@@ -33,6 +33,12 @@
    $rec['MESSAGE']=htmlspecialchars($msg);
    $rec['ADDED']=date('Y-m-d H:i:s');
    SQLInsert('shouts', $rec);
+
+   include_once(DIR_MODULES.'patterns/patterns.class.php');
+   $pt=new patterns();
+
+
+   $pt->checkAllPatterns();
    processCommand($msg);
    $getdata=1;
   }
