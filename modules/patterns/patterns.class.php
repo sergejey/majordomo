@@ -187,6 +187,7 @@ function usual(&$out) {
 * @access public
 */
  function checkPattern($id) {
+  global $pattern_matched;
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
   $pattern=$rec['PATTERN'];
   $pattern=str_replace("\r", '', $pattern);
@@ -210,6 +211,8 @@ function usual(&$out) {
   }
 
 
+
+
   $total=count($messages);
   if (!$total) {
    return 0;
@@ -222,13 +225,14 @@ function usual(&$out) {
   $history=implode('@@@@', $lines);
   $check=implode('@@@@', $lines_pattern);
 
+
   if (preg_match('/'.$check.'/is', $history, $matches)) {
    $rec['LOG']=date('Y-m-d H:i:s').' Pattern matched'."\n".$rec['LOG'];
    $rec['EXECUTED']=time();
    SQLUpdate('patterns', $rec);
-
    global $noPatternMode;
    $noPatternMode=1;
+   $pattern_matched=1;
    if ($rec['SCRIPT_ID']) {
     runScript($rec['SCRIPT_ID'], $matches);
    } elseif ($rec['SCRIPT']) {
@@ -236,6 +240,7 @@ function usual(&$out) {
    }
    $noPatternMode=0;
   }
+
  }
 
 /**

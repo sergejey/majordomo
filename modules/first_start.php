@@ -20,6 +20,20 @@ $regions = array(
     'Pacific' => DateTimeZone::PACIFIC
 );
 
+/*
+//For earlier versions of PHP:
+$regions = array(
+    'Africa' => 1,
+    'America' => 2,
+    'Antarctica' => 4,
+    'Asia' => 16,
+    'Atlantic' => 32,
+    'Europe' => 128,
+    'Indian' => 256,
+    'Pacific' => 512
+);
+*/
+
 foreach ($regions as $name => $mask) {
     $tzlist[] = DateTimeZone::listIdentifiers($mask);
 }

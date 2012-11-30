@@ -47,8 +47,7 @@ if ($qry!='') {
     SQLInsert('shouts', $rec);
 
     $pt->checkAllPatterns();
-    getObject("ThisComputer")->raiseEvent("commandReceived", array("command"=>$qrys[$i]));
-
+    processCommand($qrys[$i]);
     
    }
 

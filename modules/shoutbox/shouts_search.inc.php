@@ -33,7 +33,7 @@
    $rec['MESSAGE']=htmlspecialchars($msg);
    $rec['ADDED']=date('Y-m-d H:i:s');
    SQLInsert('shouts', $rec);
-   getObject("ThisComputer")->raiseEvent("commandReceived", array("command"=>$msg));
+   processCommand($msg);
    $getdata=1;
   }
 

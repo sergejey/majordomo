@@ -82,7 +82,10 @@
 * @access public
 */
  function processCommand($command) {
-  getObject("ThisComputer")->callMethod("commandReceived", array("command"=>$command));
+  global $pattern_matched;
+  if (!$pattern_matched) {
+   getObject("ThisComputer")->callMethod("commandReceived", array("command"=>$command));
+  }
  }
 
 /**
