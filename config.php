@@ -9,8 +9,8 @@
 
 
  Define('DB_HOST', 'localhost');
- Define('DB_NAME', 'db_terminal');
- Define('DB_USER', 'root');
+ Define('DB_NAME', 'major_domo');
+ Define('DB_USER', 'major_domo');
  Define('DB_PASSWORD', '');
 
  Define('DIR_TEMPLATES', "./templates/");
@@ -47,15 +47,15 @@
  Define('ROOTHTML', "/");
  Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
 
- //Define('ONEWIRE_SERVER', 'tcp://home:8234');    // 1-wire OWFS server
+ Define('ONEWIRE_SERVER', 'tcp://192.168.11.1:8234');    // 1-wire OWFS server
 
- /*
- Define('HOME_NETWORK', '192.168.0.*');                  // home network (optional)
+ 
+ Define('HOME_NETWORK', '192.168.11.*');                  // home network (optional)
  Define('EXT_ACCESS_USERNAME', 'user');                  // access details for external network (internet)
  Define('EXT_ACCESS_PASSWORD', 'password');
- */
+ 
 
- Define('TIME_ZONE', 'Europe/Moscow'); // Time Zone. See for supported time zones: http://www.php.net/manual/en/timezones.php
+ Define('TIME_ZONE', 'Europe/Kiev'); // Time Zone. See for supported time zones: http://www.php.net/manual/en/timezones.php
 
  //Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  // (Optional)
 
