@@ -397,7 +397,7 @@
 */
  function SQLInsert($table, &$record) {
   global $db;
-  return $db->Insert($table, &$record);
+  return $db->Insert($table, $record);
  }
 
 // --------------------------------------------------------------------   
@@ -448,6 +448,7 @@
  function SQLInsertUpdate($table, &$record) {
   return SQLUpdateInsert($table, $record);
  }
+
 
 // --------------------------------------------------------------------   
 /**
