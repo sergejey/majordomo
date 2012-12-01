@@ -78,6 +78,9 @@
    } else {
     mysql_query("SET NAMES 'utf8';",$this->dbh);
     mysql_query("SET CHARACTER SET 'utf8';",$this->dbh);
+    mysql_query("set character_set_client='utf8';",$this->dbh);
+    mysql_query("set character_set_results='utf8';",$this->dbh);
+    mysql_query("set collation_connection='utf8_general_ci';",$this->dbh);
     //mysql_query("SET SESSION collation_connection = 'utf8_general_ci';",$this->dbh);
     return 1;
    }
