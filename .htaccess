@@ -1,6 +1,12 @@
 AddDefaultCharset UTF-8
 DirectoryIndex index.html index.htm index.php default.html
 
+#php_flag allow_call_time_pass_reference on
+#php_flag display_errors off
+php_value error_reporting "E_ALL & ~E_NOTICE"
+php_flag short_open_tag on
+php_flag register_argc_argv off
+
 <IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /
