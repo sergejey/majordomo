@@ -204,7 +204,7 @@ function getParams() {
    }
 
    $this->data=$out;
-   $p=new parser($template_file, $this->data, &$this);
+   $p=new parser($template_file, $this->data, $this);
    return $p->result;
 
   }

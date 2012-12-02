@@ -307,7 +307,7 @@ function getParams() {
   $out["ACTION"]=$this->action;
 
   $this->data=$out;
-  $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, &$this);
+  $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 
  }
