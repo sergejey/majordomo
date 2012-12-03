@@ -51,7 +51,7 @@ function GetXMLTree($data) {
  // by: anony@mous.com - meets XML 1.0 specification
  xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
  
- xml_parse_into_struct($p, $data, &$vals, &$index);
+ xml_parse_into_struct($p, $data, $vals, $index);
  
  xml_parser_free($p);
  
