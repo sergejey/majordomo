@@ -24,7 +24,7 @@
   echo "OK\n";
  }
  umask($old_mask);
-/*
+
  // CHECK/REPAIR/OPTIMIZE TABLES                
  $tables=SQLSelect("SHOW TABLES FROM db_terminal");
  $total=count($tables);
@@ -45,5 +45,5 @@
  SQLExec("DELETE FROM shouts WHERE ADDED>NOW()");
  SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW())-TO_DAYS(ADDED))>=5");
 
-*/
+
 ?>
