@@ -1,4 +1,4 @@
-<?
+<?	
 /*
 * @version 0.4 (06.09.2011 bug fixed)
 */
@@ -23,8 +23,11 @@
 
 
  $bt_devices=array();
+ 
+ //windows file
  $devices_file=SERVER_ROOT."/apps/bluetoothview/devices.txt";
-
+ //linux command
+ $bts_cmd = 'hcitool scan | grep ":"';
 
  $first_run=1;
  $skip_counter=0;
@@ -32,13 +35,30 @@
   $skip_counter++;
   if ($skip_counter>=30) {
    $skip_counter=0;
-   @unlink($devices_file);
-   echo "Running bluetoothview\n";
-   exec(SERVER_ROOT.'/apps/bluetoothview/bluetoothview.exe /stab '.$devices_file);
-   sleep(5);
+   echo "Running bluetooth scanner\n";
+   $data='';
+   if (substr(php_uname(), 0, 7) == "Windows") {   
+   // windows scanner
+    @unlink($devices_file);   
+    exec(SERVER_ROOT.'/apps/bluetoothview/bluetoothview.exe /stab '.$devices_file);   
+    if (file_exists($devices_file)) {
+     $data=(LoadFile($devices_file));   
+     sleep(5);	
+    }
+   } else {
+   //linux scanner
+    ob_start();  passthru($bts_cmd); $bt_scan_arr = explode("\n", ob_get_contents()); ob_end_clean();   
+	$lines=array();
+    for ($i = 0; $i < count($bt_scan_arr) - 1; $i++) {
+      $btstr = explode("\t", $bt_scan_arr[$i]);
+      $btaddr[$i] = $btstr[1];
+      $btname[$i] = rtrim($btstr[2]);
+	  $lines[]=$i."\t".$btname[$i]."\t".$btaddr[$i];
+    }
+	$data=implode("\n",$lines);
+   }
    $last_scan=time();
-   if (file_exists($devices_file)) {
-   $data=(LoadFile($devices_file));
+   if ($data) {
    $data=str_replace(chr(0), '', $data);
    $data=str_replace("\r", '', $data);
    $lines=explode("\n", $data);
