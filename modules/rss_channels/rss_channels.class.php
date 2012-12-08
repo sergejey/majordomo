@@ -251,6 +251,7 @@ function usual(&$out) {
                                                                 $rec['BODY'] = $this->convertObjDataToStr($item->description);
                                                                 $rec['URL'] = $this->convertObjDataToStr($item->link);
                                                                 $rec['GUID']  = $rec['URL'];
+                                                                $timestamp = strtotime($rec['ADDED']);
                                                                 //print_r($rec);
                                                                 //exit;
                                                                 $tmp=SQLSelectOne("SELECT ID FROM rss_items WHERE GUID='".DBSafe($rec['GUID'])."'");
@@ -259,6 +260,8 @@ function usual(&$out) {
                                                                  if ($ch['SCRIPT_ID']) {
                                                                   $params=$rec;
                                                                   $params['CHANNEL_TITLE']=$ch['TITLE'];
+                                                                  $params['TM']=$timestamp;
+                                                                  $params['PASSED']=time()-$timestamp;
                                                                   runScript($ch['SCRIPT_ID'], $params);
                                                                  }
                                                                 }

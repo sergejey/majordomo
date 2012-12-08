@@ -24,6 +24,78 @@ function getMarkerIndex(temp_id) {
  return false;
 }
 
+function updateLocations() {
+ var url="?";
+ url+='&ajax=1&op=getlocations';
+
+ $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+   if (obj.LOCATIONS.length>0) {
+    var locations=obj.LOCATIONS;
+    for(var i=0;i<locations.length;i++) {
+     var location=locations[i];
+     var temp_id=location.ID;
+     //alert(location);
+     map.drawCircle({
+      temp_id:temp_id,
+       lat: location.LAT,
+       lng: location.LON,
+       title: location.TITLE,
+       radius: parseFloat(location.RANGE),
+       clickable: false,
+     });//       radius: location.RANGE,
+     /*
+     map.addMarker({
+       temp_id:temp_id,
+       lat: location.LAT,
+       lng: location.LON,
+       title: location.TITLE,
+      });
+     */
+    }
+   }
+  });
+
+
+ return false;
+}
+
+function updateRoute(device_id) {
+ var url="?";
+ url+='&ajax=1&op=getroute&device_id='+device_id;
+
+ $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+   if (obj.PATH.length>0) {
+    var path=obj.PATH;
+    map.drawPolyline({
+     path: path,
+     strokeColor: '#131540',
+     strokeOpacity: 0.6,
+     strokeWeight: 6
+    });
+    var points=obj.POINTS;
+    for(var i=0;i<points.length;i++) {
+     var point=points[i];
+     var temp_id=point.ID;
+     map.addMarker({
+       temp_id:temp_id,
+       lat: point.LAT,
+       lng: point.LON,
+       title: point.TITLE,
+       icon: 'http://labs.google.com/ridefinder/images/mm_20_red.png',
+      });
+    }
+   }
+  });
+
+ return false;
+}
+
 
 function updateMarkers() {
  var url="?";
@@ -119,6 +191,10 @@ GMaps.geolocate({
 updateMarkers();
 resizeMap();
 
+[#begin DEVICES#]
+ updateRoute([#ID#]);
+[#end DEVICES#]
+updateLocations();
 //
 
     });

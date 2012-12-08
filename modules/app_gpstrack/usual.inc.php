@@ -20,11 +20,37 @@
    }
    echo json_encode($data);
   }
+
+  if ($op=='getroute') {
+   global $device_id;
+   $device=SQLSelectOne("SELECT * FROM gpsdevices WHERE ID='".(int)$device_id."'");
+   $log=SQLSelect("SELECT * FROM gpslog WHERE DEVICE_ID='".(int)$device_id."' AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED))<24*60*60 ORDER BY ADDED");
+   $total=count($log);
+   $coords=array();
+   $points=array();
+   for($i=0;$i<$total;$i++) {
+    $coords[]=array($log[$i]['LAT'], $log[$i]['LON']);
+    $points[]=array('ID'=>$log[$i]['ID'], 'LAT'=>$log[$i]['LAT'], 'LON'=>$log[$i]['LON'], 'TITLE'=>$device['TITLE'].' ('.$log[$i]['ADDED'].')');
+   }
+   $res=array();
+   $res['PATH']=$coords;
+   $res['POINTS']=$points;
+   echo json_encode($res);
+  }
+
+  if ($op=='getlocations') {
+   $res=array();
+   $res['LOCATIONS']=SQLSelect("SELECT * FROM gpslocations");
+   echo json_encode($res);
+  }
+
   exit;
  }
 
  $latest_point=SQLSelectOne("SELECT * FROM gpslog ORDER BY ADDED DESC");
  $out['LATEST_LAT']=$latest_point['LAT'];
  $out['LATEST_LON']=$latest_point['LON'];
+
+ $out['DEVICES']=SQLSelect("SELECT * FROM gpsdevices");
 
 ?>
