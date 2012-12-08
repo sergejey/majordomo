@@ -33,7 +33,7 @@
  $tables=SQLSelect("SHOW TABLES FROM ".DB_NAME);
  $total=count($tables);
  for($i=0;$i<$total;$i++) {
-  $table=$tables[$i]['Tables_in_'.DB_NAME]
+  $table=$tables[$i]['Tables_in_'.DB_NAME];
   echo $table.' ...';
   if ($result=mysql_query("SELECT * FROM ".$table." LIMIT 1")) {
    echo "OK\n";
