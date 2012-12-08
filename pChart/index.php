@@ -92,15 +92,41 @@
 
    $dt=date('Y-m-d', $start_time);
 
-   while($start_time<$end_time) {
+   
+   $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+   $total=count($history);
+   $itm=0;
+   for($i=0;$i<$total;$i++) {
+    $unx=$history[$i]['UNX'];
+    if ($unx>=$start_time || $i==0) {
+     $values[$itm]=(float)$history[$i]['VALUE'];
+     $itm++;
+     $start_time+=$period;
+     if ($px_passed>30) {
+      if (date('Y-m-d', $unx)!=$dt) {
+       $hours[]=date('d/m', $unx);
+       $dt=date('Y-m-d', $unx);
+      } else {
+       $hours[]=date('H:i', $unx);
+      }
+      $px_passed=0;
+     } else {
+      $hours[]='';
+     }
+     $px+=$px_per_point;
+     $px_passed+=$px_per_point;
+    }
+   }
+   
 
+/*
+   while($start_time<$end_time) {
      $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $start_time)."') ORDER BY ADDED DESC LIMIT 1");
      if ($ph['ID']) {
       $values[]=(float)$ph['VALUE'];
      } else {
       $values[]=0;
      }
-
      if ($px_passed>30) {
       if (date('Y-m-d', $start_time)!=$dt) {
        $hours[]=date('d/m', $start_time);
@@ -112,13 +138,12 @@
      } else {
       $hours[]='';
      }
-
-
      $start_time+=$period;
      $px+=$px_per_point;
      $px_passed+=$px_per_point;
-
    }
+*/
+
 
    $DataSet->AddPoint($values,"Serie1");  
    $DataSet->AddPoint($hours,"Serie3");  
@@ -253,8 +278,6 @@
   //
   
 
-   
-   
  // Render the picture  
  if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
   $Test->AddBorder(1, 200,200,200); 

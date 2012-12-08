@@ -17,7 +17,11 @@
  }
  if ($full_backup) {
   echo "Backing up files...";
-  exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases db_terminal>".$target_dir."/db_terminal.sql");
+  if (substr(php_uname(), 0, 7) == "Windows") {
+   exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases db_terminal>".$target_dir."/db_terminal.sql");
+  } else {
+   exec("/usr/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$target_dir."/".DB_NAME.".sql");
+  }
   copyTree('./cms', $target_dir.'/cms', 1);
   copyTree('./texts', $target_dir.'/texts', 1);
   copyTree('./sounds', $target_dir.'/sounds', 1);
@@ -26,10 +30,10 @@
  umask($old_mask);
 
  // CHECK/REPAIR/OPTIMIZE TABLES                
- $tables=SQLSelect("SHOW TABLES FROM db_terminal");
+ $tables=SQLSelect("SHOW TABLES FROM ".DB_NAME);
  $total=count($tables);
  for($i=0;$i<$total;$i++) {
-  $table=$tables[$i]['Tables_in_db_terminal'];
+  $table=$tables[$i]['Tables_in_'.DB_NAME]
   echo $table.' ...';
   if ($result=mysql_query("SELECT * FROM ".$table." LIMIT 1")) {
    echo "OK\n";
