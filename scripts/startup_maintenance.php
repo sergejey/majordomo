@@ -18,7 +18,7 @@
  if ($full_backup) {
   echo "Backing up files...";
   if (substr(php_uname(), 0, 7) == "Windows") {
-   exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases db_terminal>".$target_dir."/db_terminal.sql");
+   exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases ".DB_NAME.">".$target_dir."/".DB_NAME.".sql");
   } else {
    exec("/usr/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$target_dir."/".DB_NAME.".sql");
   }
