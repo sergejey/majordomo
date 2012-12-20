@@ -791,6 +791,13 @@ $dictionary=array(
 'NO'=>'No',
 'USE_JAVASCRIPT'=>'Use JavaScript',
 
+'PERIOD'=>'Period',
+'PERIOD_DAY'=>'Day (24 hours)',
+'PERIOD_WEEK'=>'Week',
+'PERIOD_MONTH'=>'Month',
+'PERIOD_CUSTOM'=>'Custom',
+'SEARCH'=>'Search',
+
 'TEST'=>'test'
 
 

@@ -62,9 +62,9 @@ function updateLocations() {
  return false;
 }
 
-function updateRoute(device_id) {
+function updateRoute(device_id, color) {
  var url="?";
- url+='&ajax=1&op=getroute&device_id='+device_id;
+ url+='&ajax=1&op=getroute&period=[#PERIOD#]&from=[#FROM#]&to=[#TO#]&device_id='+device_id;
 
  $.ajax({
    url: url
@@ -87,7 +87,7 @@ function updateRoute(device_id) {
        lat: point.LAT,
        lng: point.LON,
        title: point.TITLE,
-       icon: 'http://labs.google.com/ridefinder/images/mm_20_red.png',
+       icon: 'http://labs.google.com/ridefinder/images/mm_20_'+color+'.png',
       });
     }
    }
@@ -117,6 +117,7 @@ function updateMarkers() {
        lat: marker.LAT,
        lng: marker.LON,
        title: marker.NAME,
+       icon: 'http://maps.google.com/intl/en_us/mapfiles/ms/micons/'+marker.COLOR+'-dot.png',
        infoWindow: {
         content: marker.HTML
        },
@@ -192,7 +193,7 @@ updateMarkers();
 resizeMap();
 
 [#begin DEVICES#]
- updateRoute([#ID#]);
+ updateRoute([#ID#], '[#COLOR#]');
 [#end DEVICES#]
 updateLocations();
 //
@@ -203,6 +204,50 @@ updateLocations();
 
 </script>
 
-<div id="add_controls">&nbsp;</div>
+<div id="add_controls">
+&nbsp;
+<table border="0" cellspacing=0 cellpadding=2>
+ <tr>
+ [#begin DEVICES#]
+  <td>
+  <img src="http://labs.google.com/ridefinder/images/mm_20_[#COLOR#].png" border="0">
+  </td>
+  <td>
+  <a href="#"[#if LATEST_LAT!=""#] onClick="map.setCenter([#LATEST_LAT#], [#LATEST_LON#]);return false;"[#endif#]>[#NAME#] ([#TITLE#])</a>
+  &nbsp;
+  </td>
+ [#end DEVICES#]
+ <form action="?" method="get">
+ <td valign="top">
+ <script language="javascript">
+  function periodUpdated() {
+   if ($('#selPeriod').val()=='custom') {
+    $('#customDates').show();
+   } else {
+    $('#customDates').hide();
+   }
+   return false;
+  }
+ </script>
+ <#LANG_PERIOD#>:
+ <select name="period" onChange='periodUpdated();' id='selPeriod'>
+  <option value="day"><#LANG_PERIOD_DAY#>
+  <option value="week"[#if PERIOD="week"#] selected[#endif#]><#LANG_PERIOD_WEEK#>
+  <option value="month"[#if PERIOD="month"#] selected[#endif#]><#LANG_PERIOD_MONTH#>
+  <option value="custom"[#if PERIOD="custom"#] selected[#endif#]><#LANG_PERIOD_CUSTOM#>...
+ </select>
+ <span id='customDates' [#if PERIOD!="custom"#]style="display:none"[#endif#]>
+ &nbsp;&nbsp;&nbsp;
+ (YYYY-MM-DD)
+ <input type="text" name="from" value="[#FROM#]">
+ -
+ <input type="text" name="to" value="[#TO#]">
+ </span>
+ <input type="submit" name="Update" value="<#LANG_SEARCH#>">
+ </td>
+ </form>
+ </tr>
+</table>
+</div>
 
 <div id="map" style="width: 100%; height: 620px;"></div>

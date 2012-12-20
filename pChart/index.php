@@ -93,7 +93,7 @@
    $dt=date('Y-m-d', $start_time);
 
    
-   $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+   /*
    $total=count($history);
    $itm=0;
    for($i=0;$i<$total;$i++) {
@@ -116,6 +116,40 @@
      $px+=$px_per_point;
      $px_passed+=$px_per_point;
     }
+   }
+   */
+
+
+   $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+   $value=$history[0]['VALUE'];
+   $next_index=1;
+   $total_values=count($history);
+
+   while($start_time<$end_time) {
+     if ($next_index<$total_values) {
+      for($i=$next_index;$i<$total_values;$i++) {
+       $next_index=$i;
+       if ($history[$i]['UNX']>=$start_time) {
+        $value=$history[$i]['VALUE'];
+        break;
+       }
+      }
+     }
+     $values[]=$value;
+     if ($px_passed>30) {
+      if (date('Y-m-d', $start_time)!=$dt) {
+       $hours[]=date('d/m', $start_time);
+       $dt=date('Y-m-d', $start_time);
+      } else {
+       $hours[]=date('H:i', $start_time);
+      }
+      $px_passed=0;
+     } else {
+      $hours[]='';
+     }
+     $start_time+=$period;
+     $px+=$px_per_point;
+     $px_passed+=$px_per_point;
    }
    
 
@@ -143,6 +177,28 @@
      $px_passed+=$px_per_point;
    }
 */
+  if ($_GET['fil01']) {
+   $fil01=$_GET['fil01'];
+  } else {
+   $fil01=0;
+  }
+
+
+ if($fil01!=0){
+   $all = count($values);
+   for($z=0; $z<$fil01; $z++){
+     for($i=0; $i<$all-1; $i++){
+       if ($values[$i]!=0 && $values[$i+1]!=0) {
+       $values[$i]=($values[$i]+$values[$i+1])/2;
+   }
+  }
+   for($i=$all-1; $i>=0; $i--){
+     if ($values[$i]!=0 && $values[$i-1]!=0) {
+       $values[$i]=($values[$i]+$values[$i-1])/2;
+     }
+   }
+  }
+ }
 
 
    $DataSet->AddPoint($values,"Serie1");  

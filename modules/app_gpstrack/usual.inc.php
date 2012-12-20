@@ -2,6 +2,40 @@
 
  global $ajax;
  global $op;
+ global $period;
+ global $to;
+ global $from;
+
+ $colors=array('red', 'blue', 'green', 'orange', 'brown', 'gray', 'yellow', 'white');
+
+ $qry=1;
+ if ($period=='week') {
+  $qry.=" AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED))<7*24*60*60";
+  $to=date('Y-m-d');
+  $from=date('Y-m-d', time()-7*24*60*60);
+ } elseif ($period=='month') {
+  $qry.=" AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED))<31*24*60*60";
+  $to=date('Y-m-d');
+  $from=date('Y-m-d', time()-31*24*60*60);
+ } elseif ($period=='custom') {
+  $qry.=" AND ADDED>=DATE('".$from."' 00:00:00)";
+  $qry.=" AND ADDED<=DATE('".$to."' 00:00:00)";
+ } else {
+  $period='day';
+  $qry.=" AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED))<1*24*60*60";
+  $to=date('Y-m-d');
+  $from=date('Y-m-d', time()-1*24*60*60);
+ }
+
+ $out['DEVICES']=SQLSelect("SELECT gpsdevices.*, users.NAME FROM gpsdevices LEFT JOIN users ON gpsdevices.USER_ID=users.ID WHERE 1 ORDER BY users.NAME");//TO_DAYS(NOW())-TO_DAYS(gpsdevices.UPDATED)<=30 
+ $total=count($out['DEVICES']);
+ for($i=0;$i<$total;$i++) {
+  $latest_point=SQLSelectOne("SELECT * FROM gpslog WHERE DEVICE_ID='".$out['DEVICES'][$i]['ID']."' ORDER BY ADDED DESC");
+  $out['DEVICES'][$i]['LATEST_LAT']=$latest_point['LAT'];
+  $out['DEVICES'][$i]['LATEST_LON']=$latest_point['LON'];
+  $out['DEVICES'][$i]['COLOR']=$colors[$i];
+ }
+
 
  if ($ajax) {
 
@@ -12,7 +46,7 @@
   
   if ($op=='getmarkers') {
    $data=array();
-   $markers=SQLSelect("SELECT gpsdevices.*, users.NAME FROM gpsdevices LEFT JOIN users ON gpsdevices.USER_ID=users.ID WHERE TO_DAYS(NOW())-TO_DAYS(gpsdevices.UPDATED)<=30");
+   $markers=$out['DEVICES'];
    $total=count($markers);
    for($i=0;$i<$total;$i++) {
     $markers[$i]['HTML']="<span style='color:black;'>".$markers[$i]['NAME']." (".$markers[$i]['TITLE'].")</span>";
@@ -24,7 +58,7 @@
   if ($op=='getroute') {
    global $device_id;
    $device=SQLSelectOne("SELECT * FROM gpsdevices WHERE ID='".(int)$device_id."'");
-   $log=SQLSelect("SELECT * FROM gpslog WHERE DEVICE_ID='".(int)$device_id."' AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED))<24*60*60 ORDER BY ADDED");
+   $log=SQLSelect("SELECT * FROM gpslog WHERE DEVICE_ID='".(int)$device_id."' AND ".$qry." ORDER BY ADDED");
    $total=count($log);
    $coords=array();
    $points=array();
@@ -51,6 +85,8 @@
  $out['LATEST_LAT']=$latest_point['LAT'];
  $out['LATEST_LON']=$latest_point['LON'];
 
- $out['DEVICES']=SQLSelect("SELECT * FROM gpsdevices");
+ $out['TO']=$to;
+ $out['FROM']=$from;
+ $out['PERIOD']=$period;
 
 ?>
