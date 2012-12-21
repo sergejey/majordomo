@@ -792,6 +792,7 @@ $dictionary=array(
 'USE_JAVASCRIPT'=>'Use JavaScript',
 
 'PERIOD'=>'Period',
+'PERIOD_TODAY'=>'Today',
 'PERIOD_DAY'=>'Day (24 hours)',
 'PERIOD_WEEK'=>'Week',
 'PERIOD_MONTH'=>'Month',

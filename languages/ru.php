@@ -782,7 +782,8 @@ $dictionary=array(
 'USE_JAVASCRIPT'=>'Использовать JavaScript',
 
 'PERIOD'=>'Период',
-'PERIOD_DAY'=>'День (24 часа)',
+'PERIOD_TODAY'=>'Сегодня',
+'PERIOD_DAY'=>'Сутки (24 часа)',
 'PERIOD_WEEK'=>'Неделя',
 'PERIOD_MONTH'=>'Месяц',
 'PERIOD_CUSTOM'=>'Выбрать',

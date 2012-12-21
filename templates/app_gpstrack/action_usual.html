@@ -71,14 +71,42 @@ function updateRoute(device_id, color) {
   }).done(function(data) { 
    var obj=jQuery.parseJSON(data);
    if (obj.PATH.length>0) {
+
+
     var path=obj.PATH;
+    var points=obj.POINTS;
+
     map.drawPolyline({
      path: path,
-     strokeColor: '#131540',
-     strokeOpacity: 0.6,
-     strokeWeight: 6
+     strokeColor: color,
+     strokeOpacity: 0.3,
+     strokeWeight: 4
     });
-    var points=obj.POINTS;
+    
+/*
+   var wps=new Array();
+   for(var i=0;i<points.length-1;i++) {
+    var point = new google.maps.LatLng(points[i].LAT,points[i].LON);
+    //var point =1;
+    wps.push({location:point});
+
+   }
+
+map.drawRoute({
+  origin: [obj.FIRST_POINT.LAT, obj.FIRST_POINT.LON],
+  destination: [obj.LAST_POINT.LAT, obj.LAST_POINT.LON],
+  waypoints: wps,
+  travelMode: 'driving',
+  strokeColor: color,
+  strokeOpacity: 0.6,
+  strokeWeight: 6
+});
+*/
+
+
+
+
+
     for(var i=0;i<points.length;i++) {
      var point=points[i];
      var temp_id=point.ID;
@@ -90,9 +118,9 @@ function updateRoute(device_id, color) {
        icon: 'http://labs.google.com/ridefinder/images/mm_20_'+color+'.png',
       });
     }
+    map.fitZoom();
    }
   });
-
  return false;
 }
 
@@ -197,10 +225,16 @@ resizeMap();
 [#end DEVICES#]
 updateLocations();
 //
-
     });
 
 
+function legendClicked(id, color) {
+ map.removePolylines();
+ map.removeOverlays();
+ map.removeMarkers();
+ updateRoute(id, color);
+ return false;
+}
 
 </script>
 
@@ -213,8 +247,10 @@ updateLocations();
   <img src="http://labs.google.com/ridefinder/images/mm_20_[#COLOR#].png" border="0">
   </td>
   <td>
-  <a href="#"[#if LATEST_LAT!=""#] onClick="map.setCenter([#LATEST_LAT#], [#LATEST_LON#]);return false;"[#endif#]>[#NAME#] ([#TITLE#])</a>
-  &nbsp;
+  <a href="#" onClick="return legendClicked([#ID#], '[#COLOR#]');">[#NAME#] ([#TITLE#])</a>
+  <!--#
+  [#if LATEST_LAT!=""#]map.setCenter([#LATEST_LAT#], [#LATEST_LON#]);[#endif#]
+  #-->
   </td>
  [#end DEVICES#]
  <form action="?" method="get">
@@ -231,7 +267,8 @@ updateLocations();
  </script>
  <#LANG_PERIOD#>:
  <select name="period" onChange='periodUpdated();' id='selPeriod'>
-  <option value="day"><#LANG_PERIOD_DAY#>
+  <option value="today"[#if PERIOD="today"#] selected[#endif#]><#LANG_PERIOD_TODAY#>
+  <option value="day"[#if PERIOD="day"#] selected[#endif#]><#LANG_PERIOD_DAY#>
   <option value="week"[#if PERIOD="week"#] selected[#endif#]><#LANG_PERIOD_WEEK#>
   <option value="month"[#if PERIOD="month"#] selected[#endif#]><#LANG_PERIOD_MONTH#>
   <option value="custom"[#if PERIOD="custom"#] selected[#endif#]><#LANG_PERIOD_CUSTOM#>...
