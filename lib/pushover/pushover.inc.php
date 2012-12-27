@@ -10,10 +10,6 @@
   Define('SETTINGS_PUSHOVER_API_TOKEN', 'X1GvhWhmSSX1V5J6cbkPfm3oEpgT7K');
 
  function postToPushover($message) {
-  //SETTINGS_PUSHOVER_USER_KEY
-  //SETTINGS_PUSHOVER_API_TOKEN
-  //DebMes("posting to pushover (token:".SETTINGS_PUSHOVER_API_TOKEN." user:".SETTINGS_PUSHOVER_USER_KEY."): ".$message);
-
   curl_setopt_array($ch = curl_init(), array(
    CURLOPT_URL => "https://api.pushover.net/1/messages.json",
    CURLOPT_RETURNTRANSFER => 1,
@@ -26,9 +22,5 @@
   )));
   $res=curl_exec($ch);
   curl_close($ch);
-
-  DebMes($res);
-  
  }
-
 ?>
