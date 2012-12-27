@@ -264,16 +264,16 @@ function admin(&$out) {
 
 
   $source=ROOT.'saverestore';
-  if ($dir = @opendir($source)) { 
-  while (($file = readdir($dir)) !== false) { 
-    if (!Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) {
+  $currentdir=getcwd();
+  chdir($source); 
+  array_multisort(array_map('filemtime', ($files = glob("*.*"))), SORT_DESC, $files);
+  chdir($currentdir); 
+  foreach($files as $file){
      $tmp=array();
      $tmp['FILENAME']=$file;
      $tmp['FILESIZE']=number_format((filesize($source."/".$file)/1024/1024), 2);
      $out['FILES'][]=$tmp;
-    }
   }
- }
 
 
 
