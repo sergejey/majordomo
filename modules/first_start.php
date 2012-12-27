@@ -190,8 +190,16 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'onoff',
     'DEFAULT'=>'1',
     'PRIORITY'=>'0'
+   ),
+    array(
+    'NAME'=>'PUSHOVER_USER_KEY',
+    'TITLE'=>'Pushover.net user key', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'0'
    )
    );
+
 
 
    foreach($settings as $k=>$v) {
