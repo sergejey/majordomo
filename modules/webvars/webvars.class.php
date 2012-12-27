@@ -263,6 +263,8 @@ function usual(&$out) {
    }
 
    if ($old_status!=$new_status && $old_status!='') {
+
+    $params=array('VALUE'=>$new_status);
     // do some status change actions
     $run_script_id=0;
     $run_code='';
@@ -275,7 +277,7 @@ function usual(&$out) {
 
     if ($run_script_id) {
      //run script
-     runScript($run_script_id);
+     runScript($run_script_id, $params);
     } elseif ($run_code) {
      //run code
      eval($run_code);
