@@ -489,6 +489,7 @@ function updateDisplay($id) {
   $rec['CHECK_LATEST']=date('Y-m-d H:i:s');
   $rec['CHECK_NEXT']=date('Y-m-d H:i:s', time()+(int)$rec['ONLINE_INTERVAL']);
 
+   $old_status=$rec['STATUS'];
    $tmp=$ow->get($device,OWNET_MSG_DIR,false);
    if (!$tmp) {
     $rec['STATUS']=0;
@@ -496,6 +497,18 @@ function updateDisplay($id) {
     $rec['STATUS']=1;
    }
    SQLUpdate('owdevices', $rec);
+
+   if ($rec['STATUS']!=$old_status && ($rec['SCRIPT_ID'] || $rec['CODE'])) {
+    $params=array();
+    $params['DEVICE']=$device;
+    $params['STATUS']=$rec['STATUS'];
+    $params['STATUS_CHANGED']=1;
+    if ($rec['SCRIPT_ID']) {
+     runScript($rec['SCRIPT_ID'], $params);
+    } elseif ($rec['CODE']) {
+     eval($rec['CODE']);
+    }
+   }
 
    if (!$rec['STATUS']) {
     return 0;
@@ -534,6 +547,7 @@ function updateDisplay($id) {
 
    if ($changed) {
     $params=$changed_values;
+    $params['DEVICE']=$device;
     if ($rec['SCRIPT_ID']) {
      runScript($rec['SCRIPT_ID'], $params);
     } elseif ($rec['CODE']) {

@@ -54,9 +54,9 @@
    global $code;
    $rec['CODE']=$code;
 
-   global $run_type_online;
+   global $run_type;
 
-       if ($run_type_online=='script') {
+       if ($run_type=='script') {
         global $script_id;
         $rec['SCRIPT_ID']=$script_id;
        } else {
@@ -64,7 +64,7 @@
        }
 
 
-   if ($rec['CODE']!='' && $run_type_online=='code') {
+   if ($rec['CODE']!='' && $run_type=='code') {
     //echo $content;
     $errors=php_syntax_error($code);
     if ($errors) {

@@ -34,15 +34,15 @@ Define('ONEWIRE_SERVER', 'tcp://localhost:1234');
 
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_onewire" style="padding:0px">
-<h3>Устройства</h3>
+<h3><#LANG_DEVICES#></h3>
 <table class="table table-bordered table-rounded">
 [#begin RESULT#]
 <tr >
  <td
    >
-   <big>[#TITLE#]</big> ([#UDID#])
+   <big>[#TITLE#]</big> ([#UDID#], [#if STATUS="1"#]<#LANG_ONLINE#>[#else STATUS#]<#LANG_OFFLINE#>[#endif STATUS#])
    <br>
-   Last check: [#CHECK_LATEST#]<br>
+   <#LANG_LAST_CHECKED#>: [#CHECK_LATEST#]<br>
    Next check: [#CHECK_NEXT#]
  </td>
  <td >

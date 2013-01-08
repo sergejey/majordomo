@@ -74,6 +74,14 @@
  </td>
 </tr>
 [#endif TYPE#]
+
+
+<tr>
+ <td align=right><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</td>
+ <td><input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20"></td>
+</tr>
+
+
 <!-- SCRIPT_ID_ONLINE (int) -->
 <tr>
  <td align=right valign="top">
@@ -147,15 +155,6 @@
  </td>
 </tr>
 
-<tr>
- <td align=right valign="top">
-  <#LANG_LOG#>:
- </td>
- <td valign="top">
-  [#LOG#]
- </td>
-</tr>
-
 
 <tr>
  <td colspan=2 align=center>
@@ -173,4 +172,17 @@
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 </form>
+
+<tr>
+ <td align=right valign="top">
+  <#LANG_LOG#>:
+ </td>
+ <td valign="top">
+ <a href="#" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
+ <div id='eventsLog' style="display:none">
+  [#LOG#]
+ </div>
+ </td>
+</tr>
+
 </table>

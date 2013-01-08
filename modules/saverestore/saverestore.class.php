@@ -1305,6 +1305,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 * @access public
 */
  function backupdatabase($filename) {
+  /*
   global $db;
 
   $tables1 = SQLSelect("SHOW TABLES;");
@@ -1313,8 +1314,6 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
     $tables[]=$v;
    }
   }
-
-
   $ignores=array('statistic', 'pot_accesslog', 'pot_add_data', 'pot_documents', 'pot_exit_targets', 'pot_hostnames', 
                  'pot_operating_systems', 'pot_referers', 'pot_search_engines', 'pot_user_agents', 'pot_visitors');
   for($i=0;$i<count($ignores);$i++) {
@@ -1335,10 +1334,17 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
    }
   }
 
-  //$filename=ROOT.DIR_BACKUP."/".date("M_d_Y_H_i").".sql";
   $fp = fopen ($filename,"w");
   fwrite ($fp,$newfile);
   fclose ($fp);
+  */
+
+  if (substr(php_uname(), 0, 7) == "Windows") {
+   exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
+  } else {
+   exec("/usr/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
+  }
+
  }
 
 /**

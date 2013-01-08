@@ -91,6 +91,10 @@
       $properties[$i]['LINKED_OBJECT']=${'linked_object'.$properties[$i]['ID']};
       $properties[$i]['LINKED_PROPERTY']=${'linked_property'.$properties[$i]['ID']};
       SQLUpdate('owproperties', $properties[$i]);
+     } elseif ($properties[$i]['LINKED_OBJECT'] || $properties[$i]['LINKED_PROPERTY']) {
+      $properties[$i]['LINKED_OBJECT']='';
+      $properties[$i]['LINKED_PROPERTY']='';
+      SQLUpdate('owproperties', $properties[$i]);
      }
      global ${'starred'.$properties[$i]['ID']};
      if (${'starred'.$properties[$i]['ID']}) {

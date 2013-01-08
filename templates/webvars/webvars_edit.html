@@ -131,7 +131,7 @@
         [#end SCRIPTS#]
    </select>    
    <br>
-   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID_OFFLINE="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
+   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
  [#if ERRORS!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS#]   
@@ -198,7 +198,10 @@
   <#LANG_LOG#>:
  </td>
  <td valign="top">
+ <a href="#" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
+ <div id='eventsLog' style="display:none">
   [#LOG#]
+ </div>
  </td>
 </tr>
 

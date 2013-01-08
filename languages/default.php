@@ -798,6 +798,7 @@ $dictionary=array(
 'PERIOD_MONTH'=>'Month',
 'PERIOD_CUSTOM'=>'Custom',
 'SEARCH'=>'Search',
+'SHOWHIDE'=>'Show/hide',
 
 'TEST'=>'test'
 

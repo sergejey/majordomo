@@ -33,6 +33,11 @@
    $rec['SEARCH_WORD']=trim($search_word);
   }
 
+  global $linked_object;
+  global $linked_property;
+  $rec['LINKED_OBJECT']=trim($linked_object);
+  $rec['LINKED_PROPERTY']=trim($linked_property);
+
   //updating 'SCRIPT_ID_ONLINE' (int)
   //updating 'CODE_ONLINE' (text)
    global $code_online;

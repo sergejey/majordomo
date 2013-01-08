@@ -224,6 +224,10 @@ function usual(&$out) {
     }
    }
 
+   if ($host['LINKED_OBJECT']!='' && $host['LINKED_PROPERTY']!='') {
+    setGlobal($host['LINKED_OBJECT'].'.'.$host['LINKED_PROPERTY'], $online);
+   }
+
    $old_status=$host['STATUS'];
    if ($online) {
     $new_status=1;
@@ -333,6 +337,8 @@ pinghosts - Pinghosts
  pinghosts: CODE_OFFLINE text
  pinghosts: OFFLINE_INTERVAL int(10) NOT NULL DEFAULT '0'
  pinghosts: ONLINE_INTERVAL int(10) NOT NULL DEFAULT '0'
+ pinghosts: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ pinghosts: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  pinghosts: LOG text
 EOD;
   parent::dbInstall($data);
