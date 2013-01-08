@@ -46,6 +46,7 @@ function getParams() {
   function run() {
   global $session;
 
+   Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
    if ($this->action=='getlatestnote') {
     header ("HTTP/1.0: 200 OK\n");

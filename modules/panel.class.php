@@ -34,6 +34,7 @@ function getParams() {
 // --------------------------------------------------------------------
  function run() {
   global $session;
+  Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
   if (IsSet($session->data["AUTHORIZED"])) {
    $this->authorized=1;

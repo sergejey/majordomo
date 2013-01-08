@@ -9,7 +9,7 @@
 * @package framework
 * @author Serge Dzheigalo <jey@unit.local>
 * @copyright ActiveUnit, Inc. 2001-2003
-* @version 2.2b
+* @version 2.1b
 * @modified 07-Jan-2004
 */
 class jTemplate {
@@ -54,18 +54,19 @@ class jTemplate {
    $this->owner=&$owner;
   }
 
-  if (is_file($template)) {
-   $template_file=$this->loadfile($template);
-  } else {
-   //echo $template;exit;
-   $template_file=$template;
+  if (defined('ALTERNATIVE_TEMPLATES')) {
+   $alt_path=str_replace('templates/', ALTERNATIVE_TEMPLATES.'/', $template);
+   if (file_exists($alt_path)) {
+    $template=$alt_path;
+   }
   }
-  
+  $template_file=$this->loadfile($template);
+
 
   $res="";
-  if (Defined("DEBUG_TEMPLATES")) {
+  if (Defined("DEBUG_MODE")) {
    // creating layer for debugging purpose
-   $res.="<div name=\"$template\" onMouseOver=\"dmo(event)\" onMouseOut=\"dmu(event)\" style=\"margin:0px\">";
+   $res.="<!-- begin of file $template -->";
   }
 
 
@@ -90,8 +91,8 @@ class jTemplate {
    $res.="<!-- end_data [".$this->div_id."] --></div>"; // dyn
   }
 
-  if (Defined("DEBUG_TEMPLATES")) {
-   $res.="</div>";
+  if (Defined("DEBUG_MODE")) {
+   $res.="<!-- end of file $template -->";
   }
   $this->result=$res;
  }
@@ -544,11 +545,13 @@ class jTemplate {
      }
 
 
+     StartMeasure("module_".$module_data["name"]); 
      // run module and insert module result in template
      $code.=$obj."->run();\n";
      $code.="\$tmp=".$obj."->result;\n";
      eval($code);
-
+     EndMeasure("module_".$module_data["name"]); 
+     
     } else {
      // module class file was not found
      global $current_installing_module;
@@ -611,9 +614,17 @@ class jTemplate {
     $res=str_replace($matches[0][$i], "<!-- Cannot find file $file_name -->", $res);
    } else {
     $new_root=dirname($file_name)."/";
-    if ((Defined("DEBUG_TEMPLATES")) && !Is_Integer(StrPos($file_name, ".js"))) {
+
+    if (defined('ALTERNATIVE_TEMPLATES')) {
+     $alt_path=str_replace('templates/', ALTERNATIVE_TEMPLATES.'/', $file_name);
+     if (file_exists($alt_path)) {
+      $file_name=$alt_path;
+     }
+    }
+
+    if ((Defined("DEBUG_MODE")) && !Is_Integer(StrPos($file_name, ".js"))) {
      $id="block".(int)rand(0, 100000);
-     $res=str_replace($matches[0][$i], "<div name=\"$file_name\" onMouseOver=\"dmo(event)\" onMouseOut=\"dmu(event)\" style=\"margin:0px\">".$this->parse($this->loadfile($file_name)."</div>", $new_hash, $new_root), $res);
+     $res=str_replace($matches[0][$i], "<!-- begin of file $file_name -->".$this->parse($this->loadfile($file_name)."<!-- end of file $file_name -->", $new_hash, $new_root), $res);
     } else {
      $res=str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
     }
