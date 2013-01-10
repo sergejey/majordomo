@@ -60,7 +60,14 @@ class jTemplate {
     $template=$alt_path;
    }
   }
-  $template_file=$this->loadfile($template);
+
+  if (is_file($template)) {
+   $template_file=$this->loadfile($template);
+  } else {
+   $template_file=$template;
+   $template='inner_code';
+  }
+
 
 
   $res="";
@@ -625,6 +632,7 @@ class jTemplate {
     if ((Defined("DEBUG_MODE")) && !Is_Integer(StrPos($file_name, ".js"))) {
      $id="block".(int)rand(0, 100000);
      $res=str_replace($matches[0][$i], "<!-- begin of file $file_name -->".$this->parse($this->loadfile($file_name)."<!-- end of file $file_name -->", $new_hash, $new_root), $res);
+     //$res=str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
     } else {
      $res=str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
     }
