@@ -3,7 +3,7 @@
 #-->
 <table width="100%" border="0">
  <tr>
-  <td valign="top" colspan=2>
+  <td valign="top" colspan=3>
   
 <table border="0" align="right">
  
@@ -11,6 +11,23 @@
         <td>
                 <a href="/"><img src="/img/icons/home.png" border="0"></a>
                 </td>
+
+                <td valign="bottom">
+<script language="javascript">
+ function leftPanelToggle() {
+  $('#leftPanel').toggle();
+  if ( $("#leftPanel").is(":visible") ) {
+   $("#leftPanelToggleIcon").attr("src","/img/icons/application-side-contract-icon.png");
+  } else { 
+   $("#leftPanelToggleIcon").attr("src","/img/icons/application-side-expand-icon.png");
+  }
+  return false;
+ }
+</script>
+                <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0" src="/img/icons/application-side-contract-icon.png" border="0"></a>
+                </td>
+
+
                                 <td width="90%" align="right">
                                 <!--#[#inc vlc_object.html#]#-->
                                 [#module name="app_player"#]
@@ -73,7 +90,7 @@
   </td>
  </tr>
  <tr>
-  <td valign="top" width="350">
+  <td valign="top" width="350" id="leftPanel">
   <iframe src="/menu.html" width="350" height="450" id="navFrame" border="0" frameborder=0 framespacing=0></iframe>
   <!--#<iframe src="/demos/main/index.html" width="350" height="400" border="0" frameborder=0 framespacing=0 scrolling="auto"></iframe>#-->
   <!--#
@@ -83,10 +100,10 @@
   </div>
   #-->
   </td>
+
   <td valign="top" width="100%">
 
 <div id="tabs">
-
 <ul>
 [#begin LAYOUTS#]
 <li><a href="#tabs-[#ID#]">[#TITLE#]</a></li>
