@@ -121,7 +121,24 @@ function admin(&$out) {
   $out['SET_DATASOURCE']=1;
  }
 
+ if (!$this->name_id) {
+  $this->name_id='default';
+ }
+
  if ($this->mode=='reset') {
+
+  $table_name='tdwiki';
+  $rec=SQLSelectOne("SELECT * FROM $table_name WHERE NAME='".$this->name_id."'");
+  if (!$rec['ID']) {
+   $rec['NAME']=$this->name_id;
+   $rec['CONTENT']=LoadFile(DIR_TEMPLATES.$this->name.'/default.html');
+   $rec['ID']=SQLInsert($table_name, $rec);
+  } else {
+   $rec['NAME']=$this->name_id;
+   $rec['CONTENT']=LoadFile(DIR_TEMPLATES.$this->name.'/default.html');
+   SQLUpdate($table_name, $rec);
+  }
+  //print_r($rec);exit;
 
  }
 

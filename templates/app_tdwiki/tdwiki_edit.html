@@ -32,6 +32,12 @@
 <div id="storeArea">
 [#CONTENT#]
 </div>
+
+<form id='postForm' action="?" method="post">
+ <input type="hidden" name="mode" value="update">
+ <input type="hidden" name="content" value="" id="contentField">
+</form>
+
 <script lang="javascript">
  var post_url="?";
  main();

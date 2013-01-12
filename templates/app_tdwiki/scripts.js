@@ -1,5 +1,5 @@
 /*
-* @version 0.2 (auto-set)
+* @version 0.1 (auto-set)
 */
 var version = {major: 1, minor: 2, revision: 32, date: new Date("Aug 18, 2005"), extensions: {}};
 
@@ -26,7 +26,7 @@ var config = {
                 },
         // Hashmap of notification functions to be called when certain tiddlers are changed or deleted
         notifyNamedTiddlers: {
-                Site<#LANG_TITLE#>: refreshTitle,
+                SiteTitle: refreshTitle,
                 SiteSubtitle: refreshSubtitle,
                 SideBarOptions: refreshSidebar,
                 StyleSheet: refreshStyles
@@ -2235,7 +2235,7 @@ function saveChanges()
         // Locate the storeArea div's
         //var elem=document.getElementById('storeArea');
         //var old_content=elem.innerHTML;
-        var content=allTiddlersAsHtml();
+        //var content=allTiddlersAsHtml();
 
         // Save the backup
         /*
@@ -2260,22 +2260,29 @@ function saveChanges()
         // Save new file
         var save = 1; // saving routine should be here
 
- var xmlhttp=false;
+// var url="?";
 
-/*@cc_on @*/
-/*@if (@_jscript_version >= 5)
-// JScript gives us Conditional compilation, we can cope with old IE versions.
-// and security blocked creation of the objects.
- try {
-  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
- } catch (e) {
-  try {
-   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  } catch (E) {
-   xmlhttp = false;
+//alert(post_url);
+$('#contentField').val(allTiddlersAsHtml());
+$.post(post_url, $("#postForm").serialize(),
+  function(data) {
+                displayMessage(config.messages.mainSaved + ' Status:' + data,"");
+                store.setDirty(false);
   }
- }
-@end @*/
+ );
+
+/*
+  $.ajax({
+   type: "POST",
+   url: url,
+   data: data,
+   success: success,
+   dataType: dataType
+  });
+*/
+
+ /*
+ var xmlhttp=false;
 
   if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
    xmlhttp = new XMLHttpRequest();
@@ -2301,6 +2308,7 @@ function saveChanges()
                 store.setDirty(false);
    }
   }
+  */
 
 }
 
