@@ -73,9 +73,11 @@
    $pt->checkAllPatterns();
   }
 
-  if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
-   include_once(ROOT.'lib/pushover/pushover.inc.php');
-   postToPushover($ph);
+  if ($level>0) {
+   if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
+    include_once(ROOT.'lib/pushover/pushover.inc.php');
+    postToPushover($ph);
+   }
   }
   postToTwitter($ph);
 

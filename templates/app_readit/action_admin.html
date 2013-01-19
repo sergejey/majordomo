@@ -1,0 +1,50 @@
+
+[#if SET_DATASOURCE!="1"#]
+&nbsp;
+<!-- source select -->
+<ul class="nav nav-tabs">
+  <li[#if DATA_SOURCE!="readit_urls" && DATA_SOURCE!=""#] [#else#] class="active"[#endif#]>
+   <a href="?data_source=readit_urls">ReadIt URLs</a>
+  </li>
+  <li[#if DATA_SOURCE!="readit_channels"#] [#else#] class="active"[#endif#]>
+   <a href="?data_source=readit_channels">ReadIt Channels</a>
+  </li>
+</ul>
+<!-- / source select -->
+[#endif SET_DATASOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="readit_urls" || DATA_SOURCE=""#]
+ <!-- table readit_urls search -->
+ [#if VIEW_MODE="search_readit_urls" || VIEW_MODE=""#]
+  [#inc readit_urls_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table readit_urls search -->
+ <!-- table readit_urls edit -->
+ [#if VIEW_MODE="edit_readit_urls"#]
+   [#inc readit_urls_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table readit_urls edit -->
+ <!-- table readit_urls view --> 
+ [#if VIEW_MODE="view_readit_urls"#]
+   [#inc readit_urls_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table readit_urls view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="readit_channels"#]
+ <!-- table readit_channels search -->
+ [#if VIEW_MODE="search_readit_channels" || VIEW_MODE=""#]
+  [#inc readit_channels_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table readit_channels search -->
+ <!-- table readit_channels edit -->
+ [#if VIEW_MODE="edit_readit_channels"#]
+   [#inc readit_channels_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table readit_channels edit -->
+ <!-- table readit_channels view --> 
+ [#if VIEW_MODE="view_readit_channels"#]
+   [#inc readit_channels_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table readit_channels view -->
+ [#endif DATA_SOURCE#]

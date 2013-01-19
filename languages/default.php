@@ -57,6 +57,7 @@ $dictionary=array(
 'APP_TDWIKI'=>'TdWiKi Notepad',
 'APP_WEATHER'=>'Weather Informer',
 'APP_CALENDAR'=>'Calendar',
+'APP_READIT'=>'ReadIt',
 
 'MODULE_OBJECTS_HISTORY'=>'Objects History',
 'MODULE_BT_DEVICES'=>'Bluetooth Devices',
@@ -799,6 +800,12 @@ $dictionary=array(
 'PERIOD_CUSTOM'=>'Custom',
 'SEARCH'=>'Search',
 'SHOWHIDE'=>'Show/hide',
+
+'AUTO_UPDATE'=>'Auto update',
+'CHANNEL'=>'Channel',
+'ADD_URL'=>'Add URL',
+'OPEN'=>'Open',
+'SEND_TO_HOME'=>'Send home',
 
 'TEST'=>'test'
 

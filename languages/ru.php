@@ -788,6 +788,13 @@ $dictionary=array(
 'PERIOD_MONTH'=>'Месяц',
 'PERIOD_CUSTOM'=>'Выбрать',
 'SEARCH'=>'Искать',
+'SHOWHIDE'=>'Показать/Скрыть',
+
+'AUTO_UPDATE'=>'Авто обновл.',
+'CHANNEL'=>'Канал',
+'ADD_URL'=>'Добавить URL',
+'OPEN'=>'Открыть',
+'SEND_TO_HOME'=>'Отпр. домой',
 
 'TEST'=>'test'
 
