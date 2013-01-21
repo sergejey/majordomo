@@ -43,6 +43,7 @@
   $pvalue=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id."' AND OBJECT_ID='".$obj->id."'");
 
   if (!$pvalue['ID']) {
+   echo "Incorrect property name";
    exit;
   }
 

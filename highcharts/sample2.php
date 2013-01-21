@@ -4,16 +4,30 @@
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
                 <title>Highstock Example</title>
                 <script type="text/javascript" src="./js/jquery-1.7.1.min.js"></script>
-                <script type="text/javascript">
+                <script type="text/javascript" language="javascript">
+
+
+var chart_preiod=15; //days
+var chart_interval=1200; //seconds (interval);
+
+var dateNow = new Date();
+var startDate = new Date(dateNow.getTime() - chart_preiod*24*60*60*1000);
+
+
 $(function() {
 
-url = '/pChart/?p=ws.tempOutside&op=values&start=2012/10/02&interval=1200';
+url = '/pChart/?p=ws.tempOutside&op=values&start='+startDate.getFullYear()+'/'+(startDate.getMonth()+1)+'/'+(startDate.getDate())+'&interval='+chart_interval;
 
 
         $.getJSON(url, function(data) {
         
+                //alert(data);
                 // Create a timer
                 var start = + new Date();
+                var old_data=data;
+                for(var i=0;i<old_data.length;i++) {
+                 data[i]=parseFloat(old_data[i]);
+                }
         
                 // Create the chart
                 var chart = new Highcharts.StockChart({
@@ -68,7 +82,7 @@ url = '/pChart/?p=ws.tempOutside&op=values&start=2012/10/02&interval=1200';
                         },
         
                     title: {
-                                text: 'Температура в г. Харькове 2012-2012'
+                                text: 'Температура в г. Харькове'
                         },
         
                         subtitle: {
@@ -78,8 +92,8 @@ url = '/pChart/?p=ws.tempOutside&op=values&start=2012/10/02&interval=1200';
                         series: [{
                         name: 'Temperature',
                         data: data,
-                        pointStart: Date.UTC(2012, 10, 2),
-                        pointInterval: 1200 * 1000,
+                        pointStart: startDate.getTime(),
+                        pointInterval: chart_interval * 1000,
                         tooltip: {
                                 valueDecimals: 1,
                                 valueSuffix: '°C'
