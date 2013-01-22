@@ -58,5 +58,5 @@
  Define('TIME_ZONE', 'Europe/Moscow'); // Time Zone. See for supported time zones: http://www.php.net/manual/en/timezones.php
 
  //Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  // (Optional)
-
+ 
 ?>
