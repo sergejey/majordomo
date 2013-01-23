@@ -197,8 +197,17 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'text',
     'DEFAULT'=>'',
     'PRIORITY'=>'0'
+   ), 
+    array(
+    'NAME'=>'PUSHOVER_LEVEL',
+    'TITLE'=>'Pushover.net message minimum level', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'1',
+    'PRIORITY'=>'0'
    )
+
    );
+
 
 
 

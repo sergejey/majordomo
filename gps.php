@@ -19,6 +19,11 @@
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
  include_once("./load_settings.php");
 
+ if ($_POST['location']) {
+  $tmp=explode(',', $_POST['location']);
+  $_POST['latitude']=$tmp[0];
+  $_POST['longitude']=$tmp[1];
+ }
 
 
  if (IsSet($_POST['latitude']))  {
