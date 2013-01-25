@@ -807,6 +807,9 @@ $dictionary=array(
 'OPEN'=>'Open',
 'SEND_TO_HOME'=>'Send home',
 
+'EXT_ID'=>'Use item',
+'VISIBLE_DELAY'=>'Rotation delay',
+
 'TEST'=>'test'
 
 

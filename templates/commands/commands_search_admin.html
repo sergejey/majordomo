@@ -44,7 +44,9 @@ $(function () {
   [#PRIORITY#]
  </td>
  <td class="command-actions">
+  [#if EXT_ID="0"#]
   <a href="?view_mode=edit_commands&parent_id=[#ID#]"><#LANG_EXPAND#></a>
+  [#endif EXT_ID#]
   [#if !RESULT#]
     <a href="?view_mode=delete_commands&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
   [#endif RESULT#]

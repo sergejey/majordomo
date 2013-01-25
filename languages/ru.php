@@ -796,6 +796,9 @@ $dictionary=array(
 'OPEN'=>'Открыть',
 'SEND_TO_HOME'=>'Отпр. домой',
 
+'EXT_ID'=>'Использовать элемент',
+'VISIBLE_DELAY'=>'Задержка при ротации',
+
 'TEST'=>'test'
 
 

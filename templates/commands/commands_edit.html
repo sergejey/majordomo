@@ -90,6 +90,8 @@ Action URL:
         </div>
 </div>
 
+[#if EXT_ID=="" || EXT_ID="0"#]
+
 <div class="control-group">
         <label class="control-label"><#LANG_TYPE#></label>
         <div class="controls">
@@ -273,6 +275,33 @@ Action URL:
 
 [#endif TYPE#]
 [#endif TYPE#]
+
+[#endif EXT_ID#]
+
+[#if (TYPE=="") || (ID=="")#]
+<div class="control-group">
+        <label class="control-label"><#LANG_EXT_ID#></label>
+        <div class="controls">
+
+                <select name="ext_id">
+                <option value="0">
+                [#begin PARENTS#]
+                <option value="[#ID#]"[#if ID="<#EXT_ID#>"#] selected[#endif#]>[#TITLE#]
+                [#end PARENTS#]
+                </select>
+                [#if EXT_ID!="0" && EXT_ID!=""#]<a href="?view_mode=edit_commands&id=[#EXT_ID#]">...</a>[#endif#]
+        </div>
+</div>
+[#endif TYPE#]
+
+<div class="control-group">
+        <label class="control-label"><#LANG_VISIBLE_DELAY#></label>
+        <div class="controls">
+                <input type="text" name="visible_delay" value="[#VISIBLE_DELAY#]"> (<#LANG_SECONDS#>)
+        </div>
+</div>
+
+
 
 <!--#
 <tr>

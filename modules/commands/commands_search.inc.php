@@ -79,6 +79,25 @@
     // some action for every record if required
 
    $item=$res[$i];
+   if ($item['VISIBLE_DELAY']) {
+    $out['VISIBLE_DELAYS']++;
+   }
+
+   if ($item['EXT_ID'] && $this->action!='admin') {
+    $visible_delay=$item['VISIBLE_DELAY'];
+    $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item['EXT_ID']."'");
+    if (!$tmp['ID']) {
+     $item=$tmp;
+     $item['VISIBLE_DELAY']=$visible_delay;
+     $res[$i]=$item;
+    }
+   } elseif ($item['EXT_ID'] && $this->action=='admin') {
+    $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item['EXT_ID']."'");
+    if ($tmp['ID']) {
+     $item['TITLE']=$item['TITLE'].' ('.$tmp['TITLE'].')';
+     $res[$i]=$item;
+    }
+   }
 
    if ($item['LINKED_PROPERTY']!='') {
     $lprop=getGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);

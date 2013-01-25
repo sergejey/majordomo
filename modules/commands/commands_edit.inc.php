@@ -38,6 +38,12 @@
    global $type;
    $rec['TYPE']=$type;
 
+   global $ext_id;
+   $rec['EXT_ID']=(int)$ext_id;
+
+   global $visible_delay;
+   $rec['VISIBLE_DELAY']=(int)$visible_delay;
+
    if ($rec['TYPE']=='plusminus' || $rec['TYPE']=='sliderbox') {
     global $min_value;
         $rec['MIN_VALUE']=$min_value;
@@ -151,10 +157,20 @@ if ($rec['TYPE']=='plusminus'
    }
   }
   if ($this->tab=='') {
-   if ($rec['SUB_LIST']!='') {
-    $parents=SQLSelect("SELECT ID, TITLE FROM $table_name WHERE ID!='".$rec['ID']."' AND ID NOT IN (".$rec['SUB_LIST'].") ORDER BY TITLE");
-   } else {
-    $parents=SQLSelect("SELECT ID, TITLE FROM $table_name WHERE ID!='".$rec['ID']."' ORDER BY TITLE");
+   //if ($rec['SUB_LIST']!='') {
+   // $parents=SQLSelect("SELECT ID, TITLE, PARENT_ID FROM $table_name WHERE ID!='".$rec['ID']."' AND ID NOT IN (".$rec['SUB_LIST'].") ORDER BY PARENT_ID, TITLE");
+   //} else {
+   $parents=SQLSelect("SELECT ID, TITLE, PARENT_ID FROM $table_name WHERE ID!='".$rec['ID']."' AND EXT_ID=0 ORDER BY PARENT_ID, TITLE");
+   //}
+   $titles=array();
+   foreach($parents as $k=>$v) {
+    $titles[$v['ID']]=$v['TITLE'];
+   }
+   $total=count($parents);
+   for($i=0;$i<$total;$i++) {
+    if ($titles[$parents[$i]['PARENT_ID']]) {
+     $parents[$i]['TITLE']=$titles[$parents[$i]['PARENT_ID']].' &gt; '.$parents[$i]['TITLE'];
+    }
    }
    $out['PARENTS']=$parents;
   }

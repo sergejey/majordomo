@@ -392,6 +392,8 @@ commands - Commands
  commands: DATA text
  commands: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  commands: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ commands: EXT_ID int(10) NOT NULL DEFAULT '0'
+ commands: VISIBLE_DELAY int(10) NOT NULL DEFAULT '0'
 
  commands: ONCHANGE_OBJECT varchar(255) NOT NULL DEFAULT ''
  commands: ONCHANGE_METHOD varchar(255) NOT NULL DEFAULT ''

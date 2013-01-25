@@ -48,7 +48,7 @@
 [#begin RESULT#]
 
 [#if TYPE=="" || TYPE=="command" || TYPE=="window" || TYPE=="url"#]
-<li>
+<li[#if VISIBLE_DELAY!="0"#] class='visible_delay'[#endif#] id='item[#ID#]'>
 <a
  [#if !RESULT#]
  href="#" 
@@ -67,7 +67,7 @@
 [#endif TYPE#]
 
 [#if TYPE=="switch"#]
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 
 <script language="javascript">
  var item[#ID#]_timer=0;
@@ -96,7 +96,7 @@
 [#endif TYPE#]
 
 [#if TYPE=="custom"#]
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <div id="label_[#ID#]">[#DATA#]</div>
 </li>
 [#endif#]
@@ -111,7 +111,7 @@
   return false;
  }
 </script>
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <label for="menu[#ID#]_v" class="select"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
 
 <select name="menu[#ID#]_v" id="menu[#ID#]_v" onChange="changedValue[#ID#]();">
@@ -134,7 +134,7 @@
   return false;
  }
 </script>
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <label for="menu[#ID#]_v" class="select"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
 <fieldset data-role="controlgroup" data-type="horizontal"> 
 <select name="menu[#ID#]_v1" id="menu[#ID#]_v1" onChange="changedValue[#ID#]();">
@@ -177,7 +177,7 @@
   return false;
  }
 </script>
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
 
 <div data-inline="true" data-role="fieldcontain">
@@ -198,7 +198,7 @@
   return false;
  }
 </script>
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
 
 <div data-inline="true" data-role="fieldcontain">
@@ -218,7 +218,7 @@
   return false;
  }
 </script>
-<li data-role="fieldcontain">
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
 
 <div data-inline="true" data-role="fieldcontain">
@@ -230,7 +230,7 @@
 
 
 [#if TYPE="label"#]
-<li data-role="list-divider">
+<li data-role="list-divider"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <!--#
 [#if ICON!=""#]<img src="/cms/icons/[#ICON#]" border="0">[#endif#]
 #-->
@@ -312,3 +312,44 @@
 [#endif RESULT#]
 
 </div>
+
+[#if VISIBLE_DELAYS#]
+<script language="javascript">
+ var vd_timer;
+ var currentItem=0;
+ var currentNum=0;
+ function visible_delay_carusel() {
+  clearTimeout(vd_timer);
+  var delay=10000;
+  var i=0;
+
+  if (currentItem!=0) {
+   $('#item'+currentItem).hide();
+  }
+  [#begin RESULT#]
+   [#if VISIBLE_DELAY!="0"#]
+    if (currentNum==i) {
+     currentItem=[#ID#];
+     delay=[#VISIBLE_DELAY#]*1000;
+    }
+    i++;
+   [#endif#]
+  [#end RESULT#]
+  currentNum++;
+  if (currentNum>=[#VISIBLE_DELAYS#]) {
+   currentNum=0;
+  }
+  if (currentItem!=0) {
+   $('#item'+currentItem).show();
+  }
+  vd_timer=setTimeout('visible_delay_carusel();', delay)
+  return false;
+ }
+
+ $( document ).bind( "pageinit", function( event, data ){
+    $('.visible_delay').hide();
+    visible_delay_carusel();
+///    alert('zz');
+});
+</script>
+[#endif#]
