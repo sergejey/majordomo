@@ -232,7 +232,7 @@ while(1) {
 
     if ($old_message!=$latest_message) {
     	$old_message=$latest_message;
-		if (isset($tmp['IMPORTANCE']) && $tmp['IMPORTANCE']>=0) {
+		if (isset($tmp['IMPORTANCE']) && $tmp['IMPORTANCE']>0) {
 			$users=SQLSelect("SELECT * FROM users WHERE SKYPE!=''");
 			$total=count($users);
 			for($i=0;$i<$total;$i++) {
