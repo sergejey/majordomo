@@ -62,7 +62,23 @@
   if (file_exists($path)) {
    DebMes("Starting ".$path." ... ");
    echo "Starting ".$path." ... ";
-   $pipe_id=$threads->newThread($path);
+   if ((preg_match("/_X/", $path))) {
+    
+    //для начала убедимся, что мы в Линуксе. Иначе удаленный запуск этих скриптов не делаем
+    if (substr(php_uname(), 0, 5) == "Linux") {
+      $display='101';
+      
+      //Попробуем получить номер Дисплея из имени файла
+      if ((preg_match("/_X(.+)_/", $path,$displays))) {
+        if (count($displays)>1) {
+          $display=$displays[1];
+        }
+      }
+      $pipe_id=$threads->newXThread($path, $display); //запускаем Линуксовый поцесс на дисплее, номер которого в имени файла после _X
+    }
+   } else {
+      $pipe_id=$threads->newThread($path);
+   }
    $pipes[$pipe_id]=$path;
    echo "OK\n";
   }
