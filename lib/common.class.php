@@ -75,8 +75,10 @@
 
   if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
    include_once(ROOT.'lib/pushover/pushover.inc.php');
-   if (defined('PUSHOVER_LEVEL') && $level>=PUSHOVER_LEVEL) {
-    postToPushover($ph);
+   if (defined('PUSHOVER_LEVEL')){
+    if($level>=PUSHOVER_LEVEL) {
+      postToPushover($ph);
+    }
    } elseif ($level>0) {
     postToPushover($ph);
    }
