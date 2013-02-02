@@ -1,5 +1,6 @@
 $(document).bind("mobileinit", function(){
   $.extend(  $.mobile , {
-    defaultTransition: 'none'
+    defaultTransition: 'none',
+    ajaxEnabled: false
   });
 });

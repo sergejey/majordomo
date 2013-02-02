@@ -252,10 +252,12 @@ $ch = curl_init();
 
 // set URL and other appropriate options
 curl_setopt($ch, CURLOPT_URL, $url);
+/*
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
 curl_setopt($ch, CURLOPT_TIMEOUT, 1);
 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
+*/
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $data=curl_exec($ch);

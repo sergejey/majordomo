@@ -4,6 +4,7 @@
         <div id="home" class="current">
 [#if ONE_ITEM_MODE!="1"#]
             <div data-role="header" data-theme="[#if "<#SETTINGS_THEME#>"=="dark"#]a[#else#]c[#endif#]">
+            
                 <h1 id="label_[#PARENT_ID#]">[#if PARENT_TITLE!=""#][#PARENT_TITLE#][#else#]MajorDoMo[#endif#]</h1>
                 [#if PARENT_ID!=""#]
                 <a class="back" href="[#if PARENT_PARENT_ID!="0"#]/menu/[#PARENT_PARENT_ID#][#else#]/menu[#endif#].html"><#LANG_BACK#></a>
@@ -57,7 +58,7 @@
  href="/menu/[#ID#].html"
  [#endif RESULT#]
 >
-<!--#[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" alt="" class="ui-li-icon">[#endif#]#-->
+[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">[#endif#]
 <span id="label_[#ID#]">[#TITLE#]</span></a>
 [#if RESULT#]
 <span class="ui-li-count">[#RESULT#]</span>

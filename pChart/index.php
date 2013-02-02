@@ -272,7 +272,7 @@
    if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
     $Test->setColorPalette(0,150,150,150);
    } else {
-    $Test->setColorPalette(0,255,255,255);
+    $Test->setColorPalette(0,250,250,250);
    }
   }
 
@@ -315,22 +315,28 @@
   if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,100,100,100,TRUE,0,2);
    $Test->drawGraphAreaGradient(240,240,240,5);
+   $Test->drawGrid(1,TRUE,230,230,230,10); 
   } else {
    $Test->drawGraphArea(213,217,221,FALSE);  
    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,213,217,221,TRUE,0,2);  
    $Test->drawGraphAreaGradient(162,183,202,50);  
+   $Test->drawGrid(1,TRUE,230,230,230,10); 
   }
 
-     
+  //$Test->setShadowProperties(3,3,0,0,0,30,4);       
   // Draw the line chart  
   $Test->drawPlotGraph($DataSet->GetData(),$DataSet->GetDataDescription(),2);  
 
   if ($_GET['gtype']=='curve') {
    $Test->drawCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription());
+   $Test->clearShadow();  
+   $Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),.1,30, FALSE); 
   } elseif ($_GET['gtype']=='bar') {
    $Test->drawBarGraph($DataSet->GetData(),$DataSet->GetDataDescription(),TRUE);
   } else {
    $Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());  
+   $Test->clearShadow();  
+   $Test->drawFilledLineGraph($DataSet->GetData(),$DataSet->GetDataDescription(), 30);  
   }
   //
   
