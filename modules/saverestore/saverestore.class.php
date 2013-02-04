@@ -1052,7 +1052,11 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
   global $folder;
 
   if (!$folder) {
-   $folder='/.';
+   if (substr(php_uname(), 0, 7) == "Windows") {
+    $folder='/.';
+   } else {
+    $folder='/';
+   }
   } else {
    $folder='/'.$folder;
   }
@@ -1079,7 +1083,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
        exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
        //@unlink('../'.str_replace('.tgz', '.tar', $file));
        } else {
-        exec('tar xzvf ../../'.$file, $output, $res);
+        exec('tar xzvf ../'.$file, $output, $res);
        }
        @unlink(ROOT.'saverestore/temp'.$folder.'/config.php');
 
@@ -1387,6 +1391,10 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
 
   $res=1;
+
+  //Remove last slash '/' in source and destination - slash was added when copy
+  $source = preg_replace("#/$#", "", $source);
+  $destination = preg_replace("#/$#", "", $destination);
 
   if (!Is_Dir($source)) {
    return 0; // cannot create destination path
