@@ -9,13 +9,13 @@
 <div style="width: 400px;" class="container well">
 <style>
 #frmEnter input {
-	width: 100%;
+        width: 100%;
 }
 hr {
-	margin: 5px 0;
+        margin: 5px 0;
 }
 h3 {
-	margin: 5px 0;
+        margin: 5px 0;
 }
 </style>
 <h1><#PROJECT_TITLE#></h1>
@@ -53,6 +53,7 @@ document.frmEnter.login.focus();
 
   <h1 align="center">Welcome to the <#SETTINGS_SITE_TITLE#> Control System</h1>
 
+  <!--#
   [#if CHECK_UPDATES="1"#]
   <div id="updates_avail" style="display:none"><b>Note:</b> <a href="?(panel:{action=saverestore})&md=saverestore&mode=checkupdates">Updates available</a></div>
   <div id="updates_div" style="display:none">Checking updates...</div>
@@ -72,6 +73,7 @@ document.frmEnter.login.focus();
    AJAXRequest(url+'check=1&ajax=1', 'checkUpdatesProcessed', 0);
   </script>
   [#endif#]
+  #-->
 
   [#begin MODULES#]
    <div class="grid-item">
