@@ -57,7 +57,7 @@
    <table border=0>
          [#begin OBJECTS#]
          <tr>
-                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a></td>
+                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>[#if DESCRIPTION!=""#] ([#DESCRIPTION#])[#endif#]</td>
                  <td>&nbsp;</td>
         </tr>
         [#if METHODS#]

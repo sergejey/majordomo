@@ -86,7 +86,7 @@
    if ($item['EXT_ID'] && $this->action!='admin') {
     $visible_delay=$item['VISIBLE_DELAY'];
     $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item['EXT_ID']."'");
-    if (!$tmp['ID']) {
+    if ($tmp['ID']) {
      $item=$tmp;
      $item['VISIBLE_DELAY']=$visible_delay;
      $res[$i]=$item;

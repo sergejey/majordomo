@@ -40,7 +40,7 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
-    $objects=SQLSelect("SELECT ID, TITLE FROM objects WHERE CLASS_ID='".$res[$i]['ID']."'");
+    $objects=SQLSelect("SELECT ID, TITLE, DESCRIPTION FROM objects WHERE CLASS_ID='".$res[$i]['ID']."'");
     if ($objects[0]['ID']) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
