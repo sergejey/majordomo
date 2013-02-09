@@ -79,7 +79,7 @@
     for(var i=0;i<urls.length;i++) {
      resHTML+='<tr>';
      resHTML+='<td valign="top">';
-     resHTML+='<a href="'+urls[i].URL+'" target="readit_frame" onClick="return setCurrentURL(\''+urls[i].URL+'\', \''+urls[i].TITLE_SAFE+'\', '+urls[i].ID+')">'+urls[i].TITLE+'</a>';
+     resHTML+='<a href="'+urls[i].URL+'" target="readit_frame" onClick="$(\'#auto_update\').attr(\'checked\', false);autoUpdateChanged();return setCurrentURL(\''+urls[i].URL+'\', \''+urls[i].TITLE_SAFE+'\', '+urls[i].ID+')">'+urls[i].TITLE+'</a>';
      resHTML+='</td>';
      resHTML+='</tr>';
     }

@@ -57,6 +57,8 @@ $dictionary=array(
 'APP_TDWIKI'=>'Блокнот',
 'APP_WEATHER'=>'Погода',
 'APP_CALENDAR'=>'Календарь',
+'APP_READIT'=>'Присл. ссылки',
+'APP_QUOTES'=>'Цитаты',
 
 'MODULE_OBJECTS_HISTORY'=>'История объектов',
 'MODULE_BT_DEVICES'=>'Bluetooth-устройства',
@@ -107,6 +109,8 @@ $dictionary=array(
 'ARE_YOU_SURE'=>'Вы уверены? Пожалуйста, подтвердите операцию.', // objects/objects_edit_methods.html; objects/objects_edit_properties.html; patterns/patterns_search_admin.html; jobs/action_admin.html; scripts/scripts_search_admin.html; scripts/scripts_search_admin.html; settings/settings_search_admin.html; commands/commands_search_admin.html; saverestore/action_admin.html; saverestore/action_admin.html; classes/classes_search_admin.html; usbdevices/action_admin.html; usbdevices/action_admin.html; pinghosts/pinghosts_search_admin.html; btdevices/btdevices.html; btdevices/btdevices.html; btdevices/btdevices.html; app_calendar/usual_edit.html; rss_channels/rss_channels_search_admin.html; events/events_search_admin.html; events/events_search_site.html; layouts/layouts_search_admin.html; app_products/products_edit_codes.html; app_products/product_categories_search_admin.html; app_products/shopping_list_items_search_admin.html; onewire/onewire_search_admin.html; app_tdwiki/action_admin.html; watchfolders/watchfolders_search_admin.html; webvars/webvars_search_admin.html; app_mediabrowser/action_admin.html; skins/action_admin.html; skins/action_admin.html; scenes/scenes_search_admin.html; scenes/elements_search_admin.html; control_access/control_access.html; app_gpstrack/gpsdevices_search_admin.html; app_gpstrack/gpslog_search_admin.html; app_gpstrack/gpslog_search_admin.html; app_gpstrack/gpslog_search_admin.html; app_gpstrack/gpslocations_search_admin.html; app_gpstrack/gpsactions_search_admin.html; userlog/userlog_search_admin.html; 
 'DELETE'=>'Удалить', // objects/objects_edit_methods.html; patterns/patterns_search_admin.html; scripts/scripts_search_admin.html; users/users_search_admin.html; methods/methods_search_admin.html; commands/commands_search_admin.html; commands/commands_edit.html; pvalues/pvalues_search_admin.html; history/history_search_admin.html; locations/locations_search_admin.html; usbdevices/action_admin.html; pinghosts/pinghosts_search_admin.html; btdevices/btdevices.html; app_calendar/usual_edit.html; rss_channels/rss_items_search_admin.html; rss_channels/rss_channels_search_admin.html; events/events_search_admin.html; layouts/layouts_search_admin.html; app_products/products_edit_codes.html; app_products/product_categories_search_admin.html; app_products/shopping_list_items_search_admin.html; onewire/onewire_search_admin.html; app_tdwiki/tdwiki_search_admin.html; watchfolders/watchfolders_search_admin.html; webvars/webvars_search_admin.html; properties/properties_search_admin.html; app_mediabrowser/action_admin.html; skins/action_admin.html; scenes/scenes_search_admin.html; scenes/elements_edit.html; scenes/elements_search_admin.html; terminals/terminals_search_admin.html; control_access/control_access.html; app_gpstrack/gpsdevices_search_admin.html; app_gpstrack/gpslog_search_admin.html; app_gpstrack/gpslocations_search_admin.html; app_gpstrack/gpsactions_search_admin.html; userlog/userlog_search_admin.html; 
 
+'DELETE_SELECTED'=>'Удалить выбранное',
+'EXPORT_SELECTED'=>'Экспортировать выбранное',
 
 'CALL_METHOD'=>'Вызов метода', // objects/objects_edit_methods.html; 
 

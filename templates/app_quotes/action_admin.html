@@ -1,0 +1,22 @@
+
+ <!-- action usual -->
+ <!-- table app_quotes search -->
+ [#if VIEW_MODE="search_app_quotes" || VIEW_MODE=""#]
+  [#inc app_quotes_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_quotes search -->
+ <!-- table app_quotes import -->
+ [#if VIEW_MODE="import_app_quotes"#]
+ [#inc app_quotes_import.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_quotes imoprt -->
+ <!-- table app_quotes edit -->
+ [#if VIEW_MODE="edit_app_quotes"#]
+   [#inc app_quotes_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_quotes edit -->
+ <!-- table app_quotes view --> 
+ [#if VIEW_MODE="view_app_quotes"#]
+   [#inc app_quotes_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_quotes view -->
