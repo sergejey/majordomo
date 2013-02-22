@@ -34,6 +34,9 @@
    global $keep_history;
    $rec['KEEP_HISTORY']=(int)$keep_history;
 
+   global $onchange;
+   $rec['ONCHANGE']=trim($onchange);
+
   //updating 'Description' (text)
    global $description;
    $rec['DESCRIPTION']=$description;

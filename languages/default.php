@@ -293,6 +293,7 @@ $dictionary=array(
 
 
 'ONCHANGE_OBJECT'=>'On-change Object', // commands/commands_edit.html; 
+'ONCHANGE_METHOD'=>'On-change Method', // commands/commands_edit.html; 
 'METHOD'=>'Method', // commands/commands_edit.html; history/history_edit.html; 
 'ONCHANGE_SCRIPT'=>'Script', // commands/commands_edit.html; onewire/onewire_edit.html; onewire/onewire_edit.html; 
 'ONCHANGE_CODE'=>'Code', // commands/commands_edit.html; 

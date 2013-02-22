@@ -478,6 +478,14 @@ curl_close($ch);
 
   }
 
+  if ($prop['ONCHANGE']) {
+   global $on_change_called;
+   $params=array();
+   $params['NEW_VALUE']=$value;
+   $params['OLD_VALUE']=$old_value;
+   $this->callMethod($prop['ONCHANGE'], $params);
+  }
+
  }
 
 /**

@@ -211,6 +211,7 @@ properties - Properties
  properties: TITLE varchar(255) NOT NULL DEFAULT ''
  properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
  properties: DESCRIPTION text
+ properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
 
  phistory: ID int(10) unsigned NOT NULL auto_increment
  phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'

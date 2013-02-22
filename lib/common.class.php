@@ -448,9 +448,9 @@
   if (file_exists($filename)) {
    $data=LoadFile($filename);
    $data=str_replace("\r", '', $data);
-   $lines=explode("\n", $data);
+   $lines=mb_split("\n", $data);
    $total=count($lines);
-   $line=$lines[round(rand(0, $total))];
+   $line=$lines[round(rand(0, $total-1))];
    if ($line!='') {
     return $line;
    }

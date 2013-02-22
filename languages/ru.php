@@ -281,6 +281,7 @@ $dictionary=array(
 
 
 'ONCHANGE_OBJECT'=>'Запускать Объект', // commands/commands_edit.html; 
+'ONCHANGE_METHOD'=>'Запускать метод при изменении', // commands/commands_edit.html; 
 'METHOD'=>'Метод', // commands/commands_edit.html; history/history_edit.html; 
 'ONCHANGE_SCRIPT'=>'Сценарий', // commands/commands_edit.html; onewire/onewire_edit.html; onewire/onewire_edit.html; 
 'ONCHANGE_CODE'=>'Код', // commands/commands_edit.html; 
