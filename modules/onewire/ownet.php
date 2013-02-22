@@ -510,9 +510,9 @@ class OWNet{
                                                 // get real php values
                                                 $ret['data_php']=$ret['data'];
                                                 if($type[0]=='i'){
-                                                        $ret['data_php']=bcadd($ret['data_php'],0,0);   // integer (using bcmath for bigger precision)
+                                                        $ret['data_php']=bcadd(trim($ret['data_php']),0,0);   // integer (using bcmath for bigger precision)
                                                 }elseif($type[0]=='u'){
-                                                        $ret['data_php']=bcadd($ret['data_php'],0,0);   // unsigned integer (using bcmath for bigger precision)
+                                                        $ret['data_php']=bcadd(trim($ret['data_php']),0,0);   // unsigned integer (using bcmath for bigger precision)
                                                         if (bccomp($ret['data_php'],0,0)==-1){
                                                                 $ret['data_php']=substr($ret['data_php'],1);            // be shure that it's unsigned
                                                         }
