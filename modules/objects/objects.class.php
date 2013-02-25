@@ -141,7 +141,35 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
- $this->admin($out);
+
+ if ($this->class) {
+  $objects=getObjectsByClass($this->class);
+  if (!$this->code) {
+   $template='#title# <i>#description#</i><br/>';
+  } else {
+   $template=$this->code;
+  }
+  $result='';
+  if ($objects[0]['ID']) {
+   $total=count($objects);
+   for($i=0;$i<$total;$i++) {
+    $objects[$i]=SQLSelectOne("SELECT * FROM objects WHERE ID='".$objects[$i]['ID']."'");
+    $line=$template;
+    $line=preg_replace('/\#title\#/is', $objects[$i]['TITLE'], $line);
+    $line=preg_replace('/\#description\#/is', $objects[$i]['DESCRIPTION'], $line);
+    if (preg_match_all('/\#([\w\d_-]+?)\#/is', $line, $m)) {
+     $totalm=count($m[0]);
+     for($im=0;$im<$totalm;$im++) {
+      $property=trim($objects[$i]['TITLE'].'.'.$m[1][$im]);
+      $line=str_replace($m[0][$im], getGlobal($property), $line);
+     }
+    }
+    $result.=$line;
+   }
+  }
+  $out['RESULT']=$result;
+ }
+
 }
 /**
 * objects search
