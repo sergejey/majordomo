@@ -12,7 +12,7 @@ var chart_interval=1200; //seconds (interval);
 
 var dateNow = new Date();
 var startDate = new Date(dateNow.getTime() - chart_preiod*24*60*60*1000);
-
+startDate.setHours(0,0,0,0);
 
 $(function() {
 
@@ -92,7 +92,7 @@ url = '/pChart/?p=ws.tempOutside&op=values&start='+startDate.getFullYear()+'/'+(
                         series: [{
                         name: 'Temperature',
                         data: data,
-                        pointStart: startDate.getTime(),
+                        pointStart: (startDate.getTime()- startDate.getTimezoneOffset() * 60*1000),
                         pointInterval: chart_interval * 1000,
                         tooltip: {
                                 valueDecimals: 1,
