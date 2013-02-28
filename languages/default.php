@@ -814,6 +814,12 @@ $dictionary=array(
 'EXT_ID'=>'Use item',
 'VISIBLE_DELAY'=>'Rotation delay',
 
+'TREE_VIEW'=>'Tree View',
+'LIST_VIEW'=>'List View',
+
+'FILTER_BY_CLASS'=>'Filter by Class',
+'FILTER_BY_LOCATION'=>'Filter by Location',
+
 'TEST'=>'test'
 
 

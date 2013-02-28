@@ -1,0 +1,41 @@
+<form action="?" method="get" name="frmFilter">
+<table border="0">
+ <tr>
+  <td>
+  <select name="class_id" onChange="document.frmFilter.submit();">
+   <option value="0"><#LANG_FILTER_BY_CLASS#> (<#LANG_ALL#>)
+   [#begin CLASSES#]
+   <option value="[#ID#]"[#if ID="<#CLASS_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end CLASSES#]
+  </select>
+  </td>
+  <td>
+  <select name="location_id" onChange="document.frmFilter.submit();">
+   <option value="0"><#LANG_FILTER_BY_LOCATION#> (<#LANG_ALL#>)
+   [#begin LOCATIONS#]
+   <option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select>
+  </td>
+ </tr>
+</table>
+<input type="hidden" name="mode" value="filter">
+</form>
+
+<table border="1" cellpadding=4 cellspacing="5">
+ <tr>
+  <td valign="top"><b><#LANG_OBJECT#></b></td>
+  <td valign="top" colspan=2><b>&nbsp;</b></td>
+  <td valign="top"><b><#LANG_LOCATION#></b></td>
+  <td valign="top"><b><#LANG_DESCRIPTION#></b></td>
+ </tr>
+ [#begin OBJECTS#]
+ <tr>
+  <td valign="top"><b><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a></b></td>
+  <td valign="top"><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]&tab=properties"><#LANG_PROPERTIES#></a></td>
+  <td valign="top"><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]&tab=methods"><#LANG_METHODS#></a></td>
+  <td valign="top">[#LOCATION#]&nbsp;</td>
+  <td valign="top">[#DESCRIPTION#]&nbsp;</td>
+ </tr>
+ [#end OBJECTS#]
+</table>

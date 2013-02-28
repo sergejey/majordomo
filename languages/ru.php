@@ -804,6 +804,12 @@ $dictionary=array(
 'EXT_ID'=>'Использовать элемент',
 'VISIBLE_DELAY'=>'Задержка при ротации',
 
+'TREE_VIEW'=>'В виде Дерева',
+'LIST_VIEW'=>'В виде Списка',
+
+'FILTER_BY_CLASS'=>'Фильтр по Классу',
+'FILTER_BY_LOCATION'=>'Фильтр по Расположению',
+
 'TEST'=>'test'
 
 

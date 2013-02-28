@@ -121,9 +121,22 @@ function admin(&$out) {
  if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
+ $this->getConfig();
  if ($this->data_source=='classes' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_classes') {
-   $this->search_classes($out);
+   if ($this->mode=='switch') {
+    global $view;
+    $this->config['DEFAULT_VIEW']=$view;
+    $this->saveConfig();
+   }
+   $out['DEFAULT_VIEW']=$this->config['DEFAULT_VIEW'];
+
+   if ($this->config['DEFAULT_VIEW']=='list') {
+    $this->list_view($out);
+   } else {
+    $this->search_classes($out);
+   }
+
   }
   if ($this->view_mode=='export_classes') {
    $this->export_classes($out, $this->id);
@@ -143,6 +156,46 @@ function admin(&$out) {
  }
 }
 
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function list_view(&$out) {
+
+  global $class_id;
+  global $location_id;
+
+  if ($this->mode=='filter') {
+   $this->config['FILTER_CLASS_ID']=(int)$class_id;
+   $this->config['FILTER_LOCATION_ID']=(int)$location_id;
+   $this->saveConfig();
+  }
+
+  $qry=1;
+
+  if ($this->config['FILTER_CLASS_ID']) {
+   $qry.=" AND objects.CLASS_ID='".(int)$this->config['FILTER_CLASS_ID']."'";
+  }
+  if ($this->config['FILTER_LOCATION_ID']) {
+   $qry.=" AND objects.LOCATION_ID='".(int)$this->config['FILTER_LOCATION_ID']."'";
+  }
+
+  $objects=SQLSelect("SELECT objects.*, locations.TITLE as LOCATION FROM objects LEFT JOIN locations ON objects.LOCATION_ID=locations.ID WHERE $qry ORDER BY CLASS_ID, TITLE");
+  $total=count($objects);
+  for($i=0;$i<$total;$i++) {
+   
+  }
+  $out['OBJECTS']=$objects;
+  $out['CLASSES']=SQLSelect("SELECT * FROM classes ORDER BY TITLE");
+  $out['LOCATIONS']=SQLSelect("SELECT * FROM locations ORDER BY TITLE");
+
+  $out['CLASS_ID']=$this->config['FILTER_CLASS_ID'];
+  $out['LOCATION_ID']=$this->config['FILTER_LOCATION_ID'];
+
+ }
 
 /**
 * Title
@@ -239,6 +292,15 @@ function admin(&$out) {
  function export_classes(&$out, $id) {
   $qry=1;
   $qry.=" AND ID='".(int)$id."'";
+
+  $sub_classes=SQLSelect("SELECT ID FROM classes WHERE PARENT_ID='".(int)$id."'");
+  if ($sub_classes[0]['ID']) {
+   $total=count($sub_classes);
+   for($i=0;$i<$total;$i++) {
+    $qry.=" OR ID='".$sub_classes[$i]['ID']."'";
+   }
+  }
+
   $records=SQLSelect("SELECT * FROM classes WHERE $qry");
 
   $total=count($records);
