@@ -23,11 +23,22 @@
    <form action="?" method="post" enctype="multipart/form-data">
    [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
 
+   [#if NO_NEED_TO_UPDATE#]<p><font color="green">You are using the latest version!</font></p>[#endif#]
+
    <p><#LANG_LONG_OPERATION_WARNING#></p>
 
    <input type="submit" name="submit" value="Update to the latest code &gt;&gt;&gt;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">
    <input type="hidden" name="mode" value="getlatest">
    </form>
+
+   [#if UPDATES#]
+   <hr>
+   <b>Latest updates:</b>
+   [#begin UPDATES#]
+   <p>[#UPDATE_TEXT#] <b>[#TITLE#]</b> (by [#AUTHOR#]) <a href="[#LINK#]" target=_blank>details...</a></p>
+   [#end UPDATES#]
+   <hr>
+   [#endif UPDATES#]
 
    <!--#
    <form action="?" method="post" enctype="multipart/form-data">

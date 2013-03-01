@@ -136,6 +136,44 @@ function admin(&$out) {
   $out['CLEAR_FIRST']=1;
  }
 
+
+ $this->getConfig();
+
+ $github_feed=getURL('https://github.com/sergejey/majordomo/commits/master.atom', 30*60);
+ if ($github_feed!='') {
+  @$tmp=GetXMLTree($github_feed);
+  @$data=XMLTreeToArray($tmp);
+  @$items=$data['feed']['entry'];
+  if (is_array($items)) {
+   $total=count($items);
+   if ($total) {
+    if ($total>5) {
+     $total=5;
+    }
+    //print_r($items);exit;
+    for($i=0;$i<$total;$i++) {
+     $itm=array();
+     $itm['ID']=trim($items[$i]['id']['textvalue']);
+     $itm['ID']=preg_replace('/.+Commit\//is', '', $itm['ID']);
+     $itm['TITLE']=trim($items[$i]['title']['textvalue']);
+     $itm['AUTHOR']=$items[$i]['author']['name']['textvalue'];
+     $itm['LINK']=$items[$i]['link']['href'];
+     $itm['UPDATED']=strtotime($items[$i]['updated']['textvalue']);
+     $itm['UPDATE_TEXT']=date('m/d/Y H:i', $itm['UPDATED']);
+     $out['UPDATES'][]=$itm;
+    }
+    $out['LATEST_ID']=$out['UPDATES'][0]['ID'];
+    if ($out['LATEST_ID']!='' && $out['LATEST_ID']==$this->config['LATEST_UPDATED_ID']) {
+     $out['NO_NEED_TO_UPDATE']=1;
+    }
+    //print_r($out['UPDATES']);
+    //exit;
+   }
+  }
+ }
+
+
+
  if ($this->mode=='savedetails') {
 
   global $ftp_host;
@@ -1176,6 +1214,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
          $this->restoredatabase(ROOT.'saverestore/temp'.$folder.'/dump.sql');
         }
 
+        $this->config['LATEST_UPDATED_ID']=$out['LATEST_ID'];
+        $this->saveConfig();
         $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));
 
        }
