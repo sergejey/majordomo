@@ -203,6 +203,15 @@
 </div>
 
 <div class="control-group">
+        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
+        <div class="controls">
+        <input type="text" name="action_object_new" value="[#STATE_ACTION_OBJECT#]"> .
+        <input type="text" name="action_method_new" value="[#STATE_ACTION_METHOD#]">
+        </div>
+</div>
+
+
+<div class="control-group">
         <label class="control-label"><#LANG_DISPLAY_CONDITION#></label>
         <div class="controls">
                 <label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="0"[#if STATE_IS_DYNAMIC="0" || STATE_IS_DYNAMIC=""#] checked[#endif#]> n/a (<#LANG_ALWAYS_VISIBLE#>)</label>

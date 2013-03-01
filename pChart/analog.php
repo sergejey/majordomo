@@ -1,7 +1,7 @@
 <?php   
  
 /*
-pChart prec.php v.1.0.1
+pChart analog.php v.1.0.0
 
 ------------------- Parameters
 
@@ -14,7 +14,7 @@ pChart prec.php v.1.0.1
 &line=   - width of line (1*)
 &point=  - radius of points (1*)
 &points= - 1/-* draw points
-&grid=   - 0/1* grid
+&grid=   - 1/-* grid
 &border= - 1/-* border
 
 //------------------- Objects
@@ -135,8 +135,8 @@ bgcolor= - background graphics (-*)
 - - none
 */
 
-
 //---------------------------- Standard inclusions 
+ 
  chdir('../');
  include_once("./config.php");
  include_once("./lib/loader.php");
@@ -157,7 +157,7 @@ bgcolor= - background graphics (-*)
 //---------------------------- Width & height of graphics
  
  if (!$width) {$w=260;} else {$w=(int)$width;}
- if (!$height){$h=180;} else {$h=(int)$height;}
+ if (!$height){$h=210;} else {$h=(int)$height;}
  
 //---------------------------- Colors
 
@@ -201,6 +201,7 @@ bgcolor= - background graphics (-*)
  if ($_GET['c9g']) {$c9g=$_GET['c9g'];} else {$c9g=0;}
  if ($_GET['c9b']) {$c9b=$_GET['c9b'];} else {$c9b=0;} 
  
+ 
 //---------------------------- Names
 
  if ($_GET['n1']) {$n1=$_GET['n1'];} else {$n1="";}   
@@ -211,7 +212,7 @@ bgcolor= - background graphics (-*)
  if ($_GET['n6']) {$n6=$_GET['n6'];} else {$n6="";}   
  if ($_GET['n7']) {$n7=$_GET['n7'];} else {$n7="";}   
  if ($_GET['n8']) {$n8=$_GET['n8'];} else {$n8="";}   
- if ($_GET['n9']) {$n9=$_GET['n9'];} else {$n9="";}   
+ if ($_GET['n9']) {$n9=$_GET['n9'];} else {$n9="";}  
    
 //---------------------------- fil01 
   
@@ -236,13 +237,13 @@ bgcolor= - background graphics (-*)
  if ($_GET['c7fil02']) {$c7fil02=$_GET['c7fil02'];} else {$c7fil02=0;} 
  if ($_GET['c8fil02']) {$c8fil02=$_GET['c8fil02'];} else {$c8fil02=0;} 
  if ($_GET['c9fil02']) {$c9fil02=$_GET['c9fil02'];} else {$c9fil02=0;} 
-  
+
 //---------------------------- Middle
   
 if ($_GET['middle']) {$middle=$_GET['middle'];} 
  else {$middle=0;}
   
-//---------------------------- Remove
+//---------------------------- Revove
   
 if ($_GET['remove']) {$remove=$_GET['remove'];} 
  else {$remove=0;}
@@ -289,7 +290,7 @@ function filter02($val, $al, $fil) {
   } //for($z)
   return $val;
 }  
-
+  
 //---------------------------- Dataset definition   
 
  $DataSet = new pData;
@@ -315,7 +316,7 @@ function filter02($val, $al, $fil) {
  }
  $pvalue2=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id2."' AND OBJECT_ID='".$obj2->id."'");
  if(!$pvalue2['ID']) {$p2='';}
- 
+
 //---------------------------- Get object 3
 
  if ($p3!='') {
@@ -336,8 +337,8 @@ function filter02($val, $al, $fil) {
    }
  }
  $pvalue4=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id4."' AND OBJECT_ID='".$obj4->id."'");
- if(!$pvalue4['ID']) {$p4='';} 
- 
+ if(!$pvalue4['ID']) {$p4='';}
+
 //---------------------------- Get object 5
 
  if ($p5!='') {
@@ -347,8 +348,8 @@ function filter02($val, $al, $fil) {
    }
  }
  $pvalue5=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id5."' AND OBJECT_ID='".$obj5->id."'");
- if(!$pvalue5['ID']) {$p5='';} 
- 
+ if(!$pvalue5['ID']) {$p5='';}
+
 //---------------------------- Get object 6
 
  if ($p6!='') {
@@ -359,7 +360,7 @@ function filter02($val, $al, $fil) {
  }
  $pvalue6=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id6."' AND OBJECT_ID='".$obj6->id."'");
  if(!$pvalue6['ID']) {$p6='';}
- 
+
 //---------------------------- Get object 7
 
  if ($p7!='') {
@@ -370,7 +371,7 @@ function filter02($val, $al, $fil) {
  }
  $pvalue7=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id7."' AND OBJECT_ID='".$obj7->id."'");
  if(!$pvalue7['ID']) {$p7='';}
- 
+
 //---------------------------- Get object 8
 
  if ($p8!='') {
@@ -381,7 +382,7 @@ function filter02($val, $al, $fil) {
  }
  $pvalue8=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id8."' AND OBJECT_ID='".$obj8->id."'");
  if(!$pvalue8['ID']) {$p8='';}
- 
+
 //---------------------------- Get object 9
 
  if ($p9!='') {
@@ -392,8 +393,8 @@ function filter02($val, $al, $fil) {
  }
  $pvalue9=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id9."' AND OBJECT_ID='".$obj9->id."'");
  if(!$pvalue9['ID']) {$p9='';}
- 
-//---------------------------- end_tme
+
+//---------------------------- end_time
  
  $end_time=time();
  //$end_time=$end_time + 3600; //time correction (1 hour)
@@ -404,13 +405,13 @@ function filter02($val, $al, $fil) {
   else {$today=0;}
    
  if ($today) {
-  $end_time=timeConvert("23:59")+59; //-3600
- }     
- 
+     $end_time=timeConvert("23:59")+59; //-3600
+ }    
+   
 //---------------------------- Precision
  
  if ($_GET['px']) {
-   $px_per_point=(int)$_GET['px'];
+   $px_per_point = (int)$_GET['px'];
  } else {
      $px_per_point=10; //precision
    }
@@ -437,16 +438,23 @@ function filter02($val, $al, $fil) {
    $period = round(($total*31*24*60*60) / (($w-80)/$px_per_point));
    $start_time = $end_time-$total*31*24*60*60;
    
-  } elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['start'], $m) && $_GET['resolution']) { // &start=13/02/6 &resolution=900 &interval=86400
+  } elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['start'], $m) && $_GET['resolution']) { // &start=12/12/6 &resolution=900 &interval86400
    $period = (int)$_GET['resolution']; //seconds
    $start_time = mktime(0, 0, 0, $m[2], $m[3], $m[1]);
    $total=1;
    $end_time = $start_time+$_GET['interval'];
  } // end if
-
+ 
 //---------------------------- Channel 1
  
- if ($total>0) {
+  if ($total>0) {
+   $px=0;
+   $px_passed=0;
+   $dt=date('Y-m-d',$start_time);
+   
+   $wid=$w-90;
+   $shk=$wid/4;
+   
    $start_time2=$start_time;
    $start_time3=$start_time;
    $start_time4=$start_time;
@@ -458,250 +466,310 @@ function filter02($val, $al, $fil) {
    
    $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total=count($history);
-   $delta_time=$end_time-$start_time;
    
-   $u=0;
-   $wid=$w-90;
-   $shk=$wid/5;
-   $shk2=$delta_time/5;
-  
-   for($z=0; $z<$wid; $z++) {
-     $values[$z] = 0;
-	 if ($z==$shk*$u) {
-	   $hours[$z]=date('H:i', $start_time+$shk2*$u);
-	   $u++;
-	 } else {
-	     $hours[$z]="";
-		 if ($z==$wid-1) {$hours[$z]=date('H:i', $end_time);}
-       }
-   }
- 
-   for($i=0; $i<$total; $i++) {
-     $unx = $history[$i]['UNX'];
-	 $sm=$unx-$start_time;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
+   $t1=date('H:i', $start_time);
+   $t2=date('H:i', $end_time);
+   $period_refresh=60;
+   $not_empty=0;
+   $itm=0;
+   $tmp=0;
+   
+   for($i=0;$i<$total;$i++) {
+     $unx=$history[$i]['UNX'];
 	 
-	 if ($values[$ar]==0){
-	   $values[$ar] = (float)$history[$i]['VALUE'];
-	 }
+     if ($unx>=$start_time || $i==0) {
+	   $not_empty=1;
+	   if (($unx>=$start_time && $unx<=$start_time+$period_refresh) || $i==0) {
+         $values[$itm]=(float)$history[$i]['VALUE'];
+		 $tmp=$values[$itm];
+       }else{
+	      $values[$itm]=$tmp;
+        }	   
+
+       $itm++;
+	   $temp_time=$start_time;
+       $start_time+=$period;
+	   
+       if ($px_passed > $shk) {
+         if (date('Y-m-d', $unx)!=$dt) {
+           $hours[]=date('d/m',$unx);
+           $dt=date('Y-m-d',$unx);
+         } else {
+             $hours[]=date('H:i',$temp_time);
+           }
+         $px_passed=0;
+       } else {
+           $hours[]='';
+         }
+       $px+=$px_per_point;
+       $px_passed+=$px_per_point;
+     }
    }
-   $all = count($values);
-   if ($c1fil01>0) {$values=filter01($values, $all, $c1fil01);}
-   if ($c1fil02>0) {$values=filter02($values, $all, $c1fil02);}
+
+   if ($not_empty==0){
+	 $values[0]=0; $hours[0]=$t1;
+     $values[2]=0; $hours[2]=$t2;
+   }  
+
+  $allh = count($hours);
+  $hours[0]=$t1;
+  $hours[$allh-1]=$t2;
+   
+//----- filters 1
+
+  $all = count($values);
+  if ($c1fil01>0) {$values=filter01($values,$all,$c1fil01);}
+  if ($c1fil02>0) {$values=filter02($values,$all,$c1fil02);}
+ 
+//----- final 1
+ 
    $DataSet->AddPoint($values,"Serie1");  
    $DataSet->AddPoint($hours,"Serie0");  
- } else {// if ($total>0)
+   } else {
    $DataSet->AddPoint(0,"Serie1");
    $DataSet->AddPoint(0,"Serie0");
- } //end else if ($total>0)
+  } //end if ($total>0)
 
 //---------------------------- Channel 2
 
- if ($p2!='') {
+  if($p2!='') {
    $history2=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue2['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time2)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total2=count($history2);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values2[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total2;$i++) {
      $unx=$history2[$i]['UNX'];
-	 $sm=$unx-$start_time2;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values2[$ar]==0){
-	   $values2[$ar]=(float)$history2[$i]['VALUE'];
-	 }
-   }
-   $all2 = count($values2);
-   if ($c2fil01>0) {$values2=filter01($values2,$all2,$c2fil01);}
-   if ($c2fil02>0) {$values2=filter02($values2,$all2,$c2fil02);}
-   $DataSet->AddPoint($values2,"Serie2");  
- }//end if ($p2!='')
- 
+     if ($unx>=$start_time2 || $i==0) {
+	   if (($unx>=$start_time2 && $unx<=$start_time2+$period_refresh) || $i==0) {
+         $values2[$itm]=(float)$history2[$i]['VALUE'];
+		 $tmp=$values2[$itm];
+       }else{
+	      $values2[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time2;
+       $start_time2+=$period;
+     }
+   }// end for
+  $all2 = count($values2);
+  if ($c2fil01>0) {$values2=filter01($values2,$all2,$c2fil01);}
+  if ($c2fil02>0) {$values2=filter02($values2,$all2,$c2fil02);}
+  $DataSet->AddPoint($values2,"Serie2");  
+  } //end if ($p2!='')
+  
 //---------------------------- Channel 3
 
- if ($p3!='') {
+  if($p3!='') {
    $history3=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue3['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time3)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total3=count($history3);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values3[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total3;$i++) {
      $unx=$history3[$i]['UNX'];
-	 $sm=$unx-$start_time3;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values3[$ar]==0){
-	   $values3[$ar]=(float)$history3[$i]['VALUE'];
-	 }
-   }
-   $all3 = count($values3);
-   if ($c3fil01>0) {$values3=filter01($values3,$all3,$c3fil01);}
-   if ($c3fil02>0) {$values3=filter02($values3,$all3,$c3fil02);}
-   $DataSet->AddPoint($values3,"Serie3");  
- }//end if ($p3!='')
- 
+     if ($unx>=$start_time3 || $i==0) {
+	   if (($unx>=$start_time3 && $unx<=$start_time3+$period_refresh) || $i==0) {
+         $values3[$itm]=(float)$history3[$i]['VALUE'];
+		 $tmp=$values3[$itm];
+       }else{
+	      $values3[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time3;
+       $start_time3+=$period;
+     }
+   }// end for
+  $all3 = count($values3);
+  if ($c3fil01>0) {$values3=filter01($values3,$all3,$c3fil01);}
+  if ($c3fil02>0) {$values3=filter02($values3,$all3,$c3fil02);}
+  $DataSet->AddPoint($values3,"Serie3");  
+  } //end if ($p3!='')
+  
 //---------------------------- Channel 4
 
- if ($p4!='') {
+  if($p4!='') {
    $history4=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue4['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time4)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total4=count($history4);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values4[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total4;$i++) {
      $unx=$history4[$i]['UNX'];
-	 $sm=$unx-$start_time4;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values4[$ar]==0){
-	   $values4[$ar]=(float)$history4[$i]['VALUE'];
-	 }
-   }
-   $all4 = count($values4);
-   if ($c4fil01>0) {$values4=filter01($values4,$all4,$c4fil01);}
-   if ($c4fil02>0) {$values4=filter02($values4,$all4,$c4fil02);}
-   $DataSet->AddPoint($values4,"Serie4");  
- }//end if ($p4!='')
- 
+     if ($unx>=$start_time4 || $i==0) {
+	   if (($unx>=$start_time4 && $unx<=$start_time4+$period_refresh) || $i==0) {
+         $values4[$itm]=(float)$history4[$i]['VALUE'];
+		 $tmp=$values4[$itm];
+       }else{
+	      $values4[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time4;
+       $start_time4+=$period;
+     }
+   }// end for
+  $all4 = count($values4);
+  if ($c4fil01>0) {$values4=filter01($values4,$all4,$c4fil01);}
+  if ($c4fil02>0) {$values4=filter02($values4,$all4,$c4fil02);}
+  $DataSet->AddPoint($values4,"Serie4");  
+  } //end if ($p4!='')
+
 //---------------------------- Channel 5
 
- if ($p5!='') {
+  if($p5!='') {
    $history5=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue5['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time5)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total5=count($history5);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values5[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total5;$i++) {
      $unx=$history5[$i]['UNX'];
-	 $sm=$unx-$start_time5;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values5[$ar]==0){
-	   $values5[$ar]=(float)$history5[$i]['VALUE'];
-	 }
-   }
-   $all5 = count($values5);
-   if ($c5fil01>0) {$values5=filter01($values5,$all5,$c5fil01);}
-   if ($c5fil02>0) {$values5=filter02($values5,$all5,$c5fil02);}
-   $DataSet->AddPoint($values5,"Serie5");  
- }//end if ($p5!='')
- 
+     if ($unx>=$start_time5 || $i==0) {
+	   if (($unx>=$start_time5 && $unx<=$start_time5+$period_refresh) || $i==0) {
+         $values5[$itm]=(float)$history5[$i]['VALUE'];
+		 $tmp=$values5[$itm];
+       }else{
+	      $values5[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time5;
+       $start_time5+=$period;
+     }
+   }// end for
+  $all5 = count($values5);
+  if ($c5fil01>0) {$values5=filter01($values5,$all5,$c5fil01);}
+  if ($c5fil02>0) {$values5=filter02($values5,$all5,$c5fil02);}
+  $DataSet->AddPoint($values5,"Serie5");  
+  } //end if ($p5!='')
+
 //---------------------------- Channel 6
 
- if ($p6!='') {
+  if($p6!='') {
    $history6=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue6['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time6)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total6=count($history6);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values6[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total6;$i++) {
      $unx=$history6[$i]['UNX'];
-	 $sm=$unx-$start_time6;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values6[$ar]==0){
-	   $values6[$ar]=(float)$history6[$i]['VALUE'];
-	 }
-   }
-   $all6 = count($values6);
-   if ($c6fil01>0) {$values6=filter01($values6,$all6,$c6fil01);}
-   if ($c6fil02>0) {$values6=filter02($values6,$all6,$c6fil02);}
-   $DataSet->AddPoint($values6,"Serie6");  
- }//end if ($p6!='')
- 
+     if ($unx>=$start_time6 || $i==0) {
+	   if (($unx>=$start_time6 && $unx<=$start_time6+$period_refresh) || $i==0) {
+         $values6[$itm]=(float)$history6[$i]['VALUE'];
+		 $tmp=$values6[$itm];
+       }else{
+	      $values6[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time6;
+       $start_time6+=$period;
+     }
+   }// end for
+  $all6 = count($values6);
+  if ($c6fil01>0) {$values6=filter01($values6,$all6,$c6fil01);}
+  if ($c6fil02>0) {$values6=filter02($values6,$all6,$c6fil02);}
+  $DataSet->AddPoint($values6,"Serie6");  
+  } //end if ($p6!='')
+
 //---------------------------- Channel 7
 
- if ($p7!='') {
+  if($p7!='') {
    $history7=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue7['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time7)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total7=count($history7);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values7[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total7;$i++) {
      $unx=$history7[$i]['UNX'];
-	 $sm=$unx-$start_time7;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values7[$ar]==0){
-	   $values7[$ar]=(float)$history7[$i]['VALUE'];
-	 }
-   }
-   $all7 = count($values7);
-   if ($c7fil01>0) {$values7=filter01($values7,$all7,$c7fil01);}
-   if ($c7fil02>0) {$values7=filter02($values7,$all7,$c7fil02);}
-   $DataSet->AddPoint($values7,"Serie7");  
- }//end if ($p7!='')
- 
+     if ($unx>=$start_time7 || $i==0) {
+	   if (($unx>=$start_time7 && $unx<=$start_time7+$period_refresh) || $i==0) {
+         $values7[$itm]=(float)$history7[$i]['VALUE'];
+		 $tmp=$values7[$itm];
+       }else{
+	      $values7[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time7;
+       $start_time7+=$period;
+     }
+   }// end for
+  $all7 = count($values7);
+  if ($c7fil01>0) {$values7=filter01($values7,$all7,$c7fil01);}
+  if ($c7fil02>0) {$values7=filter02($values7,$all7,$c7fil02);}
+  $DataSet->AddPoint($values7,"Serie7");  
+  } //end if ($p7!='')
+
 //---------------------------- Channel 8
 
- if ($p8!='') {
+  if($p8!='') {
    $history8=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue8['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time8)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total8=count($history8);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values8[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total8;$i++) {
      $unx=$history8[$i]['UNX'];
-	 $sm=$unx-$start_time8;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values8[$ar]==0){
-	   $values8[$ar]=(float)$history8[$i]['VALUE'];
-	 }
-   }
-   $all8 = count($values8);
-   if ($c8fil01>0) {$values8=filter01($values8,$all8,$c8fil01);}
-   if ($c8fil02>0) {$values8=filter02($values8,$all8,$c8fil02);}
-   $DataSet->AddPoint($values8,"Serie8");  
- }//end if ($p8!='')
- 
+     if ($unx>=$start_time8 || $i==0) {
+	   if (($unx>=$start_time8 && $unx<=$start_time8+$period_refresh) || $i==0) {
+         $values8[$itm]=(float)$history8[$i]['VALUE'];
+		 $tmp=$values8[$itm];
+       }else{
+	      $values8[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time8;
+       $start_time8+=$period;
+     }
+   }// end for
+  $all8 = count($values8);
+  if ($c8fil01>0) {$values8=filter01($values8,$all8,$c8fil01);}
+  if ($c8fil02>0) {$values8=filter02($values8,$all8,$c8fil02);}
+  $DataSet->AddPoint($values8,"Serie8");  
+  } //end if ($p8!='')
+
 //---------------------------- Channel 9
 
- if ($p9!='') {
+  if($p9!='') {
    $history9=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue9['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time9)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total9=count($history9);
-   $wid=$w-90;
-   for($z=0;$z<$wid;$z++){$values9[$z]=0;}
- 
+   $itm=0; $tmp=0;
+
    for($i=0;$i<$total9;$i++) {
      $unx=$history9[$i]['UNX'];
-	 $sm=$unx-$start_time9;
-	 $k=$delta_time/$sm;
-	 $ar=$wid/$k;
-	 if ($values9[$ar]==0){
-	   $values9[$ar]=(float)$history9[$i]['VALUE'];
-	 }
-   }
-   $all9 = count($values9);
-   if ($c9fil01>0) {$values9=filter01($values9,$all9,$c9fil01);}
-   if ($c9fil02>0) {$values9=filter02($values9,$all9,$c9fil02);}
-   $DataSet->AddPoint($values9,"Serie9");  
- }//end if ($p9!='')
- 
+     if ($unx>=$start_time9 || $i==0) {
+	   if (($unx>=$start_time9 && $unx<=$start_time9+$period_refresh) || $i==0) {
+         $values9[$itm]=(float)$history9[$i]['VALUE'];
+		 $tmp=$values9[$itm];
+       }else{
+	      $values9[$itm]=$tmp;
+        }	   
+       $itm++;
+	   $temp_time=$start_time9;
+       $start_time9+=$period;
+     }
+   }// end for
+  $all9 = count($values9);
+  if ($c9fil01>0) {$values9=filter01($values9,$all9,$c9fil01);}
+  if ($c9fil02>0) {$values9=filter02($values9,$all9,$c9fil02);}
+  $DataSet->AddPoint($values9,"Serie9");  
+  } //end if ($p9!='')
+  
+
 //---------------------------- Middle  
   
-  if($middle!=0){
+ if($middle!=0){
    
    $t1=count($values);
    $t2=count($values2);
    
-    if($t1<$t2){ //?
-      $total_m=$t1;
-    }else{
+   if($t1<$t2){ //?
+     $total_m=$t1;
+   }else{
       $total_m=$t2;
     }
 
-    for($z=0; $z<$total_m; $z++){
-      $values_middle[$z]=($values[$z]+$values2[$z])/2;
-    } 
-	  $DataSet->AddPoint($values_middle,"Serie10");
-  } 
-
+   for($z=0; $z<$total_m; $z++){
+     $values_middle[$z]=($values[$z]+$values2[$z])/2;
+   } 
+   $DataSet->AddPoint($values_middle,"Serie10");
+} 
+  
 //---------------------------- DataSet Series
 
  if($remove!=0){
+  
    for($z=0; $z<$total_m; $z++){
      $values_z[$z]=0;
    } 
@@ -728,7 +796,7 @@ function filter02($val, $al, $fil) {
      $DataSet->SetYAxisUnit("");  
    }
  $DataSet->SetXAxisUnit("");  
-
+   
 //---------------------------- Create Object of pChart  
   
  $Test = new pChart($w,$h);  
@@ -741,7 +809,7 @@ function filter02($val, $al, $fil) {
  } elseif ($_GET['gcolor']=='green') {$Test->setColorPalette(0,100,200,100);
  } elseif ($_GET['gcolor']=='orange'){$Test->setColorPalette(0,220,190,50);
  } else                              {$Test->setColorPalette(0,150,150,150);}
- 
+
 //---------------------------- Set generic colors for channels 1-9
  
  if       ($_GET['g1color']=='red')   {$Test->setColorPalette(0,220,50,50);
@@ -809,14 +877,15 @@ function filter02($val, $al, $fil) {
  
 //---------------------------- Remove color correction
  
- if($remove!=0){
+ if($remove!=0) {
+
    if       ($_GET['gcolor']=='red')   {$Test->setColorPalette(1,220,50,50);
    } elseif ($_GET['gcolor']=='brown') {$Test->setColorPalette(1,220,140,100);
    } elseif ($_GET['gcolor']=='blue')  {$Test->setColorPalette(1,100,140,220);
    } elseif ($_GET['gcolor']=='green') {$Test->setColorPalette(1,100,200,100);
    } elseif ($_GET['gcolor']=='orange'){$Test->setColorPalette(1,220,190,50);
    } else                              {$Test->setColorPalette(1,150,150,150);}
-   
+
    $Test->setColorPalette(2,0,0,0); 
  }
 
@@ -831,8 +900,8 @@ function filter02($val, $al, $fil) {
   
  $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",10);  
  if ($_GET['title']) {
-   $Test->drawTitle(100,15,$_GET['title'],150,150,150);
- } 
+  $Test->drawTitle(100,15,$_GET['title'],150,150,150);
+ } else { }
 
 //---------------------------- Font
 
@@ -857,31 +926,34 @@ function filter02($val, $al, $fil) {
 
  if ($_GET['scale']=='1') {$scale=1;}
   else {$scale=3;}
-   
-//---------------------------- drawScale
- 
- $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,80,80,80,TRUE,0,2);
 
+//---------------------------- drawScale
+
+ $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,80,80,80,TRUE,0,2);
+  
 //---------------------------- Grid  
 
- if ($_GET['grid']=='1') {
-   $Test->drawGrid(1,TRUE,230,230,230,50);
- }
+ if ($_GET['grid']=='0') {
+   //
+ } else {
+     $Test->drawGrid(1,TRUE,230,230,230,50);
+   }
 
-//---------------------------- Set linetyle
+//---------------------------- Set linestyle
   
- if ($_GET['line']) {$line=$_GET['line'];}
+ if ($_GET['line']) {$line=$_GET['line'];} 
   else {$line=1;}
+  
  $Test->setLineStyle($line,0);
  
-//---------------------------- Set pointstyle
+//---------------------------- Set pointsstyle
   
  if ($_GET['point']) {$point=$_GET['point'];} 
   else {$point=1;} 
   
 //---------------------------- Set custom RGB colors of channels 1-9
 
- if  ($p!='' && $c1r!=0) {$Test->setColorPalette(0,$c1r,$c1g,$c1b);}
+ if ($p !='' && $c1r!=0) {$Test->setColorPalette(0,$c1r,$c1g,$c1b);}
  if ($p2!='' && $c2r!=0) {$Test->setColorPalette(1,$c2r,$c2g,$c2b);}
  if ($p3!='' && $c3r!=0) {$Test->setColorPalette(2,$c3r,$c3g,$c3b);}
  if ($p4!='' && $c4r!=0) {$Test->setColorPalette(3,$c4r,$c4g,$c4b);}
@@ -889,13 +961,13 @@ function filter02($val, $al, $fil) {
  if ($p6!='' && $c6r!=0) {$Test->setColorPalette(5,$c6r,$c6g,$c6b);}
  if ($p7!='' && $c7r!=0) {$Test->setColorPalette(6,$c7r,$c7g,$c7b);}
  if ($p8!='' && $c8r!=0) {$Test->setColorPalette(7,$c8r,$c8g,$c8b);}
- if ($p9!='' && $c9r!=0) {$Test->setColorPalette(8,$c9r,$c9g,$c9b);} 
-  
+ if ($p9!='' && $c9r!=0) {$Test->setColorPalette(8,$c9r,$c9g,$c9b);}  
+
 //---------------------------- Draw points  
 
  if ($_GET['points']=='1') {
    $Test->drawPlotGraph($DataSet->GetData(),$DataSet->GetDataDescription(),$point); //plot
- }
+ } 
  
 //---------------------------- Draw graphics 
  
@@ -907,13 +979,16 @@ function filter02($val, $al, $fil) {
  } elseif ($_GET['gtype']=='fcurve'){$Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),0.1,20,FALSE);
  } else { }
 
+ 
 //---------------------------- Labels
  
  if($labels){
-   if ($p!='' && $n1!="") {
+    if ($p!='' && $n1!="") {
      $h = count($hours);
      for($i=$h/2; $i>0; $i--){
-       if ($hours[$i]!=0) {$r=$hours[$i];}
+       if ($hours[$i]!=0) {
+         $r=$hours[$i];
+       }
      }
      $Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie1",$r,$n1,221,230,174);
    }
@@ -925,7 +1000,7 @@ function filter02($val, $al, $fil) {
    if ($p7!='' && $n7!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie7",$r,$n7,221,230,174);}
    if ($p8!='' && $n8!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie8",$r,$n8,221,230,174);}
    if ($p9!='' && $n9!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie9",$r,$n9,221,230,174);}
- } 
+ }
  
 //---------------------------- Border
 

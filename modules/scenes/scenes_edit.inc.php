@@ -162,6 +162,8 @@
     global $html_new;
     global $image_new;
     global $script_id_new;
+    global $action_object_new;
+    global $action_method_new;
     global $is_dynamic_new;
     global $linked_object_new;
     global $linked_property_new;
@@ -187,6 +189,8 @@
      $state_rec['IMAGE']=$image_new;
      $state_rec['HTML']=$html_new;
      $state_rec['SCRIPT_ID']=$script_id_new;
+     $state_rec['ACTION_OBJECT']=$action_object_new;
+     $state_rec['ACTION_METHOD']=$action_method_new;
      $state_rec['IS_DYNAMIC']=$is_dynamic_new;
      $state_rec['LINKED_OBJECT']=$linked_object_new;
      $state_rec['LINKED_PROPERTY']=$linked_property_new;

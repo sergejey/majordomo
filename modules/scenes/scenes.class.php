@@ -214,11 +214,15 @@ function usual(&$out) {
     if ($op=='click') {
      global $id;
      $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
-     if ($state['SCRIPT_ID']) {
-      $params=array('STATE'=>$state['TITLE']);
-      runScript($state['SCRIPT_ID'], $params);
-      echo "OK";
+     $params=array('STATE'=>$state['TITLE']);
+     if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) {
+      callMethod($state['ACTION_OBJECT'].'.'.$state['ACTION_METHOD'], $params);
      }
+     if ($state['SCRIPT_ID']) {
+      runScript($state['SCRIPT_ID'], $params);
+     }
+     echo "OK";
+
     }
     exit;
  }
@@ -470,6 +474,8 @@ elm_states - Element states
  elm_states: CURRENT_STATE int(3) NOT NULL DEFAULT '0'
  elm_states: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  elm_states: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ elm_states: ACTION_OBJECT varchar(255) NOT NULL DEFAULT ''
+ elm_states: ACTION_METHOD varchar(255) NOT NULL DEFAULT ''
  elm_states: CONDITION int(3) NOT NULL DEFAULT '0'
  elm_states: CONDITION_VALUE varchar(255) NOT NULL DEFAULT ''
  elm_states: CONDITION_ADVANCED text
