@@ -14,7 +14,72 @@
          return false;
         }
 
+        function controlWindowPositionChanged(id) {
+         alert(id);
+         return false;
+        }
+
+        [#begin RESULT#][#begin ELEMENTS#][#begin STATES#][#if MENU_ITEM_ID!="0"#]
+        var window[#ID#]_width=[#WINDOW_WIDTH#];
+        var window[#ID#]_height=[#WINDOW_HEIGHT#];
+        var window[#ID#]_posx=[#WINDOW_POSX#];
+        var window[#ID#]_posy=[#WINDOW_POSY#];
+        [#endif MENU_ITEM_ID#][#end STATES#][#end ELEMENTS#][#end RESULT#]
+
         function stateClicked(id) {
+
+         [#begin RESULT#][#begin ELEMENTS#][#begin STATES#][#if MENU_ITEM_ID!="0"#]
+         if (id==[#ID#]) {
+          var wdth=window[#ID#]_width;
+          var hdth=window[#ID#]_height;
+          var x=window[#ID#]_posx;
+          var y=window[#ID#]_posy;
+
+          if (!wdth) wdth=500;
+          if (!hdth) hdth=500;
+          if (!x) x=200;
+          if (!y) y=200;
+
+          var jWindowObj[#ID#] = $.jWindow({ 
+           id: 'state[#ID#]', 
+           title: '<#ELEMENTS.TITLE#>', 
+           posx: x, 
+           posy: y, 
+           width: wdth, 
+           height: hdth, 
+           type: 'iframe', 
+           marginTop:0, 
+           marginBottom:0, 
+           marginLeft:0, 
+           marginRight:0, 
+           url: '/menu.html?parent=[#MENU_ITEM_ID#]',
+           onResizeEnd:function () {
+            //Size changed
+            var url1="?ajax=1&op=position";
+            window[#ID#]_posx=(jWindowObj[#ID#].get('posx'));
+            window[#ID#]_posy=(jWindowObj[#ID#].get('posy'));
+            window[#ID#]_width=(jWindowObj[#ID#].get('width'));
+            window[#ID#]_height=(jWindowObj[#ID#].get('height'));
+            url1+='&id=[#ID#]&posx='+window[#ID#]_posx+'&posy='+window[#ID#]_posy+'&width='+window[#ID#]_width+'&height='+window[#ID#]_height;
+            $.ajax({url: url1});
+           }, 
+           onDragEnd:function () {
+            //Position changed
+            var url1="?ajax=1&op=position";
+            window[#ID#]_posx=(jWindowObj[#ID#].get('posx'));
+            window[#ID#]_posy=(jWindowObj[#ID#].get('posy'));
+            window[#ID#]_width=(jWindowObj[#ID#].get('width'));
+            window[#ID#]_height=(jWindowObj[#ID#].get('height'));
+            url1+='&id=[#ID#]&posx='+window[#ID#]_posx+'&posy='+window[#ID#]_posy+'&width='+window[#ID#]_width+'&height='+window[#ID#]_height;
+            $.ajax({url: url1});
+           },
+           modal: false });
+          jWindowObj[#ID#].show();
+          jWindowObj[#ID#].update();
+          [#if SCRIPT_ID="0"#]return;[#endif#]
+         }
+         [#endif MENU_ITEM_ID#][#end STATES#][#end ELEMENTS#][#end RESULT#]
+
          var url="?ajax=1&op=click";
          url+='&id='+id;
          $.ajax({
@@ -86,7 +151,7 @@
  [#begin ELEMENTS#]
  <!-- element [#ID#] -->
  [#begin STATES#]
-  <div id="state_[#ID#]"[#if SCRIPT_ID!="0"#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#if "<#ELEMENTS.BACKGROUND#>"=="1"#]border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif BACKGROUND#][#endif#][#if SCRIPT_ID!="0"#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
+  <div id="state_[#ID#]"[#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0"#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#if "<#ELEMENTS.BACKGROUND#>"=="1"#]border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif BACKGROUND#][#endif#][#if SCRIPT_ID!="0"#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
  [#end STATES#]
  [#if JAVASCRIPT!=""#]
  <script language="javascript">

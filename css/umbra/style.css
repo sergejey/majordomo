@@ -1,0 +1,140 @@
+.jWindow-modalBackground {
+	background-color: rgba(0,0,0,.75);
+}
+
+.jWindow {
+	box-shadow: 0 0 10px black;
+	border-radius: 10px 10px 0 0;
+}
+.jWindow-modalBackground .jWindow {
+	box-shadow: 0 0 20px rgba(255,255,255,.5);
+}
+
+.jWindow-titleBar {
+	height: 30px;
+	background-color: black;
+	background: -moz-linear-gradient(top, #232323 0%, #000000 100%);
+	background: -webkit-linear-gradient(top, #232323 0%,#000000 100%);
+	background: -o-linear-gradient(top, #232323 0%,#000000 100%);
+	background: -ms-linear-gradient(top, #232323 0%,#000000 100%);
+	background: linear-gradient(top, #232323 0%,#000000 100%);
+	border-radius: 10px 10px 0 0;
+}
+.jWindow-titleBar .jWindow-title {
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+	color: white;
+	font-size: 11px;
+}
+
+.jWindow-tabsBar {
+	height: 20px;
+	background-color: #000000;
+}
+.jWindow-tabsBar .jWindow-tabs {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 0 10px;
+}
+.jWindow-tabsBar .jWindow-tabs .jWindow-tab {
+	background-color: #232323;
+	padding: 0 10px;
+	margin-right: 5px;
+	height: 20px;
+	border-radius: 10px 10px 0 0;
+	line-height: 20px;
+	color: white;
+	font-size: 11px;
+}
+.jWindow-tabsBar .jWindow-tabs .jWindow-tab:hover,
+.jWindow-tabsBar .jWindow-tabs .jWindow-tab.active {
+	background-color: #103c6b;
+}
+
+.jWindow-content {
+	background-color: rgba(0,0,0,.25);
+}
+
+.jWindow-statusBar {
+	height: 7px;
+	background-color: black;
+}
+
+.jWindow-statusBar .jWindow-resizeIcon {
+	width: 7px;
+	height: 7px;
+	background: url('img/resize.png');
+}
+
+.jWindow-titleBar .jWindow-button {
+	cursor: pointer;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.15);
+	position: absolute;
+	width: 30px;
+	height: 24px;
+	background: #181818;
+	background: -moz-linear-gradient(top, #2c2c2c 0%, #181818 100%);
+	background: -webkit-linear-gradient(top, #2c2c2c 0%,#181818 100%);
+	background: -o-linear-gradient(top, #2c2c2c 0%,#181818 100%);
+	background: -ms-linear-gradient(top, #2c2c2c 0%,#181818 100%);
+	background: linear-gradient(top, #2c2c2c 0%,#181818 100%);
+	transition: background 1s linear;
+	top: 0;
+}
+.jWindow-titleBar .jWindow-button:hover {
+	background: #181818;
+	background: -moz-linear-gradient(top, #103C6B 0%, #0c2d51 100%);
+	background: -webkit-linear-gradient(top, #103C6B 0%,#0c2d51 100%);
+	background: -o-linear-gradient(top, #103C6B 0%,#0c2d51 100%);
+	background: -ms-linear-gradient(top, #103C6B 0%,#0c2d51 100%);
+	background: linear-gradient(top, #103C6B 0%,#0c2d51 100%);
+}
+
+.jWindow-titleBar .jWindow-closeButton {
+	right: 0px;
+	border-radius: 0 10px 0 0;
+}
+.jWindow-titleBar .jWindow-closeButton:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: url('img/close.png') center center no-repeat;
+}
+
+.jWindow-titleBar .jWindow-maximiseButton {
+	right: 30px;
+}
+.jWindow-titleBar .jWindow-maximiseButton:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: url('img/max.png') center center no-repeat;
+}
+
+.jWindow-titleBar .jWindow-minimiseButton {
+	right: 60px;
+	border-radius: 0 0 0 10px;
+}
+.jWindow-titleBar .jWindow-minimiseButton:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: url('img/min.png') center center no-repeat;
+}
+
+.jWindow-titleBar .jWindow-refreshButton {
+	right: 95px;
+	border-radius: 0 0 10px 10px;
+	width: 24px;
+}
+.jWindow-titleBar .jWindow-refreshButton:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: url('img/refresh.png') center center no-repeat;
+}

@@ -162,6 +162,7 @@
     global $html_new;
     global $image_new;
     global $script_id_new;
+    global $menu_item_id_new;
     global $action_object_new;
     global $action_method_new;
     global $is_dynamic_new;
@@ -189,6 +190,7 @@
      $state_rec['IMAGE']=$image_new;
      $state_rec['HTML']=$html_new;
      $state_rec['SCRIPT_ID']=$script_id_new;
+     $state_rec['MENU_ITEM_ID']=$menu_item_id_new;
      $state_rec['ACTION_OBJECT']=$action_object_new;
      $state_rec['ACTION_METHOD']=$action_method_new;
      $state_rec['IS_DYNAMIC']=$is_dynamic_new;
@@ -245,6 +247,18 @@
 
   if ($this->tab=='elements') {
    $out['SCRIPTS']=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
+   $menu_items=SQLSelect("SELECT ID, TITLE, PARENT_ID FROM commands WHERE EXT_ID=0 ORDER BY PARENT_ID, TITLE");
+   $titles=array();
+   foreach($menu_items as $k=>$v) {
+    $titles[$v['ID']]=$v['TITLE'];
+   }
+   $total=count($menu_items);
+   for($i=0;$i<$total;$i++) {
+    if ($titles[$menu_items[$i]['PARENT_ID']]) {
+     $menu_items[$i]['TITLE']=$titles[$menu_items[$i]['PARENT_ID']].' &gt; '.$menu_items[$i]['TITLE'];
+    }
+   }
+   $out['MENU_ITEMS']=$menu_items;
    $out['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."'");
    $out['STATE_ID']=$state_id;
   }

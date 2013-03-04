@@ -203,6 +203,19 @@
 </div>
 
 <div class="control-group">
+        <label class="control-label"><#LANG_SHOW_MENU_ON_CLICK#></label>
+        <div class="controls">
+                <select name="menu_item_id_new">
+                <option value="0">
+                [#begin MENU_ITEMS#]
+                <option value="[#ID#]"[#if ID="<#STATE_MENU_ITEM_ID#>"#] selected[#endif#]>[#TITLE#]
+                [#end MENU_ITEMS#]
+                </select>
+        </div>
+</div>
+
+
+<div class="control-group">
         <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
         <div class="controls">
         <input type="text" name="action_object_new" value="[#STATE_ACTION_OBJECT#]"> .

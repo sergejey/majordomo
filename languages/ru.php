@@ -715,6 +715,7 @@ $dictionary=array(
 
 
 'RUN_SCCRIPT_ON_CLICK'=>'Выполнить сценарий при клике', // scenes/elements_edit.html; 
+'SHOW_MENU_ON_CLICK'=>'Показать меню при клике',
 
 
 'DISPLAY_CONDITION'=>'Условие отображения', // scenes/elements_edit.html; 

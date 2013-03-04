@@ -4,7 +4,8 @@
         <div id="home" class="current">
 [#if ONE_ITEM_MODE!="1"#]
             <div data-role="header" data-theme="[#if "<#SETTINGS_THEME#>"=="dark"#]a[#else#]c[#endif#]">
-            
+
+[#if IFRAME_MODE!="1"#]            
                 <h1 id="label_[#PARENT_ID#]">[#if PARENT_TITLE!=""#][#PARENT_TITLE#][#else#]MajorDoMo[#endif#]</h1>
                 [#if PARENT_ID!=""#]
                 <a class="back" href="[#if PARENT_PARENT_ID!="0"#]/menu/[#PARENT_PARENT_ID#][#else#]/menu[#endif#].html"><#LANG_BACK#></a>
@@ -12,6 +13,7 @@
                 <!--#
                 <a class="button slideup" id="infoButton" href="#about">info</a>
                 #-->
+[#endif IFRAME_MODE#]
             </div>
 
 [#if PARENT_ID!=""#]

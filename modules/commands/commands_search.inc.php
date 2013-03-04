@@ -27,6 +27,13 @@
    $this->parent_item=$this->owner->parent_item;
   }
 
+
+  if ($_GET['parent']) {
+   $qry.=" AND (commands.ID='".(int)$_GET['parent']."' OR commands.PARENT_ID='".$_GET['parent']."')";
+   $out['IFRAME_MODE']=1;
+  }
+
+
   if ($this->parent_item!='') {
    $qry.=" AND PARENT_ID='".$this->parent_item."'";
    $parent_rec=SQLSelectOne("SELECT * FROM commands WHERE ID='".$this->parent_item."'");
@@ -39,11 +46,9 @@
    $out['ONE_ITEM_MODE']=1;
    $this->pda=1;
    $out['PDA']=1;
-  } else {
+  } elseif (!$_GET['parent']) {
    $qry.=" AND PARENT_ID=0";
   }
-
-
   }
 
   // QUERY READY

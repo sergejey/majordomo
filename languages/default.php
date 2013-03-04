@@ -727,6 +727,7 @@ $dictionary=array(
 
 
 'RUN_SCCRIPT_ON_CLICK'=>'Run script on click', // scenes/elements_edit.html; 
+'SHOW_MENU_ON_CLICK'=>'Show menu on click',
 
 
 'DISPLAY_CONDITION'=>'Display condition', // scenes/elements_edit.html; 

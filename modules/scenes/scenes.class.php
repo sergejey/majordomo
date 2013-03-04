@@ -222,7 +222,23 @@ function usual(&$out) {
       runScript($state['SCRIPT_ID'], $params);
      }
      echo "OK";
-
+    }
+    if ($op=='position') {
+     global $id;
+     global $posx;
+     global $posy;
+     global $width;
+     global $height;
+     if ($id && $posx && $posy && $width && $height) {
+      $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
+      $state['WINDOW_POSX']=$posx;
+      $state['WINDOW_POSY']=$posy;
+      $state['WINDOW_WIDTH']=$width;
+      $state['WINDOW_HEIGHT']=$height;
+      SQLUpdate('elm_states', $state);
+     }
+     // 
+     echo "OK";
     }
     exit;
  }
@@ -480,6 +496,11 @@ elm_states - Element states
  elm_states: CONDITION_VALUE varchar(255) NOT NULL DEFAULT ''
  elm_states: CONDITION_ADVANCED text
  elm_states: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
+ elm_states: MENU_ITEM_ID int(10) NOT NULL DEFAULT '0'
+ elm_states: WINDOW_POSX int(10) NOT NULL DEFAULT '0'
+ elm_states: WINDOW_POSY int(10) NOT NULL DEFAULT '0'
+ elm_states: WINDOW_WIDTH int(10) NOT NULL DEFAULT '0'
+ elm_states: WINDOW_HEIGHT int(10) NOT NULL DEFAULT '0'
  elm_states: SWITCH_SCENE int(3) NOT NULL DEFAULT '0'
  elm_states: CURRENT_STATUS int(3) NOT NULL DEFAULT '0'
 EOD;

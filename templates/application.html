@@ -13,19 +13,19 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 [#endif#]
-<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css" />
+<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
 <link type="text/css" rel="stylesheet" href="/css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
-<link type="text/css" rel="stylesheet" href="/js/jquery.windows-engine.css"/>
 <link rel="stylesheet" type="text/css" href="/css/jquery.gritter.css" />
+<link rel="stylesheet" type="text/css" href="/css/umbra-css2/style.css" title="theme"/>
 <script type="text/javascript" src="/jquerymobile/jquery-1.8.3.min.js"></script>
 <link rel="stylesheet" href="/jquerymobile/jquery.mobile-1.2.0.min.css" />
 [#if POPUP="1"#]
 [#else POPUP#]
 [#endif POPUP#]
-<script language="javascript" src="/js/scripts.js"></script>
-<script language="javascript" type="text/javascript" src="/js/jquery.windows-engine.js"></script>
+<script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
 <script language="javascript" type="text/javascript" src="/js/jquery-ui-1.9.1.custom.min.js"></script>
-<script type="text/javascript" src="/js/jquery.gritter.js"></script>
+<script language="javascript" type="text/javascript" src="/js/jquery.gritter.js"></script>
+<script language="javascript" type="text/javascript" src="/js/jWindow.js"></script>
 <style>
 overflow: scroll;
 -webkit-overflow-scrolling: touch;
@@ -45,6 +45,50 @@ overflow: scroll;
 
 </head>
 <body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
+
+<script language="javascript">
+ // ----------------------------------------------------------------------
+ function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
+ /*
+  if ($(winId)!=null) {
+   Windows.focus(winId);
+   var win=Windows.getFocusedWindow();
+   win.toFront();
+   if (win.isMinimized()) {
+    win.minimize();
+   }
+   var url=win.getURL();
+   win.setURL(pageURL);
+   //win.refresh();
+  } else {
+   var win = new Window({id: winId, className: "darkX", title: winTitle, top:10, left:10, width:wdth, height:hdth, url: pageURL, parent:$('container'), showEffectOptions: {duration:0.2}}) 
+   win.setDestroyOnClose(); 
+   win.showCenter();
+   win.setConstraint(true, {left:0, right:0, top: 40, bottom:0});
+   win.toFront();
+  }
+  */
+  //$.newWindow({id:winId,posx:100,posy:50,width:wdth,height:hdth,title:winTitle, type:"iframe"});
+  //$.updateWindowContent(winId,'<iframe src="'+pageURL+'" width="'+wdth+'" height="'+hdth+'" />');
+  //
+  var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
+  jWindowObj.show();
+  jWindowObj.update();
+  return false;
+ }
+
+
+ function openModalTWindow(winId, winTitle, pageURL, wdth, hdth) {
+  var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, minimiseButton:false, maximiseButton:false, draggable:false, resizeable:false, modal: true });
+   jWindowObj.show();
+   jWindowObj.update();
+   return false;
+ }
+
+ 
+
+</script>
+
 [#if POPUP="1"#]
 <div class="ui-widget">
  <div  class="ui-widget-content">[#inc actions.html#]
@@ -158,34 +202,6 @@ overflow: scroll;
   $("#tablast_title").html(winTitle);
   $("#tabs-last").html('<iframe src="'+pageURL+'" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
   $("#tabs").tabs("select", totalLayouts);
-  return false;
- }
-
- // ----------------------------------------------------------------------
- function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
- /*
-  if ($(winId)!=null) {
-   Windows.focus(winId);
-   var win=Windows.getFocusedWindow();
-   win.toFront();
-   if (win.isMinimized()) {
-    win.minimize();
-   }
-   var url=win.getURL();
-   win.setURL(pageURL);
-   //win.refresh();
-  } else {
-   var win = new Window({id: winId, className: "darkX", title: winTitle, top:10, left:10, width:wdth, height:hdth, url: pageURL, parent:$('container'), showEffectOptions: {duration:0.2}}) 
-   win.setDestroyOnClose(); 
-   win.showCenter();
-   win.setConstraint(true, {left:0, right:0, top: 40, bottom:0});
-   win.toFront();
-  }
-  */
-  $.newWindow({id:winId,posx:100,posy:50,width:wdth,height:hdth,title:winTitle, type:"iframe"});
-  $.updateWindowContent(winId,'<iframe src="'+pageURL+'" width="'+wdth+'" height="'+hdth+'" />');
-
-
   return false;
  }
 

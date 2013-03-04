@@ -1,0 +1,98 @@
+.jWindow-modalBackground {
+	background: url('img/modal.png');
+}
+
+.jWindow {
+ 	border: 1px solid black;
+}
+.jWindow-modalBackground .jWindow {
+	border: 1px solid grey;
+}
+
+.jWindow-titleBar {
+	height: 30px;
+	background-color: black;
+}
+.jWindow-titleBar .jWindow-title {
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+	color: white;
+	font-size: 11px;
+}
+
+.jWindow-tabsBar {
+	height: 20px;
+	background-color: #000000;
+}
+.jWindow-tabsBar .jWindow-tabs {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 0 10px;
+}
+.jWindow-tabsBar .jWindow-tabs .jWindow-tab {
+	background-color: #232323;
+	padding: 0 10px;
+	margin-right: 5px;
+	height: 20px;
+	line-height: 20px;
+	color: white;
+	font-size: 11px;
+}
+.jWindow-tabsBar .jWindow-tabs .jWindow-tab:hover,
+.jWindow-tabsBar .jWindow-tabs .jWindow-tab.active {
+	background-color: #103c6b;
+}
+
+.jWindow-content {
+	background-color: grey;
+}
+
+.jWindow-statusBar {
+	height: 7px;
+	background-color: black;
+}
+
+.jWindow-statusBar .jWindow-resizeIcon {
+	width: 7px;
+	height: 7px;
+	background: url('img/resize.png');
+}
+
+.jWindow-titleBar .jWindow-button {
+	cursor: pointer;
+	position: absolute;
+	width: 30px;
+	height: 24px;
+	background-color: #181818;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.jWindow-titleBar .jWindow-button:hover {
+	background-color: #0c2d51;
+}
+
+.jWindow-titleBar .jWindow-closeButton {
+	top: 0;
+	right: 0px;
+	background-image: url('img/close.png');
+}
+
+.jWindow-titleBar .jWindow-maximiseButton {
+	top: 0;
+	right: 30px;
+	background-image: url('img/max.png');
+}
+
+.jWindow-titleBar .jWindow-minimiseButton {
+	top: 0;
+	right: 60px;
+	background-image: url('img/min.png');
+}
+
+.jWindow-titleBar .jWindow-refreshButton {
+	top: 0;
+	right: 95px;
+	width: 24px;
+	background-image: url('img/refresh.png');
+}
