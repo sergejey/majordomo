@@ -319,15 +319,21 @@ curl_close($ch);
 
    $method=SQLSelectOne("SELECT * FROM methods WHERE ID='".$id."'");
 
-   if ($method['OBJECT_ID'] && $method['CALL_PARENT']==1) {
-    $this->callMethod($name, $params, 1);
-   }
-
    $method['EXECUTED']=date('Y-m-d H:i:s');
+   if (!$method['OBJECT_ID']) {
+    if (!$params) {
+     $params=array();
+    }
+    $params['ORIGINAL_OBJECT_TITLE']=$this->object_title;
+   }
    if ($params) {
     $method['EXECUTED_PARAMS']=serialize($params);
    }
    SQLUpdate('methods', $method);
+
+   if ($method['OBJECT_ID'] && $method['CALL_PARENT']==1) {
+    $this->callMethod($name, $params, 1);
+   }
 
    if ($method['SCRIPT_ID']) {
    /*

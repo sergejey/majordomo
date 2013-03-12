@@ -147,7 +147,7 @@ function admin(&$out) {
      }
      echo '</table>';
     } elseif ($this->view_mode=='methods') {
-     $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE methods.OBJECT_ID<>0 ORDER BY methods.EXECUTED DESC");
+     $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE 1 ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';

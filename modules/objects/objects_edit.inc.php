@@ -89,7 +89,11 @@
    if ($delete_prop) {
     $pr=SQLSelectOne("SELECT * FROM properties WHERE ID='".$delete_prop."'");
     if ($pr['ID']) {
-     SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='".$delete_prop."' AND OBJECT_ID='".$rec['ID']."'");
+     $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$delete_prop."' AND OBJECT_ID='".$rec['ID']."'");
+     if ($value['ID']) {
+      SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$value['ID']."'");
+      SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='".$delete_prop."' AND OBJECT_ID='".$rec['ID']."'");
+     }
      if (!$pr['CLASS_ID']) {
       SQLExec("DELETE FROM properties WHERE ID='".$delete_prop."' AND OBJECT_ID='".$rec['ID']."'");
      }

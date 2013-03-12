@@ -135,26 +135,26 @@
   }
   $h=(int)date('G',$tm);
   if ($h==0) {
-   $hw='часов';
+   $hw='С‡Р°СЃРѕРІ';
   } elseif ($h==1) {
-   $hw='час';
+   $hw='С‡Р°СЃ';
   } elseif ($h<5) {
-   $hw='часа';
+   $hw='С‡Р°СЃР°';
   } elseif ($h<21) {
-   $hw='часов';
+   $hw='С‡Р°СЃРѕРІ';
   } elseif ($h==21) {
-   $hw='час';
+   $hw='С‡Р°СЃ';
   } elseif ($h>=21) {
-   $hw='часа';
+   $hw='С‡Р°СЃР°';
   }
   
   $m=(int)date('i',$tm);
   if ($m==0) {
-   $ms='ровно';
+   $ms='СЂРѕРІРЅРѕ';
   } else {
-   $ms=$m." минут";
+   $ms=$m." РјРёРЅСѓС‚";
   }
-  $res="$h ".win2utf($hw)." ".win2utf($ms);
+  $res="$h ".($hw)." ".($ms);
   return $res;
  }
 
@@ -350,8 +350,8 @@
 * @access public
 */
  function textToNumbers($text) {
-  $newtext=utf2win($text);
-  $newtext=win2utf($newtext);
+  $newtext=($text);
+  $newtext=($newtext);
   return $newtext;
  }
 
@@ -368,26 +368,26 @@
 
   $new_time=time();
 
-  $text=utf2win($text);
-  if (preg_match('/через (\d+) секунд.?/is', $text, $m)) {
+  $text=($text);
+  if (preg_match('/С‡РµСЂРµР· (\d+) СЃРµРєСѓРЅРґ.?/is', $text, $m)) {
    $new_time=time()+$m[1];
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
-  } elseif (preg_match('/через (\d+) минут.?/is', $text, $m)) {
+  } elseif (preg_match('/С‡РµСЂРµР· (\d+) РјРёРЅСѓС‚.?/is', $text, $m)) {
    $new_time=time()+$m[1]*60;
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
-  } elseif (preg_match('/через (\d+) час.?/is', $text, $m)) {
+  } elseif (preg_match('/С‡РµСЂРµР· (\d+) С‡Р°СЃ.?/is', $text, $m)) {
    $new_time=time()+$m[1]*60*60;
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
-  } elseif (preg_match('/в (\d+):(\d+)/is', $text, $m)) {
+  } elseif (preg_match('/РІ (\d+):(\d+)/is', $text, $m)) {
    $new_time=mktime($m[1], $m[2], 0, date('m'), date('d'), date('Y'));
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
   }
 
-  $newText=win2utf($newText);
+  $newText=($newText);
   if ($found) {
    $result=$new_time;
   }

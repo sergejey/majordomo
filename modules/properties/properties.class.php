@@ -170,6 +170,13 @@ function usual(&$out) {
  function delete_properties($id) {
   $rec=SQLSelectOne("SELECT * FROM properties WHERE ID='$id'");
   // some action for related tables
+  $values=SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='".$rec['ID']."'");
+  $total=count($values);
+  for($i=0;$i<$total;$i++) {
+   SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$values[$i]['ID']."'");
+   SQLExec("DELETE FROM pvalues WHERE ID='".$values[$i]['ID']."'");
+  }
+
   SQLExec("DELETE FROM properties WHERE ID='".$rec['ID']."'");
  }
 /**
