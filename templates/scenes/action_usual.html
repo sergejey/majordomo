@@ -30,10 +30,14 @@
 
          [#begin RESULT#][#begin ELEMENTS#][#begin STATES#][#if MENU_ITEM_ID!="0"#]
          if (id==[#ID#]) {
+
+          var top=$('#scene_background_<#RESULT.ID#>').offset().top;
+          var left=$('#scene_background_<#RESULT.ID#>').offset().left;
+
           var wdth=window[#ID#]_width;
           var hdth=window[#ID#]_height;
-          var x=window[#ID#]_posx;
-          var y=window[#ID#]_posy;
+          var x=window[#ID#]_posx+left;
+          var y=window[#ID#]_posy+top;
 
           if (!wdth) wdth=500;
           if (!hdth) hdth=500;
@@ -55,9 +59,11 @@
            url: '/menu.html?parent=[#MENU_ITEM_ID#]',
            onResizeEnd:function () {
             //Size changed
+            var top=$('#scene_background_<#RESULT.ID#>').offset().top;
+            var left=$('#scene_background_<#RESULT.ID#>').offset().left;
             var url1="?ajax=1&op=position";
-            window[#ID#]_posx=(jWindowObj[#ID#].get('posx'));
-            window[#ID#]_posy=(jWindowObj[#ID#].get('posy'));
+            window[#ID#]_posx=(jWindowObj[#ID#].get('posx'))-left;
+            window[#ID#]_posy=(jWindowObj[#ID#].get('posy'))-top;
             window[#ID#]_width=(jWindowObj[#ID#].get('width'));
             window[#ID#]_height=(jWindowObj[#ID#].get('height'));
             url1+='&id=[#ID#]&posx='+window[#ID#]_posx+'&posy='+window[#ID#]_posy+'&width='+window[#ID#]_width+'&height='+window[#ID#]_height;
@@ -66,8 +72,10 @@
            onDragEnd:function () {
             //Position changed
             var url1="?ajax=1&op=position";
-            window[#ID#]_posx=(jWindowObj[#ID#].get('posx'));
-            window[#ID#]_posy=(jWindowObj[#ID#].get('posy'));
+            var top=$('#scene_background_<#RESULT.ID#>').offset().top;
+            var left=$('#scene_background_<#RESULT.ID#>').offset().left;
+            window[#ID#]_posx=(jWindowObj[#ID#].get('posx'))-left;
+            window[#ID#]_posy=(jWindowObj[#ID#].get('posy'))-top;
             window[#ID#]_width=(jWindowObj[#ID#].get('width'));
             window[#ID#]_height=(jWindowObj[#ID#].get('height'));
             url1+='&id=[#ID#]&posx='+window[#ID#]_posx+'&posy='+window[#ID#]_posy+'&width='+window[#ID#]_width+'&height='+window[#ID#]_height;
@@ -147,7 +155,7 @@
 [#begin RESULT#]
 <li id='scene_[#ID#]'>
 [#if BACKGROUND!=""#]
- <div id="scene_background" style="position:relative;">
+ <div id="scene_background_[#ID#]" style="position:relative;">
  [#begin ELEMENTS#]
  <!-- element [#ID#] -->
  [#begin STATES#]
