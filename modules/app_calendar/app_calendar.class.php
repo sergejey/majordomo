@@ -281,7 +281,7 @@ function usual(&$out) {
    }
   }
 
-  $events_early_soon=SQLSelect("SELECT * FROM calendar_events WHERE (TO_DAYS(DATE(CONCAT_WS('-', DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(DUE, '%m'), DATE_FORMAT(DUE, '%d'))))>TO_DAYS(NOW())) AND (TO_DAYS(DATE(CONCAT_WS('-', DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(DUE, '%m'), DATE_FORMAT(DUE, '%d'))))-TO_DAYS(NOW())<=".(int)$how_soon.") AND IS_REPEATING=1 AND REPEAT_TYPE=1 AND IS_TASK=0 ORDER BY DUE");
+  $events_early_soon=SQLSelect("SELECT *, TO_DAYS(DATE(CONCAT_WS('-', DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(DUE, '%m'), DATE_FORMAT(DUE, '%d'))))-TO_DAYS(NOW()) as AGE FROM calendar_events WHERE (TO_DAYS(DATE(CONCAT_WS('-', DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(DUE, '%m'), DATE_FORMAT(DUE, '%d'))))>TO_DAYS(NOW())) AND (TO_DAYS(DATE(CONCAT_WS('-', DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(DUE, '%m'), DATE_FORMAT(DUE, '%d'))))-TO_DAYS(NOW())<=".(int)$how_soon.") AND IS_REPEATING=1 AND REPEAT_TYPE=1 AND IS_TASK=0 ORDER BY DUE");
   if ($events_early_soon) {
    foreach($events_early_soon as $k=>$v) {
     $events_soon[]=$v;
@@ -294,8 +294,16 @@ function usual(&$out) {
     $events_soon[]=$v;
    }
   }
+
   if ($events_soon) {
-   $out['EVENTS_SOON']=$events_soon;
+   $new_events=array();
+   foreach($events_soon as $ev) {
+    if (!$seen[$ev['ID']]) {
+     $new_events[]=$ev;
+    }
+    $seen[$ev['ID']]=1;
+   }
+   $out['EVENTS_SOON']=$new_events;
   }
 
 
