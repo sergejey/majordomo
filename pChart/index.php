@@ -125,6 +125,22 @@
    $value=$history[0]['VALUE'];
    $next_index=1;
    $total_values=count($history);
+   
+   if ($_GET['op']=='timed') {
+   //header("Content-type: text/json");
+    $tret = array();
+    $t_times = array();
+    $t_values = array();
+    for($i=0;$i<$total_values;$i++) {
+      $t_times[]=$history[$i]['UNX'];
+      $t_values[]=$history[$i]['VALUE'];
+      
+    }
+    $ret['TIMES']=$t_times;
+    $ret['VALUES']=$t_values;
+    echo json_encode($ret);
+    exit;
+   }
 
    while($start_time<$end_time) {
      if ($next_index<$total_values) {
