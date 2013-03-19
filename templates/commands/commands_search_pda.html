@@ -75,9 +75,10 @@
 <script language="javascript">
  var item[#ID#]_timer=0;
  function changedValue[#ID#]() {
-  clearTimeout(item[#ID#]_timer);
+  //clearTimeout(item[#ID#]_timer);
   var elem=document.getElementById('menu[#ID#]_v');
-  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  itemValueChanged("[#ID#]", elem.value);
+  //item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
   return false;
  }
 </script>
@@ -108,9 +109,10 @@
 <script language="javascript">
  var item[#ID#]_timer=0;
  function changedValue[#ID#]() {
-  clearTimeout(item[#ID#]_timer);
+  //clearTimeout(item[#ID#]_timer);
   var elem=document.getElementById('menu[#ID#]_v');
-  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  itemValueChanged("[#ID#]", elem.value);
+  //item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
   return false;
  }
 </script>

@@ -126,7 +126,7 @@
     $tmp=explode(' ', $res[$i]['ADDED']);
     $res[$i]['ADDED']=fromDBDate($tmp[0])." ".$tmp[1];
     if ($res[$i]['DT']!=$old_dt) {
-     $txtdata.="<hr size=1>";
+     $txtdata.="<hr size=1><b>".$tmp[0]."</b><br>";
      $old_dt=$res[$i]['DT'];
     }
     if ($res[$i]['MEMBER_ID']==0) {

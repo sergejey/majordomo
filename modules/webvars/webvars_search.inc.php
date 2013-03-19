@@ -47,6 +47,9 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+    if ($this->action=='admin') {
+     $res[$i]['LATEST_VALUE']=htmlspecialchars($res[$i]['LATEST_VALUE']);
+    }
    }
    $out['RESULT']=$res;
   }
