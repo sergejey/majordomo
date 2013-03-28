@@ -133,7 +133,7 @@ function admin(&$out) {
    $this->redirect("?");
   }
   if ($this->view_mode=='import_app_quotes') {
-   $this->import_app_quotes(&$out);
+   $this->import_app_quotes($out);
   }
   if ($this->view_mode=='multiple_app_quotes') {
    global $ids;
