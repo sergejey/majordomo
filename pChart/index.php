@@ -122,8 +122,6 @@
 
 
    $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
-   $value=$history[0]['VALUE'];
-   $next_index=1;
    $total_values=count($history);
    
    if ($_GET['op']=='timed') {
@@ -142,15 +140,37 @@
     exit;
    }
 
+
+   $next_index=0;
+   $temp_array=array($history[0]['VALUE']);
+
+   $approx='avg';
+   if ($_GET['approx']) {
+    $approx=$_GET['approx'];
+   }
+
    while($start_time<$end_time) {
      if ($next_index<$total_values) {
       for($i=$next_index;$i<$total_values;$i++) {
-       $next_index=$i;
+       $next_index=$i+1;
        if ($history[$i]['UNX']>=$start_time) {
-        $value=$history[$i]['VALUE'];
+        if ($approx=='sum') {
+         $value=array_sum($temp_array);
+        } elseif ($approx=='max') {
+         $value=max($temp_array);
+        } else {
+         $value=round(array_sum($temp_array)/count($temp_array), 2);
+        }
+        //
+        $temp_array=array($history[$i]['VALUE']);
         break;
+       } else {
+        $temp_array[]=$history[$i]['VALUE'];
        }
       }
+     } else {
+      // last known value
+      $value=$history[$total_values-1]['VALUE'];
      }
      $values[]=$value;
      if ($px_passed>30) {
@@ -170,30 +190,6 @@
    }
    
 
-/*
-   while($start_time<$end_time) {
-     $ph=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<=('".date('Y-m-d H:i:s', $start_time)."') ORDER BY ADDED DESC LIMIT 1");
-     if ($ph['ID']) {
-      $values[]=(float)$ph['VALUE'];
-     } else {
-      $values[]=0;
-     }
-     if ($px_passed>30) {
-      if (date('Y-m-d', $start_time)!=$dt) {
-       $hours[]=date('d/m', $start_time);
-       $dt=date('Y-m-d', $start_time);
-      } else {
-       $hours[]=date('H:i', $start_time);
-      }
-      $px_passed=0;
-     } else {
-      $hours[]='';
-     }
-     $start_time+=$period;
-     $px+=$px_per_point;
-     $px_passed+=$px_per_point;
-   }
-*/
   if ($_GET['fil01']) {
    $fil01=$_GET['fil01'];
   } else {
@@ -332,11 +328,17 @@
    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,100,100,100,TRUE,0,2);
    $Test->drawGraphAreaGradient(240,240,240,5);
    $Test->drawGrid(1,TRUE,230,230,230,10); 
+   if ($_GET['scale']=='zero') {
+    $Test->drawTreshold(0,100,100,100,FALSE,FALSE);
+   }
   } else {
    $Test->drawGraphArea(213,217,221,FALSE);  
    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,213,217,221,TRUE,0,2);  
    $Test->drawGraphAreaGradient(162,183,202,50);  
    $Test->drawGrid(1,TRUE,230,230,230,10); 
+   if ($_GET['scale']=='zero') {
+    $Test->drawTreshold(0,230,230,230,FALSE,FALSE);
+   }
   }
 
   //$Test->setShadowProperties(3,3,0,0,0,30,4);       
@@ -354,6 +356,7 @@
    $Test->clearShadow();  
    $Test->drawFilledLineGraph($DataSet->GetData(),$DataSet->GetDataDescription(), 30);  
   }
+
   //
   
 
