@@ -38,6 +38,7 @@ include_once("./config.php");
 $requests=array(
  "/^\/menu\.html/is" => '?(application:{action=menu})',
  "/^\/menu\/(\d+?)\.html/is" => '?(application:{action=menu, parent_item=\1})',
+ "/^\/popup\/(.+?)\/(.+?)\.html/is" => '?(application:{action=\1, popup=1})',
  "/^\/popup\/(.+?)\.html/is" => '?(application:{action=\1, popup=1})',
  "/^\/page\/(\d+?)\.html/is" => '?(application:{action=layouts, popup=1}layouts:{view_mode=view_layouts, id=\1})',
  "/^\/getnextevent\.html/is" => '?(application:{action=events})',

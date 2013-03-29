@@ -132,12 +132,14 @@
          return false;
         }
 
-                $(document).ready(function(){   
+                $(document).ready(function(){
+                [#if TOTAL!="1"#]
                         $("#slider").easySlider({
                                 auto: false, 
                                 numeric: true,
                                 continuous: false
                         });
+                [#endif TOTAL#]
                         checkAllStates();
                 });     
 

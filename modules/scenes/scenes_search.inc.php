@@ -9,6 +9,11 @@
   $qry="1";
   // search filters
   //searching 'TITLE' (varchar)
+
+  if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
+   $qry.=" AND scenes.ID='".$m[1]."'";
+  }
+
   global $title;
   if ($title!='') {
    $qry.=" AND TITLE LIKE '%".DBSafe($title)."%'";
@@ -54,6 +59,7 @@
       $res[$i]['NUM']=$i;
       $res[$i]['NUMP']=$i+1;
    }
+   $out['TOTAL']=$total;
    $out['RESULT']=$res;
   }
 

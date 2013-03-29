@@ -201,7 +201,11 @@ function usual(&$out) {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
     if ($op=='checkAllStates') {
-     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID");
+     $qry="1";
+     if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
+      $qry.=" AND scenes.ID='".$m[1]."'";
+     }
+     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND $qry");
      $total=count($states);
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
