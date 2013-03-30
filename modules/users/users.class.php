@@ -141,7 +141,15 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
- $this->admin($out);
+ global $session;
+ $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
+ $total=count($users);
+ for($i=0;$i<$total;$i++) {
+  if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
+   $users[$i]['SELECTED']=1;
+  }
+ }
+ $out['USERS']=$users;
 }
 /**
 * users search
@@ -207,6 +215,10 @@ users - Users
  users: NAME varchar(255) NOT NULL DEFAULT ''
  users: SKYPE varchar(255) NOT NULL DEFAULT ''
  users: MOBILE varchar(255) NOT NULL DEFAULT ''
+ users: AVATAR varchar(255) NOT NULL DEFAULT ''
+ users: PASSWORD varchar(255) NOT NULL DEFAULT ''
+ users: IS_ADMIN tinyint(3) NOT NULL DEFAULT '0'
+ users: IS_DEFAULT tinyint(3) NOT NULL DEFAULT '0'
  users: EMAIL char(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);

@@ -1,0 +1,25 @@
+<script language="javascript">
+ function switchTo(username) {
+  window.parent.location='/?username='+username;
+  return false;
+ }
+</script>
+<table width="100%" border="0" cellpadding="5">
+ [#begin USERS#]
+ <tr>
+  <td valign="top" align="center"[#if SELECTED="1"#] style="border:1px solid white"[#endif#]>
+   [#if AVATAR!=""#]
+   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="/cms/avatars/[#AVATAR#]" border="0" height="100"></a>
+   [#else#]
+   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>img/icons/user.png" border="0"></a>
+   [#endif#]
+  </td>
+  <td valign="top" width="99%"[#if SELECTED="1"#] style="border:1px solid white"[#endif#]><h1>[#NAME#]</h1>
+  [#if IS_ADMIN="1"#]<#LANG_IS_ADMIN#><br>[#endif#]
+  [#if MOBILE!=""#]Mobile: [#MOBILE#]<br>[#endif#]
+  [#if SKYPE!=""#]Skype: [#SKYPE#]<br>[#endif#]
+  [#if EMAIL!=""#]E-mail: [#EMAIL#]<br>[#endif#]
+  </td>
+ </tr>
+ [#end USERS#]
+</table>

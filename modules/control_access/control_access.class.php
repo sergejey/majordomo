@@ -70,6 +70,7 @@ function getParams() {
   if ($this->mode=='logoff') {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
+   UnSet($session->data['USERNAME']);
    Unset($session->data["cp_requested_url"]);
    if (isset($this->userlog)) {
     $this->userlog->newEntry('Logged Off');
@@ -91,6 +92,7 @@ function getParams() {
     global $psw;
 //    $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='$login' AND PASSWORD='".($psw)."'");
     $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='".DBSafe($login)."' AND PASSWORD='".DBSafe(md5($psw))."'");
+
 //    $user=SQLSelectOne("SELECT * FROM admin_users WHERE 1");
 
 // LDAP logining
@@ -208,6 +210,7 @@ function getParams() {
   } elseif ($this->action=="logoff") {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
+   UnSet($session->data['USERNAME']);
    $this->owner->redirect("?");
 
   } elseif ($this->action=="admin") {

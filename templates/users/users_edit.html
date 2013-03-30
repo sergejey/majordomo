@@ -37,6 +37,17 @@
   <input type="text" name="username" value="[#USERNAME#]">
  </td>
 </tr>
+
+<tr>
+ <td align=right>
+ <#LANG_PASSWORD#> (<#LANG_OPTIONAL#>):
+ </td>
+ <td>
+  <input type="text" name="password" value="[#PASSWORD#]">
+ </td>
+</tr>
+
+
 <!-- NAME (varchar) -->
 <tr>
  <td align=right>
@@ -77,6 +88,36 @@
   <input type="text" name="mobile" value="[#MOBILE#]">
  </td>
 </tr>
+
+<tr>
+ <td align=right>
+ <#LANG_PHOTO#>:
+ </td>
+ <td>
+  [#if AVATAR!=""#]<img src="/cms/avatars/[#AVATAR#]" border="0" height="50"><br>[#endif#]
+  <input type="file" name="avatar">
+ </td>
+</tr>
+
+
+<tr>
+ <td align=right>
+ &nbsp;
+ </td>
+ <td>
+  <label><input type="checkbox" name="is_default" value="1"[#if IS_DEFAULT="1"#] checked[#endif#]> <#LANG_DEFAULT_USER#></label>
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ &nbsp;
+ </td>
+ <td>
+  <label><input type="checkbox" name="is_admin" value="1"[#if IS_ADMIN="1"#] checked[#endif#]> <#LANG_IS_ADMIN#></label>
+ </td>
+</tr>
+
 
 
 <tr>

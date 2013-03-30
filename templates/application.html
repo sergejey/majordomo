@@ -47,6 +47,14 @@ overflow: scroll;
 <body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
 
 <script language="javascript">
+
+jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+    return this;
+}
+
  // ----------------------------------------------------------------------
  function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
  /*
@@ -74,6 +82,7 @@ overflow: scroll;
   var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
   jWindowObj.show();
   jWindowObj.update();
+  $('#usersWindow').center();
   return false;
  }
 
@@ -82,6 +91,7 @@ overflow: scroll;
   var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, minimiseButton:false, maximiseButton:false, draggable:false, resizeable:false, modal: true });
    jWindowObj.show();
    jWindowObj.update();
+   $('#usersWindow').center();
    return false;
  }
 

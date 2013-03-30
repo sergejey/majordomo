@@ -36,6 +36,17 @@ function getParams() {
   global $session;
   Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+  if (!$session->data["AUTHORIZED"] && $session->data['USERNAME']) {
+   $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($session->data['USERNAME'])."'");
+   if ($user['IS_ADMIN']) {
+    $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='admin'");
+    $session->data['USER_NAME']=$user['LOGIN'];
+    $session->data['USER_LEVEL']=$user['PRIVATE'];
+    $session->data['USER_ID']=$user['ID'];
+    $session->data["AUTHORIZED"]=1;
+   }
+  }
+
   if (IsSet($session->data["AUTHORIZED"])) {
    $this->authorized=1;
   }

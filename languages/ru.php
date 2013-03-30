@@ -811,6 +811,11 @@ $dictionary=array(
 'FILTER_BY_CLASS'=>'Фильтр по Классу',
 'FILTER_BY_LOCATION'=>'Фильтр по Расположению',
 
+'PHOTO'=>'Фотография',
+'DEFAULT_USER'=>'пользователь по-умолчанию для системы',
+'IS_ADMIN'=>'администратор системы',
+
+
 'TEST'=>'test'
 
 

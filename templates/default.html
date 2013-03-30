@@ -55,6 +55,7 @@
    </select>
   </td>
   [#endif#]
+  <!--#
   [#if HIDE_USERS!="1"#]
   <td valign="top" nowrap>
    <#LANG_USER#>:
@@ -66,6 +67,7 @@
    </select>
   </td>
   [#endif#]
+  #-->
   </form>
    </tr>
    <tr>
@@ -76,8 +78,13 @@
     </td>
    </tr>
   </table>
-
-
+  </td>
+  <td valign="top">
+   [#if USER_AVATAR!=""#]
+   <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"><img src="/cms/avatars/[#USER_AVATAR#]" border="0" height="50"></a>
+   [#else#]
+   <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"><img src="<#ROOTHTML#>img/icons/user.png" border="0"></a>
+   [#endif#]
   </td>
  </tr>
  <tr>

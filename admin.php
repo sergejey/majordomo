@@ -11,7 +11,7 @@
  include_once("./lib/loader.php");
  include_once(DIR_MODULES."panel.class.php");
 
- $session=new session("test");
+ $session=new session("prj");
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
  include_once("./load_settings.php");
 

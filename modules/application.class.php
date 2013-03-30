@@ -117,7 +117,27 @@ function getParams() {
    global $username;
    
    if ($username) {
-    $session->data['USERNAME']=$username;
+    $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
+    if (!$user['PASSWORD']) {
+     $session->data['USERNAME']=$username;
+    } else {
+     if (!isset($_SERVER['PHP_AUTH_USER'])) {
+      header('WWW-Authenticate: Basic realm="MajorDoMo"');
+      header('HTTP/1.0 401 Unauthorized');
+      echo 'Password required!';
+      exit;
+     } else {
+      if ($_SERVER['PHP_AUTH_USER']==$user['USERNAME'] && $_SERVER['PHP_AUTH_PW']==$user['PASSWORD']) {
+       $session->data['USERNAME']=$username;
+      } else {
+       header('WWW-Authenticate: Basic realm="MajorDoMo"');
+       header('HTTP/1.0 401 Unauthorized');
+       echo 'Incorrect username/password!';
+       exit;
+      }
+     }    
+
+    }
    }
    global $terminal;
    if ($terminal) {
@@ -149,12 +169,26 @@ function getParams() {
     if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
      $users[$i]['SELECTED']=1;
      $out['USER_TITLE']=$users[$i]['NAME'];
+     $out['USER_AVATAR']=$users[$i]['AVATAR'];
+    }
+    if ($users[$i]['IS_DEFAULT']==1) {
+     $out['DEFAULT_USERNAME']=$users[$i]['USERNAME'];
     }
    }
    $out['USERS']=$users;
    if ($total==1) {
     $out['HIDE_USERS']=1;
     $session->data['USERNAME']=$users[0]['USERNAME'];
+   }
+   if (!$session->data['USERNAME'] && $out['DEFAULT_USERNAME']) {
+    $session->data['USERNAME']=$out['DEFAULT_USERNAME'];
+    for($i=0;$i<$total;$i++) {
+     if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
+      $users[$i]['SELECTED']=1;
+      $out['USER_TITLE']=$users[$i]['NAME'];
+      $out['USER_AVATAR']=$users[$i]['AVATAR'];
+     }
+    }
    }
 
 

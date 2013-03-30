@@ -821,6 +821,10 @@ $dictionary=array(
 'FILTER_BY_CLASS'=>'Filter by Class',
 'FILTER_BY_LOCATION'=>'Filter by Location',
 
+'PHOTO'=>'Photo',
+'DEFAULT_USER'=>'default user for anonymous usage',
+'IS_ADMIN'=>'system administrator',
+
 'TEST'=>'test'
 
 
