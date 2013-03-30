@@ -481,7 +481,7 @@ function clearCache($verbose=0) {
     } else {
      exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
     }
-    return $rval === 0;
+    return $rval === 0 && preg_match('/ttl/is', join('', $res));
   }
 
  function transliterate($string) {
