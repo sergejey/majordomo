@@ -141,7 +141,6 @@ editAreaLoader.init({
  <td valign="top" align="right"><#LANG_COMMAND_LINE#>:</td>
  <td valign="top"><#DOC_ROOT#>\obj.bat script:[#TITLE#]</td>
 </tr>
-
 [#endif#]
 </table>
 <input type="hidden" name="id" value="<#ID#>">
@@ -150,3 +149,6 @@ editAreaLoader.init({
 <input type="hidden" name="mode" value="update">
 </form>
 
+[#if ID!=""#]
+ [#module name="xray" action="context" type="script" keyword="<#TITLE#>" code_id="code"#]
+[#endif ID#]

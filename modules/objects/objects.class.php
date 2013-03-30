@@ -435,6 +435,9 @@ curl_close($ch);
 * @access public
 */
  function setProperty($property, $value, $no_linked=0) {
+
+  global $property_linked_history;
+
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   $old_value='';
 
@@ -512,12 +515,15 @@ curl_close($ch);
 
   }
 
-  if ($prop['ONCHANGE']) {
+  if ($prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) {
+   $property_linked_history[$property][$prop['ONCHANGE']]=1;
    global $on_change_called;
    $params=array();
    $params['NEW_VALUE']=$value;
    $params['OLD_VALUE']=$old_value;
    $this->callMethod($prop['ONCHANGE'], $params);
+  } elseif ($prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) {
+   unset($property_linked_history[$property][$prop['ONCHANGE']]);
   }
 
  }

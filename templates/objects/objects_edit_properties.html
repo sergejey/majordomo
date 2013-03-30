@@ -1,17 +1,17 @@
 <!--#
  @version 0.4 (auto-set)
 #-->
-﻿[#if OK#]<font color="green"><#LANG_DATA_SAVED#></font>[#endif OK#]
+[#if OK#]<font color="green"><#LANG_DATA_SAVED#></font>[#endif OK#]
 <br>&nbsp;
 
 <table border="0" cellpadding="3">
  <form action="?" method="post">
  [#begin PROPERTIES#]
  <tr>
-  <td valign="top">[#if CLASS_ID!="0"#]<b>[#CLASS_TITLE#]. [#endif#][#TITLE#]</td>
+  <td valign="top">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</td>
   <td valign="top">=</td>
   <td valign="top">
-  <textarea name="value[#ID#]" rows=3 cols="90">[#VALUE#]</textarea>
+  <textarea name="value[#ID#]" rows=2 cols="90" class="span5">[#VALUE#]</textarea>
   </td>
   <td valign="top">
         [#if CLASS_ID="0"#]

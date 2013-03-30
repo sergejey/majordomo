@@ -1,3 +1,4 @@
+[#if ACTION!="context"#]
 <table border="1" align="center" cellspacing="3" cellpadding="5" width="100%">
  <tr>
   <td valign="top" width="20%"[#if VIEW_MODE!=""#] bgcolor="#AAAAAA"[#endif#]><a href="?">Properties</a></td>
@@ -28,3 +29,24 @@
 
  checkAllStates();
 </script>
+[#endif ACTION#]
+
+[#if ACTION="context"#]
+<b>Related:</b>
+<div id='contextBody'>...</div>
+<script language="javascript">
+ function findContext() {
+  var url="/popup/xray.html?action=context";
+  var bodyText='';
+  [#if CODE_ID!=""#]bodyText=$('#[#CODE_ID#]').val();[#endif CODE_ID#]
+  $.post(url, 
+  { action:"context", ajax: "1", op: "process", keyword: "<#KEYWORD#>", type: "<#TYPE#>", body: bodyText},
+   function(data) {
+    $('#contextBody').html(data);
+   }
+  );
+  return false;
+ }
+ findContext();
+</script>
+[#endif ACTION#]

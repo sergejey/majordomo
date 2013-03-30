@@ -96,4 +96,8 @@ editAreaLoader.init({
         <input type="text" size="90" value="<#DOC_ROOT#>\obj.bat <#OBJECT_TITLE#>.<#METHOD_TITLE#>">
         </p>
 
+[#if ID!=""#]
+ [#module name="xray" action="context" type="method" keyword="<#OBJECT_TITLE#>.<#METHOD_TITLE#>" code_id="mCode"#]
+[#endif ID#]
+
 [#endif OVERWRITE#]

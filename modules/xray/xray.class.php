@@ -76,6 +76,10 @@ function getParams() {
   if (isset($tab)) {
    $this->tab=$tab;
   }
+  global $action;
+  if (isset($action)) {
+   $this->action=$action;
+  }
 }
 /**
 * Run
@@ -86,9 +90,12 @@ function getParams() {
 */
 function run() {
  global $session;
+ global $action;
   $out=array();
   if ($this->action=='admin') {
    $this->admin($out);
+  } elseif ($this->action=='context' || $action=='context') {
+   $this->context($out);
   } else {
    $this->usual($out);
   }
@@ -109,6 +116,237 @@ function run() {
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function context(&$out) {
+  global $ajax;
+  if ($ajax) {
+   header ("HTTP/1.0: 200 OK\n");
+   header ('Content-Type: text/html; charset=utf-8');
+   global $op;
+   if ($op=='process') {
+    global $keyword;
+    global $body;
+    global $type;
+    $found=array();
+    $keywords=array();
+    $keys=array();
+    //processing keywords
+    if ($keyword) {
+     $keys[$keyword]=$type;
+    }
+
+    if ($body!='') {
+     if (preg_match_all('/runScript\([\'"](.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='script';
+      }
+     }
+     if (preg_match_all('/setGlobal\([\'"](.+?)\.(.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='object';
+       $keys[$m[1][$i].'.'.$m[2][$i]]='property';
+      }
+     }
+     if (preg_match_all('/getGlobal\([\'"](.+?)\.(.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='object';
+       $keys[$m[1][$i].'.'.$m[2][$i]]='property';
+      }
+     }
+     if (preg_match_all('/sg\([\'"](.+?)\.(.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='object';
+       $keys[$m[1][$i].'.'.$m[2][$i]]='property';
+      }
+     }
+     if (preg_match_all('/gg\([\'"](.+?)\.(.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='object';
+       $keys[$m[1][$i].'.'.$m[2][$i]]='property';
+      }
+     }
+     if (preg_match_all('/callMethod\([\'"](.+?)\.(.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='object';
+       $keys[$m[1][$i].'.'.$m[2][$i]]='method';
+      }
+     }
+     if (preg_match_all('/cm\([\'"](.+?)\.(.+?)[\'"]/is', $body, $m)) {
+      $total=count($m[0]);
+      for($i=0;$i<$total;$i++) {
+       $keys[$m[1][$i]]='object';
+       $keys[$m[1][$i].'.'.$m[2][$i]]='method';
+      }
+     }
+    }
+
+    //print_r($keys);echo "<br>";
+
+    foreach($keys as $k=>$v) {
+     if ($v=='script') {
+      $keywords["runscript(\"".$k."\""]=$k;
+      $keywords["runscript('".$k."'"]=$k;
+     }
+     if ($v=='object') {
+      $keywords["setGlobal(\"".$k."."]=$k;
+      $keywords["setGlobal('".$k."."]=$k;
+      $keywords["sg(\"".$k."."]=$k;
+      $keywords["sg('".$k."."]=$k;
+     }
+     if ($v=='property') {
+      $keywords["setGlobal(\"".$k]=$k;
+      $keywords["setGlobal('".$k]=$k;
+      $keywords["sg(\"".$k]=$k;
+      $keywords["sg('".$k]=$k;
+      $tmp=explode('.', $k);
+      $keywords["->setProperty('".$tmp[1]]=$tmp[1];
+      $keywords["->setProperty(\"".$tmp[1]]=$tmp[1];
+     }
+     if ($v=='method') {
+      $keywords["callMethod(\"".$k]=$k;
+      $keywords["callMethod('".$k]=$k;
+      $keywords["cm(\"".$k]=$k;
+      $keywords["cm('".$k]=$k;
+      $tmp=explode('.', $k);
+      $keywords["->callMethod('".$tmp[1]]=$tmp[1];
+      $keywords["->callMethod(\"".$tmp[1]]=$tmp[1];
+     }
+    }
+
+    //print_r($keywords);echo "<br>";
+    $mdl=new module();
+
+    //processing body for keywords
+    //...
+    //processing keywords
+    foreach($keywords as $k=>$v) {
+    //scripts
+     $scripts=SQLSelect("SELECT ID, TITLE FROM scripts WHERE (CODE LIKE '%".DBSafe($k)."%' OR TITLE LIKE '".DBSafe($v)."')");
+     $total=count($scripts);
+     for($i=0;$i<$total;$i++) {
+      if (!$found['script'.$scripts[$i]['ID']]) {
+       $rec=array();
+       $rec['TYPE']='script';
+       $rec['TITLE']=$scripts[$i]['TITLE'];
+       $rec['LINK']='/admin.php?action=scripts&md=scripts&inst=adm&view_mode=edit_scripts&id='.$scripts[$i]['ID'];
+       $found['script'.$scripts[$i]['ID']]=$rec;
+      }
+     }
+    //objects
+     $objects=SQLSelect("SELECT ID, TITLE, CLASS_ID FROM objects WHERE (TITLE LIKE '".DBSafe($v)."')");
+     $total=count($objects);
+     for($i=0;$i<$total;$i++) {
+      if (!$found['object'.$scripts[$i]['ID']]) {
+       $rec=array();
+       $rec['TYPE']='object';
+       $rec['TITLE']=$objects[$i]['TITLE'];
+       $rec['LINK']="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=".$objects[$i]['CLASS_ID']."})&md=objects&view_mode=edit_objects&id=".$objects[$i]['ID'];
+       $result=$mdl->parseLinks("<a href=\"".$rec['LINK']."\">");
+       if (preg_match('/\?pd=.+"/', $result, $m)) {
+        $rec['LINK']='/admin.php'.$m[0];
+       }
+       $found['object'.$objects[$i]['ID']]=$rec;
+      }
+     }
+    //methods
+     $methods=SQLSelect("SELECT methods.ID, methods.TITLE, classes.TITLE as CLASS, objects.TITLE as OBJECT, methods.CLASS_ID, methods.OBJECT_ID FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.CODE LIKE '%".DBSafe($k)."%' OR methods.TITLE LIKE '".DBSafe($v)."')");
+     $total=count($methods);
+     for($i=0;$i<$total;$i++) {
+      if (!$found['method'.$methods[$i]['ID']]) {
+       $rec=array();
+       $rec['TYPE']='method';
+       $rec['TITLE']=$methods[$i]['TITLE'];
+       if ($methods[$i]['OBJECT_ID']) {
+        $rec['LINK']="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=".$methods[$i]['CLASS_ID']."})&md=objects&view_mode=edit_objects&id=".$methods[$i]['OBJECT_ID']."&tab=methods&overwrite=1&method_id=".$methods[$i]['ID'];
+        $rec['TITLE']=$methods[$i]['OBJECT'].'.'.$rec['TITLE'];
+       } else {
+        $rec['LINK']="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=methods,id=".$methods[$i]['CLASS_ID']."})&md=methods&view_mode=edit_methods&id=".$methods[$i]['ID'];
+        $rec['TITLE']=$methods[$i]['CLASS'].' (class).'.$rec['TITLE'];
+       }
+       $result=$mdl->parseLinks("<a href=\"".$rec['LINK']."\">");
+       if (preg_match('/\?pd=.+"/', $result, $m)) {
+        $rec['LINK']='/admin.php'.$m[0];
+       }
+       $found['method'.$methods[$i]['ID']]=$rec;
+      }
+     }
+    //properties
+     $properties=SQLSelect("SELECT properties.ID, properties.TITLE, classes.TITLE as CLASS, objects.TITLE as OBJECT, properties.CLASS_ID, properties.OBJECT_ID FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID WHERE (properties.TITLE LIKE '".DBSafe($v)."')");
+     $total=count($properties);
+     for($i=0;$i<$total;$i++) {
+      if (!$found['property'.$properties[$i]['ID'].'_'.$properties[$i]['OBJECT_ID']]) {
+       $rec=array();
+       $rec['TYPE']='property';
+       $rec['TITLE']=$properties[$i]['TITLE'];
+       if ($properties[$i]['OBJECT_ID']) {
+        $rec['LINK']="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=".$properties[$i]['CLASS_ID']."})&md=objects&view_mode=edit_objects&id=".$properties[$i]['OBJECT_ID']."&tab=properties";
+        $rec['TITLE']=$properties[$i]['OBJECT'].'.'.$rec['TITLE'];
+       } else {
+        $rec['LINK']="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=properties,id=".$properties[$i]['CLASS_ID']."})&md=properties&view_mode=edit_properties&id=".$properties[$i]['ID'];
+        $rec['TITLE']=$properties[$i]['CLASS'].' (class).'.$rec['TITLE'];
+       }
+       $result=$mdl->parseLinks("<a href=\"".$rec['LINK']."\">");
+       if (preg_match('/\?pd=.+"/', $result, $m)) {
+        $rec['LINK']='/admin.php'.$m[0];
+       }
+       $found['property'.$properties[$i]['ID'].'_'.$properties[$i]['OBJECT_ID']]=$rec;
+      }
+     }
+    //properties
+     $pvalues=SQLSelect("SELECT pvalues.ID, objects.TITLE as OBJECT, properties.ID as PROPERTY_ID, properties.TITLE, properties.CLASS_ID, pvalues.OBJECT_ID FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE (properties.TITLE LIKE '".DBSafe($v)."')");
+     //print_r($pvalues);
+     $total=count($pvalues);
+     for($i=0;$i<$total;$i++) {
+      if (!$found['property'.$pvalues[$i]['PROPERTY_ID'].'_'.$pvalues[$i]['OBJECT_ID']]) {
+       $rec=array();
+       $rec['TYPE']='property';
+       $rec['TITLE']=$pvalues[$i]['OBJECT'].'.'.$pvalues[$i]['TITLE'];
+       $rec['LINK']="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=".$pvalues[$i]['CLASS_ID']."})&md=objects&view_mode=edit_objects&id=".$pvalues[$i]['OBJECT_ID']."&tab=properties";
+       $result=$mdl->parseLinks("<a href=\"".$rec['LINK']."\">");
+       if (preg_match('/\?pd=.+"/', $result, $m)) {
+        $rec['LINK']='/admin.php'.$m[0];
+       }
+       $found['property'.$pvalues[$i]['PROPERTY_ID'].'_'.$pvalues[$i]['OBJECT_ID']]=$rec;
+      }
+     }
+    //menu items
+    //timers
+    //scene elements
+    //web-vars
+    }
+
+    foreach($found as $k=>$v) {
+     echo '<a href="'.$v['LINK'].'" target=_blank>'.$v['TYPE'].': '.$v['TITLE'].'</a><br/>';
+    }
+
+    //print_r($found);
+   }
+   exit;
+  }
+  if ($this->keyword) {
+   $out['KEYWORD']=$this->keyword;
+  }
+  if ($this->code_id) {
+   $out['CODE_ID']=$this->code_id;
+  }
+  if ($this->type) {
+   $out['TYPE']=$this->type;
+  }
+ }
+
 /**
 * BackEnd
 *
