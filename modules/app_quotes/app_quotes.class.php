@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * App_quotes 
 *

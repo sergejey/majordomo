@@ -1,4 +1,4 @@
-<?
+<?php
 
 $location = $_GET['location'];
 $metric = (int)$_GET['metric'];

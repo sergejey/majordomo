@@ -1,4 +1,4 @@
-<?
+<?php
 
  global $ajax;
  global $op;

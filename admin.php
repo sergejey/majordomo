@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * This file is part of MajorDoMo system. More details at http://smartliving.ru/
 *

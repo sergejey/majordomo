@@ -1,4 +1,4 @@
-<?
+<?php
 
   function laurent_command($host, $command, $password='Laurent') {
 

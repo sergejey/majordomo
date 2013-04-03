@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Parsing XML class
 * already, class supporting a cp1251 codepage
