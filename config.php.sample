@@ -7,6 +7,23 @@
 * @version 1.1
 */
 
+ define('ENVIRONMENT', 'dev');
+
+ switch (ENVIRONMENT) {
+     case 'dev':
+         error_reporting(-1);
+         ini_set('display_errors', 1);
+         break;
+
+     case 'prod':
+         error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_STRICT);
+         ini_set('display_errors', 0);
+         break;
+
+     default:
+         header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+         exit('The application env is incorrect');
+ }
 
  Define('DB_HOST', 'localhost');
  Define('DB_NAME', 'db_terminal');
