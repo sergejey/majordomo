@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * RSS script
 *

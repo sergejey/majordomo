@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Timer Cycle script
 *

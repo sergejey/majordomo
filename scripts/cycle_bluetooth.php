@@ -1,4 +1,4 @@
-<?	
+<?php	
 /*
 * @version 0.4 (06.09.2011 bug fixed)
 */

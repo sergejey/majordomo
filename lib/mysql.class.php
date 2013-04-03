@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * MySQL database class
 *

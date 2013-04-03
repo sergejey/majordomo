@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * RSS script
 *
@@ -69,12 +69,12 @@ if ($qry!='') {
   }
 </script>
  <form action="?" method="get" name="frmSearch">
- <input type="text" name="qry" value="<?echo $qry;?>" speech required x-webkit-speech  onspeechchange="startSearch"><input type="submit" name="Submit" value="Say">
+ <input type="text" name="qry" value="<?php echo $qry;?>" speech required x-webkit-speech  onspeechchange="startSearch"><input type="submit" name="Submit" value="Say">
  </form>
- <?if ($qry!='') {?>
- <p>Command: <b><?=$qry?></b></p>
- <?}?>
- <?
+ <?php if ($qry!='') {?>
+ <p>Command: <b><?php echo $qry?></b></p>
+ <?php }?>
+ <?php
 
 $qry="1";
 

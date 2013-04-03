@@ -1,4 +1,4 @@
-<?
+<?php
 
 
   function tcp1w_command($host, $port, $command) {

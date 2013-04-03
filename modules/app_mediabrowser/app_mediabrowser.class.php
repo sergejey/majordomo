@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Media Browser Application
 *

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * XML parser
 *

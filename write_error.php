@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Write Error script
 *
