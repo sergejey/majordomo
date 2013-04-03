@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Master Login Setup 
 *

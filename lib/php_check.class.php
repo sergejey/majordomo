@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * PHP Syntax check
 *

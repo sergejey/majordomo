@@ -1,4 +1,4 @@
-<?
+<?php
 
 $op='m';
 $object='MyObject';

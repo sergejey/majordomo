@@ -1,4 +1,4 @@
-<?
+<?php
 
 // get settings
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
