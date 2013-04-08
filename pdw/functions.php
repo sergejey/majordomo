@@ -1,4 +1,8 @@
 <?php
+
+ ini_set('date.timezone', 'Europe/Moscow');
+ date_default_timezone_set('Europe/Moscow');
+
 /*
 PDW File Browser
 Date: October 19, 2010
