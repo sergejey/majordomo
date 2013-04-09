@@ -7,13 +7,13 @@
 * @version 1.1
 */
 
+include_once("./config.php");
+include_once("./lib/loader.php");
 
- include_once("./config.php");
- include_once("./lib/loader.php");
-
- if ($error) {
-  echo $error;
-  DebMes("JAVASCRIPT Error: ".$error);
- }
+if ($error) 
+{
+   echo $error;
+   DebMes("JAVASCRIPT Error: ".$error);
+}
 
 ?>

@@ -1,46 +1,48 @@
 <?php
 
- chdir(dirname(__FILE__).'/../');
+chdir(dirname(__FILE__) . '/../');
 
- include_once("./config.php");
- include_once("./lib/loader.php");
- include_once("./lib/threads.php");
+include_once("./config.php");
+include_once("./lib/loader.php");
+include_once("./lib/threads.php");
 
- set_time_limit(0);
+set_time_limit(0);
 
- $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
- include_once("./load_settings.php");
+// connecting to database
+$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
 
- include_once(DIR_MODULES."control_modules/control_modules.class.php");
- $ctl=new control_modules();
+include_once("./load_settings.php");
+include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
- include_once(DIR_MODULES.'watchfolders/watchfolders.class.php');
- $watchfolders=new watchfolders();
+$ctl = new control_modules();
 
+include_once(DIR_MODULES . 'watchfolders/watchfolders.class.php');
+ 
+$watchfolders = new watchfolders();
 
- while(1) {
+while(1) 
+{
+   echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
-  echo date("H:i:s")." running ".basename(__FILE__)."\n";
+   if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60) 
+   {
+      //Log activity every hour
+      DebMes("Cycle running OK: " . basename(__FILE__));
+      $updated_time = time();
+   }
 
-  if (!$updated_time || (time()-$updated_time)>1*60*60) {
-   //Log activity every hour
-   DebMes("Cycle running OK: ".basename(__FILE__));
-   $updated_time=time();
-  }
+   // checking all watching folders
+   $watchfolders->checkAllFolders(); 
 
+   if (file_exists('./reboot')) 
+   {
+      $db->Disconnect();
+      exit;
+   }
 
-  $watchfolders->checkAllFolders(); // checking all watching folders
+   sleep(1);
+}
 
-  if (file_exists('./reboot')) {
-   $db->Disconnect();
-   exit;
-  }
-
-  sleep(1);
-
-
- }
-
- DebMes("Unexpected close of cycle: ".basename(__FILE__));
+DebMes("Unexpected close of cycle: " . basename(__FILE__));
 
 ?>
