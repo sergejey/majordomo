@@ -13,78 +13,81 @@
 *
 * @access public
 */
- function say($ph, $level=0) {
- global $commandLine;
- global $voicemode;
+ function say($ph, $level=0) 
+ {
+	global $commandLine;
+	global $voicemode;
 
- /*
-  if ($commandLine) {
-   echo utf2win($ph);
-  } else {
-   echo $ph;
-  }
-  */
+	 /*
+	  if ($commandLine) {
+	   echo utf2win($ph);
+	  } else {
+	   echo $ph;
+	  }
+	  */
 
-  $rec=array();
-  $rec['MESSAGE']=$ph;
-  $rec['ADDED']=date('Y-m-d H:i:s');
-  $rec['ROOM_ID']=0;
-  $rec['MEMBER_ID']=0;
-  if ($level>0) {
-   $rec['IMPORTANCE']=$level;
-  }
-  $rec['ID']=SQLInsert('shouts', $rec);
+	$rec = array();
+	$rec['MESSAGE']   = $ph;
+	$rec['ADDED']     = date('Y-m-d H:i:s');
+	$rec['ROOM_ID']   = 0;
+	$rec['MEMBER_ID'] = 0;
+ 
+	if ($level>0) $rec['IMPORTANCE']=$level;
+	
+	$rec['ID'] = SQLInsert('shouts', $rec);
 
-  if ($level>=(int)getGlobal('minMsgLevel')) { //$voicemode!='off' && 
+	if ($level >= (int)getGlobal('minMsgLevel'))
+	{ 
+		//$voicemode!='off' && 
 
-   $lang='en';
-   if (defined('SETTINGS_SITE_LANGUAGE')) {
-    $lang=SETTINGS_SITE_LANGUAGE;
-   }
-   if (defined('SETTINGS_VOICE_LANGUAGE')) {
-    $lang=SETTINGS_VOICE_LANGUAGE;
-   }
+	   $lang='en';
+	   if (defined('SETTINGS_SITE_LANGUAGE')) {
+		$lang=SETTINGS_SITE_LANGUAGE;
+	   }
+	   if (defined('SETTINGS_VOICE_LANGUAGE')) {
+		$lang=SETTINGS_VOICE_LANGUAGE;
+	   }
 
-   if (!defined('SETTINGS_TTS_GOOGLE') || SETTINGS_TTS_GOOGLE) {
-    $google_file=GoogleTTS($ph, $lang);
-   } else {
-    $google_file=false;
-   }
+	   if (!defined('SETTINGS_TTS_GOOGLE') || SETTINGS_TTS_GOOGLE) {
+		$google_file=GoogleTTS($ph, $lang);
+	   } else {
+		$google_file=false;
+	   }
 
-   if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL=='1') {
-    $passed=SQLSelectOne("SELECT (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED)) as PASSED FROM shouts WHERE ID!='".$rec['ID']."' ORDER BY ID DESC LIMIT 1");
-    if ($passed['PASSED']>20) { // play intro-sound only if more than 30 seconds passed from the last one
-     playSound('dingdong', 1, $level);
-    }
-   }
+	   if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL=='1') {
+	      $passed=SQLSelectOne("SELECT (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED)) as PASSED FROM shouts WHERE ID!='".$rec['ID']."' ORDER BY ID DESC LIMIT 1");
+	      if ($passed['PASSED']>20) { // play intro-sound only if more than 30 seconds passed from the last one
+		    playSound('dingdong', 1, $level);
+		  }
+	   }
 
-   if ($google_file) {
-    @touch($google_file);
-    playSound($google_file, 1, $level);
-   } else {
-    safe_exec('cscript '.DOC_ROOT.'/rc/sapi.js '.$ph, 1, $level);
-   }
-  }
+	   if ($google_file) {
+		@touch($google_file);
+			playSound($google_file, 1, $level);
+	   } else {
+		safe_exec('cscript '.DOC_ROOT.'/rc/sapi.js '.$ph, 1, $level);
+	   }
+	}
 
-  global $noPatternMode;
-  if (!$noPatternMode) {
-   include_once(DIR_MODULES.'patterns/patterns.class.php');
-   $pt=new patterns();
-   $pt->checkAllPatterns();
-  }
+	global $noPatternMode;
+	if (!$noPatternMode) {
+		include_once(DIR_MODULES.'patterns/patterns.class.php');
+		$pt=new patterns();
+		$pt->checkAllPatterns();
+	}
 
-  if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
-   include_once(ROOT.'lib/pushover/pushover.inc.php');
-   if (defined('SETTINGS_PUSHOVER_LEVEL')){
-    if($level>=SETTINGS_PUSHOVER_LEVEL) {
-      postToPushover($ph);
-    }
-   } elseif ($level>0) {
-    postToPushover($ph);
-   }
-  }
+	if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
+		include_once(ROOT.'lib/pushover/pushover.inc.php');
+		if (defined('SETTINGS_PUSHOVER_LEVEL')){
+			if($level>=SETTINGS_PUSHOVER_LEVEL) {
+				postToPushover($ph);
+			}
+		} elseif ($level>0) {
+			postToPushover($ph);
+		}
+	}
 
-  postToTwitter($ph);
+	postToTwitter($ph);
 
  }
 
