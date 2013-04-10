@@ -17,6 +17,7 @@ include_once(DIR_MODULES."application.class.php");
 
 $session=new session("prj");
 
+
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
 
