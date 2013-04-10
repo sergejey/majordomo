@@ -7,24 +7,33 @@
 * @version 1.1
 */
 
- include_once("./config.php");
- include_once("./lib/loader.php");
+include_once("./config.php");
+include_once("./lib/loader.php");
 
- startMeasure('TOTAL'); // start calculation of execution time
+// start calculation of execution time
+startMeasure('TOTAL'); 
 
- include_once(DIR_MODULES."application.class.php");
+include_once(DIR_MODULES."application.class.php");
 
- $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
- include_once("./load_settings.php");
+// connecting to database
+$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
 
- include_once(DIR_MODULES.'backup/backup.class.php');
- $b=new backup();
- $b->create_backup();
- echo "DONE";
+include_once("./load_settings.php");
 
- $db->Disconnect(); // closing database connection
+include_once(DIR_MODULES.'backup/backup.class.php');
 
- endMeasure('TOTAL'); // end calculation of execution time
- performanceReport(); // print performance report
+$b = new backup();
+$b->create_backup();
+
+echo "DONE";
+
+// closing database connection
+$db->Disconnect(); 
+
+// end calculation of execution time
+endMeasure('TOTAL'); 
+
+// print performance report
+performanceReport(); 
 
 ?>
