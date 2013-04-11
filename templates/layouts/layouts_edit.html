@@ -51,6 +51,22 @@
         </div>
 </div>
 
+<div class="control-group">
+        <label class="control-label"><#LANG_ICON#></label>
+        <div class="controls">
+                <input type="file" name="icon">
+        <p class="help-block">
+                [#if ICON!=""#]
+                <label class="checkbox">
+                <input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
+                </label>
+                <img src="/cms/layouts/[#ICON#]" border="0">
+                [#ICON#]<br>
+                [#endif#]
+        </p>
+        </div>
+</div>
+
 
 <div class="control-group">
         <label class="control-label"><#LANG_TYPE#></label>
