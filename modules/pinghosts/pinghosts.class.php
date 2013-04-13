@@ -224,19 +224,42 @@ function usual(&$out) {
     }
    }
 
-   if ($host['LINKED_OBJECT']!='' && $host['LINKED_PROPERTY']!='') {
-    setGlobal($host['LINKED_OBJECT'].'.'.$host['LINKED_PROPERTY'], $online);
-   }
-
-   $old_status=$host['STATUS'];
    if ($online) {
     $new_status=1;
    } else {
     $new_status=2;
    }
 
+   $old_status=$host['STATUS'];
+
+   if ($host['COUNTER_REQUIRED']) {
+    $old_status_expected=$host['STATUS_EXPECTED'];
+    $host['STATUS_EXPECTED']=$new_status;
+    if ($old_status_expected!=$host['STATUS_EXPECTED']) {
+     $host['COUNTER_CURRENT']=0;
+     $host['LOG']=date('Y-m-d H:i:s').' tries counter reset (status: '.$host['STATUS_EXPECTED'].')'."\n".$host['LOG'];
+    } elseif ($host['COUNTER_REQUIRED']) {
+     $host['COUNTER_CURRENT']++;
+     $host['LOG']=date('Y-m-d H:i:s').' tries counter increased to '.$host['COUNTER_CURRENT'].' (status: '.$host['STATUS_EXPECTED'].')'."\n".$host['LOG'];
+    }
+    if ($host['COUNTER_CURRENT']>=$host['COUNTER_REQUIRED']) {
+     $host['STATUS']=$host['STATUS_EXPECTED'];
+    } else {
+     $interval=min($online_interval, $offline_interval, 20);
+     $online_interval=$interval;
+     $offline_interval=$interval;
+    }
+   } else {
+    $host['STATUS']=$new_status;
+    $host['STATUS_EXPECTED']=$host['STATUS'];
+    $host['COUNTER_CURRENT']=0;
+   }
+
    $host['CHECK_LATEST']=date('Y-m-d H:i:s');
-   $host['STATUS']=$new_status;
+
+   if ($host['LINKED_OBJECT']!='' && $host['LINKED_PROPERTY']!='') {
+    setGlobal($host['LINKED_OBJECT'].'.'.$host['LINKED_PROPERTY'], $host['STATUS']);
+   }
 
    if ($host['STATUS']=='1') {
     $host['CHECK_NEXT']=date('Y-m-d H:i:s', time()+$online_interval);
@@ -244,28 +267,28 @@ function usual(&$out) {
     $host['CHECK_NEXT']=date('Y-m-d H:i:s', time()+$offline_interval);
    }
 
-   if ($old_status!=$new_status) {
-    if ($new_status==2) {
+   if ($old_status!=$host['STATUS']) {
+    if ($host['STATUS']==2) {
      $host['LOG']=date('Y-m-d H:i:s').' Host is offline'."\n".$host['LOG'];
-    } elseif ($new_status==1) {
+    } elseif ($host['STATUS']==1) {
      $host['LOG']=date('Y-m-d H:i:s').' Host is online'."\n".$host['LOG'];
     }
    }
 
    SQLUpdate('pinghosts', $host);
 
-   if ($old_status!=$new_status && $old_status!=0) {
+   if ($old_status!=$host['STATUS'] && $old_status!=0) {
     // do some status change actions
     $run_script_id=0;
     $run_code='';
-    if ($old_status==2 && $new_status==1) {
+    if ($old_status==2 && $host['STATUS']==1) {
      // got online
      if ($host['SCRIPT_ID_ONLINE']) {
       $run_script_id=$host['SCRIPT_ID_ONLINE'];
      } elseif ($host['CODE_ONLINE']) {
       $run_code=$host['CODE_ONLINE'];
      }
-    } elseif ($old_status==1 && $new_status==2) {
+    } elseif ($old_status==1 && $host['STATUS']==2) {
      // got offline
      if ($host['SCRIPT_ID_OFFLINE']) {
       $run_script_id=$host['SCRIPT_ID_OFFLINE'];
@@ -339,6 +362,9 @@ pinghosts - Pinghosts
  pinghosts: ONLINE_INTERVAL int(10) NOT NULL DEFAULT '0'
  pinghosts: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  pinghosts: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ pinghosts: COUNTER_CURRENT int(10) NOT NULL DEFAULT '0'
+ pinghosts: COUNTER_REQUIRED int(10) NOT NULL DEFAULT '0'
+ pinghosts: STATUS_EXPECTED int(3) NOT NULL DEFAULT '0'
  pinghosts: LOG text
 EOD;
   parent::dbInstall($data);
