@@ -815,6 +815,8 @@ $dictionary=array(
 'DEFAULT_USER'=>'пользователь по-умолчанию для системы',
 'IS_ADMIN'=>'администратор системы',
 
+'COUNTER_REQUIRED'=>'Количество попыток',
+'COUNTER_REQUIRED_COMMENT'=>'(0 для переключения с первого раза)',
 
 'TEST'=>'test'
 

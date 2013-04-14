@@ -825,6 +825,9 @@ $dictionary=array(
 'DEFAULT_USER'=>'default user for anonymous usage',
 'IS_ADMIN'=>'system administrator',
 
+'COUNTER_REQUIRED'=>'Tries before switching status',
+'COUNTER_REQUIRED_COMMENT'=>'(0 to switch from the first success/fail)',
+
 'TEST'=>'test'
 
 

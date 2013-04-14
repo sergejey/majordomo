@@ -84,10 +84,7 @@ Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
    Define('EXT_ACCESS_PASSWORD', 'password');
 */
 
-// Time Zone. See for supported time zones: http://www.php.net/manual/en/timezones.php
-Define('TIME_ZONE', 'Europe/Moscow'); 
-
-// (Optional)
+/// (Optional)
 //Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  
 
 ?>

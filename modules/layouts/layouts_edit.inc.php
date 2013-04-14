@@ -33,6 +33,24 @@
    global $url;
    $rec['URL']=$url;
 
+   global $delete_icon;
+   if ($delete_icon) {
+    if ($rec['ICON']!='') {
+     @unlink(ROOT.'cms/layouts/'.$rec['ICON']);
+    }
+    $rec['ICON']="";
+   }
+
+   global $icon;
+   global $icon_name;
+   if ($icon!='') {
+    if ($rec['ICON']!='') {
+     @unlink(ROOT.'cms/layouts/'.$rec['ICON']);
+    }
+    $rec['ICON']=$rec['ID'].'_'.$icon_name;
+    copy($icon, ROOT.'cms/layouts/'.$rec['ICON']);
+   }
+
    global $refresh;
    $rec['REFRESH']=(int)$refresh;
 

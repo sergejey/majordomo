@@ -235,6 +235,7 @@ layouts - Layouts
  layouts: TYPE varchar(255) NOT NULL DEFAULT ''
  layouts: CODE text
  layouts: APP varchar(255) NOT NULL DEFAULT ''
+ layouts: ICON varchar(50) NOT NULL DEFAULT ''
  layouts: URL char(255) NOT NULL DEFAULT ''
  layouts: REFRESH int(10) NOT NULL DEFAULT '0'
  layouts: DETAILS text

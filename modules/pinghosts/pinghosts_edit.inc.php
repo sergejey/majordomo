@@ -33,6 +33,9 @@
    $rec['SEARCH_WORD']=trim($search_word);
   }
 
+  global $counter_required;
+  $rec['COUNTER_REQUIRED']=(int)$counter_required;
+
   global $linked_object;
   global $linked_property;
   $rec['LINKED_OBJECT']=trim($linked_object);
