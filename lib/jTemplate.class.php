@@ -38,71 +38,76 @@ class jTemplate {
 * @param array $data input data
 * @param object $owner parser owner
 */
- function jTemplate($template, &$data, &$owner) {
+ function jTemplate($template, &$data, &$owner) 
+ {
+   // set current directory for template includes
+   $root = strpos($template, "/") !== FALSE ? preg_replace("/\/[^\/]*?$/", "", $template) . "/" : "";
+   
+   $this->data     = &$data;
+   $this->template = $template;
 
-  // set current directory for template includes
-  if (strpos($template, "/") !== FALSE) {
-   $root=preg_replace("/\/[^\/]*?$/","",$template)."/";
-  } else {
-   $root="";
-  }
-
-  $this->data=&$data;
-  $this->template=$template;
-
-  if (Is_Object($owner)) {
-   $this->owner=&$owner;
-  }
-
-  if (defined('ALTERNATIVE_TEMPLATES')) {
-   $alt_path=str_replace('templates/', ALTERNATIVE_TEMPLATES.'/', $template);
-   if (file_exists($alt_path)) {
-    $template=$alt_path;
+   if (Is_Object($owner)) 
+   {
+      $this->owner = &$owner;
    }
-  }
 
-  if (is_file($template)) {
-   $template_file=$this->loadfile($template);
-  } else {
-   $template_file=$template;
-   $template='inner_code';
-  }
-
-
-
-  $res="";
-  if (Defined("DEBUG_MODE")) {
-   // creating layer for debugging purpose
-   $res.="<!-- begin of file $template -->";
-  }
-
-
-  if ($this->owner->ajax) {
-   $this->ajax=1;
-   $this->div_id=$this->owner->name;
-   if ($this->owner->owner->name) {
-    $this->div_id=$this->div_id.'_'.$this->owner->owner->name;
+   if (defined('ALTERNATIVE_TEMPLATES')) 
+   {
+      $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
+   
+      if (file_exists($alt_path)) 
+      {
+         $template = $alt_path;
+      }
    }
-   $res.="<div id=\"".$this->div_id."\"><!-- begin_data [".$this->div_id."] -->"; // dyn
-  }
 
-  $res.=$this->parse($template_file, $this->data, $root);
-  if (strpos($res, '{#')) {
-   //second pass
-   $res=str_replace('{#', '[#', $res);
-   $res=str_replace('#}', '#]', $res);
-   $res=$this->parse($res, $this->data, $root);
-  }
+   if (is_file($template)) 
+   {
+      $template_file = $this->loadfile($template);
+   } 
+   else 
+   {
+      $template_file = $template;
+      $template      = 'inner_code';
+   }
 
-  if ($this->ajax) {
-   $res.="<!-- end_data [".$this->div_id."] --></div>"; // dyn
-  }
+   $res = Defined("DEBUG_MODE") ? "<!-- begin of file $template -->" : "";
 
-  if (Defined("DEBUG_MODE")) {
-   $res.="<!-- end of file $template -->";
-  }
-  $this->result=$res;
- }
+   if (isset($this->owner->ajax)) 
+   {
+      $this->ajax = 1;
+      $this->div_id = $this->owner->name;
+   
+      if ($this->owner->owner->name) 
+      {
+         $this->div_id = $this->div_id . '_' . $this->owner->owner->name;
+      }
+      $res .= "<div id=\"" . $this->div_id . "\"><!-- begin_data [" . $this->div_id . "] -->"; // dyn
+   }
+
+   $res .= $this->parse($template_file, $this->data, $root);
+   
+   if (strpos($res, '{#')) 
+   {
+      //second pass
+      $res = str_replace('{#', '[#', $res);
+      $res = str_replace('#}', '#]', $res);
+      $res = $this->parse($res, $this->data, $root);
+   }
+
+   if (isset($this->ajax)) 
+   {
+      // dyn
+      $res .= "<!-- end_data [" . $this->div_id . "] --></div>"; 
+   }
+
+   if (Defined("DEBUG_MODE")) 
+   {
+      $res .= "<!-- end of file $template -->";
+   }
+  
+   $this->result = $res;
+}
 
 
 /**
@@ -117,67 +122,74 @@ class jTemplate {
 * @param string $dir current template directory (for correct [#inc ...#] tags parsing)
 * @return string parsed template strings
 */
- function parse($res, &$hash, $dir) {
+ function parse($res, &$hash, $dir) 
+ {
+   // $res=$line;
 
-// $res=$line;
+   // COMMENTS
+   if (Is_Integer(strpos($res, '<!--#'))) 
+   {
+      $res = preg_replace("/<!--#.+?#-->/is", "", $res);
+   }
 
- // COMMENTS
- if (Is_Integer(strpos($res, '<!--#'))) {
-  $res=preg_replace("/<!--#.+?#-->/is", "", $res);
- }
+   //NOTE: compiler should be perfect for this template engine (тест)
 
- //NOTE: compiler should be perfect for this template engine (тест)
+   // METHODS
+   if (Is_Integer(strpos($res, '[#method '))) 
+   {
+      $this->parseMethods($res, $hash);
+   }
 
- // METHODS
- if (Is_Integer(strpos($res, '[#method '))) {
-  $this->parseMethods($res, $hash);
- }
+   // GLOBALS
+   $this->parseGlobals($res, $hash);
 
- // GLOBALS
- $this->parseGlobals($res, $hash);
+   // BLOCKS
+   if (Is_Integer(strpos($res, '[#block '))) 
+   {
+      $this->parseBlocks($res, $hash, $dir);
+   }
 
- // BLOCKS
- if (Is_Integer(strpos($res, '[#block '))) {
-  $this->parseBlocks($res, $hash, $dir);
- }
+   // DYN LINKS
+   if (isset($this->ajax) && (Is_Integer(strpos($res, 'dnlnk') || Is_Integer(strpos($res, 'dnfrm'))))) 
+   {
+      $this->parseDynLinks($res);
+   }
 
- // DYN LINKS
- if ($this->ajax && (Is_Integer(strpos($res, 'dnlnk') || Is_Integer(strpos($res, 'dnfrm'))))) {
-  $this->parseDynLinks($res);
- }
+   // ARRAYS
+   if (Is_Integer(strpos($res, '[#begin '))) 
+   {
+      $this->parseArrays($res, $hash, $dir);
+   }
 
- // ARRAYS
- if (Is_Integer(strpos($res, '[#begin '))) {
-  $this->parseArrays($res, $hash, $dir);
- }
+   // HASHES
+   $this->parseHashes($res, $hash);
 
- // HASHES
- $this->parseHashes($res, $hash);
+   // CONDITIONS
+   if (Is_Integer(strpos($res, '[#if '))) 
+   {
+      $this->parseIf($res, $hash);
+   }
 
- // CONDITIONS
- if (Is_Integer(strpos($res, '[#if '))) {
-  $this->parseIf($res, $hash);
- }
+   // MODULES
+   if (Is_Integer(strpos($res, '[#module '))) 
+   {
+      $this->parseModules($res, $hash, $dir);
+   }
 
- // MODULES
- if (Is_Integer(strpos($res, '[#module '))) {
-  $this->parseModules($res, $hash, $dir);
- }
+   // INCLUDE FILES
+   if (Is_Integer(strpos($res, '[#inc '))) 
+   {
+      $this->parseIncludes($res, $hash, $dir);
+   }
 
- // INCLUDE FILES
- if (Is_Integer(strpos($res, '[#inc '))) {
-  $this->parseIncludes($res, $hash, $dir);
- }
+   // VARIABLES
+   if (Is_Integer(strpos($res, '[#'))) 
+   {
+      $this->parseVariables($res, $hash);
+   }
 
- // VARIABLES
- if (Is_Integer(strpos($res, '[#'))) {
-  $this->parseVariables($res, $hash);
- }
-
-
- return $res;
-
- }
+   return $res;
+}
 
 /**
 * Dynlink parsing
@@ -296,20 +308,25 @@ class jTemplate {
 * @param string $res template strings
 * @param array $hash data params
 */
- function parseGlobals(&$res, &$hash) {
- // <#VARIABLE#> - global variables
- if (preg_match_all('/[<#]#(\w+?)#[>#]/', $res, $matches, PREG_PATTERN_ORDER)) {
-  $count_matches_1=count($matches[1]);
-  for($i=0;$i<$count_matches_1;$i++) {
-   if (defined($matches[1][$i])) {
-    $res=str_replace($matches[0][$i], constant($matches[1][$i]), $res);
-   } else {
-    $res=str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
+ function parseGlobals(&$res, &$hash) 
+ {
+   // <#VARIABLE#> - global variables
+   if (preg_match_all('/[<#]#(\w+?)#[>#]/', $res, $matches, PREG_PATTERN_ORDER)) 
+   {
+      $count_matches_1 = count($matches[1]);
+      for($i = 0; $i < $count_matches_1; $i++) 
+      {
+         if (defined($matches[1][$i])) 
+         {
+            $res = str_replace($matches[0][$i], constant($matches[1][$i]), $res);
+         }
+         else 
+         {
+            $res = str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
+         }
+      }
    }
-  }
- }
-
- }
+}
 
 /**
 * [#beging ...#]...[#end ...#] tag parsing
@@ -449,11 +466,12 @@ class jTemplate {
     $body=substr($bdy, ($tmp2+2), strlen($bdy));
 
       $true_part="";
-      $false_part="";
+      
       $temp=array();
       $temp=explode("[#else#]", $body);
       $true_part=$temp[0];
-      $false_part=$temp[1];
+      $false_part = count($temp) > 1 ? $temp[1] : "";
+      
       $condition=preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
       $condition=preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
       $condition=preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);

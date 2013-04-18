@@ -336,10 +336,12 @@
 * @global object mysql database object
 * @return mixed execution result (0 - failed)
 */
- function SQLExec($query) {
-  if (($query{0}=="#") || ($query=="")) return;
-  global $db;
-  return $db->Exec($query);
+ function SQLExec($query) 
+ {
+   if ( ($query{0} == "#") || ($query == "") ) return;
+  
+   global $db;
+   return $db->Exec($query);
  }
 // --------------------------------------------------------------------   
 /**
