@@ -106,16 +106,21 @@ Define("EQ_DELIMITER", "qz_");
 * @param array $data params to save
 * @access public
 */
-  function saveParams($data=1) {
-   if (is_array($data)) {
-    if (IsSet($this->instance)) {
-     $data["instance"]=$this->instance;
-    }
-//    echo $this->name." ".$this->instance."<br>";
-    $res=$this->createParamsString($data, $this->name).PARAMS_DELIMITER.$this->saveParentParams();
-    return $res;
+ function saveParams($data = 1) 
+ {
+   $res = null;
+   
+   if (is_array($data)) 
+   {
+      if (IsSet($this->instance)) 
+      {
+         $data["instance"] = $this->instance;
+      }
+      //    echo $this->name." ".$this->instance."<br>";
+      $res = $this->createParamsString($data, $this->name) . PARAMS_DELIMITER . $this->saveParentParams();
    }
-  }
+   return $res;
+}
 
 // --------------------------------------------------------------------
 /**
@@ -433,13 +438,17 @@ Define("EQ_DELIMITER", "qz_");
      $definition.=", PRIMARY KEY(".$field.")";
      //$definition.=", KEY(".$field.")";
     }
-    $sql="CREATE TABLE IF NOT EXISTS $table ($definition);";
-    $table_defined[$table]=1;
+    
+    $sql = "CREATE TABLE IF NOT EXISTS $table ($definition);";
+    $table_defined[$table] = 1;
     SQLExec($sql);
+    
     $result = SQLExec("SHOW FIELDS FROM $table");
-    while($row = mysql_fetch_array($result)) {
-     $tbl_fields[$table][$row[Field]]=1;
-    }
+    
+   while($row = mysql_fetch_array($result)) 
+   {
+      $tbl_fields[$table][$row[Field]]=1;
+   }
 
    } elseif ((strtolower($field)=='key') || (strtolower($field)=='index')  || (strtolower($field)=='fulltext')) {
 
@@ -619,79 +628,110 @@ Define("EQ_DELIMITER", "qz_");
 *
 * @access private
 */
- function parseLinks($result) {
+function parseLinks($result) 
+{
    global $PHP_SELF;
    global $md;
 
-   if (!IsSet($_SERVER['PHP_SELF'])) {
-    $_SERVER['PHP_SELF']=$PHP_SELF;
+   $server = !isset($_SERVER['PHP_SELF']) ? $PHP_SELF : $_SERVER['PHP_SELF'];
+   
+   if ($md != $this->name) 
+   {
+      $param_str = $this->saveParams();
+   } 
+   elseif (IsSet($this->owner)) 
+   {
+      $param_str = $this->owner->saveParams();
    }
-
-   if ($md!=$this->name) {
-    $param_str=$this->saveParams();
-   } elseif (IsSet($this->owner)) {
-    $param_str=$this->owner->saveParams();
+   else
+   {
+      $param_str = null;
    }
 
    // a href links like <a href="?param=value">
-   if ((preg_match_all('/="\?(.*?)"/is', $result, $matches, PREG_PATTERN_ORDER))) {
-    for($i=0;$i<count($matches[1]);$i++) {
-     $link=$matches[1][$i];
-     if (!Is_Integer(strpos($link, '<!-- modified -->'))) { // skip custom links
-      if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1)) {
-       $other=$matches1[2];
-       $res_str=$this->codeParams($matches1[1]);
-       $result=str_replace($matches[0][$i], '="'.$_SERVER['PHP_SELF'].'?pd='.$res_str.$other.'"', $result);      
-      } elseif (strpos($link, "md=")!==0) {
-       $result=str_replace($matches[0][$i], '="'.$_SERVER['PHP_SELF'].'?pd='.$param_str.'&md='.$this->name.'&inst='.$this->instance.'&'.$link.'"', $result); // links
-      } else {
-       $result=str_replace('action="?', 'action="'.$_SERVER['PHP_SELF'].'"', $result); // forms
+   if ((preg_match_all('/="\?(.*?)"/is', $result, $matches, PREG_PATTERN_ORDER))) 
+   {
+      for($i = 0; $i < count($matches[1]); $i++) 
+      {
+         $link = $matches[1][$i];
+     
+         if (!Is_Integer(strpos($link, '<!-- modified -->'))) 
+         { // skip custom links
+            if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1)) 
+            {
+               $other   = $matches1[2];
+               $res_str = $this->codeParams($matches1[1]);
+               $result  = str_replace($matches[0][$i], '="' . $server . '?pd=' . $res_str . $other . '"', $result);      
+            } 
+            elseif (strpos($link, "md=") !==0) 
+            {
+               // links
+               $result = str_replace($matches[0][$i], '="' . $server . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"', $result); 
+            }
+            else 
+            {
+               // forms
+               $result = str_replace('action="?', 'action="' . $server . '"', $result); 
+            }
+         }
+         else 
+         {
+            // remove modified param
+            $link   = str_replace('<!-- modified -->', '', $link);      
+            $result = str_replace($matches[0][$i], '="' . $link . '"', $result);      
+         }
       }
-     } else {
-      // remove modified param
-      $link=str_replace('<!-- modified -->', '', $link);      
-      $result=str_replace($matches[0][$i], '="'.$link.'"', $result);      
-     }
-    }
    }
 
    // form hidden params
-   if (preg_match_all('/\<input([^\<\>]+?)(value="\((.*?)\)")([^\<\>]*?)\>/is', $result, $matches, PREG_PATTERN_ORDER)) {
-      for($i=0;$i<count($matches[3]);$i++) {
-         if (strpos($matches[1][$i], 'type="hidden"') !== false || strpos($matches[4][$i], 'type="hidden"') !== false) {
-            $res_str=$this->codeParams($matches[3][$i]);
-            $result=str_replace($matches[2][$i], 'value="'.$res_str.'"', $result);
+   if (preg_match_all('/\<input([^\<\>]+?)(value="\((.*?)\)")([^\<\>]*?)\>/is', $result, $matches, PREG_PATTERN_ORDER)) 
+   {
+      for($i = 0; $i < count($matches[3]); $i++) 
+      {
+         if (strpos($matches[1][$i], 'type="hidden"') !== false || strpos($matches[4][$i], 'type="hidden"') !== false)
+         {
+            $res_str = $this->codeParams($matches[3][$i]);
+            $result  = str_replace($matches[2][$i], 'value="' . $res_str . '"', $result);
          }
       }
    }
 
    // form hidden params
    /*
-   if (preg_match_all('/value="\((.*?)\)"/is', $result, $matches, PREG_PATTERN_ORDER)) {
-    for($i=0;$i<count($matches[1]);$i++) {   
-      $res_str=$this->codeParams($matches[1][$i]);
-      $result=str_replace($matches[0][$i], 'value="'.$res_str.'"', $result);      
-    }
+   if (preg_match_all('/value="\((.*?)\)"/is', $result, $matches, PREG_PATTERN_ORDER)) 
+   {
+      for($i = 0; $i < count($matches[1]); $i++) 
+      {   
+         $res_str = $this->codeParams($matches[1][$i]);
+         $result  = str_replace($matches[0][$i], 'value="' . $res_str . '"', $result);      
+      }
    }
    */
 
    // [#link ...#]
-   if (preg_match_all('/\[#link (.*?)#\]/is', $result, $matches, PREG_PATTERN_ORDER)) {
-    for($i=0;$i<count($matches[1]);$i++) {
-     $link=$matches[1][$i];
-     if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1)) {
-      $other=$matches1[2];
-      $res_str=$this->codeParams($matches1[1]);
-      $result=str_replace($matches[0][$i], $_SERVER['PHP_SELF'].'?pd='.$res_str.$other, $result);      
-     } elseif (strpos($link, "md=")!==0) {
-      $result=str_replace($matches[0][$i], $_SERVER['PHP_SELF'].'?pd='.$param_str.'&md='.$this->name.'&inst='.$this->instance.'&'.$link, $result); // links
-     }
-    }
+   if (preg_match_all('/\[#link (.*?)#\]/is', $result, $matches, PREG_PATTERN_ORDER)) 
+   {
+      for($i = 0; $i < count($matches[1]); $i++) 
+      {
+         $link = $matches[1][$i];
+         if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1)) 
+         {
+            $other   = $matches1[2];
+            $res_str = $this->codeParams($matches1[1]);
+            $result  = str_replace($matches[0][$i], $server . '?pd=' . $res_str . $other, $result);      
+         } 
+         elseif (strpos($link, "md=") !== 0) 
+         {
+            // links
+            $result = str_replace($matches[0][$i], $server . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&'. $link, $result); 
+         }
+      }
    }
 
-
    // form hidden variables (exclude </form><!-- modified -->)
-   $result=preg_replace("/<\/form>(?!<!-- modified -->)/is", "<input type=\"hidden\" name=\"pd\" value=\"$param_str\">\n<input type=\"hidden\" name=\"md\" value=\"".$this->name."\">\n<input type=\"hidden\" name=\"inst\" value=\"".$this->instance."\">\n</FORM><!-- modified -->", $result); // forms
+   // forms
+   $result = preg_replace("/<\/form>(?!<!-- modified -->)/is", "<input type=\"hidden\" name=\"pd\" value=\"$param_str\">\n<input type=\"hidden\" name=\"md\" value=\"" . $this->name . "\">\n<input type=\"hidden\" name=\"inst\" value=\"" . $this->instance . "\">\n</FORM><!-- modified -->", $result); 
+   
    return $result;
 
  }

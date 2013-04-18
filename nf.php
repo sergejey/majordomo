@@ -49,7 +49,7 @@ $requests = array(
 
 foreach($requests as $key=>$value) 
 {
-   if (!$found && preg_match($key, $_SERVER["REQUEST_URI"], $matches)) 
+   if (!isset($found) && preg_match($key, $_SERVER["REQUEST_URI"], $matches)) 
    {
       $link = $value;
       for($i = 1; $i < count($matches); $i++) 
