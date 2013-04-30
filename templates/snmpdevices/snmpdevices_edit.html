@@ -1,0 +1,165 @@
+
+<!-- Table 'snmpdevices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+[#if OK#]
+<div class="alert alert-success">Data has been saved</div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error">Please fill out all required fields</div>
+[#endif ERR#]
+<fieldset>
+[#if ID=""#]
+<legend>New Record</legend>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<div class="control-group">
+ <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
+ TITLE:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input"></div>
+</div>
+<!-- HOST (varchar) -->
+<div class="control-group">
+ <label class="control-label"[#if ERR_HOST#] style="color:red;font-weight:bold"[#endif#]>
+ IP/HOST:
+ </label>
+ <div class="controls"><input type="text" name="host" value="[#HOST#]" class="input"></div>
+</div>
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_READ_COMMUNITY#] style="color:red;font-weight:bold"[#endif#]>
+ Read Community:
+ </label>
+ <div class="controls"><input type="text" name="read_community" value="[#READ_COMMUNITY#]" class="input"></div>
+</div>
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_WRITE_COMMUNITY#] style="color:red;font-weight:bold"[#endif#]>
+ Write Community:
+ </label>
+ <div class="controls"><input type="text" name="write_community" value="[#WRITE_COMMUNITY#]" class="input"></div>
+</div>
+
+[#if ID!=""#]
+
+<!--#
+<div class="control-group">
+<div class="controls">
+[#if MIB_FILE!=""#]
+[#MIB_FILE#] <a href="<#ROOTHTML#>./cms/snmpdevices/[#MIB_FILE#]">Download</a>
+<input type="checkbox" name="delete_mib_file" value="1"> delete file
+[#endif MIB_FILE#]
+Upload oid-lib file: <input type="file" name="mib_file">
+</div>
+</div>
+#-->
+
+<!--#
+<div class="control-group">
+ <div class="controls">
+ <a href="?data_source=<#DATA_SOURCE#>" class="btn span2">Scan</a>
+ </div>
+</div>
+#-->
+
+<div class="control-group">
+
+ <label class="control-label"[#if ERR_CODE#] style="color:red;font-weight:bold"[#endif#]>
+ Properties
+ </label>
+
+
+ <div class="controls">
+ <table width="100%" border="0">
+  <tr>
+   <td>OID</td>
+   <td>Type</td>
+   <td>Title</td>
+   <td>Value</td>
+   <td>Check interval, seconds</td>
+   <td>Linked Object</td>
+   <td>Linked Property</td>
+   <td>Updated</td>
+  </tr>
+
+  [#begin PROPERTIES#]
+  <tr>
+   <td valign="top"><input type="text" name="oid_[#ID#]" class="span2" value="[#OID#]"></td>
+   <td valign="top"><select name="type_[#ID#]" class="span2">
+    <option value="int"[#if TYPE="int"#] selected[#endif#]>Integer
+    <option value="uint"[#if TYPE="uint"#] selected[#endif#]>Integer (unsigned)
+    <option value="string"[#if TYPE="string"#] selected[#endif#]>String
+    <option value="counter"[#if TYPE="counter"#] selected[#endif#]>Counter
+    <option value="oid"[#if TYPE="oid"#] selected[#endif#]>OID
+    <option value="ip"[#if TYPE="ip"#] selected[#endif#]>IP
+   </select></td>
+   <td valign="top"><input type="text" name="ptitle_[#ID#]" class="span2" value="[#TITLE#]"></td>
+   <td valign="top"><input type="text" name="pvalue_[#ID#]" class="span1" value="[#VALUE#]"></td>
+   <td valign="top"><input type="text" name="pinterval_[#ID#]" class="span1" value="[#ONLINE_INTERVAL#]"></td>
+   <td valign="top"><input type="text" name="linked_object_[#ID#]" class="span2" value="[#LINKED_OBJECT#]"></td>
+   <td valign="top"><input type="text" name="linked_property_[#ID#]" class="span2" value="[#LINKED_PROPERTY#]"></td>
+   <td valign="top">[#UPDATED#]</td>
+  </tr>
+  [#end PROPERTIES#]
+
+  <tr>
+   <td valign="top"><input type="text" name="oid_new" class="span2" placeholder="Add new"></td>
+   <td valign="top"><select name="type_new" class="span2">
+    <option value="int">Integer
+    <option value="uint">Integer (unsigned)
+    <option value="string">String
+    <option value="counter">Counter
+    <option value="oid">OID
+    <option value="ip">IP
+   </select></td>
+   <td valign="top"><input type="text" name="ptitle_new" class="span2"></td>
+   <td valign="top"><input type="text" name="pvalue_new" class="span1"></td>
+   <td valign="top"><input type="text" name="pinterval_new" class="span1"></td>
+   <td valign="top"><input type="text" name="linked_object_new" class="span2"></td>
+   <td valign="top"><input type="text" name="linked_property_new" class="span2"></td>
+   <td valign="top">&nbsp;</td>
+  </tr>
+ </table>
+ </div>
+</div>
+[#endif ID#]
+
+<!--#
+<div class="control-group">
+ <label class="control-label"[#if ERR_SCRIPT_ID#] style="color:red;font-weight:bold"[#endif#]>
+ SCRIPT_ID:
+ </label>
+<div class="controls">
+ <select name="script_id" class="input">
+  <option value="">select
+  [#begin SCRIPT_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+  [#end SCRIPT_ID_OPTIONS#]
+ </select>
+</div>
+</div>
+<div class="control-group">
+ <label class="control-label"[#if ERR_CODE#] style="color:red;font-weight:bold"[#endif#]>
+ CODE
+ :
+ </label>
+ <div class="controls">
+ <textarea name="code" rows=12 cols=100 class="input span6">[#CODE#]</textarea>
+ </div>
+</div>
+#-->
+<div class="form-actions">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary">Submit</button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary">Add</button>
+ [#endif ID#]
+ <a href="?data_source=<#DATA_SOURCE#>" class="btn">Cancel</a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+</div>
+</fieldset>
+</form>

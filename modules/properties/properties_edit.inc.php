@@ -44,6 +44,13 @@
    if ($ok) {
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
+     if (!$rec['KEEP_HISTORY']) {
+      $pvalues=SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='".$rec['ID']."'");
+      $total=count($pvalues);
+      for($i=0;$i<$total;$i++) {
+       SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalues[$i]['ID']."'");
+      }
+     }
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record

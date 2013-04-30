@@ -512,6 +512,18 @@ curl_close($ch);
    }
   }
 
+  if (file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
+   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($snmpdevices);
+   if ($total) {
+    include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
+    $snmp=new snmpdevices();
+    for($i=0;$i<$total;$i++) {
+     $snmp->setProperty($snmpdevices[$i]['ID'], $value);
+    }
+   }
+  }
+
 
   }
 

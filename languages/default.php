@@ -94,6 +94,7 @@ $dictionary=array(
 'MODULE_PATTERNS'=>'Patterns',
 'MODULE_ONEWIRE'=>'1-Wire',
 'MODULE_SCENES'=>'Scenes',
+'MODULE_SNMP'=>'SNMP',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 

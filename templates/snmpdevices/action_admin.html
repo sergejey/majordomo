@@ -1,0 +1,37 @@
+
+ <!-- action usual -->
+ [#if DATA_SOURCE="snmpdevices" || DATA_SOURCE=""#]
+ <!-- table snmpdevices search -->
+ [#if VIEW_MODE="search_snmpdevices" || VIEW_MODE=""#]
+  [#inc snmpdevices_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table snmpdevices search -->
+ <!-- table snmpdevices edit -->
+ [#if VIEW_MODE="edit_snmpdevices"#]
+   [#inc snmpdevices_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table snmpdevices edit -->
+ <!-- table snmpdevices view --> 
+ [#if VIEW_MODE="view_snmpdevices"#]
+   [#inc snmpdevices_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table snmpdevices view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="snmpproperties"#]
+ <!-- table snmpproperties search -->
+ [#if VIEW_MODE="search_snmpproperties" || VIEW_MODE=""#]
+  [#inc snmpproperties_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table snmpproperties search -->
+ <!-- table snmpproperties edit -->
+ [#if VIEW_MODE="edit_snmpproperties"#]
+   [#inc snmpproperties_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table snmpproperties edit -->
+ <!-- table snmpproperties view --> 
+ [#if VIEW_MODE="view_snmpproperties"#]
+   [#inc snmpproperties_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table snmpproperties view -->
+ [#endif DATA_SOURCE#]

@@ -82,6 +82,7 @@ $dictionary=array(
 'MODULE_PATTERNS'=>'Шаблоны поведения',
 'MODULE_ONEWIRE'=>'1-Wire',
 'MODULE_SCENES'=>'Сцены',
+'MODULE_SNMP'=>'SNMP',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
