@@ -129,6 +129,21 @@ function run() {
 *
 * @access public
 */
+ function readDevice($id) {
+  $props=SQLSelect("SELECT ID FROM snmpproperties WHERE DEVICE_ID='".$id."' ORDER BY UPDATED DESC");  
+  $total=count($props);
+  for($i=0;$i<$total;$i++) {
+   $this->readProperty($props[$i]['ID']);
+  }
+ }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
  function readAll($force=0) {
 
   if ($force) {

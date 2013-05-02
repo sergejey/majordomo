@@ -1,8 +1,10 @@
 
 <!-- table snmpdevices search -->
 <p>
-<a href="?view_mode=edit_snmpdevices" class="btn"><i class="icon-plus"></i> Add new device</a>
-<a href="?view_mode=update_all" class="btn">Update all</a>
+<a href="?view_mode=edit_snmpdevices" class="btn"><i class="icon-plus"></i> <#LANG_ADD_NEW_HOST#></a>
+[#if RESULT#]
+<a href="?view_mode=update_all" class="btn"><#LANG_REFRESH_ALL#></a>
+[#endif RESULT#]
 </p>
 <table width=100% border=0><tr>
 <td valign=top>
@@ -14,9 +16,7 @@
 <thead>
 <tr>
  <th>
- <a href="?sortby_snmpdevices=TITLE&data_source=<#DATA_SOURCE#>&save_qry=1">TITLE</a><nobr>
- [#if SORTBY="TITLE"#](+)[#endif#]
- [#if SORTBY="TITLE DESC"#](-)[#endif#]</nobr>
+ <#LANG_TITLE#>
  </th>
 <td>&nbsp;</td>
 </tr>
@@ -33,8 +33,8 @@
  <td width="1%" nowrap>
   <div style="width:120px">
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_snmpdevices&id=[#ID#]" class="btn btn-small" title="Edit"><i class="icon-pencil"></i></a>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_snmpdevices&id=[#ID#]" onClick="return confirm('Are you sure?')" class="btn btn-small" title="Delete"><i class="icon-remove"></i></a>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_snmpdevices&id=[#ID#]" class="btn btn-small" title="<#LANG_EDIT#>"><i class="icon-pencil"></i></a>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_snmpdevices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-small" title="<#LANG_DELETE#>"><i class="icon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>
