@@ -46,22 +46,20 @@
 
 [#else ID#]
 <div class="control-group">
-        <label class="control-label">ID</label>
-        <div class="controls">
-                <input type="text" value="[#ID#]" disabled>
+        <label class="control-label">ID:</label>
+        <div class="controls form-inline">
+                <input type="text" value="[#ID#]" disabled class="span1">
 
 [#if TYPE="button"#]
 Action URL:
 <a href="/menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank>Run</a>
 [#endif#]
-
-
         </div>
 </div>
 
 [#endif ID#]
 <div class="control-group">
-        <label class="control-label"><#LANG_PARENT_MENU_ITEM#></label>
+        <label class="control-label"><#LANG_PARENT_MENU_ITEM#>:</label>
         <div class="controls">
                 <select name="parent_id">
                 <option value="0">ROOT
@@ -75,7 +73,7 @@ Action URL:
 <!-- TITLE (varchar) -->
 
 <div class="control-group">
-        <label class="control-label"><#LANG_TITLE#> (*)</label>
+        <label class="control-label"><#LANG_TITLE#> (*):</label>
         <div class="controls">
                 <input type="text" name="title" value="[#TITLE#]" size="50" required="true">
         </div>
@@ -84,7 +82,7 @@ Action URL:
 
 
 <div class="control-group">
-        <label class="control-label"><#LANG_PRIORITY#></label>
+        <label class="control-label"><#LANG_PRIORITY#>:</label>
         <div class="controls">
                 <input type="text" name="priority" value="[#PRIORITY#]" size="5">
         </div>
@@ -93,7 +91,7 @@ Action URL:
 [#if EXT_ID=="" || EXT_ID="0"#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_TYPE#></label>
+        <label class="control-label"><#LANG_TYPE#>:</label>
         <div class="controls">
                 <select name="type">
                         <option value="">select
@@ -118,7 +116,7 @@ Action URL:
 
 
 <div class="control-group">
-        <label class="control-label"><#LANG_ICON#></label>
+        <label class="control-label"><#LANG_ICON#>:</label>
         <div class="controls">
                 <input type="file" name="icon">
         <p class="help-block">
@@ -136,21 +134,21 @@ Action URL:
 [#if TYPE=="plusminus" || TYPE=="sliderbox"#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_MIN_VALUE#></label>
+        <label class="control-label"><#LANG_MIN_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="min_value" value="[#MIN_VALUE#]" size="20">
         </div>
 </div>
 
 <div class="control-group">
-        <label class="control-label"><#LANG_MAX_VALUE#></label>
+        <label class="control-label"><#LANG_MAX_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="max_value" value="[#MAX_VALUE#]" size="20">
         </div>
 </div>
 
 <div class="control-group">
-        <label class="control-label"><#LANG_STEP_VALUE#></label>
+        <label class="control-label"><#LANG_STEP_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="step_value" value="[#STEP_VALUE#]" size="20">
         </div>
@@ -161,7 +159,7 @@ Action URL:
 [#if TYPE=="selectbox" || TYPE=="custom"#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_DATA#></label>
+        <label class="control-label"><#LANG_DATA#>:</label>
         <div class="controls">
                 <textarea name="data" cols="50" rows="5">[#DATA#]</textarea>
         </div>
@@ -170,7 +168,7 @@ Action URL:
 [#endif TYPE#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#></label>
+        <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#>:</label>
         <div class="controls">
                 <input type="text" name="auto_update" value="[#AUTO_UPDATE#]" size="10"> (seconds) 
         </div>
@@ -179,7 +177,7 @@ Action URL:
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_CURRENT_VALUE#></label>
+        <label class="control-label"><#LANG_CURRENT_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="cur_value" value="" size="20"> (<b>[#CUR_VALUE#]</b>)
         </div>
@@ -190,7 +188,7 @@ Action URL:
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="textbox"#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#></label>
+        <label class="control-label"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
         <div class="controls">
                 <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
         </div>
@@ -201,14 +199,14 @@ Action URL:
 [#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
+        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>:</label>
         <div class="controls">
                 <input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]" size="20">.<input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]" size="20">
         </div>
 </div>
 
 <div class="control-group">
-        <label class="control-label"><#LANG_ONCHANGE_SCRIPT#></label>
+        <label class="control-label"><#LANG_ONCHANGE_SCRIPT#>:</label>
         <div class="controls">
 <select name="script_id">
    <option value="0">
@@ -220,7 +218,7 @@ Action URL:
 </div>
 
 <div class="control-group">
-        <label class="control-label"><#LANG_ONCHANGE_CODE#> [#ERRORS#]</label>
+        <label class="control-label"><#LANG_ONCHANGE_CODE#>: [#ERRORS#]</label>
         <div class="controls">
                 <textarea name="code" rows="5" cols="50">[#CODE#]</textarea>
         </div>
@@ -241,7 +239,7 @@ Action URL:
 <!-- URL (varchar) -->
 
 <div class="control-group">
-        <label class="control-label"> <#LANG_URL#></label>
+        <label class="control-label"> <#LANG_URL#>:</label>
         <div class="controls">
                 <input type="text" name="url" value="[#URL#]" size="50">
         </div>
@@ -249,7 +247,7 @@ Action URL:
 
 [#if TYPE!="url"#]
 <div class="control-group">
-        <label class="control-label"><#LANG_TARGET_WINDOW#></label>
+        <label class="control-label"><#LANG_TARGET_WINDOW#>:</label>
         <div class="controls">
                 <input type="text" name="window" value="[#WINDOW#]" size="50">
         </div>
@@ -258,7 +256,7 @@ Action URL:
 <!-- WIDTH (int) -->
 
 <div class="control-group">
-        <label class="control-label"><#LANG_WIDTH#></label>
+        <label class="control-label"><#LANG_WIDTH#>:</label>
         <div class="controls">
                 <input type="text" name="width" value="[#WIDTH#]">
         </div>
@@ -267,7 +265,7 @@ Action URL:
 <!-- HEIGHT (int) -->
 
 <div class="control-group">
-        <label class="control-label"><#LANG_HEIGHT#></label>
+        <label class="control-label"><#LANG_HEIGHT#>:</label>
         <div class="controls">
                 <input type="text" name="height" value="[#HEIGHT#]">
         </div>
@@ -280,7 +278,7 @@ Action URL:
 
 [#if (TYPE=="") || (ID=="")#]
 <div class="control-group">
-        <label class="control-label"><#LANG_EXT_ID#></label>
+        <label class="control-label"><#LANG_EXT_ID#>:</label>
         <div class="controls">
 
                 <select name="ext_id">
@@ -295,11 +293,20 @@ Action URL:
 [#endif TYPE#]
 
 <div class="control-group">
-        <label class="control-label"><#LANG_VISIBLE_DELAY#></label>
+        <label class="control-label"><#LANG_VISIBLE_DELAY#>:</label>
         <div class="controls">
                 <input type="text" name="visible_delay" value="[#VISIBLE_DELAY#]"> (<#LANG_SECONDS#>)
         </div>
 </div>
+
+[#if ID!=""#]
+<div class="control-group">
+        <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
+        <div class="controls">
+                <a href="?(panel:{action=security_rules})&object_type=menu&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+        </div>
+</div>
+[#endif ID#]
 
 
 

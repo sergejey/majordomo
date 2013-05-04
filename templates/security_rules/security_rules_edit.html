@@ -1,0 +1,110 @@
+
+<!-- Table 'security_rules' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+[#endif ERR#]
+<fieldset>
+<input type="hidden" name="object_type" value="[#OBJECT_TYPE#]">
+<input type="hidden" name="object_id" value="[#OBJECT_ID#]">
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_SECURITY_OBJECT_ID#>:
+ </label>
+ <div class="controls">
+  [#OBJECT_TYPE#] #[#OBJECT_ID#]
+ </div>
+</div>
+
+
+<!-- TERMINALS (varchar) -->
+<div class="control-group">
+ <label class="control-label"[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_SECURITY_TERMINALS#>:
+ </label>
+ <div class="controls">
+ <label><input type="checkbox" name="terminals_limited" id='terminals_limited' value="1"[#if TERMINALS!=""#] checked[#endif#]> <#LANG_SET#></label>
+ <div id='terminals_select'>
+ &nbsp;
+  [#begin TERMINALS_LIST#]
+  <label><input type="checkbox" name="terminals_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label>
+  [#end TERMINALS_LIST#]
+  <label>( <input type="checkbox" name="terminals_except" value="1"[#if TERMINALS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</label>
+ </div>
+ </div>
+ <script language="javascript">
+  $(function () {
+  $('#terminals_limited').change(function () {                
+     $('#terminals_select').toggle(this.checked);
+  }).change();
+  });
+ </script>
+</div>
+
+<!-- USERS (varchar) -->
+<div class="control-group">
+ <label class="control-label"[#if ERR_USERS#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_SECURITY_USERS#>:
+ </label>
+ <div class="controls"><label><input type="checkbox" name="users_limited" id='users_limited' value="1"[#if USERS!=""#] checked[#endif#]> <#LANG_SET#></label>
+ <div id='users_select'>
+ &nbsp;
+  [#begin USERS_LIST#]
+  <label><input type="checkbox" name="users_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#NAME#]</label>
+  [#end USERS_LIST#]
+  <label>( <input type="checkbox" name="users_except" value="1"[#if USERS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</label>
+ </div>
+ </div>
+ <script language="javascript">
+  $(function () {
+  $('#users_limited').change(function () {                
+     $('#users_select').toggle(this.checked);
+  }).change();
+  });
+ </script>
+</div>
+
+<!-- TIMES (varchar) -->
+<div class="control-group">
+ <label class="control-label"[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_SECURITY_TIMES#>:
+ </label>
+ <div class="controls"><label><input type="checkbox" name="times_limited" id='times_limited' value="1"[#if TIMES#] checked[#endif#]> <#LANG_SET#></label>
+ <div id='times_select'>
+  &nbsp;
+  [#begin TIMES_LIST#]
+  <label><input type="checkbox" name="times_list[]" value="[#TITLE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label>
+  [#end TIMES_LIST#]
+  <label>( <input type="checkbox" name="times_except" value="1"[#if TIMES_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</label>
+ </div>
+ </div>
+ <script language="javascript">
+  $(function () {
+  $('#times_limited').change(function () {                
+     $('#times_select').toggle(this.checked);
+  }).change();
+  });
+ </script></div>
+</div>
+<div class="form-actions">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+ [#endif ID#]
+[#if NO_CANCEL!="1"#]
+ <a href="?" class="btn"><#LANG_CANCEL#></a>
+[#else#]
+ <input type="hidden" name="no_cancel" value="1">
+[#endif SINGLE_REC#]
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</div>
+</fieldset>
+</form>

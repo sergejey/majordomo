@@ -204,7 +204,20 @@ function getParams() {
    }
 
    if ($this->action=='') {
-    $out['LAYOUTS']=SQLSelect("SELECT * FROM layouts ORDER BY PRIORITY DESC, TITLE");
+    $res=SQLSelect("SELECT * FROM layouts ORDER BY PRIORITY DESC, TITLE");
+    if ($this->action!='admin') {
+     $total=count($res);
+     $res2=array();
+     for($i=0;$i<$total;$i++) {
+      if (checkAccess('layout', $res[$i]['ID'])) {
+       $res2[]=$res[$i];
+      }
+     }
+     $res=$res2;
+     unset($res2);
+    }
+    $out['LAYOUTS']=$res;
+
     $total=count($out['LAYOUTS']);
     for($i=0;$i<$total;$i++) {
      $out['LAYOUTS'][$i]['NUM']=$i;

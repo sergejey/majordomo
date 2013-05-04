@@ -217,7 +217,19 @@ function usual(&$out) {
  }
  $this->collection_id=$collection_id;
 
- $out['COLLECTIONS']=SQLSelect("SELECT * FROM collections ORDER BY TITLE");
+ $res=SQLSelect("SELECT * FROM collections ORDER BY TITLE");
+    if ($this->action!='admin') {
+     $total=count($res);
+     $res2=array();
+     for($i=0;$i<$total;$i++) {
+      if (checkAccess('media', $res[$i]['ID'])) {
+       $res2[]=$res[$i];
+      }
+     }
+     $res=$res2;
+     unset($res2);
+    }
+ $out['COLLECTIONS']=$res;
 
  if (count($out['COLLECTIONS'])==1) {
   $collection_id=$out['COLLECTIONS'][0]['ID'];

@@ -668,4 +668,17 @@
   }
  }
 
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function checkAccess($object_type, $object_id) {
+  include_once(DIR_MODULES.'security_rules/security_rules.class.php');
+  $sc=new security_rules();
+  return $sc->checkAccess($object_type, $object_id);
+ }
+
 ?>

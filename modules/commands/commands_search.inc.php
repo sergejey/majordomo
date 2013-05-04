@@ -78,6 +78,19 @@
   // SEARCH RESULTS
 
   $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY $sortby");
+
+  if ($this->action!='admin') {
+   $total=count($res);
+   $res2=array();
+   for($i=0;$i<$total;$i++) {
+    if (checkAccess('menu', $res[$i]['ID'])) {
+     $res2[]=$res[$i];
+    }
+   }
+   $res=$res2;
+   unset($res2);
+  }
+
   if ($res[0]['ID']) {
    $total=count($res);
    for($i=0;$i<$total;$i++) {

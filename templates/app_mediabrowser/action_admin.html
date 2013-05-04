@@ -15,10 +15,21 @@
   <td valign="top"><b><#LANG_PATH#>:</b></td>
   <td valign="top"><input type="text" name="path" value="[#PATH#]"></td>
  </tr>
+
+[#if ID!=""#]
+ <tr>
+  <td valign="top"><#LANG_ACCESS_CONTROL#>:</td>
+  <td valign="top">
+  <a href="?(panel:{action=security_rules})&object_type=media&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+  </td>
+ </tr>
+[#endif ID#]
+
 <tr>
  <td valign="top">&nbsp;</td>
  <td valign="top"><input type="submit" name="submit" value="<#LANG_SUBMIT#>"></td>
 </tr>
+
 <input type="hidden" name="id" value="[#ID#]">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="mode" value="update_collection">

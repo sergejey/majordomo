@@ -1,0 +1,17 @@
+
+ <!-- action usual -->
+ <!-- table security_rules search -->
+ [#if VIEW_MODE="search_security_rules" || VIEW_MODE=""#]
+  [#inc security_rules_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table security_rules search -->
+ <!-- table security_rules edit -->
+ [#if VIEW_MODE="edit_security_rules"#]
+   [#inc security_rules_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table security_rules edit -->
+ <!-- table security_rules view --> 
+ [#if VIEW_MODE="view_security_rules"#]
+   [#inc security_rules_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table security_rules view -->

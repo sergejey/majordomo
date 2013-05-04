@@ -8,13 +8,9 @@
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-[#if PRINT!="1"#]
 <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
-[#else PRINT#]
-<link rel="stylesheet" href="<#ROOTHTML#>css/admin_print.css" type="text/css">
-[#endif PRINT#]
-
+<link rel="stylesheet" type="text/css" href="/css/umbra-css2/style.css" title="theme"/>
   <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
   <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
   <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
@@ -32,7 +28,7 @@
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
   <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
-
+  <script language="javascript" type="text/javascript" src="/js/jWindow.js"></script>
 
 
 </head>
@@ -108,6 +104,33 @@
   [#endif LAST_IN_CATEGORY#]
 
   [#end SUB_MODULES#]
+ }
+</script>
+
+<script language="javascript">
+jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+    return this;
+}
+
+ // ----------------------------------------------------------------------
+ function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
+  var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
+  jWindowObj.show();
+  jWindowObj.update();
+  $('#usersWindow').center();
+  return false;
+ }
+
+
+ function openModalTWindow(winId, winTitle, pageURL, wdth, hdth) {
+  var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, minimiseButton:false, maximiseButton:false, draggable:false, resizeable:false, modal: true });
+   jWindowObj.show();
+   jWindowObj.update();
+   $('#usersWindow').center();
+   return false;
  }
 </script>
 

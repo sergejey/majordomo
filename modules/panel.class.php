@@ -56,7 +56,8 @@ function getParams() {
    $this->authorized=1;
   }
 
-  if ($this->print) {
+  if ($this->print || $_GET['print']) {
+   $this->print=1;
    $out['PRINT']=1;
   }
 

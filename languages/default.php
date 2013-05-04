@@ -95,6 +95,7 @@ $dictionary=array(
 'MODULE_ONEWIRE'=>'1-Wire',
 'MODULE_SCENES'=>'Scenes',
 'MODULE_SNMP'=>'SNMP',
+'MODULE_SECURITY_RULES'=>'Security Rules',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
@@ -828,6 +829,14 @@ $dictionary=array(
 
 'COUNTER_REQUIRED'=>'Tries before switching status',
 'COUNTER_REQUIRED_COMMENT'=>'(0 to switch from the first success/fail)',
+
+'ACCESS_CONTROL'=>'Access control',
+
+'SECURITY_OBJECT_ID'=>'Object ID',
+'SECURITY_TERMINALS'=>'Access from terminals',
+'SECURITY_USERS'=>'Available for users',
+'SECURITY_TIMES'=>'Available during hours',
+'ALLOW_EXCEPT_ABOVE'=>'Always available except selected above',
 
 'TEST'=>'test'
 

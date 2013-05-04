@@ -47,7 +47,6 @@ overflow: scroll;
 <body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
 
 <script language="javascript">
-
 jQuery.fn.center = function () {
     this.css("position","absolute");
     this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
@@ -57,28 +56,6 @@ jQuery.fn.center = function () {
 
  // ----------------------------------------------------------------------
  function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
- /*
-  if ($(winId)!=null) {
-   Windows.focus(winId);
-   var win=Windows.getFocusedWindow();
-   win.toFront();
-   if (win.isMinimized()) {
-    win.minimize();
-   }
-   var url=win.getURL();
-   win.setURL(pageURL);
-   //win.refresh();
-  } else {
-   var win = new Window({id: winId, className: "darkX", title: winTitle, top:10, left:10, width:wdth, height:hdth, url: pageURL, parent:$('container'), showEffectOptions: {duration:0.2}}) 
-   win.setDestroyOnClose(); 
-   win.showCenter();
-   win.setConstraint(true, {left:0, right:0, top: 40, bottom:0});
-   win.toFront();
-  }
-  */
-  //$.newWindow({id:winId,posx:100,posy:50,width:wdth,height:hdth,title:winTitle, type:"iframe"});
-  //$.updateWindowContent(winId,'<iframe src="'+pageURL+'" width="'+wdth+'" height="'+hdth+'" />');
-  //
   var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
   jWindowObj.show();
   jWindowObj.update();
@@ -94,9 +71,6 @@ jQuery.fn.center = function () {
    $('#usersWindow').center();
    return false;
  }
-
- 
-
 </script>
 
 [#if POPUP="1"#]

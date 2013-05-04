@@ -83,6 +83,7 @@ $dictionary=array(
 'MODULE_ONEWIRE'=>'1-Wire',
 'MODULE_SCENES'=>'Сцены',
 'MODULE_SNMP'=>'SNMP',
+'MODULE_SECURITY_RULES'=>'Правила безопасности',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
@@ -818,6 +819,15 @@ $dictionary=array(
 
 'COUNTER_REQUIRED'=>'Количество попыток',
 'COUNTER_REQUIRED_COMMENT'=>'(0 для переключения с первого раза)',
+
+'ACCESS_CONTROL'=>'Контроль доступа',
+
+'SECURITY_OBJECT_ID'=>'Объект защиты',
+'SECURITY_TERMINALS'=>'Доступ с терминалов',
+'SECURITY_USERS'=>'Доступно для пользователей',
+'SECURITY_TIMES'=>'Доступно в часы',
+'ALLOW_EXCEPT_ABOVE'=>'всегда доступно за исключением выбранного',
+
 
 'TEST'=>'test'
 
