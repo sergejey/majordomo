@@ -533,10 +533,10 @@ function updateDisplay($id) {
     if (!is_null($value) && $old_value!=$value) {
      // value updated
      $changed=1;
-     $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
      $prec['VALUE']=$value;
      $prec['UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('owproperties', $prec);
+     $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
      //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
      SQLUpdate('owdevices', $rec);
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
