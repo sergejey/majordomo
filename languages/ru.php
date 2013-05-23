@@ -828,6 +828,8 @@ $dictionary=array(
 'SECURITY_TIMES'=>'Доступно в часы',
 'ALLOW_EXCEPT_ABOVE'=>'всегда доступно за исключением выбранного',
 
+'INLINE_POSITION'=>'Расположить на уровне предыдущего элемента',
+
 
 'TEST'=>'test'
 

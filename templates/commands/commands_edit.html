@@ -235,17 +235,29 @@ Action URL:
 
 [#endif TYPE#]
 
+[#if TYPE=="button"#]
+<!-- URL (varchar) -->
+<div class="control-group">
+        <label class="control-label"> <#LANG_INLINE_POSITION#>:</label>
+        <div class="controls">
+                <label><input type="radio" name="inline" value="1"[#if INLINE="1"#] checked[#endif#]> <#LANG_YES#></label>
+                <label><input type="radio" name="inline" value="0"[#if INLINE!="1"#] checked[#endif#]> <#LANG_NO#></label>
+        </div>
+</div>
+[#endif TYPE#]
+
+
 [#if TYPE=="window" || TYPE=="url" || TYPE==""#]
 <!-- URL (varchar) -->
-
 <div class="control-group">
         <label class="control-label"> <#LANG_URL#>:</label>
         <div class="controls">
                 <input type="text" name="url" value="[#URL#]" size="50">
         </div>
 </div>
+[#endif TYPE#]
 
-[#if TYPE!="url"#]
+[#if TYPE=="window" || TYPE==""#]
 <div class="control-group">
         <label class="control-label"><#LANG_TARGET_WINDOW#>:</label>
         <div class="controls">
@@ -254,24 +266,19 @@ Action URL:
 </div>
 
 <!-- WIDTH (int) -->
-
 <div class="control-group">
         <label class="control-label"><#LANG_WIDTH#>:</label>
         <div class="controls">
                 <input type="text" name="width" value="[#WIDTH#]">
         </div>
 </div>
-
 <!-- HEIGHT (int) -->
-
 <div class="control-group">
         <label class="control-label"><#LANG_HEIGHT#>:</label>
         <div class="controls">
                 <input type="text" name="height" value="[#HEIGHT#]">
         </div>
 </div>
-
-[#endif TYPE#]
 [#endif TYPE#]
 
 [#endif EXT_ID#]

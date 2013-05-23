@@ -244,7 +244,7 @@
 [#endif TYPE#]
 
 [#if TYPE="button"#]
-<a href="#" onClick="return itemValueChanged('[#ID#]', 'clicked');" data-role="button"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></a>
+<a href="#" onClick="return itemValueChanged('[#ID#]', 'clicked');" data-role="button" [#if INLINE="1"#]data-inline="true"[#endif#]><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></a>
 <!--#
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
  <tr>

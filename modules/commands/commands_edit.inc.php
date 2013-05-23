@@ -41,6 +41,9 @@
    global $ext_id;
    $rec['EXT_ID']=(int)$ext_id;
 
+   global $inline;
+   $rec['INLINE']=(int)$inline;
+
    global $visible_delay;
    $rec['VISIBLE_DELAY']=(int)$visible_delay;
 

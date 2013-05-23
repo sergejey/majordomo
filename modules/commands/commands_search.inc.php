@@ -95,6 +95,9 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+   if ($res[$i+1]['INLINE']) {
+    $res[$i]['INLINE']=1;
+   }
 
    $item=$res[$i];
    if ($item['VISIBLE_DELAY']) {

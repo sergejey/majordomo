@@ -838,6 +838,8 @@ $dictionary=array(
 'SECURITY_TIMES'=>'Available during hours',
 'ALLOW_EXCEPT_ABOVE'=>'Always available except selected above',
 
+'INLINE_POSITION'=>'Place in-line with previuos element',
+
 'TEST'=>'test'
 
 
