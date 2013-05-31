@@ -83,6 +83,7 @@ $dictionary=array(
 'MODULE_ONEWIRE'=>'1-Wire',
 'MODULE_SCENES'=>'Сцены',
 'MODULE_SNMP'=>'SNMP',
+'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Правила безопасности',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 

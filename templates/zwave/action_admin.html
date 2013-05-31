@@ -1,0 +1,37 @@
+
+ <!-- action usual -->
+ [#if DATA_SOURCE="zwave_devices" || DATA_SOURCE=""#]
+ <!-- table zwave_devices search -->
+ [#if VIEW_MODE="search_zwave_devices" || VIEW_MODE=""#]
+  [#inc zwave_devices_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table zwave_devices search -->
+ <!-- table zwave_devices edit -->
+ [#if VIEW_MODE="edit_zwave_devices"#]
+   [#inc zwave_devices_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table zwave_devices edit -->
+ <!-- table zwave_devices view --> 
+ [#if VIEW_MODE="view_zwave_devices"#]
+   [#inc zwave_devices_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table zwave_devices view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="zwave_properties"#]
+ <!-- table zwave_properties search -->
+ [#if VIEW_MODE="search_zwave_properties" || VIEW_MODE=""#]
+  [#inc zwave_properties_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table zwave_properties search -->
+ <!-- table zwave_properties edit -->
+ [#if VIEW_MODE="edit_zwave_properties"#]
+   [#inc zwave_properties_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table zwave_properties edit -->
+ <!-- table zwave_properties view --> 
+ [#if VIEW_MODE="view_zwave_properties"#]
+   [#inc zwave_properties_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table zwave_properties view -->
+ [#endif DATA_SOURCE#]

@@ -1,0 +1,57 @@
+
+<!-- table zwave_properties search -->
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_zwave_properties" style="padding:0px" class="form">
+<table  align=center class="table table-stripped">
+<thead>
+<tr>
+ <th>
+ <a href="?sortby_zwave_properties=TITLE&data_source=<#DATA_SOURCE#>&save_qry=1">TITLE</a><nobr>
+ [#if SORTBY="TITLE"#](+)[#endif#]
+ [#if SORTBY="TITLE DESC"#](-)[#endif#]</nobr>
+ </th>
+ <th>
+ VALUE
+ </th>
+</tr>
+</thead>
+<tbody>
+[#begin RESULT#]
+<tr class="hover_btn2">
+ <td
+  >
+  <b>
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td
+   align=center>
+  [#if VALUE!=""#]
+   [#VALUE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td width="1%" nowrap>
+  <div style="width:120px">
+  </div>
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_zwave_properties">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p>
+<font color="red">No records found.</font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

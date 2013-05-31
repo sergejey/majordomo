@@ -1,0 +1,124 @@
+<!-- table zwave_devices search -->
+<div>
+ <a href="http://en.z-wave.me/" target=_blank>RaZberry API</a> connection status:
+ [#if API_STATUS="1"#]
+ <span style="color:green">ONLINE</span>
+ [#else API_STATUS#]
+ <span style="color:red">OFFLINE</span>
+ [#endif#]
+ [ <a href="#" onClick="$('#api_settings').toggle();return false;">Setup</a> ]
+</div>
+<div style="display:none" id='api_settings'>
+&nbsp;
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+<div class="control-group">
+ <label class="control-label"[#if ERR_ZWAVE_API_URL#] style="color:red;font-weight:bold"[#endif#]>
+ API URL:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="zwave_api_url" value="<#ZWAVE_API_URL#>" class="input"></div>
+</div>
+
+<div class="control-group">
+ <div class="controls">
+ <label><input type="checkbox" name="zwave_api_auth" value="1"[#if ZWAVE_API_AUTH="1"#] checked[#endif#]> authorization required</label>
+ </div>
+</div>
+
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_ZWAVE_API_USERNAME#] style="color:red;font-weight:bold"[#endif#]>
+ API Username:
+ </label>
+ <div class="controls"><input type="text" name="zwave_api_username" value="<#ZWAVE_API_USERNAME#>" class="input"></div>
+</div>
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_ZWAVE_API_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
+ API Password:
+ </label>
+ <div class="controls"><input type="password" name="zwave_api_password" value="<#ZWAVE_API_PASSWORD#>" class="input"></div>
+</div>
+
+
+<div class="form-actions">
+<button type="submit" name="subm" value="Submit" class="btn btn-primary">Update settings</button>
+<input type="hidden" name="view_mode" value="update_settings">
+<input type="hidden" name="mode" value="update">
+</div>
+</fieldset>
+</form>
+</div>
+
+[#if API_STATUS="1"#]
+<p>
+<!--#
+<a href="?view_mode=edit_zwave_devices&data_source=<#DATA_SOURCE#>" class="btn"><i class="icon-plus"></i> Add new record</a>
+#-->
+<a href="?view_mode=rescan" class="btn"><i class="icon-refresh"></i> Refresh network</a>
+</p>
+[#endif#]
+
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_zwave_devices" style="padding:0px" class="form">
+<table  align=center class="table table-stripped">
+<thead>
+<tr>
+ <th>
+ TITLE
+ </th>
+ <th>
+ DETAILS
+ </th>
+<td>&nbsp;</td>
+</tr>
+</thead>
+<tbody>
+[#begin RESULT#]
+<tr class="hover_btn2">
+ <td
+  >
+  <b>
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td
+   align=center>
+   [#if CLASS_BASIC="1"#]basic[#if BASIC!=""#] ([#BASIC#])[#endif#];[#endif#]
+   [#if CLASS_SENSOR_BINARY="1"#]sensor binary;[#endif#]
+   [#if CLASS_SENSOR_MULTILEVEL="1"#]sensor multilevel[#if SENSOR_VALUE!=""#] ([#SENSOR_VALUE#]);[#endif#][#endif#]
+   [#if CLASS_SWITCH_BINARY="1"#]switch binary ([#LEVEL#]);[#endif#]
+   [#if CLASS_SWITCH_MULTILEVEL="1"#]switch multilevel ([#LEVEL#]%);[#endif#]
+   [#if CLASS_METER="1"#]meter;[#endif#]
+   [#if CLASS_BATTERY="1"#]battery ([#BATTERY_LEVEL#]%);[#endif#]
+   [#if CLASS_THERMOSTAT="1"#]thermostat[#if MODE_VALUE!=""#] ([#MODE_VALUE#])[#endif#];[#endif#]
+   [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
+ </td>
+ <td width="1%" nowrap>
+  <div style="width:120px">
+  [#if "<#ACTION#>"=="admin"#]
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]" class="btn btn-small" title="Edit"><i class="icon-pencil"></i></a>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_zwave_devices&id=[#ID#]" onClick="return confirm('Are you sure?')" class="btn btn-small" title="Delete"><i class="icon-remove"></i></a>
+  [#endif ACTION#]
+  </div>
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_zwave_devices">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p>
+<font color="red">No records found.</font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

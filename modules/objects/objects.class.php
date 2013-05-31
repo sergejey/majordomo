@@ -524,6 +524,18 @@ curl_close($ch);
    }
   }
 
+  if (file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
+   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($zwavedevices);
+   if ($total) {
+    include_once(DIR_MODULES.'/zwave/zwave.class.php');
+    $zwave=new zwave();
+    for($i=0;$i<$total;$i++) {
+     $zwave->setProperty($zwave_properties[$i]['ID'], $value);
+    }
+   }
+  }
+
 
   }
 

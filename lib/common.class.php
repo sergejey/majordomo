@@ -311,6 +311,7 @@
 * @access public
 */
  function setTimeOut($title, $commands, $timeout) {
+  clearTimeOut($title);
   return addScheduledJob($title,$commands, time()+$timeout);
  }
 

@@ -1,0 +1,190 @@
+
+<!-- Table 'zwave_devices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+[#if OK#]
+<div class="alert alert-success">Data has been saved</div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error">Please fill out all required fields</div>
+[#endif ERR#]
+<fieldset>
+[#if ID=""#]
+<legend>New Record</legend>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<div class="control-group">
+ <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
+ TITLE:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input"></div>
+</div>
+
+<div class="control-group">
+ <label class="control-label">
+  &nbsp;
+ </label>
+ <div class="controls">
+   [#if CLASS_BASIC="1"#]basic;[#endif#]
+   [#if CLASS_SENSOR_BINARY="1"#]sensor binary;[#endif#]
+   [#if CLASS_SENSOR_MULTILEVEL="1"#]sensor multilevel;[#endif#]
+   [#if CLASS_SWITCH_BINARY="1"#]switch binary;[#endif#]
+   [#if CLASS_SWITCH_MULTILEVEL="1"#]switch multilevel;[#endif#]
+   [#if CLASS_METER="1"#]meter;[#endif#]
+   [#if CLASS_BATTERY="1"#]battery operated;[#endif#]
+   [#if CLASS_THERMOSTAT="1"#]thermostat;[#endif#]
+   [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
+ </div>
+</div>
+
+[#if CLASS_BASIC="1"#]
+<div class="control-group">
+ <label class="control-label">
+ Basic:
+ </label>
+<div class="controls">
+ [#BASIC#]
+</div>
+</div>
+[#endif CLASS_BASIC#]
+
+[#if CLASS_SWITCH_BINARY="1" || CLASS_SWITCH_MULTILEVEL="1" || CLASS_SENSOR_BINARY="1"#]
+<div class="control-group">
+ <label class="control-label">
+ Level:
+ </label>
+<div class="controls">
+ [#LEVEL#]
+</div>
+</div>
+[#endif CLASS_BASIC#]
+
+[#if CLASS_SENSOR_MULTILEVEL="1"#]
+<div class="control-group">
+ <label class="control-label">
+ Sensor data:
+ </label>
+<div class="controls">
+ [#SENSOR_VALUE#]
+</div>
+</div>
+[#endif#]
+
+[#if CLASS_THERMOSTAT="1"#]
+<div class="control-group">
+ <label class="control-label">
+ Thermostat mode:
+ </label>
+<div class="controls">
+ [#MODE_VALUE#]
+</div>
+</div>
+[#endif#]
+
+[#if CLASS_BATTERY="1"#]
+<div class="control-group">
+ <label class="control-label">
+ Battery level, %:
+ </label>
+<div class="controls">
+ [#BATTERY_LEVEL#]
+</div>
+</div>
+[#endif CLASS_BATTERY#]
+
+[#if PROPERTIES#]
+<div class="control-group">
+ <label class="control-label">
+ Properties:
+ </label>
+<div class="controls">
+ <table border="1" cellpadding="3">
+  <tr>
+   <td valign="top"><b>Title</b></td>
+   <td valign="top"><b>Value</b></td>
+   <td valign="top">
+    <b>Linked Object.Property</b>
+   </td>
+  </tr>
+  [#begin PROPERTIES#]
+  <tr>
+   <td valign="top">[#TITLE#]</td>
+   <td valign="top">[#VALUE#]</td>
+   <td valign="top">
+    <input type="text" name="linked_object[#ID#]" value="[#LINKED_OBJECT#]" class="span2">.
+    <input type="text" name="linked_property[#ID#]" value="[#LINKED_PROPERTY#]" class="span2">
+   </td>
+  </tr>
+  [#end PROPERTIES#]
+ </table>
+</div>
+</div>
+[#endif PROPERTIES#]
+
+<!--#
+<div class="control-group">
+ <label class="control-label"[#if ERR_STATUS#] style="color:red;font-weight:bold"[#endif#]>
+ STATUS:
+ </label>
+ <div class="controls"><input type="text" name="status" value="[#STATUS#]" class="input"></div>
+</div>
+<div class="control-group">
+ <label class="control-label"[#if ERR_AUTO_POLL#] style="color:red;font-weight:bold"[#endif#]>
+ AUTO_POLL:
+ </label>
+ <div class="controls"><input type="text" name="auto_poll" value="[#AUTO_POLL#]" class="input"></div>
+</div>
+<div class="control-group">
+ <label class="control-label"[#if ERR_LATEST_UPDATE#] style="color:red;font-weight:bold"[#endif#]>
+ LATEST_UPDATE:
+ </label>
+ <div class="controls">
+ <input type="text" name="latest_update_date" value="[#LATEST_UPDATE_DATE#]" maxlength=10 size=12 class="input-small">
+ [#module name="dateselect" field="latest_update_date" form="frmEdit"#]
+ &nbsp;&nbsp;&nbsp;
+ <select name="latest_update_hours" class="input-mini">
+ [#begin LATEST_UPDATE_HOURS#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end LATEST_UPDATE_HOURS#]
+ </select>
+ :
+ <select name="latest_update_minutes" class="input-mini">
+ [#begin LATEST_UPDATE_MINUTES#]
+ <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
+ [#end LATEST_UPDATE_MINUTES#]
+ </select>
+ </div>
+</div>
+#-->
+<!-- LOCATION_ID (select) -->
+[#if !IS_SET_LOCATION_ID#]
+<div class="control-group">
+ <label class="control-label"[#if ERR_LOCATION_ID#] style="color:red;font-weight:bold"[#endif#]>
+ LOCATION_ID:
+ </label>
+<div class="controls">
+ <select name="location_id" class="input">
+  <option value="">select
+  [#begin LOCATION_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+  [#end LOCATION_ID_OPTIONS#]
+ </select>
+</div>
+</div>
+
+
+[#endif IS_SET_LOCATION_ID#]
+<div class="form-actions">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary">Submit</button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary">Add</button>
+ [#endif ID#]
+ <a href="?data_source=<#DATA_SOURCE#>" class="btn">Cancel</a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+</div>
+</fieldset>
+</form>
