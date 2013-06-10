@@ -30,6 +30,7 @@ while(1)
       DebMes("Cycle running OK: " . basename(__FILE__));
       $updated_time = time();
    }
+   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
 
    //updating RSS channels
    $to_update = SQLSelect("SELECT ID, TITLE FROM rss_channels WHERE NEXT_UPDATE <= NOW() LIMIT 1");

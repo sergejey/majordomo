@@ -30,6 +30,7 @@ while(1)
       DebMes("Cycle running OK: " . basename(__FILE__));
       $updated_time=time();
    }
+   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
 
    // checking all hosts
    $pinghosts->checkAllHosts(1); 

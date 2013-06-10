@@ -25,6 +25,7 @@ while(1)
       DebMes("Cycle running OK: " . basename(__FILE__));
       $updated_time = time();
    }
+   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
 
    SQLExec("DELETE FROM safe_execs WHERE ADDED < '" . date('Y-m-d H:i:s', time() - 180) . "'");
 

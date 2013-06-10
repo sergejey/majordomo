@@ -16,21 +16,31 @@ include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
-while(1) 
-{
+if ($_GET['once']) {
+ cycleBody();
+} else {
+ while(1) {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-
    if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60) 
    {
-      //Log activity every hour
       DebMes("Cycle running OK: " . basename(__FILE__));
       $updated_time=time();
    }
+   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+   cycleBody();
+   if (file_exists('./reboot')) 
+   {
+      $db->Disconnect();
+      exit;
+   }
+   sleep(1);
+ }
+}
 
+ function cycleBody() {
    // check main system states
    $objects = getObjectsByClass('systemStates');
    $total   = count($objects);
-   
    for($i=0;$i<$total;$i++) 
    {
       $old_state = getGlobal($objects[$i]['TITLE'] . '.stateColor');
@@ -43,16 +53,8 @@ while(1)
          $params=array('STATE'=>$new_state);
          callMethod($objects[$i]['TITLE'] . '.stateChanged', $params);
       }
-   }
-
-   if (file_exists('./reboot')) 
-   {
-      $db->Disconnect();
-      exit;
-   }
-
-   sleep(1);
-}
+   }  
+ }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
 
