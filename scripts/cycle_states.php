@@ -16,16 +16,14 @@ include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
+
 if ($_GET['once']) {
+ setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
  cycleBody();
+ echo "OK";
 } else {
  while(1) {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-   if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60) 
-   {
-      DebMes("Cycle running OK: " . basename(__FILE__));
-      $updated_time=time();
-   }
    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
    cycleBody();
    if (file_exists('./reboot')) 
@@ -35,6 +33,7 @@ if ($_GET['once']) {
    }
    sleep(1);
  }
+ DebMes("Unexpected close of cycle: " . basename(__FILE__));
 }
 
  function cycleBody() {
@@ -55,7 +54,5 @@ if ($_GET['once']) {
       }
    }  
  }
-
-DebMes("Unexpected close of cycle: " . basename(__FILE__));
 
 ?>

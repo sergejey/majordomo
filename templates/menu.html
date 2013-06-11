@@ -19,6 +19,23 @@
         [#module name="commands" action="" pda="1"#]
 </div>
 
+<script language="javascript">
+ var cycleTimer;
+ function runCycleThroughWebReceived(id, data) {
+  //alert(data);
+  return false;
+ }
+ function runCycleThroughWeb() {
+  clearTimeout(cycleTimer);
+  AJAXRequest('/scripts/cycle_states.php?once=1', 'runCycleThroughWebReceived', '');
+  cycleTimer=window.setTimeout ('runCycleThroughWeb();', 30000);
+  return false;
+ }
+ $(document).ready(function(){
+   runCycleThroughWeb();
+ });
+</script>
+
 <!--#
 <div id='sound'></div>
 <script language="javascript">
@@ -39,11 +56,7 @@
  }
 
 
- $(document).ready(function(){
-  if (window.parent.location == window.location) {
-   getLatestNoteMenu();
-  }
- });
+
 </script>
 #-->
 
