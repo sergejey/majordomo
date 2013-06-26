@@ -17,6 +17,9 @@
   url+='&play_terminal='+$("#selPlayTerminal").val();
   url+='&play='+URLencode($("#hidPlayPath").val());
   url+='&rnd='+URLencode($("#hidPlayerRnd").val());
+  if (pcmd=='volume') {
+   url+='&volume='+URLencode($("#selVolume").val());
+  }
   //prompt(url, url);
   AJAXRequest(url, 'playerCommandProcessed', '');
   return false;
@@ -44,6 +47,11 @@
 #-->
   </td>
   [#if MODE="menu"#]</tr><tr>[#endif MODE#]
+  <td nowrap><select name="volume" id='selVolume' onChange="playerCommand('volume')">
+   [#begin VOLUMES#]
+   <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
+   [#end VOLUMES#]
+  </select></td>
   <td valign="top">
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_pause.png" border="0"></a></div>
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("prev");' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_prev.png" border="0"></a></div>

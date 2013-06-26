@@ -195,6 +195,17 @@ function usual(&$out) {
   $out['RND']=$rnd;
  }
 
+ $current_level=getGlobal('ThisComputer.volumeLevel');
+ for($i=0;$i<=100;$i+=5) {
+  $rec=array('VALUE'=>$i);
+  if ($i==$current_level) {
+   $rec['SELECTED']=1;
+  }
+  $out['VOLUMES'][]=$rec;
+ }
+
+
+
  global $ajax;
  if ($ajax!='') {
   global $command;
@@ -216,6 +227,12 @@ function usual(&$out) {
     $terminal['PLAYER_PORT']='8080';
    } elseif (!$terminal['PLAYER_PORT']) {
     $terminal['PLAYER_PORT']='80';
+   }
+
+   if ($command=='volume') {
+    global $volume;
+    setGlobal('ThisComputer.volumeLevel', $volume);
+    callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
    }
 
     if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
@@ -272,8 +289,10 @@ function usual(&$out) {
     echo " on ".$session->data['PLAY_TERMINAL'].' ';
    }
 
-
-   echo "OK (".$res.")";
+   echo "OK";
+   if ($res) {
+    echo " (".$res.")";
+   }
    $session->save();
    exit;
   }

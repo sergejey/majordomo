@@ -44,6 +44,7 @@ $dictionary=array(
 
 'SECTION_OBJECTS'=>'Objects',
 'SECTION_APPLICATIONS'=>'Applications',
+'SECTION_DEVICES'=>'Devices',
 'SECTION_SETTINGS'=>'Settings',
 'SECTION_SYSTEM'=>'System',
 
