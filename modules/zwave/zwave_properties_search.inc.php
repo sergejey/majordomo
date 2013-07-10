@@ -7,6 +7,7 @@
    $out['CONTROLPANEL']=1;
   }
   $qry="1";
+
   // search filters
   if (IsSet($this->device_id)) {
    $device_id=$this->device_id;
@@ -60,4 +61,7 @@
    }
    $out['RESULT']=$res;
   }
+
+
+
 ?>

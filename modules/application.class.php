@@ -52,7 +52,7 @@ function getParams() {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
 
-    $msg=SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ADDED DESC LIMIT 1");
+    $msg=SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC LIMIT 1");
     echo $msg['MESSAGE'];
 
     global $db;

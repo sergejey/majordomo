@@ -203,7 +203,7 @@ function usual(&$out) {
   $lines_pattern=explode("\n", $pattern);
   $total_lines=count($lines_pattern);
   if (!$rec['TIME_LIMIT']) {
-   $messages=SQLSelect("SELECT MESSAGE FROM shouts ORDER BY ADDED DESC LIMIT ".(int)$total_lines);
+   $messages=SQLSelect("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT ".(int)$total_lines);
    $messages=array_reverse($messages);
   } else {
    $start_from=time()-$rec['TIME_LIMIT'];

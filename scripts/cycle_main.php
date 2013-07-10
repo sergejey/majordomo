@@ -32,12 +32,6 @@ while(1)
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
-   if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60) 
-   {
-      //Log activity every hour
-      DebMes("Cycle running OK: ".basename(__FILE__));
-      $updated_time=time();
-   }
    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
 
    $m  = date('i');

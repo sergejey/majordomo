@@ -9,6 +9,14 @@
   $qry="1";
   // search filters
   //searching 'TITLE' (varchar)
+
+  global $location_id;
+  if ($location_id) {
+   $qry.=" AND LOCATION_ID='".(int)$location_id."'";
+   $out['LOCATION_ID']=(int)$location_id;
+  }
+
+
   global $title;
   if ($title!='') {
    $qry.=" AND TITLE LIKE '%".DBSafe($title)."%'";
@@ -56,4 +64,7 @@
    }
    $out['RESULT']=$res;
   }
+
+  $out['LOCATIONS']=SQLSelect("SELECT * FROM locations ORDER BY TITLE");
+
 ?>

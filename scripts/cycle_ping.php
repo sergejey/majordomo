@@ -20,27 +20,22 @@ include_once(DIR_MODULES.'pinghosts/pinghosts.class.php');
 
 $pinghosts = new pinghosts();
 
+$checked_time=0;
 while(1) 
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-
-   if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60) 
-   {
-      //Log activity every hour
-      DebMes("Cycle running OK: " . basename(__FILE__));
-      $updated_time=time();
+   if (time()-$checked_time>10) {
+    $checked_time=time();   
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+    // checking all hosts
+    $pinghosts->checkAllHosts(1); 
    }
-   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
-
-   // checking all hosts
-   $pinghosts->checkAllHosts(1); 
 
    if (file_exists('./reboot')) 
    {
       $db->Disconnect();
       exit;
    }
-
    sleep(1);
 }
 

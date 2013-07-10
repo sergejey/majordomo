@@ -22,7 +22,7 @@ class zwave extends module {
 function zwave() {
   $this->name="zwave";
   $this->title="<#LANG_MODULE_ZWAVE#>";
-  $this->module_category="<#LANG_SECTION_OBJECTS#>";
+  $this->module_category="<#LANG_SECTION_DEVICES#>";
   $this->checkInstalled();
 }
 /**
@@ -441,6 +441,11 @@ function admin(&$out) {
    if (!$data) {
     $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].']');
    }
+
+   if (!$data) {
+    return 0;
+   }
+
    if ($rec['CLASS_BASIC']) {
     $value=$data->commandClasses->{"32"}->data->value;
     if ($value!==$rec['BASIC']) {

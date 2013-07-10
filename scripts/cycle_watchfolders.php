@@ -20,20 +20,19 @@ include_once(DIR_MODULES . 'watchfolders/watchfolders.class.php');
  
 $watchfolders = new watchfolders();
 
+$checked_time=0;
+
 while(1) 
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
-   if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60) 
-   {
-      //Log activity every hour
-      DebMes("Cycle running OK: " . basename(__FILE__));
-      $updated_time = time();
-   }
-   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+   if (time()-$checked_time>10) {
+    $checked_time=time();
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
 
-   // checking all watching folders
-   $watchfolders->checkAllFolders(); 
+    // checking all watching folders
+    $watchfolders->checkAllFolders(); 
+   }
 
    if (file_exists('./reboot')) 
    {

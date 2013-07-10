@@ -87,7 +87,7 @@ $dictionary=array(
 'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Правила безопасности',
 
-'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
+'SETUP'=>'Настроить', // objects/objects_edit_methods.html; 
 
 
 'DATA_SAVED'=>'Данные сохранены!', // objects/objects_edit_methods.html; objects/objects_edit_default.html; objects/objects_edit_properties.html; patterns/patterns_edit.html; scripts/scripts_edit.html; users/users_edit.html; methods/methods_edit.html; commands/commands_edit.html; pvalues/pvalues_edit.html; history/history_edit.html; classes/classes_edit_default.html; dashboard/action_admin.html; locations/locations_edit.html; pinghosts/pinghosts_edit.html; rss_channels/rss_channels_edit_default.html; events/events_edit.html; layouts/layouts_edit.html; app_products/product_categories_edit.html; app_products/products_edit_default.html; onewire/onewire_edit.html; watchfolders/watchfolders_edit.html; webvars/webvars_edit.html; properties/properties_edit.html; scenes/scenes_edit_default.html; scenes/elements_edit.html; terminals/terminals_edit.html; control_access/control_access.html; app_gpstrack/gpslog_edit.html; app_gpstrack/gpsdevices_edit.html; app_gpstrack/gpslocations_edit.html; app_gpstrack/gpsactions_edit.html; 

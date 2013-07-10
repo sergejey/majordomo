@@ -6,7 +6,7 @@
  [#else API_STATUS#]
  <span style="color:red">OFFLINE</span>
  [#endif#]
- [ <a href="#" onClick="$('#api_settings').toggle();return false;">Setup</a> ]
+ [ <a href="#" onClick="$('#api_settings').toggle();return false;"><#LANG_SETUP#></a> ]
 </div>
 <div style="display:none" id='api_settings'>
 &nbsp;
@@ -43,7 +43,7 @@
 
 
 <div class="form-actions">
-<button type="submit" name="subm" value="Submit" class="btn btn-primary">Update settings</button>
+<button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
 <input type="hidden" name="view_mode" value="update_settings">
 <input type="hidden" name="mode" value="update">
 </div>
@@ -60,6 +60,24 @@
 </p>
 [#endif#]
 
+&nbsp;
+
+<form action="?" method="get" name="frmFilter">
+<table border="0">
+ <tr>
+  <td>
+  <select name="location_id" onChange="document.frmFilter.submit();">
+   <option value="0"><#LANG_FILTER_BY_LOCATION#> (<#LANG_ALL#>)
+   [#begin LOCATIONS#]
+   <option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select>
+  </td>
+ </tr>
+</table>
+</form>
+
+
 <table width=100% border=0><tr>
 <td valign=top>
 <!-- results -->
@@ -70,10 +88,10 @@
 <thead>
 <tr>
  <th>
- TITLE
+ <#LANG_TITLE#>
  </th>
  <th>
- DETAILS
+ <#LANG_DETAILS#>
  </th>
 <td>&nbsp;</td>
 </tr>
@@ -84,7 +102,7 @@
  <td
   >
   <b>
-   [#TITLE#]
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]">[#TITLE#]</a>
   </a></b>
  </td>
  <td
@@ -102,8 +120,8 @@
  <td width="1%" nowrap>
   <div style="width:120px">
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]" class="btn btn-small" title="Edit"><i class="icon-pencil"></i></a>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_zwave_devices&id=[#ID#]" onClick="return confirm('Are you sure?')" class="btn btn-small" title="Delete"><i class="icon-remove"></i></a>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]" class="btn btn-small" title="<#LANG_EDIT#>"><i class="icon-pencil"></i></a>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_zwave_devices&id=[#ID#]" onClick="return confirm('<#ARE_YOU_SURE#>')" class="btn btn-small" title="<#LANG_DELETE#>"><i class="icon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>
@@ -117,7 +135,7 @@
 <!-- / search results (list) -->
 [#else RESULT#]
 <p>
-<font color="red">No records found.</font>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
 </p>
 [#endif RESULT#]
 <!-- / results -->

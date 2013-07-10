@@ -57,10 +57,12 @@ com_message_pump(1000);
 
 $old_message  = $latest_message = '';
 
-$tmp = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID = 0 ORDER BY ADDED DESC");
+$tmp = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC");
 
 $latest_message = $tmp['MESSAGE'];
 $old_message = $latest_message;
+
+$checked_tm=0;
 
 //Main Loop
 if ($sink->attached) 
@@ -72,10 +74,12 @@ if ($sink->attached)
    {
       com_message_pump(10);
 
-      echo "Running skypebot...\n";
-
-      $tmp = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID = 0 ORDER BY ADDED DESC");
-      $latest_message = $tmp['MESSAGE']; //.' ('.$tmp['IMPORTANCE'].')'
+      if (time()-$checked_tm>3) {
+       echo "Running skypebot...\n";
+       $checked_tm=time();
+       $tmp = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC LIMIT 1");
+       $latest_message = $tmp['MESSAGE']; //.' ('.$tmp['IMPORTANCE'].')'
+      }
 
       if ($old_message != $latest_message) 
       {
