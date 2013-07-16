@@ -140,6 +140,16 @@
     exit;
    }
 
+   if ($_GET['op']=='log') {
+    $history=array_reverse($history);
+    for($i=0;$i<$total_values;$i++) {
+      echo date('Y-m-d H:i:s', $history[$i]['UNX']);
+      echo ": <b>";
+      echo htmlspecialchars($history[$i]['VALUE'])."</b><br>";
+    }
+    exit;
+   }
+
 
    $next_index=0;
    $temp_array=array($history[0]['VALUE']);

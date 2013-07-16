@@ -69,12 +69,31 @@ if (IsSet($_POST['latitude']))
   
    $rec['ID']=SQLInsert('gpslog', $rec);
 
+   if ($device['USER_ID']) {
+    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".$device['USER_ID']."'");
+    if ($user['LINKED_OBJECT']) {
+     setGlobal($user['LINKED_OBJECT'].'.Coordinates', $rec['LAT'].','.$rec['LON']);
+     $prev_log=SQLSelectOne("SELECT * FROM gpslog WHERE ID!='".$rec['ID']."' ORDER BY ID DESC LIMIT 1");
+     if ($prev_log['ID']) {
+      $distance=calculateTheDistance ($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
+      if ($distance>100) {
+       //we're moving
+       setGlobal($user['LINKED_OBJECT'].'.isMoving', 1);
+       clearTimeOut($user['LINKED_OBJECT'].'_moving');
+       setTimeOut($user['LINKED_OBJECT'].'_moving', "setGlobal(".$user['LINKED_OBJECT'].".isMoving', 0);", 15*60*60); // stopped after 15 minutes of inactivity
+      }
+     }
+    }
+   }
+
    // checking locations
    $lat = (float)$_POST['latitude'];
    $lon = (float)$_POST['longitude'];
 
    $locations = SQLSelect("SELECT * FROM gpslocations");
    $total     = count($locations);
+
+   $location_found=0;
   
    for($i=0;$i<$total;$i++) 
    {
@@ -86,7 +105,11 @@ if (IsSet($_POST['latitude']))
       //echo ' ('.$locations[$i]['LAT'].' : '.$locations[$i]['LON'].') '.$distance.' m';
       if ($distance<=$locations[$i]['RANGE']) 
       {
-         Debmes("Device (" . $device['TITLE'] . ") NEAR location " . $locations[$i]['TITLE']);
+         //Debmes("Device (" . $device['TITLE'] . ") NEAR location " . $locations[$i]['TITLE']);
+         $location_found=1;
+         if ($user['LINKED_OBJECT']) {
+          setGlobal($user['LINKED_OBJECT'].'.seenAt', $locations[$i]['TITLE']);
+         }
     
          // we are at location
          $rec['LOCATION_ID'] = $locations[$i]['ID'];
@@ -152,6 +175,11 @@ if (IsSet($_POST['latitude']))
       }
    }
 }
+
+if ($user['LINKED_OBJECT'] && !$location_found) {
+ setGlobal($user['LINKED_OBJECT'].'.seenAt', '');
+}
+
 
 $tmp = SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%H:%i') as DAT FROM shouts ORDER BY ADDED DESC LIMIT 1");
 

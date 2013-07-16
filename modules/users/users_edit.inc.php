@@ -47,6 +47,9 @@
    global $password;
    $rec['PASSWORD']=$password;
 
+   global $linked_object;
+   $rec['LINKED_OBJECT']=trim($linked_object);
+
    global $avatar;
    global $avatar_name;
    if ($avatar!='') {

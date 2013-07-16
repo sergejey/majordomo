@@ -8,7 +8,13 @@
  <form action="?" method="post">
  [#begin PROPERTIES#]
  <tr>
-  <td valign="top">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</td>
+  <td valign="top">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</b>
+  [#if CLASS_ID!="0"#]
+  [#if KEEP_HISTORY!="0"#]
+  (<a href="#" onClick="return openModalTWindow('propHistory<#TITLE#>.[#TITLE#]', '<#TITLE#>.[#TITLE#]', '/pChart/?p=<#TITLE#>.[#TITLE#]&op=log&type=7d', 600, 600)">H</a>)
+  [#endif#]
+  [#endif#]
+  </td>
   <td valign="top">=</td>
   <td valign="top">
   <textarea name="value[#ID#]" rows=2 cols="90" class="span5">[#VALUE#]</textarea>

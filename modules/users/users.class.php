@@ -216,6 +216,7 @@ users - Users
  users: SKYPE varchar(255) NOT NULL DEFAULT ''
  users: MOBILE varchar(255) NOT NULL DEFAULT ''
  users: AVATAR varchar(255) NOT NULL DEFAULT ''
+ users: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  users: PASSWORD varchar(255) NOT NULL DEFAULT ''
  users: IS_ADMIN tinyint(3) NOT NULL DEFAULT '0'
  users: IS_DEFAULT tinyint(3) NOT NULL DEFAULT '0'
