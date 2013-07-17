@@ -73,6 +73,7 @@ if (IsSet($_POST['latitude']))
     $user=SQLSelectOne("SELECT * FROM users WHERE ID='".$device['USER_ID']."'");
     if ($user['LINKED_OBJECT']) {
      setGlobal($user['LINKED_OBJECT'].'.Coordinates', $rec['LAT'].','.$rec['LON']);
+     setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdated', date('H:i'));
      $prev_log=SQLSelectOne("SELECT * FROM gpslog WHERE ID!='".$rec['ID']."' ORDER BY ID DESC LIMIT 1");
      if ($prev_log['ID']) {
       $distance=calculateTheDistance ($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
@@ -80,7 +81,7 @@ if (IsSet($_POST['latitude']))
        //we're moving
        setGlobal($user['LINKED_OBJECT'].'.isMoving', 1);
        clearTimeOut($user['LINKED_OBJECT'].'_moving');
-       setTimeOut($user['LINKED_OBJECT'].'_moving', "setGlobal(".$user['LINKED_OBJECT'].".isMoving', 0);", 15*60*60); // stopped after 15 minutes of inactivity
+       setTimeOut($user['LINKED_OBJECT'].'_moving', "setGlobal(".$user['LINKED_OBJECT'].".isMoving', 0);", 15*60); // stopped after 15 minutes of inactivity
       }
      }
     }
