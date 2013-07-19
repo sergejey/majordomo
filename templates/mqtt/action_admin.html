@@ -1,0 +1,17 @@
+
+ <!-- action usual -->
+ <!-- table mqtt search -->
+ [#if VIEW_MODE="search_mqtt" || VIEW_MODE=""#]
+  [#inc mqtt_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table mqtt search -->
+ <!-- table mqtt edit -->
+ [#if VIEW_MODE="edit_mqtt"#]
+   [#inc mqtt_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table mqtt edit -->
+ <!-- table mqtt view --> 
+ [#if VIEW_MODE="view_mqtt"#]
+   [#inc mqtt_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table mqtt view -->

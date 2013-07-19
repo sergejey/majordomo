@@ -98,6 +98,7 @@ $dictionary=array(
 'MODULE_SNMP'=>'SNMP',
 'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Security Rules',
+'MODULE_MQTT'=>'MQTT',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
