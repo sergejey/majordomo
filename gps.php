@@ -81,7 +81,7 @@ if (IsSet($_POST['latitude']))
        //we're moving
        setGlobal($user['LINKED_OBJECT'].'.isMoving', 1);
        clearTimeOut($user['LINKED_OBJECT'].'_moving');
-       setTimeOut($user['LINKED_OBJECT'].'_moving', "setGlobal(".$user['LINKED_OBJECT'].".isMoving', 0);", 15*60); // stopped after 15 minutes of inactivity
+       setTimeOut($user['LINKED_OBJECT'].'_moving', "setGlobal('".$user['LINKED_OBJECT'].".isMoving', 0);", 15*60); // stopped after 15 minutes of inactivity
       }
      }
     }
