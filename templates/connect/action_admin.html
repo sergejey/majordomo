@@ -1,0 +1,90 @@
+<!-- table zwave_devices search -->
+<div>
+ CONNECT [ <a href="#" onClick="$('#api_settings').toggle();return false;"><#LANG_SETUP#></a> ]
+ [ <a href="http://connect.smartliving.ru/" target=_blank>More info...</a>]
+</div>
+<div style="display:none" id='api_settings'>
+&nbsp;
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_CONNECT_USERNAME#] style="color:red;font-weight:bold"[#endif#]>
+ Username:
+ </label>
+ <div class="controls"><input type="text" name="connect_username" value="<#CONNECT_USERNAME#>" class="input"></div>
+</div>
+
+<div class="control-group">
+ <label class="control-label"[#if ERR_CONNECT_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
+ Password:
+ </label>
+ <div class="controls"><input type="password" name="connect_password" value="<#CONNECT_PASSWORD#>" class="input"></div>
+</div>
+
+
+<div class="form-actions">
+<button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
+<input type="hidden" name="view_mode" value="update_settings">
+<input type="hidden" name="mode" value="update">
+</div>
+</fieldset>
+</form>
+</div>
+
+
+[#if CONNECT_USERNAME!=""#]
+[#if UPLOADED="1"#]
+
+<p>
+[#if RESULT="OK"#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#else RESULT#]
+<div class="alert alert-error">Error[#if RESULT!=""#]: [#RESULT#][#endif#]</div>
+[#endif RESULT#]
+</p>
+
+[#endif UPLOADED#]
+&nbsp;
+<div>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+
+<div class="control-group">
+Please select items to be sent:
+</div>
+
+<div class="control-group">
+ <div class="controls">
+ <label>
+ <input type="checkbox" name="send_menu" value="1"[#if SEND_MENU="1"#] checked[#endif#]> 
+ Menu</label>
+ </div>
+</div>
+
+<div class="control-group">
+ <div class="controls">
+ <label>
+ <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]> 
+ Classes and Objects</label>
+ </div>
+</div>
+
+<div class="control-group">
+ <div class="controls">
+ <label>
+ <input type="checkbox" name="send_scripts" value="1"[#if SEND_SCRIPTS="1"#] checked[#endif#]> 
+ Scripts</label>
+ </div>
+</div>
+
+
+<div class="form-actions">
+<button type="submit" name="subm" value="Submit" class="btn btn-primary">Send data to CONNECT</button>
+<input type="hidden" name="view_mode" value="send_data">
+<input type="hidden" name="mode" value="update">
+</div>
+</fieldset>
+</form>
+</div>
+[#endif#]

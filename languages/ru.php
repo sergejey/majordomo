@@ -87,6 +87,7 @@ $dictionary=array(
 'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Правила безопасности',
 'MODULE_MQTT'=>'MQTT',
+'MODULE_CONNECT'=>'CONNECT',
 
 'SETUP'=>'Настроить', // objects/objects_edit_methods.html; 
 

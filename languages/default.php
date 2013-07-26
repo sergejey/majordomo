@@ -99,6 +99,7 @@ $dictionary=array(
 'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Security Rules',
 'MODULE_MQTT'=>'MQTT',
+'MODULE_CONNECT'=>'CONNECT',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
