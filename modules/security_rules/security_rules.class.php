@@ -197,6 +197,7 @@ function usual(&$out) {
 */
  function checkAccess($object_type, $object_id) {
 
+  global $session;
 
   $rule=SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='".$object_type."' AND OBJECT_ID='".(int)$object_id."'");
   if (!$rule['ID']) {
@@ -254,7 +255,7 @@ function usual(&$out) {
   //terminals
   if ($rule['TERMINALS']) {
    $terminals_matched=false;
-   if ($session->data['TERMINAL'] && !$session->data['TERMINAL_ID']) {
+   if ($session->data['TERMINAL']) {// && !$session->data['TERMINAL_ID']
     $terminal=SQLSelectOne("SELECT ID FROM terminals WHERE NAME='".$session->data['TERMINAL']."'");
     if ($terminal['ID']) {
      $session->data['TERMINAL_ID']=$terminal['ID'];

@@ -149,9 +149,15 @@ function getParams() {
    }
 
 
+
+
    $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
+    //!$session->data['TERMINAL'] &&  
+    if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST']) {
+     $session->data['TERMINAL']=$terminals[$i]['NAME'];
+    }
     if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
      $terminals[$i]['SELECTED']=1;
      $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
@@ -251,9 +257,11 @@ function getParams() {
     $template_file=DIR_TEMPLATES."menu.html";
    }
 
+
    $this->data=$out;
    $p=new parser($template_file, $this->data, $this);
    return $p->result;
+
 
   }
 
