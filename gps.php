@@ -54,7 +54,7 @@ if (IsSet($_REQUEST['latitude']))
       SQLUpdate('gpsdevices', $device);
    }
 
-   $rec=array();
+   $rec = array();
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['LAT']       = $_REQUEST['latitude'];
    $rec['LON']       = $_REQUEST['longitude'];
@@ -64,6 +64,7 @@ if (IsSet($_REQUEST['latitude']))
    $rec['BATTLEVEL'] = $_REQUEST['battlevel'];
    $rec['CHARGING']  = (int)$_REQUEST['charging'];
    $rec['DEVICEID']  = $_REQUEST['deviceid'];
+   $rec['ACCURACY']  = isset($_REQUEST['accuracy']) ? $_REQUEST['accuracy'] : 0;
    
    if ($device['ID']) $rec['DEVICE_ID'] = $device['ID'];
   
