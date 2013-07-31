@@ -24,7 +24,7 @@ include_once("./load_settings.php");
 
 if ($_REQUEST['location']) 
 {
-   $tmp=explode(',', $_REQUEST['location']);
+   $tmp = explode(',', $_REQUEST['location']);
   
    $_REQUEST['latitude']  = $tmp[0];
    $_REQUEST['longitude'] = $tmp[1];
@@ -32,10 +32,9 @@ if ($_REQUEST['location'])
 
 if (IsSet($_REQUEST['latitude']))  
 {
-   //DebMes("GPS DATA RECEIVED: \n".serialize($_REQUEST));
    if ($_REQUEST['deviceid']) 
    {
-      $device = SQLSelectOne("SELECT * FROM gpsdevices WHERE DEVICEID='" . DBSafe($_REQUEST['deviceid']) . "'");
+      $device = SQLSelectOne("select * from gpsdevices where DEVICEID = '" . DBSafe($_REQUEST['deviceid']) . "'");
    
       if (!$device['ID']) 
       {
@@ -52,6 +51,7 @@ if (IsSet($_REQUEST['latitude']))
       $device['UPDATED'] = date('Y-m-d H:i:s');
       
       SQLUpdate('gpsdevices', $device);
+      
    }
 
    $rec = array();
@@ -72,13 +72,13 @@ if (IsSet($_REQUEST['latitude']))
 
    if ($device['USER_ID']) 
    {
-      $user=SQLSelectOne("select * from USERS where ID = '" . $device['USER_ID'] . "'");
+      $user = SQLSelectOne("select * from users where ID = '" . $device['USER_ID'] . "'");
       if ($user['LINKED_OBJECT']) 
       {
          setGlobal($user['LINKED_OBJECT'] . '.Coordinates', $rec['LAT'] . ',' . $rec['LON']);
          setGlobal($user['LINKED_OBJECT'] . '.CoordinatesUpdated', date('H:i'));
          
-         $prev_log = SQLSelectOne("select * from GPSLOG where ID != '" . $rec['ID'] . "' order by ID desc limit 1");
+         $prev_log = SQLSelectOne("select * from gpslog where ID != '" . $rec['ID'] . "' order by ID desc limit 1");
          if ($prev_log['ID']) 
          {
             $distance = calculateTheDistance($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
@@ -87,7 +87,7 @@ if (IsSet($_REQUEST['latitude']))
                setGlobal($user['LINKED_OBJECT'] . '.isMoving', 1);
                clearTimeOut($user['LINKED_OBJECT'] . '_moving');
                // stopped after 15 minutes of inactivity
-               setTimeOut($user['LINKED_OBJECT'] . '_moving', "setGlobal('" . $user['LINKED_OBJECT'] . ".isMoving', 0);", 15*60); 
+               setTimeOut($user['LINKED_OBJECT'] . '_moving', "setGlobal('" . $user['LINKED_OBJECT'] . ".isMoving', 0);", 15 * 60); 
             }
          }
       }
@@ -97,7 +97,7 @@ if (IsSet($_REQUEST['latitude']))
    $lat = (float)$_REQUEST['latitude'];
    $lon = (float)$_REQUEST['longitude'];
 
-   $locations      = SQLSelect("select * from GPSLOCATIONS");
+   $locations      = SQLSelect("select * from gpslocations");
    $total          = count($locations);
    $location_found = 0;
   
@@ -122,14 +122,14 @@ if (IsSet($_REQUEST['latitude']))
     
          SQLUpdate('gpslog', $rec);
 
-         $tmp = SQLSelectOne("select * from GPSLOG where DEVICE_ID = '" . $device['ID'] . "' AND ID != '" . $rec['ID'] . "' order by ADDED desc limit 1");
+         $tmp = SQLSelectOne("select * from gpslog where DEVICE_ID = '" . $device['ID'] . "' AND ID != '" . $rec['ID'] . "' order by ADDED desc limit 1");
          
-         if ($tmp['LOCATION_ID']!=$locations[$i]['ID']) 
+         if ($tmp['LOCATION_ID'] != $locations[$i]['ID']) 
          {
-            Debmes("Device (" . $device['TITLE'] . ") ENTERED location " . $locations[$i]['TITLE']);
-     
+            //Debmes("Device (" . $device['TITLE'] . ") ENTERED location " . $locations[$i]['TITLE']);
+           
             // entered location
-            $gpsaction = SQLSelectOne("select * from GPSACTIONS where LOCATION_ID = '" . $locations[$i]['ID'] . "' AND ACTION_TYPE = 1 AND USER_ID = '" . $device['USER_ID'] . "'");
+            $gpsaction = SQLSelectOne("select * from gpsactions where LOCATION_ID = '" . $locations[$i]['ID'] . "' and ACTION_TYPE = 1 and USER_ID = '" . $device['USER_ID'] . "'");
      
             if ($gpsaction['ID']) 
             {
@@ -151,14 +151,14 @@ if (IsSet($_REQUEST['latitude']))
       } 
       else 
       {
-         $tmp = SQLSelectOne("select * from GPSLOG where DEVICE_ID = '" . $device['ID'] . "' and ID != '" . $rec['ID'] . "' order by ADDED desc limit 1");
+         $tmp = SQLSelectOne("select * from gpslog where DEVICE_ID = '" . $device['ID'] . "' and ID != '" . $rec['ID'] . "' order by ADDED desc limit 1");
     
          if ($tmp['LOCATION_ID'] == $locations[$i]['ID']) 
          {
             Debmes("Device (" . $device['TITLE'] . ") LEFT location " . $locations[$i]['TITLE']);
      
             // left location
-            $gpsaction = SQLSelectOne("select * from GPSACTIONS where LOCATION_ID = '" . $locations[$i]['ID'] . "' and ACTION_TYPE = 0 and USER_ID = '" . $device['USER_ID'] . "'");
+            $gpsaction = SQLSelectOne("select * from gpsactions where LOCATION_ID = '" . $locations[$i]['ID'] . "' and ACTION_TYPE = 0 and USER_ID = '" . $device['USER_ID'] . "'");
      
             if ($gpsaction['ID']) 
             {
@@ -184,7 +184,7 @@ if (IsSet($_REQUEST['latitude']))
 if ($user['LINKED_OBJECT'] && !$location_found) 
    setGlobal($user['LINKED_OBJECT'].'.seenAt', '');
 
-$tmp = SQLSelectOne("select *, date_format(ADDED, '%H:%i') as DAT from SHOUTS order by ADDED desc limit 1");
+$tmp = SQLSelectOne("select *, date_format(ADDED, '%H:%i') as DAT from shouts order by ADDED desc limit 1");
 
 if (!headers_sent()) 
 {
@@ -207,7 +207,14 @@ $db->Disconnect();
 // end calculation of execution time
 endMeasure('TOTAL'); 
 
-// Радиус земли
+/**
+ * Calculate distance between two GPS points
+ * @param $latA FirstLatitude
+ * @param $lonA FirstLongitude
+ * @param $latB SecondLatitude
+ * @param $lonB SecondLongitude
+ * @return
+ */
 function calculateTheDistance($latA, $lonA, $latB, $lonB) 
 {
    define('EARTH_RADIUS', 6372795);
