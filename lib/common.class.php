@@ -87,6 +87,14 @@
                 }
         }
 
+        if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level>=SETTINGS_GROWL_LEVEL) {
+         include_once(ROOT.'lib/growl/growl.gntp.php');
+         $growl = new Growl(SETTINGS_GROWL_HOST, SETTINGS_GROWL_PASSWORD);
+         $growl->setApplication('MajorDoMo','Notifications');
+         //$growl->registerApplication('http://localhost/img/logo.png');
+         $growl->notify($ph);
+        }
+
         postToTwitter($ph);
 
  }

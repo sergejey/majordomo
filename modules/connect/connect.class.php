@@ -192,6 +192,7 @@ function admin(&$out) {
   if ($this->config['SEND_SCRIPTS']) {
    // objects scripts
    $data['SCRIPTS']=SQLSelect("SELECT * FROM scripts");
+   $data['SCRIPT_CATEGORIES']=SQLSelect("SELECT * FROM script_categories");
   }
 
   // POST TO SERVER

@@ -102,7 +102,7 @@ function getParams() {
     exit;
    }
 
-   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_TTS_GOOGLE')) {
+   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_TTS_GOOGLE') || !defined('SETTINGS_GROWL_ENABLE')) {
     $this->action='first_start';
    }
 

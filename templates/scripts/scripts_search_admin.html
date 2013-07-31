@@ -42,7 +42,7 @@
 <table border=0 cellpadding=5 cellspacing=1 width="100%">
 [#endif#]
 <tr>
- <td width="70%">
+ <td nowrap>
   <b>
   [#if TITLE!=""#]
    <a href="?view_mode=edit_scripts&id=[#ID#]">[#TITLE#]</a>
@@ -51,6 +51,7 @@
   [#endif#]
   </a></b>
  </td>
+ <td valign="top" width="60%">[#DESCRIPTION#]&nbsp;</td>
  <td width="30%">
   <table border=0>
   [#if "<#ACTION#>"=="admin"#]
