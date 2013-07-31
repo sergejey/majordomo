@@ -15,13 +15,25 @@
  Define("THIS_URL", $_SERVER['REQUEST_URI']);
 // liblary modules loader
 
-if ($lib_dir = @opendir("./lib")) {
-  while (($lib_file = readdir($lib_dir)) !== false) {
-    if ((preg_match("/\.php$/", $lib_file)) && ($lib_file!="loader.php")) {
-     include_once("./lib/$lib_file");
-    }
-  }
-  closedir($lib_dir);
+if ($lib_dir = @opendir("./lib")) 
+{
+   while (($lib_file = readdir($lib_dir)) !== false) 
+   {
+      if ((preg_match("/\.php$/", $lib_file)) && ($lib_file!="loader.php")) 
+      {
+         include_once("./lib/$lib_file");
+      }
+   }   
+  
+   closedir($lib_dir);
 }
+
+//DebMes(dirname(__FILE__));
+// Insert the path where you unpacked log4php
+require_once dirname(__FILE__) . '/Log4Php/Logger.php';
+// Tell log4php to use our configuration file.
+Logger::configure(dirname(__FILE__) . '/Log4Php/config.xml');
+// Fetch a logger, it will inherit settings from the root logger
+$log = Logger::getLogger('MajorDomo');
 
 ?>

@@ -203,26 +203,28 @@ function usual(&$out) {
  }
 
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function loadObject($id) {
-  $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".DBSafe($id)."'");
-  if ($rec['ID']) {
-   $this->id=$rec['ID'];
-   $this->object_title=$rec['TITLE'];
-   $this->class_id=$rec['CLASS_ID'];
-   $this->description=$rec['DESCRIPTION'];
-   $this->location_id=$rec['LOCATION_ID'];
-  } else {
-   return false;
-  }
-
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+   function loadObject($id) 
+   {
+      $rec = SQLSelectOne("select * from objects where ID= '" . DBSafe($id) . "'");
+  
+      if ($rec['ID']) 
+      {
+         $this->id           = $rec['ID'];
+         $this->object_title = $rec['TITLE'];
+         $this->class_id     = $rec['CLASS_ID'];
+         $this->description  = $rec['DESCRIPTION'];
+         $this->location_id  = $rec['LOCATION_ID'];
+      } 
+      else 
+      {
+         return false;
+      }
+   }
 
 
  /**

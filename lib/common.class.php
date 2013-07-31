@@ -270,61 +270,58 @@
   }
  }
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function addScheduledJob($title, $commands, $datetime, $expire=60) {
-  $rec=array();
-  $rec['TITLE']=$title;
-  $rec['COMMANDS']=$commands;
-  $rec['RUNTIME']=date('Y-m-d H:i:s', $datetime);
-  $rec['EXPIRE']=date('Y-m-d H:i:s', $datetime+$expire);
-  $rec['ID']=SQLInsert('jobs', $rec);
-  return $rec['ID'];
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+   function addScheduledJob($title, $commands, $datetime, $expire = 60) 
+   {
+      $rec=array();
+      $rec['TITLE']    = $title;
+      $rec['COMMANDS'] = $commands;
+      $rec['RUNTIME']  = date('Y-m-d H:i:s', $datetime);
+      $rec['EXPIRE']   = date('Y-m-d H:i:s', $datetime+$expire);
+      $rec['ID']       = SQLInsert('jobs', $rec);
+      
+      return $rec['ID'];
+   }
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function clearScheduledJob($title) {
-  SQLExec("DELETE FROM jobs WHERE TITLE LIKE '".DBSafe($title)."'"); // AND RUNTIME>='".date('Y-m-d H:i:s')."'
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+   function clearScheduledJob($title) 
+   {
+      SQLExec("delete from jobs where TITLE like '" . DBSafe($title) . "'"); // and RUNTIME >= '" . date('Y-m-d H:i:s') . "'
+   }
 
  function deleteScheduledJob($id) {
   SQLExec("DELETE FROM jobs WHERE ID=".(int)$id);
  }
 
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function setTimeOut($title, $commands, $timeout) {
-  clearTimeOut($title);
-  return addScheduledJob($title,$commands, time()+$timeout);
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+   function setTimeOut($title, $commands, $timeout) 
+   {
+      clearTimeOut($title);
+      return addScheduledJob($title,$commands, time() + $timeout);
+   }
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function clearTimeOut($title) {
-  return clearScheduledJob($title);
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+   function clearTimeOut($title) 
+   {
+      return clearScheduledJob($title);
+   }
 
 /**
 * Title
@@ -540,18 +537,17 @@
 
  }
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function runScript($id, $params='') {
-  include_once(DIR_MODULES.'scripts/scripts.class.php');
-  $sc=new scripts();
-  $sc->runScript($id, $params);
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+    function runScript($id, $params = '') 
+    {
+      include_once(DIR_MODULES . 'scripts/scripts.class.php');
+      $sc = new scripts();
+      $sc->runScript($id, $params);
+    }
 
 /**
 * Title

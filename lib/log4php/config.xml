@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration xmlns="http://logging.apache.org/log4php/">
+   <appender name="MajorDomo" class="LoggerAppenderFile">
+      <layout class="LoggerLayoutPattern">
+         <param name="conversionPattern" value="%date [%level] File: %file Line: %line %newline Message: %message%newline%newline" />
+      </layout>
+      <param name="file" value="Log/logfile.log" />
+   </appender>
+   <root>
+      <level value="INFO" />
+      <appender_ref ref="MajorDomo" />
+   </root>
+</configuration>

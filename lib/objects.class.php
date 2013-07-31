@@ -4,24 +4,27 @@
 */
 
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function getObject($name) {
-  $rec=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($name)."'");
-  if ($rec['ID']) {
-   include_once(DIR_MODULES.'objects/objects.class.php');
-   $obj=new objects();
-   $obj->id=$rec['ID'];
-   $obj->loadObject($rec['ID']);
-   return $obj;
-  }
-  return 0;
- }
+   /**
+    * Title
+    * Description
+    * @access public
+    */
+   function getObject($name) 
+   {
+      $rec = SQLSelectOne("select * from objects where TITLE like '" . DBSafe($name) . "'");
+     
+      if ($rec['ID']) 
+      {
+         include_once(DIR_MODULES . 'objects/objects.class.php');
+         $obj = new objects();
+         $obj->id = $rec['ID'];
+         $obj->loadObject($rec['ID']);
+      
+         return $obj;
+      }
+      
+      return 0;
+   }
 
 
 /**
@@ -88,28 +91,34 @@
   }
  }
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function setGlobal($varname, $value, $no_linked=0) {
-  $tmp=explode('.', $varname);
-  if ($tmp[1]) {
-   $object_name=$tmp[0];
-   $varname=$tmp[1];
-  } else {
-   $object_name='ThisComputer';
-  }
-  $obj=getObject($object_name);
-  if ($obj) {
-   return $obj->setProperty($varname, $value, $no_linked);
-  } else {
-   return 0;
-  }
- }
+   /**
+    * Title
+    *
+    * Description
+    *
+    * @access public
+    */
+   function setGlobal($varname, $value, $no_linked = 0) 
+   {
+      $tmp = explode('.', $varname);
+      if ($tmp[1]) 
+      {
+         $object_name = $tmp[0];
+         $varname     = $tmp[1];
+      } 
+      else 
+      {
+         $object_name='ThisComputer';
+      }
+  
+      $obj = getObject($object_name);
+      
+      if ($obj) 
+         return $obj->setProperty($varname, $value, $no_linked);
+      else
+         return 0;
+  
+   }
 
 /**
 * Title
