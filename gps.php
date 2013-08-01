@@ -72,13 +72,13 @@ if (IsSet($_REQUEST['latitude']))
 
    if ($device['USER_ID']) 
    {
-      $user=SQLSelectOne("select * from USERS where ID = '" . $device['USER_ID'] . "'");
+      $user=SQLSelectOne("SELECT * FROM users WHERE ID = '" . $device['USER_ID'] . "'");
       if ($user['LINKED_OBJECT']) 
       {
          setGlobal($user['LINKED_OBJECT'] . '.Coordinates', $rec['LAT'] . ',' . $rec['LON']);
          setGlobal($user['LINKED_OBJECT'] . '.CoordinatesUpdated', date('H:i'));
          
-         $prev_log = SQLSelectOne("select * from GPSLOG where ID != '" . $rec['ID'] . "' order by ID desc limit 1");
+         $prev_log = SQLSelectOne("SELECT * FROM gpslog WHERE ID != '" . $rec['ID'] . "' ORDER BY ID DESC LIMIT 1");
          if ($prev_log['ID']) 
          {
             $distance = calculateTheDistance($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
@@ -97,7 +97,7 @@ if (IsSet($_REQUEST['latitude']))
    $lat = (float)$_REQUEST['latitude'];
    $lon = (float)$_REQUEST['longitude'];
 
-   $locations      = SQLSelect("select * from GPSLOCATIONS");
+   $locations      = SQLSelect("SELECT * FROM gpslocations");
    $total          = count($locations);
    $location_found = 0;
   
@@ -122,14 +122,14 @@ if (IsSet($_REQUEST['latitude']))
     
          SQLUpdate('gpslog', $rec);
 
-         $tmp = SQLSelectOne("select * from GPSLOG where DEVICE_ID = '" . $device['ID'] . "' AND ID != '" . $rec['ID'] . "' order by ADDED desc limit 1");
+         $tmp = SQLSelectOne("SELECT * FROM gpslog WHERE DEVICE_ID = '" . $device['ID'] . "' AND ID != '" . $rec['ID'] . "' ORDER BY ADDED DESC LIMIT 1");
          
          if ($tmp['LOCATION_ID']!=$locations[$i]['ID']) 
          {
             Debmes("Device (" . $device['TITLE'] . ") ENTERED location " . $locations[$i]['TITLE']);
      
             // entered location
-            $gpsaction = SQLSelectOne("select * from GPSACTIONS where LOCATION_ID = '" . $locations[$i]['ID'] . "' AND ACTION_TYPE = 1 AND USER_ID = '" . $device['USER_ID'] . "'");
+            $gpsaction = SQLSelectOne("SELECT * FROM gpsactions WHERE LOCATION_ID = '" . $locations[$i]['ID'] . "' AND ACTION_TYPE = 1 AND USER_ID = '" . $device['USER_ID'] . "'");
      
             if ($gpsaction['ID']) 
             {
@@ -151,14 +151,14 @@ if (IsSet($_REQUEST['latitude']))
       } 
       else 
       {
-         $tmp = SQLSelectOne("select * from GPSLOG where DEVICE_ID = '" . $device['ID'] . "' and ID != '" . $rec['ID'] . "' order by ADDED desc limit 1");
+         $tmp = SQLSelectOne("SELECT * FROM gpslog WHERE DEVICE_ID = '" . $device['ID'] . "' AND ID != '" . $rec['ID'] . "' ORDER BY ADDED DESC LIMIT 1");
     
          if ($tmp['LOCATION_ID'] == $locations[$i]['ID']) 
          {
             Debmes("Device (" . $device['TITLE'] . ") LEFT location " . $locations[$i]['TITLE']);
      
             // left location
-            $gpsaction = SQLSelectOne("select * from GPSACTIONS where LOCATION_ID = '" . $locations[$i]['ID'] . "' and ACTION_TYPE = 0 and USER_ID = '" . $device['USER_ID'] . "'");
+            $gpsaction = SQLSelectOne("SELECT * FROM gpsactions WHERE LOCATION_ID = '" . $locations[$i]['ID'] . "' AND ACTION_TYPE = 0 AND USER_ID = '" . $device['USER_ID'] . "'");
      
             if ($gpsaction['ID']) 
             {
@@ -184,7 +184,7 @@ if (IsSet($_REQUEST['latitude']))
 if ($user['LINKED_OBJECT'] && !$location_found) 
    setGlobal($user['LINKED_OBJECT'].'.seenAt', '');
 
-$tmp = SQLSelectOne("select *, date_format(ADDED, '%H:%i') as DAT from SHOUTS order by ADDED desc limit 1");
+$tmp = SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%H:%i') AS DAT FROM shouts ORDER BY ADDED DESC LIMIT 1");
 
 if (!headers_sent()) 
 {
