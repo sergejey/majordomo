@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 * @package MajorDoMo
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
@@ -690,4 +690,3 @@
   return $sc->checkAccess($object_type, $object_id);
  }
 
-?>
