@@ -22,7 +22,6 @@ function classes() {
   $this->name="classes";
   $this->title="<#LANG_MODULE_OBJECTS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
-
   $this->checkInstalled();
 }
 /**
@@ -619,6 +618,7 @@ classes - Classes
  classes: NOLOG int(3) NOT NULL DEFAULT '0'
  classes: SUB_LIST text
  classes: PARENT_LIST text
+ classes: DESCRIPTION text
 EOD;
   parent::dbInstall($data);
  }

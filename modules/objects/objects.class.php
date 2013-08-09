@@ -555,8 +555,8 @@ curl_close($ch);
    $property_linked_history[$property][$prop['ONCHANGE']]=1;
    global $on_change_called;
    $params=array();
-   $params['NEW_VALUE']=$value;
-   $params['OLD_VALUE']=$old_value;
+   $params['NEW_VALUE']=(string)$value;
+   $params['OLD_VALUE']=(string)$old_value;
    $this->callMethod($prop['ONCHANGE'], $params);
   } elseif ($prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) {
    unset($property_linked_history[$property][$prop['ONCHANGE']]);
