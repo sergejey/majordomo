@@ -19,26 +19,29 @@
 /**
 * Getting micro-time
 */
-function getmicrotime(){ 
+function getmicrotime()
+{ 
    list($usec, $sec) = explode(" ",microtime()); 
    return ((float)$usec + (float)$sec); 
-  } 
+} 
 
 /**
 * Starting measurement
-*
 * Starting measurement of time for specified block
 *
 * @param string $mpoint monitoring block name
 */
- function StartMeasure($mpoint) {
-  global $perf_data;
-  $tmp=getmicrotime();
-  $perf_data[$mpoint]['START']=getmicrotime();
-  if(!$perf_data[$mpoint]['MEMORY_START'] && function_exists('memory_get_usage') ) {
-   $perf_data[$mpoint]['MEMORY_START']=memory_get_usage(); 
-  }
- }
+function StartMeasure($mpoint) 
+{
+   global $perf_data;
+   $tmp = getmicrotime();
+  
+   $perf_data[$mpoint]['START'] = getmicrotime();
+   if(!isset($perf_data[$mpoint]['MEMORY_START']) && function_exists('memory_get_usage') ) 
+   {
+      $perf_data[$mpoint]['MEMORY_START'] = memory_get_usage(); 
+   }
+}
 
 /**
 * Ending measurement
@@ -47,15 +50,28 @@ function getmicrotime(){
 *
 * @param string $mpoint monitoring block name
 */
- function EndMeasure($mpoint) {
-  global $perf_data;
-  $perf_data[$mpoint]['END']=getmicrotime();
-  if(!$perf_data[$mpoint]['MEMORY_END'] && function_exists('memory_get_usage')) {
-   $perf_data[$mpoint]['MEMORY_END']=memory_get_usage(); 
-  }
-  $perf_data[$mpoint]['TIME']+=$perf_data[$mpoint]['END']-$perf_data[$mpoint]['START'];
-  $perf_data[$mpoint]['NUM']++;
- }
+function EndMeasure($mpoint) 
+{
+   global $perf_data;
+  
+   $perf_data[$mpoint]['END'] = getmicrotime();
+  
+   if(!isset($perf_data[$mpoint]['MEMORY_END']) && function_exists('memory_get_usage')) 
+   {
+      $perf_data[$mpoint]['MEMORY_END'] = memory_get_usage(); 
+   }
+  
+   //$perf_data[$mpoint]['TIME'] += $perf_data[$mpoint]['END'] - $perf_data[$mpoint]['START'];
+   if(isset($perf_data[$mpoint]['TIME']))
+      $perf_data[$mpoint]['TIME'] += $perf_data[$mpoint]['END'] - $perf_data[$mpoint]['START'];
+   else
+      $perf_data[$mpoint]['TIME'] = $perf_data[$mpoint]['END'] - $perf_data[$mpoint]['START'];
+   
+   if (isset($perf_data[$mpoint]['NUM']))
+      $perf_data[$mpoint]['NUM']++;
+   else
+      $perf_data[$mpoint]['NUM'] = 1;
+}
 
 /**
 * Report builder
@@ -64,27 +80,32 @@ function getmicrotime(){
 *
 * @param boolean $hidden n/a
 */
- function PerformanceReport($hidden=1) {
-  global $perf_data;
-  echo "<!-- BEGIN PERFORMANCE REPORT\n";
-  foreach ($perf_data as $k => $v) {
-   if ($perf_data['TOTAL']['TIME']) {
-    $v['PROC']=((int)($v['TIME']/$perf_data['TOTAL']['TIME']*100*100))/100;
+function PerformanceReport($hidden = 1) 
+{
+   global $perf_data;
+  
+   echo "<!-- BEGIN PERFORMANCE REPORT\n";
+   foreach ($perf_data as $k => $v) 
+   {
+      if ($perf_data['TOTAL']['TIME']) 
+         $v['PROC'] = ((int)($v['TIME'] / $perf_data['TOTAL']['TIME'] * 100 * 100)) / 100;
+   
+      $rs = "$k (" . $v['NUM'] . "): " . round($v['TIME'], 4) ." " . round($v['PROC'], 2) ."%";
+   
+      if ($v['MEMORY_START']) 
+         $rs .= ' M (s): ' . $v['MEMORY_START'] . 'b';
+   
+      if ($v['MEMORY_END']) 
+         $rs .= ' M (e): ' . $v['MEMORY_END'] . 'b';
+   
+      if (!$v['NUM']) 
+         $tmp[] = "Not finished $k";
+   
+      $tmp[] = $rs;
    }
-   $rs="$k (".$v['NUM']."): ".round($v['TIME'], 4)." ".round($v['PROC'], 2)."%";
-   if ($v['MEMORY_START']) {
-    $rs.=' M (s): '.$v['MEMORY_START'].'b';
-   }
-   if ($v['MEMORY_END']) {
-    $rs.=' M (e): '.$v['MEMORY_END'].'b';
-   }
-   if (!$v['NUM']) {
-    $tmp[]="Not finished $k";
-   }
-   $tmp[]=$rs;
-  }
-  echo implode("\n", $tmp);
-  echo "\n END PERFORMANCE REPORT -->";
- }
+  
+   echo implode("\n", $tmp);
+   echo "\n END PERFORMANCE REPORT -->";
+}
 
 ?>

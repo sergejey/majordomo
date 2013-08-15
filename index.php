@@ -22,7 +22,7 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 
-if (!$_GET['nocache']) 
+if (!isset($_GET['nocache'])) 
 {
    // use cache?
    $use_caching = 0; 
@@ -33,7 +33,7 @@ else
 }
 
 // 60 minutes cache expiration time
-$cache_expire  = 60*60; 
+$cache_expire  = 60 * 60; 
 $cached_result = '';
 
 $req_url = $_SERVER['REQUEST_URI'];
@@ -215,9 +215,9 @@ echobig($result);
 
 endMeasure('final_echo');
 
-if ($cache_filename != '' && $cached_result == '') 
+if (isset($cache_filename) && $cache_filename != '' && $cached_result == '') 
 {
-   SaveFile(ROOT.'cached/'.$cache_filename, $result);
+   SaveFile(ROOT.'cached/' . $cache_filename, $result);
 }
 
 $session->save();
