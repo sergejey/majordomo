@@ -19,8 +19,8 @@ $known_fields = array(
                   'windLatest'           => 6,
                   'windAverage'          => 5,
                   'rainfallRate'         => 8,
-                  'rainfallHour'         => 9,
-                  'rainfall24'           => 47,
+                  'rainfallHour'         => 47,
+                  'rainfall24'           => 9,
                   'pressure'             => 10,
                   'pressureRt'           => -1,
                   'pressureTrend'        => 18,
@@ -81,6 +81,8 @@ foreach($known_fields as $k=>$v)
 }
 
 $res = '';
+
+$updated=array();
  
 foreach($known_fields as $k=>$v) 
 {
@@ -89,11 +91,17 @@ foreach($known_fields as $k=>$v)
    $res .= $k . ' = ' . $data[(int)$v] . "\n";
    $old_value = getGlobal('ws.'.$k);
   
-   if ($old_value!=$data[(int)$v]) 
-      setGlobal('ws.'.$k, $data[(int)$v]);
+   if ($old_value!=$data[(int)$v]) {
+     $updated[$k]=1;
+     setGlobal('ws.'.$k, $data[(int)$v]);
+   } 
+   
 }
 
-setGlobal('ws.pressureRt', round(((float)getGlobal('ws.pressure'))/1.33), 1);
+if ($updated['pressure']) {
+ setGlobal('ws.pressureRt', round(((float)getGlobal('ws.pressure'))/1.33), 1);
+}
+
 
 echo "OK";
 

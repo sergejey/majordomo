@@ -362,7 +362,7 @@ function admin(&$out) {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
     if ($this->view_mode=='') {
-     $res=SQLSelect("SELECT pvalues.*, objects.TITLE as OBJECT, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID  ORDER BY pvalues.UPDATED DESC");
+     $res=SQLSelect("SELECT pvalues.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, properties.TITLE as PROPERTY, properties.DESCRIPTION FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID  ORDER BY pvalues.UPDATED DESC");
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
@@ -374,6 +374,9 @@ function admin(&$out) {
       echo '<tr>';
       echo '<td>';
       echo $res[$i]['OBJECT'].'.'.$res[$i]['PROPERTY'];
+      if ($res[$i]['OBJECT_DESCRIPTION']!='') {
+      echo "<br><small style='font-size:9px'>".$res[$i]['OBJECT_DESCRIPTION']."</small>";
+      }
       echo '</td>';
       echo '<td>';
       echo $res[$i]['VALUE'].'&nbsp;';
@@ -385,7 +388,7 @@ function admin(&$out) {
      }
      echo '</table>';
     } elseif ($this->view_mode=='methods') {
-     $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE 1 ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
+     $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, methods.DESCRIPTION FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE 1 ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
@@ -396,7 +399,18 @@ function admin(&$out) {
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
       echo '<td>';
+      @$tmp=unserialize($res[$i]['EXECUTED_PARAMS']);
+      if ($tmp['ORIGINAL_OBJECT_TITLE'] && !$res[$i]['OBJECT']) {
+       $res[$i]['OBJECT']=$tmp['ORIGINAL_OBJECT_TITLE'];
+       //unset($tmp['ORIGINAL_OBJECT_TITLE']);
+       $res[$i]['EXECUTED_PARAMS']=serialize($tmp);
+      }
       echo $res[$i]['OBJECT'].'.'.$res[$i]['TITLE'];
+      if ($res[$i]['DESCRIPTION']) {
+       echo "<br><small style='font-size:9px'>";
+       echo $res[$i]['DESCRIPTION'];
+       echo "</small>";
+      }
       echo '</td>';
       echo '<td>';
       echo str_replace(';', '; ', $res[$i]['EXECUTED_PARAMS']).'&nbsp;';
@@ -420,6 +434,9 @@ function admin(&$out) {
       echo '<tr>';
       echo '<td>';
       echo $res[$i]['TITLE'];
+      if ($res[$i]['DESCRIPTION']!='') {
+       echo "<br><small style='font-size:9px'>".$res[$i]['DESCRIPTION']."</small>";
+      }
       echo '</td>';
       echo '<td>';
       echo str_replace(';', '; ', $res[$i]['EXECUTED_PARAMS']).'&nbsp;';

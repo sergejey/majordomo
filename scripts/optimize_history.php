@@ -16,6 +16,7 @@
 
  $rules=array(
   'tempSensors.temp'=>array('optimize'=>'avg'),
+  'humiditySensors.humidity'=>array('optimize'=>'avg'),
   'uptime'=>array('keep'=>30, 'optimize'=>'max'),
   'Relays.status'=>array('keep'=>0),
   'WeatherStations.tempOutside'=>array('optimize'=>'avg'),
@@ -26,6 +27,7 @@
 
  set_time_limit(6000);
 
+ DebMes("Optimize history script started");
 
  //STEP 1 -- calculate stats
  echo "Calculating stats:<br>";
@@ -147,6 +149,8 @@
  echo "<h1>DONE!!!</h1>";
 
  $db->Disconnect(); // closing database connection
+
+ DebMes("Optimize history script finished");
 
 /**
 * Title
