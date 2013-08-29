@@ -200,10 +200,10 @@ function checkfile($path, $move) {
   } else {
    //echo $path." -> ".$dest." (OK ".round($tmdiff/60/60, 1)." h)\n";
    $fs=filesize($path);
-   if ($fs>(2*1024*1024)) {
+   //if ($fs>(2*1024*1024)) {
     $k=basename($path).'_'.$fs;
     //$files_copied[$k]=$dest;
-   }
+   //}
   }
  }
 

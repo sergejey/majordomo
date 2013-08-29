@@ -121,11 +121,11 @@ usort ($all_points, "cmp");
 
 $cp = $all_points[0];
 
-$_POST['latitude']  = $cp['LATITUDE'];
-$_POST['longitude'] = $cp['LONGITUDE'];
-$_POST['altitude']  = $cp['ALTITUDE'];
-$_POST['speed']     = $cp['SPEED'];
-$_POST['battlevel'] = $cp['BATTERY'];
+$_REQUEST['latitude']  = $cp['LATITUDE'];
+$_REQUEST['longitude'] = $cp['LONGITUDE'];
+$_REQUEST['altitude']  = $cp['ALTITUDE'];
+$_REQUEST['speed']     = $cp['SPEED'];
+$_REQUEST['battlevel'] = $cp['BATTERY'];
 
 /*
 $_POST['latitude']
