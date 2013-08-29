@@ -126,7 +126,7 @@ class jTemplate {
   $res=preg_replace("/<!--#.+?#-->/is", "", $res);
  }
 
- //NOTE: compiler should be perfect for this template engine (тест)
+ //NOTE: compiler should be perfect for this template engine (пїЅпїЅпїЅпїЅ)
 
  // METHODS
  if (Is_Integer(strpos($res, '[#method '))) {
@@ -453,7 +453,7 @@ class jTemplate {
       $temp=array();
       $temp=explode("[#else#]", $body);
       $true_part=$temp[0];
-      $false_part=$temp[1];
+      $false_part= isset($temp[1]) ? $temp[1] : "";
       $condition=preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
       $condition=preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
       $condition=preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);
