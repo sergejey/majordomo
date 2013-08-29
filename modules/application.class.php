@@ -23,7 +23,7 @@
 
 // --------------------------------------------------------------------
 
-function saveParams() {
+function saveParams($data = 1) {
  $p=array();
  $p["action"]=$this->action;
  $p['doc_name']=$this->doc_name;
