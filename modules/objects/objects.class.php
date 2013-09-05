@@ -450,7 +450,13 @@ curl_close($ch);
    $v['VALUE']=$value;
    if ($v['ID']) {
     $v['UPDATED']=date('Y-m-d H:i:s');
-    SQLUpdate('pvalues', $v);
+    if ($old_value!=$value) {
+     SQLUpdate('pvalues', $v);
+     //DebMes("Setting [".$this->object_title.".".$property."] to new value [".$value."]");
+    } else {
+     SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
+     //DebMes("Setting [".$this->object_title.".".$property."] to the same value [".$value."]");
+    }
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
@@ -557,8 +563,8 @@ curl_close($ch);
    $property_linked_history[$property][$prop['ONCHANGE']]=1;
    global $on_change_called;
    $params=array();
-   $params['NEW_VALUE']=$value;
-   $params['OLD_VALUE']=$old_value;
+   $params['NEW_VALUE']=(string)$value;
+   $params['OLD_VALUE']=(string)$old_value;
    $this->callMethod($prop['ONCHANGE'], $params);
   } elseif ($prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) {
    unset($property_linked_history[$property][$prop['ONCHANGE']]);

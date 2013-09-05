@@ -38,6 +38,7 @@ else
    
    // Get device identification
    $deviceId = $xml->devId;
+
    $_REQUEST['deviceid'] = $deviceId;
    
    // Prepare list of points

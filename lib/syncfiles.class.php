@@ -47,15 +47,15 @@ function preparePathTime($s, $mtime)
    {
       $s = str_replace('$' .$v, date($v), $s);
       $s = str_replace('%' .$v, date($v, $mtime), $s);
-  }
+   }
   return $s;  
 }
 
 function is_dir2($d) 
 {
    $d = str_replace('NET:', '//', $d);
-   if (is_dir($d)) 
-      return 1;
+   
+   if (is_dir($d)) return 1;
    
    if ($node = @opendir($d)) 
    {
@@ -173,9 +173,9 @@ function checkfile($path, $move)
       $src_size  = filesize($path);
       $tmdiff    = filemtime($path) - filemtime($dest);
       
-      if ($tmdiff>$acc || ($dest_size == 0 && $src_size != 0)) 
+      if ($tmdiff > $acc || ($dest_size == 0 && $src_size != 0)) 
       { 
-         $status = "updated $tmdiff";
+         $status = "updated " . $tmdiff;
          echo $path . " -> " . $dest . " (updated " . round($tmdiff / 60 / 60, 1) . " h)\n";
          copyFile($path, $dest);
       } 
@@ -183,12 +183,7 @@ function checkfile($path, $move)
       {
          //echo $path." -> ".$dest." (OK ".round($tmdiff/60/60, 1)." h)\n";
          $fs = filesize($path);
-   
-         if ($fs > (2 * 1024 * 1024)) 
-         {
-            $k = basename($path) . '_' . $fs;
-            //$files_copied[$k]=$dest;
-         }
+         $k  = basename($path) . '_' . $fs;
       }
    }
 
@@ -246,7 +241,7 @@ function walk_dir( $dir, $callback, $move = 0 )
 
    //if (!preg_match('/mail.ru Blogs/is', $dir)) return;
  
-   echo "processing $dir\n";
+   echo "processing " . $dir . "\n";
 
    if (!is_dir2($dir)) return;
  
@@ -293,7 +288,7 @@ function walk_dir2( $dir, $callback, $move = 0 )
    //$dir=str_replace('/', '\\', $dir);
    if (!is_dir2($dir)) 
    {
-      echo "Dir not found: $dir\n";
+      echo "Dir not found: " . $dir . "\n";
       return;
    }
 

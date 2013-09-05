@@ -22,7 +22,7 @@ class snmpdevices extends module {
 function snmpdevices() {
   $this->name="snmpdevices";
   $this->title="<#LANG_MODULE_SNMP#>";
-  $this->module_category="<#LANG_SECTION_OBJECTS#>";
+  $this->module_category="<#LANG_SECTION_DEVICES#>";
   $this->checkInstalled();
 }
 /**
@@ -179,6 +179,9 @@ function readProperty($p_id) {
  $snmp_host = $drec['HOST'];
  $snmp_community = $drec['READ_COMMUNITY'];
  @$value = snmpget($snmp_host, $snmp_community, $snmp_oid);
+ if ($value===false) {
+  return false;
+ }
 
  if (preg_match('/^(\w+:)/', $value, $m)) {
   $value=trim(str_replace($m[1], '', $value));

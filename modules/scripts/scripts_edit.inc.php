@@ -19,6 +19,9 @@
    global $category_id;
    $rec['CATEGORY_ID']=$category_id;
 
+   global $description;
+   $rec['DESCRIPTION']=$description;
+
    global $code;
 
    if ($rec['TYPE']==1) {

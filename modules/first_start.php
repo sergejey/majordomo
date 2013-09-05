@@ -204,6 +204,38 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'text',
     'DEFAULT'=>'1',
     'PRIORITY'=>'0'
+   ),
+
+   array(
+    'NAME'=>'GROWL_ENABLE',
+    'TITLE'=>'Forward notification to Growl service', 
+    'TYPE'=>'onoff',
+    'DEFAULT'=>'0',
+    'PRIORITY'=>'43'
+   ),
+
+   array(
+    'NAME'=>'GROWL_HOST',
+    'TITLE'=>'Growl service hostname', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'42'
+   ), 
+
+   array(
+    'NAME'=>'GROWL_PASSWORD',
+    'TITLE'=>'Growl service password (optional)', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'41'
+   ), 
+
+    array(
+    'NAME'=>'GROWL_LEVEL',
+    'TITLE'=>'Growl notification minimum level', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'1',
+    'PRIORITY'=>'40'
    )
 
    );

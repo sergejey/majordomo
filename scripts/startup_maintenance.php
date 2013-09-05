@@ -50,16 +50,17 @@ for( $i = 0; $i < $total; $i++)
 {
    $table = $tables[$i]['Tables_in_' . DB_NAME];
   
-   echo $table . ' ...';
+   echo 'Checking table ['.$table.'] ...';
   
-   if ($result=mysql_query("SELECT * FROM ".$table." LIMIT 1")) 
+   //mysql_query("CHECK TABLE ".$table."");
+   if ($result=mysql_query("CHECK TABLE ".$table.";"))
    {
       echo "OK\n";
    }
    else 
    {
       echo " broken ... repair ...";
-      SQLExec("REPAIR TABLE " . $table);
+      SQLExec("REPAIR TABLE " . $table.";");
       echo "OK\n";
    }
 }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
  * @package MajorDoMo
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
@@ -34,6 +34,7 @@ function say($ph, $level = 0)
    if ($level > 0) 
       $rec['IMPORTANCE'] = $level;
         
+
    $rec['ID'] = SQLInsert('shouts', $rec);
 
    if ($level >= (int)getGlobal('minMsgLevel'))
@@ -93,10 +94,19 @@ function say($ph, $level = 0)
          postToPushover($ph);
       }
    }
+   
+   if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level >= SETTINGS_GROWL_LEVEL) 
+   {
+      include_once(ROOT.'lib/growl/growl.gntp.php');
+      
+      $growl = new Growl(SETTINGS_GROWL_HOST, SETTINGS_GROWL_PASSWORD);
+      $growl->setApplication('MajorDoMo','Notifications');
+      //$growl->registerApplication('http://localhost/img/logo.png');
+      $growl->notify($ph);
+   }
 
    postToTwitter($ph);
-
- }
+}
 
 /**
  * Title
@@ -361,6 +371,7 @@ function timeOutExists($title)
 }
 
 /**
+<<<<<<< HEAD
  * Title
  *
  * Description
@@ -381,6 +392,27 @@ function runScheduledJobs()
       eval($jobs[$i]['COMMANDS']);
    }
 }
+=======
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function runScheduledJobs() {
+  //SQLExec("UPDATE jobs SET EXPIRED=1 WHERE PROCESSED=0 AND EXPIRE<='".date('Y-m-d H:i:s')."'");
+  SQLExec("DELEE FROM jobs WHERE EXPIRE<='".date('Y-m-d H:i:s')."'");
+  $jobs=SQLSelect("SELECT * FROM jobs WHERE PROCESSED=0 AND EXPIRED=0 AND RUNTIME<='".date('Y-m-d H:i:s')."'");
+  $total=count($jobs);
+  for($i=0;$i<$total;$i++) {
+   echo "Running job: ".$jobs[$i]['TITLE']."\n";
+   $jobs[$i]['PROCESSED']=1;
+   $jobs[$i]['STARTED']=date('Y-m-d H:i:s');
+   SQLUpdate('jobs', $jobs[$i]);
+   eval($jobs[$i]['COMMANDS']);
+  }
+ }
+>>>>>>> afe8118827913ba36ac05a8da76e3511c590a896
 
 /**
  * Title
@@ -610,6 +642,7 @@ function runScript($id, $params = '')
 }
 
 /**
+<<<<<<< HEAD
  * Title
  *
  * Description
@@ -654,6 +687,35 @@ function getURL(
    else 
    {
       $result=LoadFile($cache_file);
+=======
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function getURL($url, $cache=600, $username='', $password='') {
+  $cache_file=ROOT.'cached/urls/'.preg_replace('/\W/is', '_', str_replace('http://', '', $url)).'.html';
+  if (!$cache || !is_file($cache_file) || ((time()-filemtime($cache_file))>$cache)) {
+   //download
+   $ch = curl_init();
+   curl_setopt($ch, CURLOPT_URL, $url);
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
+   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+   if ($username!='') {
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+    curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password); 
+   }
+   $result = curl_exec($ch);
+   if ($cache>0) {
+    if (!is_dir(ROOT.'cached/urls')) {
+     @mkdir(ROOT.'cached/urls', 0777);
+    }
+    SaveFile($cache_file, $result);
+>>>>>>> afe8118827913ba36ac05a8da76e3511c590a896
    }
    return $result;
 }
@@ -780,4 +842,3 @@ function checkAccess(
    return $sc->checkAccess($object_type, $object_id);
 }
 
-?>

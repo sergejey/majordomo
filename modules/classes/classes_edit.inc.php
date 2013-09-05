@@ -27,6 +27,9 @@
     $ok=0;
    }
 
+   global $description;
+   $rec['DESCRIPTION']=$description;
+
    global $nolog;
    $rec['NOLOG']=(int)$nolog;
 

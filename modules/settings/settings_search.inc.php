@@ -75,6 +75,7 @@
     if ($this->mode=='update') {
      global ${'value_'.$res[$i]['ID']};
      global ${'notes_'.$res[$i]['ID']};
+     $all_settings[$res[$i]['NAME']]=${'value_'.$res[$i]['ID']};
      $res[$i]['VALUE']=${'value_'.$res[$i]['ID']};
      $res[$i]['NOTES']=htmlspecialchars(${'notes_'.$res[$i]['ID']});
      SQLUpdate('settings', $res[$i]);
@@ -93,7 +94,14 @@
 
   
     // some action for every record if required
-    if ($this->mode=='update') {
+  if ($this->mode=='update') {
+   if ($all_settings['GROWL_ENABLE']) {
+    include_once(ROOT.'lib/growl/growl.gntp.php');
+    $growl = new Growl($all_settings['GROWL_HOST'], $all_settings['GROWL_PASSWORD']);
+    $growl->setApplication('MajorDoMo','Notifications');
+    $growl->registerApplication('http://connect.smartliving.ru/img/logo.png');
+    $growl->notify('Test!');
+   }
    $this->redirect("?updated=1");
   }
 

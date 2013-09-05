@@ -42,7 +42,7 @@ class application extends module
    function getParams() 
    {
       global $action;
-      if ($action != '') $this->action=$action;
+      if ($action != '') $this->action = $action;
    }
 
    function run() 
