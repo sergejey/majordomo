@@ -621,7 +621,6 @@ function runScript($id, $params = '')
 }
 
 /**
-<<<<<<< HEAD
  * Title
  *
  * Description
@@ -636,7 +635,7 @@ function getURL(
 {
    $cache_file = ROOT . 'cached/urls/' . preg_replace('/\W/is', '_', str_replace('http://', '', $url)) . '.html';
    
-   if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file))>$cache)) 
+   if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache)) 
    {
       //download
       $ch = curl_init();
@@ -645,6 +644,7 @@ function getURL(
       curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
       curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+      curl_setopt($ch, CURLOPT_TIMEOUT, 30);
    
       if ($username != '') 
       {
@@ -665,36 +665,7 @@ function getURL(
    } 
    else 
    {
-      $result=LoadFile($cache_file);
-=======
-* Title
-*
-* Description
-*
-* @access public
-*/
- function getURL($url, $cache=600, $username='', $password='') {
-  $cache_file=ROOT.'cached/urls/'.preg_replace('/\W/is', '_', str_replace('http://', '', $url)).'.html';
-  if (!$cache || !is_file($cache_file) || ((time()-filemtime($cache_file))>$cache)) {
-   //download
-   $ch = curl_init();
-   curl_setopt($ch, CURLOPT_URL, $url);
-   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
-   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-   if ($username!='') {
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-    curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password); 
-   }
-   $result = curl_exec($ch);
-   if ($cache>0) {
-    if (!is_dir(ROOT.'cached/urls')) {
-     @mkdir(ROOT.'cached/urls', 0777);
-    }
-    SaveFile($cache_file, $result);
->>>>>>> afe8118827913ba36ac05a8da76e3511c590a896
+      $result = LoadFile($cache_file);
    }
    return $result;
 }
