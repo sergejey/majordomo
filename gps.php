@@ -13,7 +13,7 @@ include_once("./lib/loader.php");
 // start calculation of execution time
 startMeasure('TOTAL'); 
 
-include_once(DIR_MODULES."application.class.php");
+include_once(DIR_MODULES . "application.class.php");
 
 $session = new session("prj");
 
@@ -30,7 +30,7 @@ if ($_REQUEST['location'])
    $_REQUEST['longitude'] = $tmp[1];
 }
 
-if (IsSet($_REQUEST['latitude']))  
+if (isset($_REQUEST['latitude']))  
 {
    if ($_REQUEST['deviceid']) 
    {
@@ -67,9 +67,9 @@ if (IsSet($_REQUEST['latitude']))
    $rec['ACCURACY']  = isset($_REQUEST['accuracy']) ? $_REQUEST['accuracy'] : 0;
 
    
-   if ($device['ID']) $rec['DEVICE_ID']=$device['ID'];
+   if ($device['ID']) 
+      $rec['DEVICE_ID'] = $device['ID'];
   
-
    $rec['ID'] = SQLInsert('gpslog', $rec);
 
    if ($device['USER_ID']) 
@@ -105,22 +105,20 @@ if (IsSet($_REQUEST['latitude']))
    $total          = count($locations);
    $location_found = 0;
   
-   for($i=0;$i<$total;$i++) 
+   for($i = 0; $i < $total; $i++) 
    {
       //echo "<br>".$locations[$i]['TITLE'];
       if (!$locations[$i]['RANGE'])  $locations[$i]['RANGE']=500;
       
-      $distance=calculateTheDistance ($lat, $lon, $locations[$i]['LAT'], $locations[$i]['LON']);
+      $distance = calculateTheDistance ($lat, $lon, $locations[$i]['LAT'], $locations[$i]['LON']);
       
-      //echo ' ('.$locations[$i]['LAT'].' : '.$locations[$i]['LON'].') '.$distance.' m';
-      if ($distance<=$locations[$i]['RANGE']) 
+      if ($distance <= $locations[$i]['RANGE']) 
       {
-         //Debmes("Device (" . $device['TITLE'] . ") NEAR location " . $locations[$i]['TITLE']);
-         $location_found=1;
-         if ($user['LINKED_OBJECT']) {
-          setGlobal($user['LINKED_OBJECT'].'.seenAt', $locations[$i]['TITLE']);
-         }
-    
+         $location_found = 1;
+         
+         if ($user['LINKED_OBJECT']) 
+            setGlobal($user['LINKED_OBJECT'].'.seenAt', $locations[$i]['TITLE']);
+   
          // we are at location
          $rec['LOCATION_ID'] = $locations[$i]['ID'];
     
@@ -130,7 +128,6 @@ if (IsSet($_REQUEST['latitude']))
          
          if ($tmp['LOCATION_ID'] != $locations[$i]['ID']) 
          {
-            //Debmes("Device (" . $device['TITLE'] . ") ENTERED location " . $locations[$i]['TITLE']);
             // entered location
             $gpsaction = SQLSelectOne("select * from gpsactions where LOCATION_ID = '" . $locations[$i]['ID'] . "' and ACTION_TYPE = 1 and USER_ID = '" . $device['USER_ID'] . "'");
      
@@ -158,8 +155,6 @@ if (IsSet($_REQUEST['latitude']))
     
          if ($tmp['LOCATION_ID'] == $locations[$i]['ID']) 
          {
-            //Debmes("Device (" . $device['TITLE'] . ") LEFT location " . $locations[$i]['TITLE']);
-     
             // left location
             $gpsaction = SQLSelectOne("select * from gpsactions where LOCATION_ID = '" . $locations[$i]['ID'] . "' and ACTION_TYPE = 0 and USER_ID = '" . $device['USER_ID'] . "'");
      
@@ -184,9 +179,9 @@ if (IsSet($_REQUEST['latitude']))
    }
 }
 
-if ($user['LINKED_OBJECT'] && !$location_found) {
- setGlobal($user['LINKED_OBJECT'].'.seenAt', '');
-}
+if ($user['LINKED_OBJECT'] && !$location_found) 
+   setGlobal($user['LINKED_OBJECT'].'.seenAt', '');
+
 
 $tmp = SQLSelectOne("select *, date_format(ADDED, '%H:%i') as DAT from shouts order by ADDED desc limit 1");
 
@@ -200,9 +195,9 @@ if (defined('BTRACED'))
 {
    echo "OK";
 } 
-elseif ($tmp['MESSAGE']!='') 
+elseif ($tmp['MESSAGE'] != '') 
 {
-   echo ' ' . $tmp['DAT'] .' ' . transliterate($tmp['MESSAGE']);
+   echo ' ' . $tmp['DAT'] . ' ' . transliterate($tmp['MESSAGE']);
 }
 
 // closing database connection
@@ -221,27 +216,24 @@ endMeasure('TOTAL'); // end calculation of execution time
 function calculateTheDistance($latA, $lonA, $latB, $lonB) 
 {
    define('EARTH_RADIUS', 6372795);
-   //$lat1= $latA;
-   //$lat2= $la
-
-   $lat1 = $latA * M_PI / 180;
-   $lat2 = $latB * M_PI / 180;
+  
+   $lat1  = $latA * M_PI / 180;
+   $lat2  = $latB * M_PI / 180;
    $long1 = $lonA * M_PI / 180;
    $long2 = $lonB * M_PI / 180;
 
-   $cl1 = cos($lat1);
-   $cl2 = cos($lat2);
-   $sl1 = sin($lat1);
-   $sl2 = sin($lat2);
-   $delta = $long2 - $long1;
+   $cl1    = cos($lat1);
+   $cl2    = cos($lat2);
+   $sl1    = sin($lat1);
+   $sl2    = sin($lat2);
+   $delta  = $long2 - $long1;
    $cdelta = cos($delta);
    $sdelta = sin($delta);
 
    $y = sqrt(pow($cl2 * $sdelta, 2) + pow($cl1 * $sl2 - $sl1 * $cl2 * $cdelta, 2));
    $x = $sl1 * $sl2 + $cl1 * $cl2 * $cdelta;
 
-   //
-   $ad = atan2($y, $x);
+   $ad   = atan2($y, $x);
    $dist = $ad * EARTH_RADIUS;
 
    return round($dist);

@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration xmlns="http://logging.apache.org/log4php/">
-   <appender name="MajorDomo" class="LoggerAppenderFile">
+   <appender name="default" class="LoggerAppenderDailyFile">
       <layout class="LoggerLayoutPattern">
-         <param name="conversionPattern" value="%date [%level] File: %file Line: %line %newline Message: %message%newline%newline" />
+         <param name="conversionPattern" value="%d{H:i:s} %p [%c]: %m (at %F:%L) %x%n" />
       </layout>
-      <param name="file" value="Log/logfile.log" />
+      <param name="file" value="Log/%s.log" />
+      <param name="datePattern" value="Y-m-d" />
    </appender>
    <root>
-      <level value="INFO" />
-      <appender_ref ref="MajorDomo" />
+      <level value="TRACE" />
+      <appender_ref ref="default" />
    </root>
 </configuration>

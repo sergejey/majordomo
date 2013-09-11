@@ -7,6 +7,8 @@
 * @version 0.4 (wizard, 18:09:04 [Sep 13, 2010])
 */
 
+
+
 class scripts extends module 
 {
    /**
@@ -127,10 +129,10 @@ class scripts extends module
    {
       $rec = SQLSelectOne("select * from scripts where ID = '" . (int)$id . "' or TITLE like '" . DBSafe($id) . "'");
   
-      if ($rec['ID']) 
+      if (isset($rec['ID'])) 
       {
          $rec['EXECUTED'] = date('Y-m-d H:i:s');
-   
+         
          if ($params) 
             $rec['EXECUTED_PARAMS'] = serialize($params);
          

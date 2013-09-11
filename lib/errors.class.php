@@ -9,11 +9,6 @@
 * @version 0.2b
 */
 
-// Insert the path where you unpacked log4php
-require_once dirname(__FILE__) . '/Log4Php/Logger.php';
-// Tell log4php to use our configuration file.
-Logger::configure(dirname(__FILE__) . '/Log4Php/config.xml');
-
 class error 
 {
    /**
@@ -37,7 +32,7 @@ class error
       $stop = 0, 
       $short = 0) 
    {
-      $log = Logger::getLogger('MajorDomo');
+      $log = Logger::getLogger(__METHOD__);
       
       $script = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
       

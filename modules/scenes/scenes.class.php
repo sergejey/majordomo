@@ -21,10 +21,11 @@ class scenes extends module {
 *
 * @access private
 */
-function scenes() {
-  $this->name="scenes";
-  $this->title="<#LANG_MODULE_SCENES#>";
-  $this->module_category="<#LANG_SECTION_OBJECTS#>";
+function scenes() 
+{
+  $this->name              = "scenes";
+  $this->title             = "<#LANG_MODULE_SCENES#>";
+  $this->module_category   = "<#LANG_SECTION_OBJECTS#>";
   $this->checkInstalled();
 }
 /**

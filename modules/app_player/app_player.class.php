@@ -162,7 +162,8 @@ class app_player extends module
          exit;
       }
       */
- 
+      $log = Logger::getLogger(__METHOD__);
+      
       global $play;
       global $rnd;
       global $rnd;
@@ -272,7 +273,9 @@ class app_player extends module
                   $out['PLAY'] = preg_replace('/\/$/is', '', $out['PLAY']);
                
                   $path = urlencode('' . str_replace('/', "\\", ($out['PLAY'])));
-                  DebMes("PlayerURL - " . $vPlayerUrl . "/rc/?command=vlc_play&param=" . $path);
+                  
+                  $log->debug("PlayerURL: " . $vPlayerUrl . "/rc/?command=vlc_play&param=" . $path);
+                  
                   curl_setopt($ch, CURLOPT_URL, $vPlayerUrl . "/rc/?command=vlc_play&param=" . $path);
                   $res = curl_exec($ch);
                }
