@@ -6,20 +6,22 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
+$log = Logger::getLogger(__METHOD__);
+
 set_time_limit(0);
 
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
  
 include_once("./load_settings.php");
-include_once(DIR_MODULES."control_modules/control_modules.class.php");
+include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
 if (defined('ONEWIRE_SERVER')) 
 {
-   include_once(DIR_MODULES.'onewire/onewire.class.php');
-   $onw=new onewire();
+   include_once(DIR_MODULES . 'onewire/onewire.class.php');
+   $onw = new onewire();
 } 
 else 
 {
@@ -29,7 +31,7 @@ else
 while(1) 
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+   setGlobal((str_replace('.php', '', basename(__FILE__))) .'Run', time());
 
    // check all 1wire devices
    $onw->updateDevices(); 
@@ -44,6 +46,6 @@ while(1)
    sleep(1);
 }
 
-DebMes("Unexpected close of cycle: " . basename(__FILE__));
+$log->error("Unexpected close of cycle: " . basename(__FILE__));
 
 ?>
