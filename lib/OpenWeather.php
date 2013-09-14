@@ -154,6 +154,53 @@ class OpenWeather
    }
    
    /**
+    * Get html weather widget with current wheather for page
+    * @param $vCityID  CityID
+    * @param $vUnits   Units
+    * @return
+    */
+   public static function GetCurrentWeatherWidgetByCityID
+     ($vCityID,
+      $vUnits)
+   {
+      $vUnits  = OpenWeather::GetUnits($vUnits);
+      $weather = OpenWeather::GetJsonWeatherDataByCityID($vCityID,$vUnits);
+      
+      $widget  = "<div class=\"span4\">";
+      
+      if ($weather->cod == "404")
+      {
+         $widget .= "<span class=\"label label-danger\">" . $weather->message . "</span>";
+      }
+      else
+      {
+         $widget .= "<h3>" . $weather->name . ", " . $weather->sys->country . "</h3>";
+         $widget .= "<h2>";
+         $widget .= "   <img src=\"" . OpenWeather::GetWeatherImage($weather->weather[0]->icon) . "\" />"; 
+         $widget .= $weather->main->temp;
+         $widget .= $vUnits == "metric" ? " °C" : " °F";
+         $widget .= "</h2>";
+         $widget .= "<p>" . $weather->weather[0]->description . "</p>";
+         $widget .= "<div id=\"date_m\">get at " . date("D M j G:i:s T Y", $weather->dt) . "</div>";
+         $widget .= "<p>&nbsp;</p>";
+         $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
+         $widget .= "   <tbody>";
+         $widget .= "      <tr>";
+         $widget .= "         <td>Wind</td>";
+         $widget .= "         <td>Speed " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
+         $widget .= "      </tr>";
+         $widget .= "     <tr><td>Pressure</td><td>" . $weather->main->pressure . "hpa</td></tr>";
+         $widget .= "     <tr><td>Humidity</td><td>".  $weather->main->humidity . "%</td></tr>";
+         $widget .= "  </tbody>";
+         $widget .= "</table>";
+      }
+      
+      $widget .= "</div>";
+      
+      return $widget;
+   }
+   
+   /**
     * GetWeather data from openweathermap.org by Country and City
     * @param $vCountry
     * @param $vCity
@@ -181,7 +228,7 @@ class OpenWeather
      ($vCityID,
       $vUnits)
    {
-      $weather = OpenWeather::GetJsonWeatherDataByCityName($vCountry,$vCity,$vUnits);
+      $weather = OpenWeather::GetJsonWeatherDataByCityID($vCityID,$vUnits);
       return $weather;
    }
 }
