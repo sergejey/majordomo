@@ -13,6 +13,8 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
+$log = Logger::getLogger(__METHOD__);
+
 set_time_limit(0);
 
 // connecting to database
@@ -61,7 +63,8 @@ for($i = 0; $i < 5; $i++)
 	} 
    catch (Exception $e) 
    {
-      DebMes('Skype error : ' . $e->getCode() . '. Error message: ' . $e->getMessage());
+      $errMessg = "Skype error : " . $e->getCode() . " Error message: " . $e->getMessage();
+      $log->error($errMessg);
     	$n = null;
 	}
 	

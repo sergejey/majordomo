@@ -13,7 +13,7 @@
 if (!preg_match('/\/$/', $_SERVER["REQUEST_URI"])) 
    $file = basename($_SERVER["REQUEST_URI"]);
 
-$ext=strtolower(substr($file, -3));
+$ext = strtolower(substr($file, -3));
 
 if ($ext == 'jpg' || $ext == 'gif' || $ext == 'css') 
 {
@@ -22,13 +22,11 @@ if ($ext == 'jpg' || $ext == 'gif' || $ext == 'css')
 }
 
 if (preg_match("/\?(.*?)$/", $_SERVER["REQUEST_URI"], $matches)) 
-{
-   $redir_qry=$matches[1];
-}
+   $redir_qry = $matches[1];
 
 $file = preg_replace("/\.htm.*$/","", $file);
 
-if ($file!='') $fake_doc=$file;
+if ($file != '') $fake_doc = $file;
 
 include_once("./config.php");
 
@@ -47,9 +45,9 @@ $requests = array(
    "/^\/([\w-]+)\.html/is"            => '?(application:{action=docs, doc_name=\1})'
 );
 
-foreach($requests as $key=>$value) 
+foreach($requests as $key => $value) 
 {
-   if (!$found && preg_match($key, $_SERVER["REQUEST_URI"], $matches)) 
+   if (!isset($found) && preg_match($key, $_SERVER["REQUEST_URI"], $matches)) 
    {
       $link = $value;
       for($i = 1; $i < count($matches); $i++) 
@@ -72,7 +70,7 @@ if (preg_match('/^moved:(.+)/is', $link, $matches))
 include_once("./config.php");
 include_once("./lib/loader.php");
 
-if ($link!='') 
+if ($link != '') 
 {
    $mdl       = new module();
    $param_str = $mdl->parseLinks("<a href=\"$link\">");

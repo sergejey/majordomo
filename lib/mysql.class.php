@@ -87,22 +87,27 @@
   }
 
 // --------------------------------------------------------------------   
-/**
-* Execute SQL query
-*
-* @param string $query SQL query
-* @return mixed execution result (0 - failed)
-* @access public
-*/
-  function Exec($query) {
-    $result=mysql_query($query, $this->dbh);
-    if (!$result) {
-     $this->Error($query);
-     return 0;
-    } else {
-     return $result;
-    }
-  }
+   /**
+    * Execute SQL query
+    *
+    * @param string $query SQL query
+    * @return mixed execution result (0 - failed)
+    * @access public
+    */
+   function Exec($query) 
+   {
+      $result = mysql_query($query, $this->dbh);
+    
+      if (!$result) 
+      {
+         $this->Error($query);
+         return 0;
+      } 
+      else 
+      {
+         return $result;
+      }
+   }
 
 // --------------------------------------------------------------------   
 /**
@@ -134,29 +139,33 @@
   }
 
 // --------------------------------------------------------------------   
-/**
-* Execute SQL SELECT query and return first record
-*
-* This method returns record assosiated array (by field names)
-*
-* @param string $query SQL SELECT query
-* @return array execution result
-* @access public
-*/
-  function SelectOne($query) {
-   if ($result=mysql_query($query, $this->dbh)) {
-    $rec=mysql_fetch_array($result, MYSQL_ASSOC);
-    /*
-    if (Is_Array($rec))
-     foreach(array_keys($rec) as $k) {
-      if (is_numeric($k)) UnSet($rec[$k]);
-     }
+   /**
+    * Execute SQL SELECT query and return first record
+    *
+    * This method returns record assosiated array (by field names)
+    *
+    * @param string $query SQL SELECT query
+    * @return array execution result
+    * @access public
     */
-    return $rec;
-   } else {
-    $this->Error($query);
+   function SelectOne($query) 
+   {
+      if ($result = mysql_query($query, $this->dbh)) 
+      {
+         $rec = mysql_fetch_array($result, MYSQL_ASSOC);
+         /*
+            if (Is_Array($rec))
+               foreach(array_keys($rec) as $k) 
+                  if (is_numeric($k)) UnSet($rec[$k]);
+          */
+    
+         return $rec;
+      } 
+      else 
+      {
+         $this->Error($query);
+      }
    }
-  }
 
 // --------------------------------------------------------------------   
 /**
@@ -186,90 +195,102 @@
   }
 
 // --------------------------------------------------------------------   
-/**
-* Execute SQL INSERT query for one record
-*
-* Record is defined by assosiated array
-*
-* @param string $table table for new record
-* @param string $data record to insert
-* @return execution result (0 - if failed, INSERT ID - if succeed)
-* @access public
-*/
-  function Insert($table, &$data) {
-   $fields="";
-   $values="";
-   foreach($data as $field=>$value) {
-    if (!is_Numeric($field)) {  
-     $fields.="`$field`, ";
-     $values.="'".$this->DBSafe1($value)."', ";
+   /**
+    * Execute SQL INSERT query for one record
+    *
+    * Record is defined by assosiated array
+    *
+    * @param string $table table for new record
+    * @param string $data record to insert
+    * @return execution result (0 - if failed, INSERT ID - if succeed)
+    * @access public
+    */
+   function Insert($table, &$data) 
+   {
+      $fields = "";
+      $values = "";
+      foreach($data as $field=>$value) 
+      {
+         if (!is_Numeric($field)) 
+         {  
+            $fields .= "`$field`, ";
+            $values .= "'" . $this->DBSafe1($value) . "', ";
+         }
+      }
+   
+      $fields = substr($fields, 0, strlen($fields) - 2);
+      $values = substr($values, 0, strlen($values) - 2);
+   
+      $qry = "insert into `$table`($fields) values($values)";
+   
+      if (!mysql_query($qry, $this->dbh)) 
+      {
+         $this->error($qry);
+         return 0;
+      }
+      
+      return mysql_insert_id($this->dbh);
+   }
+
+ 
+   /**
+    * Disconnect from database
+    * @access public
+    */
+   function Disconnect() 
+   {
+      mysql_close($this->dbh);
+   }
+
+  
+   /**
+    * Used to strip "bad" symbols from sql query results
+    *
+    * @param string $str string to make "safe"
+    * @return string correct string
+    * @access public
+    */
+   function DbSafe($str) 
+   {
+      $str=mysql_real_escape_string($str);
+      /*
+         $str = str_replace(chr(146), '\'',   $str);
+         $str = str_replace("\\",     "\\\\", $str);
+         $str = str_replace("\n",     "\\n",  $str);
+         $str = str_replace("\r",     "",     $str);
+         $str = str_replace("'",      "\'",   $str);
+      */
+      $str = str_replace("%", "\%", $str);
+   
+      return $str;
+   }
+
+   function DbSafe1($str) 
+   {
+      $str = mysql_real_escape_string($str);
+      /*
+         $str = str_replace(chr(146), '\'',   $str);
+         $str = str_replace("\\",     "\\\\", $str);
+         $str = str_replace("\n",     "\\n",  $str);
+         $str = str_replace("\r",     "",     $str);
+         $str = str_replace("'",      "\'",   $str);
+      */
+      return $str;
+   }
+
+
+// --------------------------------------------------------------------   
+   /**
+    * MySQL database error handler
+    *
+    * @param string $query used query string
+    * @access private
+    */
+    function Error($query = "") 
+    {
+      $err = new error(mysql_errno() . ": " . mysql_error() ."<br />" . $query, 1);
+      return 1;
     }
-   }
-   $fields=substr($fields, 0, strlen($fields)-2);
-   $values=substr($values, 0, strlen($values)-2);
-   $qry="INSERT INTO `$table`($fields) VALUES($values)";
-   if (!mysql_query($qry, $this->dbh)) {
-    $this->error($qry);
-    return 0;
-   }
-   return mysql_insert_id($this->dbh);
-  }
-
-// --------------------------------------------------------------------   
-/**
-* Disconnect from database
-*
-* @access public
-*/
-  function Disconnect() {
-   mysql_close($this->dbh);
-  }
-
-// --------------------------------------------------------------------   
-/**
-* Used to strip "bad" symbols from sql query results
-*
-* @param string $str string to make "safe"
-* @return string correct string
-* @access public
-*/
-  function DbSafe($str) {
-   $str=mysql_real_escape_string($str);
-   /*
-   $str=str_replace(chr(146), '\'', $str);
-   $str=str_replace("\\", "\\\\", $str);
-   $str=str_replace("\n", "\\n", $str);
-   $str=str_replace("\r", "", $str);
-   $str=str_replace("'", "\'", $str);
-   */
-   $str=str_replace("%", "\%", $str);
-   return $str;
-  }
-
-  function DbSafe1($str) {
-   $str=mysql_real_escape_string($str);
-   /*
-   $str=str_replace(chr(146), '\'', $str);
-   $str=str_replace("\\", "\\\\", $str);
-   $str=str_replace("\n", "\\n", $str);
-   $str=str_replace("\r", "", $str);
-   $str=str_replace("'", "\'", $str);
-   */
-   return $str;
-  }
-
-
-// --------------------------------------------------------------------   
-/**
-* MySQL database error handler
-*
-* @param string $query used query string
-* @access private
-*/
-  function Error($query="") {
-   $err=new error(mysql_errno().": ".mysql_error()."<br>$query", 1);
-   return 1;
-  }
 
 // --------------------------------------------------------------------   
 /**
@@ -329,30 +350,33 @@
 // DATABASE FUNCTIONS
 // easy database manipulation
 // --------------------------------------------------------------------   
-/**
-* Execute SQL query
-*
-* @param string $query SQL query
-* @global object mysql database object
-* @return mixed execution result (0 - failed)
-*/
- function SQLExec($query) {
-  if (($query{0}=="#") || ($query=="")) return;
-  global $db;
-  return $db->Exec($query);
- }
+   /**
+    * Execute SQL query
+    *
+    * @param string $query SQL query
+    * @global object mysql database object
+    * @return mixed execution result (0 - failed)
+    */
+   function SQLExec($query) 
+   {
+      if (($query{0} == "#") || ($query == "")) return;
+     
+      global $db;
+      return $db->Exec($query);
+   }
 // --------------------------------------------------------------------   
-/**
-* Used to strip "bad" symbols from sql query results
-*
-* @param string $str string to make "safe"
-* @global object mysql database object
-* @return string correct string
-*/
- function DbSafe($in) {
-  global $db;
-  return $db->DbSafe($in);
- }
+   /**
+    * Used to strip "bad" symbols from sql query results
+    *
+    * @param string $str string to make "safe"
+    * @global object mysql database object
+    * @return string correct string
+    */
+   function DbSafe($in) 
+   {
+      global $db;
+      return $db->DbSafe($in);
+   }
 
 // --------------------------------------------------------------------   
 /**
@@ -370,50 +394,53 @@
  }
 
 // --------------------------------------------------------------------   
-/**
-* Execute SQL SELECT query and return first record
-*
-* This function returns record assosiated array (by field names)
-*
-* @param string $query SQL SELECT query
-* @global object mysql database object
-* @return array execution result
-*/
- function SQLSelectOne($query) {
-  global $db;
-  return $db->SelectOne($query);
- }
+   /**
+    * Execute SQL SELECT query and return first record
+    *
+    * This function returns record assosiated array (by field names)
+    *
+    * @param string $query SQL SELECT query
+    * @global object mysql database object
+    * @return array execution result
+    */
+   function SQLSelectOne($query) 
+   {
+      global $db;
+      return $db->SelectOne($query);
+   }
 
 // --------------------------------------------------------------------   
-/**
-* Execute SQL INSERT query for one record
-*
-* Record is defined by assosiated array
-*
-* @param string $table table for new record
-* @param string $record record to insert
-* @global object mysql database object
-* @return execution result (0 - if failed, INSERT ID - if succeed)
-*/
- function SQLInsert($table, &$record) {
-  global $db;
-  return $db->Insert($table, $record);
- }
+   /**
+    * Execute SQL INSERT query for one record
+    *
+    * Record is defined by assosiated array
+    *
+    * @param string $table table for new record
+    * @param string $record record to insert
+    * @global object mysql database object
+    * @return execution result (0 - if failed, INSERT ID - if succeed)
+    */
+   function SQLInsert($table, &$record) 
+   {
+      global $db;
+      return $db->Insert($table, $record);
+   }
 
 // --------------------------------------------------------------------   
-/**
-* Execute SQL UPDATE query for one record
-*
-* Record is defined by assosiated array
-*
-* @param string $table table to update
-* @param string $record record to update
-* @global object mysql database object
-*/
- function SQLUpdate($table, $record) {
-  global $db;
-  return $db->Update($table, $record);
- }
+   /**
+    * Execute SQL UPDATE query for one record
+    *
+    * Record is defined by assosiated array
+    *
+    * @param string $table table to update
+    * @param string $record record to update
+    * @global object mysql database object
+    */
+   function SQLUpdate($table, $record) 
+   {
+      global $db;
+      return $db->Update($table, $record);
+   }
 
 // --------------------------------------------------------------------   
 /**
