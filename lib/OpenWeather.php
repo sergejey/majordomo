@@ -220,8 +220,8 @@ class OpenWeather
       
    /**
     * Return weather by City ID
-    * @param $vCityID   CityID
-    * @param $vUnits    Unit(metric/imperial)
+    * @param $vCityID    CityID
+    * @param $vUnits     Unit(metric/imperial)
     * @return
     */
    public static function GetWeatherByCityID
