@@ -5,3 +5,4 @@ modules/*/installed
 cached/*
 debmes/*.txt
 reboot
+Log/*
