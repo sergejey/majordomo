@@ -355,7 +355,7 @@
 */
  function runScheduledJobs() {
   //SQLExec("UPDATE jobs SET EXPIRED=1 WHERE PROCESSED=0 AND EXPIRE<='".date('Y-m-d H:i:s')."'");
-  SQLExec("DELEE FROM jobs WHERE EXPIRE<='".date('Y-m-d H:i:s')."'");
+  SQLExec("DELETE FROM jobs WHERE EXPIRE<='".date('Y-m-d H:i:s')."'");
   $jobs=SQLSelect("SELECT * FROM jobs WHERE PROCESSED=0 AND EXPIRED=0 AND RUNTIME<='".date('Y-m-d H:i:s')."'");
   $total=count($jobs);
   for($i=0;$i<$total;$i++) {
