@@ -495,11 +495,27 @@ curl_close($ch);
    SQLInsert('history', $h);
   */
 
+  //commands, owproperties, snmpproperties, zwave_properties, mqtt
+  $tables=array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
+  if (!is_array($no_linked) && $no_linked) {
+   $no_linked=array();
+   foreach($tables as $t) {
+    $no_linked[$k]='0';
+   }
+  } elseif (is_array($no_linked)) {
+   foreach($tables as $t) {
+    if (!isset($no_linked[$k])) {
+     $no_linked[$k]='1';
+    }
+   }   
+  } else {
+   $no_linked=array();
+   foreach($tables as $t) {
+    $no_linked[$k]='1';
+   }
+  }
 
-  if (!$no_linked) {
-
-
-  $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+  $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['commands']);
   $total=count($commands);
   for($i=0;$i<$total;$i++) {
    $commands[$i]['CUR_VALUE']=$value;
@@ -507,7 +523,7 @@ curl_close($ch);
   }
 
   if (file_exists(DIR_MODULES.'/onewire/onewire.class.php')) {
-   $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['owproperties']);
    $total=count($owp);
    if ($total) {
     include_once(DIR_MODULES.'/onewire/onewire.class.php');
@@ -519,7 +535,7 @@ curl_close($ch);
   }
 
   if (file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
-   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['snmpproperties']);
    $total=count($snmpdevices);
    if ($total) {
     include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
@@ -531,7 +547,7 @@ curl_close($ch);
   }
 
   if (file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
-   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
    $total=count($zwave_properties);
    if ($total) {
     include_once(DIR_MODULES.'/zwave/zwave.class.php');
@@ -543,7 +559,7 @@ curl_close($ch);
   }
 
   if (file_exists(DIR_MODULES.'/mqtt/mqtt.class.php')) {
-   $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['mqtt']);
    $total=count($mqtt_properties);
    if ($total) {
     include_once(DIR_MODULES.'/mqtt/mqtt.class.php');
@@ -554,8 +570,6 @@ curl_close($ch);
    }
   }
 
-
-  }
 
   if ($prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) {
    $property_linked_history[$property][$prop['ONCHANGE']]=1;

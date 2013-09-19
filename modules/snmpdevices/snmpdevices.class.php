@@ -195,7 +195,7 @@ function readProperty($p_id) {
  SQLUpdate('snmpproperties', $prec);
 
  if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-  setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $value, 1);
+  setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $value, array('snmpproperties'=>'0'));
  }
  return $value;
 

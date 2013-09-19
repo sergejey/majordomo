@@ -158,7 +158,7 @@ function admin(&$out) {
     SQLUpdate('commands', $item);
     if ($item['LINKED_PROPERTY']!='') {
      $old_value=gg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
-     sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], 1);
+     sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array('commands'=>'ID!='.$item['ID']));
      //DebMes("setting property ".$item['LINKED_OBJECT'].".".$item['LINKED_PROPERTY']." to ".$item['CUR_VALUE']);
     }
 
