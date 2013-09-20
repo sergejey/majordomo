@@ -1,13 +1,13 @@
 <?php
 /**
-* Objects 
-*
-* Objects
-*
-* @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
-* @version 0.4 (wizard, 12:05:51 [May 22, 2009])
-*/
+ * Objects 
+ *
+ * Objects
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 0.4 (wizard, 12:05:51 [May 22, 2009])
+ */
 class objects extends module 
 {
    /**
@@ -257,7 +257,10 @@ class objects extends module
     *
     * @access public
     */
-   function getMethodByName($name, $class_id, $id) 
+   function getMethodByName
+     ($name, 
+     $class_id, 
+     $id) 
    {
       $name  = strtolower($name);
       

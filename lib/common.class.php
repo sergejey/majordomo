@@ -1,9 +1,9 @@
 <?php
-/*
+/**
  * @package MajorDoMo
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 0.7
-*/
+ */
 
 
 /**
