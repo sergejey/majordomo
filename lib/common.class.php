@@ -192,14 +192,8 @@ function timeNow($tm = 0)
  */
 function isWeekEnd() 
 {
-   if (date('w') == 0 || date('w') == 6) 
-   {
-      return true; // sunday, saturday
-   } 
-   else 
-   {
-      return false;
-   }
+   $vDay = date('w');
+   return ($vDay == 0 || $vDay == 6); // sunday, saturday
 }
 
 /**
@@ -211,14 +205,7 @@ function isWeekEnd()
  */
 function isWeekDay() 
 {
-   if (IsWeekEnd()) 
-   {
-      return false;
-   } 
-   else 
-   {
-      return true;
-   }
+   return !IsWeekEnd();
 }
 
 /**
@@ -272,11 +259,12 @@ function timeBetween($tm1, $tm2)
 {
    $trueTime1 = timeConvert($tm1);
    $trueTime2 = timeConvert($tm2);
-  
+   $time      = time();
+   
    if ($trueTime1 > $trueTime2) 
    {
       //$trueTime1-=24*60*60;
-      if ($trueTime2 < time()) 
+      if ($trueTime2 < $time) 
       {
          $trueTime2 += 24*60*60;
       } 
@@ -285,15 +273,7 @@ function timeBetween($tm1, $tm2)
          $trueTime1 -= 24*60*60;
       }
    }
-
-   /*
-   echo date('Y-m-d H:i:s', $trueTime1);
-   echo " - ";
-   echo date('Y-m-d H:i:s', $trueTime2);
-   echo "<br>";
-   */
-
-   return ((time() >= $trueTime1) && (time() <= $trueTime2));
+   return (($time >= $trueTime1) && ($time <= $trueTime2));
 }
 
 /**
@@ -338,8 +318,8 @@ function deleteScheduledJob($id)
  * Description
  * @access public
  */
-function setTimeOut(
-   $title, 
+function setTimeOut
+  ($title, 
    $commands, 
    $timeout) 
 {
@@ -462,8 +442,8 @@ function recognizeTime($text, &$newText)
  *
  * @access public
  */
-function registerEvent(
-   $eventName, 
+function registerEvent
+  ($eventName, 
    $details   = '', 
    $expire_in = 365) 
 {
@@ -531,7 +511,7 @@ function getRandomLine($filename)
       $total = count($lines);
       $line  = $lines[round(rand(0, $total-1))];
    
-      if ($line !='') return $line;
+      if ($line != '') return $line;
    }
 }
 
@@ -542,8 +522,8 @@ function getRandomLine($filename)
  *
  * @access public
  */
-function playSound(
-   $filename, 
+function playSound
+  ($filename, 
    $exclusive = 0, 
    $priority  = 0) 
 {
@@ -576,27 +556,27 @@ function playSound(
  *
  * @access public
  */
-function playMedia(
-   $path, 
+function playMedia
+  ($path, 
    $host = 'localhost') 
 {
    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE HOST LIKE '" . DBSafe($host) . "' OR NAME LIKE '" . DBSafe($host) . "' OR TITLE LIKE '" . DBSafe($host) . "'");
-   if (!$terminal['ID']) 
+   if (!isset($terminal['ID'])) 
    {
-      $terminal = SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY ID");
+      $terminal = SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY = 1 ORDER BY ID");
    }
-   if (!$terminal['ID']) 
+   if (!isset($terminal['ID'])) 
    {
       $terminal = SQLSelectOne("SELECT * FROM terminals WHERE 1 ORDER BY ID");
    }
 
-   if (!$terminal['ID']) return 0;
+   if (!isset($terminal['ID'])) return 0;
   
    include_once(DIR_MODULES . 'app_player/app_player.class.php');
   
-   $player = new app_player();
+   $player              = new app_player();
    $player->terminal_id = $terminal['ID'];
-   $player->play = $path;
+   $player->play        = $path;
 
    global $ajax;
    $ajax = 1;
@@ -613,7 +593,9 @@ function playMedia(
   * Description
   * @access public
   */
-function runScript($id, $params = '') 
+function runScript
+  ($id, 
+   $params = '') 
 {
    include_once(DIR_MODULES . 'scripts/scripts.class.php');
    $sc = new scripts();
@@ -627,8 +609,8 @@ function runScript($id, $params = '')
  *
  * @access public
  */
-function getURL(
-   $url, 
+function getURL
+  ($url, 
    $cache    = 600, 
    $username = '', 
    $password = '') 
@@ -677,8 +659,8 @@ function getURL(
  *
  * @access public
  */
-function safe_exec(
-   $command, 
+function safe_exec
+  ($command, 
    $exclusive = 0,
    $priority  = 0) 
 {
@@ -782,8 +764,8 @@ function isOnline($host)
  * @param $object_type ObjectType
  * @param $object_id ObjectID
  */
-function checkAccess(
-   $object_type, 
+function checkAccess
+  ($object_type, 
    $object_id) 
 {
    include_once(DIR_MODULES . 'security_rules/security_rules.class.php');
@@ -791,4 +773,3 @@ function checkAccess(
   
    return $sc->checkAccess($object_type, $object_id);
 }
-
