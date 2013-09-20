@@ -351,6 +351,7 @@ function timeOutExists($title)
 }
 
 /**
+<<<<<<< HEAD
  * Title
  *
  * Description
@@ -372,6 +373,27 @@ function runScheduledJobs()
       eval($jobs[$i]['COMMANDS']);
    }
 }
+=======
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function runScheduledJobs() {
+  //SQLExec("UPDATE jobs SET EXPIRED=1 WHERE PROCESSED=0 AND EXPIRE<='".date('Y-m-d H:i:s')."'");
+  SQLExec("DELETE FROM jobs WHERE EXPIRE<='".date('Y-m-d H:i:s')."'");
+  $jobs=SQLSelect("SELECT * FROM jobs WHERE PROCESSED=0 AND EXPIRED=0 AND RUNTIME<='".date('Y-m-d H:i:s')."'");
+  $total=count($jobs);
+  for($i=0;$i<$total;$i++) {
+   echo "Running job: ".$jobs[$i]['TITLE']."\n";
+   $jobs[$i]['PROCESSED']=1;
+   $jobs[$i]['STARTED']=date('Y-m-d H:i:s');
+   SQLUpdate('jobs', $jobs[$i]);
+   eval($jobs[$i]['COMMANDS']);
+  }
+ }
+>>>>>>> remotes/upstream/master
 
 /**
  * Title
