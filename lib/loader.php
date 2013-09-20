@@ -20,7 +20,7 @@ if ($lib_dir = @opendir("./lib"))
    {
       if ((preg_match("/\.php$/", $lib_file)) && ($lib_file != "loader.php")) 
       {
-         include_once("./lib/$lib_file");
+         include_once("./lib/" . $lib_file);
       }
    }   
   

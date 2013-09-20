@@ -505,29 +505,22 @@ class objects extends module
       }
 
       //commands, owproperties, snmpproperties, zwave_properties, mqtt
-      $tables = array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
-      if (!is_array($no_linked) && isset($no_linked)) 
+      $tables = array(0=>'commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
+      if (!is_array($no_linked)) 
       {
          $no_linked = array();
          foreach($tables as $t) 
-         {
-            $no_linked[$k] = '0';
-         }
-      } 
-      elseif (is_array($no_linked)) 
-      {
-         foreach($tables as $t) 
-            if (!isset($no_linked[$k])) 
-               $no_linked[$k] = '1';
+            $no_linked[$t] = '0';
       } 
       else 
       {
-         $no_linked = array();
          foreach($tables as $t) 
-            $no_linked[$k] = '1';
-      }
-
-      $commands = SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['commands']);
+            if (!isset($no_linked[$k])) 
+               $no_linked[$t] = '1';
+      } 
+      
+      $query = "SELECT * FROM commands WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['commands'];
+      $commands = SQLSelect($query);
       $total    = count($commands);
       for($i = 0; $i < $total; $i++) 
       {
@@ -539,7 +532,7 @@ class objects extends module
       {
          $owp   = SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['owproperties']);
          $total = count($owp);
-         if ($total) 
+         if ($total > 0) 
          {
             include_once(DIR_MODULES.'/onewire/onewire.class.php');
             $on_wire = new onewire();
@@ -552,7 +545,7 @@ class objects extends module
       {
          $snmpdevices = SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['snmpproperties']);
          $total = count($snmpdevices);
-         if ($total)
+         if ($total > 0)
          {
             include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
             $snmp=new snmpdevices();
@@ -565,7 +558,7 @@ class objects extends module
       {
          $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
          $total=count($zwave_properties);
-         if ($total) 
+         if ($total > 0) 
          {
             include_once(DIR_MODULES . '/zwave/zwave.class.php');
             $zwave = new zwave();
@@ -580,7 +573,7 @@ class objects extends module
       {
          $mqtt_properties = SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['mqtt']);
          $total = count($mqtt_properties);
-         if ($total) 
+         if ($total > 0) 
          {
             include_once(DIR_MODULES . '/mqtt/mqtt.class.php');
             $mqtt = new mqtt();
