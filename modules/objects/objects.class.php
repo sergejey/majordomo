@@ -505,7 +505,7 @@ class objects extends module
       }
 
       //commands, owproperties, snmpproperties, zwave_properties, mqtt
-      $tables = array(0=>'commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
+      $tables = array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
       if (!is_array($no_linked)) 
       {
          $no_linked = array();
@@ -515,7 +515,7 @@ class objects extends module
       else 
       {
          foreach($tables as $t) 
-            if (!isset($no_linked[$k])) 
+            if (!isset($no_linked[$t])) 
                $no_linked[$t] = '1';
       } 
       
