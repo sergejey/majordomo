@@ -533,7 +533,7 @@ function admin(&$out) {
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
      if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY']) {
-      setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], 1);
+      setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array('zwave_properties'=>'0'));
      }
     } else {
      $prop['ID']=SQLInsert('zwave_properties', $prop);

@@ -569,6 +569,7 @@ class objects extends module
          }
       }
 
+<<<<<<< HEAD
       if ($prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) 
       {
          $property_linked_history[$property][$prop['ONCHANGE']] = 1;
@@ -596,6 +597,162 @@ class objects extends module
    {
       parent::install();
    }
+=======
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function setProperty($property, $value, $no_linked=0) {
+
+  global $property_linked_history;
+
+  $id=$this->getPropertyByName($property, $this->class_id, $this->id);
+  $old_value='';
+
+  if ($id) {
+   $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
+   $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
+   $old_value=$v['VALUE'];
+   $v['VALUE']=$value;
+   if ($v['ID']) {
+    $v['UPDATED']=date('Y-m-d H:i:s');
+    if ($old_value!=$value) {
+     SQLUpdate('pvalues', $v);
+     //DebMes("Setting [".$this->object_title.".".$property."] to new value [".$value."]");
+    } else {
+     SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
+     //DebMes("Setting [".$this->object_title.".".$property."] to the same value [".$value."]");
+    }
+   } else {
+    $v['PROPERTY_ID']=$id;
+    $v['OBJECT_ID']=$this->id;
+    $v['VALUE']=$value;
+    $v['UPDATED']=date('Y-m-d H:i:s');
+    $v['ID']=SQLInsert('pvalues', $v);
+   }
+   //DebMes(" $id to $value ");
+  } else {
+    $prop=array();
+    $prop['OBJECT_ID']=$this->id;
+    $prop['TITLE']=$property;
+    $prop['ID']=SQLInsert('properties', $prop);
+
+    $v['PROPERTY_ID']=$prop['ID'];
+    $v['OBJECT_ID']=$this->id;
+    $v['VALUE']=$value;
+    $v['UPDATED']=date('Y-m-d H:i:s');
+    $v['ID']=SQLInsert('pvalues', $v);
+  }
+
+  if ($prop['KEEP_HISTORY']>0) {
+   SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
+   $h=array();
+   $h['VALUE_ID']=$v['ID'];
+   $h['ADDED']=date('Y-m-d H:i:s');
+   $h['VALUE']=$value;
+   $h['ID']=SQLInsert('phistory', $h);
+  }
+
+  /*
+   $h=array();
+   $h['ADDED']=date('Y-m-d H:i:s');
+   $h['OBJECT_ID']=$this->id;
+   $h['VALUE_ID']=$v['ID'];
+   $h['OLD_VALUE']=$old_value;
+   $h['NEW_VALUE']=$value;
+   SQLInsert('history', $h);
+  */
+
+  //commands, owproperties, snmpproperties, zwave_properties, mqtt
+  $tables=array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
+  if (!is_array($no_linked) && $no_linked) {
+   $no_linked=array();
+   foreach($tables as $t) {
+    $no_linked[$k]='0';
+   }
+  } elseif (is_array($no_linked)) {
+   foreach($tables as $t) {
+    if (!isset($no_linked[$k])) {
+     $no_linked[$k]='1';
+    }
+   }   
+  } else {
+   $no_linked=array();
+   foreach($tables as $t) {
+    $no_linked[$k]='1';
+   }
+  }
+
+  $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['commands']);
+  $total=count($commands);
+  for($i=0;$i<$total;$i++) {
+   $commands[$i]['CUR_VALUE']=$value;
+   SQLUpdate('commands', $commands[$i]);
+  }
+
+  if (file_exists(DIR_MODULES.'/onewire/onewire.class.php')) {
+   $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['owproperties']);
+   $total=count($owp);
+   if ($total) {
+    include_once(DIR_MODULES.'/onewire/onewire.class.php');
+    $on_wire=new onewire();
+    for($i=0;$i<$total;$i++) {
+     $on_wire->setProperty($owp[$i]['ID'], $value);
+    }
+   }
+  }
+
+  if (file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
+   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['snmpproperties']);
+   $total=count($snmpdevices);
+   if ($total) {
+    include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
+    $snmp=new snmpdevices();
+    for($i=0;$i<$total;$i++) {
+     $snmp->setProperty($snmpdevices[$i]['ID'], $value);
+    }
+   }
+  }
+
+  if (file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
+   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
+   $total=count($zwave_properties);
+   if ($total) {
+    include_once(DIR_MODULES.'/zwave/zwave.class.php');
+    $zwave=new zwave();
+    for($i=0;$i<$total;$i++) {
+     $zwave->setProperty($zwave_properties[$i]['ID'], $value);
+    }
+   }
+  }
+
+  if (file_exists(DIR_MODULES.'/mqtt/mqtt.class.php')) {
+   $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['mqtt']);
+   $total=count($mqtt_properties);
+   if ($total) {
+    include_once(DIR_MODULES.'/mqtt/mqtt.class.php');
+    $mqtt=new mqtt();
+    for($i=0;$i<$total;$i++) {
+     $mqtt->setProperty($mqtt_properties[$i]['ID'], $value);
+    }
+   }
+  }
+
+
+  if ($prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) {
+   $property_linked_history[$property][$prop['ONCHANGE']]=1;
+   global $on_change_called;
+   $params=array();
+   $params['NEW_VALUE']=(string)$value;
+   $params['OLD_VALUE']=(string)$old_value;
+   $this->callMethod($prop['ONCHANGE'], $params);
+  } elseif ($prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) {
+   unset($property_linked_history[$property][$prop['ONCHANGE']]);
+  }
+>>>>>>> remotes/upstream/master
 
    /**
     * Uninstall

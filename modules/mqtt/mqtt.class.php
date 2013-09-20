@@ -189,7 +189,7 @@ function run() {
   $rec['UPDATED']=date('Y-m-d H:i:s');
   SQLUpdate('mqtt', $rec);
   if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
-   setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $rec['VALUE'], 1);
+   setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $rec['VALUE'], array('mqtt'=>'0'));
   }
  }
 
