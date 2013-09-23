@@ -515,14 +515,22 @@ curl_close($ch);
    }
   }
 
-  $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['commands']);
-  $total=count($commands);
-  for($i=0;$i<$total;$i++) {
-   $commands[$i]['CUR_VALUE']=$value;
-   SQLUpdate('commands', $commands[$i]);
+  foreach($tables as $t) {
+   if ($no_linked[$t]=='') {
+    $no_linked[$t]='1';
+   }
   }
 
-  if (file_exists(DIR_MODULES.'/onewire/onewire.class.php')) {
+  if ($no_linked['commands']!='') {
+   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['commands']);
+   $total=count($commands);
+   for($i=0;$i<$total;$i++) {
+    $commands[$i]['CUR_VALUE']=$value;
+    SQLUpdate('commands', $commands[$i]);
+   }
+  }
+
+  if ($no_linked['owproperties']!='' && file_exists(DIR_MODULES.'/onewire/onewire.class.php')) {
    $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['owproperties']);
    $total=count($owp);
    if ($total) {
@@ -534,7 +542,7 @@ curl_close($ch);
    }
   }
 
-  if (file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
+  if ($no_linked['snmpproperties']!='' && file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
    $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['snmpproperties']);
    $total=count($snmpdevices);
    if ($total) {
@@ -546,7 +554,7 @@ curl_close($ch);
    }
   }
 
-  if (file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
+  if ($no_linked['zwave_properties']!='' && file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
    $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
    $total=count($zwave_properties);
    if ($total) {
@@ -558,7 +566,7 @@ curl_close($ch);
    }
   }
 
-  if (file_exists(DIR_MODULES.'/mqtt/mqtt.class.php')) {
+  if ($no_linked['mqtt']!='' && file_exists(DIR_MODULES.'/mqtt/mqtt.class.php')) {
    $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['mqtt']);
    $total=count($mqtt_properties);
    if ($total) {
