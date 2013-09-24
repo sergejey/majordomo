@@ -6,3 +6,6 @@ cached/*
 debmes/*.txt
 reboot
 Log/*
+*.phpproj
+*.sln
+*.suo
