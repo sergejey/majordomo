@@ -9,3 +9,4 @@ Log/*
 *.phpproj
 *.sln
 *.suo
+*.user
