@@ -89,6 +89,36 @@ class OpenWeather
          
       return $units;
    }
+   
+   /**
+    * Convert Pressure from one system to another. 
+    * If error or system not found then function return current pressure.
+    * @param $vPressure 
+    * @param $vFrom
+    * @param $vTo
+    * @param $vPrecision
+    * @return
+    */
+   public static function ConvertPressure($vPressure, $vFrom, $vTo, $vPrecision = 2)
+   {
+      if (empty($vFrom) || empty($vTo) || empty($vPressure))
+         return $vPressure;
+      
+      if (!is_numeric($vPressure))
+         return $vPressure;
+      
+      $vPressure = (float) $vPressure;
+      $vFrom     = strtolower($vFrom);
+      $vTo       = strtolower($vTo);
+      
+      if ($vFrom == "hpa" && $vTo == "mmhg")
+         return round($vPressure * 0.75006375541921, $vPrecision);
+      
+      if ($vFrom == "mmhg" && $vTo == "hpa")
+         return round($vPressure * 1.33322, $vPrecision);
+      
+      return $vPressure;
+   }
       
    /**
     * Get url to weather's image by icon 
@@ -134,7 +164,10 @@ class OpenWeather
          $widget .= $vUnits == "metric" ? " °C" : " °F";
          $widget .= "</h2>";
          $widget .= "<p>" . $weather->weather[0]->description . "</p>";
-         $widget .= "<div id=\"date_m\">get at " . date("D M j G:i:s T Y", $weather->dt) . "</div>";
+         
+         $lm_date = date("D M j G:i:s T Y", $weather->dt);
+         
+         $widget .= "<div id=\"date_m\">get at " . $lm_date . "</div>";
          $widget .= "<p>&nbsp;</p>";
          $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
          $widget .= "   <tbody>";
@@ -142,7 +175,10 @@ class OpenWeather
          $widget .= "         <td>Wind</td>";
          $widget .= "         <td>Speed " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
          $widget .= "      </tr>";
-         $widget .= "     <tr><td>Pressure</td><td>" . $weather->main->pressure . "hpa</td></tr>";
+         
+         $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "mmHg":  $weather->main->pressure . "hpa";
+         
+         $widget .= "     <tr><td>Pressure</td><td>" . $pressure . "</td></tr>";
          $widget .= "     <tr><td>Humidity</td><td>".  $weather->main->humidity . "%</td></tr>";
          $widget .= "  </tbody>";
          $widget .= "</table>";
@@ -181,7 +217,10 @@ class OpenWeather
          $widget .= $vUnits == "metric" ? " °C" : " °F";
          $widget .= "</h2>";
          $widget .= "<p>" . $weather->weather[0]->description . "</p>";
-         $widget .= "<div id=\"date_m\">get at " . date("D M j G:i:s T Y", $weather->dt) . "</div>";
+         
+         $lm_date = date("D M j G:i:s T Y", $weather->dt);
+         
+         $widget .= "<div id=\"date_m\">get at " . $lm_date . "</div>";
          $widget .= "<p>&nbsp;</p>";
          $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
          $widget .= "   <tbody>";
@@ -189,7 +228,10 @@ class OpenWeather
          $widget .= "         <td>Wind</td>";
          $widget .= "         <td>Speed " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
          $widget .= "      </tr>";
-         $widget .= "     <tr><td>Pressure</td><td>" . $weather->main->pressure . "hpa</td></tr>";
+         
+         $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "mmHg":  $weather->main->pressure . "hpa";
+         
+         $widget .= "     <tr><td>Pressure</td><td>" . $pressure . "</td></tr>";
          $widget .= "     <tr><td>Humidity</td><td>".  $weather->main->humidity . "%</td></tr>";
          $widget .= "  </tbody>";
          $widget .= "</table>";
