@@ -619,6 +619,8 @@ classes - Classes
  classes: SUB_LIST text
  classes: PARENT_LIST text
  classes: DESCRIPTION text
+ classes: INDEX (PARENT_ID)
+
 EOD;
   parent::dbInstall($data);
  }

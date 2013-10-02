@@ -410,6 +410,7 @@ Define("EQ_DELIMITER", "qz_");
 */
  function dbInstall($data) {
   $sql="";
+  $need_optimzation=array();
   $strings=explode("\n", $data);
   $table_defined=array();
   for($i=0;$i<count($strings);$i++) {
@@ -425,7 +426,10 @@ Define("EQ_DELIMITER", "qz_");
 
    $tmp=explode(" ", $definition);
    $field=$tmp[0];
-   $definition=str_replace($field.' ', '`'.$field.'` ', $definition);
+
+   if (!in_array(strtolower($field), array('key', 'index', 'fulltext'))) {
+    $definition=str_replace($field.' ', '`'.$field.'` ', $definition);
+   }
 
    if (!IsSet($table_defined[$table])) {
    // new table
@@ -452,11 +456,11 @@ Define("EQ_DELIMITER", "qz_");
     }
 
     preg_match('/\((.+?)\)/', $definition, $matches);
-    $key_name=trim($matches[1]);
-
+    $key_name=trim($matches[1], " `");
     if (!IsSet($tbl_indexes[$table][$key_name])) {
      $sql="ALTER IGNORE TABLE $table ADD $definition;";     
      SQLExec($sql);
+     $to_optimize[]=$table;
     }
 
    } elseif (!IsSet($tbl_fields[$table][$field])) {
@@ -465,6 +469,15 @@ Define("EQ_DELIMITER", "qz_");
     SQLExec($sql);
    }
   }
+
+
+  if ($to_optimize[0]) {
+   foreach($to_optimize as $table) {
+    SQLExec("OPTIMIZE TABLE ".$table.";");
+   }
+  }
+
+
 
    // executing initial query and comments each line to prevent execution next time
     if (file_exists(DIR_MODULES.$this->name."/initial.sql")) {
