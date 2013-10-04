@@ -458,6 +458,7 @@ Define("EQ_DELIMITER", "qz_");
     preg_match('/\((.+?)\)/', $definition, $matches);
     $key_name=trim($matches[1], " `");
     if (!IsSet($tbl_indexes[$table][$key_name])) {
+     $definition=str_replace('`', '', $definition);
      $sql="ALTER IGNORE TABLE $table ADD $definition;";     
      SQLExec($sql);
      $to_optimize[]=$table;

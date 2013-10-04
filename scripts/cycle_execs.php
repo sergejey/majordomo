@@ -18,29 +18,21 @@ include_once("./load_settings.php");
 while(1) 
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-
    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
-
    SQLExec("DELETE FROM safe_execs WHERE ADDED < '" . date('Y-m-d H:i:s', time() - 180) . "'");
-
-   $safe_execs = SQLSelect("SELECT * FROM safe_execs WHERE EXCLUSIVE = 1 ORDER BY PRIORITY DESC, ID LIMIT 1");
-  
+   $safe_execs = SQLSelect("SELECT * FROM safe_execs WHERE EXCLUSIVE = 1 ORDER BY PRIORITY DESC, ID LIMIT 5");
    $total=count($safe_execs);
-   
    for($i = 0; $i < $total; $i++) 
    {
       $command=utf2win($safe_execs[$i]['COMMAND']);
       SQLExec("DELETE FROM safe_execs WHERE ID='".$safe_execs[$i]['ID']."'");
       echo "Executing (exclusive): " . $command . "\n";
-   
       DebMes("Executing (exclusive): " . $command);
       exec($command);
    }
 
    $safe_execs = SQLSelect("SELECT * FROM safe_execs WHERE EXCLUSIVE=0 ORDER BY PRIORITY DESC, ID");
-   
    $total = count($safe_execs);
-   
    for($i=0;$i<$total;$i++) 
    {
       $command = utf2win($safe_execs[$i]['COMMAND']);
