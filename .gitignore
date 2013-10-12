@@ -10,3 +10,4 @@ Log/*
 *.sln
 *.suo
 *.user
+*.orig
