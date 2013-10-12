@@ -37,8 +37,8 @@ function StartMeasure($mpoint)
    $tmp = getmicrotime();
   
    $perf_data[$mpoint]['START'] = getmicrotime();
-   if(!isset($perf_data[$mpoint]['MEMORY_START']) && function_exists('memory_get_usage') ) 
-   {
+  if((isset($perf_data[$mpoint]['MEMORY_START']) && !$perf_data[$mpoint]['MEMORY_START']) || !isset($perf_data[$mpoint]['MEMORY_START'])
+      && function_exists('memory_get_usage') ) {
       $perf_data[$mpoint]['MEMORY_START'] = memory_get_usage(); 
    }
 }

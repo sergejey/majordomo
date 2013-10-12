@@ -54,7 +54,7 @@ function saveParams() {
 *
 * @access public
 */
-function getParams() {
+function getParams($data = 1) {
   global $id;
   global $mode;
   global $view_mode;

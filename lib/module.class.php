@@ -488,6 +488,7 @@ class module
    function dbInstall($data) 
    {
       $sql = "";
+  $need_optimzation=array();
       $strings = explode("\n", $data);
       $table_defined = array();
      
@@ -503,7 +504,10 @@ class module
 
          $tmp        = explode(" ", $definition);
          $field      = $tmp[0];
+
+   if (!in_array(strtolower($field), array('key', 'index', 'fulltext'))) {
          $definition = str_replace($field.' ', '`' . $field . '` ', $definition);
+   }
 
          if (!isset($table_defined[$table])) 
          {
@@ -540,12 +544,12 @@ class module
             }
 
             preg_match('/\((.+?)\)/', $definition, $matches);
-            $key_name = trim($matches[1]);
-
-            if (!isset($tbl_indexes[$table][$key_name])) 
-            {
+    $key_name=trim($matches[1], " `");
+    if (!IsSet($tbl_indexes[$table][$key_name])) {
+     $definition=str_replace('`', '', $definition);
                $sql = "alter ignore table $table add $definition;";     
                SQLExec($sql);
+     $to_optimize[]=$table;
             }
          } 
          elseif (!isset($tbl_fields[$table][$field])) 
@@ -555,6 +559,15 @@ class module
             SQLExec($sql);
          }
       }
+
+
+  if ($to_optimize[0]) {
+   foreach($to_optimize as $table) {
+    SQLExec("OPTIMIZE TABLE ".$table.";");
+   }
+  }
+
+
 
       // executing initial query and comments each line to prevent execution next time
       $fileName = DIR_MODULES . $this->name . "/initial.sql";

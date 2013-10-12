@@ -20,8 +20,9 @@ class application extends module
       $this->name = "application";
    }
 
-   function saveParams() 
-   {
+// --------------------------------------------------------------------
+
+function saveParams($data = 1) {
       $p             = array();
       $p["action"]   = $this->action;
       $p['doc_name'] = $this->doc_name;
@@ -70,31 +71,25 @@ class application extends module
          header ("HTTP/1.0: 200 OK\n");
          header ('Content-Type: text/html; charset=utf-8');
 
-         if ($dir = @opendir(ROOT."cached")) 
-         { 
-            while (($file = readdir($dir)) !== false) 
-            { 
-               if (preg_match('/\.mp3$/', $file)) 
-               {
-                  $mtime = filemtime(ROOT . "cached/" . $file);
+    if ($dir = @opendir(ROOT."cached/voice")) { 
+       while (($file = readdir($dir)) !== false) { 
+       if (preg_match('/\.mp3$/', $file)) {
+        $mtime=filemtime(ROOT."cached/voice".$file);
                   if ((time() - $mtime) > 60 * 60 * 24 && $mtime > 0) 
                   {
                      //old file, delete?
-                     unlink(ROOT . "cached/" . $file);
-                  } 
-                  else
-                  {
-                     $files[] = array('FILENAME' => $file, 'MTIME' => filemtime(ROOT . "cached/" . $file));
+         unlink(ROOT."cached/voice".$file);
+        } else {
+         $files[]=array('FILENAME'=>$file, 'MTIME'=>filemtime(ROOT."cached/voice".$file));
                   }
                }
 
-               if (preg_match('/\.wav$/', $file)) 
-               {
-                  $mtime = filemtime(ROOT . "cached/" . $file);
+       if (preg_match('/\.wav$/', $file)) {
+        $mtime=filemtime(ROOT."cached/voice".$file);
                   if ((time() - $mtime) > 60 * 60 * 24 && $mtime > 0) 
                   {
                      //old file, delete?
-                     unlink(ROOT . "cached/" . $file);
+         unlink(ROOT."cached/voice".$file);
                   }
                }
             }
@@ -111,7 +106,7 @@ class application extends module
                return ($a['MTIME'] > $b['MTIME']) ? -1 : 1; 
             }
             usort($files, 'sortFiles');
-            echo '/cached/' . $files[0]['FILENAME'];
+     echo '/cached/voice/'.$files[0]['FILENAME'];
          }
 
          global $db;

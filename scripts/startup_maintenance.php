@@ -43,7 +43,7 @@ if ($full_backup)
 umask($old_mask);
 
 // CHECK/REPAIR/OPTIMIZE TABLES                
-$tables = SQLSelect("SHOW TABLES FROM " . DB_NAME);
+$tables = SQLSelect("SHOW TABLES FROM `" . DB_NAME . "`");
 $total = count($tables);
  
 for( $i = 0; $i < $total; $i++)

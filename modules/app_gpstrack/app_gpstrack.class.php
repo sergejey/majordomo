@@ -371,6 +371,8 @@ gpsactions - Actions
  gpslog: DEVICE_ID int(10) NOT NULL DEFAULT '0'
  gpslog: LOCATION_ID int(10) NOT NULL DEFAULT '0'
  gpslog: ACCURACY float DEFAULT '0' NOT NULL
+ gpslog: INDEX (DEVICE_ID)
+ gpslog: INDEX (LOCATION_ID)
 
  gpslocations: ID int(10) unsigned NOT NULL auto_increment
  gpslocations: TITLE varchar(255) NOT NULL DEFAULT ''
@@ -386,6 +388,7 @@ gpsactions - Actions
  gpsdevices: LON varchar(255) NOT NULL DEFAULT ''
  gpsdevices: UPDATED datetime
  gpsdevices: DEVICEID varchar(255) NOT NULL DEFAULT ''
+ gpsdevices: INDEX (USER_ID)
 
  gpsactions: ID int(10) unsigned NOT NULL auto_increment
  gpsactions: LOCATION_ID int(10) NOT NULL DEFAULT '0'
@@ -395,6 +398,8 @@ gpsactions - Actions
  gpsactions: CODE text
  gpsactions: LOG text
  gpsactions: EXECUTED datetime
+ gpsactions: INDEX (LOCATION_ID)
+ gpsactions: INDEX (USER_ID)
 EOD;
   parent::dbInstall($data);
  }

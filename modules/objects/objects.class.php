@@ -451,8 +451,6 @@ class objects extends module
     */
    function setProperty($property, $value, $no_linked = 0) 
    {
-      global $property_linked_history;
-
       $id = $this->getPropertyByName($property, $this->class_id, $this->id);
       $old_value = '';
 
@@ -504,96 +502,115 @@ class objects extends module
          $h['ID']       = SQLInsert('phistory', $h);
       }
 
-      //commands, owproperties, snmpproperties, zwave_properties, mqtt
-      $tables = array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
-      if (!is_array($no_linked)) 
-      {
-         $no_linked = array();
-         foreach($tables as $t) 
-            $no_linked[$t] = '0';
-      } 
-      else 
-      {
-         foreach($tables as $t) 
-            if (!isset($no_linked[$t])) 
-               $no_linked[$t] = '1';
-      } 
-      
-      $query = "SELECT * FROM commands WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['commands'];
-      $commands = SQLSelect($query);
+  /*
+   $h=array();
+   $h['ADDED']=date('Y-m-d H:i:s');
+   $h['OBJECT_ID']=$this->id;
+   $h['VALUE_ID']=$v['ID'];
+   $h['OLD_VALUE']=$old_value;
+   $h['NEW_VALUE']=$value;
+   SQLInsert('history', $h);
+  */
+
+  //commands, owproperties, snmpproperties, zwave_properties, mqtt
+  $tables=array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
+  if (!is_array($no_linked) && $no_linked) {
+   $no_linked=array();
+   foreach($tables as $t) {
+    $no_linked[$k]='0';
+   }
+  } elseif (is_array($no_linked)) {
+   foreach($tables as $t) {
+    if (!isset($no_linked[$k])) {
+     $no_linked[$k]='1';
+    }
+   }   
+  } else {
+   $no_linked=array();
+   foreach($tables as $t) {
+    $no_linked[$k]='1';
+   }
+  }
+
+  foreach($tables as $t) {
+   if ($no_linked[$t]=='') {
+    $no_linked[$t]='1';
+   }
+  }
+
+  if ($no_linked['commands']!='') {
+   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['commands']);
       $total    = count($commands);
       for($i = 0; $i < $total; $i++) 
       {
-         $commands[$i]['CUR_VALUE'] = $value;
-         SQLUpdate('commands', $commands[$i]);
-      }
+    $commands[$i]['CUR_VALUE']=$value;
+    SQLUpdate('commands', $commands[$i]);
+   }
+  }
 
-      if (file_exists(DIR_MODULES . '/onewire/onewire.class.php')) 
-      {
-         $owp   = SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['owproperties']);
-         $total = count($owp);
-         if ($total > 0) 
-         {
-            include_once(DIR_MODULES.'/onewire/onewire.class.php');
-            $on_wire = new onewire();
-            for($i = 0; $i < $total; $i++) 
-               $on_wire->setProperty($owp[$i]['ID'], $value);
-         }
-      }
+  if ($no_linked['owproperties']!='' && file_exists(DIR_MODULES.'/onewire/onewire.class.php')) {
+   $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['owproperties']);
+   $total=count($owp);
+   if ($total) {
+    include_once(DIR_MODULES.'/onewire/onewire.class.php');
+    $on_wire=new onewire();
+    for($i=0;$i<$total;$i++) {
+     $on_wire->setProperty($owp[$i]['ID'], $value);
+    }
+   }
+  }
 
-      if (file_exists(DIR_MODULES . '/snmpdevices/snmpdevices.class.php')) 
-      {
-         $snmpdevices = SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['snmpproperties']);
-         $total = count($snmpdevices);
-         if ($total > 0)
-         {
-            include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
-            $snmp=new snmpdevices();
-            for($i=0;$i<$total;$i++) 
-               $snmp->setProperty($snmpdevices[$i]['ID'], $value);
-         }
-      }
+  if ($no_linked['snmpproperties']!='' && file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
+   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['snmpproperties']);
+   $total=count($snmpdevices);
+   if ($total) {
+    include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
+    $snmp=new snmpdevices();
+    for($i=0;$i<$total;$i++) {
+     $snmp->setProperty($snmpdevices[$i]['ID'], $value);
+    }
+   }
+  }
 
-      if (file_exists(DIR_MODULES.'/zwave/zwave.class.php')) 
-      {
-         $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
-         $total=count($zwave_properties);
-         if ($total > 0) 
-         {
-            include_once(DIR_MODULES . '/zwave/zwave.class.php');
-            $zwave = new zwave();
-            for($i = 0; $i < $total; $i++) 
-            {
-               $zwave->setProperty($zwave_properties[$i]['ID'], $value);
-            }
-         }
-      }
+  if ($no_linked['zwave_properties']!='' && file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
+   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
+   $total=count($zwave_properties);
+   if ($total) {
+    include_once(DIR_MODULES.'/zwave/zwave.class.php');
+    $zwave=new zwave();
+    for($i=0;$i<$total;$i++) {
+     $zwave->setProperty($zwave_properties[$i]['ID'], $value);
+    }
+   }
+  }
 
-      if (file_exists(DIR_MODULES . '/mqtt/mqtt.class.php')) 
-      {
-         $mqtt_properties = SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '" . DBSafe($this->object_title) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "' AND " . $no_linked['mqtt']);
-         $total = count($mqtt_properties);
-         if ($total > 0) 
-         {
-            include_once(DIR_MODULES . '/mqtt/mqtt.class.php');
-            $mqtt = new mqtt();
-            for($i = 0; $i < $total; $i++) 
-               $mqtt->setProperty($mqtt_properties[$i]['ID'], $value);
-         }
-      }
+  if ($no_linked['mqtt']!='' && file_exists(DIR_MODULES.'/mqtt/mqtt.class.php')) {
+   $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['mqtt']);
+   $total=count($mqtt_properties);
+   if ($total) {
+    include_once(DIR_MODULES.'/mqtt/mqtt.class.php');
+    $mqtt=new mqtt();
+    for($i=0;$i<$total;$i++) {
+     $mqtt->setProperty($mqtt_properties[$i]['ID'], $value);
+    }
+   }
+  }
 
-      if ($prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']])
-      {
-         $property_linked_history[$property][$prop['ONCHANGE']] = 1;
-         global $on_change_called;
-         $params = array();
-         $params['NEW_VALUE'] = (string)$value;
-         $params['OLD_VALUE'] = (string)$old_value;
-         $this->callMethod($prop['ONCHANGE'], $params);
-      } 
-      elseif ($prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) 
-      {
-         unset($property_linked_history[$property][$prop['ONCHANGE']]);
+
+  if ($prop['ONCHANGE']) {
+   global $property_linked_history;
+   if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
+    $property_linked_history[$property][$prop['ONCHANGE']]=1;
+    global $on_change_called;
+    $params=array();
+    $params['NEW_VALUE']=(string)$value;
+    $params['OLD_VALUE']=(string)$old_value;
+    $this->callMethod($prop['ONCHANGE'], $params);
+   } elseif ($property_linked_history[$property][$prop['ONCHANGE']]) {
+    unset($property_linked_history[$property][$prop['ONCHANGE']]);
+   }
+
+
       }
    }
    

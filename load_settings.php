@@ -19,4 +19,6 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
    date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 }
 
+@error_reporting(E_ALL ^ E_NOTICE);
+
 ?>
