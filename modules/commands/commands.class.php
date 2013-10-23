@@ -248,7 +248,7 @@ function usual(&$out) {
 * @access public
 */
  function delete_commands($id) {
-  $rec=SQLSelectOne("SELECT * FROM commands WHERE ID='$id'");
+  $rec=SQLSelectOne("SELECT * FROM commands WHERE ID = '" . $id . "'");
   // some action for related tables
    $tmp=SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID=".$rec['ID']);
    if ($tmp['ID']) {
@@ -288,7 +288,7 @@ function usual(&$out) {
    $parent_list=array();
   }
   $sub_list=array();
-  $res=SQLSelect("SELECT * FROM $table WHERE PARENT_ID='$parent_id'");
+  $res=SQLSelect("SELECT * FROM " . $table . " WHERE PARENT_ID = '" . $parent_id . "'");
   $total=count($res);
   for($i=0;$i<$total;$i++) {
    if ($parent_list[0]) {

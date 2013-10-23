@@ -6,6 +6,8 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
+$log = Logger::getLogger(__METHOD__);
+
 set_time_limit(0);
 
 // connecting to database
@@ -41,7 +43,7 @@ while(1)
    if ($m!=$old_minute) 
    {
       echo "new minute\n";
-      $objects = SQLSelect("SELECT ID, TITLE FROM objects WHERE $o_qry");
+      $objects = SQLSelect("SELECT ID, TITLE FROM objects WHERE " . $o_qry);
       $total   = count($objects);
    
       for($i=0;$i<$total;$i++) 
@@ -58,7 +60,7 @@ while(1)
    {
       echo "new hour\n";
       $old_hour = $h;
-      $objects  = SQLSelect("SELECT ID, TITLE FROM objects WHERE $o_qry");
+      $objects  = SQLSelect("SELECT ID, TITLE FROM objects WHERE " . $o_qry);
       $total    = count($objects);
       
       for($i = 0; $i < $total; $i++)
@@ -79,7 +81,7 @@ while(1)
 
    sleep(1);
 }
-
-DebMes("Unexpected close of cycle: " . basename(__FILE__));
+$log->error("Unexpected close of cycle: " . basename(__FILE__));
+//DebMes("Unexpected close of cycle: " . basename(__FILE__));
 
 ?>
