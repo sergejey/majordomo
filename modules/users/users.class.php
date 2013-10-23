@@ -184,8 +184,8 @@ function usual(&$out) {
 *
 * @access private
 */
- function install() {
-  parent::install();
+ function install($parent_name="") {
+  parent::install($parent_name);
  }
 /**
 * Uninstall
@@ -205,7 +205,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 users - Users
 */

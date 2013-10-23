@@ -565,7 +565,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 calendar_events - Events
 calendar_categories - Categories

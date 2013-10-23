@@ -313,11 +313,11 @@ while (false !== ($file = readdir($handle))) {
 *
 * @access private
 */
- function install() {
+ function install($parent_name="") {
   if (!Is_Dir(ROOT."./skins")) {
    mkdir(ROOT."./skins", 0777);
   }
-  parent::install();
+  parent::install($parent_name);
  }
 // --------------------------------------------------------------------
 }

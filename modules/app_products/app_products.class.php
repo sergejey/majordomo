@@ -426,7 +426,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 products - Products
 product_categories - Categories
