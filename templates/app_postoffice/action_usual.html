@@ -1,0 +1,110 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+[#if SET_DATASOURCE!="1"#]
+&nbsp;
+<!-- source select -->
+<table border=0 width=100% cellspacing=1 cellpadding=4 bgcolor="#222222">
+<tr>
+ <td align=center bgcolor="[#if DATA_SOURCE!="products" && DATA_SOURCE!=""#]#DDDDDD[#else#]#FFFFFF[#endif#]">
+  <b>
+  [#if DATA_SOURCE!="products" && DATA_SOURCE!=""#]<a href="?data_source=products"><#LANG_PRODUCTS#></a>
+  [#else#]
+   Products
+  [#endif#]
+  </b>
+ </td>
+ <td align=center bgcolor="[#if DATA_SOURCE!="product_categories"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
+  <b>
+  [#if DATA_SOURCE!="product_categories"#]<a href="?data_source=product_categories"><#LANG_CATEGORIES#></a>
+  [#else#]
+   Categories
+  [#endif#]
+  </b>
+ </td>
+ <td align=center bgcolor="[#if DATA_SOURCE!="shopping_list_items"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
+  <b>
+  [#if DATA_SOURCE!="shopping_list_items"#]<a href="?data_source=shopping_list_items"><#LANG_SHOPPING_LIST#></a>
+  [#else#]
+   Shopping List
+  [#endif#]
+  </b>
+ </td>
+</tr>
+</table>
+<!-- / source select -->
+[#endif SET_DATASOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="products" || DATA_SOURCE=""#]
+ <!-- table products search -->
+ [#if VIEW_MODE="search_products" || VIEW_MODE=""#]
+  [#inc products_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table products search -->
+ <!-- table products edit -->
+ [#if VIEW_MODE="edit_products"#]
+   [#if ID!=""#]
+   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
+   <tr>
+    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">[#endif TAB#]<#LANG_DETAILS#></a></td>
+    <td align=center[#if TAB="codes"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="codes"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=codes">[#endif TAB#]<#LANG_CODES#></a></td>
+    <td align=center[#if TAB="history"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="history"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=history">[#endif TAB#]<#LANG_HISTORY#></a></td>
+   </tr>
+   </table>
+   [#endif ID#]
+   [#if TAB=""#]
+    [#inc products_edit_default.html#]
+   [#endif TAB#]
+   [#if TAB="codes"#]
+    [#inc products_edit_codes.html#]
+   [#endif TAB#]
+   [#if TAB="history"#]
+    [#inc products_edit_history.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table products edit -->
+ <!-- table products view --> 
+ [#if VIEW_MODE="view_products"#]
+   [#if TAB=""#]
+    [#inc products_view_default.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table products view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="product_categories"#]
+ <!-- table product_categories search -->
+ [#if VIEW_MODE="search_product_categories" || VIEW_MODE=""#]
+  [#inc product_categories_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table product_categories search -->
+ <!-- table product_categories edit -->
+ [#if VIEW_MODE="edit_product_categories"#]
+   [#inc product_categories_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table product_categories edit -->
+ <!-- table product_categories view --> 
+ [#if VIEW_MODE="view_product_categories"#]
+   [#inc product_categories_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table product_categories view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="shopping_list_items"#]
+ <!-- table shopping_list_items search -->
+ [#if VIEW_MODE="search_shopping_list_items" || VIEW_MODE=""#]
+  [#inc shopping_list_items_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shopping_list_items search -->
+ <!-- table shopping_list_items edit -->
+ [#if VIEW_MODE="edit_shopping_list_items"#]
+   [#inc shopping_list_items_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shopping_list_items edit -->
+ <!-- table shopping_list_items view --> 
+ [#if VIEW_MODE="view_shopping_list_items"#]
+   [#inc shopping_list_items_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table shopping_list_items view -->
+ [#endif DATA_SOURCE#]

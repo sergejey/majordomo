@@ -1,0 +1,192 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+<script language="javascript">
+
+ function expandAll() {
+  [#begin CATEGORIES#]
+   //$('products[#ID#]').style.display='block';
+   if ($('#products[#ID#]').is(":hidden")) {
+    //alert('x');
+    //Effect.BlindDown('products[#ID#]', { duration: 0.5 });
+    $('#products[#ID#]').slideDown('fast');
+
+   } else {
+         //Effect.BlindUp('products[#ID#]', { duration: 0.5 });
+    $('#products[#ID#]').slideUp('fast');
+  }   
+  [#end CATEGORIES#]
+  return false;
+ }
+
+ function deleteProductProcessed(id, data) {
+  $('#product'+id).hide();
+  return false;
+ }
+
+ function deleteProduct(id) {
+  if (confirm('Вы уверены?')) {
+   var url="?mode=delete_product&id="+id;
+   AJAXRequest(url, 'deleteProductProcessed', id);
+  }
+  return false;
+ }
+
+ function switchInStockProcessed(id, data) {
+  if (data=='1') {
+   $('#instock'+id).html('Есть');
+   $('#instock'+id).css('color','green');
+  } else {
+   $('#instock'+id).html('Нет');
+   $('#instock'+id).css('color','red');
+  }
+  return false;
+ }
+
+  function switchInStock(id) {
+   var url="?mode=switch_product&id="+id;
+   AJAXRequest(url, 'switchInStockProcessed', id);
+   return false;
+  }
+  
+ function switchInCartProcessed(id, data) {
+  if (data=='1') {
+   $('#incart'+id).html('В списке');
+   $('#incart'+id).css('color','black');
+  } else {
+   $('#incart'+id).html('Купить');
+   $('#incart'+id).css('color','blue');
+  }
+  return false;
+ }
+
+  function switchInCart(id) {
+   var url="?mode=switch_cart&id="+id;
+   AJAXRequest(url, 'switchInCartProcessed', id);
+   return false;
+  }  
+
+ function showHideAddCategory(id) {
+  if ($('#addCategory'+id).is(":hidden")) {
+   $('#addCategory'+id).slideDown('fast');
+   //alert('zz');
+  } else {
+   //alert('dd');
+   $('#addCategory'+id).slideUp('fast');
+  }
+  return false;
+ }
+
+ function showHideAddProduct(id) {
+  if ($('#products'+id).is(":hidden")) {
+   $('#products'+id).slideDown('fast');
+  }
+
+  if ($('#addProduct'+id).is(":hidden")) {
+   $('#addProduct'+id).slideDown('fast');
+   //$('#newProduct'+id).focus();
+  } else {
+   $('#addProduct'+id).slideUp('fast');
+  }
+  return false;
+ }
+
+ function showHideProducts(id) {
+  if ($('#products'+id).is(":hidden")) {
+   //Effect.BlindDown('products'+id, { duration: 0.5 });
+   $('#products'+id).slideDown('fast');
+   //$('#products'+id).show();
+  } else {
+   $('#products'+id).slideUp('fast');
+  }
+  return false;
+ }
+
+</script>
+
+<div id="addCategory0" style="display:none">
+ <table border="0">
+  <form action="?" method="post">
+  <tr>
+   <td><#LANG_CATEGORY#>:</td>
+   <td><input type="text" name="title" value="" size="50"></td>
+   <td><input type="submit" name="submit" value="<#LANG_ADD#>">
+   <a href="#" onClick="return showHideAddCategory(0);"><#LANG_CANCEL#></a>
+   </td>
+  </tr>
+  <input type="hidden" name="mode" value="update_category">
+  </form>
+ </table>
+</div>
+
+[#if CATEGORIES#]
+ [#begin CATEGORIES#]
+ <a name="category[#ID#]"></a>
+ <div>
+        
+ <table width="550"><tr><td>    
+  <a href="#" onClick="return showHideProducts([#ID#]);">[#TITLE#]</a>
+
+
+</td>
+<td align="right"><span id="addCategoryLink[#ID#]">[ <a href="#" onClick="return showHideAddCategory([#ID#]);"><#LANG_EDIT#></a> ]</span>
+<span id="addProductLink[#ID#]">[ <a href="#" onClick="return showHideAddProduct([#ID#]);">+ <#LANG_PRODUCT#></a> ]</span>
+<span id="deleteCategoryLink[#ID#]">[ <a href="?mode=delete_category&id=[#ID#]" onClick="return confirm('<#LANG_DELETE_CATEGORY#>')">X</a> ]</span>
+</td>
+</tr></table>
+
+<div id="addCategory[#ID#]" style="display:none">
+ <table border="0">
+  <form action="?" method="post">
+  <tr>
+   <td><#LANG_CATEGORY#>:</td>
+   <td><input type="text" name="title" value="[#TITLE#]" size="50"></td>
+   <td><input type="submit" name="submit" value="Сохранить">
+   <a href="#" onClick="return showHideAddCategory([#ID#]);"><#LANG_CANCEL#></a>
+   </td>
+  </tr>
+  <input type="hidden" name="mode" value="update_category">
+  <input type="hidden" name="category_id" value="[#ID#]">
+  </form>
+ </table>
+</div>
+
+ <div id="products[#ID#]" [#if ("<#EXPANDED#>"!="1") && (ID!="<#EXPAND_ID#>")#]style="display:none"[#endif#]>
+
+ [#if PRODUCTS#]
+ <table border="0" cellpadding="3" width="550">
+  [#begin PRODUCTS#]
+  <tr>
+   <td valign="top" width="50"><a href="#" onClick="return switchInStock([#ID#])"><span id="instock[#ID#]" [#if INSTOCK!="1"#]style="color:red"><#LANG_MISSING#>[#else#]style="color:green"><#LANG_IN_STORAGE#>[#endif#]</span></a></td>
+   <td>&nbsp;</td>
+   <td valign="top" width="330">[#TITLE#]</td>
+   <td valign="top" width="80"><a href="#" onClick="return switchInCart([#ID#])"><span id="incart[#ID#]" [#if INCART!="1"#] style="color:blue"><#LANG_BUY#>[#else#] style="color:black"><#LANG_ADDED#>[#endif#]</span></a></td>   
+   <td valign="top" width="40">[ <a href="#" onClick="return deleteProduct([#ID#]);">X</a> ]</td>
+  </tr>
+  [#end PRODUCTS#]
+ </table>
+ [#endif PRODUCTS#]
+
+ <div id="addProduct[#ID#]" style="display:none">
+ <table border="0">
+  <form action="?" method="post">
+  <tr>
+   <td>+</td>
+   <td>
+         <textarea name="title" rows="3" cols="60"></textarea>
+   </td>
+   <td><input type="submit" name="submit" value="<#LANG_ADD#>"><br>
+        <a href="#" onClick="return showHideAddProduct(<#CATEGORIES.ID#>);"><#LANG_CANCEL#></a>
+   </td>
+  </tr>
+  <input type="hidden" name="mode" value="add_product">
+  <input type="hidden" name="category_id" value="[#ID#]">
+  </form>
+ </table>  
+ </div>
+
+ </div>
+ </div>
+
+ [#end CATEGORIES#]
+[#endif CATEGORIES#]

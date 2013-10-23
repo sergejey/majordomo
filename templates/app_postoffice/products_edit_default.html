@@ -1,0 +1,150 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+&nbsp;
+<!-- Table 'products' edit -->
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]">
+ </td>
+</tr>
+<!-- CATEGORY_ID (select) -->
+[#if !IS_SET_CATEGORY_ID#]
+<tr>
+ <td align=right valign=top>
+ [#if ERR_CATEGORY_ID#]<b><font color="red">[#endif#]
+ <#LANG_CATEGORY#>: 
+ </td>
+ <td>                                           
+ <select name="category_id">
+  <option value=""><#LANG_SELECT#>
+  [#begin CATEGORY_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+  [#end CATEGORY_ID_OPTIONS#]
+ </select>
+ </td>
+</tr>
+[#endif IS_SET_CATEGORY_ID#]
+<!-- IMAGE (image) -->
+<tr>
+<td colspan=2 align=center>
+<#LANG_IMAGE#>
+<br>
+[#if IMAGE!=""#]
+[#module name="thumb" src="./cms/products/<#IMAGE#>" width="300" height="300" enlarge="1" close="Close window"#]<br>
+<input type="checkbox" name="delete_image" value="1"> delete<br>
+[#endif IMAGE#]
+Upload: <input type="file" name="image">
+</td>
+</tr>
+<!-- EXPIRE_DATE (date) -->
+<tr>
+ <td align=right>
+ [#if ERR_EXPIRE_DATE#]<b><font color="red">[#endif#]
+ <#LANG_EXPIRATION_DATE#>:
+ </td>
+ <td>
+  <input type="text" name="expire_date" value="[#EXPIRE_DATE#]" maxlength=10 size=12>
+  [#module name="dateselect" field="expire_date" form="frmEdit"#]
+ </td>
+</tr>
+<!-- EXPIRE_DEFAULT (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_EXPIRE_DEFAULT#]<b><font color="red">[#endif#]
+ <#LANG_DEFAULT_EXPIRE_IN#>:
+ </td>
+ <td>
+  <input type="text" name="expire_default" value="[#EXPIRE_DEFAULT#]"> (<#LANG_DAYS#>)
+ </td>
+</tr>
+<!-- UPDATED (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_UPDATED#]<b><font color="red">[#endif#]
+ <#LANG_UPDATED#>:
+ </td>
+ <td>
+ [#UPDATED#]
+ </td>
+</tr>
+<!-- QTY (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_QTY#]<b><font color="red">[#endif#]
+ <#LANG_QUANTITY#>:
+ </td>
+ <td>
+  <input type="text" name="qty" value="[#QTY#]">
+ </td>
+</tr>
+<!-- MIN_QTY (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_MIN_QTY#]<b><font color="red">[#endif#]
+ <#LANG_RECOMENDED_QUANTITY#>:
+ </td>
+ <td>
+  <input type="text" name="min_qty" value="[#MIN_QTY#]">
+ </td>
+</tr>
+<!-- DETAILS (text) -->
+<tr>
+ <td valign=top align=right>
+ [#if ERR_DETAILS#]<b><font color="red">[#endif#]
+ <#LANG_DETAILS#>
+ :
+ </td>
+ <td valign=top>
+ <textarea name="details" rows=4 cols=50 class="field span8">[#DETAILS#]</textarea>
+ </td>
+</tr>
+<tr>
+ <td valign="top">&nbsp;</td>
+ <td valign="top"><label><input type="checkbox" name="delete" value="1"> <#LANG_DELETE_FROM_DATABASE#></label></td>
+</tr>
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="tab" value="<#TAB#>">
+</form>
+</table>
