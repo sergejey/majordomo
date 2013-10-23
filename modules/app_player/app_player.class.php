@@ -29,7 +29,7 @@ function app_player() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data=1) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
@@ -323,8 +323,8 @@ function usual(&$out) {
 *
 * @access private
 */
- function install() {
-  parent::install();
+ function install($parent_name="") {
+  parent::install($parent_name);
  }
 // --------------------------------------------------------------------
 }

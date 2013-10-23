@@ -67,8 +67,10 @@ class Threads {
             return false;
         }
         $read = $this->streams;
+		$write = null;
+		$except = null;
 
-        if (false === ($number_of_streams=stream_select($read, $write=null, $except=null, $this->timeout))) {
+        if (false === ($number_of_streams=stream_select($read, $write, $except, $this->timeout))) {
          DebMes("No active streams");
          return 0;
         }

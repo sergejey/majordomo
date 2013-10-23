@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * MQTT 
 *
@@ -333,7 +333,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 mqtt - MQTT
 */
