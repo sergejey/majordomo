@@ -19,9 +19,10 @@ if (Defined('HOME_NETWORK') && HOME_NETWORK != '' && !$argv[0] &&
 {
    $p = preg_quote(HOME_NETWORK);
    $p = str_replace('\*', '\d+?', $p);
- $p=str_replace(',', ' ', $p);
- $p=str_replace('  ', ' ', $p);
- $p=str_replace(' ', '|', $p);
+   $p =str_replace(',', ' ', $p);
+   $p =str_replace('  ', ' ', $p);
+   $p =str_replace(' ', '|', $p);
+   
    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
  
    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1') 
@@ -293,8 +294,8 @@ function checkGeneral($field)
       return 0;
 }
 
-function SendMail(
-   $from, 
+function SendMail
+  ($from, 
    $to, 
    $subj, 
    $body, 
@@ -317,8 +318,8 @@ function SendMail(
    return $result;
 }
 
-function SendMail_HTML(
-   $from, 
+function SendMail_HTML
+  ($from, 
    $to, 
    $subj, 
    $body, 
