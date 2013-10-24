@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Z-Wave 
 *
@@ -665,7 +665,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 zwave_devices - Z-Wave
 zwave_properties - Properties

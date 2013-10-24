@@ -1,4 +1,4 @@
-<?
+<?php
 
 
  $cookie_file=ROOT.'cached/zwave_cookie.txt';

@@ -18,11 +18,11 @@
   }
 
 // --------------------------------------------------------------------
-function saveParams() {
- $p=array();
- $p["action"]=$this->action;
- $p["print"]=$this->print;
- return parent::saveParams($p);
+function saveParams($data=1) {
+ $data=array();
+ $data["action"]=$this->action;
+ $data["print"]=$this->print;
+ return parent::saveParams($data);
 }
 
 // --------------------------------------------------------------------

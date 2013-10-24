@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Snmp Devices 
 *
@@ -328,7 +328,7 @@ function usual(&$out) {
 * @access private
 */
  function install($data='') {
-  parent::install();
+  parent::install($data);
  }
 /**
 * Uninstall
@@ -349,7 +349,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 snmpdevices - Snmp Devices
 snmpproperties - Snmp Properties

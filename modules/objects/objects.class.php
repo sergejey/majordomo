@@ -31,7 +31,7 @@ function objects() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data=1) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
@@ -602,8 +602,8 @@ curl_close($ch);
 *
 * @access private
 */
- function install() {
-  parent::install();
+ function install($parent_name="") {
+  parent::install($parent_name);
  }
 /**
 * Uninstall
@@ -623,7 +623,7 @@ curl_close($ch);
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 objects - Objects
 */
