@@ -28,9 +28,11 @@
 */
   function error($description, $stop=0, $short=0) {
    $script='http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-   $dat=date("M d, Y H:i:s");
-   $description=$dat." ".$script."\nError:\n".$description;
-   DebMes($description);
+   $description=$script."\nError:\n".$description;
+
+   $log = Logger::getLogger(__METHOD__);
+   $log->error($description);
+
    if (Defined("DEBUG_MODE")) {
     if (!$short) {
      $this->alert(nl2br($description));
