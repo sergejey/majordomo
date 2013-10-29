@@ -1,14 +1,12 @@
 <?php
-/*
-* @version 0.1 (auto-set)
-*/
-
 // vim: foldmethod=marker
 
 /* Generic exception class
  */
-class OAuthException extends Exception {
-  // pass
+if (!class_exists('OAuthException')) {
+  class OAuthException extends Exception {
+    // pass
+  }
 }
 
 class OAuthConsumer {
@@ -874,5 +872,3 @@ class OAuthUtil {
     return implode('&', $pairs);
   }
 }
-
-?>
