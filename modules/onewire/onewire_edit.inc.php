@@ -100,6 +100,9 @@
      if (${'starred'.$properties[$i]['ID']}) {
        $properties[$i]['STARRED']=1;
        SQLUpdate('owproperties', $properties[$i]);
+     } else {
+       $properties[$i]['STARRED']=0;
+       SQLUpdate('owproperties', $properties[$i]);
      }
     }
    }
