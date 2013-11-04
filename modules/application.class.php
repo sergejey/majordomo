@@ -53,8 +53,9 @@ function getParams() {
     header ('Content-Type: text/html; charset=utf-8');
 
     $msg=SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC LIMIT 1");
-    echo $msg['MESSAGE'];
-
+    $res=array();
+    $res['DATA']=$msg['MESSAGE'];
+    echo json_encode($res);
     global $db;
     $db->Disconnect();
     exit;

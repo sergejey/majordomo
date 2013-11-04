@@ -552,7 +552,7 @@ function admin(&$out) {
 * @access public
 */
  function apiCall($command) {
-
+   $this->getConfig();
    $command=preg_replace('/^\//', '', $command);
    $url=$this->config['ZWAVE_API_URL'].$command;
    $cookie_file=ROOT.'cached/zwave_cookie.txt';

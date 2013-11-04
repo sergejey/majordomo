@@ -26,7 +26,10 @@
  var label[#PARENT_ID#]_timer;
  function updateLabel[#PARENT_ID#]_Ready(id, data) {
   var elem=document.getElementById('label_[#PARENT_ID#]');
-  elem.innerHTML=data;
+  var obj=jQuery.parseJSON(data);
+  if (obj.DATA!='') {
+   elem.innerHTML=obj.DATA;
+  }
   return false;
  }
  function updateLabel[#PARENT_ID#]() {
@@ -270,7 +273,10 @@
  var label[#ID#]_timer;
  function updateLabel[#ID#]_Ready(id, data) {
   var elem=document.getElementById('label_[#ID#]');
-  elem.innerHTML=data;
+  var obj=jQuery.parseJSON(data);
+  if (obj.DATA!='') {
+   elem.innerHTML=obj.DATA;
+  }
   return false;
  }
 

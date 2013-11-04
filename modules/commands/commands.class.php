@@ -132,11 +132,13 @@ function admin(&$out) {
   if ($op=='get_label') {
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
    if ($item['ID']) {
+    $res=array();
     if ($item['TYPE']=='custom') {
-     echo processTitle($item['DATA'], $this);
+     $res['DATA']=processTitle($item['DATA'], $this);
     } else {
-     echo processTitle($item['TITLE'], $this);
+     $res['DATA']=processTitle($item['TITLE'], $this);
     }
+    echo json_encode($res);
     exit;
    }
   }
