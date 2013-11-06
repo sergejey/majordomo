@@ -1,10 +1,13 @@
 <h3>Почта Росссии - Отслеживание посылок</h3>
 <div class="control-group">
-   <!--/content/actions/application_postoffice.php-->
-   <form  class="form-inline" action="/modules/app_postoffice/action/app_postoffice.php" method="post" enctype="multipart/form-data" id="TrackAddForm">
+   <form  class="form-inline" action="admin.php" method="post" enctype="multipart/form-data" id="TrackAddForm">
       <input  name="trackid" type="text" class="span3" placeholder="Номер трека" />
       <input  name="trackname" type="text" class="span3" placeholder="Название трека" />
-      <input type="hidden" name="mode" value="add_track">
+      <input type="hidden" name="act" value="add" />
+      <input type="hidden" name="pd" value="" />
+      <input type="hidden" name="md" value="panel" />
+      <input type="hidden" name="inst" value="" />
+      <input type="hidden" name="action" value="app_postoffice" />
       <button type="submit" name="postAdd" class="btn btn-primary input-medium">Добавить</button>
    </form>
    <a href="#" role="button" class="btn btn-primary track-check">Проверить</a>
@@ -49,8 +52,6 @@
    </table>
 </div>
 
-
-
 <div class="modal small hide fade" id="PostOfficeTrackRemoveModal" tabindex="-1" role="dialog" aria-labelledby="PostOfficeTrackRemoveModalLabel" aria-hidden="true">
    <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -78,7 +79,7 @@
          $.get(url).success(function (data)
          {
             alert(data);
-            //window.location.reload("?");
+            window.location.reload("?");
          });
       });
    });
@@ -104,5 +105,4 @@
          window.location.reload("admin.php?pd=&md=panel&inst=&action=app_postoffice");
       });
    });
-
 </script>

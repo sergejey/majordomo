@@ -157,6 +157,37 @@ class app_postoffice extends module
          $action = "";
          return;
       }
+      else if ($action == "add")
+      {
+         $resultMessage = "";
+         try
+         {
+            // Get TrackNumber form request
+            $trackID   = isset($_REQUEST['trackid'])   ? $_REQUEST['trackid']    : null;
+            $trackName = isset($_REQUEST['trackname']) ? $_REQUEST['trackname']  : null;
+            // Exit then TrackNumber does't exist.
+            if ($trackID == null)
+               throw new Exception("TrackNumber not found.");
+            
+            $trackName = $trackName == null ? $trackID : $trackName;
+            
+            //add TrackNumber to Database
+            RussianPost::AddTrack($trackID, $trackName);
+            $url = "admin.php?pd=&md=panel&inst=&action=app_postoffice";
+            header_remove();
+            header("Location: " . $url, true);
+            die();
+            //$resultMessage = "TrackNumber was added to database";
+         }
+         catch(Exception $e)
+         {
+            $resultMessage = "Oops! We have error: " . $e->getMessage();
+         }
+         
+         //echo $resultMessage;
+         $action = "";
+         return;
+      }
       else if ($action == "check")
       {
          $result = $this->CheckPostTrack();

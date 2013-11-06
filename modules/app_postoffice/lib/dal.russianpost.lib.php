@@ -4,7 +4,7 @@ namespace DAL
    /**
     * Post Office Data Access Layer
     *
-    * @version 0.1
+    * @version 0.2
     * @author Lutsenko D.V.
     */
    class RussianPostDAL
@@ -120,27 +120,16 @@ namespace DAL
          if ($trackID       == null) return false;                    // трек номер не указан
          if ($trackName     == null) return false;                    // название трека не указано
          
-         $mysqli = DB_Connect();
+         $RequestDate =  date('Y-m-d H:i:s');
          
-         $res  = true;
-         $stmt = $mysqli->stmt_init();
-         if(
-            // подготовливаем запрос, там куда будут вствлятся данные отмечаем символом ? (плейсхолдоры)
-         ($stmt->prepare("insert into POST_TRACK(TRACK_ID, TRACK_NAME, FLAG_CHECK, TRACK_DATE, LM_DATE)
-                          values(?, ?,'Y',NOW(),NOW())") === FALSE)
-          // привязываем переменные к плейсхолдорам
-         or ($stmt->bind_param('ss', $trackID, $trackName) === FALSE)
+         $rec = array();
+         $rec["TRACK_ID"]   = $trackID;
+         $rec["TRACK_NAME"] = $trackName;
+         $rec["FLAG_CHECK"] = "Y";
+         $rec["TRACK_DATE"] = $RequestDate;
+         $rec["LM_DATE"]    = $RequestDate;
          
-         // отрправляем даные, которые на данный момент находятся в привязанных переменных
-         or ($stmt->execute() === FALSE)
-         // закрываем подготовленный запрос
-         or ($stmt->close() === FALSE)
-         ) 
-         {
-            $res = false;
-         }
-         
-         $mysqli->close();
+         $res = SQLInsert("POST_TRACK", $rec);
          
          return $res;
       }
@@ -227,39 +216,21 @@ namespace DAL
       }
       
       /**
-       * Возращает true/false в зависимости от того используем мы прокси или нет 
+       * Return true if we use proxy
        * @return true/false
        */
       public static function isProxy()
       {
-         $FlagUseProxy = "Y";
-         $mysqli = DB_Connect();
+         $flagUseProxy = "Y";
          
-         $stmt = $mysqli->stmt_init();
-         if(
-            // подготовливаем запрос, там куда будут вствлятся данные отмечаем символом ? (плейсхолдоры)
-         ($stmt->prepare("select count(*)
+         $query = "select count(*) CNT
                            from POST_PROXY 
-                          where FLAG_PROXY = ?") === FALSE)
-          // привязываем переменные к плейсхолдорам
-         or ($stmt->bind_param('s',$FlagUseProxy) === FALSE)     
+                          where FLAG_PROXY = '" . $flagUseProxy . "'";
+         $result = SQLSelectOne($query);
          
-         // отрправляем даные, которые на данный момент находятся в привязанных переменных
-         or ($stmt->execute() === FALSE)
-         // привязывем переменую для получения в нее результата
-         or ($stmt->bind_result($isProxy) === FALSE)
-         // получение результата в привязанную переменную
-         or ($stmt->fetch() === FALSE)
-         // закрываем подготовленный запрос
-         or ($stmt->close() === FALSE)
-         ) 
-         {
-            $isProxy = 0;
-         }
+         $proxyCount = $result['CNT'];
          
-         $mysqli->close();
-         
-         return $isProxy > 0;
+         return $proxyCount > 0;
       }
       
       /**
