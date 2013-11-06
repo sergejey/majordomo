@@ -177,7 +177,6 @@ class app_postoffice extends module
             header_remove();
             header("Location: " . $url, true);
             die();
-            //$resultMessage = "TrackNumber was added to database";
          }
          catch(Exception $e)
          {
@@ -359,7 +358,7 @@ class app_postoffice extends module
             }
             catch(Exception $e)
             {
-               // TODO: сделать обработчик исключений для каждого трека.
+               // TODO: СЃРґРµР»Р°С‚СЊ РѕР±СЂР°Р±РѕС‚С‡РёРє РёСЃРєР»СЋС‡РµРЅРёР№ РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚СЂРµРєР°.
             }
          }
          

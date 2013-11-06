@@ -9,11 +9,11 @@ namespace DAL
     */
    class RussianPostDAL
    {
-      const FLAG_ACTIVE_TRACK   = "Y";   // Отслеживать трек-номер
-      const FLAG_INACTIVE_TRACK = "N";   // Не отслеживать трек-номер
+      const FLAG_ACTIVE_TRACK   = "Y";   // РћС‚СЃР»РµР¶РёРІР°С‚СЊ С‚СЂРµРє-РЅРѕРјРµСЂ
+      const FLAG_INACTIVE_TRACK = "N";   // РќРµ РѕС‚СЃР»РµР¶РёРІР°С‚СЊ С‚СЂРµРє-РЅРѕРјРµСЂ
       
       /**
-       * Возвращает список треков
+       * Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‚СЂРµРєРѕРІ
        * @return array
        */
       public static function SelectTrack()
@@ -117,8 +117,8 @@ namespace DAL
         ($trackID,
          $trackName)
       {
-         if ($trackID       == null) return false;                    // трек номер не указан
-         if ($trackName     == null) return false;                    // название трека не указано
+         if ($trackID       == null) return false;                    // С‚СЂРµРє РЅРѕРјРµСЂ РЅРµ СѓРєР°Р·Р°РЅ
+         if ($trackName     == null) return false;                    // РЅР°Р·РІР°РЅРёРµ С‚СЂРµРєР° РЅРµ СѓРєР°Р·Р°РЅРѕ
          
          $RequestDate =  date('Y-m-d H:i:s');
          
