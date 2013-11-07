@@ -144,6 +144,7 @@ class app_postoffice extends module
                throw new Exception("TrackNumber not found.");
          
             //remove TrackNumber From Database
+            RussianPost::DeleteTrackDetailByID($trackID);
             $isTrackID =  RussianPost::DeleteTrack($trackID);
             
             $resultMessage = "TrackNumber was delete from database";
@@ -281,6 +282,101 @@ class app_postoffice extends module
    function install()
    {
       parent::install();
+   }
+   
+   /**
+    * Uninstall
+    *
+    * Module uninstall routine
+    *
+    * @access public
+    */
+   function uninstall()
+   {
+      SQLExec('drop table if exists POST_PROXY');
+      SQLExec('drop table if exists POST_TRACKINFO');
+      SQLExec('drop table if exists POST_TRACK');
+      parent::uninstall();
+   }
+   
+   /**
+    * dbInstall
+    *
+    * Database installation routine
+    *
+    * @access private
+    */
+   function dbInstall()
+   {
+      $RequestDate  =  date('Y-m-d H:i:s');
+      
+      // POST_PROXY     - Proxy setings for RussianPost service
+      $query = "drop table if exists POST_PROXY";
+      SQLExec($query);
+      $query = "create table POST_PROXY
+                (
+                  FLAG_PROXY           VARCHAR(1) not null default 'N',
+                  PROXY_HOST           VARCHAR(64),
+                  PROXY_PORT           VARCHAR(4),
+                  PROXY_USER           VARCHAR(64),
+                  PROXY_PASSWD         VARCHAR(64),
+                  LM_DATE              DATETIME not null,
+                  primary key (FLAG_PROXY)
+                );";
+      SQLExec($query);
+      
+      $rec = array();
+      $rec["FLAG_PROXY"]   = "N";
+      $rec["PROXY_HOST"]   = "";
+      $rec["PROXY_PORT"]   = "";
+      $rec["PROXY_USER"]   = "";
+      $rec["PROXY_PASSWD"] = "";
+      $rec["LM_DATE"]      = $RequestDate;
+     
+      SQLInsert("POST_PROXY",$rec);
+      
+      // POST_TRACK     - Track list
+      $query = "drop table if exists POST_TRACK";
+      SQLExec($query);
+      $query = "create table POST_TRACK
+                  (
+                     TRACK_ID             VARCHAR(14) not null,
+                     TRACK_NAME           VARCHAR(64) not null,
+                     FLAG_CHECK           VARCHAR(1) not null default 'Y',
+                     TRACK_DATE           DATETIME not null,
+                     LM_DATE              DATETIME not null,
+                     primary key (TRACK_ID)
+                  );";
+      SQLExec($query);
+      
+      // POST_TRACKINFO - track detail info
+      $query = "drop table if exists POST_TRACKINFO";
+      SQLExec($query);
+      $query = "create table POST_TRACKINFO
+                  (
+                     TRACK_ID             VARCHAR(14) not null,
+                     OPER_DATE            DATETIME not null,
+                     OPER_TYPE            INT(10) not null,
+                     OPER_NAME            VARCHAR(64) not null,
+                     ATTRIB_ID            INT(10),
+                     ATTRIB_NAME          VARCHAR(64),
+                     OPER_POSTCODE        INT(10),
+                     OPER_POSTPLACE       VARCHAR(64) not null,
+                     ITEM_WEIGHT          DECIMAL(10,6),
+                     DECLARED_VALUE       DECIMAL(10,6),
+                     DELIVERY_PRICE       DECIMAL(10,6),
+                     DESTINATION_POSTCODE INT(10),
+                     DELIVERY_ADDRESS     VARCHAR(255),
+                     LM_DATE              DATETIME not null,
+                     primary key (TRACK_ID, OPER_DATE)
+                  );";
+      SQLExec($query);
+      $query = "alter table POST_TRACKINFO add constraint FK_POST_TRACKINFO__TRACK_ID foreign key (TRACK_ID)
+      references POST_TRACK (TRACK_ID) on delete restrict on update restrict;";
+      SQLExec($query);
+      
+      $data = "";
+      parent::dbInstall($data);
    }
    
    /**

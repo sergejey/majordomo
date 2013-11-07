@@ -108,6 +108,21 @@ namespace DAL
       }
       
       /**
+       * Delete all track info by track number
+       * @param $trackID Track number
+       * @return
+       */
+      public static function DeleteTrackDetailByID
+        ($trackID)
+      {
+         $query = "delete  
+                     from POST_TRACKINFO
+                    where TRACK_ID = '" . $trackID . "';";
+         $result = SQLExec($query);
+         return $result;
+      }
+      
+      /**
        * Add track to database
        * @param $trackID TrackNumber
        * @param $trackName TrackName
