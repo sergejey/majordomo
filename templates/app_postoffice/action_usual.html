@@ -1,0 +1,34 @@
+<div class="well">
+   <table class="table table-striped table-condensed">
+      <thead>
+         <tr>
+            <th>№</th>
+            <th>Трек номер</th>
+            <th>Название</th>
+            <th>Дата добавления</th>
+            <th>Дата</th>
+            <th>Состояние</th>
+            <th>Текущее местонахождение</th>
+            <th>Статус</th>
+         </tr>
+      </thead>
+      <tbody>
+         [#begin TRACK_LIST#]
+         <tr>
+            <td><#TRACK_LIST.TRACK_NUM#></td>
+            <td><#TRACK_LIST.TRACK_ID#></td>
+            <td><#TRACK_LIST.TRACK_NAME#></td>
+            <td><#TRACK_LIST.TRACK_DATE#></td>
+            <td><#TRACK_LIST.OPER_DATE#></td>
+            <td><#TRACK_LIST.ATTRIB_NAME#></td>
+            <td><#TRACK_LIST.OPER_POSTPLACE#></td>
+            [#if $T.FLAG_CHECK=="Y"#]
+            <td><span class="label label-success">Active</span></td>
+            [#else#]
+            <td><span class="label">Inactive</span></td>
+            [#endif#]
+         </tr>
+         [#end TRACK_LIST#]
+      </tbody>
+   </table>
+</div>
