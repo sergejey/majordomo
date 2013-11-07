@@ -1,17 +1,14 @@
 <?php
 
-/*
- * @version 0.1 (auto-set)
- */
-
 // vim: foldmethod = marker
 
 /*
  * Generic exception class
  */
-class OAuthException extends Exception 
-{
-   // pass
+if (!class_exists('OAuthException')) {
+  class OAuthException extends Exception {
+    // pass
+  }
 }
 
 class OAuthConsumer 
@@ -48,15 +45,16 @@ class OAuthToken
       $this->secret = $secret;
    }
 
-   /**
-    * generates the basic string serialization of a token that a server
-    * would respond to request_token and access_token calls with
-    */
-   function to_string() 
-   {
-      return "oauth_token=" . OAuthUtil::urlencode_rfc3986($this->key) .
-             "&oauth_token_secret=" . OAuthUtil::urlencode_rfc3986($this->secret);
-   }
+  /**
+   * generates the basic string serialization of a token that a server
+   * would respond to request_token and access_token calls with
+   */
+  function to_string() {
+    return "oauth_token=" .
+           OAuthUtil::urlencode_rfc3986($this->key) .
+           "&oauth_token_secret=" .
+           OAuthUtil::urlencode_rfc3986($this->secret);
+  }
 
    function __toString() 
    {
@@ -954,5 +952,3 @@ class OAuthUtil
       return implode('&', $pairs);
    }
 }
-
-?>

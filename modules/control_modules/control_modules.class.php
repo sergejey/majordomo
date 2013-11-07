@@ -20,7 +20,7 @@ class control_modules extends module {
  }
 
 // --------------------------------------------------------------------
-function saveParams() {
+function saveParams($data=1) {
  // saving current module data and data of all parent modules
  $p=array();
  return parent::saveParams($p);
@@ -154,8 +154,8 @@ function getParams() {
  }
 
 // --------------------------------------------------------------------
- function install() {
-  parent::install();
+ function install($parent_name="") {
+  parent::install($parent_name);
   $this->getModulesList();
   $lst=$this->modules;
   $code="";
@@ -174,7 +174,7 @@ function getParams() {
  }
 
 // --------------------------------------------------------------------
- function dbInstall() {
+ function dbInstall($data) {
   $data = <<<EOD
    project_modules: ID tinyint(3) unsigned NOT NULL auto_increment
    project_modules: NAME varchar(50)  DEFAULT '' NOT NULL 

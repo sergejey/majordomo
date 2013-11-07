@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Z-Wave 
 *
@@ -552,7 +552,7 @@ function admin(&$out) {
 * @access public
 */
  function apiCall($command) {
-
+   $this->getConfig();
    $command=preg_replace('/^\//', '', $command);
    $url=$this->config['ZWAVE_API_URL'].$command;
    $cookie_file=ROOT.'cached/zwave_cookie.txt';
@@ -665,7 +665,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 zwave_devices - Z-Wave
 zwave_properties - Properties

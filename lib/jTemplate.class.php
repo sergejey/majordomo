@@ -617,18 +617,19 @@ class jTemplate {
     $new_hash=&$hash;
    }
    $file_name=$dir.trim($raw);
+
+   $new_root=dirname($file_name)."/";
+   if (defined('ALTERNATIVE_TEMPLATES')) {
+    $alt_path=str_replace('templates/', ALTERNATIVE_TEMPLATES.'/', $file_name);
+    if (file_exists($alt_path)) {
+     $file_name=$alt_path;
+    }
+   }
+
+
    if (!file_exists($file_name)) {
     $res=str_replace($matches[0][$i], "<!-- Cannot find file $file_name -->", $res);
    } else {
-    $new_root=dirname($file_name)."/";
-
-    if (defined('ALTERNATIVE_TEMPLATES')) {
-     $alt_path=str_replace('templates/', ALTERNATIVE_TEMPLATES.'/', $file_name);
-     if (file_exists($alt_path)) {
-      $file_name=$alt_path;
-     }
-    }
-
     if ((Defined("DEBUG_MODE")) && !Is_Integer(StrPos($file_name, ".js"))) {
      $id="block".(int)rand(0, 100000);
      $res=str_replace($matches[0][$i], "<!-- begin of file $file_name -->".$this->parse($this->loadfile($file_name)."<!-- end of file $file_name -->", $new_hash, $new_root), $res);

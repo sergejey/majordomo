@@ -350,7 +350,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 gpslog - Log
 gpslocations - Locations

@@ -31,7 +31,7 @@ class app_player extends module
     *
     * @access public
     */
-   function saveParams() 
+   function saveParams($data=1)
    {
       $p = array();
       if (isset($this->id)) 
@@ -365,9 +365,9 @@ class app_player extends module
     *
     * @access private
     */
-   function install() 
+   function install($parent_name="")
    {
-      parent::install();
+      parent::install($parent_name);
    }
 }
 

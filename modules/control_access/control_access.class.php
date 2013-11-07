@@ -20,10 +20,10 @@ class control_access extends module {
  }
 
 // --------------------------------------------------------------------
-function saveParams() {
+function saveParams($data=1) {
  // saving current module data and data of all parent modules
- $p=array();
- return parent::saveParams($p);
+ $data=array();
+ return parent::saveParams($data);
 }
 
 function getParams() {
@@ -349,7 +349,7 @@ function getParams() {
  }
 
 // --------------------------------------------------------------------
- function dbInstall() {
+ function dbInstall($data) {
   $data = <<<EOD
    admin_users: ID tinyint(3) unsigned NOT NULL auto_increment
    admin_users: NAME varchar(100)  DEFAULT '' NOT NULL 

@@ -462,7 +462,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 scenes - Scenes
 elements - Elements

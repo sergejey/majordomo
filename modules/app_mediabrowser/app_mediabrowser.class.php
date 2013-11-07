@@ -567,11 +567,11 @@ function usual(&$out) {
 *
 * @access private
 */
- function install() {
-  parent::install();
+ function install($parent_name="") {
+  parent::install($parent_name);
  }
 
- function dbInstall() {
+ function dbInstall($data) {
 /*
 terminals - Terminals
 */

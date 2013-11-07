@@ -75,6 +75,8 @@ class Threads
       if (!count($this->streams)) return false;
       
       $read = $this->streams;
+		$write = null;
+		$except = null;
 
       if (false === ($number_of_streams = stream_select($read, $write = null, $except = null, $this->timeout))) 
       {

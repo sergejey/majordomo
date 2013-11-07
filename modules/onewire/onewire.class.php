@@ -576,7 +576,7 @@ function updateDisplay($id) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 onewire - onewire
 */

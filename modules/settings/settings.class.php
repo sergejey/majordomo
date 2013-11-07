@@ -153,11 +153,11 @@ class settings extends module {
 *
 * @access private
 */
- function install() {
+ function install($parent_name="") {
   if (!Is_Dir(ROOT."./settings")) {
    mkdir(ROOT."./settings", 0777);
   }
-  parent::install();
+  parent::install($parent_name);
  }
 /**
 * Uninstall
@@ -177,7 +177,7 @@ class settings extends module {
 *
 * @access private
 */
- function dbInstall() { 
+ function dbInstall($data) {
 $data = <<<EOD
 
  // (description:settings) Web-site settings table

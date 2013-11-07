@@ -311,7 +311,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 readit_urls - ReadIt URLs
 readit_channels - ReadIt Channels

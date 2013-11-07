@@ -4,7 +4,7 @@
       <layout class="LoggerLayoutPattern">
          <param name="conversionPattern" value="%d{H:i:s} %p [%c]: %m (at %F:%L) %x%n" />
       </layout>
-      <param name="file" value="Log/%s.log" />
+      <param name="file" value="debmes/%s.log" />
       <param name="datePattern" value="Y-m-d" />
    </appender>
    <root>

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Security_rules 
 *
@@ -304,7 +304,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 security_rules - Security_rules
 */

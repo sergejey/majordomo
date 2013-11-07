@@ -1,4 +1,4 @@
-<?
+<?php
 chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");

@@ -32,7 +32,7 @@ class objects extends module
     *
     * @access public
     */
-   function saveParams() 
+   function saveParams($data=1)
    {
       $p = array();
       
@@ -358,7 +358,7 @@ class objects extends module
          {
             if (defined('SETTINGS_DEBUG_HISTORY') && SETTINGS_DEBUG_HISTORY == 1) 
             {
-               $class_objectv = SQLSelectOne("SELECT NOLOG FROM classes WHERE ID = " . $this->class_id);
+               $class_object = SQLSelectOne("SELECT NOLOG FROM classes WHERE ID = " . $this->class_id);
                if (!$class_object['NOLOG']) 
                {
                   $prevLog = SQLSelectOne("SELECT ID, UNIX_TIMESTAMP(ADDED) as UNX FROM history WHERE OBJECT_ID = " . $this->id . " AND METHOD_ID = " . $method['ID'] . " ORDER BY ID DESC LIMIT 1");
@@ -621,9 +621,9 @@ class objects extends module
     *
     * @access private
     */
-   function install() 
+   function install($parent_name="")
    {
-      parent::install();
+      parent::install($parent_name);
    }
    
    /**
@@ -646,7 +646,7 @@ class objects extends module
     *
     * @access private
     */
-   function dbInstall()
+ function dbInstall($data)
    {
       /*
       objects - Objects

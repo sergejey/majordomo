@@ -32,14 +32,14 @@ class error
       $stop = 0, 
       $short = 0) 
    {
-      $log = Logger::getLogger(__METHOD__);
+      
       
       $script = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-      
-      $description = "Script: " . $script . "\nError: " . $description;
-      
-      $log->fatal($description);
-      
+   $description=$script."\nError:\n".$description;
+
+   $log = Logger::getLogger(__METHOD__);
+   $log->error($description);
+
       if (Defined("DEBUG_MODE")) 
       {
          if (!$short) 

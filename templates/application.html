@@ -144,17 +144,22 @@ jQuery.fn.center = function () {
  */
 
  function getLatestNoteReceived(id, data) {
-  if (noteLatest!=data) {
-   if (noteLatest!='') {
-    $.gritter.add({
-        title: 'Alice',
-        text: data, 
-        sticky: false, 
-        time: 8000
-     });
-     //AJAXRequest('/getlatestmp3.html', 'getLatestNoteMP3Received', '');
+
+  var obj=jQuery.parseJSON(data);
+  if (obj.DATA!='') {
+   if (noteLatest!=obj.DATA) {
+    if (noteLatest!='') {
+     $.gritter.add({
+         title: 'Alice',
+         text: obj.DATA, 
+         sticky: false, 
+         time: 8000
+      });
+      //AJAXRequest('/getlatestmp3.html', 'getLatestNoteMP3Received', '');
+    }
+    noteLatest=obj.DATA;
    }
-   noteLatest=data;
+
   }
  }
 

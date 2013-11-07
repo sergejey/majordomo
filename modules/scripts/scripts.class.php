@@ -29,23 +29,21 @@ class scripts extends module
     * Saving module parameters
     * @access public
     */
-   function saveParams() 
-   {
-      $p = array();
-      
-      if (IsSet($this->id))
-         $p["id"] = $this->id;
-      
-      if (IsSet($this->view_mode)) 
-         $p["view_mode"] = $this->view_mode;
- 
-      if (IsSet($this->edit_mode)) 
-         $p["edit_mode"] = $this->edit_mode;
- 
-      if (IsSet($this->tab)) 
-         $p["tab"] = $this->tab;
- 
-      return parent::saveParams($p);
+function saveParams($data=1) {
+ $data=array();
+ if (IsSet($this->id)) {
+  $data["id"]=$this->id;
+ }
+ if (IsSet($this->view_mode)) {
+  $data["view_mode"]=$this->view_mode;
+ }
+ if (IsSet($this->edit_mode)) {
+  $data["edit_mode"]=$this->edit_mode;
+ }
+ if (IsSet($this->tab)) {
+  $data["tab"]=$this->tab;
+ }
+ return parent::saveParams($data);
    }
    
    /**
@@ -252,9 +250,9 @@ class scripts extends module
     * Module installation routine
     * @access private
     */
-    function install() 
-    {
-       parent::install();
+   function install($parent_name="")
+   {
+      parent::install($parent_name);
     }
     
    /**
@@ -273,7 +271,7 @@ class scripts extends module
     * Database installation routine
     * @access private
     */
-   function dbInstall() 
+   function dbInstall($data)
    {
       // scripts - Scripts
       
