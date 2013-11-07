@@ -351,9 +351,17 @@ class app_postoffice extends module
                      if($key == 'destinationAddress')       { $destinationAddress         = $value; }
                   }
                   
-                  $res = RussianPost::AddTrackDetail
+                  if ($operationTypeID == 2)                   // change track status to inactive then post is arrived to your postoffice;
+                     RussianPost::UpdateTrackStatus($trackID);
+                  
+                  $trackExist = RussianPost::isTrackInfoExist($trackID,$operationDate);
+                  
+                  if (!$trackExist)
+                  {
+                     $res = RussianPost::AddTrackDetail
                            ($trackID, $operationDate,$operationTypeID,$operationTypeName,$operationAttributeID, $operationAttribute,
                             $operationPlacePostalCode,$operationPlaceName,$itemWeight,$declaredValue,$collectOnDeliveryPrice,$destinationPostalCode,$destinationAddress);
+                  }
                }
             }
             catch(Exception $e)

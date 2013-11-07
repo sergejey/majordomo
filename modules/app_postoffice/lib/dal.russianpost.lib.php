@@ -216,6 +216,27 @@ namespace DAL
       }
       
       /**
+       * Return true then trackinfo extist on current date
+       * @param $trackID   TrackNumber
+       * @param $operDate  OperationDate
+       * @return boolean
+       */
+      public static function isTrackInfoExist
+        ($trackID,
+         $operDate)
+      {
+         $query = "select count(*) CNT
+                           from POST_TRACKINFO 
+                          where TRACK_ID  = '" . $trackID  . "'
+                            and OPER_DATE = '" . $operDate . "'";
+         $result = SQLSelectOne($query);
+         
+         $infoCnt = $result['CNT'];
+         
+         return $infoCnt > 0;
+      }
+      
+      /**
        * Return true if we use proxy
        * @return true/false
        */
