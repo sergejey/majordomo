@@ -155,6 +155,7 @@ class app_postoffice extends module
          
          echo $resultMessage;
          $action = "";
+         exit();
          return;
       }
       else if ($action == "add")
@@ -185,13 +186,14 @@ class app_postoffice extends module
          
          //echo $resultMessage;
          $action = "";
+         exit();
          return;
       }
       else if ($action == "check")
       {
          $result = $this->CheckPostTrack();
          echo $result;
-         
+         exit();
          return;
       }
       else if ($action == "changestatus")
@@ -216,6 +218,7 @@ class app_postoffice extends module
          
          echo $resultMessage;
          $action = "";
+         exit();
          return;
          
       }
