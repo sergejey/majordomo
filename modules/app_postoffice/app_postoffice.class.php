@@ -192,7 +192,7 @@ class app_postoffice extends module
       }
       else if ($action == "check")
       {
-         $result = $this->CheckPostTrack();
+         $result = $this->CheckPostTrack() ? "Russian Post ckeck is complete" : "Error! Error message in log file.";
          echo $result;
          exit();
          return;
@@ -225,35 +225,7 @@ class app_postoffice extends module
       }
       else
       {
-         $trackArray = array();
-         $trackNum   = 1;
-      
-         $tracks  = RussianPost::SelectTrack();
-     
-         foreach ($tracks as $track)
-         {
-            $trackID = $track['TRACK_ID'];
-            $arr = array();
-            $arr['TRACK_NUM']       = $trackNum;
-            $arr['TRACK_ID']        = $trackID;
-            $arr['TRACK_NAME']      = $track['TRACK_NAME'];
-            $arr['FLAG_CHECK']      = $track['FLAG_CHECK'];
-            $arr['TRACK_DATE']      = $track['TRACK_DATE'];
-            $arr['OPER_DATE']       = ""; 
-            $arr['ATTRIB_NAME']     = "";
-            $arr['OPER_POSTPLACE']  = "";
-      
-            $trackShortInfo = RussianPost::SelectTrackLastInfoByID($trackID);
-      
-            foreach ($trackShortInfo as $info)
-            {
-               $arr['OPER_DATE']      = $info['OPER_DATE'];
-               $arr['ATTRIB_NAME']    = $info['ATTRIB_NAME'];
-               $arr['OPER_POSTPLACE'] = $info['OPER_POSTPLACE'];
-            }
-            $trackArray[] = $arr;
-            $trackNum++;
-         }
+         $trackArray = $this->GetLastCheckedTracks();
       
          $out['TRACK_LIST'] = $trackArray;
       }
@@ -379,12 +351,51 @@ class app_postoffice extends module
       parent::dbInstall($data);
    }
    
+   function GetLastCheckedTracks()
+   {
+      $trackArray = array();
+      $trackNum   = 1;
+      
+      $tracks  = RussianPost::SelectTrack();
+     
+      foreach ($tracks as $track)
+      {
+         $trackID = $track['TRACK_ID'];
+         $arr = array();
+         $arr['TRACK_NUM']       = $trackNum;
+         $arr['TRACK_ID']        = $trackID;
+         $arr['TRACK_NAME']      = $track['TRACK_NAME'];
+         $arr['FLAG_CHECK']      = $track['FLAG_CHECK'];
+         $arr['TRACK_DATE']      = $track['TRACK_DATE'];
+         $arr['OPER_DATE']       = ""; 
+         $arr['ATTRIB_NAME']     = "";
+         $arr['OPER_POSTPLACE']  = "";
+      
+         $trackShortInfo = RussianPost::SelectTrackLastInfoByID($trackID);
+      
+         foreach ($trackShortInfo as $info)
+         {
+            $arr['OPER_DATE']      = $info['OPER_DATE'];
+            $arr['ATTRIB_NAME']    = $info['ATTRIB_NAME'];
+            $arr['OPER_POSTPLACE'] = $info['OPER_POSTPLACE'];
+         }
+         $trackArray[] = $arr;
+         $trackNum++;
+      }
+      
+      return $trackArray;
+   }
+   
+   
    /**
     * Check tracks on russan post
     * @return operation message
     */
    function CheckPostTrack()
    {
+      // start logger
+      $log = Logger::getLogger(__METHOD__);
+      
       try
       {
          // returned message
@@ -469,14 +480,15 @@ class app_postoffice extends module
             }
          }
          
-         $resultMessage = "Russian Post ckeck is complete";
+         return true;
       }
       catch(RussianPostException $e)
       {
-         $resultMessage = "Error: " . $e->getMessage();
+         $log->error("Error: " . $e->getMessage());
+         return false;
       }
       
-      return $resultMessage;
+      //return $resultMessage;
    }
 }
 ?>
