@@ -236,7 +236,17 @@ function usual(&$out) {
    if ($rec['SCRIPT_ID']) {
     runScript($rec['SCRIPT_ID'], $matches);
    } elseif ($rec['SCRIPT']) {
-    eval($rec['SCRIPT']);
+
+                  try {
+                   $code=$rec['SCRIPT'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in pattern code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
    }
    $noPatternMode=0;
   }

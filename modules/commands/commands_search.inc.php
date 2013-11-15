@@ -29,7 +29,12 @@
 
 
   if ($_GET['parent']) {
-   $qry.=" AND (commands.ID='".(int)$_GET['parent']."' OR commands.PARENT_ID='".$_GET['parent']."')";
+   $tmp=SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID='".$_GET['parent']."'");
+   if ($tmp['ID']) {
+    $qry.=" AND (commands.PARENT_ID='".$_GET['parent']."')";
+   } else {
+    $qry.=" AND (commands.ID='".(int)$_GET['parent']."')";
+   }
    $out['IFRAME_MODE']=1;
   }
 

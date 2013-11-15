@@ -408,7 +408,17 @@ function usual(&$out) {
   } elseif ($rec['IS_DYNAMIC']==2) {
 
    $display=0;
-   eval($rec['CONDITION_ADVANCED']);
+
+                  try {
+                   $code=$rec['CONDITION_ADVANCED'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in scene code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
    $status=$display;
 
   }

@@ -430,7 +430,17 @@ function usual(&$out) {
      if ($script_id) {
       runScript($script_id, $params);
      } elseif ($code) {
-      eval($code);
+
+
+                  try {
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in 1-wire action code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
      }
     }
    }
@@ -506,7 +516,18 @@ function updateDisplay($id) {
     if ($rec['SCRIPT_ID']) {
      runScript($rec['SCRIPT_ID'], $params);
     } elseif ($rec['CODE']) {
-     eval($rec['CODE']);
+
+                  try {
+                   $code=$rec['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in 1-wire action code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
+
     }
    }
 
@@ -551,7 +572,17 @@ function updateDisplay($id) {
     if ($rec['SCRIPT_ID']) {
      runScript($rec['SCRIPT_ID'], $params);
     } elseif ($rec['CODE']) {
-     eval($rec['CODE']);
+
+                  try {
+                   $code=$rec['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
     }
    }
 

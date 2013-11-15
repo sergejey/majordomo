@@ -132,7 +132,17 @@ function run() {
     $rec['EXECUTED_PARAMS']=serialize($params);
    }
    SQLUpdate('scripts', $rec);
-   eval($rec['CODE']);
+
+                  try {
+                   $code=$rec['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in script code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
   }
  }
 

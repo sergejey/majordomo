@@ -180,7 +180,17 @@ function admin(&$out) {
     }
     if ($item['CODE']) {
      //DebMes("Running on_change code");
-     eval($item['CODE']);
+     
+                  try {
+                   $code=$item['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error menu item code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
     }
 
    }

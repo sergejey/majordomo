@@ -170,9 +170,11 @@
  var item[#ID#]_timer=0;
  function increaseValue[#ID#]() {
   var elem=document.getElementById('menu[#ID#]_v');
+  var elem2=document.getElementById('menu[#ID#]_vv');
   var v=parseInt(elem.value);
   if ((v+[#STEP_VALUE#])<=[#MAX_VALUE#]) {
    elem.value=v+[#STEP_VALUE#];
+   elem2.innerHTML=elem.value;
    clearTimeout(item[#ID#]_timer);
    item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
   }
@@ -180,9 +182,11 @@
  }
  function decreaseValue[#ID#]() {
   var elem=document.getElementById('menu[#ID#]_v');
+  var elem2=document.getElementById('menu[#ID#]_vv');
   var v=parseInt(elem.value);
   if ((v-[#STEP_VALUE#])>=[#MIN_VALUE#]) {
    elem.value=v-[#STEP_VALUE#];
+   elem2.innerHTML=elem.value;
    clearTimeout(item[#ID#]_timer);
    item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
   }
@@ -193,9 +197,12 @@
 <span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
 
 <div data-inline="true" data-role="fieldcontain">
- <a href="#" data-role="button" onClick="return decreaseValue[#ID#]();" data-inline="true">-</a>
- <input type="text" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]" size="5" data-inline="true" style="width:50px">
  <a href="#" data-role="button" onClick="return increaseValue[#ID#]();" data-inline="true">+</a>
+ <span style="margin-left:10px;margin-right:10px" id="menu[#ID#]_vv">[#CUR_VALUE#]</span>
+ <a href="#" data-role="button" onClick="return decreaseValue[#ID#]();" data-inline="true">-</a>
+ <div style="display:none">
+ <input type="text" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]" size="5">
+ </div>
 </div>
 </li>
 [#endif TYPE#]

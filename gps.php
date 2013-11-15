@@ -144,7 +144,15 @@ if (IsSet($_REQUEST['latitude']))
                } 
                elseif ($gpsaction['CODE']) 
                {
-                  eval($gpsaction['CODE']);
+                  try {
+                   $code=$gpsaction['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in GPS action code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
                }
             }
          }
@@ -173,7 +181,15 @@ if (IsSet($_REQUEST['latitude']))
                } 
                elseif ($gpsaction['CODE']) 
                {
-                  eval($gpsaction['CODE']);
+                  try {
+                   $code=$gpsaction['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in GPS action code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
                }
             }
          }

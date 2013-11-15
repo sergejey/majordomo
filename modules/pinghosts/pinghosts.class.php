@@ -303,7 +303,17 @@ function usual(&$out) {
      runScript($run_script_id);
     } elseif ($run_code) {
      //run code
-     eval($run_code);
+
+                  try {
+                   $code=$run_code;
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in hosts online code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
     }
 
    }

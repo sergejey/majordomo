@@ -169,7 +169,7 @@
      } elseif ($m==0) {
        $ms="";
      }
-	 
+         
   $res="$h ".($hw)." ".($ms);
   return $res;
  }
@@ -368,7 +368,17 @@
    $jobs[$i]['PROCESSED']=1;
    $jobs[$i]['STARTED']=date('Y-m-d H:i:s');
    SQLUpdate('jobs', $jobs[$i]);
-   eval($jobs[$i]['COMMANDS']);
+
+                  try {
+                   $code=$jobs[$i]['COMMANDS'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in scheduled job code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
   }
  }
 
