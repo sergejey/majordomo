@@ -410,9 +410,9 @@
 * @param string $record record to update
 * @global object mysql database object
 */
- function SQLUpdate($table, $record) {
+ function SQLUpdate($table, $record, $ndx='ID') {
   global $db;
-  return $db->Update($table, $record);
+  return $db->Update($table, $record, $ndx);
  }
 
 // --------------------------------------------------------------------   
@@ -425,12 +425,12 @@
 * @param string $record record to update
 * @global object mysql database object
 */
- function SQLUpdateInsert($table, &$record) {
+ function SQLUpdateInsert($table, &$record, $ndx='ID') {
   global $db;
   if (IsSet($record["ID"])) {
-   return $db->Update($table, $record);
+   return $db->Update($table, $record, $ndx);
   } else {
-   $record["ID"]=$db->Insert($table, $record);
+   $record[$ndx]=$db->Insert($table, $record);
    return $record["ID"];
   }
  }
@@ -445,8 +445,8 @@
 * @param string $record record to update
 * @global object mysql database object
 */
- function SQLInsertUpdate($table, &$record) {
-  return SQLUpdateInsert($table, $record);
+ function SQLInsertUpdate($table, &$record, $ndx='ID') {
+  return SQLUpdateInsert($table, $record, $ndx);
  }
 
 
