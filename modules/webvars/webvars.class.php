@@ -230,9 +230,9 @@ function usual(&$out) {
    if ($host['SEARCH_PATTERN']) {
     if (preg_match('/'.$host['SEARCH_PATTERN'].'/is', $content, $m)) {
      //$new_status=$m[1];
-     $total=count($m);
-     for($i=1;$i<$total;$i++) {
-      $new_status.=$m[$i];
+     $total1=count($m);
+     for($i1=1;$i1<$total1;$i1++) {
+      $new_status.=$m[$i1];
      }
     } else {
      $ok=0; // result did not matched

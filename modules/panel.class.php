@@ -41,8 +41,8 @@ function getParams() {
    $this->action=$action;
   }
 
-  if (!$session->data["AUTHORIZED"] && $session->data['USERNAME']) {
-   $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($session->data['USERNAME'])."'");
+  if (!$session->data["AUTHORIZED"] && $session->data['SITE_USERNAME']) {
+   $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($session->data['SITE_USERNAME'])."'");
    if ($user['IS_ADMIN']) {
     $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='admin'");
     $session->data['USER_NAME']=$user['LOGIN'];

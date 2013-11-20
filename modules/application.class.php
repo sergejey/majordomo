@@ -120,7 +120,8 @@ function getParams() {
    if ($username) {
     $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
     if (!$user['PASSWORD']) {
-     $session->data['USERNAME']=$username;
+     $session->data['SITE_USERNAME']=$user['USERNAME'];
+     $session->data['SITE_USER_ID']=$user['ID'];
     } else {
      if (!isset($_SERVER['PHP_AUTH_USER'])) {
       header('WWW-Authenticate: Basic realm="MajorDoMo"');
@@ -129,7 +130,8 @@ function getParams() {
       exit;
      } else {
       if ($_SERVER['PHP_AUTH_USER']==$user['USERNAME'] && $_SERVER['PHP_AUTH_PW']==$user['PASSWORD']) {
-       $session->data['USERNAME']=$username;
+       $session->data['SITE_USERNAME']=$user['USERNAME'];
+       $session->data['SITE_USER_ID']=$user['ID'];
       } else {
        header('WWW-Authenticate: Basic realm="MajorDoMo"');
        header('HTTP/1.0 401 Unauthorized');
@@ -173,22 +175,25 @@ function getParams() {
    $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
    $total=count($users);
    for($i=0;$i<$total;$i++) {
-    if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
+    if ($users[$i]['USERNAME']==$session->data['SITE_USERNAME']) {
      $users[$i]['SELECTED']=1;
      $out['USER_TITLE']=$users[$i]['NAME'];
      $out['USER_AVATAR']=$users[$i]['AVATAR'];
     }
     if ($users[$i]['IS_DEFAULT']==1) {
      $out['DEFAULT_USERNAME']=$users[$i]['USERNAME'];
+     $out['DEFAULT_USER_ID']=$users[$i]['ID'];
     }
    }
    $out['USERS']=$users;
    if ($total==1) {
     $out['HIDE_USERS']=1;
-    $session->data['USERNAME']=$users[0]['USERNAME'];
+    $session->data['SITE_USERNAME']=$users[0]['USERNAME'];
+    $session->data['SITE_USER_ID']=$users[0]['ID'];
    }
-   if (!$session->data['USERNAME'] && $out['DEFAULT_USERNAME']) {
-    $session->data['USERNAME']=$out['DEFAULT_USERNAME'];
+   if (!$session->data['SITE_USERNAME'] && $out['DEFAULT_USERNAME']) {
+    $session->data['SITE_USERNAME']=$out['DEFAULT_USERNAME'];
+    $session->data['SITE_USER_ID']=$out['DEFAULT_USER_ID'];
     for($i=0;$i<$total;$i++) {
      if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
       $users[$i]['SELECTED']=1;

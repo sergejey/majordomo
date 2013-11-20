@@ -234,13 +234,13 @@ function usual(&$out) {
   //users
   if ($rule['USERS']) {
    $users_matched=false;
-   if ($session->data['USERNAME'] && !$session->data['USER_ID']) {
-    $user=SQLSelectOne("SELECT ID FROM users WHERE USERNAME='".$session->data['USERNAME']."'");
+   if ($session->data['SITE_USERNAME'] && !$session->data['SITE_USER_ID']) {
+    $user=SQLSelectOne("SELECT ID FROM users WHERE USERNAME='".$session->data['SITE_USERNAME']."'");
     if ($user['ID']) {
-     $session->data['USER_ID']=$user['ID'];
+     $session->data['SITE_USER_ID']=$user['ID'];
     }
    }
-   $user_id=(int)$session->data['USER_ID'];
+   $user_id=(int)$session->data['SITE_USER_ID'];
    $tmp=explode(',',$rule['USERS']);
    if (in_array($user_id, $tmp)) {
     $users_matched=true;
