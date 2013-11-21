@@ -145,7 +145,7 @@ function usual(&$out) {
  $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
  $total=count($users);
  for($i=0;$i<$total;$i++) {
-  if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
+  if ($users[$i]['ID']==$session->data['SITE_USER_ID']) {
    $users[$i]['SELECTED']=1;
   }
  }
