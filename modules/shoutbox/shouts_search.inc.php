@@ -19,10 +19,10 @@
    $this->redirect("?");
   }
 
-  if (!$session->data['USERNAME']) {
+  if (!$session->data['SITE_USERNAME']) {
    $out['NOT_LOGGED']=1;
   } else {
-   $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME='".DBSafe($session->data['USERNAME'])."'");
+   $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME='".DBSafe($session->data['SITE_USERNAME'])."'");
    $session->data['logged_user']=$user['ID'];
   }
 
