@@ -13,7 +13,7 @@
    global $hostname;
    $rec['HOSTNAME']=$hostname;
 
-   if (!preg_match('/^http:/is', $rec['HOSTNAME'])) {
+   if (!preg_match('/^http:/is', $rec['HOSTNAME']) && !preg_match('/^https:/is', $rec['HOSTNAME'])) {
     $out['ERR_HOSTNAME']=1;
     $ok=0;
    }
