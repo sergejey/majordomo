@@ -7,6 +7,17 @@
       <param name="file" value="debmes/%s.log" />
       <param name="datePattern" value="Y-m-d" />
    </appender>
+    <appender name="objectsFileLog" class="LoggerAppenderDailyFile">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%d{H:i:s} %p [%c]: %m %x%n" />
+        </layout>
+        <param name="file" value="debmes/%s.log" />
+        <param name="datePattern" value="Y-m-d" />
+    </appender>
+    <logger name="class.object" additivity="false">
+        <level value="TRACE" />
+        <appender_ref ref="objectsFileLog" />
+    </logger>
    <root>
       <level value="TRACE" />
       <appender_ref ref="default" />

@@ -117,34 +117,35 @@ function run() {
   $this->result=$p->result;
 }
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function runScript($id, $params='') {
-  $rec=SQLSelectOne("SELECT * FROM scripts WHERE ID='".(int)$id."' OR TITLE LIKE '".DBSafe($id)."'");
-  if ($rec['ID']) {
-   $rec['EXECUTED']=date('Y-m-d H:i:s');
-   if ($params) {
-    $rec['EXECUTED_PARAMS']=serialize($params);
-   }
-   SQLUpdate('scripts', $rec);
+  /**
+   * Title
+   *
+   * Description
+   *
+   * @access public
+   */
+  function runScript($id, $params = '')
+  {
+    $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE LIKE '" . DBSafe($id) . "'");
+    if ($rec['ID']) {
+      $rec['EXECUTED'] = date('Y-m-d H:i:s');
+      if ($params) {
+        $rec['EXECUTED_PARAMS'] = serialize($params);
+      }
+      SQLUpdate('scripts', $rec);
 
-                  try {
-                   $code=$rec['CODE'];
-                   $success=eval($code);
-                   if ($success===false) {
-                    DebMes("Error in script code: ".$code);
-                   }
-                  } catch(Exception $e){
-                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
-                  }
+      try {
+        $code = $rec['CODE'];
+        $success = eval($code);
+        if ($success === false) {
+          getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+        }
+      } catch (Exception $e) {
+        getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
+      }
 
+    }
   }
- }
 
 /**
 * BackEnd
