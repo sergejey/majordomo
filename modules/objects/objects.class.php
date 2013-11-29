@@ -372,14 +372,14 @@ curl_close($ch);
     }
 
 
-                  try {
-                   $success=eval($code);
-                   if ($success===false) {
-                    DebMes("Error in method code: ".$code);
-                   }
-                  } catch(Exception $e){
-                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
-                  }
+     try {
+       $success = eval($code);
+       if ($success === false) {
+         getLogger($this)->error(sprintf('Error in "%s.%s" method. Code: %s', $this->object_title, $name, $code));
+       }
+     } catch (Exception $e) {
+       getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
+     }
 
    }
 

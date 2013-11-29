@@ -30,7 +30,7 @@
    $script='http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
    $description=$script."\nError:\n".$description;
 
-   $log = Logger::getLogger(__METHOD__);
+   $log = getLogger();
    $log->error($description);
 
    if (Defined("DEBUG_MODE")) {
