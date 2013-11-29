@@ -77,6 +77,8 @@ if (IsSet($_REQUEST['latitude']))
      setGlobal($user['LINKED_OBJECT'].'.Coordinates', $rec['LAT'].','.$rec['LON']);
      setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdated', date('H:i'));
      setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdatedTimestamp', time());
+     setGlobal($user['LINKED_OBJECT'].'.BattLevel', $rec['BATTLEVEL']);
+     setGlobal($user['LINKED_OBJECT'].'.Charging', $rec['CHARGING']);
      $prev_log=SQLSelectOne("SELECT * FROM gpslog WHERE ID!='".$rec['ID']."' AND DEVICE_ID='".$device['ID']."' ORDER BY ID DESC LIMIT 1");
      if ($prev_log['ID']) {
       $distance=calculateTheDistance ($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
@@ -224,7 +226,7 @@ $db->Disconnect();
 
 endMeasure('TOTAL'); // end calculation of execution time
 
-// Радиус земли
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 function calculateTheDistance ($latA, $lonA, $latB, $lonB) 
 {
    define('EARTH_RADIUS', 6372795);
