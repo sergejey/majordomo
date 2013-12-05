@@ -179,6 +179,11 @@ function getParams() {
      $users[$i]['SELECTED']=1;
      $out['USER_TITLE']=$users[$i]['NAME'];
      $out['USER_AVATAR']=$users[$i]['AVATAR'];
+    } elseif (!$session->data['SITE_USERNAME'] && $users[$i]['HOST'] && $users[$i]['HOST']==$_SERVER['REMOTE_ADDR']) {
+     $session->data['SITE_USERNAME']=$users[$i]['USERNAME'];
+     $session->data['SITE_USER_ID']=$users[$i]['ID'];     
+     $out['USER_TITLE']=$users[$i]['NAME'];
+     $out['USER_AVATAR']=$users[$i]['AVATAR'];
     }
     if ($users[$i]['IS_DEFAULT']==1) {
      $out['DEFAULT_USERNAME']=$users[$i]['USERNAME'];

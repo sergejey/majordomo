@@ -202,7 +202,7 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    $host=$pings[$i];
    if (!$force) {
-    echo "Checking webvar: ".$host['HOSTNAME']."\n";
+    echo "Checking webvar: ".processTitle($host['HOSTNAME'])."\n";
    }
    $online_interval=$host['ONLINE_INTERVAL'];
    if (!$online_interval) {
@@ -216,9 +216,9 @@ function usual(&$out) {
    //web host
    $old_status=$host['LATEST_VALUE'];
    if ($host['AUTH'] && $host['USERNAME']) {
-    $content=getURL($host['HOSTNAME'], $host['ONLINE_INTERVAL'], $host['USERNAME'], $host['PASSWORD']);
+    $content=getURL(processTitle($host['HOSTNAME']), $host['ONLINE_INTERVAL'], $host['USERNAME'], $host['PASSWORD']);
    } else {
-    $content=getURL($host['HOSTNAME'], $host['ONLINE_INTERVAL']);
+    $content=getURL(processTitle($host['HOSTNAME']), $host['ONLINE_INTERVAL']);
    }
    
    if ($host['ENCODING']!='') {

@@ -211,10 +211,11 @@ function usual(&$out) {
    // checking
    if (!$host['TYPE']) {
     //ping host
-    $online=ping($host['HOSTNAME']);
+
+    $online=ping(processTitle($host['HOSTNAME']));
    } else {
     //web host
-    $online=file_get_contents($host['HOSTNAME']);
+    $online=file_get_contents(processTitle($host['HOSTNAME']));
     SaveFile("./cached/host_".$host['ID'].'.html', $online);
     if ($host['SEARCH_WORD']!='' && !is_integer(strpos($online, $host['SEARCH_WORD']))) {
      $online=0;

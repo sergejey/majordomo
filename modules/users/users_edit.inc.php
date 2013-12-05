@@ -50,6 +50,9 @@
    global $linked_object;
    $rec['LINKED_OBJECT']=trim($linked_object);
 
+   global $host;
+   $rec['HOST']=$host;
+
    global $avatar;
    global $avatar_name;
    if ($avatar!='') {

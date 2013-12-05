@@ -220,6 +220,7 @@ users - Users
  users: PASSWORD varchar(255) NOT NULL DEFAULT ''
  users: IS_ADMIN tinyint(3) NOT NULL DEFAULT '0'
  users: IS_DEFAULT tinyint(3) NOT NULL DEFAULT '0'
+ users: HOST varchar(255) NOT NULL DEFAULT ''
  users: EMAIL char(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
