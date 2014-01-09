@@ -843,6 +843,7 @@ $dictionary=array(
 'ALLOW_EXCEPT_ABOVE'=>'Always available except selected above',
 
 'INLINE_POSITION'=>'Place in-line with previuos element',
+'SUB_PRELOAD'=>'Preload sub-elements in hidden area',
 
 'TEST'=>'test'
 

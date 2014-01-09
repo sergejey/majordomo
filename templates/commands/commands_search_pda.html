@@ -5,7 +5,7 @@
 [#if ONE_ITEM_MODE!="1"#]
 
 [#if PARENT_TITLE!=""#]
-            <div data-role="header" data-theme="[#if "<#SETTINGS_THEME#>"=="dark"#]a[#else#]c[#endif#]">
+            <div data-role="header"[#if "<#SETTINGS_THEME#>"=="dark"#] data-theme="b"[#endif#]>
 [#if IFRAME_MODE!="1"#]            
                 <h1 id="label_[#PARENT_ID#]">[#if PARENT_TITLE!=""#][#PARENT_TITLE#][#else#]MajorDoMo[#endif#]</h1>
 
@@ -57,24 +57,35 @@
 
 [#begin RESULT#]
 
+[#if SUB_PRELOAD="1"#]
+
+ <div data-role="collapsible">
+  <h2><span  id="label_[#ID#]">[#TITLE#]</span></h2>
+  <ul data-role="listview" data-inset="true">
+  [#tree RESULT#]
+  </ul>
+ </div>
+
+[#else SUB_PRELOAD#]
 [#if TYPE=="" || TYPE=="command" || TYPE=="window" || TYPE=="url"#]
 <li[#if VISIBLE_DELAY!="0"#] class='visible_delay'[#endif#] id='item[#ID#]'>
 <a
- [#if !RESULT#]
+ [#if !RESULT_TOTAL#]
  href="#" 
  onClick="return menuClicked('[#ID#]', '[#PARENT_ID#]', '[#SUB_LIST#]', '[#WINDOW#]', '[#TITLE#]', '[#COMMAND#]', '[#URL#]'[#if TYPE="window"#], '[#WIDTH#]', '[#HEIGHT#]'[#else#],0,0[#endif TYPE#]);"
- [#else RESULT#]
+ [#else RESULT_TOTAL#]
  href="/menu/[#ID#].html"
- [#endif RESULT#]
+ [#endif RESULT_TOTAL#]
+ [#if SUB_PRELOAD="1"#] onClick="$('#sublist[#ID#]').toggle();return false;"[#endif#]
 >
 [#if ICON!=""#]<img src="/cms/icons/[#ICON#]" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">[#endif#]
-<span id="label_[#ID#]">[#TITLE#]</span></a>
-[#if RESULT#]
-<span class="ui-li-count">[#RESULT#]</span>
-[#endif#]
-
+<span id="label_[#ID#]">[#TITLE#]</span><!--#[#if RESULT_TOTAL#] <span class="ui-li-count">[#RESULT_TOTAL#]</span>[#endif#]#--></a>
 </li>
 [#endif TYPE#]
+[#endif SUB_PRELOAD#]
+
+
+
 
 [#if TYPE=="switch"#]
 <li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
@@ -90,25 +101,17 @@
  }
 </script>
 
-
         <label for="menu[#ID#]_v"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
         <select name="menu[#ID#]_v" id="menu[#ID#]_v" data-role="slider"  onChange="changedValue[#ID#]();">
                 <option value="0"[#if CUR_VALUE!="1"#] selected[#endif#]><#LANG_OFF#></option>
                 <option value="1"[#if CUR_VALUE="1"#] selected[#endif#]><#LANG_ON#></option>
         </select> 
-
-        <!--#
-<span style="float:right">
-<a href="#" style="display:inline;width:30px;" onClick="return switchValue[#ID#]();"><img src="/img/switch_[#if CUR_VALUE="1"#]on[#else#]off[#endif#].png" id="img[#ID#]" border="0"></a>
-</span>
-<input type="hidden" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]">
-#-->
 </li>
 [#endif TYPE#]
 
 [#if TYPE=="custom"#]
-<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
-<div id="label_[#ID#]">[#DATA#]</div>
+<li [#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
+<div id="label_[#ID#]" style="white-space:normal">[#DATA#]</div>
 </li>
 [#endif#]
 
@@ -258,6 +261,7 @@
 [#endif TYPE#]
 
 [#if TYPE="button"#]
+
 <a href="#" onClick="return itemValueChanged('[#ID#]', 'clicked');" data-role="button" [#if INLINE="1"#]data-inline="true"[#endif#]><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></a>
 <!--#
 <table border="0" cellspacing="0" cellpadding="0" width="100%">

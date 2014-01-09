@@ -128,6 +128,9 @@ if ($rec['TYPE']=='plusminus'
    global $window;
    $rec['WINDOW']=$window;
 
+   global $sub_preload;
+   $rec['SUB_PRELOAD']=(int)$sub_preload;
+
 
   //updating 'URL' (varchar)
    global $url;

@@ -90,6 +90,7 @@ Action URL:
 
 [#if EXT_ID=="" || EXT_ID="0"#]
 
+[#if !CHILDREN#]
 <div class="control-group">
         <label class="control-label"><#LANG_TYPE#>:</label>
         <div class="controls">
@@ -113,6 +114,7 @@ Action URL:
                 </select>
         </div>
 </div>
+[#endif CHILDREN#]
 
 
 <div class="control-group">
@@ -247,6 +249,7 @@ Action URL:
 [#endif TYPE#]
 
 
+[#if !CHILDREN#]
 [#if TYPE=="window" || TYPE=="url" || TYPE==""#]
 <!-- URL (varchar) -->
 <div class="control-group">
@@ -280,9 +283,11 @@ Action URL:
         </div>
 </div>
 [#endif TYPE#]
+[#endif CHILDREN#]
 
 [#endif EXT_ID#]
 
+[#if !CHILDREN#]
 [#if (TYPE=="") || (ID=="")#]
 <div class="control-group">
         <label class="control-label"><#LANG_EXT_ID#>:</label>
@@ -305,6 +310,18 @@ Action URL:
                 <input type="text" name="visible_delay" value="[#VISIBLE_DELAY#]"> (<#LANG_SECONDS#>)
         </div>
 </div>
+[#endif CHILDREN#]
+
+[#if CHILDREN#]
+<div class="control-group">
+        <label class="control-label"> <#LANG_SUB_PRELOAD#>:</label>
+        <div class="controls">
+                <label><input type="radio" name="sub_preload" value="1"[#if SUB_PRELOAD="1"#] checked[#endif#]> <#LANG_YES#></label>
+                <label><input type="radio" name="sub_preload" value="0"[#if SUB_PRELOAD!="1"#] checked[#endif#]> <#LANG_NO#></label>
+        </div>
+</div>
+[#endif CHILDREN#]
+
 
 [#if ID!=""#]
 <div class="control-group">

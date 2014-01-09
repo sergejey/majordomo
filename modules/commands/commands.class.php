@@ -324,6 +324,154 @@ function usual(&$out) {
  }
 
 
+  function processMenuElements(&$res) {
+
+   if ($this->action!='admin') {
+    $total=count($res);
+    $res2=array();
+    for($i=0;$i<$total;$i++) {
+     if (checkAccess('menu', $res[$i]['ID'])) {
+      $res2[]=$res[$i];
+     }
+    }
+    $res=$res2;
+    unset($res2);
+   }
+
+   $total=count($res);
+   for($i=0;$i<$total;$i++) {
+    // some action for every record if required
+   if ($res[$i+1]['INLINE']) {
+    $res[$i]['INLINE']=1;
+   }
+
+
+
+   $item=$res[$i];
+   if ($item['VISIBLE_DELAY']) {
+    $out['VISIBLE_DELAYS']++;
+   }
+
+   if ($item['EXT_ID'] && $this->action!='admin') {
+    $visible_delay=$item['VISIBLE_DELAY'];
+    $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item['EXT_ID']."'");
+    if ($tmp['ID']) {
+     $item=$tmp;
+     $item['VISIBLE_DELAY']=$visible_delay;
+     $res[$i]=$item;
+    }
+   } elseif ($item['EXT_ID'] && $this->action=='admin') {
+    $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item['EXT_ID']."'");
+    if ($tmp['ID']) {
+     $item['TITLE']=$item['TITLE'].' ('.$tmp['TITLE'].')';
+     $res[$i]=$item;
+    }
+   }
+
+   if ($item['LINKED_PROPERTY']!='') {
+    $lprop=getGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
+    if ($item['TYPE']=='custom') {
+     $field='DATA';
+    } else {
+     $field='CUR_VALUE';
+    }
+    if ($lprop!=$item[$field]) {
+     $item[$field]=$lprop;
+     SQLUpdate('commands', $item);
+     $res[$i]=$item;
+    }
+   }
+
+   if ($item['TYPE']=='timebox') {
+
+    $tmp=explode(':', $item['CUR_VALUE']);
+    $value1=(int)$tmp[0];
+    $value2=(int)$tmp[1];
+
+    for($h=0;$h<=23;$h++) {
+     $v=$h;
+     if ($v<10) {
+      $v='0'.$v;
+     }
+     $selected=0;
+     if ($h==$value1) {
+      $selected=1;
+     }
+     $item['OPTIONS1'][]=array('VALUE'=>$v, 'SELECTED'=>$selected);
+    }
+    for($h=0;$h<=59;$h++) {
+     $v=$h;
+     if ($v<10) {
+      $v='0'.$v;
+     }
+     $selected=0;
+     if ($h==$value2) {
+      $selected=1;
+     }
+     $item['OPTIONS2'][]=array('VALUE'=>$v, 'SELECTED'=>$selected);
+    }
+    $res[$i]=$item;
+   }
+
+
+   if ($item['TYPE']=='selectbox') {
+    $data=explode("\n", str_replace("\r", "", $item['DATA']));
+    $item['OPTIONS']=array();
+    foreach($data as $line) {
+     $line=trim($line);
+     if ($line!='') {
+      $option=array();
+      $tmp=explode('|', $line);
+      $option['VALUE']=$tmp[0];
+      if ($tmp[1]!='') {
+       $option['TITLE']=$tmp[1];
+      } else {
+       $option['TITLE']=$option['VALUE'];
+      }
+      if ($option['VALUE']==$item['CUR_VALUE']) {
+       $option['SELECTED']=1;
+      }
+      $item['OPTIONS'][]=$option;
+     }
+    }
+    $res[$i]=$item;
+   }
+
+   if ($this->owner->name!='panel') {
+    $res[$i]['TITLE']=processTitle($res[$i]['TITLE'], $this);
+    if ($res[$i]['TYPE']=='custom') {
+     $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
+    }
+   }
+
+
+    foreach($res[$i] as $k=>$v) {
+     if (!is_array($res[$i][$k]) && $k!='DATA') {
+      $res[$i][$k]=addslashes($v);
+     }
+    }
+
+    $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM commands WHERE PARENT_ID='".$res[$i]['ID']."'");
+    if ($tmp['TOTAL']) {
+     $res[$i]['RESULT_TOTAL']=$tmp['TOTAL'];
+    }
+
+
+    if ($res[$i]['SUB_PRELOAD'] && $this->action!='admin') {
+     $children=SQLSelect("SELECT * FROM commands WHERE PARENT_ID='".$res[$i]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+     if ($children[0]['ID']) {
+      $this->processMenuElements($children);
+      if ($children[0]['ID']) {
+       $res[$i]['RESULT']=$children;
+      }
+     }
+    }
+
+
+   }
+   
+  }
+
  /**
  * Title
  *
@@ -407,6 +555,7 @@ commands - Commands
  commands: EXT_ID int(10) NOT NULL DEFAULT '0'
  commands: VISIBLE_DELAY int(10) NOT NULL DEFAULT '0'
  commands: INLINE int(3) NOT NULL DEFAULT '0'
+ commands: SUB_PRELOAD int(3) NOT NULL DEFAULT '0'
 
  commands: ONCHANGE_OBJECT varchar(255) NOT NULL DEFAULT ''
  commands: ONCHANGE_METHOD varchar(255) NOT NULL DEFAULT ''

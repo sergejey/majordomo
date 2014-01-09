@@ -208,6 +208,14 @@ function getParams() {
     }
    }
 
+   if ($out['USER_TITLE']) {
+    Define('USER_TITLE', $out['USER_TITLE']);
+    Define('USER_AVATAR', $out['USER_AVATAR']);
+   } else {
+    Define('USER_TITLE', '');
+    Define('USER_AVATAR', '');
+   }
+
 
    if ($out["DOC_NAME"]) {
     $doc=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME LIKE '".DBSafe($out['DOC_NAME'])."'");
