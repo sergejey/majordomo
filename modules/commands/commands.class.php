@@ -146,7 +146,9 @@ function admin(&$out) {
   if ($op=='get_value') {
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
    if ($item['ID']) {
-    echo $item['CUR_VALUE'];
+    $res=array();
+    $res['DATA']=$item['CUR_VALUE'];
+    echo json_encode($res);
     exit;
    }
   }

@@ -93,10 +93,12 @@
 <script language="javascript">
  var item[#ID#]_timer=0;
  function changedValue[#ID#]() {
-  //clearTimeout(item[#ID#]_timer);
+  if (valueChangedFlag['item[#ID#]']==1) {
+   valueChangedFlag['item[#ID#]']=0;
+   return;
+  }
   var elem=document.getElementById('menu[#ID#]_v');
   itemValueChanged("[#ID#]", elem.value);
-  //item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
   return false;
  }
 </script>
@@ -119,10 +121,12 @@
 <script language="javascript">
  var item[#ID#]_timer=0;
  function changedValue[#ID#]() {
-  //clearTimeout(item[#ID#]_timer);
+  if (valueChangedFlag['item[#ID#]']==1) {
+   valueChangedFlag['item[#ID#]']=0;
+   return;
+  }
   var elem=document.getElementById('menu[#ID#]_v');
   itemValueChanged("[#ID#]", elem.value);
-  //item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
   return false;
  }
 </script>
@@ -142,6 +146,10 @@
 <script language="javascript">
  var item[#ID#]_timer=0;
  function changedValue[#ID#]() {
+  if (valueChangedFlag['item[#ID#]']==1) {
+   valueChangedFlag['item[#ID#]']=0;
+   return;
+  }
   clearTimeout(item[#ID#]_timer);
   var elem1=document.getElementById('menu[#ID#]_v1');
   var elem2=document.getElementById('menu[#ID#]_v2');
@@ -214,6 +222,10 @@
 <script language="javascript">
  var item[#ID#]_timer=0;
  function changedValue[#ID#]() {
+  if (valueChangedFlag['item[#ID#]']==1) {
+   valueChangedFlag['item[#ID#]']=0;
+   return;
+  }
   clearTimeout(item[#ID#]_timer);
   var elem=document.getElementById('menu[#ID#]_v');
   item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
@@ -279,6 +291,10 @@
 [#endif TYPE#]
 
 
+<script language="javascript">
+  valueChangedFlag['item[#ID#]']=0;
+</script>
+
 [#if AUTO_UPDATE!="0"#]
 <script language="javascript">
  var label[#ID#]_timer;
@@ -292,19 +308,31 @@
  }
 
  function updateValue[#ID#]_Ready(id, data) {
- [#if TYPE=="textbox"#]
-  if ($('#menu[#ID#]_v').val()!=data) {
-   $('#menu[#ID#]_v').val(data);
-  }
+
+ var obj=jQuery.parseJSON(data);
+ if (obj.DATA!='') {
+  data=obj.DATA;
+  [#if TYPE=="textbox"#]
+   if ($('#menu[#ID#]_v').val()!=data) {
+    $('#menu[#ID#]_v').val(data);
+   }
   [#endif TYPE#]
 
-  [#if TYPE=="switch" || TYPE=="sliderbox"#]
+  [#if TYPE=="switch"#]
    if ($('#menu[#ID#]_v').val()!=data) {
     $('#menu[#ID#]_v').val(data);
     $('#menu[#ID#]_v').slider('refresh');
    }
   [#endif TYPE#]
 
+  [#if TYPE=="sliderbox"#]
+   if ($('#menu[#ID#]_v').val()!=data) {
+    $('#menu[#ID#]_v').val(data);
+    valueChangedFlag['item[#ID#]']=1;
+    $('#menu[#ID#]_v').slider('refresh');
+   }
+  [#endif TYPE#]
+  }
   return false;
  }
 
