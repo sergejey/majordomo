@@ -88,6 +88,7 @@ $dictionary=array(
 'MODULE_SECURITY_RULES'=>'Правила безопасности',
 'MODULE_MQTT'=>'MQTT',
 'MODULE_CONNECT'=>'CONNECT',
+'MODULE_MARKET'=>'Маркет дополнений',
 
 'SETUP'=>'Настроить', // objects/objects_edit_methods.html; 
 

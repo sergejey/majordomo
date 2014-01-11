@@ -100,6 +100,7 @@ $dictionary=array(
 'MODULE_SECURITY_RULES'=>'Security Rules',
 'MODULE_MQTT'=>'MQTT',
 'MODULE_CONNECT'=>'CONNECT',
+'MODULE_MARKET'=>'Plugins Market',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
