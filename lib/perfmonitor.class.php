@@ -48,14 +48,34 @@ function getmicrotime(){
 *
 * @param string $mpoint monitoring block name
 */
- function EndMeasure($mpoint) {
+ function EndMeasure($mpoint, $save_to_db=0) {
   global $perf_data;
+  if (!$perf_data[$mpoint]['START']) {
+   return;
+  }
   $perf_data[$mpoint]['END']=getmicrotime();
   if(!$perf_data[$mpoint]['MEMORY_END'] && function_exists('memory_get_usage')) {
    $perf_data[$mpoint]['MEMORY_END']=memory_get_usage(); 
   }
   $perf_data[$mpoint]['TIME']+=$perf_data[$mpoint]['END']-$perf_data[$mpoint]['START'];
   $perf_data[$mpoint]['NUM']++;
+  return;
+  if ($save_to_db) {
+   global $db;
+   if ($db->dbh) {
+    $rec=array();
+    $rec['OPERATION']=$mpoint;
+    $rec['COUNTER']=1;
+    $rec['TIMEUSED']=$perf_data[$mpoint]['TIME'];
+    $rec['ADDED']=date('Y-m-d H:i:s');
+    if ($_SERVER['REQUEST_URI']) {
+     $rec['SOURCE']='web';
+    } else {
+     $rec['SOURCE']='cmd';
+    }
+    SQLInsert('performance_log', $rec);
+   }
+  }
  }
 
 /**

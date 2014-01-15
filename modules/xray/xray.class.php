@@ -387,6 +387,37 @@ function admin(&$out) {
       echo '</tr>';
      }
      echo '</table>';
+    } elseif ($this->view_mode=='performance') {
+
+     $time_start=date('Y-m-d H:i:s', time()-10);
+     $res=SQLSelect("SELECT OPERATION, SUM(COUNTER) as TOTAL, SUM(TIMEUSED) as TIME_TOTAL FROM performance_log WHERE ADDED>='".$time_start."' GROUP BY OPERATION ORDER BY TIME_TOTAL DESC ");//methods.OBJECT_ID<>0
+     $total=count($res);
+     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+      echo '<tr>';
+      echo '<td><b>OPERATION</b></td>';
+      echo '<td><b>COUNTER</b></td>';
+      echo '<td><b>TIME</b></td>';
+      echo '<td><b>AV. TIME</b></td>';	  
+      echo '</tr>';
+     for($i=0;$i<$total;$i++) {
+      echo '<tr>';
+      echo '<td>';
+      echo $res[$i]['OPERATION'].'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      echo $res[$i]['TOTAL'].'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      echo number_format($res[$i]['TIME_TOTAL'], 2).'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      echo number_format($res[$i]['TIME_TOTAL']/$res[$i]['TOTAL'], 2).'&nbsp;';
+      echo '</td>';	  
+      echo '</tr>';
+     }
+     echo '</table>';     
+     SQLExec("DELETE FROM performance_log WHERE ADDED<'".date('Y-m-d H:i:s', time()-10*60)."'");
+
     } elseif ($this->view_mode=='methods') {
      $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, methods.DESCRIPTION FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE 1 ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
      $total=count($res);
@@ -511,6 +542,23 @@ function admin(&$out) {
 function usual(&$out) {
  $this->admin($out);
 }
+
+ function dbInstall($data) {
+/*
+watchfolders - Watchfolders
+*/
+  $data = <<<EOD
+ performance_log: ID int(10) unsigned NOT NULL auto_increment
+ performance_log: OPERATION varchar(255) NOT NULL DEFAULT ''
+ performance_log: COUNTER int(10) NOT NULL DEFAULT '0'
+ performance_log: TIMEUSED float NOT NULL DEFAULT '0'
+ performance_log: SOURCE char(10) NOT NULL DEFAULT ''
+ performance_log: ADDED datetime
+
+EOD;
+  parent::dbInstall($data);
+ }
+
 /**
 * Install
 *

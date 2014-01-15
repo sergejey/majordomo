@@ -225,6 +225,88 @@ function usual(&$out) {
  }
 
 
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function getParentProperties($id, $def='', $include_self=0) {
+  $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".(int)$id."'");
+
+  $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$id."' AND OBJECT_ID=0");
+
+  if ($include_self) {
+   $res=$properties;
+  } else {
+   $res=array();
+  }
+
+  if (!is_array($def)) {
+   $def=array();
+   foreach($properties as $p) {
+    $def[]=$p['TITLE'];
+   }
+  }
+
+  foreach($properties as $p) {
+   if (!in_array($p['TITLE'], $def)) {
+    $res[]=$p;
+    $def[]=$p['TITLE'];
+   }
+  }
+
+  if ($class['PARENT_ID']) {
+   $p_res=$this->getParentProperties($class['PARENT_ID'], $def);
+   if ($p_res[0]['ID']) {
+    $res=array_merge($res, $p_res);
+   }
+  }
+
+  return $res;
+
+ }
+
+ function getParentMethods($id, $def='', $include_self=0) {
+  $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".(int)$id."'");
+
+  $methods=SQLSelect("SELECT methods.*, classes.TITLE as CLASS_TITLE FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID WHERE CLASS_ID='".$id."' AND OBJECT_ID=0");
+
+  if ($include_self) {
+   $res=$methods;
+  } else {
+   $res=array();
+  }
+  
+
+
+  if (!is_array($def)) {
+   $def=array();
+   foreach($methods as $p) {
+    $def[]=$p['TITLE'];
+   }
+  }
+
+  foreach($methods as $p) {
+   if (!in_array($p['TITLE'], $def)) {
+    $res[]=$p;
+    $def[]=$p['TITLE'];
+   }
+  }
+
+  if ($class['PARENT_ID']) {
+   $p_res=$this->getParentMethods($class['PARENT_ID'], $def);
+   if ($p_res[0]['ID']) {
+    $res=array_merge($res, $p_res);
+   }
+  }
+
+  return $res;
+
+ }
+
+
  /**
  * Title
  *
@@ -241,9 +323,10 @@ function usual(&$out) {
     }
    }
 
-   include_once(DIR_MODULES.'classes/classes.class.php');
-   $cl=new classes();
-   $meths=$cl->getParentMethods($class_id, '', 1);
+   //include_once(DIR_MODULES.'classes/classes.class.php');
+   //$cl=new classes();
+   //$meths=$cl->getParentMethods($class_id, '', 1);
+   $meths=$this->getParentMethods($class_id, '', 1);
 
    $total=count($meths);
    for($i=0;$i<$total;$i++) {
@@ -308,6 +391,9 @@ curl_close($ch);
 * @access public
 */
  function callMethod($name, $params=0, $parent=0) {
+
+  startMeasure('callMethod');
+  startMeasure('callMethod ('.$name.')');
 
  if (!$parent) {
   $id=$this->getMethodByName($name, $this->class_id, $this->id);
@@ -382,11 +468,14 @@ curl_close($ch);
      }
 
    }
-
+   endMeasure('callMethod', 1);
+   endMeasure('callMethod ('.$name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
     $this->callMethod($name, $params, 1);
    }
   } else {
+   endMeasure('callMethod ('.$name.')', 1);
+   endMeasure('callMethod', 1);
    return false;
   }
  }
@@ -404,9 +493,10 @@ curl_close($ch);
    return $rec['ID'];
   }
 
-  include_once(DIR_MODULES.'classes/classes.class.php');
-  $cl=new classes();
-  $props=$cl->getParentProperties($class_id, '', 1);
+  //include_once(DIR_MODULES.'classes/classes.class.php');
+  //$cl=new classes();
+  //$props=$cl->getParentProperties($class_id, '', 1);
+  $props=$this->getParentProperties($class_id, '', 1);
 
   $total=count($props);
   for($i=0;$i<$total;$i++) {
@@ -419,6 +509,8 @@ curl_close($ch);
 
  }
 
+
+
 /**
 * Title
 *
@@ -427,13 +519,31 @@ curl_close($ch);
 * @access public
 */
  function getProperty($property) {
+  if ($this->object_title) {
+   $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($this->object_title.'.'.$property)."'");
+   if (isset($value['VALUE'])) {
+    startMeasure('getPropertyCached2');
+    endMeasure('getPropertyCached2', 1);
+    endMeasure('getProperty ('.$property.')', 1);
+    endMeasure('getProperty', 1);
+    return $value['VALUE'];
+   }
+  }
+  startMeasure('getProperty');
+  startMeasure('getProperty ('.$property.')');
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   if ($id) {
    $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
-   return $value['VALUE'];
+   if (!$value['PROPERTY_NAME'] && $this->object_title) {
+    $value['PROPERTY_NAME']=$this->object_title.'.'.$property;
+    SQLUpdate('pvalues', $value);
+   }
   } else {
-   return false;
+   $value['VALUE']=false;
   }
+  endMeasure('getProperty ('.$property.')', 1);
+  endMeasure('getProperty', 1);
+  return $value['VALUE'];
  }
 
 /**
@@ -445,6 +555,8 @@ curl_close($ch);
 */
  function setProperty($property, $value, $no_linked=0) {
 
+  startMeasure('setProperty');
+  startMeasure('setProperty ('.$property.')');
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   $old_value='';
 
@@ -484,7 +596,9 @@ curl_close($ch);
   }
 
   if ($prop['KEEP_HISTORY']>0) {
+   startMeasure('DeleteOldHistory');
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
+   endMeasure('DeleteOldHistory', 1);
    $h=array();
    $h['VALUE_ID']=$v['ID'];
    $h['ADDED']=date('Y-m-d H:i:s');
@@ -600,6 +714,9 @@ curl_close($ch);
 
 
   }
+
+  endMeasure('setProperty ('.$property.')', 1);
+  endMeasure('setProperty', 1);
 
  }
 

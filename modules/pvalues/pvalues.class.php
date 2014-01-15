@@ -203,12 +203,14 @@ pvalues - Pvalues
 */
   $data = <<<EOD
  pvalues: ID int(10) unsigned NOT NULL auto_increment
+ pvalues: PROPERTY_NAME varchar(100) NOT NULL DEFAULT ''
  pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
  pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
  pvalues: VALUE text NOT NULL DEFAULT ''
  pvalues: UPDATED datetime
  pvalues: INDEX (PROPERTY_ID)
  pvalues: INDEX (OBJECT_ID)
+ pvalues: INDEX (PROPERTY_NAME)
 EOD;
   parent::dbInstall($data);
  }

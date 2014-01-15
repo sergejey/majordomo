@@ -130,7 +130,9 @@ function admin(&$out) {
 
 
   if ($op=='get_label') {
+   startMeasure('getLabel');
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
+   startMeasure('getLabel '.$item['TITLE'], 1);
    if ($item['ID']) {
     $res=array();
     if ($item['TYPE']=='custom') {
@@ -139,18 +141,22 @@ function admin(&$out) {
      $res['DATA']=processTitle($item['TITLE'], $this);
     }
     echo json_encode($res);
-    exit;
    }
+   endMeasure('getLabel '.$item['TITLE'], 1);
+   endMeasure('getLabel',1);
+   exit;   
   }
 
   if ($op=='get_value') {
+   startMeasure('getValue');
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
    if ($item['ID']) {
     $res=array();
     $res['DATA']=$item['CUR_VALUE'];
     echo json_encode($res);
-    exit;
    }
+   endMeasure('getValue',1);
+   exit;   
   }
 
 
@@ -196,8 +202,9 @@ function admin(&$out) {
     }
 
    }
-   echo "OK";exit;
+   echo "OK";
   }
+  exit;
 
  }
 
@@ -208,7 +215,9 @@ function admin(&$out) {
  }
  if ($this->data_source=='commands' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_commands') {
+   startMeasure('searchCommands');
    $this->search_commands($out);
+   endMeasure('searchCommands', 1);
   }
   if ($this->view_mode=='edit_commands') {
    $this->edit_commands($out, $this->id);
@@ -327,6 +336,10 @@ function usual(&$out) {
 
 
   function processMenuElements(&$res) {
+
+   startMeasure('processMenuElements');
+
+   startMeasure('processMenuElements '.$_SERVER['REQUEST_URI']);
 
    if ($this->action!='admin') {
     $total=count($res);
@@ -471,7 +484,9 @@ function usual(&$out) {
 
 
    }
-   
+   endMeasure('processMenuElements '.$_SERVER['REQUEST_URI'], 1);
+   endMeasure('processMenuElements', 1);
+
   }
 
  /**

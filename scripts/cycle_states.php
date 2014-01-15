@@ -16,6 +16,7 @@ include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
+$checked_time=0;
 
 if ($_GET['once']) {
  setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
@@ -24,8 +25,11 @@ if ($_GET['once']) {
 } else {
  while(1) {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
-   cycleBody();
+   if (time()-$checked_time>5) {
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+    $checked_time=time();
+    cycleBody();
+   }
    if (file_exists('./reboot')) 
    {
       $db->Disconnect();

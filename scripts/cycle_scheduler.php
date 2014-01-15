@@ -15,12 +15,16 @@ include_once("./load_settings.php");
 include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
+$checked_time=0;
  
 while(1) 
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
-   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+   if (time()-$checked_time>5) {
+    $checked_time=time();
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+   }
    runScheduledJobs();
 
    if (file_exists('./reboot')) 

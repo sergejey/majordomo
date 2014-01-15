@@ -73,6 +73,12 @@
 * @access public
 */
  function getGlobal($varname) {
+
+  $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($varname)."'");
+  if (isset($value['VALUE'])) {
+   return $value['VALUE'];
+  }
+
   $tmp=explode('.', $varname);
   if ($tmp[1]) {
    $object_name=$tmp[0];
@@ -143,7 +149,8 @@
 * @access public
 */
   function processTitle($title, $object=0) {
-
+   startMeasure('processTitle');
+   startMeasure('processTitle ['.$title.']');
    $title=preg_replace('/%rand%/is', rand(), $title);
    if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/is', $title, $m)) {
     $total=count($m[0]);
@@ -176,6 +183,8 @@
     $result=$jTempl->result;
     $title=$jTempl->result;
    }
+   endMeasure('processTitle ['.$title.']', 1);
+   endMeasure('processTitle', 1);
    return $title;
   }
 

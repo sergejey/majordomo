@@ -99,8 +99,14 @@
 
   $res=SQLSelect("SELECT shouts.*, DATE_FORMAT(shouts.ADDED, '%H:%i') as DAT, TO_DAYS(shouts.ADDED) as DT, users.NAME FROM shouts LEFT JOIN users ON shouts.MEMBER_ID=users.ID WHERE $qry ORDER BY shouts.ADDED DESC, ID DESC $limit");
 
+  if ($_GET['reverse']) {
+   $this->reverse=1;
+  }
+
   if (!$this->reverse) {
    $res=array_reverse($res);
+  } else {
+   $out['REVERSE']=1;
   }
   $txtdata='';
 

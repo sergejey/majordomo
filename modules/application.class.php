@@ -151,6 +151,10 @@ function getParams() {
     $out['APP_ACTION']=1;
    }
 
+   if ($this->app_action) {
+    $out['APP_ACTION']=1;
+   }
+
 
 
 

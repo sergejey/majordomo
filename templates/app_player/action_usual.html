@@ -12,7 +12,7 @@
   if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
   var elem=document.getElementById('playerStatus');
   elem.innerHTML=pcmd+'...';
-  var url="?ajax=1";
+  var url="/popup/app_player.html?ajax=1";
   url+='&command='+pcmd;
   url+='&play_terminal='+$("#selPlayTerminal").val();
   url+='&play='+URLencode($("#hidPlayPath").val());

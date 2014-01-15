@@ -210,10 +210,10 @@ function echobig($string, $bufferSize = 8192)
 
 startMeasure('final_echo');
 
-//ob_start("ob_gzhandler"); // should be un-commented for production server
+ob_start("ob_gzhandler"); // should be un-commented for production server
 echobig($result);
 
-endMeasure('final_echo');
+endMeasure('final_echo', 1);
 
 if ($cache_filename != '' && $cached_result == '') 
 {
