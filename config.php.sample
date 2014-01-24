@@ -78,7 +78,7 @@ Define('ROOTHTML', "/");
 Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
 
 // 1-wire OWFS server
-//Define('ONEWIRE_SERVER', 'tcp://home:8234');    
+//Define('ONEWIRE_SERVER', 'tcp://localhost:8234');    
 
 /*
    Define('HOME_NETWORK', '192.168.0.*');                  // home network (optional)

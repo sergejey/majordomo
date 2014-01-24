@@ -39,10 +39,8 @@
    global $height;
    $rec['HEIGHT']=(int)$height;
 
-   if ($rec['WIDTH']) {
-    global $background;
-    $rec['BACKGROUND']=(int)$background;
-   }
+   global $background;
+   $rec['BACKGROUND']=(int)$background;
 
   //updating 'CROSS_SCENE' (int)
    global $cross_scene;
