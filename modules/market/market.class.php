@@ -198,6 +198,7 @@ function admin(&$out) {
   SQLExec("DELETE FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
   SQLExec("DELETE FROM project_modules WHERE NAME LIKE '".DBSafe($name)."'");
   $this->removeTree(ROOT.'modules/'.$name);
+  $this->removeTree(ROOT.'templates/'.$name);
 
   $ok_msg='Uninstalled';
   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));  
