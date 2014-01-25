@@ -29,16 +29,16 @@ if ($command!='' && file_exists('./rc/commands/'.$command.'.bat')) {
  $done=1;
 } elseif ($command!='' && file_exists('./rc/scripts/'.$command.'.aut')) {
  if ($param!='') {
-  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.aut '.$param);
+  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.aut '.$param, 1);
  } else {
-  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.aut');
+  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.aut', 1);
  }
  $done=1;
 } elseif ($command!='' && file_exists('./rc/scripts/'.$command.'.au3')) {
  if ($param!='') {
-  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.au3 "'.$param.'"');
+  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.au3 "'.$param.'"', 1);
  } else {
-  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.au3');
+  safe_exec('start '.SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.au3', 1);
  }
  $done=1;
 

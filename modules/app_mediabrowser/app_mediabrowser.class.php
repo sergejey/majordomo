@@ -180,15 +180,21 @@ function admin(&$out) {
 */
 function usual(&$out) {
 
+    if(DIRECTORY_SEPARATOR=='/')
+        $run_linux=1;
+    else
+        $run_linux=0;
+
+
 
    $terminals=SQLSelect("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY TITLE");
    $total=count($terminals);
-   for($i=0;$i<$total;$i++) {
+   //for($i=0;$i<$total;$i++) {
     //if ($terminals[$i]['NAME']==$session->data['PLAY_TERMINAL']) {
     // $terminals[$i]['SELECTED']=1;
     // $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
     //}
-   }
+   //}
    $out['TERMINALS']=$terminals;
    $out['TERMINALS_TOTAL']=count($terminals);
 
@@ -231,11 +237,13 @@ function usual(&$out) {
     }
  $out['COLLECTIONS']=$res;
 
+
  if (count($out['COLLECTIONS'])==1) {
   $collection_id=$out['COLLECTIONS'][0]['ID'];
   $this->collection_id=$collection_id;
   $out['COLLECTIONS_TOTAL']=1;
  }
+
 
 
 
@@ -246,6 +254,7 @@ function usual(&$out) {
  } else {
   return;
  }
+
 
  //$this->getConfig();
  //$path=$this->config['PATH'];
@@ -263,9 +272,11 @@ function usual(&$out) {
 
   $favorites=SQLSelect("SELECT * FROM media_favorites WHERE 1 ORDER BY ID DESC");
   if ($favorites) {
-   $total=count($favorites);
-   for($i=0;$i<$total;$i++) {
-    $favorites[$i]['PATH']=urlencode(utf2win($favorites[$i]['PATH']));
+   if(!$run_linux){
+    $total=count($favorites);
+    for($i=0;$i<$total;$i++) {
+     $favorites[$i]['PATH']=urlencode(utf2win($favorites[$i]['PATH']));
+    }
    }
    $out['FAVORITES']=$favorites;
   }
@@ -276,11 +287,20 @@ function usual(&$out) {
 
   $act_dir=$path.$folder;
 
+  if($act_dir{0}=='/'){
+      $out['MEDIA_PATH']=$path;
+      $out['CURRENT_DIR']='./'.$folder;
+  } else {
+      $out['MEDIA_PATH']=win2utf($path);
+      $out['CURRENT_DIR']=win2utf('./'.$folder);
+  }
 
 
-  $out['MEDIA_PATH']=win2utf($path);
-  $out['CURRENT_DIR']=win2utf('./'.$folder);
+
+
   $out['CURRENT_DIR']=str_replace('././', './', $out['CURRENT_DIR']);
+
+
   $out['CURRENT_DIR_TITLE']=$folder;
 
   $tmp=explode('/', $out['CURRENT_DIR']);
@@ -292,7 +312,12 @@ function usual(&$out) {
     $tmp_rec['TITLE']=$tmp[$i];
     $spath.='/'.$tmp_rec['TITLE'];
     $spath=str_replace('././', './', $spath);
-    $tmp_rec['PATH']=urlencode(utf2win($spath).'/');
+    if($run_linux)
+        $tmp_rec['PATH']=urlencode($spath.'/');
+    else 
+        $tmp_rec['PATH']=urlencode(utf2win($spath).'/');
+
+
     if ($tmp_rec['TITLE']=='.') {
      $tmp_rec['TITLE']='Home';
     }
@@ -313,10 +338,19 @@ function usual(&$out) {
 
   global $file;
   if ($file) {
-   $out['FILE']=win2utf($file);
-   $out['BASEFILE']=win2utf(basename($file));
-   $file=str_replace('/', '\\\\', $file);
-   $out['FULLFILE']=win2utf(addslashes($path).$file);
+
+      if($run_linux){
+          $out['FILE']=$file;
+          $out['BASEFILE']=basename($file);
+          $file=str_replace('/', '\\\\', $file);
+          $out['FULLFILE']=addslashes($path).$file;
+      } else {
+          $out['FILE']=win2utf($file);
+          $out['BASEFILE']=win2utf(basename($file));
+          $file=str_replace('/', '\\\\', $file);
+          $out['FULLFILE']=win2utf(addslashes($path).$file);
+      }
+
    $out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
   }
 
@@ -359,9 +393,14 @@ function usual(&$out) {
     return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"])); 
    }
 
+
   $dirs=array();
   //$act_dir='\\\\home\\media\\';
-  //echo $act_dir;
+
+  if (substr($act_dir, -1)!='/' && substr($act_dir, -1)!='\\') {
+   $act_dir.='/';
+  }
+
   $d=openDir($act_dir);
   //exit;
 
@@ -378,8 +417,15 @@ function usual(&$out) {
      $rec['TITLE_SHORT']=substr($rec['TITLE_SHORT'], 0, 50).'...';
     }
 
-    $rec['TITLE']=win2utf($rec['TITLE']);
-    $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
+    if($run_linux){
+        $rec['TITLE']=$rec['TITLE'];
+        $rec['TITLE_SHORT']=$rec['TITLE_SHORT'];
+    } else {
+        $rec['TITLE']=win2utf($rec['TITLE']);
+        $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
+    }
+
+
 
     if (IsSet($descriptions[$file])) {
      $rec['DESCR']=$descriptions[$file];
@@ -393,6 +439,7 @@ function usual(&$out) {
 
   closeDir($d);
   }
+
 
 
   //$dirs=mysort_array($dirs, "TITLE");
@@ -428,8 +475,15 @@ function usual(&$out) {
     } else {
      $rec['TITLE_SHORT']=$rec['TITLE'];
     }
-    $rec['TITLE']=win2utf($rec['TITLE']);
-    $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
+
+    if($run_linux){
+        $rec['TITLE']=$rec['TITLE'];
+        $rec['TITLE_SHORT']=$rec['TITLE_SHORT'];
+    } else {
+        $rec['TITLE']=win2utf($rec['TITLE']);
+        $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
+    }
+
     $rec['REAL_PATH']=($folder.$file);
     $rec['PATH']=urlencode($folder.$file);
     $rec['FULL_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$file);
