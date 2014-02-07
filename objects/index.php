@@ -90,7 +90,7 @@
  if (!$commandLine) {
   header ('Content-Type: text/html; charset=utf-8');
  }
- echo "\nRequest: ".$request;
+ //echo "\nRequest: ".$request;
  //exit;
 
  //DebMes("Request: ".$request);
