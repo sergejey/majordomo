@@ -122,6 +122,8 @@ function admin(&$out) {
 
  $out['CONNECT_USERNAME']=$this->config['CONNECT_USERNAME'];
  $out['CONNECT_PASSWORD']=$this->config['CONNECT_PASSWORD'];
+ $out['CONNECT_SYNC']=$this->config['CONNECT_SYNC'];
+
  $out['SEND_MENU']=$this->config['SEND_MENU'];
  $out['SEND_OBJECTS']=$this->config['SEND_OBJECTS'];
  $out['SEND_SCRIPTS']=$this->config['SEND_SCRIPTS'];
@@ -130,9 +132,12 @@ function admin(&$out) {
  if ($this->view_mode=='update_settings') {
    global $connect_username;
    global $connect_password;
+   global $connect_sync;
 
    $this->config['CONNECT_USERNAME']=$connect_username;
    $this->config['CONNECT_PASSWORD']=$connect_password;
+   $this->config['CONNECT_SYNC']=$connect_sync;
+
    $this->saveConfig();
    $this->redirect("?");
  }
@@ -155,7 +160,53 @@ function admin(&$out) {
 *
 * @access public
 */
- function sendData(&$out) {
+ function sendMenu() {
+   // menu items
+   $data=array();
+   $data['COMMANDS']=SQLSelect("SELECT * FROM commands");
+   $total=count($data['COMMANDS']);
+   for($i=0;$i<$total;$i++) {
+    if (!$this->config['CONNECT_SYNC']) {
+     unset($data['COMMANDS'][$i]['CUR_VALUE']);
+     unset($data['COMMANDS'][$i]['RENDER_TITLE']);
+     unset($data['COMMANDS'][$i]['RENDER_DATA']);
+    }
+   }
+
+  // POST TO SERVER
+  $url = 'http://connect.smartliving.ru/upload/';
+  $fields = array('data' => urlencode(serialize($data)));
+
+  //url-ify the data for the POST
+  foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+  rtrim($fields_string, '&');
+
+  //open connection
+  $ch = curl_init();
+  //set the url, number of POST vars, POST data
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, count($fields));
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
+
+  //execute post
+  $result = curl_exec($ch);
+  //close connection
+  curl_close($ch);
+
+ }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function sendData(&$out, $silent=0) {
   global $send_menu;
   global $send_objects;
   global $send_scripts;
@@ -172,7 +223,11 @@ function admin(&$out) {
    $data['COMMANDS']=SQLSelect("SELECT * FROM commands");
    $total=count($data['COMMANDS']);
    for($i=0;$i<$total;$i++) {
-    unset($data['COMMANDS'][$i]['CUR_VALUE']);
+    if (!$this->config['CONNECT_SYNC']) {
+     unset($data['COMMANDS'][$i]['CUR_VALUE']);
+     unset($data['COMMANDS'][$i]['RENDER_TITLE']);
+     unset($data['COMMANDS'][$i]['RENDER_DATA']);
+    }
    }
   }
 
@@ -221,7 +276,9 @@ function admin(&$out) {
   //close connection
   curl_close($ch);
 
-  $this->redirect("?uploaded=1&result=".urlencode($result));
+  if (!$silent) {
+   $this->redirect("?uploaded=1&result=".urlencode($result));
+  }
 
  }
 

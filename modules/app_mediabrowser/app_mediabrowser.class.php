@@ -247,6 +247,7 @@ function usual(&$out) {
 
 
 
+
  if ($collection_id) {
   $collection=SQLSelectOne("SELECT * FROM collections WHERE ID='".(int)$collection_id."'");
   $path=($collection['PATH']);//addslashes
@@ -283,6 +284,7 @@ function usual(&$out) {
 
   $folder=str_replace('././', './', $folder);
   $path=str_replace('././', './', $path);
+
 
 
   $act_dir=$path.$folder;

@@ -34,7 +34,7 @@
  }
  function updateLabel[#PARENT_ID#]() {
   clearTimeout(label[#PARENT_ID#]_timer);
-  var url="?ajax=1&op=get_label";
+  var url="/menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#PARENT_ID#]', 'updateLabel[#PARENT_ID#]_Ready', '');
   label[#PARENT_ID#]_timer=setTimeout('updateLabel[#PARENT_ID#]()', ([#PARENT_AUTO_UPDATE#]*1000));
   return false;
@@ -340,7 +340,7 @@
 
  function updateLabel[#ID#]() {
   clearTimeout(label[#ID#]_timer);
-  var url="?ajax=1&op=get_label";
+  var url="/menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
 
   [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox"#]

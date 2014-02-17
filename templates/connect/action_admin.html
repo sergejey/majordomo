@@ -22,6 +22,14 @@
  <div class="controls"><input type="password" name="connect_password" value="<#CONNECT_PASSWORD#>" class="input"></div>
 </div>
 
+<div class="control-group">
+ <div class="controls">
+ <label>
+ <input type="checkbox" name="connect_sync" value="1"[#if CONNECT_SYNC="1"#] checked[#endif#]> 
+ Enable cloud sync <a href="http://smartliving.ru/Main/CloudSync" target=_blank>(?)</a></label>
+ </div>
+</div>
+
 
 <div class="form-actions">
 <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
@@ -80,7 +88,7 @@ Please select items to be sent:
 
 
 <div class="form-actions">
-<button type="submit" name="subm" value="Submit" class="btn btn-primary">Send data to CONNECT</button>
+<button type="submit" name="subm" value="Submit" class="btn btn-primary">Send to CONNECT</button>
 <input type="hidden" name="view_mode" value="send_data">
 <input type="hidden" name="mode" value="update">
 </div>

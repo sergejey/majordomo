@@ -136,9 +136,19 @@ function admin(&$out) {
    if ($item['ID']) {
     $res=array();
     if ($item['TYPE']=='custom') {
-     $res['DATA']=processTitle($item['DATA'], $this);
+     $item['DATA']=processTitle($item['DATA'], $this);
+     $res['DATA']=$item['DATA'];
     } else {
-     $res['DATA']=processTitle($item['TITLE'], $this);
+     $item['TITLE']=processTitle($item['TITLE'], $this);
+     $res['DATA']=$item['TITLE'];
+    }
+
+    if ($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) {
+     $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
+     $tmp['RENDER_TITLE']=$item['TITLE'];
+     $tmp['RENDER_DATA']=$item['DATA'];
+     $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
+     SQLUpdate('commands', $tmp);
     }
     echo json_encode($res);
    }
@@ -457,6 +467,15 @@ function usual(&$out) {
     if ($res[$i]['TYPE']=='custom') {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
+
+    if ($res[$i]['RENDER_TITLE']!=$res[$i]['TITLE'] || $res[$i]['RENDER_DATA']!=$res[$i]['DATA']) {
+     $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$res[$i]['ID']."'");
+     $tmp['RENDER_TITLE']=$res[$i]['TITLE'];
+     $tmp['RENDER_DATA']=$res[$i]['DATA'];
+     $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
+     SQLUpdate('commands', $tmp);
+    }
+
    }
 
 
@@ -573,6 +592,9 @@ commands - Commands
  commands: VISIBLE_DELAY int(10) NOT NULL DEFAULT '0'
  commands: INLINE int(3) NOT NULL DEFAULT '0'
  commands: SUB_PRELOAD int(3) NOT NULL DEFAULT '0'
+ commands: RENDER_TITLE varchar(255) NOT NULL DEFAULT ''
+ commands: RENDER_DATA text
+ commands: RENDER_UPDATED datetime
 
  commands: ONCHANGE_OBJECT varchar(255) NOT NULL DEFAULT ''
  commands: ONCHANGE_METHOD varchar(255) NOT NULL DEFAULT ''
