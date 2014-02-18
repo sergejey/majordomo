@@ -65,13 +65,13 @@ if (!$connect->config['CONNECT_SYNC']) {
 /* Create a TCP/IP socket. */
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 if ($socket === false) {
-    echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+    echo date('Y-m-d H:i:s ')."socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
     continue;
 } else {
     echo "OK.\n";
 }
 
-echo "Attempting to connect to '$address' on port '$port'...";
+echo date('Y-m-d H:i:s ')."Attempting to connect to '$address' on port '$port'...";
 $result = socket_connect($socket, $address, $port);
 if ($result === false) {
     echo "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
@@ -81,24 +81,24 @@ if ($result === false) {
 }
 
 $in='Hello, world!'."\n";
-echo "Sending: ".$in;
+echo date('Y-m-d H:i:s ')."Sending: ".$in;
 socket_write($socket, $in, strlen($in));
 echo "OK.\n";
 
 $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-echo "Response: ".trim($out)."\n";
+echo date('Y-m-d H:i:s ')."Response: ".trim($out)."\n";
 
 $in='auth:'.$connect->config['CONNECT_USERNAME'].'|'.md5(md5($connect->config['CONNECT_PASSWORD']))."\n";
 
-echo "Sending: ".$in;
+echo date('Y-m-d H:i:s ')."Sending: ".$in;
 socket_write($socket, $in, strlen($in));
 echo "OK.\n";
 
 $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-echo "Response: ".trim($out)."\n";
+echo date('Y-m-d H:i:s ')."Response: ".trim($out)."\n";
 
 $in='Hello again :)'."\n";
-echo "Sending: ".$in;
+echo date('Y-m-d H:i:s ')."Sending: ".$in;
 socket_write($socket, $in, strlen($in));
 echo "OK.\n";
 
@@ -118,18 +118,18 @@ while(1) {
          break;
         }
         $out=trim($out);
-        echo "Incoming: ".$out."\n";
+        echo date('Y-m-d H:i:s ')."Incoming: ".$out."\n";
         if (preg_match('/REQUEST:(.+)/is', $out, $m)) {
          $url=$m[1];
          if (!preg_match('/^http:/', $url)) {
           $url='http://localhost'.$url;
          }
-         echo "Sending request to $url\n";
+         echo date('Y-m-d H:i:s ')."Sending request to $url\n";
          $content=getURL($url, 0);
         }
         if (preg_match('/PING/is', $out, $m)) {
          $in='PONG!'."\n";
-         echo "Sending: ".$in;
+         echo date('Y-m-d H:i:s ')."Sending: ".$in;
          socket_write($socket, $in, strlen($in));
          echo "OK.\n";
         }
@@ -143,6 +143,17 @@ while(1) {
    if (time()-$checked_time>10) {
     $checked_time=time();
     setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+
+    // update data
+    $commands=SQLSelect("SELECT * FROM commands WHERE AUTO_UPDATE>0 AND (NOW()-RENDER_UPDATED)>AUTO_UPDATE");
+    $total=count($commands);
+    for($i=0;$i<$total;$i++) {
+     echo date('Y-m-d H:i:s ')."Updating auto update item (id ".$commands[$i]['ID']." time ".$commands[$i]['AUTO_UPDATE']."): ".$commands[$i]['TITLE']."\n";
+     $commands[$i]['RENDER_TITLE']=processTitle($commands[$i]['TITLE']);
+     $commands[$i]['RENDER_DATA']=processTitle($commands[$i]['DATA']);
+     $commands[$i]['RENDER_UPDATED']=date('Y-m-d H:i:s');
+     SQLUpdate('commands', $commands[$i]);
+    }
 
     // sending changes if any
     $commands=SQLSelect("SELECT * FROM commands");
@@ -168,7 +179,7 @@ while(1) {
      $changed_data[$i]['DATA']=str_replace("\r", '', $changed_data[$i]['DATA']);
      $changed_data[$i]['DATA']=preg_replace("/<!--(.+?)-->/is", '', $changed_data[$i]['DATA']);
      $in='serial:'.serialize($changed_data[$i])."\n";
-     echo "$i. Sending: ".$in;
+     echo date('Y-m-d H:i:s ')."$i. Sending: ".$in;
      socket_write($socket, $in, strlen($in));
      echo "OK.\n";
     }
@@ -177,7 +188,7 @@ while(1) {
 }
 
 
-echo "Closing socket...";
+echo date('Y-m-d H:i:s ')."Closing socket...";
 socket_close($socket);
 echo "OK.\n\n";
 
