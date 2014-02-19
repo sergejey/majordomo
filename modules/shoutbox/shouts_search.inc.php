@@ -93,6 +93,7 @@
   } else {
    $limit="LIMIT 50";
   }
+  $limit=str_replace('LIMIT LIMIT', 'LIMIT', $limit);
 
   $out['LIMIT']=$this->limit;
 
@@ -141,6 +142,7 @@
     $txtdata.="".$res[$i]['DAT']." <b>".$res[$i]['NAME']."</b>: ".nl2br($res[$i]['MESSAGE'])."<br>";
    }
    $out['RESULT']=$res;
+   $out['TXT_DATA']=$txtdata;
   } else {
    $txtdata.='No data';
   }

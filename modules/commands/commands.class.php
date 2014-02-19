@@ -110,7 +110,9 @@ function run() {
    $out['SINGLE_REC']=1;
   }
   $this->data=$out;
+  startMeasure('menu_template');
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
+  endMeasure('menu_template');
   $this->result=$p->result;
 }
 /**
@@ -476,8 +478,12 @@ function usual(&$out) {
      SQLUpdate('commands', $tmp);
     }
 
+
    }
 
+    if (preg_match('/<script/is', $res[$i]['DATA']) && $res[$i]['AUTO_UPDATE']) {
+     $res[$i]['AUTO_UPDATE']=0;
+    }
 
     foreach($res[$i] as $k=>$v) {
      if (!is_array($res[$i][$k]) && $k!='DATA') {

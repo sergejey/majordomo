@@ -32,6 +32,8 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
    ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
 }
 
+$session=new session("prj");
+
 set_time_limit(0);
 
 $address = '83.169.6.78';
@@ -106,11 +108,12 @@ echo "OK.\n";
 //echo "Response: ".trim($out)."\n";
 
 $checked_time=0;
+$menu_sent_time=time();
 
 while(1) {
     $read=array();
     $read[0] = $socket;
-
+    socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>60, "usec"=>0));
     $num_changed_sockets = socket_select($read, $write = NULL, $except = NULL, 0, 1);
     if ( $num_changed_sockets > 0 ) {
         $out = socket_read($socket, 2048, PHP_NORMAL_READ);
@@ -139,6 +142,18 @@ while(1) {
      $last_echo=date('Y-m-d H:i:s');
      echo $last_echo." Listening...\n";
     }
+
+   if (time()-$menu_sent_time>30*60) {
+    echo "Updating full menu\n";
+    $connect->sendMenu();
+    $commands=SQLSelect("SELECT * FROM commands");
+    $total=count($commands);
+    for($i=0;$i<$total;$i++) {
+     $cmd_values[$commands[$i]['ID']]=$commands[$i]['CUR_VALUE'];
+     $cmd_titles[$commands[$i]['ID']]=$commands[$i]['RENDER_TITLE'];
+     $cmd_data[$commands[$i]['ID']]=$commands[$i]['RENDER_DATA'];
+     }
+   }
 
    if (time()-$checked_time>10) {
     $checked_time=time();
@@ -182,6 +197,8 @@ while(1) {
      echo date('Y-m-d H:i:s ')."$i. Sending: ".$in;
      socket_write($socket, $in, strlen($in));
      echo "OK.\n";
+     $out = socket_read($socket, 2048, PHP_NORMAL_READ);
+     echo date('Y-m-d H:i:s ')."Response: ".trim($out)."\n";
     }
    }
 

@@ -8,7 +8,7 @@
 
 <!-- search results (list) -->
 <div id="shoutboxContent" class="ui-widget-content">
-<#LANG_LOADING#>...
+[#if TXT_DATA!=""#][#TXT_DATA#][#else#]<#LANG_LOADING#>...[#endif#]
 </div>
 <!-- / search results (list) -->
 <!-- / results -->
@@ -42,7 +42,9 @@ var shoutTimer;
    $.ajax({
     url: url,
     }).done(function(data) { 
-     $('#shoutboxContent').html(data);
+     if (data!='') {
+      $('#shoutboxContent').html(data);
+     }
     });
 
   [#if (NOT_LOGGED!="1") || (MOBILE=="1")#]
@@ -59,7 +61,9 @@ var shoutTimer;
   $.ajax({
    url: url,
    }).done(function(data) { 
-    $('#shoutboxContent').html(data);
+    if (data!='OK' && data!='') {
+     $('#shoutboxContent').html(data);
+    }
    });
   return false;
  }
