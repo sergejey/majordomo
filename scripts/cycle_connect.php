@@ -213,6 +213,7 @@ echo "OK.\n\n";
 * @access public
 */
  function processResponse($out) {
+   global $socket;
    echo date('Y-m-d H:i:s ')." Incoming: ".trim($out)."\n";  
 
         if (preg_match('/REQUEST:(.+)/is', $out, $m)) {
