@@ -121,21 +121,7 @@ while(1) {
          break;
         }
         $out=trim($out);
-        echo date('Y-m-d H:i:s ')."Incoming: ".$out."\n";
-        if (preg_match('/REQUEST:(.+)/is', $out, $m)) {
-         $url=$m[1];
-         if (!preg_match('/^http:/', $url)) {
-          $url='http://localhost'.$url;
-         }
-         echo date('Y-m-d H:i:s ')."Sending request to $url\n";
-         $content=getURL($url, 0);
-        }
-        if (preg_match('/PING/is', $out, $m)) {
-         $in='PONG!'."\n";
-         echo date('Y-m-d H:i:s ')."Sending: ".$in;
-         socket_write($socket, $in, strlen($in));
-         echo "OK.\n";
-        }
+        processResponse($out);
        }
 
     if (date('Y-m-d H:i:s')!=$last_echo) {
@@ -145,6 +131,7 @@ while(1) {
 
    if (time()-$menu_sent_time>30*60) {
     echo "Updating full menu\n";
+    $menu_sent_time=time();
     $connect->sendMenu();
     $commands=SQLSelect("SELECT * FROM commands");
     $total=count($commands);
@@ -157,7 +144,7 @@ while(1) {
 
    if (time()-$checked_time>10) {
     $checked_time=time();
-    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+
 
     // update data
     $commands=SQLSelect("SELECT * FROM commands WHERE AUTO_UPDATE>0 AND (NOW()-RENDER_UPDATED)>AUTO_UPDATE");
@@ -198,9 +185,16 @@ while(1) {
      socket_write($socket, $in, strlen($in));
      echo "OK.\n";
      $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-     echo date('Y-m-d H:i:s ')."Response: ".trim($out)."\n";
+     processResponse($out);
     }
    }
+
+   if (file_exists('./reboot')) 
+   {
+      $db->Disconnect();
+      exit;
+   }
+
 
 }
 
@@ -210,6 +204,33 @@ socket_close($socket);
 echo "OK.\n\n";
 
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function processResponse($out) {
+   echo date('Y-m-d H:i:s ')." Incoming: ".trim($out)."\n";  
+
+        if (preg_match('/REQUEST:(.+)/is', $out, $m)) {
+         $url=$m[1];
+         if (!preg_match('/^http:/', $url)) {
+          $url='http://localhost'.$url;
+         }
+         echo date('Y-m-d H:i:s ')."Sending request to $url\n";
+         $content=getURL($url, 0);
+        }
+        if (preg_match('/PING/is', $out, $m)) {
+         $in='PONG!'."\n";
+         echo date('Y-m-d H:i:s ')."Sending: ".$in;
+         socket_write($socket, $in, strlen($in));
+         echo "OK.\n";
+         setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+        }
+ }
 
 // closing database connection
 $db->Disconnect(); 
