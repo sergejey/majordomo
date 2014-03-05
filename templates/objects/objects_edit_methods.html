@@ -21,14 +21,18 @@
 <p><font color="green"><#LANG_DATA_SAVED#>!</font></p>
 [#endif#]
 
+<h4>[#METHOD_TITLE#]</h4>
+
 <form action="?" method="post">
 <table border="0">
+ <!--#
  <tr>
   <td valign="top">Method: 
         <b><a href="?view_mode=edit_objects&id=<#ID#>&tab=methods"><#LANG_ALL#></a></b>
         -&gt;
         <b> <a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#METHOD_CLASS_ID#]&tab=methods">[#METHOD_CLASS_TITLE#]</a> -&gt; [#METHOD_TITLE#]</b></td>
  </tr>
+ #-->
 
  <tr>
   <td valign="top">
@@ -53,7 +57,7 @@ editAreaLoader.init({
 });
 </script>
 
-   <textarea name="code" rows="20" cols="120" id="mCode" class="field span8">[#CODE#]</textarea>
+   <textarea name="code" rows="30" cols="120" id="mCode" class="field span10">[#CODE#]</textarea>
 
 
   </td>

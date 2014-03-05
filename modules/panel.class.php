@@ -56,6 +56,11 @@ function getParams() {
    $this->authorized=1;
   }
 
+  global $ajax;
+  if ($ajax) {
+   include_once(DIR_MODULES.'inc_panel_ajax.php');
+  }
+
   if ($this->print || $_GET['print']) {
    $this->print=1;
    $out['PRINT']=1;

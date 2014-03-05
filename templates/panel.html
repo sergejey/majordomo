@@ -63,6 +63,31 @@
           }
          }
 
+ var filterTimer;
+
+
+ function filterSearch() {
+  var title=document.frmFilterModules.filter_modules.value;
+  //$('#filter_add').html(title);
+ var url="?";
+ url+='&ajax=1&op=filter&title='+encodeURIComponent(title);
+
+ $.ajax({
+   url: url
+  }).done(function(data) { 
+   $('#filter_add').html(data);
+  });
+
+
+  return false;
+ }
+
+ function setFilter(value) {
+  $('#filter_modules').val(value);
+  filterSearch();
+  return false;
+ }
+
  function filterModules() {
   var title=document.frmFilterModules.filter_modules.value;
   var moduleTitle='';
@@ -72,6 +97,16 @@
   setCookie('panelFilter', title);
 
   title=title.toLowerCase();
+
+  if (title!='') {
+   $('#filter_add').html('...');
+   $('#filter_add').show();
+   clearTimeout(filterTimer);
+   filterTimer=setTimeout('filterSearch();', 1000);
+  } else {
+   $('#filter_add').hide();
+   clearTimeout(filterTimer);
+  }
 
   var found=0;
   var i=0;
@@ -214,7 +249,9 @@ margin: 10px 0;
 [#if PRINT!="1"#]
 <td class="well sidebar-left"><!--left_main-->
 
-<form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-prepend"><span class="add-on"><i class="icon-search"> </i></span><input type="text" name="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
+<form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-prepend"><span class="add-on"><i class="icon-search"> </i></span><input type="text" name="filter_modules" id="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
+
+<div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;'>...</div>
 
         <!--[menu]-->
 
