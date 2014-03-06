@@ -39,6 +39,33 @@
 </tr>
 
 <tr>
+ <td valign="top">&nbsp;</td>
+ <td valign="top">
+  <label><input type="checkbox" name="run_periodically" value="1"[#if RUN_PERIODICALLY="1"#] checked[#endif#] onClick='$("#periocidally").toggle();'>
+  <#LANG_RUN_PERIODICALLY#></label>
+  <div id='periocidally'[#if RUN_PERIODICALLY!="1"#] style="display:none"[#endif#]>
+   <#LANG_RUN_TIME#>:
+   <select name="run_hours" class="span2">
+    [#begin HOURS#]
+    <option value="[#TITLE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]
+    [#end HOURS#]
+   </select>
+   :
+   <select name="run_minutes" class="span2">
+    [#begin MINUTES#]
+    <option value="[#TITLE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]
+    [#end MINUTES#]
+   </select>
+   <br>
+   <#LANG_RUN_WEEKDAYS#>:
+   [#begin DAYS#]
+   <label><input type="checkbox" name="run_days[]" value="[#VALUE#]"[#if SELECTED="1"#] checked[#endif#]> [#TITLE#]</label>
+   [#end DAYS#]
+  </div>
+ </td>
+</tr>
+
+<tr>
  <td valign="top" align="right"><#LANG_CATEGORY#>:</td>
  <td valign="top">
   <select name="category_id">

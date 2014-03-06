@@ -715,7 +715,7 @@ $dictionary=array(
 
 'SCENE'=>'Сцена',
 'ADD_NEW_SCENE'=>'Добавить новую сцену', // scenes/scenes_search_admin.html; 
-'TOP'=>'Отсутп сверху', // scenes/elements_edit.html; 
+'TOP'=>'Отступ сверху', // scenes/elements_edit.html; 
 'LEFT'=>'Отступ слева', // scenes/elements_edit.html; 
 'STATES'=>'Состояния', // scenes/elements_edit.html; 
 'ADD_NEW_STATE'=>'Добавить новое состояние', // scenes/elements_edit.html; scenes/elements_edit.html; 
@@ -836,6 +836,17 @@ $dictionary=array(
 'INLINE_POSITION'=>'Расположить на уровне предыдущего элемента',
 
 'SUB_PRELOAD'=>'Загружать дочерние элементы в раскрывающуюся область',
+
+'RUN_PERIODICALLY'=>'Выполнять периодически',
+'RUN_TIME'=>'Время запуска',
+'RUN_WEEKDAYS'=>'Дни недели',
+'WEEK_SUN'=>'Воскресенье',
+'WEEK_MON'=>'Понедельник',
+'WEEK_TUE'=>'Вторник',
+'WEEK_WED'=>'Среда',
+'WEEK_THU'=>'Четверг',
+'WEEK_FRI'=>'Пятница',
+'WEEK_SAT'=>'Суббота',
 
 'TEST'=>'test'
 

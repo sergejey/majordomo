@@ -846,6 +846,17 @@ $dictionary=array(
 'INLINE_POSITION'=>'Place in-line with previuos element',
 'SUB_PRELOAD'=>'Preload sub-elements in hidden area',
 
+'RUN_PERIODICALLY'=>'Run periodically',
+'RUN_TIME'=>'Run time',
+'RUN_WEEKDAYS'=>'Weekdays',
+'WEEK_SUN'=>'Sunday',
+'WEEK_MON'=>'Monday',
+'WEEK_TUE'=>'Tuesday',
+'WEEK_WED'=>'Wednesday',
+'WEEK_THU'=>'Thursday',
+'WEEK_FRI'=>'Friday',
+'WEEK_SAT'=>'Saturday',
+
 'TEST'=>'test'
 
 

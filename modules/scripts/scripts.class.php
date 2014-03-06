@@ -236,6 +236,52 @@ function usual(&$out) {
   SQLExec("DELETE FROM scripts WHERE ID='".$rec['ID']."'");
  }
 
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function checkScheduledScripts() {
+  $scripts=SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND (NOW()-EXECUTED)>660");
+
+
+
+  $total=count($scripts);
+  for($i=0;$i<$total;$i++) {
+
+   $rec=$scripts[$i];
+
+   if ($rec['RUN_DAYS']==='') {
+    continue;
+   }
+
+   $run_days=explode(',', $rec['RUN_DAYS']);
+   if (!in_array(date('w'), $run_days)) {
+    continue;
+   }
+
+   $tm=strtotime(date('Y-m-d').' '.$rec['RUN_TIME']);
+
+   $diff=time()-$tm;
+
+   if ($diff<0 || $diff>=10*60) {
+    continue;
+   }
+
+   runScript($rec['TITLE']);
+
+   $rec['DIFF']=$diff;
+
+   print_r($rec);
+
+  }
+  //print_r($scripts);
+
+ }
+
+
  function delete_categories($id) {
   $rec=SQLSelectOne("SELECT * FROM script_categories WHERE ID='$id'");
   // some action for related tables
@@ -284,6 +330,9 @@ scripts - Scripts
  scripts: XML text
  scripts: EXECUTED datetime
  scripts: EXECUTED_PARAMS varchar(255)
+ scripts: RUN_PERIODICALLY int(3) unsigned NOT NULL DEFAULT 0
+ scripts: RUN_DAYS char(30) NOT NULL DEFAULT ''
+ scripts: RUN_TIME char(30) NOT NULL DEFAULT ''
 
  script_categories: ID int(10) unsigned NOT NULL auto_increment
  script_categories: TITLE varchar(255) NOT NULL DEFAULT ''

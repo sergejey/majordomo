@@ -70,7 +70,7 @@
   var title=document.frmFilterModules.filter_modules.value;
   //$('#filter_add').html(title);
  var url="?";
- url+='&ajax=1&op=filter&title='+encodeURIComponent(title);
+ url+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
 
  $.ajax({
    url: url

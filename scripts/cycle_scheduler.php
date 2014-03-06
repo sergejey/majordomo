@@ -14,7 +14,10 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
+include_once(DIR_MODULES.'scripts/scripts.class.php');
+
 $ctl = new control_modules();
+$sc=new scripts();
 $checked_time=0;
  
 while(1) 
@@ -26,6 +29,7 @@ while(1)
     setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
    }
    runScheduledJobs();
+   $sc->checkScheduledScripts();
 
    if (file_exists('./reboot')) 
    {

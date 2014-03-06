@@ -46,6 +46,20 @@
     }
    }
 
+   global $run_periodically;
+   $rec['RUN_PERIODICALLY']=(int)$run_periodically;
+
+   global $run_days;
+   $rec['RUN_DAYS']=implode(',', $run_days);
+
+
+   global $run_minutes;
+   global $run_hours;
+   $rec['RUN_TIME']=$run_hours.':'.$run_minutes;
+
+   $rec['EXECUTED']='0000-00-00 00:00:00';
+   
+
 
   //UPDATING RECORD
    if ($ok) {
@@ -75,6 +89,56 @@
    }
   }
   outHash($rec, $out);
+
+
+  $run_time=array('00', '00');
+  if ($rec['RUN_TIME']) {
+   $run_time=explode(':', $rec['RUN_TIME']);
+  }
+  
+  $total=24;
+  for($i=0;$i<$total;$i++) {
+   if ($i<10) {
+    $t='0'.$i;
+   } else {
+    $t=$i;
+   }
+   $h=array('TITLE'=>$t);
+   if ($t==$run_time[0]) {
+    $h['SELECTED']=1;
+   }
+   $out['HOURS'][]=$h;
+  }
+
+  $total=60;
+  for($i=0;$i<$total;$i++) {
+   if ($i<10) {
+    $t='0'.$i;
+   } else {
+    $t=$i;
+   }
+   $m=array('TITLE'=>$t);
+   if ($t==$run_time[1]) {
+    $m['SELECTED']=1;
+   }
+   $out['MINUTES'][]=$m;
+  }
+
+  $run_days=array();
+  if ($rec['RUN_DAYS']) {
+   $run_days=explode(',', $rec['RUN_DAYS']);
+  }
+
+  $days=array(LANG_WEEK_SUN, LANG_WEEK_MON, LANG_WEEK_TUE, LANG_WEEK_WED, LANG_WEEK_THU, LANG_WEEK_FRI, LANG_WEEK_SAT);
+  $total=7;
+  for($i=0;$i<$total;$i++) {
+   $d=array('TITLE'=>$days[$i], 'VALUE'=>$i);
+   if (in_array($i, $run_days)) {
+    $d['SELECTED']=1;
+   }
+   $out['DAYS'][]=$d;
+  }
+
 
   $out['CATEGORIES']=SQLSelect("SELECT * FROM script_categories ORDER BY TITLE");
 

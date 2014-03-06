@@ -56,8 +56,8 @@ function getParams() {
    $this->authorized=1;
   }
 
-  global $ajax;
-  if ($ajax) {
+  global $ajax_panel;
+  if ($ajax_panel) {
    include_once(DIR_MODULES.'inc_panel_ajax.php');
   }
 
