@@ -5,13 +5,13 @@
 [#begin RESULT#]
  <li>
   [#if TYPE="html"#]
-  <a href="/page/[#ID#].html" target=_blank>[#TITLE#]</a>
+  <a href="<#ROOTHTML#>page/[#ID#].html" target=_blank>[#TITLE#]</a>
   [#endif TYPE#]
   [#if TYPE="url"#]
   <a href="[#URL#]" target=_blank>[#TITLE#]</a>
   [#endif TYPE#]
   [#if TYPE="app"#]
-  <a href="/popup/[#APP#].html" target=_blank>[#TITLE#]</a>
+  <a href="<#ROOTHTML#>popup/[#APP#].html" target=_blank>[#TITLE#]</a>
   [#endif TYPE#]
   </li>
 [#end RESULT#]

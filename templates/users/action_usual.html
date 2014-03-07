@@ -9,7 +9,7 @@
  <tr>
   <td valign="top" align="center"[#if SELECTED="1"#] style="border:1px solid white"[#endif#]>
    [#if AVATAR!=""#]
-   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="/cms/avatars/[#AVATAR#]" border="0" height="100"></a>
+   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" border="0" height="100"></a>
    [#else#]
    <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>img/icons/user.png" border="0"></a>
    [#endif#]

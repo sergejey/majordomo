@@ -165,28 +165,26 @@ function gup( name )
 
 <table border="0" cellpadding="4">
  <tr>
-  <td><a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="/img/btn/btn_play.png" border="0"></a></td>
+  <td><a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a></td>
   <td><h1 style="font-weight:bold">[#CURRENT_DIR_TITLE#]</h1></td>
   <td>
    <div id="favorites_add"[#if FAVORITE=="1"#] style="display:none"[#endif#]>
-   <a href="#" onClick="return addToFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="/img/btn/notfavorite.png" border="0"></a>
+   <a href="#" onClick="return addToFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="<#ROOTHTML#>img/btn/notfavorite.png" border="0"></a>
    </div>
    <div id="favorites_remove"[#if FAVORITE!="1"#] style="display:none"[#endif#]>
-    <a href="#" onClick="return removeFromFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="/img/btn/favorite.png" border="0"></a>
+    <a href="#" onClick="return removeFromFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="<#ROOTHTML#>img/btn/favorite.png" border="0"></a>
    </div>
   </td>
  </tr>
 </table>
 [#else CURRENT_DIR#]
 
-<a href="/menu.html"><img src="/img/icons/home.png" border="0"></a>
-
 [#if FAVORITES#]
 <table border="0">
  [#begin FAVORITES#]
  <tr>
-  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="/img/btn/btn_play.png" border="0"></a></td>
-  <td><img src="/img/btn/favorite.png" border="0"></td>
+  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a></td>
+  <td><img src="<#ROOTHTML#>img/btn/favorite.png" border="0"></td>
   <td><a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]">[#TITLE#]</a></td>
  </tr>
  [#end FAVORITES#]

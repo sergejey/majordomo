@@ -101,9 +101,9 @@
   $('#urlsSelTD').toggle();
 
   if ( $("#channelSelTD").is(":visible") ) {
-   $("#channelsToggleIcon").attr("src","/img/icons/application-side-contract-icon.png");
+   $("#channelsToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-contract-icon.png");
   } else { 
-   $("#channelsToggleIcon").attr("src","/img/icons/application-side-expand-icon.png");
+   $("#channelsToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-expand-icon.png");
   }
 
   return false;
@@ -130,7 +130,7 @@
   <label><input type="checkbox" name="auto_update" value="1" id="auto_update" checked onChange="autoUpdateChanged();"> <#LANG_AUTO_UPDATE#></label>
   </td>
   <td valign="top">
-   <a href="#" onClick="return showHideSideURLs();"><img src="/img/icons/application-side-expand-icon.png" id="channelsToggleIcon" border="0"></a>
+   <a href="#" onClick="return showHideSideURLs();"><img src="<#ROOTHTML#>img/icons/application-side-expand-icon.png" id="channelsToggleIcon" border="0"></a>
    <span id="currentURL">
     ...
    </span>

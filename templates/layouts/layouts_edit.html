@@ -60,7 +60,7 @@
                 <label class="checkbox">
                 <input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
                 </label>
-                <img src="/cms/layouts/[#ICON#]" border="0">
+                <img src="<#ROOTHTML#>cms/layouts/[#ICON#]" border="0">
                 [#ICON#]<br>
                 [#endif#]
         </p>
@@ -128,7 +128,7 @@
         <div class="controls">
 
 [#if TYPE="html"#]
-<a href="/page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
+<a href="<#ROOTHTML#>page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
 [#endif TYPE#]
 
 [#if TYPE="url"#]
@@ -136,7 +136,7 @@
 [#endif TYPE#]
 
 [#if TYPE="app"#]
-<a href="/popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
+<a href="<#ROOTHTML#>popup/[#APP#].html" target=_blank>/popup/[#APP#].html</a>
 [#endif TYPE#]
         
         </div>

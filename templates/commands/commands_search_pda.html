@@ -34,7 +34,7 @@
  }
  function updateLabel[#PARENT_ID#]() {
   clearTimeout(label[#PARENT_ID#]_timer);
-  var url="/menu.html?ajax=1&op=get_label";
+  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#PARENT_ID#]', 'updateLabel[#PARENT_ID#]_Ready', '');
   label[#PARENT_ID#]_timer=setTimeout('updateLabel[#PARENT_ID#]()', ([#PARENT_AUTO_UPDATE#]*1000));
   return false;
@@ -61,7 +61,7 @@
 
  <div data-role="collapsible" data-iconpos="right">
   
-  <h2><span  id="label_[#ID#]">[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">[#endif#][#TITLE#]</span></h2>
+  <h2><span  id="label_[#ID#]">[#if ICON!=""#]<img src="<#ROOTHTML#>cms/icons/[#ICON#]" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">[#endif#][#TITLE#]</span></h2>
   <ul data-role="listview" data-inset="true">
   [#tree RESULT#]
   </ul>
@@ -75,11 +75,11 @@
  href="#" 
  onClick="return menuClicked('[#ID#]', '[#PARENT_ID#]', '[#SUB_LIST#]', '[#WINDOW#]', '[#TITLE#]', '[#COMMAND#]', '[#URL#]'[#if TYPE="window"#], '[#WIDTH#]', '[#HEIGHT#]'[#else#],0,0[#endif TYPE#]);"
  [#else RESULT_TOTAL#]
- href="/menu/[#ID#].html"
+ href="<#ROOTHTML#>menu/[#ID#].html"
  [#endif RESULT_TOTAL#]
  [#if SUB_PRELOAD="1"#] onClick="$('#sublist[#ID#]').toggle();return false;"[#endif#]
 >
-[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">[#endif#]
+[#if ICON!=""#]<img src="<#ROOTHTML#>cms/icons/[#ICON#]" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">[#endif#]
 <span id="label_[#ID#]">[#TITLE#]</span><!--#[#if RESULT_TOTAL#] <span class="ui-li-count">[#RESULT_TOTAL#]</span>[#endif#]#--></a>
 </li>
 [#endif TYPE#]
@@ -267,7 +267,7 @@
 [#if TYPE="label"#]
 <li data-role="list-divider"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
 <!--#
-[#if ICON!=""#]<img src="/cms/icons/[#ICON#]" border="0">[#endif#]
+[#if ICON!=""#]<img src="<#ROOTHTML#>cms/icons/[#ICON#]" border="0">[#endif#]
 #-->
 <span id="label_[#ID#]">[#TITLE#]</span>
 </li>
@@ -279,13 +279,13 @@
 <!--#
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
  <tr>
-  <td><img src="/img/blackBtn_left.png" border="0"></td>
+  <td><img src="<#ROOTHTML#>img/blackBtn_left.png" border="0"></td>
   [#if ICON!=""#]
-  <td background="/img/blackBtn_center.png"><img src="/cms/icons/[#ICON#]" border="0" style="float:left;margin-right:10px;padding:0px"></td>
+  <td background="<#ROOTHTML#>img/blackBtn_center.png"><img src="<#ROOTHTML#>cms/icons/[#ICON#]" border="0" style="float:left;margin-right:10px;padding:0px"></td>
   [#endif#]
-  <td  width="100%" background="/img/blackBtn_center.png">
+  <td  width="100%" background="<#ROOTHTML#>img/blackBtn_center.png">
   <a href="#" onClick="return itemValueChanged('[#ID#]', 'clicked');" style="font-weight:bold" id="label_[#ID#]">[#TITLE#]</a></td>
-  <td><img src="/img/blackBtn_right.png" border="0"></td>
+  <td><img src="<#ROOTHTML#>img/blackBtn_right.png" border="0"></td>
  </tr>
 </table>
 #-->
@@ -340,7 +340,7 @@
 
  function updateLabel[#ID#]() {
   clearTimeout(label[#ID#]_timer);
-  var url="/menu.html?ajax=1&op=get_label";
+  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
 
   [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox"#]

@@ -52,7 +52,7 @@
 
 [#if TYPE="button"#]
 Action URL:
-<a href="/menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank>Run</a>
+<a href="<#ROOTHTML#>menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank>Run</a>
 [#endif#]
         </div>
 </div>
@@ -126,7 +126,7 @@ Action URL:
                 <label class="checkbox">
                 <input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
                 </label>
-                <img src="/cms/icons/[#ICON#]" border="0">
+                <img src="<#ROOTHTML#>cms/icons/[#ICON#]" border="0">
                 [#ICON#]<br>
                 [#endif#]
         </p>

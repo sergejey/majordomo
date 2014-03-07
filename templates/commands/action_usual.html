@@ -9,8 +9,8 @@
 [#if MENU_LOADED!="1"#]
 
 [#if ONE_ITEM_MODE#]
-<!--#        <style type="text/css" media="screen">@import "/jqtouch/jqtouch_one_item.css";</style>#-->
-<!--#               <style type="text/css" media="screen">@import "/themes/jqt/theme_one_item.css";</style>#-->
+<!--#        <style type="text/css" media="screen">@import "<#ROOTHTML#>jqtouch/jqtouch_one_item.css";</style>#-->
+<!--#               <style type="text/css" media="screen">@import "<#ROOTHTML#>themes/jqt/theme_one_item.css";</style>#-->
 
 [#endif#]
 
@@ -67,7 +67,7 @@
 
  function itemValueChanged(id, new_value) {
   //alert(id+': '+new_value);
-  var url="/menu.html?ajax=1&op=value_changed";
+  var url="<#ROOTHTML#>menu.html?ajax=1&op=value_changed";
   if ($('#processing_'+id).length) {
    $('#processing_'+id).html(' - ...');
   }

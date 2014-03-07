@@ -36,7 +36,7 @@ var shoutTimer;
  function updateShoutContent() {
   clearTimeout(shoutTimer);
 
-  var url="/popup/shoutbox.html?";
+  var url="<#ROOTHTML#>popup/shoutbox.html?";
 
    url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#]';
    $.ajax({
@@ -56,7 +56,7 @@ var shoutTimer;
   if (document.frmShoutBoxMsg.message.value == '') return false; 
   var msg=URLencode(document.frmShoutBoxMsg.message.value);
   document.frmShoutBoxMsg.message.value='';
-  var url="/popup/shoutbox.html?";
+  var url="<#ROOTHTML#>popup/shoutbox.html?";
   url=url+'&limit=<#LIMIT#>&msg='+msg;
   $.ajax({
    url: url,

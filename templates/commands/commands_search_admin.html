@@ -43,7 +43,7 @@ $(function () {
    [#if RESULT#]
    <a href="#" id="link[#ID#]" class="show-hide-link btn btn-mini expand" data-id="[#ID#]"> + </a>
    [#endif#]
-   [#if ICON!=""#]<img src="/cms/icons/[#ICON#]" class="action-list-icon" align="absmiddle">[#endif#]
+   [#if ICON!=""#]<img src="<#ROOTHTML#>cms/icons/[#ICON#]" class="action-list-icon" align="absmiddle">[#endif#]
    <a href="?view_mode=edit_commands&id=[#ID#]">[#TITLE#]</a>
    <span class="divider">/</span>
    [#if TYPE!=""#][#TYPE#]<span class="divider">/</span>[#endif TYPE#]

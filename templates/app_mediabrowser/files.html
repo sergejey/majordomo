@@ -20,7 +20,7 @@
  [#begin DIRS#]
 <tr>
  <td class=plain valign=top nowrap align="right">
- <a href="?collection_id=<#COLLECTION_ID#>&mode=play&folder=[#PATH#]&file=[#PATH#]"><img src="/img/btn/btn_play.png" border="0"></a>
+ <a href="?collection_id=<#COLLECTION_ID#>&mode=play&folder=[#PATH#]&file=[#PATH#]"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
  <!--#
  <a href="#" onClick="return playThis('<#MEDIA_PATH#><#CURRENT_DIR#>[#TITLE#]', 0, 0);">Now</a>
  #-->
@@ -51,7 +51,7 @@
 [#if LIST_MODE!="foto"#]
 [#if COVER!=""#]
 <div style="padding:5px" align="center">
-<img src="/modules/thumb/thumb.php?img=[#COVER_PATH#]&w=280" border="0">
+<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#COVER_PATH#]&w=280" border="0">
 </div>
 [#endif#]
 [#endif#]

@@ -37,7 +37,7 @@
 <div id='contextBody'>...</div>
 <script language="javascript">
  function findContext() {
-  var url="/popup/xray.html?action=context";
+  var url="<#ROOTHTML#>popup/xray.html?action=context";
   var bodyText='';
   [#if CODE_ID!=""#]bodyText=$('#[#CODE_ID#]').val();[#endif CODE_ID#]
   $.post(url, 

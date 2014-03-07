@@ -9,7 +9,7 @@
  
  <tr>
         <td>
-                <a href="/"><img src="/img/icons/home.png" border="0"></a>
+                <a href="<#ROOTHTML#>"><img src="<#ROOTHTML#>img/icons/home.png" border="0"></a>
                 </td>
 
                 <td valign="bottom">
@@ -17,14 +17,14 @@
  function leftPanelToggle() {
   $('#leftPanel').toggle();
   if ( $("#leftPanel").is(":visible") ) {
-   $("#leftPanelToggleIcon").attr("src","/img/icons/application-side-contract-icon.png");
+   $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-contract-icon.png");
   } else { 
-   $("#leftPanelToggleIcon").attr("src","/img/icons/application-side-expand-icon.png");
+   $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-expand-icon.png");
   }
   return false;
  }
 </script>
-                <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0" src="/img/icons/application-side-contract-icon.png" border="0"></a>
+                <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png" border="0"></a>
                 </td>
 
 
@@ -42,8 +42,8 @@
 
   <table border="0" align="right">
    <tr>
-    <td valign="top" nowrap>[ <a href="/admin.php"><#LANG_CONTROL_PANEL#></a> ]</td>
-  <form action="/" method="get" name="frmSettings">
+    <td valign="top" nowrap>[ <a href="<#ROOTHTML#>admin.php"><#LANG_CONTROL_PANEL#></a> ]</td>
+  <form action="<#ROOTHTML#>" method="get" name="frmSettings">
   [#if HIDE_TERMINALS!="1"#]
   <td valign="top" nowrap>
    <#LANG_TERMINAL#>:
@@ -74,14 +74,14 @@
     <td valign="top" colspan="3" align="right" nowrap>
     <a href="<#LANG_WIKI_URL#>" target=_blank>MajorDoMo Project</a>
     |
-    <a href="/popup/xray.html" target=_blank>X-Ray</a>
+    <a href="<#ROOTHTML#>popup/xray.html" target=_blank>X-Ray</a>
     </td>
    </tr>
   </table>
   </td>
   <td valign="top">
    [#if USER_AVATAR!=""#]
-   <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);" title="[#USER_TITLE#]"><img src="/cms/avatars/[#USER_AVATAR#]" border="0" height="50" alt="[#USER_TITLE#]"></a>
+   <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);" title="[#USER_TITLE#]"><img src="<#ROOTHTML#>cms/avatars/[#USER_AVATAR#]" border="0" height="50" alt="[#USER_TITLE#]"></a>
    [#else#]
    <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);" title="[#USER_TITLE#]"><img src="<#ROOTHTML#>img/icons/user.png" border="0" alt="[#USER_TITLE#]"></a>
    [#endif#]
@@ -98,10 +98,10 @@
  </tr>
  <tr>
   <td valign="top" width="350" id="leftPanel">
-  <iframe src="/menu.html" width="350" height="450" id="navFrame" border="0" frameborder=0 framespacing=0></iframe>
-  <!--#<iframe src="/demos/main/index.html" width="350" height="400" border="0" frameborder=0 framespacing=0 scrolling="auto"></iframe>#-->
+  <iframe src="<#ROOTHTML#>menu.html" width="350" height="450" id="navFrame" border="0" frameborder=0 framespacing=0></iframe>
+  <!--#<iframe src="<#ROOTHTML#>demos/main/index.html" width="350" height="400" border="0" frameborder=0 framespacing=0 scrolling="auto"></iframe>#-->
   <!--#
-  <img src="/img/0.gif" border="0" width="300" height="1">
+  <img src="<#ROOTHTML#>img/0.gif" border="0" width="300" height="1">
   <div id="alertsLog" class="small">
    [#module name="shoutbox" limit="5"#]
   </div>
@@ -114,7 +114,7 @@
 <ul>
 [#begin LAYOUTS#]
 <li>
-<a href="#tabs-[#ID#]"[#if ICON!=""#] style="padding:1px 1em 2px 0.5em"[#endif#]>[#if ICON!=""#]<img src="/cms/layouts/[#ICON#]" align="absmiddle" height="28">&nbsp;&nbsp;[#endif#][#TITLE#]</a></li>
+<a href="#tabs-[#ID#]"[#if ICON!=""#] style="padding:1px 1em 2px 0.5em"[#endif#]>[#if ICON!=""#]<img src="<#ROOTHTML#>cms/layouts/[#ICON#]" align="absmiddle" height="28">&nbsp;&nbsp;[#endif#][#TITLE#]</a></li>
 [#end LAYOUTS#]
   <li><a href="#tabs-last"><span id='tablast_title'>***</span></a></li>
 </ul>
@@ -157,7 +157,7 @@ $(document).ready(function() {
          if (selected == [#NUM#]) {
           [#if TYPE="app"#]
            if ($('#tabs-[#ID#]').html()=='...') {
-            $('#tabs-[#ID#]').html('<iframe src="/popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+            $('#tabs-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="url"#]
@@ -167,7 +167,7 @@ $(document).ready(function() {
           [#endif TYPE#]
           [#if TYPE="html"#]
            if ($('#tabs-[#ID#]').html()=='...') {
-            $('#tabs-[#ID#]').html('<iframe src="/page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+            $('#tabs-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
            }
           [#endif TYPE#]
          }

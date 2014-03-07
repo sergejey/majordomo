@@ -249,10 +249,10 @@
  [#if "<#SHOPPING#>"=="1"#]
  <td>
  <div id="product_[#ID#]_ok"[#if IN_CART!="1"#] style="display:none"[#endif#]>
- <a href="#" onClick="return notInCart([#ID#]);"><img src="/img/btn/ok.png" border="0"></a>
+ <a href="#" onClick="return notInCart([#ID#]);"><img src="<#ROOTHTML#>img/btn/ok.png" border="0"></a>
  </div>
  <div id="product_[#ID#]_notok"[#if IN_CART="1"#] style="display:none"[#endif#]>
- <a href="#" onClick="return inCart([#ID#]);"><img src="/img/btn/notok.png" border="0"></a>
+ <a href="#" onClick="return inCart([#ID#]);"><img src="<#ROOTHTML#>img/btn/notok.png" border="0"></a>
  </td>
  [#endif#]
  <td  width="85%">
@@ -264,17 +264,17 @@
    <div><#RECOMENDED_QUANTITY#>: [#RECOMMENDED#]</div>
   [#endif#]
  </td>
- <td><a href="#" onClick='return changeQty("minus", "[#ID#]")'><img src="/img/btn/minus.png" border="0"></a></td>
+ <td><a href="#" onClick='return changeQty("minus", "[#ID#]")'><img src="<#ROOTHTML#>img/btn/minus.png" border="0"></a></td>
  <td align=center width="5%">
   <span id="product[#ID#]_qty">[#QTY#]</span>
  </td>
- <td><a href="#" onClick='return changeQty("plus", "[#ID#]")'><img src="/img/btn/plus.png" border="0"></a></td>
+ <td><a href="#" onClick='return changeQty("plus", "[#ID#]")'><img src="<#ROOTHTML#>img/btn/plus.png" border="0"></a></td>
  <td>
  <div id="product_[#ID#]_incart"[#if INCART!="1"#] style="display:none"[#endif#]>
- <a href="#" onClick="return removeFromCart([#ID#]);"><img src="/img/btn/incart.png" border="0"></a>
+ <a href="#" onClick="return removeFromCart([#ID#]);"><img src="<#ROOTHTML#>img/btn/incart.png" border="0"></a>
  </div>
  <div id="product_[#ID#]_addcart"[#if INCART="1"#] style="display:none"[#endif#]>
- <a href="#" onClick="return addToCart([#ID#]);"><img src="/img/btn/nocart.png" border="0"></a>
+ <a href="#" onClick="return addToCart([#ID#]);"><img src="<#ROOTHTML#>img/btn/nocart.png" border="0"></a>
  </div>
  </td>
 </tr>
