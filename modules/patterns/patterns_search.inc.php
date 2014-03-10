@@ -47,11 +47,12 @@
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM patterns WHERE $qry ORDER BY ".$sortby_patterns);
   if ($res[0]['ID']) {
-   colorizeArray($res);
+   //colorizeArray($res);
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
    }
+   $res=$this->buildTree_patterns($res);
    $out['RESULT']=$res;
   }
 ?>

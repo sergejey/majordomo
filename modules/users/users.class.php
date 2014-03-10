@@ -222,6 +222,8 @@ users - Users
  users: IS_DEFAULT tinyint(3) NOT NULL DEFAULT '0'
  users: HOST varchar(255) NOT NULL DEFAULT ''
  users: EMAIL char(255) NOT NULL DEFAULT ''
+ users: ACTIVE_CONTEXT_ID int(10) NOT NULL DEFAULT '0'
+ users: ACTIVE_CONTEXT_UPDATED datetime
 EOD;
   parent::dbInstall($data);
  }

@@ -172,12 +172,17 @@ function usual(&$out) {
 * @access public
 */
  function checkAllPatterns() {
-  $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 ORDER BY ID");
+  global $session;
+
+  $current_context=context_getcurrent();
+
+  $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY ID");
   $total=count($patterns);
   for($i=0;$i<$total;$i++) {
    $this->checkPattern($patterns[$i]['ID']);
   }
  }
+
 
 /**
 * Title
@@ -187,9 +192,15 @@ function usual(&$out) {
 * @access public
 */
  function checkPattern($id) {
+  global $session;
   global $pattern_matched;
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
-  $pattern=$rec['PATTERN'];
+
+  if (!$rec['PATTERN']) {
+   $pattern=$rec['TITLE'];
+  } else {
+   $pattern=$rec['PATTERN'];
+  }
   $pattern=str_replace("\r", '', $pattern);
   if ($pattern=='') {
    return 0;
@@ -227,15 +238,24 @@ function usual(&$out) {
 
 
   if (preg_match('/'.$check.'/is', $history, $matches)) {
-   $rec['LOG']=date('Y-m-d H:i:s').' Pattern matched'."\n".$rec['LOG'];
-   $rec['EXECUTED']=time();
-   SQLUpdate('patterns', $rec);
-   global $noPatternMode;
-   $noPatternMode=1;
-   $pattern_matched=1;
-   if ($rec['SCRIPT_ID']) {
-    runScript($rec['SCRIPT_ID'], $matches);
-   } elseif ($rec['SCRIPT']) {
+
+    if (checkAccess('pattern', $rec['ID'])) {
+
+     if ($rec['IS_CONTEXT']) {
+      context_activate($rec['ID']);
+     } else {
+      context_activate($rec['MATCHED_CONTEXT_ID']);
+     }
+
+     $rec['LOG']=date('Y-m-d H:i:s').' Pattern matched'."\n".$rec['LOG'];
+     $rec['EXECUTED']=time();
+     SQLUpdate('patterns', $rec);
+     global $noPatternMode;
+     $noPatternMode=1;
+     $pattern_matched=1;
+     if ($rec['SCRIPT_ID']) {
+      runScript($rec['SCRIPT_ID'], $matches);
+     } elseif ($rec['SCRIPT']) {
 
                   try {
                    $code=$rec['SCRIPT'];
@@ -247,8 +267,10 @@ function usual(&$out) {
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
                   }
 
+     }
+    $noPatternMode=0;
    }
-   $noPatternMode=0;
+
   }
 
  }
@@ -263,6 +285,24 @@ function usual(&$out) {
   // some action for related tables
   SQLExec("DELETE FROM patterns WHERE ID='".$rec['ID']."'");
  }
+
+ function buildTree_patterns($res, $parent_id=0, $level=0) {
+  $total=count($res);
+  $res2=array();
+  for($i=0;$i<$total;$i++) {
+   if ($res[$i]['PARENT_ID']==$parent_id) {
+    $res[$i]['LEVEL']=$level;
+    $res[$i]['RESULT']=$this->buildTree_patterns($res, $res[$i]['ID'], ($level+1));
+    $res2[]=$res[$i];
+   }
+  }
+  $total2=count($res2);
+  if ($total2) {
+   return $res2;
+  }
+ }
+
+
 /**
 * Install
 *
@@ -304,6 +344,12 @@ patterns - Patterns
  patterns: LOG text
  patterns: TIME_LIMIT int(10) NOT NULL DEFAULT '0'
  patterns: EXECUTED int(10) NOT NULL DEFAULT '0'
+ patterns: IS_CONTEXT int(3) NOT NULL DEFAULT '0'
+ patterns: MATCHED_CONTEXT_ID int(10) NOT NULL DEFAULT '0'
+ patterns: TIMEOUT int(10) NOT NULL DEFAULT '0'
+ patterns: TIMEOUT_CONTEXT_ID int(10) NOT NULL DEFAULT '0'
+ patterns: TIMEOUT_SCRIPT text
+ patterns: PARENT_ID int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }

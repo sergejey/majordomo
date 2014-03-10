@@ -244,7 +244,7 @@ function usual(&$out) {
 * @access public
 */
  function checkScheduledScripts() {
-  $scripts=SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND (NOW()-EXECUTED)>660");
+  $scripts=SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>1200");
 
 
 
@@ -274,7 +274,7 @@ function usual(&$out) {
 
    $rec['DIFF']=$diff;
 
-   print_r($rec);
+   //print_r($rec);
 
   }
   //print_r($scripts);

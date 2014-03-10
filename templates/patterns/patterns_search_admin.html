@@ -5,7 +5,7 @@
 <!-- table patterns search -->
 <p align=center>
 <b>
-<a href="?view_mode=edit_patterns">><#LANG_ADD_NEW_RECORD#><</a>
+<a href="?view_mode=edit_patterns"><#LANG_ADD_NEW_RECORD#></a>
 </b>
 </p>
 <table width=100% border=0><tr>
@@ -44,6 +44,15 @@
   </table>
  </td>
 </tr>
+[#if RESULT#]
+ <tr>
+  <td valign="top" colspan="2" style="padding-left:50px">
+   <table width="100%" border="0">
+    [#tree RESULT#]
+   </table>
+  </td>
+ </tr>
+[#endif RESULT#]
 [#end RESULT#]
 </table>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">

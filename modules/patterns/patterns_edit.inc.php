@@ -2,6 +2,11 @@
 /*
 * @version 0.1 (wizard)
 */
+
+  global $parent_id;
+  $out['PARENT_ID']=$parent_id;
+
+
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
@@ -54,6 +59,37 @@
     $ok=0;
    }
    */
+
+   global $is_context;
+   $rec['IS_CONTEXT']=(int)$is_context;
+
+   global $matched_context_id;
+   $rec['MATCHED_CONTEXT_ID']=(int)$matched_context_id;
+
+   global $timeout;
+   $rec['TIMEOUT']=(int)$timeout;
+
+   global $timeout_context_id;
+   $rec['TIMEOUT_CONTEXT_ID']=(int)$timeout_context_id;
+
+
+   global $timeout_script;
+   if ($timeout_script!='') {
+    $rec['TIMEOUT_SCRIPT']=$timeout_script;
+    $errors=php_syntax_error($rec['TIMEOUT_SCRIPT']);
+    if ($errors) {
+     $out['ERR_TIMEOUT_SCRIPT']=1;
+     $out['ERRORS_TIMEOUT_SCRIPT']=nl2br($errors);
+     $ok=0;
+    }
+   } else {
+    $rec['TIMEOUT_SCRIPT']='';
+   }
+
+
+   $rec['PARENT_ID']=(int)$parent_id;
+
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -78,5 +114,13 @@
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
   $out['LOG']=nl2br($rec['LOG']);
+
+  $out['CONTEXTS']=SQLSelect("SELECT ID, TITLE FROM patterns WHERE IS_CONTEXT=1 AND ID!=".(int)$rec['ID']." ORDER BY PARENT_ID, TITLE");
+  
+  if ($rec['ID']) {
+   $out['CHILDREN']=SQLSelect("SELECT ID, TITLE FROM patterns WHERE PARENT_ID='".(int)$rec['ID']."'");
+   $out['SAME_LEVEL']=SQLSelect("SELECT ID, TITLE FROM patterns WHERE PARENT_ID='".(int)$rec['PARENT_ID']."'");
+  }
+
 
 ?>

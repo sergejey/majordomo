@@ -857,6 +857,12 @@ $dictionary=array(
 'WEEK_FRI'=>'Friday',
 'WEEK_SAT'=>'Saturday',
 
+'PARENT_CONTEXT'=>'Parent context',
+'IS_CONTEXT'=>'is context',
+'TIMEOUT'=>'Timeout',
+'SET_CONTEXT_TIMEOUT'=>'Switch to on timeout',
+'TIMEOUT_CODE'=>'Execute on timeout',
+
 'TEST'=>'test'
 
 

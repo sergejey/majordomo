@@ -27,6 +27,20 @@
  <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
 </tr>
 [#endif ID#]
+
+<tr>
+ <td valign="top" align="right"><#LANG_PARENT_CONTEXT#>:</td>
+ <td valign="top">
+  <select name="parent_id">
+   <option value="0">
+   [#begin CONTEXTS#]
+   <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end CONTEXTS#]
+  </select>
+ </td>
+</tr>
+
+
 <!-- TITLE (varchar) -->
 <tr>
  <td align=right>
@@ -35,7 +49,7 @@
  (*)
  </td>
  <td>
-  <input type="text" name="title" value="[#TITLE#]" size="50">
+  <input type="text" name="title" value="[#TITLE#]" class="span6">
  </td>
 </tr>
 <!-- PATTERN (text) -->
@@ -46,7 +60,7 @@
  :
  </td>
  <td valign=top>
- <textarea name="pattern" rows=12 cols=100 class="field span8">[#PATTERN#]</textarea>
+ <textarea name="pattern" rows=3 cols=100 class="field span8">[#PATTERN#]</textarea>
  </td>
 </tr>
 
@@ -77,8 +91,69 @@
  [#if ERRORS!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS#]  
-  <textarea name="script"  rows=12 cols=100 class="field span8">[#SCRIPT#]</textarea></td>
+  <textarea name="script"  rows=6 cols=100 class="field span8">[#SCRIPT#]</textarea></td>
  </tr>
+
+<tr>
+ <td valign="top" align="right">Set context when matched:</td>
+ <td valign="top">
+  <select name="matched_context_id">
+   <option value="0">
+   [#begin CONTEXTS#]
+   <option value="[#ID#]"[#if ID="<#MATCHED_CONTEXT_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end CONTEXTS#]
+  </select>
+ </td>
+</tr>
+
+
+<tr>
+ <td valign="top">&nbsp;</td>
+ <td valign="top">
+  <label><input type="checkbox" name="is_context" value="1"[#if IS_CONTEXT="1"#] checked[#endif#] onClick='$("#context_details").toggle();'> <#LANG_IS_CONTEXT#></label>
+  <div id='context_details'[#if IS_CONTEXT!="1"#] style="display:none"[#endif#]>
+
+   <table border="0">
+    <tr>
+     <td align="right"><#LANG_TIMEOUT#>:</td>
+     <td valign="top"><input type="text" name="timeout" value="[#TIMEOUT#]"> (set 0 to use default)</td>
+    </tr>
+
+    <tr>
+     <td align="right"><#LANG_SET_CONTEXT_TIMEOUT#>:</td>
+     <td valign="top"><select name="timeout_context_id">
+   <option value="0">
+   [#begin CONTEXTS#]
+   <option value="[#ID#]"[#if ID="<#TIMEOUT_CONTEXT_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end CONTEXTS#]
+  </select></td>
+    </tr>
+
+ <tr>
+  <td valign="top" align="right"><#LANG_TIMEOUT_CODE#>:</td>
+  <td valign="top">
+ [#if TIMEOUT_SCRIPT_ERRORS!=""#]
+ <font color='red'>[#TIMEOUT_SCRIPT_ERRORS#]</font><br>
+ [#endif TIMEOUT_SCRIPT_ERRORS#]  
+  <textarea name="timeout_script"  rows=6 cols=100 class="field span6">[#TIMEOUT_SCRIPT#]</textarea></td>
+ </tr>
+
+   </table>
+
+  </div>
+ </td>
+</tr>
+
+[#if ID!=""#]
+<tr>
+ <td valign="top" align="right"><#LANG_ACCESS_CONTROL#>:</td>
+ <td valign="top">
+<div class="control-group">
+                <a href="?(panel:{action=security_rules})&object_type=pattern&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+ </td>
+</tr>
+[#endif ID#]
+
 <tr>
  <td colspan=2 align=center>
  [#if ID!=""#]
@@ -109,3 +184,35 @@
 
 
 </table>
+
+[#if ID!=""#]
+&nbsp;
+<table width="100%" border="0">
+ <tr>
+  <td valign="top" width="50%">
+   <b><#LANG_ON_THE_SAME_LEVEL#>:</b>
+   [#if SAME_LEVEL#]
+   <ul>
+    [#begin SAME_LEVEL#]
+    <li>[#if ID!="<#ID#>"#]<a href="?id=[#ID#]&view_mode=edit_patterns">[#else#]<b>[#endif#][#TITLE#]</b></a></li>
+    [#end SAME_LEVEL#]
+   </ul>
+   [#endif SAME_LEVEL#]
+   <a href="?id=&view_mode=edit_patterns&parent_id=<#PARENT_ID#>"><#LANG_ADD#></a>
+  </td>
+  <td valign="top" width="50%">
+   <b><#LANG_CHILD_ITEMS#>:</b>
+   [#if CHILDREN#]
+   <ul>
+    [#begin CHILDREN#]
+    <li>[#if ID!="<#ID#>"#]<a href="?id=[#ID#]&view_mode=edit_patterns">[#else#]<b>[#endif#][#TITLE#]</b></a></li>
+    [#end CHILDREN#]
+   </ul>
+   [#endif SAME_LEVEL#]
+   [#if IS_CONTEXT="1"#]
+   <a href="?id=&view_mode=edit_patterns&parent_id=<#ID#>"><#LANG_ADD#></a>
+   [#endif IS_CONTEXT#]
+  </td>
+ </tr>
+</table>
+[#endif ID#]
