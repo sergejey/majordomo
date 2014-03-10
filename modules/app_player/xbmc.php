@@ -38,7 +38,7 @@
 
       if ($command=='refresh') {
        $out['PLAY']=preg_replace('/\\\\$/is', '', $out['PLAY']);
-       $path=str_replace('/', "\\", utf2win($out['PLAY']));
+       $path = str_replace('/', "\\", Convert::Utf8ToCp1251($out['PLAY']));
        if (is_file($path)) {
         //play file
         $result=xbmc_request($ch, $terminal, 'Player.Open', array('item'=>array('file'=>$path)));

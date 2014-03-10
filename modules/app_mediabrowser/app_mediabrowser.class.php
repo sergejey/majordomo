@@ -276,7 +276,7 @@ function usual(&$out) {
    if(!$run_linux){
     $total=count($favorites);
     for($i=0;$i<$total;$i++) {
-     $favorites[$i]['PATH']=urlencode(utf2win($favorites[$i]['PATH']));
+     $favorites[$i]['PATH'] = urlencode(Convert::Utf8ToCp1251($favorites[$i]['PATH']));
     }
    }
    $out['FAVORITES']=$favorites;
@@ -293,8 +293,8 @@ function usual(&$out) {
       $out['MEDIA_PATH']=$path;
       $out['CURRENT_DIR']='./'.$folder;
   } else {
-      $out['MEDIA_PATH']=win2utf($path);
-      $out['CURRENT_DIR']=win2utf('./'.$folder);
+      $out['MEDIA_PATH'] = Convert::Cp1251ToUtf8($path);
+      $out['CURRENT_DIR'] = './' . Convert::Cp1251ToUtf8($folder);
   }
 
 
@@ -314,10 +314,11 @@ function usual(&$out) {
     $tmp_rec['TITLE']=$tmp[$i];
     $spath.='/'.$tmp_rec['TITLE'];
     $spath=str_replace('././', './', $spath);
-    if($run_linux)
-        $tmp_rec['PATH']=urlencode($spath.'/');
+    
+   if($run_linux)
+      $tmp_rec['PATH'] = urlencode($spath . '/');
     else 
-        $tmp_rec['PATH']=urlencode(utf2win($spath).'/');
+      $tmp_rec['PATH'] = urlencode(Convert::Utf8ToCp1251($spath) . '/');
 
 
     if ($tmp_rec['TITLE']=='.') {
@@ -347,10 +348,10 @@ function usual(&$out) {
           $file=str_replace('/', '\\\\', $file);
           $out['FULLFILE']=addslashes($path).$file;
       } else {
-          $out['FILE']=win2utf($file);
-          $out['BASEFILE']=win2utf(basename($file));
+         $out['FILE'] = Convert::Cp1251ToUtf8($file);
+         $out['BASEFILE'] = Convert::Cp1251ToUtf8(basename($file));
           $file=str_replace('/', '\\\\', $file);
-          $out['FULLFILE']=win2utf(addslashes($path).$file);
+          $out['FULLFILE'] = Convert::Cp1251ToUtf8(addslashes($path).$file);
       }
 
    $out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
@@ -423,8 +424,8 @@ function usual(&$out) {
         $rec['TITLE']=$rec['TITLE'];
         $rec['TITLE_SHORT']=$rec['TITLE_SHORT'];
     } else {
-        $rec['TITLE']=win2utf($rec['TITLE']);
-        $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
+       $rec['TITLE'] = Convert::Cp1251ToUtf8($rec['TITLE']);
+       $rec['TITLE_SHORT'] = Convert::Cp1251ToUtf8($rec['TITLE_SHORT']);
     }
 
 
@@ -478,12 +479,15 @@ function usual(&$out) {
      $rec['TITLE_SHORT']=$rec['TITLE'];
     }
 
-    if($run_linux){
-        $rec['TITLE']=$rec['TITLE'];
-        $rec['TITLE_SHORT']=$rec['TITLE_SHORT'];
-    } else {
-        $rec['TITLE']=win2utf($rec['TITLE']);
-        $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
+    if($run_linux)
+    {
+        $rec['TITLE'] = $rec['TITLE'];
+        $rec['TITLE_SHORT'] = $rec['TITLE_SHORT'];
+    } 
+    else 
+    {
+       $rec['TITLE'] = Convert::Cp1251ToUtf8($rec['TITLE']);
+       $rec['TITLE_SHORT'] = Convert::Cp1251ToUtf8($rec['TITLE_SHORT']);
     }
 
     $rec['REAL_PATH']=($folder.$file);

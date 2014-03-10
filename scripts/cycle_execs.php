@@ -31,7 +31,7 @@ while(1)
    $total=count($safe_execs);
    for($i = 0; $i < $total; $i++) 
    {
-      $command=utf2win($safe_execs[$i]['COMMAND']);
+      $command = Convert::Utf8ToCp1251($safe_execs[$i]['COMMAND']);
       SQLExec("DELETE FROM safe_execs WHERE ID='".$safe_execs[$i]['ID']."'");
       echo "Executing (exclusive): " . $command . "\n";
       DebMes("Executing (exclusive): " . $command);
@@ -42,7 +42,7 @@ while(1)
    $total = count($safe_execs);
    for($i=0;$i<$total;$i++) 
    {
-      $command = utf2win($safe_execs[$i]['COMMAND']);
+      $command = Convert::Utf8ToCp1251($safe_execs[$i]['COMMAND']);
       SQLExec("DELETE FROM safe_execs WHERE ID='" . $safe_execs[$i]['ID'] . "'");
       echo "Executing: " . $command . "\n";
       DebMes("Executing: " . $command);

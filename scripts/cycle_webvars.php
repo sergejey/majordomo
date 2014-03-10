@@ -20,17 +20,18 @@ include_once(DIR_MODULES . 'webvars/webvars.class.php');
 
 $webvars = new webvars();
 
-$checked_time=0;
+$checked_time = 0;
 
 while(1) 
 {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
-   if (time()-$checked_time>10) {
-    $checked_time=time();
-    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
-    // check all web vars
-    $webvars->checkAllVars(); 
+   if (time() - $checked_time > 10)
+   {
+      $checked_time = time();
+      setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+      // check all web vars
+      $webvars->checkAllVars(); 
    }
 
    if (file_exists('./reboot')) 

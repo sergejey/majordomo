@@ -67,9 +67,10 @@ try{
                 file_get_contents($url, false, $context);
                 $data = substr($data, $end+9);
             }
-            if (!$updated_time || (time() - $updated_time) > 1 * 60 * 60)
+         
+            //Log activity every hour
+            if (!$updated_time || (time() - $updated_time) > Convert::TimeHourToSec(1))
             {
-                //Log activity every hour
                 DebMes("Cycle running OK: " . basename(__FILE__));
                 $updated_time = time();
             }

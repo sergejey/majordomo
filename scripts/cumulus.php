@@ -10,7 +10,7 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
  
 include_once("./load_settings.php");
 
-$res='';
+$res = '';
 
 $known_fields = array(
                   'tempOutside'          => 2,
@@ -35,7 +35,7 @@ $known_fields = array(
 $data  = explode(' ', $_POST['data']);
 $total = count($data);
 
-for($i=0;$i<$total;$i++) 
+for($i = 0; $i < $total; $i++) 
 {
    $res .= 'data['.$i.'] = '. $data[$i] . "\n";
  }
@@ -91,17 +91,18 @@ foreach($known_fields as $k=>$v)
    $res .= $k . ' = ' . $data[(int)$v] . "\n";
    $old_value = getGlobal('ws.'.$k);
   
-   if ($old_value!=$data[(int)$v]) {
-     $updated[$k]=1;
-     setGlobal('ws.'.$k, $data[(int)$v]);
+   if ($old_value!=$data[(int)$v])
+   {
+      $updated[$k]=1;
+      setGlobal('ws.'.$k, $data[(int)$v]);
    } 
-   
 }
 
-if ($updated['pressure']) {
- setGlobal('ws.pressureRt', round(((float)getGlobal('ws.pressure'))/1.33), 1);
+if ($updated['pressure']) 
+{
+   $pressure = Convert::PressureHpaToMmhg(getGlobal('ws.pressure'), 1);
+   setGlobal('ws.pressureRt', $pressure);
 }
-
 
 echo "OK";
 

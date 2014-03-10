@@ -345,43 +345,45 @@ function usual(&$out) {
 *
 * @access public
 */
- function raiseEvent($name, $params=0, $parent=0) {
-
-  $p='';
-  $url=BASE_URL.'/objects/?object='.urlencode($this->object_title).'&op=m&m='.urlencode($name);
-  if (is_array($params)) {
-   foreach($params as $k=>$v) {
-    $p.=utf2win(' '.$k.':"'.$v.'"');
-    $url.='&'.urlencode($k).'='.urlencode($v);
+function raiseEvent($name, $params=0, $parent=0)
+{
+   $p = '';
+   $url = BASE_URL . '/objects/?object=' . urlencode($this->object_title) . '&op=m&m=' . urlencode($name);
+   if (is_array($params))
+   {
+      foreach($params as $k=>$v)
+      {
+         $p .= Convert::Utf8ToCp1251(' ' . $k . ':"' . $v . '"');
+         $url .= '&' . urlencode($k) . '=' . urlencode($v);
+      }
    }
-  }
-  //echo DOC_ROOT.'/obj.bat '.utf2win().'.'.$name.' '.$p."<br>";
-  //$cmd=(DOC_ROOT.'/obj.bat '.utf2win($this->object_title).'.'.$name.' '.$p);
-  //echo $url;
+   
+   //echo DOC_ROOT.'/obj.bat '.utf2win().'.'.$name.' '.$p."<br>";
+   //$cmd=(DOC_ROOT.'/obj.bat '.Convert::Utf8ToCp1251($this->object_title).'.'.$name.' '.$p);
+   //echo $url;
 
-$ch = curl_init();
+   $ch = curl_init();
 
-// set URL and other appropriate options
-curl_setopt($ch, CURLOPT_URL, $url);
-/*
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
-curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
-*/
-curl_setopt($ch, CURLOPT_HEADER, 0);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$data=curl_exec($ch);
-curl_close($ch);
+   // set URL and other appropriate options
+   curl_setopt($ch, CURLOPT_URL, $url);
 
-//$mh = curl_multi_init();
-//curl_multi_add_handle($mh,$ch);
-//curl_multi_exec($mh,$running);
+   /*
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
+   curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+   curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
+   */
+   curl_setopt($ch, CURLOPT_HEADER, 0);
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+   $data=curl_exec($ch);
+   curl_close($ch);
+
+   //$mh = curl_multi_init();
+   //curl_multi_add_handle($mh,$ch);
+   //curl_multi_exec($mh,$running);
 
   //popen("start /B ". $cmd, "r");
-
-  
- }
+}
 
 /**
 * Title
