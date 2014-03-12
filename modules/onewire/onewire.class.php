@@ -395,7 +395,8 @@ function usual(&$out) {
    for($i=0;$i<$total;$i++) {
     $prec=$properties[$i];
     $old_value=$prec['VALUE'];
-    $value=$ow->get($prec['PATH'],OWNET_MSG_READ,false);
+    //$value=$ow->get($prec['PATH'],OWNET_MSG_READ,false);
+    $value=$ow->get('/uncached'.$prec['PATH'], OWNET_MSG_READ,false);
 
     if (!$value) {
      $device='/'.$prec['UDID'];

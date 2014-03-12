@@ -121,7 +121,7 @@
    */
 
 
-   $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+   $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
    $total_values=count($history);
    
    if ($_GET['op']=='timed') {
@@ -143,7 +143,8 @@
    if ($_GET['op']=='log') {
     $history=array_reverse($history);
     for($i=0;$i<$total_values;$i++) {
-      echo date('Y-m-d H:i:s', $history[$i]['UNX']);
+      //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
+      echo $history[$i]['ADDED'];
       echo ": <b>";
       echo htmlspecialchars($history[$i]['VALUE'])."</b><br>";
     }

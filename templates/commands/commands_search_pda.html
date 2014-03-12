@@ -319,6 +319,13 @@
    }
   [#endif TYPE#]
 
+  [#if TYPE=="selectbox"#]
+   if ($('#menu[#ID#]_v').val()!=data) {
+    $('#menu[#ID#]_v').val(data);
+    $('#menu[#ID#]_v').selectmenu("refresh");
+   }
+  [#endif#]
+
   [#if TYPE=="switch"#]
    if ($('#menu[#ID#]_v').val()!=data) {
     $('#menu[#ID#]_v').val(data);
@@ -343,7 +350,7 @@
   var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
 
-  [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox"#]
+  [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox" || TYPE=="selectbox"#]
   var url2="?ajax=1&op=get_value";
   AJAXRequest(url2+'&item_id=[#ID#]', 'updateValue[#ID#]_Ready', '');
   [#endif TYPE#]
