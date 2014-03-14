@@ -43,9 +43,13 @@
    $qry.=" AND PARENT_ID='".$this->parent_item."'";
    $parent_rec=SQLSelectOne("SELECT * FROM commands WHERE ID='".$this->parent_item."'");
    $parent_rec['TITLE']=processTitle($parent_rec['TITLE'], $this);
+   if ($paret_rec['SUB_PRELOAD']) {
+    $parent_rec['ID']=$parent_rec['PARENT_ID'];
+   }
    foreach($parent_rec as $k=>$v) {
     $out['PARENT_'.$k]=$v;
    }
+
   } elseif ($this->id) {
    $qry.=" AND ID=".(int)$this->id;
    $out['ONE_ITEM_MODE']=1;

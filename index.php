@@ -158,14 +158,25 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/is', $result, $m))
    {
       $result=str_replace($m[0][$i], getGlobal($m[1][$i].'.'.$m[2][$i]), $result);
    }
-   /*
-   } elseif (preg_match_all('/%(\w{3,}?)%/is', $result, $m)) {
-    $total=count($m[0]);
-    for($i=0;$i<$total;$i++) {
-     $result=str_replace($m[0][$i], getGlobal($m[1][$i]), $result);
-    }
-   */
 }
+
+if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/is', $result, $m)) 
+{
+   $total = count($m[0]);
+   $seen=array();
+   for($i=0;$i<$total;$i++) 
+   {
+      $var=$m[1][$i].'.'.$m[2][$i];
+      $interval=(int)$m[2][$i]*1000;
+      if (!$interval) {
+       $interval=10000;
+      }
+      $id='var_'.preg_replace('/\W/', '_', $var).$seen[$var];
+      $seen[$var]++;
+      $result=str_replace($m[0][$i], '<span id="'.$id.'">...</span><script language="javascript">ajaxGetGlobal("'.$var.'", "'.$id.'", '.$interval.');</script>', $result);
+   }
+}
+
 // END GLOBALS
 
 // BEGIN: language constants

@@ -48,6 +48,28 @@ function getParams() {
 
    Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+
+   if ($this->action=='ajaxgetglobal') {
+    header ("HTTP/1.0: 200 OK\n");
+    header ('Content-Type: text/html; charset=utf-8');
+    $res['DATA']=getGlobal($_GET['var']);
+    echo json_encode($res);
+    global $db;
+    $db->Disconnect();
+    exit;
+   }
+
+   if ($this->action=='ajaxsetglobal') {
+    header ("HTTP/1.0: 200 OK\n");
+    header ('Content-Type: text/html; charset=utf-8');
+    setGlobal($_GET['var'], $_GET['value']);
+    $res['DATA']='OK';
+    echo json_encode($res);
+    global $db;
+    $db->Disconnect();
+    exit;
+   }
+   
    if ($this->action=='getlatestnote') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');

@@ -71,6 +71,40 @@ jQuery.fn.center = function () {
    $('#usersWindow').center();
    return false;
  }
+
+ function ajaxGetGlobal(varname, id, timeout) {
+  var url="?";
+  url+='&action=ajaxgetglobal&var='+encodeURIComponent(varname);
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+    if (obj.DATA) {
+      $('#'+id).html(obj.DATA);
+    }
+   });
+  if (timeout>0) {
+   window.setTimeout('ajaxGetGlobal("'+varname+'", "'+id+'", '+timeout+');', timeout);
+  }
+  return false;
+ }
+
+
+ function ajaxSetGlobal(varname, value) {
+  var url="?";
+  url+='&action=ajaxsetglobal&var='+encodeURIComponent(varname)+'&value='+encodeURIComponent(value);
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+    if (obj.DATA) {
+      //
+    }
+   });
+  return false;
+ }
+
+
 </script>
 
 [#if POPUP="1"#]
@@ -137,6 +171,8 @@ jQuery.fn.center = function () {
   return false;
  }
 
+
+
  /*
  function getLatestNoteMP3Received(id, data) {
     document.getElementById("sound").innerHTML="<embed src='"+data+"' hidden=true autostart=true loop=false>";
@@ -174,6 +210,7 @@ jQuery.fn.center = function () {
  function addEventProcessed(id, data) {
   return false;
  }
+
 
  // ----------------------------------------------------------------------
  function addEvent(type, win, details, terminal_to, user_to) {
