@@ -409,19 +409,19 @@
   $new_time=time();
 
   $text=($text);
-  if (preg_match('/через (\d+) секунд.?/is', $text, $m)) {
+  if (preg_match('/через (\d+) секунд.?/isu', $text, $m)) {
    $new_time=time()+$m[1];
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
-  } elseif (preg_match('/через (\d+) минут.?/is', $text, $m)) {
+  } elseif (preg_match('/через (\d+) минут.?/isu', $text, $m)) {
    $new_time=time()+$m[1]*60;
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
-  } elseif (preg_match('/через (\d+) час.?/is', $text, $m)) {
+  } elseif (preg_match('/через (\d+) час.?/isu', $text, $m)) {
    $new_time=time()+$m[1]*60*60;
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
-  } elseif (preg_match('/в (\d+):(\d+)/is', $text, $m)) {
+  } elseif (preg_match('/в (\d+):(\d+)/isu', $text, $m)) {
    $new_time=mktime($m[1], $m[2], 0, date('m'), date('d'), date('Y'));
    $newText=trim(str_replace($m[0], '', $text));
    $found=1;
