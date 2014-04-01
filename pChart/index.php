@@ -302,7 +302,7 @@
 
 
   if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
-   //$Test->drawGraphAreaGradient(132,153,172,50,TARGET_BACKGROUND);  
+   $Test->drawGraphAreaGradient(240,240,240,25,TARGET_BACKGROUND);
   } else {
    $Test->drawGraphAreaGradient(132,153,172,50,TARGET_BACKGROUND);  
   }

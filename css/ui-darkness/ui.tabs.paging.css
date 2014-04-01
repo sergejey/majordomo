@@ -1,0 +1,71 @@
+.ui-state-default.ui-tabs-paging-prev.ui-tabs-paging-disabled {
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-prev.ui-tabs-paging-disabled:hover {
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-prev.ui-tabs-paging-disabled  a {
+    color: #eeeeee;
+    cursor: default;
+}
+
+li.ui-state-default.ui-tabs-paging-prev {
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+li.ui-state-default.ui-tabs-paging-prev:hover {
+    background: #0078a3;
+    border-top: 1px solid #59b4d4;
+    border-left: 1px solid #59b4d4;
+    border-right: 1px solid #59b4d4;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+// ========== next
+
+.ui-state-default.ui-tabs-paging-next.ui-tabs-paging-disabled {
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-next.ui-tabs-paging-disabled:hover {
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-next.ui-tabs-paging-disabled a {
+    color: #eeeeee;
+    cursor: default;
+}
+
+li.ui-state-default.ui-tabs-paging-next {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+li.ui-state-default.ui-tabs-paging-next:hover {
+    background: #0078a3;
+    border-top: 1px solid #59b4d4;
+    border-left: 1px solid #59b4d4;
+    border-right: 1px solid #59b4d4;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+} 

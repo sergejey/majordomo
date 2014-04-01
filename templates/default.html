@@ -1,6 +1,8 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
+<script type="text/javascript" src="<#ROOTHTML#>js/ui.tabs.paging.js"></script>
+
 <table width="100%" border="0">
  <tr>
   <td valign="top" colspan=3>
@@ -173,6 +175,7 @@ $(document).ready(function() {
          }
          [#end LAYOUTS#]
         }});
+        $('#tabs').tabs('paging', {cycle:false, follow:false});
 
 
 

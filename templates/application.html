@@ -15,6 +15,7 @@
 [#endif#]
 <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
 <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/jquery.gritter.css" />
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
@@ -71,39 +72,6 @@ jQuery.fn.center = function () {
    $('#usersWindow').center();
    return false;
  }
-
- function ajaxGetGlobal(varname, id, timeout) {
-  var url="?";
-  url+='&action=ajaxgetglobal&var='+encodeURIComponent(varname);
-  $.ajax({
-   url: url
-  }).done(function(data) { 
-   var obj=jQuery.parseJSON(data);
-    if (obj.DATA) {
-      $('#'+id).html(obj.DATA);
-    }
-   });
-  if (timeout>0) {
-   window.setTimeout('ajaxGetGlobal("'+varname+'", "'+id+'", '+timeout+');', timeout);
-  }
-  return false;
- }
-
-
- function ajaxSetGlobal(varname, value) {
-  var url="?";
-  url+='&action=ajaxsetglobal&var='+encodeURIComponent(varname)+'&value='+encodeURIComponent(value);
-  $.ajax({
-   url: url
-  }).done(function(data) { 
-   var obj=jQuery.parseJSON(data);
-    if (obj.DATA) {
-      //
-    }
-   });
-  return false;
- }
-
 
 </script>
 

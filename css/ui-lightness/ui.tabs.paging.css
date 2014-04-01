@@ -1,0 +1,77 @@
+.ui-state-default.ui-tabs-paging-prev.ui-tabs-paging-disabled {
+    background: #eeeeee;
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-prev.ui-tabs-paging-disabled:hover {
+    background: #eeeeee;
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-prev.ui-tabs-paging-disabled  a {
+    color: #eeeeee;
+    cursor: default;
+}
+
+li.ui-state-default.ui-tabs-paging-prev {
+    background: #eeeeee; 
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+li.ui-state-default.ui-tabs-paging-prev:hover {
+    background: #FDF5CF;
+    border-top: 1px solid #FBCB09;
+    border-left: 1px solid #FBCB09;
+    border-right: 1px solid #FBCB09;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+// ========== next
+
+.ui-state-default.ui-tabs-paging-next.ui-tabs-paging-disabled {
+    background: #eeeeee; 
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-next.ui-tabs-paging-disabled:hover {
+    background: #eeeeee; 
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px;
+}
+
+.ui-state-default.ui-tabs-paging-next.ui-tabs-paging-disabled a {
+    color: #eeeeee;
+    cursor: default;
+}
+
+li.ui-state-default.ui-tabs-paging-next {
+    background: #eeeeee;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+li.ui-state-default.ui-tabs-paging-next:hover {
+    background: #FDF5CF;
+    border-top: 1px solid #FBCB09;
+    border-left: 1px solid #FBCB09;
+    border-right: 1px solid #FBCB09;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+} 

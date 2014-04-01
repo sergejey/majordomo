@@ -220,5 +220,37 @@ function startFlashing(block_id) {
   return false;
  }
 
+ function ajaxGetGlobal(varname, id, timeout) {
+  var url="/";
+  url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+    if (obj.DATA) {
+      $('#'+id).html(obj.DATA);
+    }
+   });
+  if (timeout>0) {
+   window.setTimeout('ajaxGetGlobal("'+varname+'", "'+id+'", '+timeout+');', timeout);
+  }
+  return false;
+ }
+
+
+ function ajaxSetGlobal(varname, value) {
+  var url="/";
+  url+='?md=application&action=ajaxsetglobal&var='+encodeURIComponent(varname)+'&value='+encodeURIComponent(value);
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+   var obj=jQuery.parseJSON(data);
+    if (obj.DATA) {
+      //
+    }
+   });
+  return false;
+ }
+
 
 // </AJAX>
