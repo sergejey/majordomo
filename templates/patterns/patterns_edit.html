@@ -114,6 +114,7 @@
   <div id='context_details'[#if IS_CONTEXT!="1"#] style="display:none"[#endif#]>
 
    <table border="0">
+
     <tr>
      <td align="right"><#LANG_TIMEOUT#>:</td>
      <td valign="top"><input type="text" name="timeout" value="[#TIMEOUT#]"> (set 0 to use default)</td>
@@ -129,6 +130,7 @@
   </select></td>
     </tr>
 
+
  <tr>
   <td valign="top" align="right"><#LANG_TIMEOUT_CODE#>:</td>
   <td valign="top">
@@ -137,6 +139,12 @@
  [#endif TIMEOUT_SCRIPT_ERRORS#]  
   <textarea name="timeout_script"  rows=6 cols=100 class="field span6">[#TIMEOUT_SCRIPT#]</textarea></td>
  </tr>
+
+    <tr>
+     <td valign="top">&nbsp;</td>
+     <td valign="top"><input type="checkbox" name="is_common_context" value="1"[#if IS_COMMON_CONTEXT="1"#] checked[#endif#]> <#LANG_GLOBAL_CONTEXT#></td>
+    </tr>
+
 
    </table>
 

@@ -853,7 +853,7 @@ $dictionary=array(
 'TIMEOUT'=>'Время ожидания команды',
 'SET_CONTEXT_TIMEOUT'=>'По истечении времени переключить в',
 'TIMEOUT_CODE'=>'По истечении времени выполнить',
-
+'GLOBAL_CONTEXT'=>'глобальный контекст',
 
 'TEST'=>'test'
 

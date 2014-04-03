@@ -862,6 +862,7 @@ $dictionary=array(
 'TIMEOUT'=>'Timeout',
 'SET_CONTEXT_TIMEOUT'=>'Switch to on timeout',
 'TIMEOUT_CODE'=>'Execute on timeout',
+'GLOBAL_CONTEXT'=>'Global context',
 
 'TEST'=>'test'
 

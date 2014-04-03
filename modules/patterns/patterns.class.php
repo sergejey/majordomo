@@ -178,11 +178,42 @@ function usual(&$out) {
 
   $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY ID");
   $total=count($patterns);
+  $res=0;
   for($i=0;$i<$total;$i++) {
-   $this->checkPattern($patterns[$i]['ID']);
+   $matched=$this->checkPattern($patterns[$i]['ID']);
+   if ($matched) {
+    $res=1;
+   }
   }
+
+  if (!$res) {
+   $patterns=SQLSelect("SELECT patterns.* FROM patterns LEFT JOIN patterns AS p2 ON p2.ID=patterns.PARENT_ID WHERE p2.IS_COMMON_CONTEXT=1 AND patterns.PARENT_ID!=0 ORDER BY patterns.ID");
+   $total=count($patterns);
+   $res=0;
+   for($i=0;$i<$total;$i++) {
+    $this->checkPattern($patterns[$i]['ID']);
+   }
+  }
+
  }
 
+
+
+  function getAvailableActions() {
+   $current_context=context_getcurrent();
+   $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' AND IS_COMMON_CONTEXT!=1 ORDER BY ID");
+   $total=count($patterns);
+   if (!$total) {
+    return 0;
+   }
+   $res=array();
+   for($i=0;$i<$total;$i++) {
+    $res[]=$patterns[$i]['TITLE'];
+   }
+
+   return $res;
+
+  }
 
 /**
 * Title
@@ -194,6 +225,8 @@ function usual(&$out) {
  function checkPattern($id) {
   global $session;
   global $pattern_matched;
+
+
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
 
   if (!$rec['PATTERN']) {
@@ -241,10 +274,18 @@ function usual(&$out) {
 
     if (checkAccess('pattern', $rec['ID'])) {
 
+     $is_common=0;
+     if ($rec['PARENT_ID']) {
+      $parent_rec=SQLSelectOne("SELECT IS_COMMON_CONTEXT FROM patterns WHERE ID='".$rec['PARENT_ID']."'");
+      $is_common=(int)$parent_rec['IS_COMMON_CONTEXT'];
+     }
+
      if ($rec['IS_CONTEXT']) {
       context_activate($rec['ID']);
-     } else {
+     } elseif ($rec['MATCHED_CONTEXT_ID']) {
       context_activate($rec['MATCHED_CONTEXT_ID']);
+     } elseif (!$is_common) {
+      context_activate(0);
      }
 
      $rec['LOG']=date('Y-m-d H:i:s').' Pattern matched'."\n".$rec['LOG'];
@@ -272,6 +313,14 @@ function usual(&$out) {
    }
 
   }
+
+
+ if ($pattern_matched) {
+  return 1;
+ } else {
+  return 0;
+ }
+
 
  }
 
@@ -345,6 +394,7 @@ patterns - Patterns
  patterns: TIME_LIMIT int(10) NOT NULL DEFAULT '0'
  patterns: EXECUTED int(10) NOT NULL DEFAULT '0'
  patterns: IS_CONTEXT int(3) NOT NULL DEFAULT '0'
+ patterns: IS_COMMON_CONTEXT int(3) NOT NULL DEFAULT '0'
  patterns: MATCHED_CONTEXT_ID int(10) NOT NULL DEFAULT '0'
  patterns: TIMEOUT int(10) NOT NULL DEFAULT '0'
  patterns: TIMEOUT_CONTEXT_ID int(10) NOT NULL DEFAULT '0'

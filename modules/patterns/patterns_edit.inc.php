@@ -63,6 +63,9 @@
    global $is_context;
    $rec['IS_CONTEXT']=(int)$is_context;
 
+   global $is_common_context;
+   $rec['IS_COMMON_CONTEXT']=(int)$is_common_context;
+
    global $matched_context_id;
    $rec['MATCHED_CONTEXT_ID']=(int)$matched_context_id;
 
