@@ -552,6 +552,12 @@ function updateDisplay($id) {
     }
     $old_value=$prec['VALUE'];
     $value=$ow->get($properties[$ip],OWNET_MSG_READ,false);
+
+    if (is_null($value)) {
+     $ow->get($device,OWNET_MSG_DIR,false); // hack. for some reason it didn't work correct without it on some devices
+     $value=$ow->get($properties[$ip],OWNET_MSG_READ,false);
+    }
+
     if (!is_null($value) && $old_value!=$value) {
      // value updated
      $changed=1;
