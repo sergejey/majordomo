@@ -50,7 +50,7 @@
    $rec['RUN_PERIODICALLY']=(int)$run_periodically;
 
    global $run_days;
-   $rec['RUN_DAYS']=implode(',', $run_days);
+   $rec['RUN_DAYS']=@implode(',', $run_days);
 
 
    global $run_minutes;

@@ -66,7 +66,7 @@ Please select items to be sent:
  <div class="controls">
  <label>
  <input type="checkbox" name="send_menu" value="1"[#if SEND_MENU="1"#] checked[#endif#]> 
- Menu</label>
+ <#LANG_MODULE_CONTROL_MENU#></label>
  </div>
 </div>
 
@@ -82,7 +82,15 @@ Please select items to be sent:
  <div class="controls">
  <label>
  <input type="checkbox" name="send_scripts" value="1"[#if SEND_SCRIPTS="1"#] checked[#endif#]> 
- Scripts</label>
+ <#LANG_MODULE_SCRIPTS#></label>
+ </div>
+</div>
+
+<div class="control-group">
+ <div class="controls">
+ <label>
+ <input type="checkbox" name="send_patterns" value="1"[#if SEND_PATTERNS="1"#] checked[#endif#]> 
+ <#LANG_MODULE_PATTERNS#></label>
  </div>
 </div>
 

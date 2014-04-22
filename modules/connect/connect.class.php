@@ -127,6 +127,7 @@ function admin(&$out) {
  $out['SEND_MENU']=$this->config['SEND_MENU'];
  $out['SEND_OBJECTS']=$this->config['SEND_OBJECTS'];
  $out['SEND_SCRIPTS']=$this->config['SEND_SCRIPTS'];
+ $out['SEND_PATTERNS']=$this->config['SEND_PATTERNS'];
 
 
  if ($this->view_mode=='update_settings') {
@@ -213,10 +214,12 @@ function admin(&$out) {
   global $send_menu;
   global $send_objects;
   global $send_scripts;
+  global $send_patterns;
 
   $this->config['SEND_MENU']=(int)$send_menu;
   $this->config['SEND_OBJECTS']=(int)$send_objects;
   $this->config['SEND_SCRIPTS']=(int)$send_scripts;
+  $this->config['SEND_PATTERNS']=(int)$send_patterns;
   $this->saveConfig();
 
   $data=array();
@@ -251,6 +254,11 @@ function admin(&$out) {
    // objects scripts
    $data['SCRIPTS']=SQLSelect("SELECT * FROM scripts");
    $data['SCRIPT_CATEGORIES']=SQLSelect("SELECT * FROM script_categories");
+  }
+
+  if ($this->config['SEND_PATTERNS']) {
+   // patterns
+   $data['PATTERNS']=SQLSelect("SELECT * FROM patterns");
   }
 
   // POST TO SERVER
