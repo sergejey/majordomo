@@ -42,8 +42,7 @@
    }
    $session->data['patterns_sort']=$sortby_patterns;
   }
-  if (!$sortby_patterns) $sortby_patterns="TITLE";
-  $out['SORTBY']=$sortby_patterns;
+  $sortby_patterns="PRIORITY DESC, TITLE";
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM patterns WHERE $qry ORDER BY ".$sortby_patterns);
   if ($res[0]['ID']) {

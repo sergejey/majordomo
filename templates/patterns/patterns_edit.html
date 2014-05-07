@@ -52,6 +52,17 @@
   <input type="text" name="title" value="[#TITLE#]" class="span6">
  </td>
 </tr>
+
+<tr>
+ <td align=right>
+ <#LANG_PRIORITY#>:
+ </td>
+ <td>
+  <input type="text" name="priority" value="[#PRIORITY#]" class="span1">
+  <label><input type="checkbox" name="is_last" value="1"[#if IS_LAST="1"#] checked[#endif#]> <#LANG_LAST_RULE#></label>
+ </td>
+</tr>
+
 <!-- PATTERN (text) -->
 <tr>
  <td valign=top align=right>

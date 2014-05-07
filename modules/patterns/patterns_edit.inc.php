@@ -72,6 +72,13 @@
    global $timeout;
    $rec['TIMEOUT']=(int)$timeout;
 
+   global $is_last;
+   $rec['IS_LAST']=(int)$is_last;
+
+   global $priority;
+   $rec['PRIORITY']=(int)$priority;
+
+
    global $timeout_context_id;
    $rec['TIMEOUT_CONTEXT_ID']=(int)$timeout_context_id;
 

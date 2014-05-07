@@ -176,13 +176,16 @@ function usual(&$out) {
 
   $current_context=context_getcurrent();
 
-  $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY ID");
+  $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY PRIORITY DESC, TITLE");
   $total=count($patterns);
   $res=0;
   for($i=0;$i<$total;$i++) {
    $matched=$this->checkPattern($patterns[$i]['ID']);
    if ($matched) {
     $res=1;
+    if ($patterns[$i]['IS_LAST']) {
+     break;
+    }
    }
   }
 
@@ -400,6 +403,8 @@ patterns - Patterns
  patterns: TIMEOUT_CONTEXT_ID int(10) NOT NULL DEFAULT '0'
  patterns: TIMEOUT_SCRIPT text
  patterns: PARENT_ID int(10) NOT NULL DEFAULT '0'
+ patterns: IS_LAST int(3) NOT NULL DEFAULT '0'
+ patterns: PRIORITY int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }

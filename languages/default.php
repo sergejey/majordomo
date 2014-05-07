@@ -863,6 +863,7 @@ $dictionary=array(
 'SET_CONTEXT_TIMEOUT'=>'Switch to on timeout',
 'TIMEOUT_CODE'=>'Execute on timeout',
 'GLOBAL_CONTEXT'=>'Global context',
+'LAST_RULE'=>'do not check other patterns when matched',
 
 'TEST'=>'test'
 
