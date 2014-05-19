@@ -129,33 +129,36 @@ while(1) {
      echo $last_echo." Listening...\n";
     }
 
-   if (time()-$menu_sent_time>30*60) {
-    echo "Updating full menu\n";
-    $menu_sent_time=time();
-    $connect->sendMenu();
-    $commands=SQLSelect("SELECT * FROM commands");
-    $total=count($commands);
-    for($i=0;$i<$total;$i++) {
-     $cmd_values[$commands[$i]['ID']]=$commands[$i]['CUR_VALUE'];
-     $cmd_titles[$commands[$i]['ID']]=$commands[$i]['RENDER_TITLE'];
-     $cmd_data[$commands[$i]['ID']]=$commands[$i]['RENDER_DATA'];
-     }
+   if (time() - $menu_sent_time > Convert::TimeMinToSec(30))
+   {
+      echo "Updating full menu\n";
+      $menu_sent_time = time();
+      $connect->sendMenu();
+      $commands=SQLSelect("SELECT * FROM commands");
+      $total=count($commands);
+      for($i = 0; $i < $total; $i++)
+      {
+         $cmd_values[$commands[$i]['ID']]=$commands[$i]['CUR_VALUE'];
+         $cmd_titles[$commands[$i]['ID']]=$commands[$i]['RENDER_TITLE'];
+         $cmd_data[$commands[$i]['ID']]=$commands[$i]['RENDER_DATA'];
+      }
    }
 
-   if (time()-$checked_time>10) {
-    $checked_time=time();
-
-
-    // update data
-    $commands=SQLSelect("SELECT * FROM commands WHERE AUTO_UPDATE>0 AND (NOW()-RENDER_UPDATED)>AUTO_UPDATE");
-    $total=count($commands);
-    for($i=0;$i<$total;$i++) {
-     echo date('Y-m-d H:i:s ')."Updating auto update item (id ".$commands[$i]['ID']." time ".$commands[$i]['AUTO_UPDATE']."): ".$commands[$i]['TITLE']."\n";
-     $commands[$i]['RENDER_TITLE']=processTitle($commands[$i]['TITLE']);
-     $commands[$i]['RENDER_DATA']=processTitle($commands[$i]['DATA']);
-     $commands[$i]['RENDER_UPDATED']=date('Y-m-d H:i:s');
-     SQLUpdate('commands', $commands[$i]);
-    }
+   if (time() - $checked_time > 10)
+   {
+      $checked_time = time();
+      // update data
+      $commands=SQLSelect("SELECT * FROM commands WHERE AUTO_UPDATE>0 AND (NOW()-RENDER_UPDATED)>AUTO_UPDATE");
+      $total=count($commands);
+      
+      for($i=0;$i<$total;$i++) 
+      {
+         echo date('Y-m-d H:i:s ')."Updating auto update item (id ".$commands[$i]['ID']." time ".$commands[$i]['AUTO_UPDATE']."): ".$commands[$i]['TITLE']."\n";
+         $commands[$i]['RENDER_TITLE']=processTitle($commands[$i]['TITLE']);
+         $commands[$i]['RENDER_DATA']=processTitle($commands[$i]['DATA']);
+         $commands[$i]['RENDER_UPDATED']=date('Y-m-d H:i:s');
+         SQLUpdate('commands', $commands[$i]);
+      }
 
     // sending changes if any
     $commands=SQLSelect("SELECT * FROM commands");

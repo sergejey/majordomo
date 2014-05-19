@@ -71,26 +71,31 @@ if (IsSet($_REQUEST['latitude']))
   
    $rec['ID']=SQLInsert('gpslog', $rec);
 
-   if ($device['USER_ID']) {
-    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".$device['USER_ID']."'");
-    if ($user['LINKED_OBJECT']) {
-     setGlobal($user['LINKED_OBJECT'].'.Coordinates', $rec['LAT'].','.$rec['LON']);
-     setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdated', date('H:i'));
-     setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdatedTimestamp', time());
-     setGlobal($user['LINKED_OBJECT'].'.BattLevel', $rec['BATTLEVEL']);
-     setGlobal($user['LINKED_OBJECT'].'.Charging', $rec['CHARGING']);
-     $prev_log=SQLSelectOne("SELECT * FROM gpslog WHERE ID!='".$rec['ID']."' AND DEVICE_ID='".$device['ID']."' ORDER BY ID DESC LIMIT 1");
-     if ($prev_log['ID']) {
-      $distance=calculateTheDistance ($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
-      if ($distance>100) {
-       //we're moving
-       //DebMes("Distance: ".$distance. " (point A: ".$rec['LAT'].":".$rec['LON']." point B: ".$prev_log['LAT'].":".$prev_log['LON'].")");
-       setGlobal($user['LINKED_OBJECT'].'.isMoving', 1);
-       clearTimeOut($user['LINKED_OBJECT'].'_moving');
-       setTimeOut($user['LINKED_OBJECT'].'_moving', "setGlobal('".$user['LINKED_OBJECT'].".isMoving', 0);", 15*60); // stopped after 15 minutes of inactivity
+   if ($device['USER_ID'])
+   {
+      $user=SQLSelectOne("SELECT * FROM users WHERE ID='".$device['USER_ID']."'");
+      if ($user['LINKED_OBJECT']) 
+      {
+         setGlobal($user['LINKED_OBJECT'].'.Coordinates', $rec['LAT'].','.$rec['LON']);
+         setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdated', date('H:i'));
+         setGlobal($user['LINKED_OBJECT'].'.CoordinatesUpdatedTimestamp', time());
+         setGlobal($user['LINKED_OBJECT'].'.BattLevel', $rec['BATTLEVEL']);
+         setGlobal($user['LINKED_OBJECT'].'.Charging', $rec['CHARGING']);
+         $prev_log=SQLSelectOne("SELECT * FROM gpslog WHERE ID!='".$rec['ID']."' AND DEVICE_ID='".$device['ID']."' ORDER BY ID DESC LIMIT 1");
+     
+         if ($prev_log['ID'])
+         {
+            $distance=calculateTheDistance ($rec['LAT'], $rec['LON'], $prev_log['LAT'], $prev_log['LON']);
+            if ($distance>100)
+            {
+               //we're moving
+               //DebMes("Distance: ".$distance. " (point A: ".$rec['LAT'].":".$rec['LON']." point B: ".$prev_log['LAT'].":".$prev_log['LON'].")");
+               setGlobal($user['LINKED_OBJECT'].'.isMoving', 1);
+               clearTimeOut($user['LINKED_OBJECT'].'_moving');
+               setTimeOut($user['LINKED_OBJECT'] . '_moving', "setGlobal('" . $user['LINKED_OBJECT'] . ".isMoving', 0);", Convert::TimeMinToSec(15)); // stopped after 15 minutes of inactivity
+            }
+         }
       }
-     }
-    }
    }
 
    // checking locations
@@ -226,7 +231,7 @@ $db->Disconnect();
 
 endMeasure('TOTAL'); // end calculation of execution time
 
-// ������ �����
+// Calculate distance
 function calculateTheDistance ($latA, $lonA, $latB, $lonB) 
 {
    define('EARTH_RADIUS', 6372795);

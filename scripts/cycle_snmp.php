@@ -20,10 +20,10 @@ include_once(DIR_MODULES . 'snmpdevices/snmpdevices.class.php');
 
 $snmpdevices = new snmpdevices();
 
-$tmp=SQLSelectOne("SELECT ID FROM snmpdevices LIMIT 1");
-if (!$tmp['ID']) {
- exit; // no devices added -- no need to run this cycle
-}
+$tmp = SQLSelectOne("SELECT ID FROM snmpdevices LIMIT 1");
+
+if (!$tmp['ID'])
+   exit; // no devices added -- no need to run this cycle
 
 while(1) 
 {

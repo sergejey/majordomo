@@ -17,12 +17,12 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
-$ctl=new control_modules();
+$ctl = new control_modules();
 
-if (!Defined('SETTINGS_BLUETOOTH_CYCLE') || SETTINGS_BLUETOOTH_CYCLE==0) 
+if (!Defined('SETTINGS_BLUETOOTH_CYCLE') || SETTINGS_BLUETOOTH_CYCLE == 0) 
    exit;
 
-$bt_devices=array();
+$bt_devices = array();
  
 //windows file
 $devices_file = SERVER_ROOT."/apps/bluetoothview/devices.txt";
@@ -51,7 +51,7 @@ while(1)
          if (file_exists($devices_file)) 
          {
             $data = (LoadFile($devices_file));   
-            sleep(5);	
+            sleep(5);
          }
       }
       else 
@@ -61,21 +61,21 @@ while(1)
          passthru($bts_cmd); 
          $bt_scan_arr = explode("\n", ob_get_contents()); 
          ob_end_clean();   
-	
-         $lines=array();
+   
+         $lines = array();
          
          for ($i = 0; $i < count($bt_scan_arr) - 1; $i++)
          {
             $btstr      = explode("\t", $bt_scan_arr[$i]);
             $btaddr[$i] = $btstr[1];
             $btname[$i] = rtrim($btstr[2]);
-	         $lines[]    = $i . "\t" . $btname[$i] . "\t" . $btaddr[$i];
+            $lines[]    = $i . "\t" . $btname[$i] . "\t" . $btaddr[$i];
          }
          
-	      $data=implode("\n",$lines);
+         $data=implode("\n",$lines);
       }
       
-      $last_scan=time();
+      $last_scan = time();
       
       if ($data) 
       {

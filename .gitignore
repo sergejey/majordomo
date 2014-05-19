@@ -5,3 +5,6 @@ modules/*/installed
 cached/*
 debmes/*.txt
 reboot
+*.phpproj
+*.suo
+*.sln

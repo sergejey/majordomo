@@ -92,8 +92,9 @@ if ($sink->attached)
          
             for($i=0;$i<$total;$i++) 
             {
-               echo "Sending to " . $users[$i]['SKYPE'] . ": " . convert_cyr_string(iconv('UTF-8', 'WINDOWS-1251', $latest_message), 'w', 'd') . "\n";
-               $skype->SendMessage(trim($users[$i]['SKYPE']), iconv('UTF-8', 'WINDOWS-1251', $latest_message));
+               $msg = Convert::Utf8ToCp1251($latest_message);
+               echo "Sending to " . $users[$i]['SKYPE'] . ": " . convert_cyr_string($msg, 'w', 'd') . "\n";
+               $skype->SendMessage(trim($users[$i]['SKYPE']), $msg);
             }
          }
       }
@@ -175,7 +176,7 @@ class _ISkypeEvents
             
                $user_id=$user['ID'];
 
-               $qrys  = explode(' '.DEVIDER.' ', iconv('WINDOWS-1251', 'UTF-8', $pMessage->Body));
+               $qrys  = explode(' '.DEVIDER.' ', Convert::Utf8ToCp1251($pMessage->Body));
                $total = count($qrys);
          
                for($i=0;$i<$total;$i++) 

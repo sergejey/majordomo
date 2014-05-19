@@ -33,7 +33,7 @@ else
 }
 
 // 60 minutes cache expiration time
-$cache_expire  = 60*60; 
+$cache_expire  = Convert::TimeMinToSec(60); 
 $cached_result = '';
 
 $req_url = $_SERVER['REQUEST_URI'];
