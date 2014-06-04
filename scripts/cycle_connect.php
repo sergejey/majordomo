@@ -189,7 +189,7 @@ while(1) {
     }
    }
 
-   if (file_exists('./reboot')) 
+   if (file_exists('./reboot') || $_GET['onetime']) 
    {
       $db->Disconnect();
       exit;

@@ -35,7 +35,7 @@ while(1)
    $onw->updateDevices(); 
    $onw->updateDisplays();
   
-   if (file_exists('./reboot')) 
+   if (file_exists('./reboot') || $_GET['onetime']) 
    {
       $db->Disconnect();
       exit;

@@ -34,7 +34,7 @@ while(1)
     $watchfolders->checkAllFolders(); 
    }
 
-   if (file_exists('./reboot')) 
+   if (file_exists('./reboot') || $_GET['onetime']) 
    {
       $db->Disconnect();
       exit;

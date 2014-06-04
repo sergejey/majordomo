@@ -151,11 +151,11 @@
 <table  border="0" align="center">
  <tr>
   <td valign="top">
-<div style="width:<#SETTINGS_SCENES_WIDTH#>px">
+<div[#if "<#TOTAL#>"!="1"#] style="width:<#SETTINGS_SCENES_WIDTH#>px"[#endif#]>
 <div id="slider">
-<ul>
+[#if "<#TOTAL#>"!="1"#]<ul>[#endif#]
 [#begin RESULT#]
-<li id='scene_[#ID#]'>
+[#if "<#TOTAL#>"!="1"#]<li id='scene_[#ID#]'>[#endif#]
 [#if BACKGROUND!=""#]
  <div id="scene_background_[#ID#]" style="position:relative;">
  [#begin ELEMENTS#]
@@ -173,9 +173,9 @@
  <img src="[#BACKGROUND#]" border="0">
  </div>
 [#endif#]
- </li>
+ [#if "<#TOTAL#>"!="1"#]</li>[#endif#]
 [#end RESULT#]
-</ul>
+[#if "<#TOTAL#>"!="1"#]</ul>[#endif#]
 </div>
 </div>
 </td>

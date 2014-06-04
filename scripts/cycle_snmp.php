@@ -33,7 +33,7 @@ while(1)
    // check all web vars
    $snmpdevices->readAll(); 
 
-   if (file_exists('./reboot')) 
+   if (file_exists('./reboot') || $_GET['onetime']) 
    {
       $db->Disconnect();
       exit;

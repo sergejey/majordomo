@@ -31,7 +31,7 @@ while(1)
    runScheduledJobs();
    $sc->checkScheduledScripts();
 
-   if (file_exists('./reboot')) 
+   if (file_exists('./reboot') || $_GET['onetime']) 
    {
       $db->Disconnect();
       exit;

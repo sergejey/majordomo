@@ -74,7 +74,7 @@ try{
                 $updated_time = time();
             }
             usleep($uSleep);
-        }while(!file_exists('./reboot'));
+        }while(!file_exists('./reboot') || $_GET['onetime']);
     }else{
         DebMes("Not open device ".end($tty).": " . basename(__FILE__));
     }
