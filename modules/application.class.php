@@ -125,7 +125,7 @@ function getParams() {
     exit;
    }
 
-   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_TTS_GOOGLE') || !defined('SETTINGS_GROWL_ENABLE')) {
+   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_TTS_GOOGLE') || !defined('SETTINGS_GROWL_ENABLE') || !defined('SETTINGS_HOOK_BEFORE_SAY')) {
     $this->action='first_start';
    }
 

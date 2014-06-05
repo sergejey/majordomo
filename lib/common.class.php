@@ -36,6 +36,10 @@
         
         $rec['ID'] = SQLInsert('shouts', $rec);
 
+        if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY!='') {
+         eval(SETTINGS_HOOK_BEFORE_SAY);
+        }
+
         if ($level >= (int)getGlobal('minMsgLevel'))
         { 
                 //$voicemode!='off' && 
@@ -75,6 +79,11 @@
                 $pt=new patterns();
                 $pt->checkAllPatterns();
         }
+
+        if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY!='') {
+         eval(SETTINGS_HOOK_AFTER_SAY);
+        }
+
 
         if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
                 include_once(ROOT.'lib/pushover/pushover.inc.php');

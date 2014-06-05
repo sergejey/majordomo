@@ -865,6 +865,9 @@ $dictionary=array(
 'GLOBAL_CONTEXT'=>'Global context',
 'LAST_RULE'=>'do not check other patterns when matched',
 
+'SETTINGS_SECTION_'=>'General',
+'SETTINGS_SECTION_HOOK'=>'Hooks',
+
 'TEST'=>'test'
 
 

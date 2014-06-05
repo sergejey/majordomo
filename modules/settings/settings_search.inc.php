@@ -3,12 +3,41 @@
 * @version 0.1 (auto-set)
 */
 
+  global $filter_name;
+  if ($filter_name) {
+   $this->filter_name=$filter_name;
+  }
+
+
+ $sections=array();
+ $filters=array('', 'scenes', 'calendar', 'growl', 'twitter', 'pushover', 'hook');
+ $total=count($filters);
+ for($i=0;$i<$total;$i++) {
+  $rec=array();
+  $rec['FILTER']=$filters[$i];
+  if ($rec['FILTER']==$this->filter_name) {
+   $rec['SELECTED']=1;
+  }
+  if (defined('LANG_SETTINGS_SECTION_'.strtoupper($rec['FILTER']))) {
+   $rec['TITLE']=constant('LANG_SETTINGS_SECTION_'.strtoupper($rec['FILTER']));
+  } else {
+   $rec['TITLE']=ucfirst($rec['FILTER']);
+  }
+  $sections[]=$rec;
+  if ($filters[$i]) {
+   $words[]=$filters[$i];
+  }
+ }
+ $out['SECTIONS']=$sections;
+
+
  global $session;
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
   $qry="1";
   // search filters
+
   
   // search filters
   if ($this->filter_name!='') {
@@ -22,7 +51,7 @@
   }
 
   if (!$this->filter_name) {
-   $words=array('HP', 'PROFILE');
+   //$words=array('HP', 'PROFILE');
    foreach($words as $wrd) {
     $qry.=" AND NAME NOT LIKE '%".DBSafe($wrd)."%'";
    }
@@ -102,7 +131,7 @@
     $growl->registerApplication('http://connect.smartliving.ru/img/logo.png');
     $growl->notify('Test!');
    }
-   $this->redirect("?updated=1");
+   $this->redirect("?updated=1&filter_name=".$this->filter_name);
   }
 
 ?>

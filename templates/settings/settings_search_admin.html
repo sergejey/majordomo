@@ -1,6 +1,13 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
+
+[#begin SECTIONS#]
+[#if FILTER!=""#]|[#endif#]
+<a href="?filter_name=[#FILTER#]">[#if SELECTED="1"#]<b>[#endif#][#TITLE#]</b></a>
+[#end SECTIONS#]
+<br/>&nbsp;
+
 [#if FILTER_NAME=""#]
 <h2><#LANG_GENERAL_SETTINGS#></h2>
 [#endif#]
@@ -18,11 +25,11 @@
 
 <script language="javascript">
 $(function() {
-	$(".edit-notes").click(function() {
-		var id = $(this).data('id');
-		$('#notes_' + id).show();
-		$(this).remove();
-	});
+        $(".edit-notes").click(function() {
+                var id = $(this).data('id');
+                $('#notes_' + id).show();
+                $(this).remove();
+        });
 });
 </script>
 
@@ -33,55 +40,55 @@ $(function() {
 <hr>
 [#endif#]
 <div class="control-group">
-	<label class="control-label">[#TITLE#]</label>
-	<div class="controls">
-		[#if TYPE="text"#]
-		<input type="text" name="value_[#ID#]" value="[#VALUE#]" size=50>
-		[#endif TYPE#]
+        <label class="control-label">[#TITLE#]</label>
+        <div class="controls">
+                [#if TYPE="text"#]
+                <input type="text" name="value_[#ID#]" value="[#VALUE#]" size=50>
+                [#endif TYPE#]
 
-		[#if TYPE="onoff"#]
-		<label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>On</label>
-		<label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Off</label>
-		[#endif TYPE#]
+                [#if TYPE="onoff"#]
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>On</label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Off</label>
+                [#endif TYPE#]
 
-		[#if TYPE="yesno"#]
-		<label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Yes</label>
-		<label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>No</label>
-		[#endif TYPE#]
+                [#if TYPE="yesno"#]
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Yes</label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>No</label>
+                [#endif TYPE#]
 
-		[#if TYPE="enable"#]
-		<label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Enable</label>
-		<label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>
-		[#endif TYPE#]
-		<p class="help-block">
-		[#if TYPE="text"#]
-		[#if DEFAULTVALUE!=""#]
-		<#LANG_DEFAULT_VALUE#>: [#DEFAULTVALUE#]
-		[#endif#]
-		[#endif TYPE#]
-		[#if TYPE="onoff"#]
-		<#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]On[#else#]Off[#endif#]
-		[#endif TYPE#]
-		[#if TYPE="yesno"#]
-		[#if DEFAULTVALUE!=""#]
-		<#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Yes[#else#]No[#endif#]
-		[#endif#]
-		[#endif TYPE#]
-		[#if TYPE="enable"#]
-		[#if DEFAULTVALUE!=""#]
-		<#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Enable[#else#]Disable[#endif#]
-		[#endif#]
-		[#endif TYPE#]
-		</p>
-		[#if URL_TITLE!=""#]<p class="help-block"><a href="[#URL#]" target=_blank>[#URL_TITLE#]</a></p>[#endif#]
-		[#if NOTES!=""#]
-		<p class="help-block edit-notes" data-id="[#ID#]"><acronym title="Click to edit">[#NOTES#]</acronym></p>
-		<div id="notes_[#ID#]" style="display:none;">
-		<p><i>Edit configuration help tip</i></p>
-		<textarea name="notes_[#ID#]" cols=45 rows=3 id="edit_notes_area_[#ID#]">[#NOTES#]</textarea>
-		[#endif#]
-		</div>
-	</div>
+                [#if TYPE="enable"#]
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Enable</label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>
+                [#endif TYPE#]
+                <p class="help-block">
+                [#if TYPE="text"#]
+                [#if DEFAULTVALUE!=""#]
+                <#LANG_DEFAULT_VALUE#>: [#DEFAULTVALUE#]
+                [#endif#]
+                [#endif TYPE#]
+                [#if TYPE="onoff"#]
+                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]On[#else#]Off[#endif#]
+                [#endif TYPE#]
+                [#if TYPE="yesno"#]
+                [#if DEFAULTVALUE!=""#]
+                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Yes[#else#]No[#endif#]
+                [#endif#]
+                [#endif TYPE#]
+                [#if TYPE="enable"#]
+                [#if DEFAULTVALUE!=""#]
+                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Enable[#else#]Disable[#endif#]
+                [#endif#]
+                [#endif TYPE#]
+                </p>
+                [#if URL_TITLE!=""#]<p class="help-block"><a href="[#URL#]" target=_blank>[#URL_TITLE#]</a></p>[#endif#]
+                [#if NOTES!=""#]
+                <p class="help-block edit-notes" data-id="[#ID#]"><acronym title="Click to edit">[#NOTES#]</acronym></p>
+                <div id="notes_[#ID#]" style="display:none;">
+                <p><i>Edit configuration help tip</i></p>
+                <textarea name="notes_[#ID#]" cols=45 rows=3 id="edit_notes_area_[#ID#]">[#NOTES#]</textarea>
+                [#endif#]
+                </div>
+        </div>
 </div>
   <!--#
   <br>&lt;#SETTINGS_[#NAME#]#&gt;
@@ -90,9 +97,10 @@ $(function() {
 [#end RESULT#]
 
 <div class="form-actions">
-	<button class="btn" type="submit" name="submit"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
-	<a class="btn" href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
-	<input type="hidden" name="mode" value="update">
+        <button class="btn" type="submit" name="submit"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+        <a class="btn" href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
+        <input type="hidden" name="mode" value="update">
+        <input type="hidden" name="filter_name" value="<#FILTER_NAME#>">
 </div>
 </form>
 <!-- / search results (list) -->

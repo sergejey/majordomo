@@ -236,7 +236,25 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'text',
     'DEFAULT'=>'1',
     'PRIORITY'=>'40'
+   ),
+
+    array(
+    'NAME'=>'HOOK_BEFORE_SAY',
+    'TITLE'=>'Before SAY (code)', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'30'
+   ), 
+
+    array(
+    'NAME'=>'HOOK_AFTER_SAY',
+    'TITLE'=>'After SAY (code)', 
+    'TYPE'=>'text',
+    'DEFAULT'=>'',
+    'PRIORITY'=>'29'
    )
+
+
 
    );
 

@@ -857,6 +857,9 @@ $dictionary=array(
 
 'LAST_RULE'=>'не проверять другие шаблоны при совпадении',
 
+'SETTINGS_SECTION_'=>'Общие',
+'SETTINGS_SECTION_HOOK'=>'Обработчики',
+
 'TEST'=>'test'
 
 
