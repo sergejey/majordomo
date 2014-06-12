@@ -73,7 +73,6 @@
     $states[$i]['ELEMENT_ID']=$element['ID'];
     SQLInsert('elm_states', $states[$i]);
    }
-
    $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab);
   }
 
@@ -101,6 +100,16 @@
     $state_rec=SQLSelectOne("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element_id."' ORDER BY ID");
     $state_id=$state_rec['ID'];
    }
+
+
+    global $state_clone;
+    if ($state_clone && $state_rec['ID']) {
+     $state_rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$state_id."'");
+     $state_rec['TITLE'].=' copy';
+     unset($state_rec['ID']);
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&view_mode2=".$view_mode2."&element_id=".$element_id."&state_id=".$state_rec['ID']);
+    }
 
 
    if ($this->mode=='update') {
@@ -174,6 +183,7 @@
     global $switch_scene_new;
     global $state_id;
     global $state_delete;
+    global $state_clone;
 
     if ($state_delete && $state_rec['ID']) {
 

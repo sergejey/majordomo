@@ -139,12 +139,35 @@ function admin(&$out) {
   if ($this->view_mode=='edit_webvars') {
    $this->edit_webvars($out, $this->id);
   }
+
+  if ($this->view_mode=='clone') {
+   $this->clone_webvar($this->id);
+  }
+
   if ($this->view_mode=='delete_webvars') {
    $this->delete_webvars($this->id);
    $this->redirect("?");
   }
  }
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function clone_webvar($id) {
+  $rec=SQLSelectOne("SELECT * FROM webvars WHERE ID='".(int)$id."'");
+  $rec['TITLE'].=' (copy)';
+  unset($rec['ID']);
+  $rec['LOG']='';
+  $rec['LATEST_VALUE']='';
+  $rec['ID']=SQLInsert('webvars', $rec);
+  $this->redirect("?view_mode=edit_webvars&id=".$rec['ID']);
+ }
+
 /**
 * FrontEnd
 *

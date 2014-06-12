@@ -139,6 +139,7 @@
 <h4><#LANG_ADD_NEW_STATE#></h4>
 [#else STATE_ID#]
 <a class="btn btn-mini" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=new"><i class="icon-plus-sign"></i> <#LANG_ADD_NEW_STATE#></a>
+<a class="btn btn-mini" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_clone=1&state_id=[#STATE_ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
 [#endif STATE_ID#]
 
 <div class="control-group">

@@ -131,12 +131,34 @@ function admin(&$out) {
   if ($this->view_mode=='edit_patterns') {
    $this->edit_patterns($out, $this->id);
   }
+
+  if ($this->view_mode=='clone' && $this->id) {
+   $this->clone_pattern($this->id);
+  }
+
   if ($this->view_mode=='delete_patterns') {
    $this->delete_patterns($this->id);
    $this->redirect("?");
   }
  }
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function clone_pattern($id) {
+  $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
+  $rec['TITLE'].=' (copy)';
+  unset($rec['ID']);
+  $rec['LOG']='';
+  $rec['ID']=SQLInsert('patterns', $rec);
+  $this->redirect("?view_mode=edit_patterns&id=".$rec['ID']);
+ }
+
 /**
 * FrontEnd
 *

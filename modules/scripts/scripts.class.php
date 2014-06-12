@@ -168,6 +168,10 @@ function admin(&$out) {
    //$this->redirect("?");
   }
 
+  if ($this->view_mode=='clone' && $this->id) {
+   $this->clone_script($this->id);
+  }
+
   if ($this->view_mode=='edit_scripts') {
    $this->edit_scripts($out, $this->id);
   }
@@ -195,6 +199,23 @@ function admin(&$out) {
  }
 
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function clone_script($id) {
+  $rec=SQLSelectOne("SELECT * FROM scripts WHERE ID='".(int)$id."'");
+  $rec['TITLE'].='_copy';
+  unset($rec['ID']);
+  unset($rec['EXECUTED']);
+  $rec['ID']=SQLInsert('scripts', $rec);
+  $this->redirect("?view_mode=edit_scripts&id=".$rec['ID']);
+ }
+
 /**
 * FrontEnd
 *

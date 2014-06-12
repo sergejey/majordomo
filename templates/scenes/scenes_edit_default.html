@@ -134,6 +134,11 @@ $(function() {
 <button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
 [#endif ID#]
 <a class="btn" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+
+ [#if ID!=""#]
+ &nbsp;
+ <a class="btn" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ [#endif ID#]
 </div>
 
 <input type="hidden" name="id" value="<#ID#>">

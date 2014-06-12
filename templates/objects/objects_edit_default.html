@@ -76,12 +76,17 @@
 <tr>
  <td colspan=2 align=center>
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ <input type="submit" name="subm" class="btn" value="<#LANG_UPDATE#>">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input type="submit" name="subm" class="btn" value="<#LANG_ADD#>">
  [#endif ID#]
  &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
+ <a href="?" class="btn"><#LANG_CANCEL#></a>
+
+ [#if ID!=""#]
+ <a class="btn" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ [#endif#]
+
  </td>
 </tr>
 <input type="hidden" name="id" value="<#ID#>">

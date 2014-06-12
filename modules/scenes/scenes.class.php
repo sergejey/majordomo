@@ -185,7 +185,46 @@ function admin(&$out) {
    $this->redirect("?data_source=elm_states");
   }
  }
+
+ if ($this->view_mode=='clone' && $this->id) {
+  $this->clone_scene($this->id);
+ }
+
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function clone_scene($id) {
+  $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'");
+  $rec['TITLE'].=' (copy)';
+  unset($rec['ID']);
+  $rec['ID']=SQLInsert('scenes', $rec);
+
+  //elements
+  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$id."'");
+  $total=count($elements);
+  for($i=0;$i<$total;$i++) {
+   $elm_id=$elements[$i]['ID'];
+   unset($elements[$i]['ID']);
+   $elements[$i]['SCENE_ID']=$rec['ID'];
+   $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elm_id."'");
+   $totalE=count($states);
+   for($iE=0;$iE<$totalE;$iE++) {
+    unset($states[$iE]['ID']);
+    $states[$iE]['ELEMENT_ID']=$elements[$i]['ID'];
+    SQLInsert('elm_states', $states[$iE]);
+   }
+  }
+
+  $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
+ }
+
 /**
 * FrontEnd
 *

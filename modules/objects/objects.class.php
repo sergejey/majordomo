@@ -124,6 +124,12 @@ function admin(&$out) {
   if ($this->view_mode=='' || $this->view_mode=='search_objects') {
    $this->search_objects($out);
   }
+
+  if ($this->view_mode=='clone' && $this->id) {
+   $this->clone_object($this->id);
+  }
+
+
   if ($this->view_mode=='edit_objects') {
    $this->edit_objects($out, $this->id);
   }
@@ -133,6 +139,63 @@ function admin(&$out) {
   }
  }
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function clone_object($id) {
+
+  $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".$id."'");
+  $rec['TITLE']=$rec['TITLE'].' (copy)';
+  unset($rec['ID']);
+  $rec['ID']=SQLInsert('objects', $rec);
+
+  $seen_pvalues=array();
+  $properties=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='".$id."'");
+  $total=count($properties);
+  for($i=0;$i<$total;$i++) {
+   $p_id=$properties[$i]['ID'];
+   unset($properties[$i]['ID']);
+   $properties[$i]['OBJECT_ID']=$rec['ID'];
+   $properties[$i]['ID']=SQLInsert('properties', $properties[$i]);
+   $p_value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$p_id."'");
+   if ($p_value['ID']) {
+    $seen_pvalues[$p_value['ID']]=1;
+    unset($p_value['ID']);
+    $p_value['PROPERTY_ID']=$properties[$i]['ID'];
+    $p_value['OBJECT_ID']=$rec['ID'];
+    SQLInsert('pvalues', $p_value);
+   }
+  }
+
+  $pvalues=SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID='".$id."'");
+  $total=count($properties);
+  for($i=0;$i<$total;$i++) {
+   $p_id=$pvalues[$i]['ID'];
+   if ($seen_pvalues[$p_id]) {
+    continue;
+   }
+   unset($pvalues[$i]['ID']);
+   $pvalues[$i]['OBJECT_ID']=$rec['ID'];
+   $pvalues[$i]['ID']=SQLInsert('pvalues', $pvalues[$i]);
+  }
+
+  $methods=SQLSelect("SELECT * FROM methods WHERE OBJECT_ID='".$id."'");
+  $total=count($methods);
+  for($i=0;$i<$total;$i++) {
+   unset($methods[$i]['ID']);
+   $methods[$i]['OBJECT_ID']=$rec['ID'];
+   $methods[$i]['ID']=SQLInsert('methods', $methods[$i]);
+  }
+
+  $this->redirect("?view_mode=edit_objects&id=".$rec['ID']);
+
+ }
+
 /**
 * FrontEnd
 *
