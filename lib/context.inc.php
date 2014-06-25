@@ -13,17 +13,23 @@
 
   function context_getcurrent() {
    $user_id=context_getuser();
-   $user=SQLSelectOne("SELECT ID, ACTIVE_CONTEXT_ID FROM users WHERE ID='".(int)$user_id."'");
+   $user=SQLSelectOne("SELECT ID, ACTIVE_CONTEXT_ID, ACTIVE_CONTEXT_EXTERNAL FROM users WHERE ID='".(int)$user_id."'");
    if (!$user['ID']) {
     return 0;
    }
-   return (int)$user['ACTIVE_CONTEXT_ID'];
+   if ($user['ACTIVE_CONTEXT_EXTERNAL']) {
+    return 'ext'.(int)$user['ACTIVE_CONTEXT_ID'];
+   } else {
+    return (int)$user['ACTIVE_CONTEXT_ID'];
+   }
   }
 
   function context_clear() {
    $user_id=context_getuser();
    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".(int)$user_id."'");
    $user['ACTIVE_CONTEXT_ID']=0;
+   $user['ACTIVE_CONTEXT_EXTERNAL']=0;
+   $user['ACTIVE_CONTEXT_UPDATED']=date('Y-m-d H:i:s');
    SQLUpdate('users', $user);
   }
 
@@ -31,6 +37,7 @@
    $user_id=context_getuser();
    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".(int)$user_id."'");
    $user['ACTIVE_CONTEXT_ID']=$id;
+   $user['ACTIVE_CONTEXT_EXTERNAL']=0;
    $user['ACTIVE_CONTEXT_UPDATED']=date('Y-m-d H:i:s');
    SQLUpdate('users', $user);
    if ($id) {
@@ -42,6 +49,40 @@
     }
     setTimeOut('user_'.$user_id.'_contexttimeout', 'context_timeout('.$context['ID'].', '.$user_id.');', $timeout);
    } else {
+    context_clear();
+    clearTimeOut('user_'.$user_id.'_contexttimeout');
+   }
+  }
+
+  function context_activate_ext($id, $timeout=0, $timeout_code='', $timeout_context_id=0) {
+   $user_id=context_getuser();
+   $user=SQLSelectOne("SELECT * FROM users WHERE ID='".(int)$user_id."'");
+   $user['ACTIVE_CONTEXT_ID']=$id;
+   if ($id) {
+    $user['ACTIVE_CONTEXT_EXTERNAL']=1;
+   } else {
+    $user['ACTIVE_CONTEXT_EXTERNAL']=0;
+   }
+   $user['ACTIVE_CONTEXT_UPDATED']=date('Y-m-d H:i:s');
+   DebMes("setting external context: ".$id);
+   SQLUpdate('users', $user);
+   if ($id) {
+    //execute pattern
+    if (!$timeout) {
+     $timeout=60;
+    }
+    $ev='';
+    if ($timeout_code) {
+     $ev.=$timeout_code;
+    }
+    if ($timeout_context_id) {
+     $ev.="context_activate_ext(".(int)$timeout_context_id.");";
+    } else {
+     $ev.="context_clear();";
+    }
+    setTimeOut('user_'.$user_id.'_contexttimeout', $ev, $timeout);
+   } else {
+    context_clear();
     clearTimeOut('user_'.$user_id.'_contexttimeout');
    }
   }

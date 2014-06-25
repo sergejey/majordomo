@@ -193,32 +193,49 @@ function usual(&$out) {
 *
 * @access public
 */
- function checkAllPatterns() {
+ function checkAllPatterns($from_user_id=0) {
   global $session;
 
   $current_context=context_getcurrent();
 
-  $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY PRIORITY DESC, TITLE");
-  $total=count($patterns);
-  $res=0;
-  for($i=0;$i<$total;$i++) {
-   $matched=$this->checkPattern($patterns[$i]['ID']);
-   if ($matched) {
-    $res=1;
-    if ($patterns[$i]['IS_LAST']) {
-     break;
+  //DebMes("current context:".$current_context);
+
+  if ($from_user_id && preg_match('/^ext(\d+)/', $current_context, $m)) {
+
+   $res=$this->checkExtPatterns($m[1]);
+
+  } else {
+
+   $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY PRIORITY DESC, TITLE");
+   $total=count($patterns);
+   $res=0;
+   for($i=0;$i<$total;$i++) {
+    $matched=$this->checkPattern($patterns[$i]['ID']);
+    if ($matched) {
+     $res=1;
+     if ($patterns[$i]['IS_LAST']) {
+      break;
+     }
     }
    }
+
   }
+
+
 
   if (!$res) {
    $patterns=SQLSelect("SELECT patterns.* FROM patterns LEFT JOIN patterns AS p2 ON p2.ID=patterns.PARENT_ID WHERE p2.IS_COMMON_CONTEXT=1 AND patterns.PARENT_ID!=0 ORDER BY patterns.ID");
    $total=count($patterns);
    $res=0;
    for($i=0;$i<$total;$i++) {
-    $this->checkPattern($patterns[$i]['ID']);
+    $res=$this->checkPattern($patterns[$i]['ID']);
+   }
+   if (!$res && $from_user_id) {
+    $res=$this->checkExtPatterns(0);
    }
   }
+
+  return $res;
 
  }
 
@@ -226,6 +243,12 @@ function usual(&$out) {
 
   function getAvailableActions() {
    $current_context=context_getcurrent();
+
+   if (preg_match('/^ext(\d+)/', $current_context, $m)) {
+    $res=$this->getAvailableActionsExt($m[1]);
+    return $res;
+   }
+
    $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' AND IS_COMMON_CONTEXT!=1 ORDER BY ID");
    $total=count($patterns);
    if (!$total) {
@@ -235,9 +258,155 @@ function usual(&$out) {
    for($i=0;$i<$total;$i++) {
     $res[]=$patterns[$i]['TITLE'];
    }
-
    return $res;
 
+  }
+
+
+  function checkExtPatterns($ext_context_id) {
+
+   $message=SQLSelectOne("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT 1");
+   $phrase=trim($message['MESSAGE']);
+   if (!$phrase) {
+    return 0;
+   }
+
+   $this->getConnectDetails();
+   if ($this->connect_username && $this->connect_password) {
+    //check external patterns
+    $data=array();
+    $data['mode']='check';
+    $data['context_id']=$ext_context_id;
+    $data['phrase']=$phrase;
+
+    // POST TO SERVER
+    $url = 'http://connect.smartliving.ru/patterns/';
+    $fields = array(
+     'data' => urlencode(serialize($data))
+    );
+    //DebMes("Sending data: ".serialize($data));
+
+    //url-ify the data for the POST
+    foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+    rtrim($fields_string, '&');
+
+    //open connection
+    $ch = curl_init();
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL, $url);
+    curl_setopt($ch,CURLOPT_POST, count($fields));
+    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+    curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+    curl_setopt($ch,CURLOPT_USERPWD, $this->connect_username.":".$this->connect_password); 
+    //execute post
+    $result = curl_exec($ch);
+    //close connection
+    curl_close($ch);
+
+    DebMes("External context response: ".$result);
+
+    $data=unserialize($result);
+
+    if ($data['MATCHED_CONTEXT']) {
+
+     if (is_array($data['PHRASES'])) {
+      foreach($data['PHRASES'] as $details) {
+       say($details['PHRASE'], (int)$details['LEVEL']);
+      }
+     }
+
+     $data['TIMEOUT_CODE']='';
+     if (is_array($data['TIMEOUT_PHRASES'])) {
+      foreach($data['TIMEOUT_PHRASES'] as $details) {
+       $data['TIMEOUT_CODE'].='say("'.$details['PHRASE'].'", "'.(int)$details['LEVEL'].'");';
+      }
+     }
+
+     if (is_array($data['URLS'])) {
+      foreach($data['URLS'] as $url) {
+       $rec=array();
+       $rec['EVENT_TYPE']='openurl';
+       $rec['WINDOW']='alice';
+       $rec['TERMINAL_TO']='*';
+       $rec['ADDED']=date('Y-m-d H:i:s');
+       $rec['EXPIRE']=date('Y-m-d H:i:s', time()+10);
+       $rec['DETAILS']=$url;
+       $rec['ID']=SQLInsert('events', $rec);
+      }
+     }
+
+     context_activate_ext($data['NEW_CONTEXT'], (int)$data['TIMEOUT'], $data['TIMEOUT_CODE'], (int)$data['TIMEOUT_CONTEXT_ID']);
+
+     return $data['MATCHED_CONTEXT'];
+
+    }
+
+   }
+   return 0;
+  }
+
+
+  function getAvailableActionsExt($ext_context_id) {
+   $this->getConnectDetails();  
+   if ($this->connect_username && $this->connect_password) {
+    //check external actions
+    $data=array();
+    $data['mode']='actions';
+    $data['context_id']=$ext_context_id;
+
+    // POST TO SERVER
+    $url = 'http://connect.smartliving.ru/patterns/';
+    $fields = array(
+     'data' => urlencode(serialize($data))
+    );
+
+    //url-ify the data for the POST
+    foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+    rtrim($fields_string, '&');
+
+    //open connection
+    $ch = curl_init();
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL, $url);
+    curl_setopt($ch,CURLOPT_POST, count($fields));
+    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+    curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+    curl_setopt($ch,CURLOPT_USERPWD, $this->connect_username.":".$this->connect_password); 
+    //execute post
+    $result = curl_exec($ch);
+    //close connection
+    curl_close($ch);
+    $data=unserialize($result);
+
+    DebMes("External actions response: ".$result);
+
+    if (is_array($data['ACTIONS'])) {
+     return $data['ACTIONS'];
+    }
+   }
+   return 0;
+  }
+
+
+  function getConnectDetails() {
+   if (!$this->connect_username && !$this->connect_password) {
+    include_once(DIR_MODULES.'connect/connect.class.php');
+    $cn=new connect();
+    $cn->getConfig();
+    if ($cn->config['CONNECT_USERNAME'] && $cn->config['CONNECT_PASSWORD']) {
+     $this->connect_username=$cn->config['CONNECT_USERNAME'];
+     $this->connect_password=$cn->config['CONNECT_PASSWORD'];
+    } else {
+     $this->connect_username='anonymous';
+     $this->connect_password='';
+    }
+   }
   }
 
 /**

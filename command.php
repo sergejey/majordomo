@@ -54,9 +54,10 @@ if ($qry!='')
       
       SQLInsert('shouts', $rec);
 
-      $pt->checkAllPatterns();
-      
-      processCommand($qrys[$i]);
+      $res=$pt->checkAllPatterns($rec['MEMBER_ID']);
+      if (!$res) {
+       processCommand($qrys[$i]);
+      }
    }
 
    //Header("Location:command.php");exit;

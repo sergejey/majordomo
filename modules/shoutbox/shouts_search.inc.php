@@ -38,8 +38,10 @@
    $pt=new patterns();
 
 
-   $pt->checkAllPatterns();
-   processCommand($msg);
+   $res=$pt->checkAllPatterns($rec['MEMBER_ID']);
+   if (!$res) {
+    processCommand($msg);
+   }
    $getdata=1;
   }
 

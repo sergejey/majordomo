@@ -281,6 +281,10 @@ function getParams() {
 
    if ($session->data['MY_MEMBER']) {
     $out['MY_MEMBER']=$session->data['MY_MEMBER'];
+    $tmp=SQLSelectOne("SELECT ID FROM users WHERE ID='".(int)$out['MY_MEMBER']."' AND ACTIVE_CONTEXT_ID!=0 AND TIMESTAMPDIFF(SECOND, ACTIVE_CONTEXT_UPDATED, NOW())>600");
+    if ($tmp['ID']) {
+     SQLExec("UPDAE users SET ACTIVE_CONTEXT_ID=0, ACTIVE_CONTEXT_EXTERNAL=0 WHERE ID='".$tmp['ID']."'");
+    }
    }
 
    $out['AJAX']=$this->ajax;

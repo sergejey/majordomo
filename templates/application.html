@@ -98,6 +98,9 @@ jQuery.fn.center = function () {
      if (event_type=='newwindow') {
       openTWindow(event_window, 'Event '+event_id, event_details, 500, 500);
      }
+     if (event_type=='openurl') {
+      openNewTab(event_window, event_details);      
+     }
 
      if (event_type=='maximize') {
       if ($(event_window)!=null) {
@@ -115,8 +118,8 @@ jQuery.fn.center = function () {
   if (eventLatest!=data) {
      eventLatest=data;
      eventState='processing';
-     var elem=document.getElementById('debugInfo');
-     elem.innerHTML=elem.innerHTML+'<br>'+data;
+     //var elem=document.getElementById('debugInfo');
+     //elem.innerHTML=elem.innerHTML+'<br>'+data;
      // processing
      var d=data.split('|');
      var event_id=d[0];
@@ -193,6 +196,8 @@ jQuery.fn.center = function () {
   //alert(winTitle+' '+pageURL);
   //$("#tabs").tabs("add", pageURL, winTitle);
   iFrameHeight=$(window).height()-110;
+  //alert(pageURL);
+  //alert(iFrameHeight);
   $("#tablast_title").html(winTitle);
   $("#tabs-last").html('<iframe src="'+pageURL+'" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
   $("#tabs").tabs("select", totalLayouts);
