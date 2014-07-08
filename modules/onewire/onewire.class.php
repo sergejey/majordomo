@@ -421,7 +421,7 @@ function usual(&$out) {
 
 
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-      sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
+      sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array('owproperties'=>'0'));
      }
 
      $changed_values=array();

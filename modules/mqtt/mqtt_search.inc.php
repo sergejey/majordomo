@@ -49,7 +49,8 @@
    }
    $session->data['mqtt_sort']=$sortby_mqtt;
   }
-  if (!$sortby_mqtt) $sortby_mqtt="ID DESC";
+  //if (!$sortby_mqtt) $sortby_mqtt="ID DESC";
+  $sortby_mqtt="UPDATED DESC";
   $out['SORTBY']=$sortby_mqtt;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM mqtt WHERE $qry ORDER BY ".$sortby_mqtt);

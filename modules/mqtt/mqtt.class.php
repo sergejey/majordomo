@@ -156,7 +156,7 @@ function run() {
   $mqtt_client->close();
 
   if ($set_linked && $rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
-   setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $value, 1);
+   setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $value, array('mqtt'=>'0'));
   }
 
  }
