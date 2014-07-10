@@ -605,7 +605,7 @@
    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-   if ($username!='') {
+   if ($username!='' || $password!='') {
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
     curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password); 
    }
