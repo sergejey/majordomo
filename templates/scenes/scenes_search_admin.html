@@ -36,6 +36,17 @@
 </div>
 [#endif RESULT#]
 <!-- / results -->
+<hr size=1>
+<form action="?" enctype="multipart/form-data" method="post">
+<table border="0">
+ <tr>
+  <td valign="top"><#LANG_IMPORT#>:</td>
+  <td valign="top"><input type="file" name="file" enctype="multipart/form-data"></td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_IMPORT#>"></td>
+ </tr>
+</table>
+<input type="hidden" name="view_mode" value="import">
+</form>
 
 <hr size="1">
 [#module name="settings" action="admin" filter_name="SCENES"#]

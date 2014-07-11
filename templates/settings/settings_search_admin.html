@@ -1,12 +1,13 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-
+[#if FILTER_SET=""#]
 [#begin SECTIONS#]
 [#if FILTER!=""#]|[#endif#]
 <a href="?filter_name=[#FILTER#]">[#if SELECTED="1"#]<b>[#endif#][#TITLE#]</b></a>
 [#end SECTIONS#]
 <br/>&nbsp;
+[#endif FILTER_SET#]
 
 [#if FILTER_NAME=""#]
 <h2><#LANG_GENERAL_SETTINGS#></h2>

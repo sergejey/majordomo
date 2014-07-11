@@ -189,8 +189,125 @@ function admin(&$out) {
  if ($this->view_mode=='clone' && $this->id) {
   $this->clone_scene($this->id);
  }
+ if ($this->view_mode=='export' && $this->id) {
+  $this->export_scene($this->id);
+ }
+
+ if ($this->view_mode=='import') {
+  $this->import_scene();
+ }
+
+
 
 }
+
+ /**
+ * Title
+ *
+ * Description
+ *
+ * @access public
+ */
+ function export_scene($id) {
+  $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'"); 
+  //elements
+  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$id."'");
+  $total=count($elements);
+  for($i=0;$i<$total;$i++) {
+   $elm_id=$elements[$i]['ID'];
+   unset($elements[$i]['ID']);
+   unset($elements[$i]['SCENE_ID']);
+   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elm_id."'");
+   $totalE=count($states);
+   for($iE=0;$iE<$totalE;$iE++) {
+    unset($states[$iE]['ID']);
+    unset($states[$iE]['ELEMENT_ID']);
+   }
+   $elements[$i]['STATES']=$states;
+  }
+  $rec['ELEMENTS']=$elements;
+  unset($rec['ID']);
+
+  $res=array();
+  $res['SCENE_DATA']=$rec;
+  if ($rec['BACKGROUND'] && file_exists(ROOT.$rec['BACKGROUND'])) {
+   $res['BACKGROUND_IMAGE']=base64_encode(LoadFile(ROOT.$rec['BACKGROUND']));
+  }
+
+  $data=serialize($res);
+
+   $filename=urlencode($rec['TITLE']);
+
+   $ext = "scene";   // file extension
+   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
+   ? 'application/octetstream'
+   : 'application/octet-stream';
+   header('Content-Type: ' . $mime_type);
+   if (PMA_USR_BROWSER_AGENT == 'IE')
+   {
+      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
+      header("Content-Transfer-Encoding: binary");
+      header('Expires: 0');
+      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+      header('Pragma: public');
+      print $data;
+   } else {
+      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
+      header("Content-Transfer-Encoding: binary");
+      header('Expires: 0');
+      header('Pragma: no-cache');
+      print $data;
+   }
+
+   exit;
+
+
+ }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function import_scene() {
+  global $file;
+  global $overwrite;
+
+  $data=unserialize(LoadFile($file));
+
+  if ($data['SCENE_DATA']) {
+   $rec=$data['SCENE_DATA'];
+   $rec['TITLE'].=' (imported)';
+   $elements=$rec['ELEMENTS'];
+   unset($rec['ID']);
+   unset($rec['ELEMENTS']);
+   $rec['ID']=SQLInsert('scenes', $rec);
+   $total=count($elements);
+   for($i=0;$i<$total;$i++) {
+    $states=$elements[$i]['STATES'];
+    unset($elements[$i]['STATES']);
+    unset($elements[$i]['ID']);
+    $elements[$i]['SCENE_ID']=$rec['ID'];
+    $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+    $totalE=count($states);
+    for($iE=0;$iE<$totalE;$iE++) {
+     unset($states[$iE]['ID']);
+     $states[$iE]['ELEMENT_ID']=$elements[$i]['ID'];
+     SQLInsert('elm_states', $states[$iE]);
+    }
+   }
+   if ($data['BACKGROUND_IMAGE']) {
+    $filename=ROOT.$rec['BACKGROUND'];
+    SaveFile($filename, base64_decode($data['BACKGROUND_IMAGE']));
+   }
+   $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
+  }
+
+  $this->redirect("?");
+  
+ }
 
 /**
 * Title

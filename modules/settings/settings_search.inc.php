@@ -3,7 +3,13 @@
 * @version 0.1 (auto-set)
 */
 
+
   global $filter_name;
+
+  if ($this->filter_name) {
+   $out['FILTER_SET']=$this->filter_name;
+  }
+
   if ($filter_name) {
    $this->filter_name=$filter_name;
   }
