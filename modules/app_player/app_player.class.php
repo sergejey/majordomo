@@ -216,7 +216,7 @@ function usual(&$out) {
    $ch = curl_init();
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-   if ($terminal['PLAYER_USERNAME'] && $terminal['PLAYER_PASSWORD']) {
+   if ($terminal['PLAYER_USERNAME'] || $terminal['PLAYER_PASSWORD']) {
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
     curl_setopt($ch, CURLOPT_USERPWD, $terminal['PLAYER_USERNAME'].':'.$terminal['PLAYER_PASSWORD']);
    }
