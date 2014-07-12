@@ -237,11 +237,18 @@ function usual(&$out) {
 
     if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
 
+      $terminal['PLAYER_PORT']='80';
+
       if ($command=='refresh') {
        $out['PLAY']=preg_replace('/\\\\$/is', '', $out['PLAY']);
        $out['PLAY']=preg_replace('/\/$/is', '', $out['PLAY']);
-       $path=urlencode(''.str_replace('/', "\\", ($out['PLAY'])));
+       if (preg_match('/^http/', $out['PLAY'])) {
+        $path=urlencode($out['PLAY']);
+       } else {
+        $path=urlencode(''.str_replace('/', "\\", ($out['PLAY'])));
+       }
        curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_play&param=".$path);
+       //echo $path;exit;
        $res=curl_exec($ch);
       }
 

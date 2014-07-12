@@ -45,6 +45,13 @@
        $res=curl_exec($ch);
       }
 
+      if ($command=='volume') {
+       $volume=$volume*3;
+       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/requests/status.xml?command=volume&val=$volume");
+       $res=curl_exec($ch);
+      }
+
+
    $res=''; // ->NULL
 
    //print_r();

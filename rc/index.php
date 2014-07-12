@@ -7,11 +7,13 @@ include_once("./lib/loader.php");
 $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
 include_once("./load_settings.php");
 
+/*
 DebMes($_SERVER['REQUEST_URI']);
 
 $command=stripslashes($_GET['command']);
 $section=stripslashes($_GET['section']);
 $param=stripslashes($_GET['param']);
+*/
 
 $done=0;
 

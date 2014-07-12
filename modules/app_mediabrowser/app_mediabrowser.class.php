@@ -458,6 +458,7 @@ function usual(&$out) {
   if ($cover) {
    $out['COVER']=$cover;
    $out['COVER_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$cover);
+   $out['COVER_PATH']=urlencode(($act_dir).$cover);
   }
 
 
