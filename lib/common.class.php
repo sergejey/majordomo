@@ -649,10 +649,12 @@
  function execInBackground($cmd) {
     if (substr(php_uname(), 0, 7) == "Windows"){
         //pclose(popen("start /B ". $cmd, "r")); 
-
          try {
-          $WshShell = new COM("WScript.Shell");
-          $oExec = $WshShell->Run("cmd /C ".$cmd, 0, false);
+          //pclose(popen("start /B ". $cmd, "r")); 
+          system($cmd);
+          //$WshShell = new COM("WScript.Shell");
+          //$oExec = $WshShell->Run("cmd /C ".$cmd, 0, false);
+          //exec($cmd);
          } catch(Exception $e){
           DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
          }
