@@ -172,10 +172,30 @@
  [#end OPTIONS2#]
 </select>
 </fieldset>
-
-
 </li>
 [#endif TYPE#]
+
+
+[#if TYPE=="datebox"#]
+
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#]_delay() {
+  clearTimeout(item[#ID#]_timer);
+  var elem=document.getElementById('menu[#ID#]_v');
+  item[#ID#]_timer=setTimeout('itemValueChanged("[#ID#]", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
+<span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span>
+
+<div data-inline="true" data-role="fieldcontain">
+ <input type="date" id="menu[#ID#]_v" name="menu[#ID#]_value" value="[#CUR_VALUE#]" data-inline="true" onChange="changedValue[#ID#]_delay()" onKeyUp="changedValue[#ID#]_delay();">
+</div>
+</li>
+[#endif TYPE#]
+
 
 [#if TYPE=="plusminus"#]
 <script language="javascript">

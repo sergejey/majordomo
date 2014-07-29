@@ -680,7 +680,7 @@ curl_close($ch);
   */
 
   //commands, owproperties, snmpproperties, zwave_properties, mqtt
-  $tables=array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt');
+  $tables=array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt', 'modbusdevices');
   if (!is_array($no_linked) && $no_linked) {
    $no_linked=array();
    foreach($tables as $t) {
@@ -758,6 +758,18 @@ curl_close($ch);
     $mqtt=new mqtt();
     for($i=0;$i<$total;$i++) {
      $mqtt->setProperty($mqtt_properties[$i]['ID'], $value);
+    }
+   }
+  }
+
+  if ($no_linked['modbusdevices']!='' && file_exists(DIR_MODULES.'/modbus/modbus.class.php')) {
+   $modbusdevices=SQLSelect("SELECT ID FROM modbusdevices WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['modbusdevices']);
+   $total=count($modbusdevices);
+   if ($total) {
+    include_once(DIR_MODULES.'/modbus/modbus.class.php');
+    $modbus=new modbus();
+    for($i=0;$i<$total;$i++) {
+     $modbus->poll_device($modbusdevices[$i]['ID']);
     }
    }
   }

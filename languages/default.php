@@ -99,6 +99,7 @@ $dictionary=array(
 'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Security Rules',
 'MODULE_MQTT'=>'MQTT',
+'MODULE_MODBUS'=>'ModBus',
 'MODULE_CONNECT'=>'CONNECT',
 'MODULE_MARKET'=>'Plugins Market',
 
@@ -276,6 +277,7 @@ $dictionary=array(
 
 
 'TEXT_BOX'=>'Text field', // commands/commands_edit.html; 
+'DATE_BOX'=>'Date field', // commands/commands_edit.html; 
 
 
 'CUSTOM_HTML_BOX'=>'Custom HTML-code', // commands/commands_edit.html; 
@@ -867,6 +869,13 @@ $dictionary=array(
 
 'SETTINGS_SECTION_'=>'General',
 'SETTINGS_SECTION_HOOK'=>'Hooks',
+
+'DEVICE_ID'=>'Device ID',
+'REQUEST_TYPE'=>'Request type',
+'REQUEST_START'=>'Start address',
+'REQUEST_TOTAL'=>'Items to read',
+'RESPONSE_CONVERT'=>'Data conversion',
+'CHECK_NEXT'=>'Next check',
 
 'TEST'=>'test'
 

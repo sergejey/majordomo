@@ -243,6 +243,7 @@
    }
 
    echo "<b>Done</b> (removed: $total_removed)<br>";
+   SQLExec("OPTIMIZE TABLE `phistory`");
 
    return $total_removed;
 

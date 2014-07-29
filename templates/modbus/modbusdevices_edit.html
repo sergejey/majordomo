@@ -1,0 +1,224 @@
+
+<!-- Table 'modbusdevices' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="title" value="[#TITLE#]">
+ </td>
+</tr>
+<!-- HOST (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_HOST#]<b><font color="red">[#endif#]
+ <#LANG_HOSTNAME#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="host" value="[#HOST#]">
+  <select name="protocol" class="span2">
+   <option value="TCP"[#if PROTOCOL="TCP"#] selected[#endif#]>TCP
+   <option value="UDP"[#if PROTOCOL="UDP"#] selected[#endif#]>UDP
+  </select>
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ <#LANG_DEVICE_ID#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="device_id" value="[#DEVICE_ID#]" class="span2">
+ </td>
+</tr>
+
+
+<!-- REQUEST_TYPE (select) -->
+<tr>
+ <td align=right valign=top>
+ [#if ERR_REQUEST_TYPE#]<b><font color="red">[#endif#]
+ <#LANG_REQUEST_TYPE#>:
+ (*)
+ </td>
+ <td>                                           
+ <select name="request_type">
+  <option value="">select
+  [#begin REQUEST_TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+  [#end REQUEST_TYPE_OPTIONS#]
+ </select>
+ </td>
+</tr>
+<!-- REQUEST_START (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_REQUEST_START#]<b><font color="red">[#endif#]
+ <#LANG_REQUEST_START#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="request_start" value="[#REQUEST_START#]">
+ </td>
+</tr>
+<!-- REQUEST_TOTAL (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_REQUEST_TOTAL#]<b><font color="red">[#endif#]
+ <#LANG_REQUEST_TOTAL#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="request_total" value="[#REQUEST_TOTAL#]">
+ </td>
+</tr>
+<!-- RESPONSE_CONVERT (select) -->
+<tr>
+ <td align=right valign=top>
+ [#if ERR_RESPONSE_CONVERT#]<b><font color="red">[#endif#]
+ <#LANG_RESPONSE_CONVERT#>: 
+ </td>
+ <td>                                           
+ <select name="response_convert">
+  <option value="">select
+  [#begin RESPONSE_CONVERT_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+  [#end RESPONSE_CONVERT_OPTIONS#]
+ </select>
+ </td>
+</tr>
+
+<!-- POLLPERIOD (int) -->
+<tr>
+ <td align=right>
+ [#if ERR_POLLPERIOD#]<b><font color="red">[#endif#]
+ <#LANG_CHECK_EVERY#>:
+ (*)
+ </td>
+ <td>
+  <input type="text" name="pollperiod" value="[#POLLPERIOD#]"> (sec)
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ <#LANG_DATA#>:
+ </td>
+ <td>
+  <input type="text" name="data" value="[#DATA#]">
+ </td>
+</tr>
+
+
+<!-- LINKED_OBJECT (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_LINKED_OBJECT#]<b><font color="red">[#endif#]
+ <#LANG_LINKED_OBJECT#>:
+ </td>
+ <td>
+  <input type="text" name="linked_object" value="[#LINKED_OBJECT#]">
+ </td>
+</tr>
+<!-- LINKED_PROPERTY (varchar) -->
+<tr>
+ <td align=right>
+ [#if ERR_LINKED_PROPERTY#]<b><font color="red">[#endif#]
+ <#LANG_LINKED_PROPERTY#>:
+ </td>
+ <td>
+  <input type="text" name="linked_property" value="[#LINKED_PROPERTY#]">
+ </td>
+</tr>
+
+[#if ID!=""#]
+<!-- DATA (text) -->
+<!--#
+<tr>
+ <td valign=top align=right>
+ [#if ERR_DATA#]<b><font color="red">[#endif#]
+ DATA
+ :
+ </td>
+ <td valign=top>
+ <textarea name="data" rows=12 cols=100>[#DATA#]</textarea>
+ </td>
+</tr>
+#-->
+<!-- CHECK_LATEST (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_CHECK_LATEST#]<b><font color="red">[#endif#]
+ <#LANG_LAST_CHECKED#>:
+ </td>
+ <td>
+ [#CHECK_LATEST#]
+ </td>
+</tr>
+<!-- CHECK_NEXT (datetime) -->
+<tr>
+ <td align=right>
+ [#if ERR_CHECK_NEXT#]<b><font color="red">[#endif#]
+ <#LANG_CHECK_NEXT#>:
+ </td>
+ <td>
+ [#CHECK_NEXT#]
+ </td>
+</tr>
+[#endif ID#]
+
+<tr>
+ <td colspan=2 align=center>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn">
+ [#endif ID#]
+ &nbsp;
+ <a href="?" class="btn"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+
+[#if ID!=""#]
+<tr>
+ <td align=right>
+ <#LANG_LOG#>:
+ </td>
+ <td>
+ [#LOG#]
+ </td>
+</tr>
+[#endif ID#]
+
+</table>

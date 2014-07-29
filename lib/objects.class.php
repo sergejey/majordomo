@@ -167,6 +167,17 @@
   function processTitle($title, $object=0) {
    startMeasure('processTitle');
    startMeasure('processTitle ['.$title.']');
+
+   if (preg_match('/\[#.+?#\]/is', $title)) {
+    if ($object) {
+     $jTempl=new jTemplate($title, $object->data, $object);
+    } else {
+     $jTempl=new jTemplate($title, $data, $this);
+    }
+    $title=$jTempl->result;
+   }
+
+
    $title=preg_replace('/%rand%/is', rand(), $title);
    if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/is', $title, $m)) {
     $total=count($m[0]);
@@ -183,22 +194,17 @@
    if (preg_match_all('/<#LANG_(\w+?)#>/is', $title, $m)) {
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
-     
+     $title=str_replace($m[0][$i], constant('LANG_'.$m[1][$i]), $title);
     }
+   }
+
+   if (preg_match_all('/\&#060#LANG_(.+?)#\&#062/is', $title, $m)) {
+    $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
      $title=str_replace($m[0][$i], constant('LANG_'.$m[1][$i]), $title);
     }
    }
 
-   if (preg_match('/\[#.+?#\]/is', $title)) {
-    if ($object) {
-     $jTempl=new jTemplate($title, $object->data, $object);
-    } else {
-     $jTempl=new jTemplate($title, $data, $this);
-    }
-    $result=$jTempl->result;
-    $title=$jTempl->result;
-   }
    endMeasure('processTitle ['.$title.']', 1);
    endMeasure('processTitle', 1);
    return $title;

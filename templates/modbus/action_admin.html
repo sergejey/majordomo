@@ -1,0 +1,17 @@
+
+ <!-- action usual -->
+ <!-- table modbusdevices search -->
+ [#if VIEW_MODE="search_modbusdevices" || VIEW_MODE=""#]
+  [#inc modbusdevices_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table modbusdevices search -->
+ <!-- table modbusdevices edit -->
+ [#if VIEW_MODE="edit_modbusdevices"#]
+   [#inc modbusdevices_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table modbusdevices edit -->
+ <!-- table modbusdevices view --> 
+ [#if VIEW_MODE="view_modbusdevices"#]
+   [#inc modbusdevices_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table modbusdevices view -->

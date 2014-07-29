@@ -87,6 +87,7 @@ $dictionary=array(
 'MODULE_ZWAVE'=>'Z-Wave',
 'MODULE_SECURITY_RULES'=>'Правила безопасности',
 'MODULE_MQTT'=>'MQTT',
+'MODULE_MODBUS'=>'ModBus',
 'MODULE_CONNECT'=>'CONNECT',
 'MODULE_MARKET'=>'Маркет дополнений',
 
@@ -264,6 +265,7 @@ $dictionary=array(
 
 
 'TEXT_BOX'=>'Текстовое поле', // commands/commands_edit.html; 
+'DATE_BOX'=>'Дата', // commands/commands_edit.html; 
 
 
 'CUSTOM_HTML_BOX'=>'HTML-блок', // commands/commands_edit.html; 
@@ -277,7 +279,7 @@ $dictionary=array(
 
 
 'STEP_VALUE'=>'Шаг изменений', // commands/commands_edit.html; 
-'DATA'=>'Data', // commands/commands_edit.html; saverestore/action_admin.html; 
+'DATA'=>'Данные', // commands/commands_edit.html; saverestore/action_admin.html; 
 
 
 'AUTO_UPDATE_PERIOD'=>'Период авто-обновления', // commands/commands_edit.html; 
@@ -859,6 +861,14 @@ $dictionary=array(
 
 'SETTINGS_SECTION_'=>'Общие',
 'SETTINGS_SECTION_HOOK'=>'Обработчики',
+
+'DEVICE_ID'=>'ID устройства',
+'REQUEST_TYPE'=>'Тип запроса',
+'REQUEST_START'=>'Стартовый адрес',
+'REQUEST_TOTAL'=>'Кол-во элементов',
+'RESPONSE_CONVERT'=>'Преобразование данных',
+'CHECK_NEXT'=>'Следующая проверка',
+
 
 'TEST'=>'test'
 

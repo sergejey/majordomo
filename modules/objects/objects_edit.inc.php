@@ -221,9 +221,8 @@
        } else {
         $my_meth['ID']=SQLInsert('methods', $my_meth);
        }
-       
        $out['OK']=1;
-
+       
     }
 
     }
