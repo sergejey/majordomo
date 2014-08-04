@@ -113,6 +113,17 @@
         </div>
 </div>
 
+<div class="control-group">
+        <label class="control-label"><#LANG_USE_CSS#></label>
+        <div class="controls">
+        <input type="checkbox" name="use_css" value="1"[#if ELEMENT_CSS!=""#] checked[#endif#] onClick='$("#element_css").toggle();'> <#LANG_YES#>
+        <div id="element_css"[#if ELEMENT_CSS=""#] style="display:none"[#endif#]>
+        <textarea name="css" rows="6" class="field span6">[#ELEMENT_CSS#]</textarea>
+        </div>
+        </div>
+</div>
+
+
 [#endif ELEMENT_TYPE#]
 <!-- CROSS_SCENE (int) -->
 <!--#
@@ -164,6 +175,7 @@
         <label class="control-label"><#LANG_CODE#></label>
         <div class="controls">
                 <textarea name="html_new" rows="5" cols="41" class="field span6">[#STATE_HTML#]</textarea>
+                 <br>(CSS id: <b>state_[#STATE_ID#]</b>, CSS class: <b>element_<#ELEMENT_ID#></b>)
         </div>
 </div>
 [#endif#]

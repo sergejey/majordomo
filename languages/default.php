@@ -804,7 +804,8 @@ $dictionary=array(
 'USE_BACKGROUND'=>'Use background',
 'YES'=>'Yes',
 'NO'=>'No',
-'USE_JAVASCRIPT'=>'Use JavaScript',
+'USE_JAVASCRIPT'=>'Add custom JavaScript',
+'USE_CSS'=>'Add custom CSS',
 
 'PERIOD'=>'Period',
 'PERIOD_TODAY'=>'Today',

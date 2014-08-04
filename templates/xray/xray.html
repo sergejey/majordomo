@@ -10,6 +10,7 @@
  </tr>
  <tr>
   <td valign="top" colspan=6>
+  <div><input type="text" name="filter" id="filter" onChange="checkAllStates();"></div>
   <div id="xrayContent">Loading...</div>
   </td>
  </tr>
@@ -18,7 +19,7 @@
         var checkTimer;
         function checkAllStates() {
          clearTimeout(checkTimer);
-         var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>";
+         var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val());
          $.ajax({
           url: url,
           }).done(function(data) { 

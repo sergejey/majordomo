@@ -358,11 +358,16 @@ function admin(&$out) {
  global $ajax;
  if ($ajax) {
   global $op;
+  global $filter;
   if ($op=='getcontent') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
     if ($this->view_mode=='') {
-     $res=SQLSelect("SELECT pvalues.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, properties.TITLE as PROPERTY, properties.DESCRIPTION FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID  ORDER BY pvalues.UPDATED DESC");
+     $qry="1";
+     if ($filter) {
+      $qry.=" AND (objects.TITLE LIKE '%".DBSafe($filter)."%' OR properties.TITLE LIKE '%".DBSafe($filter)."%' OR objects.DESCRIPTION LIKE '%".DBSafe($filter)."%')";
+     }
+     $res=SQLSelect("SELECT pvalues.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, properties.TITLE as PROPERTY, properties.DESCRIPTION FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE $qry ORDER BY pvalues.UPDATED DESC");
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
@@ -388,16 +393,19 @@ function admin(&$out) {
      }
      echo '</table>';
     } elseif ($this->view_mode=='performance') {
-
+     $qry="1";
+     if ($filter) {
+      $qry.=" AND (OPERATION LIKE '%".DBSafe($filter)."%')";
+     }
      $time_start=date('Y-m-d H:i:s', time()-10);
-     $res=SQLSelect("SELECT OPERATION, SUM(COUNTER) as TOTAL, SUM(TIMEUSED) as TIME_TOTAL FROM performance_log WHERE ADDED>='".$time_start."' GROUP BY OPERATION ORDER BY TIME_TOTAL DESC ");//methods.OBJECT_ID<>0
+     $res=SQLSelect("SELECT OPERATION, SUM(COUNTER) as TOTAL, SUM(TIMEUSED) as TIME_TOTAL FROM performance_log WHERE ADDED>='".$time_start."' AND $qry GROUP BY OPERATION ORDER BY TIME_TOTAL DESC ");//methods.OBJECT_ID<>0
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
       echo '<td><b>OPERATION</b></td>';
       echo '<td><b>COUNTER</b></td>';
       echo '<td><b>TIME</b></td>';
-      echo '<td><b>AV. TIME</b></td>';	  
+      echo '<td><b>AV. TIME</b></td>';    
       echo '</tr>';
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
@@ -412,14 +420,18 @@ function admin(&$out) {
       echo '</td>';
       echo '<td>';
       echo number_format($res[$i]['TIME_TOTAL']/$res[$i]['TOTAL'], 2).'&nbsp;';
-      echo '</td>';	  
+      echo '</td>';       
       echo '</tr>';
      }
      echo '</table>';     
      SQLExec("DELETE FROM performance_log WHERE ADDED<'".date('Y-m-d H:i:s', time()-10*60)."'");
 
     } elseif ($this->view_mode=='methods') {
-     $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, methods.DESCRIPTION FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE 1 ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
+     $qry="1";
+     if ($filter) {
+      $qry.=" AND (objects.TITLE LIKE '%".DBSafe($filter)."%' OR methods.TITLE LIKE '%".DBSafe($filter)."%' OR methods.DESCRIPTION LIKE '%".DBSafe($filter)."%')";
+     }
+     $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, methods.DESCRIPTION FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE $qry ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
@@ -453,7 +465,11 @@ function admin(&$out) {
      }
      echo '</table>';     
     } elseif ($this->view_mode=='scripts') {
-     $res=SQLSelect("SELECT scripts.* FROM scripts ORDER BY scripts.EXECUTED DESC");
+     $qry="1";
+     if ($filter) {
+      $qry.=" AND (scripts.TITLE LIKE '%".DBSafe($filter)."%' OR scripts.DESCRIPTION LIKE '%".DBSafe($filter)."%')";
+     }
+     $res=SQLSelect("SELECT scripts.* FROM scripts WHERE $qry ORDER BY scripts.EXECUTED DESC");
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
@@ -479,7 +495,11 @@ function admin(&$out) {
      }
      echo '</table>';     
     } elseif ($this->view_mode=='timers') {
-     $res=SQLSelect("SELECT jobs.* FROM jobs WHERE EXPIRED!=1 AND PROCESSED!=1 ORDER BY jobs.RUNTIME");
+     $qry="1";
+     if ($filter) {
+      $qry.=" AND (jobs.TITLE LIKE '%".DBSafe($filter)."%')";
+     }
+     $res=SQLSelect("SELECT jobs.* FROM jobs WHERE EXPIRED!=1 AND PROCESSED!=1 AND $qry ORDER BY jobs.RUNTIME");
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';
@@ -502,8 +522,11 @@ function admin(&$out) {
      }
      echo '</table>';     
     } elseif ($this->view_mode=='events') {
-
-     $res=SQLSelect("SELECT events.* FROM events WHERE 1 ORDER BY events.ADDED DESC LIMIT 30");
+     $qry="1";
+     if ($filter) {
+      $qry.=" AND (events.EVENT_NAME LIKE '%".DBSafe($filter)."%')";
+     }
+     $res=SQLSelect("SELECT events.* FROM events WHERE $qry ORDER BY events.ADDED DESC LIMIT 30");
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
       echo '<tr>';

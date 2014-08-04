@@ -91,6 +91,10 @@
    $element=SQLSelectOne("SELECT * FROM elements WHERE ID='".(int)$element_id."'");
    $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."'");
 
+   if (!$element['SCENE_ID']) {
+    $out['ELEMENT_SCENE_ID']=$rec['ID'];
+   }
+
    if ($state_id) {
     $state_rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$state_id."'");
     if (!$rec['ID']) {
@@ -149,6 +153,15 @@
     } else {
      $element['JAVASCRIPT']='';
     }
+
+    global $use_css;
+    if ($use_css) {
+     global $css;
+     $element['CSS']=$css;
+    } else {
+     $element['CSS']='';
+    }
+
 
    }
 

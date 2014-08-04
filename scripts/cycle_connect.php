@@ -53,7 +53,7 @@ if (!$connect->config['CONNECT_SYNC']) {
  //$send_menu=1;
  //$out=array();
  //$connect->sendData($out, 1);
- $connect->sendMenu();
+ $connect->sendMenu(1);
  $commands=SQLSelect("SELECT * FROM commands");
  $total=count($commands);
  for($i=0;$i<$total;$i++) {
@@ -132,7 +132,7 @@ while(1) {
    if (time()-$menu_sent_time>30*60) {
     echo "Updating full menu\n";
     $menu_sent_time=time();
-    $connect->sendMenu();
+    $connect->sendMenu(1);
     $commands=SQLSelect("SELECT * FROM commands");
     $total=count($commands);
     for($i=0;$i<$total;$i++) {
@@ -150,11 +150,12 @@ while(1) {
     $commands=SQLSelect("SELECT * FROM commands WHERE AUTO_UPDATE>0 AND (NOW()-RENDER_UPDATED)>AUTO_UPDATE");
     $total=count($commands);
     for($i=0;$i<$total;$i++) {
-     echo date('Y-m-d H:i:s ')."Updating auto update item (id ".$commands[$i]['ID']." time ".$commands[$i]['AUTO_UPDATE']."): ".$commands[$i]['TITLE']."\n";
-     $commands[$i]['RENDER_TITLE']=processTitle($commands[$i]['TITLE']);
-     $commands[$i]['RENDER_DATA']=processTitle($commands[$i]['DATA']);
+     $commands[$i]['RENDER_TITLE']=processTitle($commands[$i]['TITLE'], $connect);
+     $commands[$i]['RENDER_DATA']=processTitle($commands[$i]['DATA'], $connect);
      $commands[$i]['RENDER_UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('commands', $commands[$i]);
+     echo date('Y-m-d H:i:s ')."Updating auto update item (id ".$commands[$i]['ID']." time ".$commands[$i]['AUTO_UPDATE']."): ".$commands[$i]['TITLE']."\n";
+
     }
 
     // sending changes if any

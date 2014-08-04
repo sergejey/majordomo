@@ -161,13 +161,18 @@
  [#begin ELEMENTS#]
  <!-- element [#ID#] -->
  [#begin STATES#]
-  <div id="state_[#ID#]"[#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#if "<#ELEMENTS.BACKGROUND#>"=="1"#]border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif BACKGROUND#][#endif#][#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
+  <div class="element_<#ELEMENTS.ID#>" id="state_[#ID#]"[#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#if "<#ELEMENTS.BACKGROUND#>"=="1"#]border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif BACKGROUND#][#endif#][#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
  [#end STATES#]
+ [#if CSS!=""#]
+ <style>
+  [#CSS#]
+ </style>
+ [#endif CSS#]
  [#if JAVASCRIPT!=""#]
  <script language="javascript">
   [#JAVASCRIPT#]
  </script>
- [#endif#]
+ [#endif JAVASCRIPT#]
  <!-- /element [#ID#] -->
  [#end ELEMENTS#]
  <img src="[#BACKGROUND#]" border="0">

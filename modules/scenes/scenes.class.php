@@ -650,6 +650,7 @@ elm_states - Element states
  elements: CROSS_SCENE int(3) NOT NULL DEFAULT '0'
  elements: BACKGROUND int(3) NOT NULL DEFAULT '1'
  elements: JAVASCRIPT text
+ elements: CSS text
 
  elm_states: ID int(10) unsigned NOT NULL auto_increment
  elm_states: ELEMENT_ID int(10) NOT NULL DEFAULT '0'

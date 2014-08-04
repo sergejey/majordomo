@@ -794,7 +794,8 @@ $dictionary=array(
 'YES'=>'Да',
 'NO'=>'Нет',
 
-'USE_JAVASCRIPT'=>'Использовать JavaScript',
+'USE_JAVASCRIPT'=>'Дополнительный код JavaScript',
+'USE_CSS'=>'Дополнительный код CSS',
 
 'PERIOD'=>'Период',
 'PERIOD_TODAY'=>'Сегодня',
