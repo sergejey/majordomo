@@ -392,6 +392,37 @@ function admin(&$out) {
       echo '</tr>';
      }
      echo '</table>';
+
+    } elseif ($this->view_mode=='debmes') {
+     $limit=50;
+     $filename=ROOT.'debmes/'.date('Y-m-d').'.log';
+     $data=LoadFile($filename);
+     $lines=explode("\n", $data);
+     $lines=array_reverse($lines);
+     $res_lines=array();
+     $total=count($lines);
+     $added=0;
+     for($i=0;$i<$total;$i++) {
+
+      if (trim($lines[$i])=='') {
+       continue;
+      }
+
+      if ($filter && preg_match('/'.preg_quote($filter).'/is', $lines[$i])) {
+       $res_lines[]=$lines[$i];
+       $added++;
+      } elseif (!$filter) {
+       $res_lines[]=$lines[$i];
+       $added++;
+      }
+
+      if ($added>=$limit) {
+       break;
+      }
+     }
+
+     echo implode("<br/>", $res_lines);
+
     } elseif ($this->view_mode=='performance') {
      $qry="1";
      if ($filter) {

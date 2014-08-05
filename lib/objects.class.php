@@ -225,6 +225,10 @@
   return callMethod($method_name, $params);
  }
 
+ function runMethod($method_name, $params=0) {
+  return callMethod($method_name, $params);
+ }
+
  function rs($script_id, $params=0) {
   return runScript($script_id, $params);
  }

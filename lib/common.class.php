@@ -586,6 +586,11 @@
   $sc->runScript($id, $params);
  }
 
+
+ function callScript($id, $params='') {
+  runScript($id, $params);
+ }
+
 /**
 * Title
 *

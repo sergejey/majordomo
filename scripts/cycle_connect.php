@@ -73,6 +73,10 @@ if ($socket === false) {
     echo "OK.\n";
 }
 
+socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>10, "usec"=>0));
+socket_set_option($socket,SOL_SOCKET, SO_SNDTIMEO, array("sec"=>10, "usec"=>0));
+
+
 echo date('Y-m-d H:i:s ')."Attempting to connect to '$address' on port '$port'...";
 $result = socket_connect($socket, $address, $port);
 if ($result === false) {
@@ -81,6 +85,7 @@ if ($result === false) {
 } else {
     echo "OK.\n";
 }
+
 
 $in='Hello, world!'."\n";
 echo date('Y-m-d H:i:s ')."Sending: ".$in;
