@@ -377,17 +377,11 @@
    $jobs[$i]['PROCESSED']=1;
    $jobs[$i]['STARTED']=date('Y-m-d H:i:s');
    SQLUpdate('jobs', $jobs[$i]);
-
-                  try {
-                   $code=$jobs[$i]['COMMANDS'];
-                   $success=eval($code);
-                   if ($success===false) {
-                    DebMes("Error in scheduled job code: ".$code);
-                   }
-                  } catch(Exception $e){
-                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
-                  }
-
+   $url=BASE_URL.'/objects/?job='.$jobs[$i]['ID'];
+   $result=trim(getURL($url, 0));
+   if ($result!='OK') {
+    DebMes("Error executing job ".$jobs[$i]['ID'].": ".$result);
+   }
   }
  }
 

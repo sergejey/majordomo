@@ -1,10 +1,5 @@
 <?php   
  chdir('../');
- set_time_limit(0);
- /*
-     Example1 : A simple line chart
- */
-
  include_once("./config.php");
  include_once("./lib/loader.php");
 
@@ -15,6 +10,7 @@
  include_once("./load_settings.php");
 
 
+ set_time_limit(30);
 
  // Standard inclusions      
  include("./pChart/pData.class");   

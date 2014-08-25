@@ -16,6 +16,9 @@
      // $path=str_replace('/', "\\", ($out['PLAY']));
       $path=$out['PLAY'];
      
+      curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/requests/status.xml?command=pl_empty");
+      $res=curl_exec($ch);
+
       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/requests/status.xml?command=in_play&input=".urlencode($path));
       $res=curl_exec($ch);
     }

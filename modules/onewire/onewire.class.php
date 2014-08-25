@@ -22,7 +22,7 @@ if(!function_exists('bcadd'))  {
 }
 
 //check to make sure the file exists
-if(file_exists("/opt/owfs/bin/ownet.php"))  {
+if(@file_exists("/opt/owfs/bin/ownet.php"))  {
   require "/opt/owfs/bin/ownet.php";
 } else if(file_exists(DIR_MODULES."onewire/ownet.php"))  {
   require DIR_MODULES."onewire/ownet.php";

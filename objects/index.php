@@ -120,9 +120,24 @@
   } else {
    DebMes("object [".$object."] not found");
   }
+ } elseif ($job!='') {
+  $job=SQLSelectOne("SELECT * FROM jobs WHERE ID='".(int)$job."'");
+  if ($job['ID']) {
+
+                  try {
+                   $code=$job['COMMANDS'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in scheduled job code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+                  echo "OK";
+  }
  } elseif ($script!='') {
   echo "\nRunning script: ".$script;
-  DebMes("Running script: ".$script);
+  //DebMes("Running script: ".$script);
   runScript($script, $_GET);
  }
 

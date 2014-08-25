@@ -229,12 +229,6 @@ function usual(&$out) {
     $terminal['PLAYER_PORT']='80';
    }
 
-   if ($command=='volume') {
-    global $volume;
-    setGlobal('ThisComputer.volumeLevel', $volume);
-    callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
-   }
-
     if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
 
       $terminal['PLAYER_PORT']='80';
@@ -277,6 +271,13 @@ function usual(&$out) {
        curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_close");
        $res=curl_exec($ch);
       }
+
+     if ($command=='volume') {
+       global $volume;
+       setGlobal('ThisComputer.volumeLevel', $volume);
+       callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
+      }
+
    } elseif ($terminal['PLAYER_TYPE']=='xbmc') {
     include(DIR_MODULES.'app_player/xbmc.php');
 

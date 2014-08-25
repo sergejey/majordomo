@@ -47,7 +47,7 @@
         ///!!!!!! how to get it working???
         $result=xbmc_request($ch, $terminal, 'Player.Open', array('item'=>array('path'=>$path)));
        }
-       print_r($result);
+       //print_r($result);
        
       }
 
@@ -73,6 +73,9 @@
        $result=xbmc_request($ch, $terminal, 'Player.Stop', array('playerid'=>(int)$player_id));
       }
 
+     if ($command=='volume') {
+      $result=xbmc_request($ch, $terminal, 'Application.SetVolume', array('volume'=>(int)$volume));
+     }
 
 
 ?>
