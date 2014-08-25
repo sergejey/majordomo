@@ -731,6 +731,7 @@
 *
 * @access public
 */
+/*
  function utf2win($string) {
   return iconv('Windows-1251', 'UTF-8', $string);
  }
@@ -738,4 +739,4 @@
  function win2utf($string) {
   return iconv('UTF-8', 'Windows-1251', $string);
  }
-
+*/
