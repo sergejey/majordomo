@@ -52,6 +52,8 @@ class Threads {
 
         $this->commandLines[$this->lastId] = $command;        
         $this->handles[$this->lastId] = proc_open($command, $this->descriptorSpec, $pipes);
+        stream_set_timeout($pipes[0], $this->timeout);
+        stream_set_timeout($pipes[1], $this->timeout);
         $this->streams[$this->lastId] = $pipes[1];
         $this->pipes[$this->lastId] = $pipes;
         
@@ -63,12 +65,13 @@ class Threads {
     }
     
     public function iteration() {
+        $result='';
         if (!count($this->streams)) {
             return false;
         }
         $read = $this->streams;
-		$write = null;
-		$except = null;
+                $write = null;
+                $except = null;
 
         if (false === ($number_of_streams=stream_select($read, $write, $except, $this->timeout))) {
          DebMes("No active streams");
@@ -85,22 +88,27 @@ class Threads {
 
         foreach($read as $stream) {
 
-
         $id = array_search($stream, $this->streams);
+        //stream_set_blocking($stream, FALSE);
+        stream_set_timeout($stream, $this->timeout);
+
+        //echo date('H:i:s')." Reading thread: ".$this->commandLines[$id]."\n";
+
         //$result = stream_get_contents($this->pipes[$id][1]);
-        if (feof($stream) || ($contents = fread($stream, 255))==false) {
+        if (feof($stream) || ($contents = fread($stream, 255))==false) { //)
+            echo date('H:i:s')." Closing thread: ".$this->commandLines[$id]."\n";
+            DebMes("Closing thread: ".$this->commandLines[$id]);
+            $result.="THREAD CLOSED: [".$this->commandLines[$id]."]\n";
             fclose($this->pipes[$id][0]);
             fclose($this->pipes[$id][1]);
             proc_close($this->handles[$id]);
-            echo "\n".date('H:i:s')." Closing thread: ".$this->commandLines[$id];
-            DebMes("Closing thread: ".$this->commandLines[$id]);
             unset($this->handles[$id]);
             unset($this->streams[$id]);
             unset($this->pipes[$id]);
             unset($this->commandLines[$id]);
         } else {
           echo $contents;
-          //echo "\n".date('H:i:s')." Thread is running OK: ".$this->commandLines[$id];
+          $result.=$contents;
         }
 
         }

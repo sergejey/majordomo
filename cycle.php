@@ -107,10 +107,36 @@ foreach($cycles as $path)
 
 echo "ALL CYCLES STARTED\n";
 
+$restart_threads=array(
+                       'cycle_execs.php', 
+                       'cycle_main.php', 
+                       'cycle_ping.php', 
+                       'cycle_rss.php', 
+                       'cycle_scheduler.php', 
+                       'cycle_states.php', 
+                       'cycle_watchfolders.php', 
+                       'cycle_webvars.php');
+
 while (false !== ($result = $threads->iteration())) 
 {
-   if (!empty($result))  echo $result."\r\n";
+   if (!empty($result))  {
+    //echo "Res: ".$result."\n---------------------\n";
+    if (preg_match_all('/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is', $result, $matches) && !file_exists('./reboot')) {
+     $total_m=count($matches[1]);
+     for($im=0;$im<$total_m;$im++) {
+      $closed_thread=$matches[1][$im];
+      foreach($restart_threads as $item) {
+       if (preg_match('/'.$item.'/is', $closed_thread)) {
+        //restart
+        echo "RESTARTING: ".$closed_thread."\n";
+        $pipe_id = $threads->newThread($closed_thread);
+       }
+      }
+     }
+    }
+   }
 }
+
 
 @unlink('./reboot');
 
