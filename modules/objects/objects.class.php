@@ -497,6 +497,7 @@ curl_close($ch);
 
    if ($code!='') {
 
+    /*
     if (defined('SETTINGS_DEBUG_HISTORY') && SETTINGS_DEBUG_HISTORY==1) {
      $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
      if (!$class_object['NOLOG']) {
@@ -519,6 +520,7 @@ curl_close($ch);
       SQLInsert('history', $h);
      }
     }
+    */
 
 
      try {
