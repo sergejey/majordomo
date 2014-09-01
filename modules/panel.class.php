@@ -41,6 +41,24 @@ function getParams() {
    $this->action=$action;
   }
 
+  if (!$session->data['SITE_USERNAME']) {
+   $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
+   $total=count($users);
+
+   if ($total==1) {
+    $session->data['SITE_USERNAME']=$users[0]['USERNAME'];
+    $session->data['SITE_USER_ID']=$users[0]['ID'];
+   } else {
+    for($i=0;$i<$total;$i++) {
+     if ($users[$i]['HOST'] && $users[$i]['HOST']==$_SERVER['REMOTE_ADDR']) {
+      $session->data['SITE_USERNAME']=$users[$i]['USERNAME'];
+      $session->data['SITE_USER_ID']=$users[$i]['ID'];     
+     }
+    }
+   }
+  }
+
+
   if (!$session->data["AUTHORIZED"] && $session->data['SITE_USERNAME']) {
    $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($session->data['SITE_USERNAME'])."'");
    if ($user['IS_ADMIN']) {

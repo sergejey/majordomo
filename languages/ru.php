@@ -869,7 +869,15 @@ $dictionary=array(
 'REQUEST_TOTAL'=>'Кол-во элементов',
 'RESPONSE_CONVERT'=>'Преобразование данных',
 'CHECK_NEXT'=>'Следующая проверка',
+'CODE_TYPE'=>'Использовать для программирования',
 
+'LOGIC'=>'Логика',
+'LOOPS'=>'Циклы',
+'MATH'=>'Математика',
+'TEXT'=>'Текст',
+'LISTS'=>'Списки',
+'VARIABLES'=>'Переменные',
+'FUNCTIONS'=>'Функции',
 
 'TEST'=>'test'
 

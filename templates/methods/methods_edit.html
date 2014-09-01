@@ -5,7 +5,7 @@
 <p align=center>
  <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
 </p>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit">
 <table border=0 align=center cellpadding=3>
 [#if OK#]
 <tr>
@@ -69,6 +69,7 @@
  [#if ERRORS!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS#]   
+<!--#
  <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/edit_area/edit_area_full.js"></script>
 <script language="javascript" type="text/javascript">
 editAreaLoader.init({
@@ -77,8 +78,11 @@ editAreaLoader.init({
         ,start_highlight: true          // to display with highlight mode on start-up
 });
 </script>
-
+#-->
+ [#module name="blockly_code" system_name="method<#ID#>" code_field="code" action=""#]
+ <div id="code_area">
  <textarea name="code" id="code" rows=12 cols=100 class="field span8">[#CODE#]</textarea>
+ </div>
  </td>
 </tr>
 <!--#

@@ -90,6 +90,10 @@
   }
   outHash($rec, $out);
 
+  if ($out['XML']) {
+   $this->xml=$out['XML'];
+  }
+
 
   $run_time=array('00', '00');
   if ($rec['RUN_TIME']) {

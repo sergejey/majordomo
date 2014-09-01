@@ -878,6 +878,16 @@ $dictionary=array(
 'RESPONSE_CONVERT'=>'Data conversion',
 'CHECK_NEXT'=>'Next check',
 
+'CODE_TYPE'=>'Use for scripting',
+
+'LOGIC'=>'Logic',
+'LOOPS'=>'Loops',
+'MATH'=>'Math',
+'TEXT'=>'Text',
+'LISTS'=>'Lists',
+'VARIABLES'=>'Variables',
+'FUNCTIONS'=>'Functions',
+
 'TEST'=>'test'
 
 
