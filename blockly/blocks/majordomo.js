@@ -28,6 +28,7 @@ goog.provide('Blockly.Blocks.majordomo');
 
 goog.require('Blockly.Blocks');
 
+//say
 
 Blockly.Blocks['majordomo_say'] = {
   /**
@@ -35,13 +36,60 @@ Blockly.Blocks['majordomo_say'] = {
    * @this Blockly.Block
    */
   init: function() {
-    this.setColour(160);
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this
+     .appendValueInput('TEXT')
+     .appendField(Blockly.Msg.MAJORDOMO_SAY)
+     .appendField(Blockly.Msg.MAJORDOMO_PRIORITY)
+     .appendField(new Blockly.FieldTextInput('2',Blockly.FieldTextInput.nonnegativeIntegerValidator), 'NUMBER');
     this.setOutput(false);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.appendValueInput('IF0')
-     .setCheck('String')
-     .appendField(Blockly.Msg.MAJORDOMO_SAY);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
   }
-
 };
+
+//say
+
+Blockly.Blocks['majordomo_say_simple'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this
+     .appendValueInput('TEXT')
+     .appendField(Blockly.Msg.MAJORDOMO_SAY);
+    this.setOutput(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+  }
+};
+
+//setGlobal
+//getGlobal
+//runScript
+//callMethod
+//getURL
+//getURL (content)
+//getRandomLine (from file)
+//playSound
+//timeNow
+//isWeekEnd
+//isWorkDay
+//timeIs
+//timeBefore
+//timeAfter
+//timeBetween
+//clearTimeOut
+//setTimeOut

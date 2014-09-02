@@ -362,6 +362,7 @@ Blockly.Msg.VARIABLES_SET_TITLE = "присвоить";
 Blockly.Msg.VARIABLES_SET_TOOLTIP = "Присваивает переменной значение вставки.";
 
 Blockly.Msg.MAJORDOMO_SAY = "произнести";
+Blockly.Msg.MAJORDOMO_PRIORITY = "с приоритетом";
 
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;
 Blockly.Msg.LISTS_GET_SUBLIST_INPUT_IN_LIST = Blockly.Msg.LISTS_INLIST;

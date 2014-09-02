@@ -31,7 +31,35 @@ goog.require('Blockly.PHP');
 
 Blockly.PHP['majordomo_say'] = function(block) {
   // Variable getter.
-  var argument0 = Blockly.PHP.valueToCode(block, 'VALUE',
-      Blockly.PHP.ORDER_ASSIGNMENT) || '0';
-  return 'say(' + argument0 + ');\n';
+  var msg = Blockly.PHP.valueToCode(block, 'TEXT',
+      Blockly.PHP.ORDER_NONE) || '\'\'';
+  var priority = Number(block.getFieldValue('NUMBER')) || 0;
+  var code = 'say(' + msg + ', '+priority+');\n';
+  return code;
 };
+
+Blockly.PHP['majordomo_say_simple'] = function(block) {
+  var msg = Blockly.PHP.valueToCode(block, 'TEXT',
+      Blockly.PHP.ORDER_NONE) || '\'\'';
+
+  var code = 'say(' + msg + ', 2);\n';
+  return code;
+};
+
+//setGlobal
+//getGlobal
+//runScript
+//callMethod
+//getURL
+//getURL (content)
+//getRandomLine (from file)
+//playSound
+//timeNow
+//isWeekEnd
+//isWorkDay
+//timeIs
+//timeBefore
+//timeAfter
+//timeBetween
+//clearTimeOut
+//setTimeOut

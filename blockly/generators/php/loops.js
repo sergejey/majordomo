@@ -59,7 +59,7 @@ Blockly.PHP['controls_repeat_ext'] = function(block) {
     code += '$' + endVar + ' = ' + repeats + ';\n';
   }
   code += 'for ($' + loopVar + ' = 0; ' +
-      '$'+loopVar + ' < ' + '$'+endVar + '; ' +
+      '$'+loopVar + ' < ' + endVar + '; ' +
       '$'+loopVar + '++) {\n' +
       branch + '}\n';
   return code;
@@ -125,16 +125,16 @@ Blockly.PHP['controls_for'] = function(block) {
     // changes during loop execution.
     var incVar = Blockly.PHP.variableDB_.getDistinctName(
         variable0 + '_inc', Blockly.Variables.NAME_TYPE);
-    code += 'var ' + incVar + ' = ';
+    code += '//var $' + incVar + ' = ';
     if (Blockly.isNumber(increment)) {
       code += Math.abs(increment) + ';\n';
     } else {
       code += 'Math.abs(' + increment + ');\n';
     }
-    code += 'if (' + startVar + ' > ' + endVar + ') {\n';
+    code += 'if ($' + startVar + ' > ' + endVar + ') {\n';
     code += Blockly.PHP.INDENT + incVar + ' = -' + incVar + ';\n';
     code += '}\n';
-    code += 'for (' + variable0 + ' = ' + startVar + ';\n' +
+    code += 'for ($' + variable0 + ' = ' + startVar + ';\n' +
         '     ' + incVar + ' >= 0 ? ' +
         variable0 + ' <= ' + endVar + ' : ' +
         variable0 + ' >= ' + endVar + ';\n' +

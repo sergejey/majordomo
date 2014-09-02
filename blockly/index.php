@@ -123,10 +123,38 @@ $ctl = new control_modules();
       <block type="colour_rgb"></block>
       <block type="colour_blend"></block>
     </category>
+
+MajorDoMo to-do:
+//setGlobal
+//getGlobal
+//runScript
+//callMethod
+//getURL
+//getURL (content)
+//getRandomLine (from file)
+//playSound
+//timeNow
+//isWeekEnd
+//isWorkDay
+//timeIs
+//timeBefore
+//timeAfter
+//timeBetween
+//clearTimeOut
+//setTimeOut
   -->
   <xml id="toolbox" style="display: none">
     <category name="MajorDoMo">
-      <block type="majordomo_say"></block>
+      <block type="majordomo_say_simple">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_say">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
     </category>
     <category name="<?echo LANG_LOGIC;?>">
       <block type="controls_if"></block>

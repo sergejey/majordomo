@@ -362,6 +362,7 @@ Blockly.Msg.VARIABLES_SET_TITLE = "set";
 Blockly.Msg.VARIABLES_SET_TOOLTIP = "Sets this variable to be equal to the input.";
 
 Blockly.Msg.MAJORDOMO_SAY = "say";
+Blockly.Msg.MAJORDOMO_PRIORITY = "with priority";
 
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;
 Blockly.Msg.LISTS_GET_SUBLIST_INPUT_IN_LIST = Blockly.Msg.LISTS_INLIST;
