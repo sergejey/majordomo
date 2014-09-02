@@ -76,9 +76,90 @@ Blockly.Blocks['majordomo_say_simple'] = {
   }
 };
 
-//setGlobal
-//getGlobal
-//runScript
+Blockly.Blocks['majordomo_runscript'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this
+     .appendValueInput('TEXT')
+     .appendField(Blockly.Msg.MAJORDOMO_RUNSCRIPT);
+    this.setOutput(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+  }
+};
+
+Blockly.Blocks['majordomo_getglobal'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_GETGLOBAL);
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_PROPERTY);
+    this.appendValueInput("PROPERTY")
+        .setCheck("String");
+
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_OBJECT);
+    this.appendValueInput("OBJECT")
+        .setCheck("String");
+    this.setInputsInline(true);
+
+    this.setOutput(true);
+    this.setTooltip('');
+  }
+};
+
+
+Blockly.Blocks['majordomo_setglobal'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+
+    var thisBlock = this;
+    this.setColour(220);
+
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_SETGLOBAL);
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_PROPERTY);
+    this.appendValueInput("PROPERTY")
+        .setCheck("String");
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_OBJECT);
+    this.appendValueInput("OBJECT")
+        .setCheck("String");
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_SETTO);
+    this.appendValueInput("VALUE")
+        .setCheck("String");
+
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('');
+  }
+};
+
+
+//runScript with params
 //callMethod
 //getURL
 //getURL (content)

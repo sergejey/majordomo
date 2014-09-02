@@ -46,9 +46,29 @@ Blockly.PHP['majordomo_say_simple'] = function(block) {
   return code;
 };
 
-//setGlobal
-//getGlobal
-//runScript
+Blockly.PHP['majordomo_runscript'] = function(block) {
+  var msg = Blockly.PHP.valueToCode(block, 'TEXT',
+      Blockly.PHP.ORDER_NONE) || '\'\'';
+  var code = 'runScript(' + msg + ');\n';
+  return code;
+};
+
+Blockly.PHP['majordomo_setglobal'] = function(block) {
+  var value = Blockly.PHP.valueToCode(block, 'VALUE',Blockly.PHP.ORDER_NONE) || '\'\'';
+  var object = Blockly.PHP.valueToCode(block, 'OBJECT',Blockly.PHP.ORDER_NONE) || 'ThisComputer';
+  var property = Blockly.PHP.valueToCode(block, 'PROPERTY',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'setGlobal('+object+'.\'.\'.'+property+', ' + value + ');\n';
+  return code;
+};
+
+Blockly.PHP['majordomo_getglobal'] = function(block) {
+  var object = Blockly.PHP.valueToCode(block, 'OBJECT',Blockly.PHP.ORDER_NONE) || 'ThisComputer';
+  var property = Blockly.PHP.valueToCode(block, 'PROPERTY',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'getGlobal('+object+'.\'.\'.'+property+')';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+//runScript with params
 //callMethod
 //getURL
 //getURL (content)

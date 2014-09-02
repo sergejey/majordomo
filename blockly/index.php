@@ -125,10 +125,9 @@ $ctl = new control_modules();
     </category>
 
 MajorDoMo to-do:
-//setGlobal
-//getGlobal
-//runScript
+//runScript with params
 //callMethod
+//callMethod with params
 //getURL
 //getURL (content)
 //getRandomLine (from file)
@@ -150,11 +149,41 @@ MajorDoMo to-do:
           <block type="text"></block>
         </value>
       </block>
+      <block type="majordomo_runscript">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_getglobal">
+        <value name="PROPERTY">
+          <block type="text"></block>
+        </value>
+        <value name="OBJECT">
+          <block type="text"></block>
+        </value>
+      </block>
       <block type="majordomo_say">
         <value name="TEXT">
           <block type="text"></block>
         </value>
       </block>
+      <block type="majordomo_setglobal">
+        <value name="VALUE">
+          <block type="text"></block>
+        </value>
+        <value name="PROPERTY">
+          <block type="text"></block>
+        </value>
+        <value name="OBJECT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_say">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+
     </category>
     <category name="<?echo LANG_LOGIC;?>">
       <block type="controls_if"></block>

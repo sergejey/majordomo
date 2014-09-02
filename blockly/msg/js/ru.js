@@ -363,6 +363,12 @@ Blockly.Msg.VARIABLES_SET_TOOLTIP = "Присваивает переменной
 
 Blockly.Msg.MAJORDOMO_SAY = "произнести";
 Blockly.Msg.MAJORDOMO_PRIORITY = "с приоритетом";
+Blockly.Msg.MAJORDOMO_RUNSCRIPT = "запустить сценарий";
+Blockly.Msg.MAJORDOMO_OBJECT = "объекта";
+Blockly.Msg.MAJORDOMO_PROPERTY = "свойства";
+Blockly.Msg.MAJORDOMO_GETGLOBAL = "получить значение";
+Blockly.Msg.MAJORDOMO_SETGLOBAL = "установить значение";
+Blockly.Msg.MAJORDOMO_SETTO = "в";
 
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;
 Blockly.Msg.LISTS_GET_SUBLIST_INPUT_IN_LIST = Blockly.Msg.LISTS_INLIST;
