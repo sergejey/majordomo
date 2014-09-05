@@ -380,7 +380,7 @@
    $url=BASE_URL.'/objects/?job='.$jobs[$i]['ID'];
    $result=trim(getURL($url, 0));
    if ($result!='OK') {
-    DebMes("Error executing job ".$jobs[$i]['ID'].": ".$result);
+    DebMes("Error executing job ".$jobs[$i]['TITLE']." (".$jobs[$i]['ID']."): ".$result);
    }
   }
  }

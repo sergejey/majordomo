@@ -52,7 +52,7 @@ Blockly.PHP['math_arithmetic'] = function(block) {
   var code;
   // Power in PHP requires a special case since it has no operator.
   if (!operator) {
-    code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
+    code = 'pow(' + argument0 + ', ' + argument1 + ')';
     return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   }
   code = argument0 + operator + argument1;
@@ -86,37 +86,37 @@ Blockly.PHP['math_single'] = function(block) {
   // wrapping the code.
   switch (operator) {
     case 'ABS':
-      code = 'Math.abs(' + arg + ')';
+      code = 'abs(' + arg + ')';
       break;
     case 'ROOT':
-      code = 'Math.sqrt(' + arg + ')';
+      code = 'sqrt(' + arg + ')';
       break;
     case 'LN':
-      code = 'Math.log(' + arg + ')';
+      code = 'log(' + arg + ')';
       break;
     case 'EXP':
-      code = 'Math.exp(' + arg + ')';
+      code = 'exp(' + arg + ')';
       break;
     case 'POW10':
-      code = 'Math.pow(10,' + arg + ')';
+      code = 'pow(10,' + arg + ')';
       break;
     case 'ROUND':
-      code = 'Math.round(' + arg + ')';
+      code = 'round(' + arg + ')';
       break;
     case 'ROUNDUP':
-      code = 'Math.ceil(' + arg + ')';
+      code = 'ceil (' + arg + ')';
       break;
     case 'ROUNDDOWN':
-      code = 'Math.floor(' + arg + ')';
+      code = 'floor(' + arg + ')';
       break;
     case 'SIN':
-      code = 'Math.sin(' + arg + ' / 180 * Math.PI)';
+      code = 'sin(' + arg + ' / 180 * M_PI)';
       break;
     case 'COS':
-      code = 'Math.cos(' + arg + ' / 180 * Math.PI)';
+      code = 'cos(' + arg + ' / 180 * M_PI)';
       break;
     case 'TAN':
-      code = 'Math.tan(' + arg + ' / 180 * Math.PI)';
+      code = 'tan(' + arg + ' / 180 * M_PI)';
       break;
   }
   if (code) {
@@ -126,16 +126,16 @@ Blockly.PHP['math_single'] = function(block) {
   // wrapping the code.
   switch (operator) {
     case 'LOG10':
-      code = 'Math.log(' + arg + ') / Math.log(10)';
+      code = 'log(' + arg + ') / log(10)';
       break;
     case 'ASIN':
-      code = 'Math.asin(' + arg + ') / Math.PI * 180';
+      code = 'asin(' + arg + ') / M_PI * 180';
       break;
     case 'ACOS':
-      code = 'Math.acos(' + arg + ') / Math.PI * 180';
+      code = 'acos(' + arg + ') / M_PI * 180';
       break;
     case 'ATAN':
-      code = 'Math.atan(' + arg + ') / Math.PI * 180';
+      code = 'atan(' + arg + ') / M_PI * 180';
       break;
     default:
       throw 'Unknown math operator: ' + operator;
@@ -146,13 +146,13 @@ Blockly.PHP['math_single'] = function(block) {
 Blockly.PHP['math_constant'] = function(block) {
   // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
   var CONSTANTS = {
-    'PI': ['Math.PI', Blockly.PHP.ORDER_MEMBER],
-    'E': ['Math.E', Blockly.PHP.ORDER_MEMBER],
+    'PI': ['M_PI', Blockly.PHP.ORDER_MEMBER],
+    'E': ['M_E', Blockly.PHP.ORDER_MEMBER],
     'GOLDEN_RATIO':
-        ['(1 + Math.sqrt(5)) / 2', Blockly.PHP.ORDER_DIVISION],
-    'SQRT2': ['Math.SQRT2', Blockly.PHP.ORDER_MEMBER],
-    'SQRT1_2': ['Math.SQRT1_2', Blockly.PHP.ORDER_MEMBER],
-    'INFINITY': ['Infinity', Blockly.PHP.ORDER_ATOMIC]
+        ['(1 + sqrt(5)) / 2', Blockly.PHP.ORDER_DIVISION],
+    'SQRT2': ['M_SQRT2', Blockly.PHP.ORDER_MEMBER],
+    'SQRT1_2': ['M_SQRT1_2', Blockly.PHP.ORDER_MEMBER],
+    'INFINITY': ['INF', Blockly.PHP.ORDER_ATOMIC]
   };
   return CONSTANTS[block.getFieldValue('CONSTANT')];
 };
@@ -165,29 +165,8 @@ Blockly.PHP['math_number_property'] = function(block) {
   var dropdown_property = block.getFieldValue('PROPERTY');
   var code;
   if (dropdown_property == 'PRIME') {
-    // Prime is a special case as it is not a one-liner test.
-    var functionName = Blockly.PHP.provideFunction_(
-        'math_isPrime',
-        [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ + '(n) {',
-          '  // https://en.wikipedia.org/wiki/Primality_test#Naive_methods',
-          '  if (n == 2 || n == 3) {',
-          '    return true;',
-          '  }',
-          '  // False if n is NaN, negative, is 1, or not whole.',
-          '  // And false if n is divisible by 2 or 3.',
-          '  if (isNaN(n) || n <= 1 || n % 1 != 0 || n % 2 == 0 ||' +
-            ' n % 3 == 0) {',
-          '    return false;',
-          '  }',
-          '  // Check all the numbers of form 6k +/- 1, up to sqrt(n).',
-          '  for (var x = 6; x <= Math.sqrt(n) + 1; x += 6) {',
-          '    if (n % (x - 1) == 0 || n % (x + 1) == 0) {',
-          '      return false;',
-          '    }',
-          '  }',
-          '  return true;',
-          '}']);
-    code = functionName + '(' + number_to_check + ')';
+    // Prime is a special case as it is not a one-liner test.    
+    code = 'gmp_prob_prime(' + number_to_check + ') != 0';
     return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   }
   switch (dropdown_property) {
@@ -221,8 +200,7 @@ Blockly.PHP['math_change'] = function(block) {
       Blockly.PHP.ORDER_ADDITION) || '0';
   var varName = Blockly.PHP.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-  return varName + ' = (typeof ' + varName + ' == \'number\' ? ' + varName +
-      ' : 0) + ' + argument0 + ';\n';
+  return '$'+varName+' += '+argument0 + ';\n'; 
 };
 
 // Rounding functions have a single operand.
@@ -233,55 +211,43 @@ Blockly.PHP['math_trig'] = Blockly.PHP['math_single'];
 Blockly.PHP['math_on_list'] = function(block) {
   // Math functions for lists.
   var func = block.getFieldValue('OP');
-  var list, code;
+  var list, code; 
   switch (func) {
     case 'SUM':
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_MEMBER) || '[]';
-      code = list + '.reduce(function(x, y) {return x + y;})';
+      list = Blockly.PHP.valueToCode(block, 'LIST', Blockly.PHP.ORDER_MEMBER) || '[]';
+      code = 'array_sum('+list +')';
       break;
     case 'MIN':
       list = Blockly.PHP.valueToCode(block, 'LIST',
           Blockly.PHP.ORDER_COMMA) || '[]';
-      code = 'Math.min.apply(null, ' + list + ')';
+      code = 'min(' + list + ')';
       break;
     case 'MAX':
       list = Blockly.PHP.valueToCode(block, 'LIST',
           Blockly.PHP.ORDER_COMMA) || '[]';
-      code = 'Math.max.apply(null, ' + list + ')';
+      code = 'max(' + list + ')';
       break;
     case 'AVERAGE':
-      // math_median([null,null,1,3]) == 2.0.
-      var functionName = Blockly.PHP.provideFunction_(
-          'math_mean',
-          [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-              '(myList) {',
-            '  return myList.reduce(function(x, y) {return x + y;}) / ' +
-                  'myList.length;',
-            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
-      code = functionName + '(' + list + ')';
+      // math_median([null,null,1,3]) == 2.0.      
+      list = Blockly.PHP.valueToCode(block, 'LIST', Blockly.PHP.ORDER_NONE) || '[]';
+      code = 'array_sum('+list+') / count('+list+')';
       break;
     case 'MEDIAN':
-      // math_median([null,null,1,3]) == 2.0.
-      var functionName = Blockly.PHP.provideFunction_(
-          'math_median',
-          [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-              '(myList) {',
-            '  var localList = myList.filter(function (x) ' +
-              '{return typeof x == \'number\';});',
-            '  if (!localList.length) return null;',
-            '  localList.sort(function(a, b) {return b - a;});',
-            '  if (localList.length % 2 == 0) {',
-            '    return (localList[localList.length / 2 - 1] + ' +
-              'localList[localList.length / 2]) / 2;',
-            '  } else {',
-            '    return localList[(localList.length - 1) / 2];',
-            '  }',
-            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
+      // math_median([null,null,1,3]) == 2.0.      
+      list = Blockly.PHP.valueToCode(block, 'LIST', Blockly.PHP.ORDER_NONE) || '[]';
+	  var functionName = Blockly.PHP.provideFunction_(
+	      'math_median',
+		  [ 'function '+Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_+' ($myList) {',
+		    '  $localList = $myList;',
+			'  if (!isset($localList[0])) return 0;',
+			'  sort($localList);',
+			'  if (count($localList) % 2 == 0) {',
+			'    return ($localList[count($localList) / 2 - 1] + $localList[count($localList) / 2]) / 2;',
+			'  } else {',
+			'    return $localList[(count($localList) - 1) / 2];',
+			'  }',
+			'}'
+		  ]);	  
       code = functionName + '(' + list + ')';
       break;
     case 'MODE':
@@ -290,73 +256,64 @@ Blockly.PHP['math_on_list'] = function(block) {
       // Mode of [3, 'x', 'x', 1, 1, 2, '3'] -> ['x', 1].
       var functionName = Blockly.PHP.provideFunction_(
           'math_modes',
-          [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-              '(values) {',
-            '  var modes = [];',
-            '  var counts = [];',
-            '  var maxCount = 0;',
-            '  for (var i = 0; i < values.length; i++) {',
-            '    var value = values[i];',
-            '    var found = false;',
-            '    var thisCount;',
-            '    for (var j = 0; j < counts.length; j++) {',
-            '      if (counts[j][0] === value) {',
-            '        thisCount = ++counts[j][1];',
-            '        found = true;',
-            '        break;',
-            '      }',
-            '    }',
-            '    if (!found) {',
-            '      counts.push([value, 1]);',
-            '      thisCount = 1;',
-            '    }',
-            '    maxCount = Math.max(thisCount, maxCount);',
-            '  }',
-            '  for (var j = 0; j < counts.length; j++) {',
-            '    if (counts[j][1] == maxCount) {',
-            '        modes.push(counts[j][0]);',
-            '    }',
-            '  }',
-            '  return modes;',
-            '}']);
+          [ 'function '+Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_+'($values) { ',
+		    '  $modes = array();',
+			'  $counts = array();',
+			'  $maxCount = 0;',
+			'  for ($i = 0; $i < count($values); $i++) {',
+			'    $value = $values[$i];',
+			'    $found = false;',
+			'    $thisCount = 0;',
+			'    for ($j = 0; $j < count($counts); $j++) {',
+			'      if ($counts[$j][0] === $value) {',
+			'        $thisCount = ++$counts[$j][1];',
+			'        $found = true;',
+			'        break;',
+			'      }',
+			'    }',
+			'    if (!$found) {',
+			'      array_push($counts, array($value, 1));',
+			'      $thisCount = 1;',
+			'    }',
+			'    $maxCount = max($thisCount, $maxCount);',
+			'  }',
+			'  for ($j = 0; $j < count($counts); $j++) {',
+			'    if ($counts[$j][1] == $maxCount) {',
+			'        array_push($modes, $counts[$j][0]);',
+			'    }',
+			'  }',
+			'  return $modes;',
+			'}']);
       list = Blockly.PHP.valueToCode(block, 'LIST',
           Blockly.PHP.ORDER_NONE) || '[]';
       code = functionName + '(' + list + ')';
       break;
-    case 'STD_DEV':
-      var functionName = Blockly.PHP.provideFunction_(
-          'math_standard_deviation',
-          [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-              '(numbers) {',
-            '  var n = numbers.length;',
-            '  if (!n) return null;',
-            '  var mean = numbers.reduce(function(x, y) {return x + y;}) / n;',
-            '  var variance = 0;',
-            '  for (var j = 0; j < n; j++) {',
-            '    variance += Math.pow(numbers[j] - mean, 2);',
-            '  }',
-            '  variance = variance / n;',
-            '  return Math.sqrt(variance);',
-            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
+    case 'STD_DEV':      
+      list = Blockly.PHP.valueToCode(block, 'LIST', Blockly.PHP.ORDER_NONE) || '[]';  
+	  var functionName = Blockly.PHP.provideFunction_(
+	      'math_standard_deviation',
+		  [ 'function '+Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_+' ($numbers) {',
+		    '  $n = count(numbers);',
+			'  if (!$n) return 0;',
+			'  $mean = array_sum($numbers)/$n;',			
+			'  $variance = 0;',
+			'  for ($j = 0; $j < $n; $j++) {',
+			'    $variance += pow($numbers[$j] - $mean, 2);',
+			'  }',
+			'  $variance = $variance / $n;',
+			'  $standard_dev = sqrt($variance);',
+			'  return $standard_dev;',			
+			'}'
+		  ]);		  
       code = functionName + '(' + list + ')';
       break;
-    case 'RANDOM':
-      var functionName = Blockly.PHP.provideFunction_(
-          'math_random_list',
-          [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-              '(list) {',
-            '  var x = Math.floor(Math.random() * list.length);',
-            '  return list[x];',
-            '}']);
-      list = Blockly.PHP.valueToCode(block, 'LIST',
-          Blockly.PHP.ORDER_NONE) || '[]';
-      code = functionName + '(' + list + ')';
+    case 'RANDOM':      
+      list = Blockly.PHP.valueToCode(block, 'LIST', Blockly.PHP.ORDER_NONE) || '[]';
+      code = list+'[array_rand(' + list + ')]';
       break;
     default:
       throw 'Unknown operator: ' + func;
-  }
+  }  
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
@@ -378,7 +335,7 @@ Blockly.PHP['math_constrain'] = function(block) {
       Blockly.PHP.ORDER_COMMA) || '0';
   var argument2 = Blockly.PHP.valueToCode(block, 'HIGH',
       Blockly.PHP.ORDER_COMMA) || 'Infinity';
-  var code = 'Math.min(Math.max(' + argument0 + ', ' + argument1 + '), ' +
+  var code = 'min(max(' + argument0 + ', ' + argument1 + '), ' +
       argument2 + ')';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
@@ -389,23 +346,11 @@ Blockly.PHP['math_random_int'] = function(block) {
       Blockly.PHP.ORDER_COMMA) || '0';
   var argument1 = Blockly.PHP.valueToCode(block, 'TO',
       Blockly.PHP.ORDER_COMMA) || '0';
-  var functionName = Blockly.PHP.provideFunction_(
-      'math_random_int',
-      [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-          '(a, b) {',
-        '  if (a > b) {',
-        '    // Swap a and b to ensure a is smaller.',
-        '    var c = a;',
-        '    a = b;',
-        '    b = c;',
-        '  }',
-        '  return Math.floor(Math.random() * (b - a + 1) + a);',
-        '}']);
-  var code = functionName + '(' + argument0 + ', ' + argument1 + ')';
+  var code = 'rand(' + argument0 + ', ' + argument1 + ')';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
 Blockly.PHP['math_random_float'] = function(block) {
   // Random fraction between 0 and 1.
-  return ['Math.random()', Blockly.PHP.ORDER_FUNCTION_CALL];
+  return ['rand()/getrandmax()', Blockly.PHP.ORDER_FUNCTION_CALL];
 };

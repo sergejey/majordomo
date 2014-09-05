@@ -73,6 +73,8 @@
     ${$matches[1]}=trim(win2utf($matches[2]));
    } else {
     //echo "Arg: ".$argv[$i]."\n";
+    $_GET['other_params'][]=$argv[$i];
+    $other_params[]=$argv[$i];
    }
   }
  }

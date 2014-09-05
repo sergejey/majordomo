@@ -43,22 +43,21 @@ Blockly.PHP['text_join'] = function(block) {
   } else if (block.itemCount_ == 1) {
     var argument0 = Blockly.PHP.valueToCode(block, 'ADD0',
         Blockly.PHP.ORDER_NONE) || '\'\'';
-    code = 'String(' + argument0 + ')';
+    code = '(String) ' + argument0 + ' ';
     return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   } else if (block.itemCount_ == 2) {
     var argument0 = Blockly.PHP.valueToCode(block, 'ADD0',
         Blockly.PHP.ORDER_NONE) || '\'\'';
     var argument1 = Blockly.PHP.valueToCode(block, 'ADD1',
         Blockly.PHP.ORDER_NONE) || '\'\'';
-    code = 'String(' + argument0 + ') + String(' + argument1 + ')';
+    code = '(String) ' + argument0 + ' . (String) ' + argument1 + ' ';
     return [code, Blockly.PHP.ORDER_ADDITION];
   } else {
     code = new Array(block.itemCount_);
     for (var n = 0; n < block.itemCount_; n++) {
-      code[n] = Blockly.PHP.valueToCode(block, 'ADD' + n,
-          Blockly.PHP.ORDER_COMMA) || '\'\'';
+      code[n] = '(String) '+Blockly.PHP.valueToCode(block, 'ADD' + n, Blockly.PHP.ORDER_COMMA) || '\'\'';
     }
-    code = '[' + code.join(',') + '].join(\'\')';
+    code = code.join('.');
     return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   }
 };
@@ -69,14 +68,14 @@ Blockly.PHP['text_append'] = function(block) {
       block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var argument0 = Blockly.PHP.valueToCode(block, 'TEXT',
       Blockly.PHP.ORDER_NONE) || '\'\'';
-  return varName + ' = String(' + varName + ') + String(' + argument0 + ');\n';
+  return '$'+varName + ' = (String) $' + varName + ' . (String) ' + argument0 + ';\n';
 };
 
 Blockly.PHP['text_length'] = function(block) {
   // String length.
   var argument0 = Blockly.PHP.valueToCode(block, 'VALUE',
       Blockly.PHP.ORDER_FUNCTION_CALL) || '\'\'';
-  return [argument0 + '.length', Blockly.PHP.ORDER_MEMBER];
+  return ['mb_strlen('+argument0 + ', "UTF-8")', Blockly.PHP.ORDER_MEMBER];
 };
 
 Blockly.PHP['text_isEmpty'] = function(block) {
@@ -89,12 +88,12 @@ Blockly.PHP['text_isEmpty'] = function(block) {
 Blockly.PHP['text_indexOf'] = function(block) {
   // Search the text for a substring.
   var operator = block.getFieldValue('END') == 'FIRST' ?
-      'indexOf' : 'lastIndexOf';
+      'mb_strpos' : 'mb_strrpos';
   var argument0 = Blockly.PHP.valueToCode(block, 'FIND',
       Blockly.PHP.ORDER_NONE) || '\'\'';
   var argument1 = Blockly.PHP.valueToCode(block, 'VALUE',
       Blockly.PHP.ORDER_MEMBER) || '\'\'';
-  var code = argument1 + '.' + operator + '(' + argument0 + ') + 1';
+  var code = operator + '(' + argument1 +', '+ argument0 + ', 0, "UTF-8")';  
   return [code, Blockly.PHP.ORDER_MEMBER];
 };
 
@@ -108,10 +107,10 @@ Blockly.PHP['text_charAt'] = function(block) {
       Blockly.PHP.ORDER_MEMBER) || '\'\'';
   switch (where) {
     case 'FIRST':
-      var code = text + '.charAt(0)';
+      var code = 'mb_substr('+text+', 0, 1, "UTF-8")';
       return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
     case 'LAST':
-      var code = text + '.slice(-1)';
+      var code = 'mb_substr('+text+', -1, 1, "UTF-8")';
       return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
     case 'FROM_START':
       // Blockly uses one-based indicies.
@@ -122,20 +121,13 @@ Blockly.PHP['text_charAt'] = function(block) {
         // If the index is dynamic, decrement it in code.
         at += ' - 1';
       }
-      var code = text + '.charAt(' + at + ')';
+      var code = 'mb_substr('+text+', '+at+', mb_strlen('+text+', "UTF-8"), "UTF-8")';
       return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
     case 'FROM_END':
-      var code = text + '.slice(-' + at + ').charAt(0)';
+      var code = 'mb_substr('+text+', -'+at+', mb_strlen('+text+', "UTF-8"), "UTF-8")';
       return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
     case 'RANDOM':
-      var functionName = Blockly.PHP.provideFunction_(
-          'text_random_letter',
-          [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-              '(text) {',
-            '  var x = Math.floor(Math.random() * text.length);',
-            '  return text[x];',
-            '}']);
-      code = functionName + '(' + text + ')';
+	  var code = 'mb_substr('+text+', rand(0, mb_strlen('+text+', "UTF-8")-1), 1, "UTF-8")';
       return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   }
   throw 'Unhandled option (text_charAt).';
@@ -154,98 +146,63 @@ Blockly.PHP['text_getSubstring'] = function(block) {
   if (where1 == 'FIRST' && where2 == 'LAST') {
     var code = text;
   } else {
-    var functionName = Blockly.PHP.provideFunction_(
-        'text_get_substring',
-        [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-            '(text, where1, at1, where2, at2) {',
-          '  function getAt(where, at) {',
-          '    if (where == \'FROM_START\') {',
-          '      at--;',
-          '    } else if (where == \'FROM_END\') {',
-          '      at = text.length - at;',
-          '    } else if (where == \'FIRST\') {',
-          '      at = 0;',
-          '    } else if (where == \'LAST\') {',
-          '      at = text.length - 1;',
-          '    } else {',
-          '      throw \'Unhandled option (text_getSubstring).\';',
-          '    }',
-          '    return at;',
-          '  }',
-          '  at1 = getAt(where1, at1);',
-          '  at2 = getAt(where2, at2) + 1;',
-          '  return text.slice(at1, at2);',
-          '}']);
-    var code = functionName + '(' + text + ', \'' +
-        where1 + '\', ' + at1 + ', \'' + where2 + '\', ' + at2 + ')';
+    // TODO Nide test
+	var code = 'mb_substr('+ text+', '+at1+', '+(at2-at1+1)+', "UTF-8")'  
   }
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
 Blockly.PHP['text_changeCase'] = function(block) {
   // Change capitalization.
+
   var OPERATORS = {
-    'UPPERCASE': '.toUpperCase()',
-    'LOWERCASE': '.toLowerCase()',
-    'TITLECASE': null
+    'UPPERCASE': 'MB_CASE_UPPER',
+    'LOWERCASE': 'MB_CASE_LOWER',
+    'TITLECASE': 'MB_CASE_TITLE'
   };
-  var operator = OPERATORS[block.getFieldValue('CASE')];
-  var code;
-  if (operator) {
-    // Upper and lower case are functions built into PHP.
-    var argument0 = Blockly.PHP.valueToCode(block, 'TEXT',
-        Blockly.PHP.ORDER_MEMBER) || '\'\'';
-    code = argument0 + operator;
-  } else {
-    // Title case is not a native PHP function.  Define one.
-    var functionName = Blockly.PHP.provideFunction_(
-        'text_toTitleCase',
-        [ 'function ' +
-            Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ + '(str) {',
-          '  return str.replace(/\\S+/g,',
-          '      function(txt) {return txt[0].toUpperCase() + ' +
-              'txt.substring(1).toLowerCase();});',
-          '}']);
-    var argument0 = Blockly.PHP.valueToCode(block, 'TEXT',
-        Blockly.PHP.ORDER_NONE) || '\'\'';
-    code = functionName + '(' + argument0 + ')';
-  }
+  var operator = OPERATORS[block.getFieldValue('CASE')];   
+  var argument0 = Blockly.PHP.valueToCode(block, 'TEXT', Blockly.PHP.ORDER_MEMBER) || '\'\'';
+  var code = 'mb_convert_case('+argument0+', '+operator+', "UTF-8")';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
 Blockly.PHP['text_trim'] = function(block) {
   // Trim spaces.
   var OPERATORS = {
-    'LEFT': '.trimLeft()',
-    'RIGHT': '.trimRight()',
-    'BOTH': '.trim()'
+    'LEFT': 'ltrim',
+    'RIGHT': 'rtrim',
+    'BOTH': 'trim'
   };
   var operator = OPERATORS[block.getFieldValue('MODE')];
   var argument0 = Blockly.PHP.valueToCode(block, 'TEXT',
       Blockly.PHP.ORDER_MEMBER) || '\'\'';
-  return [argument0 + operator, Blockly.PHP.ORDER_FUNCTION_CALL];
+  return [operator+'('+argument0+')', Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
 Blockly.PHP['text_print'] = function(block) {
   // Print statement.
   var argument0 = Blockly.PHP.valueToCode(block, 'TEXT',
       Blockly.PHP.ORDER_NONE) || '\'\'';
-  return 'window.alert(' + argument0 + ');\n';
+  return 'echo ' + argument0 + ';\n';
 };
 
 Blockly.PHP['text_prompt'] = function(block) {
   // Prompt function (internal message).
+  /*
   var msg = Blockly.PHP.quote_(block.getFieldValue('TEXT'));
   var code = 'window.prompt(' + msg + ')';
   var toNumber = block.getFieldValue('TYPE') == 'NUMBER';
   if (toNumber) {
     code = 'parseFloat(' + code + ')';
   }
+  */
+  code = '';  
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
 Blockly.PHP['text_prompt_ext'] = function(block) {
   // Prompt function (external message).
+  /*
   var msg = Blockly.PHP.valueToCode(block, 'TEXT',
       Blockly.PHP.ORDER_NONE) || '\'\'';
   var code = 'window.prompt(' + msg + ')';
@@ -253,5 +210,7 @@ Blockly.PHP['text_prompt_ext'] = function(block) {
   if (toNumber) {
     code = 'parseFloat(' + code + ')';
   }
+  */
+  code = '';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };

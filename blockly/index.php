@@ -234,11 +234,6 @@ MajorDoMo to-do:
       <block type="text_getSubstring"></block>
       <block type="text_changeCase"></block>
       <block type="text_trim"></block>
-      <block type="text_prompt_ext">
-        <value name="TEXT">
-          <block type="text"></block>
-        </value>
-      </block>
     </category>
     <category name="<?echo LANG_LISTS;?>">
       <block type="lists_create_empty"></block>
