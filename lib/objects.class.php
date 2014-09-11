@@ -165,8 +165,19 @@
 * @access public
 */
   function processTitle($title, $object=0) {
+
+   if (!$title) {
+    return $title;
+   }
+
    startMeasure('processTitle');
-   startMeasure('processTitle ['.$title.']');
+
+   $in_title=substr($title, 0, 100);
+
+   startMeasure('processTitle ['.$in_title.']');
+
+   if ($in_title!='') {
+
 
    if (preg_match('/\[#.+?#\]/is', $title)) {
     if ($object) {
@@ -205,7 +216,9 @@
     }
    }
 
-   endMeasure('processTitle ['.$title.']', 1);
+   }
+
+   endMeasure('processTitle ['.$in_title.']', 1);
    endMeasure('processTitle', 1);
    return $title;
   }

@@ -22,9 +22,11 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blockly_compressed.js"></script>
     <script type="text/javascript" src="blocks_compressed.js"></script>
     <script type="text/javascript" src="blocks/majordomo.js"></script>
+    <script type="text/javascript" src="blocks/majordomo_objects.js"></script>
     <script type="text/javascript" src="msg/js/<?echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
     <script type="text/javascript" src="generators/php.js"></script>
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
+    <script type="text/javascript" src="generators/php/majordomo_objects.js"></script>
     <script type="text/javascript" src="generators/php/colour.js"></script>
     <script type="text/javascript" src="generators/php/lists.js"></script>
     <script type="text/javascript" src="generators/php/logic.js"></script>
@@ -123,27 +125,9 @@ $ctl = new control_modules();
       <block type="colour_rgb"></block>
       <block type="colour_blend"></block>
     </category>
-
-MajorDoMo to-do:
-//runScript with params
-//callMethod
-//callMethod with params
-//getURL
-//getURL (content)
-//getRandomLine (from file)
-//playSound
-//timeNow
-//isWeekEnd
-//isWorkDay
-//timeIs
-//timeBefore
-//timeAfter
-//timeBetween
-//clearTimeOut
-//setTimeOut
   -->
   <xml id="toolbox" style="display: none">
-    <category name="MajorDoMo">
+    <category name="<?echo LANG_GENERAL;?>">
       <block type="majordomo_say_simple">
         <value name="TEXT">
           <block type="text"></block>
@@ -154,16 +138,54 @@ MajorDoMo to-do:
           <block type="text"></block>
         </value>
       </block>
-      <block type="majordomo_getglobal">
-        <value name="PROPERTY">
-          <block type="text"></block>
-        </value>
-        <value name="OBJECT">
+      <block type="majordomo_runscriptwithparams">
+        <value name="TEXT">
           <block type="text"></block>
         </value>
       </block>
       <block type="majordomo_say">
         <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_playsound">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_geturl">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_callurl">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_getrandomline">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_phpexpression">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_phpcode">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+    </category>
+
+    <category name="<?echo LANG_SECTION_OBJECTS;?>">
+      <block type="majordomo_getglobal">
+        <value name="PROPERTY">
+          <block type="text"></block>
+        </value>
+        <value name="OBJECT">
           <block type="text"></block>
         </value>
       </block>
@@ -178,13 +200,78 @@ MajorDoMo to-do:
           <block type="text"></block>
         </value>
       </block>
-      <block type="majordomo_say">
-        <value name="TEXT">
+
+      <block type="majordomo_callmethod">
+        <value name="METHOD">
+          <block type="text"></block>
+        </value>
+        <value name="OBJECT">
+          <block type="text"></block>
+        </value>
+      </block>
+
+      <block type="majordomo_callmethodwithparams">
+        <value name="METHOD">
+          <block type="text"></block>
+        </value>
+        <value name="OBJECT">
+          <block type="text"></block>
+        </value>
+      </block>
+
+      <block type="majordomo_callmethodcurrent">
+        <value name="METHOD">
+          <block type="text"></block>
+        </value>
+      </block>
+
+      <block type="majordomo_callmethodwithparamscurrent">
+        <value name="METHOD">
+          <block type="text"></block>
+        </value>
+      </block>
+
+      <block type="majordomo_getcurrent">
+        <value name="PROPERTY">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_setcurrent">
+        <value name="VALUE">
+          <block type="text"></block>
+        </value>
+        <value name="PROPERTY">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_keyvalue">
+        <value name="KEY">
+          <block type="text"></block>
+        </value>
+        <value name="VALUE">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_paramvalue">
+        <value name="KEY">
+          <block type="text"></block>
+        </value>
+        <value name="VALUE">
+          <block type="text"></block>
+        </value>
+      </block>
+      <block type="majordomo_getobjects">
+        <value name="CLASS">
           <block type="text"></block>
         </value>
       </block>
 
     </category>
+
+    <category name="<?echo LANG_TIME;?>">
+     
+    </category>
+
     <category name="<?echo LANG_LOGIC;?>">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>

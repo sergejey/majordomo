@@ -53,6 +53,13 @@ Blockly.PHP['majordomo_runscript'] = function(block) {
   return code;
 };
 
+Blockly.PHP['majordomo_runscriptwithparams'] = function(block) {
+  var msg = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '\'\'';
+  var params = Blockly.PHP.valueToCode(block, 'PARAMS',Blockly.PHP.ORDER_NONE) || 'array()';
+  var code = 'runScript(' + msg + ', ' + params + ');\n';
+  return code;
+};
+
 Blockly.PHP['majordomo_setglobal'] = function(block) {
   var value = Blockly.PHP.valueToCode(block, 'VALUE',Blockly.PHP.ORDER_NONE) || '\'\'';
   var object = Blockly.PHP.valueToCode(block, 'OBJECT',Blockly.PHP.ORDER_NONE) || 'ThisComputer';
@@ -68,18 +75,39 @@ Blockly.PHP['majordomo_getglobal'] = function(block) {
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
-//runScript with params
-//callMethod
-//getURL
-//getURL (content)
-//getRandomLine (from file)
-//playSound
-//timeNow
-//isWeekEnd
-//isWorkDay
-//timeIs
-//timeBefore
-//timeAfter
-//timeBetween
-//clearTimeOut
-//setTimeOut
+Blockly.PHP['majordomo_phpexpression'] = function(block) {
+  var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var code = text;
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+Blockly.PHP['majordomo_getrandomline'] = function(block) {
+  var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'getRandomLine('+text+')';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+Blockly.PHP['majordomo_geturl'] = function(block) {
+  var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'getURL('+text+', 0)';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+Blockly.PHP['majordomo_callurl'] = function(block) {
+  var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'getURL('+text+', 0);\n';
+  return code;
+};
+
+Blockly.PHP['majordomo_playsound'] = function(block) {
+  var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'playSound('+text+');\n';
+  return code;
+};
+
+Blockly.PHP['majordomo_phpcode'] = function(block) {
+  //var text = Blockly.PHP.value(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
+  var code = 'eval('+text+');\n';
+  return code;
+};

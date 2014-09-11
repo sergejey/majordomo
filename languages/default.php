@@ -880,6 +880,8 @@ $dictionary=array(
 
 'CODE_TYPE'=>'Use for scripting',
 
+'GENERAL'=>'General',
+'TIME'=>'Time',
 'LOGIC'=>'Logic',
 'LOOPS'=>'Loops',
 'MATH'=>'Math',

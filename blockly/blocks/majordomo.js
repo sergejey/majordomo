@@ -97,7 +97,29 @@ Blockly.Blocks['majordomo_runscript'] = {
   }
 };
 
-Blockly.Blocks['majordomo_getglobal'] = {
+Blockly.Blocks['majordomo_phpcode'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this
+     .appendValueInput('TEXT')
+     .appendField(Blockly.Msg.MAJORDOMO_PHPCODE);
+    this.setOutput(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+  }
+};
+
+
+Blockly.Blocks['majordomo_phpexpression'] = {
   /**
    * Block for null data type.
    * @this Blockly.Block
@@ -108,63 +130,131 @@ Blockly.Blocks['majordomo_getglobal'] = {
     this.setColour(220);
 
     this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_GETGLOBAL);
-    this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_PROPERTY);
-    this.appendValueInput("PROPERTY")
-        .setCheck("String");
-
-    this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_OBJECT);
-    this.appendValueInput("OBJECT")
+        .appendField(Blockly.Msg.MAJORDOMO_PHPEXPRESSION);
+    this.appendValueInput("TEXT")
         .setCheck("String");
     this.setInputsInline(true);
-
     this.setOutput(true);
-    this.setTooltip('');
+    var thisBlock = this;
+
   }
 };
 
-
-Blockly.Blocks['majordomo_setglobal'] = {
+Blockly.Blocks['majordomo_getrandomline'] = {
   /**
    * Block for null data type.
    * @this Blockly.Block
    */
   init: function() {
-
+    // Assign 'this' to a variable for use in the closure below.
     var thisBlock = this;
     this.setColour(220);
 
     this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_SETGLOBAL);
-    this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_PROPERTY);
-    this.appendValueInput("PROPERTY")
+        .appendField(Blockly.Msg.MAJORDOMO_GETRANDOMLINE);
+    this.appendValueInput("TEXT")
         .setCheck("String");
+    this.setInputsInline(true);
+    this.setOutput(true);
+    var thisBlock = this;
+
+  }
+};
+
+Blockly.Blocks['majordomo_geturl'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
     this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_OBJECT);
-    this.appendValueInput("OBJECT")
+        .appendField(Blockly.Msg.MAJORDOMO_GETURL);
+    this.appendValueInput("TEXT")
         .setCheck("String");
+    this.setInputsInline(true);
+    this.setOutput(true);
+    var thisBlock = this;
+
+  }
+};
+
+Blockly.Blocks['majordomo_callurl'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
     this.appendDummyInput()
-        .appendField(Blockly.Msg.MAJORDOMO_SETTO);
-    this.appendValueInput("VALUE")
+        .appendField(Blockly.Msg.MAJORDOMO_CALLURL);
+    this.appendValueInput("TEXT")
         .setCheck("String");
 
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTooltip('');
+
+
+  }
+};
+
+Blockly.Blocks['majordomo_playsound'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_PLAYSOUND);
+    this.appendValueInput("TEXT")
+        .setCheck("String");
+
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+
+
   }
 };
 
 
-//runScript with params
-//callMethod
-//getURL
-//getURL (content)
-//getRandomLine (from file)
-//playSound
+Blockly.Blocks['majordomo_runscriptwithparams'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    // Assign 'this' to a variable for use in the closure below.
+    var thisBlock = this;
+    this.setColour(220);
+
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_RUNSCRIPT);
+    this.appendValueInput("TEXT")
+        .setCheck("String");
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.MAJORDOMO_PARAMS);
+    this.appendValueInput("PARAMS")
+        .setCheck("Array");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+
+  }
+};
+
+
 //timeNow
 //isWeekEnd
 //isWorkDay
@@ -172,5 +262,5 @@ Blockly.Blocks['majordomo_setglobal'] = {
 //timeBefore
 //timeAfter
 //timeBetween
-//clearTimeOut
 //setTimeOut
+//clearTimeOut

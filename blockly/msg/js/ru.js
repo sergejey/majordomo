@@ -364,10 +364,28 @@ Blockly.Msg.VARIABLES_SET_TOOLTIP = "Присваивает переменной
 Blockly.Msg.MAJORDOMO_SAY = "произнести";
 Blockly.Msg.MAJORDOMO_PRIORITY = "с приоритетом";
 Blockly.Msg.MAJORDOMO_RUNSCRIPT = "запустить сценарий";
+Blockly.Msg.MAJORDOMO_PARAMS = "с параметрами";
 Blockly.Msg.MAJORDOMO_OBJECT = "объекта";
-Blockly.Msg.MAJORDOMO_PROPERTY = "свойства";
-Blockly.Msg.MAJORDOMO_GETGLOBAL = "получить значение";
-Blockly.Msg.MAJORDOMO_SETGLOBAL = "установить значение";
+Blockly.Msg.MAJORDOMO_PROPERTY = "свойство";
+Blockly.Msg.MAJORDOMO_RUNMETHOD = "запустить метод";
+Blockly.Msg.MAJORDOMO_RUNMETHODCURRENT = "запустить для текущего объекта метод";
+Blockly.Msg.MAJORDOMO_GETGLOBAL = "получить";
+Blockly.Msg.MAJORDOMO_SETGLOBAL = "установить";
+Blockly.Msg.MAJORDOMO_PARAM = "Параметр";
+Blockly.Msg.MAJORDOMO_KEY = "Ключ";
+Blockly.Msg.MAJORDOMO_VALUE = "значение";
+Blockly.Msg.MAJORDOMO_GETOBJECTS = "список объектов класса";
+
+Blockly.Msg.MAJORDOMO_GETCURRENT = "получить для текущего объекта";
+Blockly.Msg.MAJORDOMO_SETCURRENT = "установить для текущего объекта";
+
+Blockly.Msg.MAJORDOMO_PHPEXPRESSION = "PHP-выражение";
+Blockly.Msg.MAJORDOMO_PHPCODE = "PHP-код";
+Blockly.Msg.MAJORDOMO_GETRANDOMLINE = "случайная строка из файла";
+Blockly.Msg.MAJORDOMO_GETURL = "получить страницу по ссылке";
+Blockly.Msg.MAJORDOMO_CALLURL = "HTTP-запрос по ссылке";
+Blockly.Msg.MAJORDOMO_PLAYSOUND = "проиграть звуковой файл";
+
 Blockly.Msg.MAJORDOMO_SETTO = "в";
 
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;

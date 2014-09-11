@@ -441,7 +441,7 @@ function admin(&$out) {
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
       echo '<td>';
-      echo $res[$i]['OPERATION'].'&nbsp;';
+      echo htmlspecialchars($res[$i]['OPERATION']).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['TOTAL'].'&nbsp;';
@@ -455,7 +455,7 @@ function admin(&$out) {
       echo '</tr>';
      }
      echo '</table>';     
-     SQLExec("DELETE FROM performance_log WHERE ADDED<'".date('Y-m-d H:i:s', time()-10*60)."'");
+     SQLExec("DELETE FROM performance_log WHERE ADDED<'".date('Y-m-d H:i:s', time()-60*60)."'");
 
     } elseif ($this->view_mode=='methods') {
      $qry="1";

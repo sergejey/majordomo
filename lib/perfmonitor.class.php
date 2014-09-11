@@ -64,7 +64,7 @@ function getmicrotime(){
    global $db;
    if ($db->dbh) {
     $rec=array();
-    $rec['OPERATION']=$mpoint;
+    $rec['OPERATION']=substr($mpoint, 0, 200);
     $rec['COUNTER']=1;
     $rec['TIMEUSED']=$perf_data[$mpoint]['TIME'];
     $rec['ADDED']=date('Y-m-d H:i:s');

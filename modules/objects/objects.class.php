@@ -456,7 +456,10 @@ curl_close($ch);
  function callMethod($name, $params=0, $parent=0) {
 
   startMeasure('callMethod');
-  startMeasure('callMethod ('.$name.')');
+
+  $original_method_name=$this->object_title.'.'.$name;
+
+  startMeasure('callMethod ('.$original_method_name.')');
 
  if (!$parent) {
   $id=$this->getMethodByName($name, $this->class_id, $this->id);
@@ -534,12 +537,12 @@ curl_close($ch);
 
    }
    endMeasure('callMethod', 1);
-   endMeasure('callMethod ('.$name.')', 1);
+   endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
     $this->callMethod($name, $params, 1);
    }
   } else {
-   endMeasure('callMethod ('.$name.')', 1);
+   endMeasure('callMethod ('.$original_method_name.')', 1);
    endMeasure('callMethod', 1);
    return false;
   }

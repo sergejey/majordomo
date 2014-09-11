@@ -153,9 +153,8 @@ Blockly.PHP['controls_forEach'] = function(block) {
   var branch = Blockly.PHP.statementToCode(block, 'DO');
   branch = Blockly.PHP.addLoopTrap(branch, block.id);
   var indexVar = Blockly.PHP.variableDB_.getDistinctName(variable0 + '_index', Blockly.Variables.NAME_TYPE);
-  //branch = Blockly.PHP.INDENT + variable0 + ' = ' + argument0 + '[' + indexVar + '];\n' + branch;
-  //var code = 'foreach ($' + indexVar + ' in  ' + argument0 + ') {\n' + branch + '}\n';
-  var code = 'foreach ($' + variable0 + ' in  ' + argument0 + ') {\n' +   branch + '}\n';
+  
+  var code = 'foreach (' +argument0+ ' as  $' +variable0+ ') {\n' +   branch + '}\n';
   return code;
 };
 

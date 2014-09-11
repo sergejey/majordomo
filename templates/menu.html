@@ -28,8 +28,8 @@
  }
  function runCycleThroughWeb() {
   clearTimeout(cycleTimer);
-  AJAXRequest('/scripts/cycle_states.php?once=1', 'runCycleThroughWebReceived', '');
-  cycleTimer=window.setTimeout ('runCycleThroughWeb();', 30000);
+  AJAXRequest('<#ROOTHTML#>scripts/cycle_states.php?once=1', 'runCycleThroughWebReceived', '');
+  cycleTimer=window.setTimeout ('runCycleThroughWeb();', 5*60*1000);
   return false;
  }
  $(document).ready(function(){
