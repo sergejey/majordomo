@@ -319,7 +319,3 @@ Blockly.Blocks['majordomo_getobjects'] = {
 };
 
 
-//setcurrentproperty
-//getcurrentproperty
-//callMethod
-//callMethod with params

@@ -25,7 +25,7 @@
   var thisCheck = $(this);
    if (thisCheck.val()==1) {
     $('#xml_row').show();
-    //$('#[#CODE_FIELD#]_area').hide();
+    $('#[#CODE_FIELD#]_area').hide();
    } else {
     $('#xml_row').hide();
     $('#[#CODE_FIELD#]_area').show();
@@ -38,7 +38,7 @@
 [#if CODE_TYPE="1"#]
 <script language="javascript" type="text/javascript">
 $(function() {
- //$('#[#CODE_FIELD#]_area').hide();
+ $('#[#CODE_FIELD#]_area').hide();
 });
 </script>
 [#else#]
@@ -55,6 +55,9 @@ editAreaLoader.init({
 
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
 [ <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();"><#LANG_EDIT#></a>
-<a href="#" onClick="return [#CODE_FIELD#]_editBlockly();" style="color:#888888">// <#LANG_EDIT#> (old)</a> ]
+<!--#
+<a href="#" onClick="return [#CODE_FIELD#]_editBlockly();" style="color:#888888">// <#LANG_EDIT#> (old)</a> 
+#-->
+]
 <textarea name="xml" id="xml_code" rows="5" cols="60" class="span10" style="display:none">[#XML#]</textarea>
 </div>

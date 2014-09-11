@@ -23,10 +23,12 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks_compressed.js"></script>
     <script type="text/javascript" src="blocks/majordomo.js"></script>
     <script type="text/javascript" src="blocks/majordomo_objects.js"></script>
+    <script type="text/javascript" src="blocks/majordomo_time.js"></script>
     <script type="text/javascript" src="msg/js/<?echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
     <script type="text/javascript" src="generators/php.js"></script>
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_objects.js"></script>
+    <script type="text/javascript" src="generators/php/majordomo_time.js"></script>
     <script type="text/javascript" src="generators/php/colour.js"></script>
     <script type="text/javascript" src="generators/php/lists.js"></script>
     <script type="text/javascript" src="generators/php/logic.js"></script>
@@ -269,7 +271,46 @@ $ctl = new control_modules();
     </category>
 
     <category name="<?echo LANG_TIME;?>">
-     
+      <block type="majordomo_timeis">
+        <value name="TIME">
+          <block type="text"></block>
+        </value>
+      </block>     
+      <block type="majordomo_timebefore">
+        <value name="TIME">
+          <block type="text"></block>
+        </value>
+      </block>     
+      <block type="majordomo_timeafter">
+        <value name="TIME">
+          <block type="text"></block>
+        </value>
+      </block>     
+      <block type="majordomo_timebetween">
+        <value name="TIME1">
+          <block type="text"></block>
+        </value>
+        <value name="TIME2">
+          <block type="text"></block>
+        </value>
+      </block>     
+      <block type="majordomo_cleartimeout">
+        <value name="TIMER">
+          <block type="text"></block>
+        </value>
+      </block>     
+      <block type="majordomo_settimeout">
+        <value name="TIMER">
+          <block type="text"></block>
+        </value>
+        <value name="DELAY">
+          <block type="text"></block>
+        </value>
+      </block>     
+
+      <block type="majordomo_timenow"></block>
+      <block type="majordomo_isweekend"></block>
+      <block type="majordomo_isworkday"></block>
     </category>
 
     <category name="<?echo LANG_LOGIC;?>">
