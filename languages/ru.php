@@ -790,6 +790,24 @@ $dictionary=array(
 'PRESSURE'=>'Давление',//lib/OpenWeather/OpenWeather.php;
 'HUMIDITY'=>'Влажность',//lib/OpenWeather/OpenWeather.php;
 'GET_AT'=>'Обновлено',//lib/OpenWeather/OpenWeather.php;
+'N'=>'С',//lib/OpenWeather/OpenWeather.php;
+'NNE'=>'ССВ',//lib/OpenWeather/OpenWeather.php;
+'NE'=>'СВ',//lib/OpenWeather/OpenWeather.php;
+'ENE'=>'ВСВ',//lib/OpenWeather/OpenWeather.php;
+'E'=>'В',//lib/OpenWeather/OpenWeather.php;
+'ESE'=>'ВЮВ',//lib/OpenWeather/OpenWeather.php;
+'SE'=>'ЮВ',//lib/OpenWeather/OpenWeather.php;
+'SSE'=>'ЮЮВ',//lib/OpenWeather/OpenWeather.php;
+'S'=>'Ю',//lib/OpenWeather/OpenWeather.php;
+'SSW'=>'ЮЮЗ',//lib/OpenWeather/OpenWeather.php;
+'SW'=>'ЮЗ',//lib/OpenWeather/OpenWeather.php;
+'WSW'=>'ЗЮЗ',//lib/OpenWeather/OpenWeather.php;
+'W'=>'З',//lib/OpenWeather/OpenWeather.php;
+'WNW'=>'ЗСЗ',//lib/OpenWeather/OpenWeather.php;
+'NW'=>'CЗ',//lib/OpenWeather/OpenWeather.php;
+'NNW'=>'CCЗ',//lib/OpenWeather/OpenWeather.php;
+
+
 
 'LONG_OPERATION_WARNING'=>'Внимание: данная операция может занять длительное время (несколько минут). Пожалуйста, дождитесь завершения после запуска.',
 
