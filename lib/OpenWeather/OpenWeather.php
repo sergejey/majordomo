@@ -176,10 +176,10 @@ class OpenWeather
          $widget .= "   <tbody>";
          $widget .= "      <tr>";
          $widget .= "         <td><#LANG_WIND#></td>";
-         $widget .= "         <td><#LANG_SPEED#> " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
+         $widget .= "         <td><#LANG_SPEED#> " . $weather->wind->speed . "<#LANG_M_S#> <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
          $widget .= "      </tr>";
          
-         $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "mmHg":  $weather->main->pressure . "hpa";
+         $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "<#LANG_MMHG#>":  $weather->main->pressure . "<#LANG_HPA#>";
          
          $widget .= "     <tr><td><#LANG_PRESSURE#></td><td>" . $pressure . "</td></tr>";
          $widget .= "     <tr><td><#LANG_HUMIDITY#></td><td>".  $weather->main->humidity . "%</td></tr>";
@@ -229,13 +229,13 @@ class OpenWeather
          $widget .= "   <tbody>";
          $widget .= "      <tr>";
          $widget .= "         <td><#LANG_WIND#></td>";
-         $widget .= "         <td><#LANG_SPEED#> " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
+         $widget .= "         <td><#LANG_SPEED#> " . $weather->wind->speed . "<#LANG_M_S#> <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
          $widget .= "      </tr>";
          
-         $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "mmHg":  $weather->main->pressure . "hpa";
+         $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "<#LANG_MMHG#>":  $weather->main->pressure . "<#LANG_HPA#>";
          
          $widget .= "     <tr><td><#LANG_PRESSURE#></td><td>" . $pressure . "</td></tr>";
-         $widget .= "     <tr><td><#LANG_HUMIDITY#>/td><td>".  $weather->main->humidity . "%</td></tr>";
+         $widget .= "     <tr><td><#LANG_HUMIDITY#></td><td>".  $weather->main->humidity . "%</td></tr>";
          $widget .= "  </tbody>";
          $widget .= "</table>";
       }
