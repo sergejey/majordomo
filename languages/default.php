@@ -800,6 +800,7 @@ $dictionary=array(
 'WIND'=>'Wind',//lib/OpenWeather/OpenWeather.php;
 'PRESSURE'=>'Pressure',//lib/OpenWeather/OpenWeather.php;
 'HUMIDITY'=>'Humidity',//lib/OpenWeather/OpenWeather.php;
+'GET_AT'=>'get at',//lib/OpenWeather/OpenWeather.php;
 
 
 'LONG_OPERATION_WARNING'=>'Note: This operation can take up to few minutes.<Br>Please, be patient :)',

@@ -789,6 +789,7 @@ $dictionary=array(
 'WIND'=>'Ветер',//lib/OpenWeather/OpenWeather.php;
 'PRESSURE'=>'Давление',//lib/OpenWeather/OpenWeather.php;
 'HUMIDITY'=>'Влажность',//lib/OpenWeather/OpenWeather.php;
+'GET_AT'=>'Обновлено',//lib/OpenWeather/OpenWeather.php;
 
 'LONG_OPERATION_WARNING'=>'Внимание: данная операция может занять длительное время (несколько минут). Пожалуйста, дождитесь завершения после запуска.',
 
