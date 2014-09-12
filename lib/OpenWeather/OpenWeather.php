@@ -172,14 +172,14 @@ class OpenWeather
          $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
          $widget .= "   <tbody>";
          $widget .= "      <tr>";
-         $widget .= "         <td>Wind</td>";
-         $widget .= "         <td>Speed " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
+         $widget .= "         <td><#LANG_WIND#></td>";
+         $widget .= "         <td><#LANG_SPEED#> " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
          $widget .= "      </tr>";
          
          $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "mmHg":  $weather->main->pressure . "hpa";
          
-         $widget .= "     <tr><td>Pressure</td><td>" . $pressure . "</td></tr>";
-         $widget .= "     <tr><td>Humidity</td><td>".  $weather->main->humidity . "%</td></tr>";
+         $widget .= "     <tr><td><#LANG_PRESSURE#></td><td>" . $pressure . "</td></tr>";
+         $widget .= "     <tr><td><#LANG_HUMIDITY#></td><td>".  $weather->main->humidity . "%</td></tr>";
          $widget .= "  </tbody>";
          $widget .= "</table>";
       }
@@ -225,14 +225,14 @@ class OpenWeather
          $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
          $widget .= "   <tbody>";
          $widget .= "      <tr>";
-         $widget .= "         <td>Wind</td>";
-         $widget .= "         <td>Speed " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
+         $widget .= "         <td><#LANG_WIND#></td>";
+         $widget .= "         <td><#LANG_SPEED#> " . $weather->wind->speed . "m/s <br />" . OpenWeather::GetWindDirection($weather->wind->deg) . "(" . $weather->wind->deg . "°)</td>";
          $widget .= "      </tr>";
          
          $pressure = $vUnits == "metric" ?  OpenWeather::ConvertPressure($weather->main->pressure, "hpa", "mmhg") . "mmHg":  $weather->main->pressure . "hpa";
          
-         $widget .= "     <tr><td>Pressure</td><td>" . $pressure . "</td></tr>";
-         $widget .= "     <tr><td>Humidity</td><td>".  $weather->main->humidity . "%</td></tr>";
+         $widget .= "     <tr><td><#LANG_PRESSURE#></td><td>" . $pressure . "</td></tr>";
+         $widget .= "     <tr><td><#LANG_HUMIDITY#>/td><td>".  $weather->main->humidity . "%</td></tr>";
          $widget .= "  </tbody>";
          $widget .= "</table>";
       }
