@@ -33,7 +33,10 @@ class OpenWeather
          
       if (!isset($city)) return null;
          
-      $query = "http://api.openweathermap.org/data/2.5/weather?q=" . $city . "&units=" . $vUnits;
+      if (SETTINGS_SITE_LANGUAGE == 'ru')
+      	$query = "http://api.openweathermap.org/data/2.5/weather?q=" . $city . "&lang=ru&units=" . $vUnits;
+      else
+      	$query = "http://api.openweathermap.org/data/2.5/weather?q=" . $city . "&units=" . $vUnits;
          
       $data = json_decode(file_get_contents($query));
          
@@ -163,7 +166,7 @@ class OpenWeather
          $widget .= $weather->main->temp;
          $widget .= $vUnits == "metric" ? " °C" : " °F";
          $widget .= "</h2>";
-         $widget .= "<p>" . $weather->weather[0]->description . "</p>";
+         $widget .= "<p>" . $weather->weather[0]->description . "</p>"; 
          
          $lm_date = date("D M j G:i:s T Y", $weather->dt);
          
