@@ -112,12 +112,12 @@
 <tr>
  <td colspan=2 align=center>
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
  [#endif ID#]
  &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
+ <a href="?" class="btn"><#LANG_CANCEL#></a>
  </td>
 </tr>
 <input type="hidden" name="id" value="<#ID#>">

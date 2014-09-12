@@ -360,8 +360,10 @@ function usual(&$out) {
      $qry="1";
      if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
       $qry.=" AND scenes.ID='".$m[1]."'";
+     } else {
+      $qry.=" AND scenes.HIDDEN!=1";
      }
-     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND $qry");
+     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry");
      $total=count($states);
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
@@ -638,6 +640,7 @@ elm_states - Element states
  scenes: TITLE varchar(255) NOT NULL DEFAULT ''
  scenes: BACKGROUND varchar(255) NOT NULL DEFAULT ''
  scenes: PRIORITY int(10) NOT NULL DEFAULT '0'
+ scenes: HIDDEN int(3) NOT NULL DEFAULT '0'
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'

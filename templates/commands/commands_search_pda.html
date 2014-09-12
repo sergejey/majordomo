@@ -73,7 +73,7 @@
 <a
  [#if !RESULT_TOTAL#]
  href="#" 
- onClick="return menuClicked('[#ID#]', '[#PARENT_ID#]', '[#SUB_LIST#]', '[#WINDOW#]', '[#TITLE#]', '[#COMMAND#]', '[#URL#]'[#if TYPE="window"#], '[#WIDTH#]', '[#HEIGHT#]'[#else#],0,0[#endif TYPE#]);"
+ onClick="return menuClicked('[#ID#]', '[#PARENT_ID#]', '[#SUB_LIST#]', '[#WINDOW#]', '[#TITLE_SAFE#]', '[#COMMAND#]', '[#URL#]'[#if TYPE="window"#], '[#WIDTH#]', '[#HEIGHT#]'[#else#],0,0[#endif TYPE#]);"
  [#else RESULT_TOTAL#]
  href="<#ROOTHTML#>menu/[#ID#].html"
  [#endif RESULT_TOTAL#]

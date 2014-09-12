@@ -890,6 +890,8 @@ $dictionary=array(
 'VARIABLES'=>'Variables',
 'FUNCTIONS'=>'Functions',
 
+'SCENE_HIDDEN'=>'Do not include in to the swappable list of scenes', 
+
 'TEST'=>'test'
 
 

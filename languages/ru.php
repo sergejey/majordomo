@@ -90,6 +90,7 @@ $dictionary=array(
 'MODULE_MODBUS'=>'ModBus',
 'MODULE_CONNECT'=>'CONNECT',
 'MODULE_MARKET'=>'Маркет дополнений',
+'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 
 'SETUP'=>'Настроить', // objects/objects_edit_methods.html; 
 

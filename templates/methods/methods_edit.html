@@ -48,13 +48,13 @@
  <textarea name="description" rows=3 cols=100 class="field span8">[#DESCRIPTION#]</textarea>
  </td>
 </tr>
+[#if ID!=""#]
 <!-- CODE (text) -->
 <tr>
  <td valign=top align=right>
  [#if ERR_CODE#]<b><font color="red">[#endif#]
  <#LANG_EXECUTE#>
  :
-
  </td>
  <td valign=top>
  <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
@@ -69,22 +69,14 @@
  [#if ERRORS!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS#]   
-<!--#
- <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/edit_area/edit_area_full.js"></script>
-<script language="javascript" type="text/javascript">
-editAreaLoader.init({
-        id : "code"               // textarea id
-        ,syntax: "php"                  // syntax to be uses for highgliting
-        ,start_highlight: true          // to display with highlight mode on start-up
-});
-</script>
-#-->
  [#module name="blockly_code" system_name="method<#ID#>" code_field="code" action=""#]
  <div id="code_area">
  <textarea name="code" id="code" rows=12 cols=100 class="field span8">[#CODE#]</textarea>
  </div>
  </td>
 </tr>
+[#endif ID#]
+
 <!--#
 <tr>
          <td>&nbsp;</td>
@@ -98,14 +90,15 @@ editAreaLoader.init({
 </tr>
 #-->
 <tr>
- <td colspan=2 align=center>
+ <td valign="top">&nbsp;</td>
+ <td>
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_UPDATE#>">
+ <input type="submit" name="subm" value="<#LANG_UPDATE#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
  [#endif ID#]
  &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
+ <a href="?" class="btn"><#LANG_CANCEL#></a>
  </td>
 </tr>
 </table>

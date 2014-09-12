@@ -19,6 +19,7 @@
  var valueChangedFlag = {};
 
  function menuClicked(id, parent_id, sub_list, win, winTitle, command, url, width, height) {
+
   if (sub_list!=id) {
    //$('sub'+parent_id).style.display='none';
    if ($('sub'+id).style.display=='none') {
@@ -37,8 +38,17 @@
     //openTWindow(win, winTitle, url, width, height);
    }
   } else {
-
    //command
+
+
+   var location_string=parent.location.href;
+
+   if (/popup\/scenes/.test(location_string)) {
+    window.location=url;
+    return false;
+   }
+
+
    if (command!='') {
     //alert(command);
     parent.eval(command);

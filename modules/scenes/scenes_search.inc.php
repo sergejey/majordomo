@@ -12,6 +12,8 @@
 
   if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
    $qry.=" AND scenes.ID='".$m[1]."'";
+  } else {
+   $qry.=" AND scenes.HIDDEN!=1";
   }
 
   global $title;

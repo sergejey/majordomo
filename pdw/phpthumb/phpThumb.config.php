@@ -1,4 +1,5 @@
 <?php
+//@error_reporting(E_ALL & ~(E_STRICT|E_NOTICE));
 //////////////////////////////////////////////////////////////
 ///  phpThumb() by James Heinrich <info@silisoftware.com>   //
 //        available at http://phpthumb.sourceforge.net     ///

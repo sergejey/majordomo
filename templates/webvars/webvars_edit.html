@@ -135,7 +135,12 @@
  [#if ERRORS!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS#]   
- <textarea name="code" rows=12 cols=100 class="field span8">[#CODE#]</textarea>
+
+ [#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
+ <div id="code_area">
+ <textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
+ </div>
+
 
  </td>
 </tr>
@@ -179,9 +184,9 @@
  <td valign="top">&nbsp;</td>
  <td>
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn">
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
  [#endif ID#]
  &nbsp;
  <a href="?" class="btn"><#LANG_CANCEL#></a>

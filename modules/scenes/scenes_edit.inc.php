@@ -35,6 +35,10 @@
   //updating 'PRIORITY' (int)
    global $priority;
    $rec['PRIORITY']=(int)$priority;
+
+   global $hidden;
+   $rec['HIDDEN']=(int)$hidden;
+
   // updating elements array
    global $elements;
    $elements = json_decode($elements, true);

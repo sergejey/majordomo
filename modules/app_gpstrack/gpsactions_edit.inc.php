@@ -36,6 +36,7 @@
   //updating 'CODE' (text)
    global $code;
    $rec['CODE']=$code;
+/*
   //updating 'LOG' (text)
    global $log;
    $rec['LOG']=$log;
@@ -44,6 +45,7 @@
    global $executed_minutes;
    global $executed_hours;
    $rec['EXECUTED']=toDBDate($executed_date)." $executed_hours:$executed_minutes:00";
+*/
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {

@@ -73,6 +73,7 @@
  </select>
  </td>
 </tr>
+[#if ID!=""#]
 <!-- SCRIPT_ID (select) -->
 [#if !IS_SET_SCRIPT_ID#]
 <tr>
@@ -97,7 +98,13 @@
  :
  </td>
  <td valign=top>
- <textarea name="code" rows=12 cols=100 class="field span8">[#CODE#]</textarea>
+ [#if ERRORS!=""#]<br><font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
+ [#module name="blockly_code" system_name="gpsaction<#ID#>" code_field="code" action=""#]
+ <div id="code_area">
+  <textarea name="code" id="code" rows=30 cols=100 class="field span8">[#CODE#]</textarea>
+ </div>
+
+
  </td>
 </tr>
 <!-- LOG (text) -->
@@ -108,7 +115,7 @@
  :
  </td>
  <td valign=top>
- <textarea name="log" rows=12 cols=100 class="field span8">[#LOG#]</textarea>
+ <pre>[#LOG#]</pre>
  </td>
 </tr>
 <!-- EXECUTED (datetime) -->
@@ -118,31 +125,19 @@
  <#LANG_EXECUTED#>:
  </td>
  <td>
- <input type="text" name="executed_date" value="[#EXECUTED_DATE#]" maxlength=10 size=12>
- [#module name="dateselect" field="executed_date" form="frmEdit"#]
- &nbsp;&nbsp;&nbsp;
- <select name="executed_hours">
- [#begin EXECUTED_HOURS#]
- <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
- [#end EXECUTED_HOURS#]
- </select>
- :
- <select name="executed_minutes">
- [#begin EXECUTED_MINUTES#]
- <option[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
- [#end EXECUTED_MINUTES#]
- </select>
+ [#EXECUTED#]
  </td>
 </tr>
+[#endif ID#]
 <tr>
  <td colspan=2 align=center>
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
  [#endif ID#]
  &nbsp;
- <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+ <a href="?data_source=<#DATA_SOURCE#>" class="btn"><#LANG_CANCEL#></a>
  </td>
 </tr>
 <input type="hidden" name="id" value="<#ID#>">

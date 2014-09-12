@@ -485,11 +485,15 @@ function usual(&$out) {
      $res[$i]['AUTO_UPDATE']=0;
     }
 
+    $res[$i]['TITLE_SAFE']=htmlspecialchars($res[$i]['TITLE']);
+
+    /*
     foreach($res[$i] as $k=>$v) {
      if (!is_array($res[$i][$k]) && $k!='DATA') {
       $res[$i][$k]=addslashes($v);
      }
     }
+    */
 
     $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM commands WHERE PARENT_ID='".$res[$i]['ID']."'");
     if ($tmp['TOTAL']) {

@@ -82,6 +82,7 @@
  <td valign="top"><textarea name="description" id="description" rows=3 cols=100 class="field span8">[#DESCRIPTION#]</textarea></td>
 </tr>
 
+[#if ID!=""#]
 <tr>
  <td valign="top" align="right"><#LANG_CODE#>:</td>
  <td valign="top" width="536">
@@ -89,17 +90,12 @@
  <!--#
  <a href="#" onClick="return editBlockly();"><#LANG_EDIT#></a>
  #-->
-
-
  [#module name="blockly_code" system_name="script<#ID#>" code_field="code" action=""#]
  <div id="code_area">
   <textarea name="code" id="code" rows=30 cols=100 class="field span8">[#CODE#]</textarea>
  </div>
-
  </td>
 </tr>
-
-
 
 <tr>
  <td valign=top align=right>
@@ -109,13 +105,16 @@
  <input type="checkbox" name="edit_run" id="chkRun" value="1"> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#>
  </td>
 </tr>
+
+[#endif ID#]
+
 <tr>
  <td valign="top">&nbsp;</td>
  <td>
  [#if ID!=""#]
  <input type="submit" name="subm" value="<#LANG_UPDATE#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
  [#endif ID#]
  &nbsp;
  <a href="?" class="btn"><#LANG_CANCEL#></a>
