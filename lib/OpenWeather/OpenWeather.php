@@ -167,7 +167,7 @@ class OpenWeather
          
          $lm_date = date("D M j G:i:s T Y", $weather->dt);
          
-         $widget .= "<div id=\"date_m\">get at " . $lm_date . "</div>";
+         $widget .= "<div id=\"date_m\"><#LANG_GET_AT#> " . $lm_date . "</div>";
          $widget .= "<p>&nbsp;</p>";
          $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
          $widget .= "   <tbody>";
@@ -220,7 +220,7 @@ class OpenWeather
          
          $lm_date = date("D M j G:i:s T Y", $weather->dt);
          
-         $widget .= "<div id=\"date_m\">get at " . $lm_date . "</div>";
+         $widget .= "<div id=\"date_m\"><#LANG_GET_AT#> " . $lm_date . "</div>";
          $widget .= "<p>&nbsp;</p>";
          $widget .= "<table class=\"table table-striped table-bordered table-condensed\">";
          $widget .= "   <tbody>";
