@@ -50,7 +50,7 @@ Blockly.PHP['procedures_defreturn'] = function(block) {
   }
   var args = [];
   for (var x = 0; x < block.arguments_.length; x++) {
-    args[x] = Blockly.PHP.variableDB_.getName(block.arguments_[x],
+    args[x] = '$'+Blockly.PHP.variableDB_.getName(block.arguments_[x],
         Blockly.Variables.NAME_TYPE);
   }
   var code = 'function ' + funcName + '(' + args.join(', ') + ') {\n' +
@@ -85,7 +85,7 @@ Blockly.PHP['procedures_callnoreturn'] = function(block) {
   var args = [];
   for (var x = 0; x < block.arguments_.length; x++) {
     args[x] = Blockly.PHP.valueToCode(block, 'ARG' + x,
-        Blockly.PHP.ORDER_COMMA) || 'null';
+            Blockly.PHP.ORDER_COMMA) || 'null';
   }
   var code = funcName + '(' + args.join(', ') + ');\n';
   return code;
