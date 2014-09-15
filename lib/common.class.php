@@ -96,6 +96,17 @@
                 }
         }
 
+        if (defined('SETTINGS_PUSHBULLET_KEY') && SETTINGS_PUSHBULLET_KEY) {
+                include_once(ROOT.'lib/pushbullet/pushbullet.inc.php');
+                if (defined('SETTINGS_PUSHBULLET_LEVEL')){
+                        if($level>=SETTINGS_PUSHBULLET_LEVEL) {
+                                postToPushbullet($ph);
+                        }
+                } elseif ($level>0) {
+                        postToPushbullet($ph);
+                }
+        }
+
         if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level>=SETTINGS_GROWL_LEVEL) {
          include_once(ROOT.'lib/growl/growl.gntp.php');
          $growl = new Growl(SETTINGS_GROWL_HOST, SETTINGS_GROWL_PASSWORD);

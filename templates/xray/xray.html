@@ -11,14 +11,39 @@
  </tr>
  <tr>
   <td valign="top" colspan=7>
-  <div>Filter: <input type="text" name="filter" id="filter" onChange="checkAllStates();"></div>
+   <table width="100%" border="0">
+    <tr>
+     <td valign="top" width="50%">
+     <div>Filter: <input type="text" name="filter" id="filter" onChange="checkAllStates();"></div>
+     </td>
+     <td valign="top" align="right" width="50%">
+      <a href="#" class="btn" onClick="return playPauseXRay();" id="playpausebtn">Pause</a>
+     </td>
+    </tr>
+   </table>
+  
   <div id="xrayContent">Loading...</div>
   </td>
  </tr>
 </table>
 <script language="javascript">
         var checkTimer;
+        var playingXray;
+
+        function playPauseXRay() {
+         if (playingXray==1) {
+          $('#playpausebtn').html('Continue');
+          clearTimeout(checkTimer);
+          playingXray=0;
+         } else {
+          $('#playpausebtn').html('Pause');
+          checkAllStates();
+         }
+         return false;
+        }
+
         function checkAllStates() {
+         playingXray=1;
          clearTimeout(checkTimer);
          var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val());
          $.ajax({

@@ -16,7 +16,7 @@
 
 
  $sections=array();
- $filters=array('', 'scenes', 'calendar', 'growl', 'twitter', 'pushover', 'hook');
+ $filters=array('', 'scenes', 'calendar', 'growl', 'twitter', 'pushover', 'pushbullet', 'hook');
  $total=count($filters);
  for($i=0;$i<$total;$i++) {
   $rec=array();
@@ -35,6 +35,28 @@
   }
  }
  $out['SECTIONS']=$sections;
+
+ if ($this->filter_name=='pushbullet' && !defined('SETTINGS_PUSHBULLET_KEY')) {
+  $options=array(
+   'PUSHBULLET_KEY'=>'Pushbullet API Key', 
+   'PUSHBULLET_LEVEL'=>'Pushbullet message minimum level', 
+   'PUSHBULLET_DEVICE_ID'=>'Pushbullet Device ID (optional)'
+  );
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='text';
+    if ($k=='PUSHBULLET_LEVEL') {
+     $tmp['VALUE']=1;
+     $tmp['DEFAULTVALUE']=1;
+    }
+    SQLInsert('settings', $tmp);
+   }
+  }
+ }
 
 
  global $session;
