@@ -797,6 +797,30 @@ $dictionary=array(
 
 'VIRTUAL_USER'=>'Virtual User', // app_gpstrack/gpslocations_edit.html; 
 
+'WIND'=>'Wind',//lib/OpenWeather/OpenWeather.php;
+'PRESSURE'=>'Pressure',//lib/OpenWeather/OpenWeather.php;
+'HUMIDITY'=>'Humidity',//lib/OpenWeather/OpenWeather.php;
+'GET_AT'=>'get at',//lib/OpenWeather/OpenWeather.php;
+'MMHG'=>'mmhg',//lib/OpenWeather/OpenWeather.php;
+'HPA'=>'hpa',//lib/OpenWeather/OpenWeather.php;
+'M_S'=>'m/s',//lib/OpenWeather/OpenWeather.php;
+'N'=>'N',//lib/OpenWeather/OpenWeather.php;
+'NNE'=>'NNE',//lib/OpenWeather/OpenWeather.php;
+'NE'=>'NE',//lib/OpenWeather/OpenWeather.php;
+'ENE'=>'ENE',//lib/OpenWeather/OpenWeather.php;
+'E'=>'E',//lib/OpenWeather/OpenWeather.php;
+'ESE'=>'ESE',//lib/OpenWeather/OpenWeather.php;
+'SE'=>'SE',//lib/OpenWeather/OpenWeather.php;
+'SSE'=>'SSE',//lib/OpenWeather/OpenWeather.php;
+'S'=>'S',//lib/OpenWeather/OpenWeather.php;
+'SSW'=>'SSW',//lib/OpenWeather/OpenWeather.php;
+'SW'=>'SW',//lib/OpenWeather/OpenWeather.php;
+'WSW'=>'WSW',//lib/OpenWeather/OpenWeather.php;
+'W'=>'W',//lib/OpenWeather/OpenWeather.php;
+'WNW'=>'WNW',//lib/OpenWeather/OpenWeather.php;
+'NW'=>'NW',//lib/OpenWeather/OpenWeather.php;
+'NNW'=>'NNW',//lib/OpenWeather/OpenWeather.php;
+
 'LONG_OPERATION_WARNING'=>'Note: This operation can take up to few minutes.<Br>Please, be patient :)',
 
 'STARRED'=>'Starred',
