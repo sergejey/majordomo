@@ -24,7 +24,8 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks/majordomo.js"></script>
     <script type="text/javascript" src="blocks/majordomo_objects.js"></script>
     <script type="text/javascript" src="blocks/majordomo_time.js"></script>
-    <script type="text/javascript" src="msg/js/<?echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
+    <script type="text/javascript" src="blocks/majordomo_scripts.js.php"></script>
+    <script type="text/javascript" src="msg/js/<?php echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
     <script type="text/javascript" src="generators/php.js"></script>
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_objects.js"></script>
@@ -37,6 +38,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="generators/php/procedures.js"></script>
     <script type="text/javascript" src="generators/php/text.js"></script>
     <script type="text/javascript" src="generators/php/variables.js"></script>
+    <script type="text/javascript" src="generators/php/majordomo_scripts.js.php"></script>
     <style>
       html, body {
         background-color: #fff;
@@ -118,7 +120,7 @@ $ctl = new control_modules();
   <body onload="init()">
   <div align="right">
   <input type="button" onClick="return SaveAndClose();" value="OK">
-  <input type="button" onClick="window.close();" value="<?echo LANG_CANCEL;?>">
+  <input type="button" onClick="window.close();" value="<?php echo LANG_CANCEL;?>">
   </div>
   <!--
     <category name="Color">
@@ -129,7 +131,8 @@ $ctl = new control_modules();
     </category>
   -->
   <xml id="toolbox" style="display: none">
-    <category name="<?echo LANG_GENERAL;?>">
+
+    <category name="<?php echo LANG_GENERAL;?>">
       <block type="majordomo_say_simple">
         <value name="TEXT">
           <block type="text"></block>
@@ -182,7 +185,7 @@ $ctl = new control_modules();
       </block>
     </category>
 
-    <category name="<?echo LANG_SECTION_OBJECTS;?>">
+    <category name="<?php echo LANG_SECTION_OBJECTS;?>">
       <block type="majordomo_getglobal">
         <value name="PROPERTY">
           <block type="text"></block>
@@ -270,7 +273,7 @@ $ctl = new control_modules();
 
     </category>
 
-    <category name="<?echo LANG_TIME;?>">
+    <category name="<?php echo LANG_TIME;?>">
       <block type="majordomo_timeis">
         <value name="TIME">
           <block type="text"></block>
@@ -313,7 +316,7 @@ $ctl = new control_modules();
       <block type="majordomo_isworkday"></block>
     </category>
 
-    <category name="<?echo LANG_LOGIC;?>">
+    <category name="<?php echo LANG_LOGIC;?>">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
@@ -322,7 +325,7 @@ $ctl = new control_modules();
       <block type="logic_null"></block>
       <block type="logic_ternary"></block>
     </category>
-    <category name="<?echo LANG_LOOPS;?>">
+    <category name="<?php echo LANG_LOOPS;?>">
       <block type="controls_repeat_ext">
         <value name="TIMES">
           <block type="math_number">
@@ -335,7 +338,7 @@ $ctl = new control_modules();
       <block type="controls_forEach"></block>
       <block type="controls_flow_statements"></block>
     </category>
-    <category name="<?echo LANG_MATH;?>">
+    <category name="<?php echo LANG_MATH;?>">
       <block type="math_number"></block>
       <block type="math_arithmetic"></block>
       <block type="math_single"></block>
@@ -350,7 +353,7 @@ $ctl = new control_modules();
       <block type="math_random_int"></block>
       <block type="math_random_float"></block>
     </category>
-    <category name="<?echo LANG_TEXT;?>">
+    <category name="<?php echo LANG_TEXT;?>">
       <block type="text"></block>
       <block type="text_length"></block>
       <block type="text_join"></block>
@@ -363,7 +366,7 @@ $ctl = new control_modules();
       <block type="text_changeCase"></block>
       <block type="text_trim"></block>
     </category>
-    <category name="<?echo LANG_LISTS;?>">
+    <category name="<?php echo LANG_LISTS;?>">
       <block type="lists_create_empty"></block>
       <block type="lists_create_with"></block>
       <block type="lists_repeat"></block>
@@ -374,8 +377,47 @@ $ctl = new control_modules();
       <block type="lists_setIndex"></block>
       <block type="lists_getSublist"></block>
     </category>
-    <category name="<?echo LANG_VARIABLES;?>" custom="VARIABLE"></category>
-    <category name="<?echo LANG_FUNCTIONS;?>" custom="PROCEDURE"></category>
+    <category name="<?php echo LANG_VARIABLES;?>" custom="VARIABLE"></category>
+    <category name="<?php echo LANG_FUNCTIONS;?>" custom="PROCEDURE"></category>
+
+  <?php
+
+   $sortby="script_categories.TITLE, scripts.TITLE";
+   $res=SQLSelect("SELECT scripts.*, script_categories.TITLE as CATEGORY FROM scripts LEFT JOIN script_categories ON scripts.CATEGORY_ID=script_categories.ID WHERE 1 ORDER BY $sortby");
+
+  $old_category='';
+  if ($res[0]['ID']) {
+   $total=count($res);
+   for($i=0;$i<$total;$i++) {
+    if (!$res[$i]['CATEGORY']) {
+     $res[$i]['CATEGORY']=LANG_OTHER;
+    }
+    $res[$i]['DESCRIPTION']=nl2br(htmlspecialchars($res[$i]['DESCRIPTION']));
+
+    if ($res[$i]['CATEGORY']!=$old_category) {
+     $out['TOTAL_CATEGORIES']++;
+     $old_category=$res[$i]['CATEGORY'];
+     $res[$i]['NEW_CATEGORY']=1;
+
+     if ($i>0) {
+      echo '</category>'."\n";
+     }
+     echo '<category name="'.LANG_MODULE_SCRIPTS.': '.processTitle($res[$i]['CATEGORY']).'">'."\n";
+    }
+
+    echo '<block type="majordomo_script_'.$res[$i]['ID'].'"></block>'."\n";
+
+    if ($i==$total-1) {
+     $res[$i]['LAST']=1;
+    }
+
+   }
+
+   echo '</category>';
+   $out['RESULT']=$res;
+  }
+  ?>
+
   </xml>
   </body>
 </html>
