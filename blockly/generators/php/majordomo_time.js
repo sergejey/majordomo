@@ -47,7 +47,7 @@ Blockly.PHP['majordomo_isweekend'] = function(block) {
 };
 
 Blockly.PHP['majordomo_isworkday'] = function(block) {
-  var code = 'isWorkDay()';
+  var code = 'isWeekDay()';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
