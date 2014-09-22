@@ -22,6 +22,10 @@ while(!$connected)
    sleep(5);
 }
 
+if (file_exists('./reboot')) {
+ @unlink('./reboot');
+}
+
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
  

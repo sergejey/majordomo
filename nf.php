@@ -43,6 +43,7 @@ $requests = array(
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2',
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/methods\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods',
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/methods\/(\d+)\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods&overwrite=1&method_id=\3',
+   "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/methods\/(\d+)\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods&overwrite=1&method_id=\3',
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/properties\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=properties',
    "/^\/menu\.html/is"                => '?(application:{action=menu})',
    "/^\/menu\/(\d+?)\.html/is"        => '?(application:{action=menu, parent_item=\1})',

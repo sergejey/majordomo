@@ -98,12 +98,18 @@
 
         if (defined('SETTINGS_PUSHBULLET_KEY') && SETTINGS_PUSHBULLET_KEY) {
                 include_once(ROOT.'lib/pushbullet/pushbullet.inc.php');
+                if (defined('SETTINGS_PUSHBULLET_PREFIX') && SETTINGS_PUSHBULLET_PREFIX) {
+                 $prefix=SETTINGS_PUSHBULLET_PREFIX.' ';
+                } else {
+                 $prefix='';
+                }
+
                 if (defined('SETTINGS_PUSHBULLET_LEVEL')){
                         if($level>=SETTINGS_PUSHBULLET_LEVEL) {
-                                postToPushbullet($ph);
+                                postToPushbullet($prefix.$ph);
                         }
                 } elseif ($level>0) {
-                        postToPushbullet($ph);
+                        postToPushbullet($prefix.$ph);
                 }
         }
 
@@ -619,6 +625,11 @@
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
     curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password); 
    }
+
+   $tmpfname = ROOT.'cached/cookie.txt';
+   curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
+   curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
+
    $result = curl_exec($ch);
    if ($cache>0) {
     if (!is_dir(ROOT.'cached/urls')) {

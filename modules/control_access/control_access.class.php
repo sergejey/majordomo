@@ -71,11 +71,13 @@ function getParams() {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
    UnSet($session->data['USERNAME']);
+   UnSet($session->data['SITE_USERNAME']);
+   UnSet($session->data['SITE_USER_ID']);
    Unset($session->data["cp_requested_url"]);
    if (isset($this->userlog)) {
     $this->userlog->newEntry('Logged Off');
    }
-   $this->owner->redirect("?");
+   $this->owner->redirect("/");
   }
 
   if ($this->action=="enter") {

@@ -13,7 +13,7 @@
    if (preg_match('/^(.+)\.$/', $title, $m)) {
     $object=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($m[1])."'");
     if ($object['ID']) {
-     $res.=LANG_OBJECT." <b>".$object['TITLE']."</b><br>";
+     $res.=LANG_OBJECT." <b><a href='/panel/class/".$object['CLASS_ID']."/object/".$object['ID'].".html'>".$object['TITLE']."</a></b><br>";
 
      $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".$object['CLASS_ID']."'");
      if ($class['ID']) {
@@ -28,7 +28,7 @@
     $res.=''.$object['TITLE'];
     $res.='.'.$properties[$i]['TITLE'].'<br>';
    }
-   $methods=SQLSelect("SELECT methods.ID, methods.TITLE, methods.OBJECT_ID, methods.CLASS_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.OBJECT_ID = '".DBSafe($object['ID'])."' OR methods.CLASS_ID = '".DBSafe($object['CLASS_ID'])."') ORDER BY methods.OBJECT_ID DESC, methods.TITLE");
+   $methods=SQLSelect("SELECT methods.ID, methods.TITLE, methods.OBJECT_ID, methods.CLASS_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT, objects.CLASS_ID as OBJECT_CLASS_ID FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.OBJECT_ID = '".DBSafe($object['ID'])."' OR methods.CLASS_ID = '".DBSafe($object['CLASS_ID'])."') ORDER BY methods.OBJECT_ID DESC, methods.TITLE");
    $total=count($methods);
    $res.='<a href="/panel/class/'.$object['CLASS_ID'].'/object/'.$object['ID'].'/methods.html">'.LANG_METHODS."</a>:<br>";
    for($i=0;$i<$total;$i++) {
@@ -38,7 +38,7 @@
     }
     $seen[$key]=1;
     if ($methods[$i]['OBJECT']) {
-     $res.='<a href="/panel/object/'.$methods[$i]['OBJECT_ID'].'/methods/'.$methods[$i]['ID'].'.html">'.$methods[$i]['OBJECT'];
+     $res.='<a href="/panel/class/'.$methods[$i]['OBJECT_CLASS_ID'].'/object/'.$methods[$i]['OBJECT_ID'].'/methods/'.$methods[$i]['ID'].'.html">'.$methods[$i]['OBJECT'];
     } else {
      $res.='<a href="/panel/class/'.$methods[$i]['CLASS_ID'].'/methods/'.$methods[$i]['ID'].'.html">'.$methods[$i]['CLASS'];
     }

@@ -36,11 +36,12 @@
  }
  $out['SECTIONS']=$sections;
 
- if ($this->filter_name=='pushbullet' && !defined('SETTINGS_PUSHBULLET_KEY')) {
+ if ($this->filter_name=='pushbullet' && !defined('SETTINGS_PUSHBULLET_PREFIX')) {
   $options=array(
    'PUSHBULLET_KEY'=>'Pushbullet API Key', 
    'PUSHBULLET_LEVEL'=>'Pushbullet message minimum level', 
-   'PUSHBULLET_DEVICE_ID'=>'Pushbullet Device ID (optional)'
+   'PUSHBULLET_DEVICE_ID'=>'Pushbullet Device ID (optional)',
+   'PUSHBULLET_PREFIX'=>'Pushbullet notifiaction prefix (optional)'
   );
   foreach($options as $k=>$v) {
    $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");

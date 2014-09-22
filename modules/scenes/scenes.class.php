@@ -211,13 +211,13 @@ function admin(&$out) {
  function export_scene($id) {
   $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'"); 
   //elements
-  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$id."'");
+  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".(int)$id."'");
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
    unset($elements[$i]['ID']);
    unset($elements[$i]['SCENE_ID']);
-   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elm_id."'");
+   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
    for($iE=0;$iE<$totalE;$iE++) {
     unset($states[$iE]['ID']);
@@ -323,14 +323,14 @@ function admin(&$out) {
   $rec['ID']=SQLInsert('scenes', $rec);
 
   //elements
-  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$id."'");
+  $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".(int)$id."'");
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
    unset($elements[$i]['ID']);
    $elements[$i]['SCENE_ID']=$rec['ID'];
    $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
-   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elm_id."'");
+   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
    for($iE=0;$iE<$totalE;$iE++) {
     unset($states[$iE]['ID']);
@@ -464,7 +464,7 @@ function usual(&$out) {
  function delete_scenes($id) {
   $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='$id'");
   // some action for related tables
-  $elements=SQLSelect("SELECT ID FROM elements WHERE SCENE_ID='".$rec['ID']."'");
+  $elements=SQLSelect("SELECT ID FROM elements WHERE SCENE_ID='".(int)$rec['ID']."'");
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $this->delete_elements($elements[$i]['ID']);
@@ -496,7 +496,7 @@ function usual(&$out) {
  function delete_elements($id) {
   $rec=SQLSelectOne("SELECT * FROM elements WHERE ID='$id'");
   // some action for related tables
-  $states=SQLSelect("SELECT ID FROM elm_states WHERE ELEMENT_ID='".$rec['ID']."'");
+  $states=SQLSelect("SELECT ID FROM elm_states WHERE ELEMENT_ID='".(int)$rec['ID']."'");
   $total=count($states);
   for($i=0;$i<$total;$i++) {
    $this->delete_elm_states($states[$i]['ID']);

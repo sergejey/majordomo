@@ -197,6 +197,7 @@ while(1) {
 
    if (file_exists('./reboot') || $_GET['onetime']) 
    {
+      socket_close($socket);
       $db->Disconnect();
       exit;
    }

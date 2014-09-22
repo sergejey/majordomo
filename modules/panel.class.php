@@ -72,6 +72,12 @@ function getParams() {
 
   if (IsSet($session->data["AUTHORIZED"])) {
    $this->authorized=1;
+  } else {
+   $tmp=SQLSelectOne("SELECT ID FROM users WHERE IS_ADMIN=1");
+   if ($tmp['ID']) {
+    redirect("/");
+   }
+   //
   }
 
   global $ajax_panel;

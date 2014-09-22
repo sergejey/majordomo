@@ -255,7 +255,7 @@ class PushBullet {
   }
 
 
-  if (defined('SETTINGS_PUSHBULLET_DEVICE_ID')) {
+  if (defined('SETTINGS_PUSHBULLET_DEVICE_ID') && SETTINGS_PUSHBULLET_DEVICE_ID!='') {
    $devices=explode(', ', SETTINGS_PUSHBULLET_DEVICE_ID);
    $total=count($devices);
    for($i=0;$i<$total;$i++) {
