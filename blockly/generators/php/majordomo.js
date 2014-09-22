@@ -78,6 +78,8 @@ Blockly.PHP['majordomo_getglobal'] = function(block) {
 Blockly.PHP['majordomo_phpexpression'] = function(block) {
   var text = Blockly.PHP.valueToCode(block, 'TEXT',Blockly.PHP.ORDER_NONE) || '';
   var code = text;
+  code=code.replace(/^\'|\'$/gm,'');
+  code=code.replace(/\\\'/g, '');
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 

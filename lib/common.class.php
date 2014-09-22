@@ -594,7 +594,7 @@
  function runScript($id, $params='') {
   include_once(DIR_MODULES.'scripts/scripts.class.php');
   $sc=new scripts();
-  $sc->runScript($id, $params);
+  return $sc->runScript($id, $params);
  }
 
 

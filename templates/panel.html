@@ -253,7 +253,29 @@ margin: 10px 0;
 
 <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;'>...</div>
 
-        <!--[menu]-->
+<script language="javascript">
+ function toggleCategory(id) {
+  if ($('.category'+id+':first').is(":visible")) {
+   setCookie('sub_'+id, 'off');
+  } else {
+   setCookie('sub_'+id, 'on');
+  }
+  $('.category'+id).toggle();
+  return false;
+ }
+
+ function checkCategory(id) {
+  var vl=getCookie('sub_'+id);
+  if (vl!='on') {
+   $('.category'+id).hide();
+  }
+  return false;
+ }
+
+</script>
+
+
+<!--[menu]-->
 
 <ul class="nav nav-list">
    [#begin SUB_MODULES#]
@@ -262,22 +284,28 @@ margin: 10px 0;
    <ul class="nav nav-list" id="row_[#CATEGORY#]">
    [#if CATEGORY!=""#]
    <li class="nav-header">
-   [#CATEGORY#]
+   <a href="#" onClick="return toggleCategory('[#CATEGORY_ID#]');">[#CATEGORY#]</a>
    </li>
    [#else CATEGORY#]&nbsp;[#endif CATEGORY#]
-   <script language='javascript'>
-    checkLayer('[#CATEGORY#]');
-   </script>
    [#endif NEW_CATEGORY#]
    [#if !DENIED#]
    [#if SELECTED#]
-                <li class="active" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
+                <li class="active category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
    [#else#]
-                <li id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
+                <li class="category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
    [#endif#]
    [#endif DENIED#]
    [#end SUB_MODULES#]
 </ul>
+
+   [#begin SUB_MODULES#]
+   [#if NEW_CATEGORY#]
+   <script language='javascript'>
+    checkCategory('[#CATEGORY_ID#]');
+   </script>
+   [#endif NEW_CATEGORY#]
+   [#end SUB_MODULES#]
+
 
                 <!--/left_main--></td>
 [#endif PRINT#]

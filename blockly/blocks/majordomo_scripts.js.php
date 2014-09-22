@@ -33,17 +33,25 @@ Blockly.Blocks['majordomo_script_<?php echo $scripts[$i]['ID'];?>'] = {
   init: function() {
     // Assign 'this' to a variable for use in the closure below.
     var thisBlock = this;
-    this.setColour(275);
+
 
     this.appendDummyInput()
         .appendField('<?php echo $scripts[$i]['TITLE'];?>');
     this.appendValueInput("PARAMS")
         .setCheck("Array");
     this.setInputsInline(true);
-    this.setOutput(false);
 
+    <?php if (preg_match('/return/is', $scripts[$i]['CODE'])) {?>
+    this.setColour(175);
+    this.setOutput(true);
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    <?php } else {?>
+    this.setColour(275);
+    this.setOutput(false);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
+    <?php }?>
 
     this.setTooltip('<?php echo addcslashes(preg_replace("/[\n\r]/is", '', $scripts[$i]['DESCRIPTION']), "'");?>');
   }

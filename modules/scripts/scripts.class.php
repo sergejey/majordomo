@@ -140,6 +140,7 @@ function run() {
         if ($success === false) {
           getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
         }
+        return $success;
       } catch (Exception $e) {
         getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
       }

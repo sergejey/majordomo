@@ -209,6 +209,11 @@ class PushBullet {
                                 die('Error, no matching PUSH type found. <br>'.$type.' is not a known push type or is not supported.');
                         }
                 }
+
+                if (preg_match('/@/is', $post_data['device_id'])) {
+                 $post_data['email']=$post_data['device_id'];
+                 unset($post_data['device_id']);
+                }
                 
                 foreach($post_data as $key=>$value) {
                         //      URL-ify the data to post
@@ -256,10 +261,11 @@ class PushBullet {
 
 
   if (defined('SETTINGS_PUSHBULLET_DEVICE_ID') && SETTINGS_PUSHBULLET_DEVICE_ID!='') {
-   $devices=explode(', ', SETTINGS_PUSHBULLET_DEVICE_ID);
+   $devices=explode(',', SETTINGS_PUSHBULLET_DEVICE_ID);
    $total=count($devices);
    for($i=0;$i<$total;$i++) {
     $push_bullet_device_id=trim($devices[$i]);
+    //DebMes("Sending to pushbullet device $push_bullet_device_id : ".$title);
     $res=$push->push($push_bullet_device_id,'note',$title,$data);
    }
   } else {

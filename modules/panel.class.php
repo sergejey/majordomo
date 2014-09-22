@@ -111,6 +111,7 @@ function getParams() {
     if ($modules[$i]['NAME'] == $this->action) {
      $modules[$i]['SELECTED']=1;
     }
+    $modules[$i]['CATEGORY_ID']=substr(md5($modules[$i]['CATEGORY']), 0, 4);
     if ($modules[$i]['CATEGORY']!=$old_cat) {
      $modules[$i]['NEW_CATEGORY']=1;
      $old_cat=$modules[$i]['CATEGORY'];
