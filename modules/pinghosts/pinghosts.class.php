@@ -22,7 +22,7 @@ class pinghosts extends module {
 function pinghosts() {
   $this->name="pinghosts";
   $this->title="<#LANG_MODULE_PINGHOSTS#>";
-  $this->module_category="<#LANG_SECTION_OBJECTS#>";
+  $this->module_category="<#LANG_SECTION_DEVICES#>";
   $this->checkInstalled();
 }
 /**

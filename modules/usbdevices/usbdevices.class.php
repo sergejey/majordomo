@@ -21,7 +21,7 @@ class usbdevices extends module {
 function usbdevices() {
   $this->name="usbdevices";
   $this->title="<#LANG_MODULE_USB_DEVICES#>";
-  $this->module_category="<#LANG_SECTION_OBJECTS#>";
+  $this->module_category="<#LANG_SECTION_DEVICES#>";
   $this->checkInstalled();
 }
 /**
