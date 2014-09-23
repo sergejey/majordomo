@@ -201,6 +201,9 @@
     global $state_id;
     global $state_delete;
     global $state_clone;
+    global $ext_url_new;
+    global $homepage_id_new;
+    global $do_on_click_new;
 
     if ($state_delete && $state_rec['ID']) {
 
@@ -216,16 +219,36 @@
      $state_rec['TITLE']=$state_title_new;
      $state_rec['IMAGE']=$image_new;
      $state_rec['HTML']=$html_new;
-     $state_rec['SCRIPT_ID']=$script_id_new;
-     $state_rec['MENU_ITEM_ID']=$menu_item_id_new;
-     $state_rec['ACTION_OBJECT']=$action_object_new;
-     $state_rec['ACTION_METHOD']=$action_method_new;
      $state_rec['IS_DYNAMIC']=$is_dynamic_new;
      $state_rec['LINKED_OBJECT']=$linked_object_new;
      $state_rec['LINKED_PROPERTY']=$linked_property_new;
      $state_rec['CONDITION']=$condition_new;
      $state_rec['CONDITION_VALUE']=$condition_value_new;
      $state_rec['CONDITION_ADVANCED']=$condition_advanced_new;
+
+     if ($do_on_click_new!='run_script') {
+      $script_id_new=0;
+     }
+     if ($do_on_click_new!='run_method') {
+      $action_object_new='';
+      $action_method_new='';
+     }
+     if ($do_on_click_new!='open_menu') {
+      $menu_item_id_new=0;
+     }
+     if ($do_on_click_new!='show_homepage') {
+      $homepage_id_new=0;
+     }
+     if ($do_on_click_new!='show_url') {
+      $ext_url_new='';
+     }
+
+     $state_rec['SCRIPT_ID']=$script_id_new;
+     $state_rec['MENU_ITEM_ID']=$menu_item_id_new;
+     $state_rec['ACTION_OBJECT']=$action_object_new;
+     $state_rec['ACTION_METHOD']=$action_method_new;
+     $state_rec['HOMEPAGE_ID']=(int)$homepage_id_new;
+     $state_rec['EXT_URL']=$ext_url_new;
 
      if ($state_rec['CONDITION_ADVANCED']) {
        $errors=php_syntax_error($state_rec['CONDITION_ADVANCED']);
@@ -273,6 +296,7 @@
   outHash($rec, $out);
 
   if ($this->tab=='elements') {
+   $out['HOMEPAGES']=SQLSelect("SELECT * FROM layouts ORDER BY TITLE");
    $out['SCRIPTS']=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
    $menu_items=SQLSelect("SELECT ID, TITLE, PARENT_ID FROM commands WHERE EXT_ID=0 ORDER BY PARENT_ID, TITLE");
    $titles=array();

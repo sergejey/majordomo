@@ -102,6 +102,7 @@ $dictionary=array(
 'MODULE_MODBUS'=>'ModBus',
 'MODULE_CONNECT'=>'CONNECT',
 'MODULE_MARKET'=>'Plugins Market',
+'MODULE_MYBLOCKS'=>'My blocks',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
@@ -735,8 +736,10 @@ $dictionary=array(
 'ADD_NEW_STATE'=>'Add new state', // scenes/elements_edit.html; scenes/elements_edit.html; 
 
 
-'RUN_SCCRIPT_ON_CLICK'=>'Run script on click', // scenes/elements_edit.html; 
+'RUN_SCRIPT_ON_CLICK'=>'Run script on click', // scenes/elements_edit.html; 
 'SHOW_MENU_ON_CLICK'=>'Show menu on click',
+'SHOW_HOMEPAGE_ON_CLICK'=>'Show page on click',
+'SHOW_URL_ON_CLICK'=>'Show URL on click',
 
 
 'DISPLAY_CONDITION'=>'Display condition', // scenes/elements_edit.html; 
@@ -915,6 +918,9 @@ $dictionary=array(
 'FUNCTIONS'=>'Functions',
 
 'SCENE_HIDDEN'=>'Do not include in to the swappable list of scenes', 
+
+'DO_NOTHING'=>'Do nothing',
+'DO_ONCLICK'=>'On click',
 
 'TEST'=>'test'
 

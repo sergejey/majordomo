@@ -25,6 +25,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks/majordomo_objects.js"></script>
     <script type="text/javascript" src="blocks/majordomo_time.js"></script>
     <script type="text/javascript" src="blocks/majordomo_scripts.js.php"></script>
+    <script type="text/javascript" src="blocks/majordomo_myblocks.js.php"></script>
     <script type="text/javascript" src="msg/js/<?php echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
     <script type="text/javascript" src="generators/php.js"></script>
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
@@ -39,6 +40,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="generators/php/text.js"></script>
     <script type="text/javascript" src="generators/php/variables.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_scripts.js.php"></script>
+    <script type="text/javascript" src="generators/php/majordomo_myblocks.js.php"></script>
     <style>
       html, body {
         background-color: #fff;
@@ -381,10 +383,42 @@ $ctl = new control_modules();
     <category name="<?php echo LANG_FUNCTIONS;?>" custom="PROCEDURE"></category>
 
   <?php
+  $sortby="myblocks_categories.TITLE, myblocks.TITLE";
+  $res=SQLSelect("SELECT myblocks.*, myblocks_categories.TITLE as CATEGORY FROM myblocks LEFT JOIN myblocks_categories ON myblocks.CATEGORY_ID=myblocks_categories.ID WHERE 1 ORDER BY $sortby");
+  $old_category='';
+  if ($res[0]['ID']) {
+   $total=count($res);
+   for($i=0;$i<$total;$i++) {
+    if (!$res[$i]['CATEGORY']) {
+     $res[$i]['CATEGORY']=LANG_OTHER;
+    }
+    if ($res[$i]['CATEGORY']!=$old_category) {
+     $out['TOTAL_CATEGORIES']++;
+     $old_category=$res[$i]['CATEGORY'];
+     $res[$i]['NEW_CATEGORY']=1;
 
-   $sortby="script_categories.TITLE, scripts.TITLE";
-   $res=SQLSelect("SELECT scripts.*, script_categories.TITLE as CATEGORY FROM scripts LEFT JOIN script_categories ON scripts.CATEGORY_ID=script_categories.ID WHERE 1 ORDER BY $sortby");
+     if ($i>0) {
+      echo '</category>'."\n";
+     }
+     echo '<category name="'.processTitle($res[$i]['CATEGORY']).'">'."\n";
+    }
 
+    echo '<block type="majordomo_myblock_'.$res[$i]['ID'].'"></block>'."\n";
+
+    if ($i==$total-1) {
+     $res[$i]['LAST']=1;
+    }
+
+   }
+
+   echo '</category>';
+  }
+  ?>
+
+
+  <?php
+  $sortby="script_categories.TITLE, scripts.TITLE";
+  $res=SQLSelect("SELECT scripts.*, script_categories.TITLE as CATEGORY FROM scripts LEFT JOIN script_categories ON scripts.CATEGORY_ID=script_categories.ID WHERE 1 ORDER BY $sortby");
   $old_category='';
   if ($res[0]['ID']) {
    $total=count($res);
@@ -414,7 +448,6 @@ $ctl = new control_modules();
    }
 
    echo '</category>';
-   $out['RESULT']=$res;
   }
   ?>
 

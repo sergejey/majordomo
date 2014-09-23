@@ -1,0 +1,50 @@
+
+[#if SET_DATASOURCE!="1"#]
+&nbsp;
+<!-- source select -->
+<ul class="nav nav-tabs">
+  <li[#if DATA_SOURCE!="myblocks" && DATA_SOURCE!=""#] [#else#] class="active"[#endif#]>
+   <a href="?data_source=myblocks"><#LANG_MODULE_MYBLOCKS#></a>
+  </li>
+  <li[#if DATA_SOURCE!="myblocks_categories"#] [#else#] class="active"[#endif#]>
+   <a href="?data_source=myblocks_categories"><#LANG_CATEGORIES#></a>
+  </li>
+</ul>
+<!-- / source select -->
+[#endif SET_DATASOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="myblocks" || DATA_SOURCE=""#]
+ <!-- table myblocks search -->
+ [#if VIEW_MODE="search_myblocks" || VIEW_MODE=""#]
+  [#inc myblocks_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table myblocks search -->
+ <!-- table myblocks edit -->
+ [#if VIEW_MODE="edit_myblocks"#]
+   [#inc myblocks_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table myblocks edit -->
+ <!-- table myblocks view --> 
+ [#if VIEW_MODE="view_myblocks"#]
+   [#inc myblocks_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table myblocks view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="myblocks_categories"#]
+ <!-- table myblocks_categories search -->
+ [#if VIEW_MODE="search_myblocks_categories" || VIEW_MODE=""#]
+  [#inc myblocks_categories_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table myblocks_categories search -->
+ <!-- table myblocks_categories edit -->
+ [#if VIEW_MODE="edit_myblocks_categories"#]
+   [#inc myblocks_categories_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table myblocks_categories edit -->
+ <!-- table myblocks_categories view --> 
+ [#if VIEW_MODE="view_myblocks_categories"#]
+   [#inc myblocks_categories_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table myblocks_categories view -->
+ [#endif DATA_SOURCE#]

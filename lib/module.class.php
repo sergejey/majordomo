@@ -437,7 +437,7 @@ Define("EQ_DELIMITER", "qz_");
      $definition.=", PRIMARY KEY(".$field.")";
      //$definition.=", KEY(".$field.")";
     }
-    $sql="CREATE TABLE IF NOT EXISTS $table ($definition);";
+    $sql="CREATE TABLE IF NOT EXISTS $table ($definition) CHARACTER SET utf8 COLLATE utf8_general_ci;";
     $table_defined[$table]=1;
     SQLExec($sql);
     $result = SQLExec("SHOW FIELDS FROM $table");

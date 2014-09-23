@@ -90,6 +90,8 @@ $dictionary=array(
 'MODULE_MODBUS'=>'ModBus',
 'MODULE_CONNECT'=>'CONNECT',
 'MODULE_MARKET'=>'Маркет дополнений',
+'MODULE_MYBLOCKS'=>'Мои блоки',
+
 'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 
 'SETUP'=>'Настроить', // objects/objects_edit_methods.html; 
@@ -724,8 +726,10 @@ $dictionary=array(
 'ADD_NEW_STATE'=>'Добавить новое состояние', // scenes/elements_edit.html; scenes/elements_edit.html; 
 
 
-'RUN_SCCRIPT_ON_CLICK'=>'Выполнить сценарий при клике', // scenes/elements_edit.html; 
+'RUN_SCRIPT_ON_CLICK'=>'Выполнить сценарий при клике', // scenes/elements_edit.html; 
 'SHOW_MENU_ON_CLICK'=>'Показать меню при клике',
+'SHOW_HOMEPAGE_ON_CLICK'=>'Показать домашнюю страницу при клике',
+'SHOW_URL_ON_CLICK'=>'Открыть ссылку при клике',
 
 
 'DISPLAY_CONDITION'=>'Условие отображения', // scenes/elements_edit.html; 
@@ -908,6 +912,9 @@ $dictionary=array(
 'LISTS'=>'Списки',
 'VARIABLES'=>'Переменные',
 'FUNCTIONS'=>'Функции',
+
+'DO_NOTHING'=>'Ничего не делать',
+'DO_ONCLICK'=>'Выполнить при клике',
 
 'TEST'=>'test'
 

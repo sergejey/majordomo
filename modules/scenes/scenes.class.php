@@ -671,6 +671,8 @@ elm_states - Element states
  elm_states: CONDITION_ADVANCED text
  elm_states: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  elm_states: MENU_ITEM_ID int(10) NOT NULL DEFAULT '0'
+ elm_states: HOMEPAGE_ID int(10) NOT NULL DEFAULT '0'
+ elm_states: EXT_URL varchar(255) NOT NULL DEFAULT ''
  elm_states: WINDOW_POSX int(10) NOT NULL DEFAULT '0'
  elm_states: WINDOW_POSY int(10) NOT NULL DEFAULT '0'
  elm_states: WINDOW_WIDTH int(10) NOT NULL DEFAULT '0'

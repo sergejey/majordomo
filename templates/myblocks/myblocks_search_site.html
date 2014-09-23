@@ -1,0 +1,75 @@
+
+<!-- table myblocks search -->
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0>
+<td align=right><b>Pages:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+<td>
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
+[#end PAGES#]
+</td>
+[#begin NEXTPAGE#]<td><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_myblocks" style="padding:0px" class="form">
+<table  align=center class="table table-striped">
+<thead>
+<tr>
+ <th>
+ <a href="?sortby_myblocks=TITLE&data_source=<#DATA_SOURCE#>&save_qry=1">TITLE</a><nobr>
+ [#if SORTBY="TITLE"#](+)[#endif#]
+ [#if SORTBY="TITLE DESC"#](-)[#endif#]</nobr>
+ </th>
+<td>&nbsp;</td>
+</tr>
+</thead>
+<tbody>
+[#begin RESULT#]
+<tr style="height:52px" class="hover_btn2">
+ <td style="vertical-align:middle"
+  >
+  <b>
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td style="vertical-align:middle" width="1%" nowrap>
+  <div style="width:120px">
+  </div>
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_myblocks">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0>
+<td align=right><b>Pages:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+<td>
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
+[#end PAGES#]
+</td>
+[#begin NEXTPAGE#]<td><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p>
+<font color="red">No records found.</font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>
