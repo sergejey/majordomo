@@ -1,241 +1,264 @@
 <?php
-
 class PushBullet {
-        
-        
-        
-        /*
-        *       Used to get a list of devices, returns a JSON string
-        *
-        *       Example usage
-        *       $pushbullet = new PushBullet();
-        *       $devices = json_decode($pushbullet->get_devices());
-        *       $deviceID = $devices->devices[0]->id;
-        *       
-        *       @return string
-        */
-        public function get_devices()
+        private $_apiKey;
+
+        const URL_PUSHES         = 'https://api.pushbullet.com/v2/pushes';
+        const URL_DEVICES        = 'https://api.pushbullet.com/v2/devices';
+        const URL_CONTACTS       = 'https://api.pushbullet.com/v2/contacts';
+        const URL_UPLOAD_REQUEST = 'https://api.pushbullet.com/v2/upload-request';
+        const URL_USERS          = 'https://api.pushbullet.com/v2/users';
+
+        public function __construct($apiKey)
         {
-                global $push_bullet_apikey;
-                if(is_null($push_bullet_apikey))
-                        die('Error no API key');
-                else
-                {
-                        $ch = curl_init('https://api.pushbullet.com/v2/devices');
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-                        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC); 
-                        curl_setopt($ch, CURLOPT_USERPWD, "$push_bullet_apikey:");
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-                        return curl_exec($ch);
+                $this->_apiKey = $apiKey;
+
+                if (!function_exists('curl_init')) {
+                        throw new PushBulletException('cURL library is not loaded.');
                 }
         }
 
-        /*
-        *       Used to push a list to the device specified by $deviceID, returns the JSON output of the API.
-        *
-        *       Example Usage
-        *       $pushbullet = new PushBullet();
-        *       $devices        = json_decode($pushbullet->get_devices());
-        *       $deviceID       = $devices->devices[0]->id;
-        *       $title          = 'Sample List';
-        *       $list           = array(
-        *                                       'item1',
-        *                                       'item2',
-        *                                       'item3'
-        *                                       );
-        *       $pushbullet->push_list($deviceID,$title,$list);
-        *
-        *
-        *       @param int              $deviceID
-        *       @param string   $title
-        *       @param array    $list
-        *       
-        *       @return string
-        *
-        */
-        public function push_list($deviceID,$title,$list)
+        // Pushes
+
+        public function pushNote($recipient, $title, $body = NULL)
         {
-                return $this->push($deviceID,'list',$title,$list);
+                return $this->_push($recipient, 'note', $title, $body);
+        }
+
+        public function pushLink($recipient, $title, $url, $body = NULL)
+        {
+                return $this->_push($recipient, 'link', $title, $url, $body);
+        }
+
+        public function pushAddress($recipient, $name, $address)
+        {
+                return $this->_push($recipient, 'address', $name, $address);
+        }
+
+        public function pushList($recipient, $title, $items)
+        {
+                return $this->_push($recipient, 'list', $title, $items);
+        }
+
+        public function pushFile($recipient, $filePath, $mimeType = NULL)
+        {
+                return $this->_push($recipient, 'file', $filePath, $mimeType);
+        }
+
+        public function getPushHistory($modifiedAfter = 0, $cursor = NULL)
+        {
+                $data = array();
+                $data['modified_after'] = $modifiedAfter;
+
+                if ($cursor !== NULL) {
+                        $data['cursor'] = $cursor;
+                }
+
+                return $this->_curlRequest(self::URL_PUSHES, 'GET', $data);
         }
         
-        
-        /*
-        *       Used to push a URL to the device specified by $deviceID, returns the JSON output of the API.
-        *
-        *       Example Usage
-        *       $pushbullet = new PushBullet();
-        *       $devices        = json_decode($pushbullet->get_devices());
-        *       $deviceID       = $devices->devices[0]->id;
-        *       $title          = 'Sample List';
-        *       $url            = 'http://reddit.com';
-        *       $pushbullet->push_url($deviceID,$title,$url);
-        *
-        *
-        *       @param int              $deviceID
-        *       @param string   $title
-        *       @param string   $url
-        *
-        *
-        *       @return string
-        *
-        */
-        public function push_url($deviceID,$title,$url)
+        public function dismissPush($pushIden) {
+                return $this->_curlRequest(self::URL_PUSHES . '/' . $pushIden, 'POST', array('dismissed' => TRUE));
+        }
+
+        public function deletePush($pushIden)
         {
-                return $this->push($deviceID,'link',$title,$url);
+                return $this->_curlRequest(self::URL_PUSHES . '/' . $pushIden, 'DELETE');
+        }
+
+        // Devices
+
+        public function getDevices()
+        {
+                return $this->_curlRequest(self::URL_DEVICES, 'GET');
+        }
+
+        public function deleteDevice($deviceIden)
+        {
+                return $this->_curlRequest(self::URL_DEVICES . '/' . $deviceIden, 'DELETE');
+        }
+
+        // Contacts
+        
+        public function createContact($name, $email)
+        {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
+                        throw new PushBulletException('Create contact: Invalid email address.');
+                }
+
+                $queryData = array(
+                        'name' => $name,
+                        'email' => $email
+                );
+
+                return $this->_curlRequest(self::URL_CONTACTS, 'POST', $queryData);
+        }
+
+        public function getContacts()
+        {
+                return $this->_curlRequest(self::URL_CONTACTS, 'GET');
         }
         
-        
-        
-        /*
-        *       Used to push a note to the device specified by $deviceID, returns the JSON output of the API.
-        *
-        *       Example Usage
-        *       $pushbullet = new PushBullet();
-        *       $devices        = json_decode($pushbullet->get_devices());
-        *       $deviceID       = $devices->devices[0]->id;
-        *       $title          = 'Sample Note';
-        *       $note           = 'Test note, this will hopefully be pushed to the device if everything happens correctly.';
-        *       $pushbullet->push_note($deviceID,$title,$note);
-        *
-        *
-        *       @param int              $deviceID
-        *       @param string   $title
-        *       @param string   $note
-        *
-        *
-        *       @return string
-        *
-        */
-        public function push_note($deviceID,$title,$note)
+        public function updateContact($contactIden, $name)
         {
-                return $this->push($deviceID,'note',$title,$note);
+                return $this->_curlRequest(self::URL_CONTACTS . '/' . $contactIden, 'POST', array('name' => $name));
         }
-        
-        
-        /*
-        *       Used to push a note to the device specified by $deviceID, returns the JSON output of the API.
-        *
-        *       Example Usage
-        *       $pushbullet = new PushBullet();
-        *       $devices        = json_decode($pushbullet->get_devices());
-        *       $deviceID       = $devices->devices[0]->id;
-        *       $title          = 'Google Inc.';
-        *       $address        = '1600 Amphitheatre Pkwy  Mountain View, CA 94043';
-        *       $pushbullet->push_address($deviceID,$title,$address);
-        *
-        *
-        *       @param int              $deviceID
-        *       @param string   $title
-        *       @param string   $address
-        *
-        *
-        *       @return string
-        *
-        */
-        public function push_address($deviceID,$title,$address)
+
+        public function deleteContact($contactIden)
         {
-                return $this->push($deviceID,'address',$title,$address);
+                return $this->_curlRequest(self::URL_CONTACTS . '/' . $contactIden, 'DELETE');
         }
-        
-        
-        
-        
-        
-        /*
-        *       Please ignore this, it is very messy and is the actual method for pushing.
-        *
-        *
-        *
-        *
-        *
-        */
-        public function push($device_id,$type,$title,$data)
+
+        // Users
+
+        public function getUserInformation()
         {
-                global $push_bullet_apikey;
-                if(is_null($push_bullet_apikey))
-                        die('Error no API key');
-                        
-                switch($type)
-                {
-                        case "note":{
-                                //      Gather data to push a note
-                                $post_data = array(
-                                        'device_id'     =>$device_id,
-                                        'type'          =>$type,
-                                        'title'         =>$title,
-                                        'body'          =>$data
-                                );
-                                break;
+                return $this->_curlRequest(self::URL_USERS . '/me', 'GET');
+        }
+
+        public function updateUserPreferences($preferences)
+        {
+                return $this->_curlRequest(self::URL_USERS . '/me', 'POST', array('preferences' => $preferences));
+        }
+
+
+        private function _push($recipient, $type, $arg1, $arg2 = NULL, $arg3 = NULL)
+        {
+                $queryData = array();
+
+                if (!empty($recipient)) {
+                        if (filter_var($recipient, FILTER_VALIDATE_EMAIL) !== FALSE) {
+                                $queryData['email'] = $recipient;
+                        } else {
+                                $queryData['device_iden'] = $recipient;
                         }
-                        case "address":{
-                                //      Gather data to push a address
-                                $post_data = array(
-                                        'device_id'     =>$device_id,
-                                        'type'          =>$type,
-                                        'name'          =>$title,
-                                        'address'       =>$data
-                                );
-                                break;
-                        }
-                        case "list":{
-                                //      Gather data to push a list
-                                $post_data = array(
-                                        'device_id'     =>$device_id,
-                                        'type'          =>$type,
-                                        'title'         =>$title,
-                                        'items'         =>''//  Set up a default blank space, will add the params later.
-                                );
-                                //      Loop the $items manually to create the list.
-                                foreach($data as $item)
-                                {
-                                        $post_data['items'] = $item.'&items='.$post_data['items'];
+                }
+
+                $queryData['type'] = $type;
+
+                switch($type) {
+                        case 'note':
+                                $queryData['title'] = $arg1;
+                                $queryData['body']  = $arg2;
+                        break;
+
+
+                        case 'link':
+                                $queryData['title'] = $arg1;
+                                $queryData['url']   = $arg2;
+
+                                if ($arg3 !== NULL) {
+                                        $queryData['body'] = $arg3;
                                 }
-                                break;
-                        }
-                        case "link":{
-                                //      Gather data to push a link
-                                $post_data = array(
-                                        'device_id'     =>$device_id,
-                                        'type'          =>$type,
-                                        'title'         =>$title,
-                                        'url'           =>$data
-                                );
-                                break;
-                        }
-                        
-                        default:{
-                                //      $type was incorrect
-                                die('Error, no matching PUSH type found. <br>'.$type.' is not a known push type or is not supported.');
-                        }
+                        break;
+
+
+                        case 'address':
+                                $queryData['name']    = $arg1;
+                                $queryData['address'] = $arg2;
+                        break;
+
+
+                        case 'list':
+                                $queryData['title'] = $arg1;
+                                $queryData['items'] = $arg2;
+                        break;
+
+
+                        case 'file':
+                                $fullFilePath = realpath($arg1);
+
+                                if (!is_readable($fullFilePath)) {
+                                        throw new PushBulletException('File: File does not exist or is unreadable.');
+                                }
+
+                                if (filesize($fullFilePath) > 25*1024*1024) {
+                                        throw new PushBulletException('File: File size exceeds 25 MB.');
+                                }
+
+                                $queryData['file_name'] = basename($fullFilePath);
+
+                                // Try to guess the MIME type if the argument is NULL
+                                if ($arg2 === NULL) {
+                                        $queryData['file_type'] = mime_content_type($fullFilePath);
+                                } else {
+                                        $queryData['file_type'] = $arg2;
+                                }
+
+                                // Request authorization to upload a file
+                                $response = $this->_curlRequest(self::URL_UPLOAD_REQUEST, 'GET', $queryData);
+                                $queryData['file_url'] = $response->file_url;
+                                
+                                // Upload the file
+                                $response->data->file = '@' . $fullFilePath;
+                                $this->_curlRequest($response->upload_url, 'POST', $response->data, FALSE, FALSE);
+                        break;
+
+                        default:
+                                throw new PushBulletException('Unknown push type.');
                 }
 
-                if (preg_match('/@/is', $post_data['device_id'])) {
-                 $post_data['email']=$post_data['device_id'];
-                 unset($post_data['device_id']);
-                }
-                
-                foreach($post_data as $key=>$value) {
-                        //      URL-ify the data to post
-                        $post_data_string .= $key.'='.$value.'&';
-                }
-                //      Remove the final & to avoid messing with any servers.
-                rtrim($post_data_string, '&');
-
-                //      Curl the data using the apikey as auth and post data
-                $ch = curl_init('https://api.pushbullet.com/v2/pushes');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC); 
-                curl_setopt($ch, CURLOPT_USERPWD, "$push_bullet_apikey:");
-                curl_setopt($ch, CURLOPT_POST, count($post_data));
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_string);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                
-                return curl_exec($ch);
+                return $this->_curlRequest(self::URL_PUSHES, 'POST', $queryData);
         }
-        
+
+
+        private function _curlRequest($url, $method, $data = NULL, $sendAsJSON = TRUE, $auth = TRUE)
+        {
+                $curl = curl_init();
+
+                if ($method == 'GET' && $data !== NULL) {
+                        $url .= '?' . http_build_query($data);
+                }
+
+                curl_setopt($curl, CURLOPT_URL, $url);
+
+                if ($auth) {
+                        curl_setopt($curl, CURLOPT_USERPWD, $this->_apiKey);
+                }
+
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+
+                if ($method == 'POST' && $data !== NULL) {
+                        if ($sendAsJSON) {
+                                $data = json_encode($data);
+                                curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                                        'Content-Type: application/json',
+                                        'Content-Length: ' . strlen($data)
+                                ));
+                        }
+
+                        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                }
+
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2); 
+
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($curl, CURLOPT_HEADER, FALSE);
+
+                $response = curl_exec($curl);
+
+                if ($response === FALSE) {
+                        $curlError = curl_error($curl);
+                        curl_close($curl);
+                        throw new PushBulletException('cURL Error: ' . $curlError);
+                }
+
+                $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+                if ($httpCode >= 400) {
+                        curl_close($curl);
+                        throw new PushBulletException('HTTP Error ' . $httpCode);
+                }
+
+                curl_close($curl);
+
+                return json_decode($response);
+        }
+}
+
+class PushBulletException extends Exception
+{
+        // Exception thrown by PushBullet
 }
 
 /**
@@ -246,11 +269,9 @@ class PushBullet {
 * @access public
 */
  function postToPushbullet($ph) {
-  global $push_bullet_apikey;
 
   $push_bullet_apikey=trim(SETTINGS_PUSHBULLET_KEY);
-
-  $push = new PushBullet();
+  $p = new PushBullet($push_bullet_apikey);
   if (mb_strlen($title, 'UTF-8')>100) {
    $title=mb_substr($title, 0, 100, 'UTF-8').'...';
    $data=$ph;
@@ -260,21 +281,23 @@ class PushBullet {
   }
 
 
-  if (defined('SETTINGS_PUSHBULLET_DEVICE_ID') && SETTINGS_PUSHBULLET_DEVICE_ID!='') {
+  if (defined('SETTINGS_PUSHBULLET_DEVICE_ID')) {
    $devices=explode(',', SETTINGS_PUSHBULLET_DEVICE_ID);
    $total=count($devices);
    for($i=0;$i<$total;$i++) {
     $push_bullet_device_id=trim($devices[$i]);
-    //DebMes("Sending to pushbullet device $push_bullet_device_id : ".$title);
-    $res=$push->push($push_bullet_device_id,'note',$title,$data);
+    if ($push_bullet_device_id) {
+     $res=$p->pushNote($push_bullet_device_id, $title, $data);
+    }
    }
   } else {
-   $res=$push->get_devices();
-   $devices=json_decode($res);
+   $res=$p->getDevices();
+   $devices=$res->devices;
    $total=count($devices);
    for($i=0;$i<$total;$i++) {
-    $push_bullet_device_id=$devices[$i]->iden;
-    $res=$push->push($push_bullet_device_id,'note',$title,$data);
+    if ($devices[$i]->iden) {
+     $res=$p->pushNote($devices[$i]->iden, $title, $data);
+    }
    }
   }
  }

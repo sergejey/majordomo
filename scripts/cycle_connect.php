@@ -229,6 +229,7 @@ echo "OK.\n\n";
           $url='http://localhost'.$url;
          }
          echo date('Y-m-d H:i:s ')."Sending request to $url\n";
+         DebMes("Connect command: ".$url);
          $content=getURL($url, 0);
         }
         if (preg_match('/PING/is', $out, $m)) {
