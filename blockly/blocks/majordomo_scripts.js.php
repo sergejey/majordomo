@@ -41,7 +41,10 @@ Blockly.Blocks['majordomo_script_<?php echo $scripts[$i]['ID'];?>'] = {
         .setCheck("Array");
     this.setInputsInline(true);
 
-    <?php if (preg_match('/return/is', $scripts[$i]['CODE'])) {?>
+    <?php 
+    $tmp=explode("\n", $scripts[$i]['CODE']);
+    $last_line=$tmp[count($tmp)-1];
+    if (preg_match('/return/is', $last_line)) {?>
     this.setColour(175);
     this.setOutput(true);
     this.setPreviousStatement(false);

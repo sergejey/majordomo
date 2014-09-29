@@ -27,7 +27,9 @@ for($i=0;$i<$total;$i++) {
 ?>
 Blockly.PHP['majordomo_script_<?php echo $scripts[$i]['ID'];?>'] = function(block) {
   var params = Blockly.PHP.valueToCode(block, 'PARAMS',Blockly.PHP.ORDER_NONE) || 'array()';
-  <?php if (preg_match('/return/is', $scripts[$i]['CODE'])) {?>
+  <?php 
+  $last_line=$tmp[count($tmp)-1];
+  if (preg_match('/return/is', $last_line)) {?>  
   var code = 'runScript("<?php echo $scripts[$i]['TITLE'];?>",'+params+')';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   <?php } else {?>

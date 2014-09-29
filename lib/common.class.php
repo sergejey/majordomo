@@ -80,12 +80,9 @@
                 $pt->checkAllPatterns();
         }
 
-        if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY!='') {
-         eval(SETTINGS_HOOK_AFTER_SAY);
-        }
 
-
-        if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY) {
+        global $ignorePushover;
+        if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY && !$ignorePushover) {
                 include_once(ROOT.'lib/pushover/pushover.inc.php');
                 if (defined('SETTINGS_PUSHOVER_LEVEL')){
                         if($level>=SETTINGS_PUSHOVER_LEVEL) {
@@ -96,7 +93,8 @@
                 }
         }
 
-        if (defined('SETTINGS_PUSHBULLET_KEY') && SETTINGS_PUSHBULLET_KEY) {
+        global $ignorePushbullet;
+        if (defined('SETTINGS_PUSHBULLET_KEY') && SETTINGS_PUSHBULLET_KEY && !$ignorePushbullet) {
                 include_once(ROOT.'lib/pushbullet/pushbullet.inc.php');
                 if (defined('SETTINGS_PUSHBULLET_PREFIX') && SETTINGS_PUSHBULLET_PREFIX) {
                  $prefix=SETTINGS_PUSHBULLET_PREFIX.' ';
@@ -113,7 +111,8 @@
                 }
         }
 
-        if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level>=SETTINGS_GROWL_LEVEL) {
+        global $ignoreGrowl;
+        if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level>=SETTINGS_GROWL_LEVEL && !$ignoreGrowl) {
          include_once(ROOT.'lib/growl/growl.gntp.php');
          $growl = new Growl(SETTINGS_GROWL_HOST, SETTINGS_GROWL_PASSWORD);
          $growl->setApplication('MajorDoMo','Notifications');
@@ -121,7 +120,15 @@
          $growl->notify($ph);
         }
 
-        postToTwitter($ph);
+        global $ignoreTwitter;
+        if (defined('SETTINGS_TWITTER_CKEY') && SETTINGS_TWITTER_CKEY && !$ignoreTwitter) {
+         postToTwitter($ph);
+        }
+
+        if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY!='') {
+         eval(SETTINGS_HOOK_AFTER_SAY);
+        }
+
 
  }
 
