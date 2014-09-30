@@ -1,0 +1,56 @@
+[#if VIEW_MODE=""#]
+
+ <a href="?view_mode=edit_file" class="btn"><#LANG_ADD#></a>
+
+ <table width="100%" border="0" cellpadding=5>
+  [#begin FILES#]
+  <tr>
+   <td valign="top"><big><a href="?view_mode=edit_file&file=[#FILENAME_URL#]">[#FILENAME#]</a></big></td>
+  </tr>
+  [#end FILES#]
+ </table>
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="edit_file"#]
+
+<a href="?" class="btn"><#LANG_BACK#></a>
+
+[#if FILE!=""#]
+<h1>[#FILE#]</h1>
+[#endif FILE#]
+
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+
+<table border="0">
+<form action="?" method="post">
+ <tr>
+  <td valign="top"><#LANG_TITLE#>:</td>
+  <td valign="top"><input type="text" name="file" value="[#FILE#]"></td>
+ </tr>
+ <tr>
+  <td valign="top"><#LANG_DATA#>:</td>
+  <td valign="top"><textarea name="data" class="span8" rows="30">[#DATA#]</textarea></td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top">
+   <input type="submit" name="submit" value="<#LANG_SUBMIT#>" class="btn btn-primary">
+   <a href="?" class="btn"><#LANG_CANCEL#></a>
+   [#if FILE!=""#]
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <a href="?view_mode=delete_file&file=<#FILE_URL#>" class="btn" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+   [#endif FILE#]
+  </td>
+ </tr>
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+</table>
+
+[#if FILE!=""#]
+<p>Example usage: getRandomLine('<#FILE#>');</p>
+[#endif FILE#]
+
+[#endif VIEW_MODE#]

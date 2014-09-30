@@ -91,6 +91,7 @@ $dictionary=array(
 'MODULE_CONNECT'=>'CONNECT',
 'MODULE_MARKET'=>'Маркет дополнений',
 'MODULE_MYBLOCKS'=>'Мои блоки',
+'MODULE_TEXTFILES'=>'Текстовые файлы',
 
 'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 
