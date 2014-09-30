@@ -237,7 +237,7 @@ echo "OK.\n\n";
          echo date('Y-m-d H:i:s ')."Sending: ".$in;
          socket_write($socket, $in, strlen($in));
          echo "OK.\n";
-         setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+         setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
         }
  }
 

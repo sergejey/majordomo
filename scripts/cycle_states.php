@@ -19,14 +19,14 @@ $ctl = new control_modules();
 $checked_time=0;
 
 if ($_GET['once']) {
- setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+ setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
  cycleBody();
  echo "OK";
 } else {
  while(1) {
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
    if (time()-$checked_time>5) {
-    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
     $checked_time=time();
     cycleBody();
    }

@@ -324,6 +324,16 @@ function admin(&$out) {
     } else {
      $rec['CLASS_BATTERY']=0;
     }
+    if (isset($devices[$i]->commandClasses->{'156'}->data)) {
+     $rec['CLASS_SENSOR_ALARM']=1;
+    } else {
+     $rec['CLASS_SENSOR_ALARM']=0;
+    }
+    if (is_object($devices[$i]->commandClasses->{'45'})) {
+     $rec['CLASS_SCENE_CONTROLLER']=1;
+    } else {
+     $rec['CLASS_SCENE_CONTROLLER']=0;
+    }
     if (!$rec['ID']) {
      $rec['ID']=SQLInsert('zwave_devices', $rec);
     } else {
@@ -446,6 +456,11 @@ function admin(&$out) {
     return 0;
    }
 
+   if ($_GET['debug']) {
+    echo "<hr size=1>";
+    var_dump($data);
+   }
+
    if ($rec['CLASS_BASIC']) {
     $value=$data->commandClasses->{"32"}->data->value;
     if ($value!==$rec['BASIC']) {
@@ -523,6 +538,39 @@ function admin(&$out) {
     // ...
    }
 
+   if ($rec['CLASS_SENSOR_ALARM']) {
+    // ... $data->commandClasses->{"156"}->data
+    if (is_object($data->commandClasses->{"156"}->data->{"0"}->sensorState)) {
+     $properties['AlarmGeneral']=$data->commandClasses->{"156"}->data->{"0"}->sensorState->value;
+     $value=$properties['AlarmGeneral'];
+     if ($value!=$rec['LEVEL']) {
+      $rec['LEVEL']=$value;
+      SQLUpdate('zwave_devices', $rec);
+     }
+    }
+    if (is_object($data->commandClasses->{"156"}->data->{"1"}->sensorState)) {
+     $properties['AlarmSmoke']=$data->commandClasses->{"156"}->data->{"1"}->sensorState->value;
+    }
+    if (is_object($data->commandClasses->{"156"}->data->{"2"}->sensorState)) {
+     $properties['AlarmCarbonMonoxide']=$data->commandClasses->{"156"}->data->{"2"}->sensorState->value;
+    }
+    if (is_object($data->commandClasses->{"156"}->data->{"3"}->sensorState)) {
+     $properties['AlarmCarbonDioxide']=$data->commandClasses->{"156"}->data->{"3"}->sensorState->value;
+    }
+    if (is_object($data->commandClasses->{"156"}->data->{"4"}->sensorState)) {
+     $properties['AlarmHeat']=$data->commandClasses->{"156"}->data->{"4"}->sensorState->value;
+    }
+    if (is_object($data->commandClasses->{"156"}->data->{"5"}->sensorState)) {
+     $properties['AlarmFlood']=$data->commandClasses->{"156"}->data->{"5"}->sensorState->value;
+    }
+   }
+
+   if ($rec['CLASS_SCENE_CONTROLLER'] && is_object($data->commandClasses->{"43"}->data->{"currentScene"})) {
+    // ... 45 / 43
+    $properties['CurrentScene']=$data->commandClasses->{"43"}->data->{"currentScene"}->value;
+   }
+
+
    foreach($properties as $k=>$v) {
     $prop=SQLSelectOne("SELECT * FROM zwave_properties WHERE DEVICE_ID='".$rec['ID']."' AND UNIQ_ID LIKE '".DBSafe($k)."'");
     $prop['DEVICE_ID']=$rec['ID'];
@@ -561,8 +609,8 @@ function admin(&$out) {
    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
    curl_setopt($ch, CURLOPT_URL, $url);
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-   curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
    $result = curl_exec($ch);
    curl_close($ch);
@@ -575,8 +623,8 @@ function admin(&$out) {
       curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-      curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 30);
       curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
       $result = curl_exec($ch);
       curl_close($ch);
@@ -693,6 +741,8 @@ zwave_properties - Properties
  zwave_devices: CLASS_METER int(3) NOT NULL DEFAULT '0'
  zwave_devices: CLASS_BATTERY int(3) NOT NULL DEFAULT '0'
  zwave_devices: CLASS_THERMOSTAT int(3) NOT NULL DEFAULT '0'
+ zwave_devices: CLASS_SENSOR_ALARM int(3) NOT NULL DEFAULT '0'
+ zwave_devices: CLASS_SCENE_CONTROLLER int(3) NOT NULL DEFAULT '0'
  zwave_devices: ALL_CLASSES varchar(255) NOT NULL DEFAULT ''
 
  zwave_properties: ID int(10) unsigned NOT NULL auto_increment

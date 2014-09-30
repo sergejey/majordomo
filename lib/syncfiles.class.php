@@ -217,7 +217,7 @@ function checkfile($path, $move) {
 
 function copyFile($src, $dst) {
  global $files_copied;
- $size_limit=2*1024*1024;
+ $size_limit=2000*1024*1024;
  $fs=filesize($src);
 
  if ($fs==0) {

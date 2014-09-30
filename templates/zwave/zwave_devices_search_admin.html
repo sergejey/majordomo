@@ -115,6 +115,8 @@
    [#if CLASS_METER="1"#]meter;[#endif#]
    [#if CLASS_BATTERY="1"#]battery ([#BATTERY_LEVEL#]%);[#endif#]
    [#if CLASS_THERMOSTAT="1"#]thermostat[#if MODE_VALUE!=""#] ([#MODE_VALUE#])[#endif#];[#endif#]
+   [#if CLASS_SENSOR_ALARM="1"#]sensor alarm;[#endif#]
+   [#if CLASS_SCENE_CONTROLLER="1"#]scene controller;[#endif#]
    [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
  </td>
  <td width="1%" nowrap>

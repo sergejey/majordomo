@@ -27,7 +27,7 @@ while(1)
 
    if (time()-$checked_time>10) {
     $checked_time=time();   
-    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
     //updating RSS channels
     $to_update = SQLSelect("SELECT ID, TITLE FROM rss_channels WHERE NEXT_UPDATE <= NOW() LIMIT 1");
     $total = count($to_update);

@@ -28,7 +28,7 @@ while(1)
 
    if (time()-$checked_time>10) {
     $checked_time=time();
-    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time());
+    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
     // check all web vars
     $webvars->checkAllVars(); 
    }

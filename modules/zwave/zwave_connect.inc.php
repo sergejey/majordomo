@@ -5,7 +5,13 @@
 
 
   //CHECK
-   $url=$this->config['ZWAVE_API_URL'];
+   $url=$this->config['ZWAVE_API_URL'].'ZWaveAPI/Data/0';
+
+   if (!$url || $url=='http://') {
+    return 0;
+   }
+
+
    $fields=array();
 
    foreach($fields as $key=>$value) { $fields_string .= $key.'='.urlencode($value).'&'; }
@@ -18,12 +24,14 @@
    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-   curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
    $result = curl_exec($ch);
    curl_close($ch);
-  
-   //SaveFile(ROOT.'cached/zwave_init.txt',$result);
+
+
+   SaveFile(ROOT.'cached/zwave_init.txt',$result);
+
 
    if (preg_match('/307 Temporary Redirect/is', $result)) {
     // CONNECT
@@ -46,7 +54,7 @@
     curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -66,7 +74,7 @@
     curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -76,6 +84,10 @@
      return false;
     }
 
+   }
+
+   if (!preg_match('/controller/is', $result)) {
+    return false;
    }
 
 return 1;
