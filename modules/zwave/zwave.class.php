@@ -223,9 +223,11 @@ function admin(&$out) {
      $device->id=$i;
      $device->type=$device->data->deviceTypeString->value;
 
+     /*
      if ($device->type=='Static PC Controller') {
       continue;
      }
+     */
 
      //echo $device->data->NodeId->value."<hr>";
 
@@ -329,7 +331,7 @@ function admin(&$out) {
     } else {
      $rec['CLASS_SENSOR_ALARM']=0;
     }
-    if (is_object($devices[$i]->commandClasses->{'45'})) {
+    if (is_object($devices[$i]->commandClasses->{'45'}) || is_object($devices[$i]->commandClasses->{'43'})) {
      $rec['CLASS_SCENE_CONTROLLER']=1;
     } else {
      $rec['CLASS_SCENE_CONTROLLER']=0;
@@ -446,6 +448,8 @@ function admin(&$out) {
   function pollDevice($device_id, $data=0) {
    $rec=SQLSelectOne("SELECT * FROM zwave_devices WHERE ID='".$device_id."'");
 
+   $rec_updated=0;
+
    $properties=array();
 
    if (!$data) {
@@ -457,17 +461,26 @@ function admin(&$out) {
    }
 
    if ($_GET['debug']) {
-    echo "<hr size=1>";
+    //echo $data->updateTime;exit;
     var_dump($data);
+   }
+
+   $updateTime=0;
+
+   if ($data->data->updateTime) {
+    $updateTime=$data->data->updateTime;
    }
 
    if ($rec['CLASS_BASIC']) {
     $value=$data->commandClasses->{"32"}->data->value;
     if ($value!==$rec['BASIC']) {
      $rec['BASIC']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
     $properties['Basic']=$rec['BASIC'];
+    if ($data->commandClasses->{"32"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"32"}->data->{"updateTime"};
+    }
    }
 
    if ($rec['CLASS_SENSOR_BINARY']) {
@@ -475,9 +488,12 @@ function admin(&$out) {
     $value=(int)$data->commandClasses->{"48"}->data->level->value;
     if ($value!==$rec['LEVEL']) {
      $rec['LEVEL']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
+    if ($data->commandClasses->{"48"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"48"}->data->{"updateTime"};
+    }
    }
 
    if ($rec['CLASS_SENSOR_MULTILEVEL']) {
@@ -489,23 +505,28 @@ function admin(&$out) {
       $sensor=$data->commandClasses->{"49"}->data->{"$i"};
       $values[]=$sensor->sensorTypeString->value.': '.$sensor->val->value.$sensor->scaleString->value;
       $properties[$sensor->sensorTypeString->value.', '.$sensor->scaleString->value]=$sensor->val->value;
+      if ($data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"}>$updateTime) {
+       $updateTime=$data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"};
+      }
      }
     }
     $value=implode('; ', $values);
     if ($value!=$rec['SENSOR_VALUE']) {
      $rec['SENSOR_VALUE']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
-
    }
 
    if ($rec['CLASS_THERMOSTAT']) {
     $value=$data->commandClasses->{"64"}->data->{$data->commandClasses->{"64"}->data->mode->value}->modeName->value;
     if ($value!=$rec['MODE_VALUE']) {
      $rec['MODE_VALUE']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
     $properties['Thermostat mode']=$rec['MODE_VALUE'];
+    if ($data->commandClasses->{"64"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"64"}->data->{"updateTime"};
+    }
    }
 
 
@@ -513,25 +534,34 @@ function admin(&$out) {
     $value=(int)$data->commandClasses->{"37"}->data->level->value;
     if ($value!==$rec['LEVEL']) {
      $rec['LEVEL']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
+    if ($data->commandClasses->{"37"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"37"}->data->{"updateTime"};
+    }
    }
    if ($rec['CLASS_SWITCH_MULTILEVEL']) {
     $value=(int)$data->commandClasses->{"38"}->data->level->value;
     if ($value!==$rec['LEVEL']) {
      $rec['LEVEL']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
+    if ($data->commandClasses->{"38"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"38"}->data->{"updateTime"};
+    }
    }
    if ($rec['CLASS_BATTERY']) {
     $value=(int)$data->commandClasses->{"128"}->data->last->value;
     if ($value!=$rec['BATTERY_LEVEL']) {
      $rec['BATTERY_LEVEL']=$value;
-     SQLUpdate('zwave_devices', $rec);
+     $rec_updated=1;
     }
     $properties['Battery']=$rec['BATTERY_LEVEL'];
+    if ($data->commandClasses->{"128"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"128"}->data->{"updateTime"};
+    }
    }
 
    if ($rec['CLASS_METER']) {
@@ -545,7 +575,7 @@ function admin(&$out) {
      $value=$properties['AlarmGeneral'];
      if ($value!=$rec['LEVEL']) {
       $rec['LEVEL']=$value;
-      SQLUpdate('zwave_devices', $rec);
+      $rec_updated=1;
      }
     }
     if (is_object($data->commandClasses->{"156"}->data->{"1"}->sensorState)) {
@@ -563,12 +593,36 @@ function admin(&$out) {
     if (is_object($data->commandClasses->{"156"}->data->{"5"}->sensorState)) {
      $properties['AlarmFlood']=$data->commandClasses->{"156"}->data->{"5"}->sensorState->value;
     }
+    if ($data->commandClasses->{"156"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"156"}->data->{"updateTime"};
+    }
    }
 
    if ($rec['CLASS_SCENE_CONTROLLER'] && is_object($data->commandClasses->{"43"}->data->{"currentScene"})) {
-    // ... 45 / 43
+    // ... 43
     $properties['CurrentScene']=$data->commandClasses->{"43"}->data->{"currentScene"}->value;
+    if ($data->commandClasses->{"43"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"43"}->data->{"updateTime"};
+    }
+   } elseif ($rec['CLASS_SCENE_CONTROLLER'] && is_object($data->commandClasses->{"45"}->data->{"currentScene"})) {
+    // ... 45
+    $properties['CurrentScene']=$data->commandClasses->{"45"}->data->{"currentScene"}->value;
+    if ($data->commandClasses->{"45"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"43"}->data->{"updateTime"};
+    }
    }
+
+   if ($updateTime) {
+    $properties['updateTime']=$updateTime;
+    $rec['LATEST_UPDATE']=date('Y-m-d H:i:s', $properties['updateTime']);
+    $rec_updated=1;
+   }
+
+
+   if ($rec_updated) {
+    SQLUpdate('zwave_devices', $rec);
+   }
+
 
 
    foreach($properties as $k=>$v) {

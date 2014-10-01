@@ -137,7 +137,7 @@ function admin(&$out) {
 
    $this->config['CONNECT_USERNAME']=$connect_username;
    $this->config['CONNECT_PASSWORD']=$connect_password;
-   $this->config['CONNECT_SYNC']=$connect_sync;
+   $this->config['CONNECT_SYNC']=(int)$connect_sync;
 
    $this->saveConfig();
    $this->redirect("?");
