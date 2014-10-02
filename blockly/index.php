@@ -58,13 +58,12 @@ $ctl = new control_modules();
 
       function saveCode() {
        var code = Blockly.PHP.workspaceToCode();
-
        var doc=window.opener.document;
 
        var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
        var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
-       var elem1=doc.getElementById('code');
+       var elem1=doc.getElementById('<?php echo $_GET['code_field'];?>');
        elem1.value=code;
 
        var elem2=doc.getElementById('xml_code');

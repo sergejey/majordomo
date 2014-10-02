@@ -141,6 +141,15 @@
 <input type="hidden" name="mode" value="update">
 </form>
 
+ [#if OTHER_SCRIPTS#]
+   <ul>
+   [#begin OTHER_SCRIPTS#]
+   <li>[#if ID!="<#ID#>"#]<a href="?view_mode=edit_scripts&id=[#ID#]">[#else#]<b>[#endif#][#TITLE#]</b></a></li>
+   [#end OTHER_SCRIPTS#]
+   </ul>
+ [#endif OTHER_SCRIPTS#]
+
+
 [#if ID!=""#]
  [#module name="xray" action="context" type="script" keyword="<#TITLE#>" code_id="code"#]
 [#endif ID#]
