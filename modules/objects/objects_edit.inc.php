@@ -19,6 +19,12 @@
   //updating 'TITLE' (varchar, required)
    global $title;
    $rec['TITLE']=$title;
+
+   $tmp=SQLSelectOne("SELECT ID FROM objects WHERE TITLE LIKE '".DBSafe($rec['TITLE'])."' AND ID!=".(int)$rec['ID']);
+   if ($tmp['ID']) {
+    $rec['TITLE']='';
+   }
+
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;

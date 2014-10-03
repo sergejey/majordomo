@@ -56,6 +56,25 @@
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
     $out['OK']=1;
+
+    if ($rec['CLASS_ID']) {
+     $objects=getObjectsByClass($rec['CLASS_ID']);
+     $total=count($objects);
+     $replaces=array();
+     for($i=0;$i<$total;$i++) {
+      $property=SQLSelectOne("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($rec['TITLE'])."' AND OBJECT_ID=".(int)$objects[$i]['ID']." AND CLASS_ID!=".(int)$rec['CLASS_ID']);
+      if ($property['ID']) {
+       $replaces[]=$property['ID'];
+      }
+     }
+     $total=count($replaces);
+     for($i=0;$i<$total;$i++) {
+      SQLExec("UPDATE pvalues SET PROPERTY_ID=".(int)$rec['ID']." WHERE PROPERTY_ID=".(int)$replaces[$i]);
+      SQLExec("DELETE FROM properties WHERE ID=".(int)$replaces[$i]);
+     }
+
+    }
+
    } else {
     $out['ERR']=1;
    }
@@ -77,5 +96,7 @@
     $out[$k]=htmlspecialchars($v);
    }
   }
+
+
 
 ?>

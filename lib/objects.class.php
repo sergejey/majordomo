@@ -39,7 +39,7 @@
 * @access public
 */
  function getObjectsByClass($class_name) {
-  $class_record=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe(trim($class_name))."'");
+  $class_record=SQLSelectOne("SELECT ID FROM classes WHERE (TITLE LIKE '".DBSafe(trim($class_name))."' OR ID=".(int)$class_name.")");
   if (!$class_record['ID']) {
    return 0;
   }
