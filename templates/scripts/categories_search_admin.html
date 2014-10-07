@@ -3,20 +3,19 @@
 #-->
 
 <!-- table scripts search -->
-<p align=center>
+&nbsp;
+<p>
 <b>
-<a href="?view_mode=edit_categories&data_source=<#DATA_SOURCE#>"><#LANG_ADD_NEW_CATEGORY#></a>
+<a href="?view_mode=edit_categories&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CATEGORY#></a>
 </b>
 </p>
-<table width=100% border=0><tr>
-<td valign=top>
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_scripts" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 align=center>
+<table class="table table-striped">
 [#begin RESULT#]
-<tr>
+<tr  class="hover_btn2">
  <td
   >
   <b>
@@ -27,17 +26,11 @@
   [#endif#]
   </a></b>
  </td>
- <td>
-  <table border=0>
+ <td width="100">
   [#if "<#ACTION#>"=="admin"#]
-   <td align=center>
-    <b><a href="?view_mode=edit_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>"><#LANG_EDIT#></a></b>
-   </td>
-   <td align=center>
-    <a href="?view_mode=delete_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+    <b><a href="?view_mode=edit_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" title="<#LANG_EDIT#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a></b>
+    <a href="?view_mode=delete_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
-  </table>
  </td>
 </tr>
 [#end RESULT#]
@@ -52,4 +45,4 @@
 </p>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
+

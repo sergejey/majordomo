@@ -1,14 +1,18 @@
 [#if ACTION!="context"#]
+
+<ul class="nav nav-tabs">
+ <li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?">Properties</a></li>
+ <li [#if VIEW_MODE="methods"#]class="active"[#endif#]><a href="?view_mode=methods">Methods</a></li>
+ <li [#if VIEW_MODE="scripts"#]class="active"[#endif#]><a href="?view_mode=scripts">Scripts</a></li>
+ <li [#if VIEW_MODE="timers"#]class="active"[#endif#]><a href="?view_mode=timers">Timers</a></li>
+ <li [#if VIEW_MODE="events"#]class="active"[#endif#]><a href="?view_mode=events">Events</a></li>
+ <li [#if VIEW_MODE="debmes"#]class="active"[#endif#]><a href="?view_mode=debmes">Debug</a></li>
+ <li [#if VIEW_MODE="performance"#]class="active"[#endif#]><a href="?view_mode=performance">Performance</a></li>
+</ul>
+
+&nbsp;
+
 <table border="1" align="center" cellspacing="3" cellpadding="5" width="100%">
- <tr>
-  <td valign="top" width="20%"[#if VIEW_MODE!=""#] bgcolor="#AAAAAA"[#endif#]><a href="?">Properties</a></td>
-  <td valign="top" width="20%"[#if VIEW_MODE!="methods"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=methods">Methods</a></td>
-  <td valign="top" width="20%"[#if VIEW_MODE!="scripts"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=scripts">Scripts</a></td>
-  <td valign="top" width="20%"[#if VIEW_MODE!="timers"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=timers">Timers</a></td>
-  <td valign="top" width="20%"[#if VIEW_MODE!="events"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=events">Events</a></td>
-  <td valign="top" width="20%"[#if VIEW_MODE!="debmes"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=debmes">DebMes</a></td>
-  <td valign="top" width="20%"[#if VIEW_MODE!="performance"#] bgcolor="#AAAAAA"[#endif#]><a href="?view_mode=performance">Performance</a></td>
- </tr>
  <tr>
   <td valign="top" colspan=7>
    <table width="100%" border="0">
@@ -17,7 +21,7 @@
      <div>Filter: <input type="text" name="filter" id="filter" onChange="checkAllStates();"></div>
      </td>
      <td valign="top" align="right" width="50%">
-      <a href="#" class="btn" onClick="return playPauseXRay();" id="playpausebtn">Pause</a>
+      <a href="#" class="btn btn-default" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> Pause</a>
      </td>
     </tr>
    </table>
@@ -32,11 +36,11 @@
 
         function playPauseXRay() {
          if (playingXray==1) {
-          $('#playpausebtn').html('Continue');
+          $('#playpausebtn').html('<i class="glyphicon glyphicon-play"></i> Continue');
           clearTimeout(checkTimer);
           playingXray=0;
          } else {
-          $('#playpausebtn').html('Pause');
+          $('#playpausebtn').html('<i class="glyphicon glyphicon-pause"></i> Pause');
           checkAllStates();
          }
          return false;

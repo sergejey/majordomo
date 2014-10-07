@@ -2,158 +2,142 @@
  @version 0.3 (auto-set)
 #-->
 <!-- Table 'users' edit -->
-<p align=center>
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li class="active">
+[#if ID=""#]
+<#LANG_NEW_RECORD#>
+[#else#]
+<#LANG_EDIT_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+
 [#endif ERR#]
-[#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
-[#endif ID#]
+
+
 <!-- USERNAME (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_USERNAME#]<b><font color="red">[#endif#]
- <#LANG_USERNAME#>:
- (*)
- </td>
- <td>
-  <input type="text" name="username" value="[#USERNAME#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_PASSWORD#> (<#LANG_OPTIONAL#>):
- </td>
- <td>
-  <input type="text" name="password" value="[#PASSWORD#]">
- </td>
-</tr>
-
-
-<!-- NAME (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_NAME#]<b><font color="red">[#endif#]
- <#LANG_NAME#>:
- (*)
- </td>
- <td>
-  <input type="text" name="name" value="[#NAME#]">
- </td>
-</tr>
-<!-- EMAIL (email) -->
-<tr>
- <td align=right>
- [#if ERR_EMAIL#]<b><font color="red">[#endif#]
- <#LANG_EMAIL#>:
- (*)
- </td>
- <td>
-  <input type="text" name="email" value="[#EMAIL#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_SKYPE#>:
- </td>
- <td>
-  <input type="text" name="skype" value="[#SKYPE#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_MOBILE_PHONE#>:
- </td>
- <td>
-  <input type="text" name="mobile" value="[#MOBILE#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_PHOTO#>:
- </td>
- <td>
-  [#if AVATAR!=""#]<img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" border="0" height="50"><br>[#endif#]
-  <input type="file" name="avatar">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_LINKED_OBJECT#>:
- </td>
- <td>
-  <input type="text" name="linked_object" value="[#LINKED_OBJECT#]">
- </td>
-</tr>
-
-<!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_HOST#]<b><font color="red">[#endif#]
- <#LANG_HOSTNAME#> (<#LANG_OPTIONAL#>):
- </td>
- <td>
-  <input type="text" name="host" value="[#HOST#]">
- </td>
-</tr>
-
-
-<tr>
- <td align=right>
- &nbsp;
- </td>
- <td>
-  <label><input type="checkbox" name="is_default" value="1"[#if IS_DEFAULT="1"#] checked[#endif#]> <#LANG_DEFAULT_USER#></label>
- </td>
-</tr>
-
-<tr>
- <td align=right>
- &nbsp;
- </td>
- <td>
-  <label><input type="checkbox" name="is_admin" value="1"[#if IS_ADMIN="1"#] checked[#endif#]> <#LANG_IS_ADMIN#></label>
- </td>
-</tr>
 
 
 
-<tr>
- <td colspan=2 align=center>
- [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
- [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
- [#endif ID#]
- &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
- </td>
-</tr>
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_USERNAME#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_USERNAME#]alert-danger[#endif#]"  name="username" value="[#USERNAME#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PASSWORD#> (<#LANG_OPTIONAL#>):</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="password" value="[#PASSWORD#]"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_NAME#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_NAME#]alert-danger[#endif#]"  name="name" value="[#NAME#]"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_EMAIL#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_EMAIL#]alert-danger[#endif#]"  name="email" value="[#EMAIL#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SKYPE#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="skype" value="[#SKYPE#]"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_MOBILE_PHONE#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="mobile" value="[#MOBILE#]"></div>
+</div>
+
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PHOTO#>:</label>
+        <div class="col-lg-5">
+                [#if AVATAR!=""#]<img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" border="0" height="50"><br>[#endif#]
+                <input type="file" class="form-control" name="avatar">
+        
+        </div>
+</div>
+
+
+
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_OBJECT#>:</label>
+        <div class="col-lg-5"><input type="text" class="form-control"  name="linked_object" value="[#LINKED_OBJECT#]"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_HOSTNAME#> (<#LANG_OPTIONAL#>):</label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
+</div>
+
+
+
+
+
+<div class="form-group">
+        <div class="col-lg-offset-1 col-lg-5 ">
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="is_default" [#if IS_DEFAULT="1"#] checked[#endif#]> <#LANG_DEFAULT_USER#>
+                        </label>
+                </div>
+        </div>
+</div>
+
+
+<div class="form-group">
+        <div class="col-lg-offset-1 col-lg-5 ">
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="is_admin" [#if IS_ADMIN="1"#] checked[#endif#]> <#LANG_IS_ADMIN#>
+                        </label>
+                </div>
+        </div>
+</div>
+
+
+
+
+
+
+<div class="form-group">
+     <div class="col-lg-offset-1 col-lg-5">
+        
+         [#if ID!=""#]
+                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
+                 [#else ID#]
+                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
+                 [#endif ID#]
+                 &nbsp;
+                 <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+
+    </div>
+</div>
+
+
+
+
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 </form>
-</table>
+

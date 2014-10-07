@@ -12,7 +12,7 @@
 <legend><#LANG_NEW_RECORD#></legend>
 [#endif ID#]
 <!-- TITLE (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_TITLE#>:
  (*)
@@ -20,7 +20,7 @@
  <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input"></div>
 </div>
 <!-- HOST (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_HOST#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_HOSTNAME#>:
  (*)
@@ -28,14 +28,14 @@
  <div class="controls"><input type="text" name="host" value="[#HOST#]" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_READ_COMMUNITY#] style="color:red;font-weight:bold"[#endif#]>
  Read Community:
  </label>
  <div class="controls"><input type="text" name="read_community" value="[#READ_COMMUNITY#]" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_WRITE_COMMUNITY#] style="color:red;font-weight:bold"[#endif#]>
  Write Community:
  </label>
@@ -45,7 +45,7 @@
 [#if ID!=""#]
 
 <!--#
-<div class="control-group">
+<div class="form-group">
 <div class="controls">
 [#if MIB_FILE!=""#]
 [#MIB_FILE#] <a href="<#ROOTHTML#>./cms/snmpdevices/[#MIB_FILE#]">Download</a>
@@ -57,14 +57,14 @@ Upload oid-lib file: <input type="file" name="mib_file">
 #-->
 
 <!--#
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <a href="?data_source=<#DATA_SOURCE#>" class="btn span2">Scan</a>
  </div>
 </div>
 #-->
 
-<div class="control-group">
+<div class="form-group">
 
  <label class="control-label"[#if ERR_CODE#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_PROPERTIES#>:
@@ -127,7 +127,7 @@ Upload oid-lib file: <input type="file" name="mib_file">
 [#endif ID#]
 
 <!--#
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_SCRIPT_ID#] style="color:red;font-weight:bold"[#endif#]>
  SCRIPT_ID:
  </label>
@@ -139,7 +139,7 @@ Upload oid-lib file: <input type="file" name="mib_file">
  </select>
 </div>
 </div>
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_CODE#] style="color:red;font-weight:bold"[#endif#]>
  CODE
  :

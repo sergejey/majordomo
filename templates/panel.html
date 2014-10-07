@@ -1,42 +1,69 @@
-<!DOCTYPE html>
 <!--#
- @version 0.2 (auto-set)
-#-->
+ @version 0.4 (auto-set)
+#--><!DOCTYPE html>
 <html>
 <head>
-<title><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></title>
-<meta name="keywords" content="">
-<meta name="description" content="">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
-  <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
-  <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
-  <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
+        <title><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
+        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
 
 
-<script language="javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
+        <script language="javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 
-  <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
-  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
-  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
-  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
-  <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
+        <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 
-<script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
-<script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
-<script language="javascript" src="<#ROOTHTML#>js/admin.js"></script>
+        <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+        <script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
+        <script language="javascript" src="<#ROOTHTML#>js/admin.js"></script>
 
 
-[#inc scripts.js#]
+        [#inc scripts.js#]
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
 </head>
 
-<body>
+<style>
+body {
+/*max-width: 1200px;*/
+margin: 0 auto;
+}
+div#content {
+margin: 0px 10px;
+padding: 20px 40px;
+}
+.clearfix{
+        padding-bottom:5px;
+}
+<!--#
+p, .btn, h1 {
+margin: 10px 0;
+}
+#-->
+.navbar-fixed-top .container, .navbar-fixed-bottom .container {
+/*        width: 1100px;*/
+}
 
+
+</style>
+<body bgcolor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
+
+<div id="content" class="content">
 [#if AUTHORIZED#]
 
 <script language="javascript">
@@ -171,63 +198,37 @@ jQuery.fn.center = function () {
  }
 </script>
 
-
 [#if PRINT!="1"#]
 <!--# top  #-->
-<style>
-body {
-max-width: 1200px;
-margin: 0 auto;
-}
-div#content {
-margin: 35px 10px;
-padding: 20px 40px;
-}
-p, .btn, h1 {
-margin: 10px 0;
-}
-.navbar-fixed-top .container, .navbar-fixed-bottom .container {
-        width: 1100px;
-}
-</style>
-<div id="content" class="content">
-<div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-                <div class="container">
-                <a class="brand" href="<#ROOTHTML#>"><#SETTINGS_SITE_TITLE#> // <span class="color-white"><#LANG_CONTROL_PANEL#></span></a>
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
-                        <div class="nav-collapse">
-                                <ul class="nav">
-                                        <li>
-                                                <a href="<#ROOTHTML#>" target=_blank class=smw><#LANG_FRONTEND#></a>
+
+<nav class="navbar navbar-default navbar-center" role="navigation">
+        <a class="navbar-brand" href="/" style="padding:8px"><img src="<#ROOTHTML#>img/logo_small.png" border="0" align="absmiddle"> MajorDoMo // <span><#LANG_CONTROL_PANEL#></span></a>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+                 <ul class="nav navbar-nav navbar-right">
+                                 <li>
+                                                <a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a>
                                         </li>
                                         <li>
-                                                <a href="<#ROOTHTML#>menu.html" target=_blank class=smw><#LANG_CONTROL_MENU#></a>
+                                                <a href="<#ROOTHTML#>menu.html"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a>
                                         </li>
                                         <li>
-                                                <a href="?action=xray" target=_blank class=smw>X-Ray</a>
+                                                <a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a>
                                         </li>
                                         <li>
-                                                <a href="<#LANG_WIKI_URL#>" target=_blank  class=smw>MajorDoMo Project</a>
+                                                <a href="<#LANG_WIKI_URL#>" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
                                         </li>
                                         <li>
-                                                <a href="?md=control_access&mode=logoff" class=smw><#LANG_LOGOFF#></a>
+                                                <a href="?md=control_access&mode=logoff"><i class="glyphicon glyphicon-log-out"></i> <#LANG_LOGOFF#></a>
                                         </li>
-                                </ul>
-                        </div>
-                </div>
+                </ul>
         </div>
-</div>
+</nav>
 
 <!--# .top  #-->
 
-<!--/head-->
-[#endif PRINT#]
-[#if PRINT!="1"#]
-
 <ul class="breadcrumb">
-    <li>
-    <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>[#if ACTION!=""#]<span class="divider">/</span>[#endif#]
+   <li>
+    <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>
     </li>
     [#if ACTION!=""#]
         <li class="active"><#ACTION#></li>
@@ -235,21 +236,20 @@ margin: 10px 0;
         
         <div class="float-right">
         <!--# date  #-->
-        [#TODAY#]
         <!--# .date  #-->
-        <span class="divider">/</span>
-        <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+        <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_MODULE_DESCRIPTION#></a>
         </div>
 </ul>
 
 [#endif PRINT#]
 <!--main-->
-<table id="content">
-<tr>
-[#if PRINT!="1"#]
-<td class="well sidebar-left"><!--left_main-->
-
-<form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-prepend"><span class="add-on"><i class="icon-search"> </i></span><input type="text" name="filter_modules" id="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
+<table  id="content">
+    <tr>
+        [#if PRINT!="1"#]
+        <td class="well sidebar-left" valign="top" id="left_block"><!--left_main-->
+            
+<form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-search"> </i></span>
+<input type="text" class="form-control" name="filter_modules" id="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
 
 <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;'>...</div>
 
@@ -274,9 +274,7 @@ margin: 10px 0;
 
 </script>
 
-
-<!--[menu]-->
-
+            <!--[menu]-->
 <ul class="nav nav-list">
    [#begin SUB_MODULES#]
    [#if NEW_CATEGORY#]
@@ -306,39 +304,41 @@ margin: 10px 0;
    [#endif NEW_CATEGORY#]
    [#end SUB_MODULES#]
 
+            <!--[/menu]-->
 
-                <!--/left_main--></td>
-[#endif PRINT#]
+            <!--/left_main-->
+        </td>
+        [#endif PRINT#]
+
+
 <td height=100% valign=top class="" id="main-content">
-<!--right_main-->
-<!--# [#if PRINT!="1"#]
-        <table cellpadding=10 cellspacing=0 border=0 width=100%><tr>
-        <td width=100% bgcolor="#E3E6E9" class=sm>You are here:
-        <a href="?">Control Panel</a>
-        [#if ACTION!=""#]&raquo; <b><#ACTION#></b>[#endif#]
-        </td></tr></table>
-[#endif PRINT#] #-->
-        <table width=100% height=100%><tr>
-        <td width=100% valign=top>
-
-   [#if ACTION!=""#]
-    [#module name="<#ACTION#>" action="admin" instance="adm"#]
-   [#else ACTION#]
-    [#module name="control_access" action="logged" instance="auth"#]
-   [#endif ACTION#]
 
 
-        <!--[/main]-->
-        </td></tr></table>
 
-</td></tr>
+            <!--right_main-->
+            <table cellpadding="0" cellspacing="12" border="0" width="100%" height="100%">
+                <tr>
+                    <td width=100% valign=top>
 
+
+
+
+                        [#if ACTION!=""#]
+                                [#module name="<#ACTION#>" action="admin" instance="adm"#]
+                        [#else ACTION#]
+                                [#module name="control_access" action="logged" instance="auth"#]
+                        [#endif ACTION#]
+                        <!--[/main]-->
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
- [#else AUTHORIZED#]
-
- [#module name="control_access" action="enter" instance="auth"#]
-
- [#endif AUTHORIZED#]
+[#else AUTHORIZED#]
+        [#module name="control_access" action="enter" instance="auth"#]
+[#endif AUTHORIZED#]
+<br><br>
 </div>
 </body>
 </html>

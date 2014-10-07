@@ -12,7 +12,7 @@
 &nbsp;
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_ZWAVE_API_URL#] style="color:red;font-weight:bold"[#endif#]>
  API URL:
  (*)
@@ -20,21 +20,21 @@
  <div class="controls"><input type="text" name="zwave_api_url" value="<#ZWAVE_API_URL#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label><input type="checkbox" name="zwave_api_auth" value="1"[#if ZWAVE_API_AUTH="1"#] checked[#endif#]> authorization required</label>
  </div>
 </div>
 
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_ZWAVE_API_USERNAME#] style="color:red;font-weight:bold"[#endif#]>
  API Username:
  </label>
  <div class="controls"><input type="text" name="zwave_api_username" value="<#ZWAVE_API_USERNAME#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_ZWAVE_API_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
  API Password:
  </label>

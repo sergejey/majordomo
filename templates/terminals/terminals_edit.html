@@ -2,134 +2,110 @@
  @version 0.3 (auto-set)
 #-->
 <!-- Table 'terminals' edit -->
-<p align=center>
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+
+<span class="divider">/</span>
+<li class="active">
+[#if ID!=""#]
+<#LANG_EDIT_RECORD#>
+[#else ID#]
+<#LANG_NEW_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+
+<form action="?" method="post" enctype="multipart/form-data" class="form-horizontal" name="frmEdit">
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
-[#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
-[#endif ID#]
-<!-- NAME (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_NAME#]<b><font color="red">[#endif#]
- <#LANG_SYSTEM_NAME#>:
- (*)
- </td>
- <td>
-  <input type="text" name="name" value="[#NAME#]">
- </td>
-</tr>
-<!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- (*)
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]">
- </td>
-</tr>
-
-<!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_HOST#]<b><font color="red">[#endif#]
- <#LANG_HOSTNAME#>:
- (*)
- </td>
- <td>
-  <input type="text" name="host" value="[#HOST#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- &nbsp;
- </td>
- <td>
-  <input type="checkbox" name="canplay" value="1"[#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_PLAYER_TYPE#>:
- </td>
- <td>
-  <select name="player_type">
-   <option value=""><#LANG_DEFAULT#>
-   <option value="vlc"[#if PLAYER_TYPE=="vlc"#] selected[#endif#]>VLC
-   <option value="xbmc"[#if PLAYER_TYPE=="xbmc"#] selected[#endif#]>XBMC
-   <option value="foobar"[#if PLAYER_TYPE=="foobar"#] selected[#endif#]>Foobar2000
-   <option value="vlcweb"[#if PLAYER_TYPE=="vlcweb"#] selected[#endif#]>VLC over HTTP
-   <option value="mpd"[#if PLAYER_TYPE=="mpd"#] selected[#endif#]>MPD
-  </select>
-  (<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_PLAYER_PORT#>:
- </td>
- <td>
- <input type="text" name="player_port" value="[#PLAYER_PORT#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_PLAYER_USERNAME#>:
- </td>
- <td>
- <input type="text" name="player_username" value="[#PLAYER_USERNAME#]">
- </td>
-</tr>
-
-<tr>
- <td align=right>
- <#LANG_PLAYER_PASSWORD#>:
- </td>
- <td>
- <input type="text" name="player_password" value="[#PLAYER_PASSWORD#]">
- </td>
-</tr>
 
 
 
-<tr>
- <td colspan=2 align=center>
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SYSTEM_NAME#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_NAME#]alert-danger[#endif#]"  name="name" value="[#NAME#]"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOSTNAME#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
+</div>
+
+<div class="form-group">
+        <div class="col-lg-offset-2 col-lg-5 ">
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
+                        </label>
+                </div>
+        </div>
+</div>
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:<br>(<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)</label>
+        <div class="col-lg-5">
+                <select name="player_type" class="form-control">
+                        <option value=""><#LANG_DEFAULT#>
+                        <option value="vlc"[#if PLAYER_TYPE=="vlc"#] selected[#endif#]>VLC
+                        <option value="xbmc"[#if PLAYER_TYPE=="xbmc"#] selected[#endif#]>XBMC
+                        <option value="foobar"[#if PLAYER_TYPE=="foobar"#] selected[#endif#]>Foobar2000
+                        <option value="vlcweb"[#if PLAYER_TYPE=="vlcweb"#] selected[#endif#]>VLC over HTTP
+                        <option value="mpd"[#if PLAYER_TYPE=="mpd"#] selected[#endif#]>MPD
+                </select>
+        </div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
+</div>
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
+</div>
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+     <div class="col-lg-offset-2 col-lg-5">
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
  [#endif ID#]
  &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
- </td>
-</tr>
+ <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+ </div>
+</div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 </form>
-</table>
+

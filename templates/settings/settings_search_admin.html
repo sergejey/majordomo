@@ -40,11 +40,11 @@ $(function() {
 [#if HR="1"#]
 <hr>
 [#endif#]
-<div class="control-group">
-        <label class="control-label">[#TITLE#]</label>
+<div class="form-group">
+        <label class="control-label">[#TITLE#]:</label>
         <div class="controls">
                 [#if TYPE="text"#]
-                <input type="text" name="value_[#ID#]" value="[#VALUE#]" size=50>
+                <input type="text" style="width:200px;"  class="form-control" name="value_[#ID#]" value="[#VALUE#]" size=50>
                 [#endif TYPE#]
 
                 [#if TYPE="onoff"#]
@@ -98,8 +98,8 @@ $(function() {
 [#end RESULT#]
 
 <div class="form-actions">
-        <button class="btn" type="submit" name="submit"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
-        <a class="btn" href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
+        <button class="btn btn-default btn-primary" type="submit" name="submit"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+        <a class="btn btn-default" href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
         <input type="hidden" name="mode" value="update">
         <input type="hidden" name="filter_name" value="<#FILTER_NAME#>">
 </div>

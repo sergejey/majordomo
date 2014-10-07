@@ -2,18 +2,11 @@
  @version 0.1 (auto-set)
 #-->
 
-<table border="0" align="center">
- <tr>
-  <td valign="top" align="center">
-  [#if DATA_SOURCE=="" || DATA_SOURCE=="scripts"#]<b>[#endif#]
-   <a href="?data_source=scripts"><#LANG_MODULE_SCRIPTS#></a>
-  </td>
-  <td valign="top" align="center">
-  [#if DATA_SOURCE=="categories"#]<b>[#endif#]
-   <a href="?data_source=categories"><#LANG_CATEGORIES#></a>
-  </td>
- </tr>
-</table>
+<ul class="nav nav-tabs">
+ <li [#if DATA_SOURCE="scripts" || DATA_SOURCE=""#]class="active"[#endif#]><a href="?data_source=scripts"><#LANG_MODULE_SCRIPTS#></a></li>
+ <li [#if DATA_SOURCE="categories"#]class="active"[#endif#]><a href="?data_source=categories"><#LANG_CATEGORIES#></a></li>
+</ul>
+
 
 [#if DATA_SOURCE=="" || DATA_SOURCE=="scripts"#]
  <!-- action usual -->

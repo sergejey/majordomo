@@ -12,7 +12,7 @@
 <legend><#LANG_NEW_RECORD#></legend>
 [#endif ID#]
 <!-- TITLE (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_TITLE#>:
  (*)
@@ -21,7 +21,7 @@
 </div>
 <!-- LOCATION_ID (select) -->
 [#if !IS_SET_LOCATION_ID#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_LOCATION_ID#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_LOCATION#>:
  </label>
@@ -35,7 +35,7 @@
 </div>
 [#endif IS_SET_LOCATION_ID#]
 <!-- PATH (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_PATH#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_PATH#>:
  (*)
@@ -43,7 +43,7 @@
  <div class="controls"><input type="text" name="path" value="[#PATH#]" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_VALUE#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_VALUE#>:
  </label>
@@ -52,7 +52,7 @@
  </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_VALUE#] style="color:red;font-weight:bold"[#endif#]>
  (<#LANG_SET#>:
  </label>
@@ -62,14 +62,14 @@
 
 
 <!-- LINKED_OBJECT (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_LINKED_OBJECT#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_LINKED_OBJECT#>:
  </label>
  <div class="controls"><input type="text" name="linked_object" value="[#LINKED_OBJECT#]" class="input"></div>
 </div>
 <!-- LINKED_PROPERTY (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_LINKED_PROPERTY#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_PROPERTY#>:
  </label>

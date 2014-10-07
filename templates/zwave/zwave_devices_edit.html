@@ -12,7 +12,7 @@
 <legend><#LANG_NEW_RECORD#></legend>
 [#endif ID#]
 <!-- TITLE (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_TITLE#>:
  (*)
@@ -22,7 +22,7 @@
 
 <!-- LOCATION_ID (select) -->
 [#if !IS_SET_LOCATION_ID#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_LOCATION_ID#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_LOCATION#>:
  </label>
@@ -36,7 +36,7 @@
 </div>
 [#endif IS_SET_LOCATION_ID#]
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
   &nbsp;
  </label>
@@ -56,7 +56,7 @@
 </div>
 
 [#if CLASS_BASIC="1"#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
  Basic:
  </label>
@@ -67,7 +67,7 @@
 [#endif CLASS_BASIC#]
 
 [#if CLASS_SWITCH_BINARY="1" || CLASS_SWITCH_MULTILEVEL="1" || CLASS_SENSOR_BINARY="1"#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
  Level:
  </label>
@@ -78,7 +78,7 @@
 [#endif CLASS_BASIC#]
 
 [#if CLASS_SENSOR_MULTILEVEL="1"#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
  Sensor data:
  </label>
@@ -89,7 +89,7 @@
 [#endif#]
 
 [#if CLASS_THERMOSTAT="1"#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
  Thermostat mode:
  </label>
@@ -100,7 +100,7 @@
 [#endif#]
 
 [#if CLASS_BATTERY="1"#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
  Battery level, %:
  </label>
@@ -111,7 +111,7 @@
 [#endif CLASS_BATTERY#]
 
 [#if PROPERTIES#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label">
  <#LANG_PROPERTIES#>:
  </label>
@@ -140,19 +140,19 @@
 [#endif PROPERTIES#]
 
 <!--#
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_STATUS#] style="color:red;font-weight:bold"[#endif#]>
  STATUS:
  </label>
  <div class="controls"><input type="text" name="status" value="[#STATUS#]" class="input"></div>
 </div>
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_AUTO_POLL#] style="color:red;font-weight:bold"[#endif#]>
  AUTO_POLL:
  </label>
  <div class="controls"><input type="text" name="auto_poll" value="[#AUTO_POLL#]" class="input"></div>
 </div>
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_LATEST_UPDATE#] style="color:red;font-weight:bold"[#endif#]>
  LATEST_UPDATE:
  </label>

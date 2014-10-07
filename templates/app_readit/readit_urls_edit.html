@@ -12,7 +12,7 @@
 <legend>New Record</legend>
 [#endif ID#]
 <!-- URL (url) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_URL#] style="color:red;font-weight:bold"[#endif#]>
  URL:
  </label>
@@ -21,7 +21,7 @@
  </div>
 </div>
 <!-- TITLE (varchar) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
  TITLE:
  (*)
@@ -29,14 +29,14 @@
  <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input"></div>
 </div>
 <!-- FAVORITE (int) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_FAVORITE#] style="color:red;font-weight:bold"[#endif#]>
  FAVORITE:
  </label>
  <div class="controls"><input type="text" name="favorite" value="[#FAVORITE#]" class="input"></div>
 </div>
 <!-- ADDED (datetime) -->
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_ADDED#] style="color:red;font-weight:bold"[#endif#]>
  ADDED:
  </label>
@@ -59,7 +59,7 @@
 </div>
 <!-- SYS_ID (varchar) -->
 [#if !IS_SET_SYS_ID#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_SYS_ID#] style="color:red;font-weight:bold"[#endif#]>
  SYS_ID:
  </label>
@@ -68,7 +68,7 @@
 [#endif IS_SET_SYS_ID#]
 <!-- CHANNEL_ID (select) -->
 [#if !IS_SET_CHANNEL_ID#]
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_CHANNEL_ID#] style="color:red;font-weight:bold"[#endif#]>
  CHANNEL_ID:
  </label>

@@ -8,21 +8,21 @@
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_CONNECT_USERNAME#] style="color:red;font-weight:bold"[#endif#]>
  Username:
  </label>
  <div class="controls"><input type="text" name="connect_username" value="<#CONNECT_USERNAME#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_CONNECT_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
  Password:
  </label>
  <div class="controls"><input type="password" name="connect_password" value="<#CONNECT_PASSWORD#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label>
  <input type="checkbox" name="connect_sync" value="1"[#if CONNECT_SYNC="1"#] checked[#endif#]> 
@@ -58,11 +58,11 @@
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
 
-<div class="control-group">
+<div class="form-group">
 Please select items to be sent:
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label>
  <input type="checkbox" name="send_menu" value="1"[#if SEND_MENU="1"#] checked[#endif#]> 
@@ -70,7 +70,7 @@ Please select items to be sent:
  </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label>
  <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]> 
@@ -78,7 +78,7 @@ Please select items to be sent:
  </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label>
  <input type="checkbox" name="send_scripts" value="1"[#if SEND_SCRIPTS="1"#] checked[#endif#]> 
@@ -86,7 +86,7 @@ Please select items to be sent:
  </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label>
  <input type="checkbox" name="send_patterns" value="1"[#if SEND_PATTERNS="1"#] checked[#endif#]> 

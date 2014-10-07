@@ -2,46 +2,40 @@
  @version 0.4 (auto-set)
 #-->
 
-<!-- Table 'scripts' edit -->
-<p align=center>
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit">
-<table border=0 align=center cellpadding=3>
+<ul class="breadcrumb">
+<li> 
+<a href="?data_source=<#DATA_SOURCE#>"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li class="active">
+[#if ID=""#]
+<#LANG_NEW_SCRIPT#>
+[#else#]
+<#LANG_EDIT_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit"  class="form-horizontal">
+
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
-[#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_SCRIPT#></b></td>
-</tr>
-[#endif ID#]
-<!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]" size="50">
- </td>
-</tr>
 
-<tr>
- <td valign="top">&nbsp;</td>
- <td valign="top">
-  <label><input type="checkbox" name="run_periodically" value="1"[#if RUN_PERIODICALLY="1"#] checked[#endif#] onClick='$("#periocidally").toggle();'>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+ <div class="col-lg-5 col-lg-offset-2">
+
+<label><input type="checkbox" name="run_periodically" value="1"[#if RUN_PERIODICALLY="1"#] checked[#endif#] onClick='$("#periocidally").toggle();'>
   <#LANG_RUN_PERIODICALLY#></label>
   <div id='periocidally'[#if RUN_PERIODICALLY!="1"#] style="display:none"[#endif#]>
    <#LANG_RUN_TIME#>:
@@ -59,82 +53,102 @@
    <br>
    <#LANG_RUN_WEEKDAYS#>:
    [#begin DAYS#]
-   <label><input type="checkbox" name="run_days[]" value="[#VALUE#]"[#if SELECTED="1"#] checked[#endif#]> [#TITLE#]</label>
+   <br><label><input type="checkbox" name="run_days[]" value="[#VALUE#]"[#if SELECTED="1"#] checked[#endif#]> [#TITLE#]</label>
    [#end DAYS#]
   </div>
- </td>
-</tr>
+  
+ </div>
+</div>
 
-<tr>
- <td valign="top" align="right"><#LANG_CATEGORY#>:</td>
- <td valign="top">
-  <select name="category_id">
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_CATEGORY#></label>
+        <div class="col-lg-5">
+  <select name="category_id" class="form-control">
    <option value="0">
    [#begin CATEGORIES#]
    <option value="[#ID#]" [#if ID="<#CATEGORY_ID#>"#] selected[#endif#]>[#TITLE#]
    [#end CATEGORIES#]
   </select>
- </td>
-</tr>
 
-<tr>
- <td valign="top" align="right"><#LANG_DESCRIPTION#>:</td>
- <td valign="top"><textarea name="description" id="description" rows=3 cols=100 class="field span8">[#DESCRIPTION#]</textarea></td>
-</tr>
+ </div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#></label>
+        <div class="col-lg-5">
+  <textarea name="description" id="description" rows=3 cols=100 class="form-control">[#DESCRIPTION#]</textarea>
+ </div>
+</div>
 
 [#if ID!=""#]
-<tr>
- <td valign="top" align="right"><#LANG_CODE#>:</td>
- <td valign="top" width="536">
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_CODE#></label>
+        <div class="col-lg-5">
+
  [#if ERRORS!=""#]<br><font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
  <!--#
  <a href="#" onClick="return editBlockly();"><#LANG_EDIT#></a>
  #-->
  [#module name="blockly_code" system_name="script<#ID#>" code_field="code" action=""#]
  <div id="code_area">
-  <textarea name="code" id="code" rows=30 cols=100 class="field span8">[#CODE#]</textarea>
+  <textarea name="code" id="code" rows=30 cols=100 class="form-control">[#CODE#]</textarea>
  </div>
- </td>
-</tr>
+        
+ </div>
+</div>
 
-<tr>
- <td valign=top align=right>
- &nbsp;
- </td>
- <td valign=top>
- <input type="checkbox" name="edit_run" id="chkRun" value="1"> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#>
- </td>
-</tr>
+<div class="form-group ">
+ <div class="col-lg-5 col-lg-offset-2">
+
+<label>
+  <input type="checkbox" name="edit_run" id="chkRun" value="1"> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#>
+  
+ </div>
+</div>
 
 [#endif ID#]
 
-<tr>
- <td valign="top">&nbsp;</td>
- <td>
+
+
+[#endif ID#]
+
+
+<div class="form-group">
+     <div class="col-lg-offset-1 col-lg-5">
+        
+         [#if ID!=""#]
+                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
+                 [#else ID#]
+                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
+                 [#endif ID#]
+                 &nbsp;
+                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
+
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_UPDATE#>" class="btn btn-primary">
- [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
- [#endif ID#]
  &nbsp;
- <a href="?" class="btn"><#LANG_CANCEL#></a>
- [#if ID!=""#]
- &nbsp;
- <a class="btn" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a href="?id=<#ID#>&view_mode=clone" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
  [#endif ID#]
- </td>
-</tr>
+
+
+    </div>
+</div>
+
 [#if ID!=""#]
+&nbsp;
+<table
 <tr>
- <td valign="top" align="right"><#LANG_RUN_BY_URL#>:</td>
- <td valign="top"><#BASE_URL#>/objects/?script=[#TITLE#]</td>
+ <td valign="top"><#LANG_RUN_BY_URL#>:</td>
+ <td valign="top"><a href="<#ROOTHTML#>objects/?script=[#TITLE#]" target=_blank><#BASE_URL#>/objects/?script=[#TITLE#]</a></td>
 </tr>
 <tr>
- <td valign="top" align="right"><#LANG_COMMAND_LINE#>:</td>
+ <td valign="top"><#LANG_COMMAND_LINE#>:</td>
  <td valign="top"><#DOC_ROOT#>\obj.bat script:[#TITLE#]</td>
 </tr>
-[#endif#]
 </table>
+&nbsp;
+[#endif#]
+
+
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">

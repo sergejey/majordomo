@@ -26,7 +26,7 @@
 [#endif ID#]
 <!-- TITLE (varchar) -->
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_TITLE#>(*)</label>
         <div class="controls">
                 <input type="text" name="title" value="[#TITLE#]" required>
@@ -35,7 +35,7 @@
 
 <!-- PRIORITY (int) -->
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_PRIORITY#></label>
         <div class="controls">
                 <input type="text" name="priority" value="[#PRIORITY#]">
@@ -44,14 +44,14 @@
 
 <!-- TYPE (select) -->
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#></label>
         <div class="controls">
                 <input type="text" name="refresh" value="[#REFRESH#]">
         </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_ICON#></label>
         <div class="controls">
                 <input type="file" name="icon">
@@ -68,7 +68,7 @@
 </div>
 
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_TYPE#></label>
         <div class="controls">
                 <select name="type">
@@ -82,7 +82,7 @@
 <!-- CODE (text) -->
 [#if TYPE="html"#]
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_CODE#></label>
         <div class="controls">
                 <textarea name="code" rows=12 cols=100>[#CODE#]</textarea>
@@ -94,7 +94,7 @@
 <!-- APP (varchar) -->
 
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_APP#></label>
         <div class="controls">
                 <input type="text" name="appname" value="[#APP#]">
@@ -104,7 +104,7 @@
 [#endif TYPE#]
 [#if TYPE="url"#]
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_URL#></label>
         <div class="controls">
                 <input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
@@ -114,7 +114,7 @@
 [#endif TYPE#]
 
 [#if ID!=""#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
         <div class="controls">
                 <a href="?(panel:{action=security_rules})&object_type=layout&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
@@ -123,7 +123,7 @@
 [#endif ID#]
 
 [#if ID!=""#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_URL#> (preview):</label>
         <div class="controls">
 

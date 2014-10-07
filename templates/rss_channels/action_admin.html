@@ -5,26 +5,15 @@
 [#if SET_DATASOURCE!="1"#]
 &nbsp;
 <!-- source select -->
-<table border=0 width=100% cellspacing=1 cellpadding=4 bgcolor="#222222">
-<tr>
- <td align=center bgcolor="[#if DATA_SOURCE!="rss_channels" && DATA_SOURCE!=""#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="rss_channels" && DATA_SOURCE!=""#]<a href="?data_source=rss_channels"><#LANG_RSS_CHANNELS#></a>
-  [#else#]
-   <#LANG_RSS_CHANNELS#>
-  [#endif#]
-  </b>
- </td>
- <td align=center bgcolor="[#if DATA_SOURCE!="rss_items"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="rss_items"#]<a href="?data_source=rss_items"><#LANG_RSS_NEWS#></a>
-  [#else#]
-   <#LANG_RSS_NEWS#>
-  [#endif#]
-  </b>
- </td>
-</tr>
-</table>
+
+
+
+<ul class="nav nav-tabs">
+ <li [#if DATA_SOURCE!="rss_channels" && DATA_SOURCE!=""#][#else#]class="active"[#endif#]><a href="?data_source=rss_channels"><#LANG_RSS_CHANNELS#></a></li>
+ <li [#if DATA_SOURCE!="rss_items"#][#else#]class="active"[#endif#]><a href="?data_source=rss_items"><#LANG_RSS_NEWS#></a></li>
+</ul>
+
+
 <!-- / source select -->
 [#endif SET_DATASOURCE#]
  <!-- action usual -->

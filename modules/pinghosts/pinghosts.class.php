@@ -215,7 +215,7 @@ function usual(&$out) {
     $online=ping(processTitle($host['HOSTNAME']));
    } else {
     //web host
-    $online=file_get_contents(processTitle($host['HOSTNAME']));
+    $online=getURL(processTitle($host['HOSTNAME']), 0);
     SaveFile("./cached/host_".$host['ID'].'.html', $online);
     if ($host['SEARCH_WORD']!='' && !is_integer(strpos($online, $host['SEARCH_WORD']))) {
      $online=0;

@@ -18,30 +18,28 @@
  }
 </script>
 
-
+&nbsp;
 <!-- table scripts search -->
-<p align=center>
-<b>
-<a href="?view_mode=edit_scripts"><#LANG_ADD_NEW_SCRIPT#></a>
-</b>
+<p>
+<a href="?view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_SCRIPT#></a>
 </p>
-<table width=100% border=0><tr>
-<td valign=top>
+
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
-<table border=0 cellpadding=5 cellspacing=1 width="100%">
 [#begin RESULT#]
 [#if NEW_CATEGORY#]
+[#if FIRST!="1"#]
 </table>
 </div>
 &nbsp;<br>
+[#endif FIRST#]
+<big><b>[#CATEGORY#]</b></big>
 <a href="#" id="link[#CATEGORY_ID#]" style="text-decoration:none" onClick="return showHide([#CATEGORY_ID#]);">[ + ]</a>
-<big>[#CATEGORY#]</big>
 <div id='sub[#CATEGORY_ID#]' style="display:none">
-<table border=0 cellpadding=5 cellspacing=1 width="100%">
+<table class="table table-striped">
 [#endif#]
-<tr>
+<tr class="hover_btn2">
  <td nowrap>
   <b>
   [#if TITLE!=""#]
@@ -51,21 +49,13 @@
   [#endif#]
   </a></b>
  </td>
- <td valign="top" width="60%">[#DESCRIPTION#]&nbsp;</td>
- <td width="30%">
-  <table border=0>
+ <td width="90%">[#DESCRIPTION#]&nbsp;</td>
+ <td width="200" nowrap>
   [#if "<#ACTION#>"=="admin"#]
-   <td align=center>
-    <b><a href="?view_mode=edit_scripts&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td align=center>
-    <a href="?view_mode=run_script&id=[#ID#]" target="_blank" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_EXECUTE#></a>
-   </td>   
-   <td align=center>
-    <a href="?view_mode=delete_scripts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+    <a href="?view_mode=edit_scripts&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=run_script&id=[#ID#]" target="_blank" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_EXECUTE#>"><i class="glyphicon glyphicon-flash"></i></a>
+    <a href="?view_mode=delete_scripts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
-  </table>
  </td>
 </tr>
 [#if LAST#]
@@ -79,8 +69,6 @@
 <font color="red"><#LANG_NO_RECORDS_FOUND#></font>
 </p>
 [#endif RESULT#]
-<!-- / results -->
-</td></tr></table>
 
 <script language="javascript">
 [#begin RESULT#]

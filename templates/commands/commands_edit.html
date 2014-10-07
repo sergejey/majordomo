@@ -3,6 +3,7 @@
 #-->
 <!-- Table 'commands' edit -->
 
+
 <ul class="breadcrumb">
 <li> 
 <a href="?"><#LANG_HOME#></a>
@@ -20,35 +21,35 @@
 <li class="active">
 [#TITLE#]
 </li>
+[#else#]
+<span class="divider">/</span>
+<li class="active">
+<#LANG_NEW_RECORD#>
+</li>
 [#endif#]
 </ul>
 
 <form action="?" method="post" class="form-horizontal" enctype="multipart/form-data" name="frmEdit">
+
 [#if OK#]
 
-<div class="alert alert-success">
-<a class="close" data-dismiss="alert" href="#">&times;</a>
-<#LANG_DATA_SAVED#>
-</div>
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 
 [#endif OK#]
 [#if ERR#]
 
-<div class="alert alert-error">
-<a class="close" data-dismiss="alert" href="#">&times;</a>
-<#LANG_FILLOUT_REQURED#>
-</div>
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 
 [#endif ERR#]
+
+
 [#if ID=""#]
 
-<b><#LANG_NEW_RECORD#></b>
-
 [#else ID#]
-<div class="control-group">
+<div class="form-group ">
         <label class="control-label">ID:</label>
-        <div class="controls form-inline">
-                <input type="text" value="[#ID#]" disabled class="span1">
+        <div class="col-lg-5">
+                <input type="text" value="[#ID#]" disabled class="span1" class="form-control">
 
 [#if TYPE="button"#]
 Action URL:
@@ -58,10 +59,10 @@ Action URL:
 </div>
 
 [#endif ID#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_PARENT_MENU_ITEM#>:</label>
-        <div class="controls">
-                <select name="parent_id">
+        <div class="col-lg-5">
+                <select name="parent_id" class="form-control">
                 <option value="0">ROOT
                 [#begin PARENTS#]
                 <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
@@ -72,29 +73,29 @@ Action URL:
 
 <!-- TITLE (varchar) -->
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_TITLE#> (*):</label>
-        <div class="controls">
-                <input type="text" name="title" value="[#TITLE#]" size="50" required="true">
+        <div class="col-lg-5">
+                <input type="text" name="title" value="[#TITLE#]" size="50" required="true" class="form-control">
         </div>
 </div>
 
 
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_PRIORITY#>:</label>
-        <div class="controls">
-                <input type="text" name="priority" value="[#PRIORITY#]" size="5">
+        <div class="col-lg-2">
+                <input type="text" name="priority" value="[#PRIORITY#]" size="5" class="form-control">
         </div>
 </div>
 
 [#if EXT_ID=="" || EXT_ID="0"#]
 
 [#if !CHILDREN#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_TYPE#>:</label>
-        <div class="controls">
-                <select name="type">
+        <div class="col-lg-5">
+                <select name="type" class="form-control">
                         <option value="">select
                         <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
                         <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
@@ -115,14 +116,14 @@ Action URL:
 [#endif CHILDREN#]
 
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_ICON#>:</label>
-        <div class="controls">
-                <input type="file" name="icon">
+        <div class="col-lg-5">
+                <input type="file" name="icon" class="form-control">
         <p class="help-block">
                 [#if ICON!=""#]
                 <label class="checkbox">
-                <input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
+                <input type="checkbox" name="delete_icon" value="1" class="form-control"><#LANG_DELETE#>
                 </label>
                 <img src="<#ROOTHTML#>cms/icons/[#ICON#]" border="0">
                 [#ICON#]<br>
@@ -133,24 +134,24 @@ Action URL:
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox"#]
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_MIN_VALUE#>:</label>
-        <div class="controls">
-                <input type="text" name="min_value" value="[#MIN_VALUE#]" size="20">
+        <div class="col-lg-5">
+                <input type="text" name="min_value" value="[#MIN_VALUE#]" size="20" class="form-control">
         </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_MAX_VALUE#>:</label>
-        <div class="controls">
-                <input type="text" name="max_value" value="[#MAX_VALUE#]" size="20">
+        <div class="col-lg-5">
+                <input type="text" name="max_value" value="[#MAX_VALUE#]" size="20" class="form-control">
         </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_STEP_VALUE#>:</label>
-        <div class="controls">
-                <input type="text" name="step_value" value="[#STEP_VALUE#]" size="20">
+        <div class="col-lg-5">
+                <input type="text" name="step_value" value="[#STEP_VALUE#]" size="20" class="form-control">
         </div>
 </div>
 
@@ -158,57 +159,102 @@ Action URL:
 
 [#if TYPE=="selectbox" || TYPE=="custom"#]
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_DATA#>:</label>
-        <div class="controls">
-                <textarea name="data" cols="50" rows="10" class="span8">[#DATA#]</textarea>
+        <div class="col-lg-5">
+                <textarea name="data" cols="50" rows="10"  class="form-control">[#DATA#]</textarea>
         </div>
 </div>
 
 [#endif TYPE#]
 
-<div class="control-group">
-        <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#>:</label>
-        <div class="controls">
-                <input type="text" name="auto_update" value="[#AUTO_UPDATE#]" size="10"> (seconds) 
-        </div>
+<div class="form-group">
+  <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#>:</label>
+   <div class="col-lg-2">
+     <div class="form-inline">
+      <div class="form-group col-lg-6">
+       <input type="text" name="auto_update" value="[#AUTO_UPDATE#]" size="10" class="form-control"> 
+      </div>
+      <div class="form-group col-lg-6">
+       <p class="form-control-static">
+        &nbsp;(<#LANG_SECONDS#>)
+        </p>
+      </div>
+     </div>
+    </div>
 </div>
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
 
-<div class="control-group">
-        <label class="control-label"><#LANG_CURRENT_VALUE#>:</label>
-        <div class="controls">
-                <input type="text" name="cur_value" value="" size="20"> (<b>[#CUR_VALUE#]</b>)
-        </div>
+<div class="form-group">
+  <label class="control-label"><#LANG_CURRENT_VALUE#>:</label>
+   <div class="col-lg-5">
+     <div class="form-inline">
+      <div class="form-group col-lg-6">
+       <input type="text" name="cur_value" value="" size="10" class="form-control"> 
+      </div>
+      <div class="form-group col-lg-6">
+       <p class="form-control-static">
+        &nbsp;(<#CUR_VALUE#>)
+        </p>
+      </div>
+     </div>
+    </div>
 </div>
+
 
 [#endif TYPE#]
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
 
-<div class="control-group">
-        <label class="control-label"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
-        <div class="controls">
-                <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
-        </div>
+
+<div class="form-group">
+  <label class="control-label"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
+   <div class="col-lg-5">
+     <div class="form-inline">
+      <div class="form-group col-lg-5">
+       <input type="text" name="linked_object" value="[#LINKED_OBJECT#]"  class="form-control">
+      </div>
+      <div class="form-group col-lg-1">
+       <p class="form-control-static">
+        &nbsp;.&nbsp;
+        </p>
+      </div>
+      <div class="form-group col-lg-5">
+       <input type="text" name="linked_property" value="[#LINKED_PROPERTY#]"  class="form-control">
+      </div>
+     </div>
+    </div>
 </div>
 
 [#endif TYPE#]
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
 
-<div class="control-group">
-        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>:</label>
-        <div class="controls">
-                <input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]" size="20">.<input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]" size="20">
-        </div>
+
+<div class="form-group">
+  <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>:</label>
+   <div class="col-lg-5">
+     <div class="form-inline">
+      <div class="form-group col-lg-5">
+       <input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]"  class="form-control">
+      </div>
+      <div class="form-group col-lg-1">
+       <p class="form-control-static">
+        &nbsp;.&nbsp;
+        </p>
+      </div>
+      <div class="form-group col-lg-5">
+       <input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]"  class="form-control">
+      </div>
+     </div>
+    </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_ONCHANGE_SCRIPT#>:</label>
-        <div class="controls">
-<select name="script_id">
+        <div class="col-lg-5">
+<select name="script_id" class="form-control">
    <option value="0">
    [#begin SCRIPTS#]
        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
@@ -217,10 +263,10 @@ Action URL:
         </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_ONCHANGE_CODE#>: [#ERRORS#]</label>
-        <div class="controls">
-                <textarea name="code" rows="5" cols="50">[#CODE#]</textarea>
+        <div class="col-lg-5">
+                <textarea name="code" rows="5" cols="50" class="form-control">[#CODE#]</textarea>
         </div>
 </div>
 
@@ -230,16 +276,16 @@ Action URL:
 <!-- COMMAND (varchar) -->
 
 <#LANG_COMMAND#>
-<input type="text" name="command" value="[#COMMAND#]" size="50">
+<input type="text" name="command" value="[#COMMAND#]"  class="form-control">
 
 
 [#endif TYPE#]
 
 [#if TYPE=="button"#]
 <!-- URL (varchar) -->
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"> <#LANG_INLINE_POSITION#>:</label>
-        <div class="controls">
+        <div class="col-lg-5">
                 <label><input type="radio" name="inline" value="1"[#if INLINE="1"#] checked[#endif#]> <#LANG_YES#></label>
                 <label><input type="radio" name="inline" value="0"[#if INLINE!="1"#] checked[#endif#]> <#LANG_NO#></label>
         </div>
@@ -248,36 +294,36 @@ Action URL:
 
 
 [#if !CHILDREN#]
-[#if TYPE=="window" || TYPE=="url" || TYPE==""#]
+[#if TYPE=="window" || TYPE=="url"#]
 <!-- URL (varchar) -->
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"> <#LANG_URL#>:</label>
-        <div class="controls">
-                <input type="text" name="url" value="[#URL#]" size="50">
+        <div class="col-lg-5">
+                <input type="text" name="url" value="[#URL#]"  class="form-control">
         </div>
 </div>
 [#endif TYPE#]
 
-[#if TYPE=="window" || TYPE==""#]
-<div class="control-group">
+[#if TYPE=="window"#]
+<div class="form-group">
         <label class="control-label"><#LANG_TARGET_WINDOW#>:</label>
-        <div class="controls">
-                <input type="text" name="window" value="[#WINDOW#]" size="50">
+        <div class="col-lg-5">
+                <input type="text" name="window" value="[#WINDOW#]"  class="form-control">
         </div>
 </div>
 
 <!-- WIDTH (int) -->
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_WIDTH#>:</label>
-        <div class="controls">
-                <input type="text" name="width" value="[#WIDTH#]">
+        <div class="col-lg-5">
+                <input type="text" name="width" value="[#WIDTH#]" class="form-control">
         </div>
 </div>
 <!-- HEIGHT (int) -->
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_HEIGHT#>:</label>
-        <div class="controls">
-                <input type="text" name="height" value="[#HEIGHT#]">
+        <div class="col-lg-5">
+                <input type="text" name="height" value="[#HEIGHT#]" class="form-control">
         </div>
 </div>
 [#endif TYPE#]
@@ -287,11 +333,11 @@ Action URL:
 
 [#if !CHILDREN#]
 [#if (TYPE=="") || (ID=="")#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_EXT_ID#>:</label>
-        <div class="controls">
+        <div class="col-lg-5">
 
-                <select name="ext_id">
+                <select name="ext_id" class="form-control">
                 <option value="0">
                 [#begin PARENTS#]
                 <option value="[#ID#]"[#if ID="<#EXT_ID#>"#] selected[#endif#]>[#TITLE#]
@@ -302,18 +348,29 @@ Action URL:
 </div>
 [#endif TYPE#]
 
-<div class="control-group">
-        <label class="control-label"><#LANG_VISIBLE_DELAY#>:</label>
-        <div class="controls">
-                <input type="text" name="visible_delay" value="[#VISIBLE_DELAY#]"> (<#LANG_SECONDS#>)
-        </div>
+
+<div class="form-group">
+  <label class="control-label"><#LANG_VISIBLE_DELAY#>:</label>
+   <div class="col-lg-2">
+     <div class="form-inline">
+      <div class="form-group col-lg-6">
+       <input type="text" name="visible_delay" value="[#VISIBLE_DELAY#]" size="10" class="form-control"> 
+      </div>
+      <div class="form-group col-lg-6">
+       <p class="form-control-static">
+        &nbsp;(<#LANG_SECONDS#>)
+        </p>
+      </div>
+     </div>
+    </div>
 </div>
+
 [#endif CHILDREN#]
 
 [#if CHILDREN#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"> <#LANG_SUB_PRELOAD#>:</label>
-        <div class="controls">
+        <div class="col-lg-5">
                 <label><input type="radio" name="sub_preload" value="1"[#if SUB_PRELOAD="1"#] checked[#endif#]> <#LANG_YES#></label>
                 <label><input type="radio" name="sub_preload" value="0"[#if SUB_PRELOAD!="1"#] checked[#endif#]> <#LANG_NO#></label>
         </div>
@@ -322,9 +379,9 @@ Action URL:
 
 
 [#if ID!=""#]
-<div class="control-group">
+<div class="form-group">
         <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
-        <div class="controls">
+        <div class="col-lg-5">
                 <a href="?(panel:{action=security_rules})&object_type=menu&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>
 </div>
@@ -343,15 +400,16 @@ Action URL:
 
 <div class="form-actions">
 [#if ID!=""#]
-<button type="submit" class="btn" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+<button type="submit" class="btn btn-default btn-primary" name="subm"><#LANG_SUBMIT#></button>
 [#else ID#]
-<button type="submit" class="btn" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
+<button type="submit" class="btn btn-default btn-primary" name="subm"><#LANG_ADD#></button>
 [#endif ID#]
 
-<a class="btn" href="?"><#LANG_CANCEL#></a>
+<a class="btn btn-default" href="?"><#LANG_CANCEL#></a>
 
  [#if ID!=""#]
- <a class="btn" href="?id=<#ID#>&view_mode=clone_commands" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone_commands" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?view_mode=delete_commands&id=<#ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
  [#endif ID#]
 
 <input type="hidden" name="id" value="<#ID#>">
@@ -367,7 +425,7 @@ Action URL:
 
 
 <div class="row">
-<div class="span-50">
+<div class="col-md-5">
    <#LANG_ON_THE_SAME_LEVEL#>:
    <ul>
    [#begin SAME_LEVEL#]
@@ -380,9 +438,9 @@ Action URL:
     </li>
    [#end SAME_LEVEL#]
    </ul>
-   <a href="?view_mode=edit_commands&parent_id=<#PARENT_ID#>&id="><button class="btn btn-mini btn-success"><i class="icon-plus-sign icon-white"></i> <#LANG_ADD#></button></a>
+   <a href="?view_mode=edit_commands&parent_id=<#PARENT_ID#>&id="><button class="btn btn-default btn-mini"><i class="icon-plus-sign icon-white"></i> <#LANG_ADD#></button></a>
 </div>
-<div class="span-50">
+<div class="col-md-5">
    <b><#LANG_CHILD_ITEMS#>:</b>
    [#if CHILDREN#]
    <ul>
@@ -395,7 +453,7 @@ Action URL:
    [#else CHILDREN#]
    <p>n/a</p>
    [#endif CHILDREN#]
-   <a href="?view_mode=edit_commands&parent_id=<#ID#>&id="><button class="btn btn-mini btn-success"><i class="icon-plus-sign icon-white"></i> <#LANG_ADD#></button></a>
+   <a href="?view_mode=edit_commands&parent_id=<#ID#>&id="><button class="btn btn-default btn-mini"><i class="icon-plus-sign icon-white"></i> <#LANG_ADD#></button></a>
 </div>
 </div>
 

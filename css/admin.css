@@ -19,7 +19,8 @@ table#content {
 }
 
 .sidebar-left {
-        width: 180px;
+       /* width: 180px;*/
+           width: 208px;
 }
 
 .nav .nav-header {
@@ -31,11 +32,10 @@ table#content {
 
 .grid-item {
         float: left;
-        width: 75px;
+        width: 200px;
         padding: 10px;
         text-align: center;
-        height: 80px;
-        word-wrap: break-word;
+        height:105px;
 }
 
 .grid-item:hover {
@@ -52,6 +52,8 @@ table#content {
         display: block;
         margin: 0 auto;
 }
+
+
 
 #main-content {
         padding: 0 0 0 40px;

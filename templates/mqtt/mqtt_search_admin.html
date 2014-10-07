@@ -6,7 +6,7 @@
 &nbsp;
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_MQTT_HOST#] style="color:red;font-weight:bold"[#endif#]>
  Hostname:
  (*)
@@ -14,7 +14,7 @@
  <div class="controls"><input type="text" name="mqtt_host" value="<#MQTT_HOST#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_MQTT_PORT#] style="color:red;font-weight:bold"[#endif#]>
  Port:
  (*)
@@ -22,7 +22,7 @@
  <div class="controls"><input type="text" name="mqtt_port" value="<#MQTT_PORT#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_MQTT_QUERY#] style="color:red;font-weight:bold"[#endif#]>
  Subscription path:
  (*)
@@ -30,21 +30,21 @@
  <div class="controls"><input type="text" name="mqtt_query" value="<#MQTT_QUERY#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <div class="controls">
  <label><input type="checkbox" name="mqtt_auth" value="1"[#if MQTT_AUTH="1"#] checked[#endif#]> authorization required</label>
  </div>
 </div>
 
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_MQTT_USERNAME#] style="color:red;font-weight:bold"[#endif#]>
  Username:
  </label>
  <div class="controls"><input type="text" name="mqtt_username" value="<#MQTT_USERNAME#>" class="input"></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
  <label class="control-label"[#if ERR_MQTT_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
  Password:
  </label>

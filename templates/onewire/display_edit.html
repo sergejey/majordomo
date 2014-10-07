@@ -21,13 +21,13 @@
 
 <form class="form-horizontal" action="?" method="post" enctype="multipart/form-data" name="frmEdit">
 
-<div class="control-group">
+<div class="form-group">
 <label class="control-label"><#LANG_TITLE#></label>
 <div class="controls"><input type="text" name="title" value="[#TITLE#]" required></div>
 </div>
 
 [#if ID=""#]
-<div class="control-group">
+<div class="form-group">
 <label class="control-label">UDID</label>
 <div class="controls">
 <select name="udid">
@@ -39,13 +39,13 @@
 </div>
 </div>
 [#else#]
-<div class="control-group">
+<div class="form-group">
 <label class="control-label"><#LANG_ID#></label>
 <div class="controls"><input type="text" name="udid" class="uneditable-input" disabled value="[#UDID#]"></div>
 </div>
 [#endif ID#]
 
-<div class="control-group">
+<div class="form-group">
 <label class="control-label"><#LANG_CHECK_INTERVAL#></label>
 <div class="controls">
 <div class="input-append">
@@ -54,17 +54,17 @@
 </div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
 <label class="control-label"><#LANG_ROWS#></label>
 <div class="controls"><input type="text" name="rows" value="[#ROWS#]" required></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
 <label class="control-label"><#LANG_COLS#></label>
 <div class="controls"><input type="text" name="cols" value="[#COLS#]" required></div>
 </div>
 
-<div class="control-group">
+<div class="form-group">
 <label class="control-label"><#LANG_VALUE#></label>
 <div class="controls">
 <textarea class="ow-display-text" name="value" cols="[#COLS#]" rows="[#ROWS#]" spellcheck="false">
