@@ -11,7 +11,15 @@ if (!is_dir(DOC_ROOT . '/backup'))
    mkdir(DOC_ROOT . '/backup', 0777);
 }
 
-$target_dir  = DOC_ROOT . '/backup/' . date('Ymd');
+if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH!='' && is_dir(SETTINGS_BACKUP_PATH)) {
+ $target_dir=SETTINGS_BACKUP_PATH;
+ if (substr($target_dir, -1)!='/' && substr($target_dir, -1)!='\\') {
+  $target_dir.='/';
+ }
+ $target_dir.=date('Ymd');
+} else {
+ $target_dir  = DOC_ROOT . '/backup/' . date('Ymd');
+}
 $full_backup = 0;
 
 if (!is_dir($target_dir)) 
@@ -20,23 +28,22 @@ if (!is_dir($target_dir))
    $full_backup=1;
 }
 
+echo "Target: ".$target_dir."\n";
+echo "Full backup: ".$full_backup."\n";
+sleep(5);
+
 if ($full_backup) 
 {
    echo "Backing up files...";
-   
-   if (substr(php_uname(), 0, 7) == "Windows") 
-   {
+   if (substr(php_uname(), 0, 7) == "Windows") {
       exec(SERVER_ROOT . "/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases " . DB_NAME . ">" . $target_dir . "/" . DB_NAME . ".sql");
    }
-   else 
-   {
+   else {
       exec("/usr/bin/mysqldump --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases ". DB_NAME . ">" . $target_dir . "/" . DB_NAME . ".sql");
    }
-  
    copyTree('./cms',    $target_dir . '/cms',    1);
    copyTree('./texts',  $target_dir . '/texts',  1);
    copyTree('./sounds', $target_dir . '/sounds', 1);
-  
    echo "OK\n";
 }
 

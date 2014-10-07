@@ -16,7 +16,7 @@
 
 
  $sections=array();
- $filters=array('', 'scenes', 'calendar', 'growl', 'twitter', 'pushover', 'pushbullet', 'hook');
+ $filters=array('', 'scenes', 'calendar', 'growl', 'twitter', 'pushover', 'pushbullet', 'hook', 'backup');
  $total=count($filters);
  for($i=0;$i<$total;$i++) {
   $rec=array();
@@ -35,6 +35,24 @@
   }
  }
  $out['SECTIONS']=$sections;
+
+ if ($this->filter_name=='backup' && !defined('SETTINGS_BACKUP_PATH')) {
+
+  $options=array(
+   'BACKUP_PATH'=>'Path to store backup'
+  );
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='text';
+    SQLInsert('settings', $tmp);
+   }
+  }
+
+ }
 
  if ($this->filter_name=='pushbullet' && !defined('SETTINGS_PUSHBULLET_PREFIX')) {
   $options=array(

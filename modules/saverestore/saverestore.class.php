@@ -1320,6 +1320,11 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
     chdir('../../');
    }
 
+   if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH!='' && file_exists(ROOT.'saverestore/'.$tar_name)) {
+    $dest=SETTINGS_BACKUP_PATH;
+    @copy(ROOT.'saverestore/'.$tar_name, $dest.$tar_name);
+   }
+
 
   }
  }
