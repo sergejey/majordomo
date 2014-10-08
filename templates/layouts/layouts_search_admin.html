@@ -2,13 +2,13 @@
  @version 0.2 (auto-set)
 #-->
 
-<a class="btn btn-success" href="?view_mode=edit_layouts"><i class="icon-white icon-plus-sign"></i> <#LANG_NEW_PAGE#></a>
-
+<a href="?view_mode=edit_layouts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_NEW_PAGE#></a>
+<br><br>
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_layouts">
-<table class="table-bordered table table-striped">
+<table class="table table-striped">
 <tr>
  <th>
  <a href="?sortby=TITLE&save_qry=1"><#LANG_TITLE#></a>
@@ -26,13 +26,13 @@
 [#begin RESULT#]
 <tr >
  <td
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   >
    [#if ICON!=""#]<img src="<#ROOTHTML#>cms/layouts/[#ICON#]" class="action-list-icon" align="absmiddle">[#endif#]
    [#TITLE#]<span class="divider">/</span>[#if TYPE="html"#]<a href="<#ROOTHTML#>page/[#ID#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="url"#]<a href="[#URL#]" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="app"#]<a href="<#ROOTHTML#>popup/[#APP#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#]
 </td>
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+ 
+   >
   [#if PRIORITY!=""#]
    [#PRIORITY#]
   [#else#]
@@ -40,17 +40,18 @@
   [#endif#]
  </td>
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+
+   >
   [#if TYPE!=""#]
    [#TYPE#]
   [#else#]
    &nbsp;
   [#endif#]
  </td>
- <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+ <td  width="110">
   [#if "<#ACTION#>"=="admin"#]
-<a href="?view_mode=edit_layouts&id=[#ID#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_layouts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+<a href="?view_mode=edit_layouts&id=[#ID#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+<a href="?view_mode=delete_layouts&id=[#ID#]" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
    </td>
   [#endif ACTION#]
  </td>

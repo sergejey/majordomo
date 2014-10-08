@@ -22,20 +22,25 @@
 <input type="hidden" name="mode" value="filter">
 </form>
 
-<table border="1" cellpadding=4 cellspacing="5">
+&nbsp;
+<table class="table table-bordered">
  <tr>
   <td valign="top"><b><#LANG_OBJECT#></b></td>
-  <td valign="top" colspan=2><b>&nbsp;</b></td>
   <td valign="top"><b><#LANG_LOCATION#></b></td>
   <td valign="top"><b><#LANG_DESCRIPTION#></b></td>
+  <td valign="top">&nbsp;</td>
  </tr>
  [#begin OBJECTS#]
  <tr>
   <td valign="top"><b><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a></b></td>
-  <td valign="top"><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]&tab=properties"><#LANG_PROPERTIES#></a></td>
-  <td valign="top"><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]&tab=methods"><#LANG_METHODS#></a></td>
   <td valign="top">[#LOCATION#]&nbsp;</td>
   <td valign="top">[#DESCRIPTION#]&nbsp;</td>
+  <td valign="top">
+    <a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
+    <a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
+
+  </td>
  </tr>
  [#end OBJECTS#]
 </table>

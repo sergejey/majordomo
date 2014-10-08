@@ -1,10 +1,17 @@
 <!--#
  @version 0.4 (auto-set)
 #-->
-[#if OK#]<font color="green"><#LANG_DATA_SAVED#></font>[#endif OK#]
 <br>&nbsp;
 
-<table border="0" cellpadding="3">
+[#if OK#]
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+[#endif ERR#]
+
+
+<table border="0" class="table table-bordered">
  <form action="?" method="post">
  [#begin PROPERTIES#]
  <tr>
@@ -15,13 +22,12 @@
   [#endif#]
   [#endif#]
   </td>
-  <td valign="top">=</td>
   <td valign="top">
-  <textarea name="value[#ID#]" rows=2 cols="90" class="span5">[#VALUE#]</textarea>
+  <textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE#]</textarea>
   </td>
   <td valign="top">
         [#if CLASS_ID="0"#]
-   [ <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_prop=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">X</a> ]
+   <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_prop=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
         [#else#]
         &nbsp;
         [#endif#]
@@ -29,23 +35,18 @@
  </tr>
  [#end PROPERTIES#]
  <tr>
-  <td valign="top" colspan="4"><hr><br>
+  <td valign="top" colspan="4">
   <#LANG_ADD_NEW_PROPERTY#>:
   </td>
  </tr>
  <tr>
   <td valign="top"><input type="text" name="new_property"></td>
-  <td valign="top">=</td>
   <td valign="top"><input type="text" name="new_value"></td>
   <td valign="top">&nbsp;</td>
  </tr>
  <tr>
-  <td valign="top" colspan="4"><hr>
-  </td>
- </tr>
- <tr>
   <td valign="top" colspan="4">
-   <input type="submit" name="submit" value="<#LANG_UPDATE#>">
+   <input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-primary">
   </td>
  </tr>
  <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">

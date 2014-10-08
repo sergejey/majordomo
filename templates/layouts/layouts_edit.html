@@ -3,6 +3,21 @@
 #-->
 
 <!-- Table 'layouts' edit -->
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li class="active">
+[#if ID=""#]
+<#LANG_NEW_RECORD#>
+[#else#]
+<#LANG_EDIT_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+
 
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
@@ -29,7 +44,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_TITLE#>(*)</label>
         <div class="controls">
-                <input type="text" name="title" value="[#TITLE#]" required>
+                <input class="form-control" type="text" name="title" value="[#TITLE#]" required>
         </div>
 </div>
 
@@ -38,7 +53,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_PRIORITY#></label>
         <div class="controls">
-                <input type="text" name="priority" value="[#PRIORITY#]">
+                <input class="form-control" type="text" name="priority" value="[#PRIORITY#]">
         </div>
 </div>
 
@@ -47,7 +62,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#></label>
         <div class="controls">
-                <input type="text" name="refresh" value="[#REFRESH#]">
+                <input class="form-control" type="text" name="refresh" value="[#REFRESH#]">
         </div>
 </div>
 
@@ -58,7 +73,7 @@
         <p class="help-block">
                 [#if ICON!=""#]
                 <label class="checkbox">
-                <input type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
+                <input class="form-control" type="checkbox" name="delete_icon" value="1"><#LANG_DELETE#>
                 </label>
                 <img src="<#ROOTHTML#>cms/layouts/[#ICON#]" border="0">
                 [#ICON#]<br>
@@ -71,7 +86,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_TYPE#></label>
         <div class="controls">
-                <select name="type">
+                <select class="form-control" name="type">
                 <option value="">select
                 [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
                 [#end TYPE_OPTIONS#]
@@ -85,7 +100,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_CODE#></label>
         <div class="controls">
-                <textarea name="code" rows=12 cols=100>[#CODE#]</textarea>
+                <textarea class="form-control" name="code" rows=12 cols=100>[#CODE#]</textarea>
         </div>
 </div>
 
@@ -97,7 +112,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_APP#></label>
         <div class="controls">
-                <input type="text" name="appname" value="[#APP#]">
+                <input type="text" class="form-control" name="appname" value="[#APP#]">
         </div>
 </div>
 
@@ -107,7 +122,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_URL#></label>
         <div class="controls">
-                <input type="text" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
+                <input type="text" class="form-control" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
         </div>
 </div>
 
@@ -143,13 +158,13 @@
 </div>
 
 <div class="form-actions">
-<button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+<button class="btn btn-default btn-primary" type="submit" name="subm"> <#LANG_SUBMIT#></button>
 [#else ID#]
 <div class="form-actions">
-<button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
+<button class="btn btn-default btn-primary" type="submit" name="subm"> <#LANG_ADD#></button>
 [#endif ID#]
 
-<a class="btn" href="?"><#LANG_CANCEL#></a>
+<a class="btn btn-default " href="?"><#LANG_CANCEL#></a>
 </div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">

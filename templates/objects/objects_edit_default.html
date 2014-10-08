@@ -1,98 +1,69 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
-<!-- Table 'objects' edit -->
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
+
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
-[#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_OBJECT#></b></td>
-</tr>
-[#endif ID#]
-<!-- TITLE (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- (*)
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]">
- </td>
-</tr>
-<!-- CLASS_ID (select) -->
-<tr>
- <td align=right valign=top>
- [#if ERR_CLASS_ID#]<b><font color="red">[#endif#]
- <#LANG_CLASS#>: 
- (*)</td>
- <td>                                           
- <select name="class_id">
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <div class="col-lg-4"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_CLASS#>:<font color="red">*</font></label>
+        <div class="col-lg-4">
+ <select name="class_id" class="form-control [#if ERR_TITLE#]alert-danger[#endif#]" required="true">
   <option value="">select
   [#begin CLASS_ID_OPTIONS#]<option value="[#ID#]"[#if ID="<#CLASS_ID#>"#] selected[#endif#]>[#TITLE#]
   [#end CLASS_ID_OPTIONS#]
  </select>
- </td>
-</tr>
-<!-- DESCRIPTION (text) -->
-<tr>
- <td valign=top align=right>
- [#if ERR_DESCRIPTION#]<b><font color="red">[#endif#]
- <#LANG_DESCRIPTION#>
- :
- </td>
- <td valign=top>
- <textarea name="description" rows=4 cols=100 class="field span8">[#DESCRIPTION#]</textarea>
- </td>
-</tr>
-<!-- LOCATION_ID (select) -->
-<tr>
- <td align=right valign=top>
- [#if ERR_LOCATION_ID#]<b><font color="red">[#endif#]
- <#LANG_LOCATION#>: 
- </td>
- <td>                                           
- <select name="location_id">
+        </div>
+</div>
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#>:</label>
+        <div class="col-lg-4"><textarea name="description" rows="3" class="form-control">[#DESCRIPTION#]</textarea></div>
+</div>
+
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_LOCATION#>:</label>
+        <div class="col-lg-4"><select name="location_id" class="form-control">
   <option value="">-
   [#begin LOCATION_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
   [#end LOCATION_ID_OPTIONS#]
- </select>
- </td>
-</tr>
-<tr>
- <td colspan=2 align=center>
- [#if ID!=""#]
- <input type="submit" name="subm" class="btn" value="<#LANG_UPDATE#>">
- [#else ID#]
- <input type="submit" name="subm" class="btn" value="<#LANG_ADD#>">
- [#endif ID#]
- &nbsp;
- <a href="?" class="btn"><#LANG_CANCEL#></a>
+ </select></div>
+</div>
+
+
+<div class="form-group">
+     <div class="col-lg-offset-1 col-lg-5">
+        
+         [#if ID!=""#]
+                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
+                 [#else ID#]
+                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
+                 [#endif ID#]
+                 &nbsp;
+                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
 
  [#if ID!=""#]
- <a class="btn" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
  [#endif#]
 
- </td>
-</tr>
+
+
+    </div>
+</div>
+
+
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 <input type="hidden" name="tab" value="<#TAB#>">
 </form>
-</table>

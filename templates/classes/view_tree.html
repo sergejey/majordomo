@@ -1,58 +1,41 @@
-<p>
-<b>
-[ <a href="?view_mode=edit_classes"><#LANG_ADD_NEW_CLASS#></a> ]
-</b>
-</p>
 <table width=100% border=0><tr>
 <td valign=top>
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_classes" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000">
+<table  class="table table-striped">
 [#begin RESULT#]
 <tr >
  <td
-   bgcolor="#FFFFFF" valign="top">
-  <b>
-   [#TITLE#]
-  </a></b>
+    valign="top">
+   <b><a href="?view_mode=edit_classes&id=[#ID#]">[#TITLE#]</a></b>
  </td>
- <td bgcolor="#FFFFFF">
-  <table border=0>
-  [#if "<#ACTION#>"=="admin"#]
-   <td bgcolor="#FFFFFF" align=center>
-    <b><a href="?view_mode=edit_classes&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td bgcolor="#FFFFFF" align=center>
-    <b><a href="?view_mode=edit_classes&id=[#ID#]&tab=properties"><#LANG_PROPERTIES#></a></b>
-   </td>   
-<td bgcolor="#FFFFFF" align=center>
-    <b><a href="?view_mode=edit_classes&id=[#ID#]&tab=methods"><#LANG_METHODS#></a></b>
-   </td>      
-<td bgcolor="#FFFFFF" align=center>
-    <b><a href="?view_mode=edit_classes&id=[#ID#]&tab=objects"><#LANG_OBJECTS#></a></b>
-   </td>      
-   
-   <td bgcolor="#FFFFFF" align=center>
-    <b><a href="?view_mode=edit_classes&parent_id=[#ID#]"><#LANG_EXPAND#></a>
-   </td>
-   <td bgcolor="#FFFFFF" align=center>
-    <b><a href="?view_mode=export_classes&id=[#ID#]"><#LANG_EXPORT#></a>
-   </td>   
-  [#if !OBJECTS#]
-   <td bgcolor="#FFFFFF" align=center>
-    <a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">X</a>
-   </td>
+ <td valign="top" align="right">
+
+
+    <a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
+    <a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
+    <a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
+    <a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
+    <a href="?view_mode=export_classes&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i></a>
+
+  [#if !OBJECTS && !RESULT#]
+    <a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif OBJECTS#]
-  [#endif ACTION#]
-  </table>
-  [#if OBJECTS#]
-  <#LANG_OBJECTS#>:
+
+  </td>
+</tr>
+
+[#if OBJECTS#]
+<tr>
+ <td valign="top" colspan="2">  
+  <div>
    <table border=0>
          [#begin OBJECTS#]
          <tr>
-                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>[#if DESCRIPTION!=""#] ([#DESCRIPTION#])[#endif#]</td>
+                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>[#if DESCRIPTION!=""#] [#DESCRIPTION#][#endif#]</td>
                  <td>&nbsp;</td>
         </tr>
         [#if METHODS#]
@@ -70,14 +53,14 @@
         [#endif METHODS#]
          [#end OBJECTS#]
   </table>
-  [#endif OBJECTS#]
+  </div>
  </td>
 </tr>
+  [#endif OBJECTS#]
 [#if RESULT#]
  <tr>
- <td valign="top" bgcolor="#FFFFFF">&nbsp;</td>
- <td style="padding-left:20px" bgcolor="#FFFFFF">
-  <table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+ <td style="padding-left:40px" colspan=2>
+  <table  class="table table-striped">
    [#tree RESULT#]
   </table>
  </td></tr>

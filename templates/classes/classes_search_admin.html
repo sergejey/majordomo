@@ -1,13 +1,15 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-<big><#LANG_MODULE_OBJECTS#></big>
 
-<p>
-[#if DEFAULT_VIEW!=""#]<a href="?mode=switch&view=">[#else#]<b>[#endif#]<#LANG_TREE_VIEW#></a></b>
-/
-[#if DEFAULT_VIEW!="list"#]<a href="?mode=switch&view=list">[#else#]<b>[#endif#]<#LANG_LIST_VIEW#></a></b>
-</p>
+<ul class="nav nav-tabs">
+ <li [#if DEFAULT_VIEW=""#]class="active"[#endif#]><a href="?mode=switch&view="><#LANG_TREE_VIEW#></a></li>
+ <li [#if DEFAULT_VIEW="list"#]class="active"[#endif#]><a href="?mode=switch&view=list"><#LANG_LIST_VIEW#></a></li>
+</ul>
+
+&nbsp;<br>
+<a href="?view_mode=edit_classes" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CLASS#></a>
+<br>&nbsp;
 
 <!-- table classes search -->
 

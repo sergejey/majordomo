@@ -2,38 +2,41 @@
  @version 0.3 (auto-set)
 #-->
 ﻿<!-- table locations search -->
-<big>In-house Locations</big>
+
 <p>
-<b>
-<a href="?view_mode=edit_locations"><#LANG_ADD_NEW_LOCATION#></a>
-</b>
+
+<a href="?view_mode=edit_locations" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_LOCATION#></a>
+
 </p>
-<table  border=0><tr>
-<td valign=top>
+
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_locations" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<table class="table table-striped">
+<tr>
+<th colspan="2">
+<#LANG_TITLE#>
+ </th>
+ </tr>
 [#begin RESULT#]
 <tr >
  <td
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   >
   <b>
    [#TITLE#]
   </a></b>
  </td>
- <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <table border=0>
+ <td width="100">
+  
   [#if "<#ACTION#>"=="admin"#]
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <b><a href="?view_mode=edit_locations&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <a href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
-   </td>
+  
+    <b><a class="btn btn-default btn-sm" href="?view_mode=edit_locations&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a></b>
+   
+    <a class="btn btn-default btn-sm" href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i></a>
+  
   [#endif ACTION#]
-  </table>
+
  </td>
 </tr>
 [#end RESULT#]
@@ -44,8 +47,8 @@
 <!-- / search results (list) -->
 [#else RESULT#]
 <p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+<div class="alert alert-danger"><#LANG_NO_RECORDS_FOUND#></div>
 </p>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
+

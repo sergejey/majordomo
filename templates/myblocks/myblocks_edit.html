@@ -1,4 +1,4 @@
-
+<br>
 <!-- Table 'myblocks' edit -->
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
@@ -55,7 +55,7 @@
   }
  </script>
 
-  <select name="block_type" onChange="block_type_changed(this.value);">
+  <select name="block_type" class="form-control" onChange="block_type_changed(this.value);">
    <option value="script"><#LANG_SCRIPT#>
    <option value="method"[#if BLOCK_TYPE="method"#] selected[#endif#]><#LANG_METHOD#>
    <option value="method_params"[#if BLOCK_TYPE="method_par"#] selected[#endif#]><#LANG_METHOD#> (+params)

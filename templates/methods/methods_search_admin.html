@@ -1,57 +1,46 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-﻿<!-- table methods search -->
+<!-- table methods search -->
 
-<p align=center>
-<b>
-[ <a href="?view_mode=edit_methods"><#LANG_ADD_METHOD#></a> ]
-</b>
-</p>
+&nbsp;
+<div><a href="?view_mode=edit_methods" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_METHOD#></a></div>
+&nbsp;
+
 <table width=100% border=0><tr>
 <td valign=top>
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
-<form action="?" method="post" name="frmList_methods" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<form action="?" method="post" name="frmList_methods">
+<table class="table table-bordered">
 <tr>
- <td align=center bgcolor="#AAAAAA">
+ <td>
  <b><#LANG_TITLE#></b>
  </td>
- <td align=center bgcolor="#AAAAAA">
+ <td>
  <b><#LANG_DESCRIPTION#></b>
  </td>
-<td bgcolor="#AAAAAA">&nbsp;</td>
+<td>&nbsp;</td>
 </tr>
 [#begin RESULT#]
 <tr >
 
- <td
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <b>
-   [#TITLE#]
-  </a></b>
+ <td>
+
+   <a href="?view_mode=edit_methods&id=[#ID#]" title="<#LANG_EDIT#>">[#TITLE#]</a>
  </td>
  <td
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   >
   [#if DESCRIPTION!=""#]
    [#DESCRIPTION#]
   [#else#]
    &nbsp;
   [#endif#]
  </td>
- <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <table border=0>
-  [#if "<#ACTION#>"=="admin"#]
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <b><a href="?view_mode=edit_methods&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <a href="?view_mode=delete_methods&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
-   </td>
-  [#endif ACTION#]
-  </table>
+ <td >
+    <a href="?view_mode=edit_methods&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=delete_methods&id=[#ID#]" onClick="return confirm('Delete record?')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
  </td>
 </tr>
 [#end RESULT#]
@@ -69,11 +58,11 @@
 </td></tr></table>
 [#if PARENT_METHODS#]
 <big><#LANG_PARENT_METHODS#>:</big>
-<table border="0">
+<table class="table table-bordered">
  [#begin PARENT_METHODS#]
  <tr>
   <td valign="top"><b><a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=methods">[#CLASS_TITLE#]</a>.
-  	<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,id=[#CLASS_ID#]})&md=methods&view_mode=edit_methods&id=[#ID#]&tab=methods">[#TITLE#]</a></b></td>
+        <a href="?(panel:{action=classes}classes:{view_mode=edit_classes,id=[#CLASS_ID#]})&md=methods&view_mode=edit_methods&id=[#ID#]&tab=methods">[#TITLE#]</a></b></td>
   <td valign="top">[#DESCRIPTION#]</td>
   <td valign="top">[ <a href="?view_mode=edit_methods&overwrite=[#ID#]"><#LANG_OVERWRITE#></a> ]</td>
  </tr>

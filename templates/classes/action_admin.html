@@ -9,19 +9,21 @@
  <!-- table classes edit -->
  [#if VIEW_MODE="edit_classes"#]
    [#if ID!=""#]
-   <p>
-        <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a><br><br>
-   <big>Class: [#TITLE#]</big>
-  </p>
-   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
-   <tr>
-    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_MAIN#></a></td>
-    <td align=center[#if TAB="properties"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></td>
-    <td align=center[#if TAB="methods"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></td>
-    <td align=center[#if TAB="objects"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=objects"><#LANG_OBJECTS#></a></td>      
-   </tr>
-   </table>
-   [#endif ID#]
+
+<ol class="breadcrumb">
+  <li><a href="?"><#LANG_HOME#></a></li>
+  <li class="active">Class: [#TITLE#]</li>
+</ol>
+
+<ul class="nav nav-tabs">
+ <li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_MAIN#></a></li>
+ <li [#if TAB="properties"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></li>
+ <li [#if TAB="methods"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></li>
+ <li [#if TAB="objects"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=objects"><#LANG_OBJECTS#></a></li>
+</ul>
+
+[#endif ID#]
+
    [#if TAB=""#]
     [#inc classes_edit_default.html#]
    [#endif TAB#]

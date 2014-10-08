@@ -10,19 +10,20 @@
  <!-- table objects edit -->
  [#if VIEW_MODE="edit_objects"#]
    [#if ID!=""#]
-   <p>
-        <big><#LANG_OBJECT#>: [#TITLE#]</big>
-        </p>
-   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
-   <tr>
-    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a></td>
-    <td align=center[#if TAB="properties"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></td>
-    <td align=center[#if TAB="methods"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></td>
-    <!--#
-    <td align=center[#if TAB="history"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="history"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=history">[#endif TAB#]<#LANG_HISTORY#></a></td>
-    #-->
-   </tr>
-   </table>
+
+   &nbsp;
+<ol class="breadcrumb">
+  <li class="active"><#LANG_OBJECT#>: [#TITLE#]</li>
+</ol>
+
+<ul class="nav nav-tabs">
+ <li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a></li>
+ <li [#if TAB="properties"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></li>
+ <li [#if TAB="methods"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></li>
+</ul>
+
+&nbsp;
+
    [#endif ID#]
    [#if TAB=""#]
     [#inc objects_edit_default.html#]
