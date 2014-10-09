@@ -511,7 +511,7 @@ function admin(&$out) {
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
       echo '<td>';
-      echo $res[$i]['TITLE'];
+      echo "<a href='/panel/script/".$res[$i]['ID'].".html' target=_blank>".$res[$i]['TITLE']."</a>";
       if ($res[$i]['DESCRIPTION']!='') {
        echo "<br><small style='font-size:9px'>".$res[$i]['DESCRIPTION']."</small>";
       }
