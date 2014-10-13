@@ -1,9 +1,9 @@
 [#if ERR_MSG!=""#]
-<div style="border:2px solid red;padding:10px;"><big style="color:red">[#ERR_MSG#]</big></div>
+<div class="alert alert-success">[#ERR_MSG#]</div>
 [#endif ERR_MSG#]
 
 [#if OK_MSG!=""#]
-<div style="border:2px solid green;padding:10px;"><big style="color:green">[#OK_MSG#]</big></div>
+<div class="alert alert-danger">[#OK_MSG#]</div>
 [#endif OK_MSG#]
 
 
@@ -12,7 +12,7 @@
 
 [#if MODE=""#]
 [#if PLUGINS#]
-<table border="0" cellpadding="5">
+<table class="table table-striped">
  [#begin PLUGINS#]
  <tr>
   <td valign="top"><b>[#TITLE#]</b> (v [#LATEST_VERSION#]) by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>
@@ -31,10 +31,10 @@
   <p>[#DESCRIPTION_EN#]</p>
   [#endif#]
   </td>
-  <td valign="top"><b><a href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]Update[#else#]Install[#endif#]</a></b></td>
-  <td valign="top"><a href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
-  <td valign="top"><a href="[#REPOSITORY_URL#]">Src</a></td>
-  <td valign="top">&nbsp;[#if EXISTS#]<a href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('Please confirm!')">Uninstall</a>[#endif#]</td>
+  <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]Update[#else#]Install[#endif#]</a></b></td>
+  <td valign="top"><a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
+  <td valign="top"><a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a></td>
+  <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('Please confirm!')">Uninstall</a>[#endif#]</td>
  </tr>
  [#end PLUGINS#]
 </table>

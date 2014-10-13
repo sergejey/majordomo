@@ -5,44 +5,15 @@
 [#if SET_DATASOURCE!="1"#]
 &nbsp;
 <!-- source select -->
-<table border=0 width=100% cellspacing=1 cellpadding=4 bgcolor="#222222">
-<tr>
- <td align=center bgcolor="[#if DATA_SOURCE!="gpslog" && DATA_SOURCE!=""#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="gpslog" && DATA_SOURCE!=""#]<a href="?data_source=gpslog"><#LANG_LOG#></a>
-  [#else#]
-   <#LANG_LOG#>
-  [#endif#]
-  </b>
- </td>
- <td align=center bgcolor="[#if DATA_SOURCE!="gpslocations"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="gpslocations"#]<a href="?data_source=gpslocations"><#LANG_LOCATIONS#></a>
-  [#else#]
-   <#LANG_LOCATIONS#>
-  [#endif#]
-  </b>
- </td>
- <td align=center bgcolor="[#if DATA_SOURCE!="gpsdevices"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="gpsdevices"#]<a href="?data_source=gpsdevices"><#LANG_DEVICES#></a>
-  [#else#]
-   <#LANG_DEVICES#>
-  [#endif#]
-  </b>
- </td>
- <td align=center bgcolor="[#if DATA_SOURCE!="gpsactions"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="gpsactions"#]<a href="?data_source=gpsactions"><#LANG_ACTIONS#></a>
-  [#else#]
-   <#LANG_ACTIONS#>
-  [#endif#]
-  </b>
- </td>
- </tr>
- <tr>
-</tr>
-</table>
+
+
+
+<ul class="nav nav-tabs">
+ <li [#if DATA_SOURCE!="gpslog" && DATA_SOURCE!=""#][#else#]class="active"[#endif#]><a href="?data_source=gpslog"><#LANG_LOG#></a></li>
+ <li [#if DATA_SOURCE=="gpslocations"#]class="active"[#endif#]><a href="?data_source=gpslocations"><#LANG_LOCATIONS#></a></li>
+ <li [#if DATA_SOURCE=="gpsdevices"#]class="active"[#endif#]><a href="?data_source=gpsdevices"><#LANG_DEVICES#></a></li>
+ <li [#if DATA_SOURCE=="gpsactions"#]class="active"[#endif#]><a href="?data_source=gpsactions"><#LANG_ACTIONS#></a></li>
+</ul><br>
 <!-- / source select -->
 [#endif SET_DATASOURCE#]
  <!-- action usual -->

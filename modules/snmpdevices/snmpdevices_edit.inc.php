@@ -43,7 +43,7 @@
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
      $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM snmpdevices");
      if ($tmp['TOTAL']==1) {
-      SaveFile(ROOT.'reboot'); // first device added, need reboot
+      @SaveFile(ROOT.'reboot'); // first device added, need reboot
      }
     }
    //updating 'MIB_FILE' (file)

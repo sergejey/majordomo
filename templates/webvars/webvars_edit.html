@@ -3,104 +3,91 @@
 #-->
 
 <!-- Table 'webvars' edit -->
-<p align=center>
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li class="active">
+[#if ID=""#]
+<#LANG_NEW_RECORD#>
+[#else#]
+<#LANG_EDIT_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+  <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
-[#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
-[#endif ID#]
-
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]" size="80">
- </td>
-</tr>
 
 
-<!-- HOSTNAME (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_HOSTNAME#]<b><font color="red">[#endif#]
- <#LANG_URL#>:
- </td>
- <td>
-  <input type="text" name="hostname" value="[#HOSTNAME#]" size="80">
- </td>
-</tr>
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+</div>
 
-<tr>
- <td align="right">&nbsp;</td>
- <td><input type="checkbox" name="auth" id="chkAuth" value="1" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#>
- <div [#if AUTH!="1"#]style="display:none"[#endif#] id="authCredentials">
-  <table border="0">
-   <tr>
-    <td><#LANG_USERNAME#>:</td>
-    <td><input type="text" name="username" value="[#USERNAME#]"></td>
-   </tr>
-   <tr>
-    <td><#LANG_PASSWORD#>:</td>
-    <td><input type="text" name="password" value="[#PASSWORD#]"></td>
-   </tr>
-  </table>
- </div>
- </td>
-</tr>
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_URL#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true"></div>
+</div>
+
+<div class="form-group">
+	<label class="col-lg-4 control-label">&nbsp;</label>
+	<div class="col-lg-5">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" value="1" name="auth" id="chkAuth" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#>
+			</label>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div [#if AUTH!="1"#]style="display:none"[#endif#] id="authCredentials">
+	<div class="form-group ">
+			<label class="col-lg-4 control-label" for="inputTitle"><#LANG_USERNAME#>:</label>
+			<div class="col-lg-5"><input type="text"  class="form-control"  name="username" value="[#USERNAME#]" ></div>
+	</div>
+	<div class="form-group ">
+			<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PASSWORD#>:</label>
+			<div class="col-lg-5"><input type="text"  class="form-control"  name="password" value="[#PASSWORD#]" ></div>
+	</div>
+</div>
+ 
+ 
+
 
 <script language="javascript">
  $('#chkAuth').click (function ()
  {
-  var thisCheck = $(this);
-  if (thisCheck.is (':checked'))
-  {
-   $('#authCredentials').show();
-  } else {
-  $('#authCredentials').hide();
-  }
+	  var thisCheck = $(this);
+	  if (thisCheck.is (':checked'))
+	  {
+	   $('#authCredentials').show();
+	  } else {
+	  $('#authCredentials').hide();
+	  }
  });
 </script>
 
-<tr>
- <td align=right>
- <#LANG_SOURCE_PAGE_ENCODING#>:
- </td>
- <td>
-  <input type="text" name="encoding" value="[#ENCODING#]" size="30"> (<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)
- </td>
-</tr>
 
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_SOURCE_PAGE_ENCODING#>:<br>(<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)</label>
+	<div class="col-lg-5"><input type="text"  class="form-control"  name="encoding" value="[#ENCODING#]" ></div>
+</div>
 
-<!-- SEARCH_WORD (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_SEARCH_PATTERN#]<b><font color="red">[#endif#]
- <#LANG_SEARCH_PATTERN#>:
- </td>
- <td>
-  <input type="text" name="search_pattern" value="[#SEARCH_PATTERN#]" size="80">
- </td>
-</tr>
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_PATTERN#>:<font color="red">*</font></label>
+	<div class="col-lg-5"><input type="text"  class="form-control [#if ERR_SEARCH_PATTERN#]alert-danger[#endif#]"  name="search_pattern" value="[#SEARCH_PATTERN#]" required="true"></div>
+</div>
+
 
 <!--#
 <tr>
@@ -115,104 +102,102 @@
 #-->
 
 
-<!-- SCRIPT_ID_ONLINE (int) -->
-<tr>
- <td align=right valign="top">
- [#if ERR_SCRIPT_ID#]<b><font color="red">[#endif#]
- <#LANG_ONCHANGE_ACTION#>:
- </td>
- <td>
-
- <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
-   <select name="script_id">
-    <option value="0">
-    [#begin SCRIPTS#]
-        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
-        [#end SCRIPTS#]
-   </select>    
-   <br>
-   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
- [#if ERRORS!=""#]
- <font color='red'>[#ERRORS#]</font><br>
- [#endif ERRORS#]   
-
- [#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
- <div id="code_area">
- <textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
- </div>
 
 
- </td>
-</tr>
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle"> <#LANG_ONCHANGE_ACTION#>:</label>
+	<div class="col-lg-5 [#if ERR_SCRIPT_ID#]alert-danger[#endif#]">
+		
+		 <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
+		   <select name="script_id">
+			<option value="0">
+			[#begin SCRIPTS#]
+				<option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+				[#end SCRIPTS#]
+		   </select>    
+		   <br>
+		   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
+		 [#if ERRORS!=""#]
+		 <font color='red'>[#ERRORS#]</font><br>
+		 [#endif ERRORS#]   
 
-<tr>
- <td align=right>
- <#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:
- </td>
- <td>
-  <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">
-  .
-  <input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
- </td>
-</tr>
+		 [#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
+		 <div id="code_area">
+		 <textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
+		 </div>
+	</div>
+</div>
 
 
 
 
-<!-- ONLINE_INTERVAL (int) -->
-<tr>
- <td align=right>
- [#if ERR_ONLINE_INTERVAL#]<b><font color="red">[#endif#]
- <#LANG_CHECK_INTERVAL#>:
- </td>
- <td>
-  <input type="text" name="online_interval" value="[#ONLINE_INTERVAL#]" size="10"> <#LANG_SECONDS#> (0 to use default)
- </td>
-</tr>
-
-<tr>
- <td align=right valign="top">
-  <#LANG_LATEST_VALUE#>:
- </td>
- <td valign="top">
-  [#LATEST_VALUE#]
- </td>
-</tr>
 
 
-<tr>
- <td valign="top">&nbsp;</td>
- <td>
+
+
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle"> <#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
+	
+		<div class="row">
+			<div class="col-xs-4">
+				<input type="text" name="linked_object" class="form-control" placeholder=".col-xs-4" value="[#LINKED_OBJECT#]" size="20">
+			</div>
+			
+			<div class="col-xs-4">
+				
+				<input type="text" name="linked_property" class="form-control" placeholder=".col-xs-4" value="[#LINKED_PROPERTY#]" size="20">
+				</div>
+		</div>
+	
+</div>
+
+
+
+
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_CHECK_INTERVAL#>:<font color="red">*</font><br><#LANG_SECONDS#> (0 to use default)</label>
+	<div class="col-lg-5"><input type="text"  class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  name="online_interval" value="[#ONLINE_INTERVAL#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_LATEST_VALUE#>:</label>
+	<div class="col-lg-5"> [#LATEST_VALUE#]</div>
+</div>
+
+
+
+<div class="form-group">
+	<label class="col-lg-4 control-label">&nbsp;</label>
+	<div class="col-lg-5">
+	
+	
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-primary">
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
  [#endif ID#]
  &nbsp;
- <a href="?" class="btn"><#LANG_CANCEL#></a>
+ <a href="?" class="btn  btn-default"><#LANG_CANCEL#></a>
  [#if ID!=""#]
  &nbsp;
- <a class="btn" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone"  onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
  [#endif ID#]
- </td>
-</tr>
+ </div>
+</div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
+
+
+
+<div class="form-group">
+	<label class="col-lg-4 control-label"><#LANG_LOG#>:</label>
+	<div class="col-lg-5">
+		 <a href="#" class="btn btn-default" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
+		 <div id='eventsLog' style="display:none">
+		  [#LOG#]
+		 </div>
+	</div>
+</div>
 </form>
-
-<tr>
- <td align=right valign="top">
-  <#LANG_LOG#>:
- </td>
- <td valign="top">
- <a href="#" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
- <div id='eventsLog' style="display:none">
-  [#LOG#]
- </div>
- </td>
-</tr>
-
-
-</table>

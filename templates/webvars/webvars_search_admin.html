@@ -1,33 +1,31 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-<p align=center>
-<b>
-<a href="?view_mode=edit_webvars" class="btn"><#LANG_ADD_NEW#></a>
-&nbsp;
-<a href="?view_mode=checkall" class="btn"><#LANG_REFRESH_ALL#></a>
-</b>
-</p>
 
-<table width=100% border=0><tr>
-<td valign=top>
+<a href="?view_mode=edit_webvars" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW#></a>
+&nbsp;
+<a href="?view_mode=checkall" class="btn btn-default"><#LANG_REFRESH_ALL#></a>
+
+<br><br>
+
 <!-- results -->
 [#if RESULT#]
 <!-- paging -->
 [#if PAGES#]
-<table border=0 align=center>
-<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
-[#begin PAGES#]
-<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
-[#end PAGES#]
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
+<center>
+<ul class="pagination">
+  [#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
+  [#begin PAGES#]
+  <li [#if SELECTED#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
+ [#end PAGES#]
+  [#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
+</ul>
+</center>
 [#endif PAGES#]
 <!-- / paging -->
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_webvars" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 align=center>
+<table class="table table-striped">
 [#begin RESULT#]
 <tr >
  <td valign="top">
@@ -39,17 +37,15 @@
    [#LATEST_VALUE#]
   
  </td>
- <td >
-  <table border=0>
+ <td width="100">
+  
   [#if "<#ACTION#>"=="admin"#]
-   <td  align=center>
-    <b><a href="?view_mode=edit_webvars&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td  align=center>
-    <a href="?view_mode=delete_webvars&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+ 
+   <a class="btn btn-default btn-sm" href="?view_mode=edit_webvars&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a>
+   <a class="btn btn-default btn-sm" href="?view_mode=delete_webvars&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
+  
   [#endif ACTION#]
-  </table>
+ 
  </td>
 </tr>
 [#end RESULT#]
@@ -60,20 +56,21 @@
 <!-- / search results (list) -->
 <!-- paging -->
 [#if PAGES#]
-<table border=0 align=center>
-<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
-[#begin PAGES#]
-<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
-[#end PAGES#]
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
+<center>
+<ul class="pagination">
+  [#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
+  [#begin PAGES#]
+  <li [#if SELECTED#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
+ [#end PAGES#]
+  [#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
+</ul>
+</center>
 [#endif PAGES#]
 <!-- / paging -->
 [#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+<p>
+<div class="alert alert-danger"><#LANG_NO_RECORDS_FOUND#></div>
 </p>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
+

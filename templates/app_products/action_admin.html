@@ -5,34 +5,14 @@
 [#if SET_DATASOURCE!="1"#]
 &nbsp;
 <!-- source select -->
-<table border=0 width=100% cellspacing=1 cellpadding=4 bgcolor="#222222">
-<tr>
- <td align=center bgcolor="[#if DATA_SOURCE!="products" && DATA_SOURCE!=""#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="products" && DATA_SOURCE!=""#]<a href="?data_source=products"><#LANG_PRODUCTS#></a>
-  [#else#]
-   Products
-  [#endif#]
-  </b>
- </td>
- <td align=center bgcolor="[#if DATA_SOURCE!="product_categories"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="product_categories"#]<a href="?data_source=product_categories"><#LANG_CATEGORIES#></a>
-  [#else#]
-   Categories
-  [#endif#]
-  </b>
- </td>
- <td align=center bgcolor="[#if DATA_SOURCE!="shopping_list_items"#]#DDDDDD[#else#]#FFFFFF[#endif#]">
-  <b>
-  [#if DATA_SOURCE!="shopping_list_items"#]<a href="?data_source=shopping_list_items"><#LANG_PRODUCTS#></a>
-  [#else#]
-   Shopping List
-  [#endif#]
-  </b>
- </td>
-</tr>
-</table>
+
+
+<ul class="nav nav-tabs">
+ <li [#if DATA_SOURCE!="products" && DATA_SOURCE!=""#][#else#]class="active"[#endif#]><a href="?data_source=products"><#LANG_PRODUCTS#></a></li>
+ <li  [#if DATA_SOURCE=="product_categories"#]class="active"[#endif#]><a href="?data_source=product_categories"><#LANG_CATEGORIES#></a></li>
+ <li [#if DATA_SOURCE=="shopping_list_items"#]class="active"[#endif#]><a href="?data_source=shopping_list_items"><#LANG_PRODUCTS#></a></li>
+
+</ul>
 <!-- / source select -->
 [#endif SET_DATASOURCE#]
  <!-- action usual -->

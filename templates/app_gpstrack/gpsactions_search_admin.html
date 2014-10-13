@@ -3,61 +3,61 @@
 #-->
 
 <!-- table gpsactions search -->
-<p align=center>
-<b>
-<a href="?view_mode=edit_gpsactions&data_source=<#DATA_SOURCE#>" class="btn"><#LANG_ADD_NEW_RECORD#></a>
-</b>
-</p>
-<table width=100% border=0><tr>
-<td valign=top>
+
+<a href="?view_mode=edit_gpsactions&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>
+<br><br>
+
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_gpsactions" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
+<table class="table table-striped">
+<thead>
 <tr>
 [#if !IS_SET_LOCATION_ID#]
- <td align=center bgcolor="#AAAAAA">
+ <td  >
  <b>LOCATION_ID</b>
  </td>
 [#endif IS_SET_LOCATION_ID#]
 [#if !IS_SET_USER_ID#]
- <td align=center bgcolor="#AAAAAA">
+ <td  >
  <b><#LANG_USER#></b>
  </td>
 [#endif IS_SET_USER_ID#]
- <td align=center bgcolor="#AAAAAA">
+ <td  >
  <b><#LANG_ACTION_TYPE#></b>
  </td>
 [#if !IS_SET_SCRIPT_ID#]
- <td align=center bgcolor="#AAAAAA">
+ <td  >
  <b><#LANG_SCRIPT#></b>
  </td>
 [#endif IS_SET_SCRIPT_ID#]
- <td align=center bgcolor="#AAAAAA">
+ <td  >
  <b><#LANG_EXECUTED#></b>
  </td>
-<td bgcolor="#AAAAAA">&nbsp;</td>
+<td >&nbsp;</td>
 </tr>
+</thead>
+<tbody>
 [#begin RESULT#]
 <tr >
 [#if "<#IS_SET_LOCATION_ID#>"!="1"#]
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   
+   >
    [#LOCATION_TITLE#]
  </td>
 [#endif IS_SET_LOCATION_ID#]
 [#if "<#IS_SET_USER_ID#>"!="1"#]
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   
+   >
    [#USER_NAME#]
  </td>
 [#endif IS_SET_USER_ID#]
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   
+   >
   [#if ACTION_TYPE="1"#]
    Entering
   [#else#]
@@ -66,8 +66,8 @@
  </td>
 [#if "<#IS_SET_SCRIPT_ID#>"!="1"#]
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   
+   >
   [#if SCRIPT_TITLE!=""#]
    [#SCRIPT_TITLE#]
   [#else#]
@@ -76,37 +76,35 @@
  </td>
 [#endif IS_SET_SCRIPT_ID#]
  <td
-   align=center
-   bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
+   
+   >
   [#if EXECUTED!=""#]
    [#EXECUTED#]
   [#else#]
    &nbsp;
   [#endif#]
  </td>
- <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]">
-  <table border=0>
+ <td >
+  
   [#if "<#ACTION#>"=="admin"#]
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <b><a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_gpsactions&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_gpsactions&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+ 
+   <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_gpsactions&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a>
+  
+    <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_gpsactions&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
+   
   [#endif ACTION#]
-  </table>
+ 
  </td>
 </tr>
 [#end RESULT#]
+</tbody>
 </table>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_gpsactions">
 </form>
 <!-- / search results (list) -->
 [#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
+<div class="alert alert-danger"><#LANG_NO_RECORDS_FOUND#></div>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
+

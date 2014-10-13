@@ -1,7 +1,7 @@
-
+<br>
 <!-- table elements search -->
-<a class="btn btn-success" href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements"><i class="icon-white icon-plus-sign"></i><#LANG_ADD_NEW_ELEMENT#></a>
-
+<a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_ELEMENT#></a>
+<br><br>
 
 <!-- results -->
 [#if ELEMENTS#]
@@ -16,9 +16,9 @@
  <td>
   <div class="pull-right">
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]"><#LANG_EDIT#></a>
-   <span class="separator">/</span>
-   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
+   
+   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" class="btn btn-default btn-sm" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>

@@ -157,15 +157,17 @@
         </div>
 </div>
 
-<div class="form-actions">
+<div class="form-group">
+<div class="col-lg-offset-2 col-lg-5">
 <button class="btn btn-default btn-primary" type="submit" name="subm"> <#LANG_SUBMIT#></button>
 [#else ID#]
-<div class="form-actions">
+<div class="form-group">
+<div class="col-lg-offset-2 col-lg-5">
 <button class="btn btn-default btn-primary" type="submit" name="subm"> <#LANG_ADD#></button>
 [#endif ID#]
 
 <a class="btn btn-default " href="?"><#LANG_CANCEL#></a>
-</div>
+</div></div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">

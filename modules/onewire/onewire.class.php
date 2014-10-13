@@ -12,7 +12,7 @@
 //
 //check to make sure the file exists
 if(!function_exists('bcadd'))  {
-  if(file_exists("/opt/owfs/bin/bcadd.php"))  {
+  if(@file_exists("/opt/owfs/bin/bcadd.php"))  {
     require "/opt/owfs/bin/bcadd.php";
   } else if(file_exists(DIR_MODULES."onewire/bcadd.php"))  {
     require DIR_MODULES."onewire/bcadd.php";

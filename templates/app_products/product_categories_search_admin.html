@@ -1,51 +1,14 @@
-<!--#
- @version 0.2 (auto-set)
-#-->
+<br>
+<a href="?view_mode=edit_product_categories&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>
 
-<!-- table product_categories search -->
-[#if MODE="search_product_categories"#]
-<!-- search form -->
-<table border=0>
-<tr>
- <td colspan=10><b><#LANG_SEARCH#></b></td>
-</tr>
-<form action="?" method="post" name="frmSearch">
- <tr>
-  <td align=right><#LANG_TITLE#>:</td>
-  <td><!-- varchar -->
-<input type="text" name="title" value="[#TITLE#]">
-</td>
- </tr>
- <tr>
-  <td colspan=2>
-   <input type="submit" name="submit" value="<#LANG_SEARCH#>">
-   //
-   <a href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
-  </td>
- </tr>
-<input type="hidden" name="mode" value="search_product_categories">
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-</form>
-</table>
-<!-- / search form -->
-[#endif MODE#]
-<p align=center>
-<b>
-[#if MODE!="search_product_categories"#]<a href="?mode=search_product_categories&data_source=<#DATA_SOURCE#>"><#LANG_SEARCH#></a> 
-&nbsp;&nbsp;&nbsp;
-[#endif#]
-//
-&nbsp;&nbsp;&nbsp;
-<a href="?view_mode=edit_product_categories&data_source=<#DATA_SOURCE#>">><#LANG_ADD_NEW_RECORD#><</a>
-</b>
-</p>
+<br><br>
 <table width=100% border=0><tr>
 <td valign=top>
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_product_categories" style="padding:0px">
-<table border=0 cellpadding=5 cellspacing=1 align=center>
+<table class="table table-striped">
 [#begin RESULT#]
 <tr>
  <td
@@ -54,19 +17,19 @@
    [#TITLE#]
   </a></b>
  </td>
- <td>
-  <table border=0>
+ <td width="300">
+ 
   [#if "<#ACTION#>"=="admin"#]
-   <td align=center>
-    <b><a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_product_categories&id=[#ID#]"><#LANG_EDIT#></a></b>
-   </td>
-   <td align=center>
-    <b><a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_product_categories&parent_id=[#ID#]"><#LANG_EXPAND#></a>
-   </td>
+  
+    <b><a  class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_product_categories&id=[#ID#]"><#LANG_EDIT#></a></b>
+   
+  
+    <b><a  class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_product_categories&parent_id=[#ID#]"><#LANG_EXPAND#></a>
+   
   [#if !RESULT#]
-   <td align=center>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_product_categories&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
-   </td>
+
+    <a  class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_product_categories&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+  
   [#endif RESULT#]
   [#endif ACTION#]
   </table>

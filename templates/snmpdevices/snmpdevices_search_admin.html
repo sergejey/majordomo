@@ -1,7 +1,7 @@
 
 <!-- table snmpdevices search -->
 <p>
-<a href="?view_mode=edit_snmpdevices" class="btn"><i class="icon-plus"></i> <#LANG_ADD_NEW_HOST#></a>
+<a href="?view_mode=edit_snmpdevices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_HOST#></a>
 [#if RESULT#]
 <a href="?view_mode=update_all" class="btn"><#LANG_REFRESH_ALL#></a>
 [#endif RESULT#]
@@ -33,8 +33,8 @@
  <td width="1%" nowrap>
   <div style="width:120px">
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_snmpdevices&id=[#ID#]" class="btn btn-small" title="<#LANG_EDIT#>"><i class="icon-pencil"></i></a>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_snmpdevices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-small" title="<#LANG_DELETE#>"><i class="icon-remove"></i></a>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_snmpdevices&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_snmpdevices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>
@@ -48,7 +48,7 @@
 <!-- / search results (list) -->
 [#else RESULT#]
 <p>
-<font color="red">No devices added.</font>
+<div class="alert alert-danger">No devices added.</div>
 </p>
 [#endif RESULT#]
 <!-- / results -->

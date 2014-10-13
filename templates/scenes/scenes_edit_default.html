@@ -1,4 +1,4 @@
-
+<br>
 <script src="<#ROOTHTML#>js/jquery.event.drag-2.2.js"></script>
 <script>
 $(function() {
@@ -70,7 +70,7 @@ $(function() {
 <div class="form-group">
         <label class="control-label"><#LANG_TITLE#> (*)</label>
         <div class="controls">
-                <input type="text" name="title" value="[#TITLE#]" required>
+                <input class="form-control" type="text" name="title" value="[#TITLE#]" required>
         </div>
 </div>
 
@@ -79,7 +79,7 @@ $(function() {
 <div class="form-group">
         <label class="control-label"><#LANG_PRIORITY#></label>
         <div class="controls">
-                <input type="text" name="priority" value="[#PRIORITY#]">
+                <input class="form-control" type="text" name="priority" value="[#PRIORITY#]">
         </div>
 </div>
 
@@ -96,7 +96,7 @@ $(function() {
 <div class="form-group">
         <label class="control-label"><#LANG_BACKGROUND#></label>
         <div class="controls">
-                <input type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
+                <input class="form-control" type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
         </div>
 </div>
 <script type="text/javascript">
@@ -137,16 +137,16 @@ $(function() {
 
 <div class="form-actions">
 [#if ID!=""#]
-<button class="btn" type="submit" name="subm"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
+<button class="btn btn-default btn-primary" type="submit" name="subm"> <#LANG_SUBMIT#></button>
 [#else ID#]
-<button class="btn" type="submit" name="subm"><i class="icon-plus-sign"></i> <#LANG_ADD#></button>
+<button class="btn btn-default btn-primary" type="submit" name="subm"> <#LANG_ADD#></button>
 [#endif ID#]
-<a class="btn" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
+<a class="btn btn-default" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
 
  [#if ID!=""#]
- &nbsp;
- <a class="btn" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
- <a class="btn" href="?id=<#ID#>&view_mode=export"><#LANG_EXPORT#></a>
+
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=export"><#LANG_EXPORT#></a>
  [#endif ID#]
 </div>
 

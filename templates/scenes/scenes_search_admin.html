@@ -1,9 +1,9 @@
 
 <!-- table scenes search -->
 
-<a class="btn btn-success" href="?view_mode=edit_scenes&data_source=<#DATA_SOURCE#>"><i class="icon-white icon-plus-sign"></i> <#LANG_ADD_NEW_SCENE#></a>
-<a class="btn" href="<#ROOTHTML#>popup/scenes.html" target=_blank><#LANG_PREVIEW#></a>
-
+<a href="?view_mode=edit_scenes&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_SCENE#></a>
+<a class="btn btn-default" href="<#ROOTHTML#>popup/scenes.html" target=_blank><#LANG_PREVIEW#></a>
+<br><br>
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
@@ -13,10 +13,10 @@
 <div class="well relative">
 <span class="scene-title">[#TITLE#]</span>
 <div class="btn-group pull-right">
-        <a class="btn" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><#LANG_PREVIEW#></a>
-        <a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="icon-pencil"></i> <#LANG_EDIT#></a>
+        <a class="btn btn-default btn-sm" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i></a> 
+        <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a> 
         [#if "<#ACTION#>"=="admin"#]
-        <a class="btn" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="icon-trash"></i> <#LANG_DELETE#></a>
+        <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
         [#endif ACTION#]
 </div>
 

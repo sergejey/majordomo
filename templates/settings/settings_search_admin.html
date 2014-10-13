@@ -2,10 +2,17 @@
  @version 0.2 (auto-set)
 #-->
 [#if FILTER_SET=""#]
+
+
+<ul class="nav nav-tabs">
 [#begin SECTIONS#]
-[#if FILTER!=""#]|[#endif#]
-<a href="?filter_name=[#FILTER#]">[#if SELECTED="1"#]<b>[#endif#][#TITLE#]</b></a>
+[#if FILTER!=""#][#endif#]
+<li [#if SELECTED="1"#]class="active"[#endif#]><a href="?filter_name=[#FILTER#]">[#TITLE#]</a></li>
 [#end SECTIONS#]
+</ul>
+
+
+
 <br/>&nbsp;
 [#endif FILTER_SET#]
 

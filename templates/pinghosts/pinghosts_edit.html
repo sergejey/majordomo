@@ -3,95 +3,81 @@
 #-->
 
 <!-- Table 'pinghosts' edit -->
-<p align=center>
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
-</p>
-<table border=0 align=center cellpadding=3>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li class="active">
+[#if ID=""#]
+<#LANG_NEW_RECORD#>
+[#else#]
+<#LANG_EDIT_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
-<tr>
- <td colspan=2 align=center>
-  <font color="green"><#LANG_DATA_SAVED#></font>
- </td>
-</tr>
+ <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+
 [#endif OK#]
 [#if ERR#]
-<tr>
- <td colspan=2 align=center>
-  <font color="red"><#LANG_FILLOUT_REQURED#></font>
- </td>
-</tr>
+<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
-[#if ID=""#]
-<tr>
- <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
-</tr>
-[#endif ID#]
-
-<tr>
- <td align=right>
- [#if ERR_TITLE#]<b><font color="red">[#endif#]
- <#LANG_TITLE#>:
- </td>
- <td>
-  <input type="text" name="title" value="[#TITLE#]" size="50">
- </td>
-</tr>
 
 
-<!-- HOSTNAME (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_HOSTNAME#]<b><font color="red">[#endif#]
- <#LANG_HOSTNAME#>:
- </td>
- <td>
-  <input type="text" name="hostname" value="[#HOSTNAME#]">
- </td>
-</tr>
-<!-- TYPE (select) -->
-<tr>
- <td align=right valign=top>
- [#if ERR_TYPE#]<b><font color="red">[#endif#]
- <#LANG_TYPE#>: 
- </td>
- <td>                                           
- <select name="type">
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOSTNAME#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true"></div>
+</div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TYPE#>:<font color="red">*</font></label>
+        <div class="col-lg-5">
+		<select name="type" class="form-control [#if ERR_TYPE#]alert-danger[#endif#]">
   [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
   [#end TYPE_OPTIONS#]
  </select>
- </td>
-</tr>
+		</div>
+</div>
+
+
+
+
 [#if TYPE="1"#]
-<!-- SEARCH_WORD (varchar) -->
-<tr>
- <td align=right>
- [#if ERR_SEARCH_WORD#]<b><font color="red">[#endif#]
- <#LANG_SEARCH_WORD#>:
- </td>
- <td>
-  <input type="text" name="search_word" value="[#SEARCH_WORD#]">
- </td>
-</tr>
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_WORD#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_SEARCH_WORD#]alert-danger[#endif#]"  name="search_word" value="[#SEARCH_WORD#]" required="true"></div>
+</div>
 [#endif TYPE#]
 
 
-<tr>
- <td align=right><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</td>
- <td><input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20"></td>
-</tr>
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_OBJECT#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_object" value="[#LINKED_OBJECT#]" ></div>
+</div>
 
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_PROPERTY#>:</label>
+        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_property" value="[#LINKED_PROPERTY#]" ></div>
+</div>
 
 <!-- SCRIPT_ID_ONLINE (int) -->
-<tr>
- <td align=right valign="top">
- [#if ERR_SCRIPT_ID_ONLINE#]<b><font color="red">[#endif#]
+<div class="form-group ">
+ <label class="col-lg-4 control-label" for="inputTitle">
  <#LANG_ONLINE_ACTION#>:
- </td>
- <td>
+ </label>
+ <div class="col-lg-5  [#if ERR_SCRIPT_ID_ONLINE#]alert-danger[#endif#]">
 
  <input type="radio" name="run_type_online" value="script"[#if SCRIPT_ID_ONLINE!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
-   <select name="script_id_online">
+   <select name="script_id_online" class="form-control">
     <option value="0">
     [#begin SCRIPTS#]
         <option value="[#ID#]"[#if ID="<#SCRIPT_ID_ONLINE#>"#] selected[#endif#]>[#TITLE#]
@@ -102,21 +88,21 @@
  [#if ERRORS_ONLINE!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS_ONLINE#]   
- <textarea name="code_online" rows=12 cols=100 class="field span8">[#CODE_ONLINE#]</textarea>
+ <textarea name="code_online" rows=12 cols=100 class="form-control">[#CODE_ONLINE#]</textarea>
 
- </td>
-</tr>
+ </div>
+</div>
 
 <!-- SCRIPT_ID_OFFLINE (int) -->
-<tr>
- <td align=right valign="top">
- [#if ERR_SCRIPT_ID_OFFLINE#]<b><font color="red">[#endif#]
+<div class="form-group ">
+ <label class="col-lg-4 control-label" for="inputTitle">
+ 
  <#LANG_OFFLINE_ACTION#>:
- </td>
- <td>
+ </label>
+ <div class="col-lg-5 [#if ERR_SCRIPT_ID_OFFLINE#]alert-danger[#endif#]">
 
  <input type="radio" name="run_type_offline" value="script"[#if SCRIPT_ID_OFFLINE!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
-   <select name="script_id_offline">
+   <select name="script_id_offline" class="form-control">
     <option value="0">
     [#begin SCRIPTS#]
         <option value="[#ID#]"[#if ID="<#SCRIPT_ID_OFFLINE#>"#] selected[#endif#]>[#TITLE#]
@@ -127,72 +113,73 @@
  [#if ERRORS_OFFLINE!=""#]
  <font color='red'>[#ERRORS_OFFLINE#]</font><br>
  [#endif ERRORS_OFFLINE#]   
- <textarea name="code_offline" rows=12 cols=100 class="field span8">[#CODE_OFFLINE#]</textarea>
+ <textarea  name="code_offline" rows=12 cols=100 class="form-control">[#CODE_OFFLINE#]</textarea>
 
- </td>
-</tr>
+ </div>
+</div>
 
 
 <!-- ONLINE_INTERVAL (int) -->
-<tr>
- <td align=right>
- [#if ERR_ONLINE_INTERVAL#]<b><font color="red">[#endif#]
+<div class="form-group ">
+<label class="col-lg-4 control-label" for="inputTitle">
  <#LANG_ONLINE_CHECK_INTERVAL#>:
- </td>
- <td>
-  <input type="text" name="online_interval" value="[#ONLINE_INTERVAL#]" size="10" class="span1"> <#LANG_SECONDS#> (0 to use default)
- </td>
-</tr>
+ </label>
+ <div class="col-lg-5  ">
+  <input type="text" name="online_interval" class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  value="[#ONLINE_INTERVAL#]" size="10" class="span1"> <#LANG_SECONDS#> (0 to use default)
+ </div>
+</div>
 
 <!-- OFFLINE_INTERVAL (int) -->
-<tr>
- <td align=right>
- [#if ERR_OFFLINE_INTERVAL#]<b><font color="red">[#endif#]
+<div class="form-group ">
+<label class="col-lg-4 control-label" for="inputTitle">
  <#LANG_OFFLINE_CHECK_INTERVAL#>:
- </td>
- <td>
-  <input type="text" name="offline_interval" value="[#OFFLINE_INTERVAL#]" size="10" class="span1"> <#LANG_SECONDS#> (0 to use online interval)
- </td>
-</tr>
+ </label>
+ <div class="col-lg-5 ">
+  <input type="text" name="offline_interval" class="form-control [#if ERR_OFFLINE_INTERVAL#]alert-danger[#endif#]" value="[#OFFLINE_INTERVAL#]" size="10" class="span1"> <#LANG_SECONDS#> (0 to use online interval)
+ </div>
+</div>
 
-<tr>
- <td align=right>
+<div class="form-group ">
+<label class="col-lg-4 control-label" for="inputTitle">
  <#LANG_COUNTER_REQUIRED#>:
- </td>
- <td>
-  <input type="text" name="counter_required" value="[#COUNTER_REQUIRED#]" size="10" class="span1"> <#LANG_COUNTER_REQUIRED_COMMENT#>
- </td>
-</tr>
+ </label>
+<div class="col-lg-5">
+  <input type="text" name="counter_required" class="form-control" value="[#COUNTER_REQUIRED#]" size="10" class="span1"> <#LANG_COUNTER_REQUIRED_COMMENT#>
+ </div>
+</div>
 
 
 
-<tr>
- <td colspan=2 align=center>
+<div class="form-group ">
+	<label class="col-lg-4 control-label" for="inputTitle">
+&nbsp;
+ </label>
+ <div class="col-lg-5">
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ <input type="submit" class="btn btn-default btn-primary" name="subm" value="<#LANG_SUBMIT#>">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>">
+ <input type="submit" class="btn btn-default btn-primary" name="subm" value="<#LANG_ADD#>">
  [#endif ID#]
  &nbsp;
- <a href="?"><#LANG_CANCEL#></a>
- </td>
-</tr>
+ <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+ </div>
+</div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
-</form>
 
-<tr>
- <td align=right valign="top">
+
+<div class="form-group ">
+ <label class="col-lg-4 control-label" for="inputTitle">
   <#LANG_LOG#>:
- </td>
- <td valign="top">
- <a href="#" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
+ </label>
+ <div class="col-lg-5">
+ <a href="#" class="btn btn-default" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
  <div id='eventsLog' style="display:none">
   [#LOG#]
  </div>
- </td>
-</tr>
+ </div>
+</div>
+</form>
 
-</table>

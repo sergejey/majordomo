@@ -17,7 +17,7 @@
  <#LANG_TITLE#>:
  (*)
  </label>
- <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input"></div>
+ <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input form-control"></div>
 </div>
 <!-- HOST (varchar) -->
 <div class="form-group">
@@ -25,21 +25,21 @@
  <#LANG_HOSTNAME#>:
  (*)
  </label>
- <div class="controls"><input type="text" name="host" value="[#HOST#]" class="input"></div>
+ <div class="controls"><input type="text" name="host" value="[#HOST#]" class="input form-control"></div>
 </div>
 
 <div class="form-group">
  <label class="control-label"[#if ERR_READ_COMMUNITY#] style="color:red;font-weight:bold"[#endif#]>
  Read Community:
  </label>
- <div class="controls"><input type="text" name="read_community" value="[#READ_COMMUNITY#]" class="input"></div>
+ <div class="controls"><input type="text" name="read_community" value="[#READ_COMMUNITY#]" class="input form-control"></div>
 </div>
 
 <div class="form-group">
  <label class="control-label"[#if ERR_WRITE_COMMUNITY#] style="color:red;font-weight:bold"[#endif#]>
  Write Community:
  </label>
- <div class="controls"><input type="text" name="write_community" value="[#WRITE_COMMUNITY#]" class="input"></div>
+ <div class="controls"><input type="text" name="write_community" value="[#WRITE_COMMUNITY#]" class="input form-control"></div>
 </div>
 
 [#if ID!=""#]
@@ -72,54 +72,62 @@ Upload oid-lib file: <input type="file" name="mib_file">
 
 
  <div class="controls">
- <table width="100%" border="0">
+<table class="table table-striped">
   <tr>
-   <td>OID</td>
-   <td><#LANG_TYPE#></td>
-   <td><#LANG_TITLE#></td>
-   <td><#LANG_VALUE#></td>
-   <td><#LANG_CHECK_INTERVAL#>, <#LANG_SECONDS#></td>
-   <td><#LANG_LINKED_OBJECT#></td>
-   <td><#LANG_LINKED_PROPERTY#></td>
-   <td><#LANG_UPDATED#></td>
+   <th width="130">OID</th>
+   <th width="120"><#LANG_TYPE#></th>
+   <th width="110"><#LANG_TITLE#></th>
+   <th width="110"><#LANG_VALUE#></th>
+   <th width="110"><#LANG_CHECK_INTERVAL#>, <#LANG_SECONDS#></th>
+   <th width="110"><#LANG_LINKED_OBJECT#></th>
+   <th width="110"><#LANG_LINKED_PROPERTY#></th>
+   <th width="100"><#LANG_UPDATED#></th>
   </tr>
 
   [#begin PROPERTIES#]
   <tr>
-   <td valign="top"><input type="text" name="oid_[#ID#]" class="span2" value="[#OID#]"></td>
-   <td valign="top"><select name="type_[#ID#]" class="span2">
+   <td ><input type="text" name="oid_[#ID#]" class="span2" value="[#OID#]"></td>
+   <td >
+   <div class="col-lg-1">
+   <select name="type_[#ID#]" class="form-control">
     <option value="int"[#if TYPE="int"#] selected[#endif#]>Integer
     <option value="uint"[#if TYPE="uint"#] selected[#endif#]>Integer (unsigned)
     <option value="string"[#if TYPE="string"#] selected[#endif#]>String
     <option value="counter"[#if TYPE="counter"#] selected[#endif#]>Counter
     <option value="oid"[#if TYPE="oid"#] selected[#endif#]>OID
     <option value="ip"[#if TYPE="ip"#] selected[#endif#]>IP
-   </select></td>
-   <td valign="top"><input type="text" name="ptitle_[#ID#]" class="span2" value="[#TITLE#]"></td>
-   <td valign="top"><input type="text" name="pvalue_[#ID#]" class="span1" value="[#VALUE#]"></td>
-   <td valign="top"><input type="text" name="pinterval_[#ID#]" class="span1" value="[#ONLINE_INTERVAL#]"></td>
-   <td valign="top"><input type="text" name="linked_object_[#ID#]" class="span2" value="[#LINKED_OBJECT#]"></td>
-   <td valign="top"><input type="text" name="linked_property_[#ID#]" class="span2" value="[#LINKED_PROPERTY#]"></td>
-   <td valign="top">[#UPDATED#]</td>
+   </select>
+   </div>
+   </td>
+   <td ><input type="text" name="ptitle_[#ID#]" class="span2" value="[#TITLE#]"></td>
+   <td ><input type="text" name="pvalue_[#ID#]" class="span1" value="[#VALUE#]"></td>
+   <td ><input type="text" name="pinterval_[#ID#]" class="span1" value="[#ONLINE_INTERVAL#]"></td>
+   <td ><input type="text" name="linked_object_[#ID#]" class="span2" value="[#LINKED_OBJECT#]"></td>
+   <td ><input type="text" name="linked_property_[#ID#]" class="span2" value="[#LINKED_PROPERTY#]"></td>
+   <td >[#UPDATED#]</td>
   </tr>
   [#end PROPERTIES#]
 
   <tr>
-   <td valign="top"><input type="text" name="oid_new" class="span2" placeholder="<#LANG_ADD_NEW_PROPERTY#>"></td>
-   <td valign="top"><select name="type_new" class="span2">
+   <td ><div class="form-group col-lg-15"><input type="text" name="oid_new" class="form-control" placeholder="<#LANG_ADD_NEW_PROPERTY#>"></div></td>
+   <td >
+  <div class="form-group col-lg-12">
+   <select name="type_new"  class="form-control">
     <option value="int">Integer
     <option value="uint">Integer (unsigned)
     <option value="string">String
     <option value="counter">Counter
     <option value="oid">OID
     <option value="ip">IP
-   </select></td>
-   <td valign="top"><input type="text" name="ptitle_new" class="span2"></td>
-   <td valign="top"><input type="text" name="pvalue_new" class="span1"></td>
-   <td valign="top"><input type="text" name="pinterval_new" class="span1"></td>
-   <td valign="top"><input type="text" name="linked_object_new" class="span2"></td>
-   <td valign="top"><input type="text" name="linked_property_new" class="span2"></td>
-   <td valign="top">&nbsp;</td>
+   </select>
+   </div>
+   </td>
+   <td ><div class="form-group col-lg-12"><input type="text" name="ptitle_new" class="form-control"></div></td>
+   <td ><div class="form-group col-lg-12"><input type="text" name="pvalue_new" class="form-control"></div></td>
+   <td ><div class="form-group col-lg-12"><input type="text" name="pinterval_new" class="form-control"></div></td>
+   <td ><div class="form-group col-lg-12"><input type="text" name="linked_object_new" class="form-control"></div></td>
+   <td ><div class="form-group col-lg-12"><input type="text" name="linked_property_new" class="form-control"></div></td>
+   <td >&nbsp;</td>
   </tr>
  </table>
  </div>
@@ -155,7 +163,7 @@ Upload oid-lib file: <input type="file" name="mib_file">
  [#else ID#]
  <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
  [#endif ID#]
- <a href="?data_source=<#DATA_SOURCE#>" class="btn"><#LANG_CANCEL#></a>
+ <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">

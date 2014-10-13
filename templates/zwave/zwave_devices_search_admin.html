@@ -66,7 +66,7 @@
 <table border="0">
  <tr>
   <td>
-  <select name="location_id" onChange="document.frmFilter.submit();">
+  <select class="form-control" name="location_id" onChange="document.frmFilter.submit();">
    <option value="0"><#LANG_FILTER_BY_LOCATION#> (<#LANG_ALL#>)
    [#begin LOCATIONS#]
    <option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
@@ -122,8 +122,8 @@
  <td width="1%" nowrap>
   <div style="width:120px">
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]" class="btn btn-small" title="<#LANG_EDIT#>"><i class="icon-pencil"></i></a>
-    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_zwave_devices&id=[#ID#]" onClick="return confirm('<#ARE_YOU_SURE#>')" class="btn btn-small" title="<#LANG_DELETE#>"><i class="icon-remove"></i></a>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_zwave_devices&id=[#ID#]" onClick="return confirm('<#ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>

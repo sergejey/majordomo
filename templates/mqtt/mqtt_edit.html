@@ -17,7 +17,7 @@
  <#LANG_TITLE#>:
  (*)
  </label>
- <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="input"></div>
+ <div class="controls"><input  type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
 </div>
 <!-- LOCATION_ID (select) -->
 [#if !IS_SET_LOCATION_ID#]
@@ -26,7 +26,7 @@
  <#LANG_LOCATION#>:
  </label>
 <div class="controls">
- <select name="location_id" class="input">
+ <select name="location_id"  class="form-control input">
   <option value="">select
   [#begin LOCATION_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
   [#end LOCATION_ID_OPTIONS#]
@@ -40,7 +40,7 @@
  <#LANG_PATH#>:
  (*)
  </label>
- <div class="controls"><input type="text" name="path" value="[#PATH#]" class="input"></div>
+ <div class="controls"><input  type="text" name="path" value="[#PATH#]" class="input form-control"></div>
 </div>
 
 <div class="form-group">
@@ -54,10 +54,10 @@
 
 <div class="form-group">
  <label class="control-label"[#if ERR_VALUE#] style="color:red;font-weight:bold"[#endif#]>
- (<#LANG_SET#>:
+ <#LANG_SET#>:
  </label>
  <div class="controls">
- <input type="text" name="new_value" value="" class="input span2">)</div>
+ <input type="text" name="new_value" value="" class="input span2 form-control"></div>
 </div>
 
 
@@ -66,22 +66,22 @@
  <label class="control-label"[#if ERR_LINKED_OBJECT#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_LINKED_OBJECT#>:
  </label>
- <div class="controls"><input type="text" name="linked_object" value="[#LINKED_OBJECT#]" class="input"></div>
+ <div class="controls"><input type="text" name="linked_object" value="[#LINKED_OBJECT#]" class="input form-control"></div>
 </div>
 <!-- LINKED_PROPERTY (varchar) -->
 <div class="form-group">
  <label class="control-label"[#if ERR_LINKED_PROPERTY#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_PROPERTY#>:
  </label>
- <div class="controls"><input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" class="input"></div>
+ <div class="controls"><input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" class="input form-control"></div>
 </div>
 <div class="form-actions">
  [#if ID!=""#]
- <button type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-primary"><#LANG_SUBMIT#></button>
+ <button type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-defaul btn-primary"><#LANG_SUBMIT#></button>
  [#else ID#]
- <button type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary"><#LANG_ADD#></button>
+ <button type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-defaul btn-primary"><#LANG_ADD#></button>
  [#endif ID#]
- <a href="?" class="btn"><#LANG_CANCEL#></a>
+ <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">

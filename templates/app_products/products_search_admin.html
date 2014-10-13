@@ -5,9 +5,9 @@
 <table border="0" align="center">
  <form action="?" method="get">
  <tr>
-  <td valign="top">Title/Code:</td>
-  <td valign="top"><input type="text" name="code" value="[#CODE#]" id="code_new"></td>
-  <td valign="top"><input type="submit" name="submit" value="Continue"></td>
+  <td style="vertical-align:middle">Title/Code: </td>
+  <td > <input class="form-control" type="text" name="code" value="[#CODE#]" id="code_new"></td>
+  <td ><input type="submit" name="submit" class="btn btn-default" value="Continue"></td>
  </tr>
  <input type="hidden" name="category_id" value="<#CATEGORY_ID#>">
  <input type="hidden" name="shopping" value="<#SHOPPING#>">
@@ -123,22 +123,15 @@
 </p>
 #-->
 <hr size="1">
-<table border="0" align="center">
- <tr>
 
-  <td valign="top">
-   [#if !CATS#]<a href="?">[#endif#]<#LANG_CATEGORIES#></a>
-   //
-   <nobr>[#if ALL!=""#][#else#]<a href="?all=1">[#endif#]<#LANG_ALL_PRODUCTS#></a></nobr>
-   //
-   [#if EXPIRED!=""#][#else#]<a href="?expired=1">[#endif#]<#LANG_EXPIRED#></a>
-   //
-   [#if MISSING!=""#][#else#]<a href="?missing=1">[#endif#]<#LANG_MISSING#></a>
-   //
-   [#if SHOPPING!=""#][#else#]<a href="?shopping=1">[#endif#]<#LANG_SHOPPING_LIST#></a>
-  </td>
- </tr>
-</table>
+<ul class="nav nav-tabs">
+ <li [#if CATS#]class="active"[#endif#]><a href="?"><#LANG_CATEGORIES#></a></li>
+ <li [#if ALL!=""#]class="active"[#endif#]><a href="?all=1"><#LANG_ALL_PRODUCTS#></a></li>
+ <li [#if EXPIRED!=""#]class="active"[#endif#]><a href="?expired=1"><#LANG_EXPIRED#></a></li>
+ <li [#if MISSING!=""#]class="active"[#endif#]><a href="?missing=1"><#LANG_MISSING#></a></li>
+ <li [#if SHOPPING!=""#]class="active"[#endif#]><a href="?shopping=1"><#LANG_SHOPPING_LIST#></a></li>
+</ul>
+
 
 <table border=0 align="center"><tr>
 <td valign=top>
