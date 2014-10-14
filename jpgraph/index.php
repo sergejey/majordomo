@@ -57,8 +57,9 @@
    $total=(int)$m[1];
    $period=round(($total*24*60*60)/(($w-80)/$px_per_point)); // seconds
    $start_time=$end_time-$total*24*60*60;
-   $date_format='d/m';
-
+   if ($total>3) {
+    $date_format='d/m';
+   }
 
  } elseif (preg_match('/(\d+)h/', $type, $m)) { //hours
 
@@ -91,6 +92,9 @@
    
 
    $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+
+   $first_item=SQLSelectOne("SELECT ID, VALUE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED<('".date('Y-m-d H:i:s', $start_time)."') ORDER BY ADDED DESC LIMIT 1");
+
    $total_values=count($history);
 
     $t_times = array();
@@ -98,6 +102,10 @@
     $binary_data=true;
 
     if ($total_values) {
+
+    $t_times[]=$start_time;
+    $t_values[]=$first_item['VALUE'];
+
     for($i=0;$i<$total_values;$i++) {
       $t_times[]=$history[$i]['UNX'];
       $t_values[]=$history[$i]['VALUE'];
@@ -105,8 +113,13 @@
        $binary_data=false;
       }
     }
+
+
      $t_times[]=time();
      $t_values[]=$t_values[$total_values-1];
+
+
+
     } else {
      $t_times[]=time();
      $t_values[]=0;
@@ -279,6 +292,8 @@ $graph->SetTheme($theme_class);
 $graph->SetMargin(30,30,30,50);
 if ($_GET['title']) {
  $graph->title->Set($_GET['title']);
+} else {
+ $graph->title->Set($_GET['p']);
 }
 $graph->xaxis->SetLabelAngle(90);
 
