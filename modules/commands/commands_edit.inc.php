@@ -87,6 +87,7 @@ if ($rec['TYPE']=='plusminus'
     || $rec['TYPE']=='switch' 
     || $rec['TYPE']=='custom'
     || $rec['TYPE']=='timebox'
+    || $rec['TYPE']=='datebox'
     || $rec['TYPE']=='textbox'
     ) {
     global $cur_value;
