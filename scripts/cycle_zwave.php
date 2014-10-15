@@ -26,10 +26,20 @@ if (!$tmp['ID']) {
  exit; // no devices added -- no need to run this cycle
 }
 
-if (!$zwave->connect()) {
- echo "Cannot connect to Z-Wave API";
- exit; // cannot connect
+
+$connected=0;
+for($i=0;$i<3;$i++) {
+ if ($zwave->connect()) {
+  $connected=1;
+  break;
+ } else {
+  echo "Cannot connect to Z-Wave API\n";
+ }
 }
+if (!$connected) {
+ exit;
+}
+
 
 while(1) 
 {

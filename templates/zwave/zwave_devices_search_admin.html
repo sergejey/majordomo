@@ -56,7 +56,7 @@
 <!--#
 <a href="?view_mode=edit_zwave_devices&data_source=<#DATA_SOURCE#>" class="btn"><i class="icon-plus"></i> Add new record</a>
 #-->
-<a href="?view_mode=rescan" class="btn"><i class="icon-refresh"></i> Refresh network</a>
+<a href="?view_mode=rescan" class="btn btn-default">Refresh network</a>
 </p>
 [#endif#]
 
@@ -72,6 +72,9 @@
    <option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
    [#end LOCATIONS#]
   </select>
+  </td>
+  <td valign="top">
+  <a href="?include_controller=1">Show controller</a>
   </td>
  </tr>
 </table>
@@ -93,6 +96,7 @@
  <th>
  <#LANG_DETAILS#>
  </th>
+<td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 </thead>
@@ -118,6 +122,9 @@
    [#if CLASS_SENSOR_ALARM="1"#]sensor alarm;[#endif#]
    [#if CLASS_SCENE_CONTROLLER="1"#]scene controller;[#endif#]
    [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
+ </td>
+ <td valign="top">
+ [#LATEST_UPDATE#]
  </td>
  <td width="1%" nowrap>
   <div style="width:120px">

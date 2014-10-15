@@ -95,6 +95,11 @@
     if ($this->mode=='update') {
      $total=count($properties);
      for($i=0;$i<$total;$i++) {
+      global ${'delete_property'.$properties[$i]['ID']};
+      if (${'delete_property'.$properties[$i]['ID']}) {
+       SQLExec("DELETE FROM zwave_properties WHERE ID=".(int)$properties[$i]['ID']);
+       continue;
+      }
       global ${'linked_object'.$properties[$i]['ID']};
       global ${'linked_property'.$properties[$i]['ID']};
       if (${'linked_object'.$properties[$i]['ID']} && ${'linked_property'.$properties[$i]['ID']}) {
@@ -103,6 +108,7 @@
        SQLUpdate('zwave_properties', $properties[$i]);
       }
      }
+     $properties=SQLSelect("SELECT * FROM zwave_properties WHERE DEVICE_ID='".$rec['ID']."'");
     }
     $out['PROPERTIES']=$properties;
    }
@@ -117,6 +123,11 @@
     }
    }
   }
+
+  if ($rec['RAW_DATA']) {
+   $rec['RAW_DATA']=$this->prettyPrint($rec['RAW_DATA']);
+  }
+
   outHash($rec, $out);
 
 

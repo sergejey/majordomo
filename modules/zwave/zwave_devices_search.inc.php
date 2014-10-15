@@ -16,6 +16,11 @@
    $out['LOCATION_ID']=(int)$location_id;
   }
 
+  global $include_controller;
+  if (!$include_controller) {
+   $qry.=" AND TITLE NOT LIKE 'Static PC Controller%'";
+  }
+
 
   global $title;
   if ($title!='') {

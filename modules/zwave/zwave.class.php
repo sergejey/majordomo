@@ -467,6 +467,13 @@ function admin(&$out) {
 
    $updateTime=0;
 
+   if (!$rec['RAW_DATA']) {
+    $rec_updated=1;
+   }
+
+   $rec['RAW_DATA']=json_encode($data);
+   $rec['SENSOR_VALUE']='';
+
    if ($data->data->updateTime) {
     $updateTime=$data->data->updateTime;
    }
@@ -503,8 +510,12 @@ function admin(&$out) {
     for($i=0;$i<255;$i++) {
      if (isset($data->commandClasses->{"49"}->data->{"$i"})) {
       $sensor=$data->commandClasses->{"49"}->data->{"$i"};
-      $values[]=$sensor->sensorTypeString->value.': '.$sensor->val->value.$sensor->scaleString->value;
-      $properties[$sensor->sensorTypeString->value.', '.$sensor->scaleString->value]=$sensor->val->value;
+      $values[]=trim($sensor->sensorTypeString->value).': '.$sensor->val->value.$sensor->scaleString->value;
+      $prop_name=trim($sensor->sensorTypeString->value).', '.$sensor->scaleString->value;
+      if ($properties[$prop_name]) {
+       $prop_name.=' (1)';
+      }
+      $properties[$prop_name]=$sensor->val->value;
       if ($data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"}>$updateTime) {
        $updateTime=$data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"};
       }
@@ -512,7 +523,7 @@ function admin(&$out) {
     }
     $value=implode('; ', $values);
     if ($value!=$rec['SENSOR_VALUE']) {
-     $rec['SENSOR_VALUE']=$value;
+     $rec['SENSOR_VALUE'].=$value.';';
      $rec_updated=1;
     }
    }
@@ -565,7 +576,27 @@ function admin(&$out) {
    }
 
    if ($rec['CLASS_METER']) {
-    // ...
+    // ... 50
+    $values=array();
+    for($i=0;$i<255;$i++) {
+     if (isset($data->commandClasses->{"50"}->data->{"$i"})) {
+      $sensor=$data->commandClasses->{"50"}->data->{"$i"};
+      $values[]=trim($sensor->sensorTypeString->value).': '.$sensor->val->value.$sensor->scaleString->value;
+      $prop_name=trim($sensor->sensorTypeString->value).', '.$sensor->scaleString->value;
+      if ($properties[$prop_name]) {
+       $prop_name.=' (1)';
+      }
+      $properties[$prop_name]=$sensor->val->value;
+      if ($data->commandClasses->{"50"}->data->{"$i"}->{"updateTime"}>$updateTime) {
+       $updateTime=$data->commandClasses->{"50"}->data->{"$i"}->{"updateTime"};
+      }
+     }
+    }
+    $value=implode('; ', $values);
+    if ($value!='') {
+     $rec['SENSOR_VALUE'].=$value.';';
+     $rec_updated=1;
+    }
    }
 
    if ($rec['CLASS_SENSOR_ALARM']) {
@@ -738,6 +769,64 @@ function usual(&$out) {
  function search_zwave_properties(&$out) {
   require(DIR_MODULES.$this->name.'/zwave_properties_search.inc.php');
  }
+
+function prettyPrint($json)
+{
+    $result = '';
+    $level = 0;
+    $in_quotes = false;
+    $in_escape = false;
+    $ends_line_level = NULL;
+    $json_length = strlen( $json );
+
+    for( $i = 0; $i < $json_length; $i++ ) {
+        $char = $json[$i];
+        $new_line_level = NULL;
+        $post = "";
+        if( $ends_line_level !== NULL ) {
+            $new_line_level = $ends_line_level;
+            $ends_line_level = NULL;
+        }
+        if ( $in_escape ) {
+            $in_escape = false;
+        } else if( $char === '"' ) {
+            $in_quotes = !$in_quotes;
+        } else if( ! $in_quotes ) {
+            switch( $char ) {
+                case '}': case ']':
+                    $level--;
+                    $ends_line_level = NULL;
+                    $new_line_level = $level;
+                    break;
+
+                case '{': case '[':
+                    $level++;
+                case ',':
+                    $ends_line_level = $level;
+                    break;
+
+                case ':':
+                    $post = " ";
+                    break;
+
+                case " ": case "\t": case "\n": case "\r":
+                    $char = "";
+                    $ends_line_level = $new_line_level;
+                    $new_line_level = NULL;
+                    break;
+            }
+        } else if ( $char === '\\' ) {
+            $in_escape = true;
+        }
+        if( $new_line_level !== NULL ) {
+            $result .= "\n".str_repeat( "\t", $new_line_level );
+        }
+        $result .= $char.$post;
+    }
+
+    return $result;
+}
+
 /**
 * Install
 *
@@ -798,6 +887,7 @@ zwave_properties - Properties
  zwave_devices: CLASS_SENSOR_ALARM int(3) NOT NULL DEFAULT '0'
  zwave_devices: CLASS_SCENE_CONTROLLER int(3) NOT NULL DEFAULT '0'
  zwave_devices: ALL_CLASSES varchar(255) NOT NULL DEFAULT ''
+ zwave_devices: RAW_DATA text NOT NULL DEFAULT ''
 
  zwave_properties: ID int(10) unsigned NOT NULL auto_increment
  zwave_properties: DEVICE_ID int(10) NOT NULL DEFAULT '0'

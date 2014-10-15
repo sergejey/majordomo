@@ -21,6 +21,8 @@
   } else {
    global $uniq_id;
   }
+
+
   //searching 'TITLE' (varchar)
   global $title;
   if ($title!='') {

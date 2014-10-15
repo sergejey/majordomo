@@ -121,16 +121,23 @@
    <td valign="top"><b><#LANG_TITLE#></b></td>
    <td valign="top"><b><#LANG_VALUE#></b></td>
    <td valign="top">
-    <b><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#></b>
+    <b><#LANG_LINKED_OBJECT#></b>
    </td>
+   <td valign="top"><b><#LANG_PROPERTY#></b></td>
+   <td valign="top"><b><#LANG_DELETE#></b></td>
   </tr>
   [#begin PROPERTIES#]
   <tr>
    <td valign="top">[#TITLE#]</td>
    <td valign="top">[#VALUE#]</td>
    <td valign="top">
-    <input type="text" name="linked_object[#ID#]" value="[#LINKED_OBJECT#]" class="span2 form-control">.
+    <input type="text" name="linked_object[#ID#]" value="[#LINKED_OBJECT#]" class="span2 form-control">
+   </td>
+   <td valign="top">
     <input type="text" name="linked_property[#ID#]" value="[#LINKED_PROPERTY#]" class="span2 form-control">
+   </td>
+   <td valign="top">
+    <input type="checkbox" name="delete_property[#ID#]" value="1">
    </td>
   </tr>
   [#end PROPERTIES#]
@@ -190,3 +197,10 @@
 </div>
 </fieldset>
 </form>
+
+<a href="#" onClick="$('#rawData').toggle();return false;">Show RAW data</a>
+<div id="rawData" style="display:none">
+<pre>
+[#RAW_DATA#]
+</pre>
+</div>
