@@ -107,7 +107,7 @@ class Image {
             imageantialias($this->img,$aFlg);
         }
         else {
-            JpGraphError::RaiseL(25128);//('The function imageantialias() is not available in your PHP installation. Use the GD version that comes with PHP and not the standalone version.')
+            //JpGraphError::RaiseL(25128);//('The function imageantialias() is not available in your PHP installation. Use the GD version that comes with PHP and not the standalone version.')
         }
     }
 
@@ -387,8 +387,8 @@ class Image {
                              $shadowcolor=false,$paragraph_align="left",
                              $xmarg=6,$ymarg=4,$cornerradius=0,$dropwidth=3) {
 
-		$oldx = $this->lastx;
-		$oldy = $this->lasty;
+                $oldx = $this->lastx;
+                $oldy = $this->lasty;
 
         if( !is_numeric($dir) ) {
             if( $dir=="h" ) $dir=0;
@@ -459,8 +459,8 @@ class Image {
         $this->SetTextAlign($h,$v);
 
         $this->SetAngle($olda);
-		$this->lastx = $oldx;
-		$this->lasty = $oldy;
+                $this->lastx = $oldx;
+                $this->lasty = $oldy;
 
         return $bb;
     }
@@ -482,8 +482,8 @@ class Image {
            JpGraphError::RaiseL(25131);//StrokeBoxedText2() Only support TTF fonts and not built in bitmap fonts
        }
 
-		$oldx = $this->lastx;
-		$oldy = $this->lasty;
+                $oldx = $this->lastx;
+                $oldy = $this->lasty;
         $dir = $this->NormAngle($dir);
 
         if( !is_numeric($dir) ) {
@@ -614,8 +614,8 @@ class Image {
         $this->SetTextAlign($h,$v);
         $this->SetAngle($olda);
 
-		$this->lastx = $oldx;
-		$this->lasty = $oldy;
+                $this->lastx = $oldx;
+                $this->lasty = $oldy;
 
         return $bb;
     }
@@ -1118,7 +1118,7 @@ class Image {
 
         if( $this->width  > 0 && $this->height > 0 ) {
             if( $this->plotwidth < 0  || $this->plotheight < 0 ) {
-            	JpGraphError::RaiseL(25130, $this->plotwidth, $this->plotheight);
+                JpGraphError::RaiseL(25130, $this->plotwidth, $this->plotheight);
                 //JpGraphError::raise("To small plot area. ($lm,$rm,$tm,$bm : $this->plotwidth x $this->plotheight). With the given image size and margins there is to little space left for the plot. Increase the plot size or reduce the margins.");
             }
         }
