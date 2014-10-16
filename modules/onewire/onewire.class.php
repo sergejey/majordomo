@@ -220,7 +220,23 @@ function usual(&$out) {
  function delete_display($id) {
   SQLExec("DELETE FROM owdisplays WHERE ID='".$id."'");
  }
- 
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function propertySetHandle($object, $property, $value) {
+  $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+  $total=count($owp);
+  if ($total) {
+   for($i=0;$i<$total;$i++) {
+    $this->setProperty($owp[$i]['ID'], $value);
+   }
+  }
+ }
 /**
 * onewire delete record
 *
@@ -421,7 +437,7 @@ function usual(&$out) {
 
 
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-      sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array('owproperties'=>'0'));
+      setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array($this->name=>'0'));
      }
 
      $changed_values=array();
@@ -568,7 +584,7 @@ function updateDisplay($id) {
      //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
      SQLUpdate('owdevices', $rec);
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-      sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array('owproperties'=>'0'));
+      setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array($this->name=>'0'));
      }
     }
    }

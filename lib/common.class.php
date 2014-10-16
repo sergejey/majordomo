@@ -624,10 +624,10 @@
    curl_setopt($ch, CURLOPT_URL, $url);
    curl_setopt($ch, CURLOPT_USERAGENT, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15 );
    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     // bad style, I know...
    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+   curl_setopt($ch, CURLOPT_TIMEOUT, 15 );
    if ($username!='' || $password!='') {
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
     curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password); 

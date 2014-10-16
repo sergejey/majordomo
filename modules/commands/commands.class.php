@@ -180,7 +180,7 @@ function admin(&$out) {
     SQLUpdate('commands', $item);
     if ($item['LINKED_PROPERTY']!='') {
      $old_value=gg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
-     sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array('commands'=>'ID!='.$item['ID']));
+     sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
      //DebMes("setting property ".$item['LINKED_OBJECT'].".".$item['LINKED_PROPERTY']." to ".$item['CUR_VALUE']);
     }
 
@@ -517,6 +517,23 @@ function usual(&$out) {
    endMeasure('processMenuElements', 1);
 
   }
+
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function propertySetHandle($object, $property, $value) {
+   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($commands);
+   for($i=0;$i<$total;$i++) {
+    $commands[$i]['CUR_VALUE']=$value;
+    SQLUpdate('commands', $commands[$i]);
+   }  
+ }
 
  /**
  * Title

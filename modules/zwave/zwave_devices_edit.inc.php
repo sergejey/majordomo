@@ -102,11 +102,21 @@
       }
       global ${'linked_object'.$properties[$i]['ID']};
       global ${'linked_property'.$properties[$i]['ID']};
-      if (${'linked_object'.$properties[$i]['ID']} && ${'linked_property'.$properties[$i]['ID']}) {
-       $properties[$i]['LINKED_OBJECT']=trim(${'linked_object'.$properties[$i]['ID']});
-       $properties[$i]['LINKED_PROPERTY']=trim(${'linked_property'.$properties[$i]['ID']});
-       SQLUpdate('zwave_properties', $properties[$i]);
+
+      $old_linked_object=$properties[$i]['LINKED_OBJECT'];
+      $old_linked_property=$properties[$i]['LINKED_PROPERTY'];
+
+      $properties[$i]['LINKED_OBJECT']=trim(${'linked_object'.$properties[$i]['ID']});
+      $properties[$i]['LINKED_PROPERTY']=trim(${'linked_property'.$properties[$i]['ID']});
+      SQLUpdate('zwave_properties', $properties[$i]);
+
+      if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {
+       addLinkedProperty($properties[$i]['LINKED_OBJECT'], $properties[$i]['LINKED_PROPERTY'], $this->name);
       }
+      if ($old_linked_object && $old_linked_object!=$properties[$i]['LINKED_OBJECT'] && $old_linked_property && $old_linked_property!=$properties[$i]['LINKED_PROPERTY']) {
+       removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+      }
+
      }
      $properties=SQLSelect("SELECT * FROM zwave_properties WHERE DEVICE_ID='".$rec['ID']."'");
     }

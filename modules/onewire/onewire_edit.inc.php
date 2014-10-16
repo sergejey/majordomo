@@ -87,6 +87,10 @@
     for($i=0;$i<$total;$i++) {
      global ${'linked_object'.$properties[$i]['ID']};
      global ${'linked_property'.$properties[$i]['ID']};
+
+     $old_linked_object=$properties[$i]['LINKED_OBJECT'];
+     $old_linked_property=$properties[$i]['LINKED_PROPERTY'];
+
      if (${'linked_object'.$properties[$i]['ID']} && ${'linked_property'.$properties[$i]['ID']}) {
       $properties[$i]['LINKED_OBJECT']=${'linked_object'.$properties[$i]['ID']};
       $properties[$i]['LINKED_PROPERTY']=${'linked_property'.$properties[$i]['ID']};
@@ -96,6 +100,17 @@
       $properties[$i]['LINKED_PROPERTY']='';
       SQLUpdate('owproperties', $properties[$i]);
      }
+
+     if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {
+      addLinkedProperty($properties[$i]['LINKED_OBJECT'], $properties[$i]['LINKED_PROPERTY'], $this->name);
+     }
+
+     if ($old_linked_object && $old_linked_object!=$properties[$i]['LINKED_OBJECT'] && $old_linked_property && $old_linked_property!=$properties[$i]['LINKED_PROPERTY']) {
+      removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+     }
+
+
+
      global ${'starred'.$properties[$i]['ID']};
      if (${'starred'.$properties[$i]['ID']}) {
        $properties[$i]['STARRED']=1;

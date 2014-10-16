@@ -156,7 +156,7 @@ function run() {
   $mqtt_client->close();
 
   if ($set_linked && $rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
-   setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $value, array('mqtt'=>'0'));
+   setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $value, array($this->name=>'0'));
   }
 
  }
@@ -295,6 +295,18 @@ function usual(&$out) {
  function edit_mqtt(&$out, $id) {
   require(DIR_MODULES.$this->name.'/mqtt_edit.inc.php');
  }
+
+ function propertySetHandle($object, $property, $value) {
+   $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($mqtt_properties);
+   if ($total) {
+    for($i=0;$i<$total;$i++) {
+     $this->setProperty($mqtt_properties[$i]['ID'], $value);
+    }
+   }  
+ }
+    
+
 /**
 * mqtt delete record
 *

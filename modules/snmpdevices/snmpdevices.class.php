@@ -195,7 +195,7 @@ function readProperty($p_id) {
  SQLUpdate('snmpproperties', $prec);
 
  if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-  setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $value, array('snmpproperties'=>'0'));
+  setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $value, array($this->name=>'0'));
  }
  return $value;
 
@@ -301,6 +301,18 @@ function usual(&$out) {
  function edit_snmpdevices(&$out, $id) {
   require(DIR_MODULES.$this->name.'/snmpdevices_edit.inc.php');
  }
+
+ function propertySetHandle($object, $property, $value) {
+   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($snmpdevices);
+   if ($total) {
+    for($i=0;$i<$total;$i++) {
+     $this->setProperty($snmpdevices[$i]['ID'], $value);
+    }
+   }
+ }
+    
+
 /**
 * snmpdevices delete record
 *

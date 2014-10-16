@@ -152,6 +152,16 @@ function usual(&$out) {
  $this->admin($out);
 }
 
+ function propertySetHandle($object, $property, $value) {
+   $modbusdevices=SQLSelect("SELECT ID FROM modbusdevices WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($modbusdevices);
+   if ($total) {
+    for($i=0;$i<$total;$i++) {
+     $this->poll_device($modbusdevices[$i]['ID']);
+    }
+   }  
+ }
+
 /**
 * Title
 *
@@ -340,7 +350,7 @@ function usual(&$out) {
    $rec['DATA']=$result;
    SQLUpdate('modbusdevices', $rec);
    if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
-    setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $rec['DATA'], array('modbusdevices'=>'0'));
+    setGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY'], $rec['DATA'], array($this->name=>'0'));
    }
 
   } else {

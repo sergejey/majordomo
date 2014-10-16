@@ -191,6 +191,7 @@
      $value['VALUE']=${"value".$props[$i]['ID']};
     }
     $props[$i]['VALUE']=$value['VALUE'];
+    $props[$i]['LINKED_MODULES']=$value['LINKED_MODULES'];
    }
 
    $out['PROPERTIES']=$props;

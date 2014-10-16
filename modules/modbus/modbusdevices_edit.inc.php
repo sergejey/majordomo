@@ -80,6 +80,10 @@
     $out['ERR_POLLPERIOD']=1;
     $ok=0;
    }
+
+   $old_linked_object=$rec['LINKED_OBJECT'];
+   $old_linked_property=$rec['LINKED_PROPERTY'];
+
   //updating 'LINKED_OBJECT' (varchar)
    global $linked_object;
    $rec['LINKED_OBJECT']=$linked_object;
@@ -98,6 +102,13 @@
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
     $out['OK']=1;
+
+    if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
+     addLinkedProperty($rec['LINKED_OBJECT'], $rec['LINKED_PROPERTY'], $this->name);
+    }
+    if ($old_linked_object && $old_linked_object!=$rec['LINKED_OBJECT'] && $old_linked_property && $old_linked_property!=$rec['LINKED_PROPERTY']) {
+     removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+    }
 
        $this->poll_device($rec['ID']);
 

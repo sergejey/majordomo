@@ -95,6 +95,9 @@ if ($rec['TYPE']=='plusminus'
          $rec['CUR_VALUE']=$cur_value;
         }
 
+    $old_linked_object=$rec['LINKED_OBJECT'];
+    $old_linked_property=$rec['LINKED_PROPERTY'];
+
     global $linked_object;
     $rec['LINKED_OBJECT']=trim($linked_object);
     global $linked_property;
@@ -159,6 +162,15 @@ if ($rec['TYPE']=='plusminus'
     }
     $this->updateTree_commands();
     $out['OK']=1;
+
+    if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
+     addLinkedProperty($rec['LINKED_OBJECT'], $rec['LINKED_PROPERTY'], $this->name);
+    }
+    if ($old_linked_object && $old_linked_object!=$rec['LINKED_OBJECT'] && $old_linked_property && $old_linked_property!=$rec['LINKED_PROPERTY']) {
+     removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+    }
+
+
    } else {
     $out['ERR']=1;
    }

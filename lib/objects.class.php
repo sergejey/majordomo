@@ -4,6 +4,62 @@
 */
 
 
+  function getValueIdByName($object, $property) {
+
+    $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($object.'.'.$property)."'");
+    if (!$value['ID']) {
+     $object=getObject($object);
+     $property_id=$object->getPropertyByName($property, $object->id, $object->class_id);
+     $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_ID='".(int)$property_id."' AND OBJECT_ID='".(int)$object->id."'");
+    }
+
+    return (int)$value['ID'];
+    
+  }
+
+  function addLinkedProperty($object, $property, $module) {
+    $value=SQLSelectOne("SELECT * FROM pvalues WHERE ID='".getValueIdByName($object, $property)."'");
+    if ($value['ID']) {
+     if (!$value['LINKED_MODULES']) {
+      $tmp=array();
+     } else {
+      $tmp=explode(',', $value['LINKED_MODULES']);
+     }
+     if (!in_array($module, $tmp)) {
+      $tmp[]=$module;
+      $value['LINKED_MODULES']=implode(',', $tmp);
+      SQLUpdate('pvalues', $value);
+     }
+    } else {
+     return 0;
+    }
+  }
+
+  function removeLinkedProperty($object, $property, $module) {
+    $value=SQLSelectOne("SELECT * FROM pvalues WHERE ID='".getValueIdByName($object, $property)."'");
+    if ($value['ID']) {
+     if (!$value['LINKED_MODULES']) {
+      $tmp=array();
+     } else {
+      $tmp=explode(',', $value['LINKED_MODULES']);
+     }
+     if (in_array($module, $tmp)) {
+      $total=count($tmp);
+      $res=array();
+      for($i=0;$i<$total;$i++) {
+       if ($tmp[$i]!=$module) {
+        $res[]=$tmp[$i];
+       }
+      }
+      $tmp=$res;
+      $value['LINKED_MODULES']=implode(',', $tmp);
+      SQLUpdate('pvalues', $value);
+     }
+    } else {
+     return 0;
+    }
+  }
+
 /**
 * Title
 *
@@ -198,6 +254,9 @@
    } elseif (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m)) {
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
+     if (preg_match('/^%\d/is', $m[0][$i])) {
+      continue; // dirty hack, sorry for that
+     }
      $title=str_replace($m[0][$i], getGlobal($m[1][$i]), $title);
     }
    }

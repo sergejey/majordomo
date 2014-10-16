@@ -674,112 +674,6 @@ curl_close($ch);
    $h['ID']=SQLInsert('phistory', $h);
   }
 
-  /*
-   $h=array();
-   $h['ADDED']=date('Y-m-d H:i:s');
-   $h['OBJECT_ID']=$this->id;
-   $h['VALUE_ID']=$v['ID'];
-   $h['OLD_VALUE']=$old_value;
-   $h['NEW_VALUE']=$value;
-   SQLInsert('history', $h);
-  */
-
-  //commands, owproperties, snmpproperties, zwave_properties, mqtt
-  $tables=array('commands', 'owproperties', 'snmpproperties', 'zwave_properties', 'mqtt', 'modbusdevices');
-  if (!is_array($no_linked) && $no_linked) {
-   $no_linked=array();
-   foreach($tables as $t) {
-    $no_linked[$k]='0';
-   }
-  } elseif (is_array($no_linked)) {
-   foreach($tables as $t) {
-    if (!isset($no_linked[$k])) {
-     $no_linked[$k]='1';
-    }
-   }   
-  } else {
-   $no_linked=array();
-   foreach($tables as $t) {
-    $no_linked[$k]='1';
-   }
-  }
-
-  foreach($tables as $t) {
-   if ($no_linked[$t]=='') {
-    $no_linked[$t]='1';
-   }
-  }
-
-  if ($no_linked['commands']!='') {
-   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['commands']);
-   $total=count($commands);
-   for($i=0;$i<$total;$i++) {
-    $commands[$i]['CUR_VALUE']=$value;
-    SQLUpdate('commands', $commands[$i]);
-   }
-  }
-
-  if ($no_linked['owproperties']!='' && file_exists(DIR_MODULES.'/onewire/onewire.class.php')) {
-   $owp=SQLSelect("SELECT ID FROM owproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['owproperties']);
-   $total=count($owp);
-   if ($total) {
-    include_once(DIR_MODULES.'/onewire/onewire.class.php');
-    $on_wire=new onewire();
-    for($i=0;$i<$total;$i++) {
-     $on_wire->setProperty($owp[$i]['ID'], $value);
-    }
-   }
-  }
-
-  if ($no_linked['snmpproperties']!='' && file_exists(DIR_MODULES.'/snmpdevices/snmpdevices.class.php')) {
-   $snmpdevices=SQLSelect("SELECT ID FROM snmpproperties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['snmpproperties']);
-   $total=count($snmpdevices);
-   if ($total) {
-    include_once(DIR_MODULES.'/snmpdevices/snmpdevices.class.php');
-    $snmp=new snmpdevices();
-    for($i=0;$i<$total;$i++) {
-     $snmp->setProperty($snmpdevices[$i]['ID'], $value);
-    }
-   }
-  }
-
-  if ($no_linked['zwave_properties']!='' && file_exists(DIR_MODULES.'/zwave/zwave.class.php')) {
-   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['zwave_properties']);
-   $total=count($zwave_properties);
-   if ($total) {
-    include_once(DIR_MODULES.'/zwave/zwave.class.php');
-    $zwave=new zwave();
-    for($i=0;$i<$total;$i++) {
-     $zwave->setProperty($zwave_properties[$i]['ID'], $value);
-    }
-   }
-  }
-
-  if ($no_linked['mqtt']!='' && file_exists(DIR_MODULES.'/mqtt/mqtt.class.php')) {
-   $mqtt_properties=SQLSelect("SELECT ID FROM mqtt WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['mqtt']);
-   $total=count($mqtt_properties);
-   if ($total) {
-    include_once(DIR_MODULES.'/mqtt/mqtt.class.php');
-    $mqtt=new mqtt();
-    for($i=0;$i<$total;$i++) {
-     $mqtt->setProperty($mqtt_properties[$i]['ID'], $value);
-    }
-   }
-  }
-
-  if ($no_linked['modbusdevices']!='' && file_exists(DIR_MODULES.'/modbus/modbus.class.php')) {
-   $modbusdevices=SQLSelect("SELECT ID FROM modbusdevices WHERE LINKED_OBJECT LIKE '".DBSafe($this->object_title)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."' AND ".$no_linked['modbusdevices']);
-   $total=count($modbusdevices);
-   if ($total) {
-    include_once(DIR_MODULES.'/modbus/modbus.class.php');
-    $modbus=new modbus();
-    for($i=0;$i<$total;$i++) {
-     $modbus->poll_device($modbusdevices[$i]['ID']);
-    }
-   }
-  }
-
-
   if ($prop['ONCHANGE']) {
    global $property_linked_history;
    if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
@@ -792,9 +686,47 @@ curl_close($ch);
     $this->callMethod($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
-
-
   }
+
+  if ($v['LINKED_MODULES']) { // TO-DO !
+   if (!is_array($no_linked) && $no_linked) {
+    return;
+   } elseif (!is_array($no_linked)) {
+    $no_linked=array();
+   }
+
+
+   $tmp=explode(',', $v['LINKED_MODULES']);
+   $total=count($tmp);
+
+
+
+   for($i=0;$i<$total;$i++) {
+    $linked_module=trim($tmp[$i]);
+
+    if (isset($no_linked[$linked_module])) {
+     continue;
+    }
+    if (file_exists(DIR_MODULES.$linked_module.'/'.$linked_module.'.class.php')) {
+     include_once(DIR_MODULES.$linked_module.'/'.$linked_module.'.class.php');
+     $module_object=new $linked_module;
+     if (method_exists($module_object, 'propertySetHandle')) {
+      $module_object->propertySetHandle($this->object_title, $property, $value);
+     }
+    }
+   }
+  }
+
+  /*
+   $h=array();
+   $h['ADDED']=date('Y-m-d H:i:s');
+   $h['OBJECT_ID']=$this->id;
+   $h['VALUE_ID']=$v['ID'];
+   $h['OLD_VALUE']=$old_value;
+   $h['NEW_VALUE']=$value;
+   SQLInsert('history', $h);
+  */
+
 
   endMeasure('setProperty ('.$property.')', 1);
   endMeasure('setProperty', 1);

@@ -438,6 +438,17 @@ function admin(&$out) {
    }
   }
  }
+
+ function propertySetHandle($object, $property, $value) {
+   $zwave_properties=SQLSelect("SELECT ID FROM zwave_properties WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($zwave_properties);
+   if ($total) {
+    for($i=0;$i<$total;$i++) {
+     $this->setProperty($zwave_properties[$i]['ID'], $value);
+    }
+   }
+ }
+
  /**
  * Title
  *
@@ -666,7 +677,7 @@ function admin(&$out) {
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
      if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY']) {
-      setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array('zwave_properties'=>'0'));
+      setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array($this->name=>'0'));
      }
     } else {
      $prop['ID']=SQLInsert('zwave_properties', $prop);

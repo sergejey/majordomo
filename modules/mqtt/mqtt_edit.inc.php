@@ -30,12 +30,19 @@
     $out['ERR_PATH']=1;
     $ok=0;
    }
+
+   $old_linked_object=$rec['LINKED_OBJECT'];
+   $old_linked_property=$rec['LINKED_PROPERTY'];
+
+
   //updating 'LINKED_OBJECT' (varchar)
    global $linked_object;
    $rec['LINKED_OBJECT']=$linked_object;
   //updating 'LINKED_PROPERTY' (varchar)
    global $linked_property;
    $rec['LINKED_PROPERTY']=$linked_property;
+
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -44,6 +51,14 @@
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
+
+    if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
+     addLinkedProperty($rec['LINKED_OBJECT'], $rec['LINKED_PROPERTY'], $this->name);
+    }
+    if ($old_linked_object && $old_linked_object!=$rec['LINKED_OBJECT'] && $old_linked_property && $old_linked_property!=$rec['LINKED_PROPERTY']) {
+     removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+    }
+
     $out['OK']=1;
    } else {
     $out['ERR']=1;
