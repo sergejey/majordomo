@@ -11,7 +11,7 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 
 
- $tables=array('commands'=>'commands', 'owproperties'=>'onewire', 'snmpproperties'=>'snmp', 'zwave_properties'=>'zwave', 'mqtt'=>'mqtt', 'modbusdevices'=>'modbus');
+ $tables=array('commands'=>'commands', 'owproperties'=>'onewire', 'snmpproperties'=>'snmpdevices', 'zwave_properties'=>'zwave', 'mqtt'=>'mqtt', 'modbusdevices'=>'modbus');
 
  $value_ids=array();
 
@@ -25,7 +25,7 @@ include_once("./load_settings.php");
     $value_ids[$property]=getValueIdByName($data[$i]['LINKED_OBJECT'], $data[$i]['LINKED_PROPERTY']);
    }
 
-   echo "$k: $property<br>";
+   echo "$v: $property<br>";
    if ($value_ids[$property]) {
     $value=SQLSelectOne("SELECT * FROM pvalues WHERE ID=".(int)$value_ids[$property]);
     if (!$value['LINKED_MODULES']) {
@@ -33,14 +33,15 @@ include_once("./load_settings.php");
     } else {
      $tmp=explode(',', $value['LINKED_MODULES']);
     }
-    if (!in_array($k, $tmp)) {
+    if (!in_array($v, $tmp)) {
      echo "Adding linked<br>";
-     $tmp[]=$k;
+     $tmp[]=$v;
      $value['LINKED_MODULES']=implode(',', $tmp);
      SQLUpdate('pvalues', $value);
     }
    } else {
     echo "Removing linked<br>";
+    //
     /*
     $data[$i]['LINKED_OBJECT']='';
     $data[$i]['LINKED_PROPERTY']='';
