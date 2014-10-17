@@ -5,31 +5,133 @@
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
+
   $table_name='zwave_devices';
+
   $rec=SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
+
+   if ($this->tab=='config') {
+    include(DIR_MODULES.'zwave/products.php');
+     function sortproducts($a, $b) {
+      if (!strcmp($a["BRAND"], $b["BRAND"])) {
+       return strcmp($a["TITLE"], $b["TITLE"]);
+      } else {
+       return strcmp($a["BRAND"], $b["BRAND"]);
+      }
+     }
+     usort($products, 'sortproducts');
+
+     if ($this->mode=='update') {
+      global $xmlfile;
+      if ($xmlfile) {
+       $rec['XMLFILE']=$xmlfile;
+      }
+      SQLUpdate($table_name, $rec);
+      $out['OK']=1;
+     }
+
+     if (!file_exists(ROOT.'cached/'.$rec['XMLFILE']) && preg_match('/^(\d+)-/is', $rec['XMLFILE'], $m)) {
+      $url='http://www.pepper1.net/zwavedb/device/'.$m[1].'/'.$rec['XMLFILE'];
+      $data=getURL($url, 0);
+      if ($data) {
+       SaveFile(ROOT.'cached/'.$rec['XMLFILE'], $data);
+      }
+     }
+
+     if ($rec['XMLFILE'] && file_exists(ROOT.'cached/'.$rec['XMLFILE'])) {
+      $data=simplexml_load_file(ROOT.'cached/'.$rec['XMLFILE']);
+
+      if ($data->resourceLinks->deviceImage) {
+       $image_url=((string)$data->resourceLinks->deviceImage->attributes()[0]);
+       if ($image_url) {
+        $out['IMAGE_URL']=$image_url;
+       }
+      }
+      if (preg_match('/^(\d+)-/is', $rec['XMLFILE'], $m)) {
+       $out['DETAILS_URL']='http://www.pepper1.net/zwavedb/device/'.$m[1];
+      }
+
+      $params=$data->configParams->configParam;
+      $total=count($params);
+      $res=array();
+      for($i=0;$i<$total;$i++) {
+       //var_dump($params[$i]);
+       $param=array();
+       $param['NUMBER']=(int)$params[$i]->attributes()['number'];
+       $param['TYPE']=(string)$params[$i]->attributes()['type'];
+       $param['SIZE']=(int)$params[$i]->attributes()['size'];
+       $param['DEFAULT']=hexdec((string)$params[$i]->attributes()['default']);
+       $param['NAME']=(string)$params[$i]->name->lang[1];
+       $param['DESCRIPTION']=(string)$params[$i]->description->lang[1];
+       if (isset($params[$i]->value[1])) {
+        $total_v=count($params[$i]->value);
+        //echo "zz";exit;
+        for($iv=0;$iv<$total_v;$iv++) {
+         $value=$params[$i]->value[$iv];
+         $from=hexdec((string)$value->attributes()['from']);
+         $to=hexdec((string)$value->attributes()['to']);
+         if ($from!=$to) {
+          $param['DESCRIPTION'].="\nValue from ".$from." to ".$to;
+         } else {
+          $param['DESCRIPTION'].="\nValue ".$from;
+         }
+         if ((string)$value->description->lang[1]) {
+          $param['DESCRIPTION'].=" -- ".$value->description->lang[1];
+         }
+        }
+       } else {
+        $from=hexdec((string)$params[$i]->value->attributes()['from']);
+        $to=hexdec((string)$params[$i]->value->attributes()['to']);
+        if ($from!=$to) {
+         $param['DESCRIPTION'].="\nValue from ".$from." to ".$to;
+        } else {
+         $param['DESCRIPTION'].="\nValue ".$from;
+        }
+        if ((string)$params[$i]->value->description->lang[1]) {
+         $param['DESCRIPTION'].=" -- ".$params[$i]->value->description->lang[1];
+        }
+       }
+       $param['DESCRIPTION']=nl2br($param['DESCRIPTION']);
+       //print_r($param);
+       //       echo "zz";exit;
+       $res[]=$param;
+
+       if ($this->mode=='update') {
+        global ${'config'.$param['NUMBER']};
+        if (${'config'.$param['NUMBER']}) {
+         //
+         $value=${'config'.$param['NUMBER']};
+         $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].SetDefault('.$param['NUMBER'].','.$value.','.$param['SIZE'].')');
+        }
+        if (${'configdefault'.$param['NUMBER']}) {
+         $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].SetDefault('.$param['NUMBER'].')');
+        }
+       }
+
+      }
+      $out['PARAMS']=$res;
+      //print_r($res);exit;
+      //exit;
+     }
+
+     $out['PRODUCTS']=$products;
+   }
+
 
   if ($this->mode=='update') {
    $ok=1;
   //updating 'TITLE' (varchar, required)
+
+
+   if ($this->tab=='') {
+
+
    global $title;
    $rec['TITLE']=$title;
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;
    }
-   /*
-  //updating 'STATUS' (int)
-   global $status;
-   $rec['STATUS']=(int)$status;
-  //updating 'AUTO_POLL' (int)
-   global $auto_poll;
-   $rec['AUTO_POLL']=(int)$auto_poll;
-  //updating 'LATEST_UPDATE' (datetime)
-   global $latest_update_date;
-   global $latest_update_minutes;
-   global $latest_update_hours;
-   $rec['LATEST_UPDATE']=toDBDate($latest_update_date)." $latest_update_hours:$latest_update_minutes:00";
-   */
   //updating 'LOCATION_ID' (select)
    if (IsSet($this->location_id)) {
     $rec['LOCATION_ID']=$this->location_id;
@@ -50,6 +152,9 @@
     $out['ERR']=1;
    }
   }
+
+  }
+
   if ($rec['LATEST_UPDATE']!='') {
    $tmp=explode(' ', $rec['LATEST_UPDATE']);
    $out['LATEST_UPDATE_DATE']=fromDBDate($tmp[0]);
@@ -86,7 +191,7 @@
   }
   $out['LOCATION_ID_OPTIONS']=$tmp;
 
-  if ($rec['ID']) {
+  if ($rec['ID'] && $this->tab=='') {
    $this->pollDevice($rec['ID']);
    $rec=SQLSelectOne("SELECT * FROM zwave_devices WHERE ID='".$rec['ID']."'");
 
@@ -122,7 +227,6 @@
     }
     $out['PROPERTIES']=$properties;
    }
-
   }
 
 

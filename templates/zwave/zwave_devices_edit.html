@@ -1,12 +1,104 @@
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li>
+[#TITLE#]
+</li>
 
-<!-- Table 'zwave_devices' edit -->
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+</ul>
+
+
+<ul class="nav nav-tabs">
+ <li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a></li>
+ <li [#if TAB="config"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=config">Config</a></li>
+ <li [#if TAB="raw"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=raw">Raw Data</a></li>
+</ul>
+
+&nbsp;
+
 [#if OK#]
 <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
 <div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
+
+
+[#if TAB="config"#]
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+ <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
+ Product:
+ </label>
+ <div class="controls">
+ <select name="xmlfile" class="input form-control">
+  <option value="">
+  [#begin PRODUCTS#]
+  <option value="[#FILE#]"[#if FILE="<#XMLFILE#>"#] selected[#endif#]>[#BRAND#] [#TITLE#]
+  [#end PRODUCTS#]
+ </select>
+ </div>
+
+[#if IMAGE_URL#]
+<p>
+<img src="[#IMAGE_URL#]" border="0">
+</p>
+[#endif#]
+[#if DETAILS_URL#]
+<p>
+ <a href="[#DETAILS_URL#]" target=_blank>More info...</a>
+</p>
+[#endif#]
+
+[#if PARAMS#]
+&nbsp;
+<table width="100%" border="0" class="table">
+ <tr>
+  <td valign="top"><b>NUM</b></td>
+  <td valign="top"><b>NAME</b></td>
+  <td valign="top"><b>DESCRIPTION</b></td>
+ </tr>
+ [#begin PARAMS#]
+ <tr>
+  <td valign="top">[#NUMBER#]</td>
+  <td valign="top">[#NAME#]<br/>
+  Default: [#DEFAULT#], Size: [#SIZE#]
+  <br>
+   Set: <input type="text" name="config[#NUMBER#]">
+   <input type="checkbox" name="configdefault[#NUMBER#]" value="1"> set default
+  </td>
+  <td valign="top">[#DESCRIPTION#]</td>
+ </tr>
+ [#end PARAMS#]
+</table>
+[#endif PARAMS#]
+
+&nbsp;
+<div class="form-actions">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+ [#endif ID#]
+ <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="tab" value="<#TAB#>">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+</div>
+</fieldset>
+</form>
+
+
+[#endif TAB#]
+
+[#if TAB=""#]
+<!-- Table 'zwave_devices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
 [#if ID=""#]
 <legend><#LANG_NEW_RECORD#></legend>
@@ -129,7 +221,7 @@
   [#begin PROPERTIES#]
   <tr>
    <td valign="top">[#TITLE#]</td>
-   <td valign="top">[#VALUE#]</td>
+   <td valign="top">[#VALUE#][#if COMMENTS!=""#]<br><small>[#COMMENTS#]</small>[#endif COMMENTS#]</td>
    <td valign="top">
     <input type="text" name="linked_object[#ID#]" value="[#LINKED_OBJECT#]" class="span2 form-control">
    </td>
@@ -198,9 +290,13 @@
 </fieldset>
 </form>
 
-<a href="#" onClick="$('#rawData').toggle();return false;">Show RAW data</a>
-<div id="rawData" style="display:none">
+[#endif TAB#]
+
+
+[#if TAB="raw"#]
+<div id="rawData">
 <pre>
 [#RAW_DATA#]
 </pre>
 </div>
+[#endif TAB#]

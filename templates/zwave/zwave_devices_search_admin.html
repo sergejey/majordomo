@@ -109,8 +109,7 @@
    <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]">[#TITLE#]</a>
   </a></b>
  </td>
- <td
-   align=center>
+ <td>
    [#if CLASS_BASIC="1"#]basic[#if BASIC!=""#] ([#BASIC#])[#endif#];[#endif#]
    [#if CLASS_SENSOR_BINARY="1"#]sensor binary;[#endif#]
    [#if CLASS_SENSOR_MULTILEVEL="1"#]sensor multilevel[#if SENSOR_VALUE!=""#] ([#SENSOR_VALUE#]);[#endif#][#endif#]
@@ -122,6 +121,7 @@
    [#if CLASS_SENSOR_ALARM="1"#]sensor alarm;[#endif#]
    [#if CLASS_SCENE_CONTROLLER="1"#]scene controller;[#endif#]
    [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
+   [#if XMLFILE!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]&tab=config">Config</a>[#endif#]
  </td>
  <td valign="top">
  [#LATEST_UPDATE#]

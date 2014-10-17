@@ -373,7 +373,8 @@ function admin(&$out) {
      $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[38].Set('.$value.')');
     }
    }
-   if ($rec['TITLE']=='Thermostat mode' && $device['CLASS_THERMOSTAT']) {
+   if ($device['CLASS_THERMOSTAT'] && $rec['TITLE']=='Thermostat mode') {
+   /*
     $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].']');
     $mode='';
     $av_modes=$data->commandClasses->{"64"}->data;
@@ -387,6 +388,28 @@ function admin(&$out) {
     }
     if ($mode) {
      $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[64].Set('.$mode.')');
+    }
+    */
+    $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[64].Set('.$value.')');
+   }
+   if ($device['CLASS_THERMOSTAT'] && $rec['TITLE']=='ThermostatFanMode') {
+    $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[68].Set('.$value.')');
+   }
+   if ($device['CLASS_THERMOSTAT'] && preg_match('/ThermostatSetPoint (.+)/is', $rec['TITLE'], $m)) {
+    $mode_name=$m[1];
+    $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].']');
+    $mode='';
+    $av_modes=$data->commandClasses->{"67"}->data;
+    for($i=0;$i<255;$i++) {
+     if (isset($av_modes->{"$i"}->modename)) {
+      if ($av_modes->{"$i"}->modename->value==$mode_name) {
+       $mode=$i;
+       break;
+      }
+     }
+    }
+    if ($mode) {
+     $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[67].Set('.$mode.', '.$value.')');
     }
    }
 
@@ -457,10 +480,12 @@ function admin(&$out) {
  * @access public
  */
   function pollDevice($device_id, $data=0) {
+
    $rec=SQLSelectOne("SELECT * FROM zwave_devices WHERE ID='".$device_id."'");
 
    $rec_updated=0;
 
+   $comments=array();
    $properties=array();
 
    if (!$data) {
@@ -538,19 +563,6 @@ function admin(&$out) {
      $rec_updated=1;
     }
    }
-
-   if ($rec['CLASS_THERMOSTAT']) {
-    $value=$data->commandClasses->{"64"}->data->{$data->commandClasses->{"64"}->data->mode->value}->modeName->value;
-    if ($value!=$rec['MODE_VALUE']) {
-     $rec['MODE_VALUE']=$value;
-     $rec_updated=1;
-    }
-    $properties['Thermostat mode']=$rec['MODE_VALUE'];
-    if ($data->commandClasses->{"64"}->data->{"updateTime"}>$updateTime) {
-     $updateTime=$data->commandClasses->{"64"}->data->{"updateTime"};
-    }
-   }
-
 
    if ($rec['CLASS_SWITCH_BINARY']) {
     $value=(int)$data->commandClasses->{"37"}->data->level->value;
@@ -654,6 +666,62 @@ function admin(&$out) {
     }
    }
 
+   if ($rec['CLASS_THERMOSTAT'] && isset($data->commandClasses->{"64"}->data->mode->value)) {
+    //$value=$data->commandClasses->{"64"}->data->{$data->commandClasses->{"64"}->data->mode->value}->modeName->value;
+    $rec['SENSOR_VALUE'].=" Mode: ".$data->commandClasses->{"64"}->data->{$data->commandClasses->{"64"}->data->mode->value}->modeName->value.';';
+    $value=$data->commandClasses->{"64"}->data->mode->value;
+    if ($value!=$rec['MODE_VALUE']) {
+     $rec['MODE_VALUE']=$value;
+     $rec_updated=1;
+    }
+    $properties['Thermostat mode']=$rec['MODE_VALUE'];
+    if ($data->commandClasses->{"64"}->data->{"updateTime"}>$updateTime) {
+     $updateTime=$data->commandClasses->{"64"}->data->{"updateTime"};
+    }
+
+    $comments_str='';
+    for($i=0;$i<255;$i++) {
+     if ($data->commandClasses->{"64"}->data->{$i}) {
+      $comments_str.="$i = ".$data->commandClasses->{"64"}->data->{$i}->modeName->value."; ";
+     }
+    }
+    $comments['Thermostat mode']=$comments_str;
+
+    if (isset($data->commandClasses->{"67"}->data)) {
+     //ThermostatSetPoint
+     for($i=0;$i<255;$i++) {
+      if ($data->commandClasses->{"67"}->data->{$i}->val) {
+       $key='ThermostatSetPoint '.$data->commandClasses->{"67"}->data->{$i}->modeName->value;
+       $properties[$key]=$data->commandClasses->{"67"}->data->{$i}->val->value;
+       if ($data->commandClasses->{"67"}->data->{$i}->scaleString->value) {
+        $comments[$key]=$data->commandClasses->{"67"}->data->{$i}->scaleString->value;
+       }
+      }
+     }
+    }
+
+    if (isset($data->commandClasses->{"68"}->data->mode->value)) {
+     //ThermostatFanMode
+     $properties['ThermostatFanOn']=(int)$data->commandClasses->{"68"}->data->on->value;
+
+     $properties['ThermostatFanMode']=$data->commandClasses->{"68"}->data->mode->value;
+     if ($data->commandClasses->{"68"}->data->{"updateTime"}>$updateTime) {
+      $updateTime=$data->commandClasses->{"68"}->data->{"updateTime"};
+     }
+     $rec['SENSOR_VALUE'].=" Fan Mode: ".$data->commandClasses->{"68"}->data->{$data->commandClasses->{"68"}->data->mode->value}->modeName->value.';';
+     $comments_str='';
+     for($i=0;$i<255;$i++) {
+      if ($data->commandClasses->{"68"}->data->{$i}) {
+       $comments_str.="$i = ".$data->commandClasses->{"68"}->data->{$i}->modeName->value."; ";
+      }
+     }
+     $comments['ThermostatFanMode']=$comments_str;
+    }
+
+
+   }
+
+
    if ($updateTime) {
     $properties['updateTime']=$updateTime;
     $rec['LATEST_UPDATE']=date('Y-m-d H:i:s', $properties['updateTime']);
@@ -673,6 +741,9 @@ function admin(&$out) {
     $prop['UNIQ_ID']=$k;
     $prop['TITLE']=$k;
     $prop['VALUE']=$v;
+    if ($comments[$k]) {
+     $prop['COMMENTS']=$comments[$k];
+    }
     $prop['UPDATED']=date('Y-m-d H:i:s');
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
@@ -898,12 +969,16 @@ zwave_properties - Properties
  zwave_devices: CLASS_SENSOR_ALARM int(3) NOT NULL DEFAULT '0'
  zwave_devices: CLASS_SCENE_CONTROLLER int(3) NOT NULL DEFAULT '0'
  zwave_devices: ALL_CLASSES varchar(255) NOT NULL DEFAULT ''
+ zwave_devices: BRAND varchar(255) NOT NULL DEFAULT ''
+ zwave_devices: PRODUCT varchar(255) NOT NULL DEFAULT ''
+ zwave_devices: XMLFILE varchar(255) NOT NULL DEFAULT ''
  zwave_devices: RAW_DATA text NOT NULL DEFAULT ''
 
  zwave_properties: ID int(10) unsigned NOT NULL auto_increment
  zwave_properties: DEVICE_ID int(10) NOT NULL DEFAULT '0'
  zwave_properties: UNIQ_ID varchar(100) NOT NULL DEFAULT ''
  zwave_properties: TITLE varchar(255) NOT NULL DEFAULT ''
+ zwave_properties: COMMENTS varchar(255) NOT NULL DEFAULT ''
  zwave_properties: VALUE varchar(255) NOT NULL DEFAULT ''
  zwave_properties: VALUE_TYPE varchar(255) NOT NULL DEFAULT ''
  zwave_properties: READ_ONLY int(3) NOT NULL DEFAULT '0'
