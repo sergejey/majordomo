@@ -62,7 +62,11 @@
        $param['SIZE']=(int)$params[$i]->attributes()['size'];
        $param['DEFAULT']=hexdec((string)$params[$i]->attributes()['default']);
        $param['NAME']=(string)$params[$i]->name->lang[1];
-       $param['DESCRIPTION']=(string)$params[$i]->description->lang[1];
+       if (isset($params[$i]->description->lang[1])) {
+        $param['DESCRIPTION']=(string)$params[$i]->description->lang[1];
+       } else {
+        $param['DESCRIPTION']=(string)$params[$i]->description->lang;
+       }
        if (isset($params[$i]->value[1])) {
         $total_v=count($params[$i]->value);
         //echo "zz";exit;
@@ -77,11 +81,13 @@
          }
          if ((string)$value->description->lang[1]) {
           $param['DESCRIPTION'].=" -- ".$value->description->lang[1];
+         } elseif ((string)$value->description->lang) {
+           $param['DESCRIPTION'].=" -- ".$value->description->lang;
          }
         }
        } else {
-        $from=hexdec((string)$params[$i]->value->attributes()['from']);
-        $to=hexdec((string)$params[$i]->value->attributes()['to']);
+        @$from=hexdec((string)$params[$i]->value->attributes()['from']);
+        @$to=hexdec((string)$params[$i]->value->attributes()['to']);
         if ($from!=$to) {
          $param['DESCRIPTION'].="\nValue from ".$from." to ".$to;
         } else {
@@ -89,6 +95,8 @@
         }
         if ((string)$params[$i]->value->description->lang[1]) {
          $param['DESCRIPTION'].=" -- ".$params[$i]->value->description->lang[1];
+        } elseif ((string)$params[$i]->value->description->lang) {
+          $param['DESCRIPTION'].=" -- ".$params[$i]->value->description->lang;
         }
        }
        $param['DESCRIPTION']=nl2br($param['DESCRIPTION']);
