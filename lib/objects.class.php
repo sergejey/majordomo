@@ -9,8 +9,10 @@
     $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($object.'.'.$property)."'");
     if (!$value['ID']) {
      $object=getObject($object);
-     $property_id=$object->getPropertyByName($property, $object->id, $object->class_id);
-     $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_ID='".(int)$property_id."' AND OBJECT_ID='".(int)$object->id."'");
+     if (is_object($object)) {
+      $property_id=$object->getPropertyByName($property, $object->id, $object->class_id);
+      $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_ID='".(int)$property_id."' AND OBJECT_ID='".(int)$object->id."'");
+     }
     }
 
     return (int)$value['ID'];
