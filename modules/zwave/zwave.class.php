@@ -262,6 +262,8 @@ function admin(&$out) {
      continue;
     }
    }
+
+   $seen_devices=array();
    $total=count($devices);
    //echo "Total: ".$total."<br>";
    for($i=0;$i<$total;$i++) {
@@ -341,8 +343,18 @@ function admin(&$out) {
     } else {
      SQLUpdate('zwave_devices', $rec);
     }
+    $seen_devices[]=$rec['ID'];
     $this->pollDevice($rec['ID'], $devices[$i]);
 
+   }
+
+   global $remove_not_found;
+   if (count($seen_devices)>0 && $remove_not_found) {
+    $devices=SQLSelect("SELECT ID FROM zwave_devices WHERE ID NOT IN (".implode(',', $seen_devices).")");
+    $total=count($devices);
+    for($i=0;$i<$total;$i++) {
+     $this->delete_zwave_devices($devices[$i]['ID']);
+    }
    }
 
    return $data->updateTime;
@@ -371,6 +383,14 @@ function admin(&$out) {
     }
     if ($device['CLASS_SWITCH_MULTILEVEL']) {
      $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[38].Set('.$value.')');
+    }
+   }
+   if ($rec['TITLE']=='LevelDuration command (level, duration)') {
+    $tmp=explode(',', $value);
+    $tmp[0]=(int)trim($tmp[0]);
+    $tmp[1]=(int)trim($tmp[1]);
+    if ($device['CLASS_SWITCH_MULTILEVEL']) {
+     $data=$this->apiCall('/ZWaveAPI/Run/devices['.$device['NODE_ID'].'].instances['.$device['INSTANCE_ID'].'].commandClasses[38].Set('.$tmp[0].','.$tmp[1].')');
     }
    }
    if ($device['CLASS_THERMOSTAT'] && $rec['TITLE']=='Thermostat mode') {
@@ -585,6 +605,7 @@ function admin(&$out) {
     if ($data->commandClasses->{"38"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"38"}->data->{"updateTime"};
     }
+    $properties['LevelDuration command (level, duration)']='';
    }
    if ($rec['CLASS_BATTERY']) {
     $value=(int)$data->commandClasses->{"128"}->data->last->value;

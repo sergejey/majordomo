@@ -53,10 +53,11 @@
 
 [#if API_STATUS="1"#]
 <p>
-<!--#
-<a href="?view_mode=edit_zwave_devices&data_source=<#DATA_SOURCE#>" class="btn"><i class="icon-plus"></i> Add new record</a>
-#-->
-<a href="?view_mode=rescan" class="btn btn-default">Refresh network</a>
+<form action="?" method="get">
+<input type="checkbox" name="remove_not_found" value="1"> Remove missing devices
+<input type="submit" name="submit"  class="btn btn-default" value="Refresh network">
+<input type="hidden" name="view_mode" value="rescan">
+</form>
 </p>
 [#endif#]
 

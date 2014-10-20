@@ -109,7 +109,7 @@
         if (${'config'.$param['NUMBER']}) {
          //
          $value=${'config'.$param['NUMBER']};
-         $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].SetDefault('.$param['NUMBER'].','.$value.','.$param['SIZE'].')');
+         $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].Set('.$param['NUMBER'].','.$value.','.$param['SIZE'].')');
         }
         if (${'configdefault'.$param['NUMBER']}) {
          $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].SetDefault('.$param['NUMBER'].')');
