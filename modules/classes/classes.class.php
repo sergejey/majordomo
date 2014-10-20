@@ -525,6 +525,7 @@ function usual(&$out) {
    $o->delete_objects($objects[$i]['ID']);   
   }
   SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
+  $this->updateTree_classes();
  }
 /**
 * classes build tree
@@ -538,6 +539,12 @@ function usual(&$out) {
    if ($res[$i]['PARENT_ID']==$parent_id) {
     $res[$i]['LEVEL']=$level;
     $res[$i]['RESULT']=$this->buildTree_classes($res, $res[$i]['ID'], ($level+1));
+    if (!is_array($res[$i]['RESULT'])) {
+     unset($res[$i]['RESULT']);
+    }
+    if (!$res[$i]['RESULT'] && !$res[$i]['OBJECTS']) {
+     $res[$i]['CAN_DELETE']=1;
+    }
     $res2[]=$res[$i];
    }
   }

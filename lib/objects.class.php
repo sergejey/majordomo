@@ -10,7 +10,7 @@
     if (!$value['ID']) {
      $object=getObject($object);
      if (is_object($object)) {
-      $property_id=$object->getPropertyByName($property, $object->id, $object->class_id);
+      $property_id=$object->getPropertyByName($property, $object->class_id, $object->id); //
       $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_ID='".(int)$property_id."' AND OBJECT_ID='".(int)$object->id."'");
      }
     }

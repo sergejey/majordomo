@@ -50,6 +50,9 @@
       }
      }
      $res[$i]['OBJECTS']=$objects;
+     if (!is_array($res[$i]['OBJECTS'])) {
+      unset($res[$i]['OBJECTS']);
+     }
     }
    }
    $res=$this->buildTree_classes($res);

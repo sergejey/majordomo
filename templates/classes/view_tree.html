@@ -21,9 +21,9 @@
     <a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
     <a href="?view_mode=export_classes&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i></a>
 
-  [#if !OBJECTS && !RESULT#]
+  [#if CAN_DELETE="1"#]
     <a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif OBJECTS#]
+  [#endif CAN_DELETE#]
 
   </td>
 </tr>
