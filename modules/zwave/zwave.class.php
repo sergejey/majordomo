@@ -761,11 +761,13 @@ function admin(&$out) {
     $prop['DEVICE_ID']=$rec['ID'];
     $prop['UNIQ_ID']=$k;
     $prop['TITLE']=$k;
+    if ($prop['VALUE']!=$v) {
+     $prop['UPDATED']=date('Y-m-d H:i:s');
+    }
     $prop['VALUE']=$v;
     if ($comments[$k]) {
      $prop['COMMENTS']=$comments[$k];
     }
-    $prop['UPDATED']=date('Y-m-d H:i:s');
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
      if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY']) {
