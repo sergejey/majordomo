@@ -506,6 +506,7 @@ function admin(&$out) {
    $rec_updated=0;
 
    $comments=array();
+   $updatedList=array();
    $properties=array();
 
    if (!$data) {
@@ -541,6 +542,7 @@ function admin(&$out) {
      $rec_updated=1;
     }
     $properties['Basic']=$rec['BASIC'];
+    $updatedList['Basic']=$data->commandClasses->{"32"}->data->{"updateTime"};
     if ($data->commandClasses->{"32"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"32"}->data->{"updateTime"};
     }
@@ -554,6 +556,7 @@ function admin(&$out) {
      $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
+    $updatedList['Level']=$data->commandClasses->{"48"}->data->{"updateTime"};
     if ($data->commandClasses->{"48"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"48"}->data->{"updateTime"};
     }
@@ -567,11 +570,16 @@ function admin(&$out) {
      if (isset($data->commandClasses->{"49"}->data->{"$i"})) {
       $sensor=$data->commandClasses->{"49"}->data->{"$i"};
       $values[]=trim($sensor->sensorTypeString->value).': '.$sensor->val->value.$sensor->scaleString->value;
-      $prop_name=trim($sensor->sensorTypeString->value).', '.$sensor->scaleString->value;
+      if (trim($sensor->sensorTypeString->value)) {
+       $prop_name=trim($sensor->sensorTypeString->value).', '.$sensor->scaleString->value;
+      } else {
+       $prop_name="Sensor $i";
+      }
       if ($properties[$prop_name]) {
        $prop_name.=' (1)';
       }
       $properties[$prop_name]=$sensor->val->value;
+      $updatedList[$prop_name]=$data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"};
       if ($data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"}>$updateTime) {
        $updateTime=$data->commandClasses->{"49"}->data->{"$i"}->{"updateTime"};
       }
@@ -591,6 +599,7 @@ function admin(&$out) {
      $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
+    $updatedList['Level']=$data->commandClasses->{"37"}->data->{"updateTime"};
     if ($data->commandClasses->{"37"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"37"}->data->{"updateTime"};
     }
@@ -602,6 +611,7 @@ function admin(&$out) {
      $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
+    $updatedList['Level']=$data->commandClasses->{"38"}->data->{"updateTime"};
     if ($data->commandClasses->{"38"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"38"}->data->{"updateTime"};
     }
@@ -614,6 +624,7 @@ function admin(&$out) {
      $rec_updated=1;
     }
     $properties['Battery']=$rec['BATTERY_LEVEL'];
+    $updatedList['Battery']=$data->commandClasses->{"128"}->data->{"updateTime"};
     if ($data->commandClasses->{"128"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"128"}->data->{"updateTime"};
     }
@@ -625,12 +636,17 @@ function admin(&$out) {
     for($i=0;$i<255;$i++) {
      if (isset($data->commandClasses->{"50"}->data->{"$i"})) {
       $sensor=$data->commandClasses->{"50"}->data->{"$i"};
-      $values[]=trim($sensor->sensorTypeString->value).': '.$sensor->val->value.$sensor->scaleString->value;
-      $prop_name=trim($sensor->sensorTypeString->value).', '.$sensor->scaleString->value;
+      $values[]=trim($sensor->sensorTypeString->value).': '.$sensor->val->value.' '.$sensor->scaleString->value;
+      if (trim($sensor->sensorTypeString->value)) {
+       $prop_name=trim($sensor->sensorTypeString->value).', '.$sensor->scaleString->value;
+      } else {
+       $prop_name="Meter $i";
+      }
       if ($properties[$prop_name]) {
        $prop_name.=' (1)';
       }
       $properties[$prop_name]=$sensor->val->value;
+      $updatedList[$prop_name]=$data->commandClasses->{"50"}->data->{"$i"}->{"updateTime"};
       if ($data->commandClasses->{"50"}->data->{"$i"}->{"updateTime"}>$updateTime) {
        $updateTime=$data->commandClasses->{"50"}->data->{"$i"}->{"updateTime"};
       }
@@ -638,7 +654,7 @@ function admin(&$out) {
     }
     $value=implode('; ', $values);
     if ($value!='') {
-     $rec['SENSOR_VALUE'].=$value.';';
+     $rec['SENSOR_VALUE'].=$value.'; ';
      $rec_updated=1;
     }
    }
@@ -696,6 +712,7 @@ function admin(&$out) {
      $rec_updated=1;
     }
     $properties['Thermostat mode']=$rec['MODE_VALUE'];
+    $updatedList['Thermostat mode']=$data->commandClasses->{"64"}->data->{"updateTime"};
     if ($data->commandClasses->{"64"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"64"}->data->{"updateTime"};
     }
@@ -763,6 +780,9 @@ function admin(&$out) {
     $prop['TITLE']=$k;
     if ($prop['VALUE']!=$v) {
      $prop['UPDATED']=date('Y-m-d H:i:s');
+    }
+    if ($updatedList[$k]) {
+     $prop['UPDATED']=date('Y-m-d H:i:s', $updatedList[$k]);
     }
     $prop['VALUE']=$v;
     if ($comments[$k]) {
