@@ -722,6 +722,8 @@ $dictionary=array(
 
 'SCENE'=>'Сцена',
 'ADD_NEW_SCENE'=>'Добавить новую сцену', // scenes/scenes_search_admin.html; 
+'USE_ELEMENT_TO_POSITION_RELATED'=>'Позиционировать относительно',
+'NO_RELATED'=>'Левого верхнего угла сцены',
 'TOP'=>'Отступ сверху', // scenes/elements_edit.html; 
 'LEFT'=>'Отступ слева', // scenes/elements_edit.html; 
 'STATES'=>'Состояния', // scenes/elements_edit.html; 

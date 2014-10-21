@@ -363,7 +363,7 @@ function usual(&$out) {
      } else {
       $qry.=" AND scenes.HIDDEN!=1";
      }
-     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry");
+     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry ORDER BY elements.PRIORITY DESC, elm_states.PRIORITY DESC");
      $total=count($states);
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
@@ -647,11 +647,15 @@ elm_states - Element states
  elements: TITLE varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
  elements: TOP int(10) NOT NULL DEFAULT '0'
- elements: LEFT int(255) NOT NULL DEFAULT '0'
- elements: WIDTH int(255) NOT NULL DEFAULT '0'
- elements: HEIGHT int(255) NOT NULL DEFAULT '0'
+ elements: LEFT int(10) NOT NULL DEFAULT '0'
+ elements: WIDTH int(10) NOT NULL DEFAULT '0'
+ elements: HEIGHT int(10) NOT NULL DEFAULT '0'
+ elements: DX int(10) NOT NULL DEFAULT '0'
+ elements: DY int(10) NOT NULL DEFAULT '0'
+ elements: LINKED_ELEMENT_ID int(10) NOT NULL DEFAULT '0'
  elements: CROSS_SCENE int(3) NOT NULL DEFAULT '0'
  elements: BACKGROUND int(3) NOT NULL DEFAULT '1'
+ elements: PRIORITY int(10) NOT NULL DEFAULT '0'
  elements: JAVASCRIPT text
  elements: CSS text
 
@@ -679,6 +683,7 @@ elm_states - Element states
  elm_states: WINDOW_HEIGHT int(10) NOT NULL DEFAULT '0'
  elm_states: SWITCH_SCENE int(3) NOT NULL DEFAULT '0'
  elm_states: CURRENT_STATUS int(3) NOT NULL DEFAULT '0'
+ elm_states: PRIORITY int(10) NOT NULL DEFAULT '0'
 EOD;
 
   parent::dbInstall($data);

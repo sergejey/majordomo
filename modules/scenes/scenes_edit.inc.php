@@ -128,8 +128,19 @@
      $ok=0;
      $out['ERR_TITLE']=1;
     }
+
+    global $priority;
+    $element['PRIORITY']=(int)$priority;
+
+    global $linked_element_id;
+    if ($linked_element_id==$element['ID']) {
+     $linked_element_id=0;
+    }
+    $element['LINKED_ELEMENT_ID']=(int)$linked_element_id;
+
     global $top;
     $element['TOP']=(int)$top;
+
 
     global $left;
     $element['LEFT']=(int)$left;
@@ -314,7 +325,7 @@
    $out['STATE_ID']=$state_id;
   }
 
-  $elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."'");
+  $elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
   $out['ELEMENTS']=$elements;
 
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");

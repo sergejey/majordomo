@@ -8,18 +8,21 @@
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_elements" style="padding:0px">
 <table class="table table-bordered">
+<tr>
+ <th><#LANG_TITLE#></th>
+ <th><#LANG_PRIORITY#></th>
+ <th>&nbsp;</th>
+</tr>
 [#begin ELEMENTS#]
 <tr>
  <td>
    [#TITLE#]
  </td>
+ <td>[#PRIORITY#]</td>
  <td>
   <div class="pull-right">
-  [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
-   
    <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=[#ID#]" class="btn btn-default btn-sm" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif ACTION#]
   </div>
  </td>
 </tr>

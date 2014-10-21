@@ -731,6 +731,8 @@ $dictionary=array(
 
 'SCENE'=>'Scene',
 'ADD_NEW_SCENE'=>'Add new scene', // scenes/scenes_search_admin.html; 
+'USE_ELEMENT_TO_POSITION_RELATED'=>'Use element to position related',
+'NO_RELATED'=>'None, position from top left corner',
 'TOP'=>'Top', // scenes/elements_edit.html; 
 'LEFT'=>'Left', // scenes/elements_edit.html; 
 'STATES'=>'States', // scenes/elements_edit.html; 

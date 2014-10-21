@@ -2,6 +2,35 @@
 <td valign=top>
 <!-- results -->
 [#if RESULT#]
+
+<script language="javascript">
+
+$(function () {
+
+
+        $("a.show-hide-link").click(function() {
+                var id = $(this).data('id');//'#sub' + 
+                //$(id).toggle();
+  if ($('.sublist'+id).is(":visible")) {
+   $('.sublist'+id).hide();
+   $('#link'+id).html('+');
+   $.cookie("classes_item"+id, null);
+  } else {
+   $.cookie("classes_item"+id, "1");
+   $('.sublist'+id).show();
+   $('#link'+id).html('-');
+  }
+  return false;
+
+
+        });
+
+});
+
+
+</script>
+
+
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_classes" style="padding:0px">
 <table  class="table table-striped">
@@ -9,7 +38,8 @@
 <tr >
  <td
     valign="top">
-   <b><a href="?view_mode=edit_classes&id=[#ID#]">[#TITLE#]</a></b>
+   <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]">+</a>
+   <b>[#TITLE#]</b>
  </td>
  <td valign="top" align="right">
 
@@ -29,7 +59,7 @@
 </tr>
 
 [#if OBJECTS#]
-<tr>
+<tr class="sublist[#ID#]" style="display:none">
  <td valign="top" colspan="2">  
   <div>
    <table border=0>
@@ -58,7 +88,7 @@
 </tr>
   [#endif OBJECTS#]
 [#if RESULT#]
- <tr>
+ <tr class="sublist[#ID#]" style="display:none">
  <td style="padding-left:40px" colspan=2>
   <table  class="table table-striped">
    [#tree RESULT#]
@@ -71,6 +101,20 @@
 <input type="hidden" name="view_mode" value="multiple_classes">
 </form>
 <!-- / search results (list) -->
+
+<script language="javascript">
+[#begin RESULT#]
+ if ($.cookie("classes_item[#ID#]")) {
+  $('.sublist[#ID#]').show();
+  $('#link[#ID#]').html('-');
+ }
+ [#if RESULT#]
+ [#tree RESULT#]
+ [#endif RESULT#]
+[#end RESULT#]
+</script>
+
+
 [#else RESULT#]
 <p align=center>
 <font color="red"><#LANG_NO_RECORDS_FOUND#></font>

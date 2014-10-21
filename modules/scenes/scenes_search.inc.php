@@ -61,13 +61,27 @@
 
   if ($res[0]['ID']) {
    $total=count($res);
+   $positions=array();
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
-      $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$res[$i]['ID']."'");
+      $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".$res[$i]['ID']."' ORDER BY PRIORITY DESC, TITLE");
       $totale=count($elements);
       for($ie=0;$ie<$totale;$ie++) {
-       $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."'");
+       if ($elements[$ie]['PRIORITY']) {
+        $elements[$ie]['ZINDEX']=$elements[$ie]['PRIORITY']*10;
+       }
+       $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
+       $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
+       $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
        $elements[$ie]['STATES']=$states;
+      }
+      for($ie=0;$ie<$totale;$ie++) {
+       if ($elements[$ie]['LINKED_ELEMENT_ID']) {
+        $elements[$ie]['TOP']=$positions[$elements[$ie]['LINKED_ELEMENT_ID']]['TOP']+$elements[$ie]['TOP'];
+        $elements[$ie]['LEFT']=$positions[$elements[$ie]['LINKED_ELEMENT_ID']]['LEFT']+$elements[$ie]['LEFT'];
+        $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
+        $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
+       }
       }
       $res[$i]['ELEMENTS']=$elements;
       $res[$i]['NUM']=$i;
