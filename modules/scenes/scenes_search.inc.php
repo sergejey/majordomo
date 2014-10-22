@@ -68,7 +68,7 @@
       $totale=count($elements);
       for($ie=0;$ie<$totale;$ie++) {
        if ($elements[$ie]['PRIORITY']) {
-        $elements[$ie]['ZINDEX']=$elements[$ie]['PRIORITY']*10;
+        $elements[$ie]['ZINDEX']=round($elements[$ie]['PRIORITY']/10);
        }
        $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
        $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
