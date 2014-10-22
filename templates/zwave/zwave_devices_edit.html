@@ -12,7 +12,9 @@
 
 <ul class="nav nav-tabs">
  <li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a></li>
+ [#if CLASS_CONFIG="1"#]
  <li [#if TAB="config"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=config">Config</a></li>
+ [#endif#]
  <li [#if TAB="raw"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=raw">Raw Data</a></li>
 </ul>
 
@@ -30,7 +32,7 @@
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
  <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
- Product:
+ Vendor/Product:
  </label>
  <div class="controls">
  <select name="xmlfile" class="input form-control">
@@ -67,13 +69,34 @@
   Default: [#DEFAULT#], Size: [#SIZE#]
   <br>
    Set: <input type="text" name="config[#NUMBER#]">
-   <input type="checkbox" name="configdefault[#NUMBER#]" value="1"> set default
+   <br/><input type="checkbox" name="configdefault[#NUMBER#]" value="1"> set default
   </td>
   <td valign="top">[#DESCRIPTION#]</td>
  </tr>
  [#end PARAMS#]
 </table>
 [#endif PARAMS#]
+
+&nbsp;
+
+<table border="0">
+ <tr>
+  <td valign="top">Custom parameter number:</td>
+  <td valign="top"><input type="text" name="custom_config_number"></td>
+ </tr>
+ <tr>
+  <td valign="top">Custom parameter value:</td>
+  <td valign="top"><input type="text" name="custom_config_value"></td>
+ </tr>
+ <tr>
+  <td valign="top">Custom parameter size (bytes):</td>
+  <td valign="top">
+   <input type="radio" name="custom_config_size" value="1" checked> 1
+   <input type="radio" name="custom_config_size" value="2"> 2
+   <input type="radio" name="custom_config_size" value="4"> 4
+  </td>
+ </tr>
+</table>
 
 &nbsp;
 <div class="form-actions">
@@ -143,6 +166,7 @@
    [#if CLASS_THERMOSTAT="1"#]thermostat;[#endif#]
    [#if CLASS_SENSOR_ALARM="1"#]sensor alarm;[#endif#]
    [#if CLASS_SCENE_CONTROLLER="1"#]scene controller;[#endif#]
+   [#if CLASS_CONFIG="1"#]configuration;[#endif#]
    [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
  </div>
 </div>

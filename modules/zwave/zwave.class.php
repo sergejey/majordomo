@@ -323,6 +323,11 @@ function admin(&$out) {
     } else {
      $rec['CLASS_METER']=0;
     }
+    if (isset($devices[$i]->commandClasses->{'112'}->data)) {
+     $rec['CLASS_CONFIG']=1;
+    } else {
+     $rec['CLASS_CONFIG']=0;
+    }
     if (isset($devices[$i]->commandClasses->{'128'}->data)) {
      $rec['CLASS_BATTERY']=1;
     } else {
@@ -1011,6 +1016,7 @@ zwave_properties - Properties
  zwave_devices: CLASS_THERMOSTAT int(3) NOT NULL DEFAULT '0'
  zwave_devices: CLASS_SENSOR_ALARM int(3) NOT NULL DEFAULT '0'
  zwave_devices: CLASS_SCENE_CONTROLLER int(3) NOT NULL DEFAULT '0'
+ zwave_devices: CLASS_CONFIG int(3) NOT NULL DEFAULT '0'
  zwave_devices: ALL_CLASSES varchar(255) NOT NULL DEFAULT ''
  zwave_devices: BRAND varchar(255) NOT NULL DEFAULT ''
  zwave_devices: PRODUCT varchar(255) NOT NULL DEFAULT ''

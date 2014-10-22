@@ -25,6 +25,8 @@
       global $xmlfile;
       if ($xmlfile) {
        $rec['XMLFILE']=$xmlfile;
+      } else {
+       $rec['XMLFILE']='';
       }
       SQLUpdate($table_name, $rec);
       $out['OK']=1;
@@ -114,6 +116,14 @@
         if (${'configdefault'.$param['NUMBER']}) {
          $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].SetDefault('.$param['NUMBER'].')');
         }
+
+        global $custom_config_number;
+        global $custom_config_value;
+        global $custom_config_size;
+        if ($custom_config_number) {
+         $data=$this->apiCall('/ZWaveAPI/Run/devices['.$rec['NODE_ID'].'].instances['.$rec['INSTANCE_ID'].'].commandClasses[112].Set('.(int)$custom_config_number.','.(int)$custom_config_value.','.(int)$custom_config_size.')');
+        }
+
        }
 
       }
