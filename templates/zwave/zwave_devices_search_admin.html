@@ -124,6 +124,7 @@
    [#if CLASS_CONFIG="1"#]configuration;[#endif#]
    [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
    [#if XMLFILE!="" && CLASS_CONFIG="1"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]&tab=config">Config</a>[#endif#]
+   [#if LINKED_PROPERTIES!=""#]<br>Linked: [#LINKED_PROPERTIES#][#endif#]
  </td>
  <td valign="top">
  [#LATEST_UPDATE#]

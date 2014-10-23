@@ -234,17 +234,21 @@
 <div class="controls">
  <table border="1" cellpadding="3">
   <tr>
+   <td valign="top"><b>Code</b></td>
    <td valign="top"><b><#LANG_TITLE#></b></td>
    <td valign="top"><b><#LANG_VALUE#></b></td>
    <td valign="top"><b><#LANG_UPDATED#></b></td>
    <td valign="top">
-    <b><#LANG_LINKED_OBJECT#></b>
+    <b><#LANG_LINKED_OBJECT#></b><br>(<#LANG_OPTIONAL#>)
    </td>
-   <td valign="top"><b><#LANG_PROPERTY#></b></td>
+   <td valign="top"><b><#LANG_PROPERTY#></b><br>(<#LANG_OPTIONAL#>)</td>
+   <td valign="top"><b><#LANG_AUTO_UPDATE_PERIOD#>,</b><br><#LANG_SECONDS#> (<#LANG_OPTIONAL#>)</td>
+   <td valign="top"><b>Valid range</b><br>(<#LANG_OPTIONAL#>)</td>
    <td valign="top"><b><#LANG_DELETE#></b></td>
   </tr>
   [#begin PROPERTIES#]
   <tr>
+   <td valign="top">[#COMMAND_CLASS#]</td>
    <td valign="top">[#TITLE#]</td>
    <td valign="top">[#VALUE#][#if COMMENTS!=""#]<br><small>[#COMMENTS#]</small>[#endif COMMENTS#]</td>
    <td valign="top">[#UPDATED#]</td>
@@ -253,6 +257,18 @@
    </td>
    <td valign="top">
     <input type="text" name="linked_property[#ID#]" value="[#LINKED_PROPERTY#]" class="span2 form-control">
+   </td>
+   <td valign="top">
+    <input type="text" name="update_period[#ID#]" value="[#UPDATE_PERIOD#]" class="span2 form-control">
+   </td>
+   <td valign="top">
+    <nobr><input type="checkbox" name="validate[#ID#]" value="1"[#if VALIDATE="1"#] checked[#endif#] onClick="$('#validatebox[#ID#]').toggle();">
+    <span id="validatebox[#ID#]" [#if VALIDATE!="1"#] style="display:none"[#endif#]>
+    <input type="text" name="valid_from[#ID#]" value="[#VALID_FROM#]" size="3">
+    ...
+    <input type="text" name="valid_to[#ID#]" value="[#VALID_TO#]" size="3">
+    </span>
+    </nobr>
    </td>
    <td valign="top">
     <input type="checkbox" name="delete_property[#ID#]" value="1">

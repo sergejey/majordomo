@@ -66,6 +66,16 @@
     // some action for every record if required
     $tmp=explode(' ', $res[$i]['LATEST_UPDATE']);
     $res[$i]['LATEST_UPDATE']=fromDBDate($tmp[0])." ".$tmp[1];
+    $res[$i]['LINKED_PROPERTIES']='';
+    $tmp=SQLSelect("SELECT * FROM zwave_properties WHERE DEVICE_ID='".$res[$i]['ID']."'");
+    $total2=count($tmp);
+    for($i2=0;$i2<$total2;$i2++) {
+     if ($tmp[$i2]['LINKED_OBJECT'] && $tmp[$i2]['LINKED_PROPERTY']) {
+      $object=(SQLSelectOne("SELECT ID, CLASS_ID FROM objects WHERE TITLE LIKE '".DBSafe($tmp[$i2]['LINKED_OBJECT'])."'"));
+      $res[$i]['LINKED_PROPERTIES'].='<a href="/panel/class/'.$object['CLASS_ID'].'/object/'.$object['ID'].'/properties.html">'.$tmp[$i2]['LINKED_OBJECT'].'.'.$tmp[$i2]['LINKED_PROPERTY'].'</a>; ';
+     }
+    }
+
    }
    $out['RESULT']=$res;
   }

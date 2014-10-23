@@ -40,8 +40,8 @@
          eval(SETTINGS_HOOK_BEFORE_SAY);
         }
 
-        if ($level >= (int)getGlobal('minMsgLevel'))
-        { 
+        global $ignoreVoice;
+        if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice) { 
                 //$voicemode!='off' && 
 
            $lang='en';

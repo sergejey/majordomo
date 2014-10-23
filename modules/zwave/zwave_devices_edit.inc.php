@@ -231,6 +231,19 @@
 
       $properties[$i]['LINKED_OBJECT']=trim(${'linked_object'.$properties[$i]['ID']});
       $properties[$i]['LINKED_PROPERTY']=trim(${'linked_property'.$properties[$i]['ID']});
+
+      global ${'update_period'.$properties[$i]['ID']};
+      $properties[$i]['UPDATE_PERIOD']=(int)${'update_period'.$properties[$i]['ID']};
+
+      global ${'validate'.$properties[$i]['ID']};
+      $properties[$i]['VALIDATE']=(int)${'validate'.$properties[$i]['ID']};
+
+      global ${'valid_from'.$properties[$i]['ID']};
+      $properties[$i]['VALID_FROM']=(float)${'valid_from'.$properties[$i]['ID']};
+
+      global ${'valid_to'.$properties[$i]['ID']};
+      $properties[$i]['VALID_TO']=(float)${'valid_to'.$properties[$i]['ID']};
+
       SQLUpdate('zwave_properties', $properties[$i]);
 
       if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {
