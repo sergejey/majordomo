@@ -244,6 +244,13 @@
       global ${'valid_to'.$properties[$i]['ID']};
       $properties[$i]['VALID_TO']=(float)${'valid_to'.$properties[$i]['ID']};
 
+      global ${'correct_value'.$properties[$i]['ID']};
+      if (${'correct_value'.$properties[$i]['ID']}!='') {
+       $properties[$i]['CORRECT_VALUE']=${'correct_value'.$properties[$i]['ID']};
+      } else {
+       $properties[$i]['CORRECT_VALUE']='';
+      }
+
       SQLUpdate('zwave_properties', $properties[$i]);
 
       if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {

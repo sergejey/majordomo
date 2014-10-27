@@ -832,6 +832,9 @@ function admin(&$out) {
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
      if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY']) {
+      if ($prop['CORRECT_VALUE']) {
+       $prop['VALUE']+=(float)$prop['CORRECT_VALUE'];
+      }
       if (!$prop['VALIDATE'] || (((float)$prop['VALUE']>=(float)$prop['VALID_FROM'])) && ((float)$prop['VALUE']<=(float)$prop['VALID_TO'])) {
        setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array($this->name=>'0'));
       }
@@ -1071,10 +1074,10 @@ zwave_properties - Properties
  zwave_properties: READ_ONLY int(3) NOT NULL DEFAULT '0'
  zwave_properties: UPDATE_PERIOD int(10) NOT NULL DEFAULT '0'
  zwave_properties: VALIDATE int(3) NOT NULL DEFAULT '0'
- zwave_properties: VALID_FROM varchar(10) NOT NULL DEFAULT '0'
- zwave_properties: VALID_TO varchar(10) NOT NULL DEFAULT '0'
- zwave_properties: CORRECT_VALUE varchar(10) NOT NULL DEFAULT '0'
- zwave_properties: COMMAND_CLASS varchar(10) NOT NULL DEFAULT '0'
+ zwave_properties: VALID_FROM varchar(10) NOT NULL DEFAULT ''
+ zwave_properties: VALID_TO varchar(10) NOT NULL DEFAULT ''
+ zwave_properties: CORRECT_VALUE varchar(10) NOT NULL DEFAULT ''
+ zwave_properties: COMMAND_CLASS varchar(10) NOT NULL DEFAULT ''
  zwave_properties: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  zwave_properties: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  zwave_properties: UPDATED datetime

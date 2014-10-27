@@ -104,6 +104,7 @@ $dictionary=array(
 'MODULE_MARKET'=>'Plugins Market',
 'MODULE_MYBLOCKS'=>'My blocks',
 'MODULE_TEXTFILES'=>'Text files',
+'MODULE_SOUNDFILES'=>'Sound files',
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 

@@ -92,6 +92,7 @@ $dictionary=array(
 'MODULE_MARKET'=>'Маркет дополнений',
 'MODULE_MYBLOCKS'=>'Мои блоки',
 'MODULE_TEXTFILES'=>'Текстовые файлы',
+'MODULE_SOUNDFILES'=>'Звуковые файлы',
 
 'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 

@@ -1,0 +1,60 @@
+<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>templates/soundfiles/css/mp3-player-button.css" />
+<script src="<#ROOTHTML#>templates/soundfiles/soundmanager2-nodebug-jsmin.js"></script>
+<script type="text/javascript" src="<#ROOTHTML#>templates/soundfiles/script/mp3-player-button.js"></script>
+
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+
+<a href="#" class="btn btn-default" onClick="$('#add_form').toggle();"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+<br><br>
+
+<div id='add_form' style="display:none">
+<form action="?" method="post" class="form-horizontal" enctype="multipart/form-data">
+<div class="form-group">
+        <label class="control-label">File:</label>
+        <div class="col-lg-5">
+                <input type="file" name="file" class="form-control">
+        </div>
+</div>
+
+
+<div class="form-group">
+ <label class="control-label">&nbsp;</label>
+  <div class="col-lg-5">
+   <input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-primary">
+   <a href="#" onClick="$('#add_form').toggle();" class="btn btn-default"><#LANG_CANCEL#></a>
+  </div>
+ </div>
+ 
+<input type="hidden" name="mode" value="update">
+</form>
+</div>
+
+
+ <table class="table table-striped" width="100%" border="0" cellpadding=5>
+ <tbody>
+  [#begin FILES#]
+  <tr>
+   <td valign="top"><a href="<#ROOTHTML#>sounds/[#FILENAME#].mp3" class="sm2_button">Play</a> <a href="?view_mode=edit_file&file=[#FILENAME_URL#]">[#FILENAME#]</a></td>
+   <td valign="top">playSound('[#FILENAME#]');</td>
+   <td valign="top"><a href="?view_mode=delete_file&file=[#FILENAME_URL#]" class="btn  btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a></td>
+  </tr>
+  [#end FILES#]
+ </table>
+ </tbody>
+
+
+
+
+<script>
+soundManager.setup({
+  url: '<#ROOTHTML#>templates/soundfiles/',
+  flashVersion: 9, // optional: shiny features (default = 8)
+  // optional: ignore Flash where possible, use 100% HTML5 mode
+  // preferFlash: false,
+  onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+  }
+});
+</script>

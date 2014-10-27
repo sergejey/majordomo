@@ -563,7 +563,7 @@ function usual(&$out) {
     $status=0;
    }
 
-  } elseif ($rec['IS_DYNAMIC']==2) {
+  } elseif ($rec['IS_DYNAMIC']==2 && trim($code)!='') {
 
    $display=0;
 
