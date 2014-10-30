@@ -376,19 +376,49 @@ function setLocalTime($now_date, $diff=0) {
 }
 
 // ---------------------------------------------------------
-/**
- * @param $text
- */
-function DebMes($text)
-{
-  // DEBUG MESSAGE LOG
-  if (!is_dir(ROOT . 'debmes')) {
-    mkdir(ROOT . 'debmes');
-  }
+   /**
+    * Write Exceptions
+    * @param $errorMessage string Exception message
+    * @param $logLevel string exception level, default=debug
+    */
+   function DebMes($errorMessage, $logLevel = "debug")
+   {
+      // DEBUG MESSAGE LOG
+      if (!is_dir(ROOT . 'debmes'))
+      {
+         mkdir(ROOT . 'debmes');
+      }
 
-  $log = Logger::getRootLogger();
-  $log->debug($text);
-}
+      $log = Logger::getRootLogger();
+      $dbLog = Logger::getLogger('dblog');
+      
+      switch ($logLevel) 
+      {
+         case "trace":
+            $log->trace($errorMessage);
+            $dbLog->trace($errorMessage);
+            break;
+         case "fatal":
+            $log->fatal($errorMessage);
+            $dbLog->fatal($errorMessage);
+            break;
+         case "error":
+            $log->error($errorMessage);
+            $dbLog->error($errorMessage);
+            break;    
+         case "warn":
+            $log->warn($errorMessage);
+            $dbLog->warn($errorMessage);
+            break;  
+         case "info":
+            $log->info($errorMessage);
+            $dbLog->info($errorMessage);
+            break;
+         default:
+            $log->debug($errorMessage);
+            $dbLog->debug($errorMessage);
+      }
+   }
 
 /**
  * Method returns logger with meaningful name. In this case much easy to enable\disable
