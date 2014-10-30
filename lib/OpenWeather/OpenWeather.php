@@ -163,7 +163,7 @@ class OpenWeather
          $widget .= "<h3>" . $weather->name . ", " . $weather->sys->country . "</h3>";
          $widget .= "<h2>";
          $widget .= "   <img src=\"" . OpenWeather::GetWeatherImage($weather->weather[0]->icon) . "\" />"; 
-         $widget .= $weather->main->temp;
+         $widget .= round($weather->main->temp, 2);
          $widget .= $vUnits == "metric" ? " °C" : " °F";
          $widget .= "</h2>";
          $widget .= "<p>" . $weather->weather[0]->description . "</p>"; 
