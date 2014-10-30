@@ -100,6 +100,7 @@ Action URL:
                         <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
                         <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
                         <option value="url"[#if TYPE="url"#] selected[#endif#]><#LANG_URL#>
+                        <option value="urlblank"[#if TYPE="urlblank"#] selected[#endif#]><#LANG_URL#> (<#LANG_NEW_WINDOW#>)
                         <option value="command"[#if TYPE="command"#] selected[#endif#]><#LANG_JS_COMMAND#>
                         <option value="button"[#if TYPE="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="switch"[#if TYPE="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
@@ -294,7 +295,7 @@ Action URL:
 
 
 [#if !CHILDREN#]
-[#if TYPE=="window" || TYPE=="url"#]
+[#if TYPE=="window" || TYPE=="url" || TYPE=="urlblank"#]
 <!-- URL (varchar) -->
 <div class="form-group">
         <label class="control-label"> <#LANG_URL#>:</label>

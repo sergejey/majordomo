@@ -83,6 +83,22 @@
 <span id="label_[#ID#]">[#TITLE#]</span><!--#[#if RESULT_TOTAL#] <span class="ui-li-count">[#RESULT_TOTAL#]</span>[#endif#]#--></a>
 </li>
 [#endif TYPE#]
+
+[#if TYPE=="urlblank"#]
+<li[#if VISIBLE_DELAY!="0"#] class='visible_delay'[#endif#] id='item[#ID#]'>
+<a
+ [#if !RESULT_TOTAL#]
+ href="[#URL#]" target=_blank
+ [#else RESULT_TOTAL#]
+ href="<#ROOTHTML#>menu/[#ID#].html"
+ [#endif RESULT_TOTAL#]
+>
+[#if ICON!=""#]<img src="<#ROOTHTML#>cms/icons/[#ICON#]" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">[#endif#]
+<span id="label_[#ID#]">[#TITLE#]</span></a>
+</li>
+
+[#endif TYPE#]
+
 [#endif SUB_PRELOAD#]
 
 
