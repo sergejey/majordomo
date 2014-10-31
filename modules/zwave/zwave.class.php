@@ -831,14 +831,28 @@ function admin(&$out) {
     }
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
-     if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY']) {
+     $validated=1;
+     if ($prop['LINKED_OBJECT']) {
       if ($prop['CORRECT_VALUE']) {
        $prop['VALUE']+=(float)$prop['CORRECT_VALUE'];
       }
-      if (!$prop['VALIDATE'] || (((float)$prop['VALUE']>=(float)$prop['VALID_FROM'])) && ((float)$prop['VALUE']<=(float)$prop['VALID_TO'])) {
-       setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array($this->name=>'0'));
+     }
+     if ($prop['VALIDATE']) {
+      if (((float)$prop['VALUE']<(float)$prop['VALID_FROM']) || ((float)$prop['VALUE']>(float)$prop['VALID_TO'])) {
+       $validated=0;
       }
      }
+
+     if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY'] && $validated) {
+      setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array($this->name=>'0'));
+     }
+
+     if ($prop['LINKED_OBJECT'] && $prop['LINKED_METHOD'] && $validated) {
+      $params=array();
+      $params['VALUE']=$prop['VALUE'];
+      callMethod($prop['LINKED_OBJECT'].'.'.$prop['LINKED_METHOD'], $params);
+     }
+
     } else {
      $prop['ID']=SQLInsert('zwave_properties', $prop);
     }
@@ -1080,6 +1094,7 @@ zwave_properties - Properties
  zwave_properties: COMMAND_CLASS varchar(10) NOT NULL DEFAULT ''
  zwave_properties: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  zwave_properties: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ zwave_properties: LINKED_METHOD varchar(255) NOT NULL DEFAULT ''
  zwave_properties: UPDATED datetime
  zwave_properties: NEXT_UPDATE datetime
 EOD;

@@ -225,12 +225,14 @@
       }
       global ${'linked_object'.$properties[$i]['ID']};
       global ${'linked_property'.$properties[$i]['ID']};
+      global ${'linked_method'.$properties[$i]['ID']};
 
       $old_linked_object=$properties[$i]['LINKED_OBJECT'];
       $old_linked_property=$properties[$i]['LINKED_PROPERTY'];
 
       $properties[$i]['LINKED_OBJECT']=trim(${'linked_object'.$properties[$i]['ID']});
       $properties[$i]['LINKED_PROPERTY']=trim(${'linked_property'.$properties[$i]['ID']});
+      $properties[$i]['LINKED_METHOD']=trim(${'linked_method'.$properties[$i]['ID']});
 
       global ${'update_period'.$properties[$i]['ID']};
       $properties[$i]['UPDATE_PERIOD']=(int)${'update_period'.$properties[$i]['ID']};
