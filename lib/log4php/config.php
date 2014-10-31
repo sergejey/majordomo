@@ -31,26 +31,17 @@ return array(
             'file' => 'debmes/%s.log',
             'datePattern' => 'Y-m-d',
          )
-      ),
-      'defaultDB' => array(
-         'class' => 'LoggerAppenderPDO',
-         'params' => array(
-            'dsn' => 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME,
-            'user' => DB_USER,
-            'password' => DB_PASSWORD,
-            'table' => 'log4php_log',
-         )
-      ), 
+      )
     ),
    'loggers' => array(
       'class.object' => array(
          'level' => 'TRACE',
-         'appenders' => array('objectsFileLog'),
+         'appenders' => array('default'),
          'additivity' => false,
       ),
       'dblog' => array(
          'level' => 'TRACE',
-         'appenders' => array('defaultDB'),
+         'appenders' => array('default'),
          'additivity' => false
       )
    ),
