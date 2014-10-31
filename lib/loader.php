@@ -28,6 +28,6 @@ if ($lib_dir = @opendir("./lib")) {
 require_once dirname(__FILE__) . '/log4php/Logger.php';
 
 // Tell log4php to use our configuration file.
-Logger::configure(dirname(__FILE__) . '/log4php/config.xml');
+Logger::configure(dirname(__FILE__) . '/log4php/config.php');
 
 ?>
