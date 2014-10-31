@@ -390,33 +390,32 @@ function setLocalTime($now_date, $diff=0) {
       }
 
       $log = Logger::getRootLogger();
-      $dbLog = Logger::getLogger('dblog');
-      
+      //$dbLog = Logger::getLogger('dblog');
       switch ($logLevel) 
       {
          case "trace":
             $log->trace($errorMessage);
-            $dbLog->trace($errorMessage);
+            //$dbLog->trace($errorMessage);
             break;
          case "fatal":
             $log->fatal($errorMessage);
-            $dbLog->fatal($errorMessage);
+            //$dbLog->fatal($errorMessage);
             break;
          case "error":
             $log->error($errorMessage);
-            $dbLog->error($errorMessage);
+            //$dbLog->error($errorMessage);
             break;    
          case "warn":
             $log->warn($errorMessage);
-            $dbLog->warn($errorMessage);
+            //$dbLog->warn($errorMessage);
             break;  
          case "info":
             $log->info($errorMessage);
-            $dbLog->info($errorMessage);
+            //$dbLog->info($errorMessage);
             break;
          default:
             $log->debug($errorMessage);
-            $dbLog->debug($errorMessage);
+            //$dbLog->debug($errorMessage);
       }
    }
 

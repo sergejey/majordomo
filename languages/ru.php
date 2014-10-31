@@ -42,6 +42,22 @@ $dictionary=array(
 
 'GENERAL_SERVICE'=>'Сервис',
 
+'GENERAL_GREEN'=>'Зелёный',
+'GENERAL_YELLOW'=>'Жёлтый',
+'GENERAL_RED'=>'Красный',
+'GENERAL_CHANGED_TO'=>'изменился на',
+'GENERAL_RESTORED_TO'=>'восстановился на',
+'GENERAL_SYSTEM_STATE'=>'Системный статус',
+'GENERAL_SECURITY_STATE'=>'Статус безопасности',
+'GENERAL_COMMUNICATION_STATE'=>'Статус связи',
+'GENERAL_STOPPED'=>'остановлен',
+'GENERAL_CYCLE'=>'цикл',
+'GENERAL_NO_INTERNET_ACCESS'=>'Нет доступа в Интернет',
+'GENERAL_SETTING_UP_LIGHTS'=>'Настраиваю освещение',
+'GENERAL_CONTROL'=>'Управление',
+'GENERAL_INSIDE'=>'Дома',
+'GENERAL_OUTSIDE'=>'На улице',
+
 'SECTION_OBJECTS'=>'Объекты',
 'SECTION_APPLICATIONS'=>'Приложения',
 'SECTION_DEVICES'=>'Устройства',
