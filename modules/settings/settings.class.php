@@ -45,6 +45,7 @@ class settings extends module {
  if (IsSet($this->tab)) {
   $p["tab"]=$this->tab;
  }
+ 
  return parent::saveParams($p);
 }
 /**
@@ -105,6 +106,10 @@ class settings extends module {
    $out['SINGLE_REC']=1;
   }
   $this->data=$out;
+
+  
+  $this->dbErrorTableInstall($out);
+  
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 }
@@ -197,6 +202,25 @@ EOD;
 
 parent::dbInstall($data);
  }
+ 
+   /**
+    * Check table log4php_log on save params. If table not exists then create it.
+    * @param array $data Settings params 
+    */
+   function dbErrorTableInstall($data)
+   {
+      $result = $data["RESULT"];
+      
+      foreach($result as $params)
+      {
+         if($params["NAME"] == "LOG4PHP"  && (strtolower($params["VALUE"]) == "database" || strtolower($params["VALUE"]) == "both"))
+         {
+            $query = "CREATE TABLE IF NOT EXISTS `log4php_log` (`timestamp` DATETIME, `logger` VARCHAR(256), `level` VARCHAR(32), `message` VARCHAR(4000), `thread` INTEGER, `file` VARCHAR(255), `line` VARCHAR(10));";
+            SQLExec($query);
+         }
+      }
+   }
+      
 // --------------------------------------------------------------------
 }
 /*

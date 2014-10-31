@@ -390,33 +390,36 @@ function setLocalTime($now_date, $diff=0) {
       }
 
       $log = Logger::getRootLogger();
-      $dbLog = Logger::getLogger('dblog');
+      
+      if (defined('SETTINGS_LOG4PHP'))
+      {
+         $errorDestination = strtolower(SETTINGS_LOG4PHP);
+         if ($errorDestination == "database")
+            $log = Logger::getLogger('dblog');
+         
+         if ($errorDestination == "both")
+            $log = Logger::getLogger('db_and_file');
+      }
       
       switch ($logLevel) 
       {
          case "trace":
             $log->trace($errorMessage);
-            $dbLog->trace($errorMessage);
             break;
          case "fatal":
             $log->fatal($errorMessage);
-            $dbLog->fatal($errorMessage);
             break;
          case "error":
             $log->error($errorMessage);
-            $dbLog->error($errorMessage);
             break;    
          case "warn":
             $log->warn($errorMessage);
-            $dbLog->warn($errorMessage);
             break;  
          case "info":
             $log->info($errorMessage);
-            $dbLog->info($errorMessage);
             break;
          default:
             $log->debug($errorMessage);
-            $dbLog->debug($errorMessage);
       }
    }
 

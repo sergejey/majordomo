@@ -52,6 +52,10 @@ return array(
          'level' => 'TRACE',
          'appenders' => array('defaultDB'),
          'additivity' => false
+      ),
+      'db_and_file' => array(
+         'level' => 'TRACE',
+         'appenders' => array('defaultDB')
       )
    ),
 );

@@ -1432,8 +1432,8 @@ INSERT INTO `settings` (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`
 (54, 43, 0, 'Forward notification to Growl service', 'GROWL_ENABLE', 'onoff', '', '0', '0', '', ''),
 (55, 42, 0, 'Growl service hostname', 'GROWL_HOST', 'text', '', '', '', '', ''),
 (56, 41, 0, 'Growl service password (optional)', 'GROWL_PASSWORD', 'text', '', '', '', '', ''),
-(57, 40, 0, 'Growl notification minimum level', 'GROWL_LEVEL', 'text', '', '1', '1', '', '');
-
+(57, 40, 0, 'Growl notification minimum level', 'GROWL_LEVEL', 'text', '', '1', '1', '', ''),
+(62, 0, 0, 'Log request destination', 'LOG4PHP', 'text', 'Возможные варианты: File - запись в файл, DataBase - запись в базу данных, Both - запись в файл и в базу', 'File', 'File', '', '');
 -- --------------------------------------------------------
 
 --
@@ -1686,6 +1686,20 @@ CREATE TABLE IF NOT EXISTS `watchfolders` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `log4php_log`
+--
+DROP TABLE IF EXISTS `log4php_log`;
+CREATE TABLE IF NOT EXISTS `log4php_log` (
+    `timestamp` DATETIME,
+    `logger` VARCHAR(256),
+    `level` VARCHAR(32),
+    `message` VARCHAR(4000),
+    `thread` INTEGER,
+    `file` VARCHAR(255),
+    `line` VARCHAR(10)
+)ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `webvars`
