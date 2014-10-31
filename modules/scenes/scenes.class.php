@@ -563,9 +563,10 @@ function usual(&$out) {
     $status=0;
    }
 
-  } elseif ($rec['IS_DYNAMIC']==2 && trim($code)!='') {
+  } elseif ($rec['IS_DYNAMIC']==2) {
 
    $display=0;
+
 
                   try {
                    $code=$rec['CONDITION_ADVANCED'];

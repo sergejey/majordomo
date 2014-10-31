@@ -176,10 +176,6 @@ function run() {
 
   $rec=SQLSelectOne("SELECT * FROM mqtt WHERE PATH LIKE '".DBSafe($path)."'");
 
-  if ($rec['ID'] && $value==$rec['VALUE']) {
-   return;
-  }
-
   if (!$rec['ID']) {
    $rec['PATH']=$path;
    $rec['TITLE']=$path;

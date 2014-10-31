@@ -1388,10 +1388,14 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
   fclose ($fp);
   */
 
-  if (substr(php_uname(), 0, 7) == "Windows") {
-   exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
+  if (defined('PATH_TO_MYSQLDUMP')) {
+   exec(PATH_TO_MYSQLDUMP." --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
   } else {
-   exec("/usr/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
+   if (substr(php_uname(), 0, 7) == "Windows") {
+    exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
+   } else {
+    exec("/usr/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
+   }
   }
 
  }

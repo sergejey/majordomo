@@ -62,13 +62,14 @@ if ($lib_dir = @opendir("./scripts"))
 
 $threads = new Threads;
 
-if (substr(php_uname(), 0, 7) == "Windows") 
-{
-   $threads->phpPath = '..\server\php\php.exe';
-}
-else 
-{
-   $threads->phpPath = 'php';
+if (defined('PATH_TO_PHP')) {
+ $threads->phpPath = PATH_TO_PHP;
+} else {
+ if (substr(php_uname(), 0, 7) == "Windows") {
+  $threads->phpPath = '..\server\php\php.exe';
+ } else {
+  $threads->phpPath = 'php';
+ }
 }
 
 foreach($cycles as $path) 
