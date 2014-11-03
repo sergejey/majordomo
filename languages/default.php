@@ -42,6 +42,23 @@ $dictionary=array(
 
 'GENERAL_SERVICE'=>'Service',
 
+'GENERAL_GREEN'=>'Green',
+'GENERAL_YELLOW'=>'Yellow',
+'GENERAL_RED'=>'Red',
+'GENERAL_CHANGED_TO'=>'changed to',
+'GENERAL_RESTORED_TO'=>'restored to',
+'GENERAL_SYSTEM_STATE'=>'System state',
+'GENERAL_SECURITY_STATE'=>'Security state',
+'GENERAL_COMMUNICATION_STATE'=>'Communication state',
+'GENERAL_STOPPED'=>'stopped',
+'GENERAL_CYCLE'=>'cycle',
+'GENERAL_NO_INTERNET_ACCESS'=>'No Interet access',
+'GENERAL_SETTING_UP_LIGHTS'=>'Setting lights',
+'GENERAL_CONTROL'=>'Control',
+'GENERAL_INSIDE'=>'Inside',
+'GENERAL_OUTSIDE'=>'Outside',
+
+
 'SECTION_OBJECTS'=>'Objects',
 'SECTION_APPLICATIONS'=>'Applications',
 'SECTION_DEVICES'=>'Devices',

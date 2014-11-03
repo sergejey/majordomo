@@ -829,6 +829,12 @@ function admin(&$out) {
     if ($comments[$k]) {
      $prop['COMMENTS']=$comments[$k];
     }
+
+    if (is_numeric($prop['VALUE'])) {
+     $prop['VALUE']=round($prop['VALUE'], 3);
+    }
+
+
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
      $validated=1;
@@ -844,10 +850,13 @@ function admin(&$out) {
      }
 
      if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY'] && $validated) {
-      setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array($this->name=>'0'));
+      $old_value=getGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY']);
+      if ($prop['VALUE']!=$old_value) {
+       setGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY'], $prop['VALUE'], array($this->name=>'0'));
+      }
      }
 
-     if ($prop['LINKED_OBJECT'] && $prop['LINKED_METHOD'] && $validated) {
+     if ($prop['LINKED_OBJECT'] && $prop['LINKED_METHOD'] && $validated && ($prop['VALUE']!=$old_value || (!$prop['LINKED_PROPERTY']))) {
       $params=array();
       $params['VALUE']=$prop['VALUE'];
       callMethod($prop['LINKED_OBJECT'].'.'.$prop['LINKED_METHOD'], $params);
