@@ -255,11 +255,13 @@
 
       SQLUpdate('zwave_properties', $properties[$i]);
 
-      if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {
-       addLinkedProperty($properties[$i]['LINKED_OBJECT'], $properties[$i]['LINKED_PROPERTY'], $this->name);
-      }
       if ($old_linked_object && $old_linked_object!=$properties[$i]['LINKED_OBJECT'] && $old_linked_property && $old_linked_property!=$properties[$i]['LINKED_PROPERTY']) {
        removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+       //DebMes("Removing linked property ".$old_linked_object.".".$old_linked_property);
+      }
+      if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {
+       addLinkedProperty($properties[$i]['LINKED_OBJECT'], $properties[$i]['LINKED_PROPERTY'], $this->name);
+       //DebMes("Adding linked property ".$properties[$i]['LINKED_OBJECT'].".".$properties[$i]['LINKED_PROPERTY']);
       }
 
      }

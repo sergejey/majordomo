@@ -19,6 +19,8 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
    date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 }
 
+Define('SERVER_URL', 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT']);
+
 @error_reporting(E_ALL & ~(E_STRICT|E_NOTICE));
 
 ?>
