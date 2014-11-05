@@ -590,6 +590,40 @@ function usual(&$out) {
   return $status;
  }
 
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function getElements($qry='1') {
+      $elements=SQLSelect("SELECT * FROM elements WHERE $qry ORDER BY PRIORITY DESC, TITLE");
+      $totale=count($elements);
+      for($ie=0;$ie<$totale;$ie++) {
+       if ($elements[$ie]['PRIORITY']) {
+        $elements[$ie]['ZINDEX']=round($elements[$ie]['PRIORITY']/10);
+       }
+       $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
+       $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
+       $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+       $elements[$ie]['STATES']=$states;
+       if ($elements[$ie]['TYPE']=='container') {
+        $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID']);
+       }
+      }
+      for($ie=0;$ie<$totale;$ie++) {
+       if ($elements[$ie]['LINKED_ELEMENT_ID']) {
+        $elements[$ie]['TOP']=$positions[$elements[$ie]['LINKED_ELEMENT_ID']]['TOP']+$elements[$ie]['TOP'];
+        $elements[$ie]['LEFT']=$positions[$elements[$ie]['LINKED_ELEMENT_ID']]['LEFT']+$elements[$ie]['LEFT'];
+        $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
+        $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
+       }
+      }
+      return $elements;  
+ }
+
 /**
 * Install
 *
@@ -647,13 +681,16 @@ elm_states - Element states
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'
  elements: TITLE varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
+ elements: CSS_STYLE varchar(255) NOT NULL DEFAULT ''
  elements: TOP int(10) NOT NULL DEFAULT '0'
  elements: LEFT int(10) NOT NULL DEFAULT '0'
  elements: WIDTH int(10) NOT NULL DEFAULT '0'
  elements: HEIGHT int(10) NOT NULL DEFAULT '0'
  elements: DX int(10) NOT NULL DEFAULT '0'
  elements: DY int(10) NOT NULL DEFAULT '0'
+ elements: POSITION_TYPE int(3) NOT NULL DEFAULT '0'
  elements: LINKED_ELEMENT_ID int(10) NOT NULL DEFAULT '0'
+ elements: CONTAINER_ID int(10) NOT NULL DEFAULT '0'
  elements: CROSS_SCENE int(3) NOT NULL DEFAULT '0'
  elements: BACKGROUND int(3) NOT NULL DEFAULT '1'
  elements: PRIORITY int(10) NOT NULL DEFAULT '0'

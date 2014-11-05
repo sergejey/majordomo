@@ -31,7 +31,8 @@
    }
   //updating 'BACKGROUND' (varchar)
    global $background;
-   $rec['BACKGROUND']=$background;
+   $rec['BACKGROUND']=(int)$background;
+
   //updating 'PRIORITY' (int)
    global $priority;
    $rec['PRIORITY']=(int)$priority;
@@ -132,21 +133,41 @@
     global $priority;
     $element['PRIORITY']=(int)$priority;
 
-    global $linked_element_id;
-    if ($linked_element_id==$element['ID']) {
-     $linked_element_id=0;
+
+    global $position_type;
+    $element['POSITION_TYPE']=(int)$position_type;
+
+
+    if ($element['POSITION_TYPE']==0) {
+     global $linked_element_id;
+     if ($linked_element_id==$element['ID']) {
+      $linked_element_id=0;
+     }
+     $element['LINKED_ELEMENT_ID']=(int)$linked_element_id;
+
+     global $top;
+     $element['TOP']=(int)$top;
+
+     global $left;
+     $element['LEFT']=(int)$left;
     }
-    $element['LINKED_ELEMENT_ID']=(int)$linked_element_id;
-
-    global $top;
-    $element['TOP']=(int)$top;
-
-
-    global $left;
-    $element['LEFT']=(int)$left;
 
     global $type;
     $element['TYPE']=$type;
+
+    global $css_style;
+    $element['CSS_STYLE']=$css_style;
+    if (!$element['CSS_STYLE']) {
+     $element['CSS_STYLE']='default';
+    }
+
+    global $container_id;
+    if ($element['TYPE']!='container') {
+     $element['CONTAINER_ID']=(int)$container_id;
+    } else {
+     $element['CONTAINER_ID']=0;
+    }
+
 
     global $scene_id;
     $element['SCENE_ID']=$scene_id;
@@ -278,7 +299,70 @@
       $state_id=$state_rec['ID'];
      }
      
+    } elseif ($element['TYPE']=='container') {
+
+     $state_rec['TITLE']='default';
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['TITLE']=$state_title_new;
+
+     if ($state_rec['ID']) {
+      SQLUpdate('elm_states', $state_rec);
+     } else {
+      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+      $state_id=$state_rec['ID'];
+     }
+
+    } elseif (($element['TYPE']=='informer' || $element['TYPE']=='button' || $element['TYPE']=='nav') && !$state_rec['ID']) {
+
+     $state_rec=array();
+     $state_rec['TITLE']='default';
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['HTML']=$element['TITLE'];
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
+
+    } elseif (($element['TYPE']=='switch') && !$state_rec['ID']) {
+
+     global $linked_object;
+
+     if (!$linked_object) {
+      $linked_object='myObject';
+     }
+
+     $state_rec=array();
+     $state_rec['TITLE']='off';
+     $state_rec['HTML']=$element['TITLE'];
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['IS_DYNAMIC']=1;
+     $state_rec['LINKED_OBJECT']=$linked_object;
+     $state_rec['LINKED_PROPERTY']='status';
+     $state_rec['CONDITION']=4;
+     $state_rec['CONDITION_VALUE']=1;
+     $state_rec['ACTION_OBJECT']=$state_rec['LINKED_OBJECT'];
+     $state_rec['ACTION_METHOD']='turnOn';
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+
+
+     $state_rec=array();
+     $state_rec['TITLE']='on';
+     $state_rec['HTML']=$element['TITLE'];
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['IS_DYNAMIC']=1;
+     $state_rec['LINKED_OBJECT']=$linked_object;
+     $state_rec['LINKED_PROPERTY']='status';
+     $state_rec['CONDITION']=1;
+     $state_rec['CONDITION_VALUE']=1;
+     $state_rec['ACTION_OBJECT']=$state_rec['LINKED_OBJECT'];
+     $state_rec['ACTION_METHOD']='turnOff';
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
+
+
+
+
     }
+
+
    }
         
    if (is_array($state_rec)) {
@@ -325,8 +409,12 @@
    $out['STATE_ID']=$state_id;
   }
 
-  $elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
+  //$elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
+  $elements=$this->getElements("SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0");
   $out['ELEMENTS']=$elements;
+
+  $containers=SQLSelect("SELECT `ID`, `TITLE` FROM elements WHERE SCENE_ID='".$rec['ID']."' AND TYPE='container' ORDER BY PRIORITY DESC, TITLE");
+  $out['CONTAINERS']=$containers;
 
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
 

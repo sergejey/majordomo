@@ -133,7 +133,13 @@
              }
 
              if (obj[i].STATE=='1' && !elem.is(':visible')) {
-              elem.show();
+              if (elem.hasClass('inlineblock')) {
+               elem.css('display', 'inline-block');
+              } else {
+               elem.show();
+              }
+              
+              //$('#' + id).css('display', 'inline-block');
               if (firstRun!=1 && obj[i].SWITCH_SCENE=='1') {
                switchScene(obj[i].SCENE_ID);
               }
@@ -164,7 +170,6 @@
         </script>
 
 
-
 <table  border="0" align="center">
  <tr>
   <td valign="top">
@@ -177,9 +182,33 @@
  <div id="scene_background_[#ID#]" style="position:relative;">
  [#begin ELEMENTS#]
  <!-- element [#ID#] -->
+ [#if ELEMENTS#]
+ <div 
+   class="element_<#ELEMENTS.ID#> type_<#ELEMENTS.TYPE#>[#if "<#ELEMENTS.CSS_STYLE#>"!=""#] style_<#ELEMENTS.CSS_STYLE#>[#endif#][#if ("<#ELEMENTS.BACKGROUND#>"=="1")#] container_background[#endif#]"
+   style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;
+   [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
+   [#if ("<#ELEMENTS.WIDTH#>"!="0") && ("<#ELEMENTS.HEIGHT#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#endif#]
+   ">
+  [#tree ELEMENTS#]
+ </div>
+ [#else ELEMENTS#]
+
  [#begin STATES#]
-  <div class="element_<#ELEMENTS.ID#>" id="state_[#ID#]"[#if SCRIPT_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!="" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#] onClick="stateClicked([#ID#]);"[#endif#] style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#if "<#ELEMENTS.BACKGROUND#>"=="1"#]border:1px solid white;background-color:rgba(0,0,0,0.5);padding:5px;[#endif BACKGROUND#][#endif#][#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#if "<#ELEMENTS.TYPE#>"=="html"#][#CODE#][#HTML#][#endif#]</div>
+  <div 
+   class="element_<#ELEMENTS.ID#> type_<#ELEMENTS.TYPE#>[#if "<#ELEMENTS.CSS_STYLE#>"!=""#] style_<#ELEMENTS.CSS_STYLE#>[#endif#] state_[#TITLE#][#if ("<#ELEMENTS.BACKGROUND#>"=="1")#] html_background[#endif#][#if "<#ELEMENTS.POSITION_TYPE#>"=="1"#] inlineblock[#endif#]" 
+   id="state_[#ID#]"
+   [#if SCRIPT_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!="" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#] 
+    onClick="stateClicked([#ID#]);"
+   [#endif#] 
+   style="
+   [#if "<#ELEMENTS.POSITION_TYPE#>"=="0"#]position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#endif ELEMENTS#]
+   [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
+   [#if ("<#ELEMENTS.WIDTH#>"!="0") && ("<#ELEMENTS.HEIGHT#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#endif#]
+   [#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#][#CODE#][#HTML#]</div>
  [#end STATES#]
+
+ [#endif ELEMENTS#]
+
  [#if CSS!=""#]
  <style>
   [#CSS#]

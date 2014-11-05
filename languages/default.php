@@ -942,6 +942,15 @@ $dictionary=array(
 
 'DO_NOTHING'=>'Do nothing',
 'DO_ONCLICK'=>'On click',
+'STYLE'=>'Style',
+'PLACE_IN_CONTAINER'=>'Place in container',
+'POSITION_TYPE'=>'Positioning',
+'POSITION_TYPE_ABSOLUTE'=>'Absolute',
+'POSITION_TYPE_SIDE'=>'Side by side',
+
+'CONTAINER'=>'Container',
+'INFORMER'=>'Informer',
+'NAV_LINK'=>'Nav. link',
 
 'TEST'=>'test'
 

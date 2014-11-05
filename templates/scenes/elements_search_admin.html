@@ -10,14 +10,17 @@
 <table class="table table-bordered">
 <tr>
  <th><#LANG_TITLE#></th>
+ <th><#LANG_TYPE#></th>
  <th><#LANG_PRIORITY#></th>
  <th>&nbsp;</th>
 </tr>
 [#begin ELEMENTS#]
 <tr>
  <td>
+  [#if CONTAINER_ID!="0"#]&nbsp;&nbsp;&nbsp;&nbsp;[#endif#]
    [#TITLE#]
  </td>
+ <td>[#TYPE#]</td>
  <td>[#PRIORITY#]</td>
  <td>
   <div class="pull-right">
@@ -26,6 +29,9 @@
   </div>
  </td>
 </tr>
+[#if ELEMENTS#]
+ [#tree ELEMENTS#]
+[#endif ELEMENTS#]
 [#end ELEMENTS#]
 </table>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">

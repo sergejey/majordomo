@@ -740,7 +740,7 @@ $dictionary=array(
 'SCENE'=>'Сцена',
 'ADD_NEW_SCENE'=>'Добавить новую сцену', // scenes/scenes_search_admin.html; 
 'USE_ELEMENT_TO_POSITION_RELATED'=>'Позиционировать относительно',
-'NO_RELATED'=>'Левого верхнего угла сцены',
+'NO_RELATED'=>'Левого верхнего угла',
 'TOP'=>'Отступ сверху', // scenes/elements_edit.html; 
 'LEFT'=>'Отступ слева', // scenes/elements_edit.html; 
 'STATES'=>'Состояния', // scenes/elements_edit.html; 
@@ -936,6 +936,17 @@ $dictionary=array(
 
 'DO_NOTHING'=>'Ничего не делать',
 'DO_ONCLICK'=>'Выполнить при клике',
+
+'STYLE'=>'Стиль',
+'PLACE_IN_CONTAINER'=>'Распложить в контейнере',
+'POSITION_TYPE'=>'Позиционирование',
+'POSITION_TYPE_ABSOLUTE'=>'Абсолютное',
+'POSITION_TYPE_SIDE'=>'Друг за другом',
+
+'CONTAINER'=>'Контейнер',
+'INFORMER'=>'Информер',
+'NAV_LINK'=>'Нав. ссылка',
+
 
 'TEST'=>'test'
 
