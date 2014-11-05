@@ -112,7 +112,8 @@ foreach($cycles as $path)
 
 echo "ALL CYCLES STARTED\n";
 
-$restart_threads=array(
+if (!is_array($restart_threads)) {
+ $restart_threads=array(
                        'cycle_execs.php', 
                        'cycle_main.php', 
                        'cycle_ping.php', 
@@ -121,6 +122,7 @@ $restart_threads=array(
                        'cycle_states.php', 
                        'cycle_watchfolders.php', 
                        'cycle_webvars.php');
+}
 
 while (false !== ($result = $threads->iteration())) 
 {
