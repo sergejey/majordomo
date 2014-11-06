@@ -41,17 +41,21 @@
    $rec['HIDDEN']=(int)$hidden;
 
   // updating elements array
+  /*
    global $elements;
    $elements = json_decode($elements, true);
    $elements = ($elements == null) ? array() : $elements;
+   */
   }
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
+     /*
          foreach ($elements as $value) {
                 SQLUpdate('elements', $value);
          }
+     */
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
@@ -178,9 +182,9 @@
     global $width;
     $element['WIDTH']=(int)$width;
 
-   if ($element['WIDTH']) {
     global $background;
     $element['BACKGROUND']=(int)$background;
+
 
     global $use_javascript;
     if ($use_javascript) {
@@ -197,9 +201,6 @@
     } else {
      $element['CSS']='';
     }
-
-
-   }
 
 
     global $cross_scene;

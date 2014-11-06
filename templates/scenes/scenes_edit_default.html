@@ -1,4 +1,5 @@
 <br>
+<!--#
 <script src="<#ROOTHTML#>js/jquery.event.drag-2.2.js"></script>
 <script>
 $(function() {
@@ -48,6 +49,7 @@ $(function() {
         });
 });
 </script>
+#-->
 <!-- Table 'scenes' edit -->
 <form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit" class="form-horizontal">
 [#if OK#]
@@ -97,6 +99,10 @@ $(function() {
         <label class="control-label"><#LANG_BACKGROUND#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
+[#if BACKGROUND!=""#]
+<a href="[#BACKGROUND#]" target=_blank><img src="[#BACKGROUND#]" border="0" width="300"></a>
+[#endif#]
+
         </div>
 </div>
 <script type="text/javascript">
@@ -106,6 +112,8 @@ $(function() {
      }
 </script>
 
+
+<!--#
 [#if BACKGROUND!=""#]
 <div id="scene_background" style="position:relative;">
 [#begin ELEMENTS#]
@@ -124,6 +132,7 @@ $(function() {
 [#end ELEMENTS#]
 <img src="[#BACKGROUND#]" border="0"></div>
 [#endif#]
+#-->
 
 
 [#if ID!=""#]
@@ -144,10 +153,12 @@ $(function() {
 <a class="btn btn-default" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
 
  [#if ID!=""#]
-
  <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
  <a class="btn btn-default" href="?id=<#ID#>&view_mode=export"><#LANG_EXPORT#></a>
+ <a class="btn btn-default" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i> <#LANG_PREVIEW#></a> 
  [#endif ID#]
+
+
 </div>
 
 <input type="hidden" name="id" value="<#ID#>">

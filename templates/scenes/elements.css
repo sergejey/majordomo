@@ -1,0 +1,55 @@
+.container_background {
+ border:1px solid white;background-color:rgba(0,0,0,0.2);padding:5px;
+}
+
+.html_background {
+ border:1px solid white;background-color:rgba(0,0,0,0.5);padding:3px;
+}
+
+
+
+.type_switch {
+ color:white;
+ border:1px solid green;
+ background-color:rgba(0,0,0,0.7);
+ padding:3px;
+ width:110px;
+ height:40px;
+}
+
+.type_button {
+ color:white;
+ border:1px solid red;
+ background-color:rgba(0,0,0,0.7);
+ padding:3px;
+ width:110px;
+ height:40px;
+}
+
+.type_nav {
+ color:white;
+ border:1px solid yellow;
+ background-color:rgba(0,0,0,0.7);
+ padding:3px;
+ width:110px;
+ height:40px;
+}
+
+.type_informer {
+ color:white;
+ border:1px solid white;
+ background-color:rgba(0,0,0,0.7);
+ padding:3px;
+ width:110px;
+ height:40px;
+}
+
+.type_informer.style_default {
+ color:white;
+ border:1px solid white;
+}
+
+.type_informer.style_red {
+ color:white;
+ border:1px solid red;
+}

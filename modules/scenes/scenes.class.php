@@ -605,6 +605,9 @@ function usual(&$out) {
        if ($elements[$ie]['PRIORITY']) {
         $elements[$ie]['ZINDEX']=round($elements[$ie]['PRIORITY']/10);
        }
+       if ($elements[$ie]['TYPE']=='img') {
+        $elements[$ie]['BACKGROUND']=0;
+       }
        $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
        $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
        $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
@@ -692,7 +695,7 @@ elm_states - Element states
  elements: LINKED_ELEMENT_ID int(10) NOT NULL DEFAULT '0'
  elements: CONTAINER_ID int(10) NOT NULL DEFAULT '0'
  elements: CROSS_SCENE int(3) NOT NULL DEFAULT '0'
- elements: BACKGROUND int(3) NOT NULL DEFAULT '1'
+ elements: BACKGROUND int(3) NOT NULL DEFAULT '0'
  elements: PRIORITY int(10) NOT NULL DEFAULT '0'
  elements: JAVASCRIPT text
  elements: CSS text
