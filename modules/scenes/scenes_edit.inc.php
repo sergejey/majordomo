@@ -31,7 +31,7 @@
    }
   //updating 'BACKGROUND' (varchar)
    global $background;
-   $rec['BACKGROUND']=(int)$background;
+   $rec['BACKGROUND']=$background;
 
   //updating 'PRIORITY' (int)
    global $priority;
@@ -237,6 +237,7 @@
     global $ext_url_new;
     global $homepage_id_new;
     global $do_on_click_new;
+    global $priority_new;
 
     if ($state_delete && $state_rec['ID']) {
 
@@ -258,6 +259,7 @@
      $state_rec['CONDITION']=$condition_new;
      $state_rec['CONDITION_VALUE']=$condition_value_new;
      $state_rec['CONDITION_ADVANCED']=$condition_advanced_new;
+     $state_rec['PRIORITY']=(int)$priority_new;
 
      if ($do_on_click_new!='run_script') {
       $script_id_new=0;
@@ -406,7 +408,7 @@
     }
    }
    $out['MENU_ITEMS']=$menu_items;
-   $out['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."'");
+   $out['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."' ORDER BY elm_states.PRIORITY DESC");
    $out['STATE_ID']=$state_id;
   }
 

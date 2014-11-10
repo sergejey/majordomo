@@ -16,9 +16,14 @@
 
  $rules=array(
   'tempSensors.temp'=>array('optimize'=>'avg'),
+  'humSensors.humidity'=>array('optimize'=>'avg'),
+  'lumSensors.value'=>array('optimize'=>'avg'),
   'humiditySensors.humidity'=>array('optimize'=>'avg'),
   'uptime'=>array('keep'=>30, 'optimize'=>'max'),
+  'PowerMeters.power'=>array('optimize'=>'avg'),
+  'PowerMeters.electric'=>array('optimize'=>'avg'),
   'Relays.status'=>array('keep'=>0),
+  'inhouseMovementSensors.status'=>array('keep'=>30),
   'WeatherStations.tempOutside'=>array('optimize'=>'avg'),
   'WeatherStations.updatedTime'=>array('keep'=>0),
   'WeatherStations.pressureRt'=>array('optimize'=>'avg'),
@@ -78,6 +83,8 @@
    $rule='';
    if ($rules[$key]) {
     $rule=$rules[$key];
+   } elseif ($rules[$pvalue['OTITLE'].'.'.$pvalue['PTITLE']]) {
+    $rule=$rules[$pvalue['OTITLE'].'.'.$pvalue['PTITLE']];
    } elseif ($rules[$pvalue['PTITLE']]) {
     $rule=$rules[$pvalue['PTITLE']];
    }

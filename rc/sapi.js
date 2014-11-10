@@ -234,13 +234,18 @@ for (var i=0; i<WScript.Arguments.Unnamed.Count; i++)
  strWavFileName = scriptPath+'/../cached/voice/sapi_'+MD5(text.join(' '))+'.wav';
  strMp3FileName = scriptPath+'/../cached/voice/sapi_'+MD5(text.join(' '))+'.mp3';
 
- //if (!fso.FileExists(strFileName)) {
-  //
-  // Speach engine initiation:
-  //
  
+   var sv = WScript.CreateObject("SAPI.SpVoice");
+   sv.WaitUntilDone(-1);    // Don't be loud
+   sv.Voice = (new Enumerator(sv.GetVoices("Language="+lang,"Name="+engine))).item();
+    if (sv.Voice != null) {
 
+    //speak
+    sv.speak(text.join(' '),0);
+    sv.WaitUntilDone(-1);
+   }
 
+/*
    if (!fso.FileExists(strMp3FileName)) {
 
     var sv = WScript.CreateObject("SAPI.SpVoice");
@@ -282,26 +287,10 @@ for (var i=0; i<WScript.Arguments.Unnamed.Count; i++)
     strCommand = "@copy /B \""+strMp3FileName+"\"+,, \""+strMp3FileName+"\"";
     wShell.run(strCommand, 0, false);
 
-
    }
-
- //}
-
- /*
- if (fso.FileExists(strFileName)) {
-  
-  var wShell = WScript.CreateObject("Wscript.Shell");
-  var strCommand = scriptPath+"/sndrec32 /play /close \"" + strFileName+"\"";
-  wShell.run(strCommand, 0, false);
-  strCommand = "del \"" + strFileName+"\"";
-  wShell.run(strCommand, 0, false);
- } else {
-  // file was not created for some reason!
- }
- */
+*/
 
 
- 
 //
 // Finish
 //
