@@ -87,14 +87,7 @@
         <label class="col-lg-4 control-label"><#LANG_STYLE#></label>
         <div class="controls">
          <input type="radio" name="css_style" value="default"[#if ELEMENT_CSS_STYLE=="default"#] checked[#endif#]> <#LANG_DEFAULT#>
-         [#if ELEMENT_TYPE=="informer"#]
-         [#endif ELEMENT_TYPE#]
-         [#if ELEMENT_TYPE=="switch"#]
-         [#endif ELEMENT_TYPE#]
-         [#if ELEMENT_TYPE=="button"#]
-         [#endif ELEMENT_TYPE#]
-         [#if ELEMENT_TYPE=="nav"#]
-         [#endif ELEMENT_TYPE#]
+         [#inc type_styles.html#]
         </div>
 </div>
 [#else#]
@@ -277,7 +270,7 @@
         <label class="col-lg-4 control-label"><#LANG_CODE#></label>
         <div class="controls">
                 <textarea  name="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
-                 <br>(CSS id: <b>state_[#STATE_ID#]</b>, CSS class: <b>element_<#ELEMENT_ID#></b>)
+                 <br>(CSS class: <i>type_<#ELEMENT_TYPE#> style_<#ELEMENT_CSS_STYLE#> state_[#STATE_TITLE#] element_<#ELEMENT_ID#></i>, CSS id: <i>state_[#STATE_ID#]</i>)
         </div>
 </div>
 [#endif#]

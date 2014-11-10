@@ -383,8 +383,21 @@ function usual(&$out) {
      if ($state['SCRIPT_ID']) {
       runScript($state['SCRIPT_ID'], $params);
      }
-     echo "OK";
+
+     $qry="1";
+     $qry.=" AND elements.ID=".$state['ELEMENT_ID'];
+     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry ORDER BY elements.PRIORITY DESC, elm_states.PRIORITY DESC");
+     $total=count($states);
+     for($i=0;$i<$total;$i++) {
+      $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
+      if ($states[$i]['TYPE']=='html') {
+       $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
+      }
+     }
+     echo json_encode($states);
+
     }
+
     if ($op=='position') {
      global $id;
      global $posx;
