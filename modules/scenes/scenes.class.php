@@ -357,9 +357,12 @@ function usual(&$out) {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
     if ($op=='checkAllStates') {
+     global $scene_id;
      $qry="1";
      if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
-      $qry.=" AND scenes.ID='".$m[1]."'";
+      $qry.=" AND scenes.ID='".(int)$m[1]."'";
+     } elseif ($scene_id) {
+      $qry.=" AND scenes.ID='".(int)$scene_id."'";
      } else {
       $qry.=" AND scenes.HIDDEN!=1";
      }

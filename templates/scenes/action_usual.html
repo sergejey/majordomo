@@ -151,7 +151,7 @@
 
         function checkAllStates() {
          clearTimeout(checkTimer);
-         var url="?ajax=1&op=checkAllStates";
+         var url="?ajax=1&op=checkAllStates[#if "<#SCENE_ID#>"!=""#]&scene_id=<#SCENE_ID#>[#endif#]";
          $.ajax({
           url: url,
           }).done(function(data) { 

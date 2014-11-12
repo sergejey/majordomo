@@ -68,6 +68,9 @@
       $res[$i]['NUM']=$i;
       $res[$i]['NUMP']=$i+1;
    }
+   if ($total==1) {
+    $out['SCENE_ID']=$res[0]['ID'];
+   }
    $out['TOTAL']=$total;
    $out['RESULT']=$res;
   }

@@ -17,6 +17,83 @@
 <script language="javascript">
 
  var valueChangedFlag = {};
+ var latestRequest=0;
+ var requestTimer=0;
+ var requestDelay=2;
+ var requestProcessing=0;
+ var labelsCollected='';
+ var valuesCollected='';
+
+ var labelsCollected_sent='';
+ var valuesCollected_sent='';
+
+ var requestSent = Math.round(+new Date()/1000);
+
+ function upateDebugField() {
+  if (!$('#debugField').length) return;
+  var timeUnix = Math.round(+new Date()/1000);
+  var passed=timeUnix-requestSent;
+  $('#debugField').html('Labels: '+labelsCollected+' (last sent: '+labelsCollected_sent+')<br/>Values: '+valuesCollected+' (last sent: '+valuesCollected_sent+')<br/>Passed: '+passed);
+ }
+
+ function sendRequestForUpdates_processed(id, data) {
+  var obj=jQuery.parseJSON(data);
+  if (obj.LABELS.length>0) {
+    var labels=obj.LABELS;
+    for(var i=0;i<labels.length;i++) {
+     window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
+    }
+  }
+  if (obj.VALUES.length>0) {
+    var values=obj.VALUES;
+    for(var i=0;i<values.length;i++) {
+     window["updateValue"+labels[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
+    }
+  }
+  requestProcessing=0;
+ }
+
+ function sendRequestForUpdates() {
+  clearTimeout(requestTimer);
+  if (requestProcessing==1) {
+   requestTimer=setTimeout('sendRequestForUpdates()', requestDelay*1000);
+  }
+  requestSent = Math.round(+new Date()/1000);
+
+  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_details&labels="+labelsCollected+"&values="+valuesCollected;
+  AJAXRequest(url, 'sendRequestForUpdates_processed', '');
+
+  labelsCollected_sent=labelsCollected;
+  labelsCollected='';
+  valuesCollected_sent=valuesCollected;
+  valuesCollected='';
+  upateDebugField();
+ }
+
+ function collectLabel(item_id) {
+  var timeUnix = Math.round(+new Date()/1000);
+  labelsCollected=labelsCollected+','+item_id;
+  upateDebugField();
+  if ((timeUnix-requestSent)>requestDelay) {
+   sendRequestForUpdates();
+  } else {
+   clearTimeout(requestTimer);
+   requestTimer=setTimeout('sendRequestForUpdates()', requestDelay*1000);
+  }
+ }
+
+ function collectValue(item_id) {
+  var timeUnix = Math.round(+new Date()/1000);
+  valuesCollected=valuesCollected+','+item_id;
+  upateDebugField();
+  if ((timeUnix-requestSent)>requestDelay) {
+   sendRequestForUpdates();
+  } else {
+   clearTimeout(requestTimer);
+   requestTimer=setTimeout('sendRequestForUpdates()', requestDelay*1000);
+  }
+ }
+
 
  function menuClicked(id, parent_id, sub_list, win, winTitle, command, url, width, height) {
 

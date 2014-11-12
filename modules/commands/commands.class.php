@@ -131,6 +131,70 @@ function admin(&$out) {
   global $item_id;
 
 
+  if ($op=='get_details') {
+
+   startMeasure('getDetails');
+   global $labels;
+   global $values;
+
+   $res=array();
+
+   $res['LABELS']=array();
+   $labels=explode(',', $labels);
+   $total=count($labels);
+   $seen=array();
+   for($i=0;$i<$total;$i++) {
+    $item_id=trim($labels[$i]);
+    if (!$item_id || $seen[$item['ID']]) {
+     continue;
+    }
+    $seen[$item_id]=1;
+    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
+    if ($item['ID']) {
+     $res=array();
+     if ($item['TYPE']=='custom') {
+      $item['DATA']=processTitle($item['DATA'], $this);
+      $data=$item['DATA'];
+     } else {
+      $item['TITLE']=processTitle($item['TITLE'], $this);
+      $data=$item['TITLE'];
+     }
+     if ($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) {
+      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
+      $tmp['RENDER_TITLE']=$item['TITLE'];
+      $tmp['RENDER_DATA']=$item['DATA'];
+      $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
+      SQLUpdate('commands', $tmp);
+     }
+     $res['LABELS'][]=array('ID'=>$item['ID'], 'DATA'=>$data);
+    }
+   }
+
+   $res['VALUES']=array();
+   $values=explode(',', $values);
+   $total=count($values);
+   $seen=array();
+   for($i=0;$i<$total;$i++) {
+    $item_id=trim($values[$i]);
+    if (!$item_id || $seen[$item['ID']]) {
+     continue;
+    }
+    $seen[$item_id]=1;
+    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
+    if ($item['ID']) {
+     $data=$item['CUR_VALUE'];
+     $res['VALUES'][]=array('ID'=>$item['ID'], 'DATA'=>$data);
+    }
+   }
+
+   $res['LATEST_REQUEST']=time();
+   echo json_encode($res);
+
+   endMeasure('getDetails');
+   exit;
+
+  }
+
   if ($op=='get_label') {
    startMeasure('getLabel');
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
