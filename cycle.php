@@ -135,6 +135,7 @@ while (false !== ($result = $threads->iteration()))
       foreach($restart_threads as $item) {
        if (preg_match('/'.$item.'/is', $closed_thread)) {
         //restart
+        DebMes("RESTARTING: ".$closed_thread);
         echo "RESTARTING: ".$closed_thread."\n";
         $pipe_id = $threads->newThread($closed_thread);
        }

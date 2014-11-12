@@ -91,11 +91,12 @@ $(function() {
                 [#if URL_TITLE!=""#]<p class="help-block"><a href="[#URL#]" target=_blank>[#URL_TITLE#]</a></p>[#endif#]
                 [#if NOTES!=""#]
                 <p class="help-block edit-notes" data-id="[#ID#]"><acronym title="Click to edit">[#NOTES#]</acronym></p>
-                <div id="notes_[#ID#]" style="display:none;">
+                <div id="notes_[#ID#]" style="display:none;" >
                 <p><i>Edit configuration help tip</i></p>
                 <textarea name="notes_[#ID#]" cols=45 rows=3 id="edit_notes_area_[#ID#]">[#NOTES#]</textarea>
-                [#endif#]
                 </div>
+                [#endif#]
+                
         </div>
 </div>
   <!--#

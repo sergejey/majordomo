@@ -37,6 +37,10 @@
         <li[#if TAB="elements"#] class="active"[#endif#]>
         <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements"><#LANG_ELEMENTS#></a>
         </li>
+        <li[#if TAB="preview"#] class="active"[#endif#]>
+        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#></a>
+        </li>
+
         </ul>
 
    [#endif ID#]
@@ -46,6 +50,13 @@
    [#if TAB="elements"#]
     [#inc scenes_edit_elements.html#]
    [#endif TAB#]
+
+   [#if TAB="preview"#]
+   &nbsp;
+    <iframe width="100%" height="900" src="<#ROOTHTML#>popup/scenes/[#ID#].html"></iframe>
+   [#endif TAB#]
+
+
  [#endif VIEW_MODE#]
  <!-- / table scenes edit -->
  <!-- table scenes view --> 

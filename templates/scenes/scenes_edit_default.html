@@ -99,9 +99,29 @@ $(function() {
         <label class="control-label"><#LANG_BACKGROUND#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
-[#if BACKGROUND!=""#]
-<a href="[#BACKGROUND#]" target=_blank><img src="[#BACKGROUND#]" border="0" width="300"></a>
+
+<div>
+<table width="100%" border="0">
+ <tr>
+  <td valign="top">[#if BACKGROUND!=""#]
+<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#BACKGROUND#]" width="300"></a>
 [#endif#]
+</td>
+ <td valign="top" width=90%>
+ [#if ELEMENTS#]
+ <ul>
+  [#begin ELEMENTS#]
+  <li><a href="?view_mode=edit_scenes&id=<#ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]">[#TITLE#]</a></li>
+  [#if ELEMENTS#]<ul>[#tree ELEMENTS#]</ul>[#endif ELEMENTS#]
+  [#end ELEMENTS#]
+ </ul>
+ [#endif ELEMENTS#]
+ </td>
+ </tr>
+</table>
+</div>
+
+
 
         </div>
 </div>

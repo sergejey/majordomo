@@ -952,6 +952,8 @@ $dictionary=array(
 'INFORMER'=>'Informer',
 'NAV_LINK'=>'Nav. link',
 
+'TOOLS'=>'Tools',
+
 'TEST'=>'test'
 
 

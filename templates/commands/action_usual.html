@@ -72,7 +72,8 @@
 
  function collectLabel(item_id) {
   var timeUnix = Math.round(+new Date()/1000);
-  labelsCollected=labelsCollected+','+item_id;
+  labelsCollected=labelsCollected+','+item_id+',';
+  labelsCollected=labelsCollected.replace(',,', ',');
   upateDebugField();
   if ((timeUnix-requestSent)>requestDelay) {
    sendRequestForUpdates();
@@ -84,7 +85,8 @@
 
  function collectValue(item_id) {
   var timeUnix = Math.round(+new Date()/1000);
-  valuesCollected=valuesCollected+','+item_id;
+  valuesCollected=valuesCollected+','+item_id+',';
+  valuesCollected=valuesCollected.replace(',,', ',');
   upateDebugField();
   if ((timeUnix-requestSent)>requestDelay) {
    sendRequestForUpdates();
@@ -154,6 +156,7 @@
 
  function itemValueChanged(id, new_value) {
   //alert(id+': '+new_value);
+  valuesCollected=valuesCollected.replace(','+id+',', ',');
   var url="<#ROOTHTML#>menu.html?ajax=1&op=value_changed";
   if ($('#processing_'+id).length) {
    $('#processing_'+id).html(' - ...');

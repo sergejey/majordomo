@@ -13,16 +13,33 @@
 <div class="well relative">
 <span class="scene-title">[#TITLE#]</span>
 <div class="btn-group pull-right">
-        <a class="btn btn-default btn-sm" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i></a> 
         <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a> 
-        [#if "<#ACTION#>"=="admin"#]
+        <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]&tab=elements"><i class="glyphicon glyphicon-th-list"></i></a>
+        <a class="btn btn-default btn-sm" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i></a> 
         <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_scenes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
-        [#endif ACTION#]
 </div>
 
-[#if BACKGROUND!=""#]
-<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img class="scene-thumbail" src="[#BACKGROUND#]"></a>
+<div>
+<table width="100%" border="0">
+ <tr>
+  <td valign="top">[#if BACKGROUND!=""#]
+<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#BACKGROUND#]" width="300"></a>
 [#endif#]
+</td>
+ <td valign="top" width=90%>
+ [#if ELEMENTS#]
+ <ul>
+  [#begin ELEMENTS#]
+  <li><a href="?view_mode=edit_scenes&id=<#RESULT.ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]">[#TITLE#]</a></li>
+  [#if ELEMENTS#]<ul>[#tree ELEMENTS#]</ul>[#endif ELEMENTS#]
+  [#end ELEMENTS#]
+ </ul>
+ [#endif ELEMENTS#]
+ </td>
+ </tr>
+</table>
+</div>
+
 </div>
 [#end RESULT#]
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
@@ -36,7 +53,12 @@
 </div>
 [#endif RESULT#]
 <!-- / results -->
-<hr size=1>
+
+<a href="#" class="btn btn-default" onClick="$('#scene_tools').toggle();return false;"><#LANG_TOOLS#></a>
+
+<br/>&nbsp;
+<div id='scene_tools' style="display:none">
+
 <form action="?" enctype="multipart/form-data" method="post">
 <table border="0">
  <tr>
@@ -48,5 +70,6 @@
 <input type="hidden" name="view_mode" value="import">
 </form>
 
-<hr size="1">
 [#module name="settings" action="admin" filter_name="SCENES"#]
+
+</div>

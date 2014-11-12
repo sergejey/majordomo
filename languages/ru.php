@@ -947,6 +947,8 @@ $dictionary=array(
 'INFORMER'=>'Информер',
 'NAV_LINK'=>'Нав. ссылка',
 
+'TOOLS'=>'Инструменты',
+
 
 'TEST'=>'test'
 
