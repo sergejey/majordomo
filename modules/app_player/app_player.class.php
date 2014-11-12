@@ -135,19 +135,13 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
- /*
- $this->getConfig();
- if ($this->config['ENABLED'] && $_SERVER['REQUEST_URI']=='/') {
-  echo "<html><head><title>".SETTINGS_SITE_TITLE."</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/><link href=\"/stl.css\" rel=\"stylesheet\" type=\"text/css\"/></head><body>".$this->config['CONTENT']."</body></html>";
-  exit;
- }
- */
  global $play;
  global $rnd;
  global $rnd;
  global $session;
  global $play_terminal;
  global $terminal_id;
+ global $volume;
 
 
  if ($this->play) {
@@ -273,7 +267,6 @@ function usual(&$out) {
       }
 
      if ($command=='volume') {
-       global $volume;
        setGlobal('ThisComputer.volumeLevel', $volume);
        callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
       }
