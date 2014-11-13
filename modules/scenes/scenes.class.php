@@ -144,6 +144,110 @@ function admin(&$out) {
   $out['SET_DATASOURCE']=1;
  }
  if ($this->data_source=='scenes' || $this->data_source=='') {
+
+  if ($this->view_mode=='import_elements') {
+
+   global $id;
+   global $file;
+
+   $data=unserialize(LoadFile($file));
+   if (is_array($data['ELEMENTS'])) {
+    $elements=$data['ELEMENTS'];
+
+   $total=count($elements);
+   for($i=0;$i<$total;$i++) {
+    $states=$elements[$i]['STATES'];
+    unset($elements[$i]['STATES']);
+    $elements[$i]['SCENE_ID']=$id;
+    $old_element_id=$elements[$i]['ID'];
+    unset($elements[$i]['ID']);
+    if ($elements[$i]['CONTAINER_ID']) {
+     $elements[$i]['CONTAINER_ID']=(int)$seen_elements[$elements[$i]['CONTAINER_ID']];
+    }
+    if ($elements[$i]['LINKED_ELEMENT_ID']) {
+     $elements[$i]['LINKED_ELEMENT_ID']=(int)$seen_elements[$elements[$i]['LINKED_ELEMENT_ID']];
+    }
+    $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+    $seen_elements[$old_element_id]=$elements[$i]['ID'];
+    $totalE=count($states);
+    for($iE=0;$iE<$totalE;$iE++) {
+     unset($states[$iE]['ID']);
+     $states[$iE]['ELEMENT_ID']=$elements[$i]['ID'];
+     if ($states[$iE]['IMAGE_DATA']) {
+      $filename=ROOT.$states[$iE]['IMAGE'];
+      SaveFile($filename, base64_decode($states[$iE]['IMAGE_DATA']));      
+      unset($states[$iE]['IMAGE_DATA']);
+     }
+     SQLInsert('elm_states', $states[$iE]);
+    }
+   }
+
+   }
+   $this->redirect("?tab=".$this->tab."&view_mode=edit_scenes&id=".$id);
+
+  }
+
+
+  if ($this->view_mode=='multiple_elements') {
+   global $selected;
+   if ($selected[0]) {
+
+  $res=array();
+  $elements=SQLSelect("SELECT * FROM elements WHERE ID IN (".implode(',', $selected).") ORDER BY LINKED_ELEMENT_ID, CONTAINER_ID, ID");
+  $total=count($elements);
+  for($i=0;$i<$total;$i++) {
+   $elm_id=$elements[$i]['ID'];
+   //unset($elements[$i]['ID']);
+   //unset($elements[$i]['CONTAINER_ID']);
+   //unset($elements[$i]['LINKED_ELEMENT_ID']);
+   unset($elements[$i]['SCENE_ID']);
+   $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
+   $totalE=count($states);
+   for($iE=0;$iE<$totalE;$iE++) {
+    unset($states[$iE]['ID']);
+    unset($states[$iE]['ELEMENT_ID']);
+    if ($states[$iE]['IMAGE']) {
+     $states[$iE]['IMAGE_DATA']=base64_encode(LoadFile(ROOT.$states[$iE]['IMAGE']));
+    }
+   }
+   $elements[$i]['STATES']=$states;
+  }
+  $res['ELEMENTS']=$elements;
+
+  $data=serialize($res);
+
+   $filename=urlencode('Elements'.date('H-i-s'));
+
+   $ext = "elements";   // file extension
+   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
+   ? 'application/octetstream'
+   : 'application/octet-stream';
+   header('Content-Type: ' . $mime_type);
+   if (PMA_USR_BROWSER_AGENT == 'IE')
+   {
+      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
+      header("Content-Transfer-Encoding: binary");
+      header('Expires: 0');
+      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+      header('Pragma: public');
+      print $data;
+   } else {
+      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
+      header("Content-Transfer-Encoding: binary");
+      header('Expires: 0');
+      header('Pragma: no-cache');
+      print $data;
+   }
+
+   exit;
+
+
+    exit;
+   } else {
+    $this->view_mode='edit_scenes';
+   }
+  }
+
   if ($this->view_mode=='' || $this->view_mode=='search_scenes') {
    $this->search_scenes($out);
   }
@@ -517,7 +621,7 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    $this->delete_elm_states($states[$i]['ID']);
   }
-  SQLExec("DELETE FROM elements WHERE ID='".$rec['ID']."'");
+  SQLExec("DELETE FROM elements WHERE ID='".$rec['ID']."' OR CONTAINER_ID='".$rec['ID']."'");
  }
 /**
 * elm_states search
