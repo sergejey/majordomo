@@ -95,7 +95,7 @@ $dictionary=array(
 'MODULE_EVENTS'=>'Events',
 'MODULE_JOBS'=>'Scheduled Jobs',
 'MODULE_MASTER_LOGIN'=>'Panel Login',
-'MODULE_SAVERESTORE'=>'Backup/Upgrade',
+'MODULE_SAVERESTORE'=>'Check updates',
 'MODULE_WEBVARS'=>'Web Variables',
 
 'MODULE_DASHBOARD'=>'Dashboard',

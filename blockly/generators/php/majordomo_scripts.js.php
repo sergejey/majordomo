@@ -31,10 +31,10 @@ Blockly.PHP['majordomo_script_<?php echo $scripts[$i]['ID'];?>'] = function(bloc
   $tmp=explode("\n", $scripts[$i]['CODE']);
   $last_line=$tmp[count($tmp)-1];
   if (preg_match('/return/is', $last_line)) {?>  
-  var code = 'runScript("<?php echo $scripts[$i]['TITLE'];?>",'+params+')';
+  var code = 'runScript(\'<?php echo $scripts[$i]['TITLE'];?>\','+params+')';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
   <?php } else {?>
-  var code = 'runScript("<?php echo $scripts[$i]['TITLE'];?>", '+params+');\n';
+  var code = 'runScript(\'<?php echo $scripts[$i]['TITLE'];?>\', '+params+');\n';
   return code;
   <?php }?>
 };

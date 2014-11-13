@@ -75,7 +75,7 @@
    }
 
 
-  if ($rec['TYPE']=='selectbox' || $rec['TYPE']=='custom') {
+  if ($rec['TYPE']=='selectbox' || $rec['TYPE']=='custom' || $rec['TYPE']=='switch') {
    global $data;
    $rec['DATA']=$data;
   } 

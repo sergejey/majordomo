@@ -59,8 +59,9 @@
            }
 
            if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL=='1') {
-              $passed=SQLSelectOne("SELECT (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(ADDED)) as PASSED FROM shouts WHERE ID!='".$rec['ID']."' ORDER BY ID DESC LIMIT 1");
-              if ($passed['PASSED']>20) { // play intro-sound only if more than 30 seconds passed from the last one
+              $passed=time()-(int)getGlobal('lastSayTime');
+              if ($passed>20) { // play intro-sound only if more than 20 seconds passed from the last one
+                    setGlobal('lastSayTime', time());
                     playSound('dingdong', 1, $level);
                   }
            }

@@ -129,8 +129,8 @@
 
         <label for="menu[#ID#]_v"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
         <select name="menu[#ID#]_v" id="menu[#ID#]_v" data-role="slider"  onChange="changedValue[#ID#]();">
-                <option value="0"[#if CUR_VALUE!="1"#] selected[#endif#]><#LANG_OFF#></option>
-                <option value="1"[#if CUR_VALUE="1"#] selected[#endif#]><#LANG_ON#></option>
+                <option value="[#OFF_VALUE#]"[#if CUR_VALUE!="<#RESULT.ON_VALUE#>"#] selected[#endif#]><#LANG_OFF#></option>
+                <option value="[#ON_VALUE#]"[#if CUR_VALUE=="<#RESULT.ON_VALUE#>"#] selected[#endif#]><#LANG_ON#></option>
         </select> 
 </li>
 [#endif TYPE#]

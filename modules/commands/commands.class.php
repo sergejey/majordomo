@@ -504,6 +504,17 @@ function usual(&$out) {
     $res[$i]=$item;
    }
 
+   if ($item['TYPE']=='switch') {
+    if (trim($item['DATA'])) {
+     $data=explode("\n", str_replace("\r", "", $item['DATA']));
+     $item['OFF_VALUE']=trim($data[0]);
+     $item['ON_VALUE']=trim($data[1]);
+    } else {
+     $item['OFF_VALUE']=0;
+     $item['ON_VALUE']=1;
+    }
+    $res[$i]=$item;
+   }
 
    if ($item['TYPE']=='selectbox') {
     $data=explode("\n", str_replace("\r", "", $item['DATA']));
