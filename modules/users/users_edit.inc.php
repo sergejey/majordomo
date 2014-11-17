@@ -38,6 +38,10 @@
    global $mobile;
    $rec['MOBILE']=$mobile;
 
+   global $color;
+   $rec['COLOR']=$color;
+
+
    global $is_admin;
    $rec['IS_ADMIN']=$is_admin;
 

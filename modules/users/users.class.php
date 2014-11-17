@@ -225,6 +225,7 @@ users - Users
  users: ACTIVE_CONTEXT_ID int(10) NOT NULL DEFAULT '0'
  users: ACTIVE_CONTEXT_EXTERNAL int(3) NOT NULL DEFAULT '0'
  users: ACTIVE_CONTEXT_UPDATED datetime
+ users: COLOR char(20) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

@@ -315,7 +315,7 @@
       $state_id=$state_rec['ID'];
      }
 
-    } elseif (($element['TYPE']=='informer' || $element['TYPE']=='button' || $element['TYPE']=='nav') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='button' || $element['TYPE']=='nav') && !$state_rec['ID']) {
 
      $state_rec=array();
      $state_rec['TITLE']='default';
@@ -323,6 +323,93 @@
      $state_rec['HTML']=$element['TITLE'];
      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
      $state_id=$state_rec['ID'];
+
+    } elseif (($element['TYPE']=='warning') && !$state_rec['ID']) {
+     global $linked_object;
+     global $linked_property;
+     $state_rec=array();
+     $state_rec['TITLE']='default';
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['HTML']=$element['TITLE'].'<br/>detected';
+     $state_rec['LINKED_OBJECT']=$linked_object;
+     if (!$linked_property) {
+      $linked_property='motionDetected';
+     }
+     $state_rec['LINKED_PROPERTY']=$linked_property;
+     $state_rec['IS_DYNAMIC']=1;
+     $state_rec['CONDITION']=1;
+     $state_rec['CONDITION_VALUE']=1;
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
+
+
+    } elseif (($element['TYPE']=='informer') && !$state_rec['ID']) {
+     global $linked_object;
+     global $linked_property;
+     global $state_high;
+     global $state_high_value;
+     global $state_low;
+     global $state_low_value;
+
+
+
+
+     if ($state_high) {
+      $state_rec=array();
+      $state_rec['TITLE']='high';
+      $state_rec['ELEMENT_ID']=$element['ID'];
+      $state_rec['HTML']='%'.$linked_object.'.'.$linked_property.'%';
+      $state_rec['LINKED_OBJECT']=$linked_object;
+      $state_rec['LINKED_PROPERTY']=$linked_property;
+      $state_rec['IS_DYNAMIC']=1;
+      if ($state_high_value) {
+       $state_rec['CONDITION']=2;
+       $state_rec['CONDITION_VALUE']=$state_high_value;
+      }
+      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     }
+
+     if ($state_low) {
+      $state_rec=array();
+      $state_rec['TITLE']='low';
+      $state_rec['ELEMENT_ID']=$element['ID'];
+      $state_rec['HTML']='%'.$linked_object.'.'.$linked_property.'%';
+      $state_rec['LINKED_OBJECT']=$linked_object;
+      $state_rec['LINKED_PROPERTY']=$linked_property;
+      $state_rec['IS_DYNAMIC']=1;
+      if ($state_low_value) {
+       $state_rec['CONDITION']=3;
+       $state_rec['CONDITION_VALUE']=$state_low_value;
+      }
+      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     }
+
+     $state_rec=array();
+     $state_rec['TITLE']='default';
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['HTML']='%'.$linked_object.'.'.$linked_property.'%';
+     if ($state_high || $state_low) {
+      $state_rec['IS_DYNAMIC']=1;
+      $state_rec['LINKED_OBJECT']=$linked_object;
+      $state_rec['LINKED_PROPERTY']=$linked_property;
+      //is_dynamic 2
+      if ($state_high && $state_low) {
+       $state_rec['IS_DYNAMIC']=2;
+       $state_rec['CONDITION_ADVANCED']='if (gg(\''.$linked_object.'.'.$linked_value.'\')>='.(float)$state_low_value.' && gg(\''.$linked_object.'.'.$linked_value.'\')<='.(float)$state_high_value.') '."\n ".'{$display=1;} else {$display=0;}';
+      } elseif ($state_high) {
+       $state_rec['IS_DYNAMIC']=1;
+       $state_rec['CONDITION']=3;
+       $state_rec['CONDITION_VALUE']=$state_high_value;
+      } elseif ($state_low) {
+       $state_rec['IS_DYNAMIC']=1;
+       $state_rec['CONDITION']=2;
+       $state_rec['CONDITION_VALUE']=$state_low_value;
+      }
+     }
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
+
+
 
     } elseif (($element['TYPE']=='switch') && !$state_rec['ID']) {
 

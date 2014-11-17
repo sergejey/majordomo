@@ -953,6 +953,7 @@ $dictionary=array(
 'NAV_LINK'=>'Nav. link',
 
 'TOOLS'=>'Tools',
+'COLOR'=>'Color',
 
 'TEST'=>'test'
 

@@ -100,7 +100,7 @@
   $out['LIMIT']=$this->limit;
 
 
-  $res=SQLSelect("SELECT shouts.*, DATE_FORMAT(shouts.ADDED, '%H:%i') as DAT, TO_DAYS(shouts.ADDED) as DT, users.NAME FROM shouts LEFT JOIN users ON shouts.MEMBER_ID=users.ID WHERE $qry ORDER BY shouts.ADDED DESC, ID DESC $limit");
+  $res=SQLSelect("SELECT shouts.*, DATE_FORMAT(shouts.ADDED, '%H:%i') as DAT, TO_DAYS(shouts.ADDED) as DT, users.NAME, users.COLOR FROM shouts LEFT JOIN users ON shouts.MEMBER_ID=users.ID WHERE $qry ORDER BY shouts.ADDED DESC, ID DESC $limit");
 
 
 //  if ($_GET['reverse']) {
@@ -142,7 +142,11 @@
     if ($res[$i]['MEMBER_ID']==0) {
      $res[$i]['NAME']='Alice';
     }
-    $txtdata.="".$res[$i]['DAT']." <b>".$res[$i]['NAME']."</b>: ".nl2br($res[$i]['MESSAGE'])."<br>";
+    $stl='';
+    if (trim($res[$i]['COLOR'])) {
+     $stl=' style="color:'.$res[$i]['COLOR'].'"';
+    }
+    $txtdata.="<span$stl>".$res[$i]['DAT']." <b>".$res[$i]['NAME']."</b>: ".nl2br($res[$i]['MESSAGE'])."</span><br>";
    }
    $out['RESULT']=$res;
    $out['TXT_DATA']=$txtdata;

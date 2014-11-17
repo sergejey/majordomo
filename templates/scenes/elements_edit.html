@@ -47,11 +47,22 @@
 <script language="javascript">
  function element_type_switched(new_type) {
   [#if ELEMENT_ID==""#]
-   if (new_type=='switch') {
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning') {
     $('#linked_object').show();
    } else {
     $('#linked_object').hide();
    }
+   if (new_type=='informer' || new_type=='warning') {
+    $('#linked_property').show();
+   } else {
+    $('#linked_property').hide();
+   }
+   if (new_type=='informer') {
+    $('#informer_states').show();
+   } else {
+    $('#informer_states').hide();
+   }
+
   [#endif#]
  }
 </script>
@@ -66,6 +77,7 @@
                         <option value="container"[#if ELEMENT_TYPE=="container"#] selected[#endif#]><#LANG_CONTAINER#>
                         <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
                         <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
+                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]>Warning
                         <option value="button"[#if ELEMENT_TYPE=="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
                 </select>
@@ -79,10 +91,28 @@
          <input type="text" name="linked_object" class="form-control">
         </div>
 </div>
+<div class="form-group" id="linked_property" style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#></label>
+        <div class="controls">
+         <input type="text" name="linked_property" class="form-control">
+        </div>
+</div>
+
+<div class="form-group" id="informer_states" style="display:none">
+        <label class="col-lg-4 control-label">Additional states</label>
+        <div class="controls">
+         <input type="checkbox" name="state_high" value="1"> high above
+         <input type="text" name="state_high_value" value="30"><br/>
+         <input type="checkbox" name="state_low" value="1"> low below
+         <input type="text" name="state_low_value" value="15">
+        </div>
+</div>
+
+
 [#endif ELEMENT_ID#]
 
 
-[#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="nav")#]
+[#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_STYLE#></label>
         <div class="controls">
@@ -265,7 +295,7 @@
 [#endif#]
 
 
-[#if "<#ELEMENT_TYPE#>"=="html" || "<#ELEMENT_TYPE#>"=="informer" || "<#ELEMENT_TYPE#>"=="switch" || "<#ELEMENT_TYPE#>"=="button" || "<#ELEMENT_TYPE#>"=="nav"#]
+[#if "<#ELEMENT_TYPE#>"=="html" || "<#ELEMENT_TYPE#>"=="informer" || "<#ELEMENT_TYPE#>"=="switch" || "<#ELEMENT_TYPE#>"=="button" || "<#ELEMENT_TYPE#>"=="nav" || "<#ELEMENT_TYPE#>"=="warning"#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_CODE#></label>
         <div class="controls">
