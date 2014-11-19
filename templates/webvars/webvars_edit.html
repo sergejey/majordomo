@@ -37,28 +37,28 @@
 </div>
 
 <div class="form-group">
-	<label class="col-lg-4 control-label">&nbsp;</label>
-	<div class="col-lg-5">
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" value="1" name="auth" id="chkAuth" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#>
-			</label>
-		</div>
-	</div>
+        <label class="col-lg-4 control-label">&nbsp;</label>
+        <div class="col-lg-5">
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="auth" id="chkAuth" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#>
+                        </label>
+                </div>
+        </div>
 </div>
 
 
 
 
 <div [#if AUTH!="1"#]style="display:none"[#endif#] id="authCredentials">
-	<div class="form-group ">
-			<label class="col-lg-4 control-label" for="inputTitle"><#LANG_USERNAME#>:</label>
-			<div class="col-lg-5"><input type="text"  class="form-control"  name="username" value="[#USERNAME#]" ></div>
-	</div>
-	<div class="form-group ">
-			<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PASSWORD#>:</label>
-			<div class="col-lg-5"><input type="text"  class="form-control"  name="password" value="[#PASSWORD#]" ></div>
-	</div>
+        <div class="form-group ">
+                        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_USERNAME#>:</label>
+                        <div class="col-lg-5"><input type="text"  class="form-control"  name="username" value="[#USERNAME#]" ></div>
+        </div>
+        <div class="form-group ">
+                        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PASSWORD#>:</label>
+                        <div class="col-lg-5"><input type="text"  class="form-control"  name="password" value="[#PASSWORD#]" ></div>
+        </div>
 </div>
  
  
@@ -67,25 +67,25 @@
 <script language="javascript">
  $('#chkAuth').click (function ()
  {
-	  var thisCheck = $(this);
-	  if (thisCheck.is (':checked'))
-	  {
-	   $('#authCredentials').show();
-	  } else {
-	  $('#authCredentials').hide();
-	  }
+          var thisCheck = $(this);
+          if (thisCheck.is (':checked'))
+          {
+           $('#authCredentials').show();
+          } else {
+          $('#authCredentials').hide();
+          }
  });
 </script>
 
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_SOURCE_PAGE_ENCODING#>:<br>(<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)</label>
-	<div class="col-lg-5"><input type="text"  class="form-control"  name="encoding" value="[#ENCODING#]" ></div>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SOURCE_PAGE_ENCODING#>:<br>(<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)</label>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="encoding" value="[#ENCODING#]" ></div>
 </div>
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_PATTERN#>:<font color="red">*</font></label>
-	<div class="col-lg-5"><input type="text"  class="form-control [#if ERR_SEARCH_PATTERN#]alert-danger[#endif#]"  name="search_pattern" value="[#SEARCH_PATTERN#]" required="true"></div>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_PATTERN#>:<font color="red">*</font></label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_SEARCH_PATTERN#]alert-danger[#endif#]"  name="search_pattern" value="[#SEARCH_PATTERN#]" required="true"></div>
 </div>
 
 
@@ -105,27 +105,27 @@
 
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle"> <#LANG_ONCHANGE_ACTION#>:</label>
-	<div class="col-lg-5 [#if ERR_SCRIPT_ID#]alert-danger[#endif#]">
-		
-		 <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
-		   <select name="script_id">
-			<option value="0">
-			[#begin SCRIPTS#]
-				<option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
-				[#end SCRIPTS#]
-		   </select>    
-		   <br>
-		   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
-		 [#if ERRORS!=""#]
-		 <font color='red'>[#ERRORS#]</font><br>
-		 [#endif ERRORS#]   
+        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_ONCHANGE_ACTION#>:</label>
+        <div class="col-lg-5 [#if ERR_SCRIPT_ID#]alert-danger[#endif#]">
+                
+                 <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
+                   <select name="script_id">
+                        <option value="0">
+                        [#begin SCRIPTS#]
+                                <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+                                [#end SCRIPTS#]
+                   </select>    
+                   <br>
+                   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
+                 [#if ERRORS!=""#]
+                 <font color='red'>[#ERRORS#]</font><br>
+                 [#endif ERRORS#]   
 
-		 [#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
-		 <div id="code_area">
-		 <textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
-		 </div>
-	</div>
+                 [#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
+                 <div id="code_area">
+                 <textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
+                 </div>
+        </div>
 </div>
 
 
@@ -136,41 +136,52 @@
 
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle"> <#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
-	
-		<div class="row">
-			<div class="col-xs-4">
-				<input type="text" name="linked_object" class="form-control" placeholder=".col-xs-4" value="[#LINKED_OBJECT#]" size="20">
-			</div>
-			
-			<div class="col-xs-4">
-				
-				<input type="text" name="linked_property" class="form-control" placeholder=".col-xs-4" value="[#LINKED_PROPERTY#]" size="20">
-				</div>
-		</div>
-	
+        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_LINKED_OBJECT#>:</label>
+        
+                <div class="row">
+                        <div class="col-xs-4">
+                                <input type="text" name="linked_object" id="linked_object" class="form-control" placeholder=".col-xs-4" value="[#LINKED_OBJECT#]" size="20">
+                        </div>
+                        
+                </div>
+        
 </div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PROPERTY#>:</label>
+        
+                <div class="row">
+                        
+                        <div class="col-xs-4">
+                                <input type="text" name="linked_property" id="linked_property" class="form-control" placeholder=".col-xs-4" value="[#LINKED_PROPERTY#]" size="20">
+                                </div>
+                </div>
+        
+</div>
+
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property"#]
+
 
 
 
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_CHECK_INTERVAL#>:<font color="red">*</font><br><#LANG_SECONDS#> (0 to use default)</label>
-	<div class="col-lg-5"><input type="text"  class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  name="online_interval" value="[#ONLINE_INTERVAL#]" required="true"></div>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_CHECK_INTERVAL#>:<font color="red">*</font><br><#LANG_SECONDS#> (0 to use default)</label>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  name="online_interval" value="[#ONLINE_INTERVAL#]" required="true"></div>
 </div>
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle"><#LANG_LATEST_VALUE#>:</label>
-	<div class="col-lg-5"> [#LATEST_VALUE#]</div>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LATEST_VALUE#>:</label>
+        <div class="col-lg-5"> [#LATEST_VALUE#]</div>
 </div>
 
 
 
 <div class="form-group">
-	<label class="col-lg-4 control-label">&nbsp;</label>
-	<div class="col-lg-5">
-	
-	
+        <label class="col-lg-4 control-label">&nbsp;</label>
+        <div class="col-lg-5">
+        
+        
  [#if ID!=""#]
  <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
  [#else ID#]
@@ -192,12 +203,12 @@
 
 
 <div class="form-group">
-	<label class="col-lg-4 control-label"><#LANG_LOG#>:</label>
-	<div class="col-lg-5">
-		 <a href="#" class="btn btn-default" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
-		 <div id='eventsLog' style="display:none">
-		  [#LOG#]
-		 </div>
-	</div>
+        <label class="col-lg-4 control-label"><#LANG_LOG#>:</label>
+        <div class="col-lg-5">
+                 <a href="#" class="btn btn-default" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
+                 <div id='eventsLog' style="display:none">
+                  [#LOG#]
+                 </div>
+        </div>
 </div>
 </form>

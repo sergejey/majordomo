@@ -210,43 +210,47 @@ Action URL:
 
 
 <div class="form-group">
-  <label class="control-label"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
+  <label class="control-label"><#LANG_LINKED_OBJECT#>:</label>
    <div class="col-lg-5">
      <div class="form-inline">
       <div class="form-group col-lg-5">
-       <input type="text" name="linked_object" value="[#LINKED_OBJECT#]"  class="form-control">
-      </div>
-      <div class="form-group col-lg-1">
-       <p class="form-control-static">
-        &nbsp;.&nbsp;
-        </p>
-      </div>
-      <div class="form-group col-lg-5">
-       <input type="text" name="linked_property" value="[#LINKED_PROPERTY#]"  class="form-control">
+       <input type="text" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]"  class="form-control">
       </div>
      </div>
     </div>
 </div>
 
-[#endif TYPE#]
-
-[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
-
-
 <div class="form-group">
-  <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>:</label>
+  <label class="control-label"><#LANG_PROPERTY#>:</label>
    <div class="col-lg-5">
      <div class="form-inline">
       <div class="form-group col-lg-5">
+       <input type="text" name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]"  class="form-control">
+      </div>
+     </div>
+    </div>
+</div>
+[#endif TYPE#]
+
+[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
+<div class="form-group">
+  <label class="control-label"><#LANG_METHOD#>:</label>
+  <!--#<#LANG_ONCHANGE_OBJECT#>.#-->
+   <div class="col-lg-5">
+     <div class="form-inline">
+          <!--#
+      <div class="form-group col-lg-5">
        <input type="text" name="onchange_object" value="[#ONCHANGE_OBJECT#]"  class="form-control">
       </div>
+
       <div class="form-group col-lg-1">
        <p class="form-control-static">
         &nbsp;.&nbsp;
         </p>
       </div>
+      #-->
       <div class="form-group col-lg-5">
-       <input type="text" name="onchange_method" value="[#ONCHANGE_METHOD#]"  class="form-control">
+       <input type="text" name="onchange_method" id="onchange_method" value="[#ONCHANGE_METHOD#]" class="form-control">
       </div>
      </div>
     </div>
@@ -270,8 +274,9 @@ Action URL:
                 <textarea name="code" rows="5" cols="50" class="form-control">[#CODE#]</textarea>
         </div>
 </div>
-
 [#endif TYPE#]
+
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="onchange_method"#]
 
 [#if TYPE="command"#]
 <!-- COMMAND (varchar) -->

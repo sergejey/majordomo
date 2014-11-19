@@ -103,8 +103,11 @@ if ($rec['TYPE']=='plusminus'
     global $linked_property;
     $rec['LINKED_PROPERTY']=trim($linked_property);
 
+    /*
     global $onchange_object;
     $rec['ONCHANGE_OBJECT']=trim($onchange_object);
+    */
+
     global $onchange_method;
     $rec['ONCHANGE_METHOD']=trim($onchange_method);
 
@@ -200,6 +203,11 @@ if ($rec['TYPE']=='plusminus'
     }
    }
   }
+
+  if ($rec['ONCHANGE_OBJECT'] && !$rec['LINKED_OBJECT']) {
+   $rec['LINKED_OBJECT']=$rec['ONCHANGE_OBJECT'];
+  }
+
   outHash($rec, $out);
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");

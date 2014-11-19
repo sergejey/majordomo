@@ -1,0 +1,141 @@
+<script type="text/javascript" src="/js/select2/select2.min.js"></script>
+<link rel="stylesheet" href="/js/select2/select2.css" type="text/css"/>
+
+[#if OBJECT_FIELD#]
+<select name="[#OBJECT_FIELD#]" id='linked_object_copy' style="width:300px" onChange="linked_object_chaged();">
+ <option value="">
+ [#begin OBJECTS#]
+ <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#]- [#DESCRIPTION#][#endif#]
+ [#end OBJECTS#]
+</select>
+[#endif#]
+
+[#if PROPERTY_FIELD#]
+<select name="[#PROPERTY_FIELD#]" id="linked_property_copy" style="width:300px">
+ <option value="">
+</select>
+[#endif PROPERTY_FIELD#]
+
+[#if METHOD_FIELD#]
+<select name="[#METHOD_FIELD#]" id="linked_method_copy" style="width:300px">
+ <option value="">
+</select>
+[#endif METHOD_FIELD#]
+
+
+<script language="javascript">
+ var selected_object;
+ var selected_method;
+ var selected_property;
+ var skip_property=0;
+ var skip_method=0;
+ var skip_object=0;
+
+ function linked_object_chaged() {
+  selected_object=$("#linked_object_copy").val();
+  [#if PROPERTY_FIELD!=""#]
+  if (skip_property!=1) {
+  url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=properties";
+  url+='&object='+selected_object;
+  $.get( url, function( data ) {
+  var obj=jQuery.parseJSON(data);
+  $('#linked_property_copy').empty();
+  if (obj.PROPERTIES.length>0) {
+   var optionsAsString = "<option value=''>";
+   for(var i = 0; i < obj.PROPERTIES.length; i++) {
+    if (obj.PROPERTIES[i].DESCRIPTION) {
+     optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + ' - ' + obj.PROPERTIES[i].DESCRIPTION + "</option>";
+    } else {
+     optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + "</option>";
+    }
+   }
+   $('#linked_property_copy' ).append( optionsAsString );
+   if (selected_property!='') {
+    $('#linked_property_copy').val(selected_property);
+   }
+  }
+  });
+  }
+  [#endif#]
+
+  [#if METHOD_FIELD!=""#]
+  if (skip_method!=1) {
+  url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=methods";
+  url+='&object='+selected_object;
+  $.get( url, function( data ) {
+  var obj=jQuery.parseJSON(data);
+  $('#linked_method_copy').empty();
+  if (obj.METHODS.length>0) {
+   var optionsAsString = "<option value=''>";
+   for(var i = 0; i < obj.METHODS.length; i++) {
+    if (obj.METHODS[i].DESCRIPTION) {
+     optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + ' - ' + obj.METHODS[i].DESCRIPTION + "</option>";
+    } else {
+     optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + "</option>";
+    }
+   }
+   $('#linked_method_copy' ).append( optionsAsString );
+   if (selected_method!='') {
+    $('#linked_method_copy').val(selected_method);
+   }
+  }
+  });
+  }
+  [#endif#]
+
+  return true;
+ }
+
+ $(document).ready(function() { 
+
+  [#if PROPERTY_FIELD!=""#]
+  if ($('#[#PROPERTY_FIELD#]').length) {
+   selected_property=$("#[#PROPERTY_FIELD#]").val();
+  } else {
+   skip_property=1;
+   $('#linked_property_copy').remove();
+  }
+  [#endif#]
+
+  [#if METHOD_FIELD!=""#]
+  if ($('#[#METHOD_FIELD#]').length) {
+   selected_method=$("#[#METHOD_FIELD#]").val();
+  } else {
+   skip_method=1;
+   $('#linked_method_copy').remove();
+  }
+  [#endif#]
+
+
+  [#if OBJECT_FIELD!=""#]
+  if ($('#[#OBJECT_FIELD#]').length) {
+   selected_object=$("#[#OBJECT_FIELD#]").val();
+   if (selected_object!='') {
+    $('#linked_object_copy').val(selected_object);
+    linked_object_chaged();
+   }
+   $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy'));
+   $("#linked_object_copy").select2();
+  } else {
+   skip_object=1;
+   $("#linked_object_copy").remove();
+  }
+  [#endif OBJECT_FIELD#]
+
+  [#if PROPERTY_FIELD!=""#]
+  if (skip_property==0) {
+   $("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy'));
+  }
+  [#endif#]
+
+  [#if METHOD_FIELD!=""#]
+  if (skip_method==0) {
+   $("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy'));
+  }
+  [#endif#]
+
+
+
+
+ });
+</script>

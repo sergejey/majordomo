@@ -36,6 +36,7 @@ include_once("./config.php");
 $requests = array(
    "/^\/panel\/script\/(\d+)\.html/is"=> '?(panel:{action=scripts})&md=scripts&view_mode=edit_scripts&id=\1',
    "/^\/panel\/command\/(\d+)\.html/is"=> '?(panel:{action=commands})&md=commands&view_mode=edit_commands&id=\1',
+   "/^\/panel\/linkedobject.html/is"=> '?(panel:{action=linkedobject})',
    "/^\/panel\/class\/(\d+)\.html/is"=> '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1',
    "/^\/panel\/class\/(\d+)\/properties\.html/is"=> '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1&tab=properties',
    "/^\/panel\/class\/(\d+)\/methods\.html/is"=> '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1&tab=methods',
@@ -46,6 +47,7 @@ $requests = array(
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/methods\/(\d+)\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods&overwrite=1&method_id=\3',
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/properties\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=properties',
    "/^\/menu\.html/is"                => '?(application:{action=menu})',
+   "/^\/pages\.html/is"                => '?(application:{action=pages})',
    "/^\/menu\/(\d+?)\.html/is"        => '?(application:{action=menu, parent_item=\1})',
    "/^\/popup\/(shoutbox)\.html/is"        => '?(application:{action=\1, popup=1, app_action=1})',
    "/^\/popup\/(.+?)\/(.+?)\.html/is" => '?(application:{action=\1, popup=1})',

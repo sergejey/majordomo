@@ -254,7 +254,10 @@ function admin(&$out) {
     }
 
     if ($item['ONCHANGE_METHOD']!='') {
-     getObject($item['ONCHANGE_OBJECT'])->callMethod($item['ONCHANGE_METHOD'], $params);
+     if (!$item['LINKED_OBJECT']) {
+      $item['LINKED_OBJECT']=$item['ONCHANGE_OBJECT'];
+     }
+     getObject($item['LINKED_OBJECT'])->callMethod($item['ONCHANGE_METHOD'], $params); //ONCHANGE_OBJECT
      //DebMes("calling method ".$item['ONCHANGE_OBJECT'].".".$item['ONCHANGE_METHOD']." with ".$item['CUR_VALUE']);
     }
 

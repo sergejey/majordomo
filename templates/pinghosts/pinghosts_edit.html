@@ -40,11 +40,11 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TYPE#>:<font color="red">*</font></label>
         <div class="col-lg-5">
-		<select name="type" class="form-control [#if ERR_TYPE#]alert-danger[#endif#]">
+                <select name="type" class="form-control [#if ERR_TYPE#]alert-danger[#endif#]">
   [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
   [#end TYPE_OPTIONS#]
  </select>
-		</div>
+                </div>
 </div>
 
 
@@ -60,14 +60,16 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_OBJECT#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_object" value="[#LINKED_OBJECT#]" ></div>
+        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_object" id="linked_object"  value="[#LINKED_OBJECT#]" ></div>
 </div>
 
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_PROPERTY#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_property" value="[#LINKED_PROPERTY#]" ></div>
+        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]" ></div>
 </div>
+
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property"#]
 
 <!-- SCRIPT_ID_ONLINE (int) -->
 <div class="form-group ">
@@ -151,7 +153,7 @@
 
 
 <div class="form-group ">
-	<label class="col-lg-4 control-label" for="inputTitle">
+        <label class="col-lg-4 control-label" for="inputTitle">
 &nbsp;
  </label>
  <div class="col-lg-5">
