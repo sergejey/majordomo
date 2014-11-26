@@ -121,10 +121,43 @@ $(function() {
 </table>
 </div>
 
+        </div>
+</div>
+
+
+<div class="form-group">
+        <label class="control-label"><#LANG_WALLPAPER#></label>
+        <div class="controls">
+                <input class="form-control" type="text" name="wallpaper" id="wallpaper" value="[#WALLPAPER#]" onclick="openFileBrowser('wallpaper');" size="60">
+                <br>
+                <input type="checkbox" name="wallpaper_fixed" value="1"[#if WALLPAPER_FIXED="1"#] checked[#endif#]> fixed
+                <input type="checkbox" name="wallpaper_norepeat" value="1"[#if WALLPAPER_NOREPEAT="1"#] checked[#endif#]> no-repeat
+
+[#if WALLPAPER!=""#]
+<div>
+<table width="100%" border="0">
+ <tr>
+  <td valign="top">
+<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#WALLPAPER#]" width="300"></a>
+</td>
+ <td valign="top" width=90%>
+  &nbsp;
+ </td>
+ </tr>
+</table>
+</div>
+[#endif#]
 
 
         </div>
+
+
 </div>
+
+
+
+
+
 <script type="text/javascript">
      function openFileBrowser(id){
           fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;

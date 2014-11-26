@@ -254,7 +254,7 @@ function getParams() {
     $out['AUTHORIZED_ADMIN']=1;
    }
 
-   if ($this->action=='') {
+   if ($this->action=='' || $this->action=='pages') {
     $res=SQLSelect("SELECT * FROM layouts ORDER BY PRIORITY DESC, TITLE");
     if ($this->action!='admin') {
      $total=count($res);

@@ -21,6 +21,10 @@ include_once(DIR_MODULES . 'zwave/zwave.class.php');
 $zwave = new zwave();
 $zwave->getConfig();
 
+if (!preg_match('/^http/is', $zwave->config['ZWAVE_API_URL'])) {
+ exit; // no API URL set
+}
+
 $tmp=SQLSelectOne("SELECT ID FROM zwave_devices LIMIT 1");
 if (!$tmp['ID']) {
  exit; // no devices added -- no need to run this cycle

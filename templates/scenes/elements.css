@@ -1,55 +1,17 @@
 .container_background {
- border:1px solid white;background-color:rgba(0,0,0,0.2);padding:5px;
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
+ padding:0px;
 }
 
 .html_background {
- border:1px solid white;background-color:rgba(0,0,0,0.5);padding:3px;
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
+ background-size:100%;
+ padding:0px;
 }
 
 
-
-.type_switch {
- color:white;
- border:1px solid green;
- background-color:rgba(0,0,0,0.7);
- padding:3px;
- width:110px;
- height:40px;
-}
-
-.type_button {
- color:white;
- border:1px solid red;
- background-color:rgba(0,0,0,0.7);
- padding:3px;
- width:110px;
- height:40px;
-}
-
-.type_nav {
- color:white;
- border:1px solid yellow;
- background-color:rgba(0,0,0,0.7);
- padding:3px;
- width:110px;
- height:40px;
-}
-
-.type_informer {
- color:white;
- border:1px solid white;
- background-color:rgba(0,0,0,0.7);
- padding:3px;
- width:110px;
- height:40px;
-}
-
-.type_informer.style_default {
- color:white;
- border:1px solid white;
-}
-
-.type_informer.style_red {
- color:white;
- border:1px solid red;
-}
+[#begin ALL_TYPES#]
+ [#if HAS_STYLE!=""#][#inc ../../cms/scenes/styles/<#ALL_TYPES.TITLE#>/style.css#][#endif HAS_STYLE#]
+[#end ALL_TYPES#]

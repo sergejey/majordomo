@@ -945,10 +945,22 @@ $dictionary=array(
 
 'CONTAINER'=>'Контейнер',
 'INFORMER'=>'Информер',
-'NAV_LINK'=>'Нав. ссылка',
+
+'NAV_LINK'=>'Нав. ссылка (новое окно)',
+'WARNING'=>'Уведомление',
+'NAV_LINK_GO'=>'Нав. ссылка (переход)',
 
 'TOOLS'=>'Инструменты',
 'COLOR'=>'Цвет',
+
+'WALLPAPER'=>'Обои',
+
+'ADDITIONAL_STATES'=>'Дополнительные состояния',
+'MODE_SWITCH'=>'Индикатор режима',
+'HIGH_ABOVE'=>'Значение выше',
+'LOW_BELOW'=>'Значение ниже',
+'ADDITIONAL_STATES_NOTE'=>'(вы можете использовать конструкцию %object.property% в качестве значений границ)',
+'UNIT'=>'Единица измерения',
 
 'TEST'=>'test'
 

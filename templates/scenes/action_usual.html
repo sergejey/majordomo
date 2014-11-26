@@ -22,19 +22,52 @@
          return false;
         }
 
-        [#begin RESULT#][#begin ELEMENTS#][#begin STATES#][#if MENU_ITEM_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!=""#]
-        var window[#ID#]_width=[#WINDOW_WIDTH#];
-        var window[#ID#]_height=[#WINDOW_HEIGHT#];
-        var window[#ID#]_posx=[#WINDOW_POSX#];
-        var window[#ID#]_posy=[#WINDOW_POSY#];
-        [#endif MENU_ITEM_ID#][#end STATES#][#end ELEMENTS#][#end RESULT#]
+        [#begin RESULT#][#begin ALL_ELEMENTS#]
+        [#begin STATES#]
+        [#if MENU_ITEM_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!=""#]
+         var window[#ID#]_width=[#WINDOW_WIDTH#];
+         var window[#ID#]_height=[#WINDOW_HEIGHT#];
+         var window[#ID#]_posx=[#WINDOW_POSX#];
+         var window[#ID#]_posy=[#WINDOW_POSY#];
+        [#endif MENU_ITEM_ID#][#end STATES#]
+        [#end ALL_ELEMENTS#][#end RESULT#]
 
         function stateClicked(id) {
 
          var window_url;
 
 
-         [#begin RESULT#][#begin ELEMENTS#][#begin STATES#][#if MENU_ITEM_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!=""#]
+         [#begin RESULT#][#begin ALL_ELEMENTS#][#begin STATES#]
+
+         [#if "<#ALL_ELEMENTS.TYPE#>"=="button"#]
+         if (id==[#ID#]) {
+          $('#state_[#ID#]').addClass('clicked');
+          setTimeout("$('#state_[#ID#]').removeClass('clicked');", 150);
+         }
+         [#endif TYPE#]
+
+         [#if MENU_ITEM_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!=""#]
+          [#if MENU_ITEM_ID!="0"#]
+          window_url='/menu.html?parent=[#MENU_ITEM_ID#]';
+          [#endif#]
+          [#if HOMEPAGE_ID!="0"#]
+          window_url='<#ROOTHTML#>page/[#HOMEPAGE_ID#].html';
+          [#endif#]
+          [#if EXT_URL!=""#]
+          window_url='[#EXT_URL#]';
+          [#endif#]
+         [#endif#]
+
+         [#if "<#ALL_ELEMENTS.TYPE#>"=="navgo"#]
+         if (id==[#ID#]) {
+          window.location.href=window_url;
+          return;
+         }
+         [#endif TYPE#]
+
+
+
+         [#if MENU_ITEM_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!=""#]
          if (id==[#ID#]) {
 
           var top=$('#scene_background_<#RESULT.ID#>').offset().top;
@@ -51,17 +84,6 @@
           if (!x) x=200;
           if (!y) y=200;
 
-
-
-          [#if MENU_ITEM_ID!="0"#]
-          window_url='/menu.html?parent=[#MENU_ITEM_ID#]';
-          [#endif#]
-          [#if HOMEPAGE_ID!="0"#]
-          window_url='<#ROOTHTML#>page/[#HOMEPAGE_ID#].html';
-          [#endif#]
-          [#if EXT_URL!=""#]
-          window_url='[#EXT_URL#]';
-          [#endif#]
 
 
           var jWindowObj[#ID#] = $.jWindow({ 
@@ -106,7 +128,7 @@
           jWindowObj[#ID#].update();
           [#if (SCRIPT_ID="0") && (ACTION_METHOD="")#]return;[#endif#]
          }
-         [#endif MENU_ITEM_ID#][#end STATES#][#end ELEMENTS#][#end RESULT#]
+         [#endif MENU_ITEM_ID#][#end STATES#][#end ALL_ELEMENTS#][#end RESULT#]
 
          var url="?ajax=1&op=click";
          url+='&id='+id;
@@ -124,7 +146,7 @@
            if (obj.length) {
             for(var i=0;i<obj.length;i++) {
              var elem=$('#state_'+obj[i].ID);
-             if (obj[i].TYPE=='html' && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
+             if (obj[i].HTML!='' && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
               elem.html('<span>'+obj[i].HTML+'</span>');
               codeHash['code'+obj[i].ID]=obj[i].HTML;
              }
@@ -177,15 +199,19 @@
         </script>
 
 
-<table  border="0" align="center">
+<table  border="0" align="center"[#if "<#TOTAL#>"=="1"#] width="100%"[#endif#] cellpadding="0" cellspacing="0">
  <tr>
   <td valign="top">
-<div[#if "<#TOTAL#>"!="1"#] style="width:<#SETTINGS_SCENES_WIDTH#>px"[#endif#]>
+<div style="[#if "<#TOTAL#>"!="1"#]width:<#SETTINGS_SCENES_WIDTH#>px;[#endif#]">
 <div id="slider">
 [#if "<#TOTAL#>"!="1"#]<ul>[#endif#]
 [#begin RESULT#]
 [#if "<#TOTAL#>"!="1"#]<li id='scene_[#ID#]'>[#endif#]
 [#if BACKGROUND!=""#]
+ <div style="[#if WALLPAPER!=""#]background-image:url([#WALLPAPER#]);[#if WALLPAPER_FIXED="1"#]background-attachment: fixed;[#endif#][#if WALLPAPER_NOREPEAT="1"#]background-repeat: no-repeat;[#endif#][#endif#]">
+ <!--#
+ <table border="0" cellspacing="0" cellpadding="0" align="center"><td valign="top">
+ #-->
  <div id="scene_background_[#ID#]" style="position:relative;">
  [#begin ELEMENTS#]
  <!-- element [#ID#] -->
@@ -211,7 +237,7 @@
    [#if "<#ELEMENTS.POSITION_TYPE#>"=="0"#]position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#endif ELEMENTS#]
    [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
    [#if ("<#ELEMENTS.WIDTH#>"!="0") && ("<#ELEMENTS.HEIGHT#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#endif#]
-   [#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#]<span>[#CODE#][#HTML#]</span></div>
+   [#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!="" || EXT_URL!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#]<span>[#CODE#][#HTML#]</span></div>
  [#end STATES#]
 
  [#endif ELEMENTS#]
@@ -228,14 +254,22 @@
  [#endif JAVASCRIPT#]
  <!-- /element [#ID#] -->
  [#end ELEMENTS#]
- <img src="[#BACKGROUND#]" border="0">
+ <div class="scene_background"><img src="[#BACKGROUND#]" border="0"></div>
  </div>
-[#endif#]
+ <!--#
+ </td>
+ </table>
+ #-->
+
+ </div>
+
+[#endif SCENE_BACKGROUND#]
  [#if "<#TOTAL#>"!="1"#]</li>[#endif#]
 [#end RESULT#]
 [#if "<#TOTAL#>"!="1"#]</ul>[#endif#]
 </div>
-</div>
+</div> <!-- /slider -->
 </td>
  </tr>
 </table>
+

@@ -950,10 +950,20 @@ $dictionary=array(
 
 'CONTAINER'=>'Container',
 'INFORMER'=>'Informer',
-'NAV_LINK'=>'Nav. link',
+'NAV_LINK'=>'Nav. link (window)',
 
 'TOOLS'=>'Tools',
 'COLOR'=>'Color',
+'WALLPAPER'=>'Wallpaper',
+
+'WARNING'=>'Warning',
+'NAV_LINK_GO'=>'Nav. link',
+'MODE_SWITCH'=>'Mode switch',
+'ADDITIONAL_STATES'=>'Additional states',
+'HIGH_ABOVE'=>'Value high above',
+'LOW_BELOW'=>'Value low below',
+'ADDITIONAL_STATES_NOTE'=>'(you can use %object.property% for the limits)',
+'UNIT'=>'Unit',
 
 'TEST'=>'test'
 

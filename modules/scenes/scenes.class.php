@@ -273,6 +273,10 @@ function admin(&$out) {
    $this->delete_elements($this->id);
    $this->redirect("?data_source=elements");
   }
+
+
+
+
  }
  if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
@@ -337,6 +341,10 @@ function admin(&$out) {
   if ($rec['BACKGROUND'] && file_exists(ROOT.$rec['BACKGROUND'])) {
    $res['BACKGROUND_IMAGE']=base64_encode(LoadFile(ROOT.$rec['BACKGROUND']));
   }
+  if ($rec['WALLPAPER'] && file_exists(ROOT.$rec['WALLPAPER'])) {
+   $res['WALLPAPER_IMAGE']=base64_encode(LoadFile(ROOT.$rec['WALLPAPER']));
+  }
+
 
   $data=serialize($res);
 
@@ -383,6 +391,9 @@ function admin(&$out) {
 
   if ($data['SCENE_DATA']) {
    $rec=$data['SCENE_DATA'];
+   if (!$rec['WALLPAPER']) {
+    unset($rec['WALLPAPER']);
+   }
    $rec['TITLE'].=' (imported)';
    $elements=$rec['ELEMENTS'];
    unset($rec['ID']);
@@ -405,6 +416,10 @@ function admin(&$out) {
    if ($data['BACKGROUND_IMAGE']) {
     $filename=ROOT.$rec['BACKGROUND'];
     SaveFile($filename, base64_decode($data['BACKGROUND_IMAGE']));
+   }
+   if ($data['WALLPAPER_IMAGE']) {
+    $filename=ROOT.$rec['WALLPAPER'];
+    SaveFile($filename, base64_decode($data['WALLPAPER_IMAGE']));
    }
    $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
   }
@@ -474,8 +489,12 @@ function usual(&$out) {
      $total=count($states);
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
-      if ($states[$i]['TYPE']=='html') {
-       $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
+      if ($states[$i]['HTML']!='') {
+       if (preg_match('/\[#/is', $states[$i]['HTML'])) {
+        $states[$i]['HTML']='';
+       } else {
+        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
+       }
       }
      }
      echo json_encode($states);
@@ -497,7 +516,7 @@ function usual(&$out) {
      $total=count($states);
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
-      if ($states[$i]['TYPE']=='html') {
+      if ($states[$i]['HTML']!='') {
        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
       }
      }
@@ -526,6 +545,9 @@ function usual(&$out) {
  }
 
  $this->admin($out);
+
+ $out['ALL_TYPES']=$this->getAllTypes();
+
 }
 
  function checkSettings() {
@@ -623,6 +645,52 @@ function usual(&$out) {
   }
   SQLExec("DELETE FROM elements WHERE ID='".$rec['ID']."' OR CONTAINER_ID='".$rec['ID']."'");
  }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function reorder_elements($id, $direction='up') {
+  $element=SQLSelectOne("SELECT * FROM elements WHERE ID='".(int)$id."'");
+  if ($element['CONTAINER_ID']) {
+   $all_elements=SQLSelect("SELECT * FROM elements WHERE CONTAINER_ID=".$element['CONTAINER_ID']." ORDER BY PRIORITY DESC, TITLE");
+  } else {
+   $all_elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID=".$element['SCENE_ID']." AND CONTAINER_ID=0 ORDER BY PRIORITY DESC, TITLE");
+  }
+
+  $total=count($all_elements);
+
+
+  for($i=0;$i<$total;$i++) {
+   if ($all_elements[$i]['ID']==$id && $i>0 && $direction=='up') {
+    $tmp=$all_elements[$i-1];
+    $all_elements[$i-1]=$all_elements[$i];
+    $all_elements[$i]=$tmp;
+    break;
+   }
+   if ($all_elements[$i]['ID']==$id && $i<($total-1) && $direction=='down') {
+    $tmp=$all_elements[$i+1];
+    $all_elements[$i+1]=$all_elements[$i];
+    $all_elements[$i]=$tmp;
+    break;
+   }
+  }
+
+  $priority=($total)*10;
+
+  for($i=0;$i<$total;$i++) {
+   $all_elements[$i]['PRIORITY']=$priority;
+   $priority-=10;
+   SQLUpdate('elements', $all_elements[$i]);
+  }
+
+
+  
+ }
+
 /**
 * elm_states search
 *
@@ -660,6 +728,7 @@ function usual(&$out) {
 */
  function checkState($id) {
   $rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
+
   if (!$rec['IS_DYNAMIC']) {
    $status=1;
   } elseif ($rec['IS_DYNAMIC']==1) {
@@ -669,6 +738,18 @@ function usual(&$out) {
     $value=gg($rec['LINKED_PROPERTY']);
    } else {
     $value=-1;
+   }
+
+   if (($rec['CONDITION']==2 || $rec['CONDITION']==3) 
+       && $rec['CONDITION_VALUE']!='' 
+       && !is_numeric($rec['CONDITION_VALUE']) 
+       && !preg_match('/^%/', $rec['CONDITION_VALUE'])) {
+        $rec['CONDITION_VALUE']='%'.$rec['CONDITION_VALUE'].'%';
+   }
+
+
+   if (is_integer(strpos($rec['CONDITION_VALUE'], "%"))) {
+    $rec['CONDITION_VALUE']=processTitle($rec['CONDITION_VALUE']);
    }
 
    if ($rec['CONDITION']==1 && $value==$rec['CONDITION_VALUE']) {
@@ -687,6 +768,9 @@ function usual(&$out) {
 
    $display=0;
 
+   if (is_integer(strpos($rec['CONDITION_ADVANCED'], "%"))) {
+    $rec['CONDITION_ADVANCED']=processTitle($rec['CONDITION_ADVANCED']);
+   }
 
                   try {
                    $code=$rec['CONDITION_ADVANCED'];
@@ -731,6 +815,12 @@ function usual(&$out) {
        $positions[$elements[$ie]['ID']]['TOP']=$elements[$ie]['TOP'];
        $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
        $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+       $total_s=count($states);
+       for($is=0;$is<$total_s;$is++) {
+        if ($states[$is]['HTML']!='') {
+         $states[$is]['HTML']=processTitle($states[$is]['HTML']);
+        }
+       }
        $elements[$ie]['STATES']=$states;
        if ($elements[$ie]['TYPE']=='container') {
         $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID']);
@@ -780,6 +870,114 @@ function usual(&$out) {
   SQLExec('DROP TABLE IF EXISTS elm_states');
   parent::uninstall();
  }
+
+
+ function getAllTypes() {
+  $path=ROOT.'cms/scenes/styles';
+  $res_types=array();
+  if ($handle = opendir($path)) {
+   $style_recs=array();
+   while (false !== ($entry = readdir($handle))) {
+    if ($entry!='.' && $entry!='..' && is_dir($path.'/'.$entry)) {
+     $type_rec=array('TITLE'=>$entry, 'STYLES'=>$this->getStyles($entry));
+     if (file_exists($path.'/'.$entry.'/style.css')) {
+      $type_rec['HAS_STYLE']=1;
+     }
+     $res_types[]=$type_rec;
+    }
+   }
+  }
+  closedir($handle);
+  return $res_types;
+ }
+
+ function getStyles($type='') {
+
+  $path=ROOT.'cms/scenes/styles/'.$type;
+
+  if (is_dir($path)) {
+
+   if ($handle = opendir($path)) {
+    $style_recs=array();
+    while (false !== ($entry = readdir($handle))) {
+       if (preg_match('/(.+?)\.png$/is', $entry, $m)) {
+        $style=$m[1];
+        $style=preg_replace('/^i\_/', '', $style);
+
+        $has_low=0;
+        if (preg_match('/\_lo$/', $style)) {
+         $style=preg_replace('/\_lo$/', '', $style);
+         $has_low=$entry;
+        }
+        $has_high=0;
+        if (preg_match('/\_hi$/', $style)) {
+         $style=preg_replace('/\_hi$/', '', $style);
+         $has_high=$entry;
+        }
+
+        $has_on=0;
+        if (preg_match('/\_on$/', $style)) {
+         $style=preg_replace('/\_on$/', '', $style);
+         $has_on=$entry;
+        }
+        $has_off=0;
+        if (preg_match('/\_off$/', $style)) {
+         $style=preg_replace('/\_off$/', '', $style);
+         $has_off=$entry;
+        }
+
+
+        $styles_recs[$style]['TITLE']=$style;
+        if ($has_low) {
+         $styles_recs[$style]['HAS_LOW']=$has_low;
+        }
+        if ($has_high) {
+         $styles_recs[$style]['HAS_HIGH']=$has_high;
+        }
+        if ($has_on) {
+         $styles_recs[$style]['HAS_ON']=$has_on;
+        }
+        if ($has_off) {
+         $styles_recs[$style]['HAS_OFF']=$has_off;
+        }
+
+        if (!$has_low && !$has_high && !$has_on && !$has_ff) {
+         $styles_recs[$style]['HAS_DEFAULT']=$entry;
+        }
+
+       }
+    }
+    closedir($handle);
+
+    if (is_array($styles_recs)) {
+     foreach($styles_recs as $k=>$v) {
+      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/'.$v['TITLE'].'.png')) {
+       $styles_recs[$k]['IMAGE']=$type.'/'.$v['TITLE'].'.png';
+      }
+      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/i_'.$v['TITLE'].'.png')) {
+       $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'.png';
+      }
+
+      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/i_'.$v['TITLE'].'_on.png')) {
+       $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'_on.png';
+      }
+     }
+    }
+
+    if (is_array($styles_recs)) {
+     $res_styles=array();
+     foreach($styles_recs as $k=>$v) {
+      $res_styles[]=$v;
+     }
+    }
+
+   }
+   return $res_styles;
+  }
+
+  
+ }
+
 /**
 * dbInstall
 *
@@ -797,8 +995,11 @@ elm_states - Element states
  scenes: ID int(10) unsigned NOT NULL auto_increment
  scenes: TITLE varchar(255) NOT NULL DEFAULT ''
  scenes: BACKGROUND varchar(255) NOT NULL DEFAULT ''
+ scenes: WALLPAPER varchar(255) NOT NULL DEFAULT ''
  scenes: PRIORITY int(10) NOT NULL DEFAULT '0'
  scenes: HIDDEN int(3) NOT NULL DEFAULT '0'
+ scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
+ scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'

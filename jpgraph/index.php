@@ -311,7 +311,7 @@ $graph->xaxis->scale->SetDateFormat($date_format);
 
 $line=new LinePlot($ydata, $xdata);
 //$line->SetLegend('Year 2005');
-$line->SetFillColor('lightblue@0.5');
+//$line->SetFillColor('lightblue@0.5');
 if ($binary_data) {
  $line->SetStepStyle();
 }

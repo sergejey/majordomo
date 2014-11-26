@@ -1,0 +1,123 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+<style>
+
+.tab_page{
+
+}
+
+.tab_table{
+    display:table;
+    width:100%;
+    table-layout:fixed;
+    background-color:#99bde7;
+}
+.tab_table_cell{
+    display:table-cell;
+    padding:4px;
+    vertical-align: middle;
+    font-size:13px;
+    font-weight:bold;
+    text-align:center;
+    width:100px;
+    height:40px;
+    background-color:#d2e1f3;
+    color:black;
+    border-left:1px solid white;
+    cursor:pointer;
+}
+img.tab_table_cell{
+ padding:6px;
+}
+.tab_table_cell.active{
+    background-color:#446993;
+    color:white;
+}
+
+.tab_iframe {
+ margin: 0;
+ padding: 0;
+ border: none;
+}
+
+</style>
+
+<div class="tab_page">
+<div class='tab_table'>
+  [#begin LAYOUTS#]
+  <div class='tab_table_cell' id="cell[#ID#]" onClick="return switchSelected([#ID#]);">
+   [#if ICON!=""#]<div><img src="<#ROOTHTML#>cms/layouts/[#ICON#]"></div>[#endif#]
+   [#TITLE#]
+  </div>
+  [#end LAYOUTS#]
+</div>
+
+
+[#begin LAYOUTS#]
+<div id="tab-[#ID#]" style="display:none">...</div>
+[#end LAYOUTS#]
+
+</div>
+
+
+<script language="javascript">
+
+function switchSelected(selected) {
+
+         iFrameHeight=$(document).height()-56;
+
+         [#begin LAYOUTS#]
+         if (selected != [#ID#]) {
+          $('#cell[#ID#]').removeClass('active');
+          $('#tab-[#ID#]').hide();
+         }
+         [#end LAYOUTS#]
+
+         [#begin LAYOUTS#]
+         if (selected == [#ID#]) {
+          $('#cell[#ID#]').addClass('active');
+          $('#tab-[#ID#]').show();
+
+          [#if TYPE="app"#]
+           if ($('#tab-[#ID#]').html()=='...') {
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe"></iframe>');
+           }
+          [#endif TYPE#]
+          [#if TYPE="url"#]
+           if ($('#tab-[#ID#]').html()=='...') {
+            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe"></iframe>');
+           }
+          [#endif TYPE#]
+          [#if TYPE="html"#]
+           if ($('#tab-[#ID#]').html()=='...') {
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe"></iframe>');
+           }
+          [#endif TYPE#]
+         }
+         [#end LAYOUTS#]
+
+ return false;
+}
+
+var iFrameHeight=500;
+
+$(document).ready(function() {
+  var firstFound=0;
+  [#begin LAYOUTS#]
+  $('#tab-[#ID#]').height(iFrameHeight);
+  if (firstFound==0) {
+   firstFound=1;
+   switchSelected([#ID#]);
+  }
+  [#end LAYOUTS#]
+  //alert($('#defaultFrame').height());
+});
+
+$( window ).resize(function() {
+ iFrameHeight=$(document).height()-56;
+ $('.tab_iframe').height(iFrameHeight);
+});
+
+
+</script>

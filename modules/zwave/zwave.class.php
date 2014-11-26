@@ -837,7 +837,14 @@ function admin(&$out) {
 
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
-     $validated=1;
+
+     if ($prop['VALUE']!='' || $prop['VALUE']===0) {
+      $validated=1;
+     } else {
+      $validated=0;
+      continue;
+     }
+
      if ($prop['LINKED_OBJECT']) {
       if ($prop['CORRECT_VALUE']) {
        $prop['VALUE']+=(float)$prop['CORRECT_VALUE'];
@@ -849,6 +856,7 @@ function admin(&$out) {
       }
      }
 
+ 
      if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY'] && $validated) {
       $old_value=getGlobal($prop['LINKED_OBJECT'].'.'.$prop['LINKED_PROPERTY']);
       if ($prop['VALUE']!=$old_value) {
@@ -865,6 +873,7 @@ function admin(&$out) {
     } else {
      $prop['ID']=SQLInsert('zwave_properties', $prop);
     }
+
    }
 
    //print_r($data);exit;

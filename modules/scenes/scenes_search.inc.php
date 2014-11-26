@@ -65,6 +65,7 @@
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
       $res[$i]['ELEMENTS']=$this->getElements("SCENE_ID='".$res[$i]['ID']."' AND CONTAINER_ID=0");
+      $res[$i]['ALL_ELEMENTS']=$this->getElements("SCENE_ID='".$res[$i]['ID']."'");
       $res[$i]['NUM']=$i;
       $res[$i]['NUMP']=$i+1;
    }

@@ -33,6 +33,16 @@
    global $background;
    $rec['BACKGROUND']=$background;
 
+   global $wallpaper;
+   $rec['WALLPAPER']=$wallpaper;
+
+   global $wallpaper_fixed;
+   $rec['WALLPAPER_FIXED']=(int)$wallpaper_fixed;
+
+   global $wallpaper_norepeat;
+   $rec['WALLPAPER_NOREPEAT']=(int)$wallpaper_norepeat;
+
+
   //updating 'PRIORITY' (int)
    global $priority;
    $rec['PRIORITY']=(int)$priority;
@@ -94,6 +104,19 @@
     $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab);
    }
   }
+
+  if ($view_mode2=='up_elements') {
+   global $element_id;
+   $this->reorder_elements($element_id, 'up');
+   $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab);
+  }
+
+  if ($view_mode2=='down_elements') {
+   global $element_id;
+   $this->reorder_elements($element_id, 'down');
+   $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab);
+  }
+
 
   if ($view_mode2=='edit_elements') {
    global $element_id;
@@ -315,7 +338,7 @@
       $state_id=$state_rec['ID'];
      }
 
-    } elseif (($element['TYPE']=='button' || $element['TYPE']=='nav') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='nav' || $element['TYPE']=='navgo') && !$state_rec['ID']) {
 
      $state_rec=array();
      $state_rec['TITLE']='default';
@@ -323,6 +346,25 @@
      $state_rec['HTML']=$element['TITLE'];
      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
      $state_id=$state_rec['ID'];
+
+    } elseif ($element['TYPE']=='button' && !$state_rec['ID']) {
+
+     global $linked_object;
+     global $linked_method;
+
+     $state_rec=array();
+     $state_rec['TITLE']='default';
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['HTML']=$element['TITLE'];
+
+     if ($linked_object && $linked_method) {
+       $state_rec['ACTION_OBJECT']=$linked_object;
+       $state_rec['ACTION_METHOD']=$linked_method;
+     }
+
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
+
 
     } elseif (($element['TYPE']=='warning') && !$state_rec['ID']) {
      global $linked_object;
@@ -350,7 +392,15 @@
      global $state_high_value;
      global $state_low;
      global $state_low_value;
+     global $linked_property_unit;
 
+
+     if ($state_low_value!='' && !is_numeric($state_low_value) && !preg_match('/^%/', $state_low_value)) {
+      $state_low_value='%'.$state_low_value.'%';
+     }
+     if ($state_high_value!='' && !is_numeric($state_high_value) && !preg_match('/^%/', $state_high_value)) {
+      $state_high_value='%'.$state_high_value.'%';
+     }
 
 
 
@@ -359,6 +409,9 @@
       $state_rec['TITLE']='high';
       $state_rec['ELEMENT_ID']=$element['ID'];
       $state_rec['HTML']='%'.$linked_object.'.'.$linked_property.'%';
+      if ($linked_property_unit) {
+       $state_rec['HTML'].=' '.$linked_property_unit;
+      }
       $state_rec['LINKED_OBJECT']=$linked_object;
       $state_rec['LINKED_PROPERTY']=$linked_property;
       $state_rec['IS_DYNAMIC']=1;
@@ -374,6 +427,9 @@
       $state_rec['TITLE']='low';
       $state_rec['ELEMENT_ID']=$element['ID'];
       $state_rec['HTML']='%'.$linked_object.'.'.$linked_property.'%';
+      if ($linked_property_unit) {
+       $state_rec['HTML'].=' '.$linked_property_unit;
+      }
       $state_rec['LINKED_OBJECT']=$linked_object;
       $state_rec['LINKED_PROPERTY']=$linked_property;
       $state_rec['IS_DYNAMIC']=1;
@@ -388,6 +444,9 @@
      $state_rec['TITLE']='default';
      $state_rec['ELEMENT_ID']=$element['ID'];
      $state_rec['HTML']='%'.$linked_object.'.'.$linked_property.'%';
+     if ($linked_property_unit) {
+      $state_rec['HTML'].=' '.$linked_property_unit;
+     }
      if ($state_high || $state_low) {
       $state_rec['IS_DYNAMIC']=1;
       $state_rec['LINKED_OBJECT']=$linked_object;
@@ -395,7 +454,7 @@
       //is_dynamic 2
       if ($state_high && $state_low) {
        $state_rec['IS_DYNAMIC']=2;
-       $state_rec['CONDITION_ADVANCED']='if (gg(\''.$linked_object.'.'.$linked_value.'\')>='.(float)$state_low_value.' && gg(\''.$linked_object.'.'.$linked_value.'\')<='.(float)$state_high_value.') '."\n ".'{$display=1;} else {$display=0;}';
+       $state_rec['CONDITION_ADVANCED']='if (gg(\''.$linked_object.'.'.$linked_property.'\')>=(float)\''.$state_low_value.'\' && gg(\''.$linked_object.'.'.$linked_property.'\')<=(float)\''.$state_high_value.'\') {'."\n ".'$display=1;'."\n".'} else {'."\n ".'$display=0;'."\n".'}';
       } elseif ($state_high) {
        $state_rec['IS_DYNAMIC']=1;
        $state_rec['CONDITION']=3;
@@ -448,6 +507,41 @@
      $state_id=$state_rec['ID'];
 
 
+    } elseif (($element['TYPE']=='mode') && !$state_rec['ID']) {
+
+     global $linked_object;
+
+     if (!$linked_object) {
+      $linked_object='myObject';
+     }
+
+     $state_rec=array();
+     $state_rec['TITLE']='off';
+     $state_rec['HTML']=$element['TITLE'];
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['IS_DYNAMIC']=1;
+     $state_rec['LINKED_OBJECT']=$linked_object;
+     $state_rec['LINKED_PROPERTY']='active';
+     $state_rec['CONDITION']=4;
+     $state_rec['CONDITION_VALUE']=1;
+     $state_rec['ACTION_OBJECT']=$state_rec['LINKED_OBJECT'];
+     $state_rec['ACTION_METHOD']='activate';
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+
+
+     $state_rec=array();
+     $state_rec['TITLE']='on';
+     $state_rec['HTML']=$element['TITLE'];
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['IS_DYNAMIC']=1;
+     $state_rec['LINKED_OBJECT']=$linked_object;
+     $state_rec['LINKED_PROPERTY']='active';
+     $state_rec['CONDITION']=1;
+     $state_rec['CONDITION_VALUE']=1;
+     $state_rec['ACTION_OBJECT']=$state_rec['LINKED_OBJECT'];
+     $state_rec['ACTION_METHOD']='deactivate';
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
 
 
     }
@@ -480,6 +574,19 @@
   }
   outHash($rec, $out);
 
+  if ($element['TYPE']) {
+   $styles=$this->getStyles($element['TYPE']);
+   if (is_array($styles)) {
+    $out['STYLES']=$styles;
+    /*
+    foreach($styles as $s=>$v) {
+     $out['STYLES'][]=$v;
+    }
+    */
+   }
+  }
+
+
   if ($this->tab=='elements') {
    $out['HOMEPAGES']=SQLSelect("SELECT * FROM layouts ORDER BY TITLE");
    $out['SCRIPTS']=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
@@ -510,6 +617,8 @@
   $out['CONTAINERS']=$containers;
 
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
+
+
 
 
 ?>

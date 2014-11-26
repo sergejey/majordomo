@@ -529,8 +529,8 @@ if ($_GET['gtype']=='curve') { //рисуем сглаженый график
                 "BreakVoid"=>FALSE,
                 "VoidTicks"=>0,
                 "DisplayColor"=>DISPLAY_AUTO));
-        //$Test->drawAreaChart(array("AroundZero"=>FALSE)); // заполнение снизу до кривой графика
-        $Test->drawAreaChart(array("AroundZero"=>TRUE)); // заполнение от нуля до кривой графика
+        $Test->drawAreaChart(array("AroundZero"=>FALSE)); // заполнение снизу до кривой графика
+        // $Test->drawAreaChart(array("AroundZero"=>TRUE)); // заполнение от нуля до кривой графика
 } elseif ($_GET['gtype']=='bar') { //рисуем столбы
         //$Test->drawFilledRectangle(60,60,450,190,array("R"=>255,"G"=>255,"B"=>255,"Surrounding"=>-200,"Alpha"=>10));
         //$Test->drawScale(array("DrawSubTicks"=>TRUE));

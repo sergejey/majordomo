@@ -1,0 +1,19 @@
+/* NAV GO BUTTON */
+.type_navgo {
+ margin-right: -2px;
+ margin-bottom: 1px;
+ color:black;
+ border:1px solid #FFF;
+ background-color:rgba(255,255,255,0.7);
+ padding:0px;
+ width:145px;
+ height:34px;
+
+}
+.type_navgo span {
+ display: table-cell;
+ padding-left: 20px;
+ width:110px;
+ height:29px;
+ vertical-align: middle;
+}

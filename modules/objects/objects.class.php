@@ -663,7 +663,7 @@ curl_close($ch);
     $v['ID']=SQLInsert('pvalues', $v);
   }
 
-  if ($prop['KEEP_HISTORY']>0) {
+  if ($prop['KEEP_HISTORY']>0 && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
    startMeasure('DeleteOldHistory');
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
    endMeasure('DeleteOldHistory', 1);

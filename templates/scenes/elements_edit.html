@@ -47,20 +47,28 @@
 <script language="javascript">
  function element_type_switched(new_type) {
   [#if ELEMENT_ID==""#]
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning') {
-    $('#linked_object').show();
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode') {
+    $('#linked_object_field').show();
    } else {
-    $('#linked_object').hide();
+    $('#linked_object_field').hide();
    }
    if (new_type=='informer' || new_type=='warning') {
-    $('#linked_property').show();
+    $('#linked_property_field').show();
    } else {
-    $('#linked_property').hide();
+    $('#linked_property_field').hide();
    }
+   if (new_type=='button') {
+    $('#linked_method_field').show();
+   } else {
+    $('#linked_method_field').hide();
+   }
+
    if (new_type=='informer') {
     $('#informer_states').show();
+    $('#linked_property_unit').show();
    } else {
     $('#informer_states').hide();
+    $('#linked_property_unit').hide();
    }
 
   [#endif#]
@@ -70,6 +78,7 @@
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_TYPE#></label>
         <div class="controls">
+        [#if ELEMENT_ID=""#]
                 <select class="form-control" name="type" required  onChange="element_type_switched(this.value);">
                         <option value="" disabled selected>select
                         <option value="img"[#if ELEMENT_TYPE=="img"#] selected[#endif#]><#LANG_IMAGE#>
@@ -77,34 +86,66 @@
                         <option value="container"[#if ELEMENT_TYPE=="container"#] selected[#endif#]><#LANG_CONTAINER#>
                         <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
                         <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
-                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]>Warning
+                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]><#LANG_WARNING#>
+                        <option value="mode"[#if ELEMENT_TYPE=="mode"#] selected[#endif#]><#LANG_MODE_SWITCH#>
                         <option value="button"[#if ELEMENT_TYPE=="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
+                        <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
                 </select>
+        [#else ELEMENT_ID#]
+        [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
+        [#if ELEMENT_TYPE=="html"#]HTML[#endif#]
+        [#if ELEMENT_TYPE=="container"#]<#LANG_CONTAINER#>[#endif#]
+        [#if ELEMENT_TYPE=="informer"#]<#LANG_INFORMER#>[#endif#]
+        [#if ELEMENT_TYPE=="switch"#]<#LANG_ON_OFF_SWITCH#>[#endif#]
+        [#if ELEMENT_TYPE=="mode"#]<#LANG_MODE_SWITCH#>[#endif#]
+        [#if ELEMENT_TYPE=="warning"#]<#LANG_WARNING#>[#endif#]
+        [#if ELEMENT_TYPE=="button"#]<#LANG_BUTTON#>[#endif#]
+        [#if ELEMENT_TYPE=="nav"#]<#LANG_NAV_LINK#>[#endif#]
+        [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
+        <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
+        [#endif ELEMENT_ID#]
         </div>
 </div>
 
 [#if ELEMENT_ID=""#]
-<div class="form-group" id="linked_object" style="display:none">
+<div class="form-group" id="linked_object_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#></label>
         <div class="controls">
-         <input type="text" name="linked_object" class="form-control">
+         <input type="text" name="linked_object" id="linked_object" class="form-control">
         </div>
 </div>
-<div class="form-group" id="linked_property" style="display:none">
+<div class="form-group" id="linked_property_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#></label>
         <div class="controls">
-         <input type="text" name="linked_property" class="form-control">
+         <input type="text" name="linked_property" id="linked_property" class="form-control">
         </div>
 </div>
 
-<div class="form-group" id="informer_states" style="display:none">
-        <label class="col-lg-4 control-label">Additional states</label>
+<div class="form-group" id="linked_method_field" style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_METHOD#></label>
         <div class="controls">
-         <input type="checkbox" name="state_high" value="1"> high above
+         <input type="text" name="linked_method" id="linked_method" class="form-control">
+        </div>
+</div>
+
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="linked_method"#]
+
+<div class="form-group" id="informer_states" style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_ADDITIONAL_STATES#></label>
+        <div class="controls">
+         <input type="checkbox" name="state_high" value="1"> <#LANG_HIGH_ABOVE#>
          <input type="text" name="state_high_value" value="30"><br/>
-         <input type="checkbox" name="state_low" value="1"> low below
+         <input type="checkbox" name="state_low" value="1"> <#LANG_LOW_BELOW#>
          <input type="text" name="state_low_value" value="15">
+         <#LANG_ADDITIONAL_STATES_NOTE#>
+        </div>
+</div>
+
+<div class="form-group" id="linked_property_unit" style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_UNIT#></label>
+        <div class="controls">
+         <input type="text" name="linked_property_unit" class="form-control">
         </div>
 </div>
 
@@ -112,17 +153,28 @@
 [#endif ELEMENT_ID#]
 
 
-[#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
+<!--#
+[#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="navgo" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
+#-->
+[#if STYLES#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_STYLE#></label>
         <div class="controls">
          <input type="radio" name="css_style" value="default"[#if ELEMENT_CSS_STYLE=="default"#] checked[#endif#]> <#LANG_DEFAULT#>
+         [#begin STYLES#]
+         &nbsp;&nbsp;&nbsp;&nbsp;
+         <input type="radio" name="css_style" value="[#TITLE#]"[#if TITLE=="<#ELEMENT_CSS_STYLE#>"#] checked[#endif#]> 
+         [#if IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]" border="0">[#endif#]
+         [#TITLE#]
+         [#end STYLES#]
+         <!--#
          [#inc type_styles.html#]
+         #-->
         </div>
 </div>
-[#else#]
+[#else STYLES#]
 <input type="hidden" name="css_style" value='default'>
-[#endif ELEMENT_TYPE#]
+[#endif STYLES#]
 
 [#if (ELEMENT_TYPE!="container")#]
 <div class="form-group">
@@ -295,7 +347,7 @@
 [#endif#]
 
 
-[#if "<#ELEMENT_TYPE#>"=="html" || "<#ELEMENT_TYPE#>"=="informer" || "<#ELEMENT_TYPE#>"=="switch" || "<#ELEMENT_TYPE#>"=="button" || "<#ELEMENT_TYPE#>"=="nav" || "<#ELEMENT_TYPE#>"=="warning"#]
+[#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container"#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_CODE#></label>
         <div class="controls">

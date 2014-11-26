@@ -8,10 +8,10 @@
 <title><#SETTINGS_SITE_TITLE#></title>
 <meta name="keywords" content="{#if CMS_KEYWORDS!=""#}{#CMS_KEYWORDS#}{#endif#}">
 <meta name="description" content="{#if CMS_DESCRIPTION!=""#}{#CMS_DESCRIPTION#}{#endif#}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 [#if POPUP="1"#]
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 [#if ACTION="scenes"#]<meta http-equiv="refresh" content="3600">[#endif ACTION#]
 [#endif#]
 <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>

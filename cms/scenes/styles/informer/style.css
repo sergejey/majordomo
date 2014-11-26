@@ -1,0 +1,45 @@
+
+/* INFORMER */
+.type_informer {
+ margin-right: -2px;
+ margin-bottom: 1px;
+ padding:0px 2px 0px 2px;
+ color:white;
+ border:1px solid rgba(0,0,0,0.2);
+ font-size:14px;
+ background-color:rgba(0,0,0,0.5);
+ align:left;
+ width:67px;
+ height:34px;
+}
+.type_informer span {
+ display:inline-block;
+ width:40px;
+ position:relative;
+ top:-10px;
+ text-align:center;
+}
+.type_informer.state_low span {
+color:#92e7ff; 
+}
+.type_informer.state_high span {
+color:#f1b001; 
+}
+
+[#begin STYLES#]
+[#if HAS_DEFAULT!=""#]
+ .type_informer.style_[#TITLE#]:before {
+  content: url(<#ROOTHTML#>cms/scenes/styles/informer/[#HAS_DEFAULT#]);
+ }
+[#endif#]
+[#if HAS_HIGH!=""#]
+ .type_informer.state_high.style_[#TITLE#]:before {
+  content: url(<#ROOTHTML#>cms/scenes/styles/informer/[#HAS_HIGH#]);
+ }
+[#endif#]
+[#if HAS_LOW!=""#]
+ .type_informer.state_low.style_[#TITLE#]:before {
+  content: url(<#ROOTHTML#>cms/scenes/styles/informer/[#HAS_LOW#]);
+ }
+[#endif#]
+[#end STYLES#]
