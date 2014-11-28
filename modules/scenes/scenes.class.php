@@ -150,6 +150,8 @@ function admin(&$out) {
    global $id;
    global $file;
 
+   $seen_elements=array();
+
    $data=unserialize(LoadFile($file));
    if (is_array($data['ELEMENTS'])) {
     $elements=$data['ELEMENTS'];
@@ -161,9 +163,6 @@ function admin(&$out) {
     $elements[$i]['SCENE_ID']=$id;
     $old_element_id=$elements[$i]['ID'];
     unset($elements[$i]['ID']);
-    if ($elements[$i]['CONTAINER_ID']) {
-     $elements[$i]['CONTAINER_ID']=(int)$seen_elements[$elements[$i]['CONTAINER_ID']];
-    }
     if ($elements[$i]['LINKED_ELEMENT_ID']) {
      $elements[$i]['LINKED_ELEMENT_ID']=(int)$seen_elements[$elements[$i]['LINKED_ELEMENT_ID']];
     }
@@ -179,6 +178,12 @@ function admin(&$out) {
       unset($states[$iE]['IMAGE_DATA']);
      }
      SQLInsert('elm_states', $states[$iE]);
+    }
+   }
+   for($i=0;$i<$total;$i++) {
+    if ($elements[$i]['CONTAINER_ID']) {
+     $elements[$i]['CONTAINER_ID']=(int)$seen_elements[$elements[$i]['CONTAINER_ID']];
+     SQLUpdate('elements', $elements[$i]);
     }
    }
 
@@ -643,7 +648,7 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    $this->delete_elm_states($states[$i]['ID']);
   }
-  SQLExec("DELETE FROM elements WHERE ID='".$rec['ID']."' OR CONTAINER_ID='".$rec['ID']."'");
+  SQLExec("DELETE FROM elements WHERE ID='".$rec['ID']."' OR (CONTAINER_ID>0 AND CONTAINER_ID='".$rec['ID']."')");
  }
 
 /**
