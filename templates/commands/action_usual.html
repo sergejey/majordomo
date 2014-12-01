@@ -47,7 +47,8 @@
   if (obj.VALUES.length>0) {
     var values=obj.VALUES;
     for(var i=0;i<values.length;i++) {
-     window["updateValue"+labels[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
+     //alert("updateValue"+values[i].ID+"_Ready ("+i+" of "+values.length+")");
+     window["updateValue"+values[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
     }
   }
   requestProcessing=0;
@@ -60,7 +61,7 @@
   }
   requestSent = Math.round(+new Date()/1000);
 
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_details&labels="+labelsCollected+"&values="+valuesCollected;
+  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
   AJAXRequest(url, 'sendRequestForUpdates_processed', '');
 
   labelsCollected_sent=labelsCollected;

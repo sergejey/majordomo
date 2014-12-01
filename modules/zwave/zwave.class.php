@@ -830,7 +830,7 @@ function admin(&$out) {
      $prop['COMMENTS']=$comments[$k];
     }
 
-    if (is_numeric($prop['VALUE'])) {
+    if (is_numeric($prop['VALUE']) && $prop['VALUE']!=='') {
      $prop['VALUE']=round($prop['VALUE'], 3);
     }
 
@@ -838,7 +838,7 @@ function admin(&$out) {
     if ($prop['ID']) {
      SQLUpdate('zwave_properties', $prop);
 
-     if ($prop['VALUE']!='' || $prop['VALUE']===0) {
+     if ($prop['VALUE']!=='') {
       $validated=1;
      } else {
       $validated=0;

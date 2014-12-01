@@ -62,6 +62,7 @@
 #-->
 
 
+
 [#begin RESULT#]
 
 [#if SUB_PRELOAD="1"#]
@@ -370,8 +371,13 @@
   [#endif#]
 
   [#if TYPE=="switch"#]
+   //alert('[#TITLE#]'+"\nValue:"+$('#menu[#ID#]_v').val()+"\nData:"+data);
    if ($('#menu[#ID#]_v').val()!=data) {
-    $('#menu[#ID#]_v').val(data);
+    if (data=='[#ON_VALUE#]') {
+     $('#menu[#ID#]_v').val('[#ON_VALUE#]');
+    } else {
+     $('#menu[#ID#]_v').val('[#OFF_VALUE#]');
+    }
     $('#menu[#ID#]_v').slider('refresh');
    }
   [#endif TYPE#]

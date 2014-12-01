@@ -137,7 +137,11 @@ function admin(&$out) {
    global $labels;
    global $values;
 
+
+
    $res=array();
+
+   //echo "Debug labels: $labels \nValues: $values\n";
 
    $res['LABELS']=array();
    $labels=explode(',', $labels);
@@ -145,13 +149,12 @@ function admin(&$out) {
    $seen=array();
    for($i=0;$i<$total;$i++) {
     $item_id=trim($labels[$i]);
-    if (!$item_id || $seen[$item['ID']]) {
+    if (!$item_id || $seen[$item_id]) {
      continue;
     }
     $seen[$item_id]=1;
     $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
     if ($item['ID']) {
-     $res=array();
      if ($item['TYPE']=='custom') {
       $item['DATA']=processTitle($item['DATA'], $this);
       $data=$item['DATA'];
@@ -176,7 +179,7 @@ function admin(&$out) {
    $seen=array();
    for($i=0;$i<$total;$i++) {
     $item_id=trim($values[$i]);
-    if (!$item_id || $seen[$item['ID']]) {
+    if (!$item_id || $seen[$item_id]) {
      continue;
     }
     $seen[$item_id]=1;
