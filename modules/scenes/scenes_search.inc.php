@@ -70,7 +70,9 @@
       $res[$i]['NUMP']=$i+1;
    }
    if ($total==1) {
-    $out['SCENE_ID']=$res[0]['ID'];
+    foreach($res[0] as $k=>$v) {
+     $out['SCENE_'.$k]=$v;
+    }
    }
    $out['TOTAL']=$total;
    $out['RESULT']=$res;

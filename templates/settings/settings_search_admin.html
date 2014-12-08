@@ -54,6 +54,11 @@ $(function() {
                 <input type="text"   class="form-control" name="value_[#ID#]" value="[#VALUE#]" size=50>
                 [#endif TYPE#]
 
+                [#if TYPE="path"#]
+                <input type="text"   class="form-control" name="value_[#ID#]" value="[#VALUE#]" id="value_[#ID#]" size=50 onclick="openFileBrowser('value_[#ID#]');">
+                [#endif TYPE#]
+
+
                 [#if TYPE="onoff"#]
                 <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>On</label>
                 <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Off</label>
@@ -69,7 +74,7 @@ $(function() {
                 <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>
                 [#endif TYPE#]
                 <p class="help-block">
-                [#if TYPE="text"#]
+                [#if TYPE=="text" || TYPE=="path"#]
                 [#if DEFAULTVALUE!=""#]
                 <#LANG_DEFAULT_VALUE#>: [#DEFAULTVALUE#]
                 [#endif#]

@@ -1,0 +1,46 @@
+<!--#
+ @version 0.4 (auto-set)
+ <#LANG_WIKI_URL#>
+#-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>MajorDoMo</title>
+<meta name="keywords" content="{#if CMS_KEYWORDS!=""#}{#CMS_KEYWORDS#}{#endif#}">
+<meta name="description" content="{#if CMS_DESCRIPTION!=""#}{#CMS_DESCRIPTION#}{#endif#}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta http-equiv="refresh" content="3600">
+<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
+<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
+<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
+<style>
+overflow: scroll;
+-webkit-overflow-scrolling: touch;
+#container {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  z-index:0;
+}  
+</style>
+
+</head>
+<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
+
+<div id="container">
+[#module name="scenes" action=""#]
+</div>
+
+
+
+</body>
+</html>

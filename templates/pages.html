@@ -1,4 +1,40 @@
 <!--#
+ @version 0.4 (auto-set)
+ <#LANG_WIKI_URL#>
+#-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>MajorDoMo</title>
+<meta name="keywords" content="{#if CMS_KEYWORDS!=""#}{#CMS_KEYWORDS#}{#endif#}">
+<meta name="description" content="{#if CMS_DESCRIPTION!=""#}{#CMS_DESCRIPTION#}{#endif#}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
+<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
+<style>
+overflow: scroll;
+-webkit-overflow-scrolling: touch;
+#container {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  z-index:0;
+}  
+</style>
+
+</head>
+<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;[#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background-image:url(<#SETTINGS_SCENES_BACKGROUND#>);[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_FIXED#>"=="1"#]background-attachment: fixed;[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_NOREPEAT#>"=="1"#]background-repeat: no-repeat;[#endif#]">
+
+<div id="container">
+<!--#
  @version 0.2 (auto-set)
 #-->
 <style>
@@ -9,6 +45,7 @@
 
 .tab_table{
     display:table;
+    opacity:0.8;
     width:100%;
     table-layout:fixed;
     background-color:#99bde7;
@@ -63,6 +100,11 @@ img.tab_table_cell{
 
 <script language="javascript">
 
+function setBackgroundStyle(style) {
+ //alert(style);
+ return true;
+}
+
 function switchSelected(selected) {
 
          iFrameHeight=$(document).height()-56;
@@ -81,17 +123,17 @@ function switchSelected(selected) {
 
           [#if TYPE="app"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="url"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="html"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
            }
           [#endif TYPE#]
          }
@@ -121,3 +163,10 @@ $( window ).resize(function() {
 
 
 </script>
+
+</div>
+
+
+
+</body>
+</html>

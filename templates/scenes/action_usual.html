@@ -1,7 +1,10 @@
 [#inc style.html#]
 
+        [#if TOTAL!="1"#]
         <script type="text/javascript" src="<#ROOTHTML#>js/easySlider1.7.js"></script>
-        <script type="text/javascript">
+        [#endif TOTAL#]
+
+        <script type="text/javascript" language="javascript">
 
         var codeHash=new Object();
         var firstRun=1;
@@ -184,6 +187,14 @@
          return false;
         }
 
+function inIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+
                 $(document).ready(function(){
                 [#if TOTAL!="1"#]
                         $("#slider").easySlider({
@@ -191,6 +202,20 @@
                                 numeric: true,
                                 continuous: false
                         });
+                [#else TOTAL#]
+                 [#if SCENE_WALLPAPER!=""#]
+                 if (inIframe) {
+                  if (typeof window.parent.setBackgroundStyle!=='undefined') {
+                    if ($('#scene_wallpaper_[#SCENE_ID#]').css('background-image')!='') {
+                     $('body').css('background-color', 'transparent');
+                     window.parent.$('body').css('background-image', $('#scene_wallpaper_[#SCENE_ID#]').css('background-image'));
+                     window.parent.$('body').css('background-attachment', $('#scene_wallpaper_[#SCENE_ID#]').css('background-attachment'));
+                     window.parent.$('body').css('background-repeat', $('#scene_wallpaper_[#SCENE_ID#]').css('background-repeat'));
+                     $('#scene_wallpaper_[#SCENE_ID#]').css('background-image', '');
+                    }
+                  }
+                 }
+                 [#endif SCENE_WALLPAPER#]
                 [#endif TOTAL#]
                         checkAllStates();
                 });     
@@ -207,8 +232,7 @@
 [#if "<#TOTAL#>"!="1"#]<ul>[#endif#]
 [#begin RESULT#]
 [#if "<#TOTAL#>"!="1"#]<li id='scene_[#ID#]'>[#endif#]
-[#if BACKGROUND!=""#]
- <div style="[#if WALLPAPER!=""#]background-image:url([#WALLPAPER#]);[#if WALLPAPER_FIXED="1"#]background-attachment: fixed;[#endif#][#if WALLPAPER_NOREPEAT="1"#]background-repeat: no-repeat;[#endif#][#endif#]">
+ <div id="scene_wallpaper_[#ID#]" style="[#if WALLPAPER!=""#]background-image:url([#WALLPAPER#]);[#if WALLPAPER_FIXED="1"#]background-attachment: fixed;[#endif#][#if WALLPAPER_NOREPEAT="1"#]background-repeat: no-repeat;[#endif#][#endif#]">
  <!--#
  <table border="0" cellspacing="0" cellpadding="0" align="center"><td valign="top">
  #-->
@@ -254,16 +278,15 @@
  [#endif JAVASCRIPT#]
  <!-- /element [#ID#] -->
  [#end ELEMENTS#]
+ [#if BACKGROUND!=""#]
  <div class="scene_background"><img src="[#BACKGROUND#]" border="0"></div>
+ [#endif BACKGROUND#]
  </div>
  <!--#
  </td>
  </table>
  #-->
-
  </div>
-
-[#endif SCENE_BACKGROUND#]
  [#if "<#TOTAL#>"!="1"#]</li>[#endif#]
 [#end RESULT#]
 [#if "<#TOTAL#>"!="1"#]</ul>[#endif#]

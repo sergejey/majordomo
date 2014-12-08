@@ -305,6 +305,12 @@ function getParams() {
    if ($this->action=='menu') {
     $template_file=DIR_TEMPLATES."menu.html";
    }
+   if ($this->action=='pages') {
+    $template_file=DIR_TEMPLATES."pages.html";
+   }
+   if ($this->action=='scenes') {
+    $template_file=DIR_TEMPLATES."scenes.html";
+   }
 
 
    $this->data=$out;

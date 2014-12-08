@@ -36,6 +36,43 @@
  }
  $out['SECTIONS']=$sections;
 
+ if ($this->filter_name=='scenes' && !defined('SETTINGS_SCENES_BACKGROUND_FIXED')) {
+
+  $options=array(
+   'SCENES_BACKGROUND'=>'Path to background'
+  );
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='path';
+    SQLInsert('settings', $tmp);
+   }
+  }
+
+  $options=array(
+   'SCENES_BACKGROUND_FIXED'=>'Backround Fixed',
+   'SCENES_BACKGROUND_NOREPEAT'=>'Background No repeat'
+  );
+
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='onoff';
+    $tmp['DEFAULTVALUE']='0';
+    SQLInsert('settings', $tmp);
+   }
+  }
+
+
+
+ }
+
  if ($this->filter_name=='backup' && !defined('SETTINGS_BACKUP_PATH')) {
 
   $options=array(
@@ -76,6 +113,9 @@
    }
   }
  }
+
+// if (!empty($options)) {
+// }
 
 
  global $session;

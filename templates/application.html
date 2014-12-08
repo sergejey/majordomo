@@ -43,7 +43,12 @@ overflow: scroll;
 </style>
 
 </head>
+
+[#if POPUP!="1"#]
 <body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
+[#else POPUP#]
+<body bgcolor="transparent" style="margin:0px;padding:0px;">
+[#endif POPUP#]
 
 <script language="javascript">
 jQuery.fn.center = function () {
@@ -74,12 +79,8 @@ jQuery.fn.center = function () {
 </script>
 
 [#if POPUP="1"#]
-<div class="ui-widget">
- <div  class="ui-widget-content">[#inc actions.html#]
-  <!--#<br>&nbsp;<br>&nbsp;#-->
- </div>
+ [#inc actions.html#]
 
-</div>
 
 [#else POPUP#]
 <script language="javascript">

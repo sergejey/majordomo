@@ -64,6 +64,15 @@ margin: 10px 0;
 <body bgcolor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
 
 <div id="content" class="content">
+
+<script type="text/javascript">
+     function openFileBrowser(id){
+          fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;
+          window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
+     }
+</script>
+
+
 [#if AUTHORIZED#]
 
 <script language="javascript">
