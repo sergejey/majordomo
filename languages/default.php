@@ -122,6 +122,7 @@ $dictionary=array(
 'MODULE_MYBLOCKS'=>'My blocks',
 'MODULE_TEXTFILES'=>'Text files',
 'MODULE_SOUNDFILES'=>'Sound files',
+'MODULE_SYSTEM_ERRORS'=>'System Errors', 
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
@@ -717,6 +718,7 @@ $dictionary=array(
 
 
 'DO_NOT_KEEP'=>'do not keep history', // properties/properties_edit.html; 
+'KEEP_HISTORY'=>'keep history',
 
 
 'PARENT_PROPERTIES'=>'Parent properties', // properties/properties_search_admin.html; 
@@ -964,6 +966,7 @@ $dictionary=array(
 'LOW_BELOW'=>'Value low below',
 'ADDITIONAL_STATES_NOTE'=>'(you can use %object.property% for the limits)',
 'UNIT'=>'Unit',
+'COUNTER'=>'Counter',
 
 'TEST'=>'test'
 

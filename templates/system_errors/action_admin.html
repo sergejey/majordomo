@@ -1,0 +1,133 @@
+
+
+ <!-- action usual -->
+ [#if DATA_SOURCE="system_errors" || DATA_SOURCE=""#]
+ <!-- table system_errors search -->
+ [#if VIEW_MODE="search_system_errors" || VIEW_MODE=""#]
+  [#inc system_errors_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table system_errors search -->
+ <!-- table system_errors edit -->
+ [#if VIEW_MODE="edit_system_errors"#]
+   [#if ID!=""#]
+   <p><a href="?"><#LANG_BACK#></a></p>
+   [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+<ul class="nav nav-tabs">
+  <li[#if TAB=""#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
+  </li>
+  <li[#if TAB="history"#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=history"><#LANG_HISTORY#></a>
+  </li>
+</ul>
+   [#endif ID#]
+   [#if TAB=""#]
+    [#inc system_errors_edit_default.html#]
+   [#endif TAB#]
+   [#if TAB="history"#]
+    [#inc system_errors_edit_history.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table system_errors edit -->
+ <!-- table system_errors view --> 
+ [#if VIEW_MODE="view_system_errors"#]
+   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
+   <tr>
+    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">[#endif TAB#]Home</a></td>
+    <td align=center[#if TAB="history"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="history"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=history">[#endif TAB#]History</a></td>
+   </tr>
+   </table>
+   [#if TAB=""#]
+    [#inc system_errors_view_default.html#]
+   [#endif TAB#]
+   [#if TAB="history"#]
+    [#inc system_errors_view_history.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table system_errors view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="system_errors_data"#]
+ <!-- table system_errors_data search -->
+ [#if VIEW_MODE="search_system_errors_data" || VIEW_MODE=""#]
+  [#inc system_errors_data_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table system_errors_data search -->
+ <!-- table system_errors_data edit -->
+ [#if VIEW_MODE="edit_system_errors_data"#]
+   [#if ID!=""#]
+   [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+<ul class="nav nav-tabs">
+  <li[#if TAB=""#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">General</a>
+  </li>
+  <li[#if TAB="methods"#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods">Methods</a>
+  </li>
+  <li[#if TAB="scripts"#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=scripts">Scripts</a>
+  </li>
+  <li[#if TAB="timers"#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=timers">Timers</a>
+  </li>
+  <li[#if TAB="events"#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=events">Events</a>
+  </li>
+  <li[#if TAB="debug"#] class="active"[#endif#]>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=debug">Debug</a>
+  </li>
+</ul>
+   [#endif ID#]
+   [#if TAB=""#]
+    [#inc system_errors_data_edit_default.html#]
+   [#endif TAB#]
+   [#if TAB="methods"#]
+    [#inc system_errors_data_edit_methods.html#]
+   [#endif TAB#]
+   [#if TAB="scripts"#]
+    [#inc system_errors_data_edit_scripts.html#]
+   [#endif TAB#]
+   [#if TAB="timers"#]
+    [#inc system_errors_data_edit_timers.html#]
+   [#endif TAB#]
+   [#if TAB="events"#]
+    [#inc system_errors_data_edit_events.html#]
+   [#endif TAB#]
+   [#if TAB="debug"#]
+    [#inc system_errors_data_edit_debug.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table system_errors_data edit -->
+ <!-- table system_errors_data view --> 
+ [#if VIEW_MODE="view_system_errors_data"#]
+   <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
+   <tr>
+    <td align=center[#if TAB=""#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!=""#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=">[#endif TAB#]Home</a></td>
+    <td align=center[#if TAB="methods"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="methods"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods">[#endif TAB#]Methods</a></td>
+    <td align=center[#if TAB="scripts"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="scripts"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=scripts">[#endif TAB#]Scripts</a></td>
+    <td align=center[#if TAB="timers"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="timers"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=timers">[#endif TAB#]Timers</a></td>
+    <td align=center[#if TAB="events"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="events"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=events">[#endif TAB#]Events</a></td>
+    <td align=center[#if TAB="debug"#] bgcolor="#FFFFFF"[#else#] bgcolor="#CCCCCC"[#endif#]><b>[#if TAB!="debug"#]<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=debug">[#endif TAB#]Debug</a></td>
+   </tr>
+   </table>
+   [#if TAB=""#]
+    [#inc system_errors_data_view_default.html#]
+   [#endif TAB#]
+   [#if TAB="methods"#]
+    [#inc system_errors_data_view_methods.html#]
+   [#endif TAB#]
+   [#if TAB="scripts"#]
+    [#inc system_errors_data_view_scripts.html#]
+   [#endif TAB#]
+   [#if TAB="timers"#]
+    [#inc system_errors_data_view_timers.html#]
+   [#endif TAB#]
+   [#if TAB="events"#]
+    [#inc system_errors_data_view_events.html#]
+   [#endif TAB#]
+   [#if TAB="debug"#]
+    [#inc system_errors_data_view_debug.html#]
+   [#endif TAB#]
+ [#endif VIEW_MODE#]
+ <!-- / table system_errors_data view -->
+ [#endif DATA_SOURCE#]

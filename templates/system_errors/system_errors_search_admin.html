@@ -1,0 +1,79 @@
+
+<!-- table system_errors search -->
+<p>
+<a href="?view_mode=edit_system_errors&data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_ADD_NEW_RECORD#></a>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_system_errors" style="padding:0px" class="form">
+<table  align=center class="table">
+<thead>
+<tr>
+ <th>
+ <#LANG_CODE#>
+ </th>
+ <th>
+ <#LANG_TITLE#>
+ </th>
+ <th>
+ <#LANG_COUNTER#>
+ </th>
+ <th>
+ <#LANG_UPDATED#>
+ </th>
+<td>&nbsp;</td>
+</tr>
+</thead>
+<tbody>
+[#begin RESULT#]
+<tr style="height:52px;[#if ACTIVE!="0"#]background-color:#ffdddd;[#endif#]" class="hover_btn2">
+ <td style="vertical-align:middle"
+   >
+   [#CODE#]
+ </td>
+ <td style="vertical-align:middle">
+  <b><a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]&tab=history">
+   [#TITLE#]
+  </a></b>
+ </td>
+ <td style="vertical-align:middle">[#ACTIVE#]</td>
+ <td style="vertical-align:middle"
+   >
+  [#if LATEST_UPDATE!=""#]
+   [#LATEST_UPDATE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td style="vertical-align:middle" width="1%" nowrap>
+  <div style="width:180px">
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]&tab=history" class="btn btn-default" title="View"><i class="glyphicon glyphicon-eye-open"></i></a>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_system_errors&id=[#ID#]" onClick="return confirm('Are you sure?')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
+   [#if ACTIVE!="0"#]
+   <a href="?data_source=<#DATA_SOURCE#>&view_mode=clear_system_errors&id=[#ID#]" class="btn btn-default" title="Clear"><i class="glyphicon glyphicon-ok"></i></a>
+   [#endif#]
+
+  </div>
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_system_errors">
+</form>
+<!-- / search results (list) -->
+[#else RESULT#]
+<p>
+<font color="red">No records found.</font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>
+
+<p><#LANG_CODE#>:</p>
+<pre>registerError('error_code', 'optional details');</pre>

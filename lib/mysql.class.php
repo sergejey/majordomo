@@ -267,6 +267,7 @@
 * @access private
 */
   function Error($query="") {
+   registerError('sql', mysql_errno().": ".mysql_error()."\n$query");
    $err=new error(mysql_errno().": ".mysql_error()."<br>$query", 1);
    return 1;
   }

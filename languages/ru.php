@@ -109,6 +109,7 @@ $dictionary=array(
 'MODULE_MYBLOCKS'=>'Мои блоки',
 'MODULE_TEXTFILES'=>'Текстовые файлы',
 'MODULE_SOUNDFILES'=>'Звуковые файлы',
+'MODULE_SYSTEM_ERRORS'=>'Ошибки системы', 
 
 'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 
@@ -708,6 +709,7 @@ $dictionary=array(
 
 'DO_NOT_KEEP'=>'не хранить историю', // properties/properties_edit.html; 
 
+'KEEP_HISTORY'=>'хранить историю',
 
 'PARENT_PROPERTIES'=>'Родительские свойства', // properties/properties_search_admin.html; 
 
@@ -961,6 +963,8 @@ $dictionary=array(
 'LOW_BELOW'=>'Значение ниже',
 'ADDITIONAL_STATES_NOTE'=>'(вы можете использовать конструкцию %object.property% в качестве значений границ)',
 'UNIT'=>'Единица измерения',
+
+'COUNTER'=>'Счётчик',
 
 'TEST'=>'test'
 

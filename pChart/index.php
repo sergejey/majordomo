@@ -126,14 +126,16 @@ if ($total>0) {
 
         if ($_GET['op']=='log') {
          if ($total_values>0) {
-          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a> ';
           if ($_GET['subop']=='clear') {
-           SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."'");
+           if (!$_GET['id']) {
+            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."'");
+           } else {
+            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+           }
            header('Location:'.str_replace('&subop=clear', '', $_SERVER['REQUEST_URI']));
            exit;
           }
           //OPTIMIZE_LOG
-          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
           if ($_GET['subop']=='optimize') {
            $data=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
            $total=count($data);
@@ -148,6 +150,8 @@ if ($total>0) {
            header('Location:'.str_replace('&subop=optimize', '', $_SERVER['REQUEST_URI']));
            exit;
           }
+          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a> ';
+          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
           echo '<br/>';
          }
                 $history=array_reverse($history);
@@ -155,7 +159,9 @@ if ($total>0) {
                         //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
                         echo $history[$i]['ADDED'];
                         echo ": <b>";
-                        echo htmlspecialchars($history[$i]['VALUE'])."</b><br>";
+                        echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        echo ' <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear&id='.$history[$i]['ID'].'" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">X</a> ';
+                        echo "<br/>";
                 }
                 exit;
         }

@@ -754,4 +754,40 @@
   return $sc->checkAccess($object_type, $object_id);
  }
 
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function registerError($code='custom', $details='') {
+  $error_rec=SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '".DBSafe($code)."'");
+  if (!$error_rec['ID']) {
+   $error_rec['CODE']=$code;
+   $error_rec['KEEP_HISTORY']=1;
+   $error_rec['ID']=SQLInsert('system_errors', $error_rec);
+  }
+  $error_rec['LATEST_UPDATE']=date('Y-m-d H:i:s');
+  $error_rec['ACTIVE']=(int)$error_rec['ACTIVE']+1;
+  SQLUpdate('system_errors', $error_rec);
+
+  $history_rec=array();
+  $history_rec['ERROR_ID']=$error_rec['ID'];
+  $history_rec['COMMENTS']=$details;
+  $history_rec['ADDED']=$error_rec['LATEST_UPDATE'];
+
+  $history_rec['PROPERTIES_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=', 0);
+  $history_rec['METHODS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=methods', 0);
+  $history_rec['SCRIPTS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=scripts', 0);
+  $history_rec['TIMERS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=timers', 0);
+  $history_rec['EVENTS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=events', 0);
+  $history_rec['DEBUG_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=debmes', 0);
+
+  $history_rec['ID']=SQLInsert('system_errors_data', $history_rec);
+
+  if (!$error_rec['KEEP_HISTORY']) {
+   SQLExec("DELETE FROM system_errors_data WHERE ID!='".$history_rec['ID']."'");
+  }
+ }
 
