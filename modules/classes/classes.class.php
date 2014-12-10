@@ -225,6 +225,7 @@ function admin(&$out) {
      }
      if ($overwrite) {
       $this->delete_classes($old_class['ID']);
+      $records[$i]['ID']=$old_class['ID'];
      } else {
       $records[$i]['TITLE']=$records[$i]['TITLE'].rand(0, 500);
      }
@@ -533,8 +534,8 @@ function usual(&$out) {
   if ($rec['SUB_LIST']!='' && $rec['SUB_LIST']!=$rec['ID'] && $rec['SUB_LIST']!='') {
    return;
   }
-  SQLExec("DELETE FROM properties WHERE CLASS_ID='".$rec['ID']."'");
-  SQLExec("DELETE FROM methods WHERE CLASS_ID='".$rec['ID']."'");
+  SQLExec("DELETE FROM properties WHERE CLASS_ID='".$rec['ID']."' AND OBJECT_ID=0");
+  SQLExec("DELETE FROM methods WHERE CLASS_ID='".$rec['ID']."' AND OBJECT_ID=0");
   include_once(DIR_MODULES.'objects/objects.class.php');
   $o=new objects();
   $objects=SQLSelect("SELECT * FROM objects WHERE CLASS_ID='".$rec['ID']."'");
