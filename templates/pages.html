@@ -19,6 +19,7 @@
 <style>
 overflow: scroll;
 -webkit-overflow-scrolling: touch;
+
 #container {
   position:absolute;
   top:0px;
@@ -27,12 +28,67 @@ overflow: scroll;
   height:100%;
   overflow:hidden;
   z-index:0;
+  box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
 }  
+#video_background {
+position: absolute;
+bottom: 0px;
+right: 0px;
+min-width: 100%;
+min-height: 100%;
+width: auto;
+height: auto;
+z-index: -2;
+overflow: hidden;
+opacity: 0.35;
+}
+
+#body_background {
+position: absolute;
+[#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background:url(<#SETTINGS_SCENES_BACKGROUND#>) no-repeat left top;[#endif#]
+/*bottom: 0px;
+right: 0px;
+min-width: 100%;
+min-height: 100%;
+width: auto;
+height: auto;
+z-index: -3;
+background-attachment: fixed;
+
+background-repeat: no-repeat;
+overflow: hidden;
+opacity: 1;
+ -webkit-background-size: cover;
+ -moz-background-size: cover;
+ -o-background-size: cover;
+ background-size: cover;*/
+-webkit-background-size: cover;
+ -moz-background-size: cover;
+ -o-background-size: cover;
+ background-size: cover;
+    height:100%;
+    position:fixed;
+    width:100%;
+    z-index:-3;
+    top:0;
+}
+body
+{margin:0px; padding:0px;'}
 </style>
 
 </head>
-<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;[#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background-image:url(<#SETTINGS_SCENES_BACKGROUND#>);[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_FIXED#>"=="1"#]background-attachment: fixed;[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_NOREPEAT#>"=="1"#]background-repeat: no-repeat;[#endif#]">
-
+<body>
+<!--#body style='margin:0px; padding:0px; [#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black";[#else#] bgcolor="#639FC7";[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background-image:url(<#SETTINGS_SCENES_BACKGROUND#>);[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_FIXED#>"=="1"#]background-attachment: fixed;[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_NOREPEAT#>"=="1"#]background-repeat: no-repeat; background-size: 100%;[#endif#]  overflow: hidden; bottom: 0px; right: 0px;'#-->
+<!--#
+<video id="video_background" preload="auto" autoplay="true" loop="loop">
+      <source  src="/cms/scenes/backgrounds/5730506.mp4" type='video/mp4'>
+      <source  src="3.webm" type='video/webm'>
+      <source  src="3.ogg" type='video/ogg'>
+    </video>
+#-->
+<div id="body_background"></div>
 <div id="container">
 <!--#
  @version 0.2 (auto-set)
@@ -45,10 +101,10 @@ overflow: scroll;
 
 .tab_table{
     display:table;
-    opacity:0.8;
+    opacity:1;
     width:100%;
     table-layout:fixed;
-    background-color:#99bde7;
+   //background-color:red;
 }
 .tab_table_cell{
     display:table-cell;
@@ -59,16 +115,16 @@ overflow: scroll;
     text-align:center;
     width:100px;
     height:40px;
-    background-color:#d2e1f3;
+    background-color:rgba(255,255,255,0.7);
     color:black;
-    border-left:1px solid white;
+    /*border-left:1px solid #fff;*/
     cursor:pointer;
 }
 img.tab_table_cell{
  padding:6px;
 }
 .tab_table_cell.active{
-    background-color:#446993;
+    background-color:rgba(0,0,0,0.5);
     color:white;
 }
 
@@ -105,6 +161,11 @@ function setBackgroundStyle(style) {
  return true;
 }
 
+[#begin LAYOUTS#]
+var layoutTimer[#ID#];
+[#end LAYOUTS#]
+
+
 function switchSelected(selected) {
 
          iFrameHeight=$(document).height()-56;
@@ -113,11 +174,15 @@ function switchSelected(selected) {
          if (selected != [#ID#]) {
           $('#cell[#ID#]').removeClass('active');
           $('#tab-[#ID#]').hide();
+          if ($('#tab-[#ID#]').html()!='...') {
+           layoutTimer[#ID#]=setTimeout("$('#tab-[#ID#]').html('...');", 60*1000);
+          }
          }
          [#end LAYOUTS#]
 
          [#begin LAYOUTS#]
          if (selected == [#ID#]) {
+          clearTimeout(layoutTimer[#ID#]);
           $('#cell[#ID#]').addClass('active');
           $('#tab-[#ID#]').show();
 

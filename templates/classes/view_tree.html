@@ -123,15 +123,29 @@ $(function () {
 <!-- / results -->
 </td></tr></table>
 
-<hr size=1>
+&nbsp;
+<a href="#" onClick="$('#tools').toggle();return false;" class="btn btn-default"><#LANG_TOOLS#></a>
+<br>&nbsp;
+<div id='tools' style="display:none">
 <form action="?" enctype="multipart/form-data" method="post">
 <table border="0">
  <tr>
   <td valign="top"><#LANG_IMPORT_CLASS_FROM_FILE#>:</td>
   <td valign="top"><input type="file" name="file" enctype="multipart/form-data"></td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
   <td valign="top"><label><input type="checkbox" name="overwrite" value="1"> <#LANG_OVERWRITE#></label></td>
-  <td valign="top"><input type="submit" name="submit" value="<#LANG_IMPORT#>"></td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><label><input type="checkbox" name="only_classes" value="1"> <#LANG_ONLY_CLASSES#></label></td>
+ </tr>
+ <tr>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_IMPORT#>" class="btn btn-default"></td>
  </tr>
 </table>
 <input type="hidden" name="view_mode" value="import_classes">
 </form>
+</div>

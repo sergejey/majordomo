@@ -256,6 +256,7 @@ $dictionary=array(
 
 'PARENT_METHODS'=>'Parent methods:', // methods/methods_search_admin.html; 
 'OVERWRITE'=>'Overwrite', // methods/methods_search_admin.html; classes/classes_search_admin.html; properties/properties_search_admin.html; 
+'ONLY_CLASSES'=>'Do not import objects',
 
 
 'NEW_METHOD'=>'New method', // methods/methods_edit.html; 

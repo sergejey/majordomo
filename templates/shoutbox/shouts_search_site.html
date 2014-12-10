@@ -4,10 +4,10 @@
 <!-- table shouts search -->
 <!-- results -->
 
-
+<div class="shout_box">  <!-- begin shout_box -->
 
 <!-- search results (list) -->
-<div id="shoutboxContent">
+<div id="shoutboxContent" class="shout_content">
 [#if TXT_DATA!=""#][#TXT_DATA#][#else#]<#LANG_LOADING#>...[#endif#]
 </div>
 <!-- / search results (list) -->
@@ -20,15 +20,13 @@
 </p>
 [#endif MOBILE#]
 [#else#]
+<div class="shout_form">
 <form action="?" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit='return false;'>
-<table border=0>
-<td><#LANG_COMMAND#>:</td>
-<td><input type="text" name="message"></td>
-<td><input type="submit" name="submit" value="<#LANG_SEND#>" onClick="return sendShoutMessage();"></td>
-</table>
+<input type="text" name="message" class="shout_input" placeholder="<#LANG_COMMAND#>"><input type="submit" name="submit" value="<#LANG_SEND#>" onClick="return sendShoutMessage();"  class="shout_button"></td>
 </form>
+</div>
 [#endif#]
-
+</div> <!-- end shout_box -->
 <script language="javascript">
 
 var shoutTimer;

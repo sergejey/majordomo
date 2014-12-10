@@ -150,6 +150,11 @@ $(document).ready(function() {
   //alert($('#defaultFrame').height());
 });
 
+[#begin LAYOUTS#]
+var layoutTimer[#ID#];
+[#end LAYOUTS#]
+
+
         $("#tabs").tabs({
         show: function(event, ui) { 
          iFrameHeight=$(document).height()-110;
@@ -157,6 +162,7 @@ $(document).ready(function() {
          //alert(selected);
          [#begin LAYOUTS#]
          if (selected == [#NUM#]) {
+          clearTimeout(layoutTimer[#ID#]);
           [#if TYPE="app"#]
            if ($('#tabs-[#ID#]').html()=='...') {
             $('#tabs-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
@@ -172,6 +178,10 @@ $(document).ready(function() {
             $('#tabs-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
            }
           [#endif TYPE#]
+         } else {
+          if ($('#tab-[#ID#]').html()!='...') {
+           layoutTimer[#ID#]=setTimeout("$('#tab-[#ID#]').html('...');", 60*1000);
+          }
          }
          [#end LAYOUTS#]
         }});

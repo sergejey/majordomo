@@ -246,7 +246,7 @@ $dictionary=array(
 
 'PARENT_METHODS'=>'Родительские методы:', // methods/methods_search_admin.html; 
 'OVERWRITE'=>'Переписать', // methods/methods_search_admin.html; classes/classes_search_admin.html; properties/properties_search_admin.html; 
-
+'ONLY_CLASSES'=>'Не импортировать объекты',
 
 'NEW_METHOD'=>'Новый метод', // methods/methods_edit.html; 
 'HOME'=>'Начало', // commands/commands_search_pda.html; commands/commands_edit.html; app_products/action_admin.html; 

@@ -206,6 +206,7 @@ function admin(&$out) {
  function import_classes(&$out) {
   global $file;
   global $overwrite;
+  global $only_classes;
 
   $data=LoadFile($file);
   $records=unserialize($data);
@@ -214,7 +215,14 @@ function admin(&$out) {
    $total=count($records);
    for($i=0;$i<$total;$i++) {
     $old_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($records[$i]['TITLE'])."'");
+    $total_o=0;
     if ($old_class['ID']) {
+     $old_objects=SQLSelect("SELECT * FROM objects WHERE CLASS_ID='".$old_class['ID']."'");
+     $total_o=count($old_objects);
+     for($io=0;$io<$total_o;$io++) {
+      $old_objects[$io]['CLASS_ID']=0;
+      SQLUpdate('objects', $old_objects[$io]);
+     }
      if ($overwrite) {
       $this->delete_classes($old_class['ID']);
      } else {
@@ -227,7 +235,15 @@ function admin(&$out) {
     unset($records[$i]['METHODS']);
     $properties=$records[$i]['PROPERTIES'];
     unset($records[$i]['PROPERTIES']);
+
     $records[$i]['ID']=SQLInsert('classes', $records[$i]);
+
+    if ($total_o) {
+     for($io=0;$io<$total_o;$io++) {
+      $old_objects[$io]['CLASS_ID']=$records[$i]['ID'];
+      SQLUpdate('objects', $old_objects[$io]);
+     }
+    }
 
     if (is_array($properties)) {
      $total_p=count($properties);
@@ -245,7 +261,7 @@ function admin(&$out) {
      }
     }
 
-    if (is_array($objects)) {
+    if (is_array($objects) && !$only_classes) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
       $objects[$o]['CLASS_ID']=$records[$i]['ID'];
@@ -277,6 +293,8 @@ function admin(&$out) {
    }
    //print_r($records);
   }
+
+  $this->updateTree_classes();
   $this->redirect("?");
 
  }

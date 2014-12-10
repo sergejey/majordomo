@@ -390,6 +390,14 @@ function setLocalTime($now_date, $diff=0) {
       }
 
       $log = Logger::getRootLogger();
+
+      if (defined('SETTINGS_LOGGER_DESTINATION')) {
+       $errorDestination = strtolower(SETTINGS_LOGGER_DESTINATION);
+       if ($errorDestination == "database") $log = Logger::getLogger('dblog');
+       if ($errorDestination == "both") $log = Logger::getLogger('db_and_file');
+      }
+
+
       //$dbLog = Logger::getLogger('dblog');
       switch ($logLevel) 
       {

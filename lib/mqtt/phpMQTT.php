@@ -155,6 +155,13 @@ class phpMQTT {
                         $togo = $int - strlen($string);
                         if($togo) $string .= fread($this->socket, $togo);
                 }
+
+                if (!$string) {
+                 if (!$this->socket) {
+                  @$this->disconnect();
+                  @$this->connect();
+                 }
+                }
                 
         
                 
