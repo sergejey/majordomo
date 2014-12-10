@@ -154,14 +154,19 @@ class phpMQTT {
                 while (!feof($this->socket) && $togo>0) {
                         $togo = $int - strlen($string);
                         if($togo) $string .= fread($this->socket, $togo);
+
+                 if (!$string) {
+                  if (!$this->socket) {
+                   echo "Trying to reconnect...";
+                   @$this->disconnect();
+                   sleep(2);
+                   @$this->connect();
+                  }
+                 }
+
+
                 }
 
-                if (!$string) {
-                 if (!$this->socket) {
-                  @$this->disconnect();
-                  @$this->connect();
-                 }
-                }
                 
         
                 
