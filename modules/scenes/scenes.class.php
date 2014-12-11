@@ -909,6 +909,10 @@ function usual(&$out) {
         $style=$m[1];
         $style=preg_replace('/^i\_/', '', $style);
 
+        if (preg_match('/^ign_/', $style)) {
+         continue;
+        }
+
         $has_low=0;
         if (preg_match('/\_lo$/', $style)) {
          $style=preg_replace('/\_lo$/', '', $style);

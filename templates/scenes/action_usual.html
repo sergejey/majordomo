@@ -187,14 +187,6 @@
          return false;
         }
 
-function inIframe () {
-    try {
-        return window.self !== window.top;
-    } catch (e) {
-        return true;
-    }
-}
-
                 $(document).ready(function(){
                 [#if TOTAL!="1"#]
                         $("#slider").easySlider({

@@ -48,6 +48,13 @@ overflow: scroll;
 <body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
 [#else POPUP#]
 <body bgcolor="transparent" style="margin:0px;padding:0px;">
+<script language="javascript">
+$(document).ready(function() {
+ if (!inIframe()) {
+  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]white[#endif#]');
+ }
+});
+</script>
 [#endif POPUP#]
 
 <script language="javascript">
@@ -79,9 +86,7 @@ jQuery.fn.center = function () {
 </script>
 
 [#if POPUP="1"#]
- [#inc actions.html#]
-
-
+[#inc actions.html#]
 [#else POPUP#]
 <script language="javascript">
 
@@ -222,8 +227,6 @@ jQuery.fn.center = function () {
  }
 
 </script>
-
-<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]>
 
 <div id="container">[#inc actions.html#]</div><div id='sound'></div>
 

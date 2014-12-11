@@ -1,3 +1,11 @@
+function inIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+
  function report_js_error(msg, url, linenumber) {
   stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
   /*
