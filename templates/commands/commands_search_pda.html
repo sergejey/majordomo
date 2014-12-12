@@ -355,7 +355,7 @@
  function updateValue[#ID#]_Ready(id, data) {
 
  var obj=jQuery.parseJSON(data);
- if (obj.DATA!='') {
+ if (typeof obj.DATA != 'undefined') {
   data=obj.DATA;
   [#if TYPE=="textbox"#]
    if ($('#menu[#ID#]_v').val()!=data) {
