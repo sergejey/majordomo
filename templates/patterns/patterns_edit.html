@@ -26,13 +26,13 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PARENT_CONTEXT#>:</label>
         <div class="col-lg-5">
-			<select name="parent_id" class="form-control">
-			   <option value="0">
-			   [#begin CONTEXTS#]
-			   <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
-			   [#end CONTEXTS#]
-			</select>
-		</div>
+                        <select name="parent_id" class="form-control">
+                           <option value="0">
+                           [#begin CONTEXTS#]
+                           <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
+                           [#end CONTEXTS#]
+                        </select>
+                </div>
 </div>
 
 <div class="form-group ">
@@ -42,12 +42,12 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PRIORITY#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="priority" value="[#PRIORITY#]" required="true"></div>
+        <div class="col-lg-5"><input type="text"  class="form-control"  name="priority" value="[#PRIORITY#]"></div>
 </div>
 <div class="form-group">
-	<label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
-				
+                                
                 <div class="checkbox">
                         <label>
                                 <input type="checkbox" value="1" name="is_last" [#if IS_LAST="1"#] checked[#endif#]> <#LANG_LAST_RULE#>
@@ -62,7 +62,7 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TIME_LIMIT#>, <#LANG_SECONDS#>:<font color="red">*</font><br>(set 0 to be used with the latest log record only)</label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TIME_LIMIT#]alert-danger[#endif#]"  name="time_limit" value="[#TIME_LIMIT#]" required="true"></div>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TIME_LIMIT#]alert-danger[#endif#]"  name="time_limit" value="[#TIME_LIMIT#]"></div>
 </div>
 
 
@@ -99,21 +99,21 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">Set context when matched:</label>
         <div class="col-lg-5">
-			<select name="matched_context_id" class="form-control">
-			  <option value="0">
+                        <select name="matched_context_id" class="form-control">
+                          <option value="0">
    [#begin CONTEXTS#]
    <option value="[#ID#]"[#if ID="<#MATCHED_CONTEXT_ID#>"#] selected[#endif#]>[#TITLE#]
    [#end CONTEXTS#]
-			</select>
-		</div>
+                        </select>
+                </div>
 </div>
 
 
 
 <div class="form-group">
-	<label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
-				
+                                
                 <div class="checkbox">
                         <label>
                                 <input type="checkbox" name="is_context" value="1"[#if IS_CONTEXT="1"#] checked[#endif#] onClick='$("#context_details").toggle();'> <#LANG_IS_CONTEXT#>
@@ -169,14 +169,14 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:</label>
         <div class="col-lg-5">
-	 
+         
                 <a class="btn btn-default " href="?(panel:{action=security_rules})&object_type=pattern&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
  </div>
 </div>
 [#endif ID#]
 
 <div class="form-group">
-	<label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
  [#if ID!=""#]
  <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">

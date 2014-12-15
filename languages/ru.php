@@ -382,6 +382,8 @@ $dictionary=array(
 'ADD_NEW_CLASS'=>'Добавить новый класс', // classes/classes_search_admin.html; 
 'OBJECTS'=>'Объекты', // classes/classes_search_admin.html; classes/classes_search_admin.html; classes/action_admin.html; 
 'EXPORT'=>'Экспорт', // classes/classes_search_admin.html; 
+'EXPORT_CLASS_FULL'=>'Экспорт Класса и Объектов', // classes/classes_search_admin.html; 
+'EXPORT_CLASS_NO_OBJECTS'=>'Экспорт Класса (без объектов)', // classes/classes_search_admin.html; 
 
 
 'IMPORT_CLASS_FROM_FILE'=>'Импортировать класс из файла', // classes/classes_search_admin.html; 

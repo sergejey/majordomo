@@ -393,6 +393,8 @@ $dictionary=array(
 'ADD_NEW_CLASS'=>'Add new class', // classes/classes_search_admin.html; 
 'OBJECTS'=>'Objects', // classes/classes_search_admin.html; classes/classes_search_admin.html; classes/action_admin.html; 
 'EXPORT'=>'Export', // classes/classes_search_admin.html; 
+'EXPORT_CLASS_FULL'=>'Export Class and Objects', // classes/classes_search_admin.html; 
+'EXPORT_CLASS_NO_OBJECTS'=>'Export Class (w/o Objects)', // classes/classes_search_admin.html; 
 
 
 'IMPORT_CLASS_FROM_FILE'=>'Import class from file', // classes/classes_search_admin.html; 

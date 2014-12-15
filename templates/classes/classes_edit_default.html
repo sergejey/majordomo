@@ -56,6 +56,18 @@
     </div>
 </div>
 
+[#if ID!=""#]
+&nbsp;
+<div class="form-group">
+     <div class="col-lg-offset-1 col-lg-5">
+
+<a href="?view_mode=export_classes&id=[#ID#]" class="btn btn-default" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i> <#LANG_EXPORT_CLASS_FULL#></a>
+<br/><br/>
+<a href="?view_mode=export_classes&id=[#ID#]&skip_objects=1" class="btn btn-default" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i> <#LANG_EXPORT_CLASS_NO_OBJECTS#></a>
+
+    </div>
+</div>
+[#endif ID#]
 
 
 <input type="hidden" name="id" value="<#ID#>">
@@ -66,3 +78,5 @@
 
 
 </form>
+
+

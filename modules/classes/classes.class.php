@@ -308,6 +308,7 @@ function admin(&$out) {
 * @access public
 */
  function export_classes(&$out, $id) {
+  global $skip_objects;
   $qry=1;
   $qry.=" AND ID='".(int)$id."'";
 
@@ -349,6 +350,7 @@ function admin(&$out) {
     }
 
 
+  if (!$skip_objects) {
 
    $objects=SQLSelect("SELECT * FROM objects WHERE CLASS_ID='".$records[$i]['ID']."'");
    $total_o=count($objects);
@@ -379,6 +381,12 @@ function admin(&$out) {
     unset($objects[$o]['LOCATION_ID']);
     unset($objects[$o]['SUB_LIST']);
    }
+
+  } else {
+   $objects=array();
+  }
+
+
    $records[$i]['OBJECTS']=$objects;
    unset($records[$i]['ID']);
    unset($records[$i]['PARENT_ID']);
