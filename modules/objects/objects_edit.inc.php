@@ -45,6 +45,11 @@
   //updating 'Location' (select)
    global $location_id;
    $rec['LOCATION_ID']=$location_id;
+
+   global $keep_history;
+   $rec['KEEP_HISTORY']=$keep_history;
+
+
   }
   // step: properties
   if ($this->tab=='properties') {

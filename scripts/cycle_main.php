@@ -30,9 +30,10 @@ $old_date   = date('Y-m-d');
 
 $checked_time=0;
 
+echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
+
 while(1) 
 {
-   echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
    if (time()-$checked_time>5) {
     $checked_time=time();

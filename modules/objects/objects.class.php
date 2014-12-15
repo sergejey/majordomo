@@ -281,6 +281,7 @@ function usual(&$out) {
    $this->class_id=$rec['CLASS_ID'];
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
+   $this->keep_history=$rec['KEEP_HISTORY'];
   } else {
    return false;
   }
@@ -663,7 +664,11 @@ curl_close($ch);
     $v['ID']=SQLInsert('pvalues', $v);
   }
 
-  if ($prop['KEEP_HISTORY']>0 && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
+  if ($this->keep_history>0) {
+   $prop['KEEP_HISTORY']=$this->keep_history;
+  }
+
+  if (($prop['KEEP_HISTORY']>0) && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
    startMeasure('DeleteOldHistory');
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
    endMeasure('DeleteOldHistory', 1);
@@ -771,6 +776,7 @@ objects - Objects
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
+ objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }

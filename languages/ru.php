@@ -965,6 +965,7 @@ $dictionary=array(
 'UNIT'=>'Единица измерения',
 
 'COUNTER'=>'Счётчик',
+'USE_CLASS_SETTINGS'=>'использовать настройки свойств класса',
 
 'TEST'=>'test'
 

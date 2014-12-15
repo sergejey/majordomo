@@ -206,7 +206,7 @@ Action URL:
 
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
 
 
 <div class="form-group">
@@ -219,7 +219,9 @@ Action URL:
      </div>
     </div>
 </div>
+[#endif TYPE#]
 
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
 <div class="form-group">
   <label class="control-label"><#LANG_PROPERTY#>:</label>
    <div class="col-lg-5">

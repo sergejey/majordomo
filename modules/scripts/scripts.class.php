@@ -367,7 +367,6 @@ scripts - Scripts
  safe_execs: ADDED datetime
 
 
-
 EOD;
   parent::dbInstall($data);
  }

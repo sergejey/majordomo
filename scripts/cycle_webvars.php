@@ -22,10 +22,9 @@ $webvars = new webvars();
 
 $checked_time=0;
 
+echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 while(1) 
 {
-   echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-
    if (time()-$checked_time>10) {
     $checked_time=time();
     setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);

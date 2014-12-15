@@ -26,8 +26,8 @@ if ($_GET['once']) {
  }
  echo "OK";
 } else {
+ echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
  while(1) {
-   echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
    if (time()-$checked_time>5) {
     setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
     $checked_time=time();

@@ -32,6 +32,8 @@ $bts_cmd = 'hcitool scan | grep ":"';
 
 $first_run    = 1;
 $skip_counter = 0;
+
+echo "Running bluetooth scanner\n";
  
 while(1) 
 {
@@ -41,8 +43,7 @@ while(1)
       $skip_counter = 0;
       $data = '';
       
-      echo "Running bluetooth scanner\n";
-      
+     
       if (substr(php_uname(), 0, 7) == "Windows") 
       {   
          // windows scanner
@@ -176,7 +177,7 @@ while(1)
    } 
    else 
    {
-      echo "Running Bluetooth monitor.";
+      //echo "Running Bluetooth monitor.";
    }
 
    $first_run=0;

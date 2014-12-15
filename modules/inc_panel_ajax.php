@@ -7,6 +7,11 @@
    header ('Content-Type: text/html; charset=utf-8');
   }
 
+  if ($op=='console') {
+   global $command;
+   eval($command);
+  }
+
   if ($op=='filter') {
    global $title;
 
@@ -132,7 +137,7 @@
    for($i=0;$i<$total;$i++) {
     $res.='Script: <a href="/panel/script/'.$scripts[$i]['ID'].'.html">'.$scripts[$i]['TITLE'].'</a><br>';
    }
-   //menu elements
+   //menu elements (to-do: content)
    $commands=SQLSelect("SELECT ID, TITLE FROM commands WHERE (TITLE LIKE '%".DBSafe($title)."%' OR LINKED_OBJECT LIKE '%".DBSafe($title)."%' OR LINKED_PROPERTY LIKE '%".DBSafe($title)."%' OR ONCHANGE_METHOD LIKE '%".DBSafe($title)."%' OR CODE LIKE '%".DBSafe($title)."%') ORDER BY TITLE");
    $total=count($commands);
    for($i=0;$i<$total;$i++) {
@@ -154,6 +159,8 @@
      $res.='ZWave: <a href="/panel/zwave/'.$devices[$i]['DEVICE_ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
     }
    }
+
+   //to-do: webvars
 
 
    echo $res;

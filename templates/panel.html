@@ -224,6 +224,9 @@ jQuery.fn.center = function () {
                                                 <a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a>
                                         </li>
                                         <li>
+                                                <a href="#" onClick='$("#console").toggle();return false;'><i class="glyphicon glyphicon-flash"></i> Console</a>
+                                        </li>
+                                        <li>
                                                 <a href="<#LANG_WIKI_URL#>" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
                                         </li>
                                         <li>
@@ -234,6 +237,35 @@ jQuery.fn.center = function () {
 </nav>
 
 <!--# .top  #-->
+<div id='console' style='display:none'>
+<script language="javascript">
+ var cmd='';
+ function sendConsoleCommand() {
+  cmd=$('#command').val();
+  $('#command').val('');
+
+ var url="?";
+ url+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+
+ $.ajax({
+   url: url
+  }).done(function(data) { 
+   $('#console_output').html('<pre>Command: <b>'+cmd+'</b><br/>Result:<br/>'+data+'</pre>');
+  });
+
+
+  return false;
+ }
+</script>
+<form class="form-inline" role="form" action="?" method="get" onSubmit="return sendConsoleCommand();">
+  <div class="form-group col-lg-6">
+    <input type="text" name="command" value="" id="command" class="form-control" placeholder="Command...">
+  </div>
+ <input type="submit" name="submit" value="Send" class="btn btn-default">
+</form>
+&nbsp;
+<div id='console_output' style="margin-left:15px">&nbsp;</div>
+</div>
 
 <ul class="breadcrumb">
    <li>

@@ -249,7 +249,7 @@ while(1)
 {
    $s = $dbus->waitLoop(1);
    
-   #echo "Running skypebot...\n";
+   //echo "Running skypebot...\n";
 
    $tmp = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID = 0 ORDER BY ADDED DESC");
    $latest_message = $tmp['MESSAGE'];

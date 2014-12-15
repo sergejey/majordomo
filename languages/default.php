@@ -968,6 +968,7 @@ $dictionary=array(
 'ADDITIONAL_STATES_NOTE'=>'(you can use %object.property% for the limits)',
 'UNIT'=>'Unit',
 'COUNTER'=>'Counter',
+'USE_CLASS_SETTINGS'=>'use class settings',
 
 'TEST'=>'test'
 

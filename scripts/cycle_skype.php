@@ -68,14 +68,13 @@ $checked_tm=0;
 if ($sink->attached) 
 {
    $CurrentUser = $skype->CurrentUser;
-  
+   echo "Running skypebot...\n";  
    //Message loop. Set $sink->terminated to true to quit
    while(!$sink->terminated) 
    {
       com_message_pump(10);
 
       if (time()-$checked_tm>3) {
-       echo "Running skypebot...\n";
        $checked_tm=time();
        $tmp = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC LIMIT 1");
        $latest_message = $tmp['MESSAGE']; //.' ('.$tmp['IMPORTANCE'].')'
