@@ -178,6 +178,9 @@
    $total=count($props);
    //print_R($props);exit;
    for($i=0;$i<$total;$i++) {
+    if (!$props[$i]['KEEP_HISTORY'] && $rec['KEEP_HISTORY']>0) {
+     $props[$i]['KEEP_HISTORY']=$rec['KEEP_HISTORY'];
+    }
     $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$props[$i]['ID']."' AND OBJECT_ID='".$rec['ID']."'");
     if ($this->mode=='update') {
      global ${"value".$props[$i]['ID']};

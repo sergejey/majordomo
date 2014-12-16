@@ -81,13 +81,14 @@ body
 </head>
 <body>
 <!--#body style='margin:0px; padding:0px; [#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black";[#else#] bgcolor="#639FC7";[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background-image:url(<#SETTINGS_SCENES_BACKGROUND#>);[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_FIXED#>"=="1"#]background-attachment: fixed;[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_NOREPEAT#>"=="1"#]background-repeat: no-repeat; background-size: 100%;[#endif#]  overflow: hidden; bottom: 0px; right: 0px;'#-->
-<!--#
-<video id="video_background" preload="auto" autoplay="true" loop="loop">
-      <source  src="/cms/scenes/backgrounds/5730506.mp4" type='video/mp4'>
-      <source  src="3.webm" type='video/webm'>
-      <source  src="3.ogg" type='video/ogg'>
+
+[#if "<#SETTINGS_SCENES_BACKGROUND_VIDEO#>"!=""#]
+<video id="video_background" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
+      <source  src="<#SETTINGS_SCENES_BACKGROUND_VIDEO#>" type='video/mp4'>
+<!--#      <source  src="/grey.webm" type='video/webm'>#-->
     </video>
-#-->
+[#endif#]
+
 <div id="body_background"></div>
 <div id="container">
 <!--#

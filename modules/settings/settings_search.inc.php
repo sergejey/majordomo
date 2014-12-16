@@ -56,10 +56,12 @@
 
  }
 
- if ($this->filter_name=='scenes' && !defined('SETTINGS_SCENES_BACKGROUND_FIXED')) {
+ if ($this->filter_name=='scenes' && !defined('SETTINGS_SCENES_BACKGROUND_VIDEO')) {
 
   $options=array(
-   'SCENES_BACKGROUND'=>'Path to background'
+   'SCENES_BACKGROUND'=>'Path to background',
+   'SCENES_BACKGROUND_VIDEO'=>'Path to video background',
+   'SCENES_CLICKSOUND'=>'Path to click-sound file'
   );
   foreach($options as $k=>$v) {
    $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");

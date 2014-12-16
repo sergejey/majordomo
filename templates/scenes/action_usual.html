@@ -1,5 +1,12 @@
 [#inc style.html#]
 
+[#if "<#SETTINGS_SCENES_CLICKSOUND#>"!=""#]
+<div style="display:none">
+<audio id="click_sound" src="<#SETTINGS_SCENES_CLICKSOUND#>" controls preload="auto" autobuffer>
+</audio>
+</div>
+[#endif#]
+
         [#if TOTAL!="1"#]
         <script type="text/javascript" src="<#ROOTHTML#>js/easySlider1.7.js"></script>
         [#endif TOTAL#]
@@ -10,6 +17,11 @@
         var firstRun=1;
         var checkTimer;
 
+        function EvalSound(soundobj) {
+         //alert('zz');
+         var thissound=document.getElementById(soundobj);
+         thissound.play();
+        }
 
         function switchScene(scene_id) {
          [#begin RESULT#]
@@ -21,7 +33,7 @@
         }
 
         function controlWindowPositionChanged(id) {
-         alert(id);
+         //alert(id);
          return false;
         }
 
@@ -38,6 +50,10 @@
         function stateClicked(id) {
 
          var window_url;
+         
+         [#if "<#SETTINGS_SCENES_CLICKSOUND#>"!=""#]
+         EvalSound('click_sound');
+         [#endif#]
 
 
          [#begin RESULT#][#begin ALL_ELEMENTS#][#begin STATES#]
