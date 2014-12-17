@@ -1,5 +1,8 @@
 
 <!-- Table 'mqtt' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
 <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
@@ -66,14 +69,14 @@
  <label class="control-label"[#if ERR_LINKED_OBJECT#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_LINKED_OBJECT#>:
  </label>
- <div class="controls"><input type="text" name="linked_object" value="[#LINKED_OBJECT#]" class="input form-control"></div>
+ <div class="controls"><input type="text" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]" class="input form-control"></div>
 </div>
 <!-- LINKED_PROPERTY (varchar) -->
 <div class="form-group">
  <label class="control-label"[#if ERR_LINKED_PROPERTY#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_PROPERTY#>:
  </label>
- <div class="controls"><input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" class="input form-control"></div>
+ <div class="controls"><input type="text" name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]" class="input form-control"></div>
 </div>
 <div class="form-actions">
  [#if ID!=""#]
@@ -89,3 +92,4 @@
 </div>
 </fieldset>
 </form>
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="onchange_method"#]

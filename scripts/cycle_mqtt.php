@@ -57,6 +57,14 @@ exit(1);
 $topics[$query] = array("qos"=>0, "function"=>"procmsg");
 $mqtt_client->subscribe($topics,0);
 while($mqtt_client->proc()){
+  setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+  
+  if (file_exists('./reboot') || $_GET['onetime']){
+    $db->Disconnect();
+    exit;
+  }  
+  
+  sleep(1);
 }
 
 
@@ -70,4 +78,3 @@ function procmsg($topic,$msg){
 
  $db->Disconnect(); // closing database connection
 
-?>
