@@ -21,7 +21,7 @@
   //updating 'URL' (url)
    global $url;
    $rec['URL']=$url;
-   if (!preg_match('/http:\/\/.+/', $rec['URL'])) {
+   if (!preg_match('/^(http|https)\/\/.+/', $rec['URL'])) {
     $ok=0;
     $out['ERR_URL']=1;
    }
