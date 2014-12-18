@@ -227,11 +227,26 @@ function usual(&$out) {
   $ch['NEXT_UPDATE']=date('Y-m-d H:i:s', time()+$ch['UPDATE_EVERY']*60);
   SQLUpdate('rss_channels', $ch);
 
+  $useSSL = false;
+  $parsedUrl = parse_url($ch['URL']);
+  
+  if($parsedUrl == true)
+  {
+     if (isset($parsedUrl['scheme']) && $parsedUrl['scheme'] == "https")
+        $useSSL = true;
+  }
 
   $cch =curl_init();
   curl_setopt($cch, CURLOPT_URL, $ch['URL']);
   curl_setopt($cch, CURLOPT_HTTPHEADER, array("User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3"));
   curl_setopt($cch, CURLOPT_RETURNTRANSFER, true);
+  
+  if ($useSSL)
+  {
+     curl_setopt($cch, CURLOPT_SSL_VERIFYPEER, FALSE);
+     curl_setopt($cch, CURLOPT_SSL_VERIFYHOST, FALSE);
+  }
+  
   $rssdata = curl_exec($cch);
   curl_close($cch);
   $data = simplexml_load_string($rssdata);
