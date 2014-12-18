@@ -104,7 +104,8 @@ Action URL:
                         <option value="command"[#if TYPE="command"#] selected[#endif#]><#LANG_JS_COMMAND#>
                         <option value="button"[#if TYPE="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="switch"[#if TYPE="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
-                        <option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#>
+                        <option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#> (select)
+                        <option value="radiobox"[#if TYPE="radiobox"#] selected[#endif#]><#LANG_SELECT_BOX#> (radio)
                         <option value="sliderbox"[#if TYPE="sliderbox"#] selected[#endif#]><#LANG_SLIDER_BOX#>
                         <option value="plusminus"[#if TYPE="plusminus"#] selected[#endif#]><#LANG_PLUS_MINUS_BOX#>
                         <option value="timebox"[#if TYPE="timebox"#] selected[#endif#]><#LANG_TIME_PICKER#>
@@ -158,7 +159,7 @@ Action URL:
 
 [#endif TYPE#]
 
-[#if TYPE=="selectbox" || TYPE=="custom" || TYPE=="switch"#]
+[#if TYPE=="selectbox" || TYPE=="custom" || TYPE=="switch" || TYPE=="radiobox"#]
 
 <div class="form-group">
         <label class="control-label"><#LANG_DATA#>:[#if TYPE=="switch"#]<br/>(<#LANG_OPTIONAL#>)[#endif TYPE#]</label>
@@ -185,7 +186,7 @@ Action URL:
     </div>
 </div>
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
 
 <div class="form-group">
   <label class="control-label"><#LANG_CURRENT_VALUE#>:</label>
@@ -206,7 +207,7 @@ Action URL:
 
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
 
 
 <div class="form-group">
@@ -221,7 +222,7 @@ Action URL:
 </div>
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
 <div class="form-group">
   <label class="control-label"><#LANG_PROPERTY#>:</label>
    <div class="col-lg-5">
@@ -234,7 +235,7 @@ Action URL:
 </div>
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
 <div class="form-group">
   <label class="control-label"><#LANG_METHOD#>:</label>
   <!--#<#LANG_ONCHANGE_OBJECT#>.#-->

@@ -75,7 +75,7 @@
    }
 
 
-  if ($rec['TYPE']=='selectbox' || $rec['TYPE']=='custom' || $rec['TYPE']=='switch') {
+  if ($rec['TYPE']=='selectbox' || $rec['TYPE']=='custom' || $rec['TYPE']=='switch' || $rec['TYPE']=='radiobox') {
    global $data;
    $rec['DATA']=$data;
   } 
@@ -89,6 +89,7 @@ if ($rec['TYPE']=='plusminus'
     || $rec['TYPE']=='timebox'
     || $rec['TYPE']=='datebox'
     || $rec['TYPE']=='textbox'
+    || $rec['TYPE']=='radiobox'
     ) {
     global $cur_value;
         if ($cur_value!='') {

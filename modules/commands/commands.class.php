@@ -522,14 +522,19 @@ function usual(&$out) {
     $res[$i]=$item;
    }
 
-   if ($item['TYPE']=='selectbox') {
+   if ($item['TYPE']=='selectbox' || $item['TYPE']=='radiobox') {
     $data=explode("\n", str_replace("\r", "", $item['DATA']));
     $item['OPTIONS']=array();
+    $num=1;
     foreach($data as $line) {
      $line=trim($line);
      if ($line!='') {
       $option=array();
-      $tmp=explode('|', $line);
+      if (preg_match('/=/', $line)) {
+       $tmp=explode('=', $line);
+      } else {
+       $tmp=explode('|', $line);
+      }
       $option['VALUE']=$tmp[0];
       if ($tmp[1]!='') {
        $option['TITLE']=$tmp[1];
@@ -539,6 +544,8 @@ function usual(&$out) {
       if ($option['VALUE']==$item['CUR_VALUE']) {
        $option['SELECTED']=1;
       }
+      $option['NUM']=$num;
+      $num++;
       $item['OPTIONS'][]=$option;
      }
     }

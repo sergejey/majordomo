@@ -166,6 +166,41 @@
 </li>
 [#endif TYPE#]
 
+[#if TYPE=="radiobox"#]
+<script language="javascript">
+ var item[#ID#]_timer=0;
+ function changedValue[#ID#](new_value) {
+  if (valueChangedFlag['item[#ID#]']==1) {
+   valueChangedFlag['item[#ID#]']=0;
+   return;
+  }
+  //var elem=document.getElementById('menu[#ID#]_v');
+  itemValueChanged("[#ID#]", new_value);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain"[#if VISIBLE_DELAY!="0"#]  class='visible_delay'[#endif#] id='item[#ID#]'>
+<label for="menu[#ID#]_v" class="select"><span id="label_[#ID#]">[#TITLE#]</span><span id="processing_[#ID#]"></span></label>
+
+
+    <fieldset data-role="controlgroup" data-type="horizontal">
+    [#begin OPTIONS#]
+     <input type="radio" name="menu<#RESULT.ID#>_v" class="radiobox<#RESULT.ID#>" id="menu<#RESULT.ID#>_v_[#NUM#]" value="[#VALUE#]" [#if SELECTED#]checked="checked"[#endif SELECTED#]  onClick="changedValue<#RESULT.ID#>('[#VALUE#]');"/>
+     <label for="menu<#RESULT.ID#>_v_[#NUM#]">[#TITLE#]</label>
+     [#end OPTIONS#]
+    </fieldset>
+
+<!--#
+<select name="menu[#ID#]_v" id="menu[#ID#]_v" onChange="changedValue[#ID#]();">
+ [#begin OPTIONS#]
+ <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+ [#end OPTIONS#]
+</select>
+#-->
+</li>
+[#endif TYPE#]
+
+
 
 [#if TYPE=="timebox"#]
 <script language="javascript">
@@ -370,6 +405,31 @@
    }
   [#endif#]
 
+  [#if TYPE=="radiobox"#]
+   var $selected = $('.radiobox[#ID#]:checked');
+   if (!$selected.length || $selected.val()!=data) {
+    //alert('zz');
+    //$selected.attr('checked', false).checkboxradio("refresh");
+    $( ".radiobox[#ID#]" ).each(function( index ) {
+     if ($( this ).val()!=data) {
+      //alert('not found: '+$( this ).val()+' != '+data)
+      $( this ).prop('checked', false).checkboxradio("refresh");
+     } else {
+      //alert('found: '+$( this ).val())
+      $( this ).prop('checked', true).checkboxradio("refresh");
+     }
+    });
+    //$(".radiobox[#ID#]").checkboxradio("refresh");
+    //$(".radiobox[#ID#]:first").attr("checked",true).checkboxradio("refresh");
+   }
+   /*
+   if ($('#menu[#ID#]_v').val()!=data) {
+    $('#menu[#ID#]_v').val(data);
+   }
+   */
+  [#endif#]
+
+
   [#if TYPE=="switch"#]
    //alert('[#TITLE#]'+"\nValue:"+$('#menu[#ID#]_v').val()+"\nData:"+data);
    if ($('#menu[#ID#]_v').val()!=data) {
@@ -403,7 +463,7 @@
   AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
   */
 
-  [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox" || TYPE=="selectbox"#]
+  [#if TYPE=="switch" || TYPE=="textbox" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="radiobox"#]
   /*
   var url2="?ajax=1&op=get_value";
   AJAXRequest(url2+'&item_id=[#ID#]', 'updateValue[#ID#]_Ready', '');

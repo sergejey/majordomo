@@ -115,7 +115,7 @@
     linked_object_chaged();
    }
    $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy'));
-   $("#linked_object_copy").select2();
+   $("#linked_object_copy").select2({placeholder: "<#LANG_LINKED_OBJECT#>",allowClear: true});
   } else {
    skip_object=1;
    $("#linked_object_copy").remove();
