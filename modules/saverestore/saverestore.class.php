@@ -1137,11 +1137,11 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
          $total=count($ignores);
          for($i=0;$i<$total;$i++) {
           $name=$ignores[$i]['NAME'];
-          if (is_dir('ROOT.'saverestore/temp/modules/'.$name)) {
-           $this->removeTree('ROOT.'saverestore/temp/modules/'.$name);
+          if (is_dir(ROOT.'saverestore/temp/modules/'.$name)) {
+           $this->removeTree(ROOT.'saverestore/temp/modules/'.$name);
           }
-          if (is_dir('ROOT.'saverestore/temp/templates/'.$name)) {
-           $this->removeTree('ROOT.'saverestore/temp/templates/'.$name);
+          if (is_dir(ROOT.'saverestore/temp/templates/'.$name)) {
+           $this->removeTree(ROOT.'saverestore/temp/templates/'.$name);
           }
          }
 
