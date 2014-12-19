@@ -123,6 +123,7 @@ $dictionary=array(
 'MODULE_TEXTFILES'=>'Text files',
 'MODULE_SOUNDFILES'=>'Sound files',
 'MODULE_SYSTEM_ERRORS'=>'System Errors', 
+'MODULE_MODULES'=>'Modules', 
 
 'SETUP'=>'Setup', // objects/objects_edit_methods.html; 
 
@@ -971,6 +972,20 @@ $dictionary=array(
 'UNIT'=>'Unit',
 'COUNTER'=>'Counter',
 'USE_CLASS_SETTINGS'=>'use class settings',
+
+'USING_LATEST_VERSION'=>'You are using the latest version!',
+'LATEST_UPDATES'=>'Latest updates',
+'UPDATE_TO_THE_LATEST'=>'Update to the latest code',
+'SAVE_BACKUP'=>'Save Backup',
+'CREATE_BACKUP'=>'Create Backup',
+'UPLOAD_BACKUP'=>'Upload backup/updates', 
+'CONTINUE'=>'Continue', 
+'RESTORE'=>'Restore', 
+'SHOW'=>'Show', 
+'HIDE'=>'Hide', 
+'UPDATING'=>'Incl. in updates',
+'NOT_UPDATING'=>'Not updating',
+
 
 'TEST'=>'test'
 

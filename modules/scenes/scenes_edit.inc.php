@@ -261,6 +261,7 @@
     global $homepage_id_new;
     global $do_on_click_new;
     global $priority_new;
+    global $code_new;
 
     if ($state_delete && $state_rec['ID']) {
 
@@ -300,7 +301,11 @@
      if ($do_on_click_new!='show_url') {
       $ext_url_new='';
      }
+     if ($do_on_click_new!='run_code') {
+      $code_new='';
+     }
 
+     $state_rec['CODE']=$code_new;
      $state_rec['SCRIPT_ID']=$script_id_new;
      $state_rec['MENU_ITEM_ID']=$menu_item_id_new;
      $state_rec['ACTION_OBJECT']=$action_object_new;

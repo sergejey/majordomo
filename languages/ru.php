@@ -109,7 +109,8 @@ $dictionary=array(
 'MODULE_MYBLOCKS'=>'Мои блоки',
 'MODULE_TEXTFILES'=>'Текстовые файлы',
 'MODULE_SOUNDFILES'=>'Звуковые файлы',
-'MODULE_SYSTEM_ERRORS'=>'Ошибки системы', 
+'MODULE_SYSTEM_ERRORS'=>'Ошибки системы',
+'MODULE_MODULES'=>'Модули', 
 
 'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 
@@ -968,6 +969,21 @@ $dictionary=array(
 
 'COUNTER'=>'Счётчик',
 'USE_CLASS_SETTINGS'=>'использовать настройки свойств класса',
+
+'USING_LATEST_VERSION'=>'Вы используете последнюю версию!',
+'LATEST_UPDATES'=>'Последние обновления',
+'UPDATE_TO_THE_LATEST'=>'Обновить систему',
+'SAVE_BACKUP'=>'Резервная копия',
+'CREATE_BACKUP'=>'Создать резервную копию',
+'UPLOAD_BACKUP'=>'Восстановить резервную копию', 
+'CONTINUE'=>'Продолжить', 
+'RESTORE'=>'Восстановить', 
+
+'SHOW'=>'Показать', 
+'HIDE'=>'Скрыть', 
+
+'UPDATING'=>'Вкл. в обновление',
+'NOT_UPDATING'=>'Не обновляется',
 
 'TEST'=>'test'
 

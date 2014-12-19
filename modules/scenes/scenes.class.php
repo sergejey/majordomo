@@ -514,7 +514,17 @@ function usual(&$out) {
      if ($state['SCRIPT_ID']) {
       runScript($state['SCRIPT_ID'], $params);
      }
-
+     if ($state['CODE']) {
+                  try {
+                   $code=$state['CODE'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error scene item code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+     }
      $qry="1";
      $qry.=" AND elements.ID=".$state['ELEMENT_ID'];
      $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry ORDER BY elements.PRIORITY DESC, elm_states.PRIORITY DESC");
@@ -1044,6 +1054,7 @@ elm_states - Element states
  elm_states: CONDITION int(3) NOT NULL DEFAULT '0'
  elm_states: CONDITION_VALUE varchar(255) NOT NULL DEFAULT ''
  elm_states: CONDITION_ADVANCED text
+ elm_states: CODE text
  elm_states: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  elm_states: MENU_ITEM_ID int(10) NOT NULL DEFAULT '0'
  elm_states: HOMEPAGE_ID int(10) NOT NULL DEFAULT '0'

@@ -1133,6 +1133,18 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
         if ($this->method=='direct') {
   
+         $ignores=SQLSelect("SELECT * FROM ignore_updates ORDER BY NAME");
+         $total=count($ignores);
+         for($i=0;$i<$total;$i++) {
+          $name=$ignores[$i]['NAME'];
+          if (is_dir('ROOT.'saverestore/temp/modules/'.$name)) {
+           $this->removeTree('ROOT.'saverestore/temp/modules/'.$name);
+          }
+          if (is_dir('ROOT.'saverestore/temp/templates/'.$name)) {
+           $this->removeTree('ROOT.'saverestore/temp/templates/'.$name);
+          }
+         }
+
          // UPDATING FILES DIRECTLY
          $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
 

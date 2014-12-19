@@ -23,19 +23,19 @@
    <form action="?" method="post" enctype="multipart/form-data">
    [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
 
-   [#if NO_NEED_TO_UPDATE#]<p><font color="green">You are using the latest version!</font></p>[#endif#]
+   [#if NO_NEED_TO_UPDATE#]<p><font color="green"><#LANG_USING_LATEST_VERSION#></font></p>[#endif#]
 
    <p><#LANG_LONG_OPERATION_WARNING#></p>
 
-   <input type="submit" name="submit" value="Update to the latest code &gt;&gt;&gt;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">
+   <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#> &gt;&gt;&gt;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default">
    <input type="hidden" name="mode" value="getlatest">
    </form>
 
    [#if UPDATES#]
    <hr>
-   <b>Latest updates:</b>
+   <b><#LANG_LATEST_UPDATES#>:</b>
    [#begin UPDATES#]
-   <p>[#UPDATE_TEXT#] <b>[#TITLE#]</b> (by [#AUTHOR#]) <a href="[#LINK#]" target=_blank>details...</a></p>
+   <p>[#UPDATE_TEXT#] <b>[#TITLE#]</b> (by [#AUTHOR#]) <a href="[#LINK#]" target=_blank><#LANG_MORE_DETAILS#>...</a></p>
    [#end UPDATES#]
    <hr>
    [#endif UPDATES#]
@@ -203,14 +203,14 @@
 
 
    <hr size="1">
-   <big>Save backup</big>
+   <big><#LANG_SAVE_BACKUP#></big>
    <br>
    <form action="?" method="post" enctype="multipart/form-data">
    <label><input type="checkbox" name="design" value="1"> <#LANG_DESIGN#> (templates, css, images)</label><br>
    <label><input type="checkbox" name="code" value="1"> <#LANG_CODE#> (modules)</label><br>
    <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database, documents)</label><br>
    <label><input type="checkbox" name="files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
-   <input type="submit" name="submit" value="Create Backup &gt;&gt;&gt;">
+   <input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#> &gt;&gt;&gt;" class="btn btn-default">
    <input type="hidden" name="mode" value="dump">
    </form>
 
@@ -219,7 +219,7 @@
    [#else#]
    <br>&nbsp;
    <form action="?" method="post" enctype="multipart/form-data">
-   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
+   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
    <input type="hidden" name="mode" value="clear">
    </form>
    [#endif CLEAR_FIRSTS#]
@@ -261,7 +261,7 @@
 
 
    </table>
-   <input type="submit" name="submit" value="Set">
+   <input type="submit" name="submit" value="Set" class="btn btn-default">
    [#if FTP_USERNAME!=""#]
    <input type="checkbox" name="ftp_clear" value="1"> clear details (for security)
    [#endif#]
@@ -272,11 +272,11 @@
 
    <hr size="1">
 
-   <big>Upload backup/updates</big>
+   <big><#LANG_UPLOAD_BACKUP#></big>
    <br>&nbsp;
    <form action="?" method="post" enctype="multipart/form-data">
-   File: <input type="file" name="file">
-   <input type="submit" name="submit" value="Continue &gt;&gt;&gt;">
+   File: <input type="file" name="file"><br/>
+   <input type="submit" name="submit" value="<#LANG_CONTINUE#> &gt;&gt;&gt;" class="btn btn-default">
    <input type="hidden" name="mode" value="upload">
    </form>
    [#endif#]
@@ -290,7 +290,7 @@
      <td valign="top" nowrap>[#FILESIZE#] Mb</td>
      <td valign="top"><a href="<#ROOTHTML#>saverestore/[#FILENAME#]">Download</a></td>
      [#if "<#CLEAR_FIRST#>"!="1"#]
-     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">Restore</a></td>
+     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESTORE#></a></td>
      [#endif#]
      <td valign="top"><a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">X</a></td>
     </tr>

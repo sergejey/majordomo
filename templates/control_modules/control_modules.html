@@ -54,7 +54,7 @@
  </tr>
  <tr>
   <td>
-  Category:
+  <#LANG_CATEGORY#>:
   </td>
   <td>
   <input type="text" name="category" value="[#CATEGORY#]">
@@ -118,12 +118,13 @@
 <table border=1 cellpadding=3 align=center width=90%>
 <tr>
  <td align=center><b>File</td>
- <td align=center><b>Title</td>
- <td align=center><b>Category</td>
+ <td align=center><b><#LANG_TITLE#></td>
+ <td align=center><b><#LANG_CATEGORY#></td>
  <td align=center><b>Installed</td>
  [#if LOCAL_PROJECT#] 
  <td>&nbsp;</td>
  [#endif LOCAL_PROJECT#]
+ <td>&nbsp;</td>
  <td>&nbsp;</td>
 </tr>
 [#begin MODULES#]
@@ -151,7 +152,9 @@
  &nbsp;
  </td>
  [#endif LOCAL_PROJECT#]
- <td valign="top" align="center"><a href="?mode=edit&mode2=show&name=[#FILENAME#]">[#if HIDDEN="1"#]<font color='red'>Show</font>[#else#]Hide[#endif#]</a></td>
+ <td valign="top" align="center"><a href="?mode=edit&mode2=show&name=[#FILENAME#]">[#if HIDDEN="1"#]<font color='red'><#LANG_SHOW#></font>[#else#]<#LANG_HIDE#>[#endif#]</a></td>
+ <td valign="top" align="center">[#if IGNORED="1"#]<a href="?mode=edit&mode2=unignore&name=[#FILENAME#]"><font color='red'><#LANG_NOT_UPDATING#></font></a>[#else#]
+ <a href="?mode=edit&mode2=ignore&name=[#FILENAME#]"><#LANG_UPDATING#></a>[#endif#]</td>
 </tr>
 [#endif#]
 [#end MODULES#]

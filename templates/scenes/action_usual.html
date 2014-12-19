@@ -1,4 +1,6 @@
-[#inc style.html#]
+<style>
+[#inc elements.css#]
+</style>
 
 [#if "<#SETTINGS_SCENES_CLICKSOUND#>"!=""#]
 <div style="display:none">
@@ -145,7 +147,7 @@
            modal: false });
           jWindowObj[#ID#].show();
           jWindowObj[#ID#].update();
-          [#if (SCRIPT_ID="0") && (ACTION_METHOD="")#]return;[#endif#]
+          [#if (SCRIPT_ID="0") && (ACTION_METHOD="") && (CODE="")#]return;[#endif#]
          }
          [#endif MENU_ITEM_ID#][#end STATES#][#end ALL_ELEMENTS#][#end RESULT#]
 
@@ -262,14 +264,14 @@
   <div 
    class="element_<#ELEMENTS.ID#> type_<#ELEMENTS.TYPE#>[#if "<#ELEMENTS.CSS_STYLE#>"!=""#] style_<#ELEMENTS.CSS_STYLE#>[#endif#] state_[#TITLE#][#if ("<#ELEMENTS.BACKGROUND#>"=="1")#] html_background[#endif#][#if "<#ELEMENTS.POSITION_TYPE#>"=="1"#] inlineblock[#endif#]" 
    id="state_[#ID#]"
-   [#if SCRIPT_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!="" || MENU_ITEM_ID!="0" || ACTION_METHOD!=""#] 
+   [#if SCRIPT_ID!="0" || HOMEPAGE_ID!="0" || EXT_URL!="" || MENU_ITEM_ID!="0" || ACTION_METHOD!="" || CODE!=""#] 
     onClick="stateClicked([#ID#]);"
    [#endif#] 
    style="
    [#if "<#ELEMENTS.POSITION_TYPE#>"=="0"#]position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#endif ELEMENTS#]
    [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
    [#if ("<#ELEMENTS.WIDTH#>"!="0") && ("<#ELEMENTS.HEIGHT#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#endif#]
-   [#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!="" || EXT_URL!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#]<span>[#CODE#][#HTML#]</span></div>
+   [#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!="" || EXT_URL!="" || CODE!=""#]cursor:pointer;[#endif#]display:none;">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#]<span>[#CODE#][#HTML#]</span></div>
  [#end STATES#]
 
  [#endif ELEMENTS#]

@@ -14,8 +14,8 @@ class control_modules extends module {
  function control_modules() {
   // setting module name
   $this->name="control_modules";
-  $this->title="Project Modules";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_MODULES#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
  }
 
@@ -69,6 +69,16 @@ function getParams() {
      $rec['HIDDEN']=1;
     }
     SQLUpdate('project_modules', $rec);
+    $this->redirect("?");
+
+   } elseif ($mode2=="ignore") {
+    SQLExec("DELETE FROM ignore_updates WHERE NAME LIKE '".DBSafe($rec['NAME'])."'");
+    $tmp=array();
+    $tmp['NAME']=$rec['NAME'];
+    SQLInsert('ignore_updates', $tmp);
+    $this->redirect("?");
+   } elseif ($mode2=="unignore") {
+    SQLExec("DELETE FROM ignore_updates WHERE NAME LIKE '".DBSafe($rec['NAME'])."'");
     $this->redirect("?");
    } elseif ($mode2=="install") {
     $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$name."'");
@@ -128,6 +138,10 @@ function getParams() {
    if (IsSet($rec['ID'])) {
     outHash($rec, $lst[$i]);
    }
+   $ignored=SQLSelectOne("SELECT ID FROM ignore_updates WHERE NAME LIKE '".DBSafe($lst[$i]['NAME'])."'");
+   if ($ignored['ID']) {
+    $lst[$i]['IGNORED']=1;
+   }
   }
 
   $out["MODULES"]=$lst;
@@ -171,11 +185,13 @@ function getParams() {
    }
   }
   @eval("$code");
+  SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '".$this->name."'");
  }
 
 // --------------------------------------------------------------------
  function dbInstall($data) {
   $data = <<<EOD
+
    project_modules: ID tinyint(3) unsigned NOT NULL auto_increment
    project_modules: NAME varchar(50)  DEFAULT '' NOT NULL 
    project_modules: TITLE varchar(100)  DEFAULT '' NOT NULL 
@@ -185,6 +201,11 @@ function getParams() {
    project_modules: HIDDEN int(3)  DEFAULT '0' NOT NULL
    project_modules: PRIORITY int(10)  DEFAULT '0' NOT NULL
    project_modules: ADDED timestamp(14)
+
+   ignore_updates: ID tinyint(3) unsigned NOT NULL auto_increment
+   ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL 
+
+
 EOD;
   parent::dbInstall($data);
  }
