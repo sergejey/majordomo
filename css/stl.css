@@ -31,8 +31,6 @@ opacity: 0.35;
 }
 
 
-overflow: scroll;
--webkit-overflow-scrolling: touch;
 .ui-tabs .ui-tabs-panel {
     padding: 0;
 }

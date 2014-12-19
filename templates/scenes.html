@@ -22,8 +22,37 @@
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 </head>
 <!--#[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]#-->
-<body style="margin:0px;padding:0px;">
+<style>
+#body_background {
+position: absolute;
+[#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background:url(<#SETTINGS_SCENES_BACKGROUND#>) no-repeat left top;[#endif#]
+-webkit-background-size: cover;
+ -moz-background-size: cover;
+ -o-background-size: cover;
+ background-size: cover;
+    height:100%;
+    position:fixed;
+    width:100%;
+    z-index:-3;
+    top:0;
+}
+</style>
+<body bgcolor="transparent" style="margin:0px;padding:0px;">
+<script language="javascript">
+$(document).ready(function() {
+ if (!inIframe()) {
+  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]white[#endif#]');
+ }
+});
+</script>
+[#if "<#SETTINGS_SCENES_BACKGROUND_VIDEO#>"!=""#]
+<video id="video_background" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
+      <source  src="<#SETTINGS_SCENES_BACKGROUND_VIDEO#>" type='video/mp4'>
+<!--#      <source  src="/grey.webm" type='video/webm'>#-->
+    </video>
+[#endif#]
 
+<div id="body_background"></div>
 <div id="container">
 [#module name="scenes" action=""#]
 </div>
