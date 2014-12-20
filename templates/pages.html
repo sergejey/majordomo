@@ -93,6 +93,7 @@ function switchSelected(selected) {
           $('#cell[#ID#]').removeClass('active');
           $('#tab-[#ID#]').hide();
           if ($('#tab-[#ID#]').html()!='...') {
+           clearTimeout(layoutTimer[#ID#]);
            layoutTimer[#ID#]=setTimeout("$('#tab-[#ID#]').html('...');", 60*1000);
           }
          }

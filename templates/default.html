@@ -180,6 +180,7 @@ var layoutTimer[#ID#];
           [#endif TYPE#]
          } else {
           if ($('#tabs-[#ID#]').html()!='...') {
+           clearTimeout(layoutTimer[#ID#]);
            layoutTimer[#ID#]=setTimeout("$('#tabs-[#ID#]').html('...');", 60*1000);
           }
          }
