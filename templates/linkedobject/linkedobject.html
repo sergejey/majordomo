@@ -1,8 +1,10 @@
+[#if FIRST_RUN="1"#]
 <script type="text/javascript" src="/js/select2/select2.min.js"></script>
 <link rel="stylesheet" href="/js/select2/select2.css" type="text/css"/>
+[#endif#]
 
 [#if OBJECT_FIELD#]
-<select name="[#OBJECT_FIELD#]" id='linked_object_copy' style="width:300px" onChange="linked_object_chaged();">
+<select name="[#OBJECT_FIELD#]" id='linked_object_copy<#UNIQ#>' style="width:<#WIDTH#>px" onChange="linked_object_chaged<#UNIQ#>();">
  <option value="">
  [#begin OBJECTS#]
  <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#]- [#DESCRIPTION#][#endif#]
@@ -11,35 +13,35 @@
 [#endif#]
 
 [#if PROPERTY_FIELD#]
-<select name="[#PROPERTY_FIELD#]" id="linked_property_copy" style="width:300px">
+<select name="[#PROPERTY_FIELD#]" id="linked_property_copy<#UNIQ#>" style="width:<#WIDTH#>px">
  <option value="">
 </select>
 [#endif PROPERTY_FIELD#]
 
 [#if METHOD_FIELD#]
-<select name="[#METHOD_FIELD#]" id="linked_method_copy" style="width:300px">
+<select name="[#METHOD_FIELD#]" id="linked_method_copy<#UNIQ#>" style="width:<#WIDTH#>px">
  <option value="">
 </select>
 [#endif METHOD_FIELD#]
 
 
 <script language="javascript">
- var selected_object;
- var selected_method;
- var selected_property;
- var skip_property=0;
- var skip_method=0;
- var skip_object=0;
+ var selected_object<#UNIQ#>;
+ var selected_method<#UNIQ#>;
+ var selected_property<#UNIQ#>;
+ var skip_property<#UNIQ#>=0;
+ var skip_method<#UNIQ#>=0;
+ var skip_object<#UNIQ#>=0;
 
- function linked_object_chaged() {
-  selected_object=$("#linked_object_copy").val();
+ function linked_object_chaged<#UNIQ#>() {
+  selected_object<#UNIQ#>=$("#linked_object_copy<#UNIQ#>").val();
   [#if PROPERTY_FIELD!=""#]
-  if (skip_property!=1) {
+  if (skip_property<#UNIQ#>!=1) {
   url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=properties";
-  url+='&object='+selected_object;
+  url+='&object='+selected_object<#UNIQ#>;
   $.get( url, function( data ) {
   var obj=jQuery.parseJSON(data);
-  $('#linked_property_copy').empty();
+  $('#linked_property_copy<#UNIQ#>').empty();
   if (obj.PROPERTIES.length>0) {
    var optionsAsString = "<option value=''>";
    for(var i = 0; i < obj.PROPERTIES.length; i++) {
@@ -49,9 +51,9 @@
      optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + "</option>";
     }
    }
-   $('#linked_property_copy' ).append( optionsAsString );
-   if (selected_property!='') {
-    $('#linked_property_copy').val(selected_property);
+   $('#linked_property_copy<#UNIQ#>' ).append( optionsAsString );
+   if (selected_property<#UNIQ#>!='') {
+    $('#linked_property_copy<#UNIQ#>').val(selected_property<#UNIQ#>);
    }
   }
   });
@@ -59,12 +61,12 @@
   [#endif#]
 
   [#if METHOD_FIELD!=""#]
-  if (skip_method!=1) {
-  url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=methods";
-  url+='&object='+selected_object;
+  if (skip_method<#UNIQ#>!=1) {
+  url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=methods&uniq=<#UNIQ#>";
+  url+='&object='+selected_object<#UNIQ#>;
   $.get( url, function( data ) {
   var obj=jQuery.parseJSON(data);
-  $('#linked_method_copy').empty();
+  $('#linked_method_copy<#UNIQ#>').empty();
   if (obj.METHODS.length>0) {
    var optionsAsString = "<option value=''>";
    for(var i = 0; i < obj.METHODS.length; i++) {
@@ -74,9 +76,9 @@
      optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + "</option>";
     }
    }
-   $('#linked_method_copy' ).append( optionsAsString );
-   if (selected_method!='') {
-    $('#linked_method_copy').val(selected_method);
+   $('#linked_method_copy<#UNIQ#>' ).append( optionsAsString );
+   if (selected_method<#UNIQ#>!='') {
+    $('#linked_method_copy<#UNIQ#>').val(selected_method<#UNIQ#>);
    }
   }
   });
@@ -90,47 +92,47 @@
 
   [#if PROPERTY_FIELD!=""#]
   if ($('#[#PROPERTY_FIELD#]').length) {
-   selected_property=$("#[#PROPERTY_FIELD#]").val();
+   selected_property<#UNIQ#>=$("#[#PROPERTY_FIELD#]").val();
   } else {
-   skip_property=1;
-   $('#linked_property_copy').remove();
+   skip_property<#UNIQ#>=1;
+   $('#linked_property_copy<#UNIQ#>').remove();
   }
   [#endif#]
 
   [#if METHOD_FIELD!=""#]
   if ($('#[#METHOD_FIELD#]').length) {
-   selected_method=$("#[#METHOD_FIELD#]").val();
+   selected_method<#UNIQ#>=$("#[#METHOD_FIELD#]").val();
   } else {
-   skip_method=1;
-   $('#linked_method_copy').remove();
+   skip_method<#UNIQ#>=1;
+   $('#linked_method_copy<#UNIQ#>').remove();
   }
   [#endif#]
 
 
   [#if OBJECT_FIELD!=""#]
   if ($('#[#OBJECT_FIELD#]').length) {
-   selected_object=$("#[#OBJECT_FIELD#]").val();
-   if (selected_object!='') {
-    $('#linked_object_copy').val(selected_object);
-    linked_object_chaged();
+   selected_object<#UNIQ#>=$("#[#OBJECT_FIELD#]").val();
+   if (selected_object<#UNIQ#>!='') {
+    $('#linked_object_copy<#UNIQ#>').val(selected_object<#UNIQ#>);
+    linked_object_chaged<#UNIQ#>();
    }
-   $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy'));
-   $("#linked_object_copy").select2({placeholder: "<#LANG_LINKED_OBJECT#>",allowClear: true});
+   $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy<#UNIQ#>'));
+   $("#linked_object_copy<#UNIQ#>").select2({placeholder: "<#LANG_LINKED_OBJECT#>",allowClear: true});
   } else {
-   skip_object=1;
-   $("#linked_object_copy").remove();
+   skip_object<#UNIQ#>=1;
+   $("#linked_object_copy<#UNIQ#>").remove();
   }
   [#endif OBJECT_FIELD#]
 
   [#if PROPERTY_FIELD!=""#]
-  if (skip_property==0) {
-   $("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy'));
+  if (skip_property<#UNIQ#>==0) {
+   $("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy<#UNIQ#>'));
   }
   [#endif#]
 
   [#if METHOD_FIELD!=""#]
-  if (skip_method==0) {
-   $("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy'));
+  if (skip_method<#UNIQ#>==0) {
+   $("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy<#UNIQ#>'));
   }
   [#endif#]
 

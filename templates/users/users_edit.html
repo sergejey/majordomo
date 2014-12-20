@@ -86,9 +86,10 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_OBJECT#>:</label>
-        <div class="col-lg-5"><input type="text" class="form-control"  name="linked_object" value="[#LINKED_OBJECT#]"></div>
+        <div class="col-lg-5"><input type="text" class="form-control"  name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]"></div>
 </div>
 
+[#module name="linkedobject" object_field="linked_object" method_field="onchange_method"#]
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_HOSTNAME#> (<#LANG_OPTIONAL#>):</label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>

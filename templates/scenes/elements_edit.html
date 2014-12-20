@@ -460,11 +460,11 @@
 <div class="form-group click_fields"[#if STATE_ACTION_OBJECT=""#] style="display:none"[#endif#] id='run_method_field'>
         <label class="col-lg-4 control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
         <div class="controls">
-        <input type="text" class="form-control" name="action_object_new" value="[#STATE_ACTION_OBJECT#]"> .
-        <input type="text" class="form-control" name="action_method_new" value="[#STATE_ACTION_METHOD#]">
+        <input type="text" class="form-control" name="action_object_new" id="action_object_new" value="[#STATE_ACTION_OBJECT#]"> .
+        <input type="text" class="form-control" name="action_method_new" id="action_method_new" value="[#STATE_ACTION_METHOD#]">
         </div>
 </div>
-
+[#module name="linkedobject" object_field="action_object_new" method_field="action_method_new"#]
 
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#></label>
@@ -499,14 +499,14 @@
    <div class="form-group">
         <label class="col-lg-4 control-label">Object</label>
         <div class="controls">
-                <input type="text" class="form-control" name="linked_object_new" size="10" value="[#STATE_LINKED_OBJECT#]">
+                <input type="text" class="form-control" name="linked_object_new" id="linked_object_new" size="10" value="[#STATE_LINKED_OBJECT#]">
         </div>
         </div>
      
         <div class="form-group">
         <label class="col-lg-4 control-label">Property</label>
         <div class="controls">
-                 <input type="text" class="form-control" name="linked_property_new" size="10" value="[#STATE_LINKED_PROPERTY#]">
+                 <input type="text" class="form-control" name="linked_property_new" id="linked_property_new" size="10" value="[#STATE_LINKED_PROPERTY#]">
         </div>
         </div>
         
@@ -566,8 +566,8 @@
 
 <input type="hidden" name="state_id" value="[#STATE_ID#]">
 </div>
+[#module name="linkedobject" object_field="linked_object_new" property_field="linked_property_new"#]
 [#endif ID#]
-
 
 
 <div class="form-actions">

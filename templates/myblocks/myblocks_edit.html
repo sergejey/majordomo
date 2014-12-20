@@ -83,7 +83,7 @@
  <label class="col-lg-3 control-label"[#if ERR_LINKED_OBJECT#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_LINKED_OBJECT#>:
  </label>
- <div class="col-lg-4"><input type="text" class="form-control" name="linked_object" value="[#LINKED_OBJECT#]" ></div>
+ <div class="col-lg-4"><input type="text" class="form-control" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]" ></div>
 </div>
 <!-- LINKED_PROPERTY (varchar) -->
 <div class="form-group"[#if BLOCK_TYPE!="method" && BLOCK_TYPE!="method_par" && BLOCK_TYPE!="property"#] style="display:none"[#endif#] id="property_field">
@@ -91,7 +91,7 @@
  <#LANG_METHOD#> / <#LANG_PROPERTY#>
  :
  </label>
- <div class="col-lg-4"><input type="text" class="form-control" name="linked_property" value="[#LINKED_PROPERTY#]" ></div>
+ <div class="col-lg-4"><input type="text" class="form-control" name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]" ></div>
 </div>
 
 <!-- BLOCK_COLOR (int) -->
@@ -120,3 +120,5 @@
 </div>
 </fieldset>
 </form>
+
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="onchange_method"#]

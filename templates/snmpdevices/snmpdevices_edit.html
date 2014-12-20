@@ -102,8 +102,10 @@ Upload oid-lib file: <input type="file" name="mib_file">
    <td ><input type="text" name="ptitle_[#ID#]" class="span2" value="[#TITLE#]"></td>
    <td ><input type="text" name="pvalue_[#ID#]" class="span1" value="[#VALUE#]"></td>
    <td ><input type="text" name="pinterval_[#ID#]" class="span1" value="[#ONLINE_INTERVAL#]"></td>
-   <td ><input type="text" name="linked_object_[#ID#]" class="span2" value="[#LINKED_OBJECT#]"></td>
-   <td ><input type="text" name="linked_property_[#ID#]" class="span2" value="[#LINKED_PROPERTY#]"></td>
+   <td ><input type="text" name="linked_object_[#ID#]" id="linked_object_[#ID#]" class="span2" value="[#LINKED_OBJECT#]"></td>
+   <td ><input type="text" name="linked_property_[#ID#]" id="linked_property_[#ID#]" class="span2" value="[#LINKED_PROPERTY#]">
+   [#module name="linkedobject" object_field="linked_object_<#PROPERTIES.ID#>" property_field="linked_property_<#PROPERTIES.ID#>"#]
+   </td>
    <td >[#UPDATED#]</td>
   </tr>
   [#end PROPERTIES#]

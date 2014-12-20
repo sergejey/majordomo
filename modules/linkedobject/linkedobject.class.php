@@ -99,9 +99,30 @@ function run() {
    $out['PARENT_NAME']=$this->owner->name;
   }
 
+
+
   global $op;
   global $ajax;
   global $object;
+  global $uniq;
+  global $first_run;
+
+  if (!$first_run) {
+   $out['FIRST_RUN']=1;
+   $first_run=1;
+  }
+
+  if ($this->width) {
+   $out['WIDTH']=$this->width;
+  } else {
+   $out['WIDTH']=300;
+  }
+
+  if ($uniq) {
+   $out['UNIQ']=$uniq;
+  } else {
+   $out['UNIQ']=rand(0, 999999);
+  }
 
   if ($ajax==1) {
    if ($op=='properties') {

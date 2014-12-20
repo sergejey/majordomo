@@ -255,13 +255,14 @@
    <td valign="top">[#VALUE#][#if COMMENTS!=""#]<br><small>[#COMMENTS#]</small>[#endif COMMENTS#]</td>
    <td valign="top">[#UPDATED#]</td>
    <td valign="top">
-    <input type="text" name="linked_object[#ID#]" value="[#LINKED_OBJECT#]" class="span2 form-control">
+    <input type="text" name="linked_object[#ID#]" id="linked_object[#ID#]" value="[#LINKED_OBJECT#]" class="span2 form-control">
    </td>
    <td valign="top">
-    <input type="text" name="linked_property[#ID#]" value="[#LINKED_PROPERTY#]" class="span2 form-control">
+    <input type="text" name="linked_property[#ID#]" id="linked_property[#ID#]" value="[#LINKED_PROPERTY#]" class="span2 form-control">
    </td>
    <td valign="top">
-    <input type="text" name="linked_method[#ID#]" value="[#LINKED_METHOD#]" class="span2 form-control">
+    <input type="text" name="linked_method[#ID#]" id="linked_method[#ID#]" value="[#LINKED_METHOD#]" class="span2 form-control">
+    [#module name="linkedobject" object_field="linked_object<#PROPERTIES.ID#>" property_field="linked_property<#PROPERTIES.ID#>" method_field="linked_method<#PROPERTIES.ID#>" width="200"#]
    </td>
    <td valign="top">
     <input type="text" name="update_period[#ID#]" value="[#UPDATE_PERIOD#]" class="span2 form-control">

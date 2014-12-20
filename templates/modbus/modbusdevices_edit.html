@@ -87,16 +87,16 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_OBJECT#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_LINKED_OBJECT#]alert-danger[#endif#]"  name="linked_object" value="[#LINKED_OBJECT#]" required="true"></div>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_LINKED_OBJECT#]alert-danger[#endif#]"  name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]" required="true"></div>
 </div>
 
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_PROPERTY#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_LINKED_PROPERTY#]alert-danger[#endif#]"  name="linked_property" value="[#LINKED_PROPERTY#]" required="true"></div>
+        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_LINKED_PROPERTY#]alert-danger[#endif#]"  name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]" required="true"></div>
 </div>
 
-
+[#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="onchange_method"#]
 
 
 [#if ID!=""#]
