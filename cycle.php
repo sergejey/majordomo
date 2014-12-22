@@ -137,6 +137,7 @@ while (false !== ($result = $threads->iteration()))
         //restart
         DebMes("RESTARTING: ".$closed_thread);
         echo "RESTARTING: ".$closed_thread."\n";
+        registerError('cycle_stop', $closed_thread);
         $pipe_id = $threads->newThread($closed_thread);
        }
       }

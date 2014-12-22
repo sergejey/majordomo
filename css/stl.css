@@ -12,8 +12,8 @@ body {
   left:0px;
   width:100%;
   height:100%;
+  overflow:hidden;;
 */
-  overflow:hidden;
   z-index:0;
   box-sizing:border-box;
     -webkit-box-sizing:border-box;
