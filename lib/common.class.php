@@ -762,6 +762,10 @@
 * @access public
 */
  function registerError($code='custom', $details='') {
+  $code=trim($code);
+  if (!$code) {
+   $code='custom';
+  }
   $error_rec=SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '".DBSafe($code)."'");
   if (!$error_rec['ID']) {
    $error_rec['CODE']=$code;

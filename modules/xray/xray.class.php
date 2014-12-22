@@ -460,7 +460,7 @@ function admin(&$out) {
     } elseif ($this->view_mode=='methods') {
      $qry="1";
      if ($filter) {
-      $qry.=" AND (objects.TITLE LIKE '%".DBSafe($filter)."%' OR methods.TITLE LIKE '%".DBSafe($filter)."%' OR methods.DESCRIPTION LIKE '%".DBSafe($filter)."%')";
+      $qry.=" AND (objects.TITLE LIKE '%".DBSafe($filter)."%' OR methods.TITLE LIKE '%".DBSafe($filter)."%' OR methods.DESCRIPTION LIKE '%".DBSafe($filter)."%' OR methods.EXECUTED_PARAMS LIKE '%".DBSafe($filter)."%')";
      }
      $res=SQLSelect("SELECT methods.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, methods.DESCRIPTION FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE $qry ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
      $total=count($res);

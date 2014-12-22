@@ -137,6 +137,12 @@
    for($i=0;$i<$total;$i++) {
     $res.='Script: <a href="/panel/script/'.$scripts[$i]['ID'].'.html">'.$scripts[$i]['TITLE'].'</a><br>';
    }
+   //patterns
+   $patterns=SQLSelect("SELECT ID, TITLE FROM patterns WHERE (TITLE LIKE '%".DBSafe($title)."%' OR SCRIPT LIKE '%".DBSafe($title)."%' OR PATTERN LIKE '%".DBSafe($title)."%') ORDER BY TITLE");
+   $total=count($patterns);
+   for($i=0;$i<$total;$i++) {
+    $res.='Pattern: <a href="/panel/pattern/'.$patterns[$i]['ID'].'.html">'.$patterns[$i]['TITLE'].'</a><br>';
+   }
    //menu elements (to-do: content)
    $commands=SQLSelect("SELECT ID, TITLE FROM commands WHERE (TITLE LIKE '%".DBSafe($title)."%' OR LINKED_OBJECT LIKE '%".DBSafe($title)."%' OR LINKED_PROPERTY LIKE '%".DBSafe($title)."%' OR ONCHANGE_METHOD LIKE '%".DBSafe($title)."%' OR CODE LIKE '%".DBSafe($title)."%') ORDER BY TITLE");
    $total=count($commands);
