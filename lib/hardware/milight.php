@@ -85,9 +85,9 @@ class Milight
         'whiteGroup1On' => array(0x38, 0x00),
         'whiteGroup1Off' => array(0x3b, 0x00),
         'whiteGroup2On' => array(0x3d, 0x00),
-        'whiteGroup2Off' => array(0x33, 0x00),
-        'whiteGroup3On' => array(0x3a, 0x00),
-        'whiteGroup3Off' => array(0x32, 0x00),
+        'whiteGroup2Off' => array(0x33, 0x00), //fixed!
+        'whiteGroup3On' => array(0x37, 0x00),
+        'whiteGroup3Off' => array(0x3a, 0x00),
         'whiteGroup4On' => array(0x32, 0x00),
         'whiteGroup4Off' => array(0x36, 0x00),
         'whiteGroup1BrightnessMax' => array(0xb8, 0x00),

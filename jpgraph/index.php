@@ -106,9 +106,14 @@
     $t_times[]=$start_time;
     $t_values[]=$first_item['VALUE'];
 
+    $all_positive=1;
+
     for($i=0;$i<$total_values;$i++) {
       $t_times[]=$history[$i]['UNX'];
       $t_values[]=$history[$i]['VALUE'];
+      if ($history[$i]['VALUE']<0) {
+       $all_positive=0;
+      }
       if ($history[$i]['VALUE']!=0 && $history[$i]['VALUE']!=1) {
        $binary_data=false;
       }
@@ -311,7 +316,11 @@ $graph->xaxis->scale->SetDateFormat($date_format);
 
 $line=new LinePlot($ydata, $xdata);
 //$line->SetLegend('Year 2005');
-//$line->SetFillColor('lightblue@0.5');
+
+if ($all_positive) {
+ $line->SetFillColor('lightblue@0.5');
+}
+
 if ($binary_data) {
  $line->SetStepStyle();
 }

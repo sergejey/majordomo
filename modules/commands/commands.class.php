@@ -169,6 +169,10 @@ function admin(&$out) {
       $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
       SQLUpdate('commands', $tmp);
      }
+     if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
+      $color=$m[0];
+      $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
+     }
      $res['LABELS'][]=array('ID'=>$item['ID'], 'DATA'=>$data);
     }
    }
@@ -557,6 +561,13 @@ function usual(&$out) {
     if ($res[$i]['TYPE']=='custom') {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
+
+     if (preg_match('/#[\w\d]{6}/is', $res[$i]['TITLE'], $m)) {
+      $color=$m[0];
+      $res[$i]['TITLE']=trim(str_replace($m[0], '<style>#item'.$res[$i]['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $res[$i]['TITLE']));
+     }
+
+
 
     if ($res[$i]['RENDER_TITLE']!=$res[$i]['TITLE'] || $res[$i]['RENDER_DATA']!=$res[$i]['DATA']) {
      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$res[$i]['ID']."'");

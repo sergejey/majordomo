@@ -36,6 +36,27 @@
  }
  $out['SECTIONS']=$sections;
 
+ if ($this->filter_name=='hook' && !defined('SETTINGS_HOOK_AFTER_PLAYSOUND')) {
+  //SETTINGS_HOOK_BEFORE_PLAYSOUND
+  //SETTINGS_HOOK_AFTER_PLAYSOUND
+  $options=array(
+   'HOOK_BEFORE_PLAYSOUND'=>'Before PlaySound (code)',
+   'HOOK_AFTER_PLAYSOUND'=>'After PlaySound (code)'
+  );
+
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='text';
+    $tmp['DEFAULTVALUE']='';
+    SQLInsert('settings', $tmp);
+   }
+  }
+ }
+
  if ($this->filter_name=='logger' && !defined('SETTINGS_LOGGER_DESTINATION')) {
 
   $options=array(

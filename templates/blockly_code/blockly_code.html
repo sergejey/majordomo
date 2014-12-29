@@ -46,6 +46,56 @@ $(function() {
 });
 </script>
 [#else#]
+<script src="<#ROOTHTML#>js/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.css">
+<script src="<#ROOTHTML#>js/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/xml/xml.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/javascript/javascript.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/css/css.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/clike/clike.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/php/php.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.js"></script>
+<script src="php.js"></script>
+
+<script language="javascript">
+var myTextArea;
+$(document).ready(function(){
+/*
+ myTextArea=document.getElementById('[#CODE_FIELD#]');
+ var myCodeMirror = CodeMirror(function(elt) {
+ myTextArea.parentNode.replaceChild(elt, myTextArea);
+ }, {
+ value: myTextArea.value,
+ lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-php",
+        indentUnit: 1,
+        indentWithTabs: false
+ });
+ */
+var myTextArea=document.getElementById('[#CODE_FIELD#]');
+var editor = CodeMirror.fromTextArea(myTextArea, {
+ value: myTextArea.value,
+ lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/x-php",
+        indentUnit: 1,
+        indentWithTabs: false,
+      extraKeys: {
+        "F11": function(cm) {
+          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        },
+        "Esc": function(cm) {
+          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        }
+      }
+ });
+});
+
+</script>
+<!--#
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/edit_area/edit_area_full.js"></script>
 <script language="javascript" type="text/javascript">
 editAreaLoader.init({
@@ -54,6 +104,7 @@ editAreaLoader.init({
         ,start_highlight: true          // to display with highlight mode on start-up
 });
 </script>
+#-->
 [#endif#]
 
 

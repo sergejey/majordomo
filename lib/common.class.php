@@ -17,6 +17,11 @@
  {
         global $commandLine;
         global $voicemode;
+        global $noPatternMode;
+        global $ignorePushover;
+        global $ignorePushbullet;
+        global $ignoreGrowl;
+        global $ignoreTwitter;
 
          /*
           if ($commandLine) {
@@ -74,7 +79,6 @@
            }
         }
 
-        global $noPatternMode;
         if (!$noPatternMode) {
                 include_once(DIR_MODULES.'patterns/patterns.class.php');
                 $pt=new patterns();
@@ -82,7 +86,6 @@
         }
 
 
-        global $ignorePushover;
         if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY && !$ignorePushover) {
                 include_once(ROOT.'lib/pushover/pushover.inc.php');
                 if (defined('SETTINGS_PUSHOVER_LEVEL')){
@@ -94,7 +97,6 @@
                 }
         }
 
-        global $ignorePushbullet;
         if (defined('SETTINGS_PUSHBULLET_KEY') && SETTINGS_PUSHBULLET_KEY && !$ignorePushbullet) {
                 include_once(ROOT.'lib/pushbullet/pushbullet.inc.php');
                 if (defined('SETTINGS_PUSHBULLET_PREFIX') && SETTINGS_PUSHBULLET_PREFIX) {
@@ -112,7 +114,6 @@
                 }
         }
 
-        global $ignoreGrowl;
         if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level>=SETTINGS_GROWL_LEVEL && !$ignoreGrowl) {
          include_once(ROOT.'lib/growl/growl.gntp.php');
          $growl = new Growl(SETTINGS_GROWL_HOST, SETTINGS_GROWL_PASSWORD);
@@ -121,7 +122,6 @@
          $growl->notify($ph);
         }
 
-        global $ignoreTwitter;
         if (defined('SETTINGS_TWITTER_CKEY') && SETTINGS_TWITTER_CKEY && !$ignoreTwitter) {
          postToTwitter($ph);
         }
@@ -541,6 +541,11 @@
 */
  function playSound($filename, $exclusive=0, $priority=0) {
 
+  if (defined('SETTINGS_HOOK_BEFORE_PLAYSOUND') && SETTINGS_HOOK_BEFORE_PLAYSOUND!='') {
+   eval(SETTINGS_HOOK_BEFORE_PLAYSOUND);
+  }
+
+
   if (file_exists(ROOT.'sounds/'.$filename.'.mp3')) {
    $filename=ROOT.'sounds/'.$filename.'.mp3';
   } elseif (file_exists(ROOT.'sounds/'.$filename)) {
@@ -554,6 +559,12 @@
     safe_exec('mplayer ' . $filename, $exclusive, $priority);
    }
   }
+
+  if (defined('SETTINGS_HOOK_AFTER_PLAYSOUND') && SETTINGS_HOOK_AFTER_PLAYSOUND!='') {
+   eval(SETTINGS_HOOK_AFTER_PLAYSOUND);
+  }
+
+
  }
 
 /**
