@@ -48,6 +48,9 @@
      $timeout=60;
     }
     setTimeOut('user_'.$user_id.'_contexttimeout', 'context_timeout('.$context['ID'].', '.$user_id.');', $timeout);
+    include_once(DIR_MODULES.'patterns/patterns.class.php');
+    $pt=new patterns();
+    $pt->runPatternAction($context['ID']);
    } else {
     context_clear();
     clearTimeOut('user_'.$user_id.'_contexttimeout');

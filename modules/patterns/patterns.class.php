@@ -136,12 +136,52 @@ function admin(&$out) {
    $this->clone_pattern($this->id);
   }
 
+  if ($this->view_mode=='moveup' && $this->id) {
+   $this->reorder_items($this->id, 'up');
+   $this->redirect("?");
+  }
+  if ($this->view_mode=='movedown' && $this->id) {
+   $this->reorder_items($this->id, 'down');
+   $this->redirect("?");
+  }
+
+
   if ($this->view_mode=='delete_patterns') {
    $this->delete_patterns($this->id);
    $this->redirect("?");
   }
  }
 }
+
+ function reorder_items($id, $direction='up') {
+  $element=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
+  if ($element['PARENT_ID']) {
+   $all_elements=SQLSelect("SELECT * FROM patterns WHERE PARENT_ID=".$element['PARENT_ID']." ORDER BY PRIORITY DESC, TITLE");
+  } else {
+   $all_elements=SQLSelect("SELECT * FROM patterns WHERE PARENT_ID=0 ORDER BY PRIORITY DESC, TITLE");
+  }
+  $total=count($all_elements);
+  for($i=0;$i<$total;$i++) {
+   if ($all_elements[$i]['ID']==$id && $i>0 && $direction=='up') {
+    $tmp=$all_elements[$i-1];
+    $all_elements[$i-1]=$all_elements[$i];
+    $all_elements[$i]=$tmp;
+    break;
+   }
+   if ($all_elements[$i]['ID']==$id && $i<($total-1) && $direction=='down') {
+    $tmp=$all_elements[$i+1];
+    $all_elements[$i+1]=$all_elements[$i];
+    $all_elements[$i]=$tmp;
+    break;
+   }
+  }
+  $priority=($total)*10;
+  for($i=0;$i<$total;$i++) {
+   $all_elements[$i]['PRIORITY']=$priority;
+   $priority-=10;
+   SQLUpdate('patterns', $all_elements[$i]);
+  }
+ }
 
 /**
 * Title
@@ -409,6 +449,31 @@ function usual(&$out) {
    }
   }
 
+
+ function runPatternAction($id, $matches=array()) {
+  $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");   
+
+     global $noPatternMode;
+     $noPatternMode=1;
+     if ($rec['SCRIPT_ID']) {
+      runScript($rec['SCRIPT_ID'], $matches);
+     } elseif ($rec['SCRIPT']) {
+
+                  try {
+                   $code=$rec['SCRIPT'];
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in pattern code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                  }
+
+     }
+    $noPatternMode=0;
+
+ }
+
 /**
 * Title
 *
@@ -485,25 +550,11 @@ function usual(&$out) {
      $rec['LOG']=date('Y-m-d H:i:s').' Pattern matched'."\n".$rec['LOG'];
      $rec['EXECUTED']=time();
      SQLUpdate('patterns', $rec);
-     global $noPatternMode;
-     $noPatternMode=1;
      $pattern_matched=1;
-     if ($rec['SCRIPT_ID']) {
-      runScript($rec['SCRIPT_ID'], $matches);
-     } elseif ($rec['SCRIPT']) {
 
-                  try {
-                   $code=$rec['SCRIPT'];
-                   $success=eval($code);
-                   if ($success===false) {
-                    DebMes("Error in pattern code: ".$code);
-                   }
-                  } catch(Exception $e){
-                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
-                  }
+     $this->runPatternAction($rec['ID'], $matches);
 
-     }
-    $noPatternMode=0;
+
    }
 
   }

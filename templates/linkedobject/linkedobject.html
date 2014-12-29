@@ -4,24 +4,37 @@
 [#endif#]
 
 [#if OBJECT_FIELD#]
+<span id='linked_object_replace<#UNIQ#>'>
+<nobr>
 <select name="[#OBJECT_FIELD#]" id='linked_object_copy<#UNIQ#>' style="width:<#WIDTH#>px" onChange="linked_object_chaged<#UNIQ#>();">
  <option value="">
  [#begin OBJECTS#]
  <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#]- [#DESCRIPTION#][#endif#]
  [#end OBJECTS#]
 </select>
+<a href="#" id="linked_object_link<#UNIQ#>" style='display:none'>#</a>
+</nobr>
+</span>
 [#endif#]
 
 [#if PROPERTY_FIELD#]
-<select name="[#PROPERTY_FIELD#]" id="linked_property_copy<#UNIQ#>" style="width:<#WIDTH#>px">
+<span id='linked_property_replace<#UNIQ#>'>
+<nobr><select name="[#PROPERTY_FIELD#]" id="linked_property_copy<#UNIQ#>" style="width:<#WIDTH#>px" onChange="linked_property_chaged<#UNIQ#>();">
  <option value="">
 </select>
+<a href="#" id="linked_property_link<#UNIQ#>" style='display:none'>#</a>
+</nobr>
+</span>
 [#endif PROPERTY_FIELD#]
 
 [#if METHOD_FIELD#]
-<select name="[#METHOD_FIELD#]" id="linked_method_copy<#UNIQ#>" style="width:<#WIDTH#>px">
+<span id='linked_method_replace<#UNIQ#>'>
+<nobr><select name="[#METHOD_FIELD#]" id="linked_method_copy<#UNIQ#>" style="width:<#WIDTH#>px" onChange="linked_method_chaged<#UNIQ#>();">
  <option value="">
 </select>
+<a href="#" id="linked_method_link<#UNIQ#>" style="display:none">#</a>
+</nobr>
+</span>
 [#endif METHOD_FIELD#]
 
 
@@ -33,8 +46,28 @@
  var skip_method<#UNIQ#>=0;
  var skip_object<#UNIQ#>=0;
 
+ function linked_property_chaged<#UNIQ#>() {
+  if (selected_object<#UNIQ#>!='') {
+   $('#linked_property_link<#UNIQ#>').show();
+   $('#linked_property_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=properties");
+  } else {
+   $('#linked_property_link<#UNIQ#>').hide();
+  }
+ }
+
+ function linked_method_chaged<#UNIQ#>() {
+  if (selected_object<#UNIQ#>!='') {
+   $('#linked_method_link<#UNIQ#>').show();
+   $('#linked_method_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=methods");
+  } else {
+   $('#linked_method_link<#UNIQ#>').hide();
+  }
+ }
+
  function linked_object_chaged<#UNIQ#>() {
   selected_object<#UNIQ#>=$("#linked_object_copy<#UNIQ#>").val();
+  $('#linked_object_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
+  $('#linked_object_link<#UNIQ#>').show();
   [#if PROPERTY_FIELD!=""#]
   if (skip_property<#UNIQ#>!=1) {
   url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=properties";
@@ -54,6 +87,7 @@
    $('#linked_property_copy<#UNIQ#>' ).append( optionsAsString );
    if (selected_property<#UNIQ#>!='') {
     $('#linked_property_copy<#UNIQ#>').val(selected_property<#UNIQ#>);
+    linked_property_chaged<#UNIQ#>();
    }
   }
   });
@@ -79,6 +113,7 @@
    $('#linked_method_copy<#UNIQ#>' ).append( optionsAsString );
    if (selected_method<#UNIQ#>!='') {
     $('#linked_method_copy<#UNIQ#>').val(selected_method<#UNIQ#>);
+    linked_method_chaged<#UNIQ#>();
    }
   }
   });
@@ -116,7 +151,9 @@
     $('#linked_object_copy<#UNIQ#>').val(selected_object<#UNIQ#>);
     linked_object_chaged<#UNIQ#>();
    }
-   $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy<#UNIQ#>'));
+   //
+   //$("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy<#UNIQ#>'));
+   $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_replace<#UNIQ#>'));
    $("#linked_object_copy<#UNIQ#>").select2({placeholder: "<#LANG_LINKED_OBJECT#>",allowClear: true});
   } else {
    skip_object<#UNIQ#>=1;
@@ -126,13 +163,15 @@
 
   [#if PROPERTY_FIELD!=""#]
   if (skip_property<#UNIQ#>==0) {
-   $("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy<#UNIQ#>'));
+  //$("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy<#UNIQ#>'));
+   $("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_replace<#UNIQ#>'));
   }
   [#endif#]
 
   [#if METHOD_FIELD!=""#]
   if (skip_method<#UNIQ#>==0) {
-   $("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy<#UNIQ#>'));
+  //$("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy<#UNIQ#>'));
+   $("#[#METHOD_FIELD#]").replaceWith($('#linked_method_replace<#UNIQ#>'));
   }
   [#endif#]
 

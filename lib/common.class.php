@@ -541,10 +541,7 @@
 */
  function playSound($filename, $exclusive=0, $priority=0) {
 
-  if (defined('SETTINGS_HOOK_BEFORE_PLAYSOUND') && SETTINGS_HOOK_BEFORE_PLAYSOUND!='') {
-   eval(SETTINGS_HOOK_BEFORE_PLAYSOUND);
-  }
-
+  global $ignoreSound;
 
   if (file_exists(ROOT.'sounds/'.$filename.'.mp3')) {
    $filename=ROOT.'sounds/'.$filename.'.mp3';
@@ -552,11 +549,17 @@
    $filename=ROOT.'sounds/'.$filename;
   }
 
-  if (file_exists($filename)) {
-   if (substr(php_uname(), 0, 7) == "Windows") {
-    safe_exec(DOC_ROOT.'/rc/madplay.exe '.$filename, $exclusive, $priority);
-   } else {
-    safe_exec('mplayer ' . $filename, $exclusive, $priority);
+  if (defined('SETTINGS_HOOK_BEFORE_PLAYSOUND') && SETTINGS_HOOK_BEFORE_PLAYSOUND!='') {
+   eval(SETTINGS_HOOK_BEFORE_PLAYSOUND);
+  }
+
+  if (!$ignoreSound) {
+   if (file_exists($filename)) {
+    if (substr(php_uname(), 0, 7) == "Windows") {
+     safe_exec(DOC_ROOT.'/rc/madplay.exe '.$filename, $exclusive, $priority);
+    } else {
+     safe_exec('mplayer ' . $filename, $exclusive, $priority);
+    }
    }
   }
 

@@ -1,0 +1,21 @@
+<!-- results -->
+[#if RESULT#]
+<!-- search results (list) -->
+[#begin RESULT#]
+[#if NEW_CATEGORY#]
+[#if FIRST!="1"#]
+</ul>
+</div>
+[#endif FIRST#]
+<div data-role="collapsible" data-iconpos="right">
+<h2><span  id="label_[#ID#]">[#CATEGORY#]</span></h2>
+<ul data-role="listview" data-inset="true">
+[#endif#]
+<li><a href="#" onClick="$.ajax({url: '<#ROOTHTML#>objects/?script=[#ID#]'}).done(function(data) {$('#processing_script_[#ID#]').html(' OK');});return false;" data-role="button"><span id="label_script_[#ID#]">[#TITLE#]</span><span id="processing_script_[#ID#]"></span></a>[#if DESCRIPTION!=""#]<div style="padding-left:25px;padding-bottom:30px;padding-top:5px">[#DESCRIPTION#]</div>[#endif#]</li>
+[#if LAST#]
+</ul>
+</div>
+[#endif#]
+[#end RESULT#]
+<!-- / search results (list) -->
+[#endif RESULT#]
