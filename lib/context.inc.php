@@ -98,6 +98,9 @@
    $session->data['SITE_USER_ID']=$user['ID'];
 
    $context=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
+   if (!$context['TIMEOUT_CONTEXT_ID']) {
+    context_activate(0);
+   }
    if ($context['TIMEOUT_SCRIPT']) {
                  try {
                    $code=$context['TIMEOUT_SCRIPT'];
@@ -109,7 +112,9 @@
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
                   }
    }
-   context_activate((int)$context['TIMEOUT_CONTEXT_ID']);
+   if ($context['TIMEOUT_CONTEXT_ID']) {
+    context_activate((int)$context['TIMEOUT_CONTEXT_ID']);
+   }
   }
 
 
