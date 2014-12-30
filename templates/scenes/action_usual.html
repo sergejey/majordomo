@@ -167,7 +167,7 @@
            if (obj.length) {
             for(var i=0;i<obj.length;i++) {
              var elem=$('#state_'+obj[i].ID);
-             if (obj[i].HTML!='' && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
+             if ((typeof obj[i].HTML!= 'undefined') && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
               elem.html('<span>'+obj[i].HTML+'</span>');
               codeHash['code'+obj[i].ID]=obj[i].HTML;
              }
