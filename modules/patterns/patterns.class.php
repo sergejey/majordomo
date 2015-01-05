@@ -540,7 +540,7 @@ function usual(&$out) {
      }
 
      if ($rec['IS_CONTEXT']) {
-      context_activate($rec['ID']);
+      context_activate($rec['ID'], 1);
      } elseif ($rec['MATCHED_CONTEXT_ID']) {
       context_activate($rec['MATCHED_CONTEXT_ID']);
      } elseif (!$is_common) {

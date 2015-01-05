@@ -33,7 +33,7 @@
    SQLUpdate('users', $user);
   }
 
-  function context_activate($id) {
+  function context_activate($id, $no_action=0) {
    $user_id=context_getuser();
    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".(int)$user_id."'");
    $user['ACTIVE_CONTEXT_ID']=$id;
@@ -48,9 +48,11 @@
      $timeout=60;
     }
     setTimeOut('user_'.$user_id.'_contexttimeout', 'context_timeout('.$context['ID'].', '.$user_id.');', $timeout);
-    include_once(DIR_MODULES.'patterns/patterns.class.php');
-    $pt=new patterns();
-    $pt->runPatternAction($context['ID']);
+    if (!$no_action) {
+     include_once(DIR_MODULES.'patterns/patterns.class.php');
+     $pt=new patterns();
+     $pt->runPatternAction($context['ID']);
+    }
    } else {
     context_clear();
     clearTimeOut('user_'.$user_id.'_contexttimeout');
