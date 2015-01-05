@@ -510,6 +510,9 @@ function usual(&$out) {
         $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
        }
       }
+      if ($states[$i]['TYPE']=='img') {
+       unset($states[$i]['HTML']);
+      }
      }
      echo json_encode($states);
     }
@@ -542,6 +545,9 @@ function usual(&$out) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
+      }
+      if ($states[$i]['TYPE']=='img') {
+       unset($states[$i]['HTML']);
       }
      }
      echo json_encode($states);
@@ -871,6 +877,9 @@ function usual(&$out) {
        $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
        $total_s=count($states);
        for($is=0;$is<$total_s;$is++) {
+        if ($elements[$ie]['TYPE']=='img') {
+         unset($states[$is]['HTML']);
+        }
         if ($states[$is]['HTML']!='') {
          $states[$is]['HTML']=processTitle($states[$is]['HTML']);
         }
