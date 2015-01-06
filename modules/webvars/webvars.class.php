@@ -280,6 +280,12 @@ function usual(&$out) {
 
    if ($old_status!=$new_status) {
      $host['LOG']=date('Y-m-d H:i:s').' new value:'.$new_status."\n".$host['LOG'];
+     $tmp=explode("\n", $host['LOG']);
+     $total=count($tmp);
+     if ($total>50) {
+      $tmp=array_slice($tmp, -50, 50);
+      $host['LOG']=implode("\n", $tmp);
+     }
    }
 
    $host['LATEST_VALUE']=$new_status;

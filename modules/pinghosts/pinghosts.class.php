@@ -275,6 +275,12 @@ function usual(&$out) {
     } elseif ($host['STATUS']==1) {
      $host['LOG']=date('Y-m-d H:i:s').' Host is online'."\n".$host['LOG'];
     }
+    $tmp=explode("\n", $host['LOG']);
+    $total=count($tmp);
+    if ($total>50) {
+     $tmp=array_slice($tmp, 0, 50);
+     $host['LOG']=implode("\n", $tmp);
+    }
    }
 
    SQLUpdate('pinghosts', $host);

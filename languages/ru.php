@@ -12,6 +12,7 @@ $dictionary=array(
 
 /* general */
 'WIKI_URL'=>'http://smartliving.ru/',
+'DEFAULT_COMPUTER_NAME'=>'Алиса',
 'WELCOME_GREETING'=>'Добро пожаловать!',
 'WELCOME_TEXT'=>'Спасибо, что пользуйтесь MajorDoMo -- открытой платформой домашней автоматизации. <br/><br/>Узнайте больше и присоединяйтесь к сообществу: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вы можете изменить или удалить эту страницу через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель управления</a> (логин/пароль: admin / admin)</small>',
 'CONTROL_PANEL'=>'Панель управления',

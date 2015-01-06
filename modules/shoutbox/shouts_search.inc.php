@@ -128,6 +128,12 @@
    }
   }
 
+if (defined('SETTINGS_GENERAL_ALICE_NAME') && SETTINGS_GENERAL_ALICE_NAME!='') {
+ $comp_name=SETTINGS_GENERAL_ALICE_NAME;
+} else {
+ $comp_name=LANG_DEFAULT_COMPUTER_NAME;
+}
+
   if ($res[0]['ID']) {
    $old_dt=$res[0]['DT'];
    $total=count($res);
@@ -140,7 +146,7 @@
      $old_dt=$res[$i]['DT'];
     }
     if ($res[$i]['MEMBER_ID']==0) {
-     $res[$i]['NAME']='Alice';
+     $res[$i]['NAME']=$comp_name;
     }
     $stl='';
     if (trim($res[$i]['COLOR'])) {
