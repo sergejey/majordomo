@@ -24,7 +24,9 @@ include_once("./load_settings.php");
 
 Define('DEVIDER', 'и');
 
-if ($qry!='') 
+$lastest_word=current(SQLSelectOne("SELECT MESSAGE FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC LIMIT 1"));
+      
+if ($qry!='' && $qry!=$lastest_word) 
 {
    if (!$session->data['logged_user']) 
    {
