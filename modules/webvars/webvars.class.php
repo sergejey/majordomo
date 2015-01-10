@@ -243,7 +243,7 @@ function usual(&$out) {
    } else {
     $content=getURL(processTitle($host['HOSTNAME']), $host['ONLINE_INTERVAL']);
    }
-   
+
    if ($host['ENCODING']!='') {
     $content=iconv($host['ENCODING'], "UTF-8", $content);
    }
@@ -267,9 +267,19 @@ function usual(&$out) {
    if ($host['CHECK_PATTERN'] && !preg_match('/'.$host['CHECK_PATTERN'].'/is', $new_status)) {
     $ok=0; // result did not pass the check
    }
+
+   if (strlen($new_status)>50*1024) {
+    $new_status=substr($new_status, 0, 50*1024);
+   }
    
    if (!$ok) {
     $host['LOG']=date('Y-m-d H:i:s').' incorrect value:'.$new_status."\n".$host['LOG'];
+    $tmp=explode("\n", $host['LOG']);
+    $total=count($tmp);
+    if ($total>50) {
+     $tmp=array_slice($tmp, -50, 50);
+     $host['LOG']=implode("\n", $tmp);
+    }
     SQLUpdate('webvars', $host);
     continue;
    }

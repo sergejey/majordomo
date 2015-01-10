@@ -24,21 +24,35 @@
    }
   }
 
+  function context_get_history() {
+   $user_id=context_getuser();
+   $user=SQLSelectOne("SELECT ID, ACTIVE_CONTEXT_ID, ACTIVE_CONTEXT_EXTERNAL, ACTIVE_CONTEXT_HISTORY FROM users WHERE ID='".(int)$user_id."'");    
+   if ($user['ACTIVE_CONTEXT_ID']) {
+    return $user['ACTIVE_CONTEXT_HISTORY'];
+   } else {
+    return '';
+   }
+  }
+
   function context_clear() {
    $user_id=context_getuser();
    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".(int)$user_id."'");
    $user['ACTIVE_CONTEXT_ID']=0;
    $user['ACTIVE_CONTEXT_EXTERNAL']=0;
    $user['ACTIVE_CONTEXT_UPDATED']=date('Y-m-d H:i:s');
+   $user['ACTIVE_CONTEXT_HISTORY']='';
    SQLUpdate('users', $user);
   }
 
-  function context_activate($id, $no_action=0) {
+  function context_activate($id, $no_action=0, $history='') {
    $user_id=context_getuser();
    $user=SQLSelectOne("SELECT * FROM users WHERE ID='".(int)$user_id."'");
    $user['ACTIVE_CONTEXT_ID']=$id;
    $user['ACTIVE_CONTEXT_EXTERNAL']=0;
    $user['ACTIVE_CONTEXT_UPDATED']=date('Y-m-d H:i:s');
+   if ($history) {
+    $user['ACTIVE_CONTEXT_HISTORY'].=' '.$history;
+   }
    SQLUpdate('users', $user);
    if ($id) {
     //execute pattern
