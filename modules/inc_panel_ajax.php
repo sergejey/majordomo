@@ -9,7 +9,13 @@
 
   if ($op=='console') {
    global $command;
-   eval($command);
+   if (preg_match('/^\w+\.\w+$/', $command)) {
+    echo callMethod($command);
+   } elseif (preg_match('/;/', $command)) {
+    eval($command);
+   } else {
+    eval('echo '.$command.';');
+   }
   }
 
   if ($op=='filter') {

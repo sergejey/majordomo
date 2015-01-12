@@ -150,9 +150,19 @@ if ($total>0) {
            header('Location:'.str_replace('&subop=optimize', '', $_SERVER['REQUEST_URI']));
            exit;
           }
-          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a> ';
-          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
+          echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=">H</a> ';
+          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=1h">1h</a> ';
+          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=24h">24h</a> ';
+          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=7d">7d</a> ';
+          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=31d">31d</a> ';
+          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a>';
+          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
           echo '<br/>';
+          if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
+           $code='<img src="/jpgraph/?p='.$_GET['p'].'&type='.$_GET['subop'].'&width=500&"/>';
+           echo $code."<br/>".htmlspecialchars($code);
+           exit;
+          }
          }
                 $history=array_reverse($history);
                 for($i=0;$i<$total_values;$i++) {
