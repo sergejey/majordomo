@@ -504,11 +504,11 @@ function usual(&$out) {
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
-       if (preg_match('/\[#/is', $states[$i]['HTML'])) {
-        $states[$i]['HTML']='';
-       } else {
+       //if (preg_match('/\[#/is', $states[$i]['HTML'])) {
+       // $states[$i]['HTML']='';
+       //} else {
         $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
-       }
+       //}
       }
       if ($states[$i]['TYPE']=='img') {
        unset($states[$i]['HTML']);
