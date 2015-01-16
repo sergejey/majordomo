@@ -247,18 +247,15 @@ function admin(&$out) {
    global $new_value;
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$item_id."'");
    if ($item['ID']) {
+    $old_value=$item['CUR_VALUE'];
     $item['CUR_VALUE']=$new_value;
     SQLUpdate('commands', $item);
     if ($item['LINKED_PROPERTY']!='') {
-     $old_value=gg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
+     //$old_value=gg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
      sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
-     //DebMes("setting property ".$item['LINKED_OBJECT'].".".$item['LINKED_PROPERTY']." to ".$item['CUR_VALUE']);
     }
 
-    $params=array('VALUE'=>$item['CUR_VALUE']);
-    if (isSet($old_value)) {
-     $params['OLD_VALUE']=$old_value;
-    }
+    $params=array('VALUE'=>$item['CUR_VALUE'], 'OLD_VALUE'=>$old_value);
 
     if ($item['ONCHANGE_METHOD']!='') {
      if (!$item['LINKED_OBJECT']) {

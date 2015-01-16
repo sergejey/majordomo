@@ -274,9 +274,18 @@ Action URL:
 <div class="form-group">
         <label class="control-label"><#LANG_ONCHANGE_CODE#>: [#ERRORS#]</label>
         <div class="col-lg-5">
-                <textarea name="code" rows="5" cols="50" class="form-control">[#CODE#]</textarea>
+<!--#
+                <textarea name="code" id="code" rows="5" cols="50" class="form-control">[#CODE#]</textarea>
+#-->
+
+ [#module name="blockly_code" system_name="command<#ID#>" code_field="code" action=""#]
+ <div id="code_area">
+  <textarea name="code" id="code" rows=20 cols=100 class="form-control">[#CODE#]</textarea>
+ </div>
+
         </div>
 </div>
+
 [#endif TYPE#]
 
 [#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="onchange_method"#]

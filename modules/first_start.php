@@ -20,20 +20,6 @@ $regions = array(
     'Pacific' => DateTimeZone::PACIFIC
 );
 
-/*
-//For earlier versions of PHP:
-$regions = array(
-    'Africa' => 1,
-    'America' => 2,
-    'Antarctica' => 4,
-    'Asia' => 16,
-    'Atlantic' => 32,
-    'Europe' => 128,
-    'Indian' => 256,
-    'Pacific' => 512
-);
-*/
-
 foreach ($regions as $name => $mask) {
     $tzlist[] = DateTimeZone::listIdentifiers($mask);
 }
@@ -57,13 +43,6 @@ for($i=0;$i<$total;$i++) {
  $zones[]=array('TITLE'=>$zn[$i], 'OFFSET'=>$offset, 'OFFSET_TEXT'=>$offset_text);
 }
 
- /**
- * Title
- *
- * Description
- *
- * @access public
- */
   function sort_zones($a, $b) {
    if ($a['OFFSET'] == $b['OFFSET']) return strcmp($a["TITLE"], $b["TITLE"]); 
    return ($a['OFFSET'] < $b['OFFSET']) ? -1 : 1;

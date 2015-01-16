@@ -127,6 +127,7 @@ class settings extends module {
    $this->search_settings($out);
   }
  }
+
 }
 /**
 * FrontEnd

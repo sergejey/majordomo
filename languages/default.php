@@ -987,6 +987,14 @@ $dictionary=array(
 'UPDATING'=>'Incl. in updates',
 'NOT_UPDATING'=>'Not updating',
 
+'SCRIPTS'=>'Scripts',
+'CLASSES'=>'Classes',
+'CLASS_PROPERTIES'=>'Class properties',
+'CLASS_METHODS'=>'Class methods',
+'CLASS_OBJECTS'=>'Class objects',
+'OBJECT_PROPERTIES'=>'Object properties',
+'OBJECT_METHODS'=>'Object methods',
+
 
 'TEST'=>'test'
 

@@ -668,7 +668,8 @@ curl_close($ch);
    $prop['KEEP_HISTORY']=$this->keep_history;
   }
 
-  if (($prop['KEEP_HISTORY']>0) && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
+  //if (($prop['KEEP_HISTORY']>0) && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
+  if (($prop['KEEP_HISTORY']>0) && ($value!=$old_value)) {
    startMeasure('DeleteOldHistory');
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
    endMeasure('DeleteOldHistory', 1);
@@ -677,6 +678,20 @@ curl_close($ch);
    $h['ADDED']=date('Y-m-d H:i:s');
    $h['VALUE']=$value;
    $h['ID']=SQLInsert('phistory', $h);
+  } elseif (($prop['KEEP_HISTORY']>0) && ($value==$old_value)) {
+   $tmp_history=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$v['ID']."' ORDER BY ID DESC LIMIT 2");
+   $prev_value=$tmp_history[0]['VALUE'];
+   $prev_prev_value=$tmp_history[1]['VALUE'];
+   if ($prev_value==$prev_prev_value) {
+    $tmp_history[0]['ADDED']=date('Y-m-d H:i:s');
+    SQLUpdate('phistory', $tmp_history[0]);
+   } else {
+    $h=array();
+    $h['VALUE_ID']=$v['ID'];
+    $h['ADDED']=date('Y-m-d H:i:s');
+    $h['VALUE']=$value;
+    $h['ID']=SQLInsert('phistory', $h);
+   }
   }
 
   if ($prop['ONCHANGE']) {

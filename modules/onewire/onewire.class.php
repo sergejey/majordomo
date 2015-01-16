@@ -423,7 +423,7 @@ function usual(&$out) {
     }
 
 
-    if (!is_null($value) && $value!=$old_value) {
+    if (!is_null($value)) {
      $prec['VALUE']=$value;
      $prec['UPDATED']=date('Y-m-d H:i:s');
 
@@ -440,13 +440,15 @@ function usual(&$out) {
       setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array($this->name=>'0'));
      }
 
-     $changed_values=array();
-     $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
+     if ($value!=$old_value) {
 
-     $params=$changed_values;
-     if ($script_id) {
-      runScript($script_id, $params);
-     } elseif ($code) {
+      $changed_values=array();
+      $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
+
+      $params=$changed_values;
+      if ($script_id) {
+       runScript($script_id, $params);
+      } elseif ($code) {
 
 
                   try {
@@ -458,7 +460,10 @@ function usual(&$out) {
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
                   }
 
+      }
+
      }
+
     }
    }
   }
@@ -574,18 +579,23 @@ function updateDisplay($id) {
      $value=$ow->get($properties[$ip],OWNET_MSG_READ,false);
     }
 
-    if (!is_null($value) && $old_value!=$value) {
+    if (!is_null($value)) {
      // value updated
-     $changed=1;
-     $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
      $prec['VALUE']=$value;
      $prec['UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('owproperties', $prec);
      //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
-     SQLUpdate('owdevices', $rec);
+     //SQLUpdate('owdevices', $rec);
+
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
       setGlobal($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], array($this->name=>'0'));
      }
+
+     if ($old_value!=$value) {
+      $changed=1;
+      $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
+     }
+
     }
    }
 

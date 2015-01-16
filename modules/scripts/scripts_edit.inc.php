@@ -144,7 +144,7 @@
   }
 
   if ($rec['CATEGORY_ID']) {
-   $out['OTHER_SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts WHERE CATEGORY_ID='".(int)$rec['CATEGORY_ID']."'");
+   $out['OTHER_SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts WHERE CATEGORY_ID='".(int)$rec['CATEGORY_ID']."' ORDER BY TITLE");
   }
 
 

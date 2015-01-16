@@ -51,7 +51,13 @@ $(function() {
         <label class="control-label">[#TITLE#]:</label>
         <div class="controls">
                 [#if TYPE="text"#]
-                <input type="text"   class="form-control" name="value_[#ID#]" value="[#VALUE#]" size=50>
+                [#if NAME=="SITE_TIMEZONE" || NAME=="SITE_LANGUAGE" || NAME=="THEME"#]
+                [#VALUE#]
+                <a href="<#ROOTHTML#>popup/first_start.html" target=_blank><#LANG_UPDATE#></a>
+                <input type="hidden" class="form-control" name="value_[#ID#]" value="[#VALUE#]">
+                [#else#]
+                <input type="text" class="form-control" name="value_[#ID#]" value="[#VALUE#]" size=50>
+                [#endif#]
                 [#endif TYPE#]
 
                 [#if TYPE="path"#]

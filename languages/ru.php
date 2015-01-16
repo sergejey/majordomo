@@ -986,6 +986,15 @@ $dictionary=array(
 'UPDATING'=>'Вкл. в обновление',
 'NOT_UPDATING'=>'Не обновляется',
 
+'SCRIPTS'=>'Сценарии',
+'CLASSES'=>'Классы/объекты',
+'CLASS_PROPERTIES'=>'Свойства класса',
+'CLASS_METHODS'=>'Методы класса',
+'CLASS_OBJECTS'=>'Объекты класса',
+'OBJECT_PROPERTIES'=>'Свойства объекта',
+'OBJECT_METHODS'=>'Методы объекта',
+
+
 'TEST'=>'test'
 
 
