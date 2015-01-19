@@ -4,14 +4,21 @@
 */
 
 
-  function getValueIdByName($object, $property) {
+  function getValueIdByName($object_name, $property) {
 
-    $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($object.'.'.$property)."'");
+    $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($object_name.'.'.$property)."'");
     if (!$value['ID']) {
-     $object=getObject($object);
+     $object=getObject($object_name);
      if (is_object($object)) {
       $property_id=$object->getPropertyByName($property, $object->class_id, $object->id); //
       $value=SQLSelectOne("SELECT ID FROM pvalues WHERE PROPERTY_ID='".(int)$property_id."' AND OBJECT_ID='".(int)$object->id."'");
+      if (!$value['ID'] && $property_id) {
+       $value=array();
+       $value['PROPERTY_ID']=$property_id;
+       $value['OBJECT_ID']=$object->id;
+       $value['PROPERTY_NAME']=$object_name.'.'.$property;
+       $value['ID']=SQLInsert('pvalues', $value);
+      }
      }
     }
 
