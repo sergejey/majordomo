@@ -1,0 +1,251 @@
+<!--#
+ @version 0.4 (auto-set)
+#--><!DOCTYPE html>
+<html>
+<head>
+        <title><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
+        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
+
+        <script language="javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
+
+        <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
+        <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
+
+        <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+        <script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
+        <script language="javascript" src="<#ROOTHTML#>js/admin.js"></script>
+
+
+        [#inc scripts.js#]
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+
+<style>
+body {
+/*max-width: 1200px;*/
+margin: 0 auto;
+}
+div#content {
+margin: 0px 10px;
+padding: 20px 40px;
+}
+.clearfix{
+        padding-bottom:5px;
+}
+.navbar-fixed-top .container, .navbar-fixed-bottom .container {
+/*        width: 1100px;*/
+}
+
+
+</style>
+<body bgcolor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
+
+<div id="content" class="content">
+
+
+<table width="100%" border="0" cellpadding="5" cellspacing="5">
+ <tr>
+ <td valign="top">
+
+
+[#if VIEW_MODE=""#]
+
+[#if DESCRIPTION!=""#]<p>[#DESCRIPTION#]</p>[#endif#]
+
+<div id="tabs-scripts">
+[#if HAVE_SCRIPTS#] 
+<h1><#LANG_SCRIPTS#></h1>
+
+ <table border=0 cellpadding=5 cellspacing=1 width="100%">
+[#begin SCRIPTS#]
+[#if NEW_CATEGORY#]
+</table>
+&nbsp;<br>
+<big>[#CATEGORY#]</big>
+<table border=0 cellpadding=5 cellspacing=1 width="100%">
+[#endif#]
+<tr>
+ <td nowrap valign="top">
+  <b>
+  [#if TITLE!=""#]
+   [#TITLE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+  </a></b>
+ </td>
+ <td valign="top" width="90%">[#DESCRIPTION#]&nbsp;
+ [#if CODE!=""#]
+ <div id="code[#ID#]">
+<pre>[#CODE#]</pre>
+ </div>
+ [#endif CODE#]
+ </td>
+</tr>
+[#if LAST#]
+</table>
+[#endif#]
+[#end SCRIPTS#]
+[#else HAVE_SCRIPTS#]
+<#LANG_NOT_ADDED#>
+[#endif HAVE_SCRIPTS#]  
+</div> 
+
+
+<hr>
+
+<div id="tabs-objects">
+ [#if HAVE_OBJECTS#] 
+<h1><#LANG_CLASSES#></h1>
+ [#begin CLASSES#]
+ <div>
+ <a name="class[#INTERNAL_ID#]"></a>
+ <#LANG_CLASS#> 
+ [#if PARENT_ID!="0"#]
+ [#PARENT_TITLE#] &gt;
+ [#endif#]
+ <h2>[#TITLE#]</h2>
+
+ [#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
+
+ [#if PROPERTIES#]
+ <p>
+ <#LANG_CLASS_PROPERTIES#>: 
+ [#begin PROPERTIES#]
+ <div style="margin-left:30px">
+ <b>[#TITLE#]</b>
+ [#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
+ </div>
+ [#end PROPERTIES#]
+ </p>
+ [#endif PROPERTIES#]
+
+ [#if METHODS#]
+ <p>
+ <#LANG_CLASS_METHODS#>:
+ [#begin METHODS#]
+ <div style="margin-left:30px">
+ <b>[#TITLE#]</b>
+ [#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
+ [#if CODE!=""#]
+ <div id="method_code[#ID#]"><pre>[#CODE#]</pre></div>
+ [#endif CODE#]
+ </div>
+ [#end METHODS#]
+ </p>
+ [#endif METHODS#]
+ 
+ [#if OBJECTS#]
+ <p>
+ <#LANG_CLASS_OBJECTS#>:
+ [#begin OBJECTS#]
+ <div style="margin-left:30px">
+ <b>[#TITLE#]</b>
+ [#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
+ [#if METHODS#]
+ <br><#LANG_OBJECT_METHODS#>:
+ [#begin METHODS#]
+ <div style="margin-left:30px">
+ <b>[#TITLE#]</b>
+ [#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
+ [#if CODE#]
+ <div id="object_method_code[#ID#]"><pre>[#CODE#]</pre></div>
+ [#endif CODE#]
+ </div>
+ [#end METHODS#]
+ </p>
+ [#endif METHODS#]
+ [#endif METHODS#]
+ </div>
+ [#end OBJECTS#]
+ </p>
+ [#endif OBJECTS#] 
+
+ </div>
+ [#if CLASSES#]
+  <div style="margin-left:30px">
+  [#tree CLASSES#]
+  </div>
+ [#endif CLASSES#]
+ &nbsp;
+ [#end CLASSES#]
+
+ [#else HAVE_OBJECTS#]
+ <#LANG_NOT_ADDED#>
+ [#endif HAVE_OBJECTS#]  
+</div> 
+
+<hr>
+
+<div id="tabs-patterns">
+ [#if HAVE_PATTERNS#]
+  <table border=0 style="margin-left:20px">
+  [#begin PATTERNS#]
+   <tr>
+    <td><b>[#TITLE#]</b>
+     [#if PATTERN!=""#]
+     <div><#LANG_PATTERN#>:<br/><pre>[#PATTERN#]</pre></div>
+     [#endif#]
+     [#if SCRIPT!=""#]
+     <#LANG_CODE#>>
+     <div id="pattern_script[#ID#]"><pre>[#SCRIPT#]</pre></div>
+     [#endif#]
+         &nbsp;<br>&nbsp;
+    </td>
+   </tr>
+   [#if PATTERNS#]
+    <tr>
+         <td>
+          <div style="padding-left:30px">
+          <table border=0>
+           [#tree PATTERNS#]
+          </table>
+          </div>
+         </td>
+        </tr>
+   [#endif PATTERNS#]
+  [#end PATTERNS#]
+  </table> 
+ 
+ [#else HAVE_PATTERNS#]
+ <#LANG_NOT_ADDED#>
+ [#endif HAVE_PATTERNS#]  
+</div>
+
+ 
+</div>
+
+
+
+[#endif VIEW_MODE#]
+
+
+
+
+ 
+ </td>
+
+ </tr>
+</table>
+
+
+</div>
+</body>
+</html>
