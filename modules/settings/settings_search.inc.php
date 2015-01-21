@@ -95,6 +95,24 @@
 
  }
 
+ if ($this->filter_name=='scenes' && !defined('SETTINGS_SCENES_VERTICAL_NAV')) {
+  $options=array(
+   'SCENES_VERTICAL_NAV'=>'Vertical navigation'
+  );
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='onoff';
+    $tmp['DEFAULTVALUE']='0';
+    SQLInsert('settings', $tmp);
+   }
+  }
+
+ }
+
  if ($this->filter_name=='scenes' && !defined('SETTINGS_SCENES_BACKGROUND_VIDEO')) {
 
   $options=array(

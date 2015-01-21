@@ -262,7 +262,7 @@
  function increaseValue[#ID#]() {
   var elem=document.getElementById('menu[#ID#]_v');
   var elem2=document.getElementById('menu[#ID#]_vv');
-  var v=parseInt(elem.value);
+  var v=parseFloat(elem.value);
   if ((v+[#STEP_VALUE#])<=[#MAX_VALUE#]) {
    elem.value=v+[#STEP_VALUE#];
    elem2.innerHTML=elem.value;
@@ -274,7 +274,7 @@
  function decreaseValue[#ID#]() {
   var elem=document.getElementById('menu[#ID#]_v');
   var elem2=document.getElementById('menu[#ID#]_vv');
-  var v=parseInt(elem.value);
+  var v=parseFloat(elem.value);
   if ((v-[#STEP_VALUE#])>=[#MIN_VALUE#]) {
    elem.value=v-[#STEP_VALUE#];
    elem2.innerHTML=elem.value;

@@ -69,7 +69,7 @@
                         obj.css("overflow","hidden");
                         var ts = s-1;
                         var t = 0;
-                        $("ul", obj).css('width',s*w);                  
+                        $("ul", obj).css('width',s*w);
                         
                         if(options.continuous){
                                 $("ul", obj).prepend($("ul li:last-child", obj).clone().css("margin-left","-"+ w +"px"));
@@ -82,7 +82,7 @@
                         if(options.controlsShow){
                                 var html = options.controlsBefore;                              
                                 if(options.numeric){
-                                        html += '<ol id="'+ options.numericId +'"></ol>';
+                                        html = html + '<ol id="'+ options.numericId +'"></ol>';
                                 } else {
                                         if(options.firstShow) html += '<span id="'+ options.firstId +'"><a href=\"javascript:void(0);\">'+ options.firstText +'</a></span>';
                                         html += ' <span id="'+ options.prevId +'"><a href=\"javascript:void(0);\">'+ options.prevText +'</a></span>';

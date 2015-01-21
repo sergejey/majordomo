@@ -553,6 +553,11 @@ class jTemplate {
 
 
      StartMeasure("module_".$module_data["name"]); 
+
+     if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT .'languages/'.$module_data["name"].'_' . SETTINGS_SITE_LANGUAGE . '.php')) 
+      include_once(ROOT .'languages/'.$module_data["name"].'_'.SETTINGS_SITE_LANGUAGE . '.php');
+     if (file_exists(ROOT .'languages/'.$module_data["name"].'_default.php')) include_once (ROOT .'languages/'.$module_data["name"].'_default.php');
+
      // run module and insert module result in template
      $code.=$obj."->run();\n";
      $code.="\$tmp=".$obj."->result;\n";

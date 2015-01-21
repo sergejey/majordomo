@@ -576,17 +576,22 @@ function admin(&$out) {
    }
 
    if ($rec['CLASS_SENSOR_BINARY']) {
-    // ...
-    $value=(int)$data->commandClasses->{"48"}->data->level->value;
+
+    $sensor_data=$data->commandClasses->{"48"}->data;
+    if (isset($data->commandClasses->{"48"}->data->{"1"})) {
+     $sensor_data=$data->commandClasses->{"48"}->data->{"1"};
+    }
+    $value=(int)$sensor_data->level->value;
+
     if ($value!==$rec['LEVEL']) {
      $rec['LEVEL']=$value;
      $rec_updated=1;
     }
     $properties['Level']=$rec['LEVEL'];
     $command_classes['Level']=48;
-    $updatedList['Level']=$data->commandClasses->{"48"}->data->{"updateTime"};
-    if ($data->commandClasses->{"48"}->data->{"updateTime"}>$updateTime) {
-     $updateTime=$data->commandClasses->{"48"}->data->{"updateTime"};
+    $updatedList['Level']=$sensor_data->{"updateTime"};
+    if ($sensor_data->{"updateTime"}>$updateTime) {
+     $updateTime=$sensor_data->{"updateTime"};
     }
    }
 
@@ -695,7 +700,9 @@ function admin(&$out) {
    if ($rec['CLASS_SENSOR_ALARM']) {
     // ... $data->commandClasses->{"156"}->data
     if (is_object($data->commandClasses->{"156"}->data->{"0"}->sensorState)) {
+     $command_classes['AlarmGeneral']=156;
      $properties['AlarmGeneral']=$data->commandClasses->{"156"}->data->{"0"}->sensorState->value;
+     $updatedList['AlarmGeneral']=$data->commandClasses->{"156"}->data->{"0"}->sensorState->updateTime;
      $value=$properties['AlarmGeneral'];
      if ($value!=$rec['LEVEL']) {
       $rec['LEVEL']=$value;
@@ -705,22 +712,27 @@ function admin(&$out) {
     if (is_object($data->commandClasses->{"156"}->data->{"1"}->sensorState)) {
      $command_classes['AlarmSmoke']=156;
      $properties['AlarmSmoke']=$data->commandClasses->{"156"}->data->{"1"}->sensorState->value;
+     $updatedList['AlarmSmoke']=$data->commandClasses->{"156"}->data->{"1"}->sensorState->updateTime;
     }
     if (is_object($data->commandClasses->{"156"}->data->{"2"}->sensorState)) {
      $command_classes['AlarmCarbonMonoxide']=156;
      $properties['AlarmCarbonMonoxide']=$data->commandClasses->{"156"}->data->{"2"}->sensorState->value;
+     $updatedList['AlarmCarbonMonoxide']=$data->commandClasses->{"156"}->data->{"2"}->sensorState->updateTime;
     }
     if (is_object($data->commandClasses->{"156"}->data->{"3"}->sensorState)) {
      $command_classes['AlarmCarbonDioxide']=156;
      $properties['AlarmCarbonDioxide']=$data->commandClasses->{"156"}->data->{"3"}->sensorState->value;
+     $updatedList['AlarmCarbonDioxide']=$data->commandClasses->{"156"}->data->{"3"}->sensorState->updateTime;
     }
     if (is_object($data->commandClasses->{"156"}->data->{"4"}->sensorState)) {
      $command_classes['AlarmHeat']=156;
      $properties['AlarmHeat']=$data->commandClasses->{"156"}->data->{"4"}->sensorState->value;
+     $updatedList['AlarmHeat']=$data->commandClasses->{"156"}->data->{"4"}->sensorState->updateTime;
     }
     if (is_object($data->commandClasses->{"156"}->data->{"5"}->sensorState)) {
      $command_classes['AlarmFlood']=156;
      $properties['AlarmFlood']=$data->commandClasses->{"156"}->data->{"5"}->sensorState->value;
+     $updatedList['AlarmFlood']=$data->commandClasses->{"156"}->data->{"5"}->sensorState->updateTime;
     }
     if ($data->commandClasses->{"156"}->data->{"updateTime"}>$updateTime) {
      $updateTime=$data->commandClasses->{"156"}->data->{"updateTime"};

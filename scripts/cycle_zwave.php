@@ -46,6 +46,8 @@ if (!$connected) {
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
+$zwave->scanNetwork();
+
 while(1) 
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);

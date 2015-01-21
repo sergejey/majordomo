@@ -300,6 +300,7 @@ img.tab_table_cell{
                 height:28px;
                 line-height:28px;
                 }
+
         ol#controls li a{
                 float:left;
                 height:28px;
@@ -315,5 +316,38 @@ img.tab_table_cell{
                 color:#fff;
                 }
         ol#controls li a:focus, #prevBtn a:focus, #nextBtn a:focus{outline:none;}
+
+        ol#controls_vertical{
+                margin:1em 0;
+                padding:0;
+                width:28px;    
+                position:absolute;
+                top:10px;
+                left:10px;
+                }
+
+        ol#controls_vertical li{
+                margin:0 10px 0 0; 
+                padding:0;
+                list-style:none;
+                height:32px;
+                line-height:28px;
+                }
+
+        ol#controls_vertical li a{
+                float:left;
+                height:28px;
+                line-height:28px;
+                border:1px solid #ccc;
+                background:#DAF3F8;
+                color:#555;
+                padding:0 10px;
+                text-decoration:none;
+                }
+        ol#controls_vertical li.current a{
+                background:#5DC9E1;
+                color:#fff;
+                }
+        ol#controls_vertical li a:focus, #prevBtn a:focus, #nextBtn a:focus{outline:none;}
         
 /* // Easy Slider */
