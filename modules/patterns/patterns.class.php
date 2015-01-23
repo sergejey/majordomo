@@ -378,6 +378,10 @@ function usual(&$out) {
       }
      }
 
+     if ($data['MEDIA_URL']) {
+      playMedia($data['MEDIA_URL']);
+     }
+
      context_activate_ext($data['NEW_CONTEXT'], (int)$data['TIMEOUT'], $data['TIMEOUT_CODE'], (int)$data['TIMEOUT_CONTEXT_ID']);
 
      return $data['MATCHED_CONTEXT'];

@@ -244,7 +244,7 @@ function getParams() {
 
 
    if ($out["DOC_NAME"]) {
-    $doc=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME LIKE '".DBSafe($out['DOC_NAME'])."'");
+    //$doc=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME LIKE '".DBSafe($out['DOC_NAME'])."'");
     if ($doc['ID']) {
      $this->doc=$doc['ID'];
     }
