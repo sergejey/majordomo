@@ -30,6 +30,42 @@ if ($_REQUEST['location'])
    $_REQUEST['longitude'] = $tmp[1];
 }
 
+if ($_REQUEST['op']!='') {
+ $op=$_REQUEST['op'];
+ $ok=0;
+ if ($op=='zones') {
+  $zones=SQLSelect("SELECT * FROM gpslocations");
+  echo json_encode(array('RESULT'=>array('ZONES'=>$zones, 'STATUS'=>'OK')));
+  $ok=1;
+ }
+ if ($op=='add_zone' && $_REQUEST['latitude'] && $_REQUEST['longitude'] && $_REQUEST['title']) {
+  global $title;
+  global $range;
+  $old_location=SQLSelect("SELECT * FROM gpslocations WHERE TITLE LIKE '".DBSafe($title)."'");
+  if ($old_location['ID']) {
+   $title.=' (1)';
+  }
+  if (!$range) {
+   $range=200;
+  }
+  $rec=array();
+  $rec['TITLE']=$title;
+  $rec['LAT']=$_REQUEST['latitude'];
+  $rec['LON']=$_REQUEST['longitude'];
+  $rec['RANGE']=(int)$range;
+  $rec['ID']=SQLInsert('gpslocations', $rec);
+  echo json_encode(array('RESULT'=>array('STATUS'=>'OK')));
+  $ok=1;
+ }
+
+ if (!$ok) {
+  echo json_encode(array('RESULT'=>array('STATUS'=>'FAIL')));
+ }
+
+ $db->Disconnect(); 
+ exit;
+}
+
 if (IsSet($_REQUEST['latitude']))  
 {
    //DebMes("GPS DATA RECEIVED: \n".serialize($_REQUEST));

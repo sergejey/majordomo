@@ -12,10 +12,14 @@
  global $optimize_log;
  if ($optimize_log) {
   set_time_limit(6000);
-  $records=SQLSelect("SELECT ID, DEVICEID, LOCATION_ID FROM gpslog ORDER BY DEVICEID, ADDED DESC");
+  $records=SQLSelect("SELECT gpslog.ID, gpslog.DEVICEID, gpslog.LOCATION_ID, gpsdevices.ID as GPS_DEVICE_ID FROM gpslog LEFT JOIN gpsdevices ON gpslog.DEVICE_ID=gpsdevices.ID ORDER BY gpslog.DEVICEID, gpslog.ADDED DESC");
   $total=count($records);
   $to_delete=array();
   for($i=1;$i<$total-1;$i++) {
+   if (!$records[$i]['GPS_DEVICE_ID']) {
+    SQLExec("DELETE FROM gpslog WHERE ID=".$records[$i]['ID']);
+    continue;
+   }
    if (!$records[$i]['LOCATION_ID']) continue;
    if ($records[$i]['LOCATION_ID']==$records[$i+1]['LOCATION_ID'] && $records[$i]['LOCATION_ID']==$records[$i-1]['LOCATION_ID']) {
     //$to_delete[]=$records[$i]['ID'];

@@ -291,6 +291,7 @@ function usual(&$out) {
  function delete_gpsdevices($id) {
   $rec=SQLSelectOne("SELECT * FROM gpsdevices WHERE ID='$id'");
   // some action for related tables
+  SQLExec("DELETE FROM gpslog WHERE DEVICE_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM gpsdevices WHERE ID='".$rec['ID']."'");
  }
 /**
