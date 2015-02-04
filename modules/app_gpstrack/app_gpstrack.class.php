@@ -389,6 +389,7 @@ gpsactions - Actions
  gpsdevices: LON varchar(255) NOT NULL DEFAULT ''
  gpsdevices: UPDATED datetime
  gpsdevices: DEVICEID varchar(255) NOT NULL DEFAULT ''
+ gpsdevices: TOKEN varchar(255) NOT NULL DEFAULT ''
  gpsdevices: INDEX (USER_ID)
 
  gpsactions: ID int(10) unsigned NOT NULL auto_increment

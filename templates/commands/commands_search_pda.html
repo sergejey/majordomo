@@ -48,13 +48,6 @@
 
 <div data-role="content">
 
-[#if RESULT#]
-
-<!-- search results (list) -->
-[#if ONE_ITEM_MODE!="1"#]
-<ul data-role="listview" data-inset="true">
-[#endif ONE_ITEM_MODE#]
-
 <!--#
 <li>
 <div id="debugField" style="white-space:normal;">...</div>
@@ -62,6 +55,15 @@
 #-->
 
 
+[#if RESULT#]
+
+<!-- search results (list) -->
+[#if ONE_ITEM_MODE!="1"#]
+<ul data-role="listview" data-inset="true">
+[#endif ONE_ITEM_MODE#]
+
+
+[#if RESULT_HTML!=""#][#RESULT_HTML#][#endif#]
 
 [#begin RESULT#]
 

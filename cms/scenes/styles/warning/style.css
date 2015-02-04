@@ -1,0 +1,27 @@
+/* MOTION */
+.type_warning {
+ margin-right: -2px;
+ margin-bottom: 1px;
+ color:black;
+ border:none;
+ /*border-radius:3px;  */
+ text-align: center;
+ background-image:url(/img/elements/circle_red.png);
+ padding:4px;
+ width:68px;
+ height:68px;
+}
+.type_warning span {
+ display: block;
+ width:68px;
+ height:68px;
+ vertical-align: middle;
+}
+
+[#begin STYLES#]
+   [#if HAS_DEFAULT!=""#]
+    .type_warning.style_[#TITLE#]:before {
+     content: url(<#ROOTHTML#>cms/scenes/styles/warning/[#HAS_DEFAULT#]);
+    }
+   [#endif#]
+[#end STYLES#]

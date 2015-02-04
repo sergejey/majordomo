@@ -57,6 +57,20 @@ if ($_REQUEST['op']!='') {
   echo json_encode(array('RESULT'=>array('STATUS'=>'OK')));
   $ok=1;
  }
+ if ($op=='set_token' && $_REQUEST['token'] && $_REQUEST['deviceid']) {
+      $device = SQLSelectOne("SELECT * FROM gpsdevices WHERE DEVICEID='" . DBSafe($_REQUEST['deviceid']) . "'");
+      if (!$device['ID']) 
+      {
+         $device = array();
+         $device['DEVICEID'] = $_REQUEST['deviceid'];
+         $device['TITLE']    = 'New GPS Device';
+         $device['ID']       = SQLInsert('gpsdevices', $device);
+     } else {
+      $device['TOKEN']=$_REQUEST['token'];
+      SQLUpdate('gpsdevices', $device);
+     }      
+     $ok=1;
+ }
 
  if (!$ok) {
   echo json_encode(array('RESULT'=>array('STATUS'=>'FAIL')));
@@ -78,6 +92,10 @@ if (IsSet($_REQUEST['latitude']))
          $device = array();
          $device['DEVICEID'] = $_REQUEST['deviceid'];
          $device['TITLE']    = 'New GPS Device';
+
+         if ($_REQUEST['token']) {
+          $device['TOKEN']=$_REQUEST['token'];
+         }
          $device['ID']       = SQLInsert('gpsdevices', $device);
          
          SQLExec("UPDATE gpslog SET DEVICE_ID='" . $device['ID'] . "' WHERE DEVICEID='" . DBSafe($_REQUEST['deviceid']) . "'");

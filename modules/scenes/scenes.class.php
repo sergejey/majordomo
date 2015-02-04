@@ -938,6 +938,7 @@ function usual(&$out) {
 
  function getAllTypes() {
   $path=ROOT.'cms/scenes/styles';
+  if (!is_dir($path)) return false;
   $res_types=array();
   if ($handle = opendir($path)) {
    $style_recs=array();

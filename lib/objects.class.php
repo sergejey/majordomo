@@ -146,8 +146,22 @@
 */
  function getGlobal($varname) {
 
+  $cached_name='MJD:'.$varname;
+  /*
+  if (function_exists('apc_fetch')) {
+   if (apc_exists($cached_name)) {
+    return apc_fetch($cached_name);
+   }
+  }
+  */
+
   $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($varname)."'");
   if (isset($value['VALUE'])) {
+  /*
+   if (function_exists('apc_store')) {
+    apc_store($cached_name, $value['VALUE']);
+   }
+  */
    return $value['VALUE'];
   }
 
@@ -163,7 +177,13 @@
   }
   $obj=getObject($object_name);
   if ($obj) {
-   return $obj->getProperty($varname);
+   $value=$obj->getProperty($varname);
+   /*
+   if (function_exists('apc_store')) {
+    apc_store($cached_name, $value);
+   }
+   */
+   return $value;
   } else {
    return 0;
   }

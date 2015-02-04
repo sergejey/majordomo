@@ -643,6 +643,15 @@ curl_close($ch);
      SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
      //DebMes("Setting [".$this->object_title.".".$property."] to the same value [".$value."]");
     }
+
+    /*
+    if (function_exists('apc_store')) {
+     $cached_name='MJD:'.$this->object_title.'.'.$property;
+     apc_store($cached_name, $value);
+    }
+    */
+
+
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;

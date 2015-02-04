@@ -1,0 +1,65 @@
+/* MODE */
+.type_mode {
+        margin-right: -2px;
+        margin-bottom: 1px;
+        color:black;
+        border:1px solid rgba(255,255,255,0.5);
+        text-align: center;
+        background-color:rgba(255,255,255,0.7);
+        padding:2px;
+        width:67px;
+        height:67px;
+}
+.type_mode span {
+ font-size:12px;
+ display: inline-block;
+ width:64px;
+ height:34px;
+ vertical-align: middle;
+ padding-top:35px;
+
+}
+
+/* MODE ON */
+.type_mode.state_on {
+ background-color:rgba(249,229,91,0.9);
+ border:1px solid rgba(255,255,0,0.5);
+}
+.type_mode.state_sleep
+{
+ background-color:rgba(249,229,91,0.5);
+ border:1px solid rgba(255,255,0,0.5);;
+}
+
+[#begin STYLES#]
+[#if HAS_DEFAULT!=""#]
+.type_mode.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_DEFAULT#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]
+[#if HAS_ON!=""#]
+.type_mode.state_on.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_ON#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]
+[#if HAS_OFF!=""#]
+.type_mode.state_off.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_OFF#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]
+[#if HAS_SLEEP!=""#]
+.type_mode.state_sleep.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_SLEEP#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]
+
+
+[#end STYLES#]

@@ -94,6 +94,7 @@
      $res=$this->buildTree_commands($res);
     }
     $out['RESULT']=$res;
+    //$out['RESULT_HTML']=$this->buildHTML($out['RESULT']);
    }
 
 

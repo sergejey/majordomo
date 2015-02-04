@@ -1,0 +1,27 @@
+/* NAV BUTTON */
+.type_nav {
+ margin-right: -2px;
+ margin-bottom: 1px;
+ color:black;
+ border:1px solid rgba(255,255,255,0.5);
+ font-size:14px;
+ background-color:rgba(255,255,255,0.7);
+ padding:0px;
+ align:left;
+ width:145px;
+ height:36px;
+}
+
+.type_nav span {
+ display: inline-block;
+ width: 124px;
+ position: relative;
+ padding-left: 12px;
+ padding-top: 9px;
+ vertical-align: middle;
+
+ height: 28px;
+ background-image: url(/img/elements/nav_arrow.png);
+ background-repeat: no-repeat;
+ background-position: right center;
+}

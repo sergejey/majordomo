@@ -389,6 +389,12 @@ function usual(&$out) {
   require(DIR_MODULES.$this->name.'/commands_edit.inc.php');
  }
 
+ function buildHTML($result) {
+  require(DIR_MODULES.$this->name.'/commands_html.inc.php');
+  return $res;
+ }
+
+
 
 /**
 * commands delete record

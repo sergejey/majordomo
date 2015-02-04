@@ -1,0 +1,57 @@
+/* SWITCH */
+.type_switch {
+ margin-right: -2px;
+ margin-bottom: 1px;
+ color:black;
+ border:1px solid rgba(255,255,255,0.4);
+ text-align: center;
+ background-color:rgba(255,255,255,0.7);
+ padding:2px;
+ width:67px;
+ height:67px;
+ background-image: url(<#ROOTHTML#>img/elements/i_light_off.png);
+ background-repeat: no-repeat;
+ background-position: center 4px;
+}
+.type_switch span {
+ font-size:12px;
+ display: inline-block;
+ width:64px;
+ height:34px;
+ vertical-align: middle;
+ padding-top:35px;
+}
+
+/* SWITCH ON */
+.type_switch.state_on {
+ background-color:rgba(249,229,91,0.9);
+ border:1px solid rgba(255,255,0,0.5);
+ background-image: url(<#ROOTHTML#>img/elements/i_light_on.png);
+ background-repeat: no-repeat;
+ background-position: center 4px;
+}
+
+
+[#begin STYLES#]
+[#if HAS_DEFAULT!=""#]
+.type_switch.style_[#TITLE#] {
+     background-image: url(<#ROOTHTML#>cms/scenes/styles/switch/[#HAS_DEFAULT#]);
+     background-repeat: no-repeat;
+     background-position: center 4px;
+}
+[#endif#]
+[#if HAS_ON!=""#]
+.type_switch.state_on.style_[#TITLE#] {
+     background-image: url(<#ROOTHTML#>cms/scenes/styles/switch/[#HAS_ON#]);
+     background-repeat: no-repeat;
+     background-position: center 4px;
+}
+[#endif#]
+[#if HAS_OFF!=""#]
+.type_switch.state_off.style_[#TITLE#] {
+     background-image: url(<#ROOTHTML#>cms/scenes/styles/switch/[#HAS_OFF#]);
+     background-repeat: no-repeat;
+     background-position: center 4px;
+}
+[#endif#]
+[#end STYLES#]
