@@ -28,7 +28,7 @@ while(1)
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 
-   if ((time()-$last_backup)>$timeout) {
+   if ((time()-$last_backup)>$timeout || file_exists('./reboot')) {
     echo "Running db save...";
     if (file_exists($filename)) {
      rename($filename, $filename.'.prev');
