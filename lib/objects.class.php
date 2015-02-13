@@ -146,18 +146,6 @@
 */
  function getGlobal($varname) {
 
-  $cached_name='MJD:'.$varname;
-  $cached_value=checkFromCache($cached_name);
-  if ($cached_value!==false) {
-   return $cached_value;
-  }
-
-  $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($varname)."'");
-  if (isset($value['VALUE'])) {
-   saveToCache($cached_name, $value['VALUE']);
-   return $value['VALUE'];
-  }
-
   $tmp=explode('.', $varname);
   if ($tmp[2]) {
    $object_name=$tmp[0].'.'.$tmp[1];
@@ -168,6 +156,13 @@
   } else {
    $object_name='ThisComputer';
   }
+  
+  $cached_name='MJD:'.$object_name.'.'.$varname;
+  $cached_value=checkFromCache($cached_name);
+  if ($cached_value!=false) {
+   return $cached_value;
+  }
+
   $obj=getObject($object_name);
   if ($obj) {
    $value=$obj->getProperty($varname);
