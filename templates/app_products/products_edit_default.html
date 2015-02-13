@@ -32,7 +32,7 @@
  (*)
  </td>
  <td>
-  <input type="text" name="title" value="[#TITLE#]">
+  <input type="text" name="title" value="[#TITLE#]" class="form-control">
  </td>
 </tr>
 <!-- CATEGORY_ID (select) -->
@@ -43,7 +43,7 @@
  <#LANG_CATEGORY#>: 
  </td>
  <td>                                           
- <select name="category_id">
+ <select name="category_id" class="form-control">
   <option value=""><#LANG_SELECT#>
   [#begin CATEGORY_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
   [#end CATEGORY_ID_OPTIONS#]

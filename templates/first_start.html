@@ -4,11 +4,13 @@
 &nbsp;<br>&nbsp;<br>
 <form action="?" method="get">
 Time zone:<br>
-<select name='timezone' id='timezone' style='width:350px'>
+<div class="form-group">
+<select name='timezone' id='timezone' style='width:350px' class="form-control">
 [#begin ZONELIST#]
  <option value="[#OFFSET#]"[#if TITLE="<#SETTINGS_SITE_TIMEZONE#>"#] selected[#endif#]>[#TITLE#] (GMT [#OFFSET_TEXT#])
 [#end ZONELIST#]
 </select>
+</div>
 <Br>&nbsp;
 <Br>
 Language:<Br>
@@ -25,7 +27,7 @@ Color theme:
 
 <br>
 <br>
-<input type="submit" name="submit" value="Continue &gt;&gt;&gt;">
+<input type="submit" name="submit" value="Continue &gt;&gt;&gt;"  class="btn btn-default">
 <input type="hidden" name="timezone_title" id="timezone_title" value="">
 <input type="hidden" name="mode" value="update">
 <input type="hidden" name="action" value="<#ACTION#>">

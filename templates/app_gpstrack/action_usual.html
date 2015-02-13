@@ -239,22 +239,21 @@ function legendClicked(id, color) {
 </script>
 
 <div id="add_controls">
-&nbsp;
-<table border="0" cellspacing=0 cellpadding=2>
+<table border="0" cellspacing=3 cellpadding=3>
  <tr>
  [#begin DEVICES#]
   <td>
   <img src="http://labs.google.com/ridefinder/images/mm_20_[#COLOR#].png" border="0">
   </td>
   <td>
-  <a href="#" onClick="return legendClicked([#ID#], '[#COLOR#]');">[#NAME#] ([#TITLE#])</a>
+  <a href="#" onClick="return legendClicked([#ID#], '[#COLOR#]');" class="btn btn-sm">[#NAME#] ([#TITLE#])</a>
   <!--#
   [#if LATEST_LAT!=""#]map.setCenter([#LATEST_LAT#], [#LATEST_LON#]);[#endif#]
   #-->
   </td>
  [#end DEVICES#]
  <form action="?" method="get">
- <td valign="top">
+ <td>
  <script language="javascript">
   function periodUpdated() {
    if ($('#selPeriod').val()=='custom') {
@@ -266,21 +265,39 @@ function legendClicked(id, color) {
   }
  </script>
  <#LANG_PERIOD#>:
- <select name="period" onChange='periodUpdated();' id='selPeriod'>
+ </td>
+ <td>
+ <select name="period" onChange='periodUpdated();' id='selPeriod' class="form-control input-sm">
   <option value="today"[#if PERIOD="today"#] selected[#endif#]><#LANG_PERIOD_TODAY#>
   <option value="day"[#if PERIOD="day"#] selected[#endif#]><#LANG_PERIOD_DAY#>
   <option value="week"[#if PERIOD="week"#] selected[#endif#]><#LANG_PERIOD_WEEK#>
   <option value="month"[#if PERIOD="month"#] selected[#endif#]><#LANG_PERIOD_MONTH#>
   <option value="custom"[#if PERIOD="custom"#] selected[#endif#]><#LANG_PERIOD_CUSTOM#>...
  </select>
+ </td>
+ <td>
  <span id='customDates' [#if PERIOD!="custom"#]style="display:none"[#endif#]>
+ <table width="100%" border="0">
+  <tr>
+   <td>
  &nbsp;&nbsp;&nbsp;
  (YYYY-MM-DD)
- <input type="text" name="from" value="[#FROM#]">
+ </td>
+ <td>
+ <input type="text" name="from" value="[#FROM#]" class="form-control input-sm">
+ </td>
+ <td>
  -
- <input type="text" name="to" value="[#TO#]">
+ </td>
+ <td>
+ <input type="text" name="to" value="[#TO#]" class="form-control input-sm">
+  </td>
+  </tr>
+ </table>
  </span>
- <input type="submit" name="Update" value="<#LANG_SEARCH#>">
+ </td>
+ <td>
+ <input type="submit" name="Update" value="<#LANG_SEARCH#>" class="btn btn-sm">
  </td>
  </form>
  </tr>
