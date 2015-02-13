@@ -35,6 +35,13 @@ if (!is_dir($target_dir))
    $full_backup=1;
 }
 
+if (!is_dir(ROOT.'cached/voice')) {
+   mkdir(ROOT.'cached/voice', 0777);
+}
+if (!is_dir(ROOT.'cached/urls')) {
+   mkdir(ROOT.'cached/urls', 0777);
+}
+
 echo "Target: ".$target_dir."\n";
 echo "Full backup: ".$full_backup."\n";
 sleep(5);
