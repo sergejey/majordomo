@@ -22,6 +22,13 @@
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 <link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
+
+
+<link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+
+
+<script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
+
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery.gritter.js"></script>
@@ -29,13 +36,13 @@
 </head>
 
 [#if POPUP!="1"#]
-<body[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#] style="margin:0px;padding:0px;">
+<body style="margin:0px;padding:0px;">
 [#else POPUP#]
 <body bgcolor="transparent" style="margin:0px;padding:0px;">
 <script language="javascript">
 $(document).ready(function() {
  if (!inIframe()) {
-  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]white[#endif#]');
+  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]#222222[#else#]white[#endif#]');
  }
 });
 </script>

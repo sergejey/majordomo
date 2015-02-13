@@ -225,8 +225,12 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    $host=$pings[$i];
    if (!$force) {
-    echo "Checking webvar: ".processTitle($host['HOSTNAME'])."\n";
+    echo date('H:i:s')." Checking webvar: ".processTitle($host['HOSTNAME'])."\n";
    }
+   if (!$host['HOSTNAME']) {
+    continue;
+   }
+
    $online_interval=$host['ONLINE_INTERVAL'];
    if (!$online_interval) {
     $online_interval=60;
