@@ -795,12 +795,15 @@
   $history_rec['COMMENTS']=$details;
   $history_rec['ADDED']=$error_rec['LATEST_UPDATE'];
 
+  //Temporary disabled
+  /*
   $history_rec['PROPERTIES_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=', 0);
   $history_rec['METHODS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=methods', 0);
   $history_rec['SCRIPTS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=scripts', 0);
   $history_rec['TIMERS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=timers', 0);
   $history_rec['EVENTS_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=events', 0);
   $history_rec['DEBUG_DATA']=getURL(BASE_URL.ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=debmes', 0);
+  */
 
   $history_rec['ID']=SQLInsert('system_errors_data', $history_rec);
 
