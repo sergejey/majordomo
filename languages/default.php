@@ -994,6 +994,8 @@ $dictionary=array(
 'CLASS_OBJECTS'=>'Class objects',
 'OBJECT_PROPERTIES'=>'Object properties',
 'OBJECT_METHODS'=>'Object methods',
+'PORT'=>'Port',
+'USE_DEFAULT'=>'use default',
 
 
 'TEST'=>'test'

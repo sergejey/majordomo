@@ -24,6 +24,10 @@
     $ok=0;
    }
 
+   global $port;
+   $rec['PORT']=(int)$port;
+
+
    global $protocol;
    $rec['PROTOCOL']=$protocol;
 

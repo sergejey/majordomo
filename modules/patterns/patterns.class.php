@@ -566,7 +566,7 @@ function usual(&$out) {
      $sub_patterns_matched=0;
 
      if ($rec['IS_CONTEXT']) {
-      $sub_patterns=SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='".$rec['ID']."'");
+      $sub_patterns=SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
       $total=count($sub_patterns);
       for($i=0;$i<$total;$i++) {
        if ($this->checkPattern($sub_patterns[$i]['ID'])) {

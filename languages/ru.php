@@ -993,7 +993,8 @@ $dictionary=array(
 'CLASS_OBJECTS'=>'Объекты класса',
 'OBJECT_PROPERTIES'=>'Свойства объекта',
 'OBJECT_METHODS'=>'Методы объекта',
-
+'PORT'=>'Порт',
+'USE_DEFAULT'=>'использовать по-умолчанию',
 
 'TEST'=>'test'
 

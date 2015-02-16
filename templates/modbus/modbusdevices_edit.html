@@ -26,16 +26,27 @@
 </div>
 
 
+
+
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOSTNAME#>:<font color="red">*</font></label>
         <div class="col-lg-5">
-			<input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]" required="true">
-			<select name="protocol" class="form-control" class="span2">
-		   <option value="TCP"[#if PROTOCOL="TCP"#] selected[#endif#]>TCP
-		   <option value="UDP"[#if PROTOCOL="UDP"#] selected[#endif#]>UDP
-		  </select>
-		</div>
+                        <input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]" required="true">
+                        <select name="protocol" class="form-control" class="span2">
+                   <option value="TCP"[#if PROTOCOL="TCP"#] selected[#endif#]>TCP
+                   <option value="UDP"[#if PROTOCOL="UDP"#] selected[#endif#]>UDP
+                  </select>
+                </div>
 </div>
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PORT#>:</label>
+        <div class="col-lg-5">
+                        <input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="port" value="[#PORT#]">
+                         0 - <#LANG_USE_DEFAULT#> (502)
+                </div>
+</div>
+
 
 
 <div class="form-group ">
@@ -46,12 +57,12 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_REQUEST_TYPE#>:<font color="red">*</font></label>
         <div class="col-lg-5">
-		<select name="request_type"  class="form-control [#if ERR_REQUEST_TYPE#]alert-danger[#endif#]">
-				<option value="">select
-				[#begin REQUEST_TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
-				[#end REQUEST_TYPE_OPTIONS#]
-		 </select>
-		</div>
+                <select name="request_type"  class="form-control [#if ERR_REQUEST_TYPE#]alert-danger[#endif#]">
+                                <option value="">select
+                                [#begin REQUEST_TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+                                [#end REQUEST_TYPE_OPTIONS#]
+                 </select>
+                </div>
 </div>
 
 <div class="form-group ">
@@ -67,12 +78,12 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_RESPONSE_CONVERT#>:<font color="red">*</font></label>
         <div class="col-lg-5">
-		<select name="response_convert"  class="form-control [#if ERR_RESPONSE_CONVERT#]alert-danger[#endif#]">
-				<option value="">select
+                <select name="response_convert"  class="form-control [#if ERR_RESPONSE_CONVERT#]alert-danger[#endif#]">
+                                <option value="">select
   [#begin RESPONSE_CONVERT_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
   [#end RESPONSE_CONVERT_OPTIONS#]
  </select>
-		</div>
+                </div>
 </div>
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_CHECK_EVERY#> (sec):<font color="red">*</font></label>
@@ -134,16 +145,16 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">&nbsp;:</label>
         <div class="col-lg-5">
-			
-			 [#if ID!=""#]
-			 <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
-			 [#else ID#]
-			 <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
-			 [#endif ID#]
-			 &nbsp;
-			 <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
-		
-		</div>
+                        
+                         [#if ID!=""#]
+                         <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+                         [#else ID#]
+                         <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
+                         [#endif ID#]
+                         &nbsp;
+                         <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+                
+                </div>
 </div>
 
 
@@ -163,7 +174,7 @@
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_LOG#>:</label>
         <div class="col-lg-5">
-			
+                        
 
  
  [#LOG#]

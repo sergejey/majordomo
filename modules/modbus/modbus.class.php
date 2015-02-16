@@ -204,6 +204,9 @@ function usual(&$out) {
 
    require_once dirname(__FILE__) . '/ModbusMaster.php';
    $modbus = new ModbusMaster($rec['HOST'], $rec['PROTOCOL']);
+   if ($rec['PORT']) {
+    $modbus->port=$rec['PORT'];
+   }
 
 
    if ($rec['REQUEST_TYPE']=='FC1') {
@@ -423,6 +426,7 @@ modbusdevices - Modbus devices
  modbusdevices: TITLE varchar(255) NOT NULL DEFAULT ''
  modbusdevices: HOST varchar(255) NOT NULL DEFAULT ''
  modbusdevices: PROTOCOL char(5) NOT NULL DEFAULT 'UDP'
+ modbusdevices: PORT int(10) NOT NULL DEFAULT '0'
  modbusdevices: DEVICE_ID int(10) NOT NULL DEFAULT '0'
  modbusdevices: REQUEST_TYPE varchar(10) NOT NULL DEFAULT ''
  modbusdevices: REQUEST_START int(10) NOT NULL DEFAULT '0'
