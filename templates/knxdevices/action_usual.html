@@ -1,0 +1,50 @@
+
+[#if SET_DATASOURCE!="1"#]
+&nbsp;
+<!-- source select -->
+<ul class="nav nav-tabs">
+  <li[#if DATA_SOURCE!="knxdevices" && DATA_SOURCE!=""#] [#else#] class="active"[#endif#]>
+   <a href="?data_source=knxdevices">Knx Devices</a>
+  </li>
+  <li[#if DATA_SOURCE!="knxproperties"#] [#else#] class="active"[#endif#]>
+   <a href="?data_source=knxproperties">Knx Properties</a>
+  </li>
+</ul>
+<!-- / source select -->
+[#endif SET_DATASOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="knxdevices" || DATA_SOURCE=""#]
+ <!-- table knxdevices search -->
+ [#if VIEW_MODE="search_knxdevices" || VIEW_MODE=""#]
+  [#inc knxdevices_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table knxdevices search -->
+ <!-- table knxdevices edit -->
+ [#if VIEW_MODE="edit_knxdevices"#]
+   [#inc knxdevices_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table knxdevices edit -->
+ <!-- table knxdevices view --> 
+ [#if VIEW_MODE="view_knxdevices"#]
+   [#inc knxdevices_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table knxdevices view -->
+ [#endif DATA_SOURCE#]
+ <!-- action usual -->
+ [#if DATA_SOURCE="knxproperties"#]
+ <!-- table knxproperties search -->
+ [#if VIEW_MODE="search_knxproperties" || VIEW_MODE=""#]
+  [#inc knxproperties_search_site.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table knxproperties search -->
+ <!-- table knxproperties edit -->
+ [#if VIEW_MODE="edit_knxproperties"#]
+   [#inc knxproperties_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table knxproperties edit -->
+ <!-- table knxproperties view --> 
+ [#if VIEW_MODE="view_knxproperties"#]
+   [#inc knxproperties_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table knxproperties view -->
+ [#endif DATA_SOURCE#]

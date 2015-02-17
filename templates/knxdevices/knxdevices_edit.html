@@ -1,0 +1,154 @@
+<ul class="breadcrumb">
+<li> 
+<a href="?"><#LANG_HOME#></a>
+</li>
+<span class="divider">/</span>
+<li class="active">
+[#if ID=""#]
+<#LANG_NEW_RECORD#>
+[#else#]
+<#LANG_EDIT_RECORD#>
+[#endif#]
+</li>
+</ul>
+
+<!-- Table 'knxdevices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit" class="form-horizontal">
+[#if OK#]
+   <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+[#endif ERR#]
+<fieldset>
+<!-- TITLE (varchar) -->
+<div class="form-group">
+ <label class="col-lg-3 control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_TITLE#>:
+ (*)
+ </label>
+ <div class="col-lg-4"><input type="text" class="form-control" name="title" value="[#TITLE#]" ></div>
+</div>
+<!-- TYPE (varchar) -->
+<div class="form-group">
+ <label class="col-lg-3 control-label"[#if ERR_TYPE#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_TYPE#>:
+ </label>
+ <div class="col-lg-4">
+ [#if ID=""#]
+ <select name="type" class="form-control">
+  <option value="custom"[#if TYPE="custom"#] selected[#endif#]>Custom device
+  <option value="switch"[#if TYPE="switch"#] selected[#endif#]>Switch
+  <option value="dimmer"[#if TYPE="dimmer"#] selected[#endif#]>Light Dimmer
+  <option value="temp"[#if TYPE="temp"#] selected[#endif#]>Temperature sensor
+ </select>
+ [#else ID#]
+ [#TYPE#]
+ <input type="hidden" name="type" value="[#TYPE#]">
+ [#endif ID#]
+ </div>
+</div>
+
+[#if ID!=""#]
+
+<div class="form-group">
+ <label class="col-lg-3 control-label">
+ <#LANG_PROPERTIES#>:
+ </label>
+ <div class="col-lg-4">
+  <table width="100%" border="0" class="table">
+   <tr>
+    <td>Address (X/X/X)</td>
+    <td><#LANG_TITLE#></td>
+    <td>Data type</td>
+    <td>Value</td>
+    <td>Read</td>
+    <td>Write</td>
+    <td colspan="3">Linked object/property/method</td>
+   </tr>
+   [#begin PROPERTIES#]
+   <tr>
+
+    <td valign="top">
+     <input type="text" name="address[#ID#]" value="[#ADDRESS#]">
+    </td>
+
+
+    <td valign="top">
+     <input type="text" name="title[#ID#]" value="[#TITLE#]">
+    </td>
+
+    <td valign="top">
+     <select name="data_type[#ID#]">
+      <option value="small"[#if DATA_TYPE="small"#] selected[#endif#]>Small
+      <option value="p1"[#if DATA_TYPE="p1"#] selected[#endif#]>P1
+      <option value="b1"[#if DATA_TYPE="b1"#] selected[#endif#]>B1
+      <option value="b2"[#if DATA_TYPE="b2"#] selected[#endif#]>B2
+      <option value="f2"[#if DATA_TYPE="f2"#] selected[#endif#]>F2 (string)
+     </select>
+    </td>
+
+    <td valign="top">
+     &nbsp;
+     <span title="[#if DATA_RAW!=""#][#DATA_RAW#][#endif#] set [#UPDATED#]">[#DATA_VALUE#]</span>
+     
+    </td>
+    <td valign="top">
+     <input type="checkbox" name="can_read[#ID#]" value="1"[#if CAN_READ="1"#] checked[#endif#]>
+    </td>
+    <td valign="top">
+     <input type="checkbox" name="can_write[#ID#]" value="1"[#if CAN_WRITE="1"#] checked[#endif#]>
+    </td>
+
+    <td valign="top">
+     <input type="text" name="linked_object[#ID#]" id="linked_object[#ID#]" value="[#LINKED_OBJECT#]">
+    </td>
+
+    <td valign="top">
+     <input type="text" name="linked_property[#ID#]" id="linked_property[#ID#]" value="[#LINKED_PROPERTY#]">
+    </td>
+
+    <td valign="top">
+     <input type="text" name="linked_method[#ID#]" id="linked_method[#ID#]" value="[#LINKED_METHOD#]">
+     [#module name="linkedobject" object_field="linked_object<#PROPERTIES.ID#>" property_field="linked_property<#PROPERTIES.ID#>" method_field="linked_method<#PROPERTIES.ID#>" width="200"#]
+    </td>
+
+    <td valign="top"><a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&delete_property=[#ID#]" onClick="return confirm('Are you sure?')">X</a></td>
+   </tr>
+
+   [#end PROPERTIES#]
+  </table>
+
+  <#LANG_ADD#>: <input type="text" name="new_address"> (address X/X/X)
+
+ </div>
+</div>
+
+
+[#endif#]
+
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <div class="col-lg-5">
+                        
+                         [#if ID!=""#]
+                         <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+                         [#else ID#]
+                         <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
+                         [#endif ID#]
+                         &nbsp;
+                         <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+                
+                </div>
+</div>
+
+
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+
+</div>
+</fieldset>
+</form>
