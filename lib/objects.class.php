@@ -3,6 +3,73 @@
 * @version 0.1 (auto-set)
 */
 
+ function addClass($class_name, $parent_class='') {
+  if ($parent_class!='') {
+   $parent_class_id=addClass($parent_class);
+  } else {
+   $parent_class_id=0;
+  }
+  $class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($class_name)."'");
+  if ($class['ID']) {
+   return $class['ID'];
+  } else {
+   $class=array();
+   $class['TITLE']=$class_name;
+   $class['PARENT_ID']=(int)$parent_class_id;
+   $class['ID']=SQLInsert('classes', $class);
+  }
+ }
+
+ function addClassMethod($class_name, $method_name, $code='') {
+  $class_id=addClass($class_name) ;
+  if ($class_id) {
+   $method=SQLSelectOne("SELECT * FROM methods WHERE CLASS_ID='".$class_id."' AND TITLE LIKE '".DBSafe($method_name)."' AND OBJECT_ID=0");
+   if (!$method['ID']) {
+    $method=array();
+    $method['CLASS_ID']=$class_id;
+    $method['OBJECT_ID']=0;
+    $method['CODE']=$code;
+    $method['TITLE']=$method_name;
+    $method['ID']=SQLInsert('methods', $method);
+   } else {
+    if ($code!='' && $method['CODE']!=$code) {
+     $method['CODE']=$code;
+     SQLUpdate('methods', $method);
+    }
+    return $method['ID'];
+   }
+  }
+ }
+
+ function addClassProperty($class_name, $property_name, $keep_history=0) {
+  $class_id=addClass($class_name);
+  $prop=SQLSelectOne("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($property_name)."' AND OBJECT_ID=0 AND CLASS_ID='".$class_id."'");
+  if (!$prop['ID']) {
+   $prop=array();
+   $prop['CLASS_ID']=$class_id;
+   $prop['TITLE']=$property_name;
+   $prop['KEEP_HISTORY']=$keep_history;
+   $prop['OBJECT_ID']=0;
+   $prop['ID']=SQLInsert('properties', $prop);
+  }
+  return $prop['ID'];
+ }
+
+
+ function addClassObject($class_name, $object_name) {
+  $class_id=addClass($class_name);
+  $object=SQLSelectOne("SELECT ID FROM objects WHERE TITLE LIKE '".DBSafe($object_name)."'");
+  if ($object['ID']) {
+   return $object['ID'];
+  } else {
+   $object=array();
+   $object['TITLE']=$object_name;
+   $object['CLASS_ID']=$class_id;
+   $object['ID']=SQLInsert('objects', $object);
+  }
+ }
+
+
 
   function getValueIdByName($object_name, $property) {
 

@@ -68,8 +68,8 @@ $dictionary=array(
 /* end general */
 
 /* module names */
-'APP_GPSTRACK'=>'GPS-трэкер',
-'APP_PLAYER'=>'Плэер',
+'APP_GPSTRACK'=>'GPS-трекер',
+'APP_PLAYER'=>'Плеер',
 'APP_MEDIA_BROWSER'=>'Медиа',
 'APP_PRODUCTS'=>'Продукты',
 'APP_TDWIKI'=>'Блокнот',
@@ -229,7 +229,7 @@ $dictionary=array(
 'SETTINGS_UPDATED'=>'Настройки сохранены!', // settings/settings_search_admin.html; 
 
 
-'DEFAULT_VALUE'=>'Значение по-умолчанию', // settings/settings_search_admin.html; settings/settings_search_admin.html; settings/settings_search_admin.html; settings/settings_search_admin.html; 
+'DEFAULT_VALUE'=>'Значение по умолчанию', // settings/settings_search_admin.html; settings/settings_search_admin.html; settings/settings_search_admin.html; settings/settings_search_admin.html; 
 
 
 'RESET_TO_DEFAULT'=>'Сбросить', // settings/settings_search_admin.html; 
@@ -307,7 +307,7 @@ $dictionary=array(
 'DATA'=>'Данные', // commands/commands_edit.html; saverestore/action_admin.html; 
 
 
-'AUTO_UPDATE_PERIOD'=>'Период авто-обновления', // commands/commands_edit.html; 
+'AUTO_UPDATE_PERIOD'=>'Период автообновления', // commands/commands_edit.html; 
 
 
 'CURRENT_VALUE'=>'Текущее значение', // commands/commands_edit.html; 
@@ -496,7 +496,7 @@ $dictionary=array(
 
 
 'DELETE_ALL_UNKNOWN_DEVICES'=>'Удалить все неизвестные устройства', // btdevices/btdevices.html; 
-'DELETE_FOUND_ONCE'=>'Удалить все устройство, обнаруженные только один раз', // btdevices/btdevices.html; 
+'DELETE_FOUND_ONCE'=>'Удалить все устройства, обнаруженные только один раз', // btdevices/btdevices.html; 
 
 
 'FOUND_FIRST'=>'Обнаружено впервые', // btdevices/btdevices.html; btdevices/btdevices.html; 
@@ -675,7 +675,7 @@ $dictionary=array(
 'PATH'=>'Путь', // watchfolders/watchfolders_edit.html; app_mediabrowser/action_admin.html; 
 
 
-'INCLUDE_SUBFOLDERS'=>'включая под-папки', // watchfolders/watchfolders_edit.html; 
+'INCLUDE_SUBFOLDERS'=>'включая подпапки', // watchfolders/watchfolders_edit.html; 
 
 
 'CHECK_MASK'=>'Маска файлов', // watchfolders/watchfolders_edit.html; 
@@ -690,7 +690,7 @@ $dictionary=array(
 'OPTIONAL'=>'не обязательно', // webvars/webvars_edit.html; 
 
 
-'BY_DEFAULT'=>'по-умолчанию', // webvars/webvars_edit.html; 
+'BY_DEFAULT'=>'по умолчанию', // webvars/webvars_edit.html; 
 
 
 'SEARCH_PATTERN'=>'Шаблон поиска', // webvars/webvars_edit.html; 
@@ -757,6 +757,7 @@ $dictionary=array(
 'SHOW_MENU_ON_CLICK'=>'Показать меню при клике',
 'SHOW_HOMEPAGE_ON_CLICK'=>'Показать домашнюю страницу при клике',
 'SHOW_URL_ON_CLICK'=>'Открыть ссылку при клике',
+'SHOW_SCENE_ON_CLICK'=>'Показать другую сцену',
 
 
 'DISPLAY_CONDITION'=>'Условие отображения', // scenes/elements_edit.html; 
@@ -777,16 +778,16 @@ $dictionary=array(
 'CAN_PLAY_MEDIA'=>'может проигрывать медиа-контент', // terminals/terminals_edit.html; 
 
 
-'PLAYER_TYPE'=>'Тип плэйера', // terminals/terminals_edit.html; 
-'DEFAULT'=>'По-умолчанию', // terminals/terminals_edit.html; 
+'PLAYER_TYPE'=>'Тип плеера', // terminals/terminals_edit.html; 
+'DEFAULT'=>'По умолчанию', // terminals/terminals_edit.html; 
 
 
 'MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED'=>'Проверьте, что включена возможность управления по HTTP-протоколу', // terminals/terminals_edit.html; 
 
 
-'PLAYER_PORT'=>'Порт доступа к плэеру', // terminals/terminals_edit.html; 
-'PLAYER_USERNAME'=>'Имя пользователя доступа к плэеру', // terminals/terminals_edit.html; 
-'PLAYER_PASSWORD'=>'Пароль доступа к плэеру', // terminals/terminals_edit.html; 
+'PLAYER_PORT'=>'Порт доступа к плееру', // terminals/terminals_edit.html; 
+'PLAYER_USERNAME'=>'Имя пользователя доступа к плееру', // terminals/terminals_edit.html; 
+'PLAYER_PASSWORD'=>'Пароль доступа к плееру', // terminals/terminals_edit.html; 
 'DEVICE'=>'Устройство', // app_gpstrack/gpsdevices_search_admin.html; app_gpstrack/gpslog_search_admin.html; app_gpstrack/gpslog_search_admin.html; app_gpstrack/gpslog_edit.html; app_gpstrack/gpslog_edit.html; 
 
 
@@ -880,7 +881,7 @@ $dictionary=array(
 'FILTER_BY_LOCATION'=>'Фильтр по Расположению',
 
 'PHOTO'=>'Фотография',
-'DEFAULT_USER'=>'пользователь по-умолчанию для системы',
+'DEFAULT_USER'=>'пользователь по умолчанию для системы',
 'IS_ADMIN'=>'администратор системы',
 
 'COUNTER_REQUIRED'=>'Количество попыток',
@@ -944,7 +945,7 @@ $dictionary=array(
 'DO_ONCLICK'=>'Выполнить при клике',
 
 'STYLE'=>'Стиль',
-'PLACE_IN_CONTAINER'=>'Распложить в контейнере',
+'PLACE_IN_CONTAINER'=>'Расположить в контейнере',
 'POSITION_TYPE'=>'Позиционирование',
 'POSITION_TYPE_ABSOLUTE'=>'Абсолютное',
 'POSITION_TYPE_SIDE'=>'Друг за другом',

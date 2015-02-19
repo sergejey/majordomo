@@ -867,6 +867,10 @@ function usual(&$out) {
       $elements=SQLSelect("SELECT * FROM elements WHERE $qry ORDER BY PRIORITY DESC, TITLE");
       $totale=count($elements);
       for($ie=0;$ie<$totale;$ie++) {
+       if ($elements[$ie]['CSS_STYLE']) {
+        $this->all_styles[$elements[$ie]['CSS_STYLE']]=1;
+        $elements[$ie]['CSS_IMAGE']=$this->getCSSImage($elements[$ie]['TYPE'], $elements[$ie]['CSS_STYLE']);
+       }
        if ($elements[$ie]['PRIORITY']) {
         $elements[$ie]['ZINDEX']=round($elements[$ie]['PRIORITY']/10);
        }
@@ -884,6 +888,7 @@ function usual(&$out) {
         if ($states[$is]['HTML']!='') {
          $states[$is]['HTML']=processTitle($states[$is]['HTML']);
         }
+        $states[$is]['STATE']=$this->checkState($states[$is]['ID']);
        }
        $elements[$ie]['STATES']=$states;
        if ($elements[$ie]['TYPE']=='container') {
@@ -936,6 +941,30 @@ function usual(&$out) {
  }
 
 
+  function getCSSImage($type, $style) {
+   $styles=$this->getStyles($type);
+   $total=count($styles);
+   for($i=0;$i<$total;$i++) {
+    if ($styles[$i]['TITLE']==$style) {
+     return $styles[$i]['IMAGE'];
+    }
+   }
+
+   $styles=$this->getStyles('common');
+   $total=count($styles);
+   for($i=0;$i<$total;$i++) {
+    if ($styles[$i]['TITLE']==$style) {
+     return $styles[$i]['IMAGE'];
+    }
+   }
+
+   /*
+   print_r($styles);
+   exit;
+   */
+  }
+
+
  function getAllTypes() {
   $path=ROOT.'cms/scenes/styles';
   if (!is_dir($path)) return false;
@@ -944,7 +973,7 @@ function usual(&$out) {
    $style_recs=array();
    while (false !== ($entry = readdir($handle))) {
     if ($entry!='.' && $entry!='..' && is_dir($path.'/'.$entry)) {
-     $type_rec=array('TITLE'=>$entry, 'STYLES'=>$this->getStyles($entry));
+     $type_rec=array('TITLE'=>$entry, 'STYLES'=>$this->getStylesWithCommon($entry));
      if (file_exists($path.'/'.$entry.'/style.css')) {
       $type_rec['HAS_STYLE']=1;
      }
@@ -956,9 +985,25 @@ function usual(&$out) {
   return $res_types;
  }
 
+ function getStylesWithCommon($type) {
+  $res1=$this->getStyles($type);
+  if (!is_array($res1)) {
+   $res1=array();
+  }
+  $res2=$this->getStyles('common');
+  if (!is_array($res2)) {
+   $res2=array();
+  }
+  return array_merge($res1, $res2); 
+ }
+
  function getStyles($type='') {
 
   $path=ROOT.'cms/scenes/styles/'.$type;
+
+  if (!is_dir($path)) {
+   return;
+  }
 
   if (is_dir($path)) {
 
@@ -995,6 +1040,27 @@ function usual(&$out) {
          $has_off=$entry;
         }
 
+        $has_mid=0;
+        if (preg_match('/\_mid$/', $style)) {
+         $style=preg_replace('/\_mid$/', '', $style);
+         $has_mid=$entry;
+        }
+
+        $has_na=0;
+        if (preg_match('/\_na$/', $style)) {
+         $style=preg_replace('/\_na$/', '', $style);
+         $has_na=$entry;
+        }
+
+
+
+        if (is_array($this->all_styles) && !$this->all_styles[$style]) {
+         continue;
+        }
+
+        if ($type=='common') {
+         $entry='../common/'.$entry;
+        }
 
         $styles_recs[$style]['TITLE']=$style;
         if ($has_low) {
@@ -1009,8 +1075,14 @@ function usual(&$out) {
         if ($has_off) {
          $styles_recs[$style]['HAS_OFF']=$has_off;
         }
+        if ($has_mid) {
+         $styles_recs[$style]['HAS_MID']=$has_mid;
+        }
+        if ($has_na) {
+         $styles_recs[$style]['HAS_NA']=$has_na;
+        }
 
-        if (!$has_low && !$has_high && !$has_on && !$has_ff) {
+        if (!$has_low && !$has_high && !$has_on && !$has_off && !$has_mid && !$has_na) {
          $styles_recs[$style]['HAS_DEFAULT']=$entry;
         }
 
@@ -1108,6 +1180,7 @@ elm_states - Element states
  elm_states: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  elm_states: MENU_ITEM_ID int(10) NOT NULL DEFAULT '0'
  elm_states: HOMEPAGE_ID int(10) NOT NULL DEFAULT '0'
+ elm_states: OPEN_SCENE_ID int(10) NOT NULL DEFAULT '0'
  elm_states: EXT_URL varchar(255) NOT NULL DEFAULT ''
  elm_states: WINDOW_POSX int(10) NOT NULL DEFAULT '0'
  elm_states: WINDOW_POSY int(10) NOT NULL DEFAULT '0'

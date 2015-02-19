@@ -768,6 +768,7 @@ $dictionary=array(
 'SHOW_MENU_ON_CLICK'=>'Show menu on click',
 'SHOW_HOMEPAGE_ON_CLICK'=>'Show page on click',
 'SHOW_URL_ON_CLICK'=>'Show URL on click',
+'SHOW_SCENE_ON_CLICK'=>'Show other scene',
 
 
 'DISPLAY_CONDITION'=>'Display condition', // scenes/elements_edit.html; 

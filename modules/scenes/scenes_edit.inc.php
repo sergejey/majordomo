@@ -259,6 +259,7 @@
     global $state_clone;
     global $ext_url_new;
     global $homepage_id_new;
+    global $open_scene_id_new;
     global $do_on_click_new;
     global $priority_new;
     global $code_new;
@@ -298,6 +299,11 @@
      if ($do_on_click_new!='show_homepage') {
       $homepage_id_new=0;
      }
+
+     if ($do_on_click_new!='show_scene') {
+      $open_scene_id_new=0;
+     }
+
      if ($do_on_click_new!='show_url') {
       $ext_url_new='';
      }
@@ -311,6 +317,7 @@
      $state_rec['ACTION_OBJECT']=$action_object_new;
      $state_rec['ACTION_METHOD']=$action_method_new;
      $state_rec['HOMEPAGE_ID']=(int)$homepage_id_new;
+     $state_rec['OPEN_SCENE_ID']=(int)$open_scene_id_new;
      $state_rec['EXT_URL']=$ext_url_new;
 
      if ($state_rec['CONDITION_ADVANCED']) {
@@ -565,6 +572,9 @@
     foreach ($element as $k=>$v) {
      $out['ELEMENT_'.$k]=htmlspecialchars($v);
     }
+    if ($element['CSS_STYLE']!='default') {
+     $out['ELEMENT_CSS_IMAGE']=$this->getCSSImage($element['TYPE'], $element['CSS_STYLE']);
+    }
    }
 
   }
@@ -583,18 +593,20 @@
    $styles=$this->getStyles($element['TYPE']);
    if (is_array($styles)) {
     $out['STYLES']=$styles;
-    /*
-    foreach($styles as $s=>$v) {
-     $out['STYLES'][]=$v;
-    }
-    */
    }
+
+   $styles=$this->getStyles('common');
+   if (is_array($styles)) {
+    $out['COMMON_STYLES']=$styles;
+   }
+
   }
 
 
   if ($this->tab=='elements') {
-   $out['HOMEPAGES']=SQLSelect("SELECT * FROM layouts ORDER BY TITLE");
-   $out['SCRIPTS']=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
+   $out['OTHER_SCENES']=SQLSelect("SELECT ID, TITLE FROM scenes ORDER BY PRIORITY DESC, TITLE");
+   $out['HOMEPAGES']=SQLSelect("SELECT ID, TITLE FROM layouts ORDER BY TITLE");
+   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
    $menu_items=SQLSelect("SELECT ID, TITLE, PARENT_ID FROM commands WHERE EXT_ID=0 ORDER BY PARENT_ID, TITLE");
    $titles=array();
    foreach($menu_items as $k=>$v) {
@@ -614,6 +626,14 @@
   //$elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
   $elements=$this->getElements("SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0");
   if (count($elements)) {
+  /*
+   $total=count($elements);
+   for($i=0;$i<$total;$i++) {
+     if ($elements[$i]['CSS_STYLE']!='default' && $elements[$i]['CSS_STYLE']!='') {
+      $elements[$i]['CSS_IMAGE']=$this->getCSSImage($elements[$i]['TYPE'], $elements[$i]['CSS_STYLE']);
+     }
+   }
+   */
    $out['ELEMENTS']=$elements;
   }
 

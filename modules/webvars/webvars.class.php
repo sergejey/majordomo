@@ -277,7 +277,8 @@ function usual(&$out) {
    }
    
    if (!$ok) {
-    $host['LOG']=date('Y-m-d H:i:s').' incorrect value:'.$new_status."\n".$host['LOG'];
+
+    $host['LOG'].=date('Y-m-d H:i:s').' incorrect value:'.$new_status."\n";
     $tmp=explode("\n", $host['LOG']);
     $total=count($tmp);
     if ($total>50) {

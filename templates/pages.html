@@ -53,7 +53,7 @@ background-color:[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]transparent[#en
 #-->
 <div class="tab_page">
 <div class='tab_table'>
-  [#begin LAYOUTS#]
+  [#begin LAYOUTS#]                                                                     
   <div class='tab_table_cell' id="cell[#ID#]" onClick="return switchSelected([#ID#]);">
    [#if ICON!=""#]<div><img src="<#ROOTHTML#>cms/layouts/[#ICON#]"></div>[#endif#]
    [#TITLE#]
@@ -63,7 +63,7 @@ background-color:[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]transparent[#en
 
 
 [#begin LAYOUTS#]
-<div id="tab-[#ID#]" style="display:none">...</div>
+<div id="tab-[#ID#]" class='tab_html' style="display:none">...</div>
 [#end LAYOUTS#]
 
 </div>
@@ -127,7 +127,7 @@ function switchSelected(selected) {
  return false;
 }
 
-var iFrameHeight=500;
+var iFrameHeight=$(document).height()-56;        //divheight
 
 $(document).ready(function() {
   var firstFound=0;

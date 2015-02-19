@@ -45,6 +45,7 @@ $(function () {
 <tr>
  <td align="center" width="100"><input type="checkbox" name="selected[]" value="[#ID#]"></td>
  <td>
+   [#if CSS_IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#CSS_IMAGE#]" border="0">[#endif#]
    [#if ELEMENTS#]
    <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]"> + </a>[#endif#]
    [#TITLE#]

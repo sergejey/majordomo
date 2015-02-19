@@ -447,6 +447,11 @@ curl_close($ch);
   
  }
 
+
+ function callClassMethod($name, $params=0) {
+  $this->callMethod($name, $params, 1);
+ }
+
 /**
 * Title
 *
