@@ -80,9 +80,10 @@ class parser {
   return $result;
 */
 
-
+  startMeasure('Parse template '.$template);
   $jTempl=new jTemplate($template, $data, $this->owner);
   $result=$jTempl->result;
+  endMeasure('Parse template '.$template);
   return $result;
 
  }

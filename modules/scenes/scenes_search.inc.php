@@ -64,8 +64,12 @@
    $positions=array();
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
-      $res[$i]['ELEMENTS']=$this->getElements("SCENE_ID='".$res[$i]['ID']."' AND CONTAINER_ID=0");
-      $res[$i]['ALL_ELEMENTS']=$this->getElements("SCENE_ID='".$res[$i]['ID']."'");
+      startMeasure('scene'.$res[$i]['ID'].'_get root elements');
+      $res[$i]['ELEMENTS']=$this->getElements("SCENE_ID='".$res[$i]['ID']."' AND CONTAINER_ID=0", array('ignore_css_image'=>1));
+      endMeasure('scene'.$res[$i]['ID'].'_get root elements');
+      startMeasure('scene'.$res[$i]['ID'].'_get all elements');
+      $res[$i]['ALL_ELEMENTS']=$this->getElements("SCENE_ID='".$res[$i]['ID']."'", array('ignore_state'=>1, 'ignore_sub'=>1, 'ignore_css_image'=>1));
+      endMeasure('scene'.$res[$i]['ID'].'_get all elements');
       $res[$i]['NUM']=$i;
       $res[$i]['NUMP']=$i+1;
    }

@@ -59,16 +59,14 @@ if ($_REQUEST['op']!='') {
  }
  if ($op=='set_token' && $_REQUEST['token'] && $_REQUEST['deviceid']) {
       $device = SQLSelectOne("SELECT * FROM gpsdevices WHERE DEVICEID='" . DBSafe($_REQUEST['deviceid']) . "'");
-      if (!$device['ID']) 
-      {
+      if (!$device['ID']) {
          $device = array();
          $device['DEVICEID'] = $_REQUEST['deviceid'];
          $device['TITLE']    = 'New GPS Device';
          $device['ID']       = SQLInsert('gpsdevices', $device);
-     } else {
-      $device['TOKEN']=$_REQUEST['token'];
-      SQLUpdate('gpsdevices', $device);
-     }      
+      }
+     $device['TOKEN']=$_REQUEST['token'];
+     SQLUpdate('gpsdevices', $device);
      $ok=1;
  }
 

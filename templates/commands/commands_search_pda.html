@@ -34,7 +34,7 @@
  }
  function updateLabel[#PARENT_ID#]() {
   clearTimeout(label[#PARENT_ID#]_timer);
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
+  var url="<#ROOTHTML#>ajax/commands.html?op=get_label";
   AJAXRequest(url+'&item_id=[#PARENT_ID#]', 'updateLabel[#PARENT_ID#]_Ready', '');
   label[#PARENT_ID#]_timer=setTimeout('updateLabel[#PARENT_ID#]()', ([#PARENT_AUTO_UPDATE#]*1000));
   return false;

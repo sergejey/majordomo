@@ -226,7 +226,7 @@
   
   $cached_name='MJD:'.$object_name.'.'.$varname;
   $cached_value=checkFromCache($cached_name);
-  if ($cached_value!=false) {
+  if ($cached_value!==false) {
    return $cached_value;
   }
 
@@ -302,6 +302,10 @@
 */
   function processTitle($title, $object=0) {
 
+   global $title_memory_cache;
+
+   $key=$title;
+
    if (!$title) {
     return $title;
    }
@@ -310,27 +314,38 @@
 
    $in_title=substr($title, 0, 100);
 
-   startMeasure('processTitle ['.$in_title.']');
+   //startMeasure('processTitle ['.$in_title.']');
 
    if ($in_title!='') {
 
+    if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST')) {
+     if ($title_memory_cache[$key]) {
+      return $title_memory_cache[$key];
+     }
+    }
+
 
    if (preg_match('/\[#.+?#\]/is', $title)) {
+    startMeasure('processTitleJTemplate');
     if ($object) {
      $jTempl=new jTemplate($title, $object->data, $object);
     } else {
      $jTempl=new jTemplate($title, $data, $this);
     }
     $title=$jTempl->result;
+    endMeasure('processTitleJTemplate');
    }
 
 
    $title=preg_replace('/%rand%/is', rand(), $title);
+
    if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/is', $title, $m)) {
+    startMeasure('processTitleProperties');
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
      $title=str_replace($m[0][$i], getGlobal($m[1][$i].'.'.$m[2][$i]), $title);
     }
+    endMeasure('processTitleProperties');
    } elseif (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m)) {
     $total=count($m[0]);
     for($i=0;$i<$total;$i++) {
@@ -357,7 +372,11 @@
 
    }
 
-   endMeasure('processTitle ['.$in_title.']', 1);
+   //endMeasure('processTitle ['.$in_title.']', 1);
+   if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST')) {
+    $title_memory_cache[$key]=$title;
+   }
+
    endMeasure('processTitle', 1);
    return $title;
   }

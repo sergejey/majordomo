@@ -55,6 +55,7 @@ $requests = array(
    "/^\/popup\/(shoutbox)\.html/is"        => '?(application:{action=\1, popup=1, app_action=1})',
    "/^\/popup\/(.+?)\/(.+?)\.html/is" => '?(application:{action=\1, popup=1})',
    "/^\/popup\/(.+?)\.html/is"        => '?(application:{action=\1, popup=1})',
+   "/^\/ajax\/(.+?)\.html/is"        => '?(application:{action=\1, ajax=1})',
    "/^\/page\/(\d+?)\.html/is"        => '?(application:{action=layouts, popup=1}layouts:{view_mode=view_layouts, id=\1})',
    "/^\/getnextevent\.html/is"        => '?(application:{action=events})',
    "/^\/getlatestnote\.html/is"       => '?(application:{action=getlatestnote})',

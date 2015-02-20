@@ -132,18 +132,22 @@ var iFrameHeight=$(document).height()-56;        //divheight
 $(document).ready(function() {
   var firstFound=0;
   [#begin LAYOUTS#]
-  $('#tab-[#ID#]').height(iFrameHeight);
+//  $('#tab-[#ID#]').height(iFrameHeight);
   if (firstFound==0) {
    firstFound=1;
    switchSelected([#ID#]);
   }
   [#end LAYOUTS#]
+  $('.tab_iframe').height(iFrameHeight);
+  $('.tab_html').height(iFrameHeight);
+
   //alert($('#defaultFrame').height());
 });
 
 $( window ).resize(function() {
  iFrameHeight=$(document).height()-56;
  $('.tab_iframe').height(iFrameHeight);
+ $('.tab_html').height(iFrameHeight);
 });
 
 

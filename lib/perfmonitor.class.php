@@ -89,6 +89,11 @@ function getmicrotime(){
   global $perf_data;
   echo "<!-- BEGIN PERFORMANCE REPORT\n";
   foreach ($perf_data as $k => $v) {
+   if (!$v['NUM']) {
+    EndMeasure($k);
+   }
+  }
+  foreach ($perf_data as $k => $v) {
    if ($perf_data['TOTAL']['TIME']) {
     $v['PROC']=((int)($v['TIME']/$perf_data['TOTAL']['TIME']*100*100))/100;
    }

@@ -1,15 +1,23 @@
 <?php
 
 if($terminal['PLAYER_PASSWORD']==''){
-	$terminal['PLAYER_PASSWORD'] = NULL;
+        $terminal['PLAYER_PASSWORD'] = NULL;
 }
 include 'mpd.class.php';
+
+if (!$terminal['PLAYER_PORT']) {
+ $terminal['PLAYER_PORT']=6600;
+}
+if (!$terminal['HOST']) {
+ $terminal['HOST']='localhost';
+}
+
 $mpd = new mpd($terminal['HOST'], $terminal['PLAYER_PORT'], $terminal['PLAYER_PASSWORD']);
   
 if($mpd->connected) {
     if ($command=='refresh') {
-	$mpd->PLClear();
-	$mpd->DBRefresh();
+        $mpd->PLClear();
+        $mpd->DBRefresh();
         $path=preg_replace('/\\\\$/is', '', $out['PLAY']);
         
         $db=SQLSelect("SELECT * FROM collections ORDER BY TITLE");
@@ -22,27 +30,27 @@ if($mpd->connected) {
         }
         $path=str_replace('\\', '/', $path);
         $path=str_replace('./', '', $path);
-     	//echo $path;
+        //echo $path;
         $mpd->PLAdd($path);
-	$mpd->Play();  
+        $mpd->Play();  
     } 
-	if ($command=='pause') {
+        if ($command=='pause') {
             $mpd->Pause();
-	} 
-	if ($command=='next') {
+        } 
+        if ($command=='next') {
             $mpd->Next();
-	}
-	if ($command=='prev') {
+        }
+        if ($command=='prev') {
             $mpd->Previous();
-	}
-	if ($command=='volume') {
+        }
+        if ($command=='volume') {
             $mpd->SetVolume($volume);
-	}
-	if ($command=='close') {
+        }
+        if ($command=='close') {
             $mpd->Stop();
-	} 
-	$mpd->Disconnect();
+        } 
+        $mpd->Disconnect();
 } else {
-	echo "Error: " .$mpd->errStr;
+        echo "Error: " .$mpd->errStr;
 }
 ?>

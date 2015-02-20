@@ -61,7 +61,7 @@
   }
   requestSent = Math.round(+new Date()/1000);
 
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
+  var url="<#ROOTHTML#>ajax/commands.html?op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
   AJAXRequest(url, 'sendRequestForUpdates_processed', '');
 
   labelsCollected_sent=labelsCollected;
@@ -158,7 +158,7 @@
  function itemValueChanged(id, new_value) {
   //alert(id+': '+new_value);
   valuesCollected=valuesCollected.replace(','+id+',', ',');
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=value_changed";
+  var url="<#ROOTHTML#>ajax/commands.html?op=value_changed";
   if ($('#processing_'+id).length) {
    $('#processing_'+id).html(' - ...');
   }

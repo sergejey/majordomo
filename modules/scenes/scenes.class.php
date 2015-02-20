@@ -790,9 +790,13 @@ function usual(&$out) {
  function checkState($id) {
   $rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
 
+  startMeasure('state_dynamic'.$rec['IS_DYNAMIC']);
   if (!$rec['IS_DYNAMIC']) {
+
    $status=1;
+
   } elseif ($rec['IS_DYNAMIC']==1) {
+
    if ($rec['LINKED_OBJECT']!='' && $rec['LINKED_PROPERTY']!='') {
     $value=gg(trim($rec['LINKED_OBJECT']).'.'.trim($rec['LINKED_PROPERTY']));
    } elseif ($rec['LINKED_PROPERTY']!='') {
@@ -846,10 +850,13 @@ function usual(&$out) {
    $status=$display;
 
   }
+  endMeasure('state_dynamic'.$rec['IS_DYNAMIC']);
 
   if ($rec['CURRENT_STATE']!=$status) {
+   startMeasure('stateUpdate');
    $rec['CURRENT_STATE']=$status;
    SQLExec('UPDATE elm_states SET CURRENT_STATE='.$rec['CURRENT_STATE'].' WHERE ID='.(int)$rec['ID']);
+   endMeasure('stateUpdate');
   }
 
   return $status;
@@ -863,13 +870,15 @@ function usual(&$out) {
 *
 * @access public
 */
- function getElements($qry='1') {
+ function getElements($qry='1', $options=0) {
       $elements=SQLSelect("SELECT * FROM elements WHERE $qry ORDER BY PRIORITY DESC, TITLE");
       $totale=count($elements);
       for($ie=0;$ie<$totale;$ie++) {
        if ($elements[$ie]['CSS_STYLE']) {
         $this->all_styles[$elements[$ie]['CSS_STYLE']]=1;
-        $elements[$ie]['CSS_IMAGE']=$this->getCSSImage($elements[$ie]['TYPE'], $elements[$ie]['CSS_STYLE']);
+        if (!is_array($options) || $options['ignore_css_image']!=1) {
+         $elements[$ie]['CSS_IMAGE']=$this->getCSSImage($elements[$ie]['TYPE'], $elements[$ie]['CSS_STYLE']);
+        }
        }
        if ($elements[$ie]['PRIORITY']) {
         $elements[$ie]['ZINDEX']=round($elements[$ie]['PRIORITY']/10);
@@ -888,11 +897,19 @@ function usual(&$out) {
         if ($states[$is]['HTML']!='') {
          $states[$is]['HTML']=processTitle($states[$is]['HTML']);
         }
-        $states[$is]['STATE']=$this->checkState($states[$is]['ID']);
+        if (!is_array($options) || $options['ignore_state']!=1) {
+         startMeasure('checkstates');
+         $states[$is]['STATE']=$this->checkState($states[$is]['ID']);
+         endMeasure('checkstates');
+        }
        }
        $elements[$ie]['STATES']=$states;
        if ($elements[$ie]['TYPE']=='container') {
-        $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID']);
+        if (!is_array($options) || $options['ignore_sub']!=1) {
+         startMeasure('getSubElements');
+         $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
+         endMeasure('getSubElements');
+        }
        }
       }
       for($ie=0;$ie<$totale;$ie++) {

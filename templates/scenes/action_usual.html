@@ -128,7 +128,7 @@
             //Size changed
             var top=$('#scene_background_<#RESULT.ID#>').offset().top;
             var left=$('#scene_background_<#RESULT.ID#>').offset().left;
-            var url1="?ajax=1&op=position";
+            var url1="<#ROOTHTML#>ajax/scenes.html?op=position";
             window[#ID#]_posx=(jWindowObj[#ID#].get('posx'))-left;
             window[#ID#]_posy=(jWindowObj[#ID#].get('posy'))-top;
             window[#ID#]_width=(jWindowObj[#ID#].get('width'));
@@ -138,7 +138,7 @@
            }, 
            onDragEnd:function () {
             //Position changed
-            var url1="?ajax=1&op=position";
+            var url1="<#ROOTHTML#>ajax/scenes.html?op=position";
             var top=$('#scene_background_<#RESULT.ID#>').offset().top;
             var left=$('#scene_background_<#RESULT.ID#>').offset().left;
             window[#ID#]_posx=(jWindowObj[#ID#].get('posx'))-left;
@@ -156,7 +156,7 @@
          [#endif MENU_ITEM_ID#][#end STATES#][#end ALL_ELEMENTS#][#end RESULT#]
 
 
-         var url="?ajax=1&op=click";
+         var url="<#ROOTHTML#>ajax/scenes.html?op=click";
          url+='&id='+id;
          $.ajax({
           url: url,
@@ -200,7 +200,7 @@
 
         function checkAllStates() {
          clearTimeout(checkTimer);
-         var url="?ajax=1&op=checkAllStates[#if "<#SCENE_ID#>"!=""#]&scene_id=<#SCENE_ID#>[#endif#]";
+         var url="<#ROOTHTML#>ajax/scenes.html?op=checkAllStates[#if "<#SCENE_ID#>"!=""#]&scene_id=<#SCENE_ID#>[#endif#]";
          $.ajax({
           url: url,
           }).done(function(data) { 

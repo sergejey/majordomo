@@ -312,10 +312,29 @@ function getParams() {
     $template_file=DIR_TEMPLATES."scenes.html";
    }
 
+   if ($this->ajax && $this->action) {
+    global $ajax;
+    $ajax=1;
+    if (file_exists(DIR_MODULES.$this->action)) {
+     include_once(DIR_MODULES.$this->action.'/'.$this->action.'.class.php');
+     $obj="\$object$i";
+     $code="";
+     $code.="$obj=new ".$this->action.";\n";
+     $code.=$obj."->owner=&\$this;\n";
+     $code.=$obj."->getParams();\n";
+     $code.=$obj."->ajax=1;\n";
+     $code.=$obj."->run();\n";
+     StartMeasure("module_".$this->action); 
+     eval($code);
+     endMeasure("module_".$this->action); 
 
-   $this->data=$out;
-   $p=new parser($template_file, $this->data, $this);
-   return $p->result;
+    }
+    return;
+   } else {
+    $this->data=$out;
+    $p=new parser($template_file, $this->data, $this);
+    return $p->result;
+   }
 
 
   }
