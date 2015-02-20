@@ -169,9 +169,11 @@
 
         function processCheckStates(data) {
            var obj=jQuery.parseJSON(data);
+           if (typeof obj !='object') return false;
            if (obj.length) {
             for(var i=0;i<obj.length;i++) {
              var elem=$('#state_'+obj[i].ID);
+
 
              if ((typeof obj[i].HTML!= 'undefined') && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
               elem.html('<span>'+obj[i].HTML+'</span>');
@@ -186,9 +188,11 @@
               }
               
               //$('#' + id).css('display', 'inline-block');
+              [#if "<#TOTAL#>"!="1"#]
               if (firstRun!=1 && obj[i].SWITCH_SCENE=='1') {
                switchScene(obj[i].SCENE_ID);
               }
+              [#endif#]
              }
              if (obj[i].STATE!='1' && elem.is(':visible')) {
               elem.hide();

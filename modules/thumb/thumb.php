@@ -9,7 +9,13 @@ define("_I_CACHE_PATH","../../cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds, 0 - never expired
 
 
-$img=urldecode($_REQUEST['img']);
+$img=($_REQUEST['img']);
+
+//$img=urldecode($_REQUEST['img']);
+
+$img=str_replace('\\\\', '\\', $img);
+
+//echo $img;exit;
 
 $type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
 
@@ -19,6 +25,7 @@ $type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
     2 - exact size
 */
 //$img='./../../'.$img;
+
 if (file_exists($img)) {
 
  $new_width=(int)$_REQUEST['w'];

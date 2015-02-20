@@ -282,6 +282,18 @@ function usual(&$out) {
    $out['FAVORITES']=$favorites;
   }
 
+  $media_history=SQLSelect("SELECT * FROM media_history WHERE 1 ORDER BY PLAYED DESC");
+  if ($media_history) {
+   if(!$run_linux){
+    $total=count($media_history);
+    for($i=0;$i<$total;$i++) {
+     $media_history[$i]['PATH']=urlencode(utf2win($media_history[$i]['PATH']));
+    }
+   }
+   $out['MEDIA_HISTORY']=$media_history;
+  }
+
+
   $folder=str_replace('././', './', $folder);
   $path=str_replace('././', './', $path);
 
@@ -354,6 +366,28 @@ function usual(&$out) {
       }
 
    $out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
+
+   if ($this->mode=='play') {
+    //FULLFILE_S
+    $rec=array();
+    $rec['TITLE']=$out['CURRENT_DIR_TITLE'];
+    $rec['PATH']=win2utf($folder);
+    $rec['LIST_ID']=(int)$list_id;
+    $rec['COLLECTION_ID']=$collection_id;
+    $rec['PLAYED']=date('Y-m-d H:i:s');
+    SQLExec("DELETE FROM media_history WHERE PATH LIKE '".DBSafe($rec['PATH'])."'");
+    SQLInsert('media_history', $rec);
+
+    $last10=SQLSelect("SELECT ID FROM media_history ORDER BY PLAYED DESC LIMIT 10");
+    $total=count($last10);
+    $ids=array();
+    for($i=0;$i<$total;$i++) {
+     $ids[]=$last10[$i]['ID'];
+    }
+    SQLExec("DELETE FROM media_history WHERE ID NOT IN (".implode(',', $ids).")");
+
+   }
+
   }
 
   if (preg_match('/foto/is', $act_dir) || preg_match('/photo/is', $act_dir)) {
@@ -642,6 +676,14 @@ terminals - Terminals
   media_favorites: TITLE varchar(255) NOT NULL DEFAULT ''
   media_favorites: LIST_ID int(10) unsigned NOT NULL DEFAULT '0'
   media_favorites: COLLECTION_ID int(10) unsigned NOT NULL DEFAULT '0'
+
+  media_history: ID int(10) unsigned NOT NULL auto_increment
+  media_history: PATH varchar(255) NOT NULL DEFAULT ''
+  media_history: TITLE varchar(255) NOT NULL DEFAULT ''
+  media_history: LIST_ID int(10) unsigned NOT NULL DEFAULT '0'
+  media_history: COLLECTION_ID int(10) unsigned NOT NULL DEFAULT '0'
+  media_history: PLAYED datetime
+
 
 EOD;
   parent::dbInstall($data);

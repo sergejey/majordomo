@@ -130,7 +130,7 @@ function gup( name )
   </tr>
  </form>
  </table>
- <hr size="1">
+ &nbsp;
  [#endif#]
 
 
@@ -146,46 +146,69 @@ function gup( name )
  #-->
 
  [#if HISTORY#]
- <p>
- <small>
+ <ul class="breadcrumb">
  [#begin HISTORY#]
- / <a href="?collection_id=<#COLLECTION_ID#>&folder=[#PATH#]">[#TITLE#]</a>
+ <li><a href="?collection_id=<#COLLECTION_ID#>&folder=[#PATH#]">[#TITLE#]</a></li>
  [#end HISTORY#]
- </small>
- </p>
+ </ul>
  [#endif HISTORY#]
 
  </td>
 </tr>
 </table>
 
-<table border="0" cellpadding="4">
+<table class="table">
  <tr>
-  <td><a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a></td>
-  <td><h1 style="font-weight:bold">[#CURRENT_DIR_TITLE#]</h1></td>
+  <td>   <span>
+   <a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
+   </span>
+</td>
+  <td><h1>[#CURRENT_DIR_TITLE#]</h1></td>
   <td>
-   <div id="favorites_add"[#if FAVORITE=="1"#] style="display:none"[#endif#]>
+   <span id="favorites_add"[#if FAVORITE=="1"#] style="display:none"[#endif#]>
    <a href="#" onClick="return addToFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="<#ROOTHTML#>img/btn/notfavorite.png" border="0"></a>
-   </div>
-   <div id="favorites_remove"[#if FAVORITE!="1"#] style="display:none"[#endif#]>
+   </span>
+   <span id="favorites_remove"[#if FAVORITE!="1"#] style="display:none"[#endif#]>
     <a href="#" onClick="return removeFromFavorites('[#CURRENT_DIR#]', '[#CURRENT_DIR_TITLE#]')"><img src="<#ROOTHTML#>img/btn/favorite.png" border="0"></a>
-   </div>
+   </span>
   </td>
  </tr>
 </table>
 [#else CURRENT_DIR#]
 
+<div>
 [#if FAVORITES#]
-<table border="0">
+<a href="#" onClick="$('#media_favorites').toggle();return false;" class="btn btn-default">Favorites</a>
+<div id='media_favorites' style="display:none">
+<table class="table table-bordered">
  [#begin FAVORITES#]
  <tr>
-  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a></td>
-  <td><img src="<#ROOTHTML#>img/btn/favorite.png" border="0"></td>
-  <td><a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]">[#TITLE#]</a></td>
+  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0" align="abs_middle"></a>
+  <img src="<#ROOTHTML#>img/btn/favorite.png" border="0" align="abs_middle">
+  <a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]" class="btn">[#TITLE#]</a>
+  </td>
  </tr>
  [#end FAVORITES#]
 </table>
+</div>
 [#endif FAVORITES#]
+
+[#if MEDIA_HISTORY#]
+<br/>&nbsp;<br/>
+<a href="#" onClick="$('#media_history').toggle();return false;" class="btn btn-default">Recently played</a>
+<div id='media_history' style="display:none">
+<table class="table table-bordered">
+ [#begin MEDIA_HISTORY#]
+ <tr>
+  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0" align="abs_middle"></a>
+  <a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]" class="btn">[#TITLE#]</a></td>
+ </tr>
+ [#end MEDIA_HISTORY#]
+</table>
+</div>
+[#endif MEDIA_HISTORY#]
+</div>
+
 
 [#endif CURRENT_DIR#]
 
@@ -198,10 +221,10 @@ function gup( name )
 
 [#else COLLECTION_ID#]
 
- <table border="0">
+ <table class="table table-bordered">
   [#begin COLLECTIONS#]
   <tr>
-   <td><a href="?collection_id=[#ID#]">[#TITLE#]</a></td>
+   <td><a href="?collection_id=[#ID#]" class="btn">[#TITLE#]</a></td>
   </tr>
   [#end COLLECTIONS#]
  </table>
