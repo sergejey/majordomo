@@ -2,8 +2,10 @@
 
 
  function saveToCache($key, $value, $ttl=60) {
-  global $memory_cache;
-  $memory_cache[$key]=$value;
+  if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST')) {
+   global $memory_cache;
+   $memory_cache[$key]=$value;
+  }
   if (strlen($value)<=255) {
    $rec=array('KEYWORD'=>$key, 'DATAVALUE'=>$value, 'EXPIRE'=>date('Y-m-d H:i:s', time()+$ttl));
   } else {
