@@ -100,7 +100,8 @@
 <div class="form-group">
         <label class="control-label"><#LANG_CODE#></label>
         <div class="controls">
-                <textarea class="form-control" name="code" rows=12 cols=100>[#CODE#]</textarea>
+                <textarea class="form-control" name="code" id="code" rows=12 cols=100>[#CODE#]</textarea>
+                [#module name="blockly_code" code_field="code" action="" type="html"#]
         </div>
 </div>
 

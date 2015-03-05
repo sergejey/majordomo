@@ -203,11 +203,6 @@ if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
 }
 // END: language constants
 
-if (!headers_sent()) 
-{
-   header ("HTTP/1.0: 200 OK\n");
-   header ('Content-Type: text/html; charset=utf-8');
-}
 
 function echobig($string, $bufferSize = 8192) 
 {
@@ -221,7 +216,16 @@ function echobig($string, $bufferSize = 8192)
 
 startMeasure('final_echo');
 
-ob_start("ob_gzhandler"); // should be un-commented for production server
+
+if (!headers_sent()) 
+{
+   header ("HTTP/1.0: 200 OK\n");
+   header ('Content-Type: text/html; charset=utf-8');
+   //ob_start("ob_gzhandler"); // should be un-commented for production server
+}
+
+
+
 echobig($result);
 
 endMeasure('final_echo', 1);

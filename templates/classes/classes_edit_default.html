@@ -80,3 +80,11 @@
 </form>
 
 
+[#if SUB_CLASSES#]
+<br>
+<ul>
+ [#begin SUB_CLASSES#]
+  <li><a href="?id=[#ID#]&view_mode=<#VIEW_MODE#>">[#TITLE#]</a></li>
+ [#end SUB_CLASSES#]
+</ul>
+[#endif#]

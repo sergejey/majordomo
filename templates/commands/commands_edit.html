@@ -164,7 +164,8 @@ Action URL:
 <div class="form-group">
         <label class="control-label"><#LANG_DATA#>:[#if TYPE=="switch"#]<br/>(<#LANG_OPTIONAL#>)[#endif TYPE#]</label>
         <div class="col-lg-5">
-                <textarea name="data" cols="50" rows="[#if TYPE=="switch"#]2[#else#]10[#endif#]"  class="form-control">[#DATA#]</textarea>
+                <textarea name="data" id="data" cols="50" rows="[#if TYPE=="switch"#]2[#else#]10[#endif#]"  class="form-control">[#DATA#]</textarea>
+                [#module name="blockly_code" code_field="data" action="" type="html"#]
         </div>
 </div>
 

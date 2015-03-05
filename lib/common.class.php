@@ -522,6 +522,7 @@
   if (file_exists($filename)) {
    $data=LoadFile($filename);
    $data=str_replace("\r", '', $data);
+   $data=str_replace("\n\n", "\n", $data);
    $lines=mb_split("\n", $data);
    $total=count($lines);
    $line=$lines[round(rand(0, $total-1))];
@@ -708,7 +709,7 @@
     }
 } 
 
- function getFilesTree($destination) {
+ function getFilesTree($destination,$sort='name') {
 
   if (substr($destination, -1)=='/' || substr($destination, -1)=='\\') {
    $destination=substr($destination, 0, strlen($destination)-1);
@@ -735,6 +736,11 @@
   }     
   closedir($dir); 
  }
+
+ if ($sort=='name') {
+  sort($res, SORT_STRING);
+ }
+
  return $res;
  }
 

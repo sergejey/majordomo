@@ -2,18 +2,34 @@
 /*
 * @version 0.1 (auto-set)
 */
+chdir('../../');
+include_once("./config.php");
+include_once("./lib/loader.php");
 
 
 define("_I_CACHING","1");               //    Chaching enabled, 1 - yes, 0 - no
-define("_I_CACHE_PATH","../../cached/"); //    Path to cache dir
+define("_I_CACHE_PATH","./cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds, 0 - never expired
 
 
-$img=($_REQUEST['img']);
+//$img=($_REQUEST['img']);
 
 //$img=urldecode($_REQUEST['img']);
 
-$img=str_replace('\\\\', '\\', $img);
+
+if ($url) {
+
+   $url=base64_decode($url);
+   $result=getURL($url, 0, $username, $password);
+   if ($result) {
+    SaveFile($img, $result);
+    $dc=1;
+   } else {
+    $img='error';
+   }
+}
+
+//$img=str_replace('\\\\', '\\', $img);
 
 //echo $img;exit;
 
@@ -36,7 +52,7 @@ if (file_exists($img)) {
  $cache = $path_to_cache_file.'/'.$cached_filename;
 
  //   Check the cache
- if(_I_CACHING == "1" && !$_REQUEST['dc'])
+ if(_I_CACHING == "1" && !$dc)
          
    //$cache = _I_CACHE_PATH.md5($img.filemtime($img).$image_width.$image_height).".pic";
    if(file_exists($cache))
@@ -134,4 +150,3 @@ if (file_exists($img)) {
  imageJpeg($new_image);
 
 }
-?>

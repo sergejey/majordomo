@@ -140,7 +140,7 @@
  } elseif ($script!='') {
   echo "\nRunning script: ".$script;
   //DebMes("Running script: ".$script);
-  runScript($script, $_GET);
+  runScript($script, $_REQUEST);
  }
 
  $db->Disconnect(); // closing database connection

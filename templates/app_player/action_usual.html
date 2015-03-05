@@ -64,7 +64,7 @@
  <input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
  <input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
  </form>
- [#if PLAY!="" && TERMINALS_TOTAL="1"#]
+ [#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
  <script language="javascript">
   playerCommand('refresh');
  </script>

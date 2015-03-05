@@ -81,4 +81,22 @@
    }
   }
   outHash($rec, $out);
-?>
+
+  if ($rec['ID'] && $rec['PARENT_ID']) {
+   $cr_class=array();
+   $cr_class['PARENT_ID']=$rec['PARENT_ID'];
+   $cr_class['TITLE']=$rec['TITLE'];
+   $cr_class['ID']=$rec['ID'];
+   $limit=30;
+   while ($cr_class['PARENT_ID']!="0" && $limit>0) {
+    $cr_class=SQLSelectOne("SELECT ID, PARENT_ID, TITLE FROM classes WHERE ID='".$cr_class['PARENT_ID']."'");
+    $out['HISTORY_LIST'][]=$cr_class;
+    $limit--;
+   }
+   $out['HISTORY_LIST']=array_reverse($out['HISTORY_LIST']);
+  }
+
+  if ($rec['ID']) {
+   $out['SUB_CLASSES']=SQLSelect("SELECT ID, TITLE FROM classes WHERE PARENT_ID=".$rec['ID']." ORDER BY TITLE");
+  }
+

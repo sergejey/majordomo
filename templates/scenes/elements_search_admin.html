@@ -48,7 +48,7 @@ $(function () {
    [#if CSS_IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#CSS_IMAGE#]" border="0">[#endif#]
    [#if ELEMENTS#]
    <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]"> + </a>[#endif#]
-   [#TITLE#]
+   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]">[#TITLE#]</a>
  </td>
  <td width="200">
   [#TYPE#]

@@ -73,17 +73,23 @@ class parser {
 */
  function jtemplate_parse($template, &$data) {
 
+ /*
+  if (preg_match('/menu\.html/', $_SERVER['REQUEST_URI'])) {
+   $compl=new jTemplateCompiler($template, "out", $this->owner);
+   $out=&$data;
+   include($compl->compiled_file);
+  }
+  */
+
+   startMeasure('Parse template '.$template);
+   $jTempl=new jTemplate($template, $data, $this->owner);
+   $result=$jTempl->result;
+   endMeasure('Parse template '.$template);
+ 
 /*
-  $compl=new jTemplateCompiler($template, "out", $this->owner);
-  $out=&$data;
-  include($compl->compiled_file);
   return $result;
 */
 
-  startMeasure('Parse template '.$template);
-  $jTempl=new jTemplate($template, $data, $this->owner);
-  $result=$jTempl->result;
-  endMeasure('Parse template '.$template);
   return $result;
 
  }

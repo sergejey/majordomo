@@ -637,8 +637,29 @@
    $out['ELEMENTS']=$elements;
   }
 
+  if ($element['TYPE']=='container') {
+   $sub_elements=SQLSelect("SELECT ID, TITLE FROM elements WHERE CONTAINER_ID=".(int)$element['ID']." ORDER BY PRIORITY DESC, TITLE");
+  } elseif ($element['ID']) {
+   $sub_elements=SQLSelect("SELECT ID, TITLE FROM elements WHERE CONTAINER_ID=".(int)$element['CONTAINER_ID']." AND SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
+  }
+  if ($sub_elements[0]['ID']) {
+   $out['SUB_ELEMENTS']=$sub_elements;
+  }
+
+
 
   $containers=SQLSelect("SELECT `ID`, `TITLE` FROM elements WHERE SCENE_ID='".$rec['ID']."' AND TYPE='container' ORDER BY PRIORITY DESC, TITLE");
+  if ($element['CONTAINER_ID']) {
+   $total=count($containers);
+   for($i=0;$i<$total;$i++) {
+    if ($containers[$i]['ID']==$element['CONTAINER_ID']) {
+     $out['CURRENT_CONTAINER_TITLE']=$containers[$i]['TITLE'];
+    }
+   }
+  }
+
+
+
   $out['CONTAINERS']=$containers;
 
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");

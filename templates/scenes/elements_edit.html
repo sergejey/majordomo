@@ -1,10 +1,13 @@
+<ul class="breadcrumb">
+[#if ELEMENT_CONTAINER_ID!="0" && ELEMENT_CONTAINER_ID!=""#]
+<li><a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ELEMENT_CONTAINER_ID#]">[#CURRENT_CONTAINER_TITLE#]</a></li>
+[#endif#]
+<li>[#ELEMENT_TITLE#]</li>
+</ul>
 
 <!-- Table 'elements' edit -->
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <!-- TITLE (varchar) -->
-
-
-<h3>Element details</h3>
 [#if OK#]
 <div class="alert alert-success">
 <#LANG_DATA_SAVED#>
@@ -363,7 +366,8 @@
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_CODE#></label>
         <div class="controls">
-                <textarea  name="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
+                <textarea  name="html_new" id="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
+                [#module name="blockly_code" code_field="html_new" action="" type="html"#]
                  <br>(CSS class: <i>type_<#ELEMENT_TYPE#> style_<#ELEMENT_CSS_STYLE#> state_[#STATE_TITLE#] element_<#ELEMENT_ID#></i>, CSS id: <i>state_[#STATE_ID#]</i>)
         </div>
 </div>
@@ -620,3 +624,12 @@
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 
 </form>
+
+[#if SUB_ELEMENTS#]
+&nbsp;<br/>
+<ul>
+[#begin SUB_ELEMENTS#]
+<li>[#if ID!="<#ELEMENT_ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]">[#endif#][#TITLE#]</a></li>
+[#end SUB_ELEMENTS#]
+</ul>
+[#endif#]

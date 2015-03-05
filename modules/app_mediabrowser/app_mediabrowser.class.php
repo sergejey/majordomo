@@ -437,6 +437,10 @@ function usual(&$out) {
    $act_dir.='/';
   }
 
+  if (!is_dir($act_dir)) {
+   return;
+  }
+
   $d=openDir($act_dir);
   //exit;
 
