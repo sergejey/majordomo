@@ -54,10 +54,12 @@
   }
  }
 
- if ($this->filter_name=='hook' && !defined('SETTINGS_HOOK_AFTER_PLAYSOUND')) {
+ if ($this->filter_name=='hook' && !defined('SETTINGS_HOOK_BARCODE')) {
   //SETTINGS_HOOK_BEFORE_PLAYSOUND
   //SETTINGS_HOOK_AFTER_PLAYSOUND
   $options=array(
+   'HOOK_BARCODE'=>'Bar-code reading (code)',
+   'HOOK_PLAYMEDIA'=>'Playmedia (code)',
    'HOOK_BEFORE_PLAYSOUND'=>'Before PlaySound (code)',
    'HOOK_AFTER_PLAYSOUND'=>'After PlaySound (code)'
   );

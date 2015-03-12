@@ -579,6 +579,11 @@
 * @access public
 */
  function playMedia($path, $host='localhost') {
+
+  if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA!='') {
+   eval(SETTINGS_HOOK_PLAYMEDIA);
+  }
+
   $terminal=SQLSelectOne("SELECT * FROM terminals WHERE HOST LIKE '".DBSafe($host)."' OR NAME LIKE '".DBSafe($host)."' OR TITLE LIKE '".DBSafe($host)."'");
   if (!$terminal['ID']) {
    $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY ID");

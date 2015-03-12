@@ -24,7 +24,12 @@ class Threads {
         }
         
         $params = addcslashes(serialize($params), '"');
-        $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'">>'.DOC_ROOT.'/debmes/log_'.date('Y-m-d').'-'.basename($filename).'.txt';
+
+        if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
+         $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'">>'.DOC_ROOT.'/debmes/log_'.date('Y-m-d').'-'.basename($filename).'.txt';
+        } else {
+         $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'"';
+        }
         ++$this->lastId;
 
         $this->commandLines[$this->lastId] = $command;        
