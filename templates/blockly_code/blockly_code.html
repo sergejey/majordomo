@@ -76,7 +76,12 @@ var editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
  value: myTextArea[#CODE_FIELD#].value,
  lineNumbers: true,
         matchBrackets: true,
-        mode: [#if TYPE=="php"#]"text/x-php"[#else TYPE#]"text/html"[#endif TYPE#],
+        [#if TYPE=="php"#]
+        mode: "text/x-php",
+        [#else TYPE#]
+        mode: "xml",
+        htmlMode: true,
+        [#endif TYPE#]
         indentUnit: 1,
         indentWithTabs: false,
         foldGutter: true,
