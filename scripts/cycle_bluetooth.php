@@ -44,7 +44,7 @@ while(1)
       $data = '';
       
      
-      if (substr(php_uname(), 0, 7) == "Windows") 
+      if (IsWindowsOS()) 
       {   
          // windows scanner
          @unlink($devices_file);   

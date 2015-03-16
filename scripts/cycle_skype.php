@@ -23,7 +23,7 @@ include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
  
-if (substr(php_uname(), 0, 5) == "Linux") exit;
+if (!IsWindowsOS()) exit;
 
 if (!Defined('SETTINGS_SKYPE_CYCLE') || SETTINGS_SKYPE_CYCLE == 0) exit;
  

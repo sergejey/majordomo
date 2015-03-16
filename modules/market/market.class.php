@@ -245,46 +245,46 @@ function getLatest(&$out, $url, $name, $version) {
    }
   }
 
- function upload(&$out) {
+function upload(&$out)
+{
+   set_time_limit(0);
+   global $restore;
+   global $file;
+   global $file_name;
+   global $folder;
 
-  set_time_limit(0);
-  global $restore;
-  global $file;
-  global $file_name;
-  global $folder;
-
-  if (!$folder) {
-   if (substr(php_uname(), 0, 7) == "Windows") {
-    $folder='/.';
-   } else {
-    $folder='/';
+   if (!$folder)
+      $folder = IsWindowsOS() ? '/.' : '/';
+   else
+      $folder = '/' . $folder;
+   
+   if ($restore != '')
+   {
+      $file = $restore;
+   } 
+   elseif ($file!='')
+   {
+      copy($file, ROOT.'saverestore/' . $file_name);
+      $file = $file_name;
    }
-  } else {
-   $folder='/'.$folder;
-  }
 
-  if ($restore!='') {
-   $file=$restore;
-  } elseif ($file!='') {
-   copy($file, ROOT.'saverestore/'.$file_name);
-   $file=$file_name;
-  }
+   umask(0);
+   @mkdir(ROOT.'saverestore/temp', 0777);
 
-  umask(0);
-  @mkdir(ROOT.'saverestore/temp', 0777);
+   if ($file != '') { // && mkdir(ROOT.'saverestore/temp', 0777)
+      chdir(ROOT.'saverestore/temp');
 
-  if ($file!='') { // && mkdir(ROOT.'saverestore/temp', 0777)
-
-       chdir(ROOT.'saverestore/temp');
-
-       if (substr(php_uname(), 0, 7) == "Windows") {
-       // for windows only
-        exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
-        //echo DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file);exit;
-        exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
-       } else {
-        exec('tar xzvf ../'.$file, $output, $res);
-       }
+      if (IsWindowsOS())
+      {
+         // for windows only
+         exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
+         //echo DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file);exit;
+         exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
+      } 
+      else
+      {
+         exec('tar xzvf ../' . $file, $output, $res);
+      }
 
         $x = 0;
         $dir=opendir('./');

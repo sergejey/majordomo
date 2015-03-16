@@ -65,15 +65,10 @@ if ($lib_dir = @opendir("./scripts"))
 
 $threads = new Threads;
 
-if (defined('PATH_TO_PHP')) {
- $threads->phpPath = PATH_TO_PHP;
-} else {
- if (substr(php_uname(), 0, 7) == "Windows") {
-  $threads->phpPath = '..\server\php\php.exe';
- } else {
-  $threads->phpPath = 'php';
- }
-}
+if (defined('PATH_TO_PHP'))
+   $threads->phpPath = PATH_TO_PHP;
+else
+   $threads->phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
 
 foreach($cycles as $path) 
 {
@@ -85,7 +80,7 @@ foreach($cycles as $path)
       if ((preg_match("/_X/", $path))) 
       {
          //для начала убедимся, что мы в Линуксе. Иначе удаленный запуск этих скриптов не делаем
-         if (substr(php_uname(), 0, 5) == "Linux") 
+         if (!IsWindowsOS()) 
          {
             $display = '101';
       
