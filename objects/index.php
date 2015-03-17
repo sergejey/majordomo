@@ -80,10 +80,10 @@
  }
 
 
- if (preg_match('/\/\?(\w+)\.(\w+)/', $_SERVER['REQUEST_URI'], $m)) {
+ if (preg_match('/\/\?(\w+)\.(\w+)/', $_SERVER['REQUEST_URI'], $matches)) {
   $_GET['op']='m';
-  $_GET['object']=$m[1];
-  $_GET['m']=$m[2];
+  $_GET['object']=$matches[1];
+  $_GET['m']=$matches[2];
  }
 
  foreach($_GET as $k=>$v) {
@@ -99,6 +99,7 @@
  if (!$commandLine) {
   header ('Content-Type: text/html; charset=utf-8');
  }
+
  //echo "\nRequest: ".$request;
  //exit;
 
