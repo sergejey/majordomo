@@ -468,9 +468,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in pattern code: ".$code);
+                    registerError('patterns', "Error in pattern code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('patterns', get_class($e).', '.$e->getMessage());
                   }
 
      }

@@ -316,9 +316,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in hosts online code: ".$code);
+                    registerError('ping_hosts', "Error in hosts online code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('ping_hosts', get_class($e).', '.$e->getMessage());
                   }
 
     }

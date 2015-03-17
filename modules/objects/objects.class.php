@@ -536,9 +536,11 @@ curl_close($ch);
        $success = eval($code);
        if ($success === false) {
          getLogger($this)->error(sprintf('Error in "%s.%s" method. Code: %s', $this->object_title, $name, $code));
+         registerError('method', sprintf('Exception in "%s.%s" method Code: %s', $this->object_title, $name, $code));
        }
      } catch (Exception $e) {
        getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
+       registerError('method', sprintf('Exception in "%s.%s" method '.$e->getMessage(), $this->object_title, $name));
      }
 
    }

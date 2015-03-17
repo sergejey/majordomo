@@ -277,9 +277,11 @@ function admin(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error menu item code: ".$code);
+                    registerError('menu_item', "Error menu item code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('menu_item', get_class($e).', '.$e->getMessage());
                   }
 
     }

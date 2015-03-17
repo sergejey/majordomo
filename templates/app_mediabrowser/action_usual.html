@@ -178,7 +178,7 @@ function gup( name )
 
 <div>
 [#if FAVORITES#]
-<a href="#" onClick="$('#media_favorites').toggle();return false;" class="btn btn-default">Favorites</a>
+<a href="#" onClick="$('#media_favorites').toggle();return false;" class="btn btn-default"><#LANG_FAVORITES#></a>
 <div id='media_favorites' style="display:none">
 <table class="table table-bordered">
  [#begin FAVORITES#]
@@ -195,7 +195,7 @@ function gup( name )
 
 [#if MEDIA_HISTORY#]
 <br/>&nbsp;<br/>
-<a href="#" onClick="$('#media_history').toggle();return false;" class="btn btn-default">Recently played</a>
+<a href="#" onClick="$('#media_history').toggle();return false;" class="btn btn-default"><#LANG_RECENTLY_PLAYED#></a>
 <div id='media_history' style="display:none">
 <table class="table table-bordered">
  [#begin MEDIA_HISTORY#]

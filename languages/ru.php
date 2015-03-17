@@ -997,6 +997,12 @@ $dictionary=array(
 'PORT'=>'Порт',
 'USE_DEFAULT'=>'использовать по-умолчанию',
 
+'FAVORITES'=>'Избранное',
+'RECENTLY_PLAYED'=>'Недавно проиграно',
+'CLEAR_FAVORITES'=>'Очистить Избранное',
+'CLEAR_HISTORY'=>'Очистить Недавно проигранное',
+
+
 'TEST'=>'test'
 
 

@@ -142,6 +142,17 @@ function admin(&$out) {
  */
 
  global $id;
+
+ if ($this->view_mode=='clear_favorites') {
+  SQLExec("DELETE FROM media_favorites");
+  $this->redirect("?");
+ }
+
+ if ($this->view_mode=='clear_history') {
+  SQLExec("DELETE FROM media_history");  
+  $this->redirect("?");
+ }
+
  if ($this->view_mode=='delete') {
   $rec=SQLSelectOne("SELECT * FROM collections WHERE ID='".(int)$id."'");
   SQLExec("DELETE FROM collections WHERE ID='".$rec['ID']."'");

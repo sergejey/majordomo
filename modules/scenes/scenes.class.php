@@ -533,9 +533,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error scene item code: ".$code);
+                    registerError('scenes', "Error scene item code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('scenes', get_class($e).', '.$e->getMessage());
                   }
      }
      $qry="1";
@@ -842,9 +844,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in scene code: ".$code);
+                    registerError('scenes', "Error in scene code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('scenes', get_class($e).', '.$e->getMessage());
                   }
 
    $status=$display;

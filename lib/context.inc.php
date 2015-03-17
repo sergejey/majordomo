@@ -123,9 +123,11 @@
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in context timeout code: ".$code);
+                    registerError('context_timeout_action', "Error in context timeout code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('context_timeout_action', get_class($e).', '.$e->getMessage());
                   }
    }
    if ($context['TIMEOUT_CONTEXT_ID']) {

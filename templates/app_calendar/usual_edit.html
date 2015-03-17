@@ -1,5 +1,5 @@
+<form action="?" method="post">
 <table width="100%" border="0">
- <form action="?" method="post">
  <tr>
   <td valign="top"><#LANG_TITLE#>:</td>
   <td valign="top"><input type="text" name="title" value="[#TITLE#]" size="50">
@@ -10,11 +10,11 @@
  <tr>
   <td valign="top">&nbsp;</td>
   <td valign="top">
-   <label><input type="radio" name="is_task" id="is_event" value="0"[#if IS_TASK!="1"#] checked[#endif#]> <#LANG_EVENT#></label>
+   <label><input type="radio" name="is_task" id="is_event" value="0"[#if IS_TASK!="1"#] checked[#endif#] data-role="none"> <#LANG_EVENT#></label>
    &nbsp;&nbsp;
-   <label><input type="radio" name="is_task" id="is_task" value="1"[#if IS_TASK="1"#] checked[#endif#]> <#LANG_TASK#></label>
+   <label><input type="radio" name="is_task" id="is_task" value="1"[#if IS_TASK="1"#] checked[#endif#] data-role="none"> <#LANG_TASK#></label>
    <span id="task_done_block"[#if IS_TASK!="1"#] style="display:none"[#endif#]>
-   <b><label><input type="checkbox" name="is_done" value="1"[#if IS_DONE="1"#] checked[#endif#]> <#LANG_DONE#></label></b>
+   <b><label><input type="checkbox" name="is_done" value="1"[#if IS_DONE="1"#] checked[#endif#] data-role="none"> <#LANG_DONE#></label></b>
    </span>
   </td>
  </tr>
@@ -22,11 +22,11 @@
  <tr>
   <td><#LANG_DATE#>:</td>
   <td>
-  <span id="due_block"[#if IS_NO_DATE="1"#] style="display:none"[#endif#]><input type="text" name="due" id="due" value="[#DUE#]"></span>
-<label><input type="checkbox" name="is_nodate" id="is_nodate" value="1"[#if IS_NODATE="1"#] checked[#endif#]>
+  <span id="due_block"[#if IS_NO_DATE="1"#] style="display:none"[#endif#]><input type="text" name="due" id="due" value="[#DUE#]" data-role="none"></span>
+<label><input type="checkbox" name="is_nodate" id="is_nodate" value="1"[#if IS_NODATE="1"#] checked[#endif#] data-role="none">
    <#LANG_NO_DUE_DATE#></label>
 
-<label><input type="checkbox" name="is_repeating" id="is_repeating" value="1"[#if IS_REPEATING="1"#] checked[#endif#]>
+<label><input type="checkbox" name="is_repeating" id="is_repeating" value="1"[#if IS_REPEATING="1"#] checked[#endif#] data-role="none">
    <#LANG_IS_REPEATING#></label>
 
   </td>
@@ -86,7 +86,7 @@
   <td valign="top">&nbsp;</td>
   <td valign="top">
    <div id="repeat_type_block"[#if IS_REPEATING!="1"#] style="display:none"[#endif#]>
-   <select name="repeat_type" id="repeat_type">
+   <select name="repeat_type" id="repeat_type" data-role="none">
     <option value="1"[#if REPEAT_TYPE=="1"#] selected[#endif#]><#LANG_YEARLY#>
     <option value="2"[#if REPEAT_TYPE=="2"#] selected[#endif#]><#LANG_MONTHLY#>
     <option value="3"[#if REPEAT_TYPE=="3"#] selected[#endif#]><#LANG_WEEKLY#>
@@ -96,7 +96,7 @@
    <div id="restore_in_block" [#if REPEAT_TYPE!="9"#] style="display:none"[#endif#]>
    <#LANG_RESTORE_IN#> <input type="text" size="5" name="repeat_in" value="[#REPEAT_IN#][#if REPEAT_IN=""#]3[#endif#]"> <#LANG_IN_DAYS#>
 
-   <label><input type="checkbox" name="is_repeating_after" value="1"[#if IS_REPEATING_AFTER="1"#] checked[#endif#]>
+   <label><input type="checkbox" name="is_repeating_after" value="1"[#if IS_REPEATING_AFTER="1"#] checked[#endif#] data-role="none">
    <#LANG_AFTER_COMPLETION#></label>
    </div>
    </div>
@@ -134,7 +134,7 @@
  <tr>
   <td valign="top">&nbsp;</td>
   <td valign="top">
-  <label><input type="checkbox" name="advanced" id="advanced" value="1"> <#LANG_MORE_DETAILS#></label>
+  <label><input type="checkbox" name="advanced" id="advanced" value="1" data-role="none"> <#LANG_MORE_DETAILS#></label>
   </td>
  </tr>
 
@@ -221,8 +221,8 @@
  <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
  <input type="hidden" name="mode" value="update">
  <input type="hidden" name="id" value="<#ID#>">
- </form>
 </table>
+</form>
 
 [#if OTHERS#]
 &nbsp;

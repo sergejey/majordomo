@@ -79,6 +79,13 @@
   }
  }
 
+
+ if (preg_match('/\/\?(\w+)\.(\w+)/', $_SERVER['REQUEST_URI'], $m)) {
+  $_GET['op']='m';
+  $_GET['object']=$m[1];
+  $_GET['m']=$m[2];
+ }
+
  foreach($_GET as $k=>$v) {
   $request.='&'.$k.'='.$v;
  }
@@ -131,9 +138,11 @@
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in scheduled job code: ".$code);
+                    registerError('scheduled_jobs', "Error in scheduled job code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('scheduled_jobs', get_class($e).', '.$e->getMessage());
                   }
                   echo "OK";
   }

@@ -998,6 +998,11 @@ $dictionary=array(
 'PORT'=>'Port',
 'USE_DEFAULT'=>'use default',
 
+'FAVORITES'=>'Favorites',
+'RECENTLY_PLAYED'=>'Recently played',
+'CLEAR_FAVORITES'=>'Clear Favorites',
+'CLEAR_HISTORY'=>'Clear Recently played',
+
 
 'TEST'=>'test'
 

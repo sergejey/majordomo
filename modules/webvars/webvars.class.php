@@ -333,9 +333,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in webvar code: ".$code);
+                    registerError('webvars', "Error in webvar code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('webvars', get_class($e).', '.$e->getMessage());
                   }
 
     }

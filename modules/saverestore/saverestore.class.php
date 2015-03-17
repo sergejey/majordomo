@@ -1227,6 +1227,9 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
         }
 
         $this->config['LATEST_UPDATED_ID']=$out['LATEST_ID'];
+
+        setGlobal('UpdateVersion', $this->config['LATEST_UPDATED_ID']);
+
         $this->saveConfig();
         $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));
 

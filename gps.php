@@ -203,9 +203,11 @@ if (IsSet($_REQUEST['latitude']))
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in GPS action code: ".$code);
+                    registerError('gps_action', "Code execution error: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('gps_action', get_class($e).', '.$e->getMessage());
                   }
                }
             }
