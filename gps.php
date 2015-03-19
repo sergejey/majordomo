@@ -108,8 +108,12 @@ if (IsSet($_REQUEST['latitude']))
       SQLUpdate('gpsdevices', $device);
    }
 
+   $time = date('Y-m-d H:i:s');
+   if ($_REQUEST['time']) 
+	   $time = $_REQUEST['time'];
+
    $rec=array();
-   $rec['ADDED']     = date('Y-m-d H:i:s');
+   $rec['ADDED']     = $time;
    $rec['LAT']       = $_REQUEST['latitude'];
    $rec['LON']       = $_REQUEST['longitude'];
    $rec['ALT']       = round($_REQUEST['altitude'], 2);
