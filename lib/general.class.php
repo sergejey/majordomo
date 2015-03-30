@@ -388,7 +388,7 @@ function setLocalTime($now_date, $diff=0) {
       // DEBUG MESSAGE LOG
       if (!is_dir(ROOT . 'debmes'))
       {
-         mkdir(ROOT . 'debmes');
+         mkdir(ROOT . 'debmes', 0777);
       }
 
       $log = Logger::getRootLogger();

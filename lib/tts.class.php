@@ -27,7 +27,11 @@
     'ie' => 'UTF-8',
     'q' => $message
    ));
-   $contents = file_get_contents($base_url . $qs);
+   try {
+    $contents = file_get_contents($base_url . $qs);
+   } catch(Exception $e){
+    registerError('googletts', get_class($e).', '.$e->getMessage());
+   }
    if ($contents) {
     if (!is_dir(ROOT.'cached/voice')) {
      @mkdir(ROOT.'cached/voice', 0777);

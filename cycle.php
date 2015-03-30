@@ -18,6 +18,7 @@ set_time_limit(0);
 $connected = 0;
 while(!$connected) 
 {
+   echo "Connecting to database...\n";
    $connected = @mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
    sleep(5);
 }
@@ -41,7 +42,9 @@ include_once(DIR_MODULES."control_modules/control_modules.class.php");
 $ctl = new control_modules();
 
 echo "Running startup maintenance\n";
+$run_from_start=1;
 include("./scripts/startup_maintenance.php");
+$run_from_start=0;
 
 getObject('ThisComputer')->raiseEvent("StartUp");
 

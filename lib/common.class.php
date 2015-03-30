@@ -641,6 +641,8 @@
   $cache_file=ROOT.'cached/urls/'.preg_replace('/\W/is', '_', str_replace('http://', '', $url)).'.html';
   if (!$cache || !is_file($cache_file) || ((time()-filemtime($cache_file))>$cache)) {
    //download
+  try {
+
    $ch = curl_init();
    curl_setopt($ch, CURLOPT_URL, $url);
    curl_setopt($ch, CURLOPT_USERAGENT, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
@@ -659,12 +661,19 @@
    curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
    $result = curl_exec($ch);
+
+  } catch(Exception $e){
+   registerError('geturl', $url.' '.get_class($e).', '.$e->getMessage());
+  }
+
+
    if ($cache>0) {
     if (!is_dir(ROOT.'cached/urls')) {
      @mkdir(ROOT.'cached/urls', 0777);
     }
     SaveFile($cache_file, $result);
    }
+
   } else {
    $result=LoadFile($cache_file);
   }

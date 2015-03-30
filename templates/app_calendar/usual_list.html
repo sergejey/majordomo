@@ -14,7 +14,7 @@
 <table border="0">
  [#begin EVENTS_PAST#]
  <tr>
-  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]" data-role="none">[#else#]&nbsp;[#endif#]</td>
   <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span> ([#AGE#])</td>
   <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
  </tr>

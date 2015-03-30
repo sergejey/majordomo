@@ -8,9 +8,18 @@ $old_mask = umask(0);
 
 
 $filename  = ROOT . '/database_backup/db.sql';
-if (file_exists($filename)) {
+if (file_exists($filename) && $run_from_start) {
  echo ("Running: mysql -u ".DB_USER." -p".DB_PASSWORD." ".DB_NAME." <".$filename."\n");
- exec("mysql -u ".DB_USER." -p".DB_PASSWORD." ".DB_NAME." <".$filename);
+ if (substr(php_uname(), 0, 7) == "Windows") {
+  $mysql_path=SERVER_ROOT . "/server/mysql/bin/mysql";
+ } else {
+  $mysql_path='mysql';
+ }
+ if (DB_PASSWORD!='') {
+  exec($mysql_path." -u ".DB_USER." -p".DB_PASSWORD." ".DB_NAME." <".$filename);
+ } else {
+  exec($mysql_path." -u ".DB_USER." ".DB_NAME." <".$filename);
+ }
 }
  
 if (!is_dir(DOC_ROOT . '/backup')) 

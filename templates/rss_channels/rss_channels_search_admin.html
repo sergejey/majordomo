@@ -54,8 +54,8 @@
    &nbsp;
   [#endif#]
  </td>
- <td width="150">
- 
+
+ <td width="150"> 
   [#if "<#ACTION#>"=="admin"#]
    
     <b><a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_rss_channels&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a></b>
@@ -63,8 +63,10 @@
     <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=update_rss_channels&id=[#ID#]" target=_blank><i class="glyphicon glyphicon-refresh"></i></a>
   
     <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=delete_rss_channels&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
-  
+
   [#endif ACTION#]
+  </td>
+
   </table>
  </td>
 </tr>

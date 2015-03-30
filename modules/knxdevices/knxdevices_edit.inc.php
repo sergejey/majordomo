@@ -161,12 +161,13 @@
      $properties[$i]['LINKED_PROPERTY']=${"linked_property".$properties[$i]['ID']};
      $properties[$i]['LINKED_METHOD']=${"linked_method".$properties[$i]['ID']};
 
-     if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_METHOD']) {
+     if ($properties[$i]['LINKED_OBJECT'] && $properties[$i]['LINKED_PROPERTY']) {
       addLinkedProperty($properties[$i]['LINKED_OBJECT'], $properties[$i]['LINKED_PROPERTY'], $this->name);
      }
 
      SQLUpdate('knxproperties', $properties[$i]);
 
+     $this->getProperty($properties[$i]['ID']);
     }
 
     global $new_address;
@@ -180,6 +181,16 @@
      $prop['ID']=SQLInsert('knxproperties', $prop);
 
      $this->redirect("?view_mode=edit_knxdevices&id=".$rec['ID']);
+    }
+
+   } else {
+
+    $total=count($properties);
+    for($i=0;$i<$total;$i++) {
+     if ($properties[$i]['CAN_READ']) {
+       $this->getProperty($properties[$i]['ID']);
+       $properties[$i]=SQLSelectOne("SELECT * FROM knxproperties WHERE ID='".$properties[$i]['ID']."'");
+     }
     }
 
    }

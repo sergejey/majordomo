@@ -287,7 +287,13 @@ class PushBulletException extends Exception
    for($i=0;$i<$total;$i++) {
     $push_bullet_device_id=trim($devices[$i]);
     if ($push_bullet_device_id) {
-     $res=$p->pushNote($push_bullet_device_id, $title, $data);
+
+                  try {
+                   $res=$p->pushNote($push_bullet_device_id, $title, $data);
+                  } catch(Exception $e){
+                   registerError('pushbullet', get_class($e).', '.$e->getMessage());
+                  }
+
     }
    }
   } else {
@@ -296,7 +302,13 @@ class PushBulletException extends Exception
    $total=count($devices);
    for($i=0;$i<$total;$i++) {
     if ($devices[$i]->iden) {
-     $res=$p->pushNote($devices[$i]->iden, $title, $data);
+
+                  try {
+                   $res=$p->pushNote($devices[$i]->iden, $title, $data);
+                  } catch(Exception $e){
+                   registerError('pushbullet', get_class($e).', '.$e->getMessage());
+                  }
+
     }
    }
   }

@@ -160,7 +160,11 @@ function admin(&$out) {
    global $api_enable;
    $this->config['API_URL']=$api_url;
    $this->config['API_PORT']=$api_port;
+   $old_status=$this->config['API_ENABLE'];
    $this->config['API_ENABLE']=(int)$api_enable;
+   if ($this->config['API_ENABLE']!=$old_status) {
+    SaveFile(ROOT.'reboot');
+   }
    $this->saveConfig();
    $this->redirect("?");
  }
@@ -331,12 +335,12 @@ function propertySetHandle($object, $property, $value) {
   }
 
   if (!$this->connection) {
-   echo "Connecting";
    $this->connect(0);
   }
 
   if ($this->connection) {
    $res=cacheread($this->connection, $prop['ADDRESS'], 0);
+
    //var_dump($res);
    // $res[0] - addr
    // $res[1] - from
@@ -361,6 +365,9 @@ function propertySetHandle($object, $property, $value) {
     
     $prop['DATA_RAW']=implode(',', $data);
     $prop['UPDATED']=date('Y-m-d H:i:s');
+
+    print_r($prop);
+
     SQLUpdate('knxproperties', $prop);
 
     if ($prop['LINKED_OBJECT'] && $prop['LINKED_PROPERTY']) {
