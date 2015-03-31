@@ -1089,15 +1089,10 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
   global $file_name;
   global $folder;
 
-  if (!$folder) {
-   if (substr(php_uname(), 0, 7) == "Windows") {
-    $folder='/.';
-   } else {
-    $folder='/';
-   }
-  } else {
-   $folder='/'.$folder;
-  }
+   if (!$folder)
+      $folder = IsWindowsOS() ? '/.' : '/';
+   else 
+      $folder = '/' . $folder;
 
   if ($restore!='') {
    //$file=ROOT.'saverestore/'.$restore;
@@ -1115,15 +1110,19 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
        chdir(ROOT.'saverestore/temp');
 
-       if (substr(php_uname(), 0, 7) == "Windows") {
-       // for windows only
-       exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
-       exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
-       //@unlink('../'.str_replace('.tgz', '.tar', $file));
-       } else {
-        exec('tar xzvf ../'.$file, $output, $res);
-       }
-       @unlink(ROOT.'saverestore/temp'.$folder.'/config.php');
+      if (IsWindowsOS())
+      {
+         // for windows only
+         exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
+         exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
+         //@unlink('../'.str_replace('.tgz', '.tar', $file));
+      }
+      else
+      {
+         exec('tar xzvf ../'.$file, $output, $res);
+      }
+      
+      @unlink(ROOT.'saverestore/temp'.$folder.'/config.php');
 
        //print_r($output);exit;
 
@@ -1315,24 +1314,23 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
     //$this->copyTree(ROOT.'photos', ROOT.'saverestore/temp/photos');
    }
 
-
+   
    // packing into tar.gz
-   if (substr(php_uname(), 0, 7) == "Windows") {
-    $tar_name.=date('Y-m-d__h-i-s').'.tar';
-   } else {
-    $tar_name.=date('Y-m-d__h-i-s').'.tgz';
+   $tar_name .= date('Y-m-d__h-i-s');
+   $tar_name .= IsWindowsOS() ? '.tar' : '.tgz';
+   
+   if (isset($out['BACKUP'])) 
+      $tar_name = 'backup_' . $tar_name;
+   
+   if (IsWindowsOS())
+   {
+      exec('tar.exe  --strip-components=2 -cvf ./saverestore/'.$tar_name.' ./saverestore/temp/');
    }
-
-   if ($out['BACKUP']) {
-    $tar_name='backup_'.$tar_name;
-   }
-
-   if (substr(php_uname(), 0, 7) == "Windows") {
-    exec('tar.exe  --strip-components=2 -cvf ./saverestore/'.$tar_name.' ./saverestore/temp/');
-   } else {
-    chdir(ROOT.'saverestore/temp');
-    exec('tar cvzf ../'.$tar_name.' .');
-    chdir('../../');
+   else
+   {
+      chdir(ROOT.'saverestore/temp');
+      exec('tar cvzf ../'.$tar_name.' .');
+      chdir('../../');
    }
 
    if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH!='' && file_exists(ROOT.'saverestore/'.$tar_name)) {
@@ -1403,17 +1401,13 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
   fclose ($fp);
   */
 
-  if (defined('PATH_TO_MYSQLDUMP')) {
-   exec(PATH_TO_MYSQLDUMP." --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
-  } else {
-   if (substr(php_uname(), 0, 7) == "Windows") {
-    exec(SERVER_ROOT."/server/mysql/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
-   } else {
-    exec("/usr/bin/mysqldump --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
-   }
-  }
+   if (defined('PATH_TO_MYSQLDUMP'))
+      $pathToMysqlDump = PATH_TO_MYSQLDUMP;
+   else
+      $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
 
- }
+   exec($pathToMysqlDump . " --user=".DB_USER." --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases " . DB_NAME . ">" . $filename);
+}
 
 /**
 * removeTree
