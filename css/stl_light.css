@@ -2,10 +2,10 @@
 * @version 0.2 (auto-set)
 */
 /*main styles*/
-table,div{
-        font:12px Arial, Helvetica, sans-serif;
+/*table,div{
+        font:11px Arial, Helvetica, sans-serif;
         color:black;
-}
+} */
 /*default styles*/
 a{
         color:black;
@@ -15,7 +15,7 @@ a:hover{
         color:#9ECF15;
 }
 h1{
-        font:24px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+        font:24px Arial, Helvetica, sans-serif;
     color:black;
     padding:0;
     margin:0 0 5px 0;

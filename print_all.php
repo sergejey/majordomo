@@ -98,6 +98,17 @@ header ('Content-Type: text/html; charset=utf-8');
   }
 
 
+  if (file_exists(DIR_MODULES.'zwave/zwave.class.php')) {
+   $devices=SQLSelect("SELECT * FROM zwave_devices ORDER BY NODE_ID, INSTANCE_ID, TITLE");
+   $total=count($devices);
+   for($i=0;$i<$total;$i++) {
+    $properties=SQLSelect("SELECT * FROM zwave_properties WHERE DEVICE_ID='".$devices[$i]['ID']."' ORDER BY COMMAND_CLASS, TITLE");
+    $devices[$i]['PROPERTIES']=$properties;
+   }
+   $out['ZWAVE_DEVICES']=$devices;
+  }
+
+
 
    $template_file=DIR_TEMPLATES."print_all.html";
    $p=new parser($template_file, $out);

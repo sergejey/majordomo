@@ -107,7 +107,11 @@ if (IsSet($_REQUEST['latitude']))
    }
 
    $rec=array();
-   $rec['ADDED']     = date('Y-m-d H:i:s');
+   if ($time) {
+    $rec['ADDED']     = $time;
+   } else {
+    $rec['ADDED']     = date('Y-m-d H:i:s');
+   }
    $rec['LAT']       = $_REQUEST['latitude'];
    $rec['LON']       = $_REQUEST['longitude'];
    $rec['ALT']       = round($_REQUEST['altitude'], 2);

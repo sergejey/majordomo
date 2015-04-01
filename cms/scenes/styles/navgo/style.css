@@ -25,3 +25,17 @@
  background-repeat: no-repeat;
  background-position: right center;
 }
+
+[#begin STYLES#]
+[#if HAS_DEFAULT!=""#]
+.type_navgo.style_[#TITLE#] {
+     background-image: url(<#ROOTHTML#>cms/scenes/styles/nav/[#HAS_DEFAULT#]);
+     background-repeat: no-repeat;
+     background-position: 10px 3px;
+}
+.type_navgo.style_[#TITLE#] span {
+ margin-left:36px;
+ width: 88px;
+}
+[#endif#]
+[#end STYLES#]
