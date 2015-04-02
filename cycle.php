@@ -68,10 +68,7 @@ if ($lib_dir = @opendir("./scripts"))
 
 $threads = new Threads;
 
-if (defined('PATH_TO_PHP'))
-   $threads->phpPath = PATH_TO_PHP;
-else
-   $threads->phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
+$threads->phpPath = GetCmdPhp();
 
 foreach($cycles as $path) 
 {

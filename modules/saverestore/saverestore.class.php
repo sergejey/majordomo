@@ -1401,11 +1401,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
   fclose ($fp);
   */
 
-   if (defined('PATH_TO_MYSQLDUMP'))
-      $pathToMysqlDump = PATH_TO_MYSQLDUMP;
-   else
-      $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
-
+   $pathToMysqlDump = GetCmdMysqlDump();
+   
    exec($pathToMysqlDump . " --user=".DB_USER." --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases " . DB_NAME . ">" . $filename);
 }
 

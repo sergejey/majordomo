@@ -18,24 +18,25 @@ $ctl = new control_modules();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
-$last_backup=time();
-//$last_backup=0;
+$last_backup = time();
 
-$timeout=15*60; // 15 minutes
-$filename  = ROOT . '/database_backup/db.sql';
+$timeout = 15*60; // 15 minutes
+$filename = ROOT . '/database_backup/db.sql';
 
 while(1) 
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 
-   if ((time()-$last_backup)>$timeout || file_exists('./reboot')) {
-    echo "Running db save...";
-    if (file_exists($filename)) {
-     rename($filename, $filename.'.prev');
-    }
-    exec(PATH_TO_MYSQLDUMP." --user=".DB_USER." --password=".DB_PASSWORD." --no-create-db --add-drop-table --databases ".DB_NAME.">".$filename);
-    $last_backup=time();
-    echo "OK\n";
+   if ((time() - $last_backup) > $timeout || file_exists('./reboot'))
+   {
+      echo "Running db save...";
+      if (file_exists($filename))
+         rename($filename, $filename . '.prev');
+      
+      exec(GetCmdMysqlDump() . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases " . DB_NAME . ">" . $filename);
+    
+      $last_backup = time();
+      echo "OK\n";
    }
  
    if (file_exists('./reboot') || $_GET['onetime']) 

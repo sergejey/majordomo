@@ -834,7 +834,7 @@ function execInBackground($cmd)
  }
 
 /**
-  * Возвращает true если ОС - Windows
+  * Return true if os type is Ms Windows
   * @return bool
   */
 function IsWindowsOS()
@@ -844,3 +844,40 @@ function IsWindowsOS()
 
    return false;
 }
+
+/**
+ * Return path to Mysql command
+ * @return string
+ */
+function GetCmdMysql()
+{
+   $mysqlPath = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+   
+   return $mysqlPath;
+}
+
+/**
+ * Return path to MysqlDumpCommand
+ * @return string
+ */
+function GetCmdMysqlDump()
+{
+   if (defined('PATH_TO_MYSQLDUMP'))
+      return PATH_TO_MYSQLDUMP;
+   
+   return IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
+}
+
+/**
+ * Return path to PHP command
+ * @return mixed
+ */
+function GetCmdPhp()
+{
+   if (defined('PATH_TO_PHP'))
+      return PATH_TO_PHP;
+   
+   return IsWindowsOS() ? '..\server\php\php.exe' : 'php';
+}
+
+
