@@ -390,6 +390,9 @@ function setLocalTime($now_date, $diff=0) {
       {
          mkdir(ROOT . 'debmes', 0777);
       }
+      if (!file_exists(ROOT.'debmes/'.date('Y-m-d').'.log')) {
+       SaveFile(ROOT.'debmes/'.date('Y-m-d').'.log', "Added ".date('Y-m-d H:i:s'."\n"));
+      }
 
       $log = Logger::getRootLogger();
 

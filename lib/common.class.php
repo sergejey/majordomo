@@ -844,3 +844,42 @@ function IsWindowsOS()
 
    return false;
 }
+
+function makePayload($data) {
+  $res='';
+  foreach($data as $v) {
+   $res.=chr($v);
+  }
+  return $res;
+}
+
+function HexStringToArray($buf) {
+   $res=array();
+   for($i=0;$i<strlen($buf)-1;$i+=2) {
+    $res[]=(hexdec($buf[$i].$buf[$i+1]));
+   }
+   return $res;   
+}
+
+function HexStringToString($buf) {
+   $res='';
+   for($i=0;$i<strlen($buf)-1;$i+=2) {
+    $res.=chr(hexdec($buf[$i].$buf[$i+1]));
+   }
+   return $res;   
+}
+
+
+function binaryToString($buf) {
+   $res='';
+   for($i=0;$i<strlen($buf);$i++) {
+    $num=dechex(ord($buf[$i]));
+    if (strlen($num)==1) {
+     $num='0'.$num;
+    }
+    $res.=$num;
+   }
+   return $res;
+}
+
+

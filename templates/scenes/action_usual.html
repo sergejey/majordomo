@@ -29,7 +29,11 @@
         function switchScene(scene_id) {
          [#begin RESULT#]
          if (scene_id=='[#ID#]') {
-           $('#controls[#NUMP#] a').click();
+           [#if "<#SETTINGS_SCENES_VERTICAL_NAV#>"=="1"#]
+            $('#controls_vertical[#NUMP#] a').click();
+           [#else#]
+            $('#controls[#NUMP#] a').click();
+           [#endif#]
          }
          [#end RESULT#]
          return false;
@@ -268,7 +272,7 @@
    class="element_<#ELEMENTS.ID#> type_<#ELEMENTS.TYPE#>[#if "<#ELEMENTS.CSS_STYLE#>"!=""#] style_<#ELEMENTS.CSS_STYLE#>[#endif#][#if ("<#ELEMENTS.BACKGROUND#>"=="1")#] container_background[#endif#]"
    style="position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;
    [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
-   [#if ("<#ELEMENTS.WIDTH#>"!="0") && ("<#ELEMENTS.HEIGHT#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#endif#]
+   [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]
    ">
   [#tree ELEMENTS#]
  </div>
@@ -284,7 +288,7 @@
    style="
    [#if "<#ELEMENTS.POSITION_TYPE#>"=="0"#]position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#endif ELEMENTS#]
    [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
-   [#if ("<#ELEMENTS.WIDTH#>"!="0") && ("<#ELEMENTS.HEIGHT#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;height:<#ELEMENTS.HEIGHT#>px;[#endif#]
+   [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]
    [#if SCRIPT_ID!="0" || MENU_ITEM_ID!="0" || ACTION_METHOD!="" || EXT_URL!="" || HOMEPAGE_ID!="0" || OPEN_SCENE_ID!="0" || CODE!=""#]cursor:pointer;[#endif#]
    [#if STATE!="1"#]display:none;[#else#]display:inline-block;[#endif#]">[#if "<#ELEMENTS.TYPE#>"=="img"#]<img src="[#IMAGE#]" border="0">[#endif#]<span>[#HTML#]</span></div>
  [#end STATES#]

@@ -154,10 +154,35 @@ function admin(&$out) {
    }
 
   }
-  if ($rec['MODULE_NAME']==$name) {
-   $url=$rec['REPOSITORY_URL'];
-   $version=$rec['LATEST_VERSION'];
-  }
+
+  //if ($rec['MODULE_NAME']==$name) {
+   unset($rec['LATEST_VERSION']);
+
+   if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME']==$name)) {
+    $git_url=str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
+    $github_feed=getURL($git_url, 5*60);
+    @$tmp=GetXMLTree($github_feed);
+    @$items_data=XMLTreeToArray($tmp);
+    @$items=$items_data['feed']['entry'];
+    if (is_array($items)) {
+     $latest_item=$items[0];
+     //print_r($latest_item);exit;
+     $updated=strtotime($latest_item['updated']['textvalue']);
+     $rec['LATEST_VERSION']=date('Y-m-d H:i:s', $updated);
+     $rec['LATEST_VERSION_COMMENT']=$latest_item['title']['textvalue'];
+     $rec['LATEST_VERSION_URL']=$latest_item['link']['href'];
+    }
+   }
+
+
+   if ($rec['MODULE_NAME']==$name) {
+    $url=$rec['REPOSITORY_URL'];
+    $version=$rec['LATEST_VERSION'];
+   }
+
+  //}
+
+
   $out['PLUGINS'][]=$rec;
  }
 
@@ -176,6 +201,7 @@ function admin(&$out) {
 
  if ($this->mode=='clear') {
   $this->removeTree(ROOT.'saverestore/temp');
+  @SaveFile(ROOT.'reboot', 'updated');
   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));
  }
 
@@ -239,7 +265,7 @@ function getLatest(&$out, $url, $name, $version) {
 
    if (file_exists($filename)) {
     $this->removeTree(ROOT.'saverestore/temp');
-    $this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".$version);
+    $this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version));
    } else {
     $this->redirect("?err_msg=".urlencode("Cannot download ".$url));
    }
@@ -319,7 +345,6 @@ function upload(&$out)
           }
          }
          @unlink(ROOT."modules/control_modules/installed");
-         @SaveFile(ROOT.'reboot', 'updated');
 
        global $name;
        global $version;
@@ -549,4 +574,3 @@ EOD;
 * TW9kdWxlIGNyZWF0ZWQgSmFuIDExLCAyMDE0IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
 *
 */
-?>

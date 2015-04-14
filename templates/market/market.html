@@ -1,9 +1,9 @@
 [#if ERR_MSG!=""#]
-<div class="alert alert-success">[#ERR_MSG#]</div>
+<div class="alert alert-danger">[#ERR_MSG#]</div>
 [#endif ERR_MSG#]
 
 [#if OK_MSG!=""#]
-<div class="alert alert-danger">[#OK_MSG#]</div>
+<div class="alert alert-success">[#OK_MSG#]</div>
 [#endif OK_MSG#]
 
 
@@ -15,23 +15,29 @@
 <table class="table table-striped">
  [#begin PLUGINS#]
  <tr>
-  <td valign="top"><b>[#TITLE#]</b> (v [#LATEST_VERSION#]) by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>
-  [#if EXISTS#]
-  <br>
-  [#if INSTALLED_VERSION=="<#PLUGINS.LATEST_VERSION#>"#]
-  (up to date)
-  [#else#]
-  (update available [#INSTALLED_VERSION#])
-  [#endif#]
-  [#endif EXISTS#]
-
+  <td valign="top"><b>[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
   [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
   <p>[#DESCRIPTION_RU#]</p>
   [#else#]
   <p>[#DESCRIPTION_EN#]</p>
   [#endif#]
+
+  [#if LATEST_VERSION!=""#]
+  <small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
+  [#endif#]
+
+  [#if EXISTS#]
+  <br>
+  [#if INSTALLED_VERSION=="<#PLUGINS.LATEST_VERSION#>"#]
+  <font color="green">(up to date)</font>
+  [#else#]
+  <font color="blue">(update available, current version: [#if INSTALLED_VERSION!=""#][#INSTALLED_VERSION#][#else#]unknown[#endif#])</font>
+  [#endif#]
+  [#endif EXISTS#]
+
+
   </td>
-  <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]Update[#else#]Install[#endif#]</a></b></td>
+  <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a></b></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a></td>
   <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('Please confirm!')">Uninstall</a>[#endif#]</td>
