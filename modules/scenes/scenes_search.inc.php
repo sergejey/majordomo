@@ -80,6 +80,15 @@
    }
    $out['TOTAL']=$total;
    $out['RESULT']=$res;
+
+   $out['PARAMS']='';
+   if (is_array($_GET)) {
+    foreach($_GET as $k=>$v) {
+     $out[$k]=$v;
+     $out['PARAMS'].="&$k=".urlencode($v);
+    }
+   }
+
   }
 
 ?>

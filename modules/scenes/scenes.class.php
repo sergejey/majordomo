@@ -499,12 +499,17 @@ function usual(&$out) {
      } else {
       $qry.=" AND scenes.HIDDEN!=1";
      }
+
+     foreach($_GET as $k=>$v) {
+      $this->data[$k]=$v;
+     }
+
      $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry ORDER BY elements.PRIORITY DESC, elm_states.PRIORITY DESC");
      $total=count($states);
      for($i=0;$i<$total;$i++) {
       $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
-       if (preg_match('/\[#/is', $states[$i]['HTML'])) {
+       if (preg_match('/\[#modul/is', $states[$i]['HTML'])) {
         //$states[$i]['HTML']=str_replace('#', '', $states[$i]['HTML']);
         unset($states[$i]['HTML']);
        } else {
@@ -792,6 +797,11 @@ function usual(&$out) {
  function checkState($id) {
   $rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
 
+  if (!checkAccess('scene_elements', $rec['ELEMENT_ID'])) {
+   $status=0;
+   return $status;
+  }
+
   startMeasure('state_dynamic'.$rec['IS_DYNAMIC']);
   if (!$rec['IS_DYNAMIC']) {
 
@@ -876,7 +886,21 @@ function usual(&$out) {
 */
  function getElements($qry='1', $options=0) {
       $elements=SQLSelect("SELECT * FROM elements WHERE $qry ORDER BY PRIORITY DESC, TITLE");
+
+      /*
       $totale=count($elements);
+      $res2=array();
+      for($ie=0;$ie<$totale;$ie++) {
+      if (checkAccess('scene_elements', $elements[$ie]['ID'])) {
+        $res2[]=$elements[$ie];
+       }
+      }
+      $elements=$res2;
+      */
+
+      $totale=count($elements);
+
+
       for($ie=0;$ie<$totale;$ie++) {
        if ($elements[$ie]['CSS_STYLE']) {
         $this->all_styles[$elements[$ie]['CSS_STYLE']]=1;

@@ -41,6 +41,16 @@
  <div class="controls"><input type="password" name="zwave_api_password" value="<#ZWAVE_API_PASSWORD#>" class="input"></div>
 </div>
 
+<!--#
+<div class="form-group">
+ <label class="control-label"[#if ERR_ZWAVE_API_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
+ API reset timeout:
+ </label>
+ <div class="controls"><input type="text" name="zwave_api_reset" value="<#ZWAVE_API_RESET#>" class="input"> (seconds, 0 to disable)</div>
+</div>
+#-->
+
+
 
 <div class="form-actions">
 <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
@@ -98,6 +108,9 @@
  <#LANG_TITLE#>
  </th>
  <th>
+ <#LANG_LOCATION#>
+ </th>
+ <th>
  <#LANG_DETAILS#>
  </th>
 <td>&nbsp;</td>
@@ -114,6 +127,7 @@
    <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_zwave_devices&id=[#ID#]">[#TITLE#]</a>
   </a></b>
  </td>
+ <td valign="top">[#LOCATION#]&nbsp;</td>
  <td>
    [#if CLASS_BASIC="1"#]basic[#if BASIC!=""#] ([#BASIC#])[#endif#];[#endif#]
    [#if CLASS_SENSOR_BINARY="1"#]sensor binary;[#endif#]

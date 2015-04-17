@@ -172,6 +172,15 @@
     }
    }
 
+   //zwave devices
+   if (file_exists(DIR_MODULES.'app_gpstrack/app_gpstrack.class.php')) {
+    $devices=SQLSelect("SELECT gpsactions.ID, gpslocations.TITLE, users.NAME FROM gpsactions LEFT JOIN users ON gpsactions.USER_ID=users.ID LEFT JOIN gpslocations ON gpsactions.LOCATION_ID=gpslocations.ID WHERE (TITLE LIKE '%".DBSafe($title)."%' OR CODE LIKE '%".DBSafe($title)."%') ORDER BY gpslocations.TITLE");
+    $total=count($devices);
+    for($i=0;$i<$total;$i++) {
+     $res.='GPS: <a href="/panel/app_gpstrack/action_'.$devices[$i]['ID'].'.html">'.$devices[$i]['TITLE'].' - '.$devices[$i]['NAME'].'</a><br>';
+    }
+   }
+
    //to-do: webvars
 
 

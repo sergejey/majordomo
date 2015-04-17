@@ -18,13 +18,13 @@
 
   global $include_controller;
   if (!$include_controller) {
-   $qry.=" AND TITLE NOT LIKE 'Static PC Controller%'";
+   $qry.=" AND zwave_devices.TITLE NOT LIKE 'Static PC Controller%'";
   }
 
 
   global $title;
   if ($title!='') {
-   $qry.=" AND TITLE LIKE '%".DBSafe($title)."%'";
+   $qry.=" AND zwave_devices.TITLE LIKE '%".DBSafe($title)."%'";
    $out['TITLE']=$title;
   }
   if (IsSet($this->location_id)) {
@@ -55,10 +55,10 @@
    }
    $session->data['zwave_devices_sort']=$sortby_zwave_devices;
   }
-  $sortby_zwave_devices="NODE_ID, INSTANCE_ID, TITLE";
+  $sortby_zwave_devices="zwave_devices.NODE_ID, zwave_devices.INSTANCE_ID, zwave_devices.TITLE";
   $out['SORTBY']=$sortby_zwave_devices;
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT * FROM zwave_devices WHERE $qry ORDER BY ".$sortby_zwave_devices);
+  $res=SQLSelect("SELECT zwave_devices.*, locations.TITLE as LOCATION FROM zwave_devices LEFT JOIN locations ON zwave_devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY ".$sortby_zwave_devices);
   if ($res[0]['ID']) {
    colorizeArray($res);
    $total=count($res);

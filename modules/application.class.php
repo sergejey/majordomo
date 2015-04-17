@@ -90,26 +90,32 @@ function getParams() {
     if ($dir = @opendir(ROOT."cached/voice")) { 
        while (($file = readdir($dir)) !== false) { 
        if (preg_match('/\.mp3$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice".$file);
+        $mtime=filemtime(ROOT."cached/voice/".$file);
+        /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
          unlink(ROOT."cached/voice".$file);
         } else {
-         $files[]=array('FILENAME'=>$file, 'MTIME'=>filemtime(ROOT."cached/voice".$file));
         }
+        */
+        $files[]=array('FILENAME'=>$file, 'MTIME'=>$mtime);
        }
 
        if (preg_match('/\.wav$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice".$file);
+        $mtime=filemtime(ROOT."cached/voice/".$file);
+        /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
-         unlink(ROOT."cached/voice".$file);
+         unlink(ROOT."cached/voice/".$file);
         }
+        */
        }
 
       }
      closedir($dir); 
     } 
+
+    //print_r($files);exit;
 
     if (is_array($files)) {
      function sortFiles($a, $b) {

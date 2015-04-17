@@ -149,11 +149,13 @@ function admin(&$out) {
  $out['ZWAVE_API_USERNAME']=$this->config['ZWAVE_API_USERNAME'];
  $out['ZWAVE_API_PASSWORD']=$this->config['ZWAVE_API_PASSWORD'];
  $out['ZWAVE_API_AUTH']=$this->config['ZWAVE_API_AUTH'];
+ $out['ZWAVE_API_RESET']=(int)$this->config['ZWAVE_API_RESET'];
  if ($this->view_mode=='update_settings') {
    global $zwave_api_url;
    global $zwave_api_username;
    global $zwave_api_password;
    global $zwave_api_auth;
+   global $zwave_api_reset;
 
    if (!preg_match('/\/$/', $zwave_api_url)) {
     $zwave_api_url=$zwave_api_url.'/';
@@ -162,6 +164,7 @@ function admin(&$out) {
    $this->config['ZWAVE_API_USERNAME']=$zwave_api_username;
    $this->config['ZWAVE_API_PASSWORD']=$zwave_api_password;
    $this->config['ZWAVE_API_AUTH']=(int)$zwave_api_auth;
+   $this->config['ZWAVE_API_RESET']=(int)$zwave_api_reset;
    $this->saveConfig();
    $this->redirect("?");
  }
@@ -441,6 +444,20 @@ function admin(&$out) {
    $this->pollDevice($rec['DEVICE_ID']);
   }
 
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function resetChip() {
+  //http://IP-OF-RAZBERRY:8083/ZWaveAPI/Run/SerialAPISoftReset(1)
+  $cmd="/ZWaveAPI/Run/SerialAPISoftReset(1)";
+  $data=$this->apiCall($cmd);
+ }
+
 /**
 * Title
 *
@@ -449,6 +466,7 @@ function admin(&$out) {
 * @access public
 */
  function pollUpdates() {
+
   if (!$this->latestPoll) {
    $latest=$this->scanNetwork();
    if (!$latest) {
@@ -458,6 +476,7 @@ function admin(&$out) {
    }
   } else {
 
+   $unknown_device_found=0;
    //sending update request for some properties
    $properties=SQLSelect("SELECT zwave_properties.*,zwave_devices.NODE_ID, zwave_devices.INSTANCE_ID FROM zwave_properties LEFT JOIN zwave_devices ON zwave_properties.DEVICE_ID=zwave_devices.ID WHERE UPDATE_PERIOD>0 AND (IsNull(zwave_properties.NEXT_UPDATE) OR zwave_properties.NEXT_UPDATE<='".date('Y-m-d H:i:s')."')");
    $total=count($properties);
@@ -483,7 +502,7 @@ function admin(&$out) {
     echo "Error getting updates!\n";
    } else {
     $this->latestPoll=$latest;
-
+    $this->latestDataReceived=time();
     $data=(array)$data;
     foreach($data as $k=>$v) {
      if (preg_match('/devices\.(\d+)\.instances\.(\d+)\.commandClasses/', $k, $m)) {
@@ -494,6 +513,7 @@ function admin(&$out) {
        $rec=SQLSelectOne("SELECT ID from zwave_devices WHERE NODE_ID='".$device_id."' AND INSTANCE_ID='".$instance_id."'");
        if (!$rec['ID']) {
         echo "Unknown device (".$m[0].")\n";
+        $unknown_device_found=1;
        } else {
         echo "Polling device (".$m[0].") ...";
         $this->pollDevice($rec['ID']);
@@ -503,8 +523,20 @@ function admin(&$out) {
      }
     }
     //print_r($data);
+
+    if ($unknown_device_found) {
+     $this->scanNetwork();
+    }
+
    }
   }
+
+  if ($this->config['ZWAVE_API_RESET'] && ((time()-$this->latestDataReceived)>(int)$this->config['ZWAVE_API_RESET']) && ((time()-$this->latestReset))>15*60) {
+   // reset chip if no data was received during timeout set and latest reset was 15 minutes ago or latesr
+   $this->latestReset=time();
+   $this->resetChip();
+  }
+
  }
 
  function propertySetHandle($object, $property, $value) {

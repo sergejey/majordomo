@@ -208,7 +208,7 @@
 
         function checkAllStates() {
          clearTimeout(checkTimer);
-         var url="<#ROOTHTML#>ajax/scenes.html?op=checkAllStates[#if "<#SCENE_ID#>"!=""#]&scene_id=<#SCENE_ID#>[#endif#]";
+         var url="<#ROOTHTML#>ajax/scenes.html?op=checkAllStates[#if "<#SCENE_ID#>"!=""#]&scene_id=<#SCENE_ID#>[#endif#]<#PARAMS#>";
          $.ajax({
           url: url,
           }).done(function(data) { 

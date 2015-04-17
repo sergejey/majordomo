@@ -35,6 +35,7 @@ $connected=0;
 for($i=0;$i<3;$i++) {
  if ($zwave->connect()) {
   $connected=1;
+  $zwave->latestReset=time();
   break;
  } else {
   echo "Cannot connect to Z-Wave API\n";
