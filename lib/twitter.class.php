@@ -31,7 +31,9 @@
        
       // create a new instance
       $tweet = new TwitterOAuth($consumerKey, $consumerSecret, $oAuthToken, $oAuthSecret);
-       
+      
+      // add time to message
+      $message = date('H:i:s').' '.$message;
       //send a tweet
       $tweet->post('statuses/update', array('status' => $message));
 
