@@ -153,7 +153,7 @@ jQuery.fn.center = function () {
    if (noteLatest!=obj.DATA) {
     if (noteLatest!='') {
      $.gritter.add({
-         title: 'Alice',
+         title: '[#if "<#SETTINGS_GENERAL_ALICE_NAME#>"!=""#]<#SETTINGS_GENERAL_ALICE_NAME#>[#else#]<#LANG_DEFAULT_COMPUTER_NAME#>[#endif#]',
          text: obj.DATA, 
          sticky: false, 
          time: 8000

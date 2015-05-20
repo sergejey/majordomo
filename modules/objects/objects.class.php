@@ -547,8 +547,15 @@ curl_close($ch);
    endMeasure('callMethod', 1);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
-    $this->callMethod($name, $params, 1);
+    $parent_success=$this->callMethod($name, $params, 1);
    }
+
+   if (isset($success)) {
+    return $success;
+   } else {
+    return $parent_success;
+   }
+
   } else {
    endMeasure('callMethod ('.$original_method_name.')', 1);
    endMeasure('callMethod', 1);
