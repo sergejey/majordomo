@@ -59,12 +59,7 @@ function getParams() {
         if(function_exists('ldap_connect') && is_file(ROOT.'modules/ldap_users/installed')) {
                 $out['LDAP_ON']=1;
         }
-// LDAP inicial
 
-        if (file_exists(DIR_MODULES.'userlog/userlog.class.php')) {
-         include_once(DIR_MODULES.'userlog/userlog.class.php');
-         $this->userlog=new userlog();
-        }
 
 
   if ($this->mode=='logoff') {
@@ -74,9 +69,7 @@ function getParams() {
    UnSet($session->data['SITE_USERNAME']);
    UnSet($session->data['SITE_USER_ID']);
    Unset($session->data["cp_requested_url"]);
-   if (isset($this->userlog)) {
-    $this->userlog->newEntry('Logged Off');
-   }
+   
    $this->owner->redirect("/");
   }
 
@@ -114,9 +107,7 @@ function getParams() {
      $session->data['USER_LEVEL']=$user['PRIVATE'];
      $session->data['USER_ID']=$user['ID'];
 
-     if (isset($this->userlog)) {
-      $this->userlog->newEntry('Logged In');
-     }
+     
 
      if (!$session->data["cp_requested_url"]) {
       if (file_exists(DIR_MODULES.'dashboard/dashboard.class.php')) {
@@ -318,37 +309,29 @@ function getParams() {
  }
 
 // --------------------------------------------------------------------
- function checkAccess($action="", $log=0) {
-  global $session;
+   function checkAccess($action = "", $log = 0)
+   {
+      global $session;
 
-  if ($session->data['USER_ID']==1) {
-   return 1;
-  }
+      if ($session->data['USER_ID'] == 1) 
+         return 1;
+  
+      $user = SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."'");
+      if (!$user['ID'])
+      {
+         UnSet($session->data['AUTHORIZED']);
+         UnSet($session->data['USER_NAME']);
+         $this->redirect("?");
+      }
 
-  $user=SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."'");
-  if (!$user['ID']) {
-     UnSet($session->data['AUTHORIZED']);
-     UnSet($session->data['USER_NAME']);
-     $this->redirect("?");
-  }
-
-
-  if ($action!="") {
-   $user=SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."' AND (ACCESS LIKE '$action' OR ACCESS LIKE '$action,%' OR ACCESS LIKE '%,$action' OR ACCESS LIKE '%,$action,%')");
-  }
-  if (IsSet($user['ID'])) {
-
-   if ($log && $action!='') {
-    if (!isset($this->userlog) && file_exists(DIR_MODULES.'userlog/userlog.class.php')) {
-     include_once(DIR_MODULES.'userlog/userlog.class.php');
-     $this->userlog=new userlog();
-     $this->userlog->newEntry('Working with: '.$action, 1);
-    }
+      if ($action != "") 
+         $user=SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."' AND (ACCESS LIKE '$action' OR ACCESS LIKE '$action,%' OR ACCESS LIKE '%,$action' OR ACCESS LIKE '%,$action,%')");
+    
+      if (isset($user['ID']))
+         return 1;
+  
+      return 0;
    }
-   return 1;
-  }
-  else return 0;
- }
 
 // --------------------------------------------------------------------
  function dbInstall($data) {
