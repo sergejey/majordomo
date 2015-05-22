@@ -1,10 +1,7 @@
 <?php
 
 /**
- * Title
- *
  * Description
- *
  * @access public
  */
 function xbmc_request($ch, $terminal, $method, $params = 0) 
