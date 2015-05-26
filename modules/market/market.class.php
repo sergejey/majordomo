@@ -121,7 +121,7 @@ function admin(&$out) {
 
  global $name;
 
- $data_url='http://connect.smartliving.ru/market/';
+ $data_url='http://connect.smartliving.ru/market/?lang='.LANG;
 
  global $err_msg;
  if ($err_msg) {
@@ -143,6 +143,9 @@ function admin(&$out) {
   return;
  }
  $total=count($data->PLUGINS);
+
+ $old_category='';
+
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
   if (is_dir(ROOT.'modules/'.$rec['MODULE_NAME'])) {
@@ -154,6 +157,11 @@ function admin(&$out) {
    }
 
   }
+
+   if ($rec['CATEGORY']!=$old_category) {
+    $rec['NEW_CATEGORY']=1;
+    $old_category=$rec['CATEGORY'];
+   }
 
   //if ($rec['MODULE_NAME']==$name) {
    unset($rec['LATEST_VERSION']);

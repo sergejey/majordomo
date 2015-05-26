@@ -14,6 +14,13 @@
 [#if PLUGINS#]
 <table class="table table-striped">
  [#begin PLUGINS#]
+ [#if NEW_CATEGORY#]
+ <tr>
+  <td valign="top" colspan="10">
+   <h2>[#CATEGORY#]</h2>
+  </td>
+ </tr>
+ [#endif NEW_CATEGORY#]
  <tr>
   <td valign="top"><b>[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
   [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
