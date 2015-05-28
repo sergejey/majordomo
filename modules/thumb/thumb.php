@@ -7,6 +7,12 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 
 
+if (IsWindowsOS()) {
+ define("PATH_TO_FFMPEG", SERVER_ROOT.'/apps/ffmpeg/ffmpeg.exe');
+} else {
+ define("PATH_TO_FFMPEG", 'ffmpeg');
+}
+
 define("_I_CACHING","1");               //    Chaching enabled, 1 - yes, 0 - no
 define("_I_CACHE_PATH","./cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds, 0 - never expired
@@ -18,16 +24,22 @@ define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds
 
 
 if ($url) {
-
    $url=base64_decode($url);
-   $result=getURL($url, 0, $username, $password);
-   if ($result) {
-    SaveFile($img, $result);
+   if (preg_match('/^rtsp:/is', $url) && file_exists(PATH_TO_FFMPEG)) {
+    exec(PATH_TO_FFMPEG.' -y -i "'.$url.'" -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
     $dc=1;
    } else {
-    $img='error';
+    $result=getURL($url, 0, $username, $password);
+    if ($result) {
+     SaveFile($img, $result);
+     $dc=1;
+    } else {
+     $img='error';
+    }
    }
 }
+
+
 
 //$img=str_replace('\\\\', '\\', $img);
 
@@ -43,6 +55,7 @@ $type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
 //$img='./../../'.$img;
 
 if (file_exists($img)) {
+
 
  $new_width=(int)$_REQUEST['w'];
  $new_height=(int)$_REQUEST['h'];

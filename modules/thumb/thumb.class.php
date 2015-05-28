@@ -45,7 +45,7 @@ function run() {
    $this->username=processTitle($this->username);
    $this->password=processTitle($this->password);
 
-   $filename='thumb_'.md5($this->url).basename($this->url);
+   $filename='thumb_'.md5($this->url).basename(preg_replace('/\W/', '', $this->url));
    if (preg_match('/\.cgi$/is', $filename)) {
     $filename=str_replace('.cgi', '.jpg', $filename);
    }
@@ -75,6 +75,8 @@ function run() {
    $out['REAL_WIDTH']=$lst[0];
    $out['REAL_HEIGHT']=$lst[1];
    $out['URL']=base64_encode($this->url);
+
+
    $out['USERNAME']=urlencode($this->username);
    $out['PASSWORD']=urlencode($this->password);
    $image_format=$lst[2];
