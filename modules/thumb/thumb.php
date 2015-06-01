@@ -1,79 +1,67 @@
 <?php
-/*
-* @version 0.1 (auto-set)
-*/
+
+/**
+ * Thumbnail builder
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 0.2
+ */
+
 chdir('../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
 
+$ffmpegPath = IsWindowsOS() ? SERVER_ROOT.'/apps/ffmpeg/ffmpeg.exe' : 'ffmpeg';
 
-if (IsWindowsOS()) {
- define("PATH_TO_FFMPEG", SERVER_ROOT.'/apps/ffmpeg/ffmpeg.exe');
-} else {
- define("PATH_TO_FFMPEG", 'ffmpeg');
-}
+define("PATH_TO_FFMPEG", $ffmpegPath);  // Path to FFMPEG
 
-define("_I_CACHING","1");               //    Chaching enabled, 1 - yes, 0 - no
-define("_I_CACHE_PATH","./cached/"); //    Path to cache dir
-define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds, 0 - never expired
+define("_I_CACHING", "1");               // Chaching enabled, 1 - yes, 0 - no
+define("_I_CACHE_PATH", "./cached/");    // Path to cache dir
+define("_I_CACHE_EXPIRED", "2592000");   // Expired time for images in seconds, 0 - never expired
 
-
-//$img=($_REQUEST['img']);
-
-//$img=urldecode($_REQUEST['img']);
-
-
-if ($url) {
-   $url=base64_decode($url);
-   if (preg_match('/^rtsp:/is', $url)) {
-    exec(PATH_TO_FFMPEG.' -y -i "'.$url.'" -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
-    $dc=1;
-   } else {
-    $result=getURL($url, 0, $username, $password);
-    if ($result) {
-     SaveFile($img, $result);
-     $dc=1;
-    } else {
-     $img='error';
-    }
+if ($url)
+{
+   $url = base64_decode($url);
+   
+   if (preg_match('/^rtsp:/is', $url)) 
+   {
+      exec(PATH_TO_FFMPEG.' -y -i "' . $url . '" -r 10 -f image2 -ss 00:00:01.500 -vframes 1 ' . $img);
+      $dc = 1;
+   }
+   else 
+   {
+      $result = getURL($url, 0, $username, $password);
+      
+      if ($result)
+      {
+         SaveFile($img, $result);
+         $dc = 1;
+      } 
+      else 
+      {
+         $img = 'error';
+      }
    }
 }
 
+// Allowed types: 0 - fit, 2 - exact size
+$type = (isset($_REQUEST['t']) ? $_REQUEST['t'] : 0);
 
+if (file_exists($img)) 
+{
+   $newWidth = (int)$_REQUEST['w'];
+   $newHeight = (int)$_REQUEST['h'];
 
-//$img=str_replace('\\\\', '\\', $img);
+   $cachedFilename = md5($img . filemtime($img) . $newWidth . $newHeight) . '.jpg';
+   $pathToCacheFile = _I_CACHE_PATH . substr($cachedFilename, 0, 2);
+   $cache = $pathToCacheFile . '/' . $cachedFilename;
 
-//echo $img;exit;
-
-$type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
-
-/*
-   Allowed types:
-    0 - fit
-    2 - exact size
-*/
-//$img='./../../'.$img;
-
-if (file_exists($img)) {
-
-
- $new_width=(int)$_REQUEST['w'];
- $new_height=(int)$_REQUEST['h'];
-
- $cached_filename=md5($img.filemtime($img).$new_width.$new_height).'.jpg';
- $path_to_cache_file=_I_CACHE_PATH.substr($cached_filename, 0, 2);
- $cache = $path_to_cache_file.'/'.$cached_filename;
-
- //   Check the cache
- if(_I_CACHING == "1" && !$dc)
-         
-   //$cache = _I_CACHE_PATH.md5($img.filemtime($img).$image_width.$image_height).".pic";
-   if(file_exists($cache))
+   //   Check the cache
+   if(_I_CACHING == "1" && !$dc)
    {
-    //  $resc=GetImageSize($cache);
-    //  list($w_o,$h_o,$t_o) = $resc;
-    //  if ($w_o == $image_width && $h_o == $image_height && $t_o == $image_format)
-    //  {
+      if(file_exists($cache))
+      {
          header("Content-Type:image/jpeg");
          header("Content-Length: ".filesize($cache));
          header("Cache-Control: public"); // HTTP/1.1
@@ -81,85 +69,63 @@ if (file_exists($img)) {
          header('Last-Modified: '.gmdate('D, d M Y H:i:s', @filemtime($cache)).' GMT');
          readfile($cache);
          exit;
-   //   }
-   }
-
- $filename=$img;
- $lst=GetImageSize($filename);
- $image_width=$lst[0];
- $image_height=$lst[1];
- $image_format=$lst[2];
-
-
- switch($type)
- {
-   case 0:
-    if (($new_width!=0) && ($new_width<$image_width)) {
-     $image_height=(int)($image_height*($new_width/$image_width));
-     $image_width=$new_width;
-    }
-    if (($new_height!=0) && ($new_height<$image_height)) {
-     $image_width=(int)($image_width*($new_height/$image_height));
-     $image_height=$new_height;
-    }
-   break;
-
-   case 1:
-     $image_width=$new_width;
-     $image_height=$image_height;
-   break;
- }
-
-
-   // Remove old cached images
-   /*
-   if ($handle = opendir(_I_CACHE_PATH)) {
-      while (false !== ($file = readdir($handle))) {
-          if ($file != "." && $file != ".." && time() - filemtime(_I_CACHE_PATH.$file) > _I_CACHE_EXPIRED)
-            @unlink(_I_CACHE_PATH.$file);
       }
-      closedir($handle);
    }
-   */
-   //
+   
+   $fileName = $img;
+   $lst = GetImageSize($fileName);
+   $imageWidth = $lst[0];
+   $imageHeight = $lst[1];
+   $imageFormat = $lst[2];
 
- //   endof check
- if ($image_format==1) {
-//   Header("Content-Type:image/gif");
-//   readfile($filename);
-//   exit;
-  $old_image=imagecreatefromgif($filename);
- } elseif ($image_format==2) {
-  $old_image=imagecreatefromjpeg($filename);
- } elseif ($image_format==3) {
-  $old_image=imagecreatefrompng($filename);
- } else {
-  return;
- }
+   switch($type)
+   {
+      case 0:
+         if (($newWidth > 0) && ($newWidth < $imageWidth))
+         {
+            $imageHeight = (int)($imageHeight * ($newWidth / $imageWidth));
+            $imageWidth = $newWidth;
+         }
+         
+         if (($newHeight > 0) && ($newHeight < $imageHeight)) 
+         {
+            $imageWidth = (int)($imageWidth * ($newHeight / $imageHeight));
+            $imageHeight = $newHeight;
+         }
+         
+         break;
+      case 1:
+         $imageWidth = $newWidth;
+         $imageHeight = $newHeight;
+         break;
+   }
 
-// echo("$image_width x $image_height");
- $new_image=imageCreateTrueColor($image_width, $image_height);
- $white = ImageColorAllocate($new_image, 255, 255, 255);
- ImageFill($new_image, 0, 0, $white);
+   //   endof check
+   if ($imageFormat == 1)
+      $oldImage = imagecreatefromgif($fileName);
+   elseif ($imageFormat == 2) 
+      $oldImage = imagecreatefromjpeg($fileName);
+   elseif ($imageFormat == 3)
+      $oldImage = imagecreatefrompng($fileName);
+   else
+      return;
+   
+   $newImage = imageCreateTrueColor($imageWidth, $imageHeight);
+   $imageColor = ImageColorAllocate($newImage, 255, 255, 255);
+   ImageFill($newImage, 0, 0, $imageColor);
 
- /*imageCopyResized*/imagecopyresampled( $new_image, $old_image, 0, 0, 0, 0, $image_width, $image_height, imageSX($old_image), imageSY($old_image));
+   imagecopyresampled($newImage, $oldImage, 0, 0, 0, 0, $imageWidth, $imageHeight, imageSX($oldImage), imageSY($oldImage));
 
- //   Save to cache
- if(_I_CACHING == "1" && !$_REQUEST['dc'])
- {
-    //if (!file_exists(_I_CACHE_PATH)) {
-    // @mkdir(_I_CACHE_PATH, 0777);
-    //}
-    if (!is_dir($path_to_cache_file)) {
-     @mkdir($path_to_cache_file);
-    }
+   // Save to cache
+   if(_I_CACHING == "1" && !isset($_REQUEST['dc']))
+   {
+      if (!is_dir($pathToCacheFile))
+         @mkdir($pathToCacheFile);
 
-    imageJpeg($new_image,$cache);
-    //@chmod($cache, '0666');
- }
- //   Endof save
+      imageJpeg($newImage, $cache);
+   }
+   //   Endof save
 
- Header("Content-type:image/jpeg");
- imageJpeg($new_image);
-
+   Header("Content-type:image/jpeg");
+   imageJpeg($newImage);
 }

@@ -1,18 +1,22 @@
 <?php
-/*
-* @version 0.1 (auto-set)
-*/
 
-$img=urldecode($_REQUEST['img']);
-$color=$_REQUEST['color'];
-$close=$_REQUEST['close'];
-$bgcolor=$_REQUEST['bgcolor'];
+/**
+ * Thumbnail builder
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 0.2
+ */
 
-$out="<a href='#' onClick='window.close()'><img src='".$img."' border=0></a>";
+$img = urldecode($_REQUEST['img']);
+$color = $_REQUEST['color'];
+$close = $_REQUEST['close'];
+$bgcolor = $_REQUEST['bgcolor'];
 
-if ($close!='') {
-	$out.="<div align=center><a href='#' onClick='window.close()' ".(($color!='')?'style="color:#'.$color.'"':'') .'>'.$close.'</a></div>';
-} 
+$out = "<a href='#' onClick='window.close()'><img src='" . $img . "' border=0></a>";
 
-print_r("<html><head><title>...</title></head><body style='margin:0px' bgcolor='".(($bgcolor!="")?'#'.$bgcolor:"#FFFFFF")."'>".$out."</body></html>");
+if ($close != '')
+   $out .= "<div align=center><a href='#' onClick='window.close()' " . (($color != '') ? 'style="color:#' . $color . '"' : '') . '>' . $close . '</a></div>';
+
+print_r("<html><head><title>...</title></head><body style='margin:0px' bgcolor='" . (($bgcolor != "") ? '#' . $bgcolor : "#FFFFFF") . "'>" . $out . "</body></html>");
 ?>
