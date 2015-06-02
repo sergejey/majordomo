@@ -26,7 +26,7 @@ define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds
 if ($url) {
    $url=base64_decode($url);
    if (preg_match('/^rtsp:/is', $url)) {
-    exec(PATH_TO_FFMPEG.' -y -i "'.$url.'" -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+    system(PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'" -r 10 -q:v 9 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
     $dc=1;
    } else {
     $result=getURL($url, 0, $username, $password);
