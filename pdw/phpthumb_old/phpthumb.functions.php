@@ -819,7 +819,7 @@ class phpthumb_functions {
 	function EnsureDirectoryExists($dirname) {
 		$directory_elements = explode(DIRECTORY_SEPARATOR, $dirname);
 		$startoffset = (!$directory_elements[0] ? 2 : 1);  // unix with leading "/" then start with 2nd element; Windows with leading "c:\" then start with 1st element
-		$open_basedirs = split('[;:]', ini_get('open_basedir'));
+		$open_basedirs = preg_split('/[;:]/', ini_get('open_basedir'));
 		foreach ($open_basedirs as $key => $open_basedir) {
 			if (preg_match('^'.preg_quote($open_basedir), $dirname) && (strlen($dirname) > strlen($open_basedir))) {
 				$startoffset = count(explode(DIRECTORY_SEPARATOR, $open_basedir));
