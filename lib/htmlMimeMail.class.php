@@ -138,10 +138,10 @@ class htmlMimeMail
         /**
         * Defaults for smtp sending
         */
-        if (!empty($GLOBALS['HTTP_SERVER_VARS']['HTTP_HOST'])) {
-            $helo = $GLOBALS['HTTP_SERVER_VARS']['HTTP_HOST'];
-        } elseif (!empty($GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'])) {
-            $helo = $GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'];
+        if (!empty($_SERVER['HTTP_HOST'])) {
+           $helo = $_SERVER['HTTP_HOST'];
+        } elseif (!empty($_SERVER['SERVER_NAME'])) {
+           $helo = $_SERVER['SERVER_NAME'];
         } else {
             $helo = 'localhost';
         }
@@ -628,8 +628,8 @@ class htmlMimeMail
 
             // Add message ID header
             srand((double)microtime()*10000000);
-            $host_or_name = (isset($GLOBALS["SERVER_NAME"]) && $GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME']) ? $GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'] : "";
-            $host_or_name = (isset($GLOBALS["HTTP_SERVER_VARS"]) && $GLOBALS['HTTP_SERVER_VARS']['HTTP_HOST'] && !empty($GLOBALS['HTTP_SERVER_VARS']['HTTP_HOST'])) ? $GLOBALS['HTTP_SERVER_VARS']['HTTP_HOST'] : $host_or_name;
+            $host_or_name = (isset($_SERVER["SERVER_NAME"]) && $_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : "";
+            $host_or_name = (isset($_SERVER) && $_SERVER['HTTP_HOST'] && !empty($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : $host_or_name;
             $message_id = sprintf('<%s.%s@%s>', base_convert(time(), 10, 36), base_convert(rand(), 10, 36), $host_or_name);
             $this->headers['Message-ID'] = $message_id;
 
