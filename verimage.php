@@ -25,7 +25,7 @@ while ($position > strlen($content))
 
 $text = substr($content, $position, 3 * TEXTLENGTH);
 
-$text = ereg_replace("[^a-zA-Z0-9]+", '', $text);
+$text = preg_replace("[^a-zA-Z0-9]+", '', $text);
 $text = substr($text, 0, TEXTLENGTH);
 $text = strtolower($text);
 

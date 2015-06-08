@@ -316,7 +316,7 @@
             else if($row[$j] != "") $insert .= "'".$this->DbSafe($row[$j])."',";
             else $insert .= "'',";
          }
-         $insert = ereg_replace(",$","",$insert);
+         $insert = preg_replace(",$","",$insert);
          $insert .= ");\n";
          $content .= $insert;
      }

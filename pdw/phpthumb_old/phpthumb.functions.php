@@ -883,7 +883,7 @@ class phpthumb_functions {
 
 
 	function SanitizeFilename($filename) {
-		$filename = ereg_replace('[^'.preg_quote(' !#$%^()+,-.;<>=@[]_{}').'a-zA-Z0-9]', '_', $filename);
+		$filename = preg_replace('[^'.preg_quote(' !#$%^()+,-.;<>=@[]_{}').'a-zA-Z0-9]', '_', $filename);
 		if (phpthumb_functions::version_compare_replacement(phpversion(), '4.1.0', '>=')) {
 			$filename = trim($filename, '.');
 		}

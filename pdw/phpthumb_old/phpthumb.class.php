@@ -887,7 +887,7 @@ class phpthumb {
 		$AvailableImageOutputFormats = array_unique($AvailableImageOutputFormats);
 		$this->DebugMessage('$AvailableImageOutputFormats = array('.implode(';', $AvailableImageOutputFormats).')', __FILE__, __LINE__);
 
-		$this->f = ereg_replace('[^a-z]', '', strtolower($this->f));
+		$this->f = preg_replace('[^a-z]', '', strtolower($this->f));
 		if (strtolower($this->config_output_format) == 'jpg') {
 			$this->config_output_format = 'jpeg';
 		}
@@ -1653,11 +1653,11 @@ class phpthumb {
 
 						case 'lvl':
 							@list($band, $method, $threshold) = explode('|', $parameter);
-							$band      = ($band ? ereg_replace('[^RGBA\\*]', '', strtoupper($band)) : '*');
+							$band      = ($band ? preg_replace('[^RGBA\\*]', '', strtoupper($band)) : '*');
 							$method    = ((strlen($method) > 0)    ? intval($method)                :   2);
 							$threshold = ((strlen($threshold) > 0) ? floatval($threshold)           : 0.1);
 
-							$band = ereg_replace('[^RGBA\\*]', '', strtoupper($band));
+							$band = preg_replace('[^RGBA\\*]', '', strtoupper($band));
 
 							if (($method > 1) && !$this->ImageMagickSwitchAvailable(array('channel', 'contrast-stretch'))) {
 								// Because ImageMagick processing happens before PHP-GD filters, and because some
@@ -2332,7 +2332,7 @@ exit;
 
 					case 'lvl': // autoLevels
 						@list($band, $method, $threshold) = explode('|', $parameter);
-						$band      = ($band ? ereg_replace('[^RGBA\\*]', '', strtoupper($band)) : '*');
+						$band      = ($band ? preg_replace('[^RGBA\\*]', '', strtoupper($band)) : '*');
 						$method    = ((strlen($method) > 0)    ? intval($method)                :   2);
 						$threshold = ((strlen($threshold) > 0) ? floatval($threshold)           : 0.1);
 
