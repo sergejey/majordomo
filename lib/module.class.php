@@ -170,8 +170,8 @@ Define("EQ_DELIMITER", "qz_");
   function restoreParams() {
    global $md;
    global $pd;
-   global $HTTP_GET_VARS;
-   global $HTTP_POST_VARS;
+   global $_GET;
+   global $_POST;
 
    if (strpos($pd, 'm'.STRING_DELIMITER)) {
     $this->restoreParamsOld();
@@ -242,49 +242,54 @@ Define("EQ_DELIMITER", "qz_");
 * @global array POST VARS
 * @access public
 */
-  function restoreParamsOld() {
+function restoreParamsOld()
+{
    global $md;
    global $pd;
-   global $HTTP_GET_VARS;
-   global $HTTP_POST_VARS;
+   global $_GET;
+   global $_POST;
 
-  // getting params of all modules
-  $pd=str_replace(EQ_DELIMITER, "=", $pd);
-  if (preg_match_all('/m'.STRING_DELIMITER.'(\w+?)'.STRING_DELIMITER.'(\w+?)=(.*?)'.PARAMS_DELIMITER.'/', $pd, $matches, PREG_PATTERN_ORDER)) {
-   for($i=0;$i<count($matches[1]);$i++) {
-    $global_params[$matches[1][$i]][$matches[2][$i]]=$matches[3][$i];
-   }
-  }   
+   // getting params of all modules
+   $pd = str_replace(EQ_DELIMITER, "=", $pd);
+   
+   if (preg_match_all('/m'.STRING_DELIMITER.'(\w+?)'.STRING_DELIMITER.'(\w+?)=(.*?)'.PARAMS_DELIMITER.'/', $pd, $matches, PREG_PATTERN_ORDER))
+   {
+      for($i = 0; $i < count($matches[1]); $i++) 
+         $global_params[$matches[1][$i]][$matches[2][$i]] = $matches[3][$i];
+   }   
 
-  $xml=new xml_data($global_params);
+   $xml = new xml_data($global_params);
 
-   if ($md!=$this->name) {
-    // restoring params for non-active module
-    if (IsSet($xml->hash[$this->name])) {
-     $module_data=$xml->hash[$this->name];
-     if ((IsSet($this->instance) && ($module_data["instance"] == $this->instance)) || (!IsSet($this->instance))) {
-      foreach ($module_data as $k=>$v) {
-       $this->{$k}=$v;
+   if ($md != $this->name) 
+   {
+      // restoring params for non-active module
+      if (isset($xml->hash[$this->name]))
+      {
+         $module_data = $xml->hash[$this->name];
+         
+         if ((isset($this->instance) && ($module_data["instance"] == $this->instance)) || (!isset($this->instance)))
+         {
+            foreach ($module_data as $k=>$v) 
+               $this->{$k} = $v;
+         }
       }
-     }
-    }
    }
 
-   if ($md==$this->name) {
-    // if current module then we should take params directly from query string
-    if (Is_Array($HTTP_POST_VARS) && (count($HTTP_POST_VARS)>0)) {
-     $params=$HTTP_POST_VARS;
-    } else {
-     $params=$HTTP_GET_VARS;
-    }
-    foreach($params as $k=>$v) {
-     if (($k=="md") || ($k=="pd") || ($k=="inst") || ($k=="name")) continue;
-     // setting params as module properties
-     $this->{$k}=$v;
-    }
+   if ($md == $this->name) 
+   {
+      // if current module then we should take params directly from query string
+      $params = (is_array($_POST) && (count($_POST) > 0)) ? $_POST : $_GET;
+      
+      foreach($params as $k=>$v) 
+      {
+         if (($k == "md") || ($k == "pd") || ($k == "inst") || ($k == "name")) 
+            continue;
+     
+         // setting params as module properties
+         $this->{$k} = $v;
+      }
    }
-
-  }
+}
 
 
 // --------------------------------------------------------------------
