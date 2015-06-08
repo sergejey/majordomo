@@ -1062,11 +1062,12 @@ class http_class {
             }
             $request_uri = strtolower($this->protocol) . "://" . $this->host_name . (($this->host_port == 0 || $this->host_port == $default_port) ? "" : ":" . $this->host_port) . $this->request_uri;
         }
-        if ($this->use_curl) {
-            $version = (GetType($v = curl_version()) == "array" ? (IsSet($v["version"]) ? $v["version"] : "0.0.0") : (ereg("^libcurl/([0-9]+\\.[0-9]+\\.[0-9]+)", $v, $m) ? $m[1] : "0.0.0"));
+         if ($this->use_curl)
+         {
+            $version = (GetType($v = curl_version()) == "array" ? (isset($v["version"]) ? $v["version"] : "0.0.0") : (preg_match('/^libcurl/([0-9]+\\.[0-9]+\\.[0-9]+)/', $v, $m) ? $m[1] : "0.0.0"));
             $curl_version = 100000 * intval($this->Tokenize($version, ".")) + 1000 * intval($this->Tokenize(".")) + intval($this->Tokenize(""));
             $protocol_version = ($curl_version < 713002 ? "1.0" : $this->protocol_version);
-        }
+         }
         else
             $protocol_version=$this->protocol_version;
         $this->request = $this->request_method . " " . $request_uri . " HTTP/" . $protocol_version;
@@ -1353,7 +1354,7 @@ class http_class {
                                             $path = $value;
                                             break;
                                         case "expires":
-                                            if (ereg("^((Mon|Monday|Tue|Tuesday|Wed|Wednesday|Thu|Thursday|Fri|Friday|Sat|Saturday|Sun|Sunday), )?([0-9]{2})\\-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\-([0-9]{2,4}) ([0-9]{2})\\:([0-9]{2})\\:([0-9]{2}) GMT\$", $value, $matches)) {
+                                           if (preg_match("^((Mon|Monday|Tue|Tuesday|Wed|Wednesday|Thu|Thursday|Fri|Friday|Sat|Saturday|Sun|Sunday), )?([0-9]{2})\\-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\-([0-9]{2,4}) ([0-9]{2})\\:([0-9]{2})\\:([0-9]{2}) GMT\$", $value, $matches)) {
                                                 $year = intval($matches[5]);
                                                 if ($year < 1900)
                                                     $year+= ( $year < 70 ? 2000 : 1900);
@@ -1733,7 +1734,7 @@ class http_class {
                         $value = $cookies[$secure][$domain_pattern][$path][$cookie_name]["value"];
                         if (GetType($expires) != "string"
                                 || (strlen($expires)
-                                && !ereg("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\$", $expires)))
+                                && !preg_match("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\$", $expires)))
                             return($this->SetError("invalid cookie expiry value type (" . serialize($expires) . ")"));
                         $new_cookies[$secure][$domain_pattern][$path][$cookie_name] = array(
                             "name" => $cookie_name,
