@@ -86,7 +86,7 @@ class phpthumb_filters {
 
 
 	function Blur(&$gdimg, $radius=0.5) {
-		// Taken from Torstein Hønsi's phpUnsharpMask (see phpthumb.unsharp.php)
+		// Taken from Torstein HÑˆnsi's phpUnsharpMask (see phpthumb.unsharp.php)
 
 		$radius = round(max(0, min($radius, 50)) * 2);
 		if (!$radius) {
@@ -1095,7 +1095,7 @@ class phpthumb_filters {
 		}
 		ImageAlphaBlending($gdimg, true);
 
-		if (eregi('^([0-9\\.\\-]*)x([0-9\\.\\-]*)(@[LCR])?$', $alignment, $matches)) {
+		if (preg_match('/^([0-9\\.\\-]*)x([0-9\\.\\-]*)(@[LCR])?$/i', $alignment, $matches)) {
 			$originOffsetX = intval($matches[1]);
 			$originOffsetY = intval($matches[2]);
 			$alignment = (@$matches[4] ? $matches[4] : 'L');
@@ -1225,10 +1225,10 @@ class phpthumb_filters {
 				$y1 = $text_origin_y + $TTFbox[1];
 				$x2 = $text_origin_x + $min_x + $text_width;
 				$y2 = $text_origin_y + $TTFbox[1] - $text_height;
-				$x_TL = eregi('x', $fillextend) ?               0 : min($x1, $x2);
-				$y_TL = eregi('y', $fillextend) ?               0 : min($y1, $y2);
-				$x_BR = eregi('x', $fillextend) ? ImageSX($gdimg) : max($x1, $x2);
-				$y_BR = eregi('y', $fillextend) ? ImageSY($gdimg) : max($y1, $y2);
+				$x_TL = preg_match('/x/i', $fillextend) ?               0 : min($x1, $x2);
+				$y_TL = preg_match('/y/i', $fillextend) ?               0 : min($y1, $y2);
+				$x_BR = preg_match('/x/i', $fillextend) ? ImageSX($gdimg) : max($x1, $x2);
+				$y_BR = preg_match('/y/i', $fillextend) ? ImageSY($gdimg) : max($y1, $y2);
 				//while ($y_BR > ImageSY($gdimg)) {
 				//	$y_TL--;
 				//	$y_BR--;
@@ -1413,7 +1413,7 @@ class phpthumb_filters {
 			$margin_y = (is_null($margin_y) ? $margin_x : $margin_y);
 			$watermark_margin_x = ((($margin_x > 0) && ($margin_x < 1)) ? round((1 - $margin_x) * $img_source_width)  : $margin_x);
 			$watermark_margin_y = ((($margin_y > 0) && ($margin_y < 1)) ? round((1 - $margin_y) * $img_source_height) : $margin_y);
-			if (eregi('^([0-9\\.\\-]*)x([0-9\\.\\-]*)$', $alignment, $matches)) {
+			if (preg_match('/^([0-9\\.\\-]*)x([0-9\\.\\-]*)$/i', $alignment, $matches)) {
 				$watermark_destination_x = intval($matches[1]);
 				$watermark_destination_y = intval($matches[2]);
 			} else {

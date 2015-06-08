@@ -972,7 +972,6 @@ class phpthumb {
 			return false;
 		}
 
-		//if (eregi('^(f|ht)tps?\://', $filename)) {
 		if (preg_match('/^[a-z0-9]+\:\/{1,2}/i', $filename)) {
 			// eg: http://host/path/file.jpg (HTTP URL)
 			// eg: ftp://host/path/file.jpg  (FTP URL)
@@ -1220,7 +1219,7 @@ class phpthumb {
 			// $UnAllowedParameters contains options that can only be processed in GD, not ImageMagick
 			// note: 'fltr' *may* need to be processed by GD, but we'll check that in more detail below
 			$UnAllowedParameters = array('xto', 'ar', 'bg', 'bc');
-			// 'ra' may be part of this list, if not a multiple of 90°
+			// 'ra' may be part of this list, if not a multiple of 90Â°
 			foreach ($UnAllowedParameters as $parameter) {
 				if (isset($this->$parameter)) {
 					$this->DebugMessage('$this->useRawIMoutput=false because "'.$parameter.'" is set', __FILE__, __LINE__);

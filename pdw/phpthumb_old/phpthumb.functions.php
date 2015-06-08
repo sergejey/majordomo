@@ -216,7 +216,7 @@ class phpthumb_functions {
 
 
 	function IsHexColor($HexColorString) {
-		return eregi('^[0-9A-F]{6}$', $HexColorString);
+		return preg_match('/^[0-9A-F]{6}$/i', $HexColorString);
 	}
 
 
@@ -511,7 +511,7 @@ class phpthumb_functions {
 		static $cache_gd_version = array();
 		if (empty($cache_gd_version)) {
 			$gd_info = gd_info();
-			if (eregi('bundled \((.+)\)$', $gd_info['GD Version'], $matches)) {
+			if (preg_match('/bundled \((.+)\)$/i', $gd_info['GD Version'], $matches)) {
 				$cache_gd_version[1] = $gd_info['GD Version'];  // e.g. "bundled (2.0.15 compatible)"
 				$cache_gd_version[0] = (float) $matches[1];     // e.g. "2.0" (not "bundled (2.0.15 compatible)")
 			} else {
@@ -533,7 +533,7 @@ class phpthumb_functions {
 			}
 			while (!feof($fp)) {
 				$headerline = fgets($fp, 4096);
-				if (eregi('^Content-Length: (.*)', $headerline, $matches)) {
+				if (preg_match('/^Content-Length: (.*)/i', $headerline, $matches)) {
 					$size = intval($matches[1]);
 					break;
 				}
@@ -554,7 +554,7 @@ class phpthumb_functions {
 			}
 			while (!feof($fp)) {
 				$headerline = fgets($fp, 4096);
-				if (eregi('^Last-Modified: (.*)', $headerline, $matches)) {
+				if (preg_match('/^Last-Modified: (.*)/i', $headerline, $matches)) {
 					$date = strtotime($matches[1]) - date('Z');
 					break;
 				}
@@ -649,10 +649,10 @@ class phpthumb_functions {
 				} else {
 					$Data_body .= $line;
 				}
-				if (eregi('^HTTP/[\\.0-9]+ ([0-9]+) (.+)$', rtrim($line), $matches)) {
+				if (preg_match('/^HTTP/[\\.0-9]+ ([0-9]+) (.+)$/i', rtrim($line), $matches)) {
 					list($dummy, $errno, $errstr) = $matches;
 					$errno = intval($errno);
-				} elseif (eregi('^Location: (.*)$', rtrim($line), $matches)) {
+				} elseif (preg_match('/^Location: (.*)$/i', rtrim($line), $matches)) {
 					$header_newlocation = $matches[1];
 				}
 				if ($isHeader && ($line == "\r\n")) {
@@ -679,7 +679,7 @@ class phpthumb_functions {
 	}
 
 	function CleanUpURLencoding($url, $queryseperator='&') {
-		if (!eregi('^http', $url)) {
+		if (!preg_match('/^http/i', $url)) {
 			return $url;
 		}
 		$parse_url = phpthumb_functions::ParseURLbetter($url);
@@ -742,7 +742,7 @@ class phpthumb_functions {
 		while (true) {
 			$tryagain = false;
 			$rawData = phpthumb_functions::URLreadFsock(@$parsed_url['host'], @$parsed_url['path'].'?'.@$parsed_url['query'], $errstr, true, (@$parsed_url['port'] ? @$parsed_url['port'] : 80), $timeout);
-			if (eregi('302 [a-z ]+; Location\\: (http.*)', $errstr, $matches)) {
+			if (preg_match('/302 [a-z ]+; Location\\: (http.*)/i', $errstr, $matches)) {
 				$matches[1] = trim(@$matches[1]);
 				if (!@$alreadyLookedAtURLs[$matches[1]]) {
 					// loop through and examine new URL
@@ -994,7 +994,7 @@ if (!function_exists('preg_quote')) {
 if (!function_exists('file_get_contents')) {
 	// included in PHP v4.3.0+
 	function file_get_contents($filename) {
-		if (eregi('^(f|ht)tp\://', $filename)) {
+		if (preg_match('/^[a-z0-9]+\:\/{1,2}/i', $filename)) {
 			return SafeURLread($filename, $error);
 		}
 		if ($fp = @fopen($filename, 'rb')) {
