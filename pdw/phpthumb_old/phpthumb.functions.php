@@ -106,8 +106,8 @@ class phpthumb_functions {
 
 		// and also inserts dots . before and after any non number so that for example '4.3.2RC1' becomes '4.3.2.RC.1'.
 		// Then it splits the results like if you were using explode('.',$ver). Then it compares the parts starting from left to right.
-		$version1 = eregi_replace('([0-9]+)([A-Z]+)([0-9]+)', '\\1.\\2.\\3', $version1);
-		$version2 = eregi_replace('([0-9]+)([A-Z]+)([0-9]+)', '\\1.\\2.\\3', $version2);
+		$version1 = preg_replace('/([0-9]+)([A-Z]+)([0-9]+)/i', '\\1.\\2.\\3', $version1);
+		$version2 = preg_replace('/([0-9]+)([A-Z]+)([0-9]+)/i', '\\1.\\2.\\3', $version2);
 
 		$parts1 = explode('.', $version1);
 		$parts2 = explode('.', $version1);

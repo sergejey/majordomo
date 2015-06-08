@@ -1062,7 +1062,7 @@ class phpthumb {
 			$AbsoluteFilename = realpath($AbsoluteFilename);
 		}
 		if ($this->iswindows) {
-			$AbsoluteFilename = eregi_replace('^'.preg_quote(realpath($this->config_document_root)), realpath($this->config_document_root), $AbsoluteFilename);
+			$AbsoluteFilename = preg_replace('/^' . preg_quote(realpath($this->config_document_root)) . '/i', realpath($this->config_document_root), $AbsoluteFilename);
 			$AbsoluteFilename = str_replace(DIRECTORY_SEPARATOR, '/', $AbsoluteFilename);
 		}
 		if (!$this->config_allow_src_above_docroot && !preg_match('^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', realpath($this->config_document_root))), $AbsoluteFilename)) {
