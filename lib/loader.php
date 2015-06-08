@@ -12,16 +12,18 @@
 */
 
 
- Define("THIS_URL", $_SERVER['REQUEST_URI']);
+Define("THIS_URL", $_SERVER['REQUEST_URI']);
 // liblary modules loader
 
-if ($lib_dir = @opendir("./lib")) {
-  while (($lib_file = readdir($lib_dir)) !== false) {
-    if ((preg_match("/\.php$/", $lib_file)) && ($lib_file!="loader.php")) {
-     include_once("./lib/$lib_file");
-    }
-  }
-  closedir($lib_dir);
+if ($lib_dir = @opendir("./lib")) 
+{
+   while (($lib_file = readdir($lib_dir)) !== false)
+   {
+      if ((preg_match("/\.php$/", $lib_file)) && ($lib_file!="loader.php"))
+         include_once("./lib/$lib_file");
+   }
+  
+   closedir($lib_dir);
 }
 
 // Insert the path where you unpacked log4php
