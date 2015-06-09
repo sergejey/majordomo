@@ -250,7 +250,7 @@ function usual(&$out) {
    $total=count($patterns);
    $res=0;
    for($i=0;$i<$total;$i++) {
-    $matched=$this->checkPattern($patterns[$i]['ID']);
+    $matched=$this->checkPattern($patterns[$i]['ID'], $from_user_id);
     if ($matched) {
      $res=1;
      if ($patterns[$i]['IS_LAST']) {
@@ -268,7 +268,7 @@ function usual(&$out) {
    $total=count($patterns);
    $res=0;
    for($i=0;$i<$total;$i++) {
-    $res=$this->checkPattern($patterns[$i]['ID']);
+    $res=$this->checkPattern($patterns[$i]['ID'], $from_user_id);
    }
    if (!$res && $from_user_id) {
     $res=$this->checkExtPatterns(0);
@@ -454,7 +454,7 @@ function usual(&$out) {
   }
 
 
- function runPatternAction($id, $matches=array(), $original='') {
+ function runPatternAction($id, $matches=array(), $original='', $from_user_id) {
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");   
 
      global $noPatternMode;
@@ -487,7 +487,7 @@ function usual(&$out) {
 *
 * @access public
 */
- function checkPattern($id) {
+ function checkPattern($id, $from_user_id=0) {
   global $session;
   global $pattern_matched;
 
@@ -495,6 +495,10 @@ function usual(&$out) {
   $this_pattern_matched=0;
 
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
+
+  if ($rec['SKIPSYSTEM'] && !$from_user_id) {
+   return 0;
+  }
 
   if (!$rec['PATTERN']) {
    $pattern=$rec['TITLE'];
@@ -571,7 +575,7 @@ function usual(&$out) {
       $sub_patterns=SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
       $total=count($sub_patterns);
       for($i=0;$i<$total;$i++) {
-       if ($this->checkPattern($sub_patterns[$i]['ID'])) {
+       if ($this->checkPattern($sub_patterns[$i]['ID'], $from_user_id)) {
         $sub_patterns_matched=1;
         if ($sub_patterns[$i]['IS_LAST']) {
          break;
@@ -581,7 +585,11 @@ function usual(&$out) {
      }
 
      if (!$sub_patterns_matched) {
-      $this->runPatternAction($rec['ID'], $matches, $history);
+      $this->runPatternAction($rec['ID'], $matches, $history, $from_user_id);
+     }
+
+     if ($rec['ONETIME']) {
+      SQLExec("DELETE FROM patterns WHERE ID='".$rec['ID']."'");
      }
 
    }
@@ -670,6 +678,8 @@ patterns - Patterns
  patterns: TIMEOUT_SCRIPT text
  patterns: PARENT_ID int(10) NOT NULL DEFAULT '0'
  patterns: IS_LAST int(3) NOT NULL DEFAULT '0'
+ patterns: SKIPSYSTEM int(3) NOT NULL DEFAULT '0'
+ patterns: ONETIME int(3) NOT NULL DEFAULT '0'
  patterns: PRIORITY int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);

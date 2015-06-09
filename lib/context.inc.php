@@ -136,4 +136,23 @@
   }
 
 
-?>
+ function addPattern($title, $options=array(), $overwrite=0) {
+  
+  $old=SQLSelectOne("SELECT ID FROM patterns WHERE TITLE LIKE '".DBSafe($title)."'");
+  if ($old['ID']) {
+   if ($overwrite) {
+    SQLExec("DELETE FROM patterns WHERE ID='".$old['ID']."'");
+   } else {
+    return;
+   }
+  }
+
+  $rec=array();
+  $rec['TITLE']=$title;
+
+  foreach($options as $k=>$v) {
+   $rec[$k]=$v;
+  }
+  SQLInsert('patterns', $rec);
+
+ }

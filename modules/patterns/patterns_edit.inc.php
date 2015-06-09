@@ -78,6 +78,13 @@
    global $priority;
    $rec['PRIORITY']=(int)$priority;
 
+   global $skipsystem;
+   $rec['SKIPSYSTEM']=(int)$skipsystem;
+
+   global $onetime;
+   $rec['ONETIME']=(int)$onetime;
+
+
 
    global $timeout_context_id;
    $rec['TIMEOUT_CONTEXT_ID']=(int)$timeout_context_id;

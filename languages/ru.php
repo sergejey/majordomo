@@ -1002,6 +1002,8 @@ $dictionary=array(
 'CLEAR_FAVORITES'=>'Очистить Избранное',
 'CLEAR_HISTORY'=>'Очистить Недавно проигранное',
 
+'SKIP_SYSTEM'=>'Не реагировать на системные сообщения',
+'ONETIME_PATTERN'=>'Разовый шаблон (будет удален)',
 
 'TEST'=>'test'
 

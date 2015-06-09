@@ -13,7 +13,7 @@
 *
 * @access public
 */
- function say($ph, $level=0) 
+ function say($ph, $level=0, $member_id=0) 
  {
         global $commandLine;
         global $voicemode;
@@ -35,18 +35,27 @@
         $rec['MESSAGE']   = $ph;
         $rec['ADDED']     = date('Y-m-d H:i:s');
         $rec['ROOM_ID']   = 0;
-        $rec['MEMBER_ID'] = 0;
+        $rec['MEMBER_ID'] = $member_id;
  
         if ($level>0) $rec['IMPORTANCE']=$level;
         
         $rec['ID'] = SQLInsert('shouts', $rec);
+
+        if ($member_id) {
+         //if (!$noPatternMode) {
+                include_once(DIR_MODULES.'patterns/patterns.class.php');
+                $pt=new patterns();
+                $pt->checkAllPatterns($member_id);
+         //}
+         return;
+        }
 
         if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY!='') {
          eval(SETTINGS_HOOK_BEFORE_SAY);
         }
 
         global $ignoreVoice;
-        if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice) { 
+        if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) { 
                 //$voicemode!='off' && 
 
            $lang='en';
@@ -82,7 +91,7 @@
         if (!$noPatternMode) {
                 include_once(DIR_MODULES.'patterns/patterns.class.php');
                 $pt=new patterns();
-                $pt->checkAllPatterns();
+                $pt->checkAllPatterns($member_id);
         }
 
 

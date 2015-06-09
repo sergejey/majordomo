@@ -63,6 +63,33 @@
                 </div>
         </div>
 </div>
+
+<div class="form-group">
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <div class="col-lg-5">
+                                
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="skipsystem" [#if SKIPSYSTEM="1"#] checked[#endif#]> <#LANG_SKIP_SYSTEM#>
+                        </label>
+                </div>
+        </div>
+</div>
+
+[#if ONETIME="1"#]
+<div class="form-group">
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <div class="col-lg-5">
+                                
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="onetime" [#if ONETIME="1"#] checked[#endif#]> <#LANG_ONETIME_PATTERN#>
+                        </label>
+                </div>
+        </div>
+</div>
+[#endif ONETIME#]
+
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN#>:<font color="red">*</font></label>
         <div class="col-lg-5"><textarea name="pattern" class="form-control [#if ERR_PATTERN#]alert-danger[#endif#]" rows=3 cols=100 class="field span8">[#PATTERN#]</textarea></div>
