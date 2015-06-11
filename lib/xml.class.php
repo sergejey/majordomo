@@ -44,7 +44,7 @@ function GetXMLTree($data) {
  // by: waldo@wh-e.com - trim space around tags not within
  
  //$data = eregi_replace(">"."[[:space:]]+"."<","><",$data);
- $data = preg_replace('/>\s+</', '><', $data);
+ $data = preg_replace('/>\s+</', '></i', $data);
  // XML functions
  $p = xml_parser_create();
  
