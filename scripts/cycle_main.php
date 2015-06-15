@@ -1,6 +1,6 @@
 <?php
 
-chdir(dirname(__FILE__) .'/../');
+chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
@@ -9,7 +9,7 @@ include_once("./lib/threads.php");
 set_time_limit(0);
 
 // connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
+$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
@@ -28,7 +28,7 @@ if ($timerClass['SUB_LIST'] != '')
    $o_qry .= " AND (CLASS_ID IN (" . $timerClass['SUB_LIST'] . ")";
    $o_qry .= "  OR CLASS_ID = " . $timerClass['ID'] . ")";
 }
-else 
+else
 {
    $o_qry .= " AND 0";
 }
@@ -53,7 +53,7 @@ while (1)
    $h = date('h');
    $dt = date('Y-m-d');
    
-   if ($m != $old_minute) 
+   if ($m != $old_minute)
    {
       echo "new minute\n";
       $sqlQuery = "SELECT ID, TITLE
@@ -63,7 +63,7 @@ while (1)
       $objects = SQLSelect($sqlQuery);
       $total = count($objects);
       
-      for($i = 0; $i < $total; $i++)
+      for ($i = 0; $i < $total; $i++)
       {
          echo $objects[$i]['TITLE'] . "->onNewMinute\n";
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
