@@ -331,5 +331,3 @@ function optimizeHistoryData($valueID, $type, $interval, $start, $end)
 
    return $totalRemoved;
 }
-
-?>
