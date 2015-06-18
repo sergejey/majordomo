@@ -1,6 +1,6 @@
 <?php
 
-chdir(dirname(__FILE__).'/../');
+chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
@@ -9,33 +9,29 @@ include_once("./lib/threads.php");
 set_time_limit(0);
 
 // connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
+$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
-include_once(DIR_MODULES."control_modules/control_modules.class.php");
+include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
-if (defined('ONEWIRE_SERVER')) 
-{
-   include_once(DIR_MODULES.'onewire/onewire.class.php');
-   $onw = new onewire();
-}
-else 
-{
+if (!defined('ONEWIRE_SERVER'))
    exit;
-}
 
-echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
+include_once(DIR_MODULES . 'onewire/onewire.class.php');
+$onw = new onewire();
 
-while(1) 
+echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
+
+while (1)
 {
-   setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+   setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
    // check starred 1wire properties
-   $onw->updateStarred(); 
+   $onw->updateStarred();
 
-   if (file_exists('./reboot') || $_GET['onetime']) 
+   if (file_exists('./reboot') || $_GET['onetime'])
    {
       $db->Disconnect();
       exit;
@@ -45,5 +41,3 @@ while(1)
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
-
-?>
