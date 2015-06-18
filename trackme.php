@@ -1,4 +1,5 @@
 <?php
+
 /**
 * Main project script
 *
@@ -9,7 +10,7 @@
 
 Define('BTRACED', 1);
 
-if ($_GET['a'] == 'upload') 
+if ($_GET['a'] == 'upload')
 {
    $_POST['latitude']  = $_GET['lat'];
    $_POST['longitude'] = $_GET['long'];
@@ -23,4 +24,3 @@ if ($_GET['a'] == 'upload')
    echo "Result:0";
 }
 
-?>
