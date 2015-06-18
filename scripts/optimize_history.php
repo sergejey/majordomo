@@ -1,259 +1,333 @@
 <?php
+
 /*
-* @version 0.2 (auto-set)
-*/
- chdir('../');
+ * @version 0.2 (auto-set)
+ */
+chdir('../');
 
+include_once("./config.php");
+include_once("./lib/loader.php");
 
- include_once("./config.php");
- include_once("./lib/loader.php");
+// connecting to database
+$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
+include_once("./load_settings.php");
 
- $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
- include_once("./load_settings.php");
+// OPTIMIZATION RULES
+$rules = array(
+   'tempSensors.temp'              => array('optimize' => 'avg'),
+   'humSensors.humidity'           => array('optimize' => 'avg'),
+   'lumSensors.value'              => array('optimize' => 'avg'),
+   'humiditySensors.humidity'      => array('optimize' => 'avg'),
+   'uptime'                        => array('keep'     => 30, 'optimize' => 'max'),
+   'PowerMeters.power'             => array('optimize' => 'avg'),
+   'PowerMeters.electric'          => array('optimize' => 'avg'),
+   'Relays.status'                 => array('keep'     => 0),
+   'inhouseMovementSensors.status' => array('keep'     => 30),
+   'WeatherStations.tempOutside'   => array('optimize' => 'avg'),
+   'WeatherStations.updatedTime'   => array('keep'     => 0),
+   'WeatherStations.pressureRt'    => array('optimize' => 'avg'),
+   'WeatherStations.pressure'      => array('optimize' => 'avg')
+);
 
- // OPTIMIZATION RULES
+set_time_limit(6000);
 
- $rules=array(
-  'tempSensors.temp'=>array('optimize'=>'avg'),
-  'humSensors.humidity'=>array('optimize'=>'avg'),
-  'lumSensors.value'=>array('optimize'=>'avg'),
-  'humiditySensors.humidity'=>array('optimize'=>'avg'),
-  'uptime'=>array('keep'=>30, 'optimize'=>'max'),
-  'PowerMeters.power'=>array('optimize'=>'avg'),
-  'PowerMeters.electric'=>array('optimize'=>'avg'),
-  'Relays.status'=>array('keep'=>0),
-  'inhouseMovementSensors.status'=>array('keep'=>30),
-  'WeatherStations.tempOutside'=>array('optimize'=>'avg'),
-  'WeatherStations.updatedTime'=>array('keep'=>0),
-  'WeatherStations.pressureRt'=>array('optimize'=>'avg'),
-  'WeatherStations.pressure'=>array('optimize'=>'avg')
- );
+DebMes('Optimize history script started');
 
- set_time_limit(6000);
+//STEP 1 -- calculate stats
+echo "Calculating stats:<br />";
 
- DebMes("Optimize history script started");
+$sqlQuery = "SELECT pvalues.ID, properties.TITLE as PTITLE, classes.TITLE as CTITLE, objects.TITLE as OTITLE
+               FROM pvalues 
+               LEFT JOIN objects ON pvalues.OBJECT_ID = objects.ID
+               LEFT JOIN classes ON objects.CLASS_ID  = classes.ID
+               LEFT JOIN properties ON pvalues.PROPERTY_ID = properties.ID
+             HAVING PTITLE != ''";
 
- //STEP 1 -- calculate stats
- echo "Calculating stats:<br>";
- $pvalues=SQLSelect("SELECT pvalues.ID, properties.TITLE as PTITLE, classes.TITLE as CTITLE, objects.TITLE as OTITLE FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN classes ON objects.CLASS_ID=classes.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID HAVING PTITLE!=''");
- $total=count($pvalues);
- for($i=0;$i<$total;$i++) {
-  $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory WHERE VALUE_ID='".$pvalues[$i]['ID']."'");
-  if ($tmp['TOTAL']) {
-   echo $pvalues[$i]['CTITLE'].".".$pvalues[$i]['PTITLE']." (object: ".$pvalues[$i]['OTITLE']."): ";
-   $grand_total+=$tmp['TOTAL'];
-   if ($tmp['TOTAL']>5000) {
-    echo "<b>";
+$pvalues = SQLSelect($sqlQuery);
+$total = count($pvalues);
+
+for ($i = 0; $i < $total; $i++)
+{
+   $sqlQuery = "SELECT COUNT(*) as TOTAL
+                  FROM phistory
+                 WHERE VALUE_ID = '" . $pvalues[$i]['ID'] . "'";
+
+   $tmp = SQLSelectOne($sqlQuery);
+
+   if ($tmp['TOTAL'])
+   {
+      echo $pvalues[$i]['CTITLE'] . "." . $pvalues[$i]['PTITLE'] . " (object: " . $pvalues[$i]['OTITLE'] . "): ";
+      $grand_total += $tmp['TOTAL'];
+   
+      echo $tmp['TOTAL'] > 5000 ? "<b>" . $tmp['TOTAL'] . "</b>" : $tmp['TOTAL'];
+      echo "<br />";
+      echo str_repeat(' ', 1024);
+      
+      flush();
    }
-   echo $tmp['TOTAL']."</b>";
-   echo "<br>";
+}
 
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
+echo "<h2>Grand-total: " . $grand_total . "</h2><br />";
+echo str_repeat(' ', 1024);
 
+flush();
 
-  }
- }
- echo "<h2>Grand-total: ".$grand_total."</h2><br>";
+// exit;
+if (!$rules)
+{
+   echo "No rules defined.";
+   exit;
+}
 
+//STEP 2 -- optimize values in time
+$sqlQuery = "SELECT DISTINCT(VALUE_ID)
+               FROM phistory";
 
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
+$values = SQLSelect($sqlQuery);
 
-//   exit;
- if (!$rules) {
-  echo "No rules defined.";
-  exit;
- }
+$total = count($values);
 
+for ($i = 0; $i < $total; $i++)
+{
+   $value_id = $values[$i]['VALUE_ID'];
+   $sqlQuery = "SELECT pvalues.ID, properties.TITLE as PTITLE, objects.TITLE as OTITLE, classes.TITLE as CTITLE
+                  FROM pvalues
+                  LEFT JOIN objects ON pvalues.OBJECT_ID = objects.ID
+                  LEFT JOIN properties ON pvalues.PROPERTY_ID = properties.ID
+                  LEFT JOIN classes ON classes.ID = properties.CLASS_ID
+                 WHERE pvalues.ID = '" . $value_id . "'";
 
- //STEP 2 -- optimize values in time
- $values=SQLSelect("SELECT DISTINCT(VALUE_ID) FROM phistory");
- //print_r($values);
- $total=count($values);
- for($i=0;$i<$total;$i++) {
-  $value_id=$values[$i]['VALUE_ID'];
-  $pvalue=SQLSelectOne("SELECT pvalues.ID, properties.TITLE as PTITLE, objects.TITLE as OTITLE, classes.TITLE as CTITLE FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID LEFT JOIN classes ON classes.ID=properties.CLASS_ID WHERE pvalues.ID='".$value_id."'");
-  //print_r($pvalue);
-  if ($pvalue['CTITLE']!='') {
-   $key=$pvalue['CTITLE'].'.'.$pvalue['PTITLE'];
-   $rule='';
-   if ($rules[$key]) {
-    $rule=$rules[$key];
-   } elseif ($rules[$pvalue['OTITLE'].'.'.$pvalue['PTITLE']]) {
-    $rule=$rules[$pvalue['OTITLE'].'.'.$pvalue['PTITLE']];
-   } elseif ($rules[$pvalue['PTITLE']]) {
-    $rule=$rules[$pvalue['PTITLE']];
+   $pvalue = SQLSelectOne($sqlQuery);
+
+   if ($pvalue['CTITLE'] != '')
+   {
+      $key = $pvalue['CTITLE'] . '.' . $pvalue['PTITLE'];
+      $rule = '';
+   
+      if ($rules[$key])
+         $rule = $rules[$key];
+      elseif ($rules[$pvalue['OTITLE'] . '.' . $pvalue['PTITLE']])
+         $rule = $rules[$pvalue['OTITLE'] . '.' . $pvalue['PTITLE']];
+      elseif ($rules[$pvalue['PTITLE']])
+         $rule = $rules[$pvalue['PTITLE']];
+
+      if ($rule)
+      {
+         //processing
+         echo "<h3>" . $pvalue['OTITLE'] . " (" . $key . ")</h3>";
+         
+         $sqlQuery = "SELECT COUNT(*) as TOTAL
+                        FROM phistory
+                       WHERE VALUE_ID = '" . $value_id . "'";
+
+         $total_before = current(SQLSelectOne($sqlQuery));
+
+         if (isset($rule['keep']))
+         {
+            echo " removing old (" . (int)$rule['keep'] . ")";
+            $sqlQuery = "DELETE
+                           FROM phistory
+                          WHERE VALUE_ID = '" . $value_id . "'
+                            AND TO_DAYS(NOW()) - TO_DAYS(ADDED) >= " . (int)$rule['keep'];
+            SQLExec($sqlQuery);
+         }
+
+         if ($rule['optimize'])
+         {
+            echo str_repeat(' ', 1024);
+            flush();
+
+            $sqlQuery = "SELECT UNIX_TIMESTAMP(ADDED)
+                           FROM phistory
+                          WHERE VALUE_ID = '" . $value_id . "'
+                          ORDER BY ADDED
+                          LIMIT 1";
+
+            echo "<br /><b>Before last MONTH</b><br />";
+            $end = time() - 30 * 24 * 60 * 60; // month end older
+            $start = current(SQLSelectOne($sqlQuery));
+            $interval = 2 * 60 * 60; // two-hours interval
+            optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
+
+            echo str_repeat(' ', 1024);
+            flush();
+
+            echo "<br /><b>Before last WEEK</b><br />";
+            $start = $end + 1;
+            $end = time() - 7 * 24 * 60 * 60; // week and older
+            $interval = 1 * 60 * 60; // one-hour interval
+            optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
+
+            echo str_repeat(' ', 1024);
+            flush();
+
+            echo "<br /><b>Before YESTERDAY</b><br />";
+            $start = $end + 1;
+            $end = time() - 1 * 24 * 60 * 60; // day and older
+            $interval = 20 * 60; // 20 minutes interval
+            optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
+
+            echo str_repeat(' ', 1024);
+            flush();
+
+            echo "<br /><b>Before last HOUR</b><br />";
+            $start = $end + 1;
+            $end = time() - 1 * 60 * 60; // 1 hour and older
+            $interval = 3 * 60; // 3 minutes interval
+            optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
+         }
+         
+         $sqlQuery = "SELECT COUNT(*) as TOTAL
+                        FROM phistory
+                       WHERE VALUE_ID = '" . $value_id . "'";
+         $total_after = current(SQLSelectOne($sqlQuery));
+         echo " <b>(changed " . $total_before . " -> " . $total_after . ")</b><br />";
+      }
    }
-   if ($rule) {
-    //processing
-    echo "<h3>".$pvalue['OTITLE']." (".$key.")</h3>";
-    $total_before=current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory WHERE VALUE_ID='".$value_id."'"));
-    if (isset($rule['keep'])) {
-     echo " removing old (".(int)$rule['keep'].")";
-     SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$value_id."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>=".(int)$rule['keep']);
-    }
-    if ($rule['optimize']) {
+}
 
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
+SQLExec("OPTIMIZE TABLE phistory;");
 
-     echo "<br><b>Before last MONTH</b><br>";
-     $end=time()-30*24*60*60; // month end older
-     $start=current(SQLSelectOne("SELECT UNIX_TIMESTAMP(ADDED) FROM phistory WHERE VALUE_ID='".$value_id."' ORDER BY ADDED LIMIT 1"));
-     $interval=2*60*60; // two-hours interval
-     optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
+echo "<h1>DONE!!!</h1>";
 
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
+$db->Disconnect(); // closing database connection
 
-
-     echo "<br><b>Before last WEEK</b><br>";
-     $start=$end+1;
-     $end=time()-7*24*60*60; // week and older
-     $interval=1*60*60; // one-hour interval
-     optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
-
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
-
-
-     echo "<br><b>Before YESTERDAY</b><br>";
-     $start=$end+1;
-     $end=time()-1*24*60*60; // day and older
-     $interval=20*60; // 20 minutes interval
-     optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
-
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
-
-
-     echo "<br><b>Before last HOUR</b><br>";
-     $start=$end+1;
-     $end=time()-1*60*60; // 1 hour and older
-     $interval=3*60; // 3 minutes interval
-     optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
-
-
-    }
-
-
-    $total_after=current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory WHERE VALUE_ID='".$value_id."'"));
-    echo " <b>(changed ".$total_before." -> ".$total_after.")</b><br>";
-   }
-  }
- }
-
- SQLExec("OPTIMIZE TABLE phistory;");
-
- echo "<h1>DONE!!!</h1>";
-
- $db->Disconnect(); // closing database connection
-
- DebMes("Optimize history script finished");
+DebMes("Optimize history script finished");
 
 /**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function optimizeHistoryData($value_id, $type, $interval, $start, $end) {
+ * Summary of optimizeHistoryData
+ * @param mixed $valueID  Id value
+ * @param mixed $type     Type
+ * @param mixed $interval Interval
+ * @param mixed $start    Begin date
+ * @param mixed $end      End date
+ * @return double|int
+ */
+function optimizeHistoryData($valueID, $type, $interval, $start, $end)
+{
+   $totalRemoved = 0;
+   
+   if (!$interval)
+      return 0;
 
-   $total_removed=0;
-   if (!$interval) {
-    return 0;
-   }
-   echo "Value ID: $value_id <br>";
-   echo "Interval from ".date('Y-m-d H:i:s', $start)." to ".date('Y-m-d H:i:s', $end)." (every ".$interval." seconds)<br>";
-   $total_values=(int)current(SQLSelectOne("SELECT COUNT(*) FROM phistory WHERE VALUE_ID='".$value_id."' AND ADDED>='".date('Y-m-d H:i:s', $start)."' AND ADDED<='".date('Y-m-d H:i:s', $end)."' "));
-   echo "Total values: ".$total_values."<br>";
-   if ($total_values<2) {
-    return 0;
+   $beginDate = date('Y-m-d H:i:s', $start);
+   $endDate = date('Y-m-d H:i:s', $end);
+
+   echo "Value ID: $valueID <br />";
+   echo "Interval from " . $beginDate . " to " . $endDate . " (every " . $interval . " seconds)<br />";
+   
+   $sqlQuery = "SELECT COUNT(*)
+                  FROM phistory
+                 WHERE VALUE_ID =  '" . $valueID . "'
+                   AND ADDED    >= '" . $beginDate . "'
+                   AND ADDED    <= '" . $endDate . "'";
+
+   $totalValues = (int)current(SQLSelectOne($sqlQuery));
+   
+   echo "Total values: " . $totalValues . "<br>";
+   
+   if ($totalValues < 2)
+      return 0;
+
+   $tmp = $end - $start;
+   $tmp2 = round($tmp / $interval);
+   
+   if ($totalValues <= $tmp2)
+   {
+      echo "... number of values ($totalValues) is less than optimal (" . $tmp2 . ") (skipping)<br />";
+      return 0;
    }
 
-   $tmp=$end-$start;
-   $tmp2=round($tmp/$interval);
-   if ($total_values<=$tmp2) {
-    echo "... number of values ($total_values) is less than optimal (".$tmp2.") (skipping)<br>";
-    return 0;
-   }
-
-   echo "Optimizing (should be about ".$tmp2." records)...";
+   echo "Optimizing (should be about " . $tmp2 . " records)...";
 
    echo str_repeat(' ', 1024);
    flush();
-   flush();
 
-   $first_start=current(SQLSelectOne("SELECT UNIX_TIMESTAMP(ADDED) FROM phistory WHERE VALUE_ID='".$value_id."' AND ADDED>='".date('Y-m-d H:i:s', $start)."' ORDER BY ADDED LIMIT 1"));
-   $last_start=current(SQLSelectOne("SELECT UNIX_TIMESTAMP(ADDED) FROM phistory WHERE VALUE_ID='".$value_id."' AND ADDED<='".date('Y-m-d H:i:s', $end)."' ORDER BY ADDED DESC LIMIT 1"));
+   $sqlQuery = "SELECT UNIX_TIMESTAMP(ADDED)
+                  FROM phistory
+                 WHERE VALUE_ID =  '" . $valueID . "'
+                   AND ADDED    >= '" . $beginDate . "'
+                 ORDER BY ADDED
+                 LIMIT 1";
 
-   while($start<$end) {
+   $firstStart = current(SQLSelectOne($sqlQuery));
 
-    if ($start<($first_start-$interval)) {
-     $start+=$interval;
-     continue;
-    }
+   $sqlQuery = "SELECT UNIX_TIMESTAMP(ADDED)
+                  FROM phistory
+                 WHERE VALUE_ID = '" . $valueID . "'
+                   AND ADDED    <= '" . $endDate . "'
+                 ORDER BY ADDED DESC
+                 LIMIT 1";
 
-   if ($start>($last_start+$interval)) {
-     $start+=$interval;
-     continue;
-    }
+   $lastStart = current(SQLSelectOne($sqlQuery));
 
-    //echo date('Y-m-d H:i:s', $start)."<br>\n";
-   echo ".";
-   echo str_repeat(' ', 1024);
-   flush();
-   flush();
+   while ($start < $end)
+   {
+      if ($start < ($firstStart - $interval))
+      {
+         $start += $interval;
+         continue;
+      }
 
-    $data=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$value_id."' AND ADDED>='".date('Y-m-d H:i:s', $start)."' AND ADDED<'".date('Y-m-d H:i:s', $start+$interval)."'");
-    $total=count($data);
-    if ($total>1) {
-     $values=array();
-     for($i=0;$i<$total;$i++) {
-      $values[]=$data[$i]['VALUE'];
-     }
-     if ($type=='max') {
-      $new_value=max($values);
-     } elseif ($type=='sum') {
-      $new_value=array_sum($values);
-     } else {
-      $new_value=array_sum($values)/$total;
-     }
-     SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$value_id."' AND ADDED>='".date('Y-m-d H:i:s', $start)."' AND ADDED<'".date('Y-m-d H:i:s', $start+$interval)."'");
-     $rec=array();
-     $rec['VALUE_ID']=$value_id;
-     $rec['VALUE']=$new_value;
-     if ($type=='avg') {
-      $rec['ADDED']=date('Y-m-d H:i:s', $start+(int)($interval/2));
-     } else {
-      $rec['ADDED']=date('Y-m-d H:i:s', $start+$interval-1);
-     }
-     SQLInsert('phistory', $rec);
-     $total_removed+=$total;
-     //echo "DONE ($total deleted)<br>";
-     //print_r($rec);
-     //exit;
-    } else {
-     //echo "skip mini interval ($total)<br>";
-    }
+      if ($start > ($lastStart + $interval))
+      {
+         $start += $interval;
+         continue;
+      }
 
-    $start+=$interval;
+      echo ".";
+      echo str_repeat(' ', 1024);
+      flush();
+
+      $sqlQuery = "SELECT * 
+                     FROM phistory
+                    WHERE VALUE_ID = '" . $valueID . "'
+                      AND ADDED    >= '" . date('Y-m-d H:i:s', $start) . "'
+                      AND ADDED    <  '" . date('Y-m-d H:i:s', $start + $interval) . "'";
+      
+      $data = SQLSelect($sqlQuery);
+      $total = count($data);
+    
+      if ($total > 1)
+      {
+         $values = array();
+      
+         for ($i = 0; $i < $total; $i++)
+            $values[] = $data[$i]['VALUE'];
+     
+         if ($type == 'max')
+            $newValue = max($values);
+         elseif ($type == 'sum')
+            $newValue = array_sum($values);
+         else
+            $newValue = array_sum($values) / $total;
+
+         $sqlQuery = "DELETE
+                        FROM phistory
+                       WHERE VALUE_ID = '" . $valueID . "'
+                         AND ADDED    >= '" . date('Y-m-d H:i:s', $start) . "'
+                         AND ADDED    < '" . date('Y-m-d H:i:s', $start + $interval) . "'";
+         
+         SQLExec($sqlQuery);
+
+         $addedDate = ($type == 'avg') ? $start + (int)($interval / 2) : $start + $interval - 1;
+
+         $rec = array();
+         $rec['VALUE_ID'] = $valueID;
+         $rec['VALUE'] = $newValue;
+         $rec['ADDED'] = date('Y-m-d H:i:s', $addedDate);
+         
+         SQLInsert('phistory', $rec);
+         
+         $totalRemoved += $total;
+      }
+      
+      $start += $interval;
    }
 
-   echo "<b>Done</b> (removed: $total_removed)<br>";
+   echo "<b>Done</b> (removed: $totalRemoved)<br>";
    SQLExec("OPTIMIZE TABLE `phistory`");
 
-   return $total_removed;
-
- }
-
-?>
+   return $totalRemoved;
+}
