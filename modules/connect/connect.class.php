@@ -263,23 +263,31 @@ function admin(&$out) {
 
   // POST TO SERVER
   $url = 'http://connect.smartliving.ru/upload/';
+  $datafile_name=ROOT.'cached/connect_data.txt';
+  SaveFile($datafile_name, serialize($data));
+
+
   $fields = array(
-                                                'data' => urlencode(serialize($data))
+     'datafile' => '@'.realpath($datafile_name).';filename=datafile.txt'
   );
 
-  //url-ify the data for the POST
-  foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-  rtrim($fields_string, '&');
+  //print_r($fields);exit;
 
+
+  //url-ify the data for the POST
+  //foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+  //rtrim($fields_string, '&');
+
+  //sleep(1);
   //open connection
   $ch = curl_init();
   //set the url, number of POST vars, POST data
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));
-  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
-  curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
 
