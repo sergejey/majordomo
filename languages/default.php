@@ -1006,6 +1006,14 @@ $dictionary=array(
 'SKIP_SYSTEM'=>'Skip system messages',
 'ONETIME_PATTERN'=>'One-time pattern',
 
+'PATTERN_ENTER'=>'enter',
+'PATTERN_EXIT'=>'exit',
+'PATTERN_TYPE'=>'Pattern type',
+'PATTERN_MESSAGE'=>'Message-based',
+'PATTERN_CONDITIONAL'=>'Conditional',
+'CONDITION'=>'Condition',
+'ADD_EXIT_CODE'=>'Add "exit" code',
+
 'TEST'=>'test'
 
 

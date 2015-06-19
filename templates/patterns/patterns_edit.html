@@ -31,6 +31,7 @@
 </div>
 
 
+[#if PATTERN_TYPE!="1"#]
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PARENT_CONTEXT#>:</label>
         <div class="col-lg-5">
@@ -42,11 +43,31 @@
                         </select>
                 </div>
 </div>
+[#endif PATTERN_TYPE#]
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
 </div>
+
+[#if ID=""#]
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_TYPE#>:</label>
+        <div class="col-lg-5">
+        <label><input type="radio" name="pattern_type" value="0" checked> <#LANG_PATTERN_MESSAGE#></label>
+        <label><input type="radio" name="pattern_type" value="1"> <#LANG_PATTERN_CONDITIONAL#></label>
+        </div>
+</div>
+[#else#]
+<div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_TYPE#>:</label>
+        <div class="col-lg-5">
+        [#if PATTERN_TYPE="0"#]<#LANG_PATTERN_MESSAGE#>[#endif#]
+        [#if PATTERN_TYPE="1"#]<#LANG_PATTERN_CONDITIONAL#>[#endif#]
+        </div>
+</div>
+[#endif ID#]
+
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PRIORITY#>:</label>
@@ -64,6 +85,52 @@
         </div>
 </div>
 
+
+[#if ID!=""#]
+
+[#if PATTERN_TYPE="1"#]
+
+
+   <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#></label>
+        <div class="col-lg-3">
+                <input type="text" class="form-control" name="linked_object" id="linked_object" size="10" value="[#LINKED_OBJECT#]">
+        </div>
+        </div>
+     
+        <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_PROPERTY#></label>
+        <div class="col-lg-3">
+                 <input type="text" class="form-control" name="linked_property" id="linked_property" size="10" value="[#LINKED_PROPERTY#]">
+        </div>
+        </div>
+        
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
+        <div class="col-lg-3">
+         <select name="condition" class="form-control">
+      <option value="1"[#if CONDITION="1"#] selected[#endif#]>=
+      <option value="2"[#if CONDITION="2"#] selected[#endif#]>&gt;
+      <option value="3"[#if CONDITION="3"#] selected[#endif#]>&lt;
+      <option value="4"[#if CONDITION="4"#] selected[#endif#]>&lt;&gt;
+     </select>
+        </div>
+        </div>
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_VALUE#></label>
+        <div class="col-lg-3">
+                 <input type="text" class="form-control" name="condition_value" size="10" value="[#CONDITION_VALUE#]">
+        </div>
+        </div>
+        [#module name="linkedobject" object_field="linked_object" property_field="linked_property"#]
+  
+   
+
+
+[#endif PATTERN_TYPE#]
+
+[#if PATTERN_TYPE="0"#]
 <div class="form-group">
         <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
@@ -91,7 +158,7 @@
 [#endif ONETIME#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN#>:</label>
         <div class="col-lg-5"><textarea name="pattern" class="form-control [#if ERR_PATTERN#]alert-danger[#endif#]" rows=3 cols=100 class="field span8">[#PATTERN#]</textarea></div>
 </div>
 
@@ -100,11 +167,12 @@
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TIME_LIMIT#]alert-danger[#endif#]"  name="time_limit" value="[#TIME_LIMIT#]"></div>
 </div>
 
+[#endif PATTERN_TYPE#]
 
-
-[#if ID!=""#]
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_EXECUTE_ON_MATCH#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_EXECUTE_ON_MATCH#>
+        [#if PATTERN_TYPE="1"#](<#LANG_PATTERN_ENTER#>)[#endif#]
+        :</label>
  <div class="col-lg-5">
   <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#] onClick="$('#code_option').hide();"> <#LANG_SCRIPT#>:
    <select name="script_id" class="form-control">
@@ -122,14 +190,37 @@
 
  [#module name="blockly_code" system_name="pattern<#ID#>" code_field="script" action=""#]
  <div id="script_area">
-  <textarea name="script" id="script" rows=30 cols=100 class="field span8">[#SCRIPT#]</textarea>
+  <textarea name="script" id="script" rows=20 cols=100 class="field span8">[#SCRIPT#]</textarea>
  </div>
+
+ [#if PATTERN_TYPE="1"#]
+  <input type="checkbox" name="use_script_exit" value="1"[#if SCRIPT_EXIT!=""#] checked[#endif#] onClick='$("#script_exit_block").toggle();'> <#LANG_ADD_EXIT_CODE#>
+ [#endif#]
+
  </div>
 </div>
 </div>
 
- [#endif ID#]
 
+[#if PATTERN_TYPE="1"#]
+<div class="form-group " id="script_exit_block"[#if SCRIPT_EXIT=""#] style="display:none"[#endif#]>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_EXECUTE_ON_MATCH#> (<#LANG_PATTERN_EXIT#>)
+        :</label>
+ <div class="col-lg-5">
+ <#LANG_CODE#>
+ <div id="code_option"[#if SCRIPT_ID!="0"#] style="display:none"[#endif#]>
+ [#if ERRORS_EXIT!=""#]
+ <font color='red'>[#ERRORS_EXIT#]</font><br>
+ [#endif ERRORS#]  
+
+ [#module name="blockly_code" system_name="pattern<#ID#>_exit" code_field="script_exit" action=""#]
+ <div id="script_area">
+  <textarea name="script_exit" id="script_exit" rows=20 cols=100 class="field span8">[#SCRIPT_EXIT#]</textarea>
+ </div>
+ </div>
+</div>
+</div>
+[#endif PATTERN_TYPE#]
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">Set context when matched:</label>
@@ -143,8 +234,7 @@
                 </div>
 </div>
 
-
-
+[#if PATTERN_TYPE="0"#]
 <div class="form-group">
         <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
@@ -156,6 +246,11 @@
                 </div>
         </div>
 </div>
+[#endif PATTERN_TYPE#]
+
+
+ [#endif ID#]
+
 
   
   
@@ -200,7 +295,7 @@
   </div>
  
 
-[#if ID!=""#]
+[#if ID!="" && PATTERN_TYPE!="1"#]
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:</label>
         <div class="col-lg-5">

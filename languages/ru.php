@@ -1006,6 +1006,15 @@ $dictionary=array(
 'SKIP_SYSTEM'=>'Не реагировать на системные сообщения',
 'ONETIME_PATTERN'=>'Разовый шаблон (будет удален)',
 
+'PATTERN_ENTER'=>'вход',
+'PATTERN_EXIT'=>'выход',
+'PATTERN_TYPE'=>'Тип шаблона',
+'PATTERN_MESSAGE'=>'На основе сообщений',
+'PATTERN_CONDITIONAL'=>'На основе значений свойств',
+'CONDITION'=>'Условие',
+'ADD_EXIT_CODE'=>'Добавить код "выхода"',
+
+
 'TEST'=>'test'
 
 

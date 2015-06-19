@@ -246,7 +246,7 @@ function usual(&$out) {
 
   } else {
 
-   $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' ORDER BY PRIORITY DESC, TITLE");
+   $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' AND PATTERN_TYPE=0 ORDER BY PRIORITY DESC, TITLE");
    $total=count($patterns);
    $res=0;
    for($i=0;$i<$total;$i++) {
@@ -480,6 +480,35 @@ function usual(&$out) {
 
  }
 
+ function runPatternExitAction($id, $script_exit) {
+
+     if ($script_exit) {
+                  try {
+                   $code=$script_exit;
+                   $success=eval($code);
+                   if ($success===false) {
+                    DebMes("Error in pattern exit code: ".$code);
+                    registerError('patterns', "Error in pattern exit code: ".$code);
+                   }
+                  } catch(Exception $e){
+                   DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('patterns', get_class($e).', '.$e->getMessage());
+                  }
+     }
+
+ }
+
+ function propertySetHandle($object, $property, $value) {
+   $patterns=SQLSelect("SELECT ID FROM patterns WHERE PATTERN_TYPE=1 AND LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $total=count($patterns);
+   if ($total) {
+      for($i=0;$i<$total;$i++) {
+         $this->checkPattern($patterns[$i]['ID']);
+      }
+   }
+ }
+
+
 /**
 * Title
 *
@@ -493,55 +522,110 @@ function usual(&$out) {
 
 
   $this_pattern_matched=0;
+  $condition_matched=0;
 
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
 
-  if ($rec['SKIPSYSTEM'] && !$from_user_id) {
-   return 0;
-  }
+  if ($rec['PATTERN_TYPE']==1) {
+   //conditional pattern
+   $value=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
 
-  if (!$rec['PATTERN']) {
-   $pattern=$rec['TITLE'];
+   $condition_value=$rec['CONDITION_VALUE'];
+
+   if (($rec['CONDITION']==2 || $rec['CONDITION']==3) 
+       && $condition_value!='' 
+       && !is_numeric($condition_value) 
+       && !preg_match('/^%/', $condition_value)) {
+        $condition_value='%'.$condition_value.'%';
+   }
+
+
+   if (is_integer(strpos($condition_value, "%"))) {
+    $condition_value=processTitle($condition_value);
+   }
+
+   if ($rec['CONDITION']==1 && $value==$condition_value) {
+    $status=1;
+   } elseif ($rec['CONDITION']==2 && (float)$value>=(float)$condition_value) {
+    $status=1;
+   } elseif ($rec['CONDITION']==3 && (float)$value<(float)$condition_value) {
+    $status=1;
+   } elseif ($rec['CONDITION']==4 && $value!=$condition_value) {
+    $status=1;
+   } else {
+    $status=0;
+   }
+
+   if ($status==1 && !$rec['ACTIVE_STATE']) {
+
+    $rec['ACTIVE_STATE']=1;
+    SQLUpdate('patterns', $rec);
+    $condition_matched=1;
+
+   } elseif ($status==0 && $rec['ACTIVE_STATE']) {
+
+    $rec['ACTIVE_STATE']=0;
+    SQLUpdate('patterns', $rec);
+
+    if ($rec['SCRIPT_EXIT']) {
+     $this->runPatternExitAction($rec['ID'], $rec['SCRIPT_EXIT']);
+    }
+    //to-do: state exit script
+
+   }
+
+
   } else {
-   $pattern=$rec['PATTERN'];
+
+   if ($rec['SKIPSYSTEM'] && !$from_user_id) {
+    return 0;
+   }
+
+   if (!$rec['PATTERN']) {
+    $pattern=$rec['TITLE'];
+   } else {
+    $pattern=$rec['PATTERN'];
+   }
+   $pattern=str_replace("\r", '', $pattern);
+   if ($pattern=='') {
+    return 0;
+   }
+
+   if ($rec['EXECUTED']>0 && $rec['TIME_LIMIT'] && (time()-$rec['EXECUTED'])<=$rec['TIME_LIMIT']) {
+    return 0;
+   }
+
+
+   $lines_pattern=explode("\n", $pattern);
+   $total_lines=count($lines_pattern);
+   if (!$rec['TIME_LIMIT']) {
+    $messages=SQLSelect("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT ".(int)$total_lines);
+    $messages=array_reverse($messages);
+   } else {
+    $start_from=time()-$rec['TIME_LIMIT'];
+    $messages=SQLSelect("SELECT MESSAGE FROM shouts WHERE ADDED>=('".date('Y-m-d H:i:s', $start_from)."') ORDER BY ADDED");
+   }
+
+   $total=count($messages);
+   if (!$total) {
+    return 0;
+   }
+
+   $lines=array();
+   for($i=0;$i<$total;$i++) {
+    $lines[]=$messages[$i]['MESSAGE'];
+   }
+   $history=implode('@@@@', $lines);
+   $check=implode('@@@@', $lines_pattern);
+   if (preg_match('/'.$check.'/is', $history, $matches)) {
+    $condition_matched=1;
+   }
+
+
   }
-  $pattern=str_replace("\r", '', $pattern);
-  if ($pattern=='') {
-   return 0;
-  }
-
-  if ($rec['EXECUTED']>0 && $rec['TIME_LIMIT'] && (time()-$rec['EXECUTED'])<=$rec['TIME_LIMIT']) {
-   return 0;
-  }
 
 
-  $lines_pattern=explode("\n", $pattern);
-  $total_lines=count($lines_pattern);
-  if (!$rec['TIME_LIMIT']) {
-   $messages=SQLSelect("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT ".(int)$total_lines);
-   $messages=array_reverse($messages);
-  } else {
-   $start_from=time()-$rec['TIME_LIMIT'];
-   $messages=SQLSelect("SELECT MESSAGE FROM shouts WHERE ADDED>=('".date('Y-m-d H:i:s', $start_from)."') ORDER BY ADDED");
-  }
-
-
-
-
-  $total=count($messages);
-  if (!$total) {
-   return 0;
-  }
-
-  $lines=array();
-  for($i=0;$i<$total;$i++) {
-   $lines[]=$messages[$i]['MESSAGE'];
-  }
-  $history=implode('@@@@', $lines);
-  $check=implode('@@@@', $lines_pattern);
-
-
-  if (preg_match('/'.$check.'/is', $history, $matches)) {
+  if ($condition_matched) {
 
     if (checkAccess('pattern', $rec['ID'])) {
 
@@ -667,6 +751,7 @@ patterns - Patterns
  patterns: PATTERN text
  patterns: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  patterns: SCRIPT text
+ patterns: SCRIPT_EXIT text
  patterns: LOG text
  patterns: TIME_LIMIT int(10) NOT NULL DEFAULT '0'
  patterns: EXECUTED int(10) NOT NULL DEFAULT '0'
@@ -681,6 +766,16 @@ patterns - Patterns
  patterns: SKIPSYSTEM int(3) NOT NULL DEFAULT '0'
  patterns: ONETIME int(3) NOT NULL DEFAULT '0'
  patterns: PRIORITY int(10) NOT NULL DEFAULT '0'
+
+ patterns: PATTERN_TYPE int(3) NOT NULL DEFAULT '0'
+ patterns: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ patterns: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ patterns: CONDITION int(3) NOT NULL DEFAULT '0'
+ patterns: CONDITION_VALUE varchar(255) NOT NULL DEFAULT ''
+ patterns: LATEST_VALUE varchar(255) NOT NULL DEFAULT ''
+ patterns: ACTIVE_STATE int(3) NOT NULL DEFAULT '0'
+
+
 EOD;
   parent::dbInstall($data);
  }

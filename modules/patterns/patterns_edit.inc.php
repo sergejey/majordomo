@@ -28,6 +28,40 @@
 
    global $script;
    $rec['SCRIPT']=trim($script);
+   if ($rec['SCRIPT']!='') {
+    $errors=php_syntax_error($rec['SCRIPT']);
+    if ($errors) {
+     $out['ERR_SCRIPT']=1;
+     $out['ERRORS_SCRIPT']=nl2br($errors);
+     $ok=0;
+    }
+   }
+
+
+   global $script_exit;
+   global $use_script_exit;
+
+   if (!$use_script_exit) {
+    $script_exit='';
+   }
+
+   $rec['SCRIPT_EXIT']=trim($script_exit);
+
+   if ($rec['SCRIPT_EXIT']!='') {
+    $errors=php_syntax_error($rec['SCRIPT_EXIT']);
+    if ($errors) {
+     $out['ERR_SCRIPT_EXIT']=1;
+     $out['ERRORS_SCRIPT_EXIT']=nl2br($errors);
+     $ok=0;
+    }
+   }
+
+
+   if (!$rec['ID']) {
+    global $pattern_type;
+    $rec['PATTERN_TYPE']=(int)$pattern_type;
+   }
+
 
    global $run_type;
 
@@ -105,6 +139,27 @@
 
 
    $rec['PARENT_ID']=(int)$parent_id;
+
+   if ($rec['PATTERN_TYPE']==1) {
+    $rec['PARENT_ID']=0;
+
+    global $linked_object;
+    $rec['LINKED_OBJECT']=$linked_object;
+
+    global $linked_property;
+    $rec['LINKED_PROPERTY']=$linked_property;
+
+    global $condition;
+    $rec['CONDITION']=$condition;
+
+    global $condition_value;
+    $rec['CONDITION_VALUE']=$condition_value;
+
+    if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
+     addLinkedProperty($rec['LINKED_OBJECT'], $rec['LINKED_PROPERTY'], $this->name);
+    }
+
+   }
 
 
   //UPDATING RECORD
