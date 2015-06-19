@@ -307,7 +307,8 @@ $dictionary=array(
 'DATA'=>'Данные', // commands/commands_edit.html; saverestore/action_admin.html; 
 
 
-'AUTO_UPDATE_PERIOD'=>'Период автообновления', // commands/commands_edit.html; 
+'AUTO_UPDATE_PERIOD'=>'Период автообновления',
+'POLLING_PERIOD'=>'Период опроса',
 
 
 'CURRENT_VALUE'=>'Текущее значение', // commands/commands_edit.html; 

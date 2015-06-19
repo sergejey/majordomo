@@ -121,7 +121,7 @@ function admin(&$out) {
 
  global $name;
 
- $data_url='http://connect.smartliving.ru/market/?lang='.LANG;
+ $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE;
 
  global $err_msg;
  if ($err_msg) {

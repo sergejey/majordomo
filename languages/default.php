@@ -318,6 +318,7 @@ $dictionary=array(
 
 
 'AUTO_UPDATE_PERIOD'=>'Auto update period', // commands/commands_edit.html; 
+'POLLING_PERIOD'=>'Polling period', // commands/commands_edit.html; 
 
 
 'CURRENT_VALUE'=>'Current value', // commands/commands_edit.html; 
