@@ -33,6 +33,10 @@ function run() {
   //}
 
 
+  if ($this->live) {
+   $out['LIVE']=$this->live;
+  }
+
   if ($this->userpassword) {
    $this->userpassword=processTitle($this->userpassword);
    $tmp=explode(':', $this->userpassword);

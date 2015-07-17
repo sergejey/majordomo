@@ -49,6 +49,12 @@ if (!is_dir($target_dir))
    $full_backup = 1;
 }
 
+if (!is_dir(ROOT . 'debmes'))
+   mkdir(ROOT . 'debmes', 0777);
+
+if (!is_dir(ROOT . 'cached'))
+   mkdir(ROOT . 'cached', 0777);
+
 if (!is_dir(ROOT . 'cached/voice'))
    mkdir(ROOT . 'cached/voice', 0777);
 

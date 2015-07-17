@@ -642,7 +642,7 @@ function playSound($filename, $exclusive=0, $priority=0)
 *
 * @access public
 */
- function getURL($url, $cache=600, $username='', $password='') {
+ function getURL($url, $cache=0, $username='', $password='') {
   $cache_file=ROOT.'cached/urls/'.preg_replace('/\W/is', '_', str_replace('http://', '', $url)).'.html';
   if (!$cache || !is_file($cache_file) || ((time()-filemtime($cache_file))>$cache)) {
    //download

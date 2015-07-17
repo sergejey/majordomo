@@ -10,7 +10,7 @@
                 <h1 id="label_[#PARENT_ID#]">[#if PARENT_TITLE!=""#][#PARENT_TITLE#][#else#]MajorDoMo[#endif#]</h1>
 
                 [#if PARENT_ID!=""#]
-                <a class="back" href="[#if PARENT_PARENT_ID!="0"#]/menu/[#PARENT_PARENT_ID#][#else#]/menu[#endif#].html"><#LANG_BACK#></a>
+                <a class="back" href="[#if PARENT_PARENT_ID!="0"#]<#ROOTHTML#>menu/[#PARENT_PARENT_ID#][#else#]<#ROOTHTML#>menu[#endif#].html"><#LANG_BACK#></a>
                 [#endif#]
                 <!--#
                 <a class="button slideup" id="infoButton" href="#about">info</a>

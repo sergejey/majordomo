@@ -24,18 +24,82 @@ define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds
 
 
 if ($url) {
+
+   $resize='';
+   if ($w && $h) {
+    $resize=' -vf scale='.$w.':'.$h;
+   } elseif ($w) {
+    $resize=' -vf scale='.$w.':-1';
+   } elseif ($h) {
+    $resize=' -vf scale=-1:'.$h;
+   }
+
    $url=base64_decode($url);
    if (preg_match('/^rtsp:/is', $url)) {
-    system(PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'" -r 10 -q:v 9 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+    if ($live) {
+     //$cmd=PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'" -r 10 -q:v 9 -f mjpeg pipe:1';// /dev/stdout 2>/dev/null
+     //passthru($cmd);
+     //exit;
+        $boundary = "my_mjpeg";
+        header("Cache-Control: no-cache");
+        header("Cache-Control: private");
+        header("Pragma: no-cache");
+        header("Content-type: multipart/x-mixed-replace; boundary=$boundary");
+        print "--$boundary\n";
+        set_time_limit(0);
+        @apache_setenv('no-gzip', 1);
+        @ini_set('zlib.output_compression', 0);
+        @ini_set('implicit_flush', 1);
+        for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
+        ob_implicit_flush(1);
+        while (true) {
+            print "Content-type: image/jpeg\n\n";
+            system(PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -q:v 9 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+            print LoadFile($img);
+            print "--$boundary\n";
+            sleep(1);
+        }
+
+    } else {
+     system(PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -q:v 9 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+    }
     $dc=1;
    } else {
+
+    //echo $url.' - '.$username.' - '.$password;exit;
     $result=getURL($url, 0, $username, $password);
     if ($result) {
-     SaveFile($img, $result);
+
+     if ($live) {
+
+        $boundary = "my_mjpeg";
+        header("Cache-Control: no-cache");
+        header("Cache-Control: private");
+        header("Pragma: no-cache");
+        header("Content-type: multipart/x-mixed-replace; boundary=$boundary");
+        print "--$boundary\n";
+        set_time_limit(0);
+        @apache_setenv('no-gzip', 1);
+        @ini_set('zlib.output_compression', 0);
+        @ini_set('implicit_flush', 1);
+        for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
+        ob_implicit_flush(1);
+        while (true) {
+            print "Content-type: image/jpeg\n\n";
+            $result=getURL($url, 0, $username, $password);
+            print $result;
+            print "--$boundary\n";
+            sleep(1);
+        }
+
+     } else {
+      SaveFile($img, $result);
+     }
      $dc=1;
     } else {
      $img='error';
     }
+
    }
 }
 
