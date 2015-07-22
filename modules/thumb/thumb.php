@@ -54,14 +54,14 @@ if ($url) {
         ob_implicit_flush(1);
         while (true) {
             print "Content-type: image/jpeg\n\n";
-            system(PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -q:v 9 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+            system(PATH_TO_FFMPEG.' -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
             print LoadFile($img);
             print "--$boundary\n";
             sleep(1);
         }
 
     } else {
-     system(PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -q:v 9 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+     system(PATH_TO_FFMPEG.' -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
     }
     $dc=1;
    } else {

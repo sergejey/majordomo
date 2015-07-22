@@ -798,6 +798,16 @@ curl_close($ch);
 * @access private
 */
  function dbInstall($data) {
+
+  SQLExec("DROP TABLE IF EXISTS `cached_values`;");
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
+               (`KEYWORD`   char(100) NOT NULL,
+                `DATAVALUE` char(255) NOT NULL,
+                `EXPIRE`    datetime  NOT NULL,
+                PRIMARY KEY (`KEYWORD`)
+               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+
 /*
 objects - Objects
 */
