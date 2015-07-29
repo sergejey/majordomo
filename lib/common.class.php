@@ -84,7 +84,16 @@
                 @touch($google_file);
                         playSound($google_file, 1, $level);
            } else {
-                safe_exec('cscript '.DOC_ROOT.'/rc/sapi.js '.$ph, 1, $level);
+             if (IsWindowsOS()) {
+               safe_exec('cscript '.DOC_ROOT.'/rc/sapi.js '.$ph, 1, $level);
+             } else {
+               if ($lang=='ru') {
+                $ln='russian';
+               } else {
+                $ln='english';
+               }
+               safe_exec('echo "'.$ph.'" | festival --language '.$ln.' --tts',1,$level);
+             }
            }
         }
 
