@@ -120,10 +120,8 @@ if (!is_array($restart_threads))
                          'cycle_execs.php',
                          'cycle_main.php',
                          'cycle_ping.php',
-                         'cycle_rss.php',
                          'cycle_scheduler.php',
                          'cycle_states.php',
-                         'cycle_watchfolders.php',
                          'cycle_webvars.php');
 }
 
