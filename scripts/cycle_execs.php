@@ -43,7 +43,11 @@ while (1)
    
    for ($i = 0; $i < $total; $i++)
    {
-      $command = utf2win($safe_execs[$i]['COMMAND']);
+      if (IsWindowsOS()) {
+       $command = utf2win($safe_execs[$i]['COMMAND']);
+      } else {
+       $command = $safe_execs[$i]['COMMAND'];
+      }
       $sqlQuery = "DELETE
                      FROM safe_execs
                     WHERE ID = '" . $safe_execs[$i]['ID'] . "'";
@@ -66,7 +70,11 @@ while (1)
    
    for ($i = 0; $i < $total; $i++)
    {
-      $command = utf2win($safe_execs[$i]['COMMAND']);
+      if (IsWindowsOS()) {
+       $command = utf2win($safe_execs[$i]['COMMAND']);
+      } else {
+       $command = $safe_execs[$i]['COMMAND'];
+      }
       $sqlQuery = "DELETE
                      FROM safe_execs
                     WHERE ID = '" . $safe_execs[$i]['ID'] . "'";
