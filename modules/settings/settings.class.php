@@ -189,6 +189,7 @@ $data = <<<EOD
  settings: NAME varchar(50) NOT NULL DEFAULT ''          // Setting system name
  settings: TYPE varchar(59) NOT NULL DEFAULT ''          // Setting value type
  settings: NOTES text NOT NULL DEFAULT ''                // Setting Notes / Description
+ settings: DATA text NOT NULL DEFAULT ''                 // Additional data
  settings: VALUE varchar(255) NOT NULL DEFAULT ''        // Setting Value
  settings: DEFAULTVALUE varchar(255) NOT NULL DEFAULT '' // Setting Default Value
  settings: URL varchar(255) NOT NULL DEFAULT ''          // URL for more details

@@ -36,6 +36,44 @@
  }
  $out['SECTIONS']=$sections;
 
+ if ($this->filter_name=='' && !defined('SETTINGS_TTS_ENGINE')) {
+  if (defined('SETTINGS_TTS_GOOGLE')) {
+   SQLExec('DELETE FROM settings WHERE NAME="TTS_GOOGLE"');
+  }
+  $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME='TTS_ENGINE' AND DATA LIKE '%yandex%'");
+  if (!$tmp['ID']) {
+   SQLExec('DELETE FROM settings WHERE NAME="TTS_ENGINE"');
+   $tmp=array();
+   $tmp['NAME']='TTS_ENGINE';
+   $tmp['TYPE']='select';
+   $tmp['PRIORITY']=60;
+   $tmp['TITLE']='Text-to-speech engine';
+   $tmp['DEFAULTVALUE']='';
+   $tmp['DATA']='=Default|google=Google|yandex=Yandex';
+   SQLInsert('settings', $tmp);
+  }
+ }
+
+ if ($this->filter_name=='' && !defined('SETTINGS_YANDEX_TTS_KEY')) {
+  $options=array(
+   'YANDEX_TTS_KEY'=>'Yandex TTS key'
+  );
+
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v;
+    $tmp['TYPE']='text';
+    $tmp['PRIORITY']=55;
+    $tmp['DEFAULTVALUE']='';
+    SQLInsert('settings', $tmp);
+   }
+  }
+ }
+
+
  if ($this->filter_name=='' && !defined('SETTINGS_GENERAL_ALICE_NAME')) {
   $options=array(
    'GENERAL_ALICE_NAME'=>'Computer\'s name'
@@ -281,6 +319,16 @@
      $res[$i]['VALUE']=$res[$i]['DEFAULTVALUE'];
      SQLUpdate('settings', $res[$i]);
     }
+
+    if ($res[$i]['TYPE']=='select') {
+     $data=explode('|', $res[$i]['DATA']);
+     foreach($data as $v) {
+      list($ov, $ot)=explode('=', $v);
+      $res[$i]['OPTIONS'][]=array('OPTION_TITLE'=>$ot, 'OPTION_VALUE'=>$ov);
+     }
+    }
+
+
     if ($res[$i]['VALUE']==$res[$i]['DEFAULTVALUE']) {
      $res[$i]['ISDEFAULT']='1';
     }

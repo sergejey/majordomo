@@ -75,6 +75,13 @@ $(function() {
                 <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>No</label>
                 [#endif TYPE#]
 
+                [#if TYPE="select"#]
+                [#begin OPTIONS#]
+                <label class="radio"><input type="radio" name="value_<#RESULT.ID#>" value="[#OPTION_VALUE#]"[#if OPTION_VALUE="<#RESULT.VALUE#>"#] checked[#endif#]>[#OPTION_TITLE#]</label>
+                [#end OPTIONS#]
+                [#endif TYPE#]
+
+
                 [#if TYPE="enable"#]
                 <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Enable</label>
                 <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>

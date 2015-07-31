@@ -66,10 +66,12 @@
                 $lang=SETTINGS_VOICE_LANGUAGE;
            }
 
-           if (!defined('SETTINGS_TTS_GOOGLE') || SETTINGS_TTS_GOOGLE) {
-                $google_file=GoogleTTS($ph, $lang);
+           if (SETTINGS_TTS_ENGINE=='google') {
+                $voice_file=GoogleTTS($ph, $lang);
+           } elseif (SETTINGS_TTS_ENGINE=='yandex') {
+                $voice_file=YandexTTS($ph, $lang);
            } else {
-                $google_file=false;
+                $voice_file=false;
            }
 
            if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL=='1') {
@@ -80,9 +82,9 @@
                   }
            }
 
-           if ($google_file) {
-                @touch($google_file);
-                        playSound($google_file, 1, $level);
+           if ($voice_file) {
+                @touch($voice_file);
+                        playSound($voice_file, 1, $level);
            } else {
              if (IsWindowsOS()) {
                safe_exec('cscript '.DOC_ROOT.'/rc/sapi.js '.$ph, 1, $level);
