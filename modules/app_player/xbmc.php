@@ -14,10 +14,18 @@ function xbmc_request($ch, $terminal, $method, $params = 0)
    $request = json_encode($json);
 
    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-   curl_setopt($ch, CURLOPT_POST, 1);
-   curl_setopt($ch, CURLOPT_URL, $playerAddr . "/jsonrpc");
-   curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+   curl_setopt($ch, CURLOPT_URL, $playerAddr . "/jsonrpc?request=".urlencode($request));
    $responseRaw = curl_exec($ch);
+
+   //DebMes("XBMC request (".$playerAddr . "/jsonrpc?request=".urlencode($request));
+   //DebMes("XBMC response: ".$responseRaw);
+
+   /*
+   if (!$responseRaw) {
+    DebMes("XBMC error: ".curl_error ($ch));
+   }
+   */
+
    
    return json_decode($responseRaw);
 }
@@ -64,4 +72,14 @@ if ($command == 'close')
 if ($command == 'volume') 
    $result=xbmc_request($ch, $terminal, 'Application.SetVolume', array('volume'=>(int)$volume));
 
-?>
+if ($command == 'notify') {
+ global $type;
+ global $title;
+ global $message;
+ if (!$type) $type='info';
+ if (!$title) $title='MajorDoMo';
+ $result=xbmc_request($ch, $terminal, 'GUI.ShowNotification', array('title'=>(string)$title,'message'=>(string)$message,'image'=>(string)$type));
+
+}
+ 
+
