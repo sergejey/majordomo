@@ -459,7 +459,7 @@
  function updateLabel[#ID#]() {
   clearTimeout(label[#ID#]_timer);
 
-  collectLabel([#ID#]);
+  collectLabel('[#ID#]');
   /*
   var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
@@ -470,7 +470,7 @@
   var url2="?ajax=1&op=get_value";
   AJAXRequest(url2+'&item_id=[#ID#]', 'updateValue[#ID#]_Ready', '');
   */
-  collectValue([#ID#]);
+  collectValue('[#ID#]');
   [#endif TYPE#]
 
   label[#ID#]_timer=setTimeout('updateLabel[#ID#]()', ([#AUTO_UPDATE#]*1000));

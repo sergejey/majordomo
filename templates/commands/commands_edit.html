@@ -48,19 +48,28 @@
 [#else ID#]
 <div class="form-group ">
         <label class="control-label">ID:</label>
+
+<div class="form-inline">
         <div class="col-lg-5">
                 <input type="text" value="[#ID#]" disabled class="form-control">
-
+        </div>
+        <div class="col-lg-1">
 [#if TYPE="button"#]
 Action URL:
 <a href="<#ROOTHTML#>menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank>Run</a>
+[#else#]
+<a href="<#ROOTHTML#>menu/[#ID#].html" target=_blank>#</a>
 [#endif#]
         </div>
+
+</div>
 </div>
 
 [#endif ID#]
+
 <div class="form-group">
         <label class="control-label"><#LANG_PARENT_MENU_ITEM#>:</label>
+<div class="form-inline">
         <div class="col-lg-5">
                 <select name="parent_id" class="form-control">
                 <option value="0">ROOT
@@ -69,6 +78,12 @@ Action URL:
                 [#end PARENTS#]
                 </select>
         </div>
+
+[#if PARENT_ID!="0"#]
+<div class="col-lg-1"><a href="<#ROOTHTML#>menu/[#PARENT_ID#].html" target=_blank>#</a></div>
+[#endif#]
+
+</div>
 </div>
 
 <!-- TITLE (varchar) -->
@@ -284,6 +299,15 @@ Action URL:
   <textarea name="code" id="code" rows=20 cols=100 class="form-control">[#CODE#]</textarea>
  </div>
 
+        </div>
+</div>
+
+
+<div class="form-group">
+        <label class="control-label"> Smart Repeat:</label>
+        <div class="col-lg-5">
+                <label><input type="radio" name="smart_repeat" value="1"[#if SMART_REPEAT="1"#] checked[#endif#]> <#LANG_YES#></label>
+                <label><input type="radio" name="smart_repeat" value="0"[#if SMART_REPEAT!="1"#] checked[#endif#]> <#LANG_NO#></label>
         </div>
 </div>
 

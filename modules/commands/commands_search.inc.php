@@ -25,22 +25,35 @@
 
   if ($this->owner->parent_item) {
    $this->parent_item=$this->owner->parent_item;
+   $_GET['parent']=$this->parent_item;
   }
 
 
   if ($_GET['parent']) {
+   $this->parent_item=$_GET['parent'];
+   /*
    $tmp=SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID='".$_GET['parent']."'");
    if ($tmp['ID']) {
     $qry.=" AND (commands.PARENT_ID='".$_GET['parent']."')";
    } else {
     $qry.=" AND (commands.ID='".(int)$_GET['parent']."')";
    }
+   */
    $out['IFRAME_MODE']=1;
   }
 
 
   if ($this->parent_item!='') {
-   $qry.=" AND PARENT_ID='".$this->parent_item."'";
+   $out['IFRAME_MODE']=1;
+   $tmp=SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID='".$_GET['parent']."'");
+
+   if ($tmp['ID']) {
+    $qry.=" AND (commands.PARENT_ID='".$this->parent_item."')";
+   } else {
+    $qry.=" AND (commands.ID='".$this->parent_item."')";
+   }
+
+   //$qry.=" AND PARENT_ID='".$this->parent_item."'";
    $parent_rec=SQLSelectOne("SELECT * FROM commands WHERE ID='".$this->parent_item."'");
    $parent_rec['TITLE']=processTitle($parent_rec['TITLE'], $this);
    if ($paret_rec['SUB_PRELOAD']) {
@@ -89,6 +102,31 @@
   $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY $sortby");
 
    if ($res[0]['ID']) {
+
+    if ($this->action!='admin') {
+     $dynamic_res=array();
+     $total=count($res);
+     for($i=0;$i<$total;$i++) {
+      if ($res[$i]['SMART_REPEAT'] && $res[$i]['LINKED_OBJECT']) {
+       $obj=getObject($res[$i]['LINKED_OBJECT']);
+       $objects=getObjectsByClass($obj->class_id);
+       $total_o=count($objects);
+       for($io=0;$io<$total_o;$io++) {
+        $rec=$res[$i];
+        $rec['ID']=$res[$i]['ID'].'_'.$objects[$io]['ID'];
+        $rec['LINKED_OBJECT']=$objects[$io]['TITLE'];
+        $rec['DATA']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['DATA']);
+        $rec['CUR_VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
+        $rec['TITLE']=$objects[$io]['TITLE'];
+        $dynamic_res[]=$rec;
+       }
+      } else {
+       $dynamic_res[]=$res[$i];
+      }
+     }
+     $res=$dynamic_res;
+    }
+
     $this->processMenuElements($res);
     if ($this->action=='admin') {
      $res=$this->buildTree_commands($res);
