@@ -25,7 +25,7 @@
 
   if ($this->owner->parent_item) {
    $this->parent_item=$this->owner->parent_item;
-   $_GET['parent']=$this->parent_item;
+   //$_GET['parent']=$this->parent_item;
   }
 
 
@@ -44,7 +44,7 @@
 
 
   if ($this->parent_item!='') {
-   $out['IFRAME_MODE']=1;
+   //$out['IFRAME_MODE']=1;
    $tmp=SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID='".$_GET['parent']."'");
 
    if ($tmp['ID']) {
