@@ -112,6 +112,7 @@ $dictionary=array(
 'MODULE_SOUNDFILES'=>'Звуковые файлы',
 'MODULE_SYSTEM_ERRORS'=>'Ошибки системы',
 'MODULE_MODULES'=>'Модули', 
+'MODULE_USERLOG'=>'Журнал действий', 
 
 'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
 

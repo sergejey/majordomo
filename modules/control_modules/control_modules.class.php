@@ -163,6 +163,13 @@ function getParams() {
     $lst[]=$rec;
    }
   }
+
+   function cmp_modules($a, $b) {
+    return strcmp($a["FILENAME"], $b["FILENAME"]);
+   }
+
+  usort($lst, 'cmp_modules');
+
   $this->modules=$lst;
   return $lst;
  }

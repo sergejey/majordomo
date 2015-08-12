@@ -124,6 +124,7 @@ $dictionary=array(
 'MODULE_SOUNDFILES'=>'Sound files',
 'MODULE_SYSTEM_ERRORS'=>'System Errors', 
 'MODULE_MODULES'=>'Modules', 
+'MODULE_USERLOG'=>'User log', 
 
 'SETUP'=>'Setup', 
 
