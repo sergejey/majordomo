@@ -414,7 +414,7 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "TickB"=>100,
                 "InnerTickWidth"=>0,
                 "OuterTickWidth"=>5,
-                "LabelSkip"=>4, //пропускаем тики
+                "LabelSkip"=>0, //пропускаем тики
                 "GridTicks"=>1,
                 "ScaleSpacing"=>100,
                 "XMargin"=>0,

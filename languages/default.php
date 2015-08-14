@@ -1014,6 +1014,7 @@ $dictionary=array(
 'PATTERN_CONDITIONAL'=>'Conditional',
 'CONDITION'=>'Condition',
 'ADD_EXIT_CODE'=>'Add "exit" code',
+'SMART_REPEAT'=>'Smart Repeat',
 
 'TEST'=>'test'
 

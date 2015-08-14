@@ -66,7 +66,7 @@
          [#begin RESULT#][#begin ALL_ELEMENTS#][#begin STATES#]
 
          [#if "<#ALL_ELEMENTS.TYPE#>"=="button"#]
-         if (id==[#ID#]) {
+         if (id=='[#ID#]') {
           $('#state_[#ID#]').addClass('clicked');
           setTimeout("$('#state_[#ID#]').removeClass('clicked');", 150);
          }
@@ -88,7 +88,7 @@
          [#endif#]
 
          [#if "<#ALL_ELEMENTS.TYPE#>"=="navgo"#]
-         if (id==[#ID#]) {
+         if (id=='[#ID#]') {
           window.location.href=window_url;
           return;
          }
@@ -97,7 +97,7 @@
 
 
          [#if MENU_ITEM_ID!="0" || HOMEPAGE_ID!="0" || OPEN_SCENE_ID!="0" || EXT_URL!=""#]
-         if (id==[#ID#]) {
+         if (id=='[#ID#]') {
 
           var top=$('#scene_background_<#RESULT.ID#>').offset().top;
           var left=$('#scene_background_<#RESULT.ID#>').offset().left;
@@ -283,7 +283,7 @@
    class="element_<#ELEMENTS.ID#> type_<#ELEMENTS.TYPE#>[#if "<#ELEMENTS.CSS_STYLE#>"!=""#] style_<#ELEMENTS.CSS_STYLE#>[#endif#] state_[#TITLE#][#if ("<#ELEMENTS.BACKGROUND#>"=="1")#] html_background[#endif#][#if "<#ELEMENTS.POSITION_TYPE#>"=="1"#] inlineblock[#endif#]" 
    id="state_[#ID#]"
    [#if SCRIPT_ID!="0" || HOMEPAGE_ID!="0" || OPEN_SCENE_ID!="0" || EXT_URL!="" || MENU_ITEM_ID!="0" || ACTION_METHOD!="" || CODE!=""#] 
-    onClick="stateClicked([#ID#]);"
+    onClick="stateClicked('[#ID#]');"
    [#endif#] 
    style="
    [#if "<#ELEMENTS.POSITION_TYPE#>"=="0"#]position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#endif ELEMENTS#]

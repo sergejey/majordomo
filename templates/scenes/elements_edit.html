@@ -315,6 +315,19 @@
         </div>
 </div>
 
+[#endif ELEMENT_TYPE#]
+
+[#if ELEMENT_TYPE!="container"#]
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_SMART_REPEAT#></label>
+        <div class="controls">
+                <input type="radio" name="smart_repeat" value="1"[#if ELEMENT_SMART_REPEAT=="1"#]checked[#endif#]> <#LANG_YES#>
+                <br>
+                <input type="radio" name="smart_repeat" value="0"[#if ELEMENT_SMART_REPEAT!="1"#]checked[#endif#]> <#LANG_NO#>
+        </div>
+</div>
+[#endif ELEMENT_TYPE#]
+
 [#if ID!=""#]
 <div class="form-group">
         <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
@@ -325,8 +338,6 @@
 [#endif ID#]
 
 
-
-[#endif ELEMENT_TYPE#]
 <!-- CROSS_SCENE (int) -->
 <!--#
 <tr>
@@ -338,6 +349,7 @@
  </td>
 </tr>
 #-->
+
 
 [#if ELEMENT_ID!="" && ELEMENT_TYPE!="container"#]
 

@@ -182,6 +182,10 @@
     global $type;
     $element['TYPE']=$type;
 
+    global $smart_repeat;
+    $element['SMART_REPEAT']=(int)$smart_repeat;
+
+
     global $css_style;
     $element['CSS_STYLE']=$css_style;
     if (!$element['CSS_STYLE']) {

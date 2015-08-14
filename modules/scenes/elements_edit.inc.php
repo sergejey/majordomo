@@ -47,6 +47,11 @@
   //updating 'CROSS_SCENE' (int)
    global $cross_scene;
    $rec['CROSS_SCENE']=(int)$cross_scene;
+
+   global $smart_repeat;
+   $rec['SMART_REPEAT']=(int)$smart_repeat;
+
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
