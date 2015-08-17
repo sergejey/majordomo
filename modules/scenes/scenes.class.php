@@ -552,11 +552,13 @@ function usual(&$out) {
      }
 
 
-
      $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".(int)$real_part."'");
+
      $params=array('STATE'=>$state['TITLE']);
      if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) {
-      $state['ACTION_OBJECT']=$object_rec['TITLE'];
+      if ($object_part) {
+       $state['ACTION_OBJECT']=$object_rec['TITLE'];
+      }
       callMethod($state['ACTION_OBJECT'].'.'.$state['ACTION_METHOD'], $params);
      }
      if ($state['SCRIPT_ID']) {
@@ -997,12 +999,14 @@ function usual(&$out) {
          }
 
         } else {
+         $elements[$ie]['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
          $elements[$ie]['SMART_REPEAT']=0;
          $res2[]=$elements[$ie];
         }
 
        } else {
-        $res2[]=$elements[$ie];
+         $elements[$ie]['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+         $res2[]=$elements[$ie];
        }
       }
       return $res2;
