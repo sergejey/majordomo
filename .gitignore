@@ -11,3 +11,4 @@ reboot
 *.sln
 *.suo
 *.phpproj.user
+.vs/*
