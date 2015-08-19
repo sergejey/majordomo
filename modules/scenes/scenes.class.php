@@ -519,7 +519,7 @@ function usual(&$out) {
      $total=count($states);
 
      for($i=0;$i<$total;$i++) {
-      $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
+      $states[$i]['STATE']=(string)$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
        if (preg_match('/\[#modul/is', $states[$i]['HTML'])) {
         //$states[$i]['HTML']=str_replace('#', '', $states[$i]['HTML']);
@@ -595,7 +595,7 @@ function usual(&$out) {
 
      $total=count($states);
      for($i=0;$i<$total;$i++) {
-      $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
+      $states[$i]['STATE']=(string)$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
       }
@@ -962,8 +962,8 @@ function usual(&$out) {
       $totale=count($elements);
       $res2=array();
       for($ie=0;$ie<$totale;$ie++) {
+       $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
        if ($elements[$ie]['SMART_REPEAT'] && !$this->action=='admin') {
-        $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
         $linked_object='';
         if ($states[0]['LINKED_OBJECT']) {
          $linked_object=$states[0]['LINKED_OBJECT'];
@@ -999,13 +999,13 @@ function usual(&$out) {
          }
 
         } else {
-         $elements[$ie]['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+         $elements[$ie]['STATES']=$states;
          $elements[$ie]['SMART_REPEAT']=0;
          $res2[]=$elements[$ie];
         }
 
        } else {
-         $elements[$ie]['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+         $elements[$ie]['STATES']=$states;
          $res2[]=$elements[$ie];
        }
       }
