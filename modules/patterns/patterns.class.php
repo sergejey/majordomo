@@ -617,7 +617,7 @@ function usual(&$out) {
    }
    $history=implode('@@@@', $lines);
    $check=implode('@@@@', $lines_pattern);
-   if (preg_match('/'.$check.'/is', $history, $matches)) {
+   if (preg_match('/'.$check.'/isu', $history, $matches)) {
     $condition_matched=1;
    }
 
