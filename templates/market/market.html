@@ -9,6 +9,7 @@
 
 [#if CLEAR_FIRST!="1"#]
 
+<p><a href="?mode=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a></p>
 
 [#if MODE=""#]
 [#if PLUGINS#]
@@ -47,7 +48,7 @@
   <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a></b></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a></td>
-  <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('Please confirm!')">Uninstall</a>[#endif#]</td>
+  <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('<#LANG_ARE_YOU_SURE#>')">Uninstall</a>[#endif#]</td>
  </tr>
  [#end PLUGINS#]
 </table>

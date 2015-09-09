@@ -250,7 +250,12 @@ function admin(&$out) {
 // }
 
  if ($this->mode=='clear') {
+  set_time_limit(0);
   $this->removeTree(ROOT.'saverestore/temp');
+  global $with_extensions;
+  if ($with_extensions) {
+   $this->redirect("?(panel:{action=market})&md=market&mode=update_all");
+  }
   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));
  }
 
@@ -368,7 +373,8 @@ function admin(&$out) {
     $out['BACKUP']=1;
     $this->dump($out);
     $this->removeTree(ROOT.'saverestore/temp');
-    $this->redirect("?mode=upload&restore=".urlencode('master.tgz')."&folder=".urlencode('majordomo-master'));
+    global $with_extensions;
+    $this->redirect("?mode=upload&restore=".urlencode('master.tgz')."&folder=".urlencode('majordomo-master')."&with_extensions=".$with_extensions);
    } else {
     $this->redirect("?err_msg=".urlencode("Cannot download ".$url));
    }
@@ -468,7 +474,8 @@ function admin(&$out) {
 
 
   if ($result['STATUS']=='OK') {
-   $this->redirect("?mode=clear&ok_msg=".urlencode($ok_msg));
+   global $with_extensions;
+   $this->redirect("?mode=clear&ok_msg=".urlencode($ok_msg)."&with_extensions=".$with_extensions);
   } else {
    $this->redirect("?mode=clear&err_msg=".urlencode($ok_msg));
   }
@@ -1145,7 +1152,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
          }
 
          // UPDATING FILES DIRECTLY
-         $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
+         //$this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
 
 
         } elseif ($this->method=='ftp') {
@@ -1230,7 +1237,10 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
         setGlobal('UpdateVersion', $this->config['LATEST_UPDATED_ID']);
 
         $this->saveConfig();
-        $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));
+
+        global $with_extensions;
+        $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!")."&with_extensions=".$with_extensions);
+
 
        }
   }

@@ -8,12 +8,12 @@
 [#endif ERR#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font> <#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="col-lg-4"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_CLASS#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label"><#LANG_CLASS#>:<font color="red">*</font> <#LANG_HCB#>object_class<#LANG_HCE#></label>
         <div class="col-lg-4">
  <select name="class_id" class="form-control [#if ERR_TITLE#]alert-danger[#endif#]" required="true">
   <option value="">select
@@ -25,13 +25,13 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#>:</label>
+        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#>: <#LANG_HCB#>description<#LANG_HCE#></label>
         <div class="col-lg-4"><textarea name="description" rows="3" class="form-control">[#DESCRIPTION#]</textarea></div>
 </div>
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_LOCATION#>:</label>
+        <label class="col-lg-4 control-label"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
         <div class="col-lg-4"><select name="location_id" class="form-control">
   <option value="">-
   [#begin LOCATION_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
@@ -40,7 +40,7 @@
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_KEEP_HISTORY_DAYS#>:</label>
+        <label class="col-lg-4 control-label"><#LANG_KEEP_HISTORY_DAYS#>: <#LANG_HCB#>keep_history<#LANG_HCE#></label>
 
 
    <div class="col-lg-4">

@@ -145,6 +145,7 @@ function admin(&$out) {
  $total=count($data->PLUGINS);
 
  $old_category='';
+ $can_be_updated=array();
 
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
@@ -189,11 +190,19 @@ function admin(&$out) {
    }
 
   //}
+  if ($rec['EXISTS']) {
+   $can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
+   //$can_be_updated[]=$rec['MODULE_NAME'];
+  }
 
 
   $out['PLUGINS'][]=$rec;
  }
 
+
+ if ($this->mode=='update_all') {
+  $this->updateAll($can_be_updated);
+ }
 
  if ($this->mode=='install' && $url) {
   $this->getLatest($out, $url, $name, $version);
@@ -214,6 +223,132 @@ function admin(&$out) {
  }
 
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function updateAll($can_be_updated) {
+
+  //$this->redirect("?mode=install&name=".$can_be_updated[0]."&list=".urlencode(implode(',', $can_be_updated)));
+  set_time_limit(0);
+   if (!is_dir(ROOT.'saverestore')) {
+    @umask(0);
+    @mkdir(ROOT.'saverestore', 0777);
+   }
+
+   umask(0);
+   @mkdir(ROOT.'saverestore/temp', 0777);
+
+
+  foreach($can_be_updated as $k=>$v) {
+   //$this->getLatest($out, $v['URL'], $v['NAME'], $v['VERSION']);
+    $name=$v['NAME'];
+    $version=$v['VERSION'];
+    $url=$v['URL'];
+
+    $filename=ROOT.'saverestore/'.$name.'.tgz';
+    @unlink(ROOT.'saverestore/'.$name.'.tgz');
+    @unlink(ROOT.'saverestore/'.$name.'.tar');
+    $f = fopen($filename, 'wb');
+    if ($f == FALSE){
+      $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
+    } 
+
+    DebMes("Downloading plugin $name ($version) from $url");
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 600);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);     
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+    curl_setopt($ch, CURLOPT_FILE, $f); 
+    $incoming = curl_exec($ch);
+    curl_close($ch);
+    @fclose($f);
+
+    if (file_exists($filename)) {
+
+      $file = $file_name;
+      DebMes("Installing/updating plugin $name ($version)");
+
+      chdir(ROOT.'saverestore/temp');
+
+      if (IsWindowsOS()) {
+         exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
+         exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
+      } else {
+         exec('tar xzvf ../' . $file, $output, $res);
+      }
+
+      sleep(2);
+
+        $x = 0;
+        $latest_dir='';
+        $latest_file='';
+        $dir=opendir('./');
+        while (($filec = readdir($dir)) !== false) {
+         if ($filec=='.' || $filec=='..') {
+          continue;
+         }
+         if (is_Dir($filec)) {
+          $latest_dir=$filec;
+         } elseif (is_File($filec)) {
+          $latest_file=$filec;
+         }
+         $x++;
+        }
+
+        if ($x==1 && $latest_dir) {
+         $folder='/'.$latest_dir;
+        }
+
+        chdir('../../');
+
+        DebMes("Latest folder: $latest_dir");
+
+        if ($latest_dir=='') {
+         DebMes("Error extracting $file");
+         continue;
+        }
+
+        // UPDATING FILES DIRECTLY
+        $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
+        $this->removeTree(ROOT.'saverestore/temp'.$folder);
+
+
+       $rec=SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
+       $rec['MODULE_NAME']=$name;
+       $rec['CURRENT_VERSION']=$version;
+       $rec['IS_INSTALLED']=1;
+       $rec['LATEST_UPDATE']=date('Y-m-d H:i:s');
+       if ($rec['ID']) {
+        SQLUpdate('plugins', $rec);
+       } else {
+        SQLInsert('plugins', $rec);
+       }
+
+    }
+  }
+
+        $this->removeTree(ROOT.'saverestore/temp');
+
+        $source=ROOT.'modules';
+        if ($dir = @opendir($source)) { 
+          while (($file = readdir($dir)) !== false) { 
+           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
+            @unlink(ROOT."modules/".$file."/installed");
+           }
+          }
+         }
+         @unlink(ROOT."modules/control_modules/installed");
+
+  $this->redirect("?ok_msg=".urlencode("Updates Installed!"));
+  
+ }
 
 /**
 * Title
@@ -276,7 +411,8 @@ function getLatest(&$out, $url, $name, $version) {
 
    if (file_exists($filename)) {
     $this->removeTree(ROOT.'saverestore/temp');
-    $this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version));
+    global $list;
+    $this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version)."&list=".urlencode($list));
    } else {
     $this->redirect("?err_msg=".urlencode("Cannot download ".$url));
    }
@@ -359,6 +495,9 @@ function upload(&$out)
 
        global $name;
        global $version;
+
+       DebMes("Installing/updating plugin $name ($version)");
+
        $rec=SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
        $rec['MODULE_NAME']=$name;
        $rec['CURRENT_VERSION']=$version;
@@ -369,7 +508,6 @@ function upload(&$out)
        } else {
         SQLInsert('plugins', $rec);
        }
-
 
        $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));
   }

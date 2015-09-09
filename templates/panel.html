@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
-        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
 
 
@@ -20,7 +20,7 @@
 
         <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
@@ -406,5 +406,27 @@ jQuery.fn.center = function () {
 [#endif AUTHORIZED#]
 <br><br>
 </div>
+
+<script language="javascript">
+ $(document).ready(function() {
+
+
+        $(".wiki_hint").fancybox({
+                maxWidth        : 800,
+                maxHeight       : 600,
+                fitToView       : false,
+                width           : '70%',
+                height          : '70%',
+                autoSize        : false,
+                closeClick      : false,
+                openEffect      : 'none',
+                closeEffect     : 'none'
+        });
+
+
+        
+});
+</script>
+
 </body>
 </html>
