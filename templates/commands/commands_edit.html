@@ -47,7 +47,7 @@
 
 [#else ID#]
 <div class="form-group ">
-        <label class="control-label">ID:</label>
+        <label class="control-label">ID:<#LANG_HCB#>id<#LANG_HCE#></label>
 
 <div class="form-inline">
         <div class="col-lg-5">
@@ -68,7 +68,7 @@ Action URL:
 [#endif ID#]
 
 <div class="form-group">
-        <label class="control-label"><#LANG_PARENT_MENU_ITEM#>:</label>
+        <label class="control-label"><#LANG_PARENT_MENU_ITEM#>:<#LANG_HCB#>parent_menu_item<#LANG_HCE#></label>
 <div class="form-inline">
         <div class="col-lg-5">
                 <select name="parent_id" class="form-control">
@@ -79,7 +79,7 @@ Action URL:
                 </select>
         </div>
 
-[#if PARENT_ID!="0"#]
+[#if PARENT_ID!="0" && PARENT_ID!=""#]
 <div class="col-lg-1"><a href="<#ROOTHTML#>menu/[#PARENT_ID#].html" target=_blank>#</a></div>
 [#endif#]
 
@@ -89,7 +89,7 @@ Action URL:
 <!-- TITLE (varchar) -->
 
 <div class="form-group">
-        <label class="control-label"><#LANG_TITLE#> (*):</label>
+        <label class="control-label"><#LANG_TITLE#> (*):<#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <input type="text" name="title" value="[#TITLE#]" size="50" required="true" class="form-control">
         </div>
@@ -98,7 +98,7 @@ Action URL:
 
 
 <div class="form-group">
-        <label class="control-label"><#LANG_PRIORITY#>:</label>
+        <label class="control-label"><#LANG_PRIORITY#>:<#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="col-lg-2">
                 <input type="text" name="priority" value="[#PRIORITY#]" size="5" class="form-control">
         </div>
@@ -108,7 +108,7 @@ Action URL:
 
 [#if !CHILDREN#]
 <div class="form-group">
-        <label class="control-label"><#LANG_TYPE#>:</label>
+        <label class="control-label"><#LANG_TYPE#>:<#LANG_HCB#>menu_item_type<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <select name="type" class="form-control">
                         <option value="">select
@@ -134,7 +134,7 @@ Action URL:
 
 
 <div class="form-group">
-        <label class="control-label"><#LANG_ICON#>:</label>
+        <label class="control-label"><#LANG_ICON#>:<#LANG_HCB#>menu_item_icon<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <input type="file" name="icon" class="form-control">
         <p class="help-block">
@@ -177,7 +177,7 @@ Action URL:
 [#if TYPE=="selectbox" || TYPE=="custom" || TYPE=="switch" || TYPE=="radiobox"#]
 
 <div class="form-group">
-        <label class="control-label"><#LANG_DATA#>:[#if TYPE=="switch"#]<br/>(<#LANG_OPTIONAL#>)[#endif TYPE#]</label>
+        <label class="control-label"><#LANG_DATA#>:<#LANG_HCB#>menu_data<#LANG_HCE#>[#if TYPE=="switch"#]<br/>(<#LANG_OPTIONAL#>)[#endif TYPE#]</label>
         <div class="col-lg-5">
                 <textarea name="data" id="data" cols="50" rows="[#if TYPE=="switch"#]2[#else#]10[#endif#]"  class="form-control">[#DATA#]</textarea>
                 [#module name="blockly_code" code_field="data" action="" type="html"#]
@@ -187,7 +187,7 @@ Action URL:
 [#endif TYPE#]
 
 <div class="form-group">
-  <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#>:</label>
+  <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#>:<#LANG_HCB#>menu_update_period<#LANG_HCE#></label>
    <div class="col-lg-2">
      <div class="form-inline">
       <div class="form-group col-lg-6">
@@ -227,7 +227,7 @@ Action URL:
 
 
 <div class="form-group">
-  <label class="control-label"><#LANG_LINKED_OBJECT#>:</label>
+  <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object<#LANG_HCE#></label>
    <div class="col-lg-5">
      <div class="form-inline">
       <div class="form-group col-lg-5">
@@ -240,7 +240,7 @@ Action URL:
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
 <div class="form-group">
-  <label class="control-label"><#LANG_PROPERTY#>:</label>
+  <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property<#LANG_HCE#></label>
    <div class="col-lg-5">
      <div class="form-inline">
       <div class="form-group col-lg-5">
@@ -253,7 +253,7 @@ Action URL:
 
 [#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
 <div class="form-group">
-  <label class="control-label"><#LANG_METHOD#>:</label>
+  <label class="control-label"><#LANG_METHOD#>:<#LANG_HCB#>linked_method<#LANG_HCE#></label>
   <!--#<#LANG_ONCHANGE_OBJECT#>.#-->
    <div class="col-lg-5">
      <div class="form-inline">
@@ -276,7 +276,7 @@ Action URL:
 </div>
 
 <div class="form-group">
-        <label class="control-label"><#LANG_ONCHANGE_SCRIPT#>:</label>
+        <label class="control-label"><#LANG_ONCHANGE_SCRIPT#>:<#LANG_HCB#>onchange_script<#LANG_HCE#></label>
         <div class="col-lg-5">
 <select name="script_id" class="form-control">
    <option value="0">
@@ -288,7 +288,7 @@ Action URL:
 </div>
 
 <div class="form-group">
-        <label class="control-label"><#LANG_ONCHANGE_CODE#>: [#ERRORS#]</label>
+        <label class="control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>onchange_code<#LANG_HCE#> [#ERRORS#]</label>
         <div class="col-lg-5">
 <!--#
                 <textarea name="code" id="code" rows="5" cols="50" class="form-control">[#CODE#]</textarea>
@@ -304,7 +304,7 @@ Action URL:
 
 
 <div class="form-group">
-        <label class="control-label"><#LANG_SMART_REPEAT#>:</label>
+        <label class="control-label"><#LANG_SMART_REPEAT#>:<#LANG_HCB#>menu_smartrepeat<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <label><input type="radio" name="smart_repeat" value="1"[#if SMART_REPEAT="1"#] checked[#endif#]> <#LANG_YES#></label>
                 <label><input type="radio" name="smart_repeat" value="0"[#if SMART_REPEAT!="1"#] checked[#endif#]> <#LANG_NO#></label>
@@ -327,7 +327,7 @@ Action URL:
 [#if TYPE=="button"#]
 <!-- URL (varchar) -->
 <div class="form-group">
-        <label class="control-label"> <#LANG_INLINE_POSITION#>:</label>
+        <label class="control-label"> <#LANG_INLINE_POSITION#>:<#LANG_HCB#>menu_inline<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <label><input type="radio" name="inline" value="1"[#if INLINE="1"#] checked[#endif#]> <#LANG_YES#></label>
                 <label><input type="radio" name="inline" value="0"[#if INLINE!="1"#] checked[#endif#]> <#LANG_NO#></label>
@@ -340,7 +340,7 @@ Action URL:
 [#if TYPE=="window" || TYPE=="url" || TYPE=="urlblank"#]
 <!-- URL (varchar) -->
 <div class="form-group">
-        <label class="control-label"> <#LANG_URL#>:</label>
+        <label class="control-label"> <#LANG_URL#>:<#LANG_HCB#>menu_url<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <input type="text" name="url" value="[#URL#]"  class="form-control">
         </div>
@@ -349,7 +349,7 @@ Action URL:
 
 [#if TYPE=="window"#]
 <div class="form-group">
-        <label class="control-label"><#LANG_TARGET_WINDOW#>:</label>
+        <label class="control-label"><#LANG_TARGET_WINDOW#>:<#LANG_HCB#>menu_target_window<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <input type="text" name="window" value="[#WINDOW#]"  class="form-control">
         </div>
@@ -377,7 +377,7 @@ Action URL:
 [#if !CHILDREN#]
 [#if (TYPE=="") || (ID=="")#]
 <div class="form-group">
-        <label class="control-label"><#LANG_EXT_ID#>:</label>
+        <label class="control-label"><#LANG_EXT_ID#>:<#LANG_HCB#>menu_ext_id<#LANG_HCE#></label>
         <div class="col-lg-5">
 
                 <select name="ext_id" class="form-control">
@@ -393,7 +393,7 @@ Action URL:
 
 
 <div class="form-group">
-  <label class="control-label"><#LANG_VISIBLE_DELAY#>:</label>
+  <label class="control-label"><#LANG_VISIBLE_DELAY#>:<#LANG_HCB#>menu_visible_delay<#LANG_HCE#></label>
    <div class="col-lg-2">
      <div class="form-inline">
       <div class="form-group col-lg-6">
@@ -412,7 +412,7 @@ Action URL:
 
 [#if CHILDREN#]
 <div class="form-group">
-        <label class="control-label"> <#LANG_SUB_PRELOAD#>:</label>
+        <label class="control-label"> <#LANG_SUB_PRELOAD#>:<#LANG_HCB#>menu_preload<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <label><input type="radio" name="sub_preload" value="1"[#if SUB_PRELOAD="1"#] checked[#endif#]> <#LANG_YES#></label>
                 <label><input type="radio" name="sub_preload" value="0"[#if SUB_PRELOAD!="1"#] checked[#endif#]> <#LANG_NO#></label>
@@ -423,7 +423,7 @@ Action URL:
 
 [#if ID!=""#]
 <div class="form-group">
-        <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
+        <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <a href="?(panel:{action=security_rules})&object_type=menu&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>

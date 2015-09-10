@@ -70,7 +70,7 @@ $(function() {
 <!-- TITLE (varchar) -->
 
 <div class="form-group">
-        <label class="control-label"><#LANG_TITLE#> (*)</label>
+        <label class="control-label"><#LANG_TITLE#> (*)<#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="title" value="[#TITLE#]" required>
         </div>
@@ -79,7 +79,7 @@ $(function() {
 <!-- PRIORITY (int) -->
 
 <div class="form-group">
-        <label class="control-label"><#LANG_PRIORITY#></label>
+        <label class="control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="priority" value="[#PRIORITY#]">
         </div>
@@ -88,7 +88,7 @@ $(function() {
 <div class="form-group">
         <div class="controls">
                 <input type="checkbox" name="hidden" value="1"[#if HIDDEN="1"#] checked[#endif#]>
-                <#LANG_SCENE_HIDDEN#>
+                <#LANG_SCENE_HIDDEN#> <#LANG_HCB#>scene_hidden<#LANG_HCE#>
         </div>
 </div>
 
@@ -96,7 +96,7 @@ $(function() {
 <!-- BACKGROUND (varchar) -->
 
 <div class="form-group">
-        <label class="control-label"><#LANG_BACKGROUND#></label>
+        <label class="control-label"><#LANG_BACKGROUND#><#LANG_HCB#>scene_background<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="background" id="background" value="[#BACKGROUND#]" onclick="openFileBrowser('background');" size="60">
 
@@ -126,7 +126,7 @@ $(function() {
 
 
 <div class="form-group">
-        <label class="control-label"><#LANG_WALLPAPER#></label>
+        <label class="control-label"><#LANG_WALLPAPER#><#LANG_HCB#>scene_wallpaper<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="wallpaper" id="wallpaper" value="[#WALLPAPER#]" onclick="openFileBrowser('wallpaper');" size="60">
                 <br>
@@ -184,7 +184,7 @@ $(function() {
 
 [#if ID!=""#]
 <div class="form-group">
-        <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
+        <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="controls">
                 <a href="?(panel:{action=security_rules})&object_type=scene&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>

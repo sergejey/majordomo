@@ -27,12 +27,12 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_URL#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_URL#>:<font color="red">*</font><#LANG_HCB#>webvars_url<#LANG_HCE#></label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true"></div>
 </div>
 
@@ -41,7 +41,7 @@
         <div class="col-lg-5">
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" value="1" name="auth" id="chkAuth" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#>
+                                <input type="checkbox" value="1" name="auth" id="chkAuth" [#if AUTH="1"#] checked[#endif#]> <#LANG_AUTHORIZATION_REQUIRED#> <#LANG_HCB#>webvars_auth<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -79,12 +79,12 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SOURCE_PAGE_ENCODING#>:<br>(<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SOURCE_PAGE_ENCODING#>: <#LANG_HCB#>webvars_encoding<#LANG_HCE#><br>(<#LANG_OPTIONAL#>, utf-8 <#LANG_BY_DEFAULT#>)</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="encoding" value="[#ENCODING#]" ></div>
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_PATTERN#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_PATTERN#>:<font color="red">*</font><#LANG_HCB#>webvars_pattern<#LANG_HCE#></label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_SEARCH_PATTERN#]alert-danger[#endif#]"  name="search_pattern" value="[#SEARCH_PATTERN#]" required="true"></div>
 </div>
 
@@ -105,7 +105,7 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_ONCHANGE_ACTION#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_ONCHANGE_ACTION#>:<#LANG_HCB#>code<#LANG_HCE#></label>
         <div class="col-lg-5 [#if ERR_SCRIPT_ID#]alert-danger[#endif#]">
                 
                  <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
@@ -136,7 +136,7 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_LINKED_OBJECT#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"> <#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object<#LANG_HCE#></label>
         
                 <div class="row">
                         <div class="col-xs-4">
@@ -148,7 +148,7 @@
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PROPERTY#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property<#LANG_HCE#></label>
         
                 <div class="row">
                         
@@ -166,7 +166,7 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_CHECK_INTERVAL#>:<font color="red">*</font><br><#LANG_SECONDS#> (0 to use default)</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_CHECK_INTERVAL#>:<font color="red">*</font><#LANG_HCB#>webvars_interval<#LANG_HCE#><br><#LANG_SECONDS#> (0 to use default)</label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  name="online_interval" value="[#ONLINE_INTERVAL#]"></div>
 </div>
 

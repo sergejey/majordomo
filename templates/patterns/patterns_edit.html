@@ -24,7 +24,7 @@
 [#endif ERR#]
 
 <div class="form-group ">
-        <label class="control-label">ID:</label>
+        <label class="control-label">ID:<#LANG_HCB#>id<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <input type="text" value="[#ID#]" disabled class="form-control">
         </div>
@@ -33,7 +33,7 @@
 
 [#if PATTERN_TYPE!="1"#]
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PARENT_CONTEXT#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PARENT_CONTEXT#>:<#LANG_HCB#>pattern_context<#LANG_HCE#></label>
         <div class="col-lg-5">
                         <select name="parent_id" class="form-control">
                            <option value="0">
@@ -46,13 +46,13 @@
 [#endif PATTERN_TYPE#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
 </div>
 
 [#if ID=""#]
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_TYPE#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_TYPE#>:<#LANG_HCB#>pattern_type<#LANG_HCE#></label>
         <div class="col-lg-5">
         <label><input type="radio" name="pattern_type" value="0" checked> <#LANG_PATTERN_MESSAGE#></label>
         <label><input type="radio" name="pattern_type" value="1"> <#LANG_PATTERN_CONDITIONAL#></label>
@@ -60,7 +60,7 @@
 </div>
 [#else#]
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_TYPE#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_TYPE#>:<#LANG_HCB#>pattern_type<#LANG_HCE#></label>
         <div class="col-lg-5">
         [#if PATTERN_TYPE="0"#]<#LANG_PATTERN_MESSAGE#>[#endif#]
         [#if PATTERN_TYPE="1"#]<#LANG_PATTERN_CONDITIONAL#>[#endif#]
@@ -70,7 +70,7 @@
 
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PRIORITY#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PRIORITY#>:<#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="priority" value="[#PRIORITY#]"></div>
 </div>
 <div class="form-group">
@@ -80,6 +80,7 @@
                 <div class="checkbox">
                         <label>
                                 <input type="checkbox" value="1" name="is_last" [#if IS_LAST="1"#] checked[#endif#]> <#LANG_LAST_RULE#>
+                                <#LANG_HCB#>pattern_last<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -92,21 +93,21 @@
 
 
    <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#></label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
         <div class="col-lg-3">
                 <input type="text" class="form-control" name="linked_object" id="linked_object" size="10" value="[#LINKED_OBJECT#]">
         </div>
         </div>
      
         <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PROPERTY#></label>
+        <label class="col-lg-4 control-label"><#LANG_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="col-lg-3">
                  <input type="text" class="form-control" name="linked_property" id="linked_property" size="10" value="[#LINKED_PROPERTY#]">
         </div>
         </div>
         
     <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
+        <label class="col-lg-4 control-label"><#LANG_CONDITION#><#LANG_HCB#>pattern_condition<#LANG_HCE#></label>
         <div class="col-lg-3">
          <select name="condition" class="form-control">
       <option value="1"[#if CONDITION="1"#] selected[#endif#]>=
@@ -138,6 +139,7 @@
                 <div class="checkbox">
                         <label>
                                 <input type="checkbox" value="1" name="skipsystem" [#if SKIPSYSTEM="1"#] checked[#endif#]> <#LANG_SKIP_SYSTEM#>
+                                <#LANG_HCB#>pattern_skip_system<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -151,6 +153,7 @@
                 <div class="checkbox">
                         <label>
                                 <input type="checkbox" value="1" name="onetime" [#if ONETIME="1"#] checked[#endif#]> <#LANG_ONETIME_PATTERN#>
+                                <#LANG_HCB#>pattern_onetime<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -158,19 +161,19 @@
 [#endif ONETIME#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN#>:<#LANG_HCB#>pattern_data<#LANG_HCE#></label>
         <div class="col-lg-5"><textarea name="pattern" class="form-control [#if ERR_PATTERN#]alert-danger[#endif#]" rows=3 cols=100 class="field span8">[#PATTERN#]</textarea></div>
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TIME_LIMIT#>, <#LANG_SECONDS#>:<font color="red">*</font><br>(set 0 to be used with the latest log record only)</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TIME_LIMIT#>, <#LANG_SECONDS#>:<font color="red">*</font><#LANG_HCB#>pattern_timelimit<#LANG_HCE#><br>(set 0 to be used with the latest log record only)</label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TIME_LIMIT#]alert-danger[#endif#]"  name="time_limit" value="[#TIME_LIMIT#]"></div>
 </div>
 
 [#endif PATTERN_TYPE#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_EXECUTE_ON_MATCH#>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_EXECUTE_ON_MATCH#><#LANG_HCB#>code<#LANG_HCE#>
         [#if PATTERN_TYPE="1"#](<#LANG_PATTERN_ENTER#>)[#endif#]
         :</label>
  <div class="col-lg-5">
@@ -195,6 +198,7 @@
 
  [#if PATTERN_TYPE="1"#]
   <input type="checkbox" name="use_script_exit" value="1"[#if SCRIPT_EXIT!=""#] checked[#endif#] onClick='$("#script_exit_block").toggle();'> <#LANG_ADD_EXIT_CODE#>
+  <#LANG_HCB#>pattern_exit_code<#LANG_HCE#>
  [#endif#]
 
  </div>
@@ -223,7 +227,7 @@
 [#endif PATTERN_TYPE#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle">Set context when matched:</label>
+        <label class="col-lg-4 control-label" for="inputTitle">Set context when matched:<#LANG_HCB#>pattern_set_context<#LANG_HCE#></label>
         <div class="col-lg-5">
                         <select name="matched_context_id" class="form-control">
                           <option value="0">
@@ -242,6 +246,7 @@
                 <div class="checkbox">
                         <label>
                                 <input type="checkbox" name="is_context" value="1"[#if IS_CONTEXT="1"#] checked[#endif#] onClick='$("#context_details").toggle();'> <#LANG_IS_CONTEXT#>
+                                <#LANG_HCB#>pattern_is_context<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -260,12 +265,12 @@
    <table border="0">
 
     <tr>
-     <td align="right"><#LANG_TIMEOUT#>:</td>
+     <td align="right"><#LANG_TIMEOUT#>:<#LANG_HCB#>pattern_timeout<#LANG_HCE#></td>
      <td valign="top"><input type="text" name="timeout" value="[#TIMEOUT#]"> (set 0 to use default)</td>
     </tr>
 
     <tr>
-     <td align="right"><#LANG_SET_CONTEXT_TIMEOUT#>:</td>
+     <td align="right"><#LANG_SET_CONTEXT_TIMEOUT#>:<#LANG_HCB#>pattern_timeout_context<#LANG_HCE#></td>
      <td valign="top"><select name="timeout_context_id" class="form-control">
    <option value="0">
    [#begin CONTEXTS#]
@@ -286,7 +291,9 @@
 
     <tr>
      <td valign="top">&nbsp;</td>
-     <td valign="top"><input type="checkbox" name="is_common_context" value="1"[#if IS_COMMON_CONTEXT="1"#] checked[#endif#]> <#LANG_GLOBAL_CONTEXT#></td>
+     <td valign="top"><input type="checkbox" name="is_common_context" value="1"[#if IS_COMMON_CONTEXT="1"#] checked[#endif#]> <#LANG_GLOBAL_CONTEXT#>
+     <#LANG_HCB#>pattern_global_context<#LANG_HCE#>
+     </td>
     </tr>
 
 
@@ -297,7 +304,7 @@
 
 [#if ID!="" && PATTERN_TYPE!="1"#]
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="col-lg-5">
          
                 <a class="btn btn-default " href="?(panel:{action=security_rules})&object_type=pattern&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>

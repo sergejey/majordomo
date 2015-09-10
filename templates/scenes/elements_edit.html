@@ -26,14 +26,14 @@
 
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#> (*)</label>
+        <label class="col-lg-4 control-label"><#LANG_TITLE#> (*)<#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="controls">
                 <input type="text" class="form-control" name="title" value="[#ELEMENT_TITLE#]" required>
         </div>
 </div>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_SCENE#></label>
+        <label class="col-lg-4 control-label"><#LANG_SCENE#><#LANG_HCB#>element_scene<#LANG_HCE#></label>
         <div class="controls">
                 <select class="form-control" name="scene_id" required>
                         <option value="" disabled selected>select
@@ -79,7 +79,7 @@
 </script>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_TYPE#></label>
+        <label class="col-lg-4 control-label"><#LANG_TYPE#><#LANG_HCB#>element_type<#LANG_HCE#></label>
         <div class="controls">
         [#if ELEMENT_ID=""#]
                 <select class="form-control" name="type" required  onChange="element_type_switched(this.value);">
@@ -113,20 +113,20 @@
 
 [#if ELEMENT_ID=""#]
 <div class="form-group" id="linked_object_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#></label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
         <div class="controls">
          <input type="text" name="linked_object" id="linked_object" class="form-control">
         </div>
 </div>
 <div class="form-group" id="linked_property_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#></label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="controls">
          <input type="text" name="linked_property" id="linked_property" class="form-control">
         </div>
 </div>
 
 <div class="form-group" id="linked_method_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_METHOD#></label>
+        <label class="col-lg-4 control-label"><#LANG_METHOD#><#LANG_HCB#>linked_method<#LANG_HCE#></label>
         <div class="controls">
          <input type="text" name="linked_method" id="linked_method" class="form-control">
         </div>
@@ -135,7 +135,7 @@
 [#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="linked_method"#]
 
 <div class="form-group" id="informer_states" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_ADDITIONAL_STATES#></label>
+        <label class="col-lg-4 control-label"><#LANG_ADDITIONAL_STATES#><#LANG_HCB#>element_additional_states<#LANG_HCE#></label>
         <div class="controls">
          <input type="checkbox" name="state_high" value="1"> <#LANG_HIGH_ABOVE#>
          <input type="text" name="state_high_value" value="30"><br/>
@@ -146,7 +146,7 @@
 </div>
 
 <div class="form-group" id="linked_property_unit" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_UNIT#></label>
+        <label class="col-lg-4 control-label"><#LANG_UNIT#><#LANG_HCB#>element_unit<#LANG_HCE#></label>
         <div class="controls">
          <input type="text" name="linked_property_unit" class="form-control">
         </div>
@@ -161,7 +161,7 @@
 #-->
 [#if STYLES || COMMON_STYLES#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_STYLE#></label>
+        <label class="col-lg-4 control-label"><#LANG_STYLE#><#LANG_HCB#>elemen_style<#LANG_HCE#></label>
         <div class="controls">
 
          <span id="current_style">[#if ELEMENT_CSS_IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#ELEMENT_CSS_IMAGE#]">[#endif#] [#ELEMENT_CSS_STYLE#]</span>
@@ -193,7 +193,7 @@
 
 [#if (ELEMENT_TYPE!="container")#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#></label>
+        <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
         <div class="controls">
                 <select class="form-control" name="container_id">
                         <option value="0">n/a
@@ -206,7 +206,7 @@
 [#endif ELEMENT_TYPE#]
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PRIORITY#></label>
+        <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="priority" value="[#ELEMENT_PRIORITY#]">
         </div>
@@ -223,7 +223,7 @@
 </script>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_POSITION_TYPE#></label>
+        <label class="col-lg-4 control-label"><#LANG_POSITION_TYPE#><#LANG_HCB#>element_positiontype<#LANG_HCE#></label>
         <div class="controls">
                 <input type="radio" name="position_type" onClick='position_type_changed(this.value);' value="0"[#if ELEMENT_POSITION_TYPE=="0" || ELEMENT_POSITION_TYPE==""#]checked[#endif#]> <#LANG_POSITION_TYPE_ABSOLUTE#>
                 <br>
@@ -233,7 +233,7 @@
 
 <div id='position_details'[#if ELEMENT_POSITION_TYPE=="1"#] style="display:none"[#endif#]>
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_ELEMENT_TO_POSITION_RELATED#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_ELEMENT_TO_POSITION_RELATED#><#LANG_HCB#>element_positionrelated<#LANG_HCE#></label>
         <div class="controls">
                 <select class="form-control" name="linked_element_id">
                         <option value="0"><#LANG_NO_RELATED#>
@@ -285,7 +285,7 @@
 
 [#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container")#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#><#LANG_HCB#>element_usebackgound<#LANG_HCE#></label>
         <div class="controls">
                 <input type="radio" name="background" value="1"[#if ELEMENT_BACKGROUND=="1"#]checked[#endif#]> <#LANG_YES#>
                 <br>
@@ -296,7 +296,7 @@
 
 [#if ELEMENT_TYPE="html"#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_JAVASCRIPT#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_JAVASCRIPT#><#LANG_HCB#>element_usejavascript<#LANG_HCE#></label>
         <div class="controls">
         <input  type="checkbox" name="use_javascript" value="1"[#if ELEMENT_JAVASCRIPT!=""#] checked[#endif#] onClick='$("#element_javascript").toggle();'> <#LANG_YES#>
         <div id="element_javascript"[#if ELEMENT_JAVASCRIPT=""#] style="display:none"[#endif#]>
@@ -306,7 +306,7 @@
 </div>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_CSS#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_CSS#><#LANG_HCB#>element_usecss<#LANG_HCE#></label>
         <div class="controls">
         <input  type="checkbox" name="use_css" value="1"[#if ELEMENT_CSS!=""#] checked[#endif#] onClick='$("#element_css").toggle();'> <#LANG_YES#>
         <div id="element_css"[#if ELEMENT_CSS=""#] style="display:none"[#endif#]>
@@ -319,7 +319,7 @@
 
 [#if ELEMENT_TYPE!="container"#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_SMART_REPEAT#></label>
+        <label class="col-lg-4 control-label"><#LANG_SMART_REPEAT#><#LANG_HCB#>element_smartrepeat<#LANG_HCE#></label>
         <div class="controls">
                 <input type="radio" name="smart_repeat" value="1"[#if ELEMENT_SMART_REPEAT=="1"#]checked[#endif#]> <#LANG_YES#>
                 <br>
@@ -330,7 +330,7 @@
 
 [#if ID!=""#]
 <div class="form-group">
-        <label class="control-label"><#LANG_ACCESS_CONTROL#>:</label>
+        <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="controls">
                 <a href="?(panel:{action=security_rules})&object_type=scene_elements&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>
@@ -369,7 +369,7 @@
 [#endif STATE_ID#]
 
 <div class="form-group">
-        <label class="col-lg-4 control-label">State <#LANG_TITLE#></label>
+        <label class="col-lg-4 control-label">State <#LANG_TITLE#><#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="state_title_new" value="[#STATE_TITLE#]">
         </div>
@@ -387,7 +387,7 @@
 
 [#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container"#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_CODE#></label>
+        <label class="col-lg-4 control-label"><#LANG_CODE#><#LANG_HCB#>element_code<#LANG_HCE#></label>
         <div class="controls">
                 <textarea  name="html_new" id="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
                 [#module name="blockly_code" code_field="html_new" action="" type="html"#]
@@ -399,7 +399,7 @@
 [#if "<#ELEMENT_TYPE#>"=="img"#]
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_IMAGE#></label>
+        <label class="col-lg-4 control-label"><#LANG_IMAGE#><#LANG_HCB#>element_image<#LANG_HCE#></label>
         <div class="controls">
                 <input type="text" name="image_new" class="form-control" id="image_new" value="[#STATE_IMAGE#]" onclick="openFileBrowser('image_new');" size="40">
                 <p class="help-block">
@@ -428,7 +428,7 @@
 </script>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_DO_ONCLICK#></label>
+        <label class="col-lg-4 control-label"><#LANG_DO_ONCLICK#><#LANG_HCB#>element_action<#LANG_HCE#></label>
         <div class="controls">
                 <select name="do_on_click_new" class="form-control" onChange="do_on_click_change(this.value);">
                 <option value="0"><#LANG_DO_NOTHING#>
@@ -444,7 +444,7 @@
 </div>
 
 <div class="form-group click_fields"[#if STATE_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
-        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: [#ERRORS#]</label>
+        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
         <div class="col-lg-5">
                 <textarea name="code_new" rows="5" cols="50" class="form-control">[#STATE_CODE#]</textarea>
         </div>
@@ -519,7 +519,7 @@
 [#module name="linkedobject" object_field="action_object_new" method_field="action_method_new"#]
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#></label>
+        <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#><#LANG_HCB#>element_condition<#LANG_HCE#></label>
         <div class="controls">
                 <label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="0"[#if STATE_IS_DYNAMIC="0" || STATE_IS_DYNAMIC=""#] checked[#endif#]> n/a (<#LANG_ALWAYS_VISIBLE#>)</label>
                 <label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="1"[#if STATE_IS_DYNAMIC="1"#] checked[#endif#]> <#LANG_SIMPLE#></label>
@@ -549,21 +549,21 @@
 </script>
   <div id="condition_block_new"[#if STATE_IS_DYNAMIC!="1"#] style="display:none"[#endif#]>
    <div class="form-group">
-        <label class="col-lg-4 control-label">Object</label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
         <div class="controls">
                 <input type="text" class="form-control" name="linked_object_new" id="linked_object_new" size="10" value="[#STATE_LINKED_OBJECT#]">
         </div>
         </div>
      
         <div class="form-group">
-        <label class="col-lg-4 control-label">Property</label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="controls">
                  <input type="text" class="form-control" name="linked_property_new" id="linked_property_new" size="10" value="[#STATE_LINKED_PROPERTY#]">
         </div>
         </div>
         
     <div class="form-group">
-        <label class="col-lg-4 control-label">Condition</label>
+        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
         <div class="controls">
          <select name="condition_new" class="form-control">
       <option value="1"[#if STATE_CONDITION="1"#] selected[#endif#]>=
@@ -575,7 +575,7 @@
         </div>
 
     <div class="form-group">
-        <label class="col-lg-4 control-label">Value</label>
+        <label class="col-lg-4 control-label"><#LANG_VALUE#></label>
         <div class="controls">
                  <input type="text" class="form-control" name="condition_value_new" size="10" value="[#STATE_CONDITION_VALUE#]">
         </div>
@@ -585,7 +585,7 @@
   </div>
   <div id="condition_advanced_block_new"[#if STATE_IS_DYNAMIC!="2"#] style="display:none"[#endif#]>
    <div class="form-group">
-        <label class="col-lg-4 control-label">Advanced condition</label>
+        <label class="col-lg-4 control-label">Advanced condition<#LANG_HCB#>element_condition_advanced<#LANG_HCE#></label>
         <div class="controls">
                 <textarea class="form-control" name="condition_advanced_new" rows="5" cols="40">[#STATE_CONDITION_ADVANCED#]</textarea>
                 <p class="help-block">
@@ -603,13 +603,13 @@
     <div class="form-group">
         <label class="col-lg-4 control-label">&nbsp;</label>
         <div class="controls">
-                <label class="checkbox"><input  type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#></label>
+                <label class="checkbox"><input  type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#> <#LANG_HCB#>element_switchactivated<#LANG_HCE#></label>
         </div>
         </div>
   </div>
 
 <div class="form-group click_fields" id='element_priority_field'>
-        <label class="col-lg-4 control-label"><#LANG_PRIORITY#></label>
+        <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="controls">
         <input type="text" class="form-control" name="priority_new" value="[#STATE_PRIORITY#]"> .
         </div>
