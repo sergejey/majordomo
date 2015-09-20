@@ -12,3 +12,5 @@ reboot
 *.suo
 *.phpproj.user
 .vs/
+backup/
+debmes/
