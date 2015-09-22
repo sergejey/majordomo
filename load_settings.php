@@ -19,7 +19,11 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
    date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 }
 
-Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);
+if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
+ Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);
+} else {
+ Define('SERVER_URL','http://localhost:80');
+}
 
 if (!defined('ENVIRONMENT'))
    error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));

@@ -54,6 +54,8 @@
          eval(SETTINGS_HOOK_BEFORE_SAY);
         }
 
+        processSubscriptions('SAY', array('level'=>$level, 'message'=>$ph, 'member_id'=>$member_id));
+
         global $ignoreVoice;
         if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) { 
                 //$voicemode!='off' && 

@@ -576,21 +576,25 @@ if ($_GET['gtype']=='curve') { //рисуем сглаженый график
 /* Render the picture (choose the best way) */
 $path_to_file='./cached/'.md5($_SERVER['REQUEST_URI']).'.png';
 imagepng($Test->autoOutput($path_to_file));
-Header("Content-type:image/png");
 
-$fsize=filesize($path_to_file);
-header("Content-Length:".(string)$fsize);
-$buff_length=200*1024;
-if ($buff_length>$fsize) {
-        $buff_length=$fsize;
-}
-if ($buff_length>0) {
-        $fd=fopen($path_to_file,'rb');
-        if ($fd) {
-                while(!feof($fd)) {
-                        print fread($fd, $buff_length);
-                }
-                fclose($fd);
+if (file_exists($path_to_file)) {
+        Header("Content-type:image/png");
+        $fsize=filesize($path_to_file);
+        header("Content-Length:".(string)$fsize);
+        $buff_length=200*1024;
+        if ($buff_length>$fsize) {
+                $buff_length=$fsize;
         }
+        if ($buff_length>0) {
+                $fd=fopen($path_to_file,'rb');
+                if ($fd) {
+                        while(!feof($fd)) {
+                                print fread($fd, $buff_length);
+                        }
+                        fclose($fd);
+                }
+         }
 }
+
+
 $db->Disconnect(); // closing database connection
