@@ -97,7 +97,7 @@ if ($sink->attached)
          }
       }
 
-      if (file_exists('./reboot') || $_GET['onetime']) 
+      if (file_exists('./reboot') || IsSet($_GET['onetime'])) 
       {
          $db->Disconnect();
          exit;

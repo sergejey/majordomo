@@ -128,6 +128,7 @@ Define("EQ_DELIMITER", "qz_");
 */
   function createParamsString($data, $name) {
    $params="";
+   $params1=array();
    foreach($data as $k=>$v) {
     if ($v=="") {
      UnSet($data[$k]);
@@ -641,6 +642,7 @@ Define("EQ_DELIMITER", "qz_");
     $_SERVER['PHP_SELF']=$PHP_SELF;
    }
 
+   $param_str='';
    if ($md!=$this->name) {
     $param_str=$this->saveParams();
    } elseif (IsSet($this->owner)) {
@@ -721,12 +723,15 @@ Define("EQ_DELIMITER", "qz_");
 */
  function codeParams($in) {
 
+      $res_str='';
       if (preg_match_all('/(.+?):{(.+?)}/', $in, $matches2, PREG_PATTERN_ORDER)) {
-       for($k=0;$k<count($matches2);$k++) {
+       $total=count($matches2[1]);
+       for($k=0;$k<$total;$k++) {
         $data=array();
         $module_name=$matches2[1][$k];
         $module_params=explode(',',$matches2[2][$k]);
-        for($m=0;$m<count($module_params);$m++) {
+        $totalp=count($module_params);
+        for($m=0;$m<$totalp;$m++) {
          $ar=explode("=", trim($module_params[$m]));
          $data[trim($ar[0])]=trim($ar[1]);
         }
@@ -741,4 +746,3 @@ Define("EQ_DELIMITER", "qz_");
 
 
  }
-?>

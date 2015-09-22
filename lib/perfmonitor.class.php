@@ -59,7 +59,8 @@ function getmicrotime(){
   }
   $perf_data[$mpoint]['TIME']+=$perf_data[$mpoint]['END']-$perf_data[$mpoint]['START'];
   $perf_data[$mpoint]['NUM']++;
-  return;
+
+  /*
   if ($save_to_db) {
    global $db;
    if ($db->dbh) {
@@ -76,6 +77,8 @@ function getmicrotime(){
     SQLInsert('performance_log', $rec);
    }
   }
+  */
+
  }
 
 /**

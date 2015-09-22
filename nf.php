@@ -66,6 +66,7 @@ $requests = array(
    "/^\/([\w-]+)\.html/is"              => '?(application:{action=docs, doc_name=\1})'
 );
 
+$found=0;
 foreach($requests as $key => $value)
 {
    if (!$found && preg_match($key, $_SERVER["REQUEST_URI"], $matches))

@@ -353,7 +353,7 @@
 
 [#if ELEMENT_ID!="" && ELEMENT_TYPE!="container"#]
 
-<h3><#LANG_STATES#></h3>
+<h3><#LANG_STATES#></h3><#LANG_HCB#>element_states<#LANG_HCE#>
 <ul>
 [#begin STATES#]
 <li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#TITLE#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>

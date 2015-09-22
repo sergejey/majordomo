@@ -12,7 +12,9 @@
 */
 
 
- Define("THIS_URL", $_SERVER['REQUEST_URI']);
+ if (isset($_SERVER['REQUEST_URI'])) {
+  Define("THIS_URL", $_SERVER['REQUEST_URI']);
+ }
 // liblary modules loader
 
 if ($lib_dir = @opendir("./lib")) {
