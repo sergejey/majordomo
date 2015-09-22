@@ -35,7 +35,7 @@ while (1)
       $pinghosts->checkAllHosts(1);
    }
 
-   if (file_exists('./reboot') || $_GET['onetime'])
+   if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
       $db->Disconnect();
       exit;

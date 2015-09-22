@@ -54,7 +54,7 @@ while (1)
       echo "OK\n";
    }
  
-   if (file_exists('./reboot') || $_GET['onetime'])
+   if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
       $db->Disconnect();
       exit;

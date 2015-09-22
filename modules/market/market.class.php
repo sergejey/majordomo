@@ -371,7 +371,7 @@ function admin(&$out) {
   if (file_exists(ROOT.'scripts/cycle_'.$name.'.php')) {
    @unlink(ROOT.'scripts/cycle_'.$name.'.php');
   }
-
+  removeMissingSubscribers();
   $ok_msg='Uninstalled';
   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));  
  }

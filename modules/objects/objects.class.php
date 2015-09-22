@@ -685,7 +685,7 @@ curl_close($ch);
   }
 
   //if (($prop['KEEP_HISTORY']>0) && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
-  if (($prop['KEEP_HISTORY']>0) && ($value!=$old_value)) {
+  if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0) && ($value!=$old_value)) {
    startMeasure('DeleteOldHistory');
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
    endMeasure('DeleteOldHistory', 1);
@@ -694,7 +694,7 @@ curl_close($ch);
    $h['ADDED']=date('Y-m-d H:i:s');
    $h['VALUE']=$value;
    $h['ID']=SQLInsert('phistory', $h);
-  } elseif (($prop['KEEP_HISTORY']>0) && ($value==$old_value)) {
+  } elseif (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0) && ($value==$old_value)) {
    $tmp_history=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$v['ID']."' ORDER BY ID DESC LIMIT 2");
    $prev_value=$tmp_history[0]['VALUE'];
    $prev_prev_value=$tmp_history[1]['VALUE'];
@@ -710,7 +710,7 @@ curl_close($ch);
    }
   }
 
-  if ($prop['ONCHANGE']) {
+  if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
    global $property_linked_history;
    if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
     $property_linked_history[$property][$prop['ONCHANGE']]=1;
@@ -724,7 +724,7 @@ curl_close($ch);
    }
   }
 
-  if ($v['LINKED_MODULES']) { // TO-DO !
+  if (IsSet($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
    if (!is_array($no_linked) && $no_linked) {
     return;
    } elseif (!is_array($no_linked)) {

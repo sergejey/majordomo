@@ -49,6 +49,8 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
  }
 }
 
+if (IsSet($_SERVER['REQUEST_METHOD'])) {
+
 $blocked=array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS', '_FILES', '_REQUEST', '_ENV');
 if ($_SERVER['REQUEST_METHOD']=="POST") {
  $blocked[]='_GET';
@@ -82,17 +84,16 @@ function stripit(&$a)
   $params=$_GET;
  }
 
-if (get_magic_quotes_gpc())
-{
- stripit($params);
-}
-
+ if (get_magic_quotes_gpc())
+ {
+  stripit($params);
+ }
 
  foreach($params as $k=>$v) {
   ${$k}=$v;
  }
 
- if (count($_FILES)>0) {
+ if (IsSet($_FILES) && count($_FILES)>0) {
   $ks=array_keys($_FILES);
   for($i=0;$i<count($ks);$i++) {
    $k=$ks[$i];
@@ -101,6 +102,7 @@ if (get_magic_quotes_gpc())
   }
  }
 
+}
 
 
 // --------------------------------------------------------------------   

@@ -44,7 +44,7 @@ while (1)
          $rss_ch->updateChannel($to_update[$i]['ID']);
    }
    
-   if (file_exists('./reboot') || $_GET['onetime'])
+   if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
       $db->Disconnect();
       exit;

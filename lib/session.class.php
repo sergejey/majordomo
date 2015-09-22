@@ -32,7 +32,7 @@
 
    ini_set('session.use_only_cookies', '1');
 
-   if ($this->checkBot($_SERVER['HTTP_USER_AGENT'])) {
+   if (!isset($_SERVER['HTTP_USER_AGENT']) || $this->checkBot($_SERVER['HTTP_USER_AGENT'])) {
 
     session_set_cookie_params(0); // current browser session only
     session_name($name);
@@ -40,13 +40,18 @@
 
     // setting expiration time for session (the easiest way)
     $expiretime = 60*60*1; // 2 hours
-    if ($_SESSION['expire'] < time()) {
+    if (IsSet($_SESSION['expire']) && ($_SESSION['expire']<time())) {
      $_SESSION['DATA']='';
     }
     $_SESSION['expire'] = time()+$expiretime;
 
 
-    $this->data=unserialize($_SESSION['DATA']);
+    if (isset($_SESSION['DATA'])) {
+     $this->data=unserialize($_SESSION['DATA']);
+    } else {
+     $this->data=array();
+    }
+
     $this->started=1;
     Define("SESSION_ID", session_name()."=".session_id());
     Define("SID", session_name()."=".session_id());
