@@ -129,9 +129,11 @@ function markTemplate(tmplt, remove){
 	tags[1] = "DIV"
 	tags[2] = "TBODY"
 	var i
-	for(i=0; i<tags.length; i++){
+	var tagsCnt = tags.length
+	for (i = 0; i < tagsCnt; i++) {
 	var allelem = document.body.getElementsByTagName(tags[i])
-	for (a=0; a < allelem.length; a++) {
+	var allelemCnt = allelem.length
+	for (a=0; a < allelemCnt; a++) {
 		if (allelem[a].name!=null && allelem[a].name==tmplt) {
 			if (allelem[a].name==tmplt) {
 				if (tags[i]=='TBODY') {

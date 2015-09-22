@@ -816,8 +816,10 @@ class PolarGraph extends Graph {
         }
 
         // Stroke all plots for Y1 axis
-        for($i=0; $i < count($this->plots); ++$i) {
-            $this->plots[$i]->Stroke($this->img,$this->scale);
+        $plotsCnt = count($this->plots);
+        for($i=0; $i < $plotsCnt; ++$i)
+        {
+           $this->plots[$i]->Stroke($this->img,$this->scale);
         }
 
 
@@ -862,8 +864,10 @@ class PolarGraph extends Graph {
             $aa = $this->img->SetAngle(0);
             $this->StrokeTitles();
         }
-
-        for($i=0; $i < count($this->plots) ; ++$i ) {
+        
+        $plotsCnt = count($this->plots);
+        for($i=0; $i < $plotsCnt; ++$i )
+        {
             $this->plots[$i]->Legend($this);
         }
 

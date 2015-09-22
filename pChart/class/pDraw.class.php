@@ -149,14 +149,20 @@
      if ( $SkipY != OUT_OF_SIGHT ) { $SkipY = floor($SkipY); }
 
      $RestoreShadow = $this->Shadow;
+     
      if ( !$NoFill )
-      {
-       if ( $this->Shadow && $this->ShadowX != 0 && $this->ShadowY != 0 )
+     {
+        if ($this->Shadow && $this->ShadowX != 0 && $this->ShadowY != 0)
         {
-         $this->Shadow = FALSE;
-         for($i=0;$i<=count($Points)-1;$i=$i+2)
-          { $Shadow[] = $Points[$i] + $this->ShadowX; $Shadow[] = $Points[$i+1] + $this->ShadowY; }
-         $this->drawPolygon($Shadow,array("R"=>$this->ShadowR,"G"=>$this->ShadowG,"B"=>$this->ShadowB,"Alpha"=>$this->Shadowa,"NoBorder"=>TRUE));
+            $this->Shadow = FALSE;
+            $pointsCnt = count($Points) - 1;
+            for ($i = 0; $i <= $pointsCnt; $i = $i+2)
+            {
+               $Shadow[] = $Points[$i] + $this->ShadowX;
+               $Shadow[] = $Points[$i+1] + $this->ShadowY;
+            }
+
+            $this->drawPolygon($Shadow, array("R"=>$this->ShadowR,"G"=>$this->ShadowG,"B"=>$this->ShadowB,"Alpha"=>$this->Shadowa,"NoBorder"=>TRUE));
         }
 
        $FillColor = $this->allocateColor($this->Picture,$R,$G,$B,$Alpha);
@@ -174,7 +180,8 @@
        else
         $BorderSettings = array("R"=>$BorderR,"G"=>$BorderG,"B"=>$BorderB,"Alpha"=>$BorderAlpha);
 
-       for($i=0;$i<=count($Points)-1;$i=$i+2)
+       $pointsCnt = count($Points) - 1;
+       for($i=0;$i<=$pointsCnt;$i=$i+2)
         {
          if ( isset($Points[$i+2]) )
           {
@@ -587,7 +594,9 @@
      $Weight	= isset($Format["Weight"]) ? $Format["Weight"] : NULL;
 
      $Cpt = NULL; $Mode = NULL; $Result = "";
-     for($i=1;$i<=count($Coordinates)-1;$i++)
+
+     $coordinatesCnt = count($Coordinates)-1;
+     for($i=1;$i<=$coordinatesCnt;$i++)
       {
        $X1 = $Coordinates[$i-1][0]; $Y1 = $Coordinates[$i-1][1];
        $X2 = $Coordinates[$i][0];   $Y2 = $Coordinates[$i][1];
@@ -3885,7 +3894,8 @@
        $Bounds = array_merge($BoundsA,$this->reversePlots($BoundsB));
        $this->drawPolygonChart($Bounds,array("R"=>$AreaR,"G"=>$AreaG,"B"=>$AreaB,"Alpha"=>$AreaAlpha));
 
-       for($i=0;$i<=count($BoundsA)-4;$i=$i+2)
+       $boundsACnt = count($BoundsA)-4;
+       for($i=0;$i<=$boundsACnt;$i=$i+2)
         {
          $this->drawLine($BoundsA[$i],$BoundsA[$i+1],$BoundsA[$i+2],$BoundsA[$i+3],array("R"=>$LineR,"G"=>$LineG,"B"=>$LineB,"Alpha"=>$LineAlpha,"Ticks"=>$LineTicks));
          $this->drawLine($BoundsB[$i],$BoundsB[$i+1],$BoundsB[$i+2],$BoundsB[$i+3],array("R"=>$LineR,"G"=>$LineG,"B"=>$LineB,"Alpha"=>$LineAlpha,"Ticks"=>$LineTicks));
@@ -3912,8 +3922,8 @@
         }
        $Bounds = array_merge($BoundsA,$this->reversePlots($BoundsB));
        $this->drawPolygonChart($Bounds,array("R"=>$AreaR,"G"=>$AreaG,"B"=>$AreaB,"Alpha"=>$AreaAlpha));
-
-       for($i=0;$i<=count($BoundsA)-4;$i=$i+2)
+       $boundsAcnt = count($BoundsA)-4;
+       for($i=0;$i<=$boundsAcnt;$i=$i+2)
         {
          $this->drawLine($BoundsA[$i],$BoundsA[$i+1],$BoundsA[$i+2],$BoundsA[$i+3],array("R"=>$LineR,"G"=>$LineG,"B"=>$LineB,"Alpha"=>$LineAlpha,"Ticks"=>$LineTicks));
          $this->drawLine($BoundsB[$i],$BoundsB[$i+1],$BoundsB[$i+2],$BoundsB[$i+3],array("R"=>$LineR,"G"=>$LineG,"B"=>$LineB,"Alpha"=>$LineAlpha,"Ticks"=>$LineTicks));
@@ -5139,10 +5149,20 @@
            $this->drawPolygon($Plots,$Color);
 
            $this->Shadow = $RestoreShadow;
-           if ( $DrawLine ) { for($i=2; $i<=count($Plots)-6; $i=$i+2) { $this->drawLine($Plots[$i],$Plots[$i+1],$Plots[$i+2],$Plots[$i+3],$LineColor); } }
+           
+           if ($DrawLine)
+           {
+              $plotsCnt = count($Plots) - 6;
+              for ($i = 2; $i <= $plotsCnt; $i = $i + 2)
+              {
+                 $this->drawLine($Plots[$i], $Plots[$i + 1], $Plots[$i + 2], $Plots[$i + 3], $LineColor);
+              }
+           }
+           
            if ( $DrawPlot )
             {
-             for($i=2; $i<=count($Plots)-4; $i=$i+2)
+               $plotsCnt = count($Plots) - 4;
+               for($i=2; $i<=$plotsCnt; $i=$i+2)
               {
                if ( $PlotBorder != 0 )
                 { $this->drawFilledCircle($Plots[$i],$Plots[$i+1],$PlotRadius+$PlotBorder,$PlotBorderColor); }
@@ -5173,10 +5193,18 @@
            $this->drawPolygon($Plots,$Color);
 
            $this->Shadow = $RestoreShadow;
-           if ( $DrawLine ) { for($i=2; $i<=count($Plots)-6; $i=$i+2) { $this->drawLine($Plots[$i],$Plots[$i+1],$Plots[$i+2],$Plots[$i+3],$LineColor); } }
+           if ( $DrawLine )
+           { 
+              $plotsCnt = count($Plots)-6;
+              for($i=2; $i<=$plotsCnt; $i=$i+2)
+              {
+                 $this->drawLine($Plots[$i],$Plots[$i+1],$Plots[$i+2],$Plots[$i+3],$LineColor);
+              }
+           }
            if ( $DrawPlot )
             {
-             for($i=2; $i<=count($Plots)-4; $i=$i+2)
+              $plotsCnt = count($Plots)-4;
+             for($i=2; $i<=$plotsCnt; $i=$i+2)
               {
                if ( $PlotBorder != 0 )
                 { $this->drawFilledCircle($Plots[$i],$Plots[$i+1],$PlotRadius+$PlotBorder,$PlotBorderColor); }
@@ -6040,12 +6068,14 @@
      $this->Shadow = FALSE;
 
      $AllIntegers = TRUE;
-     for($i=0;$i<=count($Points)-2;$i=$i+2)
+     $pointsCnt = count($Points)-2;
+     for($i=0;$i<=$pointsCnt;$i=$i+2)
       { if ( $this->getFirstDecimal($Points[$i+1]) != 0 ) { $AllIntegers = FALSE; } }
 
      /* Convert polygon to segments */
      $Segments = "";
-     for($i=2;$i<=count($Points)-2;$i=$i+2)
+     $pointsCnt = count($Points)-2;
+     for($i=2;$i<=$pointsCnt;$i=$i+2)
       { $Segments[] = array("X1"=>$Points[$i-2],"Y1"=>$Points[$i-1],"X2"=>$Points[$i],"Y2"=>$Points[$i+1]); }
      $Segments[] = array("X1"=>$Points[$i-2],"Y1"=>$Points[$i-1],"X2"=>$Points[0],"Y2"=>$Points[1]);
 
@@ -6148,7 +6178,8 @@
 
            /* Remove NULL plots */
            $Result = "";
-           for($i=0;$i<=count($Intersections)-1;$i=$i+2)
+           $intersectionsCnt= count($Intersections)-1;
+           for($i=0;$i<=$intersectionsCnt;$i=$i+2)
             {
              if ( isset($Intersections[$i+1]) )
               { if ( $Intersections[$i] != $Intersections[$i+1] ) { $Result[] = $Intersections[$i]; $Result[] = $Intersections[$i+1]; } }

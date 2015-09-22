@@ -52,99 +52,116 @@
     $this->hash=$this->fromXML($in);
    }
   }
-/**
-* Create XML-string from hash-data
-*
-* 
-* @param mixed Hash
-* @access public
-*/
-  function toXML($hash, $level=0) {
-  // converts from hash to xml
-   $res="";
-   if (!Is_Array($hash)) {
-    return $res;
-   }
-   foreach($hash as $k=>$v) {
-    if (substr($k, -5)!="_list") {
-    // skip NAME_list variables
-     if ((Is_Array($v)) && IsSet($v[0])) {
-      // array
-      if (IsSet($hash[$k."_list"])) {
-       $v=$hash[$k."_list"];
+
+   /**
+    * Create XML-string from hash-data
+    * @param mixed Hash
+    * @access public
+   */
+   function toXML($hash, $level = 0)
+   {
+      // converts from hash to xml
+      $res = "";
+   
+      if (!is_array($hash))
+         return $res;
+
+      foreach ($hash as $k => $v)
+      {
+         if (substr($k, -5) != "_list")
+         {
+            // skip NAME_list variables
+            if ((is_array($v)) && isset($v[0]))
+            {
+               // array
+               if (isset($hash[$k."_list"]))
+               {
+                  $v = $hash[$k . "_list"];
+               }
+
+               $vCnt = count($v);
+               for ($i = 0; $i < $vCnt ;$i++)
+               {
+                  $res .= str_repeat(" ", $level) . "<$k>\n";
+                  $res .= $this->toXML($v[$i], $level + 1);
+                  $res .= str_repeat(" ", $level) . "</$k>\n";
+               }
+            }
+            elseif ((is_array($v)) && (!isset($v[0])))
+            {
+               // hash
+               $res .= str_repeat(" ", $level) . "<$k>\n" . $this->toXML($v, $level + 1) . str_repeat(" ", $level) . "</$k>\n";
+            }
+            else
+            {
+               // variable
+               $res .= str_repeat(" ", $level) . "<$k>" . $v . "</$k>\n";
+            }
+         }
       }
-      for($i=0;$i<count($v);$i++) {
-       $res.=str_repeat(" ", $level)."<$k>\n";
-       $res.=$this->toXML($v[$i], $level+1);
-       $res.=str_repeat(" ", $level)."</$k>\n";
+      
+      return $res;
+   }
+
+
+   /**
+    * Used to create hash-data from XML-based string
+    * @param mixed $raw  XML-data
+    * @param mixed $prev 
+    * @return mixed
+    */
+   public function fromXML($raw, $prev = "")
+   {
+      // converts from xml to hash
+      global $ndx;
+
+      if ($prev == "")
+      {
+         $this->ndx = array();
       }
-     } elseif ((Is_Array($v)) && (!IsSet($v[0]))) {
-      // hash
-      $res.=str_repeat(" ", $level)."<$k>\n".$this->toXML($v, $level+1).str_repeat(" ", $level)."</$k>\n";
-     } else {
-      // variable
-      $res.=str_repeat(" ", $level)."<$k>".$v."</$k>\n";
-     }
-    }
-   }
-   return $res;
-  }
-/**
-* Used to create hash-data from XML-based string
-*
-* 
-*
-* @param string XML-data
-* @access public
-*/
-  function fromXML($raw, $prev="") {
-  // converts from xml to hash
-   global $ndx;
 
-   if ($prev=="") {
-    $this->ndx=array();
-   }
+      $raw     = preg_replace('/\<\?.+?\?\>\s*/s', '', $raw); //removes xml tag
+      $i       = 0;
+      $xml     = array();
+      $pattern = '(\s*?)<([^\?]+?)>(.*?)\1<\/\2>'; // tag-pattern
+   
+      if (preg_match_all('/' . $pattern . '/s', $raw, $matches, PREG_PATTERN_ORDER))
+      {
+         $matchesCnt = count($matches[0]);
+         for ($m = 0; $m < $matchesCnt; $m++)
+         {
+            $k = $matches[2][$i];
+            $v = $matches[3][$i];
 
-   $raw = preg_replace('/\<\?.+?\?\>\s*/s', '', $raw); //removes xml tag
-   $i=0;
-   $xml=array();
-   $pattern='(\s*?)<([^\?]+?)>(.*?)\1<\/\2>'; // tag-pattern
-   if (preg_match_all('/'.$pattern.'/s', $raw, $matches, PREG_PATTERN_ORDER)) {
- 
-    for($m=0;$m<count($matches[0]);$m++) {
- 
-     $k=$matches[2][$i];
-     $v=$matches[3][$i];
+            $res = $this->fromXML($v, $prev . $k . $i);
 
-     $res=$this->fromXML($v, $prev.$k.$i);
+            if (isset($this->ndx["$prev"."$k"]))
+            {
+               if ($ndx["$prev"."$k"] == 0)
+               {
+                  $vv = $xml["$k"];
 
+                  $xml["$k"]    = array();
+                  $xml["$k"][0] = $vv;
+               }
 
-     if (IsSet($this->ndx["$prev"."$k"])) {
-      if ($ndx["$prev"."$k"]==0) {
-       $vv=$xml["$k"];
-       $xml["$k"]=array();
-       $xml["$k"][0]=$vv;
+               $this->ndx["$prev"."$k"]++;
+               $xml["$k"][$this->ndx["$prev"."$k"]]=$res;
+            }
+            else
+            {
+               $this->ndx["$prev"."$k"]=0;
+               $xml["$k"]=$res;
+            }
+            
+            $xml["$k"."_list"][$this->ndx["$prev"."$k"]]=$res;
+            $i++;
+         }
       }
-      $this->ndx["$prev"."$k"]++;
-      $xml["$k"][$this->ndx["$prev"."$k"]]=$res;
-     } else {
-      $this->ndx["$prev"."$k"]=0;
-      $xml["$k"]=$res;
-     }
-     $xml["$k"."_list"][$this->ndx["$prev"."$k"]]=$res;
-     $i++;
-    }
 
-
+      return ($i == 0) ? $raw : $xml;
    }
-   if ($i==0) {
-    return $raw;
-   } else {
-    return $xml;
-   }
-  }
-// --------------------------------------------------------------------   
- }
+}
 
 // --------------------------------------------------------------------   
 // RELATIVE GENERAL FUNCTIONS

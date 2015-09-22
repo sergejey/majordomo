@@ -127,15 +127,14 @@
    $out['TYPE_OPTIONS'][]=array('VALUE'=>$value, 'TITLE'=>$title);
    $type_opt[$value]=$title;
   }
-  for($i=0;$i<count($out['TYPE_OPTIONS']);$i++) {
-   if ($out['TYPE_OPTIONS'][$i]['VALUE']==$rec['TYPE']) {
-    $out['TYPE_OPTIONS'][$i]['SELECTED']=1;
-    /*
-    $out['TYPE']=$out['TYPE_OPTIONS'][$i]['TITLE'];
-    $rec['TYPE']=$out['TYPE_OPTIONS'][$i]['TITLE'];
-    */
-   }
+
+  $optionsTypeCnt = count($out['TYPE_OPTIONS']);
+  for ($i = 0; $i < $optionsTypeCnt;$i++)
+  {
+      if ($out['TYPE_OPTIONS'][$i]['VALUE'] == $rec['TYPE'])
+         $out['TYPE_OPTIONS'][$i]['SELECTED'] = 1;
   }
+
   if (is_array($rec)) {
    foreach($rec as $k=>$v) {
     if (!is_array($v)) {

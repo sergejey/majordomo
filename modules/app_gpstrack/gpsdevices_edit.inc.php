@@ -51,7 +51,7 @@
   for($users_i=0;$users_i<$users_total;$users_i++) {
    $user_id_opt[$tmp[$users_i]['ID']]=$tmp[$users_i]['NAME'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$users_total;$i++) {
    if ($rec['USER_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['USER_ID_OPTIONS']=$tmp;

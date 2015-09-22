@@ -167,124 +167,152 @@ Define("EQ_DELIMITER", "qz_");
 * @global array POST VARS
 * @access public
 */
-  function restoreParams() {
-   global $md;
-   global $pd;
-   global $HTTP_GET_VARS;
-   global $HTTP_POST_VARS;
+   function restoreParams()
+   {
+      global $md;
+      global $pd;
+      global $HTTP_GET_VARS;
+      global $HTTP_POST_VARS;
 
-   if (strpos($pd, 'm'.STRING_DELIMITER)) {
-    $this->restoreParamsOld();
-    return;
-   }
+      if (strpos($pd, 'm' . STRING_DELIMITER))
+      {
+         $this->restoreParamsOld();
 
+         return;
+      }
 
+      // getting params of all modules
+      $modules    = explode(PARAMS_DELIMITER, $pd);
+      $modulesCnt = count($modules);
 
-  // getting params of all modules
-   $modules=explode(PARAMS_DELIMITER, $pd);
-   for($i=0;$i<count($modules);$i++) {
-    $data=base64_decode(urldecode($modules[$i]));
+      for ($i = 0; $i < $modulesCnt; $i++)
+      {
+         $data = base64_decode(urldecode($modules[$i]));
 
-      if (preg_match_all('/(.+?):{(.+?)}/', $data, $matches2, PREG_PATTERN_ORDER)) {
-       for($k=0;$k<count($matches2[1]);$k++) {
-        $data=array();
-        $module_name=$matches2[1][$k];
-        $module_params=explode(",",$matches2[2][$k]);
-        $instance="";
-        // creating params array for current module
-        $cr=array();
-        for($m=0;$m<count($module_params);$m++) {
-         $ar=explode("=", trim($module_params[$m]));
-         $param_name=trim($ar[0]);
-         $param_value=trim($ar[1]);
-         $cr[$param_name]=$param_value;
-        }
-        // setting params for current module
-        // module has instance in params
-        if ($cr['instance']!='') {
-         $instance_params[$module_name][$cr['instance']]=$cr;
-        } else {
-       // module has no instance
-         $global_params[$module_name]=$cr;
-        }
-       }
+         if (preg_match_all('/(.+?):{(.+?)}/', $data, $matches2, PREG_PATTERN_ORDER))
+         {
+            $matches2Cnt = count($matches2[1]);
+
+            for ($k = 0; $k < $matches2Cnt; $k++)
+            {
+               $data = array();
+               $cr   = array();  // creating params array for current module
+
+               $module_name   = $matches2[1][$k];
+               $module_params = explode(",", $matches2[2][$k]);
+               
+               $moduleParamsCnt = count($module_params);
+               
+               for ($m = 0; $m < $moduleParamsCnt; $m++)
+               {
+                  $ar = explode("=", trim($module_params[$m]));
+
+                  $param_name  = trim($ar[0]);
+                  $param_value = trim($ar[1]);
+
+                  $cr[$param_name] = $param_value;
+               }
+
+               // setting params for current module
+               // module has instance in params
+               if ($cr['instance'] != '')
+               {
+                  $instance_params[$module_name][$cr['instance']] = $cr;
+               }
+               else
+               {
+                  // module has no instance
+                  $global_params[$module_name] = $cr;
+               }
+            }
+         }
+      }
+
+      // restoring params for non-active module
+      if (isset($this->instance) && isset($instance_params[$this->name][$this->instance]))
+      {
+         // setting params for current instance
+         $module_data = $instance_params[$this->name][$this->instance];
+     
+         foreach ($module_data as $k => $v)
+         {
+            $this->{$k} = $v;
+         }
+      }
+      elseif (!isset($this->instance))
+      {
+         // module has no instances at all
+         $module_data = $global_params[$this->name];
+      }
+
+      // setting module data
+      if (isset($module_data))
+      {
+         foreach ($module_data as $k => $v)
+         {
+            $this->{$k} = $v;
+         }
       }
    }
 
-    // restoring params for non-active module
-    if (IsSet($this->instance) && IsSet($instance_params[$this->name][$this->instance])) {
-     // setting params for current instance
-     $module_data=$instance_params[$this->name][$this->instance];
-     foreach ($module_data as $k=>$v) {
-      $this->{$k}=$v;
-     }
-    } elseif (!IsSet($this->instance)) {
-     // module has no instances at all
-     $module_data=$global_params[$this->name];
-    }
+   /**
+    * Restoring module data from query string (old version)
+    */
+   public function restoreParamsOld()
+   {
+      global $md;             // query param - current module
+      global $pd;             // query param - all params
+      global $HTTP_GET_VARS;  // GET VARS
+      global $HTTP_POST_VARS; // POST VARS
 
-    // setting module data
-    if (IsSet($module_data)) {
-      foreach ($module_data as $k=>$v) {
-       $this->{$k}=$v;
+      $global_params = array();
+
+      // getting params of all modules
+      $pd = str_replace(EQ_DELIMITER, "=", $pd);
+  
+      if (preg_match_all('/m' . STRING_DELIMITER . '(\w+?)' . STRING_DELIMITER . '(\w+?)=(.*?)' . PARAMS_DELIMITER . '/', $pd, $matches, PREG_PATTERN_ORDER))
+      {
+         $matchesCnt = count($matches[1]);
+         for ($i = 0; $i < $matchesCnt; $i++)
+         {
+            $global_params[$matches[1][$i]][$matches[2][$i]] = $matches[3][$i];
+         }
       }
-    }
 
-  }
+      $xml = new xml_data($global_params);
 
-// --------------------------------------------------------------------
-/**
-* Restoring module data from query string (old version)
-*
-* @global string query param - current module
-* @global string query param - all params
-* @global array GET VARS
-* @global array POST VARS
-* @access public
-*/
-  function restoreParamsOld() {
-   global $md;
-   global $pd;
-   global $HTTP_GET_VARS;
-   global $HTTP_POST_VARS;
-
-  // getting params of all modules
-  $pd=str_replace(EQ_DELIMITER, "=", $pd);
-  if (preg_match_all('/m'.STRING_DELIMITER.'(\w+?)'.STRING_DELIMITER.'(\w+?)=(.*?)'.PARAMS_DELIMITER.'/', $pd, $matches, PREG_PATTERN_ORDER)) {
-   for($i=0;$i<count($matches[1]);$i++) {
-    $global_params[$matches[1][$i]][$matches[2][$i]]=$matches[3][$i];
-   }
-  }   
-
-  $xml=new xml_data($global_params);
-
-   if ($md!=$this->name) {
-    // restoring params for non-active module
-    if (IsSet($xml->hash[$this->name])) {
-     $module_data=$xml->hash[$this->name];
-     if ((IsSet($this->instance) && ($module_data["instance"] == $this->instance)) || (!IsSet($this->instance))) {
-      foreach ($module_data as $k=>$v) {
-       $this->{$k}=$v;
+      if ($md != $this->name)
+      {
+         // restoring params for non-active module
+         if (isset($xml->hash[$this->name]))
+         {
+            $module_data = $xml->hash[$this->name];
+      
+            if ((isset($this->instance) && ($module_data["instance"] == $this->instance)) || (!isset($this->instance)))
+            {
+               foreach ($module_data as $k => $v)
+               {
+                  $this->{$k} = $v;
+               }
+            }
+         }
       }
-     }
-    }
-   }
 
-   if ($md==$this->name) {
-    // if current module then we should take params directly from query string
-    if (Is_Array($HTTP_POST_VARS) && (count($HTTP_POST_VARS)>0)) {
-     $params=$HTTP_POST_VARS;
-    } else {
-     $params=$HTTP_GET_VARS;
-    }
-    foreach($params as $k=>$v) {
-     if (($k=="md") || ($k=="pd") || ($k=="inst") || ($k=="name")) continue;
-     // setting params as module properties
-     $this->{$k}=$v;
-    }
-   }
+      if ($md == $this->name)
+      {
+         // if current module then we should take params directly from query string
+         $params = (is_array($HTTP_POST_VARS) && (count($HTTP_POST_VARS) > 0)) ? $HTTP_POST_VARS : $HTTP_GET_VARS;
 
-  }
+         foreach ($params as $k => $v)
+         {
+            if (($k == "md") || ($k == "pd") || ($k == "inst") || ($k == "name"))
+               continue;
+
+            // setting params as module properties
+            $this->{$k} = $v;
+         }
+      }
+   }
 
 
 // --------------------------------------------------------------------
@@ -413,7 +441,10 @@ Define("EQ_DELIMITER", "qz_");
   $need_optimzation=array();
   $strings=explode("\n", $data);
   $table_defined=array();
-  for($i=0;$i<count($strings);$i++) {
+  
+   $stringsCnt = count($strings);
+   for ($i = 0; $i < $stringsCnt; $i++)
+   {
 
    $strings[$i]=preg_replace('/\/\/.+$/is', '', $strings[$i]);
    $fields=explode(":", $strings[$i]);
@@ -633,110 +664,139 @@ Define("EQ_DELIMITER", "qz_");
 *
 * @access private
 */
- function parseLinks($result) {
-   global $PHP_SELF;
-   global $md;
+   function parseLinks($result)
+   {
+      global $PHP_SELF;
+      global $md;
 
-   if (!IsSet($_SERVER['PHP_SELF'])) {
-    $_SERVER['PHP_SELF']=$PHP_SELF;
-   }
-
-   if ($md!=$this->name) {
-    $param_str=$this->saveParams();
-   } elseif (IsSet($this->owner)) {
-    $param_str=$this->owner->saveParams();
-   }
-
-   // a href links like <a href="?param=value">
-   if ((preg_match_all('/="\?(.*?)"/is', $result, $matches, PREG_PATTERN_ORDER))) {
-    for($i=0;$i<count($matches[1]);$i++) {
-     $link=$matches[1][$i];
-     if (!Is_Integer(strpos($link, '<!-- modified -->'))) { // skip custom links
-      if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1)) {
-       $other=$matches1[2];
-       $res_str=$this->codeParams($matches1[1]);
-       $result=str_replace($matches[0][$i], '="'.$_SERVER['PHP_SELF'].'?pd='.$res_str.$other.'"', $result);      
-      } elseif (strpos($link, "md=")!==0) {
-       $result=str_replace($matches[0][$i], '="'.$_SERVER['PHP_SELF'].'?pd='.$param_str.'&md='.$this->name.'&inst='.$this->instance.'&'.$link.'"', $result); // links
-      } else {
-       $result=str_replace('action="?', 'action="'.$_SERVER['PHP_SELF'].'"', $result); // forms
+      if (!isset($_SERVER['PHP_SELF']))
+      {
+         $_SERVER['PHP_SELF'] = $PHP_SELF;
       }
-     } else {
-      // remove modified param
-      $link=str_replace('<!-- modified -->', '', $link);      
-      $result=str_replace($matches[0][$i], '="'.$link.'"', $result);      
-     }
-    }
-   }
 
-   // form hidden params
-   if (preg_match_all('/\<input([^\<\>]+?)(value="\((.*?)\)")([^\<\>]*?)\>/is', $result, $matches, PREG_PATTERN_ORDER)) {
-      for($i=0;$i<count($matches[3]);$i++) {
-         if (strpos($matches[1][$i], 'type="hidden"') !== false || strpos($matches[4][$i], 'type="hidden"') !== false) {
-            $res_str=$this->codeParams($matches[3][$i]);
-            $result=str_replace($matches[2][$i], 'value="'.$res_str.'"', $result);
+      if ($md != $this->name)
+      {
+         $param_str = $this->saveParams();
+      }
+      elseif (isset($this->owner))
+      {
+         $param_str = $this->owner->saveParams();
+      }
+
+      // a href links like <a href="?param=value">
+      if ((preg_match_all('/="\?(.*?)"/is', $result, $matches, PREG_PATTERN_ORDER)))
+      {
+         $matchesCnt = count($matches[1]);
+         for ($i = 0; $i < $matchesCnt; $i++)
+         {
+            $link = $matches[1][$i];
+     
+
+            if (!is_integer(strpos($link, '<!-- modified -->')))   // skip custom links
+            {
+               
+               if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1))
+               {
+                  $other   = $matches1[2];
+                  $res_str = $this->codeParams($matches1[1]);
+                  $result  = str_replace($matches[0][$i], '="' . $_SERVER['PHP_SELF'] . '?pd=' . $res_str . $other . '"', $result);
+               }
+               elseif (strpos($link, "md=") !== 0)
+               {
+                  $result = str_replace($matches[0][$i], '="' . $_SERVER['PHP_SELF'] . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"', $result); // links
+               }
+               else
+               {
+                  $result = str_replace('action="?', 'action="' . $_SERVER['PHP_SELF'] . '"', $result); // forms
+               }
+            }
+            else
+            {
+               // remove modified param
+               $link   = str_replace('<!-- modified -->', '', $link);
+               $result = str_replace($matches[0][$i], '="'.$link.'"', $result);
+            }
          }
       }
+
+      // form hidden params
+      if (preg_match_all('/\<input([^\<\>]+?)(value="\((.*?)\)")([^\<\>]*?)\>/is', $result, $matches, PREG_PATTERN_ORDER))
+      {
+         $matches3Cnt = count($matches[3]);
+         for ($i = 0; $i < $matches3Cnt; $i++)
+         {
+            if (strpos($matches[1][$i], 'type="hidden"') !== false || strpos($matches[4][$i], 'type="hidden"') !== false)
+            {
+               $res_str = $this->codeParams($matches[3][$i]);
+               $result  = str_replace($matches[2][$i], 'value="' . $res_str . '"', $result);
+            }
+         }
+      }
+
+      // [#link ...#]
+      if (preg_match_all('/\[#link (.*?)#\]/is', $result, $matches, PREG_PATTERN_ORDER))
+      {
+         $matches1Cnt = count($matches[1]);
+         for ($i = 0; $i < $matches1Cnt; $i++)
+         {
+            $link = $matches[1][$i];
+            
+            if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1))
+            {
+               $other   = $matches1[2];
+               $res_str = $this->codeParams($matches1[1]);
+               $result  = str_replace($matches[0][$i], $_SERVER['PHP_SELF'] . '?pd=' . $res_str . $other, $result);
+            }
+            elseif (strpos($link, "md=") !== 0)
+            {
+               $result = str_replace($matches[0][$i], $_SERVER['PHP_SELF'] . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link, $result); // links
+            }
+         }
+      }
+
+      // form hidden variables (exclude </form><!-- modified -->)
+      $result = preg_replace("/<\/form>(?!<!-- modified -->)/is", "<input type=\"hidden\" name=\"pd\" value=\"$param_str\">\n<input type=\"hidden\" name=\"md\" value=\"".$this->name."\">\n<input type=\"hidden\" name=\"inst\" value=\"".$this->instance."\">\n</FORM><!-- modified -->", $result); // forms
+   
+      return $result;
    }
 
-   // form hidden params
-   /*
-   if (preg_match_all('/value="\((.*?)\)"/is', $result, $matches, PREG_PATTERN_ORDER)) {
-    for($i=0;$i<count($matches[1]);$i++) {   
-      $res_str=$this->codeParams($matches[1][$i]);
-      $result=str_replace($matches[0][$i], 'value="'.$res_str.'"', $result);      
-    }
-   }
-   */
+   /**
+    * Parsing params in coded string
+    *
+    * Used to maintain framework structure by saving modules data
+    * in query strings and hidden fields
+    *
+    * @access private
+    */
+   function codeParams($in)
+   {
+      $res_str = '';
 
-   // [#link ...#]
-   if (preg_match_all('/\[#link (.*?)#\]/is', $result, $matches, PREG_PATTERN_ORDER)) {
-    for($i=0;$i<count($matches[1]);$i++) {
-     $link=$matches[1][$i];
-     if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1)) {
-      $other=$matches1[2];
-      $res_str=$this->codeParams($matches1[1]);
-      $result=str_replace($matches[0][$i], $_SERVER['PHP_SELF'].'?pd='.$res_str.$other, $result);      
-     } elseif (strpos($link, "md=")!==0) {
-      $result=str_replace($matches[0][$i], $_SERVER['PHP_SELF'].'?pd='.$param_str.'&md='.$this->name.'&inst='.$this->instance.'&'.$link, $result); // links
-     }
-    }
-   }
+      if (preg_match_all('/(.+?):{(.+?)}/', $in, $matches2, PREG_PATTERN_ORDER))
+      {
+         $matches2Cnt = count($matches2);
 
+         for ($k = 0; $k < $matches2Cnt; $k++)
+         {
+            $data = array();
 
-   // form hidden variables (exclude </form><!-- modified -->)
-   $result=preg_replace("/<\/form>(?!<!-- modified -->)/is", "<input type=\"hidden\" name=\"pd\" value=\"$param_str\">\n<input type=\"hidden\" name=\"md\" value=\"".$this->name."\">\n<input type=\"hidden\" name=\"inst\" value=\"".$this->instance."\">\n</FORM><!-- modified -->", $result); // forms
-   return $result;
+            $module_name   = $matches2[1][$k];
+            $module_params = explode(',',$matches2[2][$k]);
+            $paramsCnt     = count($module_params);
 
- }
+            for ($m = 0; $m < $paramsCnt; $m++)
+            {
+               $ar = explode("=", trim($module_params[$m]));
 
-// --------------------------------------------------------------------
-/**
-* Parsing params in coded string
-*
-* Used to maintain framework structure by saving modules data
-* in query strings and hidden fields
-*
-* @access private
-*/
- function codeParams($in) {
-
-      if (preg_match_all('/(.+?):{(.+?)}/', $in, $matches2, PREG_PATTERN_ORDER)) {
-       for($k=0;$k<count($matches2);$k++) {
-        $data=array();
-        $module_name=$matches2[1][$k];
-        $module_params=explode(',',$matches2[2][$k]);
-        for($m=0;$m<count($module_params);$m++) {
-         $ar=explode("=", trim($module_params[$m]));
-         $data[trim($ar[0])]=trim($ar[1]);
-        }
-        $res_str.=$this->createParamsString($data, $module_name).PARAMS_DELIMITER;
-       }
+               $data[trim($ar[0])] = trim($ar[1]);
+            }
+            
+            $res_str .= $this->createParamsString($data, $module_name) . PARAMS_DELIMITER;
+         }
       }
 
       return $res_str;
-
- }
+   }
 
 
 

@@ -142,43 +142,51 @@ function getParams() {
     }
 
 
-    $modules=SQLSelect("SELECT * FROM project_modules WHERE HIDDEN='0' ORDER BY CATEGORY, NAME");
-    for($i=0;$i<count($modules);$i++) {
-     if (
-      (preg_match("/,".$modules[$i]['NAME'].",/i", @$user["ACCESS"])) ||
-      (preg_match("/,".$modules[$i]['NAME']."$/i", @$user["ACCESS"])) ||
-      (preg_match("/^".$modules[$i]['NAME'].",/i", @$user["ACCESS"])) ||
-      (preg_match("/^".$modules[$i]['NAME']."$/i", @$user["ACCESS"])) ||
-      0
-     )
-     {
-      $new[]=$modules[$i];
-     }
-    }
+    $modules    = SQLSelect("SELECT * FROM project_modules WHERE HIDDEN='0' ORDER BY CATEGORY, NAME");
+    $modulesCnt = count($modules);
+
+    for ($i = 0; $i < $modulesCnt; $i++)
+    {
+      if (
+            (preg_match("/,".$modules[$i]['NAME'].",/i", @$user["ACCESS"])) ||
+            (preg_match("/,".$modules[$i]['NAME']."$/i", @$user["ACCESS"])) ||
+            (preg_match("/^".$modules[$i]['NAME'].",/i", @$user["ACCESS"])) ||
+            (preg_match("/^".$modules[$i]['NAME']."$/i", @$user["ACCESS"])) ||
+            0
+         )
+      {
+         $new[] = $modules[$i];
+      }
+   }
 
 
-   $on_row=0;
+   $on_row = 0;
+   $newCnt = count($new);
+   
+   for ($i = 0; $i < $newCnt; $i++)
+   {
+      if ($new[$i]['CATEGORY'] != $new_category)
+      {
+         $new[$i]['NEWCATEGORY']=1;
+         $new_category=$new[$i]['CATEGORY'];
+         $on_row=0;
+      }
 
-   for($i=0;$i<count($new);$i++) {
+      $on_row++;
 
-    if ($new[$i]['CATEGORY']!=$new_category) {
-     $new[$i]['NEWCATEGORY']=1;
-     $new_category=$new[$i]['CATEGORY'];
-     $on_row=0;
-    }
+      if ($on_row % 6 == 0 && $on_row >= 6)
+      {
+         $new[$i]['NEWROW']=1;
+      }
 
-    $on_row++;
-
-    if ($on_row % 6 == 0 && $on_row>=6) {
-     $new[$i]['NEWROW']=1;
-    }
-
-    if (file_exists(ROOT.'img/admin/icons/ico_'.$new[$i]['NAME'].'.gif')) {
-     $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_'.$new[$i]['NAME'].'.gif';
-    } else {
-     $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_default.gif';
-    }
-
+      if (file_exists(ROOT.'img/admin/icons/ico_'.$new[$i]['NAME'].'.gif'))
+      {
+         $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_'.$new[$i]['NAME'].'.gif';
+      }
+      else
+      {
+         $new[$i]['ICON']=ROOTHTML.'img/admin/icons/ico_default.gif';
+      }
    }
 
    $out["MODULES"]=$new;
@@ -275,7 +283,8 @@ function getParams() {
     }
 
     $modules=SQLSelect("SELECT * FROM project_modules");
-    for($i=0;$i<count($modules);$i++) {
+    $modulesCnt = count($modules);
+    for($i=0;$i<$modulesCnt;$i++) {
      if (
       (preg_match("/,".$modules[$i]['NAME'].",/i", @$user["ACCESS"])) ||
       (preg_match("/,".$modules[$i]['NAME']."$/i", @$user["ACCESS"])) ||

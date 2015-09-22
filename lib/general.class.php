@@ -470,40 +470,64 @@ function getLogger($context = null)
     return Logger::getRootLogger();
 }
 
-// ---------------------------------------------------------
-function outArray($title, $ar, &$out) {
- // making hash-table array from plain array
- for($i=0;$i<count($ar);$i++) {
-  $rec=array();
-  $rec['NUM']=$i+1;
-  $rec['TITLE']=$ar[$i];
-  $out[$title][]=$rec;
- }
- if (count($ar)>1) {
-  if (count($ar)%2==0) {
-    $out[$title][(ceil(count($ar))/2)-1]['HALF']=1;
-  } else {
-    $out[$title][(int)(count($ar)/2)]['HALF']=1;
-  }
- }
+/**
+ * making hash-table array from plain array
+ * @param mixed $title Title
+ * @param mixed $ar    Input array
+ * @param mixed $out   Output array
+ */
+function outArray($title, $ar, &$out)
+{
+   $arCnt =  count($ar);
+
+   for ($i = 0; $i < $arCnt; $i++)
+   {
+      $rec = array();
+
+      $rec['NUM']    = $i + 1;
+      $rec['TITLE']  = $ar[$i];
+      $out[$title][] = $rec;
+   }
+
+   if ($arCnt > 1)
+   {
+      if ($arCnt % 2 == 0)
+      {
+         $out[$title][(ceil($arCnt) / 2) - 1]['HALF'] = 1;
+      }
+      else
+      {
+         $out[$title][(int)($arCnt / 2)]['HALF'] = 1;
+      }
+   }
 }
 
-// --------------------------------------------------------------------
-function multipleArraySelect($in, &$ar, $field="SELECTED") {
- // support for multiple select form elements
- if ((count($in)==0) || (count($ar)==0)) return;
- for($i=0;$i<count($ar);$i++) {
-  if (in_array($ar[$i]['TITLE'], $in)) $ar[$i][$field]=1;
- }
+function multipleArraySelect($in, &$ar, $field = "SELECTED")
+{
+   $arCnt = count($ar);
+
+   // support for multiple select form elements
+   if ((count($in) == 0) || ($arCnt == 0))
+      return;
+ 
+   for ($i = 0; $i < $arCnt; $i++)
+   {
+      if (in_array($ar[$i]['TITLE'], $in))
+         $ar[$i][$field] = 1;
+   }
 }
 
-// --------------------------------------------------------------------
-function colorizeArray(&$ar, $every=2) {
- for($i=0;$i<count($ar);$i++) {
-  if (($i+1)%$every==0) {
-   $ar[$i]["NEW_COLOR"]=1;
-  }
- }
+function colorizeArray(&$ar, $every = 2)
+{
+   $arCnt = count($ar);
+
+   for ($i = 0; $i < $arCnt; $i++)
+   {
+      if (($i + 1) % $every == 0)
+      {
+         $ar[$i]["NEW_COLOR"] = 1;
+      }
+   }
 }
 
 // --------------------------------------------------------------------

@@ -202,25 +202,36 @@ class jTemplate {
 * @param string $res template strings
 * @return string parsed template strings
 */
- function parseMethods(&$res,&$hash){
-
-  if (preg_match_all('/\[#method (\w+?)#\](.+?)\[#endmethod#\]/is', $res, $matches)) {
-   $count_matches_0=count($matches[0]);
-   for($i=0;$i<$count_matches_0;$i++) {
-    $method=$matches[1][$i];
-    $content=$matches[2][$i];
-    if (method_exists($this->owner, $method)) {
-     $o=$this->owner->$method($content);
-    } elseif (function_exists($method)) {
-     $o=$method($content, $this->owner);
-    } else {
-     $o="<!-- method \"$method\" not found -->".$content;
-    }
-    $res=str_replace($matches[0][$i], $o, $res);
+function parseMethods(&$res,&$hash)
+{
+   if (preg_match_all('/\[#method (\w+?)#\](.+?)\[#endmethod#\]/is', $res, $matches))
+   {
+      $count_matches_0 = count($matches[0]);
+   
+      for ($i = 0; $i < $count_matches_0; $i++)
+      {
+         $method  = $matches[1][$i];
+         $content = $matches[2][$i];
+    
+         if (method_exists($this->owner, $method))
+         {
+            $o = $this->owner->$method($content);
+         }
+         elseif (function_exists($method))
+         {
+            $o = $method($content, $this->owner);
+         }
+         else
+         {
+            $o = "<!-- method \"$method\" not found -->" . $content;
+         }
+    
+         $res = str_replace($matches[0][$i], $o, $res);
+      }
    }
-  }
-  return $res;
- }
+  
+   return $res;
+}
 
 
 /**
@@ -328,20 +339,24 @@ class jTemplate {
    $line1=$matches[2][$i];
    $res1="";
 
-   if ((Is_array($var)) && (count($var)>0) && (!IsSet($var[0]))) {
-        // hashtable
-        if (preg_match_all("/<#{$matches[1][$i]}\.(\w+?)#>/", $line1, $matches2, PREG_PATTERN_ORDER)) 
-        {
-                for($m=0;$m<count($matches2[1]);$m++) 
-                {
-                        @$line1=str_replace($matches2[0][$m], $this->templateSafe($var[$matches2[1][$m]]), $line1);
-                }
-        }
-    $res1.=$this->parse($line1, $var, $dir);
-
-   } elseif ((Is_Array($var)) && (count($var)>0) && (Is_Array($var[0]))) {
-//    echo $matches[1][$i]."<br>";
-    // index array
+   if ((is_array($var)) && (count($var) > 0) && (!isset($var[0])))
+   {
+      // hashtable
+      if (preg_match_all("/<#{$matches[1][$i]}\.(\w+?)#>/", $line1, $matches2, PREG_PATTERN_ORDER))
+      {
+         $matches2Cnt = count($matches2[1]);
+         for ($m = 0; $m < $matches2Cnt; $m++)
+         {
+            @$line1 = str_replace($matches2[0][$m], $this->templateSafe($var[$matches2[1][$m]]), $line1);
+         }
+      }
+    
+      $res1 .= $this->parse($line1, $var, $dir);
+   }
+   elseif ((is_array($var)) && (count($var) > 0) && (is_array($var[0])))
+   {
+      //    echo $matches[1][$i]."<br>";
+      // index array
     $count_var=count($var);
     for ($k=0;$k<$count_var;$k++) {
      $line2=$line1;
