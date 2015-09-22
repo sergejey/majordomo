@@ -214,7 +214,7 @@
  function getGlobal($varname) {
 
   $tmp=explode('.', $varname);
-  if ($tmp[2]) {
+  if (isset($tmp[2])) {
    $object_name=$tmp[0].'.'.$tmp[1];
    $varname=$tmp[2];
   } elseif ($tmp[1]) {
@@ -249,10 +249,10 @@
 */
  function setGlobal($varname, $value, $no_linked=0) {
   $tmp=explode('.', $varname);
-  if ($tmp[2]) {
+  if (IsSet($tmp[2])) {
    $object_name=$tmp[0].'.'.$tmp[1];
    $varname=$tmp[2];
-  } elseif ($tmp[1]) {
+  } elseif (IsSet($tmp[1])) {
    $object_name=$tmp[0];
    $varname=$tmp[1];
   } else {
@@ -406,4 +406,3 @@
 
 
 
-?>

@@ -2,7 +2,7 @@
 
 
  function saveToCache($key, $value, $ttl=60) {
-  if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST')) {
+  if (IsSet($_SERVER['REQUEST_METHOD']) && (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST'))) {
    global $memory_cache;
    $memory_cache[$key]=$value;
   }
@@ -17,7 +17,7 @@
 
  function checkFromCache($key) {
   global $memory_cache;
-  if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') && !is_array($memory_cache)) {
+  if (IsSet($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') && !is_array($memory_cache)) {
    $tmp=SQLSelect("SELECT KEYWORD, DATAVALUE FROM cached_values");
    $total=count($tmp);
    for($i=0;$i<$total;$i++) {
