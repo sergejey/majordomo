@@ -71,7 +71,7 @@
   for($scenes_i=0;$scenes_i<$scenes_total;$scenes_i++) {
    $scene_id_opt[$tmp[$scenes_i]['ID']]=$tmp[$scenes_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$scenes_total;$i++) {
    if ($rec['SCENE_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['SCENE_ID_OPTIONS']=$tmp;
@@ -88,13 +88,18 @@
    $out['TYPE_OPTIONS'][]=array('VALUE'=>$value, 'TITLE'=>$title);
    $type_opt[$value]=$title;
   }
-  for($i=0;$i<count($out['TYPE_OPTIONS']);$i++) {
-   if ($out['TYPE_OPTIONS'][$i]['VALUE']==$rec['TYPE']) {
-    $out['TYPE_OPTIONS'][$i]['SELECTED']=1;
-    $out['TYPE']=$out['TYPE_OPTIONS'][$i]['TITLE'];
-    $rec['TYPE']=$out['TYPE_OPTIONS'][$i]['TITLE'];
+
+  $optionsTypeCnt = count($out['TYPE_OPTIONS']);
+  for ($i = 0; $i < $optionsTypeCnt; $i++)
+  {
+      if ($out['TYPE_OPTIONS'][$i]['VALUE'] == $rec['TYPE'])
+      {
+         $out['TYPE_OPTIONS'][$i]['SELECTED'] = 1;
+         $out['TYPE'] = $out['TYPE_OPTIONS'][$i]['TITLE'];
+         $rec['TYPE'] = $out['TYPE_OPTIONS'][$i]['TITLE'];
+      }
    }
-  }
+
   if (is_array($rec)) {
    foreach($rec as $k=>$v) {
     if (!is_array($v)) {

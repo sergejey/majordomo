@@ -1576,19 +1576,28 @@ function ftpget($conn_id, $local_file, $remote_file, $mode) {
  return $res;
 }
 
-function ftpmkdir($conn_id, $ftp_dir) {
- global $set_dirs;
- $tmp=explode('/', $ftp_dir);
- $res_dir=$tmp[0];
- for($i=1;$i<count($tmp);$i++) {
-  $res_dir.='/'.$tmp[$i];
-  if (!isSet($set_dirs[$res_dir])) {
-   $set_dirs[$res_dir]=1;
-   if (! @ftp_chdir($conn_id, $res_dir)) {
-    ftp_mkdir($conn_id,$res_dir) ;
+function ftpmkdir($conn_id, $ftp_dir)
+{
+   global $set_dirs;
+
+   $tmp     = explode('/', $ftp_dir);
+   $res_dir = $tmp[0];
+   $tmpCnt  = count($tmp);
+   
+   for ($i = 1; $i < $tmpCnt; $i++)
+   {
+      $res_dir .= '/' . $tmp[$i];
+  
+      if (!isset($set_dirs[$res_dir]))
+      {
+         $set_dirs[$res_dir] = 1;
+   
+         if (!@ftp_chdir($conn_id, $res_dir))
+         {
+            ftp_mkdir($conn_id,$res_dir);
+         }
+      }
    }
-  }
- }
 }
 
 function ftpdelete($conn_id, $filename) {

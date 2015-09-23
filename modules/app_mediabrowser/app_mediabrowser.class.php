@@ -593,31 +593,50 @@ function usual(&$out) {
 
 }
 
- function getDescriptions($dir) {
-  $descr=array();
-  if (file_exists($dir."Descript.ion")) {
-   $data=LoadFile($dir."Descript.ion");
-   $strings=explode("\n", $data);
-   for($i=0;$i<count($strings);$i++) {
-    $fields=explode("\t", $strings[$i]);
-    $filename=$fields[0];
-    $filename=str_replace("\"", "", $filename);
-    $description=$fields[1];
-    $descr[$filename]=$description;
-   }
-  }
-  return $descr;
- }
+   function getDescriptions($dir)
+   {
+      $descr = array();
 
- function setDescription($dir, $file, $descr) {
-  $descriptions=getDescriptions($dir);
-  $descriptions[$file]=$descr;
-  $data=array();
-  foreach($descriptions as $k=>$v) {
-   $data[]="\"$k\"\t$v";
-  }
-  SaveFile($dir."Descript.ion", join("\n", $data));
- }
+      if (file_exists($dir . "Descript.ion"))
+      {
+         $data    = LoadFile($dir . "Descript.ion");
+         $strings = explode("\n", $data);
+         $strCnt  = count($strings);
+
+         for ($i = 0; $i < $strCnt; $i++)
+         {
+            $fields      = explode("\t", $strings[$i]);
+            $filename    = str_replace("\"", "", $fields[0]);
+            $description = $fields[1];
+
+            $descr[$filename] = $description;
+         }
+      }
+
+      return $descr;
+   }
+
+/**
+ * Set directory description
+ * @param mixed $dir   Directory
+ * @param mixed $file  File
+ * @param mixed $descr Description
+ */
+function setDescription($dir, $file, $descr)
+{
+   $descriptions = self::getDescriptions($dir);
+   
+   $descriptions[$file] = $descr;
+   
+   $data = array();
+  
+   foreach($descriptions as $k => $v)
+   {
+      $data[] = "\"$k\"\t$v";
+   }
+   
+   SaveFile($dir . "Descript.ion", join("\n", $data));
+}
 
 
  /**

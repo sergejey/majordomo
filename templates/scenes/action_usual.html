@@ -174,8 +174,10 @@
         function processCheckStates(data) {
            var obj=jQuery.parseJSON(data);
            if (typeof obj !='object') return false;
-           if (obj.length) {
-            for(var i=0;i<obj.length;i++) {
+           
+           var objCnt = obj.length;
+           if (objCnt) {
+              for(var i=0;i<objCnt;i++) {
              var elem=$('#state_'+obj[i].ID);
 
 

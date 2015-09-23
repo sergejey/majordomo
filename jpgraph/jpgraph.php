@@ -788,27 +788,37 @@ class Graph {
         }
     }
 
-    function AddTable($aTable) {
-        if( is_array($aTable) ) {
-            for($i=0; $i < count($aTable); ++$i ) {
-                $this->iTables[]=$aTable[$i];
-            }
-        }
-        else {
-            $this->iTables[] = $aTable ;
-        }
-    }
+   function AddTable($aTable)
+   {
+      if (is_array($aTable))
+      {
+         $tableCnt = count($aTable);
+         for ($i = 0; $i < $tableCnt; ++$i )
+         {
+            $this->iTables[] = $aTable[$i];
+         }
+      }
+      else
+      {
+         $this->iTables[] = $aTable ;
+      }
+   }
 
-    function AddIcon($aIcon) {
-        if( is_array($aIcon) ) {
-            for($i=0; $i < count($aIcon); ++$i ) {
-                $this->iIcons[]=$aIcon[$i];
-            }
-        }
-        else {
-            $this->iIcons[] = $aIcon ;
-        }
-    }
+   function AddIcon($aIcon)
+   {
+      if (is_array($aIcon))
+      {
+         $aIconCnt = count($aIcon);
+         for ($i = 0; $i < $aIconCnt; ++$i)
+         {
+            $this->iIcons[] = $aIcon[$i];
+         }
+      }
+      else
+      {
+         $this->iIcons[] = $aIcon;
+      }
+   }
 
     // Add plot to second Y-scale
     function AddY2($aPlot) {
@@ -869,92 +879,141 @@ class Graph {
         }
     }
 
-    // Add text object to the graph
-    function AddText($aTxt,$aToY2=false) {
-        if( $aTxt == null ) {
-            JpGraphError::RaiseL(25014);//("Graph::AddText() You tried to add a null text to the graph.");
-        }
-        if( $aToY2 ) {
-            if( is_array($aTxt) ) {
-                for($i=0; $i < count($aTxt); ++$i ) {
-                    $this->y2texts[]=$aTxt[$i];
-                }
-            }
-            else {
-                $this->y2texts[] = $aTxt;
-            }
-        }
-        else {
-            if( is_array($aTxt) ) {
-                for($i=0; $i < count($aTxt); ++$i ) {
-                    $this->texts[]=$aTxt[$i];
-                }
-            }
-            else {
-                $this->texts[] = $aTxt;
-            }
-        }
-    }
+   /**
+    * Add text object to the graph
+    * @param mixed $aTxt 
+    * @param mixed $aToY2 
+    */
+   function AddText($aTxt, $aToY2 = false)
+   {
+      if ($aTxt == null)
+      {
+         JpGraphError::RaiseL(25014);//("Graph::AddText() You tried to add a null text to the graph.");
+      }
 
-    // Add a line object (class PlotLine) to the graph
-    function AddLine($aLine,$aToY2=false) {
-        if( $aLine == null ) {
-            JpGraphError::RaiseL(25015);//("Graph::AddLine() You tried to add a null line to the graph.");
-        }
+      if ($aToY2)
+      {
+         if (is_array($aTxt))
+         {
+            $aTxtCnt = count($aTxt);
+            
+            for ($i = 0; $i < $aTxtCnt; ++$i)
+            {
+               $this->y2texts[] = $aTxt[$i];
+            }
+         }
+         else
+         {
+            $this->y2texts[] = $aTxt;
+         }
+      }
+      else
+      {
+         if (is_array($aTxt))
+         {
+            $aTxtCnt = count($aTxt);
+            
+            for ($i = 0; $i < $aTxtCnt; ++$i)
+            {
+               $this->texts[] = $aTxt[$i];
+            }
+         }
+         else
+         {
+            $this->texts[] = $aTxt;
+         }
+      }
+   }
 
-        if( $aToY2 ) {
-            if( is_array($aLine) ) {
-                for($i=0; $i < count($aLine); ++$i ) {
-                    //$this->y2lines[]=$aLine[$i];
-                    $this->y2plots[]=$aLine[$i];
-                }
-            }
-            else {
-                //$this->y2lines[] = $aLine;
-                $this->y2plots[]=$aLine;
-            }
-        }
-        else {
-            if( is_array($aLine) ) {
-                for($i=0; $i<count($aLine); ++$i ) {
-                    //$this->lines[]=$aLine[$i];
-                    $this->plots[]=$aLine[$i];
-                }
-            }
-            else {
-                //$this->lines[] = $aLine;
-                $this->plots[] = $aLine;
-            }
-        }
-    }
+   /**
+    * Add a line object (class PlotLine) to the graph
+    * @param mixed $aLine 
+    * @param mixed $aToY2 
+    */
+   function AddLine($aLine, $aToY2 = false)
+   {
+      if ($aLine == null)
+      {
+         JpGraphError::RaiseL(25015);//("Graph::AddLine() You tried to add a null line to the graph.");
+      }
 
-    // Add vertical or horizontal band
-    function AddBand($aBand,$aToY2=false) {
-        if( $aBand == null ) {
-            JpGraphError::RaiseL(25016);//(" Graph::AddBand() You tried to add a null band to the graph.");
-        }
+      if ($aToY2)
+      {
+         if (is_array($aLine))
+         {
+            $aLineCnt = count($aLine);
+            
+            for ($i = 0; $i < $aLineCnt; ++$i)
+            {
+               $this->y2plots[] = $aLine[$i];
+            }
+         }
+         else
+         {
+            $this->y2plots[] = $aLine;
+         }
+      }
+      else
+      {
+         if (is_array($aLine))
+         {
+            $aLineCnt = count($aLine);
 
-        if( $aToY2 ) {
-            if( is_array($aBand) ) {
-                for($i=0; $i < count($aBand); ++$i ) {
-                    $this->y2bands[] = $aBand[$i];
-                }
+            for ($i = 0; $i < $aLineCnt; ++$i )
+            {
+                $this->plots[] = $aLine[$i];
             }
-            else {
-                $this->y2bands[] = $aBand;
+         }
+         else
+         {
+            $this->plots[] = $aLine;
+         }
+      }
+   }
+
+    /**
+     * Add vertical or horizontal band
+     * @param mixed $aBand 
+     * @param mixed $aToY2 
+     */
+    function AddBand($aBand, $aToY2 = false)
+    {
+      if ($aBand == null)
+      {
+         JpGraphError::RaiseL(25016);//(" Graph::AddBand() You tried to add a null band to the graph.");
+      }
+
+      if ($aToY2)
+      {
+         if (is_array($aBand))
+         {
+            $aBandCnt = count($aBand);
+            for ($i = 0; $i < $aBandCnt; ++$i)
+            {
+               $this->y2bands[] = $aBand[$i];
             }
-        }
-        else {
-            if( is_array($aBand) ) {
-                for($i=0; $i < count($aBand); ++$i ) {
-                    $this->bands[] = $aBand[$i];
-                }
+         }
+         else
+         {
+            $this->y2bands[] = $aBand;
+         }
+      }
+      else
+      {
+         if (is_array($aBand))
+         {
+            $aBandCnt = count($aBand);
+            for ($i = 0; $i < $aBandCnt; ++$i )
+            {
+               $this->bands[] = $aBand[$i];
             }
-            else {
-                $this->bands[] = $aBand;
-            }
-        }
-    }
+         }
+         else
+         {
+            $this->bands[] = $aBand;
+         }
+      }
+   }
 
     function SetPlotGradient($aFrom='navy',$aTo='silver',$aGradType=2) {
         $this->plot_gradtype=$aGradType;
@@ -1949,63 +2008,82 @@ class Graph {
         }
     }
 
-    function doPrestrokeAdjustments() {
+   function doPrestrokeAdjustments()
+   {
+      // Do any pre-stroke adjustment that is needed by the different plot types
+      // (i.e bar plots want's to add an offset to the x-labels etc)
+      $plotsCnt = count($this->plots);
+      for ($i = 0; $i < $plotsCnt; ++$i )
+      {
+         $this->plots[$i]->PreStrokeAdjust($this);
+         $this->plots[$i]->DoLegend($this);
+      }
 
-        // Do any pre-stroke adjustment that is needed by the different plot types
-        // (i.e bar plots want's to add an offset to the x-labels etc)
-        for($i=0; $i < count($this->plots) ; ++$i ) {
-            $this->plots[$i]->PreStrokeAdjust($this);
-            $this->plots[$i]->DoLegend($this);
-        }
+      // Any plots on the second Y scale?
+      if ($this->y2scale != null)
+      {
+         $y2PlotsCnt = count($this->y2plots);
+         for ($i = 0; $i < $y2PlotsCnt; ++$i)
+         {
+            $this->y2plots[$i]->PreStrokeAdjust($this);
+            $this->y2plots[$i]->DoLegend($this);
+         }
+      }
 
-        // Any plots on the second Y scale?
-        if( $this->y2scale != null ) {
-            for($i=0; $i<count($this->y2plots) ; ++$i ) {
-                $this->y2plots[$i]->PreStrokeAdjust($this);
-                $this->y2plots[$i]->DoLegend($this);
-            }
-        }
+      // Any plots on the extra Y axises?
+      $n = count($this->ynaxis);
+      for ($i = 0; $i < $n; ++$i)
+      {
+         if ($this->ynplots == null || $this->ynplots[$i] == null)
+         {
+            JpGraphError::RaiseL(25032,$i);//("No plots for Y-axis nbr:$i");
+         }
+         
+         $m = count($this->ynplots[$i]);
+         for ($j = 0; $j < $m; ++$j)
+         {
+            $this->ynplots[$i][$j]->PreStrokeAdjust($this);
+            $this->ynplots[$i][$j]->DoLegend($this);
+         }
+      }
+   }
 
-        // Any plots on the extra Y axises?
-        $n = count($this->ynaxis);
-        for($i=0; $i<$n ; ++$i ) {
-            if( $this->ynplots == null || $this->ynplots[$i] == null) {
-                JpGraphError::RaiseL(25032,$i);//("No plots for Y-axis nbr:$i");
-            }
-            $m = count($this->ynplots[$i]);
-            for($j=0; $j < $m; ++$j ) {
-                $this->ynplots[$i][$j]->PreStrokeAdjust($this);
-                $this->ynplots[$i][$j]->DoLegend($this);
-            }
-        }
-    }
-
-    function StrokeBands($aDepth,$aCSIM) {
-    // Stroke bands
-        if( $this->bands != null && !$aCSIM) {
-            for($i=0; $i < count($this->bands); ++$i) {
+   function StrokeBands($aDepth, $aCSIM)
+   {
+      // Stroke bands
+      if ($this->bands != null && !$aCSIM)
+      {
+         $bandsCnt = count($this->bands);
+         for ($i = 0; $i < $bandsCnt; ++$i)
+         {
             // Stroke all bands that asks to be in the background
-                if( $this->bands[$i]->depth == $aDepth ) {
-                    $this->bands[$i]->Stroke($this->img,$this->xscale,$this->yscale);
-                }
+            if ($this->bands[$i]->depth == $aDepth)
+            {
+               $this->bands[$i]->Stroke($this->img, $this->xscale, $this->yscale);
             }
-        }
+         }
+      }
 
-        if( $this->y2bands != null && $this->y2scale != null && !$aCSIM ) {
-            for($i=0; $i < count($this->y2bands); ++$i) {
+      if ($this->y2bands != null && $this->y2scale != null && !$aCSIM)
+      {
+         $y2BandsCnt = count($this->y2bands);
+         for ($i = 0; $i < $y2BandsCnt; ++$i)
+         {
             // Stroke all bands that asks to be in the foreground
-                if( $this->y2bands[$i]->depth == $aDepth ) {
-                    $this->y2bands[$i]->Stroke($this->img,$this->xscale,$this->y2scale);
-                }
+            if ($this->y2bands[$i]->depth == $aDepth)
+            {
+               $this->y2bands[$i]->Stroke($this->img, $this->xscale, $this->y2scale);
             }
-        }
-    }
+         }
+      }
+   }
 
 
     // Stroke the graph
     // $aStrokeFileName If != "" the image will be written to this file and NOT
     // streamed back to the browser
-    function Stroke($aStrokeFileName='') {
+    function Stroke($aStrokeFileName = '')
+    {
         // Fist make a sanity check that user has specified a scale
         if( empty($this->yscale) ) {
             JpGraphError::RaiseL(25031);//('You must specify what scale to use with a call to Graph::SetScale().');
@@ -2017,7 +2095,9 @@ class Graph {
         // Give the plot a chance to do any scale adjuments the individual plots
         // wants to do. Right now this is only used by the contour plot to set scale
         // limits
-        for($i=0; $i < count($this->plots) ; ++$i ) {
+        $plotsCnt = count($this->plots);
+        for($i=0; $i < $plotsCnt; ++$i )
+        {
             $this->plots[$i]->PreScaleSetup($this);
         }
 
@@ -2032,7 +2112,7 @@ class Graph {
         // to do to generate the image map to improve performance
         // a best we can. Therefor you will see a lot of tests !$_csim in the
         // code below.
-        $_csim = ($aStrokeFileName===_CSIM_SPECIALFILE);
+        $_csim = ($aStrokeFileName === _CSIM_SPECIALFILE);
 
         // If we are called the second time (perhaps the user has called GetHTMLImageMap()
         // himself then the legends have alsready been populated once in order to get the
@@ -2150,40 +2230,52 @@ class Graph {
             $oldimage = $this->img->CloneCanvasH();
         }
 
-        if( ! $this->y2orderback ) {
-            // Stroke all plots for Y1 axis
-            for($i=0; $i < count($this->plots); ++$i) {
-                $this->plots[$i]->Stroke($this->img,$this->xscale,$this->yscale);
-                $this->plots[$i]->StrokeMargin($this->img);
-            }
+        if (!$this->y2orderback)
+        {
+           // Stroke all plots for Y1 axis
+           $plotsCnt = count($this->plots);
+           for($i = 0; $i < $plotsCnt; ++$i)
+           {
+               $this->plots[$i]->Stroke($this->img, $this->xscale, $this->yscale);
+               $this->plots[$i]->StrokeMargin($this->img);
+           }
         }
 
         // Stroke all plots for Y2 axis
-        if( $this->y2scale != null ) {
-            for($i=0; $i< count($this->y2plots); ++$i ) {
-                $this->y2plots[$i]->Stroke($this->img,$this->xscale,$this->y2scale);
-            }
+        if ($this->y2scale != null)
+        {
+           $y2PlotsCnt = count($this->y2plots);
+           for ($i = 0; $i < $y2PlotsCnt; ++$i)
+           {
+              $this->y2plots[$i]->Stroke($this->img, $this->xscale, $this->y2scale);
+           }
         }
 
-        if( $this->y2orderback ) {
-            // Stroke all plots for Y1 axis
-            for($i=0; $i < count($this->plots); ++$i) {
-                $this->plots[$i]->Stroke($this->img,$this->xscale,$this->yscale);
-                $this->plots[$i]->StrokeMargin($this->img);
-            }
+        if ($this->y2orderback)
+        {
+           // Stroke all plots for Y1 axis
+           $plotsCnt = count($this->plots);
+           for ($i = 0; $i < $plotsCnt; ++$i)
+           {
+              $this->plots[$i]->Stroke($this->img, $this->xscale, $this->yscale);
+              $this->plots[$i]->StrokeMargin($this->img);
+           }
         }
 
         $n = count($this->ynaxis);
-        for( $i=0; $i < $n; ++$i ) {
+        for( $i=0; $i < $n; ++$i )
+        {
             $m = count($this->ynplots[$i]);
-            for( $j=0; $j < $m; ++$j ) {
-                $this->ynplots[$i][$j]->Stroke($this->img,$this->xscale,$this->ynscale[$i]);
-                $this->ynplots[$i][$j]->StrokeMargin($this->img);
+            for( $j=0; $j < $m; ++$j)
+            {
+               $this->ynplots[$i][$j]->Stroke($this->img, $this->xscale, $this->ynscale[$i]);
+               $this->ynplots[$i][$j]->StrokeMargin($this->img);
             }
         }
 
-        if( $this->iIconDepth == DEPTH_FRONT) {
-            $this->StrokeIcons();
+        if ($this->iIconDepth == DEPTH_FRONT)
+        {
+           $this->StrokeIcons();
         }
 
         if( $this->iDoClipping ) {
@@ -2950,19 +3042,26 @@ class Graph {
 
     }
 
-    function StrokeTexts() {
-        // Stroke any user added text objects
-        if( $this->texts != null ) {
-            for($i=0; $i < count($this->texts); ++$i) {
-                $this->texts[$i]->StrokeWithScale($this->img,$this->xscale,$this->yscale);
-            }
-        }
+    function StrokeTexts()
+    {
+      // Stroke any user added text objects
+      if ($this->texts != null)
+      {
+         $textCnt = count($this->texts);
+         for ($i = 0; $i < $textCnt; ++$i)
+         {
+            $this->texts[$i]->StrokeWithScale($this->img, $this->xscale, $this->yscale);
+         }
+      }
 
-        if( $this->y2texts != null && $this->y2scale != null ) {
-            for($i=0; $i < count($this->y2texts); ++$i) {
-                $this->y2texts[$i]->StrokeWithScale($this->img,$this->xscale,$this->y2scale);
-            }
-        }
+      if ($this->y2texts != null && $this->y2scale != null)
+      {
+         $y2TextsCnt = count($this->y2texts);
+         for ($i = 0; $i < $y2TextsCnt; ++$i)
+         {
+            $this->y2texts[$i]->StrokeWithScale($this->img, $this->xscale, $this->y2scale);
+         }
+      }
 
     }
 

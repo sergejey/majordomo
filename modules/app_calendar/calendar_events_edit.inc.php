@@ -117,22 +117,33 @@
    $out['REPEAT_TYPE_OPTIONS'][]=array('VALUE'=>$value, 'TITLE'=>$title);
    $repeat_type_opt[$value]=$title;
   }
-  for($i=0;$i<count($out['REPEAT_TYPE_OPTIONS']);$i++) {
-   if ($out['REPEAT_TYPE_OPTIONS'][$i]['VALUE']==$rec['REPEAT_TYPE']) {
-    $out['REPEAT_TYPE_OPTIONS'][$i]['SELECTED']=1;
-    $out['REPEAT_TYPE']=$out['REPEAT_TYPE_OPTIONS'][$i]['TITLE'];
-    $rec['REPEAT_TYPE']=$out['REPEAT_TYPE_OPTIONS'][$i]['TITLE'];
+  
+   $rptOptionsCnt = count($out['REPEAT_TYPE_OPTIONS']);
+   for ($i = 0; $i < $rptOptionsCnt; $i++)
+   {
+      if ($out['REPEAT_TYPE_OPTIONS'][$i]['VALUE'] == $rec['REPEAT_TYPE'])
+      {
+         $out['REPEAT_TYPE_OPTIONS'][$i]['SELECTED']=1;
+         $out['REPEAT_TYPE']=$out['REPEAT_TYPE_OPTIONS'][$i]['TITLE'];
+         $rec['REPEAT_TYPE']=$out['REPEAT_TYPE_OPTIONS'][$i]['TITLE'];
+      }
    }
-  }
+
   //options for 'USER_ID' (select)
   $tmp=SQLSelect("SELECT ID, NAME FROM users ORDER BY NAME");
-  $users_total=count($tmp);
-  for($users_i=0;$users_i<$users_total;$users_i++) {
-   $user_id_opt[$tmp[$users_i]['ID']]=$tmp[$users_i]['NAME'];
+  
+  $users_total = count($tmp);
+  
+  for ($users_i = 0; $users_i < $users_total; $users_i++)
+  {
+      $user_id_opt[$tmp[$users_i]['ID']] = $tmp[$users_i]['NAME'];
   }
-  for($i=0;$i<count($tmp);$i++) {
-   if ($rec['USER_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
+
+  for ($i = 0; $i < $users_total; $i++)
+  {
+      if ($rec['USER_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
+
   $out['USER_ID_OPTIONS']=$tmp;
   //options for 'LOCATION_ID' (select)
   $tmp=SQLSelect("SELECT ID, TITLE FROM gpslocations ORDER BY TITLE");
@@ -140,7 +151,8 @@
   for($gpslocations_i=0;$gpslocations_i<$gpslocations_total;$gpslocations_i++) {
    $location_id_opt[$tmp[$gpslocations_i]['ID']]=$tmp[$gpslocations_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+
+  for($i=0;$i < $gpslocations_total; $i++) {
    if ($rec['LOCATION_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['LOCATION_ID_OPTIONS']=$tmp;
@@ -150,7 +162,7 @@
   for($calendar_categories_i=0;$calendar_categories_i<$calendar_categories_total;$calendar_categories_i++) {
    $calendar_category_id_opt[$tmp[$calendar_categories_i]['ID']]=$tmp[$calendar_categories_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i< $calendar_categories_total;$i++) {
    if ($rec['CALENDAR_CATEGORY_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['CALENDAR_CATEGORY_ID_OPTIONS']=$tmp;

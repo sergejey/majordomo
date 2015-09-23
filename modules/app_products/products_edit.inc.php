@@ -92,7 +92,7 @@
   for($categories_i=0;$categories_i<$categories_total;$categories_i++) {
    $category_id_opt[$tmp[$categories_i]['ID']]=$tmp[$categories_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$categories_total;$i++) {
    if ($rec['CATEGORY_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['CATEGORY_ID_OPTIONS']=$tmp;

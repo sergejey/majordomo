@@ -131,22 +131,21 @@ class mysql
     */
    function Select($query)
    {
-      if ($result = mysql_query($query, $this->dbh)) 
+      $res = array();
+      
+      if ($result = mysql_query($query, $this->dbh))
       {
-         $res = array();
-         
-         for($i = 0; $i < mysql_num_rows($result); $i++) 
+         while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
          {
-            $rec = mysql_fetch_array($result, MYSQL_ASSOC);
             $res[] = $rec;
          }
-         
-         return $res;
       }
       else 
       {
          $this->Error($query);
       }
+
+      return $res;
    }
 
    /**
@@ -474,28 +473,19 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
    return SQLUpdateInsert($table, $record, $ndx);
 }
 
-/**
- * Converts date format from YYYY/MM/DD to MM/DD/YYYY
- *
- * 
- *
- * @param string $source source date to convert
- * @param string $delim source delimiter
- * @param string $dst_delim destination delimiter
- */
-function fromDBDate($source, $delim = '-', $dst_delim = '/')
-{
-   $tmp = explode($delim, $source);
-   
-   for($i = 0; $i < count($tmp); $i++)
+   /**
+    * Converts date format from YYYY/MM/DD to MM/DD/YYYY
+    * @param mixed $source    source date
+    * @param mixed $delim     source delimiter
+    * @param mixed $dst_delim destination delimiter
+    * @return string
+    */
+   function fromDBDate($source, $delim = '-', $dst_delim = '/')
    {
-      if ($tmp[$i] < 10) 
-         $tmp[$i] = '0' . (int)$tmp[$i];
-      
-   }
+      $tmp    = explode($delim, $source);
    
-   return ($tmp[1]) . $dst_delim . ($tmp[2]) . $dst_delim . ($tmp[0]);
-}
+      return str_pad($tmp[1], 2, "0", STR_PAD_LEFT) . $dst_delim . str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim . str_pad($tmp[0], 2, "0", STR_PAD_LEFT);
+   }
 
 /**
  * Converts date format from MM/DD/YYYY to YYYY-MM-DD
@@ -508,12 +498,6 @@ function toDBDate($source, $delim = '/', $dst_delim = '-')
 {
    $tmp = explode($delim, $source);
    
-   for($i = 0; $i < count($tmp); $i++)
-   {
-      if ($tmp[$i] < 10) 
-         $tmp[$i] = '0' . (int)$tmp[$i];
-   }
-   
-   return ($tmp[2]) . $dst_delim . ($tmp[0]) . $dst_delim . ($tmp[1]);
+   return str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim . str_pad($tmp[0], 2, "0", STR_PAD_LEFT) . $dst_delim . str_pad($tmp[1], 2, "0", STR_PAD_LEFT);
 }
 

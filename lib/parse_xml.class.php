@@ -160,20 +160,29 @@ class parse_xml {
 		return $out; 
 	}
 
-	function win2utf( $str ) {
-		$utf = '';
-		for($i = 0; $i < strlen($str); $i++) {
-			$donotrecode = false; 
-			$c = ord(substr($str, $i, 1));
-			if ($c == 0xA8) $res = 0xD081;
-			elseif ($c == 0xB8) $res = 0xD191;
-			elseif ($c < 0xC0) $donotrecode = true;
-			elseif ($c < 0xF0) $res = $c + 0xCFD0;
-			else $res = $c + 0xD090;
-			$utf .= ($donotrecode) ? chr($c) : (chr($res >>8) . chr($res & 0xff));
-		}
-		return $utf;
-	}
+   function win2utf($str)
+   {
+      $utf = '';
+      
+      $strLength = strlen($str);
+
+      for ($i = 0; $i < $strLength; $i++)
+      {
+         $donotrecode = false;
+         
+         $c = ord(substr($str, $i, 1));
+
+         if ($c == 0xA8) $res = 0xD081;
+         elseif ($c == 0xB8) $res = 0xD191;
+         elseif ($c < 0xC0) $donotrecode = true;
+         elseif ($c < 0xF0) $res = $c + 0xCFD0;
+         else $res = $c + 0xD090;
+
+         $utf .= ($donotrecode) ? chr($c) : (chr($res >>8) . chr($res & 0xff));
+      }
+      
+      return $utf;
+   }
 
 }
 ?>

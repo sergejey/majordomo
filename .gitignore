@@ -11,3 +11,6 @@ reboot
 *.sln
 *.suo
 *.phpproj.user
+.vs/
+backup/
+debmes/

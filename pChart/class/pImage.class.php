@@ -444,11 +444,18 @@
 
    /* Reverse an array of points */
    function reversePlots($Plots)
-    {
-     $Result = "";
-     for($i=count($Plots)-2;$i>=0;$i=$i-2) { $Result[] = $Plots[$i]; $Result[] = $Plots[$i+1]; }
-     return($Result);
-    }
+   {
+      $Result   = "";
+      $plotsCnt = count($Plots) - 2;
+      
+      for($i = $plotsCnt; $i >= 0; $i = $i - 2)
+      {
+         $Result[] = $Plots[$i];
+         $Result[] = $Plots[$i + 1];
+      }
+
+      return($Result);
+   }
 
    /* Mirror Effect */
    function drawAreaMirror($X,$Y,$Width,$Height,$Format="")

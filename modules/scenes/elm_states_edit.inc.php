@@ -80,13 +80,18 @@
    $out['CONDITION_OPTIONS'][]=array('VALUE'=>$value, 'TITLE'=>$title);
    $condition_opt[$value]=$title;
   }
-  for($i=0;$i<count($out['CONDITION_OPTIONS']);$i++) {
-   if ($out['CONDITION_OPTIONS'][$i]['VALUE']==$rec['CONDITION']) {
-    $out['CONDITION_OPTIONS'][$i]['SELECTED']=1;
-    $out['CONDITION']=$out['CONDITION_OPTIONS'][$i]['TITLE'];
-    $rec['CONDITION']=$out['CONDITION_OPTIONS'][$i]['TITLE'];
+
+  $optionsConditionCnt = count($out['CONDITION_OPTIONS']);
+  for ($i = 0; $i < $optionsConditionCnt;$i++)
+  {
+      if ($out['CONDITION_OPTIONS'][$i]['VALUE'] == $rec['CONDITION'])
+      {
+         $out['CONDITION_OPTIONS'][$i]['SELECTED'] = 1;
+         $out['CONDITION'] = $out['CONDITION_OPTIONS'][$i]['TITLE'];
+         $rec['CONDITION'] = $out['CONDITION_OPTIONS'][$i]['TITLE'];
+      }
    }
-  }
+
   if (is_array($rec)) {
    foreach($rec as $k=>$v) {
     if (!is_array($v)) {
