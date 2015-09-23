@@ -277,12 +277,11 @@ function usual(&$out) {
    }
    
    if (!$ok) {
-
-    $host['LOG'].=date('Y-m-d H:i:s').' incorrect value:'.$new_status."\n";
+    $host['LOG']=date('Y-m-d H:i:s').' incorrect value:'.$new_status."\n".$host['LOG'];
     $tmp=explode("\n", $host['LOG']);
     $total=count($tmp);
     if ($total>50) {
-     $tmp=array_slice($tmp, -50, 50);
+     $tmp=array_slice($tmp, 0, 50);
      $host['LOG']=implode("\n", $tmp);
     }
     SQLUpdate('webvars', $host);
@@ -298,7 +297,7 @@ function usual(&$out) {
      $tmp=explode("\n", $host['LOG']);
      $total=count($tmp);
      if ($total>50) {
-      $tmp=array_slice($tmp, -50, 50);
+      $tmp=array_slice($tmp, 0, 50);
       $host['LOG']=implode("\n", $tmp);
      }
    }
