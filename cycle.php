@@ -38,7 +38,7 @@ echo "Running startup maintenance" . PHP_EOL;
 
 //restoring database backup (if was saving periodically)
 $filename  = ROOT . '/database_backup/db.sql';
-if (file_exists($filename) && $run_from_start)
+if (file_exists($filename))
 {
    echo "Running: mysql -u " . DB_USER . " -p" . DB_PASSWORD . " " . DB_NAME . " <" . $filename . PHP_EOL;
    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
@@ -47,9 +47,6 @@ if (file_exists($filename) && $run_from_start)
    $mysqlParam .= " " . DB_NAME . " <" . $filename;
    exec($mysql_path . $mysqlParam);
 }
-
-//removing cached data
-SQLExec("TRUNCATE TABLE `cached_values`");
 
 //reinstalling modules
         $source=ROOT.'modules';
@@ -60,6 +57,10 @@ SQLExec("TRUNCATE TABLE `cached_values`");
            }
           }
          }
+
+//removing cached data
+SQLExec("TRUNCATE TABLE `cached_values`");
+
 
 // continue startup
 
