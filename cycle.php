@@ -34,11 +34,39 @@ include_once("./load_settings.php");
 
 echo "CONNECTED TO DB" . PHP_EOL;
 
+echo "Running startup maintenance" . PHP_EOL;
+
+//restoring database backup (if was saving periodically)
+$filename  = ROOT . '/database_backup/db.sql';
+if (file_exists($filename) && $run_from_start)
+{
+   echo "Running: mysql -u " . DB_USER . " -p" . DB_PASSWORD . " " . DB_NAME . " <" . $filename . PHP_EOL;
+   $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+   $mysqlParam = " -u " . DB_USER;
+   if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+   $mysqlParam .= " " . DB_NAME . " <" . $filename;
+   exec($mysql_path . $mysqlParam);
+}
+
+//removing cached data
+SQLExec("TRUNCATE TABLE `cached_values`");
+
+//reinstalling modules
+        $source=ROOT.'modules';
+        if ($dir = @opendir($source)) { 
+          while (($file = readdir($dir)) !== false) { 
+           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
+            @unlink(ROOT."modules/".$file."/installed");
+           }
+          }
+         }
+
+// continue startup
+
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
-echo "Running startup maintenance" . PHP_EOL;
 
 $run_from_start = 1;
 
