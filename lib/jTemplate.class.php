@@ -753,7 +753,7 @@ class jTemplate
                }
                else
                {
-                  $tmp = "<p align=center><font color='red'><b>Module \"" . $module_data["name"]."\" not found</b>";
+                  $tmp  = "<p align=center><font color='red'><b>Module \"" . $module_data["name"] . "\" not found</b>";
                   $tmp .= " (" . str_replace('#', '', $matches[0][$i]) . ")</font></p>";
                }
             }
@@ -770,101 +770,131 @@ class jTemplate
     * [#inc ...#] tag parsing
     *
     * @access private
-    * @param string $res template strings
-    * @param array $hash data params
-    * @param string $dir current template directory (for correct [#inc ...#] tags parsing)
+    * @param string $res  Template strings
+    * @param array  $hash Data params
+    * @param string $dir  Current template directory (for correct [#inc ...#] tags parsing)
+    * @return void
     */
-   function parseIncludes(&$res, &$hash, $dir) {
-
-      if (preg_match_all('/\[#inc (.*?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
-         $count_matches_0=count($matches[0]);
-         for($i=0;$i<$count_matches_0;$i++) {
-            $raw=$matches[1][$i];
-            if (Is_Integer(strpos($raw, '="'))) {
+   public function parseIncludes(&$res, &$hash, $dir)
+   {
+      if (preg_match_all('/\[#inc (.*?)#\]/', $res, $matches, PREG_PATTERN_ORDER))
+      {
+         $count_matches_0 = count($matches[0]);
+         
+         for ($i = 0; $i < $count_matches_0; $i++)
+         {
+            $raw = $matches[1][$i];
+            
+            if (is_integer(strpos($raw, '="')))
+            {
                // inc file parameters
-               $new_hash=$hash;
+               $new_hash = $hash;
                preg_match_all('/(\w+?)="(.*?)"/', $raw, $matches1, PREG_PATTERN_ORDER);
-               $count_matches1_0=count($matches1[0]);
-               for($k=0;$k<$count_matches1_0;$k++) {
-                  $new_hash[$matches1[1][$k]]=$matches1[2][$k];
-                  $raw=str_replace($matches1[0][$k], '', $raw);
-               }
-            } else {
-               $new_hash=&$hash;
-            }
-            $file_name=$dir.trim($raw);
+               
+               $count_matches1_0 = count($matches1[0]);
+               
+               for ($k = 0; $k < $count_matches1_0; $k++)
+               {
+                  $new_hash[$matches1[1][$k]] = $matches1[2][$k];
 
-            $new_root=dirname($file_name)."/";
-            if (defined('ALTERNATIVE_TEMPLATES')) {
-               $alt_path=str_replace('templates/', ALTERNATIVE_TEMPLATES.'/', $file_name);
-               if (file_exists($alt_path)) {
-                  $file_name=$alt_path;
+                  $raw = str_replace($matches1[0][$k], '', $raw);
                }
             }
+            else
+            {
+               $new_hash = &$hash;
+            }
 
+            $file_name = $dir . trim($raw);
+            $new_root  = dirname($file_name) . "/";
+            
+            if (defined('ALTERNATIVE_TEMPLATES'))
+            {
+               $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $file_name);
+               
+               if (file_exists($alt_path))
+               {
+                  $file_name = $alt_path;
+               }
+            }
 
-            if (!file_exists($file_name)) {
-               $res=str_replace($matches[0][$i], "<!-- Cannot find file $file_name -->", $res);
-            } else {
-               if ((Defined("DEBUG_MODE")) && !Is_Integer(StrPos($file_name, ".js"))) {
-                  $id="block".(int)rand(0, 100000);
-                  //$res=str_replace($matches[0][$i], "<!-- begin of file $file_name -->".$this->parse($this->loadfile($file_name)."<!-- end of file $file_name -->", $new_hash, $new_root), $res);
-                  $res=str_replace($matches[0][$i], "".$this->parse($this->loadfile($file_name)."", $new_hash, $new_root), $res);
-               } else {
-                  $res=str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
+            if (!file_exists($file_name))
+            {
+               $res = str_replace($matches[0][$i], "<!-- Cannot find file $file_name -->", $res);
+            }
+            else
+            {
+               if ((defined("DEBUG_MODE")) && !is_integer(strpos($file_name, ".js")))
+               {
+                  $id = "block" . (int)rand(0, 100000);
+
+                  /*
+                  $replaceStr  = "<!-- begin of file $file_name -->";
+                  $replaceStr .= $this->parse($this->loadfile($file_name) . "<!-- end of file $file_name -->", $new_hash, $new_root);
+                  $res = str_replace($matches[0][$i], $replaceStr, $res);
+                  */
+
+                  $res = str_replace($matches[0][$i], "" . $this->parse($this->loadfile($file_name) . "", $new_hash, $new_root), $res);
+               }
+               else
+               {
+                  $res = str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
                }
             }
          }
       }
-
-      return $res;
-
    }
 
    /**
     * [#VARIABLE#] tag parsing
     *
     * @access private
-    * @param string $res template strings
-    * @param array $hash data params
+    * @param string $res  template strings
+    * @param array  $hash data params
+    * @return void
     */
-   function parseVariables(&$res, &$hash) {
-
+   public function parseVariables(&$res, &$hash)
+   {
       // [#VARIABLE#] - general variables
-      if (preg_match_all('/\[#(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
-         $count_matches_1=count($matches[1]);
-         for($i=0;$i<$count_matches_1;$i++) {
-            $res=str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]]), $res);
+      if (preg_match_all('/\[#(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER))
+      {
+         $count_matches_1 = count($matches[1]);
+         
+         for ($i = 0; $i < $count_matches_1; $i++)
+         {
+            $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]]), $res);
          }
       }
 
       // [#VARIABLE.VALUE#] - hash variables
-      if (preg_match_all('/\[#(\w+?)\.(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
-         $count_matches_1=count($matches[1]);
-         for($i=0;$i<$count_matches_1;$i++) {
-            $res=str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]][$matches[2][$i]]), $res);
+      if (preg_match_all('/\[#(\w+?)\.(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER))
+      {
+         $count_matches_1 = count($matches[1]);
+         
+         for ($i = 0; $i < $count_matches_1; $i++)
+         {
+            $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]][$matches[2][$i]]), $res);
          }
       }
-
-
    }
 
    /**
-    * Title
-    *
-    * Description
+    * Summary of templateSafe
     *
     * @access private
+    *
+    * @param mixed $val Param
+    * @return mixed
     */
-   function templateSafe($val) {
-      $res=$val;
-
-      $res=str_replace('[#', '&#091#', $res);
-      $res=str_replace('#]', '#&#093', $res);
-      $res=str_replace('{#', '&#123#', $res);
-      $res=str_replace('#}', '#&#125', $res);
-      $res=str_replace('<#', '&#060#', $res);
-      $res=str_replace('#>', '#&#062', $res);
+   public function templateSafe($val)
+   {
+      $res = $val;
+      $res = str_replace('[#', '&#091#', $res);
+      $res = str_replace('#]', '#&#093', $res);
+      $res = str_replace('{#', '&#123#', $res);
+      $res = str_replace('#}', '#&#125', $res);
+      $res = str_replace('<#', '&#060#', $res);
+      $res = str_replace('#>', '#&#062', $res);
 
       return $res;
    }
@@ -878,33 +908,41 @@ class jTemplate
     * @param string $filename filename to load
     * @return string file content
     */
-   function loadfile($filename) {
+   public function loadfile($filename)
+   {
       global $preload;
-      $data="";
+      
+      $data = "";
 
       /*
-      if (@$preload[$filename]!="") {
-      return $preload[$filename];
+      if (@$preload[$filename]!="")
+      {
+         return $preload[$filename];
       }
-       */
+      */
+      
       if (!is_file($filename)) return '';
 
-      $f=fopen("$filename", "r");
-      $data="";
-      if ($f) {
-         $fsize=filesize($filename);
-         if ($fsize==0) {
+      $f    = fopen("$filename", "r");
+      $data = "";
+
+      if ($f)
+      {
+         $fsize = filesize($filename);
+         
+         if ($fsize == 0)
+         {
             fclose($f);
             return '';
          }
-         $data=fread($f, $fsize);
-         $preload[$filename]=$data;
+
+         $data = fread($f, $fsize);
+
+         $preload[$filename] = $data;
          fclose($f);
       }
+
       return $data;
    }
-
 }
-// --------------------------------------------------------------------
 
-?>

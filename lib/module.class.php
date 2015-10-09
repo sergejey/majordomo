@@ -276,7 +276,7 @@ class module
     * @deprecated
     * @return void
     */
-   public public function restoreParamsOld()
+   public function restoreParamsOld()
    {
       global $md;             // query param - current module
       global $pd;             // query param - all params
@@ -920,7 +920,4 @@ class module
 
       return $res_str;
    }
-
-
-
 }

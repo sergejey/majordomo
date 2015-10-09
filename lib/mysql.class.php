@@ -68,7 +68,7 @@ class mysql
     * @param string $database Mysql database name
     * @access public
     */
-   public public function __construct($host, $port, $user, $password, $database)
+   public function __construct($host, $port, $user, $password, $database)
    {
       $this->host     = $host;
       $this->port     = $port;

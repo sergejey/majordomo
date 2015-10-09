@@ -58,7 +58,7 @@ class xml_data
     * @param mixed $in Input parameter
     * @return void
     */
-   private function set($in = "")
+   public function set($in = "")
    {
       // set data to object
       if ($in == "") return;
