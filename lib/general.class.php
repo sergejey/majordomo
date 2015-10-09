@@ -622,4 +622,10 @@ function ping($host)
     return strtr($string, $converter);
  }
 
+ function CreateDir($dirPath)
+ {
+   if (!is_dir($dirPath))
+      @mkdir($dirPath, 0777);
+ }
+
 ?>
