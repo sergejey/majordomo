@@ -812,7 +812,7 @@ class module
                elseif (strpos($link, "md=") !== 0)
                {
                   $replaceString  = '="' . $_SERVER['PHP_SELF'] . '?pd=' . $param_str;
-                  $replaceString .= '="' . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"';
+                  $replaceString .= '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"';
 
                   $result = str_replace($matches[0][$i], $replaceString, $result); // links
                }
@@ -839,8 +839,8 @@ class module
          {
             if (strpos($matches[1][$i], 'type="hidden"') !== false || strpos($matches[4][$i], 'type="hidden"') !== false)
             {
-               $res_str = $this->codeParams($matches[3][$i]);
-               $result  = str_replace($matches[2][$i], 'value="' . $res_str . '"', $result);
+               $res_str = 'value="' . $this->codeParams($matches[3][$i]) . '"';
+               $result  = str_replace($matches[2][$i], $res_str, $result);
             }
          }
       }
