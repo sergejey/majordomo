@@ -32,8 +32,10 @@ class parse_xml
     */
    public function __construct($arrSetting = '')
    {
-      $this->setting['CODING']   = (isset($arrSetting['CODING'])) ? $arrSetting['CODING'] : 0;     // default - lat; 1 - cp1251(winrus)
-      $this->setting['REGISTER'] = (isset($arrSetting['REGISTER'])) ? $arrSetting['REGISTER'] : 1; // default - upper; 2 - lower
+      // default - lat; 1 - cp1251(winrus)
+      $this->setting['CODING']   = (isset($arrSetting['CODING'])) ? $arrSetting['CODING'] : 0;
+      // default - upper; 2 - lower
+      $this->setting['REGISTER'] = (isset($arrSetting['REGISTER'])) ? $arrSetting['REGISTER'] : 1;
    }
 
    /**
@@ -292,16 +294,11 @@ class parse_xml
 
          $c = ord(substr($str, $i, 1));
 
-         if ($c == 0xA8)
-            $res = 0xD081;
-         elseif ($c == 0xB8)
-            $res = 0xD191;
-         elseif ($c < 0xC0)
-            $donotrecode = true;
-         elseif ($c < 0xF0)
-            $res = $c + 0xCFD0;
-         else
-            $res = $c + 0xD090;
+         if ($c == 0xA8) $res            = 0xD081;
+         elseif ($c == 0xB8) $res        = 0xD191;
+         elseif ($c < 0xC0) $donotrecode = true;
+         elseif ($c < 0xF0) $res         = $c + 0xCFD0;
+         else $res                       = $c + 0xD090;
 
          $utf .= ($donotrecode) ? chr($c) : (chr($res >> 8) . chr($res & 0xff));
       }

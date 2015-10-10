@@ -39,7 +39,8 @@ class Threads
       $params = addcslashes(serialize($params), '"');
 
       //if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
-      $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . DOC_ROOT . '/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+      $fileToWrite = DOC_ROOT . '/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+      $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
       /*} else {
       $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'"';
       }
@@ -168,7 +169,7 @@ class Threads
          }
 
          if (!$proc_status['running'])
-         { 
+         {
             //feof($stream)
             echo date('H:i:s') . " Closing thread: " . $this->commandLines[$id] . "\n";
 
@@ -241,8 +242,10 @@ class Threads
    }
 }
 
+/**
+ * Summary of ThreadsException
+ */
 class ThreadsException extends Exception
 {
 }
 
-?>

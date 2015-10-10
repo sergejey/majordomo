@@ -21,7 +21,9 @@ function laurent_command($host, $command, $password = 'Laurent')
 
    if ($result === false)
    {
-      echo "socket_connect( $socket , $host , 2424) failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+      $errorMessage  = "socket_connect( $socket , $host , 2424) failed.\nReason: ($result) ";
+      $errorMessage .= socket_strerror(socket_last_error($socket)) . "\n";
+      echo $errorMessage;
       return 0;
    }
 
@@ -91,7 +93,9 @@ function laurent_getStat($host, $password = 'Laurent')
 
    if ($result === false)
    {
-      echo "socket_connect( $socket , $host , 2424) failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+      $errorMessage  = "socket_connect( $socket , $host , 2424) failed.\nReason: ($result) ";
+      $errorMessage .= socket_strerror(socket_last_error($socket)) . "\n";
+      echo $errorMessage;
       
       return 0;
    }

@@ -274,7 +274,7 @@ class jTemplate
     *
     * @param string $res  Template strings
     * @param mixed  $hash Hash (not used)
-    * @return string parsed template strings
+    * @return void
     */
    public function parseBlocks(&$res, &$hash)
    {
@@ -355,8 +355,6 @@ class jTemplate
             }
          }
       }
-
-      return $res;
    }
 
    /**

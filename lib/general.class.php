@@ -1,443 +1,557 @@
 <?php
 /**
-* General functions
-*
-* Frequiently Used Functions
-*
-* @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
-* @version 1.3
-*/
+ * General functions
+ *
+ * Frequiently Used Functions
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 1.3
+ */
 
 
-if (Defined('HOME_NETWORK') && HOME_NETWORK!='' 
-    && 
-     !$argv[0] 
-    && 
-     (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op']!='')
-    &&
-     !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI']) 
-    &&
-    1) {
- $p=preg_quote(HOME_NETWORK);
- $p=str_replace('\*', '\d+?', $p);
- $p=str_replace(',', ' ', $p);
- $p=str_replace('  ', ' ', $p);
- $p=str_replace(' ', '|', $p);
- $remoteAddr = getenv('HTTP_X_FORWARDED_FOR')?getenv('HTTP_X_FORWARDED_FOR'):$_SERVER["REMOTE_ADDR"];
- if (!preg_match('/'.$p.'/is', $remoteAddr) && $remoteAddr!='127.0.0.1') {
-  // password required
-  //echo "password required for ".$remoteAddr;exit;
-  //DebMes("checking access for ".$remoteAddr);
-
-if (!isset($_SERVER['PHP_AUTH_USER'])) {
-    header("WWW-Authenticate: Basic realm=\"".PROJECT_TITLE."\"");
-    header("HTTP/1.0 401 Unauthorized");
-    echo "Authorization required\n";
-    exit;
-  } else {
-    if ($_SERVER['PHP_AUTH_USER']!=EXT_ACCESS_USERNAME || $_SERVER['PHP_AUTH_PW']!=EXT_ACCESS_PASSWORD) {
- //    header("Location:$PHP_SELF\n\n");
-     header("WWW-Authenticate: Basic realm=\"".PROJECT_TITLE."\"");
-     header("HTTP/1.0 401 Unauthorized");
-     echo "Authorization required\n";
-     exit;
-    }
-  }
-
-
- }
-}
-
-if (IsSet($_SERVER['REQUEST_METHOD'])) {
-
-$blocked=array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS', '_FILES', '_REQUEST', '_ENV');
-if ($_SERVER['REQUEST_METHOD']=="POST") {
- $blocked[]='_GET';
-} else {
- $blocked[]='_POST';
-}
-foreach($blocked as $b) {
- unset($_GET[$b]);
- unset($_POST[$b]);
- unset($_REQUEST[$b]);
-} 
-
-
-function stripit(&$a)
+if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !$argv[0]
+    && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI'])
+       || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])
+       || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']))
+       || $_REQUEST['op'] != '')
+    && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])
+    && 1)
 {
- if (is_array($a))
- {
-   foreach ($a as $fname => $fval)
+   $p = preg_quote(HOME_NETWORK);
+   $p = str_replace('\*', '\d+?', $p);
+   $p = str_replace(',', ' ', $p);
+   $p = str_replace('  ', ' ', $p);
+   $p = str_replace(' ', '|', $p);
+   
+   $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
+
+   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1')
    {
-     if (is_array($fval))
-       stripit($a[$fname]);
-     else
-       $a[$fname]=stripslashes($fval);
-   }
- }
-}
+      // password required
+      //echo "password required for ".$remoteAddr;exit;
+      //DebMes("checking access for ".$remoteAddr);
 
- if ($_SERVER['REQUEST_METHOD']=="POST") {
-  $params=$_POST;
- } else {
-  $params=$_GET;
- }
-
- if (get_magic_quotes_gpc())
- {
-  stripit($params);
- }
-
- foreach($params as $k=>$v) {
-  ${$k}=$v;
- }
-
- if (IsSet($_FILES) && count($_FILES)>0) {
-  $ks=array_keys($_FILES);
-  for($i=0;$i<count($ks);$i++) {
-   $k=$ks[$i];
-   ${"$k"}=$_FILES[$k]['tmp_name'];
-   ${"$k"."_name"}=$_FILES[$k]['name'];
-  }
- }
-
-}
-
-
-// --------------------------------------------------------------------   
- function redirect($url, $owner="", $no_sid=0) {
-  // redirect inside module
-  global $session;
-
-  if (Is_Object($owner)) {
-   $owner->redirect($url);
-  } else {
-   $param_str="";
-   if (!$no_sid) {
-    $url=str_replace('?', $_SERVER['PHP_SELF'].'?'.session_name().'='.session_id().'&pd='.$param_str.'&md='.$owner->name.'&inst='.$owner->instance.'&', $url);
-   }
-   $url="Location:$url\n\n";
-   $session->save();
-   header($url);
-   exit;
-  }
-
-
- }
-
-/**
-* Loads file
-*
-*
-* @param string File name
-* @return file content
-* @access public
-*/
-function LoadFile($filename) {
- // loading file
- $f=fopen("$filename", "r");
- $data="";
- $fsize=filesize($filename);
- if ($f && $fsize>0) {
-  $data=fread($f, $fsize);
-  fclose($f);
- }
- return $data;
-}
-
-/**
-* Save file
-*
-*
-* @param string File name
-* @param string Content
-* @access public
-*/
-
-function SaveFile($filename, $data) {
- // saving file
- $f=fopen("$filename", "w+");
- if ($f) {
-  flock ($f,2);
-  fwrite($f, $data);
-  flock ($f,3);
-  fclose($f);
-  @chmod($filename, 0666);
-  return 1;
- } else {
-  return 0;
- }
-}
-
-// --------------------------------------------------------------------   
-function outHash($var, &$hash) {
- // merge hash keys and values
- if (is_array($var)) {
-  foreach($var as $k=>$v) {
-   $hash[$k]=$v;
-  }
- }
-}
-
-/**
-* Paging
-*
-* This function used to split array into pages and creates some additional output:<br>
-* $out['PAGE'] - current page (int) \n
-* $out['CURRENT_PAGE'] - current page (int) \n
-* $out['NEXTPAGE'] - next page (mixed) \n
-* $out['PREVPAGE'] - previous page (mixed) \n
-* $out['TOTAL'] - array count \n
-* $out['TOTAL_PAGES'] - pages created \n
-* $out['ON_PAGE'] - items per page
-*
-* @param mixed Array to split on pages
-* @param int Items per page
-* @param mixed Output hash
-* @access public
-*/
-function paging(&$data, $onPage, &$out) {
- // split array using current value of $page parameter
- global $page;
-
- if (!IsSet($page)) {
-  $page=1;
- }
-
- if (!$onPage) {
-  $onPage=30;
- }
-
- $total_data=count($data);
- $tatal_pages=0;
-
-
- if ($page=="last") {
-  $page=ceil($total_data/$onPage);
- }
-
-
- $out['PAGE']=$page;
- $from=($page-1)*$onPage;
- $selPage=9999;
- $pages=array();
-
-
- for($i=0, $j=1; $i<$total_data;$i+=$onPage, $j++) {
-   $pages[$j-1]["NUM"]=(int)($i/$onPage)+1;
-   $tatal_pages++;
-   if ($selPage==($j-1)) {
-    $out["NEXTPAGE"]=$pages[$j-1];
-    $pages[$j-1]['NEXTPAGE']=1;
-   }
-     if (($from>=$i) && ($from<($i+$onPage))) {
-      $pages[$j-1]['SELECTED']=1;
-      if ($j>=2) {
-       $pages[$j-2]['PREVPAGE']=1;
-       $out["PREVPAGE"]=$pages[$j-2];
+      if (!isset($_SERVER['PHP_AUTH_USER']))
+      {
+         header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
+         header("HTTP/1.0 401 Unauthorized");
+         echo "Authorization required\n";
+         exit;
       }
-      $selPage=$j;
-     }
+      else
+      {
+         if ($_SERVER['PHP_AUTH_USER'] != EXT_ACCESS_USERNAME || $_SERVER['PHP_AUTH_PW'] != EXT_ACCESS_PASSWORD)
+         {
+            // header("Location:$PHP_SELF\n\n");
+            header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
+            header("HTTP/1.0 401 Unauthorized");
+            echo "Authorization required\n";
+            exit;
+         }
+      }
+   }
+}
+
+if (isset($_SERVER['REQUEST_METHOD']))
+{
+   $blocked = array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS',
+                    '_FILES', '_REQUEST', '_ENV');
+   
+   if ($_SERVER['REQUEST_METHOD'] == "POST")
+   {
+      $blocked[] = '_GET';
+   }
+   else
+   {
+      $blocked[] = '_POST';
    }
 
-  if (count($pages)>1) {
-   $out["PAGES"]=$pages;
-  }
- 
-
-         $total=$total_data;
-         $out["TOTAL"]=$total;
-         $out['TOTAL_PAGES']=$tatal_pages;
-         $out['CURRENT_PAGE']=$page;
-         $out['ON_PAGE']=$onPage;
-
-         $data=array_splice($data, $from, $onPage);
- 
-}
-
-
-// --------------------------------------------------------------------   
-function checkEmail($email) {
- if (!preg_match("/^([_a-z0-9-]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/" , strtolower($email))) {
-  return false;
- }
- return true;
-}
-
-// --------------------------------------------------------------------   
-function checkPassword($psw) {
- // checking valid password field
- if (strlen($psw)>=4) {
-  return 1;
- } else {
-  return 0;
- }
-}
-
-// --------------------------------------------------------------------   
-function checkGeneral($field) {
- // checking valid general field
- if (strlen($field)>=2) {
-  return 1;
- } else {
-  return 0;
- }
-}
-
-// --------------------------------------------------------------------   
-function SendMail($from, $to, $subj, $body, $attach="") {
-
- $mail = new htmlMimeMail();
- $mail->setFrom($from);
- $mail->setSubject($subj);
- $mail->setText($body);
- $mail->setTextCharset('windows-1251');
- if ($attach!='') {
-   $attach_data=$mail->getFile($attach);
-   $mail->addAttachment($attach_data, basename($attach), '');
- }
- $result = $mail->send(array($to));
- return $result;
-
-}
-
-// --------------------------------------------------------------------   
-function SendMail_HTML($from, $to, $subj, $body, $attach="") {
- // sending email as html
- //global $SERVER_SOFTWARE;
-
- $mail = new htmlMimeMail();
- $mail->setFrom($from);
- $mail->setSubject($subj);
- $mail->setHTML($body);
- $mail->setHTMLCharset('windows-1251');
- $mail->setHeadCharset('windows-1251');
-
-
- if (is_array($attach)) {
-  $total=count($attach);
-  for($i=0;$i<$total;$i++) {
-   if (file_exists($attach[$i])) {
-    $attach_data=$mail->getFile($attach[$i]);
-    $mail->addAttachment($attach_data, basename($attach[$i]), '');
+   foreach ($blocked as $b)
+   {
+      unset($_GET[$b]);
+      unset($_POST[$b]);
+      unset($_REQUEST[$b]);
    }
-  }
- } elseif ((file_exists($attach)) && ($attach!="")) {
-  $attach_data=$mail->getFile($attach);
-  $mail->addAttachment($attach_data, basename($attach), '');
- }
-        
 
- $result = $mail->send(array($to));
- return $result;
-
-
-}
-
-// --------------------------------------------------------------------   
-function genPassword($len=5) {
- // make password
- $str=crypt(rand());
- $str=preg_replace("/\W/", "", $str);
- $str=strtolower($str);
- $str=substr($str, 0, $len);
- return $str;
-}
-
-// --------------------------------------------------------------------   
-function recLocalTime($table, $id, $gmt, $field="ADDED") {
- // UPDATES TIMESTAMP FIELD USING GMT
- $rec=SQLSelectOne("SELECT ID, DATE_FORMAT($field, '%Y-%m-%d %H:%i') as DAT FROM $table WHERE ID='$id'");
- if (IsSet($rec["ID"])) {
-  $new_dat=setLocalTime($rec['DAT'], $gmt);
-  SQLExec("UPDATE $table SET $field='$new_dat' WHERE ID='$id'");
- }
-}
-
-// --------------------------------------------------------------------   
-function getLocalTime($diff=0) {
- // LOCALTIME (with GMT offset)
- $cur_dif=date("Z");
- $nowgm=gmdate("U")-$cur_dif;
- $now=$nowgm+$diff*60*60;
- $res=date("Y-m-d H:i:s", $now);
- return $res;
-}
-
-// --------------------------------------------------------------------   
-function setLocalTime($now_date, $diff=0) {
- // CONVERT FROM CURRENT TIME TO CORRECT TIME USING GMT
- $cur_dif=date("Z");
- if ($now_date=="") {
-  $nowgm=date("U")-$cur_dif;
- } else {
-  $nowgm=strtotime($now_date)-$cur_dif;
- }
- $now=$nowgm+$diff*60*60;
- $res=date("Y-m-d H:i:s", $now);
- return $res;
-}
-
-// ---------------------------------------------------------
    /**
-    * Write Exceptions
-    * @param $errorMessage string Exception message
-    * @param $logLevel string exception level, default=debug
+    * Summary of stripit
+    * @param mixed $a A
+    * @return void
     */
-   function DebMes($errorMessage, $logLevel = "debug")
+   function stripit(&$a)
    {
-      // DEBUG MESSAGE LOG
-      if (!is_dir(ROOT . 'debmes'))
+      if (is_array($a))
       {
-         mkdir(ROOT . 'debmes', 0777);
-      }
-      if (!file_exists(ROOT.'debmes/'.date('Y-m-d').'.log')) {
-       SaveFile(ROOT.'debmes/'.date('Y-m-d').'.log', "Added ".date('Y-m-d H:i:s'."\n"));
-      }
-
-      $log = Logger::getRootLogger();
-
-      if (defined('SETTINGS_LOGGER_DESTINATION')) {
-       $errorDestination = strtolower(SETTINGS_LOGGER_DESTINATION);
-       if ($errorDestination == "database") $log = Logger::getLogger('dblog');
-       if ($errorDestination == "both") $log = Logger::getLogger('db_and_file');
-      }
-
-
-      //$dbLog = Logger::getLogger('dblog');
-      switch ($logLevel) 
-      {
-         case "trace":
-            $log->trace($errorMessage);
-            //$dbLog->trace($errorMessage);
-            break;
-         case "fatal":
-            $log->fatal($errorMessage);
-            //$dbLog->fatal($errorMessage);
-            break;
-         case "error":
-            $log->error($errorMessage);
-            //$dbLog->error($errorMessage);
-            break;    
-         case "warn":
-            $log->warn($errorMessage);
-            //$dbLog->warn($errorMessage);
-            break;  
-         case "info":
-            $log->info($errorMessage);
-            //$dbLog->info($errorMessage);
-            break;
-         default:
-            $log->debug($errorMessage);
-            //$dbLog->debug($errorMessage);
+         foreach ($a as $fname => $fval)
+         {
+            if (is_array($fval))
+               stripit($a[$fname]);
+            else
+               $a[$fname] = stripslashes($fval);
+         }
       }
    }
+
+   if ($_SERVER['REQUEST_METHOD'] == "POST")
+   {
+      $params = $_POST;
+   }
+   else
+   {
+      $params = $_GET;
+   }
+
+   if (get_magic_quotes_gpc())
+   {
+      stripit($params);
+   }
+
+   foreach ($params as $k => $v)
+   {
+      ${$k} = $v;
+   }
+
+   if (isset($_FILES) && count($_FILES) > 0)
+   {
+      $ks    = array_keys($_FILES);
+      $ksCnt = count($ks);
+      
+      for ($i = 0; $i < $ksCnt; $i++)
+      {
+         $k = $ks[$i];
+         
+         ${"$k"}           = $_FILES[$k]['tmp_name'];
+         ${"$k" . "_name"} = $_FILES[$k]['name'];
+      }
+   }
+}
+
+/**
+ * Summary of redirect
+ * @param mixed $url    Url
+ * @param mixed $owner  Owner (default '')
+ * @param mixed $no_sid No sid (default 0)
+ * @return void
+ */
+function redirect($url, $owner = "", $no_sid = 0)
+{
+   // redirect inside module
+   global $session;
+
+   if (is_object($owner))
+   {
+      $owner->redirect($url);
+   }
+   else
+   {
+      $param_str = "";
+      
+      if (!$no_sid)
+      {
+         $replaceStr  = $_SERVER['PHP_SELF'] . '?' . session_name() . '=' . session_id();
+         $replaceStr .= '&pd=' . $param_str . '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
+         
+         $url = str_replace('?', $replaceStr, $url);
+      }
+
+      $url = "Location:$url\n\n";
+      $session->save();
+      header($url);
+      exit;
+   }
+}
+
+/**
+ * Summary of LoadFile
+ *
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @return string
+ */
+function LoadFile($filename)
+{
+   // loading file
+   $f     = fopen("$filename", "r");
+   $data  = "";
+   $fsize = filesize($filename);
+
+   if ($f && $fsize > 0)
+   {
+      $data = fread($f, $fsize);
+      fclose($f);
+   }
+
+   return $data;
+}
+
+/**
+ * Summary of SaveFile
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @param mixed $data     Content
+ * @return int
+ */
+function SaveFile($filename, $data)
+{
+   // saving file
+   $f = fopen("$filename", "w+");
+   
+   if ($f)
+   {
+      flock($f,2);
+      fwrite($f, $data);
+      flock($f,3);
+      fclose($f);
+      @chmod($filename, 0666);
+      
+      return 1;
+   }
+ 
+   return 0;
+}
+
+/**
+ * Summary of outHash
+ * @param mixed $var  Var
+ * @param mixed $hash Hash
+ * @return void
+ */
+function outHash($var, &$hash)
+{
+   // merge hash keys and values
+   if (is_array($var))
+   {
+      foreach ($var as $k => $v)
+      {
+         $hash[$k] = $v;
+      }
+   }
+}
+
+/**
+ * Paging
+ *
+ * This function used to split array into pages and creates some additional output:<br>
+ * $out['PAGE'] - current page (int) \n
+ * $out['CURRENT_PAGE'] - current page (int) \n
+ * $out['NEXTPAGE'] - next page (mixed) \n
+ * $out['PREVPAGE'] - previous page (mixed) \n
+ * $out['TOTAL'] - array count \n
+ * $out['TOTAL_PAGES'] - pages created \n
+ * $out['ON_PAGE'] - items per page
+ *
+ * @access public
+ *
+ * @param mixed $data   Array to split on pages
+ * @param int   $onPage Items per page
+ * @param mixed $out    Output hash
+ * @return void
+ */
+function paging(&$data, $onPage, &$out)
+{
+   // split array using current value of $page parameter
+   global $page;
+
+   if (!isset($page))
+      $page = 1;
+
+   if (!$onPage)
+      $onPage = 30;
+
+   $total_data  = count($data);
+   $tatal_pages = 0;
+
+   if ($page == "last")
+      $page = ceil($total_data / $onPage);
+
+   $out['PAGE'] = $page;
+   $from        = ($page - 1) * $onPage;
+   $selPage     = 9999;
+   $pages       = array();
+
+   for ($i = 0, $j = 1; $i < $total_data; $i += $onPage, $j++)
+   {
+      $pages[$j - 1]["NUM"] = (int)($i / $onPage) + 1;
+      $tatal_pages++;
+
+      if ($selPage == ($j - 1))
+      {
+         $out["NEXTPAGE"]           = $pages[$j - 1];
+         $pages[$j - 1]['NEXTPAGE'] = 1;
+      }
+
+      if (($from >= $i) && ($from < ($i + $onPage)))
+      {
+         $pages[$j - 1]['SELECTED'] = 1;
+         
+         if ($j >= 2)
+         {
+            $pages[$j - 2]['PREVPAGE'] = 1;
+            
+            $out["PREVPAGE"] = $pages[$j - 2];
+         }
+
+         $selPage = $j;
+      }
+   }
+
+   if (count($pages) > 1)
+      $out["PAGES"] = $pages;
+
+   $total = $total_data;
+
+   $out["TOTAL"]        = $total;
+   $out['TOTAL_PAGES']  = $tatal_pages;
+   $out['CURRENT_PAGE'] = $page;
+   $out['ON_PAGE']      = $onPage;
+
+   $data = array_splice($data, $from, $onPage);
+}
+
+/**
+ * Summary of checkEmail
+ * @param mixed $email Email
+ * @return bool
+ */
+function checkEmail($email)
+{
+   $pattern = "/^([_a-z0-9-]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/";
+
+   if (preg_match($pattern , strtolower($email)))
+      return true;
+   
+   return false;
+}
+
+/**
+ * Summary of checkPassword
+ * @param mixed $psw Password
+ * @return int
+ */
+function checkPassword($psw)
+{
+   // checking valid password field
+   return (strlen($psw) >= 4) ? 1 : 0;
+}
+
+/**
+ * Summary of checkGeneral
+ * @param mixed $field Field
+ * @return int
+ */
+function checkGeneral($field)
+{
+   // checking valid general field
+   return (strlen($field) >= 2) ? 1 : 0;
+}
+
+/**
+ * Summary of SendMail
+ * @param mixed $from   From
+ * @param mixed $to     To
+ * @param mixed $subj   Subject
+ * @param mixed $body   Body
+ * @param mixed $attach Attachement (default '')
+ * @return bool
+ */
+function SendMail($from, $to, $subj, $body, $attach = "")
+{
+   $mail = new htmlMimeMail();
+   
+   $mail->setFrom($from);
+   $mail->setSubject($subj);
+   $mail->setText($body);
+   $mail->setTextCharset('windows-1251');
+   
+   if ($attach != '')
+   {
+      $attach_data = $mail->getFile($attach);
+      $mail->addAttachment($attach_data, basename($attach), '');
+   }
+
+   $result = $mail->send(array($to));
+   
+   return $result;
+}
+
+/**
+ * Summary of SendMail_HTML
+ * @param mixed $from   From
+ * @param mixed $to     To
+ * @param mixed $subj   Subject
+ * @param mixed $body   Body
+ * @param mixed $attach Attache (default '')
+ * @return bool
+ */
+function SendMail_HTML($from, $to, $subj, $body, $attach = "")
+{
+   $mail = new htmlMimeMail();
+
+   $mail->setFrom($from);
+   $mail->setSubject($subj);
+   $mail->setHTML($body);
+   $mail->setHTMLCharset('windows-1251');
+   $mail->setHeadCharset('windows-1251');
+
+   if (is_array($attach))
+   {
+      $total = count($attach);
+      for ($i = 0; $i < $total; $i++)
+      {
+         if (file_exists($attach[$i]))
+         {
+            $attach_data = $mail->getFile($attach[$i]);
+            $mail->addAttachment($attach_data, basename($attach[$i]), '');
+         }
+      }
+   }
+   elseif ((file_exists($attach)) && ($attach != ""))
+   {
+      $attach_data = $mail->getFile($attach);
+      $mail->addAttachment($attach_data, basename($attach), '');
+   }
+
+   $result = $mail->send(array($to));
+   
+   return $result;
+}
+
+/**
+ * Summary of genPassword
+ * @param mixed $len Length (default 5)
+ * @return string
+ */
+function genPassword($len = 5)
+{
+   // make password
+   $str = crypt(rand());
+   $str = preg_replace("/\W/", "", $str);
+   $str = strtolower($str);
+   $str = substr($str, 0, $len);
+   
+   return $str;
+}
+
+/**
+ * Summary of recLocalTime
+ * @param mixed $table Table
+ * @param mixed $id    Id
+ * @param mixed $gmt   Gmt
+ * @param mixed $field Field
+ * @return void
+ */
+function recLocalTime($table, $id, $gmt, $field = "ADDED")
+{
+   // UPDATES TIMESTAMP FIELD USING GMT
+   $rec = SQLSelectOne("SELECT ID, DATE_FORMAT($field, '%Y-%m-%d %H:%i') as DAT FROM $table WHERE ID='$id'");
+   
+   if (isset($rec["ID"]))
+   {
+      $new_dat = setLocalTime($rec['DAT'], $gmt);
+      SQLExec("UPDATE $table SET $field='$new_dat' WHERE ID='$id'");
+   }
+}
+
+/**
+ * Summary of getLocalTime
+ * @param mixed $diff (default 0)
+ * @return string
+ */
+function getLocalTime($diff = 0)
+{
+   // LOCALTIME (with GMT offset)
+   $cur_dif = date("Z");
+   $nowgm   = gmdate("U") - $cur_dif;
+   $now     = $nowgm + $diff * 60 * 60;
+   $res     = date("Y-m-d H:i:s", $now);
+   
+   return $res;
+}
+
+/**
+ * Summary of setLocalTime
+ * @param mixed $now_date Current time
+ * @param mixed $diff     Diff (default 0)
+ * @return string
+ */
+function setLocalTime($now_date, $diff = 0)
+{
+   // CONVERT FROM CURRENT TIME TO CORRECT TIME USING GMT
+   $cur_dif = date("Z");
+   
+   if ($now_date == "")
+   {
+      $nowgm = date("U") - $cur_dif;
+   }
+   else
+   {
+      $nowgm = strtotime($now_date) - $cur_dif;
+   }
+
+   $now = $nowgm + $diff * 60 * 60;
+   $res = date("Y-m-d H:i:s", $now);
+   
+   return $res;
+}
+
+/**
+ * Write Exceptions
+ * @param string $errorMessage string Exception message
+ * @param string $logLevel     exception level, default=debug
+ * @return void
+ */
+function DebMes($errorMessage, $logLevel = "debug")
+{
+   // DEBUG MESSAGE LOG
+   if (!is_dir(ROOT . 'debmes'))
+   {
+      mkdir(ROOT . 'debmes', 0777);
+   }
+
+   if (!file_exists(ROOT . 'debmes/' . date('Y-m-d') . '.log'))
+   {
+      SaveFile(ROOT . 'debmes/' . date('Y-m-d') . '.log', "Added " . date('Y-m-d H:i:s' . "\n"));
+   }
+
+   $log = Logger::getRootLogger();
+
+   if (defined('SETTINGS_LOGGER_DESTINATION'))
+   {
+      $errorDestination = strtolower(SETTINGS_LOGGER_DESTINATION);
+
+      if ($errorDestination == "database") $log = Logger::getLogger('dblog');
+      if ($errorDestination == "both") $log     = Logger::getLogger('db_and_file');
+   }
+
+   switch ($logLevel)
+   {
+      case "trace":
+         $log->trace($errorMessage);
+         break;
+      case "fatal":
+         $log->fatal($errorMessage);
+         break;
+      case "error":
+         $log->error($errorMessage);
+         break;
+      case "warn":
+         $log->warn($errorMessage);
+         break;
+      case "info":
+         $log->info($errorMessage);
+         break;
+      default:
+         $log->debug($errorMessage);
+   }
+}
 
 /**
  * Method returns logger with meaningful name. In this case much easy to enable\disable
  * logs depending on requirements
- * @param $context
+ *
  * If $context is empty or null, then return root logger
  * If $context is filename or filepath, then return logger with name 'page.filename'
  * If $context is string, then return logger with name $context
@@ -450,26 +564,28 @@ function setLocalTime($now_date, $diff=0) {
  *  - $log = getLogger('MyLogger');
  *  - $log = getLogger(__FILE__);
  *  - $log = getLogger($this);
+ * @param mixed $context Context (default null)
  * @return Logger
  */
 function getLogger($context = null)
 {
-  if (empty($context))
-    return Logger::getRootLogger();
-  elseif (is_string($context)) {
-    if (is_file($context))
-      return Logger::getLogger('page.'.basename($context, '.php'));
-    else
-      return Logger::getLogger($context);
-  }
-  elseif (is_a($context, 'objects'))
-    return Logger::getLogger("class.object.$context->object_title");
-  elseif (is_a($context, 'module'))
-    return Logger::getLogger("class.module.$context->name");
-  elseif (is_object($context))
-    return Logger::getLogger('class.'.get_class($context));
-  else
-    return Logger::getRootLogger();
+   if (empty($context))
+      return Logger::getRootLogger();
+   elseif (is_string($context))
+   {
+      if (is_file($context))
+         return Logger::getLogger('page.' . basename($context, '.php'));
+      else
+         return Logger::getLogger($context);
+   }
+   elseif (is_a($context, 'objects'))
+      return Logger::getLogger("class.object.$context->object_title");
+   elseif (is_a($context, 'module'))
+      return Logger::getLogger("class.module.$context->name");
+   elseif (is_object($context))
+      return Logger::getLogger('class.' . get_class($context));
+   else
+      return Logger::getRootLogger();
 }
 
 /**
@@ -477,10 +593,11 @@ function getLogger($context = null)
  * @param mixed $title Title
  * @param mixed $ar    Input array
  * @param mixed $out   Output array
+ * @return void
  */
 function outArray($title, $ar, &$out)
 {
-   $arCnt =  count($ar);
+   $arCnt = count($ar);
 
    for ($i = 0; $i < $arCnt; $i++)
    {
@@ -504,6 +621,13 @@ function outArray($title, $ar, &$out)
    }
 }
 
+/**
+ * Summary of multipleArraySelect
+ * @param mixed $in    In
+ * @param mixed $ar    Ar
+ * @param mixed $field Field (defaul 'SELECTED')
+ * @return void
+ */
 function multipleArraySelect($in, &$ar, $field = "SELECTED")
 {
    $arCnt = count($ar);
@@ -511,7 +635,7 @@ function multipleArraySelect($in, &$ar, $field = "SELECTED")
    // support for multiple select form elements
    if ((count($in) == 0) || ($arCnt == 0))
       return;
- 
+
    for ($i = 0; $i < $arCnt; $i++)
    {
       if (in_array($ar[$i]['TITLE'], $in))
@@ -519,6 +643,12 @@ function multipleArraySelect($in, &$ar, $field = "SELECTED")
    }
 }
 
+/**
+ * Summary of colorizeArray
+ * @param mixed $ar    Array
+ * @param mixed $every Step (default 2)
+ * @return void
+ */
 function colorizeArray(&$ar, $every = 2)
 {
    $arCnt = count($ar);
@@ -532,100 +662,145 @@ function colorizeArray(&$ar, $every = 2)
    }
 }
 
-// --------------------------------------------------------------------
+/**
+ * Summary of clearCache
+ * @param mixed $verbose Verbode (default 0)
+ * @return void
+ */
+function clearCache($verbose = 0)
+{
+   if ($handle = opendir(ROOT . 'cached'))
+   {
+      while (false !== ($file = readdir($handle)))
+      {
+         if (is_file(ROOT . 'cached/' . $file))
+         {
+            @unlink(ROOT . 'cached/' . $file);
+            
+            if ($verbose)
+            {
+               echo "File : " . $file . " <b>removed</b><br>\n";
+            }
+         }
+      }
 
-function clearCache($verbose=0) {
- if ($handle = opendir(ROOT.'cached')) { 
-   while (false !== ($file = readdir($handle))) { 
-       if (is_file(ROOT.'cached/'.$file)) {
-        @unlink(ROOT.'cached/'.$file);
-        if ($verbose) {
-         echo "File : ".$file." <b>removed</b><br>\n";
-        }
-       }
-   } 
-   closedir($handle); 
- } 
+      closedir($handle);
+   }
 }
 
-
- function checkBadwords($s, $replace=1) {
-  global $badwords;
-  if (!isset($badwords)) {
-   $tmp=SQLSelect("SELECT TITLE FROM badwords");
-   $total=count($tmp);
-   for($i=0;$i<$total;$i++) {
-    $badwords[]=strtolower($tmp[$i]['TITLE']);
+/**
+ * Summary of checkBadwords
+ * @param mixed $s       String
+ * @param mixed $replace Replace (default 1)
+ * @return mixed
+ */
+function checkBadwords($s, $replace = 1)
+{
+   global $badwords;
+   
+   if (!isset($badwords))
+   {
+      $tmp   = SQLSelect("SELECT TITLE FROM badwords");
+      $total = count($tmp);
+      
+      for ($i = 0; $i < $total; $i++)
+      {
+         $badwords[] = strtolower($tmp[$i]['TITLE']);
+      }
    }
-  }
 
-  $total=count($badwords);
-  for($i=0;$i<$total;$i++) {
-   $badwords[$i]=str_replace('*', '\w+', $badwords[$i]);
-   if (preg_match('/\W'.$badwords[$i].'\W/is', $s) 
-       || preg_match('/\W'.$badwords[$i].'$/is', $s) 
-       || preg_match('/^'.$badwords[$i].'\W/is', $s) 
-       || preg_match('/^'.$badwords[$i].'$/is', $s)) {
-    if ($replace) {
-     $s=preg_replace('/^'.$badwords[$i].'$/is', ' ... ', $s);
-     $s=preg_replace('/^'.$badwords[$i].'\W/is', ' ... ', $s);
-     $s=preg_replace('/\W'.$badwords[$i].'\W/is', ' ... ', $s);
-     $s=preg_replace('/\W'.$badwords[$i].'$/is', ' ... ', $s);
-    } else {
-     return 1;
-    }
+   $total = count($badwords);
+   
+   for ($i = 0; $i < $total; $i++)
+   {
+      $badwords[$i] = str_replace('*', '\w+', $badwords[$i]);
+      
+      if (preg_match('/\W' . $badwords[$i] . '\W/is', $s)
+          || preg_match('/\W' . $badwords[$i] . '$/is', $s)
+          || preg_match('/^' . $badwords[$i] . '\W/is', $s)
+          || preg_match('/^' . $badwords[$i] . '$/is', $s))
+      {
+         if ($replace)
+         {
+            $s = preg_replace('/^' . $badwords[$i] . '$/is', ' ... ', $s);
+            $s = preg_replace('/^' . $badwords[$i] . '\W/is', ' ... ', $s);
+            $s = preg_replace('/\W' . $badwords[$i] . '\W/is', ' ... ', $s);
+            $s = preg_replace('/\W' . $badwords[$i] . '$/is', ' ... ', $s);
+         }
+         else
+         {
+            return 1;
+         }
+      }
    }
-  }
-  if ($replace) {
-   return $s;
-  } else {
-   return 0;
-  }
- }
 
+   if ($replace)
+   {
+      return $s;
+   }
+   else
+   {
+      return 0;
+   }
+}
+
+/**
+ * Ping host
+ * @param mixed $host Host address
+ * @return bool
+ */
 function ping($host)
 {
    if (IsWindowsOS())
       exec(sprintf('ping -n 1 %s', escapeshellarg($host)), $res, $rval);
    else
       exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
-   
+
    return $rval === 0 && preg_match('/ttl/is', join('', $res));
 }
 
- function transliterate($string) {
-    $converter = array(
-        'а' => 'a',   'б' => 'b',   'в' => 'v',
-        'г' => 'g',   'д' => 'd',   'е' => 'e',
-        'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
-        'и' => 'i',   'й' => 'y',   'к' => 'k',
-        'л' => 'l',   'м' => 'm',   'н' => 'n',
-        'о' => 'o',   'п' => 'p',   'р' => 'r',
-        'с' => 's',   'т' => 't',   'у' => 'u',
-        'ф' => 'f',   'х' => 'h',   'ц' => 'c',
-        'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
-        'ь' => '\'',  'ы' => 'y',   'ъ' => '\'',
-        'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
-        
-        'А' => 'A',   'Б' => 'B',   'В' => 'V',
-        'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
-        'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
-        'И' => 'I',   'Й' => 'Y',   'К' => 'K',
-        'Л' => 'L',   'М' => 'M',   'Н' => 'N',
-        'О' => 'O',   'П' => 'P',   'Р' => 'R',
-        'С' => 'S',   'Т' => 'T',   'У' => 'U',
-        'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
-        'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
-        'Ь' => '\'',  'Ы' => 'Y',   'Ъ' => '\'',
-        'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
-    );
-    return strtr($string, $converter);
- }
+/**
+ * Transliterate string
+ * @param mixed $string String
+ * @return string
+ */
+function transliterate($string)
+{
+   $converter = array(
+       'а' => 'a',   'б' => 'b',   'в' => 'v',
+       'г' => 'g',   'д' => 'd',   'е' => 'e',
+       'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
+       'и' => 'i',   'й' => 'y',   'к' => 'k',
+       'л' => 'l',   'м' => 'm',   'н' => 'n',
+       'о' => 'o',   'п' => 'p',   'р' => 'r',
+       'с' => 's',   'т' => 't',   'у' => 'u',
+       'ф' => 'f',   'х' => 'h',   'ц' => 'c',
+       'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
+       'ь' => '\'',  'ы' => 'y',   'ъ' => '\'',
+       'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
 
- function CreateDir($dirPath)
- {
+       'А' => 'A',   'Б' => 'B',   'В' => 'V',
+       'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
+       'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
+       'И' => 'I',   'Й' => 'Y',   'К' => 'K',
+       'Л' => 'L',   'М' => 'M',   'Н' => 'N',
+       'О' => 'O',   'П' => 'P',   'Р' => 'R',
+       'С' => 'S',   'Т' => 'T',   'У' => 'U',
+       'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
+       'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
+       'Ь' => '\'',  'Ы' => 'Y',   'Ъ' => '\'',
+       'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+   );
+   return strtr($string, $converter);
+}
+
+/**
+ * Create dir if not exists
+ * @param mixed $dirPath Directory path
+ * @return void
+ */
+function CreateDir($dirPath)
+{
    if (!is_dir($dirPath))
       @mkdir($dirPath, 0777);
- }
-
-?>
+}
