@@ -1,174 +1,189 @@
 <?php
 /**
-* Module class
-*
-* Main part of framework
-*
-* 
-* @package framework
-* @author Serge Dzheigalo <jey@activeunit.com>
-* @copyright http://www.activeunit.com/ (c) 2002
-* @since 20-Jan-2004
-* @version 2.4
-*/
+ * Module class
+ *
+ * Main part of framework
+ *
+ *
+ * @package Framework
+ * @author Serge Dzheigalo <jey@activeunit.com>
+ * @copyright http://www.activeunit.com/ (c) 2002
+ * @since 20-Jan-2004
+ * @version 2.4
+ */
 
 /**
-* Used for building query string
-*/
+ * Used for building query string
+ */
 Define("PARAMS_DELIMITER", "pz_");
 /**
-* Used for building query string
-*/
+ * Used for building query string
+ */
 Define("STRING_DELIMITER", "sz_");
 /**
-* Used for building query string
-*/
+ * Used for building query string
+ */
 Define("EQ_DELIMITER", "qz_");
 
 /**
-* Framework Module Class
-*
-* Used by all modules to work correctly in project framework
-*
-* @package framework
-* @author Serge Dzheigalo
-* @copyright http://www.activeunit.com/ (c) 2002
-* @version 1.0b
-*/
- class module {
-/**
-* @var string module name
-*/
-  var $name;
-/**
-* @var array module output data
-*/
-  var $data;
-/**
-* @var string module instance name (optional)
-*/
-  var $instance;
-/**
-* @var string module teplate file (optional)
-*/
-  var $template;
-/**
-* @var string module execution result
-*/
-  var $result;
-/**
-* @var object module owner (parent module)
-*/
-  var $owner;
-/**
-* @var array module configuration
-*/
-  var $config;
+ * Module class
+ * @category Modules
+ * @package Framework
+ * @author Serge Dzheigalo <jey@activeunit.com>
+ * @copyright 2002 ActiveUnit
+ * @license http://opensource.org/licenses/mit-license.php MIT License
+ * @link https://github.com/sergejey/majordomo/blob/master/lib/modules.class.php
+ */
+class module
+{
+   /**
+    * @var string module name
+    */
+   var $name;
+   /**
+    * @var array module output data
+    */
+   var $data;
+   /**
+    * @var string module instance name (optional)
+    */
+   var $instance;
+   /**
+    * @var string module teplate file (optional)
+    */
+   var $template;
+   /**
+    * @var string module execution result
+    */
+   var $result;
+   /**
+    * @var object module owner (parent module)
+    */
+   var $owner;
+   /**
+    * @var array module configuration
+    */
+   var $config;
 
-// --------------------------------------------------------------------
-/**
-* Module constructor
-*
-* @access public
-*/
-  function module() {
-   // this method should me used in context of each module
-  }
-
-// --------------------------------------------------------------------
-/**
-* Module execution
-*
-* @access public
-*/
-  function run() {
-   // this method should me used in context of each module
-  }
-
-// --------------------------------------------------------------------
-/**
-* Getting module params from query string
-*
-* Used for getting module execution params
-*
-* @access public
-*/
-  function getParams() {
-   // this method should me used in context of each module
-  }
-
-// --------------------------------------------------------------------
-/**
-* Saving module params for correct query strings building
-*
-* Used to prevent loosing current module state while interraction with child modules
-*
-* @param array $data params to save
-* @access public
-*/
-  function saveParams($data=1) {
-   if (is_array($data)) {
-    if (IsSet($this->instance)) {
-     $data["instance"]=$this->instance;
-    }
-//    echo $this->name." ".$this->instance."<br>";
-    $res=$this->createParamsString($data, $this->name).PARAMS_DELIMITER.$this->saveParentParams();
-    return $res;
+   /**
+    * Module constructor
+    * this method should me used in context of each module
+    * @access public
+    */
+   public function __construct()
+   {
    }
-  }
 
-// --------------------------------------------------------------------
-/**
-* Generating query string for saved params
-*
-* @param array $data params to save
-* @param array $data params to save
-* @access private
-* @return string current module params query string
-*/
-  function createParamsString($data, $name) {
-   $params="";
-   $params1=array();
-   foreach($data as $k=>$v) {
-    if ($v=="") {
-     UnSet($data[$k]);
-    } else {
-     $params.="m".STRING_DELIMITER.$name.STRING_DELIMITER.$k.EQ_DELIMITER.$v.PARAMS_DELIMITER;
-     $params1[]="$k=$v";
-    }
+   /**
+    * Module execution
+    * this method should me used in context of each module
+    * @access public
+    * @return void
+    */
+   public function run()
+   {
    }
-   //echo $params."<br>";
-   //$params=toXML($data);
-   //$params=serialize($data);
-   if (count($params1)) {
-    $params="$name:{".implode(",", $params1)."}";
-    //echo $params."<br>";
-    $params=urlencode(base64_encode($params));
-   } else {
-    $params="";
-    //echo "-<br>";
+
+   /**
+    * Getting module params from query string
+    *
+    * Used for getting module execution params
+    * this method should me used in context of each module
+    *
+    * @access public
+    * @return void
+    */
+   public function getParams()
+   {
    }
-   /*
-   if (count($data)>0) {
-    $temp[$this->name]=$data;
-    $xml=new xml_data($temp);
-    $res=$xml->string;
+
+   /**
+    * Saving module params for correct query strings building
+    * Used to prevent loosing current module state while interraction with child modules
+    * @param array $data params to save
+    * @access public
+    * @return string|void
+    */
+   public function saveParams($data = 1)
+   {
+      if (is_array($data))
+      {
+         if (isset($this->instance))
+         {
+            $data["instance"] = $this->instance;
+         }
+         
+         // echo $this->name." ".$this->instance."<br>";
+         $res = $this->createParamsString($data, $this->name) . PARAMS_DELIMITER . $this->saveParentParams();
+         
+         return $res;
+      }
    }
-   */
-   $res=$params;
-   return $res;
-  }
-// --------------------------------------------------------------------
-/**
-* Restoring module data from query string
-*
-* @global string query param - current module
-* @global string query param - all params
-* @global array GET VARS
-* @global array POST VARS
-* @access public
-*/
-   function restoreParams()
+
+   /**
+    * Generating query string for saved params
+    *
+    * @param array  $data Params to save
+    * @param string $name Name
+    * @access private
+    * @return string current module params query string
+    */
+   public function createParamsString($data, $name)
+   {
+      $params  = "";
+      $params1 = array();
+
+      foreach ($data as $k => $v)
+      {
+         if ($v == "")
+         {
+            unset($data[$k]);
+         }
+         else
+         {
+            $params   .= "m" . STRING_DELIMITER . $name . STRING_DELIMITER . $k . EQ_DELIMITER . $v . PARAMS_DELIMITER;
+            $params1[] = "$k=$v";
+         }
+      }
+
+      //echo $params."<br>";
+      //$params=toXML($data);
+      //$params=serialize($data);
+      if (count($params1))
+      {
+         $params = "$name:{" . implode(",", $params1) . "}";
+         //echo $params."<br>";
+         $params = urlencode(base64_encode($params));
+      }
+      else
+      {
+         $params = "";
+         //echo "-<br>";
+      }
+
+      /*
+      if (count($data)>0) {
+      $temp[$this->name]=$data;
+      $xml=new xml_data($temp);
+      $res=$xml->string;
+      }
+       */
+      $res = $params;
+
+      return $res;
+   }
+   // --------------------------------------------------------------------
+   /**
+    * Restoring module data from query string
+    *
+    * @global string query param - current module
+    * @global string query param - all params
+    * @global array GET VARS
+    * @global array POST VARS
+    * @access public
+    * @return void
+    */
+   public function restoreParams()
    {
       global $md;
       global $pd;
@@ -201,9 +216,9 @@ Define("EQ_DELIMITER", "qz_");
 
                $module_name   = $matches2[1][$k];
                $module_params = explode(",", $matches2[2][$k]);
-               
+
                $moduleParamsCnt = count($module_params);
-               
+
                for ($m = 0; $m < $moduleParamsCnt; $m++)
                {
                   $ar = explode("=", trim($module_params[$m]));
@@ -234,7 +249,7 @@ Define("EQ_DELIMITER", "qz_");
       {
          // setting params for current instance
          $module_data = $instance_params[$this->name][$this->instance];
-     
+
          foreach ($module_data as $k => $v)
          {
             $this->{$k} = $v;
@@ -258,6 +273,8 @@ Define("EQ_DELIMITER", "qz_");
 
    /**
     * Restoring module data from query string (old version)
+    * @deprecated
+    * @return void
     */
    public function restoreParamsOld()
    {
@@ -269,9 +286,10 @@ Define("EQ_DELIMITER", "qz_");
       $global_params = array();
 
       // getting params of all modules
-      $pd = str_replace(EQ_DELIMITER, "=", $pd);
-  
-      if (preg_match_all('/m' . STRING_DELIMITER . '(\w+?)' . STRING_DELIMITER . '(\w+?)=(.*?)' . PARAMS_DELIMITER . '/', $pd, $matches, PREG_PATTERN_ORDER))
+      $pd           = str_replace(EQ_DELIMITER, "=", $pd);
+      $matchPattern = '/m' . STRING_DELIMITER . '(\w+?)' . STRING_DELIMITER . '(\w+?)=(.*?)' . PARAMS_DELIMITER . '/';
+      
+      if (preg_match_all($matchPattern, $pd, $matches, PREG_PATTERN_ORDER))
       {
          $matchesCnt = count($matches[1]);
          for ($i = 0; $i < $matchesCnt; $i++)
@@ -288,7 +306,7 @@ Define("EQ_DELIMITER", "qz_");
          if (isset($xml->hash[$this->name]))
          {
             $module_data = $xml->hash[$this->name];
-      
+
             if ((isset($this->instance) && ($module_data["instance"] == $this->instance)) || (!isset($this->instance)))
             {
                foreach ($module_data as $k => $v)
@@ -315,357 +333,446 @@ Define("EQ_DELIMITER", "qz_");
       }
    }
 
-
-// --------------------------------------------------------------------
-/**
-* Saving parent module params for correct query strings building
-*
-* @access private
-* @return string parent module params query string
-*/
-  function saveParentParams() {
-   if (IsSet($this->owner->name)) {
-    return $this->owner->saveParams();
-   }
-   return "";
-  }
-
-// --------------------------------------------------------------------
-/**
-* Checking module installation status and process with installation if neccessary
-*
-* @access public
-*/
- function checkInstalled() {
-  if (!file_exists(DIR_MODULES.$this->name."/installed")) {
-   $this->install();
-  } else {
-   $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
-   if (!IsSet($rec["ID"])) $this->install();
-  }
- }
-
-
-// --------------------------------------------------------------------
-/**
-* Getting module configuration
-*
-* Used for loading module config data in $this->config variable
-*
-* @access public
-*/
- function getConfig() {
-  $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
-  $data=$rec["DATA"];
-  $this->config=unserialize($data);
-  return $this->config;
- }
-
-
-// --------------------------------------------------------------------
-/**
-* Saving module configuration
-*
-* Used for saving $this->config variable in project module repository database for future
-*
-* @access public
-*/
- function saveConfig() {
-  $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
-  $rec["DATA"]=serialize($this->config);
-  SQLUpdate("project_modules", $rec);
- }
-
-// --------------------------------------------------------------------
-/**
-* Installing current module
-*
-* Adding information about module in project registry and
-* processing to database installation routine if file "installed" does not
-* exists in module directory.
-*
-* @param string $parent_name optional parent module for installing packages (reserved for future development)
-* @access private
-*/
- function install($parent_name="") {
-  $this->dbInstall("");
-  $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
-  $rec["NAME"]=$this->name;
-  if (!IsSet($this->title)) {
-   $this->title=$this->name;
-  }
-  $rec["TITLE"]=$this->title;
-  if (IsSet($this->module_category)) {
-   $rec["CATEGORY"]=$this->module_category;
-  }
-  if (!IsSet($rec["ID"])) {
-   $rec["ID"]=SQLInsert("project_modules", $rec);
-  } else {
-   SQLUpdate("project_modules", $rec);
-  }
-  if (!file_exists(DIR_MODULES.$this->name."/installed")) {
-   SaveFile(DIR_MODULES.$this->name."/installed", date("H:m d.M.Y"));
-  }
- }
-
-// --------------------------------------------------------------------
-/**
-* UnInstalling current module
-*
-* Removing information about module in project registry and
-*
-* @access private
-*/
- function uninstall() {
-  $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
-  if (IsSet($rec["ID"])) {
-   SQLExec("DELETE FROM project_modules WHERE ID='".$rec["ID"]."'");
-  }
-  if (file_exists(DIR_MODULES.$this->name."/installed")) {
-   unlink(DIR_MODULES.$this->name."/installed");
-  }
- }
-
-
-// --------------------------------------------------------------------
-/**
-* Module data installation
-*
-* Installing required module data structure into project.
-* (Notes: file "initial.sql" will be executed if found in project directory)
-*
-* @param string $data required database tables and fields
-* @access private
-*/
- function dbInstall($data) {
-  $sql="";
-  $need_optimzation=array();
-  $strings=explode("\n", $data);
-  $table_defined=array();
-  
-   $stringsCnt = count($strings);
-   for ($i = 0; $i < $stringsCnt; $i++)
+   /**
+    * Saving parent module params for correct query strings building
+    *
+    * @access private
+    * @return string parent module params query string
+    */
+   public function saveParentParams()
    {
-
-   $strings[$i]=preg_replace('/\/\/.+$/is', '', $strings[$i]);
-   $fields=explode(":", $strings[$i]);
-   $table=trim(array_shift($fields));
-   $definition=trim(implode(':', $fields));
-   $definition=str_replace("\r", "", trim($definition));
-
-
-   if ($definition=="") continue;
-
-   $tmp=explode(" ", $definition);
-   $field=$tmp[0];
-
-   if (!in_array(strtolower($field), array('key', 'index', 'fulltext'))) {
-    $definition=str_replace($field.' ', '`'.$field.'` ', $definition);
+      if (isset($this->owner->name))
+         return $this->owner->saveParams();
+      
+      return "";
    }
 
-   if (!IsSet($table_defined[$table])) {
-   // new table
-    if (strpos($definition, "auto_increment")) {
-     $definition.=", PRIMARY KEY(".$field.")";
-     //$definition.=", KEY(".$field.")";
-    }
-    $sql="CREATE TABLE IF NOT EXISTS $table ($definition) CHARACTER SET utf8 COLLATE utf8_general_ci;";
-    $table_defined[$table]=1;
-    SQLExec($sql);
-    $result = SQLExec("SHOW FIELDS FROM $table");
-    while($row = mysql_fetch_array($result)) {
-     $tbl_fields[$table][$row[Field]]=1;
-    }
-
-   } elseif ((strtolower($field)=='key') || (strtolower($field)=='index')  || (strtolower($field)=='fulltext')) {
-
-    if (!$indexes_retrieved[$table]) {
-     $result = SQLExec("SHOW INDEX FROM $table");
-     while($row = mysql_fetch_array($result)) {
-      $tbl_indexes[$table][$row[Key_name]]=1;
-     }
-     $indexes_retrieved[$table]=1;
-    }
-
-    preg_match('/\((.+?)\)/', $definition, $matches);
-    $key_name=trim($matches[1], " `");
-    if (!IsSet($tbl_indexes[$table][$key_name])) {
-     $definition=str_replace('`', '', $definition);
-     $sql="ALTER IGNORE TABLE $table ADD $definition;";     
-     SQLExec($sql);
-     $to_optimize[]=$table;
-    }
-
-   } elseif (!IsSet($tbl_fields[$table][$field])) {
-   // new field
-    $sql="ALTER IGNORE TABLE $table ADD $definition;";
-    SQLExec($sql);
-   }
-  }
-
-
-  if ($to_optimize[0]) {
-   foreach($to_optimize as $table) {
-    SQLExec("OPTIMIZE TABLE ".$table.";");
-   }
-  }
-
-
-
-   // executing initial query and comments each line to prevent execution next time
-    if (file_exists(DIR_MODULES.$this->name."/initial.sql")) {
-     $data=LoadFile(DIR_MODULES.$this->name."/initial.sql");
-     $data.="\n";
-     $data=str_replace("\r", "", $data);
-     $query=explode("\n",$data);
-     for ($i=0;$i < count($query)-1;$i++) {
-      if ($query[$i]{0}!="#") {
-       SQLExec($query[$i]);
-       $mdf[]="#".$query[$i];
-      } else {
-       $mdf[]=$query[$i];
+   /**
+    * Checking module installation status and process with installation if neccessary
+    * @return void
+    * @access public
+    */
+   public function checkInstalled()
+   {
+      if (!file_exists(DIR_MODULES . $this->name . "/installed"))
+      {
+         $this->install();
       }
-     }
-     SaveFile(DIR_MODULES.$this->name."/initial.sql", join("\n", $mdf));
-    }
+      else
+      {
+         $sqlQuery = "SELECT *
+                        FROM project_modules
+                       WHERE NAME = '" . $this->name . "'";
+         
+         $rec = SQLSelectOne($sqlQuery);
 
- }
-
-// --------------------------------------------------------------------
-/**
-* Getting list of sub-modules
-*
-* Reserved for future development
-*
-* @access private
-*/
- function getSubModules() {
-  return SQLSelect("SELECT * FROM project_modules WHERE PARENT_NAME='".$this->name."'");
- }
-
-// --------------------------------------------------------------------
-/**
-* Redirect to another URL whithin project
-*
-* Used for redirection from one URL to another within current module or project
-*
-* @para string $url special formatted url (ex: "?mode=new", "?(application:{action=test})&md=test&var=value1", etc)
-* @access private
-*/
- function redirect($url) {
-  global $session;
-  global $db;
-
-  $url=$this->makeRealURL($url);
-
-  $session->save();
-  $db->Disconnect();
-  if (!headers_sent()) {
-   header("Location: $url\n\n");
-  } else {
-   print "Headers already sent in $filename on line $linenum<br>\n" ."Cannot redirect instead\n";
-  }
-  exit;
- }
-
-/**
-* Create "real" URL for current module
-*
-* Description
-*
-* @access public
-*/
- function makeRealURL($url) {
-  $param_str=$this->parseLinks("<a href=\"$url\">");
-  preg_match("<a href=\"(.*?)\">", $param_str, $matches);
-  $url=$matches[1];
-  $url=str_replace("?", "?".session_name()."=".session_id()."&", $url);
-  return $url;
- }
-
-
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
-// --------------------------------------------------------------------
- function cached($content) {
-  $h=md5($content);
-  $filename=ROOT.'cached/'.$this->name.'_'.$h.'.txt';
-  $cache_expire=15*60; // 15 minutes cache expiration time
-
-  if (file_exists($filename)) {
-   if ((time()-filemtime($filename))<=$cache_expire) {
-    $cached_result=LoadFile($filename);
-   } else {
-    unlink($filename);
+         if (!isset($rec["ID"]))
+            $this->install();
+      }
    }
-  }
 
-  if ($cached_result=='') {
-   $p=new jTemplate(DIR_TEMPLATES.'null.html', $this->data, $this);
-   $cached_result=$p->parse($content, $this->data, DIR_TEMPLATES);
-   SaveFile($filename, $cached_result);
-  }
+   /**
+    * Getting module configuration
+    * Used for loading module config data in $this->config variable
+    * @access public
+    * @return array
+    */
+   public function getConfig()
+   {
+      $sqlQuery = "SELECT *
+                     FROM project_modules
+                    WHERE NAME = '" . $this->name . "'";
+      
+      $rec  = SQLSelectOne($sqlQuery);
+      $data = $rec["DATA"];
 
-  return $cached_result;
+      $this->config = unserialize($data);
+      
+      return $this->config;
+   }
 
- }
+   /**
+    * Saving module configuration
+    *
+    * Used for saving $this->config variable in project module repository database for future
+    * @access public
+    * @return void
+    */
+   public function saveConfig()
+   {
+      $sqlQuery = "SELECT *
+                     FROM project_modules
+                    WHERE NAME = '" . $this->name . "'";
 
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
-// --------------------------------------------------------------------
- function dynamic($content) {
+      $rec = SQLSelectOne($sqlQuery);
 
-  $h=md5($content);
+      $rec["DATA"] = serialize($this->config);
 
-  $content="<!-- begin_data [aj_".$h."] -->".$content."<!-- end_data [aj_".$h."] -->";
+      SQLUpdate("project_modules", $rec);
+   }
 
-  $filename=ROOT.'templates_ajax/'.$this->name.'_'.$h.'.html';
+   /**
+    * Installing current module
+    *
+    * Adding information about module in project registry and
+    * processing to database installation routine if file "installed" does not
+    * exists in module directory.
+    *
+    * @param string $parent_name Optional parent module for installing packages (reserved for future development)
+    * @access private
+    * @return void
+    */
+   public function install($parent_name = "")
+   {
+      $this->dbInstall("");
+      
+      $sqlQuery = "SELECT *
+                     FROM project_modules
+                    WHERE NAME = '" . $this->name . "'";
 
-  if (!file_exists($filename)) {
-   SaveFile($filename, $content);
-  }
+      $rec         = SQLSelectOne($sqlQuery);
+      $rec["NAME"] = $this->name;
 
-  $url=$this->makeRealURL("?");
-  if (preg_match('/\?/is', $url)) {
-   $url.="&ajt=".$h;
-  } else {
-   $url.="?ajt=".$h;
-  }
+      if (!isset($this->title))
+         $this->title = $this->name;
 
-  $res.="<div id='aj_".$h."'>Loading...</div><script language='javascript' type='text/JavaScript'>getBlockData('aj_".$h."', '".$url."')</script>";
+      $rec["TITLE"] = $this->title;
 
-  return $res;
+      if (isset($this->module_category))
+         $rec["CATEGORY"] = $this->module_category;
+      
+      if (!isset($rec["ID"]))
+      {
+         $rec["ID"] = SQLInsert("project_modules", $rec);
+      }
+      else
+      {
+         SQLUpdate("project_modules", $rec);
+      }
 
- }
+      if (!file_exists(DIR_MODULES . $this->name . "/installed"))
+         SaveFile(DIR_MODULES . $this->name . "/installed", date("H:m d.M.Y"));
+   }
+
+   /**
+    * UnInstalling current module
+    *
+    * Removing information about module in project registry and
+    *
+    * @access private
+    * @return void
+    */
+   public function uninstall()
+   {
+      $sqlQuery = "SELECT *
+                     FROM project_modules
+                    WHERE NAME = '" . $this->name . "'";
+
+      $rec = SQLSelectOne($sqlQuery);
+
+      if (isset($rec["ID"]))
+      {
+         $sqlQuery = "DELETE
+                        FROM project_modules
+                       WHERE ID = '" . $rec["ID"] . "'";
+         SQLExec($sqlQuery);
+      }
+
+      if (file_exists(DIR_MODULES . $this->name . "/installed"))
+         unlink(DIR_MODULES . $this->name . "/installed");
+   }
 
 
-// --------------------------------------------------------------------
-/**
-* Parsing links to maintain modules structure and data
-*
-* Used to maintain framework structure by saving modules data
-* in query strings and hidden fields
-* Usage:
-* following will be changed
-* [#link param1=value1#]
-* <a href="?param1=value1&param2=value2&...">
-* <a href="?(module:{param1=value1, param2=value2, ...})&param1=value1&param2=value2&...">
-* (note: to prevent link modification use <a href="?...<!-- modified -->">)
-* </form> (note: to prevent "</form>" changing use "</form><!-- modified -->" construction)
-*
-* @access private
-*/
-   function parseLinks($result)
+   // --------------------------------------------------------------------
+   /**
+    * Module data installation
+    *
+    * Installing required module data structure into project.
+    * (Notes: file "initial.sql" will be executed if found in project directory)
+    *
+    * @access private
+    * @param string $data Required database tables and fields
+    * @return void
+    */
+   public function dbInstall($data)
+   {
+      $need_optimzation = array();
+      $table_defined    = array();
+
+      $sql = "";
+
+      $strings    = explode("\n", $data);
+      $stringsCnt = count($strings);
+
+      for ($i = 0; $i < $stringsCnt; $i++)
+      {
+         $strings[$i] = preg_replace('/\/\/.+$/is', '', $strings[$i]);
+
+         $fields = explode(":", $strings[$i]);
+         $table  = trim(array_shift($fields));
+
+         $definition = trim(implode(':', $fields));
+         $definition = str_replace("\r", "", trim($definition));
+
+         if ($definition == "") continue;
+
+         $tmp   = explode(" ", $definition);
+         $field = $tmp[0];
+
+         if (!in_array(strtolower($field), array('key', 'index', 'fulltext')))
+         {
+            $definition = str_replace($field . ' ', '`' . $field . '` ', $definition);
+         }
+
+         if (!isset($table_defined[$table]))
+         {
+            // new table
+            if (strpos($definition, "auto_increment"))
+            {
+               $definition .= ", PRIMARY KEY(" . $field . ")";
+               //$definition.=", KEY(".$field.")";
+            }
+
+            $sql = "CREATE TABLE IF NOT EXISTS $table ($definition) CHARACTER SET utf8 COLLATE utf8_general_ci;";
+
+            $table_defined[$table] = 1;
+            
+            SQLExec($sql);
+
+            $result = SQLExec("SHOW FIELDS FROM $table");
+
+            while ($row = mysql_fetch_array($result))
+            {
+               $tbl_fields[$table][$row[Field]] = 1;
+            }
+         }
+         elseif ((strtolower($field) == 'key') || (strtolower($field) == 'index') || (strtolower($field) == 'fulltext'))
+         {
+            if (!$indexes_retrieved[$table])
+            {
+               $result = SQLExec("SHOW INDEX FROM $table");
+               
+               while ($row = mysql_fetch_array($result))
+               {
+                  $tbl_indexes[$table][$row[Key_name]] = 1;
+               }
+
+               $indexes_retrieved[$table] = 1;
+            }
+
+            preg_match('/\((.+?)\)/', $definition, $matches);
+            
+            $key_name = trim($matches[1], " `");
+
+            if (!isset($tbl_indexes[$table][$key_name]))
+            {
+               $definition = str_replace('`', '', $definition);
+               $sql        = "ALTER IGNORE TABLE $table ADD $definition;";
+
+               SQLExec($sql);
+
+               $to_optimize[] = $table;
+            }
+         }
+         elseif (!isset($tbl_fields[$table][$field]))
+         {
+            // new field
+            $sql = "ALTER IGNORE TABLE $table ADD $definition;";
+            SQLExec($sql);
+         }
+      }
+
+      if ($to_optimize[0])
+      {
+         foreach ($to_optimize as $table)
+         {
+            SQLExec("OPTIMIZE TABLE " . $table . ";");
+         }
+      }
+
+      // executing initial query and comments each line to prevent execution next time
+      $initialFile = DIR_MODULES . $this->name . "/initial.sql";
+      if (file_exists($initialFile))
+      {
+         $data  = LoadFile($initialFile);
+         $data .= "\n";
+         $data  = str_replace("\r", "", $data);
+
+         $query    = explode("\n",$data);
+         $queryCnt = count($query) - 1;
+
+         for ($i = 0; $i < $queryCnt; $i++)
+         {
+            if ($query[$i]{0} != "#")
+            {
+               SQLExec($query[$i]);
+               $mdf[] = "#" . $query[$i];
+            }
+            else
+            {
+               $mdf[] = $query[$i];
+            }
+         }
+
+         SaveFile($initialFile, join("\n", $mdf));
+      }
+   }
+
+   /**
+    * Getting list of sub-modules
+    *
+    * Reserved for future development
+    *
+    * @access private
+    * @return array
+    */
+   public function getSubModules()
+   {
+      $sqlQuery = "SELECT *
+                     FROM project_modules
+                    WHERE PARENT_NAME = '" . $this->name . "'";
+
+      return SQLSelect($sqlQuery);
+   }
+
+   /**
+    * Redirect to another URL whithin project
+    *
+    * Used for redirection from one URL to another within current module or project
+    *
+    * @param string $url Special formatted url (ex: "?mode=new", "?(application:{action=test})&md=test&var=value1", etc)
+    * @return void
+    * @access private
+    */
+   public function redirect($url)
+   {
+      global $session;
+      global $db;
+
+      $url = $this->makeRealURL($url);
+
+      $session->save();
+      $db->Disconnect();
+
+      if (!headers_sent())
+      {
+         header("Location: $url\n\n");
+      }
+      else
+      {
+         print "Headers already sent in $filename on line $linenum<br>\n" . "Cannot redirect instead\n";
+      }
+
+      exit;
+   }
+
+   /**
+    * Create "real" URL for current module
+    * @access public
+    * @param mixed $url Url
+    * @return mixed
+    */
+   public function makeRealURL($url)
+   {
+      $param_str = $this->parseLinks("<a href=\"$url\">");
+      preg_match("<a href=\"(.*?)\">", $param_str, $matches);
+
+      $url = $matches[1];
+      $url = str_replace("?", "?" . session_name() . "=" . session_id() . "&", $url);
+      
+      return $url;
+   }
+
+   /**
+    * Summary of cached
+    * @access public
+    * @param mixed $content Content
+    * @return string
+    */
+   public function cached($content)
+   {
+      $h = md5($content);
+      
+      $filename     = ROOT . 'cached/' . $this->name . '_' . $h . '.txt';
+      $cache_expire = 15 * 60; // 15 minutes cache expiration time
+
+      if (file_exists($filename))
+      {
+         if ((time() - filemtime($filename)) <= $cache_expire)
+         {
+            $cached_result = LoadFile($filename);
+         }
+         else
+         {
+            unlink($filename);
+         }
+      }
+
+      if (isset($cached_result) && $cached_result == '')
+      {
+         $p = new jTemplate(DIR_TEMPLATES . 'null.html', $this->data, $this);
+         
+         $cached_result = $p->parse($content, $this->data, DIR_TEMPLATES);
+         
+         SaveFile($filename, $cached_result);
+      }
+
+      return $cached_result;
+   }
+
+   /**
+    * Summary of dynamic
+    * @access public
+    *
+    * @param mixed $content Content
+    * @return string
+    */
+   public function dynamic($content)
+   {
+      $h = md5($content);
+
+      $content  = "<!-- begin_data [aj_" . $h . "] -->" . $content . "<!-- end_data [aj_" . $h . "] -->";
+      $filename = ROOT . 'templates_ajax/' . $this->name . '_' . $h . '.html';
+
+      if (!file_exists($filename))
+         SaveFile($filename, $content);
+
+      $url = $this->makeRealURL("?");
+      
+      if (preg_match('/\?/is', $url))
+      {
+         $url .= "&ajt=" . $h;
+      }
+      else
+      {
+         $url .= "?ajt=" . $h;
+      }
+
+      $res .= "<div id='aj_" . $h . "'>Loading...</div>";
+      $res .= "<script language='javascript' type='text/JavaScript'>getBlockData('aj_" . $h . "', '" . $url . "')</script>";
+
+      return $res;
+   }
+
+   /**
+    * Parsing links to maintain modules structure and data
+    *
+    * Used to maintain framework structure by saving modules data
+    * in query strings and hidden fields
+    * Usage:
+    * following will be changed
+    * [#link param1=value1#]
+    * <a href="?param1=value1&param2=value2&...">
+    * <a href="?(module:{param1=value1, param2=value2, ...})&param1=value1&param2=value2&...">
+    * (note: to prevent link modification use <a href="?...<!-- modified -->">)
+    * </form> (note: to prevent "</form>" changing use "</form><!-- modified -->" construction)
+    *
+    * @access private
+    *
+    * @param mixed $result Result
+    * @return mixed
+    */
+   public function parseLinks($result)
    {
       global $PHP_SELF;
       global $md;
@@ -675,7 +782,8 @@ Define("EQ_DELIMITER", "qz_");
          $_SERVER['PHP_SELF'] = $PHP_SELF;
       }
 
-      $param_str='';
+      $param_str = '';
+
       if ($md != $this->name)
       {
          $param_str = $this->saveParams();
@@ -692,11 +800,9 @@ Define("EQ_DELIMITER", "qz_");
          for ($i = 0; $i < $matchesCnt; $i++)
          {
             $link = $matches[1][$i];
-     
 
             if (!is_integer(strpos($link, '<!-- modified -->')))   // skip custom links
             {
-               
                if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1))
                {
                   $other   = $matches1[2];
@@ -705,7 +811,10 @@ Define("EQ_DELIMITER", "qz_");
                }
                elseif (strpos($link, "md=") !== 0)
                {
-                  $result = str_replace($matches[0][$i], '="' . $_SERVER['PHP_SELF'] . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"', $result); // links
+                  $replaceString  = '="' . $_SERVER['PHP_SELF'] . '?pd=' . $param_str;
+                  $replaceString .= '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"';
+
+                  $result = str_replace($matches[0][$i], $replaceString, $result); // links
                }
                else
                {
@@ -716,7 +825,7 @@ Define("EQ_DELIMITER", "qz_");
             {
                // remove modified param
                $link   = str_replace('<!-- modified -->', '', $link);
-               $result = str_replace($matches[0][$i], '="'.$link.'"', $result);
+               $result = str_replace($matches[0][$i], '="' . $link . '"', $result);
             }
          }
       }
@@ -725,12 +834,13 @@ Define("EQ_DELIMITER", "qz_");
       if (preg_match_all('/\<input([^\<\>]+?)(value="\((.*?)\)")([^\<\>]*?)\>/is', $result, $matches, PREG_PATTERN_ORDER))
       {
          $matches3Cnt = count($matches[3]);
+
          for ($i = 0; $i < $matches3Cnt; $i++)
          {
             if (strpos($matches[1][$i], 'type="hidden"') !== false || strpos($matches[4][$i], 'type="hidden"') !== false)
             {
-               $res_str = $this->codeParams($matches[3][$i]);
-               $result  = str_replace($matches[2][$i], 'value="' . $res_str . '"', $result);
+               $res_str = 'value="' . $this->codeParams($matches[3][$i]) . '"';
+               $result  = str_replace($matches[2][$i], $res_str, $result);
             }
          }
       }
@@ -742,7 +852,7 @@ Define("EQ_DELIMITER", "qz_");
          for ($i = 0; $i < $matches1Cnt; $i++)
          {
             $link = $matches[1][$i];
-            
+
             if (preg_match('/^\((.+?)\)(.*)$/', $link, $matches1))
             {
                $other   = $matches1[2];
@@ -751,14 +861,22 @@ Define("EQ_DELIMITER", "qz_");
             }
             elseif (strpos($link, "md=") !== 0)
             {
-               $result = str_replace($matches[0][$i], $_SERVER['PHP_SELF'] . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link, $result); // links
+               $replaceString = $_SERVER['PHP_SELF'] . '?pd=' . $param_str . '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link;
+
+               $result = str_replace($matches[0][$i], $replaceString, $result); // links
             }
          }
       }
 
       // form hidden variables (exclude </form><!-- modified -->)
-      $result = preg_replace("/<\/form>(?!<!-- modified -->)/is", "<input type=\"hidden\" name=\"pd\" value=\"$param_str\">\n<input type=\"hidden\" name=\"md\" value=\"".$this->name."\">\n<input type=\"hidden\" name=\"inst\" value=\"".$this->instance."\">\n</FORM><!-- modified -->", $result); // forms
-   
+      $replaceString  = "<input type=\"hidden\" name=\"pd\" value=\"$param_str\">\n";
+      $replaceString .= "<input type=\"hidden\" name=\"md\" value=\"" . $this->name . "\">\n";
+      $replaceString .= "<input type=\"hidden\" name=\"inst\" value=\"" . $this->instance . "\">\n";
+      $replaceString .= "</FORM><!-- modified -->";
+
+      // forms
+      $result = preg_replace("/<\/form>(?!<!-- modified -->)/is", $replaceString, $result);
+
       return $result;
    }
 
@@ -769,22 +887,25 @@ Define("EQ_DELIMITER", "qz_");
     * in query strings and hidden fields
     *
     * @access private
+    *
+    * @param mixed $in In
+    * @return string
     */
-   function codeParams($in)
+   public function codeParams($in)
    {
       $res_str = '';
 
-      $res_str='';
       if (preg_match_all('/(.+?):{(.+?)}/', $in, $matches2, PREG_PATTERN_ORDER))
       {
          $total = count($matches2[1]);
+
          for ($k = 0; $k < $total; $k++)
          {
             $data = array();
 
             $module_name   = $matches2[1][$k];
             $module_params = explode(',',$matches2[2][$k]);
-        
+
             $totalp = count($module_params);
             for ($m = 0; $m < $totalp; $m++)
             {
@@ -792,14 +913,11 @@ Define("EQ_DELIMITER", "qz_");
 
                $data[trim($ar[0])] = trim($ar[1]);
             }
-            
+
             $res_str .= $this->createParamsString($data, $module_name) . PARAMS_DELIMITER;
          }
       }
 
       return $res_str;
    }
-
-
-
- }
+}

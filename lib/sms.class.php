@@ -1,18 +1,16 @@
 <?php
+
 /*
-* @version 0.1 (auto-set)
-*/
+ * @version 0.1 (auto-set)
+ */
 
-
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function sms($phone, $message) {
-  
- }
-
-?>
+ /**
+  * Summary of sms
+  * @access public
+  * @param mixed $phone   Phone number
+  * @param mixed $message Message
+  * @return void
+  */
+function sms($phone, $message)
+{
+}
