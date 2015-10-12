@@ -799,7 +799,7 @@ curl_close($ch);
 */
  function dbInstall($data) {
 
-  SQLExec("DROP TABLE IF EXISTS `cached_values`;");
+  //SQLExec("DROP TABLE IF EXISTS `cached_values`;");
   $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   char(100) NOT NULL,
                 `DATAVALUE` char(255) NOT NULL,
