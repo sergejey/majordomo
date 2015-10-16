@@ -275,7 +275,7 @@ function usual(&$out) {
 */
  function loadObject($id) {
   $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".DBSafe($id)."'");
-  if ($rec['ID']) {
+  if (IsSet($rec['ID'])) {
    $this->id=$rec['ID'];
    $this->object_title=$rec['TITLE'];
    $this->class_id=$rec['CLASS_ID'];
@@ -535,8 +535,8 @@ curl_close($ch);
      try {
        $success = eval($code);
        if ($success === false) {
-         getLogger($this)->error(sprintf('Error in "%s.%s" method. Code: %s', $this->object_title, $name, $code));
-         registerError('method', sprintf('Exception in "%s.%s" method Code: %s', $this->object_title, $name, $code));
+         getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
+         registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
        }
      } catch (Exception $e) {
        getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
@@ -548,6 +548,8 @@ curl_close($ch);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
     $parent_success=$this->callMethod($name, $params, 1);
+   } else {
+    $parent_success=true;
    }
 
    if (isset($success)) {

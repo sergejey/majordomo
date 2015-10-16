@@ -143,7 +143,8 @@ if (isset($_REQUEST['latitude']))
 
    $rec = array();
    
-   $rec['ADDED']     = ($time) ? $time : date('Y-m-d H:i:s');
+   //$rec['ADDED']     = ($time) ? $time : date('Y-m-d H:i:s');
+   $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['LAT']       = $_REQUEST['latitude'];
    $rec['LON']       = $_REQUEST['longitude'];
    $rec['ALT']       = round($_REQUEST['altitude'], 2);
