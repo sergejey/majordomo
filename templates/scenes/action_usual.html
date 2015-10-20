@@ -18,7 +18,10 @@
 
         var codeHash=new Object();
         var firstRun=1;
+        var refreshRun=0;
         var checkTimer;
+        var refreshTimer;
+        var usingWebsockets=0;
 
         function EvalSound(soundobj) {
          //alert('zz');
@@ -210,6 +213,15 @@
 
         function checkAllStates() {
          clearTimeout(checkTimer);
+
+         if (startedWebSockets==1) {
+          firstRun=0;
+          checkTimer=setTimeout('checkAllStates();', 3000);
+          if (firstRun!=1 && refreshRun!=1) {
+           return;
+          }
+         }
+
          var url="<#ROOTHTML#>ajax/scenes.html?op=checkAllStates[#if "<#SCENE_ID#>"!=""#]&scene_id=<#SCENE_ID#>[#endif#]<#PARAMS#>";
          $.ajax({
           url: url,
@@ -226,10 +238,30 @@
            }
            [#endif TOTAL#]
            firstRun=0;
+           refreshRun=0;
+           //tryWebSockets();
+           refreshTimer=setTimeout('refreshRun=1;', 65*0*1000);
            checkTimer=setTimeout('checkAllStates();', 3000);
           });
          return false;
         }
+
+        $.subscribe('wsConnected', function (_) {
+         var payload;
+         payload = new Object();
+         payload.action = 'Subscribe';
+         payload.data = new Object();
+         payload.data.TYPE='scenes';
+         payload.data.SCENE_ID='<#SCENE_ID#>';
+         wsSocket.send(JSON.stringify(payload));
+        });
+
+        $.subscribe('wsData', function (_, response) {
+          if (response.action=='states') {
+           processCheckStates(response.data);
+          }
+        });
+
 
                 $(document).ready(function(){
                 [#if TOTAL="1"#]
@@ -247,7 +279,9 @@
                  }
                  [#endif SCENE_WALLPAPER#]
                 [#endif TOTAL#]
-                        checkAllStates();
+                 
+                 checkAllStates();
+
                 });     
 
 

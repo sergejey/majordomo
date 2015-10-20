@@ -519,18 +519,7 @@ function usual(&$out) {
      $total=count($states);
 
      for($i=0;$i<$total;$i++) {
-      $states[$i]['STATE']=(string)$this->checkState($states[$i]['ID']);
-      if ($states[$i]['HTML']!='') {
-       if (preg_match('/\[#modul/is', $states[$i]['HTML'])) {
-        //$states[$i]['HTML']=str_replace('#', '', $states[$i]['HTML']);
-        unset($states[$i]['HTML']);
-       } else {
-        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
-       }
-      }
-      if ($states[$i]['TYPE']=='img') {
-       unset($states[$i]['HTML']);
-      }
+      $this->processState($states[$i]);
      }
      echo json_encode($states);
     }
@@ -580,7 +569,6 @@ function usual(&$out) {
 
      $qry="1";
      $qry.=" AND elements.ID=".$state['ELEMENT_ID'];
-     //$states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry ORDER BY elements.PRIORITY DESC, elm_states.PRIORITY DESC");
 
       $states=array();
       $elements=$this->getDynamicElements($qry);
@@ -595,6 +583,8 @@ function usual(&$out) {
 
      $total=count($states);
      for($i=0;$i<$total;$i++) {
+      $this->processState($states[$i]);
+      /*
       $states[$i]['STATE']=(string)$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
@@ -602,6 +592,7 @@ function usual(&$out) {
       if ($states[$i]['TYPE']=='img') {
        unset($states[$i]['HTML']);
       }
+      */
      }
      echo json_encode($states);
 
@@ -632,6 +623,29 @@ function usual(&$out) {
  $out['ALL_TYPES']=$this->getAllTypes();
 
 }
+
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function processState(&$state) {
+      $state['STATE']=(string)$this->checkState($state['ID']);
+      if ($state['HTML']!='') {
+       if (preg_match('/\[#modul/is', $state['HTML'])) {
+        //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
+        unset($state['HTML']);
+       } else {
+        $state['HTML']=processTitle($state['HTML'], $this);
+       }
+      }
+      if ($state['TYPE']=='img') {
+       unset($state['HTML']);
+      }
+ }
 
  function checkSettings() {
   $settings=array(
@@ -1292,6 +1306,66 @@ function usual(&$out) {
 
   
  }
+
+ /**
+ * Title
+ *
+ * Description
+ *
+ * @access public
+ */
+  function getWatchedProperties($scenes) {
+
+   //DebMes("Getting watched properties for ".serialize($scenes));
+
+   $qry='1';
+
+   if (!IsSet($scenes['all'])) {
+    $qry.=" AND (0 ";
+    foreach($scenes as $k=>$v) {
+     if ($k=='all') {
+      continue;
+     }
+     $qry.=" OR SCENE_ID=".(int)$v;
+    }
+    $qry.=")";
+   }
+
+   //DebMes("qry: ".$qry);
+
+      $states=array();
+      $elements=$this->getDynamicElements($qry);
+      $total=count($elements);
+      for($i=0;$i<$total;$i++) {
+       if (is_array($elements[$i]['STATES'])) {
+        foreach($elements[$i]['STATES'] as $st) {
+         $states[]=$st;
+        }
+       }
+      }
+
+
+   $properties=array();
+   $total=count($states);
+
+   //DebMes("total states: ".$total);
+
+   for($i=0;$i<$total;$i++) {
+    if ($states[$i]['LINKED_OBJECT'] && $states[$i]['LINKED_PROPERTY']) {
+     $properties[]=array('PROPERTY'=>mb_strtolower($states[$i]['LINKED_OBJECT'].'.'.$states[$i]['LINKED_PROPERTY'], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+    }
+    if (preg_match_all('/%([\w\d\.]+?)%/is', $states[$i]['HTML'], $m)) {
+     $totalm=count($m[1]);
+     for($im=0;$im<$totalm;$im++) {
+       $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+     }
+    }
+    //to-do: add %random% support
+   }
+
+   //DebMes("Getting watched properties for ".serialize($properties));
+   return $properties;
+  }
 
 /**
 * dbInstall

@@ -140,14 +140,58 @@ if ($filterblock != '')
 // GLOBALS
 $result = preg_replace('/%rand%/is', rand(), $result);
 
-if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/is', $result, $m))
+if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) 
 {
+ $result=preg_replace('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', '%\1.\2%', $result);
+}
+if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/isu', $result, $m))
+{
+   $tracked_properties=array();
    $total = count($m[0]);
-   
+   $seen=array();
+   $sub_js='';
    for ($i = 0; $i < $total; $i++)
    {
-      $result = str_replace($m[0][$i], getGlobal($m[1][$i] . '.' . $m[2][$i]), $result);
+      $var=mb_strtolower($m[1][$i] . '.' . $m[2][$i], 'UTF-8');
+      if (!$seen[$var]) 
+      {
+       $tracked_properties[]=$var;
+      }
+      $seen[$var]=1;
+      $id = 'var_' . preg_replace('/\W/', '_', $var);
+      $sub_js.="if (obj[i]['PROPERTY']=='$var') {\$('.$id').html(obj[i]['VALUE']);$.publish('$var.updated', obj[i]['VALUE']);}\n";
+      $result = str_replace($m[0][$i], '<span class="'.$id.'">'.getGlobal($var).'</span>', $result);
    }
+   $js="<script language='javascript'>\$.subscribe('wsConnected', function (_) {
+         var payload;
+         payload = new Object();
+         payload.action = 'Subscribe';
+         payload.data = new Object();
+         payload.data.TYPE='properties';
+         payload.data.PROPERTIES='".implode(',', $tracked_properties)."';
+         wsSocket.send(JSON.stringify(payload));
+        });\n";
+   $js.="function processPropertiesUpdate(data) {
+         var obj=jQuery.parseJSON(data);
+         var objCnt = obj.length;
+           if (objCnt) {
+              for(var i=0;i<objCnt;i++) {
+               $sub_js
+              }
+           }
+        }";
+   $js.="\$.subscribe('wsData', function (_, response) {
+          if (response.action=='properties') {
+           processPropertiesUpdate(response.data);
+          }
+          });"; 
+   $js.='</script>';
+
+
+  $result=str_replace('</body>', $js.'</body>', $result);
+
+
+
 }
 
 if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/is', $result, $m))
@@ -239,6 +283,10 @@ $session->save();
 
 // closing database connection
 $db->Disconnect();
+
+if (isset($wsClient) && $wsClient) {
+ $wsClient->disconnect();
+}
 
 // end calculation of execution time
 endMeasure('TOTAL');

@@ -203,7 +203,7 @@ function addLinkedProperty($object, $property, $module)
    
    $value = SQLSelectOne($sqlQuery);
 
-   if ($value['ID'])
+   if (IsSet($value['ID']))
    {
       if (!$value['LINKED_MODULES'])
       {
@@ -360,7 +360,7 @@ function getObjectsByClass($class_name)
 
    $sub_classes = SQLSelect($sqlQuery);
 
-   if ($sub_classes[0]['ID'])
+   if (IsSet($sub_classes[0]['ID']))
    {
       $total = count($sub_classes);
 
@@ -368,7 +368,7 @@ function getObjectsByClass($class_name)
       {
          $sub_objects = getObjectsByClass($sub_classes[$i]['TITLE']);
          
-         if ($sub_objects[0]['ID'])
+         if (IsSet($sub_objects[0]['ID']))
          {
             foreach ($sub_objects as $obj)
             {
@@ -402,7 +402,7 @@ function getGlobal($varname)
       $object_name = $tmp[0] . '.' . $tmp[1];
       $varname     = $tmp[2];
    }
-   elseif ($tmp[1])
+   elseif (isset($tmp[1]))
    {
       $object_name = $tmp[0];
       $varname     = $tmp[1];
@@ -483,12 +483,12 @@ function callMethod($method_name, $params = 0)
 {
    $tmp = explode('.', $method_name);
    
-   if ($tmp[2])
+   if (IsSet($tmp[2]))
    {
       $object_name = $tmp[0] . '.' . $tmp[1];
       $varname     = $tmp[2];
    }
-   elseif ($tmp[1])
+   elseif (IsSet($tmp[1]))
    {
       $object_name = $tmp[0];
       $method_name = $tmp[1];
@@ -536,7 +536,7 @@ function processTitle($title, $object = 0)
 
    if ($in_title != '')
    {
-      if (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'))
+      if (IsSet($_SERVER['REQUEST_METHOD']))
       {
          if ($title_memory_cache[$key])
          {
@@ -614,7 +614,7 @@ function processTitle($title, $object = 0)
    }
 
    //endMeasure('processTitle ['.$in_title.']', 1);
-   if (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'))
+   if (IsSet($_SERVER['REQUEST_METHOD']))
    {
       $title_memory_cache[$key] = $title;
    }

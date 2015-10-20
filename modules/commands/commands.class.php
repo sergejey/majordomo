@@ -148,7 +148,6 @@ function admin(&$out) {
    global $values;
 
 
-
    $res=array();
 
    //echo "Debug labels: $labels \nValues: $values\n";
@@ -702,8 +701,10 @@ function usual(&$out) {
 
    }
 
-    if (preg_match('/<script/is', $res[$i]['DATA']) && $res[$i]['AUTO_UPDATE']) {
+    if (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA'])) {
      $res[$i]['AUTO_UPDATE']=0;
+    } elseif (!$res[$i]['AUTO_UPDATE'] && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
+     $res[$i]['AUTO_UPDATE']=10;
     }
 
     $res[$i]['TITLE_SAFE']=htmlspecialchars($res[$i]['TITLE']);
@@ -784,6 +785,133 @@ function usual(&$out) {
 
    return $res;
   }
+
+ function getDynamicElements($qry=1) {
+  $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY PRIORITY DESC, TITLE");
+
+     $dynamic_res=array();
+     $total=count($res);
+     for($i=0;$i<$total;$i++) {
+      if ($res[$i]['SMART_REPEAT'] && $res[$i]['LINKED_OBJECT']) {
+       $obj=getObject($res[$i]['LINKED_OBJECT']);
+       $objects=getObjectsByClass($obj->class_id);
+       $total_o=count($objects);
+       for($io=0;$io<$total_o;$io++) {
+        $rec=$res[$i];
+        $rec['ID']=$res[$i]['ID'].'_'.$objects[$io]['ID'];
+        $rec['LINKED_OBJECT']=$objects[$io]['TITLE'];
+        $rec['DATA']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['DATA']);
+        $rec['CUR_VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
+        $rec['TITLE']=$objects[$io]['TITLE'];
+        $dynamic_res[]=$rec;
+       }
+      } else {
+       $dynamic_res[]=$res[$i];
+      }
+     }
+     $res=$dynamic_res;
+
+   return $res;
+
+ }
+
+
+ /**
+ * Title
+ *
+ * Description
+ *
+ * @access public
+ */
+  function processMenuItem($item_id) {
+
+   if (preg_match('/(\d+)\_(\d+)/', $item_id, $m)) {
+    $dynamic_item=1;
+    $real_part=$m[1];
+    $object_part=$m[2];
+   } else {
+    $dynamic_item=0;
+    $real_part=$item_id;
+    $object_part=0;
+   }
+
+
+    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$real_part."'");
+
+    if ($object_part) {
+     $object_rec=SQLSelectOne("SELECT ID, TITLE FROM objects WHERE ID=".(int)($object_part));
+     $item['DATA']=str_replace('%'.$item['LINKED_OBJECT'].'.', '%'.$object_rec['TITLE'].'.', $item['DATA']);
+     $item['TITLE']=$object_rec['TITLE'];
+     $item['LINKED_OBJECT']=$object_rec['TITLE'];
+    }
+
+    if ($item['ID']) {
+
+     if ($object_part) {
+      $data=getGlobal($object_rec['TITLE'].'.'.$item['LINKED_PROPERTY']);
+     } else {
+      $data=$item['CUR_VALUE'];
+     }
+     $item['VALUE']=$data;
+
+     if ($item['TYPE']=='custom') {
+
+      if (preg_match('/\[#modul/is', $item['DATA'])) {
+       unset($item['LABEL']);
+       continue;
+      }
+
+      $item['DATA']=processTitle($item['DATA'], $this);
+      $data=$item['DATA'];
+     } else {
+      $item['TITLE']=processTitle($item['TITLE'], $this);
+      $data=$item['TITLE'];
+     }
+     if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
+      $color=$m[0];
+      $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
+     }
+     $item['LABEL']=$data;
+
+
+    }
+
+    return $item;
+   
+  }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function getWatchedProperties($parent_id=0) {
+  $qry='1';
+  if ($parent_id) {
+   $qry.=" AND commands.PARENT_ID=".(int)$parent_id;
+  }
+  $commands=$this->getDynamicElements($qry);
+
+  $properties=array();
+  $total=count($commands);
+  for($i=0;$i<$total;$i++) {
+    if ($commands[$i]['LINKED_OBJECT'] && $commands[$i]['LINKED_PROPERTY']) {
+     $properties[]=array('PROPERTY'=>mb_strtolower($commands[$i]['LINKED_OBJECT'].'.'.$commands[$i]['LINKED_PROPERTY'], 'UTF-8'), 'COMMAND_ID'=>$commands[$i]['ID']);
+    }
+    if (preg_match_all('/%([\w\d\.]+?)%/is', $commands[$i]['TITLE'].' '.$commands[$i]['DATA'], $m)) {
+     $totalm=count($m[1]);
+     for($im=0;$im<$totalm;$im++) {
+       $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'COMMAND_ID'=>$commands[$i]['ID']);
+     }
+    }
+  }
+
+  DebMes("Getting watched properties for ".serialize($properties));
+  return $properties;
+
+ }
 
 /**
 * Install

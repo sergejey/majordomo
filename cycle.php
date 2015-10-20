@@ -37,7 +37,7 @@ echo "CONNECTED TO DB" . PHP_EOL;
 echo "Running startup maintenance" . PHP_EOL;
 
 //restoring database backup (if was saving periodically)
-$filename  = ROOT . '/database_backup/db.sql';
+$filename  = ROOT . 'database_backup/db.sql';
 if (file_exists($filename))
 {
    echo "Running: mysql -u " . DB_USER . " -p" . DB_PASSWORD . " " . DB_NAME . " <" . $filename . PHP_EOL;
@@ -53,20 +53,24 @@ if (file_exists($filename))
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 
            if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
+            //echo "Removing file ".ROOT."modules/".$file."/installed"."\n";
             @unlink(ROOT."modules/".$file."/installed");
            }
           }
          }
 
+echo "Checking modules.\n";
+// continue startup
+include_once(DIR_MODULES . "control_modules/control_modules.class.php");
+$ctl = new control_modules();
+
+
 //removing cached data
+echo "Clearing the cache.\n";
 SQLExec("TRUNCATE TABLE `cached_values`");
 
 
-// continue startup
 
-include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-
-$ctl = new control_modules();
 
 
 $run_from_start = 1;

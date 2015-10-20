@@ -9,8 +9,7 @@
  */
 function saveToCache($key, $value, $ttl = 60)
 {
-   if (isset($_SERVER['REQUEST_METHOD'])
-        && (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST')))
+   if (isset($_SERVER['REQUEST_METHOD']))
    {
       global $memory_cache;
       $memory_cache[$key] = $value;
@@ -42,7 +41,6 @@ function checkFromCache($key)
    global $memory_cache;
    
    if (isset($_SERVER['REQUEST_METHOD'])
-         && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST')
          && !is_array($memory_cache))
    {
       $tmp   = SQLSelect("SELECT KEYWORD, DATAVALUE FROM cached_values");
@@ -70,4 +68,47 @@ function checkFromCache($key)
    {
       return false;
    }
+}
+
+
+function postToWebSocket($property, $value) {
+
+ if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
+  return;
+ }
+
+ require_once ROOT.'lib/websockets/client/lib/class.websocket_client.php';
+
+ global $wsClient;
+
+ if (!Is_Object($wsClient)) {
+  $wsClient = new WebsocketClient;
+  if (!(@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
+   $wsClient=false;
+  }
+ }
+
+ if (!Is_Object($wsClient) && IsSet($_SERVER['REQUEST_METHOD'])) {
+  return false;
+ }
+
+ $payload = json_encode(array(
+        'action' => 'PostProperty',
+        'data' => array('NAME'=>$property, 'VALUE'=>$value)
+ ));
+
+ $data_sent=false;
+ if (Is_Object($wsClient)) {
+  $data_sent=$wsClient->sendData($payload);
+ }
+
+ if (!$data_sent && !IsSet($_SERVER['REQUEST_METHOD'])) {
+  //reconnect
+  $wsClient = new WebsocketClient;
+  if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
+   $wsClient->sendData($payload);
+  }
+ }
+
+
 }

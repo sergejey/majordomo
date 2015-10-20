@@ -19,15 +19,34 @@
  var valueChangedFlag = {};
  var latestRequest=0;
  var requestTimer=0;
- var requestDelay=2;
+ var requestDelay=3; // default delay for auto update
  var requestProcessing=0;
  var labelsCollected='';
  var valuesCollected='';
+ var first_run=1;
 
  var labelsCollected_sent='';
  var valuesCollected_sent='';
 
  var requestSent = Math.round(+new Date()/1000);
+
+
+        $.subscribe('wsConnected', function (_) {
+         var payload;
+         payload = new Object();
+         payload.action = 'Subscribe';
+         payload.data = new Object();
+         payload.data.TYPE='commands';
+         payload.data.PARENT_ID='<#PARENT_ID#>';
+         wsSocket.send(JSON.stringify(payload));
+        });
+
+        $.subscribe('wsData', function (_, response) {
+          if (response.action=='commands') {
+           sendRequestForUpdates_processed(0, response.data);
+          }
+        });
+
 
  function upateDebugField() {
   if (!$('#debugField').length) return;
@@ -65,6 +84,13 @@
   }
   requestSent = Math.round(+new Date()/1000);
 
+  if (startedWebSockets==1) {
+   labelsCollected='';
+   valuesCollected='';
+   if (first_run!=1) return;
+  }
+
+  first_run=0;
   var url="<#ROOTHTML#>ajax/commands.html?op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
   AJAXRequest(url, 'sendRequestForUpdates_processed', '');
 
@@ -73,6 +99,8 @@
   valuesCollected_sent=valuesCollected;
   valuesCollected='';
   upateDebugField();
+
+
  }
 
  function collectLabel(item_id) {

@@ -200,8 +200,14 @@ class mysql
       }
       
       $qry  = substr($qry, 0, strlen($qry) - 2);
+
+      if (!isset($data[$ndx])) {
+       $data[$ndx]='';
+      }
+
       $qry .= " WHERE $ndx = '" . $data[$ndx] . "'";
-      
+
+     
       if (!mysql_query($qry, $this->dbh))
       {
          $this->Error($qry);

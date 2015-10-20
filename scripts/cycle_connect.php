@@ -15,7 +15,7 @@ include_once("./lib/loader.php");
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
-const CONNECT_HOST = '83.169.6.78';
+const CONNECT_HOST = 'connect.smartliving.ru';
 const CONNECT_PORT = 11444;
 
 // get settings

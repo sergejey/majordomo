@@ -628,6 +628,9 @@ curl_close($ch);
   }
   endMeasure('getProperty ('.$property.')', 1);
   endMeasure('getProperty', 1);
+  if (!isset($value['VALUE'])) {
+   $value['VALUE']=false;
+  }
   return $value['VALUE'];
  }
 
@@ -645,6 +648,8 @@ curl_close($ch);
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   $old_value='';
 
+  $cached_name='MJD:'.$this->object_title.'.'.$property;
+
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
@@ -657,10 +662,6 @@ curl_close($ch);
     } else {
      SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
     }
-
-    $cached_name='MJD:'.$this->object_title.'.'.$property;
-    saveToCache($cached_name, $value);
-
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
@@ -681,6 +682,9 @@ curl_close($ch);
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
   }
+
+  saveToCache($cached_name, $value);
+  postToWebSocket($this->object_title.'.'.$property, $value);
 
   if ($this->keep_history>0) {
    $prop['KEEP_HISTORY']=$this->keep_history;
@@ -809,6 +813,7 @@ curl_close($ch);
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
+  //echo ("Executing $sqlQuery\n");
 
 /*
 objects - Objects
