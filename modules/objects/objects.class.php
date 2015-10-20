@@ -684,7 +684,10 @@ curl_close($ch);
   }
 
   saveToCache($cached_name, $value);
-  postToWebSocket($this->object_title.'.'.$property, $value);
+
+  if (function_exists('postToWebSocket')) {
+   postToWebSocket($this->object_title.'.'.$property, $value);
+  }
 
   if ($this->keep_history>0) {
    $prop['KEEP_HISTORY']=$this->keep_history;
