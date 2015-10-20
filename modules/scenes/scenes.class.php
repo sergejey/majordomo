@@ -1326,7 +1326,7 @@ function usual(&$out) {
      if ($k=='all') {
       continue;
      }
-     $qry.=" OR SCENE_ID=".(int)$v;
+     $qry.=" OR SCENE_ID=".(int)$k;
     }
     $qry.=")";
    }
