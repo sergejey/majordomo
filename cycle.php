@@ -49,6 +49,7 @@ if (file_exists($filename))
 }
 
 //reinstalling modules
+/*
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 
@@ -58,6 +59,7 @@ if (file_exists($filename))
            }
           }
          }
+*/
 
 echo "Checking modules.\n";
 // continue startup
