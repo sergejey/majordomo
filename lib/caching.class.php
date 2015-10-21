@@ -99,7 +99,7 @@ function postToWebSocket($property, $value) {
 
  $data_sent=false;
  if (Is_Object($wsClient)) {
-  $data_sent=$wsClient->sendData($payload);
+  $data_sent=@$wsClient->sendData($payload);
  }
 
  if (!$data_sent && !IsSet($_SERVER['REQUEST_METHOD'])) {
