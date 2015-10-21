@@ -30,3 +30,4 @@ if (!defined('WEBSOCKETS_PORT'))
 
 if (!defined('ENVIRONMENT'))
    error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
+
