@@ -240,7 +240,7 @@
            firstRun=0;
            refreshRun=0;
            //tryWebSockets();
-           refreshTimer=setTimeout('refreshRun=1;', 65*0*1000);
+           refreshTimer=setTimeout('refreshRun=1;', 5*60*1000);
            checkTimer=setTimeout('checkAllStates();', 3000);
           });
          return false;
