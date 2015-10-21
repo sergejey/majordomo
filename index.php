@@ -140,12 +140,21 @@ if ($filterblock != '')
 // GLOBALS
 $result = preg_replace('/%rand%/is', rand(), $result);
 
-if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) 
-{
- $result=preg_replace('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', '%\1.\2%', $result);
-}
 if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/isu', $result, $m))
 {
+   $total = count($m[0]);
+   
+   for ($i = 0; $i < $total; $i++)
+   {
+      $result = str_replace($m[0][$i], getGlobal($m[1][$i] . '.' . $m[2][$i]), $result);
+   }
+}
+
+if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
+{
+
+  if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) 
+  {
    $tracked_properties=array();
    $total = count($m[0]);
    $seen=array();
@@ -190,12 +199,8 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/isu', $result, $m))
 
   $result=str_replace('</body>', $js.'</body>', $result);
 
+  } else {
 
-
-}
-
-if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/is', $result, $m))
-{
    $total = count($m[0]);
    $seen  = array();
    
@@ -217,7 +222,11 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/is', $result, $m))
 
       $result = str_replace($m[0][$i], $scriptReplace, $result);
    }
+
+  }
+
 }
+
 // END GLOBALS
 
 // BEGIN: language constants
