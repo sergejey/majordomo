@@ -564,7 +564,10 @@ function processTitle($title, $object = 0)
 
       $title = preg_replace('/%rand%/is', rand(), $title);
 
-      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/is', $title, $m))
+
+      $title=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
+      
+      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/uis', $title, $m))
       {
          startMeasure('processTitleProperties');
          
@@ -577,7 +580,7 @@ function processTitle($title, $object = 0)
 
          endMeasure('processTitleProperties');
       }
-      elseif (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
+      if (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
       {
          $total = count($m[0]);
 

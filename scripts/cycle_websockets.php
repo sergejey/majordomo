@@ -26,6 +26,7 @@ $scenes = new scenes();
 include_once(DIR_MODULES . 'commands/commands.class.php');
 $commands = new commands();
 
+//Define('DEBUG_WEBSOCKETS', 1);
 
 require_once('./lib/websockets/server/server.php');
 

@@ -1354,7 +1354,11 @@ function usual(&$out) {
     if ($states[$i]['LINKED_OBJECT'] && $states[$i]['LINKED_PROPERTY']) {
      $properties[]=array('PROPERTY'=>mb_strtolower($states[$i]['LINKED_OBJECT'].'.'.$states[$i]['LINKED_PROPERTY'], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
     }
-    if (preg_match_all('/%([\w\d\.]+?)%/is', $states[$i]['HTML'], $m)) {
+
+    $content=$states[$i]['HTML'];
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+
+    if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
      $totalm=count($m[1]);
      for($im=0;$im<$totalm;$im++) {
        $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);

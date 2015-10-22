@@ -724,7 +724,7 @@ function usual(&$out) {
 
 
     if ($res[$i]['SUB_PRELOAD'] && $this->action!='admin') {
-     $children=SQLSelect("SELECT * FROM commands WHERE PARENT_ID='".$res[$i]['ID']."' ORDER BY PRIORITY DESC, TITLE");
+     $children=$this->getDynamicElements("PARENT_ID='".$res[$i]['ID']."'");
      if ($children[0]['ID']) {
       $this->processMenuElements($children);
       if ($children[0]['ID']) {
@@ -847,6 +847,7 @@ function usual(&$out) {
 
     if ($item['ID']) {
 
+     $item['ID']=$item_id;
      if ($object_part) {
       $data=getGlobal($object_rec['TITLE'].'.'.$item['LINKED_PROPERTY']);
      } else {
@@ -858,15 +859,17 @@ function usual(&$out) {
 
       if (preg_match('/\[#modul/is', $item['DATA'])) {
        unset($item['LABEL']);
-       continue;
+       return $item;
       }
-
-      $item['DATA']=processTitle($item['DATA'], $this);
+      //$item['DATA']=processTitle($item['DATA'], $this);
       $data=$item['DATA'];
      } else {
-      $item['TITLE']=processTitle($item['TITLE'], $this);
+      //$item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
      }
+
+     $data=processTitle($data, $this);
+
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
@@ -890,7 +893,7 @@ function usual(&$out) {
  function getWatchedProperties($parent_id=0) {
   $qry='1';
   if ($parent_id) {
-   $qry.=" AND commands.PARENT_ID=".(int)$parent_id;
+   $qry.=" AND (commands.PARENT_ID=".(int)$parent_id." OR commands.ID='".(int)$parent_id."')";
   }
   $commands=$this->getDynamicElements($qry);
 
@@ -900,7 +903,13 @@ function usual(&$out) {
     if ($commands[$i]['LINKED_OBJECT'] && $commands[$i]['LINKED_PROPERTY']) {
      $properties[]=array('PROPERTY'=>mb_strtolower($commands[$i]['LINKED_OBJECT'].'.'.$commands[$i]['LINKED_PROPERTY'], 'UTF-8'), 'COMMAND_ID'=>$commands[$i]['ID']);
     }
-    if (preg_match_all('/%([\w\d\.]+?)%/is', $commands[$i]['TITLE'].' '.$commands[$i]['DATA'], $m)) {
+
+    $content=$commands[$i]['TITLE'].' '.$commands[$i]['DATA'];
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+
+    //DebMes("Content (".$commands[$i]['ID']."): ".$content);
+
+    if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
      $totalm=count($m[1]);
      for($im=0;$im<$totalm;$im++) {
        $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'COMMAND_ID'=>$commands[$i]['ID']);
@@ -908,7 +917,7 @@ function usual(&$out) {
     }
   }
 
-  DebMes("Getting watched properties for ".serialize($properties));
+  //DebMes("Getting watched properties for ".serialize($properties));
   return $properties;
 
  }

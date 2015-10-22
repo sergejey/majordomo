@@ -91,8 +91,10 @@
   }
 
   first_run=0;
-  var url="<#ROOTHTML#>ajax/commands.html?op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
-  AJAXRequest(url, 'sendRequestForUpdates_processed', '');
+  if (labelsCollected!='' || valuesCollected!='') {
+   var url="<#ROOTHTML#>ajax/commands.html?op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
+   AJAXRequest(url, 'sendRequestForUpdates_processed', '');
+  }
 
   labelsCollected_sent=labelsCollected;
   labelsCollected='';

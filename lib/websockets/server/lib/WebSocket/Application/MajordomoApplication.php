@@ -73,10 +73,17 @@ class MajordomoApplication extends Application
             if ($data['SCENE_ID']=='') {
              $data['SCENE_ID']='all';
             }
+            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+             echo "Subscribing to scene: ".$data['SCENE_ID']."\n";
+            }
             $this->_clients[$client_id]->subscribedTo['scenes'][$data['SCENE_ID']]=1;
             global $scenes;
             $properties=$scenes->getWatchedProperties($this->_clients[$client_id]->subscribedTo['scenes']);
             if (is_array($properties)) {
+
+             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+              echo "Watching: ".serialize($properties)."\n";
+             }
              foreach($properties as $v) {
               $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['states'][$v['STATE_ID']]=1;
              }
@@ -85,10 +92,16 @@ class MajordomoApplication extends Application
             if ($data['PARENT_ID']=='') {
              $data['PARENT_ID']='0';
             }
+            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+             echo "Subscribing to menu: ".$data['PARENT_ID']."\n";
+            }
             $this->_clients[$client_id]->subscribedTo['commands']['PARENT_ID']=$data['PARENT_ID'];
             global $commands;
             $properties=$commands->getWatchedProperties($this->_clients[$client_id]->subscribedTo['commands']['PARENT_ID']);
             if (is_array($properties)) {
+             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+              echo "Watching: ".serialize($properties)."\n";
+             }
              foreach($properties as $v) {
               $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['commands'][$v['COMMAND_ID']]=1;
              }
@@ -97,8 +110,13 @@ class MajordomoApplication extends Application
             if ($data['PROPERTIES']=='') {
              return;
             }
-            //echo "Subscribing to properties: ".$data['PROPERTIES']."\n";
+            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+             echo "Subscribing to properties: ".$data['PROPERTIES']."\n";
+            }
             $tmp=explode(',', $data['PROPERTIES']);
+             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+              echo "Watching: ".serialize($tmp)."\n";
+             }
             foreach($tmp as $property) {
              $this->_clients[$client_id]->subscribedTo['properties'][mb_strtolower($property, 'UTF-8')]=1;
              $this->_clients[$client_id]->watchedProperties[mb_strtolower($property, 'UTF-8')]['properties']=1;
@@ -111,7 +129,9 @@ class MajordomoApplication extends Application
 
          if (IsSet($data['NAME'])) {
           $property_name=mb_strtolower($data['NAME'], 'UTF-8');
-          //echo "Update property ".$property_name."\n";
+          if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+           echo "Update property ".$property_name."\n";
+          }
           $this->_cachedProperties[$property_name]=$data['VALUE'];
           //process property update
           global $scenes;
@@ -134,7 +154,9 @@ class MajordomoApplication extends Application
              }
 
              if (isset($send_states[0])) {
-              //DebMes("Sending updated state ".serialize($send_states));
+              if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+               echo ("Sending updated state ".serialize($send_states)."\n");
+              }
               $encodedData = $this->_encodeData('states', json_encode($send_states));
               $client->send($encodedData);
              }
@@ -160,20 +182,21 @@ class MajordomoApplication extends Application
 
              if (isset($send_labels[0])) {
               $send_data=array('LABELS'=>$send_labels, 'VALUES'=>$send_values);
-              //DebMes("Sending updated menu items ".serialize($send_data));
+              if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+               echo ("Sending updated menu items ".serialize($send_data)."\n");
+              }
               $encodedData = $this->_encodeData('commands', json_encode($send_data));
               $client->send($encodedData);
              }
             }
             //properties
             if (isset($client->watchedProperties[$property_name]['properties'])) {
-             //echo "Found client that watches $property_name property\n";
              $send_data=array();
-             //foreach($client->watchedProperties[$property_name]['properties'] as $k=>$v) {
-              $send_data[]=array('PROPERTY'=>$property_name, 'VALUE'=>getGlobal($property_name));
-             //}
+             $send_data[]=array('PROPERTY'=>$property_name, 'VALUE'=>getGlobal($property_name));
              if (isset($send_data[0])) {
-              //echo("Sending updated properties ".serialize($send_data));
+              if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+               echo ("Sending updated properties ".serialize($send_data)."\n");
+              }
               $encodedData = $this->_encodeData('properties', json_encode($send_data));
               $client->send($encodedData);
              }
@@ -201,7 +224,6 @@ class MajordomoApplication extends Application
           return;
          }
 
-         //echo "Updating scene elements\n";
          $this->_scenesUpdated=time();
 
          $this->_scenesDynamicElements=array();
