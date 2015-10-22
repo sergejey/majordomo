@@ -43,6 +43,8 @@ $session = new session("prj");
 
 set_time_limit(0);
 
+$socket_connected=0;
+
 while (1)
 {
    include_once(DIR_MODULES . 'connect/connect.class.php');
@@ -57,7 +59,9 @@ while (1)
    }
    else
    {
+      /*
       $connect->sendMenu(1);
+      */
       
       $sqlQuery = "SELECT *
                      FROM commands";
@@ -78,6 +82,7 @@ while (1)
    if ($socket === false)
    {
       echo date('Y-m-d H:i:s ') . "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+      $socket_connected=false;
       continue;
    }
    else
@@ -95,11 +100,13 @@ while (1)
    if ($result === false)
    {
       echo 'socket_connect() failed.\nReason: (' . $result . ') ' . socket_strerror(socket_last_error($socket)) . "\n";
+      socket_connected=false;
       continue;
    }
    else
    {
       echo "OK.\n";
+      $socket_connected=true;
    }
 
    $in = 'Hello, world!' . "\n";
@@ -169,7 +176,9 @@ while (1)
                         FROM commands";
          
          $menu_sent_time = time();
-         $connect->sendMenu(1);
+         if ($socket_connected) {
+          $connect->sendMenu(1);
+         }
          $commands = SQLSelect($sqlQuery);
          $total = count($commands);
     

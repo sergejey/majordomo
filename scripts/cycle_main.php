@@ -55,7 +55,7 @@ while (1)
    
    if ($m != $old_minute)
    {
-      echo "new minute\n";
+      //echo "new minute\n";
       $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
@@ -65,9 +65,9 @@ while (1)
       
       for ($i = 0; $i < $total; $i++)
       {
-         echo $objects[$i]['TITLE'] . "->onNewMinute\n";
-         getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
+         echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewMinute\n";
          getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
+         getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
       }
       
       $old_minute = $m;
@@ -79,18 +79,21 @@ while (1)
                      FROM objects
                     WHERE $o_qry";
       
-      echo "new hour\n";
+      //echo "new hour\n";
       $old_hour = $h;
       $objects = SQLSelect($sqlQuery);
       $total = count($objects);
       
-      for($i = 0; $i < $total; $i++)
+      for($i = 0; $i < $total; $i++) 
+      {
+         echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewHour\n";
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
+      }
    }
    
    if ($dt != $old_date)
    {
-      echo "new day\n";
+      //echo "new day\n";
       $old_date = $dt;
    }
 
