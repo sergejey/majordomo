@@ -1274,6 +1274,10 @@ function usual(&$out) {
          $styles_recs[$style]['HAS_DEFAULT']=$entry;
         }
 
+        if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on) {
+         $styles_recs[$style]['HAS_DEFAULT']=$has_on;
+        }
+
        }
     }
     closedir($handle);
@@ -1413,6 +1417,7 @@ elm_states - Element states
  elements: PRIORITY int(10) NOT NULL DEFAULT '0'
  elements: JAVASCRIPT text
  elements: CSS text
+ elements: S3D_SCENE varchar(255) NOT NULL DEFAULT ''
  elements: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
 
  elm_states: ID int(10) unsigned NOT NULL auto_increment
