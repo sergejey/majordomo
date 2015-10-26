@@ -100,7 +100,7 @@ while (1)
    if ($result === false)
    {
       echo 'socket_connect() failed.\nReason: (' . $result . ') ' . socket_strerror(socket_last_error($socket)) . "\n";
-      socket_connected=false;
+      $socket_connected=false;
       continue;
    }
    else
