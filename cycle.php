@@ -81,6 +81,7 @@ include("./scripts/startup_maintenance.php");
 
 $run_from_start = 0;
 
+setGlobal('ThisComputer.started_time', time());
 getObject('ThisComputer')->raiseEvent("StartUp");
 
 // 1 second sleep

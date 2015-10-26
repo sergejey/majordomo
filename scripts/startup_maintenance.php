@@ -4,6 +4,8 @@
  * @version 0.1 (auto-set)
  */
 
+DebMes("Runnign maintenance script");
+
 // BACKUP DATABASE AND FILES
 $old_mask = umask(0);
 
@@ -44,6 +46,19 @@ if (!is_dir(ROOT . 'cached/voice'))
 if (!is_dir(ROOT . 'cached/urls'))
    mkdir(ROOT . 'cached/urls', 0777);
 
+
+if (!defined('LOG_FILES_EXPIRE')) {
+ define('LOG_FILES_EXPIRE', 5);
+}
+if (!defined('BACKUP_FILES_EXPIRE')) {
+ define('BACKUP_FILES_EXPIRE', 10);
+}
+if (!defined('CACHED_FILES_EXPIRE')) {
+ define('CACHED_FILES_EXPIRE', 30);
+}
+
+
+
 echo "Target: " . $target_dir . PHP_EOL;
 echo "Full backup: " . $full_backup . PHP_EOL;
 
@@ -51,6 +66,7 @@ sleep(5);
 
 if ($full_backup)
 {
+   DebMes("Backing up files...");
    echo "Backing up files...";
    
    if (defined('PATH_TO_MYSQLDUMP'))
@@ -77,6 +93,34 @@ if ($full_backup)
    echo "OK\n";
 }
 
+//removing old log files
+$dir = ROOT."debmes/";
+foreach (glob($dir."*") as $file) {
+ if (filemtime($file) < time() - LOG_FILES_EXPIRE*24*60*60) {
+  DebMes("Removing log file ".$file);
+  @unlink($file);
+ }
+}
+
+//removing old backups files
+$dir =$target_dir;
+foreach (glob($dir."*") as $file) {
+ if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
+  DebMes("Removing backup file ".$file);
+  @unlink($file);
+ }
+}
+
+//removing old cached files
+$dir = ROOT."cached/";
+foreach (glob($dir."*") as $file) {
+ if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
+  DebMes("Removing cached file ".$file);
+  @unlink($file);
+ }
+}
+
+
 umask($old_mask);
 
 // CHECK/REPAIR/OPTIMIZE TABLES
@@ -101,12 +145,16 @@ for ($i = 0; $i < $total; $i++)
    }
 }
 
-SQLExec("DELETE FROM events WHERE ADDED > NOW()");
-SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
-SQLExec("DELETE FROM history WHERE ADDED > NOW()");
-SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
-SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
-SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+setGlobal('ThisComputer.started_time', time());
+if (time()>=getGlobal('ThisComputer.started_time')) {
+ SQLExec("DELETE FROM events WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM history WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
+ SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+}
+
 
 // CHECKING DATA
 $tables = array('commands'         => 'commands',
