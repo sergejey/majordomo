@@ -157,6 +157,7 @@ if (!is_array($restart_threads))
                          'cycle_ping.php',
                          'cycle_scheduler.php',
                          'cycle_states.php',
+                         'cycle_websockets.php',
                          'cycle_webvars.php');
 }
 

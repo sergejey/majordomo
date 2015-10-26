@@ -272,7 +272,7 @@ function admin(&$out) {
 
     if (file_exists($filename)) {
 
-      $file = $file_name;
+      $file = $filename;
       DebMes("Installing/updating plugin $name ($version)");
 
       chdir(ROOT.'saverestore/temp');
