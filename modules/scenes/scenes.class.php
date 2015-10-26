@@ -263,6 +263,9 @@ function admin(&$out) {
   }
 
   if ($this->view_mode=='' || $this->view_mode=='search_scenes') {
+   if ($_GET['draggable']) {
+    $out['DRAGGABLE']=1;
+   }
    $this->search_scenes($out);
   }
   if ($this->view_mode=='edit_scenes') {
@@ -489,6 +492,53 @@ function usual(&$out) {
     global $op;
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
+
+    if ($op=='resized' || $op=='dragged') {
+     global $element;
+     global $details;
+     $element_id=0;
+     if (preg_match('/state_(\d+)/', $element, $m)) {
+      $state=SQLSelectOne("SELECT ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
+      $element_id=$state['ELEMENT_ID'];
+     } elseif (preg_match('/canvas_(\d+)/', $element, $m) || preg_match('/container_(\d+)/', $element, $m)) {
+      $element_id=$m[1];
+     }
+     $element=SQLSelectOne("SELECT * FROM elements WHERE ID='".(int)$element_id."'");
+    }
+
+
+    if ($op=='resized' && $element['ID']) {
+     $details=json_decode($details, true);
+     $element['WIDTH']=$details['size']['width'];
+     $element['HEIGHT']=$details['size']['height'];
+     if ($element['WIDTH']>0 && $element['HEIGHT']>0) {
+      SQLUpdate('elements', $element);
+     }
+    }
+
+    if ($op=='dragged' && $element['ID']) {
+     $details=json_decode($details, true);
+     //echo "Dragged $element ".serialize($details);
+     $diff_top=$details['position']['top']-$details['originalPosition']['top'];
+     $diff_left=$details['position']['left']-$details['originalPosition']['left'];
+     if ($diff_top!=0 || $diff_left!=0) {
+      $element['TOP']+=$diff_top;
+      $element['LEFT']+=$diff_left;
+      SQLUpdate('elements', $element);
+
+      $linked_elements=SQLSelect("SELECT * FROM elements WHERE LINKED_ELEMENT_ID=".(int)$element['ID']);
+      $total=count($linked_elements);
+      for($i=0;$i<$total;$i++) {
+       $linked_elements[$i]['TOP']-=$diff_top;
+       $linked_elements[$i]['LEFT']-=$diff_left;
+       SQLUpdate('elements', $linked_elements[$i]);
+      }
+
+     }
+
+    }
+
+
     if ($op=='checkAllStates') {
      global $scene_id;
      $qry="1";

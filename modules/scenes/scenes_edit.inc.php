@@ -57,6 +57,11 @@
    $elements = ($elements == null) ? array() : $elements;
    */
   }
+
+  if ($this->tab=='visual') {
+   //updating visual
+  }
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -184,6 +189,10 @@
 
     global $smart_repeat;
     $element['SMART_REPEAT']=(int)$smart_repeat;
+
+    global $s3d_scene;
+    $element['S3D_SCENE']=$s3d_scene;
+
 
 
     global $css_style;
@@ -606,7 +615,6 @@
 
   }
 
-
   if ($this->tab=='elements') {
    $out['OTHER_SCENES']=SQLSelect("SELECT ID, TITLE FROM scenes ORDER BY PRIORITY DESC, TITLE");
    $out['HOMEPAGES']=SQLSelect("SELECT ID, TITLE FROM layouts ORDER BY TITLE");
@@ -661,7 +669,6 @@
     }
    }
   }
-
 
 
   $out['CONTAINERS']=$containers;
