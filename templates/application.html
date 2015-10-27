@@ -127,6 +127,11 @@ $(document).ready(function() {
   if (eventState!='') return;
   clearTimeout(eventTimer);
   eventTimer=window.setTimeout ('getNextEvent();', 5000);
+
+  if (startedWebSockets==1) {
+   return false;
+  }
+
   eventState='requesting';
   AJAXRequest('/getnextevent.html', 'getNextEventReceived', '');
   return false;
@@ -153,6 +158,9 @@ $(document).ready(function() {
  function getLatestNote() {
   clearTimeout(noteTimer);
   noteTimer=window.setTimeout ('getLatestNote();', 5000);
+  if (startedWebSockets==1) {
+   return false;
+  }
   AJAXRequest('/getlatestnote.html', 'getLatestNoteReceived', '');
   return false;
  }
@@ -196,6 +204,35 @@ $(document).ready(function() {
 $(document).ready(function(){
  getNextEvent();
  getLatestNote();
+
+        $.subscribe('wsConnected', function (_) {
+         var payload;
+         payload = new Object();
+         payload.action = 'Subscribe';
+         payload.data = new Object();
+         payload.data.TYPE='events';
+         payload.data.EVENTS='SAY,TERMINAL_EVENT';
+         wsSocket.send(JSON.stringify(payload));
+
+        });
+
+        $.subscribe('wsData', function (_, response) {
+          if (response.action=='events') {
+           var event_data=jQuery.parseJSON(response.data);
+           if (event_data.EVENT_DATA.NAME=='SAY' && event_data.EVENT_DATA.VALUE.member_id=="0") {
+            var new_data=Object();
+            new_data.DATA=event_data.EVENT_DATA.VALUE.message;
+            getLatestNoteReceived(0, JSON.stringify(new_data));
+           }
+           if (event_data.EVENT_DATA.NAME=='TERMINAL_EVENT' && event_data.EVENT_DATA.VALUE.TERMINAL_TO=="*") {
+            var new_data=Object();
+            new_data=event_data.EVENT_DATA.VALUE.ID+'|'+event_data.EVENT_DATA.VALUE.EVENT_TYPE+'|'+event_data.EVENT_DATA.VALUE.WINDOW+'|'+event_data.EVENT_DATA.VALUE.DETAILS;
+            getNextEventReceived(0, new_data);
+           }
+          }
+        });
+
+
 });
 </script>
 [#endif POPUP#]

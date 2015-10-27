@@ -375,6 +375,9 @@ function usual(&$out) {
        $rec['EXPIRE']=date('Y-m-d H:i:s', time()+10);
        $rec['DETAILS']=$url;
        $rec['ID']=SQLInsert('events', $rec);
+
+       postToWebSocket('TERMINAL_EVENT', $rec, 'PostEvent');
+
       }
      }
 

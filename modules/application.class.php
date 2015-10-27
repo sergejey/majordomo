@@ -300,6 +300,7 @@ function getParams() {
    
    $out['TODAY']=$days[date('w')].', '.date('d.m.Y');
    Define(TODAY, $out['TODAY']);
+   $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
 
    global $ajt;
    if ($ajt=='') {

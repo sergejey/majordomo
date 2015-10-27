@@ -71,7 +71,7 @@ function checkFromCache($key)
 }
 
 
-function postToWebSocket($property, $value) {
+function postToWebSocket($property, $value, $post_action='PostProperty') {
 
  if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
   return;
@@ -93,7 +93,7 @@ function postToWebSocket($property, $value) {
  }
 
  $payload = json_encode(array(
-        'action' => 'PostProperty',
+        'action' => $post_action,
         'data' => array('NAME'=>$property, 'VALUE'=>$value)
  ));
 

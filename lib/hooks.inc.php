@@ -96,6 +96,9 @@ function processSubscriptions($event_name, $details = '')
          }
       }
    }
+
+   postToWebSocket($event_name, $details, 'PostEvent');
+
 }
 
 /**

@@ -5,8 +5,8 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. */
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
 
 require(__DIR__ . '/lib/SplClassLoader.php');
 
@@ -20,7 +20,7 @@ $server->setMaxClients(100);
 $server->setCheckOrigin(false);
 //$server->setAllowedOrigin('foo.lh');
 $server->setMaxConnectionsPerIp(100);
-$server->setMaxRequestsPerMinute(2000);
+$server->setMaxRequestsPerMinute(20000);
 
 // Hint: Status application should not be removed as it displays usefull server informations:
 $server->registerApplication('status', \WebSocket\Application\StatusApplication::getInstance());

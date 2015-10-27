@@ -121,7 +121,39 @@ class MajordomoApplication extends Application
              $this->_clients[$client_id]->subscribedTo['properties'][mb_strtolower($property, 'UTF-8')]=1;
              $this->_clients[$client_id]->watchedProperties[mb_strtolower($property, 'UTF-8')]['properties']=1;
             }
+          } elseif ($data['TYPE']=='events') {
+            if ($data['EVENTS']=='') {
+             return;
+            }
+            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+             echo "Subscribing to events: ".$data['EVENTS']."\n";
+            }
+            $tmp=explode(',', $data['EVENTS']);
+            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+             echo "Watching: ".serialize($tmp)."\n";
+            }
+            foreach($tmp as $event) {
+             $this->_clients[$client_id]->subscribedTo['events'][mb_strtolower($event, 'UTF-8')]=1;
+            }
           }
+         }
+        }
+
+        private function _actionPostEvent($data) {
+         if (IsSet($data['NAME'])) {
+          $event_name=mb_strtolower($data['NAME'], 'UTF-8');
+          if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+           echo "Received event ".$event_name."\n";
+          }
+          foreach($this->_clients as $client) {
+           if (IsSet($client->subscribedTo['events'][$event_name])) {
+            $send_data=array();
+            $send_data['EVENT_DATA']=$data;
+            $encodedData=$this->_encodeData('events', json_encode($send_data));
+            $client->send($encodedData);
+           }
+          }
+
          }
         }
 

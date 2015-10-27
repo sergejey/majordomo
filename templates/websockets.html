@@ -21,13 +21,13 @@
             wsSocket.binaryType = 'blob';
             wsSocket.onopen = function(msg) {
              ///connected
-              console.log('WS connected');
               startedWebSockets=1;
               clearTimeout(wsTimer);
               $.publish('wsConnected');
+              console.log('WS connected (<#REQUEST_URI#>)');
             };
             wsSocket.onmessage = function(msg) {
-              console.log('WS data');
+              console.log('WS data (<#REQUEST_URI#>)');
               var response;
               response = JSON.parse(msg.data);
               $.publish('wsData', response);
@@ -35,10 +35,10 @@
             };
             wsSocket.onclose = function(msg) {
               //disconnected
-              console.log('WS disconnected');
               startedWebSockets=0;
               wsTimer=setTimeout('startWebSockets();', 5*1000);
               $.publish('wsDisconnected', []);
+              console.log('WS disconnected (<#REQUEST_URI#>)');
               return;
             };
         }
