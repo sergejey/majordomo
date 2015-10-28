@@ -17,7 +17,6 @@
 <link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
-[#inc websockets.html#]
 <style>
 #body_background {
 position: absolute;
@@ -132,7 +131,6 @@ var iFrameHeight=$(document).height()-56;        //divheight
 $(document).ready(function() {
   var firstFound=0;
   [#begin LAYOUTS#]
-//  $('#tab-[#ID#]').height(iFrameHeight);
   if (firstFound==0) {
    firstFound=1;
    switchSelected([#ID#]);
@@ -140,8 +138,6 @@ $(document).ready(function() {
   [#end LAYOUTS#]
   $('.tab_iframe').height(iFrameHeight);
   $('.tab_html').height(iFrameHeight);
-
-  //alert($('#defaultFrame').height());
 });
 
 $( window ).resize(function() {
@@ -156,6 +152,6 @@ $( window ).resize(function() {
 </div>
 
 
-
+[#inc websockets.html#]
 </body>
 </html>
