@@ -13,6 +13,7 @@
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
 <title><#LANG_CONTROL_MENU#></title>
 <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+[#inc websockets.html#]
 </head>
 <body>
 <div data-role="page" id="mainPage" [#if "<#SETTINGS_THEME#>"=="dark"#] data-theme="b"[#endif#]>
@@ -35,8 +36,5 @@
    runCycleThroughWeb();
  });
 </script>
-
-
-[#inc websockets.html#]
 </body>
 </html>
