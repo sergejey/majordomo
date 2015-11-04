@@ -348,60 +348,94 @@
    [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]
    display:inline-block;"></div>
 
+   <!--#
+                <div id="info">
+                        <a href="http://threejs.org">three.js</a> - scene loader test
+                </div>
+
+                <div id="progress">
+                        <span id="message">Loading ...</span>
+
+                        <center>
+                                <div id="progressbar" class="shadow"><div id="bar" class="shadow"></div></div>
+                        </center>
+                </div>
+   #-->
+
    <script language="javascript" src="<#ROOTHTML#>js/threejs/three.min.js"></script>
-   <!--#<script language="javascript" src="<#ROOTHTML#>js/threejs/loaders/JSONLoader.js"></script>#-->
-
+<!--#
+   [#inc threejs_load 1.html#]
+   [#inc threejs_load 2.html#]
+#-->
+<script src="<#ROOTHTML#>js/threejs/loaders/deprecated/SceneLoader.js" language="javascript"></script>
+<script src="<#ROOTHTML#>js/threejs/loaders/OBJLoader.js" language="javascript"></script>
    <script language="javascript">
-    container[#ID#] = document.getElementById( 'canvas_[#ID#]' );
-    document.body.appendChild( container[#ID#]);
 
-    var scene[#ID#] = new THREE.Scene();
-    var camera[#ID#] = new THREE.PerspectiveCamera(95, [#WIDTH#]/[#HEIGHT#], 0.1, 1000);
+                        var container;
+                        var camera, scene, loaded;
+                        var renderer;
+                        var mixers = [];
+                        var rotatingObjects = [];
+                        var clock = new THREE.Clock();
 
-    renderer[#ID#] = new THREE.WebGLRenderer();
+    var container = document.getElementById('canvas_[#ID#]');
 
-    renderer[#ID#].setSize([#WIDTH#], [#HEIGHT#] );
-    container[#ID#].appendChild( renderer[#ID#].domElement );
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize( [#WIDTH#], [#HEIGHT#] );
+    renderer.domElement.style.position = "relative";
+    container.appendChild( renderer.domElement );
+    renderer.gammaInput = true;
+    renderer.gammaOutput = true;
 
-    var ambientLight = new THREE.AmbientLight(0x999999);
-    scene[#ID#].add(ambientLight);
+    var scene = new THREE.Scene();
 
-        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        var cube = new THREE.Mesh( geometry, material );
-        scene[#ID#].add( cube );
 
-        camera[#ID#].position.z = 5;
+/*
+var camera = new THREE.PerspectiveCamera( 75, [#WIDTH#] / [#HEIGHT#], 0.1, 1000 );
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+var cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( light );
+*/
 
-        [#if S3D_SCENE!=""#]
-        var sceneURL='/cms/scenes/3d/monster.js'; //
-        //var sceneURL='[#S3D_SCENE#]';
-        //var sceneURL='/cms/scenes/3d/android-animations.js';
-        //var sceneURL='/cms/scenes/3d/scene.js';
 
-        //alert(sceneURL);
-        var loader = new THREE.JSONLoader();
-        loader.load(
-                sceneURL,
-                function ( geometry, materials ) {
-                  //alert('Loaded!');
-                  var material = new THREE.MeshFaceMaterial( materials );
-                  var object = new THREE.Mesh( geometry, material );
-                  scene[#ID#].add( object );
-                }
-        );
-        [#endif#]
 
-        var render[#ID#] = function () {
-            requestAnimationFrame(render[#ID#]);
-            cube.rotation.x += 0.1;
-            cube.rotation.y += 0.1;
-            renderer[#ID#].render(scene[#ID#], camera[#ID#]);
-        };
+var loader = new THREE.SceneLoader();
+//var sceneURL='/cms/scenes/3d/cube.js.txt'; //[#S3D_SCENE#]
+var sceneURL='[#S3D_SCENE#]'; //
 
-        render[#ID#]();
+// load a resource
+loader.load(
+        // resource URL
+        sceneURL,
+        // Function when resource is loaded
+        function ( result ) {
+           loaded = result;
+           console.log(result);
+           scene = loaded.scene;
+           if (loaded.currentCamera) {
+            camera = loaded.currentCamera;
+            camera.aspect = [#WIDTH#]/[#HEIGHT#];
+            camera.updateProjectionMatrix();
+           }
+           //alert('loaded!');
+        }
+);
 
+
+                        function render() {
+                                requestAnimationFrame( render );
+                                renderer.render( scene, camera );
+                        }
+
+
+     render();
    </script>
+
+
+
 
  [#else TYPE#]
 
