@@ -13,10 +13,15 @@
             }
             serverUrl += "//" + loc.host + ':<#WEBSOCKETS_PORT#>/majordomo';
 
-            if (window.MozWebSocket) {
-              wsSocket = new MozWebSocket(serverUrl);
-            } else if (window.WebSocket) {
-              wsSocket = new WebSocket(serverUrl);
+            try {
+             if (window.MozWebSocket) {
+               wsSocket = new MozWebSocket(serverUrl);
+             } else if (window.WebSocket) {
+               wsSocket = new WebSocket(serverUrl);
+             }
+
+            } catch (e) {
+                 return false;
             }
             wsSocket.binaryType = 'blob';
             wsSocket.onopen = function(msg) {
