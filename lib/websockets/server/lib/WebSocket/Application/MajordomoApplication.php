@@ -258,6 +258,7 @@ class MajordomoApplication extends Application
 
          $this->_scenesUpdated=time();
 
+         unset($this->_scenesDynamicElements);
          $this->_scenesDynamicElements=array();
          $elements=$scenes->getDynamicElements();
          $total=count($elements);

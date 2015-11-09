@@ -71,14 +71,8 @@ $ctl = new control_modules();
 echo "Clearing the cache.\n";
 SQLExec("TRUNCATE TABLE `cached_values`");
 
-
-
-
-
 $run_from_start = 1;
-
 include("./scripts/startup_maintenance.php");
-
 $run_from_start = 0;
 
 setGlobal('ThisComputer.started_time', time());
@@ -119,12 +113,9 @@ foreach ($cycles as $path)
       
       if ((preg_match("/_X/", $path)))
       {
-         //для начала убедимся, что мы в Линуксе. Иначе удаленный запуск этих скриптов не делаем
          if (!IsWindowsOS())
          {
             $display = '101';
-            
-            //Попробуем получить номер Дисплея из имени файла
             if ((preg_match("/_X(.+)_/", $path, $displays)))
             {
                if (count($displays) > 1)
@@ -132,8 +123,6 @@ foreach ($cycles as $path)
                   $display = $displays[1];
                }
             }
-            
-            //запускаем Линуксовый поцесс на дисплее, номер которого в имени файла после _X
             $pipe_id = $threads->newXThread($path, $display);
          }
       }
@@ -158,6 +147,7 @@ if (!is_array($restart_threads))
                          'cycle_ping.php',
                          'cycle_scheduler.php',
                          'cycle_states.php',
+                         'cycle_websockets.php',
                          'cycle_webvars.php');
 
  if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) {
@@ -197,7 +187,8 @@ while (false !== ($result = $threads->iteration()))
 }
 
 
-unlink('./reboot');
+ unlink('./reboot');
 
-// closing database connection
-$db->Disconnect();
+ // closing database connection
+ $db->Disconnect();
+

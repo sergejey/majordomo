@@ -878,33 +878,11 @@ THREE.SceneLoader.prototype = {
                                 result.geometries[ geoID ] = geometry;
 
                         } else if ( geoJSON.type === "Geometry") {
-                         /*
-                                var geometry = new THREE.Geometry();
-                                alert(geoJSON.data.vertices);
-                                geometry.vertices.fromArray(geoJSON.data.vertices);
-                                geometry.verticesNeedUpdate=true;
-                                */
-                                /*
-                                var geometry = new THREE.BufferGeometry();
 
-                                geometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( geoJSON.data.vertices ), 3 ) );
 
-                                if (geoJSON.data.normals) {
-                                 geometry.addAttribute( 'normal', new THREE.BufferAttribute( new Float32Array(geoJSON.data.normals), 3 ) );
-                                 //alert('ddd');
-                                }
-                                if (geoJSON.data.uvs) {
-                                 //geometry.addAttribute( 'uv', new THREE.BufferAttribute( new Float32Array(geoJSON.data.uvs), 3 ) );
-                                }
-                                if (geoJSON.data.faces) {
-                                 //geometry.addAttribute( 'face', new THREE.BufferAttribute( new Float32Array(geoJSON.data.faces), 3 ) );
-                                }
-                                */
                                 var jsloader = new THREE.JSONLoader();
                                 var res=jsloader.parse(geoJSON.data, './');
                                 geometry=res.geometry;
-
-                                //console.log(geometry);
 
                                 geometry.name = geoID;
                                 result.geometries[ geoID ] = geometry;
@@ -1166,12 +1144,9 @@ THREE.SceneLoader.prototype = {
 
                         if (matJSON.color) {
                          matJSON.parameters[ 'color' ]=matJSON.color;
-                         //alert(matJSON.parameters);
                         }
 
 
-                        //alert(matJSON.type);
-                        //alert('ddd');
                         /*
                         if ( typeof(matJSON.parameters.opacity) != 'undefined' && matJSON.parameters.opacity < 1.0 ) {
 
