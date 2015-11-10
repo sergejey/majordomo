@@ -1495,6 +1495,8 @@ elm_states - Element states
  elm_states: WINDOW_WIDTH int(10) NOT NULL DEFAULT '0'
  elm_states: WINDOW_HEIGHT int(10) NOT NULL DEFAULT '0'
  elm_states: SWITCH_SCENE int(3) NOT NULL DEFAULT '0'
+ elm_states: S3D_OBJECT varchar(255) NOT NULL DEFAULT ''
+ elm_states: S3D_CAMERA varchar(255) NOT NULL DEFAULT ''
  elm_states: CURRENT_STATUS int(3) NOT NULL DEFAULT '0'
  elm_states: PRIORITY int(10) NOT NULL DEFAULT '0'
 EOD;

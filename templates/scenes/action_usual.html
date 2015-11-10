@@ -180,33 +180,51 @@
            
            var objCnt = obj.length;
            if (objCnt) {
-              for(var i=0;i<objCnt;i++) {
-             var elem=$('#state_'+obj[i].ID);
+             for(var i=0;i<objCnt;i++) {
 
-
-             if ((typeof obj[i].HTML!= 'undefined') && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
-              elem.html('<span>'+obj[i].HTML+'</span>');
-              codeHash['code'+obj[i].ID]=obj[i].HTML;
-             }
-
-             if (obj[i].STATE=='1' && !elem.is(':visible')) {
-              if (elem.hasClass('inlineblock')) {
-               elem.css('display', 'inline-block');
-              } else {
-               elem.show();
+              var elem=$('#state_'+obj[i].ID);
+              if ((typeof obj[i].HTML!= 'undefined') && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
+               elem.html('<span>'+obj[i].HTML+'</span>');
+               codeHash['code'+obj[i].ID]=obj[i].HTML;
               }
-              
-              //$('#' + id).css('display', 'inline-block');
-              [#if "<#TOTAL#>"!="1"#]
-              if (firstRun!=1 && obj[i].SWITCH_SCENE=='1') {
-               switchScene(obj[i].SCENE_ID);
+              if (obj[i].STATE=='1' && !elem.is(':visible')) {
+               if (elem.hasClass('inlineblock')) {
+                elem.css('display', 'inline-block');
+               } else {
+                elem.show();
+               }
+               [#if "<#TOTAL#>"!="1"#]
+               if (firstRun!=1 && obj[i].SWITCH_SCENE=='1') {
+                switchScene(obj[i].SCENE_ID);
+               }
+               [#endif#]
               }
-              [#endif#]
+              if (obj[i].STATE!='1' && elem.is(':visible')) {
+               elem.hide();
+              }
+
+              if (elem.hasClass('s3d_state')) {
+               if (elem.data('s3d_object')) {
+                var object3d = scene.getObjectByName( elem.data('s3d_object'), true );
+                if (obj[i].STATE=='1') {
+                 object3d.visible=true;
+                } else {
+                 object3d.visible=false;
+                }
+                //alert('Switch object: '+elem.data('s3d_object'));
+               }
+               if (elem.data('s3d_camera')) {
+                if (obj[i].STATE=='1') {
+                  var camera3d = scene.getObjectByName( elem.data('s3d_camera'), true );
+                  camera=camera3d;
+                 }else {
+                  camera=default_camera;
+                 }
+                 //alert('Activate camera: '+elem.data('s3d_camera'));
+               }
+              }
+
              }
-             if (obj[i].STATE!='1' && elem.is(':visible')) {
-              elem.hide();
-             }
-            }
            }
         }
 
@@ -348,25 +366,7 @@
    [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]
    display:inline-block;"></div>
 
-   <!--#
-                <div id="info">
-                        <a href="http://threejs.org">three.js</a> - scene loader test
-                </div>
-
-                <div id="progress">
-                        <span id="message">Loading ...</span>
-
-                        <center>
-                                <div id="progressbar" class="shadow"><div id="bar" class="shadow"></div></div>
-                        </center>
-                </div>
-   #-->
-
-   <script language="javascript" src="<#ROOTHTML#>js/threejs/three.min.js"></script>
-<!--#
-   [#inc threejs_load 1.html#]
-   [#inc threejs_load 2.html#]
-#-->
+<script language="javascript" src="<#ROOTHTML#>js/threejs/three.min.js"></script>
 <script src="<#ROOTHTML#>js/threejs/loaders/SceneLoader.js" language="javascript"></script>
    <script language="javascript">
 
@@ -376,8 +376,11 @@
                         var mixers = [];
                         var rotatingObjects = [];
                         var clock = new THREE.Clock();
+                        var objects = [];
 
     var container = document.getElementById('canvas_[#ID#]');
+    var camera = new THREE.PerspectiveCamera( 75, [#WIDTH#]/[#HEIGHT#], 0.1, 1000 );
+    var default_camera = new THREE.PerspectiveCamera( 75, [#WIDTH#]/[#HEIGHT#], 0.1, 1000 );
 
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( [#WIDTH#], [#HEIGHT#] );
@@ -387,18 +390,6 @@
     renderer.gammaOutput = true;
 
     var scene = new THREE.Scene();
-
-
-/*
-var camera = new THREE.PerspectiveCamera( 75, [#WIDTH#] / [#HEIGHT#], 0.1, 1000 );
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-scene.add( light );
-*/
-
 
 
 var loader = new THREE.SceneLoader();
@@ -414,10 +405,14 @@ loader.load(
            loaded = result;
            console.log(result);
            scene = loaded.scene;
+           for (var obj in loaded.objects ) {
+            objects.push(loaded.objects[obj]);
+           }
            if (loaded.currentCamera) {
             camera = loaded.currentCamera;
             camera.aspect = [#WIDTH#]/[#HEIGHT#];
             camera.updateProjectionMatrix();
+            default_camera=camera;
            }
            //alert('loaded!');
         }
@@ -431,9 +426,49 @@ loader.load(
 
 
      render();
+
+
+/*
+// projector
+var projector = new THREE.Projector();
+
+// listeners
+document.addEventListener( 'mousedown', onDocumentMouseDown, false)
+
+
+// keyboard handler
+function onDocumentMouseDown( event ) {
+    event.preventDefault();
+    //alert('zz');
+    var vector = new THREE.Vector3( 
+        ( (event.clientX-[#LEFT#]) / [#WIDTH#]  ) * 2 - 1, 
+        - ( (event.clientY-[#TOP#]) / [#HEIGHT#] ) * 2 + 1, 
+        0.5 );
+
+        //alert((event.clientX-[#LEFT#])/[#WIDTH#]);
+    
+    projector.unprojectVector( vector, camera );
+    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+    var intersects = ray.intersectObjects( objects );    
+    if ( intersects.length > 0 ) {
+        //alert(intersects[0].object.name);
+        alert('Got it!');
+    } else {
+     //alert('no intersects found');
+    }
+}
+*/
+ 
+
    </script>
-
-
+   <div style="display:none">
+    [#begin STATES#]
+    <div class="element_<#ELEMENTS.ID#> type_<#ELEMENTS.TYPE#> state_[#TITLE#] s3d_state" id="state_[#ID#]"
+    [#if S3D_OBJECT!=""#] data-s3d_object='[#S3D_OBJECT#]'[#endif#]
+    [#if S3D_CAMERA!=""#] data-s3d_camera='[#S3D_CAMERA#]'[#endif#]
+    [#if "<#DRAGGABLE#>"!="1"#]onClick="stateClicked('[#ID#]');"[#endif DRAGGABLE#]
+    ></div>[#end STATES#]
+   </div>
 
 
  [#else TYPE#]

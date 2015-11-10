@@ -276,6 +276,8 @@
     global $do_on_click_new;
     global $priority_new;
     global $code_new;
+    global $s3d_object_new;
+    global $s3d_camera_new;
 
     if ($state_delete && $state_rec['ID']) {
 
@@ -338,6 +340,11 @@
        if ($errors) {
         $state_rec['CONDITION_ADVANCED']='';;
        }
+     }
+
+     if ($element['TYPE']=='s3d') {
+      $state_rec['S3D_OBJECT']=trim($s3d_object_new);
+      $state_rec['S3D_CAMERA']=trim($s3d_camera_new);
      }
 
 

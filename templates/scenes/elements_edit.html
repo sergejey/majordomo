@@ -621,6 +621,21 @@
         </div>
   </div>
 
+[#if ELEMENT_TYPE=="s3d"#]
+<div class="form-group">
+        <label class="col-lg-4 control-label">Link to 3D Object</label>
+        <div class="controls">
+        <input type="text" class="form-control" name="s3d_object_new" id="s3d_object_new" value="[#STATE_S3D_OBJECT#]">
+        </div>
+</div>
+<div class="form-group">
+        <label class="col-lg-4 control-label">Link to Camera</label>
+        <div class="controls">
+        <input type="text" class="form-control" name="s3d_camera_new" id="s3d_camera_new" value="[#STATE_S3D_CAMERA#]">
+        </div>
+</div>
+[#endif#]
+
 <div class="form-group click_fields" id='element_priority_field'>
         <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="controls">

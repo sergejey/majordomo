@@ -179,6 +179,7 @@ THREE.SceneLoader.prototype = {
 
                                 var objJSON = children[ objID ];
                                 objID = objJSON.uuid;
+                                objName = objJSON.name;
                                 var object = result.objects[ objID ];
 
                                 if ( object === undefined ) {
@@ -286,7 +287,7 @@ THREE.SceneLoader.prototype = {
 
                                                         }
 
-                                                        object.name = objID;
+                                                        object.name = objName;
 
                                                         if ( mat ) {
 
@@ -394,7 +395,7 @@ THREE.SceneLoader.prototype = {
 
                                                 parent.add( light );
 
-                                                light.name = objID;
+                                                light.name = objName;
                                                 result.lights[ objID ] = light;
                                                 result.objects[ objID ] = light;
 
@@ -416,7 +417,7 @@ THREE.SceneLoader.prototype = {
 
                                                 }
 
-                                                camera.name = objID;
+                                                camera.name = objName;
 
                                                 if (objJSON.position) {
                                                   camera.position.fromArray( objJSON.position );
@@ -460,7 +461,7 @@ THREE.SceneLoader.prototype = {
                                                 quat = objJSON.quaternion;
 
                                                 object = new THREE.Object3D();
-                                                object.name = objID;
+                                                object.name = objName;
                                                 object.position.fromArray( pos );
 
                                                 if ( quat ) {
