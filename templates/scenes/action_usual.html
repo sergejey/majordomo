@@ -174,6 +174,7 @@
         }
 
 
+
         function processCheckStates(data) {
            var obj=jQuery.parseJSON(data);
            if (typeof obj !='object') return false;
@@ -211,16 +212,16 @@
                 } else {
                  object3d.visible=false;
                 }
-                //alert('Switch object: '+elem.data('s3d_object'));
                }
                if (elem.data('s3d_camera')) {
                 if (obj[i].STATE=='1') {
-                  var camera3d = scene.getObjectByName( elem.data('s3d_camera'), true );
-                  camera=camera3d;
+                  new_camera = scene.getObjectByName( elem.data('s3d_camera'), true );;
                  }else {
-                  camera=default_camera;
+                  new_camera = default_camera;
                  }
-                 //alert('Activate camera: '+elem.data('s3d_camera'));
+
+                 camera=new_camera;
+
                }
               }
 
@@ -366,6 +367,7 @@
    [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]
    display:inline-block;"></div>
 
+<script language="javascript" src="<#ROOTHTML#>js/Tween.js"></script>
 <script language="javascript" src="<#ROOTHTML#>js/threejs/three.min.js"></script>
 <script src="<#ROOTHTML#>js/threejs/loaders/SceneLoader.js" language="javascript"></script>
    <script language="javascript">
@@ -393,17 +395,13 @@
 
 
 var loader = new THREE.SceneLoader();
-//var sceneURL='/cms/scenes/3d/cube.js.txt'; //[#S3D_SCENE#]
 var sceneURL='[#S3D_SCENE#]'; //
 
 // load a resource
 loader.load(
-        // resource URL
         sceneURL,
-        // Function when resource is loaded
         function ( result ) {
            loaded = result;
-           console.log(result);
            scene = loaded.scene;
            for (var obj in loaded.objects ) {
             objects.push(loaded.objects[obj]);
@@ -414,7 +412,7 @@ loader.load(
             camera.updateProjectionMatrix();
             default_camera=camera;
            }
-           //alert('loaded!');
+
         }
 );
 
@@ -434,30 +432,22 @@ raycaster = new THREE.Raycaster();
 // listeners
 document.addEventListener( 'mousedown', onDocumentMouseDown, false)
 
-
-// keyboard handler
 function onDocumentMouseDown( event ) {
     event.preventDefault();
-    //alert('zz');
                 var mouse = new THREE.Vector2();
                 mouse.x = ( (event.clientX-[#LEFT#]) / renderer.domElement.width ) * 2 - 1;
                 mouse.y = - ( (event.clientY-[#TOP#]) / renderer.domElement.height ) * 2 + 1;
                 raycaster.setFromCamera( mouse, camera );
 
-        //alert((event.clientX-[#LEFT#])/[#WIDTH#]);
         var intersects = raycaster.intersectObjects( objects ); 
 
     if ( intersects.length > 0 ) {
-     //alert(intersects[0].object.name);
      [#begin STATES#]
       [#if S3D_OBJECT!=""#]
       if (intersects[0].object.name=='[#S3D_OBJECT#]') {
        stateClicked('[#ID#]');
       }[#endif#]
      [#end STATES#]
-
-    } else {
-     //alert('no intersects found');
     }
 }
  
