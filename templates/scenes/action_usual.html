@@ -428,9 +428,8 @@ loader.load(
      render();
 
 
-/*
 // projector
-var projector = new THREE.Projector();
+raycaster = new THREE.Raycaster();
 
 // listeners
 document.addEventListener( 'mousedown', onDocumentMouseDown, false)
@@ -440,24 +439,27 @@ document.addEventListener( 'mousedown', onDocumentMouseDown, false)
 function onDocumentMouseDown( event ) {
     event.preventDefault();
     //alert('zz');
-    var vector = new THREE.Vector3( 
-        ( (event.clientX-[#LEFT#]) / [#WIDTH#]  ) * 2 - 1, 
-        - ( (event.clientY-[#TOP#]) / [#HEIGHT#] ) * 2 + 1, 
-        0.5 );
+                var mouse = new THREE.Vector2();
+                mouse.x = ( (event.clientX-[#LEFT#]) / renderer.domElement.width ) * 2 - 1;
+                mouse.y = - ( (event.clientY-[#TOP#]) / renderer.domElement.height ) * 2 + 1;
+                raycaster.setFromCamera( mouse, camera );
 
         //alert((event.clientX-[#LEFT#])/[#WIDTH#]);
-    
-    projector.unprojectVector( vector, camera );
-    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-    var intersects = ray.intersectObjects( objects );    
+        var intersects = raycaster.intersectObjects( objects ); 
+
     if ( intersects.length > 0 ) {
-        //alert(intersects[0].object.name);
-        alert('Got it!');
+     //alert(intersects[0].object.name);
+     [#begin STATES#]
+      [#if S3D_OBJECT!=""#]
+      if (intersects[0].object.name=='[#S3D_OBJECT#]') {
+       stateClicked('[#ID#]');
+      }[#endif#]
+     [#end STATES#]
+
     } else {
      //alert('no intersects found');
     }
 }
-*/
  
 
    </script>
