@@ -164,7 +164,7 @@ class MajordomoApplication extends Application
           if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
            echo "Update property ".$property_name."\n";
           }
-          $this->_cachedProperties[$property_name]=$data['VALUE'];
+          //$this->_cachedProperties[$property_name]=$data['VALUE'];
           //process property update
           global $scenes;
           global $commands;
@@ -203,7 +203,7 @@ class MajordomoApplication extends Application
                continue;
               }
               $seen_commands[$k]=1;
-              $item=$commands->processMenuItem($k);
+              $item=$commands->processMenuItem($k, true, $data['VALUE']);
               if (isset($item['VALUE'])) {
                $send_values[]=array('ID'=>$item['ID'], 'DATA'=>$item['VALUE']);
               }

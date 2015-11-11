@@ -584,6 +584,11 @@ function usual(&$out) {
     return 0;
    }
 
+   $messages_qry=1;
+   if ($rec['SKIPSYSTEM']) {
+    $messages_qry.=" AND shouts.MEMBER_ID!=0";
+   }
+
    if (!$rec['PATTERN']) {
     $pattern=$rec['TITLE'];
    } else {
@@ -602,11 +607,11 @@ function usual(&$out) {
    $lines_pattern=explode("\n", $pattern);
    $total_lines=count($lines_pattern);
    if (!$rec['TIME_LIMIT']) {
-    $messages=SQLSelect("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT ".(int)$total_lines);
+    $messages=SQLSelect("SELECT MESSAGE FROM shouts WHERE $messages_qry ORDER BY ID DESC LIMIT ".(int)$total_lines);
     $messages=array_reverse($messages);
    } else {
     $start_from=time()-$rec['TIME_LIMIT'];
-    $messages=SQLSelect("SELECT MESSAGE FROM shouts WHERE ADDED>=('".date('Y-m-d H:i:s', $start_from)."') ORDER BY ADDED");
+    $messages=SQLSelect("SELECT MESSAGE FROM shouts WHERE $messages_qry AND ADDED>=('".date('Y-m-d H:i:s', $start_from)."') ORDER BY ADDED");
    }
 
    $total=count($messages);

@@ -823,7 +823,7 @@ function usual(&$out) {
  *
  * @access public
  */
-  function processMenuItem($item_id) {
+  function processMenuItem($item_id, $set_value=false, $new_value=0) {
 
    if (preg_match('/(\d+)\_(\d+)/', $item_id, $m)) {
     $dynamic_item=1;
@@ -851,6 +851,9 @@ function usual(&$out) {
      if ($object_part) {
       $data=getGlobal($object_rec['TITLE'].'.'.$item['LINKED_PROPERTY']);
      } else {
+      if ($set_value) {
+       $item['CUR_VALUE']=$new_value;
+      }
       $data=$item['CUR_VALUE'];
      }
      $item['VALUE']=$data;
