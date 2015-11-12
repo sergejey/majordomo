@@ -220,7 +220,24 @@
                   new_camera = default_camera;
                  }
 
-                 camera=new_camera;
+var new_position = new THREE.Vector3();
+new_position.setFromMatrixPosition( new_camera.matrix );
+new_camera.matrixAutoUpdate = true;
+new_camera.position.setX(new_position.x);
+new_camera.position.setY(new_position.y);
+new_camera.position.setZ(new_position.z);
+
+newlookAtVector = new THREE.Vector3(new_camera.matrix[8], new_camera.matrix[9], new_camera.matrix[10]);
+
+new TWEEN.Tween( camera.position ).to( {
+        x: new_position.x,
+        y: new_position.y,
+        z: new_position.z}, 600 ).onUpdate(function () {
+    camera.lookAt(newlookAtVector);
+}).onComplete(function () {
+    camera.lookAt(newlookAtVector);
+}).easing( TWEEN.Easing.Sinusoidal.Out).start();
+
 
                }
               }
@@ -367,7 +384,7 @@
    [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]
    display:inline-block;"></div>
 
-<script language="javascript" src="<#ROOTHTML#>js/Tween.js"></script>
+<script language="javascript" src="<#ROOTHTML#>js/threejs/libs/tween.min.js"></script>
 <script language="javascript" src="<#ROOTHTML#>js/threejs/three.min.js"></script>
 <script src="<#ROOTHTML#>js/threejs/loaders/SceneLoader.js" language="javascript"></script>
    <script language="javascript">
@@ -407,10 +424,19 @@ loader.load(
             objects.push(loaded.objects[obj]);
            }
            if (loaded.currentCamera) {
-            camera = loaded.currentCamera;
-            camera.aspect = [#WIDTH#]/[#HEIGHT#];
-            camera.updateProjectionMatrix();
-            default_camera=camera;
+
+            loaded.currentCamera.aspect = [#WIDTH#]/[#HEIGHT#];
+            loaded.currentCamera.updateProjectionMatrix();
+            default_camera=loaded.currentCamera;
+            camera = default_camera.clone();
+
+            var old_position = new THREE.Vector3();
+            old_position.setFromMatrixPosition( camera.matrix );
+            camera.matrixAutoUpdate = true;
+            camera.position.setX(old_position.x);
+            camera.position.setY(old_position.y);
+            camera.position.setZ(old_position.z);
+
            }
 
         }
@@ -420,6 +446,7 @@ loader.load(
                         function render() {
                                 requestAnimationFrame( render );
                                 renderer.render( scene, camera );
+                                TWEEN.update();
                         }
 
 
