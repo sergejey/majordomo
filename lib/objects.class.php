@@ -580,6 +580,35 @@ function processTitle($title, $object = 0)
 
          endMeasure('processTitleProperties');
       }
+      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|"(.+?)"%/uis', $title, $m))
+      {
+         startMeasure('processTitlePropertiesReplace');
+         
+         $total = count($m[0]);
+         
+         for ($i = 0; $i < $total; $i++)
+         {
+            $data=getGlobal($m[1][$i] . '.' . $m[2][$i]);
+            $descr=$m[3][$i];
+            $tmp=explode(';', $descr);
+            $totald=count($tmp);
+            $hsh=array();
+            for($id=0;$id<$totald;$id++) {
+             $item=trim($tmp[$id]);
+             if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
+              $search_value=$md[1];
+              $search_replace=$md[2];
+             } else {
+              $search_value=$id;
+              $search_replace=$item;
+             }
+             $hsh[$search_value]=$search_replace;
+            }
+            $title = str_replace($m[0][$i], $hsh[$data], $title);
+         }
+
+         endMeasure('processTitlePropertiesReplace');
+      }
       if (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
       {
          $total = count($m[0]);
