@@ -220,22 +220,30 @@
                   new_camera = default_camera;
                  }
 
-var new_position = new THREE.Vector3();
-new_position.setFromMatrixPosition( new_camera.matrix );
-new_camera.matrixAutoUpdate = true;
-new_camera.position.setX(new_position.x);
-new_camera.position.setY(new_position.y);
-new_camera.position.setZ(new_position.z);
+var new_position = new_camera.position.clone();
+var new_rotation = new_camera.rotation.clone();
+var new_quaternion = new_camera.quaternion.clone();
 
-newlookAtVector = new THREE.Vector3(new_camera.matrix[8], new_camera.matrix[9], new_camera.matrix[10]);
+//newlookAtVector = new THREE.Vector3(new_camera.matrix[8], new_camera.matrix[9], new_camera.matrix[10]);
+
+camera.rotation.clone(new_rotation);
+camera.quaternion.clone(new_quaternion);
+
+newlookAtVector = new THREE.Vector3(0, 0, -1);
+newlookAtVector.applyEuler(new_camera.rotation, new_camera.eulerOrder);
+
 
 new TWEEN.Tween( camera.position ).to( {
         x: new_position.x,
         y: new_position.y,
         z: new_position.z}, 600 ).onUpdate(function () {
-    camera.lookAt(newlookAtVector);
+
+ camera.lookAt(newlookAtVector);
+
 }).onComplete(function () {
-    camera.lookAt(newlookAtVector);
+
+ camera.lookAt(newlookAtVector);
+
 }).easing( TWEEN.Easing.Sinusoidal.Out).start();
 
 
@@ -429,13 +437,14 @@ loader.load(
             loaded.currentCamera.updateProjectionMatrix();
             default_camera=loaded.currentCamera;
             camera = default_camera.clone();
-
+            /*
             var old_position = new THREE.Vector3();
             old_position.setFromMatrixPosition( camera.matrix );
             camera.matrixAutoUpdate = true;
             camera.position.setX(old_position.x);
             camera.position.setY(old_position.y);
             camera.position.setZ(old_position.z);
+            */
 
            }
 

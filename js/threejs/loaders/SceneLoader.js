@@ -179,10 +179,19 @@ THREE.SceneLoader.prototype = {
 
                                 var objJSON = children[ objID ];
                                 objID = objJSON.uuid;
-                                objName = objJSON.name;
+
+                                if (objJSON.name) {
+                                 objName = objJSON.name;
+                                } else {
+                                 objName=objID;
+                                }
+
+
+
                                 var object = result.objects[ objID ];
 
                                 if ( object === undefined ) {
+
 
                                         // meshes
                                         if ( objJSON.type && ( objJSON.type in scope.hierarchyHandlers ) ) {
@@ -216,10 +225,10 @@ THREE.SceneLoader.prototype = {
                                         } else if ( objJSON.geometry !== undefined ) {
 
                                                 geometry = result.geometries[ objJSON.geometry ];
-
                                                 // geometry already loaded
 
                                                 if ( geometry ) {
+
 
                                                         material = result.materials[ objJSON.material ];
 
@@ -438,9 +447,10 @@ THREE.SceneLoader.prototype = {
                                                 }
 
                                                 if (objJSON.matrix) {
-                                                 camera.matrixAutoUpdate = false;
+                                                 //camera.matrixAutoUpdate = false;
                                                  camera.matrix.fromArray(objJSON.matrix);
-                                                 camera.updateMatrixWorld(true);
+                                                 camera.matrix.decompose(camera.position, camera.quaternion, camera.scale);
+                                                 //camera.updateMatrixWorld(true);
                                                 }
 
 
@@ -455,38 +465,50 @@ THREE.SceneLoader.prototype = {
 
                                         } else {
 
+
+
+                                                object = new THREE.Object3D();
+                                                object.name = objName;
+
+
                                                 pos = objJSON.position;
                                                 rot = objJSON.rotation;
                                                 scl = objJSON.scale;
                                                 quat = objJSON.quaternion;
 
-                                                object = new THREE.Object3D();
-                                                object.name = objName;
-                                                object.position.fromArray( pos );
+                                                if (pos) {
+                                                 object.position.fromArray( pos );
+                                                }
 
                                                 if ( quat ) {
 
                                                         object.quaternion.fromArray( quat );
 
-                                                } else {
+                                                } else if (rot) {
 
                                                         object.rotation.fromArray( rot );
 
                                                 }
 
-                                                object.scale.fromArray( scl );
-                                                object.visible = ( objJSON.visible !== undefined ) ? objJSON.visible : false;
+                                                if (scl) {
+                                                 object.scale.fromArray( scl );
+                                                }
+
+
+                                                object.visible = ( objJSON.visible !== undefined ) ? objJSON.visible : true;
 
                                                 if (objJSON.matrix) {
-                                                 object.matrixAutoUpdate = false;
                                                  object.matrix.fromArray(objJSON.matrix);
-                                                 object.updateMatrixWorld(true);
+                                                 object.matrix.decompose(object.position, object.quaternion, object.scale);
                                                 }
 
                                                 parent.add( object );
 
                                                 result.objects[ objID ] = object;
                                                 result.empties[ objID ] = object;
+
+
+
 
                                         }
 
@@ -840,7 +862,6 @@ THREE.SceneLoader.prototype = {
 
                         geoID = geoJSON.uuid;
 
-
                         if ( geoJSON.type === "cube"  || geoJSON.type === "BoxGeometry") {
 
                                 geometry = new THREE.BoxGeometry( geoJSON.width, geoJSON.height, geoJSON.depth, geoJSON.widthSegments, geoJSON.heightSegments, geoJSON.depthSegments );
@@ -878,15 +899,43 @@ THREE.SceneLoader.prototype = {
                                 geometry.name = geoID;
                                 result.geometries[ geoID ] = geometry;
 
-                        } else if ( geoJSON.type === "Geometry") {
+                        } else if (geoJSON.type === "BufferGeometry") {
 
+
+                          var bufgeometry = new THREE.BufferGeometry();
+
+                          if (geoJSON.data.attributes) {
+                           if (geoJSON.data.attributes.position) {
+                            bufgeometry.addAttribute( 'position', new THREE.BufferAttribute( geoJSON.data.attributes.position.array, geoJSON.data.attributes.position.itemSize ) );
+                           }
+                           if (geoJSON.data.attributes.normal) {
+                            bufgeometry.addAttribute( 'normal', new THREE.BufferAttribute( geoJSON.data.attributes.normal.array, geoJSON.data.attributes.normal.itemSize ) );
+                           }
+                          }
+
+                          if (geoJSON.data.boundingSphere) {
+                           var center = new THREE.Vector3(geoJSON.data.boundingSphere.center);
+                           var sphere = new THREE.Sphere(center, geoJSON.data.boundingSphere.radius);
+                           bufgeometry.boundingSphere=(sphere);
+                          }
+
+                          //console.log(geometry);
+
+                          geometry  = new THREE.Geometry().fromBufferGeometry(bufgeometry);
+                          geometry.name = geoID;
+                          result.geometries[ geoID ] = geometry;
+
+
+                        } else if ( geoJSON.type === "Geometry") {
 
                                 var jsloader = new THREE.JSONLoader();
                                 var res=jsloader.parse(geoJSON.data, './');
+
                                 geometry=res.geometry;
 
                                 geometry.name = geoID;
                                 result.geometries[ geoID ] = geometry;
+
 
 
                         } else if ( geoJSON.type in this.geometryHandlers ) {
@@ -1197,7 +1246,7 @@ THREE.SceneLoader.prototype = {
 
                 // defaults
 
-                //console.log(result.cameras);
+                console.log(result);
                 
                 //alert(data.defaults);
 
