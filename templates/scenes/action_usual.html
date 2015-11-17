@@ -478,6 +478,7 @@ function onDocumentMouseDown( event ) {
         var intersects = raycaster.intersectObjects( objects ); 
 
     if ( intersects.length > 0 ) {
+     console.log('Clicked on '+intersects[0].object.name);
      [#begin STATES#]
       [#if S3D_OBJECT!=""#]
       if (intersects[0].object.name=='[#S3D_OBJECT#]') {

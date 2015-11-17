@@ -625,13 +625,32 @@
 <div class="form-group">
         <label class="col-lg-4 control-label">Link to 3D Object</label>
         <div class="controls">
+        [#if S3D_OBJECTS#]
+        <select name="s3d_object_new" class="form-control" id="s3d_object_new">
+         <option value="">
+         [#begin S3D_OBJECTS#]
+         <option value="[#TITLE#]"[#if TITLE="<#STATE_S3D_OBJECT#>"#] selected[#endif#]>[#TITLE#] ([#TYPE#])
+         [#end S3D_OBJECTS#]
+        </select>
+        [#else#]
         <input type="text" class="form-control" name="s3d_object_new" id="s3d_object_new" value="[#STATE_S3D_OBJECT#]">
+        [#endif#]
+
         </div>
 </div>
 <div class="form-group">
         <label class="col-lg-4 control-label">Link to Camera</label>
         <div class="controls">
+        [#if S3D_CAMERAS#]
+        <select name="s3d_camera_new" class="form-control" id="s3d_object_new">
+         <option value="">
+         [#begin S3D_CAMERAS#]
+         <option value="[#TITLE#]"[#if TITLE="<#STATE_S3D_CAMERA#>"#] selected[#endif#]>[#TITLE#]
+         [#end S3D_CAMERAS#]
+        </select>
+        [#else#]
         <input type="text" class="form-control" name="s3d_camera_new" id="s3d_camera_new" value="[#STATE_S3D_CAMERA#]">
+        [#endif#]
         </div>
 </div>
 [#endif#]

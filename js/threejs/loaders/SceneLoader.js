@@ -921,7 +921,11 @@ THREE.SceneLoader.prototype = {
 
                           //console.log(geometry);
 
+                          bufgeometry.computeFaceNormals();
+                          bufgeometry.computeBoundingSphere();
+
                           geometry  = new THREE.Geometry().fromBufferGeometry(bufgeometry);
+
                           geometry.name = geoID;
                           result.geometries[ geoID ] = geometry;
 
