@@ -460,12 +460,16 @@ function admin(&$out) {
 
   //elements
   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".(int)$id."'");
+  $seen_elements=array();
+
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
+   $old_element_id=$elements[$i]['ID'];
    unset($elements[$i]['ID']);
    $elements[$i]['SCENE_ID']=$rec['ID'];
    $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+   $seen_elements[$old_element_id]=$elements[$i]['ID'];
    $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
    for($iE=0;$iE<$totalE;$iE++) {
@@ -474,6 +478,17 @@ function admin(&$out) {
     SQLInsert('elm_states', $states[$iE]);
    }
   }
+
+   for($i=0;$i<$total;$i++) {
+    if ($elements[$i]['LINKED_ELEMENT_ID']) {
+     $elements[$i]['LINKED_ELEMENT_ID']=(int)$seen_elements[$elements[$i]['LINKED_ELEMENT_ID']];
+     SQLUpdate('elements', $elements[$i]);
+    }
+    if ($elements[$i]['CONTAINER_ID']) {
+     $elements[$i]['CONTAINER_ID']=(int)$seen_elements[$elements[$i]['CONTAINER_ID']];
+     SQLUpdate('elements', $elements[$i]);
+    }
+   }
 
   $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
  }

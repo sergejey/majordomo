@@ -4,7 +4,7 @@
  * @version 0.1 (auto-set)
  */
 
-DebMes("Runnign maintenance script");
+DebMes("Running maintenance script");
 
 // BACKUP DATABASE AND FILES
 $old_mask = umask(0);
@@ -157,6 +157,7 @@ if (time()>=getGlobal('ThisComputer.started_time')) {
 
 
 // CHECKING DATA
+/*
 $tables = array('commands'         => 'commands',
                 'owproperties'     => 'onewire',
                 'snmpproperties'   => 'snmpdevices',
@@ -213,6 +214,7 @@ foreach ($tables as $k => $v)
       }
    }
 }
+*/
 
 $sqlQuery = "SELECT pvalues.*, objects.TITLE as OBJECT_TITLE, properties.TITLE as PROPERTY_TITLE
                FROM pvalues
