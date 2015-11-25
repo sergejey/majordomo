@@ -19,12 +19,15 @@ class MajordomoApplication extends Application
     {
                 $id = $client->getClientId();
         $this->_clients[$id] = $client;         
+
     }
 
     public function onDisconnect($client)
     {
         $id = $client->getClientId();           
-                unset($this->_clients[$id]);     
+        unset($this->_clients[$id]);
+
+
     }
 
     public function onData($data, $client)

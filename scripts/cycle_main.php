@@ -35,6 +35,12 @@ else
 
 $old_minute = date('i');
 $old_hour = date('h');
+if ($_GET['onetime']) {
+ $old_minute = -1;
+ if (date('i') == '00') {
+  $old_hour = -1;
+ }
+}
 $old_date = date('Y-m-d');
 
 $checked_time = 0;

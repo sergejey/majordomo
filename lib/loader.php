@@ -20,9 +20,18 @@ if (isset($_SERVER['REQUEST_URI']))
 // liblary modules loader
 if ($lib_dir = @opendir("./lib"))
 {
+
+   $ignore_libs=array();
+
+   if (function_exists('mysqli_connect')) {
+    $ignore_libs[]='mysql.class.php';
+   } else {
+    $ignore_libs[]='mysqli.class.php';
+   }
+
    while (($lib_file = readdir($lib_dir)) !== false)
    {
-      if ((preg_match("/\.php$/", $lib_file)) && ($lib_file != "loader.php"))
+      if ((preg_match("/\.php$/", $lib_file)) && ($lib_file != "loader.php") && !in_array($lib_file, $ignore_libs))
       {
          include_once("./lib/$lib_file");
       }

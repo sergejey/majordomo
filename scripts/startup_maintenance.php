@@ -133,7 +133,7 @@ for ($i = 0; $i < $total; $i++)
   
    echo 'Checking table [' . $table . '] ...';
   
-   if ($result = mysql_query("CHECK TABLE " . $table . ";"))
+   if ($result = SQLExec("CHECK TABLE " . $table . ";"))
    {
       echo "OK\n";
    }
