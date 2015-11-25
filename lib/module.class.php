@@ -539,23 +539,21 @@ class module
             
             SQLExec($sql);
 
-            $result = SQLExec("SHOW FIELDS FROM $table");
-
-            while ($row = mysql_fetch_array($result))
-            {
-               $tbl_fields[$table][$row[Field]] = 1;
+            $result = SQLGetFields($table);
+            foreach($result as $row) {
+             $tbl_fields[$table][$row['Field']]=1;
             }
+
          }
          elseif ((strtolower($field) == 'key') || (strtolower($field) == 'index') || (strtolower($field) == 'fulltext'))
          {
             if (!$indexes_retrieved[$table])
             {
-               $result = SQLExec("SHOW INDEX FROM $table");
-               
-               while ($row = mysql_fetch_array($result))
-               {
-                  $tbl_indexes[$table][$row[Key_name]] = 1;
-               }
+                    $result = SQLGetIndexes($table);
+                    foreach($result as $row) {
+                     $tbl_indexes[$table][$row['Key_name']]=1;
+                    }
+
 
                $indexes_retrieved[$table] = 1;
             }

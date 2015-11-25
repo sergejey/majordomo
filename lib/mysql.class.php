@@ -506,6 +506,33 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
 }
 
 /**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function SQLGetFields($table) {
+  $result = SQLExec("SHOW FIELDS FROM $table");  
+  $res=array();
+  while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
+   {
+   $res[] = $rec;
+  }
+  return $res;
+ }
+
+ function SQLGetIndexes($table) {
+  $result = SQLExec("SHOW INDEX FROM $table");  
+  $res=array();
+  while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
+   {
+   $res[] = $rec;
+  }
+  return $res;
+ }
+
+/**
  * Converts date format from YYYY/MM/DD to MM/DD/YYYY
  * @param mixed $source    Source date
  * @param mixed $delim     Source delimiter
