@@ -57,6 +57,18 @@ class mysql
     * @access private
     */
    var $dbh;
+
+   /**
+    * @var int latest transaction timestamp
+    * @access private
+    */
+   var $latestTransaction;
+
+   /**
+    * @var int connection check timeout
+    * @access private
+    */
+   var $pingTimeout;
    
    /**
     * MySQL constructor
@@ -75,6 +87,9 @@ class mysql
       $this->user     = $user;
       $this->password = $password;
       $this->dbName   = $database;
+
+      $this->latestTransaction = time();
+      $this->pingTimeout = 5*60;
 
       $this->Connect();
    }
@@ -115,6 +130,12 @@ class mysql
     */
    public function Exec($query)
    {
+
+      if ((time()-$this->latestTransaction)>$this->pingTimeout) {
+       $this->Ping();
+      }
+
+      $this->latestTransaction=time(); 
       $result = mysql_query($query, $this->dbh);
       
       if (!$result)
@@ -176,6 +197,25 @@ class mysql
       {
          $this->Error($query);
       }
+   }
+
+   public function Ping()
+   {
+    //DebMes("mysql db ping");
+    $test_query = "SHOW TABLES FROM ".$this->dbName;
+    $result = @mysql_query($test_query, $this->dbh);
+    $tblCnt = 0;
+    if ($result) {
+     while($tbl = mysql_fetch_array($result)) {
+      $tblCnt++;
+     }
+    }
+    if ($tblCnt>0) {
+     return true;
+    } else {
+     $this->Disconnect();
+     $this->Connect();
+    }
    }
 
    /**
@@ -531,6 +571,14 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
   }
   return $res;
  }
+
+
+
+ function SQLPing() {
+  global $db;
+  return $db->Ping();
+ }
+
 
 /**
  * Converts date format from YYYY/MM/DD to MM/DD/YYYY

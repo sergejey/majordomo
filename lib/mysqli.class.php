@@ -57,6 +57,19 @@ class mysql
     * @access private
     */
    var $dbh;
+
+   /**
+    * @var int latest transaction timestamp
+    * @access private
+    */
+   var $latestTransaction;
+
+   /**
+    * @var int connection check timeout
+    * @access private
+    */
+   var $pingTimeout;
+
    
    /**
     * MySQL constructor
@@ -75,6 +88,9 @@ class mysql
       $this->user     = $user;
       $this->password = $password;
       $this->dbName   = $database;
+
+      $this->latestTransaction = time();
+      $this->pingTimeout = 5*60;
 
       $this->Connect();
    }
@@ -100,7 +116,7 @@ class mysql
       }
       else
       {
-
+         $this->latestTransaction=time();
          $this->Exec("SET NAMES 'utf8';");
          $this->Exec("SET CHARACTER SET 'utf8';");
          $this->Exec("set character_set_client='utf8';");
@@ -122,6 +138,11 @@ class mysql
    public function Exec($query)
    {
 
+      if ((time()-$this->latestTransaction)>$this->pingTimeout) {
+       $this->Ping();
+      }
+
+      $this->latestTransaction=time(); 
       $result = mysqli_query($this->dbh, $query);
       
       if (!$result)
@@ -150,6 +171,7 @@ class mysql
     */
    public function Select($query)
    {
+
       $res = array();
       
       if ($result = $this->Exec($query))
@@ -189,6 +211,29 @@ class mysql
          $this->Error($query);
       }
    }
+
+
+   public function Ping()
+   {
+
+    //DebMes("mysqli db ping");
+    $test_query = "SHOW TABLES FROM ".$this->dbName;
+    $result = @mysqli_query($this->dbh, $test_query);
+    $tblCnt = 0;
+    if ($result) {
+     while($tbl = mysqli_fetch_array($result)) {
+      $tblCnt++;
+     }
+    }
+    if ($tblCnt>0) {
+     return true;
+    } else {
+     $this->Disconnect();
+     $this->Connect();
+    }
+    
+   }
+
 
    /**
     * Execute SQL UPDATE query for one record
@@ -546,6 +591,12 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
   }
   return $res;
  }
+
+ function SQLPing() {
+  global $db;
+  return $db->Ping();
+ }
+
 
 /**
  * Converts date format from YYYY/MM/DD to MM/DD/YYYY

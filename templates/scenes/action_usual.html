@@ -21,6 +21,7 @@
         var refreshRun=0;
         var checkTimer;
         var refreshTimer;
+        var noUpdatesTimer;
         var usingWebsockets=0;
 
         function EvalSound(soundobj) {
@@ -176,9 +177,14 @@
 
 
         function processCheckStates(data) {
+
+
            var obj=jQuery.parseJSON(data);
            if (typeof obj !='object') return false;
            
+           clearTimeout(noUpdatesTimer);
+           noUpdatesTimer=setTimeout("$.publish('scenesNoUpdates');", 30*60*1000);
+
            var objCnt = obj.length;
            if (objCnt) {
              for(var i=0;i<objCnt;i++) {
@@ -289,6 +295,12 @@ new TWEEN.Tween( camera.position ).to( {
           });
          return false;
         }
+
+        $.subscribe('scenesNoUpdates', function (_) {
+         window.location.reload();
+        });
+
+
 
         $.subscribe('wsConnected', function (_) {
          var payload;
