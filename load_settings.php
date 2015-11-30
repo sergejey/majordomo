@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ENVIRONMENT'))
+   error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
+
+
 // get settings
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
 $total    = count($settings);
@@ -25,5 +29,6 @@ if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
  Define('SERVER_URL','http://localhost:80');
 }
 
-if (!defined('ENVIRONMENT'))
-   error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
+if (!defined('WEBSOCKETS_PORT'))
+   Define('WEBSOCKETS_PORT', 8001);
+

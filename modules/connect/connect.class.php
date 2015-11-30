@@ -176,7 +176,7 @@ function admin(&$out) {
 
   // POST TO SERVER
   $url = 'http://connect.smartliving.ru/upload/';
-  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)));
+  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
   foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }

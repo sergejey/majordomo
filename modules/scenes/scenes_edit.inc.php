@@ -57,6 +57,11 @@
    $elements = ($elements == null) ? array() : $elements;
    */
   }
+
+  if ($this->tab=='visual') {
+   //updating visual
+  }
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -185,6 +190,10 @@
     global $smart_repeat;
     $element['SMART_REPEAT']=(int)$smart_repeat;
 
+    global $s3d_scene;
+    $element['S3D_SCENE']=$s3d_scene;
+
+
 
     global $css_style;
     $element['CSS_STYLE']=$css_style;
@@ -267,6 +276,8 @@
     global $do_on_click_new;
     global $priority_new;
     global $code_new;
+    global $s3d_object_new;
+    global $s3d_camera_new;
 
     if ($state_delete && $state_rec['ID']) {
 
@@ -329,6 +340,11 @@
        if ($errors) {
         $state_rec['CONDITION_ADVANCED']='';;
        }
+     }
+
+     if ($element['TYPE']=='s3d') {
+      $state_rec['S3D_OBJECT']=trim($s3d_object_new);
+      $state_rec['S3D_CAMERA']=trim($s3d_camera_new);
      }
 
 
@@ -606,7 +622,6 @@
 
   }
 
-
   if ($this->tab=='elements') {
    $out['OTHER_SCENES']=SQLSelect("SELECT ID, TITLE FROM scenes ORDER BY PRIORITY DESC, TITLE");
    $out['HOMEPAGES']=SQLSelect("SELECT ID, TITLE FROM layouts ORDER BY TITLE");
@@ -625,6 +640,39 @@
    $out['MENU_ITEMS']=$menu_items;
    $out['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."' ORDER BY elm_states.PRIORITY DESC");
    $out['STATE_ID']=$state_id;
+
+   if ($element['TYPE']=='s3d') {
+    if (file_exists(ROOT.$element['S3D_SCENE'])) {
+     $scene_text=LoadFile(ROOT.$element['S3D_SCENE']);
+     $scene_data=json_decode($scene_text, true);
+     if (is_array($scene_data['object']['children'])) {
+        function processObjectsTree($objects, &$result) {
+         $total=count($objects);
+         for($i=0;$i<$total;$i++) {
+          if ($objects[$i]['name']) {
+           $result[]=array('TITLE'=>$objects[$i]['name'], 'TYPE'=>$objects[$i]['type']);
+          } else {
+           $result[]=array('TITLE'=>$objects[$i]['uuid'], 'TYPE'=>$objects[$i]['type']);
+          }
+          if (is_array($objects[$i]['children'])) {
+           processObjectsTree($objects[$i]['children'], $result);
+          }
+         }
+        }
+        $res=array();
+        processObjectsTree($scene_data['object']['children'], $res);
+        $out['S3D_OBJECTS']=$res;
+        $out['S3D_CAMERAS']=array();
+        foreach($res as $k=>$v) {
+         if (is_integer(strpos(strtolower($v['TYPE']), 'camera'))) {
+          $out['S3D_CAMERAS'][]=$v;
+         }
+        }
+
+     }
+    }
+   }
+
   }
 
   //$elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
@@ -661,7 +709,6 @@
     }
    }
   }
-
 
 
   $out['CONTAINERS']=$containers;

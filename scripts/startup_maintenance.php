@@ -4,26 +4,11 @@
  * @version 0.1 (auto-set)
  */
 
+DebMes("Running maintenance script");
+
 // BACKUP DATABASE AND FILES
 $old_mask = umask(0);
 
-$filename  = ROOT . '/database_backup/db.sql';
-
-if (file_exists($filename) && $run_from_start)
-{
-   echo "Running: mysql -u " . DB_USER . " -p" . DB_PASSWORD . " " . DB_NAME . " <" . $filename . PHP_EOL;
-   
-   $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
-   $mysqlParam = " -u " . DB_USER;
-   
-   if (DB_PASSWORD != '')
-      $mysqlParam .= " -p" . DB_PASSWORD;
-
-   $mysqlParam .= " " . DB_NAME . " <" . $filename;
-      
-   exec($mysql_path . $mysqlParam);
-}
- 
 if (!is_dir(DOC_ROOT . '/backup'))
    mkdir(DOC_ROOT . '/backup', 0777);
 
@@ -61,6 +46,19 @@ if (!is_dir(ROOT . 'cached/voice'))
 if (!is_dir(ROOT . 'cached/urls'))
    mkdir(ROOT . 'cached/urls', 0777);
 
+
+if (!defined('LOG_FILES_EXPIRE')) {
+ define('LOG_FILES_EXPIRE', 5);
+}
+if (!defined('BACKUP_FILES_EXPIRE')) {
+ define('BACKUP_FILES_EXPIRE', 10);
+}
+if (!defined('CACHED_FILES_EXPIRE')) {
+ define('CACHED_FILES_EXPIRE', 30);
+}
+
+
+
 echo "Target: " . $target_dir . PHP_EOL;
 echo "Full backup: " . $full_backup . PHP_EOL;
 
@@ -68,6 +66,7 @@ sleep(5);
 
 if ($full_backup)
 {
+   DebMes("Backing up files...");
    echo "Backing up files...";
    
    if (defined('PATH_TO_MYSQLDUMP'))
@@ -94,6 +93,34 @@ if ($full_backup)
    echo "OK\n";
 }
 
+//removing old log files
+$dir = ROOT."debmes/";
+foreach (glob($dir."*") as $file) {
+ if (filemtime($file) < time() - LOG_FILES_EXPIRE*24*60*60) {
+  DebMes("Removing log file ".$file);
+  @unlink($file);
+ }
+}
+
+//removing old backups files
+$dir =$target_dir;
+foreach (glob($dir."*") as $file) {
+ if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
+  DebMes("Removing backup file ".$file);
+  @unlink($file);
+ }
+}
+
+//removing old cached files
+$dir = ROOT."cached/";
+foreach (glob($dir."*") as $file) {
+ if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
+  DebMes("Removing cached file ".$file);
+  @unlink($file);
+ }
+}
+
+
 umask($old_mask);
 
 // CHECK/REPAIR/OPTIMIZE TABLES
@@ -106,7 +133,7 @@ for ($i = 0; $i < $total; $i++)
   
    echo 'Checking table [' . $table . '] ...';
   
-   if ($result = mysql_query("CHECK TABLE " . $table . ";"))
+   if ($result = SQLExec("CHECK TABLE " . $table . ";"))
    {
       echo "OK\n";
    }
@@ -118,14 +145,19 @@ for ($i = 0; $i < $total; $i++)
    }
 }
 
-SQLExec("DELETE FROM events WHERE ADDED > NOW()");
-SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
-SQLExec("DELETE FROM history WHERE ADDED > NOW()");
-SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
-SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
-SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+setGlobal('ThisComputer.started_time', time());
+if (time()>=getGlobal('ThisComputer.started_time')) {
+ SQLExec("DELETE FROM events WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM history WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
+ SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
+ SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+}
+
 
 // CHECKING DATA
+/*
 $tables = array('commands'         => 'commands',
                 'owproperties'     => 'onewire',
                 'snmpproperties'   => 'snmpdevices',
@@ -182,6 +214,7 @@ foreach ($tables as $k => $v)
       }
    }
 }
+*/
 
 $sqlQuery = "SELECT pvalues.*, objects.TITLE as OBJECT_TITLE, properties.TITLE as PROPERTY_TITLE
                FROM pvalues

@@ -263,6 +263,9 @@ function admin(&$out) {
   }
 
   if ($this->view_mode=='' || $this->view_mode=='search_scenes') {
+   if ($_GET['draggable']) {
+    $out['DRAGGABLE']=1;
+   }
    $this->search_scenes($out);
   }
   if ($this->view_mode=='edit_scenes') {
@@ -457,12 +460,16 @@ function admin(&$out) {
 
   //elements
   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".(int)$id."'");
+  $seen_elements=array();
+
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
+   $old_element_id=$elements[$i]['ID'];
    unset($elements[$i]['ID']);
    $elements[$i]['SCENE_ID']=$rec['ID'];
    $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+   $seen_elements[$old_element_id]=$elements[$i]['ID'];
    $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
    for($iE=0;$iE<$totalE;$iE++) {
@@ -471,6 +478,17 @@ function admin(&$out) {
     SQLInsert('elm_states', $states[$iE]);
    }
   }
+
+   for($i=0;$i<$total;$i++) {
+    if ($elements[$i]['LINKED_ELEMENT_ID']) {
+     $elements[$i]['LINKED_ELEMENT_ID']=(int)$seen_elements[$elements[$i]['LINKED_ELEMENT_ID']];
+     SQLUpdate('elements', $elements[$i]);
+    }
+    if ($elements[$i]['CONTAINER_ID']) {
+     $elements[$i]['CONTAINER_ID']=(int)$seen_elements[$elements[$i]['CONTAINER_ID']];
+     SQLUpdate('elements', $elements[$i]);
+    }
+   }
 
   $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
  }
@@ -489,6 +507,53 @@ function usual(&$out) {
     global $op;
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
+
+    if ($op=='resized' || $op=='dragged') {
+     global $element;
+     global $details;
+     $element_id=0;
+     if (preg_match('/state_(\d+)/', $element, $m)) {
+      $state=SQLSelectOne("SELECT ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
+      $element_id=$state['ELEMENT_ID'];
+     } elseif (preg_match('/canvas_(\d+)/', $element, $m) || preg_match('/container_(\d+)/', $element, $m)) {
+      $element_id=$m[1];
+     }
+     $element=SQLSelectOne("SELECT * FROM elements WHERE ID='".(int)$element_id."'");
+    }
+
+
+    if ($op=='resized' && $element['ID']) {
+     $details=json_decode($details, true);
+     $element['WIDTH']=$details['size']['width'];
+     $element['HEIGHT']=$details['size']['height'];
+     if ($element['WIDTH']>0 && $element['HEIGHT']>0) {
+      SQLUpdate('elements', $element);
+     }
+    }
+
+    if ($op=='dragged' && $element['ID']) {
+     $details=json_decode($details, true);
+     //echo "Dragged $element ".serialize($details);
+     $diff_top=$details['position']['top']-$details['originalPosition']['top'];
+     $diff_left=$details['position']['left']-$details['originalPosition']['left'];
+     if ($diff_top!=0 || $diff_left!=0) {
+      $element['TOP']+=$diff_top;
+      $element['LEFT']+=$diff_left;
+      SQLUpdate('elements', $element);
+
+      $linked_elements=SQLSelect("SELECT * FROM elements WHERE LINKED_ELEMENT_ID=".(int)$element['ID']);
+      $total=count($linked_elements);
+      for($i=0;$i<$total;$i++) {
+       $linked_elements[$i]['TOP']-=$diff_top;
+       $linked_elements[$i]['LEFT']-=$diff_left;
+       SQLUpdate('elements', $linked_elements[$i]);
+      }
+
+     }
+
+    }
+
+
     if ($op=='checkAllStates') {
      global $scene_id;
      $qry="1";
@@ -519,18 +584,7 @@ function usual(&$out) {
      $total=count($states);
 
      for($i=0;$i<$total;$i++) {
-      $states[$i]['STATE']=(string)$this->checkState($states[$i]['ID']);
-      if ($states[$i]['HTML']!='') {
-       if (preg_match('/\[#modul/is', $states[$i]['HTML'])) {
-        //$states[$i]['HTML']=str_replace('#', '', $states[$i]['HTML']);
-        unset($states[$i]['HTML']);
-       } else {
-        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
-       }
-      }
-      if ($states[$i]['TYPE']=='img') {
-       unset($states[$i]['HTML']);
-      }
+      $this->processState($states[$i]);
      }
      echo json_encode($states);
     }
@@ -580,7 +634,6 @@ function usual(&$out) {
 
      $qry="1";
      $qry.=" AND elements.ID=".$state['ELEMENT_ID'];
-     //$states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements, scenes WHERE elements.SCENE_ID=scenes.ID AND elm_states.ELEMENT_ID=elements.ID AND $qry ORDER BY elements.PRIORITY DESC, elm_states.PRIORITY DESC");
 
       $states=array();
       $elements=$this->getDynamicElements($qry);
@@ -595,6 +648,8 @@ function usual(&$out) {
 
      $total=count($states);
      for($i=0;$i<$total;$i++) {
+      $this->processState($states[$i]);
+      /*
       $states[$i]['STATE']=(string)$this->checkState($states[$i]['ID']);
       if ($states[$i]['HTML']!='') {
        $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
@@ -602,6 +657,7 @@ function usual(&$out) {
       if ($states[$i]['TYPE']=='img') {
        unset($states[$i]['HTML']);
       }
+      */
      }
      echo json_encode($states);
 
@@ -632,6 +688,29 @@ function usual(&$out) {
  $out['ALL_TYPES']=$this->getAllTypes();
 
 }
+
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function processState(&$state) {
+      $state['STATE']=(string)$this->checkState($state['ID']);
+      if ($state['HTML']!='') {
+       if (preg_match('/\[#modul/is', $state['HTML'])) {
+        //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
+        unset($state['HTML']);
+       } else {
+        $state['HTML']=processTitle($state['HTML'], $this);
+       }
+      }
+      if ($state['TYPE']=='img') {
+       unset($state['HTML']);
+      }
+ }
 
  function checkSettings() {
   $settings=array(
@@ -1260,6 +1339,10 @@ function usual(&$out) {
          $styles_recs[$style]['HAS_DEFAULT']=$entry;
         }
 
+        if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on) {
+         $styles_recs[$style]['HAS_DEFAULT']=$has_on;
+        }
+
        }
     }
     closedir($handle);
@@ -1292,6 +1375,70 @@ function usual(&$out) {
 
   
  }
+
+ /**
+ * Title
+ *
+ * Description
+ *
+ * @access public
+ */
+  function getWatchedProperties($scenes) {
+
+   //DebMes("Getting watched properties for ".serialize($scenes));
+
+   $qry='1';
+
+   if (!IsSet($scenes['all'])) {
+    $qry.=" AND (0 ";
+    foreach($scenes as $k=>$v) {
+     if ($k=='all') {
+      continue;
+     }
+     $qry.=" OR SCENE_ID=".(int)$k;
+    }
+    $qry.=")";
+   }
+
+   //DebMes("qry: ".$qry);
+
+      $states=array();
+      $elements=$this->getDynamicElements($qry);
+      $total=count($elements);
+      for($i=0;$i<$total;$i++) {
+       if (is_array($elements[$i]['STATES'])) {
+        foreach($elements[$i]['STATES'] as $st) {
+         $states[]=$st;
+        }
+       }
+      }
+
+
+   $properties=array();
+   $total=count($states);
+
+   //DebMes("total states: ".$total);
+
+   for($i=0;$i<$total;$i++) {
+    if ($states[$i]['LINKED_OBJECT'] && $states[$i]['LINKED_PROPERTY']) {
+     $properties[]=array('PROPERTY'=>mb_strtolower($states[$i]['LINKED_OBJECT'].'.'.$states[$i]['LINKED_PROPERTY'], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+    }
+
+    $content=$states[$i]['HTML'];
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+
+    if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
+     $totalm=count($m[1]);
+     for($im=0;$im<$totalm;$im++) {
+       $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+     }
+    }
+    //to-do: add %random% support
+   }
+
+   //DebMes("Getting watched properties for ".serialize($properties));
+   return $properties;
+  }
 
 /**
 * dbInstall
@@ -1335,6 +1482,7 @@ elm_states - Element states
  elements: PRIORITY int(10) NOT NULL DEFAULT '0'
  elements: JAVASCRIPT text
  elements: CSS text
+ elements: S3D_SCENE varchar(255) NOT NULL DEFAULT ''
  elements: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
 
  elm_states: ID int(10) unsigned NOT NULL auto_increment
@@ -1362,6 +1510,8 @@ elm_states - Element states
  elm_states: WINDOW_WIDTH int(10) NOT NULL DEFAULT '0'
  elm_states: WINDOW_HEIGHT int(10) NOT NULL DEFAULT '0'
  elm_states: SWITCH_SCENE int(3) NOT NULL DEFAULT '0'
+ elm_states: S3D_OBJECT varchar(255) NOT NULL DEFAULT ''
+ elm_states: S3D_CAMERA varchar(255) NOT NULL DEFAULT ''
  elm_states: CURRENT_STATUS int(3) NOT NULL DEFAULT '0'
  elm_states: PRIORITY int(10) NOT NULL DEFAULT '0'
 EOD;

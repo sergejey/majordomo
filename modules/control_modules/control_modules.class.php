@@ -200,11 +200,12 @@ function install($parent_name = "")
          
          include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
          $obj = "\$object$i";
-         $code .= "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
+         $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
+         //echo "Installing ".$lst[$i]['FILENAME']."\n";
+         @eval("$code");
       }
    }
 
-   @eval("$code");
    
    SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '" . $this->name . "'");
 }

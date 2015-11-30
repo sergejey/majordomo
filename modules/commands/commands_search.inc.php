@@ -59,6 +59,11 @@
    if ($paret_rec['SUB_PRELOAD']) {
     $parent_rec['ID']=$parent_rec['PARENT_ID'];
    }
+ 
+   if (!$parent_rec['AUTO_UPDATE'] && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
+     $parent_rec['AUTO_UPDATE']=10;
+    }
+
    foreach($parent_rec as $k=>$v) {
     $out['PARENT_'.$k]=$v;
    }
@@ -81,50 +86,15 @@
    $session->data['commands_qry']=$qry;
   }
   if (!$qry) $qry="1";
-  // FIELDS ORDER
-  global $sortby;
-  if (!$sortby) {
-   $sortby=$session->data['commands_sort'];
-  } else {
-   if ($session->data['commands_sort']==$sortby) {
-    if (Is_Integer(strpos($sortby, ' DESC'))) {
-     $sortby=str_replace(' DESC', '', $sortby);
-    } else {
-     $sortby=$sortby." DESC";
-    }
-   }
-   $session->data['commands_sort']=$sortby;
-  }
-  $sortby="PRIORITY DESC, TITLE";
-  $out['SORTBY']=$sortby;
+
   // SEARCH RESULTS
 
-  $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY $sortby");
+  $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY PRIORITY DESC, TITLE");
 
    if ($res[0]['ID']) {
 
     if ($this->action!='admin') {
-     $dynamic_res=array();
-     $total=count($res);
-     for($i=0;$i<$total;$i++) {
-      if ($res[$i]['SMART_REPEAT'] && $res[$i]['LINKED_OBJECT']) {
-       $obj=getObject($res[$i]['LINKED_OBJECT']);
-       $objects=getObjectsByClass($obj->class_id);
-       $total_o=count($objects);
-       for($io=0;$io<$total_o;$io++) {
-        $rec=$res[$i];
-        $rec['ID']=$res[$i]['ID'].'_'.$objects[$io]['ID'];
-        $rec['LINKED_OBJECT']=$objects[$io]['TITLE'];
-        $rec['DATA']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['DATA']);
-        $rec['CUR_VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
-        $rec['TITLE']=$objects[$io]['TITLE'];
-        $dynamic_res[]=$rec;
-       }
-      } else {
-       $dynamic_res[]=$res[$i];
-      }
-     }
-     $res=$dynamic_res;
+     $res=$this->getDynamicElements($qry);
     }
 
     $this->processMenuElements($res);

@@ -6,13 +6,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><#SETTINGS_SITE_TITLE#></title>
-<meta name="keywords" content="{#if CMS_KEYWORDS!=""#}{#CMS_KEYWORDS#}{#endif#}">
-<meta name="description" content="{#if CMS_DESCRIPTION!=""#}{#CMS_DESCRIPTION#}{#endif#}">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 [#if POPUP="1"#]
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<!--#
 [#if ACTION="scenes"#]<meta http-equiv="refresh" content="3600">[#endif ACTION#]
+#-->
 [#endif#]
 <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
 <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
@@ -22,18 +22,15 @@
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 <link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
-
-
 <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
 
-
 <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
-
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery.gritter.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
+[#inc websockets.html#]
 </head>
 
 [#if POPUP!="1"#]
@@ -50,12 +47,13 @@ $(document).ready(function() {
 [#endif POPUP#]
 
 <script language="javascript">
-jQuery.fn.center = function () {
+
+ jQuery.fn.center = function () {
     this.css("position","absolute");
     this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
     this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
     return this;
-}
+ }
 
  // ----------------------------------------------------------------------
  function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
@@ -114,9 +112,6 @@ jQuery.fn.center = function () {
   if (eventLatest!=data) {
      eventLatest=data;
      eventState='processing';
-     //var elem=document.getElementById('debugInfo');
-     //elem.innerHTML=elem.innerHTML+'<br>'+data;
-     // processing
      var d=data.split('|');
      var event_id=d[0];
      var event_type=d[1];
@@ -133,21 +128,17 @@ jQuery.fn.center = function () {
   if (eventState!='') return;
   clearTimeout(eventTimer);
   eventTimer=window.setTimeout ('getNextEvent();', 5000);
+
+  if (startedWebSockets==1) {
+   return false;
+  }
+
   eventState='requesting';
   AJAXRequest('/getnextevent.html', 'getNextEventReceived', '');
   return false;
  }
 
-
-
- /*
- function getLatestNoteMP3Received(id, data) {
-    document.getElementById("sound").innerHTML="<embed src='"+data+"' hidden=true autostart=true loop=false>";
- }
- */
-
  function getLatestNoteReceived(id, data) {
-
   var obj=jQuery.parseJSON(data);
   if (obj.DATA!='') {
    if (noteLatest!=obj.DATA) {
@@ -158,7 +149,6 @@ jQuery.fn.center = function () {
          sticky: false, 
          time: 8000
       });
-      //AJAXRequest('/getlatestmp3.html', 'getLatestNoteMP3Received', '');
     }
     noteLatest=obj.DATA;
    }
@@ -169,6 +159,9 @@ jQuery.fn.center = function () {
  function getLatestNote() {
   clearTimeout(noteTimer);
   noteTimer=window.setTimeout ('getLatestNote();', 5000);
+  if (startedWebSockets==1) {
+   return false;
+  }
   AJAXRequest('/getlatestnote.html', 'getLatestNoteReceived', '');
   return false;
  }
@@ -189,11 +182,7 @@ jQuery.fn.center = function () {
  var totalLayouts=[#TOTAL_LAYOUTS#];
 
  function openNewTab(winTitle, pageURL) {
-  //alert(winTitle+' '+pageURL);
-  //$("#tabs").tabs("add", pageURL, winTitle);
   iFrameHeight=$(window).height()-110;
-  //alert(pageURL);
-  //alert(iFrameHeight);
   $("#tablast_title").html(winTitle);
   $("#tabs-last").html('<iframe src="'+pageURL+'" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
   $("#tabs").tabs("select", totalLayouts);
@@ -201,32 +190,54 @@ jQuery.fn.center = function () {
  }
 
  function playMedia(path, rnd, terminal_name) {
-  //alert(path);
-  //alert(terminal_id);
-  //alert('zz');
-  //alert($("#frmPlayerControl"));
   $("#hidPlayPath").val(path);
   $("#selPlayTerminal").val(terminal_name);
   playerCommand("refresh");
-  /*
-  if (terminal_id>0) {
-   openTWindow('mediaPlayer', 'Player', '/popup/player.html?rnd='+rnd+'&terminal_id='+terminal_id+'&play='+URLencode(path), 500, 80);
-  } else {
-   openTWindow('mediaPlayer', 'Player', '/popup/player.html?rnd='+rnd+'&play='+URLencode(path), 500, 80);
-  }
-  */
   return true;
  }
+
 
 </script>
 
 <div id="app_container">[#inc actions.html#]</div><div id='sound'></div>
 
 <script language="javascript">
+$(document).ready(function(){
  getNextEvent();
  getLatestNote();
+
+        $.subscribe('wsConnected', function (_) {
+         var payload;
+         payload = new Object();
+         payload.action = 'Subscribe';
+         payload.data = new Object();
+         payload.data.TYPE='events';
+         payload.data.EVENTS='SAY,TERMINAL_EVENT';
+         wsSocket.send(JSON.stringify(payload));
+
+        });
+
+        $.subscribe('wsData', function (_, response) {
+          if (response.action=='events') {
+           var event_data=jQuery.parseJSON(response.data);
+           if (event_data.EVENT_DATA.NAME=='SAY' && event_data.EVENT_DATA.VALUE.member_id=="0") {
+            var new_data=Object();
+            new_data.DATA=event_data.EVENT_DATA.VALUE.message;
+            getLatestNoteReceived(0, JSON.stringify(new_data));
+           }
+           if (event_data.EVENT_DATA.NAME=='TERMINAL_EVENT' && event_data.EVENT_DATA.VALUE.TERMINAL_TO=="*") {
+            var new_data=Object();
+            new_data=event_data.EVENT_DATA.VALUE.ID+'|'+event_data.EVENT_DATA.VALUE.EVENT_TYPE+'|'+event_data.EVENT_DATA.VALUE.WINDOW+'|'+event_data.EVENT_DATA.VALUE.DETAILS;
+            getNextEventReceived(0, new_data);
+           }
+          }
+        });
+
+
+});
 </script>
 [#endif POPUP#]
+
 
 </body>
 </html>

@@ -11,16 +11,17 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta http-equiv="refresh" content="3600">
 <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
 <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
+<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 <link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+[#inc websockets.html#]
 </head>
 <!--#[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]#-->
 <style>
@@ -49,7 +50,6 @@ $(document).ready(function() {
 [#if "<#SETTINGS_SCENES_BACKGROUND_VIDEO#>"!=""#]
 <video id="video_background" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
       <source  src="<#SETTINGS_SCENES_BACKGROUND_VIDEO#>" type='video/mp4'>
-<!--#      <source  src="/grey.webm" type='video/webm'>#-->
     </video>
 [#endif#]
 
@@ -57,7 +57,6 @@ $(document).ready(function() {
 <div id="container">
 [#module name="scenes" action=""#]
 </div>
-
 
 
 </body>

@@ -34,18 +34,48 @@ include_once("./load_settings.php");
 
 echo "CONNECTED TO DB" . PHP_EOL;
 
-include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-
-$ctl = new control_modules();
-
 echo "Running startup maintenance" . PHP_EOL;
 
+//restoring database backup (if was saving periodically)
+$filename  = ROOT . 'database_backup/db.sql';
+if (file_exists($filename))
+{
+   echo "Running: mysql -u " . DB_USER . " -p" . DB_PASSWORD . " " . DB_NAME . " <" . $filename . PHP_EOL;
+   $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+   $mysqlParam = " -u " . DB_USER;
+   if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+   $mysqlParam .= " " . DB_NAME . " <" . $filename;
+   exec($mysql_path . $mysqlParam);
+}
+
+//reinstalling modules
+/*
+        $source=ROOT.'modules';
+        if ($dir = @opendir($source)) { 
+          while (($file = readdir($dir)) !== false) { 
+           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
+            //echo "Removing file ".ROOT."modules/".$file."/installed"."\n";
+            @unlink(ROOT."modules/".$file."/installed");
+           }
+          }
+         }
+*/
+
+echo "Checking modules.\n";
+// continue startup
+include_once(DIR_MODULES . "control_modules/control_modules.class.php");
+$ctl = new control_modules();
+
+
+//removing cached data
+echo "Clearing the cache.\n";
+SQLExec("TRUNCATE TABLE `cached_values`");
+
 $run_from_start = 1;
-
 include("./scripts/startup_maintenance.php");
-
 $run_from_start = 0;
 
+setGlobal('ThisComputer.started_time', time());
 getObject('ThisComputer')->raiseEvent("StartUp");
 
 // 1 second sleep
@@ -83,12 +113,9 @@ foreach ($cycles as $path)
       
       if ((preg_match("/_X/", $path)))
       {
-         //для начала убедимся, что мы в Линуксе. Иначе удаленный запуск этих скриптов не делаем
          if (!IsWindowsOS())
          {
             $display = '101';
-            
-            //Попробуем получить номер Дисплея из имени файла
             if ((preg_match("/_X(.+)_/", $path, $displays)))
             {
                if (count($displays) > 1)
@@ -96,8 +123,6 @@ foreach ($cycles as $path)
                   $display = $displays[1];
                }
             }
-            
-            //запускаем Линуксовый поцесс на дисплее, номер которого в имени файла после _X
             $pipe_id = $threads->newXThread($path, $display);
          }
       }
@@ -123,6 +148,11 @@ if (!is_array($restart_threads))
                          'cycle_scheduler.php',
                          'cycle_states.php',
                          'cycle_webvars.php');
+
+ if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) {
+  $restart_threads[]='cycle_websockets.php';
+ }
+
 }
 
 while (false !== ($result = $threads->iteration()))
@@ -156,7 +186,8 @@ while (false !== ($result = $threads->iteration()))
 }
 
 
-unlink('./reboot');
+ unlink('./reboot');
 
-// closing database connection
-$db->Disconnect();
+ // closing database connection
+ $db->Disconnect();
+

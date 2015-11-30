@@ -41,6 +41,10 @@
    global $height;
    $rec['HEIGHT']=(int)$height;
 
+   global $d3d_scene;
+   $rec['D3D_SCENE']=$d3d_scene;
+
+
    global $background;
    $rec['BACKGROUND']=(int)$background;
 

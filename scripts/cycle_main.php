@@ -35,9 +35,16 @@ else
 
 $old_minute = date('i');
 $old_hour = date('h');
+if ($_GET['onetime']) {
+ $old_minute = -1;
+ if (date('i') == '00') {
+  $old_hour = -1;
+ }
+}
 $old_date = date('Y-m-d');
 
 $checked_time = 0;
+$started_time = time();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
@@ -47,6 +54,7 @@ while (1)
    {
       $checked_time = time();
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+      setGlobal('ThisComputer.uptime', time()-getGlobal('ThisComputer.started_time'));
    }
 
    $m = date('i');
@@ -55,7 +63,7 @@ while (1)
    
    if ($m != $old_minute)
    {
-      echo "new minute\n";
+      //echo "new minute\n";
       $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
@@ -65,9 +73,9 @@ while (1)
       
       for ($i = 0; $i < $total; $i++)
       {
-         echo $objects[$i]['TITLE'] . "->onNewMinute\n";
-         getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
+         echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewMinute\n";
          getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
+         getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
       }
       
       $old_minute = $m;
@@ -79,18 +87,21 @@ while (1)
                      FROM objects
                     WHERE $o_qry";
       
-      echo "new hour\n";
+      //echo "new hour\n";
       $old_hour = $h;
       $objects = SQLSelect($sqlQuery);
       $total = count($objects);
       
-      for($i = 0; $i < $total; $i++)
+      for($i = 0; $i < $total; $i++) 
+      {
+         echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewHour\n";
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
+      }
    }
    
    if ($dt != $old_date)
    {
-      echo "new day\n";
+      //echo "new day\n";
       $old_date = $dt;
    }
 

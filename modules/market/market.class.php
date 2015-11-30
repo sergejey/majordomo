@@ -272,19 +272,19 @@ function admin(&$out) {
 
     if (file_exists($filename)) {
 
-      $file = $file_name;
+      $file = basename($filename);
       DebMes("Installing/updating plugin $name ($version)");
 
       chdir(ROOT.'saverestore/temp');
 
       if (IsWindowsOS()) {
+         //DebMes("Running ".DOC_ROOT.'/gunzip ../'.$file);
          exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
+         //DebMes("Running ".DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file));
          exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
       } else {
          exec('tar xzvf ../' . $file, $output, $res);
       }
-
-      sleep(2);
 
         $x = 0;
         $latest_dir='';

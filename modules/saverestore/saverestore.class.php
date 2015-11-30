@@ -1133,12 +1133,10 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
        //print_r($output);exit;
 
-       if (1) {
+
 
         chdir('../../');
 
-        if ($this->method=='direct') {
-  
          $ignores=SQLSelect("SELECT * FROM ignore_updates ORDER BY NAME");
          $total=count($ignores);
          for($i=0;$i<$total;$i++) {
@@ -1152,63 +1150,9 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
          }
 
          // UPDATING FILES DIRECTLY
-         //$this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
+         $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
 
 
-        } elseif ($this->method=='ftp') {
-
-  // UPDATING FILES BY FTP
-
-
-  $conn_id = @ftp_connect($this->config['FTP_HOST']); 
-  if ($conn_id) {
-
-   $login_result = @ftp_login($conn_id, $this->config['FTP_USERNAME'], $this->config['FTP_PASSWORD']); 
-   if ($login_result) {
-    $systyp=ftp_systype($conn_id);
-      
-      
-
-    if (@ftp_chdir($conn_id, $this->config['FTP_FOLDER'].'saverestore')) {
-     @ftp_chdir($conn_id, $this->config['FTP_FOLDER']);
-     // ok, we're in. updating!
-        $log='';
-        $files=$this->getLocalFilesTree(ROOT.'saverestore/temp'.$folder, '.+', 'installed', $log, 0);
-        $total=count($files);
-        $modules_processed=array();
-        for($i=0;$i<$total;$i++) {
-          $file=$files[$i];
-          $file['REMOTE_FILENAME']=preg_replace('/^'.preg_quote(ROOT.'saverestore/temp/'.$folder, '/').'/is', $this->config['FTP_FOLDER'], $file['FILENAME']);
-          $file['REMOTE_FILENAME']=str_replace('//', '/', $file['REMOTE_FILENAME']);
-          $res_f=$this->ftpput( $conn_id, $file['REMOTE_FILENAME'], $file['FILENAME'], FTP_BINARY);
-
-          if (preg_match('/\.class\.php$/', basename($file['FILENAME'])) && !$modules_processed[dirname($file['REMOTE_FILENAME'])]) {
-           // if this a module then we should update attributes for folder and remove 'installed' file
-           $modules_processed[dirname($file['REMOTE_FILENAME'])]=1;
-           @ftp_site($conn_id,"CHMOD 0777 ".dirname($file['REMOTE_FILENAME']));
-           @ftp_delete($conn_id, dirname($file['REMOTE_FILENAME']).'/installed');
-          }
-        }
-
-
-    } else {
-     $out['FTP_ERR']='Incorrect folder ('.$ftp_folder.')';
-     
-    }
-   } else {
-    $out['FTP_ERR']='Incorrect username/password';
-    
-   }
-
-   ftp_close($conn_id);
-
-  } else {
-   $out['FTP_ERR']='Cannot connect to host ('.$ftp_host.')';
-   $this->redirect("?err_msg=".urlencode($out['FTP_ERR']));
-  }
-
-
-        }
 
         //if (is_dir(ROOT.'saverestore/temp/'.$folder.'modules')) {
         // code restore
@@ -1242,7 +1186,6 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
         $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!")."&with_extensions=".$with_extensions);
 
 
-       }
   }
 
   /*

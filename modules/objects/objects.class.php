@@ -275,7 +275,7 @@ function usual(&$out) {
 */
  function loadObject($id) {
   $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".DBSafe($id)."'");
-  if ($rec['ID']) {
+  if (IsSet($rec['ID'])) {
    $this->id=$rec['ID'];
    $this->object_title=$rec['TITLE'];
    $this->class_id=$rec['CLASS_ID'];
@@ -535,8 +535,8 @@ curl_close($ch);
      try {
        $success = eval($code);
        if ($success === false) {
-         getLogger($this)->error(sprintf('Error in "%s.%s" method. Code: %s', $this->object_title, $name, $code));
-         registerError('method', sprintf('Exception in "%s.%s" method Code: %s', $this->object_title, $name, $code));
+         getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
+         registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
        }
      } catch (Exception $e) {
        getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
@@ -548,6 +548,8 @@ curl_close($ch);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
     $parent_success=$this->callMethod($name, $params, 1);
+   } else {
+    $parent_success=true;
    }
 
    if (isset($success)) {
@@ -626,6 +628,9 @@ curl_close($ch);
   }
   endMeasure('getProperty ('.$property.')', 1);
   endMeasure('getProperty', 1);
+  if (!isset($value['VALUE'])) {
+   $value['VALUE']=false;
+  }
   return $value['VALUE'];
  }
 
@@ -643,6 +648,8 @@ curl_close($ch);
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   $old_value='';
 
+  $cached_name='MJD:'.$this->object_title.'.'.$property;
+
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
@@ -655,10 +662,6 @@ curl_close($ch);
     } else {
      SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
     }
-
-    $cached_name='MJD:'.$this->object_title.'.'.$property;
-    saveToCache($cached_name, $value);
-
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
@@ -678,6 +681,12 @@ curl_close($ch);
     $v['VALUE']=$value;
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
+  }
+
+  saveToCache($cached_name, $value);
+
+  if (function_exists('postToWebSocket')) {
+   postToWebSocket($this->object_title.'.'.$property, $value);
   }
 
   if ($this->keep_history>0) {
@@ -799,7 +808,7 @@ curl_close($ch);
 */
  function dbInstall($data) {
 
-  SQLExec("DROP TABLE IF EXISTS `cached_values`;");
+  //SQLExec("DROP TABLE IF EXISTS `cached_values`;");
   $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   char(100) NOT NULL,
                 `DATAVALUE` char(255) NOT NULL,
@@ -807,6 +816,7 @@ curl_close($ch);
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
+  //echo ("Executing $sqlQuery\n");
 
 /*
 objects - Objects

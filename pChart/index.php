@@ -521,6 +521,11 @@ $drawThreshold["Alpha"]=10;  //празрачность вертикальной закраски
         }
 
 //выводим заголовок графика
+
+if (IsSet($_GET['title'])) {
+ $_GET['title']=strip_tags($_GET['title']);
+}
+
 if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
         if ($_GET['title']) {
                 $Test->drawText($left_border,$title_top_offset,$_GET['title'],array("FontSize"=>$title_fontsize,"R"=>55,"G"=>55,"B"=>55,"Align"=>TEXT_ALIGN_BOTTOMLEFT));
