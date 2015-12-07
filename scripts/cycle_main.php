@@ -97,6 +97,9 @@ while (1)
          echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewHour\n";
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
       }
+
+      processSubscriptions('HOURLY');
+
    }
    
    if ($dt != $old_date)

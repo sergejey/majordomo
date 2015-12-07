@@ -44,6 +44,7 @@ $session = new session("prj");
 set_time_limit(0);
 
 $socket_connected=0;
+$latest_urls_time=0;
 
 while (1)
 {
@@ -76,6 +77,38 @@ while (1)
       }
    }
 
+
+   if ((time()-$latest_urls_time)>5*60) {
+    //getting latest URLs
+          $latest_urls_time=time();
+          $ch = curl_init();
+
+          $url='http://connect.smartliving.ru/latest_urls.php';
+          curl_setopt($ch,CURLOPT_URL, $url);
+          curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+          curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
+          curl_setopt($ch,CURLOPT_TIMEOUT, 120);
+          curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+          curl_setopt($ch,CURLOPT_USERPWD, $connect->config['CONNECT_USERNAME'].":".$connect->config['CONNECT_PASSWORD']); 
+        
+          //execute post
+          $result = curl_exec($ch);
+
+          //close connection
+          curl_close($ch);
+
+          if ($result) {
+           $data=json_decode($result, true);
+           if (is_array($data['URLS'])) {
+            $total=count($data['URLS']);
+            for($i=0;$i<$total;$i++) {
+             processResponse($data['URLS'][$i]['DATA']);
+            }
+           }
+          }
+   }
+
+
    // Create a TCP/IP socket.
    $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
    
@@ -83,6 +116,7 @@ while (1)
    {
       echo date('Y-m-d H:i:s ') . "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
       $socket_connected=false;
+      sleep(5);
       continue;
    }
    else
@@ -101,6 +135,7 @@ while (1)
    {
       echo 'socket_connect() failed.\nReason: (' . $result . ') ' . socket_strerror(socket_last_error($socket)) . "\n";
       $socket_connected=false;
+      sleep(5);
       continue;
    }
    else
