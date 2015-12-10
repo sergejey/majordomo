@@ -267,9 +267,33 @@ function admin(&$out) {
   SaveFile($datafile_name, serialize($data));
 
 
+  if (!function_exists('getCurlValue')) {
+   function getCurlValue($filename, $contentType, $postname)
+   {
+     if (function_exists('curl_file_create')) {
+         return curl_file_create($filename, $contentType, $postname);
+     }
+     $value = "@".$filename.";filename=" . $postname;
+     if ($contentType) {
+         $value .= ';type=' . $contentType;
+     }
+     return $value;
+   }
+  }
+
+  $cfile = getCurlValue($datafile_name,'text/plain','datafile.txt');
+ 
+//NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
+
+  $fields = array(
+     'datafile' => $cfile
+  );
+
+  /*
   $fields = array(
      'datafile' => '@'.realpath($datafile_name).';filename=datafile.txt'
   );
+  */
 
   //print_r($fields);exit;
 

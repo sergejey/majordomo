@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 18, 2015 at 04:32 PM
+-- Generation Time: Dec 03, 2015 at 03:49 PM
 -- Server version: 5.1.46
 -- PHP Version: 5.4.30
 
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `admin_users`
 --
 
+DROP TABLE IF EXISTS `admin_users`;
 CREATE TABLE IF NOT EXISTS `admin_users` (
   `ID` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(100) NOT NULL DEFAULT '',
@@ -50,9 +51,23 @@ INSERT INTO `admin_users` (`ID`, `NAME`, `LOGIN`, `PASSWORD`, `EMAIL`, `COMMENTS
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `app_quotes`
+--
+
+DROP TABLE IF EXISTS `app_quotes`;
+CREATE TABLE IF NOT EXISTS `app_quotes` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BODY` text,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `blockly_code`
 --
 
+DROP TABLE IF EXISTS `blockly_code`;
 CREATE TABLE IF NOT EXISTS `blockly_code` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `SYSTEM_NAME` varchar(255) NOT NULL DEFAULT '',
@@ -61,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `blockly_code` (
   `XML` text,
   `UPDATED` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=83 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=85 ;
 
 --
 -- Dumping data for table `blockly_code`
@@ -81,7 +96,7 @@ INSERT INTO `blockly_code` (`ID`, `SYSTEM_NAME`, `CODE_TYPE`, `CODE`, `XML`, `UP
 (16, 'method94', 0, '', '', '2014-09-04 16:26:24'),
 (17, 'method95', 0, '', '', '2014-09-04 16:26:34'),
 (18, 'method96', 0, '', '', '2014-09-04 16:27:00'),
-(72, 'object17_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'',''watchfolders''=>''watch folders'',''rss''=>''RSS'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 15:08:11'),
+(84, 'object17_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2015-12-03 14:46:44'),
 (74, 'pattern6', 0, '', '', '2014-10-31 15:22:41'),
 (75, 'pattern5', 0, '', '', '2014-10-31 15:22:55'),
 (73, 'object18_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 15:10:21'),
@@ -115,7 +130,8 @@ INSERT INTO `blockly_code` (`ID`, `SYSTEM_NAME`, `CODE_TYPE`, `CODE`, `XML`, `UP
 (78, 'object18_method74', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 15:33:53'),
 (80, 'pattern8', 0, '', '', '2014-10-31 15:38:58'),
 (81, 'pattern9', 0, '', '', '2014-10-31 15:39:25'),
-(82, 'method61', 0, 'if ($params[''status'']) {\r\n $this->setProperty(''status'',$params[''status'']);\r\n}\r\n$this->setProperty(''updatedTimestamp'',time());\r\n\r\n$this->setProperty("alive",1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=12*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);', '', '2015-01-29 11:29:50');
+(82, 'method61', 0, 'if ($params[''status'']) {\r\n $this->setProperty(''status'',$params[''status'']);\r\n}\r\n$this->setProperty(''updatedTimestamp'',time());\r\n\r\n$this->setProperty("alive",1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=12*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);', '', '2015-01-29 11:29:50'),
+(83, 'command108', 0, '', '', '2015-12-03 14:45:18');
 
 -- --------------------------------------------------------
 
@@ -123,6 +139,7 @@ INSERT INTO `blockly_code` (`ID`, `SYSTEM_NAME`, `CODE_TYPE`, `CODE`, `XML`, `UP
 -- Table structure for table `cached_values`
 --
 
+DROP TABLE IF EXISTS `cached_values`;
 CREATE TABLE IF NOT EXISTS `cached_values` (
   `KEYWORD` char(100) NOT NULL,
   `DATAVALUE` char(255) NOT NULL,
@@ -135,41 +152,49 @@ CREATE TABLE IF NOT EXISTS `cached_values` (
 --
 
 INSERT INTO `cached_values` (`KEYWORD`, `DATAVALUE`, `EXPIRE`) VALUES
-('MJD:ThisComputer.timeNow', '15:32', '2015-11-18 15:33:00'),
-('MJD:Security.stateColor', 'green', '2015-11-18 15:18:43'),
-('MJD:Security.stateDetails', '', '2015-11-18 15:18:43'),
-('MJD:System.stateColor', 'green', '2015-11-18 15:18:43'),
-('MJD:System.stateDetails', '', '2015-11-18 15:18:43'),
-('MJD:Communication.stateColor', 'green', '2015-11-18 15:18:43'),
-('MJD:Communication.stateDetails', '', '2015-11-18 15:18:43'),
-('MJD:ThisComputer.somebodyHomeText', '', '2015-11-18 15:18:43'),
-('MJD:Admin.seenAt', '', '2015-11-18 15:18:43'),
-('MJD:Admin.CoordinatesUpdated', '', '2015-11-18 15:18:43'),
-('MJD:ThisComputer.started_time', '1447849067', '2015-11-18 15:18:47'),
-('MJD:ThisComputer.weatherFull', '(too big)', '2015-11-18 15:28:00'),
-('MJD:ThisComputer.cycle_execsRun', '1447849930', '2015-11-18 15:33:10'),
-('MJD:ThisComputer.cycle_mainRun', '1447849931', '2015-11-18 15:33:11'),
-('MJD:ThisComputer.cycle_pingRun', '1447849932', '2015-11-18 15:33:12'),
-('MJD:ThisComputer.cycle_rssRun', '1447849932', '2015-11-18 15:33:12'),
-('MJD:ThisComputer.uptime', '864', '2015-11-18 15:33:11'),
-('MJD:ThisComputer.cycle_schedulerRun', '1447849927', '2015-11-18 15:33:07'),
-('MJD:ThisComputer.cycle_statesRun', '1447849931', '2015-11-18 15:33:11'),
-('MJD:ThisComputer.cycle_webvarsRun', '1447849926', '2015-11-18 15:33:06'),
-('MJD:ThisComputer.cycle_watchfoldersRun', '1447849728', '2015-11-18 15:29:48'),
-('MJD:ClockChime.time', '2015-11-18 15:32:00', '2015-11-18 15:33:00'),
-('MJD:ThisComputer.clockChimeEnabled', '1', '2015-11-18 15:19:00'),
-('MJD:NobodyHomeMode.active', '0', '2015-11-18 15:19:00'),
-('MJD:ThisComputer.HomeStatus', '15:32 Дома кто-то есть', '2015-11-18 15:33:00'),
-('MJD:ThisComputer.SunRiseTime', '08:47', '2015-11-18 15:19:00'),
-('MJD:ThisComputer.SunSetTime', '17:02', '2015-11-18 15:19:00'),
-('MJD:ThisComputer.isDark', '0', '2015-11-18 15:19:00'),
-('MJD:ThisComputer.AlarmStatus', '', '2015-11-18 15:19:00'),
-('MJD:ThisComputer.volumeLevel', '90', '2015-11-18 15:26:17'),
-('MJD:ThisComputer.TempOutside', '+7.7', '2015-11-18 15:26:18'),
-('MJD:Livingroom.Temperature', '22.4', '2015-11-18 15:26:18'),
-('MJD:Livingroom.Humidity', '42', '2015-11-18 15:26:18'),
-('MJD:ThisComputer.textBoxTest', '0', '2015-11-18 15:30:12'),
-('MJD:ThisComputer.AlarmTime', '09:30', '2015-11-18 15:30:12');
+('MJD:ThisComputer.weatherFull', '(too big)', '2015-12-03 14:49:23'),
+('MJD:ThisComputer.started_time', '1449142973', '2015-12-03 14:43:53'),
+('MJD:Livingroom.Temperature', '22.4', '2015-12-03 14:43:56'),
+('MJD:Livingroom.Humidity', '42', '2015-12-03 14:43:56'),
+('MJD:ThisComputer.cycle_execsRun', '1449143362', '2015-12-03 14:50:22'),
+('MJD:ThisComputer.cycle_mainRun', '1449143367', '2015-12-03 14:50:27'),
+('MJD:ThisComputer.cycle_schedulerRun', '1449143363', '2015-12-03 14:50:23'),
+('MJD:ThisComputer.timeNow', '14:49', '2015-12-03 14:50:00'),
+('MJD:Security.stateColor', 'green', '2015-12-03 14:43:59'),
+('MJD:Security.stateDetails', '', '2015-12-03 14:43:59'),
+('MJD:System.stateColor', 'green', '2015-12-03 14:47:48'),
+('MJD:System.stateDetails', '', '2015-12-03 14:47:48'),
+('MJD:Communication.stateColor', 'green', '2015-12-03 14:43:59'),
+('MJD:Communication.stateDetails', '', '2015-12-03 14:43:59'),
+('MJD:ThisComputer.somebodyHomeText', '', '2015-12-03 14:43:59'),
+('MJD:admin.seenAt', 'Home', '2015-12-03 14:48:55'),
+('MJD:admin.CoordinatesUpdated', '10:00', '2015-12-03 14:48:55'),
+('MJD:ThisComputer.uptime', '394', '2015-12-03 14:50:27'),
+('MJD:ThisComputer.cycle_statesRun', '1449143365', '2015-12-03 14:50:25'),
+('MJD:ThisComputer.cycle_rssRun', '1449143365', '2015-12-03 14:50:25'),
+('MJD:ThisComputer.cycle_pingRun', '1449143366', '2015-12-03 14:50:26'),
+('MJD:ThisComputer.cycle_webvarsRun', '1449143365', '2015-12-03 14:50:25'),
+('MJD:ThisComputer.cycle_watchfoldersRun', '1447849728', '2015-12-03 14:44:00'),
+('MJD:ClockChime.time', '2015-12-03 14:49:00', '2015-12-03 14:50:00'),
+('MJD:ThisComputer.clockChimeEnabled', '1', '2015-12-03 14:44:00'),
+('MJD:NobodyHomeMode.active', '0', '2015-12-03 14:44:00'),
+('MJD:ThisComputer.HomeStatus', '14:49 Дома кто-то есть', '2015-12-03 14:50:00'),
+('MJD:ThisComputer.SunRiseTime', '09:12', '2015-12-03 14:44:00'),
+('MJD:ThisComputer.SunSetTime', '16:45', '2015-12-03 14:44:00'),
+('MJD:ThisComputer.isDark', '0', '2015-12-03 14:44:00'),
+('MJD:ThisComputer.AlarmStatus', '', '2015-12-03 14:44:00'),
+('MJD:ThisComputer.volumeLevel', '90', '2015-12-03 14:44:28'),
+('MJD:ThisComputer.TempOutside', '-0.9', '2015-12-03 14:44:28'),
+('MJD:ThisComputer.textBoxTest', '0', '2015-12-03 14:46:01'),
+('MJD:ThisComputer.AlarmTime', '09:30', '2015-12-03 14:46:01'),
+('MJD:Switch1.status', '0', '2015-12-03 14:47:13'),
+('MJD:System.stateTitle', 'Зелёный', '2015-12-03 14:47:48'),
+('MJD:ThisComputer.minMsgLevel', '1', '2015-12-03 14:47:48'),
+('MJD:admin.atHome', '', '2015-12-03 14:48:55'),
+('MJD:admin.Coordinates', '', '2015-12-03 14:48:55'),
+('MJD:admin.CoordinatesUpdatedTimestamp', '', '2015-12-03 14:48:55'),
+('MJD:admin.fullName', '', '2015-12-03 14:48:55'),
+('MJD:admin.isMoving', '', '2015-12-03 14:48:55');
 
 -- --------------------------------------------------------
 
@@ -177,6 +202,7 @@ INSERT INTO `cached_values` (`KEYWORD`, `DATAVALUE`, `EXPIRE`) VALUES
 -- Table structure for table `calendar_categories`
 --
 
+DROP TABLE IF EXISTS `calendar_categories`;
 CREATE TABLE IF NOT EXISTS `calendar_categories` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -192,6 +218,7 @@ CREATE TABLE IF NOT EXISTS `calendar_categories` (
 -- Table structure for table `calendar_events`
 --
 
+DROP TABLE IF EXISTS `calendar_events`;
 CREATE TABLE IF NOT EXISTS `calendar_events` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -223,6 +250,7 @@ CREATE TABLE IF NOT EXISTS `calendar_events` (
 -- Table structure for table `classes`
 --
 
+DROP TABLE IF EXISTS `classes`;
 CREATE TABLE IF NOT EXISTS `classes` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -264,6 +292,7 @@ INSERT INTO `classes` (`ID`, `TITLE`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`, `N
 -- Table structure for table `collections`
 --
 
+DROP TABLE IF EXISTS `collections`;
 CREATE TABLE IF NOT EXISTS `collections` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PATH` varchar(255) NOT NULL DEFAULT '',
@@ -277,6 +306,7 @@ CREATE TABLE IF NOT EXISTS `collections` (
 -- Table structure for table `commands`
 --
 
+DROP TABLE IF EXISTS `commands`;
 CREATE TABLE IF NOT EXISTS `commands` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -321,11 +351,11 @@ CREATE TABLE IF NOT EXISTS `commands` (
 --
 
 INSERT INTO `commands` (`ID`, `TITLE`, `COMMAND`, `URL`, `WIDTH`, `HEIGHT`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`, `PRIORITY`, `WINDOW`, `AUTOSTART`, `TYPE`, `MIN_VALUE`, `MAX_VALUE`, `CUR_VALUE`, `STEP_VALUE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `ONCHANGE_OBJECT`, `ONCHANGE_METHOD`, `ICON`, `DATA`, `SCRIPT_ID`, `AUTO_UPDATE`, `CODE`, `SYSTEM`, `EXT_ID`, `VISIBLE_DELAY`, `INLINE`, `SUB_PRELOAD`, `RENDER_TITLE`, `RENDER_DATA`, `RENDER_UPDATED`, `SMART_REPEAT`) VALUES
-(1, '<#LANG_APP_MEDIA_BROWSER#>', '', '', 0, 0, 0, '2,3', '0', 6000, '', 0, '', 0, 0, '0', 0, '', '', '', '', '1_iPhone_MUSIC_5_sm.png', '', 0, 0, '', '', 0, 0, 0, 0, 'Media Library', '', '2015-01-29 12:50:38', 0),
+(1, '<#LANG_APP_MEDIA_BROWSER#>', '', '', 0, 0, 0, '2,3', '0', 6000, '', 0, '', 0, 0, '0', 0, '', '', '', '', '1_iPhone_MUSIC_5_sm.png', '', 0, 0, '', '', 0, 0, 0, 0, 'Медиа', '', '2015-12-03 14:42:25', 0),
 (2, 'Browse', '', '/popup/app_mediabrowser.html', 0, 0, 1, '2', '1', 100, '', 0, 'url', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Browse', '', '2014-07-15 21:13:34', 0),
 (3, 'Player control', '', '', 0, 0, 1, '3', '1', 90, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '[#module name="app_player" mode="menu"#]', 0, 0, '', '', 0, 0, 0, 0, 'Player control', '<!-- begin of file inner_code --><!-- begin of file ./templates/app_player/app_player.html -->\n\n<!-- Frontend -->\n <!-- begin of file ./templates/app_player/action_usual.html -->\n<script language="javascript">\n function playerCommandProcessed(id, data) {\n  var elem=document.getElementById(''playerStatus'');\n  elem.innerHTML=data;  \n  return false;\n }\n function playerCommand(pcmd) {\n  if ($("#selPlayTerminal").val()=='''') return false;\n  if ($("#hidPlayPath").val()=='''' && pcmd==''refresh'') return false;\n  var elem=document.getElementById(''playerStatus'');\n  elem.innerHTML=pcmd+''...'';\n  var url="/popup/app_player.html?ajax=1";\n  url+=''&command=''+pcmd;\n  url+=''&play_terminal=''+$("#selPlayTerminal").val();\n  url+=''&play=''+URLencode($("#hidPlayPath").val());\n  url+=''&rnd=''+URLencode($("#hidPlayerRnd").val());\n  if (pcmd==''volume'') {\n   url+=''&volume=''+URLencode($("#selVolume").val());\n  }\n  //prompt(url, url);\n  AJAXRequest(url, ''playerCommandProcessed'', '''');\n  return false;\n }\n</script>\n<table border="0" cellpadding="0" cellspacing="0">\n <tr>\n  <form action="/nf.php?pd=pz_Y29tbWFuZHM6e3BhcmVudF9pdGVtPTF9pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=app_player&inst=&" method="get" name="frmPlayerControl" id="frmPlayerControl">\n  <td align="right" style="vertical-align:middle">\n  <div style="display:none">\n   <select name="play_terminal" id="selPlayTerminal">\n    <option value="">\n    \n    <option value="MAIN" selected>Server\n    \n   </select>\n  </div>\n   <div id=''playerStatus'' style="color:white"></div>\n\n  </td>\n  </tr><tr>\n  <td nowrap><select name="volume" id=''selVolume'' onChange="playerCommand(''volume'')">\n   \n   <option value="0">0%\n   \n   <option value="5">5%\n   \n   <option value="10">10%\n   \n   <option value="15">15%\n   \n   <option value="20">20%\n   \n   <option value="25">25%\n   \n   <option value="30">30%\n   \n   <option value="35">35%\n   \n   <option value="40">40%\n   \n   <option value="45">45%\n   \n   <option value="50">50%\n   \n   <option value="55">55%\n   \n   <option value="60">60%\n   \n   <option value="65">65%\n   \n   <option value="70">70%\n   \n   <option value="75">75%\n   \n   <option value="80">80%\n   \n   <option value="85">85%\n   \n   <option value="90" selected>90%\n   \n   <option value="95">95%\n   \n   <option value="100">100%\n   \n  </select></td>\n  <td valign="top">\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("pause");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_pause.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("prev");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_prev.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("refresh");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_play.png" border="0"></a></div> \n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("next");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_next.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("fullscreen");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/eye.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("close");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/delete.png" border="0"></a></div>\n  </td>\n </tr>\n <input type="hidden" name="play" value="" id="hidPlayPath">\n <input type="hidden" name="rnd" value="" id="hidPlayerRnd">\n <input type="hidden" name="pd" value="pz_Y29tbWFuZHM6e3BhcmVudF9pdGVtPTF9pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_">\n<input type="hidden" name="md" value="app_player">\n<input type="hidden" name="inst" value="">\n</FORM><!-- modified -->\n</table>\n<!-- end of file ./templates/app_player/action_usual.html -->\n\n\n<!-- end of file ./templates/app_player/app_player.html --><!-- end of file inner_code -->', '2014-10-30 15:42:22', 0),
 (75, '<#LANG_MODULE_LAYOUTS#>', '', '', 0, 0, 86, '75', '86', 1000, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '[#module name="layouts"#]', 0, 60, '', '', 0, 0, 0, 0, 'Домашние страницы', '<!-- begin of file inner_code --><!-- begin of file ./templates/layouts/layouts.html -->\n\n\n<!-- Frontend -->\n <!-- begin of file ./templates/layouts/action_usual.html -->\n\n <!-- action usual -->\n <!-- table layouts search -->\n \n  <!-- begin of file ./templates/layouts/layouts_search_site.html --><!-- results -->\n\n\n<ul data-role="listview">\n\n <li>\n  \n  <a href="/page/8.html" target=_blank>Добро пожаловать!</a>\n  \n  \n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/scenes.html" target=_blank>Сцены</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_mediabrowser.html" target=_blank>Медиа</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_calendar.html" target=_blank>Календарь</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_products.html" target=_blank>Продукты</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_gpstrack.html" target=_blank>GPS</a>\n  \n  </li>\n\n</ul>\n\n<!-- end of file ./templates/layouts/layouts_search_site.html -->\n \n <!-- / table layouts search -->\n <!-- table layouts edit -->\n \n <!-- / table layouts edit -->\n <!-- table layouts view --> \n \n <!-- / table layouts view -->\n<!-- end of file ./templates/layouts/action_usual.html -->\n\n\n<!-- end of file ./templates/layouts/layouts.html --><!-- end of file inner_code -->', '2014-10-30 14:58:15', 0),
-(82, '<#LANG_GENERAL_EVENTS_LOG#>', '', '', 0, 0, 0, '82', '0', 10, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Events log', '', '2015-01-29 12:50:38', 0),
+(82, '<#LANG_GENERAL_EVENTS_LOG#>', '', '', 0, 0, 0, '82', '0', 10, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'История событий', '', '2015-12-03 14:42:25', 0),
 (63, '%ClockChime.time%', '', '', 0, 0, 66, '63', '86,66', 10000, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '%ClockChime.time%<br>\r\nhello! <a href="/test">test</a>', 0, 60, '', '', 0, 0, 0, 0, '2014-10-30 14:58:00', '2014-10-30 14:58:00<br>\r\nhello! <a href="/test">test</a>', '2014-10-30 14:58:15', 0),
 (66, 'Demo controls', '', '', 0, 0, 86, '63,67,68,69,70,71,72,73,77,78,80', '86', 0, '', 0, '', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Demo controls', '', '2014-07-15 12:25:40', 0),
 (67, '<#LANG_LABEL#>', '', '', 0, 0, 66, '67', '86,66', 9000, '', 0, 'label', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Подпись', '', '2014-09-04 16:17:08', 0),
@@ -335,23 +365,23 @@ INSERT INTO `commands` (`ID`, `TITLE`, `COMMAND`, `URL`, `WIDTH`, `HEIGHT`, `PAR
 (71, '<#LANG_ON_OFF_SWITCH#>', '', '', 0, 0, 66, '71', '86,66', 5000, '', 0, 'switch', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Выключатель', '', '2014-09-04 16:17:08', 0),
 (72, 'Select box', '', '', 0, 0, 66, '72', '86,66', 4000, '', 0, 'selectbox', 0, 0, '2', 0, '', '', '', '', '', '1|Item 1\r\n2|Item 2\r\n3|Item 3', 0, 0, '', '', 0, 0, 0, 0, 'Select box', '1|Item 1\r\n2|Item 2\r\n3|Item 3', '2014-09-04 16:17:08', 0),
 (73, 'Plus minus box', '', '', 0, 0, 66, '73', '86,66', 3000, '', 0, 'plusminus', 0, 5, '3', 1, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Plus minus box', '', '2014-09-04 16:17:08', 0),
-(74, '<#LANG_GENERAL_EVENTS_LOG#> (code)', '', '', 0, 0, 0, '74', '0', 9, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '<div style="text-shadow:none;font-weight:normal;">[#module name="shoutbox" limit="10" reverse="1" mobile="1"#]</div>', 0, 60, '', '', 0, 0, 0, 0, 'Events log (code)', '<!-- begin of file inner_code --><div style="text-shadow:none;font-weight:normal;"><!-- begin of file ./templates/shoutbox/shoutbox.html -->\n\r\n<!-- Frontend -->\r\n \n\r\n <!-- action usual -->\r\n <!-- table shouts search -->\r\n \r\n  \r\n<!-- table shouts search -->\r\n<!-- results -->\r\n\r\n<div class="shout_box">  <!-- begin shout_box -->\r\n\r\n<!-- search results (list) -->\r\n<div id="shoutboxContent" class="shout_content">\r\nLoading......\r\n</div>\r\n<!-- / search results (list) -->\r\n<!-- / results -->\r\n\r\n\r\n<div class="shout_form">\r\n<form action="/nf.php?pd=pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=shoutbox&inst=&" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit=''return false;''>\r\n<input type="text" name="message" class="shout_input" placeholder="Command"><input type="submit" name="submit" value="Send" onClick="return sendShoutMessage();"  class="shout_button">\r\n<input type="hidden" name="pd" value="pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_">\n<input type="hidden" name="md" value="shoutbox">\n<input type="hidden" name="inst" value="">\n</FORM><!-- modified -->\r\n</div>\r\n\r\n</div> <!-- end shout_box -->\r\n<script language="javascript">\r\n\r\nvar shoutTimer;\r\n\r\n function updateShoutContent() {\r\n  clearTimeout(shoutTimer);\r\n\r\n  var url="/popup/shoutbox.html?";\r\n\r\n   url=url+''&limit=10&getdata=1&reverse=1'';\r\n   $.ajax({\r\n    url: url,\r\n    }).done(function(data) { \r\n     if (data!='''') {\r\n      old_data=$(''#shoutboxContent'').html();\r\n      if (old_data!=data) {\r\n       $(''#shoutboxContent'').html(data);\r\n      }\r\n     }\r\n\r\n  \r\n  shoutTimer=setTimeout("updateShoutContent('''', '''');", 10000);\r\n  \r\n\r\n\r\n    });\r\n\r\n }\r\n\r\n function sendShoutMessage() {\r\n  if (document.frmShoutBoxMsg.message.value == '''') return false; \r\n  var msg=URLencode(document.frmShoutBoxMsg.message.value);\r\n  document.frmShoutBoxMsg.message.value='''';\r\n  var url="/popup/shoutbox.html?";\r\n  url=url+''&limit=10&msg=''+msg;\r\n  $.ajax({\r\n   url: url,\r\n   }).done(function(data) { \r\n    if (data!=''OK'' && data!='''') {\r\n     $(''#shoutboxContent'').html(data);\r\n    }\r\n   });\r\n  return false;\r\n }\r\n</script>\r\n\r\n\r\n<script language="javascript">\r\n  updateShoutContent();\r\n</script>\r\n\r\n \r\n <!-- / table shouts search -->\r\n <!-- table shouts edit -->\r\n \r\n <!-- / table shouts edit -->\r\n <!-- table shouts view --> \r\n \r\n <!-- / table shouts view -->\r\n\r\n\r\n\r\n<!-- end of file ./templates/shoutbox/shoutbox.html --></div><!-- end of file inner_code -->', '2015-11-18 15:17:33', 0),
+(74, '<#LANG_GENERAL_EVENTS_LOG#> (code)', '', '', 0, 0, 0, '74', '0', 9, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '<div style="text-shadow:none;font-weight:normal;">[#module name="shoutbox" limit="10" reverse="1" mobile="1"#]</div>', 0, 60, '', '', 0, 0, 0, 0, 'История событий (code)', '<!-- begin of file inner_code --><div style="text-shadow:none;font-weight:normal;"><!-- begin of file ./templates/shoutbox/shoutbox.html -->\n\r\n<!-- Frontend -->\r\n \n\r\n <!-- action usual -->\r\n <!-- table shouts search -->\r\n \r\n  \r\n<!-- table shouts search -->\r\n<!-- results -->\r\n\r\n<div class="shout_box">  <!-- begin shout_box -->\r\n\r\n<!-- search results (list) -->\r\n<div id="shoutboxContent" class="shout_content">\r\nЗагрузка......\r\n</div>\r\n<!-- / search results (list) -->\r\n<!-- / results -->\r\n\r\n\r\n<div class="shout_form">\r\n<form action="/nf.php?pd=pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=shoutbox&inst=&" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit=''return false;''>\r\n<input type="text" name="message" class="shout_input" placeholder="Команда"><input type="submit" name="submit" value="Отправить" onClick="return sendShoutMessage();"  class="shout_button">\r\n<input type="hidden" name="pd" value="pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_">\n<input type="hidden" name="md" value="shoutbox">\n<input type="hidden" name="inst" value="">\n</FORM><!-- modified -->\r\n</div>\r\n\r\n</div> <!-- end shout_box -->\r\n<script language="javascript">\r\n\r\nvar shoutTimer;\r\n\r\n function updateShoutContent() {\r\n  clearTimeout(shoutTimer);\r\n\r\n  var url="/popup/shoutbox.html?";\r\n\r\n   url=url+''&limit=10&getdata=1&reverse=1'';\r\n   $.ajax({\r\n    url: url,\r\n    }).done(function(data) { \r\n     if (data!='''') {\r\n      old_data=$(''#shoutboxContent'').html();\r\n      if (old_data!=data) {\r\n       $(''#shoutboxContent'').html(data);\r\n      }\r\n     }\r\n\r\n  \r\n  shoutTimer=setTimeout("updateShoutContent('''', '''');", 10000);\r\n  \r\n\r\n\r\n    });\r\n\r\n }\r\n\r\n function sendShoutMessage() {\r\n  if (document.frmShoutBoxMsg.message.value == '''') return false; \r\n  var msg=URLencode(document.frmShoutBoxMsg.message.value);\r\n  document.frmShoutBoxMsg.message.value='''';\r\n  var url="/popup/shoutbox.html?";\r\n  url=url+''&limit=10&msg=''+msg;\r\n  $.ajax({\r\n   url: url,\r\n   }).done(function(data) { \r\n    if (data!=''OK'' && data!='''') {\r\n     $(''#shoutboxContent'').html(data);\r\n    }\r\n   });\r\n  return false;\r\n }\r\n</script>\r\n\r\n\r\n<script language="javascript">\r\n  updateShoutContent();\r\n</script>\r\n\r\n \r\n <!-- / table shouts search -->\r\n <!-- table shouts edit -->\r\n \r\n <!-- / table shouts edit -->\r\n <!-- table shouts view --> \r\n \r\n <!-- / table shouts view -->\r\n\r\n\r\n\r\n<!-- end of file ./templates/shoutbox/shoutbox.html --></div><!-- end of file inner_code -->', '2015-12-03 14:48:23', 0),
 (77, 'Alarm time', '', '', 0, 0, 66, '77', '86,66', 0, '', 0, 'timebox', 0, 0, '09:30', 0, 'ThisComputer', 'AlarmTime', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Alarm time', '', '2014-09-04 16:17:08', 0),
 (78, '<#LANG_TEXT_BOX#>', '', '', 0, 0, 66, '78', '86,66', 0, '', 0, 'textbox', 0, 0, '0', 0, 'ThisComputer', 'textBoxTest', '', '', '', '', 0, 10, '', '', 0, 0, 0, 0, 'Текстовое поле', '', '2014-10-30 14:58:15', 0),
 (80, '<#LANG_SLIDER_BOX#>', '', '', 0, 0, 66, '80', '86,66', 0, '', 0, 'sliderbox', 0, 10, '0', 1, 'ThisComputer', 'textBoxTest', '', '', '', '', 0, 5, '', '', 0, 0, 0, 0, 'Слайдер', '', '2014-10-30 14:58:15', 0),
-(86, '<#LANG_GENERAL_SERVICE#>', '', '', 0, 0, 0, '75,66,63,67,68,69,70,71,72,73,77,78,80,98,99', '0', 2, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Service', '', '2015-01-29 12:50:38', 0),
-(106, '<#LANG_GENERAL_CONTROL#>', '', '', 0, 0, 0, '108', '0', 7000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 1, 'Control', '', '2015-01-29 12:50:38', 0),
+(86, '<#LANG_GENERAL_SERVICE#>', '', '', 0, 0, 0, '75,66,63,67,68,69,70,71,72,73,77,78,80,98,99', '0', 2, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Сервис', '', '2015-12-03 14:42:25', 0),
+(106, '<#LANG_GENERAL_CONTROL#>', '', '', 0, 0, 0, '108', '0', 7000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 1, 'Управление', '', '2015-12-03 14:42:25', 0),
 (114, 'Admin (status)', '', '', 0, 0, 110, '114', '110', 950, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%Admin.seenAt% (%Admin.CoordinatesUpdated%)\r\n<br><br>\r\n<a href="http://maps.google.com/maps?q=loc:%Admin.Coordinates%" target=_blank><img src="http://maps.googleapis.com/maps/api/staticmap?center=%Admin.Coordinates%&size=300x300&maptype=hybrid&sensor=false&zoom=16&markers=%Admin.Coordinates%"></a>', 0, 0, '', '', 0, 0, 0, 0, 'Admin (status)', ' ()\r\n<br><br>\r\n<a href="http://maps.google.com/maps?q=loc:" target=_blank><img src="http://maps.googleapis.com/maps/api/staticmap?center=&size=300x300&maptype=hybrid&sensor=false&zoom=16&markers="></a>', '2014-10-30 15:40:58', 0),
-(91, '<#LANG_GENERAL_CLIMATE#> (<#LANG_GENERAL_OUTSIDE#>: %ThisComputer.TempOutside%°C / <#LANG_GENERAL_INSIDE#>: %Livingroom.Temperature%°C)', '', '', 0, 0, 0, '92,93,104,105', '0', 8000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 60, '', '', 0, 0, 0, 1, 'Climate (Outside: +7.7°C / Inside: 22.4°C)', '', '2015-11-18 15:17:33', 0),
-(92, '<#LANG_GENERAL_WEATHER_FORECAST#> (code)', '', '', 0, 0, 91, '92', '91', 1000, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%ThisComputer.weatherFull%', 0, 0, '', '', 0, 0, 0, 0, 'Weather forecast (code)', '\n<b>Сегодня:</b><br />\nднем: +0&deg;, пасмурно, снег, ночью: +0&deg;...-2&deg;, пасмурно, снег, ветер: З — 2-4 м/с, давление: 760 мм.рт.ст, влажность: 90%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +0&deg;...-2&deg;, пасмурно, ночью: -1&deg;...-3&deg;, пасмурно, снег, ветер: C — 3-5 м/с, давление: 767 мм.рт.ст, влажность: 85%<br />\n<br />\n<br />\n', '2015-11-18 15:27:00', 0),
-(93, '<#LANG_GENERAL_WEATHER_FORECAST#>', '', '', 0, 0, 91, '93', '91', 1001, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Weather forecast', '', '2015-01-29 12:50:38', 0),
-(104, '<#LANG_GENERAL_INSIDE#>', '', '', 0, 0, 91, '104', '91', 2000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Inside', '', '2015-01-29 12:50:38', 0),
-(105, '<#LANG_GENERAL_INSIDE#> (data)', '', '', 0, 0, 91, '105', '91', 1900, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', 'Livingroom: %Livingroom.Temperature%&deg;C / %Livingroom.Humidity%%', 0, 30, '', '', 0, 0, 0, 0, 'Inside (data)', 'Livingroom: 22.4&deg;C / 42%', '2015-11-18 15:17:33', 0),
-(97, 'State', '', '', 0, 0, 0, '97', '0', 100010, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '<big style="font-size:24px">%ThisComputer.timeNow%</big>\r\n\r\n<img src="/img/icons/status/lock_32_%Security.stateColor%.png" align="absmiddle"> %Security.stateDetails%\r\n<img src="/img/icons/status/system_32_%System.stateColor%.png" align="absmiddle"> %System.stateDetails%\r\n<img src="/img/icons/status/network_32_%Communication.stateColor%.png" align="absmiddle"> %Communication.stateDetails%\r\n<br/>\r\n%ThisComputer.somebodyHomeText%\r\n<br/>\r\nAdmin -- %Admin.seenAt% (%Admin.CoordinatesUpdated%)', 0, 10, '', '', 0, 0, 0, 0, 'State', '<big style="font-size:24px">15:26</big>\r\n\r\n<img src="/img/icons/status/lock_32_green.png" align="absmiddle"> \r\n<img src="/img/icons/status/system_32_green.png" align="absmiddle"> \r\n<img src="/img/icons/status/network_32_green.png" align="absmiddle"> \r\n<br/>\r\n\r\n<br/>\r\nAdmin --  ()', '2015-11-18 15:26:15', 0),
+(91, '<#LANG_GENERAL_CLIMATE#> (<#LANG_GENERAL_OUTSIDE#>: %ThisComputer.TempOutside%°C / <#LANG_GENERAL_INSIDE#>: %Livingroom.Temperature%°C)', '', '', 0, 0, 0, '92,93,104,105', '0', 8000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 60, '', '', 0, 0, 0, 1, 'Климат (На улице: -0.9°C / Дома: 22.4°C)', '', '2015-12-03 14:43:28', 0),
+(92, '<#LANG_GENERAL_WEATHER_FORECAST#> (code)', '', '', 0, 0, 91, '92', '91', 1000, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%ThisComputer.weatherFull%', 0, 0, '', '', 0, 0, 0, 0, 'Прогноз погоды (code)', '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:43:28', 0),
+(93, '<#LANG_GENERAL_WEATHER_FORECAST#>', '', '', 0, 0, 91, '93', '91', 1001, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Прогноз погоды', '', '2015-12-03 14:42:25', 0),
+(104, '<#LANG_GENERAL_INSIDE#>', '', '', 0, 0, 91, '104', '91', 2000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Дома', '', '2015-12-03 14:42:25', 0),
+(105, '<#LANG_GENERAL_INSIDE#> (data)', '', '', 0, 0, 91, '105', '91', 1900, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', 'Livingroom: %Livingroom.Temperature%&deg;C / %Livingroom.Humidity%%', 0, 30, '', '', 0, 0, 0, 0, 'Дома (data)', 'Livingroom: 22.4&deg;C / 42%', '2015-12-03 14:43:28', 0),
+(97, 'State', '', '', 0, 0, 0, '97', '0', 100010, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '<big style="font-size:24px">%ThisComputer.timeNow%</big>\r\n\r\n<img src="/img/icons/status/lock_32_%Security.stateColor%.png" align="absmiddle"> %Security.stateDetails%\r\n<img src="/img/icons/status/system_32_%System.stateColor%.png" align="absmiddle"> %System.stateDetails%\r\n<img src="/img/icons/status/network_32_%Communication.stateColor%.png" align="absmiddle"> %Communication.stateDetails%\r\n<br/>\r\n%ThisComputer.somebodyHomeText%\r\n<br/>\r\nAdmin -- %Admin.seenAt% (%Admin.CoordinatesUpdated%)', 0, 10, '', '', 0, 0, 0, 0, 'State', '<big style="font-size:24px">14:48</big>\r\n\r\n<img src="/img/icons/status/lock_32_green.png" align="absmiddle"> \r\n<img src="/img/icons/status/system_32_green.png" align="absmiddle"> \r\n<img src="/img/icons/status/network_32_green.png" align="absmiddle"> \r\n<br/>\r\n\r\n<br/>\r\nAdmin -- Home (10:00)', '2015-12-03 14:48:02', 0),
 (98, '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, 86, '99', '86', 20000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Настройки', '', '2014-08-25 17:04:27', 0),
 (99, 'Говорить время', '', '', 0, 0, 98, '99', '86,98', 1000, '', 0, 'switch', 0, 0, '1', 0, 'ThisComputer', 'clockChimeEnabled', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Говорить время', '', '2014-08-25 17:04:33', 0),
-(108, 'Switch 1', '', '', 0, 0, 106, '108', '106', 0, '', 0, 'switch', 0, 0, '0', 0, '', '', '', '', '', '', 0, 300, '', '', 0, 0, 0, 0, 'Switch 1', '', '2014-10-31 15:30:26', 0),
-(110, '<#LANG_MODULE_USERS#>', '', '', 0, 0, 0, '114,111', '0', 5000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Users', '', '2015-01-29 12:50:38', 0),
+(108, 'Switch 1', '', '', 0, 0, 106, '108', '106', 0, '', 0, 'switch', 0, 0, '0', 0, 'Switch1', 'status', '', 'refresh', '', '', 0, 300, '', '', 0, 0, 0, 0, 'Switch 1', '', '2014-10-31 15:30:26', 0),
+(110, '<#LANG_MODULE_USERS#>', '', '', 0, 0, 0, '114,111', '0', 5000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Пользователи', '', '2015-12-03 14:42:25', 0),
 (111, 'Admin', '', '', 0, 0, 110, '111', '110', 1000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Admin', '', '2014-10-30 15:40:58', 0);
 
 -- --------------------------------------------------------
@@ -360,6 +390,7 @@ INSERT INTO `commands` (`ID`, `TITLE`, `COMMAND`, `URL`, `WIDTH`, `HEIGHT`, `PAR
 -- Table structure for table `country`
 --
 
+DROP TABLE IF EXISTS `country`;
 CREATE TABLE IF NOT EXISTS `country` (
   `COUNTRY_ID` int(10) NOT NULL,
   `COUNTRY_GUID` varchar(48) NOT NULL,
@@ -628,6 +659,7 @@ INSERT INTO `country` (`COUNTRY_ID`, `COUNTRY_GUID`, `COUNTRY_NAME`, `LM_DATE`, 
 -- Table structure for table `elements`
 --
 
+DROP TABLE IF EXISTS `elements`;
 CREATE TABLE IF NOT EXISTS `elements` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `SCENE_ID` int(10) NOT NULL DEFAULT '0',
@@ -651,14 +683,15 @@ CREATE TABLE IF NOT EXISTS `elements` (
   `S3D_SCENE` varchar(255) NOT NULL DEFAULT '',
   `SMART_REPEAT` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `elements`
 --
 
 INSERT INTO `elements` (`ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, `BACKGROUND`, `JAVASCRIPT`, `CSS`, `DX`, `DY`, `LINKED_ELEMENT_ID`, `PRIORITY`, `CSS_STYLE`, `POSITION_TYPE`, `CONTAINER_ID`, `S3D_SCENE`, `SMART_REPEAT`) VALUES
-(1, 1, 'Webcam Sample', 'html', 55, 392, 270, 210, 0, 1, NULL, NULL, 0, 0, 0, 0, '', 0, 0, '', 0);
+(1, 1, 'Webcam Sample', 'html', 55, 392, 270, 210, 0, 1, NULL, NULL, 0, 0, 0, 0, '', 0, 0, '', 0),
+(6, 1, 'Switch 1', 'switch', 405, 465, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 'default', 0, 0, '', 0);
 
 -- --------------------------------------------------------
 
@@ -666,6 +699,7 @@ INSERT INTO `elements` (`ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH
 -- Table structure for table `elm_states`
 --
 
+DROP TABLE IF EXISTS `elm_states`;
 CREATE TABLE IF NOT EXISTS `elm_states` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ELEMENT_ID` int(10) NOT NULL DEFAULT '0',
@@ -697,14 +731,16 @@ CREATE TABLE IF NOT EXISTS `elm_states` (
   `S3D_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `S3D_CAMERA` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `elm_states`
 --
 
 INSERT INTO `elm_states` (`ID`, `ELEMENT_ID`, `TITLE`, `IMAGE`, `HTML`, `IS_DYNAMIC`, `CURRENT_STATE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `CONDITION`, `CONDITION_VALUE`, `CONDITION_ADVANCED`, `SCRIPT_ID`, `SWITCH_SCENE`, `CURRENT_STATUS`, `ACTION_OBJECT`, `ACTION_METHOD`, `MENU_ITEM_ID`, `WINDOW_POSX`, `WINDOW_POSY`, `WINDOW_WIDTH`, `WINDOW_HEIGHT`, `HOMEPAGE_ID`, `EXT_URL`, `PRIORITY`, `CODE`, `OPEN_SCENE_ID`, `S3D_OBJECT`, `S3D_CAMERA`) VALUES
-(1, 1, 'Default', '', '<img src="http://abclocal.go.com/three/wabc/webcam/skycpk.jpg" width="270">', 0, 1, '', '', 1, '', '', 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', '');
+(1, 1, 'Default', '', '<img src="http://abclocal.go.com/three/wabc/webcam/skycpk.jpg" width="270">', 0, 1, '', '', 1, '', '', 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', ''),
+(4, 6, 'off', '', 'Switch 1', 1, 1, 'Switch1', 'status', 4, '1', NULL, 0, 0, 0, 'Switch1', 'turnOn', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', ''),
+(5, 6, 'on', '', 'Switch 1', 1, 0, 'Switch1', 'status', 1, '1', NULL, 0, 0, 0, 'Switch1', 'turnOff', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -712,6 +748,7 @@ INSERT INTO `elm_states` (`ID`, `ELEMENT_ID`, `TITLE`, `IMAGE`, `HTML`, `IS_DYNA
 -- Table structure for table `events`
 --
 
+DROP TABLE IF EXISTS `events`;
 CREATE TABLE IF NOT EXISTS `events` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `EVENT_TYPE` varchar(10) NOT NULL DEFAULT '',
@@ -741,6 +778,7 @@ INSERT INTO `events` (`ID`, `EVENT_TYPE`, `TERMINAL_FROM`, `TERMINAL_TO`, `USER_
 -- Table structure for table `gpsactions`
 --
 
+DROP TABLE IF EXISTS `gpsactions`;
 CREATE TABLE IF NOT EXISTS `gpsactions` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `LOCATION_ID` int(10) NOT NULL DEFAULT '0',
@@ -761,6 +799,7 @@ CREATE TABLE IF NOT EXISTS `gpsactions` (
 -- Table structure for table `gpsdevices`
 --
 
+DROP TABLE IF EXISTS `gpsdevices`;
 CREATE TABLE IF NOT EXISTS `gpsdevices` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -780,6 +819,7 @@ CREATE TABLE IF NOT EXISTS `gpsdevices` (
 -- Table structure for table `gpslocations`
 --
 
+DROP TABLE IF EXISTS `gpslocations`;
 CREATE TABLE IF NOT EXISTS `gpslocations` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -803,6 +843,7 @@ INSERT INTO `gpslocations` (`ID`, `TITLE`, `LAT`, `LON`, `RANGE`, `VIRTUAL_USER_
 -- Table structure for table `gpslog`
 --
 
+DROP TABLE IF EXISTS `gpslog`;
 CREATE TABLE IF NOT EXISTS `gpslog` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ADDED` datetime DEFAULT NULL,
@@ -828,6 +869,7 @@ CREATE TABLE IF NOT EXISTS `gpslog` (
 -- Table structure for table `history`
 --
 
+DROP TABLE IF EXISTS `history`;
 CREATE TABLE IF NOT EXISTS `history` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ADDED` datetime DEFAULT NULL,
@@ -846,6 +888,7 @@ CREATE TABLE IF NOT EXISTS `history` (
 -- Table structure for table `ignore_updates`
 --
 
+DROP TABLE IF EXISTS `ignore_updates`;
 CREATE TABLE IF NOT EXISTS `ignore_updates` (
   `ID` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(50) NOT NULL DEFAULT '',
@@ -858,6 +901,7 @@ CREATE TABLE IF NOT EXISTS `ignore_updates` (
 -- Table structure for table `jobs`
 --
 
+DROP TABLE IF EXISTS `jobs`;
 CREATE TABLE IF NOT EXISTS `jobs` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -876,6 +920,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 -- Table structure for table `layouts`
 --
 
+DROP TABLE IF EXISTS `layouts`;
 CREATE TABLE IF NOT EXISTS `layouts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -908,6 +953,7 @@ INSERT INTO `layouts` (`ID`, `TITLE`, `PRIORITY`, `TYPE`, `CODE`, `APP`, `URL`, 
 -- Table structure for table `locations`
 --
 
+DROP TABLE IF EXISTS `locations`;
 CREATE TABLE IF NOT EXISTS `locations` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -933,6 +979,7 @@ INSERT INTO `locations` (`ID`, `TITLE`) VALUES
 -- Table structure for table `log4php_log`
 --
 
+DROP TABLE IF EXISTS `log4php_log`;
 CREATE TABLE IF NOT EXISTS `log4php_log` (
   `timestamp` datetime DEFAULT NULL,
   `logger` varchar(256) DEFAULT NULL,
@@ -949,6 +996,7 @@ CREATE TABLE IF NOT EXISTS `log4php_log` (
 -- Table structure for table `media_favorites`
 --
 
+DROP TABLE IF EXISTS `media_favorites`;
 CREATE TABLE IF NOT EXISTS `media_favorites` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PATH` varchar(255) NOT NULL DEFAULT '',
@@ -971,6 +1019,7 @@ INSERT INTO `media_favorites` (`ID`, `PATH`, `TITLE`, `LIST_ID`, `COLLECTION_ID`
 -- Table structure for table `media_history`
 --
 
+DROP TABLE IF EXISTS `media_history`;
 CREATE TABLE IF NOT EXISTS `media_history` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PATH` varchar(255) NOT NULL DEFAULT '',
@@ -987,6 +1036,7 @@ CREATE TABLE IF NOT EXISTS `media_history` (
 -- Table structure for table `methods`
 --
 
+DROP TABLE IF EXISTS `methods`;
 CREATE TABLE IF NOT EXISTS `methods` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `OBJECT_ID` int(10) NOT NULL DEFAULT '0',
@@ -1010,15 +1060,15 @@ CREATE TABLE IF NOT EXISTS `methods` (
 INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `CODE`, `CALL_PARENT`, `SCRIPT_ID`, `EXECUTED`, `EXECUTED_PARAMS`) VALUES
 (1, 0, 1, 'KeyPressed', 'событие, возникающее при нажатии на кнопку', '$this->setProperty("lastTimePressed",time());', 0, 0, NULL, NULL),
 (23, 0, 11, 'say', '', 'echo "notify: ".utf2win($params[''say''])."<br>";\r\n$say=utf2win($params[''say'']);\r\n$say=str_replace('' '',''..'',$say);\r\necho (''"c:\\\\program files\\\\Growl for windows\\\\growlnotify.com" /t:Alice ''.$say.'''');\r\nexec(''"c:\\\\program files\\\\Growl for windows\\\\growlnotify.com" /t:Alice ''.$say.'''');', 0, 0, NULL, NULL),
-(14, 0, 7, 'onNewMinute', '', '', 0, 0, '2015-11-18 15:32:00', 'a:4:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:11:"onNewMinute";s:21:"ORIGINAL_OBJECT_TITLE";s:10:"ClockChime";}'),
+(14, 0, 7, 'onNewMinute', '', '', 0, 0, '2015-12-03 14:49:00', 'a:4:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:11:"onNewMinute";s:21:"ORIGINAL_OBJECT_TITLE";s:10:"ClockChime";}'),
 (15, 0, 7, 'onNewHour', '', '', 0, 0, '2015-02-04 15:00:00', 'a:4:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:9:"onNewHour";s:21:"ORIGINAL_OBJECT_TITLE";s:10:"ClockChime";}'),
 (16, 0, 9, 'Connected', '', '', 0, 0, NULL, NULL),
 (55, 0, 18, 'Lost', '', '', 0, 0, NULL, NULL),
-(18, 6, 0, 'onNewMinute', '', '$h=(int)date(''G'',time());\r\n$m=date(''i'',time());\r\n\r\n\r\nif (isWeekDay()) {\r\n\r\n}\r\n\r\n\r\nif (($h>=8) && getGlobal(''clockChimeEnabled'')) {\r\n if ($m=="00") {\r\n   say(timeNow(),1);\r\n }\r\n}\r\n\r\n\r\nsetGlobal(''timeNow'',date(''H:i''));\r\n\r\n$homeStatus=date(''H:i'');\r\nif (getGlobal(''NobodyHomeMode.active'')) {\r\n $homeStatus.='' Дома никого'';\r\n} else {\r\n $homeStatus.='' Дома кто-то есть'';\r\n}\r\n\r\n$homeStatus.='' ''.getGlobal(''Security.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''System.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''Communication.stateDetails'');\r\nsetGlobal(''HomeStatus'',$homeStatus);\r\n\r\n if (timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')=="1") {\r\n  setGlobal("isDark",0);\r\n  callMethod(''DarknessMode.deactivate'');  \r\n } elseif (!timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')!="1") {\r\n  setGlobal("isDark",1);\r\n  callMethod(''DarknessMode.activate'');    \r\n }\r\n \r\n  if (timeIs(getGlobal(''SunRiseTime''))) {\r\n  say(''Всходит солнце'');\r\n }\r\n if (timeIs(getGlobal(''SunSetTime''))) {\r\n  say(''Солнце заходит'',2);\r\n }\r\n \r\nif (timeIs("23:30") && (gg("EconomMode.active")!="1") && (gg("NobodyHomeMode.active")=="1")) {\r\n say("Похоже никого нет сегодня, можно сэкономить немного.");\r\n callMethod(''EconomMode.activate'');\r\n}\r\n\r\nif (timeIs(''20:00'')) {\r\n callMethod(''NightMode.activate'');\r\n} elseif (timeIs(''08:00'')) {\r\n callMethod(''NightMode.deactivate'');\r\n}\r\n\r\nif (timeIs("03:00")) {\r\n runScript("systemMaintenance");\r\n}\r\n\r\nif (gg(''ThisComputer.AlarmStatus'') && timeIs(gg(''ThisComputer.AlarmTime''))) {\r\n runScript(''MorningAlarm'');\r\n}', 1, 0, '2015-11-18 15:32:00', 'a:3:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:11:"onNewMinute";}'),
+(18, 6, 0, 'onNewMinute', '', '$h=(int)date(''G'',time());\r\n$m=date(''i'',time());\r\n\r\n\r\nif (isWeekDay()) {\r\n\r\n}\r\n\r\n\r\nif (($h>=8) && getGlobal(''clockChimeEnabled'')) {\r\n if ($m=="00") {\r\n   say(timeNow(),1);\r\n }\r\n}\r\n\r\n\r\nsetGlobal(''timeNow'',date(''H:i''));\r\n\r\n$homeStatus=date(''H:i'');\r\nif (getGlobal(''NobodyHomeMode.active'')) {\r\n $homeStatus.='' Дома никого'';\r\n} else {\r\n $homeStatus.='' Дома кто-то есть'';\r\n}\r\n\r\n$homeStatus.='' ''.getGlobal(''Security.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''System.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''Communication.stateDetails'');\r\nsetGlobal(''HomeStatus'',$homeStatus);\r\n\r\n if (timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')=="1") {\r\n  setGlobal("isDark",0);\r\n  callMethod(''DarknessMode.deactivate'');  \r\n } elseif (!timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')!="1") {\r\n  setGlobal("isDark",1);\r\n  callMethod(''DarknessMode.activate'');    \r\n }\r\n \r\n  if (timeIs(getGlobal(''SunRiseTime''))) {\r\n  say(''Всходит солнце'');\r\n }\r\n if (timeIs(getGlobal(''SunSetTime''))) {\r\n  say(''Солнце заходит'',2);\r\n }\r\n \r\nif (timeIs("23:30") && (gg("EconomMode.active")!="1") && (gg("NobodyHomeMode.active")=="1")) {\r\n say("Похоже никого нет сегодня, можно сэкономить немного.");\r\n callMethod(''EconomMode.activate'');\r\n}\r\n\r\nif (timeIs(''20:00'')) {\r\n callMethod(''NightMode.activate'');\r\n} elseif (timeIs(''08:00'')) {\r\n callMethod(''NightMode.deactivate'');\r\n}\r\n\r\nif (timeIs("03:00")) {\r\n runScript("systemMaintenance");\r\n}\r\n\r\nif (gg(''ThisComputer.AlarmStatus'') && timeIs(gg(''ThisComputer.AlarmTime''))) {\r\n runScript(''MorningAlarm'');\r\n}', 1, 0, '2015-12-03 14:49:00', 'a:3:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:11:"onNewMinute";}'),
 (19, 4, 0, 'Connected', '', 'if ($params[''serial'']=='''' && $params[''devname'']!='''') {\r\n $params[''serial'']=$params[''devname''];\r\n}\r\n\r\n$device=SQLSelectOne("SELECT * FROM usbdevices WHERE SERIAL LIKE ''".$params[''serial'']."''");\r\nif (!$device[''ID'']) {\r\n // new device connected\r\n //say("Подключено новое устройство",1);\r\n $device=array();\r\n $device[''SERIAL'']=$params[''serial''];\r\n $device[''TITLE'']=''устройство ''.$params[''devname''];\r\n $device[''FIRST_FOUND'']=date(''Y-m-d H:i:s'');\r\n $device[''LAST_FOUND'']=date(''Y-m-d H:i:s'');\r\n $device[''LOG''].=$device[''FIRST_FOUND''].'' подключено (впервые)''."\\n";\r\n $device[''ID'']=SQLInsert(''usbdevices'',$device);\r\n} else {\r\n // device already in our database\r\n //say("Подключено ".$device[''TITLE''],1);\r\n if ($device[''USER_ID'']) {\r\n  $user=SQLSelectOne("SELECT * FROM users WHERE ID=''".$device[''USER_ID'']."''");\r\n  if ($user[''ID'']) {\r\n    //$user[''NAME'']; // теперь мы знаем имя пользователя, связанного с этим устройством\r\n  }\r\n }\r\n $device[''LAST_FOUND'']=date(''Y-m-d H:i:s'');\r\n $device[''LOG'']=$device[''LAST_FOUND''].'' подключено''."\\n".$device[''LOG''];\r\n SQLUpdate(''usbdevices'',$device);\r\n if ($device[''SCRIPT_ID'']!='''') {\r\n  runScript($device[''SCRIPT_ID''],$params);\r\n } elseif ($device[''SCRIPT'']!='''') {\r\n  eval($device[''SCRIPT'']);\r\n }\r\n}', 1, 0, NULL, NULL),
 (20, 0, 10, 'WakedUp', '', '', 0, 0, NULL, NULL),
 (25, 0, 10, 'onIdle', '', '', 0, 0, NULL, NULL),
-(27, 0, 10, 'StartUp', '', '', 0, 0, '2015-11-18 15:17:48', 'a:4:{s:6:"object";s:12:"ThisComputer";s:2:"op";s:1:"m";s:1:"m";s:7:"StartUp";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
+(27, 0, 10, 'StartUp', '', '', 0, 0, '2015-12-03 14:42:54', 'a:4:{s:6:"object";s:12:"ThisComputer";s:2:"op";s:1:"m";s:1:"m";s:7:"StartUp";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
 (29, 0, 10, 'commandReceived', 'получение новой команды', '', 0, 0, '2014-09-05 12:07:08', 'a:2:{s:7:"command";s:14:"статусы";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
 (30, 7, 0, 'commandReceived', '', '$command=$params[''command''];\r\n\r\n$short_command='''';\r\n$dt=recognizeTime($command,$short_command);\r\n\r\nif (preg_match(''/скажи сколько врем/is'',$command)) {\r\n if ($dt>0) {\r\n  addScheduledJob("command".$dt,"processCommand(''".$short_command."'');",$dt);\r\n  say(''Задача принята'',2);\r\n  return;\r\n }\r\n global $voicemode;\r\n $voicemode=''on'';\r\n say(''Сейчас ''.timeNow(),2);\r\n} elseif (preg_match(''/сколько время/is'',$command)) {\r\n if ($dt>0) {\r\n  addScheduledJob("command".$dt,"processCommand(''".$short_command."'');",$dt);\r\n  say(''Задача принята'');\r\n  echo $short_command;\r\n  return;\r\n }\r\n say(''Сейчас ''.timeNow());\r\n} elseif (preg_match(''/повтори (.+)/is'',$command,$m) || preg_match(''/скажи (.+)/is'',$command,$m)) {\r\n if ($dt>0) {\r\n  addScheduledJob("command".$dt,"processCommand(''".$short_command."'');",$dt);\r\n  say(''Задача принята'',2);\r\n  return;\r\n }\r\n global $voicemode;\r\n $voicemode=''on'';\r\n say($m[1],2);\r\n} else {\r\n say(''Неизвестная команда...'',2);\r\n}', 1, 0, '2014-09-05 12:07:08', 'a:1:{s:7:"command";s:14:"статусы";}'),
 (31, 0, 12, 'onNewMessage', '', '', 0, 0, NULL, NULL),
@@ -1031,8 +1081,8 @@ INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `C
 (54, 0, 18, 'Found', '', '', 0, 0, NULL, NULL),
 (56, 13, 0, 'Found', '', '// new device\r\n\r\n$tm=registeredEventTime(''btcall''); \r\nif ((time()-$tm)>60 || $tm<0) {\r\n registerEvent(''btcall''); \r\n}\r\n\r\n\r\nif ($params[''new'']) {\r\n //say(''Обнаружено новое блютуз устройство'');\r\n}\r\nif ($params[''user'']!='''') {\r\n //say($params[''user''].'' где-то рядом'');\r\n}', 1, 0, NULL, NULL),
 (57, 13, 0, 'Lost', '', '// device lost\r\n', 1, 1, NULL, NULL),
-(59, 0, 21, 'checkState', '', ' ', 0, 0, '2015-11-18 15:32:11', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:13:"Communication";}'),
-(60, 0, 21, 'stateChanged', '', '', 0, 0, '2015-02-04 13:57:38', 'a:2:{s:5:"STATE";s:5:"green";s:21:"ORIGINAL_OBJECT_TITLE";s:6:"System";}'),
+(59, 0, 21, 'checkState', '', ' ', 0, 0, '2015-12-03 14:49:25', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:13:"Communication";}'),
+(60, 0, 21, 'stateChanged', '', '', 0, 0, '2015-12-03 14:46:48', 'a:2:{s:5:"STATE";s:5:"green";s:21:"ORIGINAL_OBJECT_TITLE";s:6:"System";}'),
 (61, 0, 22, 'statusChanged', '', 'if ($params[''status'']) {\r\n $this->setProperty(''status'',$params[''status'']);\r\n}\r\n$this->setProperty(''updatedTimestamp'',time());\r\n\r\n$this->setProperty("alive",1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=12*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);', 0, 0, '0000-00-00 00:00:00', ''),
 (62, 0, 23, 'statusChanged', '', '$this->setProperty(''status'',$params[''status'']); // выставляем статус сенсора\r\n$this->setProperty(''updatedTimestamp'',time()); // выставляем время срабатывания сенсора\r\n\r\n$this->setProperty(''alive'',1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=24*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);\r\n\r\nif ($params[''status'']) {\r\n \r\n $this->setProperty(''motionDetected'',1);\r\n clearTimeOut($this->object_title.''_detected''); \r\n setTimeOut($this->object_title.''_detected'',"setGlobal(''".$this->object_title.".motionDetected'',0);",30);\r\n\r\n $linked_room=$this->getProperty(''LinkedRoom'');\r\n if ($linked_room!='''') {\r\n  callMethod($linked_room.''.onActivity'');\r\n }\r\n\r\n if ($this->object_title==''sensorMovement3'' || $this->object_title==''sensorMovementRemote1'' || $this->object_title==''sensorMovementRemote2'') {\r\n  //|| $this->object_title==''sensorMovement5''\r\n  return; // не реагируем на движение в спальне, по ip-сенсорам и по сенсору на втром этаже\r\n }\r\n\r\n ClearTimeOut("nobodyHome"); \r\n SetTimeOut("nobodyHome","callMethod(''NobodyHomeMode.activate'');", 1*60*60); // выполняем если целый час никого не было\r\n\r\n if (getGlobal(''NobodyHomeMode.active'')) {\r\n  callMethod(''NobodyHomeMode.deactivate'');\r\n }\r\n\r\n $last_register=registeredEventTime(''inhouseMovement''); // проверяем когда в последний раз срабатывало событие "движение внутри дома"\r\n  registerEvent(''inhouseMovement'',$this->name,2); // регистрируем событие "движение внутри дома" \r\n  if (timeBetween(''05:00'', ''12:00'') && ((time()-$last_register)>2*60*60)) {\r\n   runScript(''Greeting''); // запускаем скрипт "доброе утро"\r\n  }\r\n}', 0, 0, '2014-09-05 13:00:59', 'a:5:{s:2:"op";s:1:"m";s:6:"object";s:13:"MotionSensor4";s:1:"m";s:13:"statusChanged";s:6:"status";s:1:"1";s:21:"ORIGINAL_OBJECT_TITLE";s:13:"MotionSensor4";}'),
 (63, 0, 24, 'modeChanged', '', '$this->setProperty("updated",time());\r\n$this->setProperty("updatedTime",date(''H:i''));\r\nif ($this->getProperty(''active'')) {\r\n say("Режим ".$this->getProperty(''title'')." активирован.");\r\n} else {\r\n say("Режим ".$this->getProperty(''title'')." выключен.");\r\n}', 0, 0, '2015-01-29 12:51:00', 'a:4:{s:8:"PROPERTY";s:6:"active";s:9:"NEW_VALUE";s:1:"0";s:9:"OLD_VALUE";s:1:"1";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"DarknessMode";}'),
@@ -1040,14 +1090,14 @@ INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `C
 (65, 0, 24, 'deactivate', '', '$this->setProperty(''active'',0);', 0, 0, '2015-01-29 12:51:00', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:12:"DarknessMode";}'),
 (66, 0, 25, 'onActivity', '', '$latestActivity=$this->getProperty(''LatestActivity'');\r\n$this->setProperty(''LatestActivity'',time());\r\n$this->setProperty(''LatestActivityTime'',date(''H:i''));\r\n\r\n$this->setProperty(''SomebodyHere'',1);\r\n$ot=$this->object_title;\r\nif ($this->getProperty("IdleDelay")) {\r\n $activity_timeout=(int)$this->getProperty("IdleDelay");\r\n} else {\r\n $activity_timeout=10*60;\r\n}\r\nclearTimeOut($ot."_activity_timeout");\r\nsetTimeOut($ot."_activity_timeout","callMethod(''".$ot.".onIdle'');",$activity_timeout);\r\n$this->callMethod("updateActivityStatus");\r\n', 0, 0, '2014-09-05 13:01:00', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:10:"Kinderroom";}'),
 (67, 0, 25, 'onIdle', '', '$this->setProperty(''SomebodyHere'',0);', 0, 0, '2014-09-05 12:24:46', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:10:"Kinderroom";}'),
-(68, 0, 26, 'refresh', '', '$status=$this->getProperty("status");\r\nif ($status) {\r\n $this->callMethod(''turnOn'');\r\n} else {\r\n $this->callMethod(''turnOff'');\r\n}', 0, 0, '2014-09-05 11:01:41', 'a:3:{s:5:"VALUE";s:1:"0";s:9:"OLD_VALUE";s:1:"1";s:21:"ORIGINAL_OBJECT_TITLE";s:4:"noo2";}'),
+(68, 0, 26, 'refresh', '', '$status=$this->getProperty("status");\r\nif ($status) {\r\n $this->callMethod(''turnOn'');\r\n} else {\r\n $this->callMethod(''turnOff'');\r\n}', 0, 0, '2015-12-03 14:46:02', 'a:3:{s:5:"VALUE";s:1:"1";s:9:"OLD_VALUE";s:0:"";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
 (69, 0, 26, 'switch', '', '$status=$this->getProperty("status");\r\nif ($status) {\r\n $this->callMethod(''turnOff'');\r\n} else {\r\n $this->callMethod(''turnOn'');\r\n}', 0, 0, NULL, NULL),
-(70, 0, 26, 'turnOff', '', '$this->setProperty("status",0);', 0, 0, NULL, NULL),
-(71, 0, 26, 'turnOn', '', '$this->setProperty("status",1);', 0, 0, NULL, NULL),
+(70, 0, 26, 'turnOff', '', '$this->setProperty("status",0);', 0, 0, '2015-12-03 14:46:13', 'a:2:{s:5:"STATE";s:2:"on";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
+(71, 0, 26, 'turnOn', '', '$this->setProperty("status",1);', 0, 0, '2015-12-03 14:46:12', 'a:2:{s:5:"STATE";s:3:"off";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
 (72, 0, 19, 'tempChanged', '', '//$params[''t'']\r\n $this->setProperty("updated",time());\r\n $this->setProperty("updatedTime",date("H:i",time()));\r\n $this->setProperty("alive",1); \r\n \r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=30*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout); \r\n\r\nif (!isset($params[''t''])) {\r\n return;\r\n}\r\n\r\n\r\n$old_temp=$this->getProperty(''temp'');\r\n$t=round($params[''t''],1);\r\n\r\nif ($t>110) return;\r\n\r\n$this->setProperty(''temp'',$t);\r\nif ($params[''uptime'']) {\r\n $this->setProperty(''uptime'',$params[''uptime'']);\r\n}\r\n\r\nif ($t>$old_temp) {\r\n $d=1;\r\n} elseif ($t<$old_temp) {\r\n $d=-1;\r\n} else {\r\n $d=0;\r\n}\r\n$this->setProperty(''direction'',$d);\r\n\r\n$linked_room=$this->getProperty("LinkedRoom");\r\nif ($linked_room) {\r\n setGlobal($linked_room.''.Temperature'',$t);\r\n}', 0, 0, '2014-09-05 12:54:30', 'a:2:{s:1:"t";d:22.5;s:21:"ORIGINAL_OBJECT_TITLE";s:12:"TempSensor03";}'),
-(73, 17, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'',''watchfolders''=>''watch folders'',''rss''=>''RSS'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-11-18 15:32:11', ''),
-(74, 18, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-11-18 15:32:11', ''),
-(75, 16, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-11-18 15:32:11', ''),
+(73, 17, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
+(74, 18, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
+(75, 16, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
 (77, 0, 10, 'VolumeLevelChanged', '', '$volume=round(65535*$params[''VALUE'']/100);\r\n$this->setProperty(''volumeLevel'',$params[''VALUE'']);\r\nsafe_exec(''..\\\\apps\\\\nircmd\\\\nircmdc setsysvolume ''.$volume);\r\nsay("Изменилась громкость до ".$params[''VALUE'']." процентов");', 0, 0, '2014-07-31 21:15:03', 'a:3:{s:5:"VALUE";s:2:"90";s:4:"HOST";s:9:"localhost";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
 (86, 0, 29, 'turnOn', '', '$code1=$this->getProperty(''Code1'');\r\n$code2=$this->getProperty(''Code2'');\r\nsafe_exec("c:\\_majordomo\\apps\\arduino_gw\\arduino_gw.exe rcon$code1:$code2;");\r\n$this->setProperty("status",1);', 0, 0, '2014-08-27 23:28:35', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:7:"OutletB";}'),
 (81, 47, 0, 'activate', '', 'setGlobal(''minMsgLevel'',''2'');', 1, 0, '2014-09-04 20:00:00', ''),
@@ -1070,6 +1120,7 @@ INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `C
 -- Table structure for table `myblocks`
 --
 
+DROP TABLE IF EXISTS `myblocks`;
 CREATE TABLE IF NOT EXISTS `myblocks` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1088,6 +1139,7 @@ CREATE TABLE IF NOT EXISTS `myblocks` (
 -- Table structure for table `myblocks_categories`
 --
 
+DROP TABLE IF EXISTS `myblocks_categories`;
 CREATE TABLE IF NOT EXISTS `myblocks_categories` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1100,6 +1152,7 @@ CREATE TABLE IF NOT EXISTS `myblocks_categories` (
 -- Table structure for table `newsletter`
 --
 
+DROP TABLE IF EXISTS `newsletter`;
 CREATE TABLE IF NOT EXISTS `newsletter` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `EMAIL` varchar(255) NOT NULL DEFAULT '',
@@ -1114,6 +1167,7 @@ CREATE TABLE IF NOT EXISTS `newsletter` (
 -- Table structure for table `objects`
 --
 
+DROP TABLE IF EXISTS `objects`;
 CREATE TABLE IF NOT EXISTS `objects` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1122,7 +1176,7 @@ CREATE TABLE IF NOT EXISTS `objects` (
   `LOCATION_ID` int(10) NOT NULL DEFAULT '0',
   `KEEP_HISTORY` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=74 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=75 ;
 
 --
 -- Dumping data for table `objects`
@@ -1154,7 +1208,8 @@ INSERT INTO `objects` (`ID`, `TITLE`, `CLASS_ID`, `DESCRIPTION`, `LOCATION_ID`, 
 (51, 'MotionSensor1', 23, '', 6, 0),
 (54, 'Kinderroom', 25, '', 10, 0),
 (55, 'Toilet', 25, '', 8, 0),
-(68, 'admin', 32, '', 0, 0);
+(68, 'admin', 32, '', 0, 0),
+(74, 'Switch1', 26, '', 0, 3);
 
 -- --------------------------------------------------------
 
@@ -1162,6 +1217,7 @@ INSERT INTO `objects` (`ID`, `TITLE`, `CLASS_ID`, `DESCRIPTION`, `LOCATION_ID`, 
 -- Table structure for table `patterns`
 --
 
+DROP TABLE IF EXISTS `patterns`;
 CREATE TABLE IF NOT EXISTS `patterns` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1207,6 +1263,7 @@ INSERT INTO `patterns` (`ID`, `TITLE`, `PATTERN`, `SCRIPT_ID`, `SCRIPT`, `LOG`, 
 -- Table structure for table `performance_log`
 --
 
+DROP TABLE IF EXISTS `performance_log`;
 CREATE TABLE IF NOT EXISTS `performance_log` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `OPERATION` varchar(255) NOT NULL DEFAULT '',
@@ -1223,6 +1280,7 @@ CREATE TABLE IF NOT EXISTS `performance_log` (
 -- Table structure for table `phistory`
 --
 
+DROP TABLE IF EXISTS `phistory`;
 CREATE TABLE IF NOT EXISTS `phistory` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `VALUE_ID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1238,6 +1296,7 @@ CREATE TABLE IF NOT EXISTS `phistory` (
 -- Table structure for table `pinghosts`
 --
 
+DROP TABLE IF EXISTS `pinghosts`;
 CREATE TABLE IF NOT EXISTS `pinghosts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `HOSTNAME` varchar(255) NOT NULL DEFAULT '',
@@ -1267,7 +1326,7 @@ CREATE TABLE IF NOT EXISTS `pinghosts` (
 --
 
 INSERT INTO `pinghosts` (`ID`, `HOSTNAME`, `TYPE`, `STATUS`, `SEARCH_WORD`, `CHECK_LATEST`, `CHECK_NEXT`, `SCRIPT_ID_ONLINE`, `CODE_ONLINE`, `SCRIPT_ID_OFFLINE`, `CODE_OFFLINE`, `OFFLINE_INTERVAL`, `ONLINE_INTERVAL`, `TITLE`, `LOG`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `COUNTER_CURRENT`, `COUNTER_REQUIRED`, `STATUS_EXPECTED`) VALUES
-(8, 'tut.by', 0, 1, '', '2015-11-18 15:25:59', '2015-11-18 15:35:59', 0, '', 0, '', 600, 600, 'Internet', '2014-10-30 15:01:22 Host is online\n2014-09-05 00:41:06 Host is online\n2014-09-05 00:31:05 Host is offline\n2014-09-04 16:36:02 Host is online\n2014-09-03 16:37:00 Host is online\n2014-09-03 16:26:47 Host is offline\n2014-09-03 14:45:29 Host is online\n2014-09-03 14:35:26 Host is offline\n2014-09-03 12:54:33 Host is online\n2014-09-03 12:44:31 Host is offline\n2014-08-21 06:25:53 Host is online\n2014-08-21 06:15:49 Host is offline\n2014-08-19 15:16:17 Host is online\n2014-08-19 15:06:14 Host is offline\n2014-08-19 09:52:20 Host is online\n2014-08-19 09:42:18 Host is offline\n2014-08-19 09:32:10 Host is online\n2014-08-19 09:22:07 Host is offline\n2014-08-18 17:34:00 Host is online\n2014-08-18 17:23:59 Host is offline\n2014-08-18 05:58:14 Host is online\n2014-08-18 05:48:13 Host is offline\n2014-08-13 02:45:56 Host is online\n2014-08-13 02:35:50 Host is offline\n2014-08-06 09:25:20 Host is online\n2014-08-06 09:15:17 Host is offline\n2014-08-05 22:39:57 Host is online\n2014-08-05 22:29:56 Host is offline\n2014-08-01 16:29:12 Host is online\n2014-08-01 15:28:44 Host is offline\n2014-07-31 21:19:39 Host is online\n2014-07-31 21:09:29 Host is offline\n2014-07-28 13:34:03 Host is online\n2014-07-28 13:23:56 Host is offline\n2014-07-28 12:33:17 Host is online\n2014-07-28 12:13:03 Host is offline\n2014-07-28 04:39:08 Host is online\n2014-07-28 04:29:00 Host is offline\n2014-07-28 00:57:07 Host is online\n2014-07-28 00:37:00 Host is offline\n2014-07-27 22:25:52 Host is online\n2014-07-27 21:35:01 Host is offline\n2014-07-27 21:24:49 Host is online\n2014-07-27 21:14:47 Host is offline\n2014-07-27 21:04:39 Host is online\n2014-07-27 20:44:15 Host is offline\n2014-07-27 19:53:42 Host is online\n2014-07-27 19:43:39 Host is offline\n2014-07-27 19:33:32 Host is online\n2014-07-27 19:23:30 Host is offline\n2014-07-27 17:42:36 Host is online\n2014-07-27 17:22:22 Host is offline\n2014-07-27 16:31:49 Host is online\n2014-07-27 16:21:47 Host is offline\n2014-07-27 16:11:39 Host is online\n2014-07-27 16:01:37 Host is offline\n2014-07-27 12:49:59 Host is online\n2014-07-27 12:39:57 Host is offline\n2014-07-27 10:28:49 Host is online\n2014-07-27 10:18:43 Host is offline\n2014-07-27 09:38:13 Host is online\n2014-07-27 09:28:11 Host is offline\n2014-07-27 09:07:57 Host is online\n2014-07-27 08:37:46 Host is offline\n2014-07-27 08:27:37 Host is online\n2014-07-27 08:17:35 Host is offline\n2014-07-27 07:06:58 Host is online\n2014-07-27 06:56:54 Host is offline\n2014-07-27 06:26:37 Host is online\n2014-07-27 06:16:28 Host is offline\n2014-07-27 05:56:11 Host is online\n2014-07-27 05:15:53 Host is offline\n2014-07-27 04:25:26 Host is online\n2014-07-27 03:54:46 Host is offline\n2014-07-27 02:54:08 Host is online\n2014-07-27 02:44:06 Host is offline\n2014-07-27 00:22:52 Host is online\n2014-07-27 00:12:50 Host is offline\n2014-07-26 23:52:37 Host is online\n2014-07-26 23:42:35 Host is offline\n2014-07-26 23:32:27 Host is online\n2014-07-26 23:12:09 Host is offline\n2014-07-26 13:07:06 Host is online\n2014-07-26 12:57:04 Host is offline\n2014-07-26 12:36:53 Host is online\n2014-07-26 12:26:48 Host is offline\n2014-07-26 12:16:41 Host is online\n2014-07-26 11:46:28 Host is offline\n2014-07-24 20:47:09 Host is online\n2014-07-24 20:37:04 Host is offline\n2014-07-24 17:05:19 Host is online\n2014-07-24 16:55:18 Host is offline\n2014-07-24 14:03:49 Host is online\n2014-07-24 13:53:48 Host is offline\n2014-07-24 04:08:54 Host is online\n2014-07-24 03:58:45 Host is offline\n2014-07-24 03:38:28 Host is online\n2014-07-24 03:28:20 Host is offline\n2014-07-24 01:17:07 Host is online\n2014-07-24 01:06:58 Host is offline\n2014-07-23 22:45:41 Host is online\n2014-07-23 22:35:32 Host is offline\n2014-07-23 19:23:50 Host is online\n2014-07-23 19:13:48 Host is offline\n2014-07-23 15:52:04 Host is online\n2014-07-23 15:42:03 Host is offline\n2014-07-23 15:21:49 Host is online\n2014-07-23 15:11:47 Host is offline\n2014-07-22 22:26:00 Host is online\n2014-07-22 22:15:54 Host is offline\n2014-07-22 21:45:34 Host is online\n2014-07-22 21:35:34 Host is offline\n2014-07-22 21:25:22 Host is online\n2014-07-22 21:15:19 Host is offline\n2014-07-22 19:44:22 Host is online\n2014-07-22 19:34:21 Host is offline\n2014-07-21 22:22:24 Host is online\n2014-07-21 21:41:45 Host is offline\n2014-07-21 03:21:41 Host is online\n2014-07-21 03:11:30 Host is offline\n2014-07-21 02:41:09 Host is online\n2014-07-21 02:31:07 Host is offline\n2014-07-21 02:20:55 Host is online\n2014-07-21 01:29:40 Host is offline\n2014-07-21 01:19:30 Host is online\n2014-07-21 00:59:02 Host is offline\n2014-07-21 00:48:52 Host is online\n2014-07-21 00:38:41 Host is offline\n2014-07-21 00:08:19 Host is online\n2014-07-20 23:47:53 Host is offline\n2014-07-20 23:37:40 Host is online\n2014-07-20 22:36:27 Host is offline\n2014-07-20 17:53:48 Host is online\n2014-07-20 17:43:46 Host is offline\n2014-07-20 17:23:32 Host is online\n2014-07-20 17:13:30 Host is offline\n2014-07-20 13:41:35 Host is online\n2014-07-20 13:31:32 Host is offline\n2014-07-18 19:28:59 Host is online\n2014-07-18 15:26:15 Host is offline\n2014-07-18 11:54:25 Host is online\n2014-07-18 11:44:19 Host is offline\n2014-07-18 02:39:13 Host is online\n2014-07-18 02:29:11 Host is offline\n2014-07-17 20:46:03 Host is online\n2014-07-17 20:35:53 Host is offline\n2014-07-17 16:33:40 Host is online\n2014-07-17 16:23:32 Host is offline\n2014-07-17 10:50:39 Host is online\n2014-07-17 10:40:29 Host is offline\n2014-07-17 10:30:18 Host is online\n2014-07-17 10:20:08 Host is offline\n2014-07-17 06:28:07 Host is online\n2014-07-17 06:18:06 Host is offline\n2014-07-16 22:14:02 Host is online\n2014-07-16 22:04:01 Host is offline\n2014-07-16 21:53:51 Host is online\n2014-07-16 21:43:41 Host is offline\n2014-07-16 10:07:48 Host is online\n2014-07-16 09:57:38 Host is offline\n2014-07-16 09:47:28 Host is online\n2014-07-16 09:27:02 Host is offline\n2014-07-16 08:36:30 Host is online\n2014-07-16 08:26:20 Host is offline\n2012-11-17 14:47:08 Host is online\n2012-11-17 14:37:06 Host is offline\n2012-11-17 14:27:05 Host is online\n2012-11-16 17:29:14 Host is offline\n2012-11-16 16:59:02 Host is online\n2012-11-16 16:49:01 Host is offline\n2012-11-16 15:08:49 Host is online\n2012-11-16 14:58:45 Host is offline\n2012-10-31 09:59:11 Host is online\n2012-10-31 09:49:11 Host is offline\n2012-10-29 09:48:24 Host is online\n2012-10-29 06:37:11 Host is offline\n2012-10-29 06:27:07 Host is online\n2012-10-29 05:46:55 Host is offline\n2012-10-29 05:26:51 Host is online\n2012-10-29 05:16:51 Host is offline\n2012-10-29 05:06:47 Host is online\n2012-10-29 04:06:27 Host is offline\n2012-10-29 03:56:23 Host is online\n2012-10-29 03:46:23 Host is offline\n2012-10-29 03:36:19 Host is online\n2012-10-29 03:16:15 Host is offline\n2012-10-29 03:06:11 Host is online\n2012-10-29 01:25:44 Host is offline\n2012-10-29 01:15:41 Host is online\n2012-10-29 00:05:17 Host is offline\n2012-10-23 14:53:36 Host is online\n2012-10-23 14:23:28 Host is offline\n2012-10-19 06:11:55 Host is online\n2012-10-19 06:01:55 Host is offline\n2012-10-16 11:55:17 Host is online\n', '', '', 0, 0, 1);
+(8, 'tut.by', 0, 1, '', '2015-12-03 14:42:32', '2015-12-03 14:52:32', 0, '', 0, '', 600, 600, 'Internet', '2014-10-30 15:01:22 Host is online\n2014-09-05 00:41:06 Host is online\n2014-09-05 00:31:05 Host is offline\n2014-09-04 16:36:02 Host is online\n2014-09-03 16:37:00 Host is online\n2014-09-03 16:26:47 Host is offline\n2014-09-03 14:45:29 Host is online\n2014-09-03 14:35:26 Host is offline\n2014-09-03 12:54:33 Host is online\n2014-09-03 12:44:31 Host is offline\n2014-08-21 06:25:53 Host is online\n2014-08-21 06:15:49 Host is offline\n2014-08-19 15:16:17 Host is online\n2014-08-19 15:06:14 Host is offline\n2014-08-19 09:52:20 Host is online\n2014-08-19 09:42:18 Host is offline\n2014-08-19 09:32:10 Host is online\n2014-08-19 09:22:07 Host is offline\n2014-08-18 17:34:00 Host is online\n2014-08-18 17:23:59 Host is offline\n2014-08-18 05:58:14 Host is online\n2014-08-18 05:48:13 Host is offline\n2014-08-13 02:45:56 Host is online\n2014-08-13 02:35:50 Host is offline\n2014-08-06 09:25:20 Host is online\n2014-08-06 09:15:17 Host is offline\n2014-08-05 22:39:57 Host is online\n2014-08-05 22:29:56 Host is offline\n2014-08-01 16:29:12 Host is online\n2014-08-01 15:28:44 Host is offline\n2014-07-31 21:19:39 Host is online\n2014-07-31 21:09:29 Host is offline\n2014-07-28 13:34:03 Host is online\n2014-07-28 13:23:56 Host is offline\n2014-07-28 12:33:17 Host is online\n2014-07-28 12:13:03 Host is offline\n2014-07-28 04:39:08 Host is online\n2014-07-28 04:29:00 Host is offline\n2014-07-28 00:57:07 Host is online\n2014-07-28 00:37:00 Host is offline\n2014-07-27 22:25:52 Host is online\n2014-07-27 21:35:01 Host is offline\n2014-07-27 21:24:49 Host is online\n2014-07-27 21:14:47 Host is offline\n2014-07-27 21:04:39 Host is online\n2014-07-27 20:44:15 Host is offline\n2014-07-27 19:53:42 Host is online\n2014-07-27 19:43:39 Host is offline\n2014-07-27 19:33:32 Host is online\n2014-07-27 19:23:30 Host is offline\n2014-07-27 17:42:36 Host is online\n2014-07-27 17:22:22 Host is offline\n2014-07-27 16:31:49 Host is online\n2014-07-27 16:21:47 Host is offline\n2014-07-27 16:11:39 Host is online\n2014-07-27 16:01:37 Host is offline\n2014-07-27 12:49:59 Host is online\n2014-07-27 12:39:57 Host is offline\n2014-07-27 10:28:49 Host is online\n2014-07-27 10:18:43 Host is offline\n2014-07-27 09:38:13 Host is online\n2014-07-27 09:28:11 Host is offline\n2014-07-27 09:07:57 Host is online\n2014-07-27 08:37:46 Host is offline\n2014-07-27 08:27:37 Host is online\n2014-07-27 08:17:35 Host is offline\n2014-07-27 07:06:58 Host is online\n2014-07-27 06:56:54 Host is offline\n2014-07-27 06:26:37 Host is online\n2014-07-27 06:16:28 Host is offline\n2014-07-27 05:56:11 Host is online\n2014-07-27 05:15:53 Host is offline\n2014-07-27 04:25:26 Host is online\n2014-07-27 03:54:46 Host is offline\n2014-07-27 02:54:08 Host is online\n2014-07-27 02:44:06 Host is offline\n2014-07-27 00:22:52 Host is online\n2014-07-27 00:12:50 Host is offline\n2014-07-26 23:52:37 Host is online\n2014-07-26 23:42:35 Host is offline\n2014-07-26 23:32:27 Host is online\n2014-07-26 23:12:09 Host is offline\n2014-07-26 13:07:06 Host is online\n2014-07-26 12:57:04 Host is offline\n2014-07-26 12:36:53 Host is online\n2014-07-26 12:26:48 Host is offline\n2014-07-26 12:16:41 Host is online\n2014-07-26 11:46:28 Host is offline\n2014-07-24 20:47:09 Host is online\n2014-07-24 20:37:04 Host is offline\n2014-07-24 17:05:19 Host is online\n2014-07-24 16:55:18 Host is offline\n2014-07-24 14:03:49 Host is online\n2014-07-24 13:53:48 Host is offline\n2014-07-24 04:08:54 Host is online\n2014-07-24 03:58:45 Host is offline\n2014-07-24 03:38:28 Host is online\n2014-07-24 03:28:20 Host is offline\n2014-07-24 01:17:07 Host is online\n2014-07-24 01:06:58 Host is offline\n2014-07-23 22:45:41 Host is online\n2014-07-23 22:35:32 Host is offline\n2014-07-23 19:23:50 Host is online\n2014-07-23 19:13:48 Host is offline\n2014-07-23 15:52:04 Host is online\n2014-07-23 15:42:03 Host is offline\n2014-07-23 15:21:49 Host is online\n2014-07-23 15:11:47 Host is offline\n2014-07-22 22:26:00 Host is online\n2014-07-22 22:15:54 Host is offline\n2014-07-22 21:45:34 Host is online\n2014-07-22 21:35:34 Host is offline\n2014-07-22 21:25:22 Host is online\n2014-07-22 21:15:19 Host is offline\n2014-07-22 19:44:22 Host is online\n2014-07-22 19:34:21 Host is offline\n2014-07-21 22:22:24 Host is online\n2014-07-21 21:41:45 Host is offline\n2014-07-21 03:21:41 Host is online\n2014-07-21 03:11:30 Host is offline\n2014-07-21 02:41:09 Host is online\n2014-07-21 02:31:07 Host is offline\n2014-07-21 02:20:55 Host is online\n2014-07-21 01:29:40 Host is offline\n2014-07-21 01:19:30 Host is online\n2014-07-21 00:59:02 Host is offline\n2014-07-21 00:48:52 Host is online\n2014-07-21 00:38:41 Host is offline\n2014-07-21 00:08:19 Host is online\n2014-07-20 23:47:53 Host is offline\n2014-07-20 23:37:40 Host is online\n2014-07-20 22:36:27 Host is offline\n2014-07-20 17:53:48 Host is online\n2014-07-20 17:43:46 Host is offline\n2014-07-20 17:23:32 Host is online\n2014-07-20 17:13:30 Host is offline\n2014-07-20 13:41:35 Host is online\n2014-07-20 13:31:32 Host is offline\n2014-07-18 19:28:59 Host is online\n2014-07-18 15:26:15 Host is offline\n2014-07-18 11:54:25 Host is online\n2014-07-18 11:44:19 Host is offline\n2014-07-18 02:39:13 Host is online\n2014-07-18 02:29:11 Host is offline\n2014-07-17 20:46:03 Host is online\n2014-07-17 20:35:53 Host is offline\n2014-07-17 16:33:40 Host is online\n2014-07-17 16:23:32 Host is offline\n2014-07-17 10:50:39 Host is online\n2014-07-17 10:40:29 Host is offline\n2014-07-17 10:30:18 Host is online\n2014-07-17 10:20:08 Host is offline\n2014-07-17 06:28:07 Host is online\n2014-07-17 06:18:06 Host is offline\n2014-07-16 22:14:02 Host is online\n2014-07-16 22:04:01 Host is offline\n2014-07-16 21:53:51 Host is online\n2014-07-16 21:43:41 Host is offline\n2014-07-16 10:07:48 Host is online\n2014-07-16 09:57:38 Host is offline\n2014-07-16 09:47:28 Host is online\n2014-07-16 09:27:02 Host is offline\n2014-07-16 08:36:30 Host is online\n2014-07-16 08:26:20 Host is offline\n2012-11-17 14:47:08 Host is online\n2012-11-17 14:37:06 Host is offline\n2012-11-17 14:27:05 Host is online\n2012-11-16 17:29:14 Host is offline\n2012-11-16 16:59:02 Host is online\n2012-11-16 16:49:01 Host is offline\n2012-11-16 15:08:49 Host is online\n2012-11-16 14:58:45 Host is offline\n2012-10-31 09:59:11 Host is online\n2012-10-31 09:49:11 Host is offline\n2012-10-29 09:48:24 Host is online\n2012-10-29 06:37:11 Host is offline\n2012-10-29 06:27:07 Host is online\n2012-10-29 05:46:55 Host is offline\n2012-10-29 05:26:51 Host is online\n2012-10-29 05:16:51 Host is offline\n2012-10-29 05:06:47 Host is online\n2012-10-29 04:06:27 Host is offline\n2012-10-29 03:56:23 Host is online\n2012-10-29 03:46:23 Host is offline\n2012-10-29 03:36:19 Host is online\n2012-10-29 03:16:15 Host is offline\n2012-10-29 03:06:11 Host is online\n2012-10-29 01:25:44 Host is offline\n2012-10-29 01:15:41 Host is online\n2012-10-29 00:05:17 Host is offline\n2012-10-23 14:53:36 Host is online\n2012-10-23 14:23:28 Host is offline\n2012-10-19 06:11:55 Host is online\n2012-10-19 06:01:55 Host is offline\n2012-10-16 11:55:17 Host is online\n', '', '', 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -1275,6 +1334,7 @@ INSERT INTO `pinghosts` (`ID`, `HOSTNAME`, `TYPE`, `STATUS`, `SEARCH_WORD`, `CHE
 -- Table structure for table `plugins`
 --
 
+DROP TABLE IF EXISTS `plugins`;
 CREATE TABLE IF NOT EXISTS `plugins` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1298,6 +1358,7 @@ CREATE TABLE IF NOT EXISTS `plugins` (
 -- Table structure for table `products`
 --
 
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1322,6 +1383,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 -- Table structure for table `product_categories`
 --
 
+DROP TABLE IF EXISTS `product_categories`;
 CREATE TABLE IF NOT EXISTS `product_categories` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1345,6 +1407,7 @@ INSERT INTO `product_categories` (`ID`, `TITLE`, `PRIORITY`, `PARENT_ID`, `SUB_L
 -- Table structure for table `product_codes`
 --
 
+DROP TABLE IF EXISTS `product_codes`;
 CREATE TABLE IF NOT EXISTS `product_codes` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1367,6 +1430,7 @@ INSERT INTO `product_codes` (`ID`, `TITLE`, `CODE`, `PRODUCT_ID`) VALUES
 -- Table structure for table `product_log`
 --
 
+DROP TABLE IF EXISTS `product_log`;
 CREATE TABLE IF NOT EXISTS `product_log` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1384,6 +1448,7 @@ CREATE TABLE IF NOT EXISTS `product_log` (
 -- Table structure for table `prod_categories`
 --
 
+DROP TABLE IF EXISTS `prod_categories`;
 CREATE TABLE IF NOT EXISTS `prod_categories` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1396,6 +1461,7 @@ CREATE TABLE IF NOT EXISTS `prod_categories` (
 -- Table structure for table `project_modules`
 --
 
+DROP TABLE IF EXISTS `project_modules`;
 CREATE TABLE IF NOT EXISTS `project_modules` (
   `ID` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(50) NOT NULL DEFAULT '',
@@ -1407,7 +1473,7 @@ CREATE TABLE IF NOT EXISTS `project_modules` (
   `PRIORITY` int(10) NOT NULL DEFAULT '0',
   `ADDED` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=107 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=108 ;
 
 --
 -- Dumping data for table `project_modules`
@@ -1462,7 +1528,8 @@ INSERT INTO `project_modules` (`ID`, `NAME`, `TITLE`, `CATEGORY`, `PARENT_NAME`,
 (99, 'soundfiles', '<#LANG_MODULE_SOUNDFILES#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2014-10-30 11:57:41'),
 (100, 'textfiles', '<#LANG_MODULE_TEXTFILES#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2014-10-30 11:57:41'),
 (101, 'linkedobject', 'LinkedObject', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2015-01-29 08:24:25'),
-(102, 'system_errors', '<#LANG_MODULE_SYSTEM_ERRORS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 0, 0, '2015-01-29 08:24:26');
+(102, 'system_errors', '<#LANG_MODULE_SYSTEM_ERRORS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 0, 0, '2015-01-29 08:24:26'),
+(107, 'app_quotes', '<#LANG_APP_QUOTES#>', '<#LANG_SECTION_APPLICATIONS#>', '', NULL, 0, 0, '2015-12-03 11:42:24');
 
 -- --------------------------------------------------------
 
@@ -1470,6 +1537,7 @@ INSERT INTO `project_modules` (`ID`, `NAME`, `TITLE`, `CATEGORY`, `PARENT_NAME`,
 -- Table structure for table `properties`
 --
 
+DROP TABLE IF EXISTS `properties`;
 CREATE TABLE IF NOT EXISTS `properties` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CLASS_ID` int(10) NOT NULL DEFAULT '0',
@@ -1606,6 +1674,7 @@ INSERT INTO `properties` (`ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `OBJECT_ID`,
 -- Table structure for table `pvalues`
 --
 
+DROP TABLE IF EXISTS `pvalues`;
 CREATE TABLE IF NOT EXISTS `pvalues` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PROPERTY_ID` int(10) NOT NULL DEFAULT '0',
@@ -1618,7 +1687,7 @@ CREATE TABLE IF NOT EXISTS `pvalues` (
   KEY `PROPERTY_ID` (`PROPERTY_ID`),
   KEY `OBJECT_ID` (`OBJECT_ID`),
   KEY `PROPERTY_NAME` (`PROPERTY_NAME`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=307 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=315 ;
 
 --
 -- Dumping data for table `pvalues`
@@ -1628,10 +1697,10 @@ INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PR
 (59, 18, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.minMsgLevel', ''),
 (60, 17, 7, '-15', '2014-10-30 15:02:45', 'ThisComputer.testProp', ''),
 (58, 10, 7, '1346415251', '2014-10-30 15:02:45', 'ThisComputer.checked', ''),
-(24, 12, 6, '2015-11-18 15:32:00', '2015-11-18 15:32:00', 'ClockChime.time', ''),
-(61, 20, 7, '\n<b>Сегодня:</b><br />\nднем: +0&deg;, пасмурно, снег, ночью: +0&deg;...-2&deg;, пасмурно, снег, ветер: З — 2-4 м/с, давление: 760 мм.рт.ст, влажность: 90%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +0&deg;...-2&deg;, пасмурно, ночью: -1&deg;...-3&deg;, пасмурно, снег, ветер: C — 3-5 м/с, давление: 767 мм.рт.ст, влажность: 85%<br />\n<br />\n<br />\n', '2015-02-04 13:57:34', 'ThisComputer.weatherFull', ''),
+(24, 12, 6, '2015-12-03 14:49:00', '2015-12-03 14:49:00', 'ClockChime.time', ''),
+(61, 20, 7, '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:42:32', 'ThisComputer.weatherFull', ''),
 (186, 54, 51, 'Hall', '2014-09-04 12:12:08', 'MotionSensor1.LinkedRoom', ''),
-(80, 43, 7, '+7.7', '2015-11-18 15:15:59', 'ThisComputer.TempOutside', ''),
+(80, 43, 7, '-0.9', '2015-12-03 14:42:33', 'ThisComputer.TempOutside', ''),
 (62, 21, 7, '09:30', '2014-10-30 15:02:45', 'ThisComputer.AlarmTime', 'commands'),
 (63, 22, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.textBoxTest', 'commands'),
 (64, 23, 7, '4', '2014-10-30 15:02:45', 'ThisComputer.1w_temp', ''),
@@ -1654,23 +1723,26 @@ INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PR
 (82, 45, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.securityMode', ''),
 (83, 46, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.nobodyHome', ''),
 (84, 47, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.WeHaveGuests', ''),
-(85, 48, 7, '1447849931', '2015-11-18 15:32:11', 'ThisComputer.cycle_statesRun', ''),
-(86, 69, 7, '1447849930', '2015-11-18 15:32:10', 'ThisComputer.cycle_execsRun', ''),
-(87, 70, 7, '1447849931', '2015-11-18 15:32:11', 'ThisComputer.cycle_mainRun', ''),
-(88, 71, 7, '1447849932', '2015-11-18 15:32:12', 'ThisComputer.cycle_rssRun', ''),
-(89, 72, 7, '1447849932', '2015-11-18 15:32:12', 'ThisComputer.cycle_pingRun', ''),
+(85, 48, 7, '1449143365', '2015-12-03 14:49:25', 'ThisComputer.cycle_statesRun', ''),
+(86, 69, 7, '1449143362', '2015-12-03 14:49:22', 'ThisComputer.cycle_execsRun', ''),
+(87, 70, 7, '1449143367', '2015-12-03 14:49:27', 'ThisComputer.cycle_mainRun', ''),
+(88, 71, 7, '1449143365', '2015-12-03 14:49:25', 'ThisComputer.cycle_rssRun', ''),
+(89, 72, 7, '1449143366', '2015-12-03 14:49:26', 'ThisComputer.cycle_pingRun', ''),
 (90, 73, 7, '1447849728', '2015-11-18 15:28:48', 'ThisComputer.cycle_watchfoldersRun', ''),
-(91, 74, 7, '1447849927', '2015-11-18 15:32:07', 'ThisComputer.cycle_schedulerRun', ''),
-(92, 75, 7, '1447849926', '2015-11-18 15:32:06', 'ThisComputer.cycle_webvarsRun', ''),
-(93, 42, 17, 'green', '2015-02-04 13:57:38', 'System.stateColor', ''),
-(94, 76, 17, 'Зелёный', '2015-02-04 13:57:38', 'System.stateTitle', ''),
+(91, 74, 7, '1449143363', '2015-12-03 14:49:23', 'ThisComputer.cycle_schedulerRun', ''),
+(92, 75, 7, '1449143365', '2015-12-03 14:49:25', 'ThisComputer.cycle_webvarsRun', ''),
+(93, 42, 17, 'green', '2015-12-03 14:46:48', 'System.stateColor', ''),
+(94, 76, 17, 'Зелёный', '2015-12-03 14:46:48', 'System.stateTitle', ''),
 (95, 42, 18, 'green', '2014-10-31 15:33:55', 'Communication.stateColor', ''),
 (96, 77, 18, 'Green', '2014-10-31 15:33:55', 'Communication.stateTitle', ''),
 (97, 42, 16, 'green', '2013-08-09 13:29:00', 'Security.stateColor', ''),
 (98, 78, 16, 'Green', '2013-08-09 13:29:00', 'Security.stateTitle', ''),
-(99, 41, 17, '', '2015-02-04 13:57:38', 'System.stateDetails', ''),
+(99, 41, 17, '', '2015-12-03 14:46:48', 'System.stateDetails', ''),
+(310, 136, 68, '10:00', '2015-12-03 14:47:55', '', ''),
+(308, 134, 68, '', '2015-12-03 14:47:55', '', ''),
+(309, 135, 68, '', '2015-12-03 14:47:55', '', ''),
 (100, 83, 7, '90', '2014-10-30 15:02:45', 'ThisComputer.volumeLevel', ''),
-(157, 110, 7, ' +6&deg;...+8&deg;, пасмурно, небольшой дождь', '2015-11-18 15:16:00', 'ThisComputer.weatherTomorrow', ''),
+(157, 110, 7, ' +4&deg;...+6&deg;, пасмурно', '2015-12-03 14:42:36', 'ThisComputer.weatherTomorrow', ''),
 (191, 62, 29, '22.5', '2014-09-05 12:44:59', 'Kitchen.Temperature', ''),
 (189, 64, 26, 'Kitchen', '2014-09-04 12:14:26', 'TempSensor01.LinkedRoom', ''),
 (188, 52, 51, '', '2014-09-04 12:12:08', 'MotionSensor1.statusText', ''),
@@ -1703,21 +1775,21 @@ INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PR
 (141, 57, 23, '1422521460', '2015-01-29 12:51:00', 'DarknessMode.updated', ''),
 (142, 58, 23, '12:51', '2015-01-29 12:51:00', 'DarknessMode.updatedTime', ''),
 (143, 56, 23, 'Темное время суток', '2014-07-21 12:44:48', 'DarknessMode.title', ''),
-(144, 101, 7, '15:32', '2015-11-18 15:32:00', 'ThisComputer.timeNow', ''),
-(145, 102, 7, '15:32 Дома кто-то есть   ', '2015-11-18 15:32:00', 'ThisComputer.HomeStatus', ''),
+(144, 101, 7, '14:49', '2015-12-03 14:49:00', 'ThisComputer.timeNow', ''),
+(145, 102, 7, '14:49 Дома кто-то есть   ', '2015-12-03 14:49:00', 'ThisComputer.HomeStatus', ''),
 (146, 103, 7, '0', '2015-01-29 12:51:00', 'ThisComputer.isDark', ''),
 (147, 55, 47, '0', '2014-09-05 08:00:00', 'NightMode.active', ''),
 (148, 57, 47, '1409893200', '2014-09-05 08:00:00', 'NightMode.updated', ''),
 (149, 58, 47, '08:00', '2014-09-05 08:00:00', 'NightMode.updatedTime', ''),
 (150, 56, 47, 'Ночной', '2014-07-21 12:51:25', 'NightMode.title', ''),
-(151, 104, 7, '17:02', '2015-11-18 15:16:00', 'ThisComputer.SunSetTime', ''),
-(152, 105, 7, '08:47', '2015-11-18 15:16:00', 'ThisComputer.SunRiseTime', ''),
+(151, 104, 7, '16:45', '2015-12-03 14:42:34', 'ThisComputer.SunSetTime', ''),
+(152, 105, 7, '09:12', '2015-12-03 14:42:35', 'ThisComputer.SunRiseTime', ''),
 (153, 106, 7, '', '2014-10-30 15:02:45', 'ThisComputer.somebodyHomeText', ''),
 (154, 107, 7, '1409911299', '2014-10-30 15:02:45', 'ThisComputer.cycle_connectRun', ''),
 (158, 111, 7, ' +31°...+33°, переменная облачность', '2014-10-30 15:02:45', 'ThisComputer.weatherTomorrowweatherToday', ''),
 (156, 109, 7, '1407146995', '2014-10-30 15:02:45', 'ThisComputer.cycle_connect_manualRun', ''),
 (155, 108, 7, '', '2014-10-30 15:02:45', 'ThisComputer.wunderHost', ''),
-(159, 112, 7, ' +7&deg;...+9&deg;, пасмурно, небольшой дождь', '2015-11-18 15:16:00', 'ThisComputer.weatherToday', ''),
+(159, 112, 7, ' +0&deg;...+2&deg;, пасмурно, туман', '2015-12-03 14:42:37', 'ThisComputer.weatherToday', ''),
 (160, 113, 7, '1407249215', '2014-10-30 15:02:45', 'ThisComputer.connect_manualRun', ''),
 (180, 125, 52, '1', '2014-09-05 12:44:59', 'humSensor01.direction', ''),
 (179, 120, 52, '43', '2014-09-05 12:44:59', 'humSensor01.humidity', ''),
@@ -1770,8 +1842,13 @@ INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PR
 (302, 146, 7, '1414670249', '2014-10-30 15:02:45', 'ThisComputer.cycle_modbusRun', ''),
 (303, 147, 7, '1414670247', '2014-10-30 15:02:45', 'ThisComputer.cycle_zwaveRun', ''),
 (304, 148, 7, '1423047600', '2015-02-04 15:00:00', 'ThisComputer.lastSayTime', ''),
-(305, 149, 7, '864', '2015-11-18 15:32:11', 'ThisComputer.uptime', ''),
-(306, 150, 7, '1447849067', '2015-11-18 15:17:47', 'ThisComputer.started_time', '');
+(305, 149, 7, '394', '2015-12-03 14:49:27', 'ThisComputer.uptime', ''),
+(306, 150, 7, '1449142973', '2015-12-03 14:42:53', 'ThisComputer.started_time', ''),
+(307, 63, 74, '0', '2015-12-03 14:46:13', 'Switch1.status', 'commands'),
+(311, 137, 68, '', '2015-12-03 14:47:55', '', ''),
+(312, 138, 68, '', '2015-12-03 14:47:55', '', ''),
+(313, 139, 68, '', '2015-12-03 14:47:55', '', ''),
+(314, 140, 68, 'Home', '2015-12-03 14:47:55', '', '');
 
 -- --------------------------------------------------------
 
@@ -1779,6 +1856,7 @@ INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PR
 -- Table structure for table `readit_channels`
 --
 
+DROP TABLE IF EXISTS `readit_channels`;
 CREATE TABLE IF NOT EXISTS `readit_channels` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1791,6 +1869,7 @@ CREATE TABLE IF NOT EXISTS `readit_channels` (
 -- Table structure for table `readit_urls`
 --
 
+DROP TABLE IF EXISTS `readit_urls`;
 CREATE TABLE IF NOT EXISTS `readit_urls` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `URL` char(255) NOT NULL DEFAULT '',
@@ -1808,6 +1887,7 @@ CREATE TABLE IF NOT EXISTS `readit_urls` (
 -- Table structure for table `rss_channels`
 --
 
+DROP TABLE IF EXISTS `rss_channels`;
 CREATE TABLE IF NOT EXISTS `rss_channels` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1825,6 +1905,7 @@ CREATE TABLE IF NOT EXISTS `rss_channels` (
 -- Table structure for table `rss_items`
 --
 
+DROP TABLE IF EXISTS `rss_items`;
 CREATE TABLE IF NOT EXISTS `rss_items` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1842,6 +1923,7 @@ CREATE TABLE IF NOT EXISTS `rss_items` (
 -- Table structure for table `safe_execs`
 --
 
+DROP TABLE IF EXISTS `safe_execs`;
 CREATE TABLE IF NOT EXISTS `safe_execs` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `COMMAND` text NOT NULL,
@@ -1857,6 +1939,7 @@ CREATE TABLE IF NOT EXISTS `safe_execs` (
 -- Table structure for table `scenes`
 --
 
+DROP TABLE IF EXISTS `scenes`;
 CREATE TABLE IF NOT EXISTS `scenes` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1882,6 +1965,7 @@ INSERT INTO `scenes` (`ID`, `TITLE`, `BACKGROUND`, `PRIORITY`, `HIDDEN`, `WALLPA
 -- Table structure for table `scripts`
 --
 
+DROP TABLE IF EXISTS `scripts`;
 CREATE TABLE IF NOT EXISTS `scripts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1921,6 +2005,7 @@ INSERT INTO `scripts` (`ID`, `TITLE`, `CODE`, `DESCRIPTION`, `TYPE`, `XML`, `CAT
 -- Table structure for table `script_categories`
 --
 
+DROP TABLE IF EXISTS `script_categories`;
 CREATE TABLE IF NOT EXISTS `script_categories` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -1943,6 +2028,7 @@ INSERT INTO `script_categories` (`ID`, `TITLE`) VALUES
 -- Table structure for table `security_rules`
 --
 
+DROP TABLE IF EXISTS `security_rules`;
 CREATE TABLE IF NOT EXISTS `security_rules` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `OBJECT_TYPE` char(20) NOT NULL DEFAULT '',
@@ -1962,6 +2048,7 @@ CREATE TABLE IF NOT EXISTS `security_rules` (
 -- Table structure for table `settings`
 --
 
+DROP TABLE IF EXISTS `settings`;
 CREATE TABLE IF NOT EXISTS `settings` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PRIORITY` int(3) unsigned NOT NULL DEFAULT '0',
@@ -1976,7 +2063,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `URL_TITLE` varchar(255) NOT NULL DEFAULT '',
   `DATA` text NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=77 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=79 ;
 
 --
 -- Dumping data for table `settings`
@@ -1996,7 +2083,7 @@ INSERT INTO `settings` (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`
 (33, 28, 0, 'Twitter Access token', 'TWITTER_ATOKEN', 'text', '', '', '', '', '', ''),
 (34, 27, 0, 'Twitter Access token secret', 'TWITTER_ASECRET', 'text', '', '', '', '', '', ''),
 (35, 0, 0, 'Save debug information to history', 'DEBUG_HISTORY', 'onoff', '', '0', '0', '', '', ''),
-(61, 0, 0, 'Voice notifications language', 'VOICE_LANGUAGE', 'text', '', 'en', 'en', '', '', ''),
+(61, 0, 0, 'Voice notifications language', 'VOICE_LANGUAGE', 'text', '', 'ru', 'en', '', '', ''),
 (62, 0, 0, 'Color theme', 'THEME', 'text', '', 'light', 'dark', '', '', ''),
 (44, 0, 0, 'Play sound signal before speaking', 'SPEAK_SIGNAL', 'onoff', '', '1', '1', '', '', ''),
 (45, 0, 0, 'Pushover.net user key', 'PUSHOVER_USER_KEY', 'text', '', '', '', '', '', ''),
@@ -2014,8 +2101,9 @@ INSERT INTO `settings` (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`
 (68, 0, 0, 'Pushbullet notifiaction prefix (optional)', 'PUSHBULLET_PREFIX', 'text', '', '', '', '', '', ''),
 (69, 0, 0, 'Path to store backup', 'BACKUP_PATH', 'text', '', '', '', '', '', ''),
 (72, 0, 0, 'Computer''s name', 'GENERAL_ALICE_NAME', 'text', '', '', '', '', '', ''),
-(74, 0, 0, 'Time zone', 'SITE_TIMEZONE', 'text', '', 'Europe/Minsk', 'Europe/Moscow', '', '', ''),
-(76, 55, 0, 'Yandex TTS key', 'YANDEX_TTS_KEY', 'text', '', '', '', '', '', '');
+(74, 0, 0, 'Time zone', 'SITE_TIMEZONE', 'text', '', 'Indian/Mayotte', 'Europe/Moscow', '', '', ''),
+(76, 55, 0, 'Yandex TTS key', 'YANDEX_TTS_KEY', 'text', '', '', '', '', '', ''),
+(78, 60, 0, 'Use Google Text-to-Speech engine', 'TTS_GOOGLE', 'onoff', '', '1', '1', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -2023,6 +2111,7 @@ INSERT INTO `settings` (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`
 -- Table structure for table `shoplist`
 --
 
+DROP TABLE IF EXISTS `shoplist`;
 CREATE TABLE IF NOT EXISTS `shoplist` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -2035,6 +2124,7 @@ CREATE TABLE IF NOT EXISTS `shoplist` (
 -- Table structure for table `shopping_list_items`
 --
 
+DROP TABLE IF EXISTS `shopping_list_items`;
 CREATE TABLE IF NOT EXISTS `shopping_list_items` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -2051,6 +2141,7 @@ CREATE TABLE IF NOT EXISTS `shopping_list_items` (
 -- Table structure for table `shoutrooms`
 --
 
+DROP TABLE IF EXISTS `shoutrooms`;
 CREATE TABLE IF NOT EXISTS `shoutrooms` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(250) NOT NULL DEFAULT '',
@@ -2067,6 +2158,7 @@ CREATE TABLE IF NOT EXISTS `shoutrooms` (
 -- Table structure for table `shouts`
 --
 
+DROP TABLE IF EXISTS `shouts`;
 CREATE TABLE IF NOT EXISTS `shouts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ROOM_ID` int(10) NOT NULL DEFAULT '0',
@@ -2075,7 +2167,7 @@ CREATE TABLE IF NOT EXISTS `shouts` (
   `ADDED` datetime DEFAULT NULL,
   `IMPORTANCE` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2083,6 +2175,7 @@ CREATE TABLE IF NOT EXISTS `shouts` (
 -- Table structure for table `system_errors`
 --
 
+DROP TABLE IF EXISTS `system_errors`;
 CREATE TABLE IF NOT EXISTS `system_errors` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CODE` varchar(50) NOT NULL DEFAULT '',
@@ -2092,15 +2185,22 @@ CREATE TABLE IF NOT EXISTS `system_errors` (
   `LATEST_UPDATE` datetime DEFAULT NULL,
   `KEEP_HISTORY` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `system_errors`
 --
 
 INSERT INTO `system_errors` (`ID`, `CODE`, `TITLE`, `DETAILS`, `ACTIVE`, `LATEST_UPDATE`, `KEEP_HISTORY`) VALUES
-(1, 'cycle_stop', '', NULL, 1, '2015-11-18 15:15:51', 1),
-(2, 'sql', '', NULL, 1, '2015-11-18 15:28:48', 1);
+(3, 'sql', '', '', 2, '2015-12-03 15:42:04', 1),
+(1, 'cycle_stop', '', '', 7, '2015-12-03 15:42:07', 1),
+(2, 'sql', '', NULL, 1, '2015-11-18 15:28:48', 1),
+(4, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
+(5, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
+(6, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
+(7, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
+(8, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
+(9, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1);
 
 -- --------------------------------------------------------
 
@@ -2108,6 +2208,7 @@ INSERT INTO `system_errors` (`ID`, `CODE`, `TITLE`, `DETAILS`, `ACTIVE`, `LATEST
 -- Table structure for table `system_errors_data`
 --
 
+DROP TABLE IF EXISTS `system_errors_data`;
 CREATE TABLE IF NOT EXISTS `system_errors_data` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ERROR_ID` int(10) NOT NULL DEFAULT '0',
@@ -2120,15 +2221,28 @@ CREATE TABLE IF NOT EXISTS `system_errors_data` (
   `EVENTS_DATA` text,
   `DEBUG_DATA` text,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `system_errors_data`
 --
 
 INSERT INTO `system_errors_data` (`ID`, `ERROR_ID`, `COMMENTS`, `ADDED`, `PROPERTIES_DATA`, `METHODS_DATA`, `SCRIPTS_DATA`, `TIMERS_DATA`, `EVENTS_DATA`, `DEBUG_DATA`) VALUES
+(3, 7, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 5, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 4, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 3, '1146: Table ''db_terminal.system_errors_data'' doesn''t exist\nINSERT INTO `system_errors_data`(`ERROR_ID`, `COMMENTS`, `ADDED`) VALUES(''6'', ''1146: Table \\''db_terminal.system_errors\\'' doesn\\''t exist\\nSELECT * FROM system_errors WHERE CODE LIKE \\''sql\\'''', ''2015-12-03 15:42:04'')', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 3, '1146: Table ''db_terminal.system_errors_data'' doesn''t exist\nINSERT INTO `system_errors_data`(`ERROR_ID`, `COMMENTS`, `ADDED`) VALUES(''3'', ''1146: Table \\''db_terminal.system_errors\\'' doesn\\''t exist\\nSELECT * FROM system_errors WHERE CODE LIKE \\''sql\\'''', ''2015-12-03 15:42:04'')', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
 (1, 1, './scripts/cycle_main.php', '2015-11-18 15:15:51', NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 2, '1146: Table ''db_terminal.watchfolders'' doesn''t exist\nSELECT ID FROM watchfolders WHERE CHECK_NEXT<NOW()', '2015-11-18 15:28:48', NULL, NULL, NULL, NULL, NULL, NULL);
+(2, 2, '1146: Table ''db_terminal.watchfolders'' doesn''t exist\nSELECT ID FROM watchfolders WHERE CHECK_NEXT<NOW()', '2015-11-18 15:28:48', NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 8, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 9, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 1, './scripts/cycle_execs.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 1, './scripts/cycle_main.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 1, './scripts/cycle_ping.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
+(13, 1, './scripts/cycle_scheduler.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 1, './scripts/cycle_states.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
+(15, 1, './scripts/cycle_webvars.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2136,6 +2250,7 @@ INSERT INTO `system_errors_data` (`ID`, `ERROR_ID`, `COMMENTS`, `ADDED`, `PROPER
 -- Table structure for table `tdwiki`
 --
 
+DROP TABLE IF EXISTS `tdwiki`;
 CREATE TABLE IF NOT EXISTS `tdwiki` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(100) NOT NULL DEFAULT '',
@@ -2157,6 +2272,7 @@ INSERT INTO `tdwiki` (`ID`, `NAME`, `CONTENT`) VALUES
 -- Table structure for table `terminals`
 --
 
+DROP TABLE IF EXISTS `terminals`;
 CREATE TABLE IF NOT EXISTS `terminals` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `NAME` varchar(255) NOT NULL DEFAULT '',
@@ -2183,6 +2299,7 @@ INSERT INTO `terminals` (`ID`, `NAME`, `TITLE`, `HOST`, `CANPLAY`, `PLAYER_TYPE`
 -- Table structure for table `usbdevices`
 --
 
+DROP TABLE IF EXISTS `usbdevices`;
 CREATE TABLE IF NOT EXISTS `usbdevices` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -2202,6 +2319,7 @@ CREATE TABLE IF NOT EXISTS `usbdevices` (
 -- Table structure for table `userlog`
 --
 
+DROP TABLE IF EXISTS `userlog`;
 CREATE TABLE IF NOT EXISTS `userlog` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `USER_ID` int(10) NOT NULL DEFAULT '0',
@@ -2217,6 +2335,7 @@ CREATE TABLE IF NOT EXISTS `userlog` (
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `USERNAME` varchar(255) NOT NULL DEFAULT '',
@@ -2251,6 +2370,7 @@ INSERT INTO `users` (`ID`, `USERNAME`, `NAME`, `EMAIL`, `SKYPE`, `MOBILE`, `AVAT
 -- Table structure for table `webvars`
 --
 
+DROP TABLE IF EXISTS `webvars`;
 CREATE TABLE IF NOT EXISTS `webvars` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
@@ -2279,12 +2399,12 @@ CREATE TABLE IF NOT EXISTS `webvars` (
 --
 
 INSERT INTO `webvars` (`ID`, `TITLE`, `HOSTNAME`, `TYPE`, `SEARCH_PATTERN`, `CHECK_PATTERN`, `LATEST_VALUE`, `CHECK_LATEST`, `CHECK_NEXT`, `SCRIPT_ID`, `ONLINE_INTERVAL`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `CODE`, `LOG`, `ENCODING`, `AUTH`, `USERNAME`, `PASSWORD`) VALUES
-(1, '<#LANG_GENERAL_WEATHER_FORECAST#>', 'http://pogoda.tut.by/city/26850?pda=1', 0, '<\\/a><br><br \\/>(.+?)<a', '', '\n<b>Сегодня:</b><br />\nднем: +0&deg;, пасмурно, снег, ночью: +0&deg;...-2&deg;, пасмурно, снег, ветер: З — 2-4 м/с, давление: 760 мм.рт.ст, влажность: 90%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +0&deg;...-2&deg;, пасмурно, ночью: -1&deg;...-3&deg;, пасмурно, снег, ветер: C — 3-5 м/с, давление: 767 мм.рт.ст, влажность: 85%<br />\n<br />\n<br />\n', '2015-02-04 13:57:34', '2015-11-18 17:15:59', 0, 7200, 'ThisComputer', 'weatherFull', '', '2015-11-18 15:15:59 incorrect value:\n<b>Завтра:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +19&deg;...+21&deg;,\nпеременная облачность, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-31 08:45:40 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +27&deg;...+29&deg;, облачно с прояснениями, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 759 мм.рт.ст, влажность: 45%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 760 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-31 00:45:20 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nоблачно с прояснениями, ветер: ЮЗ — 3-5 м/с, давление: 760 мм.рт.ст, влажность: 40%<br /><br />\n\n2014-07-30 20:45:10 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +30&deg;...+32&deg;, ясно, ночью: +16&deg;...+18&deg;,\nясно, ветер: Ю — 5-7 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-30 08:44:40 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +27&deg;...+29&deg;, ясно, ночью: +16&deg;...+18&deg;,\nясно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 35%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nясно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-30 00:44:20 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +28&deg;...+30&deg;, ясно, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nоблачно с прояснениями, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-29 20:44:10 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +30&deg;...+32&deg;, ясно, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 5-7 м/с, давление: 761 мм.рт.ст, влажность: 35%<br /><br />\n<b>Завтра:</b><br />днем: +28&deg;...+30&deg;, ясно, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-29 08:43:38 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +28&deg;...+30&deg;, ясно, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 5-7 м/с, давление: 761 мм.рт.ст, влажность: 40%<br /><br />', '', 0, '', ''),
-(4, '<#LANG_GENERAL_TEMPERATURE_OUTSIDE#>', 'http://pogoda.by/pda/?city=26850', 0, 'погода фактическая.+?Температура воздуха (.+?)[°&]', '', '+7.7', '2015-11-18 15:15:59', '2015-11-18 15:55:59', 0, 2400, 'ThisComputer', 'TempOutside', '', '2015-11-18 15:15:59 new value:+7.7\n2014-08-31 15:54:25 new value:+19.1\n2014-08-31 13:13:49 new value:+15.4\n2014-08-31 09:53:03 new value:+13.8\n2014-08-31 07:12:25 new value:+13.1\n2014-08-31 03:51:40 new value:+13.4\n2014-08-31 01:11:01 new value:+13.9\n2014-08-30 21:50:24 new value:+17.5\n2014-08-30 19:09:46 new value:+19.5\n2014-08-30 15:49:01 new value:+20.7\n2014-08-30 13:08:26 new value:+18.5\n2014-08-30 09:47:37 new value:+13.2\n2014-08-30 07:07:01 new value:+8.4\n2014-08-30 03:46:14 new value:+9.9\n2014-08-30 01:05:46 new value:+11.8\n2014-08-29 21:45:01 new value:+14.4\n2014-08-29 19:04:22 new value:+16.8\n2014-08-29 15:43:36 new value:+17.4\n2014-08-29 13:02:59 new value:+14.6\n2014-08-29 10:22:43 new value:+11.2\n2014-08-29 07:02:35 new value:+10.8\n2014-08-29 03:42:06 new value:+11.0\n2014-08-29 01:01:50 new value:+12.2\n2014-08-28 21:41:38 new value:+13.4\n2014-08-28 19:01:32 new value:+12.8\n2014-08-28 15:40:57 new value:+16.6\n2014-08-28 13:00:54 new value:+13.0\n2014-08-28 09:40:36 new value:+12.6\n2014-08-28 07:00:33 new value:+12.2\n2014-08-28 03:40:30 new value:+12.8\n2014-08-28 01:00:18 new value:+13.2\n2014-08-27 21:39:32 new value:+14.0\n2014-08-27 18:59:04 new value:+16.0\n2014-08-27 15:38:40 new value:+16.6\n2014-08-27 12:58:19 new value:+14.2\n2014-08-27 09:38:04 new value:+10.5\n2014-08-27 06:57:40 new value:+9.7\n2014-08-27 03:37:23 new value:+11.2\n2014-08-27 00:57:05 new value:+11.4\n2014-08-26 21:36:49 new value:+12.5\n2014-08-26 18:56:28 new value:+13.8\n2014-08-26 15:36:03 new value:+15.8\n2014-08-26 12:55:49 new value:+14.8\n2014-08-26 10:15:19 new value:+10.6\n2014-08-26 06:54:47 new value:+8.8\n2014-08-26 04:14:17 new value:+9.3\n2014-08-26 00:53:45 new value:+11.1\n2014-08-25 22:13:33 new value:+12.6\n2014-08-25 18:53:03 new value:+12.4\n2014-08-25 16:52:35 new value:+12.6', 'windows-1251', 0, '', ''),
-(5, 'Sunset Time', 'http://pogoda.by/', 0, 'заход: (\\d+:\\d+) \\[местное\\]', '', '17:02', '2015-11-18 15:16:00', '2015-11-18 20:16:00', 0, 18000, 'ThisComputer', 'SunSetTime', '', '2015-11-18 15:16:00 new value:17:02\n2014-10-30 15:30:21 new value:17:35\n2014-10-30 14:57:24 new value:17:35\n2014-09-05 04:55:15 new value:19:46\n2014-09-04 08:54:59 new value:19:48\n2014-09-03 02:54:30 new value:19:51\n2014-09-02 01:53:47 new value:19:53\n2014-09-01 00:53:07 new value:19:56\n2014-08-31 09:52:41 new value:19:58\n2014-08-30 08:52:08 new value:20:00\n2014-08-29 02:51:26 new value:20:03\n2014-08-28 01:50:55 new value:20:05\n2014-08-27 00:50:39 new value:20:08\n2014-08-26 04:50:25 new value:20:10\n2014-08-25 03:49:45 new value:20:12\n2014-08-24 22:49:37 new value:20:15\n2014-08-22 01:07:56 new value:20:19\n2014-08-21 00:07:40 new value:20:21\n2014-08-20 04:07:24 new value:20:24\n2014-08-19 03:07:07 new value:20:26\n2014-08-18 02:06:39 new value:20:28\n2014-08-17 01:06:15 new value:20:30\n2014-08-16 00:02:37 new value:20:32\n2014-08-15 04:01:08 new value:20:35\n2014-08-14 03:00:47 new value:20:37\n2014-08-13 02:00:13 new value:20:39\n2014-08-12 00:59:37 new value:20:41\n2014-08-11 04:59:08 new value:20:43\n2014-08-10 03:58:29 new value:20:45\n2014-08-09 02:57:53 new value:20:47\n2014-08-08 01:57:16 new value:20:49\n2014-08-07 00:56:40 new value:20:51\n2014-08-06 04:56:08 new value:20:53\n2014-08-05 03:55:34 new value:20:55\n2014-08-04 02:55:00 new value:20:57\n2014-08-03 01:54:22 new value:20:59\n2014-08-02 00:53:43 new value:21:01\n2014-08-01 02:09:41 new value:21:02\n2014-07-31 03:42:49 new value:21:04\n2014-07-30 02:42:13 new value:21:06\n2014-07-29 01:41:32 new value:21:08\n2014-07-28 00:40:55 new value:21:09\n2014-07-27 09:40:31 new value:21:11\n2014-07-27 04:40:26 incorrect value:\n2014-07-26 03:39:58 new value:21:13\n2014-07-25 02:02:30 new value:21:14\n2014-07-24 01:01:53 new value:21:16\n2014-07-23 15:01:41 new value:21:17\n2014-07-22 09:02:03 new value:21:19\n2014-07-21 13:01:45 new value:21:20', 'windows-1251', 0, '', ''),
-(6, 'Sunrise Time', 'http://pogoda.by/', 0, 'Восход: (\\d+:\\d+),', '', '08:47', '2015-11-18 15:16:00', '2015-11-18 20:16:00', 0, 18000, 'ThisComputer', 'SunRiseTime', '', '2015-11-18 15:16:00 new value:08:47\n2014-10-30 15:30:10 new value:08:10\n2014-10-30 14:57:24 new value:08:10\n2014-09-05 04:55:15 new value:06:29\n2014-09-04 08:54:59 new value:06:27\n2014-09-03 02:54:30 new value:06:25\n2014-09-02 01:53:47 new value:06:24\n2014-09-01 00:53:07 new value:06:22\n2014-08-31 09:52:41 new value:06:20\n2014-08-30 08:52:08 new value:06:18\n2014-08-29 02:51:26 new value:06:17\n2014-08-28 01:50:55 new value:06:15\n2014-08-27 00:50:39 new value:06:13\n2014-08-26 04:50:25 new value:06:11\n2014-08-25 03:49:45 new value:06:10\n2014-08-24 22:49:37 new value:06:08\n2014-08-22 01:07:56 new value:06:04\n2014-08-21 00:07:40 new value:06:03\n2014-08-20 04:07:24 new value:06:01\n2014-08-19 03:07:07 new value:05:59\n2014-08-18 02:06:39 new value:05:57\n2014-08-17 01:06:15 new value:05:56\n2014-08-16 00:02:37 new value:05:54\n2014-08-15 04:01:08 new value:05:52\n2014-08-14 03:00:47 new value:05:50\n2014-08-13 02:00:13 new value:05:49\n2014-08-12 00:59:37 new value:05:47\n2014-08-11 04:59:08 new value:05:45\n2014-08-10 03:58:29 new value:05:43\n2014-08-09 02:57:53 new value:05:42\n2014-08-08 01:57:16 new value:05:40\n2014-08-07 00:56:40 new value:05:38\n2014-08-06 04:56:08 new value:05:36\n2014-08-05 03:55:34 new value:05:35\n2014-08-04 02:55:00 new value:05:33\n2014-08-03 01:54:22 new value:05:31\n2014-08-02 00:53:44 new value:05:30\n2014-08-01 02:09:41 new value:05:28\n2014-07-31 03:42:49 new value:05:26\n2014-07-30 02:42:13 new value:05:25\n2014-07-29 01:41:32 new value:05:23\n2014-07-28 00:40:55 new value:05:21\n2014-07-27 09:40:31 new value:05:20\n2014-07-27 04:40:26 incorrect value:\n2014-07-26 03:39:58 new value:05:18\n2014-07-25 02:02:30 new value:05:17\n2014-07-24 01:01:54 new value:05:15\n2014-07-23 15:01:41 new value:05:14\n2014-07-22 04:02:50 new value:05:12\n2014-07-21 13:02:39 new value:05:11', 'windows-1251', 0, '', ''),
-(7, 'Weather Tomorrow', 'http://pogoda.tut.by/city/26850?pda=1', 0, 'город<\\/a><br>.+?Завтра.+?днем:(.+?), ночью', '', ' +6&deg;...+8&deg;, пасмурно, небольшой дождь', '2015-11-18 15:16:00', '2015-11-18 17:16:00', 0, 7200, 'ThisComputer', 'weatherTomorrow', '', '2015-11-18 15:16:00 new value: +6&deg;...+8&deg;, пасмурно, небольшой дождь\n2014-08-20 21:17:49 new value: +16&deg;...+18&deg;, пасмурно\n2014-08-20 09:17:11 new value: +16&deg;...+18&deg;, пасмурно, дождь, гроза\n2014-08-20 01:16:42 new value: +14&deg;...+16&deg;, облачно с прояснениями, дождь, гроза \n2014-08-19 09:16:02 new value: +21&deg;...+23&deg;, переменная облачность, дождь, гроза \n2014-08-19 01:15:39 new value: +22&deg;...+24&deg;, малооблачно\n2014-08-18 21:15:22 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-18 09:15:01 new value: +19&deg;...+21&deg;, переменная облачность, дождь, гроза \n2014-08-18 01:14:35 new value: +19&deg;...+21&deg;, переменная облачность, небольшой дождь\n2014-08-17 09:13:49 new value: +19&deg;...+21&deg;, переменная облачность\n2014-08-17 01:13:19 new value: +18&deg;...+20&deg;, переменная облачность\n2014-08-16 21:13:07 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-16 09:11:44 new value: +17&deg;...+19&deg;, облачно с прояснениями, небольшой дождь\n2014-08-16 01:11:13 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-15 09:08:57 new value: +20&deg;...+22&deg;, малооблачно, возможна гроза\n2014-08-15 01:07:29 new value: +19&deg;...+21&deg;, малооблачно, возможна гроза\n2014-08-14 21:07:25 new value: +21&deg;...+23&deg;, ясно\n2014-08-14 01:06:23 new value: +20&deg;...+22&deg;, переменная облачность\n2014-08-13 21:06:10 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-13 09:05:38 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-13 01:05:12 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-12 09:04:34 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-12 01:04:12 new value: +19&deg;...+21&deg;, пасмурно\n2014-08-11 21:04:02 new value: +20&deg;...+22&deg;, облачно с прояснениями, дождь, гроза \n2014-08-11 09:03:32 new value: +22&deg;...+24&deg;, переменная облачность, дождь, гроза \n2014-08-11 01:03:10 new value: +21&deg;...+23&deg;, переменная облачность, дождь, гроза \n2014-08-10 09:02:28 new value: +27&deg;...+29&deg;, ясно\n2014-08-10 01:02:07 new value: +27&deg;...+29&deg;, малооблачно\n2014-08-08 21:00:55 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-08 09:00:24 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-08 01:00:04 new value: +27&deg;...+29&deg;, переменная облачность, дождь, гроза \n2014-08-07 20:59:54 new value: +27&deg;...+29&deg;, ясно\n2014-08-07 08:59:23 new value: +26&deg;...+28&deg;, переменная облачность, небольшой дождь\n2014-08-07 00:59:02 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-06 20:58:52 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 08:58:21 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-06 06:58:14 incorrect value:\n2014-08-06 00:57:59 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-05 20:57:50 new value: +27&deg;...+29&deg;, малооблачно, возможна гроза\n2014-08-05 08:57:22 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-05 00:57:00 new value: +25&deg;...+27&deg;, малооблачно, возможен дождь\n2014-08-04 00:56:02 new value: +27&deg;...+29&deg;, переменная облачность\n2014-08-03 20:55:51 new value: +30&deg;...+32&deg;, малооблачно\n2014-08-03 08:55:20 new value: +28&deg;...+30&deg;, переменная облачность, небольшой дождь\n2014-08-03 00:54:58 new value: +31&deg;...+33&deg;, ясно\n2014-08-02 20:54:47 new value: +32&deg;...+34&deg;, ясно\n2014-08-02 08:54:16 new value: +32&deg;...+34&deg;, малооблачно\n2014-08-02 00:53:54 new value: +33&deg;...+35&deg;, ясно\n2014-08-01 20:53:45 new value: +32&deg;...+34&deg;, переменная облачность\n2014-08-01 14:52:21 new value: +31&deg;...+33&deg;, ясно', '', 0, '', ''),
-(8, 'Weather Today', 'http://pogoda.tut.by/city/26850?pda=1', 0, 'город<\\/a><br>.+?днем:(.+?), ночью', '', ' +7&deg;...+9&deg;, пасмурно, небольшой дождь', '2015-11-18 15:16:00', '2015-11-18 17:16:00', 0, 7200, 'ThisComputer', 'weatherToday', '', '2015-11-18 15:16:00 new value: +7&deg;...+9&deg;, пасмурно, небольшой дождь\n2014-08-19 21:16:31 new value: +22&deg;...+24&deg;, малооблачно\n2014-08-19 09:16:02 new value: +21&deg;...+23&deg;, переменная облачность\n2014-08-19 01:15:40 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-18 21:15:22 new value: +20&deg;...+22&deg;, переменная облачность\n2014-08-18 01:14:36 new value: +19&deg;...+21&deg;, переменная облачность\n2014-08-17 21:14:24 new value: +18&deg;...+20&deg;, переменная облачность\n2014-08-17 01:13:19 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-16 09:11:44 new value: +20&deg;...+22&deg;, переменная облачность, дождь, гроза \n2014-08-16 01:11:13 new value: +20&deg;...+22&deg;, малооблачно, возможна гроза\n2014-08-15 21:10:42 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-15 09:08:57 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-15 01:07:29 new value: +21&deg;...+23&deg;, ясно\n2014-08-14 21:07:25 new value: +25&deg;...+27&deg;, переменная облачность\n2014-08-14 11:06:49 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-14 01:06:23 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-13 09:05:38 new value: +22&deg;...+24&deg;, переменная облачность\n2014-08-13 01:05:12 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-12 21:05:02 new value: +19&deg;...+21&deg;, пасмурно, дождь, гроза\n2014-08-12 09:04:34 new value: +22&deg;...+24&deg;, пасмурно, дождь, гроза\n2014-08-12 01:04:12 new value: +20&deg;...+22&deg;, облачно с прояснениями, дождь, гроза \n2014-08-11 21:04:02 new value: +28&deg;...+30&deg;, ясно\n2014-08-11 01:03:10 new value: +27&deg;...+29&deg;, ясно\n2014-08-10 21:03:01 new value: +25&deg;...+27&deg;, переменная облачность\n2014-08-10 09:02:28 new value: +23&deg;...+25&deg;, малооблачно\n2014-08-10 01:02:07 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-09 21:01:57 new value: +23&deg;...+25&deg;, переменная облачность, небольшой дождь\n2014-08-09 09:01:27 new value: +24&deg;...+26&deg;, переменная облачность\n2014-08-09 01:01:06 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-08 21:00:55 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-08 09:00:24 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-07 08:59:23 new value: +27&deg;...+29&deg;, ясно\n2014-08-07 00:59:02 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 20:58:52 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-06 08:58:21 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 06:58:14 incorrect value:\n2014-08-06 00:57:59 new value: +27&deg;...+29&deg;, малооблачно, возможна гроза\n2014-08-05 20:57:50 new value: +30&deg;...+32&deg;, ясно\n2014-08-05 08:57:22 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-05 00:57:00 new value: +27&deg;...+29&deg;, переменная облачность\n2014-08-04 20:56:50 new value: +32&deg;...+34&deg;, ясно\n2014-08-04 08:56:21 new value: +31&deg;...+33&deg;, ясно\n2014-08-04 00:56:02 new value: +30&deg;...+32&deg;, малооблачно\n2014-08-03 20:55:51 new value: +33&deg;...+35&deg;, ясно\n2014-08-03 00:54:58 new value: +32&deg;...+34&deg;, ясно\n2014-08-02 20:54:48 new value: +32&deg;...+34&deg;, малооблачно\n2014-08-02 08:54:16 new value: +31&deg;...+33&deg;, малооблачно\n2014-08-02 00:53:54 new value: +32&deg;...+34&deg;, переменная облачность\n2014-08-01 14:53:27 new value: +31&deg;...+33&deg;, переменная облачность\n2014-08-01 14:53:16 new value: +31&deg;...+33&deg;, переменная облачность', '', 0, '', '');
+(1, '<#LANG_GENERAL_WEATHER_FORECAST#>', 'http://pogoda.tut.by/city/26850?pda=1', 0, '<\\/a><br><br \\/>(.+?)<a', '', '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:42:32', '2015-12-03 16:42:32', 0, 7200, 'ThisComputer', 'weatherFull', '', '2015-12-03 14:42:32 new value:\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n\n2015-11-18 15:15:59 incorrect value:\n<b>Завтра:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +19&deg;...+21&deg;,\nпеременная облачность, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-31 08:45:40 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +27&deg;...+29&deg;, облачно с прояснениями, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 759 мм.рт.ст, влажность: 45%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 760 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-31 00:45:20 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nоблачно с прояснениями, ветер: ЮЗ — 3-5 м/с, давление: 760 мм.рт.ст, влажность: 40%<br /><br />\n\n2014-07-30 20:45:10 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +30&deg;...+32&deg;, ясно, ночью: +16&deg;...+18&deg;,\nясно, ветер: Ю — 5-7 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-30 08:44:40 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +27&deg;...+29&deg;, ясно, ночью: +16&deg;...+18&deg;,\nясно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 35%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nясно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-30 00:44:20 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +28&deg;...+30&deg;, ясно, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nоблачно с прояснениями, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-29 20:44:10 new value:\n<br>  ', '', 0, '', ''),
+(4, '<#LANG_GENERAL_TEMPERATURE_OUTSIDE#>', 'http://pogoda.by/pda/?city=26850', 0, 'погода фактическая.+?Температура воздуха (.+?)[°&]', '', '-0.9', '2015-12-03 14:42:33', '2015-12-03 15:22:33', 0, 2400, 'ThisComputer', 'TempOutside', '', '2015-12-03 14:42:33 new value:-0.9\n2015-11-18 15:15:59 new value:+7.7\n2014-08-31 15:54:25 new value:+19.1\n2014-08-31 13:13:49 new value:+15.4\n2014-08-31 09:53:03 new value:+13.8\n2014-08-31 07:12:25 new value:+13.1\n2014-08-31 03:51:40 new value:+13.4\n2014-08-31 01:11:01 new value:+13.9\n2014-08-30 21:50:24 new value:+17.5\n2014-08-30 19:09:46 new value:+19.5\n2014-08-30 15:49:01 new value:+20.7\n2014-08-30 13:08:26 new value:+18.5\n2014-08-30 09:47:37 new value:+13.2\n2014-08-30 07:07:01 new value:+8.4\n2014-08-30 03:46:14 new value:+9.9\n2014-08-30 01:05:46 new value:+11.8\n2014-08-29 21:45:01 new value:+14.4\n2014-08-29 19:04:22 new value:+16.8\n2014-08-29 15:43:36 new value:+17.4\n2014-08-29 13:02:59 new value:+14.6\n2014-08-29 10:22:43 new value:+11.2\n2014-08-29 07:02:35 new value:+10.8\n2014-08-29 03:42:06 new value:+11.0\n2014-08-29 01:01:50 new value:+12.2\n2014-08-28 21:41:38 new value:+13.4\n2014-08-28 19:01:32 new value:+12.8\n2014-08-28 15:40:57 new value:+16.6\n2014-08-28 13:00:54 new value:+13.0\n2014-08-28 09:40:36 new value:+12.6\n2014-08-28 07:00:33 new value:+12.2\n2014-08-28 03:40:30 new value:+12.8\n2014-08-28 01:00:18 new value:+13.2\n2014-08-27 21:39:32 new value:+14.0\n2014-08-27 18:59:04 new value:+16.0\n2014-08-27 15:38:40 new value:+16.6\n2014-08-27 12:58:19 new value:+14.2\n2014-08-27 09:38:04 new value:+10.5\n2014-08-27 06:57:40 new value:+9.7\n2014-08-27 03:37:23 new value:+11.2\n2014-08-27 00:57:05 new value:+11.4\n2014-08-26 21:36:49 new value:+12.5\n2014-08-26 18:56:28 new value:+13.8\n2014-08-26 15:36:03 new value:+15.8\n2014-08-26 12:55:49 new value:+14.8\n2014-08-26 10:15:19 new value:+10.6\n2014-08-26 06:54:47 new value:+8.8\n2014-08-26 04:14:17 new value:+9.3\n2014-08-26 00:53:45 new value:+11.1\n2014-08-25 22:13:33 new value:+12.6\n2014-08-25 18:53:03 new value:+12.4', 'windows-1251', 0, '', ''),
+(5, 'Sunset Time', 'http://pogoda.by/', 0, 'заход: (\\d+:\\d+) \\[местное\\]', '', '16:45', '2015-12-03 14:42:34', '2015-12-03 19:42:34', 0, 18000, 'ThisComputer', 'SunSetTime', '', '2015-12-03 14:42:34 new value:16:45\n2015-11-18 15:16:00 new value:17:02\n2014-10-30 15:30:21 new value:17:35\n2014-10-30 14:57:24 new value:17:35\n2014-09-05 04:55:15 new value:19:46\n2014-09-04 08:54:59 new value:19:48\n2014-09-03 02:54:30 new value:19:51\n2014-09-02 01:53:47 new value:19:53\n2014-09-01 00:53:07 new value:19:56\n2014-08-31 09:52:41 new value:19:58\n2014-08-30 08:52:08 new value:20:00\n2014-08-29 02:51:26 new value:20:03\n2014-08-28 01:50:55 new value:20:05\n2014-08-27 00:50:39 new value:20:08\n2014-08-26 04:50:25 new value:20:10\n2014-08-25 03:49:45 new value:20:12\n2014-08-24 22:49:37 new value:20:15\n2014-08-22 01:07:56 new value:20:19\n2014-08-21 00:07:40 new value:20:21\n2014-08-20 04:07:24 new value:20:24\n2014-08-19 03:07:07 new value:20:26\n2014-08-18 02:06:39 new value:20:28\n2014-08-17 01:06:15 new value:20:30\n2014-08-16 00:02:37 new value:20:32\n2014-08-15 04:01:08 new value:20:35\n2014-08-14 03:00:47 new value:20:37\n2014-08-13 02:00:13 new value:20:39\n2014-08-12 00:59:37 new value:20:41\n2014-08-11 04:59:08 new value:20:43\n2014-08-10 03:58:29 new value:20:45\n2014-08-09 02:57:53 new value:20:47\n2014-08-08 01:57:16 new value:20:49\n2014-08-07 00:56:40 new value:20:51\n2014-08-06 04:56:08 new value:20:53\n2014-08-05 03:55:34 new value:20:55\n2014-08-04 02:55:00 new value:20:57\n2014-08-03 01:54:22 new value:20:59\n2014-08-02 00:53:43 new value:21:01\n2014-08-01 02:09:41 new value:21:02\n2014-07-31 03:42:49 new value:21:04\n2014-07-30 02:42:13 new value:21:06\n2014-07-29 01:41:32 new value:21:08\n2014-07-28 00:40:55 new value:21:09\n2014-07-27 09:40:31 new value:21:11\n2014-07-27 04:40:26 incorrect value:\n2014-07-26 03:39:58 new value:21:13\n2014-07-25 02:02:30 new value:21:14\n2014-07-24 01:01:53 new value:21:16\n2014-07-23 15:01:41 new value:21:17\n2014-07-22 09:02:03 new value:21:19', 'windows-1251', 0, '', ''),
+(6, 'Sunrise Time', 'http://pogoda.by/', 0, 'Восход: (\\d+:\\d+),', '', '09:12', '2015-12-03 14:42:35', '2015-12-03 19:42:35', 0, 18000, 'ThisComputer', 'SunRiseTime', '', '2015-12-03 14:42:35 new value:09:12\n2015-11-18 15:16:00 new value:08:47\n2014-10-30 15:30:10 new value:08:10\n2014-10-30 14:57:24 new value:08:10\n2014-09-05 04:55:15 new value:06:29\n2014-09-04 08:54:59 new value:06:27\n2014-09-03 02:54:30 new value:06:25\n2014-09-02 01:53:47 new value:06:24\n2014-09-01 00:53:07 new value:06:22\n2014-08-31 09:52:41 new value:06:20\n2014-08-30 08:52:08 new value:06:18\n2014-08-29 02:51:26 new value:06:17\n2014-08-28 01:50:55 new value:06:15\n2014-08-27 00:50:39 new value:06:13\n2014-08-26 04:50:25 new value:06:11\n2014-08-25 03:49:45 new value:06:10\n2014-08-24 22:49:37 new value:06:08\n2014-08-22 01:07:56 new value:06:04\n2014-08-21 00:07:40 new value:06:03\n2014-08-20 04:07:24 new value:06:01\n2014-08-19 03:07:07 new value:05:59\n2014-08-18 02:06:39 new value:05:57\n2014-08-17 01:06:15 new value:05:56\n2014-08-16 00:02:37 new value:05:54\n2014-08-15 04:01:08 new value:05:52\n2014-08-14 03:00:47 new value:05:50\n2014-08-13 02:00:13 new value:05:49\n2014-08-12 00:59:37 new value:05:47\n2014-08-11 04:59:08 new value:05:45\n2014-08-10 03:58:29 new value:05:43\n2014-08-09 02:57:53 new value:05:42\n2014-08-08 01:57:16 new value:05:40\n2014-08-07 00:56:40 new value:05:38\n2014-08-06 04:56:08 new value:05:36\n2014-08-05 03:55:34 new value:05:35\n2014-08-04 02:55:00 new value:05:33\n2014-08-03 01:54:22 new value:05:31\n2014-08-02 00:53:44 new value:05:30\n2014-08-01 02:09:41 new value:05:28\n2014-07-31 03:42:49 new value:05:26\n2014-07-30 02:42:13 new value:05:25\n2014-07-29 01:41:32 new value:05:23\n2014-07-28 00:40:55 new value:05:21\n2014-07-27 09:40:31 new value:05:20\n2014-07-27 04:40:26 incorrect value:\n2014-07-26 03:39:58 new value:05:18\n2014-07-25 02:02:30 new value:05:17\n2014-07-24 01:01:54 new value:05:15\n2014-07-23 15:01:41 new value:05:14\n2014-07-22 04:02:50 new value:05:12', 'windows-1251', 0, '', ''),
+(7, 'Weather Tomorrow', 'http://pogoda.tut.by/city/26850?pda=1', 0, 'город<\\/a><br>.+?Завтра.+?днем:(.+?), ночью', '', ' +4&deg;...+6&deg;, пасмурно', '2015-12-03 14:42:36', '2015-12-03 16:42:36', 0, 7200, 'ThisComputer', 'weatherTomorrow', '', '2015-12-03 14:42:36 new value: +4&deg;...+6&deg;, пасмурно\n2015-11-18 15:16:00 new value: +6&deg;...+8&deg;, пасмурно, небольшой дождь\n2014-08-20 21:17:49 new value: +16&deg;...+18&deg;, пасмурно\n2014-08-20 09:17:11 new value: +16&deg;...+18&deg;, пасмурно, дождь, гроза\n2014-08-20 01:16:42 new value: +14&deg;...+16&deg;, облачно с прояснениями, дождь, гроза \n2014-08-19 09:16:02 new value: +21&deg;...+23&deg;, переменная облачность, дождь, гроза \n2014-08-19 01:15:39 new value: +22&deg;...+24&deg;, малооблачно\n2014-08-18 21:15:22 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-18 09:15:01 new value: +19&deg;...+21&deg;, переменная облачность, дождь, гроза \n2014-08-18 01:14:35 new value: +19&deg;...+21&deg;, переменная облачность, небольшой дождь\n2014-08-17 09:13:49 new value: +19&deg;...+21&deg;, переменная облачность\n2014-08-17 01:13:19 new value: +18&deg;...+20&deg;, переменная облачность\n2014-08-16 21:13:07 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-16 09:11:44 new value: +17&deg;...+19&deg;, облачно с прояснениями, небольшой дождь\n2014-08-16 01:11:13 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-15 09:08:57 new value: +20&deg;...+22&deg;, малооблачно, возможна гроза\n2014-08-15 01:07:29 new value: +19&deg;...+21&deg;, малооблачно, возможна гроза\n2014-08-14 21:07:25 new value: +21&deg;...+23&deg;, ясно\n2014-08-14 01:06:23 new value: +20&deg;...+22&deg;, переменная облачность\n2014-08-13 21:06:10 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-13 09:05:38 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-13 01:05:12 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-12 09:04:34 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-12 01:04:12 new value: +19&deg;...+21&deg;, пасмурно\n2014-08-11 21:04:02 new value: +20&deg;...+22&deg;, облачно с прояснениями, дождь, гроза \n2014-08-11 09:03:32 new value: +22&deg;...+24&deg;, переменная облачность, дождь, гроза \n2014-08-11 01:03:10 new value: +21&deg;...+23&deg;, переменная облачность, дождь, гроза \n2014-08-10 09:02:28 new value: +27&deg;...+29&deg;, ясно\n2014-08-10 01:02:07 new value: +27&deg;...+29&deg;, малооблачно\n2014-08-08 21:00:55 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-08 09:00:24 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-08 01:00:04 new value: +27&deg;...+29&deg;, переменная облачность, дождь, гроза \n2014-08-07 20:59:54 new value: +27&deg;...+29&deg;, ясно\n2014-08-07 08:59:23 new value: +26&deg;...+28&deg;, переменная облачность, небольшой дождь\n2014-08-07 00:59:02 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-06 20:58:52 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 08:58:21 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-06 06:58:14 incorrect value:\n2014-08-06 00:57:59 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-05 20:57:50 new value: +27&deg;...+29&deg;, малооблачно, возможна гроза\n2014-08-05 08:57:22 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-05 00:57:00 new value: +25&deg;...+27&deg;, малооблачно, возможен дождь\n2014-08-04 00:56:02 new value: +27&deg;...+29&deg;, переменная облачность\n2014-08-03 20:55:51 new value: +30&deg;...+32&deg;, малооблачно\n2014-08-03 08:55:20 new value: +28&deg;...+30&deg;, переменная облачность, небольшой дождь\n2014-08-03 00:54:58 new value: +31&deg;...+33&deg;, ясно\n2014-08-02 20:54:47 new value: +32&deg;...+34&deg;, ясно\n2014-08-02 08:54:16 new value: +32&deg;...+34&deg;, малооблачно\n2014-08-02 00:53:54 new value: +33&deg;...+35&deg;, ясно\n2014-08-01 20:53:45 new value: +32&deg;...+34&deg;, переменная облачность', '', 0, '', ''),
+(8, 'Weather Today', 'http://pogoda.tut.by/city/26850?pda=1', 0, 'город<\\/a><br>.+?днем:(.+?), ночью', '', ' +0&deg;...+2&deg;, пасмурно, туман', '2015-12-03 14:42:37', '2015-12-03 16:42:37', 0, 7200, 'ThisComputer', 'weatherToday', '', '2015-12-03 14:42:37 new value: +0&deg;...+2&deg;, пасмурно, туман\n2015-11-18 15:16:00 new value: +7&deg;...+9&deg;, пасмурно, небольшой дождь\n2014-08-19 21:16:31 new value: +22&deg;...+24&deg;, малооблачно\n2014-08-19 09:16:02 new value: +21&deg;...+23&deg;, переменная облачность\n2014-08-19 01:15:40 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-18 21:15:22 new value: +20&deg;...+22&deg;, переменная облачность\n2014-08-18 01:14:36 new value: +19&deg;...+21&deg;, переменная облачность\n2014-08-17 21:14:24 new value: +18&deg;...+20&deg;, переменная облачность\n2014-08-17 01:13:19 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-16 09:11:44 new value: +20&deg;...+22&deg;, переменная облачность, дождь, гроза \n2014-08-16 01:11:13 new value: +20&deg;...+22&deg;, малооблачно, возможна гроза\n2014-08-15 21:10:42 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-15 09:08:57 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-15 01:07:29 new value: +21&deg;...+23&deg;, ясно\n2014-08-14 21:07:25 new value: +25&deg;...+27&deg;, переменная облачность\n2014-08-14 11:06:49 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-14 01:06:23 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-13 09:05:38 new value: +22&deg;...+24&deg;, переменная облачность\n2014-08-13 01:05:12 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-12 21:05:02 new value: +19&deg;...+21&deg;, пасмурно, дождь, гроза\n2014-08-12 09:04:34 new value: +22&deg;...+24&deg;, пасмурно, дождь, гроза\n2014-08-12 01:04:12 new value: +20&deg;...+22&deg;, облачно с прояснениями, дождь, гроза \n2014-08-11 21:04:02 new value: +28&deg;...+30&deg;, ясно\n2014-08-11 01:03:10 new value: +27&deg;...+29&deg;, ясно\n2014-08-10 21:03:01 new value: +25&deg;...+27&deg;, переменная облачность\n2014-08-10 09:02:28 new value: +23&deg;...+25&deg;, малооблачно\n2014-08-10 01:02:07 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-09 21:01:57 new value: +23&deg;...+25&deg;, переменная облачность, небольшой дождь\n2014-08-09 09:01:27 new value: +24&deg;...+26&deg;, переменная облачность\n2014-08-09 01:01:06 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-08 21:00:55 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-08 09:00:24 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-07 08:59:23 new value: +27&deg;...+29&deg;, ясно\n2014-08-07 00:59:02 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 20:58:52 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-06 08:58:21 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 06:58:14 incorrect value:\n2014-08-06 00:57:59 new value: +27&deg;...+29&deg;, малооблачно, возможна гроза\n2014-08-05 20:57:50 new value: +30&deg;...+32&deg;, ясно\n2014-08-05 08:57:22 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-05 00:57:00 new value: +27&deg;...+29&deg;, переменная облачность\n2014-08-04 20:56:50 new value: +32&deg;...+34&deg;, ясно\n2014-08-04 08:56:21 new value: +31&deg;...+33&deg;, ясно\n2014-08-04 00:56:02 new value: +30&deg;...+32&deg;, малооблачно\n2014-08-03 20:55:51 new value: +33&deg;...+35&deg;, ясно\n2014-08-03 00:54:58 new value: +32&deg;...+34&deg;, ясно\n2014-08-02 20:54:48 new value: +32&deg;...+34&deg;, малооблачно\n2014-08-02 08:54:16 new value: +31&deg;...+33&deg;, малооблачно\n2014-08-02 00:53:54 new value: +32&deg;...+34&deg;, переменная облачность\n2014-08-01 14:53:27 new value: +31&deg;...+33&deg;, переменная облачность', '', 0, '', '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
