@@ -27,6 +27,9 @@
   //updating 'DEVICEID' (varchar)
    global $deviceid;
    $rec['DEVICEID']=$deviceid;
+
+
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -35,6 +38,7 @@
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
+
     $out['OK']=1;
 
     if ($rec['DEVICEID']) {

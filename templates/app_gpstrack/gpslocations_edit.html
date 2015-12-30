@@ -52,17 +52,26 @@
 </div>
 
 <div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOME_LOCATION#>:<font color="red">*</font></label>
+        <div class="col-lg-5">
+        <input type="radio" name="is_home" value="1"[#if IS_HOME="1"#] checked[#endif#]> <#LANG_YES#>
+        <input type="radio" name="is_home" value="0"[#if IS_HOME!="1"#] checked[#endif#]> <#LANG_NO#>
+ </div>
+</div>
+
+
+<div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
-		 [#if ID!=""#]
-		 <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
-		 [#else ID#]
-		 <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
-		 [#endif ID#]
-		 &nbsp;
-		 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default "><#LANG_CANCEL#></a>
-		
-		</div>
+                 [#if ID!=""#]
+                 <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+                 [#else ID#]
+                 <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
+                 [#endif ID#]
+                 &nbsp;
+                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default "><#LANG_CANCEL#></a>
+                
+                </div>
 </div>
 
 

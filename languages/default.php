@@ -823,6 +823,7 @@ $dictionary=array(
 'LOCATIONS'=>'Locations', 
 'DEVICES'=>'Devices', 
 'ACTIONS'=>'Actions', 
+'HOME_LOCATION'=>'Home location', 
 
 
 'ACTION_TYPE'=>'Action type', 

@@ -43,6 +43,11 @@
     $ok=0;
    }
    */
+
+   global $is_home;
+   $rec['IS_HOME']=(int)$is_home;
+
+
   //updating 'VIRTUAL_USER_ID' (int)
    global $virtual_user_id;
    $rec['VIRTUAL_USER_ID']=(int)$virtual_user_id;
@@ -54,6 +59,12 @@
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
+
+    if ($rec['IS_HOME']) {
+     SQLExec("UPDATE gpslocations SET IS_HOME=0 WHERE IS_HOME=1 AND ID!=".$rec['ID']);
+    }
+
+
     $out['OK']=1;
    } else {
     $out['ERR']=1;

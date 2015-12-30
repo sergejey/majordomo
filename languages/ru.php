@@ -813,7 +813,7 @@ $dictionary=array(
 'LOCATIONS'=>'Места', 
 'DEVICES'=>'Устройства', 
 'ACTIONS'=>'Действия', 
-
+'HOME_LOCATION'=>'Дом (место)', 
 
 'ACTION_TYPE'=>'Тип действия', 
 'EXECUTED'=>'Выполнено', 

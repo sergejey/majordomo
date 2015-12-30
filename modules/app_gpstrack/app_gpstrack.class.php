@@ -381,6 +381,7 @@ gpsactions - Actions
  gpslocations: LON float DEFAULT '0' NOT NULL
  gpslocations: RANGE float DEFAULT '0' NOT NULL
  gpslocations: VIRTUAL_USER_ID int(10) NOT NULL DEFAULT '0'
+ gpslocations: IS_HOME int(3) NOT NULL DEFAULT '0'
 
  gpsdevices: ID int(10) unsigned NOT NULL auto_increment
  gpsdevices: TITLE varchar(255) NOT NULL DEFAULT ''
@@ -390,6 +391,7 @@ gpsactions - Actions
  gpsdevices: UPDATED datetime
  gpsdevices: DEVICEID varchar(255) NOT NULL DEFAULT ''
  gpsdevices: TOKEN varchar(255) NOT NULL DEFAULT ''
+ gpsdevices: HOME_DISTANCE int(10) NOT NULL DEFAULT '0'
  gpsdevices: INDEX (USER_ID)
 
  gpsactions: ID int(10) unsigned NOT NULL auto_increment
