@@ -1,3 +1,10 @@
+<ul class="nav nav-tabs">
+ <li [#if TAB==""#]class="active"[#endif#]><a href="?"><#LANG_GENERAL#></a></li>
+ <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls">Public Calls</a></li>
+</ul><br>
+
+
+[#if TAB==""#]
 <!-- table zwave_devices search -->
 <div>
  CONNECT [ <a href="#" onClick="$('#api_settings').toggle();return false;"><#LANG_SETUP#></a> ]
@@ -58,7 +65,7 @@
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
 
-<div class="form-group">
+<div>
 Please select items to be sent:
 </div>
 
@@ -104,3 +111,9 @@ Please select items to be sent:
 </form>
 </div>
 [#endif#]
+
+[#endif TAB#]
+
+[#if TAB="calls"#]
+ [#inc calls.html#]
+[#endif TAB#]
