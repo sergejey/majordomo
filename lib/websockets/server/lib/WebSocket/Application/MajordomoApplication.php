@@ -190,7 +190,7 @@ class MajordomoApplication extends Application
 
              if (isset($send_states[0])) {
               if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
-               echo "date('Y-m-d H:i:s').(" Sending updated state ".serialize($send_states)."\n");
+               echo date('Y-m-d H:i:s').(" Sending updated state ".serialize($send_states)."\n");
               }
               $encodedData = $this->_encodeData('states', json_encode($send_states));
               $client->send($encodedData);
@@ -218,7 +218,7 @@ class MajordomoApplication extends Application
              if (isset($send_labels[0])) {
               $send_data=array('LABELS'=>$send_labels, 'VALUES'=>$send_values);
               if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
-               echo "date('Y-m-d H:i:s').(" Sending updated menu items ".serialize($send_data)."\n");
+               echo date('Y-m-d H:i:s').(" Sending updated menu items ".serialize($send_data)."\n");
               }
               $encodedData = $this->_encodeData('commands', json_encode($send_data));
               $client->send($encodedData);
@@ -230,7 +230,7 @@ class MajordomoApplication extends Application
              $send_data[]=array('PROPERTY'=>$property_name, 'VALUE'=>getGlobal($property_name));
              if (isset($send_data[0])) {
               if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
-               echo "date('Y-m-d H:i:s').(" Sending updated properties ".serialize($send_data)."\n");
+               echo date('Y-m-d H:i:s').(" Sending updated properties ".serialize($send_data)."\n");
               }
               $encodedData = $this->_encodeData('properties', json_encode($send_data));
               $client->send($encodedData);

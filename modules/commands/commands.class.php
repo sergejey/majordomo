@@ -592,11 +592,11 @@ function usual(&$out) {
 
    if ($item['LINKED_PROPERTY']!='') {
     $lprop=getGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
-    if ($item['TYPE']=='custom') {
-     $field='DATA';
-    } else {
+    //if ($item['TYPE']=='custom') {
+    // $field='DATA';
+    //} else {
      $field='CUR_VALUE';
-    }
+    //}
     if ($lprop!=$item[$field] && !$dynamic_item) {
      $item[$field]=$lprop;
      SQLUpdate('commands', $item);
