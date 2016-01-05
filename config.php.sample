@@ -7,25 +7,6 @@
 * @version 1.1
 */
 
-define('ENVIRONMENT', 'dev');
-
-switch (ENVIRONMENT) 
-{
-   case 'dev':
-      error_reporting(-1);
-      ini_set('display_errors', 1);
-      break;
-
-   case 'prod':
-      error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_STRICT);
-      ini_set('display_errors', 0);
-      break;
-
-   default:
-      header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-      exit('The application env is incorrect');
-}
-
 Define('DB_HOST', 'localhost');
 Define('DB_NAME', 'db_terminal');
 Define('DB_USER', 'root');
@@ -53,9 +34,9 @@ else
 
  Define('DOC_ROOT', dirname(__FILE__));              // Your htdocs location (should be detected automatically)
 
- Define('SERVER_ROOT', 'c:/_majordomo');
- Define('PATH_TO_PHP', SERVER_ROOT.'/server/php/php.exe');
- Define('PATH_TO_MYSQLDUMP', SERVER_ROOT."/server/mysql/bin/mysqldump");
+ Define('SERVER_ROOT', '/var/www');
+ Define('PATH_TO_PHP', 'php');
+ Define('PATH_TO_MYSQLDUMP', "mysqldump");
 
  
 if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"])
