@@ -27,6 +27,8 @@ include_once(DIR_MODULES . 'commands/commands.class.php');
 $commands = new commands();
 
 //Define('DEBUG_WEBSOCKETS', 1);
+$cycleName=str_replace('.php', '', basename(__FILE__)) . 'Run';
+setGlobal($cycleName, time(), 1);
 
 require_once('./lib/websockets/server/server.php');
 

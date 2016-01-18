@@ -13,6 +13,7 @@ class MajordomoApplication extends Application
     private $_cachedProperties = array();
     private $_scenesUpdated = 0;
     private $_filename = '';
+    private $_latestAlive = 0;
     private $_scenesDynamicElements = array();
 
         public function onConnect($client)
@@ -66,7 +67,20 @@ class MajordomoApplication extends Application
                 $this->_filename = '';
         }
 
+        private function cycleAlive() {
+         if ($this->_latestAlive==time()) {
+          return;
+         }
+         $this->_latestAlive=time();
+         global $cycleName;
+         if ($cycleName) {
+          setGlobal($cycleName, time(), 1);
+         }
+        }
+
+
         private function _actionSubscribe($data, $client_id) {
+         $this->cycleAlive();
          if ($data['TYPE']) {
           echo date('Y-m-d H:i:s')."  Subscription from client to ".$data['TYPE']."\n";
           if ($data['TYPE']=='scenes') {
@@ -143,6 +157,7 @@ class MajordomoApplication extends Application
         }
 
         private function _actionPostEvent($data) {
+         $this->cycleAlive();
          if (IsSet($data['NAME'])) {
           $event_name=mb_strtolower($data['NAME'], 'UTF-8');
           if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
@@ -161,7 +176,7 @@ class MajordomoApplication extends Application
         }
 
         private function _actionPostProperty($data) {
-
+         $this->cycleAlive();
          if (IsSet($data['NAME'])) {
           $property_name=mb_strtolower($data['NAME'], 'UTF-8');
           if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
@@ -280,6 +295,7 @@ class MajordomoApplication extends Application
         
         private function _actionEcho($text, $client_id)
         {               
+                $this->cycleAlive();
                 $encodedData = $this->_encodeData('echo', $text);               
                 foreach($this->_clients as $sendto)
                 {
