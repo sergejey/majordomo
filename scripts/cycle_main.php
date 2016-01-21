@@ -116,7 +116,7 @@ while (1)
        SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$q_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
        $h=array();
        $h['VALUE_ID']=$q_rec['VALUE_ID'];
-       $h['ADDED']=date('Y-m-d H:i:s');
+       $h['ADDED']=$q_rec['ADDED'];
        $h['VALUE']=$value;
        $h['ID']=SQLInsert('phistory', $h);
      } elseif ($value==$old_value) {
@@ -124,12 +124,12 @@ while (1)
        $prev_value=$tmp_history[0]['VALUE'];
        $prev_prev_value=$tmp_history[1]['VALUE'];
        if ($prev_value==$prev_prev_value) {
-         $tmp_history[0]['ADDED']=date('Y-m-d H:i:s');
+         $tmp_history[0]['ADDED']=$q_rec['ADDED'];
          SQLUpdate('phistory', $tmp_history[0]);
        } else {
          $h=array();
          $h['VALUE_ID']=$q_rec['VALUE_ID'];
-         $h['ADDED']=date('Y-m-d H:i:s');
+         $h['ADDED']=$q_rec['ADDED'];
          $h['VALUE']=$value;
          $h['ID']=SQLInsert('phistory', $h);
        }
