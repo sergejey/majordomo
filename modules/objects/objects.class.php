@@ -693,31 +693,16 @@ curl_close($ch);
    $prop['KEEP_HISTORY']=$this->keep_history;
   }
 
-  //if (($prop['KEEP_HISTORY']>0) && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
-  if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0) && ($value!=$old_value)) {
-   startMeasure('DeleteOldHistory');
-   SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
-   endMeasure('DeleteOldHistory', 1);
-   $h=array();
-   $h['VALUE_ID']=$v['ID'];
-   $h['ADDED']=date('Y-m-d H:i:s');
-   $h['VALUE']=$value;
-   $h['ID']=SQLInsert('phistory', $h);
-  } elseif (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0) && ($value==$old_value)) {
-   $tmp_history=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$v['ID']."' ORDER BY ID DESC LIMIT 2");
-   $prev_value=$tmp_history[0]['VALUE'];
-   $prev_prev_value=$tmp_history[1]['VALUE'];
-   if ($prev_value==$prev_prev_value) {
-    $tmp_history[0]['ADDED']=date('Y-m-d H:i:s');
-    SQLUpdate('phistory', $tmp_history[0]);
-   } else {
-    $h=array();
-    $h['VALUE_ID']=$v['ID'];
-    $h['ADDED']=date('Y-m-d H:i:s');
-    $h['VALUE']=$value;
-    $h['ID']=SQLInsert('phistory', $h);
-   }
+  if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0)) {
+   $q_rec=array();
+   $q_rec['VALUE_ID']=$v['ID'];
+   $q_rec['ADDED']=date('Y-m-d H:i:s');
+   $q_rec['VALUE']=$value;
+   $q_rec['OLD_VALUE']=$old_value;
+   $q_rec['KEEP_HISTORY']=$prop['KEEP_HISTORY'];
+   SQLInsert('phistory_queue', $q_rec);
   }
+
 
   if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
    global $property_linked_history;
@@ -828,6 +813,7 @@ objects - Objects
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
  objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
+
 EOD;
   parent::dbInstall($data);
  }

@@ -101,6 +101,43 @@ while (1)
       processSubscriptions('HOURLY');
 
    }
+
+   $queue=SQLSelect("SELECT * FROM phistory_queue ORDER BY ID");
+   if ($queue[0]['ID']) {
+    $total=count($queue);
+    for($i=0;$i<$total;$i++) {
+     $q_rec=$queue[$i];
+     $value=$q_rec['VALUE'];
+     $old_value=$q_rec['OLD_VALUE'];
+
+     SQLExec("DELETE FROM phistory_queue WHERE ID='".$q_rec['ID']."'");
+
+     if ($value!=$old_value) {
+       SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$q_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
+       $h=array();
+       $h['VALUE_ID']=$q_rec['VALUE_ID'];
+       $h['ADDED']=date('Y-m-d H:i:s');
+       $h['VALUE']=$value;
+       $h['ID']=SQLInsert('phistory', $h);
+     } elseif ($value==$old_value) {
+       $tmp_history=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$q_rec['VALUE_ID']."' ORDER BY ID DESC LIMIT 2");
+       $prev_value=$tmp_history[0]['VALUE'];
+       $prev_prev_value=$tmp_history[1]['VALUE'];
+       if ($prev_value==$prev_prev_value) {
+         $tmp_history[0]['ADDED']=date('Y-m-d H:i:s');
+         SQLUpdate('phistory', $tmp_history[0]);
+       } else {
+         $h=array();
+         $h['VALUE_ID']=$q_rec['VALUE_ID'];
+         $h['ADDED']=date('Y-m-d H:i:s');
+         $h['VALUE']=$value;
+         $h['ID']=SQLInsert('phistory', $h);
+       }
+     }
+
+
+    }
+   }
    
    if ($dt != $old_date)
    {
