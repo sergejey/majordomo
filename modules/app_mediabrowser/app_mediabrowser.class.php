@@ -373,7 +373,7 @@ function usual(&$out) {
           $out['FILE']=win2utf($file);
           $out['BASEFILE']=win2utf(basename($file));
           $file=str_replace('/', '\\\\', $file);
-          $out['FULLFILE']=win2utf(addslashes($path).$file);
+          $out['FULLFILE']=win2utf(($path).$file);
       }
 
    $out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
@@ -538,7 +538,8 @@ function usual(&$out) {
 
     $rec['REAL_PATH']=($folder.$file);
     $rec['PATH']=urlencode($folder.$file);
-    $rec['FULL_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$file);
+    //$rec['FULL_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$file);
+    $rec['FULL_PATH']=urlencode($act_dir.$file);
     $size=filesize($act_dir.$file);
     $total_size+=$size;
     if ($size>1024) {
@@ -565,12 +566,16 @@ function usual(&$out) {
    $total=count($files);
    $out['TOTAL_FILES']=$total;
    for($i=0;$i<$total;$i++) {
-    if (preg_match('/\.jpg$/is', $files[$i]['PATH'])) {
+    if (preg_match('/\.jpg$/is', $files[$i]['PATH']) || preg_match('/\.jpeg$/is', $files[$i]['PATH']) || preg_match('/\.png$/is', $files[$i]['PATH'])) {
      $files[$i]['IS_FOTO']=1;
+     $total_photos++;
     }
     if (($i+1)%4==0) {
      $files[$i]['NEWROW']=1;
     }
+   }
+   if ($total_photos==$total) {
+    $out['LIST_MODE']='foto';
    }
    $out['FILES']=$files;
   }

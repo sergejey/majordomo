@@ -814,6 +814,14 @@ objects - Objects
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
  objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 
+ phistory_queue: ID int(10) unsigned NOT NULL auto_increment
+ phistory_queue: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
+ phistory_queue: VALUE text NOT NULL DEFAULT ''
+ phistory_queue: OLD_VALUE text NOT NULL DEFAULT ''
+ phistory_queue: KEEP_HISTORY int(10) unsigned NOT NULL DEFAULT '0'
+ phistory_queue: ADDED datetime
+
+
 EOD;
   parent::dbInstall($data);
  }
@@ -824,4 +832,3 @@ EOD;
 * TW9kdWxlIGNyZWF0ZWQgTWF5IDIyLCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
 *
 */
-?>

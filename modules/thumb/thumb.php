@@ -118,6 +118,7 @@ $type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
 */
 //$img='./../../'.$img;
 
+
 if (file_exists($img)) {
 
 
