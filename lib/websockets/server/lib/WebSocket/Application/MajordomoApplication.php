@@ -73,8 +73,13 @@ class MajordomoApplication extends Application
          }
          $this->_latestAlive=time();
          global $cycleName;
+         global $websockets_script_started;
          if ($cycleName) {
           setGlobal($cycleName, time(), 1);
+         }
+         global $websockets_script_started;
+         if ($websockets_script_started>0 && (time()-$websockets_script_started)>12*60*60) {
+          exit; // restart every 12 hours
          }
         }
 

@@ -27,6 +27,9 @@ include_once(DIR_MODULES . 'commands/commands.class.php');
 $commands = new commands();
 
 //Define('DEBUG_WEBSOCKETS', 1);
+
+$websockets_script_started=time();
+
 $cycleName=str_replace('.php', '', basename(__FILE__)) . 'Run';
 setGlobal($cycleName, time(), 1);
 
