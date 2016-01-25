@@ -115,14 +115,14 @@ function context_activate($id, $no_action = 0, $history = '')
          $timeout = 60;
 
       $timeoutTitle   = 'user_' . $user_id . '_contexttimeout';
-      $timeoutCommand = 'context_timeout(' . $context['ID'] . ', ' . $user_id . ');';
+      $timeoutCommand = 'context_timeout(' . (int)$context['ID'] . ', ' . $user_id . ');';
       setTimeOut($timeoutTitle, $timeoutCommand, $timeout);
       
       if (!$no_action)
       {
          include_once(DIR_MODULES . 'patterns/patterns.class.php');
          $pt = new patterns();
-         $pt->runPatternAction($context['ID']);
+         $pt->runPatternAction((int)$context['ID']);
       }
    }
    else
