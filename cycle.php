@@ -155,6 +155,8 @@ if (!is_array($restart_threads))
   $restart_threads[]='cycle_websockets.php';
  }
 
+$last_restart=array();
+
 
 while (false !== ($result = $threads->iteration()))
 {
@@ -172,9 +174,10 @@ while (false !== ($result = $threads->iteration()))
             
             foreach ($restart_threads as $item)
             {
-               if (preg_match('/' . $item . '/is', $closed_thread))
+               if (preg_match('/' . $item . '/is', $closed_thread) && (!$last_restart[$closed_thread] || (time()-$last_restart[$closed_thread])>30))
                {
                   //restart
+                  $last_restart[$closed_thread]=time();
                   DebMes("RESTARTING: " . $closed_thread);
                   echo "RESTARTING: " . $closed_thread . PHP_EOL;
                   registerError('cycle_stop', $closed_thread);
