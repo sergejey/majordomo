@@ -10,7 +10,7 @@
  */
 
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !$argv[0]
+if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
     && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI'])
        || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])
        || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']))

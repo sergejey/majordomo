@@ -180,7 +180,9 @@ while (false !== ($result = $threads->iteration()))
                   $last_restart[$closed_thread]=time();
                   DebMes("RESTARTING: " . $closed_thread);
                   echo "RESTARTING: " . $closed_thread . PHP_EOL;
-                  registerError('cycle_stop', $closed_thread);
+                  if (!preg_match('/websockets/is', $closed_thread)) {
+                   registerError('cycle_stop', $closed_thread);
+                  }
                   $pipe_id = $threads->newThread($closed_thread);
                }
             }
