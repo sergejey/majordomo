@@ -367,16 +367,17 @@ function usual(&$out) {
       if($run_linux){
           $out['FILE']=$file;
           $out['BASEFILE']=basename($file);
-          $file=str_replace('/', '\\\\', $file);
+          $file=str_replace('/', '\\', $file);
           $out['FULLFILE']=addslashes($path).$file;
       } else {
           $out['FILE']=win2utf($file);
           $out['BASEFILE']=win2utf(basename($file));
-          $file=str_replace('/', '\\\\', $file);
+          $file=str_replace('/', '\\', $file);
           $out['FULLFILE']=win2utf(($path).$file);
       }
 
-   $out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
+   //$out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
+   $out['FULLFILE_S']=$out['FULLFILE'];
 
    if ($this->mode=='play') {
     //FULLFILE_S

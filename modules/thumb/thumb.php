@@ -2,6 +2,7 @@
 /*
 * @version 0.1 (auto-set)
 */
+error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
 chdir('../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
@@ -23,7 +24,7 @@ define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds
 //$img=urldecode($_REQUEST['img']);
 
 
-if ($url) {
+if (IsSet($url)) {
 
    $resize='';
    if ($w && $h) {
@@ -109,7 +110,7 @@ if ($url) {
 
 //echo $img;exit;
 
-$type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
+$type = (IsSet($_REQUEST['t']) ? $_REQUEST['t']:0);
 
 /*
    Allowed types:
@@ -118,9 +119,7 @@ $type = ($_REQUEST['t'] ? $_REQUEST['t']:0);
 */
 //$img='./../../'.$img;
 
-
 if (file_exists($img)) {
-
 
  $new_width=(int)$_REQUEST['w'];
  $new_height=(int)$_REQUEST['h'];
