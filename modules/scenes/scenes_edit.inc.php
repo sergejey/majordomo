@@ -13,6 +13,26 @@
   $table_name='scenes';
   $rec=SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
+
+  global $open;
+  if ($open!='') {
+
+   if ($open=='new') {
+    $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&view_mode2=edit_elements&element_id=&top=".$_GET['top']."&left=".$_GET['left']);
+   }
+
+   $element_id=0;
+   if (preg_match('/state_(\d+)/', $open, $m)) {
+    $state=SQLSelectOne("SELECT ID, ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
+    $element_id=(int)$state['ELEMENT_ID'];
+   } elseif (preg_match('/container_(\d+)/', $open, $m)) {
+    $element_id=(int)$m[1];
+   }
+   if ($element_id) {
+    $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&view_mode2=edit_elements&element_id=".$element_id);
+   }
+  }
+
   global $state_id;
 
 
@@ -194,6 +214,22 @@
     $element['S3D_SCENE']=$s3d_scene;
 
 
+    global $easy_config;
+    if ($element['TYPE']=='switch' || $element['TYPE']=='informer' || $element['TYPE']=='warning') {
+     $element['EASY_CONFIG']=(int)$easy_config;
+    } else {
+     $element['EASY_CONFIG']=0;
+    }
+
+    global $linked_object;
+    $element['LINKED_OBJECT']=$linked_object;
+
+    global $linked_property;
+    $element['LINKED_PROPERTY']=$linked_property;
+
+    global $linked_method;
+    $element['LINKED_METHOD']=$linked_method;
+
 
     global $css_style;
     $element['CSS_STYLE']=$css_style;
@@ -287,7 +323,7 @@
      }
      SQLExec("DELETE FROM elm_states WHERE ID='".$state_rec['ID']."'");
 
-    } elseif ($state_title_new) {
+    } elseif ($state_title_new && !$element['EASY_CONFIG']) {
 
      $state_rec['ELEMENT_ID']=$element['ID'];
      $state_rec['TITLE']=$state_title_new;
@@ -398,7 +434,9 @@
      $state_id=$state_rec['ID'];
 
 
-    } elseif (($element['TYPE']=='warning') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='warning') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
      global $linked_object;
      global $linked_property;
      $state_rec=array();
@@ -417,7 +455,9 @@
      $state_id=$state_rec['ID'];
 
 
-    } elseif (($element['TYPE']=='informer') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='informer') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
      global $linked_object;
      global $linked_property;
      global $state_high;
@@ -502,8 +542,9 @@
 
 
 
-    } elseif (($element['TYPE']=='switch') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='switch') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
 
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
      global $linked_object;
 
      if (!$linked_object) {
@@ -620,6 +661,9 @@
     $out['COMMON_STYLES']=$styles;
    }
 
+  } else {
+   $out['ELEMENT_TOP']=$_GET['top'];
+   $out['ELEMENT_LEFT']=$_GET['left'];
   }
 
   if ($this->tab=='elements') {
@@ -677,6 +721,8 @@
 
   //$elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
   $elements=$this->getElements("SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0");
+
+
   if (count($elements)) {
   /*
    $total=count($elements);
@@ -716,6 +762,3 @@
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
 
 
-
-
-?>

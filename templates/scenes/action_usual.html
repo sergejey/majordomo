@@ -16,6 +16,15 @@
 
         <script type="text/javascript" language="javascript">
 
+$.fn.customContextMenu = function(callBack){
+    $(this).each(function(){
+        $(this).bind("contextmenu",function(e){
+             e.preventDefault();
+             callBack(e);
+        });
+    }); 
+}
+
         var codeHash=new Object();
         var firstRun=1;
         var refreshRun=0;
@@ -23,6 +32,10 @@
         var refreshTimer;
         var noUpdatesTimer;
         var usingWebsockets=0;
+        var ignoreClick=0;
+        var contextTimeout=0;
+        var contextTop='';
+        var contextLeft='';
 
         function EvalSound(soundobj) {
          //alert('zz');
@@ -57,6 +70,44 @@
          var window[#ID#]_posy=[#WINDOW_POSY#];
         [#endif MENU_ITEM_ID#][#end STATES#]
         [#end ALL_ELEMENTS#][#end RESULT#]
+
+        function stateClickedEdit(id) {
+         //alert(window.parent.location);
+         //id = id.replace(/\D/g,'');
+         //alert(id);
+
+
+          var window_url=window.parent.location.href;
+
+          var wdth=850;
+          var hdth=600;
+
+          window_url=window_url.replace('tab=preview', 'tab=elements')+'&open='+id+'&print=1';
+          if (id=='new') {
+           window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
+          }
+
+          var jWindowObjElement = $.jWindow({ 
+           id: 'windowEdit'+id, 
+           title: 'Settings', 
+           width: wdth, 
+           height: hdth, 
+           type: 'iframe', 
+           marginTop:0, 
+           marginBottom:0, 
+           marginLeft:0, 
+           marginRight:0, 
+           url: window_url,
+           onClose:function () {
+            window.location.href=window.location.href;
+           },
+           modal: true });
+          jWindowObjElement.show();
+          jWindowObjElement.update();
+
+
+         return false;
+        }
 
         function stateClicked(id) {
 
@@ -146,6 +197,7 @@
            }, 
            onDragEnd:function () {
             //Position changed
+            ignoreClick=0;
             var url1="<#ROOTHTML#>ajax/scenes.html?op=position";
             var top=$('#scene_background_<#RESULT.ID#>').offset().top;
             var left=$('#scene_background_<#RESULT.ID#>').offset().left;
@@ -339,7 +391,26 @@ new TWEEN.Tween( camera.position ).to( {
                              }).done(function(data) { 
                              //alert(data);
                              });
-                           }});
+                           }}).click(function(){
+            if ( $(this).is('.ui-draggable-dragging') ) {
+                  return;
+            }
+            // click action here
+            stateClickedEdit($(this).attr("id"));
+      });
+
+      [#begin RESULT#]
+      $("#scene_wallpaper_[#ID#]").customContextMenu(function(e){
+        //alert(e.pageX + ' , ' + e.pageY);
+       contextTop=e.pageY;
+       contextLeft=e.pageX;
+       $("#contextMenuDiv").css({ "top": e.pageY+"px", "left": e.pageX+"px" });
+       //alert('zz');
+       $('#contextMenuDiv').show();
+       contextTimeout=setTimeout("$('#contextMenuDiv').hide();", 3*1000);
+       return false;
+      });
+      [#end RESULT#]
  
                  [#endif#]
                  [#if SCENE_WALLPAPER!=""#]
@@ -564,3 +635,6 @@ function onDocumentMouseDown( event ) {
  </tr>
 </table>
 
+[#if "<#DRAGGABLE#>"=="1"#]
+<div id='contextMenuDiv' style="display:none;width:100px;height:20px;background-color:white;position:absolute;border: 1px solid black;z-index:10000;top:200px;left:300px;padding:10px;text-align:center"><a href="#" onClick="stateClickedEdit('new');return false;"><#LANG_ADD#></a></div>
+[#endif#]

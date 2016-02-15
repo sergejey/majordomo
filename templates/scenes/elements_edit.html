@@ -33,6 +33,14 @@
 </div>
 
 <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
+        <div class="controls">
+                <input class="form-control" type="text" name="priority" value="[#ELEMENT_PRIORITY#]">
+        </div>
+</div>
+
+
+<div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_SCENE#><#LANG_HCB#>element_scene<#LANG_HCE#></label>
         <div class="controls">
                 <select class="form-control" name="scene_id" required>
@@ -48,25 +56,48 @@
 <!-- TYPE (select) -->
 
 <script language="javascript">
- function element_type_switched(new_type) {
-  [#if ELEMENT_ID==""#]
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode') {
+ function element_type_switched() {
+
+   [#if ELEMENT_ID=""#]
+   var new_type=$('select[name=type]').val();
+   [#else#]
+   var new_type=$('input[name=type]').val();
+   [#endif#]
+
+   var easy_config=$('input:radio[name=easy_config]:checked').val();
+
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning') {
+    $('#advanced_config_block').show();
+    if (easy_config==1) {
+     $('.advanced_options').hide();
+    } else {
+     $('.advanced_options').show();
+    }
+
+   } else {
+    $('#advanced_config_block').hide();
+    $('.advanced_options').show();
+   }
+
+   if (easy_config==1 && (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode')) {
     $('#linked_object_field').show();
    } else {
     $('#linked_object_field').hide();
    }
-   if (new_type=='informer' || new_type=='warning') {
+
+   if (easy_config==1 && (new_type=='informer' || new_type=='warning')) {
     $('#linked_property_field').show();
    } else {
     $('#linked_property_field').hide();
    }
-   if (new_type=='button') {
+
+   if (easy_config==1 && (new_type=='button')) {
     $('#linked_method_field').show();
    } else {
     $('#linked_method_field').hide();
    }
 
-   if (new_type=='informer') {
+   if (easy_config==1 && (new_type=='informer')) {
     $('#informer_states').show();
     $('#linked_property_unit').show();
    } else {
@@ -74,7 +105,6 @@
     $('#linked_property_unit').hide();
    }
 
-  [#endif#]
  }
 </script>
 
@@ -82,14 +112,14 @@
         <label class="col-lg-4 control-label"><#LANG_TYPE#><#LANG_HCB#>element_type<#LANG_HCE#></label>
         <div class="controls">
         [#if ELEMENT_ID=""#]
-                <select class="form-control" name="type" required  onChange="element_type_switched(this.value);">
+                <select class="form-control" name="type" required  onChange="element_type_switched();">
                         <option value="" disabled selected>select
+                        <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
+                        <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
+                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]><#LANG_WARNING#>
                         <option value="img"[#if ELEMENT_TYPE=="img"#] selected[#endif#]><#LANG_IMAGE#>
                         <option value="html"[#if ELEMENT_TYPE=="html"#] selected[#endif#]>HTML
                         <option value="container"[#if ELEMENT_TYPE=="container"#] selected[#endif#]><#LANG_CONTAINER#>
-                        <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
-                        <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
-                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]><#LANG_WARNING#>
                         <option value="mode"[#if ELEMENT_TYPE=="mode"#] selected[#endif#]><#LANG_MODE_SWITCH#>
                         <option value="button"[#if ELEMENT_TYPE=="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
@@ -113,24 +143,35 @@
         </div>
 </div>
 
-[#if ELEMENT_ID=""#]
+<div class="form-group" id='advanced_config_block' style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_ADVANCED_CONFIG#><#LANG_HCB#>element_advanced_config<#LANG_HCE#></label>
+        <div class="controls">
+                <input type="radio" name="easy_config" value="0"[#if ELEMENT_EASY_CONFIG!="1" && ELEMENT_TYPE!=""#]checked[#endif#] onClick="element_type_switched();"> <#LANG_YES#>
+                <br>
+                <input type="radio" name="easy_config" value="1"[#if ELEMENT_EASY_CONFIG=="1" || ELEMENT_TYPE==""#]checked[#endif#] onClick="element_type_switched();"> <#LANG_NO#>
+        </div>
+</div>
+[#endif ELEMENT_TYPE#]
+
+
+[#if ELEMENT_ID="" || ELEMENT_EASY_CONFIG="1"#]
 <div class="form-group" id="linked_object_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_object" id="linked_object" class="form-control">
+         <input type="text" name="linked_object" value="[#ELEMENT_LINKED_OBJECT#]" id="linked_object" class="form-control">
         </div>
 </div>
 <div class="form-group" id="linked_property_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_property" id="linked_property" class="form-control">
+         <input type="text" name="linked_property" value="[#ELEMENT_LINKED_PROPERTY#]" id="linked_property" class="form-control">
         </div>
 </div>
 
 <div class="form-group" id="linked_method_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_METHOD#><#LANG_HCB#>linked_method<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_method" id="linked_method" class="form-control">
+         <input type="text" name="linked_method" value="[#ELEMENT_LINKED_METHOD#]" id="linked_method" class="form-control">
         </div>
 </div>
 
@@ -193,26 +234,6 @@
 <input type="hidden" name="css_style" value='default'>
 [#endif STYLES#]
 
-[#if (ELEMENT_TYPE!="container")#]
-<div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
-        <div class="controls">
-                <select class="form-control" name="container_id">
-                        <option value="0">n/a
-                        [#begin CONTAINERS#]
-                        <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
-                        [#end CONTAINERS#]
-                </select>
-        </div>
-</div>
-[#endif ELEMENT_TYPE#]
-
-<div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
-        <div class="controls">
-                <input class="form-control" type="text" name="priority" value="[#ELEMENT_PRIORITY#]">
-        </div>
-</div>
 
 <script language="javascript">
  function position_type_changed(new_position) {
@@ -224,6 +245,7 @@
  }
 </script>
 
+<div class='advanced_options' [#if ELEMENT_EASY_CONFIG=="1" || ELEMENT_ID==""#]style="display:none"[#endif#]>
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_POSITION_TYPE#><#LANG_HCB#>element_positiontype<#LANG_HCE#></label>
         <div class="controls">
@@ -245,7 +267,8 @@
                 </select>
         </div>
 </div>
-
+</div>
+</div>
 
 <!-- LEFT (int) -->
 <div class="form-group">
@@ -264,7 +287,23 @@
         </div>
 </div>
 
+
+<div class='advanced_options' [#if ELEMENT_EASY_CONFIG="1" || ELEMENT_ID=""#]style="display:none"[#endif#]>
+
+[#if (ELEMENT_TYPE!="container")#]
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
+        <div class="controls">
+                <select class="form-control" name="container_id">
+                        <option value="0">n/a
+                        [#begin CONTAINERS#]
+                        <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
+                        [#end CONTAINERS#]
+                </select>
+        </div>
 </div>
+[#endif ELEMENT_TYPE#]
+
 
 
 [#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container"#]
@@ -344,7 +383,7 @@
 </div>
 [#endif ELEMENT_TYPE#]
 
-[#if ID!=""#]
+[#if ELEMENT_ID!=""#]
 <div class="form-group">
         <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="controls">
@@ -352,19 +391,6 @@
         </div>
 </div>
 [#endif ID#]
-
-
-<!-- CROSS_SCENE (int) -->
-<!--#
-<tr>
- <td align=right>
-  &nbsp;
- </td>
- <td>
-  <input type="checkbox" name="cross_scene" value="1"[#if ELEMENT_CROSS_SCENE="1"#] checked[#endif#]> cross scene element
- </td>
-</tr>
-#-->
 
 
 [#if ELEMENT_ID!="" && ELEMENT_TYPE!="container"#]
@@ -667,6 +693,7 @@
 </div>
 [#module name="linkedobject" object_field="linked_object_new" property_field="linked_property_new"#]
 [#endif ID#]
+</div>
 
 
 <div class="form-actions">
@@ -680,6 +707,7 @@
 
  [#if ID!=""#]
  <a class="btn btn-default" href="?tab=elements&id=<#ID#>&view_mode=<#VIEW_MODE#>&edit_mode=<#EDIT_MODE#>&view_mode2=clone_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
  [#endif ID#]
 
 </div>
@@ -702,4 +730,12 @@
 <li>[#if ID!="<#ELEMENT_ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]">[#endif#][#TITLE#]</a></li>
 [#end SUB_ELEMENTS#]
 </ul>
+[#endif#]
+
+[#if ELEMENT_ID!=""#]
+<script language="javascript">
+ $(document).ready(function(){ 
+  element_type_switched();
+ });
+</script>
 [#endif#]

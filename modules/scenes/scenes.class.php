@@ -1468,6 +1468,9 @@ elm_states - Element states
  elements: TITLE varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
  elements: CSS_STYLE varchar(255) NOT NULL DEFAULT ''
+ elements: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ elements: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ elements: LINKED_METHOD varchar(255) NOT NULL DEFAULT ''
  elements: TOP int(10) NOT NULL DEFAULT '0'
  elements: LEFT int(10) NOT NULL DEFAULT '0'
  elements: WIDTH int(10) NOT NULL DEFAULT '0'
@@ -1484,6 +1487,7 @@ elm_states - Element states
  elements: CSS text
  elements: S3D_SCENE varchar(255) NOT NULL DEFAULT ''
  elements: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
+ elements: EASY_CONFIG int(3) NOT NULL DEFAULT '0'
 
  elm_states: ID int(10) unsigned NOT NULL auto_increment
  elm_states: ELEMENT_ID int(10) NOT NULL DEFAULT '0'
