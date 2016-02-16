@@ -1271,6 +1271,11 @@ function usual(&$out) {
          continue;
         }
 
+        if ($type=='common') {
+         $entry='../common/'.$entry;
+        }
+
+
         $has_low=0;
         if (preg_match('/\_lo$/', $style)) {
          $style=preg_replace('/\_lo$/', '', $style);
@@ -1311,9 +1316,6 @@ function usual(&$out) {
          continue;
         }
 
-        if ($type=='common') {
-         $entry='../common/'.$entry;
-        }
 
         $styles_recs[$style]['TITLE']=$style;
         if ($has_low) {
