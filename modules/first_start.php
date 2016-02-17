@@ -7,6 +7,7 @@
  $languages[]=array('TITLE'=>'en');
  $languages[]=array('TITLE'=>'ru');
  $languages[]=array('TITLE'=>'ua');
+ $languages[]=array('TITLE'=>'lt');
 
  $out['LANGUAGES']=$languages;
 
