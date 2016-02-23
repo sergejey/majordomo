@@ -1,5 +1,38 @@
 <?php
 
+    function directoryToArray($directory, $recursive = true, $listDirs = false, $listFiles = true, $exclude = '') {
+        $arrayItems = array();
+        $skipByExclude = false;
+        $handle = opendir($directory);
+        if ($handle) {
+            while (false !== ($file = readdir($handle))) {
+            preg_match("/(^(([\.]){1,2})$|(\.(svn|git|md))|(Thumbs\.db|\.DS_STORE))$/iu", $file, $skip);
+            if($exclude){
+                preg_match($exclude, $file, $skipByExclude);
+            }
+            if (!$skip && !$skipByExclude) {
+                if (is_dir($directory. DIRECTORY_SEPARATOR . $file)) {
+                    if($recursive) {
+                        $arrayItems = array_merge($arrayItems, directoryToArray($directory. DIRECTORY_SEPARATOR . $file, $recursive, $listDirs, $listFiles, $exclude));
+                    }
+                    if($listDirs){
+                        $file = $directory . DIRECTORY_SEPARATOR . $file;
+                        $arrayItems[] = $file;
+                    }
+                } else {
+                    if($listFiles){
+                        $file = $directory . DIRECTORY_SEPARATOR . $file;
+                        $arrayItems[] = $file;
+                    }
+                }
+            }
+        }
+        closedir($handle);
+        }
+        return $arrayItems;
+    }
+
+
 /**
  * Description
  * @access public
@@ -38,19 +71,34 @@ $player_id = $players->result[0]->playerid;
 if ($command == 'refresh')
 {
    $out['PLAY'] = preg_replace('/\\\\$/is', '', $out['PLAY']);
-   $path = str_replace('/', "\\", utf2win($out['PLAY']));
-   
+   $path = $out['PLAY'];
+   $path = str_replace('/', "\\", $path);
+   if (IsWindowsOs()) {
+    $path = utf2win($path);
+   }
+
+   $items=array();
    if (is_file($path))
    {
-      //play file
-      $result=xbmc_request($ch, $terminal, 'Player.Open', array('item'=>array('file'=>$path)));
+     $items[]=$path;
    } 
-   else
+   elseif (is_dir($path))
    {
-      //play folder
-      ///!!!!!! how to get it working???
-      $result=xbmc_request($ch, $terminal, 'Player.Open', array('item'=>array('path'=>$path)));
+      $items=directoryToArray($path);
    }
+
+   $result=xbmc_request($ch, $terminal, 'Playlist.Clear', array('playlistid'=>0));
+
+   foreach($items as $v) {
+      if (IsWindowsOs()) {
+       $v=win2utf($v);
+      }
+      $v = preg_replace('/^\\\\\\\\/is', 'SMB://', $v);
+      $v = str_replace('\\', '/', $v);
+      $result=xbmc_request($ch, $terminal, 'Playlist.Add', array('playlistid'=>0, 'item'=>array('file'=>$v)));
+   }
+
+   $result=xbmc_request($ch, $terminal, 'Player.Open', array('item'=>array('playlistid'=>0)));
 }
 
 if ($command == 'pause') 

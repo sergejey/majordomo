@@ -1486,6 +1486,7 @@ elm_states - Element states
  elements: BACKGROUND int(3) NOT NULL DEFAULT '0'
  elements: PRIORITY int(10) NOT NULL DEFAULT '0'
  elements: JAVASCRIPT text
+ elements: WIZARD_DATA text
  elements: CSS text
  elements: S3D_SCENE varchar(255) NOT NULL DEFAULT ''
  elements: SMART_REPEAT int(3) NOT NULL DEFAULT '0'

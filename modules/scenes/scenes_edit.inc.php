@@ -466,6 +466,20 @@
      global $state_low_value;
      global $linked_property_unit;
 
+     $wizard_data=array();
+     $wizard_data['STATE_HIGH']=(int)$state_high;
+     if ($wizard_data['STATE_HIGH']) {
+      $wizard_data['STATE_HIGH_VALUE']=(int)$state_high_value;
+     }
+     $wizard_data['STATE_LOW']=(int)$state_low;
+     if ($wizard_data['STATE_LOW']) {
+      $wizard_data['STATE_LOW_VALUE']=(int)$state_low_value;
+     }
+     $wizard_data['UNIT']=$linked_property_unit;
+
+     $element['WIZARD_DATA']=json_encode($wizard_data);
+     SQLUpdate('elements', $element);
+
 
      if ($state_low_value!='' && !is_numeric($state_low_value) && !preg_match('/^%/', $state_low_value)) {
       $state_low_value='%'.$state_low_value.'%';
@@ -635,6 +649,12 @@
     }
     if ($element['CSS_STYLE']!='default') {
      $out['ELEMENT_CSS_IMAGE']=$this->getCSSImage($element['TYPE'], $element['CSS_STYLE']);
+    }
+    if ($element['WIZARD_DATA']!='') {
+     $wizard_data=json_decode($element['WIZARD_DATA'], TRUE);
+     foreach($wizard_data as $k=>$v) {
+      $out['WIZARD_'.$k]=$v;
+     }
     }
    }
 

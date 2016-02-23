@@ -18,7 +18,10 @@
   if ($this->tab=='') {
   //updating 'TITLE' (varchar, required)
    global $title;
+
    $rec['TITLE']=$title;
+
+   $rec['TITLE']=str_replace(' ', '', trim($rec['TITLE']));
 
    $tmp=SQLSelectOne("SELECT ID FROM objects WHERE TITLE LIKE '".DBSafe($rec['TITLE'])."' AND ID!=".(int)$rec['ID']);
    if ($tmp['ID']) {

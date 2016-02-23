@@ -180,10 +180,10 @@
 <div class="form-group" id="informer_states" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_ADDITIONAL_STATES#><#LANG_HCB#>element_additional_states<#LANG_HCE#></label>
         <div class="controls">
-         <input type="checkbox" name="state_high" value="1"> <#LANG_HIGH_ABOVE#>
-         <input type="text" name="state_high_value" value="30"><br/>
-         <input type="checkbox" name="state_low" value="1"> <#LANG_LOW_BELOW#>
-         <input type="text" name="state_low_value" value="15">
+         <input type="checkbox" name="state_high" value="1"[#if WIZARD_STATE_HIGH="1"#] checked[#endif#]> <#LANG_HIGH_ABOVE#>
+         <input type="text" name="state_high_value" value="[#if WIZARD_STATE_HIGH_VALUE!=""#][#WIZARD_STATE_HIGH_VALUE#][#else#]30[#endif#]"><br/>
+         <input type="checkbox" name="state_low" value="1"[#if WIZARD_STATE_LOW="1"#] checked[#endif#]> <#LANG_LOW_BELOW#>
+         <input type="text" name="state_low_value" value="[#if WIZARD_STATE_LOW_VALUE!=""#][#WIZARD_STATE_LOW_VALUE#][#else#]15[#endif#]">
          <#LANG_ADDITIONAL_STATES_NOTE#>
         </div>
 </div>
@@ -191,7 +191,7 @@
 <div class="form-group" id="linked_property_unit" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_UNIT#><#LANG_HCB#>element_unit<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_property_unit" class="form-control">
+         <input type="text" name="linked_property_unit" value="[#WIZARD_UNIT#]" class="form-control">
         </div>
 </div>
 

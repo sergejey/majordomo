@@ -136,6 +136,23 @@ function run() {
   }
 
   if ($ajax==1) {
+
+   if ($op=='objects') {
+    $res=array();
+    $tmp=SQLSelect("SELECT ID, TITLE, DESCRIPTION FROM objects ORDER BY CLASS_ID, TITLE");
+    $total=count($tmp);
+    for($i=0;$i<$total;$i++) {
+     $res[]=$tmp[$i];
+    }
+    $res['OBJECTS']=$res;
+
+    //$tmp=SQLSelectOne("SELECT TITLE FROM objects ORDER BY ID DESC LIMIT 1");
+    //$res['LATEST_OBJECT']=$tmp['TITLE'];
+    $res['LATEST_OBJECT']='';
+
+    echo json_encode($res);
+   }
+
    if ($op=='properties') {
     $res=array();
     $obj=getObject($object);
