@@ -53,6 +53,8 @@ $(function() {
 <link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/lib/codemirror.css">
 <link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.css">
 <link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.css">
+
 <script src="<#ROOTHTML#>js/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/mode/xml/xml.js"></script>
@@ -66,7 +68,8 @@ $(function() {
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/brace-fold.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/comment-fold.js"></script>
-<script src="php.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/addon/edit/closebrackets.js"></script>
 
 <script language="javascript">
 var myTextArea[#CODE_FIELD#];
@@ -84,6 +87,7 @@ var editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
         [#endif TYPE#]
         indentUnit: 1,
         indentWithTabs: false,
+        autoCloseBrackets: true,
         foldGutter: true,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       extraKeys: {
@@ -94,9 +98,24 @@ var editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
         "Esc": function(cm) {
           if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
         },
+        "Ctrl-Space": "autocomplete",
         "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
       }
  });
+
+/*
+CodeMirror.hint.javascript = function(cm) {
+  var inner = orig(cm) || {from: cm.getCursor(), to: cm.getCursor(), list: []};
+  inner.list.push("bozo");
+  return inner.
+};
+*/
+/*
+editor.on('keyup', function(){
+    CodeMirror.commands.autocomplete(editor);
+});
+*/
+
 
 /*
      editor.operation(function() {
