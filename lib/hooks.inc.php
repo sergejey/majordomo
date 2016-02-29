@@ -91,6 +91,7 @@ function processSubscriptions($event_name, $details = '')
 
             if (method_exists($module_object, 'processSubscription'))
             {
+               DebMes("$module_name.processSubscription");
                $module_object->processSubscription($event_name, $details);
             }
          }
