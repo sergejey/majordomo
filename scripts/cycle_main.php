@@ -102,7 +102,7 @@ while (1)
 
    }
 
-   $queue=SQLSelect("SELECT * FROM phistory_queue ORDER BY ID");
+   $queue=SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT 5000");
    if ($queue[0]['ID']) {
     $total=count($queue);
     for($i=0;$i<$total;$i++) {
