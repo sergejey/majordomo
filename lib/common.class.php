@@ -95,7 +95,8 @@ function say($ph, $level = 0, $member_id = 0)
          @touch($voice_file);
          playSound($voice_file, 1, $level);
       }
-      else
+      
+      if (SETTINGS_TTS_ENGINE == 'default')
       {
          if (IsWindowsOS())
          {
