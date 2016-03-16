@@ -30,7 +30,7 @@
   <form action="?" method="get" name="frmPlayerControl" id="frmPlayerControl">
   <td align="right" style="vertical-align:middle">
   <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
-   <select name="play_terminal" id="selPlayTerminal">
+   <select name="play_terminal" id="selPlayTerminal" class="form-control input-sm">
     <option value="">
     [#begin TERMINALS#]
     <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
@@ -47,7 +47,7 @@
 #-->
   </td>
   [#if MODE="menu"#]</tr><tr>[#endif MODE#]
-  <td nowrap><select name="volume" id='selVolume' onChange="playerCommand('volume')">
+  <td nowrap><select name="volume" id='selVolume' onChange="playerCommand('volume')" class="form-control input-sm">
    [#begin VOLUMES#]
    <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
    [#end VOLUMES#]
@@ -64,4 +64,9 @@
  <input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
  <input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
  </form>
+ [#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
+ <script language="javascript">
+  playerCommand('refresh');
+ </script>
+ [#endif#]
 </table>

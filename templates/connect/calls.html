@@ -1,0 +1,101 @@
+[#if VIEW_MODE=""#]
+<div>
+<a href="?tab=<#TAB#>&view_mode=edit_calls&id=" class="btn btn-default"><#LANG_ADD#></a>
+[#if CALLS#]
+<a href="?tab=<#TAB#>&view_mode=sync" class="btn btn-default">Send to Connect</a>
+[#endif CALLS#]
+</div>
+&nbsp;
+
+
+[#if CALLS#]
+<table width="100%" border="0" class="table table-stripped">
+ [#begin CALLS#]
+ <tr>
+  <td><b>[#TITLE#]</b></td>
+  <td>[#LINKED_OBJECT#].[#LINKED_METHOD#]</td>
+  <td>
+  [#if PUBLIC_KEY!=""#]
+  URL: <a href="http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&" target=_blank>http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&</a><br/>
+  Image URL: http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&img=1&
+  [#else#]n/a[#endif#]</td>
+  <td valign="top"><a href="?tab=<#TAB#>&view_mode=edit_calls&id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a>
+  <a href="?tab=<#TAB#>&view_mode=delete_calls&id=[#ID#]" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+  </td>
+ </tr>
+ [#end CALLS#]
+</table>
+[#endif CALLS#]
+
+[#endif VIEW_MODE#]
+
+
+[#if VIEW_MODE="edit_calls"#]
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+
+<div class="form-group">
+ <label class="control-label">
+ <#LANG_TITLE#>:
+ </label>
+ <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="form-control"></div>
+</div>
+
+
+<div class="form-group">
+ <label class="control-label">
+ <#LANG_LINKED_OBJECT#>:
+ </label>
+ <div class="controls"><input type="text" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]" class="form-control"></div>
+</div>
+
+<div class="form-group">
+ <label class="control-label">
+ <#LANG_METHOD#>:
+ </label>
+ <div class="controls"><input type="text" name="linked_method" id="linked_method" value="[#LINKED_METHOD#]" class="form-control"></div>
+</div>
+
+[#module name="linkedobject" object_field="linked_object" method_field="linked_method"#]
+
+<div class="form-group">
+ <label class="control-label">
+ Password protected:
+ </label>
+ <div class="controls">
+ <input type="radio" name="protected" value="1"[#if PROTECTED="1"#] checked[#endif PROTECTED#]> <#LANG_YES#>
+ <input type="radio" name="protected" value="0"[#if PROTECTED!="1"#] checked[#endif PROTECTED#]> <#LANG_NO#>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="control-label">
+ <#LANG_USERNAME#>:<br/>(<#LANG_OPTIONAL#>)
+ </label>
+ <div class="controls"><input type="text" name="public_username" value="[#PUBLIC_USERNAME#]" class="form-control"></div>
+</div>
+
+<div class="form-group">
+ <label class="control-label">
+ <#LANG_PASSWORD#>:
+ <br/>(<#LANG_OPTIONAL#>)
+ </label>
+ <div class="controls"><input type="text" name="public_password" value="[#PUBLIC_PASSWORD#]" class="form-control"></div>
+</div>
+
+
+<div class="form-actions">
+<button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+<a href="?&tab=<#TAB#>" class="btn btn-default"><#LANG_CANCEL#></a>
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="tab" value="<#TAB#>">
+<input type="hidden" name="id" value="<#ID#>">
+</div>
+</fieldset>
+</form>
+
+
+
+[#endif VIEW_MODE#]

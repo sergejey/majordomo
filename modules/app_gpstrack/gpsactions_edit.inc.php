@@ -65,7 +65,7 @@
   for($gpslocations_i=0;$gpslocations_i<$gpslocations_total;$gpslocations_i++) {
    $location_id_opt[$tmp[$gpslocations_i]['ID']]=$tmp[$gpslocations_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i < $gpslocations_total; $i++) {
    if ($rec['LOCATION_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['LOCATION_ID_OPTIONS']=$tmp;
@@ -75,7 +75,7 @@
   for($users_i=0;$users_i<$users_total;$users_i++) {
    $user_id_opt[$tmp[$users_i]['ID']]=$tmp[$users_i]['NAME'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$users_total;$i++) {
    if ($rec['USER_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['USER_ID_OPTIONS']=$tmp;
@@ -92,20 +92,24 @@
    $out['ACTION_TYPE_OPTIONS'][]=array('VALUE'=>$value, 'TITLE'=>$title);
    $action_type_opt[$value]=$title;
   }
-  for($i=0;$i<count($out['ACTION_TYPE_OPTIONS']);$i++) {
-   if ($out['ACTION_TYPE_OPTIONS'][$i]['VALUE']==$rec['ACTION_TYPE']) {
-    $out['ACTION_TYPE_OPTIONS'][$i]['SELECTED']=1;
-    $out['ACTION_TYPE']=$out['ACTION_TYPE_OPTIONS'][$i]['TITLE'];
-    $rec['ACTION_TYPE']=$out['ACTION_TYPE_OPTIONS'][$i]['TITLE'];
+
+   $actTypeCnt = count($out['ACTION_TYPE_OPTIONS']);
+   for ($i = 0; $i < $actTypeCnt; $i++)
+   {
+      if ($out['ACTION_TYPE_OPTIONS'][$i]['VALUE'] == $rec['ACTION_TYPE'])
+      {
+         $out['ACTION_TYPE_OPTIONS'][$i]['SELECTED'] = 1;
+         $out['ACTION_TYPE'] = $out['ACTION_TYPE_OPTIONS'][$i]['TITLE'];
+         $rec['ACTION_TYPE'] = $out['ACTION_TYPE_OPTIONS'][$i]['TITLE'];
+      }
    }
-  }
   //options for 'SCRIPT_ID' (select)
   $tmp=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
   $scripts_total=count($tmp);
   for($scripts_i=0;$scripts_i<$scripts_total;$scripts_i++) {
    $script_id_opt[$tmp[$scripts_i]['ID']]=$tmp[$scripts_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$scripts_total;$i++) {
    if ($rec['SCRIPT_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['SCRIPT_ID_OPTIONS']=$tmp;

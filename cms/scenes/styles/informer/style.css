@@ -9,11 +9,11 @@
  font-size:14px;
  background-color:rgba(0,0,0,0.5);
  align:left;
- width:70px;
- height:36px;
+ width:71px;
+ height:34px;
  background-image: url(<#ROOTHTML#>img/elements/i_temp.png);
  background-repeat: no-repeat;
- background-position: left center;
+ background-position: -6;
 }
 
 .type_informer span {
@@ -47,21 +47,21 @@ color:#f1b001;
  .type_informer.style_[#TITLE#] {
   background-image: url(<#ROOTHTML#>cms/scenes/styles/informer/[#HAS_DEFAULT#]);
   background-repeat: no-repeat;
-  background-position: left center;
+  background-position: -6;
  }
 [#endif#]
 [#if HAS_HIGH!=""#]
  .type_informer.state_high.style_[#TITLE#] {
   background-image: url(<#ROOTHTML#>cms/scenes/styles/informer/[#HAS_HIGH#]);
   background-repeat: no-repeat;
-  background-position: left center;
+  background-position: -6;
  }
 [#endif#]
 [#if HAS_LOW!=""#]
  .type_informer.state_low.style_[#TITLE#] {
   background-image: url(<#ROOTHTML#>cms/scenes/styles/informer/[#HAS_LOW#]);
   background-repeat: no-repeat;
-  background-position: left center;
+  background-position: -6;
  }
 [#endif#]
 [#end STYLES#]

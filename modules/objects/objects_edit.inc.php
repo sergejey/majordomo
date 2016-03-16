@@ -18,7 +18,10 @@
   if ($this->tab=='') {
   //updating 'TITLE' (varchar, required)
    global $title;
+
    $rec['TITLE']=$title;
+
+   $rec['TITLE']=str_replace(' ', '', trim($rec['TITLE']));
 
    $tmp=SQLSelectOne("SELECT ID FROM objects WHERE TITLE LIKE '".DBSafe($rec['TITLE'])."' AND ID!=".(int)$rec['ID']);
    if ($tmp['ID']) {
@@ -111,7 +114,7 @@
   for($classes_i=0;$classes_i<$classes_total;$classes_i++) {
    $class_id_opt[$tmp[$classes_i]['ID']]=$tmp[$classes_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$classes_total;$i++) {
    if ($rec['CLASS_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['CLASS_ID_OPTIONS']=$tmp;
@@ -121,7 +124,7 @@
   for($locations_i=0;$locations_i<$locations_total;$locations_i++) {
    $location_id_opt[$tmp[$locations_i]['ID']]=$tmp[$locations_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$locations_total;$i++) {
    if ($rec['LOCATION_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['LOCATION_ID_OPTIONS']=$tmp;

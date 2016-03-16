@@ -349,8 +349,9 @@
                         ret[row][ret[row].length] = sprintf('<td align="center" class="%s">%s</td>', cssClass, linkHTML);
                 }
 
-                // Format the HTML
-                for(i=0; i<ret.length; i++){
+           // Format the HTML
+                var retCnt = ret.length;
+                for (i = 0; i < retCnt; i++) {
                         ret[i] = ret[i].join('\n') + '\n';
                 }
 
@@ -663,13 +664,14 @@
         
                 document.onclick = function ()
                 {
-                        if(!dynCalendar_mouseoverStatus){
-                                for(i=0; i<dynCalendar_layers.length; ++i){
-                                        dynCalendar_layers[i]._hideLayer();
-                                }
-                        }
+                   if(!dynCalendar_mouseoverStatus){
+                      var layersCnt = dynCalendar_layers.length;
+                      for (i = 0; i < layersCnt; ++i) {
+                        dynCalendar_layers[i]._hideLayer();
+                      }
+                   }
         
-                        dynCalendar_oldOnclick(arguments[0] ? arguments[0] : null);
+                   dynCalendar_oldOnclick(arguments[0] ? arguments[0] : null);
                 }
                 var clickEventAssigned = true;
         }

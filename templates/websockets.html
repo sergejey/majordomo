@@ -1,0 +1,59 @@
+<script type="text/javascript" src="<#ROOTHTML#>js/jquery.tiny-pubsub.js"></script>
+<script language="javascript">
+ var wsTimer=0;
+ var startedWebSockets=0;
+
+        function startWebSockets() {
+            var loc = window.location, new_uri;
+            var serverUrl='';
+            if (loc.protocol === "https:") {
+                    serverUrl = "wss:";
+            } else {
+                    serverUrl = "ws:";
+            }
+            serverUrl += "//" + loc.host + ':<#WEBSOCKETS_PORT#>/majordomo';
+
+            try {
+             if (window.MozWebSocket) {
+               wsSocket = new MozWebSocket(serverUrl);
+             } else if (window.WebSocket) {
+               wsSocket = new WebSocket(serverUrl);
+             }
+
+            } catch (e) {
+                 return false;
+            }
+            wsSocket.binaryType = 'blob';
+            wsSocket.onopen = function(msg) {
+             ///connected
+              startedWebSockets=1;
+              clearTimeout(wsTimer);
+              $.publish('wsConnected');
+              console.log('WS connected (<#REQUEST_URI#>)');
+            };
+            wsSocket.onmessage = function(msg) {
+              console.log('WS data (<#REQUEST_URI#>)');
+              var response;
+              response = JSON.parse(msg.data);
+              $.publish('wsData', response);
+              return;
+            };
+            wsSocket.onclose = function(msg) {
+              //disconnected
+              startedWebSockets=0;
+              wsTimer=setTimeout('startWebSockets();', 5*1000);
+              $.publish('wsDisconnected', []);
+              console.log('WS disconnected (<#REQUEST_URI#>)');
+              return;
+            };
+        }
+
+ $(document).ready(function(){
+  [#if "<#DISABLE_WEBSOCKETS#>"!="1"#]
+   startWebSockets();
+  [#endif#]
+ });
+
+         
+</script>
+

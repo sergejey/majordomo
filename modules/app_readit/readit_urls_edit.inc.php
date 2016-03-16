@@ -85,7 +85,7 @@
   for($readit_channels_i=0;$readit_channels_i<$readit_channels_total;$readit_channels_i++) {
    $channel_id_opt[$tmp[$readit_channels_i]['ID']]=$tmp[$readit_channels_i]['TITLE'];
   }
-  for($i=0;$i<count($tmp);$i++) {
+  for($i=0;$i<$readit_channels_total;$i++) {
    if ($rec['CHANNEL_ID']==$tmp[$i]['ID']) $tmp[$i]['SELECTED']=1;
   }
   $out['CHANNEL_ID_OPTIONS']=$tmp;

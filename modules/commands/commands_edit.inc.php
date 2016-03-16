@@ -35,6 +35,10 @@
    global $priority;
    $rec['PRIORITY']=$priority;
 
+   global $smart_repeat;
+   $rec['SMART_REPEAT']=(int)$smart_repeat;
+
+
    global $type;
    $rec['TYPE']=$type;
 

@@ -142,6 +142,17 @@ function admin(&$out) {
  */
 
  global $id;
+
+ if ($this->view_mode=='clear_favorites') {
+  SQLExec("DELETE FROM media_favorites");
+  $this->redirect("?");
+ }
+
+ if ($this->view_mode=='clear_history') {
+  SQLExec("DELETE FROM media_history");  
+  $this->redirect("?");
+ }
+
  if ($this->view_mode=='delete') {
   $rec=SQLSelectOne("SELECT * FROM collections WHERE ID='".(int)$id."'");
   SQLExec("DELETE FROM collections WHERE ID='".$rec['ID']."'");
@@ -282,6 +293,18 @@ function usual(&$out) {
    $out['FAVORITES']=$favorites;
   }
 
+  $media_history=SQLSelect("SELECT * FROM media_history WHERE 1 ORDER BY PLAYED DESC");
+  if ($media_history) {
+   if(!$run_linux){
+    $total=count($media_history);
+    for($i=0;$i<$total;$i++) {
+     $media_history[$i]['PATH']=urlencode(utf2win($media_history[$i]['PATH']));
+    }
+   }
+   $out['MEDIA_HISTORY']=$media_history;
+  }
+
+
   $folder=str_replace('././', './', $folder);
   $path=str_replace('././', './', $path);
 
@@ -344,16 +367,39 @@ function usual(&$out) {
       if($run_linux){
           $out['FILE']=$file;
           $out['BASEFILE']=basename($file);
-          $file=str_replace('/', '\\\\', $file);
+          $file=str_replace('/', '\\', $file);
           $out['FULLFILE']=addslashes($path).$file;
       } else {
           $out['FILE']=win2utf($file);
           $out['BASEFILE']=win2utf(basename($file));
-          $file=str_replace('/', '\\\\', $file);
-          $out['FULLFILE']=win2utf(addslashes($path).$file);
+          $file=str_replace('/', '\\', $file);
+          $out['FULLFILE']=win2utf(($path).$file);
       }
 
-   $out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
+   //$out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
+   $out['FULLFILE_S']=$out['FULLFILE'];
+
+   if ($this->mode=='play') {
+    //FULLFILE_S
+    $rec=array();
+    $rec['TITLE']=$out['CURRENT_DIR_TITLE'];
+    $rec['PATH']=win2utf($folder);
+    $rec['LIST_ID']=(int)$list_id;
+    $rec['COLLECTION_ID']=$collection_id;
+    $rec['PLAYED']=date('Y-m-d H:i:s');
+    SQLExec("DELETE FROM media_history WHERE PATH LIKE '".DBSafe($rec['PATH'])."'");
+    SQLInsert('media_history', $rec);
+
+    $last10=SQLSelect("SELECT ID FROM media_history ORDER BY PLAYED DESC LIMIT 10");
+    $total=count($last10);
+    $ids=array();
+    for($i=0;$i<$total;$i++) {
+     $ids[]=$last10[$i]['ID'];
+    }
+    SQLExec("DELETE FROM media_history WHERE ID NOT IN (".implode(',', $ids).")");
+
+   }
+
   }
 
   if (preg_match('/foto/is', $act_dir) || preg_match('/photo/is', $act_dir)) {
@@ -401,6 +447,10 @@ function usual(&$out) {
 
   if (substr($act_dir, -1)!='/' && substr($act_dir, -1)!='\\') {
    $act_dir.='/';
+  }
+
+  if (!is_dir($act_dir)) {
+   return;
   }
 
   $d=openDir($act_dir);
@@ -489,7 +539,8 @@ function usual(&$out) {
 
     $rec['REAL_PATH']=($folder.$file);
     $rec['PATH']=urlencode($folder.$file);
-    $rec['FULL_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$file);
+    //$rec['FULL_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$file);
+    $rec['FULL_PATH']=urlencode($act_dir.$file);
     $size=filesize($act_dir.$file);
     $total_size+=$size;
     if ($size>1024) {
@@ -516,12 +567,16 @@ function usual(&$out) {
    $total=count($files);
    $out['TOTAL_FILES']=$total;
    for($i=0;$i<$total;$i++) {
-    if (preg_match('/\.jpg$/is', $files[$i]['PATH'])) {
+    if (preg_match('/\.jpg$/is', $files[$i]['PATH']) || preg_match('/\.jpeg$/is', $files[$i]['PATH']) || preg_match('/\.png$/is', $files[$i]['PATH'])) {
      $files[$i]['IS_FOTO']=1;
+     $total_photos++;
     }
     if (($i+1)%4==0) {
      $files[$i]['NEWROW']=1;
     }
+   }
+   if ($total_photos==$total) {
+    $out['LIST_MODE']='foto';
    }
    $out['FILES']=$files;
   }
@@ -544,31 +599,50 @@ function usual(&$out) {
 
 }
 
- function getDescriptions($dir) {
-  $descr=array();
-  if (file_exists($dir."Descript.ion")) {
-   $data=LoadFile($dir."Descript.ion");
-   $strings=explode("\n", $data);
-   for($i=0;$i<count($strings);$i++) {
-    $fields=explode("\t", $strings[$i]);
-    $filename=$fields[0];
-    $filename=str_replace("\"", "", $filename);
-    $description=$fields[1];
-    $descr[$filename]=$description;
-   }
-  }
-  return $descr;
- }
+   function getDescriptions($dir)
+   {
+      $descr = array();
 
- function setDescription($dir, $file, $descr) {
-  $descriptions=getDescriptions($dir);
-  $descriptions[$file]=$descr;
-  $data=array();
-  foreach($descriptions as $k=>$v) {
-   $data[]="\"$k\"\t$v";
-  }
-  SaveFile($dir."Descript.ion", join("\n", $data));
- }
+      if (file_exists($dir . "Descript.ion"))
+      {
+         $data    = LoadFile($dir . "Descript.ion");
+         $strings = explode("\n", $data);
+         $strCnt  = count($strings);
+
+         for ($i = 0; $i < $strCnt; $i++)
+         {
+            $fields      = explode("\t", $strings[$i]);
+            $filename    = str_replace("\"", "", $fields[0]);
+            $description = $fields[1];
+
+            $descr[$filename] = $description;
+         }
+      }
+
+      return $descr;
+   }
+
+/**
+ * Set directory description
+ * @param mixed $dir   Directory
+ * @param mixed $file  File
+ * @param mixed $descr Description
+ */
+function setDescription($dir, $file, $descr)
+{
+   $descriptions = self::getDescriptions($dir);
+   
+   $descriptions[$file] = $descr;
+   
+   $data = array();
+  
+   foreach($descriptions as $k => $v)
+   {
+      $data[] = "\"$k\"\t$v";
+   }
+   
+   SaveFile($dir . "Descript.ion", join("\n", $data));
+}
 
 
  /**
@@ -642,6 +716,14 @@ terminals - Terminals
   media_favorites: TITLE varchar(255) NOT NULL DEFAULT ''
   media_favorites: LIST_ID int(10) unsigned NOT NULL DEFAULT '0'
   media_favorites: COLLECTION_ID int(10) unsigned NOT NULL DEFAULT '0'
+
+  media_history: ID int(10) unsigned NOT NULL auto_increment
+  media_history: PATH varchar(255) NOT NULL DEFAULT ''
+  media_history: TITLE varchar(255) NOT NULL DEFAULT ''
+  media_history: LIST_ID int(10) unsigned NOT NULL DEFAULT '0'
+  media_history: COLLECTION_ID int(10) unsigned NOT NULL DEFAULT '0'
+  media_history: PLAYED datetime
+
 
 EOD;
   parent::dbInstall($data);

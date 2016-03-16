@@ -229,7 +229,7 @@
 
 
 <div id="category_0">
-<table border="0" cellpadding="5">
+<table border="0" cellpadding="5" style="width: 300px;"> 
 [#begin RESULT#]
 [#if NEW_CATEGORY#]
 </table>
@@ -251,10 +251,10 @@
  <td  width="85%">
   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_products&id=[#ID#]"><b>[#TITLE#]</b></a>
   [#if EXPIRE_TERM!="" && QTY!="0"#]
-   <div>Will expire in [#EXPIRE_TERM#] days [#if EXPIRED#]<b style="color:red"><#LANG_EXPIRED#></b>[#endif EXPIRED#]</div>
+   <div><#LANG_EXPIRE_IN#> [#EXPIRE_TERM#] <#LANG_DAYS#>. [#if EXPIRED#]<b style="color:red"><#LANG_EXPIRED#></b>[#endif EXPIRED#]</div>
   [#endif#]
   [#if RECOMMENDED#]
-   <div><#RECOMENDED_QUANTITY#>: [#RECOMMENDED#]</div>
+   <div><#LANG_RECOMENDED_QUANTITY#>: [#RECOMMENDED#]</div>  
   [#endif#]
  </td>
  <td><a href="#" onClick='return changeQty("minus", "[#ID#]")'><img src="<#ROOTHTML#>img/btn/minus.png" border="0"></a></td>

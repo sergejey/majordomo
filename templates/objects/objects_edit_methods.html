@@ -34,7 +34,7 @@
 
  <tr>
   <td valign="top">
-   [#if ERR_CODE#]<font color='red'>[#endif#]<#LANG_EXECUTE#>:<br>
+   [#if ERR_CODE#]<font color='red'>[#endif#]<#LANG_EXECUTE#>:<#LANG_HCB#>code<#LANG_HCE#><br>
    <input type="radio" name="run_type" value="script"[#if SCRIPT_ID!="0"#] checked[#endif#] onClick="$('#code_option').hide();"> <#LANG_SCRIPT#>:
    <select name="script_id">
     <option value="0">
@@ -64,7 +64,9 @@
 
   &nbsp;<br/>
 
-  <#LANG_CALL_PARENT_METHOD#>:<br>
+  <#LANG_CALL_PARENT_METHOD#>:
+  <#LANG_HCB#>parent_method<#LANG_HCE#>
+  <br>
   <label><input type="radio" name="call_parent" value="1"[#if CALL_PARENT="1"#] checked[#endif#]> <#LANG_BEFORE_CODE_EXECUTION#></label>
   <label><input type="radio" name="call_parent" value="2"[#if CALL_PARENT="2"#] checked[#endif#]> <#LANG_AFTER_CODE_EXECUTION#></label>
   <label><input type="radio" name="call_parent" value="0"[#if CALL_PARENT="0"#] checked[#endif#]> <#LANG_NEVER#></label>

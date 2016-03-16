@@ -275,7 +275,7 @@ function usual(&$out) {
 */
  function loadObject($id) {
   $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".DBSafe($id)."'");
-  if ($rec['ID']) {
+  if (IsSet($rec['ID'])) {
    $this->id=$rec['ID'];
    $this->object_title=$rec['TITLE'];
    $this->class_id=$rec['CLASS_ID'];
@@ -447,6 +447,11 @@ curl_close($ch);
   
  }
 
+
+ function callClassMethod($name, $params=0) {
+  $this->callMethod($name, $params, 1);
+ }
+
 /**
 * Title
 *
@@ -530,18 +535,29 @@ curl_close($ch);
      try {
        $success = eval($code);
        if ($success === false) {
-         getLogger($this)->error(sprintf('Error in "%s.%s" method. Code: %s', $this->object_title, $name, $code));
+         getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
+         registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
        }
      } catch (Exception $e) {
        getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
+       registerError('method', sprintf('Exception in "%s.%s" method '.$e->getMessage(), $this->object_title, $name));
      }
 
    }
    endMeasure('callMethod', 1);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
-    $this->callMethod($name, $params, 1);
+    $parent_success=$this->callMethod($name, $params, 1);
+   } else {
+    $parent_success=true;
    }
+
+   if (isset($success)) {
+    return $success;
+   } else {
+    return $parent_success;
+   }
+
   } else {
    endMeasure('callMethod ('.$original_method_name.')', 1);
    endMeasure('callMethod', 1);
@@ -612,6 +628,9 @@ curl_close($ch);
   }
   endMeasure('getProperty ('.$property.')', 1);
   endMeasure('getProperty', 1);
+  if (!isset($value['VALUE'])) {
+   $value['VALUE']=false;
+  }
   return $value['VALUE'];
  }
 
@@ -629,6 +648,8 @@ curl_close($ch);
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   $old_value='';
 
+  $cached_name='MJD:'.$this->object_title.'.'.$property;
+
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
@@ -641,10 +662,6 @@ curl_close($ch);
     } else {
      SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
     }
-
-    $cached_name='MJD:'.$this->object_title.'.'.$property;
-    saveToCache($cached_name, $value);
-
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
@@ -666,37 +683,28 @@ curl_close($ch);
     $v['ID']=SQLInsert('pvalues', $v);
   }
 
+  saveToCache($cached_name, $value);
+
+  if (function_exists('postToWebSocket')) {
+   postToWebSocket($this->object_title.'.'.$property, $value);
+  }
+
   if ($this->keep_history>0) {
    $prop['KEEP_HISTORY']=$this->keep_history;
   }
 
-  //if (($prop['KEEP_HISTORY']>0) && (($value!=$old_value) || (defined('KEEP_HISTORY_DUPLICATES') && KEEP_HISTORY_DUPLICATES==1))) {
-  if (($prop['KEEP_HISTORY']>0) && ($value!=$old_value)) {
-   startMeasure('DeleteOldHistory');
-   SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
-   endMeasure('DeleteOldHistory', 1);
-   $h=array();
-   $h['VALUE_ID']=$v['ID'];
-   $h['ADDED']=date('Y-m-d H:i:s');
-   $h['VALUE']=$value;
-   $h['ID']=SQLInsert('phistory', $h);
-  } elseif (($prop['KEEP_HISTORY']>0) && ($value==$old_value)) {
-   $tmp_history=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$v['ID']."' ORDER BY ID DESC LIMIT 2");
-   $prev_value=$tmp_history[0]['VALUE'];
-   $prev_prev_value=$tmp_history[1]['VALUE'];
-   if ($prev_value==$prev_prev_value) {
-    $tmp_history[0]['ADDED']=date('Y-m-d H:i:s');
-    SQLUpdate('phistory', $tmp_history[0]);
-   } else {
-    $h=array();
-    $h['VALUE_ID']=$v['ID'];
-    $h['ADDED']=date('Y-m-d H:i:s');
-    $h['VALUE']=$value;
-    $h['ID']=SQLInsert('phistory', $h);
-   }
+  if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0)) {
+   $q_rec=array();
+   $q_rec['VALUE_ID']=$v['ID'];
+   $q_rec['ADDED']=date('Y-m-d H:i:s');
+   $q_rec['VALUE']=$value;
+   $q_rec['OLD_VALUE']=$old_value;
+   $q_rec['KEEP_HISTORY']=$prop['KEEP_HISTORY'];
+   SQLInsert('phistory_queue', $q_rec);
   }
 
-  if ($prop['ONCHANGE']) {
+
+  if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
    global $property_linked_history;
    if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
     $property_linked_history[$property][$prop['ONCHANGE']]=1;
@@ -710,7 +718,7 @@ curl_close($ch);
    }
   }
 
-  if ($v['LINKED_MODULES']) { // TO-DO !
+  if (IsSet($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
    if (!is_array($no_linked) && $no_linked) {
     return;
    } elseif (!is_array($no_linked)) {
@@ -784,6 +792,17 @@ curl_close($ch);
 * @access private
 */
  function dbInstall($data) {
+
+  //SQLExec("DROP TABLE IF EXISTS `cached_values`;");
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
+               (`KEYWORD`   char(100) NOT NULL,
+                `DATAVALUE` char(255) NOT NULL,
+                `EXPIRE`    datetime  NOT NULL,
+                PRIMARY KEY (`KEYWORD`)
+               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+  //echo ("Executing $sqlQuery\n");
+
 /*
 objects - Objects
 */
@@ -794,6 +813,15 @@ objects - Objects
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
  objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
+
+ phistory_queue: ID int(10) unsigned NOT NULL auto_increment
+ phistory_queue: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
+ phistory_queue: VALUE text NOT NULL DEFAULT ''
+ phistory_queue: OLD_VALUE text NOT NULL DEFAULT ''
+ phistory_queue: KEEP_HISTORY int(10) unsigned NOT NULL DEFAULT '0'
+ phistory_queue: ADDED datetime
+
+
 EOD;
   parent::dbInstall($data);
  }
@@ -804,4 +832,3 @@ EOD;
 * TW9kdWxlIGNyZWF0ZWQgTWF5IDIyLCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
 *
 */
-?>

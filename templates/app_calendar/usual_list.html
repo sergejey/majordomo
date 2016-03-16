@@ -1,19 +1,20 @@
+<form action="?" method="get">
 <table border="0" align="center">
- <form action="?" method="get">
  <tr>
-  <td valign="top"><input type="text" name="title" size="40"></td>
-  <td valign="top"><input type="submit" name="submit" value="<#LANG_ADD#>"></td>
+  <td valign="top"><input type="text" name="title" size="40"  class="form-control"></td>
+  <td valign="top">&nbsp;</td>
+  <td valign="top"><input type="submit" name="submit" value="<#LANG_ADD#>"  class="btn"></td>
  </tr>
  <input type="hidden" name="view_mode" value="edit">
- </form>
 </table>
+</form>
 
 [#if EVENTS_PAST#]
 <h1><#LANG_PAST_DUE#></h1>
-<table width="300" border="0">
+<table border="0">
  [#begin EVENTS_PAST#]
  <tr>
-  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]" data-role="none">[#else#]&nbsp;[#endif#]</td>
   <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span> ([#AGE#])</td>
   <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
  </tr>
@@ -22,11 +23,11 @@
 [#endif EVENTS_PAST#]
 
 <h1><#LANG_TODAY#></h1>
-<table  width="300" border="0">
+<table border="0">
  [#if EVENTS_TODAY#]
  [#begin EVENTS_TODAY#]
  <tr>
-  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td valign="top">[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]" data-role="none">[#else#]&nbsp;[#endif#]</td>
   <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span></td>
   <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
  </tr>
@@ -40,10 +41,10 @@
 
 [#if EVENTS_SOON#]
 <h1><#LANG_SOON#></h1>
-<table width="300" border="0">
+<table border="0">
  [#begin EVENTS_SOON#]
  <tr>
-  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]">[#else#]&nbsp;[#endif#]</td>
+  <td>[#if IS_TASK="1"#]<input type="checkbox" name="task[#ID#]" class="tasks" value="[#ID#]" data-role="none">[#else#]&nbsp;[#endif#]</td>
   <td width="90%"><span id="task_title[#ID#]">[#TITLE#]</span> ([#AGE#])</td>
   <td><a href="?view_mode=edit&id=[#ID#]"><#LANG_EDIT#></a></td>
  </tr>
@@ -53,7 +54,7 @@
 
 [#if RECENTLY_DONE#]
 <h1><#LANG_DONE_RECENTLY#></h1>
-<table width="300" border="0">
+<table border="0">
  [#begin RECENTLY_DONE#]
  <tr>
   <td width="90%"><span id="task_title[#ID#]" style="text-decoration:line-through">[#TITLE#]</span></td>

@@ -271,9 +271,9 @@ function usual(&$out) {
 
    if ($old_status!=$host['STATUS']) {
     if ($host['STATUS']==2) {
-     $host['LOG']=date('Y-m-d H:i:s').' Host is offline'."\n".$host['LOG'];
+     $host['LOG'].=date('Y-m-d H:i:s').' Host is offline'."\n";
     } elseif ($host['STATUS']==1) {
-     $host['LOG']=date('Y-m-d H:i:s').' Host is online'."\n".$host['LOG'];
+     $host['LOG'].=date('Y-m-d H:i:s').' Host is online'."\n";
     }
     $tmp=explode("\n", $host['LOG']);
     $total=count($tmp);
@@ -316,9 +316,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in hosts online code: ".$code);
+                    registerError('ping_hosts', "Error in hosts online code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('ping_hosts', get_class($e).', '.$e->getMessage());
                   }
 
     }

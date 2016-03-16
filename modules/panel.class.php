@@ -108,9 +108,18 @@ function getParams() {
     clearCache(0);
    }
 
-   $modules=SQLSelect("SELECT * FROM project_modules WHERE (`HIDDEN`='0' OR NAME='control_modules') ORDER BY FIELD(CATEGORY, '<#LANG_SECTION_OBJECTS#>', '<#LANG_SECTION_DEVICES#>', '<#LANG_SECTION_APPLICATIONS#>', '<#LANG_SECTION_SETTINGS#>', '<#LANG_SECTION_SYSTEM#>'), `PRIORITY`, `TITLE`");
-   $old_cat='some_never_should_be_category_name';
-   for($i=0;$i<count($modules);$i++) {
+   $sqlQuery = "SELECT *
+                  FROM project_modules
+                 WHERE (`HIDDEN`='0' OR NAME='control_modules')
+                 ORDER BY FIELD(CATEGORY, '<#LANG_SECTION_OBJECTS#>', '<#LANG_SECTION_DEVICES#>', '<#LANG_SECTION_APPLICATIONS#>',
+                                '<#LANG_SECTION_SETTINGS#>', '<#LANG_SECTION_SYSTEM#>'),
+                          `PRIORITY`, `TITLE`";
+
+   $modules    = SQLSelect($sqlQuery);
+   $old_cat    = 'some_never_should_be_category_name';
+   $modulesCnt = count($modules);
+
+   for ($i = 0; $i < $modulesCnt; $i++) {
     if ($modules[$i]['NAME'] == $this->action) {
      $modules[$i]['SELECTED']=1;
     }

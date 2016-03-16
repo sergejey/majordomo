@@ -53,7 +53,9 @@ $(function () {
   <a href="?view_mode=moveup&id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-arrow-up"></i></a>
   <a href="?view_mode=movedown&id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-arrow-down"></i></a>
   [#if EXT_ID="0"#]
+  <!--#
   <a href="?view_mode=edit_commands&parent_id=[#ID#]"><#LANG_EXPAND#></a>
+  #-->
   [#endif EXT_ID#]
   <a href="?view_mode=edit_commands&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
   [#if !RESULT#]

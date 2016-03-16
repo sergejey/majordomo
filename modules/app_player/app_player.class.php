@@ -177,6 +177,7 @@ function usual(&$out) {
 
  if (!$play && $session->data['LAST_PLAY']) {
   $play=$session->data['LAST_PLAY'];
+  $out['LAST_PLAY']=1;
  } elseif ($play) {
   $session->data['LAST_PLAY']=$play;
  }

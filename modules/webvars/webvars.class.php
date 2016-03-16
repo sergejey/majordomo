@@ -225,8 +225,12 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    $host=$pings[$i];
    if (!$force) {
-    echo "Checking webvar: ".processTitle($host['HOSTNAME'])."\n";
+    echo date('H:i:s')." Checking webvar: ".processTitle($host['HOSTNAME'])."\n";
    }
+   if (!$host['HOSTNAME']) {
+    continue;
+   }
+
    $online_interval=$host['ONLINE_INTERVAL'];
    if (!$online_interval) {
     $online_interval=60;
@@ -277,7 +281,7 @@ function usual(&$out) {
     $tmp=explode("\n", $host['LOG']);
     $total=count($tmp);
     if ($total>50) {
-     $tmp=array_slice($tmp, -50, 50);
+     $tmp=array_slice($tmp, 0, 50);
      $host['LOG']=implode("\n", $tmp);
     }
     SQLUpdate('webvars', $host);
@@ -293,7 +297,7 @@ function usual(&$out) {
      $tmp=explode("\n", $host['LOG']);
      $total=count($tmp);
      if ($total>50) {
-      $tmp=array_slice($tmp, -50, 50);
+      $tmp=array_slice($tmp, 0, 50);
       $host['LOG']=implode("\n", $tmp);
      }
    }
@@ -328,9 +332,11 @@ function usual(&$out) {
                    $success=eval($code);
                    if ($success===false) {
                     DebMes("Error in webvar code: ".$code);
+                    registerError('webvars', "Error in webvar code: ".$code);
                    }
                   } catch(Exception $e){
                    DebMes('Error: exception '.get_class($e).', '.$e->getMessage().'.');
+                   registerError('webvars', get_class($e).', '.$e->getMessage());
                   }
 
     }

@@ -190,14 +190,7 @@ This section allows you to set up subordinate users to the control panel and sel
    </form>
    </table>
 
-   [#if ID!="" && ID!="1"#]
-   <big>User Log</big><br>&nbsp;
-   [#module name="userlog" user_id="<#ID#>"#]
-   [#endif#]
-
-   <p align=center>
-   <a href="?action=<#ACTION#>">&lt;&lt;&lt; <#LANG_BACK#></a>
-   </p>
+   <p style="text-align:center"><a href="?action=<#ACTION#>">&lt;&lt;&lt; <#LANG_BACK#></a></p>
   [#else#]
 
         [#if LDAP_ON==1#]

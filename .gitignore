@@ -10,3 +10,7 @@ reboot
 *.bak
 *.sln
 *.suo
+*.phpproj.user
+.vs/
+backup/
+debmes/

@@ -48,23 +48,29 @@ var flashing=0;
 
 // -------------------------------------------------------------
 
-function Win2Escape(AStr){
-var Result='';
-for(var i=0;i<AStr.length;i++)
-if(AStr.charAt(i)>='À' && AStr.charAt(i)<='ÿ')
-Result+=Letters[AStr.charCodeAt(i)-0x0410];
-else if(AStr.charAt(i)=='¨')
-Result+=Letters[64];
-else if(AStr.charAt(i)=='¸')
-Result+=Letters[65];
-else if(AStr.charAt(i)=='=')
-Result+='%3D';
-else if(AStr.charAt(i)=='&')
-Result+='%26';
-else
-Result+=AStr.charAt(i);
-return Result;
-}//Win2Escape
+function Win2Escape(AStr)
+{
+   var Result='';
+   var aStrCnt = AStr.length;
+
+   for(var i = 0; i < aStrCnt; i++)
+   {
+      if(AStr.charAt(i) >= 'À' && AStr.charAt(i) <= 'ÿ')
+         Result += Letters[AStr.charCodeAt(i) - 0x0410];
+      else if (AStr.charAt(i) == '¨')
+         Result += Letters[64];
+      else if (AStr.charAt(i) == '¸')
+         Result += Letters[65];
+      else if (AStr.charAt(i) == '=')
+         Result += '%3D';
+      else if (AStr.charAt(i) == '&')
+         Result += '%26';
+      else
+         Result += AStr.charAt(i);
+   }
+   
+   return Result;
+}
 
 // -------------------------------------------------------------
 
@@ -139,14 +145,18 @@ function startFlashing(block_id) {
 // -------------------------------------------------------------
 
  function getBlockDataForm(block_id, form) {
-  params='';
-  for(i=0;i<form.elements.length;i++) {
-   if (form.elements[i].type!='radio' || form.elements[i].checked) {
-    params+='&'+form.elements[i].name+'='+URLencode(form.elements[i].value);
-   }
-  }
-  //alert(params);
-  url=form.action;
+    params='';
+    var formElementsCnt = form.elements.length;
+    
+    for(i = 0; i < formElementsCnt; i++)
+    {
+       if (form.elements[i].type != 'radio' || form.elements[i].checked)
+       {
+         params += '&' + form.elements[i].name + '=' + URLencode(form.elements[i].value);
+       }
+    }
+  
+    url = form.action;
 
  layer = document.getElementById(block_id);
  old_data=layer.innerHTML;

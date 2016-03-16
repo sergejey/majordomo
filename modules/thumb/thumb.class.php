@@ -33,6 +33,10 @@ function run() {
   //}
 
 
+  if ($this->live) {
+   $out['LIVE']=$this->live;
+  }
+
   if ($this->userpassword) {
    $this->userpassword=processTitle($this->userpassword);
    $tmp=explode(':', $this->userpassword);
@@ -45,19 +49,15 @@ function run() {
    $this->username=processTitle($this->username);
    $this->password=processTitle($this->password);
 
-   $filename='thumb_'.md5($this->url).basename($this->url);
+   $filename='thumb_'.md5($this->url).basename(preg_replace('/\W/', '', $this->url));
    if (preg_match('/\.cgi$/is', $filename)) {
     $filename=str_replace('.cgi', '.jpg', $filename);
    }
 
    $this->src=ROOT.'cached/'.$filename;
 
-   $result=getURL($this->url, 0, $this->username, $this->password);
-   if ($result) {
-    SaveFile($this->src, $result);
-   } else {
-    //$this->src='';
-   }
+   /*
+   */
 
    $this->src_def=urlencode('/cached/'.$filename);
 
@@ -74,10 +74,15 @@ function run() {
 
 
 
-  if (file_exists($this->src)) {
+  if (file_exists($this->src) || $this->url) {
    //$lst=GetImageSize($this->src);
    $out['REAL_WIDTH']=$lst[0];
    $out['REAL_HEIGHT']=$lst[1];
+   $out['URL']=base64_encode($this->url);
+
+
+   $out['USERNAME']=urlencode($this->username);
+   $out['PASSWORD']=urlencode($this->password);
    $image_format=$lst[2];
 
    $out['UNIQ']=rand(1, time());

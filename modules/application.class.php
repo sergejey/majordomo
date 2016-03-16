@@ -90,26 +90,32 @@ function getParams() {
     if ($dir = @opendir(ROOT."cached/voice")) { 
        while (($file = readdir($dir)) !== false) { 
        if (preg_match('/\.mp3$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice".$file);
+        $mtime=filemtime(ROOT."cached/voice/".$file);
+        /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
          unlink(ROOT."cached/voice".$file);
         } else {
-         $files[]=array('FILENAME'=>$file, 'MTIME'=>filemtime(ROOT."cached/voice".$file));
         }
+        */
+        $files[]=array('FILENAME'=>$file, 'MTIME'=>$mtime);
        }
 
        if (preg_match('/\.wav$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice".$file);
+        $mtime=filemtime(ROOT."cached/voice/".$file);
+        /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
-         unlink(ROOT."cached/voice".$file);
+         unlink(ROOT."cached/voice/".$file);
         }
+        */
        }
 
       }
      closedir($dir); 
     } 
+
+    //print_r($files);exit;
 
     if (is_array($files)) {
      function sortFiles($a, $b) {
@@ -125,7 +131,7 @@ function getParams() {
     exit;
    }
 
-   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_TTS_GOOGLE') || !defined('SETTINGS_GROWL_ENABLE') || !defined('SETTINGS_HOOK_BEFORE_SAY')) {
+   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_GROWL_ENABLE') || !defined('SETTINGS_HOOK_BEFORE_SAY')) {
     $this->action='first_start';
    }
 
@@ -283,7 +289,7 @@ function getParams() {
     $out['MY_MEMBER']=$session->data['MY_MEMBER'];
     $tmp=SQLSelectOne("SELECT ID FROM users WHERE ID='".(int)$out['MY_MEMBER']."' AND ACTIVE_CONTEXT_ID!=0 AND TIMESTAMPDIFF(SECOND, ACTIVE_CONTEXT_UPDATED, NOW())>600");
     if ($tmp['ID']) {
-     SQLExec("UPDAE users SET ACTIVE_CONTEXT_ID=0, ACTIVE_CONTEXT_EXTERNAL=0 WHERE ID='".$tmp['ID']."'");
+     SQLExec("UPDATE users SET ACTIVE_CONTEXT_ID=0, ACTIVE_CONTEXT_EXTERNAL=0 WHERE ID='".$tmp['ID']."'");
     }
    }
 
@@ -294,6 +300,7 @@ function getParams() {
    
    $out['TODAY']=$days[date('w')].', '.date('d.m.Y');
    Define(TODAY, $out['TODAY']);
+   $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
 
    global $ajt;
    if ($ajt=='') {
@@ -312,10 +319,29 @@ function getParams() {
     $template_file=DIR_TEMPLATES."scenes.html";
    }
 
+   if ($this->ajax && $this->action) {
+    global $ajax;
+    $ajax=1;
+    if (file_exists(DIR_MODULES.$this->action)) {
+     include_once(DIR_MODULES.$this->action.'/'.$this->action.'.class.php');
+     $obj="\$object$i";
+     $code="";
+     $code.="$obj=new ".$this->action.";\n";
+     $code.=$obj."->owner=&\$this;\n";
+     $code.=$obj."->getParams();\n";
+     $code.=$obj."->ajax=1;\n";
+     $code.=$obj."->run();\n";
+     StartMeasure("module_".$this->action); 
+     eval($code);
+     endMeasure("module_".$this->action); 
 
-   $this->data=$out;
-   $p=new parser($template_file, $this->data, $this);
-   return $p->result;
+    }
+    return;
+   } else {
+    $this->data=$out;
+    $p=new parser($template_file, $this->data, $this);
+    return $p->result;
+   }
 
 
   }

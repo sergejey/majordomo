@@ -10,7 +10,7 @@
                 <h1 id="label_[#PARENT_ID#]">[#if PARENT_TITLE!=""#][#PARENT_TITLE#][#else#]MajorDoMo[#endif#]</h1>
 
                 [#if PARENT_ID!=""#]
-                <a class="back" href="[#if PARENT_PARENT_ID!="0"#]/menu/[#PARENT_PARENT_ID#][#else#]/menu[#endif#].html"><#LANG_BACK#></a>
+                <a class="back" href="[#if PARENT_PARENT_ID!="0"#]<#ROOTHTML#>menu/[#PARENT_PARENT_ID#][#else#]<#ROOTHTML#>menu[#endif#].html"><#LANG_BACK#></a>
                 [#endif#]
                 <!--#
                 <a class="button slideup" id="infoButton" href="#about">info</a>
@@ -34,7 +34,7 @@
  }
  function updateLabel[#PARENT_ID#]() {
   clearTimeout(label[#PARENT_ID#]_timer);
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
+  var url="<#ROOTHTML#>ajax/commands.html?op=get_label";
   AJAXRequest(url+'&item_id=[#PARENT_ID#]', 'updateLabel[#PARENT_ID#]_Ready', '');
   label[#PARENT_ID#]_timer=setTimeout('updateLabel[#PARENT_ID#]()', ([#PARENT_AUTO_UPDATE#]*1000));
   return false;
@@ -459,7 +459,7 @@
  function updateLabel[#ID#]() {
   clearTimeout(label[#ID#]_timer);
 
-  collectLabel([#ID#]);
+  collectLabel('[#ID#]');
   /*
   var url="<#ROOTHTML#>menu.html?ajax=1&op=get_label";
   AJAXRequest(url+'&item_id=[#ID#]', 'updateLabel[#ID#]_Ready', '');
@@ -470,7 +470,7 @@
   var url2="?ajax=1&op=get_value";
   AJAXRequest(url2+'&item_id=[#ID#]', 'updateValue[#ID#]_Ready', '');
   */
-  collectValue([#ID#]);
+  collectValue('[#ID#]');
   [#endif TYPE#]
 
   label[#ID#]_timer=setTimeout('updateLabel[#ID#]()', ([#AUTO_UPDATE#]*1000));

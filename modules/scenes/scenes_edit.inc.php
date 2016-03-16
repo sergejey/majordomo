@@ -13,6 +13,26 @@
   $table_name='scenes';
   $rec=SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
+
+  global $open;
+  if ($open!='') {
+
+   if ($open=='new') {
+    $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&view_mode2=edit_elements&element_id=&top=".$_GET['top']."&left=".$_GET['left']);
+   }
+
+   $element_id=0;
+   if (preg_match('/state_(\d+)/', $open, $m)) {
+    $state=SQLSelectOne("SELECT ID, ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
+    $element_id=(int)$state['ELEMENT_ID'];
+   } elseif (preg_match('/container_(\d+)/', $open, $m)) {
+    $element_id=(int)$m[1];
+   }
+   if ($element_id) {
+    $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&view_mode2=edit_elements&element_id=".$element_id);
+   }
+  }
+
   global $state_id;
 
 
@@ -57,6 +77,11 @@
    $elements = ($elements == null) ? array() : $elements;
    */
   }
+
+  if ($this->tab=='visual') {
+   //updating visual
+  }
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -182,6 +207,30 @@
     global $type;
     $element['TYPE']=$type;
 
+    global $smart_repeat;
+    $element['SMART_REPEAT']=(int)$smart_repeat;
+
+    global $s3d_scene;
+    $element['S3D_SCENE']=$s3d_scene;
+
+
+    global $easy_config;
+    if ($element['TYPE']=='switch' || $element['TYPE']=='informer' || $element['TYPE']=='warning') {
+     $element['EASY_CONFIG']=(int)$easy_config;
+    } else {
+     $element['EASY_CONFIG']=0;
+    }
+
+    global $linked_object;
+    $element['LINKED_OBJECT']=$linked_object;
+
+    global $linked_property;
+    $element['LINKED_PROPERTY']=$linked_property;
+
+    global $linked_method;
+    $element['LINKED_METHOD']=$linked_method;
+
+
     global $css_style;
     $element['CSS_STYLE']=$css_style;
     if (!$element['CSS_STYLE']) {
@@ -259,9 +308,12 @@
     global $state_clone;
     global $ext_url_new;
     global $homepage_id_new;
+    global $open_scene_id_new;
     global $do_on_click_new;
     global $priority_new;
     global $code_new;
+    global $s3d_object_new;
+    global $s3d_camera_new;
 
     if ($state_delete && $state_rec['ID']) {
 
@@ -271,7 +323,7 @@
      }
      SQLExec("DELETE FROM elm_states WHERE ID='".$state_rec['ID']."'");
 
-    } elseif ($state_title_new) {
+    } elseif ($state_title_new && !$element['EASY_CONFIG']) {
 
      $state_rec['ELEMENT_ID']=$element['ID'];
      $state_rec['TITLE']=$state_title_new;
@@ -298,6 +350,11 @@
      if ($do_on_click_new!='show_homepage') {
       $homepage_id_new=0;
      }
+
+     if ($do_on_click_new!='show_scene') {
+      $open_scene_id_new=0;
+     }
+
      if ($do_on_click_new!='show_url') {
       $ext_url_new='';
      }
@@ -311,6 +368,7 @@
      $state_rec['ACTION_OBJECT']=$action_object_new;
      $state_rec['ACTION_METHOD']=$action_method_new;
      $state_rec['HOMEPAGE_ID']=(int)$homepage_id_new;
+     $state_rec['OPEN_SCENE_ID']=(int)$open_scene_id_new;
      $state_rec['EXT_URL']=$ext_url_new;
 
      if ($state_rec['CONDITION_ADVANCED']) {
@@ -318,6 +376,11 @@
        if ($errors) {
         $state_rec['CONDITION_ADVANCED']='';;
        }
+     }
+
+     if ($element['TYPE']=='s3d') {
+      $state_rec['S3D_OBJECT']=trim($s3d_object_new);
+      $state_rec['S3D_CAMERA']=trim($s3d_camera_new);
      }
 
 
@@ -371,7 +434,9 @@
      $state_id=$state_rec['ID'];
 
 
-    } elseif (($element['TYPE']=='warning') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='warning') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
      global $linked_object;
      global $linked_property;
      $state_rec=array();
@@ -390,7 +455,9 @@
      $state_id=$state_rec['ID'];
 
 
-    } elseif (($element['TYPE']=='informer') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='informer') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
      global $linked_object;
      global $linked_property;
      global $state_high;
@@ -398,6 +465,20 @@
      global $state_low;
      global $state_low_value;
      global $linked_property_unit;
+
+     $wizard_data=array();
+     $wizard_data['STATE_HIGH']=(int)$state_high;
+     if ($wizard_data['STATE_HIGH']) {
+      $wizard_data['STATE_HIGH_VALUE']=(int)$state_high_value;
+     }
+     $wizard_data['STATE_LOW']=(int)$state_low;
+     if ($wizard_data['STATE_LOW']) {
+      $wizard_data['STATE_LOW_VALUE']=(int)$state_low_value;
+     }
+     $wizard_data['UNIT']=$linked_property_unit;
+
+     $element['WIZARD_DATA']=json_encode($wizard_data);
+     SQLUpdate('elements', $element);
 
 
      if ($state_low_value!='' && !is_numeric($state_low_value) && !preg_match('/^%/', $state_low_value)) {
@@ -475,8 +556,9 @@
 
 
 
-    } elseif (($element['TYPE']=='switch') && !$state_rec['ID']) {
+    } elseif (($element['TYPE']=='switch') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
 
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
      global $linked_object;
 
      if (!$linked_object) {
@@ -565,6 +647,15 @@
     foreach ($element as $k=>$v) {
      $out['ELEMENT_'.$k]=htmlspecialchars($v);
     }
+    if ($element['CSS_STYLE']!='default') {
+     $out['ELEMENT_CSS_IMAGE']=$this->getCSSImage($element['TYPE'], $element['CSS_STYLE']);
+    }
+    if ($element['WIZARD_DATA']!='') {
+     $wizard_data=json_decode($element['WIZARD_DATA'], TRUE);
+     foreach($wizard_data as $k=>$v) {
+      $out['WIZARD_'.$k]=$v;
+     }
+    }
    }
 
   }
@@ -583,18 +674,22 @@
    $styles=$this->getStyles($element['TYPE']);
    if (is_array($styles)) {
     $out['STYLES']=$styles;
-    /*
-    foreach($styles as $s=>$v) {
-     $out['STYLES'][]=$v;
-    }
-    */
    }
+
+   $styles=$this->getStyles('common');
+   if (is_array($styles)) {
+    $out['COMMON_STYLES']=$styles;
+   }
+
+  } else {
+   $out['ELEMENT_TOP']=$_GET['top'];
+   $out['ELEMENT_LEFT']=$_GET['left'];
   }
 
-
   if ($this->tab=='elements') {
-   $out['HOMEPAGES']=SQLSelect("SELECT * FROM layouts ORDER BY TITLE");
-   $out['SCRIPTS']=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
+   $out['OTHER_SCENES']=SQLSelect("SELECT ID, TITLE FROM scenes ORDER BY PRIORITY DESC, TITLE");
+   $out['HOMEPAGES']=SQLSelect("SELECT ID, TITLE FROM layouts ORDER BY TITLE");
+   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
    $menu_items=SQLSelect("SELECT ID, TITLE, PARENT_ID FROM commands WHERE EXT_ID=0 ORDER BY PARENT_ID, TITLE");
    $titles=array();
    foreach($menu_items as $k=>$v) {
@@ -609,21 +704,81 @@
    $out['MENU_ITEMS']=$menu_items;
    $out['STATES']=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".$element['ID']."' ORDER BY elm_states.PRIORITY DESC");
    $out['STATE_ID']=$state_id;
+
+   if ($element['TYPE']=='s3d') {
+    if (file_exists(ROOT.$element['S3D_SCENE'])) {
+     $scene_text=LoadFile(ROOT.$element['S3D_SCENE']);
+     $scene_data=json_decode($scene_text, true);
+     if (is_array($scene_data['object']['children'])) {
+        function processObjectsTree($objects, &$result) {
+         $total=count($objects);
+         for($i=0;$i<$total;$i++) {
+          if ($objects[$i]['name']) {
+           $result[]=array('TITLE'=>$objects[$i]['name'], 'TYPE'=>$objects[$i]['type']);
+          } else {
+           $result[]=array('TITLE'=>$objects[$i]['uuid'], 'TYPE'=>$objects[$i]['type']);
+          }
+          if (is_array($objects[$i]['children'])) {
+           processObjectsTree($objects[$i]['children'], $result);
+          }
+         }
+        }
+        $res=array();
+        processObjectsTree($scene_data['object']['children'], $res);
+        $out['S3D_OBJECTS']=$res;
+        $out['S3D_CAMERAS']=array();
+        foreach($res as $k=>$v) {
+         if (is_integer(strpos(strtolower($v['TYPE']), 'camera'))) {
+          $out['S3D_CAMERAS'][]=$v;
+         }
+        }
+
+     }
+    }
+   }
+
   }
 
   //$elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
   $elements=$this->getElements("SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0");
+
+
   if (count($elements)) {
+  /*
+   $total=count($elements);
+   for($i=0;$i<$total;$i++) {
+     if ($elements[$i]['CSS_STYLE']!='default' && $elements[$i]['CSS_STYLE']!='') {
+      $elements[$i]['CSS_IMAGE']=$this->getCSSImage($elements[$i]['TYPE'], $elements[$i]['CSS_STYLE']);
+     }
+   }
+   */
    $out['ELEMENTS']=$elements;
   }
 
+  if ($element['TYPE']=='container') {
+   $sub_elements=SQLSelect("SELECT ID, TITLE FROM elements WHERE CONTAINER_ID=".(int)$element['ID']." ORDER BY PRIORITY DESC, TITLE");
+  } elseif ($element['ID']) {
+   $sub_elements=SQLSelect("SELECT ID, TITLE FROM elements WHERE CONTAINER_ID=".(int)$element['CONTAINER_ID']." AND SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
+  }
+  if ($sub_elements[0]['ID']) {
+   $out['SUB_ELEMENTS']=$sub_elements;
+  }
+
+
 
   $containers=SQLSelect("SELECT `ID`, `TITLE` FROM elements WHERE SCENE_ID='".$rec['ID']."' AND TYPE='container' ORDER BY PRIORITY DESC, TITLE");
+  if ($element['CONTAINER_ID']) {
+   $total=count($containers);
+   for($i=0;$i<$total;$i++) {
+    if ($containers[$i]['ID']==$element['CONTAINER_ID']) {
+     $out['CURRENT_CONTAINER_TITLE']=$containers[$i]['TITLE'];
+    }
+   }
+  }
+
+
   $out['CONTAINERS']=$containers;
 
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
 
 
-
-
-?>

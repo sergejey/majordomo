@@ -8,10 +8,11 @@
         <meta name="description" content="">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
+
         <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
-        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.fancybox.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
 
 
@@ -19,7 +20,7 @@
 
         <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
         <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
@@ -205,35 +206,46 @@ jQuery.fn.center = function () {
 [#if PRINT!="1"#]
 <!--# top  #-->
 
-<nav class="navbar navbar-default navbar-center" role="navigation">
-        <a class="navbar-brand" href="/" style="padding:8px"><img src="<#ROOTHTML#>img/logo_small.png" border="0" align="absmiddle"> MajorDoMo // <span><#LANG_CONTROL_PANEL#></span></a>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-                 <ul class="nav navbar-nav navbar-right">
-                                 <li>
-                                                <a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a>
-                                        </li>
-                                        <li>
-                                                <a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a>
-                                        </li>
-                                        <li>
-                                                <a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a>
-                                        </li>
-                                        <li>
-                                                <a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a>
-                                        </li>
-                                        <li>
-                                                <a href="#" onClick='$("#console").toggle();return false;'><i class="glyphicon glyphicon-flash"></i> Console</a>
-                                        </li>
-                                        <li>
-                                                <a href="<#LANG_WIKI_URL#>" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
-                                        </li>
-                                        <li>
-                                                <a href="?md=control_access&mode=logoff"><i class="glyphicon glyphicon-log-out"></i> <#LANG_LOGOFF#></a>
-                                        </li>
-                </ul>
-        </div>
-</nav>
+<!--# top  #-->
+<div class="container-fluid">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="z-index:1">
+   <div class="navbar-header">
+    <button type=button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    </button>
+  <a class="navbar-brand" href="/" style="padding:8px"><img src="<#ROOTHTML#>img/logo_small.png" border="0" align="absmiddle"> MajorDoMo </a>
+  </div>
 
+  <div class="collapse navbar-collapse" id="responsive-menu">
+    <ul class="nav navbar-nav navbar-right" >
+      <li>
+        <a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a>
+      </li>
+      <li>
+        <a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a>
+      </li>
+      <li>
+        <a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a>
+      </li>
+      <li>
+        <a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a>
+      </li>
+      <li>
+        <a href="#" onClick='$("#console").toggle();return false;'><i class="glyphicon glyphicon-flash"></i> Console</a>
+      </li>
+      <li>
+        <a href="<#LANG_WIKI_URL#>" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
+      </li>
+      <li>
+        <a href="?md=control_access&mode=logoff"><i class="glyphicon glyphicon-log-out"></i> <#LANG_LOGOFF#></a>
+      </li>
+   </ul>
+  </div>
+</nav>
+</div>
+<br><br><br>
 <!--# .top  #-->
 <div id='console' style='display:none'>
 <script language="javascript">
@@ -267,6 +279,23 @@ jQuery.fn.center = function () {
 
 <ul class="breadcrumb">
    <li>
+<script language="javascript">
+ function leftPanelToggle() {
+  $('#left_block').toggle();
+  if ( $("#left_block").is(":visible") ) {
+   $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-contract-icon.png");
+   setCookie('adminLeftPanel', '');
+  } else { 
+   $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-expand-icon.png");
+   setCookie('adminLeftPanel', 'off');
+  }
+  return false;
+ }
+</script>
+
+
+<a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png" border="0"></a>
+
     <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>
     </li>
     [#if ACTION!=""#]
@@ -286,7 +315,8 @@ jQuery.fn.center = function () {
     <tr>
         [#if PRINT!="1"#]
         <td class="well sidebar-left" valign="top" id="left_block"><!--left_main-->
-            
+
+           
 <form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-search"> </i></span>
 <input type="text" class="form-control" name="filter_modules" id="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
 
@@ -346,6 +376,14 @@ jQuery.fn.center = function () {
             <!--[/menu]-->
 
             <!--/left_main-->
+
+  <script language="javascript">
+  var vl=getCookie('adminLeftPanel');
+  if (vl=='off') {
+   $('#left_block').hide();
+  }
+  </script>
+
         </td>
         [#endif PRINT#]
 
@@ -379,5 +417,27 @@ jQuery.fn.center = function () {
 [#endif AUTHORIZED#]
 <br><br>
 </div>
+
+<script language="javascript">
+ $(document).ready(function() {
+
+
+        $(".wiki_hint").fancybox({
+                maxWidth        : 800,
+                maxHeight       : 600,
+                fitToView       : false,
+                width           : '70%',
+                height          : '70%',
+                autoSize        : false,
+                closeClick      : false,
+                openEffect      : 'none',
+                closeEffect     : 'none'
+        });
+
+
+        
+});
+</script>
+
 </body>
 </html>

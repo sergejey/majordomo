@@ -44,12 +44,12 @@
 
   <table border="0" align="right">
    <tr>
-    <td valign="top" nowrap>[ <a href="<#ROOTHTML#>admin.php"><#LANG_CONTROL_PANEL#></a> ]</td>
+    <td nowrap><a href="<#ROOTHTML#>admin.php" class="btn btn-default"><#LANG_CONTROL_PANEL#></a></td>
   <form action="<#ROOTHTML#>" method="get" name="frmSettings">
   [#if HIDE_TERMINALS!="1"#]
   <td valign="top" nowrap>
    <#LANG_TERMINAL#>:
-   <select name="terminal" onChange="document.frmSettings.submit();">
+   <select name="terminal" onChange="document.frmSettings.submit();"  class="form-control input-sm">
     <option value=""><#LANG_SELECT#>
     [#begin TERMINALS#]
     <option value="[#NAME#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]
@@ -72,13 +72,14 @@
   #-->
   </form>
    </tr>
+   <!--#
    <tr>
     <td valign="top" colspan="3" align="right" nowrap>
     <a href="<#LANG_WIKI_URL#>" target=_blank>MajorDoMo Project</a>
-    |
     <a href="<#ROOTHTML#>popup/xray.html" target=_blank>X-Ray</a>
     </td>
    </tr>
+   #-->
   </table>
   </td>
   <td valign="top">

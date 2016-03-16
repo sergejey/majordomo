@@ -45,9 +45,10 @@ $(function () {
 <tr>
  <td align="center" width="100"><input type="checkbox" name="selected[]" value="[#ID#]"></td>
  <td>
+   [#if CSS_IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#CSS_IMAGE#]" border="0">[#endif#]
    [#if ELEMENTS#]
    <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]"> + </a>[#endif#]
-   [#TITLE#]
+   <a href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=edit_elements&element_id=[#ID#]">[#TITLE#]</a>
  </td>
  <td width="200">
   [#TYPE#]
@@ -77,6 +78,7 @@ $(function () {
 [#end ELEMENTS#]
 </table>
 <input type="submit" name="submit" value="<#LANG_EXPORT#>" class="btn btn-default">
+<#LANG_HCB#>scene_export_elements<#LANG_HCE#>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_elements">
 <input type="hidden" name="tab" value="<#TAB#>">
@@ -110,6 +112,7 @@ $(function () {
 <form action="?" method="post" name="frmList_elements" style="padding:0px" enctype="multipart/form-data">
 <input type="file" name="file"><br/>
 <input type="submit" name="submit" value="<#LANG_IMPORT#>" class="btn btn-default">
+<#LANG_HCB#>scene_import_elements<#LANG_HCE#>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="import_elements">
 <input type="hidden" name="tab" value="<#TAB#>">

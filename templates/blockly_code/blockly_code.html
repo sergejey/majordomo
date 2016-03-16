@@ -1,3 +1,4 @@
+[#if TYPE=="php"#]
 <script language="javascript">
  function [#CODE_FIELD#]_editBlocklyUpdated() {
   //var blockly=window.open('<#ROOTHTML#>blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','width=100%,height=100%');
@@ -16,10 +17,12 @@
 
 </script>
 
+
 <#LANG_CODE_TYPE#>:<br>
+
 <div>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE!="1"#] checked[#endif#]> PHP
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly
+ <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE!="1"#] checked[#endif#]> PHP <#LANG_HCB#>codePhp<#LANG_HCE#>
+ <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
 </div>
 
  <script language="javascript">
@@ -37,7 +40,7 @@
   }
   );
  </script>
-
+[#endif TYPE#]
 
 [#if CODE_TYPE="1"#]
 <script language="javascript" type="text/javascript">
@@ -50,6 +53,8 @@ $(function() {
 <link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/lib/codemirror.css">
 <link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.css">
 <link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.css">
+
 <script src="<#ROOTHTML#>js/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/mode/xml/xml.js"></script>
@@ -57,37 +62,32 @@ $(function() {
 <script src="<#ROOTHTML#>js/codemirror/mode/css/css.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/mode/clike/clike.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/mode/php/php.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/foldcode.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/brace-fold.js"></script>
 <script src="<#ROOTHTML#>js/codemirror/addon/fold/comment-fold.js"></script>
-<script src="php.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.js"></script>
+<script src="<#ROOTHTML#>js/codemirror/addon/edit/closebrackets.js"></script>
 
 <script language="javascript">
-var myTextArea;
+var myTextArea[#CODE_FIELD#];
 $(document).ready(function(){
-/*
- myTextArea=document.getElementById('[#CODE_FIELD#]');
- var myCodeMirror = CodeMirror(function(elt) {
- myTextArea.parentNode.replaceChild(elt, myTextArea);
- }, {
- value: myTextArea.value,
+var myTextArea[#CODE_FIELD#]=document.getElementById('[#CODE_FIELD#]');
+var editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
+ value: myTextArea[#CODE_FIELD#].value,
  lineNumbers: true,
         matchBrackets: true,
+        [#if TYPE=="php"#]
         mode: "text/x-php",
-        indentUnit: 1,
-        indentWithTabs: false
- });
- */
-var myTextArea=document.getElementById('[#CODE_FIELD#]');
-var editor = CodeMirror.fromTextArea(myTextArea, {
- value: myTextArea.value,
- lineNumbers: true,
-        matchBrackets: true,
-        mode: "text/x-php",
+        [#else TYPE#]
+        mode: "xml",
+        htmlMode: true,
+        [#endif TYPE#]
         indentUnit: 1,
         indentWithTabs: false,
+        autoCloseBrackets: true,
         foldGutter: true,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       extraKeys: {
@@ -98,9 +98,24 @@ var editor = CodeMirror.fromTextArea(myTextArea, {
         "Esc": function(cm) {
           if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
         },
+        "Ctrl-Space": "autocomplete",
         "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
       }
  });
+
+/*
+CodeMirror.hint.javascript = function(cm) {
+  var inner = orig(cm) || {from: cm.getCursor(), to: cm.getCursor(), list: []};
+  inner.list.push("bozo");
+  return inner.
+};
+*/
+/*
+editor.on('keyup', function(){
+    CodeMirror.commands.autocomplete(editor);
+});
+*/
+
 
 /*
      editor.operation(function() {
@@ -125,7 +140,7 @@ editAreaLoader.init({
 #-->
 [#endif#]
 
-
+[#if TYPE=="php"#]
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
 [ <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();"><#LANG_EDIT#></a>
 <!--#
@@ -134,3 +149,4 @@ editAreaLoader.init({
 ]
 <textarea name="xml" id="xml_code" rows="5" cols="60" class="span10" style="display:none">[#XML#]</textarea>
 </div>
+[#endif TYPE#]

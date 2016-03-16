@@ -13,7 +13,6 @@
 .type_mode span {
  font-size:12px;
  display: inline-block;
- width:64px;
  height:34px;
  vertical-align: middle;
  padding-top:35px;
@@ -29,6 +28,27 @@
 {
  background-color:rgba(249,229,91,0.5);
  border:1px solid rgba(255,255,0,0.5);;
+}
+
+.type_mode.state_active
+{
+ color:white;
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
+}
+
+.type_mode.state_mid
+{
+ color:white;
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
+}
+
+.type_mode.state_na
+{
+ color:white;
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
 }
 
 [#begin STYLES#]
@@ -53,13 +73,36 @@
   background-position: center 4px;
 }
 [#endif#]
-[#if HAS_SLEEP!=""#]
+
+[#if HAS_MID!=""#]
+.type_mode.state_mid.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_MID#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]
+
+[#if HAS_NA!=""#]
+.type_mode.state_na.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_NA#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]
+
+/*[#if HAS_SLEEP!=""#]
 .type_mode.state_sleep.style_[#TITLE#] {
   background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_SLEEP#]);
   background-repeat: no-repeat;
   background-position: center 4px;
 }
 [#endif#]
-
+[#if HAS_ACTIVE!=""#]
+.type_mode.state_active.style_[#TITLE#] {
+  background-image: url(<#ROOTHTML#>cms/scenes/styles/mode/[#HAS_ACTIVE#]);
+  background-repeat: no-repeat;
+  background-position: center 4px;
+}
+[#endif#]*/
 
 [#end STYLES#]

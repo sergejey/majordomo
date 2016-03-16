@@ -19,15 +19,34 @@
  var valueChangedFlag = {};
  var latestRequest=0;
  var requestTimer=0;
- var requestDelay=2;
+ var requestDelay=3; // default delay for auto update
  var requestProcessing=0;
  var labelsCollected='';
  var valuesCollected='';
+ var first_run=1;
 
  var labelsCollected_sent='';
  var valuesCollected_sent='';
 
  var requestSent = Math.round(+new Date()/1000);
+
+
+        $.subscribe('wsConnected', function (_) {
+         var payload;
+         payload = new Object();
+         payload.action = 'Subscribe';
+         payload.data = new Object();
+         payload.data.TYPE='commands';
+         payload.data.PARENT_ID='<#PARENT_ID#>';
+         wsSocket.send(JSON.stringify(payload));
+        });
+
+        $.subscribe('wsData', function (_, response) {
+          if (response.action=='commands') {
+           sendRequestForUpdates_processed(0, response.data);
+          }
+        });
+
 
  function upateDebugField() {
   if (!$('#debugField').length) return;
@@ -36,17 +55,21 @@
   $('#debugField').html('Labels: '+labelsCollected+' (last sent: '+labelsCollected_sent+')<br/>Values: '+valuesCollected+' (last sent: '+valuesCollected_sent+')<br/>Passed: '+passed);
  }
 
- function sendRequestForUpdates_processed(id, data) {
-  var obj=jQuery.parseJSON(data);
-  if (obj.LABELS.length>0) {
+ function sendRequestForUpdates_processed(id, data)
+ {
+   var obj = jQuery.parseJSON(data);
+   var objLabelsCnt  = obj.LABELS.length;
+   var objValuesCnt = obj.VALUES.length;
+
+   if (objLabelsCnt > 0) {
     var labels=obj.LABELS;
-    for(var i=0;i<labels.length;i++) {
+    for (var i = 0; i < objLabelsCnt; i++) {
      window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
     }
   }
-  if (obj.VALUES.length>0) {
+   if (objValuesCnt > 0) {
     var values=obj.VALUES;
-    for(var i=0;i<values.length;i++) {
+    for (var i = 0; i < objValuesCnt; i++) {
      //alert("updateValue"+values[i].ID+"_Ready ("+i+" of "+values.length+")");
      window["updateValue"+values[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
     }
@@ -61,14 +84,25 @@
   }
   requestSent = Math.round(+new Date()/1000);
 
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
-  AJAXRequest(url, 'sendRequestForUpdates_processed', '');
+  if (startedWebSockets==1) {
+   labelsCollected='';
+   valuesCollected='';
+   if (first_run!=1) return;
+  }
+
+  first_run=0;
+  if (labelsCollected!='' || valuesCollected!='') {
+   var url="<#ROOTHTML#>ajax/commands.html?op=get_details&labels="+encodeURIComponent(labelsCollected)+"&values="+encodeURIComponent(valuesCollected);
+   AJAXRequest(url, 'sendRequestForUpdates_processed', '');
+  }
 
   labelsCollected_sent=labelsCollected;
   labelsCollected='';
   valuesCollected_sent=valuesCollected;
   valuesCollected='';
   upateDebugField();
+
+
  }
 
  function collectLabel(item_id) {
@@ -158,7 +192,7 @@
  function itemValueChanged(id, new_value) {
   //alert(id+': '+new_value);
   valuesCollected=valuesCollected.replace(','+id+',', ',');
-  var url="<#ROOTHTML#>menu.html?ajax=1&op=value_changed";
+  var url="<#ROOTHTML#>ajax/commands.html?op=value_changed";
   if ($('#processing_'+id).length) {
    $('#processing_'+id).html(' - ...');
   }

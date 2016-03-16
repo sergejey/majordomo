@@ -124,6 +124,12 @@ function admin(&$out) {
   $this->code_field='code';
  }
 
+ if ($this->type) {
+  $out['TYPE']=$this->type;
+ } else {
+  $out['TYPE']='php';
+ }
+
  $out['CODE_FIELD']=$this->code_field;
 
  $rec=SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME LIKE '".DBSafe($this->system_name)."'");
@@ -134,7 +140,7 @@ function admin(&$out) {
   $out['XML']=$this->owner->xml;
  }
 
- if ($_SERVER['REQUEST_METHOD']=='POST') {
+ if ($_SERVER['REQUEST_METHOD']=='POST' && $out['TYPE']=='php') {
   global $xml;
   global $code;
 

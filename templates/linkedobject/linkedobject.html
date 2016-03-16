@@ -8,6 +8,7 @@
 <nobr>
 <select name="[#OBJECT_FIELD#]" id='linked_object_copy<#UNIQ#>' style="width:<#WIDTH#>px" onChange="linked_object_chaged<#UNIQ#>();">
  <option value="">
+ <option value="[add]">[ <#LANG_ADD#> ]
  [#begin OBJECTS#]
  <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#]- [#DESCRIPTION#][#endif#]
  [#end OBJECTS#]
@@ -66,30 +67,99 @@
 
  function linked_object_chaged<#UNIQ#>() {
   selected_object<#UNIQ#>=$("#linked_object_copy<#UNIQ#>").val();
+
+  if (selected_object<#UNIQ#>=='[add]') {
+   var window_url='/admin.php?&md=panel&action=classes&print=1';
+          var jWindowObjElement = $.jWindow({ 
+           id: 'windowEdit<#UNIQ#>', 
+           title: 'Settings', 
+           width: 1000, 
+           height: 700, 
+           type: 'iframe', 
+           marginTop:0, 
+           marginBottom:0, 
+           marginLeft:0, 
+           marginRight:0, 
+           url: window_url,
+           onClose:function () {
+            //window.location.href=window.location.href;
+            var url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=objects";
+                  $.get( url, function( data )
+                  {
+                      var obj=jQuery.parseJSON(data);
+                      $('#linked_object_copy<#UNIQ#>').empty();
+                      var objPropertyCnt = obj.OBJECTS.length;
+                      if (objPropertyCnt > 0)
+                      {
+                         var optionsAsString = "<option value=''></option><option value='[add]'>[ <#LANG_ADD#> ]</option>";
+                         $('#linked_object_copy<#UNIQ#>' ).append( optionsAsString );
+                         optionsAsString='';
+
+                         for(var i = 0; i < objPropertyCnt; i++)
+                         {
+                            if (obj.OBJECTS[i].DESCRIPTION)
+                            {
+                               optionsAsString += "<option value='" + obj.OBJECTS[i].TITLE + "'>" + obj.OBJECTS[i].TITLE + ' - ' + obj.OBJECTS[i].DESCRIPTION + "</option>";
+                            }
+                            else
+                            {
+                               optionsAsString += "<option value='" + obj.OBJECTS[i].TITLE + "'>" + obj.OBJECTS[i].TITLE + "</option>";
+                            }
+                         }
+                   
+                         $('#linked_object_copy<#UNIQ#>' ).append( optionsAsString );
+   
+                         if (obj.LATEST_OBJECT!='')
+                         {
+                            $('#linked_object_copy<#UNIQ#>').val(obj.LATEST_OBJECT).trigger("change");;
+                         }
+                      }
+                  }); 
+
+           },
+           modal: true });
+          jWindowObjElement.show();
+          jWindowObjElement.update();
+   return;
+  }
+
   $('#linked_object_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
   $('#linked_object_link<#UNIQ#>').show();
   [#if PROPERTY_FIELD!=""#]
   if (skip_property<#UNIQ#>!=1) {
   url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=properties";
   url+='&object='+selected_object<#UNIQ#>;
-  $.get( url, function( data ) {
-  var obj=jQuery.parseJSON(data);
-  $('#linked_property_copy<#UNIQ#>').empty();
-  if (obj.PROPERTIES.length>0) {
-   var optionsAsString = "<option value=''>";
-   for(var i = 0; i < obj.PROPERTIES.length; i++) {
-    if (obj.PROPERTIES[i].DESCRIPTION) {
-     optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + ' - ' + obj.PROPERTIES[i].DESCRIPTION + "</option>";
-    } else {
-     optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + "</option>";
-    }
-   }
-   $('#linked_property_copy<#UNIQ#>' ).append( optionsAsString );
-   if (selected_property<#UNIQ#>!='') {
-    $('#linked_property_copy<#UNIQ#>').val(selected_property<#UNIQ#>);
-    linked_property_chaged<#UNIQ#>();
-   }
-  }
+  
+  $.get( url, function( data )
+  {
+      var obj=jQuery.parseJSON(data);
+      $('#linked_property_copy<#UNIQ#>').empty();
+      var objPropertyCnt = obj.PROPERTIES.length;
+
+      if (objPropertyCnt > 0)
+      {
+         var optionsAsString = "<option value=''>";
+   
+         for(var i = 0; i < objPropertyCnt; i++)
+         {
+            if (obj.PROPERTIES[i].DESCRIPTION)
+            {
+               optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + ' - ' + obj.PROPERTIES[i].DESCRIPTION + "</option>";
+            }
+            else
+            {
+               optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + "</option>";
+            }
+         }
+   
+         $('#linked_property_copy<#UNIQ#>' ).append( optionsAsString );
+   
+         if (selected_property<#UNIQ#>!='')
+         {
+            $('#linked_property_copy<#UNIQ#>').val(selected_property<#UNIQ#>);
+            linked_property_chaged<#UNIQ#>();
+         }
+      }
   });
   }
   [#endif#]
@@ -101,9 +171,11 @@
   $.get( url, function( data ) {
   var obj=jQuery.parseJSON(data);
   $('#linked_method_copy<#UNIQ#>').empty();
-  if (obj.METHODS.length>0) {
-   var optionsAsString = "<option value=''>";
-   for(var i = 0; i < obj.METHODS.length; i++) {
+  var objMethodsCnt = obj.METHODS.length;
+  if (objMethodsCnt > 0) {
+     var optionsAsString = "<option value=''>";
+
+     for(var i = 0; i < objMethodsCnt; i++) {
     if (obj.METHODS[i].DESCRIPTION) {
      optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + ' - ' + obj.METHODS[i].DESCRIPTION + "</option>";
     } else {

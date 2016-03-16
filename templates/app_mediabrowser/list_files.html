@@ -1,27 +1,16 @@
 <!--#
  @version 0.3 (auto-set)
 #-->
-<table width="100%" border="0">
+<table class="table table-bordered">
 [#begin FILES#]
 <tr>
 
- <td class=plain valign=top align="right" nowrap>
-  <!--#
-  [ <a href="#" onClick="return playThis('<#CURRENT_DIR#>[#TITLE#]', 0, 0);">Play</a> ]
-  #-->
-  <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
-  <!--#
-  <a href="#" onClick="return playThis('<#MEDIA_PATH#><#CURRENT_DIR#>[#TITLE#]', 0, 0);">Now</a>
-  #-->
-  <!--#
-  [ <a href="?enq=<#CURRENT_DIR#>[#TITLE#]">+</a> ]
-  #-->
- </td>
  <td class=plain>
+ <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play" align="abs_middle"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
  <!--#
  <nobr><a href="[#PATH#]" title="[#TITLE#]"></b></a>
  #-->
- <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play">[#TITLE_SHORT#]</a>
+ <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play" class="btn">[#TITLE_SHORT#]</a>
  </td>
 
  <!--#

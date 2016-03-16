@@ -1,10 +1,13 @@
+<ul class="breadcrumb">
+[#if ELEMENT_CONTAINER_ID!="0" && ELEMENT_CONTAINER_ID!=""#]
+<li><a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ELEMENT_CONTAINER_ID#]">[#CURRENT_CONTAINER_TITLE#]</a></li>
+[#endif#]
+<li>[#ELEMENT_TITLE#]</li>
+</ul>
 
 <!-- Table 'elements' edit -->
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <!-- TITLE (varchar) -->
-
-
-<h3>Element details</h3>
 [#if OK#]
 <div class="alert alert-success">
 <#LANG_DATA_SAVED#>
@@ -23,14 +26,22 @@
 
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#> (*)</label>
+        <label class="col-lg-4 control-label"><#LANG_TITLE#> (*)<#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="controls">
                 <input type="text" class="form-control" name="title" value="[#ELEMENT_TITLE#]" required>
         </div>
 </div>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_SCENE#></label>
+        <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
+        <div class="controls">
+                <input class="form-control" type="text" name="priority" value="[#ELEMENT_PRIORITY#]">
+        </div>
+</div>
+
+
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_SCENE#><#LANG_HCB#>element_scene<#LANG_HCE#></label>
         <div class="controls">
                 <select class="form-control" name="scene_id" required>
                         <option value="" disabled selected>select
@@ -45,25 +56,48 @@
 <!-- TYPE (select) -->
 
 <script language="javascript">
- function element_type_switched(new_type) {
-  [#if ELEMENT_ID==""#]
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode') {
+ function element_type_switched() {
+
+   [#if ELEMENT_ID=""#]
+   var new_type=$('select[name=type]').val();
+   [#else#]
+   var new_type=$('input[name=type]').val();
+   [#endif#]
+
+   var easy_config=$('input:radio[name=easy_config]:checked').val();
+
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning') {
+    $('#advanced_config_block').show();
+    if (easy_config==1) {
+     $('.advanced_options').hide();
+    } else {
+     $('.advanced_options').show();
+    }
+
+   } else {
+    $('#advanced_config_block').hide();
+    $('.advanced_options').show();
+   }
+
+   if (easy_config==1 && (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode')) {
     $('#linked_object_field').show();
    } else {
     $('#linked_object_field').hide();
    }
-   if (new_type=='informer' || new_type=='warning') {
+
+   if (easy_config==1 && (new_type=='informer' || new_type=='warning')) {
     $('#linked_property_field').show();
    } else {
     $('#linked_property_field').hide();
    }
-   if (new_type=='button') {
+
+   if (easy_config==1 && (new_type=='button')) {
     $('#linked_method_field').show();
    } else {
     $('#linked_method_field').hide();
    }
 
-   if (new_type=='informer') {
+   if (easy_config==1 && (new_type=='informer')) {
     $('#informer_states').show();
     $('#linked_property_unit').show();
    } else {
@@ -71,26 +105,26 @@
     $('#linked_property_unit').hide();
    }
 
-  [#endif#]
  }
 </script>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_TYPE#></label>
+        <label class="col-lg-4 control-label"><#LANG_TYPE#><#LANG_HCB#>element_type<#LANG_HCE#></label>
         <div class="controls">
         [#if ELEMENT_ID=""#]
-                <select class="form-control" name="type" required  onChange="element_type_switched(this.value);">
+                <select class="form-control" name="type" required  onChange="element_type_switched();">
                         <option value="" disabled selected>select
+                        <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
+                        <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
+                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]><#LANG_WARNING#>
                         <option value="img"[#if ELEMENT_TYPE=="img"#] selected[#endif#]><#LANG_IMAGE#>
                         <option value="html"[#if ELEMENT_TYPE=="html"#] selected[#endif#]>HTML
                         <option value="container"[#if ELEMENT_TYPE=="container"#] selected[#endif#]><#LANG_CONTAINER#>
-                        <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
-                        <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
-                        <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]><#LANG_WARNING#>
                         <option value="mode"[#if ELEMENT_TYPE=="mode"#] selected[#endif#]><#LANG_MODE_SWITCH#>
                         <option value="button"[#if ELEMENT_TYPE=="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
                         <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
+                        <option value="s3d"[#if ELEMENT_TYPE=="s3d"#] selected[#endif#]>3D scene
                 </select>
         [#else ELEMENT_ID#]
         [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
@@ -103,49 +137,61 @@
         [#if ELEMENT_TYPE=="button"#]<#LANG_BUTTON#>[#endif#]
         [#if ELEMENT_TYPE=="nav"#]<#LANG_NAV_LINK#>[#endif#]
         [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
+        [#if ELEMENT_TYPE=="s3d"#]3D scene[#endif#]
         <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
         [#endif ELEMENT_ID#]
         </div>
 </div>
 
-[#if ELEMENT_ID=""#]
-<div class="form-group" id="linked_object_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#></label>
+<div class="form-group" id='advanced_config_block' style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_ADVANCED_CONFIG#><#LANG_HCB#>element_advanced_config<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_object" id="linked_object" class="form-control">
+                <input type="radio" name="easy_config" value="0"[#if ELEMENT_EASY_CONFIG!="1" && ELEMENT_TYPE!=""#]checked[#endif#] onClick="element_type_switched();"> <#LANG_YES#>
+                <br>
+                <input type="radio" name="easy_config" value="1"[#if ELEMENT_EASY_CONFIG=="1" || ELEMENT_TYPE==""#]checked[#endif#] onClick="element_type_switched();"> <#LANG_NO#>
+        </div>
+</div>
+[#endif ELEMENT_TYPE#]
+
+
+[#if ELEMENT_ID="" || ELEMENT_EASY_CONFIG="1"#]
+<div class="form-group" id="linked_object_field" style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
+        <div class="controls">
+         <input type="text" name="linked_object" value="[#ELEMENT_LINKED_OBJECT#]" id="linked_object" class="form-control">
         </div>
 </div>
 <div class="form-group" id="linked_property_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#></label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_property" id="linked_property" class="form-control">
+         <input type="text" name="linked_property" value="[#ELEMENT_LINKED_PROPERTY#]" id="linked_property" class="form-control">
         </div>
 </div>
 
 <div class="form-group" id="linked_method_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_METHOD#></label>
+        <label class="col-lg-4 control-label"><#LANG_METHOD#><#LANG_HCB#>linked_method<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_method" id="linked_method" class="form-control">
+         <input type="text" name="linked_method" value="[#ELEMENT_LINKED_METHOD#]" id="linked_method" class="form-control">
         </div>
 </div>
 
 [#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="linked_method"#]
 
 <div class="form-group" id="informer_states" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_ADDITIONAL_STATES#></label>
+        <label class="col-lg-4 control-label"><#LANG_ADDITIONAL_STATES#><#LANG_HCB#>element_additional_states<#LANG_HCE#></label>
         <div class="controls">
-         <input type="checkbox" name="state_high" value="1"> <#LANG_HIGH_ABOVE#>
-         <input type="text" name="state_high_value" value="30"><br/>
-         <input type="checkbox" name="state_low" value="1"> <#LANG_LOW_BELOW#>
-         <input type="text" name="state_low_value" value="15">
+         <input type="checkbox" name="state_high" value="1"[#if WIZARD_STATE_HIGH="1"#] checked[#endif#]> <#LANG_HIGH_ABOVE#>
+         <input type="text" name="state_high_value" value="[#if WIZARD_STATE_HIGH_VALUE!=""#][#WIZARD_STATE_HIGH_VALUE#][#else#]30[#endif#]"><br/>
+         <input type="checkbox" name="state_low" value="1"[#if WIZARD_STATE_LOW="1"#] checked[#endif#]> <#LANG_LOW_BELOW#>
+         <input type="text" name="state_low_value" value="[#if WIZARD_STATE_LOW_VALUE!=""#][#WIZARD_STATE_LOW_VALUE#][#else#]15[#endif#]">
          <#LANG_ADDITIONAL_STATES_NOTE#>
         </div>
 </div>
 
 <div class="form-group" id="linked_property_unit" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_UNIT#></label>
+        <label class="col-lg-4 control-label"><#LANG_UNIT#><#LANG_HCB#>element_unit<#LANG_HCE#></label>
         <div class="controls">
-         <input type="text" name="linked_property_unit" class="form-control">
+         <input type="text" name="linked_property_unit" value="[#WIZARD_UNIT#]" class="form-control">
         </div>
 </div>
 
@@ -156,17 +202,29 @@
 <!--#
 [#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="navgo" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
 #-->
-[#if STYLES#]
+[#if STYLES || COMMON_STYLES#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_STYLE#></label>
+        <label class="col-lg-4 control-label"><#LANG_STYLE#><#LANG_HCB#>elemen_style<#LANG_HCE#></label>
         <div class="controls">
-         <input type="radio" name="css_style" value="default"[#if ELEMENT_CSS_STYLE=="default"#] checked[#endif#]> <#LANG_DEFAULT#>
+
+         <span id="current_style">[#if ELEMENT_CSS_IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#ELEMENT_CSS_IMAGE#]">[#endif#] [#ELEMENT_CSS_STYLE#]</span>
+         <span style='display: inline-block;'><a href="#" onClick="$('#more_styles').toggle();return false;"><#LANG_EDIT#></a></span>
+         <input type="hidden" name="css_style" id="css_style" value="<#ELEMENT_CSS_STYLE#>">
+
+         <div id='more_styles' style="display:none">
+         <span style='display: inline-block;'><a href="#" onClick="$('#css_style').val('default');$('#current_style').html('<#LANG_DEFAULT#>');$('#more_styles').hide();return false;"><#LANG_DEFAULT#></a></span>
          [#begin STYLES#]
-         &nbsp;&nbsp;&nbsp;&nbsp;
-         <input type="radio" name="css_style" value="[#TITLE#]"[#if TITLE=="<#ELEMENT_CSS_STYLE#>"#] checked[#endif#]> 
-         [#if IMAGE!=""#]<img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]" border="0">[#endif#]
-         [#TITLE#]
+         [#if IMAGE!=""#]<span style='display: inline-block;'><a href="#" onClick="$('#css_style').val('[#TITLE#]');$('#current_style').html('<img src=\'<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]\' border=\'0\'> [#TITLE#]');$('#more_styles').hide();return false;"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]" border="0"></a></span>[#endif#]
          [#end STYLES#]
+
+         <br/>
+
+         [#begin COMMON_STYLES#]
+         [#if IMAGE!=""#]<span style='display: inline-block;'><a href="#" onClick="$('#css_style').val('[#TITLE#]');$('#current_style').html('<img src=\'<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]\' border=\'0\'> [#TITLE#]');$('#more_styles').hide();return false;"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]" border="0"></a></span>[#endif#]
+         [#end COMMON_STYLES#]
+
+
+         </div>
          <!--#
          [#inc type_styles.html#]
          #-->
@@ -176,26 +234,6 @@
 <input type="hidden" name="css_style" value='default'>
 [#endif STYLES#]
 
-[#if (ELEMENT_TYPE!="container")#]
-<div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#></label>
-        <div class="controls">
-                <select class="form-control" name="container_id">
-                        <option value="0">n/a
-                        [#begin CONTAINERS#]
-                        <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
-                        [#end CONTAINERS#]
-                </select>
-        </div>
-</div>
-[#endif ELEMENT_TYPE#]
-
-<div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_PRIORITY#></label>
-        <div class="controls">
-                <input class="form-control" type="text" name="priority" value="[#ELEMENT_PRIORITY#]">
-        </div>
-</div>
 
 <script language="javascript">
  function position_type_changed(new_position) {
@@ -207,8 +245,9 @@
  }
 </script>
 
+<div class='advanced_options' [#if ELEMENT_EASY_CONFIG=="1" || ELEMENT_ID==""#]style="display:none"[#endif#]>
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_POSITION_TYPE#></label>
+        <label class="col-lg-4 control-label"><#LANG_POSITION_TYPE#><#LANG_HCB#>element_positiontype<#LANG_HCE#></label>
         <div class="controls">
                 <input type="radio" name="position_type" onClick='position_type_changed(this.value);' value="0"[#if ELEMENT_POSITION_TYPE=="0" || ELEMENT_POSITION_TYPE==""#]checked[#endif#]> <#LANG_POSITION_TYPE_ABSOLUTE#>
                 <br>
@@ -218,7 +257,7 @@
 
 <div id='position_details'[#if ELEMENT_POSITION_TYPE=="1"#] style="display:none"[#endif#]>
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_ELEMENT_TO_POSITION_RELATED#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_ELEMENT_TO_POSITION_RELATED#><#LANG_HCB#>element_positionrelated<#LANG_HCE#></label>
         <div class="controls">
                 <select class="form-control" name="linked_element_id">
                         <option value="0"><#LANG_NO_RELATED#>
@@ -228,7 +267,16 @@
                 </select>
         </div>
 </div>
+</div>
+</div>
 
+<!-- LEFT (int) -->
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_LEFT#></label>
+        <div class="controls">
+                <input class="form-control" type="text" name="left" value="[#ELEMENT_LEFT#]">
+        </div>
+</div>
 
 
 <!-- TOP (int) -->
@@ -239,17 +287,26 @@
         </div>
 </div>
 
-<!-- LEFT (int) -->
+
+<div class='advanced_options' [#if ELEMENT_EASY_CONFIG="1" || ELEMENT_ID=""#]style="display:none"[#endif#]>
+
+[#if (ELEMENT_TYPE!="container")#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_LEFT#></label>
+        <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
         <div class="controls">
-                <input class="form-control" type="text" name="left" value="[#ELEMENT_LEFT#]">
+                <select class="form-control" name="container_id">
+                        <option value="0">n/a
+                        [#begin CONTAINERS#]
+                        <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
+                        [#end CONTAINERS#]
+                </select>
         </div>
 </div>
-</div>
+[#endif ELEMENT_TYPE#]
 
 
-[#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="container"#]
+
+[#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container"#]
 <!-- WIDTH (int) -->
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_WIDTH#></label>
@@ -267,9 +324,24 @@
 </div>
 [#endif ELEMENT_TYPE#]
 
-[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container")#]
+[#if "<#ELEMENT_TYPE#>"=="s3d"#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#></label>
+        <label class="col-lg-4 control-label">3D Scene (json)</label>
+        <div class="controls">
+                <input type="text" name="s3d_scene" class="form-control" id="s3d_scene" value="[#ELEMENT_S3D_SCENE#]" onclick="openFileBrowser('s3d_scene');" size="40">
+        </div>
+</div>
+<script type="text/javascript">
+     function openFileBrowser(id){
+          fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;
+          window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
+     }
+</script>
+[#endif#]
+
+[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d")#]
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#><#LANG_HCB#>element_usebackgound<#LANG_HCE#></label>
         <div class="controls">
                 <input type="radio" name="background" value="1"[#if ELEMENT_BACKGROUND=="1"#]checked[#endif#]> <#LANG_YES#>
                 <br>
@@ -278,9 +350,9 @@
 </div>
 [#endif ELEMENT_TYPE#]
 
-[#if ELEMENT_TYPE="html"#]
+[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="s3d")#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_JAVASCRIPT#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_JAVASCRIPT#><#LANG_HCB#>element_usejavascript<#LANG_HCE#></label>
         <div class="controls">
         <input  type="checkbox" name="use_javascript" value="1"[#if ELEMENT_JAVASCRIPT!=""#] checked[#endif#] onClick='$("#element_javascript").toggle();'> <#LANG_YES#>
         <div id="element_javascript"[#if ELEMENT_JAVASCRIPT=""#] style="display:none"[#endif#]>
@@ -290,7 +362,7 @@
 </div>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_USE_CSS#></label>
+        <label class="col-lg-4 control-label"><#LANG_USE_CSS#><#LANG_HCB#>element_usecss<#LANG_HCE#></label>
         <div class="controls">
         <input  type="checkbox" name="use_css" value="1"[#if ELEMENT_CSS!=""#] checked[#endif#] onClick='$("#element_css").toggle();'> <#LANG_YES#>
         <div id="element_css"[#if ELEMENT_CSS=""#] style="display:none"[#endif#]>
@@ -298,24 +370,32 @@
         </div>
         </div>
 </div>
-
-
 [#endif ELEMENT_TYPE#]
-<!-- CROSS_SCENE (int) -->
-<!--#
-<tr>
- <td align=right>
-  &nbsp;
- </td>
- <td>
-  <input type="checkbox" name="cross_scene" value="1"[#if ELEMENT_CROSS_SCENE="1"#] checked[#endif#]> cross scene element
- </td>
-</tr>
-#-->
+
+[#if (ELEMENT_TYPE!="container") && (ELEMENT_TYPE!="s3d")#]
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_SMART_REPEAT#><#LANG_HCB#>element_smartrepeat<#LANG_HCE#></label>
+        <div class="controls">
+                <input type="radio" name="smart_repeat" value="1"[#if ELEMENT_SMART_REPEAT=="1"#]checked[#endif#]> <#LANG_YES#>
+                <br>
+                <input type="radio" name="smart_repeat" value="0"[#if ELEMENT_SMART_REPEAT!="1"#]checked[#endif#]> <#LANG_NO#>
+        </div>
+</div>
+[#endif ELEMENT_TYPE#]
+
+[#if ELEMENT_ID!=""#]
+<div class="form-group">
+        <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
+        <div class="controls">
+                <a href="?(panel:{action=security_rules})&object_type=scene_elements&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+        </div>
+</div>
+[#endif ID#]
+
 
 [#if ELEMENT_ID!="" && ELEMENT_TYPE!="container"#]
 
-<h3><#LANG_STATES#></h3>
+<h3><#LANG_STATES#></h3><#LANG_HCB#>element_states<#LANG_HCE#>
 <ul>
 [#begin STATES#]
 <li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#TITLE#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>
@@ -331,7 +411,7 @@
 [#endif STATE_ID#]
 
 <div class="form-group">
-        <label class="col-lg-4 control-label">State <#LANG_TITLE#></label>
+        <label class="col-lg-4 control-label">State <#LANG_TITLE#><#LANG_HCB#>title<#LANG_HCE#></label>
         <div class="controls">
                 <input class="form-control" type="text" name="state_title_new" value="[#STATE_TITLE#]">
         </div>
@@ -347,20 +427,20 @@
 [#endif#]
 
 
-[#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container"#]
+[#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container" && "<#ELEMENT_TYPE#>"!="s3d"#]
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_CODE#></label>
+        <label class="col-lg-4 control-label"><#LANG_CODE#><#LANG_HCB#>element_code<#LANG_HCE#></label>
         <div class="controls">
-                <textarea  name="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
+                <textarea  name="html_new" id="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
+                [#module name="blockly_code" code_field="html_new" action="" type="html"#]
                  <br>(CSS class: <i>type_<#ELEMENT_TYPE#> style_<#ELEMENT_CSS_STYLE#> state_[#STATE_TITLE#] element_<#ELEMENT_ID#></i>, CSS id: <i>state_[#STATE_ID#]</i>)
         </div>
 </div>
 [#endif#]
 
 [#if "<#ELEMENT_TYPE#>"=="img"#]
-
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_IMAGE#></label>
+        <label class="col-lg-4 control-label"><#LANG_IMAGE#><#LANG_HCB#>element_image<#LANG_HCE#></label>
         <div class="controls">
                 <input type="text" name="image_new" class="form-control" id="image_new" value="[#STATE_IMAGE#]" onclick="openFileBrowser('image_new');" size="40">
                 <p class="help-block">
@@ -370,14 +450,12 @@
                 </p>
         </div>
 </div>
-
 <script type="text/javascript">
      function openFileBrowser(id){
           fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;
           window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
      }
 </script>
-
 [#endif#]
 
 <script language="javascript">
@@ -389,7 +467,7 @@
 </script>
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_DO_ONCLICK#></label>
+        <label class="col-lg-4 control-label"><#LANG_DO_ONCLICK#><#LANG_HCB#>element_action<#LANG_HCE#></label>
         <div class="controls">
                 <select name="do_on_click_new" class="form-control" onChange="do_on_click_change(this.value);">
                 <option value="0"><#LANG_DO_NOTHING#>
@@ -398,13 +476,14 @@
                 <option value="run_code"[#if STATE_CODE!=""#] selected[#endif#]><#LANG_ONCHANGE_CODE#>
                 <option value="open_menu"[#if STATE_MENU_ITEM_ID!="0" && STATE_MENU_ITEM_ID!=""#] selected[#endif#]><#LANG_SHOW_MENU_ON_CLICK#>
                 <option value="show_homepage"[#if STATE_HOMEPAGE_ID!="0" && STATE_HOMEPAGE_ID!=""#] selected[#endif#]><#LANG_SHOW_HOMEPAGE_ON_CLICK#>
+                <option value="show_scene"[#if STATE_OPEN_SCENE_ID!="0" && STATE_OPEN_SCENE_ID!=""#] selected[#endif#]><#LANG_SHOW_SCENE_ON_CLICK#>
                 <option value="show_url"[#if STATE_EXT_URL!=""#] selected[#endif#]><#LANG_SHOW_URL_ON_CLICK#>
                 </select>
         </div>
 </div>
 
 <div class="form-group click_fields"[#if STATE_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
-        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: [#ERRORS#]</label>
+        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
         <div class="col-lg-5">
                 <textarea name="code_new" rows="5" cols="50" class="form-control">[#STATE_CODE#]</textarea>
         </div>
@@ -447,6 +526,18 @@
         </div>
 </div>
 
+<div class="form-group click_fields"[#if STATE_OPEN_SCENE_ID="0" || STATE_OPEN_SCENE_ID=""#] style="display:none"[#endif#] id='show_scene_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_SCENE_ON_CLICK#></label>
+        <div class="controls">
+                <select name="open_scene_id_new" class="form-control">
+                <option value="0">
+                [#begin OTHER_SCENES#]
+                <option value="[#ID#]"[#if ID="<#STATE_OPEN_SCENE_ID#>"#] selected[#endif#]>[#TITLE#]
+                [#end OTHER_SCENES#]
+                </select>
+        </div>
+</div>
+
 <div class="form-group click_fields"[#if STATE_EXT_URL=""#] style="display:none"[#endif#] id='show_url_field'>
         <label class="col-lg-4 control-label"><#LANG_SHOW_URL_ON_CLICK#></label>
         <div class="controls">
@@ -467,7 +558,7 @@
 [#module name="linkedobject" object_field="action_object_new" method_field="action_method_new"#]
 
 <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#></label>
+        <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#><#LANG_HCB#>element_condition<#LANG_HCE#></label>
         <div class="controls">
                 <label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="0"[#if STATE_IS_DYNAMIC="0" || STATE_IS_DYNAMIC=""#] checked[#endif#]> n/a (<#LANG_ALWAYS_VISIBLE#>)</label>
                 <label class="radio"><input type="radio" name="is_dynamic_new" class="is_dynamic_new" value="1"[#if STATE_IS_DYNAMIC="1"#] checked[#endif#]> <#LANG_SIMPLE#></label>
@@ -497,21 +588,21 @@
 </script>
   <div id="condition_block_new"[#if STATE_IS_DYNAMIC!="1"#] style="display:none"[#endif#]>
    <div class="form-group">
-        <label class="col-lg-4 control-label">Object</label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
         <div class="controls">
                 <input type="text" class="form-control" name="linked_object_new" id="linked_object_new" size="10" value="[#STATE_LINKED_OBJECT#]">
         </div>
         </div>
      
         <div class="form-group">
-        <label class="col-lg-4 control-label">Property</label>
+        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="controls">
                  <input type="text" class="form-control" name="linked_property_new" id="linked_property_new" size="10" value="[#STATE_LINKED_PROPERTY#]">
         </div>
         </div>
         
     <div class="form-group">
-        <label class="col-lg-4 control-label">Condition</label>
+        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
         <div class="controls">
          <select name="condition_new" class="form-control">
       <option value="1"[#if STATE_CONDITION="1"#] selected[#endif#]>=
@@ -523,7 +614,7 @@
         </div>
 
     <div class="form-group">
-        <label class="col-lg-4 control-label">Value</label>
+        <label class="col-lg-4 control-label"><#LANG_VALUE#></label>
         <div class="controls">
                  <input type="text" class="form-control" name="condition_value_new" size="10" value="[#STATE_CONDITION_VALUE#]">
         </div>
@@ -533,7 +624,7 @@
   </div>
   <div id="condition_advanced_block_new"[#if STATE_IS_DYNAMIC!="2"#] style="display:none"[#endif#]>
    <div class="form-group">
-        <label class="col-lg-4 control-label">Advanced condition</label>
+        <label class="col-lg-4 control-label">Advanced condition<#LANG_HCB#>element_condition_advanced<#LANG_HCE#></label>
         <div class="controls">
                 <textarea class="form-control" name="condition_advanced_new" rows="5" cols="40">[#STATE_CONDITION_ADVANCED#]</textarea>
                 <p class="help-block">
@@ -551,13 +642,47 @@
     <div class="form-group">
         <label class="col-lg-4 control-label">&nbsp;</label>
         <div class="controls">
-                <label class="checkbox"><input  type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#></label>
+                <label class="checkbox"><input  type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#> <#LANG_HCB#>element_switchactivated<#LANG_HCE#></label>
         </div>
         </div>
   </div>
 
+[#if ELEMENT_TYPE=="s3d"#]
+<div class="form-group">
+        <label class="col-lg-4 control-label">Link to 3D Object</label>
+        <div class="controls">
+        [#if S3D_OBJECTS#]
+        <select name="s3d_object_new" class="form-control" id="s3d_object_new">
+         <option value="">
+         [#begin S3D_OBJECTS#]
+         <option value="[#TITLE#]"[#if TITLE="<#STATE_S3D_OBJECT#>"#] selected[#endif#]>[#TITLE#] ([#TYPE#])
+         [#end S3D_OBJECTS#]
+        </select>
+        [#else#]
+        <input type="text" class="form-control" name="s3d_object_new" id="s3d_object_new" value="[#STATE_S3D_OBJECT#]">
+        [#endif#]
+
+        </div>
+</div>
+<div class="form-group">
+        <label class="col-lg-4 control-label">Link to Camera</label>
+        <div class="controls">
+        [#if S3D_CAMERAS#]
+        <select name="s3d_camera_new" class="form-control" id="s3d_object_new">
+         <option value="">
+         [#begin S3D_CAMERAS#]
+         <option value="[#TITLE#]"[#if TITLE="<#STATE_S3D_CAMERA#>"#] selected[#endif#]>[#TITLE#]
+         [#end S3D_CAMERAS#]
+        </select>
+        [#else#]
+        <input type="text" class="form-control" name="s3d_camera_new" id="s3d_camera_new" value="[#STATE_S3D_CAMERA#]">
+        [#endif#]
+        </div>
+</div>
+[#endif#]
+
 <div class="form-group click_fields" id='element_priority_field'>
-        <label class="col-lg-4 control-label"><#LANG_PRIORITY#></label>
+        <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
         <div class="controls">
         <input type="text" class="form-control" name="priority_new" value="[#STATE_PRIORITY#]"> .
         </div>
@@ -568,6 +693,7 @@
 </div>
 [#module name="linkedobject" object_field="linked_object_new" property_field="linked_property_new"#]
 [#endif ID#]
+</div>
 
 
 <div class="form-actions">
@@ -581,6 +707,7 @@
 
  [#if ID!=""#]
  <a class="btn btn-default" href="?tab=elements&id=<#ID#>&view_mode=<#VIEW_MODE#>&edit_mode=<#EDIT_MODE#>&view_mode2=clone_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
  [#endif ID#]
 
 </div>
@@ -595,3 +722,20 @@
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 
 </form>
+
+[#if SUB_ELEMENTS#]
+&nbsp;<br/>
+<ul>
+[#begin SUB_ELEMENTS#]
+<li>[#if ID!="<#ELEMENT_ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements&view_mode2=edit_elements&element_id=[#ID#]">[#endif#][#TITLE#]</a></li>
+[#end SUB_ELEMENTS#]
+</ul>
+[#endif#]
+
+[#if ELEMENT_ID!=""#]
+<script language="javascript">
+ $(document).ready(function(){ 
+  element_type_switched();
+ });
+</script>
+[#endif#]

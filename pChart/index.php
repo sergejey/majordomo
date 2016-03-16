@@ -414,7 +414,7 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "TickB"=>100,
                 "InnerTickWidth"=>0,
                 "OuterTickWidth"=>5,
-                "LabelSkip"=>4, //пропускаем тики
+                "LabelSkip"=>0, //пропускаем тики
                 "GridTicks"=>1,
                 "ScaleSpacing"=>100,
                 "XMargin"=>0,
@@ -521,6 +521,11 @@ $drawThreshold["Alpha"]=10;  //празрачность вертикальной закраски
         }
 
 //выводим заголовок графика
+
+if (IsSet($_GET['title'])) {
+ $_GET['title']=strip_tags($_GET['title']);
+}
+
 if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
         if ($_GET['title']) {
                 $Test->drawText($left_border,$title_top_offset,$_GET['title'],array("FontSize"=>$title_fontsize,"R"=>55,"G"=>55,"B"=>55,"Align"=>TEXT_ALIGN_BOTTOMLEFT));
@@ -576,21 +581,25 @@ if ($_GET['gtype']=='curve') { //рисуем сглаженый график
 /* Render the picture (choose the best way) */
 $path_to_file='./cached/'.md5($_SERVER['REQUEST_URI']).'.png';
 imagepng($Test->autoOutput($path_to_file));
-Header("Content-type:image/png");
 
-$fsize=filesize($path_to_file);
-header("Content-Length:".(string)$fsize);
-$buff_length=200*1024;
-if ($buff_length>$fsize) {
-        $buff_length=$fsize;
-}
-if ($buff_length>0) {
-        $fd=fopen($path_to_file,'rb');
-        if ($fd) {
-                while(!feof($fd)) {
-                        print fread($fd, $buff_length);
-                }
-                fclose($fd);
+if (file_exists($path_to_file)) {
+        Header("Content-type:image/png");
+        $fsize=filesize($path_to_file);
+        header("Content-Length:".(string)$fsize);
+        $buff_length=200*1024;
+        if ($buff_length>$fsize) {
+                $buff_length=$fsize;
         }
+        if ($buff_length>0) {
+                $fd=fopen($path_to_file,'rb');
+                if ($fd) {
+                        while(!feof($fd)) {
+                                print fread($fd, $buff_length);
+                        }
+                        fclose($fd);
+                }
+         }
 }
+
+
 $db->Disconnect(); // closing database connection

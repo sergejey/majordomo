@@ -237,6 +237,57 @@ padding: 20px 40px;
 [#endif VIEW_MODE#]
 
 
+[#if ZWAVE_DEVICES#]
+<div id="zwave">
+<h1>Z-Wave</h1>
+ <table width="100%" border="0">
+  [#begin ZWAVE_DEVICES#]
+  <tr>
+   <td>[#NODE_ID#].[#INSTANCE_ID#]</td>
+   <td valign="top"><b>[#TITLE#]</b></td>
+   <td width=80%>
+   [#if CLASS_BASIC="1"#]basic[#if BASIC!=""#] ([#BASIC#])[#endif#];[#endif#]
+   [#if CLASS_SENSOR_BINARY="1"#]sensor binary;[#endif#]
+   [#if CLASS_SENSOR_MULTILEVEL="1"#]sensor multilevel[#if SENSOR_VALUE!=""#] ([#SENSOR_VALUE#]);[#endif#][#endif#]
+   [#if CLASS_SWITCH_BINARY="1"#]switch binary ([#LEVEL#]);[#endif#]
+   [#if CLASS_SWITCH_MULTILEVEL="1"#]switch multilevel ([#LEVEL#]%);[#endif#]
+   [#if CLASS_METER="1"#]meter;[#endif#]
+   [#if CLASS_BATTERY="1"#]battery ([#BATTERY_LEVEL#]%);[#endif#]
+   [#if CLASS_THERMOSTAT="1"#]thermostat[#if MODE_VALUE!=""#] ([#MODE_VALUE#])[#endif#];[#endif#]
+   [#if CLASS_SENSOR_ALARM="1"#]sensor alarm;[#endif#]
+   [#if CLASS_SCENE_CONTROLLER="1"#]scene controller;[#endif#]
+   [#if CLASS_CONFIG="1"#]configuration;[#endif#]
+   [#if ALL_CLASSES!=""#]<span title="[#ALL_CLASSES#]">...</span>[#endif#]
+   </td>
+  </tr>
+  <tr>
+   <td valign="top">&nbsp;</td>
+   <td valign="top" colspan="2">
+    <table width="100%" border="0" class='table table-bordered'>
+     [#begin PROPERTIES#]
+     <tr>
+      <td valign="top">[#COMMAND_CLASS#]</td>
+      <td valign="top">[#TITLE#]</td>
+      <td valign="top" width="90%">
+       [#if LINKED_OBJECT!=""#]Linked to: [#LINKED_OBJECT#][#endif#][#if LINKED_PROPERTY!=""#].[#LINKED_PROPERTY#][#endif#] [#if LINKED_METHOD!=""#]/ [#LINKED_METHOD#][#endif#]
+       [#if VALUE!=""#]
+       <br/>Latest value: [#VALUE#][#if COMMENTS!=""#]<br><small>[#COMMENTS#]</small>[#endif COMMENTS#]
+       [#endif#]
+       [#if UPDATE_PERIOD!="0"#]<br/>Force update: [#UPDATE_PERIOD#]s[#endif#]
+       [#if VALID_FROM!="0"#]<br>Valid from: [#VALID_FROM#][#endif#]
+       [#if VALID_TO!="0"#]<br>Valid from: [#VALID_TO#][#endif#]
+       [#if CORRECT_VALUE!="0"#]<br>Correction: [#CORRECT_VALUE#][#endif#]
+      </td>
+     </tr>
+     [#end PROPERTIES#]
+    </table>
+   </td>
+  </tr>
+  [#end ZWAVE_DEVICES#]
+ </table>
+</div>
+[#endif#]
+
 
 
  

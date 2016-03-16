@@ -147,10 +147,70 @@ function admin(&$out) {
   $this->sendData($out);
  }
 
+ if ($this->tab=='calls') {
+
+  if ($this->view_mode=='sync') {
+   if ($this->config['CONNECT_USERNAME']) {
+    $this->sendCalls();
+   }
+   $this->redirect("?tab=".$this->tab);
+  }
+
+  if ($this->view_mode=='delete_calls') {
+   global $id;
+   SQLExec("DELETE FROM public_calls WHERE ID='".(int)$id."'");
+   $this->redirect("?tab=".$this->tab."&view_mode=sync");
+  }
+
+  if ($this->view_mode=='edit_calls') {
+   global $id;
+   $rec=SQLSelectOne("SELECT * FROM public_calls WHERE ID='".(int)$id."'");
+   if ($this->mode=='update') {
+    $ok=1;
+
+    global $title;
+    $rec['TITLE']=$title;
+    if (!$rec['TITLE']) {
+     $out['ERR_TITLE']=1;
+     $ok=0;
+    }
+
+    global $linked_object;
+    $rec['LINKED_OBJECT']=$linked_object;
+
+    global $linked_method;
+    $rec['LINKED_METHOD']=$linked_method;
+
+    global $protected;
+    $rec['PROTECTED']=(int)$protected;
+
+    global $public_username;
+    $rec['PUBLIC_USERNAME']=$public_username;
+
+    global $public_password;
+    $rec['PUBLIC_PASSWORD']=$public_password;
+
+    if ($ok) {
+     if ($rec['ID']) {
+      SQLUpdate('public_calls', $rec);
+     } else {
+      $rec['ID']=SQLInsert('public_calls', $rec);
+     }
+     $this->redirect("?tab=".$this->tab."&view_mode=sync");
+    }
+   }
+   outHash($rec, $out);
+  }
+  $calls=SQLSelect("SELECT * FROM public_calls ORDER BY ID DESC");
+  $out['CALLS']=$calls;
+ }
+
  if ($_GET['uploaded']) {
   $out['UPLOADED']=1;
   $out['RESULT']=$_GET['result'];
  }
+
+ $out['TAB']=$this->tab;
 
 }
 
@@ -176,7 +236,7 @@ function admin(&$out) {
 
   // POST TO SERVER
   $url = 'http://connect.smartliving.ru/upload/';
-  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)));
+  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
   foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
@@ -201,6 +261,60 @@ function admin(&$out) {
   //close connection
   curl_close($ch);
 
+ }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+ function sendCalls() {
+
+   // menu items
+   $data=array();
+   $data['PUBLIC_CALLS']=SQLSelect("SELECT * FROM public_calls");
+
+
+  // POST TO SERVER
+  $url = 'http://connect.smartliving.ru/upload/';
+  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
+
+  //url-ify the data for the POST
+  foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+  rtrim($fields_string, '&');
+
+  //open connection
+  $ch = curl_init();
+  //set the url, number of POST vars, POST data
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, count($fields));
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+
+
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
+
+  //execute post
+  $result = curl_exec($ch);
+
+  //echo $result;exit;
+  $tmp=json_decode($result, true);
+  if (is_array($tmp['PUBLIC_CALLS'])) {
+   $total=count($tmp['PUBLIC_CALLS']);
+   for($i=0;$i<$total;$i++) {
+    SQLExec("UPDATE public_calls SET PUBLIC_KEY='".$tmp['PUBLIC_CALLS'][$i]['PUBLIC_KEY']."' WHERE ID='".$tmp['PUBLIC_CALLS'][$i]['INTERNAL_ID']."'");
+   }
+  }
+
+  //close connection
+  curl_close($ch);
+
+  
  }
 
 /**
@@ -263,23 +377,55 @@ function admin(&$out) {
 
   // POST TO SERVER
   $url = 'http://connect.smartliving.ru/upload/';
+  $datafile_name=ROOT.'cached/connect_data.txt';
+  SaveFile($datafile_name, serialize($data));
+
+
+  if (!function_exists('getCurlValue')) {
+   function getCurlValue($filename, $contentType, $postname)
+   {
+     if (function_exists('curl_file_create')) {
+         return curl_file_create($filename, $contentType, $postname);
+     }
+     $value = "@".$filename.";filename=" . $postname;
+     if ($contentType) {
+         $value .= ';type=' . $contentType;
+     }
+     return $value;
+   }
+  }
+
+  $cfile = getCurlValue($datafile_name,'text/plain','datafile.txt');
+ 
+//NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
+
   $fields = array(
-                                                'data' => urlencode(serialize($data))
+     'datafile' => $cfile
   );
 
-  //url-ify the data for the POST
-  foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-  rtrim($fields_string, '&');
+  /*
+  $fields = array(
+     'datafile' => '@'.realpath($datafile_name).';filename=datafile.txt'
+  );
+  */
 
+  //print_r($fields);exit;
+
+
+  //url-ify the data for the POST
+  //foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+  //rtrim($fields_string, '&');
+
+  //sleep(1);
   //open connection
   $ch = curl_init();
   //set the url, number of POST vars, POST data
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));
-  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
-  curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
 
@@ -313,6 +459,26 @@ function usual(&$out) {
 */
  function install($data='') {
   parent::install();
+ }
+
+ function dbInstall($data) {
+/*
+commands - Commands
+*/
+  $data = <<<EOD
+ public_calls: ID int(10) unsigned NOT NULL auto_increment
+ public_calls: TITLE varchar(255) NOT NULL DEFAULT ''
+ public_calls: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ public_calls: LINKED_METHOD varchar(255) NOT NULL DEFAULT ''
+ public_calls: PUBLIC_USERNAME varchar(255) NOT NULL DEFAULT ''
+ public_calls: PUBLIC_PASSWORD varchar(255) NOT NULL DEFAULT ''
+ public_calls: PUBLIC_KEY varchar(255) NOT NULL DEFAULT ''
+ public_calls: PROTECTED int(3) NOT NULL DEFAULT '0'
+
+EOD;
+  parent::dbInstall($data);
+
+
  }
 // --------------------------------------------------------------------
 }

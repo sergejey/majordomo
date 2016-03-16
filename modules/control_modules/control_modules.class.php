@@ -133,7 +133,10 @@ function getParams() {
 
   $this->getModulesList();
   $lst=$this->modules;
-  for($i=0;$i<count($lst);$i++) {
+  $lstCnt = count($lst);
+
+  for ($i = 0; $i < $lstCnt ;$i++)
+  {
    $rec=SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%M %d, %Y (%H:%i)') as DAT FROM project_modules WHERE NAME='".$lst[$i]['FILENAME']."'");
    if (IsSet($rec['ID'])) {
     outHash($rec, $lst[$i]);
@@ -163,30 +166,49 @@ function getParams() {
     $lst[]=$rec;
    }
   }
+
+   function cmp_modules($a, $b) {
+    return strcmp($a["FILENAME"], $b["FILENAME"]);
+   }
+
+  usort($lst, 'cmp_modules');
+
   $this->modules=$lst;
   return $lst;
  }
 
-// --------------------------------------------------------------------
- function install($parent_name="") {
-  parent::install($parent_name);
-  $this->getModulesList();
-  $lst=$this->modules;
-  $code="";
-  for($i=0;$i<count($lst);$i++) {
-   if (file_exists(DIR_MODULES.$lst[$i]['FILENAME']."/".$lst[$i]['FILENAME'].".class.php")) {
-    if ($lst[$i]['FILENAME']=='control_modules') {
-     continue;
-    }
-    @unlink(DIR_MODULES.$lst[$i]['FILENAME']."/installed");
-    include_once(DIR_MODULES.$lst[$i]['FILENAME']."/".$lst[$i]['FILENAME'].".class.php");
-    $obj="\$object$i";
-    $code.="$obj=new ".$lst[$i]['FILENAME'].";\n";
+function install($parent_name = "")
+{
+   parent::install($parent_name);
+  
+   $this->getModulesList();
+   
+   $lst    = $this->modules;
+   $lstCnt = count($lst);
+   $code   = "";
+
+   for ($i = 0; $i < $lstCnt; $i++)
+   {
+      if (file_exists(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php"))
+      {
+         if ($lst[$i]['FILENAME'] == 'control_modules')
+            continue;
+
+         $installedFile = DIR_MODULES . $lst[$i]['FILENAME'] . "/installed";
+         if (file_exists($installedFile))
+            unlink($installedFile);
+         
+         include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
+         $obj = "\$object$i";
+         $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
+         //echo "Installing ".$lst[$i]['FILENAME']."\n";
+         @eval("$code");
+      }
    }
-  }
-  @eval("$code");
-  SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '".$this->name."'");
- }
+
+   
+   SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '" . $this->name . "'");
+}
 
 // --------------------------------------------------------------------
  function dbInstall($data) {

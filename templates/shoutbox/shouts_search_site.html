@@ -41,13 +41,19 @@ var shoutTimer;
     url: url,
     }).done(function(data) { 
      if (data!='') {
-      $('#shoutboxContent').html(data);
+      old_data=$('#shoutboxContent').html();
+      if (old_data!=data) {
+       $('#shoutboxContent').html(data);
+      }
      }
-    });
 
   [#if (NOT_LOGGED!="1") || (MOBILE=="1")#]
   shoutTimer=setTimeout("updateShoutContent('', '');", 10000);
   [#endif NOT_LOGGED#]
+
+
+    });
+
  }
 
  function sendShoutMessage() {
@@ -69,5 +75,5 @@ var shoutTimer;
 
 
 <script language="javascript">
- updateShoutContent();
+  updateShoutContent();
 </script>
