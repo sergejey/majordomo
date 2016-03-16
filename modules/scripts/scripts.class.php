@@ -139,7 +139,7 @@ function run() {
         $success = eval($code);
         if ($success === false) {
           getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
-          registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE']));
+          registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
         }
         return $success;
       } catch (Exception $e) {

@@ -194,6 +194,13 @@ while (1)
          }
          
          $out = trim($out);
+
+         if (preg_match('/Please login/is', $out)) {
+          echo date('Y-m-d H:i:s') . ' Login required. Closing socket...';
+          socket_close($socket);
+          break(2);
+         }
+
          processResponse($out);
       }
 

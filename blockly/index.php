@@ -76,7 +76,7 @@ $ctl = new control_modules();
 
        function SaveAndClose() {
         saveCode();
-        window.close();
+        setTimeout(function(){window.close()}, 1000);
         return false;
        }
 
