@@ -181,8 +181,10 @@ while (1)
       $read[0] = $socket;
     
       socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => 60, "usec" => 0));
-      
-      $num_changed_sockets = socket_select($read, $write = null, $except = null, 0, 1);
+
+      $write  = NULL;
+      $except = NULL;
+      $num_changed_sockets = socket_select($read, $writ, $except, 0, 1);      
     
       if ($num_changed_sockets > 0)
       {
@@ -197,8 +199,7 @@ while (1)
 
          if (preg_match('/Please login/is', $out)) {
           echo date('Y-m-d H:i:s') . ' Login required. Closing socket...';
-          socket_close($socket);
-          break(2);
+          break 2;
          }
 
          processResponse($out);

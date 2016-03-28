@@ -95,6 +95,8 @@ $res = '';
 
 $updated = array();
 
+$latest_update=gg('ws.updatedTimestamp');
+
 foreach ($known_fields as $k => $v)
 {
    if ($v < 0)
@@ -103,7 +105,7 @@ foreach ($known_fields as $k => $v)
    $res .= $k . ' = ' . $data[(int)$v] . "\n";
    $old_value = getGlobal('ws.' . $k);
    
-   if ($old_value != $data[(int)$v])
+   if ($old_value != $data[(int)$v] || ((time()-$latest_update)>30*60))
    {
       $updated[$k] = 1;
       setGlobal('ws.' . $k, $data[(int)$v]);

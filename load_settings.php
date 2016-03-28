@@ -25,6 +25,7 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
 
 if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
  Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);
+ Define('SERVER_ADDR', $_SERVER['SERVER_ADDR']);
 } else {
  Define('SERVER_URL','http://localhost:80');
 }

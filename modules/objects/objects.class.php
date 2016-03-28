@@ -419,31 +419,8 @@ function usual(&$out) {
     $url.='&'.urlencode($k).'='.urlencode($v);
    }
   }
-  //echo DOC_ROOT.'/obj.bat '.utf2win().'.'.$name.' '.$p."<br>";
-  //$cmd=(DOC_ROOT.'/obj.bat '.utf2win($this->object_title).'.'.$name.' '.$p);
-  //echo $url;
 
-$ch = curl_init();
-
-// set URL and other appropriate options
-curl_setopt($ch, CURLOPT_URL, $url);
-/*
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
-curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
-*/
-curl_setopt($ch, CURLOPT_HEADER, 0);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$data=curl_exec($ch);
-curl_close($ch);
-
-//$mh = curl_multi_init();
-//curl_multi_add_handle($mh,$ch);
-//curl_multi_exec($mh,$running);
-
-  //popen("start /B ". $cmd, "r");
-
+  $data=getURL($url, 0);
   
  }
 

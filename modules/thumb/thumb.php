@@ -24,7 +24,7 @@ define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds
 //$img=urldecode($_REQUEST['img']);
 
 
-if (IsSet($url)) {
+if (IsSet($url) && $url!='') {
 
    $resize='';
    if ($w && $h) {

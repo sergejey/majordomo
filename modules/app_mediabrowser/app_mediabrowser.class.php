@@ -367,7 +367,7 @@ function usual(&$out) {
       if($run_linux){
           $out['FILE']=$file;
           $out['BASEFILE']=basename($file);
-          $file=str_replace('/', '\\', $file);
+          //$file=str_replace('/', '\\', $file);
           $out['FULLFILE']=addslashes($path).$file;
       } else {
           $out['FILE']=win2utf($file);
@@ -541,7 +541,7 @@ function usual(&$out) {
     $rec['PATH']=urlencode($folder.$file);
     //$rec['FULL_PATH']=urlencode(str_replace('\\\\', '\\', $act_dir).$file);
     $rec['FULL_PATH']=urlencode($act_dir.$file);
-    $size=filesize($act_dir.$file);
+    $size=@filesize($act_dir.$file);
     $total_size+=$size;
     if ($size>1024) {
      if ($size>1024*1024) {
@@ -672,7 +672,7 @@ function setDescription($dir, $file, $descr)
       || preg_match('/\.gif$/is', $file)
       || preg_match('/\.png$/is', $file)
    ) {
-    $file_size=filesize($path.$file);
+    $file_size=@filesize($path.$file);
     if ($file_size>$biggest_size) {
      $biggest_size=$file_size;
      $biggest_file=$file;

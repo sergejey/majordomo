@@ -65,10 +65,12 @@ function say($ph, $level = 0, $member_id = 0)
          $lang = SETTINGS_VOICE_LANGUAGE;
       }
 
+      /*
       if (SETTINGS_TTS_ENGINE == 'google')
       {
          $voice_file = GoogleTTS($ph, $lang);
       }
+      */
       elseif (SETTINGS_TTS_ENGINE == 'yandex')
       {
          $voice_file = YandexTTS($ph, $lang);
@@ -112,7 +114,7 @@ function say($ph, $level = 0, $member_id = 0)
                $ln = 'english';
             }
 
-            safe_exec('echo "' . $ph . '" | festival --language ' . $ln . ' --tts', 1, $level);
+            //safe_exec('echo "' . $ph . '" | festival --language ' . $ln . ' --tts', 1, $level);
          }
       }
    }
