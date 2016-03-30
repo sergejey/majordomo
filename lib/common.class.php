@@ -71,7 +71,7 @@ function say($ph, $level = 0, $member_id = 0)
          $voice_file = GoogleTTS($ph, $lang);
       }
       */
-      elseif (SETTINGS_TTS_ENGINE == 'yandex')
+      if (SETTINGS_TTS_ENGINE == 'yandex')
       {
          $voice_file = YandexTTS($ph, $lang);
       }
