@@ -11,6 +11,8 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once(DIR_MODULES . "panel.class.php");
 
+startMeasure('TOTAL');
+
 $session = new session("prj");
 
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
@@ -44,10 +46,12 @@ if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
    
    for ($i = 0; $i < $total; $i++)
    {
+   /*
       if (preg_match('/value=["\']' . preg_quote($matches[0][$i]) . '["\']/is', $result))
       {
          continue;
       }
+   */
 
       if (defined('LANG_' . $matches[1][$i]))
       {
@@ -73,3 +77,9 @@ echo $result;
 
 $session->save();
 $db->Disconnect(); // closing database connection
+
+// end calculation of execution time
+endMeasure('TOTAL');
+
+// print performance report
+performanceReport();

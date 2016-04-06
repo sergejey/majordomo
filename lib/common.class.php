@@ -418,7 +418,8 @@ function deleteScheduledJob($id)
 function setTimeOut($title, $commands, $timeout)
 {
    clearTimeOut($title);
-   return addScheduledJob($title, $commands, time() + $timeout);
+   $res=addScheduledJob($title, $commands, time() + $timeout);
+   return $res;
 }
 
 /**

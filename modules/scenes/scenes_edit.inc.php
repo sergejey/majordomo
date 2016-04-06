@@ -740,20 +740,15 @@
   }
 
   //$elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
-  $elements=$this->getElements("SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0");
 
-
-  if (count($elements)) {
   /*
-   $total=count($elements);
-   for($i=0;$i<$total;$i++) {
-     if ($elements[$i]['CSS_STYLE']!='default' && $elements[$i]['CSS_STYLE']!='') {
-      $elements[$i]['CSS_IMAGE']=$this->getCSSImage($elements[$i]['TYPE'], $elements[$i]['CSS_STYLE']);
-     }
-   }
-   */
+  $elements=$this->getElements("SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0");
+  */
+  $elements=SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='".$rec['ID']."' AND CONTAINER_ID=0 ORDER BY PRIORITY DESC, TITLE");
+  if (count($elements)) {
    $out['ELEMENTS']=$elements;
   }
+
 
   if ($element['TYPE']=='container') {
    $sub_elements=SQLSelect("SELECT ID, TITLE FROM elements WHERE CONTAINER_ID=".(int)$element['ID']." ORDER BY PRIORITY DESC, TITLE");

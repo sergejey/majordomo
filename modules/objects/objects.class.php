@@ -281,7 +281,7 @@ function usual(&$out) {
    $this->class_id=$rec['CLASS_ID'];
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
-   $this->keep_history=$rec['KEEP_HISTORY'];
+   //$this->keep_history=$rec['KEEP_HISTORY'];
   } else {
    return false;
   }
@@ -627,6 +627,7 @@ function usual(&$out) {
 
   $cached_name='MJD:'.$this->object_title.'.'.$property;
 
+  startMeasure('setproperty_update');
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
@@ -634,11 +635,11 @@ function usual(&$out) {
    $v['VALUE']=$value;
    if ($v['ID']) {
     $v['UPDATED']=date('Y-m-d H:i:s');
-    if ($old_value!=$value) {
+    //if ($old_value!=$value) {
      SQLUpdate('pvalues', $v);
-    } else {
-     SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
-    }
+    //} else {
+    // SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
+    //}
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
@@ -659,16 +660,21 @@ function usual(&$out) {
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
   }
+  endMeasure('setproperty_update');
 
   saveToCache($cached_name, $value);
 
   if (function_exists('postToWebSocket')) {
+   startMeasure('setproperty_postwebsocket');
    postToWebSocket($this->object_title.'.'.$property, $value);
+   endMeasure('setproperty_postwebsocket');
   }
 
+  /*
   if ($this->keep_history>0) {
    $prop['KEEP_HISTORY']=$this->keep_history;
   }
+  */
 
   if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY']>0)) {
    $q_rec=array();
@@ -708,12 +714,14 @@ function usual(&$out) {
 
 
 
+   startMeasure('linkedModulesProcessing');
    for($i=0;$i<$total;$i++) {
     $linked_module=trim($tmp[$i]);
 
     if (isset($no_linked[$linked_module])) {
      continue;
     }
+    startMeasure('linkedModule'.$linked_module);
     if (file_exists(DIR_MODULES.$linked_module.'/'.$linked_module.'.class.php')) {
      include_once(DIR_MODULES.$linked_module.'/'.$linked_module.'.class.php');
      $module_object=new $linked_module;
@@ -721,7 +729,9 @@ function usual(&$out) {
       $module_object->propertySetHandle($this->object_title, $property, $value);
      }
     }
+    endMeasure('linkedModule'.$linked_module);
    }
+   endMeasure('linkedModulesProcessing');
   }
 
   /*

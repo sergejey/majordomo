@@ -355,6 +355,14 @@ function admin(&$out) {
    }
    echo "OK";
   }
+
+// end calculation of execution time
+endMeasure('TOTAL');
+
+// print performance report
+//performanceReport();
+
+
   exit;
 
  }

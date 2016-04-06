@@ -236,8 +236,10 @@ if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
    
    for ($i = 0; $i < $total; $i++)
    {
+      /*
       if (preg_match('/value=["\']' . preg_quote($matches[0][$i]) . '["\']/is', $result))
          continue;
+         */
       
       $languageConstant = 'LANG_' . $matches[1][$i];
       if (defined($languageConstant))
