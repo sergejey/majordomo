@@ -35,8 +35,13 @@ function getmicrotime()
 function StartMeasure($mpoint)
 {
    global $perf_data;
-   
-   $perf_data[$mpoint]['START'] = getmicrotime();
+
+   global $script_started_time;
+   if ($mpoint=='TOTAL' && $script_started_time) {
+    $perf_data[$mpoint]['START'] = $script_started_time;
+   } else {
+    $perf_data[$mpoint]['START'] = getmicrotime();
+   }
 
    if ((isset($perf_data[$mpoint]['MEMORY_START']) && !$perf_data[$mpoint]['MEMORY_START'])
        || !isset($perf_data[$mpoint]['MEMORY_START'])

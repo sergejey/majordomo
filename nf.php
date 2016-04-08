@@ -10,6 +10,9 @@
  * @package MajorDoMo
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  */
+list($usec, $sec) = explode(" ",microtime());
+$script_started_time = ((float)$usec + (float)$sec);
+
 
 if (!preg_match('/\/$/', $_SERVER["REQUEST_URI"]))
    $file = basename($_SERVER["REQUEST_URI"]);

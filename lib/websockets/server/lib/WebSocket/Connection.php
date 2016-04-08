@@ -34,12 +34,12 @@ class Connection
                 $this->port = $tmp[1];          
                 $this->connectionId = md5($this->ip . $this->port . spl_object_hash($this));            
 
-                $this->log('Connected');
+                //$this->log('Connected');
     }
     
     private function handshake($data)
     {   
-        $this->log('Performing handshake');         
+        //$this->log('Performing handshake');         
         $lines = preg_split("/\r\n/", $data);
                 
                 // check for valid http-header:
@@ -134,7 +134,7 @@ class Connection
                         return false;
                 }
                 $this->handshaked = true;
-                $this->log('Handshake sent');
+                //$this->log('Handshake sent');
                 $this->application->onConnect($this);
                 
                 // trigger status application:
@@ -252,7 +252,7 @@ class Connection
                 
                         case 'close':                   
                                 $this->close();
-                                $this->log('Disconnected');
+                                //$this->log('Disconnected');
                         break;
                 }
                 
@@ -326,7 +326,7 @@ class Connection
 
         public function onDisconnect()
     {           
-        $this->log('Disconnected', 'info');
+        //$this->log('Disconnected', 'info');
         $this->close(1000);
     }     
 

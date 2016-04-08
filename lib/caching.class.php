@@ -86,6 +86,7 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   if (!(@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
    $wsClient=false;
    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+    DebMes("Failed to connect to websocket");
     echo date('Y-m-d H:i:s')." Failed to connect to websocket\n";
    }
   }
@@ -105,6 +106,7 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   $data_sent=@$wsClient->sendData($payload);
   if (!$data_sent) {
    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+    DebMes("Failed to send data to websocket");
     echo date('Y-m-d H:i:s')." Failed to send data to websocket\n";
    }
   }
@@ -117,6 +119,7 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
    $wsClient->sendData($payload);
   } else {
    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+    DebMes("Failed to reconnect to websocket");
     echo date('Y-m-d H:i:s')." Failed to reconnect to websocket\n";
    }
   }
