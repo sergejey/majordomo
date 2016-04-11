@@ -470,6 +470,8 @@ function runScheduledJobs()
       $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
       $result = trim(getURL($url, 0));
 
+      $result = preg_replace('/<!--.+-->/is', '', $result);
+
       if ($result != 'OK')
       {
          DebMes("Error executing job " . $jobs[$i]['TITLE'] . " (" . $jobs[$i]['ID'] . "): " . $result);

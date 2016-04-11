@@ -77,6 +77,11 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   return;
  }
 
+ global $websockets_script_started;
+ if ($websockets_script_started) {
+  return;
+ }
+
  require_once ROOT.'lib/websockets/client/lib/class.websocket_client.php';
 
  global $wsClient;

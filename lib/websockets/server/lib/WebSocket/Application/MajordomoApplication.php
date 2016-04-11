@@ -192,6 +192,8 @@ class MajordomoApplication extends Application
           global $scenes;
           global $commands;
 
+          $found_subscribers=0;
+
           foreach($this->_clients as $client) {
            if (IsSet($client->watchedProperties[$property_name])) {
             //scenes
@@ -257,6 +259,12 @@ class MajordomoApplication extends Application
              }
 
             }
+           }
+          }
+
+          if (!$found_subscribers) {
+           if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+            echo date('Y-m-d H:i:s').(" No subscribers for ".$property_name."\n");
            }
           }
 
