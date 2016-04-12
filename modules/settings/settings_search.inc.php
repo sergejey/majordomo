@@ -49,7 +49,7 @@
    $tmp['PRIORITY']=60;
    $tmp['TITLE']='Text-to-speech engine';
    $tmp['DEFAULTVALUE']='';
-   $tmp['DATA']='=Default|google=Google|yandex=Yandex';
+   $tmp['DATA']='=Disable|default=Default|google=Google|yandex=Yandex';
    SQLInsert('settings', $tmp);
   }
  }
