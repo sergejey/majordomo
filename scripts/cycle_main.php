@@ -102,6 +102,15 @@ while (1)
 
    }
 
+   $keep=SQLSelect("SELECT DISTINCT VALUE_ID,KEEP_HISTORY FROM phistory_queue");
+   if ($keep[0]['VALUE_ID']) {
+    $total=count($keep);
+    for($i=0;$i<$total;$i++) {
+     $keep_rec=$keep[$i];
+     SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$keep_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
+    }
+   }
+
    $queue=SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT 500");
    if ($queue[0]['ID']) {
     $total=count($queue);

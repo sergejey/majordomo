@@ -39,6 +39,7 @@ $(function () {
 <table class="table table-bordered">
 [#begin RESULT#]
 <tr>
+ <td><input type="checkbox" name="selected[]" value="[#ID#]"></td>
  <td>
    [#if RESULT#]
    <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]"> + </a>
@@ -63,7 +64,7 @@ $(function () {
   [#endif RESULT#]
 </tr>
 [#if RESULT#]
- <tr><td colspan=2>
+ <tr><td colspan=3>
   <div id="sub[#ID#]" style="display:none">
   <table class="table table-bordered table-inner">
    [#tree RESULT#]
@@ -76,7 +77,12 @@ $(function () {
 </table>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_commands">
+
+<input type="submit" name="submit" value="<#LANG_EXPORT#>" class="btn btn-default">
+<#LANG_HCB#>menu_export_elements<#LANG_HCE#>
 </form>
+
+
 
 <script language="javascript">
 [#begin RESULT#]
@@ -97,3 +103,31 @@ $(function () {
 </div>
 [#endif RESULT#]
 <!-- / results -->
+
+&nbsp;<br/>
+
+<a href="#" class="btn btn-default" onClick="$('#menu_tools').toggle();return false;"><#LANG_TOOLS#></a>
+
+<br/>&nbsp;
+<div id='menu_tools' style="display:none">
+
+<h3><#LANG_IMPORT#></h3>
+
+<form action="?" method="post" name="frmList_elements" style="padding:0px" enctype="multipart/form-data">
+<input type="file" name="file"><br/>
+
+<#LANG_PARENT_MENU_ITEM#>:
+<select name="parent_id" style="width:200px">
+ <option value="0"><#LANG_ROOT#>
+ [#begin RESULT#]
+ <option value="[#ID#]">[#TITLE#]
+ [#if RESULT#][#tree RESULT#][#endif RESULT#]
+ [#end RESULT#]
+</select>
+ <br/>
+<input type="submit" name="submit" value="<#LANG_IMPORT#>" class="btn btn-default">
+<#LANG_HCB#>menu_import_elements<#LANG_HCE#>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="import_commands">
+</form>
+</div>
