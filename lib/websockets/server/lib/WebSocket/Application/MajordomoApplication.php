@@ -158,6 +158,9 @@ class MajordomoApplication extends Application
              $this->_clients[$client_id]->subscribedTo['events'][mb_strtolower($event, 'UTF-8')]=1;
             }
           }
+          $send_data=array();
+          $encodedData = $this->_encodeData('subscribed', json_encode($send_data));
+          $this->_clients[$client_id]->send($encodedData);
          }
         }
 

@@ -28,10 +28,15 @@
  var labelsCollected_sent='';
  var valuesCollected_sent='';
 
+ var subscribedWebSockets=0;
+ var subscribedWebSocketsTimer;
+
+
  var requestSent = Math.round(+new Date()/1000);
 
 
-        $.subscribe('wsConnected', function (_) {
+        function subscribeToMenu() {
+         console.log('Sending menu subscription request...');
          var payload;
          payload = new Object();
          payload.action = 'Subscribe';
@@ -39,9 +44,21 @@
          payload.data.TYPE='commands';
          payload.data.PARENT_ID='<#PARENT_ID#>';
          wsSocket.send(JSON.stringify(payload));
+         subscribedWebSocketsTimer=setTimeout('subscribeToMenu();', 3000);
+         return false;
+        }
+
+
+        $.subscribe('wsConnected', function (_) {
+         subscribeToMenu();
         });
 
         $.subscribe('wsData', function (_, response) {
+          if (response.action=='subscribed') {
+           console.log('Subscription to menu confirmed.');
+           clearTimeout(subscribedWebSocketsTimer);
+           subscribedWebSockets=1;
+          }
           if (response.action=='commands') {
            sendRequestForUpdates_processed(0, response.data);
           }
@@ -84,7 +101,7 @@
   }
   requestSent = Math.round(+new Date()/1000);
 
-  if (startedWebSockets==1) {
+  if (subscribedWebSockets==1) {
    labelsCollected='';
    valuesCollected='';
    if (first_run!=1) return;

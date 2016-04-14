@@ -36,6 +36,8 @@ $.fn.customContextMenu = function(callBack){
         var contextTimeout=0;
         var contextTop='';
         var contextLeft='';
+        var subscribedWebSockets=0;
+        var subscribedWebSocketsTimer;
 
         function EvalSound(soundobj) {
          //alert('zz');
@@ -316,7 +318,7 @@ new TWEEN.Tween( camera.position ).to( {
         function checkAllStates() {
          clearTimeout(checkTimer);
 
-         if (startedWebSockets==1) {
+         if (subscribedWebSockets==1) {
           firstRun=0;
           checkTimer=setTimeout('checkAllStates();', 3000);
           if (firstRun!=1 && refreshRun!=1) {
@@ -353,8 +355,8 @@ new TWEEN.Tween( camera.position ).to( {
         });
 
 
-
-        $.subscribe('wsConnected', function (_) {
+        function subscribeToScene() {
+         console.log('Sending scene subscription request...');
          var payload;
          payload = new Object();
          payload.action = 'Subscribe';
@@ -362,9 +364,21 @@ new TWEEN.Tween( camera.position ).to( {
          payload.data.TYPE='scenes';
          payload.data.SCENE_ID='<#SCENE_ID#>';
          wsSocket.send(JSON.stringify(payload));
+         subscribedWebSocketsTimer=setTimeout('subscribeToScene();', 3000);
+         return false;
+        }
+
+
+        $.subscribe('wsConnected', function (_) {
+         subscribeToScene();
         });
 
         $.subscribe('wsData', function (_, response) {
+          if (response.action=='subscribed') {
+           console.log('Subscription confirmed.');
+           clearTimeout(subscribedWebSocketsTimer);
+           subscribedWebSockets=1;
+          }
           if (response.action=='states') {
            processCheckStates(response.data);
           }
