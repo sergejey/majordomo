@@ -107,7 +107,7 @@ while (1)
     $total=count($keep);
     for($i=0;$i<$total;$i++) {
      $keep_rec=$keep[$i];
-     SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$keep_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
+     SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$keep_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$keep_rec['KEEP_HISTORY']);
     }
    }
 
