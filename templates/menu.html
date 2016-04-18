@@ -15,8 +15,13 @@
 <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
 [#inc websockets.html#]
 </head>
-<body>
-<div data-role="page" id="mainPage" [#if "<#SETTINGS_THEME#>"=="dark"#] data-theme="b"[#endif#]>
+[#if FROM_SCENE="1"#]
+<style>
+ .ui-field-contain {border-bottom:none}
+</style>
+[#endif#]
+<body[#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#]>
+<div data-role="page" id="mainPage" [#if "<#SETTINGS_THEME#>"=="dark"#] data-theme="b"[#endif#][#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#]>
         [#module name="commands" action="" pda="1"#]
 </div>
 

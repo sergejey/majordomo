@@ -66,7 +66,7 @@
 
    var easy_config=$('input:radio[name=easy_config]:checked').val();
 
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning') {
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem') {
     $('#advanced_config_block').show();
     if (easy_config==1) {
      $('.advanced_options').hide();
@@ -105,6 +105,12 @@
     $('#linked_property_unit').hide();
    }
 
+   if ((new_type=='menuitem')) {
+    $('#menuitem_select').show();
+   }
+   
+
+
  }
 </script>
 
@@ -125,6 +131,7 @@
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
                         <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
                         <option value="s3d"[#if ELEMENT_TYPE=="s3d"#] selected[#endif#]>3D scene
+                        <option value="menuitem"[#if ELEMENT_TYPE=="menuitem"#] selected[#endif#]>Menu Control
                 </select>
         [#else ELEMENT_ID#]
         [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
@@ -138,6 +145,7 @@
         [#if ELEMENT_TYPE=="nav"#]<#LANG_NAV_LINK#>[#endif#]
         [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
         [#if ELEMENT_TYPE=="s3d"#]3D scene[#endif#]
+        [#if ELEMENT_TYPE=="menuitem"#]Menu Control[#endif#]
         <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
         [#endif ELEMENT_ID#]
         </div>
@@ -192,6 +200,18 @@
         <label class="col-lg-4 control-label"><#LANG_UNIT#><#LANG_HCB#>element_unit<#LANG_HCE#></label>
         <div class="controls">
          <input type="text" name="linked_property_unit" value="[#WIZARD_UNIT#]" class="form-control">
+        </div>
+</div>
+
+<div class="form-group" id="menuitem_select" style="display:none">
+        <label class="col-lg-4 control-label"><#LANG_EXT_ID#><#LANG_HCB#>element_menuitem<#LANG_HCE#></label>
+        <div class="controls">
+                <select name="menuitem_select_id" class="form-control">
+                <option value="0">
+                [#begin MENU_ITEMS#]
+                <option value="[#ID#]"[#if ID="<#WIZARD_MENU_ITEM_ID#>"#] selected[#endif#]>[#TITLE#]
+                [#end MENU_ITEMS#]
+                </select>
         </div>
 </div>
 
@@ -306,7 +326,7 @@
 
 
 
-[#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container"#]
+[#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container" || ELEMENT_TYPE=="menuitem"#]
 <!-- WIDTH (int) -->
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_WIDTH#></label>
@@ -339,7 +359,7 @@
 </script>
 [#endif#]
 
-[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d")#]
+[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d") || (ELEMENT_TYPE=="menuitem")#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#><#LANG_HCB#>element_usebackgound<#LANG_HCE#></label>
         <div class="controls">

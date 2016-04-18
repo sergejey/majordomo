@@ -680,6 +680,13 @@ function usual(&$out) {
      // 
      echo "OK";
     }
+
+    endMeasure('TOTAL');
+
+    if ($_GET['performance']) {
+     performanceReport();
+    }
+
     exit;
  }
 

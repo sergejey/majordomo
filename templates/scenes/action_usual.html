@@ -609,6 +609,7 @@ function onDocumentMouseDown( event ) {
    [#endif DRAGGABLE#]
    [#endif#] 
    style="
+   [#if "<#DRAGGABLE#>"=="1"#]border:1px solid blue;[#endif#]
    [#if "<#ELEMENTS.POSITION_TYPE#>"=="0"#]position:absolute;left:<#ELEMENTS.LEFT#>px;top:<#ELEMENTS.TOP#>px;[#endif ELEMENTS#]
    [#if "<#ELEMENTS.ZINDEX#>"!=""#]z-index:<#ELEMENTS.ZINDEX#>;[#endif#]
    [#if ("<#ELEMENTS.WIDTH#>"!="0")#]width:<#ELEMENTS.WIDTH#>px;[#endif#][#if ("<#ELEMENTS.HEIGHT#>"!="0")#]height:<#ELEMENTS.HEIGHT#>px;[#endif#]

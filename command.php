@@ -45,6 +45,8 @@ if ($qry != '' && $qry != $lastest_word)
       $user_id = $session->data['logged_user'];
    }
 
+   if (isset($params['user_id'])) { $user_id = $params['user_id']; } 
+
    include_once(DIR_MODULES . 'patterns/patterns.class.php');
    
    $pt = new patterns();

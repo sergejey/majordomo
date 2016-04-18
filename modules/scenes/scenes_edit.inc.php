@@ -215,7 +215,7 @@
 
 
     global $easy_config;
-    if ($element['TYPE']=='switch' || $element['TYPE']=='informer' || $element['TYPE']=='warning') {
+    if ($element['TYPE']=='switch' || $element['TYPE']=='informer' || $element['TYPE']=='warning' || $element['TYPE']=='menuitem') {
      $element['EASY_CONFIG']=(int)$easy_config;
     } else {
      $element['EASY_CONFIG']=0;
@@ -253,6 +253,12 @@
 
     global $width;
     $element['WIDTH']=(int)$width;
+
+    if ($element['TYPE']=='menuitem' && !$element['WIDTH'] && !$element['HEIGHT']) {
+     $element['HEIGHT']=0;
+     $element['WIDTH']=200;
+    }
+
 
     global $background;
     $element['BACKGROUND']=(int)$background;
@@ -453,6 +459,28 @@
      $state_rec['CONDITION_VALUE']=1;
      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
      $state_id=$state_rec['ID'];
+
+
+    } elseif (($element['TYPE']=='menuitem') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     $wizard_data=array();
+
+     global $menuitem_select_id;
+     $wizard_data['MENU_ITEM_ID']=(int)$menuitem_select_id;
+
+     $element['WIZARD_DATA']=json_encode($wizard_data);
+
+     SQLUpdate('elements', $element);
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
+
+     $state_rec=array();
+     $state_rec['TITLE']='default';
+     $state_rec['ELEMENT_ID']=$element['ID'];
+     $state_rec['HTML']='<iframe src="/menu.html?parent='.(int)$wizard_data['MENU_ITEM_ID'].'&from_scene=1" frameBorder="0" width="100%"></iframe>';
+     $state_rec['ID']=SQLInsert('elm_states', $state_rec);
+     $state_id=$state_rec['ID'];
+
 
 
     } elseif (($element['TYPE']=='informer') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {

@@ -302,6 +302,12 @@ function getParams() {
    Define(TODAY, $out['TODAY']);
    $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
 
+   global $from_scene;
+   if ($from_scene) {
+    $out['FROM_SCENE']=1;
+   }
+
+
    global $ajt;
    if ($ajt=='') {
     $template_file=DIR_TEMPLATES.$this->name.".html";

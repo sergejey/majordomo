@@ -192,6 +192,6 @@ elseif ($script != '')
 $db->Disconnect(); // closing database connection
 
 endMeasure('TOTAL'); // end calculation of execution time
-performanceReport(); // print performance report
+//performanceReport(); // print performance report
 
 // ob_end_flush();
