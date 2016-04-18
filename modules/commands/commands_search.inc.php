@@ -28,6 +28,10 @@
    //$_GET['parent']=$this->parent_item;
   }
 
+  if ($_GET['from_scene']) {
+   $out['FROM_SCENE']=1;
+   $out['ONE_ITEM_MODE']=1;
+  }
 
   if ($_GET['parent']) {
    $this->parent_item=$_GET['parent'];
