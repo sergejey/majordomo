@@ -295,7 +295,7 @@
  {else}
  href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
  {/if}
- {if $SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
+ {if $item.SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
 >
 {if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span>{*{if $item.RESULT_TOTAL} <span class="ui-li-count">{$item.RESULT_TOTAL}</span>{/if}*}</a>
@@ -311,7 +311,7 @@
  href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
  {/if}
 >
-{if ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
+{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span></a>
 </li>
 
