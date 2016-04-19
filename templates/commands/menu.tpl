@@ -370,7 +370,7 @@
 <label for="menu{$item.ID}_v" class="select"><span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span></label>
 
 <select name="menu{$item.ID}_v" id="menu{$item.ID}_v" onChange="changedValue{$item.ID}();">
- {foreach $OPTIONS as $i}
+ {foreach $item.OPTIONS as $i}
  <option value="{$i.VALUE}"{if $i.SELECTED} selected{/if}>{$i.TITLE}
  {/foreach}
 </select>
@@ -395,7 +395,7 @@
 
 
     <fieldset data-role="controlgroup" data-type="horizontal">
-     {foreach $OPTIONS as $i}
+     {foreach $item.OPTIONS as $i}
      <input type="radio" name="menu{$item.ID}_v" class="radiobox{$item.ID}" id="menu{$item.ID}_v_{$i.NUM}" value="{$i.VALUE}" {if $i.SELECTED}checked="checked"{/if}  onClick="changedValue{$item.ID}('{$i.VALUE}');"/>
      <label for="menu{$item.ID}_v_{$i.NUM}">{$i.TITLE}</label>
       {/foreach}
@@ -403,7 +403,7 @@
 
 {*
 <select name="menu{$item.ID}_v" id="menu{$item.ID}_v" onChange="changedValue{$item.ID}();">
- {foreach $OPTIONS as $i}
+ {foreach $item.OPTIONS as $i}
  <option value="{$i.VALUE}"{if $i.SELECTED} selected{/if}>{$i.TITLE}
  {/foreach}
 </select>
@@ -432,12 +432,12 @@
 <label for="menu{$item.ID}_v" class="select"><span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span></label>
 <fieldset data-role="controlgroup" data-type="horizontal"> 
 <select name="menu{$item.ID}_v1" id="menu{$item.ID}_v1" onChange="changedValue{$item.ID}();">
- {foreach $OPTIONS1 as $i}
+ {foreach $item.OPTIONS1 as $i}
   <option value="{$i.VALUE}"{if $i.SELECTED=='1'} selected{/if}>{$i.VALUE}
  {/foreach}
 </select>
 <select name="menu{$item.ID}_v2" id="menu{$item.ID}_v2" onChange="changedValue{$item.ID}();">
- {foreach $OPTIONS2 as $i}
+ {foreach $item.OPTIONS2 as $i}
  <option value="{$i.VALUE}"{if $i.SELECTED=='1'} selected{/if}>{$i.VALUE}
  {/foreach}
 </select>

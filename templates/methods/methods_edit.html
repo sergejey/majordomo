@@ -45,7 +45,6 @@
 <div id="code_option"[#if SCRIPT_ID!="0"#] style="display:none"[#endif#]>
 
  [#if ERRORS!=""#]<br><font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
-
  [#module name="blockly_code" system_name="method<#ID#>" code_field="code" action=""#]
  <div id="code_area">
   <textarea name="code" id="code" rows=30 cols=100 class="form-control">[#CODE#]</textarea>
