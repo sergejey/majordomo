@@ -225,6 +225,11 @@
     global $method_id;
     $method=SQLSelectOne("SELECT * FROM methods WHERE ID='".(int)$method_id."'");
 
+    if ($method['OBJECT_ID']) {
+     $obj=SQLSelectOne("SELECT ID, CLASS_ID FROM objects WHERE ID='".$method['OBJECT_ID']."'");
+     $method=SQLSelectOne("SELECT * FROM methods WHERE TITLE LIKE '".$method['TITLE']."' AND CLASS_ID='".$obj['CLASS_ID']."'");
+    }
+
     $out['METHOD_CLASS_ID']=$method['CLASS_ID'];
     $tmp=SQLSelectOne("SELECT * FROM classes WHERE ID='".$method['CLASS_ID']."'");
     $out['METHOD_CLASS_TITLE']=$tmp['TITLE'];

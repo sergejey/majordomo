@@ -129,8 +129,43 @@ function run() {
    $out['SINGLE_REC']=1;
   }
   $this->data=$out;
-  $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
-  $this->result=$p->result;
+
+  if ($this->action=='') {
+
+  /*
+   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
+   $this->result=$p->result;
+  */
+
+   require_once ROOT.'lib/smarty/Smarty.class.php';
+   $smarty = new Smarty;
+   $smarty->setCacheDir(ROOT.'cached/template_c');
+
+   $smarty->setTemplateDir(ROOT.'./templates')
+          ->setCompileDir(ROOT.'./cached/templates_c')
+          ->setCacheDir(ROOT.'./cached');
+
+   $smarty->debugging = false;
+   $smarty->caching = true;
+   $smarty->setCaching(120);
+
+   foreach($out as $k=>$v) {
+    $smarty->assign($k, $v);
+   }
+
+
+   @$this->result=$smarty->fetch(DIR_TEMPLATES.'scenes/scenes.tpl');
+
+
+
+  } else {
+
+   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
+   $this->result=$p->result;
+
+
+  }
+
 }
 /**
 * BackEnd

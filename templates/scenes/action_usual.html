@@ -1,5 +1,21 @@
 <style>
-[#inc elements.css#]
+.container_background {
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
+ padding:0px;
+}
+
+.html_background {
+ border:1px solid rgba(0,0,0,0.2);
+ background-color:rgba(0,0,0,0.5);
+ background-size:100%;
+ padding:0px;
+}
+
+
+[#begin ALL_TYPES#]
+ [#if HAS_STYLE!=""#][#inc ../../cms/scenes/styles/<#ALL_TYPES.TITLE#>/style.css#][#endif HAS_STYLE#]
+[#end ALL_TYPES#]
 </style>
 
 [#if "<#SETTINGS_SCENES_CLICKSOUND#>"!=""#]

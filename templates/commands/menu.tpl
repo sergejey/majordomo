@@ -703,7 +703,7 @@
 
 </div>
 
-{if VISIBLE_DELAYS}
+{if $VISIBLE_DELAYS}
 <script language="javascript">
  var vd_timer;
  var currentItem=0;
