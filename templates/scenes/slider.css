@@ -1,3 +1,4 @@
+{literal}
 /* Easy Slider */
         #slider ul, #slider li,
         #slider2 ul, #slider2 li{
@@ -105,3 +106,4 @@
                 }
         ol#controls_vertical li a:focus, #prevBtn a:focus, #nextBtn a:focus{outline:none;}
 /* // Easy Slider */
+{/literal}

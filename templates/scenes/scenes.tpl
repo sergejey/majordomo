@@ -24,7 +24,7 @@
 {/if}
 
         {if $TOTAL!="1"}
-        <style>{include 'slider.css'}</style>
+        <style>{include './slider.css'}</style>
         <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js"></script>
         {/if}
 
@@ -54,7 +54,6 @@ $.fn.customContextMenu = function(callBack){
         var subscribedWebSocketsTimer;
 
         function EvalSound(soundobj) {
-         //alert('zz');
          var thissound=document.getElementById(soundobj);
          thissound.play();
         }
@@ -73,7 +72,6 @@ $.fn.customContextMenu = function(callBack){
         }
 
         function controlWindowPositionChanged(id) {
-         //alert(id);
          return false;
         }
 
@@ -91,10 +89,6 @@ $.fn.customContextMenu = function(callBack){
         {/foreach}
 
         function stateClickedEdit(id) {
-         //alert(window.parent.location);
-         //id = id.replace(/\D/g,'');
-         //alert(id);
-
 
           var window_url=window.parent.location.href;
 
@@ -258,10 +252,10 @@ $.fn.customContextMenu = function(callBack){
 
         function processCheckStates(data) {
 
-
            var obj=jQuery.parseJSON(data);
            if (typeof obj !='object') return false;
            
+
            clearTimeout(noUpdatesTimer);
            noUpdatesTimer=setTimeout("$.publish('scenesNoUpdates');", 30*60*1000);
 
@@ -289,7 +283,10 @@ $.fn.customContextMenu = function(callBack){
                elem.hide();
               }
 
+
               if (elem.hasClass('s3d_state')) {
+
+
                if (elem.data('s3d_object')) {
                 var object3d = scene.getObjectByName( elem.data('s3d_object'), true );
                 if (obj[i].STATE=='1') {
@@ -298,6 +295,8 @@ $.fn.customContextMenu = function(callBack){
                  object3d.visible=false;
                 }
                }
+
+
                if (elem.data('s3d_camera')) {
                 if (obj[i].STATE=='1') {
                   new_camera = scene.getObjectByName( elem.data('s3d_camera'), true );;
@@ -305,35 +304,34 @@ $.fn.customContextMenu = function(callBack){
                   new_camera = default_camera;
                  }
 
-var new_position = new_camera.position.clone();
-var new_rotation = new_camera.rotation.clone();
-var new_quaternion = new_camera.quaternion.clone();
+                        var new_position = new_camera.position.clone();
+                        var new_rotation = new_camera.rotation.clone();
+                        var new_quaternion = new_camera.quaternion.clone();
 
-//newlookAtVector = new THREE.Vector3(new_camera.matrix[8], new_camera.matrix[9], new_camera.matrix[10]);
+                        //newlookAtVector = new THREE.Vector3(new_camera.matrix[8], new_camera.matrix[9], new_camera.matrix[10]);
 
-camera.rotation.clone(new_rotation);
-camera.quaternion.clone(new_quaternion);
+                        camera.rotation.clone(new_rotation);
+                        camera.quaternion.clone(new_quaternion);
 
-newlookAtVector = new THREE.Vector3(0, 0, -1);
-newlookAtVector.applyEuler(new_camera.rotation, new_camera.eulerOrder);
-
-
-new TWEEN.Tween( camera.position ).to( {
-        x: new_position.x,
-        y: new_position.y,
-        z: new_position.z}, 600 ).onUpdate(function () {
-
- camera.lookAt(newlookAtVector);
-
-}).onComplete(function () {
-
- camera.lookAt(newlookAtVector);
-
-}).easing( TWEEN.Easing.Sinusoidal.Out).start();
+                        newlookAtVector = new THREE.Vector3(0, 0, -1);
+                        newlookAtVector.applyEuler(new_camera.rotation, new_camera.eulerOrder);
 
 
+                        new TWEEN.Tween( camera.position ).to( {
+                                x: new_position.x,
+                                y: new_position.y,
+                                z: new_position.z}, 600 ).onUpdate(function () {
+
+                         camera.lookAt(newlookAtVector);
+
+                        }).onComplete(function () {
+
+                         camera.lookAt(newlookAtVector);
+        
+                        }).easing( TWEEN.Easing.Sinusoidal.Out).start();
                }
               }
+
 
              }
            }
@@ -365,6 +363,7 @@ new TWEEN.Tween( camera.position ).to( {
                                 continuous: false
                         });
            }
+
            {/if}
            firstRun=0;
            refreshRun=0;
@@ -529,8 +528,8 @@ new TWEEN.Tween( camera.position ).to( {
                         var objects = [];
 
     var container = document.getElementById('canvas_{$ELEMENT.ID}');
-    var camera = new THREE.PerspectiveCamera( 75, {$WIDTH}/{$HEIGHT}, 0.1, 1000 );
-    var default_camera = new THREE.PerspectiveCamera( 75, {$WIDTH}/{$HEIGHT}, 0.1, 1000 );
+    var camera = new THREE.PerspectiveCamera( 75, {$ELEMENT.WIDTH}/{$ELEMENT.HEIGHT}, 0.1, 1000 );
+    var default_camera = new THREE.PerspectiveCamera( 75, {$ELEMENT.WIDTH}/{$ELEMENT.HEIGHT}, 0.1, 1000 );
 
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( {$ELEMENT.WIDTH}, {$ELEMENT.HEIGHT} );
@@ -621,7 +620,6 @@ function onDocumentMouseDown( event ) {
     {if $DRAGGABLE!="1"}onClick="stateClicked('{$STATE.ID}');"{/if}
     ></div>{/foreach}
    </div>
-
 
  {else}
 
