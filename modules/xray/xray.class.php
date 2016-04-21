@@ -394,8 +394,18 @@ function admin(&$out) {
      echo '</table>';
 
     } elseif ($this->view_mode=='debmes') {
-     $limit=50;
-     $filename=ROOT.'debmes/'.date('Y-m-d').'.log';
+
+     global $limit;
+     if (!$limit) {
+      $limit=50;
+     }
+
+     global $file;
+     if (!$file) {
+      $file=date('Y-m-d').'.log';
+     }
+
+     $filename=ROOT.'debmes/'.$file;
      $data=LoadFile($filename);
      $lines=explode("\n", $data);
      $lines=array_reverse($lines);
@@ -583,7 +593,23 @@ function admin(&$out) {
     }
   exit;
  }
+
 }
+
+ if ($this->view_mode=='debmes') {
+  $path=ROOT.'debmes';
+   if ($handle = opendir($path)) {
+    $files=array();
+    while (false !== ($entry = readdir($handle))) {
+     if ($entry=='.' || $entry=='..') {
+      continue;
+     }
+     $files[]=array('TITLE'=>$entry);
+    }
+   }
+   $out['FILES']=$files;
+ }
+
 
 }
 /**

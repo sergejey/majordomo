@@ -21,6 +21,27 @@
      <td valign="top" width="50%">
      <div>Filter: <input type="text" name="filter" id="filter" onChange="checkAllStates();"></div>
      </td>
+     [#if VIEW_MODE="debmes"#]
+     <td valign="top" nowrap>
+     File:
+     <select name="file" id='file'>
+      <option value="">
+      [#begin FILES#]
+      <option value="[#TITLE#]">[#TITLE#]
+      [#end FILES#]
+     </select>
+     </td>
+     <td valign="top" nowrap>
+     Lines:
+     <select name="limit" id='limit' onChange="checkAllStates();">
+     <option>50
+     <option>100
+     <option>200
+     <option>500
+     <option>1000
+     </select>
+     </td>
+     [#endif VIEW_MODE#]
      <td valign="top" align="right" width="50%">
       <a href="#" class="btn btn-default" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> Pause</a>
      </td>
@@ -50,7 +71,8 @@
         function checkAllStates() {
          playingXray=1;
          clearTimeout(checkTimer);
-         var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val());
+
+         var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val())+"&limit="+$('#limit').val()+"&file="+$('#file').val();
          $.ajax({
           url: url,
           }).done(function(data) { 
