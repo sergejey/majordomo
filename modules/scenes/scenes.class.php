@@ -136,7 +136,6 @@ function run() {
    $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
    $this->result=$p->result;
   */
-
    require_once ROOT.'lib/smarty/Smarty.class.php';
    $smarty = new Smarty;
    $smarty->setCacheDir(ROOT.'cached/template_c');

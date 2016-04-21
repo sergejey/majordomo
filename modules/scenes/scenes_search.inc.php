@@ -78,7 +78,7 @@
      $out['SCENE_'.$k]=$v;
     }
    }
-   $out['TOTAL']=$total;
+   $out['TOTAL_SCENES']=$total;
    $out['RESULT']=$res;
 
    $out['PARAMS']='';

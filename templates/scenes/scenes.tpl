@@ -22,8 +22,7 @@
 </audio>
 </div>
 {/if}
-
-        {if $TOTAL!="1"}
+        {if $TOTAL_SCENES!="1"}
         <style>{include './slider.css'}</style>
         <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js"></script>
         {/if}
@@ -273,7 +272,7 @@ $.fn.customContextMenu = function(callBack){
                } else {
                 elem.show();
                }
-               {if $TOTAL!="1"}
+               {if $TOTAL_SCENES!="1"}
                if (firstRun!=1 && obj[i].SWITCH_SCENE=='1') {
                 switchScene(obj[i].SCENE_ID);
                }
@@ -354,7 +353,7 @@ $.fn.customContextMenu = function(callBack){
           url: url,
           }).done(function(data) { 
            processCheckStates(data);
-           {if $TOTAL!="1"}
+           {if $TOTAL_SCENES!="1"}
            if (firstRun==1) {
                         $("#slider").easySlider({
                                 auto: false, 
@@ -410,7 +409,7 @@ $.fn.customContextMenu = function(callBack){
 
 
                 $(document).ready(function(){
-                {if $TOTAL="1"}
+                {if $TOTAL_SCENES=="1"}
                  {if $DRAGGABLE=="1"}
                     $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid: [5,5],
                         stop: function(e, ui) {
@@ -476,14 +475,14 @@ $.fn.customContextMenu = function(callBack){
         </script>
 
 
-<table  border="0" align="center"{if $TOTAL=="1"} width="100%"{/if} cellpadding="0" cellspacing="0">
+<table  border="0" align="center"{if $TOTAL_SCENES=="1"} width="100%"{/if} cellpadding="0" cellspacing="0">
  <tr>
   <td valign="top">
-<div style="{if $TOTAL!="1"}width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;{/if};position:relative;">
+<div style="{if $TOTAL_SCENES!="1"}width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;{/if};position:relative;">
 <div id="slider">
-{if $TOTAL!="1"}<ul>{/if}
+{if $TOTAL_SCENES!="1"}<ul>{/if}
 {foreach $RESULT as $SCENE}
-{if $TOTAL!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
+{if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
  <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
@@ -663,10 +662,10 @@ function onDocumentMouseDown( event ) {
  {if $SCENE.BACKGROUND!=""}<div class="scene_background"><img src="{$SCENE.BACKGROUND}" border="0"></div>{/if}
  </div>
  </div>
- {if $TOTAL!="1"}</li>{/if}
+ {if $TOTAL_SCENES!="1"}</li>{/if}
 {/foreach}
 
-{if $TOTAL!="1"}</ul>{/if}
+{if $TOTAL_SCENES!="1"}</ul>{/if}
 </div>
 </div> <!-- /slider -->
 </td>
