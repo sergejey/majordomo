@@ -88,6 +88,15 @@
   }
   outHash($rec, $out);
 
+  if ($rec['CLASS_ID']) {
+   //echo "zz";exit;
+    include_once(DIR_MODULES.'objects/objects.class.php');
+    $obj=new objects();
+    $methods=$obj->getParentMethods($rec['CLASS_ID'], '', 1);
+    $out['METHODS']=$methods;
+
+  }
+
   global $overwrite;
   if ($overwrite) {
    $tmp=SQLSelectOne("SELECT * FROM properties WHERE ID='".(int)$overwrite."'");

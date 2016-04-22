@@ -1293,14 +1293,22 @@ function usual(&$out) {
 
  function getStyles($type='') {
 
+  startMeasure('getStyles');
   $path=ROOT.'cms/scenes/styles/'.$type;
 
   if (!is_dir($path)) {
    return;
   }
 
-  if (is_dir($path)) {
+   $cache_file=ROOT.'cached/styles_'.$type.'.txt';
 
+   if (file_exists($cache_file) && (time()-filemtime($cache_file)<1*60*60)) {
+    $styles_recs=unserialize(LoadFile($cache_file));
+   } else {
+
+
+
+   startMeasure('openAndReadDir');
    if ($handle = opendir($path)) {
     $style_recs=array();
     while (false !== ($entry = readdir($handle))) {
@@ -1405,6 +1413,15 @@ function usual(&$out) {
      }
     }
 
+    SaveFile($cache_file, serialize($styles_recs));
+    endMeasure('openAndReadDir');
+
+    }
+
+
+   }
+
+
     if (is_array($styles_recs)) {
      $res_styles=array();
      foreach($styles_recs as $k=>$v) {
@@ -1412,12 +1429,14 @@ function usual(&$out) {
      }
     }
 
-   }
+
+
+   endMeasure('getStyles');
    return $res_styles;
-  }
 
   
  }
+
 
  /**
  * Title
