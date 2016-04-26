@@ -18,10 +18,6 @@ function say($ph, $level = 0, $member_id = 0)
    global $commandLine;
    global $voicemode;
    global $noPatternMode;
-   global $ignorePushover;
-   global $ignorePushbullet;
-   global $ignoreGrowl;
-   global $ignoreTwitter;
 
    $rec = array();
 
@@ -48,137 +44,29 @@ function say($ph, $level = 0, $member_id = 0)
       eval(SETTINGS_HOOK_BEFORE_SAY);
    }
 
-   processSubscriptions('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
-
    global $ignoreVoice;
    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id)
    {
-      $lang = 'en';
-      
-      if (defined('SETTINGS_SITE_LANGUAGE'))
-      {
-         $lang = SETTINGS_SITE_LANGUAGE;
-      }
-      
-      if (defined('SETTINGS_VOICE_LANGUAGE'))
-      {
-         $lang = SETTINGS_VOICE_LANGUAGE;
-      }
-
-      /*
-      if (SETTINGS_TTS_ENGINE == 'google')
-      {
-         $voice_file = GoogleTTS($ph, $lang);
-      }
-      */
-      if (SETTINGS_TTS_ENGINE == 'yandex')
-      {
-         $voice_file = YandexTTS($ph, $lang);
-      }
-      else
-      {
-         $voice_file = false;
-      }
-
       if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1')
       {
          $passed = time() - (int)getGlobal('lastSayTime');
-
          // play intro-sound only if more than 20 seconds passed from the last one
          if ($passed > 20)
          {
-            setGlobal('lastSayTime', time());
             playSound('dingdong', 1, $level);
          }
       }
-
-      if ($voice_file)
-      {
-         @touch($voice_file);
-         playSound($voice_file, 1, $level);
-      }
-      else
-      {
-         if (IsWindowsOS())
-         {
-            safe_exec('cscript ' . DOC_ROOT . '/rc/sapi.js ' . $ph, 1, $level);
-         }
-         else
-         {
-            if ($lang == 'ru')
-            {
-               $ln = 'russian';
-            }
-            else
-            {
-               $ln = 'english';
-            }
-
-            //safe_exec('echo "' . $ph . '" | festival --language ' . $ln . ' --tts', 1, $level);
-         }
-      }
    }
+
+   setGlobal('lastSayTime', time());
+   setGlobal('lastSayMessage', $ph);
+   processSubscriptions('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
 
    if (!$noPatternMode)
    {
       include_once(DIR_MODULES . 'patterns/patterns.class.php');
       $pt = new patterns();
       $pt->checkAllPatterns($member_id);
-   }
-
-   if (defined('SETTINGS_PUSHOVER_USER_KEY') && SETTINGS_PUSHOVER_USER_KEY && !$ignorePushover)
-   {
-      include_once(ROOT . 'lib/pushover/pushover.inc.php');
-      if (defined('SETTINGS_PUSHOVER_LEVEL'))
-      {
-         if ($level >= SETTINGS_PUSHOVER_LEVEL)
-         {
-            postToPushover($ph);
-         }
-      }
-      elseif ($level > 0)
-      {
-         postToPushover($ph);
-      }
-   }
-
-   if (defined('SETTINGS_PUSHBULLET_KEY') && SETTINGS_PUSHBULLET_KEY && !$ignorePushbullet)
-   {
-      include_once(ROOT . 'lib/pushbullet/pushbullet.inc.php');
-      if (defined('SETTINGS_PUSHBULLET_PREFIX') && SETTINGS_PUSHBULLET_PREFIX)
-      {
-         $prefix = SETTINGS_PUSHBULLET_PREFIX . ' ';
-      }
-      else
-      {
-         $prefix = '';
-      }
-
-      if (defined('SETTINGS_PUSHBULLET_LEVEL'))
-      {
-         if ($level >= SETTINGS_PUSHBULLET_LEVEL)
-         {
-            postToPushbullet($prefix . $ph);
-         }
-      }
-      elseif ($level > 0)
-      {
-         postToPushbullet($prefix . $ph);
-      }
-   }
-
-   if (defined('SETTINGS_GROWL_ENABLE') && SETTINGS_GROWL_ENABLE && $level >= SETTINGS_GROWL_LEVEL && !$ignoreGrowl)
-   {
-      include_once(ROOT . 'lib/growl/growl.gntp.php');
-      $growl = new Growl(SETTINGS_GROWL_HOST, SETTINGS_GROWL_PASSWORD);
-      $growl->setApplication('MajorDoMo','Notifications');
-      //$growl->registerApplication('http://localhost/img/logo.png');
-      $growl->notify($ph);
-   }
-
-   if (defined('SETTINGS_TWITTER_CKEY') && SETTINGS_TWITTER_CKEY && !$ignoreTwitter)
-   {
-      postToTwitter($ph);
    }
 
    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '')
