@@ -13,6 +13,7 @@
 
 [#if MODE=""#]
 [#if PLUGINS#]
+<form action="?" method="post">
 <table class="table table-striped">
  [#begin PLUGINS#]
  [#if NEW_CATEGORY#]
@@ -23,6 +24,7 @@
  </tr>
  [#endif NEW_CATEGORY#]
  <tr>
+  <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
   <td valign="top"><b>[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
   [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
   <p>[#DESCRIPTION_RU#]</p>
@@ -42,8 +44,6 @@
   <font color="blue">(update available, current version: [#if INSTALLED_VERSION!=""#][#INSTALLED_VERSION#][#else#]unknown[#endif#])</font>
   [#endif#]
   [#endif EXISTS#]
-
-
   </td>
   <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a></b></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
@@ -52,6 +52,9 @@
  </tr>
  [#end PLUGINS#]
 </table>
+<input type="submit" name="submit" value="<#LANG_ADD#> / <#LANG_UPDATE#>" class="btn btn-default">
+<input type="hidden" name="mode" value="install_multiple">
+</form>
 [#endif PLUGINS#]
 [#endif MODE#]
 

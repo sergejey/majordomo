@@ -146,6 +146,12 @@ function admin(&$out) {
 
  $old_category='';
  $can_be_updated=array();
+ $selected_plugins=array();
+ global $names;
+
+ if (!is_array($names)) {
+  $names=array();
+ }
 
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
@@ -192,11 +198,17 @@ function admin(&$out) {
   //}
   if ($rec['EXISTS']) {
    $can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
-   //$can_be_updated[]=$rec['MODULE_NAME'];
+  }
+  if (in_array($rec['MODULE_NAME'], $names)) {
+   $selected_plugins[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
 
-
   $out['PLUGINS'][]=$rec;
+ }
+
+
+ if ($this->mode=='install_multiple') {
+  $this->updateAll($selected_plugins);
  }
 
 
