@@ -1,4 +1,69 @@
 <style>
+
+@keyframes lefttoright  {
+  0% { transform: translateX(-500px); }
+  45% { transform: translateX(40px); }
+  65% { transform: translateX(-10px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes righttoleft {
+  0% { transform: translateX(500px); }
+  45% { transform: translateX(-40px); }
+  65% { transform: translateX(10px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes bottomtotop {
+  0% { transform: translateY(500px); }
+  45% { transform: translateY(-40px); }
+  65% { transform: translateY(10px); }
+ 100% { transform: translateY(0px); }
+}
+@keyframes toptobottom {
+  0% { transform: translateY(-500px); }
+  45% { transform: translateY(40px); }
+  65% { transform: translateY(-10px); }
+ 100% { transform: translateY(0px); }
+}
+@keyframes blink {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes scale {
+  0%   { transform: scale(0.5); }
+  25%  { transform: scale(1.1); }
+  45%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+
+{foreach $RESULT as $SCENE}
+{foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
+{if $ELEMENT.APPEAR_ANIMATION=='1'}
+.element_{$ELEMENT.ID} { animation: lefttoright 1s ease-out; }
+{/if}
+{if $ELEMENT.APPEAR_ANIMATION=='2'}
+.element_{$ELEMENT.ID} { animation: righttoleft 1s ease-out; }
+{/if}
+{if $ELEMENT.APPEAR_ANIMATION=='3'}
+.element_{$ELEMENT.ID} { animation: toptobottom 1s ease-out; }
+{/if}
+{if $ELEMENT.APPEAR_ANIMATION=='4'}
+.element_{$ELEMENT.ID} { animation: bottomtotop 1s ease-out; }
+{/if}
+{if $ELEMENT.APPEAR_ANIMATION=='5'}
+.element_{$ELEMENT.ID} { animation: blink 0.5s ease-out; }
+{/if}
+{if $ELEMENT.APPEAR_ANIMATION=='6'}
+.element_{$ELEMENT.ID} { animation: scale 0.5s ease-out; }
+{/if}
+
+
+{/foreach}
+{/foreach}
+
+
 .container_background {
  border:1px solid rgba(0,0,0,0.2);
  background-color:rgba(0,0,0,0.5);
@@ -11,6 +76,7 @@
  background-size:100%;
  padding:0px;
 }
+
 {foreach $ALL_TYPES as $TYPE}
  {if $TYPE.HAS_STYLE!=""}{include file="../../cms/scenes/styles/{$TYPE.TITLE}/style.css.tpl"}{/if}
 {/foreach}
@@ -473,6 +539,7 @@ $.fn.customContextMenu = function(callBack){
 
 
         </script>
+
 
 
 <table  border="0" align="center"{if $TOTAL_SCENES=="1"} width="100%"{/if} cellpadding="0" cellspacing="0">

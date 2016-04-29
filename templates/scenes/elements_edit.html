@@ -243,7 +243,6 @@
          [#if IMAGE!=""#]<span style='display: inline-block;'><a href="#" onClick="$('#css_style').val('[#TITLE#]');$('#current_style').html('<img src=\'<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]\' border=\'0\'> [#TITLE#]');$('#more_styles').hide();return false;"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]" border="0"></a></span>[#endif#]
          [#end COMMON_STYLES#]
 
-
          </div>
          <!--#
          [#inc type_styles.html#]
@@ -253,6 +252,21 @@
 [#else STYLES#]
 <input type="hidden" name="css_style" value='default'>
 [#endif STYLES#]
+
+<div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_APPEAR_ANIMATION#><#LANG_HCB#>appear_animation<#LANG_HCE#></label>
+        <div class="controls">
+                <select name="appear_animation" class="form-control">
+                <option value="0">None
+                <option value="1"[#if ELEMENT_APPEAR_ANIMATION="1"#] selected[#endif#]><#LANG_APPEAR_LEFTTORIGHT#>
+                <option value="2"[#if ELEMENT_APPEAR_ANIMATION="2"#] selected[#endif#]><#LANG_APPEAR_RIGHTTOLEFT#>
+                <option value="3"[#if ELEMENT_APPEAR_ANIMATION="3"#] selected[#endif#]><#LANG_APPEAR_TOPTOBOTTOM#>
+                <option value="4"[#if ELEMENT_APPEAR_ANIMATION="4"#] selected[#endif#]><#LANG_APPEAR_BOTTOMTOTOP#>
+                <option value="5"[#if ELEMENT_APPEAR_ANIMATION="5"#] selected[#endif#]><#LANG_APPEAR_BLINK#>
+                <option value="6"[#if ELEMENT_APPEAR_ANIMATION="6"#] selected[#endif#]><#LANG_APPEAR_SCALE#>
+                </select>
+        </div>
+</div>
 
 
 <script language="javascript">

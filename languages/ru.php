@@ -772,6 +772,14 @@ $dictionary=array(
 
 'SWITCH_SCENE_WHEN_ACTIVATED'=>'переключить на сцену при активации', 
 
+'APPEAR_ANIMATION'=>'Анимация появления', 
+'APPEAR_LEFTTORIGHT'=>'Слева-на-право', 
+'APPEAR_RIGHTTOLEFT'=>'Справа-на-лево', 
+'APPEAR_TOPTOBOTTOM'=>'Сверху-вниз', 
+'APPEAR_BOTTOMTOTOP'=>'Снизу-вверх', 
+'APPEAR_BLINK'=>'Моргание', 
+'APPEAR_SCALE'=>'Масштаб', 
+
 
 'ADD_NEW_ELEMENT'=>'Добавить новый элемент', 
 'ELEMENTS'=>'Элементы', 

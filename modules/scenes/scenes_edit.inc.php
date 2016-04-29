@@ -207,6 +207,9 @@
     global $type;
     $element['TYPE']=$type;
 
+    global $appear_animation;
+    $element['APPEAR_ANIMATION']=(int)$appear_animation;
+
     global $smart_repeat;
     $element['SMART_REPEAT']=(int)$smart_repeat;
 

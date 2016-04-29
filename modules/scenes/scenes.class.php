@@ -1551,6 +1551,7 @@ elm_states - Element states
  elements: S3D_SCENE varchar(255) NOT NULL DEFAULT ''
  elements: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
  elements: EASY_CONFIG int(3) NOT NULL DEFAULT '0'
+ elements: APPEAR_ANIMATION int(3) NOT NULL DEFAULT '0'
 
  elm_states: ID int(10) unsigned NOT NULL auto_increment
  elm_states: ELEMENT_ID int(10) NOT NULL DEFAULT '0'
