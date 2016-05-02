@@ -1302,9 +1302,9 @@ function usual(&$out) {
 
    $cache_file=ROOT.'cached/styles_'.$type.'.txt';
 
-   if (file_exists($cache_file) && (time()-filemtime($cache_file)<1*60*60)) {
-    $styles_recs=unserialize(LoadFile($cache_file));
-   } else {
+   //if (file_exists($cache_file) && (time()-filemtime($cache_file)<1*60*60)) {
+   // $styles_recs=unserialize(LoadFile($cache_file));
+   //} else {
 
 
 
@@ -1413,13 +1413,12 @@ function usual(&$out) {
      }
     }
 
-    SaveFile($cache_file, serialize($styles_recs));
+    //SaveFile($cache_file, serialize($styles_recs));
     endMeasure('openAndReadDir');
 
     }
 
-
-   }
+   //}
 
 
     if (is_array($styles_recs)) {
