@@ -149,7 +149,6 @@ $dictionary=array(
 
 
 'BY_URL'=>'По ссылке', 
-'TEST'=>'Проверка', 
 
 
 'COMMAND_LINE'=>'Через командную строку', 

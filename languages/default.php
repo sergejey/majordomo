@@ -159,8 +159,6 @@ $dictionary=array(
 
 
 'BY_URL'=>'By URL', 
-'TEST'=>'Test', 
-
 
 'COMMAND_LINE'=>'Using command-line', 
 

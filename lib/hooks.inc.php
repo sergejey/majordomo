@@ -7,7 +7,7 @@
  * @param mixed $filter_details Filter details (default '')
  * @return void
  */
-function subscribeToEvent($module_name, $event_name, $filter_details = '')
+function subscribeToEvent($module_name, $event_name, $filter_details = '', $priority = 0)
 {
    $rec = SQLSelectOne("SELECT * FROM settings WHERE NAME = 'HOOK_EVENT_" . DBSafe(strtoupper($event_name)) . "'");
 
@@ -24,13 +24,9 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '')
 
    $data = json_decode($rec['VALUE'], true);
    
-   if (!isset($data[$module_name]))
-   {
-      $data[$module_name] = 1;
-      $rec['VALUE']       = json_encode($data);
-      
-      SQLUpdate('settings', $rec);
-   }
+   $data[$module_name] = array('priority'=>$priority, 'filter'=>$filter_details);
+   $rec['VALUE']       = json_encode($data);
+   SQLUpdate('settings', $rec);
 }
 
 /**
@@ -78,10 +74,26 @@ function processSubscriptions($event_name, $details = '')
    
    if (is_array($data))
    {
-      foreach ($data as $k => $v)
-      {
-         $module_name    = $k;
-         $filter_details = $v;
+
+      function cmpSubscribers ($a, $b) { 
+       if ($a['priority'] == $b['priority']) return 0; 
+       return ($a['priority'] > $b['priority']) ? -1 : 1; 
+      } 
+
+
+      $data2=array();
+      foreach($data as $k => $v) {
+       $data2[]=array('module'=>$k, 'filter'=>$v['filter'], 'priority'=>(int)$v['priority']);
+      }
+
+      usort($data2, 'cmpSubscribers');
+
+      $total=count($data2);
+      for($i=0;$i<$total;$i++) {
+       
+         $module_name    = $data2[$i]['module'];
+         $filter_details = $data2[$i]['filter'];
+
          $modulePath     = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
 
          if (file_exists($modulePath))
@@ -95,6 +107,7 @@ function processSubscriptions($event_name, $details = '')
                $module_object->processSubscription($event_name, $details);
             }
          }
+
       }
    }
 
