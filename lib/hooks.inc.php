@@ -75,10 +75,12 @@ function processSubscriptions($event_name, $details = '')
    if (is_array($data))
    {
 
-      function cmpSubscribers ($a, $b) { 
-       if ($a['priority'] == $b['priority']) return 0; 
-       return ($a['priority'] > $b['priority']) ? -1 : 1; 
-      } 
+      if (!function_exists('cmpSubscribers')) {
+       function cmpSubscribers ($a, $b) { 
+        if ($a['priority'] == $b['priority']) return 0; 
+        return ($a['priority'] > $b['priority']) ? -1 : 1; 
+       } 
+      }
 
 
       $data2=array();
