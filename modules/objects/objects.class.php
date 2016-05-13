@@ -11,6 +11,7 @@
 //
 //
 class objects extends module {
+
 /**
 * objects
 *
@@ -711,7 +712,6 @@ function usual(&$out) {
 
    $tmp=explode(',', $v['LINKED_MODULES']);
    $total=count($tmp);
-
 
 
    startMeasure('linkedModulesProcessing');

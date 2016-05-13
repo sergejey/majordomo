@@ -15,7 +15,7 @@
 * You should have received a copy of the GNU General Public License
 * along with htmlMimeMail; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-* 
+*
 * � Copyright 2004 Richard Heyes
 */
 
@@ -81,14 +81,14 @@ class htmlMimeMail
     * @var boolean
     */
     var $is_built;
-    
+
     /**
     * The return path address. If not set the From:
     * address is used instead
     * @var string
     */
     var $return_path;
-    
+
     /**
     * Array of information needed for smtp sending
     * @var array
@@ -360,7 +360,7 @@ class htmlMimeMail
             // If duplicate images are embedded, they may show up as attachments, so remove them.
             $html_images = array_unique($html_images);
             sort($html_images);
-    
+
             for ($i=0; $i<count($html_images); $i++) {
                 if ($image = $this->getFile($images_dir.$html_images[$i])) {
                     $ext = substr($html_images[$i], strrpos($html_images[$i], '.') + 1);
@@ -412,7 +412,7 @@ class htmlMimeMail
         } else {
             $return = new Mail_mimePart($text, $params);
         }
-        
+
         return $return;
     }
 
@@ -429,7 +429,7 @@ class htmlMimeMail
         } else {
             $return = new Mail_mimePart($this->html, $params);
         }
-        
+
         return $return;
     }
 
@@ -440,7 +440,7 @@ class htmlMimeMail
     {
         $params['content_type'] = 'multipart/mixed';
         $return = new Mail_mimePart('', $params);
-        
+
         return $return;
     }
 
@@ -455,7 +455,7 @@ class htmlMimeMail
         } else {
             $return = new Mail_mimePart('', $params);
         }
-        
+
         return $return;
     }
 
@@ -470,7 +470,7 @@ class htmlMimeMail
         } else {
             $return = new Mail_mimePart('', $params);
         }
-        
+
         return $return;
     }
 
@@ -651,7 +651,7 @@ class htmlMimeMail
             $replacement = preg_replace('/([\x20\x80-\xFF])/e', '"=" . strtoupper(dechex(ord("\1")))', $value);
             $input = str_replace($value, '=?' . $charset . '?Q?' . $replacement . '?=', $input);
         }
-        
+
         return $input;
     }
 
@@ -692,12 +692,12 @@ class htmlMimeMail
                 } else {
                     $result = @mail($to, $subject, $this->output, implode(CRLF, $headers));
                 }
-                
+
                 // Reset the subject in case mail is resent
                 if ($subject !== '') {
                     $this->headers['Subject'] = $subject;
                 }
-                
+
                 // Return
                 return $result;
                 break;
@@ -706,7 +706,7 @@ class htmlMimeMail
                 require_once(dirname(__FILE__) . '/smtp.php');
                 require_once(dirname(__FILE__) . '/RFC822.php');
                 $smtp = &smtp::connect($this->smtp_params);
-                
+
                 // Parse recipients argument for internet addresses
                 foreach ($recipients as $recipient) {
                     $addresses = Mail_RFC822::parseAddressList($recipient, $this->smtp_params['helo'], null, false);
@@ -733,7 +733,7 @@ class htmlMimeMail
                 }
                 // Add To header based on $recipients argument
                 $headers[] = 'To: ' . $this->_encodeHeader(implode(', ', $recipients), $this->build_params['head_charset']);
-                
+
                 // Add headers to send_params
                 $send_params['headers']    = $headers;
                 $send_params['recipients'] = array_values(array_unique($smtp_recipients));
@@ -1125,6 +1125,3 @@ class Mail_mimePart {
         return $output;
     }
 } // End of class
-
-
-?>

@@ -30,13 +30,13 @@ else
    do
    {
       $pkt = stream_socket_recvfrom($socket, 512, 0, $peer);
-      
+
       if (preg_match('/:\d+$/', $peer, $m))
          $peer = str_replace($m[0], '', $peer);
 
       echo date('Y-m-d H:i:s') . ' new snmp trap from ' . $peer . PHP_EOL;
 
-      $sqlQuery = "SELECT ID 
+      $sqlQuery = "SELECT ID
                      FROM snmpdevices
                     WHERE HOST LIKE '" . DBSafe($peer) . "'";
 

@@ -13,7 +13,7 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
- 
+
 $ctl = new control_modules();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
@@ -48,17 +48,17 @@ while (1)
    if ((time() - $last_backup) > $timeout || file_exists('./reboot'))
    {
       echo "Running db save...";
-      
+
       if (file_exists($filename))
          rename($filename, $filename . '.prev');
 
       exec($mysqlDumpPath . $mysqlDumpParam . " > " . $filename);
-    
+
       $last_backup = time();
-      
+
       echo "OK\n";
    }
- 
+
    if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
       $db->Disconnect();

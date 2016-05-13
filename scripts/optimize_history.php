@@ -38,7 +38,7 @@ DebMes('Optimize history script started');
 echo "Calculating stats:<br />";
 
 $sqlQuery = "SELECT pvalues.ID, properties.TITLE as PTITLE, classes.TITLE as CTITLE, objects.TITLE as OTITLE
-               FROM pvalues 
+               FROM pvalues
                LEFT JOIN objects ON pvalues.OBJECT_ID = objects.ID
                LEFT JOIN classes ON objects.CLASS_ID  = classes.ID
                LEFT JOIN properties ON pvalues.PROPERTY_ID = properties.ID
@@ -59,11 +59,11 @@ for ($i = 0; $i < $total; $i++)
    {
       echo $pvalues[$i]['CTITLE'] . "." . $pvalues[$i]['PTITLE'] . " (object: " . $pvalues[$i]['OTITLE'] . "): ";
       $grand_total += $tmp['TOTAL'];
-   
+
       echo $tmp['TOTAL'] > 5000 ? "<b>" . $tmp['TOTAL'] . "</b>" : $tmp['TOTAL'];
       echo "<br />";
       echo str_repeat(' ', 1024);
-      
+
       flush();
    }
 }
@@ -104,7 +104,7 @@ for ($i = 0; $i < $total; $i++)
    {
       $key = $pvalue['CTITLE'] . '.' . $pvalue['PTITLE'];
       $rule = '';
-   
+
       if ($rules[$key])
          $rule = $rules[$key];
       elseif ($rules[$pvalue['OTITLE'] . '.' . $pvalue['PTITLE']])
@@ -116,7 +116,7 @@ for ($i = 0; $i < $total; $i++)
       {
          //processing
          echo "<h3>" . $pvalue['OTITLE'] . " (" . $key . ")</h3>";
-         
+
          $sqlQuery = "SELECT COUNT(*) as TOTAL
                         FROM phistory
                        WHERE VALUE_ID = '" . $value_id . "'";
@@ -177,7 +177,7 @@ for ($i = 0; $i < $total; $i++)
             $interval = 3 * 60; // 3 minutes interval
             optimizeHistoryData($value_id, $rule['optimize'], $interval, $start, $end);
          }
-         
+
          $sqlQuery = "SELECT COUNT(*) as TOTAL
                         FROM phistory
                        WHERE VALUE_ID = '" . $value_id . "'";
@@ -207,7 +207,7 @@ DebMes("Optimize history script finished");
 function optimizeHistoryData($valueID, $type, $interval, $start, $end)
 {
    $totalRemoved = 0;
-   
+
    if (!$interval)
       return 0;
 
@@ -216,7 +216,7 @@ function optimizeHistoryData($valueID, $type, $interval, $start, $end)
 
    echo "Value ID: $valueID <br />";
    echo "Interval from " . $beginDate . " to " . $endDate . " (every " . $interval . " seconds)<br />";
-   
+
    $sqlQuery = "SELECT COUNT(*)
                   FROM phistory
                  WHERE VALUE_ID =  '" . $valueID . "'
@@ -224,15 +224,15 @@ function optimizeHistoryData($valueID, $type, $interval, $start, $end)
                    AND ADDED    <= '" . $endDate . "'";
 
    $totalValues = (int)current(SQLSelectOne($sqlQuery));
-   
+
    echo "Total values: " . $totalValues . "<br>";
-   
+
    if ($totalValues < 2)
       return 0;
 
    $tmp = $end - $start;
    $tmp2 = round($tmp / $interval);
-   
+
    if ($totalValues <= $tmp2)
    {
       echo "... number of values ($totalValues) is less than optimal (" . $tmp2 . ") (skipping)<br />";
@@ -280,22 +280,22 @@ function optimizeHistoryData($valueID, $type, $interval, $start, $end)
       echo str_repeat(' ', 1024);
       flush();
 
-      $sqlQuery = "SELECT * 
+      $sqlQuery = "SELECT *
                      FROM phistory
                     WHERE VALUE_ID = '" . $valueID . "'
                       AND ADDED    >= '" . date('Y-m-d H:i:s', $start) . "'
                       AND ADDED    <  '" . date('Y-m-d H:i:s', $start + $interval) . "'";
-      
+
       $data = SQLSelect($sqlQuery);
       $total = count($data);
-    
+
       if ($total > 1)
       {
          $values = array();
-      
+
          for ($i = 0; $i < $total; $i++)
             $values[] = $data[$i]['VALUE'];
-     
+
          if ($type == 'max')
             $newValue = max($values);
          elseif ($type == 'sum')
@@ -308,7 +308,7 @@ function optimizeHistoryData($valueID, $type, $interval, $start, $end)
                        WHERE VALUE_ID = '" . $valueID . "'
                          AND ADDED    >= '" . date('Y-m-d H:i:s', $start) . "'
                          AND ADDED    < '" . date('Y-m-d H:i:s', $start + $interval) . "'";
-         
+
          SQLExec($sqlQuery);
 
          $addedDate = ($type == 'avg') ? $start + (int)($interval / 2) : $start + $interval - 1;
@@ -317,12 +317,12 @@ function optimizeHistoryData($valueID, $type, $interval, $start, $end)
          $rec['VALUE_ID'] = $valueID;
          $rec['VALUE'] = $newValue;
          $rec['ADDED'] = date('Y-m-d H:i:s', $addedDate);
-         
+
          SQLInsert('phistory', $rec);
-         
+
          $totalRemoved += $total;
       }
-      
+
       $start += $interval;
    }
 
