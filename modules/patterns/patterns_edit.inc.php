@@ -38,6 +38,11 @@
    }
 
 
+   if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
+    global $usemorphy;
+    $rec['USEMORPHY']=(int)$usemorphy;
+   }
+
    global $script_exit;
    global $use_script_exit;
 
@@ -194,5 +199,8 @@
    $out['SAME_LEVEL']=SQLSelect("SELECT ID, TITLE FROM patterns WHERE PARENT_ID='".(int)$rec['PARENT_ID']."'");
   }
 
+  if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
+   $out['SHOW_MORPHY']=1;
+  }
 
 ?>

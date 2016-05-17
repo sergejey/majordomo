@@ -297,11 +297,7 @@ class mysql
       {
          if (is_Numeric($field)) continue;
          $fields .= "`$field`, ";
-         if (!is_null($value)) {
-            $values .= "'" . $this->DBSafe1($value) . "', ";
-         } else {
-            $values .= "NULL, ";
-         }
+         $values .= "'" . $this->DBSafe1($value) . "', ";
       }
       
       $fields = substr($fields, 0, strlen($fields) - 2);
