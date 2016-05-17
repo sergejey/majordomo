@@ -16,8 +16,8 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
-$sqlQuery = "SELECT * 
-               FROM classes 
+$sqlQuery = "SELECT *
+               FROM classes
               WHERE TITLE LIKE 'timer'";
 
 $timerClass = SQLSelectOne($sqlQuery);
@@ -60,39 +60,39 @@ while (1)
    $m = date('i');
    $h = date('h');
    $dt = date('Y-m-d');
-   
+
    if ($m != $old_minute)
    {
       //echo "new minute\n";
       $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
-      
+
       $objects = SQLSelect($sqlQuery);
       $total = count($objects);
-      
+
       for ($i = 0; $i < $total; $i++)
       {
          echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewMinute\n";
          getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
       }
-      
+
       $old_minute = $m;
    }
-   
+
    if ($h != $old_hour)
    {
       $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
-      
+
       //echo "new hour\n";
       $old_hour = $h;
       $objects = SQLSelect($sqlQuery);
       $total = count($objects);
-      
-      for($i = 0; $i < $total; $i++) 
+
+      for($i = 0; $i < $total; $i++)
       {
          echo date('H:i:s').' '.$objects[$i]['TITLE'] . "->onNewHour\n";
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
@@ -147,7 +147,7 @@ while (1)
 
     }
    }
-   
+
    if ($dt != $old_date)
    {
       //echo "new day\n";

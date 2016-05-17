@@ -15,10 +15,10 @@ if (!is_dir(DOC_ROOT . '/backup'))
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH))
 {
    $target_dir = SETTINGS_BACKUP_PATH;
-   
+
    if (substr($target_dir, -1) != '/' && substr($target_dir, -1) != '\\')
       $target_dir .= '/';
-   
+
    $target_dir .= date('Ymd');
 }
 else
@@ -68,10 +68,10 @@ if ($full_backup)
 {
    DebMes("Backing up files...");
    echo "Backing up files...";
-   
+
    if (defined('PATH_TO_MYSQLDUMP'))
       $mysqlDumpPath = PATH_TO_MYSQLDUMP;
-   
+
    if ($mysqlDumpPath == '')
    {
       if (substr(php_uname(), 0, 7) == "Windows")
@@ -85,7 +85,7 @@ if ($full_backup)
    $mysqlDumpParam .= " > " . $target_dir . "/" . DB_NAME . ".sql";
 
    exec($mysqlDumpPath . $mysqlDumpParam);
-   
+
    copyTree('./cms', $target_dir . '/cms', 1);
    copyTree('./texts', $target_dir . '/texts', 1);
    copyTree('./sounds', $target_dir . '/sounds', 1);
@@ -126,13 +126,13 @@ umask($old_mask);
 // CHECK/REPAIR/OPTIMIZE TABLES
 $tables = SQLSelect("SHOW TABLES FROM `" . DB_NAME . "`");
 $total = count($tables);
- 
+
 for ($i = 0; $i < $total; $i++)
 {
    $table = $tables[$i]['Tables_in_' . DB_NAME];
-  
+
    echo 'Checking table [' . $table . '] ...';
-  
+
    if ($result = SQLExec("CHECK TABLE " . $table . ";"))
    {
       echo "OK\n";
@@ -181,7 +181,7 @@ foreach ($tables as $k => $v)
    {
       $module = $v;
       $property = $data[$i]['LINKED_OBJECT'] . '.' . $data[$i]['LINKED_PROPERTY'];
-   
+
       if (!$value_ids[$property])
          $value_ids[$property] = getValueIdByName($data[$i]['LINKED_OBJECT'], $data[$i]['LINKED_PROPERTY']);
 
@@ -190,9 +190,9 @@ foreach ($tables as $k => $v)
          $sqlQuery = "SELECT *
                         FROM pvalues
                        WHERE ID = " . (int)$value_ids[$property];
-         
+
          $value = SQLSelectOne($sqlQuery);
-    
+
          if (!$value['LINKED_MODULES'])
             $tmp = array();
          else
@@ -204,7 +204,7 @@ foreach ($tables as $k => $v)
             echo "$property adding linked" . PHP_EOL;
             $tmp[] = $v;
             $value['LINKED_MODULES'] = implode(',', $tmp);
-     
+
             SQLUpdate('pvalues', $value);
          }
       }
@@ -234,13 +234,13 @@ for ($i = 0; $i < $total; $i++)
    else
       echo "Missing: " . $objectProperty . PHP_EOL;
 
-   $sqlQuery = "SELECT * 
+   $sqlQuery = "SELECT *
                   FROM pvalues
                  WHERE ID = '" . $data[$i]['ID'] . "'";
 
    $rec = SQLSelectOne($sqlQuery);
-   
+
    $rec['PROPERTY_NAME'] = $data[$i]['OBJECT_TITLE'] . "." . $data[$i]['PROPERTY_TITLE'];
-  
+
    SQLUpdate('pvalues', $rec);
 }

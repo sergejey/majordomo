@@ -51,8 +51,8 @@ if (file_exists($filename))
 //reinstalling modules
 /*
         $source=ROOT.'modules';
-        if ($dir = @opendir($source)) { 
-          while (($file = readdir($dir)) !== false) { 
+        if ($dir = @opendir($source)) {
+          while (($file = readdir($dir)) !== false) {
            if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
             //echo "Removing file ".ROOT."modules/".$file."/installed"."\n";
             @unlink(ROOT."modules/".$file."/installed");
@@ -110,7 +110,7 @@ foreach ($cycles as $path)
    {
       DebMes("Starting " . $path . " ... ");
       echo "Starting " . $path . " ... ";
-      
+
       if ((preg_match("/_X/", $path)))
       {
          if (!IsWindowsOS())
@@ -130,9 +130,9 @@ foreach ($cycles as $path)
       {
          $pipe_id = $threads->newThread($path);
       }
-      
+
       $pipes[$pipe_id] = $path;
-      
+
       echo "OK" . PHP_EOL;
    }
 }
@@ -167,11 +167,11 @@ while (false !== ($result = $threads->iteration()))
       if (preg_match_all($closePattern, $result, $matches) && !file_exists('./reboot'))
       {
          $total_m = count($matches[1]);
-         
+
          for ($im = 0; $im < $total_m; $im++)
          {
             $closed_thread = $matches[1][$im];
-            
+
             foreach ($restart_threads as $item)
             {
                if (preg_match('/' . $item . '/is', $closed_thread) && (!$last_restart[$closed_thread] || (time()-$last_restart[$closed_thread])>30))
@@ -196,4 +196,3 @@ while (false !== ($result = $threads->iteration()))
 
  // closing database connection
  $db->Disconnect();
-

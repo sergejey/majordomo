@@ -2,9 +2,9 @@
 
 chdir(dirname(__FILE__) . '/../');
 
-include_once("./config.php");
-include_once("./lib/loader.php");
-include_once("./lib/threads.php");
+include_once './config.php';
+include_once './lib/loader.php';
+include_once './lib/threads.php';
 
 set_time_limit(0);
 
@@ -30,7 +30,7 @@ while (1)
    {
       $checked_time = time();
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-    
+
       // checking all hosts
       $pinghosts->checkAllHosts(1);
    }
@@ -44,4 +44,3 @@ while (1)
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
-

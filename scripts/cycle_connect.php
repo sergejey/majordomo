@@ -49,7 +49,7 @@ $latest_urls_time=0;
 while (1)
 {
    include_once(DIR_MODULES . 'connect/connect.class.php');
-   
+
    $connect = new connect();
    $connect->getConfig();
 
@@ -63,12 +63,12 @@ while (1)
       /*
       $connect->sendMenu(1);
       */
-      
+
       $sqlQuery = "SELECT *
                      FROM commands";
       $commands = SQLSelect($sqlQuery);
       $total = count($commands);
-   
+
       for ($i = 0; $i < $total; $i++)
       {
          $cmd_values[$commands[$i]['ID']] = $commands[$i]['CUR_VALUE'];
@@ -89,8 +89,8 @@ while (1)
           curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
           curl_setopt($ch,CURLOPT_TIMEOUT, 120);
           curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-          curl_setopt($ch,CURLOPT_USERPWD, $connect->config['CONNECT_USERNAME'].":".$connect->config['CONNECT_PASSWORD']); 
-        
+          curl_setopt($ch,CURLOPT_USERPWD, $connect->config['CONNECT_USERNAME'].":".$connect->config['CONNECT_PASSWORD']);
+
           //execute post
           $result = curl_exec($ch);
 
@@ -111,7 +111,7 @@ while (1)
 
    // Create a TCP/IP socket.
    $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-   
+
    if ($socket === false)
    {
       echo date('Y-m-d H:i:s ') . "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
@@ -155,19 +155,19 @@ while (1)
    $in = 'auth:' . $connect->config['CONNECT_USERNAME'] . '|' . md5(md5($connect->config['CONNECT_PASSWORD'])) . "\n";
 
    echo date('Y-m-d H:i:s ') . 'Sending: ' . $in;
-   
+
    socket_write($socket, $in, strlen($in));
-   
+
    echo "OK.\n";
 
    $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-   
+
    echo date('Y-m-d H:i:s ') . 'Response: ' . trim($out) . "\n";
 
    $in = 'Hello again :)' . "\n";
 
    echo date('Y-m-d H:i:s ') . 'Sending: ' . $in;
-   
+
    socket_write($socket, $in, strlen($in));
 
    echo "OK.\n";
@@ -179,22 +179,22 @@ while (1)
    {
       $read = array();
       $read[0] = $socket;
-    
+
       socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => 60, "usec" => 0));
 
       $write  = NULL;
       $except = NULL;
-      $num_changed_sockets = socket_select($read, $writ, $except, 0, 1);      
-    
+      $num_changed_sockets = socket_select($read, $writ, $except, 0, 1);
+
       if ($num_changed_sockets > 0)
       {
          $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-         
+
          if ($out === false)
          {
             break;
          }
-         
+
          $out = trim($out);
 
          if (preg_match('/Please login/is', $out)) {
@@ -214,17 +214,17 @@ while (1)
       if (time() - $menu_sent_time > 30 * 60)
       {
          echo "Updating full menu\n";
-    
+
          $sqlQuery = "SELECT *
                         FROM commands";
-         
+
          $menu_sent_time = time();
          if ($socket_connected) {
           $connect->sendMenu(1);
          }
          $commands = SQLSelect($sqlQuery);
          $total = count($commands);
-    
+
          for ($i = 0; $i < $total; $i++)
          {
             $cmd_values[$commands[$i]['ID']] = $commands[$i]['CUR_VALUE'];
@@ -242,33 +242,33 @@ while (1)
                         FROM commands
                        WHERE AUTO_UPDATE > 0
                          AND (NOW() - RENDER_UPDATED) > AUTO_UPDATE";
-         
+
          $commands = SQLSelect($sqlQuery);
          $total = count($commands);
-    
+
          for ($i = 0; $i < $total; $i++)
          {
             $commands[$i]['RENDER_TITLE'] = processTitle($commands[$i]['TITLE'], $connect);
             $commands[$i]['RENDER_DATA'] = processTitle($commands[$i]['DATA'], $connect);
             $commands[$i]['RENDER_UPDATED'] = date('Y-m-d H:i:s');
-            
+
             SQLUpdate('commands', $commands[$i]);
-         
+
             $resultMessage = date('Y-m-d H:i:s');
             $resultMessage .= ' Updating auto update item (id ' . $commands[$i]['ID'];
             $resultMessage .= ' time ' . $commands[$i]['AUTO_UPDATE'] . '): ' . $commands[$i]['TITLE'] . "\n";
-            
+
             echo $resultMessage;
          }
-    
+
          // sending changes if any
          $sqlQuery = "SELECT *
                         FROM commands";
-         
+
          $commands = SQLSelect($sqlQuery);
          $total = count($commands);
          $changed_data = array();
-    
+
          for ($i = 0; $i < $total; $i++)
          {
             if ($cmd_values[$commands[$i]['ID']] != $commands[$i]['CUR_VALUE'])
@@ -286,7 +286,7 @@ while (1)
                                        'ID'   => $commands[$i]['ID'],
                                        'DATA' => $commands[$i]['RENDER_TITLE']);
             }
-      
+
             if ($cmd_data[$commands[$i]['ID']] != $commands[$i]['RENDER_DATA'])
             {
                $cmd_data[$commands[$i]['ID']] = $commands[$i]['RENDER_DATA'];
@@ -295,25 +295,25 @@ while (1)
                                        'DATA' => $commands[$i]['RENDER_DATA']);
             }
          }
-    
+
          $total = count($changed_data);
-    
+
          for ($i = 0; $i < $total; $i++)
          {
             $changed_data[$i]['DATA'] = str_replace("\n", ' ', $changed_data[$i]['DATA']);
             $changed_data[$i]['DATA'] = str_replace("\r", '', $changed_data[$i]['DATA']);
             $changed_data[$i]['DATA'] = preg_replace("/<!--(.+?)-->/is", '', $changed_data[$i]['DATA']);
-     
+
             $in = 'serial:' . serialize($changed_data[$i]) . "\n";
-            
+
             echo date('Y-m-d H:i:s') . ' ' . $i . 'Sending: ' . $in;
-     
+
             socket_write($socket, $in, strlen($in));
-            
+
             echo "OK.\n";
-     
+
             $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-      
+
             processResponse($out);
          }
       }
@@ -339,35 +339,35 @@ while (1)
 function processResponse($out)
 {
    global $socket;
-   
+
    echo date('Y-m-d H:i:s') . ' Incoming: ' . trim($out) . "\n";
 
    if (preg_match('/REQUEST:(.+)/is', $out, $m))
    {
       $url = $m[1];
-         
+
       if (!preg_match('/^http:/', $url))
       {
          $url = 'http://localhost' . $url;
       }
-         
+
       echo date('Y-m-d H:i:s') . ' Sending request to ' . $url . "\n";
-         
+
       DebMes('Connect command: ' . $url);
-         
+
       $content = getURL($url, 0);
    }
-   
+
    if (preg_match('/PING/is', $out, $m))
    {
       $in = "PONG!\n";
-         
+
       echo date('Y-m-d H:i:s') . ' Sending: ' . $in;
-         
+
       socket_write($socket, $in, strlen($in));
-      
+
       echo "OK.\n";
-         
+
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
    }
 }

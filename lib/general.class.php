@@ -23,7 +23,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
    $p = str_replace(',', ' ', $p);
    $p = str_replace('  ', ' ', $p);
    $p = str_replace(' ', '|', $p);
-   
+
    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
 
    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1')
@@ -57,7 +57,7 @@ if (isset($_SERVER['REQUEST_METHOD']))
 {
    $blocked = array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS',
                     '_FILES', '_REQUEST', '_ENV');
-   
+
    if ($_SERVER['REQUEST_METHOD'] == "POST")
    {
       $blocked[] = '_GET';
@@ -116,11 +116,11 @@ if (isset($_SERVER['REQUEST_METHOD']))
    {
       $ks    = array_keys($_FILES);
       $ksCnt = count($ks);
-      
+
       for ($i = 0; $i < $ksCnt; $i++)
       {
          $k = $ks[$i];
-         
+
          ${"$k"}           = $_FILES[$k]['tmp_name'];
          ${"$k" . "_name"} = $_FILES[$k]['name'];
       }
@@ -146,12 +146,12 @@ function redirect($url, $owner = "", $no_sid = 0)
    else
    {
       $param_str = "";
-      
+
       if (!$no_sid)
       {
          $replaceStr  = $_SERVER['PHP_SELF'] . '?' . session_name() . '=' . session_id();
          $replaceStr .= '&pd=' . $param_str . '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
-         
+
          $url = str_replace('?', $replaceStr, $url);
       }
 
@@ -173,7 +173,7 @@ function redirect($url, $owner = "", $no_sid = 0)
 function LoadFile($filename)
 {
    // loading file
-   $f     = fopen("$filename", "r");
+   $f     = fopen($filename, "r");
    $data  = "";
    $fsize = filesize($filename);
 
@@ -198,7 +198,7 @@ function SaveFile($filename, $data)
 {
    // saving file
    $f = fopen("$filename", "w+");
-   
+
    if ($f)
    {
       flock($f,2);
@@ -206,10 +206,10 @@ function SaveFile($filename, $data)
       flock($f,3);
       fclose($f);
       @chmod($filename, 0666);
-      
+
       return 1;
    }
- 
+
    return 0;
 }
 
@@ -286,11 +286,11 @@ function paging(&$data, $onPage, &$out)
       if (($from >= $i) && ($from < ($i + $onPage)))
       {
          $pages[$j - 1]['SELECTED'] = 1;
-         
+
          if ($j >= 2)
          {
             $pages[$j - 2]['PREVPAGE'] = 1;
-            
+
             $out["PREVPAGE"] = $pages[$j - 2];
          }
 
@@ -322,7 +322,7 @@ function checkEmail($email)
 
    if (preg_match($pattern , strtolower($email)))
       return true;
-   
+
    return false;
 }
 
@@ -360,12 +360,12 @@ function checkGeneral($field)
 function SendMail($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
-   
+
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setText($body);
    $mail->setTextCharset('windows-1251');
-   
+
    if ($attach != '')
    {
       $attach_data = $mail->getFile($attach);
@@ -373,7 +373,7 @@ function SendMail($from, $to, $subj, $body, $attach = "")
    }
 
    $result = $mail->send(array($to));
-   
+
    return $result;
 }
 
@@ -413,9 +413,15 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
       $attach_data = $mail->getFile($attach);
       $mail->addAttachment($attach_data, basename($attach), '');
    }
-
    $result = $mail->send(array($to));
-   
+   if(!$result)
+   {
+       getLogger(__FILE__)->error('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo);
+   }
+   else
+   {
+       getLogger(__FILE__)->debug('Message has been sent');
+   }
    return $result;
 }
 
@@ -431,7 +437,7 @@ function genPassword($len = 5)
    $str = preg_replace("/\W/", "", $str);
    $str = strtolower($str);
    $str = substr($str, 0, $len);
-   
+
    return $str;
 }
 
@@ -447,7 +453,7 @@ function recLocalTime($table, $id, $gmt, $field = "ADDED")
 {
    // UPDATES TIMESTAMP FIELD USING GMT
    $rec = SQLSelectOne("SELECT ID, DATE_FORMAT($field, '%Y-%m-%d %H:%i') as DAT FROM $table WHERE ID='$id'");
-   
+
    if (isset($rec["ID"]))
    {
       $new_dat = setLocalTime($rec['DAT'], $gmt);
@@ -467,7 +473,7 @@ function getLocalTime($diff = 0)
    $nowgm   = gmdate("U") - $cur_dif;
    $now     = $nowgm + $diff * 60 * 60;
    $res     = date("Y-m-d H:i:s", $now);
-   
+
    return $res;
 }
 
@@ -481,7 +487,7 @@ function setLocalTime($now_date, $diff = 0)
 {
    // CONVERT FROM CURRENT TIME TO CORRECT TIME USING GMT
    $cur_dif = date("Z");
-   
+
    if ($now_date == "")
    {
       $nowgm = date("U") - $cur_dif;
@@ -493,7 +499,7 @@ function setLocalTime($now_date, $diff = 0)
 
    $now = $nowgm + $diff * 60 * 60;
    $res = date("Y-m-d H:i:s", $now);
-   
+
    return $res;
 }
 
@@ -676,7 +682,7 @@ function clearCache($verbose = 0)
          if (is_file(ROOT . 'cached/' . $file))
          {
             @unlink(ROOT . 'cached/' . $file);
-            
+
             if ($verbose)
             {
                echo "File : " . $file . " <b>removed</b><br>\n";
@@ -697,12 +703,12 @@ function clearCache($verbose = 0)
 function checkBadwords($s, $replace = 1)
 {
    global $badwords;
-   
+
    if (!isset($badwords))
    {
       $tmp   = SQLSelect("SELECT TITLE FROM badwords");
       $total = count($tmp);
-      
+
       for ($i = 0; $i < $total; $i++)
       {
          $badwords[] = strtolower($tmp[$i]['TITLE']);
@@ -710,11 +716,11 @@ function checkBadwords($s, $replace = 1)
    }
 
    $total = count($badwords);
-   
+
    for ($i = 0; $i < $total; $i++)
    {
       $badwords[$i] = str_replace('*', '\w+', $badwords[$i]);
-      
+
       if (preg_match('/\W' . $badwords[$i] . '\W/is', $s)
           || preg_match('/\W' . $badwords[$i] . '$/is', $s)
           || preg_match('/^' . $badwords[$i] . '\W/is', $s)

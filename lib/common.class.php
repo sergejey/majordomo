@@ -26,6 +26,8 @@ function say($ph, $level = 0, $member_id = 0)
    $rec['ROOM_ID']   = 0;
    $rec['MEMBER_ID'] = $member_id;
 
+
+
    if ($level > 0) $rec['IMPORTANCE'] = $level;
 
    $rec['ID'] = SQLInsert('shouts', $rec);
@@ -167,6 +169,7 @@ function isWeekEnd()
    if (date('w') == 0 || date('w') == 6)
       return true; // sunday, saturday
    
+
    return false;
 }
 
@@ -362,7 +365,7 @@ function runScheduledJobs()
 
       if ($result != 'OK')
       {
-         DebMes("Error executing job " . $jobs[$i]['TITLE'] . " (" . $jobs[$i]['ID'] . "): " . $result);
+         getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
       }
    }
 }
@@ -965,7 +968,6 @@ function binaryToString($buf)
 
    return $res;
 }
-
 
 /**
 * Title

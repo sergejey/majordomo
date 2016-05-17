@@ -44,7 +44,7 @@ class error
       $script      = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
       $description = $script . "\nError:\n" . $description;
 
-      $log = getLogger();
+      $log = getLogger($this);
       $log->error($description);
 
       if (defined("DEBUG_MODE"))
