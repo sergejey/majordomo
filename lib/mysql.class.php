@@ -342,9 +342,12 @@ class mysql
     */
    public function Error($query = "")
    {
-      registerError('sql', mysql_errno() . ": " . mysql_error() . "\n$query");
-      new error(mysql_errno() . ": " . mysql_error() . "<br>$query", 1);
-      
+
+      $err_no = mysql_errno();
+      $err_details = mysql_error();
+      registerError('sql', $err_no . ": " . $err_details . "\n$query");
+      new error($err_no . ": " . $err_details . "<br>$query", 1);
+
       return 1;
    }
 

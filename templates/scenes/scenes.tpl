@@ -267,11 +267,11 @@ $.fn.customContextMenu = function(callBack){
             var top=$('#scene_background_{$SCENE.ID}').offset().top;
             var left=$('#scene_background_{$SCENE.ID}').offset().left;
             var url1="{$smarty.const.ROOTHTML}ajax/scenes.html?op=position";
-            window{$ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
-            window{$ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
-            window{$ID}_width=(jWindowObj{$STATE.ID}.get('width'));
-            window{$ID}_height=(jWindowObj{$STATE.ID}.get('height'));
-            url1+='&id={$ID}&posx='+window{$STATE.ID}_posx+'&posy='+window{$ID}_posy+'&width='+window{$STATE.ID}_width+'&height='+window{$STATE.ID}_height;
+            window{$STATE.ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
+            window{$STATE.ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
+            window{$STATE.ID}_width=(jWindowObj{$STATE.ID}.get('width'));
+            window{$STATE.ID}_height=(jWindowObj{$STATE.ID}.get('height'));
+            url1+='&id={$STATE.ID}&posx='+window{$STATE.ID}_posx+'&posy='+window{$STATE.ID}_posy+'&width='+window{$STATE.ID}_width+'&height='+window{$STATE.ID}_height;
             {literal}
             $.ajax({url: url1});
             {/literal}
@@ -282,10 +282,10 @@ $.fn.customContextMenu = function(callBack){
             var url1="{$smarty.const.ROOTHTML}ajax/scenes.html?op=position";
             var top=$('#scene_background_{$SCENE.ID}').offset().top;
             var left=$('#scene_background_{$SCENE.ID}').offset().left;
-            window{$ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
-            window{$ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
-            window{$ID}_width=(jWindowObj{$STATE.ID}.get('width'));
-            window{$ID}_height=(jWindowObj{$STATE.ID}.get('height'));
+            window{$STATE.ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
+            window{$STATE.ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
+            window{$STATE.ID}_width=(jWindowObj{$STATE.ID}.get('width'));
+            window{$STATE.ID}_height=(jWindowObj{$STATE.ID}.get('height'));
             url1+='&id={$STATE.ID}&posx='+window{$STATE.ID}_posx+'&posy='+window{$STATE.ID}_posy+'&width='+window{$STATE.ID}_width+'&height='+window{$STATE.ID}_height;
             {literal}
             $.ajax({url: url1});

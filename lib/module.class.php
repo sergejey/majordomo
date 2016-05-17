@@ -565,7 +565,7 @@ class module
             if (!isset($tbl_indexes[$table][$key_name]))
             {
                $definition = str_replace('`', '', $definition);
-               $sql        = "ALTER IGNORE TABLE $table ADD $definition;";
+               $sql        = "ALTER TABLE $table ADD $definition;";
 
                SQLExec($sql);
 
@@ -575,7 +575,7 @@ class module
          elseif (!isset($tbl_fields[$table][$field]))
          {
             // new field
-            $sql = "ALTER IGNORE TABLE $table ADD $definition;";
+            $sql = "ALTER TABLE $table ADD $definition;";
             SQLExec($sql);
          }
       }

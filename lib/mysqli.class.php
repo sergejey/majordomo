@@ -252,8 +252,12 @@ class mysql
       
       foreach ($data as $field => $value)
       {
-         if (!is_Numeric($field))
-            $qry .= "`$field`='" . $this->DBSafe1($value) . "', ";
+         if (is_Numeric($field)) continue;
+         if (!is_null($value)) {
+          $qry .= "`$field`='" . $this->DBSafe1($value) . "', ";
+         } else {
+          $qry .= "`$field`=NULL, ";
+         }
       }
       
       $qry  = substr($qry, 0, strlen($qry) - 2);
@@ -291,10 +295,12 @@ class mysql
       
       foreach ($data as $field => $value)
       {
-         if (!is_numeric($field))
-         {
-            $fields .= "`$field`, ";
+         if (is_Numeric($field)) continue;
+         $fields .= "`$field`, ";
+         if (!is_null($value)) {
             $values .= "'" . $this->DBSafe1($value) . "', ";
+         } else {
+            $values .= "NULL, ";
          }
       }
       
@@ -361,9 +367,10 @@ class mysql
    {
 
 
-
-      registerError('sql', mysqli_errno($this->dbh) . ": " . mysqli_error($this->dbh) . "\n$query");
-      new error(mysqli_errno($this->dbh) . ": " . mysqli_error($this->dbh) . "<br>$query", 1);
+      $err_no = mysqli_errno($this->dbh);
+      $err_details = mysqli_error($this->dbh);
+      registerError('sql', $err_no . ": " . $err_details . "\n$query");
+      new error($err_no . ": " . $err_details . "<br>$query", 1);
       
       return 1;
    }

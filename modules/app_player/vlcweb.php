@@ -18,7 +18,7 @@ if ($command == 'refresh')
    curl_setopt($ch, CURLOPT_URL, $playerAddr . "/requests/status.xml?command=pl_empty");
    $res=curl_exec($ch);
 
-   curl_setopt($ch, CURLOPT_URL, $playerAddr . "/requests/status.xml?command=in_play&input=" . urlencode($path));
+   curl_setopt($ch, CURLOPT_URL, $playerAddr . "/requests/status.xml?command=in_play&input=" . rawurlencode($path));
    $res=curl_exec($ch);
 }
 
