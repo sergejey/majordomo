@@ -121,7 +121,7 @@ while (1)
 
      SQLExec("DELETE FROM phistory_queue WHERE ID='".$q_rec['ID']."'");
 
-     if ($value!=$old_value) {
+     if ($value!=$old_value || (defined('HISTORY_NO_OPTIMIZE') && HISTORY_NO_OPTIMIZE==1)) {
        SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$q_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
        $h=array();
        $h['VALUE_ID']=$q_rec['VALUE_ID'];
@@ -143,7 +143,6 @@ while (1)
          $h['ID']=SQLInsert('phistory', $h);
        }
      }
-
 
     }
    }
