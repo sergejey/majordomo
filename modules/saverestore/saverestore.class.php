@@ -1238,6 +1238,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
     
     $this->copyTree(ROOT.'lib', ROOT.'saverestore/temp/lib');
     $this->copyTree(ROOT.'modules', ROOT.'saverestore/temp/modules');
+    $this->copyTree(ROOT.'scripts', ROOT.'saverestore/temp/scripts');
+    $this->copyTree(ROOT.'languages', ROOT.'saverestore/temp/languages');
 
     $pt=array('\.php');
     $this->copyFiles(ROOT, ROOT.'saverestore/temp', 0, $pt);

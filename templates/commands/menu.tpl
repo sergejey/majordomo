@@ -46,6 +46,7 @@
            subscribedWebSockets=1;
           }
           if (response.action=='commands') {
+           console.log('Commands: '+response.data);
            sendRequestForUpdates_processed(0, response.data);
           }
         });
@@ -642,7 +643,7 @@
   {if $item.TYPE=='switch'}
    //alert('{$item.TITLE}'+"\nValue:"+$('#menu{$item.ID}_v').val()+"\nData:"+data);
    if ($('#menu{$item.ID}_v').val()!=data) {
-    if (data=='{$ON_VALUE}') {
+    if (data=='{$item.ON_VALUE}') {
      $('#menu{$item.ID}_v').val('{$item.ON_VALUE}');
     } else {
      $('#menu{$item.ID}_v').val('{$item.OFF_VALUE}');
