@@ -544,7 +544,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
                 $currentElement = $data[$currentKey];
                 if(count($data[$currentKey]) <= 0) {
                         $this->generate_combinations($data, $all, $group, null, $i + 1,$currentKey);
-                } else {
+                } elseif (is_array($currentElement)) {
                         foreach ($currentElement as $val) {
                                 $this->generate_combinations($data, $all, $group, $val, $i + 1,$currentKey);
                         }
@@ -666,6 +666,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
    for($i=0;$i<$total;$i++) {
     $lines[]=$messages[$i]['MESSAGE'];
    }
+   $history=implode('@@@@', $lines);
 
    if ($total==1 && $rec['USEMORPHY'] && file_exists(ROOT . "lib/phpmorphy/common.php")) {
         require_once (ROOT . "lib/phpmorphy/common.php");
@@ -714,9 +715,8 @@ function generate_combinations(array $data, array &$all = array(), array $group 
      $lines[]=implode(' ', $combos[$i]);
     }
    }
-   $history=implode('@@@@', $lines);
    $check=implode('@@@@', $lines_pattern);
-   if (preg_match('/'.$check.'/isu', $history, $matches)) {
+   if (preg_match('/'.$check.'/isu', implode('@@@@', $lines), $matches)) {
     $condition_matched=1;
    }
 

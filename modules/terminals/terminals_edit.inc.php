@@ -24,6 +24,9 @@
    global $canplay;
    $rec['CANPLAY']=(int)$canplay;
 
+   global $majordroid_api;
+   $rec['MAJORDROID_API']=(int)$majordroid_api;
+
    global $player_type;
    $rec['PLAYER_TYPE']=$player_type;
 
@@ -33,6 +36,12 @@
    $rec['PLAYER_USERNAME']=$player_username;
    global $player_password;
    $rec['PLAYER_PASSWORD']=$player_password;
+
+   global $linked_object;
+   $rec['LINKED_OBJECT']=$linked_object;
+
+   global $level_linked_property;
+   $rec['LEVEL_LINKED_PROPERTY']=$level_linked_property;
 
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;

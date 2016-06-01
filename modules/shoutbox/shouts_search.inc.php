@@ -34,6 +34,19 @@
    $rec['ADDED']=date('Y-m-d H:i:s');
    SQLInsert('shouts', $rec);
 
+   if ($session->data['TERMINAL']) {
+    $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($session->data['TERMINAL'])."'");
+
+    if ($terminal_rec['ID']) {
+     $terminal_rec['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+     $terminal_rec['LATEST_REQUEST_TIME']=$terminal_rec['LATEST_ACTIVITY'];
+     $terminal_rec['LATEST_REQUEST']=$rec['MESSAGE'];
+     $terminal_rec['IS_ONLINE']=1;
+     SQLUpdate('terminals', $terminal_rec);
+    }
+
+   }
+
    include_once(DIR_MODULES.'patterns/patterns.class.php');
    $pt=new patterns();
 

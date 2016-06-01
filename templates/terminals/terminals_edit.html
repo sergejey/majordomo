@@ -44,16 +44,80 @@
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
 </div>
 
+<script language="javascript">
+ function majordroidChanged() {
+  if ($('#majordroid_api').is(':checked')) {
+   $('#majordroidDetails').show();
+  } else {
+   $('#majordroidDetails').hide();
+  }
+  return false;
+ }
+</script>
+
+<div class="form-group">
+  <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object_terminal<#LANG_HCE#></label>
+   <div class="col-lg-5">
+     <div class="form-inline">
+      <div class="form-group col-lg-5">
+       <input type="text" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]"  class="form-control">
+      </div>
+     </div>
+    </div>
+</div>
+
 <div class="form-group">
         <div class="col-lg-offset-2 col-lg-5 ">
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" value="1" name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
+                                <input type="checkbox" value="1" id='majordroid_api' onClick='majordroidChanged();' name="majordroid_api" [#if MAJORDROID_API="1"#] checked[#endif#]> MajorDroid API
                         </label>
                 </div>
         </div>
 </div>
 
+<div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
+
+
+
+<div class="form-group">
+  <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
+   <div class="col-lg-5">
+     <div class="form-inline">
+      <div class="form-group col-lg-5">
+       <input type="text" name="level_linked_property" id="level_linked_property" value="[#LEVEL_LINKED_PROPERTY#]"  class="form-control">
+      </div>
+     </div>
+    </div>
+</div>
+
+[#module name="linkedobject" object_field="linked_object" property_field="level_linked_property"#]
+
+</div>
+
+<script language="javascript">
+ function canPlayChanged() {
+  if ($('#canplay').is(':checked')) {
+   $('#playerDetails').show();
+  } else {
+   $('#playerDetails').hide();
+  }
+  return false;
+ }
+</script>
+
+
+<div class="form-group">
+        <div class="col-lg-offset-2 col-lg-5 ">
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" id='canplay' onClick='canPlayChanged();' name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
+                        </label>
+                </div>
+        </div>
+</div>
+
+<div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:<br>(<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)</label>
@@ -85,7 +149,7 @@
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
 </div>
-
+</div>
 
 
 

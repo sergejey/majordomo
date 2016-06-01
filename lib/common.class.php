@@ -1,10 +1,80 @@
 <?php
-/*
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 0.7
+/**
+ * Summary of sayReply
+ * @param mixed $ph        Phrase
+ * @param mixed $level     Level (default 0)
+ * @param mixed $replyto   Original request
+ * @return void
  */
+ function sayReply($ph, $level = 0, $replyto='') {
+  if ($replyto) {
+   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%".DBSafe($replyto)."%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
+  } else {
+   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE (NOW()-LATEST_REQUEST_TIME)<=5 ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
+  }
+  if (!$terminal_rec) {
+   say($ph, $level);
+  } else {
+   $said_status=sayTo($ph, $level, $terminal_rec['NAME']);
+   if (!$said_status) {
+    say($ph, $level);
+   } else {
+    $rec = array();
+    $rec['MESSAGE']   = $ph;
+    $rec['ADDED']     = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']   = 0;
+    $rec['MEMBER_ID'] = 0;
+    if ($level > 0) $rec['IMPORTANCE'] = $level;
+    $rec['ID'] = SQLInsert('shouts', $rec);
+   }
+  }
+  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto));
+ }
 
+/**
+ * Summary of sayTo
+ * @param mixed $ph        Phrase
+ * @param mixed $level     Level (default 0)
+ * @param mixed $destination  Destination terminal name
+ * @return void
+ */
+ function sayTo($ph, $level = 0, $destination = '') {
+  if (!$destination) {
+   return 0;
+  }
+  processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
+
+  if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
+   $min_level=(int)getGlobal($terminal_rec['LINKED_OBJECT'].'.'.$terminal_rec['LEVEL_LINKED_PROPERTY']);
+  } else {
+   $min_level=(int)getGlobal('minMsgLevel');
+  }
+
+  if ($level < $min_level) {
+   return 0;
+  }
+
+  if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
+   $service_port='7999';
+   $in='tts:'.$ph;
+   $address=$terminal_rec['HOST'];
+   if (!preg_match('/^\d/',$address)) return 0;
+   $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+   if ($socket === false) {
+    return 0;
+   }
+   $result = socket_connect($socket, $address, $service_port);
+   if ($result === false) {
+    return 0;
+   }
+   socket_write($socket, $in, strlen($in));
+   socket_close($socket);
+   return 1;
+  }
+
+  return 0;
+ }
 
 /**
  * Summary of say
@@ -15,21 +85,15 @@
  */
 function say($ph, $level = 0, $member_id = 0)
 {
-   global $commandLine;
-   global $voicemode;
    global $noPatternMode;
+   global $ignoreVoice;
 
    $rec = array();
-
    $rec['MESSAGE']   = $ph;
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['ROOM_ID']   = 0;
    $rec['MEMBER_ID'] = $member_id;
-
-
-
    if ($level > 0) $rec['IMPORTANCE'] = $level;
-
    $rec['ID'] = SQLInsert('shouts', $rec);
 
    if ($member_id)
@@ -37,7 +101,6 @@ function say($ph, $level = 0, $member_id = 0)
       include_once(DIR_MODULES . 'patterns/patterns.class.php');
       $pt = new patterns();
       $pt->checkAllPatterns($member_id);
-   
       return;
    }
 
@@ -46,13 +109,11 @@ function say($ph, $level = 0, $member_id = 0)
       eval(SETTINGS_HOOK_BEFORE_SAY);
    }
 
-   global $ignoreVoice;
    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id)
    {
       if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1')
       {
          $passed = time() - (int)getGlobal('lastSayTime');
-         // play intro-sound only if more than 20 seconds passed from the last one
          if ($passed > 20)
          {
             playSound('dingdong', 1, $level);
@@ -75,6 +136,13 @@ function say($ph, $level = 0, $member_id = 0)
    {
       eval(SETTINGS_HOOK_AFTER_SAY);
    }
+
+   $terminals=SQLSelect("SELECT NAME FROM terminals WHERE IS_ONLINE=1 AND MAJORDROID_API=1");
+   $total=count($terminals);
+   for($i=0;$i<$total;$i++) {
+    sayTo($ph, $level, $terminals[$i]['NAME']);
+   }
+
 }
 
 /**

@@ -211,6 +211,13 @@ terminals - Terminals
  terminals: PLAYER_PORT varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_USERNAME varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_PASSWORD varchar(255) NOT NULL DEFAULT ''
+ terminals: IS_ONLINE int(3) NOT NULL DEFAULT '0'
+ terminals: MAJORDROID_API int(3) NOT NULL DEFAULT '0'
+ terminals: LATEST_REQUEST varchar(255) NOT NULL DEFAULT ''
+ terminals: LATEST_REQUEST_TIME datetime
+ terminals: LATEST_ACTIVITY datetime
+ terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

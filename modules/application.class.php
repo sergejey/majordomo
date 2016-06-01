@@ -184,25 +184,41 @@ function getParams() {
    }
 
 
-
-
    $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     //!$session->data['TERMINAL'] &&  
-    if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST']) {
+    if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
      $session->data['TERMINAL']=$terminals[$i]['NAME'];
     }
     if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
-     $terminals[$i]['SELECTED']=1;
+     $terminals[$i]['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+     $terminals[$i]['IS_ONLINE']=1;
+     SQLUpdate('terminals', $terminals[$i]);
      $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
+     $terminals[$i]['SELECTED']=1;
     }
    }
+
+   if (!$out['TERMINAL_TITLE'] && $session->data['TERMINAL']) {
+    $new_terminal=array();
+    $new_terminal['TITLE']=$session->data['TERMINAL'];
+    $new_terminal['HOST']=$_SERVER['REMOTE_ADDR'];
+    $new_terminal['NAME']=$new_terminal['TITLE'];
+    $new_terminal['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+    $new_terminal['IS_ONLINE']=1;
+    SQLInsert('terminals', $new_terminal);
+    $out['TERMINAL_TITLE']=$new_terminal['TITLE'];
+    $new_terminal['SELECTED']=1;
+    $out['TERMINALS'][]=$new_terminal;
+   }
+
    $out['TERMINALS']=$terminals;
    if ($total==1) {
     $out['HIDE_TERMINALS']=1;
     $session->data['TERMINAL']=$terminals[0]['NAME'];
    }
+   SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE (NOW()-LATEST_ACTIVITY)>30*60');
 
    $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
    $total=count($users);

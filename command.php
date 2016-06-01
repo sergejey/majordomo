@@ -35,6 +35,24 @@ $lastest_word = current(SQLSelectOne($sqlQuery));
 
 if ($qry != '' && $qry != $lastest_word)
 {
+
+   global $terminal;
+   if ($terminal) {
+    $session->data['TERMINAL']=$terminal;
+   }
+
+   $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
+   $total=count($terminals);
+   for($i=0;$i<$total;$i++) {
+    if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
+     $session->data['TERMINAL']=$terminals[$i]['NAME'];
+    }
+    if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
+     $terminal_rec=$terminals[$i];
+    }
+   }
+
+
    if (!$session->data['logged_user'])
    {
       $user    = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
@@ -66,6 +84,14 @@ if ($qry != '' && $qry != $lastest_word)
       $rec['ADDED']     = date('Y-m-d H:i:s');
       
       SQLInsert('shouts', $rec);
+
+      if ($terminal_rec['ID']) {
+       $terminal_rec['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+       $terminal_rec['LATEST_REQUEST_TIME']=$terminal_rec['LATEST_ACTIVITY'];
+       $terminal_rec['LATEST_REQUEST']=$rec['MESSAGE'];
+       $terminal_rec['IS_ONLINE']=1;
+       SQLUpdate('terminals', $terminal_rec);
+      }
 
       $res = $pt->checkAllPatterns($rec['MEMBER_ID']);
       
