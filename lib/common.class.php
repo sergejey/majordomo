@@ -71,6 +71,8 @@
    socket_write($socket, $in, strlen($in));
    socket_close($socket);
    return 1;
+  } elseif ($terminal_rec['IS_ONLINE']) {
+   return 1;
   }
 
   return 0;

@@ -191,7 +191,7 @@ function getParams() {
     if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
      $session->data['TERMINAL']=$terminals[$i]['NAME'];
     }
-    if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
+    if (mb_strtoupper($terminals[$i]['NAME'], 'UTF-8')==mb_strtoupper($session->data['TERMINAL'], 'UTF-8')) {
      $terminals[$i]['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
      $terminals[$i]['IS_ONLINE']=1;
      SQLUpdate('terminals', $terminals[$i]);

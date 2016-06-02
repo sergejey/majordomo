@@ -47,7 +47,7 @@ if ($qry != '' && $qry != $lastest_word)
     if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
      $session->data['TERMINAL']=$terminals[$i]['NAME'];
     }
-    if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
+    if (mb_strtoupper($terminals[$i]['NAME'], 'UTF-8')==mb_strtoupper($session->data['TERMINAL'], 'UTF-8')) {
      $terminal_rec=$terminals[$i];
     }
    }
@@ -98,9 +98,7 @@ if ($qry != '' && $qry != $lastest_word)
       if (!$res)
          processCommand($qrys[$i]);
    }
-
-   // Header("Location:command.php");
-   // exit;
+   SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE (NOW()-LATEST_ACTIVITY)>30*60');
 }
 
 ?>
