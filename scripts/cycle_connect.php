@@ -199,7 +199,7 @@ while (1)
 
          if (preg_match('/Please login/is', $out)) {
           echo date('Y-m-d H:i:s') . ' Login required. Closing socket...';
-          break 2;
+          continue 2;
          }
 
          processResponse($out);

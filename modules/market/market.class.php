@@ -212,7 +212,8 @@ function admin(&$out) {
  }
 
 
- if ($this->mode=='update_all') {
+ global $mode;
+ if ($mode=='update_all') {
   $this->updateAll($can_be_updated);
  }
 
