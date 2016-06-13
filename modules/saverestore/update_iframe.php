@@ -42,10 +42,10 @@ if ($res) {
 
   if ($with_extensions) {
    $sv->echonow("Redirecting to extensions update...");
-   $sv->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&mode=update_all";</script>');
+   $sv->echonow('<script language="javascript">window.top.location.href="'.ROOTHTML.'admin.php?action=market&mode=iframe&mode2=update_all";</script>');
   } else {
    $sv->echonow("Redirecting to main page...");
-   $sv->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=saverestore&ok_msg='.urlencode("Updates Installed!").'";</script>');
+   $sv->echonow('<script language="javascript">window.top.location.href="'.ROOTHTML.'admin.php?md=panel&action=saverestore&ok_msg='.urlencode("Updates Installed!").'";</script>');
   }
  }
 

@@ -110,6 +110,18 @@ function run() {
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 }
+
+/**
+* Title
+*
+* Description
+*
+* @access public
+*/
+function checkPlugins(&$out) {
+  
+}
+
 /**
 * BackEnd
 *
@@ -120,6 +132,12 @@ function run() {
 function admin(&$out) {
 
  global $name;
+
+ global $mode;
+ if (!$this->mode && $mode) {
+  $this->mode=$mode;
+ }
+
 
  $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE;
 
@@ -134,6 +152,20 @@ function admin(&$out) {
 
  if (is_dir(ROOT.'saverestore/temp')) {
   $out['CLEAR_FIRST']=1;
+ }
+
+ if ($this->mode=='iframe') {
+  global $mode2;
+  global $name;
+  global $names;
+
+  if (is_array($names)) {
+   $out['NAMES']=urlencode(implode(',', $names));
+  }
+  $out['NAME']=urlencode($name);
+
+  $out['MODE2']=$mode2;
+  return;
  }
 
  $result=getURL($data_url, 120);
@@ -191,16 +223,16 @@ function admin(&$out) {
 
 
    if ($rec['MODULE_NAME']==$name) {
-    $url=$rec['REPOSITORY_URL'];
-    $version=$rec['LATEST_VERSION'];
+    $this->url=$rec['REPOSITORY_URL'];
+    $this->version=$rec['LATEST_VERSION'];
    }
 
   //}
   if ($rec['EXISTS']) {
-   $can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
+   $this->can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
   if (in_array($rec['MODULE_NAME'], $names)) {
-   $selected_plugins[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
+   $this->selected_plugins[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
 
   $out['PLUGINS'][]=$rec;
@@ -208,17 +240,16 @@ function admin(&$out) {
 
 
  if ($this->mode=='install_multiple') {
-  $this->updateAll($selected_plugins);
+  $this->updateAll($this->selected_plugins);
  }
 
 
- global $mode;
- if ($mode=='update_all') {
-  $this->updateAll($can_be_updated);
+ if ($this->mode=='update_all') {
+  $this->updateAll($this->can_be_updated);
  }
 
- if ($this->mode=='install' && $url) {
-  $this->getLatest($out, $url, $name, $version);
+ if ($this->mode=='install' && $this->url) {
+  $this->getLatest($out, $this->url, $name, $this->version);
  }
 
  if ($this->mode=='upload') {
@@ -244,7 +275,7 @@ function admin(&$out) {
 *
 * @access public
 */
- function updateAll($can_be_updated) {
+ function updateAll($can_be_updated, $frame=0) {
 
   //$this->redirect("?mode=install&name=".$can_be_updated[0]."&list=".urlencode(implode(',', $can_be_updated)));
   set_time_limit(0);
@@ -271,6 +302,10 @@ function admin(&$out) {
       $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
     } 
 
+    if ($frame) {
+     $this->echonow("Downloading '$url' ... ");
+    }
+
     DebMes("Downloading plugin $name ($version) from $url");
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -285,10 +320,20 @@ function admin(&$out) {
 
     if (file_exists($filename)) {
 
+      if ($frame) {
+       $this->echonow("OK<br/>", 'green');
+      }
+
+
       $file = basename($filename);
       DebMes("Installing/updating plugin $name ($version)");
 
       chdir(ROOT.'saverestore/temp');
+
+      if ($frame) {
+       $this->echonow("Unpacking '$file' ..");
+      }
+
 
       if (IsWindowsOS()) {
          //DebMes("Running ".DOC_ROOT.'/gunzip ../'.$file);
@@ -324,13 +369,30 @@ function admin(&$out) {
         DebMes("Latest folder: $latest_dir");
 
         if ($latest_dir=='') {
+         if ($frame) {
+          $this->echonow("ERROR<br/>", 'red');
+         }
          DebMes("Error extracting $file");
          continue;
         }
 
+        if ($frame) {
+         $this->echonow("OK<br/>", 'green');
+        }
+
+
         // UPDATING FILES DIRECTLY
+        if ($frame) {
+         $this->echonow("Updating files ...");
+        }
+
         $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
         $this->removeTree(ROOT.'saverestore/temp'.$folder);
+
+        if ($frame) {
+         $this->echonow("OK<br/>", 'green');
+        }
+
 
 
        $rec=SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
@@ -347,7 +409,7 @@ function admin(&$out) {
     }
   }
 
-        $this->removeTree(ROOT.'saverestore/temp');
+        $this->removeTree(ROOT.'saverestore/temp', $frame);
 
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
@@ -359,7 +421,11 @@ function admin(&$out) {
          }
          @unlink(ROOT."modules/control_modules/installed");
 
-  $this->redirect("?ok_msg=".urlencode("Updates Installed!"));
+         if ($frame) {
+          return ("Updates Installed!");
+         } else {
+          $this->redirect("?ok_msg=".urlencode("Updates Installed!"));
+         }
   
  }
 
@@ -370,15 +436,20 @@ function admin(&$out) {
 *
 * @access public
 */
- function uninstallPlugin($name) {
+ function uninstallPlugin($name, $frame=0) {
 
   if (!is_dir(ROOT.'modules/'.$name)) {
    $err_msg='Module not found';
    $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));  
   }
-
+  if ($frame) {
+   $this->echonow("Removing module '$name' from database ... ");
+  }
   SQLExec("DELETE FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
   SQLExec("DELETE FROM project_modules WHERE NAME LIKE '".DBSafe($name)."'");
+  if ($frame) {
+   $this->echonow(" OK<br/>", 'green');
+  }
   $this->removeTree(ROOT.'modules/'.$name);
   $this->removeTree(ROOT.'templates/'.$name);
   if (file_exists(ROOT.'scripts/cycle_'.$name.'.php')) {
@@ -386,10 +457,19 @@ function admin(&$out) {
   }
   removeMissingSubscribers();
   $ok_msg='Uninstalled';
-  $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));  
+
+  if ($frame) {
+   $this->echonow(" Plugin uninstalled!<br/>", 'green');
+  }
+
+  if (!$frame) {
+   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));  
+  } else {
+   return $ok_msg;
+  }
  }
 
-function getLatest(&$out, $url, $name, $version) {
+function getLatest(&$out, $url, $name, $version, $frame=0) {
 
    set_time_limit(0);
 
@@ -405,10 +485,18 @@ function getLatest(&$out, $url, $name, $version) {
 
     $f = fopen($filename, 'wb');
     if ($f == FALSE){
-      $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
+      if ($frame) {
+       $this->echonow("Cannot open ".$filename." for writing", "red");
+       return 0;
+      } else {
+       $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
+      }
     } 
 
 
+   if ($frame) {
+    $this->echonow("Downloading '".$url."' ... ");
+   }
 
    $ch = curl_init();
    curl_setopt($ch, CURLOPT_URL, $url);
@@ -423,15 +511,32 @@ function getLatest(&$out, $url, $name, $version) {
    @fclose($f);
 
    if (file_exists($filename)) {
-    $this->removeTree(ROOT.'saverestore/temp');
-    global $list;
-    $this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version)."&list=".urlencode($list));
+
+    if ($frame) {
+     $this->echonow("OK<br/>", 'green');
+    }
+
+
+    $this->removeTree(ROOT.'saverestore/temp', $frame);
+
+    if ($frame) {
+     return 1;
+    } else {
+     global $list;
+     $this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version)."&list=".urlencode($list));
+    }
+
    } else {
-    $this->redirect("?err_msg=".urlencode("Cannot download ".$url));
+      if ($frame) {
+       $this->echonow("Cannot download '".$url."'<br/>", "red");
+       return 0;
+      } else {
+       $this->redirect("?err_msg=".urlencode("Cannot download ".$url));
+      }
    }
   }
 
-function upload(&$out)
+function upload(&$out, $frame=0)
 {
    set_time_limit(0);
    global $restore;
@@ -460,6 +565,9 @@ function upload(&$out)
    if ($file != '') { // && mkdir(ROOT.'saverestore/temp', 0777)
       chdir(ROOT.'saverestore/temp');
 
+      if ($frame) {
+       $this->echonow("Unpacking '$file' ... ");
+      }
       if (IsWindowsOS())
       {
          // for windows only
@@ -470,6 +578,9 @@ function upload(&$out)
       else
       {
          exec('tar xzvf ../' . $file, $output, $res);
+      }
+      if ($frame) {
+       $this->echonow(" OK <br/>", 'green');
       }
 
         $x = 0;
@@ -495,6 +606,10 @@ function upload(&$out)
 
         chdir('../../');
         // UPDATING FILES DIRECTLY
+        if ($frame) {
+         $this->echonow("Updating files ... ");
+        }
+
         $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
@@ -505,6 +620,10 @@ function upload(&$out)
           }
          }
          @unlink(ROOT."modules/control_modules/installed");
+
+       if ($frame) {
+        $this->echonow(" OK <br/>", 'green');
+       }
 
        global $name;
        global $version;
@@ -522,7 +641,12 @@ function upload(&$out)
         SQLInsert('plugins', $rec);
        }
 
-       $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));
+       if ($frame) {
+        $this->echonow("Plugin '$name' ($version) installed.<br/>", 'green');
+        return "Plugin '$name' ($version) installed.";
+       } else {
+        $this->redirect("?mode=clear&ok_msg=".urlencode("Updates Installed!"));
+       }
   }
 
 
@@ -557,13 +681,19 @@ function usual(&$out) {
 *
 * @access public
 */
- function removeTree($destination) {
+ function removeTree($destination, $frame=0) {
 
   $res=1;
 
   if (!Is_Dir($destination)) {
     return 0; // cannot create destination path
   }
+
+  if ($frame) {
+     $this->echonow("Removing dir $destination ... ");
+  }
+
+
  if ($dir = @opendir($destination)) { 
   while (($file = readdir($dir)) !== false) { 
     if (Is_Dir($destination."/".$file) && ($file!='.') && ($file!='..')) {
@@ -575,6 +705,12 @@ function usual(&$out) {
   closedir($dir); 
   $res=@rmdir($destination);
  }
+
+  if ($frame) {
+     $this->echonow("OK<br/>", "green");
+  }
+
+
  return $res;
  }
 
@@ -689,6 +825,21 @@ function usual(&$out) {
  }
  return $res;
  }
+
+ function echonow($msg, $color='') {
+  if ($color) {
+   echo '<font color="'.$color.'">';
+  }
+  echo $msg;
+  if ($color) {
+   echo '</font>';
+  }
+  echo "<script language='javascript'>window.scrollTo(0,document.body.scrollHeight);</script>";
+  echo str_repeat(' ', 16*1024);
+  flush();
+  ob_flush();
+ }
+
 
 /**
 * Uninstall

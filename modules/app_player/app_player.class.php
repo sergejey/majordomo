@@ -199,6 +199,9 @@ function usual(&$out) {
   $out['VOLUMES'][]=$rec;
  }
 
+ if (!$terminal['CANPLAY']) {
+  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY IS_ONLINE DESC LIMIT 1");
+ }
 
 
  global $ajax;

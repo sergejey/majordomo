@@ -7,11 +7,24 @@
 [#endif OK_MSG#]
 
 
-[#if CLEAR_FIRST!="1"#]
 
-<p><a href="?mode=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a></p>
+[#if MODE="iframe"#]
+<iframe src="<#ROOTHTML#>modules/market/update_iframe.php?mode2=<#MODE2#>&name=[#NAME#]&names=[#NAMES#]" width="100%" height="400" frameborder=0></iframe>
+[#endif MODE#]
 
 [#if MODE=""#]
+
+[#if CLEAR_FIRST!="1"#]
+<p><a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a></p>
+[#else CLEAR_FIRST#]
+   <br>&nbsp;
+   <form action="?" method="post" enctype="multipart/form-data">
+   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
+   <input type="hidden" name="mode" value="clear">
+   </form>
+[#endif CLEAR_FIRST#]
+
+
 [#if PLUGINS#]
 <form action="?" method="post">
 <table class="table table-striped">
@@ -45,26 +58,16 @@
   [#endif#]
   [#endif EXISTS#]
   </td>
-  <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a></b></td>
+  <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a></b></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
   <td valign="top"><a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a></td>
-  <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('<#LANG_ARE_YOU_SURE#>')">Uninstall</a>[#endif#]</td>
+  <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return ('<#LANG_ARE_YOU_SURE#>')">Uninstall</a>[#endif#]</td>
  </tr>
  [#end PLUGINS#]
 </table>
 <input type="submit" name="submit" value="<#LANG_ADD#> / <#LANG_UPDATE#>" class="btn btn-default">
-<input type="hidden" name="mode" value="install_multiple">
+<input type="hidden" name="mode" value="iframe">
+<input type="hidden" name="mode2" value="install_multiple">
 </form>
 [#endif PLUGINS#]
 [#endif MODE#]
-
-[#else#]
-
-   <br>&nbsp;
-   <form action="?" method="post" enctype="multipart/form-data">
-   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
-   <input type="hidden" name="mode" value="clear">
-   </form>
-
-
-[#endif#]
