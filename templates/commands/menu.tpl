@@ -65,17 +65,28 @@
    var objLabelsCnt  = obj.LABELS.length;
    var objValuesCnt = obj.VALUES.length;
 
+
    if (objLabelsCnt > 0) {
     var labels=obj.LABELS;
     for (var i = 0; i < objLabelsCnt; i++) {
-     window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
+     try {
+       window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
+     }
+     catch(err) {
+        // Handle error(s) here
+     }
     }
   }
    if (objValuesCnt > 0) {
     var values=obj.VALUES;
     for (var i = 0; i < objValuesCnt; i++) {
      //alert("updateValue"+values[i].ID+"_Ready ("+i+" of "+values.length+")");
-     window["updateValue"+values[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
+     try {
+       window["updateValue"+values[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
+     }
+     catch(err) {
+        // Handle error(s) here
+     }
     }
   }
   requestProcessing=0;

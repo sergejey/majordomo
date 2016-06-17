@@ -27,12 +27,16 @@
   }
 
   if ($this->action=='' && $session->data['logged_user'] && $msg!='') {
+
+   say(htmlspecialchars($msg), 0, $session->data['logged_user']);
+   /*
    $rec=array();
    $rec['ROOM_ID']=(int)$room_id;
    $rec['MEMBER_ID']=$session->data['logged_user'];
    $rec['MESSAGE']=htmlspecialchars($msg);
    $rec['ADDED']=date('Y-m-d H:i:s');
    SQLInsert('shouts', $rec);
+   */
 
    if ($session->data['TERMINAL']) {
     $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($session->data['TERMINAL'])."'");
@@ -47,14 +51,14 @@
 
    }
 
+   /*
    include_once(DIR_MODULES.'patterns/patterns.class.php');
    $pt=new patterns();
-
-
    $res=$pt->checkAllPatterns($rec['MEMBER_ID']);
    if (!$res) {
     processCommand($msg);
    }
+   */
    $getdata=1;
   }
 

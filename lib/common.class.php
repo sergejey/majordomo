@@ -102,7 +102,11 @@ function say($ph, $level = 0, $member_id = 0)
    {
       include_once(DIR_MODULES . 'patterns/patterns.class.php');
       $pt = new patterns();
-      $pt->checkAllPatterns($member_id);
+      $res=$pt->checkAllPatterns($member_id);
+      if (!$res) {
+       processCommand($msg);
+      }
+      processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
       return;
    }
 
