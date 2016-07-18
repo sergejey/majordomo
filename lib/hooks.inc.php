@@ -137,7 +137,7 @@ function removeMissingSubscribers()
          foreach ($data as $k => $v)
          {
             $module_name = $k;
-            if (!file_exists(DIR_MODULES . 'modules/' . $module_name . '/' . $module_name . '.class.php'))
+            if (!file_exists(DIR_MODULES . $module_name . '/' . $module_name . '.class.php'))
             {
                unset($data[$module_name]);
                $changed = 1;

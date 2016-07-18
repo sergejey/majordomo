@@ -290,7 +290,7 @@
 {if $item.SUB_PRELOAD=='1'}
 
  <div data-role="collapsible" data-iconpos="right">
-  <h2><span  id="label_{$ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span></h2>
+  <h2><span  id="label_{$item.ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span></h2>
   <ul data-role="listview" data-inset="true">
   {if $item.RESULT}
   {menu items=$item.RESULT}

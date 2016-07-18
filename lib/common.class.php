@@ -104,7 +104,7 @@ function say($ph, $level = 0, $member_id = 0)
       $pt = new patterns();
       $res=$pt->checkAllPatterns($member_id);
       if (!$res) {
-       processCommand($msg);
+       processCommand($ph);
       }
       processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
       return;
@@ -437,7 +437,7 @@ function runScheduledJobs()
 
       $result = preg_replace('/<!--.+-->/is', '', $result);
 
-      if ($result != 'OK')
+      if (!preg_match('/OK$/', $result))
       {
          getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
       }

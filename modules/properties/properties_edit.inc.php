@@ -31,6 +31,20 @@
     $ok=0;
    }
 
+   if ($ok && $rec['CLASS_ID']) {
+    include_once(DIR_MODULES.'classes/classes.class.php');
+    $cl=new classes();
+    $parent_properties=$cl->getParentProperties($rec['CLASS_ID']);
+    $seen=array();
+    foreach($parent_properties as $k=>$v) {
+     $seen[strtoupper($v['TITLE'])]=1;
+    }
+    if (IsSet($seen[strtoupper($rec['TITLE'])])) {
+     $ok=0;
+     $out['ERR_TITLE']=1;
+    }
+   }
+
    global $keep_history;
    $rec['KEEP_HISTORY']=(int)$keep_history;
 
