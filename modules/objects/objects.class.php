@@ -794,6 +794,7 @@ objects - Objects
 */
   $data = <<<EOD
  objects: ID int(10) unsigned NOT NULL auto_increment
+ objects: SYSTEM varchar(255) NOT NULL DEFAULT ''
  objects: TITLE varchar(255) NOT NULL DEFAULT ''
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
  objects: DESCRIPTION text

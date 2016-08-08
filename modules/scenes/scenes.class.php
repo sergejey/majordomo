@@ -1527,6 +1527,7 @@ elm_states - Element states
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'
  elements: TITLE varchar(255) NOT NULL DEFAULT ''
+ elements: SYSTEM varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
  elements: CSS_STYLE varchar(255) NOT NULL DEFAULT ''
  elements: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''

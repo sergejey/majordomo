@@ -227,6 +227,10 @@ function usual(&$out) {
     $terminal['PLAYER_PORT']='80';
    }
 
+   if ($terminal['NAME']=='MAIN' && $command=='volume') {
+    setGlobal('ThisComputer.volumeLevel', $volume);
+   }
+
     if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
 
       $terminal['PLAYER_PORT']='80';

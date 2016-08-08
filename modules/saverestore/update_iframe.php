@@ -23,6 +23,23 @@ echo "<body>";
 
 $out=array();
 
+if ($backup) {
+
+ $res=$sv->dump($out, 1);
+ if ($res) {
+
+   $sv->echonow("Removing temporary files ... ");
+   $sv->removeTree(ROOT.'saverestore/temp');
+   $sv->echonow(" OK<br/> ", 'green');
+
+
+   $sv->echonow("Redirecting to main page...");
+   $sv->echonow('<script language="javascript">window.top.location.href="'.ROOTHTML.'admin.php?md=panel&action=saverestore&ok_msg='.urlencode("Backup complete!").'";</script>');
+ }
+
+} else {
+
+$res=$sv->admin($out);
 $res=$sv->getLatest($out, 1);
 if ($res) {
  global $restore;
@@ -51,6 +68,7 @@ if ($res) {
 
 }
 
+}
 
 echo "</body>";
 echo "</html>";

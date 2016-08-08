@@ -215,6 +215,7 @@ properties - Properties
  properties: ID int(10) unsigned NOT NULL auto_increment
  properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
  properties: OBJECT_ID int(10) NOT NULL DEFAULT '0'
+ properties: SYSTEM varchar(255) NOT NULL DEFAULT ''
  properties: TITLE varchar(255) NOT NULL DEFAULT ''
  properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
  properties: DESCRIPTION text

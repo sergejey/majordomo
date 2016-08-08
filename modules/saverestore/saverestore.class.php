@@ -308,6 +308,18 @@ function admin(&$out) {
  if ($this->mode=='getlatest_iframe') {
   global $with_extensions;
   $out['WITH_EXTENSIONS']=$with_extensions;
+
+  global $backup;
+  $out['BACKUP']=$backup;
+  global $data;
+  $out['DATA']=$data;
+  global $code;
+  $out['CODE']=$code;
+  global $files;
+  $out['FILES']=$files;
+  global $design;
+  $out['DESIGN']=$design;
+
  }
 
 
@@ -1402,7 +1414,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
    
    if (IsWindowsOS())
    {
-      exec('tar.exe  --strip-components=2 -cvf ./saverestore/'.$tar_name.' ./saverestore/temp/');
+      exec('tar.exe --strip-components=2 -cvf ./saverestore/'.$tar_name.' ./saverestore/temp/');
    }
    else
    {
@@ -1429,6 +1441,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
 
   }
+  return 1;
  }
 
 /**
