@@ -18,7 +18,7 @@
  * @license http://opensource.org/licenses/mit-license.php MIT License
  * @link https://github.com/sergejey/majordomo/blob/master/lib/errors.class.php
  */
-class error
+class custom_error
 {
    /**
     * @var string error code
@@ -115,7 +115,7 @@ function simplisticErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
    if (( $errno != E_NOTICE ) ) //&& ( $errno != E_WARNING)
    {
       $err = "PHP warning: $errmsg in $filename on line $linenum\n";
-      $err = new error($err, 0, 1);
+      $err = new custom_error($err, 0, 1);
    }
 }
 

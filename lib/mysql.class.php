@@ -20,6 +20,12 @@
  * @license http://opensource.org/licenses/mit-license.php MIT License
  * @link https://github.com/sergejey/majordomo/blob/master/lib/mysql.class.php
  */
+
+define('MYSQL_BOTH',MYSQLI_BOTH);
+define('MYSQL_NUM',MYSQLI_NUM);
+define('MYSQL_ASSOC',MYSQLI_ASSOC);
+
+
 class mysql
 {
    /**
@@ -346,7 +352,7 @@ class mysql
       $err_no = mysql_errno();
       $err_details = mysql_error();
       registerError('sql', $err_no . ": " . $err_details . "\n$query");
-      new error($err_no . ": " . $err_details . "<br>$query", 1);
+      new custom_error($err_no . ": " . $err_details . "<br>$query", 1);
 
       return 1;
    }
