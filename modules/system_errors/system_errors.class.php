@@ -278,7 +278,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 system_errors - System Errors
 system_errors_data - System Errors Data

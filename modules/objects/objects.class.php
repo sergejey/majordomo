@@ -623,6 +623,11 @@ function usual(&$out) {
 
   startMeasure('setProperty');
   startMeasure('setProperty ('.$property.')');
+
+  if (is_null($value)) {
+   $value='';
+  }
+
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   $old_value='';
 
