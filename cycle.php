@@ -20,7 +20,11 @@ $connected = 0;
 while (!$connected)
 {
    echo "Connecting to database..." . PHP_EOL;
-   $connected = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+   if (function_exists('mysqli_connect')) {
+    $connected = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD);
+   } else {
+    $connected = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+   }
    sleep(5);
 }
 

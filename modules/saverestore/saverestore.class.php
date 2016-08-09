@@ -329,6 +329,7 @@ function admin(&$out) {
   chdir($source); 
   array_multisort(array_map('filemtime', ($files = glob("*.*"))), SORT_DESC, $files);
   chdir($currentdir); 
+  $out['FILES']=array();
   foreach($files as $file){
      $tmp=array();
      $tmp['FILENAME']=$file;
