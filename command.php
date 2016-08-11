@@ -76,16 +76,9 @@ if ($qry != '' && $qry != $lastest_word)
    {
       $room_id = 0;
 
-      $rec = array();
-
-      $rec['ROOM_ID']   = (int)$room_id;
-      $rec['MEMBER_ID'] = $user_id;
-      $rec['MESSAGE']   = htmlspecialchars($qrys[$i]);
-      $rec['ADDED']     = date('Y-m-d H:i:s');
-      
-      SQLInsert('shouts', $rec);
-
+      $say_source='';
       if ($terminal_rec['ID']) {
+       $say_source='terminal'.$terminal_rec['ID'];
        $terminal_rec['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
        $terminal_rec['LATEST_REQUEST_TIME']=$terminal_rec['LATEST_ACTIVITY'];
        $terminal_rec['LATEST_REQUEST']=$rec['MESSAGE'];
@@ -93,10 +86,25 @@ if ($qry != '' && $qry != $lastest_word)
        SQLUpdate('terminals', $terminal_rec);
       }
 
+      if ($source) {
+       $say_source=$source;
+      }
+
+      say(htmlspecialchars($qrys[$i]), 0, $user_id, $say_source);
+
+      /*
+      $rec = array();
+      $rec['ROOM_ID']   = (int)$room_id;
+      $rec['MEMBER_ID'] = $user_id;
+      $rec['MESSAGE']   = htmlspecialchars($qrys[$i]);
+      $rec['ADDED']     = date('Y-m-d H:i:s');
+      SQLInsert('shouts', $rec);
+
       $res = $pt->checkAllPatterns($rec['MEMBER_ID']);
       
       if (!$res)
          processCommand($qrys[$i]);
+         */
    }
    SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE (NOW()-LATEST_ACTIVITY)>30*60');
 }

@@ -239,6 +239,7 @@ shouts - Shoutbox
  shouts: MESSAGE varchar(255) NOT NULL DEFAULT ''
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
+ shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

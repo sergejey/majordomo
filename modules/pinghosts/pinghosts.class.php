@@ -277,8 +277,8 @@ function usual(&$out) {
     }
     $tmp=explode("\n", $host['LOG']);
     $total=count($tmp);
-    if ($total>50) {
-     $tmp=array_slice($tmp, 0, 50);
+    if ($total > 30) {
+     $tmp=array_slice($tmp, 0, 30);
      $host['LOG']=implode("\n", $tmp);
     }
    }

@@ -7,14 +7,20 @@
  * @return void
  */
  function sayReply($ph, $level = 0, $replyto='') {
+  $source='';
   if ($replyto) {
    $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%".DBSafe($replyto)."%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
+   $orig_msg=SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%".DBSafe($replyto)."%' AND (NOW()-ADDED)<=30 ORDER BY ADDED DESC LIMIT 1");
+   if ($orig_msg['ID']) {
+    $source=$orig_msg['SOURCE'];
+   }
   } else {
    $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE (NOW()-LATEST_REQUEST_TIME)<=5 ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
   }
   if (!$terminal_rec) {
    say($ph, $level);
   } else {
+   $source='terminal'.$terminal_rec['ID'];
    $said_status=sayTo($ph, $level, $terminal_rec['NAME']);
    if (!$said_status) {
     say($ph, $level);
@@ -28,7 +34,7 @@
     $rec['ID'] = SQLInsert('shouts', $rec);
    }
   }
-  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto));
+  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
  }
 
 /**
@@ -85,7 +91,7 @@
  * @param mixed $member_id Member ID (default 0)
  * @return void
  */
-function say($ph, $level = 0, $member_id = 0)
+function say($ph, $level = 0, $member_id = 0, $source = '')
 {
    global $noPatternMode;
    global $ignoreVoice;
@@ -95,6 +101,8 @@ function say($ph, $level = 0, $member_id = 0)
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['ROOM_ID']   = 0;
    $rec['MEMBER_ID'] = $member_id;
+   $rec['SOURCE'] = $source;
+
    if ($level > 0) $rec['IMPORTANCE'] = $level;
    $rec['ID'] = SQLInsert('shouts', $rec);
 
@@ -912,6 +920,10 @@ function checkAccess($object_type, $object_id)
 function registerError($code = 'custom', $details = '')
 {
    $code = trim($code);
+
+   if ($code == 'sql') {
+    return 0;
+   }
    
    if (!$code)
    {

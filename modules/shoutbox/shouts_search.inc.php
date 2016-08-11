@@ -28,16 +28,6 @@
 
   if ($this->action=='' && $session->data['logged_user'] && $msg!='') {
 
-   say(htmlspecialchars($msg), 0, $session->data['logged_user']);
-   /*
-   $rec=array();
-   $rec['ROOM_ID']=(int)$room_id;
-   $rec['MEMBER_ID']=$session->data['logged_user'];
-   $rec['MESSAGE']=htmlspecialchars($msg);
-   $rec['ADDED']=date('Y-m-d H:i:s');
-   SQLInsert('shouts', $rec);
-   */
-
    if ($session->data['TERMINAL']) {
     $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($session->data['TERMINAL'])."'");
 
@@ -48,8 +38,17 @@
      $terminal_rec['IS_ONLINE']=1;
      SQLUpdate('terminals', $terminal_rec);
     }
-
    }
+   say(htmlspecialchars($msg), 0, $session->data['logged_user'], 'terminal'.$terminal_rec['ID']);
+   /*
+   $rec=array();
+   $rec['ROOM_ID']=(int)$room_id;
+   $rec['MEMBER_ID']=$session->data['logged_user'];
+   $rec['MESSAGE']=htmlspecialchars($msg);
+   $rec['ADDED']=date('Y-m-d H:i:s');
+   SQLInsert('shouts', $rec);
+   */
+
 
    /*
    include_once(DIR_MODULES.'patterns/patterns.class.php');

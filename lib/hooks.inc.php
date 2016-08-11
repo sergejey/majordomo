@@ -74,6 +74,7 @@ function processSubscriptions($event_name, $details = '')
    }
 
    $data = json_decode(constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), true);
+   //DebMes("Subscription data: ".serialize($data));
    
    if (is_array($data))
    {
@@ -110,9 +111,12 @@ function processSubscriptions($event_name, $details = '')
             {
                DebMes("$module_name.processSubscription ($event_name)");
                $module_object->processSubscription($event_name, $details);
+            } else {
+             DebMes("$module_name.processSubscription error (method not found)");
             }
+         } else {
+          DebMes("$module_name.processSubscription error (module class not found)");
          }
-
       }
    }
 
