@@ -114,7 +114,8 @@
    }
 
    //properties and methods
-   $properties=SQLSelect("SELECT properties.ID, properties.CLASS_ID, properties.TITLE, objects.CLASS_ID as OBJECT_CLASS_ID, objects.ID as OBJECT_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID LEFT JOIN pvalues ON (properties.ID=pvalues.PROPERTY_ID AND properties.OBJECT_ID=pvalues.OBJECT_ID) WHERE (properties.TITLE LIKE '%".DBSafe($title)."%' OR pvalues.VALUE LIKE '%".DBSafe($title)."%') ORDER BY properties.TITLE");
+   $qry="SELECT properties.ID, properties.CLASS_ID, properties.TITLE, objects.CLASS_ID as OBJECT_CLASS_ID, objects.ID as OBJECT_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN pvalues ON (properties.ID=pvalues.PROPERTY_ID AND (properties.OBJECT_ID=pvalues.OBJECT_ID OR properties.OBJECT_ID=0)) LEFT JOIN objects ON (properties.OBJECT_ID=objects.ID OR pvalues.OBJECT_ID=objects.ID)  WHERE (properties.TITLE LIKE '%".DBSafe($title)."%' OR pvalues.VALUE LIKE '%".DBSafe($title)."%') ORDER BY properties.TITLE";
+   $properties=SQLSelect($qry);
    $total=count($properties);
    for($i=0;$i<$total;$i++) {
     $res.='P: '; //<a href="/panel/object/'.'">
