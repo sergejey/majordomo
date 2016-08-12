@@ -273,9 +273,53 @@ function usual(&$out) {
    }
   }
 
+  if ($rule['CONDITION_ACTIVE'] && $rule['CONDITION_LINKED_OBJECT'] && $rule['CONDITION_LINKED_PROPERTY']) {
+   $value=getGlobal($rule['CONDITION_LINKED_OBJECT'].'.'.$rule['CONDITION_LINKED_PROPERTY']);
+   $res=$this->checkCondition($rule, $value);
+   if (!$res) {
+    return false;
+   }
+  }
+
 
   return true;
  }
+
+ function checkCondition($rec, $value) {
+
+  $status=0;
+
+   if (($rec['CONDITION']==2 || $rec['CONDITION']==3) 
+       && $rec['CONDITION_VALUE']!='' 
+       && !is_numeric($rec['CONDITION_VALUE']) 
+       && !preg_match('/^%/', $rec['CONDITION_VALUE'])) {
+        $rec['CONDITION_VALUE']='%'.$rec['CONDITION_VALUE'].'%';
+   }
+
+   if (is_integer(strpos($rec['CONDITION_VALUE'], "%"))) {
+    $rec['CONDITION_VALUE']=processTitle($rec['CONDITION_VALUE']);
+   }
+
+   if ($rec['CONDITION']==1 && $value==$rec['CONDITION_VALUE']) {
+    $status=1;
+   } elseif ($rec['CONDITION']==2 && (float)$value>(float)$rec['CONDITION_VALUE']) {
+    $status=1;
+   } elseif ($rec['CONDITION']==3 && (float)$value<(float)$rec['CONDITION_VALUE']) {
+    $status=1;
+   } elseif ($rec['CONDITION']==4 && $value!=$rec['CONDITION_VALUE']) {
+    $status=1;
+   } elseif ($rec['CONDITION']==5) {
+    $status=1;
+   } else {
+    $status=0;
+   }
+
+
+  return $status;
+
+ }
+
+
 /**
 * Install
 *
@@ -318,6 +362,13 @@ security_rules - Security_rules
  security_rules: USERS_EXCEPT int(3) NOT NULL DEFAULT '0'
  security_rules: TIMES varchar(255) NOT NULL DEFAULT ''
  security_rules: TIMES_EXCEPT int(3) NOT NULL DEFAULT '0'
+
+ security_rules: CONDITION_ACTIVE int(3) NOT NULL DEFAULT '0'
+ security_rules: CONDITION_LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ security_rules: CONDITION_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ security_rules: CONDITION int(3) NOT NULL DEFAULT '0'
+ security_rules: CONDITION_VALUE varchar(255) NOT NULL DEFAULT ''
+
 EOD;
   parent::dbInstall($data);
  }

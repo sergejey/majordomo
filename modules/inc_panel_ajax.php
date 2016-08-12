@@ -114,13 +114,15 @@
    }
 
    //properties and methods
-   $properties=SQLSelect("SELECT properties.ID, properties.TITLE, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID WHERE properties.TITLE LIKE '%".DBSafe($title)."%' ORDER BY properties.TITLE");
+   $properties=SQLSelect("SELECT properties.ID, properties.CLASS_ID, properties.TITLE, objects.CLASS_ID as OBJECT_CLASS_ID, objects.ID as OBJECT_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID LEFT JOIN pvalues ON (properties.ID=pvalues.PROPERTY_ID AND properties.OBJECT_ID=pvalues.OBJECT_ID) WHERE (properties.TITLE LIKE '%".DBSafe($title)."%' OR pvalues.VALUE LIKE '%".DBSafe($title)."%') ORDER BY properties.TITLE");
    $total=count($properties);
    for($i=0;$i<$total;$i++) {
     $res.='P: '; //<a href="/panel/object/'.'">
     if ($properties[$i]['OBJECT']) {
+     $res.='<a href="/panel/class/'.$properties[$i]['OBJECT_CLASS_ID'].'/object/'.$properties[$i]['OBJECT_ID'].'/properties.html">'.$methods[$i]['OBJECT'];
      $res.=$properties[$i]['OBJECT'];
     } else {
+     $res.='<a href="/panel/class/'.$properties[$i]['CLASS_ID'].'/properties.html">'.$methods[$i]['OBJECT'];
      $res.=$properties[$i]['CLASS'];
     }
     $res.='.'.$properties[$i]['TITLE'].'</a><br>';
