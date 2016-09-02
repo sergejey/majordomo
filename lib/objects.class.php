@@ -329,6 +329,52 @@ function getObject($name)
    return 0;
 }
 
+
+
+/**
+ * Summary of getObjectsByProperty
+ * @param mixed $property_name Property name
+ * @return array|int
+ */
+function getObjectsByProperty($property_name, $condition='', $condition_value='') 
+{
+  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($property_name)."'");
+  $total=count($pRecs);
+  if (!$total) {
+   return 0;
+  }
+  $found=array();
+  for($i=0;$i<$total;$i++) {
+   $pValues=SQLSelect("SELECT objects.TITLE, VALUE FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."'");
+   $totalv=count($pValues);
+   for($iv=0;$iv<$totalv;$iv++) {
+    $v=$pValues[$iv]['VALUE'];
+    if (!$condition) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='=' || $condition=='==') && ($v==$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='>=') && ($v>=$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='>') && ($v>$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='<=') && ($v<=$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='<') && ($v<$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='<>' || $condition=='!=') && ($v!=$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    }
+   }
+  }
+
+  $res=array();
+  foreach($found as $k=>$v) {
+   $res[]=$k;
+  }
+  return $res;
+
+}
+
 /**
  * Summary of getObjectsByClass
  * @param mixed $class_name Class name
@@ -443,7 +489,7 @@ function getGlobal($varname)
 * @access public
 */
 function getHistoryValueId($varname){
-	$tmp = explode('.', $varname);
+        $tmp = explode('.', $varname);
 
   if (isset($tmp[2]))
   {
@@ -457,21 +503,21 @@ function getHistoryValueId($varname){
   }
   else  
     $object_name = 'ThisComputer';
-	
-	// Get object
-	$obj = getObject($object_name);
-	if (!$obj) return false;
-	
-	// Get property
-	$prop_id = $obj->getPropertyByName($varname, $obj->class_id, $obj->id);	
-	if ($prop_id == false)	return false;
-	
-	$rec=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$prop_id."' AND OBJECT_ID='".(int)$obj->id."'");
-	
-	if (!$rec['ID']) 
-		return false;
-	
-	return $rec['ID'];
+        
+        // Get object
+        $obj = getObject($object_name);
+        if (!$obj) return false;
+        
+        // Get property
+        $prop_id = $obj->getPropertyByName($varname, $obj->class_id, $obj->id); 
+        if ($prop_id == false)  return false;
+        
+        $rec=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$prop_id."' AND OBJECT_ID='".(int)$obj->id."'");
+        
+        if (!$rec['ID']) 
+                return false;
+        
+        return $rec['ID'];
 }
 
 /**
@@ -481,15 +527,15 @@ function getHistoryValueId($varname){
 *
 * @access public
 */
-function getHistory($varname, $start_time, $stop_time = 0) {	
-	if ($start_time <= 0) $start_time = (time() + $start_time);
-	if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
-	
-	// Get hist val id
+function getHistory($varname, $start_time, $stop_time = 0) {    
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
 
-	// Get data
-	return SQLSelect("SELECT VALUE, ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        // Get data
+        return SQLSelect("SELECT VALUE, ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
 }
 
 /**
@@ -499,20 +545,20 @@ function getHistory($varname, $start_time, $stop_time = 0) {
 *
 * @access public
 */
-function getHistoryMin($varname, $start_time, $stop_time = 0) {	
-	if ($start_time <= 0) $start_time = (time() + $start_time);
-	if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
-	
-	// Get hist val id
+function getHistoryMin($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
 
-	// Get data
-	$data = SQLSelectOne("SELECT MIN(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
-	
-	if (!$data['VALUE'])
-		return false;
-	
-	return $data['VALUE'];
+        // Get data
+        $data = SQLSelectOne("SELECT MIN(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
 }
 
 /**
@@ -522,19 +568,19 @@ function getHistoryMin($varname, $start_time, $stop_time = 0) {
 *
 * @access public
 */
-function getHistoryMax($varname, $start_time, $stop_time = 0) {	
-	if ($start_time <= 0) $start_time = (time() + $start_time);
-	if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
-	
-	// Get hist val id
+function getHistoryMax($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
 
-	// Get data
-	$data = SQLSelectOne("SELECT MAX(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
-	if (!$data['VALUE'])
-		return false;
-	
-	return $data['VALUE'];
+        // Get data
+        $data = SQLSelectOne("SELECT MAX(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
 }
 
 /**
@@ -544,19 +590,19 @@ function getHistoryMax($varname, $start_time, $stop_time = 0) {
 *
 * @access public
 */
-function getHistoryCount($varname, $start_time, $stop_time = 0) {	
-	if ($start_time <= 0) $start_time = (time() + $start_time);
-	if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
-	
-	// Get hist val id
+function getHistoryCount($varname, $start_time, $stop_time = 0) {       
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
 
-	// Get data
-	$data = SQLSelectOne("SELECT COUNT(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
-	if (!$data['VALUE'])
-		return false;
-	
-	return $data['VALUE'];
+        // Get data
+        $data = SQLSelectOne("SELECT COUNT(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
 }
 
 /**
@@ -566,19 +612,19 @@ function getHistoryCount($varname, $start_time, $stop_time = 0) {
 *
 * @access public
 */
-function getHistorySum($varname, $start_time, $stop_time = 0) {	
-	if ($start_time <= 0) $start_time = (time() + $start_time);
-	if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
-	
-	// Get hist val id
+function getHistorySum($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
 
-	// Get data
-	$data = SQLSelectOne("SELECT SUM(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
-	if (!$data['VALUE'])
-		return false;
-	
-	return $data['VALUE'];
+        // Get data
+        $data = SQLSelectOne("SELECT SUM(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
 }
 
 /**
@@ -588,19 +634,19 @@ function getHistorySum($varname, $start_time, $stop_time = 0) {
 *
 * @access public
 */
-function getHistoryAvg($varname, $start_time, $stop_time = 0) {	
-	if ($start_time <= 0) $start_time = (time() + $start_time);
-	if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
-	
-	// Get hist val id
+function getHistoryAvg($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
 
-	// Get data
-	$data = SQLSelectOne("SELECT AVG(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
-	if (!$data['VALUE'])
-		return false;
-	
-	return $data['VALUE'];
+        // Get data
+        $data = SQLSelectOne("SELECT AVG(VALUE) AS VALUE FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
 }
 /**
 * getHistoryValue
@@ -609,46 +655,46 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0) {
 *
 * @access public
 */
-function getHistoryValue($varname, $time, $nerest = false) {	
-	if ($time <= 0) $time = (time() + $time);	
-	
-	// Get hist val id
+function getHistoryValue($varname, $time, $nerest = false) {    
+        if ($time <= 0) $time = (time() + $time);       
+        
+        // Get hist val id
   $id = getHistoryValueId($varname);
-	
-	// Get val before
-	$val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
-	
-	// Get val after	
-	$val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
-	
-	// Not found values
-	if ((!$val1['VALUE']) && (!$val2['VALUE']))	
-		return false;	
-	
-	// Only before
-	if (($val1['VALUE']) && (!$val2['VALUE']))	
-		return $val1['VALUE'];	
-	
-	// Only after
-	if ((!$val1['VALUE']) && ($val2['VALUE']))	
-		return $val2['VALUE'];	
-	
-	// Nerest
-	if ($nerest)
-	{
-		if (($time-$val1['ADDED']) < ($val2['ADDED']-$time))
-			return $val1['VALUE'];
-		else
-			return $val2['VALUE'];
-	}
-	// Interpolation
-	else 	
-	{		
-		if ($val2['ADDED'] - $val1['ADDED'] == 0) 
-			return $val1['VALUE'];
-	  else
-	  	return $val1['VALUE'] + ($val2['VALUE'] - $val1['VALUE']) * ($time - $val1['ADDED']) / ($val2['ADDED'] - $val1['ADDED']);
-	}
+        
+        // Get val before
+        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
+        
+        // Get val after        
+        $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
+        
+        // Not found values
+        if ((!$val1['VALUE']) && (!$val2['VALUE']))     
+                return false;   
+        
+        // Only before
+        if (($val1['VALUE']) && (!$val2['VALUE']))      
+                return $val1['VALUE'];  
+        
+        // Only after
+        if ((!$val1['VALUE']) && ($val2['VALUE']))      
+                return $val2['VALUE'];  
+        
+        // Nerest
+        if ($nerest)
+        {
+                if (($time-$val1['ADDED']) < ($val2['ADDED']-$time))
+                        return $val1['VALUE'];
+                else
+                        return $val2['VALUE'];
+        }
+        // Interpolation
+        else    
+        {               
+                if ($val2['ADDED'] - $val1['ADDED'] == 0) 
+                        return $val1['VALUE'];
+          else
+                return $val1['VALUE'] + ($val2['VALUE'] - $val1['VALUE']) * ($time - $val1['ADDED']) / ($val2['ADDED'] - $val1['ADDED']);
+        }
 }
 /**
  * Summary of setGlobal

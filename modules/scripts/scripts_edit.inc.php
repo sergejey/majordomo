@@ -14,7 +14,7 @@
    $rec['TITLE']=$title;
   //updating 'CODE' (text)
    global $type;
-   $rec['TYPE']=$type;
+   $rec['TYPE']=(int)$type;
 
    global $category_id;
    $rec['CATEGORY_ID']=$category_id;
@@ -51,13 +51,17 @@
 
    global $run_days;
    $rec['RUN_DAYS']=@implode(',', $run_days);
+   if (is_null($rec['RUN_DAYS'])) {
+    $rec['RUN_DAYS']='';
+   }
 
 
    global $run_minutes;
    global $run_hours;
    $rec['RUN_TIME']=$run_hours.':'.$run_minutes;
 
-   $rec['EXECUTED']='0000-00-00 00:00:00';
+   //$rec['EXECUTED']='0000-00-00 00:00:00';
+   unset($rec['EXECUTED']);
    
 
 

@@ -214,7 +214,7 @@
     $element['SMART_REPEAT']=(int)$smart_repeat;
 
     global $s3d_scene;
-    $element['S3D_SCENE']=$s3d_scene;
+    $element['S3D_SCENE']=$s3d_scene.'';
 
 
     global $easy_config;
