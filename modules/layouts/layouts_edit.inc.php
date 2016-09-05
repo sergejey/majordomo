@@ -28,10 +28,10 @@
 
   //updating 'APP' (varchar)
    global $appname;
-   $rec['APP']=$appname;
+   $rec['APP']=$appname.'';
   //updating 'URL' (url)
    global $url;
-   $rec['URL']=$url;
+   $rec['URL']=$url.'';
 
    global $delete_icon;
    if ($delete_icon) {

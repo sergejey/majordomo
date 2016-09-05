@@ -47,10 +47,10 @@
    $rec['DESCRIPTION']=$description;
   //updating 'Location' (select)
    global $location_id;
-   $rec['LOCATION_ID']=$location_id;
+   $rec['LOCATION_ID']=(int)$location_id;
 
    global $keep_history;
-   $rec['KEEP_HISTORY']=$keep_history;
+   $rec['KEEP_HISTORY']=(int)$keep_history;
 
 
   }
