@@ -251,6 +251,7 @@ for($i=0;$i<$total;$i++) {
      } else {
       $rec['VALUE']=$v['VALUE'];
      }
+     $rec['DATA']='';
      $rec['DEFAULTVALUE']=$v['DEFAULT'];
      $rec['TITLE']=$v['TITLE'];
      $rec['TYPE']=$v['TYPE'];
