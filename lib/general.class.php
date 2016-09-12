@@ -416,11 +416,13 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
    $result = $mail->send(array($to));
    if(!$result)
    {
-       getLogger(__FILE__)->error('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo);
+    DebMes('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo.' ('.__FILE__.')');
+    //getLogger(__FILE__)->error('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo);
    }
    else
    {
-       getLogger(__FILE__)->debug('Message has been sent');
+       DebMes('Message has been sent');
+    //getLogger(__FILE__)->debug('Message has been sent');
    }
    return $result;
 }
@@ -517,6 +519,17 @@ function DebMes($errorMessage, $logLevel = "debug")
       mkdir(ROOT . 'debmes', 0777);
    }
 
+   $today_file=ROOT.'debmes/'.date('Ymd').'.log';
+   $f=fopen($today_file, "a+");
+   if ($f) {
+                $tmp=explode(' ', microtime());
+                fputs($f, date("d.m.Y H:i:s").' '.$tmp[0]);
+                fputs($f, " $text\n");
+                fclose($f);
+                @chmod($today_file, 0666);
+   }
+
+   /*
    if (!file_exists(ROOT . 'debmes/' . date('Y-m-d') . '.log'))
    {
       SaveFile(ROOT . 'debmes/' . date('Y-m-d') . '.log', "Added " . date('Y-m-d H:i:s' . "\n"));
@@ -552,6 +565,7 @@ function DebMes($errorMessage, $logLevel = "debug")
       default:
          $log->debug($errorMessage);
    }
+   */
 }
 
 /**
@@ -575,6 +589,7 @@ function DebMes($errorMessage, $logLevel = "debug")
  */
 function getLogger($context = null)
 {
+/*
    if (empty($context))
       return Logger::getRootLogger();
    elseif (is_string($context))
@@ -592,6 +607,8 @@ function getLogger($context = null)
       return Logger::getLogger('class.' . get_class($context));
    else
       return Logger::getRootLogger();
+      */
+      return false;
 }
 
 /**

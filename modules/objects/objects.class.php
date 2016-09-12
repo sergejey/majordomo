@@ -513,11 +513,11 @@ function usual(&$out) {
      try {
        $success = eval($code);
        if ($success === false) {
-         getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
+         //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
          registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
        }
      } catch (Exception $e) {
-       getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
+       //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
        registerError('method', sprintf('Exception in "%s.%s" method '.$e->getMessage(), $this->object_title, $name));
      }
 

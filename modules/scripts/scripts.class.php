@@ -138,12 +138,12 @@ function run() {
         $code = $rec['CODE'];
         $success = eval($code);
         if ($success === false) {
-          getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+          //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
           registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
         }
         return $success;
       } catch (Exception $e) {
-        getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
+        //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
         registerError('script', sprintf('Error in script "%s": '.$e->getMessage(), $rec['TITLE']));
       }
 

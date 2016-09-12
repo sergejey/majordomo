@@ -34,8 +34,6 @@ if (file_exists('./reboot'))
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
-include_once("./load_settings.php");
-
 echo "CONNECTED TO DB" . PHP_EOL;
 
 echo "Running startup maintenance" . PHP_EOL;
@@ -52,18 +50,21 @@ if (file_exists($filename))
    exec($mysql_path . $mysqlParam);
 }
 
+include_once("./load_settings.php");
+
+
 //reinstalling modules
 /*
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) {
           while (($file = readdir($dir)) !== false) {
            if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
-            //echo "Removing file ".ROOT."modules/".$file."/installed"."\n";
             @unlink(ROOT."modules/".$file."/installed");
            }
           }
          }
 */
+
 
 echo "Checking modules.\n";
 // continue startup

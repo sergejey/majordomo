@@ -81,7 +81,7 @@
   //UPDATING RECORD
    if ($ok) {
     $rec['LATEST_VALUE']='';
-    $rec['CHECK_LATEST']='';
+    $rec['CHECK_LATEST']=date('Y-m-d H:i:s');
     $rec['CHECK_NEXT']=date('Y-m-d H:i:s');
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update

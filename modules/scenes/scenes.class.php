@@ -1184,7 +1184,11 @@ function usual(&$out) {
        if ($elements[$ie]['TYPE']=='container') {
         if (!is_array($options) || $options['ignore_sub']!=1) {
          startMeasure('getSubElements');
-         $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
+         if (checkAccess('scene_elements', $elements[$ie]['ID'])) {
+          $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
+         } else {
+          $elements[$ie]['TYPE']='';
+         }
          endMeasure('getSubElements');
         }
        }

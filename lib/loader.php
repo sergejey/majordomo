@@ -40,8 +40,9 @@ if ($lib_dir = @opendir("./lib"))
    closedir($lib_dir);
 }
 
+/*
 // Insert the path where you unpacked log4php
 require_once dirname(__FILE__) . '/log4php/Logger.php';
-
 // Tell log4php to use our configuration file.
 Logger::configure(dirname(__FILE__) . '/log4php/config.php');
+*/

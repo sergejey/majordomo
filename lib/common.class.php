@@ -447,7 +447,8 @@ function runScheduledJobs()
 
       if (!preg_match('/OK$/', $result))
       {
-         getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+         //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+         DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) .' ('.__FILE__.')');
       }
    }
 }
@@ -919,6 +920,8 @@ function checkAccess($object_type, $object_id)
  */
 function registerError($code = 'custom', $details = '')
 {
+
+   DebMes("Error registered (type: $code): ".$details);
    $code = trim($code);
 
    if ($code == 'sql') {

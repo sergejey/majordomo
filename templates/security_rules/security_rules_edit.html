@@ -96,7 +96,7 @@
  <label class="control-label"[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_CONDITION#>:
  </label>
- <div class="controls"><label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE#] checked[#endif#]> <#LANG_SET#></label>
+ <div class="controls"><label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#></label>
  <div id='condition_select'>
   &nbsp;
 

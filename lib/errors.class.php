@@ -44,8 +44,9 @@ class custom_error
       $script      = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
       $description = $script . "\nError:\n" . $description;
 
-      $log = getLogger($this);
-      $log->error($description);
+      //$log = getLogger($this);
+      //$log->error($description);
+      DebMes($description.' ('.__FILE__.')');
 
       if (defined("DEBUG_MODE"))
       {
