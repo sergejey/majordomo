@@ -519,12 +519,12 @@ function DebMes($errorMessage, $logLevel = "debug")
       mkdir(ROOT . 'debmes', 0777);
    }
 
-   $today_file=ROOT.'debmes/'.date('Ymd').'.log';
+   $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
    $f=fopen($today_file, "a+");
    if ($f) {
                 $tmp=explode(' ', microtime());
-                fputs($f, date("d.m.Y H:i:s").' '.$tmp[0]);
-                fputs($f, " $text\n");
+                fputs($f, date("H:i:s").' '.$tmp[0]);
+                fputs($f, " ".$errorMessage."\n");
                 fclose($f);
                 @chmod($today_file, 0666);
    }

@@ -19,6 +19,11 @@
   //updating 'PRIORITY' (int)
    global $priority;
    $rec['PRIORITY']=(int)$priority;
+
+   global $hidden;
+   $rec['HIDDEN']=(int)$hidden;
+
+
   //updating 'TYPE' (select)
    global $type;
    $rec['TYPE']=$type;

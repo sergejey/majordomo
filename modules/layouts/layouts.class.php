@@ -276,6 +276,7 @@ layouts - Layouts
  layouts: URL char(255) NOT NULL DEFAULT ''
  layouts: REFRESH int(10) NOT NULL DEFAULT '0'
  layouts: DETAILS text
+ layouts: HIDDEN int(3) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }

@@ -235,6 +235,11 @@ jQuery.fn.center = function () {
       <li>
         <a href="#" onClick='$("#console").toggle();return false;'><i class="glyphicon glyphicon-flash"></i> Console</a>
       </li>
+        [#if APP_TDWIKI_INSTALLED="1"#]
+        <li>
+            <a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-globe"></i> Wiki</a>
+        </li>
+        [#endif#]
       <li>
         <a href="<#LANG_WIKI_URL#>" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
       </li>

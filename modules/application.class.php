@@ -33,6 +33,9 @@ function saveParams($data = 1) {
  if ($this->popup) {
   $p['popup']=$this->popup;
  }
+ if ($this->app_action) {
+  $p['app_action']=$this->app_action;
+ }
  return parent::saveParams($p);
  }
 
@@ -277,7 +280,7 @@ function getParams() {
    }
 
    if ($this->action=='' || $this->action=='pages') {
-    $res=SQLSelect("SELECT * FROM layouts ORDER BY PRIORITY DESC, TITLE");
+    $res=SQLSelect("SELECT * FROM layouts WHERE HIDDEN!=1 ORDER BY PRIORITY DESC, TITLE");
     if ($this->action!='admin') {
      $total=count($res);
      $res2=array();
