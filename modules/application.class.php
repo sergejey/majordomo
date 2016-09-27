@@ -140,6 +140,8 @@ function getParams() {
 
    if ($this->action=='first_start') {
     include(DIR_MODULES.'first_start.php');
+   } elseif ($this->action=='apps') {
+    include(DIR_MODULES.'apps.php');
    }
 
    $out["ACTION"]=$this->action;
@@ -178,12 +180,15 @@ function getParams() {
     $session->data['TERMINAL']=$terminal;
    }
 
-   if (preg_match('/^app_\w+$/is', $this->action) || $this->action=='xray') {
-    $out['APP_ACTION']=1;
-   }
+   if ($this->action!='apps') {
+    if (preg_match('/^app_\w+$/is', $this->action) || $this->action=='xray') {
+     $out['APP_ACTION']=1;
+    }
 
-   if ($this->app_action) {
-    $out['APP_ACTION']=1;
+    if ($this->app_action) {
+     $out['APP_ACTION']=1;
+    }
+
    }
 
 

@@ -161,6 +161,9 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
+ if ($this->owner->action=='apps') {
+  $this->redirect(ROOTHTML."pages.html");
+ }
  $this->admin($out);
 }
 /**

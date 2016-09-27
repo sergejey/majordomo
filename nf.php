@@ -59,6 +59,8 @@ $requests = array(
    "/^\/menu\/(\d+?)\.html/is"          => '?(application:{action=menu, parent_item=\1})',
    "/^\/popup\/(shoutbox)\.html/is"     => '?(application:{action=\1, popup=1, app_action=1})',
    "/^\/module\/(.+?)\.html/is"     => '?(application:{action=\1, popup=1, app_action=1})',
+    "/^\/apps\/(.+?)\.html/is"     => '?(application:{action=apps, popup=1, app_action=\1})',
+    "/^\/apps\.html/is"     => '?(application:{action=apps, popup=1})',
    "/^\/popup\/(.+?)\/(.+?)\.html/is"   => '?(application:{action=\1, popup=1})',
    "/^\/popup\/(.+?)\.html/is"          => '?(application:{action=\1, popup=1})',
    "/^\/ajax\/(.+?)\.html/is"           => '?(application:{action=\1, ajax=1})',

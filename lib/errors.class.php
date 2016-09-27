@@ -46,6 +46,8 @@ class custom_error
 
       //$log = getLogger($this);
       //$log->error($description);
+      //$backtrace=debug_backtrace();
+      //print_r($backtrace);exit;
       DebMes($description.' ('.__FILE__.')');
 
       if (defined("DEBUG_MODE"))

@@ -34,14 +34,21 @@
  [#inc default.html#]
 [#endif#]
 
+
+
 [#if ACTION="pages"#]
  [#inc pages.html#]
 [#endif#]
 
 
-[#if APP_ACTION#]
- [#module name="<#ACTION#>" action=""#]
-[#endif#]
+  [#if ACTION="apps"#]
+  [#inc apps.html#]
+  [#else#]
+   [#if APP_ACTION#]
+    [#module name="<#ACTION#>" action=""#]
+   [#endif#]
+  [#endif#]
+
 
 [#if ACTION="player"#]
  [#module name="app_player" action=""#]

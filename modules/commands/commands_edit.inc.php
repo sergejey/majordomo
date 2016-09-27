@@ -40,7 +40,7 @@
 
 
    global $type;
-   $rec['TYPE']=$type;
+   $rec['TYPE']=$type.'';
 
    global $ext_id;
    $rec['EXT_ID']=(int)$ext_id;

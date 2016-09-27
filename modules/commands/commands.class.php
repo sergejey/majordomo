@@ -553,6 +553,9 @@ endMeasure('TOTAL');
 * @access public
 */
 function usual(&$out) {
+ if ($this->owner->action=='apps') {
+  $this->redirect(ROOTHTML."menu.html");
+ }
  $this->admin($out);
 }
 /**
