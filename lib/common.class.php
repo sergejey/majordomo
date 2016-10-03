@@ -10,12 +10,12 @@
   $source='';
   if ($replyto) {
    $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%".DBSafe($replyto)."%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-   $orig_msg=SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%".DBSafe($replyto)."%' AND (NOW()-ADDED)<=30 ORDER BY ADDED DESC LIMIT 1");
+   $orig_msg=SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%".DBSafe($replyto)."%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
    if ($orig_msg['ID']) {
     $source=$orig_msg['SOURCE'];
    }
   } else {
-   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE (NOW()-LATEST_REQUEST_TIME)<=5 ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
+   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST_TIME>=(NOW() - INTERVAL 5 SECOND) ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
   }
   if (!$terminal_rec) {
    say($ph, $level);
@@ -347,10 +347,9 @@ function timeBetween($tm1, $tm2)
  * @param mixed $expire   Expire time (default 60)
  * @return mixed
  */
-function addScheduledJob($title, $commands, $datetime, $expire = 60)
+function addScheduledJob($title, $commands, $datetime, $expire = 1800)
 {
    $rec = array();
-
    $rec['TITLE']    = $title;
    $rec['COMMANDS'] = $commands;
    $rec['RUNTIME']  = date('Y-m-d H:i:s', $datetime);

@@ -226,7 +226,7 @@ function getParams() {
     $out['HIDE_TERMINALS']=1;
     $session->data['TERMINAL']=$terminals[0]['NAME'];
    }
-   SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE (NOW()-LATEST_ACTIVITY)>30*60');
+   SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 30 MINUTE)');
 
    $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
    $total=count($users);

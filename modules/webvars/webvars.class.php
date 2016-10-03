@@ -388,7 +388,7 @@ webvars - webvars
  webvars: TYPE int(30) NOT NULL DEFAULT '0'
  webvars: SEARCH_PATTERN varchar(255) NOT NULL DEFAULT ''
  webvars: CHECK_PATTERN varchar(255) NOT NULL DEFAULT ''
- webvars: LATEST_VALUE text NOT NULL DEFAULT ''
+ webvars: LATEST_VALUE text
  webvars: CHECK_LATEST datetime
  webvars: CHECK_NEXT datetime
  webvars: SCRIPT_ID int(10) NOT NULL DEFAULT '0'

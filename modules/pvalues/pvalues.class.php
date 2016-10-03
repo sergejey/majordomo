@@ -206,7 +206,7 @@ pvalues - Pvalues
  pvalues: PROPERTY_NAME varchar(100) NOT NULL DEFAULT ''
  pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
  pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
- pvalues: VALUE text NOT NULL DEFAULT ''
+ pvalues: VALUE text
  pvalues: UPDATED datetime
  pvalues: LINKED_MODULES varchar(255) NOT NULL DEFAULT ''
  pvalues: INDEX (PROPERTY_ID)

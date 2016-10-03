@@ -384,7 +384,7 @@ function admin(&$out) {
       }
       echo '</td>';
       echo '<td>';
-      echo $res[$i]['VALUE'].'&nbsp;';
+      echo htmlspecialchars($res[$i]['VALUE']).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['UPDATED'].'&nbsp;';
@@ -419,10 +419,10 @@ function admin(&$out) {
       }
 
       if ($filter && preg_match('/'.preg_quote($filter).'/is', $lines[$i])) {
-       $res_lines[]=$lines[$i];
+       $res_lines[]=htmlspecialchars($lines[$i]);
        $added++;
       } elseif (!$filter) {
-       $res_lines[]=$lines[$i];
+       $res_lines[]=htmlspecialchars($lines[$i]);
        $added++;
       }
 
@@ -497,7 +497,7 @@ function admin(&$out) {
       }
       echo '</td>';
       echo '<td>';
-      echo str_replace(';', '; ', $res[$i]['EXECUTED_PARAMS']).'&nbsp;';
+      echo str_replace(';', '; ', htmlspecialchars($res[$i]['EXECUTED_PARAMS'])).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['EXECUTED'].'&nbsp;';
@@ -527,7 +527,7 @@ function admin(&$out) {
       }
       echo '</td>';
       echo '<td>';
-      echo str_replace(';', '; ', $res[$i]['EXECUTED_PARAMS']).'&nbsp;';
+      echo str_replace(';', '; ', htmlspecialchars($res[$i]['EXECUTED_PARAMS'])).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['EXECUTED'].'&nbsp;';
@@ -554,7 +554,7 @@ function admin(&$out) {
       echo $res[$i]['TITLE'];
       echo '</td>';
       echo '<td>';
-      echo $res[$i]['COMMANDS'];
+      echo htmlspecialchars($res[$i]['COMMANDS']);
       echo '</td>';
       echo '<td>';
       echo $res[$i]['RUNTIME'].'&nbsp;';
@@ -581,7 +581,7 @@ function admin(&$out) {
       echo $res[$i]['EVENT_NAME'].'&nbsp;';
       echo '</td>';
       echo '<td>';
-      echo $res[$i]['DETAILS'].'&nbsp;';
+      echo htmlspecialchars($res[$i]['DETAILS']).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['ADDED'].'&nbsp;';

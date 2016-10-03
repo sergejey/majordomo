@@ -373,6 +373,10 @@ class mysql
 
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
+      if (preg_match('/Unknown column/is',$err_details)) {
+         unlink(DIR_MODULES.'control_modules/installed');
+         //header("Location:".ROOTHTML);exit;
+      }
       registerError('sql', $err_no . ": " . $err_details . "\n$query");
       new custom_error($err_no . ": " . $err_details . "<br>$query", 1);
       

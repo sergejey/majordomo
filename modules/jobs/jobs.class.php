@@ -230,7 +230,7 @@ jobs - jobs
   $data = <<<EOD
  jobs: ID int(10) unsigned NOT NULL auto_increment
  jobs: TITLE varchar(255) NOT NULL DEFAULT ''
- jobs: COMMANDS text NOT NULL DEFAULT ''
+ jobs: COMMANDS text
  jobs: RUNTIME datetime
  jobs: EXPIRE datetime
  jobs: STARTED datetime
