@@ -1017,6 +1017,7 @@ function usual(&$out) {
    $qry.=" AND (commands.PARENT_ID=".(int)$parent_id." OR commands.ID='".(int)$parent_id."')";
   }
   $commands=$this->getDynamicElements($qry);
+  //DebMes("Serialize elements: ".serialize($commands));
 
   $properties=array();
   $total=count($commands);

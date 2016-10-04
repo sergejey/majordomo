@@ -300,6 +300,7 @@ $dictionary=array(
 
 'TEXT_BOX'=>'Text field', 
 'DATE_BOX'=>'Date field', 
+'COLOR_PICKER'=>'Color-picker', 
 
 
 'CUSTOM_HTML_BOX'=>'Custom HTML-code', 

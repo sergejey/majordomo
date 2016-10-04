@@ -291,6 +291,7 @@ $dictionary=array(
 
 'TEXT_BOX'=>'Текстовое поле', 
 'DATE_BOX'=>'Дата', 
+'COLOR_PICKER'=>'Выбор цвета', 
 
 
 'CUSTOM_HTML_BOX'=>'HTML-блок', 

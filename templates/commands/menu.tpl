@@ -211,7 +211,7 @@
   if ($('#processing_'+id).length) {
    $('#processing_'+id).html(' - ...');
   }
-  AJAXRequest(url+'&item_id='+id+'&new_value='+new_value, 'itemValueChangedProcessed', id);
+  AJAXRequest(url+'&item_id='+id+'&new_value='+encodeURIComponent(new_value), 'itemValueChangedProcessed', id);
   return false;
  }
 
@@ -561,7 +561,35 @@
  <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" data-inline="true" onChange="changedValue{$item.ID}_delay()" onKeyUp="changedValue{$item.ID}_delay();">
 </div>
 </li>
+{/if}
 
+{if $item.TYPE=='color'}
+<script src='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.css' />
+<script language="javascript">
+ var item{$item.ID}_timer=0;
+ function changedValue{$item.ID}_delay() {
+  clearTimeout(item{$item.ID}_timer);
+  var elem=document.getElementById('menu{$item.ID}_v');
+  item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain"{if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
+<span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span>
+
+<div data-inline="true" data-role="fieldcontain">
+ <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" data-inline="true" onChange="changedValue{$item.ID}_delay()" onKeyUp="changedValue{$item.ID}_delay();">
+</div>
+</li>
+<script>
+ $("#menu{$item.ID}_v").spectrum({
+  preferredFormat: "hex",
+  showInput: true,
+  chooseText: "OK",
+  cancelText: "{$smarty.const.LANG_CANCEL}"
+ });
+</script>
 {/if}
 
 
@@ -616,6 +644,11 @@
   {if $item.TYPE=='textbox'}
    if ($('#menu{$item.ID}_v').val()!=data) {
     $('#menu{$item.ID}_v').val(data);
+   }
+  {/if}
+  {if $item.TYPE=='color'}
+   if ($('#menu{$item.ID}_v').val()!=data) {
+    $("#menu{$item.ID}_v").spectrum("set", data);
    }
   {/if}
 
