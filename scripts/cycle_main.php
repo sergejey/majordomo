@@ -77,7 +77,9 @@ while (1)
          getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
          getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
       }
-
+     
+      processSubscriptions('MINUTELY');
+     
       $old_minute = $m;
    }
 
