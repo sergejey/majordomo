@@ -118,8 +118,8 @@ class mysql
       }
       if (!mysqli_select_db($this->dbh, $this->dbName))
       {
+
          $this->Error();
-         
          return 0;
       }
       else

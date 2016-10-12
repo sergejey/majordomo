@@ -23,6 +23,14 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
    date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 }
 
+function timezone_offset_string( $offset )
+{
+        return sprintf( "%s%02d:%02d", ( $offset >= 0 ) ? '+' : '-', abs( $offset / 3600 ), abs( $offset % 3600 ) );
+}
+$offset = timezone_offset_get(new DateTimeZone(SETTINGS_SITE_TIMEZONE), new DateTime());
+$offset_text=timezone_offset_string( $offset );
+SQLExec("SET GLOBAL time_zone = '".$offset_text."';");
+
 if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
  Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);
  Define('SERVER_ADDR', $_SERVER['SERVER_ADDR']);
