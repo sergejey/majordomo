@@ -27,7 +27,7 @@ $dictionary=array(
 'MODULE_DESCRIPTION'=>'Опис модуля',
 
 'GENERAL_SENSORS'=>'Сенсори',
-'GENERAL_OPERATIONAL_MODES'=>'Режими работы',
+'GENERAL_OPERATIONAL_MODES'=>'Режими роботи',
 'GENERAL_ENERGY_SAVING_MODE'=>'Енергозбереження',
 'GENERAL_SECURITY_MODE'=>'Безпека',
 'GENERAL_NOBODYS_HOME_MODE'=>'Нікого нема вдома',
@@ -47,7 +47,7 @@ $dictionary=array(
 'GENERAL_YELLOW'=>'Жовтий',
 'GENERAL_RED'=>'Червоний',
 'GENERAL_CHANGED_TO'=>'змінився на',
-'GENERAL_RESTORED_TO'=>'ввідновився на',
+'GENERAL_RESTORED_TO'=>'відновився на',
 'GENERAL_SYSTEM_STATE'=>'Системний статус',
 'GENERAL_SECURITY_STATE'=>'Статус безпеки',
 'GENERAL_COMMUNICATION_STATE'=>'Статус зв\'язку',
