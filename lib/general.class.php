@@ -519,6 +519,10 @@ function DebMes($errorMessage, $logLevel = "debug")
       mkdir(ROOT . 'debmes', 0777);
    }
 
+   if (is_array($errorMessage)) {
+      $errorMessage='Array: '.serialize($errorMessage);
+   }
+
    $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
    $f=fopen($today_file, "a+");
    if ($f) {

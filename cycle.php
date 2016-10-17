@@ -111,8 +111,19 @@ else
 
 foreach ($cycles as $path)
 {
+
    if (file_exists($path))
    {
+
+      if (preg_match('/(cycle_.+?)\.php/is',$path,$m)) {
+         $title = $m[1];
+         if (getGlobal($title.'Disabled')) {
+            DebMes("Cycle ".$title." disabled. Skipping.");
+            continue;
+         }
+      }
+
+
       DebMes("Starting " . $path . " ... ");
       echo "Starting " . $path . " ... ";
 
@@ -165,6 +176,72 @@ $last_restart=array();
 
 while (false !== ($result = $threads->iteration()))
 {
+
+
+   $to_start=array();
+   $to_stop=array();
+   $to_restart=array();
+   $auto_restarts=array();
+
+   $qry="1 AND TITLE LIKE 'cycle%Run'";
+   $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+   $total = count($cycles);
+
+   for ($i = 0; $i < $total; $i++) {
+      $title = $cycles[$i]['TITLE'];
+      $title = preg_replace('/Run$/', '', $title);
+      $control=getGlobal($title.'Control');
+      $auto_restart=getGlobal($title.'AutoRestart');
+      if ($auto_restart) {
+        $auto_restarts[]=$title;
+      }
+      if ($control!='') {
+         if ($control=='stop') {
+            $to_stop[]=$title;
+         } elseif ($control=='start') {
+            $to_start[]=$title;
+         } elseif ($control=='restart') {
+            $to_stop[]=$title;
+            $to_start[]=$title;
+         }
+       setGlobal($title.'Control','');
+      }
+
+   }
+
+   $some_closed=0;
+   $is_running=array();
+   foreach($threads->commandLines as $id=>$cmd) {
+      if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
+         $title=$m[1];
+         if (in_array($title,$to_stop) || in_array($title,$to_restart)) {
+            DebMes("Closing service ".$title." (id: $id)");
+            $threads->closeThread($id);
+            $some_closed=1;
+         } else {
+            $is_running[]=$title;
+         }
+      }
+   }
+
+   if ($some_closed) {
+      sleep(3);
+   }
+
+   foreach($to_start as $title) {
+      if (!in_array($title,$is_running)) {
+         $cmd='./scripts/'.$title.'.php';
+         DebMes("Starting service ".$title.' ('.$cmd.')');
+         $pipe_id = $threads->newThread($cmd);
+      }
+   }
+
+/*
+   setGlobal('runningCycles',serialize($threads->commandLines));
+   setGlobal('runningToStop',serialize($to_stop));
+   setGlobal('runningToStart',serialize($to_start));
+*/
+
    if (!empty($result))
    {
       //echo "Res: " . $result . PHP_EOL . "---------------------" . PHP_EOL;
@@ -172,24 +249,32 @@ while (false !== ($result = $threads->iteration()))
       if (preg_match_all($closePattern, $result, $matches) && !file_exists('./reboot'))
       {
          $total_m = count($matches[1]);
-
          for ($im = 0; $im < $total_m; $im++)
          {
             $closed_thread = $matches[1][$im];
-
+            $need_restart=0;
+            if (preg_match('/(cycle_.+?)\.php/is',$closed_thread,$m)) {
+               $title=$m[1];
+               setGlobal($title.'Run','');
+               if (in_array($title,$auto_restarts)) {
+                  $need_restart=1;
+               }
+            }
             foreach ($restart_threads as $item)
             {
                if (preg_match('/' . $item . '/is', $closed_thread) && (!$last_restart[$closed_thread] || (time()-$last_restart[$closed_thread])>30))
                {
                   //restart
+                  $need_restart=1;
                   $last_restart[$closed_thread]=time();
-                  DebMes("RESTARTING: " . $closed_thread);
-                  echo "RESTARTING: " . $closed_thread . PHP_EOL;
-                  if (!preg_match('/websockets/is', $closed_thread)) {
-                   registerError('cycle_stop', $closed_thread);
-                  }
-                  $pipe_id = $threads->newThread($closed_thread);
                }
+            }
+            if ($need_restart) {
+               DebMes("AUTO-RECOVERY: " . $closed_thread);
+               if (!preg_match('/websockets/is', $closed_thread)) {
+                  registerError('cycle_stop', $closed_thread);
+               }
+               $pipe_id = $threads->newThread($closed_thread);
             }
          }
       }

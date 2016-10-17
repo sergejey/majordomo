@@ -39,6 +39,7 @@ include_once("./config.php");
 $requests = array(
    "/^\/panel\/script\/(\d+)\.html/is"  => '?(panel:{action=scripts})&md=scripts&view_mode=edit_scripts&id=\1',
    "/^\/panel\/command\/(\d+)\.html/is" => '?(panel:{action=commands})&md=commands&view_mode=edit_commands&id=\1',
+    "/^\/panel\/xray\.html/is" => '?(panel:{action=xray})&md=xray',
    "/^\/panel\/linkedobject.html/is"    => '?(panel:{action=linkedobject})',
     "/^\/panel\/popup\/(.+?).html/is"   => '?(panel:{action=\1})&print=1',
    "/^\/panel\/class\/(\d+)\.html/is"   => '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1',

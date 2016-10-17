@@ -38,7 +38,7 @@ if ($mode2=='install' && $name!='') {
   $res=$mkt->upload($out, 1);
   if ($res) {
    $mkt->removeTree(ROOT.'saverestore/temp');
-   @SaveFile(ROOT.'reboot', 'updated');
+   //@SaveFile(ROOT.'reboot', 'updated');
    $mkt->echonow("Redirecting to main page...");
    $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
   }

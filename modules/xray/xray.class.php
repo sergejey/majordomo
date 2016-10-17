@@ -356,6 +356,31 @@ function run() {
 */
 function admin(&$out) {
  global $ajax;
+
+ if ($this->view_mode=='services') {
+  global $cmd;
+  global $service;
+  if ($cmd=='start' && $service!='') {
+   sg($service.'Control','start');
+  } elseif ($cmd=='stop' && $service!='') {
+   sg($service.'Control','stop');
+  } elseif ($cmd=='restart' && $service!='') {
+   sg($service.'Control','restart');
+  } elseif ($cmd=='switch_restart' && $service!='') {
+   if (gg($service.'AutoRestart')) {
+    sg($service.'AutoRestart',0);
+   } else {
+    sg($service.'AutoRestart',1);
+   }
+  } elseif ($cmd=='switch_disabled' && $service!='') {
+   if (gg($service.'Disabled')) {
+    sg($service.'Disabled',0);
+   } else {
+    sg($service.'Disabled',1);
+   }
+  }
+ }
+
  if ($ajax) {
   global $op;
   global $filter;
@@ -534,7 +559,76 @@ function admin(&$out) {
       echo '</td>';
       echo '</tr>';
      }
-     echo '</table>';     
+     echo '</table>';
+
+    } elseif ($this->view_mode=='services') {
+     $qry="1 AND TITLE LIKE 'cycle%Run'";
+     $res=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+     $total=count($res);
+     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+     echo '<tr>';
+     echo '<td><b>CYCLE</b></td>';
+     echo '<td><b>LIVE</b></td>';
+     echo '<td><b>CONTROL</b></td>';
+     echo '<td><b>DISABLED</b></td>';
+     echo '<td><b>AUTO-RECOVERY</b></td>';
+     echo '</tr>';
+     for($i=0;$i<$total;$i++) {
+      echo '<tr>';
+      echo '<td>';
+      $title = $res[$i]['TITLE'];
+      $title = preg_replace('/Run$/', '', $title);
+      echo $title;
+      echo '</td>';
+      echo '<td>';
+      $tm = (int)getGlobal($title . 'Run');
+      if ($tm > 0) {
+       if ((time() - $tm) < 60) {
+        echo "<font color='green'><b>";
+       } else {
+        echo "<font color='blue'>";
+       }
+       $updated = date('Y-m-d H:i:s', $tm);
+      } else {
+       $updated='';
+      }
+      echo $updated.'&nbsp;</b></font>';
+      $control=getGlobal($title.'Control');
+      if ($control!='') {
+       echo '&nbsp;'.$control;
+      }
+      echo '</td>';
+
+      $url=ROOTHTML.'panel/xray.html?view_mode=services&service='.urlencode($title);
+
+      echo '<td>';
+      echo '<a href="'.$url.'&cmd=start" class="btn btn-default">Start</a>&nbsp;';
+      echo '<a href="'.$url.'&cmd=stop" class="btn btn-default">Stop</a>&nbsp;';
+      echo '<a href="'.$url.'&cmd=restart" class="btn btn-default">Restart Now</a>&nbsp;';
+      echo '</td>';
+
+      echo '<td>';
+      if (getGlobal($title.'Disabled')) {
+       echo "<font color='red'><b>".LANG_YES."</b></font>";
+      } else {
+       echo LANG_NO;
+      }
+      echo '&nbsp;<a href="'.$url.'&cmd=switch_disabled" class="btn btn-default">Switch</a>&nbsp;';
+      echo '</td>';
+
+      echo '<td>';
+      if (getGlobal($title.'AutoRestart')) {
+       echo "<font color='green'><b>".LANG_YES."</b></font>";
+      } else {
+       echo LANG_NO;
+      }
+      echo '&nbsp;<a href="'.$url.'&cmd=switch_restart" class="btn btn-default">Switch</a>&nbsp;';
+      echo '</td>';
+
+
+      echo '</tr>';
+     }
+     echo '</table>';
     } elseif ($this->view_mode=='timers') {
      $qry="1";
      if ($filter) {

@@ -14,13 +14,26 @@ class Threads
        1 => array('pipe', 'w')
    );
 
-   private $handles      = array();
+   public $handles      = array();
    private $streams      = array();
    private $results      = array();
    private $pipes        = array();
-   private $commandLines = array();
+   public $commandLines = array();
    private $timeout      = 5;
    private $lastCheck    = 0;
+
+
+   public function closeThread($id) {
+      $pstatus = proc_get_status($this->handles[$id]);
+      $pid = $pstatus['pid'];
+      stripos(php_uname('s'), 'win')>-1  ? exec("taskkill /F /T /PID $pid") : exec("kill -9 $pid");
+      //proc_terminate($this->handles[$id]);
+      /*
+      fclose($this->pipes[$id][0]);
+      fclose($this->pipes[$id][1]);
+      proc_close($this->handles[$id]);
+      */
+   }
 
    /**
     * Summary of newThread
