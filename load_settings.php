@@ -29,7 +29,7 @@ function timezone_offset_string( $offset )
 }
 $offset = timezone_offset_get(new DateTimeZone(SETTINGS_SITE_TIMEZONE), new DateTime());
 $offset_text=timezone_offset_string( $offset );
-SQLExec("SET GLOBAL time_zone = '".$offset_text."';");
+SQLExec("SET time_zone = '".$offset_text."';");
 
 if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
  Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);
