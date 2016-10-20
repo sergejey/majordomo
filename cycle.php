@@ -121,6 +121,9 @@ foreach ($cycles as $path)
             DebMes("Cycle ".$title." disabled. Skipping.");
             continue;
          }
+         if (getGlobal($title.'Control')!='') {
+          setGlobal($title.'Control', '');
+         }
       }
 
 

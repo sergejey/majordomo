@@ -26,7 +26,7 @@ class Threads
    public function closeThread($id) {
       $pstatus = proc_get_status($this->handles[$id]);
       $pid = $pstatus['pid'];
-      stripos(php_uname('s'), 'win')>-1  ? exec("taskkill /F /T /PID $pid") : exec("kill -9 $pid");
+      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("sudo kill -9 $pid");
       //proc_terminate($this->handles[$id]);
       /*
       fclose($this->pipes[$id][0]);
@@ -54,6 +54,11 @@ class Threads
       //if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
       $fileToWrite = DOC_ROOT . '/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
       $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
+
+      if (!IsWindowsOS()) {
+       $command='exec '.$command;
+      }
+
       /*} else {
       $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'"';
       }

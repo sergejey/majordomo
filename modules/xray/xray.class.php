@@ -361,10 +361,12 @@ function admin(&$out) {
   global $cmd;
   global $service;
   if ($cmd=='start' && $service!='') {
+   sg($service.'Run','');
    sg($service.'Control','start');
   } elseif ($cmd=='stop' && $service!='') {
    sg($service.'Control','stop');
   } elseif ($cmd=='restart' && $service!='') {
+   sg($service.'Run','');
    sg($service.'Control','restart');
   } elseif ($cmd=='switch_restart' && $service!='') {
    if (gg($service.'AutoRestart')) {
@@ -564,6 +566,31 @@ function admin(&$out) {
     } elseif ($this->view_mode=='services') {
      $qry="1 AND TITLE LIKE 'cycle%Run'";
      $res=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+     $total=count($res);
+     $seen=array();
+     for($i=0;$i<$total;$i++) {
+      $title = $res[$i]['TITLE'];
+      $title = preg_replace('/Run$/', '', $title);
+      $seen[$title]=1;
+     }
+
+
+  $path=ROOT.'scripts';
+  $files=array();
+   if ($handle = opendir($path)) {
+    $files=array();
+    while (false !== ($entry = readdir($handle))) {
+     if (preg_match('/^cycle/is', $entry)) {
+      $title=preg_replace('/\.php$/', '', $entry);
+      if (!$seen[$title]) {
+       $res[]=array('TITLE'=>$title.'Run');
+      }
+     }
+    }
+   }
+
+
+
      $total=count($res);
      echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
      echo '<tr>';
