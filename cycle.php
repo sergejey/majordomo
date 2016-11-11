@@ -42,7 +42,7 @@ echo "Running startup maintenance" . PHP_EOL;
 $filename  = ROOT . 'database_backup/db.sql';
 if (file_exists($filename))
 {
-   echo "Running: mysql -u " . DB_USER . " -p" . DB_PASSWORD . " " . DB_NAME . " <" . $filename . PHP_EOL;
+   echo "Running: mysql restore from file: " . $filename . PHP_EOL;
    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
    $mysqlParam = " -u " . DB_USER;
    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;

@@ -225,13 +225,13 @@
     }
 
     global $linked_object;
-    $element['LINKED_OBJECT']=$linked_object;
+    $element['LINKED_OBJECT']=$linked_object.'';
 
     global $linked_property;
-    $element['LINKED_PROPERTY']=$linked_property;
+    $element['LINKED_PROPERTY']=$linked_property.'';
 
     global $linked_method;
-    $element['LINKED_METHOD']=$linked_method;
+    $element['LINKED_METHOD']=$linked_method.'';
 
 
     global $css_style;
@@ -339,8 +339,8 @@
      $state_rec['IMAGE']=$image_new;
      $state_rec['HTML']=$html_new;
      $state_rec['IS_DYNAMIC']=$is_dynamic_new;
-     $state_rec['LINKED_OBJECT']=$linked_object_new;
-     $state_rec['LINKED_PROPERTY']=$linked_property_new;
+     $state_rec['LINKED_OBJECT']=$linked_object_new.'';
+     $state_rec['LINKED_PROPERTY']=$linked_property_new.'';
      $state_rec['CONDITION']=$condition_new;
      $state_rec['CONDITION_VALUE']=$condition_value_new;
      $state_rec['CONDITION_ADVANCED']=$condition_advanced_new;
@@ -471,7 +471,7 @@
      global $menuitem_select_id;
      $wizard_data['MENU_ITEM_ID']=(int)$menuitem_select_id;
 
-     $element['WIZARD_DATA']=json_encode($wizard_data);
+     $element['WIZARD_DATA']=json_encode($wizard_data).'';
 
      SQLUpdate('elements', $element);
 

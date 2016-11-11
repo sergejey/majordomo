@@ -175,6 +175,14 @@ function usual(&$out) {
   $terminal['HOST']='localhost';
  }
 
+ if (!$terminal['CANPLAY']) {
+  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE NAME='HOME' OR NAME='MAIN'");
+ }
+
+ if (!$terminal['CANPLAY']) {
+  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY IS_ONLINE DESC LIMIT 1");
+ }
+
  if (!$play && $session->data['LAST_PLAY']) {
   $play=$session->data['LAST_PLAY'];
   $out['LAST_PLAY']=1;
@@ -199,9 +207,7 @@ function usual(&$out) {
   $out['VOLUMES'][]=$rec;
  }
 
- if (!$terminal['CANPLAY']) {
-  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY IS_ONLINE DESC LIMIT 1");
- }
+
 
 
  global $ajax;
@@ -244,7 +250,6 @@ function usual(&$out) {
         $path=urlencode(''.str_replace('/', "\\", ($out['PLAY'])));
        }
        curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_play&param=".$path);
-       //echo $path;exit;
        $res=curl_exec($ch);
       }
 

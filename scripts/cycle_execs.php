@@ -54,7 +54,7 @@ while (1)
 
       SQLExec($sqlQuery);
 
-      echo "Executing (exclusive): " . $command . "\n";
+      echo date("H:i:s") . " Executing (exclusive): " . $command . "\n";
       DebMes("Executing (exclusive): " . $command);
 
       exec($command);
@@ -81,7 +81,7 @@ while (1)
 
       SQLExec($sqlQuery);
 
-      echo "Executing: " . $command . "\n";
+      echo date("H:i:s") . " Executing: " . $command . "\n";
       DebMes("Executing: " . $command);
 
       execInBackground($command);

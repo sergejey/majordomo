@@ -751,6 +751,36 @@ function getURL($url, $cache = 0, $username = '', $password = '')
             curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
          }
 
+         $url_parsed=parse_url($url);
+         $host=$url_parsed['host'];
+
+         $use_proxy=false;
+         if (defined('USE_PROXY') && USE_PROXY!='') {
+          $use_proxy=true;
+         }
+
+         if ($host == '127.0.0.1' || $host == 'localhost') {
+          $use_proxy=false;
+         }
+
+         if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
+             $p = preg_quote(HOME_NETWORK);
+             $p = str_replace('\*', '\d+?', $p);
+             $p = str_replace(',', ' ', $p);
+             $p = str_replace('  ', ' ', $p);
+             $p = str_replace(' ', '|', $p);
+             if (preg_match('/' . $p . '/is', $host)) {
+              $use_proxy=false;
+             }
+         }
+
+         if ($use_proxy) {
+          curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+          if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH!='') {
+           curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+          }
+         }
+
          $tmpfname = ROOT . 'cached/cookie.txt';
          curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
          curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
@@ -789,8 +819,8 @@ function safe_exec($command, $exclusive = 0, $priority = 0)
 
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['COMMAND']   = $command;
-   $rec['EXCLUSIVE'] = $exclusive;
-   $rec['PRIORITY']  = $priority;
+   $rec['EXCLUSIVE'] = (int)$exclusive;
+   $rec['PRIORITY']  = (int)$priority;
 
    $rec['ID'] = SQLInsert('safe_execs', $rec);
    return $rec['ID'];

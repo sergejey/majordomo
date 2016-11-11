@@ -780,6 +780,8 @@ function ping($host)
 {
    if (IsWindowsOS())
       exec(sprintf('ping -n 1 %s', escapeshellarg($host)), $res, $rval);
+   elseif (substr(php_uname(), 0, 7) === "FreeBSD")
+      exec(sprintf('ping -c 1 -t 5 %s', escapeshellarg($host)), $res, $rval);
    else
       exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
 

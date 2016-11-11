@@ -536,6 +536,10 @@ function admin(&$out) {
 */
 function usual(&$out) {
 
+ if ($this->owner->action=='apps') {
+  $this->redirect(ROOTHTML."popup/scenes.html");
+ }
+
  global $ajax;
  if ($ajax) {
     global $op;
