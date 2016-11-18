@@ -104,6 +104,8 @@ $.fn.customContextMenu = function(callBack){
     }); 
 }
 
+
+
         var codeHash=new Object();
         var firstRun=1;
         var refreshRun=0;
@@ -140,6 +142,7 @@ $.fn.customContextMenu = function(callBack){
          return false;
         }
 
+
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
         {foreach $ELEMENT.STATES as $STATE}
@@ -152,6 +155,8 @@ $.fn.customContextMenu = function(callBack){
         {/foreach}
         {/foreach}
         {/foreach}
+
+
 
         function stateClickedEdit(id) {
 
@@ -187,6 +192,8 @@ $.fn.customContextMenu = function(callBack){
          return false;
         }
 
+
+
         function stateClicked(id) {
 
          var window_url;
@@ -206,6 +213,7 @@ $.fn.customContextMenu = function(callBack){
           setTimeout("$('#state_{$STATE.ID}').removeClass('clicked');", 150);
          }
          {/if}
+
 
          {if $STATE.MENU_ITEM_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!=""}
           {if $STATE.MENU_ITEM_ID!="0"}
@@ -247,6 +255,7 @@ $.fn.customContextMenu = function(callBack){
           if (!hdth) hdth=500;
           if (!x) x=200;
           if (!y) y=200;
+
 
 
           var jWindowObj{$STATE.ID} = $.jWindow({ 

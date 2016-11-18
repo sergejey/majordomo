@@ -11,6 +11,10 @@ if (IsSet($_GET['theme'])) {
  Define('SETTINGS_THEME', $_GET['theme']);
 }
 
+if (IsSet($_GET['disable_websockets'])) {
+ Define('DISABLE_WEBSOCKETS', 1);
+}
+
 for ($i = 0; $i < $total; $i ++)
    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 

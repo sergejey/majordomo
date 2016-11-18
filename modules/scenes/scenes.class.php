@@ -637,6 +637,8 @@ function usual(&$out) {
       if ($object_part) {
        $object_rec=SQLSelectOne("SELECT ID, TITLE FROM objects WHERE ID=".(int)($object_part));
       }
+     } elseif (preg_match('/^object_(.+?)/', $id, $m)) {
+      return false;
      } else {
       $dynamic_item=0;
       $real_part=$id;
@@ -744,6 +746,11 @@ function usual(&$out) {
 */
  function processState(&$state) {
       $state['STATE']=(string)$this->checkState($state['ID']);
+
+      if ($state['TYPE']=='img') {
+       unset($state['HTML']);
+      }
+
       if ($state['HTML']!='') {
        if (preg_match('/\[#modul/is', $state['HTML'])) {
         //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
@@ -751,9 +758,6 @@ function usual(&$out) {
        } else {
         $state['HTML']=processTitle($state['HTML'], $this);
        }
-      }
-      if ($state['TYPE']=='img') {
-       unset($state['HTML']);
       }
  }
 
@@ -965,6 +969,11 @@ function usual(&$out) {
 */
  function checkState($id) {
 
+
+ if (preg_match('/^object_(.+?)/', $id, $m)) {
+  return 1;
+ }
+
     if (preg_match('/(\d+)\_(\d+)/', $id, $m)) {
      $dynamic_item=1;
      $real_part=$m[1];
@@ -1086,7 +1095,37 @@ function usual(&$out) {
       $totale=count($elements);
       $res2=array();
       for($ie=0;$ie<$totale;$ie++) {
-       $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
+
+       if ($elements[$ie]['TYPE']=='object') {
+        $state=array();
+
+        $object=getObject($elements[$ie]['LINKED_OBJECT']);
+        $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
+
+        $state['ID']='object_'.md5($elements[$ie]['LINKED_OBJECT']);
+        $state['ELEMENT_ID']=$elements[$ie]['ID'];
+        $state['HTML']=$class['TEMPLATE'];
+        //$state['HTML']=str_replace('%.', '%'.$elements[$ie]['LINKED_OBJECT'].'.', $state['HTML']);
+        /*
+        if (preg_match('/<script.+?<\/script>/is', $state['HTML'], $m)) {
+         $old_script=$m[0];
+         $old_script=preg_replace('/%.(\w+?)%/', ($elements[$ie]['LINKED_OBJECT'].'.\1'), $old_script);
+         $state['HTML']=str_replace($m[0], $old_script, $state['HTML']);
+        }
+        */
+        $state['HTML']=preg_replace('/%\.(\w+?)/', '%'.$elements[$ie]['LINKED_OBJECT'].'.\1'.'', $state['HTML']);
+        //print_r($state);exit;
+        $state['TYPE']=$elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID']=0;
+        $state['HOMEPAGE_ID']=0;
+        $state['OPEN_SCENE_ID']=0;
+        $states=array($state);
+
+
+       } else {
+        $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
+       }
+
        if ($elements[$ie]['SMART_REPEAT'] && !$this->action=='admin') {
         $linked_object='';
         if ($states[0]['LINKED_OBJECT']) {
@@ -1205,6 +1244,8 @@ function usual(&$out) {
         $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
        }
       }
+
+
       return $elements;  
  }
 
@@ -1495,6 +1536,7 @@ function usual(&$out) {
 
     $content=$states[$i]['HTML'];
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
 
     if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
      $totalm=count($m[1]);

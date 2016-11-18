@@ -218,7 +218,7 @@
 
 
     global $easy_config;
-    if ($element['TYPE']=='switch' || $element['TYPE']=='informer' || $element['TYPE']=='warning' || $element['TYPE']=='menuitem') {
+    if ($element['TYPE']=='switch' || $element['TYPE']=='informer' || $element['TYPE']=='warning' || $element['TYPE']=='menuitem' || $element['TYPE']=='object') {
      $element['EASY_CONFIG']=(int)$easy_config;
     } else {
      $element['EASY_CONFIG']=0;
@@ -585,6 +585,16 @@
      $state_rec['ID']=SQLInsert('elm_states', $state_rec);
      $state_id=$state_rec['ID'];
 
+
+
+    } elseif (($element['TYPE']=='object') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
+     global $linked_object;
+
+     if (!$linked_object) {
+      $linked_object='myObject';
+     }
 
 
     } elseif (($element['TYPE']=='switch') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {

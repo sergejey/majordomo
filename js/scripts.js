@@ -228,6 +228,16 @@ function startFlashing(block_id) {
   return false;
  }
 
+ function callMethod(method_name) {
+  var url="/";
+  url+='objects/?method='+encodeURIComponent(method_name);
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+    //alert(data);
+   });
+ }
+
  function ajaxGetGlobal(varname, id, timeout) {
   var url="/";
   url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);

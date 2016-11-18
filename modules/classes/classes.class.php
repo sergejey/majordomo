@@ -653,6 +653,7 @@ classes - Classes
  classes: SUB_LIST text
  classes: PARENT_LIST text
  classes: DESCRIPTION text
+ classes: TEMPLATE text
  classes: INDEX (PARENT_ID)
 
 EOD;

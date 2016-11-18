@@ -66,7 +66,7 @@
 
    var easy_config=$('input:radio[name=easy_config]:checked').val();
 
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem') {
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem' || new_type=='object') {
     $('#advanced_config_block').show();
     if (easy_config==1) {
      $('.advanced_options').hide();
@@ -79,7 +79,7 @@
     $('.advanced_options').show();
    }
 
-   if (easy_config==1 && (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode')) {
+   if (easy_config==1 && (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode' || new_type=='object')) {
     $('#linked_object_field').show();
    } else {
     $('#linked_object_field').hide();
@@ -132,6 +132,7 @@
                         <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
                         <option value="s3d"[#if ELEMENT_TYPE=="s3d"#] selected[#endif#]>3D scene
                         <option value="menuitem"[#if ELEMENT_TYPE=="menuitem"#] selected[#endif#]>Menu Control
+                        <option value="object"[#if ELEMENT_TYPE=="object"#] selected[#endif#]><#LANG_OBJECT#>
                 </select>
         [#else ELEMENT_ID#]
         [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
@@ -146,6 +147,7 @@
         [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
         [#if ELEMENT_TYPE=="s3d"#]3D scene[#endif#]
         [#if ELEMENT_TYPE=="menuitem"#]Menu Control[#endif#]
+        [#if ELEMENT_TYPE=="object"#]<#LANG_OBJECT#>[#endif#]
         <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
         [#endif ELEMENT_ID#]
         </div>
