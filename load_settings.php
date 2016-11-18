@@ -3,7 +3,6 @@
 if (!defined('ENVIRONMENT'))
    error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
 
-
 // get settings
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
 $total    = count($settings);
@@ -34,6 +33,15 @@ function timezone_offset_string( $offset )
 $offset = timezone_offset_get(new DateTimeZone(SETTINGS_SITE_TIMEZONE), new DateTime());
 $offset_text=timezone_offset_string( $offset );
 SQLExec("SET time_zone = '".$offset_text."';");
+
+if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') && defined('WAIT_FOR_MAIN_CYCLE') && WAIT_FOR_MAIN_CYCLE==1 && !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI'])) {
+ $maincycleUpdate=getGlobal('cycle_mainRun');
+ if ((time()-$maincycleUpdate)>60) { //main cycle is offline
+  echo "Main cycle is down. Please check background processes status.";
+  exit;
+ }
+}
+
 
 if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
  Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);

@@ -9,7 +9,6 @@
  * @version 1.3
  */
 
-
 if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
     && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI'])
        || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])

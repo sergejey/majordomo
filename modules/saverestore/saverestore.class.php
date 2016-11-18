@@ -1410,12 +1410,19 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
    if (isset($out['BACKUP'])) 
       $tar_name = 'backup_' . $tar_name;
 
-   $this->echonow("Packing $tar_name ... ");
+   if ($iframe) {
+    $this->echonow("Packing $tar_name ... ");
+   }
 
-   
+
    if (IsWindowsOS())
    {
-      exec('tar.exe --strip-components=2 -cvf ./saverestore/'.$tar_name.' ./saverestore/temp/');
+      $result=exec('tar.exe --strip-components=2 -C ./saverestore/temp/ -cvf ./saverestore/'.$tar_name.' ./');
+      $new_name=str_replace('.tar', '.tar.gz', $tar_name);
+      $result=exec('gzip.exe ./saverestore/'.$tar_name);
+      if (file_exists('./saverestore/'.$new_name)) {
+       $tar_name =  $new_name;
+      }
    }
    else
    {
@@ -1442,7 +1449,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 
 
   }
-  return 1;
+  return $tar_name;
  }
 
 /**

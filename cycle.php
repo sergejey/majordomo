@@ -43,6 +43,7 @@ $filename  = ROOT . 'database_backup/db.sql';
 if (file_exists($filename))
 {
    echo "Running: mysql restore from file: " . $filename . PHP_EOL;
+   DebMes("Running: mysql restore from file: " . $filename);
    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
    $mysqlParam = " -u " . DB_USER;
    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
@@ -76,12 +77,6 @@ $ctl = new control_modules();
 echo "Clearing the cache.\n";
 SQLExec("TRUNCATE TABLE `cached_values`");
 
-$run_from_start = 1;
-include("./scripts/startup_maintenance.php");
-$run_from_start = 0;
-
-setGlobal('ThisComputer.started_time', time());
-getObject('ThisComputer')->raiseEvent("StartUp");
 
 // 1 second sleep
 sleep(1);

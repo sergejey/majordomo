@@ -16,6 +16,17 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
+setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+
+$run_from_start = 1;
+include("./scripts/startup_maintenance.php");
+$run_from_start = 0;
+
+setGlobal('ThisComputer.started_time', time());
+getObject('ThisComputer')->raiseEvent("StartUp");
+
+
+
 $sqlQuery = "SELECT *
                FROM classes
               WHERE TITLE LIKE 'timer'";

@@ -180,7 +180,7 @@ class Threads
                $name = $m[0];
             }
 
-            echo date('H:i:s') . " working thread: " . $name . "\n";
+            //echo date('H:i:s') . " working thread: " . $name . "\n";
             //echo "Status:\n";
             //print_r($proc_status);
             //echo "\n";
