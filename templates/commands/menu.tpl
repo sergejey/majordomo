@@ -365,6 +365,12 @@
 </li>
 {/if}
 
+{if $item.TYPE=='object'}
+ <li {if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
+  <div id="label_{$item.ID}" style="white-space:normal">{$item.DATA}</div>
+ </li>
+{/if}
+
 {if $item.TYPE=='selectbox'}
 <script language="javascript">
  var item{$item.ID}_timer=0;

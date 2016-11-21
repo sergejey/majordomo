@@ -1105,16 +1105,7 @@ function usual(&$out) {
         $state['ID']='object_'.md5($elements[$ie]['LINKED_OBJECT']);
         $state['ELEMENT_ID']=$elements[$ie]['ID'];
         $state['HTML']=$class['TEMPLATE'];
-        //$state['HTML']=str_replace('%.', '%'.$elements[$ie]['LINKED_OBJECT'].'.', $state['HTML']);
-        /*
-        if (preg_match('/<script.+?<\/script>/is', $state['HTML'], $m)) {
-         $old_script=$m[0];
-         $old_script=preg_replace('/%.(\w+?)%/', ($elements[$ie]['LINKED_OBJECT'].'.\1'), $old_script);
-         $state['HTML']=str_replace($m[0], $old_script, $state['HTML']);
-        }
-        */
         $state['HTML']=preg_replace('/%\.(\w+?)/', '%'.$elements[$ie]['LINKED_OBJECT'].'.\1'.'', $state['HTML']);
-        //print_r($state);exit;
         $state['TYPE']=$elements[$ie]['TYPE'];
         $state['MENU_ITEM_ID']=0;
         $state['HOMEPAGE_ID']=0;

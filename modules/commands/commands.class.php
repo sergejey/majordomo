@@ -800,6 +800,13 @@ function usual(&$out) {
     if ($res[$i]['TYPE']=='custom') {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
+    if ($res[$i]['TYPE']=='object' && $res[$i]['LINKED_OBJECT']) {
+     $object=getObject($res[$i]['LINKED_OBJECT']);
+     $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
+     $res[$i]['DATA']=$class['TEMPLATE'];
+     $res[$i]['DATA']=preg_replace('/%\.(\w+?)/', '%'.$res[$i]['LINKED_OBJECT'].'.\1'.'', $res[$i]['DATA']);
+     $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
+    }
 
      if (preg_match('/#[\w\d]{6}/is', $res[$i]['TITLE'], $m)) {
       $color=$m[0];
@@ -924,6 +931,13 @@ function usual(&$out) {
         $dynamic_res[]=$rec;
        }
       } else {
+       if ($res[$i]['TYPE']=='object') {
+        $object=getObject($res[$i]['LINKED_OBJECT']);
+        $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
+        $data=$class['TEMPLATE'];
+        $data=preg_replace('/%\.(\w+?)/', '%'.$res[$i]['LINKED_OBJECT'].'.\1'.'', $data);
+        $res[$i]['DATA']=$data;
+       }
        $dynamic_res[]=$res[$i];
       }
      }
@@ -989,6 +1003,12 @@ function usual(&$out) {
       $data=$item['TITLE'];
      }
 
+     if ($item['TYPE']=='object'  && $item['LINKED_OBJECT']) {
+       $object=getObject($item['LINKED_OBJECT']);
+       $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
+       $data=$class['TEMPLATE'];
+       $data=preg_replace('/%\.(\w+?)/', '%'.$item['LINKED_OBJECT'].'.\1'.'', $data);
+     }
      $data=processTitle($data, $this);
 
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
@@ -1028,6 +1048,8 @@ function usual(&$out) {
 
     $content=$commands[$i]['TITLE'].' '.$commands[$i]['DATA'];
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
 
     //DebMes("Content (".$commands[$i]['ID']."): ".$content);
 

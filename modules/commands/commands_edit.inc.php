@@ -95,6 +95,7 @@ if ($rec['TYPE']=='plusminus'
     || $rec['TYPE']=='textbox'
     || $rec['TYPE']=='radiobox'
     || $rec['TYPE']=='color'
+    || $rec['TYPE']=='object'
     ) {
     global $cur_value;
         if ($cur_value!='') {
