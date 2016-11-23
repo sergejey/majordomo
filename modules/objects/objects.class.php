@@ -638,7 +638,7 @@ function usual(&$out) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    $old_value=$v['VALUE'];
-   $v['VALUE']=$value;
+   $v['VALUE']=$value.'';
    if ($v['ID']) {
     $v['UPDATED']=date('Y-m-d H:i:s');
     //if ($old_value!=$value) {
@@ -649,7 +649,7 @@ function usual(&$out) {
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
-    $v['VALUE']=$value;
+    $v['VALUE']=$value.'';
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
    }
@@ -658,11 +658,12 @@ function usual(&$out) {
     $prop=array();
     $prop['OBJECT_ID']=$this->id;
     $prop['TITLE']=$property;
+    $prop['VALUE']='';
     $prop['ID']=SQLInsert('properties', $prop);
 
     $v['PROPERTY_ID']=$prop['ID'];
     $v['OBJECT_ID']=$this->id;
-    $v['VALUE']=$value;
+    $v['VALUE']=$value.'';
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
   }
@@ -686,7 +687,7 @@ function usual(&$out) {
    $q_rec=array();
    $q_rec['VALUE_ID']=$v['ID'];
    $q_rec['ADDED']=date('Y-m-d H:i:s');
-   $q_rec['VALUE']=$value;
+   $q_rec['VALUE']=$value.'';
    $q_rec['OLD_VALUE']=$old_value;
    $q_rec['KEEP_HISTORY']=$prop['KEEP_HISTORY'];
    SQLInsert('phistory_queue', $q_rec);

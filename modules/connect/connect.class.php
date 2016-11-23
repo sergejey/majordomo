@@ -122,7 +122,7 @@ function run() {
 
 
  function cloudBackup() {
-  $connect_username=$this->config['CONNECT_PASSWORD'];
+  $connect_username=$this->config['CONNECT_USERNAME']; //username
   $connect_password=$this->config['CONNECT_PASSWORD'];
   if (!$connect_username || !$connect_password) {
    return false;
