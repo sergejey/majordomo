@@ -658,7 +658,7 @@ function usual(&$out) {
     $prop=array();
     $prop['OBJECT_ID']=$this->id;
     $prop['TITLE']=$property;
-    $prop['VALUE']='';
+    //$prop['VALUE']='';
     $prop['ID']=SQLInsert('properties', $prop);
 
     $v['PROPERTY_ID']=$prop['ID'];

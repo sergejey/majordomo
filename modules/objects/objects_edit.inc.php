@@ -78,7 +78,7 @@
        $new_property['TITLE']=$pvalues[$i]['PROPERTY_TITLE'];
        $new_property['CLASS_ID']=0;
        $new_property['OBJECT_ID']=$rec['ID'];
-       $new_property['VALUE']='';
+       //$new_property['VALUE']='';
        $new_property['ID']=SQLInsert('properties', $new_property);
        $pvalues[$i]['PROPERTY_ID']=$new_property['ID'];
        unset($pvalues[$i]['PROPERTY_TITLE']);
