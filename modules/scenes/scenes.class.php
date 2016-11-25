@@ -550,7 +550,9 @@ function usual(&$out) {
      global $element;
      global $details;
      $element_id=0;
-     if (preg_match('/state_(\d+)/', $element, $m)) {
+     if (preg_match('/state_element_(\d+)/', $element, $m)) {
+      $element_id=$m[1];
+     } elseif (preg_match('/state_(\d+)/', $element, $m)) {
       $state=SQLSelectOne("SELECT ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
       $element_id=$state['ELEMENT_ID'];
      } elseif (preg_match('/canvas_(\d+)/', $element, $m) || preg_match('/container_(\d+)/', $element, $m)) {
@@ -1099,13 +1101,9 @@ function usual(&$out) {
        if ($elements[$ie]['TYPE']=='object') {
         $state=array();
 
-        $object=getObject($elements[$ie]['LINKED_OBJECT']);
-        $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
-
-        $state['ID']='object_'.md5($elements[$ie]['LINKED_OBJECT']);
+        $state['ID']='element_'.($elements[$ie]['ID']);
         $state['ELEMENT_ID']=$elements[$ie]['ID'];
-        $state['HTML']=$class['TEMPLATE'];
-        $state['HTML']=preg_replace('/%\.(\w+?)/', '%'.$elements[$ie]['LINKED_OBJECT'].'.\1'.'', $state['HTML']);
+        $state['HTML']=getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
         $state['TYPE']=$elements[$ie]['TYPE'];
         $state['MENU_ITEM_ID']=0;
         $state['HOMEPAGE_ID']=0;

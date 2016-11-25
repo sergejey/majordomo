@@ -801,10 +801,7 @@ function usual(&$out) {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
     if ($res[$i]['TYPE']=='object' && $res[$i]['LINKED_OBJECT']) {
-     $object=getObject($res[$i]['LINKED_OBJECT']);
-     $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
-     $res[$i]['DATA']=$class['TEMPLATE'];
-     $res[$i]['DATA']=preg_replace('/%\.(\w+?)/', '%'.$res[$i]['LINKED_OBJECT'].'.\1'.'', $res[$i]['DATA']);
+     $res[$i]['DATA']=getObjectClassTemplate($res[$i]['LINKED_OBJECT']);
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
 
@@ -932,11 +929,7 @@ function usual(&$out) {
        }
       } else {
        if ($res[$i]['TYPE']=='object') {
-        $object=getObject($res[$i]['LINKED_OBJECT']);
-        $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
-        $data=$class['TEMPLATE'];
-        $data=preg_replace('/%\.(\w+?)/', '%'.$res[$i]['LINKED_OBJECT'].'.\1'.'', $data);
-        $res[$i]['DATA']=$data;
+        $res[$i]['DATA']=getObjectClassTemplate($res[$i]['LINKED_OBJECT']);
        }
        $dynamic_res[]=$res[$i];
       }
@@ -1004,10 +997,7 @@ function usual(&$out) {
      }
 
      if ($item['TYPE']=='object'  && $item['LINKED_OBJECT']) {
-       $object=getObject($item['LINKED_OBJECT']);
-       $class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$object->class_id);
-       $data=$class['TEMPLATE'];
-       $data=preg_replace('/%\.(\w+?)/', '%'.$item['LINKED_OBJECT'].'.\1'.'', $data);
+       $data=getObjectClassTemplate($item['LINKED_OBJECT']);
      }
      $data=processTitle($data, $this);
 

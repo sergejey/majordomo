@@ -14,7 +14,9 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label">Template:<#LANG_HCB#>classtemplate<#LANG_HCE#></label>
-        <div class="col-lg-4"><textarea name="template" rows="10" class="form-control">[#TEMPLATE#]</textarea></div>
+        <div class="col-lg-4"><textarea name="template" id="template" rows="10" class="form-control">[#TEMPLATE#]</textarea>
+            [#module name="blockly_code" code_field="template" action="" type="html"#]
+        </div>
 </div>
 
 <!--#

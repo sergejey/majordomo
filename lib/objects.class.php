@@ -41,6 +41,26 @@ function addClass($class_name, $parent_class = '')
 }
 
 /**
+ * Summary of getObjectClassTemplate
+ * @param mixed $object_name Object name
+ * @return mixed
+ */
+function getObjectClassTemplate($object_name) {
+    $object=getObject($object_name);
+    $class=SQLSelectOne("SELECT ID, TITLE, TEMPLATE FROM classes WHERE ID=".(int)$object->class_id);
+    $class_file_path=DIR_TEMPLATES.'classes/views/'.$class['TITLE'].'.html';
+    if ($class['TEMPLATE']!='') {
+     $data=$class['TEMPLATE'];
+    } elseif (file_exists($class_file_path)) {
+     $data=LoadFile($class_file_path);
+    } else {
+     $data='Template for ['.$class['TITLE'].'] not found';
+    }
+    $data=preg_replace('/%\.(\w+?)/', '%'.$object_name.'.\1'.'', $data);
+    return $data;
+}
+
+/**
  * Summary of addClassMethod
  * @param mixed $class_name  Class method
  * @param mixed $method_name Method name

@@ -594,6 +594,15 @@ function usual(&$out) {
   }
   startMeasure('getProperty');
   startMeasure('getProperty ('.$property.')');
+
+  if ($this->object_title) {
+   if ($property=='object_title') {
+    return $this->object_title;
+   } elseif ($property=='object_description') {
+    return $this->object_description;
+   }
+  }
+
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   if ($id) {
    $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");

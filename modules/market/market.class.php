@@ -445,6 +445,9 @@ function admin(&$out) {
   if ($frame) {
    $this->echonow("Removing module '$name' from database ... ");
   }
+
+  include_once(ROOT.'modules/'.$name.'/'.$name.'.class.php');
+
   SQLExec("DELETE FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
   SQLExec("DELETE FROM project_modules WHERE NAME LIKE '".DBSafe($name)."'");
   if ($frame) {
@@ -456,6 +459,11 @@ function admin(&$out) {
    @unlink(ROOT.'scripts/cycle_'.$name.'.php');
   }
   removeMissingSubscribers();
+
+  $code='$plugin = new '.$name.';$plugin->uninstall();';
+  eval($code);
+
+
   $ok_msg='Uninstalled';
 
   if ($frame) {
