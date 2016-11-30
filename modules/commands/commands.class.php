@@ -924,7 +924,10 @@ function usual(&$out) {
         $rec['LINKED_OBJECT']=$objects[$io]['TITLE'];
         $rec['DATA']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['DATA']);
         $rec['CUR_VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
-        $rec['TITLE']=$objects[$io]['TITLE'];
+        $title=getGlobal($rec['LINKED_OBJECT'].'.'.$res[$i]['TITLE']);
+        if ($title=='')
+          $title=$objects[$io]['TITLE'];
+        $rec['TITLE']=$title;
         $dynamic_res[]=$rec;
        }
       } else {
