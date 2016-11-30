@@ -923,8 +923,12 @@ function usual(&$out) {
         $rec['ID']=$res[$i]['ID'].'_'.$objects[$io]['ID'];
         $rec['LINKED_OBJECT']=$objects[$io]['TITLE'];
         $rec['DATA']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['DATA']);
+        if (is_integer(strpos($rec['TITLE'], '%'.$res[$i]['LINKED_OBJECT'].'.'))) {
+         $rec['TITLE']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['TITLE']);
+        } else {
+         $rec['TITLE']=$objects[$io]['TITLE'];
+        }
         $rec['CUR_VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
-        $rec['TITLE']=$objects[$io]['TITLE'];
         $dynamic_res[]=$rec;
        }
       } else {
@@ -966,7 +970,12 @@ function usual(&$out) {
     if ($object_part) {
      $object_rec=SQLSelectOne("SELECT ID, TITLE FROM objects WHERE ID=".(int)($object_part));
      $item['DATA']=str_replace('%'.$item['LINKED_OBJECT'].'.', '%'.$object_rec['TITLE'].'.', $item['DATA']);
-     $item['TITLE']=$object_rec['TITLE'];
+        if (is_integer(strpos($item['TITLE'], '%'.$item['LINKED_OBJECT'].'.'))) {
+         $item['TITLE']=str_replace('%'.$item['LINKED_OBJECT'].'.', '%'.$object_rec['TITLE'].'.', $item['TITLE']);
+        } else {
+         $item['TITLE']=$object_rec['TITLE'];
+        }
+     //$item['TITLE']=$object_rec['TITLE'];
      $item['LINKED_OBJECT']=$object_rec['TITLE'];
     }
 

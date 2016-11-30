@@ -34,16 +34,16 @@
    $rec['IS_DYNAMIC']=(int)$is_dynamic;
   //updating 'LINKED_OBJECT' (varchar)
    global $linked_object;
-   $rec['LINKED_OBJECT']=$linked_object;
+   $rec['LINKED_OBJECT']=$linked_object.'';
   //updating 'LINKED_PROPERTY' (varchar)
    global $linked_property;
-   $rec['LINKED_PROPERTY']=$linked_property;
+   $rec['LINKED_PROPERTY']=$linked_property.'';
   //updating 'CONDITION' (select)
    global $condition;
    $rec['CONDITION']=$condition;
   //updating 'CONDITION_VALUE' (varchar)
    global $condition_value;
-   $rec['CONDITION_VALUE']=$condition_value;
+   $rec['CONDITION_VALUE']=$condition_value.'';
   //updating 'SCRIPT_ID' (int)
    if (IsSet($this->script_id)) {
     $rec['SCRIPT_ID']=$this->script_id;
