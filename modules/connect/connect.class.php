@@ -114,7 +114,7 @@ function run() {
   if ($event_name=='HOURLY') {
    //...
    $this->getConfig();
-   if ($this->config['CONNECT_BACKUP'] && ((int)date('H'))==3) { // cloud backup at 3 AM
+   if ($this->config['CONNECT_BACKUP'] && ((int)date('H'))==(int)$this->config['CONNECT_BACKUP_HOUR']) {
     $this->cloudBackup();
    }
   }
@@ -213,6 +213,7 @@ function admin(&$out) {
    $this->config['CONNECT_PASSWORD']=$connect_password;
    $this->config['CONNECT_SYNC']=(int)$connect_sync;
    $this->config['CONNECT_BACKUP']=(int)$connect_backup;
+   $this->config['CONNECT_BACKUP_HOUR']=(int)rand(0, 6);
 
    if ($this->config['CONNECT_BACKUP']) {
     subscribeToEvent($this->name, 'HOURLY');
@@ -538,7 +539,7 @@ function usual(&$out) {
 * @access private
 */
  function install($data='') {
-  
+  subscribeToEvent($this->name, 'HOURLY');  
   parent::install();
  }
 
