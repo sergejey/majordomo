@@ -228,9 +228,10 @@ function startFlashing(block_id) {
   return false;
  }
 
- function callMethod(method_name) {
+ function callMethod(method_name, optional_params) {
+  if (typeof optional_params === 'undefined') { optional_params = ''; }
   var url="/";
-  url+='objects/?method='+encodeURIComponent(method_name);
+  url+='objects/?method='+encodeURIComponent(method_name)+'&'+optional_params;
   $.ajax({
    url: url
   }).done(function(data) { 
@@ -268,6 +269,10 @@ function startFlashing(block_id) {
     }
    });
   return false;
+ }
+
+ function setGlobal(varname, value) {
+  ajaxSetGlobal(varname, value);
  }
 
 
