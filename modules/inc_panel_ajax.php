@@ -40,10 +40,13 @@
    //properties and methods
    $properties=SQLSelect("SELECT properties.ID, properties.TITLE, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID WHERE (properties.OBJECT_ID = '".DBSafe($object['ID'])."' OR properties.CLASS_ID = '".DBSafe($object['CLASS_ID'])."') ORDER BY properties.TITLE");
    $total=count($properties);
-   $res.='<a href="/panel/class/'.$object['CLASS_ID'].'/object/'.$object['ID'].'/properties.html">'.LANG_PROPERTIES."</a>:<br>";
+   $base_link='/panel/class/'.$object['CLASS_ID'].'/object/'.$object['ID'].'/properties.html';
+   $res.='<a href="'.$base_link.'">'.LANG_PROPERTIES."</a>:<br>";
    for($i=0;$i<$total;$i++) {
     $res.=''.$object['TITLE'];
-    $res.='.'.$properties[$i]['TITLE'].'<br>';
+    $res.='.'.$properties[$i]['TITLE'];
+    $res.=' <a href="'.$base_link.'#" title="'.htmlspecialchars(gg($object['TITLE'].'.'.$properties[$i]['TITLE'])).'">#</a>';
+    $res.="<br/>";
    }
    $methods=SQLSelect("SELECT methods.ID, methods.TITLE, methods.OBJECT_ID, methods.CLASS_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT, objects.CLASS_ID as OBJECT_CLASS_ID FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.OBJECT_ID = '".DBSafe($object['ID'])."' OR methods.CLASS_ID = '".DBSafe($object['CLASS_ID'])."') ORDER BY methods.OBJECT_ID DESC, methods.TITLE");
    $total=count($methods);

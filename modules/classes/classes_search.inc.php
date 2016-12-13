@@ -44,6 +44,7 @@
     if ($objects[0]['ID']) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
+      $objects[$o]['KEY_DATA']=getKeyData($objects[$o]['ID']);
       $methods=SQLSelect("SELECT ID, TITLE FROM methods WHERE OBJECT_ID='".$objects[$o]['ID']."'");
       if ($methods[0]['ID']) {
        $total_m=count($methods);

@@ -1028,6 +1028,11 @@ $dictionary=array(
 'HCB'=>' <a href="http://majordomo.smartliving.ru/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 
+    'DATA_KEY' => 'Key data',
+    'DATA_TYPE' => 'Data type',
+    'DATA_TYPE_GENERAL' => 'General',
+    'CLASS_TEMPLATE' => 'Template',
+
 'TEST'=>'test'
 
 

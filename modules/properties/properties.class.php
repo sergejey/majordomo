@@ -218,6 +218,8 @@ properties - Properties
  properties: SYSTEM varchar(255) NOT NULL DEFAULT ''
  properties: TITLE varchar(255) NOT NULL DEFAULT ''
  properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
+ properties: DATA_KEY int(3) NOT NULL DEFAULT '0' 
+ properties: DATA_TYPE int(3) NOT NULL DEFAULT '0' 
  properties: DESCRIPTION text
  properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
  properties: INDEX (CLASS_ID)

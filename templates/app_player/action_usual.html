@@ -31,7 +31,6 @@
   <td align="right" style="vertical-align:middle">
   <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
    <select name="play_terminal" id="selPlayTerminal" class="form-control input-sm">
-    <option value="">
     [#begin TERMINALS#]
     <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
     [#end TERMINALS#]

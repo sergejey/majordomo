@@ -53,10 +53,11 @@
  <td
    >
   [#if DESCRIPTION!=""#]
-   [#DESCRIPTION#]
-  [#else#]
-   &nbsp;
+   <div>[#DESCRIPTION#]</div>
   [#endif#]
+  [#if ADD_DESCRIPTION!=""#]
+  <div><i>[#ADD_DESCRIPTION#]</i></div>
+  [#endif ADD_DESCRIPTION#]
  </td>
  <td
    align=center

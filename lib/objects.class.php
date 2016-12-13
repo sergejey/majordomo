@@ -213,6 +213,7 @@ function getValueIdByName($object_name, $property)
             $value['PROPERTY_ID']   = $property_id;
             $value['OBJECT_ID']     = $object->id;
             $value['PROPERTY_NAME'] = $object_name . '.' . $property;
+            $value['VALUE']         = '';
             $value['ID']            = SQLInsert('pvalues', $value);
          }
       }
@@ -465,6 +466,44 @@ function getObjectsByClass($class_name)
     */
 
    return $objects;
+}
+
+
+function getClassProperties($class_id, $def='') {
+    $class=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='".(int)$class_id."' OR TITLE LIKE '".DBSafe($class_id)."')");
+    $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$class['ID']."' AND OBJECT_ID=0");
+    $res=$properties;
+    if (!is_array($def)) {
+        $def=array();
+        foreach($properties as $p) {
+            $def[]=$p['TITLE'];
+        }
+    }
+    foreach($properties as $p) {
+        if (!in_array($p['TITLE'], $def)) {
+            $res[]=$p;
+            $def[]=$p['TITLE'];
+        }
+    }
+    if ($class['PARENT_ID']) {
+        $p_res=getClassProperties($class['PARENT_ID'], $def);
+        if ($p_res[0]['ID']) {
+            $res=array_merge($res, $p_res);
+        }
+    }
+    return $res;
+}
+
+function getKeyData($object_id) {
+    $object_rec=SQLSelectOne("SELECT ID,TITLE,CLASS_ID FROM objects WHERE ID=".(int)$object_id);
+    $props=getClassProperties($object_rec['CLASS_ID']);
+    $add_description='';
+    foreach($props as $k=>$v) {
+        if ($v['DATA_KEY']) {
+            $add_description.=$v['TITLE'].': '.getGlobal($object_rec['TITLE'].'.'.$v['TITLE']);
+        }
+    }
+    return $add_description;
 }
 
 /**

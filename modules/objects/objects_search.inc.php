@@ -48,10 +48,14 @@
   if ($res[0]['ID']) {
    paging($res, 50, $out); // search result paging
    colorizeArray($res);
+
    $total=count($res);
+   $cached_properties=array();
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+     $res[$i]['ADD_DESCRIPTION']=getKeyData($res[$i]['ID']);
    }
+
    $out['RESULT']=$res;
   }
 ?>
