@@ -488,7 +488,12 @@ function getClassProperties($class_id, $def='') {
     if ($class['PARENT_ID']) {
         $p_res=getClassProperties($class['PARENT_ID'], $def);
         if ($p_res[0]['ID']) {
-            $res=array_merge($res, $p_res);
+            foreach($p_res as $k=>$p) {
+                if (!in_array($p['TITLE'], $def)) {
+                    $res[]=$p;
+                    $def[]=$p['TITLE'];
+                }
+            }
         }
     }
     return $res;
@@ -500,7 +505,10 @@ function getKeyData($object_id) {
     $add_description='';
     foreach($props as $k=>$v) {
         if ($v['DATA_KEY']) {
-            $add_description.=$v['TITLE'].': '.getGlobal($object_rec['TITLE'].'.'.$v['TITLE']);
+            $data=getGlobal($object_rec['TITLE'].'.'.$v['TITLE']);
+            if ($data!='') {
+                $add_description.=$v['TITLE'].': '.$data.'; ';
+            }
         }
     }
     return $add_description;
