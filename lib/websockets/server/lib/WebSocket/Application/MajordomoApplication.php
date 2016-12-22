@@ -76,6 +76,7 @@ class MajordomoApplication extends Application
          global $websockets_script_started;
          if ($cycleName) {
           setGlobal($cycleName, time(), 1);
+          setGlobal('WSClientsTotal', count($this->_clients), 1);
          }
          global $websockets_script_started;
          if ($websockets_script_started>0 && (time()-$websockets_script_started)>12*60*60) {

@@ -223,7 +223,8 @@ function admin(&$out) {
 
 
    if ($rec['MODULE_NAME']==$name) {
-    $this->url=$rec['REPOSITORY_URL'];
+    //$this->url=$rec['REPOSITORY_URL'];
+    $this->url='http://connect.smartliving.ru/market/?op=download&name='.urlencode($rec['MODULE_NAME'])."&serial=".urlencode(gg('Serial'));
     $this->version=$rec['LATEST_VERSION'];
    }
 

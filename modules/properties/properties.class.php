@@ -227,6 +227,7 @@ properties - Properties
 
  phistory: ID int(10) unsigned NOT NULL auto_increment
  phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
+ phistory: SOURCE varchar(20) NOT NULL DEFAULT ''
  phistory: ADDED datetime
  phistory: INDEX (VALUE_ID)
 

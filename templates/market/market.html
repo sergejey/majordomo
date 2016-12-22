@@ -15,7 +15,42 @@
 [#if MODE=""#]
 
 [#if CLEAR_FIRST!="1"#]
-<p><a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a></p>
+<div class="row">
+ <div class="col-md-3">
+  <a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a>
+ </div>
+ <div class="col-md-6">&nbsp;</div>
+ <div class="col-md-3">
+  <script type="text/javascript">
+   var upTimer=0;
+   function filterPlugins() {
+    var str=$('#filter').val();
+    str = str.toLowerCase();
+    if (str!='') {
+     $('.pluginRow').each(function(i, obj) {
+      var text='';
+      text+=$('#'+obj.id+'_title').html();
+      text+=' ' + $('#'+obj.id+'_description').html();
+      text = text.toLowerCase();
+      if (text.indexOf(str) !== -1) {
+       $('#'+obj.id).show();
+      } else {
+       $('#'+obj.id).hide();
+      }
+     });
+    } else {
+     $('.pluginRow').show();
+    }
+   }
+   function searchKeyUp() {
+    clearTimeout(upTimer);
+    upTimer=setTimeout('filterPlugins();',1000);
+   }
+  </script>
+  <input type="text" class="form-control" placeholder="<#LANG_SEARCH#>" id="filter" onkeyup="searchKeyUp();">
+ </div>
+</div>
+&nbsp;
 [#else CLEAR_FIRST#]
    <br>&nbsp;
    <form action="?" method="post" enctype="multipart/form-data">
@@ -36,13 +71,13 @@
   </td>
  </tr>
  [#endif NEW_CATEGORY#]
- <tr>
+ <tr class="pluginRow" id="row[#ID#]">
   <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
-  <td valign="top"><b>[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
+  <td valign="top"><b id="row[#ID#]_title">[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
   [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
-  <p>[#DESCRIPTION_RU#]</p>
+  <p id="row[#ID#]_description">[#DESCRIPTION_RU#]</p>
   [#else#]
-  <p>[#DESCRIPTION_EN#]</p>
+  <p id="row[#ID#]_description">[#DESCRIPTION_EN#]</p>
   [#endif#]
 
   [#if LATEST_VERSION!=""#]

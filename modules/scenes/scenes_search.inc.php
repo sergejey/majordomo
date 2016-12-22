@@ -12,6 +12,7 @@
 
   if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
    $qry.=" AND scenes.ID='".$m[1]."'";
+   $out['ONE_SCENE']=1;
   } elseif (!$out['CONTROLPANEL']) {
    $qry.=" AND scenes.HIDDEN!=1";
   }

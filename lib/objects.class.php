@@ -788,7 +788,7 @@ function getHistoryValue($varname, $time, $nerest = false) {
  * @param mixed $no_linked No-Linked (default 0)
  * @return int
  */
-function setGlobal($varname, $value, $no_linked = 0)
+function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
    $tmp = explode('.', $varname);
 
@@ -811,7 +811,7 @@ function setGlobal($varname, $value, $no_linked = 0)
    
    if ($obj)
    {
-      return $obj->setProperty($varname, $value, $no_linked);
+      return $obj->setProperty($varname, $value, $no_linked, $source);
    }
    else
    {
@@ -1011,9 +1011,9 @@ function processTitle($title, $object = 0)
  * @param mixed $no_linked No-Linked (default 0)
  * @return int
  */
-function sg($varname, $value, $no_linked = 0)
+function sg($varname, $value, $no_linked = 0, $source = '')
 {
-   return setGlobal($varname, $value, $no_linked);
+   return setGlobal($varname, $value, $no_linked, $source);
 }
 
 /**

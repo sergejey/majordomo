@@ -15,7 +15,7 @@
  <form action="?" method="post">
  [#begin PROPERTIES#]
  <tr>
-  <td valign="top">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</b>
+  <td valign="top" width="30%">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</b>
   [#if CLASS_ID!="0"#]
   [#if KEEP_HISTORY!="0"#]
   (<a href="#" onClick="return openModalTWindow('propHistory<#TITLE#>.[#TITLE#]', '<#TITLE#>.[#TITLE#]', '/pChart/?p=<#TITLE#>.[#TITLE#]&op=log&type=7d', 600, 600)">H</a>)
@@ -25,8 +25,10 @@
   [#if DESCRIPTION!=""#]<br/><i>[#DESCRIPTION#]</i>[#endif#]
 
   </td>
-  <td valign="top">
-  <textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE#]</textarea>
+  <td valign="top" width="70%">
+   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();"><pre>[#VALUE#]</pre></div>
+   <div id="prop[#ID#]_edit" style="display:none"><textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE#]</textarea></div>
+
   [#if LINKED_MODULES!=""#]<br>(linked to: [#LINKED_MODULES#])[#endif#]
   </td>
   <td valign="top">

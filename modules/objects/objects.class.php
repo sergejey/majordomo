@@ -628,13 +628,48 @@ function usual(&$out) {
 *
 * @access public
 */
- function setProperty($property, $value, $no_linked=0) {
+ function setProperty($property, $value, $no_linked=0, $source='') {
 
   startMeasure('setProperty');
   startMeasure('setProperty ('.$property.')');
 
   if (is_null($value)) {
    $value='';
+  }
+
+  if (!$source && is_string($no_linked)) {
+   $source=$no_linked;
+   $no_linked=0;
+  }
+
+  if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES==1) {
+   $save=1;
+
+   if (!is_numeric(trim($value))) {
+    $save=0;
+   }
+
+   if (defined('TRACK_DATA_CHANGES_IGNORE') && TRACK_DATA_CHANGES_IGNORE!='' && $save) {
+    $tmp=explode(',', TRACK_DATA_CHANGES_IGNORE);
+    $total=count($tmp);
+    for($i=0;$i<$total;$i++) {
+     $regex=trim($tmp[$i]);
+     if (preg_match('/'.$regex.'/is', $this->object_title.'.'.$property)) {
+      $save=0;
+      break;
+     }
+    }
+   }
+   if ($save) {
+    $today_file=ROOT.'debmes/'.date('Y-m-d').'.data';
+    $f=fopen($today_file, "a+");
+    if ($f) {
+                fputs($f, date("Y-m-d H:i:s"));
+                fputs($f, "\t".$this->object_title.'.'.$property."\t".trim($value)."\t".$source."\n");
+                fclose($f);
+                @chmod($today_file, 0666);
+    }   
+   }
   }
 
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
@@ -648,6 +683,7 @@ function usual(&$out) {
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    $old_value=$v['VALUE'];
    $v['VALUE']=$value.'';
+   $v['SOURCE']=$source.'';
    if ($v['ID']) {
     $v['UPDATED']=date('Y-m-d H:i:s');
     //if ($old_value!=$value) {
@@ -659,6 +695,7 @@ function usual(&$out) {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
     $v['VALUE']=$value.'';
+    $v['SOURCE']=$source.'';
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
    }
@@ -673,6 +710,7 @@ function usual(&$out) {
     $v['PROPERTY_ID']=$prop['ID'];
     $v['OBJECT_ID']=$this->id;
     $v['VALUE']=$value.'';
+    $v['SOURCE']=$source.'';
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
   }
@@ -697,6 +735,7 @@ function usual(&$out) {
    $q_rec['VALUE_ID']=$v['ID'];
    $q_rec['ADDED']=date('Y-m-d H:i:s');
    $q_rec['VALUE']=$value.'';
+   $q_rec['SOURCE']=$source.'';
    $q_rec['OLD_VALUE']=$old_value;
    $q_rec['KEEP_HISTORY']=$prop['KEEP_HISTORY'];
    SQLInsert('phistory_queue', $q_rec);
@@ -711,6 +750,7 @@ function usual(&$out) {
     $params['PROPERTY']=$property;
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
+    $params['SOURCE']=(string)$source;
     $this->callMethod($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
@@ -821,6 +861,7 @@ objects - Objects
  phistory_queue: VALUE text
  phistory_queue: OLD_VALUE text
  phistory_queue: KEEP_HISTORY int(10) unsigned NOT NULL DEFAULT '0'
+ phistory_queue: SOURCE varchar(20) NOT NULL DEFAULT ''
  phistory_queue: ADDED datetime
 
 
