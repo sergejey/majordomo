@@ -277,6 +277,14 @@ function admin(&$out) {
      } else {
       $rec['ID']=SQLInsert('public_calls', $rec);
      }
+
+     if (preg_match_all('/%(\w+)\.(\w+)%/is',$rec['TITLE'],$m)) {
+      $total = count($m[1]);
+      for ($i = 0; $i < $total; $i++) {
+       addLinkedProperty($m[1][$i],$m[2][$i],$this->name);
+      }
+     }
+
      $this->redirect("?tab=".$this->tab."&view_mode=sync");
     }
    }
@@ -344,6 +352,13 @@ function admin(&$out) {
 
  }
 
+ function propertySetHandle($object, $property, $value) {
+  $calls=SQLSelect("SELECT ID FROM public_calls WHERE TITLE LIKE '%".DBSafe($object.'.'.$property."%'"));
+  if ($calls[0]['ID']) {
+   $this->sendCalls();
+  }
+ }
+
 /**
 * Title
 *
@@ -355,7 +370,12 @@ function admin(&$out) {
 
    // menu items
    $data=array();
-   $data['PUBLIC_CALLS']=SQLSelect("SELECT * FROM public_calls");
+   $calls=SQLSelect("SELECT * FROM public_calls");
+   $total = count($calls);
+   for ($i = 0; $i < $total; $i++) {
+    $calls[$i]['TITLE']=processTitle($calls[$i]['TITLE']);
+   }
+   $data['PUBLIC_CALLS']=$calls;
 
 
   // POST TO SERVER
