@@ -353,7 +353,7 @@ function admin(&$out) {
  }
 
  function propertySetHandle($object, $property, $value) {
-  $calls=SQLSelect("SELECT ID FROM public_calls WHERE TITLE LIKE '%".DBSafe($object.'.'.$property."%'"));
+  $calls=SQLSelect("SELECT ID FROM public_calls WHERE TITLE LIKE '%".DBSafe($object.'.'.$property)."%'");
   if ($calls[0]['ID']) {
    $this->sendCalls();
   }
@@ -368,6 +368,7 @@ function admin(&$out) {
 */
  function sendCalls() {
 
+   $this->getConfig();
    // menu items
    $data=array();
    $calls=SQLSelect("SELECT * FROM public_calls");
