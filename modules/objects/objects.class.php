@@ -856,6 +856,37 @@ objects - Objects
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
  objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 
+ properties: ID int(10) unsigned NOT NULL auto_increment
+ properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
+ properties: OBJECT_ID int(10) NOT NULL DEFAULT '0'
+ properties: SYSTEM varchar(255) NOT NULL DEFAULT ''
+ properties: TITLE varchar(255) NOT NULL DEFAULT ''
+ properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
+ properties: DATA_KEY int(3) NOT NULL DEFAULT '0' 
+ properties: DATA_TYPE int(3) NOT NULL DEFAULT '0' 
+ properties: DESCRIPTION text
+ properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
+ properties: INDEX (CLASS_ID)
+ properties: INDEX (OBJECT_ID)
+ 
+ pvalues: ID int(10) unsigned NOT NULL auto_increment
+ pvalues: PROPERTY_NAME varchar(100) NOT NULL DEFAULT ''
+ pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
+ pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
+ pvalues: VALUE text
+ pvalues: UPDATED datetime
+ pvalues: SOURCE varchar(20) NOT NULL DEFAULT ''
+ pvalues: LINKED_MODULES varchar(255) NOT NULL DEFAULT ''
+ pvalues: INDEX (PROPERTY_ID)
+ pvalues: INDEX (OBJECT_ID)
+ pvalues: INDEX (PROPERTY_NAME) 
+
+ phistory: ID int(10) unsigned NOT NULL auto_increment
+ phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
+ phistory: SOURCE varchar(20) NOT NULL DEFAULT ''
+ phistory: ADDED datetime
+ phistory: INDEX (VALUE_ID)
+
  phistory_queue: ID int(10) unsigned NOT NULL auto_increment
  phistory_queue: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
  phistory_queue: VALUE text

@@ -198,22 +198,6 @@ function usual(&$out) {
 * @access private
 */
  function dbInstall($data) {
-/*
-pvalues - Pvalues
-*/
-  $data = <<<EOD
- pvalues: ID int(10) unsigned NOT NULL auto_increment
- pvalues: PROPERTY_NAME varchar(100) NOT NULL DEFAULT ''
- pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
- pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
- pvalues: VALUE text
- pvalues: UPDATED datetime
- pvalues: SOURCE varchar(20) NOT NULL DEFAULT ''
- pvalues: LINKED_MODULES varchar(255) NOT NULL DEFAULT ''
- pvalues: INDEX (PROPERTY_ID)
- pvalues: INDEX (OBJECT_ID)
- pvalues: INDEX (PROPERTY_NAME)
-EOD;
   parent::dbInstall($data);
  }
 // --------------------------------------------------------------------

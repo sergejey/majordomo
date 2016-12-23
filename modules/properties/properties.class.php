@@ -208,31 +208,6 @@ function usual(&$out) {
 * @access private
 */
  function dbInstall($data) {
-/*
-properties - Properties
-*/
-  $data = <<<EOD
- properties: ID int(10) unsigned NOT NULL auto_increment
- properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
- properties: OBJECT_ID int(10) NOT NULL DEFAULT '0'
- properties: SYSTEM varchar(255) NOT NULL DEFAULT ''
- properties: TITLE varchar(255) NOT NULL DEFAULT ''
- properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
- properties: DATA_KEY int(3) NOT NULL DEFAULT '0' 
- properties: DATA_TYPE int(3) NOT NULL DEFAULT '0' 
- properties: DESCRIPTION text
- properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
- properties: INDEX (CLASS_ID)
- properties: INDEX (OBJECT_ID)
-
- phistory: ID int(10) unsigned NOT NULL auto_increment
- phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
- phistory: SOURCE varchar(20) NOT NULL DEFAULT ''
- phistory: ADDED datetime
- phistory: INDEX (VALUE_ID)
-
-
-EOD;
   parent::dbInstall($data);
  }
 // --------------------------------------------------------------------
