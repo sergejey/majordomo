@@ -288,8 +288,8 @@ function admin(&$out) {
    umask(0);
    @mkdir(ROOT.'saverestore/temp', 0777);
 
-
-  foreach($can_be_updated as $k=>$v) {
+  if (is_array($can_be_updated)) {
+   foreach($can_be_updated as $k=>$v) {
    //$this->getLatest($out, $v['URL'], $v['NAME'], $v['VERSION']);
     $name=$v['NAME'];
     $version=$v['VERSION'];
@@ -409,7 +409,7 @@ function admin(&$out) {
 
     }
   }
-
+  }
         $this->removeTree(ROOT.'saverestore/temp', $frame);
 
         $source=ROOT.'modules';

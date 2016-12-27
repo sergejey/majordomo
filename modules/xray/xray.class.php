@@ -389,7 +389,7 @@ function admin(&$out) {
   if ($op=='getcontent') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
-    if ($this->view_mode=='') {
+    if ($this->view_mode=='properties') {
      $qry="1";
      if ($filter) {
       $qry.=" AND (objects.TITLE LIKE '%".DBSafe($filter)."%' OR properties.TITLE LIKE '%".DBSafe($filter)."%' OR objects.DESCRIPTION LIKE '%".DBSafe($filter)."%')";
@@ -420,7 +420,7 @@ function admin(&$out) {
      }
      echo '</table>';
 
-    } elseif ($this->view_mode=='debmes') {
+    } elseif ($this->view_mode=='') {
 
      global $limit;
      if (!$limit) {
@@ -717,7 +717,7 @@ function admin(&$out) {
 
 }
 
- if ($this->view_mode=='debmes') {
+ if ($this->view_mode=='') {
   $path=ROOT.'debmes';
    if ($handle = opendir($path)) {
     $files=array();
