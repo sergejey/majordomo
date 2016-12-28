@@ -139,7 +139,7 @@ function admin(&$out) {
 
  $this->getConfig();
 
- $github_feed=getURL('https://github.com/sergejey/majordomo/commits/master.atom', 30*60);
+ $github_feed=getURL('https://github.com/MrRecovery/majordomo/commits/master.atom', 30*60);
  if ($github_feed!='') {
   @$tmp=GetXMLTree($github_feed);
   @$data=XMLTreeToArray($tmp);
@@ -351,7 +351,7 @@ function admin(&$out) {
  */
   function getLatest(&$out, $iframe=0) {
 
-   $url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+   $url='https://github.com/MrRecovery/majordomo/archive/master.tar.gz';
 
    set_time_limit(0);
 
