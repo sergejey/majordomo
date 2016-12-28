@@ -815,24 +815,16 @@ class AccBarPlot extends BarPlot {
         }
     }
 
-   function Max()
-   {
-      list($xmax) = $this->plots[0]->Max();
-
-      $nmax=0;
-
-      $plotsCnt = count($this->plots);
-      
-      for ($i = 0; $i < $plotsCnt; ++$i)
-      {
-         $n       = count($this->plots[$i]->coords[0]);
-         $nmax    = max($nmax,$n);
-         list($x) = $this->plots[$i]->Max();
-         $xmax    = max($xmax,$x);
-      }
-
-      for ($i = 0; $i < $nmax; $i++ )
-      {
+    function Max() {
+        list($xmax) = $this->plots[0]->Max();
+        $nmax=0;
+        for($i=0; $i < count($this->plots); ++$i) {
+            $n = count($this->plots[$i]->coords[0]);
+            $nmax = max($nmax,$n);
+            list($x) = $this->plots[$i]->Max();
+            $xmax = max($xmax,$x);
+        }
+        for( $i = 0; $i < $nmax; $i++ ) {
             // Get y-value for bar $i by adding the
             // individual bars from all the plots added.
             // It would be wrong to just add the
@@ -864,9 +856,7 @@ class AccBarPlot extends BarPlot {
     function Min() {
         $nmax=0;
         list($xmin,$ysetmin) = $this->plots[0]->Min();
-        $plotsCnt = count($this->plots);
-        
-        for($i=0; $i < $plotsCnt; ++$i) {
+        for($i=0; $i < count($this->plots); ++$i) {
             $n = count($this->plots[$i]->coords[0]);
             $nmax = max($nmax,$n);
             list($x,$y) = $this->plots[$i]->Min();
@@ -1188,7 +1178,7 @@ class AccBarPlot extends BarPlot {
                         $this->plots[$j]->value->SetMargin(-1);
                     }
                 }
-                $this->plots[$j]->value->Stroke($img,$this->plots[$j]->coords[0][$i],$x,$y);
+                $this->plots[$j]->value->Stroke($img,$this->plots[$j]->coords[0][$i],round($x),round($y));
             }
 
         }
