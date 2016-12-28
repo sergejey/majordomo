@@ -116,13 +116,11 @@ class mysql
       } else {
        $this->dbh = mysqli_connect($this->host , $this->user, $this->password);
       }
-      if (!mysqli_select_db($this->dbh, $this->dbName))
-      {
-
-         $this->Error();
+      $db_select = mysqli_select_db($this->dbh, $this->dbName);                                                                                                     
+      if (!$db_select) {                                                                                                                                           
+         $this->Error();                                                                                                                                             
          return 0;
-      }
-      else
+      } else
       {
          $this->latestTransaction=time();
          $this->Exec("SET NAMES 'utf8';");
