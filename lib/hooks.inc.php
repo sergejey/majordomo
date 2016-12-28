@@ -18,6 +18,8 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
       $rec['NAME']     = 'HOOK_EVENT_' . strtoupper($event_name);
       $rec['TITLE']    = $rec['NAME'];
       $rec['TYPE']     = 'json';
+      $rec['NOTES']     = '';
+      $rec['DATA']     = '';
       $rec['PRIORITY'] = 0;
       $rec['ID']       = SQLInsert('settings', $rec);
    }
