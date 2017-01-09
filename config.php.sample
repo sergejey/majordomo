@@ -79,3 +79,4 @@ Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
  //Define('HISTORY_NO_OPTIMIZE', 1);
 
 
+ Define('MASTER_UPDATE_URL', 'https://github.com/sergejey/majordomo/archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)

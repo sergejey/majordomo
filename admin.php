@@ -72,8 +72,9 @@ if (!headers_sent())
    //ob_start("ob_gzhandler"); // should be un-commented for production server
 }
 
-
 $result = str_replace("nf.php", "admin.php", $result);
+
+require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 echo $result;
 

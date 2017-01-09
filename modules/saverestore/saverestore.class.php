@@ -351,7 +351,12 @@ function admin(&$out) {
  */
   function getLatest(&$out, $iframe=0) {
 
-   $url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+   
+   if (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL!='') {
+    $url=MASTER_UPDATE_URL;
+   } else {
+    $url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+   }
 
    set_time_limit(0);
 
