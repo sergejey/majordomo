@@ -26,7 +26,7 @@
 
   </td>
   <td valign="top" width="70%">
-   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();"><pre>[#VALUE#]</pre></div>
+   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();"><pre>[#VALUE#][#if SOURCE!=""#] (src: [#SOURCE#])[#endif#]</pre></div>
    <div id="prop[#ID#]_edit" style="display:none"><textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE#]</textarea></div>
 
   [#if LINKED_MODULES!=""#]<br>(linked to: [#LINKED_MODULES#])[#endif#]
