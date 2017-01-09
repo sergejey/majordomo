@@ -139,7 +139,15 @@ function admin(&$out) {
 
  $this->getConfig();
 
- $github_feed=getURL('https://github.com/sergejey/majordomo/commits/master.atom', 30*60);
+ if (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL!='') {
+  $github_feed_url=MASTER_UPDATE_URL;
+  $github_feed_url=str_replace('/archive/','/commits/',$github_feed_url);
+  $github_feed_url=str_replace('.tar.gz','.atom',$github_feed_url);
+ } else {
+  $github_feed_url='https://github.com/sergejey/majordomo/commits/master.atom';
+ }
+ $github_feed=getURL($github_feed_url, 30*60);
+
  if ($github_feed!='') {
   @$tmp=GetXMLTree($github_feed);
   @$data=XMLTreeToArray($tmp);
