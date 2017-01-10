@@ -129,6 +129,24 @@ class MajordomoApplication extends Application
               $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['commands'][$v['COMMAND_ID']]=1;
              }
             }
+          } elseif ($data['TYPE']=='devices') {
+              if ($data['DEVICE_ID']=='') {
+                  $data['DEVICE_ID']='0';
+              }
+              if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                  echo date('Y-m-d H:i:s')." Subscribing to device: ".$data['DEVICE_ID']."\n";
+              }
+              $this->_clients[$client_id]->subscribedTo['devices']['DEVICE_ID']=$data['DEVICE_ID'];
+              global $devices;
+              $properties=$devices->getWatchedProperties($this->_clients[$client_id]->subscribedTo['devices']['DEVICE_ID']);
+              if (is_array($properties)) {
+                  if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                      echo date('Y-m-d H:i:s')." Watching: ".serialize($properties)."\n";
+                  }
+                  foreach($properties as $v) {
+                      $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['devices'][$v['DEVICE_ID']]=1;
+                  }
+              }
           } elseif ($data['TYPE']=='properties') {
             if ($data['PROPERTIES']=='') {
              return;
@@ -195,6 +213,7 @@ class MajordomoApplication extends Application
           //process property update
           global $scenes;
           global $commands;
+          global $devices;
 
           $found_subscribers=0;
 
@@ -250,6 +269,31 @@ class MajordomoApplication extends Application
               $client->send($encodedData);
              }
             }
+               //devices
+               if (isset($client->watchedProperties[$property_name]['devices'])) {
+                   $send_values=array();
+                   $seen_devices=array();
+                   foreach($client->watchedProperties[$property_name]['devices'] as $k=>$v) {
+                       if (isset($seen_devices[$k])) {
+                           continue;
+                       }
+                       $seen_devices[$k]=1;
+                       $item=$devices->processDevice($k);
+                       if (isset($item['HTML'])) {
+                           $send_values[]=array('DEVICE_ID'=>$item['DEVICE_ID'], 'DATA'=>$item['HTML']);
+                       }
+                   }
+
+                   if (isset($send_values[0])) {
+                       $send_data=array('DATA'=>$send_values);
+                       if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                           echo date('Y-m-d H:i:s').(" Sending updated device items ".serialize($send_data)."\n");
+                       }
+                       $encodedData = $this->_encodeData('devices', json_encode($send_data));
+                       $client->send($encodedData);
+                   }
+               }
+
             //properties
             if (isset($client->watchedProperties[$property_name]['properties'])) {
              $send_data=array();

@@ -150,7 +150,7 @@
         <label class="control-label"><#LANG_URL#> (preview):</label>
         <div class="controls">
 
-[#if TYPE="html"#]
+[#if TYPE="html" || TYPE="dashboard"#]
 <a href="<#ROOTHTML#>page/[#ID#].html" target=_blank>/page/[#ID#].html</a>
 [#endif TYPE#]
 

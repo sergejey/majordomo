@@ -315,6 +315,7 @@ $dictionary=array(
 
 'STEP_VALUE'=>'Step value', 
 'DATA'=>'Data', 
+'INTERFACE'=>'Interface', 
 
 
 'AUTO_UPDATE_PERIOD'=>'Auto update period', 
@@ -954,7 +955,8 @@ $dictionary=array(
 'VARIABLES'=>'Variables',
 'FUNCTIONS'=>'Functions',
 
-'SCENE_HIDDEN'=>'Do not include in to the swappable list of scenes', 
+'SCENE_HIDDEN'=>'Do not include in to the swappable list of scenes',
+'SCENE_AUTO_SCALE'=>'Auto zoom scene to device with',
 
 'DO_NOTHING'=>'Do nothing',
 'DO_ONCLICK'=>'On click',

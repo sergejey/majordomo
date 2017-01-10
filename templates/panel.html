@@ -36,7 +36,7 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
+[#inc websockets.html#]
 </head>
 
 <style>
@@ -402,13 +402,13 @@ jQuery.fn.center = function () {
                 <tr>
                     <td width=100% valign=top>
 
-
-
-
                         [#if ACTION!=""#]
                                 [#module name="<#ACTION#>" action="admin" instance="adm"#]
                         [#else ACTION#]
+                        <!--#
                                 [#module name="control_access" action="logged" instance="auth"#]
+                                #-->
+                        <iframe src="<#ROOTHTML#>page/Panel.html" width="100%" height="800" frameborder="0"></iframe>
                         [#endif ACTION#]
                         <!--[/main]-->
                     </td>
@@ -428,6 +428,18 @@ jQuery.fn.center = function () {
 
 
         $(".wiki_hint").fancybox({
+                maxWidth        : 800,
+                maxHeight       : 600,
+                fitToView       : false,
+                width           : '70%',
+                height          : '70%',
+                autoSize        : false,
+                closeClick      : false,
+                openEffect      : 'none',
+                closeEffect     : 'none'
+        });
+
+        $(".popup").fancybox({
                 maxWidth        : 800,
                 maxHeight       : 600,
                 fitToView       : false,

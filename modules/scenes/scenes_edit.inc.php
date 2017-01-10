@@ -62,6 +62,9 @@
    global $wallpaper_norepeat;
    $rec['WALLPAPER_NOREPEAT']=(int)$wallpaper_norepeat;
 
+   global $auto_scale;
+   $rec['AUTO_SCALE']=(int)$auto_scale;
+
 
   //updating 'PRIORITY' (int)
    global $priority;
@@ -500,11 +503,11 @@
      $wizard_data=array();
      $wizard_data['STATE_HIGH']=(int)$state_high;
      if ($wizard_data['STATE_HIGH']) {
-      $wizard_data['STATE_HIGH_VALUE']=(int)$state_high_value;
+      $wizard_data['STATE_HIGH_VALUE']=$state_high_value;
      }
      $wizard_data['STATE_LOW']=(int)$state_low;
      if ($wizard_data['STATE_LOW']) {
-      $wizard_data['STATE_LOW_VALUE']=(int)$state_low_value;
+      $wizard_data['STATE_LOW_VALUE']=$state_low_value;
      }
      $wizard_data['UNIT']=$linked_property_unit;
 

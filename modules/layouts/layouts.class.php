@@ -8,7 +8,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.2 (wizard, 18:09:58 [Sep 10, 2010])
 */
-Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL'); // options for 'TYPE' //page=Page|
+Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL|dashboard=Dashboard'); // options for 'TYPE' //page=Page|
 //
 //
 class layouts extends module {
@@ -191,9 +191,17 @@ function usual(&$out) {
 * @access public
 */
  function view_layouts(&$out, $id) {
-  $rec=SQLSelectOne("SELECT * FROM layouts WHERE ID='".(int)$id."'");
+  $rec=SQLSelectOne("SELECT * FROM layouts WHERE ID='".(int)$id."' OR TITLE LIKE '".DBSafe($id)."'");
   if (!$rec['ID']) {
-   return 0;
+   if ($id=='Panel') {
+    $rec=array();
+    $rec['TITLE']='Panel';
+    $rec['HIDDEN']=1;
+    $rec['TYPE']='dashboard';
+    $rec['ID']=SQLInsert('layouts',$rec);
+   } else {
+    return 0;
+   }
   }
   outHash($rec, $out);
  }

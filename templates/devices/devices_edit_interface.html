@@ -1,0 +1,64 @@
+
+<!-- Table 'devices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+[#endif ERR#]
+<fieldset>
+[#if ID=""#]
+<legend><#LANG_NEW_RECORD#></legend>
+[#endif ID#]
+
+ <div class="form-group">
+  <label class="col-lg-3 control-label">
+   &nbsp;
+   </label>
+  <div class="col-lg-4">
+   <input type="checkbox" name="add_menu" value="1"[#if ADD_MENU="1"#] checked[#endif#]> <#LANG_DEVICES_ADD_MENU#>
+   <select name="add_menu_id" class="form-control">
+    <option value="0"><#LANG_ROOT#></option>
+    [#begin MENU#]
+    <option value="[#ID#]"[#if ID="<#ADD_MENU_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+    [#end MENU#]
+   </select>
+  </div>
+ </div>
+
+ <div class="form-group">
+  <label class="col-lg-3 control-label">
+   &nbsp;
+  </label>
+  <div class="col-lg-4">
+   <input type="checkbox" name="add_scene" value="1"[#if ADD_SCENE="1"#] checked[#endif#]> <#LANG_DEVICES_ADD_SCENE#>
+   <select name="add_scene_id" class="form-control">
+    [#begin SCENES#]
+    <option value="[#ID#]"[#if ID="<#ADD_SCENE_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+    [#end SCENES#]
+   </select>
+  </div>
+ </div>
+
+
+<div class="form-group">
+ <label class="col-lg-3 control-label">
+  &nbsp;
+ </label>
+        <div class="col-lg-4">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+ [#endif ID#]
+ <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="tab" value="<#TAB#>">
+        </div>
+</div>
+</fieldset>
+</form>

@@ -26,6 +26,11 @@ $scenes = new scenes();
 include_once(DIR_MODULES . 'commands/commands.class.php');
 $commands = new commands();
 
+if (file_exists(DIR_MODULES . 'devices/devices.class.php')) {
+ include_once(DIR_MODULES . 'devices/devices.class.php');
+ $devices = new devices();
+}
+
 //Define('DEBUG_WEBSOCKETS', 1);
 
 $websockets_script_started=time();

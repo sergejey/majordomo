@@ -113,9 +113,9 @@ function addClassMethod($class_name, $method_name, $code = '')
             SQLUpdate('methods', $method);
          }
 
-         return $method['ID'];
       }
    }
+   return $method['ID'];
 }
 
 /**
@@ -157,7 +157,7 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
  * @param mixed $object_name Object name
  * @return mixed
  */
-function addClassObject($class_name, $object_name)
+function addClassObject($class_name, $object_name, $system='')
 {
    $class_id = addClass($class_name);
    $sqlQuery = "SELECT ID
@@ -174,7 +174,10 @@ function addClassObject($class_name, $object_name)
 
    $object['TITLE']    = $object_name;
    $object['CLASS_ID'] = $class_id;
+   $object['SYSTEM']   = $system.'';
    $object['ID']       = SQLInsert('objects', $object);
+   return $object['ID'];
+
 }
 
 /**
@@ -1057,4 +1060,35 @@ function runMethod($method_name, $params = 0)
 function rs($script_id, $params = 0)
 {
    return runScript($script_id, $params);
+}
+
+function getRoomObjectByLocation($location_id,$auto_add=0) {
+    $location_rec=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+    $location_title=transliterate($location_rec['TITLE']);
+    $location_title=preg_replace('/\W/','',$location_title);
+    if (!$location_title) {
+        $location_title='Room'.$location_id;
+    }
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($location_title)."'");
+    if ($room_object['ID']) return $room_object['TITLE'];
+
+    $class_id=addClass("Rooms");
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE LOCATION_ID=".$location_id." AND CLASS_ID=".$class_id);
+    if ($room_object['ID']) return $room_object['TITLE'];
+    if ($auto_add) {
+        $object_id=addClassObject("Rooms",$location_title);
+        SQLExec("UPDATE objects SET LOCATION_ID=".(int)$location_rec['ID'].", DESCRIPTION='".DBSafe($location_rec['TITLE'])."' WHERE ID=".$object_id);
+        return $location_title;
+    } else {
+        return '';
+    }
+}
+
+function deleteObject($object_id) {
+    $object_rec=SQLSelectOne("SELECT ID FROM objects WHERE ID=".(int)$object_id." OR TITLE LIKE '".DBSafe($object_id)."'");
+    if ($object_rec['ID']) {
+        include_once(DIR_MODULES.'objects/objects.class.php');
+        $obj=new objects();
+        $obj->delete_objects($object_rec['ID']);
+    }
 }

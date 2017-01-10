@@ -52,7 +52,8 @@ while (1)
       if (file_exists($filename))
          rename($filename, $filename . '.prev');
 
-      exec($mysqlDumpPath . $mysqlDumpParam . " > " . $filename);
+      exec($mysqlDumpPath . $mysqlDumpParam . " > " . $filename.'.tmp');
+      rename($filename.'.tmp', $filename);
 
       $last_backup = time();
 
