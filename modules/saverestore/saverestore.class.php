@@ -1,6 +1,6 @@
 <?php
 /**
-* ���������� 
+* я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ 
 *
 * Saverestore
 *
@@ -365,6 +365,7 @@ function admin(&$out) {
    } else {
     $url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
    }
+   $this->url=$url;
 
    set_time_limit(0);
 
@@ -418,7 +419,13 @@ function admin(&$out) {
 
     if (!$iframe) {
      global $with_extensions;
-     $this->redirect("?mode=upload&restore=".urlencode('master.tgz')."&folder=".urlencode('majordomo-master')."&with_extensions=".$with_extensions);
+     $folder='majordomo-master';
+     $basename=basename($this->url);
+     if ($basename!='master.tar.gz') {
+      $basename=str_replace('.tar.gz', '', $basename);
+      $folder=str_replace('master', $basename, $folder);
+     }
+     $this->redirect("?mode=upload&restore=".urlencode('master.tgz')."&folder=".urlencode($folder)."&with_extensions=".$with_extensions);
     } else {
      return 1;
     }
