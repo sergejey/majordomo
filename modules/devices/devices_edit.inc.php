@@ -162,6 +162,13 @@
       $rec['LOCATION_ID']=(int)$location_id;
 
     $rec['LINKED_OBJECT']=$linked_object;
+      if ($rec['LINKED_OBJECT'] && !$rec['ID']) {
+          $other_device=SQLSelectOne("SELECT ID FROM devices WHERE LINKED_OBJECT LIKE '".DBSafe($rec['LINKED_OBJECT'])."'");
+          if ($other_device['ID']) {
+              $out['ERR_LINKED_OBJECT']=1;
+              $ok=0;
+          }
+      }
 
       global $add_object;
       $out['ADD_OBJECT']=$add_object;
@@ -189,8 +196,8 @@
 
     $out['OK']=1;
 
+       $type_details=$this->getTypeDetails($rec['TYPE']);
        if (!$rec['LINKED_OBJECT'] && $out['ADD_OBJECT']) {
-           $type_details=$this->getTypeDetails($rec['TYPE']);
            $new_object_title=ucfirst($rec['TYPE']).$this->getNewObjectIndex($type_details['CLASS']);
            $object_id=addClassObject($type_details['CLASS'],$new_object_title,'sdevice'.$rec['ID']);
            $rec['LINKED_OBJECT']=$new_object_title;
@@ -198,11 +205,23 @@
        }
 
        $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT']);
+       $class_id=current(SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($type_details['CLASS'])."'"));
+
 
        $object_rec=SQLSelectOne("SELECT * FROM objects WHERE ID=".$object_id);
        $object_rec['DESCRIPTION']=$rec['TITLE'];
        $object_rec['LOCATION_ID']=$rec['LOCATION_ID'];
+       $class_changed=0;
+       if ($object_rec['CLASS_ID']!=$class_id) {
+           //move object to new class
+           $object_rec['CLASS_ID']=$class_id;
+           $class_changed=1;
+       }
        SQLUpdate('objects',$object_rec);
+       if ($class_changed) {
+           objectClassChanged($object_rec['ID']);
+       }
+
 
        if ($location_title) {
            setGlobal($object_rec['TITLE'].'.linkedRoom',$location_title);

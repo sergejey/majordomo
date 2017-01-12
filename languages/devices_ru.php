@@ -5,6 +5,8 @@ $dictionary=array(
 
 'DEVICES_MODULE_TITLE'=>'Простые устройства',
 
+'DEVICES_LINKED_WARNING'=>'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
+
 'DEVICES_RELAY'=>'Управляемое реле/Выключатель',
 'DEVICES_DIMMER'=>'Управляемый диммер',
 'DEVICES_MOTION'=>'Датчик движения',

@@ -69,33 +69,7 @@
      SQLUpdate($table_name, $rec); // update
 
      if ($class_changed_from) {
-      // class changed from $class_changed_from to $rec['CLASS_ID']
-      // step 1. take all properties out of class
-      $pvalues=SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY_TITLE FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID!=0 AND pvalues.OBJECT_ID='".$rec['ID']."'");
-      $total=count($pvalues);
-      for($i=0;$i<$total;$i++) {
-       $new_property=array();
-       $new_property['TITLE']=$pvalues[$i]['PROPERTY_TITLE'];
-       $new_property['CLASS_ID']=0;
-       $new_property['OBJECT_ID']=$rec['ID'];
-       //$new_property['VALUE']='';
-       $new_property['ID']=SQLInsert('properties', $new_property);
-       $pvalues[$i]['PROPERTY_ID']=$new_property['ID'];
-       unset($pvalues[$i]['PROPERTY_TITLE']);
-       SQLUpdate('pvalues', $pvalues[$i]);
-      }
-      // step 2. apply matched properties of new class
-      $properties=$this->getParentProperties($rec['CLASS_ID'], '', 1);
-      $total=count($properties);
-      for($i=0;$i<$total;$i++) {
-       $pvalue=SQLSelectOne("SELECT pvalues.* FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID=0 AND pvalues.OBJECT_ID='".$rec['ID']."' AND properties.TITLE LIKE '".DBSafe($properties[$i]['TITLE'])."'");
-       if ($pvalue['ID']) {
-        $old_prop=$pvalue['PROPERTY_ID'];
-        $pvalue['PROPERTY_ID']=$properties[$i]['ID'];
-        SQLUpdate('pvalues', $pvalue);
-        SQLExec("DELETE FROM properties WHERE ID='".$old_prop."'");
-       }
-      }
+         objectClassChanged($rec['ID']);
      }
 
     } else {

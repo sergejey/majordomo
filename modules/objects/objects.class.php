@@ -425,7 +425,6 @@ function usual(&$out) {
   
  }
 
-
  function callClassMethod($name, $params=0) {
   $this->callMethod($name, $params, 1);
  }

@@ -5,6 +5,8 @@ $dictionary=array(
 
 'DEVICES_MODULE_TITLE'=>'Simple Devices',
 
+'DEVICES_LINKED_WARNING'=>'Please note that when linking to existing object, it will be assigned to the new class.',
+
 'DEVICES_RELAY'=>'Relay/Switch',
 'DEVICES_DIMMER'=>'Dimmer',
 'DEVICES_MOTION'=>'Motion sensor',

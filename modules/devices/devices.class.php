@@ -94,6 +94,14 @@ function setDictionary() {
             'METHODS'=>array(
                 'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
                 'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
+            ),
+            'INJECTS'=>array(
+                'OperationalModes'=>array(
+                  'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
+                  'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
+                  'NightMode.activate'=>'nightmode_activate',
+                  'NightMode.deactivate'=>'nightmode_deactivate',
+                ),
             )
         ),
         'controller'=>array(
@@ -363,6 +371,21 @@ function renderStructure() {
                        }
                        SQLUpdate('methods',$method);
                   }
+              }
+          }
+      }
+
+      if (is_array($v['INJECTS'])) {
+          foreach($v['INJECTS'] as $class_name=>$methods) {
+              addClass($class_name);
+              foreach($methods as $mk=>$mv) {
+                  list($object,$method_name)=explode('.',$mk);
+                  addClassObject($class_name,$object);
+                  if (!file_exists(DIR_MODULES."devices/".$mv.".php")) {
+                      $code='<?php'."\n\n";
+                      @SaveFile(DIR_MODULES."devices/".$mv.".php", $code);
+                  }
+                  injectObjectMethodCode($mk,'SDevices',"require(DIR_MODULES.'devices/".$mv.".php');");
               }
           }
       }
