@@ -411,7 +411,7 @@ function admin(&$out) {
     global $data;
     global $design;
     $code=1;
-    $data=0;
+    $data=1; //fix
     $design=1;
     $out['BACKUP']=1;
     $this->dump($out, $iframe);
@@ -873,7 +873,7 @@ function admin(&$out) {
   global $code;
   global $data;
   $code=1;
-  $data=0;
+  $data=1;
   $out['BACKUP']=1;
   $this->dump($out);
   $this->removeTree(ROOT.'saverestore/temp');
@@ -1246,6 +1246,14 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
        $this->echonow(" OK<br/> ", 'green');
       }
 
+        if (file_exists(ROOT.'saverestore/temp'.$folder.'/dump.sql')) {
+         // data restore
+         if ($iframe) {
+          $this->echonow("Restoring database ... ");
+         }
+         $this->restoredatabase(ROOT.'saverestore/temp'.$folder.'/dump.sql');
+         $this->echonow(" OK<br/> ", 'green');
+        }
 
 
       if ($iframe) {
@@ -1268,26 +1276,20 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
        $this->echonow(" OK<br/> ", 'green');
       }
 
-      if ($iframe) {
-       $this->echonow("Rebooting system ... ");
-      }
-
-
-         @SaveFile(ROOT.'reboot', 'updated');
-
-      if ($iframe) {
-       $this->echonow(" OK<br/> ", 'green');
-      }
-
 
         //}
 
 
 
-        if (file_exists(ROOT.'saverestore/temp'.$folder.'/dump.sql')) {
-         // data restore
-         $this->restoredatabase(ROOT.'saverestore/temp'.$folder.'/dump.sql');
-        }
+      if ($iframe) {
+       $this->echonow("Rebooting system ... ");
+      }
+
+      @SaveFile(ROOT.'reboot', 'updated');
+      if ($iframe) {
+       $this->echonow(" OK<br/> ", 'green');
+      }
+
 
         $this->config['LATEST_UPDATED_ID']=$out['LATEST_ID'];
 
@@ -1497,40 +1499,6 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 * @access public
 */
  function backupdatabase($filename) {
-  /*
-  global $db;
-
-  $tables1 = SQLSelect("SHOW TABLES;");
-  foreach($tables1 as $t) {
-   foreach($t as $k=>$v) {
-    $tables[]=$v;
-   }
-  }
-  $ignores=array('statistic', 'pot_accesslog', 'pot_add_data', 'pot_documents', 'pot_exit_targets', 'pot_hostnames', 
-                 'pot_operating_systems', 'pot_referers', 'pot_search_engines', 'pot_user_agents', 'pot_visitors');
-  for($i=0;$i<count($ignores);$i++) {
-   $ignore[$ignores[$i]]=1;
-  }
-
-  $newfile="";
-  for($i=0;$i<count($tables);$i++) {
-   $table=$tables[$i];
-   if (!IsSet($ignore[$table])) {
-           $newfile .= "\n# ----------------------------------------------------------\n#\n";
-           $newfile .= "# structur for table '$table'\n#\n";
-           $newfile .= $db->get_mysql_def($table);
-           $newfile .= "\n\n";
-           $newfile .= "#\n# data for table '$table'\n#\n";
-           $newfile .= $db->get_mysql_content($table);
-           $newfile .= "\n\n";   
-   }
-  }
-
-  $fp = fopen ($filename,"w");
-  fwrite ($fp,$newfile);
-  fclose ($fp);
-  */
-
    if (defined('PATH_TO_MYSQLDUMP'))
       $pathToMysqlDump = PATH_TO_MYSQLDUMP;
    else

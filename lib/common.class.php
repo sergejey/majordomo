@@ -635,7 +635,7 @@ function playSound($filename, $exclusive = 0, $priority = 0)
          if (IsWindowsOS())
             safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
          else
-            safe_exec('mplayer ' . $filename, $exclusive, $priority);
+            safe_exec('mplayer ' . $filename . " >/dev/null 2>&1 &", $exclusive, $priority);
       }
    }
 

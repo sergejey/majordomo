@@ -265,7 +265,7 @@ jQuery.fn.center = function () {
  $.ajax({
    url: url
   }).done(function(data) { 
-   $('#console_output').html('<pre>Command: <b>'+cmd+'</b><br/>Result:<br/>'+data+'</pre>');
+   $('#console_output').html('<pre>Command: <b>'+cmd+'</b> <a href="#" onClick="$(\'#command\').val(\''+cmd+'\');sendConsoleCommand();">Retry</a><br/>Result:<br/>'+data+'</pre>');
   });
 
 

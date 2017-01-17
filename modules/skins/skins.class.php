@@ -31,7 +31,7 @@ class skins extends module {
 *
 * @access public
 */
- function saveParams() {
+ function saveParams($data = 0) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
