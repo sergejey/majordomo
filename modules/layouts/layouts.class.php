@@ -161,6 +161,21 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
+ if ($this->ajax) {
+  global $op;
+  global $id;
+  if ($op=='loaddashboard') {
+   $page_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$id);
+   echo $page_rec['DETAILS'];
+  }
+  if ($op=='savedashboard') {
+   global $data;
+   $page_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$id);
+   $page_rec['DETAILS']=$data;
+   SQLUpdate('layouts',$page_rec);
+  }
+  exit;
+ }
  if ($this->owner->action=='apps') {
   $this->redirect(ROOTHTML."pages.html");
  }
@@ -202,6 +217,9 @@ function usual(&$out) {
    } else {
     return 0;
    }
+  }
+  if ($rec['TYPE']=='dashboard') {
+   $this->redirect(ROOTHTML."freeboard/?layout_id=".$rec['ID']);
   }
   outHash($rec, $out);
  }

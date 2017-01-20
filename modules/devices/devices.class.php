@@ -433,6 +433,20 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
+    if ($this->ajax) {
+
+        header("HTTP/1.0: 200 OK\n");
+        header('Content-Type: text/html; charset=utf-8');
+
+        global $op;
+        global $id;
+        $res=array();
+        if ($op=='get_device') {
+            $res=$this->processDevice($id);
+        }
+        echo json_encode($res);
+        exit;
+    }
  $this->admin($out);
 }
 /**

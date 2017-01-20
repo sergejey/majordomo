@@ -1027,6 +1027,9 @@ $dictionary=array(
 'ADVANCED_CONFIG'=>'Advanced config',
 'UPDATE_ALL_EXTENSIONS'=>'Update all extensions installed',
 
+'SAVE_CHANGES'=>'Save changes',
+'ADD_PANE'=>'Add Pane',
+
 'HCB'=>' <a href="http://majordomo.smartliving.ru/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 
