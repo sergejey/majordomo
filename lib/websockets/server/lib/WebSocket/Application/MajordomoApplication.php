@@ -334,6 +334,7 @@ class MajordomoApplication extends Application
                            echo date('Y-m-d H:i:s').(" Sending updated object items ".serialize($send_data)."\n");
                        }
                        $encodedData = $this->_encodeData('objects', json_encode($send_data));
+                       //echo "encoded data: ".serialize($encodedData);
                        $client->send($encodedData);
                    }
                }

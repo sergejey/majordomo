@@ -615,7 +615,7 @@ function usual(&$out) {
    if ($property=='object_title') {
     return $this->object_title;
    } elseif ($property=='object_description') {
-    return $this->object_description;
+    return $this->description;
    }
   }
 
