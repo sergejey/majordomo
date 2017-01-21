@@ -161,7 +161,7 @@ $ctl = new control_modules();
                     </ul>
                 </div>
             </div>
-            <div id="datasources" style="display:none">
+            <div id="datasources">
                 <h2 class="title">DATASOURCES</h2>
 
                 <div class="datasource-list-container">
