@@ -6,71 +6,71 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 ?>
 
-var activeDevices = Array();
-var devicesWidgetWSTimer;
-var devicesWidgetWSUpdatedTimer;
+var activeObjects = Array();
+var objectsWidgetWSTimer;
+var objectsWidgetWSUpdatedTimer;
 
 $.subscribe('wsData', function (_, response) {
     if (response.action=='subscribed') {
-        //console.log('Subscription to devices confirmed.');
+        //console.log('Subscription to objects confirmed.');
     }
-    if (response.action=='devices') {
+    if (response.action=='objects') {
         var obj=jQuery.parseJSON(response.data);
         if (typeof obj.DATA !='object') return false;
         var objCnt = obj.DATA.length;
         if (objCnt) {
             for(var i=0;i<objCnt;i++) {
-                var device_id=obj.DATA[i].DEVICE_ID;
+                var object_id=obj.DATA[i].OBJECT_ID;
                 var html=obj.DATA[i].DATA;
-                $('#device'+device_id).html(html);
+                $('#object'+object_id).html(html);
             }
         }
     }
 });
 
-function refreshWSSubscription() {
-    clearTimeout(devicesWidgetWSTimer);
+function refreshWSObjectsSubscription() {
+    clearTimeout(objectsWidgetWSTimer);
     //console.log('refresh subscription');
     if (startedWebSockets) {
-        //for(var i=0;i<activeDevices.length;i++) {
-            console.log('subscribing ws to device '+activeDevices.join());
+        //for(var i=0;i<activeObjects.length;i++) {
+            console.log('subscribing ws to objects '+activeObjects.join());
             var payload;
             payload = new Object();
             payload.action = 'Subscribe';
             payload.data = new Object();
-            payload.data.TYPE='devices';
-            payload.data.DEVICE_ID=activeDevices.join();
+            payload.data.TYPE='objects';
+            payload.data.OBJECT_ID=activeObjects.join();
             wsSocket.send(JSON.stringify(payload));
         //}
-        devicesWidgetWSTimer=setTimeout('refreshWSSubscription();',10*60000);
+        objectsWidgetWSTimer=setTimeout('refreshWSObjectsSubscription();',10*60000);
     } else {
-        devicesWidgetWSTimer=setTimeout('refreshWSSubscription();',5000);
+        objectsWidgetWSTimer=setTimeout('refreshWSObjectsSubscription();',5000);
     }
 }
 
-function activeDevicesUpdated() {
-    clearTimeout(devicesWidgetWSUpdatedTimer);
-    devicesWidgetWSUpdatedTimer=setTimeout('refreshWSSubscription();',2000);
+function activeObjectsUpdated() {
+    clearTimeout(objectsWidgetWSUpdatedTimer);
+    objectsWidgetWSUpdatedTimer=setTimeout('refreshWSObjectsSubscription();',2000);
 }
 
 
 
-function requestDeviceHTML(device_id,widgetElement) {
-    //alert('requested html for '+device_id+' ');
+function requestObjectHTML(object_id,widgetElement) {
+    //alert('requested html for '+object_id+' ');
 
-    if (activeDevices.indexOf(device_id)<0) {
-        activeDevices.push(device_id);
-        activeDevicesUpdated();
+    if (activeObjects.indexOf(object_id)<0) {
+        activeObjects.push(object_id);
+        activeObjectsUpdated();
     }
 
-    var url='<?php echo ROOTHTML;?>ajax/devices.html?op=get_device&id='+device_id;
+    var url='<?php echo ROOTHTML;?>ajax/objects.html?op=get_object&id='+object_id;
     $.ajax({
         url: url
     }).done(function(data) {
         var res=JSON.parse(data);
         if (typeof res.HTML !== 'undefined') {
             //alert(res.HTML);
-            var myTextElement = $("<div id='device"+device_id+"'>"+res.HTML+"</div>");
+            var myTextElement = $("<div id='object"+object_id+"'>"+res.HTML+"</div>");
             $(widgetElement).html(myTextElement);
             //subscribe to changes
         }
@@ -84,18 +84,18 @@ function requestDeviceHTML(device_id,widgetElement) {
 
     freeboard.loadWidgetPlugin({
         // Same stuff here as with datasource plugin.
-        "type_name"   : "devices_plugin",
-        "display_name": "Device",
-        "description" : "MajorDoMo devices",
+        "type_name"   : "objects_plugin",
+        "display_name": "Object",
+        "description" : "MajorDoMo objects",
         "fill_size" : false,
         "settings"    : [
             {
-                "name"        : "device_id",
-                "display_name": "Device",
+                "name"        : "object_id",
+                "display_name": "<?php echo LANG_LINKED_OBJECT;?>",
                 "required" : true,
                 "type"        : "option",
                 <?php
-                $scripts=SQLSelect("SELECT ID,TITLE FROM devices ORDER BY TITLE");
+                $scripts=SQLSelect("SELECT ID,TITLE FROM objects ORDER BY TITLE");
                 ?>
                 "options"     : [
                     <?php
@@ -107,49 +107,65 @@ function requestDeviceHTML(device_id,widgetElement) {
                     }
                     ?>
                 ]
+            },
+            {
+                "name"        : "size",
+                "display_name": "Size",
+                "type"        : "option",
+                "options"     : [
+                    {"name" : "1","value": "1"},
+                    {"name" : "2","value": "2"},
+                    {"name" : "3","value": "3"},
+                    {"name" : "4","value": "4"},
+                    {"name" : "5","value": "5"},
+                    {"name" : "6","value": "6"},
+                    {"name" : "7","value": "7"},
+                    {"name" : "8","value": "8"}
+                ]
             }
 
         ],
 // Same as with datasource plugin, but there is no updateCallback parameter in this case.
         newInstance   : function(settings, newInstanceCallback)
         {
-            newInstanceCallback(new myDevicesPlugin(settings));
+            newInstanceCallback(new myObjectsPlugin(settings));
         }
     });
 
-    var myDevicesPlugin = function(settings)
+    var myObjectsPlugin = function(settings)
     {
         var self = this;
         var currentSettings = settings;
         var widgetElement;
-        function updateDeviceHTML()
+        function updateObjectHTML()
         {
             if(widgetElement)
             {
-                requestDeviceHTML(currentSettings.device_id,widgetElement);
+                requestObjectHTML(currentSettings.object_id,widgetElement);
             }
         }
 
         self.render = function(element)
         {
             widgetElement = element;
-            updateDeviceHTML();
+            updateObjectHTML();
         }
 
         self.getHeight = function()
         {
-            return 1;
+            if (typeof currentSettings.size == 'undefined') currentSettings.size=1;
+            return parseInt(currentSettings.size);
         }
 
         self.onSettingsChanged = function(newSettings)
         {
             currentSettings = newSettings;
-            updateDeviceHTML();
+            updateObjectHTML();
         }
 
         self.onCalculatedValueChanged = function(settingName, newValue)
         {
-            updateDeviceHTML();
+            updateObjectHTML();
         }
 
         self.onDispose = function()

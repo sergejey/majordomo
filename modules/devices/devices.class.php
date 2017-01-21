@@ -288,17 +288,16 @@ function processDevice($device_id) {
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
     $result['HTML']=processTitle($template,$this);
-
     return $result;
 }
 
 function getWatchedProperties($device_id=0) {
     $this->setDictionary();
+    $properties=array();
     $qry=1;
     if ($device_id) {
-        $qry.=" AND devices.ID=".$device_id;
+        $qry.=" AND devices.ID IN (".$device_id.")";
     }
-    $properties=array();
     $devices=SQLSelect("SELECT * FROM devices WHERE $qry");
     $total = count($devices);
     for ($i = 0; $i < $total; $i++) {

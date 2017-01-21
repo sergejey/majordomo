@@ -31,6 +31,10 @@ if (file_exists(DIR_MODULES . 'devices/devices.class.php')) {
  $devices = new devices();
 }
 
+include_once(DIR_MODULES . 'objects/objects.class.php');
+$objects_module = new objects();
+
+
 //Define('DEBUG_WEBSOCKETS', 1);
 
 $websockets_script_started=time();

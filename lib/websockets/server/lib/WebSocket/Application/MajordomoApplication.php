@@ -88,7 +88,7 @@ class MajordomoApplication extends Application
         private function _actionSubscribe($data, $client_id) {
          $this->cycleAlive();
          if ($data['TYPE']) {
-          echo date('Y-m-d H:i:s')."  Subscription from client to ".$data['TYPE']."\n";
+          echo date('Y-m-d H:i:s')."  Subscription from client to ".$data['TYPE']." (".serialize($data).")\n";
           if ($data['TYPE']=='scenes') {
 
             $this->refreshSceneDynamicElements();
@@ -145,6 +145,24 @@ class MajordomoApplication extends Application
                   }
                   foreach($properties as $v) {
                       $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['devices'][$v['DEVICE_ID']]=1;
+                  }
+              }
+          } elseif ($data['TYPE']=='objects') {
+              if ($data['OBJECT_ID']=='') {
+                  $data['OBJECT_ID']='0';
+              }
+              if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                  echo date('Y-m-d H:i:s')." Subscribing to object: ".$data['OBJECT_ID']."\n";
+              }
+              $this->_clients[$client_id]->subscribedTo['objects']['OBJECT_ID']=$data['OBJECT_ID'];
+              global $objects_module;
+              $properties=$objects_module->getWatchedProperties($this->_clients[$client_id]->subscribedTo['objects']['OBJECT_ID']);
+              if (is_array($properties)) {
+                  if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                      echo date('Y-m-d H:i:s')." Watching: ".serialize($properties)."\n";
+                  }
+                  foreach($properties as $v) {
+                      $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['objects'][$v['OBJECT_ID']]=1;
                   }
               }
           } elseif ($data['TYPE']=='properties') {
@@ -214,6 +232,7 @@ class MajordomoApplication extends Application
           global $scenes;
           global $commands;
           global $devices;
+          global $objects_module;
 
           $found_subscribers=0;
 
@@ -290,6 +309,31 @@ class MajordomoApplication extends Application
                            echo date('Y-m-d H:i:s').(" Sending updated device items ".serialize($send_data)."\n");
                        }
                        $encodedData = $this->_encodeData('devices', json_encode($send_data));
+                       $client->send($encodedData);
+                   }
+               }
+
+               //objects
+               if (isset($client->watchedProperties[$property_name]['objects'])) {
+                   $send_values=array();
+                   $seen_objects=array();
+                   foreach($client->watchedProperties[$property_name]['objects'] as $k=>$v) {
+                       if (isset($seen_objects[$k])) {
+                           continue;
+                       }
+                       $seen_objects[$k]=1;
+                       $item=$objects_module->processObject($k);
+                       if (isset($item['HTML'])) {
+                           $send_values[]=array('OBJECT_ID'=>$item['OBJECT_ID'], 'DATA'=>$item['HTML']);
+                       }
+                   }
+
+                   if (isset($send_values[0])) {
+                       $send_data=array('DATA'=>$send_values);
+                       if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                           echo date('Y-m-d H:i:s').(" Sending updated object items ".serialize($send_data)."\n");
+                       }
+                       $encodedData = $this->_encodeData('objects', json_encode($send_data));
                        $client->send($encodedData);
                    }
                }

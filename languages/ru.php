@@ -1027,7 +1027,7 @@ $dictionary=array(
 'ADVANCED_CONFIG'=>'Расширенная настройка',
 'UPDATE_ALL_EXTENSIONS'=>'Обновить все установленные дополнения',
 
-'SAVE_CHANGES'=>'Сохранить зименения',
+'SAVE_CHANGES'=>'Сохранить изменения',
 'ADD_PANE'=>'Добавить панель',
 
     'DATA_KEY' => 'Ключевые данные',

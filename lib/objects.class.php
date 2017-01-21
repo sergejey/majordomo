@@ -56,7 +56,17 @@ function addClass($class_name, $parent_class = '')
    } elseif ($class['PARENT_ID']) {
     $data=getClassTemplate($class['PARENT_ID']);
    } else {
-    $data='Template for ['.$class['TITLE'].'] not found';
+    //$data='Template for ['.$class['TITLE'].'] not found';
+    $data='<b>%.object_title%</b>';
+       $props=SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=".$class['ID']." AND DATA_KEY=1 ORDER BY TITLE");
+       if (!IsSet($props[0])) {
+           $props=SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=".$class['ID']." ORDER BY TITLE");
+       }
+       if (is_array($props)) {
+           foreach($props as $k=>$v) {
+               $data.=' '.$v['TITLE'].': %.'.$v['TITLE'].'%';
+           }
+       }
    }
    return $data;
  }
