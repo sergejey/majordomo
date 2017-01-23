@@ -53,7 +53,7 @@ $ctl = new control_modules();
         var layoutId='<?php
             echo $_GET['layout_id'];
             ?>';
-        <?}?>
+        <?php }?>
 
         head.js("lib/js/thirdparty/knockout.js",
                 "lib/js/thirdparty/jquery-ui.js",
