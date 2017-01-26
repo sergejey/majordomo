@@ -456,7 +456,9 @@ function admin(&$out) {
   }
   $this->removeTree(ROOT.'modules/'.$name);
   $this->removeTree(ROOT.'templates/'.$name);
-  if (file_exists(ROOT.'scripts/cycle_'.$name.'.php')) {
+  if (file_exists(ROOT.'scripts/cycle_'.$name.'app.php')) {
+   @unlink(ROOT.'scripts/cycle_'.$name.'app.php');
+  } elseif (file_exists(ROOT.'scripts/cycle_'.$name.'.php')) {
    @unlink(ROOT.'scripts/cycle_'.$name.'.php');
   }
   removeMissingSubscribers();

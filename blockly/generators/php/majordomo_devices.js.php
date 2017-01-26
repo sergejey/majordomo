@@ -70,6 +70,14 @@ Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_motionDetected'] =
 };
 <?php
 }
+if ($blocks[$i]['TYPE']=='openclose') {
+?>
+Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentStatus'] = function(block) {
+  var code = 'getGlobal("<?php echo $blocks[$i]['LINKED_OBJECT'].'.status';?>")';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+<?php
+}
     /*
 if ($blocks[$i]['TYPE']=='switch') {
 ?>

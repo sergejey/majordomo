@@ -71,7 +71,7 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentStatus']
     this.setOutput(true);
     this.setPreviousStatement(false);
     this.setNextStatement(false);
-    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES__IS_ON;?>');
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_IS_ON;?>');
   }
 };
 
@@ -125,7 +125,6 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_maxValue'] = {
 }
 if ($blocks[$i]['TYPE']=='motion') {
   ?>
-
 Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_motionDetected'] = {
   init: function () {
     var thisBlock = this;
@@ -139,7 +138,23 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_motionDetected'
     this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_MOTION_DETECTED;?>');
   }
 };
-
+<?php
+}
+if ($blocks[$i]['TYPE']=='openclose') {
+?>
+Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentStatus'] = {
+  init: function () {
+    var thisBlock = this;
+    this.appendDummyInput()
+        .appendField('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_IS_CLOSED;?>');
+    this.setInputsInline(true);
+    this.setColour(175);
+    this.setOutput(true);
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_IS_CLOSED;?>');
+  }
+};
 <?php
 }
 /*

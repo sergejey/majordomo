@@ -48,7 +48,7 @@
   if (!$destination) {
    return 0;
   }
-  processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
 
   if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
@@ -56,11 +56,9 @@
   } else {
    $min_level=(int)getGlobal('minMsgLevel');
   }
-
   if ($level < $min_level) {
    return 0;
   }
-
   if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
    $service_port='7999';
    $in='tts:'.$ph;
@@ -77,10 +75,10 @@
    socket_write($socket, $in, strlen($in));
    socket_close($socket);
    return 1;
-  } elseif ($terminal_rec['IS_ONLINE']) {
-   return 1;
+  } elseif (!$processed) {
+   //say($ph,$level);
+   return 0;
   }
-
   return 0;
  }
 
@@ -111,10 +109,10 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
       include_once(DIR_MODULES . 'patterns/patterns.class.php');
       $pt = new patterns();
       $res=$pt->checkAllPatterns($member_id);
-      if (!$res) {
-       processCommand($ph);
-      }
-      processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+       if (!$processed) {
+           processCommand($ph);
+       }
       return;
    }
 

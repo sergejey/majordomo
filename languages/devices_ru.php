@@ -14,6 +14,7 @@ $dictionary=array(
 'DEVICES_SWITCH'=>'Выключатель',
 'DEVICES_TEMP_SENSOR'=>'Датчик температуры',
 'DEVICES_HUM_SENSOR'=>'Датчик влажности',
+'DEVICES_OPENCLOSE'=>'Датчик открытия/закрытия',
 
 'DEVICES_STATUS'=>'Статус',
 
@@ -31,6 +32,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Значение датчика вернулось к норме',
 
 'DEVICES_IS_ON'=>'Включено',
+'DEVICES_IS_CLOSED'=>'Закрыто',
 
 'DEVICES_MOTION_DETECTED'=>'Обнаружено',
 
@@ -40,6 +42,7 @@ $dictionary=array(
 
 'DEVICES_GROUP_ECO'=>'Выключать в режиме экономии',
 'DEVICES_GROUP_SUNRISE'=>'Выключать с рассветом',
+'DEVICES_IS_ACTIVITY'=>'Изменение означает активность в помещении',
 
 'DEVICES_ADD_MENU'=>'Добавить устройство в Меню',
 'DEVICES_ADD_SCENE'=>'Добавить устройство на Сцену',

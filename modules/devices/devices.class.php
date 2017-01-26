@@ -143,6 +143,17 @@ function setDictionary() {
                 'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
             )
         ),
+        'openclose'=>array(
+            'TITLE'=>LANG_DEVICES_OPENCLOSE,
+            'PARENT_CLASS'=>'SDevices',
+            'CLASS'=>'SOpenClose',
+            'PROPERTIES'=>array(
+                'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
+            ),
+            'METHODS'=>array(
+                'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+            )
+        ),
         'button'=>array(
             'TITLE'=>LANG_DEVICES_BUTTON,
             'PARENT_CLASS'=>'SDevices',

@@ -411,10 +411,8 @@ $ctl = new control_modules();
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_motionDetected"></block>'."\n";
       } elseif ($res[$i]['TYPE']=='sensor_temp') {
       } elseif ($res[$i]['TYPE']=='sensor_humidity') {
-/*
-      } elseif ($res[$i]['TYPE']=='switch') {
+      } elseif ($res[$i]['TYPE']=='openclose') {
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentStatus"></block>'."\n";
-*/
       } elseif ($res[$i]['TYPE']=='button') {
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_press"></block>'."\n";
       }

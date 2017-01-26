@@ -12,6 +12,7 @@ $dictionary=array(
 'DEVICES_MOTION'=>'Motion sensor',
 'DEVICES_BUTTON'=>'Button',
 'DEVICES_SWITCH'=>'Switch',
+'DEVICES_OPENCLOSE'=>'Open/Close sensor',
 'DEVICES_TEMP_SENSOR'=>'Temperature sensor',
 'DEVICES_HUM_SENSOR'=>'Humidity sensor',
 
@@ -31,6 +32,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Value is back to normal',
 
 'DEVICES_IS_ON'=>'is ON',
+'DEVICES_IS_CLOSED'=>'is Closed',
 
 'DEVICES_MOTION_DETECTED'=>'Detected',
 
@@ -40,6 +42,7 @@ $dictionary=array(
 
 'DEVICES_GROUP_ECO'=>'Turn it off in ECO mode',
 'DEVICES_GROUP_SUNRISE'=>'Turn it off with Sunrise',
+'DEVICES_IS_ACTIVITY'=>'Status change means activity in the room',
 
 'DEVICES_ADD_MENU'=>'Add device to Menu',
 'DEVICES_ADD_SCENE'=>'Add device to Scene',
