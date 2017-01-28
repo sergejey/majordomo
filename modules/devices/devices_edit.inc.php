@@ -127,6 +127,8 @@
 
 
   if ($this->tab=='') {
+      global $prefix;
+      $out['PREFIX']=$prefix;
       global $source_table;
       $out['SOURCE_TABLE']=$source_table;
       global $source_table_id;
@@ -198,7 +200,7 @@
 
        $type_details=$this->getTypeDetails($rec['TYPE']);
        if (!$rec['LINKED_OBJECT'] && $out['ADD_OBJECT']) {
-           $new_object_title=ucfirst($rec['TYPE']).$this->getNewObjectIndex($type_details['CLASS']);
+           $new_object_title=$out['PREFIX'].ucfirst($rec['TYPE']).$this->getNewObjectIndex($type_details['CLASS']);
            $object_id=addClassObject($type_details['CLASS'],$new_object_title,'sdevice'.$rec['ID']);
            $rec['LINKED_OBJECT']=$new_object_title;
            SQLUpdate('devices',$rec);

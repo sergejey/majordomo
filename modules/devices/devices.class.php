@@ -239,6 +239,9 @@ function link(&$out) {
     } else {
         $ok=0;
     }
+    if ($this->prefix) {
+       $out['PREFIX']=$this->prefix;
+    }
     if ($this->linked_object) {
         $device_rec=SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '".DBSafe($this->linked_object)."'");
         if ($device_rec['TITLE']) {
