@@ -56,7 +56,17 @@ function addClass($class_name, $parent_class = '')
    } elseif ($class['PARENT_ID']) {
     $data=getClassTemplate($class['PARENT_ID']);
    } else {
-    $data='Template for ['.$class['TITLE'].'] not found';
+    //$data='Template for ['.$class['TITLE'].'] not found';
+    $data='<b>%.object_title%</b>';
+       $props=SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=".$class['ID']." AND DATA_KEY=1 ORDER BY TITLE");
+       if (!IsSet($props[0])) {
+           $props=SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=".$class['ID']." ORDER BY TITLE");
+       }
+       if (is_array($props)) {
+           foreach($props as $k=>$v) {
+               $data.=' '.$v['TITLE'].': %.'.$v['TITLE'].'%';
+           }
+       }
    }
    return $data;
  }
@@ -113,9 +123,9 @@ function addClassMethod($class_name, $method_name, $code = '')
             SQLUpdate('methods', $method);
          }
 
-         return $method['ID'];
       }
    }
+   return $method['ID'];
 }
 
 /**
@@ -157,7 +167,7 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
  * @param mixed $object_name Object name
  * @return mixed
  */
-function addClassObject($class_name, $object_name)
+function addClassObject($class_name, $object_name, $system='')
 {
    $class_id = addClass($class_name);
    $sqlQuery = "SELECT ID
@@ -174,7 +184,10 @@ function addClassObject($class_name, $object_name)
 
    $object['TITLE']    = $object_name;
    $object['CLASS_ID'] = $class_id;
+   $object['SYSTEM']   = $system.'';
    $object['ID']       = SQLInsert('objects', $object);
+   return $object['ID'];
+
 }
 
 /**
@@ -828,7 +841,6 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
 function callMethod($method_name, $params = 0)
 {
    $tmp = explode('.', $method_name);
-   
    if (IsSet($tmp[2]))
    {
       $object_name = $tmp[0] . '.' . $tmp[1];
@@ -843,7 +855,6 @@ function callMethod($method_name, $params = 0)
    {
       $object_name = 'ThisComputer';
    }
-
    $obj = getObject($object_name);
 
    if ($obj)
@@ -854,7 +865,58 @@ function callMethod($method_name, $params = 0)
    {
       return 0;
    }
+}
 
+function injectObjectMethodCode($method_name,$key,$code) {
+    $tmp = explode('.', $method_name);
+    if (IsSet($tmp[2]))
+    {
+        $object_name = $tmp[0] . '.' . $tmp[1];
+        $varname     = $tmp[2];
+    }
+    elseif (IsSet($tmp[1]))
+    {
+        $object_name = $tmp[0];
+        $method_name = $tmp[1];
+    }
+    else
+    {
+        $object_name = 'ThisComputer';
+    }
+    $obj = getObject($object_name);
+
+    if ($obj)
+    {
+        //return $obj->callMethod($method_name, $params);
+        $id=$obj->getMethodByName($method_name, $obj->class_id, $obj->id);
+        if ($id) {
+            $method=SQLSelectOne("SELECT * FROM methods WHERE ID=".(int)$id);
+            if ($method['OBJECT_ID']!=$obj->id) {
+                $method=array();
+                $method['OBJECT_ID']=$obj->id;
+                $method['TITLE']=$method_name;
+                $method['ID']=SQLInsert('methods',$method);
+            }
+            $injection_code='/* begin injection of {'.$key.'} */'."\n".$code."\n".'/* end injection of {'.$key.'} */';
+            @$old_code=$method['CODE'];
+            if (preg_match('/\/\* begin injection of {'.$key.'} \*\/(.*?)\/\* end injection of {'.$key.'} \*\//uis',$method['CODE'],$m)) {
+                $current_injection=trim($m[1]);
+                if ($current_injection!=$code) {
+                    $method['CODE']=str_replace($m[0],$injection_code,$method['CODE']);
+                }
+            } else {
+                $method['CODE'].="\n".$injection_code;
+            }
+            if ($method['CODE']!=$old_code) {
+                SQLUpdate('methods',$method);
+            }
+            return 1;
+        }
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 /**
@@ -1057,4 +1119,69 @@ function runMethod($method_name, $params = 0)
 function rs($script_id, $params = 0)
 {
    return runScript($script_id, $params);
+}
+
+function getRoomObjectByLocation($location_id,$auto_add=0) {
+    $location_rec=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+    $location_title=transliterate($location_rec['TITLE']);
+    $location_title=preg_replace('/\W/','',$location_title);
+    if (!$location_title) {
+        $location_title='Room'.$location_id;
+    }
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($location_title)."'");
+    if ($room_object['ID']) return $room_object['TITLE'];
+
+    $class_id=addClass("Rooms");
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE LOCATION_ID=".$location_id." AND CLASS_ID=".$class_id);
+    if ($room_object['ID']) return $room_object['TITLE'];
+    if ($auto_add) {
+        $object_id=addClassObject("Rooms",$location_title);
+        SQLExec("UPDATE objects SET LOCATION_ID=".(int)$location_rec['ID'].", DESCRIPTION='".DBSafe($location_rec['TITLE'])."' WHERE ID=".$object_id);
+        return $location_title;
+    } else {
+        return '';
+    }
+}
+
+function deleteObject($object_id) {
+    $object_rec=SQLSelectOne("SELECT ID FROM objects WHERE ID=".(int)$object_id." OR TITLE LIKE '".DBSafe($object_id)."'");
+    if ($object_rec['ID']) {
+        include_once(DIR_MODULES.'objects/objects.class.php');
+        $obj=new objects();
+        $obj->delete_objects($object_rec['ID']);
+    }
+}
+
+function objectClassChanged($object_id) {
+
+    include_once(DIR_MODULES.'objects/objects.class.php');
+    $obj=new objects();
+    // class changed from $class_changed_from to $rec['CLASS_ID']
+    $rec=SQLSelectOne("SELECT * FROM objects WHERE ID=".(int)$object_id);
+    // step 1. take all properties out of class
+    $pvalues=SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY_TITLE FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID!=0 AND pvalues.OBJECT_ID='".$rec['ID']."'");
+    $total=count($pvalues);
+    for($i=0;$i<$total;$i++) {
+        $new_property=array();
+        $new_property['TITLE']=$pvalues[$i]['PROPERTY_TITLE'];
+        $new_property['CLASS_ID']=0;
+        $new_property['OBJECT_ID']=$rec['ID'];
+        //$new_property['VALUE']='';
+        $new_property['ID']=SQLInsert('properties', $new_property);
+        $pvalues[$i]['PROPERTY_ID']=$new_property['ID'];
+        unset($pvalues[$i]['PROPERTY_TITLE']);
+        SQLUpdate('pvalues', $pvalues[$i]);
+    }
+    // step 2. apply matched properties of new class
+    $properties=$obj->getParentProperties($rec['CLASS_ID'], '', 1);
+    $total=count($properties);
+    for($i=0;$i<$total;$i++) {
+        $pvalue=SQLSelectOne("SELECT pvalues.* FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID=0 AND pvalues.OBJECT_ID='".$rec['ID']."' AND properties.TITLE LIKE '".DBSafe($properties[$i]['TITLE'])."'");
+        if ($pvalue['ID']) {
+            $old_prop=$pvalue['PROPERTY_ID'];
+            $pvalue['PROPERTY_ID']=$properties[$i]['ID'];
+            SQLUpdate('pvalues', $pvalue);
+            SQLExec("DELETE FROM properties WHERE ID='".$old_prop."'");
+        }
+    }
 }

@@ -184,7 +184,8 @@ function admin(&$out) {
  if (!is_array($names)) {
   $names=array();
  }
-
+ $cat = array();
+ $cat_id = -1;
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
   if (is_dir(ROOT.'modules/'.$rec['MODULE_NAME'])) {
@@ -198,8 +199,11 @@ function admin(&$out) {
   }
 
    if ($rec['CATEGORY']!=$old_category) {
-    $rec['NEW_CATEGORY']=1;
-    $old_category=$rec['CATEGORY'];
+       $cat[] = array();
+       ++$cat_id;
+       $cat[$cat_id]['NAME'] = $rec['CATEGORY'];
+       $cat[$cat_id]['CATEGORY_ID'] = $rec['CATEGORY_ID'];
+       $old_category=$rec['CATEGORY'];
    }
 
   //if ($rec['MODULE_NAME']==$name) {
@@ -228,17 +232,17 @@ function admin(&$out) {
     $this->version=$rec['LATEST_VERSION'];
    }
 
-  //}
   if ($rec['EXISTS']) {
    $this->can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
   if (in_array($rec['MODULE_NAME'], $names)) {
    $this->selected_plugins[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
-
-  $out['PLUGINS'][]=$rec;
+  if ($rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'])
+      $cat[$cat_id]['NEW_VERSION'] = 1;
+  $cat[$cat_id]['PLUGINS'][]=$rec;
  }
-
+ $out['CATEGORY'] = $cat;
 
  if ($this->mode=='install_multiple') {
   $this->updateAll($this->selected_plugins);

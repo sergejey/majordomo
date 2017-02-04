@@ -206,6 +206,23 @@ function admin(&$out) {
 */
 function usual(&$out) {
 
+ if ($this->ajax) {
+
+  header("HTTP/1.0: 200 OK\n");
+  header('Content-Type: text/html; charset=utf-8');
+
+  global $op;
+  global $id;
+  $res=array();
+  if ($op=='get_object') {
+   $res=$this->processObject($id);
+  }
+  echo json_encode($res);
+
+  global $db;$db->disconnect();
+  exit;
+ }
+
  if ($this->class) {
   $objects=getObjectsByClass($this->class);
   if (!$this->code) {
@@ -425,7 +442,6 @@ function usual(&$out) {
   
  }
 
-
  function callClassMethod($name, $params=0) {
   $this->callMethod($name, $params, 1);
  }
@@ -599,7 +615,7 @@ function usual(&$out) {
    if ($property=='object_title') {
     return $this->object_title;
    } elseif ($property=='object_description') {
-    return $this->object_description;
+    return $this->description;
    }
   }
 
@@ -802,6 +818,39 @@ function usual(&$out) {
   endMeasure('setProperty ('.$property.')', 1);
   endMeasure('setProperty', 1);
 
+ }
+
+ function getWatchedProperties($objects) {
+  $properties=array();
+  $ids=explode(',',$objects);
+  include_once(DIR_MODULES.'classes/classes.class.php');
+  $cl=new classes();
+
+  foreach($ids as $object_id) {
+   $this->loadObject($object_id);
+   $props=$cl->getParentProperties($this->class_id, '', 1);
+   $my_props=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='".(int)$object_id."'");
+   if ($my_props[0]['ID']) {
+    foreach($my_props as $p) {
+     $props[]=$p;
+    }
+   }
+   if (is_array($props)) {
+    foreach($props as $k=>$v) {
+     if (substr($v['TITLE'],0,1)=='_') continue;
+     $properties[]=array('PROPERTY'=>mb_strtolower($this->object_title.'.'.$v['TITLE'], 'UTF-8'), 'OBJECT_ID'=>$object_id);
+    }
+   }
+  }
+  return $properties;
+ }
+
+ function processObject($object_id) {
+  $object_rec=SQLSelectOne("SELECT * FROM objects WHERE ID=".(int)$object_id);
+  $result=array('HTML'=>'','OBJECT_ID'=>$object_rec['ID']);
+  $template=getObjectClassTemplate($object_rec['TITLE']);
+  $result['HTML']=processTitle($template,$this);
+  return $result;
  }
 
 /**

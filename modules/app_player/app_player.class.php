@@ -293,6 +293,8 @@ function usual(&$out) {
     include(DIR_MODULES.'app_player/vlcweb.php');
    } elseif ($terminal['PLAYER_TYPE']=='mpd') {
     include(DIR_MODULES.'app_player/mpd.php');
+   } elseif ($terminal['MAJORDROID_API']) {
+   include(DIR_MODULES.'app_player/majordroid.php');
    }
 
    // close cURL resource, and free up system resources

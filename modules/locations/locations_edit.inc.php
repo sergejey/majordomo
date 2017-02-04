@@ -25,6 +25,7 @@
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
+    $location_title=getRoomObjectByLocation($rec['ID'],1);
     $out['OK']=1;
    } else {
     $out['ERR']=1;

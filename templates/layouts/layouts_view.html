@@ -1,4 +1,11 @@
-<div id="htmlTab[#NUM#]">[#inc ../../cms/layouts/<#ID#>.html#]</div>
+<div id="htmlTab[#NUM#]">
+  [#if TYPE="html"#]
+  [#inc ../../cms/layouts/<#ID#>.html#]
+  [#endif TYPE#]
+  [#if TYPE="dashboard"#]
+  [#inc dashboard.html#]
+  [#endif TYPE#]
+</div>
 [#if REFRESH!="0"#]
 <script language="javascript">
  var tm;

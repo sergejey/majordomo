@@ -1560,6 +1560,7 @@ elm_states - Element states
  scenes: WALLPAPER varchar(255) NOT NULL DEFAULT ''
  scenes: PRIORITY int(10) NOT NULL DEFAULT '0'
  scenes: HIDDEN int(3) NOT NULL DEFAULT '0'
+ scenes: AUTO_SCALE int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
 

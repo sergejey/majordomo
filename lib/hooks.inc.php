@@ -116,11 +116,14 @@ function processSubscriptions($event_name, $details = '')
             } else {
              DebMes("$module_name.processSubscription error (method not found)");
             }
+            if ($details['BREAK']) break;
          } else {
           DebMes("$module_name.processSubscription error (module class not found)");
          }
       }
+      return (int)$details['PROCESSED'];
    }
+   return 0;
 
 }
 

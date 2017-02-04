@@ -239,6 +239,17 @@ function startFlashing(block_id) {
    });
  }
 
+ function runScript(script_name, optional_params) {
+  if (typeof optional_params === 'undefined') { optional_params = ''; }
+  var url="/";
+  url+='objects/?script='+encodeURIComponent(script_name)+'&'+optional_params;
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+    //alert(data);
+   });
+ }
+
  function ajaxGetGlobal(varname, id, timeout) {
   var url="/";
   url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);

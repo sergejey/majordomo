@@ -1,0 +1,29 @@
+<style>
+    .openclose-widget {
+    }
+    .openclose-text {
+        padding-top:10px;
+        cursor:pointer;
+        vertical-align:middle;
+    }
+    .openclose-light {
+        border-radius:50%;
+        width:22px;
+        height:22px;
+        border:2px solid #3d3d3d;
+        margin-top:5px;
+        float:left;
+        margin-right:10px;
+    }
+    .openclose-light.on {
+        background-color:#C7FF73;
+        box-shadow: 0px 0px 15px #99FF00;
+        border-color:#FDF1DF;
+    }
+</style>
+<div class="openclose-widget">
+    <div class="openclose-light %.status|"off;on"%"></div>
+    <div class="openclose-text" style='display:%.status|"none;block"%;cursor:pointer'>%.object_description%</div>
+    <div class="openclose-text" style='display:%.status|"block;none"%;cursor:pointer'>%.object_description%</div>
+
+</div>

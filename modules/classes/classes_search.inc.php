@@ -40,12 +40,12 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
-    $objects=SQLSelect("SELECT ID, TITLE, CLASS_ID, DESCRIPTION FROM objects WHERE CLASS_ID='".$res[$i]['ID']."'");
+    $objects=SQLSelect("SELECT ID, TITLE, CLASS_ID, DESCRIPTION FROM objects WHERE CLASS_ID='".$res[$i]['ID']."' ORDER BY objects.TITLE");
     if ($objects[0]['ID']) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
       $objects[$o]['KEY_DATA']=getKeyData($objects[$o]['ID']);
-      $methods=SQLSelect("SELECT ID, TITLE FROM methods WHERE OBJECT_ID='".$objects[$o]['ID']."'");
+      $methods=SQLSelect("SELECT ID, TITLE FROM methods WHERE OBJECT_ID='".$objects[$o]['ID']."' ORDER BY methods.TITLE");
       if ($methods[0]['ID']) {
        $total_m=count($methods);
        for($im=0;$im<$total_m;$im++) {
