@@ -184,6 +184,13 @@ function install($parent_name = "")
    $this->getModulesList();
 
    $lst    = $this->modules;
+
+   $prelist=array('objects', 'devices');
+   foreach($prelist as $v) {
+    $rec=array('FILENAME'=>$v);
+    array_unshift($lst, $rec);
+   }
+
    $lstCnt = count($lst);
    $code   = "";
 
@@ -222,7 +229,7 @@ function install($parent_name = "")
    project_modules: DATA text
    project_modules: HIDDEN int(3)  DEFAULT '0' NOT NULL
    project_modules: PRIORITY int(10)  DEFAULT '0' NOT NULL
-   project_modules: ADDED timestamp(14)
+   project_modules: ADDED timestamp
 
    ignore_updates: ID tinyint(3) unsigned NOT NULL auto_increment
    ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL
