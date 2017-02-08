@@ -184,6 +184,13 @@ function install($parent_name = "")
    $this->getModulesList();
 
    $lst    = $this->modules;
+
+   $prelist=array('objects', 'devices');
+   foreach($prelist as $v) {
+    $rec=array('FILENAME'=>$v);
+    array_unshift($lst, $rec);
+   }
+
    $lstCnt = count($lst);
    $code   = "";
 
