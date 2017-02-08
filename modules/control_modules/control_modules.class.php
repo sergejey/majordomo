@@ -222,7 +222,7 @@ function install($parent_name = "")
    project_modules: DATA text
    project_modules: HIDDEN int(3)  DEFAULT '0' NOT NULL
    project_modules: PRIORITY int(10)  DEFAULT '0' NOT NULL
-   project_modules: ADDED timestamp(14)
+   project_modules: ADDED timestamp
 
    ignore_updates: ID tinyint(3) unsigned NOT NULL auto_increment
    ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL

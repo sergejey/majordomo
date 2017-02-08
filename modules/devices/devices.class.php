@@ -612,7 +612,7 @@ function usual(&$out) {
            $linked_property='';
            $linked_method='pressed';
         }
-       if ($rec['TYPE']=='switch') {
+       if ($rec['TYPE']=='switch' || $rec['TYPE']=='openclose') {
            $linked_property='status';
        }
         if ($table_rec['ID']) {
