@@ -186,6 +186,7 @@ function install($parent_name = "")
    $lst    = $this->modules;
 
    $prelist=array('objects', 'devices');
+   $prelist=array_reverse($prelist);
    foreach($prelist as $v) {
     $rec=array('FILENAME'=>$v);
     array_unshift($lst, $rec);
