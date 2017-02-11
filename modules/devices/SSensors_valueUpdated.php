@@ -29,3 +29,6 @@
   }
  }
 
+include_once(DIR_MODULES.'devices/devices.class.php');
+$dv=new devices();
+$dv->checkLinkedDevicesAction($this->object_title, $value);

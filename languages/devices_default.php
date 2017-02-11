@@ -16,6 +16,8 @@ $dictionary=array(
 'DEVICES_TEMP_SENSOR'=>'Temperature sensor',
 'DEVICES_HUM_SENSOR'=>'Humidity sensor',
 
+'DEVICES_LINKS'=>'Linked devices',
+
 'DEVICES_STATUS'=>'Status',
 
 'DEVICES_LOGIC_ACTION'=>'Action',
@@ -46,6 +48,29 @@ $dictionary=array(
 
 'DEVICES_ADD_MENU'=>'Add device to Menu',
 'DEVICES_ADD_SCENE'=>'Add device to Scene',
+
+'DEVICES_LINKS_NOT_ADDED'=>'No linked devices set',
+'DEVICES_LINKS_AVAILABLE'=>'Available links',
+'DEVICES_LINKS_COMMENT'=>'Comment (optional)',
+'DEVICES_LINKS_LINKED_DEVICE'=>'Linked device',
+'DEVICES_LINKS_ADDED'=>'Links added',
+
+'DEVICES_LINK_ACTION_TYPE'=>'Action type',
+'DEVICES_LINK_TYPE_TURN_ON'=>'Turn On',
+'DEVICES_LINK_TYPE_TURN_OFF'=>'Turn Off',
+'DEVICES_LINK_TYPE_SWITCH'=>'Switch',
+
+'DEVICES_LINK_SWITCH_IT'=>'Switch it',
+'DEVICES_LINK_SWITCH_IT_DESCRIPTION'=>'Control another devices when action triggered',
+'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY'=>'Delay (seconds)',
+
+'DEVICES_LINK_SENSOR_SWITCH'=>'Sensor control',
+'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION'=>'Control another devices based on sensor\'s value',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION'=>'Condition type',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_ABOVE'=>'Above',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW'=>'Below',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE'=>'Value',
+
 
 'DEVICES_UPDATE_CLASSSES'=>'Update classes',
 'DEVICES_ADD_OBJECT_AUTOMATICALLY'=>'Add automatically'

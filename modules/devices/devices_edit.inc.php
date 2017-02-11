@@ -145,6 +145,10 @@
       }
   }
 
+  if ($this->tab=='links') {
+      include_once(DIR_MODULES.'devices/devices_links.inc.php');
+  }
+
   if ($this->mode=='update' && $this->tab=='') {
    $ok=1;
    global $title;

@@ -100,8 +100,7 @@
 
 
 
-<form action="?" method="post" name="frmList_devices" style="padding:0px" class="form">
-<table  align=center class="table table-striped">
+<table  class="table table-striped">
 <tbody>
 [#begin RESULT#]
 <tr style="height:52px" class="hover_btn2">
@@ -110,9 +109,7 @@
   <b>
    [#TITLE#]
   </a></b>
-  ([#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#]
-
-  )
+  ([#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#])
  </td>
  <td><div id="device[#ID#]">[#HTML#]</div></td>
  <td style="vertical-align:middle" width="1%" nowrap>
@@ -120,6 +117,7 @@
   [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=settings" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-wrench"></i></a>
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=links" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-link"></i>[#if LINKED!=""#] ([#LINKED#])[#endif#]</a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i></a>
     <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
@@ -129,9 +127,6 @@
 [#end RESULT#]
 </tbody>
 </table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_devices">
-</form>
 <!-- / search results (list) -->
 <!-- paging -->
 [#if PAGES#]

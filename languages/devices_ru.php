@@ -16,6 +16,8 @@ $dictionary=array(
 'DEVICES_HUM_SENSOR'=>'Датчик влажности',
 'DEVICES_OPENCLOSE'=>'Датчик открытия/закрытия',
 
+'DEVICES_LINKS'=>'Связанные устройства',
+
 'DEVICES_STATUS'=>'Статус',
 
 'DEVICES_LOGIC_ACTION'=>'Действия',
@@ -46,6 +48,28 @@ $dictionary=array(
 
 'DEVICES_ADD_MENU'=>'Добавить устройство в Меню',
 'DEVICES_ADD_SCENE'=>'Добавить устройство на Сцену',
+
+'DEVICES_LINKS_NOT_ADDED'=>'Нет связанных устройств',
+'DEVICES_LINKS_AVAILABLE'=>'Доступные типы связей',
+'DEVICES_LINKS_COMMENT'=>'Комментарий (не обязательно)',
+'DEVICES_LINKS_LINKED_DEVICE'=>'Связанное устройство',
+'DEVICES_LINKS_ADDED'=>'Связанные устройства',
+
+'DEVICES_LINK_ACTION_TYPE'=>'Действие',
+'DEVICES_LINK_TYPE_TURN_ON'=>'Включить',
+'DEVICES_LINK_TYPE_TURN_OFF'=>'Выключить',
+'DEVICES_LINK_TYPE_SWITCH'=>'Переключить',
+
+'DEVICES_LINK_SWITCH_IT'=>'Включить/Выключить',
+'DEVICES_LINK_SWITCH_IT_DESCRIPTION'=>'Управление другим устройством по событию',
+'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY'=>'Задержка выполнения (секунд)',
+
+'DEVICES_LINK_SENSOR_SWITCH'=>'Условное управление',
+'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION'=>'Управление другим устройством по показаниям датчика',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION'=>'Тип условия',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_ABOVE'=>'Выше заданного',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW'=>'Ниже заданного',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE'=>'Пороговое значение',
 
 
 'DEVICES_UPDATE_CLASSSES'=>'Обновить классы',
