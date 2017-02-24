@@ -95,7 +95,7 @@ $this->device_types=array(
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
         )
-    ),
+    ),	
     'sensor_temp'=>array(
         'TITLE'=>LANG_DEVICES_TEMP_SENSOR,
         'PARENT_CLASS'=>'SSensors',
@@ -105,5 +105,35 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_HUM_SENSOR,
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SHumSensors'
+    ),
+	'sensor_state'=>array(
+        'TITLE'=>LANG_DEVICES_STATE_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SStateSensors'
+    ),
+	'sensor_percentage'=>array(
+        'TITLE'=>LANG_DEVICES_PERCENTAGE_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SPercentageSensors'
+    ),
+	'sensor_pressure'=>array(
+        'TITLE'=>LANG_DEVICES_PRESSURE_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SPressureSensors'
+    ),
+	'sensor_power'=>array(
+        'TITLE'=>LANG_DEVICES_POWER_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SPowукSensors'
+    ),
+	'sensor_voltage'=>array(
+        'TITLE'=>LANG_DEVICES_VOLTAGE_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SVoltageSensors'
+    ),
+	'sensor_current'=>array(
+        'TITLE'=>LANG_DEVICES_CURRENT_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SCurrentSensors'
     ),
 );

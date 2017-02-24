@@ -15,7 +15,20 @@ $dictionary=array(
 'DEVICES_OPENCLOSE'=>'Open/Close sensor',
 'DEVICES_TEMP_SENSOR'=>'Temperature sensor',
 'DEVICES_HUM_SENSOR'=>'Humidity sensor',
+'DEVICES_STATE_SENSOR'=>'State sensor',
+'DEVICES_PERCENTAGE_SENSOR'=>'Percentage value sensor',
+'DEVICES_PRESSURE_SENSOR'=>'Atmospheric pressure sesnor',
+'DEVICES_POWER_SENSOR'=>'Watt sensor',
+'DEVICES_VOLTAGE_SENSOR'=>'Voltage sensor',
+'DEVICES_CURRENT_SENSOR'=>'Current sensor',
 
+// Measure
+'M_VOLTAGE'=>'V',
+'M_CURRENT'=>'I',
+'M_PRESSURE'=>'Tor',
+'M_WATT'=>'W',
+
+//----
 'DEVICES_LINKS'=>'Linked devices',
 
 'DEVICES_STATUS'=>'Status',

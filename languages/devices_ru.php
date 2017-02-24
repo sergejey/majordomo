@@ -12,10 +12,23 @@ $dictionary=array(
 'DEVICES_MOTION'=>'Датчик движения',
 'DEVICES_BUTTON'=>'Кнопка',
 'DEVICES_SWITCH'=>'Выключатель',
+'DEVICES_OPENCLOSE'=>'Датчик открытия/закрытия',
 'DEVICES_TEMP_SENSOR'=>'Датчик температуры',
 'DEVICES_HUM_SENSOR'=>'Датчик влажности',
-'DEVICES_OPENCLOSE'=>'Датчик открытия/закрытия',
+'DEVICES_STATE_SENSOR'=>'Датчик состояния',
+'DEVICES_PERCENTAGE_SENSOR'=>'Датчик процентное значение',
+'DEVICES_PRESSURE_SENSOR'=>'Датчик атмосферного давления',
+'DEVICES_POWER_SENSOR'=>'Датчик мощьности',
+'DEVICES_VOLTAGE_SENSOR'=>'Датчик напряжения',
+'DEVICES_CURRENT_SENSOR'=>'Датчик тока',
 
+// Measure
+'M_VOLTAGE'=>'В',
+'M_CURRENT'=>'А',
+'M_PRESSURE'=>'торр',
+'M_WATT'=>'Вт',
+
+//----
 'DEVICES_LINKS'=>'Связанные устройства',
 
 'DEVICES_STATUS'=>'Статус',

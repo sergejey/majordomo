@@ -48,6 +48,9 @@ function addClass($class_name, $parent_class = '')
  */
  function getClassTemplate($class_id) {
    $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);  
+   if (!$class['ID']) {
+    return '';
+   }
    $class_file_path=DIR_TEMPLATES.'classes/views/'.$class['TITLE'].'.html';
    if ($class['TEMPLATE']!='') {
     $data=$class['TEMPLATE'];
