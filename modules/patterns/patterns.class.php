@@ -376,7 +376,7 @@ function usual(&$out) {
        $rec['DETAILS']=$url;
        $rec['ID']=SQLInsert('events', $rec);
 
-       postToWebSocket('TERMINAL_EVENT', $rec, 'PostEvent');
+       postToWebSocketQueue('TERMINAL_EVENT', $rec, 'PostEvent');
 
       }
      }

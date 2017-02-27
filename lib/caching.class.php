@@ -71,15 +71,25 @@ function checkFromCache($key)
 }
 
 
+function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
+  SQLExec("DELETE FROM cached_ws WHERE PROPERTY='".DBSafe($property)."'");
+  $rec=array();
+  $rec['PROPERTY']=$property;
+  $rec['DATAVALUE']=$value;
+  $rec['POST_ACTION']=$post_action;
+  $rec['ADDED']=date('Y-m-d H:i:s');
+  SQLInsert('cached_ws', $rec);
+}
+
 function postToWebSocket($property, $value, $post_action='PostProperty') {
 
  if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
-  return;
+  return false;
  }
 
  global $websockets_script_started;
  if ($websockets_script_started) {
-  return;
+  return false;
  }
 
  require_once ROOT.'lib/websockets/client/lib/class.websocket_client.php';
@@ -121,7 +131,7 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   //reconnect
   $wsClient = new WebsocketClient;
   if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
-   $wsClient->sendData($payload);
+   $data_sent=@$wsClient->sendData($payload);
   } else {
    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
     DebMes("Failed to reconnect to websocket");
@@ -130,5 +140,6 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   }
  }
 
+ return $data_sent;
 
 }

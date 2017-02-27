@@ -68,7 +68,7 @@ function unsubscribeFromEvent($module_name, $event_name = '')
 function processSubscriptions($event_name, $details = '')
 {
 
-   postToWebSocket($event_name, $details, 'PostEvent');
+   postToWebSocketQueue($event_name, $details, 'PostEvent');
 
    if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)))
    {

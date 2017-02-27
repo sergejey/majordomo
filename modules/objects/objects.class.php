@@ -734,10 +734,10 @@ function usual(&$out) {
 
   saveToCache($cached_name, $value);
 
-  if (function_exists('postToWebSocket')) {
-   startMeasure('setproperty_postwebsocket');
-   postToWebSocket($this->object_title.'.'.$property, $value);
-   endMeasure('setproperty_postwebsocket');
+  if (function_exists('postToWebSocketQueue')) {
+   startMeasure('setproperty_postwebsocketqueue');
+   postToWebSocketQueue($this->object_title.'.'.$property, $value);
+   endMeasure('setproperty_postwebsocketqueue');
   }
 
   /*
@@ -891,6 +891,16 @@ function usual(&$out) {
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
+
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
+               (`PROPERTY`   char(100) NOT NULL,
+                `DATAVALUE` varchar(20000) NOT NULL,
+                `POST_ACTION`   char(100) NOT NULL,
+                `ADDED`    datetime  NOT NULL,
+                PRIMARY KEY (`PROPERTY`)
+               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+
   //echo ("Executing $sqlQuery\n");
 
 /*
