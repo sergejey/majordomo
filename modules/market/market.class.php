@@ -207,21 +207,23 @@ function admin(&$out) {
    }
 
   //if ($rec['MODULE_NAME']==$name) {
-   unset($rec['LATEST_VERSION']);
+   //unset($rec['LATEST_VERSION']);
 
-   if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME']==$name)) {
-    $git_url=str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
-    $github_feed=getURL($git_url, 5*60);
-    @$tmp=GetXMLTree($github_feed);
-    @$items_data=XMLTreeToArray($tmp);
-    @$items=$items_data['feed']['entry'];
-    if (is_array($items)) {
-     $latest_item=$items[0];
-     //print_r($latest_item);exit;
-     $updated=strtotime($latest_item['updated']['textvalue']);
-     $rec['LATEST_VERSION']=date('Y-m-d H:i:s', $updated);
-     $rec['LATEST_VERSION_COMMENT']=$latest_item['title']['textvalue'];
-     $rec['LATEST_VERSION_URL']=$latest_item['link']['href'];
+   if (!isset($rec['LATEST_VERSION_URL'])) {
+    if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME']==$name)) {
+     $git_url=str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
+     $github_feed=getURL($git_url, 5*60);
+     @$tmp=GetXMLTree($github_feed);
+     @$items_data=XMLTreeToArray($tmp);
+     @$items=$items_data['feed']['entry'];
+     if (is_array($items)) {
+      $latest_item=$items[0];
+      //print_r($latest_item);exit;
+      $updated=strtotime($latest_item['updated']['textvalue']);
+      $rec['LATEST_VERSION']=date('Y-m-d H:i:s', $updated);
+      $rec['LATEST_VERSION_COMMENT']=$latest_item['title']['textvalue'];
+      $rec['LATEST_VERSION_URL']=$latest_item['link']['href'];
+     }
     }
    }
 
