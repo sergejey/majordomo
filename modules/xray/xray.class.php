@@ -727,6 +727,7 @@ function admin(&$out) {
      }
      $files[]=array('TITLE'=>$entry);
     }
+    sort($files);
    }
    $out['FILES']=$files;
  }
