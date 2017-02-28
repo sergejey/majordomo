@@ -26,7 +26,7 @@ class Threads
    public function closeThread($id) {
       $pstatus = proc_get_status($this->handles[$id]);
       $pid = $pstatus['pid'];
-      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("sudo kill -9 $pid");
+      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("kill -9 $pid");
       //proc_terminate($this->handles[$id]);
       /*
       fclose($this->pipes[$id][0]);

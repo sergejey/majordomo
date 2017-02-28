@@ -169,6 +169,9 @@ function admin(&$out) {
  }
 
  $result=getURL($data_url, 120);
+ if (!$result) {
+  $result=getURL($data_url, 0);
+ }
  $data=json_decode($result);
  if (!$data->PLUGINS) {
   $out['ERR']=1;
@@ -240,8 +243,9 @@ function admin(&$out) {
   if (in_array($rec['MODULE_NAME'], $names)) {
    $this->selected_plugins[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
-  if ($rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'])
+  if ($rec['EXISTS'] && $rec['INSTALLED_VERSION']!=$rec['LATEST_VERSION']) {
       $cat[$cat_id]['NEW_VERSION'] = 1;
+  }
   $cat[$cat_id]['PLUGINS'][]=$rec;
  }
  $out['CATEGORY'] = $cat;
