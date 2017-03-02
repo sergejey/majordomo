@@ -21,6 +21,9 @@ if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
 SQLExec("TRUNCATE TABLE cached_ws");
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
+$latest_sent=time();
+clearTimeout('restartWebSocket');
+
 while (1)
 {
    if (time() - $checked_time > 0)
@@ -38,9 +41,11 @@ while (1)
         }
        }
        if ($sent_ok) {
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        $latest_sent=time();
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
+        setTimeout('restartWebSocket','registerError("websockets","Error posting to websocket daemon.");sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60);
        } else {
-        echo date("H:i:s") . ' Error while posting to websocket.';
+        echo date("H:i:s") . ' Error while posting to websocket.'."\n";
        }
       }
 
