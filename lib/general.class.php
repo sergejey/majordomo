@@ -175,7 +175,7 @@ function LoadFile($filename)
    $data  = '';
    if(!file_exists($filename))
    {
-     $data = 'File not found: '.$filename;
+     $data = 'LoadFile: File not found - '.$filename;
      return $data;
    }
    $f     = fopen($filename, "r");
@@ -201,6 +201,11 @@ function LoadFile($filename)
 function SaveFile($filename, $data)
 {
    // saving file
+   if(!file_exists($filename))
+   {
+     DebMes("SaveFile: File not found - ".$filename);
+     return 0;
+   }
    $f = fopen("$filename", "w+");
 
    if ($f)
