@@ -6,35 +6,15 @@
  * @param mixed $replyto   Original request
  * @return void
  */
- function sayReply($ph, $level = 0, $replyto='') {
-  $source='';
-  if ($replyto) {
-   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%".DBSafe($replyto)."%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-   $orig_msg=SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%".DBSafe($replyto)."%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
-   if ($orig_msg['ID']) {
-    $source=$orig_msg['SOURCE'];
-   }
-  } else {
-   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST_TIME>=(NOW() - INTERVAL 5 SECOND) ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-  }
-  if (!$terminal_rec) {
-   say($ph, $level);
-  } else {
-   $source='terminal'.$terminal_rec['ID'];
-   $said_status=sayTo($ph, $level, $terminal_rec['NAME']);
-   if (!$said_status) {
-    say($ph, $level);
-   } else {
-    $rec = array();
-    $rec['MESSAGE']   = $ph;
-    $rec['ADDED']     = date('Y-m-d H:i:s');
-    $rec['ROOM_ID']   = 0;
-    $rec['MEMBER_ID'] = 0;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
-   }
-  }
-  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
+ function sayReply($ph, $level = 0, $replyto='') 
+ {
+    //$replyto - не удаляем, чтобы пользователям не пришлось переписывать свой код
+    
+    global $session;
+    sayTo($ph, $level, $session->data['TERMINAL']);
+    
+    //processSubscriptions не работает, так как отсутсвует значение HOOK_EVENT_SAYREPLY в таблице setting
+    processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
  }
 
 /**
