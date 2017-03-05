@@ -10,6 +10,16 @@
  {
     //$replyto - не удаляем, чтобы пользователям не пришлось переписывать свой код
     
+    //Делаем запись в чат
+    $rec = array();
+    $rec['MESSAGE']   = $ph;
+    $rec['ADDED']     = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']   = 0;
+    $rec['MEMBER_ID'] = 0;
+    if ($level > 0) 
+      $rec['IMPORTANCE'] = $level;
+    $rec['ID'] = SQLInsert('shouts', $rec);
+    
     global $session;
     sayTo($ph, $level, $session->data['TERMINAL']);
     
