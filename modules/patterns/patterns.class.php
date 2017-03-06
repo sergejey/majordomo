@@ -247,17 +247,20 @@ function usual(&$out) {
   } else {
 
    $patterns=SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='".(int)$current_context."' AND PATTERN_TYPE=0 ORDER BY PRIORITY DESC, TITLE");
-   $total=count($patterns);
-   $res=0;
-   for($i=0;$i<$total;$i++) {
-    $matched=$this->checkPattern($patterns[$i]['ID'], $from_user_id);
-    if ($matched) {
-     $res=1;
-     if ($patterns[$i]['IS_LAST']) {
-      break;
-     }
+   
+    $res=0;
+    foreach($patterns as $key => $data)
+    {
+      $matched=$this->checkPattern($data, $from_user_id);
+      if($matched)
+      {
+        $res=1;
+        if ($data['IS_LAST']) 
+        {
+          break;
+        }
+      }
     }
-   }
 
   }
 
@@ -268,7 +271,7 @@ function usual(&$out) {
    $total=count($patterns);
    $res=0;
    for($i=0;$i<$total;$i++) {
-    $res=$this->checkPattern($patterns[$i]['ID'], $from_user_id);
+    $res=$this->checkPattern($patterns[$i], $from_user_id);
    }
    if (!$res && $from_user_id) {
     $res=$this->checkExtPatterns(0);
@@ -516,7 +519,7 @@ function usual(&$out) {
    $total=count($patterns);
    if ($total) {
       for($i=0;$i<$total;$i++) {
-         $this->checkPattern($patterns[$i]['ID']);
+         $this->checkPattern($patterns[$i]);
       }
    }
  }
@@ -560,7 +563,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
 *
 * @access public
 */
- function checkPattern($id, $from_user_id=0) {
+ function checkPattern($rec, $from_user_id=0) {
   global $session;
   global $pattern_matched;
 
@@ -568,9 +571,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
   $this_pattern_matched=0;
   $condition_matched=0;
 
-  if (!checkAccess('pattern', $id)) return 0;
-
-  $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
+  if (!checkAccess('pattern', $rec['ID'])) return 0;
 
   if ($rec['PATTERN_TYPE']==1) {
    //conditional pattern
@@ -756,7 +757,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
       $sub_patterns=SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
       $total=count($sub_patterns);
       for($i=0;$i<$total;$i++) {
-       if ($this->checkPattern($sub_patterns[$i]['ID'], $from_user_id)) {
+       if ($this->checkPattern($sub_patterns[$i], $from_user_id)) {
         $sub_patterns_matched=1;
         if ($sub_patterns[$i]['IS_LAST']) {
          break;
