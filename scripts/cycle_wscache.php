@@ -43,7 +43,7 @@ while (1)
        if ($sent_ok) {
         $latest_sent=time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
-        setTimeout('restartWebSocket','registerError("websockets","Error posting to websocket daemon.");sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60);
+        setTimeout('restartWebSocket','sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60); //registerError("websockets","Error posting to websocket daemon.");
        } else {
         echo date("H:i:s") . ' Error while posting to websocket.'."\n";
        }

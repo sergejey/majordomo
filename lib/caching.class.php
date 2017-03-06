@@ -72,6 +72,9 @@ function checkFromCache($key)
 
 
 function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
+    if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
+        return false;
+    }
   SQLExec("DELETE FROM cached_ws WHERE PROPERTY='".DBSafe($property)."'");
   $rec=array();
   $rec['PROPERTY']=$property;
