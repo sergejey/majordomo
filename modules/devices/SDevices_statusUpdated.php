@@ -11,3 +11,7 @@
  $ot=$this->object_title;
 
  setTimeout($ot.'_alive_timer', 'setGlobal("'.$ot.'.alive", 0);', $alive_timeout);
+
+include_once(DIR_MODULES.'devices/devices.class.php');
+$dv=new devices();
+$dv->checkLinkedDevicesAction($this->object_title, $value);

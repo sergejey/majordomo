@@ -124,7 +124,7 @@ $this->device_types=array(
 	'sensor_power'=>array(
         'TITLE'=>LANG_DEVICES_POWER_SENSOR,
         'PARENT_CLASS'=>'SSensors',
-        'CLASS'=>'SPowукSensors'
+        'CLASS'=>'SPowerSensors' //fix
     ),
 	'sensor_voltage'=>array(
         'TITLE'=>LANG_DEVICES_VOLTAGE_SENSOR,

@@ -228,7 +228,6 @@
            objectClassChanged($object_rec['ID']);
        }
 
-
        if ($location_title) {
            setGlobal($object_rec['TITLE'].'.linkedRoom',$location_title);
        }
@@ -245,6 +244,8 @@
     if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
     }
+
+    $this->homebridgeSync();
 
     if ($added) {
       $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=interface");

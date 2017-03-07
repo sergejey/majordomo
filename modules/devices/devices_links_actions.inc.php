@@ -1,5 +1,45 @@
 <?php
 
+DebMes("Checking linked actions for device ".$device1['ID']);
+
+if ($this->isHomeBridgeAvailable()) {
+    // send updated status to HomeKit
+    $payload=array();
+    $payload['name']=$device1['LINKED_OBJECT'];
+    $payload['service_name']=$device1['TITLE'];
+
+    if ($device1['TYPE']=='relay') {
+        $payload['service']='Switch';
+        $payload['characteristic'] = 'On';
+        if (gg($device1['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;
+        } else {
+            $payload['value']=false;
+        }
+    } elseif ($device1['TYPE']=='sensor_temp') {
+        $payload['service']='TemperatureSensor';
+        $payload['characteristic'] = 'CurrentTemperature';
+        $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+    } elseif ($device1['TYPE']=='sensor_humidity') {
+        $payload['service']='HumiditySensor';
+        $payload['characteristic'] = 'CurrentRelativeHumidity';
+        $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+    } elseif ($device1['TYPE']=='motion') {
+        $payload['service']='MotionSensor';
+        $payload['characteristic'] = 'MotionDetected';
+        if (gg($device1['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;
+        } else {
+            $payload['value']=false;
+        }
+    }
+    if (isset($payload['value'])) {
+        DebMes('HB sending to_set: '.json_encode($payload));
+        sg('HomeBridge.to_set',json_encode($payload));
+    }
+
+}
+
 $links=SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE DEVICE1_ID=".(int)$device1['ID']);
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
@@ -49,7 +89,6 @@ for ($i = 0; $i < $total; $i++) {
         } catch (Exception $e) {
             registerError('linked_device', sprintf('Error in script "%s": '.$e->getMessage(), $link_type));
         }
-
     }
 
 }

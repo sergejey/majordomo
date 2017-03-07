@@ -328,6 +328,13 @@ function renderStructure() {
   }
 }
 
+
+function homebridgeSync($device_id=0) {
+    if ($this->isHomeBridgeAvailable()) {
+        include_once(DIR_MODULES.'devices/homebridgeSync.inc.php');
+    }
+}
+
 /**
 * BackEnd
 *
@@ -340,8 +347,17 @@ function admin(&$out) {
   $out['SET_DATASOURCE']=1;
  }
  if ($this->data_source=='devices' || $this->data_source=='') {
+     
+  if ($this->mode=='homebridgesync') {
+      $this->homebridgeSync();
+      $this->redirect("?");
+  }   
+     
   if ($this->view_mode=='' || $this->view_mode=='search_devices') {
    $this->search_devices($out);
+      if ($this->isHomeBridgeAvailable()) {
+          $out['ENABLE_HOMEBRIDGE']=1;
+      }
   }
   if ($this->view_mode=='edit_devices') {
    $this->edit_devices($out, $this->id);
@@ -358,6 +374,17 @@ function admin(&$out) {
   }
  }
 }
+
+function isHomeBridgeAvailable() {
+    //return true; // temporary
+    $tmp=SQLSelectOne("SELECT ID FROM objects WHERE TITLE='HomeBridge'");
+    if ($tmp['ID']) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /**
 * FrontEnd
 *
@@ -367,10 +394,8 @@ function admin(&$out) {
 */
 function usual(&$out) {
     if ($this->ajax) {
-
         header("HTTP/1.0: 200 OK\n");
         header('Content-Type: text/html; charset=utf-8');
-
         global $op;
         global $id;
         $res=array();
@@ -428,6 +453,7 @@ function usual(&$out) {
      }
   SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='".$rec['ID']."' OR DEVICE2_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM devices WHERE ID='".$rec['ID']."'");
+     $this->homebridgeSync();
  }
     
  function addDevice($device_type, $options=0) {
