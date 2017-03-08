@@ -515,7 +515,7 @@ function usual(&$out) {
  }
 
  function propertySetHandle($object, $property, $value) {
-   $patterns=SQLSelect("SELECT ID FROM patterns WHERE PATTERN_TYPE=1 AND LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $patterns=SQLSelect("SELECT * FROM patterns WHERE PATTERN_TYPE=1 AND LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
    $total=count($patterns);
    if ($total) {
       for($i=0;$i<$total;$i++) {
@@ -754,7 +754,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
      $sub_patterns_matched=0;
 
      if ($rec['IS_CONTEXT']) {
-      $sub_patterns=SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
+      $sub_patterns=SQLSelect("SELECT * FROM patterns WHERE PARENT_ID='".$rec['ID']."' ORDER BY PRIORITY DESC, TITLE");
       $total=count($sub_patterns);
       for($i=0;$i<$total;$i++) {
        if ($this->checkPattern($sub_patterns[$i], $from_user_id)) {
