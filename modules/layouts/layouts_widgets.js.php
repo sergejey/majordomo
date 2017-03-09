@@ -29,7 +29,7 @@ include_once("./load_settings.php");
             }
         });
 
-        var clockDayNames= ["Sunday",
+        var clockDayNames= ["<?php echo LANG_WEEK_SUN;?>",
             "<?php echo LANG_WEEK_MON;?>",
             "<?php echo LANG_WEEK_TUE;?>",
             "<?php echo LANG_WEEK_WED;?>",
@@ -94,22 +94,22 @@ include_once("./load_settings.php");
 
 
 freeboard.loadWidgetPlugin({
-		// Same stuff here as with datasource plugin.
-		"type_name"   : "application_plugin",
-		"display_name": "Application",
+                // Same stuff here as with datasource plugin.
+                "type_name"   : "application_plugin",
+                "display_name": "Application",
         "description" : "MajorDoMo application",
-		"fill_size" : true,
-		"settings"    : [
-			{
-				"name"        : "app",
-				"display_name": "Application",
-				"type"        : "option",
-				<?php
+                "fill_size" : true,
+                "settings"    : [
+                        {
+                                "name"        : "app",
+                                "display_name": "Application",
+                                "type"        : "option",
+                                <?php
 
-				$files=scandir(DIR_MODULES,0);
-				$total = count($files);
-				$apps=array();
-				for ($i = 0; $i < $total; $i++) {
+                                $files=scandir(DIR_MODULES,0);
+                                $total = count($files);
+                                $apps=array();
+                                for ($i = 0; $i < $total; $i++) {
                     if ($files[$i]=='.' || $files[$i]=='..' || !is_dir(DIR_MODULES.$files[$i])) continue;
                     if (file_exists(DIR_MODULES.$files[$i].'/app')) {
                         //echo $files[$i]."!<br/>";
@@ -119,15 +119,15 @@ freeboard.loadWidgetPlugin({
                     }
                 }
 
-				$project_modules=SQLSelect("SELECT * FROM project_modules");
-				$modules=array();
-				foreach($project_modules as $k=>$v) {
+                                $project_modules=SQLSelect("SELECT * FROM project_modules");
+                                $modules=array();
+                                foreach($project_modules as $k=>$v) {
                     $modules[$v['NAME']]=$v;
                 }
 
-				$res=array();
-				$total = count($apps);
-				for ($i = 0; $i < $total; $i++) {
+                                $res=array();
+                                $total = count($apps);
+                                for ($i = 0; $i < $total; $i++) {
                     $rec=array();
                     $rec['NAME']=$apps[$i];
                     if (isset($modules[$rec['NAME']])) {
@@ -143,7 +143,7 @@ freeboard.loadWidgetPlugin({
                     $res[]=$rec;
                 }
 
-				?>
+                                ?>
 "options"     : [
 <?php
 foreach($res as $k=>$v) {

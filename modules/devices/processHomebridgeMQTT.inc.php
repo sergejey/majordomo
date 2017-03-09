@@ -86,6 +86,20 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
             }
         }
     }
+    if ($device['TYPE']=='button') {
+        if ($data['characteristic']=='ProgrammableSwitchEvent' || $data['characteristic']=='On') {
+            cm($device['LINKED_OBJECT'].'.pressed');
+            if ($data['characteristic'] == 'On') {
+                $payload=array();
+                $payload['name']=$device['LINKED_OBJECT'];
+                $payload['service_name']=$device['TITLE'];
+                //$payload['service'] = 'Switch';
+                $payload['characteristic'] = 'On';
+                $payload['value'] = false;
+                sg('HomeBridge.to_set',json_encode($payload));
+            }
+        }
+    }
 }
 
 /*

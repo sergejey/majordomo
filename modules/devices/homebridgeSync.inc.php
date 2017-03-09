@@ -1,5 +1,5 @@
 <?php
-//$device_id;
+// thanks to https://github.com/cflurin/homebridge-mqtt
 
 $qry="1";
 
@@ -84,6 +84,19 @@ for ($i = 0; $i < $total; $i++) {
         $payload['service_name']=$devices[$i]['TITLE'];
         $payload['service']='MotionSensor';
         sg('HomeBridge.to_add',json_encode($payload));
+
+    } elseif ($devices[$i]['TYPE']=='button') {
+
+        $payload=array();
+        $payload['name']=$devices[$i]['LINKED_OBJECT'];
+        sg('HomeBridge.to_remove',json_encode($payload));
+
+        $payload=array();
+        $payload['name']=$devices[$i]['LINKED_OBJECT'];
+        $payload['service_name']=$devices[$i]['TITLE'];
+        $payload['service']='Switch';
+        sg('HomeBridge.to_add',json_encode($payload));
+
     }
 }
 
