@@ -12,7 +12,7 @@
  $linked_room=$this->getProperty('linkedRoom');
 
  if (getGlobal('NobodyHomeMode.active')) {
-  callMethod('NobodyHomeMode.deactivate');
+  callMethod('NobodyHomeMode.deactivate', array('sensor'=>$ot));
  }
  ClearTimeOut("nobodyHome"); 
  SetTimeOut("nobodyHome","callMethod('NobodyHomeMode.activate');", 1*60*60);

@@ -790,7 +790,7 @@ function keepLatestLimitedBySize($path, $max_size, $removeEmptyFolders = true) {
    if ($total>0) {
       if (!function_exists('sort_files_by_date')) {
          function sort_files_by_date($a,$b) {
-            if ($a['TM'] == ['TM']) {
+            if ($a['TM'] == $b['TM']) {
                return 0;
             }
             return ($a['TM'] > $b['TM']) ? -1 : 1;

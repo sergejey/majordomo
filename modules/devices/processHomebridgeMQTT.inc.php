@@ -80,15 +80,15 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
     if ($device['TYPE']=='relay') {
         if ($data['characteristic']=='On') {
             if ($data['value']) {
-                sg($device['LINKED_OBJECT'].'.status',1);
+                callMethod($device['LINKED_OBJECT'].'.turnOn');
             } else {
-                sg($device['LINKED_OBJECT'].'.status',0);
+                callMethod($device['LINKED_OBJECT'].'.turnOff');
             }
         }
     }
     if ($device['TYPE']=='button') {
         if ($data['characteristic']=='ProgrammableSwitchEvent' || $data['characteristic']=='On') {
-            cm($device['LINKED_OBJECT'].'.pressed');
+            callMethod($device['LINKED_OBJECT'].'.pressed');
             if ($data['characteristic'] == 'On') {
                 $payload=array();
                 $payload['name']=$device['LINKED_OBJECT'];
