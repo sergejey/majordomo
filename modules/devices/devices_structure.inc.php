@@ -59,6 +59,9 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_MOTION,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SMotions',
+        'PROPERTIES'=>array(
+            'ignoreModeChange'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE_MODE_CHANGE,'_CONFIG_TYPE'=>'yesno'),
+        ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
         )

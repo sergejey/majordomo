@@ -488,11 +488,7 @@ function usual(&$out) {
    }
 
    if ($method['SCRIPT_ID']) {
-   /*
-    $script=SQLSelectOne("SELECT * FROM scripts WHERE ID='".$method['SCRIPT_ID']."'");
-    $code=$script['CODE'];
-   */
-    runScript($method['SCRIPT_ID']);
+    runScript($method['SCRIPT_ID'],$params);
    } else {
     $code=$method['CODE'];
    }
@@ -679,11 +675,16 @@ function usual(&$out) {
     }
    }
    if ($save) {
+    if ($this->location_id) {
+     $location=current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=".(int)$this->location_id));
+    } else {
+     $location='';
+    }
     $today_file=ROOT.'debmes/'.date('Y-m-d').'.data';
     $f=fopen($today_file, "a+");
     if ($f) {
                 fputs($f, date("Y-m-d H:i:s"));
-                fputs($f, "\t".$this->object_title.'.'.$property."\t".trim($value)."\t".$source."\n");
+                fputs($f, "\t".$this->object_title.'.'.$property."\t".trim($value)."\t".trim($source)."\t".trim($location)."\n");
                 fclose($f);
                 @chmod($today_file, 0666);
     }   

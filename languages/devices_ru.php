@@ -18,7 +18,7 @@ $dictionary=array(
 'DEVICES_STATE_SENSOR'=>'Датчик состояния',
 'DEVICES_PERCENTAGE_SENSOR'=>'Датчик процентное значение',
 'DEVICES_PRESSURE_SENSOR'=>'Датчик атмосферного давления',
-'DEVICES_POWER_SENSOR'=>'Датчик мощьности',
+'DEVICES_POWER_SENSOR'=>'Датчик мощности',
 'DEVICES_VOLTAGE_SENSOR'=>'Датчик напряжения',
 'DEVICES_CURRENT_SENSOR'=>'Датчик тока',
 
@@ -50,6 +50,7 @@ $dictionary=array(
 'DEVICES_IS_CLOSED'=>'Закрыто',
 
 'DEVICES_MOTION_DETECTED'=>'Обнаружено',
+'DEVICES_MOTION_IGNORE_MODE_CHANGE'=>'Игнорировать движения в режиме "Никого нет"',
 
 'DEVICES_PRESS'=>'Нажать',
 'DEVICES_TURN_ON'=>'Включить',

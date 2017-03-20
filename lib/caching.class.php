@@ -75,13 +75,40 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
         return false;
     }
-  SQLExec("DELETE FROM cached_ws WHERE PROPERTY='".DBSafe($property)."'");
+
+    global $db;
+
+  $qry= "DELETE FROM cached_ws WHERE PROPERTY='".DBSafe($property)."'";
+  $result = mysqli_query($db->dbh, $qry);
+
   $rec=array();
   $rec['PROPERTY']=$property;
   $rec['DATAVALUE']=$value;
   $rec['POST_ACTION']=$post_action;
   $rec['ADDED']=date('Y-m-d H:i:s');
-  SQLInsert('cached_ws', $rec);
+
+  //SQLInsert('cached_ws', $rec);
+
+      $fields = "";
+      $values = "";
+      
+      foreach ($rec as $field => $value)
+      {
+         if (is_Numeric($field)) continue;
+         $fields .= "`$field`, ";
+         $values .= "'" . $db->DBSafe1($value) . "', ";
+      }
+      $fields = substr($fields, 0, strlen($fields) - 2);
+      $values = substr($values, 0, strlen($values) - 2);
+      
+  $qry = "INSERT INTO `cached_ws`($fields) VALUES($values)";
+  $result = mysqli_query($db->dbh, $qry);
+  if (!$result) {
+      $err_no = mysqli_errno($db->dbh);
+      $err_details = mysqli_error($db->dbh);
+      registerError('sql', $err_no . ": " . $err_details . "\n".$qry);
+  }
+
 }
 
 function postToWebSocket($property, $value, $post_action='PostProperty') {

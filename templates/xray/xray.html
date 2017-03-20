@@ -79,6 +79,7 @@
          $.ajax({
           url: url,
           }).done(function(data) { 
+          //var currentContent=$('#xrayContent').html();
           $('#xrayContent').html(data);
           checkTimer=setTimeout('checkAllStates()', 5000);
          });

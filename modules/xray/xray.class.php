@@ -435,7 +435,8 @@ function admin(&$out) {
      $filename=ROOT.'debmes/'.$file;
      $data=LoadFile($filename);
      $lines=explode("\n", $data);
-     $lines=array_reverse($lines);
+     //$lines=array_reverse($lines);
+     $lines=array_slice($lines, -1*($limit), $limit);
      $res_lines=array();
      $total=count($lines);
      $added=0;
@@ -449,14 +450,32 @@ function admin(&$out) {
        $res_lines[]=htmlspecialchars($lines[$i]);
        $added++;
       } elseif (!$filter) {
-       $res_lines[]=htmlspecialchars($lines[$i]);
-       $added++;
+       if (!preg_match('/^\d+:\d+:\d+/is',$lines[$i]) && $added>0) {
+        $res_lines[$added-1].="\n".htmlspecialchars($lines[$i]);
+       } else {
+        $line=htmlspecialchars($lines[$i]);
+        if (preg_match('/^(\d+:\d+:\d+ [\d\.]+)/',$line)) {
+         $line=preg_replace('/^(\d+:\d+:\d+ [\d\.]+)/is','<b>\1</b>',$line);
+        } elseif (preg_match('/^(\d+:\d+:\d+)/',$line)) {
+         $line=preg_replace('/^(\d+:\d+:\d+)/is','<b>\1</b>',$line);
+        }
+        $res_lines[]=$line;
+        $added++;
+       }
       }
-
       if ($added>=$limit) {
        break;
       }
      }
+
+     $total = count($res_lines);
+     for ($i = 0; $i < $total; $i++) {
+      $line=$res_lines[$i];
+      $line=str_replace('Warning:','<font color="#b8860b">Warning:</font>',$line);
+      $res_lines[$i]=nl2br($line);
+     }
+
+     $res_lines=array_reverse($res_lines);
 
      echo implode("<br/>", $res_lines);
 

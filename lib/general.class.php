@@ -518,11 +518,15 @@ function DebMes($errorMessage, $logLevel = "debug")
       mkdir(ROOT . 'debmes', 0777);
    }
 
-   if (is_array($errorMessage)) {
-      $errorMessage='Array: '.serialize($errorMessage);
+   if (is_array($errorMessage) || is_object($errorMessage)) {
+      $errorMessage=json_encode($errorMessage, JSON_PRETTY_PRINT);
    }
 
-   $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
+   if ($logLevel!='debug') {
+      $today_file=ROOT.'debmes/'.date('Y-m-d').'_'.$logLevel.'.log';
+   } else {
+      $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
+   }
    $f=fopen($today_file, "a+");
    if ($f) {
                 $tmp=explode(' ', microtime());
