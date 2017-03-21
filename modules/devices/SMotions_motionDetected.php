@@ -5,12 +5,6 @@
   return;
  }
 
- $nobodyhome=getGlobal('NobodyHomeMode.active');
-
- if ($nobodyhome && $this->getProperty('ignoreModeChange')) {
-  return;
- }
-
  $this->setProperty('status', 1);
 
  $motion_timeout=20; // seconds timeout
@@ -21,7 +15,7 @@
 
  $linked_room=$this->getProperty('linkedRoom');
 
- if ($nobodyhome) {
+ if (getGlobal('NobodyHomeMode.active')) {
   callMethod('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));
  }
  ClearTimeOut("nobodyHome"); 

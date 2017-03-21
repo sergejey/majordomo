@@ -428,7 +428,7 @@ function admin(&$out) {
      }
 
      global $file;
-     if (!$file) {
+     if (!$file || $file=='xray') {
       $file=date('Y-m-d').'.log';
      }
 

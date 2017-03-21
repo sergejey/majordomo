@@ -24,6 +24,8 @@ $dictionary=array(
 'FRONTEND'=>'Веб-сайт',
 'MY_ACCOUNT'=>'Мой аккаунт',
 'LOGOFF'=>'Выйти',
+'CONSOLE'=>'Консоль',
+'CONSOLE_RETRY'=>'Повтор',
 'MODULE_DESCRIPTION'=>'Описание модуля',
 
 'GENERAL_SENSORS'=>'Сенсоры',

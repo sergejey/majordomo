@@ -652,6 +652,14 @@ class module
       $session->save();
       $db->Disconnect();
 
+      if ($_GET['part_load']) {
+       $res=array();
+       $res['CONTENT']='';
+       $res['NEED_RELOAD']=1;
+       echo json_encode($res);
+       exit;
+      }
+
       if (!headers_sent())
       {
          header("Location: $url\n\n");

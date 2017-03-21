@@ -7,29 +7,26 @@
         <meta name="keywords" content="">
         <meta name="description" content="">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
 
+        <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
         <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
 
+        <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 
-        <script language="javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
-
-        <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
-        <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
-        <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
-
-        <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
-        <script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
-        <script language="javascript" src="<#ROOTHTML#>js/admin.js"></script>
-
+    <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+    <script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
+    <script language="javascript" src="<#ROOTHTML#>js/admin.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
+    <script type="text/javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 
         [#inc scripts.js#]
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -233,11 +230,11 @@ jQuery.fn.center = function () {
         <a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a>
       </li>
       <li>
-        <a href="#" onClick='$("#console").toggle();return false;'><i class="glyphicon glyphicon-flash"></i> Console</a>
+        <a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a>
       </li>
         [#if APP_TDWIKI_INSTALLED="1"#]
         <li>
-            <a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-globe"></i> Wiki</a>
+            <a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a>
         </li>
         [#endif#]
       <li>
@@ -252,36 +249,129 @@ jQuery.fn.center = function () {
 </div>
 <br><br><br>
 <!--# .top  #-->
+
+    <script language="javascript">
+        var cmd='';
+
+        var hrefLocation=window.location.href;
+        hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+
+        var consoleDebugTimer;
+
+        function updateConsoleDebug() {
+            //$('#console_debug').html('mmm');
+            var url="<#ROOTHTML#>ajax/xray.html?op=getcontent&limit=10";
+            $.ajax({
+                url: url,
+            }).done(function(data) {
+                $('#console_debug').html(data);
+            });
+            consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
+        }
+
+        function consoleToggle() {
+            $("#console").toggle();
+            if ($('#console').is(":visible")) {
+                updateConsoleDebug();
+            } else {
+                clearTimeout(consoleDebugTimer);
+            }
+            return false;
+        }
+
+        var locationTimer;
+        function checkLocationHref() {
+            clearTimeout(locationTimer);
+            /*
+             var currentHref;
+             currentHref = window.location.href;
+             currentHref = currentHref.replace(/^.*\/\/[^\/]+/, '');
+             if (currentHref.localeCompare(hrefLocation)!=0) {
+             }
+             locationTimer = setTimeout('checkLocationHref();',1000);
+             */
+        }
+
+        var loaderTimer;
+        function loadInProgress() {
+            $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> Still working... Click <a href="'+urlInProgress+'">here</a> if it takes too long.');
+            return false;
+        }
+
+        var urlInProgress='';
+
+        function partLoad(link) {
+            //partLoadContent
+            var url=link;
+            urlInProgress=link;
+            hrefLocation = link;
+            hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+            clearTimeout(locationTimer);
+            locationTimer = setTimeout('checkLocationHref();',1000);
+
+            url+='&part_load=1';
+
+            loaderTimer=setTimeout(loadInProgress, 1000);
+
+            $.ajax({
+                url: url
+            }).done(function(data) {
+                //console.log('loaded');
+                clearTimeout(loaderTimer);
+                var obj=jQuery.parseJSON(data);
+                if (obj.NEED_RELOAD!=0) {
+                    //alert('need reload');
+                    window.location.href=link;
+                } else {
+                    window.history.pushState('', window.title, link);
+                    $('#partLoadContent').html(obj.CONTENT);
+
+                    $('input[name=filter_modules]').keyup(function() {
+                        filterModules();
+                    });
+
+                }
+            });
+            return false;
+        }
+
+        function sendConsoleCommand() {
+            var cmd=$('#command').val();
+            //$('#command').val('');
+
+            var url="?";
+            url+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+
+            $.ajax({
+                url: url
+            }).done(function(data) {
+                //$('#console_output').html('<pre>Command: <b>'+cmd+'</b> <a href="#" onClick="$(\'#command\').val(\''+cmd+'\');sendConsoleCommand();"><#LANG_CONSOLE_RETRY#></a><br/>Result:<br/>'+data+'</pre>');
+                $('#console_output').html('&nbsp;<br/><pre>'+data+'</pre>');
+            });
+
+
+            return false;
+        }
+    </script>
+
 <div id='console' style='display:none'>
-<script language="javascript">
- var cmd='';
- function sendConsoleCommand() {
-  cmd=$('#command').val();
-  $('#command').val('');
-
- var url="?";
- url+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
-
- $.ajax({
-   url: url
-  }).done(function(data) { 
-   $('#console_output').html('<pre>Command: <b>'+cmd+'</b> <a href="#" onClick="$(\'#command\').val(\''+cmd+'\');sendConsoleCommand();">Retry</a><br/>Result:<br/>'+data+'</pre>');
-  });
-
-
-  return false;
- }
-</script>
+    <div class="row">
+<div class="col-md-5">
 <form class="form-inline" role="form" action="?" method="get" onSubmit="return sendConsoleCommand();">
-  <div class="form-group col-lg-6">
+  <div class="form-group col-md-10">
     <input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
   </div>
- <input type="submit" name="submit" value="Send" class="btn btn-default">
+    <div class="form-group col-md-2">
+ <input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-default">
+        </div>
 </form>
-&nbsp;
 <div id='console_output' style="margin-left:15px">&nbsp;</div>
+    </div>
+        <div class="col-md-7" id="console_debug">...</div>
+        </div>
 </div>
 
+<div id="partLoadContent">
 <ul class="breadcrumb">
    <li>
 <script language="javascript">
@@ -298,9 +388,7 @@ jQuery.fn.center = function () {
  }
 </script>
 
-
 <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png" border="0"></a>
-
     <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>
     </li>
     [#if ACTION!=""#]
@@ -345,7 +433,6 @@ jQuery.fn.center = function () {
   }
   return false;
  }
-
 </script>
 
             <!--[menu]-->
@@ -395,8 +482,6 @@ jQuery.fn.center = function () {
 
 <td height=100% valign=top class="" id="main-content">
 
-
-
             <!--right_main-->
             <table cellpadding="0" cellspacing="12" border="0" width="100%" height="100%">
                 <tr>
@@ -421,12 +506,12 @@ jQuery.fn.center = function () {
         [#module name="control_access" action="enter" instance="auth"#]
 [#endif AUTHORIZED#]
 <br><br>
-</div>
+</div><!--partloadend-->
+
 
 <script language="javascript">
+
  $(document).ready(function() {
-
-
         $(".wiki_hint").fancybox({
                 maxWidth        : 800,
                 maxHeight       : 600,
@@ -450,9 +535,7 @@ jQuery.fn.center = function () {
                 openEffect      : 'none',
                 closeEffect     : 'none'
         });
-
-
-        
+     checkLocationHref();
 });
 </script>
 

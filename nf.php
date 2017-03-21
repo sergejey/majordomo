@@ -100,8 +100,13 @@ if (preg_match('/^moved:(.+)/is', $link, $matches))
    exit;
 }
 
+include_once("./lib/perfmonitor.class.php");
+
+startMeasure('TOTAL');
 include_once("./config.php");
+startMeasure('loader');
 include_once("./lib/loader.php");
+endMeasure('loader');
 
 if ($link != '')
 {

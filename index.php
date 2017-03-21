@@ -9,11 +9,13 @@
  * @version 1.2
  */
 
+include_once("./lib/perfmonitor.class.php");
+startMeasure('TOTAL');
+
 include_once("./config.php");
 include_once("./lib/loader.php");
 
 // start calculation of execution time
-startMeasure('TOTAL');
 
 include_once(DIR_MODULES . "application.class.php");
 
@@ -68,40 +70,6 @@ if ($cached_result == '')
    if ($app->action != '' && $app->action != 'docs')
       $fake_doc = '';
 
-   if ($app->action == '' && $fake_doc != "" && file_exists(DIR_MODULES . 'cms_docs/cms_docs.class.php'))
-   {
-      $sqlQuery = "SELECT ID
-                     FROM cms_docs
-                    WHERE NAME = '" . DBSafe($fake_doc) . "'";
-      
-      $tmp = SQLSelectOne($sqlQuery);
-      
-      if (isset($tmp['ID']))
-      {
-         $app->action = "docs";
-         $app->doc    = $tmp['ID'];
-      }
-      elseif (file_exists(DIR_TEMPLATES . $fake_doc . ".html"))
-      {
-         $app->action = $fake_doc;
-      }
-      else
-      {
-         //$tmp1=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME='404'");
-         $tmp1 = array();
-         if ($tmp1['ID'])
-         {
-            $app->action = "docs";
-            $app->doc    = $tmp1['ID'];
-         }
-         else
-         {
-            header("HTTP/1.0 404 Not Found");
-            echo "The page cannot be found. Please use <a href='/'>this link</a> to continue browsing.";
-            exit;
-         }
-      }
-   }
 
    $result = $app->run();
    $result = str_replace("nf.php", "index.php", $result);
@@ -153,7 +121,7 @@ if ($cache_filename != '' && $cached_result == '')
 $session->save();
 
 // closing database connection
-$db->Disconnect();
+//$db->Disconnect();
 
 if (isset($wsClient) && $wsClient) {
  $wsClient->disconnect();

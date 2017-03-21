@@ -24,6 +24,8 @@ $dictionary=array(
 'FRONTEND'=>'Front End',
 'MY_ACCOUNT'=>'My Account',
 'LOGOFF'=>'Logoff',
+'CONSOLE'=>'Console',
+'CONSOLE_RETRY'=>'Retry',
 'MODULE_DESCRIPTION'=>'Module Description on the Web',
 
 'GENERAL_SENSORS'=>'Sensors',
@@ -73,7 +75,7 @@ $dictionary=array(
 'APP_PLAYER'=>'Player Control',
 'APP_MEDIA_BROWSER'=>'Media Library',
 'APP_PRODUCTS'=>'Products Inventory',
-'APP_TDWIKI'=>'TdWiKi Notepad',
+'APP_TDWIKI'=>'Notepad',
 'APP_WEATHER'=>'Weather Informer',
 'APP_CALENDAR'=>'Calendar',
 'APP_READIT'=>'ReadIt',

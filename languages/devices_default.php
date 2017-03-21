@@ -17,8 +17,8 @@ $dictionary=array(
 'DEVICES_HUM_SENSOR'=>'Humidity sensor',
 'DEVICES_STATE_SENSOR'=>'State sensor',
 'DEVICES_PERCENTAGE_SENSOR'=>'Percentage value sensor',
-'DEVICES_PRESSURE_SENSOR'=>'Atmospheric pressure sensor',
-'DEVICES_POWER_SENSOR'=>'Power sensor',
+'DEVICES_PRESSURE_SENSOR'=>'Atmospheric pressure sesnor',
+'DEVICES_POWER_SENSOR'=>'Watt sensor',
 'DEVICES_VOLTAGE_SENSOR'=>'Voltage sensor',
 'DEVICES_CURRENT_SENSOR'=>'Current sensor',
 
@@ -50,7 +50,6 @@ $dictionary=array(
 'DEVICES_IS_CLOSED'=>'is Closed',
 
 'DEVICES_MOTION_DETECTED'=>'Detected',
-'DEVICES_MOTION_IGNORE_MODE_CHANGE'=>'Ignore motion events when "Nobody home" mode active',
 
 'DEVICES_PRESS'=>'Press',
 'DEVICES_TURN_ON'=>'Turn On',

@@ -488,7 +488,11 @@ function usual(&$out) {
    }
 
    if ($method['SCRIPT_ID']) {
-    runScript($method['SCRIPT_ID'],$params);
+   /*
+    $script=SQLSelectOne("SELECT * FROM scripts WHERE ID='".$method['SCRIPT_ID']."'");
+    $code=$script['CODE'];
+   */
+    runScript($method['SCRIPT_ID']);
    } else {
     $code=$method['CODE'];
    }
@@ -691,7 +695,9 @@ function usual(&$out) {
    }
   }
 
+  startMeasure('getPropertyByName');
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
+  endMeasure('getPropertyByName');
   $old_value='';
 
   $cached_name='MJD:'.$this->object_title.'.'.$property;
@@ -699,7 +705,9 @@ function usual(&$out) {
   startMeasure('setproperty_update');
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
+   startMeasure('setproperty_update_getvalue');
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
+   endMeasure('setproperty_update_getvalue');
    $old_value=$v['VALUE'];
    $v['VALUE']=$value.'';
    $v['SOURCE']=$source.'';
