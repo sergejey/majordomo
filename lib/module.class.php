@@ -656,6 +656,7 @@ class module
        $res=array();
        $res['CONTENT']='';
        $res['NEED_RELOAD']=1;
+       $res['REDIRECT']=$url;
        echo json_encode($res);
        exit;
       }

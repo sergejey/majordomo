@@ -319,6 +319,11 @@ jQuery.fn.center = function () {
                 //console.log('loaded');
                 clearTimeout(loaderTimer);
                 var obj=jQuery.parseJSON(data);
+
+                if ("undefined" !== typeof obj.REDIRECT) {
+                 link = obj.REDIRECT;
+                }
+
                 if (obj.NEED_RELOAD!=0) {
                     //alert('need reload');
                     window.location.href=link;

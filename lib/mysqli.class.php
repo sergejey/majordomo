@@ -351,8 +351,10 @@ class mysql
     */
    public function DbSafe1($str)
    {
+      if (is_array($str)) {
+       $str=json_encode($str);
+      }
       $str = mysqli_real_escape_string($this->dbh, (string)$str);
-      
       return $str;
    }
 
