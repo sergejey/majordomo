@@ -162,26 +162,19 @@
     $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$props[$i]['ID']."' AND OBJECT_ID='".$rec['ID']."'");
     if ($this->mode=='update') {
      global ${"value".$props[$i]['ID']};
-        if (isset(${"value".$props[$i]['ID']}) && (${"value".$props[$i]['ID']}!=$this->getProperty($props[$i]['TITLE']))) {
+        if (isset(${"value".$props[$i]['ID']})) {
             $this->class_id=$rec['CLASS_ID'];
             $this->id=$rec['ID'];
             $this->object_title=$rec['TITLE'];
             $this->setProperty($props[$i]['TITLE'], ${"value".$props[$i]['ID']});
-            //echo "Updating ".$props[$i]['TITLE']."<br/>";
         }
-     /*
-     SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='".$props[$i]['ID']."' AND OBJECT_ID='".$rec['ID']."'");
-     $tmp=array();
-     $tmp['PROPERTY_ID']=$props[$i]['ID'];
-     $tmp['OBJECT_ID']=$rec['ID'];
-     $tmp['VALUE']=${"value".$props[$i]['ID']};
-     $tmp['ID']=SQLInsert('pvalues', $tmp);
-     */
-     $value['VALUE']=${"value".$props[$i]['ID']};
     }
     $props[$i]['VALUE']=$value['VALUE'];
     $props[$i]['SOURCE']=$value['SOURCE'];
     $props[$i]['LINKED_MODULES']=$value['LINKED_MODULES'];
+   }
+   if ($this->mode=='update') {
+    $this->redirect("?view_mode=".$this->view_mode."&id=".$rec['ID']."&tab=".$this->tab);
    }
 
    $out['PROPERTIES']=$props;
