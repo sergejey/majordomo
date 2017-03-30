@@ -92,15 +92,17 @@ endMeasure('part2');
 
 if ($_GET['part_load']) {
    $res=array();
-   //if (preg_match('/<div id="partLoadContent">(.+?)<\/div><!--partloadend-->/uis',$result,$m)) {
+
    $cut_begin='<div id="partLoadContent">';
-   $cut_begin_index=strpos($result, $cut_begin);
+   $cut_begin_index=mb_strpos($result, $cut_begin);
    $cut_end='</div><!--partloadend-->';
-   $cut_end_index=strpos($result, $cut_end);
+   $cut_end_index=mb_strpos($result, $cut_end);
+
    if (is_integer($cut_begin_index) && is_integer($cut_end_index)) {
-      $res['CONTENT']=substr($result,$cut_begin_index+strlen($cut_begin),($cut_end_index-$cut_begin_index));
+      $cut_begin_index+=mb_strlen($cut_begin)+2;
+      $res['CONTENT']=mb_substr($result,$cut_begin_index,($cut_end_index-$cut_begin_index));
       $res['NEED_RELOAD']=0;
-      if (preg_match('/$(document).ready/is',$res['CONTENT'])) {
+      if (is_integer(mb_strpos($res['CONTENT'], '$(document).ready')) || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) { 
          $res['CONTENT']='';
          $res['NEED_RELOAD']=1;
       }
@@ -110,7 +112,13 @@ if ($_GET['part_load']) {
    }
 
       $result=json_encode($res);
-      echo $result;
+      if (is_integer(mb_strpos($result, '"CONTENT":null')) && !$res['NEED_RELOAD']) {
+             $res['CONTENT']='';
+             $res['NEED_RELOAD']=1;
+             $result=json_encode($res);
+      }
+
+      echo $result;exit;
       $session->save();
       $db->Disconnect(); // closing database connection
       exit;
