@@ -736,7 +736,7 @@ function getURL($url, $cache = 0, $username = '', $password = '')
       {
          $ch = curl_init();
          curl_setopt($ch, CURLOPT_URL, $url);
-         curl_setopt($ch, CURLOPT_USERAGENT, 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
