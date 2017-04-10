@@ -241,6 +241,8 @@
            setGlobal($object_rec['TITLE'].'.maxValue',60);
        }
 
+    clearPropertiesCache();
+
     if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
     }
@@ -248,7 +250,7 @@
     $this->homebridgeSync();
 
     if ($added) {
-      $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=interface");
+      $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=settings");
     }
 
 

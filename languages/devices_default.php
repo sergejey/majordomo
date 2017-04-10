@@ -45,9 +45,13 @@ $dictionary=array(
 'DEVICES_NORMAL_VALUE'=>'Value within range',
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Value is out of normal range',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Value is back to normal',
+'DEVICES_MOTION_IGNORE'=>'Ignore device events when nobody\'s home',
+'DEVICES_ALIVE_TIMEOUT'=>'Possible inactivity timeout (hours)',
+'DEVICES_MAIN_SENSOR'=>'Main sensor for the room',
 
 'DEVICES_IS_ON'=>'is ON',
 'DEVICES_IS_CLOSED'=>'is Closed',
+'DEVICES_NOT_UPDATING'=>'is not updating',
 
 'DEVICES_MOTION_DETECTED'=>'Detected',
 

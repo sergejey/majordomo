@@ -4,6 +4,7 @@
  $this->callMethod('logicAction');
 
  $ot=$this->object_title;
+ $linked_room=$this->getProperty('linkedRoom');
 
  $value=(float)$this->getProperty('value');
  $minValue=(float)$this->getProperty('minValue');
@@ -26,6 +27,14 @@
   if ($this->getProperty('notify')) {
    //back to normal notify
    say(LANG_DEVICES_NOTIFY_BACKTONORMAL. ' ('.$ot.': '.$value.')', 2);
+  }
+ }
+
+ if ($linked_room && $this->getProperty('mainSensor')) {
+  if ($this->class_title=='STempSensors') {
+   sg($linked_room.'.temperature',$value);
+  } elseif ($this->class_title=='SHumSensors') {
+   sg($linked_room.'.humidity',$value);
   }
  }
 

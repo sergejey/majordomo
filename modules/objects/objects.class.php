@@ -297,6 +297,10 @@ function usual(&$out) {
    $this->id=$rec['ID'];
    $this->object_title=$rec['TITLE'];
    $this->class_id=$rec['CLASS_ID'];
+   if ($this->class_id) {
+    $class_rec=SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=".$this->class_id);
+    $this->class_title=$class_rec['TITLE'];
+   }
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
    //$this->keep_history=$rec['KEEP_HISTORY'];
@@ -618,6 +622,8 @@ function usual(&$out) {
     return $this->description;
    } elseif ($property=='object_id') {
     return $this->id;
+   } elseif ($property=='class_title') {
+    return $this->class_title;
    }
   }
 

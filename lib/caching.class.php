@@ -70,6 +70,10 @@ function checkFromCache($key)
    }
 }
 
+function clearPropertiesCache() {
+    SQLExec("TRUNCATE cached_values;");
+}
+
 
 function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {

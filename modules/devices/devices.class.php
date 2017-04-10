@@ -290,7 +290,7 @@ function renderStructure() {
       //METHODS
       if (is_array($v['METHODS'])) {
           foreach($v['METHODS'] as $mk=>$mv) {
-              $method_id=addClassMethod($v['CLASS'],$mk,"require(DIR_MODULES.'devices/".$v['CLASS']."_".$mk.".php');");
+              $method_id=addClassMethod($v['CLASS'],$mk,"require(DIR_MODULES.'devices/".$v['CLASS']."_".$mk.".php');",'SDevices');
               if (!file_exists(DIR_MODULES."devices/".$v['CLASS']."_".$mk.".php")) {
                $code='<?php'."\n\n";
                @SaveFile(DIR_MODULES."devices/".$v['CLASS']."_".$mk.".php", $code);

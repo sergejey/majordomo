@@ -45,6 +45,10 @@ $dictionary=array(
 'DEVICES_NORMAL_VALUE'=>'Значение в нормальных пределах',
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Значение датчика вышло за порог',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Значение датчика вернулось к норме',
+'DEVICES_MOTION_IGNORE'=>'Игнорировать события от устройства, когда никого нет дома',
+'DEVICES_ALIVE_TIMEOUT'=>'Допустимое время отсутствия данных (часов)',
+'DEVICES_MAIN_SENSOR'=>'Основной сенсор помещения',
+'DEVICES_NOT_UPDATING'=>'не обновляется',
 
 'DEVICES_IS_ON'=>'Включено',
 'DEVICES_IS_CLOSED'=>'Закрыто',

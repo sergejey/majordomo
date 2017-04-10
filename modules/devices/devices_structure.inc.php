@@ -1,12 +1,25 @@
 <?php
 
 $this->device_types=array(
+    'rooms'=>array(
+        'CLASS'=>'Rooms',
+        'DESCRIPTION'=>'Rooms/Locations',
+        'PROPERTIES'=>array(
+            'temperature'=>array('DESCRIPTION'=>'Temperature','KEEP_HISTORY'=>365),
+            'humidity'=>array('DESCRIPTION'=>'Humidity','KEEP_HISTORY'=>365),
+            'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
+        ),
+        'METHODS'=>array(
+            'onActivity'=>array('DESCRIPTION'=>'Rooms activity')
+        )
+    ),
     'general'=>array(
         'CLASS'=>'SDevices',
         'DESCRIPTION'=>'General Devices Class',
         'PROPERTIES'=>array(
             'status'=>array('DESCRIPTION'=>LANG_DEVICES_STATUS, 'KEEP_HISTORY'=>365, 'ONCHANGE'=>'statusUpdated', 'DATA_KEY'=>1),
             'alive'=>array('DESCRIPTION'=>'Alive','KEEP_HISTORY'=>365),
+            'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num'),
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
             'updatedText'=>array('DESCRIPTION'=>'Updated Time (text)'),
@@ -21,6 +34,7 @@ $this->device_types=array(
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
                 'NightMode.activate'=>'nightmode_activate',
                 'NightMode.deactivate'=>'nightmode_deactivate',
+                'System.checkstate'=>'system_checkstate',
             ),
         )
     ),
@@ -59,6 +73,9 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_MOTION,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SMotions',
+        'PROPERTIES'=>array(
+            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno')
+        ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
         )
@@ -90,6 +107,7 @@ $this->device_types=array(
             'minValue'=>array('DESCRIPTION'=>LANG_DEVICES_MIN_VALUE,'_CONFIG_TYPE'=>'num'),
             'maxValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE,'_CONFIG_TYPE'=>'num'),
             'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno'),
+            'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno'),
             'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>365),
         ),
         'METHODS'=>array(
