@@ -185,7 +185,7 @@ if ($total>0) {
                         echo "<br/>";
                 }
                 if (!$_GET['full']) {
-                        echo ' <br/><a href="'.$_SERVER['REQUEST_URI'].'&full=1">Load all values</a> ';
+                        echo ' <br/><a href="'.$_SERVER['REQUEST_URI'].'&type=&full=1">Load all values</a> ';
                 }
                 exit;
         }
