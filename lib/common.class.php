@@ -229,7 +229,7 @@ function timeNow($tm = 0)
    }
    elseif ($m >= 2 && $m <= 4 || $m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)   
    {
-      $ms = $m . " 	";
+      $ms = $m . "      ";
    }
    elseif ($m == 0)
    {
@@ -731,18 +731,23 @@ function getURL($url, $cache = 0, $username = '', $password = '')
    
    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache))
    {
-      //download
       try
       {
+
+         //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
+         //$startTime=getmicrotime();
+
          $ch = curl_init();
          curl_setopt($ch, CURLOPT_URL, $url);
          curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+         curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-         
+
          if ($username != '' || $password != '')
          {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -784,6 +789,18 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
          $result = curl_exec($ch);
+
+         //$endTime=getmicrotime();
+         //DebMes('Geturl finished for '.$url.' (Time taken: '.round($endTime-$startTime,2).')', 'geturl');
+
+          if (curl_errno($ch)) {
+              $errorInfo = curl_error($ch);
+              $info = curl_getinfo($ch);
+              $callSource=debug_backtrace()[1]['function'];
+              DebMes("Geturl to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
+          }
+          curl_close($ch);
+
       }
       catch (Exception $e)
       {

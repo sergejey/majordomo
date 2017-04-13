@@ -1033,10 +1033,14 @@ function usual(&$out) {
  function getWatchedProperties($parent_id=0) {
   $qry='1';
   if ($parent_id) {
-   $qry.=" AND (commands.PARENT_ID=".(int)$parent_id." OR commands.ID='".(int)$parent_id."')";
+   $qry.=" AND (commands.PARENT_ID=".(int)$parent_id." OR commands.ID='".(int)$parent_id."') OR";
+   $parent_rec=SQLSelectOne("SELECT SUB_LIST FROM commands WHERE ID=".$parent_id);
+   if ($parent_rec['SUB_LIST']!='') {
+    $qry.=" OR commands.ID IN (".$parent_rec['SUB_LIST'].")";
+   }
+   $qry.="0)";
   }
   $commands=$this->getDynamicElements($qry);
-  //DebMes("Serialize elements: ".serialize($commands));
 
   $properties=array();
   $total=count($commands);

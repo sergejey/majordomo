@@ -118,9 +118,20 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   return false;
  }
 
+    if (is_array($property) && is_array($value) ) {
+        $data=array();
+        $total = count($property);
+        for ($i = 0; $i < $total; $i++) {
+            $data[] = array('NAME'=>$property[$i],'VALUE'=>$value[$i]);
+        }
+    } else {
+        $data = array('NAME'=>$property, 'VALUE'=>$value);
+    }
+    
+   
  $payload = json_encode(array(
         'action' => $post_action,
-        'data' => array('NAME'=>$property, 'VALUE'=>$value)
+        'data' => $data
  ));
 
  $data_sent=false;

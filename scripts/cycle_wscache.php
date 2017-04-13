@@ -34,12 +34,18 @@ while (1)
        SQLExec("TRUNCATE TABLE cached_ws");
        $total=count($queue);
        $sent_ok=1;
+       $properties=array();
+       $values=array();
        for($i=0;$i<$total;$i++) {
-        $sent=postToWebSocket($queue[$i]['PROPERTY'], $queue[$i]['DATAVALUE'], $queue[$i]['POST_ACTION']);
-        if (!$sent) {
-         $sent_ok=0;
-        }
+           $properties[]=$queue[$i]['PROPERTY'];
+           $values[]=$queue[$i]['DATAVALUE'];
        }
+
+          $sent=postToWebSocket($properties, $values, 'PostProperty');
+          if (!$sent) {
+              $sent_ok=0;
+          }
+          
        if ($sent_ok) {
         $latest_sent=time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);

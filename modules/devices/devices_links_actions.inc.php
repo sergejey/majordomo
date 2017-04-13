@@ -1,6 +1,6 @@
 <?php
 
-DebMes("Checking linked actions for device ".$device1['ID']);
+//DebMes("Checking linked actions for device ".$device1['ID']);
 
 if ($this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
