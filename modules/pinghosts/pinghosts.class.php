@@ -271,16 +271,17 @@ function usual(&$out) {
 
    if ($old_status!=$host['STATUS']) {
     if ($host['STATUS']==2) {
-     $host['LOG'].=date('Y-m-d H:i:s').' Host is offline'."\n";
+     $host['LOG']=date('Y-m-d H:i:s').' Host is offline'."\n".$host['LOG'];
     } elseif ($host['STATUS']==1) {
-     $host['LOG'].=date('Y-m-d H:i:s').' Host is online'."\n";
+     $host['LOG']=date('Y-m-d H:i:s').' Host is online'."\n".$host['LOG'];
     }
-    $tmp=explode("\n", $host['LOG']);
-    $total=count($tmp);
-    if ($total > 30) {
-     $tmp=array_slice($tmp, 0, 30);
-     $host['LOG']=implode("\n", $tmp);
-    }
+   }
+
+   $tmp=explode("\n", $host['LOG']);
+   $total=count($tmp);
+   if ($total > 30) {
+    $tmp=array_slice($tmp, 0, 30);
+    $host['LOG']=implode("\n", $tmp);
    }
 
    SQLUpdate('pinghosts', $host);

@@ -206,6 +206,23 @@ function admin(&$out) {
 */
 function usual(&$out) {
 
+ if ($this->ajax) {
+
+  header("HTTP/1.0: 200 OK\n");
+  header('Content-Type: text/html; charset=utf-8');
+
+  global $op;
+  global $id;
+  $res=array();
+  if ($op=='get_object') {
+   $res=$this->processObject($id);
+  }
+  echo json_encode($res);
+
+  global $db;$db->disconnect();
+  exit;
+ }
+
  if ($this->class) {
   $objects=getObjectsByClass($this->class);
   if (!$this->code) {
@@ -280,6 +297,10 @@ function usual(&$out) {
    $this->id=$rec['ID'];
    $this->object_title=$rec['TITLE'];
    $this->class_id=$rec['CLASS_ID'];
+   if ($this->class_id) {
+    $class_rec=SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=".$this->class_id);
+    $this->class_title=$class_rec['TITLE'];
+   }
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
    //$this->keep_history=$rec['KEEP_HISTORY'];
@@ -424,7 +445,6 @@ function usual(&$out) {
   $data=getURL($url, 0);
   
  }
-
 
  function callClassMethod($name, $params=0) {
   $this->callMethod($name, $params, 1);
@@ -594,6 +614,19 @@ function usual(&$out) {
   }
   startMeasure('getProperty');
   startMeasure('getProperty ('.$property.')');
+
+  if ($this->object_title) {
+   if ($property=='object_title') {
+    return $this->object_title;
+   } elseif ($property=='object_description') {
+    return $this->description;
+   } elseif ($property=='object_id') {
+    return $this->id;
+   } elseif ($property=='class_title') {
+    return $this->class_title;
+   }
+  }
+
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   if ($id) {
    $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
@@ -619,7 +652,7 @@ function usual(&$out) {
 *
 * @access public
 */
- function setProperty($property, $value, $no_linked=0) {
+ function setProperty($property, $value, $no_linked=0, $source='') {
 
   startMeasure('setProperty');
   startMeasure('setProperty ('.$property.')');
@@ -628,7 +661,49 @@ function usual(&$out) {
    $value='';
   }
 
+  if (!$source && is_string($no_linked)) {
+   $source=$no_linked;
+   $no_linked=0;
+  }
+
+  if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES==1) {
+   $save=1;
+
+   if (!is_numeric(trim($value))) {
+    $save=0;
+   }
+
+   if (defined('TRACK_DATA_CHANGES_IGNORE') && TRACK_DATA_CHANGES_IGNORE!='' && $save) {
+    $tmp=explode(',', TRACK_DATA_CHANGES_IGNORE);
+    $total=count($tmp);
+    for($i=0;$i<$total;$i++) {
+     $regex=trim($tmp[$i]);
+     if (preg_match('/'.$regex.'/is', $this->object_title.'.'.$property)) {
+      $save=0;
+      break;
+     }
+    }
+   }
+   if ($save) {
+    if ($this->location_id) {
+     $location=current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=".(int)$this->location_id));
+    } else {
+     $location='';
+    }
+    $today_file=ROOT.'debmes/'.date('Y-m-d').'.data';
+    $f=fopen($today_file, "a+");
+    if ($f) {
+                fputs($f, date("Y-m-d H:i:s"));
+                fputs($f, "\t".$this->object_title.'.'.$property."\t".trim($value)."\t".trim($source)."\t".trim($location)."\n");
+                fclose($f);
+                @chmod($today_file, 0666);
+    }   
+   }
+  }
+
+  startMeasure('getPropertyByName');
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
+  endMeasure('getPropertyByName');
   $old_value='';
 
   $cached_name='MJD:'.$this->object_title.'.'.$property;
@@ -636,9 +711,12 @@ function usual(&$out) {
   startMeasure('setproperty_update');
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
+   startMeasure('setproperty_update_getvalue');
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
+   endMeasure('setproperty_update_getvalue');
    $old_value=$v['VALUE'];
-   $v['VALUE']=$value;
+   $v['VALUE']=$value.'';
+   $v['SOURCE']=$source.'';
    if ($v['ID']) {
     $v['UPDATED']=date('Y-m-d H:i:s');
     //if ($old_value!=$value) {
@@ -649,7 +727,8 @@ function usual(&$out) {
    } else {
     $v['PROPERTY_ID']=$id;
     $v['OBJECT_ID']=$this->id;
-    $v['VALUE']=$value;
+    $v['VALUE']=$value.'';
+    $v['SOURCE']=$source.'';
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
    }
@@ -658,11 +737,13 @@ function usual(&$out) {
     $prop=array();
     $prop['OBJECT_ID']=$this->id;
     $prop['TITLE']=$property;
+    //$prop['VALUE']='';
     $prop['ID']=SQLInsert('properties', $prop);
 
     $v['PROPERTY_ID']=$prop['ID'];
     $v['OBJECT_ID']=$this->id;
-    $v['VALUE']=$value;
+    $v['VALUE']=$value.'';
+    $v['SOURCE']=$source.'';
     $v['UPDATED']=date('Y-m-d H:i:s');
     $v['ID']=SQLInsert('pvalues', $v);
   }
@@ -670,10 +751,10 @@ function usual(&$out) {
 
   saveToCache($cached_name, $value);
 
-  if (function_exists('postToWebSocket')) {
-   startMeasure('setproperty_postwebsocket');
-   postToWebSocket($this->object_title.'.'.$property, $value);
-   endMeasure('setproperty_postwebsocket');
+  if (function_exists('postToWebSocketQueue')) {
+   startMeasure('setproperty_postwebsocketqueue');
+   postToWebSocketQueue($this->object_title.'.'.$property, $value);
+   endMeasure('setproperty_postwebsocketqueue');
   }
 
   /*
@@ -686,7 +767,8 @@ function usual(&$out) {
    $q_rec=array();
    $q_rec['VALUE_ID']=$v['ID'];
    $q_rec['ADDED']=date('Y-m-d H:i:s');
-   $q_rec['VALUE']=$value;
+   $q_rec['VALUE']=$value.'';
+   $q_rec['SOURCE']=$source.'';
    $q_rec['OLD_VALUE']=$old_value;
    $q_rec['KEEP_HISTORY']=$prop['KEEP_HISTORY'];
    SQLInsert('phistory_queue', $q_rec);
@@ -701,6 +783,7 @@ function usual(&$out) {
     $params['PROPERTY']=$property;
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
+    $params['SOURCE']=(string)$source;
     $this->callMethod($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
@@ -754,6 +837,39 @@ function usual(&$out) {
 
  }
 
+ function getWatchedProperties($objects) {
+  $properties=array();
+  $ids=explode(',',$objects);
+  include_once(DIR_MODULES.'classes/classes.class.php');
+  $cl=new classes();
+
+  foreach($ids as $object_id) {
+   $this->loadObject($object_id);
+   $props=$cl->getParentProperties($this->class_id, '', 1);
+   $my_props=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='".(int)$object_id."'");
+   if ($my_props[0]['ID']) {
+    foreach($my_props as $p) {
+     $props[]=$p;
+    }
+   }
+   if (is_array($props)) {
+    foreach($props as $k=>$v) {
+     if (substr($v['TITLE'],0,1)=='_') continue;
+     $properties[]=array('PROPERTY'=>mb_strtolower($this->object_title.'.'.$v['TITLE'], 'UTF-8'), 'OBJECT_ID'=>$object_id);
+    }
+   }
+  }
+  return $properties;
+ }
+
+ function processObject($object_id) {
+  $object_rec=SQLSelectOne("SELECT * FROM objects WHERE ID=".(int)$object_id);
+  $result=array('HTML'=>'','OBJECT_ID'=>$object_rec['ID']);
+  $template=getObjectClassTemplate($object_rec['TITLE']);
+  $result['HTML']=processTitle($template,$this);
+  return $result;
+ }
+
 /**
 * Install
 *
@@ -792,6 +908,16 @@ function usual(&$out) {
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
+
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
+               (`PROPERTY`   char(100) NOT NULL,
+                `DATAVALUE` varchar(20000) NOT NULL,
+                `POST_ACTION`   char(100) NOT NULL,
+                `ADDED`    datetime  NOT NULL,
+                PRIMARY KEY (`PROPERTY`)
+               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+
   //echo ("Executing $sqlQuery\n");
 
 /*
@@ -806,11 +932,43 @@ objects - Objects
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
  objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 
+ properties: ID int(10) unsigned NOT NULL auto_increment
+ properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
+ properties: OBJECT_ID int(10) NOT NULL DEFAULT '0'
+ properties: SYSTEM varchar(255) NOT NULL DEFAULT ''
+ properties: TITLE varchar(255) NOT NULL DEFAULT ''
+ properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
+ properties: DATA_KEY int(3) NOT NULL DEFAULT '0' 
+ properties: DATA_TYPE int(3) NOT NULL DEFAULT '0' 
+ properties: DESCRIPTION text
+ properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
+ properties: INDEX (CLASS_ID)
+ properties: INDEX (OBJECT_ID)
+ 
+ pvalues: ID int(10) unsigned NOT NULL auto_increment
+ pvalues: PROPERTY_NAME varchar(100) NOT NULL DEFAULT ''
+ pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
+ pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
+ pvalues: VALUE text
+ pvalues: UPDATED datetime
+ pvalues: SOURCE varchar(20) NOT NULL DEFAULT ''
+ pvalues: LINKED_MODULES varchar(255) NOT NULL DEFAULT ''
+ pvalues: INDEX (PROPERTY_ID)
+ pvalues: INDEX (OBJECT_ID)
+ pvalues: INDEX (PROPERTY_NAME) 
+
+ phistory: ID int(10) unsigned NOT NULL auto_increment
+ phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
+ phistory: SOURCE varchar(20) NOT NULL DEFAULT ''
+ phistory: ADDED datetime
+ phistory: INDEX (VALUE_ID)
+
  phistory_queue: ID int(10) unsigned NOT NULL auto_increment
  phistory_queue: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
  phistory_queue: VALUE text
  phistory_queue: OLD_VALUE text
  phistory_queue: KEEP_HISTORY int(10) unsigned NOT NULL DEFAULT '0'
+ phistory_queue: SOURCE varchar(20) NOT NULL DEFAULT ''
  phistory_queue: ADDED datetime
 
 

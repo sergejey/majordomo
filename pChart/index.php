@@ -159,7 +159,11 @@ if ($total>0) {
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
           echo '<br/>';
           if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
-           $code='<img src="/jpgraph/?p='.$_GET['p'].'&type='.$_GET['subop'].'&width=500&"/>';
+           if (file_exists(DIR_MODULES.'charts/charts.class.php')) {
+            $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+           } else {
+            $code='<img src="/jpgraph/?p='.$_GET['p'].'&type='.$_GET['subop'].'&width=500&"/>';
+           }
            echo $code."<br/>".htmlspecialchars($code);
            exit;
           }
@@ -174,6 +178,9 @@ if ($total>0) {
                         echo $history[$i]['ADDED'];
                         echo ": <b>";
                         echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        if ($history[$i]['SOURCE']) {
+                         echo ' ('.$history[$i]['SOURCE'].')';
+                        }
                         echo ' <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear&id='.$history[$i]['ID'].'" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">X</a> ';
                         echo "<br/>";
                 }

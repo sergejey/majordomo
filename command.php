@@ -110,6 +110,12 @@ if ($qry != '' && $qry != $lastest_word)
    
 }
 
+if (!headers_sent())
+{
+   header("HTTP/1.0: 200 OK\n");
+   header('Content-Type: text/html; charset=utf-8');
+   header('Access-Control-Allow-Origin: *');  
+}
 ?>
 
 <html>

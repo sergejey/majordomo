@@ -51,6 +51,12 @@
    global $onchange;
    $rec['ONCHANGE']=trim($onchange);
 
+   global $data_key;
+   $rec['DATA_KEY']=(int)$data_key;
+
+   global $data_type;
+   $rec['DATA_TYPE']=(int)$data_type;
+
   //updating 'Description' (text)
    global $description;
    $rec['DESCRIPTION']=$description;

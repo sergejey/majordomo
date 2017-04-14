@@ -1,12 +1,19 @@
 <?php
+error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
 
-if (!defined('ENVIRONMENT'))
-   error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
-
+mb_internal_encoding("UTF-8");
 
 // get settings
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
 $total    = count($settings);
+
+if (IsSet($_GET['theme'])) {
+ Define('SETTINGS_THEME', $_GET['theme']);
+}
+
+if (IsSet($_GET['disable_websockets'])) {
+ Define('DISABLE_WEBSOCKETS', 1);
+}
 
 for ($i = 0; $i < $total; $i ++)
    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
@@ -22,6 +29,24 @@ if (defined('SETTINGS_SITE_TIMEZONE'))
    ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
    date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 }
+
+function timezone_offset_string( $offset )
+{
+        return sprintf( "%s%02d:%02d", ( $offset >= 0 ) ? '+' : '-', abs( $offset / 3600 ), abs( $offset % 3600 ) );
+}
+$offset = timezone_offset_get(new DateTimeZone(SETTINGS_SITE_TIMEZONE), new DateTime());
+$offset_text=timezone_offset_string( $offset );
+SQLExec("SET time_zone = '".$offset_text."';");
+
+
+if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') && defined('WAIT_FOR_MAIN_CYCLE') && WAIT_FOR_MAIN_CYCLE==1 && !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI'])) {
+ $maincycleUpdate=getGlobal('cycle_mainRun');
+ if ((time()-$maincycleUpdate)>60) { //main cycle is offline
+  echo "Main cycle is down. Please check background processes status.";
+  exit;
+ }
+}
+
 
 if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
  Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);

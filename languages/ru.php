@@ -24,6 +24,8 @@ $dictionary=array(
 'FRONTEND'=>'Веб-сайт',
 'MY_ACCOUNT'=>'Мой аккаунт',
 'LOGOFF'=>'Выйти',
+'CONSOLE'=>'Консоль',
+'CONSOLE_RETRY'=>'Повтор',
 'MODULE_DESCRIPTION'=>'Описание модуля',
 
 'GENERAL_SENSORS'=>'Сенсоры',
@@ -114,7 +116,8 @@ $dictionary=array(
 'MODULE_MODULES'=>'Модули', 
 'MODULE_USERLOG'=>'Журнал действий', 
 
-'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен', 
+'SCENE_HIDDEN'=>'Не включать в список переключающихся сцен',
+'SCENE_AUTO_SCALE'=>'Автоматически изменять размер сцены по ширине экрана',
 
 'SETUP'=>'Настроить', 
 
@@ -305,7 +308,8 @@ $dictionary=array(
 
 
 'STEP_VALUE'=>'Шаг изменений', 
-'DATA'=>'Данные', 
+'DATA'=>'Данные',
+'INTERFACE'=>'Интерфейс', 
 
 
 'AUTO_UPDATE_PERIOD'=>'Период автообновления',
@@ -1025,6 +1029,14 @@ $dictionary=array(
 'ADVANCED_CONFIG'=>'Расширенная настройка',
 'UPDATE_ALL_EXTENSIONS'=>'Обновить все установленные дополнения',
 
+'SAVE_CHANGES'=>'Сохранить изменения',
+'ADD_PANE'=>'Добавить панель',
+
+    'DATA_KEY' => 'Ключевые данные',
+    'DATA_TYPE' => 'Тип данных',
+    'DATA_TYPE_GENERAL' => 'Общий формат',
+    'CLASS_TEMPLATE' => 'Шаблон отображения',
+    
 'TEST'=>'test'
 
 

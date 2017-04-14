@@ -169,6 +169,9 @@ function admin(&$out) {
  }
 
  $result=getURL($data_url, 120);
+ if (!$result) {
+  $result=getURL($data_url, 0);
+ }
  $data=json_decode($result);
  if (!$data->PLUGINS) {
   $out['ERR']=1;
@@ -184,7 +187,8 @@ function admin(&$out) {
  if (!is_array($names)) {
   $names=array();
  }
-
+ $cat = array();
+ $cat_id = -1;
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
   if (is_dir(ROOT.'modules/'.$rec['MODULE_NAME'])) {
@@ -198,46 +202,53 @@ function admin(&$out) {
   }
 
    if ($rec['CATEGORY']!=$old_category) {
-    $rec['NEW_CATEGORY']=1;
-    $old_category=$rec['CATEGORY'];
+       $cat[] = array();
+       ++$cat_id;
+       $cat[$cat_id]['NAME'] = $rec['CATEGORY'];
+       $cat[$cat_id]['CATEGORY_ID'] = $rec['CATEGORY_ID'];
+       $old_category=$rec['CATEGORY'];
    }
 
   //if ($rec['MODULE_NAME']==$name) {
-   unset($rec['LATEST_VERSION']);
+   //unset($rec['LATEST_VERSION']);
 
-   if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME']==$name)) {
-    $git_url=str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
-    $github_feed=getURL($git_url, 5*60);
-    @$tmp=GetXMLTree($github_feed);
-    @$items_data=XMLTreeToArray($tmp);
-    @$items=$items_data['feed']['entry'];
-    if (is_array($items)) {
-     $latest_item=$items[0];
-     //print_r($latest_item);exit;
-     $updated=strtotime($latest_item['updated']['textvalue']);
-     $rec['LATEST_VERSION']=date('Y-m-d H:i:s', $updated);
-     $rec['LATEST_VERSION_COMMENT']=$latest_item['title']['textvalue'];
-     $rec['LATEST_VERSION_URL']=$latest_item['link']['href'];
+   if (!isset($rec['LATEST_VERSION_URL'])) {
+    if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME']==$name)) {
+     $git_url=str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
+     $github_feed=getURL($git_url, 5*60);
+     @$tmp=GetXMLTree($github_feed);
+     @$items_data=XMLTreeToArray($tmp);
+     @$items=$items_data['feed']['entry'];
+     if (is_array($items)) {
+      $latest_item=$items[0];
+      //print_r($latest_item);exit;
+      $updated=strtotime($latest_item['updated']['textvalue']);
+      $rec['LATEST_VERSION']=date('Y-m-d H:i:s', $updated);
+      $rec['LATEST_VERSION_COMMENT']=$latest_item['title']['textvalue'];
+      $rec['LATEST_VERSION_URL']=$latest_item['link']['href'];
+     }
     }
    }
 
 
    if ($rec['MODULE_NAME']==$name) {
-    $this->url=$rec['REPOSITORY_URL'];
+    //$this->url=$rec['REPOSITORY_URL'];
+    $this->url='http://connect.smartliving.ru/market/?op=download&name='.urlencode($rec['MODULE_NAME'])."&serial=".urlencode(gg('Serial'));
     $this->version=$rec['LATEST_VERSION'];
    }
 
-  //}
   if ($rec['EXISTS']) {
    $this->can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
   if (in_array($rec['MODULE_NAME'], $names)) {
    $this->selected_plugins[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
-
-  $out['PLUGINS'][]=$rec;
+  if ($rec['EXISTS'] && $rec['INSTALLED_VERSION']!=$rec['LATEST_VERSION']) {
+      $cat[$cat_id]['NEW_VERSION'] = 1;
+  }
+  $cat[$cat_id]['PLUGINS'][]=$rec;
  }
-
+ $out['CATEGORY'] = $cat;
 
  if ($this->mode=='install_multiple') {
   $this->updateAll($this->selected_plugins);
@@ -287,8 +298,8 @@ function admin(&$out) {
    umask(0);
    @mkdir(ROOT.'saverestore/temp', 0777);
 
-
-  foreach($can_be_updated as $k=>$v) {
+  if (is_array($can_be_updated)) {
+   foreach($can_be_updated as $k=>$v) {
    //$this->getLatest($out, $v['URL'], $v['NAME'], $v['VERSION']);
     $name=$v['NAME'];
     $version=$v['VERSION'];
@@ -408,7 +419,7 @@ function admin(&$out) {
 
     }
   }
-
+  }
         $this->removeTree(ROOT.'saverestore/temp', $frame);
 
         $source=ROOT.'modules';
@@ -445,6 +456,9 @@ function admin(&$out) {
   if ($frame) {
    $this->echonow("Removing module '$name' from database ... ");
   }
+
+  include_once(ROOT.'modules/'.$name.'/'.$name.'.class.php');
+
   SQLExec("DELETE FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
   SQLExec("DELETE FROM project_modules WHERE NAME LIKE '".DBSafe($name)."'");
   if ($frame) {
@@ -456,6 +470,11 @@ function admin(&$out) {
    @unlink(ROOT.'scripts/cycle_'.$name.'.php');
   }
   removeMissingSubscribers();
+
+  $code='$plugin = new '.$name.';$plugin->uninstall();';
+  eval($code);
+
+
   $ok_msg='Uninstalled';
 
   if ($frame) {

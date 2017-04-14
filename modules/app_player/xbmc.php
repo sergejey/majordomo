@@ -78,16 +78,15 @@ if ($command == 'refresh')
    }
 
    $items=array();
-   if (is_file($path))
+   if (is_dir($path))
    {
+     $items=directoryToArray($path);
+   } else {
      $items[]=$path;
-   } 
-   elseif (is_dir($path))
-   {
-      $items=directoryToArray($path);
    }
 
    $result=xbmc_request($ch, $terminal, 'Playlist.Clear', array('playlistid'=>0));
+
 
    foreach($items as $v) {
       if (IsWindowsOs()) {
@@ -127,7 +126,5 @@ if ($command == 'notify') {
  if (!$type) $type='info';
  if (!$title) $title='MajorDoMo';
  $result=xbmc_request($ch, $terminal, 'GUI.ShowNotification', array('title'=>(string)$title,'message'=>(string)$message,'image'=>(string)$type));
-
 }
  
-

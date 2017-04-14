@@ -51,9 +51,24 @@
       </div>
      </div>
     </div>
-
-
 </div>
+
+    <div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_DATA_TYPE#>:<#LANG_HCB#>datatype<#LANG_HCE#></label>
+        <div class="col-lg-4">
+            <select name="data_type" class="form-control">
+                <option value="0"[#if DATA_TYPE="0"#] selected[#endif#]><#LANG_DATA_TYPE_GENERAL#>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_DATA_KEY#>:<#LANG_HCB#>datakey<#LANG_HCE#></label>
+        <div class="col-lg-4">
+        <input type="radio" name="data_key" value="1"[#if DATA_KEY="1"#] checked[#endif#]> <#LANG_YES#>
+         <input type="radio" name="data_key" value="0"[#if DATA_KEY!="1"#] checked[#endif#]> <#LANG_NO#>
+        </div>
+    </div>
 
 
 <div class="form-group">

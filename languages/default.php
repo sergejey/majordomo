@@ -24,6 +24,8 @@ $dictionary=array(
 'FRONTEND'=>'Front End',
 'MY_ACCOUNT'=>'My Account',
 'LOGOFF'=>'Logoff',
+'CONSOLE'=>'Console',
+'CONSOLE_RETRY'=>'Retry',
 'MODULE_DESCRIPTION'=>'Module Description on the Web',
 
 'GENERAL_SENSORS'=>'Sensors',
@@ -73,7 +75,7 @@ $dictionary=array(
 'APP_PLAYER'=>'Player Control',
 'APP_MEDIA_BROWSER'=>'Media Library',
 'APP_PRODUCTS'=>'Products Inventory',
-'APP_TDWIKI'=>'TdWiKi Notepad',
+'APP_TDWIKI'=>'Notepad',
 'APP_WEATHER'=>'Weather Informer',
 'APP_CALENDAR'=>'Calendar',
 'APP_READIT'=>'ReadIt',
@@ -315,6 +317,7 @@ $dictionary=array(
 
 'STEP_VALUE'=>'Step value', 
 'DATA'=>'Data', 
+'INTERFACE'=>'Interface', 
 
 
 'AUTO_UPDATE_PERIOD'=>'Auto update period', 
@@ -954,7 +957,8 @@ $dictionary=array(
 'VARIABLES'=>'Variables',
 'FUNCTIONS'=>'Functions',
 
-'SCENE_HIDDEN'=>'Do not include in to the swappable list of scenes', 
+'SCENE_HIDDEN'=>'Do not include in to the swappable list of scenes',
+'SCENE_AUTO_SCALE'=>'Auto zoom scene to device with',
 
 'DO_NOTHING'=>'Do nothing',
 'DO_ONCLICK'=>'On click',
@@ -1025,8 +1029,16 @@ $dictionary=array(
 'ADVANCED_CONFIG'=>'Advanced config',
 'UPDATE_ALL_EXTENSIONS'=>'Update all extensions installed',
 
+'SAVE_CHANGES'=>'Save changes',
+'ADD_PANE'=>'Add Pane',
+
 'HCB'=>' <a href="http://majordomo.smartliving.ru/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
+
+    'DATA_KEY' => 'Key data',
+    'DATA_TYPE' => 'Data type',
+    'DATA_TYPE_GENERAL' => 'General',
+    'CLASS_TEMPLATE' => 'Template',
 
 'TEST'=>'test'
 

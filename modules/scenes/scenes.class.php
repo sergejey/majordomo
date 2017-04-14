@@ -536,6 +536,10 @@ function admin(&$out) {
 */
 function usual(&$out) {
 
+ if ($this->owner->action=='apps') {
+  $this->redirect(ROOTHTML."popup/scenes.html");
+ }
+
  global $ajax;
  if ($ajax) {
     global $op;
@@ -546,7 +550,9 @@ function usual(&$out) {
      global $element;
      global $details;
      $element_id=0;
-     if (preg_match('/state_(\d+)/', $element, $m)) {
+     if (preg_match('/state_element_(\d+)/', $element, $m)) {
+      $element_id=$m[1];
+     } elseif (preg_match('/state_(\d+)/', $element, $m)) {
       $state=SQLSelectOne("SELECT ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
       $element_id=$state['ELEMENT_ID'];
      } elseif (preg_match('/canvas_(\d+)/', $element, $m) || preg_match('/container_(\d+)/', $element, $m)) {
@@ -633,6 +639,8 @@ function usual(&$out) {
       if ($object_part) {
        $object_rec=SQLSelectOne("SELECT ID, TITLE FROM objects WHERE ID=".(int)($object_part));
       }
+     } elseif (preg_match('/^object_(.+?)/', $id, $m)) {
+      return false;
      } else {
       $dynamic_item=0;
       $real_part=$id;
@@ -740,6 +748,11 @@ function usual(&$out) {
 */
  function processState(&$state) {
       $state['STATE']=(string)$this->checkState($state['ID']);
+
+      if ($state['TYPE']=='img') {
+       unset($state['HTML']);
+      }
+
       if ($state['HTML']!='') {
        if (preg_match('/\[#modul/is', $state['HTML'])) {
         //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
@@ -747,9 +760,6 @@ function usual(&$out) {
        } else {
         $state['HTML']=processTitle($state['HTML'], $this);
        }
-      }
-      if ($state['TYPE']=='img') {
-       unset($state['HTML']);
       }
  }
 
@@ -961,6 +971,11 @@ function usual(&$out) {
 */
  function checkState($id) {
 
+
+ if (preg_match('/^object_(.+?)/', $id, $m)) {
+  return 1;
+ }
+
     if (preg_match('/(\d+)\_(\d+)/', $id, $m)) {
      $dynamic_item=1;
      $real_part=$m[1];
@@ -1082,7 +1097,24 @@ function usual(&$out) {
       $totale=count($elements);
       $res2=array();
       for($ie=0;$ie<$totale;$ie++) {
-       $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
+
+       if ($elements[$ie]['TYPE']=='object') {
+        $state=array();
+
+        $state['ID']='element_'.($elements[$ie]['ID']);
+        $state['ELEMENT_ID']=$elements[$ie]['ID'];
+        $state['HTML']=getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
+        $state['TYPE']=$elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID']=0;
+        $state['HOMEPAGE_ID']=0;
+        $state['OPEN_SCENE_ID']=0;
+        $states=array($state);
+
+
+       } else {
+        $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
+       }
+
        if ($elements[$ie]['SMART_REPEAT'] && !$this->action=='admin') {
         $linked_object='';
         if ($states[0]['LINKED_OBJECT']) {
@@ -1201,6 +1233,8 @@ function usual(&$out) {
         $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
        }
       }
+
+
       return $elements;  
  }
 
@@ -1491,6 +1525,7 @@ function usual(&$out) {
 
     $content=$states[$i]['HTML'];
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
 
     if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
      $totalm=count($m[1]);
@@ -1525,6 +1560,7 @@ elm_states - Element states
  scenes: WALLPAPER varchar(255) NOT NULL DEFAULT ''
  scenes: PRIORITY int(10) NOT NULL DEFAULT '0'
  scenes: HIDDEN int(3) NOT NULL DEFAULT '0'
+ scenes: AUTO_SCALE int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
 

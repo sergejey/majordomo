@@ -800,6 +800,10 @@ function usual(&$out) {
     if ($res[$i]['TYPE']=='custom') {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
+    if ($res[$i]['TYPE']=='object' && $res[$i]['LINKED_OBJECT']) {
+     $res[$i]['DATA']=getObjectClassTemplate($res[$i]['LINKED_OBJECT']);
+     $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
+    }
 
      if (preg_match('/#[\w\d]{6}/is', $res[$i]['TITLE'], $m)) {
       $color=$m[0];
@@ -919,11 +923,18 @@ function usual(&$out) {
         $rec['ID']=$res[$i]['ID'].'_'.$objects[$io]['ID'];
         $rec['LINKED_OBJECT']=$objects[$io]['TITLE'];
         $rec['DATA']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['DATA']);
+        if (is_integer(strpos($rec['TITLE'], '%'.$res[$i]['LINKED_OBJECT'].'.'))) {
+         $rec['TITLE']=str_replace('%'.$res[$i]['LINKED_OBJECT'].'.', '%'.$rec['LINKED_OBJECT'].'.', $rec['TITLE']);
+        } else {
+         $rec['TITLE']=$objects[$io]['TITLE'];
+        }
         $rec['CUR_VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$rec['LINKED_PROPERTY']);
-        $rec['TITLE']=$objects[$io]['TITLE'];
         $dynamic_res[]=$rec;
        }
       } else {
+       if ($res[$i]['TYPE']=='object') {
+        $res[$i]['DATA']=getObjectClassTemplate($res[$i]['LINKED_OBJECT']);
+       }
        $dynamic_res[]=$res[$i];
       }
      }
@@ -959,7 +970,12 @@ function usual(&$out) {
     if ($object_part) {
      $object_rec=SQLSelectOne("SELECT ID, TITLE FROM objects WHERE ID=".(int)($object_part));
      $item['DATA']=str_replace('%'.$item['LINKED_OBJECT'].'.', '%'.$object_rec['TITLE'].'.', $item['DATA']);
-     $item['TITLE']=$object_rec['TITLE'];
+        if (is_integer(strpos($item['TITLE'], '%'.$item['LINKED_OBJECT'].'.'))) {
+         $item['TITLE']=str_replace('%'.$item['LINKED_OBJECT'].'.', '%'.$object_rec['TITLE'].'.', $item['TITLE']);
+        } else {
+         $item['TITLE']=$object_rec['TITLE'];
+        }
+     //$item['TITLE']=$object_rec['TITLE'];
      $item['LINKED_OBJECT']=$object_rec['TITLE'];
     }
 
@@ -989,6 +1005,9 @@ function usual(&$out) {
       $data=$item['TITLE'];
      }
 
+     if ($item['TYPE']=='object'  && $item['LINKED_OBJECT']) {
+       $data=getObjectClassTemplate($item['LINKED_OBJECT']);
+     }
      $data=processTitle($data, $this);
 
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
@@ -1014,10 +1033,14 @@ function usual(&$out) {
  function getWatchedProperties($parent_id=0) {
   $qry='1';
   if ($parent_id) {
-   $qry.=" AND (commands.PARENT_ID=".(int)$parent_id." OR commands.ID='".(int)$parent_id."')";
+   $qry.=" AND (commands.PARENT_ID=".(int)$parent_id." OR commands.ID='".(int)$parent_id."' OR ";
+   $parent_rec=SQLSelectOne("SELECT SUB_LIST FROM commands WHERE ID=".$parent_id);
+   if ($parent_rec['SUB_LIST']!='') {
+    $qry.="commands.ID IN (".$parent_rec['SUB_LIST'].") OR "; //
+   }
+   $qry.="0)";
   }
   $commands=$this->getDynamicElements($qry);
-  //DebMes("Serialize elements: ".serialize($commands));
 
   $properties=array();
   $total=count($commands);
@@ -1028,6 +1051,8 @@ function usual(&$out) {
 
     $content=$commands[$i]['TITLE'].' '.$commands[$i]['DATA'];
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
 
     //DebMes("Content (".$commands[$i]['ID']."): ".$content);
 

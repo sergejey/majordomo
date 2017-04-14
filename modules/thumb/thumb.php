@@ -68,7 +68,8 @@ if (IsSet($url) && $url!='') {
 
     } else {
      @unlink($img);
-     system(PATH_TO_FFMPEG.' -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+     $cmd=PATH_TO_FFMPEG.' -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
+     system($cmd);
     }
     $dc=1;
    } else {

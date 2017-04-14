@@ -1,0 +1,29 @@
+<style>
+    .motion-widget {
+    }
+    .motion-text {
+        padding-top:10px;
+        cursor:pointer;
+        vertical-align:middle;
+        white-space: nowrap;
+    }
+    .motion-light {
+        border-radius:50%;
+        width:22px;
+        height:22px;
+        border:2px solid #3d3d3d;
+        margin-top:5px;
+        float:left;
+        margin-right:10px;
+    }
+    .motion-light.on {
+        background-color: #ff1e00;
+        box-shadow: 0px 0px 15px #ff727e;
+        border-color:#FDF1DF;
+    }
+</style>
+<div class="motion-widget">
+    <div class="motion-light %.status|"off;on"%"></div>
+    <div class="motion-text" style='display:%.status|"none;block"%;'>%.object_description% (%.updatedText%)</div>
+    <div class="motion-text" style='display:%.status|"block;none"%;'>%.object_description% (%.updatedText%)</div>
+</div>

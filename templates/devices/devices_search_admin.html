@@ -1,0 +1,154 @@
+
+<!-- table devices search -->
+
+<form class="form-inline" name="frmFilter">
+
+ <div class="form-group">
+  <a href="?view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+  [#if ENABLE_HOMEBRIDGE="1"#]
+  <a href="?mode=homebridgesync" class="btn btn-default">HomeBridge Sync</a>
+  [#endif#]
+  <!--#
+  <a href="?view_mode=render_structure" class="btn btn-default"> <#LANG_DEVICES_UPDATE_CLASSSES#></a>
+  #-->
+
+  </div>
+
+ <div class="form-group">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <#LANG_SEARCH#>:
+  </div>
+
+ <div class="form-group">
+  <select name="type" class="form-control" onchange="this.form.submit();">
+   <option value=""><#LANG_TYPE#></option>
+   [#begin TYPES#]
+   <option value="[#NAME#]"[#if NAME="<#TYPE#>"#] selected[#endif#]>[#TITLE#]</option>
+   [#end TYPES#]
+  </select>
+
+ </div>
+
+ <div class="form-group ">
+  <select name="location_id" class="form-control" onchange="this.form.submit();">
+   <option value=""><#LANG_LOCATION#>
+    [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select>
+ </div>
+</form>&nbsp;
+
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<table border=0>
+<td align=right><b>Pages:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+<td>
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
+[#end PAGES#]
+</td>
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+
+<script type="text/javascript">
+ var subscribedWebSockets=0;
+ var subscribedWebSocketsTimer;
+ var requestSent = Math.round(+new Date()/1000);
+ function subscribeToDevices() {
+  console.log('Sending devices subscription request...');
+  var payload;
+  payload = new Object();
+  payload.action = 'Subscribe';
+  payload.data = new Object();
+  payload.data.TYPE='devices';
+  payload.data.DEVICE_ID='0';
+  wsSocket.send(JSON.stringify(payload));
+  subscribedWebSocketsTimer=setTimeout('subscribeToDevices();', 3000);
+  return false;
+ }
+
+ $.subscribe('wsConnected', function (_) {
+  subscribeToDevices();
+ });
+
+ $.subscribe('wsData', function (_, response) {
+  if (response.action=='subscribed') {
+   console.log('Subscription to devices confirmed.');
+   clearTimeout(subscribedWebSocketsTimer);
+   subscribedWebSockets=1;
+  }
+  if (response.action=='devices') {
+   var obj=jQuery.parseJSON(response.data);
+   if (typeof obj.DATA !='object') return false;
+   var objCnt = obj.DATA.length;
+   if (objCnt) {
+    for(var i=0;i<objCnt;i++) {
+     var device_id=obj.DATA[i].DEVICE_ID;
+     var html=obj.DATA[i].DATA;
+     $('#device'+device_id).html(html);
+    }
+   }
+  }
+ });
+</script>
+
+
+
+
+<table  class="table table-striped">
+<tbody>
+[#begin RESULT#]
+<tr style="height:52px" class="hover_btn2">
+  <td style="vertical-align:middle"
+  >
+  <b>
+   [#TITLE#]
+  </a></b>
+  ([#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#])
+ </td>
+ <td><div id="device[#ID#]">[#HTML#]</div></td>
+ <td style="vertical-align:middle" width="1%" nowrap>
+  <div>
+  [#if "<#ACTION#>"=="admin"#]
+   <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=settings" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-wrench"></i></a>
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=links" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-link"></i>[#if LINKED!=""#] ([#LINKED#])[#endif#]</a>
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i></a>
+    <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
+  [#endif ACTION#]
+  </div>
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<table border=0>
+<td align=right><b>Pages:</b>&nbsp;</td>
+[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
+<td>
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
+[#end PAGES#]
+</td>
+[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
+</table>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>

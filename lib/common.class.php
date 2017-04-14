@@ -48,7 +48,7 @@
   if (!$destination) {
    return 0;
   }
-  processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
 
   if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
@@ -56,11 +56,9 @@
   } else {
    $min_level=(int)getGlobal('minMsgLevel');
   }
-
   if ($level < $min_level) {
    return 0;
   }
-
   if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
    $service_port='7999';
    $in='tts:'.$ph;
@@ -77,10 +75,10 @@
    socket_write($socket, $in, strlen($in));
    socket_close($socket);
    return 1;
-  } elseif ($terminal_rec['IS_ONLINE']) {
-   return 1;
+  } elseif (!$processed) {
+   //say($ph,$level);
+   return 0;
   }
-
   return 0;
  }
 
@@ -111,10 +109,10 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
       include_once(DIR_MODULES . 'patterns/patterns.class.php');
       $pt = new patterns();
       $res=$pt->checkAllPatterns($member_id);
-      if (!$res) {
-       processCommand($ph);
-      }
-      processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+       if (!$processed) {
+           processCommand($ph);
+       }
       return;
    }
 
@@ -229,9 +227,9 @@ function timeNow($tm = 0)
    {
       $ms = $m . " минут";
    }
-   elseif ($m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)
+   elseif ($m >= 2 && $m <= 4 || $m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)   
    {
-      $ms = $m . " минуты";
+      $ms = $m . "      ";
    }
    elseif ($m == 0)
    {
@@ -635,7 +633,7 @@ function playSound($filename, $exclusive = 0, $priority = 0)
          if (IsWindowsOS())
             safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
          else
-            safe_exec('mplayer ' . $filename, $exclusive, $priority);
+            safe_exec('mplayer ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
       }
    }
 
@@ -733,22 +731,57 @@ function getURL($url, $cache = 0, $username = '', $password = '')
    
    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache))
    {
-      //download
       try
       {
+
+         //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
+         //$startTime=getmicrotime();
+
          $ch = curl_init();
          curl_setopt($ch, CURLOPT_URL, $url);
-         curl_setopt($ch, CURLOPT_USERAGENT, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
+         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
+         curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-         
+
          if ($username != '' || $password != '')
          {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+         }
+
+         $url_parsed=parse_url($url);
+         $host=$url_parsed['host'];
+
+         $use_proxy=false;
+         if (defined('USE_PROXY') && USE_PROXY!='') {
+          $use_proxy=true;
+         }
+
+         if ($host == '127.0.0.1' || $host == 'localhost') {
+          $use_proxy=false;
+         }
+
+         if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
+             $p = preg_quote(HOME_NETWORK);
+             $p = str_replace('\*', '\d+?', $p);
+             $p = str_replace(',', ' ', $p);
+             $p = str_replace('  ', ' ', $p);
+             $p = str_replace(' ', '|', $p);
+             if (preg_match('/' . $p . '/is', $host)) {
+              $use_proxy=false;
+             }
+         }
+
+         if ($use_proxy) {
+          curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+          if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH!='') {
+           curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+          }
          }
 
          $tmpfname = ROOT . 'cached/cookie.txt';
@@ -756,6 +789,18 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
          $result = curl_exec($ch);
+
+         //$endTime=getmicrotime();
+         //DebMes('Geturl finished for '.$url.' (Time taken: '.round($endTime-$startTime,2).')', 'geturl');
+
+          if (curl_errno($ch)) {
+              $errorInfo = curl_error($ch);
+              $info = curl_getinfo($ch);
+              $callSource=debug_backtrace()[1]['function'];
+              DebMes("Geturl to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
+          }
+          curl_close($ch);
+
       }
       catch (Exception $e)
       {
@@ -789,8 +834,8 @@ function safe_exec($command, $exclusive = 0, $priority = 0)
 
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['COMMAND']   = $command;
-   $rec['EXCLUSIVE'] = $exclusive;
-   $rec['PRIORITY']  = $priority;
+   $rec['EXCLUSIVE'] = (int)$exclusive;
+   $rec['PRIORITY']  = (int)$priority;
 
    $rec['ID'] = SQLInsert('safe_execs', $rec);
    return $rec['ID'];

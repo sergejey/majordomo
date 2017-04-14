@@ -32,7 +32,11 @@
 
    global $nolog;
    $rec['NOLOG']=(int)$nolog;
+  }
 
+  if ($this->tab=='template') {
+   global $template;
+   $rec['TEMPLATE']=$template.'';
   }
 
 

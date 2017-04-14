@@ -109,6 +109,78 @@ function run() {
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 }
+
+ function processSubscription($event_name, $details='') {
+  if ($event_name=='HOURLY') {
+   //...
+   $this->getConfig();
+   if ($this->config['CONNECT_BACKUP'] && ((int)date('H'))==(int)$this->config['CONNECT_BACKUP_HOUR']) {
+    $this->cloudBackup();
+   }
+  }
+ }
+
+
+ function cloudBackup() {
+  $connect_username=$this->config['CONNECT_USERNAME']; //username
+  $connect_password=$this->config['CONNECT_PASSWORD'];
+  if (!$connect_username || !$connect_password) {
+   return false;
+  }
+
+
+  include_once(DIR_MODULES.'saverestore/saverestore.class.php');
+  $sv=new saverestore();
+  global $data;
+  $data=1;
+  $out=array();
+  $sv->removeTree(ROOT.'saverestore/temp');
+  $tar_name=$sv->dump($out);
+  $sv->removeTree(ROOT.'saverestore/temp');
+  $sv->removeTree(ROOT.'saverestore/temp');
+
+
+  $dest_file=ROOT.'saverestore/'.$tar_name;
+
+
+  if ($dest_file && file_exists($dest_file) && filesize($dest_file)>0) {
+
+  if (function_exists('curl_file_create')) { // php 5.6+
+   $cfile = curl_file_create($dest_file);
+  } else { // 
+   $cfile = '@' . realpath($dest_file);
+  }
+ 
+  $fields = array(
+     'backupfile' => $cfile, 
+     'force_data' => '1'
+  );
+
+  $url='http://connect.smartliving.ru/upload/';
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, 1);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 120);
+  curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+  curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password); 
+
+  //execute post
+  $result = curl_exec($ch);
+  //close connection
+  curl_close($ch);
+
+  //echo "POST RESULT: ".$result;
+  if ($result=='OK') {
+   @unlink($dest_file);
+  }
+
+  }
+
+ }
+
 /**
 * BackEnd
 *
@@ -123,6 +195,7 @@ function admin(&$out) {
  $out['CONNECT_USERNAME']=$this->config['CONNECT_USERNAME'];
  $out['CONNECT_PASSWORD']=$this->config['CONNECT_PASSWORD'];
  $out['CONNECT_SYNC']=$this->config['CONNECT_SYNC'];
+ $out['CONNECT_BACKUP']=$this->config['CONNECT_BACKUP'];
 
  $out['SEND_MENU']=$this->config['SEND_MENU'];
  $out['SEND_OBJECTS']=$this->config['SEND_OBJECTS'];
@@ -134,12 +207,21 @@ function admin(&$out) {
    global $connect_username;
    global $connect_password;
    global $connect_sync;
+   global $connect_backup;
 
    $this->config['CONNECT_USERNAME']=$connect_username;
    $this->config['CONNECT_PASSWORD']=$connect_password;
    $this->config['CONNECT_SYNC']=(int)$connect_sync;
+   $this->config['CONNECT_BACKUP']=(int)$connect_backup;
+   $this->config['CONNECT_BACKUP_HOUR']=(int)rand(0, 6);
+
+   if ($this->config['CONNECT_BACKUP']) {
+    subscribeToEvent($this->name, 'HOURLY');
+    $this->cloudBackup(); // backup now
+   }
 
    $this->saveConfig();
+   setGlobal('cycle_connectControl', 'restart');
    $this->redirect("?");
  }
 
@@ -196,6 +278,14 @@ function admin(&$out) {
      } else {
       $rec['ID']=SQLInsert('public_calls', $rec);
      }
+
+     if (preg_match_all('/%(\w+)\.(\w+)%/is',$rec['TITLE'],$m)) {
+      $total = count($m[1]);
+      for ($i = 0; $i < $total; $i++) {
+       addLinkedProperty($m[1][$i],$m[2][$i],$this->name);
+      }
+     }
+
      $this->redirect("?tab=".$this->tab."&view_mode=sync");
     }
    }
@@ -263,6 +353,13 @@ function admin(&$out) {
 
  }
 
+ function propertySetHandle($object, $property, $value) {
+  $calls=SQLSelect("SELECT ID FROM public_calls WHERE TITLE LIKE '%".DBSafe($object.'.'.$property)."%'");
+  if ($calls[0]['ID']) {
+   $this->sendCalls();
+  }
+ }
+
 /**
 * Title
 *
@@ -272,9 +369,15 @@ function admin(&$out) {
 */
  function sendCalls() {
 
+   $this->getConfig();
    // menu items
    $data=array();
-   $data['PUBLIC_CALLS']=SQLSelect("SELECT * FROM public_calls");
+   $calls=SQLSelect("SELECT * FROM public_calls");
+   $total = count($calls);
+   for ($i = 0; $i < $total; $i++) {
+    $calls[$i]['TITLE']=processTitle($calls[$i]['TITLE']);
+   }
+   $data['PUBLIC_CALLS']=$calls;
 
 
   // POST TO SERVER
@@ -458,6 +561,7 @@ function usual(&$out) {
 * @access private
 */
  function install($data='') {
+  subscribeToEvent($this->name, 'HOURLY');  
   parent::install();
  }
 

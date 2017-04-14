@@ -70,16 +70,56 @@ function checkFromCache($key)
    }
 }
 
+function clearPropertiesCache() {
+    SQLExec("TRUNCATE cached_values;");
+}
+
+
+function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
+    if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS == 1) {
+        return false;
+    }
+    SQLExec("DELETE FROM cached_ws WHERE PROPERTY='" . DBSafe($property) . "'");
+    $rec = array();
+    $rec['PROPERTY'] = $property;
+    $rec['DATAVALUE'] = $value;
+    $rec['POST_ACTION'] = $post_action;
+    $rec['ADDED'] = date('Y-m-d H:i:s');
+
+    $fields = "";
+    $values = "";
+    $table = 'cached_ws';
+
+    global $db;
+
+    foreach ($rec as $field => $value) {
+        if (is_Numeric($field)) continue;
+        $fields .= "`$field`, ";
+        $values .= "'" . $db->DBSafe1($value) . "', ";
+    }
+
+    $fields = substr($fields, 0, strlen($fields) - 2);
+    $values = substr($values, 0, strlen($values) - 2);
+    $query = "INSERT INTO `$table`($fields) VALUES($values)";
+
+    if (function_exists('mysqli_query')) {
+        $res = mysqli_query($db->dbh, $query);
+    } else {
+        $res = mysql_query($query);
+    }
+    return $res;
+    //SQLInsert('cached_ws', $rec);
+}
 
 function postToWebSocket($property, $value, $post_action='PostProperty') {
 
  if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
-  return;
+  return false;
  }
 
  global $websockets_script_started;
  if ($websockets_script_started) {
-  return;
+  return false;
  }
 
  require_once ROOT.'lib/websockets/client/lib/class.websocket_client.php';
@@ -101,9 +141,20 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   return false;
  }
 
+    if (is_array($property) && is_array($value) ) {
+        $data=array();
+        $total = count($property);
+        for ($i = 0; $i < $total; $i++) {
+            $data[] = array('NAME'=>$property[$i],'VALUE'=>$value[$i]);
+        }
+    } else {
+        $data = array('NAME'=>$property, 'VALUE'=>$value);
+    }
+    
+   
  $payload = json_encode(array(
         'action' => $post_action,
-        'data' => array('NAME'=>$property, 'VALUE'=>$value)
+        'data' => $data
  ));
 
  $data_sent=false;
@@ -121,7 +172,7 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   //reconnect
   $wsClient = new WebsocketClient;
   if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
-   $wsClient->sendData($payload);
+   $data_sent=@$wsClient->sendData($payload);
   } else {
    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
     DebMes("Failed to reconnect to websocket");
@@ -130,5 +181,6 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
   }
  }
 
+ return $data_sent;
 
 }

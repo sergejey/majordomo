@@ -113,6 +113,7 @@ Action URL:
                 <select name="type" class="form-control">
                         <option value="">select
                         <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
+                        <option value="object"[#if TYPE="object"#] selected[#endif#]><#LANG_OBJECT#>
                         <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
                         <option value="url"[#if TYPE="url"#] selected[#endif#]><#LANG_URL#>
                         <option value="urlblank"[#if TYPE="urlblank"#] selected[#endif#]><#LANG_URL#> (<#LANG_NEW_WINDOW#>)
@@ -224,9 +225,7 @@ Action URL:
 
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox" || TYPE=="color"#]
-
-
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox" || TYPE=="color" || TYPE=="object"#]
 <div class="form-group">
   <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object<#LANG_HCE#></label>
    <div class="col-lg-5">

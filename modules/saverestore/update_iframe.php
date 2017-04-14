@@ -21,6 +21,7 @@ global $with_extensions;
 echo "<html>";
 echo "<body>";
 
+
 $out=array();
 
 if ($backup) {
@@ -46,6 +47,13 @@ if ($res) {
  $restore='master.tgz';
 
  $folder='majordomo-master';
+
+     $basename=basename($sv->url);
+     if ($basename!='master.tar.gz') {
+      $basename=str_replace('.tar.gz', '', $basename);
+      $folder=str_replace('master', $basename, $folder);
+     }
+
 
  $res=$sv->upload($out, 1);
 

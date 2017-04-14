@@ -1,0 +1,65 @@
+
+ <!-- action usual -->
+ <!-- table devices search -->
+ [#if VIEW_MODE="search_devices" || VIEW_MODE=""#]
+  [#inc devices_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table devices search -->
+ <!-- table devices edit -->
+ [#if VIEW_MODE="edit_devices"#]
+ [#if ID!=""#]
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+ [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+ <ul class="nav nav-tabs">
+     <li[#if TAB=""#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
+     </li>
+     [#if LINKED_OBJECT!=""#]
+     <li[#if TAB="interface"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
+     </li>
+     <li[#if TAB="settings"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=settings"><#LANG_SECTION_SETTINGS#></a>
+     </li>
+     <li[#if TAB="links"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=links"><#LANG_DEVICES_LINKS#></a>
+     </li>
+     <li[#if TAB="logic"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=logic"><#LANG_DEVICES_LOGIC_ACTION#></a>
+     </li>
+     <li[#if TAB="preview"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#></a>
+     </li>
+     [#endif LINKED_OBJECT#]
+ </ul>
+ &nbsp;<br/>
+ [#endif ID#]
+ [#if TAB=""#]
+   [#inc devices_edit.html#]
+ [#endif TAB#]
+ [#if TAB="interface"#]
+   [#inc devices_edit_interface.html#]
+ [#endif TAB#]
+ [#if TAB="settings"#]
+   [#inc devices_edit_settings.html#]
+ [#endif TAB#]
+
+ [#if TAB="links"#]
+ [#inc devices_edit_links.html#]
+ [#endif TAB#]
+
+ [#if TAB="logic"#]
+ [#inc devices_edit_logic.html#]
+ [#endif TAB#]
+
+ [#if TAB="preview"#]
+  [#inc preview.html#]
+ [#endif TAB#]
+
+ [#endif VIEW_MODE#]
+ <!-- / table devices edit -->
+ <!-- table devices view --> 
+ [#if VIEW_MODE="view_devices"#]
+   [#inc devices_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table devices view -->

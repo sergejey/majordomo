@@ -39,6 +39,7 @@ include_once("./config.php");
 $requests = array(
    "/^\/panel\/script\/(\d+)\.html/is"  => '?(panel:{action=scripts})&md=scripts&view_mode=edit_scripts&id=\1',
    "/^\/panel\/command\/(\d+)\.html/is" => '?(panel:{action=commands})&md=commands&view_mode=edit_commands&id=\1',
+    "/^\/panel\/xray\.html/is" => '?(panel:{action=xray})&md=xray',
    "/^\/panel\/linkedobject.html/is"    => '?(panel:{action=linkedobject})',
     "/^\/panel\/popup\/(.+?).html/is"   => '?(panel:{action=\1})&print=1',
    "/^\/panel\/class\/(\d+)\.html/is"   => '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1',
@@ -64,7 +65,7 @@ $requests = array(
    "/^\/popup\/(.+?)\/(.+?)\.html/is"   => '?(application:{action=\1, popup=1})',
    "/^\/popup\/(.+?)\.html/is"          => '?(application:{action=\1, popup=1})',
    "/^\/ajax\/(.+?)\.html/is"           => '?(application:{action=\1, ajax=1})',
-   "/^\/page\/(\d+?)\.html/is"          => '?(application:{action=layouts, popup=1}layouts:{view_mode=view_layouts, id=\1})',
+   "/^\/page\/(\w+?)\.html/is"          => '?(application:{action=layouts, popup=1}layouts:{view_mode=view_layouts, id=\1})',
    "/^\/getnextevent\.html/is"          => '?(application:{action=events})',
    "/^\/getlatestnote\.html/is"         => '?(application:{action=getlatestnote})',
    "/^\/getlatestmp3\.html/is"          => '?(application:{action=getlatestmp3})',
@@ -99,8 +100,13 @@ if (preg_match('/^moved:(.+)/is', $link, $matches))
    exit;
 }
 
+include_once("./lib/perfmonitor.class.php");
+
+startMeasure('TOTAL');
 include_once("./config.php");
+startMeasure('loader');
 include_once("./lib/loader.php");
+endMeasure('loader');
 
 if ($link != '')
 {

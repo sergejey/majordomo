@@ -72,3 +72,11 @@ Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
                        'cycle_scheduler.php', 
                        'cycle_states.php', 
                        'cycle_webvars.php');
+
+ //Define('USE_PROXY', '127.0.0.1:8888');               //PROXY SERVER DETAILS (optional)
+ //Define('USE_PROXY_AUTH', 'user:password');           //PROXY SERVER AUTH (optional)
+
+ //Define('HISTORY_NO_OPTIMIZE', 1);
+
+
+ Define('MASTER_UPDATE_URL', 'https://github.com/sergejey/majordomo/archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)

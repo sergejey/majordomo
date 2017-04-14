@@ -228,6 +228,28 @@ function startFlashing(block_id) {
   return false;
  }
 
+ function callMethod(method_name, optional_params) {
+  if (typeof optional_params === 'undefined') { optional_params = ''; }
+  var url="/";
+  url+='objects/?method='+encodeURIComponent(method_name)+'&'+optional_params;
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+    //alert(data);
+   });
+ }
+
+ function runScript(script_name, optional_params) {
+  if (typeof optional_params === 'undefined') { optional_params = ''; }
+  var url="/";
+  url+='objects/?script='+encodeURIComponent(script_name)+'&'+optional_params;
+  $.ajax({
+   url: url
+  }).done(function(data) { 
+    //alert(data);
+   });
+ }
+
  function ajaxGetGlobal(varname, id, timeout) {
   var url="/";
   url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);
@@ -258,6 +280,10 @@ function startFlashing(block_id) {
     }
    });
   return false;
+ }
+
+ function setGlobal(varname, value) {
+  ajaxSetGlobal(varname, value);
  }
 
 

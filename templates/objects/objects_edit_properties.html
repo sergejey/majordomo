@@ -12,10 +12,9 @@
 
 
 <table border="0" class="table table-bordered">
- <form action="?" method="post">
  [#begin PROPERTIES#]
  <tr>
-  <td valign="top">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</b>
+  <td valign="top" width="30%">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</b>
   [#if CLASS_ID!="0"#]
   [#if KEEP_HISTORY!="0"#]
   (<a href="#" onClick="return openModalTWindow('propHistory<#TITLE#>.[#TITLE#]', '<#TITLE#>.[#TITLE#]', '/pChart/?p=<#TITLE#>.[#TITLE#]&op=log&type=7d', 600, 600)">H</a>)
@@ -25,8 +24,23 @@
   [#if DESCRIPTION!=""#]<br/><i>[#DESCRIPTION#]</i>[#endif#]
 
   </td>
-  <td valign="top">
-  <textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE#]</textarea>
+  <td valign="top" width="70%">
+   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();"><pre>[#VALUE#][#if SOURCE!=""#] (src: [#SOURCE#])[#endif#]</pre></div>
+
+   <div id="prop[#ID#]_edit" style="display:none">
+ <form action="?" method="post">
+ <textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE#]</textarea>
+ <br/>
+ <input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-primary">
+ <a href="#" class="btn btn-default" onclick="$('#prop[#ID#]_edit').hide();$('#prop[#ID#]_current').show();return false;"><#LANG_CANCEL#></a>
+ <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+ <input type="hidden" name="id" value="<#ID#>">
+ <input type="hidden" name="tab" value="<#TAB#>">
+ <input type="hidden" name="mode" value="update">
+ </form>
+
+   </div>
+
   [#if LINKED_MODULES!=""#]<br>(linked to: [#LINKED_MODULES#])[#endif#]
   </td>
   <td valign="top">
@@ -44,18 +58,20 @@
   </td>
  </tr>
  <tr>
-  <td valign="top"><input type="text" name="new_property"></td>
-  <td valign="top"><input type="text" name="new_value"></td>
-  <td valign="top">&nbsp;</td>
- </tr>
- <tr>
   <td valign="top" colspan="4">
-   <input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-primary">
-  </td>
- </tr>
+ <form action="?" method="post">
+ <#LANG_PROPERTY#>:<br/>
+ <input type="text" name="new_property"><br/>
+ <#LANG_VALUE#>:<br/>
+ <textarea name="new_value" rows=2 cols="50" class="span5">[#VALUE#]</textarea>
+ <br/>
+ <input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-primary">
  <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
  <input type="hidden" name="id" value="<#ID#>">
  <input type="hidden" name="tab" value="<#TAB#>">
  <input type="hidden" name="mode" value="update">
  </form>
+
+  </td>
+ </tr>
 </table>

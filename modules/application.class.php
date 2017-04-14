@@ -55,6 +55,7 @@ function getParams() {
    if ($this->action=='ajaxgetglobal') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
+    $_GET['var']=str_replace('%', '', $_GET['var']);
     $res['DATA']=getGlobal($_GET['var']);
     echo json_encode($res);
     global $db;
@@ -65,6 +66,7 @@ function getParams() {
    if ($this->action=='ajaxsetglobal') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
+    $_GET['var']=str_replace('%', '', $_GET['var']);
     setGlobal($_GET['var'], $_GET['value']);
     $res['DATA']='OK';
     echo json_encode($res);

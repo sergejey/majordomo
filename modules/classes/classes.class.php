@@ -185,7 +185,7 @@ function admin(&$out) {
   $objects=SQLSelect("SELECT objects.*, locations.TITLE as LOCATION FROM objects LEFT JOIN locations ON objects.LOCATION_ID=locations.ID WHERE $qry ORDER BY CLASS_ID, TITLE");
   $total=count($objects);
   for($i=0;$i<$total;$i++) {
-   
+   $objects[$i]['KEY_DATA']=getKeyData($objects[$i]['ID']);
   }
   $out['OBJECTS']=$objects;
   $out['CLASSES']=SQLSelect("SELECT * FROM classes ORDER BY TITLE");
@@ -653,6 +653,7 @@ classes - Classes
  classes: SUB_LIST text
  classes: PARENT_LIST text
  classes: DESCRIPTION text
+ classes: TEMPLATE text
  classes: INDEX (PARENT_ID)
 
 EOD;

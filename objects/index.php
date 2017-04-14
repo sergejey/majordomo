@@ -182,10 +182,13 @@ elseif ($job != '')
       echo "OK";
    }
 }
+elseif ($method != '')
+{
+   $method=str_replace('%', '', $method);
+   callMethod($method, $_REQUEST);
+}
 elseif ($script != '')
 {
-   //echo "\nRunning script: ".$script;
-   //DebMes("Running script: ".$script);
    runScript($script, $_REQUEST);
 }
 

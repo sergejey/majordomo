@@ -9,7 +9,6 @@
  * @version 1.3
  */
 
-
 if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
     && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI'])
        || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])
@@ -519,7 +518,15 @@ function DebMes($errorMessage, $logLevel = "debug")
       mkdir(ROOT . 'debmes', 0777);
    }
 
-   $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
+   if (is_array($errorMessage) || is_object($errorMessage)) {
+      $errorMessage=json_encode($errorMessage, JSON_PRETTY_PRINT);
+   }
+
+   if ($logLevel!='debug') {
+      $today_file=ROOT.'debmes/'.date('Y-m-d').'_'.$logLevel.'.log';
+   } else {
+      $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
+   }
    $f=fopen($today_file, "a+");
    if ($f) {
                 $tmp=explode(' ', microtime());
@@ -776,6 +783,8 @@ function ping($host)
 {
    if (IsWindowsOS())
       exec(sprintf('ping -n 1 %s', escapeshellarg($host)), $res, $rval);
+   elseif (substr(php_uname(), 0, 7) === "FreeBSD")
+      exec(sprintf('ping -c 1 -t 5 %s', escapeshellarg($host)), $res, $rval);
    else
       exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
 
