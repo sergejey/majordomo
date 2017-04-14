@@ -741,10 +741,10 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          curl_setopt($ch, CURLOPT_URL, $url);
          curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
          curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+         curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
