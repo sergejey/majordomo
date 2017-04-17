@@ -69,6 +69,21 @@ $this->device_types=array(
             'turnOff'=>array('DESCRIPTION'=>'Dimmer turnOff'),
         )
     ),
+    'rgb'=>array(
+        'TITLE'=>LANG_DEVICES_RGB,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SRGB',
+        'PROPERTIES'=>array(
+            'color'=>array('DESCRIPTION'=>'Current color','ONCHANGE'=>'colorUpdated','DATA_KEY'=>1),
+            'colorSaved'=>array('DESCRIPTION'=>'Saved color')
+        ),
+        'METHODS'=>array(
+            'colorUpdated'=>array('DESCRIPTION'=>'Color Updated'),
+            'setColor'=>array('DESCRIPTION'=>'Color Set'),
+            'turnOn'=>array('DESCRIPTION'=>'RGB turnOn'),
+            'turnOff'=>array('DESCRIPTION'=>'RGB turnOff'),
+        )
+    ),
     'motion'=>array(
         'TITLE'=>LANG_DEVICES_MOTION,
         'PARENT_CLASS'=>'SDevices',

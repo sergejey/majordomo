@@ -9,6 +9,7 @@ $dictionary=array(
 
 'DEVICES_RELAY'=>'Управляемое реле/Выключатель',
 'DEVICES_DIMMER'=>'Управляемый диммер',
+'DEVICES_RGB'=>'RGB-контроллер',
 'DEVICES_MOTION'=>'Датчик движения',
 'DEVICES_BUTTON'=>'Кнопка',
 'DEVICES_SWITCH'=>'Выключатель',

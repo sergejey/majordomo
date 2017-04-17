@@ -550,6 +550,9 @@ function usual(&$out) {
         if ($rec['TYPE']=='dimmer') {
             $linked_property='level';
         }
+       if ($rec['TYPE']=='rgb') {
+           $linked_property='color';
+       }
         if ($rec['TYPE']=='motion') {
             $linked_property='';
             $linked_method='motionDetected';

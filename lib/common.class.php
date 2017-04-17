@@ -735,7 +735,7 @@ function getURL($url, $cache = 0, $username = '', $password = '')
       {
 
          //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
-         //$startTime=getmicrotime();
+         $startTime=getmicrotime();
 
          $ch = curl_init();
          curl_setopt($ch, CURLOPT_URL, $url);
@@ -790,7 +790,7 @@ function getURL($url, $cache = 0, $username = '', $password = '')
 
          $result = curl_exec($ch);
 
-         //$endTime=getmicrotime();
+         $endTime=getmicrotime();
          //DebMes('Geturl finished for '.$url.' (Time taken: '.round($endTime-$startTime,2).')', 'geturl');
 
           if (curl_errno($ch)) {
@@ -798,8 +798,11 @@ function getURL($url, $cache = 0, $username = '', $password = '')
               $info = curl_getinfo($ch);
               $callSource=debug_backtrace()[1]['function'];
               DebMes("Geturl to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
+          } elseif (($endTime-$startTime)>5) {
+              DebMes("Warning: geturl to $url is pretty slow (".round($endTime-$startTime,2)."s)");
           }
           curl_close($ch);
+
 
       }
       catch (Exception $e)

@@ -77,7 +77,8 @@ $ctl = new control_modules();
 
                 "plugins/freeboard/freeboard.datasources.js",
                 "plugins/freeboard/freeboard.widgets.js",
-                "examples/plugin_example.js",
+                "plugins/thirdparty/handlebars.js",
+                "plugins/thirdparty/actuator.js",
         <?php
 
         $modules=SQLSelect("SELECT ID,NAME FROM project_modules");

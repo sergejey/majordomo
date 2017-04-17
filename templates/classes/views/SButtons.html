@@ -1,27 +1,4 @@
-<style>
-    .button-widget {
-        cursor:pointer;
-    }
-    .button-text {
-        padding-top:10px;
-        vertical-align:middle;
-        white-space: nowrap;
-    }
-    .button-light {
-        border-radius:50%;
-        width:22px;
-        height:22px;
-        border:2px solid #0b05ff;
-        margin-top:5px;
-        float:left;
-        margin-right:10px;
-    }
-    .button-light.on {
-        background-color: #000bff;
-        box-shadow: 0px 0px 15px #929aff;
-        border-color:#FDF1DF;
-    }
-</style>
+<link rel='stylesheet' href='/css/devices.css' />
 <div class="button-widget" onClick='callMethod("%.pressed");$("#button%.object_id%_light").addClass("on");setTimeout("$(\"#button%.object_id%_light\").removeClass(\"on\");",300);'>
     <div class="button-light" id="button%.object_id%_light"></div>
     <div class="button-text">%.object_description%</div>

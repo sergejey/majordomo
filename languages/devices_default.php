@@ -9,6 +9,7 @@ $dictionary=array(
 
 'DEVICES_RELAY'=>'Relay/Switch',
 'DEVICES_DIMMER'=>'Dimmer',
+'DEVICES_RGB'=>'RGB-light',
 'DEVICES_MOTION'=>'Motion sensor',
 'DEVICES_BUTTON'=>'Button',
 'DEVICES_SWITCH'=>'Switch',
