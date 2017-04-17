@@ -77,6 +77,11 @@ $dictionary=array(
 'APP_CALENDAR'=>'Календар',
 'APP_READIT'=>'Надісл. посил.',
 'APP_QUOTES'=>'Цитати',
+'APP_ALARMCLOCK'=>'Будильник',
+'APP_OPENWEATHER'=>'Погода від OpenWeatherMap',
+'SYS_DATEFORMAT'=>'Формат дати',
+'APP_YATRAFFIC'=>'Яндекс.Пробки',
+'APP_CHATBOX'=>'Повідомлення',
 
 'MODULE_OBJECTS_HISTORY'=>'Історія об\'єктів',
 'MODULE_BT_DEVICES'=>'Bluetooth-пристрої',

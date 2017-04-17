@@ -80,6 +80,11 @@ $dictionary=array(
 'APP_CALENDAR'=>'Calendar',
 'APP_READIT'=>'ReadIt',
 'APP_QUOTES'=>'Quotes',
+'APP_ALARMCLOCK'=>'AlarmClock',
+'APP_OPENWEATHER'=>'Weather from OpenWeatherMap',
+'SYS_DATEFORMAT'=>'Date format',
+'APP_YATRAFFIC'=>'Yandex.Traffic',
+'APP_CHATBOX'=>'ChatBox',
 
 'MODULE_OBJECTS_HISTORY'=>'Objects History',
 'MODULE_BT_DEVICES'=>'Bluetooth Devices',
