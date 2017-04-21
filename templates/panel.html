@@ -318,6 +318,12 @@ jQuery.fn.center = function () {
             }).done(function(data) {
                 //console.log('loaded');
                 clearTimeout(loaderTimer);
+                try {
+                        JSON.parse(data);
+                } catch (e) {
+                        window.location.href=urlInProgress;
+                        return false;
+                }
                 var obj=jQuery.parseJSON(data);
 
                 if ("undefined" !== typeof obj.REDIRECT) {

@@ -65,13 +65,6 @@ if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
 }
 // END: language constants
 
-if (!headers_sent())
-{
-   header("HTTP/1.0: 200 OK\n");
-   header('Content-Type: text/html; charset=utf-8');
-   //ob_start("ob_gzhandler"); // should be un-commented for production server
-}
-
 $result = str_replace("nf.php", "admin.php", $result);
 
 require(ROOT.'lib/utils/postprocess_result.inc.php');
@@ -102,7 +95,7 @@ if ($_GET['part_load']) {
       $cut_begin_index+=mb_strlen($cut_begin)+2;
       $res['CONTENT']=mb_substr($result,$cut_begin_index,($cut_end_index-$cut_begin_index));
       $res['NEED_RELOAD']=0;
-      if (is_integer(mb_strpos($res['CONTENT'], '$(document).ready')) || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) { 
+      if (headers_sent() || is_integer(mb_strpos($res['CONTENT'], '$(document).ready')) || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) { 
          $res['CONTENT']='';
          $res['NEED_RELOAD']=1;
       }
@@ -118,6 +111,8 @@ if ($_GET['part_load']) {
              $result=json_encode($res);
       }
 
+      header("HTTP/1.0: 200 OK\n");
+      header('Content-Type: text/html; charset=utf-8');
       echo $result;exit;
       $session->save();
       $db->Disconnect(); // closing database connection
@@ -126,6 +121,14 @@ if ($_GET['part_load']) {
 }
 
 startMeasure('echoall');
+
+if (!headers_sent())
+{
+   header("HTTP/1.0: 200 OK\n");
+   header('Content-Type: text/html; charset=utf-8');
+   //ob_start("ob_gzhandler"); // should be un-commented for production server
+}
+
 echo $result;
 endMeasure('echoall');
 

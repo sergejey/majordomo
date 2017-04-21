@@ -24,7 +24,25 @@ $this->device_links=array(
                     'PARAM_TYPE'=>'num'
                 )
             )
+            ),
+        array(
+            'LINK_NAME'=>'set_color',
+            'LINK_TITLE'=>LANG_DEVICES_LINK_SET_COLOR,
+            'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SET_COLOR_DESCRIPTION,
+            'TARGET_CLASS'=>'SRGB',
+            'PARAMS'=>array(
+                array(
+                    'PARAM_NAME'=>'action_color',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR,
+                    'PARAM_TYPE'=>'color'
+                ),
+                array(
+                    'PARAM_NAME'=>'action_delay',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
+                    'PARAM_TYPE'=>'num'
+                )
             )
+        )
     ),
     'SSensors'=>array(
         array(

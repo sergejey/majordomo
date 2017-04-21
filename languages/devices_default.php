@@ -18,7 +18,7 @@ $dictionary=array(
 'DEVICES_HUM_SENSOR'=>'Humidity sensor',
 'DEVICES_STATE_SENSOR'=>'State sensor',
 'DEVICES_PERCENTAGE_SENSOR'=>'Percentage value sensor',
-'DEVICES_PRESSURE_SENSOR'=>'Atmospheric pressure sesnor',
+'DEVICES_PRESSURE_SENSOR'=>'Atmospheric pressure sensor' ,
 'DEVICES_POWER_SENSOR'=>'Watt sensor',
 'DEVICES_VOLTAGE_SENSOR'=>'Voltage sensor',
 'DEVICES_CURRENT_SENSOR'=>'Current sensor',
@@ -81,6 +81,11 @@ $dictionary=array(
 'DEVICES_LINK_SWITCH_IT'=>'Switch it',
 'DEVICES_LINK_SWITCH_IT_DESCRIPTION'=>'Control another devices when action triggered',
 'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY'=>'Delay (seconds)',
+
+'DEVICES_LINK_SET_COLOR'=>'Set Color',
+'DEVICES_LINK_SET_COLOR_DESCRIPTION'=>'Change color when action triggered',
+'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR'=>'Color',
+
 
 'DEVICES_LINK_SENSOR_SWITCH'=>'Sensor control',
 'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION'=>'Control another devices based on sensor\'s value',

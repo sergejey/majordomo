@@ -50,16 +50,22 @@ for ($i = 0; $i < $total; $i++) {
     $action_string='';
     // -----------------------------------------------------------------
     if ($link_type=='switch_it') {
-        if ($settings['action_type']=='turnoff') {
-            $action_string='callMethod("'.$object.'.turnOff'.'");';
-        } elseif ($settings['action_type']=='turnon') {
-            $action_string='callMethod("'.$object.'.turnOn'.'");';
-        } elseif ($settings['action_type']=='switch') {
-            $action_string='callMethod("'.$object.'.switch'.'");';
+        if ($settings['action_type'] == 'turnoff') {
+            $action_string = 'callMethod("' . $object . '.turnOff' . '");';
+        } elseif ($settings['action_type'] == 'turnon') {
+            $action_string = 'callMethod("' . $object . '.turnOn' . '");';
+        } elseif ($settings['action_type'] == 'switch') {
+            $action_string = 'callMethod("' . $object . '.switch' . '");';
         }
-        if ((int)$settings['action_delay']>0) {
-            $action_string='setTimeout(\''.$timer_name.'\',\''.$action_string.'\','.(int)$settings['action_delay'].');';
+        if ((int)$settings['action_delay'] > 0) {
+            $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
         }
+    } elseif ($link_type=='set_color') {
+            $action_string='callMethod("'.$object.'.setColor'.'",array("color"=>"'.$settings['action_color'].'"));';
+            if ((int)$settings['action_delay']>0) {
+                $action_string='setTimeout(\''.$timer_name.'\',\''.$action_string.'\','.(int)$settings['action_delay'].');';
+            }
+            // -----------------------------------------------------------------
     // -----------------------------------------------------------------
     } elseif ($link_type=='sensor_switch') {
         if ($settings['action_type']=='turnoff' && gg($object.'.status')) {

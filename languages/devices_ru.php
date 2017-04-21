@@ -82,6 +82,10 @@ $dictionary=array(
 'DEVICES_LINK_SWITCH_IT_DESCRIPTION'=>'Управление другим устройством по событию',
 'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY'=>'Задержка выполнения (секунд)',
 
+    'DEVICES_LINK_SET_COLOR'=>'Установить цвет',
+    'DEVICES_LINK_SET_COLOR_DESCRIPTION'=>'Установить цвет по событию',
+    'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR'=>'Цвет',
+
 'DEVICES_LINK_SENSOR_SWITCH'=>'Условное управление',
 'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION'=>'Управление другим устройством по показаниям датчика',
 'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION'=>'Тип условия',
