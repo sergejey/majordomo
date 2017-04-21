@@ -405,7 +405,37 @@ function usual(&$out) {
         echo json_encode($res);
         exit;
     }
- $this->admin($out);
+
+ if ($this->owner->action=='apps') {
+  //$this->redirect(ROOTHTML."module/devices.html");
+ }
+
+    global $location_id;
+    if ($location_id) {
+        $devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID='".(int)$location_id."' ORDER BY TYPE, TITLE");
+        $total = count($devices);
+        for ($i = 0; $i < $total; $i++) {
+            if ($devices[$i]['LINKED_OBJECT']) {
+                $processed=$this->processDevice($devices[$i]['ID']);
+                $devices[$i]['HTML']=$processed['HTML'];
+            }
+        }
+        $out['DEVICES']=$devices;
+        $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+        foreach($location as $k=>$v) {
+            $out['LOCATION_'.$k]=$v;
+        }
+    }
+
+    $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+    $total = count($locations);
+    for ($i = 0; $i < $total; $i++) {
+        $devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
+        $locations[$i]['DEVICES_TOTAL']=$devices_count;
+    }
+    $out['LOCATIONS']=$locations;
+
+
 }
 /**
 * devices search
