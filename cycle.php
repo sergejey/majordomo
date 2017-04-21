@@ -193,13 +193,19 @@ while (false !== ($result = $threads->iteration()))
    $to_restart=array();
    $auto_restarts=array();
 
-   $qry="1 AND TITLE LIKE 'cycle%Run'";
+   $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
    $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
    $total = count($cycles);
 
+   $seen=array();
    for ($i = 0; $i < $total; $i++) {
       $title = $cycles[$i]['TITLE'];
       $title = preg_replace('/Run$/', '', $title);
+      $title = preg_replace('/Control$/', '', $title);
+      if (isset($seen[$title])) {
+       continue;
+      }
+      $seen[$title]=1;
       $control=getGlobal($title.'Control');
       $auto_restart=getGlobal($title.'AutoRestart');
       if ($auto_restart) {

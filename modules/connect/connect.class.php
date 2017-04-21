@@ -221,6 +221,7 @@ function admin(&$out) {
    }
 
    $this->saveConfig();
+   setGlobal('cycle_connectControl', 'restart');
    $this->redirect("?");
  }
 

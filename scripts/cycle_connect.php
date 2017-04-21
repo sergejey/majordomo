@@ -15,32 +15,12 @@ include_once("./lib/loader.php");
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
+include_once("./load_settings.php");
+
 const CONNECT_HOST = 'connect.smartliving.ru';
 const CONNECT_PORT = 11444;
 
 // get settings
-$sqlQuery = "SELECT NAME, VALUE
-               FROM settings";
-
-$settings = SQLSelect($sqlQuery);
-$total = count($settings);
-
-for ($i = 0; $i < $total; $i ++)
-   Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
-
-// language selection by settings
-if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php'))
-   include_once (ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
-
-include_once (ROOT . 'languages/default.php');
-
-if (defined('SETTINGS_SITE_TIMEZONE'))
-{
-   ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
-}
-
-$session = new session("prj");
-
 set_time_limit(0);
 
 $socket_connected=0;
@@ -134,12 +114,14 @@ while (1)
    if ($result === false)
    {
       echo 'socket_connect() failed.\nReason: (' . $result . ') ' . socket_strerror(socket_last_error($socket)) . "\n";
+      DebMes("Failed to connect (".$result.")", 'connect');
       $socket_connected=false;
       sleep(5);
       continue;
    }
    else
    {
+      DebMes("Connected OK (".$result.")", 'connect');
       echo "OK.\n";
       $socket_connected=true;
    }
@@ -148,67 +130,56 @@ while (1)
    echo date('Y-m-d H:i:s ') . 'Sending: ' . $in;
    socket_write($socket, $in, strlen($in));
    echo "OK.\n";
-
    $out = socket_read($socket, 2048, PHP_NORMAL_READ);
    echo date('Y-m-d H:i:s ') . 'Response: ' . trim($out) . "\n";
-
    $in = 'auth:' . $connect->config['CONNECT_USERNAME'] . '|' . md5(md5($connect->config['CONNECT_PASSWORD'])) . "\n";
-
    echo date('Y-m-d H:i:s ') . 'Sending: ' . $in;
-
    socket_write($socket, $in, strlen($in));
-
    echo "OK.\n";
-
    $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-
    echo date('Y-m-d H:i:s ') . 'Response: ' . trim($out) . "\n";
-
    $in = 'Hello again :)' . "\n";
-
    echo date('Y-m-d H:i:s ') . 'Sending: ' . $in;
-
    socket_write($socket, $in, strlen($in));
-
    echo "OK.\n";
 
    $checked_time = 0;
    $menu_sent_time = time();
+   socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => 60, "usec" => 0));
+
+   $sent_data_hash=array();
 
    while (1)
    {
       $read = array();
       $read[0] = $socket;
 
-      socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => 60, "usec" => 0));
-
       $write  = NULL;
       $except = NULL;
-      $num_changed_sockets = socket_select($read, $writ, $except, 0, 1);
+      $num_changed_sockets = socket_select($read, $write, $except, 0, 1);
 
       if ($num_changed_sockets > 0)
       {
          $out = socket_read($socket, 2048, PHP_NORMAL_READ);
-
          if ($out === false)
          {
+            DebMes("Error reading from socket", 'connect');
             break;
          }
-
          $out = trim($out);
 
          if (preg_match('/Please login/is', $out)) {
           echo date('Y-m-d H:i:s') . ' Login required. Closing socket...';
           continue 2;
          }
-
          processResponse($out);
       }
 
       if (date('Y-m-d H:i:s') != $last_echo)
       {
          $last_echo = date('Y-m-d H:i:s');
-         echo $last_echo . " Listening...\n";
+         //echo $last_echo . " Listening...\n";
+         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
       }
 
       if (time() - $menu_sent_time > 30 * 60)
@@ -248,23 +219,28 @@ while (1)
 
          for ($i = 0; $i < $total; $i++)
          {
-            $commands[$i]['RENDER_TITLE'] = processTitle($commands[$i]['TITLE'], $connect);
-            $commands[$i]['RENDER_DATA'] = processTitle($commands[$i]['DATA'], $connect);
+            $old_render_title = $commands[$i]['RENDER_TITLE'];
+            $new_render_title = processTitle($commands[$i]['TITLE'], $connect);
+            $commands[$i]['RENDER_TITLE'] = $new_render_title;
+
+            $old_render_data=$commands[$i]['RENDER_DATA'];
+            $new_render_data='';
+            if ($commands[$i]['DATA']!='') {
+             $new_render_data=processTitle($commands[$i]['DATA'], $connect);
+             $commands[$i]['RENDER_DATA'] = $new_render_data;
+            }
+            if ($new_render_title!=$old_render_title || $new_render_data!=$old_render_data) {
+             $resultMessage = date('Y-m-d H:i:s');
+             $resultMessage .= ' Updating auto update item (id ' . $commands[$i]['ID'];
+             $resultMessage .= ' time ' . $commands[$i]['AUTO_UPDATE'] . '): ' . $commands[$i]['TITLE'] . "\n";
+             echo $resultMessage;
+            }
             $commands[$i]['RENDER_UPDATED'] = date('Y-m-d H:i:s');
-
             SQLUpdate('commands', $commands[$i]);
-
-            $resultMessage = date('Y-m-d H:i:s');
-            $resultMessage .= ' Updating auto update item (id ' . $commands[$i]['ID'];
-            $resultMessage .= ' time ' . $commands[$i]['AUTO_UPDATE'] . '): ' . $commands[$i]['TITLE'] . "\n";
-
-            echo $resultMessage;
          }
 
          // sending changes if any
-         $sqlQuery = "SELECT *
-                        FROM commands";
-
+         $sqlQuery = "SELECT ID, CUR_VALUE, RENDER_TITLE, RENDER_DATA FROM commands";
          $commands = SQLSelect($sqlQuery);
          $total = count($commands);
          $changed_data = array();
@@ -297,23 +273,35 @@ while (1)
          }
 
          $total = count($changed_data);
-
          for ($i = 0; $i < $total; $i++)
          {
             $changed_data[$i]['DATA'] = str_replace("\n", ' ', $changed_data[$i]['DATA']);
             $changed_data[$i]['DATA'] = str_replace("\r", '', $changed_data[$i]['DATA']);
             $changed_data[$i]['DATA'] = preg_replace("/<!--(.+?)-->/is", '', $changed_data[$i]['DATA']);
+            $data_key=$changed_data[$i]['TYPE'].$changed_data[$i]['ID'];
 
+            if (isset($sent_data_hash[$data_key]) && $sent_data_hash[$data_key]==$changed_data[$i]['DATA']) {
+             continue;
+            }
+            $sent_data_hash[$data_key]=$changed_data[$i]['DATA'];
             $in = 'serial:' . serialize($changed_data[$i]) . "\n";
 
-            echo date('Y-m-d H:i:s') . ' ' . $i . 'Sending: ' . $in;
+            echo date('Y-m-d H:i:s') . ' ' . $i . ' Sending: ' . $in;
+            $out = socket_write($socket, $in, strlen($in));
 
-            socket_write($socket, $in, strlen($in));
+            if ($out === false) {
+             DebMes("Error writing to socket", 'connect');
+             break;
+            }
 
             echo "OK.\n";
 
             $out = socket_read($socket, 2048, PHP_NORMAL_READ);
 
+            if ($out === false) {
+             DebMes("Error reading socket after write", 'connect');
+             break;
+            }
             processResponse($out);
          }
       }
@@ -327,6 +315,7 @@ while (1)
    }
 
    echo date('Y-m-d H:i:s') . ' Closing socket...';
+   DebMes("Closing socket.");
    socket_close($socket);
    echo "OK.\n\n";
 }
@@ -361,14 +350,9 @@ function processResponse($out)
    if (preg_match('/PING/is', $out, $m))
    {
       $in = "PONG!\n";
-
       echo date('Y-m-d H:i:s') . ' Sending: ' . $in;
-
       socket_write($socket, $in, strlen($in));
-
       echo "OK.\n";
-
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
    }
 }
 

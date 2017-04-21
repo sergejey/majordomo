@@ -9,12 +9,28 @@ $dictionary=array(
 
 'DEVICES_RELAY'=>'Управляемое реле/Выключатель',
 'DEVICES_DIMMER'=>'Управляемый диммер',
+'DEVICES_RGB'=>'RGB-контроллер',
 'DEVICES_MOTION'=>'Датчик движения',
 'DEVICES_BUTTON'=>'Кнопка',
 'DEVICES_SWITCH'=>'Выключатель',
+'DEVICES_OPENCLOSE'=>'Датчик открытия/закрытия',
 'DEVICES_TEMP_SENSOR'=>'Датчик температуры',
 'DEVICES_HUM_SENSOR'=>'Датчик влажности',
-'DEVICES_OPENCLOSE'=>'Датчик открытия/закрытия',
+'DEVICES_STATE_SENSOR'=>'Датчик состояния',
+'DEVICES_PERCENTAGE_SENSOR'=>'Датчик процентное значение',
+'DEVICES_PRESSURE_SENSOR'=>'Датчик атмосферного давления',
+'DEVICES_POWER_SENSOR'=>'Датчик мощности',
+'DEVICES_VOLTAGE_SENSOR'=>'Датчик напряжения',
+'DEVICES_CURRENT_SENSOR'=>'Датчик тока',
+
+// Measure
+'M_VOLTAGE'=>'В',
+'M_CURRENT'=>'А',
+'M_PRESSURE'=>'торр',
+'M_WATT'=>'Вт',
+
+//----
+'DEVICES_LINKS'=>'Связанные устройства',
 
 'DEVICES_STATUS'=>'Статус',
 
@@ -30,6 +46,10 @@ $dictionary=array(
 'DEVICES_NORMAL_VALUE'=>'Значение в нормальных пределах',
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Значение датчика вышло за порог',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Значение датчика вернулось к норме',
+'DEVICES_MOTION_IGNORE'=>'Игнорировать события от устройства, когда никого нет дома',
+'DEVICES_ALIVE_TIMEOUT'=>'Допустимое время отсутствия данных (часов)',
+'DEVICES_MAIN_SENSOR'=>'Основной сенсор помещения',
+'DEVICES_NOT_UPDATING'=>'не обновляется',
 
 'DEVICES_IS_ON'=>'Включено',
 'DEVICES_IS_CLOSED'=>'Закрыто',
@@ -46,6 +66,32 @@ $dictionary=array(
 
 'DEVICES_ADD_MENU'=>'Добавить устройство в Меню',
 'DEVICES_ADD_SCENE'=>'Добавить устройство на Сцену',
+
+'DEVICES_LINKS_NOT_ADDED'=>'Нет связанных устройств',
+'DEVICES_LINKS_AVAILABLE'=>'Доступные типы связей',
+'DEVICES_LINKS_COMMENT'=>'Комментарий (не обязательно)',
+'DEVICES_LINKS_LINKED_DEVICE'=>'Связанное устройство',
+'DEVICES_LINKS_ADDED'=>'Связанные устройства',
+
+'DEVICES_LINK_ACTION_TYPE'=>'Действие',
+'DEVICES_LINK_TYPE_TURN_ON'=>'Включить',
+'DEVICES_LINK_TYPE_TURN_OFF'=>'Выключить',
+'DEVICES_LINK_TYPE_SWITCH'=>'Переключить',
+
+'DEVICES_LINK_SWITCH_IT'=>'Включить/Выключить',
+'DEVICES_LINK_SWITCH_IT_DESCRIPTION'=>'Управление другим устройством по событию',
+'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY'=>'Задержка выполнения (секунд)',
+
+    'DEVICES_LINK_SET_COLOR'=>'Установить цвет',
+    'DEVICES_LINK_SET_COLOR_DESCRIPTION'=>'Установить цвет по событию',
+    'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR'=>'Цвет',
+
+'DEVICES_LINK_SENSOR_SWITCH'=>'Условное управление',
+'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION'=>'Управление другим устройством по показаниям датчика',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION'=>'Тип условия',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_ABOVE'=>'Выше заданного',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW'=>'Ниже заданного',
+'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE'=>'Пороговое значение',
 
 
 'DEVICES_UPDATE_CLASSSES'=>'Обновить классы',

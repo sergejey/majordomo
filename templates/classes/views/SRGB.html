@@ -1,0 +1,19 @@
+<script src='/js/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='/js/spectrum/spectrum.min.css' />
+<link rel='stylesheet' href='/css/devices.css' />
+<div class="controller-widget">
+    <div class="controller-light %.status|"off;on"%"></div>
+    <div class="controller-text" style='display:%.status|"none;block"%;cursor:pointer;' onClick='callMethod("%.turnOff");'>%.object_description%</div>
+    <div class="controller-text" style='display:%.status|"block;none"%;cursor:pointer;' onClick='callMethod("%.turnOn");'>%.object_description%</div>
+<div>
+    <input type="text" id="color%.object_id%" value="%.colorSaved%" onChange='callMethod("%.setColor","color="+encodeURIComponent(this.value));'/>
+</div>
+<script>
+    $("#color%.object_id%").spectrum({
+        preferredFormat: "hex",
+        showInput: true,
+        chooseText: "OK",
+        cancelText: "<#LANG_CANCEL#>"
+    });
+</script>
+</div>

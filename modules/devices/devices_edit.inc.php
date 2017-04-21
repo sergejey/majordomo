@@ -145,6 +145,10 @@
       }
   }
 
+  if ($this->tab=='links') {
+      include_once(DIR_MODULES.'devices/devices_links.inc.php');
+  }
+
   if ($this->mode=='update' && $this->tab=='') {
    $ok=1;
    global $title;
@@ -224,7 +228,6 @@
            objectClassChanged($object_rec['ID']);
        }
 
-
        if ($location_title) {
            setGlobal($object_rec['TITLE'].'.linkedRoom',$location_title);
        }
@@ -238,12 +241,16 @@
            setGlobal($object_rec['TITLE'].'.maxValue',60);
        }
 
+    clearPropertiesCache();
+
     if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
     }
 
+    $this->homebridgeSync();
+
     if ($added) {
-      $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=interface");
+      $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=settings");
     }
 
 

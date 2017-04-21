@@ -26,7 +26,7 @@ class Threads
    public function closeThread($id) {
       $pstatus = proc_get_status($this->handles[$id]);
       $pid = $pstatus['pid'];
-      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("sudo kill -9 $pid");
+      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("kill -9 $pid");
       //proc_terminate($this->handles[$id]);
       /*
       fclose($this->pipes[$id][0]);
@@ -65,6 +65,7 @@ class Threads
        */
       ++$this->lastId;
 
+      echo date('H:i:s') . " Starting thread: " . $command . "\n";
       $this->commandLines[$this->lastId] = $command;
       $this->handles[$this->lastId]      = proc_open($command, $this->descriptorSpec, $pipes);
 
@@ -101,6 +102,8 @@ class Threads
       ++$this->lastId;
 
       $this->commandLines[$this->lastId] = $command;
+
+      echo date('H:i:s') . " Starting threadx: " . $command . "\n";
       $this->handles[$this->lastId]      = proc_open($command, $this->descriptorSpec, $pipes);
       
       stream_set_timeout($pipes[0], $this->timeout);
@@ -190,7 +193,6 @@ class Threads
          {
             //feof($stream)
             echo date('H:i:s') . " Closing thread: " . $this->commandLines[$id] . "\n";
-
             DebMes("Closing thread: " . $this->commandLines[$id]);
             
             $result .= "THREAD CLOSED: [" . $this->commandLines[$id] . "]\n";

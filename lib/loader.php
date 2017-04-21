@@ -31,9 +31,10 @@ if ($lib_dir = @opendir("./lib"))
 
    while (($lib_file = readdir($lib_dir)) !== false)
    {
+      if ($lib_file=='perfmonitor.class.php' && function_exists('startMeasure')) continue;
       if ((preg_match("/\.php$/", $lib_file)) && ($lib_file != "loader.php") && !in_array($lib_file, $ignore_libs))
       {
-         include_once("./lib/$lib_file");
+         include("./lib/$lib_file");
       }
    }
 

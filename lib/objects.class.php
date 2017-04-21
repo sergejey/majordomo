@@ -48,6 +48,9 @@ function addClass($class_name, $parent_class = '')
  */
  function getClassTemplate($class_id) {
    $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);  
+   if (!$class['ID']) {
+    return '';
+   }
    $class_file_path=DIR_TEMPLATES.'classes/views/'.$class['TITLE'].'.html';
    if ($class['TEMPLATE']!='') {
     $data=$class['TEMPLATE'];
@@ -90,7 +93,7 @@ function getObjectClassTemplate($object_name) {
  * @param mixed $code        Code (default '')
  * @return mixed
  */
-function addClassMethod($class_name, $method_name, $code = '')
+function addClassMethod($class_name, $method_name, $code = '', $key = '')
 {
    $class_id = addClass($class_name);
 
@@ -104,22 +107,37 @@ function addClassMethod($class_name, $method_name, $code = '')
 
       $method = SQLSelectOne($sqlQuery);
 
+      if ($key!='') {
+          $injection_code='/* begin injection of {'.$key.'} */'."\n".$code."\n".'/* end injection of {'.$key.'} */';
+      } else {
+          $injection_code=$code;
+      }
+
       if (!$method['ID'])
       {
          $method = array();
          
          $method['CLASS_ID']  = $class_id;
          $method['OBJECT_ID'] = 0;
-         $method['CODE']      = $code;
+         $method['CODE']      = $injection_code;
          $method['TITLE']     = $method_name;
          $method['ID']        = SQLInsert('methods', $method);
       }
       else
       {
-         if ($code != '' && $method['CODE'] != $code)
+         if ($code != '' && $method['CODE'] != $injection_code && $method['CODE'] != $code  && $key!='')
          {
-            $method['CODE'] = $code;
+             @$old_code=$method['CODE'];
+             if (preg_match('/\/\* begin injection of {'.$key.'} \*\/(.*?)\/\* end injection of {'.$key.'} \*\//uis',$method['CODE'],$m)) {
+                 $current_injection=trim($m[1]);
+                 if ($current_injection!=$code) {
+                     $method['CODE']=str_replace($m[0],$injection_code,$method['CODE']);
+                 }
+             } else {
+                 $method['CODE'].="\n".$injection_code;
+             }
 
+            //$method['CODE'] = $code;
             SQLUpdate('methods', $method);
          }
 

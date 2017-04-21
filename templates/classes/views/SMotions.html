@@ -1,1 +1,6 @@
-<div>%.object_description%: %.status% (<#LANG_UPDATED#>: %.updatedText%)</div>
+<link rel='stylesheet' href='/css/devices.css' />
+<div class="motion-widget">
+    <div class="motion-light %.status|"off;on"%"></div>
+    <div class="motion-text" style='display:%.status|"none;block"%;'>%.object_description% (%.updatedText%)</div>
+    <div class="motion-text" style='display:%.status|"block;none"%;'>%.object_description% (%.updatedText%)</div>
+</div>

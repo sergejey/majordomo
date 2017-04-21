@@ -1,0 +1,127 @@
+.button-widget {
+    cursor:pointer;
+}
+.button-text {
+    padding-top:10px;
+    vertical-align:middle;
+    white-space: nowrap;
+}
+.button-light {
+    border-radius:50%;
+    width:22px;
+    height:22px;
+    border:2px solid #0b05ff;
+    margin-top:5px;
+    float:left;
+    margin-right:10px;
+}
+.button-light.on {
+    background-color: #000bff;
+    box-shadow: 0px 0px 15px #929aff;
+    border-color:#FDF1DF;
+}
+
+.controller-widget {
+}
+.controller-text {
+    padding-top:10px;
+    cursor:pointer;
+    vertical-align:middle;
+}
+.controller-light {
+    border-radius:50%;
+    width:22px;
+    height:22px;
+    border:2px solid #3d3d3d;
+    margin-top:5px;
+    float:left;
+    margin-right:10px;
+}
+.controller-light.on {
+    background-color:#FFC773;
+    box-shadow: 0px 0px 15px #FF9900;
+    border-color:#FDF1DF;
+}
+
+.temp-widget {
+}
+.temp-value {
+    font-size:42px;
+    text-align:center;
+}
+.widget .temp-value {
+    color:white;
+}
+.temp-description {
+    text-align:center;
+    font-size:11px;
+    margin-top:-4px;
+}
+.widget .temp-description {
+    color:white;
+}
+
+.openclose-widget {
+}
+.openclose-text {
+    padding-top:10px;
+    cursor:pointer;
+    vertical-align:middle;
+    white-space: nowrap;
+}
+.openclose-light {
+    border-radius:50%;
+    width:22px;
+    height:22px;
+    border:2px solid #3d3d3d;
+    margin-top:5px;
+    float:left;
+    margin-right:10px;
+}
+.openclose-light.on {
+    background-color:#C7FF73;
+    box-shadow: 0px 0px 15px #99FF00;
+    border-color:#FDF1DF;
+}
+
+.motion-widget {
+}
+.motion-text {
+    padding-top:10px;
+    cursor:pointer;
+    vertical-align:middle;
+    white-space: nowrap;
+}
+.motion-light {
+    border-radius:50%;
+    width:22px;
+    height:22px;
+    border:2px solid #3d3d3d;
+    margin-top:5px;
+    float:left;
+    margin-right:10px;
+}
+.motion-light.on {
+    background-color: #ff1e00;
+    box-shadow: 0px 0px 15px #ff727e;
+    border-color:#FDF1DF;
+}
+
+.hum-widget {
+ }
+.hum-value {
+    font-size:42px;
+    text-align:center;
+}
+.widget .hum-value {
+    color:white;
+}
+.hum-description {
+    text-align:center;
+    font-size:11px;
+    margin-top:-4px;
+}
+.widget .hum-description {
+    color:white;
+}
+

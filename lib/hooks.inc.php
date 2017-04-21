@@ -68,7 +68,7 @@ function unsubscribeFromEvent($module_name, $event_name = '')
 function processSubscriptions($event_name, $details = '')
 {
 
-   postToWebSocket($event_name, $details, 'PostEvent');
+   postToWebSocketQueue($event_name, $details, 'PostEvent');
 
    if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)))
    {
@@ -116,11 +116,19 @@ function processSubscriptions($event_name, $details = '')
             } else {
              DebMes("$module_name.processSubscription error (method not found)");
             }
+            if (!isset($details['BREAK'])) {
+             $details['BREAK']=false;
+            }
             if ($details['BREAK']) break;
          } else {
           DebMes("$module_name.processSubscription error (module class not found)");
          }
       }
+
+      if (!isset($details['PROCESSED'])) {
+       $details['PROCESSED']=false;
+      }
+
       return (int)$details['PROCESSED'];
    }
    return 0;

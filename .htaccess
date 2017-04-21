@@ -1,34 +1,6 @@
 AddDefaultCharset UTF-8
 DirectoryIndex index.html index.htm index.php default.html
 
-<IfModule mod_expires.c>
-ExpiresActive On
-ExpiresDefault "access 7 days"
-ExpiresByType application/javascript "access plus 1 year"
-ExpiresByType text/javascript "access plus 1 year"
-ExpiresByType text/css "access plus 1 year"
-ExpiresByType text/x-javascript "access 1 year"
-ExpiresByType image/x-icon "access 1 year"
-ExpiresByType application/x-shockwave-flash "access 1 year"
-</IfModule>
-
-# Cache-Control
-<ifModule mod_headers.c>
-# 30
-<filesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf)$">
-Header set Cache-Control "max-age=2592000, public"
-</filesMatch>
-# 30
-<filesMatch "\.(css|js)$">
-Header set Cache-Control "max-age=2592000, public"
-</filesMatch>
-</ifModule>
-
-<IfModule mod_setenvif.c>
-BrowserMatch "MSIE" force-no-vary
-BrowserMatch "Mozilla/4.[0-9]{2}" force-no-vary
-</IfModule>
-
 <IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /

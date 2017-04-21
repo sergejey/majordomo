@@ -4,6 +4,7 @@
  $this->callMethod('logicAction');
 
  $ot=$this->object_title;
+ $linked_room=$this->getProperty('linkedRoom');
 
  $value=(float)$this->getProperty('value');
  $minValue=(float)$this->getProperty('minValue');
@@ -29,3 +30,14 @@
   }
  }
 
+ if ($linked_room && $this->getProperty('mainSensor')) {
+  if ($this->class_title=='STempSensors') {
+   sg($linked_room.'.temperature',$value);
+  } elseif ($this->class_title=='SHumSensors') {
+   sg($linked_room.'.humidity',$value);
+  }
+ }
+
+include_once(DIR_MODULES.'devices/devices.class.php');
+$dv=new devices();
+$dv->checkLinkedDevicesAction($this->object_title, $value);

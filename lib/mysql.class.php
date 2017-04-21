@@ -336,7 +336,7 @@ class mysql
     */
    public function DbSafe1($str)
    {
-      $str = mysql_real_escape_string($str);
+      $str = mysql_real_escape_string((string)$str);
       
       return $str;
    }

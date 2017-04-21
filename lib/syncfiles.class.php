@@ -760,4 +760,53 @@ function copyTree($source, $destination, $over = 0)
    return $res;
 }
 
-?>
+function removeEmptySubFolders($path)
+{
+  $empty=true;
+  foreach (glob($path.DIRECTORY_SEPARATOR."*") as $file)
+  {
+     $empty &= is_dir($file) && removeEmptySubFolders($file);
+  }
+  return $empty && rmdir($path);
+}
+
+function getDirTree($dir, &$results = array()){
+   $files = scandir($dir);
+   foreach($files as $key => $value){
+      $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+      if(!is_dir($path)) {
+         $results[] = array('FILENAME'=>$path,'DT'=>date('Y-m-d H:i:s',filemtime($path)),'TM'=>filemtime($path),'SIZE'=>filesize($path));
+      } else if($value != "." && $value != "..") {
+         getDirTree($path, $results);
+      }
+   }
+   return $results;
+}
+
+function keepLatestLimitedBySize($path, $max_size, $removeEmptyFolders = true) {
+   $files=array();
+   getDirTree($path,$files);
+   $total = count($files);
+   if ($total>0) {
+      if (!function_exists('sort_files_by_date')) {
+         function sort_files_by_date($a,$b) {
+            if ($a['TM'] == $b['TM']) {
+               return 0;
+            }
+            return ($a['TM'] > $b['TM']) ? -1 : 1;
+         }
+      }
+      usort($files,'sort_files_by_date');
+      $size=0;
+      for ($i = 0; $i < $total; $i++) {
+         $size+=$files[$i]['SIZE'];
+         if ($size>$max_size) {
+            @unlink($files[$i]['FILENAME']);
+         }
+      }
+   }
+   if ($removeEmptyFolders) {
+    removeEmptySubFolders($path);
+   }
+}
+

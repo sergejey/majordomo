@@ -24,6 +24,8 @@ $dictionary=array(
 'FRONTEND'=>'Веб-сайт',
 'MY_ACCOUNT'=>'Мой аккаунт',
 'LOGOFF'=>'Выйти',
+'CONSOLE'=>'Консоль',
+'CONSOLE_RETRY'=>'Повтор',
 'MODULE_DESCRIPTION'=>'Описание модуля',
 
 'GENERAL_SENSORS'=>'Сенсоры',
@@ -77,6 +79,11 @@ $dictionary=array(
 'APP_CALENDAR'=>'Календарь',
 'APP_READIT'=>'Присл. ссылки',
 'APP_QUOTES'=>'Цитаты',
+'APP_ALARMCLOCK'=>'Будильник',
+'APP_OPENWEATHER'=>'Погода от OpenWeatherMap',
+'SYS_DATEFORMAT'=>'Формат даты',
+'APP_YATRAFFIC'=>'Яндекс.Пробки',
+'APP_CHATBOX'=>'Сообщения',
 
 'MODULE_OBJECTS_HISTORY'=>'История объектов',
 'MODULE_BT_DEVICES'=>'Bluetooth-устройства',

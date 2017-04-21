@@ -112,11 +112,11 @@ class mysql
    {
       // connects to database
       if ($this->port) {
-       $this->dbh = mysqli_connect($this->host . ":" . $this->port, $this->user, $this->password);
+       $this->dbh = mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
       } else {
-       $this->dbh = mysqli_connect($this->host , $this->user, $this->password);
+       $this->dbh = mysqli_connect(''.$this->host , $this->user, $this->password);
       }
-      $db_select = mysqli_select_db($this->dbh, $this->dbName);                                                                                                     
+      $db_select = mysqli_select_db($this->dbh, $this->dbName);
       if (!$db_select) {                                                                                                                                           
          $this->Error();                                                                                                                                             
          return 0;
@@ -128,8 +128,6 @@ class mysql
          $this->Exec("set character_set_client='utf8';");
          $this->Exec("set character_set_results='utf8';");
          $this->Exec("set collation_connection='utf8_general_ci';");
-
-         
          return 1;
       }
 
@@ -353,8 +351,10 @@ class mysql
     */
    public function DbSafe1($str)
    {
-      $str = mysqli_real_escape_string($this->dbh, $str);
-      
+      if (is_array($str)) {
+       $str=json_encode($str);
+      }
+      $str = mysqli_real_escape_string($this->dbh, (string)$str);
       return $str;
    }
 

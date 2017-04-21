@@ -297,6 +297,10 @@ function usual(&$out) {
    $this->id=$rec['ID'];
    $this->object_title=$rec['TITLE'];
    $this->class_id=$rec['CLASS_ID'];
+   if ($this->class_id) {
+    $class_rec=SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=".$this->class_id);
+    $this->class_title=$class_rec['TITLE'];
+   }
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
    //$this->keep_history=$rec['KEEP_HISTORY'];
@@ -616,6 +620,10 @@ function usual(&$out) {
     return $this->object_title;
    } elseif ($property=='object_description') {
     return $this->description;
+   } elseif ($property=='object_id') {
+    return $this->id;
+   } elseif ($property=='class_title') {
+    return $this->class_title;
    }
   }
 
@@ -677,18 +685,25 @@ function usual(&$out) {
     }
    }
    if ($save) {
+    if ($this->location_id) {
+     $location=current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=".(int)$this->location_id));
+    } else {
+     $location='';
+    }
     $today_file=ROOT.'debmes/'.date('Y-m-d').'.data';
     $f=fopen($today_file, "a+");
     if ($f) {
                 fputs($f, date("Y-m-d H:i:s"));
-                fputs($f, "\t".$this->object_title.'.'.$property."\t".trim($value)."\t".$source."\n");
+                fputs($f, "\t".$this->object_title.'.'.$property."\t".trim($value)."\t".trim($source)."\t".trim($location)."\n");
                 fclose($f);
                 @chmod($today_file, 0666);
     }   
    }
   }
 
+  startMeasure('getPropertyByName');
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
+  endMeasure('getPropertyByName');
   $old_value='';
 
   $cached_name='MJD:'.$this->object_title.'.'.$property;
@@ -696,7 +711,9 @@ function usual(&$out) {
   startMeasure('setproperty_update');
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
+   startMeasure('setproperty_update_getvalue');
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
+   endMeasure('setproperty_update_getvalue');
    $old_value=$v['VALUE'];
    $v['VALUE']=$value.'';
    $v['SOURCE']=$source.'';
@@ -734,10 +751,10 @@ function usual(&$out) {
 
   saveToCache($cached_name, $value);
 
-  if (function_exists('postToWebSocket')) {
-   startMeasure('setproperty_postwebsocket');
-   postToWebSocket($this->object_title.'.'.$property, $value);
-   endMeasure('setproperty_postwebsocket');
+  if (function_exists('postToWebSocketQueue')) {
+   startMeasure('setproperty_postwebsocketqueue');
+   postToWebSocketQueue($this->object_title.'.'.$property, $value);
+   endMeasure('setproperty_postwebsocketqueue');
   }
 
   /*
@@ -891,6 +908,16 @@ function usual(&$out) {
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
+
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
+               (`PROPERTY`   char(100) NOT NULL,
+                `DATAVALUE` varchar(20000) NOT NULL,
+                `POST_ACTION`   char(100) NOT NULL,
+                `ADDED`    datetime  NOT NULL,
+                PRIMARY KEY (`PROPERTY`)
+               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+
   //echo ("Executing $sqlQuery\n");
 
 /*

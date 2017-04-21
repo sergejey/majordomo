@@ -148,6 +148,7 @@ function admin(&$out) {
   }
   if ($this->view_mode=='clear_system_errors') {
    SQLExec("UPDATE system_errors SET ACTIVE=0 WHERE ID='".(int)$this->id."'");
+   SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID='".(int)$this->id."'");
    $this->redirect("?data_source=system_errors");
   }
  }
