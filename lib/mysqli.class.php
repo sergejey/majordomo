@@ -204,16 +204,18 @@ class mysql
     */
    public function SelectOne($query)
    {
+      $rec = Array();
       if ($result = $this->Exec($query))
       {
          $rec = mysqli_fetch_array($result, MYSQL_ASSOC);
          
-         return $rec;
+         
       }
       else
       {
          $this->Error($query);
       }
+      return $rec;
    }
 
 
