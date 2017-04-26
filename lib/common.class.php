@@ -65,8 +65,11 @@
    socket_write($socket, $in, strlen($in));
    socket_close($socket);
    return 1;
-  } elseif (!$processed) {
-   //say($ph,$level);
+  }
+  elseif (!$processed) 
+  {
+    //чтобы сервер говорил на sayReply
+    processSubscriptions('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
    return 0;
   }
   return 0;
