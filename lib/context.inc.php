@@ -115,7 +115,9 @@ function context_activate($id, $no_action = 0, $history = '')
          $timeout = 60;
 
       $timeoutTitle   = 'user_' . $user_id . '_contexttimeout';
-      $timeoutCommand = 'context_timeout(' . (int)$context['ID'] . ', ' . $user_id . ');';
+      //добавляем имя терминала - to do: вместо имени сделать айди
+      global $session;
+      $timeoutCommand = 'context_timeout(' . (int)$context['ID'] . ', ' . $user_id . ', '.$session->data['TERMINAL'].');';
       setTimeOut($timeoutTitle, $timeoutCommand, $timeout);
       
       if (!$no_action)
@@ -187,14 +189,14 @@ function context_activate_ext($id, $timeout = 0, $timeout_code = '', $timeout_co
  * @param mixed $user_id User ID
  * @return void
  */
-function context_timeout($id, $user_id)
+function context_timeout($id, $user_id, $terminal_name='')
 {
    global $session;
 
    $user = SQLSelectOne("SELECT * FROM users WHERE ID = '" . (int)$user_id . "'");
    
    $session->data['SITE_USER_ID'] = $user['ID'];
-
+   $session->data['TERMINAL'] = $terminal_name;
    $context = SQLSelectOne("SELECT * FROM patterns WHERE ID = '" . (int)$id . "'");
    
    if (!$context['TIMEOUT_CONTEXT_ID'])
