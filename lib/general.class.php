@@ -172,8 +172,13 @@ function redirect($url, $owner = "", $no_sid = 0)
 function LoadFile($filename)
 {
    // loading file
+  $data  = '';
+  if(!file_exists($filename))
+  {
+    $data = 'File not found: '.$filename;
+    return $data;
+  }
    $f     = fopen($filename, "r");
-   $data  = "";
    $fsize = filesize($filename);
 
    if ($f && $fsize > 0)
