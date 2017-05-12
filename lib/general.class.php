@@ -513,9 +513,9 @@ function setLocalTime($now_date, $diff = 0)
 function DebMes($errorMessage, $logLevel = "debug")
 {
    // DEBUG MESSAGE LOG
-   if (!is_dir(ROOT . 'debmes'))
+   if (!is_dir(DEBUG_LOGS))
    {
-      mkdir(ROOT . 'debmes', 0777);
+      mkdir(DEBUG_LOGS, 0777);
    }
 
    if (is_array($errorMessage) || is_object($errorMessage)) {
@@ -523,9 +523,9 @@ function DebMes($errorMessage, $logLevel = "debug")
    }
 
    if ($logLevel!='debug') {
-      $today_file=ROOT.'debmes/'.date('Y-m-d').'_'.$logLevel.'.log';
+      $today_file=DEBUG_LOGS.'/'.date('Y-m-d').'_'.$logLevel.'.log';
    } else {
-      $today_file=ROOT.'debmes/'.date('Y-m-d').'.log';
+      $today_file=DEBUG_LOGS.'/'.date('Y-m-d').'.log';
    }
    $f=fopen($today_file, "a+");
    if ($f) {
