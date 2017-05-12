@@ -15,6 +15,7 @@ Define('DB_PASSWORD', '');
 Define('DIR_TEMPLATES', "./templates/");
 Define('DIR_MODULES', "./modules/");
 Define('DEBUG_MODE', 1);
+Define('DEBUG_LOGS', '/tmp/smarthome/');
 Define('UPDATES_REPOSITORY_NAME', 'smarthome');
 
 Define('PROJECT_TITLE', 'MajordomoSL');
