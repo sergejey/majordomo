@@ -116,6 +116,14 @@ class mysql
       } else {
        $this->dbh = mysqli_connect(''.$this->host , $this->user, $this->password);
       }
+      if (!$this->dbh) {
+          $err_no = mysqli_connect_errno();
+          $err_details = mysqli_connect_error();
+          registerError('sqlconn', $err_no . ": " . $err_details);
+          new custom_error($err_no . ": " . $err_details, 1);
+          return 0;
+      }
+
       $db_select = mysqli_select_db($this->dbh, $this->dbName);
       if (!$db_select) {                                                                                                                                           
          $this->Error();                                                                                                                                             
