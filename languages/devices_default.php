@@ -59,10 +59,12 @@ $dictionary=array(
 'DEVICES_PRESS'=>'Press',
 'DEVICES_TURN_ON'=>'Turn On',
 'DEVICES_TURN_OFF'=>'Turn Off',
+'DEVICES_SET_COLOR'=>'Set Color', 
 
 'DEVICES_GROUP_ECO'=>'Turn it off in ECO mode',
 'DEVICES_GROUP_SUNRISE'=>'Turn it off with Sunrise',
 'DEVICES_IS_ACTIVITY'=>'Status change means activity in the room',
+'DEVICES_NCNO'=>'Sensor type',
 
 'DEVICES_ADD_MENU'=>'Add device to Menu',
 'DEVICES_ADD_SCENE'=>'Add device to Scene',

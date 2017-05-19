@@ -665,6 +665,11 @@
    }
   {/if}
 
+
+  {if $item.TYPE=='plusminus'}
+  $('#menu{$item.ID}_vv').html(data);
+  {/if}
+
   {if $item.TYPE=='radiobox'}
    var $selected = $('.radiobox{$item.ID}:checked');
    if (!$selected.length || $selected.val()!=data) {

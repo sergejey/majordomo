@@ -41,10 +41,10 @@ Blockly.Blocks['majordomo_say'] = {
     this.setColour(220);
 
     this
-     .appendValueInput('TEXT')
-     .appendField(Blockly.Msg.MAJORDOMO_SAY)
-     .appendField(Blockly.Msg.MAJORDOMO_PRIORITY)
-     .appendField(new Blockly.FieldTextInput('2',Blockly.FieldTextInput.nonnegativeIntegerValidator), 'NUMBER');
+        .appendValueInput('TEXT')
+        .appendField(Blockly.Msg.MAJORDOMO_SAY)
+        .appendField(Blockly.Msg.MAJORDOMO_PRIORITY)
+        .appendField(new Blockly.FieldTextInput('2',Blockly.FieldTextInput.nonnegativeIntegerValidator), 'NUMBER');
     this.setOutput(false);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -52,6 +52,21 @@ Blockly.Blocks['majordomo_say'] = {
     var thisBlock = this;
   }
 };
+
+
+Blockly.Blocks['majordomo_color'] = {
+  init: function() {
+    var thisBlock = this;
+    this.setColour(220);
+
+    this.appendField(Blockly.Msg.MAJORDOMO_COLOR);
+    this.setOutput(true);
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    var thisBlock = this;
+  }
+};
+
 
 //say
 

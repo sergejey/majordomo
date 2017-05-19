@@ -5,15 +5,15 @@
 <hr size="1">
 
 [#if VIEW_MODE="edit"#]
-<table border="0" align="center">
 <form action="?" method="post">
+<table border="0" align="center">
  <tr>
   <td valign="top"><b><#LANG_TITLE#>:</b></td>
-  <td valign="top"><input type="text" name="title" value="[#TITLE#]"></td>
+  <td valign="top"><input type="text" name="title" value="[#TITLE#]" class="form-control"></td>
  </tr>
  <tr>
   <td valign="top"><b><#LANG_PATH#>:</b></td>
-  <td valign="top"><input type="text" name="path" value="[#PATH#]"></td>
+  <td valign="top"><input type="text" name="path" value="[#PATH#]" class="form-control"></td>
  </tr>
 
 [#if ID!=""#]
@@ -27,14 +27,15 @@
 
 <tr>
  <td valign="top">&nbsp;</td>
- <td valign="top"><input type="submit" name="submit" value="<#LANG_SUBMIT#>"></td>
+ <td valign="top"><input type="submit" name="submit" value="<#LANG_SUBMIT#>" class="btn btn-default"></td>
 </tr>
 
+</table>
 <input type="hidden" name="id" value="[#ID#]">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="mode" value="update_collection">
 </form>
-</table>
+
 [#endif#]
 <br><br>
 <p align="center">

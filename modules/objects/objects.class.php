@@ -690,7 +690,15 @@ function usual(&$out) {
     } else {
      $location='';
     }
-    $today_file=ROOT.'debmes/'.date('Y-m-d').'.data';
+
+
+   if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+    $path=LOG_DIRECTORY;
+   } else {
+    $path = ROOT . 'debmes';
+   }
+
+    $today_file=$path . '/'.date('Y-m-d').'.data';
     $f=fopen($today_file, "a+");
     if ($f) {
                 fputs($f, date("Y-m-d H:i:s"));

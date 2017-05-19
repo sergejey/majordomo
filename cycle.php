@@ -183,80 +183,80 @@ if (!is_array($restart_threads))
 
 $last_restart=array();
 
+$last_cycles_control_check=time();
 
 while (false !== ($result = $threads->iteration()))
 {
 
 
-   $to_start=array();
-   $to_stop=array();
-   $to_restart=array();
-   $auto_restarts=array();
+   if ((time()-$last_cycles_control_check)>=5) {
+      $last_cycles_control_check=time();
 
-   $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
-   $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
-   $total = count($cycles);
+      $to_start=array();
+      $to_stop=array();
+      $to_restart=array();
+      $auto_restarts=array();
 
-   $seen=array();
-   for ($i = 0; $i < $total; $i++) {
-      $title = $cycles[$i]['TITLE'];
-      $title = preg_replace('/Run$/', '', $title);
-      $title = preg_replace('/Control$/', '', $title);
-      if (isset($seen[$title])) {
-       continue;
-      }
-      $seen[$title]=1;
-      $control=getGlobal($title.'Control');
-      $auto_restart=getGlobal($title.'AutoRestart');
-      if ($auto_restart) {
-        $auto_restarts[]=$title;
-      }
-      if ($control!='') {
-         if ($control=='stop') {
-            $to_stop[]=$title;
-         } elseif ($control=='start') {
-            $to_start[]=$title;
-         } elseif ($control=='restart') {
-            $to_stop[]=$title;
-            $to_start[]=$title;
+      $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
+      $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+      $total = count($cycles);
+
+      $seen=array();
+      for ($i = 0; $i < $total; $i++) {
+         $title = $cycles[$i]['TITLE'];
+         $title = preg_replace('/Run$/', '', $title);
+         $title = preg_replace('/Control$/', '', $title);
+         if (isset($seen[$title])) {
+            continue;
          }
-       setGlobal($title.'Control','');
+         $seen[$title]=1;
+         $control=getGlobal($title.'Control');
+         $auto_restart=getGlobal($title.'AutoRestart');
+         if ($auto_restart) {
+            $auto_restarts[]=$title;
+         }
+         if ($control!='') {
+            if ($control=='stop') {
+               $to_stop[]=$title;
+            } elseif ($control=='start') {
+               $to_start[]=$title;
+            } elseif ($control=='restart') {
+               $to_stop[]=$title;
+               $to_start[]=$title;
+            }
+            setGlobal($title.'Control','');
+         }
+
       }
 
-   }
-
-   $some_closed=0;
-   $is_running=array();
-   foreach($threads->commandLines as $id=>$cmd) {
-      if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
-         $title=$m[1];
-         if (in_array($title,$to_stop) || in_array($title,$to_restart)) {
-            DebMes("Closing service ".$title." (id: $id)");
-            $threads->closeThread($id);
-            $some_closed=1;
-         } else {
-            $is_running[]=$title;
+      $some_closed=0;
+      $is_running=array();
+      foreach($threads->commandLines as $id=>$cmd) {
+         if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
+            $title=$m[1];
+            if (in_array($title,$to_stop) || in_array($title,$to_restart)) {
+               DebMes("Closing service ".$title." (id: $id)");
+               $threads->closeThread($id);
+               $some_closed=1;
+            } else {
+               $is_running[]=$title;
+            }
          }
       }
-   }
 
-   if ($some_closed) {
-      sleep(3);
-   }
-
-   foreach($to_start as $title) {
-      if (!in_array($title,$is_running)) {
-         $cmd='./scripts/'.$title.'.php';
-         DebMes("Starting service ".$title.' ('.$cmd.')');
-         $pipe_id = $threads->newThread($cmd);
+      if ($some_closed) {
+         sleep(3);
       }
-   }
 
-/*
-   setGlobal('runningCycles',serialize($threads->commandLines));
-   setGlobal('runningToStop',serialize($to_stop));
-   setGlobal('runningToStart',serialize($to_start));
-*/
+      foreach($to_start as $title) {
+         if (!in_array($title,$is_running)) {
+            $cmd='./scripts/'.$title.'.php';
+            DebMes("Starting service ".$title.' ('.$cmd.')');
+            $pipe_id = $threads->newThread($cmd);
+         }
+      }
+
+   }
 
    if (!empty($result))
    {

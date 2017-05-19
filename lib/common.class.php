@@ -195,6 +195,13 @@ function timeConvert($tm)
 }
 
 
+function getNumberWord($number, $suffix) {
+    $keys = array(2, 0, 1, 1, 1, 2);
+    $mod = $number % 100;
+    $suffix_key = ($mod > 7 && $mod < 20) ? 2: $keys[min($mod % 10, 5)];
+    return $suffix[$suffix_key];
+}
+
 /**
  * Summary of timeNow
  * @param mixed $tm time (default 0)
@@ -209,34 +216,17 @@ function timeNow($tm = 0)
 
    $h = (int)date('G', $tm);
 
-   if ($h == 0) $hw      = 'часов';
-   elseif ($h == 1) $hw  = 'час';
-   elseif ($h < 5) $hw   = 'часа';
-   elseif ($h < 21) $hw  = 'часов';
-   elseif ($h == 21) $hw = 'час';
-   elseif ($h >= 21) $hw = 'часа';
+   $array = array("час", "часа", "часов");
+   $hw = $h.' '.getNumberWord($h,$array);
 
    $m = (int)date('i', $tm);
 
-   if ($m == 1 || $m == 21 || $m == 31 || $m == 41 || $m == 51)
-   {
-      $ms = $m . " минута";
-   }
-   elseif ($m >= 5 && $m <= 20 || $m >= 25 && $m <= 30 || $m >= 35
-        && $m <= 40 || $m >= 45 && $m <= 50 || $m >= 55 && $m <= 59)
-   {
-      $ms = $m . " минут";
-   }
-   elseif ($m >= 2 && $m <= 4 || $m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)   
-   {
-      $ms = $m . "      ";
-   }
-   elseif ($m == 0)
-   {
-      $ms = "";
-   }
+    if ($m>0) {
+        $array = array("минута", "минуты", "минут");
+        $ms = $m.' '.getNumberWord($m,$array);
+    }
 
-   $res = "$h " . ($hw) . " " . ($ms);
+   $res = trim($hw . " " . $ms);
    return $res;
 }
 
@@ -793,12 +783,18 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          $endTime=getmicrotime();
          //DebMes('Geturl finished for '.$url.' (Time taken: '.round($endTime-$startTime,2).')', 'geturl');
 
+          if (Defined('GETURL_WARNING_TIMEOUT') && ((int)GETURL_WARNING_TIMEOUT>0)) {
+           $warning_timeout=GETURL_WARNING_TIMEOUT;
+          } else {
+           $warning_timeout = 5;
+          }
+
           if (curl_errno($ch)) {
               $errorInfo = curl_error($ch);
               $info = curl_getinfo($ch);
               $callSource=debug_backtrace()[1]['function'];
               DebMes("Geturl to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
-          } elseif (($endTime-$startTime)>5) {
+          } elseif (($endTime-$startTime)>$warning_timeout) {
               DebMes("Warning: geturl to $url is pretty slow (".round($endTime-$startTime,2)."s)");
           }
           curl_close($ch);

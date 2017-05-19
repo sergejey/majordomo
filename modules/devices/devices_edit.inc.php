@@ -72,6 +72,20 @@
                  $v['NAME']=$k;
                  $v['CONFIG_TYPE']=$v['_CONFIG_TYPE'];
                  $v['VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$k);
+                 if ($v['CONFIG_TYPE']=='select') {
+                     $tmp=explode(',',$v['_CONFIG_OPTIONS']);
+                     $total = count($tmp);
+                     for ($i = 0; $i < $total; $i++) {
+                         $data_s=explode('=',trim($tmp[$i]));
+                         $value=$data_s[0];
+                         if (isset($data_s[1])) {
+                             $title=$data_s[1];
+                         } else {
+                             $title=$value;
+                         }
+                         $v['OPTIONS'][]=array('VALUE'=>$value,'TITLE'=>$title);
+                     }
+                 }
                  $res_properties[]=$v;
              }
          }
@@ -142,6 +156,10 @@
           if ($old_rec['ID']) {
               $rec=$old_rec;
           }
+      }
+      global $add_title;
+      if ($add_title) {
+          $out['TITLE']=$add_title;
       }
   }
 

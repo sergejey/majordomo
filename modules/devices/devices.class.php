@@ -137,6 +137,11 @@ function link(&$out) {
     if ($this->prefix) {
        $out['PREFIX']=$this->prefix;
     }
+
+    if ($this->add_title) {
+        $out['ADD_TITLE']=urlencode($this->add_title);
+    }
+
     if ($this->linked_object) {
         $device_rec=SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '".DBSafe($this->linked_object)."'");
         if ($device_rec['TITLE']) {
@@ -584,7 +589,7 @@ function usual(&$out) {
            $linked_property='color';
        }
         if ($rec['TYPE']=='motion') {
-            $linked_property='';
+            $linked_property='status';
             $linked_method='motionDetected';
         }
         if ($rec['TYPE']=='button') {

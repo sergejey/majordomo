@@ -28,7 +28,7 @@ include_once("./load_settings.php");
                     <?php
                     foreach($scripts as $k=>$v) {
                         echo '{';
-                        echo '"name" : "'.processTitle($v['TITLE']).'",'."\n";
+                        echo '"name" : "'.addcslashes($v['TITLE'],'"').'",'."\n";
                         echo '"value" : "'.$v['ID'].'"';
                         echo '},';
                     }
