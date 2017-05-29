@@ -150,6 +150,11 @@
       global $type;
       $out['TYPE']=$type;
       global $linked_object;
+      if ($linked_object!='') {
+          if (!getObject($linked_object)) {
+              $linked_object='';
+          }
+      }
       $out['LINKED_OBJECT']=trim($linked_object);
       if ($out['LINKED_OBJECT'] && !$rec['ID']) {
           $old_rec=SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '".DBSafe($out['LINKED_OBJECT'])."'");
