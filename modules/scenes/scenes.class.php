@@ -1537,16 +1537,15 @@ function usual(&$out) {
     }
 
     // advanced conditions properties
-    if ($states[$i]['IS_DYNAMIC']==2 && preg_match_all('/([\w\d\.]+?\.[\w\d\.]+?)/is',$states[$i]['CONDITION_ADVANCED'],$mc)) {
+    if ($states[$i]['IS_DYNAMIC']==2 && preg_match_all('/([\w\d\.]+?\.[\w\d\.]+)/is',$states[$i]['CONDITION_ADVANCED'],$mc)) {
      $totala = count($mc[1]);
      for ($ia = 0; $ia < $totala; $ia++) {
-      $properties[]=array('PROPERTY'=>mb_strtolower($mc[1][$i], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+      $properties[]=array('PROPERTY'=>mb_strtolower($mc[1][$ia], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
      }
     }
 
    }
 
-   //DebMes("Getting watched properties for ".serialize($properties));
    return $properties;
   }
 
