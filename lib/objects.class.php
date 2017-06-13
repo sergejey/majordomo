@@ -403,6 +403,10 @@ function getObject($name)
  */
 function getObjectsByProperty($property_name, $condition='', $condition_value='') 
 {
+    if ($condition_value=='' && $condition!='') {
+        $condition_value=$condition;
+        $condition='==';
+    }
   $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($property_name)."'");
   $total=count($pRecs);
   if (!$total) {

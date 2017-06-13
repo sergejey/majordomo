@@ -106,6 +106,10 @@ if ($total>0) {
         $dt=date('Y-m-d', $start_time);
 
         $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+        if (!$history[0]['ID'] && $op == 'log') {
+                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM phistory WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+                $history = array_reverse($history);
+        }
         $total_values=count($history);
         $start_time=$history[0]['UNX'];
 

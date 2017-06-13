@@ -1519,21 +1519,31 @@ function usual(&$out) {
    //DebMes("total states: ".$total);
 
    for($i=0;$i<$total;$i++) {
+
+    // linked object.property
     if ($states[$i]['LINKED_OBJECT'] && $states[$i]['LINKED_PROPERTY']) {
      $properties[]=array('PROPERTY'=>mb_strtolower($states[$i]['LINKED_OBJECT'].'.'.$states[$i]['LINKED_PROPERTY'], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
     }
 
+    //html content properties
     $content=$states[$i]['HTML'];
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
-
     if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
      $totalm=count($m[1]);
      for($im=0;$im<$totalm;$im++) {
        $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
      }
     }
-    //to-do: add %random% support
+
+    // advanced conditions properties
+    if ($states[$i]['IS_DYNAMIC']==2 && preg_match_all('/([\w\d\.]+?\.[\w\d\.]+?)/is',$states[$i]['CONDITION_ADVANCED'],$mc)) {
+     $totala = count($mc[1]);
+     for ($ia = 0; $ia < $totala; $ia++) {
+      $properties[]=array('PROPERTY'=>mb_strtolower($mc[1][$i], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+     }
+    }
+
    }
 
    //DebMes("Getting watched properties for ".serialize($properties));
