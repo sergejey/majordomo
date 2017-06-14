@@ -450,6 +450,17 @@ function usual(&$out) {
   $this->callMethod($name, $params, 1);
  }
 
+ function callMethodSafe($name,$params = 0) {
+  $url=BASE_URL.'/objects/?object='.$this->name.'&op=m&m='.urlencode(($name));
+  if (is_array($params)) {
+   foreach($params as $k=>$v) {
+    $url.='&'.$k.'='.urlencode($v);
+   }
+  }
+  $result = getURL($url,0);
+  return $result;
+ }
+
 /**
 * Title
 *
@@ -792,7 +803,8 @@ function usual(&$out) {
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
     $params['SOURCE']=(string)$source;
-    $this->callMethod($prop['ONCHANGE'], $params);
+    //$this->callMethod($prop['ONCHANGE'], $params);
+    $this->callMethodSafe($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
   }
