@@ -451,7 +451,7 @@ function usual(&$out) {
  }
 
  function callMethodSafe($name,$params = 0) {
-  $url=BASE_URL.'/objects/?object='.$this->name.'&op=m&m='.urlencode(($name));
+  $url=BASE_URL.'/objects/?object='.$this->object_title.'&op=m&m='.urlencode($name);
   if (is_array($params)) {
    foreach($params as $k=>$v) {
     $url.='&'.$k.'='.urlencode($v);
