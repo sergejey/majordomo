@@ -457,7 +457,7 @@ function usual(&$out) {
   }
 
 
- function runPatternAction($id, $matches=array(), $original='', $from_user_id) {
+ function runPatternAction($id, $matches=array(), $original = '', $from_user_id = 0) {
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");   
 
      global $noPatternMode;

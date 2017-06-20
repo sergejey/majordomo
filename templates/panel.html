@@ -3,7 +3,7 @@
 #--><!DOCTYPE html>
 <html>
 <head>
-        <title><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></title>
+        <title>{#TITLE#}</title>
         <meta name="keywords" content="">
         <meta name="description" content="">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -294,7 +294,7 @@ jQuery.fn.center = function () {
 
         var loaderTimer;
         function loadInProgress() {
-            $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> Still working... Click <a href="'+urlInProgress+'">here</a> if it takes too long.');
+            $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
             return false;
         }
 
@@ -336,6 +336,9 @@ jQuery.fn.center = function () {
                 } else {
                     window.history.pushState('', window.title, link);
                     $('#partLoadContent').html(obj.CONTENT);
+                    if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
+                        window.document.title = obj.TITLE;
+                    }
 
                     $('input[name=filter_modules]').keyup(function() {
                         filterModules();

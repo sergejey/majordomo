@@ -22,6 +22,11 @@ $dictionary=array(
 'DEVICES_POWER_SENSOR'=>'Датчик мощности',
 'DEVICES_VOLTAGE_SENSOR'=>'Датчик напряжения',
 'DEVICES_CURRENT_SENSOR'=>'Датчик тока',
+'DEVICES_LIGHT_SENSOR'=>'Датчик освещённости',
+'DEVICES_LEAK_SENSOR'=>'Датчик протечки',
+'DEVICES_SMOKE_SENSOR'=>'Датчик дыма',
+'DEVICES_COUNTER'=>'Счётчик',
+'DEVICES_UNIT'=>'Единица измерения',
 
 // Measure
 'M_VOLTAGE'=>'В',

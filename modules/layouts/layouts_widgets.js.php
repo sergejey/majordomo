@@ -186,7 +186,7 @@ function updateFrame()
 {
 if(widgetElement)
 {
-var newHeight=parseInt(currentSettings.size)*100-20;
+var newHeight=parseInt(currentSettings.size)*60-20;
 var myTextElement = $("<iframe style='margin-top:20px;height:"+newHeight+"px' src='<?php echo ROOTHTML;?>apps/"+currentSettings.app+".html' width='100%' height='"+newHeight+"' frameborder=0></iframe");
     $(widgetElement).append(myTextElement);
     }

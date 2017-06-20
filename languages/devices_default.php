@@ -22,6 +22,11 @@ $dictionary=array(
 'DEVICES_POWER_SENSOR'=>'Watt sensor',
 'DEVICES_VOLTAGE_SENSOR'=>'Voltage sensor',
 'DEVICES_CURRENT_SENSOR'=>'Current sensor',
+'DEVICES_LIGHT_SENSOR'=>'Light sensor',
+'DEVICES_LEAK_SENSOR'=>'Leak detector',
+'DEVICES_SMOKE_SENSOR'=>'Smoke detector',
+'DEVICES_UNIT'=>'Units',
+'DEVICES_COUNTER'=>'Meter/Counter',
 
 // Measure
 'M_VOLTAGE'=>'V',

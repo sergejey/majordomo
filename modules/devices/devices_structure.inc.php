@@ -107,6 +107,34 @@ $this->device_types=array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
         )
     ),
+    'leak'=>array(
+        'TITLE'=>LANG_DEVICES_LEAK_SENSOR,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SLeak',
+        'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+        )
+    ),
+    'smoke'=>array(
+        'TITLE'=>LANG_DEVICES_SMOKE_SENSOR,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SSmoke',
+        'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+        )
+    ),
+    'counter'=>array(
+        'TITLE'=>LANG_DEVICES_COUNTER,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SCounters',
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value updated event')
+        ),
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            'value'=>array('DESCRIPTION'=>'Current Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+        ),
+    ),
     'button'=>array(
         'TITLE'=>LANG_DEVICES_BUTTON,
         'PARENT_CLASS'=>'SDevices',
@@ -169,5 +197,13 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_CURRENT_SENSOR,
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SCurrentSensors'
+    ),
+    'sensor_light'=>array(
+        'TITLE'=>LANG_DEVICES_LIGHT_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SLightSensors',
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            ),
     ),
 );

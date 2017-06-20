@@ -9,6 +9,7 @@
  */
 function saveToCache($key, $value, $ttl = 60)
 {
+    global $db;
    if (isset($_SERVER['REQUEST_METHOD']))
    {
       global $memory_cache;
@@ -25,8 +26,8 @@ function saveToCache($key, $value, $ttl = 60)
    }
 
    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)
-                VALUES ('" . DBSafe($rec['KEYWORD']) . "',
-                        '" . DBSafe($rec['DATAVALUE']) . "',
+                VALUES ('" . $db->DbSafe1($rec['KEYWORD']) . "',
+                        '" . $db->DbSafe1($rec['DATAVALUE']) . "',
                         '" . $rec['EXPIRE'] . "')";
    SQLExec($sqlQuery);
 }

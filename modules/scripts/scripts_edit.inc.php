@@ -154,4 +154,6 @@
 
   $out['CATEGORIES']=SQLSelect("SELECT * FROM script_categories ORDER BY TITLE");
 
-?>
+if ($out['TITLE']) {
+    $this->owner->data['TITLE'] = $out['TITLE'];
+}

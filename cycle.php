@@ -135,7 +135,7 @@ foreach ($cycles as $path)
 
 
       DebMes("Starting " . $path . " ... ");
-      echo "Starting " . $path . " ... ";
+      echo "Starting " . $path . " ... \n";
 
       if ((preg_match("/_X/", $path)))
       {
@@ -185,10 +185,12 @@ $last_restart=array();
 
 $last_cycles_control_check=time();
 
+$auto_restarts=array();
+
 while (false !== ($result = $threads->iteration()))
 {
 
-
+   $already_started = array();
    if ((time()-$last_cycles_control_check)>=5) {
       $last_cycles_control_check=time();
 
@@ -254,6 +256,7 @@ while (false !== ($result = $threads->iteration()))
             DebMes("Starting service ".$title.' ('.$cmd.')');
             $pipe_id = $threads->newThread($cmd);
          }
+         $already_started[] = $title;
       }
 
    }
@@ -271,6 +274,9 @@ while (false !== ($result = $threads->iteration()))
             $need_restart=0;
             if (preg_match('/(cycle_.+?)\.php/is',$closed_thread,$m)) {
                $title=$m[1];
+               if (in_array($title,$already_started)) {
+                  continue;
+               }
                setGlobal($title.'Run','');
                if (in_array($title,$auto_restarts)) {
                   $need_restart=1;
@@ -297,8 +303,6 @@ while (false !== ($result = $threads->iteration()))
    }
 }
 
-
  unlink('./reboot');
-
  // closing database connection
  $db->Disconnect();

@@ -27,6 +27,9 @@ $dictionary=array(
 'CONSOLE'=>'Консоль',
 'CONSOLE_RETRY'=>'Повтор',
 'MODULE_DESCRIPTION'=>'Описание модуля',
+    'STILL_WORKING'=>'Загружаются данные... Нажмите',
+    'CLICK_HERE'=>'здесь',
+    'TAKES_TOO_LONG'=>', если процесс загрузки занимает слишком много времени.',
 
 'GENERAL_SENSORS'=>'Сенсоры',
 'GENERAL_OPERATIONAL_MODES'=>'Режимы работы',
@@ -34,6 +37,8 @@ $dictionary=array(
 'GENERAL_SECURITY_MODE'=>'Безопасность',
 'GENERAL_NOBODYS_HOME_MODE'=>'Никого нет дома',
 'GENERAL_WE_HAVE_GUESTS_MODE'=>'У нас гости',
+'GENERAL_NIGHT_MODE'=>'Ночной режим',
+'GENERAL_DARKNESS_MODE'=>'Тёмное время суток',    
 
 'GENERAL_CLIMATE'=>'Климат',
 'GENERAL_WEATHER_FORECAST'=>'Прогноз погоды',

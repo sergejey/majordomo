@@ -451,12 +451,32 @@ function usual(&$out) {
  }
 
  function callMethodSafe($name,$params = 0) {
-  $url=BASE_URL.'/objects/?object='.$this->object_title.'&op=m&m='.urlencode($name);
+  $current_call=$this->object_title.'.'.$name;
+  $call_stack=array();
+  if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+   $call_stack = $_GET['m_c_s'];
+  }
+
+  if (in_array($current_call,$call_stack)) {
+   $call_stack[]=$current_call;
+   DebMes("Warning: cross-linked call of ".$current_call."\nlog:\n".implode(" -> \n",$call_stack));
+   return 0;
+  }
+
+  $call_stack[]=$current_call;
+  $data=array(
+   'object'=>$this->object_title,
+      'op'=>'m',
+      'm'=>$name,
+      'm_c_s'=>$call_stack
+  );
+  $url=BASE_URL.'/objects/?'.http_build_query($data);
   if (is_array($params)) {
    foreach($params as $k=>$v) {
     $url.='&'.$k.'='.urlencode($v);
    }
   }
+
   $result = getURL($url,0);
   return $result;
  }
@@ -613,6 +633,9 @@ function usual(&$out) {
 * @access public
 */
  function getProperty($property) {
+
+  $property = trim($property);
+
   if ($this->object_title) {
    $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($this->object_title.'.'.$property)."'");
    if (isset($value['VALUE'])) {
@@ -667,6 +690,8 @@ function usual(&$out) {
 
   startMeasure('setProperty');
   startMeasure('setProperty ('.$property.')');
+
+  $property = trim($property);
 
   if (is_null($value)) {
    $value='';
