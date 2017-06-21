@@ -125,6 +125,7 @@ while (1)
    $queue=SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT 500");
    if ($queue[0]['ID']) {
     $total=count($queue);
+    $processed=array();
     for($i=0;$i<$total;$i++) {
      $q_rec=$queue[$i];
      $value=$q_rec['VALUE'];
@@ -133,7 +134,10 @@ while (1)
      SQLExec("DELETE FROM phistory_queue WHERE ID='".$q_rec['ID']."'");
 
      if ($value!=$old_value || (defined('HISTORY_NO_OPTIMIZE') && HISTORY_NO_OPTIMIZE==1)) {
-       SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$q_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
+       if (!$processed[$q_rec['VALUE_ID']] || ((time()-$processed[$q_rec['VALUE_ID']])>8*60*60)) {
+        SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$q_rec['VALUE_ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$q_rec['KEEP_HISTORY']);
+        $processed[$q_rec['VALUE_ID']]=time();
+       }
        $h=array();
        $h['VALUE_ID']=$q_rec['VALUE_ID'];
        $h['ADDED']=$q_rec['ADDED'];

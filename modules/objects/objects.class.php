@@ -514,7 +514,12 @@ function usual(&$out) {
     $params['ORIGINAL_OBJECT_TITLE']=$this->object_title;
    }
    if ($params) {
-    $method['EXECUTED_PARAMS']=serialize($params);
+    $saved_params=$params;
+    unset($saved_params['m_c_s']);
+    $method['EXECUTED_PARAMS']=json_encode($saved_params);
+    if (strlen($method['EXECUTED_PARAMS'])>250) {
+     $method['EXECUTED_PARAMS']=substr($method['EXECUTED_PARAMS'],0,250);
+    }
    }
    SQLUpdate('methods', $method);
 
