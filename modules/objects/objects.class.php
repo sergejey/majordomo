@@ -476,8 +476,7 @@ function usual(&$out) {
     $url.='&'.$k.'='.urlencode($v);
    }
   }
-
-  $result = getURL($url,0);
+  $result = getURLBackground($url,0);
   return $result;
  }
 
