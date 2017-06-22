@@ -816,12 +816,12 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          $result = curl_exec($ch);
 
 
-          if (curl_errno($ch)) {
+          if (curl_errno($ch) && !$background) {
               $errorInfo = curl_error($ch);
               $info = curl_getinfo($ch);
               $backtrace = debug_backtrace();
               $callSource = $backtrace[1]['function'];
-              DebMes("GeturlBackground to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
+              DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
           }
           curl_close($ch);
 
