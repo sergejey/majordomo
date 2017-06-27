@@ -531,7 +531,7 @@ function usual(&$out) {
     $script=SQLSelectOne("SELECT * FROM scripts WHERE ID='".$method['SCRIPT_ID']."'");
     $code=$script['CODE'];
    */
-    runScript($method['SCRIPT_ID']);
+    runScriptSafe($method['SCRIPT_ID']);
    } else {
     $code=$method['CODE'];
    }

@@ -463,7 +463,7 @@ function usual(&$out) {
      global $noPatternMode;
      $noPatternMode=1;
      if ($rec['SCRIPT_ID']) {
-      runScript($rec['SCRIPT_ID'], $matches);
+      runScriptSafe($rec['SCRIPT_ID'], $matches);
      } elseif ($rec['SCRIPT']) {
 
                   try {

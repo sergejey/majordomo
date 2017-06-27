@@ -357,7 +357,7 @@ function admin(&$out) {
     }
 
     if ($item['SCRIPT_ID']) {
-     runScript($item['SCRIPT_ID'], $params);
+     runScriptSafe($item['SCRIPT_ID'], $params);
     }
     if ($item['CODE']) {
      

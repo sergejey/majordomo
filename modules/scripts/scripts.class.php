@@ -294,7 +294,7 @@ function usual(&$out) {
     continue;
    }
 
-   runScript($rec['TITLE']);
+   runScriptSafe($rec['TITLE']);
 
    $rec['DIFF']=$diff;
 
