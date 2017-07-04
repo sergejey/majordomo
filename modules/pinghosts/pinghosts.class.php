@@ -207,13 +207,12 @@ function usual(&$out) {
    }
    SQLUpdate('pinghosts', $host);
 
-   $online=0;
+   $online=0
    // checking
-   if (!$host['TYPE']) {
+   if ($host['TYPE']==0) {
     //ping host
-
-    $online=ping(processTitle($host['HOSTNAME']));
-   } else {
+	$online=ping(processTitle($host['HOSTNAME']));
+   } elseif ($host['TYPE']==1) {
     //web host
     $online=getURL(processTitle($host['HOSTNAME']), 0);
     SaveFile("./cached/host_".$host['ID'].'.html', $online);
@@ -223,6 +222,8 @@ function usual(&$out) {
     if ($online) {
      $online=1;
     }
+   } elseif ($host['TYPE']==2) {
+	 $online=pingbt(processTitle($host['HOSTNAME']));
    }
 
    if ($online) {
