@@ -295,5 +295,6 @@
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 
-
-?>
+if ($out['TITLE']) {
+    $this->owner->owner->data['TITLE'] = $out['TITLE'];
+}

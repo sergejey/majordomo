@@ -195,6 +195,13 @@ function timeConvert($tm)
 }
 
 
+function getNumberWord($number, $suffix) {
+    $keys = array(2, 0, 1, 1, 1, 2);
+    $mod = $number % 100;
+    $suffix_key = ($mod > 7 && $mod < 20) ? 2: $keys[min($mod % 10, 5)];
+    return $suffix[$suffix_key];
+}
+
 /**
  * Summary of timeNow
  * @param mixed $tm time (default 0)
@@ -209,34 +216,17 @@ function timeNow($tm = 0)
 
    $h = (int)date('G', $tm);
 
-   if ($h == 0) $hw      = 'часов';
-   elseif ($h == 1) $hw  = 'час';
-   elseif ($h < 5) $hw   = 'часа';
-   elseif ($h < 21) $hw  = 'часов';
-   elseif ($h == 21) $hw = 'час';
-   elseif ($h >= 21) $hw = 'часа';
+   $array = array("час", "часа", "часов");
+   $hw = $h.' '.getNumberWord($h,$array);
 
    $m = (int)date('i', $tm);
 
-   if ($m == 1 || $m == 21 || $m == 31 || $m == 41 || $m == 51)
-   {
-      $ms = $m . " минута";
-   }
-   elseif ($m >= 5 && $m <= 20 || $m >= 25 && $m <= 30 || $m >= 35
-        && $m <= 40 || $m >= 45 && $m <= 50 || $m >= 55 && $m <= 59)
-   {
-      $ms = $m . " минут";
-   }
-   elseif ($m >= 2 && $m <= 4 || $m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)   
-   {
-      $ms = $m . "      ";
-   }
-   elseif ($m == 0)
-   {
-      $ms = "";
-   }
+    if ($m>0) {
+        $array = array("минута", "минуты", "минут");
+        $ms = $m.' '.getNumberWord($m,$array);
+    }
 
-   $res = "$h " . ($hw) . " " . ($ms);
+   $res = trim($hw . " " . $ms);
    return $res;
 }
 
@@ -706,6 +696,32 @@ function runScript($id, $params = '')
    return $sc->runScript($id, $params);
 }
 
+function runScriptSafe($id, $params = '') {
+    $current_call='script.'.$id;
+    $call_stack=array();
+    if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        $call_stack = $_GET['m_c_s'];
+    }
+    if (in_array($current_call,$call_stack)) {
+        $call_stack[]=$current_call;
+        DebMes("Warning: cross-linked call of ".$current_call."\nlog:\n".implode(" -> \n",$call_stack));
+        return 0;
+    }
+    $call_stack[]=$current_call;
+    $data=array(
+        'script'=>$id,
+        'm_c_s'=>$call_stack
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
+
 /**
  * Summary of callScript
  * @param mixed $id     ID
@@ -717,6 +733,10 @@ function callScript($id, $params = '')
    runScript($id, $params);
 }
 
+function getURLBackground($url, $cache = 0, $username = '', $password = '') {
+  getURL($url, $cache, $username, $password, true);
+}
+
 /**
  * Summary of getURL
  * @param mixed $url      Url
@@ -725,7 +745,7 @@ function callScript($id, $params = '')
  * @param mixed $password Password (default '')
  * @return mixed
  */
-function getURL($url, $cache = 0, $username = '', $password = '')
+function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
    $cache_file = ROOT . 'cached/urls/' . preg_replace('/\W/is', '_', str_replace('http://', '', $url)) . '.html';
    
@@ -747,6 +767,11 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+          if ($background) {
+              //curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+          }
 
          if ($username != '' || $password != '')
          {
@@ -790,16 +815,13 @@ function getURL($url, $cache = 0, $username = '', $password = '')
 
          $result = curl_exec($ch);
 
-         $endTime=getmicrotime();
-         //DebMes('Geturl finished for '.$url.' (Time taken: '.round($endTime-$startTime,2).')', 'geturl');
 
-          if (curl_errno($ch)) {
+          if (curl_errno($ch) && !$background) {
               $errorInfo = curl_error($ch);
               $info = curl_getinfo($ch);
-              $callSource=debug_backtrace()[1]['function'];
-              DebMes("Geturl to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
-          } elseif (($endTime-$startTime)>5) {
-              DebMes("Warning: geturl to $url is pretty slow (".round($endTime-$startTime,2)."s)");
+              $backtrace = debug_backtrace();
+              $callSource = $backtrace[1]['function'];
+              DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
           }
           curl_close($ch);
 

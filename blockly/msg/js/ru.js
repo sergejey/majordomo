@@ -398,6 +398,8 @@ Blockly.Msg.MAJORDOMO_SETTIMEOUT = "создать таймер отложенн
 Blockly.Msg.MAJORDOMO_SETTIMEOUTDELAY = "задержкой (сек)";
 Blockly.Msg.MAJORDOMO_SETTIMEOUTOPERATIONS = "действия";
 
+Blockly.Msg.MAJORDOMO_COLOR = "Цвет";
+
 Blockly.Msg.MAJORDOMO_SETTO = "в";
 
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;

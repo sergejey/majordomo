@@ -22,6 +22,11 @@ $dictionary=array(
 'DEVICES_POWER_SENSOR'=>'Watt sensor',
 'DEVICES_VOLTAGE_SENSOR'=>'Voltage sensor',
 'DEVICES_CURRENT_SENSOR'=>'Current sensor',
+'DEVICES_LIGHT_SENSOR'=>'Light sensor',
+'DEVICES_LEAK_SENSOR'=>'Leak detector',
+'DEVICES_SMOKE_SENSOR'=>'Smoke detector',
+'DEVICES_UNIT'=>'Units',
+'DEVICES_COUNTER'=>'Meter/Counter',
 
 // Measure
 'M_VOLTAGE'=>'V',
@@ -59,10 +64,12 @@ $dictionary=array(
 'DEVICES_PRESS'=>'Press',
 'DEVICES_TURN_ON'=>'Turn On',
 'DEVICES_TURN_OFF'=>'Turn Off',
+'DEVICES_SET_COLOR'=>'Set Color', 
 
 'DEVICES_GROUP_ECO'=>'Turn it off in ECO mode',
 'DEVICES_GROUP_SUNRISE'=>'Turn it off with Sunrise',
 'DEVICES_IS_ACTIVITY'=>'Status change means activity in the room',
+'DEVICES_NCNO'=>'Sensor type',
 
 'DEVICES_ADD_MENU'=>'Add device to Menu',
 'DEVICES_ADD_SCENE'=>'Add device to Scene',

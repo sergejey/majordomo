@@ -399,6 +399,8 @@ Blockly.Msg.MAJORDOMO_SETTIMEOUT = "set timer with name";
 Blockly.Msg.MAJORDOMO_SETTIMEOUTDELAY = "delay (sec)";
 Blockly.Msg.MAJORDOMO_SETTIMEOUTOPERATIONS = "actions";
 
+Blockly.Msg.MAJORDOMO_COLOR = "Color";
+
 Blockly.Msg.MAJORDOMO_SETTO = "to";
 
 Blockly.Msg.PROCEDURES_DEFRETURN_TITLE = Blockly.Msg.PROCEDURES_DEFNORETURN_TITLE;

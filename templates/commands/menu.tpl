@@ -492,7 +492,8 @@
   var elem2=document.getElementById('menu{$item.ID}_vv');
   var v=parseFloat(elem.value);
   if ((v+{$item.STEP_VALUE})<={$item.MAX_VALUE}) {
-   elem.value=v+{$item.STEP_VALUE};
+   var resultV = v+{$item.STEP_VALUE};
+   elem.value = parseFloat(resultV.toFixed(4));
    elem2.innerHTML=elem.value;
    clearTimeout(item{$item.ID}_timer);
    item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
@@ -504,7 +505,8 @@
   var elem2=document.getElementById('menu{$item.ID}_vv');
   var v=parseFloat(elem.value);
   if ((v-{$item.STEP_VALUE})>={$item.MIN_VALUE}) {
-   elem.value=v-{$item.STEP_VALUE};
+   var resultV = v-{$item.STEP_VALUE};
+   elem.value = parseFloat(resultV.toFixed(4));
    elem2.innerHTML=elem.value;
    clearTimeout(item{$item.ID}_timer);
    item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
@@ -663,6 +665,11 @@
     $('#menu{$item.ID}_v').val(data);
     $('#menu{$item.ID}_v').selectmenu("refresh");
    }
+  {/if}
+
+
+  {if $item.TYPE=='plusminus'}
+  $('#menu{$item.ID}_vv').html(data);
   {/if}
 
   {if $item.TYPE=='radiobox'}

@@ -86,6 +86,10 @@
   }
   outHash($rec, $out);
 
+if ($out['TITLE']) {
+    $this->owner->data['TITLE'] = $out['TITLE'];
+}
+
   if ($rec['ID'] && $rec['PARENT_ID']) {
    $cr_class=array();
    $cr_class['PARENT_ID']=$rec['PARENT_ID'];

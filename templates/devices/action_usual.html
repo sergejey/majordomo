@@ -1,0 +1,60 @@
+<div>
+ &nbsp;<br/>
+[#if LOCATION_ID!=""#]
+ <script type="text/javascript">
+  var subscribedWebSockets=0;
+  var subscribedWebSocketsTimer;
+  var requestSent = Math.round(+new Date()/1000);
+  function subscribeToDevices() {
+   console.log('Sending devices subscription request...');
+   var payload;
+   payload = new Object();
+   payload.action = 'Subscribe';
+   payload.data = new Object();
+   payload.data.TYPE='devices';
+   payload.data.DEVICE_ID='0';
+   wsSocket.send(JSON.stringify(payload));
+   subscribedWebSocketsTimer=setTimeout('subscribeToDevices();', 3000);
+   return false;
+  }
+
+  $.subscribe('wsConnected', function (_) {
+   subscribeToDevices();
+  });
+
+  $.subscribe('wsData', function (_, response) {
+   if (response.action=='subscribed') {
+    console.log('Subscription to devices confirmed.');
+    clearTimeout(subscribedWebSocketsTimer);
+    subscribedWebSockets=1;
+   }
+   if (response.action=='devices') {
+    var obj=jQuery.parseJSON(response.data);
+    if (typeof obj.DATA !='object') return false;
+    var objCnt = obj.DATA.length;
+    if (objCnt) {
+     for(var i=0;i<objCnt;i++) {
+      var device_id=obj.DATA[i].DEVICE_ID;
+      var html=obj.DATA[i].DATA;
+      $('#device'+device_id).html(html);
+     }
+    }
+   }
+  });
+ </script>
+ <p><a href="?" class="btn btn-default"><#LANG_BACK#></a></p>
+ <h1>[#LOCATION_TITLE#]</h1>
+ [#begin DEVICES#]
+ <div id="device[#ID#]">[#HTML#]</div>
+ <div style="clear:both">&nbsp;</div>
+ [#end DEVICES#]
+[#else LOCATION_ID#]
+[#begin LOCATIONS#]
+ [#if DEVICES_TOTAL!="0"#]
+<p>
+ <a href="?location_id=[#ID#]"><h2>[#TITLE#] ([#DEVICES_TOTAL#])</h2></a>
+</p>
+ [#endif#]
+[#end LOCATIONS#]
+[#endif LOCATION_ID#]
+</div>

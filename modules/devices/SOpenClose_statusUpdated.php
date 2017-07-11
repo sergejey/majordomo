@@ -18,16 +18,16 @@
  if ($this->getProperty('isActivity')) {
   $linked_room=$this->getProperty('linkedRoom');
   if (getGlobal('NobodyHomeMode.active')) {
-   callMethod('NobodyHomeMode.deactivate');
+   callMethodSafe('NobodyHomeMode.deactivate');
   }
   ClearTimeOut("nobodyHome"); 
-  SetTimeOut("nobodyHome","callMethod('NobodyHomeMode.activate');", 1*60*60);
+  SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);
   if ($linked_room) {
-   callMethod($linked_room.'.onActivity', array('sensor'=>$ot));
+   callMethodSafe($linked_room.'.onActivity', array('sensor'=>$ot));
   }  
  }
 
-$this->callMethod('logicAction');
+$this->callMethodSafe('logicAction');
 
 include_once(DIR_MODULES.'devices/devices.class.php');
 $dv=new devices();

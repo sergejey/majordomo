@@ -25,6 +25,15 @@
    <input type="radio" value="1" name="[#NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
    <input type="radio" value="0" name="[#NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
    [#endif#]
+
+   [#if CONFIG_TYPE="select"#]
+   <select name="[#NAME#]_value">
+   [#begin OPTIONS#]
+    <option value="[#VALUE#]"[#if VALUE="<#PROPERTIES.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
+   [#end OPTIONS#]
+   </select>
+   [#endif#]
+
   </div>
  </div>
  [#end PROPERTIES#]

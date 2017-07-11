@@ -45,6 +45,10 @@ class panel extends module
             $this->action = $action;
         }
 
+        if ($this->action) {
+            $out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
+        }
+
         if (!$session->data['SITE_USERNAME']) {
             $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
             $total = count($users);
@@ -158,6 +162,9 @@ class panel extends module
         }
 
         $out["ACTION"] = $this->action;
+        if (!$out['TITLE']) {
+            $out['TITLE'] = LANG_CONTROL_PANEL;
+        }
         $this->data = $out;
         $p = new parser(DIR_TEMPLATES . $this->name . ".html", $this->data, $this);
         return $p->result;

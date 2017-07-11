@@ -315,7 +315,7 @@ while (1)
    }
 
    echo date('Y-m-d H:i:s') . ' Closing socket...';
-   DebMes("Closing socket.");
+   DebMes("Connect: Closing socket.",'connect');
    socket_close($socket);
    echo "OK.\n\n";
 }

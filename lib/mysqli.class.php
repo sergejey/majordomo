@@ -272,7 +272,6 @@ class mysql
 
       $qry .= " WHERE $ndx = '" . $data[$ndx] . "'";
 
-     
       if (!$this->Exec($qry))
       {
          $this->Error($qry);

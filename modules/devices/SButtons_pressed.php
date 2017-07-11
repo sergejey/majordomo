@@ -6,7 +6,7 @@
 
  $linked_room=$this->getProperty('linkedRoom');
  if ($linked_room) {
-  callMethod($linked_room.'.onActivity', array('sensor'=>$ot));
+  callMethodSafe($linked_room.'.onActivity', array('sensor'=>$ot));
  }
 
  include_once(DIR_MODULES.'devices/devices.class.php');

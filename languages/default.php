@@ -27,6 +27,10 @@ $dictionary=array(
 'CONSOLE'=>'Console',
 'CONSOLE_RETRY'=>'Retry',
 'MODULE_DESCRIPTION'=>'Module Description on the Web',
+'STILL_WORKING'=>'Loading data... Click',
+'CLICK_HERE'=>'here',
+'TAKES_TOO_LONG'=>'if it takes too long.',
+
 
 'GENERAL_SENSORS'=>'Sensors',
 'GENERAL_OPERATIONAL_MODES'=>'Operational modes',
@@ -34,6 +38,8 @@ $dictionary=array(
 'GENERAL_SECURITY_MODE'=>'Security mode',
 'GENERAL_NOBODYS_HOME_MODE'=>'Nobody\'s home',
 'GENERAL_WE_HAVE_GUESTS_MODE'=>'We have guests',
+'GENERAL_NIGHT_MODE'=>'Night mode',
+'GENERAL_DARKNESS_MODE'=>'Darkness mode',
 
 'GENERAL_CLIMATE'=>'Climate',
 'GENERAL_WEATHER_FORECAST'=>'Weather forecast',

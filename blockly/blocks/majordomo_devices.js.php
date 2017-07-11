@@ -77,6 +77,28 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentStatus']
 
 <?php
 }
+if ($blocks[$i]['TYPE']=='rgb') {
+?>
+
+Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setColor'] = {
+  init: function () {
+
+    var thisBlock = this;
+    this.appendValueInput('COLOR')
+        .appendField('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_SET_COLOR;?>');
+
+    this.setInputsInline(true);
+    this.setColour(275);
+    this.setOutput(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_SET_COLOR;?>');
+
+  }
+};
+
+<?php
+}
 if ($dev->device_types[$blocks[$i]['TYPE']]['PARENT_CLASS']=='SSensors') {
 ?>
 

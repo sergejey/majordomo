@@ -403,6 +403,10 @@ function getObject($name)
  */
 function getObjectsByProperty($property_name, $condition='', $condition_value='') 
 {
+    if ($condition_value=='' && $condition!='') {
+        $condition_value=$condition;
+        $condition='==';
+    }
   $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($property_name)."'");
   $total=count($pRecs);
   if (!$total) {
@@ -821,6 +825,7 @@ function getHistoryValue($varname, $time, $nerest = false) {
  */
 function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
+
    $tmp = explode('.', $varname);
 
    if (isset($tmp[2]))
@@ -883,6 +888,35 @@ function callMethod($method_name, $params = 0)
    {
       return 0;
    }
+}
+
+function callMethodSafe($method_name, $params = 0)
+{
+    $tmp = explode('.', $method_name);
+    if (IsSet($tmp[2]))
+    {
+        $object_name = $tmp[0] . '.' . $tmp[1];
+        $varname     = $tmp[2];
+    }
+    elseif (IsSet($tmp[1]))
+    {
+        $object_name = $tmp[0];
+        $method_name = $tmp[1];
+    }
+    else
+    {
+        $object_name = 'ThisComputer';
+    }
+    $obj = getObject($object_name);
+
+    if ($obj)
+    {
+        return $obj->callMethodSafe($method_name, $params);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 function injectObjectMethodCode($method_name,$key,$code) {
@@ -1156,6 +1190,24 @@ function getRoomObjectByLocation($location_id,$auto_add=0) {
         $object_id=addClassObject("Rooms",$location_title);
         SQLExec("UPDATE objects SET LOCATION_ID=".(int)$location_rec['ID'].", DESCRIPTION='".DBSafe($location_rec['TITLE'])."' WHERE ID=".$object_id);
         return $location_title;
+    } else {
+        return '';
+    }
+}
+
+function getUserObjectByTitle($user_id,$auto_add=0) {
+    $user_rec=SQLSelectOne("SELECT * FROM users WHERE ID=".(int)$user_id);
+    $user_title=transliterate($user_rec['USERNAME']);
+    $user_title=preg_replace('/\W/','',$user_title);
+    if (!$user_title) {
+        $user_title='User'.$user_id;
+    }
+    $user_object=SQLSelectOne("SELECT * FROM objects WHERE (TITLE LIKE '".DBSafe($user_title)."' OR (DESCRIPTION!='' AND DESCRIPTION LIKE '".$user_rec['NAME']."'))");
+    if ($user_object['ID']) return $user_object['TITLE'];
+    if ($auto_add) {
+        $object_id=addClassObject("Users",$user_title);
+        SQLExec("UPDATE objects SET DESCRIPTION='".DBSafe($user_rec['NAME'])."' WHERE ID=".$object_id);
+        return $user_title;
     } else {
         return '';
     }

@@ -177,6 +177,13 @@
      $res.='ZWave: <a href="/panel/zwave/'.$devices[$i]['DEVICE_ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
     }
    }
+   if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
+    $devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE (TITLE LIKE '%".DBSafe($title)."%' OR LINKED_OBJECT LIKE '%".DBSafe($title)."%') ORDER BY TITLE");
+    $total=count($devices);
+    for($i=0;$i<$total;$i++) {
+     $res.='Device: <a href="/panel/devices/'.$devices[$i]['ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
+    }
+   }
 
    //zwave devices
    if (file_exists(DIR_MODULES.'app_gpstrack/app_gpstrack.class.php')) {

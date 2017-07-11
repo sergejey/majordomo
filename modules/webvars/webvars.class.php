@@ -324,7 +324,7 @@ function usual(&$out) {
 
     if ($run_script_id) {
      //run script
-     runScript($run_script_id, $params);
+     runScriptSafe($run_script_id, $params);
     } elseif ($run_code) {
      //run code
                   try {

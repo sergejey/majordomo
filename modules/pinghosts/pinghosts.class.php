@@ -259,10 +259,6 @@ function usual(&$out) {
 
    $host['CHECK_LATEST']=date('Y-m-d H:i:s');
 
-   if ($host['LINKED_OBJECT']!='' && $host['LINKED_PROPERTY']!='') {
-    setGlobal($host['LINKED_OBJECT'].'.'.$host['LINKED_PROPERTY'], $host['STATUS']);
-   }
-
    if ($host['STATUS']=='1') {
     $host['CHECK_NEXT']=date('Y-m-d H:i:s', time()+$online_interval);
    } else {
@@ -270,6 +266,9 @@ function usual(&$out) {
    }
 
    if ($old_status!=$host['STATUS']) {
+    if ($host['LINKED_OBJECT']!='' && $host['LINKED_PROPERTY']!='') {
+     setGlobal($host['LINKED_OBJECT'].'.'.$host['LINKED_PROPERTY'], $host['STATUS']);
+    }
     if ($host['STATUS']==2) {
      $host['LOG']=date('Y-m-d H:i:s').' Host is offline'."\n".$host['LOG'];
     } elseif ($host['STATUS']==1) {
@@ -278,8 +277,8 @@ function usual(&$out) {
    }
 
    $tmp=explode("\n", $host['LOG']);
-   $total=count($tmp);
-   if ($total > 30) {
+   $total_log=count($tmp);
+   if ($total_log > 30) {
     $tmp=array_slice($tmp, 0, 30);
     $host['LOG']=implode("\n", $tmp);
    }
@@ -308,7 +307,7 @@ function usual(&$out) {
 
     if ($run_script_id) {
      //run script
-     runScript($run_script_id);
+     runScriptSafe($run_script_id);
     } elseif ($run_code) {
      //run code
 

@@ -159,8 +159,16 @@ $sqlQuery = "SELECT shouts.*, UNIX_TIMESTAMP(shouts.ADDED) as TM, users.NAME
 $res   = SQLSelect($sqlQuery);
 $total = count($res);
 
+$latest_date='';
+
 for ($i = 0; $i < $total; $i++)
 {
+
+  if (date('Y-m-d',$res[$i]['TM'])!=$latest_date) {
+   $latest_date=date('Y-m-d',$res[$i]['TM']);
+   echo "<h2>$latest_date</h2>\n\n";
+  }
+
    if ($res[$i]['MEMBER_ID'] == 0)
       $res[$i]['NAME'] = 'Alice';
    
