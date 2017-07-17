@@ -31,7 +31,7 @@ function usbdevices() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data=1) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
