@@ -207,7 +207,7 @@ function usual(&$out) {
    }
    SQLUpdate('pinghosts', $host);
 
-   $online=0
+   $online=0;
    // checking
    if ($host['TYPE']==0) {
     //ping host
