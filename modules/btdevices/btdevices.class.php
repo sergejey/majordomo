@@ -31,7 +31,7 @@ function btdevices() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data = 1) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
@@ -231,7 +231,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall($data) {
+ function dbInstall($data = 1) {
 /*
 btdevices - btdevices
 */
