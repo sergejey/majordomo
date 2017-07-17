@@ -247,7 +247,7 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall($data) {
+ function dbInstall($data=1) {
 /*
 usbdevices - usbdevices
 */
