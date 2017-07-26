@@ -1,5 +1,6 @@
 <?php
-
+//отключение ворнингов
+error_reporting( E_ERROR ); 
 /**
  * Main project script
  *
