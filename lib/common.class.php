@@ -769,7 +769,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
           if ($background) {
-              //curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+              curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
               curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
           }
 
