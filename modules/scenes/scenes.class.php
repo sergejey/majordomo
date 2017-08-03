@@ -152,8 +152,14 @@ function run() {
     $smarty->assign($k, $v);
    }
 
-
-   @$this->result=$smarty->fetch(DIR_TEMPLATES.'scenes/scenes.tpl');
+   $template = DIR_TEMPLATES.'scenes/scenes.tpl';
+   if (defined('ALTERNATIVE_TEMPLATES')) {
+    $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
+    if (file_exists($alt_path)) {
+     $template = $alt_path;
+    }
+   }
+   @$this->result=$smarty->fetch($template);
 
 
 
