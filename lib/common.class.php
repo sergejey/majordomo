@@ -990,16 +990,14 @@ function checkAccess($object_type, $object_id)
 function registerError($code = 'custom', $details = '')
 {
 
-   DebMes("Error registered (type: $code): ".$details);
+   $e = new \Exception;
+   $backtrace=$e->getTraceAsString();
+
+   DebMes("Error registered (type: $code):\n".$details."\nBacktrace:\n".$backtrace,'error');
    $code = trim($code);
 
    if ($code == 'sql') {
     return 0;
-   }
-   
-   if (!$code)
-   {
-      $code = 'custom';
    }
 
    $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
@@ -1012,13 +1010,12 @@ function registerError($code = 'custom', $details = '')
    }
 
    $error_rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-   $error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
+   @$error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
    SQLUpdate('system_errors', $error_rec);
 
    $history_rec = array();
-
    $history_rec['ERROR_ID'] = $error_rec['ID'];
-   $history_rec['COMMENTS'] = $details;
+   $history_rec['COMMENTS'] = $details."\nBacktrace:\n".$backtrace;
    $history_rec['ADDED']    = $error_rec['LATEST_UPDATE'];
 
    //Temporary disabled
@@ -1031,7 +1028,6 @@ function registerError($code = 'custom', $details = '')
    $history_rec['EVENTS_DATA']     = getURL($xrayUrl . 'events', 0);
    $history_rec['DEBUG_DATA']      = getURL($xrayUrl . 'debmes', 0);
     */
-
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
    if (!$error_rec['KEEP_HISTORY'])

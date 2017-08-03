@@ -41,6 +41,12 @@ class panel extends module
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
         global $action;
+
+        if (defined('NO_DATABASE_CONNECTION')) {
+         if (!$action) $action = 'saverestore';
+         $this->print = 1;
+        }
+
         if (!$this->action && $action) {
             $this->action = $action;
         }
@@ -81,7 +87,7 @@ class panel extends module
             }
         }
 
-        if (IsSet($session->data["AUTHORIZED"])) {
+        if (IsSet($session->data["AUTHORIZED"]) || defined('NO_DATABASE_CONNECTION')) {
             $this->authorized = 1;
         } else {
             $tmp = SQLSelectOne("SELECT ID FROM users WHERE IS_ADMIN=1");
