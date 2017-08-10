@@ -915,6 +915,7 @@ function usual(&$out) {
 
   $this->setDictionary();
   $this->renderStructure();
+  $this->homebridgeSync();
  }
 /**
 * Uninstall
