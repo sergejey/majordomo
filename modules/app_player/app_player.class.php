@@ -293,7 +293,7 @@ function usual(&$out) {
     include(DIR_MODULES.'app_player/vlcweb.php');
    } elseif ($terminal['PLAYER_TYPE']=='mpd') {
     include(DIR_MODULES.'app_player/mpd.php');
-   } elseif ($terminal['MAJORDROID_API']) {
+   } elseif ($terminal['MAJORDROID_API'] || $terminal['PLAYER_TYPE']=='majordroid') {
    include(DIR_MODULES.'app_player/majordroid.php');
    }
 

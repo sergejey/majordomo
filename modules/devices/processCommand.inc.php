@@ -10,7 +10,7 @@
 $command = $details['message'];
 $processed = 0;
 $reply_confirm = 0;
-//DebMes("Processing device command: ".$command,'devices');
+
 $devices = SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices");
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
@@ -58,10 +58,8 @@ for ($i = 0; $i < $total; $i++) {
         for ($is = 0; $is < $totals; $is++) {
             $lines[] = implode(' ', $combos[$is]);
         }
-        //DebMes("Checking " . $devices[$i]['TITLE'] . " against " . implode('@@@@', $lines), 'devices');
         if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
             $device_matched = 1;
-            //DebMes("Matched !", 'devices');
         }
     }
 
@@ -86,6 +84,10 @@ for ($i = 0; $i < $total; $i++) {
         } elseif ($device_type == 'openclose') {
             sayReply($device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_CLOSED : LANG_DEVICES_STATUS_OPEN), 2);
             $processed = 1;
+        } elseif ($device_type == 'button') {
+            callMethod($linked_object . '.pressed');
+            $processed = 1;
+            $reply_confirm = 1;
         } elseif ($device_type == 'controller' ||
             $device_type == 'relay' ||
             $device_type == 'dimmer' ||

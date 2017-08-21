@@ -112,6 +112,10 @@ $dictionary = array(
     'DEVICES_STATUS_CLOSED' => 'is closed',
     'DEVICES_COMMAND_CONFIRMATION' => 'Done|Ok',
 
+    'DEVICES_ROOMS_NOBODYHOME' => 'Nobody home',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Somebody home',
+    'DEVICES_ROOMS_ACTIVITY' => 'Latest activity',
+
     /* end module names */
 
 

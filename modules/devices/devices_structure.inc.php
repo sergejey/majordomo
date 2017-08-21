@@ -10,7 +10,8 @@ $this->device_types=array(
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
         ),
         'METHODS'=>array(
-            'onActivity'=>array('DESCRIPTION'=>'Rooms activity')
+            'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
+            'updateActivityStatus'=>array('DESCRIPTION'=>'Update activity status')
         )
     ),
     'general'=>array(
@@ -30,6 +31,8 @@ $this->device_types=array(
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(
+                'EconomMode.activate'=>'econommode_activate',
+                'EconomMode.deactivate'=>'econommode_deactivate',
                 'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
                 'NightMode.activate'=>'nightmode_activate',
