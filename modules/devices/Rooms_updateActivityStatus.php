@@ -1,7 +1,7 @@
 <?php
 
-@include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
-@include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+@include_once(ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
+@include_once(ROOT . 'languages/devices_default' . '.php');
 
 $rooms = getObjectsByClass("Rooms");
 $total = count($rooms);
@@ -37,4 +37,7 @@ if (!$rooms[0]['active']) {
     }
     $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME." ". LANG_DEVICES_ROOMS_ACTIVITY . " " . implode(", ", $res_rooms);
 }
+
+echo $somebodyHomeText;
+
 setGlobal('somebodyHomeText', $somebodyHomeText);

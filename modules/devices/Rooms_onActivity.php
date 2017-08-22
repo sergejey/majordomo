@@ -18,8 +18,8 @@ if ($this->getProperty("IdleDelay")) {
 clearTimeOut($ot."_activity_timeout");
 setTimeOut($ot."_activity_timeout","callMethod('".$ot.".onIdle');",$activity_timeout);
 
-$this->callMethod("updateActivityStatus");
+$this->callMethodSafe("updateActivityStatus");
 
 if (getGlobal('NobodyHomeMode.active')) {
-    callMethod('NobodyHomeMode.deactivate',array('sensor'=>$params['sensor'],'room'=>$ot));
+    callMethodSafe('NobodyHomeMode.deactivate',array('sensor'=>$params['sensor'],'room'=>$ot));
 }
