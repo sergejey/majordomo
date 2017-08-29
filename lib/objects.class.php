@@ -649,8 +649,14 @@ function getHistory($varname, $start_time, $stop_time = 0) {
   // Get hist val id
   $id = getHistoryValueId($varname);
 
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
   // Get data
-  return SQLSelect("SELECT VALUE, ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+  return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
 }
 
 /**
@@ -667,8 +673,14 @@ function getHistoryMin($varname, $start_time, $stop_time = 0) {
         // Get hist val id
         $id = getHistoryValueId($varname);
 
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
         // Get data
-        $data = SQLSelectOne("SELECT MIN(VALUE+0.0) AS VALUE FROM phistory ".
+        $data = SQLSelectOne("SELECT MIN(VALUE+0.0) AS VALUE FROM $table_name ".
                 "WHERE VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
         
         if (!$data['VALUE'])
@@ -690,9 +702,13 @@ function getHistoryMax($varname, $start_time, $stop_time = 0) {
         
         // Get hist val id
   $id = getHistoryValueId($varname);
-
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
         // Get data
-        $data = SQLSelectOne("SELECT MAX(VALUE+0.0) AS VALUE FROM phistory ".
+        $data = SQLSelectOne("SELECT MAX(VALUE+0.0) AS VALUE FROM $table_name ".
                 "WHERE VALUE != \"\" AND  VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
         if (!$data['VALUE'])
                 return false;
@@ -713,9 +729,13 @@ function getHistoryCount($varname, $start_time, $stop_time = 0) {
         
         // Get hist val id
   $id = getHistoryValueId($varname);
-
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
         // Get data
-        $data = SQLSelectOne("SELECT COUNT(VALUE+0.0) AS VALUE FROM phistory ".
+        $data = SQLSelectOne("SELECT COUNT(VALUE+0.0) AS VALUE FROM $table_name ".
                 "WHERE VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
         if (!$data['VALUE'])
                 return false;
@@ -736,9 +756,13 @@ function getHistorySum($varname, $start_time, $stop_time = 0) {
         
         // Get hist val id
   $id = getHistoryValueId($varname);
-
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
         // Get data
-        $data = SQLSelectOne("SELECT SUM(VALUE+0.0) AS VALUE FROM phistory ".
+        $data = SQLSelectOne("SELECT SUM(VALUE+0.0) AS VALUE FROM $table_name ".
                 "WHERE  VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
         if (!$data['VALUE'])
                 return false;
@@ -759,9 +783,14 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0) {
         
         // Get hist val id
   $id = getHistoryValueId($varname);
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
 
         // Get data
-        $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM phistory ".
+        $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name ".
                 "WHERE  VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
         if (!$data['VALUE'])
                 return false;
@@ -780,12 +809,18 @@ function getHistoryValue($varname, $time, $nerest = false) {
         
         // Get hist val id
   $id = getHistoryValueId($varname);
-        
-        // Get val before
-        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+    // Get val before
+        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
         
         // Get val after        
-        $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM phistory WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
+        $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
         
         // Not found values
         if ((!$val1['VALUE']) && (!$val2['VALUE']))     

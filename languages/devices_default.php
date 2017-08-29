@@ -116,6 +116,12 @@ $dictionary = array(
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Somebody home',
     'DEVICES_ROOMS_ACTIVITY' => 'Latest activity',
 
+    'DEVICES_PASSED_NOW' => 'Now',
+    'DEVICES_PASSED_SECONDS_AGO' => 'seconds ago',
+    'DEVICES_PASSED_MINUTES_AGO' => 'minutes ago',
+    'DEVICES_PASSED_HOURS_AGO' => 'hours ago',
+    'DEVICES_CHOOSE_EXISTING' => '... or choose existing device record',
+
     /* end module names */
 
 

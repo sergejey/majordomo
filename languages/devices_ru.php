@@ -115,6 +115,12 @@ $dictionary = array(
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
     'DEVICES_ROOMS_ACTIVITY' => 'Активность:',
 
+    'DEVICES_PASSED_NOW' => 'только что',
+    'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
+    'DEVICES_PASSED_MINUTES_AGO' => 'мин. назад',
+    'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
+    'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
+
     /* end module names */
 
 

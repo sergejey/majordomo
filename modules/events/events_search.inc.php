@@ -34,10 +34,10 @@
   if (!$sortby) $sortby="ID DESC";
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT * FROM events WHERE $qry ORDER BY $sortby");
+  $res=SQLSelect("SELECT * FROM events WHERE $qry ORDER BY EVENT_NAME");
   if ($res[0]['ID']) {
-   paging($res, 50, $out); // search result paging
-   colorizeArray($res);
+   //paging($res, 50, $out); // search result paging
+   //colorizeArray($res);
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
@@ -46,6 +46,10 @@
     $tmp=explode(' ', $res[$i]['EXPIRE']);
     $res[$i]['EXPIRE']=fromDBDate($tmp[0])." ".$tmp[1];
    }
+   $out['ITEMS']=$this->pathToTree($res);
+
+   //print_r($out['CHILDS']);exit;
    $out['RESULT']=$res;
+
   }
 ?>

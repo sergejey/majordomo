@@ -105,9 +105,15 @@ if ($total>0) {
         $px_passed=0;
         $dt=date('Y-m-d', $start_time);
 
-        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+        if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+                $history_table = createHistoryTable($pvalue['ID']);
+        } else {
+                $history_table = 'phistory';
+        }
+
+        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
         if (!$history[0]['ID'] && $op == 'log') {
-                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM phistory WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
                 $history = array_reverse($history);
         }
         $total_values=count($history);
@@ -132,21 +138,21 @@ if ($total>0) {
          if ($total_values>0) {
           if ($_GET['subop']=='clear') {
            if (!$_GET['id']) {
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."'");
+            SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
            } else {
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+            SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
            }
            header('Location:'.str_replace('&subop=clear', '', $_SERVER['REQUEST_URI']));
            exit;
           }
           //OPTIMIZE_LOG
           if ($_GET['subop']=='optimize') {
-           $data=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
+           $data=SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
            $total=count($data);
            $old_value=$data[0]['VALUE'];
            for($i=1;$i<$total;$i++) {
             if ($data[$i]['VALUE']==$old_value) {
-             SQLExec("DELETE FROM phistory WHERE ID='".$data[$i]['ID']."'");
+             SQLExec("DELETE FROM $history_table WHERE ID='".$data[$i]['ID']."'");
             } else {
              $old_value=$data[$i]['VALUE'];
             }

@@ -27,6 +27,7 @@ $this->device_types=array(
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
         ),
         'INJECTS'=>array(

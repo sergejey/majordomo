@@ -89,6 +89,40 @@ $ctl = new control_modules();
 echo "Clearing the cache.\n";
 SQLExec("TRUNCATE TABLE `cached_values`");
 
+if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE==1) {
+   // split data into multiple tables
+   $phistory_values = SQLSelect("SELECT VALUE_ID, COUNT(*) as TOTAL FROM phistory GROUP BY VALUE_ID");
+   $total = count($phistory_values);
+   for($i=0;$i<$total;$i++) {
+      $value_id=$phistory_values[$i]['VALUE_ID'];
+      $total_data=$phistory_values[$i]['TOTAL'];
+      DebMes("Processing data for value $value_id ($total_data) ... ");
+      echo "Processing data for value $value_id ($total_data) ... ";
+      $table_name = createHistoryTable($value_id);
+      moveDataFromMainHistoryToTable($value_id);
+      DebMes("Processing of $value_id finished.");
+      echo "OK\n";
+   }
+} else {
+  //combine data into single table
+   $data=SQLSelect("SHOW TABLES;");
+   $tables=array();
+   foreach($data as $v) {
+      foreach($v as $k=>$v2) {
+         $tables[]=$v2;
+      }
+   }
+   foreach($tables as $table) {
+      if (preg_match('/phistory_value_(\d+)/',$table,$m)) {
+         $value_id=$m[1];
+         echo "Processing table: $table ($value_id) ...\n";
+         DebMes("Processing data for value $value_id ($table) ... ");
+         moveDataFromTableToMainHistory($value_id);
+         DebMes("Processing of $value_id finished.");
+         echo "OK\n";
+      }
+   }
+}
 
 // 1 second sleep
 sleep(1);

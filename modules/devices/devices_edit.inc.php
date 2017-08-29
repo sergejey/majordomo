@@ -166,6 +166,20 @@
       if ($add_title) {
           $out['TITLE']=$add_title;
       }
+
+      if ($out['SOURCE_TABLE'] && !$rec['ID']) {
+          $qry_devices=1;
+          if ($out['TYPE']) {
+              $qry_devices.=" AND devices.TYPE='".DBSafe($out['TYPE'])."'";
+          }
+          $existing_devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE $qry_devices ORDER BY TITLE");
+          if ($existing_devices[0]['ID']) {
+              $out['SELECT_EXISTING']=1;
+              $out['EXISTING_DEVICES']=$existing_devices;
+          }
+      }
+
+
   }
 
   if ($this->tab=='links') {

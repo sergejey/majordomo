@@ -508,39 +508,11 @@ function recognizeTime($text, &$newText)
  * @param mixed $expire_in Expire time (default 365)
  * @return mixed
  */
-function registerEvent($eventName, $details = '', $expire_in = 365)
+function registerEvent($eventName, $details = '', $expire_in = 0)
 {
-   $sqlQuery = "SELECT *
-                  FROM events
-                 WHERE EVENT_NAME = '" . DBSafe($eventName) . "'
-                   AND EVENT_TYPE = 'system'
-                 ORDER BY ID DESC
-                 LIMIT 1";
-
-   $rec = array();
-   $rec = SQLSelectOne($sqlQuery);
-
-   $rec['EVENT_NAME'] = $eventName;
-   $rec['EVENT_TYPE'] = 'system';
-   $rec['DETAILS']    = $details;
-   $rec['ADDED']      = date('Y-m-d H:i:s');
-   $rec['EXPIRE']     = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
-   $rec['PROCESSED']  = 1;
-
-   if ($rec['ID'])
-   {
-      SQLUpdate('events', $rec);
-      $sqlQuery = "DELETE FROM events
-                    WHERE EVENT_NAME = '" . $rec['EVENT_NAME'] . "'
-                      AND EVENT_TYPE = '" . $rec['EVENT_TYPE'] . "'
-                      AND ID         != " . $rec['ID'];
-      SQLExec($sqlQuery);
-   }
-   else
-   {
-      $rec['ID'] = SQLInsert('events', $rec);
-   }
-   return $rec['ID'];
+    include_once(DIR_MODULES.'events/events.class.php');
+    $events = new events();
+    return $events->registerEvent($eventName, $details, $expire_in);
 }
 
 /**
