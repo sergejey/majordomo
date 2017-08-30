@@ -67,6 +67,7 @@ if ($p!='') {
         }
 }
 
+$property = SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$prop_id);
 $pvalue=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id."' AND OBJECT_ID='".$obj->id."'");
 
 if (!$pvalue['ID']) {
@@ -138,8 +139,19 @@ if ($total>0) {
          if ($total_values>0) {
           if ($_GET['subop']=='clear') {
            if (!$_GET['id']) {
-            SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
+                   $values=SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
+                   $total = count($values);
+                   for ($i = 0; $i < $total; $i++) {
+                           if ($property['DATA_TYPE']==5) {
+                                 @unlink(ROOT.'cms/images/'.$values[$i]['VALUE']);
+                           }
+                   }
+                   SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
            } else {
+            $value=SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+            if ($property['DATA_TYPE']==5) {
+              @unlink(ROOT.'cms/images/'.$value['VALUE']);
+            }
             SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
            }
            header('Location:'.str_replace('&subop=clear', '', $_SERVER['REQUEST_URI']));
@@ -187,7 +199,11 @@ if ($total>0) {
                         //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
                         echo $history[$i]['ADDED'];
                         echo ": <b>";
-                        echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        if ($property['DATA_TYPE']==5) {
+                           echo "<a href='".ROOTHTML."cms/images/".$history[$i]['VALUE']."' target='_blank'><img src='".ROOTHTML."cms/images/".$history[$i]['VALUE']."' height=100></a>";
+                        } else {
+                           echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        }
                         if ($history[$i]['SOURCE']) {
                          echo ' ('.$history[$i]['SOURCE'].')';
                         }

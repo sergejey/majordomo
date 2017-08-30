@@ -121,6 +121,15 @@ $dictionary = array(
     'DEVICES_PASSED_MINUTES_AGO' => 'minutes ago',
     'DEVICES_PASSED_HOURS_AGO' => 'hours ago',
     'DEVICES_CHOOSE_EXISTING' => '... or choose existing device record',
+    
+    'DEVICES_CAMERA' =>'IP camera',
+    'DEVICES_CAMERA_STREAM_URL' =>'Stream URL',
+    'DEVICES_CAMERA_USERNAME' =>'Camera Username',
+    'DEVICES_CAMERA_PASSWORD' =>'Camera Password',
+    'DEVICES_CAMERA_SNAPSHOT_URL' =>'Snapshot URL',
+    'DEVICES_CAMERA_SNAPSHOT' =>'Snapshot',
+    'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Take Snapshot',
+    'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'History',
 
     /* end module names */
 

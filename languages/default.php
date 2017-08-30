@@ -1049,6 +1049,7 @@ $dictionary=array(
     'DATA_KEY' => 'Key data',
     'DATA_TYPE' => 'Data type',
     'DATA_TYPE_GENERAL' => 'General',
+    'DATA_TYPE_IMAGE' => 'Image',
     'CLASS_TEMPLATE' => 'Template',
 
 'TEST'=>'test'

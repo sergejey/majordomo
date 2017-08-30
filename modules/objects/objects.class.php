@@ -763,6 +763,44 @@ function usual(&$out) {
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    endMeasure('setproperty_update_getvalue');
    $old_value=$v['VALUE'];
+
+   if ($prop['DATA_TYPE']==5 && $value!=$old_value) { // image
+    $path_parts=pathinfo($value);
+    $extension=strtolower($path_parts['extension']);
+    if ($extension!='jpg' && $extension!='jpeg' && $extension!='png'  && $extension!='gif') {
+     $extension='jpg';
+    }
+    $image_file_name=date('Ymd_His').'.'.$extension;
+    if (preg_match('/^http.+/',$value)) {
+     $image_data=getURL($value);
+     @mkdir(ROOT.'cms/images/'.$prop['ID'],0777);
+     SaveFile(ROOT.'cms/images/'.$prop['ID'].'/'.$image_file_name,$image_data);
+     $value=$prop['ID'].'/'.$image_file_name;
+    } elseif (file_exists($value)) {
+     @mkdir(ROOT.'cms/images/'.$prop['ID'],0777);
+     copyFile($value,ROOT.'cms/images/'.$prop['ID'].'/'.$image_file_name);
+     $value=$prop['ID'].'/'.$image_file_name;
+    } else {
+     $value = '';
+    }
+    if ($value!='' && file_exists(ROOT.'cms/images/'.$value)) {
+     $lst=GetImageSize(ROOT.'cms/images/'.$value);
+     //$image_width=$lst[0];
+     //$image_height=$lst[1];
+     $image_format=$lst[2];
+     if (!$image_format) {
+      @unlink(ROOT.'cms/images/'.$value);
+      $value = '';
+     }
+    } else {
+     $value = '';
+    }
+    if ($value!='' && $old_value!='' && !$prop['KEEP_HISTORY'] && file_exists(ROOT.'cms/images/'.$old_value)) {
+     @unlink(ROOT.'cms/images/'.$old_value);
+    }
+    if ($value=='') $value=$old_value;
+   }
+
    $v['VALUE']=$value.'';
    $v['SOURCE']=$source.'';
    if ($v['ID']) {

@@ -121,6 +121,15 @@ $dictionary = array(
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
     'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
 
+    'DEVICES_CAMERA' =>'IP-камера',
+    'DEVICES_CAMERA_STREAM_URL' =>'URL видео-потока',
+    'DEVICES_CAMERA_USERNAME' =>'Имя пользователя',
+    'DEVICES_CAMERA_PASSWORD' =>'Пароль',
+    'DEVICES_CAMERA_SNAPSHOT_URL' =>'URL статического снимка',
+    'DEVICES_CAMERA_SNAPSHOT' =>'Снимок',
+    'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Сохранить снимок',
+    'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'История',
+
     /* end module names */
 
 

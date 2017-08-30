@@ -92,7 +92,10 @@ function setDictionary() {
 * @access public
 */
 function run() {
- global $session;
+
+    @include_once(ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
+    @include_once(ROOT . 'languages/devices_default' . '.php');
+
   $out=array();
   if ($this->action=='admin') {
       $this->admin($out);
@@ -227,6 +230,10 @@ function processDevice($device_id) {
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
     $result['HTML']=processTitle($template,$this);
+    if ($device_rec['TYPE']=='camera') {
+        $result['HEIGHT']=5;
+    }
+
     return $result;
 }
 

@@ -99,6 +99,24 @@ $this->device_types=array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
         )
     ),
+    'camera'=>array(
+        'TITLE'=>LANG_DEVICES_CAMERA,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SCameras',
+        'PROPERTIES'=>array(
+            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'cameraUsername'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_USERNAME,'_CONFIG_TYPE'=>'text'),
+            'cameraPassword'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PASSWORD,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
+            'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
+        ),
+        'METHODS'=>array(
+            'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
+            'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
+            'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+        )
+    ),
     'openclose'=>array(
         'TITLE'=>LANG_DEVICES_OPENCLOSE,
         'PARENT_CLASS'=>'SDevices',

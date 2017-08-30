@@ -1044,6 +1044,7 @@ $dictionary = array(
     'DATA_KEY' => 'Ключевые данные',
     'DATA_TYPE' => 'Тип данных',
     'DATA_TYPE_GENERAL' => 'Общий формат',
+    'DATA_TYPE_IMAGE' => 'Изображение',
     'CLASS_TEMPLATE' => 'Шаблон отображения',
 
     'TEST' => 'test',
