@@ -15,6 +15,11 @@
  [#if ERR#]
  <div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
  [#endif ERR#]
+  <div>
+   <label for="description"><#LANG_DESCRIPTION#>:</label>
+   <input type="text" name="description" id="description" value="[#DESCRIPTION#]" class="form-control"/>
+  </div>
+
 
  <table class="table">
   [#begin PARAMS#]

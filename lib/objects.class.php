@@ -37,6 +37,7 @@ function addClass($class_name, $parent_class = '')
       $class['TITLE']     = $class_name;
       $class['PARENT_ID'] = (int)$parent_class_id;
       $class['ID']        = SQLInsert('classes', $class);
+      return $class['ID'];
    }
 }
 

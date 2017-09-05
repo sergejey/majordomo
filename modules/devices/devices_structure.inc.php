@@ -104,7 +104,8 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SCameras',
         'PROPERTIES'=>array(
-            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (LQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'streamURL_HQ'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (HQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
             'cameraUsername'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_USERNAME,'_CONFIG_TYPE'=>'text'),
             'cameraPassword'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PASSWORD,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
             'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),

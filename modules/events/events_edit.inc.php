@@ -6,6 +6,9 @@
 
  $rec=SQLSelectOne("SELECT * FROM events WHERE ID='$id'");
 if ($this->mode=='update') {
+    global $description;
+    $rec['DESCRIPTION']=$description;
+    SQLUpdate('events',$rec);
     $out['OK']=1;
 }
  outHash($rec, $out);

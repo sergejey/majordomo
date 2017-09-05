@@ -6,12 +6,29 @@ API example:
 /api/events/path/to/event?param1=value1
 </pre>
 
+<script type="text/javascript">
+ var updateTimer = 0;
+ function updateRecentEvents() {
+  var url = "/ajax/events.html?getlatest=1";
+  $.ajax({
+   url: url
+  }).done(function(data) {
+   $('#recentEvents').html(data);
+   updateTimer = setTimeout('updateRecentEvents();',1000);
+  });
+ }
+ updateTimer = setTimeout('updateRecentEvents();',2000);
+</script>
+
+<div id="recentEvents">...</div>
+
 [#if ITEMS#]
 <ul>
  [#begin ITEMS#]
  <li>
   [#if ID!=""#]
   <a href="?view_mode=edit_events&id=[#ID#]">[#TITLE#]</a> ([#ADDED#])
+  [#if DESCRIPTION!=""#]<i>[#DESCRIPTION#]</i>[#endif#]
 
   [#else#][#TITLE#][#endif#]
 
@@ -61,4 +78,5 @@ API example:
 </p>
 [#endif RESULT#]
 #-->
+
 

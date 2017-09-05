@@ -158,6 +158,21 @@ function admin(&$out) {
 function usual(&$out) {
  global $session;
 
+ if ($this->ajax) {
+  $events=SQLSelect("SELECT ID, EVENT_NAME, DESCRIPTION, DETAILS, ADDED FROM events ORDER BY ADDED DESC LIMIT 8");
+  $total = count($events);
+  echo "<table class='table'>";
+  for ($i = 0; $i < $total; $i++) {
+   echo "<tr>";
+   echo "<td><a href='".ROOTHTML."panel/event/".$events[$i]['ID'].".html'>".$events[$i]['EVENT_NAME']."</a></td>";
+   echo "<td><i>".$events[$i]['DESCRIPTION'].'</i><div>'.$events[$i]['DETAILS']."</div></td>";
+   echo "<td>".$events[$i]['ADDED']."</td>";
+   echo "</tr>";
+  }
+  echo "</table>";
+  exit;
+ }
+
  if ($this->action=='addevent') {
 
   global $mode;
@@ -410,6 +425,7 @@ events - Events
  events: ADDED datetime
  events: EXPIRE datetime
  events: PROCESSED int(3) NOT NULL DEFAULT '0'
+ events: DESCRIPTION varchar(255) NOT NULL DEFAULT ''
  
  events_params: ID int(10) unsigned NOT NULL auto_increment
  events_params: EVENT_ID int(10) unsigned NOT NULL DEFAULT '0'

@@ -37,6 +37,7 @@ include_once("./config.php");
 
 // use this array for URL conversion rules
 $requests = array(
+   "/^\/panel\/event\/(\d+)\.html/is"  => '?(panel:{action=events})&md=events&view_mode=edit_events&id=\1',
    "/^\/panel\/script\/(\d+)\.html/is"  => '?(panel:{action=scripts})&md=scripts&view_mode=edit_scripts&id=\1',
    "/^\/panel\/command\/(\d+)\.html/is" => '?(panel:{action=commands})&md=commands&view_mode=edit_commands&id=\1',
     "/^\/panel\/xray\.html/is" => '?(panel:{action=xray})&md=xray',
