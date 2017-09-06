@@ -153,7 +153,7 @@ class phpMQTT {
                 $togo = $int;
                 while (!feof($this->socket) && $togo>0) {
                         $togo = $int - strlen($string);
-                        if($togo) $string .= fread($this->socket, $togo);
+                        if($togo>0) $string .= fread($this->socket, $togo);
 
                  if (!$string) {
                   if (!$this->socket) {
