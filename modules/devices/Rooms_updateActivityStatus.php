@@ -12,6 +12,9 @@ for ($i = 0; $i < $total; $i++) {
     }
     $rooms[$i]['active'] = getGlobal($rooms[$i]['TITLE'] . '.SomebodyHere');
     $rooms[$i]['time'] = getGlobal($rooms[$i]['TITLE'] . '.LatestActivity');
+    if (!$rooms[$i]['time']) {
+        $rooms[$i]['time'] = 0;
+    }
     $rooms[$i]['diff'] = time() - $rooms[$i]['time'];
 }
 
