@@ -380,7 +380,6 @@ function admin(&$out) {
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
-   unset($elements[$i]['ID']);
    unset($elements[$i]['SCENE_ID']);
    $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
@@ -457,18 +456,27 @@ function admin(&$out) {
    unset($rec['ELEMENTS']);
    $rec['ID']=SQLInsert('scenes', $rec);
    $total=count($elements);
+   $seen_elements=array();
    for($i=0;$i<$total;$i++) {
     $states=$elements[$i]['STATES'];
+    $old_element_id=$elements[$i]['ID'];
     unset($elements[$i]['STATES']);
     unset($elements[$i]['ID']);
     $elements[$i]['SCENE_ID']=$rec['ID'];
     $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+    $seen_elements[$old_element_id]=$elements[$i]['ID'];
     $totalE=count($states);
     for($iE=0;$iE<$totalE;$iE++) {
      unset($states[$iE]['ID']);
      $states[$iE]['ELEMENT_ID']=$elements[$i]['ID'];
      SQLInsert('elm_states', $states[$iE]);
     }
+   }
+   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID=".$rec['ID']." AND CONTAINER_ID!=0");
+   $total = count($elements);
+   for ($i = 0; $i < $total; $i++) {
+    $elements[$i]['CONTAINER_ID']=$seen_elements[$elements[$i]['CONTAINER_ID']];
+    SQLUpdate('elements',$elements[$i]);
    }
    if ($data['BACKGROUND_IMAGE']) {
     $filename=ROOT.$rec['BACKGROUND'];
