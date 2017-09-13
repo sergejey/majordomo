@@ -31,7 +31,7 @@ if (!function_exists('cmpRoomsActivity')) {
 usort($rooms, "cmpRoomsActivity");
 
 if (!$rooms[0]['active']) {
-    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i m.d.y', $rooms[0]['time']) . " (" . $rooms[0]['room'] . "). " . $rooms[0]['user'];
+    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i (m.d.y)', $rooms[0]['time']) . " (" . $rooms[0]['room'] . "). " . $rooms[0]['user'];
 	setGlobal($rooms[0]['TITLE']. '.UserName','');
 } else {
     $res_rooms = array();
