@@ -1,0 +1,22 @@
+
+ <!-- action usual -->
+ <!-- table home_market search -->
+ [#if VIEW_MODE="search_home_market"#]
+  [#inc home_market_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table home_market search -->
+ <!-- table home_market edit -->
+ [#if VIEW_MODE="edit_home_market"#]
+   [#inc home_market_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table home_market edit -->
+ <!-- table home_market main --> 
+ [#if VIEW_MODE=""#]
+   [#inc home_market_main.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table home_market main --> 
+ <!-- table home_market view --> 
+ [#if VIEW_MODE="view_home_market"#]
+   [#inc home_market_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table home_market view -->

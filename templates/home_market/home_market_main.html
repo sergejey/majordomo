@@ -1,0 +1,129 @@
+[#if ERR_MSG!=""#]
+<div class="alert alert-danger">[#ERR_MSG#]</div>
+[#endif ERR_MSG#]
+
+[#if OK_MSG!=""#]
+<div class="alert alert-success">[#OK_MSG#]</div>
+[#endif OK_MSG#]
+
+
+
+[#if MODE="iframe"#]
+<iframe src="<#ROOTHTML#>modules/home_market/update_iframe.php?mode2=<#MODE2#>&name=[#NAME#]&names=[#NAMES#]" width="100%" height="400" frameborder=0></iframe>
+[#endif MODE#]
+
+[#if MODE=""#]
+
+[#if CLEAR_FIRST!="1"#]
+<div class="row">
+ <div class="col-md-3">
+  <a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a>
+ </div>
+ <div class="col-md-6">&nbsp;</div>
+<div class="col-md-3">
+<a href="?view_mode=search_home_market" class="btn btn-default">Изменить свои модуля</a>
+</div>
+ <div class="col-md-3">
+  <script type="text/javascript">
+   var upTimer=0;
+   function filterPlugins() {
+    var str=$('#filter').val();
+    str = str.toLowerCase();
+    if (str!='') {
+     $('.pluginRow').each(function(i, obj) {
+      var text='';
+      text+=$('#'+obj.id+'_title').html();
+      text+=' ' + $('#'+obj.id+'_description').html();
+      text = text.toLowerCase();
+      if (text.indexOf(str) !== -1) {
+       $('#'+obj.id).show();
+      } else {
+       $('#'+obj.id).hide();
+      }
+     });
+    } else {
+     $('.pluginRow').show();
+    }
+   }
+   function searchKeyUp() {
+    clearTimeout(upTimer);
+    upTimer=setTimeout('filterPlugins();',1000);
+   }
+  </script>
+  <input type="text" class="form-control" placeholder="<#LANG_SEARCH#>" id="filter" onkeyup="searchKeyUp();">
+ </div>
+</div>
+&nbsp;
+[#else CLEAR_FIRST#]
+   <br>&nbsp;
+   <form action="?" method="post" enctype="multipart/form-data">
+   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
+   <input type="hidden" name="mode" value="clear">
+   </form>
+[#endif CLEAR_FIRST#]
+
+
+[#if CATEGORY#]
+<form action="?" method="post">
+<ul id="tab" class="nav nav-tabs">
+	[#begin CATEGORY#]
+		<li><a data-toggle="tab" href="#panel_[#CATEGORY_ID#]">[#NAME#]
+		[#if NEW_VERSION==1#]
+		<span class="label label-success">New</span>
+		[#endif#]
+		</a>
+		</li>
+	[#end CATEGORY#]
+</ul>
+<div class="tab-content">
+ [#begin CATEGORY#]
+  <div id="panel_[#CATEGORY_ID#]" class="tab-pane fade in">
+	<table class="table table-striped">
+	[#if PLUGINS#]
+	[#begin PLUGINS#]
+	 <tr class="pluginRow" id="row[#ID#]">
+	  <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
+	  <td valign="top"><b id="row[#ID#]_title">[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
+	  [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
+	  <p id="row[#ID#]_description">[#DESCRIPTION_RU#]</p>
+	  [#else#]
+	  <p id="row[#ID#]_description">[#DESCRIPTION_EN#]</p>
+	  [#endif#]
+	  [#if LATEST_VERSION!=""#]
+	  <small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
+	  [#endif#]
+	  [#if EXISTS#]
+	  <br>
+	  [#if INSTALLED_VERSION=="<#PLUGINS.LATEST_VERSION#>"#]
+	  <font color="green">(up to date)</font>
+	  [#else#]
+	  <font color="blue">(update available, current version: [#if INSTALLED_VERSION!=""#][#INSTALLED_VERSION#][#else#]unknown[#endif#])</font>
+	  [#endif#]
+	  [#endif EXISTS#]
+	  </td>
+	  <td valign="top">
+	  <div class="btn-group pull-left">
+	  <a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a>
+	  <a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a>
+	  <a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a>
+	  [#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return ('<#LANG_ARE_YOU_SURE#>')">Uninstall</a>[#endif#]
+	  </div>
+	  <td>
+	  </tr>
+	 [#end PLUGINS#]
+	</table>
+	[#endif PLUGINS#]
+  </div>
+  [#end CATEGORY#]
+</div>
+
+
+<input type="submit" name="submit" value="<#LANG_ADD#> / <#LANG_UPDATE#>" class="btn btn-default">
+<input type="hidden" name="mode" value="iframe">
+<input type="hidden" name="mode2" value="install_multiple">
+</form>
+<script type="text/javascript">
+$('#tab a:first').tab('show');
+</script>
+[#endif CATEGORY#]
+[#endif MODE#]
