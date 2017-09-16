@@ -8,7 +8,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.2 (wizard, 00:01:48 [Jan 06, 2011])
 */
-Define('DEF_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)'); // options for 'HOST TYPE'
+Define('DEF_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=BLUETOOTH (MAC)'); 
 //
 //
 class pinghosts extends module {
@@ -208,22 +208,24 @@ function usual(&$out) {
    SQLUpdate('pinghosts', $host);
 
    $online=0;
-   // checking
-   if (!$host['TYPE']) {
-    //ping host
-
-    $online=ping(processTitle($host['HOSTNAME']));
-   } else {
-    //web host
-    $online=getURL(processTitle($host['HOSTNAME']), 0);
-    SaveFile("./cached/host_".$host['ID'].'.html', $online);
-    if ($host['SEARCH_WORD']!='' && !is_integer(strpos($online, $host['SEARCH_WORD']))) {
-     $online=0;
-    }
-    if ($online) {
-     $online=1;
-    }
-   }
+// checking
+if ($host['TYPE']==0) {
+//ping host
+$online=ping(processTitle($host['HOSTNAME']));
+} elseif ($host['TYPE']==1) {
+//web host
+$online=getURL(processTitle($host['HOSTNAME']), 0);
+SaveFile("./cached/host_".$host['ID'].'.html', $online);
+if ($host['SEARCH_WORD']!='' && !is_integer(strpos($online, $host['SEARCH_WORD']))) {
+$online=0;
+}
+if ($online) {
+$online=1;
+}
+} elseif ($host['TYPE']==2) {
+$online =0;
+$online=pingbt(processTitle($host['HOSTNAME']));
+}
 
    if ($online) {
     $new_status=1;
