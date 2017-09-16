@@ -114,6 +114,23 @@ $dictionary = array(
     'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є.',
     'DEVICES_ROOMS_ACTIVITY' => 'Активність:',
+    
+    'DEVICES_PASSED_NOW' => 'тільки що',
+    'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
+    'DEVICES_PASSED_MINUTES_AGO' => 'хв. назад',
+    'DEVICES_PASSED_HOURS_AGO' => 'год. назад',
+    'DEVICES_CHOOSE_EXISTING' => '... або виберіть вже добавлений пристрій',
+    
+    'DEVICES_CAMERA' =>'IP-камера',
+    'DEVICES_CAMERA_STREAM_URL' =>'URL відео-потоку',
+    'DEVICES_CAMERA_USERNAME' =>'Імя користувача',
+    'DEVICES_CAMERA_PASSWORD' =>'Пароль',
+    'DEVICES_CAMERA_SNAPSHOT_URL' =>'URL статичного знімку',
+    'DEVICES_CAMERA_SNAPSHOT' =>'Знімок',
+    'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Зберегти знімок',
+    'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'Історія',
+
+
 
     /* end module names */
 
