@@ -215,16 +215,23 @@ function timeNow($tm = 0)
    }
 
    $h = (int)date('G', $tm);
-
-   $array = array("час", "часа", "часов");
-   $hw = $h.' '.getNumberWord($h,$array);
-
    $m = (int)date('i', $tm);
+   $ms = '';
 
-    if ($m>0) {
-        $array = array("минута", "минуты", "минут");
-        $ms = $m.' '.getNumberWord($m,$array);
-    }
+   $language = SETTINGS_SITE_LANGUAGE;
+
+   if ($language == 'ru') {
+       $array = array("час", "часа", "часов");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("минута", "минуты", "минут");
+           $ms = $m.' '.getNumberWord($m,$array);
+       }
+   } elseif ($language == 'en' && $m == 0) {
+       $hw = $h.' o\'clock';
+   } else {
+       $hw = date('H:i',$tm);
+   }
 
    $res = trim($hw . " " . $ms);
    return $res;
@@ -742,7 +749,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
           if ($background) {
               curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1000);
           }
 
          if ($username != '' || $password != '')

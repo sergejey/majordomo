@@ -487,7 +487,7 @@ function usual(&$out) {
 *
 * @access public
 */
- function callMethod($name, $params=0, $parent=0) {
+ function callMethod($name, $params=0, $parentClassId=0) {
 
   startMeasure('callMethod');
 
@@ -495,10 +495,11 @@ function usual(&$out) {
 
   startMeasure('callMethod ('.$original_method_name.')');
 
- if (!$parent) {
+ if (!$parentClassId) {
   $id=$this->getMethodByName($name, $this->class_id, $this->id);
+  $parentClassId = $this->class_id;
  } else {
-  $id=$this->getMethodByName($name, $this->class_id, 0);
+  $id=$this->getMethodByName($name, $parentClassId, 0);
  }
 
   if ($id) {
@@ -523,7 +524,13 @@ function usual(&$out) {
    SQLUpdate('methods', $method);
 
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==1) {
-    $this->callMethod($name, $params, 1);
+    // call class method
+    $parent_success = $this->callMethod($name, $params, $this->class_id);
+   } elseif ($method['CALL_PARENT']==1) {
+    $parentClass=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE ID=".(int)$parentClassId);
+    if ($parentClass['PARENT_ID']) {
+     $parent_success = $this->callMethod($name, $params, $parentClass['PARENT_ID']);
+    }
    }
 
    if ($method['SCRIPT_ID']) {
@@ -580,7 +587,12 @@ function usual(&$out) {
    endMeasure('callMethod', 1);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
-    $parent_success=$this->callMethod($name, $params, 1);
+    $parent_success = $this->callMethod($name, $params, $this->class_id);
+   } elseif ($method['CALL_PARENT']==2) {
+    $parentClass=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE ID=".(int)$parentClassId);
+    if ($parentClass['PARENT_ID']) {
+     $parent_success = $this->callMethod($name, $params, $parentClass['PARENT_ID']);
+    }
    } else {
     $parent_success=true;
    }

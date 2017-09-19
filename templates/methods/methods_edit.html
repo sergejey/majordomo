@@ -50,10 +50,28 @@
   <textarea name="code" id="code" rows=30 cols=100 class="form-control">[#CODE#]</textarea>
  </div>
 </div>
-        
+
+
  </div>
+
 </div>
-[#endif ID#]
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"></label>
+
+        <div class="col-lg-5">
+            <#LANG_CALL_PARENT_METHOD#>:
+            <#LANG_HCB#>parent_method<#LANG_HCE#>
+                <br>
+                <label><input type="radio" name="call_parent" value="1"[#if CALL_PARENT="1"#] checked[#endif#]> <#LANG_BEFORE_CODE_EXECUTION#></label>
+                <label><input type="radio" name="call_parent" value="2"[#if CALL_PARENT="2"#] checked[#endif#]> <#LANG_AFTER_CODE_EXECUTION#></label>
+                <label><input type="radio" name="call_parent" value="0"[#if CALL_PARENT="0"#] checked[#endif#]> <#LANG_NEVER#></label>
+                </div>
+    </div>
+
+
+
+    [#endif ID#]
 
 
 <div class="form-group">
@@ -80,5 +98,5 @@
 </form>
 
 [#if ID!=""#]
- [#module name="xray" action="context" type="method" keyword="<#TITLE#>" code_id="áode"#]
+ [#module name="xray" action="context" type="method" keyword="<#TITLE#>" code_id="ï¿½ode"#]
 [#endif ID#]

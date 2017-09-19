@@ -40,7 +40,7 @@ $scale_fontsize=8;
 $threshold_fontsize=6;
 $w_delta=80;
 $px_per_point=6;
-$unit="�C";
+$unit="°C";
 $end_time=time();
 $approx='avg';
 $fil01=0;
@@ -78,6 +78,10 @@ if (!$pvalue['ID']) {
 if ($_GET['op']=='value') {
         echo $pvalue['VALUE'];
         exit;
+}
+
+if (!$type) {
+ $type = '7d';
 }
 
 if (preg_match('/(\d+)d/', $type, $m)) {

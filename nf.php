@@ -52,6 +52,7 @@ $requests = array(
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/methods\/(\d+)\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods&overwrite=1&method_id=\3',
    "/^\/panel\/class\/(\d+)\/object\/(\d+)\\/properties\.html/is"=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=properties',
    "/^\/panel\/scene\/(\d+)\/elements\/(\d+)\\/state(\d+)\.html/is"=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2&state_id=\3',
+   "/^\/panel\/scene\/(\d+)\/elements\/(\d+)\.html/is"=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2',
    "/^\/panel\/zwave\/(\d+)\.html/is"   => '?(panel:{action=zwave})&md=zwave&view_mode=edit_zwave_devices&id=\1',
    "/^\/panel\/devices\/(\d+)\.html/is"   => '?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=\1',
    "/^\/panel\/app_gpstrack\/action_(\d+)\.html/is"=> '?(panel:{action=app_gpstrack})&md=app_gpstrack&data_source=gpsactions&view_mode=edit_gpsactions&id=\1',

@@ -395,8 +395,6 @@ function getObject($name)
    return 0;
 }
 
-
-
 /**
  * Summary of getObjectsByProperty
  * @param mixed $property_name Property name
