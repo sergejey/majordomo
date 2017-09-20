@@ -190,7 +190,7 @@ function install($parent_name = "")
 
    $lst    = $this->modules;
 
-   $prelist=array('objects', 'devices');
+   $prelist=array('settings','objects', 'devices');
    $prelist=array_reverse($prelist);
    foreach($prelist as $v) {
     $rec=array('FILENAME'=>$v);
