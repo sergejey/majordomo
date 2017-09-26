@@ -199,7 +199,8 @@
  function itemValueChangedProcessed(data, v) {
   //alert(data);
   if ($('#processing_'+data).length) {
-   $('#processing_'+data).html(' - OK');
+   $('#processing_'+data).html('<span class="opConfirm"> - OK</span>');
+   setTimeout("$('#processing_"+data+"').html('')",1500);
   }
   return false;
  }
@@ -518,9 +519,9 @@
 <span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span>
 
 <div data-inline="true" data-role="fieldcontain">
- <a href="#" data-role="button" onClick="return increaseValue{$item.ID}();" data-inline="true">+</a>
- <span style="margin-left:10px;margin-right:10px" id="menu{$item.ID}_vv">{$item.CUR_VALUE}</span>
  <a href="#" data-role="button" onClick="return decreaseValue{$item.ID}();" data-inline="true">-</a>
+ <span style="margin-left:10px;margin-right:10px" id="menu{$item.ID}_vv">{$item.CUR_VALUE}</span>
+ <a href="#" data-role="button" onClick="return increaseValue{$item.ID}();" data-inline="true">+</a>
  <div style="display:none">
  <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" size="5">
  </div>
@@ -723,21 +724,10 @@
 
  function updateLabel{$item.ID}() {
   clearTimeout(label{$item.ID}_timer);
-
   collectLabel('{$item.ID}');
-  /*
-  var url="{$smarty.const.ROOTHTML}menu.html?ajax=1&op=get_label";
-  AJAXRequest(url+'&item_id={$item.ID}', 'updateLabel{$item.ID}_Ready', '');
-  */
-
   {if $item.TYPE=='switch' || $item.TYPE=='textbox' || $item.TYPE=='sliderbox' || $item.TYPE=='selectbox' || $item.TYPE=='radiobox'}
-  /*
-  var url2="?ajax=1&op=get_value";
-  AJAXRequest(url2+'&item_id={$item.ID}', 'updateValue{$item.ID}_Ready', '');
-  */
   collectValue('{$item.ID}');
   {/if}
-
   label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', ({$item.AUTO_UPDATE}*1000));
   return false;
  }
@@ -798,7 +788,6 @@
  $( document ).bind( "pageinit", function( event, data ){
     $('.visible_delay').hide();
     visible_delay_carusel();
-///    alert('zz');
 });
 </script>
 {/if}

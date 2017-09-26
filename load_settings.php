@@ -23,10 +23,13 @@ if (!defined('SETTINGS_SITE_LANGUAGE')) {
 }
 
 // language selection by settings
-if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php'))
-   include_once (ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
+if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php')) {
+    include_once (ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
+    include_once (ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
+}
 
 include_once (ROOT . 'languages/default.php');
+include_once (ROOT . 'languages/devices_default' . '.php');
 
 if (!defined('SETTINGS_SITE_TIMEZONE')) {
     Define('SETTINGS_SITE_TIMEZONE','Europe/Minsk');
