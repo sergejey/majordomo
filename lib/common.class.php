@@ -106,11 +106,11 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    if ($member_id)
    {
-      include_once(DIR_MODULES . 'patterns/patterns.class.php');
-      $pt = new patterns();
-      $res=$pt->checkAllPatterns($member_id);
       $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
        if (!$processed) {
+           include_once(DIR_MODULES . 'patterns/patterns.class.php');
+           $pt = new patterns();
+           $res=$pt->checkAllPatterns($member_id);
            processCommand($ph);
        }
       return;
@@ -215,16 +215,23 @@ function timeNow($tm = 0)
    }
 
    $h = (int)date('G', $tm);
-
-   $array = array("час", "часа", "часов");
-   $hw = $h.' '.getNumberWord($h,$array);
-
    $m = (int)date('i', $tm);
+   $ms = '';
 
-    if ($m>0) {
-        $array = array("минута", "минуты", "минут");
-        $ms = $m.' '.getNumberWord($m,$array);
-    }
+   $language = SETTINGS_SITE_LANGUAGE;
+
+   if ($language == 'ru') {
+       $array = array("час", "часа", "часов");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("минута", "минуты", "минут");
+           $ms = $m.' '.getNumberWord($m,$array);
+       }
+   } elseif ($language == 'en' && $m == 0) {
+       $hw = $h.' o\'clock';
+   } else {
+       $hw = date('H:i',$tm);
+   }
 
    $res = trim($hw . " " . $ms);
    return $res;
@@ -508,39 +515,11 @@ function recognizeTime($text, &$newText)
  * @param mixed $expire_in Expire time (default 365)
  * @return mixed
  */
-function registerEvent($eventName, $details = '', $expire_in = 365)
+function registerEvent($eventName, $details = '', $expire_in = 0)
 {
-   $sqlQuery = "SELECT *
-                  FROM events
-                 WHERE EVENT_NAME = '" . DBSafe($eventName) . "'
-                   AND EVENT_TYPE = 'system'
-                 ORDER BY ID DESC
-                 LIMIT 1";
-
-   $rec = array();
-   $rec = SQLSelectOne($sqlQuery);
-
-   $rec['EVENT_NAME'] = $eventName;
-   $rec['EVENT_TYPE'] = 'system';
-   $rec['DETAILS']    = $details;
-   $rec['ADDED']      = date('Y-m-d H:i:s');
-   $rec['EXPIRE']     = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
-   $rec['PROCESSED']  = 1;
-
-   if ($rec['ID'])
-   {
-      SQLUpdate('events', $rec);
-      $sqlQuery = "DELETE FROM events
-                    WHERE EVENT_NAME = '" . $rec['EVENT_NAME'] . "'
-                      AND EVENT_TYPE = '" . $rec['EVENT_TYPE'] . "'
-                      AND ID         != " . $rec['ID'];
-      SQLExec($sqlQuery);
-   }
-   else
-   {
-      $rec['ID'] = SQLInsert('events', $rec);
-   }
-   return $rec['ID'];
+    include_once(DIR_MODULES.'events/events.class.php');
+    $events = new events();
+    return $events->registerEvent($eventName, $details, $expire_in);
 }
 
 /**
@@ -769,8 +748,8 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
           if ($background) {
-              //curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+              curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1000);
           }
 
          if ($username != '' || $password != '')
@@ -990,16 +969,14 @@ function checkAccess($object_type, $object_id)
 function registerError($code = 'custom', $details = '')
 {
 
-   DebMes("Error registered (type: $code): ".$details);
+   $e = new \Exception;
+   $backtrace=$e->getTraceAsString();
+
+   DebMes("Error registered (type: $code):\n".$details."\nBacktrace:\n".$backtrace,'error');
    $code = trim($code);
 
    if ($code == 'sql') {
     return 0;
-   }
-   
-   if (!$code)
-   {
-      $code = 'custom';
    }
 
    $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
@@ -1012,13 +989,12 @@ function registerError($code = 'custom', $details = '')
    }
 
    $error_rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-   $error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
+   @$error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
    SQLUpdate('system_errors', $error_rec);
 
    $history_rec = array();
-
    $history_rec['ERROR_ID'] = $error_rec['ID'];
-   $history_rec['COMMENTS'] = $details;
+   $history_rec['COMMENTS'] = $details."\nBacktrace:\n".$backtrace;
    $history_rec['ADDED']    = $error_rec['LATEST_UPDATE'];
 
    //Temporary disabled
@@ -1031,7 +1007,6 @@ function registerError($code = 'custom', $details = '')
    $history_rec['EVENTS_DATA']     = getURL($xrayUrl . 'events', 0);
    $history_rec['DEBUG_DATA']      = getURL($xrayUrl . 'debmes', 0);
     */
-
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
    if (!$error_rec['KEEP_HISTORY'])

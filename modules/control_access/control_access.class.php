@@ -320,6 +320,10 @@ function getParams() {
 // --------------------------------------------------------------------
    function checkAccess($action = "", $log = 0)
    {
+
+      if (defined('NO_DATABASE_CONNECTION')) {
+       return 1;
+      }
       global $session;
 
       if ($session->data['USER_ID'] == 1) 

@@ -158,6 +158,9 @@ function run() {
 
   $url='http://connect.smartliving.ru/upload/';
   $ch = curl_init();
+
+   DebMes("Cloudbackup file $dest_file to $url");
+
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, 1);
   curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);

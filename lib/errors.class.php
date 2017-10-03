@@ -39,67 +39,49 @@ class custom_error
     * @param int    $short       Short (default 0)
     * @return void
     */
-   public function __construct($description, $stop = 0, $short = 0)
+   public function __construct($description, $stop = 0)
    {
       $script      = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-      $description = $script . "\nError:\n" . $description;
 
-      //$log = getLogger($this);
-      //$log->error($description);
-      //$backtrace=debug_backtrace();
-      //print_r($backtrace);exit;
-      DebMes($description.' ('.__FILE__.')');
+      if (!mb_detect_encoding($description, 'UTF-8', true)) {
+         $description = iconv('windows-1251','UTF-8',$description);
+      }
 
-      if (defined("DEBUG_MODE"))
-      {
-         if (!$short)
-         {
-            $this->alert(nl2br($description));
-         }
-         else
-         {
-            echo nl2br($description);
-         }
+      $e = new \Exception;
+      if (defined("DEBUG_MODE")) {
+         $content=<<<FF
+         <html>
+          <head>
+          <title>Error</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>          
+          </head>
+          <body>
+          <div class="container">
+          <h1>Error</h1>
+          <h3>Details</h3>
+          <div class="alert alert-danger">$script<br/>$description</div>
+          <h3>Backtrace</h3>
+          <div><pre>{$e->getTraceAsString()}</pre></div>
+          <div>
+           <a href="#" class="btn btn-default" onclick="window.history.go(-1);return false;">&lt;&lt;&lt; Back</a>
+           <a href="#" class="btn btn-default" onclick="window.location.reload();return false;">Reload page</a>
+           <a href="/admin.php?md=panel&action=saverestore" class="btn btn-default">Go to Backup section</a>
+          </div>
+          </div>
+          </body>
+         </html>
+FF;
+         echo $content;
       }
-      else
-      {
-         if (!$short)
-         {
-            $this->alert("");
-         }
-         else
-         {
-            echo "Warning...<br>";
-         }
-      }
-      
-      sendmail("errors@" . PROJECT_DOMAIN, PROJECT_BUGTRACK, "Error reporting: $script", $description);
-      
+      //sendmail("errors@" . PROJECT_DOMAIN, PROJECT_BUGTRACK, "Error reporting: $script", $description);
       if ($stop) exit;
    }
 
-   /**
-    * Error processing
-    * used to show and log error/warning message
-    *
-    * @access private
-    *
-    * @param string $description error description
-    * @return void
-    */
-   public function alert($description)
-   {
-      echo "<html><head><style>body {font-family:tahoma, arial}</style></head><body>";
-      echo "&nbsp;<br>";
-      echo "<table border=0 cellspacing=2 cellpadding=15 bgcolor=#FF0000 align=center width=600>";
-      echo "<tr><td bgcolor='#FFFFFF'>";
-      echo "<p align=center><font color=red><b>Sorry, page is temporary unavailable.<br>";
-      echo "<br>Please try again later.</b></font></p>";
-      echo "<p align='center'><a href='#' onClick='history.go(-1);'>&lt;&lt;&lt; Back to previous page</a></p>";
-      echo "</td></tr>";
-      echo "<tr><td bgcolor='#FFFFFF'><p align=center><font color=red><b>$description</b></font></p></td></tr>";
-      echo "</table></body></html>";
-   }
 }
 
 /**

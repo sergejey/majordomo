@@ -40,7 +40,7 @@ $scale_fontsize=8;
 $threshold_fontsize=6;
 $w_delta=80;
 $px_per_point=6;
-$unit="�C";
+$unit="°C";
 $end_time=time();
 $approx='avg';
 $fil01=0;
@@ -67,6 +67,7 @@ if ($p!='') {
         }
 }
 
+$property = SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$prop_id);
 $pvalue=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id."' AND OBJECT_ID='".$obj->id."'");
 
 if (!$pvalue['ID']) {
@@ -77,6 +78,10 @@ if (!$pvalue['ID']) {
 if ($_GET['op']=='value') {
         echo $pvalue['VALUE'];
         exit;
+}
+
+if (!$type) {
+ $type = '7d';
 }
 
 if (preg_match('/(\d+)d/', $type, $m)) {
@@ -105,9 +110,15 @@ if ($total>0) {
         $px_passed=0;
         $dt=date('Y-m-d', $start_time);
 
-        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+        if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+                $history_table = createHistoryTable($pvalue['ID']);
+        } else {
+                $history_table = 'phistory';
+        }
+
+        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
         if (!$history[0]['ID'] && $op == 'log') {
-                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM phistory WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
                 $history = array_reverse($history);
         }
         $total_values=count($history);
@@ -132,21 +143,32 @@ if ($total>0) {
          if ($total_values>0) {
           if ($_GET['subop']=='clear') {
            if (!$_GET['id']) {
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."'");
+                   $values=SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
+                   $total = count($values);
+                   for ($i = 0; $i < $total; $i++) {
+                           if ($property['DATA_TYPE']==5) {
+                                 @unlink(ROOT.'cms/images/'.$values[$i]['VALUE']);
+                           }
+                   }
+                   SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
            } else {
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+            $value=SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+            if ($property['DATA_TYPE']==5) {
+              @unlink(ROOT.'cms/images/'.$value['VALUE']);
+            }
+            SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
            }
            header('Location:'.str_replace('&subop=clear', '', $_SERVER['REQUEST_URI']));
            exit;
           }
           //OPTIMIZE_LOG
           if ($_GET['subop']=='optimize') {
-           $data=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
+           $data=SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
            $total=count($data);
            $old_value=$data[0]['VALUE'];
            for($i=1;$i<$total;$i++) {
             if ($data[$i]['VALUE']==$old_value) {
-             SQLExec("DELETE FROM phistory WHERE ID='".$data[$i]['ID']."'");
+             SQLExec("DELETE FROM $history_table WHERE ID='".$data[$i]['ID']."'");
             } else {
              $old_value=$data[$i]['VALUE'];
             }
@@ -181,7 +203,11 @@ if ($total>0) {
                         //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
                         echo $history[$i]['ADDED'];
                         echo ": <b>";
-                        echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        if ($property['DATA_TYPE']==5) {
+                           echo "<a href='".ROOTHTML."cms/images/".$history[$i]['VALUE']."' target='_blank'><img src='".ROOTHTML."cms/images/".$history[$i]['VALUE']."' height=100></a>";
+                        } else {
+                           echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        }
                         if ($history[$i]['SOURCE']) {
                          echo ' ('.$history[$i]['SOURCE'].')';
                         }

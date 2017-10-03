@@ -3,18 +3,8 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-// get settings
-$settings = SQLSelect('SELECT NAME, VALUE FROM settings');
-$total = count($settings);
-for ($i = 0; $i < $total; $i++)
-    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
-// language selection by settings
-if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php'))
-    include_once(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
-include_once(ROOT . 'languages/default.php');
-if (defined('SETTINGS_SITE_TIMEZONE')) {
-    ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
-}
+include_once("./load_settings.php");
+
 header('Content-Type: text/html; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -29,6 +19,55 @@ $result = array();
 
 if (!isset($request[0])) {
     $result['error'] = 'Incorrect usage';
+} elseif (strtolower($request[0]) == 'devices') {
+    $devices=SQLSelect("SELECT * FROM devices ORDER BY TITLE");
+    $result['devices']=array();
+    $total = count($devices);
+    for ($i = 0; $i < $total; $i++) {
+        $device=array();
+        $device['title']=$devices[$i]['TITLE'];
+        $device['object']=$devices[$i]['LINKED_OBJECT'];
+        $device['type']=$devices[$i]['TYPE'];
+        $device['status']=getGlobal($device['object'].'.status');
+        $device['value']=getGlobal($device['object'].'.value');
+        $result['devices'][]=$device;
+    }
+} elseif (strtolower($request[0]) == 'rooms' && ($request[1])) {
+    $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$request[1]);
+    $result['room']=array();
+    if ($location['ID']) {
+        $result['room']['title']=$location['TITLE'];
+        $result['room']['id']=$location['ID'];
+        $result['room']['object']=getRoomObjectByLocation($location['ID'],1);
+        $devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=".$location['ID']);
+        $result['room']['devices']=array();
+        $total = count($devices);
+        for ($i = 0; $i < $total; $i++) {
+            $device=array();
+            $device['title']=$devices[$i]['TITLE'];
+            $device['object']=$devices[$i]['LINKED_OBJECT'];
+            $device['type']=$devices[$i]['TYPE'];
+            $device['status']=getGlobal($device['object'].'.status');
+            $device['value']=getGlobal($device['object'].'.value');
+            $result['room']['devices'][]=$device;
+        }
+    }
+} elseif (strtolower($request[0]) == 'rooms') {
+    $result['rooms']=array();
+    $locations=SQLSelect("SELECT * FROM locations ORDER BY TITLE");
+    foreach($locations as $k=>$v) {
+        $location=array();
+        $location['id']=$v['ID'];
+        $location['title']=$v['TITLE'];
+        $location['object']=getRoomObjectByLocation($v['ID'],1);
+        $result['rooms'][]=$location;
+    }
+} elseif (strtolower($request[0]) == 'events' && isset($request[1])) {
+    array_shift($request);
+    $event_name=implode('/',$request);
+    $result['event_name']=$event_name;
+    $result['params']=$_GET;
+    $result['event_id']=registerEvent($event_name,$result['params']);
 } elseif (strtolower($request[0]) == 'data' && isset($request[1])) {
     $tmp = explode('.', $request[1]);
     if ($method == 'GET') {

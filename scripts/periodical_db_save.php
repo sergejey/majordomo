@@ -41,6 +41,8 @@ if ($mysqlDumpPath == '')
 $mysqlDumpParam = " --user=" . DB_USER . " --password=" . DB_PASSWORD;
 $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
 
+$backups_in_row=0;
+
 while (1)
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
@@ -56,6 +58,12 @@ while (1)
       rename($filename.'.tmp', $filename);
 
       $last_backup = time();
+      $backups_in_row++;
+
+      if ($backups_in_row >= 4 && is_dir('/tmp/mysql')) {
+       safe_exec('cp -rf /tmp/mysql/* /var/lib/mysql');
+       $backups_in_row = 0;
+      }
 
       echo "OK\n";
    }

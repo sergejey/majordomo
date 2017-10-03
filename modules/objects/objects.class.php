@@ -487,7 +487,7 @@ function usual(&$out) {
 *
 * @access public
 */
- function callMethod($name, $params=0, $parent=0) {
+ function callMethod($name, $params=0, $parentClassId=0) {
 
   startMeasure('callMethod');
 
@@ -495,10 +495,11 @@ function usual(&$out) {
 
   startMeasure('callMethod ('.$original_method_name.')');
 
- if (!$parent) {
+ if (!$parentClassId) {
   $id=$this->getMethodByName($name, $this->class_id, $this->id);
+  $parentClassId = $this->class_id;
  } else {
-  $id=$this->getMethodByName($name, $this->class_id, 0);
+  $id=$this->getMethodByName($name, $parentClassId, 0);
  }
 
   if ($id) {
@@ -523,7 +524,13 @@ function usual(&$out) {
    SQLUpdate('methods', $method);
 
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==1) {
-    $this->callMethod($name, $params, 1);
+    // call class method
+    $parent_success = $this->callMethod($name, $params, $this->class_id);
+   } elseif ($method['CALL_PARENT']==1) {
+    $parentClass=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE ID=".(int)$parentClassId);
+    if ($parentClass['PARENT_ID']) {
+     $parent_success = $this->callMethod($name, $params, $parentClass['PARENT_ID']);
+    }
    }
 
    if ($method['SCRIPT_ID']) {
@@ -580,7 +587,12 @@ function usual(&$out) {
    endMeasure('callMethod', 1);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
-    $parent_success=$this->callMethod($name, $params, 1);
+    $parent_success = $this->callMethod($name, $params, $this->class_id);
+   } elseif ($method['CALL_PARENT']==2) {
+    $parentClass=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE ID=".(int)$parentClassId);
+    if ($parentClass['PARENT_ID']) {
+     $parent_success = $this->callMethod($name, $params, $parentClass['PARENT_ID']);
+    }
    } else {
     $parent_success=true;
    }
@@ -763,6 +775,44 @@ function usual(&$out) {
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    endMeasure('setproperty_update_getvalue');
    $old_value=$v['VALUE'];
+
+   if ($prop['DATA_TYPE']==5 && $value!=$old_value) { // image
+    $path_parts=pathinfo($value);
+    $extension=strtolower($path_parts['extension']);
+    if ($extension!='jpg' && $extension!='jpeg' && $extension!='png'  && $extension!='gif') {
+     $extension='jpg';
+    }
+    $image_file_name=date('Ymd_His').'.'.$extension;
+    if (preg_match('/^http.+/',$value)) {
+     $image_data=getURL($value);
+     @mkdir(ROOT.'cms/images/'.$prop['ID'],0777);
+     SaveFile(ROOT.'cms/images/'.$prop['ID'].'/'.$image_file_name,$image_data);
+     $value=$prop['ID'].'/'.$image_file_name;
+    } elseif (file_exists($value)) {
+     @mkdir(ROOT.'cms/images/'.$prop['ID'],0777);
+     copyFile($value,ROOT.'cms/images/'.$prop['ID'].'/'.$image_file_name);
+     $value=$prop['ID'].'/'.$image_file_name;
+    } else {
+     $value = '';
+    }
+    if ($value!='' && file_exists(ROOT.'cms/images/'.$value)) {
+     $lst=GetImageSize(ROOT.'cms/images/'.$value);
+     //$image_width=$lst[0];
+     //$image_height=$lst[1];
+     $image_format=$lst[2];
+     if (!$image_format) {
+      @unlink(ROOT.'cms/images/'.$value);
+      $value = '';
+     }
+    } else {
+     $value = '';
+    }
+    if ($value!='' && $old_value!='' && !$prop['KEEP_HISTORY'] && file_exists(ROOT.'cms/images/'.$old_value)) {
+     @unlink(ROOT.'cms/images/'.$old_value);
+    }
+    if ($value=='') $value=$old_value;
+   }
+
    $v['VALUE']=$value.'';
    $v['SOURCE']=$source.'';
    if ($v['ID']) {

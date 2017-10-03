@@ -202,10 +202,17 @@ $.fn.customContextMenu = function(callBack){
          EvalSound('click_sound');
          {/if}
 
-
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
         {foreach $ELEMENT.STATES as $STATE}
+
+
+            {if $ELEMENT.TYPE=="img"}
+            if (id=='{$STATE.ID}') {
+                $('#state_{$STATE.ID}').hide();
+                setTimeout("$('#state_{$STATE.ID}').show();", 150);
+            }
+            {/if}
 
          {if $ELEMENT.TYPE=="button"}
          if (id=='{$STATE.ID}') {

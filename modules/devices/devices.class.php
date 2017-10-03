@@ -92,7 +92,10 @@ function setDictionary() {
 * @access public
 */
 function run() {
- global $session;
+
+    @include_once(ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
+    @include_once(ROOT . 'languages/devices_default' . '.php');
+
   $out=array();
   if ($this->action=='admin') {
       $this->admin($out);
@@ -227,6 +230,10 @@ function processDevice($device_id) {
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
     $result['HTML']=processTitle($template,$this);
+    if ($device_rec['TYPE']=='camera') {
+        $result['HEIGHT']=5;
+    }
+
     return $result;
 }
 
@@ -327,12 +334,46 @@ function renderStructure() {
               }
           }
       }
-
-
-      
   }
+  subscribeToEvent('devices', 'COMMAND', '', 100);
 }
 
+function processSubscription($event, &$details) {
+    if ($event == 'COMMAND') {
+        include_once(DIR_MODULES.'devices/processCommand.inc.php');
+    }
+}
+
+    /**
+
+    Generate all the possible combinations among a set of nested arrays. *
+    @param array $data The entrypoint array container.
+    @param array $all The final container (used internally).
+    @param array $group The sub container (used internally).
+    @param mixed $val The value to append (used internally).
+    @param int $i The key index (used internally). */
+
+    function generate_combinations(array $data, array &$all = array(), array $group = array(), $value = null, $i = 0,$key = null)
+    {
+        $keys = array_keys($data);
+        if (isset($value) === true) {
+            $group[$key] = $value;
+        }
+        if ($i >= count($data)) {
+            array_push($all, $group);
+        } else {
+            $currentKey = $keys[$i];
+            $currentElement = $data[$currentKey];
+            if(count($data[$currentKey]) <= 0) {
+                $this->generate_combinations($data, $all, $group, null, $i + 1,$currentKey);
+            } elseif (is_array($currentElement)) {
+                foreach ($currentElement as $val) {
+                    $this->generate_combinations($data, $all, $group, $val, $i + 1,$currentKey);
+                }
+            }
+        }
+        return $all;
+    }
 
 function homebridgeSync($device_id=0) {
     if ($this->isHomeBridgeAvailable()) {
@@ -881,6 +922,7 @@ function usual(&$out) {
 
   $this->setDictionary();
   $this->renderStructure();
+  $this->homebridgeSync();
  }
 /**
 * Uninstall

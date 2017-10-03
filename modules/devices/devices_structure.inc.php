@@ -10,7 +10,8 @@ $this->device_types=array(
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
         ),
         'METHODS'=>array(
-            'onActivity'=>array('DESCRIPTION'=>'Rooms activity')
+            'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
+            'updateActivityStatus'=>array('DESCRIPTION'=>'Update activity status')
         )
     ),
     'general'=>array(
@@ -26,10 +27,13 @@ $this->device_types=array(
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(
+                'EconomMode.activate'=>'econommode_activate',
+                'EconomMode.deactivate'=>'econommode_deactivate',
                 'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
                 'NightMode.activate'=>'nightmode_activate',
@@ -93,6 +97,25 @@ $this->device_types=array(
         ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
+        )
+    ),
+    'camera'=>array(
+        'TITLE'=>LANG_DEVICES_CAMERA,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SCameras',
+        'PROPERTIES'=>array(
+            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (LQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'streamURL_HQ'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (HQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'cameraUsername'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_USERNAME,'_CONFIG_TYPE'=>'text'),
+            'cameraPassword'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PASSWORD,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
+            'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
+        ),
+        'METHODS'=>array(
+            'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
+            'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
+            'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
         )
     ),
     'openclose'=>array(

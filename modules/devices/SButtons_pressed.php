@@ -1,6 +1,9 @@
 <?php
 
- $this->setProperty('status', 1);
+ if (!isset($params['statusUpdated'])) {
+  $this->setProperty('status', 1);
+ }
+
  $this->callMethod('statusUpdated');
  $this->callMethod('logicAction');
 

@@ -271,6 +271,13 @@ function admin(&$out) {
       $properties=$objects[$o]['PROPERTIES'];
       Unset($objects[$o]['PROPERTIES']);
       $objects[$o]['ID']=SQLInsert('objects', $objects[$o]);
+      if ($objects[$o]['LOCATION_ID']) {
+       $location_rec=SQLSelectOne("SELECT ID FROM locations WHERE ID=".$objects[$o]['LOCATION_ID']);
+       if (!$location_rec['ID']) {
+        $objects[$o]['LOCATION_ID']=0;
+        SQLUpdate('objects',$objects[$o]);
+       }
+      }
 
       if (is_array($properties)) {
        $total_p=count($properties);
@@ -378,7 +385,7 @@ function admin(&$out) {
 
     unset($objects[$o]['ID']);
     unset($objects[$o]['CLASS_ID']);
-    unset($objects[$o]['LOCATION_ID']);
+    //unset($objects[$o]['LOCATION_ID']);
     unset($objects[$o]['SUB_LIST']);
    }
 

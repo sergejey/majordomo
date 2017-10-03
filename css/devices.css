@@ -46,7 +46,7 @@
 .temp-widget {
 }
 .temp-value {
-    font-size:42px;
+    font-size:32px;
     text-align:center;
 }
 .widget .temp-value {
@@ -110,7 +110,7 @@
 .hum-widget {
  }
 .hum-value {
-    font-size:42px;
+    font-size:32px;
     text-align:center;
 }
 .widget .hum-value {
@@ -125,3 +125,10 @@
     color:white;
 }
 
+.camera-widget {
+}
+.camera-text {
+    padding-top:10px;
+    vertical-align:middle;
+    white-space: nowrap;
+}
