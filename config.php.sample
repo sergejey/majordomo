@@ -20,6 +20,8 @@ Define('UPDATES_REPOSITORY_NAME', 'smarthome');
 Define('PROJECT_TITLE', 'MajordomoSL');
 Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru");
 
+define('USE_SYSTEM_CRON', FALSE);
+
 date_default_timezone_set('UTC');
 
 if (isset($_ENV["COMPUTERNAME"]) && $_ENV["COMPUTERNAME"])

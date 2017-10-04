@@ -66,7 +66,7 @@ while (1) {
     $h = date('h');
     $dt = date('Y-m-d');
 
-    if ($m != $old_minute) {
+    if ($m != $old_minute && !USE_SYSTEM_CRON) {
         //echo "new minute\n";
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects
@@ -84,7 +84,7 @@ while (1) {
         $old_minute = $m;
     }
 
-    if ($h != $old_hour) {
+    if ($h != $old_hour && !USE_SYSTEM_CRON) {
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
