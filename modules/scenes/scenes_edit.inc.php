@@ -713,6 +713,10 @@
    }
   }
   outHash($rec, $out);
+  $this->owner->data['TITLE']=$rec['TITLE'];
+  if ($out['ELEMENT_TITLE']) {
+   $this->owner->data['TITLE'].=' - '.$out['ELEMENT_TITLE'];
+  }
 
   if ($element['TYPE']) {
    $styles=$this->getStyles($element['TYPE']);

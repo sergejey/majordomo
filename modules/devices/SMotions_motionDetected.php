@@ -1,6 +1,6 @@
 <?php
 
- if (isset($params['VALUE']) && !$params['VALUE']) {
+ if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdated'])) {
   $this->setProperty('status', 0);
   return;
  }
@@ -9,7 +9,9 @@
  $ot=$this->object_title;
  $nobodysHome=getGlobal('NobodyHomeMode.active');
 
- $this->setProperty('status', 1);
+ if (!isset($params['statusUpdated'])) {
+  $this->setProperty('status', 1);
+ }
  setTimeout($ot.'_motion_timer', 'setGlobal("'.$ot.'.status", 0);', $motion_timeout);
 
  if ($nobodysHome && $this->getProperty('ignoreNobodysHome')) {
@@ -19,13 +21,13 @@
  $this->callMethod('logicAction');
  $linked_room=$this->getProperty('linkedRoom');
  if ($nobodysHome) {
-  callMethod('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));
+  callMethodSafe('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));
  }
  ClearTimeOut("nobodyHome"); 
- SetTimeOut("nobodyHome","callMethod('NobodyHomeMode.activate');", 1*60*60);
+ SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);
 
  if ($linked_room) {
-  callMethod($linked_room.'.onActivity', array('sensor'=>$ot));
+  callMethodSafe($linked_room.'.onActivity', array('sensor'=>$ot));
  }
 
 /*

@@ -132,11 +132,7 @@
      $tmp['OBJECT_ID']=$rec['ID'];
      $tmp['ID']=SQLInsert('properties', $tmp);
      if ($new_value!='') {
-      $tmp2=array();
-      $tmp2['PROPERTY_ID']=$tmp['ID'];
-      $tmp2['OBJECT_ID']=$rec['ID'];
-      $tmp2['VALUE']=$new_value.'';
-      SQLInsert('pvalues', $tmp2);
+         setGlobal($rec['TITLE'].'.'.$new_property,$new_value);
      }
     }
    }
@@ -295,5 +291,6 @@
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 
-
-?>
+if ($out['TITLE']) {
+    $this->owner->owner->data['TITLE'] = $out['TITLE'];
+}

@@ -159,7 +159,7 @@ Blockly.FieldColour.prototype.showEditor_ = function() {
   Blockly.FieldColour.changeEventKey_ = goog.events.listen(picker,
       goog.ui.ColorPicker.EventType.CHANGE,
       function(event) {
-        var colour = event.target.getSelectedColor() || '#000000';
+        var colour = event.target.getSelectedColor() || '000000';
         Blockly.WidgetDiv.hide();
         if (thisObj.changeHandler_) {
           // Call any change handler, and allow it to override.

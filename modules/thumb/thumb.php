@@ -60,7 +60,7 @@ if (IsSet($url) && $url!='') {
         ob_implicit_flush(1);
         while (true) {
             print "Content-type: image/jpeg\n\n";
-            system(PATH_TO_FFMPEG.' -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+            system(PATH_TO_FFMPEG.' -timelimit 5 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
             print LoadFile($img);
             print "--$boundary\n";
             sleep(1);
@@ -68,7 +68,7 @@ if (IsSet($url) && $url!='') {
 
     } else {
      @unlink($img);
-     $cmd=PATH_TO_FFMPEG.' -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
+     $cmd=PATH_TO_FFMPEG.' -timelimit 5 -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
      system($cmd);
     }
     $dc=1;

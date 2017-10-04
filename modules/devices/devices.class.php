@@ -92,7 +92,10 @@ function setDictionary() {
 * @access public
 */
 function run() {
- global $session;
+
+    @include_once(ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
+    @include_once(ROOT . 'languages/devices_default' . '.php');
+
   $out=array();
   if ($this->action=='admin') {
       $this->admin($out);
@@ -137,6 +140,11 @@ function link(&$out) {
     if ($this->prefix) {
        $out['PREFIX']=$this->prefix;
     }
+
+    if ($this->add_title) {
+        $out['ADD_TITLE']=urlencode($this->add_title);
+    }
+
     if ($this->linked_object) {
         $device_rec=SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '".DBSafe($this->linked_object)."'");
         if ($device_rec['TITLE']) {
@@ -222,6 +230,10 @@ function processDevice($device_id) {
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
     $result['HTML']=processTitle($template,$this);
+    if ($device_rec['TYPE']=='camera') {
+        $result['HEIGHT']=5;
+    }
+
     return $result;
 }
 
@@ -322,12 +334,46 @@ function renderStructure() {
               }
           }
       }
-
-
-      
   }
+  subscribeToEvent('devices', 'COMMAND', '', 100);
 }
 
+function processSubscription($event, &$details) {
+    if ($event == 'COMMAND') {
+        include_once(DIR_MODULES.'devices/processCommand.inc.php');
+    }
+}
+
+    /**
+
+    Generate all the possible combinations among a set of nested arrays. *
+    @param array $data The entrypoint array container.
+    @param array $all The final container (used internally).
+    @param array $group The sub container (used internally).
+    @param mixed $val The value to append (used internally).
+    @param int $i The key index (used internally). */
+
+    function generate_combinations(array $data, array &$all = array(), array $group = array(), $value = null, $i = 0,$key = null)
+    {
+        $keys = array_keys($data);
+        if (isset($value) === true) {
+            $group[$key] = $value;
+        }
+        if ($i >= count($data)) {
+            array_push($all, $group);
+        } else {
+            $currentKey = $keys[$i];
+            $currentElement = $data[$currentKey];
+            if(count($data[$currentKey]) <= 0) {
+                $this->generate_combinations($data, $all, $group, null, $i + 1,$currentKey);
+            } elseif (is_array($currentElement)) {
+                foreach ($currentElement as $val) {
+                    $this->generate_combinations($data, $all, $group, $val, $i + 1,$currentKey);
+                }
+            }
+        }
+        return $all;
+    }
 
 function homebridgeSync($device_id=0) {
     if ($this->isHomeBridgeAvailable()) {
@@ -405,7 +451,37 @@ function usual(&$out) {
         echo json_encode($res);
         exit;
     }
- $this->admin($out);
+
+ if ($this->owner->action=='apps') {
+  //$this->redirect(ROOTHTML."module/devices.html");
+ }
+
+    global $location_id;
+    if ($location_id) {
+        $devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID='".(int)$location_id."' ORDER BY TYPE, TITLE");
+        $total = count($devices);
+        for ($i = 0; $i < $total; $i++) {
+            if ($devices[$i]['LINKED_OBJECT']) {
+                $processed=$this->processDevice($devices[$i]['ID']);
+                $devices[$i]['HTML']=$processed['HTML'];
+            }
+        }
+        $out['DEVICES']=$devices;
+        $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+        foreach($location as $k=>$v) {
+            $out['LOCATION_'.$k]=$v;
+        }
+    }
+
+    $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+    $total = count($locations);
+    for ($i = 0; $i < $total; $i++) {
+        $devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
+        $locations[$i]['DEVICES_TOTAL']=$devices_count;
+    }
+    $out['LOCATIONS']=$locations;
+
+
 }
 /**
 * devices search
@@ -554,7 +630,7 @@ function usual(&$out) {
            $linked_property='color';
        }
         if ($rec['TYPE']=='motion') {
-            $linked_property='';
+            $linked_property='status';
             $linked_method='motionDetected';
         }
         if ($rec['TYPE']=='button') {
@@ -846,6 +922,7 @@ function usual(&$out) {
 
   $this->setDictionary();
   $this->renderStructure();
+  $this->homebridgeSync();
  }
 /**
 * Uninstall

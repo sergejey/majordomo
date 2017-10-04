@@ -37,14 +37,27 @@ while (1)
        $properties=array();
        $values=array();
        for($i=0;$i<$total;$i++) {
-           $properties[]=$queue[$i]['PROPERTY'];
-           $values[]=$queue[$i]['DATAVALUE'];
+           if ($queue[$i]['POST_ACTION']=='PostProperty') {
+            $properties[]=$queue[$i]['PROPERTY'];
+            $values[]=$queue[$i]['DATAVALUE'];
+           } else {
+            $dataValue=$queue[$i]['DATAVALUE'];
+            if (is_array(json_decode($dataValue, true))) {
+             $dataValue=json_decode($dataValue, true);
+            }
+            $sent=postToWebSocket($queue[$i]['PROPERTY'], $dataValue, $queue[$i]['POST_ACTION']);
+            if (!$sent) {
+             $sent_ok=0;
+            }
+           }
        }
 
+       if (count($properties)>0) {
           $sent=postToWebSocket($properties, $values, 'PostProperty');
           if (!$sent) {
               $sent_ok=0;
           }
+       }
           
        if ($sent_ok) {
         $latest_sent=time();

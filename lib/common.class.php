@@ -106,11 +106,11 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    if ($member_id)
    {
-      include_once(DIR_MODULES . 'patterns/patterns.class.php');
-      $pt = new patterns();
-      $res=$pt->checkAllPatterns($member_id);
       $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
        if (!$processed) {
+           include_once(DIR_MODULES . 'patterns/patterns.class.php');
+           $pt = new patterns();
+           $res=$pt->checkAllPatterns($member_id);
            processCommand($ph);
        }
       return;
@@ -195,6 +195,13 @@ function timeConvert($tm)
 }
 
 
+function getNumberWord($number, $suffix) {
+    $keys = array(2, 0, 1, 1, 1, 2);
+    $mod = $number % 100;
+    $suffix_key = ($mod > 7 && $mod < 20) ? 2: $keys[min($mod % 10, 5)];
+    return $suffix[$suffix_key];
+}
+
 /**
  * Summary of timeNow
  * @param mixed $tm time (default 0)
@@ -208,35 +215,25 @@ function timeNow($tm = 0)
    }
 
    $h = (int)date('G', $tm);
-
-   if ($h == 0) $hw      = 'часов';
-   elseif ($h == 1) $hw  = 'час';
-   elseif ($h < 5) $hw   = 'часа';
-   elseif ($h < 21) $hw  = 'часов';
-   elseif ($h == 21) $hw = 'час';
-   elseif ($h >= 21) $hw = 'часа';
-
    $m = (int)date('i', $tm);
+   $ms = '';
 
-   if ($m == 1 || $m == 21 || $m == 31 || $m == 41 || $m == 51)
-   {
-      $ms = $m . " минута";
-   }
-   elseif ($m >= 5 && $m <= 20 || $m >= 25 && $m <= 30 || $m >= 35
-        && $m <= 40 || $m >= 45 && $m <= 50 || $m >= 55 && $m <= 59)
-   {
-      $ms = $m . " минут";
-   }
-   elseif ($m >= 2 && $m <= 4 || $m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)   
-   {
-      $ms = $m . "      ";
-   }
-   elseif ($m == 0)
-   {
-      $ms = "";
+   $language = SETTINGS_SITE_LANGUAGE;
+
+   if ($language == 'ru') {
+       $array = array("час", "часа", "часов");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("минута", "минуты", "минут");
+           $ms = $m.' '.getNumberWord($m,$array);
+       }
+   } elseif ($language == 'en' && $m == 0) {
+       $hw = $h.' o\'clock';
+   } else {
+       $hw = date('H:i',$tm);
    }
 
-   $res = "$h " . ($hw) . " " . ($ms);
+   $res = trim($hw . " " . $ms);
    return $res;
 }
 
@@ -518,39 +515,11 @@ function recognizeTime($text, &$newText)
  * @param mixed $expire_in Expire time (default 365)
  * @return mixed
  */
-function registerEvent($eventName, $details = '', $expire_in = 365)
+function registerEvent($eventName, $details = '', $expire_in = 0)
 {
-   $sqlQuery = "SELECT *
-                  FROM events
-                 WHERE EVENT_NAME = '" . DBSafe($eventName) . "'
-                   AND EVENT_TYPE = 'system'
-                 ORDER BY ID DESC
-                 LIMIT 1";
-
-   $rec = array();
-   $rec = SQLSelectOne($sqlQuery);
-
-   $rec['EVENT_NAME'] = $eventName;
-   $rec['EVENT_TYPE'] = 'system';
-   $rec['DETAILS']    = $details;
-   $rec['ADDED']      = date('Y-m-d H:i:s');
-   $rec['EXPIRE']     = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
-   $rec['PROCESSED']  = 1;
-
-   if ($rec['ID'])
-   {
-      SQLUpdate('events', $rec);
-      $sqlQuery = "DELETE FROM events
-                    WHERE EVENT_NAME = '" . $rec['EVENT_NAME'] . "'
-                      AND EVENT_TYPE = '" . $rec['EVENT_TYPE'] . "'
-                      AND ID         != " . $rec['ID'];
-      SQLExec($sqlQuery);
-   }
-   else
-   {
-      $rec['ID'] = SQLInsert('events', $rec);
-   }
-   return $rec['ID'];
+    include_once(DIR_MODULES.'events/events.class.php');
+    $events = new events();
+    return $events->registerEvent($eventName, $details, $expire_in);
 }
 
 /**
@@ -706,6 +675,32 @@ function runScript($id, $params = '')
    return $sc->runScript($id, $params);
 }
 
+function runScriptSafe($id, $params = '') {
+    $current_call='script.'.$id;
+    $call_stack=array();
+    if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        $call_stack = $_GET['m_c_s'];
+    }
+    if (in_array($current_call,$call_stack)) {
+        $call_stack[]=$current_call;
+        DebMes("Warning: cross-linked call of ".$current_call."\nlog:\n".implode(" -> \n",$call_stack));
+        return 0;
+    }
+    $call_stack[]=$current_call;
+    $data=array(
+        'script'=>$id,
+        'm_c_s'=>$call_stack
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
+
 /**
  * Summary of callScript
  * @param mixed $id     ID
@@ -717,6 +712,10 @@ function callScript($id, $params = '')
    runScript($id, $params);
 }
 
+function getURLBackground($url, $cache = 0, $username = '', $password = '') {
+  getURL($url, $cache, $username, $password, true);
+}
+
 /**
  * Summary of getURL
  * @param mixed $url      Url
@@ -725,7 +724,7 @@ function callScript($id, $params = '')
  * @param mixed $password Password (default '')
  * @return mixed
  */
-function getURL($url, $cache = 0, $username = '', $password = '')
+function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
    $cache_file = ROOT . 'cached/urls/' . preg_replace('/\W/is', '_', str_replace('http://', '', $url)) . '.html';
    
@@ -747,6 +746,11 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+          if ($background) {
+              curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1000);
+          }
 
          if ($username != '' || $password != '')
          {
@@ -790,16 +794,13 @@ function getURL($url, $cache = 0, $username = '', $password = '')
 
          $result = curl_exec($ch);
 
-         $endTime=getmicrotime();
-         //DebMes('Geturl finished for '.$url.' (Time taken: '.round($endTime-$startTime,2).')', 'geturl');
 
-          if (curl_errno($ch)) {
+          if (curl_errno($ch) && !$background) {
               $errorInfo = curl_error($ch);
               $info = curl_getinfo($ch);
-              $callSource=debug_backtrace()[1]['function'];
-              DebMes("Geturl to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
-          } elseif (($endTime-$startTime)>5) {
-              DebMes("Warning: geturl to $url is pretty slow (".round($endTime-$startTime,2)."s)");
+              $backtrace = debug_backtrace();
+              $callSource = $backtrace[1]['function'];
+              DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
           }
           curl_close($ch);
 
@@ -968,16 +969,14 @@ function checkAccess($object_type, $object_id)
 function registerError($code = 'custom', $details = '')
 {
 
-   DebMes("Error registered (type: $code): ".$details);
+   $e = new \Exception;
+   $backtrace=$e->getTraceAsString();
+
+   DebMes("Error registered (type: $code):\n".$details."\nBacktrace:\n".$backtrace,'error');
    $code = trim($code);
 
    if ($code == 'sql') {
     return 0;
-   }
-   
-   if (!$code)
-   {
-      $code = 'custom';
    }
 
    $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
@@ -990,13 +989,12 @@ function registerError($code = 'custom', $details = '')
    }
 
    $error_rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-   $error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
+   @$error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
    SQLUpdate('system_errors', $error_rec);
 
    $history_rec = array();
-
    $history_rec['ERROR_ID'] = $error_rec['ID'];
-   $history_rec['COMMENTS'] = $details;
+   $history_rec['COMMENTS'] = $details."\nBacktrace:\n".$backtrace;
    $history_rec['ADDED']    = $error_rec['LATEST_UPDATE'];
 
    //Temporary disabled
@@ -1009,7 +1007,6 @@ function registerError($code = 'custom', $details = '')
    $history_rec['EVENTS_DATA']     = getURL($xrayUrl . 'events', 0);
    $history_rec['DEBUG_DATA']      = getURL($xrayUrl . 'debmes', 0);
     */
-
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
    if (!$error_rec['KEEP_HISTORY'])

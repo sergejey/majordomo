@@ -168,6 +168,12 @@
    for($i=0;$i<$total;$i++) {
     $res.='Scene: <a href="/panel/scene/'.$states[$i]['SCENE_ID'].'/elements/'.$states[$i]['ELEMENT_ID'].'/state'.$states[$i]['ID'].'.html">'.$states[$i]['ELEMENT_TITLE'].'.'.$states[$i]['TITLE'].'</a><br>';
    }
+   //scene elements
+   $elements=SQLSelect("SELECT elements.ID, elements.SCENE_ID, elements.TITLE FROM elements WHERE (elements.LINKED_OBJECT LIKE '%".DBSafe($title)."%' OR elements.LINKED_PROPERTY LIKE '%".DBSafe($title)."%' OR elements.TITLE LIKE '%".DBSafe($title)."%') ORDER BY elements.TITLE");
+   $total=count($elements);
+   for($i=0;$i<$total;$i++) {
+    $res.='Scene: <a href="/panel/scene/'.$elements[$i]['SCENE_ID'].'/elements/'.$elements[$i]['ID'].'.html">'.$elements[$i]['TITLE'].'</a><br>';
+   }
 
    //zwave devices
    if (file_exists(DIR_MODULES.'zwave/zwave.class.php')) {
@@ -175,6 +181,13 @@
     $total=count($devices);
     for($i=0;$i<$total;$i++) {
      $res.='ZWave: <a href="/panel/zwave/'.$devices[$i]['DEVICE_ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
+    }
+   }
+   if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
+    $devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE (TITLE LIKE '%".DBSafe($title)."%' OR LINKED_OBJECT LIKE '%".DBSafe($title)."%') ORDER BY TITLE");
+    $total=count($devices);
+    for($i=0;$i<$total;$i++) {
+     $res.='Device: <a href="/panel/devices/'.$devices[$i]['ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
     }
    }
 

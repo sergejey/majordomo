@@ -27,6 +27,7 @@ $ctl = new control_modules();
         <link href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
         <link href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
     <link href="lib/css/freeboard/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
 
     <?php
 
@@ -42,6 +43,7 @@ $ctl = new control_modules();
 
     <script src="lib/js/thirdparty/head.js"></script>
     <script src="lib/js/thirdparty/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.fancybox/jquery.fancybox.js"></script>
     <?php
     $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
     $template_file=DIR_TEMPLATES.'websockets.html';

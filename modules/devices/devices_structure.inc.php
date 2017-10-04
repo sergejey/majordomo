@@ -10,7 +10,8 @@ $this->device_types=array(
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
         ),
         'METHODS'=>array(
-            'onActivity'=>array('DESCRIPTION'=>'Rooms activity')
+            'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
+            'updateActivityStatus'=>array('DESCRIPTION'=>'Update activity status')
         )
     ),
     'general'=>array(
@@ -26,10 +27,13 @@ $this->device_types=array(
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(
+                'EconomMode.activate'=>'econommode_activate',
+                'EconomMode.deactivate'=>'econommode_deactivate',
                 'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
                 'NightMode.activate'=>'nightmode_activate',
@@ -95,16 +99,64 @@ $this->device_types=array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
         )
     ),
+    'camera'=>array(
+        'TITLE'=>LANG_DEVICES_CAMERA,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SCameras',
+        'PROPERTIES'=>array(
+            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (LQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'streamURL_HQ'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (HQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'cameraUsername'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_USERNAME,'_CONFIG_TYPE'=>'text'),
+            'cameraPassword'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PASSWORD,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
+            'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
+        ),
+        'METHODS'=>array(
+            'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
+            'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
+            'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+        )
+    ),
     'openclose'=>array(
         'TITLE'=>LANG_DEVICES_OPENCLOSE,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SOpenClose',
         'PROPERTIES'=>array(
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
+            'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
         )
+    ),
+    'leak'=>array(
+        'TITLE'=>LANG_DEVICES_LEAK_SENSOR,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SLeak',
+        'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+        )
+    ),
+    'smoke'=>array(
+        'TITLE'=>LANG_DEVICES_SMOKE_SENSOR,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SSmoke',
+        'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+        )
+    ),
+    'counter'=>array(
+        'TITLE'=>LANG_DEVICES_COUNTER,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SCounters',
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value updated event')
+        ),
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            'value'=>array('DESCRIPTION'=>'Current Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+        ),
     ),
     'button'=>array(
         'TITLE'=>LANG_DEVICES_BUTTON,
@@ -168,5 +220,13 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_CURRENT_SENSOR,
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SCurrentSensors'
+    ),
+    'sensor_light'=>array(
+        'TITLE'=>LANG_DEVICES_LIGHT_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SLightSensors',
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            ),
     ),
 );

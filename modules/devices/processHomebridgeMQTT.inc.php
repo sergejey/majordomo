@@ -3,8 +3,8 @@
     $params['PROPERTY']=$property;
     $params['NEW_VALUE']=(string)$value;
 */
-DebMes("HB property: ".$params['PROPERTY']);
-DebMes("HB value: ".$params['NEW_VALUE']);
+DebMes("HB property: ".$params['PROPERTY'], 'homebridge');
+DebMes("HB value: ".$params['NEW_VALUE'], 'homebridge');
 
 $data=json_decode($params['NEW_VALUE'],true);
 
@@ -21,7 +21,7 @@ if ($params['PROPERTY']=='from_response' && gg('HomeBridge.mode')=='list') {
     }
     $total = count($devices);
     if ($total>0) {
-        DebMes("Got devices list");
+        DebMes("Got devices list", 'homebridge');
         sg('HomeBridge.mode','');
         $to_remove=array();
         for ($i = 0; $i < $total; $i++) {
@@ -35,11 +35,11 @@ if ($params['PROPERTY']=='from_response' && gg('HomeBridge.mode')=='list') {
             for ($i = 0; $i < $total; $i++) {
                 $payload=array();
                 $payload['name']=$to_remove[$i];
-                DebMes("Homebridge: removing unknown device ".$payload['name']);
+                DebMes("Homebridge: removing unknown device ".$payload['name'], 'homebridge');
                 sg('HomeBridge.to_remove',json_encode($payload));
             }
         } else {
-            DebMes("Nothing to remove");
+            DebMes("Nothing to remove", 'homebridge');
         }
     }
 }
@@ -80,15 +80,15 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
     if ($device['TYPE']=='relay') {
         if ($data['characteristic']=='On') {
             if ($data['value']) {
-                callMethod($device['LINKED_OBJECT'].'.turnOn');
+                callMethodSafe($device['LINKED_OBJECT'].'.turnOn');
             } else {
-                callMethod($device['LINKED_OBJECT'].'.turnOff');
+                callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
             }
         }
     }
     if ($device['TYPE']=='button') {
         if ($data['characteristic']=='ProgrammableSwitchEvent' || $data['characteristic']=='On') {
-            callMethod($device['LINKED_OBJECT'].'.pressed');
+            callMethodSafe($device['LINKED_OBJECT'].'.pressed');
             if ($data['characteristic'] == 'On') {
                 $payload=array();
                 $payload['name']=$device['LINKED_OBJECT'];

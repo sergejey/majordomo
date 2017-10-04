@@ -199,7 +199,8 @@
  function itemValueChangedProcessed(data, v) {
   //alert(data);
   if ($('#processing_'+data).length) {
-   $('#processing_'+data).html(' - OK');
+   $('#processing_'+data).html('<span class="opConfirm"> - OK</span>');
+   setTimeout("$('#processing_"+data+"').html('')",1500);
   }
   return false;
  }
@@ -492,7 +493,8 @@
   var elem2=document.getElementById('menu{$item.ID}_vv');
   var v=parseFloat(elem.value);
   if ((v+{$item.STEP_VALUE})<={$item.MAX_VALUE}) {
-   elem.value=v+{$item.STEP_VALUE};
+   var resultV = v+{$item.STEP_VALUE};
+   elem.value = parseFloat(resultV.toFixed(4));
    elem2.innerHTML=elem.value;
    clearTimeout(item{$item.ID}_timer);
    item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
@@ -504,7 +506,8 @@
   var elem2=document.getElementById('menu{$item.ID}_vv');
   var v=parseFloat(elem.value);
   if ((v-{$item.STEP_VALUE})>={$item.MIN_VALUE}) {
-   elem.value=v-{$item.STEP_VALUE};
+   var resultV = v-{$item.STEP_VALUE};
+   elem.value = parseFloat(resultV.toFixed(4));
    elem2.innerHTML=elem.value;
    clearTimeout(item{$item.ID}_timer);
    item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
@@ -516,9 +519,9 @@
 <span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span>
 
 <div data-inline="true" data-role="fieldcontain">
- <a href="#" data-role="button" onClick="return increaseValue{$item.ID}();" data-inline="true">+</a>
- <span style="margin-left:10px;margin-right:10px" id="menu{$item.ID}_vv">{$item.CUR_VALUE}</span>
  <a href="#" data-role="button" onClick="return decreaseValue{$item.ID}();" data-inline="true">-</a>
+ <span style="margin-left:10px;margin-right:10px" id="menu{$item.ID}_vv">{$item.CUR_VALUE}</span>
+ <a href="#" data-role="button" onClick="return increaseValue{$item.ID}();" data-inline="true">+</a>
  <div style="display:none">
  <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" size="5">
  </div>
@@ -665,6 +668,11 @@
    }
   {/if}
 
+
+  {if $item.TYPE=='plusminus'}
+  $('#menu{$item.ID}_vv').html(data);
+  {/if}
+
   {if $item.TYPE=='radiobox'}
    var $selected = $('.radiobox{$item.ID}:checked');
    if (!$selected.length || $selected.val()!=data) {
@@ -716,21 +724,10 @@
 
  function updateLabel{$item.ID}() {
   clearTimeout(label{$item.ID}_timer);
-
   collectLabel('{$item.ID}');
-  /*
-  var url="{$smarty.const.ROOTHTML}menu.html?ajax=1&op=get_label";
-  AJAXRequest(url+'&item_id={$item.ID}', 'updateLabel{$item.ID}_Ready', '');
-  */
-
   {if $item.TYPE=='switch' || $item.TYPE=='textbox' || $item.TYPE=='sliderbox' || $item.TYPE=='selectbox' || $item.TYPE=='radiobox'}
-  /*
-  var url2="?ajax=1&op=get_value";
-  AJAXRequest(url2+'&item_id={$item.ID}', 'updateValue{$item.ID}_Ready', '');
-  */
   collectValue('{$item.ID}');
   {/if}
-
   label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', ({$item.AUTO_UPDATE}*1000));
   return false;
  }
@@ -791,7 +788,6 @@
  $( document ).bind( "pageinit", function( event, data ){
     $('.visible_delay').hide();
     visible_delay_carusel();
-///    alert('zz');
 });
 </script>
 {/if}

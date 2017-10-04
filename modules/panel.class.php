@@ -41,8 +41,18 @@ class panel extends module
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
         global $action;
+
+        if (defined('NO_DATABASE_CONNECTION')) {
+         if (!$action) $action = 'saverestore';
+         $this->print = 1;
+        }
+
         if (!$this->action && $action) {
             $this->action = $action;
+        }
+
+        if ($this->action) {
+            $out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
         }
 
         if (!$session->data['SITE_USERNAME']) {
@@ -77,7 +87,7 @@ class panel extends module
             }
         }
 
-        if (IsSet($session->data["AUTHORIZED"])) {
+        if (IsSet($session->data["AUTHORIZED"]) || defined('NO_DATABASE_CONNECTION')) {
             $this->authorized = 1;
         } else {
             $tmp = SQLSelectOne("SELECT ID FROM users WHERE IS_ADMIN=1");
@@ -158,6 +168,9 @@ class panel extends module
         }
 
         $out["ACTION"] = $this->action;
+        if (!$out['TITLE']) {
+            $out['TITLE'] = LANG_CONTROL_PANEL;
+        }
         $this->data = $out;
         $p = new parser(DIR_TEMPLATES . $this->name . ".html", $this->data, $this);
         return $p->result;

@@ -3,7 +3,7 @@
 #--><!DOCTYPE html>
 <html>
 <head>
-        <title><#SETTINGS_SITE_TITLE#> <#LANG_CONTROL_PANEL#></title>
+        <title>{#TITLE#}</title>
         <meta name="keywords" content="">
         <meta name="description" content="">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -253,8 +253,9 @@ jQuery.fn.center = function () {
     <script language="javascript">
         var cmd='';
 
-        var hrefLocation=window.location.href;
+        var hrefLocation = window.location.href;
         hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+        var urlInProgress = '';
 
         var consoleDebugTimer;
 
@@ -294,48 +295,48 @@ jQuery.fn.center = function () {
 
         var loaderTimer;
         function loadInProgress() {
-            $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> Still working... Click <a href="'+urlInProgress+'">here</a> if it takes too long.');
+            $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
             return false;
         }
 
-        var urlInProgress='';
+
 
         function partLoad(link) {
             //partLoadContent
             var url=link;
-            urlInProgress=link;
+            urlInProgress = link;
             hrefLocation = link;
             hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
             clearTimeout(locationTimer);
             locationTimer = setTimeout('checkLocationHref();',1000);
-
             url+='&part_load=1';
-
             loaderTimer=setTimeout(loadInProgress, 1000);
 
             $.ajax({
-                url: url
+                url: url,
+                urlInProgress: urlInProgress
             }).done(function(data) {
                 //console.log('loaded');
                 clearTimeout(loaderTimer);
                 try {
                         JSON.parse(data);
                 } catch (e) {
-                        window.location.href=urlInProgress;
+                        window.location.href=this.urlInProgress;
                         return false;
                 }
                 var obj=jQuery.parseJSON(data);
-
                 if ("undefined" !== typeof obj.REDIRECT) {
                  link = obj.REDIRECT;
                 }
 
                 if (obj.NEED_RELOAD!=0) {
-                    //alert('need reload');
                     window.location.href=link;
                 } else {
                     window.history.pushState('', window.title, link);
                     $('#partLoadContent').html(obj.CONTENT);
+                    if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
+                        window.document.title = obj.TITLE;
+                    }
 
                     $('input[name=filter_modules]').keyup(function() {
                         filterModules();

@@ -40,6 +40,8 @@ if ($this->isHomeBridgeAvailable()) {
 
 }
 
+$value = (float)gg($device1['LINKED_OBJECT'].'.value');
+
 $links=SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE DEVICE1_ID=".(int)$device1['ID']);
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {

@@ -8,7 +8,7 @@ RewriteBase /
 ReWriteCond %{REQUEST_URI} pda$
 RewriteRule .* /popup/pda.html [R,L]
 
-ReWriteCond %{REQUEST_URI} ^api/
+ReWriteCond %{REQUEST_URI} ^/api/
 RewriteRule .* /api.php
 
 RewriteCond %{REQUEST_FILENAME} !-f

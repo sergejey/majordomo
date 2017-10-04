@@ -216,6 +216,9 @@ if ($rec['TYPE']=='plusminus'
   }
 
   outHash($rec, $out);
+  if ($out['TITLE']) {
+    $this->owner->data['TITLE'] = $out['TITLE'];
+  }
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 

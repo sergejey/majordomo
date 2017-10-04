@@ -89,6 +89,40 @@ $ctl = new control_modules();
 echo "Clearing the cache.\n";
 SQLExec("TRUNCATE TABLE `cached_values`");
 
+if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE==1) {
+   // split data into multiple tables
+   $phistory_values = SQLSelect("SELECT VALUE_ID, COUNT(*) as TOTAL FROM phistory GROUP BY VALUE_ID");
+   $total = count($phistory_values);
+   for($i=0;$i<$total;$i++) {
+      $value_id=$phistory_values[$i]['VALUE_ID'];
+      $total_data=$phistory_values[$i]['TOTAL'];
+      DebMes("Processing data for value $value_id ($total_data) ... ");
+      echo "Processing data for value $value_id ($total_data) ... ";
+      $table_name = createHistoryTable($value_id);
+      moveDataFromMainHistoryToTable($value_id);
+      DebMes("Processing of $value_id finished.");
+      echo "OK\n";
+   }
+} else {
+  //combine data into single table
+   $data=SQLSelect("SHOW TABLES;");
+   $tables=array();
+   foreach($data as $v) {
+      foreach($v as $k=>$v2) {
+         $tables[]=$v2;
+      }
+   }
+   foreach($tables as $table) {
+      if (preg_match('/phistory_value_(\d+)/',$table,$m)) {
+         $value_id=$m[1];
+         echo "Processing table: $table ($value_id) ...\n";
+         DebMes("Processing data for value $value_id ($table) ... ");
+         moveDataFromTableToMainHistory($value_id);
+         DebMes("Processing of $value_id finished.");
+         echo "OK\n";
+      }
+   }
+}
 
 // 1 second sleep
 sleep(1);
@@ -135,7 +169,7 @@ foreach ($cycles as $path)
 
 
       DebMes("Starting " . $path . " ... ");
-      echo "Starting " . $path . " ... ";
+      echo "Starting " . $path . " ... \n";
 
       if ((preg_match("/_X/", $path)))
       {
@@ -183,80 +217,83 @@ if (!is_array($restart_threads))
 
 $last_restart=array();
 
+$last_cycles_control_check=time();
+
+$auto_restarts=array();
 
 while (false !== ($result = $threads->iteration()))
 {
 
+   $already_started = array();
+   if ((time()-$last_cycles_control_check)>=5) {
+      $last_cycles_control_check=time();
 
-   $to_start=array();
-   $to_stop=array();
-   $to_restart=array();
-   $auto_restarts=array();
+      $to_start=array();
+      $to_stop=array();
+      $to_restart=array();
+      $auto_restarts=array();
 
-   $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
-   $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
-   $total = count($cycles);
+      $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
+      $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+      $total = count($cycles);
 
-   $seen=array();
-   for ($i = 0; $i < $total; $i++) {
-      $title = $cycles[$i]['TITLE'];
-      $title = preg_replace('/Run$/', '', $title);
-      $title = preg_replace('/Control$/', '', $title);
-      if (isset($seen[$title])) {
-       continue;
-      }
-      $seen[$title]=1;
-      $control=getGlobal($title.'Control');
-      $auto_restart=getGlobal($title.'AutoRestart');
-      if ($auto_restart) {
-        $auto_restarts[]=$title;
-      }
-      if ($control!='') {
-         if ($control=='stop') {
-            $to_stop[]=$title;
-         } elseif ($control=='start') {
-            $to_start[]=$title;
-         } elseif ($control=='restart') {
-            $to_stop[]=$title;
-            $to_start[]=$title;
+      $seen=array();
+      for ($i = 0; $i < $total; $i++) {
+         $title = $cycles[$i]['TITLE'];
+         $title = preg_replace('/Run$/', '', $title);
+         $title = preg_replace('/Control$/', '', $title);
+         if (isset($seen[$title])) {
+            continue;
          }
-       setGlobal($title.'Control','');
+         $seen[$title]=1;
+         $control=getGlobal($title.'Control');
+         $auto_restart=getGlobal($title.'AutoRestart');
+         if ($auto_restart) {
+            $auto_restarts[]=$title;
+         }
+         if ($control!='') {
+            if ($control=='stop') {
+               $to_stop[]=$title;
+            } elseif ($control=='start') {
+               $to_start[]=$title;
+            } elseif ($control=='restart') {
+               $to_stop[]=$title;
+               $to_start[]=$title;
+            }
+            setGlobal($title.'Control','');
+         }
+
       }
 
-   }
-
-   $some_closed=0;
-   $is_running=array();
-   foreach($threads->commandLines as $id=>$cmd) {
-      if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
-         $title=$m[1];
-         if (in_array($title,$to_stop) || in_array($title,$to_restart)) {
-            DebMes("Closing service ".$title." (id: $id)");
-            $threads->closeThread($id);
-            $some_closed=1;
-         } else {
-            $is_running[]=$title;
+      $some_closed=0;
+      $is_running=array();
+      foreach($threads->commandLines as $id=>$cmd) {
+         if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
+            $title=$m[1];
+            if (in_array($title,$to_stop) || in_array($title,$to_restart)) {
+               DebMes("Closing service ".$title." (id: $id)");
+               $threads->closeThread($id);
+               $some_closed=1;
+            } else {
+               $is_running[]=$title;
+            }
          }
       }
-   }
 
-   if ($some_closed) {
-      sleep(3);
-   }
-
-   foreach($to_start as $title) {
-      if (!in_array($title,$is_running)) {
-         $cmd='./scripts/'.$title.'.php';
-         DebMes("Starting service ".$title.' ('.$cmd.')');
-         $pipe_id = $threads->newThread($cmd);
+      if ($some_closed) {
+         sleep(3);
       }
-   }
 
-/*
-   setGlobal('runningCycles',serialize($threads->commandLines));
-   setGlobal('runningToStop',serialize($to_stop));
-   setGlobal('runningToStart',serialize($to_start));
-*/
+      foreach($to_start as $title) {
+         if (!in_array($title,$is_running)) {
+            $cmd='./scripts/'.$title.'.php';
+            DebMes("Starting service ".$title.' ('.$cmd.')');
+            $pipe_id = $threads->newThread($cmd);
+         }
+         $already_started[] = $title;
+      }
+
+   }
 
    if (!empty($result))
    {
@@ -271,6 +308,9 @@ while (false !== ($result = $threads->iteration()))
             $need_restart=0;
             if (preg_match('/(cycle_.+?)\.php/is',$closed_thread,$m)) {
                $title=$m[1];
+               if (in_array($title,$already_started)) {
+                  continue;
+               }
                setGlobal($title.'Run','');
                if (in_array($title,$auto_restarts)) {
                   $need_restart=1;
@@ -297,8 +337,6 @@ while (false !== ($result = $threads->iteration()))
    }
 }
 
-
  unlink('./reboot');
-
  // closing database connection
  $db->Disconnect();

@@ -324,22 +324,23 @@
 </div>
 
 
+
 <div class='advanced_options' [#if ELEMENT_EASY_CONFIG="1" || ELEMENT_ID=""#]style="display:none"[#endif#]>
 
-[#if (ELEMENT_TYPE!="container")#]
-<div class="form-group">
+
+    [#if (ELEMENT_TYPE!="container")#]
+    <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
         <div class="controls">
-                <select class="form-control" name="container_id">
-                        <option value="0">n/a
-                        [#begin CONTAINERS#]
-                        <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
-                        [#end CONTAINERS#]
-                </select>
+            <select class="form-control" name="container_id">
+                <option value="0">n/a
+                    [#begin CONTAINERS#]
+                <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end CONTAINERS#]
+            </select>
         </div>
-</div>
-[#endif ELEMENT_TYPE#]
-
+    </div>
+    [#endif ELEMENT_TYPE#]
 
 
 [#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container" || ELEMENT_TYPE=="menuitem"#]

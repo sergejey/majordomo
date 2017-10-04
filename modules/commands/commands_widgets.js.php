@@ -28,7 +28,7 @@ include_once("./load_settings.php");
                     <?php
                     foreach($scripts as $k=>$v) {
                         echo '{';
-                        echo '"name" : "'.processTitle($v['TITLE']).'",'."\n";
+                        echo '"name" : "'.addcslashes($v['TITLE'],'"').'",'."\n";
                         echo '"value" : "'.$v['ID'].'"';
                         echo '},';
                     }
@@ -68,7 +68,7 @@ include_once("./load_settings.php");
         {
             if(widgetElement)
             {
-                var newHeight=parseInt(currentSettings.size)*100-20;
+                var newHeight=parseInt(currentSettings.size)*80-20;
                 var myTextElement = $("<iframe style='margin-top:20px;height:"+newHeight+"px' src='<?php echo ROOTHTML;?>menu.html?parent="+currentSettings.menu+"' width='100%' height='"+newHeight+"' frameborder=0></iframe>");
                 $(widgetElement).append(myTextElement);
             }

@@ -133,14 +133,9 @@ $ctl = new control_modules();
   <input type="button" onClick="return SaveAndClose();" value="OK">
   <input type="button" onClick="window.close();" value="<?php echo LANG_CANCEL;?>">
   </div>
-  <!--
-    <category name="Color">
-      <block type="colour_picker"></block>
-      <block type="colour_random"></block>
-      <block type="colour_rgb"></block>
-      <block type="colour_blend"></block>
-    </category>
-  -->
+
+
+
   <xml id="toolbox" style="display: none">
 
     <category name="<?php echo LANG_GENERAL;?>">
@@ -388,6 +383,13 @@ $ctl = new control_modules();
       <block type="lists_setIndex"></block>
       <block type="lists_getSublist"></block>
     </category>
+
+    <category name="<?php echo LANG_COLOR;?>">
+      <block type="colour_picker"></block>
+      <block type="colour_random"></block>
+      <block type="colour_rgb"></block>
+    </category>
+
     <category name="<?php echo LANG_VARIABLES;?>" custom="VARIABLE"></category>
     <category name="<?php echo LANG_FUNCTIONS;?>" custom="PROCEDURE"></category>
 
@@ -420,6 +422,11 @@ $ctl = new control_modules();
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOn"></block>'."\n";
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOff"></block>'."\n";
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentStatus"></block>'."\n";
+      }
+      if ($res[$i]['TYPE']=='rgb') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_setColor">'."\n";
+        echo "<value name=\"COLOR\"><block type=\"text\"></block></value>";
+        echo "</block>";
       }
       if ($dev->device_types[$res[$i]['TYPE']]['PARENT_CLASS']=='SSensors') {
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentValue"></block>'."\n";

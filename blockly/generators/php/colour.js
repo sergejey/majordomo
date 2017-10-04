@@ -37,13 +37,7 @@ Blockly.PHP['colour_picker'] = function(block) {
 
 Blockly.PHP['colour_random'] = function(block) {
   // Generate a random colour.
-  var functionName = Blockly.PHP.provideFunction_(
-      'colour_random',
-      [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ + '() {',
-        '  var num = Math.floor(Math.random() * Math.pow(2, 24));',
-        '  return \'#\' + (\'00000\' + num.toString(16)).substr(-6);',
-        '}']);
-  var code = functionName + '()';
+  var code = 'str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, \'0\', STR_PAD_LEFT)';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
@@ -55,19 +49,7 @@ Blockly.PHP['colour_rgb'] = function(block) {
       Blockly.PHP.ORDER_COMMA) || 0;
   var blue = Blockly.PHP.valueToCode(block, 'BLUE',
       Blockly.PHP.ORDER_COMMA) || 0;
-  var functionName = Blockly.PHP.provideFunction_(
-      'colour_rgb',
-      [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
-          '(r, g, b) {',
-        '  r = Math.max(Math.min(Number(r), 100), 0) * 2.55;',
-        '  g = Math.max(Math.min(Number(g), 100), 0) * 2.55;',
-        '  b = Math.max(Math.min(Number(b), 100), 0) * 2.55;',
-        '  r = (\'0\' + (Math.round(r) || 0).toString(16)).slice(-2);',
-        '  g = (\'0\' + (Math.round(g) || 0).toString(16)).slice(-2);',
-        '  b = (\'0\' + (Math.round(b) || 0).toString(16)).slice(-2);',
-        '  return \'#\' + r + g + b;',
-        '}']);
-  var code = functionName + '(' + red + ', ' + green + ', ' + blue + ')';
+  var code = 'sprintf("%02x%02x%02x", '+red+', '+green+', '+blue+')';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 
@@ -96,7 +78,7 @@ Blockly.PHP['colour_blend'] = function(block) {
         '  r = (\'0\' + (r || 0).toString(16)).slice(-2);',
         '  g = (\'0\' + (g || 0).toString(16)).slice(-2);',
         '  b = (\'0\' + (b || 0).toString(16)).slice(-2);',
-        '  return \'#\' + r + g + b;',
+        '  return \'\' + r + g + b;',
         '}']);
   var code = functionName + '(' + c1 + ', ' + c2 + ', ' + ratio + ')';
   return [code, Blockly.PHP.ORDER_FUNCTION_CALL];

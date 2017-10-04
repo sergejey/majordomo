@@ -72,6 +72,20 @@
                  $v['NAME']=$k;
                  $v['CONFIG_TYPE']=$v['_CONFIG_TYPE'];
                  $v['VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$k);
+                 if ($v['CONFIG_TYPE']=='select') {
+                     $tmp=explode(',',$v['_CONFIG_OPTIONS']);
+                     $total = count($tmp);
+                     for ($i = 0; $i < $total; $i++) {
+                         $data_s=explode('=',trim($tmp[$i]));
+                         $value=$data_s[0];
+                         if (isset($data_s[1])) {
+                             $title=$data_s[1];
+                         } else {
+                             $title=$value;
+                         }
+                         $v['OPTIONS'][]=array('VALUE'=>$value,'TITLE'=>$title);
+                     }
+                 }
                  $res_properties[]=$v;
              }
          }
@@ -136,6 +150,11 @@
       global $type;
       $out['TYPE']=$type;
       global $linked_object;
+      if ($linked_object!='') {
+          if (!getObject($linked_object)) {
+              $linked_object='';
+          }
+      }
       $out['LINKED_OBJECT']=trim($linked_object);
       if ($out['LINKED_OBJECT'] && !$rec['ID']) {
           $old_rec=SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '".DBSafe($out['LINKED_OBJECT'])."'");
@@ -143,6 +162,24 @@
               $rec=$old_rec;
           }
       }
+      global $add_title;
+      if ($add_title) {
+          $out['TITLE']=$add_title;
+      }
+
+      if ($out['SOURCE_TABLE'] && !$rec['ID']) {
+          $qry_devices=1;
+          if ($out['TYPE']) {
+              $qry_devices.=" AND devices.TYPE='".DBSafe($out['TYPE'])."'";
+          }
+          $existing_devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE $qry_devices ORDER BY TITLE");
+          if ($existing_devices[0]['ID']) {
+              $out['SELECT_EXISTING']=1;
+              $out['EXISTING_DEVICES']=$existing_devices;
+          }
+      }
+
+
   }
 
   if ($this->tab=='links') {

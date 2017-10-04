@@ -84,7 +84,11 @@ endMeasure('part2');
 
 
 if ($_GET['part_load']) {
+
    $res=array();
+   $res['TITLE']='';
+   $res['CONTENT']='';
+   $res['NEED_RELOAD']=1;
 
    $cut_begin='<div id="partLoadContent">';
    $cut_begin_index=mb_strpos($result, $cut_begin);
@@ -98,6 +102,9 @@ if ($_GET['part_load']) {
       if (headers_sent() || is_integer(mb_strpos($res['CONTENT'], '$(document).ready')) || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) { 
          $res['CONTENT']='';
          $res['NEED_RELOAD']=1;
+      }
+      if (preg_match('/<title>(.+?)<\/title>/is',$result,$m)) {
+         $res['TITLE']=$m[1];
       }
    } else {
          $res['CONTENT']='';

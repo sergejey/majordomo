@@ -4,6 +4,10 @@
  $this->callMethod('logicAction');
 
  $ot=$this->object_title;
+ $description = $this->description;
+ if (!$description) {
+  $description = $ot;
+ }
  $linked_room=$this->getProperty('linkedRoom');
 
  $value=(float)$this->getProperty('value');
@@ -20,13 +24,13 @@
   $this->setProperty('normalValue', 0);
   if ($this->getProperty('notify')) {
    //out of range notify
-   say(LANG_DEVICES_NOTIFY_OUTOFRANGE. ' ('.$ot.': '.$value.')', 2);
+   say(LANG_DEVICES_NOTIFY_OUTOFRANGE. ' ('.$description.' '.$value.')', 2);
   }
  } elseif (($value<=$maxValue && $value>=$minValue) && !$is_normal) {
   $this->setProperty('normalValue', 1);
   if ($this->getProperty('notify')) {
    //back to normal notify
-   say(LANG_DEVICES_NOTIFY_BACKTONORMAL. ' ('.$ot.': '.$value.')', 2);
+   say(LANG_DEVICES_NOTIFY_BACKTONORMAL. ' ('.$description.' '.$value.')', 2);
   }
  }
 

@@ -129,8 +129,14 @@ function run() {
     $smarty->assign($k, $v);
    }
 
-
-   @$this->result=$smarty->fetch(DIR_TEMPLATES.'commands/menu.tpl');
+   $template = DIR_TEMPLATES.'commands/menu.tpl';
+   if (defined('ALTERNATIVE_TEMPLATES')) {
+    $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
+    if (file_exists($alt_path)) {
+     $template = $alt_path;
+    }
+   }
+   @$this->result=$smarty->fetch($template);
 
   } else {
    $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
@@ -357,7 +363,7 @@ function admin(&$out) {
     }
 
     if ($item['SCRIPT_ID']) {
-     runScript($item['SCRIPT_ID'], $params);
+     runScriptSafe($item['SCRIPT_ID'], $params);
     }
     if ($item['CODE']) {
      

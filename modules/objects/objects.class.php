@@ -450,6 +450,36 @@ function usual(&$out) {
   $this->callMethod($name, $params, 1);
  }
 
+ function callMethodSafe($name,$params = 0) {
+  $current_call=$this->object_title.'.'.$name;
+  $call_stack=array();
+  if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+   $call_stack = $_GET['m_c_s'];
+  }
+
+  if (in_array($current_call,$call_stack)) {
+   $call_stack[]=$current_call;
+   DebMes("Warning: cross-linked call of ".$current_call."\nlog:\n".implode(" -> \n",$call_stack));
+   return 0;
+  }
+
+  $call_stack[]=$current_call;
+  $data=array(
+   'object'=>$this->object_title,
+      'op'=>'m',
+      'm'=>$name,
+      'm_c_s'=>$call_stack
+  );
+  $url=BASE_URL.'/objects/?'.http_build_query($data);
+  if (is_array($params)) {
+   foreach($params as $k=>$v) {
+    $url.='&'.$k.'='.urlencode($v);
+   }
+  }
+  $result = getURLBackground($url,0);
+  return $result;
+ }
+
 /**
 * Title
 *
@@ -457,7 +487,7 @@ function usual(&$out) {
 *
 * @access public
 */
- function callMethod($name, $params=0, $parent=0) {
+ function callMethod($name, $params=0, $parentClassId=0) {
 
   startMeasure('callMethod');
 
@@ -465,10 +495,11 @@ function usual(&$out) {
 
   startMeasure('callMethod ('.$original_method_name.')');
 
- if (!$parent) {
+ if (!$parentClassId) {
   $id=$this->getMethodByName($name, $this->class_id, $this->id);
+  $parentClassId = $this->class_id;
  } else {
-  $id=$this->getMethodByName($name, $this->class_id, 0);
+  $id=$this->getMethodByName($name, $parentClassId, 0);
  }
 
   if ($id) {
@@ -483,12 +514,23 @@ function usual(&$out) {
     $params['ORIGINAL_OBJECT_TITLE']=$this->object_title;
    }
    if ($params) {
-    $method['EXECUTED_PARAMS']=serialize($params);
+    $saved_params=$params;
+    unset($saved_params['m_c_s']);
+    $method['EXECUTED_PARAMS']=json_encode($saved_params);
+    if (strlen($method['EXECUTED_PARAMS'])>250) {
+     $method['EXECUTED_PARAMS']=substr($method['EXECUTED_PARAMS'],0,250);
+    }
    }
    SQLUpdate('methods', $method);
 
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==1) {
-    $this->callMethod($name, $params, 1);
+    // call class method
+    $parent_success = $this->callMethod($name, $params, $this->class_id);
+   } elseif ($method['CALL_PARENT']==1) {
+    $parentClass=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE ID=".(int)$parentClassId);
+    if ($parentClass['PARENT_ID']) {
+     $parent_success = $this->callMethod($name, $params, $parentClass['PARENT_ID']);
+    }
    }
 
    if ($method['SCRIPT_ID']) {
@@ -496,7 +538,7 @@ function usual(&$out) {
     $script=SQLSelectOne("SELECT * FROM scripts WHERE ID='".$method['SCRIPT_ID']."'");
     $code=$script['CODE'];
    */
-    runScript($method['SCRIPT_ID']);
+    runScriptSafe($method['SCRIPT_ID']);
    } else {
     $code=$method['CODE'];
    }
@@ -545,7 +587,12 @@ function usual(&$out) {
    endMeasure('callMethod', 1);
    endMeasure('callMethod ('.$original_method_name.')', 1);
    if ($method['OBJECT_ID'] && $method['CALL_PARENT']==2) {
-    $parent_success=$this->callMethod($name, $params, 1);
+    $parent_success = $this->callMethod($name, $params, $this->class_id);
+   } elseif ($method['CALL_PARENT']==2) {
+    $parentClass=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE ID=".(int)$parentClassId);
+    if ($parentClass['PARENT_ID']) {
+     $parent_success = $this->callMethod($name, $params, $parentClass['PARENT_ID']);
+    }
    } else {
     $parent_success=true;
    }
@@ -602,6 +649,9 @@ function usual(&$out) {
 * @access public
 */
  function getProperty($property) {
+
+  $property = trim($property);
+
   if ($this->object_title) {
    $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($this->object_title.'.'.$property)."'");
    if (isset($value['VALUE'])) {
@@ -657,6 +707,8 @@ function usual(&$out) {
   startMeasure('setProperty');
   startMeasure('setProperty ('.$property.')');
 
+  $property = trim($property);
+
   if (is_null($value)) {
    $value='';
   }
@@ -690,7 +742,15 @@ function usual(&$out) {
     } else {
      $location='';
     }
-    $today_file=ROOT.'debmes/'.date('Y-m-d').'.data';
+
+
+   if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+    $path=LOG_DIRECTORY;
+   } else {
+    $path = ROOT . 'debmes';
+   }
+
+    $today_file=$path . '/'.date('Y-m-d').'.data';
     $f=fopen($today_file, "a+");
     if ($f) {
                 fputs($f, date("Y-m-d H:i:s"));
@@ -715,6 +775,44 @@ function usual(&$out) {
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    endMeasure('setproperty_update_getvalue');
    $old_value=$v['VALUE'];
+
+   if ($prop['DATA_TYPE']==5 && $value!=$old_value) { // image
+    $path_parts=pathinfo($value);
+    $extension=strtolower($path_parts['extension']);
+    if ($extension!='jpg' && $extension!='jpeg' && $extension!='png'  && $extension!='gif') {
+     $extension='jpg';
+    }
+    $image_file_name=date('Ymd_His').'.'.$extension;
+    if (preg_match('/^http.+/',$value)) {
+     $image_data=getURL($value);
+     @mkdir(ROOT.'cms/images/'.$prop['ID'],0777);
+     SaveFile(ROOT.'cms/images/'.$prop['ID'].'/'.$image_file_name,$image_data);
+     $value=$prop['ID'].'/'.$image_file_name;
+    } elseif (file_exists($value)) {
+     @mkdir(ROOT.'cms/images/'.$prop['ID'],0777);
+     copyFile($value,ROOT.'cms/images/'.$prop['ID'].'/'.$image_file_name);
+     $value=$prop['ID'].'/'.$image_file_name;
+    } else {
+     $value = '';
+    }
+    if ($value!='' && file_exists(ROOT.'cms/images/'.$value)) {
+     $lst=GetImageSize(ROOT.'cms/images/'.$value);
+     //$image_width=$lst[0];
+     //$image_height=$lst[1];
+     $image_format=$lst[2];
+     if (!$image_format) {
+      @unlink(ROOT.'cms/images/'.$value);
+      $value = '';
+     }
+    } else {
+     $value = '';
+    }
+    if ($value!='' && $old_value!='' && !$prop['KEEP_HISTORY'] && file_exists(ROOT.'cms/images/'.$old_value)) {
+     @unlink(ROOT.'cms/images/'.$old_value);
+    }
+    if ($value=='') $value=$old_value;
+   }
+
    $v['VALUE']=$value.'';
    $v['SOURCE']=$source.'';
    if ($v['ID']) {
@@ -784,7 +882,8 @@ function usual(&$out) {
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
     $params['SOURCE']=(string)$source;
-    $this->callMethod($prop['ONCHANGE'], $params);
+    //$this->callMethod($prop['ONCHANGE'], $params);
+    $this->callMethodSafe($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
   }
