@@ -1,6 +1,6 @@
 <div>
  &nbsp;<br/>
-[#if LOCATION_ID!=""#]
+[#if (LOCATION_ID!="") || (TYPE!="")#]
  <script type="text/javascript">
   var subscribedWebSockets=0;
   var subscribedWebSocketsTimer;
@@ -43,12 +43,27 @@
   });
  </script>
  <p><a href="?" class="btn btn-default"><#LANG_BACK#></a></p>
- <h1>[#LOCATION_TITLE#]</h1>
+ <h1>[#TITLE#]</h1>
  [#begin DEVICES#]
+ [#if NEW_LOCATION#]
+ <h2>[#LOCATION_TITLE#]</h2>
+ [#endif#]
  <div id="device[#ID#]">[#HTML#]</div>
- <div style="clear:both">&nbsp;</div>
+ &nbsp;
  [#end DEVICES#]
 [#else LOCATION_ID#]
+
+ <p>
+  <form action="?">
+  <select name="type" onchange="this.form.submit();" class="form-control">
+   <option value=""><#LANG_TYPE#></option>
+   [#begin TYPES#]
+   <option value="[#NAME#]">[#TITLE#] ([#TOTAL#])</option>
+   [#end TYPES#]
+  </select>
+ </form>
+ </p>
+
 [#begin LOCATIONS#]
  [#if DEVICES_TOTAL!="0"#]
 <p>

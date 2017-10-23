@@ -176,6 +176,9 @@ if ($total>0) {
            header('Location:'.str_replace('&subop=optimize', '', $_SERVER['REQUEST_URI']));
            exit;
           }
+
+                 echo "<table width=100%><tr><td width='99%'>";
+
           echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=">H</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=1h">1h</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=24h">24h</a> ';
@@ -183,6 +186,9 @@ if ($total>0) {
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=31d">31d</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a>';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
+                 echo "</td><td>";
+                 echo '<a href="javascript:window.close();">X</a>';
+                 echo "</td></tr></table>";
           echo '<br/>';
           if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
            if (file_exists(DIR_MODULES.'charts/charts.class.php')) {

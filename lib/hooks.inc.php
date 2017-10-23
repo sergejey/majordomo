@@ -111,7 +111,10 @@ function processSubscriptions($event_name, $details = '')
 
             if (method_exists($module_object, 'processSubscription'))
             {
-               DebMes("$module_name.processSubscription ($event_name)");
+               //DebMes("$module_name.processSubscription ($event_name)");
+               if (Defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+                  DebMes("Processing subscription to [".$event_name."] by [".$module_name."] (".(is_array($details) ? json_encode($details) : '').")",'verbose');
+               }
                $module_object->processSubscription($event_name, $details);
             } else {
              DebMes("$module_name.processSubscription error (method not found)");
@@ -128,7 +131,6 @@ function processSubscriptions($event_name, $details = '')
       if (!isset($details['PROCESSED'])) {
        $details['PROCESSED']=false;
       }
-
       return (int)$details['PROCESSED'];
    }
    return 0;
