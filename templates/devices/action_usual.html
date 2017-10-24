@@ -2,6 +2,7 @@
  &nbsp;<br/>
 [#if (LOCATION_ID!="") || (TYPE!="")#]
  <script type="text/javascript">
+  var httpRefreshTimer = 0;
   var subscribedWebSockets=0;
   var subscribedWebSocketsTimer;
   var requestSent = Math.round(+new Date()/1000);
@@ -19,6 +20,7 @@
   }
 
   $.subscribe('wsConnected', function (_) {
+   clearTimeout(httpRefreshTimer);
    subscribeToDevices();
   });
 
@@ -41,6 +43,29 @@
     }
    }
   });
+
+  var trackedDevices = [];
+  [#begin DEVICES#]
+  trackedDevices.push([#ID#]);
+  [#end DEVICES#]
+
+  function httpRefreshDevices() {
+   clearTimeout(httpRefreshTimer);
+   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
+   trackedDevices.forEach(function(item, index) {
+    var url = baseURL + item;
+    $.ajax({
+     url: url
+    }).done(function(data) {
+     var obj=jQuery.parseJSON(data);
+     $('#device'+item).html(obj.HTML);
+    });
+   });
+   httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
+  }
+  httpRefreshTimer = setTimeout('httpRefreshDevices()',5000);
+  ///ajax/devices.html?op=get_device&id=25
+
  </script>
  <p><a href="?" class="btn btn-default"><#LANG_BACK#></a></p>
  <h1>[#TITLE#]</h1>
