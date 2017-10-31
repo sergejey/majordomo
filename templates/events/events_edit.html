@@ -44,3 +44,16 @@
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 </form>
+
+[#if RELEVANT#]
+&nbsp;<Br/>
+<#LANG_SIMILAR_ITEMS#>
+<table class="table">
+ [#begin RELEVANT#]
+ <tr>
+  <td><a href="?view_mode=edit_events&id=[#ID#]">[#EVENT_NAME#]</a></td>
+  <td>[#ADDED#]</td>
+ </tr>
+ [#end RELEVANT#]
+</table>
+[#endif#]

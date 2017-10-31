@@ -80,7 +80,9 @@
 	[#begin PLUGINS#]
 	 <tr class="pluginRow" id="row[#ID#]">
 	  <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
-	  <td valign="top"><b id="row[#ID#]_title">[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
+	  <td valign="top">
+		  [#if URL!=""#]<a href="[#URL#]" target="_blank">[#endif#]<b id="row[#ID#]_title">[#TITLE#]</b></a>
+		  (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
 	  [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
 	  <p id="row[#ID#]_description">[#DESCRIPTION_RU#]</p>
 	  [#else#]
@@ -100,10 +102,15 @@
 	  </td>
 	  <td valign="top">
 	  <div class="btn-group pull-left">
-	  <a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a>
+      [#if URL!=""#]
+		  <a class="btn btn-default btn-sm" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-globe"></i> Info</a>
+		  [#endif URL#]
+	  <a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> <#LANG_UPDATE#>[#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+		  <!--#
 	  <a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a>
 	  <a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a>
-	  [#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return ('<#LANG_ARE_YOU_SURE#>')">Uninstall</a>[#endif#]
+	  #-->
+	  [#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>[#endif#]
 	  </div>
 	  <td>
 	  </tr>

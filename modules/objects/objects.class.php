@@ -489,6 +489,13 @@ function usual(&$out) {
 */
  function callMethod($name, $params=0, $parentClassId=0) {
 
+  if (Defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+   if (!$parentClassId) {
+    DebMes("Method [".$this->object_title.".$name] (".(is_array($params)?json_encode($params):'').")",'verbose');
+   } else {
+    DebMes("Class method [".$this->class_title.'/'.$this->object_title.".$name] (".(is_array($params)?json_encode($params):'').")",'verbose');
+   }
+  }
   startMeasure('callMethod');
 
   $original_method_name=$this->object_title.'.'.$name;
@@ -703,6 +710,12 @@ function usual(&$out) {
 * @access public
 */
  function setProperty($property, $value, $no_linked=0, $source='') {
+
+  if (Defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+   if (!preg_match('/cycle/is',$property)) {
+    DebMes('Property ['.$this->object_title.'.'.$property.'] set to \''.$value.'\'','verbose');
+   }
+  }
 
   startMeasure('setProperty');
   startMeasure('setProperty ('.$property.')');
