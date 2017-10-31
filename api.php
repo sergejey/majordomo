@@ -54,7 +54,7 @@ if (!isset($request[0])) {
     }
 } elseif (strtolower($request[0]) == 'rooms') {
     $result['rooms']=array();
-    $locations=SQLSelect("SELECT * FROM locations ORDER BY TITLE");
+    $locations=SQLSelect("SELECT * FROM locations ORDER BY PRIORITY DESC, TITLE");
     foreach($locations as $k=>$v) {
         $location=array();
         $location['id']=$v['ID'];

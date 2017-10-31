@@ -13,6 +13,10 @@
   //updating 'Title' (varchar, required)
    global $title;
    $rec['TITLE']=$title;
+
+   global $priority;
+      $rec['PRIORITY']=(int)$priority;
+
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;
