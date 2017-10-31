@@ -70,6 +70,9 @@ $dictionary = array(
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Sensor type',
+    'DEVICES_LOADTYPE' => 'Device type',
+    'DEVICES_LOADTYPE_LIGHT' => 'Light',
+    'DEVICES_LOADTYPE_POWER' => 'Other',
 
     'DEVICES_ADD_MENU' => 'Add device to Menu',
     'DEVICES_ADD_SCENE' => 'Add device to Scene',

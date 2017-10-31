@@ -8,6 +8,7 @@ $this->device_types=array(
             'temperature'=>array('DESCRIPTION'=>'Temperature','KEEP_HISTORY'=>365),
             'humidity'=>array('DESCRIPTION'=>'Humidity','KEEP_HISTORY'=>365),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
+            'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),
         'METHODS'=>array(
             'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
@@ -49,6 +50,8 @@ $this->device_types=array(
         'PROPERTIES'=>array(
             'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno'),
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno'),
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
+            'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.',power='.LANG_DEVICES_LOADTYPE_POWER),
         ),
         'METHODS'=>array(
             'turnOn'=>array('DESCRIPTION'=>'turnOn'),

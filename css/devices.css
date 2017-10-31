@@ -94,6 +94,10 @@
     background-image: url(../cms/scenes/styles/switch/i_light_off.png);
 }
 
+.controller.loadtype_power .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
+}
+
 .controller .device-icon.on {
     background-color:yellow;
     background-image: url(../cms/scenes/styles/switch/i_light_on.png);

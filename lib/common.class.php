@@ -469,16 +469,16 @@ function runScheduledJobs()
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
       
       SQLUpdate('jobs', $jobs[$i]);
-      $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-      $result = trim(getURL($url, 0));
 
-      $result = preg_replace('/<!--.+-->/is', '', $result);
-
-      if (!preg_match('/OK$/', $result))
-      {
-         //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-         DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) .' ('.__FILE__.')');
-      }
+       if ($jobs[$i]['COMMANDS'] != '') {
+           $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+           $result = trim(getURL($url, 0));
+           $result = preg_replace('/<!--.+-->/is', '', $result);
+           if (!preg_match('/OK$/', $result)) {
+               //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+               DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
+           }
+       }
    }
 }
 
@@ -778,7 +778,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
          curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
+         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 

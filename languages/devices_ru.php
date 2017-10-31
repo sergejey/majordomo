@@ -70,6 +70,9 @@ $dictionary = array(
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип сенсора',
+    'DEVICES_LOADTYPE' => 'Тип устройства',
+    'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
+    'DEVICES_LOADTYPE_POWER' => 'Разное',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
     'DEVICES_ADD_SCENE' => 'Добавить устройство на Сцену',
