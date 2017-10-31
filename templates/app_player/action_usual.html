@@ -2,41 +2,71 @@
  @version 0.3
 #-->
 <script language="javascript">
+
+ var track = new Audio();
+ track.controls = true;   // Set to false to make it a hidden element
+ var trackcontainer = document.getElementById("html5audio");
+ trackcontainer.appendChild(track);
+
  function playerCommandProcessed(id, data) {
   var elem=document.getElementById('playerStatus');
   elem.innerHTML=data;  
   return false;
  }
+ var playElement=document.getElementById('html5audio_player');
  function playerCommand(pcmd) {
   if ($("#selPlayTerminal").val()=='') return false;
   if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
   var elem=document.getElementById('playerStatus');
   elem.innerHTML=pcmd+'...';
-  var url="<#ROOTHTML#>popup/app_player.html?ajax=1";
-  url+='&command='+pcmd;
-  url+='&play_terminal='+$("#selPlayTerminal").val();
-  url+='&play='+URLencode($("#hidPlayPath").val());
-  url+='&rnd='+URLencode($("#hidPlayerRnd").val());
-  if (pcmd=='volume') {
-   url+='&volume='+URLencode($("#selVolume").val());
+  var playTerminal;
+  playTerminal = $("#selPlayTerminal").val();
+  if (playTerminal == 'html5') {
+   playerCommandProcessed('playerStatus',pcmd);
+
+   //alert(playElement);
+   //playElement.src = $("#hidPlayPath").val();
+   if (pcmd == 'refresh') {
+    track.src = $("#hidPlayPath").val();
+    track.play();
+   }
+   if (pcmd == 'pause') {
+    if (track.paused) {
+     track.play();
+    } else {
+     track.pause();
+    }
+   }
+  } else {
+   var url="<#ROOTHTML#>popup/app_player.html?ajax=1";
+   url+='&command='+pcmd;
+   url+='&play_terminal=' + playTerminal;
+   url+='&play='+URLencode($("#hidPlayPath").val());
+   url+='&rnd='+URLencode($("#hidPlayerRnd").val());
+   if (pcmd=='volume') {
+    url+='&volume='+URLencode($("#selVolume").val());
+   }
+   //prompt(url, url);
+   AJAXRequest(url, 'playerCommandProcessed', '');
   }
-  //prompt(url, url);
-  AJAXRequest(url, 'playerCommandProcessed', '');
   return false;
  }
 </script>
+<div id="html5audio">
+</div>
 <table border="0" cellpadding="0" cellspacing="0">
  <tr>
   <form action="?" method="get" name="frmPlayerControl" id="frmPlayerControl">
-  <td align="right" style="vertical-align:middle">
+  <td align="right">
   <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
    <select name="play_terminal" id="selPlayTerminal" class="form-control input-sm">
     [#begin TERMINALS#]
     <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
     [#end TERMINALS#]
+    <option value="html5">Web Browser</option>
    </select>
   </div>
-   <div id='playerStatus'[#if MODE="menu"#] style="color:white"[#endif#]></div>
+  <div id='playerStatus'[#if MODE="menu"#] style="color:white"[#endif#]></div>
 <!--#
 [#if PLAY!=""#]
 <script language="javascript">
