@@ -129,6 +129,16 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Снимок',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Сохранить снимок',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'История',
+    
+    /* DVR camera*/
+    'DEVICES_DVRCAMERA' =>'DVR-камера',
+    'DEVICES_DVRCAMERA_STREAM_URL' =>'URL видео-потока',
+    'DEVICES_DVRCAMERA_SNAPSHOT_URL' =>'URL статического снимка',
+    'DEVICES_DVRCAMERA_ASPECT_RATIO' =>'Співвідношення сторін кадру',
+    'DEVICES_DVRCAMERA_RECOGNITION_LEVEL' =>'Минимальный уровень распознавания лица (400 - среднее)',
+    'DEVICES_DVRCAMERA_SNAPSHOT' =>'Снимок',
+    'DEVICES_DVRCAMERA_TAKE_SNAPSHOT' =>'Сохранить снимок',
+    'DEVICES_DVRCAMERA_SNAPSHOT_HISTORY' =>'История',
 
     /* end module names */
 
