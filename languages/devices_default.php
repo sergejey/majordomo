@@ -130,6 +130,16 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Snapshot',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Take Snapshot',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'History',
+    
+     /* DVR camera*/
+    'DEVICES_DVRCAMERA' =>'DVR-camera',
+    'DEVICES_DVRCAMERA_STREAM_URL' =>'Stream URL',
+    'DEVICES_DVRCAMERA_SNAPSHOT' =>'Snapshot',
+    'DEVICES_DVRCAMERA_SNAPSHOT_URL' =>'Snapshot URL',
+    'DEVICES_DVRCAMERA_ASPECT_RATIO' =>'Aspect ratio',
+    'DEVICES_DVRCAMERA_RECOGNITION_LEVEL' =>'Minimal level face recognition (recomended - 400)',
+    'DEVICES_DVRCAMERA_TAKE_SNAPSHOT' =>'Take Snapshot',
+    'DEVICES_DVRCAMERA_SNAPSHOT_HISTORY' =>'History',
 
     /* end module names */
 
