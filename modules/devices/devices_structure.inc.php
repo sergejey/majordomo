@@ -118,6 +118,25 @@ $this->device_types=array(
             'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
         )
     ),
+    'dvrcamera'=>array(
+        'TITLE'=>LANG_DEVICES_DVRCAMERA,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SDVRCameras',
+        'PROPERTIES'=>array(
+            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_DVRCAMERA_STREAM_URL.' (LQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'streamURL_HQ'=>array('DESCRIPTION'=>LANG_DEVICES_DVRCAMERA_STREAM_URL.' (HQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+	    'aspect_ratio'=>array('DESCRIPTION'=>LANG_DEVICES_DVRCAMERA_ASPECT_RATIO,'_CONFIG_TYPE'=>'text'),
+	    'recognition_level'=>array('DESCRIPTION'=>LANG_DEVICES_DVRCAMERA_RECOGNITION_LEVEL,'_CONFIG_TYPE'=>'text'),
+            'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_DVRCAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
+            'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_DVRCAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
+        ),
+        'METHODS'=>array(
+            'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
+            'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
+            'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+        )
+    ),
     'openclose'=>array(
         'TITLE'=>LANG_DEVICES_OPENCLOSE,
         'PARENT_CLASS'=>'SDevices',
