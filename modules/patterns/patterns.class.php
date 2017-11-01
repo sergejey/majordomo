@@ -354,7 +354,7 @@ function usual(&$out) {
 
      if (is_array($data['PHRASES'])) {
       foreach($data['PHRASES'] as $details) {
-       say($details['PHRASE'], (int)$details['LEVEL']);
+       sayReply($details['PHRASE'], (int)$details['LEVEL']);
       }
      }
 
