@@ -744,6 +744,29 @@ function checkBadwords($s, $replace = 1)
 }
 
 /**
+* Ping bluetooth host
+* @param mixed $host Host address
+* @return bool
+*/
+function pingbt($host)
+{
+if (IsWindowsOS()){
+$answer='';
+$connect = shell_exec(SERVER_ROOT . '/apps/blutoothscan/btdiscovery -d%a%%c%');
+$PCREpattern = '/\r\n|\r|\n/u';
+$connected = preg_replace($PCREpattern, '', $connect);
+$pos = stripos($connected, $host);
+$answer = substr($connected, $pos+18,3); // возвращает "Yes or No"
+if ($answer == Yes) {
+$result=1;
+} else {
+$result=0;
+}
+}
+return $result;
+}
+
+/**
  * Ping host
  * @param mixed $host Host address
  * @return bool
