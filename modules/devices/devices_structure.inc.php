@@ -64,6 +64,25 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SRelays'
     ),
+    'thermostat'=>array(
+        'TITLE'=>LANG_DEVICES_THERMOSTAT,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SThermostats',
+        'PROPERTIES'=>array(
+            'relay_status'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_RELAY_STATUS,'KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1),
+            'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+            'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+            'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+        ),
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
+            'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
+            'tempDown'=>array('DESCRIPTION'=>'Descrease target temperature'),
+        )
+    ),
     'dimmer'=>array(
         'TITLE'=>LANG_DEVICES_DIMMER,
         'PARENT_CLASS'=>'SControllers',

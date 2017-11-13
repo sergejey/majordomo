@@ -166,9 +166,7 @@ elseif ($job != '')
       try
       {
 
-         if (Defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
-            DebMes("Scheduled job [".$job['TITLE']."]",'verbose');
-         }
+         verbose_log("Scheduled job [".$job['TITLE']."]");
 
          $code = $job['COMMANDS'];
          if ($code != '') {

@@ -1137,6 +1137,51 @@ function binaryToString($buf)
    return $res;
 }
 
+function verbose_log($data) {
+    if (defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+        if (defined('VERBOSE_LOG_IGNORE') && VERBOSE_LOG_IGNORE!='') {
+            $tmp=explode(',', VERBOSE_LOG_IGNORE);
+            $total=count($tmp);
+            for($i=0;$i<$total;$i++) {
+                $regex=trim($tmp[$i]);
+                if (preg_match('/'.$regex.'/is', $data)) {
+                    return;
+                }
+            }
+        }
+        global $verbose_thread_id;
+        global $argv;
+        if (!isset($verbose_thread_id)) {
+            $verbose_thread_id = date('H:i:s').'_'.rand(1000,9999);
+            $cmd = '';
+            if ($_SERVER['REQUEST_URI']!='') {
+                $cmd = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
+            } elseif ($argv[0]!='') {
+                $cmd = implode(' ',$argv);
+                $verbose_thread_id.='_'.basename($argv[0]);
+            }
+            DebMes('th_'.$verbose_thread_id.' start '.$cmd,'verbose');
+        }
+        $bt = debug_backtrace();
+        $total_bt = count($bt);
+        $max_bt = 5;
+        //$bt = array_reverse($bt);
+        $bt = array_slice($bt,1,$max_bt);
+        $total = count($bt);
+        if ($total>0) {
+            $res_trace=array();
+            for($i=0;$i<$total;$i++) {
+                $res_trace[]=$bt[$i]['function'];
+            }
+            if ($total_bt>($max_bt+1)) {
+                $res_trace[]='...';
+            }
+            $data = $data . ' ('.implode('<',$res_trace).')';
+        }
+     DebMes('th_'.$verbose_thread_id.' '.$data,'verbose');
+    }    
+}
+
 /**
 * Title
 * @return string

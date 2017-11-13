@@ -68,19 +68,22 @@ class MajordomoApplication extends Application
         }
 
         private function cycleAlive() {
-         if ($this->_latestAlive==time()) {
+         if ((time()-$this->_latestAlive)<3) {
           return;
          }
          $this->_latestAlive=time();
          global $cycleName;
-         global $websockets_script_started;
          if ($cycleName) {
           setGlobal($cycleName, time(), 1);
-          setGlobal('WSClientsTotal', count($this->_clients), 1);
+          $ws_clients_total = count($this->_clients);
+          $old_value = gg('WSClientsTotal');
+             if ($ws_clients_total!=$old_value) {
+                 setGlobal('WSClientsTotal', $ws_clients_total, 1);
+             }
          }
          global $websockets_script_started;
-         if ($websockets_script_started>0 && (time()-$websockets_script_started)>12*60*60) {
-          exit; // restart every 12 hours
+         if ($websockets_script_started>0 && (time()-$websockets_script_started)>6*60*60) {
+          exit; // restart every 6 hours
          }
         }
 
