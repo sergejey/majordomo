@@ -29,7 +29,7 @@ if (!function_exists('cmpRoomsActivity')) {
 }
 usort($rooms, "cmpRoomsActivity");
 
-if (!$rooms[0]['active']) {
+if (getGlobal('NobodyHomeMode.active')) {
     $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";
 } else {
     $res_rooms = array();

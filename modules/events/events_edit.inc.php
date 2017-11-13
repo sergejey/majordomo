@@ -27,3 +27,10 @@ for ($i = 0; $i < $total; $i++) {
     }
 }
 $out['PARAMS']=$params;
+
+if ($rec['ID'] && $rec['ADDED']!='') {
+    $events=SQLSelect("SELECT ID, EVENT_NAME,ADDED FROM events WHERE ABS(UNIX_TIMESTAMP(ADDED)-UNIX_TIMESTAMP(('".$rec['ADDED']."')))<=5 AND ID!=".$rec['ID']);
+    if ($events[0]['ID']) {
+        $out['RELEVANT']=$events;
+    }
+}

@@ -1,6 +1,7 @@
 <?php
 
  if (!isset($params['statusUpdated'])) {
+  setTimeout($ot.'_pressed_status', '', 3);
   $this->setProperty('status', 1);
  }
 

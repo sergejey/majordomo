@@ -45,11 +45,26 @@
     $res[$i]['ADDED']=fromDBDate($tmp[0])." ".$tmp[1];
     $tmp=explode(' ', $res[$i]['EXPIRE']);
     $res[$i]['EXPIRE']=fromDBDate($tmp[0])." ".$tmp[1];
+    $objects=SQLSelect("SELECT * FROM events_params WHERE EVENT_ID=".$res[$i]['ID']." AND LINKED_OBJECT!=''");
+    $totalo = count($objects);
+    for ($io = 0; $io < $totalo; $io++) {
+     $res[$i]['OBJECTS'].=$objects[$io]['LINKED_OBJECT'].'.'.$objects[$io]['LINKED_PROPERTY'].';';
+    }
+
+    if ($_GET['clear_notlinked'] && !$res[$i]['OBJECTS'] && !$res[$i]['DESCRIPTION']) {
+     $this->delete_events($res[$i]['ID']);
+    }
+
+
    }
    $out['ITEMS']=$this->pathToTree($res);
 
-   //print_r($out['CHILDS']);exit;
    $out['RESULT']=$res;
 
   }
+
+ if ($_GET['clear_notlinked']) {
+  $this->redirect('?');
+ }
+
 ?>

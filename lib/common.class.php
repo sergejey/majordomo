@@ -157,6 +157,41 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
 }
 
+function ask($prompt, $target = '') {
+    processSubscriptions('ASK', array('prompt' => $prompt, 'target' => $target));
+
+    $service_port='7999';
+    $in='ask:'.$prompt;
+
+    if (preg_match('/^[\d\.]+$/',$target)) {
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if ($socket) {
+            $result = socket_connect($socket, $target, $service_port);
+            if ($result) {
+                socket_write($socket, $in, strlen($in));
+            }
+        }
+        socket_close($socket);
+    } else {
+        $qry=1;
+        $qry.=" AND MAJORDROID_API=1";
+        $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE $qry");
+        $total = count($terminals);
+        for ($i = 0; $i < $total; $i++) {
+            $address = $terminals[$i]['HOST'];
+            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            if ($socket) {
+                $result = socket_connect($socket, $address, $service_port);
+                if ($result) {
+                    socket_write($socket, $in, strlen($in));
+                }
+            }
+            socket_close($socket);
+        }
+    }
+}
+
 /**
  * Summary of processCommand
  * @param mixed $command Command
@@ -434,16 +469,16 @@ function runScheduledJobs()
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
       
       SQLUpdate('jobs', $jobs[$i]);
-      $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-      $result = trim(getURL($url, 0));
 
-      $result = preg_replace('/<!--.+-->/is', '', $result);
-
-      if (!preg_match('/OK$/', $result))
-      {
-         //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-         DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) .' ('.__FILE__.')');
-      }
+       if ($jobs[$i]['COMMANDS'] != '') {
+           $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+           $result = trim(getURL($url, 0));
+           $result = preg_replace('/<!--.+-->/is', '', $result);
+           if (!preg_match('/OK$/', $result)) {
+               //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+               DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
+           }
+       }
    }
 }
 
@@ -743,7 +778,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
          curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
+         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 

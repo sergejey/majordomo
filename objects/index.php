@@ -165,9 +165,18 @@ elseif ($job != '')
    {
       try
       {
+
+         if (Defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+            DebMes("Scheduled job [".$job['TITLE']."]",'verbose');
+         }
+
          $code = $job['COMMANDS'];
-         $success = eval($code);
-         
+         if ($code != '') {
+            $success = eval($code);
+         } else {
+            $success = true;
+         }
+
          if ($success === false)
          {
             DebMes("Error in scheduled job code: " . $code);
