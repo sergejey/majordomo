@@ -32,7 +32,10 @@ function run() {
   // $this->src=preg_replace('/\/~(.+?)\//', '/', $this->src);
   //}
 
-
+  if ($this->stream) {
+   $out['STREAM']=$this->stream;
+  }
+  
   if ($this->live) {
    $out['LIVE']=$this->live;
   }
