@@ -127,9 +127,7 @@ function run() {
   function runScript($id, $params = '')
   {
 
-      if (Defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
-         DebMes("Script [".$id."] (".is_array($params) ? json_encode($params):''.")",'verbose');
-      }
+    verbose_log("Script [".$id."] (".is_array($params) ? json_encode($params):''.")");
 
     $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE LIKE '" . DBSafe($id) . "'");
     if ($rec['ID']) {

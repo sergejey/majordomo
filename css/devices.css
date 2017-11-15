@@ -25,6 +25,12 @@
     padding-top:10px;
 }
 
+.thermostat .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
+}
+
 .button .device-header {
     height:40px;
     position: relative;
@@ -33,6 +39,13 @@
 
 .device-details {
     font-size:11px;
+}
+
+.device-icon.thermostat {
+    background-image: url(../cms/scenes/styles/switch/i_warm_on.png);
+}
+.device-icon.thermostat.on {
+    background-color:yellow;
 }
 
 .device-icon.motion {

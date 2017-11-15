@@ -103,6 +103,13 @@ $dictionary = array(
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW' => 'Ниже заданного',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE' => 'Пороговое значение',
 
+    'DEVICES_LINK_SENSOR_PASS' => 'Пересылка данных',
+    'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Пересылка данных от сенсора на другое устройство',
+
+    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Управление устройством',
+    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Управление другим устройствам в зависимости от статуса термостата',
+    'DEVICES_LINK_THERMOSTAT_INVERT' => 'Инвертная установка статуса',
+
 
     'DEVICES_UPDATE_CLASSSES' => 'Обновить классы',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Создать автоматически',
@@ -132,6 +139,16 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Снимок',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Сохранить снимок',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'История',
+
+    'DEVICES_THERMOSTAT' => 'Термостат',
+    'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
+    'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Обычная целевая температура',
+    'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO целевая температура',
+    'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Текущая температура',
+    'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Целевая температура',
+    'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
+    'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
 
     /* end module names */
 

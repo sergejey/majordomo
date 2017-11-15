@@ -44,6 +44,25 @@ $this->device_links=array(
             )
         )
     ),
+    'SThermostats'=>array(
+        array(
+            'LINK_NAME'=>'thermostat_switch',
+            'LINK_TITLE'=>LANG_DEVICES_LINK_THERMOSTAT_SWITCH,
+            'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION,
+            'TARGET_CLASS'=>'SControllers',
+            'PARAMS'=>array(
+                array(
+                    'PARAM_NAME'=>'invert_status',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_THERMOSTAT_INVERT,
+                    'PARAM_TYPE'=>'select',
+                    'PARAM_OPTIONS'=>array(
+                        array('TITLE'=>LANG_NO,'VALUE'=>'0'),
+                        array('TITLE'=>LANG_YES,'VALUE'=>'1')
+                    )
+                )
+            )
+        )
+    ),
     'SSensors'=>array(
         array(
             'LINK_NAME'=>'sensor_switch',
@@ -75,6 +94,12 @@ $this->device_links=array(
                     )
                 )
             )
+        ),
+        array (
+            'LINK_NAME'=>'sensor_pass',
+            'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_PASS,
+            'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
+            'TARGET_CLASS'=>'SThermostats',
         )
     )
 );

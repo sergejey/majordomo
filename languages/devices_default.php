@@ -104,6 +104,13 @@ $dictionary = array(
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW' => 'Below',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE' => 'Value',
 
+    'DEVICES_LINK_SENSOR_PASS' => 'Sensor data pass',
+    'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Pass sensor\'s value to another device',
+
+    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Thermostat device control',
+    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Control another device based on thermostat status',
+    'DEVICES_LINK_THERMOSTAT_INVERT' => 'Invert device\'s status',
+
 
     'DEVICES_UPDATE_CLASSSES' => 'Update classes',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Add automatically',
@@ -133,6 +140,16 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Snapshot',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Take Snapshot',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'History',
+
+    'DEVICES_THERMOSTAT' => 'Thermostat',
+    'DEVICES_THERMOSTAT_MODE' => 'Mode',
+    'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO mode',
+    'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Normal target temperature',
+    'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO target temperature',
+    'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Current temperature',
+    'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Current target temperature',
+    'DEVICES_THERMOSTAT_THRESHOLD' => 'Temperature threshold (0.25 by default)',
+    'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
 
     /* end module names */
 
