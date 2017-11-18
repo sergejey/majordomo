@@ -7,6 +7,6 @@
     %.currentTargetValue%
     <a href="#" class="btn btn-default btn-sm" onClick='callMethod("%.tempUp");return false;'>+</a>
 </div>
-<div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TEMP#>: %.value% [<a href="#"  onclick="window.open('/pChart/?p=%.object_title%'+'.value&op=log&type=7d&subop=1h&subop=24h&subop=7d');"><#LANG_HISTORY#></a>]</div>
+<div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TEMP#>: %.value% [<a href="#"  onclick="var url=('/pChart/?p[]=%.object_title%'+'.value&p[]=%.object_title%'+'.relay_status&op=log&subop=24h');$.fancybox.open({ href: url, type: 'iframe' });return false;"><#LANG_HISTORY#></a>]</div>
 <div class="device-details"><#LANG_DEVICES_THERMOSTAT_MODE#>: <a href="#" onClick='callMethod("%.switch");return false;'>%.status|"ECO;NORMAL"%</a></div>
 </div>
