@@ -1,5 +1,9 @@
 <?php
 
+if (!isset($params['statusUpdated'])) {
+ setTimeout($ot.'_motion_timer_status', '', 3);
+}
+
  if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdated'])) {
   $this->setProperty('status', 0);
   return;
@@ -10,7 +14,6 @@
  $nobodysHome=getGlobal('NobodyHomeMode.active');
 
  if (!isset($params['statusUpdated'])) {
-  setTimeout($ot.'_motion_timer_status', '', 3);
   $this->setProperty('status', 1);
  }
  setTimeout($ot.'_motion_timer', 'setGlobal("'.$ot.'.status", 0);', $motion_timeout);

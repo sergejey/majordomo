@@ -39,6 +39,8 @@ $this->device_types=array(
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
                 'NightMode.activate'=>'nightmode_activate',
                 'NightMode.deactivate'=>'nightmode_deactivate',
+                'DarknessMode.activate'=>'darknessmode_activate',
+                'DarknessMode.deactivate'=>'darknessmode_deactivate',
                 'System.checkstate'=>'system_checkstate',
             ),
         )
@@ -75,6 +77,7 @@ $this->device_types=array(
             'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
             'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
             'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+            'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),

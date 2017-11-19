@@ -60,6 +60,10 @@ if ($_GET['px']) $px_per_point=(int)$_GET['px'];
 // Dataset definition   
 $DataSet = new pData;
 
+if (is_array($p)) {
+    $p=$p[0];
+}
+
 if ($p!='') {
         if (preg_match('/(.+)\.(.+)/is', $p, $m)) {
                 $obj=getObject($m[1]);
@@ -192,9 +196,17 @@ if ($total>0) {
           echo '<br/>';
           if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
            if (file_exists(DIR_MODULES.'charts/charts.class.php')) {
-            $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+               if (!is_array($_GET['p'])) {
+                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+               } else {
+                   $p_url='';
+                   foreach($_GET['p'] as $p) {
+                       $p_url.='&properties[]='.urlencode($p);
+                   }
+                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].$p_url.'" width=100% height=300></iframe>';
+               }
            } else {
-            $code='<img src="/jpgraph/?p='.$_GET['p'].'&type='.$_GET['subop'].'&width=500&"/>';
+            $code='<img src="/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
            }
            echo $code."<br/>".htmlspecialchars($code);
            exit;

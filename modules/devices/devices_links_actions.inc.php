@@ -89,6 +89,12 @@ for ($i = 0; $i < $total; $i++) {
     }  elseif ($link_type=='thermostat_switch') {
         $set_value=0;
         $current_relay_status = gg($device1['LINKED_OBJECT'].'.relay_status');
+        $ncno = gg($device1['LINKED_OBJECT'].'.ncno');
+        if ($ncno == 'no' && $current_relay_status) {
+            $current_relay_status = 0;
+        } elseif ($ncno == 'no' && !$current_relay_status) {
+            $current_relay_status = 1;
+        }
         $current_target_status = gg($object.'.status');
         //echo "status: $current_relay_status / $current_target_status<Br/>";
         if (!$settings['invert_status'] && $current_relay_status) { // NC
