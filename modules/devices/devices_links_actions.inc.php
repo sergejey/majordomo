@@ -34,7 +34,7 @@ if ($this->isHomeBridgeAvailable()) {
         }
     }
     if (isset($payload['value'])) {
-        DebMes('HB sending to_set: '.json_encode($payload));
+        //DebMes('HB sending to_set: '.json_encode($payload));
         sg('HomeBridge.to_set',json_encode($payload));
     }
 

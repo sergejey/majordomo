@@ -51,6 +51,7 @@ $this->device_types=array(
         'DESCRIPTION'=>'Controllable device',
         'PROPERTIES'=>array(
             'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno'),
+            'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno'),            
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno'),
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
             'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.',power='.LANG_DEVICES_LOADTYPE_POWER),

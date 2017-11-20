@@ -156,7 +156,18 @@ function admin(&$out) {
         }
         sg('Serial',$serial);
     }
- $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial);
+
+    if (IsWindowsOS()) {
+        $os = 'Windows';
+    } else {
+        $os=trim(exec("uname -a"));
+        if (!$os) {
+            $os = 'Linux';
+        }
+    }
+    $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
+ $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
 
  global $err_msg;
  if ($err_msg) {

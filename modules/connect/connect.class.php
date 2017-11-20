@@ -138,24 +138,17 @@ function run() {
   $tar_name=$sv->dump($out);
   $sv->removeTree(ROOT.'saverestore/temp');
   $sv->removeTree(ROOT.'saverestore/temp');
-
-
   $dest_file=ROOT.'saverestore/'.$tar_name;
-
-
   if ($dest_file && file_exists($dest_file) && filesize($dest_file)>0) {
-
   if (function_exists('curl_file_create')) { // php 5.6+
    $cfile = curl_file_create($dest_file);
   } else { // 
    $cfile = '@' . realpath($dest_file);
   }
- 
   $fields = array(
      'backupfile' => $cfile, 
      'force_data' => '1'
   );
-
   $url='http://connect.smartliving.ru/upload/';
   $ch = curl_init();
 
@@ -201,6 +194,7 @@ function admin(&$out) {
  $out['CONNECT_BACKUP']=$this->config['CONNECT_BACKUP'];
 
  $out['SEND_MENU']=$this->config['SEND_MENU'];
+ $out['SEND_CLASSES']=$this->config['SEND_CLASSES'];
  $out['SEND_OBJECTS']=$this->config['SEND_OBJECTS'];
  $out['SEND_SCRIPTS']=$this->config['SEND_SCRIPTS'];
  $out['SEND_PATTERNS']=$this->config['SEND_PATTERNS'];
@@ -433,10 +427,12 @@ function admin(&$out) {
  function sendData(&$out, $silent=0) {
   global $send_menu;
   global $send_objects;
+  global $send_classes;
   global $send_scripts;
   global $send_patterns;
 
   $this->config['SEND_MENU']=(int)$send_menu;
+  $this->config['SEND_CLASSES']=(int)$send_classes;
   $this->config['SEND_OBJECTS']=(int)$send_objects;
   $this->config['SEND_SCRIPTS']=(int)$send_scripts;
   $this->config['SEND_PATTERNS']=(int)$send_patterns;
@@ -457,17 +453,31 @@ function admin(&$out) {
    }
   }
 
-  if ($this->config['SEND_OBJECTS']) {
-   // objects and classes
+  if ($this->config['SEND_CLASSES']) {
    $data['CLASSES']=SQLSelect("SELECT * FROM classes");
-   $data['OBJECTS']=SQLSelect("SELECT * FROM objects");
-   $data['METHODS']=SQLSelect("SELECT * FROM methods");
+   $data['METHODS']=SQLSelect("SELECT * FROM methods WHERE OBJECT_ID=0");
    $total=count($data['METHODS']);
    for($i=0;$i<$total;$i++) {
     unset($data['METHODS'][$i]['EXECUTED_PARAMS']);
     unset($data['METHODS'][$i]['EXECUTED']);
    }
-   $data['PROPERTIES']=SQLSelect("SELECT * FROM properties");
+   $data['PROPERTIES']=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID=0");
+
+   if ($this->config['SEND_OBJECTS']) {
+    // objects
+    $data['OBJECTS']=SQLSelect("SELECT * FROM objects");
+    $add_methods=SQLSelect("SELECT * FROM methods WHERE OBJECT_ID!=0");
+    foreach($add_methods as $m) {
+     unset($m['EXECUTED_PARAMS']);
+     unset($m['EXECUTED']);
+     $data['METHODS'][]=$m;
+    }
+    $add_properties=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID!=0");
+    foreach($add_properties as $p) {
+     $data['PROPERTIES'][]=$p;
+    }
+   }
+
   }
 
   if ($this->config['SEND_SCRIPTS']) {
