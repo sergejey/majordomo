@@ -3,8 +3,6 @@ majordomo
 
 Home automation platform.
 
-Structure: http://clip2net.com/clip/m1/1351782616-clip-37kb.png
+Web-site: [majordomohome.com](http://majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page) (international)
 
-Web-site: http://majordomohome.com/ (international)
-
-Web-site: http://smartliving.ru/ (russian)
+Web-site: [majordomo.smartliving.ru](http://majordomo.smartliving.ru/?utm_source=github&utm_medium=link&utm_campaign=main_page) (russian)
