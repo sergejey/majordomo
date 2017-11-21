@@ -94,6 +94,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    global $noPatternMode;
    global $ignoreVoice;
 
+    verbose_log("SAY (level: $level; member: $member; source: $source): ".$ph);
+
    $rec = array();
    $rec['MESSAGE']   = $ph;
    $rec['ADDED']     = date('Y-m-d H:i:s');
