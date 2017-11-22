@@ -65,8 +65,12 @@ if (IsSet($url) && $url!='') {
             print "--$boundary\n";
             sleep(1);
         }
-
-    } else {
+  } else if ($stream) {
+	   	Header('Accept-Ranges:bytes');
+		   Header('Connection:keep-alive');
+		   Header('Content-type: multipart/x-mixed-replace;boundary=ffserver');
+		   passthru(PATH_TO_FFMPEG.' -i "'.$url.'"'.$resize.' -qscale 2 -r 23 -b:v 2048k -crf 50 -f mpjpeg pipe:');
+	 } else {
      @unlink($img);
      $cmd=PATH_TO_FFMPEG.' -timelimit 5 -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
      system($cmd);
