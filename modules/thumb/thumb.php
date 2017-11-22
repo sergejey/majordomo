@@ -24,22 +24,6 @@ define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds
 
 //$img=urldecode($_REQUEST['img']);
 
-if (IsSet($url) && $url != '') {
-    $tmp_url = base64_decode($url);
-    if ($tmp_url == 'usb') {
-        $url = "";
-        $img_tmp = $img . '_tmp';
-        $resolution = '1280x720';
-        if ($w && $h) {
-            $resolution = $w.'x'.$h;
-        }
-        $cmd = 'fswebcam -r '.$resolution.' '.$img_tmp;
-        exec($cmd);
-        if (file_exists($img_tmp)) {
-            rename($img_tmp, $img);
-        }
-    }
-}
 
 if (IsSet($url) && $url!='') {
 
@@ -81,43 +65,21 @@ if (IsSet($url) && $url!='') {
             print "--$boundary\n";
             sleep(1);
         }
-
-    } else {
+  } else if ($stream) {
+	   	Header('Accept-Ranges:bytes');
+		   Header('Connection:keep-alive');
+		   Header('Content-type: multipart/x-mixed-replace;boundary=ffserver');
+		   passthru(PATH_TO_FFMPEG.' -i "'.$url.'"'.$resize.' -qscale 2 -r 23 -b:v 2048k -crf 50 -f mpjpeg pipe:');
+	 } else {
      @unlink($img);
      $cmd=PATH_TO_FFMPEG.' -timelimit 5 -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
-        //echo $cmd;exit;
      system($cmd);
     }
     $dc=1;
    } else {
 
-       function mjpeg_grab_frame($url) {
-           $f = fopen($url, 'r');
-           if($f) {
-               $r = null;
-               $lines = 0;
-               while(substr_count($r, "\xFF\xD8") != 2 && $lines<1000) {
-                   $r .= fread($f, 512);
-                   $lines++;
-               }
-               if ($lines>=1000) {
-                   return false;
-               }
-               $start = strpos($r, "\xFF\xD8");
-               $end = strpos($r, "\xFF\xD9", $start)+2;
-               $frame = substr($r, $start, $end-$start);
-               fclose($f);
-               return $frame;
-           }
-       }
-
-       $result=@mjpeg_grab_frame($url);
-
-       if (!$result) {
-           $result=getURL($url, 0, $username, $password);
-       }
-
-
+    //echo $url.' - '.$username.' - '.$password;exit;
+    $result=getURL($url, 0, $username, $password);
     if ($result) {
 
      if ($live) {
