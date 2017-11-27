@@ -295,6 +295,8 @@ jQuery.fn.center = function () {
 
         var loaderTimer;
         function loadInProgress() {
+            $('.sp-replacer').remove();
+            $('.sp-container').remove();
             $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
             return false;
         }

@@ -300,7 +300,7 @@ function usual(&$out) {
     $method_params=array();
     $method_params['VALUE']=$v;
     $method_params['EVENT']=$rec['TITLE'];
-    callMethoSafe($param_rec['LINKED_OBJECT'].'.'.$param_rec['LINKED_METHOD'],$method_params);
+    callMethodSafe($param_rec['LINKED_OBJECT'].'.'.$param_rec['LINKED_METHOD'],$method_params);
    }
   }
 

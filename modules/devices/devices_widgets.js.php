@@ -28,6 +28,19 @@ $.subscribe('wsData', function (_, response) {
     }
 });
 
+function refreshDevicesHTTP() {
+    var baseURL = "/ajax/devices.html?op=get_device&id=";
+    activeDevices.forEach(function(item, index) {
+        var url = baseURL + item;
+        $.ajax({
+            url: url
+        }).done(function(data) {
+            var obj=jQuery.parseJSON(data);
+            $('#device'+item).html(obj.HTML);
+        });
+    });
+}
+
 function refreshWSSubscription() {
     clearTimeout(devicesWidgetWSTimer);
     //console.log('refresh subscription');
@@ -44,6 +57,7 @@ function refreshWSSubscription() {
         //}
         devicesWidgetWSTimer=setTimeout('refreshWSSubscription();',10*60000);
     } else {
+        refreshDevicesHTTP();
         devicesWidgetWSTimer=setTimeout('refreshWSSubscription();',5000);
     }
 }

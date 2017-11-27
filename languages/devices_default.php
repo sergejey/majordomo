@@ -67,9 +67,13 @@ $dictionary = array(
     'DEVICES_SET_COLOR' => 'Set Color',
 
     'DEVICES_GROUP_ECO' => 'Turn it off in ECO mode',
+    'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
-    'DEVICES_NCNO' => 'Sensor type',
+    'DEVICES_NCNO' => 'Device/Sensor type',
+    'DEVICES_LOADTYPE' => 'Device type',
+    'DEVICES_LOADTYPE_LIGHT' => 'Light',
+    'DEVICES_LOADTYPE_POWER' => 'Other',
 
     'DEVICES_ADD_MENU' => 'Add device to Menu',
     'DEVICES_ADD_SCENE' => 'Add device to Scene',
@@ -101,6 +105,13 @@ $dictionary = array(
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW' => 'Below',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE' => 'Value',
 
+    'DEVICES_LINK_SENSOR_PASS' => 'Sensor data pass',
+    'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Pass sensor\'s value to another device',
+
+    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Thermostat device control',
+    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Control another device based on thermostat status',
+    'DEVICES_LINK_THERMOSTAT_INVERT' => 'Invert device\'s status',
+
 
     'DEVICES_UPDATE_CLASSSES' => 'Update classes',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Add automatically',
@@ -130,6 +141,16 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Snapshot',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Take Snapshot',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'History',
+
+    'DEVICES_THERMOSTAT' => 'Thermostat',
+    'DEVICES_THERMOSTAT_MODE' => 'Mode',
+    'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO mode',
+    'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Normal target temperature',
+    'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO target temperature',
+    'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Current temperature',
+    'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Current target temperature',
+    'DEVICES_THERMOSTAT_THRESHOLD' => 'Temperature threshold (0.25 by default)',
+    'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
 
     /* end module names */
 

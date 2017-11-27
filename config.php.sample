@@ -91,3 +91,5 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS
 //Define('PATH_TO_FFMPEG','avconv');
 //Define('DISABLE_PANEL_ACCELERATION', 1);
+//Define('VERBOSE_LOG',1); // STORE SYSTEM ACTIVITY IN VERBOSE LOG
+//Define('VERBOSE_LOG_IGNORE','.checkstate, ThisComputer.uptime'); // IGNORE SOME DATA

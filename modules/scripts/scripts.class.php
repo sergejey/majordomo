@@ -126,6 +126,9 @@ function run() {
    */
   function runScript($id, $params = '')
   {
+
+    verbose_log("Script [".$id."] (".is_array($params) ? json_encode($params):''.")");
+
     $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE LIKE '" . DBSafe($id) . "'");
     if ($rec['ID']) {
       $rec['EXECUTED'] = date('Y-m-d H:i:s');

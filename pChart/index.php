@@ -60,6 +60,10 @@ if ($_GET['px']) $px_per_point=(int)$_GET['px'];
 // Dataset definition   
 $DataSet = new pData;
 
+if (is_array($p)) {
+    $p=$p[0];
+}
+
 if ($p!='') {
         if (preg_match('/(.+)\.(.+)/is', $p, $m)) {
                 $obj=getObject($m[1]);
@@ -176,6 +180,9 @@ if ($total>0) {
            header('Location:'.str_replace('&subop=optimize', '', $_SERVER['REQUEST_URI']));
            exit;
           }
+
+                 echo "<table width=100%><tr><td width='99%'>";
+
           echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=">H</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=1h">1h</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=24h">24h</a> ';
@@ -183,12 +190,23 @@ if ($total>0) {
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=31d">31d</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a>';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
+                 echo "</td><td>";
+                 echo '<a href="javascript:window.close();">X</a>';
+                 echo "</td></tr></table>";
           echo '<br/>';
           if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
            if (file_exists(DIR_MODULES.'charts/charts.class.php')) {
-            $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+               if (!is_array($_GET['p'])) {
+                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+               } else {
+                   $p_url='';
+                   foreach($_GET['p'] as $p) {
+                       $p_url.='&properties[]='.urlencode($p);
+                   }
+                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].$p_url.'" width=100% height=300></iframe>';
+               }
            } else {
-            $code='<img src="/jpgraph/?p='.$_GET['p'].'&type='.$_GET['subop'].'&width=500&"/>';
+            $code='<img src="/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
            }
            echo $code."<br/>".htmlspecialchars($code);
            exit;

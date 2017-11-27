@@ -23,12 +23,18 @@ API example:
 <div id="recentEvents">...</div>
 
 [#if ITEMS#]
+<p>
+ <a href="?clear_notlinked=1" class="btn btn-default" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');">Remove not linked events</a>
+</p>
+
+
 <ul>
  [#begin ITEMS#]
  <li>
   [#if ID!=""#]
   <a href="?view_mode=edit_events&id=[#ID#]">[#TITLE#]</a> ([#ADDED#])
   [#if DESCRIPTION!=""#]<i>[#DESCRIPTION#]</i>[#endif#]
+  [#if OBJECTS!=""#]([#OBJECTS#])[#endif OBJECTS#]
 
   [#else#][#TITLE#][#endif#]
 

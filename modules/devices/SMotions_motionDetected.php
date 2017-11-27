@@ -1,12 +1,16 @@
 <?php
 
+$ot=$this->object_title;
+if (!isset($params['statusUpdated'])) {
+ setTimeout($ot.'_motion_timer_status', '', 3);
+}
+
  if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdated'])) {
   $this->setProperty('status', 0);
   return;
  }
 
  $motion_timeout=20; // seconds timeout
- $ot=$this->object_title;
  $nobodysHome=getGlobal('NobodyHomeMode.active');
 
  if (!isset($params['statusUpdated'])) {

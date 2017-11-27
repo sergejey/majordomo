@@ -139,7 +139,35 @@ function admin(&$out) {
  }
 
 
- $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE;
+ $serial = gg('Serial');
+    if (!$serial || $serial=='0') {
+        $serial = '';
+        if (IsWindowsOS()) {
+            $data = exec('vol c:');
+            if (preg_match('/[\w]+\-[\w]+/',$data,$m)) {
+                $serial=strtolower($m[0]);
+            }
+        } else {
+            $data=trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
+            $serial=ltrim($data,'0');
+        }
+        if (!$serial) {
+            $serial = uniqid('uniq');
+        }
+        sg('Serial',$serial);
+    }
+
+    if (IsWindowsOS()) {
+        $os = 'Windows';
+    } else {
+        $os=trim(exec("uname -a"));
+        if (!$os) {
+            $os = 'Linux';
+        }
+    }
+    $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
+ $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
 
  global $err_msg;
  if ($err_msg) {

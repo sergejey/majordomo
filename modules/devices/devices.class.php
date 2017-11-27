@@ -457,29 +457,59 @@ function usual(&$out) {
  }
 
     global $location_id;
-    if ($location_id) {
-        $devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID='".(int)$location_id."' ORDER BY TYPE, TITLE");
+    global $type;
+
+    if ($location_id || $type) {
+        $qry = 1;
+        if ($location_id) {
+            $qry.=" AND devices.LOCATION_ID=".(int)$location_id;
+            $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+            foreach($location as $k=>$v) {
+                $out['LOCATION_'.$k]=$v;
+            }
+            $out['TITLE']=$location['TITLE'];
+        }
+        if ($type) {
+            $qry.= " AND devices.TYPE LIKE '".DBSafe($type)."'";
+            $out['TITLE']=$this->device_types[$type]['TITLE'];
+            $out['TYPE']=$type;
+        }
+        $location_title='';
+        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE");
         $total = count($devices);
         for ($i = 0; $i < $total; $i++) {
+            if ($devices[$i]['LOCATION_TITLE']!=$location_title && !$out['LOCATION_TITLE']) {
+                $devices[$i]['NEW_LOCATION']=1;
+                $location_title=$devices[$i]['LOCATION_TITLE'];
+            }
             if ($devices[$i]['LINKED_OBJECT']) {
                 $processed=$this->processDevice($devices[$i]['ID']);
                 $devices[$i]['HTML']=$processed['HTML'];
             }
         }
         $out['DEVICES']=$devices;
-        $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
-        foreach($location as $k=>$v) {
-            $out['LOCATION_'.$k]=$v;
-        }
     }
 
-    $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+    $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
     $total = count($locations);
     for ($i = 0; $i < $total; $i++) {
         $devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
         $locations[$i]['DEVICES_TOTAL']=$devices_count;
     }
     $out['LOCATIONS']=$locations;
+
+    $types=array();
+    foreach($this->device_types as $k=>$v) {
+        if ($v['TITLE']) {
+            $type_rec=array('NAME'=>$k,'TITLE'=>$v['TITLE']);
+            $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices WHERE TYPE='".$k."'");
+            $type_rec['TOTAL']=(int)$tmp['TOTAL'];
+            if ($type_rec['TOTAL']>0) {
+                $types[]=$type_rec;
+            }
+        }
+    }
+    $out['TYPES']=$types;
 
 
 }
