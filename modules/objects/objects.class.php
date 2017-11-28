@@ -709,7 +709,7 @@ function usual(&$out) {
 */
  function setProperty($property, $value, $no_linked=0, $source='') {
 
-  if (!preg_match('/cycle/is',$property)) {
+  if (!preg_match('/cycle/is',$property) && function_exists('verbose_log')) {
    verbose_log('Property ['.$this->object_title.'.'.$property.'] set to \''.$value.'\'');
   }
   startMeasure('setProperty');
