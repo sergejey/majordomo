@@ -63,20 +63,26 @@ if (IsSet($url) && $url!='') {
      //passthru($cmd);
      //exit;
         $boundary = "my_mjpeg";
-        header("Cache-Control: no-cache");
-        header("Cache-Control: private");
-        header("Pragma: no-cache");
-        header("Content-type: multipart/x-mixed-replace; boundary=$boundary");
-        print "--$boundary\n";
-        set_time_limit(0);
-        @apache_setenv('no-gzip', 1);
-        @ini_set('zlib.output_compression', 0);
-        @ini_set('implicit_flush', 1);
+        if (!$_GET['debug']) {
+            header("Cache-Control: no-cache");
+            header("Cache-Control: private");
+            header("Pragma: no-cache");
+            header("Content-type: multipart/x-mixed-replace; boundary=$boundary");
+            print "--$boundary\n";
+            set_time_limit(0);
+            @apache_setenv('no-gzip', 1);
+            @ini_set('zlib.output_compression', 0);
+            @ini_set('implicit_flush', 1);
+        }
         for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
         ob_implicit_flush(1);
         while (true) {
             print "Content-type: image/jpeg\n\n";
-            system(PATH_TO_FFMPEG.' -timelimit 5 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img);
+            $cmd = PATH_TO_FFMPEG.' -timelimit 5 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
+            if ($_GET['debug']) {
+                echo $cmd;exit;
+            }
+            system($cmd);
             print LoadFile($img);
             print "--$boundary\n";
             sleep(1);
@@ -85,7 +91,9 @@ if (IsSet($url) && $url!='') {
     } else {
      @unlink($img);
      $cmd=PATH_TO_FFMPEG.' -timelimit 5 -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
-        //echo $cmd;exit;
+        if ($_GET['debug']) {
+            echo $cmd;exit;
+        }
      system($cmd);
     }
     $dc=1;

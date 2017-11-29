@@ -1,6 +1,8 @@
 <?php
 // thanks to https://github.com/cflurin/homebridge-mqtt
 
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+
 $qry="1";
 
 if ($device_id) {

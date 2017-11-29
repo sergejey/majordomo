@@ -262,6 +262,9 @@ function getWatchedProperties($device_id=0) {
 }
     
 function renderStructure() {
+
+  if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+
   foreach($this->device_types as $k=>$v) {
       //$v['CLASS']
       //$v['PARENT_CLASS']
