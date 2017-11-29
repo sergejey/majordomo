@@ -1352,7 +1352,6 @@ class saverestore extends module
             }
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
-            setGlobal('UpdateVersion', $this->config['LATEST_UPDATED_ID']);
             $this->saveConfig();
 
             if ($iframe) {
