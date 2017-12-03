@@ -655,7 +655,7 @@ function getHistory($varname, $start_time, $stop_time = 0) {
     }
 
   // Get data
-  return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+  return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."') ORDER BY ADDED");
 }
 
 /**

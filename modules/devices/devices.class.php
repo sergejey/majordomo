@@ -339,6 +339,15 @@ function renderStructure() {
       }
   }
   subscribeToEvent('devices', 'COMMAND', '', 100);
+
+  //update cameras
+    $objects = getObjectsByClass('SCameras');
+    $total = count($objects);
+    for ($i = 0; $i < $total; $i++) {
+        $ot = $objects[$i]['TITLE'];
+        callMethod($ot.'.updatePreview');
+    }
+
 }
 
 function processSubscription($event, &$details) {

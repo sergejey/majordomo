@@ -58,12 +58,18 @@ if (IsSet($url) && $url!='') {
    }
 
    if (preg_match('/^rtsp:/is', $url)) {
-    if ($live) {
+    //-rtsp_transport tcp // -rtsp_transport tcp 
+    $stream_options = '-timelimit 15 -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1';
+    if ($_GET['debug']) {
+        $stream_options = '-v verbose '.$stream_options;
+    }
+    $cmd = PATH_TO_FFMPEG.' '.$stream_options.' '.$img;
+
+    if ($live && !$_GET['debug']) {
      //$cmd=PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'" -r 10 -q:v 9 -f mjpeg pipe:1';// /dev/stdout 2>/dev/null
      //passthru($cmd);
      //exit;
         $boundary = "my_mjpeg";
-        if (!$_GET['debug']) {
             header("Cache-Control: no-cache");
             header("Cache-Control: private");
             header("Pragma: no-cache");
@@ -73,15 +79,11 @@ if (IsSet($url) && $url!='') {
             @apache_setenv('no-gzip', 1);
             @ini_set('zlib.output_compression', 0);
             @ini_set('implicit_flush', 1);
-        }
+
         for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
         ob_implicit_flush(1);
         while (true) {
             print "Content-type: image/jpeg\n\n";
-            $cmd = PATH_TO_FFMPEG.' -timelimit 5 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
-            if ($_GET['debug']) {
-                echo $cmd;exit;
-            }
             system($cmd);
             print LoadFile($img);
             print "--$boundary\n";
@@ -90,11 +92,15 @@ if (IsSet($url) && $url!='') {
 
     } else {
      @unlink($img);
-     $cmd=PATH_TO_FFMPEG.' -timelimit 5 -v 0 -rtsp_transport tcp -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1 '.$img;
+     $output=array();
+     $res = exec($cmd.' 2>&1',$output);
+
         if ($_GET['debug']) {
-            echo $cmd;exit;
+            echo $cmd;
+            echo "<hr><pre>".implode("\n",$output)."</pre>";
+            exit;
         }
-     system($cmd);
+
     }
     $dc=1;
    } else {
