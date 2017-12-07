@@ -94,6 +94,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    global $noPatternMode;
    global $ignoreVoice;
 
+    verbose_log("SAY (level: $level; member: $member; source: $source): ".$ph);
+
    $rec = array();
    $rec['MESSAGE']   = $ph;
    $rec['ADDED']     = date('Y-m-d H:i:s');
@@ -155,6 +157,41 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     sayTo($ph, $level, $terminals[$i]['NAME']);
    }
 
+}
+
+function ask($prompt, $target = '') {
+    processSubscriptions('ASK', array('prompt' => $prompt, 'target' => $target));
+
+    $service_port='7999';
+    $in='ask:'.$prompt;
+
+    if (preg_match('/^[\d\.]+$/',$target)) {
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if ($socket) {
+            $result = socket_connect($socket, $target, $service_port);
+            if ($result) {
+                socket_write($socket, $in, strlen($in));
+            }
+        }
+        socket_close($socket);
+    } else {
+        $qry=1;
+        $qry.=" AND MAJORDROID_API=1";
+        $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE $qry");
+        $total = count($terminals);
+        for ($i = 0; $i < $total; $i++) {
+            $address = $terminals[$i]['HOST'];
+            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            if ($socket) {
+                $result = socket_connect($socket, $address, $service_port);
+                if ($result) {
+                    socket_write($socket, $in, strlen($in));
+                }
+            }
+            socket_close($socket);
+        }
+    }
 }
 
 /**
@@ -434,16 +471,16 @@ function runScheduledJobs()
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
       
       SQLUpdate('jobs', $jobs[$i]);
-      $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-      $result = trim(getURL($url, 0));
 
-      $result = preg_replace('/<!--.+-->/is', '', $result);
-
-      if (!preg_match('/OK$/', $result))
-      {
-         //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-         DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) .' ('.__FILE__.')');
-      }
+       if ($jobs[$i]['COMMANDS'] != '') {
+           $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+           $result = trim(getURL($url, 0));
+           $result = preg_replace('/<!--.+-->/is', '', $result);
+           if (!preg_match('/OK$/', $result)) {
+               //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+               DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
+           }
+       }
    }
 }
 
@@ -743,7 +780,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
          curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
+         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
@@ -1100,6 +1137,51 @@ function binaryToString($buf)
    }
 
    return $res;
+}
+
+function verbose_log($data) {
+    if (defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+        if (defined('VERBOSE_LOG_IGNORE') && VERBOSE_LOG_IGNORE!='') {
+            $tmp=explode(',', VERBOSE_LOG_IGNORE);
+            $total=count($tmp);
+            for($i=0;$i<$total;$i++) {
+                $regex=trim($tmp[$i]);
+                if (preg_match('/'.$regex.'/is', $data)) {
+                    return;
+                }
+            }
+        }
+        global $verbose_thread_id;
+        global $argv;
+        if (!isset($verbose_thread_id)) {
+            $verbose_thread_id = date('H:i:s').'_'.rand(1000,9999);
+            $cmd = '';
+            if ($_SERVER['REQUEST_URI']!='') {
+                $cmd = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
+            } elseif ($argv[0]!='') {
+                $cmd = implode(' ',$argv);
+                $verbose_thread_id.='_'.basename($argv[0]);
+            }
+            DebMes('th_'.$verbose_thread_id.' start '.$cmd,'verbose');
+        }
+        $bt = debug_backtrace();
+        $total_bt = count($bt);
+        $max_bt = 5;
+        //$bt = array_reverse($bt);
+        $bt = array_slice($bt,1,$max_bt);
+        $total = count($bt);
+        if ($total>0) {
+            $res_trace=array();
+            for($i=0;$i<$total;$i++) {
+                $res_trace[]=$bt[$i]['function'];
+            }
+            if ($total_bt>($max_bt+1)) {
+                $res_trace[]='...';
+            }
+            $data = $data . ' ('.implode('<',$res_trace).')';
+        }
+     DebMes('th_'.$verbose_thread_id.' '.$data,'verbose');
+    }    
 }
 
 /**

@@ -168,7 +168,7 @@ foreach ($cycles as $path)
       }
 
 
-      DebMes("Starting " . $path . " ... ");
+      DebMes("Starting " . $path . " ... ",'threads');
       echo "Starting " . $path . " ... \n";
 
       if ((preg_match("/_X/", $path)))
@@ -220,19 +220,17 @@ $last_restart=array();
 $last_cycles_control_check=time();
 
 $auto_restarts=array();
+$to_start=array();
+$to_stop=array();
+
 
 while (false !== ($result = $threads->iteration()))
 {
 
-   $already_started = array();
    if ((time()-$last_cycles_control_check)>=5) {
       $last_cycles_control_check=time();
 
-      $to_start=array();
-      $to_stop=array();
-      $to_restart=array();
       $auto_restarts=array();
-
       $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
       $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
       $total = count($cycles);
@@ -252,52 +250,56 @@ while (false !== ($result = $threads->iteration()))
             $auto_restarts[]=$title;
          }
          if ($control!='') {
+            DebMes("Got control command '$control' for ".$title,'threads');
             if ($control=='stop') {
-               $to_stop[]=$title;
+               $to_stop[$title]=time();
             } elseif ($control=='start') {
-               $to_start[]=$title;
+               $to_start[$title]=time();
             } elseif ($control=='restart') {
-               $to_stop[]=$title;
-               $to_start[]=$title;
+               $to_stop[$title]=time();
+               $to_start[$title]=time()+5;
             }
             setGlobal($title.'Control','');
          }
 
       }
 
-      $some_closed=0;
-      $is_running=array();
-      foreach($threads->commandLines as $id=>$cmd) {
-         if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
-            $title=$m[1];
-            if (in_array($title,$to_stop) || in_array($title,$to_restart)) {
-               DebMes("Closing service ".$title." (id: $id)");
-               $threads->closeThread($id);
-               $some_closed=1;
-            } else {
-               $is_running[]=$title;
-            }
+   }
+
+   $is_running=array();
+   foreach($threads->commandLines as $id=>$cmd) {
+      if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
+         $title=$m[1];
+         $is_running[$title]=$id;
+      }
+   }
+
+   foreach($to_stop as $title=>$tm) {
+      if ($tm<=time()) {
+         if (isset($is_running[$title])) {
+            $id =$is_running[$title];
+            DebMes("Closing service ".$title." (id: ".$id.")",'threads');
+            $threads->closeThread($id);
          }
+         unset($to_stop[$title]);
       }
+   }
 
-      if ($some_closed) {
-         sleep(3);
-      }
-
-      foreach($to_start as $title) {
-         if (!in_array($title,$is_running)) {
+   foreach($to_start as $title=>$tm) {
+      if ($tm<=time()) {
+         if (!isset($is_running[$title])) {
             $cmd='./scripts/'.$title.'.php';
-            DebMes("Starting service ".$title.' ('.$cmd.')');
+            DebMes("Starting service ".$title.' ('.$cmd.')','threads');
             $pipe_id = $threads->newThread($cmd);
+            $is_running[$title]=$pipe_id;
          }
-         $already_started[] = $title;
+         unset($to_stop[$title]);
+         unset($to_start[$title]);
       }
-
    }
 
    if (!empty($result))
    {
-      //echo "Res: " . $result . PHP_EOL . "---------------------" . PHP_EOL;
       $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
       if (preg_match_all($closePattern, $result, $matches) && !file_exists('./reboot'))
       {
@@ -305,32 +307,30 @@ while (false !== ($result = $threads->iteration()))
          for ($im = 0; $im < $total_m; $im++)
          {
             $closed_thread = $matches[1][$im];
+            $cycle_title = '';
             $need_restart=0;
             if (preg_match('/(cycle_.+?)\.php/is',$closed_thread,$m)) {
-               $title=$m[1];
-               if (in_array($title,$already_started)) {
-                  continue;
-               }
-               setGlobal($title.'Run','');
-               if (in_array($title,$auto_restarts)) {
+               $cycle_title=$m[1];
+               DebMes("Thread closed: " . $cycle_title,'threads');
+               unset($to_stop[$cycle_title]);
+               setGlobal($cycle_title.'Run','');
+               if (in_array($cycle_title,$auto_restarts)) {
                   $need_restart=1;
                }
             }
             foreach ($restart_threads as $item)
             {
-               if (preg_match('/' . $item . '/is', $closed_thread) && (!$last_restart[$closed_thread] || (time()-$last_restart[$closed_thread])>30))
-               {
-                  //restart
+               if (preg_match('/' . $item . '/is', $closed_thread)) {
                   $need_restart=1;
-                  $last_restart[$closed_thread]=time();
                }
             }
-            if ($need_restart) {
-               DebMes("AUTO-RECOVERY: " . $closed_thread);
+            if ($need_restart && $cycle_title) {
+               DebMes("AUTO-RECOVERY: " . $closed_thread,'threads');
                if (!preg_match('/websockets/is', $closed_thread)) {
-                  registerError('cycle_stop', $closed_thread);
+                  registerError('cycle_stop', $closed_thread."\n".$result);
                }
-               $pipe_id = $threads->newThread($closed_thread);
+               $to_start[$cycle_title]=time()+5;
+               //$pipe_id = $threads->newThread($closed_thread);
             }
          }
       }

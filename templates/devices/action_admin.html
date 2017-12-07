@@ -15,9 +15,6 @@
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
      </li>
      [#if LINKED_OBJECT!=""#]
-     <li[#if TAB="interface"#] class="active"[#endif#]>
-     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
-     </li>
      <li[#if TAB="settings"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=settings"><#LANG_SECTION_SETTINGS#></a>
      </li>
@@ -26,6 +23,9 @@
      </li>
      <li[#if TAB="logic"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=logic"><#LANG_DEVICES_LOGIC_ACTION#></a>
+     </li>
+     <li[#if TAB="interface"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
      </li>
      <li[#if TAB="preview"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#></a>

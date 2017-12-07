@@ -1,5 +1,7 @@
 <?php
 
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+
 /*
  * array('level' => $level, 'message' => $ph, 'member_id' => $member_id)
  * $details['BREAK'] = 1 / 0

@@ -431,8 +431,11 @@ function admin(&$out) {
      if (!$file || $file=='xray') {
       $file=date('Y-m-d').'.log';
      }
-
      $filename=ROOT.'debmes/'.$file;
+     if (!file_exists($filename)) {
+      $file = date('Y-m-d').'_'.$file.'.log';
+      $filename=ROOT.'debmes/'.$file;
+     }
      $data=LoadFile($filename);
      $lines=explode("\n", $data);
      //$lines=array_reverse($lines);

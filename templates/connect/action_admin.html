@@ -86,11 +86,19 @@ Please select items to be sent:
  </div>
 </div>
 
+ <div class="form-group">
+  <div class="controls">
+   <label>
+    <input type="checkbox" name="send_classes" value="1"[#if SEND_CLASSES="1"#] checked[#endif#]>
+    Classes</label>
+  </div>
+ </div>
+
 <div class="form-group">
  <div class="controls">
  <label>
  <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]> 
- Classes and Objects</label>
+ <#LANG_OBJECTS#></label>
  </div>
 </div>
 
