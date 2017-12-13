@@ -308,6 +308,17 @@ function usual(&$out) {
 
  }
 
+    function propertySetHandle($object, $property, $value)
+    {
+        $scripts = SQLSelect("SELECT ID FROM scripts WHERE LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
+        $total = count($scripts);
+        if ($total) {
+            for ($i = 0; $i < $total; $i++) {
+                $this->runScript($scripts[$i]['ID'],array('VALUE'=>$value));
+            }
+        }
+    }
+
 
  function delete_categories($id) {
   $rec=SQLSelectOne("SELECT * FROM script_categories WHERE ID='$id'");
@@ -360,6 +371,8 @@ scripts - Scripts
  scripts: RUN_PERIODICALLY int(3) unsigned NOT NULL DEFAULT 0
  scripts: RUN_DAYS char(30) NOT NULL DEFAULT ''
  scripts: RUN_TIME char(30) NOT NULL DEFAULT ''
+ scripts: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ scripts: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 
  script_categories: ID int(10) unsigned NOT NULL auto_increment
  script_categories: TITLE varchar(255) NOT NULL DEFAULT ''

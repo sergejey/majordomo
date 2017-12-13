@@ -16,11 +16,12 @@
   <td>[#LINKED_OBJECT#].[#LINKED_METHOD#]</td>
   <td>
   [#if PUBLIC_KEY!=""#]
+  Action URL (with confirmation): <a href="http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&confirm=1" target=_blank>http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&confirm=1</a><br/>
   Action URL: <a href="http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&" target=_blank>http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&</a><br/>
   Action Image URL: http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&img=1&<br/>
   Value text URL: http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&text=1&<br/>
   Value image URL: http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&img=value&<br/>
-   <img src="http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&img=value&">
+   &lt;img src="http://connect.smartliving.ru/public.php?key=[#PUBLIC_KEY#]&img=value&"&gt;
   [#else#]n/a[#endif#]</td>
   <td valign="top"><a href="?tab=<#TAB#>&view_mode=edit_calls&id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a>
   <a href="?tab=<#TAB#>&view_mode=delete_calls&id=[#ID#]" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>

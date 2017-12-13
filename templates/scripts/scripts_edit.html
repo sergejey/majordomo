@@ -97,6 +97,15 @@
  </div>
 </div>
 
+[#if LINKED_OBJECT!="" && LINKED_PROPERTY!=""#]
+    <div class="form-group ">
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#></label>
+        <div class="col-lg-5">
+         [#LINKED_OBJECT#].[#LINKED_PROPERTY#]
+        </div>
+    </div>
+[#endif#]
+
 <div class="form-group ">
  <div class="col-lg-5 col-lg-offset-2">
 
