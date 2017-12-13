@@ -8,6 +8,7 @@ $this->device_types=array(
             'temperature'=>array('DESCRIPTION'=>'Temperature','KEEP_HISTORY'=>365),
             'humidity'=>array('DESCRIPTION'=>'Humidity','KEEP_HISTORY'=>365),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
+            'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),
         'METHODS'=>array(
             'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
@@ -38,6 +39,8 @@ $this->device_types=array(
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
                 'NightMode.activate'=>'nightmode_activate',
                 'NightMode.deactivate'=>'nightmode_deactivate',
+                'DarknessMode.activate'=>'darknessmode_activate',
+                'DarknessMode.deactivate'=>'darknessmode_deactivate',
                 'System.checkstate'=>'system_checkstate',
             ),
         )
@@ -48,7 +51,10 @@ $this->device_types=array(
         'DESCRIPTION'=>'Controllable device',
         'PROPERTIES'=>array(
             'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno'),
+            'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno'),            
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno'),
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
+            'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.',power='.LANG_DEVICES_LOADTYPE_POWER),
         ),
         'METHODS'=>array(
             'turnOn'=>array('DESCRIPTION'=>'turnOn'),
@@ -60,6 +66,26 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_RELAY,
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SRelays'
+    ),
+    'thermostat'=>array(
+        'TITLE'=>LANG_DEVICES_THERMOSTAT,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SThermostats',
+        'PROPERTIES'=>array(
+            'relay_status'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_RELAY_STATUS,'KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1),
+            'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+            'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+            'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
+            'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
+        ),
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
+            'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
+            'tempDown'=>array('DESCRIPTION'=>'Descrease target temperature'),
+        )
     ),
     'dimmer'=>array(
         'TITLE'=>LANG_DEVICES_DIMMER,

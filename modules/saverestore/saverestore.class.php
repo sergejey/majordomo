@@ -333,8 +333,8 @@ class saverestore extends module
             $out['DATA'] = $data;
             global $code;
             $out['CODE'] = $code;
-            global $files;
-            $out['FILES'] = $files;
+            global $save_files;
+            $out['SAVE_FILES'] = $save_files;
             global $design;
             $out['DESIGN'] = $design;
 
@@ -1352,7 +1352,6 @@ class saverestore extends module
             }
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
-            setGlobal('UpdateVersion', $this->config['LATEST_UPDATED_ID']);
             $this->saveConfig();
 
             if ($iframe) {
@@ -1449,26 +1448,27 @@ class saverestore extends module
             // DATA
             global $data;
             if ($data) {
-
                 if ($iframe) {
                     $this->echonow("Saving data ... ");
                 }
-
                 $tar_name .= 'data_';
-                $this->copyTree(ROOT . 'cms', ROOT . 'saverestore/temp/cms');
                 $this->backupdatabase(ROOT . 'saverestore/temp/dump.sql');
-
                 if ($iframe) {
                     $this->echonow(" OK<br/>", 'green');
                 }
-
-
             }
 
             // FILES
-            global $files;
-            if ($files) {
+            global $save_files;
+            if ($save_files) {
+                if ($iframe) {
+                    $this->echonow("Saving files ... ");
+                }
                 $tar_name .= 'files_';
+                $this->copyTree(ROOT . 'cms', ROOT . 'saverestore/temp/cms');
+                if ($iframe) {
+                    $this->echonow(" OK<br/>", 'green');
+                }
             }
 
 
@@ -1550,7 +1550,8 @@ class saverestore extends module
         else
             $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
 
-        exec($pathToMysqlDump . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases " . DB_NAME . ">" . $filename);
+        $cmd = $pathToMysqlDump . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
+        exec($cmd);
     }
 
     /**

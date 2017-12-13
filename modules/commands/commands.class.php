@@ -220,6 +220,7 @@ function admin(&$out) {
       $item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
      }
+     /*
      if (($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) && (!$dynamic_item)) {
       $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
       $tmp['RENDER_TITLE']=$item['TITLE'];
@@ -227,6 +228,7 @@ function admin(&$out) {
       $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
       SQLUpdate('commands', $tmp);
      }
+     */
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
@@ -299,7 +301,7 @@ function admin(&$out) {
      $item['TITLE']=processTitle($item['TITLE'], $this);
      $res['DATA']=$item['TITLE'];
     }
-
+    /*
     if (($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) && !$dynamic_item) {
      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
      $tmp['RENDER_TITLE']=$item['TITLE'];
@@ -307,6 +309,7 @@ function admin(&$out) {
      $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('commands', $tmp);
     }
+    */
     echo json_encode($res);
    }
    endMeasure('getLabel '.$item['TITLE'], 1);
@@ -818,6 +821,7 @@ function usual(&$out) {
 
 
 
+    /*
     if (($res[$i]['RENDER_TITLE']!=$res[$i]['TITLE'] || $res[$i]['RENDER_DATA']!=$res[$i]['DATA']) && !$dynamic_item) {
      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$res[$i]['ID']."'");
      $tmp['RENDER_TITLE']=$res[$i]['TITLE'];
@@ -825,6 +829,7 @@ function usual(&$out) {
      $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
      SQLUpdate('commands', $tmp);
     }
+    */
 
 
    }

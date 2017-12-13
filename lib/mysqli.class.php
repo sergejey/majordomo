@@ -174,13 +174,7 @@ class mysql
       
       if (!$result)
       {
-
-      //$e = new Exception;
-      //var_dump($e->getTraceAsString());
-
-
          $this->Error($query);
-         
          return 0;
       }
       
@@ -210,7 +204,7 @@ class mysql
       }
       else
       {
-         $this->Error($query);
+         $this->Error($query,0);
       }
 
       return $res;
@@ -389,7 +383,7 @@ class mysql
     * @access private
     * @return int
     */
-   public function Error($query = "", $stop = 1)
+   public function Error($query = "", $stop = 0)
    {
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
