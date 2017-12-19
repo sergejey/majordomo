@@ -150,6 +150,9 @@ function update_menu_data($element_id = 0) {
         $new_render_data='';
         if ($commands[$i]['DATA']!='') {
             $new_render_data=processTitle($commands[$i]['DATA'], $connect);
+            if (strlen($new_render_data)>50*1024) {
+                $new_render_data = substr($new_render_data,0,50*1024);
+            }
             $commands[$i]['RENDER_DATA'] = $new_render_data;
         }
         if ($new_render_title!=$old_render_title || $new_render_data!=$old_render_data) {

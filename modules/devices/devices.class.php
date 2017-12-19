@@ -262,6 +262,9 @@ function getWatchedProperties($device_id=0) {
 }
     
 function renderStructure() {
+
+  if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+
   foreach($this->device_types as $k=>$v) {
       //$v['CLASS']
       //$v['PARENT_CLASS']
@@ -336,6 +339,15 @@ function renderStructure() {
       }
   }
   subscribeToEvent('devices', 'COMMAND', '', 100);
+
+  //update cameras
+    $objects = getObjectsByClass('SCameras');
+    $total = count($objects);
+    for ($i = 0; $i < $total; $i++) {
+        $ot = $objects[$i]['TITLE'];
+        callMethod($ot.'.updatePreview');
+    }
+
 }
 
 function processSubscription($event, &$details) {
