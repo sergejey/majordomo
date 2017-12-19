@@ -62,6 +62,21 @@ if (!isset($request[0])) {
         $location['object']=getRoomObjectByLocation($v['ID'],1);
         $result['rooms'][]=$location;
     }
+} elseif (strtolower($request[0]) == 'module') {
+    $module_name = $request[1];
+    $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
+    if (file_exists($module_file)) {
+        include_once($module_file);
+        $module = new $module_name;
+        if (method_exists($module,'api')) {
+            $params = $request;
+            array_shift($params);
+            array_shift($params);
+            $module->api($params);
+            $db->Disconnect();
+            exit;
+        }
+    }
 } elseif (strtolower($request[0]) == 'events' && isset($request[1])) {
     array_shift($request);
     $event_name=implode('/',$request);
