@@ -168,7 +168,6 @@ class saverestore extends module
                     if ($total > 5) {
                         $total = 5;
                     }
-                    //print_r($items);exit;
                     for ($i = 0; $i < $total; $i++) {
                         $itm = array();
                         $itm['ID'] = trim($items[$i]['id']['textvalue']);
@@ -183,6 +182,14 @@ class saverestore extends module
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
                     if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $this->config['LATEST_UPDATED_ID']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
+                    }
+                    if ($this->ajax && $_GET['op']=='check_updates') {
+                        if (!$out['NO_NEED_TO_UPDATE']) {
+                            echo "1";
+                        } else {
+                            echo "0";
+                        }
+                        exit;
                     }
                     //print_r($out['UPDATES']);
                     //exit;

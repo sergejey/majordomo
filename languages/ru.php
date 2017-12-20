@@ -1049,6 +1049,11 @@ $dictionary = array(
 
     'TEST' => 'test',
 
+    'MODULES_UPDATES_AVAILABLE'=>'Доступны обнволения модулей',
+    'SYSTEM_UPDATES_AVAILABLE'=>'Доступны обновления системы',
+    'ERRORS_SAVED'=>'Сохранены ошибки',
+
+
     /* end module names */
 
 

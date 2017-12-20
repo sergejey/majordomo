@@ -1052,6 +1052,11 @@ $dictionary=array(
     'DATA_TYPE_IMAGE' => 'Image',
     'CLASS_TEMPLATE' => 'Template',
 
+    'MODULES_UPDATES_AVAILABLE'=>'Modules updates available',
+    'SYSTEM_UPDATES_AVAILABLE'=>'System updates available',
+    'ERRORS_SAVED'=>'Errors saved',
+
+
 'TEST'=>'test'
 
 
