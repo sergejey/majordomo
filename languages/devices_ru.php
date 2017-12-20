@@ -140,6 +140,13 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Снимок',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Сохранить снимок',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'История',
+    'DEVICES_CAMERA_STREAM_TRANSPORT' =>'Транспорт потока',
+    'DEVICES_CAMERA_PREVIEW_TYPE' =>'Предпросмотр',
+    'DEVICES_CAMERA_PREVIEW_TYPE_STATIC' =>'Статический снимок',
+    'DEVICES_CAMERA_PREVIEW_TYPE_SLIDESHOW' =>'Слайд-шоу',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK' =>'Действие по нажатию на изображение',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE' =>'Увеличить изображеие',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL' =>'Перейти на поток',
 
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',

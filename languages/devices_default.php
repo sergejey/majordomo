@@ -141,6 +141,13 @@ $dictionary = array(
     'DEVICES_CAMERA_SNAPSHOT' =>'Snapshot',
     'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Take Snapshot',
     'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'History',
+    'DEVICES_CAMERA_STREAM_TRANSPORT' =>'Stream transport',
+    'DEVICES_CAMERA_PREVIEW_TYPE' =>'Preview image',
+    'DEVICES_CAMERA_PREVIEW_TYPE_STATIC' =>'Static',
+    'DEVICES_CAMERA_PREVIEW_TYPE_SLIDESHOW' =>'Slideshow',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK' =>'OnClick action',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE' =>'Enlarge image',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL' =>'Go to stream',
 
     'DEVICES_THERMOSTAT' => 'Thermostat',
     'DEVICES_THERMOSTAT_MODE' => 'Mode',
