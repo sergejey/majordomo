@@ -1215,7 +1215,7 @@ $dictionary=array(
     'DEVICES_ALL_BY_TYPE' => 'List all by types',
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
 
-
+    'AUTO_LINK' => 'Execute script automatically',
 
 'TEST'=>'test'
 

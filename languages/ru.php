@@ -1209,6 +1209,7 @@ $dictionary = array(
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
 
+    'AUTO_LINK' => 'Автоматический запуск сценария',
 
     /* end module names */
 

@@ -8,6 +8,9 @@ if ($this->owner->name == 'panel') {
 $table_name = 'scripts';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 if ($this->mode == 'update') {
+
+    //print_r($_REQUEST);exit;
+
     $ok = 1;
     //updating 'TITLE' (varchar)
     global $title;
@@ -34,6 +37,7 @@ if ($this->mode == 'update') {
 
     //echo $code;exit;
 
+    $old_code=$rec['CODE'];
     $rec['CODE'] = $code;
 
     if ($rec['CODE'] != '') {
@@ -63,6 +67,8 @@ if ($this->mode == 'update') {
     //$rec['EXECUTED']='0000-00-00 00:00:00';
     unset($rec['EXECUTED']);
 
+    global $auto_link;
+    $rec['AUTO_LINK']=(int)$auto_link;
 
     //UPDATING RECORD
     if ($ok) {
@@ -84,6 +90,19 @@ if ($this->mode == 'update') {
                 $linked_object='ClockChime';
                 $linked_property='time';
             }
+        }
+
+        if ($linked_object!='' && $linked_property!='') {
+            $rec['AUTO_LINK_AVAILABLE']=1;
+            if (!$old_code) {
+                $rec['AUTO_LINK']=1;
+            }
+        } else {
+            $rec['AUTO_LINK_AVAILABLE']=0;
+        }
+        if (!$rec['AUTO_LINK']) {
+            $linked_object='';
+            $linked_property='';
         }
 
         $rec['LINKED_OBJECT'] = $linked_object;
