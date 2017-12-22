@@ -515,6 +515,16 @@ function usual(&$out) {
                     $devices[$i]['NEW_TYPE']=1;
                 }
             }
+        }
+    } else {
+        $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+        $qry=" devices.FAVORITE=1";
+        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
+    }
+
+    if ($devices[0]['ID']) {
+        $total = count($devices);
+        for($i=0;$i<$total;$i++) {
             if ($devices[$i]['LINKED_OBJECT']) {
                 $processed=$this->processDevice($devices[$i]['ID']);
                 $devices[$i]['HTML']=$processed['HTML'];
@@ -1015,6 +1025,7 @@ devices -
  devices: TYPE varchar(100) NOT NULL DEFAULT ''
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  
+ devices: FAVORITE int(3) unsigned NOT NULL DEFAULT 0 
 
  devices: SYSTEM varchar(255) NOT NULL DEFAULT ''
  devices: SUBTYPE varchar(100) NOT NULL DEFAULT ''

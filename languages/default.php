@@ -1216,6 +1216,7 @@ $dictionary=array(
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
 
     'AUTO_LINK' => 'Execute script automatically',
+    'FAVORITE_DEVICE' => 'Favorite device',
 
 'TEST'=>'test'
 

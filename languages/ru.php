@@ -1210,6 +1210,7 @@ $dictionary = array(
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
 
     'AUTO_LINK' => 'Автоматический запуск сценария',
+    'FAVORITE_DEVICE' => 'В списке быстрого доступа',
 
     /* end module names */
 
