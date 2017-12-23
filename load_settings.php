@@ -18,17 +18,23 @@ if (IsSet($_GET['disable_websockets'])) {
 for ($i = 0; $i < $total; $i ++)
    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 
+if (!defined('SETTINGS_SITE_LANGUAGE')) {
+    Define('SETTINGS_SITE_LANGUAGE','en');
+}
+
 // language selection by settings
-if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php'))
-   include_once (ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
+if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php')) {
+    include_once (ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
+}
 
 include_once (ROOT . 'languages/default.php');
 
-if (defined('SETTINGS_SITE_TIMEZONE'))
-{
-   ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
-   date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
+if (!defined('SETTINGS_SITE_TIMEZONE')) {
+    Define('SETTINGS_SITE_TIMEZONE','Europe/Minsk');
 }
+
+ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
+date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 
 function timezone_offset_string( $offset )
 {
@@ -39,7 +45,12 @@ $offset_text=timezone_offset_string( $offset );
 SQLExec("SET time_zone = '".$offset_text."';");
 
 
-if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') && defined('WAIT_FOR_MAIN_CYCLE') && WAIT_FOR_MAIN_CYCLE==1 && !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI'])) {
+if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') &&
+    defined('WAIT_FOR_MAIN_CYCLE') &&
+    WAIT_FOR_MAIN_CYCLE==1 &&
+    !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI']) &&
+    !defined('NO_DATABASE_CONNECTION'))
+{
  $maincycleUpdate=getGlobal('cycle_mainRun');
  if ((time()-$maincycleUpdate)>60) { //main cycle is offline
   echo "Main cycle is down. Please check background processes status.";

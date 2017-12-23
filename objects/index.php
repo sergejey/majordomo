@@ -165,9 +165,13 @@ elseif ($job != '')
    {
       try
       {
+         verbose_log("Scheduled job [".$job['TITLE']."]");
          $code = $job['COMMANDS'];
-         $success = eval($code);
-         
+         if ($code != '') {
+            $success = eval($code);
+         } else {
+            $success = true;
+         }
          if ($success === false)
          {
             DebMes("Error in scheduled job code: " . $code);
@@ -179,6 +183,9 @@ elseif ($job != '')
          DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
          registerError('scheduled_jobs', get_class($e) . ', ' . $e->getMessage());
       }
+      echo "OK";
+   } else {
+      //DebMes("Job not found: ".$_SERVER['REQUEST_URI']);
       echo "OK";
    }
 }

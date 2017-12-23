@@ -21,9 +21,9 @@
 
  <div class="form-group">
   <select name="type" class="form-control" onchange="this.form.submit();">
-   <option value=""><#LANG_TYPE#></option>
+   <option value=""><#LANG_TYPE#> (<#LANG_TOTAL#>: [#TOTAL#])</option>
    [#begin TYPES#]
-   <option value="[#NAME#]"[#if NAME="<#TYPE#>"#] selected[#endif#]>[#TITLE#]</option>
+   <option value="[#NAME#]"[#if NAME="<#TYPE#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])</option>
    [#end TYPES#]
   </select>
 
@@ -32,7 +32,7 @@
  <div class="form-group ">
   <select name="location_id" class="form-control" onchange="this.form.submit();">
    <option value=""><#LANG_LOCATION#>
-    [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
+    [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])
    [#end LOCATIONS#]
   </select>
  </div>
@@ -103,16 +103,21 @@
 
 
 
-<table  class="table table-striped">
+<table  class="table">
 <tbody>
 [#begin RESULT#]
-<tr style="height:52px" class="hover_btn2">
-  <td style="vertical-align:middle"
-  >
+[#if NEW_LOCATION#]
+<tr>
+ <td colspan="10"><h3>[#LOCATION_TITLE#]</h3></td>
+</tr>
+[#endif#]
+<tr>
+  <td style="vertical-align:middle">
   <b>
    [#TITLE#]
-  </a></b>
-  ([#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#])
+  </a></b><br/>
+  [#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#]
+  [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
  </td>
  <td><div id="device[#ID#]">[#HTML#]</div></td>
  <td style="vertical-align:middle" width="1%" nowrap>

@@ -25,7 +25,15 @@
 
   </td>
   <td valign="top" width="70%">
-   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();"><pre>[#VALUE#][#if SOURCE!=""#] (src: [#SOURCE#])[#endif#]</pre></div>
+   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();">
+    [#if DATA_TYPE="5"#]
+    [#if VALUE!=""#]
+     <img src="<#ROOTHTML#>cms/images/[#VALUE#]" height="200"><br/>
+     <a href="<#ROOTHTML#>cms/images/[#VALUE#]" target="_blank">[full size]</a>
+     [#endif#]
+    [#endif#]
+    [#if DATA_TYPE="0"#]<pre>[#VALUE#][#if SOURCE!=""#] (src: [#SOURCE#])[#endif#]</pre>[#endif#]
+   </div>
 
    <div id="prop[#ID#]_edit" style="display:none">
  <form action="?" method="post">

@@ -202,10 +202,17 @@ $.fn.customContextMenu = function(callBack){
          EvalSound('click_sound');
          {/if}
 
-
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
         {foreach $ELEMENT.STATES as $STATE}
+
+
+            {if $ELEMENT.TYPE=="img"}
+            if (id=='{$STATE.ID}') {
+                $('#state_{$STATE.ID}').hide();
+                setTimeout("$('#state_{$STATE.ID}').show();", 150);
+            }
+            {/if}
 
          {if $ELEMENT.TYPE=="button"}
          if (id=='{$STATE.ID}') {
@@ -541,7 +548,7 @@ $.fn.customContextMenu = function(callBack){
                   }
                  }
                  {/if}
-                    {if $SCENE_AUTO_SCALE=="1"}
+                    {if $SCENE_AUTO_SCALE=="1" && $DRAGGABLE!="1"}
                     setTimeout('sceneZoom();',2000);
                     $(window).on('resize', function(){
                         sceneZoom();

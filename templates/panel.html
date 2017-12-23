@@ -223,6 +223,9 @@ jQuery.fn.center = function () {
       <li>
         <a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a>
       </li>
+        <li>
+            <a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a>
+        </li>
       <li>
         <a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a>
       </li>
@@ -253,8 +256,9 @@ jQuery.fn.center = function () {
     <script language="javascript">
         var cmd='';
 
-        var hrefLocation=window.location.href;
+        var hrefLocation = window.location.href;
         hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+        var urlInProgress = '';
 
         var consoleDebugTimer;
 
@@ -294,44 +298,43 @@ jQuery.fn.center = function () {
 
         var loaderTimer;
         function loadInProgress() {
+            $('.sp-replacer').remove();
+            $('.sp-container').remove();
             $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
             return false;
         }
 
-        var urlInProgress='';
+
 
         function partLoad(link) {
             //partLoadContent
             var url=link;
-            urlInProgress=link;
+            urlInProgress = link;
             hrefLocation = link;
             hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
             clearTimeout(locationTimer);
             locationTimer = setTimeout('checkLocationHref();',1000);
-
             url+='&part_load=1';
-
             loaderTimer=setTimeout(loadInProgress, 1000);
 
             $.ajax({
-                url: url
+                url: url,
+                urlInProgress: urlInProgress
             }).done(function(data) {
                 //console.log('loaded');
                 clearTimeout(loaderTimer);
                 try {
                         JSON.parse(data);
                 } catch (e) {
-                        window.location.href=urlInProgress;
+                        window.location.href=this.urlInProgress;
                         return false;
                 }
                 var obj=jQuery.parseJSON(data);
-
                 if ("undefined" !== typeof obj.REDIRECT) {
                  link = obj.REDIRECT;
                 }
 
                 if (obj.NEED_RELOAD!=0) {
-                    //alert('need reload');
                     window.location.href=link;
                 } else {
                     window.history.pushState('', window.title, link);
@@ -405,13 +408,53 @@ jQuery.fn.center = function () {
     </li>
     [#if ACTION!=""#]
         <li class="active"><#ACTION#></li>
-        [#endif#]
-        
-        <div class="float-right">
-        <!--# date  #-->
-        <!--# .date  #-->
+    <div class="float-right">
         <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_MODULE_DESCRIPTION#></a>
-        </div>
+    </div>
+
+        [#endif#]
+
+    <script type="text/javascript">
+        function checkUpdatesAvailable() {
+            var url = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
+            $.ajax({
+                url: url
+            }).done(function(data) {
+                if (data == '1') {
+                    $('#updates-check-system').show();
+                }
+            });
+            url = '<#ROOTHTML#>ajax/market.html?op=check_updates';
+            $.ajax({
+                url: url
+            }).done(function(data) {
+                if (data == '1') {
+                    $('#updates-check-market').show();
+                }
+            });
+            url = '<#ROOTHTML#>ajax/system_errors.html?op=check';
+            $.ajax({
+                url: url
+            }).done(function(data) {
+                if (data == '1') {
+                    $('#errors-saved').show();
+                }
+            });
+        }
+    </script>
+    <div id="updates-check-market" class="float-right" style="padding-right:20px; display:none">
+        <span style="font-weight:bold;color:green"><#LANG_MODULES_UPDATES_AVAILABLE#>:</span>
+        <a href="?action=market"><#LANG_DETAILS#></a>
+    </div>
+    <div id="updates-check-system" class="float-right" style="padding-right:20px; display:none">
+        <span style="font-weight:bold;color:green"><#LANG_SYSTEM_UPDATES_AVAILABLE#>:</span>
+        <a href="?action=saverestore"><#LANG_DETAILS#></a>
+    </div>
+    <div id="errors-saved" class="float-right" style="padding-right:20px; display:none">
+        <span style="font-weight:bold;color:red"><#LANG_ERRORS_SAVED#>:</span>
+        <a href="?action=system_errors"><#LANG_DETAILS#></a>
+    </div>
+
 </ul>
 
 [#endif PRINT#]
@@ -548,6 +591,9 @@ jQuery.fn.center = function () {
                 closeEffect     : 'none'
         });
      checkLocationHref();
+     [#if ACTION=""#]
+     checkUpdatesAvailable();
+     [#endif#]
 });
 </script>
 

@@ -185,3 +185,35 @@ function postToWebSocket($property, $value, $post_action='PostProperty') {
  return $data_sent;
 
 }
+
+
+function createHistoryTable($value_id) {
+    $table_name = 'phistory_value_'.$value_id;
+    SQLExec("CREATE TABLE IF NOT EXISTS `$table_name` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `VALUE_ID` int(10) unsigned NOT NULL DEFAULT '0',
+  `ADDED` datetime DEFAULT NULL,
+  `VALUE` varchar(255) NOT NULL,
+  `SOURCE` varchar(20) NOT NULL DEFAULT '',
+  PRIMARY KEY (`ID`),
+  KEY `VALUE_ID` (`VALUE_ID`)
+ ) ENGINE=MyISAM  DEFAULT CHARSET=utf8");
+    return $table_name;
+}
+
+function moveDataFromMainHistoryToTable($value_id) {
+    $table_name = 'phistory_value_'.$value_id;
+    $qry = "phistory.VALUE_ID=".$value_id;
+    SQLExec("INSERT INTO $table_name (VALUE_ID,ADDED,VALUE,SOURCE) SELECT VALUE_ID,ADDED,VALUE,SOURCE FROM phistory WHERE $qry");
+    SQLExec("DELETE FROM phistory WHERE $qry");
+    return true;
+}
+
+function moveDataFromTableToMainHistory($value_id) {
+    $table_name = 'phistory_value_'.$value_id;
+    $qry = "phistory.VALUE_ID=".$value_id;
+    SQLExec("DELETE FROM phistory WHERE $qry");
+    SQLExec("INSERT INTO phistory (VALUE_ID,ADDED,VALUE,SOURCE) SELECT VALUE_ID,ADDED,VALUE,SOURCE FROM $table_name");
+    SQLExec("DROP TABLE $table_name");
+    return true;
+}

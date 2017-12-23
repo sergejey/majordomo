@@ -14,7 +14,7 @@
 [#if CLEAR_FIRST!="1"#]
 
 [#if MODE="getlatest_iframe"#]
-<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&files=<#FILES#>" width="100%" height="400" frameborder=0></iframe>
+<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe>
 [#else MODE#]
 
 
@@ -57,8 +57,8 @@
    <form action="?" method="post" enctype="multipart/form-data">
    <label><input type="checkbox" name="design" value="1"> <#LANG_DESIGN#> (templates, css, images)</label><br>
    <label><input type="checkbox" name="code" value="1"> <#LANG_CODE#> (modules)</label><br>
-   <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database, documents)</label><br>
-   <label><input type="checkbox" name="files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
+   <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database)</label><br>
+   <label><input type="checkbox" name="save_files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
    <input type="hidden" name="backup" value="1">
    <input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#> &gt;&gt;&gt;" class="btn btn-default">
    <input type="hidden" name="mode" value="getlatest_iframe">
@@ -81,16 +81,23 @@
 
    [#if FILES#]
    &nbsp;<br>
-   <table border="1" cellpadding="5">
+   <table class="table table-bordered">
    [#begin FILES#]
     <tr>
-     <td valign="top">[#FILENAME#]</td>
-     <td valign="top" nowrap>[#FILESIZE#] Mb</td>
-     <td valign="top"><a href="<#ROOTHTML#>saverestore/[#FILENAME#]">Download</a></td>
+     <td valign="top">[#TITLE#]</td>
+     <td valign="top" nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
      [#if "<#CLEAR_FIRST#>"!="1"#]
-     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESTORE#></a></td>
+     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_RESTORE#></a></td>
      [#endif#]
-     <td valign="top"><a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">X</a></td>
+
+     [#if FILESIZE!=""#]
+     <td valign="top"><a href="<#ROOTHTML#>saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
+     <td valign="top">
+      <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+     </td>
+     [#else#]
+     <td colspan="3">&nbsp;</td>
+     [#endif#]
     </tr>
    [#end FILES#]
    </table>

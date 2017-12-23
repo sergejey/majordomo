@@ -207,7 +207,7 @@ $(function() {
 <a class="btn btn-default" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
 
  [#if ID!=""#]
- <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_MAKE_COPY#></a>
  <a class="btn btn-default" href="?id=<#ID#>&view_mode=export"><#LANG_EXPORT#></a>
  <a class="btn btn-default" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i> <#LANG_PREVIEW#></a> 
  [#endif ID#]

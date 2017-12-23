@@ -94,6 +94,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    global $noPatternMode;
    global $ignoreVoice;
 
+    verbose_log("SAY (level: $level; member: $member; source: $source): ".$ph);
+
    $rec = array();
    $rec['MESSAGE']   = $ph;
    $rec['ADDED']     = date('Y-m-d H:i:s');
@@ -106,11 +108,11 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    if ($member_id)
    {
-      include_once(DIR_MODULES . 'patterns/patterns.class.php');
-      $pt = new patterns();
-      $res=$pt->checkAllPatterns($member_id);
       $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
        if (!$processed) {
+           include_once(DIR_MODULES . 'patterns/patterns.class.php');
+           $pt = new patterns();
+           $res=$pt->checkAllPatterns($member_id);
            processCommand($ph);
        }
       return;
@@ -155,6 +157,41 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     sayTo($ph, $level, $terminals[$i]['NAME']);
    }
 
+}
+
+function ask($prompt, $target = '') {
+    processSubscriptions('ASK', array('prompt' => $prompt, 'target' => $target));
+
+    $service_port='7999';
+    $in='ask:'.$prompt;
+
+    if (preg_match('/^[\d\.]+$/',$target)) {
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if ($socket) {
+            $result = socket_connect($socket, $target, $service_port);
+            if ($result) {
+                socket_write($socket, $in, strlen($in));
+            }
+        }
+        socket_close($socket);
+    } else {
+        $qry=1;
+        $qry.=" AND MAJORDROID_API=1";
+        $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE $qry");
+        $total = count($terminals);
+        for ($i = 0; $i < $total; $i++) {
+            $address = $terminals[$i]['HOST'];
+            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            if ($socket) {
+                $result = socket_connect($socket, $address, $service_port);
+                if ($result) {
+                    socket_write($socket, $in, strlen($in));
+                }
+            }
+            socket_close($socket);
+        }
+    }
 }
 
 /**
@@ -215,16 +252,23 @@ function timeNow($tm = 0)
    }
 
    $h = (int)date('G', $tm);
-
-   $array = array("час", "часа", "часов");
-   $hw = $h.' '.getNumberWord($h,$array);
-
    $m = (int)date('i', $tm);
+   $ms = '';
 
-    if ($m>0) {
-        $array = array("минута", "минуты", "минут");
-        $ms = $m.' '.getNumberWord($m,$array);
-    }
+   $language = SETTINGS_SITE_LANGUAGE;
+
+   if ($language == 'ru') {
+       $array = array("час", "часа", "часов");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("минута", "минуты", "минут");
+           $ms = $m.' '.getNumberWord($m,$array);
+       }
+   } elseif ($language == 'en' && $m == 0) {
+       $hw = $h.' o\'clock';
+   } else {
+       $hw = date('H:i',$tm);
+   }
 
    $res = trim($hw . " " . $ms);
    return $res;
@@ -427,16 +471,16 @@ function runScheduledJobs()
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
       
       SQLUpdate('jobs', $jobs[$i]);
-      $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-      $result = trim(getURL($url, 0));
 
-      $result = preg_replace('/<!--.+-->/is', '', $result);
-
-      if (!preg_match('/OK$/', $result))
-      {
-         //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-         DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) .' ('.__FILE__.')');
-      }
+       if ($jobs[$i]['COMMANDS'] != '') {
+           $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+           $result = trim(getURL($url, 0));
+           $result = preg_replace('/<!--.+-->/is', '', $result);
+           if (!preg_match('/OK$/', $result)) {
+               //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+               DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
+           }
+       }
    }
 }
 
@@ -508,39 +552,11 @@ function recognizeTime($text, &$newText)
  * @param mixed $expire_in Expire time (default 365)
  * @return mixed
  */
-function registerEvent($eventName, $details = '', $expire_in = 365)
+function registerEvent($eventName, $details = '', $expire_in = 0)
 {
-   $sqlQuery = "SELECT *
-                  FROM events
-                 WHERE EVENT_NAME = '" . DBSafe($eventName) . "'
-                   AND EVENT_TYPE = 'system'
-                 ORDER BY ID DESC
-                 LIMIT 1";
-
-   $rec = array();
-   $rec = SQLSelectOne($sqlQuery);
-
-   $rec['EVENT_NAME'] = $eventName;
-   $rec['EVENT_TYPE'] = 'system';
-   $rec['DETAILS']    = $details;
-   $rec['ADDED']      = date('Y-m-d H:i:s');
-   $rec['EXPIRE']     = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
-   $rec['PROCESSED']  = 1;
-
-   if ($rec['ID'])
-   {
-      SQLUpdate('events', $rec);
-      $sqlQuery = "DELETE FROM events
-                    WHERE EVENT_NAME = '" . $rec['EVENT_NAME'] . "'
-                      AND EVENT_TYPE = '" . $rec['EVENT_TYPE'] . "'
-                      AND ID         != " . $rec['ID'];
-      SQLExec($sqlQuery);
-   }
-   else
-   {
-      $rec['ID'] = SQLInsert('events', $rec);
-   }
-   return $rec['ID'];
+    include_once(DIR_MODULES.'events/events.class.php');
+    $events = new events();
+    return $events->registerEvent($eventName, $details, $expire_in);
 }
 
 /**
@@ -764,13 +780,13 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
          curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 60);  // operation timeout
+         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
           if ($background) {
               curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1000);
           }
 
          if ($username != '' || $password != '')
@@ -990,16 +1006,14 @@ function checkAccess($object_type, $object_id)
 function registerError($code = 'custom', $details = '')
 {
 
-   DebMes("Error registered (type: $code): ".$details);
+   $e = new \Exception;
+   $backtrace=$e->getTraceAsString();
+
+   DebMes("Error registered (type: $code):\n".$details."\nBacktrace:\n".$backtrace,'error');
    $code = trim($code);
 
    if ($code == 'sql') {
     return 0;
-   }
-   
-   if (!$code)
-   {
-      $code = 'custom';
    }
 
    $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
@@ -1012,13 +1026,12 @@ function registerError($code = 'custom', $details = '')
    }
 
    $error_rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-   $error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
+   @$error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
    SQLUpdate('system_errors', $error_rec);
 
    $history_rec = array();
-
    $history_rec['ERROR_ID'] = $error_rec['ID'];
-   $history_rec['COMMENTS'] = $details;
+   $history_rec['COMMENTS'] = $details."\nBacktrace:\n".$backtrace;
    $history_rec['ADDED']    = $error_rec['LATEST_UPDATE'];
 
    //Temporary disabled
@@ -1031,7 +1044,6 @@ function registerError($code = 'custom', $details = '')
    $history_rec['EVENTS_DATA']     = getURL($xrayUrl . 'events', 0);
    $history_rec['DEBUG_DATA']      = getURL($xrayUrl . 'debmes', 0);
     */
-
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
    if (!$error_rec['KEEP_HISTORY'])
@@ -1125,6 +1137,51 @@ function binaryToString($buf)
    }
 
    return $res;
+}
+
+function verbose_log($data) {
+    if (defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+        if (defined('VERBOSE_LOG_IGNORE') && VERBOSE_LOG_IGNORE!='') {
+            $tmp=explode(',', VERBOSE_LOG_IGNORE);
+            $total=count($tmp);
+            for($i=0;$i<$total;$i++) {
+                $regex=trim($tmp[$i]);
+                if (preg_match('/'.$regex.'/is', $data)) {
+                    return;
+                }
+            }
+        }
+        global $verbose_thread_id;
+        global $argv;
+        if (!isset($verbose_thread_id)) {
+            $verbose_thread_id = date('H:i:s').'_'.rand(1000,9999);
+            $cmd = '';
+            if ($_SERVER['REQUEST_URI']!='') {
+                $cmd = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
+            } elseif ($argv[0]!='') {
+                $cmd = implode(' ',$argv);
+                $verbose_thread_id.='_'.basename($argv[0]);
+            }
+            DebMes('th_'.$verbose_thread_id.' start '.$cmd,'verbose');
+        }
+        $bt = debug_backtrace();
+        $total_bt = count($bt);
+        $max_bt = 5;
+        //$bt = array_reverse($bt);
+        $bt = array_slice($bt,1,$max_bt);
+        $total = count($bt);
+        if ($total>0) {
+            $res_trace=array();
+            for($i=0;$i<$total;$i++) {
+                $res_trace[]=$bt[$i]['function'];
+            }
+            if ($total_bt>($max_bt+1)) {
+                $res_trace[]='...';
+            }
+            $data = $data . ' ('.implode('<',$res_trace).')';
+        }
+     DebMes('th_'.$verbose_thread_id.' '.$data,'verbose');
+    }    
 }
 
 /**

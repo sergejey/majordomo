@@ -3,9 +3,6 @@
 b {
         color:rgba(249, 229, 91, 0.9);
 }
-td {
-        color:white;
-}
 .shout_box {
         color: #fff;
         font-size:12px;

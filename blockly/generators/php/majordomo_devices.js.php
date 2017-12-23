@@ -74,7 +74,7 @@ if ($blocks[$i]['TYPE']=='rgb') {
 ?>
 Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setColor'] = function(block) {
   var color = Blockly.PHP.valueToCode(block, 'COLOR',Blockly.PHP.ORDER_NONE) || '\'\'';
-  var code = 'callMethod("<?php echo $blocks[$i]['LINKED_OBJECT'].'.setColor';?>",array("color"=>'+color+');';
+  var code = 'callMethod("<?php echo $blocks[$i]['LINKED_OBJECT'].'.setColor';?>",array("color"=>'+color+'));';
   return code;
 };
 <?php

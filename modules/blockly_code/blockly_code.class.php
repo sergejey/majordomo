@@ -145,8 +145,6 @@ function admin(&$out) {
   global $code;
 
   global ${$this->code_field."_code_type"};
-
-
   SQLExec("DELETE FROM blockly_code WHERE SYSTEM_NAME LIKE '".DBSafe($this->system_name)."'");
   $rec=array();
   $rec['XML']=$xml;

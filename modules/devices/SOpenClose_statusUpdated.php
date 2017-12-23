@@ -4,7 +4,7 @@
 
  $tm=time();
  $this->setProperty('updated', $tm);
- $this->setProperty('updatedText', date('H:i', $tm));
+ $this->callMethod('setUpdatedText');
  $this->setProperty('alive', 1);
 
  $alive_timeout=(int)$this->getProperty('aliveTimeout')*60*60;
@@ -18,7 +18,7 @@
  if ($this->getProperty('isActivity')) {
   $linked_room=$this->getProperty('linkedRoom');
   if (getGlobal('NobodyHomeMode.active')) {
-   callMethodSafe('NobodyHomeMode.deactivate');
+   callMethodSafe('NobodyHomeMode.deactivate',array('sensor'=>$ot, 'room'=>$linked_room));
   }
   ClearTimeOut("nobodyHome"); 
   SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);

@@ -79,4 +79,18 @@ Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
  //Define('HISTORY_NO_OPTIMIZE', 1);
 
 
- Define('MASTER_UPDATE_URL', 'https://github.com/sergejey/majordomo/archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
+Define('MASTER_UPDATE_URL', 'https://github.com/sergejey/majordomo/archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
+
+//Define('WAIT_FOR_MAIN_CYCLE', 1);
+//Define('TRACK_DATA_CHANGES', 1);                                   // TRACK EVENTS
+//Define('TRACK_DATA_CHANGES_IGNORE', 'cycle_, clockchime, uptime, WSClientsTotal'); // IGNORE
+
+Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getURL function warning
+
+//Define('SEPARATE_HISTORY_STORAGE',1);                 // STORE HISTORY DATA IN DIFFERENT TABLES
+//Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS
+//Define('PATH_TO_FFMPEG','avconv');
+//Define('DISABLE_PANEL_ACCELERATION', 1);
+//Define('VERBOSE_LOG',1); // STORE SYSTEM ACTIVITY IN VERBOSE LOG
+//Define('VERBOSE_LOG_IGNORE','.checkstate, ThisComputer.uptime'); // IGNORE SOME DATA
+//Define('DISABLE_SIMPLE_DEVICES',1); // disables simple devices behavior

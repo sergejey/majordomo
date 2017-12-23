@@ -15,5 +15,5 @@ include_once("./lib/loader.php");
 if ($error)
 {
    echo $error;
-   DebMes("JAVASCRIPT Error: " . $error);
+   //DebMes("JAVASCRIPT Error: " . $error);
 }

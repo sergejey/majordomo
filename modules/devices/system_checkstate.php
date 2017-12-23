@@ -1,7 +1,6 @@
 <?php
 
-@include_once(ROOT.'languages/devices_'.SETTINGS_SITE_LANGUAGE.'.php');
-@include_once(ROOT.'languages/devices_default'.'.php');
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
 
 $classes_to_check=array('SMotions','SOpenClose','SSensors');
 $res_objects=array();

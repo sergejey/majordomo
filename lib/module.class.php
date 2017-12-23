@@ -540,8 +540,10 @@ class module
             SQLExec($sql);
 
             $result = SQLGetFields($table);
-            foreach($result as $row) {
-             $tbl_fields[$table][$row['Field']]=1;
+            if (is_array($result)) {
+               foreach($result as $row) {
+                  $tbl_fields[$table][$row['Field']]=1;
+               }
             }
 
          }

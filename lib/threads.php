@@ -46,7 +46,8 @@ class Threads
    {
       if (!file_exists($filename))
       {
-         throw new ThreadsException('FILE_NOT_FOUND');
+         DebMes("Cannot start thread '$filename' -- FILE NOT FOUND");
+         return false;
       }
 
       $params = addcslashes(serialize($params), '"');
@@ -93,8 +94,10 @@ class Threads
       if (IsWindowsOS())
          throw new ThreadsException('FOR_LINUX_ONLY');
 
-      if (!file_exists($filename))
-         throw new ThreadsException('FILE_NOT_FOUND');
+      if (!file_exists($filename)) {
+         DebMes("Cannot start thread '$filename' -- FILE NOT FOUND");
+         return false;
+      }
 
       $params  = addcslashes(serialize($params), '"');
       $command = 'DISPLAY=:' . $display . ' ' . $this->phpPath . ' ' . $filename . ' --params "' . $params . '"';

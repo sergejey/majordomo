@@ -34,11 +34,14 @@ if ($this->isHomeBridgeAvailable()) {
         }
     }
     if (isset($payload['value'])) {
-        DebMes('HB sending to_set: '.json_encode($payload));
+        //DebMes('HB sending to_set: '.json_encode($payload));
         sg('HomeBridge.to_set',json_encode($payload));
     }
 
 }
+
+$value = (float)gg($device1['LINKED_OBJECT'].'.value');
+$status = (float)gg($device1['LINKED_OBJECT'].'.status');
 
 $links=SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE DEVICE1_ID=".(int)$device1['ID']);
 $total = count($links);
@@ -80,6 +83,31 @@ for ($i = 0; $i < $total; $i++) {
         } else {
             //do nothing
             $action_string='';
+        }
+    }  elseif ($link_type=='sensor_pass') {
+        $action_string='sg("'.$object.'.value'.'","'.$value.'");';
+    }  elseif ($link_type=='thermostat_switch') {
+        $set_value=0;
+        $current_relay_status = gg($device1['LINKED_OBJECT'].'.relay_status');
+        $ncno = gg($device1['LINKED_OBJECT'].'.ncno');
+        if ($ncno == 'no' && $current_relay_status) {
+            $current_relay_status = 0;
+        } elseif ($ncno == 'no' && !$current_relay_status) {
+            $current_relay_status = 1;
+        }
+        $current_target_status = gg($object.'.status');
+        //echo "status: $current_relay_status / $current_target_status<Br/>";
+        if (!$settings['invert_status'] && $current_relay_status) { // NC
+                $set_value=1;
+        } elseif ($settings['invert_status'] && !$current_relay_status) {
+                $set_value=1;
+        }
+        if ($set_value && !$current_target_status) {
+            // turn on
+            $action_string='callMethod("'.$object.'.turnOn'.'");';
+        } elseif (!$set_value && $current_target_status) {
+            // turn off
+            $action_string='callMethod("'.$object.'.turnOff'.'");';
         }
     }
 

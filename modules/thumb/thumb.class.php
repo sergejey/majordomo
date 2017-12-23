@@ -79,6 +79,7 @@ function run() {
    $out['REAL_WIDTH']=$lst[0];
    $out['REAL_HEIGHT']=$lst[1];
    $out['URL']=base64_encode($this->url);
+   $out['TRANSPORT']=urldecode($this->transport);
 
 
    $out['USERNAME']=urlencode($this->username);
@@ -90,12 +91,12 @@ function run() {
    $out['HEIGHT']=$this->height;
    $out['MAX_HEIGHT']=$this->max_height;
    $out['MAX_WIDTH']=$this->max_width;
-   $out['CLOSE']=$this->close;
+   $out['CLOSE']=htmlspecialchars($this->close);
    /*
    $out['BGCOLOR']=(($this->bgcolor[0]='#')?substr($this->bgcolor,1):$this->bgcolor);
    $out['COLOR']=(($this->color[0]='#')?substr($this->color,1):$this->color);
    */
-   $out['ENLARGE']=$this->enlarge;
+   $out['ENLARGE']=(int)($this->enlarge);
    $out['SRC']=urlencode($this->src);
    $out['SRC_REAL']=$this->src_def;
    //echo $out['SRC_REAL']."<br>";

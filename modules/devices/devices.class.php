@@ -92,7 +92,7 @@ function setDictionary() {
 * @access public
 */
 function run() {
- global $session;
+
   $out=array();
   if ($this->action=='admin') {
       $this->admin($out);
@@ -227,6 +227,10 @@ function processDevice($device_id) {
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
     $result['HTML']=processTitle($template,$this);
+    if ($device_rec['TYPE']=='camera') {
+        $result['HEIGHT']=5;
+    }
+
     return $result;
 }
 
@@ -255,6 +259,9 @@ function getWatchedProperties($device_id=0) {
 }
     
 function renderStructure() {
+
+  if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+
   foreach($this->device_types as $k=>$v) {
       //$v['CLASS']
       //$v['PARENT_CLASS']
@@ -327,12 +334,55 @@ function renderStructure() {
               }
           }
       }
-
-
-      
   }
+  subscribeToEvent('devices', 'COMMAND', '', 100);
+
+  //update cameras
+    $objects = getObjectsByClass('SCameras');
+    $total = count($objects);
+    for ($i = 0; $i < $total; $i++) {
+        $ot = $objects[$i]['TITLE'];
+        callMethod($ot.'.updatePreview');
+    }
+
 }
 
+function processSubscription($event, &$details) {
+    if ($event == 'COMMAND') {
+        include_once(DIR_MODULES.'devices/processCommand.inc.php');
+    }
+}
+
+    /**
+
+    Generate all the possible combinations among a set of nested arrays. *
+    @param array $data The entrypoint array container.
+    @param array $all The final container (used internally).
+    @param array $group The sub container (used internally).
+    @param mixed $val The value to append (used internally).
+    @param int $i The key index (used internally). */
+
+    function generate_combinations(array $data, array &$all = array(), array $group = array(), $value = null, $i = 0,$key = null)
+    {
+        $keys = array_keys($data);
+        if (isset($value) === true) {
+            $group[$key] = $value;
+        }
+        if ($i >= count($data)) {
+            array_push($all, $group);
+        } else {
+            $currentKey = $keys[$i];
+            $currentElement = $data[$currentKey];
+            if(count($data[$currentKey]) <= 0) {
+                $this->generate_combinations($data, $all, $group, null, $i + 1,$currentKey);
+            } elseif (is_array($currentElement)) {
+                foreach ($currentElement as $val) {
+                    $this->generate_combinations($data, $all, $group, $val, $i + 1,$currentKey);
+                }
+            }
+        }
+        return $all;
+    }
 
 function homebridgeSync($device_id=0) {
     if ($this->isHomeBridgeAvailable()) {
@@ -416,29 +466,93 @@ function usual(&$out) {
  }
 
     global $location_id;
-    if ($location_id) {
-        $devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID='".(int)$location_id."' ORDER BY TYPE, TITLE");
+    global $type;
+
+    if ($location_id || $type) {
+        $qry = 1;
+        $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+        if ($location_id) {
+            if ($location_id!='all') {
+                $qry.=" AND devices.LOCATION_ID=".(int)$location_id;
+                $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+                foreach($location as $k=>$v) {
+                    $out['LOCATION_'.$k]=$v;
+                }
+                $out['TITLE']=$location['TITLE'];
+            } else {
+                $out['LOCATION_ID']='All';
+                $qry.=" AND 1";
+            }
+
+        }
+        if ($type) {
+            if ($type!='all') {
+                $qry.= " AND devices.TYPE LIKE '".DBSafe($type)."'";
+                $out['TITLE']=$this->device_types[$type]['TITLE'];
+            } else {
+                $orderby = 'TYPE, locations.PRIORITY DESC, LOCATION_ID, TITLE';
+            }
+            $out['TYPE']=$type;
+        }
+        $location_title='';
+        $type_title='';
+        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
         $total = count($devices);
         for ($i = 0; $i < $total; $i++) {
+            if ($type=='all') {
+                $devices[$i]['LOCATION_TITLE']=$this->device_types[$devices[$i]['TYPE']]['TITLE'];
+                if ($devices[$i]['LOCATION_TITLE']!=$location_title) {
+                    $devices[$i]['NEW_LOCATION']=1;
+                    $location_title=$devices[$i]['LOCATION_TITLE'];
+                }
+            } else {
+                if ($devices[$i]['LOCATION_TITLE']!=$location_title && !$out['LOCATION_TITLE']) {
+                    $devices[$i]['NEW_LOCATION']=1;
+                    $location_title=$devices[$i]['LOCATION_TITLE'];
+                }
+                if ($this->device_types[$devices[$i]['TYPE']]['TITLE']!=$type_title) {
+                    $type_title=$this->device_types[$devices[$i]['TYPE']]['TITLE'];
+                    $devices[$i]['NEW_TYPE']=1;
+                }
+            }
+        }
+    } else {
+        $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+        $qry=" devices.FAVORITE=1";
+        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
+    }
+
+    if ($devices[0]['ID']) {
+        $total = count($devices);
+        for($i=0;$i<$total;$i++) {
             if ($devices[$i]['LINKED_OBJECT']) {
                 $processed=$this->processDevice($devices[$i]['ID']);
                 $devices[$i]['HTML']=$processed['HTML'];
             }
         }
         $out['DEVICES']=$devices;
-        $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
-        foreach($location as $k=>$v) {
-            $out['LOCATION_'.$k]=$v;
-        }
     }
 
-    $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+    $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
     $total = count($locations);
     for ($i = 0; $i < $total; $i++) {
         $devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
         $locations[$i]['DEVICES_TOTAL']=$devices_count;
     }
     $out['LOCATIONS']=$locations;
+
+    $types=array();
+    foreach($this->device_types as $k=>$v) {
+        if ($v['TITLE']) {
+            $type_rec=array('NAME'=>$k,'TITLE'=>$v['TITLE']);
+            $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices WHERE TYPE='".$k."'");
+            $type_rec['TOTAL']=(int)$tmp['TOTAL'];
+            if ($type_rec['TOTAL']>0) {
+                $types[]=$type_rec;
+            }
+        }
+    }
+    $out['TYPES']=$types;
 
 
 }
@@ -881,6 +995,7 @@ function usual(&$out) {
 
   $this->setDictionary();
   $this->renderStructure();
+  $this->homebridgeSync();
  }
 /**
 * Uninstall
@@ -910,6 +1025,7 @@ devices -
  devices: TYPE varchar(100) NOT NULL DEFAULT ''
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  
+ devices: FAVORITE int(3) unsigned NOT NULL DEFAULT 0 
 
  devices: SYSTEM varchar(255) NOT NULL DEFAULT ''
  devices: SUBTYPE varchar(100) NOT NULL DEFAULT ''
