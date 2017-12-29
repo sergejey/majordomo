@@ -130,6 +130,8 @@ sleep(1);
 // getting list of /scripts/cycle_*.php files to run each in separate thread
 $cycles = array();
 
+$reboot_timer=0;
+
 if (is_dir("./scripts"))
 {
    if ($lib_dir = opendir("./scripts"))
@@ -274,11 +276,26 @@ while (false !== ($result = $threads->iteration()))
       }
    }
 
+   if (file_exists(ROOT.'reboot')) {
+      if (!$reboot_timer) {
+         $reboot_timer=time();
+      } elseif ((time()-$reboot_timer)>10) {
+         $reboot_timer=0;
+         //force close all running threads
+         DebMes("Force closing all running services.",'threads');
+         $to_start = array();
+         $restart_threads = array();
+         foreach($is_running as $k=>$v) {
+            $to_stop[$k]=time();
+         }
+      }
+   }
+
    foreach($to_stop as $title=>$tm) {
       if ($tm<=time()) {
          if (isset($is_running[$title])) {
             $id =$is_running[$title];
-            DebMes("Closing service ".$title." (id: ".$id.")",'threads');
+            DebMes("Force closing service ".$title." (id: ".$id.")",'threads');
             $threads->closeThread($id);
          }
          unset($to_stop[$title]);
