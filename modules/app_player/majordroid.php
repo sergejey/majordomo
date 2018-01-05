@@ -40,6 +40,7 @@ if ($command == 'prev')
 
 if ($command == 'close')
 {
+   $in='pause';
 }
 
 if ($in!='') {
