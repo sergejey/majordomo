@@ -41,6 +41,10 @@ if (IsSet($url) && $url != '') {
     }
 }
 
+if ($_GET['debug']) {
+    $live = 0;
+}
+
 if (IsSet($url) && $url!='') {
 
    $resize='';
@@ -59,16 +63,16 @@ if (IsSet($url) && $url!='') {
 
    if (preg_match('/^rtsp:/is', $url)) {
     //-rtsp_transport tcp // -rtsp_transport tcp 
-    $stream_options = '-timelimit 15 -y -i "'.$url.'"'.$resize.' -r 10 -f image2 -ss 00:00:01.500 -vframes 1';
+    $stream_options = '-timelimit 15 -y -i "'.$url.'"'.$resize.' -r 5 -f image2 -vframes 1'; //-ss 00:00:01.500
     if ($_GET['debug']) {
         $stream_options = '-v verbose '.$stream_options;
     }
+    if ($_GET['transport']) {
+        $stream_options = '-rtsp_transport '.$_GET['transport'].' '.$stream_options;
+    }
     $cmd = PATH_TO_FFMPEG.' '.$stream_options.' '.$img;
 
-    if ($live && !$_GET['debug']) {
-     //$cmd=PATH_TO_FFMPEG.' -stimeout 5000000 -rtsp_transport tcp -y -i "'.$url.'" -r 10 -q:v 9 -f mjpeg pipe:1';// /dev/stdout 2>/dev/null
-     //passthru($cmd);
-     //exit;
+    if ($live) {
         $boundary = "my_mjpeg";
             header("Cache-Control: no-cache");
             header("Cache-Control: private");
@@ -89,7 +93,6 @@ if (IsSet($url) && $url!='') {
             print "--$boundary\n";
             sleep(1);
         }
-
     } else {
      @unlink($img);
      $output=array();

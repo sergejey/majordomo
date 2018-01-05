@@ -1,8 +1,5 @@
 <?php
 
-@include_once(ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
-@include_once(ROOT . 'languages/devices_default' . '.php');
-
 $ot = $this->object_title;
 $updatedTime = $this->getProperty('updated');
 $passed = time() - $updatedTime;
@@ -17,11 +14,6 @@ if ($passed<10) {
 } elseif ($passed<60*60) {
     $newTimeout = 60;
     $this->setProperty('updatedText',round($passed/60).' '.LANG_DEVICES_PASSED_MINUTES_AGO);
-/*
-} elseif ($passed<12*60*60) {
-    $newTimeout = 60 * 60;
-    $this->setProperty('updatedText',round($passed/60/60).' '.LANG_DEVICES_PASSED_HOURS_AGO);
-*/
 } elseif ($passed<20*60*60) {
     //just time
     $newTimeout = 60 * 60;

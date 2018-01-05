@@ -278,6 +278,16 @@ function admin(&$out) {
  }
  $out['CATEGORY'] = $cat;
 
+ if ($this->ajax && $_GET['op']=='check_updates') {
+     $total = count($this->can_be_updated);
+     if ($total > 0) {
+         echo "1";
+     } else {
+         echo "0";
+     }
+     exit;
+ }
+
  if ($this->mode=='install_multiple') {
   $this->updateAll($this->selected_plugins);
  }

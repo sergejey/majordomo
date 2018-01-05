@@ -1354,15 +1354,12 @@ function usual(&$out) {
 
    $cache_file=ROOT.'cached/styles_'.$type.'.txt';
 
-   //if (file_exists($cache_file) && (time()-filemtime($cache_file)<1*60*60)) {
-   // $styles_recs=unserialize(LoadFile($cache_file));
-   //} else {
-
-
-
+   if (file_exists($cache_file) && (time()-filemtime($cache_file))<1*60*60) {
+    $styles_recs=unserialize(LoadFile($cache_file));
+   } else {
    startMeasure('openAndReadDir');
    if ($handle = opendir($path)) {
-    $style_recs=array();
+    $styles_recs=array();
     while (false !== ($entry = readdir($handle))) {
        if (preg_match('/(.+?)\.png$/is', $entry, $m)) {
         $style=$m[1];
@@ -1465,12 +1462,12 @@ function usual(&$out) {
      }
     }
 
-    //SaveFile($cache_file, serialize($styles_recs));
+    SaveFile($cache_file, serialize($styles_recs));
     endMeasure('openAndReadDir');
 
     }
 
-   //}
+   }
 
 
     if (is_array($styles_recs)) {
