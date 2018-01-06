@@ -9,7 +9,7 @@
  font-size:14px;
  background-color:rgba(0,0,0,0.5);
  align:left;
- width:71px;
+ width:81px;
  height:34px;
  background-image: url({$smarty.const.ROOTHTML}img/elements/i_temp.png);
  background-repeat: no-repeat;
@@ -18,11 +18,11 @@
 
 .type_informer span {
  display:inline-block;
- width:40px;
+ width:52px;
  height:28px;
  
  position:relative;
- padding-left:21px;
+ padding-left:25px;
  padding-top:9px;
 }
 

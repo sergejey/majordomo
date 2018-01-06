@@ -40,6 +40,7 @@
   $out['SORTBY']=$sortby_system_errors;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM system_errors WHERE $qry ORDER BY ".$sortby_system_errors);
+  $errors_found=0;
   if ($res[0]['ID']) {
    colorizeArray($res);
    $total=count($res);
@@ -47,7 +48,17 @@
     // some action for every record if required
     $tmp=explode(' ', $res[$i]['LATEST_UPDATE']);
     $res[$i]['LATEST_UPDATE']=fromDBDate($tmp[0])." ".$tmp[1];
+    $errors_found+=$res[$i]['ACTIVE'];
    }
    $out['RESULT']=$res;
   }
-?>
+
+ if ($this->ajax && $_GET['op']=='check') {
+  if ($errors_found>0) {
+   echo "1";
+  } else {
+   echo "0";
+  }
+  exit;
+ }
+

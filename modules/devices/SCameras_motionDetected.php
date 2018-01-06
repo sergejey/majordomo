@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 $ot=$this->object_title;
 if (!isset($params['statusUpdated'])) {
  setTimeout($ot.'_motion_timer_status', '', 3);
@@ -39,3 +40,14 @@ include_once(DIR_MODULES.'devices/devices.class.php');
 $dv=new devices();
 $dv->checkLinkedDevicesAction($this->object_title);
 */
+=======
+$ot = $this->object_title;
+
+$this->setProperty('status', 1);
+$this->setProperty('activeHTML', $this->getProperty('previewHTML'));
+
+$motion_timeout=20; // seconds timeout
+setTimeout($ot.'_motion_timer', 'setGlobal("'.$ot.'.status", 0);setGlobal("'.$ot.'.activeHTML", '');', $motion_timeout);
+
+$this->callMethod('logicAction');
+>>>>>>> 291423a6794307cbb9cae969cf85cf317d841614

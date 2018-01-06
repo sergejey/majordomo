@@ -93,9 +93,6 @@ function setDictionary() {
 */
 function run() {
 
-    @include_once(ROOT . 'languages/devices_' . SETTINGS_SITE_LANGUAGE . '.php');
-    @include_once(ROOT . 'languages/devices_default' . '.php');
-
   $out=array();
   if ($this->action=='admin') {
       $this->admin($out);
@@ -473,27 +470,61 @@ function usual(&$out) {
 
     if ($location_id || $type) {
         $qry = 1;
+        $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
         if ($location_id) {
-            $qry.=" AND devices.LOCATION_ID=".(int)$location_id;
-            $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
-            foreach($location as $k=>$v) {
-                $out['LOCATION_'.$k]=$v;
+            if ($location_id!='all') {
+                $qry.=" AND devices.LOCATION_ID=".(int)$location_id;
+                $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+                foreach($location as $k=>$v) {
+                    $out['LOCATION_'.$k]=$v;
+                }
+                $out['TITLE']=$location['TITLE'];
+            } else {
+                $out['LOCATION_ID']='All';
+                $qry.=" AND 1";
             }
-            $out['TITLE']=$location['TITLE'];
+
         }
         if ($type) {
-            $qry.= " AND devices.TYPE LIKE '".DBSafe($type)."'";
-            $out['TITLE']=$this->device_types[$type]['TITLE'];
+            if ($type!='all') {
+                $qry.= " AND devices.TYPE LIKE '".DBSafe($type)."'";
+                $out['TITLE']=$this->device_types[$type]['TITLE'];
+            } else {
+                $orderby = 'TYPE, locations.PRIORITY DESC, LOCATION_ID, TITLE';
+            }
             $out['TYPE']=$type;
         }
         $location_title='';
-        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE");
+        $type_title='';
+        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
         $total = count($devices);
         for ($i = 0; $i < $total; $i++) {
-            if ($devices[$i]['LOCATION_TITLE']!=$location_title && !$out['LOCATION_TITLE']) {
-                $devices[$i]['NEW_LOCATION']=1;
-                $location_title=$devices[$i]['LOCATION_TITLE'];
+            if ($type=='all') {
+                $devices[$i]['LOCATION_TITLE']=$this->device_types[$devices[$i]['TYPE']]['TITLE'];
+                if ($devices[$i]['LOCATION_TITLE']!=$location_title) {
+                    $devices[$i]['NEW_LOCATION']=1;
+                    $location_title=$devices[$i]['LOCATION_TITLE'];
+                }
+            } else {
+                if ($devices[$i]['LOCATION_TITLE']!=$location_title && !$out['LOCATION_TITLE']) {
+                    $devices[$i]['NEW_LOCATION']=1;
+                    $location_title=$devices[$i]['LOCATION_TITLE'];
+                }
+                if ($this->device_types[$devices[$i]['TYPE']]['TITLE']!=$type_title) {
+                    $type_title=$this->device_types[$devices[$i]['TYPE']]['TITLE'];
+                    $devices[$i]['NEW_TYPE']=1;
+                }
             }
+        }
+    } else {
+        $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+        $qry=" devices.FAVORITE=1";
+        $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
+    }
+
+    if ($devices[0]['ID']) {
+        $total = count($devices);
+        for($i=0;$i<$total;$i++) {
             if ($devices[$i]['LINKED_OBJECT']) {
                 $processed=$this->processDevice($devices[$i]['ID']);
                 $devices[$i]['HTML']=$processed['HTML'];
@@ -994,6 +1025,7 @@ devices -
  devices: TYPE varchar(100) NOT NULL DEFAULT ''
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  
+ devices: FAVORITE int(3) unsigned NOT NULL DEFAULT 0 
 
  devices: SYSTEM varchar(255) NOT NULL DEFAULT ''
  devices: SUBTYPE varchar(100) NOT NULL DEFAULT ''
