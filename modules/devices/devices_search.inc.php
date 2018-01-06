@@ -29,6 +29,10 @@ if ($location_id) {
    $session->data['devices_qry']=$qry;
   }
   if (!$qry) $qry="1";
+
+  $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices");
+  $out['TOTAL']=(int)$tmp['TOTAL'];
+
   $loc_title='';
   $sortby_devices="locations.PRIORITY DESC, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
   $out['SORTBY']=$sortby_devices;

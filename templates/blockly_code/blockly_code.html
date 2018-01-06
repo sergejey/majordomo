@@ -1,20 +1,14 @@
 [#if TYPE=="php"#]
 <script language="javascript">
  function [#CODE_FIELD#]_editBlocklyUpdated() {
-  //var blockly=window.open('<#ROOTHTML#>blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','width=100%,height=100%');
+     if (typeof editor!=="undefined") {
+         editor.toTextArea();
+     }
   var blockly = window.open('<#ROOTHTML#>blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
   blockly.creator=self;
   blockly.focus(); 
-
   return false;
  }
-
- function [#CODE_FIELD#]_editBlockly() {
-  var blockly=window.open('<#ROOTHTML#>blocky/demos/code/index.html','Blockly','width=100%,height=100%');
-  return false;
- }
-
-
 </script>
 
 
@@ -72,10 +66,11 @@ $(function() {
 <script src="<#ROOTHTML#>js/codemirror/addon/edit/closebrackets.js"></script>
 
 <script language="javascript">
+var editor;
 var myTextArea[#CODE_FIELD#];
 $(document).ready(function(){
 var myTextArea[#CODE_FIELD#]=document.getElementById('[#CODE_FIELD#]');
-var editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
+editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
  value: myTextArea[#CODE_FIELD#].value,
  lineNumbers: true,
         matchBrackets: true,
@@ -128,25 +123,11 @@ editor.on('keyup', function(){
 
 
 </script>
-<!--#
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/edit_area/edit_area_full.js"></script>
-<script language="javascript" type="text/javascript">
-editAreaLoader.init({
-        id : "[#CODE_FIELD#]"               // textarea id
-        ,syntax: "php"                  // syntax to be uses for highgliting
-        ,start_highlight: true          // to display with highlight mode on start-up
-});
-</script>
-#-->
 [#endif#]
 
 [#if TYPE=="php"#]
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
-[ <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();"><#LANG_EDIT#></a>
-<!--#
-<a href="#" onClick="return [#CODE_FIELD#]_editBlockly();" style="color:#888888">// <#LANG_EDIT#> (old)</a> 
-#-->
-]
+[ <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();"><#LANG_EDIT#></a> ]
 <textarea name="xml" id="xml_code" rows="5" cols="60" class="span10" style="display:none">[#XML#]</textarea>
 </div>
 [#endif TYPE#]

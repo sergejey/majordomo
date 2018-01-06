@@ -371,6 +371,8 @@ scripts - Scripts
  scripts: RUN_PERIODICALLY int(3) unsigned NOT NULL DEFAULT 0
  scripts: RUN_DAYS char(30) NOT NULL DEFAULT ''
  scripts: RUN_TIME char(30) NOT NULL DEFAULT ''
+ scripts: AUTO_LINK int(3) unsigned NOT NULL DEFAULT 0 
+ scripts: AUTO_LINK_AVAILABLE int(3) unsigned NOT NULL DEFAULT 0 
  scripts: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  scripts: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 

@@ -1,6 +1,6 @@
 <div>
  &nbsp;<br/>
-[#if (LOCATION_ID!="") || (TYPE!="")#]
+ [#if DEVICES#]
  <script type="text/javascript">
   var httpRefreshTimer = 0;
   var subscribedWebSockets=0;
@@ -64,21 +64,26 @@
    httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
   }
   httpRefreshTimer = setTimeout('httpRefreshDevices()',5000);
-  ///ajax/devices.html?op=get_device&id=25
-
  </script>
- <p><a href="?" class="btn btn-default"><#LANG_BACK#></a></p>
+ [#endif DEVICES#]
+
+[#if (LOCATION_ID!="") || (TYPE!="")#]
+ <p><a href="<#ROOTHTML#>apps/devices.html" class="btn btn-default"><#LANG_BACK#></a></p>
  <h1>[#TITLE#]</h1>
  [#begin DEVICES#]
  [#if NEW_LOCATION#]
+ <div style="clear:both"></div>
  <h2>[#LOCATION_TITLE#]</h2>
+ <div style="clear:both"></div>
  [#endif#]
- <div id="device[#ID#]">[#HTML#]</div>
- &nbsp;
+ [#if NEW_TYPE="1"#]<div style="clear:both"></div>[#endif#]
+ <div id="device[#ID#]" class="col-sm-3">[#HTML#]</div>
  [#end DEVICES#]
-[#else LOCATION_ID#]
 
- <p>
+ [#else LOCATION_ID#]
+
+ <div class="row">
+  <div class="col-md-6">
   <form action="?">
   <select name="type" onchange="this.form.submit();" class="form-control">
    <option value=""><#LANG_TYPE#></option>
@@ -87,7 +92,21 @@
    [#end TYPES#]
   </select>
  </form>
- </p>
+  </div>
+  <div class="col-md-6">
+   <a href="<#ROOTHTML#>apps/devices.html?location_id=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_ROOM#></a>
+   <a href="<#ROOTHTML#>apps/devices.html?type=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_TYPE#></a>
+  </div>
+ </div>
+
+ [#if DEVICES#]
+ &nbsp;
+ <div style="clear:both"></div>
+ [#begin DEVICES#]
+ <div id="device[#ID#]" class="col-sm-3">[#HTML#]</div>
+ [#end DEVICES#]
+ <div style="clear:both"></div>
+ [#endif DEVICES#]
 
 [#begin LOCATIONS#]
  [#if DEVICES_TOTAL!="0"#]

@@ -3,7 +3,11 @@
 #-->
 [#if SRC!=""#]
 [#if ENLARGE!="1"#]
+<<<<<<< HEAD
 <img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&live=[#LIVE#]&username=[#USERNAME#]&password=[#PASSWORD#]&stream=[#STREAM#]">
+=======
+<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&live=[#LIVE#]&username=[#USERNAME#]&password=[#PASSWORD#]&transport=[#TRANSPORT#]">
+>>>>>>> 291423a6794307cbb9cae969cf85cf317d841614
 [#else#]
 <script language="javascript">
  function enlarge[#UNIQ#]() {
@@ -21,7 +25,11 @@
   wnd=window.open("<#ROOTHTML#>modules/thumb/enlarge.php?img=[#SRC_REAL#]&color=[#COLOR#]&close=[#CLOSE#]&bgcolor=[#BGCOLOR#]", "img[#UNIQ#]", settings);
  }
 </script>
+<<<<<<< HEAD
 <a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&username=[#USERNAME#]&password=[#PASSWORD#]&live=[#LIVE#]&stream=[#STREAM#]" border=0></a>
+=======
+<a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&username=[#USERNAME#]&password=[#PASSWORD#]&live=[#LIVE#]&transport=[#TRANSPORT#]" border=0></a>
+>>>>>>> 291423a6794307cbb9cae969cf85cf317d841614
 [#endif#]
 [#else SRC#]
 image not found ([#REQUESTED#])

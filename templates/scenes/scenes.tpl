@@ -548,7 +548,7 @@ $.fn.customContextMenu = function(callBack){
                   }
                  }
                  {/if}
-                    {if $SCENE_AUTO_SCALE=="1"}
+                    {if $SCENE_AUTO_SCALE=="1" && $DRAGGABLE!="1"}
                     setTimeout('sceneZoom();',2000);
                     $(window).on('resize', function(){
                         sceneZoom();

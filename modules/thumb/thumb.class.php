@@ -83,6 +83,7 @@ function run() {
    $out['REAL_WIDTH']=$lst[0];
    $out['REAL_HEIGHT']=$lst[1];
    $out['URL']=base64_encode($this->url);
+   $out['TRANSPORT']=urldecode($this->transport);
 
 
    $out['USERNAME']=urlencode($this->username);

@@ -21,7 +21,7 @@
 
  <div class="form-group">
   <select name="type" class="form-control" onchange="this.form.submit();">
-   <option value=""><#LANG_TYPE#></option>
+   <option value=""><#LANG_TYPE#> (<#LANG_TOTAL#>: [#TOTAL#])</option>
    [#begin TYPES#]
    <option value="[#NAME#]"[#if NAME="<#TYPE#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])</option>
    [#end TYPES#]
@@ -112,12 +112,12 @@
 </tr>
 [#endif#]
 <tr>
-  <td style="vertical-align:middle"
-  >
+  <td style="vertical-align:middle">
   <b>
    [#TITLE#]
   </a></b><br/>
   [#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#]
+  [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
  </td>
  <td><div id="device[#ID#]">[#HTML#]</div></td>
  <td style="vertical-align:middle" width="1%" nowrap>
