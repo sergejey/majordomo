@@ -22,9 +22,9 @@ if ($this->class_title == 'SMotions' && $params['NEW_VALUE'] && !timeOutExists($
     $this->callMethodSafe('pressed',array('statusUpdated'=>1));
 }
 
-if ($linked_room && $this->getProperty('isActivity')) {
+if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
  if (getGlobal('NobodyHomeMode.active')) {
-  callMethodSafe('NobodyHomeMode.deactivate');
+  callMethodSafe('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));
  }
  ClearTimeOut("nobodyHome");
  SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);

@@ -60,6 +60,10 @@
     background-image: url(../cms/scenes/styles/button/i_knopka.png);
 }
 
+.device-icon.button.on {
+    background-color:yellow;
+}
+
 .device-icon.motion.on {
     background-color:yellow;
 }

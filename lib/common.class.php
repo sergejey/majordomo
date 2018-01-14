@@ -763,7 +763,11 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '') {
  */
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
-   $cache_file = ROOT . 'cached/urls/' . preg_replace('/\W/is', '_', str_replace('http://', '', $url)) . '.html';
+   $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
+    if (strlen($filename_part)>200) {
+        $filename_part=substr($filename_part,0,200).md5($filename_part);
+    }
+   $cache_file = ROOT . 'cached/urls/' . $filename_part . '.html';
    
    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache))
    {

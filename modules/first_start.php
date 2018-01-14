@@ -8,6 +8,8 @@
  $languages[]=array('TITLE'=>'ru');
  $languages[]=array('TITLE'=>'ua');
  $languages[]=array('TITLE'=>'lt');
+ $languages[]=array('TITLE'=>'es');
+ $languages[]=array('TITLE'=>'it');
 
  $out['LANGUAGES']=$languages;
 
