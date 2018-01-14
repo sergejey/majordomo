@@ -29,36 +29,36 @@ function app_mediabrowser() {
 *
 * @access public
 */
-function saveParams() {
- $p=array();
+function saveParams($data=1) {
+ $data=array();
  if (IsSet($this->id)) {
-  $p["id"]=$this->id;
+  $data["id"]=$this->id;
  }
  if (IsSet($this->view_mode)) {
-  $p["view_mode"]=$this->view_mode;
+  $data["view_mode"]=$this->view_mode;
  }
  if (IsSet($this->edit_mode)) {
-  $p["edit_mode"]=$this->edit_mode;
+  $data["edit_mode"]=$this->edit_mode;
  }
  if (IsSet($this->tab)) {
-  $p["tab"]=$this->tab;
+  $data["tab"]=$this->tab;
  }
  if (IsSet($this->mode)) {
-  $p["mode"]=$this->mode;
+  $data["mode"]=$this->mode;
  }
  if (IsSet($this->collection_id)) {
-  $p["collection_id"]=$this->collection_id;
+  $data["collection_id"]=$this->collection_id;
  }
  if (IsSet($this->folder)) {
-  $p["folder"]=$this->folder;
+  $data["folder"]=$this->folder;
  }
 
 
  if (IsSet($this->showplayer)) {
-  $p["showplayer"]=$this->showplayer;
+  $data["showplayer"]=$this->showplayer;
  }
 
- return parent::saveParams($p);
+ return parent::saveParams($data);
 }
 /**
 * getParams

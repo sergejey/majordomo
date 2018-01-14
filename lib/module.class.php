@@ -112,10 +112,10 @@ class module
          {
             $data["instance"] = $this->instance;
          }
-         
+
          // echo $this->name." ".$this->instance."<br>";
          $res = $this->createParamsString($data, $this->name) . PARAMS_DELIMITER . $this->saveParentParams();
-         
+
          return $res;
       }
    }
@@ -288,7 +288,7 @@ class module
       // getting params of all modules
       $pd           = str_replace(EQ_DELIMITER, "=", $pd);
       $matchPattern = '/m' . STRING_DELIMITER . '(\w+?)' . STRING_DELIMITER . '(\w+?)=(.*?)' . PARAMS_DELIMITER . '/';
-      
+
       if (preg_match_all($matchPattern, $pd, $matches, PREG_PATTERN_ORDER))
       {
          $matchesCnt = count($matches[1]);
@@ -343,7 +343,7 @@ class module
    {
       if (isset($this->owner->name))
          return $this->owner->saveParams();
-      
+
       return "";
    }
 
@@ -363,7 +363,7 @@ class module
          $sqlQuery = "SELECT *
                         FROM project_modules
                        WHERE NAME = '" . $this->name . "'";
-         
+
          $rec = SQLSelectOne($sqlQuery);
 
          if (!isset($rec["ID"]))
@@ -382,12 +382,12 @@ class module
       $sqlQuery = "SELECT *
                      FROM project_modules
                     WHERE NAME = '" . $this->name . "'";
-      
+
       $rec  = SQLSelectOne($sqlQuery);
       $data = $rec["DATA"];
 
       $this->config = unserialize($data);
-      
+
       return $this->config;
    }
 
@@ -425,7 +425,7 @@ class module
    public function install($parent_name = "")
    {
       $this->dbInstall("");
-      
+
       $sqlQuery = "SELECT *
                      FROM project_modules
                     WHERE NAME = '" . $this->name . "'";
@@ -440,7 +440,7 @@ class module
 
       if (isset($this->module_category))
          $rec["CATEGORY"] = $this->module_category;
-      
+
       if (!isset($rec["ID"]))
       {
          $rec["ID"] = SQLInsert("project_modules", $rec);
@@ -536,12 +536,14 @@ class module
             $sql = "CREATE TABLE IF NOT EXISTS $table ($definition) CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
             $table_defined[$table] = 1;
-            
+
             SQLExec($sql);
 
             $result = SQLGetFields($table);
-            foreach($result as $row) {
-             $tbl_fields[$table][$row['Field']]=1;
+            if (is_array($result)) {
+               foreach($result as $row) {
+                  $tbl_fields[$table][$row['Field']]=1;
+               }
             }
 
          }
@@ -559,13 +561,13 @@ class module
             }
 
             preg_match('/\((.+?)\)/', $definition, $matches);
-            
+
             $key_name = trim($matches[1], " `");
 
             if (!isset($tbl_indexes[$table][$key_name]))
             {
                $definition = str_replace('`', '', $definition);
-               $sql        = "ALTER IGNORE TABLE $table ADD $definition;";
+               $sql        = "ALTER TABLE $table ADD $definition;";
 
                SQLExec($sql);
 
@@ -575,7 +577,7 @@ class module
          elseif (!isset($tbl_fields[$table][$field]))
          {
             // new field
-            $sql = "ALTER IGNORE TABLE $table ADD $definition;";
+            $sql = "ALTER TABLE $table ADD $definition;";
             SQLExec($sql);
          }
       }
@@ -652,6 +654,15 @@ class module
       $session->save();
       $db->Disconnect();
 
+      if ($_GET['part_load']) {
+       $res=array();
+       $res['CONTENT']='';
+       $res['NEED_RELOAD']=1;
+       $res['REDIRECT']=$url;
+       echo json_encode($res);
+       exit;
+      }
+
       if (!headers_sent())
       {
          header("Location: $url\n\n");
@@ -677,7 +688,7 @@ class module
 
       $url = $matches[1];
       $url = str_replace("?", "?" . session_name() . "=" . session_id() . "&", $url);
-      
+
       return $url;
    }
 
@@ -690,7 +701,7 @@ class module
    public function cached($content)
    {
       $h = md5($content);
-      
+
       $filename     = ROOT . 'cached/' . $this->name . '_' . $h . '.txt';
       $cache_expire = 15 * 60; // 15 minutes cache expiration time
 
@@ -709,9 +720,9 @@ class module
       if (isset($cached_result) && $cached_result == '')
       {
          $p = new jTemplate(DIR_TEMPLATES . 'null.html', $this->data, $this);
-         
+
          $cached_result = $p->parse($content, $this->data, DIR_TEMPLATES);
-         
+
          SaveFile($filename, $cached_result);
       }
 
@@ -736,7 +747,7 @@ class module
          SaveFile($filename, $content);
 
       $url = $this->makeRealURL("?");
-      
+
       if (preg_match('/\?/is', $url))
       {
          $url .= "&ajt=" . $h;

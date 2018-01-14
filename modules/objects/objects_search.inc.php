@@ -44,14 +44,18 @@
   if (!$sortby) $sortby="TITLE";
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT objects.*, classes.TITLE as CLASS_TITLE, locations.TITLE as LOCATION_TITLE FROM objects LEFT JOIN locations ON locations.ID=objects.LOCATION_ID LEFT JOIN classes ON classes.ID=objects.CLASS_ID WHERE $qry ORDER BY $sortby");
+  $res=SQLSelect("SELECT objects.*, classes.TITLE as CLASS_TITLE, locations.TITLE as LOCATION_TITLE FROM objects LEFT JOIN locations ON locations.ID=objects.LOCATION_ID LEFT JOIN classes ON classes.ID=objects.CLASS_ID WHERE $qry ORDER BY objects.TITLE");
   if ($res[0]['ID']) {
    paging($res, 50, $out); // search result paging
    colorizeArray($res);
+
    $total=count($res);
+   $cached_properties=array();
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+     $res[$i]['ADD_DESCRIPTION']=getKeyData($res[$i]['ID']);
    }
+
    $out['RESULT']=$res;
   }
 ?>

@@ -248,13 +248,14 @@ function usual(&$out) {
 *
 * @access private
 */
- function dbInstall() {
+ function dbInstall($data) {
 /*
 myblocks - Myblocks
 myblocks_categories - Myblocks Categories
 */
   $data = <<<EOD
  myblocks: ID int(10) unsigned NOT NULL auto_increment
+ myblocks: SYSTEM varchar(255) NOT NULL DEFAULT ''
  myblocks: TITLE varchar(255) NOT NULL DEFAULT ''
  myblocks: CATEGORY_ID int(10) NOT NULL DEFAULT '0'
  myblocks: BLOCK_TYPE char(10) NOT NULL DEFAULT ''
@@ -264,6 +265,7 @@ myblocks_categories - Myblocks Categories
  myblocks: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  myblocks_categories: ID int(10) unsigned NOT NULL auto_increment
  myblocks_categories: TITLE varchar(255) NOT NULL DEFAULT ''
+ myblocks_categories: SYSTEM varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

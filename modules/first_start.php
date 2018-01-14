@@ -8,6 +8,8 @@
  $languages[]=array('TITLE'=>'ru');
  $languages[]=array('TITLE'=>'ua');
  $languages[]=array('TITLE'=>'lt');
+ $languages[]=array('TITLE'=>'es');
+ $languages[]=array('TITLE'=>'it');
 
  $out['LANGUAGES']=$languages;
 
@@ -251,6 +253,7 @@ for($i=0;$i<$total;$i++) {
      } else {
       $rec['VALUE']=$v['VALUE'];
      }
+     $rec['DATA']='';
      $rec['DEFAULTVALUE']=$v['DEFAULT'];
      $rec['TITLE']=$v['TITLE'];
      $rec['TYPE']=$v['TYPE'];

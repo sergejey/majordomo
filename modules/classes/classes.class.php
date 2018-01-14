@@ -185,7 +185,7 @@ function admin(&$out) {
   $objects=SQLSelect("SELECT objects.*, locations.TITLE as LOCATION FROM objects LEFT JOIN locations ON objects.LOCATION_ID=locations.ID WHERE $qry ORDER BY CLASS_ID, TITLE");
   $total=count($objects);
   for($i=0;$i<$total;$i++) {
-   
+   $objects[$i]['KEY_DATA']=getKeyData($objects[$i]['ID']);
   }
   $out['OBJECTS']=$objects;
   $out['CLASSES']=SQLSelect("SELECT * FROM classes ORDER BY TITLE");
@@ -271,6 +271,13 @@ function admin(&$out) {
       $properties=$objects[$o]['PROPERTIES'];
       Unset($objects[$o]['PROPERTIES']);
       $objects[$o]['ID']=SQLInsert('objects', $objects[$o]);
+      if ($objects[$o]['LOCATION_ID']) {
+       $location_rec=SQLSelectOne("SELECT ID FROM locations WHERE ID=".$objects[$o]['LOCATION_ID']);
+       if (!$location_rec['ID']) {
+        $objects[$o]['LOCATION_ID']=0;
+        SQLUpdate('objects',$objects[$o]);
+       }
+      }
 
       if (is_array($properties)) {
        $total_p=count($properties);
@@ -378,7 +385,7 @@ function admin(&$out) {
 
     unset($objects[$o]['ID']);
     unset($objects[$o]['CLASS_ID']);
-    unset($objects[$o]['LOCATION_ID']);
+    //unset($objects[$o]['LOCATION_ID']);
     unset($objects[$o]['SUB_LIST']);
    }
 
@@ -653,6 +660,7 @@ classes - Classes
  classes: SUB_LIST text
  classes: PARENT_LIST text
  classes: DESCRIPTION text
+ classes: TEMPLATE text
  classes: INDEX (PARENT_ID)
 
 EOD;

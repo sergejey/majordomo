@@ -175,6 +175,14 @@ function usual(&$out) {
   $terminal['HOST']='localhost';
  }
 
+ if (!$terminal['CANPLAY']) {
+  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE NAME='HOME' OR NAME='MAIN'");
+ }
+
+ if (!$terminal['CANPLAY']) {
+  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY IS_ONLINE DESC LIMIT 1");
+ }
+
  if (!$play && $session->data['LAST_PLAY']) {
   $play=$session->data['LAST_PLAY'];
   $out['LAST_PLAY']=1;
@@ -201,6 +209,7 @@ function usual(&$out) {
 
 
 
+
  global $ajax;
  if ($ajax!='') {
   global $command;
@@ -224,6 +233,10 @@ function usual(&$out) {
     $terminal['PLAYER_PORT']='80';
    }
 
+   if ($terminal['NAME']=='MAIN' && $command=='volume') {
+    setGlobal('ThisComputer.volumeLevel', $volume);
+   }
+
     if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
 
       $terminal['PLAYER_PORT']='80';
@@ -237,7 +250,6 @@ function usual(&$out) {
         $path=urlencode(''.str_replace('/', "\\", ($out['PLAY'])));
        }
        curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_play&param=".$path);
-       //echo $path;exit;
        $res=curl_exec($ch);
       }
 
@@ -281,6 +293,10 @@ function usual(&$out) {
     include(DIR_MODULES.'app_player/vlcweb.php');
    } elseif ($terminal['PLAYER_TYPE']=='mpd') {
     include(DIR_MODULES.'app_player/mpd.php');
+    } elseif ($terminal['PLAYER_TYPE']=='chromecast') {
+     include(DIR_MODULES.'app_player/chromecast.php');
+   } elseif ($terminal['MAJORDROID_API'] || $terminal['PLAYER_TYPE']=='majordroid') {
+   include(DIR_MODULES.'app_player/majordroid.php');
    }
 
    // close cURL resource, and free up system resources

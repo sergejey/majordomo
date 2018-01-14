@@ -22,23 +22,17 @@ $checked_time = 0;
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
-while (1)
-{
-   if (time() - $checked_time > 5)
-   {
+while (1) {
+   if (time() - $checked_time > 5) {
       $checked_time = time();
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
    }
-   
    runScheduledJobs();
    $sc->checkScheduledScripts();
-
-   if (file_exists('./reboot') || IsSet($_GET['onetime']))
-   {
+   if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
       $db->Disconnect();
       exit;
    }
-
    sleep(1);
 }
 

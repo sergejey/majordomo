@@ -92,6 +92,13 @@ $(function() {
         </div>
 </div>
 
+<div class="form-group">
+        <div class="controls">
+                <input type="checkbox" name="auto_scale" value="1"[#if AUTO_SCALE="1"#] checked[#endif#]>
+                <#LANG_SCENE_AUTO_SCALE#> <#LANG_HCB#>scene_auto_scale<#LANG_HCE#>
+        </div>
+</div>
+
 
 <!-- BACKGROUND (varchar) -->
 
@@ -200,7 +207,7 @@ $(function() {
 <a class="btn btn-default" href="?data_source=<#DATA_SOURCE#>"><#LANG_CANCEL#></a>
 
  [#if ID!=""#]
- <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_MAKE_COPY#></a>
  <a class="btn btn-default" href="?id=<#ID#>&view_mode=export"><#LANG_EXPORT#></a>
  <a class="btn btn-default" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i> <#LANG_PREVIEW#></a> 
  [#endif ID#]

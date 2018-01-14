@@ -113,6 +113,7 @@ Action URL:
                 <select name="type" class="form-control">
                         <option value="">select
                         <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
+                        <option value="object"[#if TYPE="object"#] selected[#endif#]><#LANG_OBJECT#>
                         <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
                         <option value="url"[#if TYPE="url"#] selected[#endif#]><#LANG_URL#>
                         <option value="urlblank"[#if TYPE="urlblank"#] selected[#endif#]><#LANG_URL#> (<#LANG_NEW_WINDOW#>)
@@ -126,6 +127,7 @@ Action URL:
                         <option value="timebox"[#if TYPE="timebox"#] selected[#endif#]><#LANG_TIME_PICKER#>
                         <option value="datebox"[#if TYPE="datebox"#] selected[#endif#]><#LANG_DATE_BOX#>
                         <option value="textbox"[#if TYPE="textbox"#] selected[#endif#]><#LANG_TEXT_BOX#>
+                        <option value="color"[#if TYPE="color"#] selected[#endif#]><#LANG_COLOR_PICKER#>
                         <option value="custom"[#if TYPE="custom"#] selected[#endif#]><#LANG_CUSTOM_HTML_BOX#>
                 </select>
         </div>
@@ -202,7 +204,7 @@ Action URL:
     </div>
 </div>
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox" || TYPE=="color"#]
 
 <div class="form-group">
   <label class="control-label"><#LANG_CURRENT_VALUE#>:</label>
@@ -223,9 +225,7 @@ Action URL:
 
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
-
-
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox" || TYPE=="color" || TYPE=="object"#]
 <div class="form-group">
   <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object<#LANG_HCE#></label>
    <div class="col-lg-5">
@@ -238,7 +238,7 @@ Action URL:
 </div>
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox" || TYPE=="color"#]
 <div class="form-group">
   <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property<#LANG_HCE#></label>
    <div class="col-lg-5">
@@ -249,9 +249,17 @@ Action URL:
      </div>
     </div>
 </div>
+
+<div class="form-group">
+        <label class="control-label"><#LANG_SMART_REPEAT#>:<#LANG_HCB#>menu_smartrepeat<#LANG_HCE#></label>
+        <div class="col-lg-5">
+                <label><input type="radio" name="smart_repeat" value="1"[#if SMART_REPEAT="1"#] checked[#endif#]> <#LANG_YES#></label>
+                <label><input type="radio" name="smart_repeat" value="0"[#if SMART_REPEAT!="1"#] checked[#endif#]> <#LANG_NO#></label>
+        </div>
+</div>
 [#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox"#]
+[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="datebox" || TYPE=="textbox" || TYPE=="radiobox" || TYPE=="color"#]
 <div class="form-group">
   <label class="control-label"><#LANG_METHOD#>:<#LANG_HCB#>linked_method<#LANG_HCE#></label>
   <!--#<#LANG_ONCHANGE_OBJECT#>.#-->
@@ -302,14 +310,6 @@ Action URL:
         </div>
 </div>
 
-
-<div class="form-group">
-        <label class="control-label"><#LANG_SMART_REPEAT#>:<#LANG_HCB#>menu_smartrepeat<#LANG_HCE#></label>
-        <div class="col-lg-5">
-                <label><input type="radio" name="smart_repeat" value="1"[#if SMART_REPEAT="1"#] checked[#endif#]> <#LANG_YES#></label>
-                <label><input type="radio" name="smart_repeat" value="0"[#if SMART_REPEAT!="1"#] checked[#endif#]> <#LANG_NO#></label>
-        </div>
-</div>
 
 [#endif TYPE#]
 

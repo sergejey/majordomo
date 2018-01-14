@@ -60,6 +60,10 @@ $(function() {
                 [#endif#]
                 [#endif TYPE#]
 
+                [#if TYPE="json"#]
+                <pre>[#VALUE#]</pre>
+                [#endif TYPE#]
+
                 [#if TYPE="path"#]
                 <input type="text"   class="form-control" name="value_[#ID#]" value="[#VALUE#]" id="value_[#ID#]" size=50 onclick="openFileBrowser('value_[#ID#]');">
                 [#endif TYPE#]

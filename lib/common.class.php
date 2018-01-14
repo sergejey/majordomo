@@ -1,10 +1,86 @@
 <?php
-/*
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 0.7
+/**
+ * Summary of sayReply
+ * @param mixed $ph        Phrase
+ * @param mixed $level     Level (default 0)
+ * @param mixed $replyto   Original request
+ * @return void
  */
+ function sayReply($ph, $level = 0, $replyto='') {
+  $source='';
+  if ($replyto) {
+   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%".DBSafe($replyto)."%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
+   $orig_msg=SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%".DBSafe($replyto)."%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
+   if ($orig_msg['ID']) {
+    $source=$orig_msg['SOURCE'];
+   }
+  } else {
+   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST_TIME>=(NOW() - INTERVAL 5 SECOND) ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
+  }
+  if (!$terminal_rec) {
+   say($ph, $level);
+  } else {
+   $source='terminal'.$terminal_rec['ID'];
+   $said_status=sayTo($ph, $level, $terminal_rec['NAME']);
+   if (!$said_status) {
+    say($ph, $level);
+   } else {
+    $rec = array();
+    $rec['MESSAGE']   = $ph;
+    $rec['ADDED']     = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']   = 0;
+    $rec['MEMBER_ID'] = 0;
+    if ($level > 0) $rec['IMPORTANCE'] = $level;
+    $rec['ID'] = SQLInsert('shouts', $rec);
+   }
+  }
+  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
+ }
 
+/**
+ * Summary of sayTo
+ * @param mixed $ph        Phrase
+ * @param mixed $level     Level (default 0)
+ * @param mixed $destination  Destination terminal name
+ * @return void
+ */
+ function sayTo($ph, $level = 0, $destination = '') {
+  if (!$destination) {
+   return 0;
+  }
+  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
+
+  if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
+   $min_level=(int)getGlobal($terminal_rec['LINKED_OBJECT'].'.'.$terminal_rec['LEVEL_LINKED_PROPERTY']);
+  } else {
+   $min_level=(int)getGlobal('minMsgLevel');
+  }
+  if ($level < $min_level) {
+   return 0;
+  }
+  if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
+   $service_port='7999';
+   $in='tts:'.$ph;
+   $address=$terminal_rec['HOST'];
+   if (!preg_match('/^\d/',$address)) return 0;
+   $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+   if ($socket === false) {
+    return 0;
+   }
+   $result = socket_connect($socket, $address, $service_port);
+   if ($result === false) {
+    return 0;
+   }
+   socket_write($socket, $in, strlen($in));
+   socket_close($socket);
+   return 1;
+  } elseif (!$processed) {
+   //say($ph,$level);
+   return 0;
+  }
+  return 0;
+ }
 
 /**
  * Summary of say
@@ -13,29 +89,32 @@
  * @param mixed $member_id Member ID (default 0)
  * @return void
  */
-function say($ph, $level = 0, $member_id = 0)
+function say($ph, $level = 0, $member_id = 0, $source = '')
 {
-   global $commandLine;
-   global $voicemode;
    global $noPatternMode;
+   global $ignoreVoice;
+
+    verbose_log("SAY (level: $level; member: $member; source: $source): ".$ph);
 
    $rec = array();
-
    $rec['MESSAGE']   = $ph;
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['ROOM_ID']   = 0;
    $rec['MEMBER_ID'] = $member_id;
+   $rec['SOURCE'] = $source;
 
    if ($level > 0) $rec['IMPORTANCE'] = $level;
-
    $rec['ID'] = SQLInsert('shouts', $rec);
 
    if ($member_id)
    {
-      include_once(DIR_MODULES . 'patterns/patterns.class.php');
-      $pt = new patterns();
-      $pt->checkAllPatterns($member_id);
-   
+      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+       if (!$processed) {
+           include_once(DIR_MODULES . 'patterns/patterns.class.php');
+           $pt = new patterns();
+           $res=$pt->checkAllPatterns($member_id);
+           processCommand($ph);
+       }
       return;
    }
 
@@ -44,13 +123,11 @@ function say($ph, $level = 0, $member_id = 0)
       eval(SETTINGS_HOOK_BEFORE_SAY);
    }
 
-   global $ignoreVoice;
    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id)
    {
       if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1')
       {
          $passed = time() - (int)getGlobal('lastSayTime');
-         // play intro-sound only if more than 20 seconds passed from the last one
          if ($passed > 20)
          {
             playSound('dingdong', 1, $level);
@@ -73,6 +150,48 @@ function say($ph, $level = 0, $member_id = 0)
    {
       eval(SETTINGS_HOOK_AFTER_SAY);
    }
+
+   $terminals=SQLSelect("SELECT NAME FROM terminals WHERE IS_ONLINE=1 AND MAJORDROID_API=1");
+   $total=count($terminals);
+   for($i=0;$i<$total;$i++) {
+    sayTo($ph, $level, $terminals[$i]['NAME']);
+   }
+
+}
+
+function ask($prompt, $target = '') {
+    processSubscriptions('ASK', array('prompt' => $prompt, 'target' => $target));
+
+    $service_port='7999';
+    $in='ask:'.$prompt;
+
+    if (preg_match('/^[\d\.]+$/',$target)) {
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if ($socket) {
+            $result = socket_connect($socket, $target, $service_port);
+            if ($result) {
+                socket_write($socket, $in, strlen($in));
+            }
+        }
+        socket_close($socket);
+    } else {
+        $qry=1;
+        $qry.=" AND MAJORDROID_API=1";
+        $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE $qry");
+        $total = count($terminals);
+        for ($i = 0; $i < $total; $i++) {
+            $address = $terminals[$i]['HOST'];
+            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            if ($socket) {
+                $result = socket_connect($socket, $address, $service_port);
+                if ($result) {
+                    socket_write($socket, $in, strlen($in));
+                }
+            }
+            socket_close($socket);
+        }
+    }
 }
 
 /**
@@ -113,6 +232,13 @@ function timeConvert($tm)
 }
 
 
+function getNumberWord($number, $suffix) {
+    $keys = array(2, 0, 1, 1, 1, 2);
+    $mod = $number % 100;
+    $suffix_key = ($mod > 7 && $mod < 20) ? 2: $keys[min($mod % 10, 5)];
+    return $suffix[$suffix_key];
+}
+
 /**
  * Summary of timeNow
  * @param mixed $tm time (default 0)
@@ -126,35 +252,25 @@ function timeNow($tm = 0)
    }
 
    $h = (int)date('G', $tm);
-
-   if ($h == 0) $hw      = 'часов';
-   elseif ($h == 1) $hw  = 'час';
-   elseif ($h < 5) $hw   = 'часа';
-   elseif ($h < 21) $hw  = 'часов';
-   elseif ($h == 21) $hw = 'час';
-   elseif ($h >= 21) $hw = 'часа';
-
    $m = (int)date('i', $tm);
+   $ms = '';
 
-   if ($m == 1 || $m == 21 || $m == 31 || $m == 41 || $m == 51)
-   {
-      $ms = $m . " минута";
-   }
-   elseif ($m >= 5 && $m <= 20 || $m >= 25 && $m <= 30 || $m >= 35
-        && $m <= 40 || $m >= 45 && $m <= 50 || $m >= 55 && $m <= 59)
-   {
-      $ms = $m . " минут";
-   }
-   elseif ($m >= 22 && $m <= 24 || $m >= 32 && $m <= 34 || $m >= 42 && $m <= 44 || $m >= 52 && $m <= 54)
-   {
-      $ms = $m . " минуты";
-   }
-   elseif ($m == 0)
-   {
-      $ms = "";
+   $language = SETTINGS_SITE_LANGUAGE;
+
+   if ($language == 'ru') {
+       $array = array("час", "часа", "часов");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("минута", "минуты", "минут");
+           $ms = $m.' '.getNumberWord($m,$array);
+       }
+   } elseif ($language == 'en' && $m == 0) {
+       $hw = $h.' o\'clock';
+   } else {
+       $hw = date('H:i',$tm);
    }
 
-   $res = "$h " . ($hw) . " " . ($ms);
+   $res = trim($hw . " " . $ms);
    return $res;
 }
 
@@ -167,6 +283,7 @@ function isWeekEnd()
    if (date('w') == 0 || date('w') == 6)
       return true; // sunday, saturday
    
+
    return false;
 }
 
@@ -262,10 +379,9 @@ function timeBetween($tm1, $tm2)
  * @param mixed $expire   Expire time (default 60)
  * @return mixed
  */
-function addScheduledJob($title, $commands, $datetime, $expire = 60)
+function addScheduledJob($title, $commands, $datetime, $expire = 1800)
 {
    $rec = array();
-
    $rec['TITLE']    = $title;
    $rec['COMMANDS'] = $commands;
    $rec['RUNTIME']  = date('Y-m-d H:i:s', $datetime);
@@ -355,15 +471,16 @@ function runScheduledJobs()
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
       
       SQLUpdate('jobs', $jobs[$i]);
-      $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-      $result = trim(getURL($url, 0));
 
-      $result = preg_replace('/<!--.+-->/is', '', $result);
-
-      if ($result != 'OK')
-      {
-         DebMes("Error executing job " . $jobs[$i]['TITLE'] . " (" . $jobs[$i]['ID'] . "): " . $result);
-      }
+       if ($jobs[$i]['COMMANDS'] != '') {
+           $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+           $result = trim(getURL($url, 0));
+           $result = preg_replace('/<!--.+-->/is', '', $result);
+           if (!preg_match('/OK$/', $result)) {
+               //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
+               DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
+           }
+       }
    }
 }
 
@@ -435,39 +552,11 @@ function recognizeTime($text, &$newText)
  * @param mixed $expire_in Expire time (default 365)
  * @return mixed
  */
-function registerEvent($eventName, $details = '', $expire_in = 365)
+function registerEvent($eventName, $details = '', $expire_in = 0)
 {
-   $sqlQuery = "SELECT *
-                  FROM events
-                 WHERE EVENT_NAME = '" . DBSafe($eventName) . "'
-                   AND EVENT_TYPE = 'system'
-                 ORDER BY ID DESC
-                 LIMIT 1";
-
-   $rec = array();
-   $rec = SQLSelectOne($sqlQuery);
-
-   $rec['EVENT_NAME'] = $eventName;
-   $rec['EVENT_TYPE'] = 'system';
-   $rec['DETAILS']    = $details;
-   $rec['ADDED']      = date('Y-m-d H:i:s');
-   $rec['EXPIRE']     = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
-   $rec['PROCESSED']  = 1;
-
-   if ($rec['ID'])
-   {
-      SQLUpdate('events', $rec);
-      $sqlQuery = "DELETE FROM events
-                    WHERE EVENT_NAME = '" . $rec['EVENT_NAME'] . "'
-                      AND EVENT_TYPE = '" . $rec['EVENT_TYPE'] . "'
-                      AND ID         != " . $rec['ID'];
-      SQLExec($sqlQuery);
-   }
-   else
-   {
-      $rec['ID'] = SQLInsert('events', $rec);
-   }
-   return $rec['ID'];
+    include_once(DIR_MODULES.'events/events.class.php');
+    $events = new events();
+    return $events->registerEvent($eventName, $details, $expire_in);
 }
 
 /**
@@ -550,7 +639,7 @@ function playSound($filename, $exclusive = 0, $priority = 0)
          if (IsWindowsOS())
             safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
          else
-            safe_exec('mplayer ' . $filename, $exclusive, $priority);
+            safe_exec('mplayer ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
       }
    }
 
@@ -623,6 +712,32 @@ function runScript($id, $params = '')
    return $sc->runScript($id, $params);
 }
 
+function runScriptSafe($id, $params = '') {
+    $current_call='script.'.$id;
+    $call_stack=array();
+    if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        $call_stack = $_GET['m_c_s'];
+    }
+    if (in_array($current_call,$call_stack)) {
+        $call_stack[]=$current_call;
+        DebMes("Warning: cross-linked call of ".$current_call."\nlog:\n".implode(" -> \n",$call_stack));
+        return 0;
+    }
+    $call_stack[]=$current_call;
+    $data=array(
+        'script'=>$id,
+        'm_c_s'=>$call_stack
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
+
 /**
  * Summary of callScript
  * @param mixed $id     ID
@@ -634,6 +749,10 @@ function callScript($id, $params = '')
    runScript($id, $params);
 }
 
+function getURLBackground($url, $cache = 0, $username = '', $password = '') {
+  getURL($url, $cache, $username, $password, true);
+}
+
 /**
  * Summary of getURL
  * @param mixed $url      Url
@@ -642,28 +761,72 @@ function callScript($id, $params = '')
  * @param mixed $password Password (default '')
  * @return mixed
  */
-function getURL($url, $cache = 0, $username = '', $password = '')
+function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
-   $cache_file = ROOT . 'cached/urls/' . preg_replace('/\W/is', '_', str_replace('http://', '', $url)) . '.html';
+   $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
+    if (strlen($filename_part)>200) {
+        $filename_part=substr($filename_part,0,200).md5($filename_part);
+    }
+   $cache_file = ROOT . 'cached/urls/' . $filename_part . '.html';
    
    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache))
    {
-      //download
       try
       {
+
+         //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
+         $startTime=getmicrotime();
+
          $ch = curl_init();
          curl_setopt($ch, CURLOPT_URL, $url);
-         curl_setopt($ch, CURLOPT_USERAGENT, 'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.14');
+         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
+         curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-         
+
+          if ($background) {
+              curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1000);
+          }
+
          if ($username != '' || $password != '')
          {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+         }
+
+         $url_parsed=parse_url($url);
+         $host=$url_parsed['host'];
+
+         $use_proxy=false;
+         if (defined('USE_PROXY') && USE_PROXY!='') {
+          $use_proxy=true;
+         }
+
+         if ($host == '127.0.0.1' || $host == 'localhost') {
+          $use_proxy=false;
+         }
+
+         if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
+             $p = preg_quote(HOME_NETWORK);
+             $p = str_replace('\*', '\d+?', $p);
+             $p = str_replace(',', ' ', $p);
+             $p = str_replace('  ', ' ', $p);
+             $p = str_replace(' ', '|', $p);
+             if (preg_match('/' . $p . '/is', $host)) {
+              $use_proxy=false;
+             }
+         }
+
+         if ($use_proxy) {
+          curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+          if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH!='') {
+           curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+          }
          }
 
          $tmpfname = ROOT . 'cached/cookie.txt';
@@ -671,6 +834,18 @@ function getURL($url, $cache = 0, $username = '', $password = '')
          curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
          $result = curl_exec($ch);
+
+
+          if (curl_errno($ch) && !$background) {
+              $errorInfo = curl_error($ch);
+              $info = curl_getinfo($ch);
+              $backtrace = debug_backtrace();
+              $callSource = $backtrace[1]['function'];
+              DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info));
+          }
+          curl_close($ch);
+
+
       }
       catch (Exception $e)
       {
@@ -704,8 +879,8 @@ function safe_exec($command, $exclusive = 0, $priority = 0)
 
    $rec['ADDED']     = date('Y-m-d H:i:s');
    $rec['COMMAND']   = $command;
-   $rec['EXCLUSIVE'] = $exclusive;
-   $rec['PRIORITY']  = $priority;
+   $rec['EXCLUSIVE'] = (int)$exclusive;
+   $rec['PRIORITY']  = (int)$priority;
 
    $rec['ID'] = SQLInsert('safe_execs', $rec);
    return $rec['ID'];
@@ -834,11 +1009,15 @@ function checkAccess($object_type, $object_id)
  */
 function registerError($code = 'custom', $details = '')
 {
+
+   $e = new \Exception;
+   $backtrace=$e->getTraceAsString();
+
+   DebMes("Error registered (type: $code):\n".$details."\nBacktrace:\n".$backtrace,'error');
    $code = trim($code);
-   
-   if (!$code)
-   {
-      $code = 'custom';
+
+   if ($code == 'sql') {
+    return 0;
    }
 
    $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
@@ -851,13 +1030,12 @@ function registerError($code = 'custom', $details = '')
    }
 
    $error_rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-   $error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
+   @$error_rec['ACTIVE']        = (int)$error_rec['ACTIVE'] + 1;
    SQLUpdate('system_errors', $error_rec);
 
    $history_rec = array();
-
    $history_rec['ERROR_ID'] = $error_rec['ID'];
-   $history_rec['COMMENTS'] = $details;
+   $history_rec['COMMENTS'] = $details."\nBacktrace:\n".$backtrace;
    $history_rec['ADDED']    = $error_rec['LATEST_UPDATE'];
 
    //Temporary disabled
@@ -870,7 +1048,6 @@ function registerError($code = 'custom', $details = '')
    $history_rec['EVENTS_DATA']     = getURL($xrayUrl . 'events', 0);
    $history_rec['DEBUG_DATA']      = getURL($xrayUrl . 'debmes', 0);
     */
-
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
    if (!$error_rec['KEEP_HISTORY'])
@@ -966,6 +1143,50 @@ function binaryToString($buf)
    return $res;
 }
 
+function verbose_log($data) {
+    if (defined('VERBOSE_LOG') && VERBOSE_LOG==1) {
+        if (defined('VERBOSE_LOG_IGNORE') && VERBOSE_LOG_IGNORE!='') {
+            $tmp=explode(',', VERBOSE_LOG_IGNORE);
+            $total=count($tmp);
+            for($i=0;$i<$total;$i++) {
+                $regex=trim($tmp[$i]);
+                if (preg_match('/'.$regex.'/is', $data)) {
+                    return;
+                }
+            }
+        }
+        global $verbose_thread_id;
+        global $argv;
+        if (!isset($verbose_thread_id)) {
+            $verbose_thread_id = date('H:i:s').'_'.rand(1000,9999);
+            $cmd = '';
+            if ($_SERVER['REQUEST_URI']!='') {
+                $cmd = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
+            } elseif ($argv[0]!='') {
+                $cmd = implode(' ',$argv);
+                $verbose_thread_id.='_'.basename($argv[0]);
+            }
+            DebMes('th_'.$verbose_thread_id.' start '.$cmd,'verbose');
+        }
+        $bt = debug_backtrace();
+        $total_bt = count($bt);
+        $max_bt = 5;
+        //$bt = array_reverse($bt);
+        $bt = array_slice($bt,1,$max_bt);
+        $total = count($bt);
+        if ($total>0) {
+            $res_trace=array();
+            for($i=0;$i<$total;$i++) {
+                $res_trace[]=$bt[$i]['function'];
+            }
+            if ($total_bt>($max_bt+1)) {
+                $res_trace[]='...';
+            }
+            $data = $data . ' ('.implode('<',$res_trace).')';
+        }
+     DebMes('th_'.$verbose_thread_id.' '.$data,'verbose');
+    }    
+}
 
 /**
 * Title

@@ -376,7 +376,7 @@ function usual(&$out) {
        $rec['DETAILS']=$url;
        $rec['ID']=SQLInsert('events', $rec);
 
-       postToWebSocket('TERMINAL_EVENT', $rec, 'PostEvent');
+       postToWebSocketQueue('TERMINAL_EVENT', $rec, 'PostEvent');
 
       }
      }
@@ -457,16 +457,26 @@ function usual(&$out) {
   }
 
 
- function runPatternAction($id, $matches=array(), $original='', $from_user_id) {
+ function runPatternAction($id, $matches=array(), $original = '', $from_user_id = 0) {
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");   
 
      global $noPatternMode;
      $noPatternMode=1;
      if ($rec['SCRIPT_ID']) {
-      runScript($rec['SCRIPT_ID'], $matches);
+      runScriptSafe($rec['SCRIPT_ID'], $matches);
      } elseif ($rec['SCRIPT']) {
 
                   try {
+                   if (isset($this->morphy)) {
+                    $total=count($matches);
+                    $bases=array();
+                    for($i=0;$i<$total;$i++) {
+                     $Word = mb_strtoupper($matches[$i], 'UTF-8');
+                     $form_bases = $this->morphy->getBaseForm($Word);
+                     $bases[$i] = $form_bases[0];
+                    }
+                   }
+
                    $code=$rec['SCRIPT'];
                    $success=eval($code);
                    if ($success===false) {
@@ -513,6 +523,37 @@ function usual(&$out) {
 
 
 /**
+
+    Generate all the possible combinations among a set of nested arrays. *
+    @param array $data The entrypoint array container.
+    @param array $all The final container (used internally).
+    @param array $group The sub container (used internally).
+    @param mixed $val The value to append (used internally).
+    @param int $i The key index (used internally). */
+
+function generate_combinations(array $data, array &$all = array(), array $group = array(), $value = null, $i = 0,$key = null)
+{
+        $keys = array_keys($data);
+        if (isset($value) === true) {
+                $group[$key] = $value;
+        }
+        if ($i >= count($data)) {
+                array_push($all, $group);
+        } else {
+                $currentKey = $keys[$i];
+                $currentElement = $data[$currentKey];
+                if(count($data[$currentKey]) <= 0) {
+                        $this->generate_combinations($data, $all, $group, null, $i + 1,$currentKey);
+                } elseif (is_array($currentElement)) {
+                        foreach ($currentElement as $val) {
+                                $this->generate_combinations($data, $all, $group, $val, $i + 1,$currentKey);
+                        }
+                }
+        }
+        return $all;
+}
+
+/**
 * Title
 *
 * Description
@@ -526,6 +567,8 @@ function usual(&$out) {
 
   $this_pattern_matched=0;
   $condition_matched=0;
+
+  if (!checkAccess('pattern', $id)) return 0;
 
   $rec=SQLSelectOne("SELECT * FROM patterns WHERE ID='".(int)$id."'");
 
@@ -624,8 +667,56 @@ function usual(&$out) {
     $lines[]=$messages[$i]['MESSAGE'];
    }
    $history=implode('@@@@', $lines);
+
+   if ($total==1 && $rec['USEMORPHY'] && file_exists(ROOT . "lib/phpmorphy/common.php")) {
+        require_once (ROOT . "lib/phpmorphy/common.php");
+        $opts = array(
+        // storage type, follow types supported
+        // PHPMORPHY_STORAGE_FILE - use file operations(fread, fseek) for dictionary access, this is very slow...
+        // PHPMORPHY_STORAGE_SHM - load dictionary in shared memory(using shmop php extension), this is preferred mode
+        // PHPMORPHY_STORAGE_MEM - load dict to memory each time when phpMorphy intialized, this useful when shmop ext. not activated. Speed same as for PHPMORPHY_STORAGE_SHM type
+        'storage' => PHPMORPHY_STORAGE_MEM,
+        // Enable prediction by suffix
+        'predict_by_suffix' => true,
+        // Enable prediction by prefix
+        'predict_by_db' => true,
+        // TODO: comment this
+        'graminfo_as_text' => true,
+        );    
+    $dir = ROOT . 'lib/phpmorphy/dicts';
+
+    if (SETTINGS_SITE_LANGUAGE=='ru') {
+     $lang = 'ru_RU';
+    } else {
+     $lang = 'en_EN';
+    }
+
+    try {
+        $morphy = new phpMorphy($dir, $lang, $opts);
+        $this->morphy=&$morphy;
+    }
+    catch(phpMorphy_Exception $e){
+        die('Error occured while creating phpMorphy instance: ' . PHP_EOL . $e);
+    }
+    $words=explode(' ', $lines[0]);
+    $base_forms=array();
+    $total=count($words);
+    for($i=0;$i<$total;$i++) {
+     if (!preg_match('/[\(\)\+\.]/', $words[$i])) {
+      $Word = mb_strtoupper($words[$i], 'UTF-8');
+      $base_forms[$i]=$morphy->getBaseForm($Word);
+     } else {
+      $base_forms[$i]=array($words[$i]);
+     }
+    }
+    $combos=$this->generate_combinations($base_forms);
+    $total=count($combos);
+    for($i=0;$i<$total;$i++) {
+     $lines[]=implode(' ', $combos[$i]);
+    }
+   }
    $check=implode('@@@@', $lines_pattern);
-   if (preg_match('/'.$check.'/isu', $history, $matches)) {
+   if (preg_match('/'.$check.'/isu', implode('@@@@', $lines), $matches)) {
     $condition_matched=1;
    }
 
@@ -634,8 +725,6 @@ function usual(&$out) {
 
 
   if ($condition_matched) {
-
-    if (checkAccess('pattern', $rec['ID'])) {
 
      $is_common=0;
      if ($rec['PARENT_ID']) {
@@ -683,8 +772,6 @@ function usual(&$out) {
      if ($rec['ONETIME']) {
       SQLExec("DELETE FROM patterns WHERE ID='".$rec['ID']."'");
      }
-
-   }
 
   } else {
    $this_pattern_matched=0;
@@ -773,6 +860,7 @@ patterns - Patterns
  patterns: IS_LAST int(3) NOT NULL DEFAULT '0'
  patterns: SKIPSYSTEM int(3) NOT NULL DEFAULT '0'
  patterns: ONETIME int(3) NOT NULL DEFAULT '0'
+ patterns: USEMORPHY int(3) NOT NULL DEFAULT '0'
  patterns: PRIORITY int(10) NOT NULL DEFAULT '0'
 
  patterns: PATTERN_TYPE int(3) NOT NULL DEFAULT '0'

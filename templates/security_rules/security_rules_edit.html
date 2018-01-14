@@ -90,6 +90,65 @@
   });
  </script></div>
 </div>
+
+<!-- CONDITIO (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_CONDITION#>:
+ </label>
+ <div class="controls"><label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#></label>
+ <div id='condition_select'>
+  &nbsp;
+
+   <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
+        <div class="controls">
+                <input type="text" class="form-control" name="condition_linked_object" id="condition_linked_object" size="10" value="[#CONDITION_LINKED_OBJECT#]">
+        </div>
+   </div>
+     
+        <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
+        <div class="controls">
+                 <input type="text" class="form-control" name="condition_linked_property" id="condition_linked_property" size="10" value="[#CONDITION_LINKED_PROPERTY#]">
+        </div>
+        </div>
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
+        <div class="controls">
+         <select name="condition" class="form-control">
+      <option value="1"[#if CONDITION="1"#] selected[#endif#]>=
+      <option value="2"[#if CONDITION="2"#] selected[#endif#]>&gt;
+      <option value="3"[#if CONDITION="3"#] selected[#endif#]>&lt;
+      <option value="4"[#if CONDITION="4"#] selected[#endif#]>&lt;&gt;
+      <option value="5"[#if CONDITION="5"#] selected[#endif#]><#LANG_VALUE_UPDATED#>
+     </select>
+        </div>
+        </div>
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_VALUE#></label>
+        <div class="controls">
+                 <input type="text" class="form-control" name="condition_value" size="10" value="[#CONDITION_VALUE#]">
+        </div>
+        </div>
+
+
+[#module name="linkedobject" object_field="condition_linked_object" property_field="condition_linked_property"#]
+
+ </div>
+ </div>
+ <script language="javascript">
+  $(function () {
+  $('#condition_active').change(function () {                
+     $('#condition_select').toggle(this.checked);
+  }).change();
+  });
+ </script></div>
+</div>
+
+
 <div class="form-actions">
  [#if ID!=""#]
  <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>

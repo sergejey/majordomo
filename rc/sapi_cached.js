@@ -279,16 +279,13 @@ for (var i=0; i<WScript.Arguments.Unnamed.Count; i++)
 
    } else {
 
+    
     var wShell = WScript.CreateObject("Wscript.Shell");
     var strCommand = scriptPath+"/madplay.exe \"" + strMp3FileName+"\"";
     wShell.run(strCommand, 0, true);
 
-    /*
-    strCommand = "@del \"" + strWavFileName+"\"";
-    wShell.run(strCommand, 0, false);
-    */
-
-    strCommand = "@copy /B \""+strMp3FileName+"\"+,, \""+strMp3FileName+"\"";
+    strCommand = 'cmd.exe /c del "'+scriptPath+'\\..\\cached\\voice\\*.wav"';
+    //WScript.Echo(strCommand);
     wShell.run(strCommand, 0, false);
 
 

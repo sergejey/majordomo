@@ -7,64 +7,127 @@
 [#endif OK_MSG#]
 
 
-[#if CLEAR_FIRST!="1"#]
 
-<p><a href="?mode=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a></p>
-
-[#if MODE=""#]
-[#if PLUGINS#]
-<form action="?" method="post">
-<table class="table table-striped">
- [#begin PLUGINS#]
- [#if NEW_CATEGORY#]
- <tr>
-  <td valign="top" colspan="10">
-   <h2>[#CATEGORY#]</h2>
-  </td>
- </tr>
- [#endif NEW_CATEGORY#]
- <tr>
-  <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
-  <td valign="top"><b>[#TITLE#]</b> (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
-  [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
-  <p>[#DESCRIPTION_RU#]</p>
-  [#else#]
-  <p>[#DESCRIPTION_EN#]</p>
-  [#endif#]
-
-  [#if LATEST_VERSION!=""#]
-  <small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
-  [#endif#]
-
-  [#if EXISTS#]
-  <br>
-  [#if INSTALLED_VERSION=="<#PLUGINS.LATEST_VERSION#>"#]
-  <font color="green">(up to date)</font>
-  [#else#]
-  <font color="blue">(update available, current version: [#if INSTALLED_VERSION!=""#][#INSTALLED_VERSION#][#else#]unknown[#endif#])</font>
-  [#endif#]
-  [#endif EXISTS#]
-  </td>
-  <td valign="top"><b><a class="btn btn-default btn-sm" href="?mode=install&name=[#MODULE_NAME#]">[#if EXISTS#]<#LANG_UPDATE#>[#else#]<#LANG_ADD#>[#endif#]</a></b></td>
-  <td valign="top"><a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a></td>
-  <td valign="top"><a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a></td>
-  <td valign="top">&nbsp;[#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=uninstall&name=[#MODULE_NAME#]" onClick="return ('<#LANG_ARE_YOU_SURE#>')">Uninstall</a>[#endif#]</td>
- </tr>
- [#end PLUGINS#]
-</table>
-<input type="submit" name="submit" value="<#LANG_ADD#> / <#LANG_UPDATE#>" class="btn btn-default">
-<input type="hidden" name="mode" value="install_multiple">
-</form>
-[#endif PLUGINS#]
+[#if MODE="iframe"#]
+<iframe src="<#ROOTHTML#>modules/market/update_iframe.php?mode2=<#MODE2#>&name=[#NAME#]&names=[#NAMES#]" width="100%" height="400" frameborder=0></iframe>
 [#endif MODE#]
 
-[#else#]
+[#if MODE=""#]
 
+[#if CLEAR_FIRST!="1"#]
+<div class="row">
+ <div class="col-md-3">
+  <a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_UPDATE_ALL_EXTENSIONS#></a>
+ </div>
+ <div class="col-md-6">&nbsp;</div>
+ <div class="col-md-3">
+  <script type="text/javascript">
+   var upTimer=0;
+   function filterPlugins() {
+    var str=$('#filter').val();
+    str = str.toLowerCase();
+    if (str!='') {
+     $('.pluginRow').each(function(i, obj) {
+      var text='';
+      text+=$('#'+obj.id+'_title').html();
+      text+=' ' + $('#'+obj.id+'_description').html();
+      text = text.toLowerCase();
+      if (text.indexOf(str) !== -1) {
+       $('#'+obj.id).show();
+      } else {
+       $('#'+obj.id).hide();
+      }
+     });
+    } else {
+     $('.pluginRow').show();
+    }
+   }
+   function searchKeyUp() {
+    clearTimeout(upTimer);
+    upTimer=setTimeout('filterPlugins();',1000);
+   }
+  </script>
+  <input type="text" class="form-control" placeholder="<#LANG_SEARCH#>" id="filter" onkeyup="searchKeyUp();">
+ </div>
+</div>
+&nbsp;
+[#else CLEAR_FIRST#]
    <br>&nbsp;
    <form action="?" method="post" enctype="multipart/form-data">
    <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
    <input type="hidden" name="mode" value="clear">
    </form>
+[#endif CLEAR_FIRST#]
 
 
-[#endif#]
+[#if CATEGORY#]
+<form action="?" method="post">
+<ul id="tab" class="nav nav-tabs">
+	[#begin CATEGORY#]
+		<li><a data-toggle="tab" href="#panel_[#CATEGORY_ID#]">[#NAME#]
+		[#if NEW_VERSION==1#]
+		<span class="label label-success">New</span>
+		[#endif#]
+		</a>
+		</li>
+	[#end CATEGORY#]
+</ul>
+<div class="tab-content">
+ [#begin CATEGORY#]
+  <div id="panel_[#CATEGORY_ID#]" class="tab-pane fade in">
+	<table class="table table-striped">
+	[#if PLUGINS#]
+	[#begin PLUGINS#]
+	 <tr class="pluginRow" id="row[#ID#]">
+	  <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
+	  <td valign="top">
+		  [#if URL!=""#]<a href="[#URL#]" target="_blank">[#endif#]<b id="row[#ID#]_title">[#TITLE#]</b></a>
+		  (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
+	  [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
+	  <p id="row[#ID#]_description">[#DESCRIPTION_RU#]</p>
+	  [#else#]
+	  <p id="row[#ID#]_description">[#DESCRIPTION_EN#]</p>
+	  [#endif#]
+	  [#if LATEST_VERSION!=""#]
+	  <small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
+	  [#endif#]
+	  [#if EXISTS#]
+	  <br>
+	  [#if INSTALLED_VERSION=="<#PLUGINS.LATEST_VERSION#>"#]
+	  <font color="green">(up to date)</font>
+	  [#else#]
+	  <font color="blue">(update available, current version: [#if INSTALLED_VERSION!=""#][#INSTALLED_VERSION#][#else#]unknown[#endif#])</font>
+	  [#endif#]
+	  [#endif EXISTS#]
+	  </td>
+	  <td valign="top">
+	  <div class="btn-group pull-left">
+      [#if URL!=""#]
+		  <a class="btn btn-default btn-sm" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-globe"></i> Info</a>
+		  [#endif URL#]
+	  <a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> <#LANG_UPDATE#>[#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+		  <!--#
+	  <a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a>
+	  <a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a>
+	  #-->
+	  [#if EXISTS#]<a class="btn btn-default btn-sm" href="?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>[#endif#]
+	  </div>
+	  <td>
+	  </tr>
+	 [#end PLUGINS#]
+	</table>
+	[#endif PLUGINS#]
+  </div>
+  [#end CATEGORY#]
+</div>
+
+
+<input type="submit" name="submit" value="<#LANG_ADD#> / <#LANG_UPDATE#>" class="btn btn-default">
+<input type="hidden" name="mode" value="iframe">
+<input type="hidden" name="mode2" value="install_multiple">
+</form>
+<script type="text/javascript">
+$('#tab a:first').tab('show');
+</script>
+[#endif CATEGORY#]
+[#endif MODE#]

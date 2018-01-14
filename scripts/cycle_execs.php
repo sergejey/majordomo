@@ -30,17 +30,17 @@ while (1)
    $sqlQuery = "DELETE
                   FROM safe_execs
                  WHERE ADDED < '" . date('Y-m-d H:i:s', time() - 180) . "'";
-   
+
    SQLExec($sqlQuery);
-   
+
    $sqlQuery = "SELECT *
                   FROM safe_execs
                  WHERE EXCLUSIVE = 1
                  ORDER BY PRIORITY DESC, ID LIMIT 5";
-   
+
    $safe_execs = SQLSelect($sqlQuery);
    $total = count($safe_execs);
-   
+
    for ($i = 0; $i < $total; $i++)
    {
       if (IsWindowsOS()) {
@@ -51,12 +51,12 @@ while (1)
       $sqlQuery = "DELETE
                      FROM safe_execs
                     WHERE ID = '" . $safe_execs[$i]['ID'] . "'";
-      
+
       SQLExec($sqlQuery);
-      
-      echo "Executing (exclusive): " . $command . "\n";
+
+      echo date("H:i:s") . " Executing (exclusive): " . $command . "\n";
       DebMes("Executing (exclusive): " . $command);
-      
+
       exec($command);
    }
 
@@ -64,10 +64,10 @@ while (1)
                   FROM safe_execs
                  WHERE EXCLUSIVE = 0
                  ORDER BY PRIORITY DESC, ID";
-   
+
    $safe_execs = SQLSelect($sqlQuery);
    $total = count($safe_execs);
-   
+
    for ($i = 0; $i < $total; $i++)
    {
       if (IsWindowsOS()) {
@@ -78,12 +78,12 @@ while (1)
       $sqlQuery = "DELETE
                      FROM safe_execs
                     WHERE ID = '" . $safe_execs[$i]['ID'] . "'";
-      
+
       SQLExec($sqlQuery);
-      
-      echo "Executing: " . $command . "\n";
+
+      echo date("H:i:s") . " Executing: " . $command . "\n";
       DebMes("Executing: " . $command);
-      
+
       execInBackground($command);
    }
 
@@ -97,4 +97,3 @@ while (1)
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
-

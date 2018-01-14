@@ -1,0 +1,42 @@
+<script type="text/javascript">
+    var subscribedWebSockets=0;
+    var subscribedWebSocketsTimer;
+    var requestSent = Math.round(+new Date()/1000);
+    function subscribeToDevice[#ID#]() {
+        console.log('Sending devices subscription request...');
+        var payload;
+        payload = new Object();
+        payload.action = 'Subscribe';
+        payload.data = new Object();
+        payload.data.TYPE='devices';
+        payload.data.DEVICE_ID='[#ID#]';
+        wsSocket.send(JSON.stringify(payload));
+        subscribedWebSocketsTimer=setTimeout('subscribeToDevice[#ID#]();', 3000);
+        return false;
+    }
+
+    $.subscribe('wsConnected', function (_) {
+        subscribeToDevice[#ID#]();
+    });
+
+    $.subscribe('wsData', function (_, response) {
+        if (response.action=='subscribed') {
+            console.log('Subscription to devices confirmed.');
+            clearTimeout(subscribedWebSocketsTimer);
+            subscribedWebSockets=1;
+        }
+        if (response.action=='devices') {
+            var obj=jQuery.parseJSON(response.data);
+            if (typeof obj.DATA !='object') return false;
+            var objCnt = obj.DATA.length;
+            if (objCnt) {
+                for(var i=0;i<objCnt;i++) {
+                    var device_id=obj.DATA[i].DEVICE_ID;
+                    var html=obj.DATA[i].DATA;
+                    $('#device'+device_id).html(html);
+                }
+            }
+        }
+    });
+</script>
+<div id="device[#ID#]">[#HTML#]</div>

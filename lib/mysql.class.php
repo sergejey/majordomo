@@ -20,6 +20,14 @@
  * @license http://opensource.org/licenses/mit-license.php MIT License
  * @link https://github.com/sergejey/majordomo/blob/master/lib/mysql.class.php
  */
+
+if (!defined('MYSQL_BOTH')) {
+ define('MYSQL_BOTH',MYSQLI_BOTH);
+ define('MYSQL_NUM',MYSQLI_NUM);
+ define('MYSQL_ASSOC',MYSQLI_ASSOC);
+}
+
+
 class mysql
 {
    /**
@@ -328,7 +336,7 @@ class mysql
     */
    public function DbSafe1($str)
    {
-      $str = mysql_real_escape_string($str);
+      $str = mysql_real_escape_string((string)$str);
       
       return $str;
    }
@@ -342,9 +350,12 @@ class mysql
     */
    public function Error($query = "")
    {
-      registerError('sql', mysql_errno() . ": " . mysql_error() . "\n$query");
-      new error(mysql_errno() . ": " . mysql_error() . "<br>$query", 1);
-      
+
+      $err_no = mysql_errno();
+      $err_details = mysql_error();
+      registerError('sql', $err_no . ": " . $err_details . "\n$query");
+      new custom_error($err_no . ": " . $err_details . "<br>$query", 1);
+
       return 1;
    }
 

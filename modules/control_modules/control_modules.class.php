@@ -180,12 +180,26 @@ function getParams() {
 function install($parent_name = "")
 {
    parent::install($parent_name);
-  
+
+   global $db;
+ if (!is_object($db) || !$db->connected) {
+  return false;
+ }
+
    $this->getModulesList();
-   
+
    $lst    = $this->modules;
+
+   $prelist=array('settings','objects', 'devices');
+   $prelist=array_reverse($prelist);
+   foreach($prelist as $v) {
+    $rec=array('FILENAME'=>$v);
+    array_unshift($lst, $rec);
+   }
+
    $lstCnt = count($lst);
-   $code   = "";
+
+   SQLExec("ALTER TABLE `project_modules` CHANGE `ID` `ID` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT");
 
    for ($i = 0; $i < $lstCnt; $i++)
    {
@@ -197,7 +211,7 @@ function install($parent_name = "")
          $installedFile = DIR_MODULES . $lst[$i]['FILENAME'] . "/installed";
          if (file_exists($installedFile))
             unlink($installedFile);
-         
+
          include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
          $obj = "\$object$i";
          $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
@@ -206,7 +220,7 @@ function install($parent_name = "")
       }
    }
 
-   
+
    SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '" . $this->name . "'");
 }
 
@@ -215,17 +229,17 @@ function install($parent_name = "")
   $data = <<<EOD
 
    project_modules: ID tinyint(3) unsigned NOT NULL auto_increment
-   project_modules: NAME varchar(50)  DEFAULT '' NOT NULL 
-   project_modules: TITLE varchar(100)  DEFAULT '' NOT NULL 
-   project_modules: CATEGORY varchar(50)  DEFAULT '' NOT NULL 
-   project_modules: PARENT_NAME varchar(50)  DEFAULT '' NOT NULL 
+   project_modules: NAME varchar(50)  DEFAULT '' NOT NULL
+   project_modules: TITLE varchar(100)  DEFAULT '' NOT NULL
+   project_modules: CATEGORY varchar(50)  DEFAULT '' NOT NULL
+   project_modules: PARENT_NAME varchar(50)  DEFAULT '' NOT NULL
    project_modules: DATA text
    project_modules: HIDDEN int(3)  DEFAULT '0' NOT NULL
    project_modules: PRIORITY int(10)  DEFAULT '0' NOT NULL
-   project_modules: ADDED timestamp(14)
+   project_modules: ADDED timestamp
 
    ignore_updates: ID tinyint(3) unsigned NOT NULL auto_increment
-   ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL 
+   ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL
 
 
 EOD;
@@ -234,4 +248,3 @@ EOD;
 
 // --------------------------------------------------------------------
 }
-?>

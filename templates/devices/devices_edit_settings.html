@@ -1,0 +1,60 @@
+
+<!-- Table 'devices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+[#endif ERR#]
+<fieldset>
+[#if ID=""#]
+<legend><#LANG_NEW_RECORD#></legend>
+[#endif ID#]
+
+ [#begin PROPERTIES#]
+ <div class="form-group">
+  <label class="col-md-8 control-label">
+   [#DESCRIPTION#]
+   </label>
+  <div class="col-md-4">
+   [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]
+   <input type="text" value="[#VALUE#]" name="[#NAME#]_value" class="form-control">
+   [#endif#]
+   [#if CONFIG_TYPE="yesno"#]
+   <input type="radio" value="1" name="[#NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
+   <input type="radio" value="0" name="[#NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+   [#endif#]
+
+   [#if CONFIG_TYPE="select"#]
+   <select name="[#NAME#]_value">
+   [#begin OPTIONS#]
+    <option value="[#VALUE#]"[#if VALUE="<#PROPERTIES.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
+   [#end OPTIONS#]
+   </select>
+   [#endif#]
+
+  </div>
+ </div>
+ [#end PROPERTIES#]
+
+<div class="form-group">
+ <label class="col-md-8 control-label">
+  &nbsp;
+ </label>
+        <div class="col-md-4">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+ [#endif ID#]
+ <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="tab" value="<#TAB#>">
+        </div>
+</div>
+</fieldset>
+</form>

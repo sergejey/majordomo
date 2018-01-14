@@ -19,6 +19,11 @@
   //updating 'PRIORITY' (int)
    global $priority;
    $rec['PRIORITY']=(int)$priority;
+
+   global $hidden;
+   $rec['HIDDEN']=(int)$hidden;
+
+
   //updating 'TYPE' (select)
    global $type;
    $rec['TYPE']=$type;
@@ -28,10 +33,10 @@
 
   //updating 'APP' (varchar)
    global $appname;
-   $rec['APP']=$appname;
+   $rec['APP']=$appname.'';
   //updating 'URL' (url)
    global $url;
-   $rec['URL']=$url;
+   $rec['URL']=$url.'';
 
    global $delete_icon;
    if ($delete_icon) {

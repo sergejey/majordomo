@@ -104,6 +104,8 @@ $.fn.customContextMenu = function(callBack){
     }); 
 }
 
+
+
         var codeHash=new Object();
         var firstRun=1;
         var refreshRun=0;
@@ -140,6 +142,7 @@ $.fn.customContextMenu = function(callBack){
          return false;
         }
 
+
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
         {foreach $ELEMENT.STATES as $STATE}
@@ -152,6 +155,8 @@ $.fn.customContextMenu = function(callBack){
         {/foreach}
         {/foreach}
         {/foreach}
+
+
 
         function stateClickedEdit(id) {
 
@@ -187,6 +192,8 @@ $.fn.customContextMenu = function(callBack){
          return false;
         }
 
+
+
         function stateClicked(id) {
 
          var window_url;
@@ -195,10 +202,17 @@ $.fn.customContextMenu = function(callBack){
          EvalSound('click_sound');
          {/if}
 
-
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
         {foreach $ELEMENT.STATES as $STATE}
+
+
+            {if $ELEMENT.TYPE=="img"}
+            if (id=='{$STATE.ID}') {
+                $('#state_{$STATE.ID}').hide();
+                setTimeout("$('#state_{$STATE.ID}').show();", 150);
+            }
+            {/if}
 
          {if $ELEMENT.TYPE=="button"}
          if (id=='{$STATE.ID}') {
@@ -206,6 +220,7 @@ $.fn.customContextMenu = function(callBack){
           setTimeout("$('#state_{$STATE.ID}').removeClass('clicked');", 150);
          }
          {/if}
+
 
          {if $STATE.MENU_ITEM_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!=""}
           {if $STATE.MENU_ITEM_ID!="0"}
@@ -249,6 +264,7 @@ $.fn.customContextMenu = function(callBack){
           if (!y) y=200;
 
 
+
           var jWindowObj{$STATE.ID} = $.jWindow({ 
            id: 'state{$STATE.ID}', 
            title: '{$ELEMENT.TITLE}', 
@@ -267,11 +283,11 @@ $.fn.customContextMenu = function(callBack){
             var top=$('#scene_background_{$SCENE.ID}').offset().top;
             var left=$('#scene_background_{$SCENE.ID}').offset().left;
             var url1="{$smarty.const.ROOTHTML}ajax/scenes.html?op=position";
-            window{$ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
-            window{$ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
-            window{$ID}_width=(jWindowObj{$STATE.ID}.get('width'));
-            window{$ID}_height=(jWindowObj{$STATE.ID}.get('height'));
-            url1+='&id={$ID}&posx='+window{$STATE.ID}_posx+'&posy='+window{$ID}_posy+'&width='+window{$STATE.ID}_width+'&height='+window{$STATE.ID}_height;
+            window{$STATE.ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
+            window{$STATE.ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
+            window{$STATE.ID}_width=(jWindowObj{$STATE.ID}.get('width'));
+            window{$STATE.ID}_height=(jWindowObj{$STATE.ID}.get('height'));
+            url1+='&id={$STATE.ID}&posx='+window{$STATE.ID}_posx+'&posy='+window{$STATE.ID}_posy+'&width='+window{$STATE.ID}_width+'&height='+window{$STATE.ID}_height;
             {literal}
             $.ajax({url: url1});
             {/literal}
@@ -282,10 +298,10 @@ $.fn.customContextMenu = function(callBack){
             var url1="{$smarty.const.ROOTHTML}ajax/scenes.html?op=position";
             var top=$('#scene_background_{$SCENE.ID}').offset().top;
             var left=$('#scene_background_{$SCENE.ID}').offset().left;
-            window{$ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
-            window{$ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
-            window{$ID}_width=(jWindowObj{$STATE.ID}.get('width'));
-            window{$ID}_height=(jWindowObj{$STATE.ID}.get('height'));
+            window{$STATE.ID}_posx=(jWindowObj{$STATE.ID}.get('posx'))-left;
+            window{$STATE.ID}_posy=(jWindowObj{$STATE.ID}.get('posy'))-top;
+            window{$STATE.ID}_width=(jWindowObj{$STATE.ID}.get('width'));
+            window{$STATE.ID}_height=(jWindowObj{$STATE.ID}.get('height'));
             url1+='&id={$STATE.ID}&posx='+window{$STATE.ID}_posx+'&posy='+window{$STATE.ID}_posy+'&width='+window{$STATE.ID}_width+'&height='+window{$STATE.ID}_height;
             {literal}
             $.ajax({url: url1});
@@ -476,6 +492,7 @@ $.fn.customContextMenu = function(callBack){
 
                 $(document).ready(function(){
                 {if $TOTAL_SCENES=="1"}
+
                  {if $DRAGGABLE=="1"}
                     $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid: [5,5],
                         stop: function(e, ui) {
@@ -531,18 +548,36 @@ $.fn.customContextMenu = function(callBack){
                   }
                  }
                  {/if}
+                    {if $SCENE_AUTO_SCALE=="1" && $DRAGGABLE!="1"}
+                    setTimeout('sceneZoom();',2000);
+                    $(window).on('resize', function(){
+                        sceneZoom();
+                    });
+                    {/if}
                 {/if}
                  
                  checkAllStates();
 
-                });     
+
+
+
+
+
+                });
+
+
+            function sceneZoom() {
+                zoom = $(window).width()/$("#slider").width()*100;
+                document.body.style.zoom = zoom+"%"
+            }
 
 
         </script>
 
 
 
-<table  border="0" align="center"{if $TOTAL_SCENES=="1"} width="100%"{/if} cellpadding="0" cellspacing="0">
+<div id="scenes_body">
+<table  border="0" cellpadding="0" cellspacing="0">
  <tr>
   <td valign="top">
 <div style="{if $TOTAL_SCENES!="1"}width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;{/if};position:relative;">
@@ -738,6 +773,7 @@ function onDocumentMouseDown( event ) {
 </td>
  </tr>
 </table>
+</div>
 
 {if $DRAGGABLE=="1"}
 <div id='contextMenuDiv' style="display:none;width:100px;height:20px;background-color:white;position:absolute;border: 1px solid black;z-index:10000;top:200px;left:300px;padding:10px;text-align:center"><a href="#" onClick="stateClickedEdit('new');return false;">{$smarty.const.LANG_ADD}</a></div>

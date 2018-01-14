@@ -14,13 +14,26 @@ class Threads
        1 => array('pipe', 'w')
    );
 
-   private $handles      = array();
+   public $handles      = array();
    private $streams      = array();
    private $results      = array();
    private $pipes        = array();
-   private $commandLines = array();
+   public $commandLines = array();
    private $timeout      = 5;
    private $lastCheck    = 0;
+
+
+   public function closeThread($id) {
+      $pstatus = proc_get_status($this->handles[$id]);
+      $pid = $pstatus['pid'];
+      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("kill -9 $pid");
+      //proc_terminate($this->handles[$id]);
+      /*
+      fclose($this->pipes[$id][0]);
+      fclose($this->pipes[$id][1]);
+      proc_close($this->handles[$id]);
+      */
+   }
 
    /**
     * Summary of newThread
@@ -33,7 +46,8 @@ class Threads
    {
       if (!file_exists($filename))
       {
-         throw new ThreadsException('FILE_NOT_FOUND');
+         DebMes("Cannot start thread '$filename' -- FILE NOT FOUND");
+         return false;
       }
 
       $params = addcslashes(serialize($params), '"');
@@ -41,12 +55,18 @@ class Threads
       //if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
       $fileToWrite = DOC_ROOT . '/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
       $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
+
+      if (!IsWindowsOS()) {
+       $command='exec '.$command;
+      }
+
       /*} else {
       $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'"';
       }
        */
       ++$this->lastId;
 
+      echo date('H:i:s') . " Starting thread: " . $command . "\n";
       $this->commandLines[$this->lastId] = $command;
       $this->handles[$this->lastId]      = proc_open($command, $this->descriptorSpec, $pipes);
 
@@ -74,8 +94,10 @@ class Threads
       if (IsWindowsOS())
          throw new ThreadsException('FOR_LINUX_ONLY');
 
-      if (!file_exists($filename))
-         throw new ThreadsException('FILE_NOT_FOUND');
+      if (!file_exists($filename)) {
+         DebMes("Cannot start thread '$filename' -- FILE NOT FOUND");
+         return false;
+      }
 
       $params  = addcslashes(serialize($params), '"');
       $command = 'DISPLAY=:' . $display . ' ' . $this->phpPath . ' ' . $filename . ' --params "' . $params . '"';
@@ -83,6 +105,8 @@ class Threads
       ++$this->lastId;
 
       $this->commandLines[$this->lastId] = $command;
+
+      echo date('H:i:s') . " Starting threadx: " . $command . "\n";
       $this->handles[$this->lastId]      = proc_open($command, $this->descriptorSpec, $pipes);
       
       stream_set_timeout($pipes[0], $this->timeout);
@@ -162,7 +186,7 @@ class Threads
                $name = $m[0];
             }
 
-            echo date('H:i:s') . " working thread: " . $name . "\n";
+            //echo date('H:i:s') . " working thread: " . $name . "\n";
             //echo "Status:\n";
             //print_r($proc_status);
             //echo "\n";
@@ -172,7 +196,6 @@ class Threads
          {
             //feof($stream)
             echo date('H:i:s') . " Closing thread: " . $this->commandLines[$id] . "\n";
-
             DebMes("Closing thread: " . $this->commandLines[$id]);
             
             $result .= "THREAD CLOSED: [" . $this->commandLines[$id] . "]\n";

@@ -35,6 +35,7 @@
               console.log('WS data (<#REQUEST_URI#>)');
               var response;
               response = JSON.parse(msg.data);
+              console.log('Action: '+response.action+'; Data: '+response.data);
               $.publish('wsData', response);
               return;
             };

@@ -158,6 +158,21 @@ function admin(&$out) {
 function usual(&$out) {
  global $session;
 
+ if ($this->ajax) {
+  $events=SQLSelect("SELECT ID, EVENT_NAME, DESCRIPTION, DETAILS, ADDED FROM events ORDER BY ADDED DESC LIMIT 8");
+  $total = count($events);
+  echo "<table class='table'>";
+  for ($i = 0; $i < $total; $i++) {
+   echo "<tr>";
+   echo "<td><a href='".ROOTHTML."panel/event/".$events[$i]['ID'].".html'>".$events[$i]['EVENT_NAME']."</a></td>";
+   echo "<td><i>".$events[$i]['DESCRIPTION'].'</i><div>'.$events[$i]['DETAILS']."</div></td>";
+   echo "<td>".$events[$i]['ADDED']."</td>";
+   echo "</tr>";
+  }
+  echo "</table>";
+  exit;
+ }
+
  if ($this->action=='addevent') {
 
   global $mode;
@@ -180,7 +195,7 @@ function usual(&$out) {
    $event['ADDED']=date('Y-m-d H:i:s');
    $event['EXPIRE']=date('Y-m-d H:i:s', time()+5*60); //5 minutes expire
    SQLInsert('events', $event);
-   postToWebSocket('TERMINAL_EVENT', $event, 'PostEvent');
+   postToWebSocketQueue('TERMINAL_EVENT', $event, 'PostEvent');
   }
 
    $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
@@ -227,6 +242,72 @@ function usual(&$out) {
   exit;
  }
 }
+ 
+ function registerEvent($eventName, $details = '', $expire_in = 0) {
+  $sqlQuery = "SELECT *
+                  FROM events
+                 WHERE EVENT_NAME = '" . DBSafe($eventName) . "'
+                   AND EVENT_TYPE = 'system'
+                 ORDER BY ID DESC
+                 LIMIT 1";
+
+  $rec = array();
+  $rec = SQLSelectOne($sqlQuery);
+
+  $rec['EVENT_NAME'] = $eventName;
+  $rec['EVENT_TYPE'] = 'system';
+  if (!is_array($details)) {
+   $rec['DETAILS'] = $details;
+  } else {
+   $rec['DETAILS'] = json_encode($details);
+  }
+  $rec['ADDED']      = date('Y-m-d H:i:s');
+  if ($expire_in) {
+   $rec['EXPIRE']     = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
+  } else {
+   $rec['EXPIRE'] = null;
+  }
+  $rec['PROCESSED']  = 1;
+
+  if ($rec['ID']){
+   SQLUpdate('events', $rec);
+  } else {
+   $rec['ID'] = SQLInsert('events', $rec);
+  }
+
+  if (is_array($details)) {
+   $params=$details;
+  } else {
+   $params=array();
+  }
+  $params['updated']=time();
+
+  foreach($params as $k=>$v) {
+   $param_rec=SQLSelectOne("SELECT * FROM events_params WHERE EVENT_ID=".$rec['ID']." AND TITLE LIKE '".DBSafe($k)."'");
+   $param_rec['TITLE']=$k;
+   $param_rec['VALUE']=$v;
+   $param_rec['UPDATED']=date('Y-m-d H:i:s');
+   $param_rec['EVENT_ID']=$rec['ID'];
+   if ($param_rec['ID']) {
+    SQLUpdate('events_params',$param_rec);
+   } else {
+    $param_rec['ID']=SQLInsert('events_params',$param_rec);
+   }
+   if ($param_rec['LINKED_OBJECT'] && $param_rec['LINKED_PROPERTY']) {
+    setGlobal($param_rec['LINKED_OBJECT'].'.'.$param_rec['LINKED_PROPERTY'],$v);
+   }
+   if ($param_rec['LINKED_OBJECT'] && $param_rec['LINKED_METHOD']) {
+    $method_params=array();
+    $method_params['VALUE']=$v;
+    $method_params['EVENT']=$rec['TITLE'];
+    callMethodSafe($param_rec['LINKED_OBJECT'].'.'.$param_rec['LINKED_METHOD'],$method_params);
+   }
+  }
+
+  return $rec['ID'];
+  
+ }
+ 
 /**
 * events search
 *
@@ -235,6 +316,49 @@ function usual(&$out) {
  function search_events(&$out) {
   require(DIR_MODULES.$this->name.'/events_search.inc.php');
  }
+
+ function pathToTree($array){
+  $tree = array();
+  foreach($array AS $item) {
+   $pathIds = explode("/", ltrim($item["EVENT_NAME"], "/") .'/'. $item["ID"]);
+   $current = &$tree;
+   foreach($pathIds AS $id) {
+    if(!isset($current["CHILDS"][$id])) $current["CHILDS"][$id] = array();
+    $current = &$current["CHILDS"][$id];
+    if($id == $item["ID"]) {
+     $current = $item;
+    }
+   }
+  }
+  //print_r($tree);exit;
+  return ($this->childsToArray($tree['CHILDS']));
+  //return $tree["CHILDS"];
+ }
+
+ function childsToArray($items) {
+  $res=array();
+  foreach($items as $k=>$v) {
+   if (!$v['EVENT_NAME']) {
+    $v['TITLE']=$k;
+   } else {
+    $tmp=explode('/',$v['EVENT_NAME']);
+    $v['TITLE']=$tmp[count($tmp)-1];
+    $v['TITLE']=$v['EVENT_NAME'];
+   }
+   if (isset($v['CHILDS'])) {
+    $items=$this->childsToArray($v['CHILDS']);
+    if (count($items)==1) {
+     $v=$items[0];
+    } else {
+     $v['ITEMS']=$items;
+    }
+    unset($v['CHILDS']);
+   }
+   $res[]=$v;
+  }
+  return $res;
+ }
+
 /**
 * events edit/add
 *
@@ -251,6 +375,7 @@ function usual(&$out) {
  function delete_events($id) {
   $rec=SQLSelectOne("SELECT * FROM events WHERE ID='$id'");
   // some action for related tables
+  SQLExec("DELETE FROM events_params WHERE EVENT_ID=".$rec['ID']);
   SQLExec("DELETE FROM events WHERE ID='".$rec['ID']."'");
  }
 /**
@@ -262,7 +387,7 @@ function usual(&$out) {
 */
  function install($parent_name="") {
   parent::install($parent_name);
-  SQLExec("UPDATE project_modules SET HIDDEN=1 WHERE NAME LIKE '".$this->name."'");
+  SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '".$this->name."'");
  }
 /**
 * Uninstall
@@ -287,6 +412,7 @@ function usual(&$out) {
 events - Events
 */
   $data = <<<EOD
+
  events: ID int(10) unsigned NOT NULL auto_increment
  events: EVENT_NAME varchar(255) NOT NULL DEFAULT ''
  events: EVENT_TYPE char(10) NOT NULL DEFAULT ''
@@ -299,6 +425,17 @@ events - Events
  events: ADDED datetime
  events: EXPIRE datetime
  events: PROCESSED int(3) NOT NULL DEFAULT '0'
+ events: DESCRIPTION varchar(255) NOT NULL DEFAULT ''
+ 
+ events_params: ID int(10) unsigned NOT NULL auto_increment
+ events_params: EVENT_ID int(10) unsigned NOT NULL DEFAULT '0'
+ events_params: TITLE varchar(255) NOT NULL DEFAULT ''  
+ events_params: VALUE varchar(255) NOT NULL DEFAULT ''
+ events_params: UPDATED datetime
+ events_params: LINKED_OBJECT varchar(255) NOT NULL DEFAULT '' 
+ events_params: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT '' 
+ events_params: LINKED_METHOD varchar(255) NOT NULL DEFAULT '' 
+ 
 EOD;
   parent::dbInstall($data);
  }

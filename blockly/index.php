@@ -26,6 +26,11 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks/majordomo_time.js"></script>
     <script type="text/javascript" src="blocks/majordomo_scripts.js.php"></script>
     <script type="text/javascript" src="blocks/majordomo_myblocks.js.php"></script>
+    <?php
+    if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
+      echo '<script type="text/javascript" src="blocks/majordomo_devices.js.php"></script>';
+    }
+    ?>
     <script type="text/javascript" src="msg/js/<?php echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
     <script type="text/javascript" src="generators/php.js"></script>
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
@@ -41,6 +46,11 @@ $ctl = new control_modules();
     <script type="text/javascript" src="generators/php/variables.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_scripts.js.php"></script>
     <script type="text/javascript" src="generators/php/majordomo_myblocks.js.php"></script>
+    <?php
+    if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
+     echo '<script type="text/javascript" src="generators/php/majordomo_devices.js.php"></script>';
+    }
+    ?>
     <style>
       html, body {
         background-color: #fff;
@@ -123,14 +133,9 @@ $ctl = new control_modules();
   <input type="button" onClick="return SaveAndClose();" value="OK">
   <input type="button" onClick="window.close();" value="<?php echo LANG_CANCEL;?>">
   </div>
-  <!--
-    <category name="Color">
-      <block type="colour_picker"></block>
-      <block type="colour_random"></block>
-      <block type="colour_rgb"></block>
-      <block type="colour_blend"></block>
-    </category>
-  -->
+
+
+
   <xml id="toolbox" style="display: none">
 
     <category name="<?php echo LANG_GENERAL;?>">
@@ -378,8 +383,62 @@ $ctl = new control_modules();
       <block type="lists_setIndex"></block>
       <block type="lists_getSublist"></block>
     </category>
+
+    <category name="<?php echo LANG_COLOR;?>">
+      <block type="colour_picker"></block>
+      <block type="colour_random"></block>
+      <block type="colour_rgb"></block>
+    </category>
+
     <category name="<?php echo LANG_VARIABLES;?>" custom="VARIABLE"></category>
     <category name="<?php echo LANG_FUNCTIONS;?>" custom="PROCEDURE"></category>
+
+  <?php
+
+
+  if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
+   @include_once(ROOT.'languages/devices'.'_'.SETTINGS_SITE_LANGUAGE.'.php');
+   @include_once(ROOT.'languages/devices'.'_default'.'.php');
+
+    include_once(DIR_MODULES.'devices/devices.class.php');
+    $dev=new devices();
+    $dev->setDictionary();
+    echo '<category name="'.LANG_DEVICES_MODULE_TITLE.'">'."\n";
+    $res=SQLSelect("SELECT * FROM devices ORDER BY TITLE");
+    $total = count($res);
+    for ($i = 0; $i < $total; $i++) {
+      if ($res[$i]['TYPE']=='relay') {
+      } elseif ($res[$i]['TYPE']=='dimmer') {
+      } elseif ($res[$i]['TYPE']=='motion') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_motionDetected"></block>'."\n";
+      } elseif ($res[$i]['TYPE']=='sensor_temp') {
+      } elseif ($res[$i]['TYPE']=='sensor_humidity') {
+      } elseif ($res[$i]['TYPE']=='openclose') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentStatus"></block>'."\n";
+      } elseif ($res[$i]['TYPE']=='button') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_press"></block>'."\n";
+      }
+      if ($dev->device_types[$res[$i]['TYPE']]['PARENT_CLASS']=='SControllers') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOn"></block>'."\n";
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOff"></block>'."\n";
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentStatus"></block>'."\n";
+      }
+      if ($res[$i]['TYPE']=='rgb') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_setColor">'."\n";
+        echo "<value name=\"COLOR\"><block type=\"text\"></block></value>";
+        echo "</block>";
+      }
+      if ($dev->device_types[$res[$i]['TYPE']]['PARENT_CLASS']=='SSensors') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentValue"></block>'."\n";
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_minValue"></block>'."\n";
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_maxValue"></block>'."\n";
+      }
+    }
+    
+   echo '</category>';
+  }
+
+  ?>
 
   <?php
   $sortby="myblocks_categories.TITLE, myblocks.TITLE";
@@ -409,7 +468,6 @@ $ctl = new control_modules();
     }
 
    }
-
    echo '</category>';
   }
   ?>

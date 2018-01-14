@@ -310,6 +310,9 @@
     if ($this->mode=='update') {
      global ${'value_'.$res[$i]['ID']};
      global ${'notes_'.$res[$i]['ID']};
+
+     if (!isset(${'value_'.$res[$i]['ID']})) continue;
+
      $all_settings[$res[$i]['NAME']]=${'value_'.$res[$i]['ID']};
      $res[$i]['VALUE']=${'value_'.$res[$i]['ID']};
      $res[$i]['NOTES']=htmlspecialchars(${'notes_'.$res[$i]['ID']});
@@ -336,6 +339,7 @@
    }
    $out['RESULT']=$res;
   }
+
 
   
     // some action for every record if required

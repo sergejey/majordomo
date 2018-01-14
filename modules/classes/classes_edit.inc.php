@@ -32,7 +32,11 @@
 
    global $nolog;
    $rec['NOLOG']=(int)$nolog;
+  }
 
+  if ($this->tab=='template') {
+   global $template;
+   $rec['TEMPLATE']=$template.'';
   }
 
 
@@ -81,6 +85,10 @@
    }
   }
   outHash($rec, $out);
+
+if ($out['TITLE']) {
+    $this->owner->data['TITLE'] = $out['TITLE'];
+}
 
   if ($rec['ID'] && $rec['PARENT_ID']) {
    $cr_class=array();

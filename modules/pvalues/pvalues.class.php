@@ -31,7 +31,7 @@ function pvalues() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data = 0) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
@@ -198,21 +198,6 @@ function usual(&$out) {
 * @access private
 */
  function dbInstall($data) {
-/*
-pvalues - Pvalues
-*/
-  $data = <<<EOD
- pvalues: ID int(10) unsigned NOT NULL auto_increment
- pvalues: PROPERTY_NAME varchar(100) NOT NULL DEFAULT ''
- pvalues: PROPERTY_ID int(10) NOT NULL DEFAULT '0'
- pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
- pvalues: VALUE text NOT NULL DEFAULT ''
- pvalues: UPDATED datetime
- pvalues: LINKED_MODULES varchar(255) NOT NULL DEFAULT ''
- pvalues: INDEX (PROPERTY_ID)
- pvalues: INDEX (OBJECT_ID)
- pvalues: INDEX (PROPERTY_NAME)
-EOD;
   parent::dbInstall($data);
  }
 // --------------------------------------------------------------------

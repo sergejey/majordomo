@@ -1,12 +1,13 @@
 [#if ACTION!="context"#]
 
 <ul class="nav nav-tabs">
- <li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?">Properties</a></li>
+ <li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?view_mode=">Debug</a></li>
+ <li [#if VIEW_MODE="properties"#]class="active"[#endif#]><a href="?view_mode=properties">Properties</a></li>
  <li [#if VIEW_MODE="methods"#]class="active"[#endif#]><a href="?view_mode=methods">Methods</a></li>
  <li [#if VIEW_MODE="scripts"#]class="active"[#endif#]><a href="?view_mode=scripts">Scripts</a></li>
  <li [#if VIEW_MODE="timers"#]class="active"[#endif#]><a href="?view_mode=timers">Timers</a></li>
  <li [#if VIEW_MODE="events"#]class="active"[#endif#]><a href="?view_mode=events">Events</a></li>
- <li [#if VIEW_MODE="debmes"#]class="active"[#endif#]><a href="?view_mode=debmes">Debug</a></li>
+ <li [#if VIEW_MODE="services"#]class="active"[#endif#]><a href="?view_mode=services">Services</a></li>
  <li [#if VIEW_MODE="performance"#]class="active"[#endif#]><a href="?view_mode=performance">Performance</a></li>
  <li><a href="print_all.php" target=_blank>Structure</a></li>
 </ul>
@@ -16,12 +17,13 @@
 <table border="1" align="center" cellspacing="3" cellpadding="5" width="100%">
  <tr>
   <td valign="top" colspan=7>
+   [#if VIEW_MODE!="services"#]
    <table width="100%" border="0">
     <tr>
      <td valign="top" width="50%">
      <div>Filter: <input type="text" name="filter" id="filter" onChange="checkAllStates();"></div>
      </td>
-     [#if VIEW_MODE="debmes"#]
+     [#if VIEW_MODE=""#]
      <td valign="top" nowrap>
      File:
      <select name="file" id='file'>
@@ -47,6 +49,7 @@
      </td>
     </tr>
    </table>
+   [#endif VIEW_MODE#]
   
   <div id="xrayContent">Loading...</div>
   </td>
@@ -76,6 +79,7 @@
          $.ajax({
           url: url,
           }).done(function(data) { 
+          //var currentContent=$('#xrayContent').html();
           $('#xrayContent').html(data);
           checkTimer=setTimeout('checkAllStates()', 5000);
          });

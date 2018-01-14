@@ -40,10 +40,13 @@
    //properties and methods
    $properties=SQLSelect("SELECT properties.ID, properties.TITLE, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID WHERE (properties.OBJECT_ID = '".DBSafe($object['ID'])."' OR properties.CLASS_ID = '".DBSafe($object['CLASS_ID'])."') ORDER BY properties.TITLE");
    $total=count($properties);
-   $res.='<a href="/panel/class/'.$object['CLASS_ID'].'/object/'.$object['ID'].'/properties.html">'.LANG_PROPERTIES."</a>:<br>";
+   $base_link='/panel/class/'.$object['CLASS_ID'].'/object/'.$object['ID'].'/properties.html';
+   $res.='<a href="'.$base_link.'">'.LANG_PROPERTIES."</a>:<br>";
    for($i=0;$i<$total;$i++) {
     $res.=''.$object['TITLE'];
-    $res.='.'.$properties[$i]['TITLE'].'<br>';
+    $res.='.'.$properties[$i]['TITLE'];
+    $res.=' <a href="'.$base_link.'#" title="'.htmlspecialchars(gg($object['TITLE'].'.'.$properties[$i]['TITLE'])).'">#</a>';
+    $res.="<br/>";
    }
    $methods=SQLSelect("SELECT methods.ID, methods.TITLE, methods.OBJECT_ID, methods.CLASS_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT, objects.CLASS_ID as OBJECT_CLASS_ID FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.OBJECT_ID = '".DBSafe($object['ID'])."' OR methods.CLASS_ID = '".DBSafe($object['CLASS_ID'])."') ORDER BY methods.OBJECT_ID DESC, methods.TITLE");
    $total=count($methods);
@@ -114,13 +117,16 @@
    }
 
    //properties and methods
-   $properties=SQLSelect("SELECT properties.ID, properties.TITLE, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN objects ON properties.OBJECT_ID=objects.ID WHERE properties.TITLE LIKE '%".DBSafe($title)."%' ORDER BY properties.TITLE");
+   $qry="SELECT properties.ID, properties.CLASS_ID, properties.TITLE, objects.CLASS_ID as OBJECT_CLASS_ID, objects.ID as OBJECT_ID, classes.TITLE as CLASS, objects.TITLE as OBJECT FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID LEFT JOIN pvalues ON (properties.ID=pvalues.PROPERTY_ID AND (properties.OBJECT_ID=pvalues.OBJECT_ID OR properties.OBJECT_ID=0)) LEFT JOIN objects ON (properties.OBJECT_ID=objects.ID OR pvalues.OBJECT_ID=objects.ID)  WHERE (properties.TITLE LIKE '%".DBSafe($title)."%' OR pvalues.VALUE LIKE '%".DBSafe($title)."%') ORDER BY properties.TITLE";
+   $properties=SQLSelect($qry);
    $total=count($properties);
    for($i=0;$i<$total;$i++) {
     $res.='P: '; //<a href="/panel/object/'.'">
     if ($properties[$i]['OBJECT']) {
+     $res.='<a href="/panel/class/'.$properties[$i]['OBJECT_CLASS_ID'].'/object/'.$properties[$i]['OBJECT_ID'].'/properties.html">'.$methods[$i]['OBJECT'];
      $res.=$properties[$i]['OBJECT'];
     } else {
+     $res.='<a href="/panel/class/'.$properties[$i]['CLASS_ID'].'/properties.html">'.$methods[$i]['OBJECT'];
      $res.=$properties[$i]['CLASS'];
     }
     $res.='.'.$properties[$i]['TITLE'].'</a><br>';
@@ -162,6 +168,12 @@
    for($i=0;$i<$total;$i++) {
     $res.='Scene: <a href="/panel/scene/'.$states[$i]['SCENE_ID'].'/elements/'.$states[$i]['ELEMENT_ID'].'/state'.$states[$i]['ID'].'.html">'.$states[$i]['ELEMENT_TITLE'].'.'.$states[$i]['TITLE'].'</a><br>';
    }
+   //scene elements
+   $elements=SQLSelect("SELECT elements.ID, elements.SCENE_ID, elements.TITLE FROM elements WHERE (elements.LINKED_OBJECT LIKE '%".DBSafe($title)."%' OR elements.LINKED_PROPERTY LIKE '%".DBSafe($title)."%' OR elements.TITLE LIKE '%".DBSafe($title)."%') ORDER BY elements.TITLE");
+   $total=count($elements);
+   for($i=0;$i<$total;$i++) {
+    $res.='Scene: <a href="/panel/scene/'.$elements[$i]['SCENE_ID'].'/elements/'.$elements[$i]['ID'].'.html">'.$elements[$i]['TITLE'].'</a><br>';
+   }
 
    //zwave devices
    if (file_exists(DIR_MODULES.'zwave/zwave.class.php')) {
@@ -169,6 +181,13 @@
     $total=count($devices);
     for($i=0;$i<$total;$i++) {
      $res.='ZWave: <a href="/panel/zwave/'.$devices[$i]['DEVICE_ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
+    }
+   }
+   if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
+    $devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE (TITLE LIKE '%".DBSafe($title)."%' OR LINKED_OBJECT LIKE '%".DBSafe($title)."%') ORDER BY TITLE");
+    $total=count($devices);
+    for($i=0;$i<$total;$i++) {
+     $res.='Device: <a href="/panel/devices/'.$devices[$i]['ID'].'.html">'.$devices[$i]['TITLE'].'</a><br>';
     }
    }
 

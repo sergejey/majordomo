@@ -1,0 +1,134 @@
+.device-widget {
+    max-width:350px;
+    padding:2px;
+}
+.device-icon {
+    background-image: url(../cms/scenes/styles/button/i_button.png);
+    background-repeat: no-repeat;
+    background-position: center 4px;
+    margin-right:5px;
+    width:40px;
+    height:40px;
+    float:left;
+}
+.device-header {
+    font-size:22px;
+}
+
+.device-widget.controller, .device-widget.sensor, .device-widget.button {
+    cursor:pointer;
+}
+
+.controller .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
+}
+
+.thermostat .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
+}
+
+.button .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
+}
+
+.device-details {
+    font-size:11px;
+}
+
+.device-icon.thermostat {
+    background-image: url(../cms/scenes/styles/switch/i_warm_on.png);
+}
+.device-icon.thermostat.on {
+    background-color:yellow;
+}
+
+.device-icon.motion {
+    background-image: url(../cms/scenes/styles/informer/i_motion.png);
+}
+
+.device-icon.smoke {
+    background-image: url(../cms/scenes/styles/informer/i_alarm.png);
+}
+
+.device-icon.button {
+    background-image: url(../cms/scenes/styles/button/i_knopka.png);
+}
+
+.device-icon.button.on {
+    background-color:yellow;
+}
+
+.device-icon.motion.on {
+    background-color:yellow;
+}
+
+.device-icon.smoke.on {
+    background-color:red;
+}
+
+.device-icon.openclose {
+    background-image: url(../cms/scenes/styles/common/i_window_off.png);
+}
+
+.device-icon.openclose.on {
+    background-color:yellow;
+}
+
+.device-icon.temperature {
+    background-image: url(../cms/scenes/styles/informer/i_temp.png);
+}
+.device-icon.humidity {
+    background-image: url(../cms/scenes/styles/informer/i_humidity.png);
+}
+
+.device-icon.pressure {
+    background-image: url(../cms/scenes/styles/informer/i_temp.png);
+}
+
+.device-icon.light-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_illum.png);
+}
+
+.device-icon.current-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.device-icon.voltage-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.device-icon.power-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.controller .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_light_off.png);
+}
+
+.controller.loadtype_power .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
+}
+
+.controller.loadtype_power .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
+}
+
+.controller .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_light_on.png);
+}
+
+.camera-widget {
+}
+.camera-text {
+    padding-top:10px;
+    vertical-align:middle;
+    white-space: nowrap;
+}

@@ -8,7 +8,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.2 (wizard, 18:09:58 [Sep 10, 2010])
 */
-Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL'); // options for 'TYPE' //page=Page|
+Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL|dashboard=Dashboard'); // options for 'TYPE' //page=Page|
 //
 //
 class layouts extends module {
@@ -161,6 +161,24 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
+ if ($this->ajax) {
+  global $op;
+  global $id;
+  if ($op=='loaddashboard') {
+   $page_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$id);
+   echo $page_rec['DETAILS'];
+  }
+  if ($op=='savedashboard') {
+   global $data;
+   $page_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$id);
+   $page_rec['DETAILS']=$data;
+   SQLUpdate('layouts',$page_rec);
+  }
+  exit;
+ }
+ if ($this->owner->action=='apps') {
+  $this->redirect(ROOTHTML."pages.html");
+ }
  $this->admin($out);
 }
 /**
@@ -188,9 +206,20 @@ function usual(&$out) {
 * @access public
 */
  function view_layouts(&$out, $id) {
-  $rec=SQLSelectOne("SELECT * FROM layouts WHERE ID='".(int)$id."'");
+  $rec=SQLSelectOne("SELECT * FROM layouts WHERE ID='".(int)$id."' OR TITLE LIKE '".DBSafe($id)."'");
   if (!$rec['ID']) {
-   return 0;
+   if ($id=='Panel') {
+    $rec=array();
+    $rec['TITLE']='Panel';
+    $rec['HIDDEN']=1;
+    $rec['TYPE']='dashboard';
+    $rec['ID']=SQLInsert('layouts',$rec);
+   } else {
+    return 0;
+   }
+  }
+  if ($rec['TYPE']=='dashboard') {
+   $this->redirect(ROOTHTML."freeboard/?layout_id=".$rec['ID']);
   }
   outHash($rec, $out);
  }
@@ -276,6 +305,7 @@ layouts - Layouts
  layouts: URL char(255) NOT NULL DEFAULT ''
  layouts: REFRESH int(10) NOT NULL DEFAULT '0'
  layouts: DETAILS text
+ layouts: HIDDEN int(3) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }

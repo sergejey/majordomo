@@ -126,6 +126,9 @@ function run() {
    */
   function runScript($id, $params = '')
   {
+
+    verbose_log("Script [".$id."] (".is_array($params) ? json_encode($params):''.")");
+
     $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE LIKE '" . DBSafe($id) . "'");
     if ($rec['ID']) {
       $rec['EXECUTED'] = date('Y-m-d H:i:s');
@@ -138,12 +141,12 @@ function run() {
         $code = $rec['CODE'];
         $success = eval($code);
         if ($success === false) {
-          getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+          //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
           registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
         }
         return $success;
       } catch (Exception $e) {
-        getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
+        //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
         registerError('script', sprintf('Error in script "%s": '.$e->getMessage(), $rec['TITLE']));
       }
 
@@ -294,7 +297,7 @@ function usual(&$out) {
     continue;
    }
 
-   runScript($rec['TITLE']);
+   runScriptSafe($rec['TITLE']);
 
    $rec['DIFF']=$diff;
 
@@ -304,6 +307,17 @@ function usual(&$out) {
   //print_r($scripts);
 
  }
+
+    function propertySetHandle($object, $property, $value)
+    {
+        $scripts = SQLSelect("SELECT ID FROM scripts WHERE LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
+        $total = count($scripts);
+        if ($total) {
+            for ($i = 0; $i < $total; $i++) {
+                $this->runScript($scripts[$i]['ID'],array('VALUE'=>$value));
+            }
+        }
+    }
 
 
  function delete_categories($id) {
@@ -357,13 +371,17 @@ scripts - Scripts
  scripts: RUN_PERIODICALLY int(3) unsigned NOT NULL DEFAULT 0
  scripts: RUN_DAYS char(30) NOT NULL DEFAULT ''
  scripts: RUN_TIME char(30) NOT NULL DEFAULT ''
+ scripts: AUTO_LINK int(3) unsigned NOT NULL DEFAULT 0 
+ scripts: AUTO_LINK_AVAILABLE int(3) unsigned NOT NULL DEFAULT 0 
+ scripts: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ scripts: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 
  script_categories: ID int(10) unsigned NOT NULL auto_increment
  script_categories: TITLE varchar(255) NOT NULL DEFAULT ''
 
 
  safe_execs: ID int(10) unsigned NOT NULL auto_increment
- safe_execs: COMMAND text NOT NULL DEFAULT ''
+ safe_execs: COMMAND text
  safe_execs: EXCLUSIVE int(3) NOT NULL DEFAULT 0
  safe_execs: PRIORITY int(10) NOT NULL DEFAULT 0
  safe_execs: ADDED datetime

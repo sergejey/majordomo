@@ -5,27 +5,22 @@
 
 <script language="javascript">
 
-$(function () {
-
-
-        $("a.show-hide-link").click(function() {
-                var id = $(this).data('id');//'#sub' + 
-                //$(id).toggle();
-  if ($('.sublist'+id).is(":visible")) {
-   $('.sublist'+id).hide();
-   $('#link'+id).html('+');
-   $.cookie("classes_item"+id, null);
-  } else {
-   $.cookie("classes_item"+id, "1");
-   $('.sublist'+id).show();
-   $('#link'+id).html('-');
-  }
-  return false;
-
-
+    $(function () {
+        $("a.show-hide-link").click(function () {
+            var id = $(this).data('id');//'#sub' +
+            //$(id).toggle();
+            if ($('.sublist' + id).is(":visible")) {
+                $('.sublist' + id).hide();
+                $('#link' + id).html('+');
+                $.cookie("classes_item" + id, null);
+            } else {
+                $.cookie("classes_item" + id, "1");
+                $('.sublist' + id).show();
+                $('#link' + id).html('-');
+            }
+            return false;
         });
-
-});
+    });
 
 
 </script>
@@ -33,14 +28,14 @@ $(function () {
 
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_classes" style="padding:0px">
-<table  class="table table-striped">
+<table  class="table">
 [#begin RESULT#]
 <tr >
  <td
     valign="top">
    <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]">+</a>
    <b>[#TITLE#]</b>
-   [#if DESCRIPTION!=""#]<i>[#DESCRIPTION#]</i>[#endif#]
+   [#if DESCRIPTION!=""#]<i>[#DESCRIPTION#]</i>[#endif DESCRIPTION#]
  </td>
  <td valign="top" align="right">
 
@@ -66,7 +61,10 @@ $(function () {
    <table border=0>
          [#begin OBJECTS#]
          <tr>
-                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>[#if DESCRIPTION!=""#] [#DESCRIPTION#][#endif#]</td>
+                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>
+                     [#if DESCRIPTION!=""#] [#DESCRIPTION#][#endif#]
+                     [#if KEY_DATA!=""#]<i>[#KEY_DATA#]</i>[#endif#]
+                 </td>
                  <td>&nbsp;</td>
         </tr>
         [#if METHODS#]
@@ -91,7 +89,7 @@ $(function () {
 [#if RESULT#]
  <tr class="sublist[#ID#]" style="display:none">
  <td style="padding-left:40px" colspan=2>
-  <table  class="table table-striped">
+  <table  class="table">
    [#tree RESULT#]
   </table>
  </td></tr>
@@ -128,25 +126,32 @@ $(function () {
 <a href="#" onClick="$('#tools').toggle();return false;" class="btn btn-default"><#LANG_TOOLS#></a>
 <br>&nbsp;
 <div id='tools' style="display:none">
-<form action="?" enctype="multipart/form-data" method="post">
-<table border="0">
- <tr>
-  <td valign="top"><#LANG_IMPORT_CLASS_FROM_FILE#>:</td>
-  <td valign="top"><input type="file" name="file" enctype="multipart/form-data"></td>
- </tr>
- <tr>
-  <td valign="top">&nbsp;</td>
-  <td valign="top"><label><input type="checkbox" name="overwrite" value="1"> <#LANG_OVERWRITE#></label></td>
- </tr>
- <tr>
-  <td valign="top">&nbsp;</td>
-  <td valign="top"><label><input type="checkbox" name="only_classes" value="1"> <#LANG_ONLY_CLASSES#></label></td>
- </tr>
- <tr>
-  <td valign="top">&nbsp;</td>
-  <td valign="top"><input type="submit" name="submit" value="<#LANG_IMPORT#>" class="btn btn-default"></td>
- </tr>
-</table>
-<input type="hidden" name="view_mode" value="import_classes">
-</form>
+    <form action="?" enctype="multipart/form-data" method="post">
+        <table border="0">
+            <tr>
+                <td valign="top">
+                    <#LANG_IMPORT_CLASS_FROM_FILE#>:
+                </td>
+                <td valign="top"><input type="file" name="file" enctype="multipart/form-data"></td>
+            </tr>
+            <tr>
+                <td valign="top">&nbsp;</td>
+                <td valign="top"><label><input type="checkbox" name="overwrite" value="1">
+                    <#LANG_OVERWRITE#>
+                </label></td>
+            </tr>
+            <tr>
+                <td valign="top">&nbsp;</td>
+                <td valign="top"><label><input type="checkbox" name="only_classes" value="1">
+                    <#LANG_ONLY_CLASSES#>
+                </label></td>
+            </tr>
+            <tr>
+                <td valign="top">&nbsp;</td>
+                <td valign="top"><input type="submit" name="submit" value="<#LANG_IMPORT#>" class="btn btn-default">
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="view_mode" value="import_classes">
+    </form>
 </div>

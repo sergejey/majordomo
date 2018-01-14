@@ -30,7 +30,7 @@
    */
   //updating 'Value' (varchar)
    global $value;
-   $rec['VALUE']=$value;
+   $rec['VALUE']=$value.'';
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {

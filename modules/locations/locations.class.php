@@ -31,7 +31,7 @@ function locations() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data = 0) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
@@ -124,6 +124,18 @@ function admin(&$out) {
   if ($this->view_mode=='' || $this->view_mode=='search_locations') {
    $this->search_locations($out);
   }
+
+     if ($this->view_mode=='priority_up') {
+         global $id;
+         $this->reorder_items($id,'up');
+         $this->redirect("?");
+     }
+     if ($this->view_mode=='priority_down') {
+         global $id;
+         $this->reorder_items($id,'down');
+         $this->redirect("?");
+     }
+
   if ($this->view_mode=='edit_locations') {
    $this->edit_locations($out, $this->id);
   }
@@ -133,6 +145,31 @@ function admin(&$out) {
   }
  }
 }
+
+    function reorder_items($id, $direction='up') {
+        $all_elements=SQLSelect("SELECT * FROM locations WHERE 1 ORDER BY PRIORITY DESC, TITLE");
+        $total=count($all_elements);
+        for($i=0;$i<$total;$i++) {
+            if ($all_elements[$i]['ID']==$id && $i>0 && $direction=='up') {
+                $tmp=$all_elements[$i-1];
+                $all_elements[$i-1]=$all_elements[$i];
+                $all_elements[$i]=$tmp;
+                break;
+            }
+            if ($all_elements[$i]['ID']==$id && $i<($total-1) && $direction=='down') {
+                $tmp=$all_elements[$i+1];
+                $all_elements[$i+1]=$all_elements[$i];
+                $all_elements[$i]=$tmp;
+                break;
+            }
+        }
+        $priority=($total)*10;
+        for($i=0;$i<$total;$i++) {
+            $all_elements[$i]['PRIORITY']=$priority;
+            $priority-=10;
+            SQLUpdate('locations', $all_elements[$i]);
+        }
+    }
 /**
 * FrontEnd
 *
@@ -204,6 +241,7 @@ locations - Locations
   $data = <<<EOD
  locations: ID int(10) unsigned NOT NULL auto_increment
  locations: TITLE varchar(255) NOT NULL DEFAULT ''
+ locations: PRIORITY int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }

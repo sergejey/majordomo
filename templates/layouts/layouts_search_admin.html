@@ -28,7 +28,7 @@
  <td
    >
    [#if ICON!=""#]<img src="<#ROOTHTML#>cms/layouts/[#ICON#]" class="action-list-icon" align="absmiddle">[#endif#]
-   [#TITLE#]<span class="divider">/</span>[#if TYPE="html"#]<a href="<#ROOTHTML#>page/[#ID#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="url"#]<a href="[#URL#]" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="app"#]<a href="<#ROOTHTML#>popup/[#APP#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#]
+   [#TITLE#]<span class="divider">/</span>[#if TYPE="html" || TYPE="dashboard"#]<a href="<#ROOTHTML#>page/[#ID#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="url"#]<a href="[#URL#]" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#][#if TYPE="app"#]<a href="<#ROOTHTML#>popup/[#APP#].html" target=_blank><#LANG_PREVIEW#></a>[#endif TYPE#]
 </td>
  <td
  

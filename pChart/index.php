@@ -1,31 +1,32 @@
 <?php   
 chdir('../');
 set_time_limit(0);
- /*
-        Документация по построению графиков: http://wiki.pchart.net/
-        Параметры в адресной строке:
-         &p=sensor1.temp - Объект.свойство
-         &op=log - лог исходных данных
-         &op=debug - лог данных сформированных для построения графика
-         &op=value - последнее значение свойства объекта
-         &op=timed - лог исходных данных в формате JSON
-         &op=json - лог данных графика в формате JSON
-         &px=6 - расстояние между точками графика
-         &approx=avg - аппроксимация (sum - по сумме, max - по максимуму, count - по разнице между макимальним и минимальным значением в периуде)
-         &fil01=0 - сглаживание, по умолчанию = 0 (отсутствует)
-         &gcolor=brown - цвет графика (brown, blue, green, orange), безцветный по умолчанию
-         &bg=light - фон графика (может быть light, dark), по умолчанию dark
-         &title=Title - заголовок
-         &scale=zero - показывать ось нулевого значения
-         &gtype=curve - тип графика (может быть: curve, bar, line -- плавная линия, столбцы, ступенчатый)
-         &type=8h - Период (8h = 8 часов, 8d = 8 дней, 8m = 8 месяцев) 
-         &start=2014/09/25 - дата с которой берется начало графика в формате (гггг/мм/дд)
-         &interval= секунд в интервале
-         &width=610 - ширина графика в пикселях
-         &height=210 - высота графика в пикселях
-         &unit=°C - единицы измерения
- */
-//Общие настройки по умолчанию:
+
+/*
+       Р”РѕРєСѓРјРµРЅС‚Р°С†РёСЏ РїРѕ РїРѕСЃС‚СЂРѕРµРЅРёСЋ РіСЂР°С„РёРєРѕРІ: http://wiki.pchart.net/
+       РџР°СЂР°РјРµС‚СЂС‹ РІ Р°РґСЂРµСЃРЅРѕР№ СЃС‚СЂРѕРєРµ:
+        &p=sensor1.temp - РћР±СЉРµРєС‚.СЃРІРѕР№СЃС‚РІРѕ
+        &op=log - Р»РѕРі РёСЃС…РѕРґРЅС‹С… РґР°РЅРЅС‹С…
+        &op=debug - Р»РѕРі РґР°РЅРЅС‹С… СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹С… РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ РіСЂР°С„РёРєР°
+        &op=value - РїРѕСЃР»РµРґРЅРµРµ Р·РЅР°С‡РµРЅРёРµ СЃРІРѕР№СЃС‚РІР° РѕР±СЉРµРєС‚Р°
+        &op=timed - Р»РѕРі РёСЃС…РѕРґРЅС‹С… РґР°РЅРЅС‹С… РІ С„РѕСЂРјР°С‚Рµ JSON
+        &op=json - Р»РѕРі РґР°РЅРЅС‹С… РіСЂР°С„РёРєР° РІ С„РѕСЂРјР°С‚Рµ JSON
+        &px=6 - СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ С‚РѕС‡РєР°РјРё РіСЂР°С„РёРєР°
+        &approx=avg - Р°РїРїСЂРѕРєСЃРёРјР°С†РёСЏ (sum - РїРѕ СЃСѓРјРјРµ, max - РїРѕ РјР°РєСЃРёРјСѓРјСѓ, count - РїРѕ СЂР°Р·РЅРёС†Рµ РјРµР¶РґСѓ РјР°РєРёРјР°Р»СЊРЅРёРј Рё РјРёРЅРёРјР°Р»СЊРЅС‹Рј Р·РЅР°С‡РµРЅРёРµРј РІ РїРµСЂРёСѓРґРµ)
+        &fil01=0 - СЃРіР»Р°Р¶РёРІР°РЅРёРµ, РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ = 0 (РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚)
+        &gcolor=brown - С†РІРµС‚ РіСЂР°С„РёРєР° (brown, blue, green, orange), Р±РµР·С†РІРµС‚РЅС‹Р№ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+        &bg=light - С„РѕРЅ РіСЂР°С„РёРєР° (РјРѕР¶РµС‚ Р±С‹С‚СЊ light, dark), РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ dark
+        &title=Title - Р·Р°РіРѕР»РѕРІРѕРє
+        &scale=zero - РїРѕРєР°Р·С‹РІР°С‚СЊ РѕСЃСЊ РЅСѓР»РµРІРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ
+        &gtype=curve - С‚РёРї РіСЂР°С„РёРєР° (РјРѕР¶РµС‚ Р±С‹С‚СЊ: curve, bar, line -- РїР»Р°РІРЅР°СЏ Р»РёРЅРёСЏ, СЃС‚РѕР»Р±С†С‹, СЃС‚СѓРїРµРЅС‡Р°С‚С‹Р№)
+        &type=8h - РџРµСЂРёРѕРґ (8h = 8 С‡Р°СЃРѕРІ, 8d = 8 РґРЅРµР№, 8m = 8 РјРµСЃСЏС†РµРІ)
+        &start=2014/09/25 - РґР°С‚Р° СЃ РєРѕС‚РѕСЂРѕР№ Р±РµСЂРµС‚СЃСЏ РЅР°С‡Р°Р»Рѕ РіСЂР°С„РёРєР° РІ С„РѕСЂРјР°С‚Рµ (РіРіРіРі/РјРј/РґРґ)
+        &interval= СЃРµРєСѓРЅРґ РІ РёРЅС‚РµСЂРІР°Р»Рµ
+        &width=610 - С€РёСЂРёРЅР° РіСЂР°С„РёРєР° РІ РїРёРєСЃРµР»СЏС…
+        &height=210 - РІС‹СЃРѕС‚Р° РіСЂР°С„РёРєР° РІ РїРёРєСЃРµР»СЏС…
+        &unit=В°C - РµРґРёРЅРёС†С‹ РёР·РјРµСЂРµРЅРёСЏ
+*/
+
 $w=610; //width
 $h=210; //heigh
 $right_border=25;
@@ -39,7 +40,7 @@ $scale_fontsize=8;
 $threshold_fontsize=6;
 $w_delta=80;
 $px_per_point=6;
-$unit="°C";
+$unit="В°C";
 $end_time=time();
 $approx='avg';
 $fil01=0;
@@ -52,13 +53,16 @@ include_once("./load_settings.php");
 include(dirname(__FILE__)."/class/pDraw.class.php");
 include(dirname(__FILE__)."/class/pImage.class.php");
 include(dirname(__FILE__)."/class/pData.class.php");
-
 if ($width) $w=(int)$width;
 if ($height) $h=(int)$height;
 if ($_GET['px']) $px_per_point=(int)$_GET['px'];
 
 // Dataset definition   
 $DataSet = new pData;
+
+if (is_array($p)) {
+    $p=$p[0];
+}
 
 if ($p!='') {
         if (preg_match('/(.+)\.(.+)/is', $p, $m)) {
@@ -67,6 +71,7 @@ if ($p!='') {
         }
 }
 
+$property = SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$prop_id);
 $pvalue=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id."' AND OBJECT_ID='".$obj->id."'");
 
 if (!$pvalue['ID']) {
@@ -77,6 +82,10 @@ if (!$pvalue['ID']) {
 if ($_GET['op']=='value') {
         echo $pvalue['VALUE'];
         exit;
+}
+
+if (!$type) {
+ $type = '7d';
 }
 
 if (preg_match('/(\d+)d/', $type, $m)) {
@@ -105,7 +114,17 @@ if ($total>0) {
         $px_passed=0;
         $dt=date('Y-m-d', $start_time);
 
-        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+        if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+                $history_table = createHistoryTable($pvalue['ID']);
+        } else {
+                $history_table = 'phistory';
+        }
+
+        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
+        if (!$history[0]['ID'] && $op == 'log') {
+                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+                $history = array_reverse($history);
+        }
         $total_values=count($history);
         $start_time=$history[0]['UNX'];
 
@@ -128,21 +147,32 @@ if ($total>0) {
          if ($total_values>0) {
           if ($_GET['subop']=='clear') {
            if (!$_GET['id']) {
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."'");
+                   $values=SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
+                   $total = count($values);
+                   for ($i = 0; $i < $total; $i++) {
+                           if ($property['DATA_TYPE']==5) {
+                                 @unlink(ROOT.'cms/images/'.$values[$i]['VALUE']);
+                           }
+                   }
+                   SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."'");
            } else {
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+            $value=SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
+            if ($property['DATA_TYPE']==5) {
+              @unlink(ROOT.'cms/images/'.$value['VALUE']);
+            }
+            SQLExec("DELETE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ID='".(int)$_GET['id']."'");
            }
            header('Location:'.str_replace('&subop=clear', '', $_SERVER['REQUEST_URI']));
            exit;
           }
           //OPTIMIZE_LOG
           if ($_GET['subop']=='optimize') {
-           $data=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
+           $data=SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' ORDER BY ADDED DESC");
            $total=count($data);
            $old_value=$data[0]['VALUE'];
            for($i=1;$i<$total;$i++) {
             if ($data[$i]['VALUE']==$old_value) {
-             SQLExec("DELETE FROM phistory WHERE ID='".$data[$i]['ID']."'");
+             SQLExec("DELETE FROM $history_table WHERE ID='".$data[$i]['ID']."'");
             } else {
              $old_value=$data[$i]['VALUE'];
             }
@@ -150,6 +180,9 @@ if ($total>0) {
            header('Location:'.str_replace('&subop=optimize', '', $_SERVER['REQUEST_URI']));
            exit;
           }
+
+                 echo "<table width=100%><tr><td width='99%'>";
+
           echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=">H</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=1h">1h</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=24h">24h</a> ';
@@ -157,21 +190,50 @@ if ($total>0) {
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=31d">31d</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a>';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
+                 echo "</td><td>";
+                 echo '<a href="javascript:window.close();">X</a>';
+                 echo "</td></tr></table>";
           echo '<br/>';
           if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
-           $code='<img src="/jpgraph/?p='.$_GET['p'].'&type='.$_GET['subop'].'&width=500&"/>';
+           if (file_exists(DIR_MODULES.'charts/charts.class.php')) {
+               if (!is_array($_GET['p'])) {
+                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+               } else {
+                   $p_url='';
+                   foreach($_GET['p'] as $p) {
+                       $p_url.='&properties[]='.urlencode($p);
+                   }
+                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].$p_url.'" width=100% height=300></iframe>';
+               }
+           } else {
+            $code='<img src="/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
+           }
            echo $code."<br/>".htmlspecialchars($code);
            exit;
           }
          }
                 $history=array_reverse($history);
+                if (!$_GET['full']) {
+                        $history=array_slice($history,0,25);
+                        $total_values=count($history);
+                }
                 for($i=0;$i<$total_values;$i++) {
                         //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
                         echo $history[$i]['ADDED'];
                         echo ": <b>";
-                        echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        if ($property['DATA_TYPE']==5) {
+                           echo "<a href='".ROOTHTML."cms/images/".$history[$i]['VALUE']."' target='_blank'><img src='".ROOTHTML."cms/images/".$history[$i]['VALUE']."' height=100></a>";
+                        } else {
+                           echo htmlspecialchars($history[$i]['VALUE'])."</b>";
+                        }
+                        if ($history[$i]['SOURCE']) {
+                         echo ' ('.$history[$i]['SOURCE'].')';
+                        }
                         echo ' <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear&id='.$history[$i]['ID'].'" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">X</a> ';
                         echo "<br/>";
+                }
+                if (!$_GET['full']) {
+                        echo ' <br/><a href="'.$_SERVER['REQUEST_URI'].'&full=1">Load all values</a> ';
                 }
                 exit;
         }
@@ -189,12 +251,12 @@ if ($total>0) {
         
         $index=0;
         while($start_time<=$end_time) {
-                if ($next_index<$total_values) {        //перебираем значения
+                if ($next_index<$total_values) {        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                         for($i=$next_index;$i<$total_values;$i++) {
                                 $next_index=$i+1;
                                 if ($history[$i]['UNX']>=$start_time || $next_index>=$total_values) {
                                         if ($temp_array) {
-                                                if ($history[$i]['UNX']+$period > $start_time && $next_index==$total_values) $temp_array[]=$history[$i]['VALUE']; //последнее значение
+                                                if ($history[$i]['UNX']+$period > $start_time && $next_index==$total_values) $temp_array[]=$history[$i]['VALUE']; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                                                 if ($approx=='sum') {
                                                         $value=array_sum($temp_array);
                                                 } elseif ($approx=='max') {
@@ -212,36 +274,36 @@ if ($total>0) {
                                         }
                                         if ($_GET['op']=='debug') {
                                                 echo "<tt>Take value = </tt><b>".$value."</b><tt> from ";
-                                                //print_r($temp_array);         //способ предоставления на выбор, ненужое закоментировать
-                                                //var_dump($temp_array);        //способ предоставления на выбор, ненужое закоментировать
-                                                var_export($temp_array);        //способ предоставления на выбор, ненужое закоментировать
+                                                //print_r($temp_array);         //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                                                //var_dump($temp_array);        //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                                                var_export($temp_array);        //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                                                 echo "<tt><br>Period time: ".date('Y-m-d H:i:s', $start_time-$period)." - ".date('Y-m-d H:i:s', $start_time)." (".$period." sec)</tt><br>";
                                                 echo "<hr></tt>";
                                         }
                                         
-                                        //ловим пропущеные данные
+                                        //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                                         if ($i>=1 && $i<$total_values-1)        $last_value=$history[$i-1]['VALUE'];
                                         elseif ($i==$total_values-1)            $last_value=$history[$total_values-1]['VALUE'];
                                         else                                                            $last_value=$history[0]['VALUE'];
-                                        if (($start_time+$period)<$history[$i]['UNX']) { //для пропусков в середине
-                                                $temp_array=array($last_value); //будет записано предидущее знчение
+                                        if (($start_time+$period)<$history[$i]['UNX']) { //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                                                $temp_array=array($last_value); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                                                 $next_index=$i;
-                                        } elseif ($start_time>$history[$i]['UNX']) { //для пропусков в конце
-                                                $temp_array=array($history[$total_values-1]['VALUE']); //будет записано последнее знчение
+                                        } elseif ($start_time>$history[$i]['UNX']) { //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
+                                                $temp_array=array($history[$total_values-1]['VALUE']); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                                                 $next_index=$i;
                                         } else 
-                                                $temp_array=array($history[$i]['VALUE']); //начинаем формировать новый массив
+                                                $temp_array=array($history[$i]['VALUE']); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                                         //}
                                         //if ($_GET['op']=='debug') echo "<tt>".$history[$i]['UNX'].">".$start_time.": ".$history[$i]['VALUE']."</tt><br>";
                                         break;
                                 } else {
                                         if ($history[$i]['UNX']<$start_time)
-                                        $temp_array[]=$history[$i]['VALUE']; //продолжаем формировать массив, добавляем следующие значения
+                                        $temp_array[]=$history[$i]['VALUE']; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                                         //if ($_GET['op']=='debug') echo "<tt>".$history[$i]['UNX']."<".$start_time.": ".$history[$i]['VALUE']."</tt><br>";
                                 }
                         }
                 } else {
-                        // добавляем последнее значение
+                        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                         if ($approx=='count') {
                                 $value=round($history[$total_values-1]['VALUE']-$last_value, 2);
                         } else {
@@ -327,10 +389,10 @@ if ($_GET['op']=='json') {
 
 $DataSet->setAxisUnit(0,$unit);
 $DataSet->addPoints($hours,"Labels");
-$DataSet->setSerieDescription("Labels","Время");
+$DataSet->setSerieDescription("Labels","пїЅпїЅпїЅпїЅпїЅ");
 $DataSet->setAbscissa("Labels");
 
-//цвет графика
+//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 if ($_GET['gcolor']=='red') {
         $ColorPalete = array("R"=>220,"G"=>50,"B"=>50);
 } elseif ($_GET['gcolor']=='brown') {
@@ -348,7 +410,7 @@ if ($_GET['gcolor']=='red') {
                 $ColorPalete = array("R"=>250,"G"=>250,"B"=>250);
         }
 }
-//$ColorPalete["Alpha"] = 100; //прозрачность
+//$ColorPalete["Alpha"] = 100; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 $DataSet->setPalette("Serie1",$ColorPalete);
  
 // Initialise the graph  
@@ -357,7 +419,7 @@ $Test = new pImage($w,$h,$DataSet);
 /* Define the boundaries of the graph area */
 $Test->setGraphArea($left_border,$top_border,$w-$right_border,$h-$bottom_border);
 
-//градиентная заливка фона
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
         $Settings = array(
                 "StartR"=>240,
@@ -378,7 +440,7 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "Alpha"=>100);
 }
 $Test->drawGradientArea(0,0,$w,$h,DIRECTION_VERTICAL,$Settings);
-//градиентная заливка поля графика
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 $Settings["StartR"]=$Settings["StartR"]+40;
 $Settings["StartG"]=$Settings["StartG"]+40;
 $Settings["StartB"]=$Settings["StartB"]+40;
@@ -404,17 +466,17 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "ManualScale"=>$AxisBoundaries,
                 "DrawXLines"=>FALSE,
                 "DrawYLines"=>FALSE,
-                //цвет координатной оси
+                //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
                 "AxisR"=>100,
                 "AxisG"=>100,
                 "AxisB"=>100,
-                //цвет тиков на координатной оси
+                //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
                 "TickR"=>100,
                 "TickG"=>100,
                 "TickB"=>100,
                 "InnerTickWidth"=>0,
                 "OuterTickWidth"=>5,
-                "LabelSkip"=>0, //пропускаем тики
+                "LabelSkip"=>0, //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
                 "GridTicks"=>1,
                 "ScaleSpacing"=>100,
                 "XMargin"=>0,
@@ -438,7 +500,7 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "DrawBox"=>FALSE,
                 "CaptionOffset"=>-18,
                 "NoMargin"=>TRUE,
-                "Border"=>FALSE,                                //границы области вертикальной закраски для drawXThresholdArea
+                "Border"=>FALSE,                                //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ drawXThresholdArea
                 "CaptionAlign"=>CAPTION_RIGHT_BOTTOM);
         /* Choose a nice font */
         $Test->setFontProperties(array("FontName"=>$font,"R"=>100,"G"=>100,"B"=>100,"FontSize"=>$scale_fontsize));
@@ -448,17 +510,17 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "ManualScale"=>$AxisBoundaries,
                 "DrawXLines"=>FALSE,
                 "DrawYLines"=>FALSE,
-                //цвет координатной оси
+                //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
                 "AxisR"=>240,
                 "AxisG"=>240,
                 "AxisB"=>240,
-                //цвет тиков на координатной оси
+                //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
                 "TickR"=>240,
                 "TickG"=>240,
                 "TickB"=>240,
                 "InnerTickWidth"=>0,
                 "OuterTickWidth"=>5,
-                "LabelSkip"=>0, //пропускаем тики
+                "LabelSkip"=>0, //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
                 "GridTicks"=>1,
                 "ScaleSpacing"=>100,
                 "XMargin"=>0,
@@ -482,7 +544,7 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
                 "DrawBox"=>FALSE,
                 "CaptionOffset"=>-18,
                 "NoMargin"=>TRUE,
-                "Border"=>FALSE,                                //границы области вертикальной закраски для drawXThresholdArea
+                "Border"=>FALSE,                                //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ drawXThresholdArea
                 "CaptionAlign"=>CAPTION_RIGHT_BOTTOM);
         /* Choose a nice font */
         $Test->setFontProperties(array("FontName"=>$font,"R"=>240,"G"=>240,"B"=>240,"FontSize"=>$scale_fontsize));
@@ -492,7 +554,7 @@ $Test->drawScale($scaleSettings);
 //$Test->drawGraphAreaGradient(162,183,202,50);
 $Test->setFontProperties(array("FontName"=>$font,"FontSize"=>$threshold_fontsize));
 $drawThreshold=$ThresholdSettings;
-$drawThreshold["Alpha"]=10;  //празрачность вертикальной закраски
+$drawThreshold["Alpha"]=10;  //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         $index=0;
         $Alpha=$drawThreshold["Alpha"];
         while ($index<sizeof($thresholds)) {
@@ -509,9 +571,9 @@ $drawThreshold["Alpha"]=10;  //празрачность вертикальной закраски
                 ++$index;
         }
         $drawThreshold["Alpha"]=$Alpha;
-        $Test->drawThreshold(round(max($values),1),$ThresholdSettings); //горизонтальная линия по максимальному значению
-        $Test->drawThreshold(round(min($values),1),$ThresholdSettings); //горизонтальная линия по минимальному значению
-        $Test->drawThreshold(round(array_sum($values)/sizeof($values),1),$ThresholdSettings); //горизонтальная линия по среднему значению
+        $Test->drawThreshold(round(max($values),1),$ThresholdSettings); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        $Test->drawThreshold(round(min($values),1),$ThresholdSettings); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        $Test->drawThreshold(round(array_sum($values)/sizeof($values),1),$ThresholdSettings); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         //$Test->drawGrid(1,TRUE,230,230,230,10); 
         if ($_GET['scale']=='zero') {
                 $temp=$ThresholdSettings["WriteCaption"];
@@ -520,7 +582,7 @@ $drawThreshold["Alpha"]=10;  //празрачность вертикальной закраски
                 $ThresholdSettings["WriteCaption"]=$temp;
         }
 
-//выводим заголовок графика
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 if (IsSet($_GET['title'])) {
  $_GET['title']=strip_tags($_GET['title']);
@@ -540,8 +602,8 @@ if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
         }
 }
 
-// рисуем график
-if ($_GET['gtype']=='curve') { //рисуем сглаженый график
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+if ($_GET['gtype']=='curve') { //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         //$Test->drawCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription());
         //$Test->clearShadow();  
         //$Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),.1,30, FALSE);
@@ -550,9 +612,9 @@ if ($_GET['gtype']=='curve') { //рисуем сглаженый график
                 "BreakVoid"=>FALSE,
                 "VoidTicks"=>0,
                 "DisplayColor"=>DISPLAY_AUTO));
-        $Test->drawAreaChart(array("AroundZero"=>FALSE)); // заполнение снизу до кривой графика
-        // $Test->drawAreaChart(array("AroundZero"=>TRUE)); // заполнение от нуля до кривой графика
-} elseif ($_GET['gtype']=='bar') { //рисуем столбы
+        $Test->drawAreaChart(array("AroundZero"=>FALSE)); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        // $Test->drawAreaChart(array("AroundZero"=>TRUE)); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+} elseif ($_GET['gtype']=='bar') { //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         //$Test->drawFilledRectangle(60,60,450,190,array("R"=>255,"G"=>255,"B"=>255,"Surrounding"=>-200,"Alpha"=>10));
         //$Test->drawScale(array("DrawSubTicks"=>TRUE));
         $Test->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
@@ -565,7 +627,7 @@ if ($_GET['gtype']=='curve') { //рисуем сглаженый график
                 "Rounded"=>FALSE,
                 "AroundZero"=>TRUE,
                 "Surrounding"=>0));
-} else { //рисуем прямолинейный график
+} else { //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         //$Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());  
         //$Test->clearShadow();  
         //$Test->drawFilledLineGraph($DataSet->GetData(),$DataSet->GetDataDescription(), 30);
@@ -574,8 +636,8 @@ if ($_GET['gtype']=='curve') { //рисуем сглаженый график
                 "BreakVoid"=>FALSE,
                 "VoidTicks"=>0,
                 "DisplayColor"=>DISPLAY_AUTO));
-        //$Test->drawAreaChart(array("AroundZero"=>FALSE)); // заполнение снизу до кривой графика
-        $Test->drawAreaChart(array("AroundZero"=>TRUE)); // заполнение от нуля до кривой графика
+        //$Test->drawAreaChart(array("AroundZero"=>FALSE)); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        $Test->drawAreaChart(array("AroundZero"=>TRUE)); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   }
 
 /* Render the picture (choose the best way) */

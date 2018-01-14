@@ -20,6 +20,14 @@
  * @license http://opensource.org/licenses/mit-license.php MIT License
  * @link https://github.com/sergejey/majordomo/blob/master/lib/mysql.class.php
  */
+
+if (!defined('MYSQL_BOTH')) {
+ define('MYSQL_BOTH',MYSQLI_BOTH);
+ define('MYSQL_NUM',MYSQLI_NUM);
+ define('MYSQL_ASSOC',MYSQLI_ASSOC);
+}
+
+
 class mysql
 {
    /**
@@ -70,6 +78,9 @@ class mysql
     */
    var $pingTimeout;
 
+
+   public $connected;
+
    
    /**
     * MySQL constructor
@@ -103,27 +114,42 @@ class mysql
    public function Connect()
    {
       // connects to database
-      if ($this->port) {
-       $this->dbh = mysqli_connect($this->host . ":" . $this->port, $this->user, $this->password);
-      } else {
-       $this->dbh = mysqli_connect($this->host , $this->user, $this->password);
+
+      /*if (preg_match('/firefox/is',$_SERVER['HTTP_USER_AGENT'])) {
+         $this->host='127.0.0.3';
       }
-      if (!mysqli_select_db($this->dbh, $this->dbName))
-      {
-         $this->Error();
-         
+      */
+
+      if ($this->port) {
+       $this->dbh = @mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
+      } else {
+       $this->dbh = @mysqli_connect(''.$this->host , $this->user, $this->password);
+      }
+
+      $this->connected = false;      
+      
+      if (!$this->dbh) {
+         $err_no = mysqli_connect_errno();
+         $err_details = mysqli_connect_error();
+         Define('NO_DATABASE_CONNECTION',1);
+         registerError('sqlconn', $err_no . ": " . $err_details);
+         //new custom_error($err_no . ": " . $err_details, 1);
          return 0;
       }
-      else
+      $db_select = mysqli_select_db($this->dbh, $this->dbName);
+      if (!$db_select) {
+         Define('NO_DATABASE_CONNECTION',1);
+         $this->Error("Selecting db: ".$this->dbName, 0);
+         return 0;
+      } else
       {
+         $this->connected = true;
          $this->latestTransaction=time();
          $this->Exec("SET NAMES 'utf8';");
          $this->Exec("SET CHARACTER SET 'utf8';");
          $this->Exec("set character_set_client='utf8';");
          $this->Exec("set character_set_results='utf8';");
          $this->Exec("set collation_connection='utf8_general_ci';");
-
-         
          return 1;
       }
 
@@ -138,6 +164,7 @@ class mysql
    public function Exec($query)
    {
 
+      if (!$this->connected) return false;
       if ((time()-$this->latestTransaction)>$this->pingTimeout) {
        $this->Ping();
       }
@@ -147,13 +174,7 @@ class mysql
       
       if (!$result)
       {
-
-      //$e = new Exception;
-      //var_dump($e->getTraceAsString());
-
-
          $this->Error($query);
-         
          return 0;
       }
       
@@ -171,7 +192,7 @@ class mysql
     */
    public function Select($query)
    {
-
+      if (!$this->connected) return false;
       $res = array();
       
       if ($result = $this->Exec($query))
@@ -183,7 +204,7 @@ class mysql
       }
       else
       {
-         $this->Error($query);
+         $this->Error($query,0);
       }
 
       return $res;
@@ -200,6 +221,7 @@ class mysql
     */
    public function SelectOne($query)
    {
+      if (!$this->connected) return false;
       if ($result = $this->Exec($query))
       {
          $rec = mysqli_fetch_array($result, MYSQL_ASSOC);
@@ -215,8 +237,6 @@ class mysql
 
    public function Ping()
    {
-
-    //DebMes("mysqli db ping");
     $test_query = "SHOW TABLES FROM ".$this->dbName;
     $result = @mysqli_query($this->dbh, $test_query);
     $tblCnt = 0;
@@ -248,12 +268,17 @@ class mysql
     */
    public function Update($table, $data, $ndx = "ID")
    {
+      if (!$this->connected) return false;
       $qry = "UPDATE `$table` SET ";
       
       foreach ($data as $field => $value)
       {
-         if (!is_Numeric($field))
-            $qry .= "`$field`='" . $this->DBSafe1($value) . "', ";
+         if (is_Numeric($field)) continue;
+         if (!is_null($value)) {
+          $qry .= "`$field`='" . $this->DBSafe1($value) . "', ";
+         } else {
+          $qry .= "`$field`=NULL, ";
+         }
       }
       
       $qry  = substr($qry, 0, strlen($qry) - 2);
@@ -264,7 +289,6 @@ class mysql
 
       $qry .= " WHERE $ndx = '" . $data[$ndx] . "'";
 
-     
       if (!$this->Exec($qry))
       {
          $this->Error($qry);
@@ -286,16 +310,14 @@ class mysql
     */
    public function Insert($table, &$data)
    {
+      if (!$this->connected) return false;
       $fields = "";
       $values = "";
-      
       foreach ($data as $field => $value)
       {
-         if (!is_numeric($field))
-         {
-            $fields .= "`$field`, ";
-            $values .= "'" . $this->DBSafe1($value) . "', ";
-         }
+         if (is_Numeric($field)) continue;
+         $fields .= "`$field`, ";
+         $values .= "'" . $this->DBSafe1($value) . "', ";
       }
       
       $fields = substr($fields, 0, strlen($fields) - 2);
@@ -320,6 +342,7 @@ class mysql
     */
    public function Disconnect()
    {
+      if (!$this->connected) return false;
       mysqli_close($this->dbh);
    }
 
@@ -332,6 +355,7 @@ class mysql
     */
    public function DbSafe($str)
    {
+      if (!$this->connected) return $str;
       $str = mysqli_real_escape_string($this->dbh, $str);
       $str = str_replace("%", "\%", $str);
       return $str;
@@ -345,8 +369,10 @@ class mysql
     */
    public function DbSafe1($str)
    {
-      $str = mysqli_real_escape_string($this->dbh, $str);
-      
+      if (is_array($str)) {
+       $str=json_encode($str);
+      }
+      $str = mysqli_real_escape_string($this->dbh, (string)$str);
       return $str;
    }
 
@@ -357,14 +383,16 @@ class mysql
     * @access private
     * @return int
     */
-   public function Error($query = "")
+   public function Error($query = "", $stop = 0)
    {
-
-
-
-      registerError('sql', mysqli_errno($this->dbh) . ": " . mysqli_error($this->dbh) . "\n$query");
-      new error(mysqli_errno($this->dbh) . ": " . mysqli_error($this->dbh) . "<br>$query", 1);
-      
+      $err_no = mysqli_errno($this->dbh);
+      $err_details = mysqli_error($this->dbh);
+      if (preg_match('/Unknown column/is',$err_details)) {
+         unlink(DIR_MODULES.'control_modules/installed');
+         //header("Location:".ROOTHTML);exit;
+      }
+      registerError('sql', $err_no . ": " . $err_details . "\n$query");
+      new custom_error($err_no . ": " . $err_details . "<br>$query", $stop);
       return 1;
    }
 
@@ -460,7 +488,11 @@ function SQLExec($query)
 function DbSafe($in)
 {
    global $db;
-   return $db->DbSafe($in);
+   if (is_object($db)) {
+      return $db->DbSafe($in);
+   } else {
+      return $in;
+   }
 }
 
 /**
@@ -475,7 +507,11 @@ function DbSafe($in)
 function SQLSelect($query)
 {
    global $db;
-   return $db->Select($query);
+   if (is_object($db)) {
+      return $db->Select($query);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -490,7 +526,11 @@ function SQLSelect($query)
 function SQLSelectOne($query)
 {
    global $db;
-   return $db->SelectOne($query);
+   if (is_object($db)) {
+      return $db->SelectOne($query);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -506,7 +546,11 @@ function SQLSelectOne($query)
 function SQLInsert($table, &$record)
 {
    global $db;
-   return $db->Insert($table, $record);
+   if (is_object($db)) {
+      return $db->Insert($table, $record);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -519,7 +563,11 @@ function SQLInsert($table, &$record)
 function SQLUpdate($table, $record, $ndx = 'ID')
 {
    global $db;
-   return $db->Update($table, $record, $ndx);
+   if (is_object($db)) {
+      return $db->Update($table, $record, $ndx);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -539,11 +587,19 @@ function SQLUpdateInsert($table, &$record, $ndx = 'ID')
  
    if (isset($record[$ndx]))
    {
-      return $db->Update($table, $record, $ndx);
+      if (is_object($db)) {
+         return $db->Update($table, $record, $ndx);
+      } else {
+         return false;
+      }
    }
    else
    {
-      $record[$ndx] = $db->Insert($table, $record);
+      if (is_object($db)) {
+         $record[$ndx] = $db->Insert($table, $record);
+      } else {
+         return false;
+      }
       return $record[$ndx];
    }
 }
@@ -573,6 +629,10 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
 * @access public
 */
  function SQLGetFields($table) {
+    global $db;
+    if (!is_object($db) || !$db->connected) {
+       return false;
+    }
   $result = SQLExec("SHOW FIELDS FROM $table");  
   $res=array();
   while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
@@ -594,7 +654,11 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
 
  function SQLPing() {
   global $db;
-  return $db->Ping();
+  if (is_object($db)) {
+     return $db->Ping();
+  } else {
+     return false;
+  }
  }
 
 

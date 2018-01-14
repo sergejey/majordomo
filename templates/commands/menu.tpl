@@ -46,6 +46,7 @@
            subscribedWebSockets=1;
           }
           if (response.action=='commands') {
+           console.log('Commands: '+response.data);
            sendRequestForUpdates_processed(0, response.data);
           }
         });
@@ -64,17 +65,28 @@
    var objLabelsCnt  = obj.LABELS.length;
    var objValuesCnt = obj.VALUES.length;
 
+
    if (objLabelsCnt > 0) {
     var labels=obj.LABELS;
     for (var i = 0; i < objLabelsCnt; i++) {
-     window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
+     try {
+       window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
+     }
+     catch(err) {
+        // Handle error(s) here
+     }
     }
   }
    if (objValuesCnt > 0) {
     var values=obj.VALUES;
     for (var i = 0; i < objValuesCnt; i++) {
      //alert("updateValue"+values[i].ID+"_Ready ("+i+" of "+values.length+")");
-     window["updateValue"+values[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
+     try {
+       window["updateValue"+values[i].ID+"_Ready"](values[i].ID, JSON.stringify(values[i]));
+     }
+     catch(err) {
+        // Handle error(s) here
+     }
     }
   }
   requestProcessing=0;
@@ -187,7 +199,8 @@
  function itemValueChangedProcessed(data, v) {
   //alert(data);
   if ($('#processing_'+data).length) {
-   $('#processing_'+data).html(' - OK');
+   $('#processing_'+data).html('<span class="opConfirm"> - OK</span>');
+   setTimeout("$('#processing_"+data+"').html('')",1500);
   }
   return false;
  }
@@ -199,7 +212,7 @@
   if ($('#processing_'+id).length) {
    $('#processing_'+id).html(' - ...');
   }
-  AJAXRequest(url+'&item_id='+id+'&new_value='+new_value, 'itemValueChangedProcessed', id);
+  AJAXRequest(url+'&item_id='+id+'&new_value='+encodeURIComponent(new_value), 'itemValueChangedProcessed', id);
   return false;
  }
 
@@ -278,7 +291,7 @@
 {if $item.SUB_PRELOAD=='1'}
 
  <div data-role="collapsible" data-iconpos="right">
-  <h2><span  id="label_{$ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span></h2>
+  <h2><span  id="label_{$item.ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span></h2>
   <ul data-role="listview" data-inset="true">
   {if $item.RESULT}
   {menu items=$item.RESULT}
@@ -351,6 +364,12 @@
 <li {if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
 <div id="label_{$item.ID}" style="white-space:normal">{$item.DATA}</div>
 </li>
+{/if}
+
+{if $item.TYPE=='object'}
+ <li {if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
+  <div id="label_{$item.ID}" style="white-space:normal">{$item.DATA}</div>
+ </li>
 {/if}
 
 {if $item.TYPE=='selectbox'}
@@ -474,7 +493,8 @@
   var elem2=document.getElementById('menu{$item.ID}_vv');
   var v=parseFloat(elem.value);
   if ((v+{$item.STEP_VALUE})<={$item.MAX_VALUE}) {
-   elem.value=v+{$item.STEP_VALUE};
+   var resultV = v+{$item.STEP_VALUE};
+   elem.value = parseFloat(resultV.toFixed(4));
    elem2.innerHTML=elem.value;
    clearTimeout(item{$item.ID}_timer);
    item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
@@ -486,7 +506,8 @@
   var elem2=document.getElementById('menu{$item.ID}_vv');
   var v=parseFloat(elem.value);
   if ((v-{$item.STEP_VALUE})>={$item.MIN_VALUE}) {
-   elem.value=v-{$item.STEP_VALUE};
+   var resultV = v-{$item.STEP_VALUE};
+   elem.value = parseFloat(resultV.toFixed(4));
    elem2.innerHTML=elem.value;
    clearTimeout(item{$item.ID}_timer);
    item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
@@ -498,9 +519,9 @@
 <span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span>
 
 <div data-inline="true" data-role="fieldcontain">
- <a href="#" data-role="button" onClick="return increaseValue{$item.ID}();" data-inline="true">+</a>
- <span style="margin-left:10px;margin-right:10px" id="menu{$item.ID}_vv">{$item.CUR_VALUE}</span>
  <a href="#" data-role="button" onClick="return decreaseValue{$item.ID}();" data-inline="true">-</a>
+ <span style="margin-left:10px;margin-right:10px" id="menu{$item.ID}_vv">{$item.CUR_VALUE}</span>
+ <a href="#" data-role="button" onClick="return increaseValue{$item.ID}();" data-inline="true">+</a>
  <div style="display:none">
  <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" size="5">
  </div>
@@ -549,7 +570,35 @@
  <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" data-inline="true" onChange="changedValue{$item.ID}_delay()" onKeyUp="changedValue{$item.ID}_delay();">
 </div>
 </li>
+{/if}
 
+{if $item.TYPE=='color'}
+<script src='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.css' />
+<script language="javascript">
+ var item{$item.ID}_timer=0;
+ function changedValue{$item.ID}_delay() {
+  clearTimeout(item{$item.ID}_timer);
+  var elem=document.getElementById('menu{$item.ID}_v');
+  item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
+  return false;
+ }
+</script>
+<li data-role="fieldcontain"{if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
+<span id="label_{$item.ID}">{$item.TITLE}</span><span id="processing_{$item.ID}"></span>
+
+<div data-inline="true" data-role="fieldcontain">
+ <input type="text" id="menu{$item.ID}_v" name="menu{$item.ID}_value" value="{$item.CUR_VALUE}" data-inline="true" onChange="changedValue{$item.ID}_delay()" onKeyUp="changedValue{$item.ID}_delay();">
+</div>
+</li>
+<script>
+ $("#menu{$item.ID}_v").spectrum({
+  preferredFormat: "hex",
+  showInput: true,
+  chooseText: "OK",
+  cancelText: "{$smarty.const.LANG_CANCEL}"
+ });
+</script>
 {/if}
 
 
@@ -606,12 +655,22 @@
     $('#menu{$item.ID}_v').val(data);
    }
   {/if}
+  {if $item.TYPE=='color'}
+   if ($('#menu{$item.ID}_v').val()!=data) {
+    $("#menu{$item.ID}_v").spectrum("set", data);
+   }
+  {/if}
 
   {if $item.TYPE=='selectbox'}
    if ($('#menu{$item.ID}_v').val()!=data) {
     $('#menu{$item.ID}_v').val(data);
     $('#menu{$item.ID}_v').selectmenu("refresh");
    }
+  {/if}
+
+
+  {if $item.TYPE=='plusminus'}
+  $('#menu{$item.ID}_vv').html(data);
   {/if}
 
   {if $item.TYPE=='radiobox'}
@@ -642,7 +701,7 @@
   {if $item.TYPE=='switch'}
    //alert('{$item.TITLE}'+"\nValue:"+$('#menu{$item.ID}_v').val()+"\nData:"+data);
    if ($('#menu{$item.ID}_v').val()!=data) {
-    if (data=='{$ON_VALUE}') {
+    if (data=='{$item.ON_VALUE}') {
      $('#menu{$item.ID}_v').val('{$item.ON_VALUE}');
     } else {
      $('#menu{$item.ID}_v').val('{$item.OFF_VALUE}');
@@ -665,21 +724,10 @@
 
  function updateLabel{$item.ID}() {
   clearTimeout(label{$item.ID}_timer);
-
   collectLabel('{$item.ID}');
-  /*
-  var url="{$smarty.const.ROOTHTML}menu.html?ajax=1&op=get_label";
-  AJAXRequest(url+'&item_id={$item.ID}', 'updateLabel{$item.ID}_Ready', '');
-  */
-
   {if $item.TYPE=='switch' || $item.TYPE=='textbox' || $item.TYPE=='sliderbox' || $item.TYPE=='selectbox' || $item.TYPE=='radiobox'}
-  /*
-  var url2="?ajax=1&op=get_value";
-  AJAXRequest(url2+'&item_id={$item.ID}', 'updateValue{$item.ID}_Ready', '');
-  */
   collectValue('{$item.ID}');
   {/if}
-
   label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', ({$item.AUTO_UPDATE}*1000));
   return false;
  }
@@ -740,7 +788,6 @@
  $( document ).bind( "pageinit", function( event, data ){
     $('.visible_delay').hide();
     visible_delay_carusel();
-///    alert('zz');
 });
 </script>
 {/if}

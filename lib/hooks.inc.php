@@ -18,6 +18,8 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
       $rec['NAME']     = 'HOOK_EVENT_' . strtoupper($event_name);
       $rec['TITLE']    = $rec['NAME'];
       $rec['TYPE']     = 'json';
+      $rec['NOTES']     = '';
+      $rec['DATA']     = '';
       $rec['PRIORITY'] = 0;
       $rec['ID']       = SQLInsert('settings', $rec);
    }
@@ -39,7 +41,7 @@ function unsubscribeFromEvent($module_name, $event_name = '')
 {
    $sqlQuery = "SELECT *
                   FROM settings
-                 WHERE NAME LIKE 'HOOK_EVENT_'" . strtoupper($event_name) . "
+                 WHERE NAME LIKE 'HOOK_EVENT_" . DBSafe(strtoupper($event_name)) . "'
                    AND TYPE = 'json'";
 
    $rec = SQLSelectOne($sqlQuery);
@@ -65,20 +67,26 @@ function unsubscribeFromEvent($module_name, $event_name = '')
  */
 function processSubscriptions($event_name, $details = '')
 {
+
+   postToWebSocketQueue($event_name, $details, 'PostEvent');
+
    if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)))
    {
       return 0;
    }
 
    $data = json_decode(constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), true);
+   //DebMes("Subscription data: ".serialize($data));
    
    if (is_array($data))
    {
 
-      function cmpSubscribers ($a, $b) { 
-       if ($a['priority'] == $b['priority']) return 0; 
-       return ($a['priority'] > $b['priority']) ? -1 : 1; 
-      } 
+      if (!function_exists('cmpSubscribers')) {
+       function cmpSubscribers ($a, $b) { 
+        if ($a['priority'] == $b['priority']) return 0; 
+        return ($a['priority'] > $b['priority']) ? -1 : 1; 
+       } 
+      }
 
 
       $data2=array();
@@ -103,15 +111,27 @@ function processSubscriptions($event_name, $details = '')
 
             if (method_exists($module_object, 'processSubscription'))
             {
-               DebMes("$module_name.processSubscription");
+               //DebMes("$module_name.processSubscription ($event_name)");
+               verbose_log("Processing subscription to [".$event_name."] by [".$module_name."] (".(is_array($details) ? json_encode($details) : '').")");
                $module_object->processSubscription($event_name, $details);
+            } else {
+             DebMes("$module_name.processSubscription error (method not found)");
             }
+            if (!isset($details['BREAK'])) {
+             $details['BREAK']=false;
+            }
+            if ($details['BREAK']) break;
+         } else {
+          DebMes("$module_name.processSubscription error (module class not found)");
          }
-
       }
-   }
 
-   postToWebSocket($event_name, $details, 'PostEvent');
+      if (!isset($details['PROCESSED'])) {
+       $details['PROCESSED']=false;
+      }
+      return (int)$details['PROCESSED'];
+   }
+   return 0;
 
 }
 
@@ -134,7 +154,7 @@ function removeMissingSubscribers()
          foreach ($data as $k => $v)
          {
             $module_name = $k;
-            if (!file_exists(DIR_MODULES . 'modules/' . $module_name . '/' . $module_name . '.class.php'))
+            if (!file_exists(DIR_MODULES . $module_name . '/' . $module_name . '.class.php'))
             {
                unset($data[$module_name]);
                $changed = 1;

@@ -1,3 +1,5 @@
+
+
 <!--#
  @version 0.6 (2010-08-30)
 #-->
@@ -9,13 +11,17 @@
 <div style="border:2px solid green;padding:10px;"><big style="color:green">[#OK_MSG#]</big></div>
 [#endif OK_MSG#]
 
+[#if CLEAR_FIRST!="1"#]
+
+[#if MODE="getlatest_iframe"#]
+<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe>
+[#else MODE#]
+
+
 
 <table width="100%" border="0">
  <tr>
   <td valign="top" width="50%">
-
-   [#if CLEAR_FIRST!="1"#]
-
 
    <big><#LANG_UPDATES#></big>
    <br>
@@ -32,7 +38,7 @@
    <br/>
    <input type="checkbox" name="with_extensions" value="1" checked> <#LANG_UPDATE_ALL_EXTENSIONS#>
 
-   <input type="hidden" name="mode" value="getlatest">
+   <input type="hidden" name="mode" value="getlatest_iframe">
    </form>
 
    [#if UPDATES#]
@@ -44,167 +50,6 @@
    <hr>
    [#endif UPDATES#]
 
-   <!--#
-   <form action="?" method="post" enctype="multipart/form-data">
-   [#if OK_CHECK#]
-
-     [#if NO_UPDATES#]
-     <p><b><font color="green"><#LANG_NO_UPDATES_AVAILABLE#></font></b></p>
-     [#else#]
-     <p><b>Updates available:</b>
-      <table border="0" cellspacing=0>
-       [#begin TO_UPDATE#]
-       <tr>
-        <td valign="top"><input type="checkbox" name="to_update[]" value="[#FILE#]" checked></td>
-        <td valign="top"><b>[#FILE#]</b> (<#LANG_NEW_VERSION#>: [#VERSION#])</td>
-       </tr>
-       [#end TO_UPDATE#]
-      </table>
-     </p>
-
-   <input type="submit" name="submit" value="Install selected updates &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="downloadupdates">
-
-
-     [#endif#]
-
-   [#else#]
-
-   [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
-
-   <p><#LANG_LONG_OPERATION_WARNING#></p>
-
-   <input type="submit" name="submit" value="Check for updates &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="checkupdates">
-   [#endif#]
-   </form>
-   #-->
-
-   <!--#
-   <form action="?" method="post" enctype="multipart/form-data">
-   [#if OK_CHECK#]
-
-     [#if NO_UPDATES#]
-     <p><b><font color="green"><#LANG_NO_UPDATES_AVAILABLE#></font></b></p>
-     [#else#]
-     <p><b>Updates available:</b>
-      <table border="0" cellspacing=0>
-       [#begin TO_UPDATE#]
-       <tr>
-        <td valign="top"><input type="checkbox" name="to_update[]" value="[#FILE#]" checked></td>
-        <td valign="top"><b>[#FILE#]</b> (<#LANG_NEW_VERSION#>: [#VERSION#])</td>
-       </tr>
-       [#end TO_UPDATE#]
-      </table>
-     </p>
-
-   <input type="submit" name="submit" value="Install selected updates &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="downloadupdates">
-
-
-     [#endif#]
-
-   [#else#]
-
-   [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
-
-   <input type="submit" name="submit" value="Check for updates &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="checkupdates">
-   [#endif#]
-   </form>
-   #-->
-
-   <!--#
-   <hr size="1">
-   <big><#LANG_INSTALL_NEW_MODULES#></big>
-   <br>
-   <form action="?" method="post" enctype="multipart/form-data">
-   [#if OK_BROWSE#]
-
-    [#if INTRO#]
-    
-    <p>[#INTRO#]</p>
-
-    [#endif INTRO#]
-
-    [#if TO_INSTALL#]
-    <p><b>Modules available:</b>
-      <table border="0" cellspacing=0>
-       [#begin TO_INSTALL#]
-       <tr>
-        <td valign="top" valign="top"><input type="checkbox" name="to_install[]" value="[#FILE#]"></td>
-        <td valign="top" valign="top"><b>[#TITLE#]</b>
-        [#if DESCRIPTION!=""#]
-        <div>[#DESCRIPTION#]</div>
-        [#endif DESCRIPTION#]
-        </td>
-       </tr>
-       [#end TO_INSTALL#]
-      </table>
-    </p>
-    <input type="submit" name="submit" value="Install modules &gt;&gt;&gt;">
-    <input type="hidden" name="mode" value="downloadapps">
-    [#endif TO_INSTALL#]
-
-    [#if NO_MODULES#]
-    <p><#LANG_NO_MODULES_AVAILABLE#></p>
-    [#endif#]
-
-   [#else OK_BROWSE#]
-   <input type="submit" name="submit" value="<#LANG_GET_LIST_OF_MODULES#> &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="checkapps">
-   [#endif OK_BROWSE#]
-
-   </form>
-   #-->
-
-
-   <!--#
-   <hr size="1">
-   <big><#LANG_SUBMIT_NEWER_FILES#></big>
-   <Br>
-   <form action="?" method="post" enctype="multipart/form-data">
-   [#if OK_CHECKSUBMIT#]
-
-     [#if NO_SUBMIT#]
-     <p><b><font color="green"><#LANG_NO_FILES_TO_SUBMIT#></font></b></p>
-     [#else#]
-     <p><b><#FILES_YOU_CAN_SUBMIT#>:</b>
-      <table border="0" cellspacing=0>
-       [#begin TO_SUBMIT#]
-       <tr>
-        <td valign="top"><input type="checkbox" name="to_submit[]" value="[#FILE#]"></td>
-        <td valign="top"><b>[#FILE#]</b> version <font color="green"><b>[#L_VERSION#]</b></font> <#IS_NEWER_THAN#> <font color='red'><b>[#VERSION#]</b></font>
-        [#if PACK_FOLDER#](<input type="checkbox" name="pack_folders[]" value="[#FILE#]"> <#LANG_FOLDER#>)[#endif#]
-        </td>
-       </tr>
-       [#end TO_SUBMIT#]
-      </table>
-     </p>
-
-   <#LANG_YOUR_NAME#>:
-   <input type="text" name="name" value="[#NAME#]"><br>
-   <#LANG_YOUR_EMAIL#>:
-   <input type="text" name="email" value="[#EMAIL#]"><br>
-   <#LANG_NOTES#>:<br>
-   <textarea name="description" rows="5" cols="70"></textarea><br>
-
-   <input type="submit" name="submit" value="<#LANG_SUBMIT_SELECTED_FILES#> &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="uploadupdates">
-
-
-     [#endif#]
-
-   [#else#]
-
-   [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
-
-   <input type="submit" name="submit" value="<#LANG_CHECK_FILES_FOR_SUBMIT#> &gt;&gt;&gt;">
-   <input type="hidden" name="mode" value="checksubmit">
-   [#endif#]
-   </form>
-   #-->
-
 
    <hr size="1">
    <big><#LANG_SAVE_BACKUP#></big>
@@ -212,69 +57,19 @@
    <form action="?" method="post" enctype="multipart/form-data">
    <label><input type="checkbox" name="design" value="1"> <#LANG_DESIGN#> (templates, css, images)</label><br>
    <label><input type="checkbox" name="code" value="1"> <#LANG_CODE#> (modules)</label><br>
-   <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database, documents)</label><br>
-   <label><input type="checkbox" name="files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
+   <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database)</label><br>
+   <label><input type="checkbox" name="save_files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
+   <input type="hidden" name="backup" value="1">
    <input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#> &gt;&gt;&gt;" class="btn btn-default">
-   <input type="hidden" name="mode" value="dump">
+   <input type="hidden" name="mode" value="getlatest_iframe">
    </form>
 
-
-
-   [#else#]
-   <br>&nbsp;
-   <form action="?" method="post" enctype="multipart/form-data">
-   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
-   <input type="hidden" name="mode" value="clear">
-   </form>
-   [#endif CLEAR_FIRSTS#]
 
   </td>
 
   <td valign="top">&nbsp;</td>
 
   <td valign="top" width="50%">
-   [#if CLEAR_FIRST!="1"#]
-
-   [#if METHOD="ftp"#]
-   <big>FTP details</big>
-   <br>
-   (required for updates installation)
-   <br>&nbsp;
-   [#if FTP_ERR!=""#]
-   <p><b><font color="red">[#FTP_ERR#]</font></b></p>
-   [#endif#]
-   <form action="?" method="post" enctype="multipart/form-data">
-   <table border="0">
-    <tr>
-     <td valign="top">FTP Host:</td>
-     <td valign="top"><input type="text" name="ftp_host" value="[#FTP_HOST#]"></td>
-    </tr>
-
-    <tr>
-     <td valign="top">FTP Username:</td>
-     <td valign="top"><input type="text" name="ftp_username" value="[#FTP_USERNAME#]"></td>
-    </tr>
-    <tr>
-     <td valign="top">FTP Password:</td>
-     <td valign="top"><input type="text" name="ftp_password" value="[#FTP_PASSWORD#]"></td>
-    </tr>
-    <tr>
-     <td valign="top">FTP folder:</td>
-     <td valign="top"><input type="text" name="ftp_folder" value="[#FTP_FOLDER#]"></td>
-    </tr>
-
-
-   </table>
-   <input type="submit" name="submit" value="Set" class="btn btn-default">
-   [#if FTP_USERNAME!=""#]
-   <input type="checkbox" name="ftp_clear" value="1"> clear details (for security)
-   [#endif#]
-   <input type="hidden" name="mode" value="savedetails">
-   </form>
-   <br>
-   [#endif METHOD#]
-
-   <hr size="1">
 
    <big><#LANG_UPLOAD_BACKUP#></big>
    <br>&nbsp;
@@ -283,20 +78,26 @@
    <input type="submit" name="submit" value="<#LANG_CONTINUE#> &gt;&gt;&gt;" class="btn btn-default">
    <input type="hidden" name="mode" value="upload">
    </form>
-   [#endif#]
 
    [#if FILES#]
    &nbsp;<br>
-   <table border="1" cellpadding="5">
+   <table class="table table-bordered">
    [#begin FILES#]
     <tr>
-     <td valign="top">[#FILENAME#]</td>
-     <td valign="top" nowrap>[#FILESIZE#] Mb</td>
-     <td valign="top"><a href="<#ROOTHTML#>saverestore/[#FILENAME#]">Download</a></td>
+     <td valign="top">[#TITLE#]</td>
+     <td valign="top" nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
      [#if "<#CLEAR_FIRST#>"!="1"#]
-     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESTORE#></a></td>
+     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_RESTORE#></a></td>
      [#endif#]
-     <td valign="top"><a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">X</a></td>
+
+     [#if FILESIZE!=""#]
+     <td valign="top"><a href="<#ROOTHTML#>saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
+     <td valign="top">
+      <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+     </td>
+     [#else#]
+     <td colspan="3">&nbsp;</td>
+     [#endif#]
     </tr>
    [#end FILES#]
    </table>
@@ -305,3 +106,13 @@
   </td>
  </tr>
 </table>
+
+[#endif MODE#]
+
+[#else CLEAR_FIRSTS#]
+   <br>&nbsp;
+   <form action="?" method="post" enctype="multipart/form-data">
+   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
+   <input type="hidden" name="mode" value="clear">
+   </form>
+   [#endif CLEAR_FIRSTS#]

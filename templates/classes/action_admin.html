@@ -13,7 +13,7 @@
 <ol class="breadcrumb">
   <li><a href="?"><#LANG_HOME#></a></li>
   [#begin HISTORY_LIST#]
-  <li class="active"><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]">[#TITLE#]</a></li>
+  <li class="active"><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#TITLE#]</a></li>
   [#end HISTORY_LIST#]
   <li class="active">[#TITLE#]</li>
 </ol>
@@ -23,6 +23,7 @@
  <li [#if TAB="properties"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></li>
  <li [#if TAB="methods"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></li>
  <li [#if TAB="objects"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=objects"><#LANG_OBJECTS#></a></li>
+ <li [#if TAB="template"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=template"><#LANG_CLASS_TEMPLATE#></a></li>
 </ul>
 
 [#endif ID#]
@@ -30,6 +31,12 @@
    [#if TAB=""#]
     [#inc classes_edit_default.html#]
    [#endif TAB#]
+
+   [#if TAB="template"#]
+    [#inc classes_edit_template.html#]
+   [#endif TAB#]
+
+
    [#if TAB="properties"#]
     [#inc classes_edit_properties.html#]
    [#endif TAB#]

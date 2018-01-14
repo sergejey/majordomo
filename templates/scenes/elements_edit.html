@@ -66,7 +66,7 @@
 
    var easy_config=$('input:radio[name=easy_config]:checked').val();
 
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem') {
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem' || new_type=='object') {
     $('#advanced_config_block').show();
     if (easy_config==1) {
      $('.advanced_options').hide();
@@ -79,7 +79,7 @@
     $('.advanced_options').show();
    }
 
-   if (easy_config==1 && (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode')) {
+   if (easy_config==1 && (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='button' || new_type=='mode' || new_type=='object')) {
     $('#linked_object_field').show();
    } else {
     $('#linked_object_field').hide();
@@ -132,6 +132,7 @@
                         <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
                         <option value="s3d"[#if ELEMENT_TYPE=="s3d"#] selected[#endif#]>3D scene
                         <option value="menuitem"[#if ELEMENT_TYPE=="menuitem"#] selected[#endif#]>Menu Control
+                        <option value="object"[#if ELEMENT_TYPE=="object"#] selected[#endif#]><#LANG_OBJECT#>
                 </select>
         [#else ELEMENT_ID#]
         [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
@@ -146,6 +147,7 @@
         [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
         [#if ELEMENT_TYPE=="s3d"#]3D scene[#endif#]
         [#if ELEMENT_TYPE=="menuitem"#]Menu Control[#endif#]
+        [#if ELEMENT_TYPE=="object"#]<#LANG_OBJECT#>[#endif#]
         <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
         [#endif ELEMENT_ID#]
         </div>
@@ -322,22 +324,23 @@
 </div>
 
 
+
 <div class='advanced_options' [#if ELEMENT_EASY_CONFIG="1" || ELEMENT_ID=""#]style="display:none"[#endif#]>
 
-[#if (ELEMENT_TYPE!="container")#]
-<div class="form-group">
+
+    [#if (ELEMENT_TYPE!="container")#]
+    <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
         <div class="controls">
-                <select class="form-control" name="container_id">
-                        <option value="0">n/a
-                        [#begin CONTAINERS#]
-                        <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
-                        [#end CONTAINERS#]
-                </select>
+            <select class="form-control" name="container_id">
+                <option value="0">n/a
+                    [#begin CONTAINERS#]
+                <option value="[#ID#]"[#if ID="<#ELEMENT_CONTAINER_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end CONTAINERS#]
+            </select>
         </div>
-</div>
-[#endif ELEMENT_TYPE#]
-
+    </div>
+    [#endif ELEMENT_TYPE#]
 
 
 [#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container" || ELEMENT_TYPE=="menuitem"#]
@@ -421,7 +424,7 @@
 <div class="form-group">
         <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="controls">
-                <a href="?(panel:{action=security_rules})&object_type=scene_elements&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+                <a href="?(panel:{action=security_rules})&object_type=scene_elements&object_id=<#ELEMENT_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>
 </div>
 [#endif ID#]

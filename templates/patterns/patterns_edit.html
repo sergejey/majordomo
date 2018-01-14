@@ -132,6 +132,23 @@
 [#endif PATTERN_TYPE#]
 
 [#if PATTERN_TYPE="0"#]
+
+[#if SHOW_MORPHY="1"#]
+<div class="form-group">
+        <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
+        <div class="col-lg-5">
+                                
+                <div class="checkbox">
+                        <label>
+                                <input type="checkbox" value="1" name="usemorphy" [#if USEMORPHY="1"#] checked[#endif#]> Use morphology
+                                <#LANG_HCB#>pattern_usemorphy<#LANG_HCE#>
+                        </label>
+                </div>
+        </div>
+</div>
+[#endif SHOW_MORPHY#]
+
+
 <div class="form-group">
         <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">

@@ -356,13 +356,40 @@ function run() {
 */
 function admin(&$out) {
  global $ajax;
+
+ if ($this->view_mode=='services') {
+  global $cmd;
+  global $service;
+  if ($cmd=='start' && $service!='') {
+   sg($service.'Run','');
+   sg($service.'Control','start');
+  } elseif ($cmd=='stop' && $service!='') {
+   sg($service.'Control','stop');
+  } elseif ($cmd=='restart' && $service!='') {
+   sg($service.'Run','');
+   sg($service.'Control','restart');
+  } elseif ($cmd=='switch_restart' && $service!='') {
+   if (gg($service.'AutoRestart')) {
+    sg($service.'AutoRestart',0);
+   } else {
+    sg($service.'AutoRestart',1);
+   }
+  } elseif ($cmd=='switch_disabled' && $service!='') {
+   if (gg($service.'Disabled')) {
+    sg($service.'Disabled',0);
+   } else {
+    sg($service.'Disabled',1);
+   }
+  }
+ }
+
  if ($ajax) {
   global $op;
   global $filter;
   if ($op=='getcontent') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
-    if ($this->view_mode=='') {
+    if ($this->view_mode=='properties') {
      $qry="1";
      if ($filter) {
       $qry.=" AND (objects.TITLE LIKE '%".DBSafe($filter)."%' OR properties.TITLE LIKE '%".DBSafe($filter)."%' OR objects.DESCRIPTION LIKE '%".DBSafe($filter)."%')";
@@ -384,7 +411,7 @@ function admin(&$out) {
       }
       echo '</td>';
       echo '<td>';
-      echo $res[$i]['VALUE'].'&nbsp;';
+      echo htmlspecialchars($res[$i]['VALUE']).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['UPDATED'].'&nbsp;';
@@ -393,7 +420,7 @@ function admin(&$out) {
      }
      echo '</table>';
 
-    } elseif ($this->view_mode=='debmes') {
+    } elseif ($this->view_mode=='') {
 
      global $limit;
      if (!$limit) {
@@ -401,14 +428,18 @@ function admin(&$out) {
      }
 
      global $file;
-     if (!$file) {
+     if (!$file || $file=='xray') {
       $file=date('Y-m-d').'.log';
      }
-
      $filename=ROOT.'debmes/'.$file;
+     if (!file_exists($filename)) {
+      $file = date('Y-m-d').'_'.$file.'.log';
+      $filename=ROOT.'debmes/'.$file;
+     }
      $data=LoadFile($filename);
      $lines=explode("\n", $data);
-     $lines=array_reverse($lines);
+     //$lines=array_reverse($lines);
+     $lines=array_slice($lines, -1*($limit), $limit);
      $res_lines=array();
      $total=count($lines);
      $added=0;
@@ -419,17 +450,35 @@ function admin(&$out) {
       }
 
       if ($filter && preg_match('/'.preg_quote($filter).'/is', $lines[$i])) {
-       $res_lines[]=$lines[$i];
+       $res_lines[]=htmlspecialchars($lines[$i]);
        $added++;
       } elseif (!$filter) {
-       $res_lines[]=$lines[$i];
-       $added++;
+       if (!preg_match('/^\d+:\d+:\d+/is',$lines[$i]) && $added>0) {
+        $res_lines[$added-1].="\n".htmlspecialchars($lines[$i]);
+       } else {
+        $line=htmlspecialchars($lines[$i]);
+        if (preg_match('/^(\d+:\d+:\d+ [\d\.]+)/',$line)) {
+         $line=preg_replace('/^(\d+:\d+:\d+ [\d\.]+)/is','<b>\1</b>',$line);
+        } elseif (preg_match('/^(\d+:\d+:\d+)/',$line)) {
+         $line=preg_replace('/^(\d+:\d+:\d+)/is','<b>\1</b>',$line);
+        }
+        $res_lines[]=$line;
+        $added++;
+       }
       }
-
       if ($added>=$limit) {
        break;
       }
      }
+
+     $total = count($res_lines);
+     for ($i = 0; $i < $total; $i++) {
+      $line=$res_lines[$i];
+      $line=str_replace('Warning:','<font color="#b8860b">Warning:</font>',$line);
+      $res_lines[$i]=nl2br($line);
+     }
+
+     $res_lines=array_reverse($res_lines);
 
      echo implode("<br/>", $res_lines);
 
@@ -497,7 +546,7 @@ function admin(&$out) {
       }
       echo '</td>';
       echo '<td>';
-      echo str_replace(';', '; ', $res[$i]['EXECUTED_PARAMS']).'&nbsp;';
+      echo str_replace(';', '; ', htmlspecialchars($res[$i]['EXECUTED_PARAMS'])).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['EXECUTED'].'&nbsp;';
@@ -527,14 +576,108 @@ function admin(&$out) {
       }
       echo '</td>';
       echo '<td>';
-      echo str_replace(';', '; ', $res[$i]['EXECUTED_PARAMS']).'&nbsp;';
+      echo str_replace(';', '; ', htmlspecialchars($res[$i]['EXECUTED_PARAMS'])).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['EXECUTED'].'&nbsp;';
       echo '</td>';
       echo '</tr>';
      }
-     echo '</table>';     
+     echo '</table>';
+
+    } elseif ($this->view_mode=='services') {
+     $qry="1 AND TITLE LIKE 'cycle%Run'";
+     $res=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+     $total=count($res);
+     $seen=array();
+     for($i=0;$i<$total;$i++) {
+      $title = $res[$i]['TITLE'];
+      $title = preg_replace('/Run$/', '', $title);
+      $seen[$title]=1;
+     }
+
+
+  $path=ROOT.'scripts';
+  $files=array();
+   if ($handle = opendir($path)) {
+    $files=array();
+    while (false !== ($entry = readdir($handle))) {
+     if (preg_match('/^cycle/is', $entry)) {
+      $title=preg_replace('/\.php$/', '', $entry);
+      if (!$seen[$title]) {
+       $res[]=array('TITLE'=>$title.'Run');
+      }
+     }
+    }
+   }
+
+
+
+     $total=count($res);
+     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+     echo '<tr>';
+     echo '<td><b>CYCLE</b></td>';
+     echo '<td><b>LIVE</b></td>';
+     echo '<td><b>CONTROL</b></td>';
+     echo '<td><b>DISABLED</b></td>';
+     echo '<td><b>AUTO-RECOVERY</b></td>';
+     echo '</tr>';
+     for($i=0;$i<$total;$i++) {
+      echo '<tr>';
+      echo '<td>';
+      $title = $res[$i]['TITLE'];
+      $title = preg_replace('/Run$/', '', $title);
+      echo $title;
+      echo '</td>';
+      echo '<td>';
+      $tm = (int)getGlobal($title . 'Run');
+      if ($tm > 0) {
+       if ((time() - $tm) < 60) {
+        echo "<font color='green'><b>";
+       } else {
+        echo "<font color='blue'>";
+       }
+       $updated = date('Y-m-d H:i:s', $tm);
+      } else {
+       $updated='';
+      }
+      echo $updated.'&nbsp;</b></font>';
+      $control=getGlobal($title.'Control');
+      if ($control!='') {
+       echo '&nbsp;'.$control;
+      }
+      echo '</td>';
+
+      $url=ROOTHTML.'panel/xray.html?view_mode=services&service='.urlencode($title);
+
+      echo '<td>';
+      echo '<a href="'.$url.'&cmd=start" class="btn btn-default">Start</a>&nbsp;';
+      echo '<a href="'.$url.'&cmd=stop" class="btn btn-default">Stop</a>&nbsp;';
+      echo '<a href="'.$url.'&cmd=restart" class="btn btn-default">Restart Now</a>&nbsp;';
+      echo '</td>';
+
+      echo '<td>';
+      if (getGlobal($title.'Disabled')) {
+       echo "<font color='red'><b>".LANG_YES."</b></font>";
+      } else {
+       echo LANG_NO;
+      }
+      echo '&nbsp;<a href="'.$url.'&cmd=switch_disabled" class="btn btn-default">Switch</a>&nbsp;';
+      echo '</td>';
+
+      echo '<td>';
+      if (getGlobal($title.'AutoRestart')) {
+       echo "<font color='green'><b>".LANG_YES."</b></font>";
+      } else {
+       echo LANG_NO;
+      }
+      echo '&nbsp;<a href="'.$url.'&cmd=switch_restart" class="btn btn-default">Switch</a>&nbsp;';
+      echo '</td>';
+
+
+      echo '</tr>';
+     }
+     echo '</table>';
     } elseif ($this->view_mode=='timers') {
      $qry="1";
      if ($filter) {
@@ -554,7 +697,7 @@ function admin(&$out) {
       echo $res[$i]['TITLE'];
       echo '</td>';
       echo '<td>';
-      echo $res[$i]['COMMANDS'];
+      echo htmlspecialchars($res[$i]['COMMANDS']);
       echo '</td>';
       echo '<td>';
       echo $res[$i]['RUNTIME'].'&nbsp;';
@@ -581,7 +724,7 @@ function admin(&$out) {
       echo $res[$i]['EVENT_NAME'].'&nbsp;';
       echo '</td>';
       echo '<td>';
-      echo $res[$i]['DETAILS'].'&nbsp;';
+      echo htmlspecialchars($res[$i]['DETAILS']).'&nbsp;';
       echo '</td>';
       echo '<td>';
       echo $res[$i]['ADDED'].'&nbsp;';
@@ -596,7 +739,7 @@ function admin(&$out) {
 
 }
 
- if ($this->view_mode=='debmes') {
+ if ($this->view_mode=='') {
   $path=ROOT.'debmes';
    if ($handle = opendir($path)) {
     $files=array();
@@ -606,6 +749,7 @@ function admin(&$out) {
      }
      $files[]=array('TITLE'=>$entry);
     }
+    sort($files);
    }
    $out['FILES']=$files;
  }

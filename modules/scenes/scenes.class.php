@@ -152,8 +152,14 @@ function run() {
     $smarty->assign($k, $v);
    }
 
-
-   @$this->result=$smarty->fetch(DIR_TEMPLATES.'scenes/scenes.tpl');
+   $template = DIR_TEMPLATES.'scenes/scenes.tpl';
+   if (defined('ALTERNATIVE_TEMPLATES')) {
+    $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
+    if (file_exists($alt_path)) {
+     $template = $alt_path;
+    }
+   }
+   @$this->result=$smarty->fetch($template);
 
 
 
@@ -374,7 +380,6 @@ function admin(&$out) {
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
-   unset($elements[$i]['ID']);
    unset($elements[$i]['SCENE_ID']);
    $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
@@ -451,18 +456,27 @@ function admin(&$out) {
    unset($rec['ELEMENTS']);
    $rec['ID']=SQLInsert('scenes', $rec);
    $total=count($elements);
+   $seen_elements=array();
    for($i=0;$i<$total;$i++) {
     $states=$elements[$i]['STATES'];
+    $old_element_id=$elements[$i]['ID'];
     unset($elements[$i]['STATES']);
     unset($elements[$i]['ID']);
     $elements[$i]['SCENE_ID']=$rec['ID'];
     $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+    $seen_elements[$old_element_id]=$elements[$i]['ID'];
     $totalE=count($states);
     for($iE=0;$iE<$totalE;$iE++) {
      unset($states[$iE]['ID']);
      $states[$iE]['ELEMENT_ID']=$elements[$i]['ID'];
      SQLInsert('elm_states', $states[$iE]);
     }
+   }
+   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID=".$rec['ID']." AND CONTAINER_ID!=0");
+   $total = count($elements);
+   for ($i = 0; $i < $total; $i++) {
+    $elements[$i]['CONTAINER_ID']=$seen_elements[$elements[$i]['CONTAINER_ID']];
+    SQLUpdate('elements',$elements[$i]);
    }
    if ($data['BACKGROUND_IMAGE']) {
     $filename=ROOT.$rec['BACKGROUND'];
@@ -536,6 +550,10 @@ function admin(&$out) {
 */
 function usual(&$out) {
 
+ if ($this->owner->action=='apps') {
+  $this->redirect(ROOTHTML."popup/scenes.html");
+ }
+
  global $ajax;
  if ($ajax) {
     global $op;
@@ -546,7 +564,9 @@ function usual(&$out) {
      global $element;
      global $details;
      $element_id=0;
-     if (preg_match('/state_(\d+)/', $element, $m)) {
+     if (preg_match('/state_element_(\d+)/', $element, $m)) {
+      $element_id=$m[1];
+     } elseif (preg_match('/state_(\d+)/', $element, $m)) {
       $state=SQLSelectOne("SELECT ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
       $element_id=$state['ELEMENT_ID'];
      } elseif (preg_match('/canvas_(\d+)/', $element, $m) || preg_match('/container_(\d+)/', $element, $m)) {
@@ -633,6 +653,8 @@ function usual(&$out) {
       if ($object_part) {
        $object_rec=SQLSelectOne("SELECT ID, TITLE FROM objects WHERE ID=".(int)($object_part));
       }
+     } elseif (preg_match('/^object_(.+?)/', $id, $m)) {
+      return false;
      } else {
       $dynamic_item=0;
       $real_part=$id;
@@ -740,6 +762,11 @@ function usual(&$out) {
 */
  function processState(&$state) {
       $state['STATE']=(string)$this->checkState($state['ID']);
+
+      if ($state['TYPE']=='img') {
+       unset($state['HTML']);
+      }
+
       if ($state['HTML']!='') {
        if (preg_match('/\[#modul/is', $state['HTML'])) {
         //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
@@ -747,9 +774,6 @@ function usual(&$out) {
        } else {
         $state['HTML']=processTitle($state['HTML'], $this);
        }
-      }
-      if ($state['TYPE']=='img') {
-       unset($state['HTML']);
       }
  }
 
@@ -961,6 +985,11 @@ function usual(&$out) {
 */
  function checkState($id) {
 
+
+ if (preg_match('/^object_(.+?)/', $id, $m)) {
+  return 1;
+ }
+
     if (preg_match('/(\d+)\_(\d+)/', $id, $m)) {
      $dynamic_item=1;
      $real_part=$m[1];
@@ -1082,7 +1111,24 @@ function usual(&$out) {
       $totale=count($elements);
       $res2=array();
       for($ie=0;$ie<$totale;$ie++) {
-       $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
+
+       if ($elements[$ie]['TYPE']=='object') {
+        $state=array();
+
+        $state['ID']='element_'.($elements[$ie]['ID']);
+        $state['ELEMENT_ID']=$elements[$ie]['ID'];
+        $state['HTML']=getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
+        $state['TYPE']=$elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID']=0;
+        $state['HOMEPAGE_ID']=0;
+        $state['OPEN_SCENE_ID']=0;
+        $states=array($state);
+
+
+       } else {
+        $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
+       }
+
        if ($elements[$ie]['SMART_REPEAT'] && !$this->action=='admin') {
         $linked_object='';
         if ($states[0]['LINKED_OBJECT']) {
@@ -1184,7 +1230,11 @@ function usual(&$out) {
        if ($elements[$ie]['TYPE']=='container') {
         if (!is_array($options) || $options['ignore_sub']!=1) {
          startMeasure('getSubElements');
-         $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
+         if (checkAccess('scene_elements', $elements[$ie]['ID'])) {
+          $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
+         } else {
+          $elements[$ie]['TYPE']='';
+         }
          endMeasure('getSubElements');
         }
        }
@@ -1197,6 +1247,8 @@ function usual(&$out) {
         $positions[$elements[$ie]['ID']]['LEFT']=$elements[$ie]['LEFT'];
        }
       }
+
+
       return $elements;  
  }
 
@@ -1302,15 +1354,12 @@ function usual(&$out) {
 
    $cache_file=ROOT.'cached/styles_'.$type.'.txt';
 
-   //if (file_exists($cache_file) && (time()-filemtime($cache_file)<1*60*60)) {
-   // $styles_recs=unserialize(LoadFile($cache_file));
-   //} else {
-
-
-
+   if (file_exists($cache_file) && (time()-filemtime($cache_file))<1*60*60) {
+    $styles_recs=unserialize(LoadFile($cache_file));
+   } else {
    startMeasure('openAndReadDir');
    if ($handle = opendir($path)) {
-    $style_recs=array();
+    $styles_recs=array();
     while (false !== ($entry = readdir($handle))) {
        if (preg_match('/(.+?)\.png$/is', $entry, $m)) {
         $style=$m[1];
@@ -1413,12 +1462,12 @@ function usual(&$out) {
      }
     }
 
-    //SaveFile($cache_file, serialize($styles_recs));
+    SaveFile($cache_file, serialize($styles_recs));
     endMeasure('openAndReadDir');
 
     }
 
-   //}
+   }
 
 
     if (is_array($styles_recs)) {
@@ -1481,23 +1530,33 @@ function usual(&$out) {
    //DebMes("total states: ".$total);
 
    for($i=0;$i<$total;$i++) {
+
+    // linked object.property
     if ($states[$i]['LINKED_OBJECT'] && $states[$i]['LINKED_PROPERTY']) {
      $properties[]=array('PROPERTY'=>mb_strtolower($states[$i]['LINKED_OBJECT'].'.'.$states[$i]['LINKED_PROPERTY'], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
     }
 
+    //html content properties
     $content=$states[$i]['HTML'];
     $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
-
+    $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
     if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
      $totalm=count($m[1]);
      for($im=0;$im<$totalm;$im++) {
        $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
      }
     }
-    //to-do: add %random% support
+
+    // advanced conditions properties
+    if ($states[$i]['IS_DYNAMIC']==2 && preg_match_all('/([\w\d\.]+?\.[\w\d\.]+)/is',$states[$i]['CONDITION_ADVANCED'],$mc)) {
+     $totala = count($mc[1]);
+     for ($ia = 0; $ia < $totala; $ia++) {
+      $properties[]=array('PROPERTY'=>mb_strtolower($mc[1][$ia], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+     }
+    }
+
    }
 
-   //DebMes("Getting watched properties for ".serialize($properties));
    return $properties;
   }
 
@@ -1521,12 +1580,14 @@ elm_states - Element states
  scenes: WALLPAPER varchar(255) NOT NULL DEFAULT ''
  scenes: PRIORITY int(10) NOT NULL DEFAULT '0'
  scenes: HIDDEN int(3) NOT NULL DEFAULT '0'
+ scenes: AUTO_SCALE int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'
  elements: TITLE varchar(255) NOT NULL DEFAULT ''
+ elements: SYSTEM varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
  elements: CSS_STYLE varchar(255) NOT NULL DEFAULT ''
  elements: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''

@@ -64,6 +64,7 @@ class Server extends Socket
                                                 
                                                 if(count($this->clients) > $this->_maxClients)
                                                 {
+                                                        $this->log('Attention: Client Limit Reached!');
                                                         $client->onDisconnect();
                                                         if($this->getApplication('status') !== false)
                                                         {
@@ -75,6 +76,7 @@ class Server extends Socket
                                                 $this->_addIpToStorage($client->getClientIp());
                                                 if($this->_checkMaxConnectionsPerIp($client->getClientIp()) === false)
                                                 {
+                                                        $this->log('Connection/Ip limit for ip ' . $client->getClientIp() . ' was reached!');
                                                         $client->onDisconnect();
                                                         if($this->getApplication('status') !== false)
                                                         {

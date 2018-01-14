@@ -53,8 +53,13 @@ if($mpd->connected)
    if ($command == 'prev')
       $mpd->Previous();
    
-   if ($command == 'volume')
-      $mpd->SetVolume($volume);
+   if ($command == 'volume') {
+    if ($terminal['HOST']=='localhost') {
+     safe_exec('amixer  sset PCM,0 '.$volume.'%');
+    } else {
+     $mpd->SetVolume($volume);
+    }
+   }
    
    if ($command == 'close')
       $mpd->Stop();

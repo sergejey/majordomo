@@ -13,7 +13,7 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
- 
+
 $ctl = new control_modules();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
@@ -41,6 +41,8 @@ if ($mysqlDumpPath == '')
 $mysqlDumpParam = " --user=" . DB_USER . " --password=" . DB_PASSWORD;
 $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
 
+$backups_in_row=0;
+
 while (1)
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
@@ -48,17 +50,24 @@ while (1)
    if ((time() - $last_backup) > $timeout || file_exists('./reboot'))
    {
       echo "Running db save...";
-      
+
       if (file_exists($filename))
          rename($filename, $filename . '.prev');
 
-      exec($mysqlDumpPath . $mysqlDumpParam . " > " . $filename);
-    
+      exec($mysqlDumpPath . $mysqlDumpParam . " > " . $filename.'.tmp');
+      rename($filename.'.tmp', $filename);
+
       $last_backup = time();
-      
+      $backups_in_row++;
+
+      if ($backups_in_row >= 4 && is_dir('/tmp/mysql')) {
+       safe_exec('cp -rf /tmp/mysql/* /var/lib/mysql');
+       $backups_in_row = 0;
+      }
+
       echo "OK\n";
    }
- 
+
    if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
       $db->Disconnect();

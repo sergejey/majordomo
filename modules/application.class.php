@@ -33,6 +33,9 @@ function saveParams($data = 1) {
  if ($this->popup) {
   $p['popup']=$this->popup;
  }
+ if ($this->app_action) {
+  $p['app_action']=$this->app_action;
+ }
  return parent::saveParams($p);
  }
 
@@ -52,6 +55,7 @@ function getParams() {
    if ($this->action=='ajaxgetglobal') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
+    $_GET['var']=str_replace('%', '', $_GET['var']);
     $res['DATA']=getGlobal($_GET['var']);
     echo json_encode($res);
     global $db;
@@ -62,6 +66,7 @@ function getParams() {
    if ($this->action=='ajaxsetglobal') {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
+    $_GET['var']=str_replace('%', '', $_GET['var']);
     setGlobal($_GET['var'], $_GET['value']);
     $res['DATA']='OK';
     echo json_encode($res);
@@ -137,6 +142,8 @@ function getParams() {
 
    if ($this->action=='first_start') {
     include(DIR_MODULES.'first_start.php');
+   } elseif ($this->action=='apps') {
+    include(DIR_MODULES.'apps.php');
    }
 
    $out["ACTION"]=$this->action;
@@ -175,34 +182,53 @@ function getParams() {
     $session->data['TERMINAL']=$terminal;
    }
 
-   if (preg_match('/^app_\w+$/is', $this->action) || $this->action=='xray') {
-    $out['APP_ACTION']=1;
+   if ($this->action!='apps') {
+    if (preg_match('/^app_\w+$/is', $this->action) || $this->action=='xray') {
+     $out['APP_ACTION']=1;
+    }
+
+    if ($this->app_action) {
+     $out['APP_ACTION']=1;
+    }
+
    }
-
-   if ($this->app_action) {
-    $out['APP_ACTION']=1;
-   }
-
-
 
 
    $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     //!$session->data['TERMINAL'] &&  
-    if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST']) {
+    if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
      $session->data['TERMINAL']=$terminals[$i]['NAME'];
     }
-    if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
-     $terminals[$i]['SELECTED']=1;
+    if (mb_strtoupper($terminals[$i]['NAME'], 'UTF-8')==mb_strtoupper($session->data['TERMINAL'], 'UTF-8')) {
+     $terminals[$i]['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+     $terminals[$i]['IS_ONLINE']=1;
+     SQLUpdate('terminals', $terminals[$i]);
      $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
+     $terminals[$i]['SELECTED']=1;
     }
    }
+
+   if (!$out['TERMINAL_TITLE'] && $session->data['TERMINAL']) {
+    $new_terminal=array();
+    $new_terminal['TITLE']=$session->data['TERMINAL'];
+    $new_terminal['HOST']=$_SERVER['REMOTE_ADDR'];
+    $new_terminal['NAME']=$new_terminal['TITLE'];
+    $new_terminal['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+    $new_terminal['IS_ONLINE']=1;
+    SQLInsert('terminals', $new_terminal);
+    $out['TERMINAL_TITLE']=$new_terminal['TITLE'];
+    $new_terminal['SELECTED']=1;
+    $out['TERMINALS'][]=$new_terminal;
+   }
+
    $out['TERMINALS']=$terminals;
    if ($total==1) {
     $out['HIDE_TERMINALS']=1;
     $session->data['TERMINAL']=$terminals[0]['NAME'];
    }
+   SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 30 MINUTE)');
 
    $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
    $total=count($users);
@@ -261,7 +287,7 @@ function getParams() {
    }
 
    if ($this->action=='' || $this->action=='pages') {
-    $res=SQLSelect("SELECT * FROM layouts ORDER BY PRIORITY DESC, TITLE");
+    $res=SQLSelect("SELECT * FROM layouts WHERE HIDDEN!=1 ORDER BY PRIORITY DESC, TITLE");
     if ($this->action!='admin') {
      $total=count($res);
      $res2=array();

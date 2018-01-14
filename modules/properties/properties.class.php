@@ -31,21 +31,21 @@ function properties() {
 *
 * @access public
 */
-function saveParams() {
- $p=array();
+function saveParams($data=1) {
+ $data=array();
  if (IsSet($this->id)) {
-  $p["id"]=$this->id;
+  $data["id"]=$this->id;
  }
  if (IsSet($this->view_mode)) {
-  $p["view_mode"]=$this->view_mode;
+  $data["view_mode"]=$this->view_mode;
  }
  if (IsSet($this->edit_mode)) {
-  $p["edit_mode"]=$this->edit_mode;
+  $data["edit_mode"]=$this->edit_mode;
  }
  if (IsSet($this->tab)) {
-  $p["tab"]=$this->tab;
+  $data["tab"]=$this->tab;
  }
- return parent::saveParams($p);
+ return parent::saveParams($data);
 }
 /**
 * getParams
@@ -208,27 +208,6 @@ function usual(&$out) {
 * @access private
 */
  function dbInstall($data) {
-/*
-properties - Properties
-*/
-  $data = <<<EOD
- properties: ID int(10) unsigned NOT NULL auto_increment
- properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
- properties: OBJECT_ID int(10) NOT NULL DEFAULT '0'
- properties: TITLE varchar(255) NOT NULL DEFAULT ''
- properties: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
- properties: DESCRIPTION text
- properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
- properties: INDEX (CLASS_ID)
- properties: INDEX (OBJECT_ID)
-
- phistory: ID int(10) unsigned NOT NULL auto_increment
- phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
- phistory: ADDED datetime
- phistory: INDEX (VALUE_ID)
-
-
-EOD;
   parent::dbInstall($data);
  }
 // --------------------------------------------------------------------

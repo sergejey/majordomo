@@ -69,6 +69,21 @@
     $rec['TIMES_EXCEPT']=0;
    }
 
+   global $condition_active;
+   $rec['CONDITION_ACTIVE']=(int)$condition_active;
+
+   global $condition_linked_object;
+   $rec['CONDITION_LINKED_OBJECT']=$condition_linked_object;
+
+   global $condition_linked_property;
+   $rec['CONDITION_LINKED_PROPERTY']=$condition_linked_property;
+
+   global $condition;
+   $rec['CONDITION']=(int)$condition;
+
+   global $condition_value;
+   $rec['CONDITION_VALUE']=$condition_value;
+
   //UPDATING RECORD
    if ($ok) {
     if ($rec['ID']) {
@@ -77,7 +92,7 @@
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
-    if ($rec['USERS']=='' && $rec['TIMES']=='' && $rec['TERMINALS']=='') {
+    if ($rec['USERS']=='' && $rec['TIMES']=='' && $rec['TERMINALS']=='' && $rec['CONDITION_ACTIVE']==0) {
      SQLExec("DELETE FROM security_rules WHERE ID='".$rec['ID']."'");
      $this->redirect("?object_id=".$rec['OBJECT_ID']."&object_type=".$rec['OBJECT_TYPE']);
     }

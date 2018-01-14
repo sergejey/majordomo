@@ -1,0 +1,132 @@
+[#if EDIT_MODE=""#]
+[#if LINKS#]
+<p><#LANG_DEVICES_LINKS_ADDED#>:<p>
+<table class="table">
+    [#begin LINKS#]
+    <tr>
+        <td><b>[#TITLE#]</b></td>
+        <td>
+            [#if COMMENT!=""#][#COMMENT#]<br/>[#endif#]
+            [#LINK_TYPE#] ([#LINK_SETTINGS#])
+        </td>
+        <td>
+            <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&edit_mode=edit_link&link_id=[#ID#]&link_name=[#LINK_TYPE#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&edit_mode=delete_link&link_id=[#ID#]" class="btn btn-default" onclick="return confirm('Are you sure?');"><i class="glyphicon glyphicon-remove"></i></a>
+        </td>
+    </tr>
+    [#end LINKS#]
+</table>
+[#else LINKS#]
+<p><#LANG_DEVICES_LINKS_NOT_ADDED#></p>
+[#endif LINKS#]
+
+[#if AVAIL_LINKS#]
+<hr>
+<p><#LANG_DEVICES_LINKS_AVAILABLE#>:</p>
+<table class="table">
+    [#begin AVAIL_LINKS#]
+    <tr>
+        <td>
+            <b>[#LINK_TITLE#]</b>
+            <br/>[#LINK_DESCRIPTION#]
+        </td>
+        <td>
+            <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&edit_mode=edit_link&link_name=[#LINK_NAME#]" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+        </td>
+    </tr>
+    [#end AVAIL_LINKS#]
+</table>
+[#endif#]
+[#endif EDIT_MODE#]
+
+[#if EDIT_MODE="edit_link"#]
+
+<!-- Table 'devices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+    [#if OK#]
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+    [#endif OK#]
+    [#if ERR#]
+    <div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+    [#endif ERR#]
+    <legend><#LINK_DETAILS_LINK_TITLE#></legend>
+    <p><#LINK_DETAILS_LINK_DESCRIPTION#></p>
+    <fieldset>
+        <div class="form-group">
+            <label class="col-md-4 control-label">
+                <#LANG_DEVICES_LINKS_LINKED_DEVICE#>:
+            </label>
+            <div class="col-md-8">
+                <select name="device2_id" class="form-control">
+                    [#begin SECOND_DEVICES#]
+                    <option value="[#ID#]"[#if ID="<#DEVICE2_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+                    [#end SECOND_DEVICES#]
+                </select>
+             </div>
+           </div>
+        [#begin LINK_DETAILS_PARAMS#]
+        <div class="form-group">
+            <label class="col-md-4 control-label">
+                [#PARAM_TITLE#]
+            </label>
+            <div class="col-md-8">
+                [#if PARAM_TYPE="num" || PARAM_TYPE="text"#]
+                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control">
+                [#endif#]
+                [#if PARAM_TYPE="color"#]
+                <script src='<#ROOTHTML#>js/spectrum/spectrum.min.js'></script>
+                <link rel='stylesheet' href='<#ROOTHTML#>js/spectrum/spectrum.min.css' />
+                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control" id="[#PARAM_NAME#]_value">
+                <script type="text/javascript">
+                    $("#[#PARAM_NAME#]_value").spectrum({
+                        preferredFormat: "hex",
+                        showInput: true,
+                        chooseText: "OK",
+                        cancelText: "<#LANG_CANCEL#>"
+                    });
+                </script>
+                [#endif#]
+                [#if PARAM_TYPE="yesno"#]
+                <input type="radio" value="1" name="[#PARAM_NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
+                <input type="radio" value="0" name="[#PARAM_NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+                [#endif#]
+                [#if PARAM_TYPE="select"#]
+                 <select name="[#PARAM_NAME#]_value" class="form-control">
+                     [#begin PARAM_OPTIONS#]
+                     <option value="[#VALUE#]"[#if VALUE=="<#LINK_DETAILS_PARAMS.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
+                     [#end PARAM_OPTIONS#]
+                 </select>
+                [#endif#]
+            </div>
+        </div>
+        [#end LINK_DETAILS_PARAMS#]
+
+        <div class="form-group">
+            <label class="col-md-4 control-label">
+                <#LANG_DEVICES_LINKS_COMMENT#>:
+            </label>
+            <div class="col-md-8">
+                <input type="text" value="[#COMMENT#]" name="comment" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-8 control-label">
+                &nbsp;
+            </label>
+            <div class="col-md-4">
+                <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+                <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>" class="btn btn-default "><#LANG_CANCEL#></a>
+                <input type="hidden" name="id" value="<#ID#>">
+                <input type="hidden" name="link_id" value="<#LINK_ID#>">
+                <input type="hidden" name="link_name" value="<#LINK_DETAILS_LINK_NAME#>">
+                <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+                <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+                <input type="hidden" name="mode" value="update">
+                <input type="hidden" name="tab" value="<#TAB#>">
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+[#endif EDIT_MODE#]

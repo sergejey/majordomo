@@ -37,7 +37,54 @@ function addClass($class_name, $parent_class = '')
       $class['TITLE']     = $class_name;
       $class['PARENT_ID'] = (int)$parent_class_id;
       $class['ID']        = SQLInsert('classes', $class);
+      return $class['ID'];
    }
+}
+
+
+/**
+ * Summary of getObjectClassTemplate
+ * @param mixed $object_name Object name
+ * @return mixed
+ */
+ function getClassTemplate($class_id) {
+   $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);  
+   if (!$class['ID']) {
+    return '';
+   }
+   $class_file_path=DIR_TEMPLATES.'classes/views/'.$class['TITLE'].'.html';
+   if ($class['TEMPLATE']!='') {
+    $data=$class['TEMPLATE'];
+   } elseif (file_exists($class_file_path)) {
+    $data=LoadFile($class_file_path);
+   } elseif ($class['PARENT_ID']) {
+    $data=getClassTemplate($class['PARENT_ID']);
+   } else {
+    //$data='Template for ['.$class['TITLE'].'] not found';
+    $data='<b>%.object_title%</b>';
+       $props=SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=".$class['ID']." AND DATA_KEY=1 ORDER BY TITLE");
+       if (!IsSet($props[0])) {
+           $props=SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=".$class['ID']." ORDER BY TITLE");
+       }
+       if (is_array($props)) {
+           foreach($props as $k=>$v) {
+               $data.=' '.$v['TITLE'].': %.'.$v['TITLE'].'%';
+           }
+       }
+   }
+   return $data;
+ }
+
+/**
+ * Summary of getObjectClassTemplate
+ * @param mixed $object_name Object name
+ * @return mixed
+ */
+function getObjectClassTemplate($object_name) {
+    $object=getObject($object_name);
+    $data=getClassTemplate((int)$object->class_id);
+    $data=preg_replace('/%\.(\w+?)/', '%'.$object_name.'.\1'.'', $data);
+    return $data;
 }
 
 /**
@@ -47,7 +94,7 @@ function addClass($class_name, $parent_class = '')
  * @param mixed $code        Code (default '')
  * @return mixed
  */
-function addClassMethod($class_name, $method_name, $code = '')
+function addClassMethod($class_name, $method_name, $code = '', $key = '')
 {
    $class_id = addClass($class_name);
 
@@ -61,28 +108,43 @@ function addClassMethod($class_name, $method_name, $code = '')
 
       $method = SQLSelectOne($sqlQuery);
 
+      if ($key!='') {
+          $injection_code='/* begin injection of {'.$key.'} */'."\n".$code."\n".'/* end injection of {'.$key.'} */';
+      } else {
+          $injection_code=$code;
+      }
+
       if (!$method['ID'])
       {
          $method = array();
          
          $method['CLASS_ID']  = $class_id;
          $method['OBJECT_ID'] = 0;
-         $method['CODE']      = $code;
+         $method['CODE']      = $injection_code;
          $method['TITLE']     = $method_name;
          $method['ID']        = SQLInsert('methods', $method);
       }
       else
       {
-         if ($code != '' && $method['CODE'] != $code)
+         if ($code != '' && $method['CODE'] != $injection_code && $method['CODE'] != $code  && $key!='')
          {
-            $method['CODE'] = $code;
+             @$old_code=$method['CODE'];
+             if (preg_match('/\/\* begin injection of {'.$key.'} \*\/(.*?)\/\* end injection of {'.$key.'} \*\//uis',$method['CODE'],$m)) {
+                 $current_injection=trim($m[1]);
+                 if ($current_injection!=$code) {
+                     $method['CODE']=str_replace($m[0],$injection_code,$method['CODE']);
+                 }
+             } else {
+                 $method['CODE'].="\n".$injection_code;
+             }
 
+            //$method['CODE'] = $code;
             SQLUpdate('methods', $method);
          }
 
-         return $method['ID'];
       }
    }
+   return $method['ID'];
 }
 
 /**
@@ -124,7 +186,7 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
  * @param mixed $object_name Object name
  * @return mixed
  */
-function addClassObject($class_name, $object_name)
+function addClassObject($class_name, $object_name, $system='')
 {
    $class_id = addClass($class_name);
    $sqlQuery = "SELECT ID
@@ -141,7 +203,10 @@ function addClassObject($class_name, $object_name)
 
    $object['TITLE']    = $object_name;
    $object['CLASS_ID'] = $class_id;
+   $object['SYSTEM']   = $system.'';
    $object['ID']       = SQLInsert('objects', $object);
+   return $object['ID'];
+
 }
 
 /**
@@ -180,6 +245,7 @@ function getValueIdByName($object_name, $property)
             $value['PROPERTY_ID']   = $property_id;
             $value['OBJECT_ID']     = $object->id;
             $value['PROPERTY_NAME'] = $object_name . '.' . $property;
+            $value['VALUE']         = '';
             $value['ID']            = SQLInsert('pvalues', $value);
          }
       }
@@ -330,6 +396,54 @@ function getObject($name)
 }
 
 /**
+ * Summary of getObjectsByProperty
+ * @param mixed $property_name Property name
+ * @return array|int
+ */
+function getObjectsByProperty($property_name, $condition='', $condition_value='') 
+{
+    if ($condition_value=='' && $condition!='') {
+        $condition_value=$condition;
+        $condition='==';
+    }
+  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($property_name)."'");
+  $total=count($pRecs);
+  if (!$total) {
+   return 0;
+  }
+  $found=array();
+  for($i=0;$i<$total;$i++) {
+   $pValues=SQLSelect("SELECT objects.TITLE, VALUE FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."'");
+   $totalv=count($pValues);
+   for($iv=0;$iv<$totalv;$iv++) {
+    $v=$pValues[$iv]['VALUE'];
+    if (!$condition) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='=' || $condition=='==') && ($v==$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='>=') && ($v>=$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='>') && ($v>$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='<=') && ($v<=$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='<') && ($v<$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    } elseif (($condition=='<>' || $condition=='!=') && ($v!=$condition_value)) {
+     $found[$pValues[$iv]['TITLE']]=1;
+    }
+   }
+  }
+
+  $res=array();
+  foreach($found as $k=>$v) {
+   $res[]=$k;
+  }
+  return $res;
+
+}
+
+/**
  * Summary of getObjectsByClass
  * @param mixed $class_name Class name
  * @return array|int
@@ -388,6 +502,52 @@ function getObjectsByClass($class_name)
    return $objects;
 }
 
+
+function getClassProperties($class_id, $def='') {
+    $class=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='".(int)$class_id."' OR TITLE LIKE '".DBSafe($class_id)."')");
+    $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$class['ID']."' AND OBJECT_ID=0");
+    $res=$properties;
+    if (!is_array($def)) {
+        $def=array();
+        foreach($properties as $p) {
+            $def[]=$p['TITLE'];
+        }
+    }
+    foreach($properties as $p) {
+        if (!in_array($p['TITLE'], $def)) {
+            $res[]=$p;
+            $def[]=$p['TITLE'];
+        }
+    }
+    if ($class['PARENT_ID']) {
+        $p_res=getClassProperties($class['PARENT_ID'], $def);
+        if ($p_res[0]['ID']) {
+            foreach($p_res as $k=>$p) {
+                if (!in_array($p['TITLE'], $def)) {
+                    $res[]=$p;
+                    $def[]=$p['TITLE'];
+                }
+            }
+        }
+    }
+    return $res;
+}
+
+function getKeyData($object_id) {
+    $object_rec=SQLSelectOne("SELECT ID,TITLE,CLASS_ID FROM objects WHERE ID=".(int)$object_id);
+    $props=getClassProperties($object_rec['CLASS_ID']);
+    $add_description='';
+    foreach($props as $k=>$v) {
+        if ($v['DATA_KEY']) {
+            $data=getGlobal($object_rec['TITLE'].'.'.$v['TITLE']);
+            if ($data!='') {
+                $add_description.=$v['TITLE'].': '.$data.'; ';
+            }
+        }
+    }
+    return $add_description;
+}
+
 /**
  * Summary of getGlobal
  * @param mixed $varname Variable name
@@ -436,14 +596,270 @@ function getGlobal($varname)
 }
 
 /**
+* getHistoryValueId
+*
+* Return history value id
+*
+* @access public
+*/
+function getHistoryValueId($varname){
+        $tmp = explode('.', $varname);
+
+  if (isset($tmp[2]))
+  {
+    $object_name = $tmp[0] . '.' . $tmp[1];
+    $varname     = $tmp[2];
+  }
+  elseif (isset($tmp[1]))
+  {
+    $object_name = $tmp[0];
+    $varname     = $tmp[1];
+  }
+  else  
+    $object_name = 'ThisComputer';
+        
+        // Get object
+        $obj = getObject($object_name);
+        if (!$obj) return false;
+        
+        // Get property
+        $prop_id = $obj->getPropertyByName($varname, $obj->class_id, $obj->id); 
+        if ($prop_id == false)  return false;
+        
+        $rec=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$prop_id."' AND OBJECT_ID='".(int)$obj->id."'");
+        
+        if (!$rec['ID']) 
+                return false;
+        
+        return $rec['ID'];
+}
+
+/**
+* getHistory
+*
+* Return history data
+*
+* @access public
+*/
+function getHistory($varname, $start_time, $stop_time = 0) {    
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+  if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+  // Get hist val id
+  $id = getHistoryValueId($varname);
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+  // Get data
+  return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."') ORDER BY ADDED");
+}
+
+/**
+* getHistoryMin
+*
+* Return history data
+*
+* @access public
+*/
+function getHistoryMin($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
+        $id = getHistoryValueId($varname);
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+        // Get data
+        $data = SQLSelectOne("SELECT MIN(VALUE+0.0) AS VALUE FROM $table_name ".
+                "WHERE VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
+}
+
+/**
+* getHistoryMax
+*
+* Return history data
+*
+* @access public
+*/
+function getHistoryMax($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
+  $id = getHistoryValueId($varname);
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+        // Get data
+        $data = SQLSelectOne("SELECT MAX(VALUE+0.0) AS VALUE FROM $table_name ".
+                "WHERE VALUE != \"\" AND  VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
+}
+
+/**
+* getHistoryCount
+*
+* Return history data
+*
+* @access public
+*/
+function getHistoryCount($varname, $start_time, $stop_time = 0) {       
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
+  $id = getHistoryValueId($varname);
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+        // Get data
+        $data = SQLSelectOne("SELECT COUNT(VALUE+0.0) AS VALUE FROM $table_name ".
+                "WHERE VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
+}
+
+/**
+* getHistorySum
+*
+* Return history data
+*
+* @access public
+*/
+function getHistorySum($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
+  $id = getHistoryValueId($varname);
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+        // Get data
+        $data = SQLSelectOne("SELECT SUM(VALUE+0.0) AS VALUE FROM $table_name ".
+                "WHERE  VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
+}
+
+/**
+* getHistoryAvg
+*
+* Return history data
+*
+* @access public
+*/
+function getHistoryAvg($varname, $start_time, $stop_time = 0) { 
+        if ($start_time <= 0) $start_time = (time() + $start_time);
+        if ($stop_time  <= 0) $stop_time  = (time() + $stop_time);
+        
+        // Get hist val id
+  $id = getHistoryValueId($varname);
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+        // Get data
+        $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name ".
+                "WHERE  VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+        if (!$data['VALUE'])
+                return false;
+        
+        return $data['VALUE'];
+}
+/**
+* getHistoryValue
+*
+* Return history value
+*
+* @access public
+*/
+function getHistoryValue($varname, $time, $nerest = false) {    
+        if ($time <= 0) $time = (time() + $time);       
+        
+        // Get hist val id
+  $id = getHistoryValueId($varname);
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+    // Get val before
+        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
+        
+        // Get val after        
+        $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
+        
+        // Not found values
+        if ((!$val1['VALUE']) && (!$val2['VALUE']))     
+                return false;   
+        
+        // Only before
+        if (($val1['VALUE']) && (!$val2['VALUE']))      
+                return $val1['VALUE'];  
+        
+        // Only after
+        if ((!$val1['VALUE']) && ($val2['VALUE']))      
+                return $val2['VALUE'];  
+        
+        // Nerest
+        if ($nerest)
+        {
+                if (($time-$val1['ADDED']) < ($val2['ADDED']-$time))
+                        return $val1['VALUE'];
+                else
+                        return $val2['VALUE'];
+        }
+        // Interpolation
+        else    
+        {               
+                if ($val2['ADDED'] - $val1['ADDED'] == 0) 
+                        return $val1['VALUE'];
+                else
+                        return $val1['VALUE'] + ($val2['VALUE'] - $val1['VALUE']) * ($time - $val1['ADDED']) / ($val2['ADDED'] - $val1['ADDED']);
+        }
+}
+/**
  * Summary of setGlobal
  * @param mixed $varname   Variable name
  * @param mixed $value     Value
  * @param mixed $no_linked No-Linked (default 0)
  * @return int
  */
-function setGlobal($varname, $value, $no_linked = 0)
+function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
+
    $tmp = explode('.', $varname);
 
    if (isset($tmp[2]))
@@ -465,7 +881,7 @@ function setGlobal($varname, $value, $no_linked = 0)
    
    if ($obj)
    {
-      return $obj->setProperty($varname, $value, $no_linked);
+      return $obj->setProperty($varname, $value, $no_linked, $source);
    }
    else
    {
@@ -482,7 +898,6 @@ function setGlobal($varname, $value, $no_linked = 0)
 function callMethod($method_name, $params = 0)
 {
    $tmp = explode('.', $method_name);
-   
    if (IsSet($tmp[2]))
    {
       $object_name = $tmp[0] . '.' . $tmp[1];
@@ -497,7 +912,6 @@ function callMethod($method_name, $params = 0)
    {
       $object_name = 'ThisComputer';
    }
-
    $obj = getObject($object_name);
 
    if ($obj)
@@ -508,7 +922,87 @@ function callMethod($method_name, $params = 0)
    {
       return 0;
    }
+}
 
+function callMethodSafe($method_name, $params = 0)
+{
+    $tmp = explode('.', $method_name);
+    if (IsSet($tmp[2]))
+    {
+        $object_name = $tmp[0] . '.' . $tmp[1];
+        $varname     = $tmp[2];
+    }
+    elseif (IsSet($tmp[1]))
+    {
+        $object_name = $tmp[0];
+        $method_name = $tmp[1];
+    }
+    else
+    {
+        $object_name = 'ThisComputer';
+    }
+    $obj = getObject($object_name);
+
+    if ($obj)
+    {
+        return $obj->callMethodSafe($method_name, $params);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+function injectObjectMethodCode($method_name,$key,$code) {
+    $tmp = explode('.', $method_name);
+    if (IsSet($tmp[2]))
+    {
+        $object_name = $tmp[0] . '.' . $tmp[1];
+        $varname     = $tmp[2];
+    }
+    elseif (IsSet($tmp[1]))
+    {
+        $object_name = $tmp[0];
+        $method_name = $tmp[1];
+    }
+    else
+    {
+        $object_name = 'ThisComputer';
+    }
+    $obj = getObject($object_name);
+
+    if ($obj)
+    {
+        //return $obj->callMethod($method_name, $params);
+        $id=$obj->getMethodByName($method_name, $obj->class_id, $obj->id);
+        if ($id) {
+            $method=SQLSelectOne("SELECT * FROM methods WHERE ID=".(int)$id);
+            if ($method['OBJECT_ID']!=$obj->id) {
+                $method=array();
+                $method['OBJECT_ID']=$obj->id;
+                $method['TITLE']=$method_name;
+                $method['ID']=SQLInsert('methods',$method);
+            }
+            $injection_code='/* begin injection of {'.$key.'} */'."\n".$code."\n".'/* end injection of {'.$key.'} */';
+            @$old_code=$method['CODE'];
+            if (preg_match('/\/\* begin injection of {'.$key.'} \*\/(.*?)\/\* end injection of {'.$key.'} \*\//uis',$method['CODE'],$m)) {
+                $current_injection=trim($m[1]);
+                if ($current_injection!=$code) {
+                    $method['CODE']=str_replace($m[0],$injection_code,$method['CODE']);
+                }
+            } else {
+                $method['CODE'].="\n".$injection_code;
+            }
+            if ($method['CODE']!=$old_code) {
+                SQLUpdate('methods',$method);
+            }
+            return 1;
+        }
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 /**
@@ -665,9 +1159,9 @@ function processTitle($title, $object = 0)
  * @param mixed $no_linked No-Linked (default 0)
  * @return int
  */
-function sg($varname, $value, $no_linked = 0)
+function sg($varname, $value, $no_linked = 0, $source = '')
 {
-   return setGlobal($varname, $value, $no_linked);
+   return setGlobal($varname, $value, $no_linked, $source);
 }
 
 /**
@@ -711,4 +1205,87 @@ function runMethod($method_name, $params = 0)
 function rs($script_id, $params = 0)
 {
    return runScript($script_id, $params);
+}
+
+function getRoomObjectByLocation($location_id,$auto_add=0) {
+    $location_rec=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$location_id);
+    $location_title=transliterate($location_rec['TITLE']);
+    $location_title=preg_replace('/\W/','',$location_title);
+    if (!$location_title) {
+        $location_title='Room'.$location_id;
+    }
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($location_title)."'");
+    if ($room_object['ID']) return $room_object['TITLE'];
+
+    $class_id=addClass("Rooms");
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE LOCATION_ID=".$location_id." AND CLASS_ID=".$class_id);
+    if ($room_object['ID']) return $room_object['TITLE'];
+    if ($auto_add) {
+        $object_id=addClassObject("Rooms",$location_title);
+        SQLExec("UPDATE objects SET LOCATION_ID=".(int)$location_rec['ID'].", DESCRIPTION='".DBSafe($location_rec['TITLE'])."' WHERE ID=".$object_id);
+        return $location_title;
+    } else {
+        return '';
+    }
+}
+
+function getUserObjectByTitle($user_id,$auto_add=0) {
+    $user_rec=SQLSelectOne("SELECT * FROM users WHERE ID=".(int)$user_id);
+    $user_title=transliterate($user_rec['USERNAME']);
+    $user_title=preg_replace('/\W/','',$user_title);
+    if (!$user_title) {
+        $user_title='User'.$user_id;
+    }
+    $user_object=SQLSelectOne("SELECT * FROM objects WHERE (TITLE LIKE '".DBSafe($user_title)."' OR (DESCRIPTION!='' AND DESCRIPTION LIKE '".$user_rec['NAME']."'))");
+    if ($user_object['ID']) return $user_object['TITLE'];
+    if ($auto_add) {
+        $object_id=addClassObject("Users",$user_title);
+        SQLExec("UPDATE objects SET DESCRIPTION='".DBSafe($user_rec['NAME'])."' WHERE ID=".$object_id);
+        return $user_title;
+    } else {
+        return '';
+    }
+}
+
+function deleteObject($object_id) {
+    $object_rec=SQLSelectOne("SELECT ID FROM objects WHERE ID=".(int)$object_id." OR TITLE LIKE '".DBSafe($object_id)."'");
+    if ($object_rec['ID']) {
+        include_once(DIR_MODULES.'objects/objects.class.php');
+        $obj=new objects();
+        $obj->delete_objects($object_rec['ID']);
+    }
+}
+
+function objectClassChanged($object_id) {
+
+    include_once(DIR_MODULES.'objects/objects.class.php');
+    $obj=new objects();
+    // class changed from $class_changed_from to $rec['CLASS_ID']
+    $rec=SQLSelectOne("SELECT * FROM objects WHERE ID=".(int)$object_id);
+    // step 1. take all properties out of class
+    $pvalues=SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY_TITLE FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID!=0 AND pvalues.OBJECT_ID='".$rec['ID']."'");
+    $total=count($pvalues);
+    for($i=0;$i<$total;$i++) {
+        $new_property=array();
+        $new_property['TITLE']=$pvalues[$i]['PROPERTY_TITLE'];
+        $new_property['CLASS_ID']=0;
+        $new_property['OBJECT_ID']=$rec['ID'];
+        //$new_property['VALUE']='';
+        $new_property['ID']=SQLInsert('properties', $new_property);
+        $pvalues[$i]['PROPERTY_ID']=$new_property['ID'];
+        unset($pvalues[$i]['PROPERTY_TITLE']);
+        SQLUpdate('pvalues', $pvalues[$i]);
+    }
+    // step 2. apply matched properties of new class
+    $properties=$obj->getParentProperties($rec['CLASS_ID'], '', 1);
+    $total=count($properties);
+    for($i=0;$i<$total;$i++) {
+        $pvalue=SQLSelectOne("SELECT pvalues.* FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID=0 AND pvalues.OBJECT_ID='".$rec['ID']."' AND properties.TITLE LIKE '".DBSafe($properties[$i]['TITLE'])."'");
+        if ($pvalue['ID']) {
+            $old_prop=$pvalue['PROPERTY_ID'];
+            $pvalue['PROPERTY_ID']=$properties[$i]['ID'];
+            SQLUpdate('pvalues', $pvalue);
+            SQLExec("DELETE FROM properties WHERE ID='".$old_prop."'");
+        }
+    }
 }

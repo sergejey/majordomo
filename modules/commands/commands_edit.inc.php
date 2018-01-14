@@ -40,7 +40,7 @@
 
 
    global $type;
-   $rec['TYPE']=$type;
+   $rec['TYPE']=$type.'';
 
    global $ext_id;
    $rec['EXT_ID']=(int)$ext_id;
@@ -94,6 +94,8 @@ if ($rec['TYPE']=='plusminus'
     || $rec['TYPE']=='datebox'
     || $rec['TYPE']=='textbox'
     || $rec['TYPE']=='radiobox'
+    || $rec['TYPE']=='color'
+    || $rec['TYPE']=='object'
     ) {
     global $cur_value;
         if ($cur_value!='') {
@@ -117,10 +119,10 @@ if ($rec['TYPE']=='plusminus'
     $rec['ONCHANGE_METHOD']=trim($onchange_method);
 
     global $script_id;
-    $rec['SCRIPT_ID']=$script_id;
+    $rec['SCRIPT_ID']=(int)$script_id;
 
     global $code;
-    $rec['CODE']=$code;
+    $rec['CODE']=$code.'';
     if ($rec['CODE']!='') {
      //echo $content;
      $errors=php_syntax_error($rec['CODE']);
@@ -135,10 +137,10 @@ if ($rec['TYPE']=='plusminus'
 
   //updating 'COMMAND' (varchar)
    global $command;
-   $rec['COMMAND']=$command;
+   $rec['COMMAND']=$command.'';
 
    global $window;
-   $rec['WINDOW']=$window;
+   $rec['WINDOW']=$window.'';
 
    global $sub_preload;
    $rec['SUB_PRELOAD']=(int)$sub_preload;
@@ -146,7 +148,7 @@ if ($rec['TYPE']=='plusminus'
 
   //updating 'URL' (varchar)
    global $url;
-   $rec['URL']=$url;
+   $rec['URL']=$url.'';
   //updating 'WIDTH' (int)
    global $width;
    $rec['WIDTH']=(int)$width;
@@ -214,6 +216,9 @@ if ($rec['TYPE']=='plusminus'
   }
 
   outHash($rec, $out);
+  if ($out['TITLE']) {
+    $this->owner->data['TITLE'] = $out['TITLE'];
+  }
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 

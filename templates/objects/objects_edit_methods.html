@@ -42,7 +42,6 @@
         <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
         [#end SCRIPTS#]
    </select>
-    
    <br>
    <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]  onClick="$('#code_option').show();"> <#LANG_CODE#>
 
@@ -95,7 +94,7 @@
         <#LANG_CALL_METHOD#>:<br>
         <#LANG_BY_URL#>:<br>
         <input type="text" size="90" id="debugURL" value="<#SERVER_URL#><#ROOTHTML#>objects/?object=<#OBJECT_TITLE_URL#>&op=m&m=<#METHOD_TITLE_URL#>&">
-        <a href="#" onClick="this.href=document.getElementById('debugURL').value" target=_blank><#LANG_TEST#></a>
+        <a href="<#ROOTHTML#>objects/?object=<#OBJECT_TITLE_URL#>&op=m&m=<#METHOD_TITLE_URL#>" target=_blank><#LANG_TEST#></a>
         <br>
         <#LANG_COMMAND_LINE#>:<br>
         <input type="text" size="90" value="<#DOC_ROOT#>\obj.bat <#OBJECT_TITLE#>.<#METHOD_TITLE#>">

@@ -14,11 +14,15 @@
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_locations" style="padding:0px">
 <table class="table table-striped">
+    <thead>
 <tr>
-<th colspan="2">
+<th>
 <#LANG_TITLE#>
  </th>
+    <th><#LANG_PRIORITY#></th>
+    <th>&nbsp;</th>
  </tr>
+    </thead>
 [#begin RESULT#]
 <tr >
  <td
@@ -27,14 +31,16 @@
    [#TITLE#]
   </a></b>
  </td>
- <td width="100">
-  
+    <td>[#PRIORITY#]</td>
+ <td width="200">
+
   [#if "<#ACTION#>"=="admin"#]
-  
-    <b><a class="btn btn-default btn-sm" href="?view_mode=edit_locations&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a></b>
-   
+     <a class="btn btn-default btn-sm" href="?view_mode=priority_up&id=[#ID#]"><i class="glyphicon glyphicon-arrow-up"></i></a>
+     <a class="btn btn-default btn-sm" href="?view_mode=priority_down&id=[#ID#]"><i class="glyphicon glyphicon-arrow-down"></i></a>
+
+    <a class="btn btn-default btn-sm" href="?view_mode=edit_locations&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a>
     <a class="btn btn-default btn-sm" href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i></a>
-  
+
   [#endif ACTION#]
 
  </td>

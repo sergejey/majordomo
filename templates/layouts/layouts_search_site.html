@@ -4,7 +4,7 @@
 <ul data-role="listview">
 [#begin RESULT#]
  <li>
-  [#if TYPE="html"#]
+  [#if TYPE="html" || TYPE="dashboard"#]
   <a href="<#ROOTHTML#>page/[#ID#].html" target=_blank>[#TITLE#]</a>
   [#endif TYPE#]
   [#if TYPE="url"#]

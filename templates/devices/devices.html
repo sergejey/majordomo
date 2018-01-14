@@ -1,0 +1,38 @@
+[#if ACTION=""#]
+ [#inc action_usual.html#]
+[#endif#]
+[#if ACTION="admin"#]
+ [#inc action_admin.html#]
+[#endif#]
+[#if ACTION="link"#]
+<script type="text/javascript">
+ function addClicked[#UNIQ#]() {
+  var wdth=950;
+  var hdth=600;
+  var window_url='<#ROOTHTML#>panel/popup/devices.html?md=devices&view_mode=edit_devices&source_table=<#SOURCE_TABLE#>&source_table_id=<#SOURCE_TABLE_ID#>&linked_object=<#LINKED_OBJECT#>&type=<#TYPE#>&prefix=<#PREFIX#>&add_title=<#ADD_TITLE#>';
+  var jWindowObjElement[#UNIQ#] = $.jWindow({
+   id: 'windowEdit[#UNIQ#]',
+   title: 'Settings',
+   width: wdth,
+   height: hdth,
+   type: 'iframe',
+   marginTop:0,
+   marginBottom:0,
+   marginLeft:0,
+   marginRight:0,
+   url: window_url,
+   onClose:function () {
+    window.location.reload();
+   },
+   modal: true });
+  jWindowObjElement[#UNIQ#].show();
+  jWindowObjElement[#UNIQ#].update();
+  return false;
+ }
+</script>
+[#if OK#]
+<a href="#" onclick="addClicked[#UNIQ#]();">[#if TITLE!=""#][#TITLE#][#else#]<#LANG_ADD#>[#endif#]</a>
+[#else OK#]
+Usage error
+[#endif OK#]
+[#endif#]

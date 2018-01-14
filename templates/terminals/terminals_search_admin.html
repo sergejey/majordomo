@@ -40,6 +40,9 @@
  <th>
  <b><#LANG_TITLE#></b>
  </th>
+ <th>
+ <b>Latest activity</b>
+ </th>
 <th></th>
 
 </tr>
@@ -59,6 +62,14 @@
    [#TITLE#]
   </a></b>
   [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
+  [#if MAJORDROID_API="1"#](+MajorDroidAPI)[#endif#]
+ </td>
+ <td valign="top">[#LATEST_ACTIVITY#]
+ [#if IS_ONLINE="1"#]
+  <font color="green">Online</font>
+ [#else#]
+  <font color="red">Offline</font>
+ [#endif#]
  </td>
  <td width="100">
  

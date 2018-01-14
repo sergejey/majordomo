@@ -47,10 +47,10 @@
    $rec['DESCRIPTION']=$description;
   //updating 'Location' (select)
    global $location_id;
-   $rec['LOCATION_ID']=$location_id;
+   $rec['LOCATION_ID']=(int)$location_id;
 
    global $keep_history;
-   $rec['KEEP_HISTORY']=$keep_history;
+   $rec['KEEP_HISTORY']=(int)$keep_history;
 
 
   }
@@ -69,32 +69,7 @@
      SQLUpdate($table_name, $rec); // update
 
      if ($class_changed_from) {
-      // class changed from $class_changed_from to $rec['CLASS_ID']
-      // step 1. take all properties out of class
-      $pvalues=SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY_TITLE FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID!=0 AND pvalues.OBJECT_ID='".$rec['ID']."'");
-      $total=count($pvalues);
-      for($i=0;$i<$total;$i++) {
-       $new_property=array();
-       $new_property['TITLE']=$pvalues[$i]['PROPERTY_TITLE'];
-       $new_property['CLASS_ID']=0;
-       $new_property['OBJECT_ID']=$rec['ID'];
-       $new_property['ID']=SQLInsert('properties', $new_property);
-       $pvalues[$i]['PROPERTY_ID']=$new_property['ID'];
-       unset($pvalues[$i]['PROPERTY_TITLE']);
-       SQLUpdate('pvalues', $pvalues[$i]);
-      }
-      // step 2. apply matched properties of new class
-      $properties=$this->getParentProperties($rec['CLASS_ID'], '', 1);
-      $total=count($properties);
-      for($i=0;$i<$total;$i++) {
-       $pvalue=SQLSelectOne("SELECT pvalues.* FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID=0 AND pvalues.OBJECT_ID='".$rec['ID']."' AND properties.TITLE LIKE '".DBSafe($properties[$i]['TITLE'])."'");
-       if ($pvalue['ID']) {
-        $old_prop=$pvalue['PROPERTY_ID'];
-        $pvalue['PROPERTY_ID']=$properties[$i]['ID'];
-        SQLUpdate('pvalues', $pvalue);
-        SQLExec("DELETE FROM properties WHERE ID='".$old_prop."'");
-       }
-      }
+         objectClassChanged($rec['ID']);
      }
 
     } else {
@@ -157,11 +132,7 @@
      $tmp['OBJECT_ID']=$rec['ID'];
      $tmp['ID']=SQLInsert('properties', $tmp);
      if ($new_value!='') {
-      $tmp2=array();
-      $tmp2['PROPERTY_ID']=$tmp['ID'];
-      $tmp2['OBJECT_ID']=$rec['ID'];
-      $tmp2['VALUE']=$new_value;
-      SQLInsert('pvalues', $tmp2);
+         setGlobal($rec['TITLE'].'.'.$new_property,$new_value);
      }
     }
    }
@@ -187,22 +158,19 @@
     $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$props[$i]['ID']."' AND OBJECT_ID='".$rec['ID']."'");
     if ($this->mode=='update') {
      global ${"value".$props[$i]['ID']};
-     $this->class_id=$rec['CLASS_ID'];
-     $this->id=$rec['ID'];
-     $this->object_title=$rec['TITLE'];
-     $this->setProperty($props[$i]['TITLE'], ${"value".$props[$i]['ID']});
-     /*
-     SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='".$props[$i]['ID']."' AND OBJECT_ID='".$rec['ID']."'");
-     $tmp=array();
-     $tmp['PROPERTY_ID']=$props[$i]['ID'];
-     $tmp['OBJECT_ID']=$rec['ID'];
-     $tmp['VALUE']=${"value".$props[$i]['ID']};
-     $tmp['ID']=SQLInsert('pvalues', $tmp);
-     */
-     $value['VALUE']=${"value".$props[$i]['ID']};
+        if (isset(${"value".$props[$i]['ID']})) {
+            $this->class_id=$rec['CLASS_ID'];
+            $this->id=$rec['ID'];
+            $this->object_title=$rec['TITLE'];
+            $this->setProperty($props[$i]['TITLE'], ${"value".$props[$i]['ID']});
+        }
     }
     $props[$i]['VALUE']=$value['VALUE'];
+    $props[$i]['SOURCE']=$value['SOURCE'];
     $props[$i]['LINKED_MODULES']=$value['LINKED_MODULES'];
+   }
+   if ($this->mode=='update') {
+    $this->redirect("?view_mode=".$this->view_mode."&id=".$rec['ID']."&tab=".$this->tab);
    }
 
    $out['PROPERTIES']=$props;
@@ -323,5 +291,6 @@
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 
-
-?>
+if ($out['TITLE']) {
+    $this->owner->owner->data['TITLE'] = $out['TITLE'];
+}
