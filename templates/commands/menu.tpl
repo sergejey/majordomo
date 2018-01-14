@@ -604,10 +604,7 @@
 
 {if $item.TYPE=='label'}
 <li data-role="list-divider"{if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
-{*
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" border="0">{/if}
-*}
-<span id="label_{$item.ID}">{$item.TITLE}</span>
+<span id="label_{$item.ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span>
 </li>
 {/if}
 
