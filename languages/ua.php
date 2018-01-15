@@ -1,6 +1,6 @@
 <? Php
 / **
- * Russian language file
+ * Ukranian language file
  *
  * @package MajorDoMo
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
@@ -12,7 +12,7 @@ $ Dictionary = array (
 
     / * General * /
     'WIKI_URL' => 'http://smartliving.ru/',
-    'DEFAULT_COMPUTER_NAME' => 'Аліса',
+    'DEFAULT_COMPUTER_NAME' => 'Василіса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
     'WELCOME_TEXT' => 'Спасибі, що користуйтеся MajorDoMo - відкритою платформою домашньої автоматизації. <br/> <br/> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#> "target = _blank> Веб-сайт </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Форум </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> Facebook сторінка </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Панель управління </a> </ small> ',
     'CONTROL_PANEL' => 'Панель управління',
@@ -414,7 +414,7 @@ $ Dictionary = array (
     'PARENT_CLASS' => 'Батьківський клас',
 
 
-    'DO_NOT_SAVE_CLASS_ACTIVITY' => "не зберігати активність об\'єктів класу в лог ',
+    'DO_NOT_SAVE_CLASS_ACTIVITY' => 'не зберігати активність об\'єктів класу в лог ',
     'MAIN' => 'Основне',
 
 
@@ -679,7 +679,7 @@ $ Dictionary = array (
 
 
     'LINKED_OBJECT' => 'Зв\'язаний об\'єкт',
-    'LINKED_PROPERTY' => 'Пов\'язане св-во',
+    'LINKED_PROPERTY' => 'Пов\'язана вл-ть',
     'SET' => 'встановити',
 
 
@@ -721,7 +721,7 @@ $ Dictionary = array (
     'REFRESH_ALL' => 'Оновити все',
 
 
-    'NEW_PROPERTY' => 'Нове властивість',
+    'NEW_PROPERTY' => 'Нова властивість',
 
 
     'KEEP_HISTORY_DAYS' => 'Зберігати історію (днів)',
@@ -1008,7 +1008,7 @@ $ Dictionary = array (
     'HIDE' => 'Приховати',
 
     'UPDATING' => 'Увімкнути. в оновлення ',
-    'NOT_UPDATING' => "Не оновлюється ',
+    'NOT_UPDATING' => 'Не оновлюється ',
 
     'SCRIPTS' => 'Сценарії',
     'CLASSES' => 'Класи / об\'єкти',
@@ -1056,7 +1056,7 @@ $ Dictionary = array (
     // DEVICES
     'DEVICES_MODULE_TITLE' => 'Прості пристрої',
     'DEVICES_LINKED_WARNING' => 'Увага: вибір існуючого об\'єкта призведе до прив\'язки його до нового класу.',
-    'DEVICES_RELAY' => 'Кероване реле / ​​Вимикач',
+    'DEVICES_RELAY' => 'Кероване реле / Вимикач',
     'DEVICES_DIMMER' => 'Керований диммер',
     'DEVICES_RGB' => 'RGB-контролер',
     'DEVICES_MOTION' => 'Датчик руху',
@@ -1134,11 +1134,11 @@ $ Dictionary = array (
     'DEVICES_LINKS_ADDED' => 'Зміни, пов\'язані пристрої',
 
     'DEVICES_LINK_ACTION_TYPE' => 'Дія',
-    'DEVICES_LINK_TYPE_TURN_ON' => 'Включити',
+    'DEVICES_LINK_TYPE_TURN_ON' => 'Ввімкнути',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Вимкнути',
-    'DEVICES_LINK_TYPE_SWITCH' => 'Переключити',
+    'DEVICES_LINK_TYPE_SWITCH' => 'Перемкнути',
 
-    'DEVICES_LINK_SWITCH_IT' => 'Включити / Виключити',
+    'DEVICES_LINK_SWITCH_IT' => 'Ввімкнути / Вимкнути',
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Використання іншого пристроєм за подією',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Затримка виконання (секунд)',
 
@@ -1156,8 +1156,8 @@ $ Dictionary = array (
     'DEVICES_LINK_SENSOR_PASS' => 'Пересилання даних',
     'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Пересилання даних від сенсора на інший пристрій',
 
-    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Управління пристроєм',
-    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Управління інших пристроїв в залежності від статусу термостата',
+    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Керування пристроєм',
+    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Керування інших пристроїв в залежності від статусу термостата',
     'DEVICES_LINK_THERMOSTAT_INVERT' => 'інвертоване встановлення статусу',
 
 
@@ -1178,7 +1178,7 @@ $ Dictionary = array (
     'DEVICES_PASSED_NOW' => 'тільки що',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
     'DEVICES_PASSED_MINUTES_AGO' => 'хв. назад',
-    'DEVICES_PASSED_HOURS_AGO' => 'u. назад',
+    'DEVICES_PASSED_HOURS_AGO' => 'г. назад',
     'DEVICES_CHOOSE_EXISTING' => '... або виберіть вже доданий пристрій',
 
     'DEVICES_CAMERA' => 'IP-камера',
@@ -1194,7 +1194,7 @@ $ Dictionary = array (
     'DEVICES_CAMERA_PREVIEW_TYPE_STATIC' => 'Статичний знімок',
     'DEVICES_CAMERA_PREVIEW_TYPE_SLIDESHOW' => 'Слайд-шоу',
     'DEVICES_CAMERA_PREVIEW_ONCLICK' => 'Дія після натискання на зображення',
-    'DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE' => 'Збільшити ізображеіе',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE' => 'Збільшити зображення',
     'DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL' => 'Перейти на потік',
 
     'DEVICES_THERMOSTAT' => 'Термостат',
