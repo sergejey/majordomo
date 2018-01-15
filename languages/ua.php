@@ -87,7 +87,7 @@ $ Dictionary = array (
     'APP_ALARMCLOCK' => 'Будильник',
     'APP_OPENWEATHER' => 'Погода від OpenWeatherMap',
     'SYS_DATEFORMAT' => 'Формат дати',
-    'APP_YATRAFFIC' => 'Яндекс.Пробки ",
+    'APP_YATRAFFIC' => 'Яндекс.Пробки ',
     'APP_CHATBOX' => 'Повідомлення',
 
     'MODULE_OBJECTS_HISTORY' => 'Історія об\'єктів',
