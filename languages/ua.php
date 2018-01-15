@@ -1,1037 +1,780 @@
 <?php
 /**
-* Ukrainian language file
-*
-* @package MajorDoMo
-* @author Sergii Zolenko <szolenko@gmail.com> http://smartliving.ru/
-* @version 1.0
-*/
-
-
-$dictionary=array(
-
-/* general */
-'WIKI_URL'=>'http://smartliving.ru/',
-'DEFAULT_COMPUTER_NAME'=>'Аліса',
-'WELCOME_GREETING'=>'Ласкаво просимо!',
-'WELCOME_TEXT'=>'Дякуємо, що використовуєте MajorDoMo -- відкриту платформу домашньої автоматизації. <br/><br/>Дізнайтеся більше та приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Ви можете змінити чи видалити цю сторінку за допомогою <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
-'CONTROL_PANEL'=>'Панель керування',
-'TERMINAL'=>'Термінал',
-'USER'=>'Користувач',
-'SELECT'=>'обрати',
-'CONTROL_MENU'=>'Меню',
-'YOU_ARE_HERE'=>'Ви тут',
-'FRONTEND'=>'Веб-сайт',
-'MY_ACCOUNT'=>'Мій аккаунт',
-'LOGOFF'=>'Вийти',
-'MODULE_DESCRIPTION'=>'Опис модуля',
-
-'GENERAL_SENSORS'=>'Сенсори',
-'GENERAL_OPERATIONAL_MODES'=>'Режими роботи',
-'GENERAL_ENERGY_SAVING_MODE'=>'Енергозбереження',
-'GENERAL_SECURITY_MODE'=>'Безпека',
-'GENERAL_NOBODYS_HOME_MODE'=>'Нікого нема вдома',
-'GENERAL_WE_HAVE_GUESTS_MODE'=>'В нас гості',
-
-'GENERAL_CLIMATE'=>'Клімат',
-'GENERAL_WEATHER_FORECAST'=>'Прогноз погоди',
-'GENERAL_TEMPERATURE_OUTSIDE'=>'Температура за вікном',
-'GENERAL_GRAPHICS'=>'Графіки',
-
-'GENERAL_SECURITY_CAMERA'=>'Камери спостереження',
-'GENERAL_EVENTS_LOG'=>'Істория подій',
-
-'GENERAL_SERVICE'=>'Сервіс',
-
-'GENERAL_GREEN'=>'Зелений',
-'GENERAL_YELLOW'=>'Жовтий',
-'GENERAL_RED'=>'Червоний',
-'GENERAL_CHANGED_TO'=>'змінився на',
-'GENERAL_RESTORED_TO'=>'відновився на',
-'GENERAL_SYSTEM_STATE'=>'Системний статус',
-'GENERAL_SECURITY_STATE'=>'Статус безпеки',
-'GENERAL_COMMUNICATION_STATE'=>'Статус зв\'язку',
-'GENERAL_STOPPED'=>'зупинен',
-'GENERAL_CYCLE'=>'цикл',
-'GENERAL_NO_INTERNET_ACCESS'=>'Відсутній доступ до Інтернет',
-'GENERAL_SETTING_UP_LIGHTS'=>'Налагоджую освітлення',
-'GENERAL_CONTROL'=>'Керування',
-'GENERAL_INSIDE'=>'Вдома',
-'GENERAL_OUTSIDE'=>'На вулиці',
-
-'SECTION_OBJECTS'=>'Об\'єкти',
-'SECTION_APPLICATIONS'=>'Додатки',
-'SECTION_DEVICES'=>'Пристрої',
-'SECTION_SETTINGS'=>'Налаштування',
-'SECTION_SYSTEM'=>'Система',
-
-/* end general */
-
-/* module names */
-'APP_GPSTRACK'=>'GPS-трекер',
-'APP_PLAYER'=>'Плеєр',
-'APP_MEDIA_BROWSER'=>'Медіа',
-'APP_PRODUCTS'=>'Продукти',
-'APP_TDWIKI'=>'Нотатник',
-'APP_WEATHER'=>'Погода',
-'APP_CALENDAR'=>'Календар',
-'APP_READIT'=>'Надісл. посил.',
-'APP_QUOTES'=>'Цитати',
-'APP_ALARMCLOCK'=>'Будильник',
-'APP_OPENWEATHER'=>'Погода від OpenWeatherMap',
-'SYS_DATEFORMAT'=>'Формат дати',
-'APP_YATRAFFIC'=>'Яндекс.Пробки',
-'APP_CHATBOX'=>'Повідомлення',
-
-'MODULE_OBJECTS_HISTORY'=>'Історія об\'єктів',
-'MODULE_BT_DEVICES'=>'Bluetooth-пристрої',
-'MODULE_CONTROL_MENU'=>'Меню керування',
-'MODULE_OBJECTS'=>'Об\'єкти',
-'MODULE_PINGHOSTS'=>'Пристрої Online',
-'MODULE_SCRIPTS'=>'Сценарії',
-'MODULE_USB_DEVICES'=>'USB-пристрої',
-'MODULE_WATCHFOLDERS'=>'Теки',
-'MODULE_LAYOUTS'=>'Домашні сторінки',
-'MODULE_LOCATIONS'=>'Розташування',
-'MODULE_RSS_CHANNELS'=>'Канали RSS',
-'MODULE_SETTINGS'=>'Загальні налаштування',
-'MODULE_TERMINALS'=>'Термінали',
-'MODULE_USERS'=>'Користувачі',
-'MODULE_EVENTS'=>'Події',
-'MODULE_JOBS'=>'Завдання',
-'MODULE_MASTER_LOGIN'=>'Пароль доступу',
-'MODULE_SAVERESTORE'=>'Перевірка оновлень',
-'MODULE_WEBVARS'=>'Веб-змінні',
-'MODULE_PATTERNS'=>'Шаблони поведінки',
-'MODULE_ONEWIRE'=>'1-Wire',
-'MODULE_SCENES'=>'Сцени',
-'MODULE_SNMP'=>'SNMP',
-'MODULE_ZWAVE'=>'Z-Wave',
-'MODULE_SECURITY_RULES'=>'Правила безпеки',
-'MODULE_MQTT'=>'MQTT',
-'MODULE_MODBUS'=>'ModBus',
-'MODULE_CONNECT'=>'CONNECT',
-'MODULE_MARKET'=>'Маркет додатків',
-'MODULE_MYBLOCKS'=>'Мої блоки',
-'MODULE_TEXTFILES'=>'Текстові файли',
-'MODULE_SOUNDFILES'=>'Звукові файли',
-'MODULE_SYSTEM_ERRORS'=>'Помилки системи',
-'MODULE_MODULES'=>'Модулі', 
-'MODULE_USERLOG'=>'Журнал дій', 
-
-'SCENE_HIDDEN'=>'Не включати до переліку перемикаючихся сцен', 
-
-'SETUP'=>'Налаштувати', 
-
-
-'DATA_SAVED'=>'Дані збережені!', 
-'ALL'=>'Все', 
-'EXECUTE'=>'Виконати', 
-'SCRIPT'=>'Сценарій', 
-'CODE'=>'Код', 
-
-
-'CALL_PARENT_METHOD'=>'Викликати батьківський метод', 
-
-
-'BEFORE_CODE_EXECUTION'=>'перед виконанням коду', 
-
-
-'AFTER_CODE_EXECUTION'=>'після виконання коду', 
-'NEVER'=>'ніколи', 
-'UPDATE'=>'Обновити', 
-'CANCEL'=>'Відміна', 
-
-'MAKE_COPY'=>'Створити копію (клонувати)',
-
-'ARE_YOU_SURE'=>'Ви впевнені? Будь ласка, підтвердіть операцію.', 
-'DELETE'=>'Видалити', 
-
-'DELETE_SELECTED'=>'Видалити обране',
-'EXPORT_SELECTED'=>'Експортувати обране',
-
-'CALL_METHOD'=>'Визов методу', 
-
-
-'BY_URL'=>'По посиланню', 
-
-
-'COMMAND_LINE'=>'Через командну строку', 
-
-
-'FILLOUT_REQURED'=>'Будь ласка, заповніть необхідні поля!', 
-
-
-'NEW_OBJECT'=>'Новий об\'єкт', 
-'TITLE'=>'Найменування', 
-'CLASS'=>'Клас', 
-'DESCRIPTION'=>'Опис', 
-'LOCATION'=>'Розташування', 
-'ADD'=>'Додати', 
-'BACK'=>'Назад', 
-'OBJECT'=>'Об\'єкт', 
-'DETAILS'=>'Деталі', 
-'PROPERTIES'=>'Властивості', 
-'METHODS'=>'Методи', 
-'HISTORY'=>'Історія', 
-
-
-'ADD_NEW_OBJECT'=>'Додати новий об\'єкт', 
-'PAGES'=>'Сторінки', 
-'EDIT'=>'Редагувати', 
-
-
-'NO_OBJECTS_DEFINED'=>'Нема заданих об\'єктів', 
-
-
-'ADD_NEW_PROPERTY'=>'Додати нову властивість', 
-
-
-'NEW_RECORD'=>'Новий запис', 
-'PATTERN'=>'Шаблон', 
-
-
-'TIME_LIMIT'=>'Обмеження по часу', 
-'SECONDS'=>'секунд', 
-
-
-'EXECUTE_ON_MATCH'=>'Виконувати при співпадінні', 
-'SUBMIT'=>'Зберегти', 
-
-
-'ADD_NEW_RECORD'=>'Додати новий запис', 
-'EDIT_RECORD'=>'Редагування запису', 
-
-
-'NO_RECORDS_FOUND'=>'Нема данних', 
-'COMMAND'=>'Команда', 
-
-
-'RUN_IN'=>'Виконати через', 
-'MINUTES'=>'хвилини', 
-'HOURS'=>'часи', 
-'PROCESSED'=>'оброблено', 
-
-
-'IN_QUEUE'=>'в черзі', 
-
-
-'NEW_SCRIPT'=>'Новий сценарій', 
-
-
-'EXECUTE_SCRIPT_AFTER_UPDATE'=>'виконати після збереження', 
-
-
-'RUN_BY_URL'=>'Запуск по посиланню', 
-
-
-'ADD_NEW_SCRIPT'=>'Додати новий сценарій', 
-
-
-'GENERAL_SETTINGS'=>'Загальні налаштування', 
-
-
-'SETTINGS_UPDATED'=>'Налаштування збережені!', 
-
-
-'DEFAULT_VALUE'=>'Значення по замовчанню', 
-
-
-'RESET_TO_DEFAULT'=>'Скинути', 
-'SEARCH'=>'Пошук', 
-'USERNAME'=>'Ім\'я користувача', 
-'NAME'=>'Ім\'я', 
-'EMAIL'=>'E-mail', 
-'SKYPE'=>'Skype', 
-
-
-'MOBILE_PHONE'=>'Мобільний телефон', 
-
-
-'ADD_METHOD'=>'Додати новий метод', 
-
-
-'PARENT_METHODS'=>'Батьківські методи:', 
-'OVERWRITE'=>'Переписати', 
-'ONLY_CLASSES'=>'Не імпортувати об\'єкти',
-
-'NEW_METHOD'=>'Новий метод', 
-'HOME'=>'Початок', 
-'OFF'=>'Вимк', 
-'ON'=>'Вкл', 
-
-
-'ADD_NEW_SECTION'=>'Додати новий розділ', 
-'EXPAND'=>'Розширити', 
-
-
-'PARENT_MENU_ITEM'=>'Батьківський пункт меню', 
-'PRIORITY'=>'Пріоритет', 
-'TYPE'=>'Тип', 
-'LABEL'=>'Підпис', 
-
-
-'NEW_WINDOW'=>'Нове вікно', 
-'URL'=>'Посилання', 
-
-
-'JS_COMMAND'=>'JavaScript команда', 
-'BUTTON'=>'Кнопка', 
-
-
-'ON_OFF_SWITCH'=>'Вимикач', 
-
-
-'SELECT_BOX'=>'Поле вибору', 
-
-
-'SLIDER_BOX'=>'Слайдер', 
-
-
-'PLUS_MINUS_BOX'=>'Плюс-мінус', 
-
-
-'TIME_PICKER'=>'Вибір часу', 
-
-
-'TEXT_BOX'=>'Текстове поле', 
-'DATE_BOX'=>'Дата', 
-
-
-'CUSTOM_HTML_BOX'=>'HTML-блок', 
-'ICON'=>'Іконка', 
-
-
-'MIN_VALUE'=>'Мін. значення', 
-
-
-'MAX_VALUE'=>'Макс. значення', 
-
-
-'STEP_VALUE'=>'Шаг зміни', 
-'DATA'=>'Дані', 
-
-
-'AUTO_UPDATE_PERIOD'=>'Період автооновлення',
-'POLLING_PERIOD'=>'Період опитування',
-
-
-'CURRENT_VALUE'=>'Поточне значення', 
-'PROPERTY'=>'Властивість', 
-
-
-'ONCHANGE_OBJECT'=>'Виконовути Об\'єкт', 
-'ONCHANGE_METHOD'=>'Виконувати метод при зміні', 
-'METHOD'=>'Метод', 
-'ONCHANGE_SCRIPT'=>'Сценарій', 
-'ONCHANGE_CODE'=>'Код', 
-
-
-'TARGET_WINDOW'=>'Вікно', 
-'WIDTH'=>'Ширина', 
-'HEIGHT'=>'Висота', 
-
-
-'ON_THE_SAME_LEVEL'=>'На цьому рівні', 
-
-
-'CHILD_ITEMS'=>'Дочірні пункти', 
-'ADDED'=>'Додано', 
-'VALUE'=>'Значення', 
-
-
-'OLD_VALUE'=>'Старе значення', 
-
-
-'NEW_VALUE'=>'Нове значення', 
-'UPDATES'=>'Оновлення', 
-
-
-'NO_UPDATES_AVAILABLE'=>'Доступні оновлення відсутні', 
-
-
-'NEW_VERSION'=>'Нова версія', 
-
-
-'INSTALL_NEW_MODULES'=>'Встановити нові модулі', 
-
-
-'NO_MODULES_AVAILABLE'=>'Доступні модулі відсутні', 
-
-
-'GET_LIST_OF_MODULES'=>'Отримати перелік модулів', 
-
-
-'SUBMIT_NEWER_FILES'=>'Надіслати нові файли', 
-
-
-'NO_FILES_TO_SUBMIT'=>'Відсутні файли для відправки', 
-'FOLDER'=>'Тека', 
-
-
-'YOUR_NAME'=>'Ваше ім\'я', 
-'YOUR_EMAIL'=>'Ваш e-mail', 
-'NOTES'=>'Нотатки', 
-
-
-'SUBMIT_SELECTED_FILES'=>'Надіслати обрані файли', 
-
-
-'CHECK_FILES_FOR_SUBMIT'=>'Оберіть файли для відправки', 
-'DESIGN'=>'Дизайн', 
-
-
-'FILES_UPLOADED'=>'Файли надіслані', 
-
-
-'CLEAR_TEMPORARY_FOLDER'=>'Очистити тимчасову теку', 
-
-
-'ADD_NEW_CLASS'=>'Додати новий клас', 
-'OBJECTS'=>'Об\'єкти', 
-'EXPORT'=>'Експорт', 
-'EXPORT_CLASS_FULL'=>'Експорт Класу та Об\'єктів', 
-'EXPORT_CLASS_NO_OBJECTS'=>'Експорт Класу (без об\'єктів)', 
-
-
-'IMPORT_CLASS_FROM_FILE'=>'Імпортувати клас з файлу', 
-'IMPORT'=>'Імпортувати', 
-
-
-'NEW_CLASS'=>'Новий клас', 
-
-
-'PARENT_CLASS'=>'Батьківський клас', 
-
-
-'DO_NOT_SAVE_CLASS_ACTIVITY'=>'не зберігати активність об\'єктів класу в лог', 
-'MAIN'=>'Головне', 
-
-
-'STRING_BACK'=>'Повернутися', 
-'STRING_SUCCESS'=>'Дані були збережені!', 
-'STRING_ERROR'=>'Помилка', 
-'STRING_NEW_RECORD'=>'Новий запис', 
-
-
-'SHOUTROOMS_TITLE'=>'Найменування', 
-'SHOUTROOMS_PRIORITY'=>'Пріоритет', 
-
-
-'FORM_SUBMIT'=>'Зберегти', 
-'FORM_ADD'=>'Додати', 
-'FORM_CANCEL'=>'Відміна', 
-
-
-'STRING_ADD_NEW'=>'Додати', 
-
-
-'SHOUTROOMS_STRING_PUBLIC'=>'Відкрита', 
-'SHOUTROOMS_STRING_PRIVATE'=>'Приватна', 
-
-
-'STRING_EDIT'=>'Редагувати', 
-'STRING_DELETE'=>'Видалити', 
-'STRING_NOT_FOUND'=>'Не знайдено', 
-
-
-'SHOUTROOMS_STRING_SHOUTROOMS'=>'ShoutRooms', 
-
-
-'NEW_LOCATION'=>'Нове розташування', 
-
-
-'ADD_NEW_LOCATION'=>'Додати нове розташування', 
-'LOADING'=>'Завантаження...', 
-
-
-'PLEASE_LOGIN'=>'Будь ласка, увійдіть в систему.', 
-'SEND'=>'Відправити', 
-
-
-'SHOUTBOX_STRING_DELETE_ALL'=>'Видалити все', 
-
-
-'STRING_PAGES'=>'Сторінки', 
-
-
-'MEMBERS_MEMBER'=>'Користувач', 
-
-
-'SHOUTBOX_MESSAGE'=>'Повідомлення', 
-'SHOUTBOX_ADDED'=>'Додано', 
-
-
-'STRING_DELETE_CONFIRM'=>'Ви впевнені?', 
-
-
-'DELETE_UNKNOWN_DEVICES'=>'Видалити невідомі пристрої', 
-'SERIAL'=>'Серійний номер', 
-
-
-'FIRST_ATTACHED'=>'Підключено вперше', 
-
-
-'LAST_ATTACHED'=>'Підключено в останній раз', 
-
-
-'EXECUTE_ON_ATTACH'=>'Виконати при підключенні', 
-'HOSTNAME'=>'Хост (адреса)', 
-
-
-'SEARCH_WORD'=>'Шукати слово', 
-
-
-'ONLINE_ACTION'=>'Дія при переході в Online', 
-
-
-'OFFLINE_ACTION'=>'Дія при переході в Offline', 
-
-
-'ONLINE_CHECK_INTERVAL'=>'Інтервал перевірки (коли online)', 
-
-
-'OFFLINE_CHECK_INTERVAL'=>'Інтервал перевірки (коли offline)', 
-'LOG'=>'Лог подій', 
-
-
-'ADD_NEW_HOST'=>'Додати новий хост', 
-'ONLINE'=>'Online', 
-'OFFLINE'=>'Offline', 
-'UNKNOWN'=>'Невідомо', 
-
-
-'DELETE_ALL_UNKNOWN_DEVICES'=>'Видалити всі невідомі пристрої', 
-'DELETE_FOUND_ONCE'=>'Видалити всі пристрої, виявлені тільки один раз', 
-
-
-'FOUND_FIRST'=>'Виявлено вперше', 
-'FOUND_LAST'=>'Виявлено в останній раз', 
-
-
-'PAST_DUE'=>'Пропущено', 
-'TODAY'=>'Сьогодні', 
-
-
-'NOTHING_TO_DO'=>'Нічого робити... Везе ж!', 
-'SOON'=>'Попереду', 
-
-
-'DONE_RECENTLY'=>'Нещодавно виконано', 
-'PREVIEW'=>'Перегляд', 
-
-
-'SYSTEM_NAME'=>'Системне ім\'я', 
-'EVENT'=>'Подія', 
-'TASK'=>'Задача', 
-'DONE'=>'Виконано', 
-'DATE'=>'Дата', 
-
-
-'NO_DUE_DATE'=>'без конкретної дати', 
-
-
-'IS_REPEATING'=>'повторювані', 
-'YEARLY'=>'Щорічно', 
-'MONTHLY'=>'Щомісячно', 
-'WEEKLY'=>'Щоденно', 
-'OTHER'=>'Інше', 
-
-
-'RESTORE_IN'=>'Відновити через', 
-
-
-'IN_DAYS'=>'днів', 
-
-
-'AFTER_COMPLETION'=>'після виконання', 
-
-
-'MORE_DETAILS'=>'Деталі', 
-
-
-'ANY_USER'=>'Будь-який користувач', 
-'ANY_LOCATION'=>'Будь-яке розташування', 
-
-
-'RUN_SCRIPT'=>'Виконати сценарій', 
-
-
-'WHEN_TASK_WILL_BE_DONE'=>'коли завдання буде виконано', 
-
-
-'SIMILAR_ITEMS'=>'Схожі записи', 
-
-
-'LOCATION_CODE'=>'Код міста (city id)', 
-'REFRESH'=>'Оновити', 
-
-
-'ERROR_GETTING_WEATHER_DATA'=>'Помидка отримання даних про погоду', 
-
-
-'CLEAR_ALL'=>'Очистити все', 
-
-
-'ADD_NEW_CHANNEL'=>'Додати новий канал', 
-
-
-'LAST_CHECKED'=>'Остання перевірка', 
-
-
-'RSS_CHANNELS'=>'RSS-канали', 
-'RSS_NEWS'=>'RSS-новини', 
-
-
-'NEW_CHANNEL'=>'Новий канал', 
-
-
-'SOURCE_URL'=>'URL-джерело', 
-
-
-'CHECK_EVERY'=>'Перевіряти кожні', 
-
-
-'EXECUTE_FOR_NEW_RECORDS'=>'Виконувати для нових записів', 
-
-
-'TERMINAL_FROM'=>'З терміналу', 
-
-
-'USER_FROM'=>'Від користувача', 
-'USER_TO'=>'Користувачу', 
-'WINDOW'=>'Вікно', 
-'EXPIRE'=>'Закінчується', 
-
-
-'TERMINAL_TO'=>'Терміналу', 
-
-
-'NEW_PAGE'=>'Нова сторінка', 
-'APP'=>'Додаток', 
-'QUANTITY'=>'Кількість', 
-'ACTION'=>'Дія', 
-'CATEGORY'=>'Категорія', 
-'ADD_NEW_CATEGORY'=>'Додати категорію',
-'PRODUCT'=>'Продукт', 
-
-
-'DELETE_CATEGORY'=>'Видалити категорію', 
-'MISSING'=>'Відсутні', 
-
-
-'IN_STORAGE'=>'В наявності', 
-'BUY'=>'Купити', 
-'CODES'=>'Коди', 
-'PARENT'=>'Батько', 
-'ROOT'=>'(корінь)', 
-
-
-'CREATE_NOTE'=>'Створити нотатку', 
-'TOTAL'=>'Всього', 
-
-
-'EXPIRE_IN'=>'Закінчується через', 
-'DAYS'=>'днів', 
-'CATEGORIES'=>'Категорії', 
-
-
-'ALL_PRODUCTS'=>'Усе продукти', 
-'EXPIRED'=>'Скінчились', 
-
-
-'SHOPPING_LIST'=>'Придбання', 
-'PRODUCTS'=>'Продукти', 
-'IMAGE'=>'Зображення', 
-
-
-'EXPIRATION_DATE'=>'Дата закінчення строку збереження', 
-
-
-'DEFAULT_EXPIRE_IN'=>'По-замувчуванню "строк закінчення"', 
-'UPDATED'=>'Оновлено', 
-
-
-'RECOMENDED_QUANTITY'=>'Рекомендована кількість', 
-
-
-'DELETE_FROM_DATABASE'=>'Видилити з бази даних', 
-
-
-'RESCAN_DEVICES'=>'Сканувати пристрої', 
-
-
-'NO_DEVICES_FOUND'=>'Пристрої відсутні', 
-'ID'=>'ID', 
-
-
-'CHECK_INTERVAL'=>'Інтервал перевірки', 
-
-
-'LINKED_OBJECT'=>'Пов\'язаний об\'єкт', 
-'LINKED_PROPERTY'=>'Пов\'язана властивість', 
-'SET'=>'встановити', 
-
-
-'ONCHANGE_ACTION'=>'Дія при зміні', 
-'RESET'=>'Скинути', 
-
-
-'MORE_INFO'=>'Деталі', 
-'PATH'=>'Шлях', 
-
-
-'INCLUDE_SUBFOLDERS'=>'включно підтеки', 
-
-
-'CHECK_MASK'=>'Маска файлів', 
-'EXAMPLE'=>'Приклад', 
-
-
-'AUTHORIZATION_REQUIRED'=>'потрібна авторизація', 
-'PASSWORD'=>'Пароль', 
-
-
-'SOURCE_PAGE_ENCODING'=>'Кодування сторінки', 
-'OPTIONAL'=>'не обов\'язково', 
-
-
-'BY_DEFAULT'=>'по замовчуванню', 
-
-
-'SEARCH_PATTERN'=>'Шаблон пошуку', 
-
-
-'LATEST_VALUE'=>'Останнє значення', 
-
-
-'ADD_NEW'=>'Додати', 
-
-
-'REFRESH_ALL'=>'Оновити все', 
-
-
-'NEW_PROPERTY'=>'Нова властивість', 
-
-
-'KEEP_HISTORY_DAYS'=>'Зберігати історию (днів)', 
-
-
-'DO_NOT_KEEP'=>'не зберігати історію', 
-
-'KEEP_HISTORY'=>'зберігати історію',
-
-'PARENT_PROPERTIES'=>'Батьківські властивості', 
-
-
-'ADD_NEW_COLLECTION'=>'Додати нову колекцію', 
-
-
-'NEW_SKIN_INSTALLED'=>'Новий skin встановлено', 
-
-
-'INCORRECT_FILE_FORMAT'=>'Некоректний формат файлу', 
-
-
-'CANNOT_CREATE_FOLDER'=>'Не можу створити теку', 
-
-
-'SKIN_ALREADY_EXISTS'=>'Skin вже існує', 
-
-
-'UPLOAD_NEW_SKIN'=>'Завантаження нового skin-у', 
-
-
-'INSTALL_SKIN'=>'Встановити skin', 
-
-
-'NO_ADDITIONAL_SKINS_INSTALLED'=>'Відсутні додаткові skin-и', 
-'BACKGROUND'=>'Фонове зображення', 
-
-
-'SCENE'=>'Сцена',
-'ADD_NEW_SCENE'=>'Додати нову сцену', 
-'USE_ELEMENT_TO_POSITION_RELATED'=>'Позиціонувати відносно',
-'NO_RELATED'=>'Лівого верхнього кута',
-'TOP'=>'Відступ вгорі', 
-'LEFT'=>'Відступ зліва', 
-'STATES'=>'Стани', 
-'ADD_NEW_STATE'=>'Додати новий стан', 
-
-
-'RUN_SCRIPT_ON_CLICK'=>'Виконати сценарій по натисканню', 
-'SHOW_MENU_ON_CLICK'=>'Відобразити меню по натисканню',
-'SHOW_HOMEPAGE_ON_CLICK'=>'Відобразити домашню сторінку по натисканню',
-'SHOW_URL_ON_CLICK'=>'Відкрити посилання по натисканню',
-'SHOW_SCENE_ON_CLICK'=>'Відобразити іншу сцену',
-
-
-'DISPLAY_CONDITION'=>'Умовне відображення', 
-
-
-'ALWAYS_VISIBLE'=>'завжди відображати', 
-'SIMPLE'=>'просте', 
-'ADVANCED'=>'розширене', 
-
-
-'SWITCH_SCENE_WHEN_ACTIVATED'=>'переключити на сцену при активації', 
-
-
-'ADD_NEW_ELEMENT'=>'Додати новий елемент', 
-'ELEMENTS'=>'Елементи', 
-
-
-'CAN_PLAY_MEDIA'=>'може виконувати медіа-контент', 
-
-
-'PLAYER_TYPE'=>'Тип програвача', 
-'DEFAULT'=>'По замовчуванню', 
-
-
-'MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED'=>'Перевірте, чи ввімкнена можливість керування по HTTP-протоколу', 
-
-
-'PLAYER_PORT'=>'Порт доступу к програвача', 
-'PLAYER_USERNAME'=>'Ім\'я користувача доступу до програвача', 
-'PLAYER_PASSWORD'=>'Пароль доступа до програвача', 
-'DEVICE'=>'Пристрій', 
-
-
-'CLEAR_LOG'=>'Знищити лог', 
-
-
-'OPTIMIZE_LOG'=>'Оптимізувати лог', 
-'LATITUDE'=>'Широта', 
-'LONGITUDE'=>'Долгота', 
-'SPEED'=>'Швидкість', 
-'ACCURACY'=>'Точність', 
-
-
-'BATTERY_LEVEL'=>'Рівень заряду', 
-'CHARGING'=>'На зарядці', 
-'MAP'=>'Мапа', 
-'RANGE'=>'Радіус дії', 
-'ALTITUDE'=>'Висота', 
-'PROVIDER'=>'Провайдер', 
-
-'LOCATIONS'=>'Місця', 
-'DEVICES'=>'Пристрої', 
-'ACTIONS'=>'Дії', 
-'HOME_LOCATION'=>'Дім (місце)', 
-
-'ACTION_TYPE'=>'Тип дії', 
-'EXECUTED'=>'Виконано', 
-
-
-'VIRTUAL_USER'=>'Віртуальний користувач', 
-
-'WIND'=>'Вітер',
-'PRESSURE'=>'Тиск',
-'HUMIDITY'=>'Вогогість',
-'GET_AT'=>'Оновлено',
-'MMHG'=>'мм рт.ст.',
-'HPA'=>'гПа',
-'M_S'=>'м/с',
-'N'=>'Пн',
-'NNE'=>'ПнПнСх',
-'NE'=>'ПнСх',
-'ENE'=>'СхПнСх',
-'E'=>'Сх',
-'ESE'=>'СхПдСх',
-'SE'=>'ПдСх',
-'SSE'=>'ПдПдСх',
-'S'=>'Сх',
-'SSW'=>'СхСхЗх',
-'SW'=>'СхЗх',
-'WSW'=>'ЗхСхЗх',
-'W'=>'Зх',
-'WNW'=>'ЗхПнЗх',
-'NW'=>'ПнЗх',
-'NNW'=>'ПнПнЗх',
-
-
-
-'LONG_OPERATION_WARNING'=>'Увага: дана операція може виконуватись довгий час (декілька хвилин). Будь ласка, дочекайтесь завершення після запуску.',
-
-'STARRED'=>'Обране',
-
-'USE_BACKGROUND'=>'Використовувати фон',
-'YES'=>'Так',
-'NO'=>'Ні',
-
-'USE_JAVASCRIPT'=>'Додатковий код JavaScript',
-'USE_CSS'=>'Додатковий код CSS',
-
-'PERIOD'=>'Період',
-'PERIOD_TODAY'=>'Сьогодні',
-'PERIOD_DAY'=>'Доба (24 години)',
-'PERIOD_WEEK'=>'Неділя',
-'PERIOD_MONTH'=>'Місяць',
-'PERIOD_CUSTOM'=>'Обрати',
-'SEARCH'=>'Пошук',
-'SHOWHIDE'=>'Відобразити/Сховати',
-
-'AUTO_UPDATE'=>'Авто оновл.',
-'CHANNEL'=>'Канал',
-'ADD_URL'=>'Додати URL',
-'OPEN'=>'Відкрити',
-'SEND_TO_HOME'=>'Відпр. додому',
-
-'EXT_ID'=>'Використовувати елемент',
-'VISIBLE_DELAY'=>'Затримка при ротації',
-
-'TREE_VIEW'=>'У вигляді Дерева',
-'LIST_VIEW'=>'У вигляді Переліку',
-
-'FILTER_BY_CLASS'=>'Фільтр по Класу',
-'FILTER_BY_LOCATION'=>'Фільтр по розташуванню',
-
-'PHOTO'=>'Фотографія',
-'DEFAULT_USER'=>'користувач по замовчуванню для системи',
-'IS_ADMIN'=>'адміністратор системи',
-
-'COUNTER_REQUIRED'=>'Кількість спроб',
-'COUNTER_REQUIRED_COMMENT'=>'(0 для переключення з першого разу)',
-
-'ACCESS_CONTROL'=>'Контроль доступу',
-
-'SECURITY_OBJECT_ID'=>'Об\'єкт захисту',
-'SECURITY_TERMINALS'=>'Доступ з терміналів',
-'SECURITY_USERS'=>'Доступно для користувачів',
-'SECURITY_TIMES'=>'Доступно в години',
-'ALLOW_EXCEPT_ABOVE'=>'завжди доступно за виключенням обраного',
-
-'INLINE_POSITION'=>'Розташувати на рівні попереднього елементу',
-
-'SUB_PRELOAD'=>'Загрузити дочірні елементи в відкриваєму область',
-
-'RUN_PERIODICALLY'=>'Виконувати періодично',
-'RUN_TIME'=>'Час виконання',
-'RUN_WEEKDAYS'=>'Дні тижня',
-'WEEK_SUN'=>'Неділя',
-'WEEK_MON'=>'Понеділок',
-'WEEK_TUE'=>'Вівторок',
-'WEEK_WED'=>'Середа',
-'WEEK_THU'=>'Четвер',
-'WEEK_FRI'=>'П\'ятниця',
-'WEEK_SAT'=>'Субота',
-
-'PARENT_CONTEXT'=>'Доступно в контексті',
-'IS_CONTEXT'=>'використовувати як контекст',
-'TIMEOUT'=>'Час очікування команди',
-'SET_CONTEXT_TIMEOUT'=>'По завершенню часу переключити в',
-'TIMEOUT_CODE'=>'По завершенню часу виконати',
-'GLOBAL_CONTEXT'=>'глобальний контекст',
-
-'LAST_RULE'=>'не перевіряти інші шаблони при співпадінні',
-
-'SETTINGS_SECTION_'=>'Загальні',
-'SETTINGS_SECTION_HOOK'=>'Обробники',
-
-'DEVICE_ID'=>'ID пристрою',
-'REQUEST_TYPE'=>'Тип запросу',
-'REQUEST_START'=>'Стартова адреса',
-'REQUEST_TOTAL'=>'Кількість елементів',
-'RESPONSE_CONVERT'=>'Перетворення даних',
-'CHECK_NEXT'=>'Наступна перевірка',
-'CODE_TYPE'=>'Використовувати для програмування',
-
-
-'GENERAL'=>'Загальне',
-'TIME'=>'Час',
-'LOGIC'=>'Логіка',
-'LOOPS'=>'Цикли',
-'MATH'=>'Математика',
-'TEXT'=>'Текст',
-'LISTS'=>'Переліки',
-'VARIABLES'=>'Змінні',
-'FUNCTIONS'=>'Функції',
-
-'DO_NOTHING'=>'Нічого не робити',
-'DO_ONCLICK'=>'Виконувати по натисканню',
-
-'STYLE'=>'Стиль',
-'PLACE_IN_CONTAINER'=>'Розташувати в контейнері',
-'POSITION_TYPE'=>'Позиціонування',
-'POSITION_TYPE_ABSOLUTE'=>'Абсолютне',
-'POSITION_TYPE_SIDE'=>'Один за одним',
-
-'CONTAINER'=>'Контейнер',
-'INFORMER'=>'Інформер',
-
-'NAV_LINK'=>'Нав. посилання (нове вікно)',
-'WARNING'=>'Повідомлення',
-'NAV_LINK_GO'=>'Нав. посилання (перехід)',
-
-'TOOLS'=>'Інструменти',
-'COLOR'=>'Колір',
-
-'WALLPAPER'=>'Шпалери',
-
-'ADDITIONAL_STATES'=>'Додаткові стани',
-'MODE_SWITCH'=>'Індикатор режиму',
-'HIGH_ABOVE'=>'Значення вище',
-'LOW_BELOW'=>'Значення нижче',
-'ADDITIONAL_STATES_NOTE'=>'(ви можете використовувати конструкцію %object.property% в якості значення меж)',
-'UNIT'=>'Одиниця виміру',
-
-'COUNTER'=>'Лічільник',
-'USE_CLASS_SETTINGS'=>'використовувати налаштування властивостей класу',
-
-'USING_LATEST_VERSION'=>'Ви використовуєте останню версію!',
-'LATEST_UPDATES'=>'Останні оновлення',
-'UPDATE_TO_THE_LATEST'=>'Оновити систему',
-'SAVE_BACKUP'=>'Резервна копія',
-'CREATE_BACKUP'=>'Створити резервну копію',
-'UPLOAD_BACKUP'=>'Відновити резервну копію', 
-'CONTINUE'=>'Продовжити', 
-'RESTORE'=>'Відновити', 
-
-'SHOW'=>'Відобразити', 
-'HIDE'=>'Сховати', 
-
-'UPDATING'=>'Вкл. в оновлення',
-'NOT_UPDATING'=>'Не оновлюється',
-
-'SCRIPTS'=>'Сценарії',
-'CLASSES'=>'Класси/об\'єкти',
-'CLASS_PROPERTIES'=>'Властивості класу',
-'CLASS_METHODS'=>'Методи класу',
-'CLASS_OBJECTS'=>'Об\'єкти класу',
-'OBJECT_PROPERTIES'=>'Властивості об\'єкту',
-'OBJECT_METHODS'=>'Методи об\'єкту',
-'PORT'=>'Порт',
-'USE_DEFAULT'=>'використовувати по замовчуванню',
-
-'FAVORITES'=>'Обране',
-'RECENTLY_PLAYED'=>'Нещодавно програно',
-'CLEAR_FAVORITES'=>'Видалити Обране',
-'CLEAR_HISTORY'=>'Видалити Нещодавно програне',
-
-'SKIP_SYSTEM'=>'Не реагувати на системні повідомлення',
-'ONETIME_PATTERN'=>'Одноразовий шаблон (буде видалено)',
-
-'PATTERN_ENTER'=>'вхід',
-'PATTERN_EXIT'=>'вихід',
-'PATTERN_TYPE'=>'Тип шаблону',
-'PATTERN_MESSAGE'=>'На основі повідомлень',
-'PATTERN_CONDITIONAL'=>'На основі значень властивостей',
-'CONDITION'=>'Умова',
-'ADD_EXIT_CODE'=>'Додати код "виходу"',
-'UPDATE_ALL_EXTENSIONS'=>'Оновити усі встановлені додатки',
-
-'TEST'=>'test'
-
-
-
-/* end module names */
-
-
-
+ * Russian language file
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 1.0
+ */
+$dictionary = array(
+    /* general */
+    'WIKI_URL' => 'http://smartliving.ru/',
+    'DEFAULT_COMPUTER_NAME' => 'Аліса',
+    'WELCOME_GREETING' => 'Добро пожаловать!',
+    'WELCOME_TEXT' => 'Спасибо, что пользуйтесь MajorDoMo -- открытой платформой домашней автоматизации. <br/><br/>Узнайте больше и присоединяйтесь к сообществу: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вы можете изменить или удалить эту страницу через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель управления</a></small>',
+    'CONTROL_PANEL' => 'Панель управления',
+    'TERMINAL' => 'Терминал',
+    'USER' => 'Пользователь',
+    'SELECT' => 'выбрать',
+    'CONTROL_MENU' => 'Меню',
+    'YOU_ARE_HERE' => 'Вы здесь',
+    'FRONTEND' => 'Веб-сайт',
+    'MY_ACCOUNT' => 'Мой аккаунт',
+    'LOGOFF' => 'Выйти',
+    'CONSOLE' => 'Консоль',
+    'CONSOLE_RETRY' => 'Повтор',
+    'MODULE_DESCRIPTION' => 'Описание модуля',
+    'STILL_WORKING' => 'Загружаются данные... Нажмите',
+    'CLICK_HERE' => 'здесь',
+    'TAKES_TOO_LONG' => ', если процесс загрузки занимает слишком много времени.',
+    'GENERAL_SENSORS' => 'Сенсоры',
+    'GENERAL_OPERATIONAL_MODES' => 'Режимы работы',
+    'GENERAL_ENERGY_SAVING_MODE' => 'Энергосбережение',
+    'GENERAL_SECURITY_MODE' => 'Безопасность',
+    'GENERAL_NOBODYS_HOME_MODE' => 'Никого нет дома',
+    'GENERAL_WE_HAVE_GUESTS_MODE' => 'У нас гости',
+    'GENERAL_NIGHT_MODE' => 'Ночной режим',
+    'GENERAL_DARKNESS_MODE' => 'Тёмное время суток',
+    'GENERAL_CLIMATE' => 'Климат',
+    'GENERAL_WEATHER_FORECAST' => 'Прогноз погоды',
+    'GENERAL_TEMPERATURE_OUTSIDE' => 'Температура за окном',
+    'GENERAL_GRAPHICS' => 'Графики',
+    'GENERAL_SECURITY_CAMERA' => 'Камеры наблюдения',
+    'GENERAL_EVENTS_LOG' => 'История событий',
+    'GENERAL_SERVICE' => 'Сервис',
+    'GENERAL_GREEN' => 'Зелёный',
+    'GENERAL_YELLOW' => 'Жёлтый',
+    'GENERAL_RED' => 'Красный',
+    'GENERAL_CHANGED_TO' => 'изменился на',
+    'GENERAL_RESTORED_TO' => 'восстановился на',
+    'GENERAL_SYSTEM_STATE' => 'Системный статус',
+    'GENERAL_SECURITY_STATE' => 'Статус безопасности',
+    'GENERAL_COMMUNICATION_STATE' => 'Статус связи',
+    'GENERAL_STOPPED' => 'остановлен',
+    'GENERAL_CYCLE' => 'цикл',
+    'GENERAL_NO_INTERNET_ACCESS' => 'Нет доступа в Интернет',
+    'GENERAL_SETTING_UP_LIGHTS' => 'Настраиваю освещение',
+    'GENERAL_CONTROL' => 'Управление',
+    'GENERAL_INSIDE' => 'Дома',
+    'GENERAL_OUTSIDE' => 'На улице',
+    'SECTION_OBJECTS' => 'Объекты',
+    'SECTION_APPLICATIONS' => 'Приложения',
+    'SECTION_DEVICES' => 'Устройства',
+    'SECTION_SETTINGS' => 'Настройки',
+    'SECTION_SYSTEM' => 'Система',
+    /* end general */
+    /* module names */
+    'APP_GPSTRACK' => 'GPS-трекер',
+    'APP_PLAYER' => 'Плеер',
+    'APP_MEDIA_BROWSER' => 'Медиа',
+    'APP_PRODUCTS' => 'Продукты',
+    'APP_TDWIKI' => 'Блокнот',
+    'APP_WEATHER' => 'Погода',
+    'APP_CALENDAR' => 'Календарь',
+    'APP_READIT' => 'Присл. ссылки',
+    'APP_QUOTES' => 'Цитаты',
+    'APP_ALARMCLOCK' => 'Будильник',
+    'APP_OPENWEATHER' => 'Погода от OpenWeatherMap',
+    'SYS_DATEFORMAT' => 'Формат даты',
+    'APP_YATRAFFIC' => 'Яндекс.Пробки',
+    'APP_CHATBOX' => 'Сообщения',
+    'MODULE_OBJECTS_HISTORY' => 'История объектов',
+    'MODULE_BT_DEVICES' => 'Bluetooth-устройства',
+    'MODULE_CONTROL_MENU' => 'Меню управления',
+    'MODULE_OBJECTS' => 'Объекты',
+    'MODULE_PINGHOSTS' => 'Устройства Online',
+    'MODULE_SCRIPTS' => 'Сценарии',
+    'MODULE_USB_DEVICES' => 'USB-устройства',
+    'MODULE_WATCHFOLDERS' => 'Папки',
+    'MODULE_LAYOUTS' => 'Домашние страницы',
+    'MODULE_LOCATIONS' => 'Расположение',
+    'MODULE_RSS_CHANNELS' => 'Каналы RSS',
+    'MODULE_SETTINGS' => 'Общие настройки',
+    'MODULE_TERMINALS' => 'Терминалы',
+    'MODULE_USERS' => 'Пользователи',
+    'MODULE_EVENTS' => 'События',
+    'MODULE_JOBS' => 'Задания',
+    'MODULE_MASTER_LOGIN' => 'Пароль доступа',
+    'MODULE_SAVERESTORE' => 'Проверка обновлений',
+    'MODULE_WEBVARS' => 'Веб-переменные',
+    'MODULE_PATTERNS' => 'Шаблоны поведения',
+    'MODULE_ONEWIRE' => '1-Wire',
+    'MODULE_SCENES' => 'Сцены',
+    'MODULE_SNMP' => 'SNMP',
+    'MODULE_ZWAVE' => 'Z-Wave',
+    'MODULE_SECURITY_RULES' => 'Правила безопасности',
+    'MODULE_MQTT' => 'MQTT',
+    'MODULE_MODBUS' => 'ModBus',
+    'MODULE_CONNECT' => 'CONNECT',
+    'MODULE_MARKET' => 'Маркет дополнений',
+    'MODULE_MYBLOCKS' => 'Мои блоки',
+    'MODULE_TEXTFILES' => 'Текстовые файлы',
+    'MODULE_SOUNDFILES' => 'Звуковые файлы',
+    'MODULE_SYSTEM_ERRORS' => 'Ошибки системы',
+    'MODULE_MODULES' => 'Модули',
+    'MODULE_USERLOG' => 'Журнал действий',
+    'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
+    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
+    'SETUP' => 'Настроить',
+    'DATA_SAVED' => 'Данные сохранены!',
+    'ALL' => 'Все',
+    'EXECUTE' => 'Выполнить',
+    'SCRIPT' => 'Сценарий',
+    'CODE' => 'Код',
+    'CALL_PARENT_METHOD' => 'Вызывать родительский метод',
+    'BEFORE_CODE_EXECUTION' => 'перед выполнением кода',
+    'AFTER_CODE_EXECUTION' => 'после выполнения кода',
+    'NEVER' => 'никогда',
+    'UPDATE' => 'Обновить',
+    'CANCEL' => 'Отмена',
+    'MAKE_COPY' => 'Создать копию (клонировать)',
+    'ARE_YOU_SURE' => 'Вы уверены? Пожалуйста, подтвердите операцию.',
+    'DELETE' => 'Удалить',
+    'DELETE_SELECTED' => 'Удалить выбранное',
+    'EXPORT_SELECTED' => 'Экспортировать выбранное',
+    'CALL_METHOD' => 'Вызов метода',
+    'BY_URL' => 'По ссылке',
+    'COMMAND_LINE' => 'Через командную строку',
+    'FILLOUT_REQURED' => 'Пожалуйста, заполните необходимые поля!',
+    'NEW_OBJECT' => 'Новый объект',
+    'TITLE' => 'Название',
+    'CLASS' => 'Класс',
+    'DESCRIPTION' => 'Описание',
+    'LOCATION' => 'Местоположение',
+    'ADD' => 'Добавить',
+    'BACK' => 'Назад',
+    'OBJECT' => 'Объект',
+    'DETAILS' => 'Детали',
+    'PROPERTIES' => 'Свойства',
+    'METHODS' => 'Методы',
+    'HISTORY' => 'История',
+    'ADD_NEW_OBJECT' => 'Добавить новый объект',
+    'PAGES' => 'Страницы',
+    'EDIT' => 'Редактировать',
+    'NO_OBJECTS_DEFINED' => 'Нет заданных объектов',
+    'ADD_NEW_PROPERTY' => 'Добавить новое свойство',
+    'NEW_RECORD' => 'Новая запись',
+    'PATTERN' => 'Шаблон',
+    'TIME_LIMIT' => 'Ограничение по времени',
+    'SECONDS' => 'секунд',
+    'EXECUTE_ON_MATCH' => 'Выполнить при совпадении',
+    'SUBMIT' => 'Сохранить',
+    'ADD_NEW_RECORD' => 'Добавить новую запись',
+    'EDIT_RECORD' => 'Редактирование записи',
+    'NO_RECORDS_FOUND' => 'Нет данных',
+    'COMMAND' => 'Команда',
+    'RUN_IN' => 'Выполнить через',
+    'MINUTES' => 'минуты',
+    'HOURS' => 'часы',
+    'PROCESSED' => 'обработано',
+    'IN_QUEUE' => 'в очереди',
+    'NEW_SCRIPT' => 'Новый сценарий',
+    'EXECUTE_SCRIPT_AFTER_UPDATE' => 'выполнить после сохранения',
+    'RUN_BY_URL' => 'Запуск по ссылке',
+    'ADD_NEW_SCRIPT' => 'Добавить новый сценарий',
+    'GENERAL_SETTINGS' => 'Общие настройки',
+    'SETTINGS_UPDATED' => 'Настройки сохранены!',
+    'DEFAULT_VALUE' => 'Значение по умолчанию',
+    'RESET_TO_DEFAULT' => 'Сбросить',
+    'SEARCH' => 'Поиск',
+    'USERNAME' => 'Имя пользователя',
+    'NAME' => 'Имя',
+    'EMAIL' => 'E-mail',
+    'SKYPE' => 'Skype',
+    'MOBILE_PHONE' => 'Мобильный телефон',
+    'ADD_METHOD' => 'Добавить новый метод',
+    'PARENT_METHODS' => 'Родительские методы:',
+    'OVERWRITE' => 'Переписать',
+    'ONLY_CLASSES' => 'Не импортировать объекты',
+    'NEW_METHOD' => 'Новый метод',
+    'HOME' => 'Начало',
+    'OFF' => 'Выкл',
+    'ON' => 'Вкл',
+    'ADD_NEW_SECTION' => 'Добавить новый раздел',
+    'EXPAND' => 'Расширить',
+    'PARENT_MENU_ITEM' => 'Родительский пункт меню',
+    'PRIORITY' => 'Приоритет',
+    'TYPE' => 'Тип',
+    'LABEL' => 'Подпись',
+    'NEW_WINDOW' => 'Новое окно',
+    'URL' => 'Ссылка',
+    'JS_COMMAND' => 'JavaScript команда',
+    'BUTTON' => 'Кнопка',
+    'ON_OFF_SWITCH' => 'Выключатель',
+    'SELECT_BOX' => 'Поле выбора',
+    'SLIDER_BOX' => 'Слайдер',
+    'PLUS_MINUS_BOX' => 'Плюс-минус',
+    'TIME_PICKER' => 'Выбор времени',
+    'TEXT_BOX' => 'Текстовое поле',
+    'DATE_BOX' => 'Дата',
+    'COLOR_PICKER' => 'Выбор цвета',
+    'CUSTOM_HTML_BOX' => 'HTML-блок',
+    'ICON' => 'Иконка',
+    'MIN_VALUE' => 'Мин. значение',
+    'MAX_VALUE' => 'Макс. значение',
+    'STEP_VALUE' => 'Шаг изменений',
+    'DATA' => 'Данные',
+    'INTERFACE' => 'Интерфейс',
+    'AUTO_UPDATE_PERIOD' => 'Период автообновления',
+    'POLLING_PERIOD' => 'Период опроса',
+    'CURRENT_VALUE' => 'Текущее значение',
+    'PROPERTY' => 'Свойство',
+    'ONCHANGE_OBJECT' => 'Запускать Объект',
+    'ONCHANGE_METHOD' => 'Запускать метод при изменении',
+    'METHOD' => 'Метод',
+    'ONCHANGE_SCRIPT' => 'Сценарий',
+    'ONCHANGE_CODE' => 'Код',
+    'TARGET_WINDOW' => 'Окно',
+    'WIDTH' => 'Ширина',
+    'HEIGHT' => 'Высота',
+    'ON_THE_SAME_LEVEL' => 'На этом уровне',
+    'CHILD_ITEMS' => 'Дочерние пункты',
+    'ADDED' => 'Добавлено',
+    'VALUE' => 'Значение',
+    'OLD_VALUE' => 'Старое значение',
+    'NEW_VALUE' => 'Новое значение',
+    'UPDATES' => 'Обновления',
+    'NO_UPDATES_AVAILABLE' => 'Нет доступных обновлений',
+    'NEW_VERSION' => 'Новая версия',
+    'INSTALL_NEW_MODULES' => 'Установить новые модули',
+    'NO_MODULES_AVAILABLE' => 'Нет доступных модулей',
+    'GET_LIST_OF_MODULES' => 'Получить список модулей',
+    'SUBMIT_NEWER_FILES' => 'Отправить новые файлы',
+    'NO_FILES_TO_SUBMIT' => 'Нет файлов для отправки',
+    'FOLDER' => 'Папка',
+    'YOUR_NAME' => 'Ваше имя',
+    'YOUR_EMAIL' => 'Ваш e-mail',
+    'NOTES' => 'Заметки',
+    'SUBMIT_SELECTED_FILES' => 'Отправить выбранные файлы',
+    'CHECK_FILES_FOR_SUBMIT' => 'Выберите файлы для отправки',
+    'DESIGN' => 'Дизайн',
+    'FILES_UPLOADED' => 'Файлы загружены',
+    'CLEAR_TEMPORARY_FOLDER' => 'Очистить временную папку',
+    'ADD_NEW_CLASS' => 'Добавить новый класс',
+    'OBJECTS' => 'Объекты',
+    'EXPORT' => 'Экспорт',
+    'EXPORT_CLASS_FULL' => 'Экспорт Класса и Объектов',
+    'EXPORT_CLASS_NO_OBJECTS' => 'Экспорт Класса (без объектов)',
+    'IMPORT_CLASS_FROM_FILE' => 'Импортировать класс из файла',
+    'IMPORT' => 'Импортировать',
+    'NEW_CLASS' => 'Новый класс',
+    'PARENT_CLASS' => 'Родительский класс',
+    'DO_NOT_SAVE_CLASS_ACTIVITY' => 'не сохранять активность объектов класса в лог',
+    'MAIN' => 'Основное',
+    'STRING_BACK' => 'Назад',
+    'STRING_SUCCESS' => 'Данные были сохранены!',
+    'STRING_ERROR' => 'Ошибка',
+    'STRING_NEW_RECORD' => 'Новая запись',
+    'SHOUTROOMS_TITLE' => 'Название',
+    'SHOUTROOMS_PRIORITY' => 'Приоритет',
+    'FORM_SUBMIT' => 'Сохранить',
+    'FORM_ADD' => 'Добавить',
+    'FORM_CANCEL' => 'Отмена',
+    'STRING_ADD_NEW' => 'Добавить',
+    'SHOUTROOMS_STRING_PUBLIC' => 'Открытая',
+    'SHOUTROOMS_STRING_PRIVATE' => 'Приватная',
+    'STRING_EDIT' => 'Редактировать',
+    'STRING_DELETE' => 'Удалить',
+    'STRING_NOT_FOUND' => 'Не найдено',
+    'SHOUTROOMS_STRING_SHOUTROOMS' => 'ShoutRooms',
+    'NEW_LOCATION' => 'Новое местоположение',
+    'ADD_NEW_LOCATION' => 'Добавить новое местоположение',
+    'LOADING' => 'Загрузка...',
+    'PLEASE_LOGIN' => 'Пожалуйста, войдите в систему.',
+    'SEND' => 'Отправить',
+    'SHOUTBOX_STRING_DELETE_ALL' => 'Удалить всё',
+    'STRING_PAGES' => 'Страницы',
+    'MEMBERS_MEMBER' => 'Пользователь',
+    'SHOUTBOX_MESSAGE' => 'Сообщение',
+    'SHOUTBOX_ADDED' => 'Добавлено',
+    'STRING_DELETE_CONFIRM' => 'Вы уверены?',
+    'DELETE_UNKNOWN_DEVICES' => 'Удалить неизвестные устройства',
+    'SERIAL' => 'Серийный номер',
+    'FIRST_ATTACHED' => 'Подключено впервые',
+    'LAST_ATTACHED' => 'Подключено в последний раз',
+    'EXECUTE_ON_ATTACH' => 'Выполнить при подключении',
+    'HOSTNAME' => 'Хост (адрес)',
+    'SEARCH_WORD' => 'Искать слово',
+    'ONLINE_ACTION' => 'Действие при переходе в Online',
+    'OFFLINE_ACTION' => 'Действие при переходе в Offline',
+    'ONLINE_CHECK_INTERVAL' => 'Интервал проверки (когда online)',
+    'OFFLINE_CHECK_INTERVAL' => 'Интервал проверки (когда offline)',
+    'LOG' => 'Лог событий',
+    'ADD_NEW_HOST' => 'Добавить новый хост',
+    'ONLINE' => 'Online',
+    'OFFLINE' => 'Offline',
+    'UNKNOWN' => 'Неизвестно',
+    'DELETE_ALL_UNKNOWN_DEVICES' => 'Удалить все неизвестные устройства',
+    'DELETE_FOUND_ONCE' => 'Удалить все устройства, обнаруженные только один раз',
+    'FOUND_FIRST' => 'Обнаружено впервые',
+    'FOUND_LAST' => 'Обнаружено в последний раз',
+    'PAST_DUE' => 'Пропущено',
+    'TODAY' => 'Сегодня',
+    'NOTHING_TO_DO' => 'Нечего делать... Везёт же!',
+    'SOON' => 'Скоро',
+    'DONE_RECENTLY' => 'Недавно выполнено',
+    'PREVIEW' => 'Просмотр',
+    'SYSTEM_NAME' => 'Системное имя',
+    'EVENT' => 'Событие',
+    'TASK' => 'Задача',
+    'DONE' => 'Готово',
+    'DATE' => 'Дата',
+    'NO_DUE_DATE' => 'без конкретной даты',
+    'IS_REPEATING' => 'повторяющееся',
+    'YEARLY' => 'Ежегодно',
+    'MONTHLY' => 'Ежемесячно',
+    'WEEKLY' => 'Еженедельно',
+    'OTHER' => 'Другое',
+    'RESTORE_IN' => 'Восстановить через',
+    'IN_DAYS' => 'дней',
+    'AFTER_COMPLETION' => 'после выполнения',
+    'MORE_DETAILS' => 'Детали',
+    'ANY_USER' => 'Любой пользователь',
+    'ANY_LOCATION' => 'Любое местоположение',
+    'RUN_SCRIPT' => 'Запустить сценарий',
+    'WHEN_TASK_WILL_BE_DONE' => 'когда задача будет выполнена',
+    'SIMILAR_ITEMS' => 'Похожие записи',
+    'LOCATION_CODE' => 'Код корода (city id)',
+    'REFRESH' => 'Обновить',
+    'ERROR_GETTING_WEATHER_DATA' => 'Ошибка получения данных о погоде',
+    'CLEAR_ALL' => 'Очистить всё',
+    'ADD_NEW_CHANNEL' => 'Добавить новый канал',
+    'LAST_CHECKED' => 'Последняя проверка',
+    'RSS_CHANNELS' => 'RSS-каналы',
+    'RSS_NEWS' => 'RSS-новости',
+    'NEW_CHANNEL' => 'Новый канал',
+    'SOURCE_URL' => 'URL-источник',
+    'CHECK_EVERY' => 'Проверять каждые',
+    'EXECUTE_FOR_NEW_RECORDS' => 'Выполнять для новых записей',
+    'TERMINAL_FROM' => 'From terminal',
+    'USER_FROM' => 'From user',
+    'USER_TO' => 'To user',
+    'WINDOW' => 'Окно',
+    'EXPIRE' => 'Истекает',
+    'TERMINAL_TO' => 'To terminal',
+    'NEW_PAGE' => 'Новая страница',
+    'APP' => 'Приложение',
+    'QUANTITY' => 'Кол-во',
+    'ACTION' => 'Действие',
+    'CATEGORY' => 'Категория',
+    'ADD_NEW_CATEGORY' => 'Добавить категорию',
+    'PRODUCT' => 'Продукт',
+    'DELETE_CATEGORY' => 'Удалить категорию',
+    'MISSING' => 'Отсутствующие',
+    'IN_STORAGE' => 'В наличии',
+    'BUY' => 'Купить',
+    'CODES' => 'Коды',
+    'PARENT' => 'Родитель',
+    'ROOT' => '(корень)',
+    'CREATE_NOTE' => 'Создать заметку',
+    'TOTAL' => 'Всего',
+    'EXPIRE_IN' => 'Истекает через',
+    'DAYS' => 'дней',
+    'CATEGORIES' => 'Категории',
+    'ALL_PRODUCTS' => 'Все продукты',
+    'EXPIRED' => 'Истёкшие',
+    'SHOPPING_LIST' => 'Покупки',
+    'PRODUCTS' => 'Продукты',
+    'IMAGE' => 'Изображение',
+    'EXPIRATION_DATE' => 'Дата истечения срока годности',
+    'DEFAULT_EXPIRE_IN' => 'По-умолчанию "истекает через"',
+    'UPDATED' => 'Обновлено',
+    'RECOMENDED_QUANTITY' => 'Рекомендуемое кол-во',
+    'DELETE_FROM_DATABASE' => 'Удалить из базы данных',
+    'RESCAN_DEVICES' => 'Сканировать устройства',
+    'NO_DEVICES_FOUND' => 'Нет устройств',
+    'ID' => 'ID',
+    'CHECK_INTERVAL' => 'Интервал проверки',
+    'LINKED_OBJECT' => 'Связанный объект',
+    'LINKED_PROPERTY' => 'Связанное св-во',
+    'SET' => 'установить',
+    'ONCHANGE_ACTION' => 'Действие при изменении',
+    'RESET' => 'Сбросить',
+    'MORE_INFO' => 'Детали',
+    'PATH' => 'Путь',
+    'INCLUDE_SUBFOLDERS' => 'включая подпапки',
+    'CHECK_MASK' => 'Маска файлов',
+    'EXAMPLE' => 'Пример',
+    'AUTHORIZATION_REQUIRED' => 'требуется авторизация',
+    'PASSWORD' => 'Пароль',
+    'SOURCE_PAGE_ENCODING' => 'Кодировка страницы',
+    'OPTIONAL' => 'не обязательно',
+    'BY_DEFAULT' => 'по умолчанию',
+    'SEARCH_PATTERN' => 'Шаблон поиска',
+    'LATEST_VALUE' => 'Последнее значение',
+    'ADD_NEW' => 'Добавить',
+    'REFRESH_ALL' => 'Обновить все',
+    'NEW_PROPERTY' => 'Новое свойство',
+    'KEEP_HISTORY_DAYS' => 'Хранить историю (дней)',
+    'DO_NOT_KEEP' => 'не хранить историю',
+    'KEEP_HISTORY' => 'хранить историю',
+    'PARENT_PROPERTIES' => 'Родительские свойства',
+    'ADD_NEW_COLLECTION' => 'Добавить новую коллекцию',
+    'NEW_SKIN_INSTALLED' => 'Новый skin установлен',
+    'INCORRECT_FILE_FORMAT' => 'Некорректный формат файла',
+    'CANNOT_CREATE_FOLDER' => 'Не могу создать папку',
+    'SKIN_ALREADY_EXISTS' => 'Skin уже существует',
+    'UPLOAD_NEW_SKIN' => 'Загрузка нового skin-а',
+    'INSTALL_SKIN' => 'Установить skin',
+    'NO_ADDITIONAL_SKINS_INSTALLED' => 'Нет дополнительных skin-ов',
+    'BACKGROUND' => 'Фоновое изображение',
+    'SCENE' => 'Сцена',
+    'ADD_NEW_SCENE' => 'Добавить новую сцену',
+    'USE_ELEMENT_TO_POSITION_RELATED' => 'Позиционировать относительно',
+    'NO_RELATED' => 'Левого верхнего угла',
+    'TOP' => 'Отступ сверху',
+    'LEFT' => 'Отступ слева',
+    'STATES' => 'Состояния',
+    'ADD_NEW_STATE' => 'Добавить новое состояние',
+    'RUN_SCRIPT_ON_CLICK' => 'Выполнить сценарий при клике',
+    'SHOW_MENU_ON_CLICK' => 'Показать меню при клике',
+    'SHOW_HOMEPAGE_ON_CLICK' => 'Показать домашнюю страницу при клике',
+    'SHOW_URL_ON_CLICK' => 'Открыть ссылку при клике',
+    'SHOW_SCENE_ON_CLICK' => 'Показать другую сцену',
+    'DISPLAY_CONDITION' => 'Условие отображения',
+    'ALWAYS_VISIBLE' => 'всегда показывать',
+    'SIMPLE' => 'простое',
+    'ADVANCED' => 'расширенное',
+    'SWITCH_SCENE_WHEN_ACTIVATED' => 'переключить на сцену при активации',
+    'APPEAR_ANIMATION' => 'Анимация появления',
+    'APPEAR_LEFTTORIGHT' => 'Слева-на-право',
+    'APPEAR_RIGHTTOLEFT' => 'Справа-на-лево',
+    'APPEAR_TOPTOBOTTOM' => 'Сверху-вниз',
+    'APPEAR_BOTTOMTOTOP' => 'Снизу-вверх',
+    'APPEAR_BLINK' => 'Моргание',
+    'APPEAR_SCALE' => 'Масштаб',
+    'ADD_NEW_ELEMENT' => 'Добавить новый элемент',
+    'ELEMENTS' => 'Элементы',
+    'CAN_PLAY_MEDIA' => 'может проигрывать медиа-контент',
+    'PLAYER_TYPE' => 'Тип плеера',
+    'DEFAULT' => 'По умолчанию',
+    'MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED' => 'Проверьте, что включена возможность управления по HTTP-протоколу',
+    'PLAYER_PORT' => 'Порт доступа к плееру',
+    'PLAYER_USERNAME' => 'Имя пользователя доступа к плееру',
+    'PLAYER_PASSWORD' => 'Пароль доступа к плееру',
+    'DEVICE' => 'Устройство',
+    'CLEAR_LOG' => 'Очистить лог',
+    'OPTIMIZE_LOG' => 'Оптимизировать лог',
+    'LATITUDE' => 'Широта',
+    'LONGITUDE' => 'Долгота',
+    'SPEED' => 'Скорость',
+    'ACCURACY' => 'Точность',
+    'BATTERY_LEVEL' => 'Уровень заряда',
+    'CHARGING' => 'На зарядке',
+    'MAP' => 'Карта',
+    'RANGE' => 'Радиус действия',
+    'ALTITUDE' => 'Высота',
+    'PROVIDER' => 'Провайдер',
+    'LOCATIONS' => 'Места',
+    'DEVICES' => 'Устройства',
+    'ACTIONS' => 'Действия',
+    'HOME_LOCATION' => 'Дом (место)',
+    'ACTION_TYPE' => 'Тип действия',
+    'EXECUTED' => 'Выполнено',
+    'VIRTUAL_USER' => 'Виртуальный пользователь',
+    'WIND' => 'Ветер',
+    'PRESSURE' => 'Давление',
+    'HUMIDITY' => 'Влажность',
+    'GET_AT' => 'Обновлено',
+    'MMHG' => 'мм рт.ст.',
+    'HPA' => 'гПа',
+    'M_S' => 'м/с',
+    'N' => 'С',
+    'NNE' => 'ССВ',
+    'NE' => 'СВ',
+    'ENE' => 'ВСВ',
+    'E' => 'В',
+    'ESE' => 'ВЮВ',
+    'SE' => 'ЮВ',
+    'SSE' => 'ЮЮВ',
+    'S' => 'Ю',
+    'SSW' => 'ЮЮЗ',
+    'SW' => 'ЮЗ',
+    'WSW' => 'ЗЮЗ',
+    'W' => 'З',
+    'WNW' => 'ЗСЗ',
+    'NW' => 'CЗ',
+    'NNW' => 'CCЗ',
+    'LONG_OPERATION_WARNING' => 'Внимание: данная операция может занять длительное время (несколько минут). Пожалуйста, дождитесь завершения после запуска.',
+    'STARRED' => 'Избранное',
+    'USE_BACKGROUND' => 'Использовать фон',
+    'YES' => 'Да',
+    'NO' => 'Нет',
+    'USE_JAVASCRIPT' => 'Дополнительный код JavaScript',
+    'USE_CSS' => 'Дополнительный код CSS',
+    'PERIOD' => 'Период',
+    'PERIOD_TODAY' => 'Сегодня',
+    'PERIOD_DAY' => 'Сутки (24 часа)',
+    'PERIOD_WEEK' => 'Неделя',
+    'PERIOD_MONTH' => 'Месяц',
+    'PERIOD_CUSTOM' => 'Выбрать',
+    'SEARCH' => 'Искать',
+    'SHOWHIDE' => 'Показать/Скрыть',
+    'AUTO_UPDATE' => 'Авто обновл.',
+    'CHANNEL' => 'Канал',
+    'ADD_URL' => 'Добавить URL',
+    'OPEN' => 'Открыть',
+    'SEND_TO_HOME' => 'Отпр. домой',
+    'EXT_ID' => 'Использовать элемент',
+    'VISIBLE_DELAY' => 'Задержка при ротации',
+    'TREE_VIEW' => 'В виде Дерева',
+    'LIST_VIEW' => 'В виде Списка',
+    'FILTER_BY_CLASS' => 'Фильтр по Классу',
+    'FILTER_BY_LOCATION' => 'Фильтр по Расположению',
+    'PHOTO' => 'Фотография',
+    'DEFAULT_USER' => 'пользователь по умолчанию для системы',
+    'IS_ADMIN' => 'администратор системы',
+    'COUNTER_REQUIRED' => 'Количество попыток',
+    'COUNTER_REQUIRED_COMMENT' => '(0 для переключения с первого раза)',
+    'ACCESS_CONTROL' => 'Контроль доступа',
+    'SECURITY_OBJECT_ID' => 'Объект защиты',
+    'SECURITY_TERMINALS' => 'Доступ с терминалов',
+    'SECURITY_USERS' => 'Доступно для пользователей',
+    'SECURITY_TIMES' => 'Доступно в часы',
+    'ALLOW_EXCEPT_ABOVE' => 'всегда доступно за исключением выбранного',
+    'INLINE_POSITION' => 'Расположить на уровне предыдущего элемента',
+    'SUB_PRELOAD' => 'Загружать дочерние элементы в раскрывающуюся область',
+    'RUN_PERIODICALLY' => 'Выполнять периодически',
+    'RUN_TIME' => 'Время запуска',
+    'RUN_WEEKDAYS' => 'Дни недели',
+    'WEEK_SUN' => 'Воскресенье',
+    'WEEK_MON' => 'Понедельник',
+    'WEEK_TUE' => 'Вторник',
+    'WEEK_WED' => 'Среда',
+    'WEEK_THU' => 'Четверг',
+    'WEEK_FRI' => 'Пятница',
+    'WEEK_SAT' => 'Суббота',
+    'PARENT_CONTEXT' => 'Доступно в контексте',
+    'IS_CONTEXT' => 'использовать как контекст',
+    'TIMEOUT' => 'Время ожидания команды',
+    'SET_CONTEXT_TIMEOUT' => 'По истечении времени переключить в',
+    'TIMEOUT_CODE' => 'По истечении времени выполнить',
+    'GLOBAL_CONTEXT' => 'глобальный контекст',
+    'LAST_RULE' => 'не проверять другие шаблоны при совпадении',
+    'SETTINGS_SECTION_' => 'Общие',
+    'SETTINGS_SECTION_HOOK' => 'Обработчики',
+    'DEVICE_ID' => 'ID устройства',
+    'REQUEST_TYPE' => 'Тип запроса',
+    'REQUEST_START' => 'Стартовый адрес',
+    'REQUEST_TOTAL' => 'Кол-во элементов',
+    'RESPONSE_CONVERT' => 'Преобразование данных',
+    'CHECK_NEXT' => 'Следующая проверка',
+    'CODE_TYPE' => 'Использовать для программирования',
+    'GENERAL' => 'Общее',
+    'TIME' => 'Время',
+    'LOGIC' => 'Логика',
+    'LOOPS' => 'Циклы',
+    'MATH' => 'Математика',
+    'TEXT' => 'Текст',
+    'LISTS' => 'Списки',
+    'VARIABLES' => 'Переменные',
+    'FUNCTIONS' => 'Функции',
+    'DO_NOTHING' => 'Ничего не делать',
+    'DO_ONCLICK' => 'Выполнить при клике',
+    'STYLE' => 'Стиль',
+    'PLACE_IN_CONTAINER' => 'Расположить в контейнере',
+    'POSITION_TYPE' => 'Позиционирование',
+    'POSITION_TYPE_ABSOLUTE' => 'Абсолютное',
+    'POSITION_TYPE_SIDE' => 'Друг за другом',
+    'CONTAINER' => 'Контейнер',
+    'INFORMER' => 'Информер',
+    'NAV_LINK' => 'Нав. ссылка (новое окно)',
+    'WARNING' => 'Уведомление',
+    'NAV_LINK_GO' => 'Нав. ссылка (переход)',
+    'TOOLS' => 'Инструменты',
+    'COLOR' => 'Цвет',
+    'WALLPAPER' => 'Обои',
+    'ADDITIONAL_STATES' => 'Дополнительные состояния',
+    'MODE_SWITCH' => 'Индикатор режима',
+    'HIGH_ABOVE' => 'Значение выше',
+    'LOW_BELOW' => 'Значение ниже',
+    'ADDITIONAL_STATES_NOTE' => '(вы можете использовать конструкцию %object.property% в качестве значений границ)',
+    'UNIT' => 'Единица измерения',
+    'COUNTER' => 'Счётчик',
+    'USE_CLASS_SETTINGS' => 'использовать настройки свойств класса',
+    'USING_LATEST_VERSION' => 'Вы используете последнюю версию!',
+    'LATEST_UPDATES' => 'Последние обновления',
+    'UPDATE_TO_THE_LATEST' => 'Обновить систему',
+    'SAVE_BACKUP' => 'Резервная копия',
+    'CREATE_BACKUP' => 'Создать резервную копию',
+    'UPLOAD_BACKUP' => 'Восстановить резервную копию',
+    'CONTINUE' => 'Продолжить',
+    'RESTORE' => 'Восстановить',
+    'SHOW' => 'Показать',
+    'HIDE' => 'Скрыть',
+    'UPDATING' => 'Вкл. в обновление',
+    'NOT_UPDATING' => 'Не обновляется',
+    'SCRIPTS' => 'Сценарии',
+    'CLASSES' => 'Классы/объекты',
+    'CLASS_PROPERTIES' => 'Свойства класса',
+    'CLASS_METHODS' => 'Методы класса',
+    'CLASS_OBJECTS' => 'Объекты класса',
+    'OBJECT_PROPERTIES' => 'Свойства объекта',
+    'OBJECT_METHODS' => 'Методы объекта',
+    'PORT' => 'Порт',
+    'USE_DEFAULT' => 'использовать по-умолчанию',
+    'FAVORITES' => 'Избранное',
+    'RECENTLY_PLAYED' => 'Недавно проиграно',
+    'CLEAR_FAVORITES' => 'Очистить Избранное',
+    'CLEAR_HISTORY' => 'Очистить Недавно проигранное',
+    'SKIP_SYSTEM' => 'Не реагировать на системные сообщения',
+    'ONETIME_PATTERN' => 'Разовый шаблон (будет удален)',
+    'PATTERN_ENTER' => 'вход',
+    'PATTERN_EXIT' => 'выход',
+    'PATTERN_TYPE' => 'Тип шаблона',
+    'PATTERN_MESSAGE' => 'На основе сообщений',
+    'PATTERN_CONDITIONAL' => 'На основе значений свойств',
+    'CONDITION' => 'Условие',
+    'ADD_EXIT_CODE' => 'Добавить код "выхода"',
+    'ADVANCED_CONFIG' => 'Расширенная настройка',
+    'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
+    'SAVE_CHANGES' => 'Сохранить изменения',
+    'ADD_PANE' => 'Добавить панель',
+    'DATA_KEY' => 'Ключевые данные',
+    'DATA_TYPE' => 'Тип данных',
+    'DATA_TYPE_GENERAL' => 'Общий формат',
+    'DATA_TYPE_IMAGE' => 'Изображение',
+    'CLASS_TEMPLATE' => 'Шаблон отображения',
+    'TEST' => 'test',
+    'MODULES_UPDATES_AVAILABLE'=>'Доступны обновления модулей',
+    'SYSTEM_UPDATES_AVAILABLE'=>'Доступны обновления системы',
+    'ERRORS_SAVED'=>'Сохранены ошибки',
+// DEVICES
+    'DEVICES_MODULE_TITLE' => 'Простые устройства',
+    'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
+    'DEVICES_RELAY' => 'Управляемое реле/Выключатель',
+    'DEVICES_DIMMER' => 'Управляемый диммер',
+    'DEVICES_RGB' => 'RGB-контроллер',
+    'DEVICES_MOTION' => 'Датчик движения',
+    'DEVICES_BUTTON' => 'Кнопка',
+    'DEVICES_SWITCH' => 'Выключатель',
+    'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
+    'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
+    'DEVICES_HUM_SENSOR' => 'Датчик влажности',
+    'DEVICES_STATE_SENSOR' => 'Датчик состояния',
+    'DEVICES_PERCENTAGE_SENSOR' => 'Датчик процентное значение',
+    'DEVICES_PRESSURE_SENSOR' => 'Датчик атмосферного давления',
+    'DEVICES_POWER_SENSOR' => 'Датчик мощности',
+    'DEVICES_VOLTAGE_SENSOR' => 'Датчик напряжения',
+    'DEVICES_CURRENT_SENSOR' => 'Датчик тока',
+    'DEVICES_LIGHT_SENSOR' => 'Датчик освещённости',
+    'DEVICES_LEAK_SENSOR' => 'Датчик протечки',
+    'DEVICES_SMOKE_SENSOR' => 'Датчик дыма',
+    'DEVICES_COUNTER' => 'Счётчик',
+    'DEVICES_UNIT' => 'Единица измерения',
+// Measure
+    'M_VOLTAGE' => 'В',
+    'M_CURRENT' => 'А',
+    'M_PRESSURE' => 'торр',
+    'M_WATT' => 'Вт',
+//----
+    'DEVICES_LINKS' => 'Связанные устройства',
+    'DEVICES_STATUS' => 'Статус',
+    'DEVICES_LOGIC_ACTION' => 'Действия',
+    'DEVICES_CURRENT_VALUE' => 'Текущее значение',
+    'DEVICES_CURRENT_HUMIDITY' => 'Влажность',
+    'DEVICES_CURRENT_TEMPERATURE' => 'Температура',
+    'DEVICES_MIN_VALUE' => 'Нижний порог',
+    'DEVICES_MAX_VALUE' => 'Верхний порог',
+    'DEVICES_NOTIFY' => 'Умедомлять при выходе за порог',
+    'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
+    'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
+    'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
+    'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',
+    'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
+    'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
+    'DEVICES_NOT_UPDATING' => 'не обновляется',
+    'DEVICES_IS_ON' => 'Включено',
+    'DEVICES_IS_CLOSED' => 'Закрыто',
+    'DEVICES_MOTION_DETECTED' => 'Обнаружено',
+    'DEVICES_PRESS' => 'Нажать',
+    'DEVICES_TURN_ON' => 'Включить',
+    'DEVICES_TURN_OFF' => 'Выключить',
+    'DEVICES_SET_COLOR' => 'Установить цвет',
+    'DEVICES_GROUP_ECO' => 'Выключать в режиме экономии',
+    'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
+    'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
+    'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
+    'DEVICES_NCNO' => 'Тип устройства/сенсора',
+    'DEVICES_LOADTYPE' => 'Тип устройства',
+    'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
+    'DEVICES_LOADTYPE_POWER' => 'Разное',
+    'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
+    'DEVICES_ADD_SCENE' => 'Добавить устройство на Сцену',
+    'DEVICES_LINKS_NOT_ADDED' => 'Нет связанных устройств',
+    'DEVICES_LINKS_AVAILABLE' => 'Доступные типы связей',
+    'DEVICES_LINKS_COMMENT' => 'Комментарий (не обязательно)',
+    'DEVICES_LINKS_LINKED_DEVICE' => 'Связанное устройство',
+    'DEVICES_LINKS_ADDED' => 'Связанные устройства',
+    'DEVICES_LINK_ACTION_TYPE' => 'Действие',
+    'DEVICES_LINK_TYPE_TURN_ON' => 'Включить',
+    'DEVICES_LINK_TYPE_TURN_OFF' => 'Выключить',
+    'DEVICES_LINK_TYPE_SWITCH' => 'Переключить',
+    'DEVICES_LINK_SWITCH_IT' => 'Включить/Выключить',
+    'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Управление другим устройством по событию',
+    'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Задержка выполнения (секунд)',
+    'DEVICES_LINK_SET_COLOR' => 'Установить цвет',
+    'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
+    'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Цвет',
+    'DEVICES_LINK_SENSOR_SWITCH' => 'Условное управление',
+    'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Управление другим устройством по показаниям датчика',
+    'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION' => 'Тип условия',
+    'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_ABOVE' => 'Выше заданного',
+    'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW' => 'Ниже заданного',
+    'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE' => 'Пороговое значение',
+    'DEVICES_LINK_SENSOR_PASS' => 'Пересылка данных',
+    'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Пересылка данных от сенсора на другое устройство',
+    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Управление устройством',
+    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Управление другим устройствам в зависимости от статуса термостата',
+    'DEVICES_LINK_THERMOSTAT_INVERT' => 'Инвертная установка статуса',
+    'DEVICES_UPDATE_CLASSSES' => 'Обновить классы',
+    'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Создать автоматически',
+    'DEVICES_PATTERN_TURNON' => 'включи|зажги',
+    'DEVICES_PATTERN_TURNOFF' => 'выключи|потуши|отключи',
+    'DEVICES_DEGREES' => 'градусов',
+    'DEVICES_STATUS_OPEN' => 'открыт',
+    'DEVICES_STATUS_CLOSED' => 'закрыт',
+    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете',
+    'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
+    'DEVICES_ROOMS_ACTIVITY' => 'Активность:',
+    'DEVICES_PASSED_NOW' => 'только что',
+    'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
+    'DEVICES_PASSED_MINUTES_AGO' => 'мин. назад',
+    'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
+    'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
+    'DEVICES_CAMERA' =>'IP-камера',
+    'DEVICES_CAMERA_STREAM_URL' =>'URL видео-потока',
+    'DEVICES_CAMERA_USERNAME' =>'Имя пользователя',
+    'DEVICES_CAMERA_PASSWORD' =>'Пароль',
+    'DEVICES_CAMERA_SNAPSHOT_URL' =>'URL статического снимка',
+    'DEVICES_CAMERA_SNAPSHOT' =>'Снимок',
+    'DEVICES_CAMERA_TAKE_SNAPSHOT' =>'Сохранить снимок',
+    'DEVICES_CAMERA_SNAPSHOT_HISTORY' =>'История',
+    'DEVICES_CAMERA_STREAM_TRANSPORT' =>'Транспорт потока',
+    'DEVICES_CAMERA_PREVIEW_TYPE' =>'Предпросмотр',
+    'DEVICES_CAMERA_PREVIEW_TYPE_STATIC' =>'Статический снимок',
+    'DEVICES_CAMERA_PREVIEW_TYPE_SLIDESHOW' =>'Слайд-шоу',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK' =>'Действие по нажатию на изображение',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE' =>'Увеличить изображеие',
+    'DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL' =>'Перейти на поток',
+    'DEVICES_THERMOSTAT' => 'Термостат',
+    'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
+    'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Обычная целевая температура',
+    'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO целевая температура',
+    'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Текущая температура',
+    'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Целевая температура',
+    'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
+    'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
+    'DEVICES_ALL_BY_TYPE' => 'Все по типам',
+    'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
+    'AUTO_LINK' => 'Автоматический запуск сценария',
+    'FAVORITE_DEVICE' => 'В списке быстрого доступа',
+    /* end module names */
 );
-
-foreach ($dictionary as $k=>$v) {
- if (!defined('LANG_'.$k)) {
-  define('LANG_'.$k, $v);
- }
+foreach ($dictionary as $k => $v) {
+    if (!defined('LANG_' . $k)) {
+        define('LANG_' . $k, $v);
+    }
 }
