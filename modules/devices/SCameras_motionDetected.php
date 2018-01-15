@@ -1,4 +1,5 @@
 <?php
+
 $ot = $this->object_title;
 
 $this->setProperty('status', 1);
