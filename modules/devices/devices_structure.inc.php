@@ -119,7 +119,8 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SMotions',
         'PROPERTIES'=>array(
-            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno')
+            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno'),
+            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num')
         ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
