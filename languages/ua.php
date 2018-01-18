@@ -1,16 +1,17 @@
-<? Php
-/ **
+<?php
+/**
  * Ukranian language file
  *
  * @package MajorDoMo
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 1.0
- * /
+ */
 
 
-$ Dictionary = array (
 
-    / * General * /
+$dictionary = array (
+
+    /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Василіса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
@@ -72,9 +73,9 @@ $ Dictionary = array (
     'SECTION_SETTINGS' => 'Налаштування',
     'SECTION_SYSTEM' => 'Система',
 
-    / * End general * /
+    /* end general */
 
-    / * Module names * /
+    /* module names */
     'APP_GPSTRACK' => 'GPS-трекер',
     'APP_PLAYER' => 'Плеєр',
     'APP_MEDIA_BROWSER' => 'Медіа',
@@ -573,7 +574,7 @@ $ Dictionary = array (
     'SIMILAR_ITEMS' => 'Схожі записи',
 
 
-    'LOCATION_CODE' => 'Код Короді (city id)',
+    'LOCATION_CODE' => 'Код міста (city id)',
     'REFRESH' => 'Оновити',
 
 
@@ -658,7 +659,7 @@ $ Dictionary = array (
     'EXPIRATION_DATE' => 'Дата закінчення терміну придатності',
 
 
-    'DEFAULT_EXPIRE_IN' => 'За замовчуванням "закінчується через"',
+    'DEFAULT_EXPIRE_IN' => 'За замовчуванням закінчується через',
     'UPDATED' => 'Додано',
 
 
@@ -1034,7 +1035,7 @@ $ Dictionary = array (
     'PATTERN_MESSAGE' => 'На основі повідомлень',
     'PATTERN_CONDITIONAL' => 'На основі значень властивостей',
     'CONDITION' => 'Умова',
-    'ADD_EXIT_CODE' => 'Додати код "виходу"',
+    'ADD_EXIT_CODE' => 'Додати код виходу',
     'ADVANCED_CONFIG' => 'Розширена настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Оновити всі встановлені додатки',
 
@@ -1212,13 +1213,13 @@ $ Dictionary = array (
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
 
-    / * End module names * /
+     /* end module names */
 
 
 );
 
-foreach ($ dictionary as $ k => $ v) {
-    if (! defined ( 'LANG_'. $ k)) {
-        define ( 'LANG_'. $ k, $ v);
+foreach ($dictionary as $k => $v) {
+    if (!defined('LANG_' . $k)) {
+        define('LANG_' . $k, $v);
     }
 }
