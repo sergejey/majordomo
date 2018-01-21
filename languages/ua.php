@@ -929,7 +929,7 @@ $dictionary = array (
     'WEEK_SUN' => 'Неділя',
     'WEEK_MON' => 'понеділок',
     'WEEK_TUE' => 'вівторок',
-    'WEEK_WED' => 'серед «,
+    'WEEK_WED' => 'серед ',
     'WEEK_THU' => 'четвер',
     'WEEK_FRI' => 'п\'ятницю',
     'WEEK_SAT' => 'суботу',
@@ -1126,7 +1126,7 @@ $dictionary = array (
     'DEVICES_LOADTYPE_POWER' => 'Різне',
 
     'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
-    'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену ",
+    'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену ',
 
     'DEVICES_LINKS_NOT_ADDED' => 'Немає пов\'язаних пристроїв',
     'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв\'язків',
