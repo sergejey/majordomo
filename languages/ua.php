@@ -15,7 +15,7 @@ $dictionary = array (
     'WIKI_URL' => 'http://smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Василіса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-    'WELCOME_TEXT' => 'Спасибі, що користуйтеся MajorDoMo - відкритою платформою домашньої автоматизації. <br/> <br/> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#> "target = _blank> Веб-сайт </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Форум </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> Facebook сторінка </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Панель управління </a> </ small> ',
+    'WELCOME_TEXT' => 'Спасибі, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації. <br/> <br/> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#> "target = _blank> Веб-сайт </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Форум </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> Facebook сторінка </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Панель управління </a> </ small> ',
     'CONTROL_PANEL' => 'Панель управління',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
@@ -39,7 +39,7 @@ $dictionary = array (
     'GENERAL_NOBODYS_HOME_MODE' => 'Нікого немає вдома',
     'GENERAL_WE_HAVE_GUESTS_MODE' => 'У нас гості',
     'GENERAL_NIGHT_MODE' => 'Нічний режим',
-    'GENERAL_DARKNESS_MODE' => 'Темне час доби',
+    'GENERAL_DARKNESS_MODE' => 'Темна пора доби',
 
     'GENERAL_CLIMATE' => 'Клімат',
     'GENERAL_WEATHER_FORECAST' => 'Прогноз погоди',
@@ -127,7 +127,7 @@ $dictionary = array (
     'MODULE_MODULES' => 'Модулі',
     'MODULE_USERLOG' => 'Журнал дій',
 
-    'SCENE_HIDDEN' => 'Не вмикати в список перемикаються сцен',
+    'SCENE_HIDDEN' => 'Не включати до переліку сцен, що перемикаються',
     'SCENE_AUTO_SCALE' => 'Автоматично змінювати розмір сцени по ширині екрану',
 
     'SETUP' => 'Налаштувати',
@@ -156,8 +156,8 @@ $dictionary = array (
     'ARE_YOU_SURE' => 'Ви впевнені? Будь ласка, підтвердіть операцію. ',
     'DELETE' => 'Вилучити',
 
-    'DELETE_SELECTED' => 'Видалити вибране',
-    'EXPORT_SELECTED' => 'Експорт вбрання',
+    'DELETE_SELECTED' => 'Видалити обране',
+    'EXPORT_SELECTED' => 'Експорт обраного',
 
     'CALL_METHOD' => 'Виклик методу',
 
@@ -248,8 +248,8 @@ $dictionary = array (
 
     'RESET_TO_DEFAULT' => 'Скинути',
     'SEARCH' => 'Пошук',
-    'USERNAME' => 'Ім користувача',
-    'NAME' => 'Ім',
+    'USERNAME' => 'Ім\'я користувача',
+    'NAME' => 'Ім\'я',
     'EMAIL' => 'E-mail',
     'SKYPE' => 'Skype',
 
@@ -323,7 +323,7 @@ $dictionary = array (
     'INTERFACE' => 'Інтерфейс',
 
 
-    'AUTO_UPDATE_PERIOD' => 'Період автообновления',
+    'AUTO_UPDATE_PERIOD' => 'Період автооновления',
     'POLLING_PERIOD' => 'Період опитування',
 
 
@@ -392,7 +392,7 @@ $dictionary = array (
     'DESIGN' => 'Дизайн',
 
 
-    'FILES_UPLOADED' => 'долучено',
+    'FILES_UPLOADED' => 'Файли завантажено',
 
 
     'CLEAR_TEMPORARY_FOLDER' => 'Очистити тимчасову папку',
@@ -521,7 +521,7 @@ $dictionary = array (
 
 
     'PAST_DUE' => 'Пропущено',
-    'TODAY' => 'Сегодня',
+    'TODAY' => 'Сьогодні',
 
 
     'NOTHING_TO_DO' => 'Нема чого робити ... Везе ж!',
@@ -606,16 +606,16 @@ $dictionary = array (
     'EXECUTE_FOR_NEW_RECORDS' => 'Виконувати для нових записів',
 
 
-    'TERMINAL_FROM' => 'From terminal',
+    'TERMINAL_FROM' => 'З терміналу',
 
 
-    'USER_FROM' => 'From user',
-    'USER_TO' => 'To user',
+    'USER_FROM' => 'Від користувача',
+    'USER_TO' => 'Коритувачу',
     'WINDOW' => 'Вікно',
     'EXPIRE' => 'Завершується',
 
 
-    'TERMINAL_TO' => 'To terminal',
+    'TERMINAL_TO' => 'До терміналу',
 
 
     'NEW_PAGE' => 'Нова сторінка',
@@ -744,7 +744,7 @@ $dictionary = array (
     'INCORRECT_FILE_FORMAT' => 'Некоректний формат файлу',
 
 
-    'CANNOT_CREATE_FOLDER' => 'Не можливо створити папку',
+    'CANNOT_CREATE_FOLDER' => 'Не можливо створити теку',
 
 
     'SKIN_ALREADY_EXISTS' => 'Skin вже існує',
@@ -904,7 +904,7 @@ $dictionary = array (
     'FILTER_BY_CLASS' => 'Фільтр по Класу',
     'FILTER_BY_LOCATION' => 'Фільтр по Положенням',
 
-    'PHOTO' => 'Фотография',
+    'PHOTO' => 'Фотографія',
     'DEFAULT_USER' => 'користувач за замовчуванням для системи',
     'IS_ADMIN' => 'адміністратор системи',
 
@@ -916,12 +916,12 @@ $dictionary = array (
     'SECURITY_OBJECT_ID' => 'Об\'єкт захисту',
     'SECURITY_TERMINALS' => 'Доступ з терміналів',
     'SECURITY_USERS' => 'Доступно для користувачів',
-    'SECURITY_TIMES' => 'Доступно в годинник',
+    'SECURITY_TIMES' => 'Доступно в години',
     'ALLOW_EXCEPT_ABOVE' => 'завжди є за винятком обраного',
 
     'INLINE_POSITION' => 'Розташувати на рівні попереднього елемента',
 
-    'SUB_PRELOAD' => 'Завантажувати дочірні елементи в розкривається область',
+    'SUB_PRELOAD' => 'Завантажувати дочірні елементи в розкриваєму область',
 
     'RUN_PERIODICALLY' => 'Виконувати періодично',
     'RUN_TIME' => 'Час запуску',
@@ -929,7 +929,7 @@ $dictionary = array (
     'WEEK_SUN' => 'Неділя',
     'WEEK_MON' => 'понеділок',
     'WEEK_TUE' => 'вівторок',
-    'WEEK_WED' => 'серед «,
+    'WEEK_WED' => 'середа',
     'WEEK_THU' => 'четвер',
     'WEEK_FRI' => 'п\'ятницю',
     'WEEK_SAT' => 'суботу',
@@ -1008,7 +1008,7 @@ $dictionary = array (
     'SHOW' => 'Показати',
     'HIDE' => 'Приховати',
 
-    'UPDATING' => 'Увімкнути. в оновлення ',
+    'UPDATING' => 'Добавити до оновлення ',
     'NOT_UPDATING' => 'Не оновлюється ',
 
     'SCRIPTS' => 'Сценарії',
@@ -1081,7 +1081,7 @@ $dictionary = array (
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'торр',
+    'M_PRESSURE' => 'тор',
     'M_WATT' => 'Вт',
 
 // ----
@@ -1097,7 +1097,7 @@ $dictionary = array (
 
     'DEVICES_MIN_VALUE' => 'Нижній поріг',
     'DEVICES_MAX_VALUE' => 'Верхній поріг',
-    'DEVICES_NOTIFY' => 'Умедомлять при виході за поріг',
+    'DEVICES_NOTIFY' => 'Повідомляти при виході за поріг',
     'DEVICES_NORMAL_VALUE' => 'Значення в нормальних межах',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значення датчика вийшло за поріг',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значення датчика повернулося до норми',
@@ -1117,7 +1117,7 @@ $dictionary = array (
     'DEVICES_SET_COLOR' => 'Встановити колір',
 
     'DEVICES_GROUP_ECO' => 'Вимикати в режимі економії',
-    'DEVICES_GROUP_ECO_ON' => 'Включати при виході з режиму економії',
+    'DEVICES_GROUP_ECO_ON' => 'Вмикати при виході з режиму економії',
     'DEVICES_GROUP_SUNRISE' => 'Вимикати на світанку',
     'DEVICES_IS_ACTIVITY' => 'Зміна означає активність в приміщенні',
     'DEVICES_NCNO' => 'Тип пристрою / сенсора',
@@ -1131,7 +1131,7 @@ $dictionary = array (
     'DEVICES_LINKS_NOT_ADDED' => 'Немає пов\'язаних пристроїв',
     'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв\'язків',
     'DEVICES_LINKS_COMMENT' => 'Коментар (не обов\'язково)',
-    'DEVICES_LINKS_LINKED_DEVICE' => 'Пов\'язане пристрій',
+    'DEVICES_LINKS_LINKED_DEVICE' => 'Пов\'язаний пристрій',
     'DEVICES_LINKS_ADDED' => 'Зміни, пов\'язані пристрої',
 
     'DEVICES_LINK_ACTION_TYPE' => 'Дія',
@@ -1147,8 +1147,8 @@ $dictionary = array (
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Встановити колір за подією',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Колір',
 
-    'DEVICES_LINK_SENSOR_SWITCH' => 'Умовне управління',
-    'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Використання іншого пристроєм за показаннями датчика',
+    'DEVICES_LINK_SENSOR_SWITCH' => 'Умовне керування',
+    'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Використання іншого пристрою за показаннями датчика',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION' => 'Тип умови',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_ABOVE' => 'Вище заданого',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW' => 'Нижче заданого',
@@ -1176,7 +1176,7 @@ $dictionary = array (
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є.',
     'DEVICES_ROOMS_ACTIVITY' => 'Активність:',
 
-    'DEVICES_PASSED_NOW' => 'тільки що',
+    'DEVICES_PASSED_NOW' => 'щойно',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
     'DEVICES_PASSED_MINUTES_AGO' => 'хв. назад',
     'DEVICES_PASSED_HOURS_AGO' => 'г. назад',
@@ -1184,7 +1184,7 @@ $dictionary = array (
 
     'DEVICES_CAMERA' => 'IP-камера',
     'DEVICES_CAMERA_STREAM_URL' => 'URL відео-потоку',
-    'DEVICES_CAMERA_USERNAME' => 'Ім користувача',
+    'DEVICES_CAMERA_USERNAME' => 'Ім\'я користувача',
     'DEVICES_CAMERA_PASSWORD' => 'Пароль',
     'DEVICES_CAMERA_SNAPSHOT_URL' => 'URL статичного знімка',
     'DEVICES_CAMERA_SNAPSHOT' => 'Знімок',
@@ -1207,7 +1207,7 @@ $dictionary = array (
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Цільова температура',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Поріг спрацьовування термостата (0.25 за замовчуванням)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
-    'DEVICES_ALL_BY_TYPE' => 'Всі по типам',
+    'DEVICES_ALL_BY_TYPE' => 'Всі по типах',
     'DEVICES_ALL_BY_ROOM' => 'Всі по кімнатах',
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
