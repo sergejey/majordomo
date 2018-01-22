@@ -262,7 +262,7 @@ $dictionary = array (
 
     'PARENT_METHODS' => 'Батьківські методи:',
     'OVERWRITE' => 'Переписати',
-    'ONLY_CLASSES' => "Не імпортувати об\'єкти ',
+    'ONLY_CLASSES' => 'Не імпортувати об\'єкти ',
 
     'NEW_METHOD' => 'Новий метод',
     'HOME' => 'Початок',
