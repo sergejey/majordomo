@@ -16,7 +16,7 @@ $dictionary = array (
     'DEFAULT_COMPUTER_NAME' => 'Василіса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
     'WELCOME_TEXT' => 'Спасибі, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації. <br/> <br/> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#> "target = _blank> Веб-сайт </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Форум </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> Facebook сторінка </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Панель управління </a> </ small> ',
-    'CONTROL_PANEL' => 'Панель управління',
+    'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
     'SELECT' => 'Обрати',
