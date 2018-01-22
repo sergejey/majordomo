@@ -931,8 +931,8 @@ $dictionary = array (
     'WEEK_TUE' => 'вівторок',
     'WEEK_WED' => 'середа',
     'WEEK_THU' => 'четвер',
-    'WEEK_FRI' => 'п\'ятницю',
-    'WEEK_SAT' => 'суботу',
+    'WEEK_FRI' => 'п\'ятниця',
+    'WEEK_SAT' => 'субота',
 
     'PARENT_CONTEXT' => 'Доступно в контексті',
     'IS_CONTEXT' => 'використовувати як контекст',
@@ -1126,7 +1126,7 @@ $dictionary = array (
     'DEVICES_LOADTYPE_POWER' => 'Різне',
 
     'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
-    'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену ",
+    'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену',
 
     'DEVICES_LINKS_NOT_ADDED' => 'Немає пов\'язаних пристроїв',
     'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв\'язків',
