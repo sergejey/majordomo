@@ -796,7 +796,7 @@ $dictionary = array (
     'APPEAR_SCALE' => 'Масштаб',
 
 
-    'ADD_NEW_ELEMENT' => 'Додати новий елемент,
+    'ADD_NEW_ELEMENT' => 'Додати новий елемент',
     'ELEMENTS' => 'Елементи',
 
 
