@@ -11,7 +11,8 @@ $this->device_types=array(
             'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),
         'METHODS'=>array(
-            'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
+            'onActivity'=>array('DESCRIPTION'=>'Rooms Activity'),
+            'onIdle'=>array('DESCRIPTION'=>'Rooms Idle'),
             'updateActivityStatus'=>array('DESCRIPTION'=>'Update activity status')
         )
     ),

@@ -1,3 +1,9 @@
+
+function simple_hash(s) {
+ return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+}
+
+
 function inIframe () {
     try {
         return window.self !== window.top;
@@ -36,11 +42,11 @@ var flashing=0;
 function Win2Escape(AStr){
 var Result='';
 for(var i=0;i<AStr.length;i++)
-if(AStr.charAt(i)>='À' && AStr.charAt(i)<='ÿ')
+if(AStr.charAt(i)>='ï¿½' && AStr.charAt(i)<='ï¿½')
 Result+=Letters[AStr.charCodeAt(i)-0x0410];
-else if(AStr.charAt(i)=='¨')
+else if(AStr.charAt(i)=='ï¿½')
 Result+=Letters[64];
-else if(AStr.charAt(i)=='¸')
+else if(AStr.charAt(i)=='ï¿½')
 Result+=Letters[65];
 else if(AStr.charAt(i)=='=')
 Result+='%3D';
