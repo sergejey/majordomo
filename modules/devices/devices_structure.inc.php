@@ -11,7 +11,8 @@ $this->device_types=array(
             'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),
         'METHODS'=>array(
-            'onActivity'=>array('DESCRIPTION'=>'Rooms activity'),
+            'onActivity'=>array('DESCRIPTION'=>'Rooms Activity'),
+            'onIdle'=>array('DESCRIPTION'=>'Rooms Idle'),
             'updateActivityStatus'=>array('DESCRIPTION'=>'Update activity status')
         )
     ),
@@ -206,7 +207,7 @@ $this->device_types=array(
             'maxValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE,'_CONFIG_TYPE'=>'num'),
             'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno'),
             'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno'),
-            'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>365),
+            'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>0),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
