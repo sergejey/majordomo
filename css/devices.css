@@ -125,6 +125,10 @@
     background-image: url(../cms/scenes/styles/switch/i_light_on.png);
 }
 
+.device-icon.pressed {
+    background-color:greenyellow;
+}
+
 .camera-widget {
 }
 .camera-text {

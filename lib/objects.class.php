@@ -83,7 +83,11 @@ function addClass($class_name, $parent_class = '')
 function getObjectClassTemplate($object_name) {
     $object=getObject($object_name);
     $data=getClassTemplate((int)$object->class_id);
-    $data=preg_replace('/%\.(\w+?)/', '%'.$object_name.'.\1'.'', $data);
+    $data=preg_replace('/%\.object_title%/uis', $object_name, $data);
+    $data=preg_replace('/%\.object_id%/uis', $object->id, $data);
+    $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
+    //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     return $data;
 }
 
@@ -791,6 +795,13 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0) {
         // Get data
         $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name ".
                 "WHERE  VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $stop_time)."')");
+
+        if (!$data['VALUE']) {
+            $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name ".
+                "WHERE  VALUE != \"\" AND VALUE_ID='".$id."' AND ADDED<('".date('Y-m-d H:i:s', $start_time)."') ORDER BY ADDED DESC LIMIT 1");
+        }
+
+
         if (!$data['VALUE'])
                 return false;
         
@@ -1083,6 +1094,7 @@ function processTitle($title, $object = 0)
          for ($i = 0; $i < $total; $i++)
          {
             $data=getGlobal($m[1][$i] . '.' . $m[2][$i]);
+            if ($data == '') $data = 0;
             $descr=$m[3][$i];
             $tmp=explode(';', $descr);
             $totald=count($tmp);

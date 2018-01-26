@@ -27,7 +27,7 @@
    [#endif#]
 
    [#if CONFIG_TYPE="select"#]
-   <select name="[#NAME#]_value">
+   <select name="[#NAME#]_value" class="form-control">
    [#begin OPTIONS#]
     <option value="[#VALUE#]"[#if VALUE="<#PROPERTIES.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
    [#end OPTIONS#]

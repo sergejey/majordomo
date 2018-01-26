@@ -211,6 +211,11 @@ function usual(&$out) {
 
 
  global $ajax;
+ if ($this->ajax) {
+  $ajax=1;
+ }
+
+
  if ($ajax!='') {
   global $command;
   if ($command!='') {

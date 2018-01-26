@@ -291,7 +291,7 @@
 {if $item.SUB_PRELOAD=='1'}
 
  <div data-role="collapsible" data-iconpos="right">
-  <h2><span  id="label_{$item.ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span></h2>
+  <h2>{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="item_icon">{/if} <span  id="label_{$item.ID}">{$item.TITLE}</span></h2>
   <ul data-role="listview" data-inset="true">
   {if $item.RESULT}
   {menu items=$item.RESULT}
@@ -310,7 +310,7 @@
  {/if}
  {if $item.SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
 >
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
+{if $item.ICON!=''}<span><img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon item_icon"></span>{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span>{*{if $item.RESULT_TOTAL} <span class="ui-li-count">{$item.RESULT_TOTAL}</span>{/if}*}</a>
 </li>
 {/if}
@@ -324,7 +324,7 @@
  href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
  {/if}
 >
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
+{if $item.ICON!=''}<span><img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon item_icon"></span>{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span></a>
 </li>
 
@@ -604,9 +604,7 @@
 
 {if $item.TYPE=='label'}
 <li data-role="list-divider"{if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
-{*
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" border="0">{/if}
-*}
+{if $item.ICON!=''}<span><img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" border="0" class="ui-icon item_icon"></span>{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span>
 </li>
 {/if}
