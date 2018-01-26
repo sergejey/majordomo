@@ -1,11 +1,10 @@
 <script src='/js/spectrum/spectrum.min.js'></script>
 <link rel='stylesheet' href='/js/spectrum/spectrum.min.css' />
-<link rel='stylesheet' href='/css/devices.css' />
 
-<div class="device-widget controller" onClick='callMethod("%.switch");'>
+<div class="device-widget controller" onClick='callMethod("%.object_title%.switch");'>
     <div class="device-icon %.status|"off;on"%"></div>
 <div class="device-header"><span>%.object_description%</span>
-    <input type="text" id="color%.object_id%" class="colorpicker" value="%.colorSaved%" onChange='callMethod("%.setColor","color="+encodeURIComponent(this.value));'/>
+    <input type="text" id="color%.object_id%" class="colorpicker" value="%.colorSaved%" onChange='callMethod("%.object_title%.setColor","color="+encodeURIComponent(this.value));'/>
 </div>
 <script>
     $("#color%.object_id%").spectrum({

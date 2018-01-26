@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
+        <link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
 
         <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 
@@ -306,8 +307,14 @@ jQuery.fn.center = function () {
 
 
 
+        var requestCounter = 0;
+
         function partLoad(link) {
-            //partLoadContent
+
+            if (typeof link == 'undefined') return;
+
+            requestCounter++;
+            var seqNumber=requestCounter;
             var url=link;
             urlInProgress = link;
             hrefLocation = link;
@@ -315,13 +322,25 @@ jQuery.fn.center = function () {
             clearTimeout(locationTimer);
             locationTimer = setTimeout('checkLocationHref();',1000);
             url+='&part_load=1';
-            loaderTimer=setTimeout(loadInProgress, 1000);
+
+            var cachedKey = simple_hash(url);
+            var cachedContent = localStorage.getItem(cachedKey);
+            if (typeof cachedContent == 'string') {
+                window.history.pushState('', window.title, link);
+                $('#partLoadContent').html(cachedContent);
+            } else {
+                cachedContent = '';
+                loaderTimer=setTimeout(loadInProgress, 1000);
+            }
 
             $.ajax({
                 url: url,
                 urlInProgress: urlInProgress
             }).done(function(data) {
-                //console.log('loaded');
+                console.log('part content loaded');
+                if (seqNumber!=requestCounter) {
+                    console.log('Ignoring response');
+                }
                 clearTimeout(loaderTimer);
                 try {
                         JSON.parse(data);
@@ -338,7 +357,10 @@ jQuery.fn.center = function () {
                     window.location.href=link;
                 } else {
                     window.history.pushState('', window.title, link);
-                    $('#partLoadContent').html(obj.CONTENT);
+                    if (cachedContent!=obj.CONTENT) {
+                        $('#partLoadContent').html(obj.CONTENT);
+                        localStorage.setItem(cachedKey,obj.CONTENT);
+                    }
                     if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
                         window.document.title = obj.TITLE;
                     }
