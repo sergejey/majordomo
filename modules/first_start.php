@@ -4,12 +4,18 @@
 
  $languages=array();
 
- $languages[]=array('TITLE'=>'en');
- $languages[]=array('TITLE'=>'ru');
- $languages[]=array('TITLE'=>'ua');
- $languages[]=array('TITLE'=>'lt');
- $languages[]=array('TITLE'=>'es');
- $languages[]=array('TITLE'=>'it');
+ $languages[]=array('TITLE'=>'en','CAPTION'=>'English');
+ $languages[]=array('TITLE'=>'ru','CAPTION'=>'Russian');
+ $languages[]=array('TITLE'=>'ua','CAPTION'=>'Ukrainian');
+ $languages[]=array('TITLE'=>'lt','CAPTION'=>'Lithuanian');
+ $languages[]=array('TITLE'=>'es','CAPTION'=>'Spanish');
+ $languages[]=array('TITLE'=>'it','CAPTION'=>'Italian');
+ $languages[]=array('TITLE'=>'bg','CAPTION'=>'Bulgarian');
+
+ function cmp_languages($a, $b) {
+  return strcmp($a["CAPTION"], $b["CAPTION"]);
+ }
+ usort($languages,'cmp_languages');
 
  $out['LANGUAGES']=$languages;
 

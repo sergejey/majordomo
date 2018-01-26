@@ -5,3 +5,6 @@
     max-width:32px;
     vertical-align:middle;
 }
+.ui-listview>li>a.ui-btn {
+    padding: 0.3em 1em;
+}
