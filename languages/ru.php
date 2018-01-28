@@ -1101,6 +1101,7 @@ $dictionary = array(
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
     'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',
+    'DEVICES_MOTION_TIMEOUT' => 'Время активности (секунд)',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
     'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
     'DEVICES_NOT_UPDATING' => 'не обновляется',
