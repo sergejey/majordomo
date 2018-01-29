@@ -1106,6 +1106,7 @@ $dictionary=array(
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Value is out of normal range',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Value is back to normal',
     'DEVICES_MOTION_IGNORE' => 'Ignore device events when nobody\'s home',
+    'DEVICES_MOTION_TIMEOUT' => 'Activity timeout (sec)',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
     'DEVICES_MAIN_SENSOR' => 'Main sensor for the room',
 

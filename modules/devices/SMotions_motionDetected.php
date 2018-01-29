@@ -10,7 +10,10 @@ if (!isset($params['statusUpdated'])) {
   return;
  }
 
- $motion_timeout=20; // seconds timeout
+ $motion_timeout=$this->getProperty('timeout'); // seconds timeout
+ if (!$motion_timeout) {
+  $motion_timeout=20; // timeout by default
+ }
  $nobodysHome=getGlobal('NobodyHomeMode.active');
 
  if (!isset($params['statusUpdated'])) {
