@@ -27,6 +27,7 @@ $ctl = new control_modules();
         <link href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
         <link href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
     <link href="lib/css/freeboard/styles.css" rel="stylesheet" />
+    <link href="/css/devices.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="/js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
 
     <?php
