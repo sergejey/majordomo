@@ -6,15 +6,11 @@
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 1.0
  */
-<<<<<<< HEAD
-$dictionary = array (
-=======
 
 
 
 $dictionary = array (
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Василіса',
@@ -35,10 +31,7 @@ $dictionary = array (
     'STILL_WORKING' => 'Завантажуються дані ... Натисніть',
     'CLICK_HERE' => 'тут',
     'TAKES_TOO_LONG' => ', якщо процес завантаження займає надто багато часу.',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'GENERAL_SENSORS' => 'Сенсори',
     'GENERAL_OPERATIONAL_MODES' => 'Режими роботи',
     'GENERAL_ENERGY_SAVING_MODE' => 'Енергозбереження',
@@ -47,26 +40,17 @@ $dictionary = array (
     'GENERAL_WE_HAVE_GUESTS_MODE' => 'У нас гості',
     'GENERAL_NIGHT_MODE' => 'Нічний режим',
     'GENERAL_DARKNESS_MODE' => 'Темна пора доби',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'GENERAL_CLIMATE' => 'Клімат',
     'GENERAL_WEATHER_FORECAST' => 'Прогноз погоди',
     'GENERAL_TEMPERATURE_OUTSIDE' => 'Температура за вікном',
     'GENERAL_GRAPHICS' => 'Графіки',
-<<<<<<< HEAD
-    'GENERAL_SECURITY_CAMERA' => 'Камери спостереження',
-    'GENERAL_EVENTS_LOG' => 'Історія подій',
-    'GENERAL_SERVICE' => 'Сервіс',
-=======
 
     'GENERAL_SECURITY_CAMERA' => 'Камери спостереження',
     'GENERAL_EVENTS_LOG' => 'Історія подій',
 
     'GENERAL_SERVICE' => 'Сервіс',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'GENERAL_GREEN' => 'Зелений',
     'GENERAL_YELLOW' => 'Жовтий',
     'GENERAL_RED' => 'Червоний',
@@ -82,22 +66,15 @@ $dictionary = array (
     'GENERAL_CONTROL' => 'Управління',
     'GENERAL_INSIDE' => 'Будинки',
     'GENERAL_OUTSIDE' => 'На вулиці',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'SECTION_OBJECTS' => 'Об\'єкти',
     'SECTION_APPLICATIONS' => 'Додатки',
     'SECTION_DEVICES' => 'Пристрої',
     'SECTION_SETTINGS' => 'Налаштування',
     'SECTION_SYSTEM' => 'Система',
-<<<<<<< HEAD
-    /* end general */
-=======
 
     /* end general */
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     /* module names */
     'APP_GPSTRACK' => 'GPS-трекер',
     'APP_PLAYER' => 'Плеєр',
@@ -113,10 +90,7 @@ $dictionary = array (
     'SYS_DATEFORMAT' => 'Формат дати',
     'APP_YATRAFFIC' => 'Яндекс.Пробки ',
     'APP_CHATBOX' => 'Повідомлення',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'MODULE_OBJECTS_HISTORY' => 'Історія об\'єктів',
     'MODULE_BT_DEVICES' => 'Bluetooth-пристрої',
     'MODULE_CONTROL_MENU' => 'Меню управління',
@@ -152,11 +126,6 @@ $dictionary = array (
     'MODULE_SYSTEM_ERRORS' => 'Помилки системи',
     'MODULE_MODULES' => 'Модулі',
     'MODULE_USERLOG' => 'Журнал дій',
-<<<<<<< HEAD
-    'SCENE_HIDDEN' => 'Не включати до переліку сцен, що перемикаються',
-    'SCENE_AUTO_SCALE' => 'Автоматично змінювати розмір сцени по ширині екрану',
-    'SETUP' => 'Налаштувати',
-=======
 
     'SCENE_HIDDEN' => 'Не включати до переліку сцен, що перемикаються',
     'SCENE_AUTO_SCALE' => 'Автоматично змінювати розмір сцени по ширині екрану',
@@ -164,16 +133,11 @@ $dictionary = array (
     'SETUP' => 'Налаштувати',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DATA_SAVED' => 'Дані збережені!',
     'ALL' => 'Всі',
     'EXECUTE' => 'Виконати',
     'SCRIPT' => 'Сценарій',
     'CODE' => 'Код',
-<<<<<<< HEAD
-    'CALL_PARENT_METHOD' => 'Викликати батьківський метод',
-    'BEFORE_CODE_EXECUTION' => 'перед виконанням коду',
-=======
 
 
     'CALL_PARENT_METHOD' => 'Викликати батьківський метод',
@@ -182,22 +146,10 @@ $dictionary = array (
     'BEFORE_CODE_EXECUTION' => 'перед виконанням коду',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'AFTER_CODE_EXECUTION' => 'після виконання коду',
     'NEVER' => 'ніколи',
     'UPDATE' => 'Оновити',
     'CANCEL' => 'Скасувати',
-<<<<<<< HEAD
-    'MAKE_COPY' => 'Створити копію (клонувати)',
-    'ARE_YOU_SURE' => 'Ви впевнені? Будь ласка, підтвердіть операцію. ',
-    'DELETE' => 'Вилучити',
-    'DELETE_SELECTED' => 'Видалити обране',
-    'EXPORT_SELECTED' => 'Експорт обраного',
-    'CALL_METHOD' => 'Виклик методу',
-    'BY_URL' => 'За посиланням',
-    'COMMAND_LINE' => 'Через командний рядок',
-    'FILLOUT_REQURED' => 'Будь ласка, заповніть необхідні поля!',
-=======
 
     'MAKE_COPY' => 'Створити копію (клонувати)',
 
@@ -219,7 +171,6 @@ $dictionary = array (
     'FILLOUT_REQURED' => 'Будь ласка, заповніть необхідні поля!',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'NEW_OBJECT' => 'Новий об\'єкт',
     'TITLE' => 'Назва',
     'CLASS' => 'Клас',
@@ -232,23 +183,6 @@ $dictionary = array (
     'PROPERTIES' => 'Властивості',
     'METHODS' => 'Методи',
     'HISTORY' => 'Історія',
-<<<<<<< HEAD
-    'ADD_NEW_OBJECT' => 'Додати новий об\'єкт',
-    'PAGES' => 'Сторінки',
-    'EDIT' => 'Редагувати',
-    'NO_OBJECTS_DEFINED' => 'Немає заданих об\'єктів',
-    'ADD_NEW_PROPERTY' => 'Додати нову властивість',
-    'NEW_RECORD' => 'Новий запис',
-    'PATTERN' => 'Шаблон',
-    'TIME_LIMIT' => 'Обмеження за часом',
-    'SECONDS' => 'секунд',
-    'EXECUTE_ON_MATCH' => 'Виконати при збігу',
-    'SUBMIT' => 'Зберегти',
-    'ADD_NEW_RECORD' => 'Додати новий запис',
-    'EDIT_RECORD' => 'Редагування запису',
-    'NO_RECORDS_FOUND' => 'Немає даних',
-    'COMMAND' => 'Команда',
-=======
 
 
     'ADD_NEW_OBJECT' => 'Додати новий об\'єкт',
@@ -282,21 +216,10 @@ $dictionary = array (
     'COMMAND' => 'Команда',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'RUN_IN' => 'Виконати через',
     'MINUTES' => 'хвилини',
     'HOURS' => 'годинник',
     'PROCESSED' => 'оброблено',
-<<<<<<< HEAD
-    'IN_QUEUE' => 'в черзі',
-    'NEW_SCRIPT' => 'Новий сценарій',
-    'EXECUTE_SCRIPT_AFTER_UPDATE' => 'виконати після збереження',
-    'RUN_BY_URL' => 'Запуск за посиланням',
-    'ADD_NEW_SCRIPT' => 'Додати новий сценарій',
-    'GENERAL_SETTINGS' => 'Налаштування',
-    'SETTINGS_UPDATED' => 'Налаштування збережені!',
-    'DEFAULT_VALUE' => 'Значення за замовчуванням',
-=======
 
 
     'IN_QUEUE' => 'в черзі',
@@ -323,20 +246,12 @@ $dictionary = array (
     'DEFAULT_VALUE' => 'Значення за замовчуванням',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'RESET_TO_DEFAULT' => 'Скинути',
     'SEARCH' => 'Пошук',
     'USERNAME' => 'Ім\'я користувача',
     'NAME' => 'Ім\'я',
     'EMAIL' => 'E-mail',
     'SKYPE' => 'Skype',
-<<<<<<< HEAD
-    'MOBILE_PHONE' => 'Мобільний телефон',
-    'ADD_METHOD' => 'Додати новий метод',
-    'PARENT_METHODS' => 'Батьківські методи:',
-    'OVERWRITE' => 'Переписати',
-    'ONLY_CLASSES' => 'Не імпортувати об\'єкти ',
-=======
 
 
     'MOBILE_PHONE' => 'Мобільний телефон',
@@ -349,51 +264,20 @@ $dictionary = array (
     'OVERWRITE' => 'Переписати',
     'ONLY_CLASSES' => 'Не імпортувати об\'єкти ',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'NEW_METHOD' => 'Новий метод',
     'HOME' => 'Початок',
     'OFF' => 'Вимкнути',
     'ON' => 'Увімкнути',
-<<<<<<< HEAD
-    'ADD_NEW_SECTION' => 'Додати новий розділ',
-    'EXPAND' => 'Розширити',
-=======
 
 
     'ADD_NEW_SECTION' => 'Додати новий розділ',
     'EXPAND' => 'Розширити',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'PARENT_MENU_ITEM' => 'Батьківський пункт меню',
     'PRIORITY' => 'Пріоритет',
     'TYPE' => 'Тип',
     'LABEL' => 'Підпис',
-<<<<<<< HEAD
-    'NEW_WINDOW' => 'Нове вікно',
-    'URL' => 'Посилання',
-    'JS_COMMAND' => 'JavaScript команда',
-    'BUTTON' => 'Кнопка',
-    'ON_OFF_SWITCH' => 'Вимикач',
-    'SELECT_BOX' => 'Поле вибору',
-    'SLIDER_BOX' => 'Слайдер',
-    'PLUS_MINUS_BOX' => 'Плюс-мінус',
-    'TIME_PICKER' => 'Вибір часу',
-    'TEXT_BOX' => 'Текстове поле',
-    'DATE_BOX' => 'Дата',
-    'COLOR_PICKER' => 'Вибір кольору',
-    'CUSTOM_HTML_BOX' => 'HTML-блок',
-    'ICON' => 'Іконка',
-    'MIN_VALUE' => 'Мін. значення ',
-    'MAX_VALUE' => 'Макс. значення ',
-    'STEP_VALUE' => 'Крок змін',
-    'DATA' => 'Дані',
-    'INTERFACE' => 'Інтерфейс',
-    'AUTO_UPDATE_PERIOD' => 'Період автооновления',
-    'POLLING_PERIOD' => 'Період опитування',
-    'CURRENT_VALUE' => 'Поточне значення',
-    'PROPERTY' => 'Властивість',
-=======
 
 
     'NEW_WINDOW' => 'Нове вікно',
@@ -447,40 +331,11 @@ $dictionary = array (
     'PROPERTY' => 'Властивість',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'ONCHANGE_OBJECT' => 'Запускати Об\'єкт',
     'ONCHANGE_METHOD' => 'Запускати метод при зміні',
     'METHOD' => 'Метод',
     'ONCHANGE_SCRIPT' => 'Сценарій',
     'ONCHANGE_CODE' => 'Код',
-<<<<<<< HEAD
-    'TARGET_WINDOW' => 'Вікно',
-    'WIDTH' => 'Ширина',
-    'HEIGHT' => 'Висота',
-    'ON_THE_SAME_LEVEL' => 'На цьому рівні',
-    'CHILD_ITEMS' => 'Дочірні пункти',
-    'ADDED' => 'Додано',
-    'VALUE' => 'Значення',
-    'OLD_VALUE' => 'Старе значення',
-    'NEW_VALUE' => 'Нове значення',
-    'UPDATES' => 'Оновлення',
-    'NO_UPDATES_AVAILABLE' => 'Немає доступних оновлень',
-    'NEW_VERSION' => 'Нова версія',
-    'INSTALL_NEW_MODULES' => 'Встановити нові модулі',
-    'NO_MODULES_AVAILABLE' => 'Немає доступних модулів',
-    'GET_LIST_OF_MODULES' => 'Отримати список модулів',
-    'SUBMIT_NEWER_FILES' => 'Надіслати нові файли',
-    'NO_FILES_TO_SUBMIT' => 'Немає файлів для відправки',
-    'FOLDER' => 'Папка',
-    'YOUR_NAME' => 'Ваше ім\'я',
-    'YOUR_EMAIL' => 'Ваш e-mail',
-    'NOTES' => 'Нотатки',
-    'SUBMIT_SELECTED_FILES' => 'Надіслати вибрані файли',
-    'CHECK_FILES_FOR_SUBMIT' => 'Оберіть файли для відправки',
-    'DESIGN' => 'Дизайн',
-    'FILES_UPLOADED' => 'Файли завантажено',
-    'CLEAR_TEMPORARY_FOLDER' => 'Очистити тимчасову папку',
-=======
 
 
     'TARGET_WINDOW' => 'Вікно',
@@ -543,20 +398,11 @@ $dictionary = array (
     'CLEAR_TEMPORARY_FOLDER' => 'Очистити тимчасову папку',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'ADD_NEW_CLASS' => 'Додати новий клас',
     'OBJECTS' => 'Об\'єкти',
     'EXPORT' => 'Експорт',
     'EXPORT_CLASS_FULL' => 'Експорт Класу і Об\'єктів',
     'EXPORT_CLASS_NO_OBJECTS' => 'Експорт Класу (без об\'єктів)',
-<<<<<<< HEAD
-    'IMPORT_CLASS_FROM_FILE' => 'Імпортувати клас з файлу',
-    'IMPORT' => 'Імпортувати',
-    'NEW_CLASS' => 'Новий клас',
-    'PARENT_CLASS' => 'Батьківський клас',
-    'DO_NOT_SAVE_CLASS_ACTIVITY' => 'не зберігати активність об\'єктів класу в лог ',
-    'MAIN' => 'Основне',
-=======
 
 
     'IMPORT_CLASS_FROM_FILE' => 'Імпортувати клас з файлу',
@@ -573,48 +419,10 @@ $dictionary = array (
     'MAIN' => 'Основне',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'STRING_BACK' => 'Назад',
     'STRING_SUCCESS' => 'Дані були збережені!',
     'STRING_ERROR' => 'Помилка',
     'STRING_NEW_RECORD' => 'Новий запис',
-<<<<<<< HEAD
-    'SHOUTROOMS_TITLE' => 'Назва',
-    'SHOUTROOMS_PRIORITY' => 'Пріоритет',
-    'FORM_SUBMIT' => 'Зберегти',
-    'FORM_ADD' => 'Додати',
-    'FORM_CANCEL' => 'Скасувати',
-    'STRING_ADD_NEW' => 'Додати',
-    'SHOUTROOMS_STRING_PUBLIC' => 'Відкрита',
-    'SHOUTROOMS_STRING_PRIVATE' => 'Приватна',
-    'STRING_EDIT' => 'Редагувати',
-    'STRING_DELETE' => 'Вилучити',
-    'STRING_NOT_FOUND' => 'не знайдено',
-    'SHOUTROOMS_STRING_SHOUTROOMS' => 'ShoutRooms',
-    'NEW_LOCATION' => 'Нове місце розташування',
-    'ADD_NEW_LOCATION' => 'Додати нове місце розташування',
-    'LOADING' => 'Завантаження ...',
-    'PLEASE_LOGIN' => 'Будь ласка, увійдіть в систему.',
-    'SEND' => 'Надіслати',
-    'SHOUTBOX_STRING_DELETE_ALL' => 'Видалити все',
-    'STRING_PAGES' => 'Сторінки',
-    'MEMBERS_MEMBER' => 'Користувач',
-    'SHOUTBOX_MESSAGE' => 'Повідомлення',
-    'SHOUTBOX_ADDED' => 'Додано',
-    'STRING_DELETE_CONFIRM' => 'Ви впевнені?',
-    'DELETE_UNKNOWN_DEVICES' => 'Видалити невідомі пристрої',
-    'SERIAL' => 'Серійний номер',
-    'FIRST_ATTACHED' => 'Підключено вперше',
-    'LAST_ATTACHED' => 'Підключено в останній раз',
-    'EXECUTE_ON_ATTACH' => 'Виконати при підключенні',
-    'HOSTNAME' => 'Хост (адреса)',
-    'SEARCH_WORD' => 'Шукати слово',
-    'ONLINE_ACTION' => 'Дія при переході в Online',
-    'OFFLINE_ACTION' => 'Дія при переході в Offline',
-    'ONLINE_CHECK_INTERVAL' => 'Інтервал перевірки (коли online)',
-    'OFFLINE_CHECK_INTERVAL' => 'Інтервал перевірки (коли offline)',
-    'LOG' => 'Лог подій',
-=======
 
 
     'SHOUTROOMS_TITLE' => 'Назва',
@@ -698,23 +506,10 @@ $dictionary = array (
     'LOG' => 'Лог подій',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'ADD_NEW_HOST' => 'Додати новий хост',
     'ONLINE' => 'Online',
     'OFFLINE' => 'Offline',
     'UNKNOWN' => 'Не відомо',
-<<<<<<< HEAD
-    'DELETE_ALL_UNKNOWN_DEVICES' => 'Вилучити всі невідомі пристрої',
-    'DELETE_FOUND_ONCE' => 'Вилучити всі пристрої, виявлені тільки один раз',
-    'FOUND_FIRST' => 'Виявлено вперше',
-    'FOUND_LAST' => 'Виявлено в останній раз',
-    'PAST_DUE' => 'Пропущено',
-    'TODAY' => 'Сьогодні',
-    'NOTHING_TO_DO' => 'Нема чого робити ... Везе ж!',
-    'SOON' => 'Скоро',
-    'DONE_RECENTLY' => 'Нещодавно виконано',
-    'PREVIEW' => 'Перегляд',
-=======
 
 
     'DELETE_ALL_UNKNOWN_DEVICES' => 'Вилучити всі невідомі пристрої',
@@ -737,50 +532,21 @@ $dictionary = array (
     'PREVIEW' => 'Перегляд',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'SYSTEM_NAME' => 'Системне ім\'я',
     'EVENT' => 'Подія',
     'TASK' => 'Завдання',
     'DONE' => 'Готово',
     'DATE' => 'Дата',
-<<<<<<< HEAD
-    'NO_DUE_DATE' => 'без конкретної дати',
-=======
 
 
     'NO_DUE_DATE' => 'без конкретної дати',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'IS_REPEATING' => 'повторюється',
     'YEARLY' => 'Щороку',
     'MONTHLY' => 'Щомісяця',
     'WEEKLY' => 'Щотижня',
     'OTHER' => 'Інша',
-<<<<<<< HEAD
-    'RESTORE_IN' => 'Відновити через',
-    'IN_DAYS' => 'днів',
-    'AFTER_COMPLETION' => 'після виконання',
-    'MORE_DETAILS' => 'Деталі',
-    'ANY_USER' => 'Будь-який користувач',
-    'ANY_LOCATION' => 'Будь-яке місце розташування',
-    'RUN_SCRIPT' => 'Запустити службовий скрипт',
-    'WHEN_TASK_WILL_BE_DONE' => 'коли завдання буде виконано',
-    'SIMILAR_ITEMS' => 'Схожі записи',
-    'LOCATION_CODE' => 'Код міста (city id)',
-    'REFRESH' => 'Оновити',
-    'ERROR_GETTING_WEATHER_DATA' => 'Помилка отримання даних про погоду',
-    'CLEAR_ALL' => 'Очистити все',
-    'ADD_NEW_CHANNEL' => 'Додати новий канал',
-    'LAST_CHECKED' => 'Остання перевірка',
-    'RSS_CHANNELS' => 'RSS-канали',
-    'RSS_NEWS' => 'RSS-новини',
-    'NEW_CHANNEL' => 'Новий канал',
-    'SOURCE_URL' => 'URL-джерело',
-    'CHECK_EVERY' => 'Перевіряти кожні',
-    'EXECUTE_FOR_NEW_RECORDS' => 'Виконувати для нових записів',
-    'TERMINAL_FROM' => 'З терміналу',
-=======
 
 
     'RESTORE_IN' => 'Відновити через',
@@ -843,20 +609,15 @@ $dictionary = array (
     'TERMINAL_FROM' => 'З терміналу',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'USER_FROM' => 'Від користувача',
     'USER_TO' => 'Коритувачу',
     'WINDOW' => 'Вікно',
     'EXPIRE' => 'Завершується',
-<<<<<<< HEAD
-    'TERMINAL_TO' => 'До терміналу',
-=======
 
 
     'TERMINAL_TO' => 'До терміналу',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'NEW_PAGE' => 'Нова сторінка',
     'APP' => 'Додаток',
     'QUANTITY' => 'Кількість',
@@ -864,76 +625,17 @@ $dictionary = array (
     'CATEGORY' => 'Категорія',
     'ADD_NEW_CATEGORY' => 'Додати категорію',
     'PRODUCT' => 'Продукт',
-<<<<<<< HEAD
-    'DELETE_CATEGORY' => 'Вилучити категорію',
-    'MISSING' => 'Відсутні',
-=======
 
 
     'DELETE_CATEGORY' => 'Вилучити категорію',
     'MISSING' => 'Відсутні',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'IN_STORAGE' => 'У наявності',
     'BUY' => 'Купити',
     'CODES' => 'Коди',
     'PARENT' => 'Батько',
     'ROOT' => '(корінь)',
-<<<<<<< HEAD
-    'CREATE_NOTE' => 'Створити замітку',
-    'TOTAL' => 'Кількість',
-    'EXPIRE_IN' => 'Завершується через',
-    'DAYS' => 'днів',
-    'CATEGORIES' => 'Категорії',
-    'ALL_PRODUCTS' => 'Всі продукти',
-    'EXPIRED' => 'минулий',
-    'SHOPPING_LIST' => 'Покупки',
-    'PRODUCTS' => 'Продукти',
-    'IMAGE' => 'Зображення',
-    'EXPIRATION_DATE' => 'Дата закінчення терміну придатності',
-    'DEFAULT_EXPIRE_IN' => 'За замовчуванням закінчується через',
-    'UPDATED' => 'Додано',
-    'RECOMENDED_QUANTITY' => 'Рекомендована кількість',
-    'DELETE_FROM_DATABASE' => 'Вилучити з бази даних',
-    'RESCAN_DEVICES' => 'Сканувати пристрою',
-    'NO_DEVICES_FOUND' => 'Немає пристроїв',
-    'ID' => 'ID',
-    'CHECK_INTERVAL' => 'Інтервал перевірки',
-    'LINKED_OBJECT' => 'Зв\'язаний об\'єкт',
-    'LINKED_PROPERTY' => 'Пов\'язана вл-ть',
-    'SET' => 'встановити',
-    'ONCHANGE_ACTION' => 'Дія при зміні',
-    'RESET' => 'Скинути',
-    'MORE_INFO' => 'Деталі',
-    'PATH' => 'Шлях',
-    'INCLUDE_SUBFOLDERS' => 'включаючи підпапки',
-    'CHECK_MASK' => 'Маска файлів',
-    'EXAMPLE' => 'Приклад',
-    'AUTHORIZATION_REQUIRED' => 'необхідно ввійти в систему',
-    'PASSWORD' => 'Пароль',
-    'SOURCE_PAGE_ENCODING' => 'Кодування сторінки',
-    'OPTIONAL' => 'не обов\'язково',
-    'BY_DEFAULT' => 'за замовчуванням',
-    'SEARCH_PATTERN' => 'Шаблон пошуку',
-    'LATEST_VALUE' => 'Останнє значення',
-    'ADD_NEW' => 'Додати',
-    'REFRESH_ALL' => 'Оновити все',
-    'NEW_PROPERTY' => 'Нова властивість',
-    'KEEP_HISTORY_DAYS' => 'Зберігати історію (днів)',
-    'DO_NOT_KEEP' => 'не зберігати історію',
-    'KEEP_HISTORY' => 'зберігати історію',
-    'PARENT_PROPERTIES' => 'Батьківські властивості',
-    'ADD_NEW_COLLECTION' => 'Додати нову колекцію',
-    'NEW_SKIN_INSTALLED' => 'Новий skin встановлений',
-    'INCORRECT_FILE_FORMAT' => 'Некоректний формат файлу',
-    'CANNOT_CREATE_FOLDER' => 'Не можливо створити теку',
-    'SKIN_ALREADY_EXISTS' => 'Skin вже існує',
-    'UPLOAD_NEW_SKIN' => 'Завантаження нового skin-а',
-    'INSTALL_SKIN' => 'Встановити skin',
-    'NO_ADDITIONAL_SKINS_INSTALLED' => 'Немає додаткових skin-ів',
-    'BACKGROUND' => 'Фонове зображення',
-=======
 
 
     'CREATE_NOTE' => 'Створити замітку',
@@ -1058,7 +760,6 @@ $dictionary = array (
     'BACKGROUND' => 'Фонове зображення',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'SCENE' => 'Сцена',
     'ADD_NEW_SCENE' => 'Додати нову сцену',
     'USE_ELEMENT_TO_POSITION_RELATED' => 'Позиціонувати щодо',
@@ -1067,23 +768,13 @@ $dictionary = array (
     'LEFT' => 'Лівий відступ',
     'STATES' => 'Стани',
     'ADD_NEW_STATE' => 'Додати новий стан',
-<<<<<<< HEAD
-=======
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'RUN_SCRIPT_ON_CLICK' => 'Виконати сценарій при кліці',
     'SHOW_MENU_ON_CLICK' => 'Показати меню при кліці',
     'SHOW_HOMEPAGE_ON_CLICK' => 'Показати домашню сторінку при кліці',
     'SHOW_URL_ON_CLICK' => 'Відкрити посилання при кліці',
     'SHOW_SCENE_ON_CLICK' => 'Показати іншу сцену',
-<<<<<<< HEAD
-    'DISPLAY_CONDITION' => 'Умова відображення',
-    'ALWAYS_VISIBLE' => 'завжди показувати',
-    'SIMPLE' => 'просте',
-    'ADVANCED' => 'розширене',
-    'SWITCH_SCENE_WHEN_ACTIVATED' => 'перемкнути на сцену при активації',
-=======
 
 
     'DISPLAY_CONDITION' => 'Умова відображення',
@@ -1096,7 +787,6 @@ $dictionary = array (
 
     'SWITCH_SCENE_WHEN_ACTIVATED' => 'перемкнути на сцену при активації',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'APPEAR_ANIMATION' => 'Анімація появи',
     'APPEAR_LEFTTORIGHT' => 'Зліва-на-право',
     'APPEAR_RIGHTTOLEFT' => 'Праворуч-на-ліво',
@@ -1104,14 +794,6 @@ $dictionary = array (
     'APPEAR_BOTTOMTOTOP' => 'Знизу-вгору',
     'APPEAR_BLINK' => 'Моргание',
     'APPEAR_SCALE' => 'Масштаб',
-<<<<<<< HEAD
-    'ADD_NEW_ELEMENT' => 'Додати новий елемент',
-    'ELEMENTS' => 'Елементи',
-    'CAN_PLAY_MEDIA' => 'може програвати медіа-контент',
-    'PLAYER_TYPE' => 'Тип плеєра',
-    'DEFAULT' => 'За замовчуванням',
-    'MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED' => 'Перевірте, що включена можливість управління по HTTP-протоколу',
-=======
 
 
     'ADD_NEW_ELEMENT' => 'Додати новий елемент',
@@ -1128,49 +810,33 @@ $dictionary = array (
     'MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED' => 'Перевірте, що включена можливість управління по HTTP-протоколу',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'PLAYER_PORT' => 'Порт доступу до плеєра',
     'PLAYER_USERNAME' => 'Ім користувача доступу до плеєра',
     'PLAYER_PASSWORD' => 'Пароль доступу до плеєра',
     'DEVICE' => 'Пристрій',
-<<<<<<< HEAD
-    'CLEAR_LOG' => 'Очистити лог',
-=======
 
 
     'CLEAR_LOG' => 'Очистити лог',
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'OPTIMIZE_LOG' => 'Оптимізувати лог',
     'LATITUDE' => 'Широта',
     'LONGITUDE' => 'Довгота',
     'SPEED' => 'Швидкість',
     'ACCURACY' => 'Точність',
-<<<<<<< HEAD
-=======
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'BATTERY_LEVEL' => 'Рівень заряду',
     'CHARGING' => 'На зарядці',
     'MAP' => 'Карта',
     'RANGE' => 'Радіус дії',
     'ALTITUDE' => 'Висота',
     'PROVIDER' => 'Провайдер',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'LOCATIONS' => 'Місця',
     'DEVICES' => 'Пристрої',
     'ACTIONS' => 'Дії',
     'HOME_LOCATION' => 'Будинок (місце)',
-<<<<<<< HEAD
-    'ACTION_TYPE' => 'Тип дії',
-    'EXECUTED' => 'Виконано',
-    'VIRTUAL_USER' => 'Віртуальний користувач',
-=======
 
     'ACTION_TYPE' => 'Тип дії',
     'EXECUTED' => 'Виконано',
@@ -1178,7 +844,6 @@ $dictionary = array (
 
     'VIRTUAL_USER' => 'Віртуальний користувач',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'WIND' => 'Вітер',
     'PRESSURE' => 'Тиск',
     'HUMIDITY' => 'Вологість',
@@ -1202,15 +867,6 @@ $dictionary = array (
     'WNW' => 'Пд',
     'NW' => 'Пн',
     'NNW' => 'ПС',
-<<<<<<< HEAD
-    'LONG_OPERATION_WARNING' => 'Увага: дана операція може зайняти тривалий час (кілька хвилин). Будь ласка, дочекайтеся завершення після запуску. ',
-    'STARRED' => 'Вибране',
-    'USE_BACKGROUND' => 'Використовувати фон',
-    'YES' => 'Так',
-    'NO' => 'Немає',
-    'USE_JAVASCRIPT' => 'Додатковий код JavaScript',
-    'USE_CSS' => 'Додатковий код CSS',
-=======
 
 
     'LONG_OPERATION_WARNING' => 'Увага: дана операція може зайняти тривалий час (кілька хвилин). Будь ласка, дочекайтеся завершення після запуску. ',
@@ -1224,7 +880,6 @@ $dictionary = array (
     'USE_JAVASCRIPT' => 'Додатковий код JavaScript',
     'USE_CSS' => 'Додатковий код CSS',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'PERIOD' => 'Період',
     'PERIOD_TODAY' => 'Сегодня',
     'PERIOD_DAY' => 'Доба (24 години)',
@@ -1233,29 +888,12 @@ $dictionary = array (
     'PERIOD_CUSTOM' => 'Вибрати',
     'SEARCH' => 'Пошук',
     'SHOWHIDE' => 'Показати / Приховати',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'AUTO_UPDATE' => 'Авто обновл.',
     'CHANNEL' => 'Канал',
     'ADD_URL' => 'Додати URL',
     'OPEN' => 'Відкрити',
     'SEND_TO_HOME' => 'Над. додому ',
-<<<<<<< HEAD
-    'EXT_ID' => 'Використовувати елемент',
-    'VISIBLE_DELAY' => 'Затримка при ротації',
-    'TREE_VIEW' => 'У вигляді Дерева',
-    'LIST_VIEW' => 'У вигляді Списку',
-    'FILTER_BY_CLASS' => 'Фільтр по Класу',
-    'FILTER_BY_LOCATION' => 'Фільтр по Положенням',
-    'PHOTO' => 'Фотографія',
-    'DEFAULT_USER' => 'користувач за замовчуванням для системи',
-    'IS_ADMIN' => 'адміністратор системи',
-    'COUNTER_REQUIRED' => 'Кількість спроб',
-    'COUNTER_REQUIRED_COMMENT' => '(0 для перемикання з першого разу)',
-    'ACCESS_CONTROL' => 'Контроль доступу',
-=======
 
     'EXT_ID' => 'Використовувати елемент',
     'VISIBLE_DELAY' => 'Затримка при ротації',
@@ -1275,22 +913,16 @@ $dictionary = array (
 
     'ACCESS_CONTROL' => 'Контроль доступу',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'SECURITY_OBJECT_ID' => 'Об\'єкт захисту',
     'SECURITY_TERMINALS' => 'Доступ з терміналів',
     'SECURITY_USERS' => 'Доступно для користувачів',
     'SECURITY_TIMES' => 'Доступно в години',
     'ALLOW_EXCEPT_ABOVE' => 'завжди є за винятком обраного',
-<<<<<<< HEAD
-    'INLINE_POSITION' => 'Розташувати на рівні попереднього елемента',
-    'SUB_PRELOAD' => 'Завантажувати дочірні елементи в розкриваєму область',
-=======
 
     'INLINE_POSITION' => 'Розташувати на рівні попереднього елемента',
 
     'SUB_PRELOAD' => 'Завантажувати дочірні елементи в розкриваєму область',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'RUN_PERIODICALLY' => 'Виконувати періодично',
     'RUN_TIME' => 'Час запуску',
     'RUN_WEEKDAYS' => 'Дні тижня',
@@ -1301,28 +933,19 @@ $dictionary = array (
     'WEEK_THU' => 'четвер',
     'WEEK_FRI' => 'п\'ятниця',
     'WEEK_SAT' => 'субота',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'PARENT_CONTEXT' => 'Доступно в контексті',
     'IS_CONTEXT' => 'використовувати як контекст',
     'TIMEOUT' => 'Час очікування команди',
     'SET_CONTEXT_TIMEOUT' => 'Після закінчення часу переключити в',
     'TIMEOUT_CODE' => 'Після закінчення часу виконати',
     'GLOBAL_CONTEXT' => 'глобальний контекст',
-<<<<<<< HEAD
-    'LAST_RULE' => 'не перевіряти інші шаблони при збігу',
-    'SETTINGS_SECTION_' => 'Загальні',
-    'SETTINGS_SECTION_HOOK' => 'Обробники',
-=======
 
     'LAST_RULE' => 'не перевіряти інші шаблони при збігу',
 
     'SETTINGS_SECTION_' => 'Загальні',
     'SETTINGS_SECTION_HOOK' => 'Обробники',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICE_ID' => 'ID пристрою',
     'REQUEST_TYPE' => 'Тип запиту',
     'REQUEST_START' => 'Стартова адреса',
@@ -1330,11 +953,8 @@ $dictionary = array (
     'RESPONSE_CONVERT' => 'Перетворення даних',
     'CHECK_NEXT' => 'Наступна перевірка',
     'CODE_TYPE' => 'Використовувати для програмування',
-<<<<<<< HEAD
-=======
 
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'GENERAL' => 'Загальна',
     'TIME' => 'Час',
     'LOGIC' => 'Логіка',
@@ -1344,30 +964,15 @@ $dictionary = array (
     'LISTS' => 'Списки',
     'VARIABLES' => 'Змінні',
     'FUNCTIONS' => 'Функції',
-<<<<<<< HEAD
-    'DO_NOTHING' => 'Нічого не робити',
-    'DO_ONCLICK' => 'Виконати при кліці',
-=======
 
     'DO_NOTHING' => 'Нічого не робити',
     'DO_ONCLICK' => 'Виконати при кліці',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'STYLE' => 'Стиль',
     'PLACE_IN_CONTAINER' => 'Розмістити у контейнері',
     'POSITION_TYPE' => 'Позиціонування',
     'POSITION_TYPE_ABSOLUTE' => 'Абсолютна',
     'POSITION_TYPE_SIDE' => 'Один за одним',
-<<<<<<< HEAD
-    'CONTAINER' => 'Контейнер',
-    'INFORMER' => 'інформери',
-    'NAV_LINK' => 'Нав. посилання (нове вікно) ',
-    'WARNING' => 'Повідомлення',
-    'NAV_LINK_GO' => 'Нав. посилання (перехід) ',
-    'TOOLS' => 'Інструменти',
-    'COLOR' => 'Колір',
-    'WALLPAPER' => 'Шпалери',
-=======
 
     'CONTAINER' => 'Контейнер',
     'INFORMER' => 'інформери',
@@ -1381,22 +986,16 @@ $dictionary = array (
 
     'WALLPAPER' => 'Шпалери',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'ADDITIONAL_STATES' => 'Додаткові стану',
     'MODE_SWITCH' => 'Індикатор режиму',
     'HIGH_ABOVE' => 'Значення вище',
     'LOW_BELOW' => 'Значення нижче',
     'ADDITIONAL_STATES_NOTE' => '(ви можете використовувати конструкцію% object.property% в якості значень меж)',
     'UNIT' => 'Одиниця виміру',
-<<<<<<< HEAD
-    'COUNTER' => 'Лічильник',
-    'USE_CLASS_SETTINGS' => 'використовувати налаштування властивостей класу',
-=======
 
     'COUNTER' => 'Лічильник',
     'USE_CLASS_SETTINGS' => 'використовувати налаштування властивостей класу',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'USING_LATEST_VERSION' => 'Ви використовуєте останню версію!',
     'LATEST_UPDATES' => 'Останні оновлення',
     'UPDATE_TO_THE_LATEST' => 'Оновити систему',
@@ -1405,12 +1004,6 @@ $dictionary = array (
     'UPLOAD_BACKUP' => 'Відновити резервну копію',
     'CONTINUE' => 'Продовжити',
     'RESTORE' => 'Відновити',
-<<<<<<< HEAD
-    'SHOW' => 'Показати',
-    'HIDE' => 'Приховати',
-    'UPDATING' => 'Добавити до оновлення ',
-    'NOT_UPDATING' => 'Не оновлюється ',
-=======
 
     'SHOW' => 'Показати',
     'HIDE' => 'Приховати',
@@ -1418,7 +1011,6 @@ $dictionary = array (
     'UPDATING' => 'Добавити до оновлення ',
     'NOT_UPDATING' => 'Не оновлюється ',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'SCRIPTS' => 'Сценарії',
     'CLASSES' => 'Класи / об\'єкти',
     'CLASS_PROPERTIES' => 'Властивості класу',
@@ -1428,23 +1020,15 @@ $dictionary = array (
     'OBJECT_METHODS' => 'Методи об\'єкта',
     'PORT' => 'Порт',
     'USE_DEFAULT' => 'використовувати за замовчуванням',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'FAVORITES' => 'Вибране',
     'RECENTLY_PLAYED' => 'Нещодавно програно',
     'CLEAR_FAVORITES' => 'Очистити Вибране',
     'CLEAR_HISTORY' => 'Очистити Нещодавно програне',
-<<<<<<< HEAD
-    'SKIP_SYSTEM' => 'Не реагувати на системні повідомлення',
-    'ONETIME_PATTERN' => 'Разовий шаблон (буде видалено)',
-=======
 
     'SKIP_SYSTEM' => 'Не реагувати на системні повідомлення',
     'ONETIME_PATTERN' => 'Разовий шаблон (буде видалено)',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'PATTERN_ENTER' => 'вхід',
     'PATTERN_EXIT' => 'вихід',
     'PATTERN_TYPE' => 'Тип шаблону',
@@ -1454,27 +1038,18 @@ $dictionary = array (
     'ADD_EXIT_CODE' => 'Додати код виходу',
     'ADVANCED_CONFIG' => 'Розширена настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Оновити всі встановлені додатки',
-<<<<<<< HEAD
-    'SAVE_CHANGES' => 'Зберегти зміни',
-    'ADD_PANE' => 'Додати панель',
-=======
 
     'SAVE_CHANGES' => 'Зберегти зміни',
     'ADD_PANE' => 'Додати панель',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DATA_KEY' => 'Ключові дані',
     'DATA_TYPE' => 'Тип даних',
     'DATA_TYPE_GENERAL' => 'Загальний формат',
     'DATA_TYPE_IMAGE' => 'Зображення',
     'CLASS_TEMPLATE' => 'Шаблон відображення',
-<<<<<<< HEAD
-    'TEST' => 'test',
-=======
 
     'TEST' => 'test',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'MODULES_UPDATES_AVAILABLE' => 'Доступні оновлення модулів',
     'SYSTEM_UPDATES_AVAILABLE' => 'Доступні оновлення системи',
     'ERRORS_SAVED' => 'Збережено помилки',
@@ -1502,24 +1077,12 @@ $dictionary = array (
     'DEVICES_SMOKE_SENSOR' => 'Датчик диму',
     'DEVICES_COUNTER' => 'Лічильник',
     'DEVICES_UNIT' => 'Одиниця виміру',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
     'M_PRESSURE' => 'тор',
     'M_WATT' => 'Вт',
-<<<<<<< HEAD
-// ----
-    'DEVICES_LINKS' => 'Зміни, пов\'язані пристрої',
-    'DEVICES_STATUS' => 'Статус',
-    'DEVICES_LOGIC_ACTION' => 'Дії',
-    'DEVICES_CURRENT_VALUE' => 'Поточне значення',
-    'DEVICES_CURRENT_HUMIDITY' => 'Вологість',
-    'DEVICES_CURRENT_TEMPERATURE' => 'Температура',
-=======
 
 // ----
     'DEVICES_LINKS' => 'Зміни, пов\'язані пристрої',
@@ -1532,7 +1095,6 @@ $dictionary = array (
     'DEVICES_CURRENT_HUMIDITY' => 'Вологість',
     'DEVICES_CURRENT_TEMPERATURE' => 'Температура',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_MIN_VALUE' => 'Нижній поріг',
     'DEVICES_MAX_VALUE' => 'Верхній поріг',
     'DEVICES_NOTIFY' => 'Повідомляти при виході за поріг',
@@ -1543,26 +1105,17 @@ $dictionary = array (
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимий час відсутності даних (годин)',
     'DEVICES_MAIN_SENSOR' => 'Основний сенсор приміщення',
     'DEVICES_NOT_UPDATING' => 'не оновлюється',
-<<<<<<< HEAD
-    'DEVICES_IS_ON' => 'Включено',
-    'DEVICES_IS_CLOSED' => 'Закрито',
-    'DEVICES_MOTION_DETECTED' => 'Виявлено',
-=======
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрито',
 
     'DEVICES_MOTION_DETECTED' => 'Виявлено',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_PRESS' => 'Натиснути',
     'DEVICES_TURN_ON' => 'Ввімкнути',
     'DEVICES_TURN_OFF' => 'Вимкнути',
     'DEVICES_SET_COLOR' => 'Встановити колір',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_GROUP_ECO' => 'Вимикати в режимі економії',
     'DEVICES_GROUP_ECO_ON' => 'Вмикати при виході з режиму економії',
     'DEVICES_GROUP_SUNRISE' => 'Вимикати на світанку',
@@ -1571,36 +1124,20 @@ $dictionary = array (
     'DEVICES_LOADTYPE' => 'Тип пристрою',
     'DEVICES_LOADTYPE_LIGHT' => 'Освітлення',
     'DEVICES_LOADTYPE_POWER' => 'Різне',
-<<<<<<< HEAD
-    'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
-    'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену',
-=======
 
     'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
     'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_LINKS_NOT_ADDED' => 'Немає пов\'язаних пристроїв',
     'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв\'язків',
     'DEVICES_LINKS_COMMENT' => 'Коментар (не обов\'язково)',
     'DEVICES_LINKS_LINKED_DEVICE' => 'Пов\'язаний пристрій',
     'DEVICES_LINKS_ADDED' => 'Зміни, пов\'язані пристрої',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_LINK_ACTION_TYPE' => 'Дія',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Ввімкнути',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Вимкнути',
     'DEVICES_LINK_TYPE_SWITCH' => 'Перемкнути',
-<<<<<<< HEAD
-    'DEVICES_LINK_SWITCH_IT' => 'Ввімкнути / Вимкнути',
-    'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Використання іншого пристроєм за подією',
-    'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Затримка виконання (секунд)',
-    'DEVICES_LINK_SET_COLOR' => 'Встановити колір',
-    'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Встановити колір за подією',
-    'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Колір',
-=======
 
     'DEVICES_LINK_SWITCH_IT' => 'Ввімкнути / Вимкнути',
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Використання іншого пристроєм за подією',
@@ -1610,22 +1147,12 @@ $dictionary = array (
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Встановити колір за подією',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Колір',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_LINK_SENSOR_SWITCH' => 'Умовне керування',
     'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Використання іншого пристрою за показаннями датчика',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION' => 'Тип умови',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_ABOVE' => 'Вище заданого',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION_BELOW' => 'Нижче заданого',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_VALUE' => 'Граничне значення',
-<<<<<<< HEAD
-    'DEVICES_LINK_SENSOR_PASS' => 'Пересилання даних',
-    'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Пересилання даних від сенсора на інший пристрій',
-    'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Керування пристроєм',
-    'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Керування інших пристроїв в залежності від статусу термостата',
-    'DEVICES_LINK_THERMOSTAT_INVERT' => 'інвертоване встановлення статусу',
-    'DEVICES_UPDATE_CLASSSES' => 'Оновити класи',
-    'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Створити автоматично',
-=======
 
     'DEVICES_LINK_SENSOR_PASS' => 'Пересилання даних',
     'DEVICES_LINK_SENSOR_PASS_DESCRIPTION' => 'Пересилання даних від сенсора на інший пристрій',
@@ -1638,33 +1165,23 @@ $dictionary = array (
     'DEVICES_UPDATE_CLASSSES' => 'Оновити класи',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Створити автоматично',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_PATTERN_TURNON' => 'включи | запали | ввімкни',
     'DEVICES_PATTERN_TURNOFF' => 'вимкни | потушкуй | відключи',
     'DEVICES_DEGREES' => 'градусів',
     'DEVICES_STATUS_OPEN' => 'відкритий',
     'DEVICES_STATUS_CLOSED' => 'закритий',
     'DEVICES_COMMAND_CONFIRMATION' => 'Готово | Зроблено | Як побажаєте',
-<<<<<<< HEAD
-    'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
-    'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є.',
-    'DEVICES_ROOMS_ACTIVITY' => 'Активність:',
-=======
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є.',
     'DEVICES_ROOMS_ACTIVITY' => 'Активність:',
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_PASSED_NOW' => 'щойно',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
     'DEVICES_PASSED_MINUTES_AGO' => 'хв. назад',
     'DEVICES_PASSED_HOURS_AGO' => 'г. назад',
     'DEVICES_CHOOSE_EXISTING' => '... або виберіть вже доданий пристрій',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_CAMERA' => 'IP-камера',
     'DEVICES_CAMERA_STREAM_URL' => 'URL відео-потоку',
     'DEVICES_CAMERA_USERNAME' => 'Ім\'я користувача',
@@ -1680,10 +1197,7 @@ $dictionary = array (
     'DEVICES_CAMERA_PREVIEW_ONCLICK' => 'Дія після натискання на зображення',
     'DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE' => 'Збільшити зображення',
     'DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL' => 'Перейти на потік',
-<<<<<<< HEAD
-=======
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
@@ -1695,12 +1209,6 @@ $dictionary = array (
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_ALL_BY_TYPE' => 'Всі по типах',
     'DEVICES_ALL_BY_ROOM' => 'Всі по кімнатах',
-<<<<<<< HEAD
-    'AUTO_LINK' => 'Автоматичний запуск сценарію',
-    'FAVORITE_DEVICE' => 'У списку швидкого доступу',
-     /* end module names */
-);
-=======
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
@@ -1710,7 +1218,6 @@ $dictionary = array (
 
 );
 
->>>>>>> fe8a0f90a8d44f5ddc3ec996f08c64d4e300b41c
 foreach ($dictionary as $k => $v) {
     if (!defined('LANG_' . $k)) {
         define('LANG_' . $k, $v);
