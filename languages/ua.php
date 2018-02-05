@@ -669,7 +669,7 @@ $dictionary = array (
     'DELETE_FROM_DATABASE' => 'Вилучити з бази даних',
 
 
-    'RESCAN_DEVICES' => 'Сканувати пристрою',
+    'RESCAN_DEVICES' => 'Сканувати пристрої',
 
 
     'NO_DEVICES_FOUND' => 'Немає пристроїв',
