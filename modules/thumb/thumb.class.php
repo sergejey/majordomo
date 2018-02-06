@@ -36,7 +36,11 @@ function run() {
   if ($this->live) {
    $out['LIVE']=$this->live;
   }
-
+  
+  if ($this->stream) {
+   $out['STREAM']=$this->stream;
+  }
+  
   if ($this->userpassword) {
    $this->userpassword=processTitle($this->userpassword);
    $tmp=explode(':', $this->userpassword);
