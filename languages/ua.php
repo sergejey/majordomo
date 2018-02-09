@@ -13,9 +13,14 @@ $dictionary = array (
 
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
-    'DEFAULT_COMPUTER_NAME' => 'Василіса',
+    'DEFAULT_COMPUTER_NAME' => 'Аліса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-    'WELCOME_TEXT' => 'Спасибі, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації. <br/> <br/> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#> "target = _blank> Веб-сайт </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Форум </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> Facebook сторінка </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Панель управління </a> </ small> ',
+    'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.
+        <br /><br />
+        Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a>
+        <br /><br />
+        <small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a>
+        </small>',
     'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
