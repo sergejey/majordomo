@@ -508,10 +508,6 @@ function getObjectsByClass($class_name)
 
 
 function getClassProperties($class_id, $def='') {
-
-    global $cached_class_properties;
-    if (isset($cached_class_properties[$class_id])) return $cached_class_properties[$class_id];
-
     $class=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='".(int)$class_id."' OR TITLE LIKE '".DBSafe($class_id)."')");
     $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$class['ID']."' AND OBJECT_ID=0");
     $res=$properties;
@@ -538,12 +534,10 @@ function getClassProperties($class_id, $def='') {
             }
         }
     }
-    $cached_class_properties[$class_id]=$res;
     return $res;
 }
 
 function getKeyData($object_id) {
-    startMeasure('getKeyData');
     $object_rec=SQLSelectOne("SELECT ID,TITLE,CLASS_ID FROM objects WHERE ID=".(int)$object_id);
     $props=getClassProperties($object_rec['CLASS_ID']);
     $add_description='';
@@ -555,7 +549,6 @@ function getKeyData($object_id) {
             }
         }
     }
-    endMeasure('getKeyData');
     return $add_description;
 }
 

@@ -93,13 +93,13 @@
 
   // SEARCH RESULTS
 
-  if ($this->action!='admin') {
-   $res=$this->getDynamicElements($qry);
-  } else {
-   $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY PRIORITY DESC, TITLE");
-  }
+  $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY PRIORITY DESC, TITLE");
 
    if ($res[0]['ID']) {
+
+    if ($this->action!='admin') {
+     $res=$this->getDynamicElements($qry);
+    }
 
     $this->processMenuElements($res);
     if ($this->action=='admin') {

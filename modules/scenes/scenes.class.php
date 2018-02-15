@@ -630,7 +630,6 @@ function usual(&$out) {
       for($i=0;$i<$total;$i++) {
        if (is_array($elements[$i]['STATES'])) {
         foreach($elements[$i]['STATES'] as $st) {
-         if ($elements[$i]['TYPE']=='container') unset($st['HTML']);
          $states[]=$st;
         }
        }
@@ -698,7 +697,6 @@ function usual(&$out) {
       for($i=0;$i<$total;$i++) {
        if (is_array($elements[$i]['STATES'])) {
         foreach($elements[$i]['STATES'] as $st) {
-         if ($elements[$i]['TYPE']=='container') unset($st['HTML']);
          $states[]=$st;
         }
        }
@@ -1176,17 +1174,6 @@ function usual(&$out) {
          $elements[$ie]['STATES']=$states;
          $res2[]=$elements[$ie];
        }
-
-       if (is_array($elements[$ie]['STATES'])) {
-        $total_states=count($elements[$ie]['STATES']);
-        for($is=0;$is<$total_states;$is++) {
-         if ($elements[$ie]['TYPE']=='container') {
-          unset($elements[$ie]['STATES'][$is]['HTML']);
-         }
-        }
-       }
-
-
       }
       return $res2;
 
@@ -1243,9 +1230,6 @@ function usual(&$out) {
        if ($elements[$ie]['TYPE']=='container') {
         if (!is_array($options) || $options['ignore_sub']!=1) {
          startMeasure('getSubElements');
-         $elements[$ie]['STATE']=$elements[$ie]['STATES'][0]['STATE'];
-         $elements[$ie]['STATE_ID']=$elements[$ie]['STATES'][0]['ID'];
-
          if (checkAccess('scene_elements', $elements[$ie]['ID'])) {
           $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
          } else {

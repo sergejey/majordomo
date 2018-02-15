@@ -38,15 +38,16 @@ $result = $app->run();
 endMeasure('apprun');
 
 startMeasure('part2');
-
+// BEGIN: filter output
 if ($filterblock != '')
 {
    $blockPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($blockPattern, $result, $match);
    $result = $match[1];
 }
+// END: filter output
 
-startMeasure('languageConstants');
+// BEGIN: language constants
 if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
 {
    $total = count($matches[0]);
@@ -62,18 +63,22 @@ if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
       }
    }
 }
-endMeasure('languageConstants');
+// END: language constants
 
 $result = str_replace("nf.php", "admin.php", $result);
 
 require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 
-startMeasure('accelerationProcess');
 if (!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1) {
- $result = preg_replace('/href="(\/admin\.php.+?)">/is','href="\1" onclick="return partLoad(this.href);">',$result);
+ if (preg_match_all('/href="(\/admin\.php.+?)">/is',$result,$matches)) {
+    $total = count($matches[1]);
+    for ($i = 0; $i < $total; $i++) {
+       $result=str_replace($matches[0][$i],'href="'.$matches[1][$i].'" onclick="return partLoad(this.href);">',$result);
+    }
+ }
 }
-endMeasure('accelerationProcess');
+
 
 endMeasure('part2');
 
@@ -119,6 +124,7 @@ if ($_GET['part_load']) {
       $session->save();
       $db->Disconnect(); // closing database connection
       exit;
+
 }
 
 startMeasure('echoall');

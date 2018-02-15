@@ -118,16 +118,6 @@ class settings extends module {
  function admin(&$out) {
  global $updated;
 
-  $to_remove = array('BLUETOOTH_CYCLE','SKYPE_CYCLE','TWITTER_CKEY','TWITTER_CSECRET','TWITTER_ATOKEN','TWITTER_ASECRET','TTS_ENGINE','PUSHOVER_USER_KEY',
-      'PUSHOVER_LEVEL','GROWL_ENABLE','GROWL_HOST','GROWL_PASSWORD','GROWL_LEVEL','PUSHBULLET_KEY','PUSHBULLET_LEVEL','PUSHBULLET_DEVICE_ID',
-      'PUSHBULLET_PREFIX','YANDEX_TTS_KEY','LOGGER_DESTINATION');
-  $total = count($to_remove);
-  for($i=0;$i<$total;$i++) {
-   $to_remove[$i]="'".$to_remove[$i]."'";
-  }
-  SQLExec("DELETE FROM settings WHERE `NAME` IN (".implode(',',$to_remove).")");
-
-
  if ($updated) {
   $out['UPDATED']=1;
  }

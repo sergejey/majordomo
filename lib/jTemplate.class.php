@@ -658,11 +658,11 @@ class jTemplate
                {
                   include_once(DIR_MODULES . $module_data["name"] . '/' . $module_data["name"] . ".class.php");
                }
-               // creating code for module creation and running
 
+               // creating code for module creation and running
                $obj   = "\$object$i";
                $code  = "";
-               $code .= "$obj=new " . $module_data["name"] . "();\n";
+               $code .= "$obj=new " . $module_data["name"] . ";\n";
                $code .= $obj . "->owner=&\$this->owner;\n";
 
                // setting module parameters from module including directive
@@ -692,7 +692,7 @@ class jTemplate
                foreach ($module_data as $k => $v)
                {
                   if ($k == "name") continue;
-
+                  
                   $code .= $obj . "->" . $k . "='" . addslashes($v) . "';\n";
                }
 
@@ -707,13 +707,9 @@ class jTemplate
                // run module and insert module result in template
                $code .= $obj . "->run();\n";
                $code .= "\$tmp=" . $obj . "->result;\n";
-
-               try {
-                  eval($code);
-               } catch (Exception $e) {
-                  echo "Error: ".$e->getMessage();
-               }
-
+               
+               eval($code);
+               
                EndMeasure("module_" . $module_data["name"]);
             }
             else
