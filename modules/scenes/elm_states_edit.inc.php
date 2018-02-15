@@ -19,10 +19,12 @@
   //updating 'TITLE' (varchar, required)
    global $title;
    $rec['TITLE']=$title;
+      /*
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;
    }
+      */
   //updating 'IMAGE' (varchar)
    global $image;
    $rec['IMAGE']=$image;

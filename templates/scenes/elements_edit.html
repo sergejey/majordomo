@@ -430,12 +430,13 @@
 [#endif ID#]
 
 
-[#if ELEMENT_ID!="" && ELEMENT_TYPE!="container"#]
+[#if ELEMENT_ID!=""#]
 
+[#if ELEMENT_TYPE!="container"#]
 <h3><#LANG_STATES#></h3><#LANG_HCB#>element_states<#LANG_HCE#>
 <ul>
 [#begin STATES#]
-<li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#TITLE#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>
+<li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#if TITLE=""#]Default[#else#][#TITLE#][#endif#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>
 [#end STATES#]
 </ul>
 
@@ -446,6 +447,7 @@
 <a class="btn btn-default" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_clone=1&state_id=[#STATE_ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
 <br><br>
 [#endif STATE_ID#]
+
 
 <div class="form-group">
         <label class="col-lg-4 control-label">State <#LANG_TITLE#><#LANG_HCB#>title<#LANG_HCE#></label>
@@ -462,6 +464,7 @@
         </div>
 </div>
 [#endif#]
+[#endif ELEMENT_TYPE#]
 
 
 [#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container" && "<#ELEMENT_TYPE#>"!="s3d"#]
@@ -495,6 +498,7 @@
 </script>
 [#endif#]
 
+[#if ELEMENT_TYPE!="container"#]
 <script language="javascript">
  function do_on_click_change(val) {
   $('.click_fields').hide();
@@ -518,6 +522,7 @@
                 </select>
         </div>
 </div>
+
 
 <div class="form-group click_fields"[#if STATE_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
         <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
@@ -593,6 +598,8 @@
         </div>
 </div>
 [#module name="linkedobject" object_field="action_object_new" method_field="action_method_new"#]
+
+[#endif ELEMENT_TYPE#]
 
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#><#LANG_HCB#>element_condition<#LANG_HCE#></label>
