@@ -344,7 +344,7 @@ $.fn.customContextMenu = function(callBack){
            if (objCnt) {
              for(var i=0;i<objCnt;i++) {
               var elem=$('#state_'+obj[i].ID);
-              if ((typeof obj[i].HTML!= 'undefined') && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
+              if ((typeof obj[i].HTML!= 'undefined') && (obj[i].HTML!=null) && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
                elem.html('<span>'+obj[i].HTML+'</span>');
                codeHash['code'+obj[i].ID]=obj[i].HTML;
               }
@@ -597,8 +597,9 @@ $.fn.customContextMenu = function(callBack){
    style="position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;
    {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
+   {if $ELEMENT.STATE!="1"}display:none;{/if}
    "
-   id="container_{$ELEMENT.ID}"
+   id="state_{$ELEMENT.STATE_ID}"
    >
   {elements items=$ELEMENT.ELEMENTS}
  </div>

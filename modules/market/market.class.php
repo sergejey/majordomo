@@ -226,6 +226,10 @@ function admin(&$out) {
    if ($plugin_rec['ID']) {
     $rec['INSTALLED_VERSION']=$plugin_rec['CURRENT_VERSION'];
    }
+   $ignore_rec=SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '".DBSafe($rec['MODULE_NAME'])."'");
+   if ($ignore_rec['ID']) {
+       $rec['IGNORE_UPDATE']=1;
+   }
 
   }
 
@@ -265,7 +269,7 @@ function admin(&$out) {
     $this->version=$rec['LATEST_VERSION'];
    }
 
-  if ($rec['EXISTS']) {
+  if ($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) {
    $this->can_be_updated[]=array('NAME'=>$rec['MODULE_NAME'], 'URL'=>$rec['REPOSITORY_URL'], 'VERSION'=>$rec['LATEST_VERSION']);
   }
   if (in_array($rec['MODULE_NAME'], $names)) {
@@ -288,6 +292,7 @@ function admin(&$out) {
      exit;
  }
 
+ 
  if ($this->mode=='install_multiple') {
   $this->updateAll($this->selected_plugins);
  }
