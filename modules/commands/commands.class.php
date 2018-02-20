@@ -216,8 +216,11 @@ function admin(&$out) {
     if ($item['ID']) {
      if ($item['TYPE']=='custom') {
       $ajax = 0;
-      $item['DATA']=processTitle($item['DATA'], $this);
-      $data=$item['DATA'];
+      $item['DATA'] = processTitle($item['DATA'], $this);
+      $data = $item['DATA'];
+     } elseif ($item['TYPE']=='object') {
+      $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
+      $data=processTitle($item['DATA'], $this);
      } else {
       $item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
@@ -301,6 +304,9 @@ function admin(&$out) {
     if ($item['TYPE']=='custom') {
      $item['DATA']=processTitle($item['DATA'], $this);
      $res['DATA']=$item['DATA'];
+    } elseif ($item['TYPE']=='object') {
+     $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
+     $res['DATA']=processTitle($item['DATA'], $this);
     } else {
      $item['TITLE']=processTitle($item['TITLE'], $this);
      $res['DATA']=$item['TITLE'];
