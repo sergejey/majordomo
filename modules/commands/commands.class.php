@@ -221,20 +221,12 @@ function admin(&$out) {
      } elseif ($item['TYPE']=='object') {
       $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
       $data=processTitle($item['DATA'], $this);
+      //$data = '';
      } else {
       $item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
      }
 
-     /*
-     if (($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) && (!$dynamic_item)) {
-      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
-      $tmp['RENDER_TITLE']=$item['TITLE'];
-      $tmp['RENDER_DATA']=$item['DATA'];
-      $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
-      SQLUpdate('commands', $tmp);
-     }
-     */
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
@@ -851,7 +843,7 @@ function usual(&$out) {
 
     if (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA'])) {
      $res[$i]['AUTO_UPDATE']=0;
-    } elseif (!$res[$i]['AUTO_UPDATE'] && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
+    } elseif (!$res[$i]['AUTO_UPDATE'] && $res[$i]['TYPE']!='object' && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
      $res[$i]['AUTO_UPDATE']=10;
     }
 
@@ -1038,10 +1030,13 @@ function usual(&$out) {
      }
      $data=processTitle($data, $this);
 
+     /*
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
      }
+     */
+
      $item['LABEL']=$data;
 
 

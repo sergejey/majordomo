@@ -636,10 +636,9 @@
 <script language="javascript">
  var label{$item.ID}_timer;
  function updateLabel{$item.ID}_Ready(id, data) {
-  var elem=document.getElementById('label_{$item.ID}');
   var obj=jQuery.parseJSON(data);
   if (obj.DATA!='') {
-   elem.innerHTML=obj.DATA;
+   $('#label_{$item.ID}').html(obj.DATA);
   }
   return false;
  }
@@ -737,9 +736,11 @@
   return false;
   {/if}
  }
+
+ {if $item.AUTO_UPDATE!='0'}
  label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', (1000));
  initialLabels = initialLabels + ',{$item.ID}';
- //updateLabel{$item.ID}();
+ {/if}
 
 </script>
 
