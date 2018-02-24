@@ -71,7 +71,8 @@
     var labels=obj.LABELS;
     for (var i = 0; i < objLabelsCnt; i++) {
      try {
-       if (labels[i].ID == '354') {
+       if (labels[i].ID == '360') {
+        //alert(JSON.stringify(labels[i]));
        }
        window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
      }
@@ -291,7 +292,8 @@
 {foreach $items as $item}
 {if $item.SUB_PRELOAD=='1'}
  <div data-role="collapsible" data-iconpos="right">
-  <h2>{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="item_icon">{/if} <span  id="label_{$item.ID}">{$item.TITLE}</span></h2>
+  <h2>{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="item_icon">{/if}<span id="label_{$item.ID}">{$item.TITLE}</span></h2>
+  <!--  -->
   <ul data-role="listview" data-inset="true">
   {if $item.RESULT}
   {menu items=$item.RESULT}
@@ -301,16 +303,16 @@
 {else}
 {if $item.TYPE=='' || $item.TYPE=='command' || $item.TYPE=='window' || $item.TYPE=='url'}
 <li{if $item.VISIBLE_DELAY!='0'} class='visible_delay'{/if} id='item{$item.ID}'>
-<a
- {if !$item.RESULT_TOTAL}
- href="#" 
- onClick="return menuClicked('{$item.ID}', '{$item.PARENT_ID}', '{$item.SUB_LIST}', '{$item.WINDOW}', '{$item.TITLE_SAFE}', '{$item.COMMAND}', '{$item.URL}'{if $item.TYPE=='window'}, '{$item.WIDTH}', '{$item.HEIGHT}'{else},0,0{/if});"
- {else}
- href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
- {/if}
- {if $item.SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
->
-<h2>{if $item.ICON!=''}<span><img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon item_icon"></span>{/if}
+ <a
+         {if !$item.RESULT_TOTAL}
+          href="#"
+          onClick="return menuClicked('{$item.ID}', '{$item.PARENT_ID}', '{$item.SUB_LIST}', '{$item.WINDOW}', '{$item.TITLE_SAFE}', '{$item.COMMAND}', '{$item.URL}'{if $item.TYPE=='window'}, '{$item.WIDTH}', '{$item.HEIGHT}'{else},0,0{/if});"
+         {else}
+          href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
+         {/if}
+         {if $item.SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
+ >
+<h2>{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon item_icon" style="margin-bottom:0px;margin-top:0px;">{/if}
  <span id="label_{$item.ID}">{$item.TITLE}</span></h2>{*{if $item.RESULT_TOTAL} <span class="ui-li-count">{$item.RESULT_TOTAL}</span>{/if}*}</a>
 </li>
 {/if}
@@ -634,10 +636,9 @@
 <script language="javascript">
  var label{$item.ID}_timer;
  function updateLabel{$item.ID}_Ready(id, data) {
-  var elem=document.getElementById('label_{$item.ID}');
   var obj=jQuery.parseJSON(data);
   if (obj.DATA!='') {
-   elem.innerHTML=obj.DATA;
+   $('#label_{$item.ID}').html(obj.DATA);
   }
   return false;
  }
@@ -735,9 +736,11 @@
   return false;
   {/if}
  }
+
+ {if $item.AUTO_UPDATE!='0'}
  label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', (1000));
  initialLabels = initialLabels + ',{$item.ID}';
- //updateLabel{$item.ID}();
+ {/if}
 
 </script>
 
