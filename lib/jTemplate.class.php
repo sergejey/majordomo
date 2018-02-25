@@ -50,7 +50,7 @@ class jTemplate
     * @param object $owner    Parser owner
     * @return void
     */
-   public function __construct($template, &$data, &$owner)
+   public function __construct($template, &$data, &$owner = '')
    {
       // set current directory for template includes
       if (strpos($template, "/") !== false)

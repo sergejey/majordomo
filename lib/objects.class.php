@@ -1066,7 +1066,7 @@ function processTitle($title, $object = 0)
          }
          else
          {
-            $jTempl = new jTemplate($title, $data, $this);
+            $jTempl = new jTemplate($title, $data);
          }
 
          $title = $jTempl->result;
