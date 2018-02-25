@@ -25,7 +25,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
 
    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
 
-   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1')
+   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr)!= '::1')
    {
       // password required
       //echo "password required for ".$remoteAddr;exit;
