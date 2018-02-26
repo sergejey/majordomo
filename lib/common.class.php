@@ -899,10 +899,12 @@ function execInBackground($cmd)
       try
       {
          //pclose(popen("start /B ". $cmd, "r"));
-         system($cmd);
-         //$WshShell = new COM("WScript.Shell");
-         //$oExec = $WshShell->Run("cmd /C ".$cmd, 0, false);
-         //exec($cmd);
+          if (class_exists('COM')) {
+              $WshShell = new COM("WScript.Shell");
+              $oExec = $WshShell->Run("cmd /C \"".$cmd."\"", 0, false);
+          } else {
+              system($cmd);
+          }
       }
       catch (Exception $e)
       {
