@@ -138,6 +138,8 @@ function admin(&$out) {
   $this->mode=$mode;
  }
 
+    $this->can_be_updated=array();
+    $this->have_updates=array();
 
  $serial = gg('Serial');
     if (!$serial || $serial=='0') {
@@ -277,13 +279,14 @@ function admin(&$out) {
   }
   if ($rec['EXISTS'] && $rec['INSTALLED_VERSION']!=$rec['LATEST_VERSION']) {
       $cat[$cat_id]['NEW_VERSION'] = 1;
+      $this->have_updates[]=$rec['MODULE_NAME'];
   }
   $cat[$cat_id]['PLUGINS'][]=$rec;
  }
  $out['CATEGORY'] = $cat;
 
  if ($this->ajax && $_GET['op']=='check_updates') {
-     $total = count($this->can_be_updated);
+     $total = count($this->have_updates);
      if ($total > 0) {
          echo "1";
      } else {
