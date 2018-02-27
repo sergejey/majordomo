@@ -108,7 +108,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    if ($member_id)
    {
-      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
        if (!$processed) {
            include_once(DIR_MODULES . 'patterns/patterns.class.php');
            $pt = new patterns();
