@@ -60,21 +60,29 @@
    return 0;
   }
   if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
-   $service_port='7999';
-   $in='tts:'.$ph;
-   $address=$terminal_rec['HOST'];
-   if (!preg_match('/^\d/',$address)) return 0;
-   $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-   if ($socket === false) {
-    return 0;
-   }
-   $result = socket_connect($socket, $address, $service_port);
-   if ($result === false) {
-    return 0;
-   }
-   socket_write($socket, $in, strlen($in));
-   socket_close($socket);
-   return 1;
+      $service_port = '7999';
+      $in = 'tts:' . $ph;
+      $address = $terminal_rec['HOST'];
+      if (!preg_match('/^\d/', $address)) return 0;
+      $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+      if ($socket === false) {
+          return 0;
+      }
+      $result = socket_connect($socket, $address, $service_port);
+      if ($result === false) {
+          return 0;
+      }
+      socket_write($socket, $in, strlen($in));
+      socket_close($socket);
+      return 1;
+  } elseif ($terminal_rec['PLAYER_TYPE']=='googlehomenotifier') {
+      $port=$terminal_rec['PLAYER_PORT'];
+      if (!$port) {
+          $port='8091';
+      }
+      $host=$terminal_rec['HOST'];
+      $url = 'http://'.$host.':'.$port.'/google-home-notifier?text='.urlencode($ph);
+      getURLBackground($url,0);
   } elseif (!$processed) {
    //say($ph,$level);
    return 0;
@@ -151,7 +159,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
       eval(SETTINGS_HOOK_AFTER_SAY);
    }
 
-   $terminals=SQLSelect("SELECT NAME FROM terminals WHERE IS_ONLINE=1 AND MAJORDROID_API=1");
+   $terminals=SQLSelect("SELECT NAME FROM terminals WHERE (IS_ONLINE=1 AND MAJORDROID_API=1) OR PLAYER_TYPE='googlehomenotifier'");
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     sayTo($ph, $level, $terminals[$i]['NAME']);
