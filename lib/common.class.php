@@ -75,14 +75,15 @@
       socket_write($socket, $in, strlen($in));
       socket_close($socket);
       return 1;
-  } elseif ($terminal_rec['PLAYER_TYPE']=='googlehomenotifier') {
+  } elseif ($terminal_rec['PLAYER_TYPE']=='ghn') {
       $port=$terminal_rec['PLAYER_PORT'];
+      $language = SETTINGS_SITE_LANGUAGE;
       if (!$port) {
           $port='8091';
       }
       $host=$terminal_rec['HOST'];
-      $url = 'http://'.$host.':'.$port.'/google-home-notifier?text='.urlencode($ph);
-      getURLBackground($url,0);
+      $url = 'http://'.$host.':'.$port.'/google-home-notifier?language='.$language.'&text='.urlencode($ph);
+      getURL($url,0);
   } elseif (!$processed) {
    //say($ph,$level);
    return 0;
