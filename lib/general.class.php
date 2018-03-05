@@ -126,6 +126,20 @@ if (isset($_SERVER['REQUEST_METHOD']))
    }
 }
 
+
+function gr($var_name,$type='') {
+   $value = $_REQUEST[$var_name];
+   if (get_magic_quotes_gpc()) {
+      stripit($value);
+   }
+   if ($type=='int') {
+      $value=(int)$value;
+   } elseif ($type=='float') {
+      $value=(float)$value;
+   }
+   return $value;
+}
+
 /**
  * Summary of redirect
  * @param mixed $url    Url
