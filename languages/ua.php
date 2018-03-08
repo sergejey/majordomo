@@ -88,7 +88,7 @@ $dictionary = array (
     'APP_TDWIKI' => 'Блокнот',
     'APP_WEATHER' => 'Погода',
     'APP_CALENDAR' => 'Календар',
-    'APP_READIT' => 'прислів. посилання ',
+    'APP_READIT' => 'Завантаж. посилання',
     'APP_QUOTES' => 'Цитати',
     'APP_ALARMCLOCK' => 'Будильник',
     'APP_OPENWEATHER' => 'Погода від OpenWeatherMap',
@@ -115,6 +115,7 @@ $dictionary = array (
     'MODULE_MASTER_LOGIN' => 'Пароль доступу',
     'MODULE_SAVERESTORE' => 'Перевірка оновлень',
     'MODULE_WEBVARS' => 'Веб-змінні',
+    'MODULE_SHOUTBOX'=>'Рупор',
     'MODULE_PATTERNS' => 'Шаблони поведінки',
     'MODULE_ONEWIRE' => '1-Wire',
     'MODULE_SCENES' => 'Сцени',
@@ -271,8 +272,8 @@ $dictionary = array (
 
     'NEW_METHOD' => 'Новий метод',
     'HOME' => 'Початок',
-    'OFF' => 'Вимкнути',
-    'ON' => 'Увімкнути',
+    'OFF' => 'Вимкн.',
+    'ON' => 'Увімк.',
 
 
     'ADD_NEW_SECTION' => 'Додати новий розділ',
@@ -932,12 +933,12 @@ $dictionary = array (
     'RUN_TIME' => 'Час запуску',
     'RUN_WEEKDAYS' => 'Дні тижня',
     'WEEK_SUN' => 'Неділя',
-    'WEEK_MON' => 'понеділок',
-    'WEEK_TUE' => 'вівторок',
-    'WEEK_WED' => 'середа',
-    'WEEK_THU' => 'четвер',
-    'WEEK_FRI' => 'п’ятниця',
-    'WEEK_SAT' => 'субота',
+    'WEEK_MON' => 'Понеділок',
+    'WEEK_TUE' => 'Вівторок',
+    'WEEK_WED' => 'Середа',
+    'WEEK_THU' => 'Четвер',
+    'WEEK_FRI' => 'П’ятниця',
+    'WEEK_SAT' => 'Субота',
 
     'PARENT_CONTEXT' => 'Доступно в контексті',
     'IS_CONTEXT' => 'використовувати як контекст',
@@ -1058,7 +1059,7 @@ $dictionary = array (
     'MODULES_UPDATES_AVAILABLE' => 'Доступні оновлення модулів',
     'SYSTEM_UPDATES_AVAILABLE' => 'Доступні оновлення системи',
     'ERRORS_SAVED' => 'Збережено помилки',
-    
+
     // DEVICES
     'DEVICES_MODULE_TITLE' => 'Прості пристрої',
     'DEVICES_LINKED_WARNING' => 'Увага: вибір існуючого об’єкта призведе до прив’язки його до нового класу.',
@@ -1086,7 +1087,7 @@ $dictionary = array (
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'тор',
+    'M_PRESSURE' => 'Торр',
     'M_WATT' => 'Вт',
 
 // ----
