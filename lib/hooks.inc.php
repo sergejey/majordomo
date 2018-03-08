@@ -14,7 +14,6 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
    if (!$rec['ID'])
    {
       $rec = array();
-      
       $rec['NAME']     = 'HOOK_EVENT_' . strtoupper($event_name);
       $rec['TITLE']    = $rec['NAME'];
       $rec['TYPE']     = 'json';
@@ -25,8 +24,10 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
    }
 
    $data = json_decode($rec['VALUE'], true);
-   
-   $data[$module_name] = array('priority'=>$priority, 'filter'=>$filter_details);
+   $data[$module_name] = array('filter'=>$filter_details);
+   if ($priority) {
+      $data[$module_name]['priority']=$priority;
+   }
    $rec['VALUE']       = json_encode($data);
    SQLUpdate('settings', $rec);
 }
@@ -80,21 +81,15 @@ function processSubscriptions($event_name, $details = '')
    
    if (is_array($data))
    {
-
-      if (!function_exists('cmpSubscribers')) {
-       function cmpSubscribers ($a, $b) { 
-        if ($a['priority'] == $b['priority']) return 0; 
-        return ($a['priority'] > $b['priority']) ? -1 : 1; 
-       } 
-      }
-
-
       $data2=array();
       foreach($data as $k => $v) {
        $data2[]=array('module'=>$k, 'filter'=>$v['filter'], 'priority'=>(int)$v['priority']);
       }
 
-      usort($data2, 'cmpSubscribers');
+      usort($data2, function($a,$b) {
+         if ($a['priority'] == $b['priority']) return 0;
+         return ($a['priority'] > $b['priority']) ? -1 : 1;
+      });
 
       $total=count($data2);
       for($i=0;$i<$total;$i++) {
@@ -122,7 +117,7 @@ function processSubscriptions($event_name, $details = '')
             }
             if ($details['BREAK']) break;
          } else {
-          DebMes("$module_name.processSubscription error (module class not found)");
+          //DebMes("$module_name.processSubscription error (module class not found)");
          }
       }
 

@@ -226,11 +226,12 @@ function admin(&$out) {
       $item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
      }
-
+     /*
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
      }
+     */
      $res['LABELS'][]=array('ID'=>$item_id, 'DATA'=>$data);
     }
    }
@@ -784,7 +785,7 @@ function usual(&$out) {
      $line=trim($line);
      if ($line!='') {
       $option=array();
-      if (preg_match('/=/', $line)) {
+      if (preg_match('/^[\w\d\-]+=/', $line)) {
        $tmp=explode('=', $line);
       } else {
        $tmp=explode('|', $line);
@@ -820,10 +821,12 @@ function usual(&$out) {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
 
+    /*
      if (preg_match('/#[\w\d]{6}/is', $res[$i]['TITLE'], $m)) {
       $color=$m[0];
       $res[$i]['TITLE']=trim(str_replace($m[0], '<style>#item'.$res[$i]['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $res[$i]['TITLE']));
      }
+    */
 
 
 
