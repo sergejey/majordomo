@@ -84,9 +84,8 @@
       $host=$terminal_rec['HOST'];
       $url = 'http://'.$host.':'.$port.'/google-home-notifier?language='.$language.'&text='.urlencode($ph);
       getURL($url,0);
-  } elseif (!$processed) {
-   //say($ph,$level);
-   return 0;
+  } elseif ($processed) {
+   return 1;
   }
   return 0;
  }
