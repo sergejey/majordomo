@@ -52,7 +52,7 @@ padding: 20px 40px;
 .navbar-fixed-top .container, .navbar-fixed-bottom .container {
 /*        width: 1100px;*/
 }
-
+.panel-body { padding:0px; }
 
 </style>
 <body bgcolor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
@@ -484,56 +484,63 @@ jQuery.fn.center = function () {
 <table  id="content">
     <tr>
         [#if PRINT!="1"#]
-        <td class="well sidebar-left" valign="top" id="left_block"><!--left_main-->
+        <td class="well well-sm sidebar-left" valign="top" id="left_block"><!--left_main-->
 
            
 <form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-search"> </i></span>
-<input type="text" class="form-control" name="filter_modules" id="filter_modules" style="width: 140px" placeholder="<#LANG_FILTER#>"></div></form>
+<input type="text" class="form-control" name="filter_modules" id="filter_modules" style="width: 180px" placeholder="<#LANG_FILTER#>"></div></form>
 
 <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;'>...</div>
 
 <script language="javascript">
  function toggleCategory(id) {
-  if ($('.category'+id+':first').is(":visible")) {
+  var vl=getCookie('sub_'+id);
+  if (vl=='on') {
    setCookie('sub_'+id, 'off');
   } else {
    setCookie('sub_'+id, 'on');
   }
-  $('.category'+id).toggle();
+  $('#row_'+id).collapse("toggle");
   return false;
  }
 
  function checkCategory(id) {
   var vl=getCookie('sub_'+id);
-  if (vl!='on') {
-   $('.category'+id).hide();
+  if (vl=='on') {
+   $('#row_'+id).collapse("show");
   }
   return false;
  }
 </script>
 
             <!--[menu]-->
-<ul class="nav nav-list">
-   [#begin SUB_MODULES#]
+<div class="panel-group">
+[#begin SUB_MODULES#]
    [#if NEW_CATEGORY#]
-   </ul>
-   <ul class="nav nav-list" id="row_[#CATEGORY#]">
-   [#if CATEGORY!=""#]
-   <li class="nav-header">
-   <a href="#" onClick="return toggleCategory('[#CATEGORY_ID#]');">[#CATEGORY#]</a>
-   </li>
-   [#else CATEGORY#]&nbsp;[#endif CATEGORY#]
+    <div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a href="#" onClick="return toggleCategory('[#CATEGORY_ID#]');">[#CATEGORY#]</a>
+        </h4>
+    </div>
+    <div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
+    <div class="panel-body">
+        <ul class="nav nav-list">
+        
    [#endif NEW_CATEGORY#]
+   
    [#if !DENIED#]
-   [#if SELECTED#]
-                <li class="active category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
-   [#else#]
-                <li class="category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]">[#TITLE#]</a></li>
-   [#endif#]
+        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
    [#endif DENIED#]
-   [#end SUB_MODULES#]
-</ul>
-
+   
+   [#if LAST_IN_CATEGORY#]
+        </ul>
+   </div>
+   </div>
+   </div>
+   [#endif#]
+[#end SUB_MODULES#]
+</div>
    [#begin SUB_MODULES#]
    [#if NEW_CATEGORY#]
    <script language='javascript'>
