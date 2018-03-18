@@ -459,7 +459,7 @@ class jTemplate
                   
                   // SELF-CALL FOR ARRAY ELEMENT
                   $searchStr  = "[#tree " . $matches[1][$i] . "#]";
-                  $replaceStr = "[#begin " . $matches[1][$i] . "#]" . $line1 . "[#end " . $matches[1][$i] . "#]";
+                  $replaceStr = $this->parse("[#begin " . $matches[1][$i] . "#]" . $line1 . "[#end " . $matches[1][$i] . "#]", $var[$k], $dir);
                   
                   $line2 = str_replace($searchStr, $replaceStr, $line2);
                   
