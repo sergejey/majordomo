@@ -1213,6 +1213,15 @@ $dictionary = array(
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
 
+    'ROOMS' => 'Комнаты',
+    'APPEARANCE' => 'Внешний вид',
+    'MAINTENANCE' => 'Обслуживание',
+    'LIST' => 'Список',
+    'DATA_OPTIMIZING' => 'Оптимизация данных',
+    'DID_YOU_KNOW' => 'А знаете ли вы что...',
+    'NEWS' => 'Новости MajorDoMo',
+
+
     /* end module names */
 
 

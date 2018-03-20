@@ -38,24 +38,9 @@
  </div>
 </form>&nbsp;
 
-<table width=100% border=0><tr>
-<td valign=top>
 <!-- results -->
 [#if RESULT#]
-<!-- paging -->
-[#if PAGES#]
-<table border=0>
-<td align=right><b>Pages:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
-<td>
-[#begin PAGES#]
-[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
-[#end PAGES#]
-</td>
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
-[#endif PAGES#]
-<!-- / paging -->
+
 <!-- search results (list) -->
 
 <script type="text/javascript">
@@ -100,28 +85,22 @@
  });
 </script>
 
-
-
-
-<table  class="table">
-<tbody>
 [#begin RESULT#]
 [#if NEW_LOCATION#]
-<tr>
- <td colspan="10"><h3>[#LOCATION_TITLE#]</h3></td>
-</tr>
+<div class="row">
+ <h3>[#LOCATION_TITLE#]</h3>
+</div>
 [#endif#]
-<tr>
-  <td style="vertical-align:middle">
+<div class="row">
+  <div class="col-md-4">
   <b>
    [#TITLE#]
   </a></b><br/>
   [#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#]
   [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
- </td>
- <td><div id="device[#ID#]">[#HTML#]</div></td>
- <td style="vertical-align:middle" width="1%" nowrap>
-  <div>
+ </div>
+ <div class="col-md-5"><div id="device[#ID#]">[#HTML#]</div></div>
+ <div class="col-md-3" nowrap>
   [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=settings" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-wrench"></i></a>
@@ -129,26 +108,11 @@
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i></a>
     <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
-  </div>
- </td>
-</tr>
+ </div>
+</div>
 [#end RESULT#]
-</tbody>
-</table>
 <!-- / search results (list) -->
-<!-- paging -->
-[#if PAGES#]
-<table border=0>
-<td align=right><b>Pages:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
-<td>
-[#begin PAGES#]
-[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</b></a>
-[#end PAGES#]
-</td>
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
-[#endif PAGES#]
+
 <!-- / paging -->
 [#else RESULT#]
 <p>
@@ -156,4 +120,4 @@
 </p>
 [#endif RESULT#]
 <!-- / results -->
-</td></tr></table>
+
