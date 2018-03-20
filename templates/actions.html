@@ -1,54 +1,22 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
-[#if ACTION="pda"#]
-<h1>PDA Home Control</h1>
- [#module name="commands" action="" pda="1"#]
-[#endif ACTION#]
-
-<!--#installed:cms_docs#-->
-[#if ACTION="docs"#]
-
- [#if DOC_ID!=""#]
-  [#module name="cms_docs" action="preview" show_title="1" id="<#DOC_ID#>"#]
- [#else#]
-  [#if DOC_NAME!=""#]
-   [#module name="cms_docs" action="preview" show_title="1" doc_name="<#DOC_NAME#>"#]
-  [#endif#]
- [#endif#]
-
-[#endif ACTION#]
-
-[#if ACTION="search"#]
-[#module name="search"#]
-[#endif ACTION#]
-
 [#if ACTION="first_start"#]
-[#inc first_start.html#]
+ [#inc first_start.html#]
 [#endif ACTION#]
-
-
-<!--#/installed:cms_docs#-->
 
 [#if ACTION=""#]
  [#inc default.html#]
 [#endif#]
 
-
-
 [#if ACTION="pages"#]
  [#inc pages.html#]
 [#endif#]
 
-
-  [#if ACTION="apps"#]
-  [#inc apps.html#]
-  [#else#]
-   [#if APP_ACTION#]
-    [#module name="<#ACTION#>" action=""#]
-   [#endif#]
-  [#endif#]
-
+[#if ACTION="apps"#]
+ [#inc apps.html#]
+[#else#]
+ [#if APP_ACTION#]
+  [#module name="<#ACTION#>" action=""#]
+ [#endif#]
+[#endif#]
 
 [#if ACTION="player"#]
  [#module name="app_player" action=""#]
@@ -58,13 +26,9 @@
  [#module name="layouts" action=""#]
 [#endif#]
 
-
-
 [#if ACTION="scenes"#]
  [#module name="scenes" action=""#]
 [#endif#]
-
-
 
 [#if ACTION="events"#]
  [#module name="events" action="getnextevent"#]
@@ -86,23 +50,6 @@
 [#module name="shoutbox" limit="10"#]
 [#endif#]
 
-
-<!--#installed:feedback#-->
-[#if ACTION="feedback"#]
-
-[#module name="feedback" form="contact" required="NAME,EMAIL" mailto="contact@<#PROJECT_DOMAIN#>" mailfrom="contact@<#PROJECT_DOMAIN#>" subject="<#PROJECT_DOMAIN#> contact form"#]
-
-[#endif ACTION#]
-
-[#if ACTION="design_sample"#]
- [#inc design_sample.html#]
-[#endif#]
-
 [#if ACTION="wiki"#]
  [#module name="tdwiki" name_id="mainwiki"#]
 [#endif ACTION#]
-
-
-<!--#/installed:feedback#--><!--#install:body_block
-[...]
-#-->

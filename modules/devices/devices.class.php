@@ -335,7 +335,7 @@ function renderStructure() {
           }
       }
   }
-  subscribeToEvent('devices', 'COMMAND', '', 100);
+  subscribeToEvent('devices', 'COMMAND');
 
   //update cameras
     $objects = getObjectsByClass('SCameras');
@@ -552,6 +552,9 @@ function usual(&$out) {
             }
         }
     }
+    usort($types, function($a,$b) {
+        return strcmp($a["TITLE"], $b["TITLE"]);
+    });
     $out['TYPES']=$types;
 
 

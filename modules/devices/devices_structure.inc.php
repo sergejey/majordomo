@@ -38,8 +38,6 @@ $this->device_types=array(
                 'EconomMode.deactivate'=>'econommode_deactivate',
                 'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
-                'NightMode.activate'=>'nightmode_activate',
-                'NightMode.deactivate'=>'nightmode_deactivate',
                 'DarknessMode.activate'=>'darknessmode_activate',
                 'DarknessMode.deactivate'=>'darknessmode_deactivate',
                 'System.checkstate'=>'system_checkstate',
@@ -242,7 +240,11 @@ $this->device_types=array(
 	'sensor_power'=>array(
         'TITLE'=>LANG_DEVICES_POWER_SENSOR,
         'PARENT_CLASS'=>'SSensors',
-        'CLASS'=>'SPowerSensors' //fix
+        'CLASS'=>'SPowerSensors',
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'loadStatusChanged'=>array('DESCRIPTION'=>'Load Status Changed'),
+        )
     ),
 	'sensor_voltage'=>array(
         'TITLE'=>LANG_DEVICES_VOLTAGE_SENSOR,

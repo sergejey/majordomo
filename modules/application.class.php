@@ -136,7 +136,7 @@ function getParams() {
     exit;
    }
 
-   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_GROWL_ENABLE') || !defined('SETTINGS_HOOK_BEFORE_SAY')) {
+   if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_HOOK_BEFORE_SAY')) {
     $this->action='first_start';
    }
 
@@ -325,7 +325,7 @@ function getParams() {
    $days=array('Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота');
    
    $out['TODAY']=$days[date('w')].', '.date('d.m.Y');
-   Define(TODAY, $out['TODAY']);
+   Define('TODAY', $out['TODAY']);
    $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
 
    global $from_scene;

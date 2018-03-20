@@ -182,6 +182,7 @@ function admin(&$out) {
    //echo "Debug labels: $labels \nValues: $values\n";
 
    $res['LABELS']=array();
+
    $labels=explode(',', $labels);
    $total=count($labels);
    $seen=array();
@@ -214,28 +215,27 @@ function admin(&$out) {
 
     if ($item['ID']) {
      if ($item['TYPE']=='custom') {
-      $item['DATA']=processTitle($item['DATA'], $this);
-      $data=$item['DATA'];
+      $ajax = 0;
+      $item['DATA'] = processTitle($item['DATA'], $this);
+      $data = $item['DATA'];
+     } elseif ($item['TYPE']=='object') {
+      $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
+      $data=processTitle($item['DATA'], $this);
+      //$data = '';
      } else {
       $item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
      }
      /*
-     if (($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) && (!$dynamic_item)) {
-      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
-      $tmp['RENDER_TITLE']=$item['TITLE'];
-      $tmp['RENDER_DATA']=$item['DATA'];
-      $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
-      SQLUpdate('commands', $tmp);
-     }
-     */
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
      }
+     */
      $res['LABELS'][]=array('ID'=>$item_id, 'DATA'=>$data);
     }
    }
+
 
    $res['VALUES']=array();
    $values=explode(',', $values);
@@ -297,6 +297,9 @@ function admin(&$out) {
     if ($item['TYPE']=='custom') {
      $item['DATA']=processTitle($item['DATA'], $this);
      $res['DATA']=$item['DATA'];
+    } elseif ($item['TYPE']=='object') {
+     $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
+     $res['DATA']=processTitle($item['DATA'], $this);
     } else {
      $item['TITLE']=processTitle($item['TITLE'], $this);
      $res['DATA']=$item['TITLE'];
@@ -782,7 +785,7 @@ function usual(&$out) {
      $line=trim($line);
      if ($line!='') {
       $option=array();
-      if (preg_match('/=/', $line)) {
+      if (preg_match('/^[\w\d\-]+=/', $line)) {
        $tmp=explode('=', $line);
       } else {
        $tmp=explode('|', $line);
@@ -805,6 +808,10 @@ function usual(&$out) {
    }
 
    if ($this->owner->name!='panel') {
+
+    //$res[$i]['TITLE']='';
+    //$res[$i]['DATA']='';
+
     $res[$i]['TITLE']=processTitle($res[$i]['TITLE'], $this);
     if ($res[$i]['TYPE']=='custom') {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
@@ -814,10 +821,13 @@ function usual(&$out) {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
 
+    /*
      if (preg_match('/#[\w\d]{6}/is', $res[$i]['TITLE'], $m)) {
       $color=$m[0];
       $res[$i]['TITLE']=trim(str_replace($m[0], '<style>#item'.$res[$i]['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $res[$i]['TITLE']));
      }
+    */
+
 
 
 
@@ -836,7 +846,7 @@ function usual(&$out) {
 
     if (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA'])) {
      $res[$i]['AUTO_UPDATE']=0;
-    } elseif (!$res[$i]['AUTO_UPDATE'] && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
+    } elseif (!$res[$i]['AUTO_UPDATE'] && $res[$i]['TYPE']!='object' && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
      $res[$i]['AUTO_UPDATE']=10;
     }
 
@@ -995,6 +1005,8 @@ function usual(&$out) {
      $item['ID']=$item_id;
      if ($object_part) {
       $data=getGlobal($object_rec['TITLE'].'.'.$item['LINKED_PROPERTY']);
+     } elseif($item['LINKED_OBJECT'] && $item['LINKED_PROPERTY']) {
+      $data=getGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
      } else {
       if ($set_value) {
        $item['CUR_VALUE']=$new_value;
@@ -1021,10 +1033,13 @@ function usual(&$out) {
      }
      $data=processTitle($data, $this);
 
+     /*
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
      }
+     */
+
      $item['LABEL']=$data;
 
 

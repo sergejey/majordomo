@@ -1,7 +1,3 @@
-<!--#
- @version 0.4 (auto-set)
- <#LANG_WIKI_URL#>
-#-->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,28 +6,38 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 [#if POPUP="1"#]
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<!--#
-[#if ACTION="scenes"#]<meta http-equiv="refresh" content="3600">[#endif ACTION#]
-#-->
 [#endif#]
-<link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
-<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
-<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
-<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/jquery.gritter.css" />
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
-<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
-<link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
-<link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
-<link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery.gritter.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
+
+  <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
+  <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
+  <link href="<#ROOTHTML#>css/devices.css?v=2018-03-08" rel="stylesheet" type="text/css"/>
+
+  <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
+  <link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
+
+  <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+  <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/jquery.gritter.css" />
+  <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery.gritter.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
+  <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
+
+  <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+  <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+
+
+[#if ACTION=""#]
+  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
+  <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
+[#endif#]
+
+
 [#inc websockets.html#]
 </head>
 

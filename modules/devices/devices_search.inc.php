@@ -71,6 +71,9 @@ foreach($this->device_types as $k=>$v) {
      }
  }
 }
+usort($types, function($a,$b) {
+    return strcmp($a["TITLE"], $b["TITLE"]);
+});
 $out['TYPES']=$types;
 
 $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");

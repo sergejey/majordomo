@@ -153,10 +153,10 @@ class panel extends module
                     $last_allow = $i;
                 }
 
-                if (file_exists(ROOT . 'img/admin/icons/ico_' . $modules[$i]['NAME'] . '_sm.gif')) {
-                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/admin/icons/ico_' . $modules[$i]['NAME'] . '_sm.gif';
+                if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
+                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
-                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/admin/icons/ico_default_sm.gif';
+                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
                 }
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;

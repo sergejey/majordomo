@@ -1,6 +1,7 @@
 .device-widget {
     max-width:350px;
     padding:2px;
+    border:1px solid transparent;
 }
 .device-icon {
     background-image: url(../cms/scenes/styles/button/i_button.png);
@@ -12,7 +13,7 @@
     float:left;
 }
 .device-header {
-    font-size:22px;
+    font-size:18px;
 }
 
 .device-widget.controller, .device-widget.sensor, .device-widget.button {
@@ -105,6 +106,10 @@
 
 .device-icon.power-sensor {
     background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.device-icon.power-sensor.on {
+    background-color:yellow;
 }
 
 .controller .device-icon {

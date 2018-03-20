@@ -2,7 +2,7 @@
 /*
 * @version 0.1 (auto-set)
 */
-error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
+//error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
 chdir('../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
@@ -289,7 +289,9 @@ if (file_exists($img)) {
  }
  //   Endof save
 
- Header("Content-type:image/jpeg");
- imageJpeg($new_image);
+
+        Header("Content-type:image/jpeg");
+        imageJpeg($new_image);
+
 
 }
