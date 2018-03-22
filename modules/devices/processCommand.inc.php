@@ -86,6 +86,9 @@ for ($i = 0; $i < $total; $i++) {
         } elseif ($device_type == 'openclose') {
             sayReply($device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_CLOSED : LANG_DEVICES_STATUS_OPEN), 2);
             $processed = 1;
+        } elseif ($device_type == 'smoke' || $device_type == 'leak') {
+            sayReply($device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_ALARM : LANG_DEVICES_NORMAL_VALUE), 2);
+            $processed = 1;
         } elseif ($device_type == 'button') {
             callMethod($linked_object . '.pressed');
             $processed = 1;

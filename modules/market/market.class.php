@@ -558,8 +558,14 @@ function admin(&$out) {
   }
   $this->removeTree(ROOT.'modules/'.$name);
   $this->removeTree(ROOT.'templates/'.$name);
-  if (file_exists(ROOT.'scripts/cycle_'.$name.'.php')) {
-   @unlink(ROOT.'scripts/cycle_'.$name.'.php');
+
+  if ($name == 'scheduler') {
+      $cycle_name = ROOT.'scripts/cycle_schedapp.php';
+  } else {
+      $cycle_name = ROOT.'scripts/cycle_'.$name.'.php';
+  }
+  if (file_exists($cycle_name)) {
+   @unlink($cycle_name);
   }
   removeMissingSubscribers();
 

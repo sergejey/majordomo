@@ -182,11 +182,17 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SCounters',
         'METHODS'=>array(
-            'valueUpdated'=>array('DESCRIPTION'=>'Value updated event')
+            'valueUpdated'=>array('DESCRIPTION'=>'Data Value updated event'),
+            'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event')
         ),
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
-            'value'=>array('DESCRIPTION'=>'Current Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'valueWork'=>array('DESCRIPTION'=>'Work Value','ONCHANGE'=>'valueWorkUpdated','KEEP_HISTORY'=>0),
+            'valueHour'=>array('DESCRIPTION'=>'Hour Value','KEEP_HISTORY'=>365),
+            'valueDay'=>array('DESCRIPTION'=>'Day Value','KEEP_HISTORY'=>5*365),
+            'valueMonth'=>array('DESCRIPTION'=>'Month Value','KEEP_HISTORY'=>5*365),
+            'conversion'=>array('DESCRIPTION'=>'Conversion coefficient (work-to-data)','_CONFIG_TYPE'=>'text'),
         ),
     ),
     'button'=>array(

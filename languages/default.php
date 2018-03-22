@@ -1176,6 +1176,7 @@ $dictionary=array(
     'DEVICES_DEGREES' => 'degrees',
     'DEVICES_STATUS_OPEN' => 'is open',
     'DEVICES_STATUS_CLOSED' => 'is closed',
+    'DEVICES_STATUS_ALARM' => 'alarm state',
     'DEVICES_COMMAND_CONFIRMATION' => 'Done|Ok',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Nobody home',
@@ -1225,6 +1226,7 @@ $dictionary=array(
     'DATA_OPTIMIZING' => 'Data Optimizing',
     'DID_YOU_KNOW' => 'Did you know that...',
     'NEWS' => 'MajorDoMo News',
+    'KNOWLEDGE_BASE' => 'Knowledge Base',
 
 'TEST'=>'test'
 

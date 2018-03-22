@@ -1,4 +1,12 @@
-<div class="temp-widget">
-    <div class="temp-value">%.value%%.unit%</div>
-    <div class="temp-description">%.object_description%</div>
+<div class="device-widget">
+    <div class="device-header">%.value% %.unit%
+        </div>
+    <div class="device-details">%.object_description%
+        (H:
+        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueHour&op=log&subop=24h&minimal=1');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueHour%</a>,
+        D:
+        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueDay&op=log&subop=7d&minimal=1');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueDay%</a>,
+        M:
+        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueMonth&op=log&subop=12m&minimal=1');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueMonth%</a>)
+    </div>
 </div>

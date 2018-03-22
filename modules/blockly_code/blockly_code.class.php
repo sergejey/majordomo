@@ -151,7 +151,11 @@ function admin(&$out) {
   $rec['CODE']=$code;
   $rec['UPDATED']=date('Y-m-d H:i:s');
   $rec['SYSTEM_NAME']=$this->system_name;
-  $rec['CODE_TYPE']=(int)${$this->code_field."_code_type"};
+  if (isset(${$this->code_field."_code_type"})) {
+   $rec['CODE_TYPE']=(int)${$this->code_field."_code_type"};
+  } else {
+   $rec['CODE_TYPE']=1;
+  }
   if (!$rec['CODE_TYPE']) {
    //$rec['XML']='';
   }
