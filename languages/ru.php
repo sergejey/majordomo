@@ -1096,7 +1096,7 @@ $dictionary = array(
 
     'DEVICES_MIN_VALUE' => 'Нижний порог',
     'DEVICES_MAX_VALUE' => 'Верхний порог',
-    'DEVICES_NOTIFY' => 'Умедомлять при выходе за порог',
+    'DEVICES_NOTIFY' => 'Уведомлять при выходе за порог',
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
