@@ -141,35 +141,6 @@ function admin(&$out) {
     $this->can_be_updated=array();
     $this->have_updates=array();
 
- $serial = gg('Serial');
-    if (!$serial || $serial=='0') {
-        $serial = '';
-        if (IsWindowsOS()) {
-            $data = exec('vol c:');
-            if (preg_match('/[\w]+\-[\w]+/',$data,$m)) {
-                $serial=strtolower($m[0]);
-            }
-        } else {
-            $data=trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
-            $serial=ltrim($data,'0');
-        }
-        if (!$serial) {
-            $serial = uniqid('uniq');
-        }
-        sg('Serial',$serial);
-    }
-
-    if (IsWindowsOS()) {
-        $os = 'Windows';
-    } else {
-        $os=trim(exec("uname -a"));
-        if (!$os) {
-            $os = 'Linux';
-        }
-    }
-    $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-
- $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
 
  global $err_msg;
  if ($err_msg) {
@@ -198,10 +169,50 @@ function admin(&$out) {
   return;
  }
 
- $result=getURL($data_url, 120);
- if (!$result) {
-  $result=getURL($data_url, 0);
+ if ($this->ajax && $_GET['op']=='didyouknow') {
+     $result = $this->marketRequest('op=didyouknow',0);
+     $data = json_decode($result,true);
+     if ($data['BODY']) {
+         echo nl2br(htmlspecialchars($data['BODY']));
+         if ($data['LINK']!='') {
+             echo "<br/><a href='".$data['LINK']."' target='_blank'>".LANG_DETAILS."</a>";
+         }
+     }
+     exit;
  }
+
+    if ($this->ajax && $_GET['op']=='news') {
+        $result = $this->marketRequest('op=news',5*60);
+        $data = json_decode($result,true);
+        //echo json_encode($data);
+        if (is_array($data)) {
+            $total = count($data);
+            for($i=0;$i<$total;$i++) {
+                echo "<div>";
+                echo "<b>".(htmlspecialchars($data[$i]['ADDED'].' '.$data[$i]['TITLE']))."</b>";
+                $body = nl2br(htmlspecialchars($data[$i]['BODY']));
+                $body = str_replace('&amp;','&',$body);
+                $body = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/','<a href="$1" target=_blank>$1</a>',$body);
+                echo "<p>".$body;
+                if ($data[$i]['LINK']!='') {
+                    echo "<br/><a href='".$data[$i]['LINK']."' target='_blank'>".LANG_DETAILS."</a>";
+                }
+                echo "</p></div>&nbsp;";
+            }
+        }
+        /*
+        if ($data['BODY']) {
+            echo nl2br(htmlspecialchars($data['BODY']));
+            if ($data['LINK']!='') {
+                echo "<br/><a href='".$data['LINK']."' target='_blank'>".LANG_DETAILS."</a>";
+            }
+        }
+        */
+        exit;
+    }
+
+ // $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
+ $result = $this->marketRequest();
  $data=json_decode($result);
  if (!$data->PLUGINS) {
   $out['ERR']=1;
@@ -324,6 +335,44 @@ function admin(&$out) {
  }
 
 }
+
+ function marketRequest($details = '', $cache_timeout = 120) {
+     $serial = gg('Serial');
+     if (!$serial || $serial=='0') {
+         $serial = '';
+         if (IsWindowsOS()) {
+             $data = exec('vol c:');
+             if (preg_match('/[\w]+\-[\w]+/',$data,$m)) {
+                 $serial=strtolower($m[0]);
+             }
+         } else {
+             $data=trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
+             $serial=ltrim($data,'0');
+         }
+         if (!$serial) {
+             $serial = uniqid('uniq');
+         }
+         sg('Serial',$serial);
+     }
+
+     if (IsWindowsOS()) {
+         $os = 'Windows';
+     } else {
+         $os=trim(exec("uname -a"));
+         if (!$os) {
+             $os = 'Linux';
+         }
+     }
+     $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+     $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os)."&".$details;
+
+     $result=getURL($data_url, $cache_timeout);
+     if (!$result && $cache_timeout>0) {
+         $result=getURL($data_url, 0);
+     }
+     return $result;
+
+ }
 
 /**
 * Title
@@ -512,8 +561,14 @@ function admin(&$out) {
   }
   $this->removeTree(ROOT.'modules/'.$name);
   $this->removeTree(ROOT.'templates/'.$name);
-  if (file_exists(ROOT.'scripts/cycle_'.$name.'.php')) {
-   @unlink(ROOT.'scripts/cycle_'.$name.'.php');
+
+  if ($name == 'scheduler') {
+      $cycle_name = ROOT.'scripts/cycle_schedapp.php';
+  } else {
+      $cycle_name = ROOT.'scripts/cycle_'.$name.'.php';
+  }
+  if (file_exists($cycle_name)) {
+   @unlink($cycle_name);
   }
   removeMissingSubscribers();
 

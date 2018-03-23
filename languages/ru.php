@@ -1170,6 +1170,7 @@ $dictionary = array(
     'DEVICES_DEGREES' => 'градусов',
     'DEVICES_STATUS_OPEN' => 'открыт',
     'DEVICES_STATUS_CLOSED' => 'закрыт',
+    'DEVICES_STATUS_ALARM' => 'состояние тревоги',
     'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
@@ -1212,6 +1213,16 @@ $dictionary = array(
 
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
+
+    'ROOMS' => 'Комнаты',
+    'APPEARANCE' => 'Внешний вид',
+    'MAINTENANCE' => 'Обслуживание',
+    'LIST' => 'Список',
+    'DATA_OPTIMIZING' => 'Оптимизация данных',
+    'DID_YOU_KNOW' => 'А знаете ли вы что...',
+    'NEWS' => 'Новости MajorDoMo',
+    'KNOWLEDGE_BASE' => 'База знаний',
+
 
     /* end module names */
 

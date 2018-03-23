@@ -13,15 +13,13 @@ function inIframe () {
 }
 
  function report_js_error(msg, url, linenumber) {
-  stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
-  /*
-  tmp = new Image();
-  tmp.src = "write_error.php?error="+stuff;
-  */
+  var stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
+  var tmp = new Image();
+  tmp.src = "write_error.php?error="+encodeURIComponent(stuff);
   return true;
  }
 
-window.onerror=report_js_error
+window.onerror=report_js_error;
 
 
 var bV=parseInt(navigator.appVersion);
@@ -292,5 +290,24 @@ function startFlashing(block_id) {
   ajaxSetGlobal(varname, value);
  }
 
+function getCookie(Name) {
+ var search = Name + "="
+ if (document.cookie.length > 0)
+ { // if there are any cookies
+  offset = document.cookie.indexOf(search)
+  if (offset != -1) { // if cookie exists
+   offset += search.length          // set index of beginning of value
+   end = document.cookie.indexOf(";", offset)          // set index of end of cookie value
+   if (end == -1) end = document.cookie.length
+   return unescape(document.cookie.substring(offset, end))
+  }
+ }
+}
+
+
+function setCookie(name, value) {
+ var expire = "0, 01-01-2020 00:00:00 GMT"
+ document.cookie = name + "=" + escape(value) + "; expires=" + expire + "; path=/";
+}
 
 // </AJAX>

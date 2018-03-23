@@ -42,6 +42,8 @@ class panel extends module
 
         global $action;
 
+        $out['TAB']=gr('tab');
+
         if (defined('NO_DATABASE_CONNECTION')) {
          if (!$action) $action = 'saverestore';
          $this->print = 1;
@@ -165,6 +167,9 @@ class panel extends module
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {
             $out['APP_TDWIKI_INSTALLED'] = 1;
+        }
+        if (is_dir(DIR_MODULES . 'optimizer')) {
+            $out['OPTIMIZER_INSTALLED'] = 1;
         }
 
         $out["ACTION"] = $this->action;

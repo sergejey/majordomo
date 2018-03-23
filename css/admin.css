@@ -20,7 +20,7 @@ table#content {
 
 .sidebar-left {
        /* width: 180px;*/
-           width: 238px;
+           width: 208px;
 }
 
 .nav .nav-header {
@@ -55,9 +55,11 @@ table#content {
 
 
 
+/*
 #main-content {
         padding: 0 0 0 40px;
 }
+*/
 
 .row {
         position: relative;
