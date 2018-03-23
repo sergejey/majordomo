@@ -182,7 +182,7 @@ function admin(&$out) {
  }
 
     if ($this->ajax && $_GET['op']=='news') {
-        $result = $this->marketRequest('op=news',0);
+        $result = $this->marketRequest('op=news',5*60);
         $data = json_decode($result,true);
         //echo json_encode($data);
         if (is_array($data)) {
@@ -190,7 +190,10 @@ function admin(&$out) {
             for($i=0;$i<$total;$i++) {
                 echo "<div>";
                 echo "<b>".(htmlspecialchars($data[$i]['ADDED'].' '.$data[$i]['TITLE']))."</b>";
-                echo "<p>".nl2br(htmlspecialchars($data[$i]['BODY']));
+                $body = nl2br(htmlspecialchars($data[$i]['BODY']));
+                $body = str_replace('&amp;','&',$body);
+                $body = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/','<a href="$1" target=_blank>$1</a>',$body);
+                echo "<p>".$body;
                 if ($data[$i]['LINK']!='') {
                     echo "<br/><a href='".$data[$i]['LINK']."' target='_blank'>".LANG_DETAILS."</a>";
                 }

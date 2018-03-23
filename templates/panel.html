@@ -18,9 +18,12 @@
 
         <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 
-    <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+    <script language="javascript" src="<#ROOTHTML#>js/scripts.js?v=1"></script>
+    <!--#
     <script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
-    <script language="javascript" src="<#ROOTHTML#>js/admin.js"></script>
+    <script language="javascript" src="<#ROOTHTML#>js/admin.js?v=1"></script>
+    [#inc scripts.js#]
+    #-->
     <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
@@ -29,7 +32,7 @@
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
     <script type="text/javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 
-        [#inc scripts.js#]
+
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -605,6 +608,7 @@ jQuery.fn.center = function () {
 <script language="javascript">
 
  $(document).ready(function() {
+
         $(".wiki_hint").fancybox({
                 maxWidth        : 800,
                 maxHeight       : 600,
@@ -629,11 +633,13 @@ jQuery.fn.center = function () {
                 closeEffect     : 'none'
         });
      checkLocationHref();
-     [#if ACTION=""#]
-     checkUpdatesAvailable();
-     checkDidYouKnow();
-     checkNews();
-     [#endif#]
+
+     $('input[name=filter_modules]').keyup(function() {
+         filterModules();
+     });
+
+     localStorage.clear();
+
 });
 </script>
 
