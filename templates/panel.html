@@ -425,7 +425,7 @@ jQuery.fn.center = function () {
         </li>
         [#endif#]
       <li>
-        <a href="<#LANG_WIKI_URL#>" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
+        <a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
       </li>
       <li>
         <a href="?md=control_access&mode=logoff"><i class="glyphicon glyphicon-log-out"></i> <#LANG_LOGOFF#></a>
@@ -551,7 +551,6 @@ jQuery.fn.center = function () {
         </div>
 [#endif PRINT#]
 <div class="col-sm-10" id="main-content">
-    &nbsp;
     <div>
         <!--#
             <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"></a>
@@ -563,10 +562,13 @@ jQuery.fn.center = function () {
         <div class="float-right" style="padding-right:30px">
             <i class="glyphicon glyphicon-question-sign"></i>
             [#if ACTION!=""#]
-            <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>?utm_source=Panel&utm_medium=link&utm_campaign=mainlink" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
-            /
+            <a href="<#LANG_KB_URL#>category/moduli-v-majordomo/<#ACTION#>_help/?utm_source=Panel&utm_medium=link&utm_campaign=mainlink" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            [#else#]
+            <a href="<#LANG_KB_URL#>?utm_source=Panel&utm_medium=link&utm_campaign=mainlink" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#endif#]
-            <a href="http://kb.smartliving.ru/?utm_source=Panel&utm_medium=link&utm_campaign=mainlink" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
+            <!--#
+
+            #-->
         </div>
 
                     <div id="updates-check-market" class="float-right" style="padding-right:20px; display:none">

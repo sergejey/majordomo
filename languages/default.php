@@ -12,6 +12,7 @@ $dictionary=array(
 
 /* general */
 'WIKI_URL'=>'http://majordomohome.com/',
+'KB_URL'=>'https://kb.smartliving.ru/',
 'DEFAULT_COMPUTER_NAME'=>'Alice',
 'WELCOME_GREETING'=>'Welcome!',
 'WELCOME_TEXT'=>'Thank you for using MajorDoMo -- an open-source home automation platform. <br/><br/>Read more about it and join our community: <a href="<#LANG_WIKI_URL#>" target=_blank>Web-site</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forum</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook page</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. You can customize or delete this page using <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Control Panel</a></small>',
@@ -1227,6 +1228,8 @@ $dictionary=array(
     'DID_YOU_KNOW' => 'Did you know that...',
     'NEWS' => 'MajorDoMo News',
     'KNOWLEDGE_BASE' => 'Knowledge Base',
+    'ACTIVITIES' => 'Activities',
+    'COMMANDS' => 'Commands',
 
 'TEST'=>'test'
 

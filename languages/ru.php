@@ -12,6 +12,7 @@ $dictionary = array(
 
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
+    'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Алиса',
     'WELCOME_GREETING' => 'Добро пожаловать!',
     'WELCOME_TEXT' => 'Спасибо, что пользуйтесь MajorDoMo -- открытой платформой домашней автоматизации. <br/><br/>Узнайте больше и присоединяйтесь к сообществу: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вы можете изменить или удалить эту страницу через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель управления</a></small>',
@@ -1096,7 +1097,7 @@ $dictionary = array(
 
     'DEVICES_MIN_VALUE' => 'Нижний порог',
     'DEVICES_MAX_VALUE' => 'Верхний порог',
-    'DEVICES_NOTIFY' => 'Уведомлять при выходе за порог',
+    'DEVICES_NOTIFY' => 'Умедомлять при выходе за порог',
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
@@ -1222,6 +1223,8 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'А знаете ли вы что...',
     'NEWS' => 'Новости MajorDoMo',
     'KNOWLEDGE_BASE' => 'База знаний',
+    'ACTIVITIES' => 'Поведение',
+    'COMMANDS' => 'Команды',
 
 
     /* end module names */

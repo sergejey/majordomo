@@ -14,6 +14,9 @@ if ($conversion>0) {
 }
 
 $data_value = (float)$this->getProperty('value');
-$new_data_value = (($data_value + $diff));
+$new_data_value = round(($data_value + $diff),3);
 
-$this->setProperty('value',round($new_data_value,3));
+if ($data_value!=$new_data_value) {
+  $this->setProperty('value',$new_data_value);
+}
+
