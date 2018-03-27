@@ -226,6 +226,7 @@ function processDevice($device_id) {
     $result=array('HTML'=>'','DEVICE_ID'=>$device_rec['ID']);
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
+
     $result['HTML']=processTitle($template,$this);
     if ($device_rec['TYPE']=='camera') {
         $result['HEIGHT']=5;

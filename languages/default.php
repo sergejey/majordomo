@@ -1128,6 +1128,10 @@ $dictionary=array(
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
+    'DEVICES_LOADTYPE_VENT' => 'Ventilation',
+    'DEVICES_LOADTYPE_HEATING' => 'Heating',
+    'DEVICES_LOADTYPE_CURTAINS' => 'Curtains',
+    'DEVICES_LOADTYPE_GATES' => 'Gates',
     'DEVICES_LOADTYPE_LIGHT' => 'Light',
     'DEVICES_LOADTYPE_POWER' => 'Other',
 

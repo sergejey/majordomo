@@ -88,6 +88,7 @@ function getObjectClassTemplate($object_name) {
     $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
     //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     return $data;
 }
 
@@ -1076,7 +1077,6 @@ function processTitle($title, $object = 0)
 
       $title = preg_replace('/%rand%/is', rand(), $title);
 
-
       $title=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
       
       if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/uis', $title, $m))
@@ -1106,16 +1106,24 @@ function processTitle($title, $object = 0)
             $tmp=explode(';', $descr);
             $totald=count($tmp);
             $hsh=array();
-            for($id=0;$id<$totald;$id++) {
-             $item=trim($tmp[$id]);
-             if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
-              $search_value=$md[1];
-              $search_replace=$md[2];
-             } else {
-              $search_value=$id;
-              $search_replace=$item;
-             }
-             $hsh[$search_value]=$search_replace;
+            if ($totald==1) {
+                if ($data!='') {
+                    $hsh[$data]=$descr;
+                } else {
+                    $hsh[$data]='';
+                }
+            } else {
+                for($id=0;$id<$totald;$id++) {
+                    $item=trim($tmp[$id]);
+                    if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
+                        $search_value=$md[1];
+                        $search_replace=$md[2];
+                    } else {
+                        $search_value=$id;
+                        $search_replace=$item;
+                    }
+                    $hsh[$search_value]=$search_replace;
+                }
             }
             $title = str_replace($m[0][$i], $hsh[$data], $title);
          }
