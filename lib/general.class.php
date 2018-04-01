@@ -14,6 +14,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
        || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])
        || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']))
        || $_REQUEST['op'] != '')
+    && !preg_match('/\/webhook_telegram\.php/is', $_SERVER['REQUEST_URI'])
     && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])
     && 1)
 {
