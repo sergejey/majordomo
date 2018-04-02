@@ -120,11 +120,31 @@ if ($total>0) {
                 $history_table = 'phistory';
         }
 
-        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
-        if (!$history[0]['ID'] && $op == 'log') {
-                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+        if ($end_time == $start_time) {
+            $history = array();
+        } else {
+            $history=SQLSelect("SELECT ID, VALUE, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."')"); // ORDER BY ADDED
+            if (!$history[0]['ID'] && $op == 'log') {
+                $history = SQLSelect("SELECT ID, VALUE, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
                 $history = array_reverse($history);
+            }
+
+            if ($history[0]['ID']) {
+                $total = count($history);
+                for($i=0;$i<$total;$i++) {
+                    $history[$i]['UNX']=strtotime($history[$i]['ADDED']);
+                }
+                usort($history,function($a,$b) {
+                    if ($a['UNX'] == $b['UNX']) {
+                        return 0;
+                    }
+                    return ($a['UNX'] < $b['UNX']) ? -1 : 1;
+                });
+            }
         }
+
+    //echo "test";exit;
+
         $total_values=count($history);
         $start_time=$history[0]['UNX'];
 
