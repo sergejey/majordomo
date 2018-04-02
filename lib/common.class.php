@@ -1207,3 +1207,22 @@ function verbose_log($data) {
   $unit=array('b','kb','mb','gb','tb','pb');
   return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
  }
+
+function getPassedText($updatedTime) {
+    $passed = time() - $updatedTime;
+    $passedText = '';
+    if ($passed<10) {
+        $passedText = LANG_DEVICES_PASSED_NOW;
+    } elseif ($passed<60) {
+        $passedText = $passed.' '.LANG_DEVICES_PASSED_SECONDS_AGO;
+    } elseif ($passed<60*60) {
+        $passedText = round($passed/60).' '.LANG_DEVICES_PASSED_MINUTES_AGO;
+    } elseif ($passed<20*60*60) {
+        //just time
+        $passedText = date('H:i',$updatedTime); 
+    } else {
+        //time and date
+        $passedText=date('d.m.Y H:i',$updatedTime);
+    }
+    return $passedText;
+}
