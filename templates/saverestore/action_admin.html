@@ -1,5 +1,3 @@
-
-
 <!--#
  @version 0.6 (2010-08-30)
 #-->
@@ -16,15 +14,9 @@
 [#if MODE="getlatest_iframe"#]
 <iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe>
 [#else MODE#]
-
-
-
-<table width="100%" border="0">
- <tr>
-  <td valign="top" width="50%">
-
-   <big><#LANG_UPDATES#></big>
-   <br>
+<div class="row">
+ <div class="col-md-6">
+   <h3><#LANG_UPDATES#></h3>
 
    <form action="?" method="post" enctype="multipart/form-data">
    [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
@@ -33,10 +25,11 @@
 
    <p><#LANG_LONG_OPERATION_WARNING#></p>
 
-   <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#> &gt;&gt;&gt;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default">
-
-   <br/>
+    <div>
+   <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-primary">
+   &nbsp;
    <input type="checkbox" name="with_extensions" value="1" checked> <#LANG_UPDATE_ALL_EXTENSIONS#>
+    </div>
 
    <input type="hidden" name="mode" value="getlatest_iframe">
    </form>
@@ -51,9 +44,8 @@
    [#endif UPDATES#]
 
 
-   <hr size="1">
-   <big><#LANG_SAVE_BACKUP#></big>
-   <br>
+   <h3><#LANG_SAVE_BACKUP#></h3>
+
    <form action="?" method="post" enctype="multipart/form-data">
    <label><input type="checkbox" name="design" value="1"> <#LANG_DESIGN#> (templates, css, images)</label><br>
    <label><input type="checkbox" name="code" value="1"> <#LANG_CODE#> (modules)</label><br>
@@ -65,34 +57,33 @@
    </form>
 
 
-  </td>
-
-  <td valign="top">&nbsp;</td>
-
-  <td valign="top" width="50%">
-
-   <big><#LANG_UPLOAD_BACKUP#></big>
-   <br>&nbsp;
+ </div>
+ <div class="col-md-6">
+   <h3><#LANG_UPLOAD_BACKUP#></h3>
    <form action="?" method="post" enctype="multipart/form-data">
-   File: <input type="file" name="file"><br/>
+    <div>
+   File: <input type="file" name="file">
+    </div>
+    &nbsp;
+    <div>
    <input type="submit" name="submit" value="<#LANG_CONTINUE#> &gt;&gt;&gt;" class="btn btn-default">
+    </div>
    <input type="hidden" name="mode" value="upload">
    </form>
 
    [#if FILES#]
    &nbsp;<br>
-   <table class="table table-bordered">
+   <table class="table">
    [#begin FILES#]
     <tr>
-     <td valign="top">[#TITLE#]</td>
-     <td valign="top" nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
+     <td>[#TITLE#]</td>
+     <td nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
      [#if "<#CLEAR_FIRST#>"!="1"#]
      <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_RESTORE#></a></td>
      [#endif#]
-
      [#if FILESIZE!=""#]
-     <td valign="top"><a href="<#ROOTHTML#>saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
-     <td valign="top">
+     <td><a href="<#ROOTHTML#>saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
+     <td>
       <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
      </td>
      [#else#]
@@ -103,9 +94,7 @@
    </table>
    [#endif FILES#]
 
-  </td>
- </tr>
-</table>
+ </div>
 
 [#endif MODE#]
 
