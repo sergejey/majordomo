@@ -147,6 +147,7 @@ $this->device_types=array(
             'clickAction'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PREVIEW_ONCLICK,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'enlarge='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE.',stream='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL),            
             'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
             'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'series'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>30,'DATA_TYPE'=>5),
             'snapshotPreviewURL'=>array('DESCRIPTION'=>'Snapshot Preview URL'),
             'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
             'activeHTML'=>array('DESCRIPTION'=>'Active HTML',),
@@ -155,6 +156,7 @@ $this->device_types=array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
             'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
             'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+            'takeSeries'=>array('DESCRIPTION'=>'Takes image series'),
         )
     ),
     'openclose'=>array(

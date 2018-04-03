@@ -86,8 +86,21 @@ while (1) {
                 if ((time() - $processed[$q_rec['VALUE_ID']]) > 8 * 60 * 60) {
                     $start_tm = date('Y-m-d H:i:s',(time()-(int)$q_rec['KEEP_HISTORY']*24*60*60));
                     debug_echo("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n");
+                    $v=SQLSelectOne("SELECT PROPERTY_ID FROM pvalues WHERE ID=".(int)$q_rec['VALUE_ID']);
+                    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$v['PROPERTY_ID']);
+                    if ($prop['DATA_TYPE']==5) {
+                        $values=SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')");
+                        $totalv=count($values);
+                        for($iv=0;$iv<$totalv;$iv++) {
+                            if ($values[$iv]['VALUE']!='' && file_exists(ROOT.'cms/images/'.$values[$iv]['VALUE'])) {
+                                @unlink(ROOT.'cms/images/'.$values[$iv]['VALUE']);
+                            }
+                        }
+                    }
                     SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')");
                     $processed[$q_rec['VALUE_ID']] = time();
+
+
                     debug_echo(" Done ");
                 }
                 $h = array();
