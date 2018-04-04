@@ -12,6 +12,7 @@ $dictionary = array(
 
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
+    'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Алиса',
     'WELCOME_GREETING' => 'Добро пожаловать!',
     'WELCOME_TEXT' => 'Спасибо, что пользуйтесь MajorDoMo -- открытой платформой домашней автоматизации. <br/><br/>Узнайте больше и присоединяйтесь к сообществу: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вы можете изменить или удалить эту страницу через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель управления</a></small>',
@@ -1122,6 +1123,10 @@ $dictionary = array(
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип устройства/сенсора',
     'DEVICES_LOADTYPE' => 'Тип устройства',
+    'DEVICES_LOADTYPE_VENT' => 'Вентиляция',
+    'DEVICES_LOADTYPE_HEATING' => 'Обогрев',
+    'DEVICES_LOADTYPE_CURTAINS' => 'Шторы',
+    'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
     'DEVICES_LOADTYPE_POWER' => 'Разное',
 
@@ -1222,6 +1227,8 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'А знаете ли вы что...',
     'NEWS' => 'Новости MajorDoMo',
     'KNOWLEDGE_BASE' => 'База знаний',
+    'ACTIVITIES' => 'Поведение',
+    'COMMANDS' => 'Команды',
 
 
     /* end module names */

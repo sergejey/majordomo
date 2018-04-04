@@ -7,51 +7,21 @@ include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
 set_time_limit(0);
-
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-
 $ctl = new control_modules();
-
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
-$run_from_start = 1;
-include("./scripts/startup_maintenance.php");
-$run_from_start = 0;
+//SQLExec("TRUNCATE TABLE phistory_queue;");
 
-setGlobal('ThisComputer.started_time', time());
-getObject('ThisComputer')->raiseEvent("StartUp");
-
-$sqlQuery = "SELECT *
-               FROM classes
-              WHERE TITLE LIKE 'timer'";
-
-$timerClass = SQLSelectOne($sqlQuery);
-$o_qry = 1;
-
-if ($timerClass['SUB_LIST'] != '') {
-    $o_qry .= " AND (CLASS_ID IN (" . $timerClass['SUB_LIST'] . ")";
-    $o_qry .= "  OR CLASS_ID = " . $timerClass['ID'] . ")";
-} else {
-    $o_qry .= " AND 0";
-}
-
-$old_minute = date('i');
-$old_hour = date('h');
-if ($_GET['onetime']) {
-    $old_minute = -1;
-    if (date('i') == '00') {
-        $old_hour = -1;
-    }
-}
-$old_date = date('Y-m-d');
+debug_echo("Optimizing phistory");
+SQLExec("OPTIMIZE TABLE phistory;");
+debug_echo("Done");
 
 $checked_time = 0;
-$started_time = time();
-
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
 while (1) {
@@ -61,46 +31,6 @@ while (1) {
         setGlobal('ThisComputer.uptime', time() - getGlobal('ThisComputer.started_time'));
     }
 
-    $m = date('i');
-    $h = date('h');
-    $dt = date('Y-m-d');
-
-    if ($m != $old_minute) {
-        //echo "new minute\n";
-        $sqlQuery = "SELECT ID, TITLE
-                     FROM objects
-                    WHERE $o_qry";
-
-        $objects = SQLSelect($sqlQuery);
-        $total = count($objects);
-
-        for ($i = 0; $i < $total; $i++) {
-            echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewMinute\n";
-            getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
-            getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
-        }
-
-        $old_minute = $m;
-    }
-
-    if ($h != $old_hour) {
-        $sqlQuery = "SELECT ID, TITLE
-                     FROM objects
-                    WHERE $o_qry";
-
-        //echo "new hour\n";
-        $old_hour = $h;
-        $objects = SQLSelect($sqlQuery);
-        $total = count($objects);
-
-        for ($i = 0; $i < $total; $i++) {
-            echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewHour\n";
-            getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
-        }
-
-        processSubscriptions('HOURLY');
-
-    }
 
     /*
     $keep = SQLSelect("SELECT DISTINCT VALUE_ID, KEEP_HISTORY FROM phistory_queue");
@@ -121,7 +51,7 @@ while (1) {
         }
     }
     */
-    /*
+
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT 500");
     if ($queue[0]['ID']) {
         $total = count($queue);
@@ -131,7 +61,16 @@ while (1) {
             $value = $q_rec['VALUE'];
             $old_value = $q_rec['OLD_VALUE'];
 
-            //echo "Queue $i / $total\n";
+            debug_echo("Queue $i / $total");
+
+            $queue_error_status=gg('phistory_queue_problem');
+            if ($total>200 && !$queue_error_status) {
+                sg('phistory_queue_problem',1);
+                registerError('phistory_queue','Properties history queue is too long ('.$total.')');
+            } elseif ($total<=200 && $queue_error_status) {
+                sg('phistory_queue_problem',0);
+            }
+
             SQLExec("DELETE FROM phistory_queue WHERE ID='" . $q_rec['ID'] . "'");
 
             if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
@@ -146,53 +85,74 @@ while (1) {
                 }
                 if ((time() - $processed[$q_rec['VALUE_ID']]) > 8 * 60 * 60) {
                     $start_tm = date('Y-m-d H:i:s',(time()-(int)$q_rec['KEEP_HISTORY']*24*60*60));
-                    //echo date('Y-m-d H:i:s').("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n");
+                    debug_echo("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n");
+                    $v=SQLSelectOne("SELECT PROPERTY_ID FROM pvalues WHERE ID=".(int)$q_rec['VALUE_ID']);
+                    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$v['PROPERTY_ID']);
+                    if ($prop['DATA_TYPE']==5) {
+                        $values=SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')");
+                        $totalv=count($values);
+                        for($iv=0;$iv<$totalv;$iv++) {
+                            if ($values[$iv]['VALUE']!='' && file_exists(ROOT.'cms/images/'.$values[$iv]['VALUE'])) {
+                                @unlink(ROOT.'cms/images/'.$values[$iv]['VALUE']);
+                            }
+                        }
+                    }
                     SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')");
                     $processed[$q_rec['VALUE_ID']] = time();
-                    //echo date('Y-m-d H:i:s ')." Done \n";
+
+
+                    debug_echo(" Done ");
                 }
                 $h = array();
                 $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                 $h['ADDED'] = $q_rec['ADDED'];
                 $h['VALUE'] = $value;
-                //echo date('Y-m-d H:i:s ')." Insert new value ".$h['VALUE_ID']."\n";
+                debug_echo(" Insert new value ".$h['VALUE_ID']);
                 $h['ID'] = SQLInsert($table_name, $h);
-                //echo date('Y-m-d H:i:s ')." Done \n";
+                debug_echo(" Done ");
             } elseif ($value == $old_value) {
+
+                //debug_echo(" Check history for same value ".$h['VALUE_ID']);
                 $tmp_history = SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' ORDER BY ID DESC LIMIT 2");
                 $prev_value = $tmp_history[0]['VALUE'];
                 $prev_prev_value = $tmp_history[1]['VALUE'];
-                if ($prev_value == $prev_prev_value) {
+                //debug_echo(" Done ");
+
+                if ($prev_value == $prev_prev_value && $tmp_history[0]['ID']) {
+                    debug_echo(" Update same value ".$h['VALUE_ID']);
+                    SQLExec("UPDATE $table_name SET ADDED='".$q_rec['ADDED']."' WHERE ID=".$tmp_history[0]['ID']);
+                    /*
                     $tmp_history[0]['ADDED'] = $q_rec['ADDED'];
-                    //echo date('Y-m-d H:i:s ')." Update same value ".$tmp_history[0]['VALUE_ID']."\n";
-                    SQLUpdate($table_name, $tmp_history[0]);
-                    //echo date('Y-m-d H:i:s ')." Done \n";
+                    foreach($tmp_history[0] as $k=>$v) {
+                        if ($k=='ID' || $k=='ADDED') continue;
+                        unset($tmp_history[0][$k]);
+                    }
+                    */
+                    //SQLUpdate($table_name, $tmp_history[0]);
+                    debug_echo(" Done ");
                 } else {
+                    debug_echo(" Insert same new value ".$h['VALUE_ID']);
                     $h = array();
                     $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                     $h['ADDED'] = $q_rec['ADDED'];
                     $h['VALUE'] = $value;
-                    //echo date('Y-m-d H:i:s ')." Insert same value ".$h['VALUE_ID']."\n";
                     $h['ID'] = SQLInsert($table_name, $h);
-                    //echo date('Y-m-d H:i:s ')." Done \n";
+                    debug_echo(" Done ");
                 }
             }
 
         }
-    }
-    */
-
-    if ($dt != $old_date) {
-        //echo "new day\n";
-        $old_date = $dt;
     }
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         $db->Disconnect();
         exit;
     }
-
     sleep(1);
+}
+
+function debug_echo($line) {
+    //echo date('Y-m-d H:i:s').' '.$line."\n";
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));

@@ -111,6 +111,7 @@ if ($this->mode == 'update') {
             addLinkedProperty($linked_object, $linked_property, $this->name);
         }
 
+        $rec['UPDATED']=date('Y-m-d H:i:s');
 
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update

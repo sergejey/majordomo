@@ -53,7 +53,15 @@ $this->device_types=array(
             'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno'),            
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno'),
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
-            'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.',power='.LANG_DEVICES_LOADTYPE_POWER),
+            'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,
+                '_CONFIG_TYPE'=>'select',
+                '_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.
+                    ',heating='.LANG_DEVICES_LOADTYPE_HEATING.
+                    ',vent='.LANG_DEVICES_LOADTYPE_VENT.
+                    ',curtains='.LANG_DEVICES_LOADTYPE_CURTAINS.
+                    ',gates='.LANG_DEVICES_LOADTYPE_GATES.
+                    ',power='.LANG_DEVICES_LOADTYPE_POWER),
+            'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image'),
         ),
         'METHODS'=>array(
             'turnOn'=>array('DESCRIPTION'=>'turnOn'),
@@ -139,6 +147,7 @@ $this->device_types=array(
             'clickAction'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PREVIEW_ONCLICK,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'enlarge='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE.',stream='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL),            
             'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
             'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'series'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>30,'DATA_TYPE'=>5),
             'snapshotPreviewURL'=>array('DESCRIPTION'=>'Snapshot Preview URL'),
             'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
             'activeHTML'=>array('DESCRIPTION'=>'Active HTML',),
@@ -147,6 +156,7 @@ $this->device_types=array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
             'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
             'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+            'takeSeries'=>array('DESCRIPTION'=>'Takes image series'),
         )
     ),
     'openclose'=>array(
@@ -199,6 +209,9 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_BUTTON,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SButtons',
+        'PROPERTIES'=>array(
+            'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image'),
+        ),
         'METHODS'=>array(
             'pressed'=>array('DESCRIPTION'=>'Button pressed'),
         )

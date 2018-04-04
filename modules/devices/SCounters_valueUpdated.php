@@ -35,7 +35,7 @@ foreach($history_values as $history_value=>$time) {
     } else {
         $set_value = $prev_value_set;
     }
-    $set_value = round($set_value,2);
+    $set_value = round($set_value,3);
     $prev_value_set = $set_value;
     //echo "$history_value = $set_value; ";
     $value_id = (int)getHistoryValueId($ot.'.'.$history_value);
@@ -44,9 +44,10 @@ foreach($history_values as $history_value=>$time) {
     } else {
         $table_name = 'phistory';
     }
-    //echo "DELETE FROM $table_name WHERE VALUE_ID=$value_id AND ADDED>=DATE('".$time."')<br/>";
     SQLExec("DELETE FROM $table_name WHERE VALUE_ID=$value_id AND ADDED>=('".$time."')");
-    //echo "setting $history_value to $set_value<br/>";
+    //$end_time=date('Y-m-d H:i:s');
+    //setTimeout('Counter_'.$value_id.'_'.$time,"SQLExec(\"DELETE FROM $table_name WHERE VALUE_ID=$value_id AND ADDED>=('$time') AND ADDED<('$end_time')\");",30);
+    //$old_set_value = $this->getProperty($history_value);
     $this->setProperty($history_value,$set_value);
 }
 

@@ -20,12 +20,34 @@
 
 &nbsp;
 <!-- table scripts search -->
-<p>
-<a href="?view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_SCRIPT#></a>
-</p>
-
+<form action="?" method="get">
+<div class="row">
+ <div class="col-md-4">
+  <input type="text" name="title" value="<#TITLE#>" class="form-control" placeholder="<#LANG_SEARCH#>">
+ </div>
+ <div class="col-md-2">
+  <input type="submit" class="btn btn-default" value="<#LANG_SEARCH#>">
+  [#if TITLE!=""#]
+  <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+  [#endif#]
+ </div>
+ <div class="col-md-3">
+  <select name="recently_updated" id="recently_updated" class="form-control" onchange="this.form.submit();">
+   <option value=""><#LANG_UPDATED#></option>
+   [#begin RECENTLY_UPDATED#]
+   <option value="[#ID#]">[#TITLE#] ([#PASSED#])</option>
+   [#end RECENTLY_UPDATED#]
+  </select>
+ </div>
+ <div class="col-md-3 text-right">
+  <a href="?view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_SCRIPT#></a>
+ </div>
+</div>
+</form>
+&nbsp;<br/>
 <!-- results -->
 [#if RESULT#]
+<form action="?" method="post">
 <!-- search results (list) -->
 [#begin RESULT#]
 [#if NEW_CATEGORY#]
@@ -36,21 +58,27 @@
 [#endif FIRST#]
 <big><b>[#CATEGORY#]</b></big>
 <a href="#" id="link[#CATEGORY_ID#]" style="text-decoration:none" onClick="return showHide([#CATEGORY_ID#]);">[ + ]</a>
-<div id='sub[#CATEGORY_ID#]' style="display:none">
+<div id='sub[#CATEGORY_ID#]' [#if "<#ALL_OPEN#>"!="1"#]style="display:none"[#endif#]>
 <table class="table table-striped">
+ <thead>
+ <tr>
+  <th><#LANG_TITLE#></th>
+  <th><#LANG_DESCRIPTION#></th>
+  <th><#LANG_EXECUTED#></th>
+  <th>&nbsp;</th>
+ </tr>
+ </thead>
 [#endif#]
-<tr class="hover_btn2">
+<tr>
  <td nowrap>
+  <input type="checkbox" name="ids[]" value="[#ID#]">
   <b>
-  [#if TITLE!=""#]
    <a href="?view_mode=edit_scripts&id=[#ID#]">[#TITLE#]</a>
-  [#else#]
-   &nbsp;
-  [#endif#]
   </a></b>
  </td>
- <td width="90%">[#DESCRIPTION#]&nbsp;</td>
- <td width="200" nowrap>
+ <td>[#DESCRIPTION#]&nbsp;</td>
+ <td>[#EXECUTED_PASSED#]</td>
+ <td nowrap>
   [#if "<#ACTION#>"=="admin"#]
     <a href="?view_mode=edit_scripts&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
     <a href="?view_mode=run_script&id=[#ID#]" target="_blank" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_EXECUTE#>"><i class="glyphicon glyphicon-flash"></i></a>
@@ -63,12 +91,36 @@
 </div>
 [#endif#]
 [#end RESULT#]
+<input type="hidden" name="view_mode" value="multiple">
+ <br>&nbsp;
+ <p>
+ <input type="submit" class="btn btn-default" name="export" value="<#LANG_EXPORT#>">
+ </p>
+</form>
 <!-- / search results (list) -->
 [#else RESULT#]
 <p align=center>
 <font color="red"><#LANG_NO_RECORDS_FOUND#></font>
 </p>
 [#endif RESULT#]
+
+<a href="#" class="btn btn-default" onClick="$('#scripts_tools').toggle();return false;"><#LANG_TOOLS#></a>
+
+<br/>&nbsp;
+<div id='scripts_tools' style="display:none">
+ <hr>
+ <h2><#LANG_IMPORT#></h2>
+ <form action="?" enctype="multipart/form-data" method="post">
+  <table class="table">
+   <tr>
+    <td><#LANG_IMPORT#>:</td>
+    <td><input type="file" name="file" enctype="multipart/form-data" class="form-control"></td>
+    <td><input type="submit" name="submit" value="<#LANG_IMPORT#>" class="btn btn-default"></td>
+   </tr>
+  </table>
+  <input type="hidden" name="view_mode" value="import">
+ </form>
+</div>
 
 <script language="javascript">
 [#begin RESULT#]

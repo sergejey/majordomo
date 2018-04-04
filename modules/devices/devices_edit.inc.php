@@ -88,6 +88,11 @@
                          }
                          $v['OPTIONS'][]=array('VALUE'=>$value,'TITLE'=>$title);
                      }
+                 } elseif ($v['CONFIG_TYPE']=='style_image') {
+                     include_once(DIR_MODULES.'scenes/scenes.class.php');
+                     $scene_class = new scenes();
+                     $styles = $scene_class->getAllTypes();
+                     $v['FOLDERS']=$styles;
                  }
                  $res_properties[]=$v;
              }
