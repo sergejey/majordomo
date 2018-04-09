@@ -359,7 +359,8 @@ function admin(&$out) {
  }
 
  if ($this->view_mode=='import') {
-  $this->import_scene();
+  global $file;
+  $this->import_scene($file);
  }
 
 
@@ -374,7 +375,8 @@ function admin(&$out) {
  * @access public
  */
  function export_scene($id) {
-  $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'"); 
+  $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'");
+  unset($rec['SYSTEM']);
   //elements
   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".(int)$id."'");
   $total=count($elements);
@@ -439,13 +441,15 @@ function admin(&$out) {
 *
 * @access public
 */
- function import_scene() {
-  global $file;
-  global $overwrite;
-
+ function import_scene($file, $system = '') {
   $data=unserialize(LoadFile($file));
-
   if ($data['SCENE_DATA']) {
+   if ($system!='') {
+    $old_rec=SQLSelectOne("SELECT ID FROM scenes WHERE SYSTEM LIKE '".DBSafe($system)."'");
+    if ($old_rec['ID']) {
+     return;
+    }
+   }
    $rec=$data['SCENE_DATA'];
    if (!$rec['WALLPAPER']) {
     unset($rec['WALLPAPER']);
@@ -1602,6 +1606,7 @@ elm_states - Element states
  scenes: AUTO_SCALE int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
+ scenes: SYSTEM varchar(255) NOT NULL DEFAULT '' 
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'

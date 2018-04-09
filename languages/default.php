@@ -1227,6 +1227,7 @@ $dictionary=array(
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',
+    'MAINTENANCE' => 'Maintenance',
     'LIST' => 'List',
     'DATA_OPTIMIZING' => 'Data Optimizing',
     'DID_YOU_KNOW' => 'Did you know that...',
@@ -1234,6 +1235,9 @@ $dictionary=array(
     'KNOWLEDGE_BASE' => 'Knowledge Base',
     'ACTIVITIES' => 'Activities',
     'COMMANDS' => 'Commands',
+    'ADDON_FILE' => 'Addon package',
+    'UPLOAD_AND_INSTALL' => 'Upload and Install',
+    'ADD_UPDATE_MANUALLY' =>'Add/Update Manually',
 
 'TEST'=>'test'
 

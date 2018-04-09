@@ -16,10 +16,25 @@
 
 [#if CLEAR_FIRST!="1"#]
 <div class="row">
- <div class="col-md-3" style="padding-left:0px">
+ <div class="col-md-6" style="padding-left:0px">
   <a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_ALL_EXTENSIONS#></a>
+	 <a href="#manualUpload" class="btn btn-default popup"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_UPDATE_MANUALLY#></a>
+	 <div style="display:none" id="manualUpload">
+		 <h2><#LANG_ADD_UPDATE_MANUALLY#></h2>
+			 <form class="form" method="post" enctype="multipart/form-data">
+				 <div class="form-group">
+				 <label for="module_file"><#LANG_ADDON_FILE#> (.tgz, .tar.gz):</label>
+				 <input type="file" name="file" id="module_file" class="form-control">
+				 </div>
+				 <div class="form-group">
+				 <input type="hidden" name="mode" value="upload">
+				 <input type="submit" class="btn btn-default" value="<#LANG_UPLOAD_AND_INSTALL#>">
+					 </div>
+			 </form>
+		 </div>
+
  </div>
- <div class="col-md-6">&nbsp;</div>
+ <div class="col-md-3">&nbsp;</div>
  <div class="col-md-3">
   <script type="text/javascript">
    var upTimer=0;
@@ -88,16 +103,19 @@
 		  [#endif#]
 		  [#endif EXISTS#]
 		  [#if URL!=""#]<a href="[#URL#]" target="_blank">[#endif#]<b id="row[#ID#]_title">[#TITLE#]</b></a>
+		  [#if AUTHOR!=""#]
 		  (by [#if AUTHOR_URL!=""#]<a href="[#AUTHOR_URL#]" target=_blank>[#endif#][#AUTHOR#]</a>)
+		  [#endif#]
 	  [#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
-	  <p id="row[#ID#]_description">[#DESCRIPTION_RU#]</p>
+			  [#if DESCRIPTION_RU!=""#]<p id="row[#ID#]_description">[#DESCRIPTION_RU#]</p>[#endif#]
 	  [#else#]
-	  <p id="row[#ID#]_description">[#DESCRIPTION_EN#]</p>
+			  [#if DESCRIPTION_EN!=""#]<p id="row[#ID#]_description">[#DESCRIPTION_EN#]</p>[#endif#]
 	  [#endif#]
 	  [#if LATEST_VERSION!=""#]
 	  <small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
 	  [#endif#]
 	  [#if EXISTS#]
+			  [#if LATEST_VERSION!=""#]
 	  <br>
 	  [#if INSTALLED_VERSION=="<#PLUGINS.LATEST_VERSION#>"#]
 	  <font color="green">(up to date)</font>
@@ -105,12 +123,14 @@
 	  <font color="blue">(update available, current version: [#if INSTALLED_VERSION!=""#][#INSTALLED_VERSION#][#else#]unknown[#endif#])</font>
 	  [#endif#]
 	  [#endif EXISTS#]
+				  [#endif#]
 	  </td>
 	  <td valign="top">
       [#if URL!=""#]
 		  <a class="btn btn-default btn-sm" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-globe"></i> Info</a>
-		  [#endif URL#]
-	  <a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> <#LANG_UPDATE#>[#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+		  <a class="btn btn-default btn-sm" href="?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> <#LANG_UPDATE#>[#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+	  [#endif URL#]
+
 		  <!--#
 	  <a class="btn btn-default btn-sm" href="[#SUPPORT_URL#]" target=_blank>Support</a>
 	  <a class="btn btn-default btn-sm" href="[#REPOSITORY_URL#]">Src</a>

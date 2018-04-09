@@ -142,7 +142,10 @@ function admin(&$out) {
   }
 
   if ($this->view_mode=='import_classes') {
-   $this->import_classes($out);
+   global $file;
+   global $overwrite;
+   global $only_classes;
+   $this->import_classes($file,$overwrite,$only_classes);
   }
 
   if ($this->view_mode=='edit_classes') {
@@ -203,10 +206,7 @@ function admin(&$out) {
 *
 * @access public
 */
- function import_classes(&$out) {
-  global $file;
-  global $overwrite;
-  global $only_classes;
+ function import_classes($file,$overwrite=0,$only_classes=0) {
 
   $data=LoadFile($file);
   $records=unserialize($data);

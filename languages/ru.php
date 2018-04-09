@@ -1229,6 +1229,9 @@ $dictionary = array(
     'KNOWLEDGE_BASE' => 'База знаний',
     'ACTIVITIES' => 'Поведение',
     'COMMANDS' => 'Команды',
+    'ADDON_FILE' => 'Файл дополнения',
+    'UPLOAD_AND_INSTALL' => 'Загрузить и установить',
+    'ADD_UPDATE_MANUALLY' =>'Добавить/обновить вручную',
 
 
     /* end module names */
