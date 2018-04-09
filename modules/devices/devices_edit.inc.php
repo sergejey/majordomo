@@ -73,6 +73,7 @@
                      }
                  }
                  $v['NAME']=$k;
+                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP']=$v['_CONFIG_HELP'];
                  $v['CONFIG_TYPE']=$v['_CONFIG_TYPE'];
                  $v['VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$k);
                  if ($v['CONFIG_TYPE']=='select') {
