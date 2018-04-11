@@ -152,8 +152,14 @@ function run() {
     $smarty->assign($k, $v);
    }
 
-
-   @$this->result=$smarty->fetch(DIR_TEMPLATES.'scenes/scenes.tpl');
+   $template = DIR_TEMPLATES.'scenes/scenes.tpl';
+   if (defined('ALTERNATIVE_TEMPLATES')) {
+    $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
+    if (file_exists($alt_path)) {
+     $template = $alt_path;
+    }
+   }
+   @$this->result=$smarty->fetch($template);
 
 
 
@@ -374,7 +380,6 @@ function admin(&$out) {
   $total=count($elements);
   for($i=0;$i<$total;$i++) {
    $elm_id=$elements[$i]['ID'];
-   unset($elements[$i]['ID']);
    unset($elements[$i]['SCENE_ID']);
    $states=SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='".(int)$elm_id."'");
    $totalE=count($states);
@@ -451,18 +456,27 @@ function admin(&$out) {
    unset($rec['ELEMENTS']);
    $rec['ID']=SQLInsert('scenes', $rec);
    $total=count($elements);
+   $seen_elements=array();
    for($i=0;$i<$total;$i++) {
     $states=$elements[$i]['STATES'];
+    $old_element_id=$elements[$i]['ID'];
     unset($elements[$i]['STATES']);
     unset($elements[$i]['ID']);
     $elements[$i]['SCENE_ID']=$rec['ID'];
     $elements[$i]['ID']=SQLInsert('elements', $elements[$i]);
+    $seen_elements[$old_element_id]=$elements[$i]['ID'];
     $totalE=count($states);
     for($iE=0;$iE<$totalE;$iE++) {
      unset($states[$iE]['ID']);
      $states[$iE]['ELEMENT_ID']=$elements[$i]['ID'];
      SQLInsert('elm_states', $states[$iE]);
     }
+   }
+   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID=".$rec['ID']." AND CONTAINER_ID!=0");
+   $total = count($elements);
+   for ($i = 0; $i < $total; $i++) {
+    $elements[$i]['CONTAINER_ID']=$seen_elements[$elements[$i]['CONTAINER_ID']];
+    SQLUpdate('elements',$elements[$i]);
    }
    if ($data['BACKGROUND_IMAGE']) {
     $filename=ROOT.$rec['BACKGROUND'];
@@ -616,6 +630,7 @@ function usual(&$out) {
       for($i=0;$i<$total;$i++) {
        if (is_array($elements[$i]['STATES'])) {
         foreach($elements[$i]['STATES'] as $st) {
+         if ($elements[$i]['TYPE']=='container') unset($st['HTML']);
          $states[]=$st;
         }
        }
@@ -683,6 +698,7 @@ function usual(&$out) {
       for($i=0;$i<$total;$i++) {
        if (is_array($elements[$i]['STATES'])) {
         foreach($elements[$i]['STATES'] as $st) {
+         if ($elements[$i]['TYPE']=='container') unset($st['HTML']);
          $states[]=$st;
         }
        }
@@ -1160,6 +1176,17 @@ function usual(&$out) {
          $elements[$ie]['STATES']=$states;
          $res2[]=$elements[$ie];
        }
+
+       if (is_array($elements[$ie]['STATES'])) {
+        $total_states=count($elements[$ie]['STATES']);
+        for($is=0;$is<$total_states;$is++) {
+         if ($elements[$ie]['TYPE']=='container') {
+          unset($elements[$ie]['STATES'][$is]['HTML']);
+         }
+        }
+       }
+
+
       }
       return $res2;
 
@@ -1216,6 +1243,9 @@ function usual(&$out) {
        if ($elements[$ie]['TYPE']=='container') {
         if (!is_array($options) || $options['ignore_sub']!=1) {
          startMeasure('getSubElements');
+         $elements[$ie]['STATE']=$elements[$ie]['STATES'][0]['STATE'];
+         $elements[$ie]['STATE_ID']=$elements[$ie]['STATES'][0]['ID'];
+
          if (checkAccess('scene_elements', $elements[$ie]['ID'])) {
           $elements[$ie]['ELEMENTS']=$this->getElements("CONTAINER_ID=".(int)$elements[$ie]['ID'], $options);
          } else {
@@ -1338,17 +1368,15 @@ function usual(&$out) {
    return;
   }
 
+   $enable_style_caching = false;
    $cache_file=ROOT.'cached/styles_'.$type.'.txt';
 
-   //if (file_exists($cache_file) && (time()-filemtime($cache_file)<1*60*60)) {
-   // $styles_recs=unserialize(LoadFile($cache_file));
-   //} else {
-
-
-
+   if ($enable_style_caching && file_exists($cache_file) && (time()-filemtime($cache_file))<1*60*60) {
+    $styles_recs=unserialize(LoadFile($cache_file));
+   } else {
    startMeasure('openAndReadDir');
    if ($handle = opendir($path)) {
-    $style_recs=array();
+    $styles_recs=array();
     while (false !== ($entry = readdir($handle))) {
        if (preg_match('/(.+?)\.png$/is', $entry, $m)) {
         $style=$m[1];
@@ -1451,12 +1479,14 @@ function usual(&$out) {
      }
     }
 
-    //SaveFile($cache_file, serialize($styles_recs));
+    if ($enable_style_caching && count($styles_recs)>0) {
+     SaveFile($cache_file, serialize($styles_recs));
+    }
     endMeasure('openAndReadDir');
 
     }
 
-   //}
+   }
 
 
     if (is_array($styles_recs)) {

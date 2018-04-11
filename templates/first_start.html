@@ -1,5 +1,5 @@
 <div align="center">
-<div align="left" style="width:400px;padding-top:150px">
+<div align="left" style="width:500px;padding-top:150px">
 <h1>Hello, world! :)</h1>
 &nbsp;<br>&nbsp;<br>
 <form action="?" method="get">
@@ -12,20 +12,25 @@ Time zone:<br>
 </select>
 </div>
 <Br>&nbsp;
-<Br>
+<div class="row">
 Language:<Br>
 [#begin LANGUAGES#]
-<label><input type="radio" name="language" value="[#TITLE#]"[#if TITLE="<#SETTINGS_SITE_LANGUAGE#>"#] checked[#endif#]>
-<img src="<#ROOTHTML#>img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" align="absmiddle"> [#TITLE#]
-</label><br>
+<div class="col-md-4">
+    <label for="lang_[#TITLE#]">
+<input type="radio" name="language" id="lang_[#TITLE#]" value="[#TITLE#]"[#if TITLE="<#SETTINGS_SITE_LANGUAGE#>"#] checked[#endif#]>
+<img src="<#ROOTHTML#>img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" height="30" align="absmiddle"> [#CAPTION#]
+    </label>
+</div>
 [#end LANGUAGES#]
-
+</div>
+    &nbsp;
+<div>
 Color theme:
 
 <input type="radio" name="theme" value="dark"[#if "<#SETTINGS_THEME#>"!="light"#] checked[#endif#]> Dark
 <input type="radio" name="theme" value="light"[#if "<#SETTINGS_THEME#>"=="light"#] checked[#endif#]> Light
 
-<br>
+    </div>
 <br>
 <input type="submit" name="submit" value="Continue &gt;&gt;&gt;"  class="btn btn-default">
 <input type="hidden" name="timezone_title" id="timezone_title" value="">

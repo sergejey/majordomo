@@ -25,7 +25,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
 
    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
 
-   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1')
+   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr)!= '::1')
    {
       // password required
       //echo "password required for ".$remoteAddr;exit;
@@ -124,6 +124,20 @@ if (isset($_SERVER['REQUEST_METHOD']))
          ${"$k" . "_name"} = $_FILES[$k]['name'];
       }
    }
+}
+
+
+function gr($var_name,$type='') {
+   $value = $_REQUEST[$var_name];
+   if (get_magic_quotes_gpc()) {
+      stripit($value);
+   }
+   if ($type=='int') {
+      $value=(int)$value;
+   } elseif ($type=='float') {
+      $value=(float)$value;
+   }
+   return $value;
 }
 
 /**

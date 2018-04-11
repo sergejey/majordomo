@@ -8,16 +8,17 @@
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
  [#if ID!=""#]
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
- [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+ <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
+ <div class="row">
+     <div class="col-md-8">
+         <!--#
+         [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+         #-->
  <ul class="nav nav-tabs">
      <li[#if TAB=""#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
      </li>
      [#if LINKED_OBJECT!=""#]
-     <li[#if TAB="interface"#] class="active"[#endif#]>
-     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
-     </li>
      <li[#if TAB="settings"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=settings"><#LANG_SECTION_SETTINGS#></a>
      </li>
@@ -27,9 +28,14 @@
      <li[#if TAB="logic"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=logic"><#LANG_DEVICES_LOGIC_ACTION#></a>
      </li>
+     <li[#if TAB="interface"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
+     </li>
+     <!--#
      <li[#if TAB="preview"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#></a>
      </li>
+     #-->
      [#endif LINKED_OBJECT#]
  </ul>
  &nbsp;<br/>
@@ -55,6 +61,15 @@
  [#if TAB="preview"#]
   [#inc preview.html#]
  [#endif TAB#]
+
+     </div>
+     [#if LINKED_OBJECT!=""#]
+     <div class="col-md-4">
+         [#inc preview.html#]
+     </div>
+     [#endif#]
+ </div>
+
 
  [#endif VIEW_MODE#]
  <!-- / table devices edit -->

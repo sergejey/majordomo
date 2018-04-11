@@ -1,5 +1,6 @@
-<link rel='stylesheet' href='/css/devices.css' />
-<div class="button-widget" onClick='callMethod("%.pressed");$("#button%.object_id%_light").addClass("on");setTimeout("$(\"#button%.object_id%_light\").removeClass(\"on\");",300);'>
-    <div class="button-light" id="button%.object_id%_light"></div>
-    <div class="button-text">%.object_description%</div>
+<div class="device-widget button" onClick='callMethod("%.object_title%.pressed");$("#icon%.object_id%_light").addClass("pressed");setTimeout("$(\"#icon%.object_id%_light\").removeClass(\"pressed\");",300);'>
+    <div class="device-icon button" id="icon%.object_id%_light" style='%.icon|"background-image:url(%.icon%)"%'></div>
+<div class="device-header">%.object_description%</div>
 </div>
+
+

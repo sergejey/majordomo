@@ -41,6 +41,14 @@ class panel extends module
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
         global $action;
+
+        $out['TAB']=gr('tab');
+
+        if (defined('NO_DATABASE_CONNECTION')) {
+         if (!$action) $action = 'saverestore';
+         $this->print = 1;
+        }
+
         if (!$this->action && $action) {
             $this->action = $action;
         }
@@ -81,7 +89,7 @@ class panel extends module
             }
         }
 
-        if (IsSet($session->data["AUTHORIZED"])) {
+        if (IsSet($session->data["AUTHORIZED"]) || defined('NO_DATABASE_CONNECTION')) {
             $this->authorized = 1;
         } else {
             $tmp = SQLSelectOne("SELECT ID FROM users WHERE IS_ADMIN=1");
@@ -147,10 +155,10 @@ class panel extends module
                     $last_allow = $i;
                 }
 
-                if (file_exists(ROOT . 'img/admin/icons/ico_' . $modules[$i]['NAME'] . '_sm.gif')) {
-                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/admin/icons/ico_' . $modules[$i]['NAME'] . '_sm.gif';
+                if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
+                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
-                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/admin/icons/ico_default_sm.gif';
+                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
                 }
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
@@ -159,6 +167,9 @@ class panel extends module
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {
             $out['APP_TDWIKI_INSTALLED'] = 1;
+        }
+        if (is_dir(DIR_MODULES . 'optimizer')) {
+            $out['OPTIMIZER_INSTALLED'] = 1;
         }
 
         $out["ACTION"] = $this->action;

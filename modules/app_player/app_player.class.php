@@ -211,6 +211,11 @@ function usual(&$out) {
 
 
  global $ajax;
+ if ($this->ajax) {
+  $ajax=1;
+ }
+
+
  if ($ajax!='') {
   global $command;
   if ($command!='') {
@@ -286,14 +291,17 @@ function usual(&$out) {
 
    } elseif ($terminal['PLAYER_TYPE']=='xbmc') {
     include(DIR_MODULES.'app_player/xbmc.php');
-
+    } elseif ($terminal['PLAYER_TYPE']=='ghn') {
+     include(DIR_MODULES.'app_player/ghn.php');
    } elseif ($terminal['PLAYER_TYPE']=='foobar') {
     include(DIR_MODULES.'app_player/foobar.php');
    } elseif ($terminal['PLAYER_TYPE']=='vlcweb') {
     include(DIR_MODULES.'app_player/vlcweb.php');
    } elseif ($terminal['PLAYER_TYPE']=='mpd') {
     include(DIR_MODULES.'app_player/mpd.php');
-   } elseif ($terminal['MAJORDROID_API']) {
+    } elseif ($terminal['PLAYER_TYPE']=='chromecast') {
+     include(DIR_MODULES.'app_player/chromecast.php');
+   } elseif ($terminal['MAJORDROID_API'] || $terminal['PLAYER_TYPE']=='majordroid') {
    include(DIR_MODULES.'app_player/majordroid.php');
    }
 

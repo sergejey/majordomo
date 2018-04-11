@@ -1,9 +1,11 @@
 
 <!-- table scenes search -->
 
+<div>
 <a href="?view_mode=edit_scenes&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_SCENE#></a>
 <a class="btn btn-default" href="<#ROOTHTML#>popup/scenes.html" target=_blank><#LANG_PREVIEW#></a>
-<br><br>
+</div>
+&nbsp;
 <!-- results -->
 [#if RESULT#]
 <!-- search results (list) -->
@@ -63,7 +65,8 @@
 
 <br/>&nbsp;
 <div id='scene_tools' style="display:none">
-
+<hr>
+    <h2><#LANG_IMPORT#></h2>
 <form action="?" enctype="multipart/form-data" method="post">
 <table border="0">
  <tr>
@@ -74,7 +77,8 @@
 </table>
 <input type="hidden" name="view_mode" value="import">
 </form>
-
+<hr>
+<h2><#LANG_MODULE_SETTINGS#></h2>
 [#module name="settings" action="admin" filter_name="SCENES"#]
 
 </div>

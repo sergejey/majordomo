@@ -1,12 +1,24 @@
 <?php
 
 /**
- * RSS script
+ * COMMAND script
  *
  * @package MajorDoMo
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 1.2
  */
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+}
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    exit(0);
+}
 
 
 include_once("./config.php");
@@ -53,14 +65,18 @@ if ($qry != '' && $qry != $lastest_word)
    }
 
 
-   if (!$session->data['logged_user'])
-   {
-      $user    = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
-      $user_id = $user['ID'];
+   if ($username) {
+       $user    = SQLSelectOne("SELECT ID FROM users WHERE USERNAME LIKE '".DBSafe(trim($username))."'");
+       $user_id = (int)$user['ID'];
    }
-   else
-   {
-      $user_id = $session->data['logged_user'];
+
+   if (!$user_id) {
+       if ($session->data['logged_user']) {
+           $user_id = $session->data['logged_user'];
+       } else {
+           $user    = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
+           $user_id = $user['ID'];
+       }
    }
 
    if (isset($params['user_id'])) { $user_id = $params['user_id']; } 
@@ -81,7 +97,7 @@ if ($qry != '' && $qry != $lastest_word)
        $say_source='terminal'.$terminal_rec['ID'];
        $terminal_rec['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
        $terminal_rec['LATEST_REQUEST_TIME']=$terminal_rec['LATEST_ACTIVITY'];
-       $terminal_rec['LATEST_REQUEST']=$rec['MESSAGE'];
+       $terminal_rec['LATEST_REQUEST']=htmlspecialchars($qrys[$i]);
        $terminal_rec['IS_ONLINE']=1;
        SQLUpdate('terminals', $terminal_rec);
       }

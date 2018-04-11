@@ -1,18 +1,19 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-
+<div>
 <a href="?view_mode=edit_webvars" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW#></a>
 &nbsp;
-<a href="?view_mode=checkall" class="btn btn-default"><#LANG_REFRESH_ALL#></a>
+<a href="?view_mode=checkall" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i> <#LANG_REFRESH_ALL#></a>
+</div>
 
-<br><br>
+&nbsp;
 
 <!-- results -->
 [#if RESULT#]
 <!-- paging -->
 [#if PAGES#]
-<center>
+<div class="text-center">
 <ul class="pagination">
   [#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
   [#begin PAGES#]
@@ -20,24 +21,22 @@
  [#end PAGES#]
   [#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
 </ul>
-</center>
+</div>
 [#endif PAGES#]
 <!-- / paging -->
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_webvars" style="padding:0px">
-<table class="table table-striped">
+<table class="table">
 [#begin RESULT#]
 <tr >
  <td valign="top">
-   [#if TITLE!=""#]<big>[#TITLE#]</big><br>[#endif#]
-   <b>[#HOSTNAME#]</b>
-   <br>Next check: [#CHECK_NEXT#]
+   [#if TITLE!=""#]<b>[#TITLE#]</b>[#endif#]
+   <br/><a href="[#HOSTNAME#]" target="_blank">[#HOSTNAME#]</a>
  </td>
  <td valign="top">
-   [#LATEST_VALUE#]
-  
+   <pre>[#LATEST_VALUE#]</pre>
  </td>
- <td width="100">
+ <td nowrap>
   
   [#if "<#ACTION#>"=="admin"#]
  

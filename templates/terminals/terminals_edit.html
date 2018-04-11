@@ -120,7 +120,12 @@
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:<br>(<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
+            <br>
+            [#if (PLAYER_TYPE=="vlcweb") || (PLAYER_TYPE=="xbmc") || (PLAYER_TYPE=="foobar")#]
+            (<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
+            [#endif#]
+        </label>
         <div class="col-lg-5">
                 <select name="player_type" class="form-control">
                         <option value=""><#LANG_DEFAULT#>
@@ -129,9 +134,15 @@
                         <option value="foobar"[#if PLAYER_TYPE=="foobar"#] selected[#endif#]>Foobar2000
                         <option value="vlcweb"[#if PLAYER_TYPE=="vlcweb"#] selected[#endif#]>VLC over HTTP
                         <option value="mpd"[#if PLAYER_TYPE=="mpd"#] selected[#endif#]>MPD
+                        <option value="majordroid"[#if PLAYER_TYPE=="majordroid"#] selected[#endif#]>MajorDroid
+                        <option value="chromecast"[#if PLAYER_TYPE=="chromecast"#] selected[#endif#]>ChromeCast / Google TV
+                        <option value="ghn"[#if PLAYER_TYPE=="ghn"#] selected[#endif#]>Google-home-notifier
+                        <option value="dlna"[#if PLAYER_TYPE=="dlna"#] selected[#endif#]>DLNA Player
                 </select>
         </div>
 </div>
+
+[#if (PLAYER_TYPE!="chromecast") && (PLAYER_TYPE!="majordroid")#]
 
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
@@ -149,8 +160,9 @@
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
 </div>
-</div>
+[#endif#]
 
+</div>
 
 
 

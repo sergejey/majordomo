@@ -28,6 +28,19 @@ $.subscribe('wsData', function (_, response) {
     }
 });
 
+function refreshDevicesHTTP() {
+    var baseURL = "/ajax/devices.html?op=get_device&id=";
+    activeDevices.forEach(function(item, index) {
+        var url = baseURL + item;
+        $.ajax({
+            url: url
+        }).done(function(data) {
+            var obj=jQuery.parseJSON(data);
+            $('#device'+item).html(obj.HTML);
+        });
+    });
+}
+
 function refreshWSSubscription() {
     clearTimeout(devicesWidgetWSTimer);
     //console.log('refresh subscription');
@@ -44,6 +57,7 @@ function refreshWSSubscription() {
         //}
         devicesWidgetWSTimer=setTimeout('refreshWSSubscription();',10*60000);
     } else {
+        refreshDevicesHTTP();
         devicesWidgetWSTimer=setTimeout('refreshWSSubscription();',5000);
     }
 }
@@ -62,21 +76,22 @@ function requestDeviceHTML(device_id,widgetElement) {
         activeDevices.push(device_id);
         activeDevicesUpdated();
     }
-
     var url='<?php echo ROOTHTML;?>ajax/devices.html?op=get_device&id='+device_id;
     $.ajax({
         url: url
     }).done(function(data) {
         var res=JSON.parse(data);
         if (typeof res.HTML !== 'undefined') {
-            //alert(res.HTML);
             var myTextElement = $("<div id='device"+device_id+"'>"+res.HTML+"</div>");
             $(widgetElement).html(myTextElement);
-            //subscribe to changes
         }
+        /*
+        if (typeof res.HEIGHT !== 'undefined') {
+            newSettings.size=res.HEIGHT;
+            alert(newSettings);
+        }
+        */
     });
-
-
 }
 
 (function()
@@ -107,8 +122,22 @@ function requestDeviceHTML(device_id,widgetElement) {
                     }
                     ?>
                 ]
+            },
+            {
+                "name"        : "size",
+                "display_name": "Size",
+                "type"        : "option",
+                "options"     : [
+                    {"name" : "1","value": "1"},
+                    {"name" : "2","value": "2"},
+                    {"name" : "3","value": "3"},
+                    {"name" : "4","value": "4"},
+                    {"name" : "5","value": "5"},
+                    {"name" : "6","value": "6"},
+                    {"name" : "7","value": "7"},
+                    {"name" : "8","value": "8"}
+                ]
             }
-
         ],
 // Same as with datasource plugin, but there is no updateCallback parameter in this case.
         newInstance   : function(settings, newInstanceCallback)
@@ -122,6 +151,7 @@ function requestDeviceHTML(device_id,widgetElement) {
         var self = this;
         var currentSettings = settings;
         var widgetElement;
+
         function updateDeviceHTML()
         {
             if(widgetElement)
@@ -138,7 +168,8 @@ function requestDeviceHTML(device_id,widgetElement) {
 
         self.getHeight = function()
         {
-            return 1;
+            if (typeof currentSettings.size == 'undefined') currentSettings.size=1;
+            return parseInt(currentSettings.size);
         }
 
         self.onSettingsChanged = function(newSettings)

@@ -327,6 +327,10 @@
     global $s3d_object_new;
     global $s3d_camera_new;
 
+    if ($element['TYPE']=='container') {
+     $state_title_new='Default';
+    }
+
     if ($state_delete && $state_rec['ID']) {
 
      $state_rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$state_id."'");
@@ -348,6 +352,7 @@
      $state_rec['CONDITION_VALUE']=$condition_value_new;
      $state_rec['CONDITION_ADVANCED']=$condition_advanced_new;
      $state_rec['PRIORITY']=(int)$priority_new;
+
 
      if ($do_on_click_new!='run_script') {
       $script_id_new=0;
@@ -409,7 +414,6 @@
 
      $state_rec['TITLE']='default';
      $state_rec['ELEMENT_ID']=$element['ID'];
-     $state_rec['TITLE']=$state_title_new;
 
      if ($state_rec['ID']) {
       SQLUpdate('elm_states', $state_rec);

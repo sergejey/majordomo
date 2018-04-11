@@ -4,10 +4,20 @@
 
  $languages=array();
 
- $languages[]=array('TITLE'=>'en');
- $languages[]=array('TITLE'=>'ru');
- $languages[]=array('TITLE'=>'ua');
- $languages[]=array('TITLE'=>'lt');
+ $languages[]=array('TITLE'=>'en','CAPTION'=>'English');
+ $languages[]=array('TITLE'=>'ru','CAPTION'=>'Russian');
+ $languages[]=array('TITLE'=>'ua','CAPTION'=>'Ukrainian');
+ $languages[]=array('TITLE'=>'lt','CAPTION'=>'Lithuanian');
+ $languages[]=array('TITLE'=>'es','CAPTION'=>'Spanish');
+ $languages[]=array('TITLE'=>'it','CAPTION'=>'Italian');
+ $languages[]=array('TITLE'=>'bg','CAPTION'=>'Bulgarian');
+ $languages[]=array('TITLE'=>'lv','CAPTION'=>'Latvian');
+ $languages[]=array('TITLE'=>'ro','CAPTION'=>'Romanian');
+
+ function cmp_languages($a, $b) {
+  return strcmp($a["CAPTION"], $b["CAPTION"]);
+ }
+ usort($languages,'cmp_languages');
 
  $out['LANGUAGES']=$languages;
 
@@ -103,53 +113,11 @@ for($i=0;$i<$total;$i++) {
     'VALUE'=>$tz
    ),
    array(
-    'NAME'=>'BLUETOOTH_CYCLE', 
-    'TITLE'=>'Run bluetooth scanner on startup', 
-    'TYPE'=>'onoff',
-    'DEFAULT'=>'0',
-    'PRIORITY'=>'51'
-   ),
-   array(
-    'NAME'=>'SKYPE_CYCLE', 
-    'TITLE'=>'Run Skype script on startup', 
-    'TYPE'=>'onoff',
-    'DEFAULT'=>'0',
-    'PRIORITY'=>'50'
-   ),
-   array(
     'NAME'=>'THEME', 
     'TITLE'=>'Color theme', 
     'TYPE'=>'text',
     'DEFAULT'=>'dark',
     'VALUE'=>$theme
-   )   ,
-   array(
-    'NAME'=>'TWITTER_CKEY', 
-    'TITLE'=>'Twitter Consumer key', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'30'
-   )   ,
-   array(
-    'NAME'=>'TWITTER_CSECRET', 
-    'TITLE'=>'Twitter Consumer secret', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'29'
-   )   ,
-   array(
-    'NAME'=>'TWITTER_ATOKEN', 
-    'TITLE'=>'Twitter Access token', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'28'
-   ),
-   array(
-    'NAME'=>'TWITTER_ASECRET', 
-    'TITLE'=>'Twitter Access token secret', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'27'
    ),
     array(
     'NAME'=>'DEBUG_HISTORY', 
@@ -159,66 +127,12 @@ for($i=0;$i<$total;$i++) {
     'PRIORITY'=>'0'
    ),
     array(
-    'NAME'=>'TTS_GOOGLE',
-    'TITLE'=>'Use Google Text-to-Speech engine', 
-    'TYPE'=>'onoff',
-    'DEFAULT'=>'1',
-    'PRIORITY'=>'60'
-   ),
-    array(
     'NAME'=>'SPEAK_SIGNAL',
     'TITLE'=>'Play sound signal before speaking', 
     'TYPE'=>'onoff',
     'DEFAULT'=>'1',
     'PRIORITY'=>'0'
    ),
-    array(
-    'NAME'=>'PUSHOVER_USER_KEY',
-    'TITLE'=>'Pushover.net user key', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'0'
-   ), 
-    array(
-    'NAME'=>'PUSHOVER_LEVEL',
-    'TITLE'=>'Pushover.net message minimum level', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'1',
-    'PRIORITY'=>'0'
-   ),
-
-   array(
-    'NAME'=>'GROWL_ENABLE',
-    'TITLE'=>'Forward notification to Growl service', 
-    'TYPE'=>'onoff',
-    'DEFAULT'=>'0',
-    'PRIORITY'=>'43'
-   ),
-
-   array(
-    'NAME'=>'GROWL_HOST',
-    'TITLE'=>'Growl service hostname', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'42'
-   ), 
-
-   array(
-    'NAME'=>'GROWL_PASSWORD',
-    'TITLE'=>'Growl service password (optional)', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'',
-    'PRIORITY'=>'41'
-   ), 
-
-    array(
-    'NAME'=>'GROWL_LEVEL',
-    'TITLE'=>'Growl notification minimum level', 
-    'TYPE'=>'text',
-    'DEFAULT'=>'1',
-    'PRIORITY'=>'40'
-   ),
-
     array(
     'NAME'=>'HOOK_BEFORE_SAY',
     'TITLE'=>'Before SAY (code)', 

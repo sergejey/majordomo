@@ -50,7 +50,7 @@ class jTemplate
     * @param object $owner    Parser owner
     * @return void
     */
-   public function __construct($template, &$data, &$owner)
+   public function __construct($template, &$data, &$owner = '')
    {
       // set current directory for template includes
       if (strpos($template, "/") !== false)
@@ -459,7 +459,7 @@ class jTemplate
                   
                   // SELF-CALL FOR ARRAY ELEMENT
                   $searchStr  = "[#tree " . $matches[1][$i] . "#]";
-                  $replaceStr = "[#begin " . $matches[1][$i] . "#]" . $line1 . "[#end " . $matches[1][$i] . "#]";
+                  $replaceStr = $this->parse("[#begin " . $matches[1][$i] . "#]" . $line1 . "[#end " . $matches[1][$i] . "#]", $var[$k], $dir);
                   
                   $line2 = str_replace($searchStr, $replaceStr, $line2);
                   
@@ -658,11 +658,11 @@ class jTemplate
                {
                   include_once(DIR_MODULES . $module_data["name"] . '/' . $module_data["name"] . ".class.php");
                }
-
                // creating code for module creation and running
+
                $obj   = "\$object$i";
                $code  = "";
-               $code .= "$obj=new " . $module_data["name"] . ";\n";
+               $code .= "$obj=new " . $module_data["name"] . "();\n";
                $code .= $obj . "->owner=&\$this->owner;\n";
 
                // setting module parameters from module including directive
@@ -692,7 +692,7 @@ class jTemplate
                foreach ($module_data as $k => $v)
                {
                   if ($k == "name") continue;
-                  
+
                   $code .= $obj . "->" . $k . "='" . addslashes($v) . "';\n";
                }
 
@@ -707,9 +707,13 @@ class jTemplate
                // run module and insert module result in template
                $code .= $obj . "->run();\n";
                $code .= "\$tmp=" . $obj . "->result;\n";
-               
-               eval($code);
-               
+
+               try {
+                  eval($code);
+               } catch (Exception $e) {
+                  echo "Error: ".$e->getMessage();
+               }
+
                EndMeasure("module_" . $module_data["name"]);
             }
             else

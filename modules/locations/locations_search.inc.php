@@ -34,7 +34,7 @@
   if (!$sortby) $sortby="TITLE";
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT * FROM locations WHERE $qry ORDER BY $sortby");
+  $res=SQLSelect("SELECT * FROM locations WHERE $qry ORDER BY PRIORITY DESC, TITLE");
   if ($res[0]['ID']) {
    colorizeArray($res);
    $total=count($res);

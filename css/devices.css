@@ -1,127 +1,177 @@
-.button-widget {
-    cursor:pointer;
+.device-widget {
+    max-width:350px;
+    padding:2px;
+    border:1px solid transparent;
 }
-.button-text {
-    padding-top:10px;
-    vertical-align:middle;
-    white-space: nowrap;
-}
-.button-light {
-    border-radius:50%;
-    width:22px;
-    height:22px;
-    border:2px solid #0b05ff;
-    margin-top:5px;
+.device-icon {
+    background-image: url(../cms/scenes/styles/button/i_button.png);
+    background-repeat: no-repeat;
+    background-position: center 4px;
+    margin-right:5px;
+    width:40px;
+    height:40px;
     float:left;
-    margin-right:10px;
 }
-.button-light.on {
-    background-color: #000bff;
-    box-shadow: 0px 0px 15px #929aff;
-    border-color:#FDF1DF;
+.device-header {
+    font-size:18px;
 }
 
-.controller-widget {
-}
-.controller-text {
-    padding-top:10px;
+.device-widget.controller, .device-widget.sensor, .device-widget.button {
     cursor:pointer;
-    vertical-align:middle;
-}
-.controller-light {
-    border-radius:50%;
-    width:22px;
-    height:22px;
-    border:2px solid #3d3d3d;
-    margin-top:5px;
-    float:left;
-    margin-right:10px;
-}
-.controller-light.on {
-    background-color:#FFC773;
-    box-shadow: 0px 0px 15px #FF9900;
-    border-color:#FDF1DF;
 }
 
-.temp-widget {
+.controller .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
 }
-.temp-value {
-    font-size:42px;
-    text-align:center;
+
+.thermostat .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
 }
-.widget .temp-value {
-    color:white;
+
+.button .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
 }
-.temp-description {
-    text-align:center;
+
+.device-details {
     font-size:11px;
-    margin-top:-4px;
-}
-.widget .temp-description {
-    color:white;
 }
 
-.openclose-widget {
+.device-icon.thermostat {
+    background-image: url(../cms/scenes/styles/switch/i_warm_on.png);
 }
-.openclose-text {
+.device-icon.thermostat.on {
+    background-color:yellow;
+}
+
+.device-icon.motion {
+    background-image: url(../cms/scenes/styles/informer/i_motion.png);
+}
+
+.device-icon.smoke {
+    background-image: url(../cms/scenes/styles/informer/i_alarm.png);
+}
+
+.device-icon.button {
+    background-image: url(../cms/scenes/styles/button/i_knopka.png);
+}
+
+.device-icon.button.on {
+    background-color:yellow;
+}
+
+.device-icon.motion.on {
+    background-color:yellow;
+}
+
+.device-icon.smoke.on {
+    background-color:red;
+}
+
+.device-icon.openclose {
+    background-image: url(../cms/scenes/styles/common/i_window_off.png);
+}
+
+.device-icon.openclose.on {
+    background-color:yellow;
+}
+
+.device-icon.temperature {
+    background-image: url(../cms/scenes/styles/informer/i_temp.png);
+}
+.device-icon.humidity {
+    background-image: url(../cms/scenes/styles/informer/i_humidity.png);
+}
+
+.device-icon.pressure {
+    background-image: url(../cms/scenes/styles/informer/i_temp.png);
+}
+
+.device-icon.light-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_illum.png);
+}
+
+.device-icon.current-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.device-icon.voltage-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.device-icon.power-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_power.png);
+}
+
+.device-icon.power-sensor.on {
+    background-color:yellow;
+}
+
+.controller .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_light_off.png);
+}
+
+.controller.loadtype_power .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
+}
+
+.controller.loadtype_heating .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_warm.png);
+}
+
+.controller.loadtype_heating .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_warm.png);
+}
+
+.controller.loadtype_curtains .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_shtory_mid.png);
+}
+.controller.loadtype_curtains .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_shtory_mid.png);
+}
+
+.controller.loadtype_gates .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_gate_off.png);
+}
+.controller.loadtype_gates .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_gate_on.png);
+}
+
+.controller.loadtype_vent .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_ventilacia_on.png);
+}
+
+.controller.loadtype_vent .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_ventilacia_on.png);
+}
+
+.controller.loadtype_power .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
+}
+
+.controller .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_light_on.png);
+}
+
+.device-icon.pressed {
+    background-color:greenyellow;
+}
+
+.camera-widget {
+}
+.camera-text {
     padding-top:10px;
-    cursor:pointer;
     vertical-align:middle;
     white-space: nowrap;
 }
-.openclose-light {
-    border-radius:50%;
-    width:22px;
-    height:22px;
-    border:2px solid #3d3d3d;
-    margin-top:5px;
-    float:left;
-    margin-right:10px;
-}
-.openclose-light.on {
-    background-color:#C7FF73;
-    box-shadow: 0px 0px 15px #99FF00;
-    border-color:#FDF1DF;
-}
-
-.motion-widget {
-}
-.motion-text {
-    padding-top:10px;
-    cursor:pointer;
-    vertical-align:middle;
-    white-space: nowrap;
-}
-.motion-light {
-    border-radius:50%;
-    width:22px;
-    height:22px;
-    border:2px solid #3d3d3d;
-    margin-top:5px;
-    float:left;
-    margin-right:10px;
-}
-.motion-light.on {
-    background-color: #ff1e00;
-    box-shadow: 0px 0px 15px #ff727e;
-    border-color:#FDF1DF;
-}
-
-.hum-widget {
- }
-.hum-value {
-    font-size:42px;
-    text-align:center;
-}
-.widget .hum-value {
-    color:white;
-}
-.hum-description {
-    text-align:center;
-    font-size:11px;
-    margin-top:-4px;
-}
-.widget .hum-description {
-    color:white;
-}
-

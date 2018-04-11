@@ -767,19 +767,28 @@ function removeEmptySubFolders($path)
   {
      $empty &= is_dir($file) && removeEmptySubFolders($file);
   }
-  return $empty && rmdir($path);
+
+  if (is_dir($path)) {
+     $empty &= rmdir($path);
+  }
+
+   return $empty;
 }
 
 function getDirTree($dir, &$results = array()){
-   $files = scandir($dir);
-   foreach($files as $key => $value){
-      $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
-      if(!is_dir($path)) {
+   $isdir = is_dir($dir);
+   if ($isdir) {
+     $files = scandir($dir);
+     foreach($files as $key => $value){
+       $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+       if(!is_dir($path)) {
          $results[] = array('FILENAME'=>$path,'DT'=>date('Y-m-d H:i:s',filemtime($path)),'TM'=>filemtime($path),'SIZE'=>filesize($path));
-      } else if($value != "." && $value != "..") {
+       } else if($value != "." && $value != "..") {
          getDirTree($path, $results);
-      }
+       }
+     }
    }
+
    return $results;
 }
 

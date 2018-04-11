@@ -29,7 +29,12 @@ if ($location_id) {
    $session->data['devices_qry']=$qry;
   }
   if (!$qry) $qry="1";
-  $sortby_devices="ID DESC";
+
+  $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices");
+  $out['TOTAL']=(int)$tmp['TOTAL'];
+
+  $loc_title='';
+  $sortby_devices="locations.PRIORITY DESC, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
   $out['SORTBY']=$sortby_devices;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY ".$sortby_devices);
@@ -38,6 +43,10 @@ if ($location_id) {
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+       if ($res[$i]['LOCATION_TITLE']!=$loc_title) {
+           $res[$i]['NEW_LOCATION']=1;
+           $loc_title=$res[$i]['LOCATION_TITLE'];
+       }
     if ($res[$i]['LINKED_OBJECT']) {
      $processed=$this->processDevice($res[$i]['ID']);
      $res[$i]['HTML']=$processed['HTML'];
@@ -54,9 +63,24 @@ if ($location_id) {
 $types=array();
 foreach($this->device_types as $k=>$v) {
  if ($v['TITLE']) {
-  $types[]=array('NAME'=>$k,'TITLE'=>$v['TITLE']);
+  $type_rec=array('NAME'=>$k,'TITLE'=>$v['TITLE']);
+  $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices WHERE TYPE='".$k."'");
+     $type_rec['TOTAL']=(int)$tmp['TOTAL'];
+     if ($type_rec['TOTAL']>0) {
+         $types[]=$type_rec;
+     }
  }
 }
+usort($types, function($a,$b) {
+    return strcmp($a["TITLE"], $b["TITLE"]);
+});
 $out['TYPES']=$types;
-$out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+
+$locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+$total = count($locations);
+for ($i = 0; $i < $total; $i++) {
+  $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices WHERE LOCATION_ID='".$locations[$i]['ID']."'");
+  $locations[$i]['TOTAL']=(int)$tmp['TOTAL'];
+}
+$out['LOCATIONS']=$locations;
 //var_dump($this->getWatchedProperties(0));exit;

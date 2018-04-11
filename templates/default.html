@@ -3,102 +3,73 @@
 #-->
 <script type="text/javascript" src="<#ROOTHTML#>js/ui.tabs.paging.js"></script>
 
-<table width="100%" border="0">
- <tr>
-  <td valign="top" colspan=3>
-  
-<table border="0" align="right" width="100%">
- 
- <tr>
-        <td>
-                <a href="<#ROOTHTML#>"><img src="<#ROOTHTML#>img/icons/home.png" border="0"></a>
-                </td>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td valign="top" colspan=2>
 
-                <td valign="bottom">
-<script language="javascript">
- function leftPanelToggle() {
-  $('#leftPanel').toggle();
-  if ( $("#leftPanel").is(":visible") ) {
-   $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-contract-icon.png");
-  } else { 
-   $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-expand-icon.png");
-  }
-  return false;
- }
-</script>
-                <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png" border="0"></a>
-                </td>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td width="350">
+                        <table cellpadding="0" cellspacing="0" border="0" width="350">
+                            <td>
+                                <a href="<#ROOTHTML#>"><img src="<#ROOTHTML#>img/icons/home.png" border="0"></a>
+                            </td>
+                            <td valign="bottom" align="right">
+                                <script language="javascript">
+                                    function leftPanelToggle() {
+                                        $('#leftPanel').toggle();
+                                        if ($("#leftPanel").is(":visible")) {
+                                            $("#leftPanelToggleIcon").attr("src", "<#ROOTHTML#>img/icons/application-side-contract-icon.png");
+                                        } else {
+                                            $("#leftPanelToggleIcon").attr("src", "<#ROOTHTML#>img/icons/application-side-expand-icon.png");
+                                        }
+                                        return false;
+                                    }
+                                </script>
+                                <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" border="0"
+                                                                                     src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"
+                                                                                     border="0"></a>
+                            </td>
+                        </table>
+                    </td>
+                    <td align="center">
+                        [#module name="app_player"#]
+                    </td>
 
+                    <td align="center">
+                        <a href="<#ROOTHTML#>admin.php" class="btn btn-default btn-sm"><#LANG_CONTROL_PANEL#></a>
+                    </td>
+                    [#if HIDE_TERMINALS!="1"#]
+                    <form action="<#ROOTHTML#>" method="get" name="frmSettings">
+                    <td align="center">
+                            <select name="terminal" id="terminalSelect" onChange="document.frmSettings.submit();"
+                                    class="form-control input-sm">
+                                <option value=""><#LANG_TERMINAL#>
+                                    [#begin TERMINALS#]
+                                <option value="[#NAME#]" [#if SELECTED="1" #] selected[#endif#]>[#TITLE#]
+                                    [#end TERMINALS#]
+                            </select>
+                    </td>
+                    </form>
+                    [#endif#]
+                    <td align="center">
+                        [#if USER_AVATAR!=""#]
+                        <a href="#"
+                           onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
+                           title="[#USER_TITLE#]"><img src="<#ROOTHTML#>cms/avatars/[#USER_AVATAR#]" border="0"
+                                                       height="50" alt="[#USER_TITLE#]"></a>
+                        [#else#]
+                        <a href="#"
+                           onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
+                           title="[#USER_TITLE#]"><img src="<#ROOTHTML#>img/icons/user.png" border="0"
+                                                       alt="[#USER_TITLE#]"></a>
+                        [#endif#]
+                    </td>
+                </tr>
+            </table>
 
-                                <td width="90%" align="right">
-                                <!--#[#inc vlc_object.html#]#-->
-                                [#module name="app_player"#]
-                                
-                                </td>
-  <!--#
-  <td valign="top" nowrap>
-  [ <a href="#" onClick="return openTWindow('addEventWin', 'Add Event', '/popup/addevent.html', 500, 230)">Add Event</a> ]
-  </td>
-  #-->
-  <td valign="top" nowrap>
-
-  <table border="0" align="right">
-   <tr>
-    <td nowrap><a href="<#ROOTHTML#>admin.php" class="btn btn-default"><#LANG_CONTROL_PANEL#></a></td>
-  <form action="<#ROOTHTML#>" method="get" name="frmSettings">
-  [#if HIDE_TERMINALS!="1"#]
-  <td valign="top" nowrap>
-   <#LANG_TERMINAL#>:
-   <select name="terminal" onChange="document.frmSettings.submit();"  class="form-control input-sm">
-    <option value=""><#LANG_SELECT#>
-    [#begin TERMINALS#]
-    <option value="[#NAME#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]
-    [#end TERMINALS#]
-   </select>
-  </td>
-  [#endif#]
-  <!--#
-  [#if HIDE_USERS!="1"#]
-  <td valign="top" nowrap>
-   <#LANG_USER#>:
-   <select name="username" onChange="document.frmSettings.submit();">
-    <option value=""><#LANG_SELECT#>
-    [#begin USERS#]
-    <option value="[#USERNAME#]"[#if SELECTED="1"#] selected[#endif#]>[#NAME#]
-    [#end USERS#]
-   </select>
-  </td>
-  [#endif#]
-  #-->
-  </form>
-   </tr>
-   <!--#
-   <tr>
-    <td valign="top" colspan="3" align="right" nowrap>
-    <a href="<#LANG_WIKI_URL#>" target=_blank>MajorDoMo Project</a>
-    <a href="<#ROOTHTML#>popup/xray.html" target=_blank>X-Ray</a>
-    </td>
-   </tr>
-   #-->
-  </table>
-  </td>
-  <td valign="top">
-   [#if USER_AVATAR!=""#]
-   <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);" title="[#USER_TITLE#]"><img src="<#ROOTHTML#>cms/avatars/[#USER_AVATAR#]" border="0" height="50" alt="[#USER_TITLE#]"></a>
-   [#else#]
-   <a href="#" onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);" title="[#USER_TITLE#]"><img src="<#ROOTHTML#>img/icons/user.png" border="0" alt="[#USER_TITLE#]"></a>
-   [#endif#]
-  </td>
- </tr>
- <tr>
-  <td valign="top" colspan="3">
-   <div id="debugInfo"></div>
-  </td>
- </tr>
-</table>
-  
-  </td>
- </tr>
+        </td>
+    </tr>
  <tr>
   <td valign="top" width="350" id="leftPanel">
   <iframe src="<#ROOTHTML#>menu.html" width="350" height="450" id="navFrame" border="0" frameborder=0 framespacing=0></iframe>
@@ -110,7 +81,6 @@
   </div>
   #-->
   </td>
-
   <td valign="top" width="100%">
 
 
@@ -120,7 +90,7 @@
 <li>
 <a href="#tabs-[#ID#]"[#if ICON!=""#] style="padding:1px 1em 2px 0.5em"[#endif#]>[#if ICON!=""#]<img src="<#ROOTHTML#>cms/layouts/[#ICON#]" align="absmiddle" height="28">&nbsp;&nbsp;[#endif#][#TITLE#]</a></li>
 [#end LAYOUTS#]
-  <li><a href="#tabs-last"><span id='tablast_title'>***</span></a></li>
+  <li ><a href="#tabs-last" style="display:none"><span id='tablast_title'>***</span></a></li>
 </ul>
 
 [#begin LAYOUTS#]
@@ -129,7 +99,7 @@
 
 <div id="tabs-last">
   ...
-</div> 
+</div>
 
 </div>
 
@@ -163,7 +133,7 @@ var layoutTimer[#ID#];
 
 
         $("#tabs").tabs({
-        show: function(event, ui) { 
+        show: function(event, ui) {
          iFrameHeight=$(document).height()-110;
          var selected = $( "#tabs" ).tabs( "option", "selected" );
          //alert(selected);

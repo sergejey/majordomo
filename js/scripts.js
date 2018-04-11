@@ -1,3 +1,9 @@
+
+function simple_hash(s) {
+ return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+}
+
+
 function inIframe () {
     try {
         return window.self !== window.top;
@@ -7,15 +13,13 @@ function inIframe () {
 }
 
  function report_js_error(msg, url, linenumber) {
-  stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
-  /*
-  tmp = new Image();
-  tmp.src = "write_error.php?error="+stuff;
-  */
+  var stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
+  var tmp = new Image();
+  tmp.src = "write_error.php?error="+encodeURIComponent(stuff);
   return true;
  }
 
-window.onerror=report_js_error
+window.onerror=report_js_error;
 
 
 var bV=parseInt(navigator.appVersion);
@@ -36,11 +40,11 @@ var flashing=0;
 function Win2Escape(AStr){
 var Result='';
 for(var i=0;i<AStr.length;i++)
-if(AStr.charAt(i)>='À' && AStr.charAt(i)<='ÿ')
+if(AStr.charAt(i)>='ï¿½' && AStr.charAt(i)<='ï¿½')
 Result+=Letters[AStr.charCodeAt(i)-0x0410];
-else if(AStr.charAt(i)=='¨')
+else if(AStr.charAt(i)=='ï¿½')
 Result+=Letters[64];
-else if(AStr.charAt(i)=='¸')
+else if(AStr.charAt(i)=='ï¿½')
 Result+=Letters[65];
 else if(AStr.charAt(i)=='=')
 Result+='%3D';
@@ -286,5 +290,24 @@ function startFlashing(block_id) {
   ajaxSetGlobal(varname, value);
  }
 
+function getCookie(Name) {
+ var search = Name + "="
+ if (document.cookie.length > 0)
+ { // if there are any cookies
+  offset = document.cookie.indexOf(search)
+  if (offset != -1) { // if cookie exists
+   offset += search.length          // set index of beginning of value
+   end = document.cookie.indexOf(";", offset)          // set index of end of cookie value
+   if (end == -1) end = document.cookie.length
+   return unescape(document.cookie.substring(offset, end))
+  }
+ }
+}
+
+
+function setCookie(name, value) {
+ var expire = "0, 01-01-2020 00:00:00 GMT"
+ document.cookie = name + "=" + escape(value) + "; expires=" + expire + "; path=/";
+}
 
 // </AJAX>

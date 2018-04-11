@@ -15,8 +15,9 @@ $in='';
 
 if ($command == 'refresh')
 {
-   $out['PLAY'] = preg_replace('/\\\\$/is', '', $out['PLAY']);
-   $path = str_replace('/', "\\", ($out['PLAY']));
+   //$out['PLAY'] = preg_replace('/\\\\$/is', '', $out['PLAY']);
+   //$path = str_replace('/', "\\", ($out['PLAY']));
+   $path= $out['PLAY'];
    $in='play:'.$path;
 }
 
@@ -39,6 +40,7 @@ if ($command == 'prev')
 
 if ($command == 'close')
 {
+   $in='pause';
 }
 
 if ($in!='') {

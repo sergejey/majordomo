@@ -1,7 +1,4 @@
-<link rel='stylesheet' href='/css/devices.css' />
-<div class="controller-widget">
-    <div class="controller-light %.status|"off;on"%"></div>
-    <div class="controller-text" style='display:%.status|"none;block"%;cursor:pointer' onClick='callMethod("%.turnOff");'>%.object_description%</div>
-    <div class="controller-text" style='display:%.status|"block;none"%;cursor:pointer' onClick='callMethod("%.turnOn");'>%.object_description%</div>
-
+<div class="device-widget controller loadtype_%.loadType%" onClick='$("#icon%.object_id%_light").addClass("pressed");setTimeout("$(\"#icon%.object_id%_light\").removeClass(\"pressed\");",300);callMethod("%.object_title%.switch");'>
+<div class="device-icon %.status|"off;on"%" id="icon%.object_id%_light" style='%.icon|"background-image:url(%.icon%)"%'></div>
+<div class="device-header">%.object_description%</div>
 </div>

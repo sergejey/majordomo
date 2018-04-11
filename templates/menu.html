@@ -6,13 +6,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
+<link href="<#ROOTHTML#>css/menu_custom.css" rel="stylesheet" type="text/css"/>
+<link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/custom-scripting.js"></script>               
 <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.jplayer.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
+<script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
 <title><#LANG_CONTROL_MENU#></title>
 <script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+
 [#inc websockets.html#]
 </head>
 [#if FROM_SCENE="1"#]
@@ -20,7 +25,7 @@
  .ui-field-contain {border-bottom:none}
 </style>
 [#endif#]
-<body[#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#]>
+<body[#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#][#if "<#SETTINGS_THEME#>"=="dark"#] style="background-color:#252525"[#endif#]>
 <div data-role="page" id="mainPage" [#if "<#SETTINGS_THEME#>"=="dark"#] data-theme="b"[#endif#][#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#]>
         [#module name="commands" action="" pda="1"#]
 </div>
