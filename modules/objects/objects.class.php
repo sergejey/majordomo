@@ -681,7 +681,9 @@ function usual(&$out) {
     return $this->class_title;
    }
   }
-
+  if($property=='location_title') {
+    return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=".(int)$this->location_id));
+  }
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   if ($id) {
    $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
