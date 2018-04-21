@@ -159,29 +159,29 @@ function addClassMethod($class_name, $method_name, $code = '', $key = '')
  * @param mixed $keep_history  Flag keep history (default 0)
  * @return mixed
  */
-function addClassProperty($class_name, $property_name, $keep_history = 0)
+function addClassProperty($class_name, $property_name, $keep_history = 0, $method_name='')
 {
    $class_id = addClass($class_name);
-
+   $method_id = addClassMethod($class_name, $method_name);
+   
    $sqlQuery = "SELECT ID
                   FROM properties
                  WHERE TITLE LIKE '" . DBSafe($property_name) . "'
                    AND OBJECT_ID = 0
                    AND CLASS_ID  = '" . $class_id . "'";
-
    $prop = SQLSelectOne($sqlQuery);
    
    if (!$prop['ID'])
    {
       $prop = array();
-
       $prop['CLASS_ID']     = $class_id;
       $prop['TITLE']        = $property_name;
       $prop['KEEP_HISTORY'] = $keep_history;
+      $prop['ONCHANGE'] = $method_name;
       $prop['OBJECT_ID']    = 0;
+	  
       $prop['ID']           = SQLInsert('properties', $prop);
    }
-
    return $prop['ID'];
 }
 
