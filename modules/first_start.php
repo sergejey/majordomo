@@ -121,13 +121,6 @@ for($i=0;$i<$total;$i++) {
     'VALUE'=>$theme
    ),
     array(
-    'NAME'=>'DEBUG_HISTORY', 
-    'TITLE'=>'Save debug information to history', 
-    'TYPE'=>'onoff',
-    'DEFAULT'=>'0',
-    'PRIORITY'=>'0'
-   ),
-    array(
     'NAME'=>'SPEAK_SIGNAL',
     'TITLE'=>'Play sound signal before speaking', 
     'TYPE'=>'onoff',
