@@ -1215,6 +1215,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
+    'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',
 
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',

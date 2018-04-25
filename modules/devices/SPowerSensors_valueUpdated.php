@@ -5,20 +5,36 @@ $ot = $this->object_title;
 $status = $this->getProperty('status');
 $currentValue = $this->getProperty('value');
 $min_value = (float)$this->getProperty('minValue');
+
+$loadTimeout = $this->getProperty('loadStatusTimeout');
+$tmp=explode(',',$loadTimeout);
+$tmp=array_map('trim',$tmp);
+$onTimeout=(int)$tmp[0];
+if ($tmp[1]) {
+    $offTimeout=(int)$tmp[1];
+} else {
+    $offTimeout=$onTimeout;
+}
+
 if (!$min_value) {
     $min_value=1;
 }
 
-$timer=$ot.'_turned_off';
+$timerOn=$ot.'_turned_on';
+$timerOff=$ot.'_turned_off';
 
 if ($currentValue>=$min_value) {
-    clearTimeout($timer);
     if (!$status) {
-        $this->setProperty('status',1);
-        $this->callMethod('loadStatusChanged',array('status'=>1));
+        clearTimeout($timerOff);
+        if (!timeOutExists($timerOn)) {
+            setTimeout($timerOn,'setGlobal("'.$ot.'.status",1);callMethod("'.$ot.'.loadStatusChanged",array("status"=>1));',$onTimeout);
+        }
     }
 } elseif ($currentValue<$min_value) {
     if ($status) {
-        setTimeout($timer,'setGlobal("'.$ot.'.status",0);callMethod("'.$ot.'.loadStatusChanged",array("status"=>0));',10);
+        clearTimeOut($timerOn);
+        if (!timeOutExists($timerOff)) {
+            setTimeout($timerOff, 'setGlobal("' . $ot . '.status",0);callMethod("' . $ot . '.loadStatusChanged",array("status"=>0));', $offTimeout);
+        }
     }
 }

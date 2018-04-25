@@ -1221,6 +1221,7 @@ $dictionary=array(
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
     'DEVICES_ALL_BY_TYPE' => 'List all by types',
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
+    'DEVICES_LOAD_TIMEOUT'=>'Load status timeout',
 
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',

@@ -224,7 +224,7 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
-    $res[$i]['HINT_NAME']='settings'.str_replace('_','',$res[$i]['NAME']);
+
     
     // some action for every record if required
     if ($this->mode=='update') {
@@ -269,12 +269,12 @@
       }
       return ($a['PRIORITY'] > $b['PRIORITY']) ? -1 : 1;
      });
-     //print_r($res[$i]['OPTIONS']);exit;
     }
     if ($res[$i]['VALUE']==$res[$i]['DEFAULTVALUE']) {
      $res[$i]['ISDEFAULT']='1';
     }
     $res[$i]['VALUE']=htmlspecialchars($res[$i]['VALUE']);
+    $res[$i]['HINT_NAME']='settings'.str_replace('_','',$res[$i]['NAME']);
    }
    $out['RESULT']=$res;
   }
