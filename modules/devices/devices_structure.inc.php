@@ -193,7 +193,8 @@ $this->device_types=array(
         'CLASS'=>'SCounters',
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Data Value updated event'),
-            'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event')
+            'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event'),
+            'refreshStats'=>array('DESCRIPTION'=>'Refreshes daily/monthly stats','_CONFIG_SHOW'=>1),
         ),
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),

@@ -3,10 +3,10 @@
         </div>
     <div class="device-details">%.object_description%
         (H:
-        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueHour&op=log&subop=24h&minimal=1');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueHour%</a>,
+        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueHour&op=log&minimal=1&chart_type=column&subop=24h');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueHour%</a>,
         D:
-        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueDay&op=log&subop=7d&minimal=1');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueDay%</a>,
+        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueDay&op=log&minimal=1&chart_type=column&subop=7d');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueDay%</a>,
         M:
-        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueMonth&op=log&subop=12m&minimal=1');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueMonth%</a>)
+        <a href="#" onclick="var url=('/pChart/?p=%.object_title%'+'.valueMonth&op=log&minimal=1&chart_type=column&subop=365d');$.fancybox.open({ href: url, type: 'iframe' });;return false;">%.valueMonth%</a>)
     </div>
 </div>
