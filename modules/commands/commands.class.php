@@ -423,29 +423,12 @@ endMeasure('TOTAL');
 
   $data=serialize($res);
 
-   $filename=urlencode('items'.date('H-i-s'));
+   $filename=urlencode('items'.date('H-i-s')).'.menu';
 
-   $ext = "menu";   // file extension
-   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-   ? 'application/octetstream'
-   : 'application/octet-stream';
-   header('Content-Type: ' . $mime_type);
-   if (PMA_USR_BROWSER_AGENT == 'IE')
-   {
-      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      print $data;
-   } else {
-      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Pragma: no-cache');
-      print $data;
-   }
-
+   header('Content-Type: application/octet-stream');
+   header('Content-Disposition: attachment; filename="'.($filename).'"');
+   header('Expires: 0');
+   echo $data;
    exit;
 
    } else {

@@ -603,7 +603,7 @@ function admin(&$out) {
                  foreach($files_to_import as $file) {
                      $filename = $folder.'/import/classes/'.$file;
                      if (is_file($filename)) {
-                         $classes_module->import($filename,1);
+                         $classes_module->import_classes($filename,1);
                      }
                  }
              }
@@ -752,6 +752,13 @@ function upload(&$out, $frame=0)
    {
       copy($file, ROOT.'saverestore/' . $file_name);
       $file = $file_name;
+   }
+
+   if (!$name) {
+       $name = $file_name;
+       $name = str_replace('.tgz','',$name);
+       $name = str_replace('.tar.gz','',$name);
+       $name = strtolower($name);
    }
 
    umask(0);
