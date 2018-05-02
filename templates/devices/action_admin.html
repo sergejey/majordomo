@@ -66,6 +66,17 @@
      [#if LINKED_OBJECT!=""#]
      <div class="col-md-4">
          [#inc preview.html#]
+
+         [#if SHOW_METHODS#]
+         <hr>
+         <b><#LANG_METHODS#></b>:
+         [#begin SHOW_METHODS#]
+         <div><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);">[#NAME#]</a>
+         &mdash; [#DESCRIPTION#]
+             </div>&nbsp;
+         [#end SHOW_METHODS#]
+         [#endif SHOW_METHODS#]
+
      </div>
      [#endif#]
  </div>

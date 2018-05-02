@@ -224,14 +224,22 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+
     
     // some action for every record if required
     if ($this->mode=='update') {
      global ${'value_'.$res[$i]['ID']};
      global ${'notes_'.$res[$i]['ID']};
 
-     if (!isset(${'value_'.$res[$i]['ID']})) continue;
+     if ($res[$i]['TYPE']=='json' && preg_match('/^hook/is',$res[$i]['NAME'])) {
+      $data = json_decode($res[$i]['VALUE'], true);
+      foreach($data as $k=>$v) {
+       $data[$k]['priority']=gr($k.'_'.$res[$i]['ID'].'_priority','int');
+      }
+      ${'value_'.$res[$i]['ID']} = json_encode($data);
+     }
 
+     if (!isset(${'value_'.$res[$i]['ID']})) continue;
      $all_settings[$res[$i]['NAME']]=${'value_'.$res[$i]['ID']};
      $res[$i]['VALUE']=${'value_'.$res[$i]['ID']};
      $res[$i]['NOTES']=htmlspecialchars(${'notes_'.$res[$i]['ID']});
@@ -248,13 +256,25 @@
       list($ov, $ot)=explode('=', $v);
       $res[$i]['OPTIONS'][]=array('OPTION_TITLE'=>$ot, 'OPTION_VALUE'=>$ov);
      }
+    } elseif ($res[$i]['TYPE']=='json' && preg_match('/^hook/is',$res[$i]['NAME'])) {
+     $data=json_decode($res[$i]['VALUE'],true);
+     foreach($data as $k=>$v) {
+      $row=array('OPTION_TITLE'=>$k, 'FILTER'=>$v['filter'],'PRIORITY'=>(int)$v['priority']);
+      $res[$i]['OPTIONS'][]=$row;
+     }
+
+     usort($res[$i]['OPTIONS'], function ($a,$b) {
+      if ($a['PRIORITY'] == $b['PRIORITY']) {
+       return 0;
+      }
+      return ($a['PRIORITY'] > $b['PRIORITY']) ? -1 : 1;
+     });
     }
-
-
     if ($res[$i]['VALUE']==$res[$i]['DEFAULTVALUE']) {
      $res[$i]['ISDEFAULT']='1';
     }
     $res[$i]['VALUE']=htmlspecialchars($res[$i]['VALUE']);
+    $res[$i]['HINT_NAME']='settings'.str_replace('_','',$res[$i]['NAME']);
    }
    $out['RESULT']=$res;
   }
@@ -263,6 +283,7 @@
   
     // some action for every record if required
   if ($this->mode=='update') {
+   /*
    if ($all_settings['GROWL_ENABLE']) {
     include_once(ROOT.'lib/growl/growl.gntp.php');
     $growl = new Growl($all_settings['GROWL_HOST'], $all_settings['GROWL_PASSWORD']);
@@ -270,6 +291,7 @@
     $growl->registerApplication('http://connect.smartliving.ru/img/logo.png');
     $growl->notify('Test!');
    }
+   */
    $this->redirect("?updated=1&filter_name=".$this->filter_name);
   }
 

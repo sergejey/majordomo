@@ -1221,12 +1221,14 @@ $dictionary=array(
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
     'DEVICES_ALL_BY_TYPE' => 'List all by types',
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
+    'DEVICES_LOAD_TIMEOUT'=>'Load status timeout',
 
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',
+    'MAINTENANCE' => 'Maintenance',
     'LIST' => 'List',
     'DATA_OPTIMIZING' => 'Data Optimizing',
     'DID_YOU_KNOW' => 'Did you know that...',
@@ -1234,6 +1236,9 @@ $dictionary=array(
     'KNOWLEDGE_BASE' => 'Knowledge Base',
     'ACTIVITIES' => 'Activities',
     'COMMANDS' => 'Commands',
+    'ADDON_FILE' => 'Addon package',
+    'UPLOAD_AND_INSTALL' => 'Upload and Install',
+    'ADD_UPDATE_MANUALLY' =>'Add/Update Manually',
 
 'TEST'=>'test'
 

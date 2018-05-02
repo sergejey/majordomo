@@ -9,10 +9,13 @@
  $languages[]=array('TITLE'=>'ua','CAPTION'=>'Ukrainian');
  $languages[]=array('TITLE'=>'lt','CAPTION'=>'Lithuanian');
  $languages[]=array('TITLE'=>'es','CAPTION'=>'Spanish');
+ $languages[]=array('TITLE'=>'et','CAPTION'=>'Estonian');
  $languages[]=array('TITLE'=>'it','CAPTION'=>'Italian');
  $languages[]=array('TITLE'=>'bg','CAPTION'=>'Bulgarian');
  $languages[]=array('TITLE'=>'lv','CAPTION'=>'Latvian');
  $languages[]=array('TITLE'=>'ro','CAPTION'=>'Romanian');
+ $languages[]=array('TITLE'=>'cs','CAPTION'=>'Czech');
+ $languages[]=array('TITLE'=>'pl','CAPTION'=>'Polish');
 
  function cmp_languages($a, $b) {
   return strcmp($a["CAPTION"], $b["CAPTION"]);
@@ -118,13 +121,6 @@ for($i=0;$i<$total;$i++) {
     'TYPE'=>'text',
     'DEFAULT'=>'dark',
     'VALUE'=>$theme
-   ),
-    array(
-    'NAME'=>'DEBUG_HISTORY', 
-    'TITLE'=>'Save debug information to history', 
-    'TYPE'=>'onoff',
-    'DEFAULT'=>'0',
-    'PRIORITY'=>'0'
    ),
     array(
     'NAME'=>'SPEAK_SIGNAL',

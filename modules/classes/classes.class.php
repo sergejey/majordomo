@@ -142,7 +142,11 @@ function admin(&$out) {
   }
 
   if ($this->view_mode=='import_classes') {
-   $this->import_classes($out);
+   global $file;
+   global $overwrite;
+   global $only_classes;
+   $this->import_classes($file,$overwrite,$only_classes);
+   $this->redirect("?");
   }
 
   if ($this->view_mode=='edit_classes') {
@@ -203,10 +207,7 @@ function admin(&$out) {
 *
 * @access public
 */
- function import_classes(&$out) {
-  global $file;
-  global $overwrite;
-  global $only_classes;
+ function import_classes($file,$overwrite=0,$only_classes=0) {
 
   $data=LoadFile($file);
   $records=unserialize($data);
@@ -236,6 +237,13 @@ function admin(&$out) {
     unset($records[$i]['METHODS']);
     $properties=$records[$i]['PROPERTIES'];
     unset($records[$i]['PROPERTIES']);
+    if ($records[$i]['PARENT_CLASS']) {
+     $parent_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($records[$i]['PARENT_CLASS'])."'");
+     if ($parent_class['ID']) {
+      $records[$i]['PARENT_ID']=$parent_class['ID'];
+     }
+     unset($records[$i]['PARENT_CLASS']);
+    }
 
     $records[$i]['ID']=SQLInsert('classes', $records[$i]);
 
@@ -303,7 +311,6 @@ function admin(&$out) {
   }
 
   $this->updateTree_classes();
-  $this->redirect("?");
 
  }
 
@@ -396,35 +403,21 @@ function admin(&$out) {
 
    $records[$i]['OBJECTS']=$objects;
    unset($records[$i]['ID']);
-   unset($records[$i]['PARENT_ID']);
+   if ($records[$i]['PARENT_ID']) {
+    $parent_class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$records[$i]['PARENT_ID']);
+    $records[$i]['PARENT_CLASS']=$parent_class['TITLE'];
+    unset($records[$i]['PARENT_ID']);
+   }
    unset($records[$i]['PARENT_LIST']);
    unset($records[$i]['SUB_LIST']);
   }
 
   $data=serialize($records);
-
-   $filename=urlencode($records[0]['TITLE']);
-
-   $ext = "txt";   // file extension
-   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-   ? 'application/octetstream'
-   : 'application/octet-stream';
-   header('Content-Type: ' . $mime_type);
-   if (PMA_USR_BROWSER_AGENT == 'IE')
-   {
-      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      print $data;
-   } else {
-      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Pragma: no-cache');
-      print $data;
-   }
+  $filename=urlencode($records[0]['TITLE']).'.txt';
+  header('Content-Type: application/octet-stream');
+  header('Content-Disposition: attachment; filename="'.($filename).'"');
+  header('Expires: 0');
+  echo $data;
 
 
   exit;

@@ -25,6 +25,25 @@ if ($names!='') {
  $names=explode(',', $names);
 }
 
+if ($mode2=='uploaded' && $name!='') {
+ $out=array();
+ $mkt->admin($out);
+ $filename = ROOT.'saverestore/'.$name;
+ if (file_exists($filename)) {
+  $mkt->echonow("Uploaded ".$name);
+  $folder=str_replace('.tgz','',$name);
+  $restore=$name;
+  $version='Unknown version';
+  $res=$mkt->upload($out, 1);
+  if ($res) {
+   $mkt->removeTree(ROOT.'saverestore/temp');
+   //@SaveFile(ROOT.'reboot', 'updated');
+   $mkt->echonow("Redirecting to main page...");
+   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+  }
+ }
+}
+
 if ($mode2=='install' && $name!='') {
  // install/update one extension
  $out=array();

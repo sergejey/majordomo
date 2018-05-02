@@ -551,32 +551,6 @@ function usual(&$out) {
 
    if ($code!='') {
 
-    /*
-    if (defined('SETTINGS_DEBUG_HISTORY') && SETTINGS_DEBUG_HISTORY==1) {
-     $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
-     if (!$class_object['NOLOG']) {
-
-      $prevLog=SQLSelectOne("SELECT ID, UNIX_TIMESTAMP(ADDED) as UNX FROM history WHERE OBJECT_ID='".$this->id."' AND METHOD_ID='".$method['ID']."' ORDER BY ID DESC LIMIT 1");
-      if ($prevLog['ID']) {
-       $prevRun=$prevLog['UNX'];
-       $prevRunPassed=time()-$prevLog['UNX'];
-      }
-
-      $h=array();
-      $h['ADDED']=date('Y-m-d H:i:s');
-      $h['OBJECT_ID']=$this->id;
-      $h['METHOD_ID']=$method['ID'];
-      $h['DETAILS']=serialize($params);
-      if ($parent) {
-       $h['DETAILS']='(parent method) '.$h['DETAILS'];
-      }
-      $h['DETAILS'].="\n".'code: '."\n".$code;
-      SQLInsert('history', $h);
-     }
-    }
-    */
-
-
      try {
        $success = eval($code);
        if ($success === false) {
@@ -681,7 +655,9 @@ function usual(&$out) {
     return $this->class_title;
    }
   }
-
+  if($property=='location_title') {
+    return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=".(int)$this->location_id));
+  }
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   if ($id) {
    $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");

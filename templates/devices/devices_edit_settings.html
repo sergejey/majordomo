@@ -16,6 +16,7 @@
  <div class="form-group">
   <div class="col-md-5 text-right">
    [#DESCRIPTION#]
+   [#if CONFIG_HELP!=""#]<#LANG_HCB#>[#CONFIG_HELP#]<#LANG_HCE#>[#endif#]
   </div>
   <div class="col-md-7">
    [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]

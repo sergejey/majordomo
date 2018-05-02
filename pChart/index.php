@@ -203,6 +203,7 @@ if ($total>0) {
 
                  echo "<table width=100%><tr><td width='99%'>";
 
+          $_SERVER['REQUEST_URI']=preg_replace('/&subop=(\w+)/','',$_SERVER['REQUEST_URI']);
           echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=">H</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=1h">1h</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=24h">24h</a> ';
@@ -220,7 +221,8 @@ if ($total>0) {
              }
              echo "</tr></table>";
           //echo '<br/>';
-          if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
+
+          if (preg_match('/^\d+\w$/',$_GET['subop'])) {
 
            if (file_exists(DIR_MODULES.'charts/charts.class.php')) {
 
@@ -231,14 +233,14 @@ if ($total>0) {
 
 
                if (!is_array($_GET['p'])) {
-                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'&height='.$height.'" width=100% height='.($height).'></iframe>';
+                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).'&property='.urlencode($_GET['p']).'&height='.$height.'" width=100% height='.($height).'></iframe>';
                } else {
                    $p_url='';
                    foreach($_GET['p'] as $p) {
                        $p_url.='&properties[]='.urlencode($p);
                    }
                    $p_url.='&height='.$height;
-                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].$p_url.'" width=100% height='.$height.'></iframe>';
+                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).$p_url.'" width=100% height='.$height.'></iframe>';
                }
            } else {
             $code='<img src="/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';

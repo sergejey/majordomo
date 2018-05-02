@@ -155,6 +155,19 @@ function admin(&$out) {
   $out['CLEAR_FIRST']=1;
  }
 
+ if ($this->mode=='upload') {
+     global $file;
+     global $file_name;
+     if (is_file($file) && $file!='') {
+         //echo "Moving $file to ".ROOT.'saverestore/'.$file_name;exit;
+         $file_name=str_replace('.tar.gz','.tgz',$file_name);
+         copy($file,ROOT.'saverestore/'.$file_name);
+         $this->redirect("?mode=iframe&mode2=uploaded&name=".urlencode($file_name));
+     } else {
+         $this->redirect("?");
+     }
+ }
+
  if ($this->mode=='iframe') {
   global $mode2;
   global $name;
@@ -181,7 +194,7 @@ function admin(&$out) {
      exit;
  }
 
-    if ($this->ajax && $_GET['op']=='news') {
+ if ($this->ajax && $_GET['op']=='news') {
         $result = $this->marketRequest('op=news',5*60);
         $data = json_decode($result,true);
         //echo json_encode($data);
@@ -230,6 +243,25 @@ function admin(&$out) {
  }
  $cat = array();
  $cat_id = -1;
+
+ $added_plugins=SQLSelect("SELECT MODULE_NAME FROM plugins");
+    $market_plugins=array();
+    for($i=0;$i<$total;$i++) {
+        $rec=(array)$data->PLUGINS[$i];
+        $market_plugins[]=$rec['MODULE_NAME'];
+    }
+    foreach($added_plugins as $plugin) {
+        if (!in_array($plugin['MODULE_NAME'],$market_plugins)) {
+            $rec=array();
+            $rec['MODULE_NAME']=$plugin['MODULE_NAME'];
+            $rec['TITLE']=$rec['MODULE_NAME'];
+            $rec['EXISTS']=1;
+            $rec['CATEGORY']='Custom';
+            $data->PLUGINS[]=$rec;
+        }
+    }
+
+ $total = count($data->PLUGINS);
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
   if (is_dir(ROOT.'modules/'.$rec['MODULE_NAME'])) {
@@ -492,8 +524,7 @@ function admin(&$out) {
          $this->echonow("Updating files ...");
         }
 
-        $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
-        $this->removeTree(ROOT.'saverestore/temp'.$folder);
+        $this->installUnpacketPlugin(ROOT.'saverestore/temp'.$folder,$name);
 
         if ($frame) {
          $this->echonow("OK<br/>", 'green');
@@ -535,6 +566,58 @@ function admin(&$out) {
   
  }
 
+ function installUnpacketPlugin($folder,$plugin_name) {
+     $out = array();
+     if (is_dir($folder.'/import')) {
+         if (is_dir($folder.'/import/scripts')) {
+             include_once(DIR_MODULES.'scripts/scripts.class.php');
+             $scripts_module = new scripts();
+             $files_to_import = scandir($folder.'/import/scripts');
+             if (is_array($files_to_import)) {
+                 foreach($files_to_import as $file) {
+                     $filename = $folder.'/import/scripts/'.$file;
+                     if (is_file($filename)) {
+                         $scripts_module->import($out,$filename);
+                     }
+                 }
+             }
+         }
+         if (is_dir($folder.'/import/scenes')) {
+             include_once(DIR_MODULES.'scenes/scenes.class.php');
+             $scenes_module = new scenes();
+             $files_to_import = scandir($folder.'/import/scenes');
+             if (is_array($files_to_import)) {
+                 foreach($files_to_import as $file) {
+                     $filename = $folder.'/import/scenes/'.$file;
+                     if (is_file($filename)) {
+                         $scenes_module->import($filename,$plugin_name);
+                     }
+                 }
+             }
+         }
+         if (is_dir($folder.'/import/classes')) {
+             include_once(DIR_MODULES.'classes/classes.class.php');
+             $classes_module = new classes();
+             $files_to_import = scandir($folder.'/import/classes');
+             if (is_array($files_to_import)) {
+                 foreach($files_to_import as $file) {
+                     $filename = $folder.'/import/classes/'.$file;
+                     if (is_file($filename)) {
+                         $classes_module->import_classes($filename,1);
+                     }
+                 }
+             }
+         }
+         $this->removeTree($folder.'/import');
+     }
+     if (file_exists($folder.'/install.php')) {
+         require($folder.'/install.php');
+         @unlink($folder.'/install.php');
+     }
+     $this->copyTree($folder, ROOT, 1); // restore all files
+     $this->removeTree($folder);
+ }
+
 /**
 * Title
 *
@@ -543,41 +626,31 @@ function admin(&$out) {
 * @access public
 */
  function uninstallPlugin($name, $frame=0) {
-
-  if (!is_dir(ROOT.'modules/'.$name)) {
-   $err_msg='Module not found';
-   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));  
-  }
   if ($frame) {
-   $this->echonow("Removing module '$name' from database ... ");
+      $this->echonow("Removing module '$name' from database ... ");
   }
-
-  include_once(ROOT.'modules/'.$name.'/'.$name.'.class.php');
-
   SQLExec("DELETE FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($name)."'");
-  SQLExec("DELETE FROM project_modules WHERE NAME LIKE '".DBSafe($name)."'");
-  if ($frame) {
-   $this->echonow(" OK<br/>", 'green');
+  if (is_dir(ROOT.'modules/'.$name)) {
+      include_once(ROOT . 'modules/' . $name . '/' . $name . '.class.php');
+      SQLExec("DELETE FROM project_modules WHERE NAME LIKE '" . DBSafe($name) . "'");
+      if ($frame) {
+          $this->echonow(" OK<br/>", 'green');
+      }
+      $this->removeTree(ROOT . 'modules/' . $name);
+      $this->removeTree(ROOT . 'templates/' . $name);
+      if ($name == 'scheduler') {
+          $cycle_name = ROOT . 'scripts/cycle_schedapp.php';
+      } else {
+          $cycle_name = ROOT . 'scripts/cycle_' . $name . '.php';
+      }
+      if (file_exists($cycle_name)) {
+          @unlink($cycle_name);
+      }
+      removeMissingSubscribers();
+      $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
+      eval($code);
   }
-  $this->removeTree(ROOT.'modules/'.$name);
-  $this->removeTree(ROOT.'templates/'.$name);
-
-  if ($name == 'scheduler') {
-      $cycle_name = ROOT.'scripts/cycle_schedapp.php';
-  } else {
-      $cycle_name = ROOT.'scripts/cycle_'.$name.'.php';
-  }
-  if (file_exists($cycle_name)) {
-   @unlink($cycle_name);
-  }
-  removeMissingSubscribers();
-
-  $code='$plugin = new '.$name.';$plugin->uninstall();';
-  eval($code);
-
-
   $ok_msg='Uninstalled';
-
   if ($frame) {
    $this->echonow(" Plugin uninstalled!<br/>", 'green');
   }
@@ -663,6 +736,8 @@ function upload(&$out, $frame=0)
    global $file;
    global $file_name;
    global $folder;
+   global $name;
+   global $version;
 
    if (!$folder)
       $folder = IsWindowsOS() ? '/.' : '/';
@@ -679,6 +754,13 @@ function upload(&$out, $frame=0)
       $file = $file_name;
    }
 
+   if (!$name) {
+       $name = $file_name;
+       $name = str_replace('.tgz','',$name);
+       $name = str_replace('.tar.gz','',$name);
+       $name = strtolower($name);
+   }
+
    umask(0);
    @mkdir(ROOT.'saverestore/temp', 0777);
 
@@ -692,9 +774,9 @@ function upload(&$out, $frame=0)
       {
          // for windows only
          exec(DOC_ROOT.'/gunzip ../'.$file, $output, $res);
-         //echo DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file);exit;
          exec(DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file), $output, $res);
-      } 
+         @unlink('../'.str_replace('.tgz', '.tar', $file));
+      }
       else
       {
          exec('tar xzvf ../' . $file, $output, $res);
@@ -722,15 +804,12 @@ function upload(&$out, $frame=0)
         }
         @unlink(ROOT.'saverestore/temp'.$folder.'/config.php');
         @unlink(ROOT.'saverestore/temp'.$folder.'/README.md');
-
-
         chdir('../../');
         // UPDATING FILES DIRECTLY
         if ($frame) {
          $this->echonow("Updating files ... ");
         }
-
-        $this->copyTree(ROOT.'saverestore/temp'.$folder, ROOT, 1); // restore all files
+        $this->installUnpacketPlugin(ROOT.'saverestore/temp'.$folder,$name);
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 
@@ -745,8 +824,7 @@ function upload(&$out, $frame=0)
         $this->echonow(" OK <br/>", 'green');
        }
 
-       global $name;
-       global $version;
+
 
        DebMes("Installing/updating plugin $name ($version)");
 

@@ -18,6 +18,7 @@ $ctl = new control_modules();
 $checked_time = 0;
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
+SQLExec("DELETE FROM safe_execs");
 
 while (1)
 {

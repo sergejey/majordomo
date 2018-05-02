@@ -200,7 +200,25 @@ function getAllProperties($type) {
         }
     }
     return $properties;
-}    
+}
+
+    function getAllMethods($type) {
+        $methods=$this->device_types[$type]['METHODS'];
+        $parent_class=$this->device_types[$type]['PARENT_CLASS'];
+        if ($parent_class!='') {
+            foreach($this->device_types as $k=>$v) {
+                if ($v['CLASS']==$parent_class) {
+                    $parent_methods=$this->getAllMethods($k);
+                    foreach($parent_methods as $pk=>$pv) {
+                        if (!isset($methods[$pk])) {
+                            $methods[$pk]=$pv;
+                        }
+                    }
+                }
+            }
+        }
+        return $methods;
+    }
     
 function getNewObjectIndex($class) {
     $objects=getObjectsByClass($class);

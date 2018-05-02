@@ -1215,6 +1215,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
+    'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',
 
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
@@ -1229,6 +1230,9 @@ $dictionary = array(
     'KNOWLEDGE_BASE' => 'База знаний',
     'ACTIVITIES' => 'Поведение',
     'COMMANDS' => 'Команды',
+    'ADDON_FILE' => 'Файл дополнения',
+    'UPLOAD_AND_INSTALL' => 'Загрузить и установить',
+    'ADD_UPDATE_MANUALLY' =>'Добавить/обновить вручную',
 
 
     /* end module names */
