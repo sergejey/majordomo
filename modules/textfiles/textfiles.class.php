@@ -19,7 +19,7 @@ class textfiles extends module {
 *
 * @access private
 */
-function textfiles() {
+function __construct() {
   $this->name="textfiles";
   $this->title="<#LANG_MODULE_TEXTFILES#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

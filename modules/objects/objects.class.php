@@ -19,7 +19,7 @@ class objects extends module {
 *
 * @access private
 */
-function objects() {
+function __construct() {
   $this->name="objects";
   $this->title="<#LANG_MODULE_OBJECT_INSTANCES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";

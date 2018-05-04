@@ -18,7 +18,7 @@ class commands extends module {
 *
 * @access private
 */
-function commands() {
+function __construct() {
   $this->name="commands";
   $this->title="<#LANG_MODULE_CONTROL_MENU#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";

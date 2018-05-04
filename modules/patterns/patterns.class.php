@@ -19,7 +19,7 @@ class patterns extends module {
 *
 * @access private
 */
-function patterns() {
+function __construct() {
   $this->name="patterns";
   $this->title="<#LANG_MODULE_PATTERNS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";

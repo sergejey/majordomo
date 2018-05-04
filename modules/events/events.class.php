@@ -18,7 +18,7 @@ class events extends module {
 *
 * @access private
 */
-function events() {
+function __construct() {
   $this->name="events";
   $this->title="<#LANG_MODULE_EVENTS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

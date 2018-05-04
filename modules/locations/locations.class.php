@@ -18,7 +18,7 @@ class locations extends module {
 *
 * @access private
 */
-function locations() {
+function __construct() {
   $this->name="locations";
   $this->title="<#LANG_MODULE_LOCATIONS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

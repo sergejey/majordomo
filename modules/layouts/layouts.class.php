@@ -19,7 +19,7 @@ class layouts extends module {
 *
 * @access private
 */
-function layouts() {
+function __construct() {
   $this->name="layouts";
   $this->title="<#LANG_MODULE_LAYOUTS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

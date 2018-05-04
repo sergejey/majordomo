@@ -16,7 +16,7 @@ class devices extends module {
 *
 * @access private
 */
-function devices() {
+function __construct() {
   $this->name="devices";
   $this->title="Devices";
   $this->module_category="<#LANG_SECTION_DEVICES#>";

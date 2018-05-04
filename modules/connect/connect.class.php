@@ -19,7 +19,7 @@ class connect extends module {
 *
 * @access private
 */
-function connect() {
+function __construct() {
   $this->name="connect";
   $this->title="<#LANG_MODULE_CONNECT#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

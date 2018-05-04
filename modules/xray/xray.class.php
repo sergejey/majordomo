@@ -19,7 +19,7 @@ class xray extends module {
 *
 * @access private
 */
-function xray() {
+function __construct() {
   $this->name="xray";
   $this->title="X-Ray";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

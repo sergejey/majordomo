@@ -19,7 +19,7 @@ class soundfiles extends module {
 *
 * @access private
 */
-function soundfiles() {
+function __construct() {
   $this->name="soundfiles";
   $this->title="<#LANG_MODULE_SOUNDFILES#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

@@ -18,7 +18,7 @@ class dateselect extends module {
 *
 * @access private
 */
-function dateselect() {
+function __construct() {
   $this->name="dateselect";
   $this->title="Date Selector";
   $this->module_category="System";

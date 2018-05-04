@@ -13,7 +13,7 @@ class panel extends module
     var $action;
 
 // --------------------------------------------------------------------
-    function panel()
+    function __construct()
     {
         $this->name = "panel";
     }

@@ -19,7 +19,7 @@ class system_errors extends module {
 *
 * @access private
 */
-function system_errors() {
+function __construct() {
   $this->name="system_errors";
   $this->title="<#LANG_MODULE_SYSTEM_ERRORS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

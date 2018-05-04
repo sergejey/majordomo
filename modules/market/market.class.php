@@ -19,7 +19,7 @@ class market extends module {
 *
 * @access private
 */
-function market() {
+function __construct() {
   $this->name="market";
   $this->title="<#LANG_MODULE_MARKET#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

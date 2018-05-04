@@ -18,7 +18,7 @@ class classes extends module {
 *
 * @access private
 */
-function classes() {
+function __construct() {
   $this->name="classes";
   $this->title="<#LANG_MODULE_OBJECTS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -225,8 +225,9 @@ function admin(&$out) {
       SQLUpdate('objects', $old_objects[$io]);
      }
      if ($overwrite) {
-      $this->delete_classes($old_class['ID']);
-      $records[$i]['ID']=$old_class['ID'];
+      if (!$this->delete_classes($old_class['ID'])) {
+       $records[$i]['ID']=$old_class['ID'];
+      }
      } else {
       $records[$i]['TITLE']=$records[$i]['TITLE'].rand(0, 500);
      }
@@ -245,7 +246,12 @@ function admin(&$out) {
      unset($records[$i]['PARENT_CLASS']);
     }
 
-    $records[$i]['ID']=SQLInsert('classes', $records[$i]);
+    if ($records[$i]['ID']) {
+     SQLUpdate('classes', $records[$i]);
+    } else {
+     $records[$i]['ID']=SQLInsert('classes', $records[$i]);
+    }
+
 
     if ($total_o) {
      for($io=0;$io<$total_o;$io++) {
@@ -540,7 +546,7 @@ function usual(&$out) {
   $rec=SQLSelectOne("SELECT * FROM classes WHERE ID='$id'");
   // some action for related tables
   if ($rec['SUB_LIST']!='' && $rec['SUB_LIST']!=$rec['ID'] && $rec['SUB_LIST']!='') {
-   return;
+   return 0;
   }
   SQLExec("DELETE FROM properties WHERE CLASS_ID='".$rec['ID']."' AND OBJECT_ID=0");
   SQLExec("DELETE FROM methods WHERE CLASS_ID='".$rec['ID']."' AND OBJECT_ID=0");
@@ -553,6 +559,7 @@ function usual(&$out) {
   }
   SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
   $this->updateTree_classes();
+  return 1;
  }
 /**
 * classes build tree

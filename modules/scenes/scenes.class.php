@@ -21,7 +21,7 @@ class scenes extends module {
 *
 * @access private
 */
-function scenes() {
+function __construct() {
   $this->name="scenes";
   $this->title="<#LANG_MODULE_SCENES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -1309,25 +1309,24 @@ function usual(&$out) {
 
   function getCSSImage($type, $style) {
    $styles=$this->getStyles($type);
-   $total=count($styles);
-   for($i=0;$i<$total;$i++) {
-    if ($styles[$i]['TITLE']==$style) {
-     return $styles[$i]['IMAGE'];
+   if (is_array($styles)) {
+    $total=count($styles);
+    for($i=0;$i<$total;$i++) {
+     if ($styles[$i]['TITLE']==$style) {
+      return $styles[$i]['IMAGE'];
+     }
     }
    }
 
    $styles=$this->getStyles('common');
-   $total=count($styles);
-   for($i=0;$i<$total;$i++) {
-    if ($styles[$i]['TITLE']==$style) {
-     return $styles[$i]['IMAGE'];
+   if (is_array($styles)) {
+    $total=count($styles);
+    for($i=0;$i<$total;$i++) {
+     if ($styles[$i]['TITLE']==$style) {
+      return $styles[$i]['IMAGE'];
+     }
     }
    }
-
-   /*
-   print_r($styles);
-   exit;
-   */
   }
 
 

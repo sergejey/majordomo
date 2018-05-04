@@ -11,7 +11,7 @@
 class control_access extends module {
  var $id;
 // --------------------------------------------------------------------
- function control_access() {
+ function __construct() {
   // setting module name
   $this->name="control_access";
   $this->title="Control Access";

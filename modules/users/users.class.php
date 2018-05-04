@@ -18,7 +18,7 @@ class users extends module {
 *
 * @access private
 */
-function users() {
+function __construct() {
   $this->name="users";
   $this->title="<#LANG_MODULE_USERS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

@@ -19,7 +19,7 @@ class scripts extends module
      *
      * @access private
      */
-    function scripts()
+    function __construct()
     {
         $this->name = "scripts";
         $this->title = "<#LANG_MODULE_SCRIPTS#>";

@@ -12,7 +12,7 @@ class thumb extends module {
 
 // --------------------------------------------------------------------
 
-function thumb() {
+function __construct() {
 
   // setting module name
   $this->name="thumb";

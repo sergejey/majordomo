@@ -14,11 +14,8 @@
   var $member_id;
 
 // --------------------------------------------------------------------
-  function application() {
-   global $session;
-   global $db;
+  function __construct() {
    $this->name="application";
-   
  }
 
 // --------------------------------------------------------------------
