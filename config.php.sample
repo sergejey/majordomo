@@ -51,6 +51,7 @@ else
 
 Define('ROOT', DOC_ROOT."/");
 Define('ROOTHTML', "/");
+if (!isset( $_SERVER['SERVER_NAME']))  $_SERVER['SERVER_NAME']='localhost'; 
 Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
 
 // 1-wire OWFS server
