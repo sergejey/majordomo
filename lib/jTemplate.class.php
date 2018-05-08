@@ -579,6 +579,7 @@ class jTemplate
                $condition = preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);
+               $condition = preg_replace('/(\w+)[[:space:]](?=[=!<>])/', '$hash[\'\\1\']', $condition);
                $condition = preg_replace('/\((\w+)\)/', '($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/\]=(?=[^\w=])/', ']==', $condition);
 
