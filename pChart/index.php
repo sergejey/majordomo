@@ -243,7 +243,7 @@ if ($total>0) {
                    $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).$p_url.'" width=100% height='.$height.'></iframe>';
                }
            } else {
-            $code='<img src="/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
+            $code='<img src="'.ROOTHTML.'3rdparty/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
            }
            echo $code;
               if (!$_GET['minimal']) {

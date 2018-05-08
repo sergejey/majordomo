@@ -258,17 +258,21 @@
      }
     } elseif ($res[$i]['TYPE']=='json' && preg_match('/^hook/is',$res[$i]['NAME'])) {
      $data=json_decode($res[$i]['VALUE'],true);
-     foreach($data as $k=>$v) {
-      $row=array('OPTION_TITLE'=>$k, 'FILTER'=>$v['filter'],'PRIORITY'=>(int)$v['priority']);
-      $res[$i]['OPTIONS'][]=$row;
+     if (is_array($data)) {
+      foreach($data as $k=>$v) {
+       $row=array('OPTION_TITLE'=>$k, 'FILTER'=>$v['filter'],'PRIORITY'=>(int)$v['priority']);
+       $res[$i]['OPTIONS'][]=$row;
+      }
+     }
+     if (is_array($res[$i]['OPTIONS'])) {
+      usort($res[$i]['OPTIONS'], function ($a,$b) {
+       if ($a['PRIORITY'] == $b['PRIORITY']) {
+        return 0;
+       }
+       return ($a['PRIORITY'] > $b['PRIORITY']) ? -1 : 1;
+      });
      }
 
-     usort($res[$i]['OPTIONS'], function ($a,$b) {
-      if ($a['PRIORITY'] == $b['PRIORITY']) {
-       return 0;
-      }
-      return ($a['PRIORITY'] > $b['PRIORITY']) ? -1 : 1;
-     });
     }
     if ($res[$i]['VALUE']==$res[$i]['DEFAULTVALUE']) {
      $res[$i]['ISDEFAULT']='1';

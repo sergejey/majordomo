@@ -22,7 +22,7 @@ class saverestore extends module
      *
      * @access private
      */
-    function saverestore()
+    function __construct()
     {
         $this->name = "saverestore";
         $this->title = "<#LANG_MODULE_SAVERESTORE#>";
@@ -1648,7 +1648,7 @@ class saverestore extends module
                         }
                     }
                     if ($ok_to_copy) {
-                        $res = copy($source . "/" . $file, $destination . "/" . $file);
+                        @$res = copy($source . "/" . $file, $destination . "/" . $file);
                     }
                 }
             }

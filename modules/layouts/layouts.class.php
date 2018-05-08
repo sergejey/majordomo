@@ -219,7 +219,7 @@ function usual(&$out) {
    }
   }
   if ($rec['TYPE']=='dashboard') {
-   $this->redirect(ROOTHTML."freeboard/?layout_id=".$rec['ID']);
+   $this->redirect(ROOTHTML."3rdparty/freeboard/?layout_id=".$rec['ID']);
   }
   outHash($rec, $out);
  }
