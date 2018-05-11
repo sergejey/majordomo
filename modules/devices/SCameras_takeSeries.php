@@ -70,7 +70,7 @@ if ($total>0) {
         $durations[]=$gif_delay;
     }
     include_once(ROOT.'lib/utils/AnimGif.php');
-    $gif_filename = ROOT.'cached/'.$ot.'_'.date('Y-m-d_H-i-s').'.gif';
+    $gif_filename = ROOT.'cms/cached/'.$ot.'_'.date('Y-m-d_H-i-s').'.gif';
 
     $anim = new GifCreator\AnimGif();
     if ($anim->create($images,$durations)) {

@@ -38,6 +38,37 @@ echo "CONNECTED TO DB" . PHP_EOL;
 
 echo "Running startup maintenance" . PHP_EOL;
 
+// moving some folders to ./cms/
+$move_folders=array(
+    'cached',
+    'debmes',
+    'saverestore',
+    'sounds',
+    'texts');
+foreach($move_folders as $folder) {
+   if (is_dir(ROOT.$folder)) {
+      echo "Moving ".ROOT.$folder.' to '.ROOT.'cms/'.$folder."\n";
+      rename(ROOT.$folder,ROOT.'cms/'.$folder);
+   }
+}
+
+// removing some 3rd-party directories
+$check_folders=array(
+    'blockly' => '3rdparty/blockly',
+    'bootstrap' => '3rdparty/bootstrap',
+    'js/codemirror' => '3rdparty/codemirror',
+    'freeboard' => '3rdparty/freeboard',
+    'jquerymobile' => '3rdparty/jquerymobile',
+    'pdw' => '3rdparty/pdw',
+    'js/threejs' => '3rdparty/threejs'
+    );
+foreach($check_folders as $k=>$v) {
+   if (is_dir(ROOT.$v)) {
+      echo "Removing ".ROOT.$k."\n";
+      removeTree(ROOT.$k);
+   }
+}
+
 //restoring database backup (if was saving periodically)
 $filename  = ROOT . 'database_backup/db.sql';
 if (file_exists($filename))

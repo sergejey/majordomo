@@ -616,9 +616,9 @@ $.fn.customContextMenu = function(callBack){
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
    display:inline-block;"></div>
 
-<script language="javascript" src="{$smarty.const.ROOTHTML}js/threejs/libs/tween.min.js"></script>
-<script language="javascript" src="{$smarty.const.ROOTHTML}js/threejs/three.min.js"></script>
-<script src="{$smarty.const.ROOTHTML}js/threejs/loaders/SceneLoader.js" language="javascript"></script>
+<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/libs/tween.min.js"></script>
+<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/three.min.js"></script>
+<script src="{$smarty.const.ROOTHTML}3rdparty/threejs/loaders/SceneLoader.js" language="javascript"></script>
    <script language="javascript">
 
                         var container;

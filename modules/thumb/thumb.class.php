@@ -54,12 +54,12 @@ function run() {
     $filename=str_replace('.cgi', '.jpg', $filename);
    }
 
-   $this->src=ROOT.'cached/'.$filename;
+   $this->src=ROOT.'cms/cached/'.$filename;
 
    /*
    */
 
-   $this->src_def=urlencode('/cached/'.$filename);
+   $this->src_def=urlencode('/cms/cached/'.$filename);
 
   } else {
 

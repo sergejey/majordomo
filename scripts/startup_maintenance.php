@@ -8,43 +8,41 @@ DebMes("Running maintenance script");
 
 // BACKUP DATABASE AND FILES
 $old_mask = umask(0);
-
 if (!is_dir(DOC_ROOT . '/backup'))
    mkdir(DOC_ROOT . '/backup', 0777);
 
-if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH))
-{
+if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
    $target_dir = SETTINGS_BACKUP_PATH;
 
    if (substr($target_dir, -1) != '/' && substr($target_dir, -1) != '\\')
       $target_dir .= '/';
 
    $target_dir .= date('Ymd');
-}
-else
-{
+} else {
    $target_dir  = DOC_ROOT . '/backup/' . date('Ymd');
 }
 
 $full_backup = 0;
 
-if (!is_dir($target_dir))
-{
+if (!is_dir($target_dir)) {
    mkdir($target_dir, 0777);
    $full_backup = 1;
 }
 
-if (!is_dir(ROOT . 'debmes'))
-   mkdir(ROOT . 'debmes', 0777);
-
 if (!is_dir(ROOT . 'cached'))
-   mkdir(ROOT . 'cached', 0777);
+    mkdir(ROOT . 'cached', 0777);
 
-if (!is_dir(ROOT . 'cached/voice'))
-   mkdir(ROOT . 'cached/voice', 0777);
+if (!is_dir(ROOT . 'cms/cached'))
+   mkdir(ROOT . 'cms/cached', 0777);
 
-if (!is_dir(ROOT . 'cached/urls'))
-   mkdir(ROOT . 'cached/urls', 0777);
+if (!is_dir(ROOT . 'cms/debmes'))
+    mkdir(ROOT . 'cms/debmes', 0777);
+
+if (!is_dir(ROOT . 'cms/cached/voice'))
+   mkdir(ROOT . 'cms/cached/voice', 0777);
+
+if (!is_dir(ROOT . 'cms/cached/urls'))
+   mkdir(ROOT . 'cms/cached/urls', 0777);
 
 
 if (!defined('LOG_FILES_EXPIRE')) {
@@ -63,6 +61,15 @@ echo "Target: " . $target_dir . PHP_EOL;
 echo "Full backup: " . $full_backup . PHP_EOL;
 
 sleep(5);
+
+//removing old log files
+$dir = ROOT."cms/debmes/";
+foreach (glob($dir."*") as $file) {
+    if (filemtime($file) < time() - LOG_FILES_EXPIRE*24*60*60) {
+        DebMes("Removing log file ".$file);
+        @unlink($file);
+    }
+}
 
 if ($full_backup)
 {
@@ -87,20 +94,10 @@ if ($full_backup)
    exec($mysqlDumpPath . $mysqlDumpParam);
 
    copyTree('./cms', $target_dir . '/cms', 1);
-   copyTree('./texts', $target_dir . '/texts', 1);
-   copyTree('./sounds', $target_dir . '/sounds', 1);
-
    echo "OK\n";
 }
 
-//removing old log files
-$dir = ROOT."debmes/";
-foreach (glob($dir."*") as $file) {
- if (filemtime($file) < time() - LOG_FILES_EXPIRE*24*60*60) {
-  DebMes("Removing log file ".$file);
-  @unlink($file);
- }
-}
+
 
 //removing old backups files
 $dir =$target_dir;
@@ -112,7 +109,7 @@ foreach (glob($dir."*") as $file) {
 }
 
 //removing old cached files
-$dir = ROOT."cached/";
+$dir = ROOT."cms/cached/";
 foreach (glob($dir."*") as $file) {
  if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
   DebMes("Removing cached file ".$file);
@@ -155,66 +152,6 @@ if (time()>=getGlobal('ThisComputer.started_time')) {
  SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
 }
 
-
-// CHECKING DATA
-/*
-$tables = array('commands'         => 'commands',
-                'owproperties'     => 'onewire',
-                'snmpproperties'   => 'snmpdevices',
-                'zwave_properties' => 'zwave',
-                'mqtt'             => 'mqtt',
-                'modbusdevices'    => 'modbus');
-
-$value_ids = array();
-
-foreach ($tables as $k => $v)
-{
-   $sqlQuery = "SELECT *
-                  FROM $k
-                 WHERE LINKED_OBJECT   != ''
-                   AND LINKED_PROPERTY != ''";
-
-   $data = SQLSelect($sqlQuery);
-   $total = count($data);
-
-   for ($i = 0; $i < $total; $i++)
-   {
-      $module = $v;
-      $property = $data[$i]['LINKED_OBJECT'] . '.' . $data[$i]['LINKED_PROPERTY'];
-
-      if (!$value_ids[$property])
-         $value_ids[$property] = getValueIdByName($data[$i]['LINKED_OBJECT'], $data[$i]['LINKED_PROPERTY']);
-
-      if ($value_ids[$property])
-      {
-         $sqlQuery = "SELECT *
-                        FROM pvalues
-                       WHERE ID = " . (int)$value_ids[$property];
-
-         $value = SQLSelectOne($sqlQuery);
-
-         if (!$value['LINKED_MODULES'])
-            $tmp = array();
-         else
-            $tmp = explode(',', $value['LINKED_MODULES']);
-
-
-         if (!in_array($v, $tmp))
-         {
-            echo "$property adding linked" . PHP_EOL;
-            $tmp[] = $v;
-            $value['LINKED_MODULES'] = implode(',', $tmp);
-
-            SQLUpdate('pvalues', $value);
-         }
-      }
-      else
-      {
-         echo "$property removing linked" . PHP_EOL;
-      }
-   }
-}
-*/
 
 $sqlQuery = "SELECT pvalues.*, objects.TITLE as OBJECT_TITLE, properties.TITLE as PROPERTY_TITLE
                FROM pvalues

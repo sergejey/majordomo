@@ -134,11 +134,11 @@ function run() {
   global $data;
   $data=1;
   $out=array();
-  $sv->removeTree(ROOT.'saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
   $tar_name=$sv->dump($out);
-  $sv->removeTree(ROOT.'saverestore/temp');
-  $sv->removeTree(ROOT.'saverestore/temp');
-  $dest_file=ROOT.'saverestore/'.$tar_name;
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
+  $dest_file=ROOT.'cms/saverestore/'.$tar_name;
   if ($dest_file && file_exists($dest_file) && filesize($dest_file)>0) {
   if (function_exists('curl_file_create')) { // php 5.6+
    $cfile = curl_file_create($dest_file);
@@ -521,7 +521,7 @@ function admin(&$out) {
 
   // POST TO SERVER
   $url = 'http://connect.smartliving.ru/upload/';
-  $datafile_name=ROOT.'cached/connect_data.txt';
+  $datafile_name=ROOT.'cms/cached/connect_data.txt';
   SaveFile($datafile_name, serialize($data));
 
 

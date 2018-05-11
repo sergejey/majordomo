@@ -16,7 +16,7 @@ if (!defined('PATH_TO_FFMPEG')) {
 }
 
 define("_I_CACHING","1");               //    Chaching enabled, 1 - yes, 0 - no
-define("_I_CACHE_PATH","./cached/"); //    Path to cache dir
+define("_I_CACHE_PATH","./cms/cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds, 0 - never expired
 
 

@@ -216,7 +216,7 @@ function usual(&$out) {
    } else {
     //web host
     $online=getURL(processTitle($host['HOSTNAME']), 0);
-    SaveFile("./cached/host_".$host['ID'].'.html', $online);
+    SaveFile("./cms/cached/host_".$host['ID'].'.html', $online);
     if ($host['SEARCH_WORD']!='' && !is_integer(strpos($online, $host['SEARCH_WORD']))) {
      $online=0;
     }

@@ -430,7 +430,7 @@ $graph->Stroke();
   $Test->AddBorder(1); 
  }
 
- $path_to_file='./cached/'.md5($_SERVER['REQUEST_URI']).'.png';
+ $path_to_file='./cms/cached/'.md5($_SERVER['REQUEST_URI']).'.png';
  imagepng($Test->Picture, $path_to_file);
 
  Header("Content-type:image/png");

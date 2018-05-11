@@ -89,14 +89,14 @@ function getParams() {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
 
-    if ($dir = @opendir(ROOT."cached/voice")) { 
+    if ($dir = @opendir(ROOT."cms/cached/voice")) {
        while (($file = readdir($dir)) !== false) { 
        if (preg_match('/\.mp3$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice/".$file);
+        $mtime=filemtime(ROOT."cms/cached/voice/".$file);
         /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
-         unlink(ROOT."cached/voice".$file);
+         unlink(ROOT."cms/cached/voice".$file);
         } else {
         }
         */
@@ -104,11 +104,11 @@ function getParams() {
        }
 
        if (preg_match('/\.wav$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice/".$file);
+        $mtime=filemtime(ROOT."cms/cached/voice/".$file);
         /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
-         unlink(ROOT."cached/voice/".$file);
+         unlink(ROOT."cms/cached/voice/".$file);
         }
         */
        }
@@ -125,7 +125,7 @@ function getParams() {
          return ($a['MTIME'] > $b['MTIME']) ? -1 : 1; 
      }
      usort($files, 'sortFiles');
-     echo '/cached/voice/'.$files[0]['FILENAME'];
+     echo '/cms/cached/voice/'.$files[0]['FILENAME'];
     }
 
     global $db;

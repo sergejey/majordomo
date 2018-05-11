@@ -681,7 +681,7 @@ if ($_GET['gtype']=='curve') { //������ ��������� 
   }
 
 /* Render the picture (choose the best way) */
-$path_to_file='./cached/'.md5($_SERVER['REQUEST_URI']).'.png';
+$path_to_file='./cms/cached/'.md5($_SERVER['REQUEST_URI']).'.png';
 imagepng($Test->autoOutput($path_to_file));
 
 if (file_exists($path_to_file)) {

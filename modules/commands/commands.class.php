@@ -115,11 +115,11 @@ function run() {
 
    require_once ROOT.'lib/smarty/Smarty.class.php';
    $smarty = new Smarty;
-   $smarty->setCacheDir(ROOT.'cached/template_c');
+   $smarty->setCacheDir(ROOT.'cms/cached/template_c');
 
    $smarty->setTemplateDir(ROOT.'./templates')
-          ->setCompileDir(ROOT.'./cached/templates_c')
-          ->setCacheDir(ROOT.'./cached');
+          ->setCompileDir(ROOT.'./cms/cached/templates_c')
+          ->setCacheDir(ROOT.'./cms/cached');
 
    $smarty->debugging = false;
    $smarty->caching = true;
