@@ -53,7 +53,7 @@ if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') &&
 {
  $maincycleUpdate=getGlobal('cycle_mainRun');
  if ((time()-$maincycleUpdate)>60) { //main cycle is offline
-  echo "Main cycle is down. Please check background processes status.";
+  echo "Main cycle is down. Please check background processes status. <a href='/diagnostic.php'>".LANG_SUBMIT_DIAGNOSTIC."</a>";
   exit;
  }
 }

@@ -31,6 +31,7 @@ $dictionary = array(
     'STILL_WORKING' => 'Загружаются данные... Нажмите',
     'CLICK_HERE' => 'здесь',
     'TAKES_TOO_LONG' => ', если процесс загрузки занимает слишком много времени.',
+    'SUBMIT_DIAGNOSTIC'=>'Отправка данных диагностики',
 
     'GENERAL_SENSORS' => 'Сенсоры',
     'GENERAL_OPERATIONAL_MODES' => 'Режимы работы',
