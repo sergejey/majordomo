@@ -149,7 +149,7 @@ function run() {
      'backupfile' => $cfile, 
      'force_data' => '1'
   );
-  $url='http://connect.smartliving.ru/upload/';
+  $url='https://connect.smartliving.ru/upload/';
   $ch = curl_init();
 
    DebMes("Cloudbackup file $dest_file to $url");
@@ -303,7 +303,7 @@ function admin(&$out) {
 
  function sendMenuItems($items) {
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('force_data'=>1,'menu_items'=>1, 'items' => urlencode(serialize($items)));
 
   //url-ify the data for the POST
@@ -350,7 +350,7 @@ function admin(&$out) {
    }
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
@@ -406,7 +406,7 @@ function admin(&$out) {
 
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
@@ -520,7 +520,7 @@ function admin(&$out) {
   }
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $datafile_name=ROOT.'cms/cached/connect_data.txt';
   SaveFile($datafile_name, serialize($data));
 

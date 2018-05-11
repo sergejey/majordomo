@@ -224,7 +224,7 @@ function admin(&$out) {
         exit;
     }
 
- // $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
+ // $data_url='https://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
  $result = $this->marketRequest();
  $data=json_decode($result);
  if (!$data->PLUGINS) {
@@ -310,7 +310,7 @@ function admin(&$out) {
 
    if ($rec['MODULE_NAME']==$name) {
     //$this->url=$rec['REPOSITORY_URL'];
-    $this->url='http://connect.smartliving.ru/market/?op=download&name='.urlencode($rec['MODULE_NAME'])."&serial=".urlencode(gg('Serial'));
+    $this->url='https://connect.smartliving.ru/market/?op=download&name='.urlencode($rec['MODULE_NAME'])."&serial=".urlencode(gg('Serial'));
     $this->version=$rec['LATEST_VERSION'];
    }
 
@@ -396,7 +396,7 @@ function admin(&$out) {
          }
      }
      $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-     $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os)."&".$details;
+     $data_url='https://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os)."&".$details;
 
      $result=getURL($data_url, $cache_timeout);
      if (!$result && $cache_timeout>0) {

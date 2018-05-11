@@ -292,7 +292,7 @@
     include_once(ROOT.'lib/growl/growl.gntp.php');
     $growl = new Growl($all_settings['GROWL_HOST'], $all_settings['GROWL_PASSWORD']);
     $growl->setApplication('MajorDoMo','Notifications');
-    $growl->registerApplication('http://connect.smartliving.ru/img/logo.png');
+    $growl->registerApplication('https://connect.smartliving.ru/img/logo.png');
     $growl->notify('Test!');
    }
    */
