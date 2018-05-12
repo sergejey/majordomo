@@ -1472,7 +1472,16 @@ class saverestore extends module
                     $this->echonow("Saving files ... ");
                 }
                 $tar_name .= 'files_';
-                $this->copyTree(ROOT . 'cms', ROOT . 'cms/saverestore/temp/cms');
+
+                $cms_dirs=scandir(ROOT.'cms');
+                foreach($cms_dirs as $d) {
+                    if ($d=='.' ||
+                        $d=='..' ||
+                        $d=='cached' ||
+                        $d=='debmes' ||
+                        $d=='saverestore') continue;
+                    $this->copyTree(ROOT.'cms/'.$d, ROOT . 'cms/saverestore/temp/cms/'.$d);
+                }                
                 if ($iframe) {
                     $this->echonow(" OK<br/>", 'green');
                 }

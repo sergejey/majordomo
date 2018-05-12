@@ -48,7 +48,8 @@ $move_folders=array(
 foreach($move_folders as $folder) {
    if (is_dir(ROOT.$folder)) {
       echo "Moving ".ROOT.$folder.' to '.ROOT.'cms/'.$folder."\n";
-      rename(ROOT.$folder,ROOT.'cms/'.$folder);
+      copyTree(ROOT.$folder,ROOT.'cms/'.$folder);
+      removeTree(ROOT.$folder);
    }
 }
 
@@ -59,6 +60,7 @@ $check_folders=array(
     'js/codemirror' => '3rdparty/codemirror',
     'freeboard' => '3rdparty/freeboard',
     'jquerymobile' => '3rdparty/jquerymobile',
+    'jpgraph' => '3rdparty/jpgraph',
     'pdw' => '3rdparty/pdw',
     'js/threejs' => '3rdparty/threejs'
     );

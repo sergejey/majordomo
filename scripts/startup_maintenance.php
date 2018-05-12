@@ -93,7 +93,17 @@ if ($full_backup)
 
    exec($mysqlDumpPath . $mysqlDumpParam);
 
-   copyTree('./cms', $target_dir . '/cms', 1);
+    $cms_dirs=scandir(ROOT.'cms');
+    foreach($cms_dirs as $d) {
+        if ($d=='.' ||
+            $d=='..' ||
+            $d=='cached' ||
+            $d=='debmes' ||
+            $d=='saverestore') continue;
+        copyTree(ROOT.'cms/'.$d, $target_dir . '/cms/'.$d, 1);
+    }
+
+
    echo "OK\n";
 }
 

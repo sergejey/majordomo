@@ -682,7 +682,7 @@ function colorizeArray(&$ar, $every = 2)
  */
 function clearCache($verbose = 0)
 {
-   if ($handle = opendir(ROOT . 'cached'))
+   if ($handle = opendir(ROOT . 'cms/cached'))
    {
       while (false !== ($file = readdir($handle)))
       {

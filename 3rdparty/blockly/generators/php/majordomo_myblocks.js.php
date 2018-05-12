@@ -6,7 +6,7 @@ goog.require('Blockly.PHP');
 
 <?php
 
-chdir(dirname(__FILE__) . '/../../../../../');
+chdir(dirname(__FILE__) . '/../../../../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
