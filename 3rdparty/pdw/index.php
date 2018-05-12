@@ -443,7 +443,10 @@ $(document).ready(function() {
 +     Address Bar & Search      +
 +++++++++++++++++++++++++++++++++
 -->
-<?php $rootname = array_pop((explode("/", trim($uploadpath,"/")))); ?>
+<?php
+$uploadPathArray = explode("/", trim($uploadpath, "/"));
+$rootname = array_pop($uploadPathArray);
+?>
 <div id="addressbar" class="ab">
   <ol>
         <li class="root"><span>&nbsp;</span></li>
