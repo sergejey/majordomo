@@ -26,7 +26,7 @@ THE SOFTWARE.
 */
 ob_start( 'ob_gzhandler' );
 
-define('MINIFY_CACHE_DIR', dirname(__FILE__) . '/../../cached');
+define('MINIFY_CACHE_DIR', dirname(__FILE__) . '/../../cms/cached');
 
 require_once('functions.php');
 require_once('minify.php');

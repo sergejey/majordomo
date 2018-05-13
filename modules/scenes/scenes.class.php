@@ -1362,149 +1362,160 @@ function usual(&$out) {
   return array_merge($res1, $res2); 
  }
 
- function getStyles($type='') {
+function getStyles($type = '')
+{
+   startMeasure('getStyles');
+   $path = ROOT . 'cms/scenes/styles/' . $type;
 
-  startMeasure('getStyles');
-  $path=ROOT.'cms/scenes/styles/'.$type;
-
-  if (!is_dir($path)) {
-   return;
-  }
+   if (!is_dir($path))
+      return;
 
    $enable_style_caching = false;
-   $cache_file=ROOT.'cached/styles_'.$type.'.txt';
+   $cache_file = ROOT . 'cms/cached/styles_' . $type . '.txt';
 
-   if ($enable_style_caching && file_exists($cache_file) && (time()-filemtime($cache_file))<1*60*60) {
-    $styles_recs=unserialize(LoadFile($cache_file));
-   } else {
-   startMeasure('openAndReadDir');
-   if ($handle = opendir($path)) {
-    $styles_recs=array();
-    while (false !== ($entry = readdir($handle))) {
-       if (preg_match('/(.+?)\.png$/is', $entry, $m)) {
-        $style=$m[1];
-        $style=preg_replace('/^i\_/', '', $style);
+   if ($enable_style_caching && file_exists($cache_file) && (time() - filemtime($cache_file)) < 1 * 60 * 60)
+   {
+      $styles_recs = unserialize(LoadFile($cache_file));
+   }
+   else
+   {
+      startMeasure('openAndReadDir');
+   
+      if ($handle = opendir($path))
+      {
+         $styles_recs = array();
+    
+         while (false !== ($entry = readdir($handle)))
+         {
+            if (preg_match('/(.+?)\.png$/is', $entry, $m))
+            {
+               $style = $m[1];
+               $style = preg_replace('/^i\_/', '', $style);
 
-        if (preg_match('/^ign_/', $style)) {
-         continue;
-        }
+        
+               if (preg_match('/^ign_/', $style))
+                  continue;
 
-        if ($type=='common') {
-         $entry='../common/'.$entry;
-        }
-
-
-        $has_low=0;
-        if (preg_match('/\_lo$/', $style)) {
-         $style=preg_replace('/\_lo$/', '', $style);
-         $has_low=$entry;
-        }
-        $has_high=0;
-        if (preg_match('/\_hi$/', $style)) {
-         $style=preg_replace('/\_hi$/', '', $style);
-         $has_high=$entry;
-        }
-
-        $has_on=0;
-        if (preg_match('/\_on$/', $style)) {
-         $style=preg_replace('/\_on$/', '', $style);
-         $has_on=$entry;
-        }
-        $has_off=0;
-        if (preg_match('/\_off$/', $style)) {
-         $style=preg_replace('/\_off$/', '', $style);
-         $has_off=$entry;
-        }
-
-        $has_mid=0;
-        if (preg_match('/\_mid$/', $style)) {
-         $style=preg_replace('/\_mid$/', '', $style);
-         $has_mid=$entry;
-        }
-
-        $has_na=0;
-        if (preg_match('/\_na$/', $style)) {
-         $style=preg_replace('/\_na$/', '', $style);
-         $has_na=$entry;
-        }
+        
+               if ($type == 'common')
+                  $entry = '../common/' . $entry;
 
 
+               $has_low = 0;
+        
+               if (preg_match('/\_lo$/', $style))
+               {
+                  $style = preg_replace('/\_lo$/', '', $style);
+                  $has_low = $entry;
+               }
+        
+               $has_high = 0;
+        
+               if (preg_match('/\_hi$/', $style))
+               {
+                  $style = preg_replace('/\_hi$/', '', $style);
+                  $has_high = $entry;
+               }
 
-        if (is_array($this->all_styles) && !$this->all_styles[$style]) {
-         continue;
-        }
+               $has_on = 0;
+        
+               if (preg_match('/\_on$/', $style))
+               {
+                  $style = preg_replace('/\_on$/', '', $style);
+                  $has_on = $entry;
+               }
+        
+               $has_off = 0;
+               
+               if (preg_match('/\_off$/', $style))
+               {
+                  $style = preg_replace('/\_off$/', '', $style);
+                  $has_off = $entry;
+               }
 
+               $has_mid = 0;
+            
+               if (preg_match('/\_mid$/', $style))
+               {
+                  $style = preg_replace('/\_mid$/', '', $style);
+                  $has_mid = $entry;
+               }
 
-        $styles_recs[$style]['TITLE']=$style;
-        if ($has_low) {
-         $styles_recs[$style]['HAS_LOW']=$has_low;
-        }
-        if ($has_high) {
-         $styles_recs[$style]['HAS_HIGH']=$has_high;
-        }
-        if ($has_on) {
-         $styles_recs[$style]['HAS_ON']=$has_on;
-        }
-        if ($has_off) {
-         $styles_recs[$style]['HAS_OFF']=$has_off;
-        }
-        if ($has_mid) {
-         $styles_recs[$style]['HAS_MID']=$has_mid;
-        }
-        if ($has_na) {
-         $styles_recs[$style]['HAS_NA']=$has_na;
-        }
+               $has_na = 0;
+               
+               if (preg_match('/\_na$/', $style))
+               {
+                  $style=preg_replace('/\_na$/', '', $style);
+                  $has_na=$entry;
+               }
 
-        if (!$has_low && !$has_high && !$has_on && !$has_off && !$has_mid && !$has_na) {
-         $styles_recs[$style]['HAS_DEFAULT']=$entry;
-        }
+               if (is_array($this->all_styles) && !$this->all_styles[$style])
+                  continue;
 
-        if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on) {
-         $styles_recs[$style]['HAS_DEFAULT']=$has_on;
-        }
+               $styles_recs[$style]['TITLE'] = $style;
+        
+               if ($has_low)
+                  $styles_recs[$style]['HAS_LOW'] = $has_low;
+        
+               if ($has_high)
+                  $styles_recs[$style]['HAS_HIGH'] = $has_high;
+        
+               if ($has_on)
+                  $styles_recs[$style]['HAS_ON'] = $has_on;
+        
+               if ($has_off)
+                  $styles_recs[$style]['HAS_OFF'] = $has_off;
+        
+               if ($has_mid)
+                  $styles_recs[$style]['HAS_MID'] = $has_mid;
+            
+               if ($has_na)
+                  $styles_recs[$style]['HAS_NA'] = $has_na;
 
-       }
-    }
-    closedir($handle);
+               if (!$has_low && !$has_high && !$has_on && !$has_off && !$has_mid && !$has_na)
+                  $styles_recs[$style]['HAS_DEFAULT'] = $entry;
 
-    if (is_array($styles_recs)) {
-     foreach($styles_recs as $k=>$v) {
-      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/'.$v['TITLE'].'.png')) {
-       $styles_recs[$k]['IMAGE']=$type.'/'.$v['TITLE'].'.png';
+               if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on)
+                  $styles_recs[$style]['HAS_DEFAULT'] = $has_on;
+            }
+         }
+    
+         closedir($handle);
+
+         if (is_array($styles_recs))
+         {
+            foreach($styles_recs as $k => $v)
+            {
+               if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/' . $v['TITLE'] . '.png'))
+                  $styles_recs[$k]['IMAGE'] = $type . '/' . $v['TITLE'] . '.png';
+
+               if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/i_' . $v['TITLE'] . '.png'))
+                  $styles_recs[$k]['IMAGE'] = $type . '/i_' . $v['TITLE'] . '.png';
+
+               if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/i_' . $v['TITLE'] . '_on.png'))
+                  $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'_on.png';
+            }
+         }
+
+         if ($enable_style_caching && count($styles_recs) > 0)
+            SaveFile($cache_file, serialize($styles_recs));
+    
+         endMeasure('openAndReadDir');
       }
-      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/i_'.$v['TITLE'].'.png')) {
-       $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'.png';
-      }
-
-      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/i_'.$v['TITLE'].'_on.png')) {
-       $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'_on.png';
-      }
-     }
-    }
-
-    if ($enable_style_caching && count($styles_recs)>0) {
-     SaveFile($cache_file, serialize($styles_recs));
-    }
-    endMeasure('openAndReadDir');
-
-    }
-
    }
 
 
-    if (is_array($styles_recs)) {
-     $res_styles=array();
-     foreach($styles_recs as $k=>$v) {
-      $res_styles[]=$v;
-     }
-    }
-
-
-
+   if (is_array($styles_recs))
+   {
+      $res_styles = array();
+     
+      foreach($styles_recs as $k => $v)
+         $res_styles[] = $v;
+   }
+   
    endMeasure('getStyles');
+   
    return $res_styles;
-
-  
  }
 
 

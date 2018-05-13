@@ -248,53 +248,42 @@ for (var i=0; i<WScript.Arguments.Unnamed.Count; i++)
 
 
    if (!fso.FileExists(strMp3FileName)) {
-
-    var sv = WScript.CreateObject("SAPI.SpVoice");
-    var oFilestream = WScript.CreateObject("SAPI.SpFileStream");
+      var sv = WScript.CreateObject("SAPI.SpVoice");
+      var oFilestream = WScript.CreateObject("SAPI.SpFileStream");
                   
-    sv.WaitUntilDone(-1);    // Don't be loud
+      sv.WaitUntilDone(-1);    // Don't be loud
  
-    sv.Voice = (new Enumerator(sv.GetVoices("Language="+lang,"Name="+engine))).item();
+      sv.Voice = (new Enumerator(sv.GetVoices("Language=" + lang,"Name=" + engine))).item();
 
+      if (sv.Voice != null)
+      {
+         //speak
+         sv.speak(text.join(' '), 0);
+         sv.WaitUntilDone(-1);
 
-    if (sv.Voice != null) {
+         //save to wav
+         oFilestream.Open(strWavFileName, 3, false);
+         sv.AudioOutputStream = oFilestream;
+         sv.speak(text.join(' '), 0);
+         sv.WaitUntilDone(-1);
+         oFilestream.close();
 
-    //speak
-    sv.speak(text.join(' '),0);
-    sv.WaitUntilDone(-1);
-
-    //save to wav
-    oFilestream.Open(strWavFileName, 3, false);
-    sv.AudioOutputStream = oFilestream;
-    sv.speak(text.join(' '),0);
-    sv.WaitUntilDone(-1);
-    oFilestream.close();
-
-    //convert wav to mp3
-    var wShell = WScript.CreateObject("Wscript.Shell");
-    var strCommand = scriptPath+"/lame.exe -V0 "+strWavFileName+" "+strMp3FileName;
-    wShell.run(strCommand, 0, false);
-
-    }
-
-   } else {
-
-    
-    var wShell = WScript.CreateObject("Wscript.Shell");
-    var strCommand = scriptPath+"/madplay.exe \"" + strMp3FileName+"\"";
-    wShell.run(strCommand, 0, true);
-
-    strCommand = 'cmd.exe /c del "'+scriptPath+'\\..\\cached\\voice\\*.wav"';
-    //WScript.Echo(strCommand);
-    wShell.run(strCommand, 0, false);
-
-
-
+         //convert wav to mp3
+         var wShell = WScript.CreateObject("Wscript.Shell");
+         var strCommand = scriptPath + "/lame.exe -V0 " + strWavFileName + " " + strMp3FileName;
+         
+         wShell.run(strCommand, 0, false);
+      }
    }
-
-
-
-
+   else {
+      var wShell = WScript.CreateObject("Wscript.Shell");
+      var strCommand = scriptPath + "/madplay.exe \"" + strMp3FileName + "\"";
+    
+      wShell.run(strCommand, 0, true);
+      strCommand = 'cmd.exe /c del "' + scriptPath + '\\..\\cms\cached\\voice\\*.wav"';
+      //WScript.Echo(strCommand);
+      wShell.run(strCommand, 0, false);
+   }
 
 //
 // Finish
