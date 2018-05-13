@@ -26,10 +26,14 @@ $menu_sent_time = 0;
 while (1) {
     $connect = new connect();
     $connect->getConfig();
-    if (!$connect->config['CONNECT_SYNC']) {
-        echo "Connect sync turned off.";
+    
+    $mqttLib = file_exists(SERVER_ROOT . "/lib/mqtt/phpMQTT.php");
+
+    if (!$connect->config['CONNECT_SYNC'] || !$mqttLib) {
+        echo "Connect sync turned off or MQTT application is not installed.";
         exit;
     }
+
     $sqlQuery = "SELECT * FROM commands";
     $commands = SQLSelect($sqlQuery);
     $total = count($commands);
