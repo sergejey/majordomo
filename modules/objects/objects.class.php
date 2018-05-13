@@ -731,7 +731,7 @@ function usual(&$out) {
    if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
     $path=LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'debmes';
+    $path = ROOT . 'cms/debmes';
    }
 
     $today_file=$path . '/'.date('Y-m-d').'.data';

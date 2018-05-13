@@ -739,39 +739,46 @@ function admin(&$out) {
 
 }
 
- if ($this->view_mode=='') {
-  $path=ROOT.'debmes';
-   if ($handle = opendir($path)) {
-    $files=array();
-    while (false !== ($entry = readdir($handle))) {
-     if ($entry=='.' || $entry=='..') {
-      continue;
-     }
-     $files[]=array('TITLE'=>$entry);
-    }
-    sort($files);
+      if ($this->view_mode == '')
+      {
+         $path = ROOT . 'cms/debmes';
+      
+         if ($handle = opendir($path))
+         {
+            $files = array();
+    
+            while (false !== ($entry = readdir($handle)))
+            {
+               if ($entry == '.' || $entry == '..')
+                  continue;
+     
+               $files[] = array('TITLE' => $entry);
+            }
+    
+            sort($files);
+         }
+   
+         $out['FILES'] = $files;
+      }
    }
-   $out['FILES']=$files;
- }
 
+   /**
+    * FrontEnd
+    *
+    * Module frontend
+    *
+    * @access public
+    */
+   function usual(&$out)
+   {
+      $this->admin($out);
+   }
 
-}
-/**
-* FrontEnd
-*
-* Module frontend
-*
-* @access public
-*/
-function usual(&$out) {
- $this->admin($out);
-}
+   function dbInstall($data)
+   {
+      // watchfolders - Watchfolders
 
- function dbInstall($data) {
-/*
-watchfolders - Watchfolders
-*/
-  $data = <<<EOD
+      $data = <<<EOD
  performance_log: ID int(10) unsigned NOT NULL auto_increment
  performance_log: OPERATION varchar(255) NOT NULL DEFAULT ''
  performance_log: COUNTER int(10) NOT NULL DEFAULT '0'
@@ -780,8 +787,8 @@ watchfolders - Watchfolders
  performance_log: ADDED datetime
 
 EOD;
-  parent::dbInstall($data);
- }
+      parent::dbInstall($data);
+   }
 
 /**
 * Install
@@ -790,9 +797,10 @@ EOD;
 *
 * @access private
 */
- function install($parent_name="") {
-  parent::install($parent_name);
- }
+   function install($parent_name = "")
+   {
+      parent::install($parent_name);
+   }
 // --------------------------------------------------------------------
 }
 /*
