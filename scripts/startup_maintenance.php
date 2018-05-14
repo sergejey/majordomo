@@ -11,26 +11,27 @@ $old_mask = umask(0);
 if (!is_dir(DOC_ROOT . '/backup'))
    mkdir(DOC_ROOT . '/backup', 0777);
 
-if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
+if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH))
+{
    $target_dir = SETTINGS_BACKUP_PATH;
 
    if (substr($target_dir, -1) != '/' && substr($target_dir, -1) != '\\')
       $target_dir .= '/';
 
    $target_dir .= date('Ymd');
-} else {
+}
+else
+{
    $target_dir  = DOC_ROOT . '/backup/' . date('Ymd');
 }
 
 $full_backup = 0;
 
-if (!is_dir($target_dir)) {
+if (!is_dir($target_dir))
+{
    mkdir($target_dir, 0777);
    $full_backup = 1;
 }
-
-if (!is_dir(ROOT . 'cached'))
-    mkdir(ROOT . 'cached', 0777);
 
 if (!is_dir(ROOT . 'cms/cached'))
    mkdir(ROOT . 'cms/cached', 0777);
@@ -45,17 +46,14 @@ if (!is_dir(ROOT . 'cms/cached/urls'))
    mkdir(ROOT . 'cms/cached/urls', 0777);
 
 
-if (!defined('LOG_FILES_EXPIRE')) {
- define('LOG_FILES_EXPIRE', 5);
-}
-if (!defined('BACKUP_FILES_EXPIRE')) {
- define('BACKUP_FILES_EXPIRE', 10);
-}
-if (!defined('CACHED_FILES_EXPIRE')) {
- define('CACHED_FILES_EXPIRE', 30);
-}
+if (!defined('LOG_FILES_EXPIRE'))
+    define('LOG_FILES_EXPIRE', 5);
 
+if (!defined('BACKUP_FILES_EXPIRE'))
+   define('BACKUP_FILES_EXPIRE', 10);
 
+if (!defined('CACHED_FILES_EXPIRE'))
+   define('CACHED_FILES_EXPIRE', 30);
 
 echo "Target: " . $target_dir . PHP_EOL;
 echo "Full backup: " . $full_backup . PHP_EOL;
@@ -63,12 +61,15 @@ echo "Full backup: " . $full_backup . PHP_EOL;
 sleep(5);
 
 //removing old log files
-$dir = ROOT."cms/debmes/";
-foreach (glob($dir."*") as $file) {
-    if (filemtime($file) < time() - LOG_FILES_EXPIRE*24*60*60) {
-        DebMes("Removing log file ".$file);
-        @unlink($file);
-    }
+$dir = ROOT . "cms/debmes/";
+
+foreach (glob($dir . "*") as $file)
+{
+   if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60)
+   {
+      DebMes("Removing log file " . $file);
+      @unlink($file);
+   }
 }
 
 if ($full_backup)
@@ -93,40 +94,42 @@ if ($full_backup)
 
    exec($mysqlDumpPath . $mysqlDumpParam);
 
-    $cms_dirs=scandir(ROOT.'cms');
-    foreach($cms_dirs as $d) {
-        if ($d=='.' ||
-            $d=='..' ||
-            $d=='cached' ||
-            $d=='debmes' ||
-            $d=='saverestore') continue;
-        copyTree(ROOT.'cms/'.$d, $target_dir . '/cms/'.$d, 1);
-    }
+   $cms_dirs = scandir(ROOT . 'cms');
+    
+   foreach($cms_dirs as $d)
+   {
+      if ($d == '.' || $d == '..' || $d == 'cached' || $d == 'debmes' || $d == 'saverestore')
+        continue;
 
+      copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1);
+   }
 
    echo "OK\n";
 }
 
-
-
 //removing old backups files
-$dir =$target_dir;
-foreach (glob($dir."*") as $file) {
- if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
-  DebMes("Removing backup file ".$file);
-  @unlink($file);
- }
+$dir = $target_dir;
+
+foreach (glob($dir . "*") as $file)
+{
+   if (filemtime($file) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60)
+   {
+      DebMes("Removing backup file " . $file);
+      @unlink($file);
+   }
 }
 
 //removing old cached files
-$dir = ROOT."cms/cached/";
-foreach (glob($dir."*") as $file) {
- if (filemtime($file) < time() - BACKUP_FILES_EXPIRE*24*60*60) {
-  DebMes("Removing cached file ".$file);
-  @unlink($file);
- }
-}
+$dir = ROOT . "cms/cached/";
 
+foreach (glob($dir . "*") as $file)
+{
+   if (filemtime($file) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60)
+   {
+      DebMes("Removing cached file " . $file);
+      @unlink($file);
+   }
+}
 
 umask($old_mask);
 
@@ -153,13 +156,15 @@ for ($i = 0; $i < $total; $i++)
 }
 
 setGlobal('ThisComputer.started_time', time());
-if (time()>=getGlobal('ThisComputer.started_time')) {
- SQLExec("DELETE FROM events WHERE ADDED > NOW()");
- SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
- SQLExec("DELETE FROM history WHERE ADDED > NOW()");
- SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
- SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
- SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+
+if (time() >= getGlobal('ThisComputer.started_time'))
+{
+   SQLExec("DELETE FROM events WHERE ADDED > NOW()");
+   SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
+   SQLExec("DELETE FROM history WHERE ADDED > NOW()");
+   SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
+   SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
+   SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
 }
 
 
