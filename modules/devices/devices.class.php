@@ -476,6 +476,24 @@ function usual(&$out) {
         if ($op=='get_device') {
             $res=$this->processDevice($id);
         }
+        if ($op=='loadAllDevicesHTML') {
+            /*
+            if (gr('favorite')) {
+                $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE=1");
+            } else {
+                $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE!=1");
+            }
+            */
+            $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE 1");
+            $total = count($devices);
+            for($i=0;$i<$total;$i++) {
+                if ($devices[$i]['LINKED_OBJECT']) {
+                    $processed=$this->processDevice($devices[$i]['ID']);
+                    $devices[$i]['HTML']=$processed['HTML'];
+                }
+            }
+            $res['DEVICES']=$devices;
+        }
         echo json_encode($res);
         exit;
     }
@@ -488,7 +506,7 @@ function usual(&$out) {
     global $type;
 
     if ($location_id || $type) {
-        $qry = 1;
+        $qry = "1";
         $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
         if ($location_id) {
             if ($location_id!='all') {
@@ -537,28 +555,64 @@ function usual(&$out) {
         }
     } else {
         $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
-        $qry=" devices.FAVORITE=1";
+        //$qry=" devices.FAVORITE=1";
+        $qry="1";
         $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
     }
 
     if ($devices[0]['ID']) {
-        $total = count($devices);
-        for($i=0;$i<$total;$i++) {
-            if ($devices[$i]['LINKED_OBJECT']) {
-                $processed=$this->processDevice($devices[$i]['ID']);
-                $devices[$i]['HTML']=$processed['HTML'];
+        if ($location_id || $type || 1) {
+            $total = count($devices);
+            for($i=0;$i<$total;$i++) {
+                if ($devices[$i]['LINKED_OBJECT']) {
+                    $processed=$this->processDevice($devices[$i]['ID']);
+                    $devices[$i]['HTML']=$processed['HTML'];
+                }
             }
+
         }
         $out['DEVICES']=$devices;
     }
 
     $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
+    $total_devices=count($devices);
+    if ($total_devices) {
+        $favorite_devices=array();
+        $devices_count = 0;
+        for($idv=0;$idv<$total_devices;$idv++) {
+            if ($devices[$idv]['FAVORITE']) {
+                $devices_count++;
+                $favorite_devices[]=$devices[$idv];
+            }
+        }
+        if ($devices_count>0) {
+            $loc_rec=array();
+            $loc_rec['ID']=0;
+            $loc_rec['TITLE']=LANG_FAVORITES;
+            $loc_rec['DEVICES']=$favorite_devices;
+            $loc_rec['DEVICES_TOTAL']=$devices_count;
+            array_unshift($locations,$loc_rec);
+        }
+    }
+
     $total = count($locations);
     for ($i = 0; $i < $total; $i++) {
-        $devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
-        $locations[$i]['DEVICES_TOTAL']=$devices_count;
+        if ($locations[$i]['ID']) {
+            $devices_count = 0;
+            if ($total_devices) {
+                for($idv=0;$idv<$total_devices;$idv++) {
+                    if ($devices[$idv]['LOCATION_ID']==$locations[$i]['ID']) {
+                        $devices_count++;
+                        $locations[$i]['DEVICES'][]=$devices[$idv];
+                    }
+                }
+            }
+            $locations[$i]['DEVICES_TOTAL']=$devices_count;
+        }
+        //$devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
+        $locations[$i]['INDEX']=$i;
     }
-    $out['LOCATIONS']=$locations;
+    $out['GROUPS']=$locations;
 
     $types=array();
     foreach($this->device_types as $k=>$v) {

@@ -6,6 +6,9 @@ if ($this->app_action) {
     $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME LIKE '".DBSafe($this->app_action)."'");
     if ($rec['ID']) {
         $out['APP_TITLE']=$rec['TITLE'];
+        if ($this->app_action=='devices') {
+            $out['APP_TITLE']='';
+        }
     }
 
 } else {
