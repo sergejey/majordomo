@@ -103,21 +103,20 @@ function processSubscriptions($event_name, $details = '')
          {
             include_once($modulePath);
             $module_object = new $module_name();
-
             if (method_exists($module_object, 'processSubscription'))
             {
-               //DebMes("$module_name.processSubscription ($event_name)");
+               DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
                verbose_log("Processing subscription to [".$event_name."] by [".$module_name."] (".(is_array($details) ? json_encode($details) : '').")");
                $module_object->processSubscription($event_name, $details);
             } else {
-             DebMes("$module_name.processSubscription error (method not found)");
+             DebMes("$module_name.processSubscription error (method not found)",'process_subscription');
             }
             if (!isset($details['BREAK'])) {
              $details['BREAK']=false;
             }
             if ($details['BREAK']) break;
          } else {
-          //DebMes("$module_name.processSubscription error (module class not found)");
+          DebMes("$module_name.processSubscription error (module class not found)",'process_subscription');
          }
       }
 

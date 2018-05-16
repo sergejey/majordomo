@@ -15,6 +15,7 @@ $dirs_to_check = array(
     ROOT . 'cms/cached',
     ROOT . 'cms/cached/voice',
     ROOT . 'cms/cached/urls',
+    ROOT . 'cms/cached/templates_c',
 );
 
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
@@ -47,17 +48,6 @@ if (!is_dir($target_dir)) {
 
 
 
-$cms_dirs = scandir(ROOT . 'cms');
-foreach ($cms_dirs as $d) {
-    if ($d == '.' ||
-        $d == '..' ||
-        $d == 'cached' ||
-        $d == 'debmes' ||
-        $d == 'saverestore'
-    ) continue;
-    copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1);
-}
-
 if (!defined('LOG_FILES_EXPIRE')) {
     define('LOG_FILES_EXPIRE', 5);
 }
@@ -84,8 +74,20 @@ foreach (glob($dir . "*") as $file) {
 }
 
 if ($full_backup) {
-    DebMes("Backing up files...");
+    DebMes("Backing up files...",'backup');
     echo "Backing up files...";
+
+    $cms_dirs = scandir(ROOT . 'cms');
+    foreach ($cms_dirs as $d) {
+        if ($d == '.' ||
+            $d == '..' ||
+            $d == 'cached' ||
+            $d == 'debmes' ||
+            $d == 'saverestore'
+        ) continue;
+        DebMes("Backing up dir ".ROOT . 'cms/' . $d,'backup');
+        copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1);
+    }
 
     if (defined('PATH_TO_MYSQLDUMP'))
         $mysqlDumpPath = PATH_TO_MYSQLDUMP;
@@ -101,6 +103,7 @@ if ($full_backup) {
     $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
     $mysqlDumpParam .= " > " . $target_dir . "/" . DB_NAME . ".sql";
 
+    DebMes("Backing up database ".DB_NAME. ' to ' . $target_dir . "/" . DB_NAME . ".sql");
     exec($mysqlDumpPath . $mysqlDumpParam);
 
 
