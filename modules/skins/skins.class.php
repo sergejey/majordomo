@@ -18,7 +18,7 @@ class skins extends module {
 *
 * @access private
 */
- function skins() {
+ function __construct() {
   $this->name="skins";
   $this->title="<#LANG_MODULE_SKINS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

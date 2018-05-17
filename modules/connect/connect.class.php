@@ -19,7 +19,7 @@ class connect extends module {
 *
 * @access private
 */
-function connect() {
+function __construct() {
   $this->name="connect";
   $this->title="<#LANG_MODULE_CONNECT#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -134,11 +134,11 @@ function run() {
   global $data;
   $data=1;
   $out=array();
-  $sv->removeTree(ROOT.'saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
   $tar_name=$sv->dump($out);
-  $sv->removeTree(ROOT.'saverestore/temp');
-  $sv->removeTree(ROOT.'saverestore/temp');
-  $dest_file=ROOT.'saverestore/'.$tar_name;
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
+  $dest_file=ROOT.'cms/saverestore/'.$tar_name;
   if ($dest_file && file_exists($dest_file) && filesize($dest_file)>0) {
   if (function_exists('curl_file_create')) { // php 5.6+
    $cfile = curl_file_create($dest_file);
@@ -149,7 +149,7 @@ function run() {
      'backupfile' => $cfile, 
      'force_data' => '1'
   );
-  $url='http://connect.smartliving.ru/upload/';
+  $url='https://connect.smartliving.ru/upload/';
   $ch = curl_init();
 
    DebMes("Cloudbackup file $dest_file to $url");
@@ -303,7 +303,7 @@ function admin(&$out) {
 
  function sendMenuItems($items) {
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('force_data'=>1,'menu_items'=>1, 'items' => urlencode(serialize($items)));
 
   //url-ify the data for the POST
@@ -350,7 +350,7 @@ function admin(&$out) {
    }
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
@@ -406,7 +406,7 @@ function admin(&$out) {
 
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
@@ -520,8 +520,8 @@ function admin(&$out) {
   }
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
-  $datafile_name=ROOT.'cached/connect_data.txt';
+  $url = 'https://connect.smartliving.ru/upload/';
+  $datafile_name=ROOT.'cms/cached/connect_data.txt';
   SaveFile($datafile_name, serialize($data));
 
 

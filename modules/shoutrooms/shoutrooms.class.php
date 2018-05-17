@@ -18,7 +18,7 @@ class shoutrooms extends module {
 *
 * @access private
 */
-function shoutrooms() {
+function __construct() {
   $this->name="shoutrooms";
   $this->title="<#LANG_MODULE_SHOUTROOMS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

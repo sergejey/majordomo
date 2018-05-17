@@ -19,7 +19,7 @@ class patterns extends module {
 *
 * @access private
 */
-function patterns() {
+function __construct() {
   $this->name="patterns";
   $this->title="<#LANG_MODULE_PATTERNS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -320,7 +320,7 @@ function usual(&$out) {
     $data['phrase']=$phrase;
 
     // POST TO SERVER
-    $url = 'http://connect.smartliving.ru/patterns/';
+    $url = 'https://connect.smartliving.ru/patterns/';
     $fields = array(
      'data' => urlencode(serialize($data))
     );
@@ -405,7 +405,7 @@ function usual(&$out) {
     $data['context_id']=$ext_context_id;
 
     // POST TO SERVER
-    $url = 'http://connect.smartliving.ru/patterns/';
+    $url = 'https://connect.smartliving.ru/patterns/';
     $fields = array(
      'data' => urlencode(serialize($data))
     );

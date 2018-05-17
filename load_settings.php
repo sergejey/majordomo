@@ -49,11 +49,12 @@ if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') &&
     defined('WAIT_FOR_MAIN_CYCLE') &&
     WAIT_FOR_MAIN_CYCLE==1 &&
     !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI']) &&
+    !preg_match('/diagnostic\.php/', $_SERVER['REQUEST_URI']) &&
     !defined('NO_DATABASE_CONNECTION'))
 {
  $maincycleUpdate=getGlobal('cycle_mainRun');
  if ((time()-$maincycleUpdate)>60) { //main cycle is offline
-  echo "Main cycle is down. Please check background processes status.";
+  echo "Main cycle is down. Please check background processes status. <a href='/diagnostic.php'>".LANG_SUBMIT_DIAGNOSTIC."</a>";
   exit;
  }
 }

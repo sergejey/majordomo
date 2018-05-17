@@ -31,6 +31,7 @@ $dictionary=array(
 'STILL_WORKING'=>'Loading data... Click',
 'CLICK_HERE'=>'here',
 'TAKES_TOO_LONG'=>'if it takes too long.',
+'SUBMIT_DIAGNOSTIC'=>'Submit Diagnostic Details',
 
 
 'GENERAL_SENSORS'=>'Sensors',

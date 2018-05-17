@@ -19,7 +19,7 @@ class blockly_code extends module {
 *
 * @access private
 */
-function blockly_code() {
+function __construct() {
   $this->name="blockly_code";
   $this->title="Blockly code";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

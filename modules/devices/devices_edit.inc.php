@@ -321,12 +321,16 @@
   }
   outHash($rec, $out);
 
- $methods=$this->getAllMethods($rec['TYPE']);
- $show_methods=array();
- foreach($methods as $k=>$v) {
-     if ($v['_CONFIG_SHOW']) {
-         $v['NAME']=$k;
-         $show_methods[]=$v;
+$show_methods=array();
+ if ($rec['TYPE']!='') {
+     $methods=$this->getAllMethods($rec['TYPE']);
+     if (is_array($methods)) {
+         foreach($methods as $k=>$v) {
+             if ($v['_CONFIG_SHOW']) {
+                 $v['NAME']=$k;
+                 $show_methods[]=$v;
+             }
+         }
      }
  }
  if (isset($show_methods[0])) {

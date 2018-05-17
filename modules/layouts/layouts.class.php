@@ -19,7 +19,7 @@ class layouts extends module {
 *
 * @access private
 */
-function layouts() {
+function __construct() {
   $this->name="layouts";
   $this->title="<#LANG_MODULE_LAYOUTS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
@@ -219,7 +219,7 @@ function usual(&$out) {
    }
   }
   if ($rec['TYPE']=='dashboard') {
-   $this->redirect(ROOTHTML."freeboard/?layout_id=".$rec['ID']);
+   $this->redirect(ROOTHTML."3rdparty/freeboard/?layout_id=".$rec['ID']);
   }
   outHash($rec, $out);
  }

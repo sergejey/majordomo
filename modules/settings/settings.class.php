@@ -18,7 +18,7 @@ class settings extends module {
 *
 * @access private
 */
- function settings() {
+ function __construct() {
   $this->name="settings";
   $this->title="<#LANG_MODULE_SETTINGS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

@@ -19,7 +19,7 @@ class webvars extends module {
 *
 * @access private
 */
-function webvars() {
+function __construct() {
   $this->name="webvars";
   $this->title="<#LANG_MODULE_WEBVARS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";

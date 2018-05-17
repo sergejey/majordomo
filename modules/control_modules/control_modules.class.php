@@ -11,7 +11,7 @@
 class control_modules extends module {
  var $modules; // all modules list
 // --------------------------------------------------------------------
- function control_modules() {
+ function __construct() {
   // setting module name
   $this->name="control_modules";
   $this->title="<#LANG_MODULE_MODULES#>";

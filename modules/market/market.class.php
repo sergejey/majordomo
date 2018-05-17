@@ -19,7 +19,7 @@ class market extends module {
 *
 * @access private
 */
-function market() {
+function __construct() {
   $this->name="market";
   $this->title="<#LANG_MODULE_MARKET#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -151,7 +151,7 @@ function admin(&$out) {
   $out['OK_MSG']=$ok_msg;
  }
 
- if (is_dir(ROOT.'saverestore/temp')) {
+ if (is_dir(ROOT.'cms/saverestore/temp')) {
   $out['CLEAR_FIRST']=1;
  }
 
@@ -159,9 +159,9 @@ function admin(&$out) {
      global $file;
      global $file_name;
      if (is_file($file) && $file!='') {
-         //echo "Moving $file to ".ROOT.'saverestore/'.$file_name;exit;
+         //echo "Moving $file to ".ROOT.'cms/saverestore/'.$file_name;exit;
          $file_name=str_replace('.tar.gz','.tgz',$file_name);
-         copy($file,ROOT.'saverestore/'.$file_name);
+         copy($file,ROOT.'cms/saverestore/'.$file_name);
          $this->redirect("?mode=iframe&mode2=uploaded&name=".urlencode($file_name));
      } else {
          $this->redirect("?");
@@ -224,7 +224,7 @@ function admin(&$out) {
         exit;
     }
 
- // $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
+ // $data_url='https://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
  $result = $this->marketRequest();
  $data=json_decode($result);
  if (!$data->PLUGINS) {
@@ -310,7 +310,7 @@ function admin(&$out) {
 
    if ($rec['MODULE_NAME']==$name) {
     //$this->url=$rec['REPOSITORY_URL'];
-    $this->url='http://connect.smartliving.ru/market/?op=download&name='.urlencode($rec['MODULE_NAME'])."&serial=".urlencode(gg('Serial'));
+    $this->url='https://connect.smartliving.ru/market/?op=download&name='.urlencode($rec['MODULE_NAME'])."&serial=".urlencode(gg('Serial'));
     $this->version=$rec['LATEST_VERSION'];
    }
 
@@ -361,7 +361,7 @@ function admin(&$out) {
  }
 
  if ($this->mode=='clear') {
-  $this->removeTree(ROOT.'saverestore/temp');
+  $this->removeTree(ROOT.'cms/saverestore/temp');
   @SaveFile(ROOT.'reboot', 'updated');
   $this->redirect("?err_msg=".urlencode($err_msg)."&ok_msg=".urlencode($ok_msg));
  }
@@ -396,7 +396,7 @@ function admin(&$out) {
          }
      }
      $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-     $data_url='http://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os)."&".$details;
+     $data_url='https://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os)."&".$details;
 
      $result=getURL($data_url, $cache_timeout);
      if (!$result && $cache_timeout>0) {
@@ -417,13 +417,13 @@ function admin(&$out) {
 
   //$this->redirect("?mode=install&name=".$can_be_updated[0]."&list=".urlencode(implode(',', $can_be_updated)));
   set_time_limit(0);
-   if (!is_dir(ROOT.'saverestore')) {
+   if (!is_dir(ROOT.'cms/saverestore')) {
     @umask(0);
-    @mkdir(ROOT.'saverestore', 0777);
+    @mkdir(ROOT.'cms/saverestore', 0777);
    }
 
    umask(0);
-   @mkdir(ROOT.'saverestore/temp', 0777);
+   @mkdir(ROOT.'cms/saverestore/temp', 0777);
 
   if (is_array($can_be_updated)) {
    foreach($can_be_updated as $k=>$v) {
@@ -432,9 +432,9 @@ function admin(&$out) {
     $version=$v['VERSION'];
     $url=$v['URL'];
 
-    $filename=ROOT.'saverestore/'.$name.'.tgz';
-    @unlink(ROOT.'saverestore/'.$name.'.tgz');
-    @unlink(ROOT.'saverestore/'.$name.'.tar');
+    $filename=ROOT.'cms/saverestore/'.$name.'.tgz';
+    @unlink(ROOT.'cms/saverestore/'.$name.'.tgz');
+    @unlink(ROOT.'cms/saverestore/'.$name.'.tar');
     $f = fopen($filename, 'wb');
     if ($f == FALSE){
       $this->redirect("?err_msg=".urlencode("Cannot open ".$filename." for writing"));
@@ -466,7 +466,7 @@ function admin(&$out) {
       $file = basename($filename);
       DebMes("Installing/updating plugin $name ($version)");
 
-      chdir(ROOT.'saverestore/temp');
+      chdir(ROOT.'cms/saverestore/temp');
 
       if ($frame) {
        $this->echonow("Unpacking '$file' ..");
@@ -524,7 +524,7 @@ function admin(&$out) {
          $this->echonow("Updating files ...");
         }
 
-        $this->installUnpacketPlugin(ROOT.'saverestore/temp'.$folder,$name);
+        $this->installUnpacketPlugin(ROOT.'cms/saverestore/temp'.$folder,$name);
 
         if ($frame) {
          $this->echonow("OK<br/>", 'green');
@@ -546,7 +546,7 @@ function admin(&$out) {
     }
   }
   }
-        $this->removeTree(ROOT.'saverestore/temp', $frame);
+        $this->removeTree(ROOT.'cms/saverestore/temp', $frame);
 
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
@@ -666,15 +666,15 @@ function getLatest(&$out, $url, $name, $version, $frame=0) {
 
    set_time_limit(0);
 
-   if (!is_dir(ROOT.'saverestore')) {
+   if (!is_dir(ROOT.'cms/saverestore')) {
     @umask(0);
-    @mkdir(ROOT.'saverestore', 0777);
+    @mkdir(ROOT.'cms/saverestore', 0777);
    }
 
-    $filename=ROOT.'saverestore/'.$name.'.tgz';
+    $filename=ROOT.'cms/saverestore/'.$name.'.tgz';
 
-    @unlink(ROOT.'saverestore/'.$name.'.tgz');
-    @unlink(ROOT.'saverestore/'.$name.'.tar');
+    @unlink(ROOT.'cms/saverestore/'.$name.'.tgz');
+    @unlink(ROOT.'cms/saverestore/'.$name.'.tar');
 
     $f = fopen($filename, 'wb');
     if ($f == FALSE){
@@ -710,7 +710,7 @@ function getLatest(&$out, $url, $name, $version, $frame=0) {
     }
 
 
-    $this->removeTree(ROOT.'saverestore/temp', $frame);
+    $this->removeTree(ROOT.'cms/saverestore/temp', $frame);
 
     if ($frame) {
      return 1;
@@ -750,7 +750,7 @@ function upload(&$out, $frame=0)
    } 
    elseif ($file!='')
    {
-      copy($file, ROOT.'saverestore/' . $file_name);
+      copy($file, ROOT.'cms/saverestore/' . $file_name);
       $file = $file_name;
    }
 
@@ -762,10 +762,10 @@ function upload(&$out, $frame=0)
    }
 
    umask(0);
-   @mkdir(ROOT.'saverestore/temp', 0777);
+   @mkdir(ROOT.'cms/saverestore/temp', 0777);
 
-   if ($file != '') { // && mkdir(ROOT.'saverestore/temp', 0777)
-      chdir(ROOT.'saverestore/temp');
+   if ($file != '') { // && mkdir(ROOT.'cms/saverestore/temp', 0777)
+      chdir(ROOT.'cms/saverestore/temp');
 
       if ($frame) {
        $this->echonow("Unpacking '$file' ... ");
@@ -802,14 +802,14 @@ function upload(&$out, $frame=0)
         if ($x==1 && $latest_dir) {
          $folder='/'.$latest_dir;
         }
-        @unlink(ROOT.'saverestore/temp'.$folder.'/config.php');
-        @unlink(ROOT.'saverestore/temp'.$folder.'/README.md');
-        chdir('../../');
+        @unlink(ROOT.'cms/saverestore/temp'.$folder.'/config.php');
+        @unlink(ROOT.'cms/saverestore/temp'.$folder.'/README.md');
+        chdir('../../../');
         // UPDATING FILES DIRECTLY
         if ($frame) {
          $this->echonow("Updating files ... ");
         }
-        $this->installUnpacketPlugin(ROOT.'saverestore/temp'.$folder,$name);
+        $this->installUnpacketPlugin(ROOT.'cms/saverestore/temp'.$folder,$name);
         $source=ROOT.'modules';
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 

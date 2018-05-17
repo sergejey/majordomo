@@ -19,7 +19,7 @@ class textfiles extends module {
 *
 * @access private
 */
-function textfiles() {
+function __construct() {
   $this->name="textfiles";
   $this->title="<#LANG_MODULE_TEXTFILES#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
@@ -124,7 +124,7 @@ function admin(&$out) {
 
   $files=array();
 
- $dir=ROOT.'texts';
+ $dir=ROOT.'cms/texts';
  $handle = opendir( $dir );
  while ( false !== $thing = readdir( $handle ) ) { 
   if( $thing == '.' || $thing == '..' ) continue;
@@ -138,18 +138,18 @@ function admin(&$out) {
   $out['FILES']=$files;
 
  } elseif ($this->view_mode=='delete_file' && $file!='') {
-  @unlink(ROOT.'texts/'.$file.".txt");
+  @unlink(ROOT.'cms/texts/'.$file.".txt");
   $this->redirect("?");
 
  } elseif ($this->view_mode=='edit_file') {
 
   if ($this->mode=='update' && $file!='') {
    global $data;
-   SaveFile(ROOT.'texts/'.$file.".txt", trim($data));
+   SaveFile(ROOT.'cms/texts/'.$file.".txt", trim($data));
    $out['OK']=1;
   }
   if ($file!='') {
-   $data=LoadFile(ROOT.'texts/'.$file.".txt");
+   $data=LoadFile(ROOT.'cms/texts/'.$file.".txt");
    $out['DATA']=htmlspecialchars($data);
   }
   $out['FILE']=$file;
@@ -176,8 +176,8 @@ function usual(&$out) {
 */
  function install($data='') {
  @umask(0);
-  if (!Is_Dir(ROOT."./texts")) {
-   mkdir(ROOT."./texts", 0777);
+  if (!Is_Dir(ROOT."./cms/texts")) {
+   mkdir(ROOT."./cms/texts", 0777);
   }
   parent::install();
  }

@@ -8,7 +8,7 @@
 <meta name="description" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-        <link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
         <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
         <link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
 
-        <script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquerymobile/jquery-1.10.2.min.js"></script>
 
     <script language="javascript" src="<#ROOTHTML#>js/scripts.js?v=1"></script>
     <!--#
@@ -24,7 +24,7 @@
     <script language="javascript" src="<#ROOTHTML#>js/admin.js?v=1"></script>
     [#inc scripts.js#]
     #-->
-    <script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
@@ -48,7 +48,7 @@
 <script language="javascript">
 
     function openFileBrowser(id){
-        fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;
+        fileBrowserlink = "<#ROOTHTML#>3rdparty/pdw/index.php?editor=standalone&returnID=" + id;
         window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
     }
 
@@ -562,9 +562,9 @@ jQuery.fn.center = function () {
         <div class="float-right" style="padding-right:30px">
             <i class="glyphicon glyphicon-question-sign"></i>
             [#if ACTION!=""#]
-            <a href="<#LANG_KB_URL#>category/moduli-v-majordomo/<#ACTION#>_help/?utm_source=Panel&utm_medium=link&utm_campaign=mainlink" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            <a href="<#LANG_KB_URL#>category/moduli-v-majordomo/<#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
             [#else#]
-            <a href="<#LANG_KB_URL#>?utm_source=Panel&utm_medium=link&utm_campaign=mainlink" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
+            <a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#endif#]
             <!--#
 

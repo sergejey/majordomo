@@ -39,15 +39,15 @@ if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) &&
 {
    $cache_filename = preg_replace('/\W/', '_', $matches[1]) . '.html';
    
-   if (file_exists(ROOT . 'cached/' . $cache_filename))
+   if (file_exists(ROOT . 'cms/cached/' . $cache_filename))
    {
-      if ((time() - filemtime(ROOT . 'cached/' . $cache_filename)) <= $cache_expire)
+      if ((time() - filemtime(ROOT . 'cms/cached/' . $cache_filename)) <= $cache_expire)
       {
-         $cached_result = LoadFile(ROOT . 'cached/' . $cache_filename);
+         $cached_result = LoadFile(ROOT . 'cms/cached/' . $cache_filename);
       }
       else
       {
-         unlink(ROOT . 'cached/' . $cache_filename);
+         unlink(ROOT . 'cms/cached/' . $cache_filename);
       }
    }
 }
@@ -115,7 +115,7 @@ endMeasure('final_echo', 1);
 
 if ($cache_filename != '' && $cached_result == '')
 {
-   SaveFile(ROOT . 'cached/' . $cache_filename, $result);
+   SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
 }
 
 $session->save();

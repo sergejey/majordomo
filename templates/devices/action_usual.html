@@ -38,7 +38,7 @@
      for(var i=0;i<objCnt;i++) {
       var device_id=obj.DATA[i].DEVICE_ID;
       var html=obj.DATA[i].DATA;
-      $('#device'+device_id).html(html);
+      $('.device'+device_id).html(html);
      }
     }
    }
@@ -58,7 +58,7 @@
      url: url
     }).done(function(data) {
      var obj=jQuery.parseJSON(data);
-     $('#device'+item).html(obj.HTML);
+     $('.device'+item).html(obj.HTML);
     });
    });
    httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
@@ -77,28 +77,135 @@
  <div style="clear:both"></div>
  [#endif#]
  [#if NEW_TYPE="1"#]<div style="clear:both"></div>[#endif#]
- <div id="device[#ID#]" class="col-sm-3">[#HTML#]</div>
+ <div class="device[#ID#] col-md-3">[#HTML#]</div>
  [#end DEVICES#]
 
  [#else LOCATION_ID#]
 
- <div class="row">
-  <div class="col-md-6">
-  <form action="?">
-  <select name="type" onchange="this.form.submit();" class="form-control">
-   <option value=""><#LANG_TYPE#></option>
-   [#begin TYPES#]
-   <option value="[#NAME#]">[#TITLE#] ([#TOTAL#])</option>
-   [#end TYPES#]
-  </select>
- </form>
+ [#if GROUPS#]
+ <link href="<#ROOTHTML#>3rdparty/swiper/css/swiper.min.css" rel="stylesheet" type="text/css"/>
+ <script src="<#ROOTHTML#>3rdparty/swiper/js/swiper.min.js"></script>
+ <script type="text/javascript">
+  var mySwiper;
+  $(document).ready(function() {
+
+   mySwiper = new Swiper('.swiper-container', {
+    speed: 400,
+    spaceBetween: 100,
+    //slidesPerView: 'auto',
+    //hashNavigation: true,
+   });
+   mySwiper.on('slideChange', function () {
+    $('#sliderQuickNav').val(mySwiper.activeIndex);
+   });
+   //loadAllDevicesHTML();
+  });
+
+
+  function processAllDevicesData(data) {
+   var obj=jQuery.parseJSON(data);
+   if (typeof obj.DEVICES != 'undefined') {
+    for(var i=0;i<obj.DEVICES.length;i++) {
+     $('.device'+obj.DEVICES[i].ID).html(obj.DEVICES[i].HTML);
+    }
+   }
+  }
+
+  function loadAllDevicesHTML() {
+   var url="<#ROOTHTML#>ajax/devices.html?op=loadAllDevicesHTML";
+   $.ajax({
+    url: url
+   }).done(function(data) {
+    //localStorage.setItem('allDevicesList',data);
+    processAllDevicesData(data);
+   });
+
+   /*
+   var cachedContent = localStorage.getItem('allDevicesList');
+   if (typeof cachedContent == 'string') {
+    processAllDevicesData(cachedContent);
+   }
+   */
+
+
+  }
+
+  function quickNavUpdated() {
+   var groupSelectedIdx=$('#sliderQuickNav').val();
+   mySwiper.slideTo(groupSelectedIdx);
+   return true;
+  }
+ </script>
+
+ <div class="row" style="margin-left:0px;margin-right:0px;">
+  <div class="col-xs-7">
+   <div id="roomSwitch">
+  <form class="form">
+   <select name="sliderQuickNav" id="sliderQuickNav" onchange="return quickNavUpdated();" class="form-control">
+    [#begin GROUPS#]
+    <option value="[#INDEX#]">[#TITLE#]</option>
+    [#end GROUPS#]
+   </select>
+  </form>
+   </div>
+   <div id="typeFilter" style="display:none">
+    <div class="row">
+     <div class="col-md-8">
+    <form action="?" class="form">
+     <select name="type" onchange="this.form.submit();" class="form-control">
+      <option value=""><#LANG_TYPE#></option>
+      [#begin TYPES#]
+      <option value="[#NAME#]">[#TITLE#] ([#TOTAL#])</option>
+      [#end TYPES#]
+     </select>
+    </form>
+      </div>
+     <div class="col-md-4">
+      <a href="<#ROOTHTML#>apps/devices.html?type=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_TYPE#></a>
+      <a href="<#ROOTHTML#>apps/devices.html?location_id=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_ROOM#></a>
+     </div>
+    </div>
+   </div>
   </div>
-  <div class="col-md-6">
-   <a href="<#ROOTHTML#>apps/devices.html?location_id=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_ROOM#></a>
-   <a href="<#ROOTHTML#>apps/devices.html?type=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_TYPE#></a>
+  <div class="col-xs-5 text-right">
+   <script type="text/javascript">
+    function devicesFilterSwitch() {
+     if ($('#typeFilter').is(":visible")) {
+      $('#typeFilter').hide();
+      $('#roomSwitch').show();
+      $('#switchBtn').removeClass('glyphicon-menu-hamburger');
+      $('#switchBtn').addClass('glyphicon-filter');
+     } else {
+      $('#typeFilter').show();
+      $('#roomSwitch').hide();
+      $('#switchBtn').removeClass('glyphicon-filter');
+      $('#switchBtn').addClass('glyphicon-menu-hamburger');
+     }
+     return false;
+    }
+   </script>
+   <a href="#" class="btn btn-default" onclick="return devicesFilterSwitch();"><i class="glyphicon glyphicon-filter" id="switchBtn"></i></a>
+   <a href="/apps.html" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
   </div>
  </div>
 
+ <!-- Slider main container -->
+ <div class="swiper-container" style="margin-left:15px;maring-right:15px;">
+  <div class="swiper-wrapper">
+   <!-- Slides -->
+ [#begin GROUPS#]
+ <div id="group[#ID#]" class="swiper-slide" data-hash="group[#ID#]">
+  <!--#<h4>[#TITLE#]</h4>#-->
+  [#begin DEVICES#]
+  <div class="device[#ID#] col-md-3">[#HTML#]</div>
+  [#end DEVICES#]
+ </div>
+ [#end GROUPS#]
+   </div>
+  </div>
+ [#endif GROUPS#]
+
+ <!--#
  [#if DEVICES#]
  &nbsp;
  <div style="clear:both"></div>
@@ -115,5 +222,7 @@
 </p>
  [#endif#]
 [#end LOCATIONS#]
+#-->
 [#endif LOCATION_ID#]
+
 </div>

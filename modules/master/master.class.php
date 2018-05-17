@@ -18,7 +18,7 @@ class master extends module {
 *
 * @access private
 */
-function master() {
+function __construct() {
   $this->name="master";
   $this->title="<#LANG_MODULE_MASTER_LOGIN#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

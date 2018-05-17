@@ -16,7 +16,7 @@ class app_player extends module {
 *
 * @access private
 */
-function app_player() {
+function __construct() {
   $this->name="app_player";
   $this->title="<#LANG_APP_PLAYER#>";
   $this->module_category="<#LANG_SECTION_APPLICATIONS#>";

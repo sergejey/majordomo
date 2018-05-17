@@ -96,7 +96,7 @@ if ($_GET['part_load']) {
       $res['NEED_RELOAD']=0;
       if (headers_sent()
           || is_integer(mb_strpos($res['CONTENT'], '$(document).ready'))
-          || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) {
+          || is_integer(mb_strpos($res['CONTENT'], 'codemirror/'))) {
          $res['CONTENT']='';
          $res['NEED_RELOAD']=1;
       }

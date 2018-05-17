@@ -19,7 +19,7 @@ class objects extends module {
 *
 * @access private
 */
-function objects() {
+function __construct() {
   $this->name="objects";
   $this->title="<#LANG_MODULE_OBJECT_INSTANCES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -731,7 +731,7 @@ function usual(&$out) {
    if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
     $path=LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'debmes';
+    $path = ROOT . 'cms/debmes';
    }
 
     $today_file=$path . '/'.date('Y-m-d').'.data';

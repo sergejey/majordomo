@@ -18,7 +18,7 @@ class terminals extends module {
 *
 * @access private
 */
-function terminals() {
+function __construct() {
   $this->name="terminals";
   $this->title="<#LANG_MODULE_TERMINALS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

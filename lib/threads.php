@@ -53,7 +53,7 @@ class Threads
       $params = addcslashes(serialize($params), '"');
 
       //if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
-      $fileToWrite = DOC_ROOT . '/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+      $fileToWrite = DOC_ROOT . '/cms/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
       $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
 
       if (!IsWindowsOS()) {

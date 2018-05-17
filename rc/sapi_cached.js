@@ -231,8 +231,8 @@ for (var i=0; i<WScript.Arguments.Unnamed.Count; i++)
 
  var scriptPath = fso.GetFile(WScript.ScriptFullName).ParentFolder;
 
- strWavFileName = scriptPath+'/../cached/voice/sapi_'+MD5(text.join(' '))+'.wav';
- strMp3FileName = scriptPath+'/../cached/voice/sapi_'+MD5(text.join(' '))+'.mp3';
+ strWavFileName = scriptPath+'/../cms/cached/voice/sapi_'+MD5(text.join(' '))+'.wav';
+ strMp3FileName = scriptPath+'/../cms/cached/voice/sapi_'+MD5(text.join(' '))+'.mp3';
 
 /* 
    var sv = WScript.CreateObject("SAPI.SpVoice");
@@ -248,53 +248,42 @@ for (var i=0; i<WScript.Arguments.Unnamed.Count; i++)
 
 
    if (!fso.FileExists(strMp3FileName)) {
-
-    var sv = WScript.CreateObject("SAPI.SpVoice");
-    var oFilestream = WScript.CreateObject("SAPI.SpFileStream");
+      var sv = WScript.CreateObject("SAPI.SpVoice");
+      var oFilestream = WScript.CreateObject("SAPI.SpFileStream");
                   
-    sv.WaitUntilDone(-1);    // Don't be loud
+      sv.WaitUntilDone(-1);    // Don't be loud
  
-    sv.Voice = (new Enumerator(sv.GetVoices("Language="+lang,"Name="+engine))).item();
+      sv.Voice = (new Enumerator(sv.GetVoices("Language=" + lang,"Name=" + engine))).item();
 
+      if (sv.Voice != null)
+      {
+         //speak
+         sv.speak(text.join(' '), 0);
+         sv.WaitUntilDone(-1);
 
-    if (sv.Voice != null) {
+         //save to wav
+         oFilestream.Open(strWavFileName, 3, false);
+         sv.AudioOutputStream = oFilestream;
+         sv.speak(text.join(' '), 0);
+         sv.WaitUntilDone(-1);
+         oFilestream.close();
 
-    //speak
-    sv.speak(text.join(' '),0);
-    sv.WaitUntilDone(-1);
-
-    //save to wav
-    oFilestream.Open(strWavFileName, 3, false);
-    sv.AudioOutputStream = oFilestream;
-    sv.speak(text.join(' '),0);
-    sv.WaitUntilDone(-1);
-    oFilestream.close();
-
-    //convert wav to mp3
-    var wShell = WScript.CreateObject("Wscript.Shell");
-    var strCommand = scriptPath+"/lame.exe -V0 "+strWavFileName+" "+strMp3FileName;
-    wShell.run(strCommand, 0, false);
-
-    }
-
-   } else {
-
-    
-    var wShell = WScript.CreateObject("Wscript.Shell");
-    var strCommand = scriptPath+"/madplay.exe \"" + strMp3FileName+"\"";
-    wShell.run(strCommand, 0, true);
-
-    strCommand = 'cmd.exe /c del "'+scriptPath+'\\..\\cached\\voice\\*.wav"';
-    //WScript.Echo(strCommand);
-    wShell.run(strCommand, 0, false);
-
-
-
+         //convert wav to mp3
+         var wShell = WScript.CreateObject("Wscript.Shell");
+         var strCommand = scriptPath + "/lame.exe -V0 " + strWavFileName + " " + strMp3FileName;
+         
+         wShell.run(strCommand, 0, false);
+      }
    }
-
-
-
-
+   else {
+      var wShell = WScript.CreateObject("Wscript.Shell");
+      var strCommand = scriptPath + "/madplay.exe \"" + strMp3FileName + "\"";
+    
+      wShell.run(strCommand, 0, true);
+      strCommand = 'cmd.exe /c del "' + scriptPath + '\\..\\cms\cached\\voice\\*.wav"';
+      //WScript.Echo(strCommand);
+      wShell.run(strCommand, 0, false);
+   }
 
 //
 // Finish
@@ -313,32 +302,32 @@ function Time2String(date) {
         }
  
         switch (dig) {
-        case  0    : return("­®«ì");
-        case  1    : return(is_female? "®¤­ " : "®¤¨­");
-        case  2    : return(is_female? "¤¢¥"  : "¤¢ ");
-        case  3    : return("âà¨");
-        case  4    : return("ç¥âëà¥");
-        case  5    : return("¯ïâì");
-        case  6    : return("è¥áâì");
-        case  7    : return("á¥¬ì");
-        case  8    : return("¢®á¥¬ì");
-        case  9    : return("¤¥¢ïâì");
-        case 10    : return("¤¥áïâì");
-        case 11    : return("®¤¨­ ¤æ âì");
-        case 12    : return("¤¢¥­ ¤æ âì");
-        case 13    : return("âà¨­ ¤æ âì");
-        case 14    : return("ç¥âëà­ ¤æ âì");
-        case 15    : return("¯ïâ­ ¤æ âì");
-        case 16    : return("è¥áâ­ ¤æ âì");
-        case 17    : return("á¥¬­ ¤æ âì");
-        case 18    : return("¢®á¥¬­ ¤æ âì");
-        case 19    : return("¤¥¢ïâ­ ¤æ âì");
-        case 20    : return("¤¢ ¤æ âì");
-        case 30    : return("âà¨¤æ âì");
-        case 40    : return("á®à®ª");
-        case 50    : return("¯ïâì¤¥áïâ");
-        case 60    : return("è¥áâì¤¥áïâ");
-        default : return("­¥ §­ î");
+        case  0    : return("ï¿½ï¿½ï¿½ï¿½");
+        case  1    : return(is_female? "ï¿½ï¿½ï¿½ï¿½" : "ï¿½ï¿½ï¿½ï¿½");
+        case  2    : return(is_female? "ï¿½ï¿½ï¿½"  : "ï¿½ï¿½ï¿½");
+        case  3    : return("ï¿½ï¿½");
+        case  4    : return("ï¿½ï¿½ï¿½ï¿½");
+        case  5    : return("ï¿½ï¿½ï¿½ï¿½");
+        case  6    : return("ï¿½ï¿½ï¿½ï¿½");
+        case  7    : return("á¥¬ï¿½");
+        case  8    : return("ï¿½ï¿½á¥¬ï¿½");
+        case  9    : return("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 10    : return("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 11    : return("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 12    : return("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 13    : return("ï¿½à¨­ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 14    : return("ï¿½ï¿½ï¿½à­ ï¿½ï¿½ï¿½ï¿½");
+        case 15    : return("ï¿½ï¿½â­ ï¿½ï¿½ï¿½ï¿½");
+        case 16    : return("ï¿½ï¿½â­ ï¿½ï¿½ï¿½ï¿½");
+        case 17    : return("á¥¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 18    : return("ï¿½ï¿½á¥¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 19    : return("ï¿½ï¿½ï¿½ï¿½â­ ï¿½ï¿½ï¿½ï¿½");
+        case 20    : return("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        case 30    : return("ï¿½à¨¤ï¿½ï¿½ï¿½");
+        case 40    : return("ï¿½à®ª");
+        case 50    : return("ï¿½ï¿½ï¿½ì¤¥ï¿½ï¿½ï¿½");
+        case 60    : return("ï¿½ï¿½ï¿½ì¤¥ï¿½ï¿½ï¿½");
+        default : return("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
         }
     }
  
@@ -347,14 +336,14 @@ function Time2String(date) {
     var arr  = new Array(dig2str(hour));
  
     if (hour > 20) hour %= 10;
-    arr.push((hour==1) ? "ç á" : (hour==0 || hour>4)? "ç á®¢" : "ç á " );
+    arr.push((hour==1) ? "ï¿½ï¿½" : (hour==0 || hour>4)? "ï¿½á®¢" : "ï¿½ï¿½" );
  
     if (!mins) {
-        arr.push('à®¢­®');
+        arr.push('à®¢ï¿½ï¿½');
     } else {
         arr.push(dig2str(mins,true));
         if (mins > 20) mins %= 10;
-        arr.push((mins==1) ? "¬¨­ãâ " : (mins==0 || mins>4)? "¬¨­ãâ" : "¬¨­ãâë" );
+        arr.push((mins==1) ? "ï¿½ï¿½ï¿½ï¿½ï¿½" : (mins==0 || mins>4)? "ï¿½ï¿½ï¿½ï¿½ï¿½" : "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" );
     }
  
     return arr.join(' ');

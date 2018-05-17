@@ -579,11 +579,12 @@ class jTemplate
                $condition = preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);
+               $condition = preg_replace('/(\w+)[[:space:]](?=[=!<>])/', '$hash[\'\\1\']', $condition);
                $condition = preg_replace('/\((\w+)\)/', '($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/\]=(?=[^\w=])/', ']==', $condition);
 
                $str = "if ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";
-               eval($str);
+               @eval($str);
 
                $bdy      = $res1;
                $res      = str_replace($bdy_old, $bdy, $res);

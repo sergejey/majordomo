@@ -530,7 +530,7 @@ function DebMes($errorMessage, $logLevel = "debug")
    if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
     $path=LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'debmes';
+    $path = ROOT . 'cms/debmes';
    }
 
    // DEBUG MESSAGE LOG
@@ -682,13 +682,13 @@ function colorizeArray(&$ar, $every = 2)
  */
 function clearCache($verbose = 0)
 {
-   if ($handle = opendir(ROOT . 'cached'))
+   if ($handle = opendir(ROOT . 'cms/cached'))
    {
       while (false !== ($file = readdir($handle)))
       {
-         if (is_file(ROOT . 'cached/' . $file))
+         if (is_file(ROOT . 'cms/cached/' . $file))
          {
-            @unlink(ROOT . 'cached/' . $file);
+            @unlink(ROOT . 'cms/cached/' . $file);
 
             if ($verbose)
             {

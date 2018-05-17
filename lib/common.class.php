@@ -600,9 +600,9 @@ function registeredEventTime($eventName)
  */
 function getRandomLine($filename)
 {
-   if (file_exists(ROOT . 'texts/' . $filename . '.txt'))
+   if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt'))
    {
-      $filename = ROOT . 'texts/' . $filename . '.txt';
+      $filename = ROOT . 'cms/texts/' . $filename . '.txt';
    }
 
    if (file_exists($filename))
@@ -632,10 +632,10 @@ function playSound($filename, $exclusive = 0, $priority = 0)
 {
    global $ignoreSound;
 
-   if (file_exists(ROOT . 'sounds/' . $filename . '.mp3'))
-      $filename = ROOT . 'sounds/' . $filename . '.mp3';
-   elseif (file_exists(ROOT . 'sounds/' . $filename))
-      $filename = ROOT . 'sounds/' . $filename;
+   if (file_exists(ROOT . 'cms/sounds/' . $filename . '.mp3'))
+      $filename = ROOT . 'cms/sounds/' . $filename . '.mp3';
+   elseif (file_exists(ROOT . 'cms/sounds/' . $filename))
+      $filename = ROOT . 'cms/sounds/' . $filename;
 
    if (defined('SETTINGS_HOOK_BEFORE_PLAYSOUND') && SETTINGS_HOOK_BEFORE_PLAYSOUND != '')
       eval(SETTINGS_HOOK_BEFORE_PLAYSOUND);
@@ -775,7 +775,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     if (strlen($filename_part)>200) {
         $filename_part=substr($filename_part,0,200).md5($filename_part);
     }
-   $cache_file = ROOT . 'cached/urls/' . $filename_part . '.html';
+   $cache_file = ROOT . 'cms/cached/urls/' . $filename_part . '.html';
    
    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache))
    {
@@ -837,7 +837,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
           }
          }
 
-         $tmpfname = ROOT . 'cached/cookie.txt';
+         $tmpfname = ROOT . 'cms/cached/cookie.txt';
          curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
          curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
@@ -862,7 +862,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
       if ($cache > 0)
       {
-         CreateDir(ROOT . 'cached/urls');
+         CreateDir(ROOT . 'cms/cached/urls');
          SaveFile($cache_file, $result);
       }
    }
