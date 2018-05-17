@@ -93,7 +93,7 @@ $ctl = new control_modules();
         }
         }
         ?>
-            "../js/scripts.js",
+            "../../js/scripts.js",
 
                 // *** Load more plugins here ***
                 function(){

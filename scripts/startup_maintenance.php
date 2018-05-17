@@ -85,8 +85,8 @@ if ($full_backup) {
             $d == 'debmes' ||
             $d == 'saverestore'
         ) continue;
-        DebMes("Backing up dir ".ROOT . 'cms/' . $d,'backup');
-        copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1);
+        DebMes("Backing up dir ".ROOT . 'cms/' . $d. ' to ' . $target_dir . '/cms/' . $d,'backup');
+        copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d , 1);
     }
 
     if (defined('PATH_TO_MYSQLDUMP'))
@@ -103,7 +103,7 @@ if ($full_backup) {
     $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
     $mysqlDumpParam .= " > " . $target_dir . "/" . DB_NAME . ".sql";
 
-    DebMes("Backing up database ".DB_NAME. ' to ' . $target_dir . "/" . DB_NAME . ".sql");
+    DebMes("Backing up database ".DB_NAME. ' to ' . $target_dir . "/" . DB_NAME . ".sql",'backup');
     exec($mysqlDumpPath . $mysqlDumpParam);
 
 
