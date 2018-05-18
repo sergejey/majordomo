@@ -18,6 +18,7 @@ $ctl = new control_modules();
 
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
+echo "Running startup maintenance" . PHP_EOL;
 $run_from_start = 1;
 include("./scripts/startup_maintenance.php");
 $run_from_start = 0;
