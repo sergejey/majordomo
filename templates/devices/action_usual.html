@@ -84,10 +84,43 @@
 
  [#if GROUPS#]
  <link href="<#ROOTHTML#>3rdparty/swiper/css/swiper.min.css" rel="stylesheet" type="text/css"/>
+ <style>
+  .swiper-container {
+   width: 100%;
+   height: auto;
+  }
+
+  .swiper-container-nav {
+   padding-left:10px;
+   padding-right:10px;
+   padding-bottom:10px;
+   height:45px;
+  }
+
+  .swiper-container-nav .swiper-wrapper .swiper-slide {
+    width: auto;
+    padding: 10px;
+    background-color:grey;
+  }
+
+  .nav-slide-active {
+   background-color:darkslateblue !important;
+  }
+
+ </style>
  <script src="<#ROOTHTML#>3rdparty/swiper/js/swiper.min.js"></script>
  <script type="text/javascript">
   var mySwiper;
   $(document).ready(function() {
+
+   mySwiperNav = new Swiper('.swiper-container-nav', {
+    speed: 400,
+    spaceBetween: 5,
+    slidesPerView: 'auto',
+    //autoHeight:true,
+    slidesPerView: 'auto',
+    //hashNavigation: true,
+   });
 
    mySwiper = new Swiper('.swiper-container', {
     speed: 400,
@@ -95,8 +128,24 @@
     //slidesPerView: 'auto',
     //hashNavigation: true,
    });
+
+   mySwiperNav.on('slideChange', function () {
+    //mySwiper.slideTo(mySwiperNav.activeIndex);
+   });
+
+   mySwiperNav.on('click', function () {
+    $('.nav-slide').removeClass('nav-slide-active');
+    $('.nav-slide:eq('+mySwiperNav.clickedIndex+')').addClass('nav-slide-active');
+    mySwiperNav.slideTo(mySwiperNav.clickedIndex);
+    mySwiper.slideTo(mySwiperNav.clickedIndex);
+   });
+
+
    mySwiper.on('slideChange', function () {
+    $('.nav-slide').removeClass('nav-slide-active');
+    $('.nav-slide:eq('+mySwiper.activeIndex+')').addClass('nav-slide-active');
     $('#sliderQuickNav').val(mySwiper.activeIndex);
+    mySwiperNav.slideTo(mySwiper.activeIndex);
    });
    //loadAllDevicesHTML();
   });
@@ -138,8 +187,8 @@
  </script>
 
  <div class="row" style="margin-left:0px;margin-right:0px;">
-  <div class="col-xs-7">
-   <div id="roomSwitch">
+  <div class="col-xs-10">
+   <div id="roomSwitch" style="display:none">
   <form class="form">
    <select name="sliderQuickNav" id="sliderQuickNav" onchange="return quickNavUpdated();" class="form-control">
     [#begin GROUPS#]
@@ -148,9 +197,9 @@
    </select>
   </form>
    </div>
-   <div id="typeFilter" style="display:none">
+   <div id="typeFilter">
     <div class="row">
-     <div class="col-md-8">
+     <div class="col-md-12">
     <form action="?" class="form">
      <select name="type" onchange="this.form.submit();" class="form-control">
       <option value=""><#LANG_TYPE#></option>
@@ -160,14 +209,16 @@
      </select>
     </form>
       </div>
+     <!--#
      <div class="col-md-4">
       <a href="<#ROOTHTML#>apps/devices.html?type=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_TYPE#></a>
       <a href="<#ROOTHTML#>apps/devices.html?location_id=all" class="btn btn-default"><#LANG_DEVICES_ALL_BY_ROOM#></a>
      </div>
+     #-->
     </div>
    </div>
   </div>
-  <div class="col-xs-5 text-right">
+  <div class="col-xs-2 text-right">
    <script type="text/javascript">
     function devicesFilterSwitch() {
      if ($('#typeFilter').is(":visible")) {
@@ -184,8 +235,18 @@
      return false;
     }
    </script>
+   <!--#
    <a href="#" class="btn btn-default" onclick="return devicesFilterSwitch();"><i class="glyphicon glyphicon-filter" id="switchBtn"></i></a>
+   #-->
    <a href="/apps.html" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+  </div>
+ </div>
+
+ <div class="swiper-container-nav">
+  <div class="swiper-wrapper">
+   [#begin GROUPS#]
+   <div class="swiper-slide text-center nav-slide[#if INDEX="0"#] nav-slide-active[#endif#]">[#TITLE#]</div>
+   [#end GROUPS#]
   </div>
  </div>
 

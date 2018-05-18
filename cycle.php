@@ -9,6 +9,10 @@
 
 chdir(dirname(__FILE__));
 
+if (file_exists('./reboot'))
+   unlink('./reboot');
+
+
 include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
@@ -28,19 +32,24 @@ while (!$connected)
    sleep(5);
 }
 
-if (file_exists('./reboot'))
-   unlink('./reboot');
-
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
+include_once("./load_settings.php");
 
 echo "CONNECTED TO DB" . PHP_EOL;
 
-echo "Running startup maintenance" . PHP_EOL;
+$old_mask = umask(0);
+if (is_dir(ROOT.'cached')) {
+   DebMes("Removing cache from ".ROOT.'cached');
+   removeTree(ROOT.'chached');
+}
+if (is_dir(ROOT.'cms/cached')) {
+   DebMes("Removing cache from ".ROOT.'cms/cached');
+   removeTree(ROOT.'cms/chached');
+}
 
 // moving some folders to ./cms/
 $move_folders=array(
-    'cached',
     'debmes',
     'saverestore',
     'sounds',
@@ -48,6 +57,7 @@ $move_folders=array(
 foreach($move_folders as $folder) {
    if (is_dir(ROOT.$folder)) {
       echo "Moving ".ROOT.$folder.' to '.ROOT.'cms/'.$folder."\n";
+      DebMes('Moving '.ROOT.$folder.' to '.ROOT.'cms/'.$folder);
       copyTree(ROOT.$folder,ROOT.'cms/'.$folder);
       removeTree(ROOT.$folder);
    }
@@ -63,13 +73,38 @@ $check_folders=array(
     'jpgraph' => '3rdparty/jpgraph',
     'pdw' => '3rdparty/pdw',
     'js/threejs' => '3rdparty/threejs'
-    );
+);
 foreach($check_folders as $k=>$v) {
    if (is_dir(ROOT.$v)) {
       echo "Removing ".ROOT.$k."\n";
+      DebMes('Removing '.ROOT.$k);
       removeTree(ROOT.$k);
    }
 }
+
+
+// check/recreate folders
+$dirs_to_check = array(
+    ROOT . 'backup',
+    ROOT . 'cms/debmes',
+    ROOT . 'cms/cached',
+    ROOT . 'cms/cached/voice',
+    ROOT . 'cms/cached/urls',
+    ROOT . 'cms/cached/templates_c',
+);
+
+if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
+   $dirs_to_check[]=SETTINGS_BACKUP_PATH;
+}
+
+foreach ($dirs_to_check as $d) {
+   if (!is_dir($d)) {
+      mkdir($d, 0777);
+   } else {
+      chmod($d, 0777);
+   }
+}
+
 
 //restoring database backup (if was saving periodically)
 $filename  = ROOT . 'database_backup/db.sql';
@@ -83,9 +118,6 @@ if (file_exists($filename))
    $mysqlParam .= " " . DB_NAME . " <" . $filename;
    exec($mysql_path . $mysqlParam);
 }
-
-include_once("./load_settings.php");
-
 
 //reinstalling modules
 /*

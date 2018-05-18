@@ -7,28 +7,6 @@
 DebMes("Running maintenance script");
 
 // BACKUP DATABASE AND FILES
-$old_mask = umask(0);
-
-$dirs_to_check = array(
-    ROOT . 'backup',
-    ROOT . 'cms/debmes',
-    ROOT . 'cms/cached',
-    ROOT . 'cms/cached/voice',
-    ROOT . 'cms/cached/urls',
-    ROOT . 'cms/cached/templates_c',
-);
-
-if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
-    $dirs_to_check[]=SETTINGS_BACKUP_PATH;
-}
-
-foreach ($dirs_to_check as $d) {
-    if (!is_dir($d)) {
-        mkdir($d, 0777);
-    } else {
-        chmod($d, 0777);
-    }
-}
 
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
     $target_dir = SETTINGS_BACKUP_PATH;
@@ -77,6 +55,9 @@ if ($full_backup) {
     DebMes("Backing up files...",'backup');
     echo "Backing up files...";
 
+    if (!is_dir($target_dir . '/cms')) {
+        mkdir($target_dir . '/cms',0777);
+    }
     $cms_dirs = scandir(ROOT . 'cms');
     foreach ($cms_dirs as $d) {
         if ($d == '.' ||
@@ -121,6 +102,7 @@ foreach (glob($dir . "*") as $file) {
 }
 
 //removing old cached files
+/*
 $dir = ROOT . "cms/cached/";
 foreach (glob($dir . "*") as $file) {
     if (filemtime($file) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
@@ -128,8 +110,7 @@ foreach (glob($dir . "*") as $file) {
         @unlink($file);
     }
 }
-
-
+*/
 umask($old_mask);
 
 // CHECK/REPAIR/OPTIMIZE TABLES
