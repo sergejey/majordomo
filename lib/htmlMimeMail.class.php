@@ -705,7 +705,7 @@ class htmlMimeMail
             }
 
             // Get flat representation of headers
-            $headers[] = array();
+            $headers = [];
             foreach ($this->headers as $name => $value)
                $headers[] = $name . ': ' . $this->_encodeHeader($value, $this->build_params['head_charset']);
 
