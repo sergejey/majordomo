@@ -71,8 +71,11 @@ for ($i = 0; $i < $total; $i++) {
         $device_type = $devices[$i]['TYPE'];
         $device_title = $devices[$i]['TITLE'];
         $linked_object = $devices[$i]['LINKED_OBJECT'];
-        if ($device_type == 'sensor_light' || $device_type == 'sensor_percentage' || $device_type == 'sensor_humidity') {
+        if ($device_type == 'sensor_percentage' || $device_type == 'sensor_humidity') {
             sayReply($device_title . ' ' . gg($linked_object . '.value') . '%', 2);
+            $processed = 1;
+        } elseif ($device_type == 'sensor_light') {
+            sayReply($device_title . ' ' . gg($linked_object . '.value'), 2);
             $processed = 1;
         } elseif ($device_type == 'sensor_temp') {
             sayReply($device_title . ' ' . gg($linked_object . '.value') . ' ' . LANG_DEVICES_DEGREES, 2);
