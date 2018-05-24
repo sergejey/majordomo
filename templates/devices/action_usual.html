@@ -50,6 +50,7 @@
   [#end DEVICES#]
 
   function httpRefreshDevices() {
+   //return;
    clearTimeout(httpRefreshTimer);
    var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
    trackedDevices.forEach(function(item, index) {
@@ -95,6 +96,7 @@
    padding-right:10px;
    padding-bottom:10px;
    height:45px;
+   color:white;
   }
 
   .swiper-container-nav .swiper-wrapper .swiper-slide {
