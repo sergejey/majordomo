@@ -115,7 +115,8 @@ $dictionary = array (
     'MODULE_MASTER_LOGIN' => 'Пароль доступу',
     'MODULE_SAVERESTORE' => 'Перевірка оновлень',
     'MODULE_WEBVARS' => 'Веб-змінні',
-    'MODULE_SHOUTBOX'=>'Рупор',
+    'MODULE_SHOUTBOX' => 'Рупор',
+	'MODULE_SKINS' => 'Дизайн скінів',
     'MODULE_PATTERNS' => 'Шаблони поведінки',
     'MODULE_ONEWIRE' => '1-Wire',
     'MODULE_SCENES' => 'Сцени',
@@ -224,7 +225,7 @@ $dictionary = array (
 
     'RUN_IN' => 'Виконати через',
     'MINUTES' => 'хвилини',
-    'HOURS' => 'годинник',
+    'HOURS' => 'години',
     'PROCESSED' => 'оброблено',
 
 
@@ -1218,6 +1219,20 @@ $dictionary = array (
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
+	
+	'ROOMS' => 'Кімнати',
+    'APPEARANCE' => 'Зовнішній вигляд',
+    'MAINTENANCE' => 'Обслуговування',
+    'LIST' => 'Список',
+    'DATA_OPTIMIZING' => 'Оптимізація даних',
+    'DID_YOU_KNOW' => 'А чи знаєте ви що ...',
+    'NEWS' => 'Новини MajorDoMo',
+    'KNOWLEDGE_BASE' => 'База знань',
+    'ACTIVITIES' => 'Поведінка',
+    'COMMANDS' => 'Команди',
+    'ADDON_FILE' => 'Файл доповнення',
+    'UPLOAD_AND_INSTALL' => 'Завантажити та встановити',
+    'ADD_UPDATE_MANUALLY' =>'Додати / оновити вручну',
 
      /* end module names */
 
