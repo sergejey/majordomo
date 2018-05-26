@@ -264,10 +264,9 @@ function admin(&$out) {
  $total = count($data->PLUGINS);
  for($i=0;$i<$total;$i++) {
   $rec=(array)$data->PLUGINS[$i];
-  if (is_dir(ROOT.'modules/'.$rec['MODULE_NAME'])) {
+  $plugin_rec=SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($rec['MODULE_NAME'])."'");
+  if (is_dir(ROOT.'modules/'.$rec['MODULE_NAME']) || $plugin_rec['ID']) {
    $rec['EXISTS']=1;
-
-   $plugin_rec=SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '".DBSafe($rec['MODULE_NAME'])."'");
    if ($plugin_rec['ID']) {
     $rec['INSTALLED_VERSION']=$plugin_rec['CURRENT_VERSION'];
    }
@@ -275,7 +274,6 @@ function admin(&$out) {
    if ($ignore_rec['ID']) {
        $rec['IGNORE_UPDATE']=1;
    }
-
   }
 
    if ($rec['CATEGORY']!=$old_category) {
@@ -784,6 +782,7 @@ function upload(&$out, $frame=0)
       if ($frame) {
        $this->echonow(" OK <br/>", 'green');
       }
+
 
         $x = 0;
         $dir=opendir('./');

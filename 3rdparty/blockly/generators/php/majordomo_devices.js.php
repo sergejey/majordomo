@@ -62,6 +62,31 @@ Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_maxValue'] = funct
 };
 <?php
 }
+if ($blocks[$i]['TYPE']=='dimmer') {
+?>
+Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setLevel'] = function(block) {
+  var value = Blockly.PHP.valueToCode(block, 'VALUE',Blockly.PHP.ORDER_NONE) || '\'\'';
+  var code = 'setGlobal("<?php echo $blocks[$i]['LINKED_OBJECT'].'.level';?>", ' + value + ');\n';
+  return code;
+};
+
+<?php
+}
+if ($blocks[$i]['TYPE']=='counter') {
+?>
+Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentValue'] = function(block) {
+  var code = 'getGlobal("<?php echo $blocks[$i]['LINKED_OBJECT'].'.value';?>")';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setValue'] = function(block) {
+  var value = Blockly.PHP.valueToCode(block, 'VALUE',Blockly.PHP.ORDER_NONE) || '\'\'';
+  var code = 'setGlobal("<?php echo $blocks[$i]['LINKED_OBJECT'].'.value';?>", ' + value + ');\n';
+  return code;
+};
+
+<?php
+}
 if ($blocks[$i]['TYPE']=='motion') {
 ?>
 Blockly.PHP['majordomo_device_<?php echo $blocks[$i]['ID'];?>_motionDetected'] = function(block) {

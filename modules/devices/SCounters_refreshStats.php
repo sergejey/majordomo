@@ -28,10 +28,8 @@ for($i=0;$i<$total_days;$i++) {
     $val1 = SQLSelectOne("SELECT ID, VALUE, ADDED FROM $main_table_name WHERE VALUE_ID='".$main_value_id."' AND ADDED<=('".$day_begins."') ORDER BY ADDED DESC LIMIT 1");
     $val2 = SQLSelectOne("SELECT ID, VALUE, ADDED FROM $main_table_name WHERE VALUE_ID='".$main_value_id."' AND ADDED<=('".$day_ends."') ORDER BY ADDED DESC LIMIT 1");
     */
-
     $val1 = SQLSelectOne("SELECT ID, VALUE, ADDED FROM $main_table_name WHERE VALUE_ID='".$main_value_id."' AND ADDED>=('".$day_begins."') AND ADDED<=('".$day_ends."') ORDER BY ADDED LIMIT 1");
     $val2 = SQLSelectOne("SELECT ID, VALUE, ADDED FROM $main_table_name WHERE VALUE_ID='".$main_value_id."' AND ADDED>=('".$day_begins."') AND ADDED<=('".$day_ends."') ORDER BY ADDED DESC LIMIT 1");
-
     $day_result = 0;
     if (isset($val1['VALUE']) && isset($val2['VALUE'])) {
         $day_result=$val2['VALUE']-$val1['VALUE'];
@@ -70,4 +68,3 @@ foreach($months as $k=>$v) {
         SQLInsert($table_name,$new_rec);
     }
 }
-

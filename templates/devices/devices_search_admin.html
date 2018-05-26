@@ -44,6 +44,7 @@
 <!-- search results (list) -->
 
 <script type="text/javascript">
+ var httpRefreshTimer = 0;
  var subscribedWebSockets=0;
  var subscribedWebSocketsTimer;
  var requestSent = Math.round(+new Date()/1000);
@@ -61,6 +62,7 @@
  }
 
  $.subscribe('wsConnected', function (_) {
+  clearTimeout(httpRefreshTimer);
   subscribeToDevices();
  });
 
@@ -78,11 +80,34 @@
     for(var i=0;i<objCnt;i++) {
      var device_id=obj.DATA[i].DEVICE_ID;
      var html=obj.DATA[i].DATA;
-     $('#device'+device_id).html(html);
+     $('.device'+device_id).html(html);
     }
    }
   }
  });
+
+ var trackedDevices = [];
+ [#begin RESULT#]
+ trackedDevices.push([#ID#]);
+ [#end RESULT#]
+
+ function httpRefreshDevices() {
+  //return;
+  clearTimeout(httpRefreshTimer);
+  var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
+  trackedDevices.forEach(function(item, index) {
+   var url = baseURL + item;
+   $.ajax({
+    url: url
+   }).done(function(data) {
+    var obj=jQuery.parseJSON(data);
+    $('.device'+item).html(obj.HTML);
+   });
+  });
+  httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
+ }
+ httpRefreshTimer = setTimeout('httpRefreshDevices()',5000);
+
 </script>
 
 [#begin RESULT#]
@@ -99,7 +124,7 @@
   [#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#]
   [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
  </div>
- <div class="col-md-5"><div id="device[#ID#]">[#HTML#]</div></div>
+ <div class="col-md-5"><div class="device[#ID#]">[#HTML#]</div></div>
  <div class="col-md-3" nowrap>
   [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>

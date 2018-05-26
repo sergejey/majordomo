@@ -409,6 +409,10 @@ $ctl = new control_modules();
     for ($i = 0; $i < $total; $i++) {
       if ($res[$i]['TYPE']=='relay') {
       } elseif ($res[$i]['TYPE']=='dimmer') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_setLevel"></block>'."\n";
+      } elseif ($res[$i]['TYPE']=='counter') {
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentValue"></block>'."\n";
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_setValue"></block>'."\n";
       } elseif ($res[$i]['TYPE']=='motion') {
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_motionDetected"></block>'."\n";
       } elseif ($res[$i]['TYPE']=='sensor_temp') {

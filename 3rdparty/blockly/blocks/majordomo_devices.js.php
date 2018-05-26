@@ -79,14 +79,11 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentStatus']
 }
 if ($blocks[$i]['TYPE']=='rgb') {
 ?>
-
 Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setColor'] = {
   init: function () {
-
     var thisBlock = this;
     this.appendValueInput('COLOR')
         .appendField('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_SET_COLOR;?>');
-
     this.setInputsInline(true);
     this.setColour(275);
     this.setOutput(false);
@@ -96,12 +93,10 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setColor'] = {
 
   }
 };
-
 <?php
 }
 if ($dev->device_types[$blocks[$i]['TYPE']]['PARENT_CLASS']=='SSensors') {
 ?>
-
 Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentValue'] = {
   init: function () {
     var thisBlock = this;
@@ -144,6 +139,55 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_maxValue'] = {
   }
 };
   <?php
+}
+if ($blocks[$i]['TYPE']=='dimmer') {
+  ?>
+Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setLevel'] = {
+  init: function() {
+    var thisBlock = this;
+    this.setColour(220);
+    this.appendDummyInput()
+        .appendField('<?php echo $blocks[$i]['TITLE'].' '.LANG_SET.' %';?>');
+    this.appendValueInput("VALUE");
+    //.setCheck("String");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('');
+  }
+};
+<?php
+}
+if ($blocks[$i]['TYPE']=='counter') {
+  ?>
+  Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentValue'] = {
+    init: function () {
+      var thisBlock = this;
+      this.appendDummyInput()
+      .appendField('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_CURRENT_VALUE;?>');
+    this.setInputsInline(true);
+    this.setColour(175);
+    this.setOutput(true);
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_CURRENT_VALUE;?>');
+  }
+  };
+  Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_setValue'] = {
+  init: function() {
+    var thisBlock = this;
+    this.setColour(220);
+    this.appendDummyInput()
+        .appendField('<?php echo $blocks[$i]['TITLE'].' '.LANG_SET;?>');
+    this.appendValueInput("VALUE");
+        //.setCheck("String");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('');
+  }
+};
+<?php
 }
 if ($blocks[$i]['TYPE']=='motion') {
   ?>

@@ -27,8 +27,7 @@ while (1) {
     $connect = new connect();
     $connect->getConfig();
     
-    $mqttLib = file_exists(SERVER_ROOT . "/lib/mqtt/phpMQTT.php");
-
+    $mqttLib = file_exists(ROOT . "lib/mqtt/phpMQTT.php");
     if (!$connect->config['CONNECT_SYNC'] || !$mqttLib) {
         echo "Connect sync turned off or MQTT application is not installed.";
         exit;

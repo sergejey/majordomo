@@ -31,9 +31,129 @@ if (preg_match('/ru/is',$_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
    $lang_sent_ok_note='(information is kept private and available only by the URL above)';
 }
 
+
+function collectData() {
+   $result = array();
+
+   $result['unixtime']=time();
+   $result['timestamp']=date('Y-m-d H:i:s',$result['unixtime']);
+
+
+   $result['reboot']=array();
+   if (file_exists('./reboot')) {
+      $reboot_started=filemtime('./reboot');
+      $result['reboot']['status']='initiated';
+      $result['reboot']['started']=date('Y-m-d H:i:s',$reboot_started);
+      $result['reboot']['since_started']=$result['unixtime']-$reboot_started;
+   } else {
+      $result['reboot']['status']='ok';
+   }
+
+   if (IsWindowsOS()) {
+      $os = 'Windows';
+   } else {
+      $os=trim(exec("uname -a"));
+      if (!$os) {
+         $os = 'Linux';
+      }
+   }
+   $result['OS']=$os;
+   $result['locale'] = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
+   $cycles=array();
+   if ($lib_dir = opendir("./scripts"))
+   {
+      while (($lib_file = readdir($lib_dir)) !== false)
+      {
+         if ((preg_match("/^cycle_.+?\.php$/", $lib_file)))
+            $cycles[$lib_file] = array();
+      }
+      closedir($lib_dir);
+   }
+   $result['cycles']=$cycles;
+
+   global $db; 
+   $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
+   if ($db) {
+      include_once("./load_settings.php");
+      $result['DB']['connection']='OK';
+      $tables = SQLSelect("SHOW TABLE STATUS;");
+      $result['DB']['tables']=$tables;
+
+      $sys_errors = SQLSelect("SELECT ID,CODE,LATEST_UPDATE,ACTIVE FROM system_errors ORDER BY LATEST_UPDATE DESC");
+      if ($sys_errors[0]['ID']) {
+         foreach($sys_errors as $v) {
+            $errors_data=SQLSelect("SELECT COMMENTS,ADDED FROM system_errors_data WHERE ERROR_ID=".$v['ID']." ORDER BY ADDED DESC LIMIT 5");
+            $v['DATA']=$errors_data;
+            if ($v['ACTIVE']) {
+               $result['active_errors']+=$v['ACTIVE'];
+            }
+            unset($v['ID']);
+            $result['SYSTEM_ERRORS'][]=$v;
+         }
+      }
+
+      foreach($result['cycles'] as $path=>$v) {
+         if (preg_match('/(cycle_.+?)\.php/is',$path,$m)) {
+            $title=$m[1];
+            if (getGlobal($title.'Disabled')) {
+               $result['cycles'][$path]['disabled']=1;
+            }
+            if (getGlobal($title.'Control')) {
+               $result['cycles'][$path]['control']=getGlobal($title.'Control');
+            }
+            $cycle_run_update=getGlobal($title.'Run');
+            if ($cycle_run_update) {
+               $result['cycles'][$path]['run']=$cycle_run_update;
+               $time_passed=($result['unixtime']-$cycle_run_update);
+               $result['cycles'][$path]['since_update']=$time_passed;
+               if ($time_passed>5*60) {
+                  $result['cycles'][$path]['status']='stopped';
+               } else {
+                  $result['cycles'][$path]['status']='running';
+               }
+            } else {
+               $result['cycles'][$path]['status']='offline';
+            }
+         }
+      }
+
+   } else {
+      $result['DB']['connection']='Failed';
+   }
+
+   if (!IsWindowsOS()) {
+      $max_usage=90; //%
+      $output = array();
+      exec('df', $output);
+
+      $result['DF_OUTPUT']=implode("\n",$output);
+
+      foreach ($output as $line) {
+         if (preg_match('/(\d+)% (\/.+)/', $line, $m))
+            $proc = $m[1];
+         $path = trim($m[2]);
+         if ($path=='') continue;
+         $result['SPACE_AVAILABLE'][$path]['usage_proc']=$proc;
+         if ($proc > $max_usage) {
+            $result['SPACE_AVAILABLE'][$path]['status']='low';
+         } else {
+            $result['SPACE_AVAILABLE'][$path]['status']='ok';
+         }
+      }
+   }
+
+   $result['language']=SETTINGS_SITE_LANGUAGE;
+   $result['timezone']=SETTINGS_SITE_TIMEZONE;
+   return $result;
+}
+
 $comments='';
 if (isset($_POST['send'])) {
-   $data=gr('data');;
+   $data=gr('data');
+   if (!$data) {
+      $data=json_encode(collectData());
+   }
    $comments=gr('comments');
    $tar_name='';
    if ($_POST['include_log']) {
@@ -73,6 +193,9 @@ if (isset($_POST['send'])) {
        'data'=>$data,
        'comments'=>$comments
    );
+   if ($_POST['code']) {
+      $fields['code']=$code;
+   }
 
    if ($tar_name!='') {
       if (!function_exists('getCurlValue')) {
@@ -112,6 +235,12 @@ if (isset($_POST['send'])) {
 
    curl_close($ch);
 
+   if ($_POST['code']) {
+      header("Content-type:text/json");
+      echo $result;
+      exit;
+   }
+
    if ($result!='') {
       $data=json_decode($result,true);
       if (is_array($data) && $data['status']=='ok') {
@@ -128,117 +257,7 @@ if (isset($_POST['send'])) {
 
 }
 
-$result = array();
-
-$result['unixtime']=time();
-$result['timestamp']=date('Y-m-d H:i:s',$result['unixtime']);
-
-
-$result['reboot']=array();
-if (file_exists('./reboot')) {
-   $reboot_started=filemtime('./reboot');
-   $result['reboot']['status']='initiated';
-   $result['reboot']['started']=date('Y-m-d H:i:s',$reboot_started);
-   $result['reboot']['since_started']=$result['unixtime']-$reboot_started;
-} else {
-   $result['reboot']['status']='ok';
-}
-
-if (IsWindowsOS()) {
-   $os = 'Windows';
-} else {
-   $os=trim(exec("uname -a"));
-   if (!$os) {
-      $os = 'Linux';
-   }
-}
-$result['OS']=$os;
-$result['locale'] = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-
-$cycles=array();
-if ($lib_dir = opendir("./scripts"))
-{
-   while (($lib_file = readdir($lib_dir)) !== false)
-   {
-      if ((preg_match("/^cycle_.+?\.php$/", $lib_file)))
-         $cycles[$lib_file] = array();
-   }
-   closedir($lib_dir);
-}
-$result['cycles']=$cycles;
-
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-if ($db) {
-   include_once("./load_settings.php");
-   $result['DB']['connection']='OK';
-   $tables = SQLSelect("SHOW TABLE STATUS;");
-   $result['DB']['tables']=$tables;
-
-   $sys_errors = SQLSelect("SELECT ID,CODE,LATEST_UPDATE,ACTIVE FROM system_errors ORDER BY LATEST_UPDATE DESC");
-   if ($sys_errors[0]['ID']) {
-      foreach($sys_errors as $v) {
-         $errors_data=SQLSelect("SELECT COMMENTS,ADDED FROM system_errors_data WHERE ERROR_ID=".$v['ID']." ORDER BY ADDED DESC LIMIT 5");
-         $v['DATA']=$errors_data;
-         if ($v['ACTIVE']) {
-            $result['active_errors']+=$v['ACTIVE'];
-         }
-         unset($v['ID']);
-         $result['SYSTEM_ERRORS'][]=$v;
-      }
-   }
-
-   foreach($result['cycles'] as $path=>$v) {
-      if (preg_match('/(cycle_.+?)\.php/is',$path,$m)) {
-         $title=$m[1];
-         if (getGlobal($title.'Disabled')) {
-            $result['cycles'][$path]['disabled']=1;
-         }
-         if (getGlobal($title.'Control')) {
-            $result['cycles'][$path]['control']=getGlobal($title.'Control');
-         }
-         $cycle_run_update=getGlobal($title.'Run');
-         if ($cycle_run_update) {
-            $result['cycles'][$path]['run']=$cycle_run_update;
-            $time_passed=($result['unixtime']-$cycle_run_update);
-            $result['cycles'][$path]['since_update']=$time_passed;
-            if ($time_passed>5*60) {
-               $result['cycles'][$path]['status']='stopped';
-            } else {
-               $result['cycles'][$path]['status']='running';
-            }
-         } else {
-            $result['cycles'][$path]['status']='offline';
-         }
-      }
-   }
-
-} else {
-   $result['DB']['connection']='Failed';
-}
-
-if (!IsWindowsOS()) {
-   $max_usage=90; //%
-   $output = array();
-   exec('df', $output);
-
-   $result['DF_OUTPUT']=implode("\n",$output);
-
-   foreach ($output as $line) {
-      if (preg_match('/(\d+)% (\/.+)/', $line, $m))
-         $proc = $m[1];
-      $path = trim($m[2]);
-      if ($path=='') continue;
-      $result['SPACE_AVAILABLE'][$path]['usage_proc']=$proc;
-      if ($proc > $max_usage) {
-         $result['SPACE_AVAILABLE'][$path]['status']='low';
-      } else {
-         $result['SPACE_AVAILABLE'][$path]['status']='ok';
-      }
-   }
-}
-
-$result['language']=SETTINGS_SITE_LANGUAGE;
-$result['timezone']=SETTINGS_SITE_TIMEZONE;
+$result=collectData();
 
 ?>
 <html>
