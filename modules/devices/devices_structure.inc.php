@@ -99,9 +99,14 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SDimmers',
         'PROPERTIES'=>array(
-            'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1)),
+            'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1),
+            'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
+            'minWork'=>array('DESCRIPTION'=>'Min level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'maxWork'=>array('DESCRIPTION'=>'Max level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            ),
         'METHODS'=>array(
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
+            'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),
             'turnOn'=>array('DESCRIPTION'=>'Dimmer turnOn'),
             'turnOff'=>array('DESCRIPTION'=>'Dimmer turnOff'),
         )
