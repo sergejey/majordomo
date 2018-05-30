@@ -1,5 +1,4 @@
 <div>
- &nbsp;<br/>
  [#if DEVICES#]
  <script type="text/javascript">
   var httpRefreshTimer = 0;
@@ -44,22 +43,27 @@
    }
   });
 
+
   var trackedDevices = [];
-  [#begin DEVICES#]
-  trackedDevices.push([#ID#]);
-  [#end DEVICES#]
+  $(function() {
+   ajaxManager.run();
+   [#begin RESULT#]
+   trackedDevices.push([#ID#]);
+   [#end RESULT#]
+  });
 
   function httpRefreshDevices() {
-   //return;
    clearTimeout(httpRefreshTimer);
    var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
    trackedDevices.forEach(function(item, index) {
     var url = baseURL + item;
-    $.ajax({
-     url: url
-    }).done(function(data) {
-     var obj=jQuery.parseJSON(data);
-     $('.device'+item).html(obj.HTML);
+    ajaxManager.addReq({
+     type: 'GET',
+     url: url,
+     success: function(data){
+      var obj=jQuery.parseJSON(data);
+      $('.device'+item).html(obj.HTML);
+     }
     });
    });
    httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
@@ -91,6 +95,14 @@
    height: auto;
   }
 
+  .swiper-container-header {
+   padding-left:10px;
+   padding-right:10px;
+   padding-bottom:10px;
+   padding-top:10px;
+   height:65px;
+  }
+
   .swiper-container-nav {
    padding-left:10px;
    padding-right:10px;
@@ -112,9 +124,18 @@
  </style>
  <script src="<#ROOTHTML#>3rdparty/swiper/js/swiper.min.js"></script>
  <script type="text/javascript">
-  var mySwiper;
-  $(document).ready(function() {
 
+  var mySwiper;
+  var mySwiperHeader;
+  var mySwierNav;
+
+
+
+
+  $(function() {
+
+
+    mySwiperHeader = new Swiper('.swiper-container-header',{});
    mySwiperNav = new Swiper('.swiper-container-nav', {
     speed: 400,
     spaceBetween: 5,
@@ -142,15 +163,16 @@
     mySwiper.slideTo(mySwiperNav.clickedIndex);
    });
 
-
    mySwiper.on('slideChange', function () {
     $('.nav-slide').removeClass('nav-slide-active');
     $('.nav-slide:eq('+mySwiper.activeIndex+')').addClass('nav-slide-active');
     $('#sliderQuickNav').val(mySwiper.activeIndex);
     mySwiperNav.slideTo(mySwiper.activeIndex);
    });
-   //loadAllDevicesHTML();
+
+
   });
+
 
 
   function processAllDevicesData(data) {
@@ -171,14 +193,6 @@
     processAllDevicesData(data);
    });
 
-   /*
-   var cachedContent = localStorage.getItem('allDevicesList');
-   if (typeof cachedContent == 'string') {
-    processAllDevicesData(cachedContent);
-   }
-   */
-
-
   }
 
   function quickNavUpdated() {
@@ -186,7 +200,15 @@
    mySwiper.slideTo(groupSelectedIdx);
    return true;
   }
+
+
+
  </script>
+
+
+ <div class="swiper-container-header">
+  <div class="swiper-wrapper swiper-wrapper-header">
+   <div class="swiper-slide">
 
  <div class="row" style="margin-left:0px;margin-right:0px;">
   <div class="col-xs-10">
@@ -243,6 +265,11 @@
    <a href="/apps.html" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
   </div>
  </div>
+
+   </div>
+   </div>
+  </div>
+
 
  <div class="swiper-container-nav">
   <div class="swiper-wrapper">

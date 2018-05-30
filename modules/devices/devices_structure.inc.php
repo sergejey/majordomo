@@ -293,3 +293,13 @@ $this->device_types=array(
             ),
     ),
 );
+
+$addons_dir=DIR_MODULES.$this->name.'/addons';
+if (is_dir($addons_dir)) {
+    $addon_files=scandir($addons_dir);
+    foreach($addon_files as $file) {
+        if (preg_match('/\_structure\.php$/',$file)) {
+            require($addons_dir.'/'.$file);
+        }
+    }
+}
