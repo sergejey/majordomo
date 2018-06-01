@@ -735,7 +735,7 @@ function copyTree($source, $destination, $over = 0)
 
    if (!Is_Dir($destination))
    {
-      if (!mkdir($destination, 0777))
+      if (!mkdir($destination, 0777,true))
       {
          return 0; // cannot create destination path
       }
