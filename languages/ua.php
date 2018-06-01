@@ -687,7 +687,7 @@ $dictionary = array (
 
 
     'LINKED_OBJECT' => 'Зв’язаний об’єкт',
-    'LINKED_PROPERTY' => 'Пов’язана вл-ть',
+    'LINKED_PROPERTY' => 'Зв’язана вл-ть',
     'SET' => 'встановити',
 
 
@@ -796,10 +796,10 @@ $dictionary = array (
 
     'APPEAR_ANIMATION' => 'Анімація появи',
     'APPEAR_LEFTTORIGHT' => 'Зліва-на-право',
-    'APPEAR_RIGHTTOLEFT' => 'Праворуч-на-ліво',
+    'APPEAR_RIGHTTOLEFT' => 'Справа-на-ліво',
     'APPEAR_TOPTOBOTTOM' => 'Зверху-вниз',
     'APPEAR_BOTTOMTOTOP' => 'Знизу-вгору',
-    'APPEAR_BLINK' => 'Моргание',
+    'APPEAR_BLINK' => 'Моргання',
     'APPEAR_SCALE' => 'Масштаб',
 
 
@@ -818,7 +818,7 @@ $dictionary = array (
 
 
     'PLAYER_PORT' => 'Порт доступу до плеєра',
-    'PLAYER_USERNAME' => 'Ім користувача доступу до плеєра',
+    'PLAYER_USERNAME' => 'Ім’я користувача доступу до плеєра',
     'PLAYER_PASSWORD' => 'Пароль доступу до плеєра',
     'DEVICE' => 'Пристрій',
 
@@ -882,13 +882,13 @@ $dictionary = array (
 
     'USE_BACKGROUND' => 'Використовувати фон',
     'YES' => 'Так',
-    'NO' => 'Немає',
+    'NO' => 'Ні',
 
     'USE_JAVASCRIPT' => 'Додатковий код JavaScript',
     'USE_CSS' => 'Додатковий код CSS',
 
     'PERIOD' => 'Період',
-    'PERIOD_TODAY' => 'Сегодня',
+    'PERIOD_TODAY' => 'Сьогодні',
     'PERIOD_DAY' => 'Доба (24 години)',
     'PERIOD_WEEK' => 'Тиждень',
     'PERIOD_MONTH' => 'Місяць',
@@ -993,7 +993,7 @@ $dictionary = array (
 
     'WALLPAPER' => 'Шпалери',
 
-    'ADDITIONAL_STATES' => 'Додаткові стану',
+    'ADDITIONAL_STATES' => 'Додаткові стани',
     'MODE_SWITCH' => 'Індикатор режиму',
     'HIGH_ABOVE' => 'Значення вище',
     'LOW_BELOW' => 'Значення нижче',
@@ -1092,7 +1092,7 @@ $dictionary = array (
     'M_WATT' => 'Вт',
 
 // ----
-    'DEVICES_LINKS' => 'Зміни, пов’язані пристрої',
+    'DEVICES_LINKS' => 'Зв’язані пристрої',
 
     'DEVICES_STATUS' => 'Статус',
 
@@ -1139,7 +1139,7 @@ $dictionary = array (
     'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв’язків',
     'DEVICES_LINKS_COMMENT' => 'Коментар (не обов’язково)',
     'DEVICES_LINKS_LINKED_DEVICE' => 'Пов’язаний пристрій',
-    'DEVICES_LINKS_ADDED' => 'Зміни, пов’язані пристрої',
+    'DEVICES_LINKS_ADDED' => 'Зв’язані пристрої',
 
     'DEVICES_LINK_ACTION_TYPE' => 'Дія',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Ввімкнути',
