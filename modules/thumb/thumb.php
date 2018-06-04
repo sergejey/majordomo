@@ -34,7 +34,11 @@ if (IsSet($url) && $url != '') {
             $resolution = $w.'x'.$h;
         }
         $cmd = 'fswebcam -r '.$resolution.' '.$img_tmp;
-        exec($cmd);
+        if ($_GET['debug']) {
+            echo $cmd.'<br/>';
+        } else {
+            exec($cmd);
+        }
         if (file_exists($img_tmp)) {
             rename($img_tmp, $img);
         }

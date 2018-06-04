@@ -111,6 +111,17 @@ for ($i = 0; $i < $total; $i++) {
                 $reply_confirm = 1;
             }
         }
+
+        $addons_dir=DIR_MODULES.$this->name.'/addons';
+        if (is_dir($addons_dir)) {
+            $addon_files=scandir($addons_dir);
+            foreach($addon_files as $file) {
+                if (preg_match('/\_commands\.php$/',$file)) {
+                    require($addons_dir.'/'.$file);
+                }
+            }
+        }
+
     }
     if ($processed) break;
 }

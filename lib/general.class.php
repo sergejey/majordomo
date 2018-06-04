@@ -188,14 +188,11 @@ function LoadFile($filename)
    // loading file
    $f     = fopen($filename, "r");
    $data  = "";
-   $fsize = filesize($filename);
-
-   if ($f && $fsize > 0)
-   {
+   if ($f) {
+      $fsize = filesize($filename);
       $data = fread($f, $fsize);
       fclose($f);
    }
-
    return $data;
 }
 
@@ -533,12 +530,17 @@ function DebMes($errorMessage, $logLevel = "debug")
     $path = ROOT . 'cms/debmes';
    }
 
+   if (defined('LOG_MAX_SIZE') && LOG_MAX_SIZE>0) {
+      $max_log_size = LOG_MAX_SIZE*1024*1024; // Mb
+   } else {
+      $max_log_size = 5*1024*1024; // 5 Mb, default
+   }
+
    // DEBUG MESSAGE LOG
    if (!is_dir($path))
    {
       mkdir($path, 0777);
    }
-
    if (is_array($errorMessage) || is_object($errorMessage)) {
       $errorMessage=json_encode($errorMessage, JSON_PRETTY_PRINT);
    }
@@ -548,6 +550,9 @@ function DebMes($errorMessage, $logLevel = "debug")
    } else {
       $today_file=$path.'/'.date('Y-m-d').'.log';
    }
+
+   if (file_exists($today_file) && filesize($today_file)>$max_log_size) return;
+
    $f=fopen($today_file, "a+");
    if ($f) {
                 $tmp=explode(' ', microtime());

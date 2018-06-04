@@ -99,9 +99,14 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SDimmers',
         'PROPERTIES'=>array(
-            'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1)),
+            'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1),
+            'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
+            'minWork'=>array('DESCRIPTION'=>'Min level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'maxWork'=>array('DESCRIPTION'=>'Max level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            ),
         'METHODS'=>array(
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
+            'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),
             'turnOn'=>array('DESCRIPTION'=>'Dimmer turnOn'),
             'turnOff'=>array('DESCRIPTION'=>'Dimmer turnOff'),
         )
@@ -231,7 +236,15 @@ $this->device_types=array(
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
         )
-    ),	
+    ),
+    'sensor_general'=>array(
+        'TITLE'=>LANG_DEVICES_GENERAL_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SGeneralSensors',
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+        ),
+    ),
     'sensor_temp'=>array(
         'TITLE'=>LANG_DEVICES_TEMP_SENSOR,
         'PARENT_CLASS'=>'SSensors',
@@ -288,3 +301,13 @@ $this->device_types=array(
             ),
     ),
 );
+
+$addons_dir=DIR_MODULES.$this->name.'/addons';
+if (is_dir($addons_dir)) {
+    $addon_files=scandir($addons_dir);
+    foreach($addon_files as $file) {
+        if (preg_match('/\_structure\.php$/',$file)) {
+            require($addons_dir.'/'.$file);
+        }
+    }
+}

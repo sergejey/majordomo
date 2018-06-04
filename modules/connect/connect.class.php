@@ -161,7 +161,9 @@ function run() {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-  curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password); 
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password);
 
   //execute post
   $result = curl_exec($ch);
@@ -319,8 +321,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-
-
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
 
@@ -351,31 +353,60 @@ function admin(&$out) {
 
   // POST TO SERVER
   $url = 'https://connect.smartliving.ru/upload/';
-  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
-  //url-ify the data for the POST
-  foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-  rtrim($fields_string, '&');
+  $datafile_name=ROOT.'cms/cached/connect_data.txt';
+  SaveFile($datafile_name, serialize($data));
+
+  if (!function_exists('getCurlValue')) {
+   function getCurlValue($filename, $contentType, $postname)
+   {
+    if (function_exists('curl_file_create')) {
+     return curl_file_create($filename, $contentType, $postname);
+    }
+    $value = "@".$filename.";filename=" . $postname;
+    if ($contentType) {
+     $value .= ';type=' . $contentType;
+    }
+    return $value;
+   }
+  }
+
+  $cfile = getCurlValue($datafile_name,'text/plain','datafile.txt');
+  $fields = array(
+      'datafile' => $cfile,
+      'merge' => 1,
+      'force_data'=>$force_data
+  );
 
   //open connection
   $ch = curl_init();
-  //set the url, number of POST vars, POST data
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));
-  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_HEADER, 1);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
 
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+
 
   //execute post
   $result = curl_exec($ch);
   //close connection
-  curl_close($ch);
 
+  if (curl_errno($ch)) {
+   $errorInfo = curl_error($ch);
+   $info = curl_getinfo($ch);
+   //DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info),'connect_menu');
+  }
+  curl_close($ch);
+  //DebMes('Connect sending menu request $url ('.$this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD'].'): '. json_encode($fields),'connect_menu');
+  //DebMes('Connect sending menu response: '.$result,'connect_menu');
  }
 
  function propertySetHandle($object, $property, $value) {
@@ -422,8 +453,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-
-
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
 
@@ -524,7 +555,6 @@ function admin(&$out) {
   $datafile_name=ROOT.'cms/cached/connect_data.txt';
   SaveFile($datafile_name, serialize($data));
 
-
   if (!function_exists('getCurlValue')) {
    function getCurlValue($filename, $contentType, $postname)
    {
@@ -541,26 +571,10 @@ function admin(&$out) {
 
   $cfile = getCurlValue($datafile_name,'text/plain','datafile.txt');
  
-//NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
-
   $fields = array(
      'datafile' => $cfile
   );
 
-  /*
-  $fields = array(
-     'datafile' => '@'.realpath($datafile_name).';filename=datafile.txt'
-  );
-  */
-
-  //print_r($fields);exit;
-
-
-  //url-ify the data for the POST
-  //foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-  //rtrim($fields_string, '&');
-
-  //sleep(1);
   //open connection
   $ch = curl_init();
   //set the url, number of POST vars, POST data
@@ -571,7 +585,9 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-  curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
 
   //execute post
   $result = curl_exec($ch);

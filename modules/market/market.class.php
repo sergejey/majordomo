@@ -933,7 +933,7 @@ function usual(&$out) {
   }
 
   if (!Is_Dir($destination)) {
-   if (!mkdir($destination)) {
+   if (!mkdir($destination,0777,true)) {
     return 0; // cannot create destination path
    }
   }
