@@ -1070,6 +1070,7 @@ $dictionary=array(
     'DEVICES_BUTTON' => 'Button',
     'DEVICES_SWITCH' => 'Switch',
     'DEVICES_OPENCLOSE' => 'Open/Close sensor',
+    'DEVICES_GENERAL_SENSOR' => 'General sensor',
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
     'DEVICES_STATE_SENSOR' => 'State sensor',

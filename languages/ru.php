@@ -1065,6 +1065,7 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Кнопка',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
+    'DEVICES_GENERAL_SENSOR' => 'Общий датчик',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности',
     'DEVICES_STATE_SENSOR' => 'Датчик состояния',

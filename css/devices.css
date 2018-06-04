@@ -92,6 +92,10 @@
     background-image: url(../cms/scenes/styles/informer/i_temp.png);
 }
 
+.device-icon.general-sensor {
+    background-image: url(../cms/scenes/styles/informer/i_temp.png);
+}
+
 .device-icon.light-sensor {
     background-image: url(../cms/scenes/styles/informer/i_illum.png);
 }

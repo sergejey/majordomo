@@ -236,7 +236,15 @@ $this->device_types=array(
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
         )
-    ),	
+    ),
+    'sensor_general'=>array(
+        'TITLE'=>LANG_DEVICES_GENERAL_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SGeneralSensors',
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+        ),
+    ),
     'sensor_temp'=>array(
         'TITLE'=>LANG_DEVICES_TEMP_SENSOR,
         'PARENT_CLASS'=>'SSensors',
