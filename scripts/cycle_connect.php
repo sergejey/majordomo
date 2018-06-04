@@ -23,13 +23,21 @@ include_once(DIR_MODULES . 'connect/connect.class.php');
 
 $menu_sent_time = 0;
 
+$mqttLib = file_exists(ROOT . "lib/mqtt/phpMQTT.php");
+if (!$mqttLib) {
+    echo "MQTT application is not installed.";
+    exit;
+} else {
+    require("./lib/mqtt/phpMQTT.php");
+}
+
+
 while (1) {
     $connect = new connect();
     $connect->getConfig();
     
-    $mqttLib = file_exists(ROOT . "lib/mqtt/phpMQTT.php");
-    if (!$connect->config['CONNECT_SYNC'] || !$mqttLib) {
-        echo "Connect sync turned off or MQTT application is not installed.";
+    if (!$connect->config['CONNECT_SYNC']) {
+        echo "Connect sync turned off.";
         exit;
     }
 
@@ -42,8 +50,6 @@ while (1) {
         $cmd_titles[$commands[$i]['ID']] = $commands[$i]['RENDER_TITLE'];
         $cmd_data[$commands[$i]['ID']] = $commands[$i]['RENDER_DATA'];
     }
-
-    require("./lib/mqtt/phpMQTT.php");
 
     $username = strtolower($connect->config['CONNECT_USERNAME']);
     $password = $connect->config['CONNECT_PASSWORD'];
