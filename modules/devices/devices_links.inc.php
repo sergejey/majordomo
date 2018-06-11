@@ -62,9 +62,10 @@ if ($this->edit_mode=='edit_link') {
     }
     $target_classes=explode(',',$link_details['TARGET_CLASS']);
     $target_classes=array_map('trim',$target_classes);
+    $second_devices=array();
+
     $other_devices=SQLSelect("SELECT * FROM devices WHERE ID!=".(int)$rec['ID']." ORDER BY TITLE");
     $total = count($other_devices);
-    $second_devices=array();
     for ($i = 0; $i < $total; $i++) {
         $type_details=$this->getTypeDetails($other_devices[$i]['TYPE']);
         if (in_array($type_details['CLASS'],$target_classes) || in_array($type_details['PARENT_CLASS'],$target_classes)) {

@@ -34,8 +34,20 @@
    <option value=""><#LANG_LOCATION#>
     [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])
    [#end LOCATIONS#]
+   <option value="manage_locations">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
   </select>
  </div>
+
+ <div class="form-group">
+  <select name="group_name" class="form-control"  onchange="this.form.submit();">
+   <option value=""><#LANG_GROUPS#></option>
+   [#begin GROUPS#]
+   <option value="[#SYS_NAME#]"[#if SYS_NAME="<#GROUP_NAME#>"#] selected[#endif#]>[#TITLE#]</option>
+   [#end GROUPS#]
+   <option value="manage_groups">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
+  </select>
+ </div>
+
 </form>&nbsp;
 
 <!-- results -->
