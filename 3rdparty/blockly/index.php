@@ -403,27 +403,9 @@ $ctl = new control_modules();
     include_once(DIR_MODULES.'devices/devices.class.php');
     $dev=new devices();
     $dev->setDictionary();
-
-    $groups = SQLSelect("SELECT * FROM devices_groups ORDER BY TITLE");
-    $total = count($groups);
-    if ($total>0) {
-      echo '<category name="'.LANG_DEVICES_MODULE_TITLE.' - '.LANG_GROUPS.'">'."\n";
-      for ($i = 0; $i < $total; $i++) {
-        echo '<block type="majordomo_group_'.$groups[$i]['ID'].'_turnOn"></block>'."\n";
-        echo '<block type="majordomo_group_'.$groups[$i]['ID'].'_turnOff"></block>'."\n";
-      }
-      echo '</category>';
-    }
-
-    $locations = SQLSelect("SELECT * FROM locations ORDER BY TITLE");
-    $totall=count($locations);
-    for($il=0;$il<$totall;$il++) {
-    $res=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=".(int)$locations[$il]['ID']." ORDER BY TITLE");
+    echo '<category name="'.LANG_DEVICES_MODULE_TITLE.'">'."\n";
+    $res=SQLSelect("SELECT * FROM devices ORDER BY TITLE");
     $total = count($res);
-      if (!$total) {
-        continue;
-      }
-    echo '<category name="'.LANG_DEVICES_MODULE_TITLE.' - '.$locations[$i]['TITLE'].'">'."\n";
     for ($i = 0; $i < $total; $i++) {
       if ($res[$i]['TYPE']=='relay') {
       } elseif ($res[$i]['TYPE']=='dimmer') {
@@ -458,7 +440,6 @@ $ctl = new control_modules();
     }
     
    echo '</category>';
-  }
   }
 
   ?>

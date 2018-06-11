@@ -297,11 +297,13 @@ function usual(&$out) {
     include(DIR_MODULES.'app_player/foobar.php');
    } elseif ($terminal['PLAYER_TYPE']=='vlcweb') {
     include(DIR_MODULES.'app_player/vlcweb.php');
+   } elseif ($terminal['PLAYER_TYPE']=='mpd') {
+    include(DIR_MODULES.'app_player/mpd.php');
+    } elseif ($terminal['PLAYER_TYPE']=='chromecast') {
+     include(DIR_MODULES.'app_player/chromecast.php');
    } elseif ($terminal['MAJORDROID_API'] || $terminal['PLAYER_TYPE']=='majordroid') {
    include(DIR_MODULES.'app_player/majordroid.php');
-   } elseif (file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.php')) {
-     include(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.php');
-    }
+   }
 
    // close cURL resource, and free up system resources
    curl_close($ch);    

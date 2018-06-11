@@ -26,21 +26,6 @@ $dev->setDictionary();
 @include_once(ROOT.'languages/devices'.'_'.SETTINGS_SITE_LANGUAGE.'.php');
 @include_once(ROOT.'languages/devices'.'_default'.'.php');
 
-$blocks=SQLSelect("SELECT * FROM devices_groups ORDER BY ID");
-$total=count($blocks);
-for($i=0;$i<$total;$i++) {
-  ?>
-Blockly.PHP['majordomo_group_<?php echo $blocks[$i]['ID'];?>_turnOn'] = function(block) {
-  var code = '$objects=getObjectsByProperty("group<?php echo $blocks[$i]['SYS_NAME']?>",1);\nforeach($objects as $object_title) {\ncallMethod($object_title.".turnOn");\n}\n';
-  return code;
-};
-Blockly.PHP['majordomo_group_<?php echo $blocks[$i]['ID'];?>_turnOff'] = function(block) {
-  var code = '$objects=getObjectsByProperty("group<?php echo $blocks[$i]['SYS_NAME']?>",1);\nforeach($objects as $object_title) {\ncallMethod($object_title.".turnOff");\n}\n';
-  return code;
-};
-<?php
-}
-
 $blocks=SQLSelect("SELECT * FROM devices ORDER BY ID");
 $total=count($blocks);
 for($i=0;$i<$total;$i++) {

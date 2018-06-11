@@ -70,20 +70,6 @@
  </div>
  [#end PROPERTIES#]
 
- [#if GROUPS#]
- <div class="form-group">
-  <div class="col-md-5 text-right">
-   <#LANG_GROUPS#>:
-   <#LANG_HCB#>devicegroups<#LANG_HCE#>
-  </div>
-  <div class="col-md-7">
-   [#begin GROUPS#]
-   <input type="checkbox" name="apply_groups[]" value="[#SYS_NAME#]"[#if SELECTED="1"#] checked[#endif#]> [#TITLE#] (<#LANG_PROPERTY#> group[#SYS_NAME#])<br/>
-   [#end GROUPS#]
-  </div>
- </div>
- [#endif GROUPS#]
-
 <div class="form-group">
  <label class="col-md-8 control-label">
   &nbsp;

@@ -1,7 +1,7 @@
 <?php
 $address=$terminal['HOST']; // ip
 
-include_once(DIR_MODULES.'app_player/addons/castv2/Chromecast.php');
+include_once(DIR_MODULES.'app_player/castv2/Chromecast.php');
 
 $cc = new Chromecast($address,8009);
 $cc->requestId = time();

@@ -130,13 +130,14 @@
                 <select name="player_type" class="form-control">
                         <option value=""><#LANG_DEFAULT#>
                         <option value="vlc"[#if PLAYER_TYPE=="vlc"#] selected[#endif#]>VLC
+                        <option value="xbmc"[#if PLAYER_TYPE=="xbmc"#] selected[#endif#]>Kodi (XBMC)
+                        <option value="foobar"[#if PLAYER_TYPE=="foobar"#] selected[#endif#]>Foobar2000
                         <option value="vlcweb"[#if PLAYER_TYPE=="vlcweb"#] selected[#endif#]>VLC over HTTP
+                        <option value="mpd"[#if PLAYER_TYPE=="mpd"#] selected[#endif#]>MPD
                         <option value="majordroid"[#if PLAYER_TYPE=="majordroid"#] selected[#endif#]>MajorDroid
+                        <option value="chromecast"[#if PLAYER_TYPE=="chromecast"#] selected[#endif#]>ChromeCast / Google TV
                         <option value="ghn"[#if PLAYER_TYPE=="ghn"#] selected[#endif#]>Google-home-notifier
-                    [#begin PLAYER_ADDONS#]
-                    <option value="[#VALUE#]"[#if VALUE="<#PLAYER_TYPE#>"#] selected[#endif#]>[#TITLE#]
-                    [#end PLAYER_ADDONS#]
-
+                        <option value="dlna"[#if PLAYER_TYPE=="dlna"#] selected[#endif#]>DLNA Player
                 </select>
         </div>
 </div>

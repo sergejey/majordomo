@@ -3,7 +3,7 @@
 if($terminal['PLAYER_PASSWORD'] == '')
    $terminal['PLAYER_PASSWORD'] = NULL;
 
-include_once(DIR_MODULES.'app_player/addons/mpd/mpd.class.php');
+include 'mpd.class.php';
 
 if (!$terminal['PLAYER_PORT'])
    $terminal['PLAYER_PORT'] = 6600;

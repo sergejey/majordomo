@@ -9,32 +9,16 @@
   $qry="1";
   // search filters
 
-$type=gr('type');
+  global $type;
   if ($type!='') {
    $qry.=" AND devices.TYPE='".DBSafe($type)."'";
    $out['TYPE']=$type;
   }
 
-$location_id=gr('location_id');
-if ($location_id == 'manage_locations') {
-    $this->redirect("?(panel:{action=locations})");
-} elseif ($location_id) {
+global $location_id;
+if ($location_id) {
  $out['LOCATION_ID']=(int)$location_id;
  $qry.=" AND devices.LOCATION_ID=".$out['LOCATION_ID'];
-}
-
-$group_name=gr('group_name');
-if ($group_name=='manage_groups') {
-    $this->redirect("?view_mode=manage_groups");
-} elseif ($group_name) {
-    $object_names=getObjectsByProperty('group'.$group_name,1);
-    $object_names[]=0;
-    $total = count($object_names);
-    for($i=0;$i<$total;$i++) {
-        $object_names[$i]="'".$object_names[$i]."'";
-    }
-    $qry.=" AND devices.LINKED_OBJECT IN (".implode(',',$object_names).")";
-    $out['GROUP_NAME']=$group_name;
 }
 
   // QUERY READY
@@ -100,6 +84,3 @@ for ($i = 0; $i < $total; $i++) {
 }
 $out['LOCATIONS']=$locations;
 //var_dump($this->getWatchedProperties(0));exit;
-
-$groups = SQLSelect("SELECT * FROM devices_groups ORDER BY TITLE");
-$out['GROUPS']=$groups;
