@@ -1225,6 +1225,9 @@ $dictionary=array(
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
     'DEVICES_LOAD_TIMEOUT'=>'Load status timeout',
 
+    'GROUPS' => 'Groups',
+    'APPLIES_TO' => 'Applies to',
+
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
 

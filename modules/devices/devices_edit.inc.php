@@ -106,6 +106,43 @@
          //print_r($res_properties);exit;
          $out['PROPERTIES']=$res_properties;
      }
+     $groups=$this->getAllGroups($rec['TYPE']);
+
+     global $apply_groups;
+     if ($this->mode=='update') {
+         if (!is_array($apply_groups)) {
+             $apply_groups=array();
+         }
+     } else {
+         $apply_groups=array();
+     }
+
+     $total = count($groups);
+
+     $object_id=gg($rec['LINKED_OBJECT'].'.object_id');
+
+     if ($total>0) {
+         for($i=0;$i<$total;$i++) {
+             $property_title='group'.$groups[$i]['SYS_NAME'];
+             if ($this->mode=='update') {
+                 if (in_array($groups[$i]['SYS_NAME'],$apply_groups)) {
+                     sg($rec['LINKED_OBJECT'].'.'.$property_title,1);
+                 } elseif (gg($rec['LINKED_OBJECT'].'.'.$property_title)) {
+                     sg($rec['LINKED_OBJECT'].'.'.$property_title,0);
+                     $property_id=current(SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID=".(int)$object_id." AND TITLE='".DBSafe($property_title)."'"));
+                     if ($property_id) {
+                         SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID=".$property_id." AND OBJECT_ID=".$object_id);
+                         SQLExec("DELETE FROM properties WHERE ID=".$property_id);
+                     }
+                     //echo $property_id;exit;
+                 }
+             }
+             if (gg($rec['LINKED_OBJECT'].'.'.$property_title)){
+                 $groups[$i]['SELECTED']=1;
+             }
+         }
+         $out['GROUPS']=$groups;
+     }
   }
 
   if ($this->tab=='interface') {

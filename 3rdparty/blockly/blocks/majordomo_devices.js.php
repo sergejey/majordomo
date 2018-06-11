@@ -26,6 +26,40 @@ $dev->setDictionary();
 @include_once(ROOT.'languages/devices'.'_'.SETTINGS_SITE_LANGUAGE.'.php');
 @include_once(ROOT.'languages/devices'.'_default'.'.php');
 
+$blocks=SQLSelect("SELECT * FROM devices_groups ORDER BY TITLE");
+$total=count($blocks);
+for($i=0;$i<$total;$i++) {
+  ?>
+Blockly.Blocks['majordomo_group_<?php echo $blocks[$i]['ID'];?>_turnOn'] = {
+  init: function () {
+    var thisBlock = this;
+    this.appendDummyInput()
+        .appendField('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_TURN_ON;?>');
+    this.setInputsInline(true);
+    this.setColour(275);
+    this.setOutput(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_TURN_ON;?>');
+  }
+};
+
+Blockly.Blocks['majordomo_group_<?php echo $blocks[$i]['ID'];?>_turnOff'] = {
+  init: function () {
+    var thisBlock = this;
+    this.appendDummyInput()
+        .appendField('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_TURN_OFF;?>');
+    this.setInputsInline(true);
+    this.setColour(275);
+    this.setOutput(false);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_TURN_OFF;?>');
+  }
+};
+<?php
+}
+
 $blocks=SQLSelect("SELECT * FROM devices ORDER BY ID");
 $total=count($blocks);
 for($i=0;$i<$total;$i++) {
