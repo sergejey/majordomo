@@ -1106,6 +1106,7 @@ $dictionary=array(
     'DEVICES_MAX_VALUE' => 'Maximum value',
     'DEVICES_NOTIFY' => 'Notify when value out of range',
     'DEVICES_NORMAL_VALUE' => 'Value within range',
+    'DEVICES_DIRECTION_TIMEOUT' => 'Direction tracking time period (seconds)',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Value is out of normal range',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Value is back to normal',
     'DEVICES_MOTION_IGNORE' => 'Ignore device events when nobody\'s home',

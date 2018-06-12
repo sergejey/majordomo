@@ -1101,6 +1101,7 @@ $dictionary = array(
     'DEVICES_MAX_VALUE' => 'Верхний порог',
     'DEVICES_NOTIFY' => 'Уведомлять при выходе за порог',
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
+    'DEVICES_DIRECTION_TIMEOUT' => 'Интервал времени расчета направления изменений (сек)',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
     'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',

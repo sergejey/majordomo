@@ -14,6 +14,10 @@
  $minValue=(float)$this->getProperty('minValue');
  $maxValue=(float)$this->getProperty('maxValue');
  $is_normal=(int)$this->getProperty('normalValue');
+ $directionTimeout=(int)$this->getProperty('directionTimeout');
+ if (!$directionTimeout) {
+  $directionTimeout=1*60*60;
+ }
 
  if ($maxValue==0 && $minValue==0 && !$is_normal) {
   $this->setProperty('normalValue', 1);
@@ -29,6 +33,19 @@
    //back to normal notify
    say(LANG_DEVICES_NOTIFY_BACKTONORMAL. ' ('.$description.' '.$value.')', 2);
   }
+ }
+
+
+ $data1 = getHistoryValue($this->object_title.".value", time()-$directionTimeout);
+ $direction = 0;
+ if ($data1>$value) {
+  $direction=-1;
+ } elseif ($data1<$value) {
+  $direction=1;
+ }
+ $currentDirection = $this->getProperty('direction');
+ if ($currentDirection != $direction) {
+  $this->setProperty('direction',$direction);
  }
 
  if ($linked_room && $this->getProperty('mainSensor')) {

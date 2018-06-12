@@ -28,7 +28,9 @@ if ($group_name=='manage_groups') {
     $this->redirect("?view_mode=manage_groups");
 } elseif ($group_name) {
     $object_names=getObjectsByProperty('group'.$group_name,1);
-    $object_names[]=0;
+    if (!is_array($object_names)) {
+        $object_names=array(0);
+    }
     $total = count($object_names);
     for($i=0;$i<$total;$i++) {
         $object_names[$i]="'".$object_names[$i]."'";

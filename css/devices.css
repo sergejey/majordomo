@@ -3,6 +3,11 @@
     padding:2px;
     border:1px solid transparent;
 }
+
+.device-widget.offline {
+    background-color:#aaaaaa;
+}
+
 .device-icon {
     background-image: url(../cms/scenes/styles/button/i_button.png);
     background-repeat: no-repeat;
