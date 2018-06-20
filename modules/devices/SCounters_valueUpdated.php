@@ -12,6 +12,8 @@ if (!isset($params['NEW_VALUE'])) {
     $new_value=(float)$params['NEW_VALUE'];
 }
 
+
+
 $history_values=array(
     'valueHour'=>date('Y-m-d H:00:00'),
     'valueDay'=>date('Y-m-d 00:00:00')

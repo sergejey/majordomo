@@ -273,29 +273,10 @@ function admin(&$out) {
    $filename=urlencode('Elements'.date('H-i-s'));
 
    $ext = "elements";   // file extension
-   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-   ? 'application/octetstream'
-   : 'application/octet-stream';
-   header('Content-Type: ' . $mime_type);
-   if (PMA_USR_BROWSER_AGENT == 'IE')
-   {
-      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      print $data;
-   } else {
-      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Pragma: no-cache');
-      print $data;
-   }
 
-   exit;
-
-
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="'.($filename . '.' . $ext).'"');
+    echo ($data);
     exit;
    } else {
     $this->view_mode='edit_scenes';
@@ -1119,18 +1100,26 @@ function usual(&$out) {
       for($ie=0;$ie<$totale;$ie++) {
 
        if ($elements[$ie]['TYPE']=='object') {
-        $state=array();
-
-        $state['ID']='element_'.($elements[$ie]['ID']);
-        $state['ELEMENT_ID']=$elements[$ie]['ID'];
-        $state['HTML']=getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
-        $state['TYPE']=$elements[$ie]['TYPE'];
-        $state['MENU_ITEM_ID']=0;
-        $state['HOMEPAGE_ID']=0;
-        $state['OPEN_SCENE_ID']=0;
-        $states=array($state);
-
-
+        $state = array();
+        $state['ID'] = 'element_' . ($elements[$ie]['ID']);
+        $state['ELEMENT_ID'] = $elements[$ie]['ID'];
+        $state['HTML'] = getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
+        $state['TYPE'] = $elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID'] = 0;
+        $state['HOMEPAGE_ID'] = 0;
+        $state['OPEN_SCENE_ID'] = 0;
+        $states = array($state);
+       } elseif ($elements[$ie]['TYPE']=='device') {
+        $device_rec=SQLSelectOne("SELECT * FROM devices WHERE ID=".(int)$elements[$ie]['DEVICE_ID']);
+        $state = array();
+        $state['ID'] = 'element_' . ($elements[$ie]['ID']);
+        $state['ELEMENT_ID'] = $elements[$ie]['ID'];
+        $state['HTML'] = '<div style="width:250px">'.getObjectClassTemplate($device_rec['LINKED_OBJECT']).'</div>';
+        $state['TYPE'] = $elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID'] = 0;
+        $state['HOMEPAGE_ID'] = 0;
+        $state['OPEN_SCENE_ID'] = 0;
+        $states = array($state);
        } else {
         $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
        }
@@ -1624,6 +1613,7 @@ elm_states - Element states
  elements: SYSTEM varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
  elements: CSS_STYLE varchar(255) NOT NULL DEFAULT ''
+ elements: DEVICE_ID int(10) NOT NULL DEFAULT '0'
  elements: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  elements: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  elements: LINKED_METHOD varchar(255) NOT NULL DEFAULT ''

@@ -18,10 +18,12 @@ if ($this->edit_mode=='edit_link') {
         $out['LINK_ID']=$link_rec['ID'];
         $out['COMMENT']=$link_rec['COMMENT'];
         $settings=unserialize($link_rec['LINK_SETTINGS']);
+        if (is_array($link_details['PARAMS'])) {
         foreach($link_details['PARAMS'] as &$p) {
             if (isset($settings[$p['PARAM_NAME']])) {
                 $p['VALUE']=$settings[$p['PARAM_NAME']];
             }
+        }
         }
     }
 

@@ -462,7 +462,7 @@ function admin(&$out) {
 
   if ($this->view_mode=='delete_devices') {
    $this->delete_devices($this->id);
-   $this->redirect("?");
+   $this->redirect("?type=".gr('type').'&location_id='.gr('location_id').'&group_name='.gr('group_name'));
   }
  }
 }
@@ -900,6 +900,9 @@ function usual(&$out) {
      $element_rec['EASY_CONFIG']=1;
      $linked_property_unit='';
 
+     $element_rec['TYPE']='device';
+     $element_rec['DEVICE_ID']=$rec['ID'];
+     /*
      if ($rec['TYPE']=='relay' || $rec['TYPE']=='dimmer' || $rec['TYPE']=='switch') {
          $element_rec['TYPE'] = 'switch';
          $element_rec['LINKED_PROPERTY'] = 'status';
@@ -918,7 +921,6 @@ function usual(&$out) {
      } else {
          $element_rec['TYPE']='object';
      }
-
      if ($rec['TYPE']=='sensor_temp' || $rec['TYPE']=='sensor_humidity') {
          $element_rec['TYPE'] = 'informer';
          $element_rec['LINKED_PROPERTY'] = 'value';
@@ -928,6 +930,7 @@ function usual(&$out) {
          $wizard_data['STATE_LOW_VALUE']='%'.$element_rec['LINKED_OBJECT'].'.maxValue%';
          $wizard_data['UNIT']=$linked_property_unit;
      }
+     */
 
      $element_rec['WIZARD_DATA']=json_encode($wizard_data);
 

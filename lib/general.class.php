@@ -563,6 +563,24 @@ function DebMes($errorMessage, $logLevel = "debug")
    }
 }
 
+function dprint($data = 0, $stop = 1) {
+   echo "<pre>";
+   if ($data!==0) {
+      if (is_array($data)) {
+         print_r($data);
+      } else {
+         echo $data;
+      }
+   } else {
+      echo date('Y-m-d H:i:s');
+   }
+   echo "</pre>";
+
+   if ($stop) {
+      exit;
+   }
+}
+
 /**
  * Method returns logger with meaningful name. In this case much easy to enable\disable
  * logs depending on requirements
