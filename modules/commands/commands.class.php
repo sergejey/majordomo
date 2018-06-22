@@ -355,12 +355,7 @@ function admin(&$out) {
      $item['LINKED_OBJECT']=$object_rec['TITLE'];
     }
 
-    if ($item['LINKED_PROPERTY']!='') {
-     sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
-    }
-
     $params=array('VALUE'=>$item['CUR_VALUE'], 'OLD_VALUE'=>$old_value);
-
     if ($item['ONCHANGE_METHOD']!='') {
      if (!$item['LINKED_OBJECT']) {
       $item['LINKED_OBJECT']=$item['ONCHANGE_OBJECT'];
@@ -368,6 +363,10 @@ function admin(&$out) {
      getObject($item['LINKED_OBJECT'])->callMethod($item['ONCHANGE_METHOD'], $params); //ONCHANGE_OBJECT
     }
 
+    if ($item['LINKED_PROPERTY']!='') {
+      sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
+     }
+     
     if ($item['SCRIPT_ID']) {
      runScriptSafe($item['SCRIPT_ID'], $params);
     }
