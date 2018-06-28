@@ -1,7 +1,7 @@
 <?php
 
  $this->callMethod('statusUpdated');
- $this->callMethod('logicAction');
+ //$this->callMethod('logicAction');
 
  $ot=$this->object_title;
  $description = $this->description;
@@ -56,6 +56,8 @@
   }
  }
 
+/*
 include_once(DIR_MODULES.'devices/devices.class.php');
 $dv=new devices();
 $dv->checkLinkedDevicesAction($this->object_title, $value);
+*/
