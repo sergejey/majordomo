@@ -259,7 +259,7 @@ jQuery.fn.center = function () {
              hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
              clearTimeout(locationTimer);
              locationTimer = setTimeout('checkLocationHref();',1000);
-             url+='&part_load=1';
+             // url+='&part_load=1';
 
              var cachedKey = simple_hash(url);
              var cachedContent = localStorage.getItem(cachedKey);
