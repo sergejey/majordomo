@@ -12,8 +12,8 @@
                     serverUrl = "ws:";
             }
             serverUrl += "//" + loc.host + ':<#WEBSOCKETS_PORT#>/majordomo';
-
             try {
+                console.log('Conneting to '+serverUrl);
              if (window.MozWebSocket) {
                wsSocket = new MozWebSocket(serverUrl);
              } else if (window.WebSocket) {
@@ -21,15 +21,16 @@
              }
 
             } catch (e) {
+                console.log('Failed connecting to '+serverUrl);
                  return false;
             }
             wsSocket.binaryType = 'blob';
             wsSocket.onopen = function(msg) {
              ///connected
+              console.log('WS connected (<#REQUEST_URI#>)');
               startedWebSockets=1;
               clearTimeout(wsTimer);
               $.publish('wsConnected');
-              console.log('WS connected (<#REQUEST_URI#>)');
             };
             wsSocket.onmessage = function(msg) {
               console.log('WS data (<#REQUEST_URI#>)');

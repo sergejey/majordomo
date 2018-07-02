@@ -18,16 +18,17 @@ class MajordomoApplication extends Application
 
         public function onConnect($client)
     {
-                $id = $client->getClientId();
-        $this->_clients[$id] = $client;         
-
+        $id = $client->getClientId();
+        $this->_clients[$id] = $client;
+        echo "Client connected (".$client->getClientIp()."). Total clients: ".count($this->_clients)."\n";
     }
 
     public function onDisconnect($client)
     {
+        echo "Client disconnected\n";
         $id = $client->getClientId();           
         unset($this->_clients[$id]);
-
+        echo "Client dicconnected (".$client->getClientIp()."). Total clients: ".count($this->_clients)."\n";
 
     }
 
