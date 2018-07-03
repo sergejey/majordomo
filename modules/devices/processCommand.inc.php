@@ -31,8 +31,10 @@ for ($i = 0; $i < $total; $i++) {
         $dir = ROOT . 'lib/phpmorphy/dicts';
         if (SETTINGS_SITE_LANGUAGE == 'ru') {
             $lang = 'ru_RU';
-        } else {
+        } else if (SETTINGS_SITE_LANGUAGE == 'en'){
             $lang = 'en_EN';
+        } else {
+            $lang = 'uk_UA';
         }
         try {
             $morphy = new phpMorphy($dir, $lang, $opts);
