@@ -1,87 +1,116 @@
 <!--#
  @version 0.3
 #-->
+<link href="<#ROOTHTML#>3rdparty/jquery.multiselect/jquery.multiselect.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery.multiselect/jquery.multiselect.js"></script>
 <script language="javascript">
+ $(function() {
+  [#if MODE!="menu"#]
+   $('#selPlayTerminal').multiselect();
+  [#endif#]
+  [#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
+  playerCommand('refresh');
+  [#endif#]
+});
 
  var track = new Audio();
  track.controls = true;   // Set to false to make it a hidden element
  var trackcontainer = document.getElementById("html5audio");
  trackcontainer.appendChild(track);
 
- function playerCommandProcessed(id, data) {
-  var elem=document.getElementById('playerStatus');
-  elem.innerHTML=data;  
-  return false;
- }
  var playElement=document.getElementById('html5audio_player');
- function playerCommand(pcmd) {
-  if ($("#selPlayTerminal").val()=='') return false;
-  if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
-  var elem=document.getElementById('playerStatus');
-  elem.innerHTML=pcmd+'...';
-  var playTerminal;
-  playTerminal = $("#selPlayTerminal").val();
-  if (playTerminal == 'html5') {
-   playerCommandProcessed('playerStatus',pcmd);
 
-   //alert(playElement);
-   //playElement.src = $("#hidPlayPath").val();
+ var playerStatusTimer=0;
+ function playerStatus(status) {
+  clearTimeout(playerStatusTimer);
+  if (status=='') {
+   $('#playerStatus').hide();
+   return;
+  }
+  $('#playerStatus').html(status);
+  $('#playerStatus').show();
+  playerStatusTimer=setTimeout("playerStatus('');",2000);
+ }
+
+ function sendPlayerCommand(playTerminal,pcmd) {
+  var playURL = "<#ROOTHTML#>popup/app_player.html?ajax=1";
+  if (playTerminal == 'html5') {
    if (pcmd == 'refresh') {
     track.src = $("#hidPlayPath").val();
     track.play();
    }
+   if (pcmd == 'close') {
+    track.pause();
+   }
    if (pcmd == 'pause') {
     if (track.paused) {
+     playerStatus('Web-browser play.');
      track.play();
     } else {
+     playerStatus('Web-browser pause.');
      track.pause();
     }
    }
+   playURL += '&play_terminal=' + encodeURIComponent(playTerminal);
+   playURL += '&session_terminal=' + encodeURIComponent($("#selPlayTerminal").val());
+   $.ajax({
+    url: playURL
+   }).done(function (data) {
+    playerStatus(data);
+   });
   } else {
-   var url="<#ROOTHTML#>popup/app_player.html?ajax=1";
-   url+='&command='+pcmd;
-   url+='&play_terminal=' + playTerminal;
-   url+='&play='+URLencode($("#hidPlayPath").val());
-   url+='&rnd='+URLencode($("#hidPlayerRnd").val());
-   if (pcmd=='volume') {
-    url+='&volume='+URLencode($("#selVolume").val());
+   playURL += '&command=' + pcmd;
+   playURL += '&play_terminal=' + encodeURIComponent(playTerminal);
+   playURL += '&session_terminal=' + encodeURIComponent($("#selPlayTerminal").val());
+   playURL += '&play=' + encodeURIComponent($("#hidPlayPath").val());
+   playURL += '&rnd=' + encodeURIComponent($("#hidPlayerRnd").val());
+   if (pcmd == 'volume') {
+    playURL += '&volume=' + encodeURIComponent($("#selVolume").val());
    }
-   //prompt(url, url);
-   AJAXRequest(url, 'playerCommandProcessed', '');
+   $.ajax({
+    url: playURL
+   }).done(function (data) {
+    playerStatus(data);
+   });
+  }
+ }
+
+
+ function playerCommand(pcmd) {
+  if ($("#selPlayTerminal").val()=='') return false;
+  if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
+  playerStatus(pcmd);
+  var players = $("#selPlayTerminal").val();
+  for(var i=0;i<players.length;i++) {
+   sendPlayerCommand(players[i],pcmd);
   }
   return false;
  }
 </script>
 <div id="html5audio">
 </div>
-<table border="0" cellpadding="0" cellspacing="0">
- <tr>
-  <form action="?" method="get" name="frmPlayerControl" id="frmPlayerControl">
-  <td align="right">
-  <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
-   <select name="play_terminal" id="selPlayTerminal" class="form-control input-sm">
-    [#begin TERMINALS#]
-    <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
-    [#end TERMINALS#]
-    <option value="html5">Web Browser</option>
-   </select>
-  </div>
-  <div id='playerStatus'[#if MODE="menu"#] style="color:white"[#endif#]></div>
-<!--#
-[#if PLAY!=""#]
-<script language="javascript">
- playerCommand("refresh");
-</script>
+[#if (MODE!="header") && (PLAY!="")#]
+<div>Stream: [#PLAY#]</div>
 [#endif#]
-#-->
+<div id="playerStatus" style="display:none;position:absolute;padding:10px; background-color:#dddddd;color:black;z-index:1000;"></div>
+<table>
+  <tr>
+  <td[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
+   <select name="play_terminal" id="selPlayTerminal" multiple>
+    [#begin TERMINALS#]
+    <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]</option>
+    [#end TERMINALS#]
+   </select>
   </td>
-  [#if MODE="menu"#]</tr><tr>[#endif MODE#]
-  <td nowrap><select name="volume" id='selVolume' onChange="playerCommand('volume')" class="form-control input-sm">
-   [#begin VOLUMES#]
-   <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
-   [#end VOLUMES#]
-  </select></td>
-  <td valign="top">
+  <td style="padding-left:5px">
+   <select name="volume" id='selVolume' onChange="playerCommand('volume')" class="form-control input-sm">
+    [#begin VOLUMES#]
+    <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
+     [#end VOLUMES#]
+   </select>
+  </td>
+  [#if MODE="menu"#]</tr><tr>[#endif#]
+  <td[#if MODE="menu"#] colspan="2"[#endif#]>
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_pause.png" border="0"></a></div>
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("prev");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_prev.png" border="0"></a></div>
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("refresh");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_play.png" border="0"></a></div> 
@@ -89,13 +118,9 @@
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("fullscreen");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/eye.png" border="0"></a></div>
    <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("close");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/delete.png" border="0"></a></div>
   </td>
- </tr>
  <input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
  <input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
- </form>
- [#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
- <script language="javascript">
-  playerCommand('refresh');
- </script>
- [#endif#]
+  </tr>
 </table>
+
+

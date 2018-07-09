@@ -15,31 +15,33 @@ $mpd = new mpd($terminal['HOST'], $terminal['PLAYER_PORT'], $terminal['PLAYER_PA
 
 if($mpd->connected)
 {
+
    if ($command == 'refresh')
    {
       $mpd->PLClear();
       $mpd->DBRefresh();
-      $path = preg_replace('/\\\\$/is', '', $out['PLAY']);
-      
-      $db = SQLSelect("SELECT * FROM collections ORDER BY TITLE");
-      $total = count($db);
-      
+
+      $path = $out['PLAY'];
+
+
       /*
-      for($i = 0; $i < $total; $i++)
-      {
-         if ($db[$i][PATH]{0} == '/')
-         {
-            $path = str_replace($db[$i][PATH], '', $path);
-            break;
-         }
-      }
+       * $path = preg_replace('/\\\\$/is', '', $path);
+
+$db = SQLSelect("SELECT * FROM collections ORDER BY TITLE");
+$total = count($db);
+
+for($i = 0; $i < $total; $i++)
+{
+   if ($db[$i][PATH]{0} == '/')
+   {
+      $path = str_replace($db[$i][PATH], '', $path);
+      break;
+   }
+}
+$path = str_replace('\\', '/', $path);
+$path = str_replace('./', '', $path);
       */
-      $path = str_replace('\\', '/', $path);
-      $path = str_replace('./', '', $path);
 
-      //echo $path;
-
-      
       $mpd->PLAdd($path);
       $mpd->Play();  
    }
@@ -71,4 +73,3 @@ else
    echo "Error: " . $mpd->errStr;
 }
 
-?>
