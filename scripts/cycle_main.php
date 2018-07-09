@@ -66,8 +66,8 @@ while (1) {
     $h = date('h');
     $dt = date('Y-m-d');
 
+    #NewMinute
     if ($m != $old_minute) {
-        //echo "new minute\n";
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
@@ -84,15 +84,8 @@ while (1) {
         $old_minute = $m;
     }
 
+    #NewHour
     if ($h != $old_hour) {
-        $sqlQuery = "SELECT ID, TITLE
-                     FROM objects
-                    WHERE $o_qry";
-
-        //echo "new hour\n";
-        $old_hour = $h;
-        $objects = SQLSelect($sqlQuery);
-        $total = count($objects);
 
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewHour\n";
@@ -100,7 +93,19 @@ while (1) {
         }
 
         processSubscriptions('HOURLY');
+        $old_hour = $h;
+    }
 
+    #NewDay
+    if ($dt != $old_date) {
+
+        for ($i = 0; $i < $total; $i++) {
+            echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewDay\n";
+            getObject($objects[$i]['TITLE'])->raiseEvent("onNewDay");
+        }
+
+        processSubscriptions('DAILY');
+        $old_date = $dt;
     }
 
     /*
@@ -183,12 +188,7 @@ while (1) {
     }
     */
 
-    if ($dt != $old_date) {
-        //echo "new day\n";
-        $old_date = $dt;
-    }
-
-    if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+    if (file_exists('./reboot') || isset($_GET['onetime'])) {
         $db->Disconnect();
         exit;
     }

@@ -4,6 +4,11 @@
  [#if VIEW_MODE="search_devices" || VIEW_MODE=""#]
   [#inc devices_search_admin.html#]
  [#endif VIEW_MODE#]
+
+ [#if VIEW_MODE="manage_groups"#]
+ [#inc devices_mange_groups.html#]
+ [#endif VIEW_MODE#]
+
  <!-- / table devices search -->
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]

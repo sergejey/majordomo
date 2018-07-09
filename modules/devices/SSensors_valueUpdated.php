@@ -1,7 +1,7 @@
 <?php
 
  $this->callMethod('statusUpdated');
- $this->callMethod('logicAction');
+ //$this->callMethod('logicAction');
 
  $ot=$this->object_title;
  $description = $this->description;
@@ -14,6 +14,10 @@
  $minValue=(float)$this->getProperty('minValue');
  $maxValue=(float)$this->getProperty('maxValue');
  $is_normal=(int)$this->getProperty('normalValue');
+ $directionTimeout=(int)$this->getProperty('directionTimeout');
+ if (!$directionTimeout) {
+  $directionTimeout=1*60*60;
+ }
 
  if ($maxValue==0 && $minValue==0 && !$is_normal) {
   $this->setProperty('normalValue', 1);
@@ -31,6 +35,19 @@
   }
  }
 
+
+ $data1 = getHistoryValue($this->object_title.".value", time()-$directionTimeout);
+ $direction = 0;
+ if ($data1>$value) {
+  $direction=-1;
+ } elseif ($data1<$value) {
+  $direction=1;
+ }
+ $currentDirection = $this->getProperty('direction');
+ if ($currentDirection != $direction) {
+  $this->setProperty('direction',$direction);
+ }
+
  if ($linked_room && $this->getProperty('mainSensor')) {
   if ($this->class_title=='STempSensors') {
    sg($linked_room.'.temperature',$value);
@@ -39,6 +56,8 @@
   }
  }
 
+/*
 include_once(DIR_MODULES.'devices/devices.class.php');
 $dv=new devices();
 $dv->checkLinkedDevicesAction($this->object_title, $value);
+*/

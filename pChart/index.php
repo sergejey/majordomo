@@ -88,6 +88,10 @@ if (!$type) {
  $type = '7d';
 }
 
+if ($_GET['group']) {
+    $group = $_GET['group'];
+}
+
 if (preg_match('/(\d+)d/', $type, $m)) {
         $total=(int)$m[1];
         $period=round(($total*24*60*60)/(($w-$w_delta)/$px_per_point)); // seconds
@@ -233,14 +237,14 @@ if ($total>0) {
 
 
                if (!is_array($_GET['p'])) {
-                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).'&property='.urlencode($_GET['p']).'&height='.$height.'" width=100% height='.($height).'></iframe>';
+                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).'&group='.$group.'&property='.urlencode($_GET['p']).'&height='.$height.'" width=100% height='.($height).'></iframe>';
                } else {
                    $p_url='';
                    foreach($_GET['p'] as $p) {
                        $p_url.='&properties[]='.urlencode($p);
                    }
                    $p_url.='&height='.$height;
-                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).$p_url.'" width=100% height='.$height.'></iframe>';
+                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).'&group='.$group.$p_url.'" width=100% height='.$height.'></iframe>';
                }
            } else {
             $code='<img src="'.ROOTHTML.'3rdparty/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';

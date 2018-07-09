@@ -232,6 +232,8 @@ $this->device_types=array(
             'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdSensorMinMax'),
             'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdMainSensor'),
             'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>0),
+            'direction'=>array('DESCRIPTION'=>'Direction of changes','KEEP_HISTORY'=>0),
+            'directionTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_DIRECTION_TIMEOUT,'KEEP_HISTORY'=>0,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDirectionTimeout','ONCHANGE'=>'valueUpdated'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),

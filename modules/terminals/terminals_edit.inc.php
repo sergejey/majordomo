@@ -76,4 +76,19 @@
    }
   }
   outHash($rec, $out);
+
+ if (is_dir(DIR_MODULES.'app_player/addons')) {
+   $add_players = scandir(DIR_MODULES.'app_player/addons');
+   if (is_array($add_players)) {
+    foreach($add_players as $p) {
+     if (preg_match('/^(.+)\.php$/',$p,$m)) {
+      $addon_value = $m[1];
+      $addon_title = $addon_value;
+      $addon_title=ucfirst(str_replace('_',' ',$addon_title));
+      $out['PLAYER_ADDONS'][]=array('TITLE'=>$addon_title,'VALUE'=>$addon_value);
+     }
+    }
+   }
+ }
+
 ?>

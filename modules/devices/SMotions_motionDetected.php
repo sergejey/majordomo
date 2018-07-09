@@ -25,7 +25,8 @@ if (!isset($params['statusUpdated'])) {
   return;
  }
 
- $this->callMethod('logicAction');
+ //$this->callMethod('logicAction');
+
  $linked_room=$this->getProperty('linkedRoom');
  if ($nobodysHome) {
   callMethodSafe('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));

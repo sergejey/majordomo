@@ -12,11 +12,11 @@
         <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
         <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
-        <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
         <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
         <link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
 
-        <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquerymobile/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
     <script language="javascript" src="<#ROOTHTML#>js/scripts.js?v=1"></script>
     <!--#
@@ -26,12 +26,13 @@
     #-->
     <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
     <script type="text/javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
+    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -81,11 +82,11 @@
  function filterSearch() {
   var title=document.frmFilterModules.filter_modules.value;
   //$('#filter_add').html(title);
- var url="?";
- url+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
+ var urlFilter="?";
+ urlFilter+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
 
  $.ajax({
-   url: url
+   url: urlFilter
   }).done(function(data) { 
    $('#filter_add').html(data);
   });
@@ -202,9 +203,9 @@ jQuery.fn.center = function () {
 
          function updateConsoleDebug() {
              //$('#console_debug').html('mmm');
-             var url="<#ROOTHTML#>ajax/xray.html?op=getcontent&limit=10";
+             var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&limit=10";
              $.ajax({
-                 url: url,
+                 url: urlDebug,
              }).done(function(data) {
                  $('#console_debug').html(data);
              });
@@ -252,15 +253,15 @@ jQuery.fn.center = function () {
 
              requestCounter++;
              var seqNumber=requestCounter;
-             var url=link;
+             var urlPartLoad=link;
              urlInProgress = link;
              hrefLocation = link;
              hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
              clearTimeout(locationTimer);
              locationTimer = setTimeout('checkLocationHref();',1000);
-             url+='&part_load=1';
+             urlPartLoad+='&part_load=1';
 
-             var cachedKey = simple_hash(url);
+             var cachedKey = simple_hash(urlPartLoad);
              var cachedContent = localStorage.getItem(cachedKey);
              if (typeof cachedContent == 'string') {
                  window.history.pushState('', window.title, link);
@@ -271,7 +272,7 @@ jQuery.fn.center = function () {
              }
 
              $.ajax({
-                 url: url,
+                 url: urlPartLoad,
                  urlInProgress: urlInProgress
              }).done(function(data) {
                  console.log('part content loaded');
@@ -315,11 +316,11 @@ jQuery.fn.center = function () {
              var cmd=$('#command').val();
              //$('#command').val('');
 
-             var url="?";
-             url+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+             var urlCommand="?";
+             urlCommand+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
 
              $.ajax({
-                 url: url
+                 url: urlCommand
              }).done(function(data) {
                  //$('#console_output').html('<pre>Command: <b>'+cmd+'</b> <a href="#" onClick="$(\'#command\').val(\''+cmd+'\');sendConsoleCommand();"><#LANG_CONSOLE_RETRY#></a><br/>Result:<br/>'+data+'</pre>');
                  $('#console_output').html('&nbsp;<br/><pre>'+data+'</pre>');
@@ -331,9 +332,9 @@ jQuery.fn.center = function () {
 
          function checkDidYouKnow() {
              $('#didyouknow').hide();
-             url = '<#ROOTHTML#>ajax/market.html?op=didyouknow';
+             var urlDidyouknow = '<#ROOTHTML#>ajax/market.html?op=didyouknow';
              $.ajax({
-                 url: url
+                 url: urlDidyouknow
              }).done(function(data) {
                  if (data!='') {
                      $('#didyouknow_body').html(data);
@@ -344,9 +345,9 @@ jQuery.fn.center = function () {
          }
 
     function checkNews() {
-        url = '<#ROOTHTML#>ajax/market.html?op=news';
+        var urlCheckNews = '<#ROOTHTML#>ajax/market.html?op=news';
         $.ajax({
-            url: url
+            url: urlCheckNews
         }).done(function(data) {
             if (data!='') {
                 $('#news').show();
@@ -357,25 +358,25 @@ jQuery.fn.center = function () {
     }
 
          function checkUpdatesAvailable() {
-             var url = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
+             var urlCheckUpdates = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
              $.ajax({
-                 url: url
+                 url: urlCheckUpdates
              }).done(function(data) {
                  if (data == '1') {
                      $('#updates-check-system').show();
                  }
              });
-             url = '<#ROOTHTML#>ajax/market.html?op=check_updates';
+             urlCheckUpdates = '<#ROOTHTML#>ajax/market.html?op=check_updates';
              $.ajax({
-                 url: url
+                 url: urlCheckUpdates
              }).done(function(data) {
                  if (data == '1') {
                      $('#updates-check-market').show();
                  }
              });
-             url = '<#ROOTHTML#>ajax/system_errors.html?op=check';
+             urlCheckUpdates = '<#ROOTHTML#>ajax/system_errors.html?op=check';
              $.ajax({
-                 url: url
+                 url: urlCheckUpdates
              }).done(function(data) {
                  if (data == '1') {
                      $('#errors-saved').show();
@@ -562,7 +563,7 @@ jQuery.fn.center = function () {
         <div class="float-right" style="padding-right:30px">
             <i class="glyphicon glyphicon-question-sign"></i>
             [#if ACTION!=""#]
-            <a href="<#LANG_KB_URL#>category/moduli-v-majordomo/<#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            <a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
             [#else#]
             <a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#endif#]

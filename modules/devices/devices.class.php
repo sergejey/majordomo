@@ -183,6 +183,19 @@ function getLinkDetails($link_name) {
         }
     }
 }
+
+function getAllGroups($type) {
+    $groups=SQLSelect("SELECT * FROM devices_groups");
+    $res=array();
+    $total = count($groups);
+    for($i=0;$i<$total;$i++) {
+        $tmp=explode(',',$groups[$i]['APPLY_TYPES']);
+        if (in_array($type,$tmp)) {
+            $res[]=$groups[$i];
+        }
+    }
+    return $res;
+}    
     
 function getAllProperties($type) {
     $properties=$this->device_types[$type]['PROPERTIES'];
@@ -433,6 +446,11 @@ function admin(&$out) {
           $out['ENABLE_HOMEBRIDGE']=1;
       }
   }
+
+  if ($this->view_mode=='manage_groups') {
+      $this->manage_groups($out);
+  }
+
   if ($this->view_mode=='edit_devices') {
    $this->edit_devices($out, $this->id);
   }
@@ -444,7 +462,7 @@ function admin(&$out) {
 
   if ($this->view_mode=='delete_devices') {
    $this->delete_devices($this->id);
-   $this->redirect("?");
+   $this->redirect("?type=".gr('type').'&location_id='.gr('location_id').'&group_name='.gr('group_name'));
   }
  }
 }
@@ -457,6 +475,11 @@ function isHomeBridgeAvailable() {
     } else {
         return false;
     }
+}
+
+
+function manage_groups(&$out) {
+    require(DIR_MODULES.$this->name.'/devices_manage_groups.inc.php');
 }
 
 /**
@@ -683,7 +706,7 @@ function usual(&$out) {
     
  function addDevice($device_type, $options=0) {
      $this->setDictionary();
-     $type_details=$this->getTypeDetails($rec['TYPE']);
+     $type_details=$this->getTypeDetails($device_type);
 
      if (!is_array($options)) {
          $options=array();
@@ -877,6 +900,9 @@ function usual(&$out) {
      $element_rec['EASY_CONFIG']=1;
      $linked_property_unit='';
 
+     $element_rec['TYPE']='device';
+     $element_rec['DEVICE_ID']=$rec['ID'];
+     /*
      if ($rec['TYPE']=='relay' || $rec['TYPE']=='dimmer' || $rec['TYPE']=='switch') {
          $element_rec['TYPE'] = 'switch';
          $element_rec['LINKED_PROPERTY'] = 'status';
@@ -895,7 +921,6 @@ function usual(&$out) {
      } else {
          $element_rec['TYPE']='object';
      }
-
      if ($rec['TYPE']=='sensor_temp' || $rec['TYPE']=='sensor_humidity') {
          $element_rec['TYPE'] = 'informer';
          $element_rec['LINKED_PROPERTY'] = 'value';
@@ -905,6 +930,7 @@ function usual(&$out) {
          $wizard_data['STATE_LOW_VALUE']='%'.$element_rec['LINKED_OBJECT'].'.maxValue%';
          $wizard_data['UNIT']=$linked_property_unit;
      }
+     */
 
      $element_rec['WIZARD_DATA']=json_encode($wizard_data);
 
@@ -1115,7 +1141,12 @@ devices -
  devices_linked: DEVICE2_ID int(10) unsigned NOT NULL DEFAULT 0
  devices_linked: LINK_TYPE varchar(100) NOT NULL DEFAULT ''
  devices_linked: LINK_SETTINGS text
- devices_linked: COMMENT varchar(255) NOT NULL DEFAULT '' 
+ devices_linked: COMMENT varchar(255) NOT NULL DEFAULT ''
+  
+ devices_groups: ID int(10) unsigned NOT NULL auto_increment
+ devices_groups: SYS_NAME varchar(100) NOT NULL DEFAULT ''
+ devices_groups: TITLE varchar(255) NOT NULL DEFAULT ''
+ devices_groups: APPLY_TYPES text
 
 
 EOD;

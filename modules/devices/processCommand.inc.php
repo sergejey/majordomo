@@ -14,6 +14,15 @@ $processed = 0;
 $reply_confirm = 0;
 
 $devices = SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices");
+
+$groups = SQLSelect("SELECT * FROM devices_groups");
+$total = count($groups);
+for($i=0;$i<$total;$i++) {
+    $add_rec=$groups[$i];
+    $add_rec['TYPE']='group';
+    $devices[] = $add_rec;
+}
+
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
 
@@ -109,6 +118,30 @@ for ($i = 0; $i < $total; $i++) {
                 callMethod($linked_object . '.turnOff');
                 $processed = 1;
                 $reply_confirm = 1;
+            }
+        } elseif ($device_type == 'group') {
+            $applies_to=explode(',',$devices[$i]['APPLY_TYPES']);
+            $devices_in_group=getObjectsByProperty('group'.$devices[$i]['SYS_NAME'],1);
+            if (!is_array($devices_in_group)) continue;
+
+            if (in_array('relay',$applies_to) ||
+                in_array('dimmer',$applies_to) ||
+                in_array('rgb',$applies_to) ||
+                0
+            ) {
+                if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $command)) {
+                    foreach($devices_in_group as $linked_object) {
+                        callMethod($linked_object . '.turnOn');
+                    }
+                    $processed = 1;
+                    $reply_confirm = 1;
+                } elseif (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $command)) {
+                    foreach($devices_in_group as $linked_object) {
+                        callMethod($linked_object . '.turnOff');
+                    }
+                    $processed = 1;
+                    $reply_confirm = 1;
+                }
             }
         }
 
