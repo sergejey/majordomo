@@ -13,8 +13,34 @@
   [#endif#]
 });
 
+ var _getSourceIdx = function(elem) {
+  for(var i = 0; i < elem.sources.length; i++){
+   if (elem.currentSrc == elem.sources[i]) return i;
+  }
+  return 0;
+ }
+
+ var _nextSource = function(elem) {
+  var sourceIdx  = _getSourceIdx(elem);
+  var nextSourceIdx = (sourceIdx == elem.sources.length -1 ) ? 0 : sourceIdx + 1;
+  elem.src = elem.sources[nextSourceIdx];
+  elem.play();
+ }
+
+ var _prevSource = function(elem) {
+  var sourceIdx  = _getSourceIdx(elem);
+  var nextSourceIdx = (sourceIdx == 0 ) ? 0 : sourceIdx - 1;
+  elem.src = elem.sources[nextSourceIdx];
+  elem.play();
+ }
+
  var track = new Audio();
  track.controls = true;   // Set to false to make it a hidden element
+
+ track.addEventListener('ended', function() {
+   _nextSource(this);
+ });
+
  var trackcontainer = document.getElementById("html5audio");
  trackcontainer.appendChild(track);
 
@@ -34,10 +60,28 @@
 
  function sendPlayerCommand(playTerminal,pcmd) {
   var playURL = "<#ROOTHTML#>popup/app_player.html?ajax=1";
+  var mediaURL = $("#hidPlayPath").val();
   if (playTerminal == 'html5') {
    if (pcmd == 'refresh') {
-    track.src = $("#hidPlayPath").val();
-    track.play();
+    if (mediaURL.endsWith('m3u')) {
+     $.ajax({
+      url: mediaURL
+     }).done(function(data) {
+      track.sources = data.match(/^(?!#)(?!\s).*$/mg).filter(function(element){return (element);});
+      track.src = track.sources[0];
+      track.play();
+     });
+    } else {
+     track.src = mediaURL;
+     track.sources = [track.src];
+     track.play();
+    }
+   }
+   if (pcmd == 'next') {
+    _nextSource(track);
+   }
+   if (pcmd == 'prev') {
+    _prevSource(track);
    }
    if (pcmd == 'close') {
     track.pause();
