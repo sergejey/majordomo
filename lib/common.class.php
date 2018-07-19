@@ -474,7 +474,7 @@ function runScheduledJobs()
 
    for ($i = 0; $i < $total; $i++)
    {
-      echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
+      //echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
       $jobs[$i]['PROCESSED'] = 1;
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
       

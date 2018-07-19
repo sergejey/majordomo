@@ -13,8 +13,64 @@ $command = $details['message'];
 $processed = 0;
 $reply_confirm = 0;
 
-$devices = SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices");
+$phpmorphy_loaded=0;
 
+if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
+    require_once(ROOT . "lib/phpmorphy/common.php");
+    $opts = array(
+        'storage' => PHPMORPHY_STORAGE_MEM,
+        'predict_by_suffix' => true,
+        'predict_by_db' => true,
+        'graminfo_as_text' => true,
+    );
+    $dir = ROOT . 'lib/phpmorphy/dicts';
+    if (SETTINGS_SITE_LANGUAGE == 'ru') {
+        $lang = 'ru_RU';
+    } else {
+        $lang = 'en_EN';
+    }
+    try {
+        $morphy = new phpMorphy($dir, $lang, $opts);
+        $this->morphy =& $morphy;
+    } catch (phpMorphy_Exception $e) {
+        die('Error occured while creating phpMorphy instance: ' . PHP_EOL . $e);
+    }
+    $words = explode(' ', $command);
+    $base_forms = array();
+    $totals = count($words);
+    for ($is = 0; $is < $totals; $is++) {
+        if (preg_match('/^(\d+)$/', $words[$is])) {
+            $base_forms[$is] = array($words[$is]);
+        } elseif (!preg_match('/[\(\)\+\.]/', $words[$is])) {
+            $Word = mb_strtoupper($words[$is], 'UTF-8');
+            $base_forms[$is] = $morphy->getBaseForm($Word);
+            $base_forms[$is][] = $words[$is];
+        } else {
+            $base_forms[$is] = array($words[$is]);
+        }
+    }
+    $combos = $this->generate_combinations($base_forms);
+    /*
+    $phrases=array();
+    foreach($combos as $combo) {
+        $mutations=$this->computePermutations($combo);
+        foreach($mutations as $m) {
+            $phrases[]=implode(' ',$m);
+        }
+    }
+    $lines=$phrases;
+    dprint($phrases,false);
+    */
+    $lines = array();
+    $totals = count($combos);
+    for ($is = 0; $is < $totals; $is++) {
+        $lines[] = implode(' ', $combos[$is]);
+    }
+    //dprint($lines);
+    $phpmorphy_loaded=1;
+}
+
+$devices = SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices");
 $groups = SQLSelect("SELECT * FROM devices_groups");
 $total = count($groups);
 for($i=0;$i<$total;$i++) {
@@ -23,59 +79,71 @@ for($i=0;$i<$total;$i++) {
     $devices[] = $add_rec;
 }
 
+if ($phpmorphy_loaded) {
+        $total=count($devices);
+        $add_devices=array();
+        for($i=0;$i<$total;$i++) {
+            $device_title = $devices[$i]['TITLE'];
+            $words = explode(' ', mb_strtoupper($device_title, 'UTF-8'));
+            $base_forms = array();
+            $totals = count($words);
+            for ($is = 0; $is < $totals; $is++) {
+                if (preg_match('/^(\d+)$/', $words[$is])) {
+                    $base_forms[$is] = array($words[$is]);
+                } elseif (!preg_match('/[\(\)\+\.]/', $words[$is])) {
+                    $Word = mb_strtoupper($words[$is], 'UTF-8');
+                    $base_form = $morphy->getBaseForm($Word);
+                    if (is_array($base_form)) {
+                        $base_forms[$is]=$base_form;
+                    } else {
+                        $base_forms[$is]=array();
+                    }
+                    if (!in_array($words[$is],$base_forms[$is])) {
+                        $base_forms[$is][] = $words[$is];
+                    }
+                } else {
+                    $base_forms[$is] = array($words[$is]);
+                }
+            }
+            $combos = $this->generate_combinations($base_forms);
+            $phrases=array();
+            foreach($combos as $combo) {
+                $mutations=$this->computePermutations($combo);
+                foreach($mutations as $m) {
+                    $phrases[]=implode(' ',$m);
+                }
+            }
+            $device_titles = array();
+            $totals = count($phrases);
+            for ($is = 0; $is < $totals; $is++) {
+                $new_title = $phrases[$is];
+                $device_titles[]=$new_title;
+                $new_device=$devices[$i];
+                $new_device['TITLE']=$new_title;
+                $add_devices[]=$new_device;
+            }
+        }
+    foreach($add_devices as $device) {
+        $devices[]=$device;
+    }
+}
+
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
-
     $device_matched = 0;
     if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $command)) {
         $device_matched = 1;
-    } elseif (file_exists(ROOT . "lib/phpmorphy/common.php")) {
-        require_once(ROOT . "lib/phpmorphy/common.php");
-        $opts = array(
-            'storage' => PHPMORPHY_STORAGE_MEM,
-            'predict_by_suffix' => true,
-            'predict_by_db' => true,
-            'graminfo_as_text' => true,
-        );
-        $dir = ROOT . 'lib/phpmorphy/dicts';
-        if (SETTINGS_SITE_LANGUAGE == 'ru') {
-            $lang = 'ru_RU';
-        } else {
-            $lang = 'en_EN';
-        }
-        try {
-            $morphy = new phpMorphy($dir, $lang, $opts);
-            $this->morphy =& $morphy;
-        } catch (phpMorphy_Exception $e) {
-            die('Error occured while creating phpMorphy instance: ' . PHP_EOL . $e);
-        }
-        $words = explode(' ', $command);
-        $base_forms = array();
-        $totals = count($words);
-        for ($is = 0; $is < $totals; $is++) {
-            if (preg_match('/^(\d+)$/', $words[$is])) {
-                $base_forms[$is] = array($words[$is]);
-            } elseif (!preg_match('/[\(\)\+\.]/', $words[$is])) {
-                $Word = mb_strtoupper($words[$is], 'UTF-8');
-                $base_forms[$is] = $morphy->getBaseForm($Word);
-                $base_forms[$is][]=$words[$is];
-            } else {
-                $base_forms[$is] = array($words[$is]);
-            }
-        }
-        $combos = $this->generate_combinations($base_forms);
-        $lines = array();
-        $totals = count($combos);
-        for ($is = 0; $is < $totals; $is++) {
-            $lines[] = implode(' ', $combos[$is]);
-        }
+    } elseif ($phpmorphy_loaded) {
         if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
             $device_matched = 1;
         }
     }
 
     if ($device_matched) {
+
         //found device
+        DebMes("Device found for $event",'simple_devices');
+
         $device_id = $devices[$i]['ID'];
         $device_type = $devices[$i]['TYPE'];
         $device_title = $devices[$i]['TITLE'];
@@ -111,11 +179,11 @@ for ($i = 0; $i < $total; $i++) {
             $device_type == 'rgb'
         ) {
             if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $command)) {
-                callMethod($linked_object . '.turnOn');
+                callMethodSafe($linked_object . '.turnOn');
                 $processed = 1;
                 $reply_confirm = 1;
             } elseif (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $command)) {
-                callMethod($linked_object . '.turnOff');
+                callMethodSafe($linked_object . '.turnOff');
                 $processed = 1;
                 $reply_confirm = 1;
             }
@@ -131,13 +199,13 @@ for ($i = 0; $i < $total; $i++) {
             ) {
                 if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $command)) {
                     foreach($devices_in_group as $linked_object) {
-                        callMethod($linked_object . '.turnOn');
+                        callMethodSafe($linked_object . '.turnOn');
                     }
                     $processed = 1;
                     $reply_confirm = 1;
                 } elseif (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $command)) {
                     foreach($devices_in_group as $linked_object) {
-                        callMethod($linked_object . '.turnOff');
+                        callMethodSafe($linked_object . '.turnOff');
                     }
                     $processed = 1;
                     $reply_confirm = 1;
@@ -154,7 +222,6 @@ for ($i = 0; $i < $total; $i++) {
                 }
             }
         }
-
     }
     if ($processed) break;
 }
@@ -163,7 +230,9 @@ for ($i = 0; $i < $total; $i++) {
 if ($reply_confirm) {
     $items = explode('|', LANG_DEVICES_COMMAND_CONFIRMATION);
     $items = array_map('trim', $items);
-    say($items[array_rand($items)], 2);
+    DebMes("Device reply for $event",'simple_devices');
+    sayReply($items[array_rand($items)], 2);
+    DebMes("Device reply DONE for $event",'simple_devices');
 }
 
 if ($processed) {

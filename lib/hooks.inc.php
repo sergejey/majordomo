@@ -69,7 +69,9 @@ function unsubscribeFromEvent($module_name, $event_name = '')
 function processSubscriptions($event_name, $details = '')
 {
 
+   //DebMes("New event: ".$event_name,'process_subscription');
    postToWebSocketQueue($event_name, $details, 'PostEvent');
+   //DebMes("Post websocket event done: ".$event_name,'process_subscription');
 
    if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)))
    {
@@ -93,9 +95,10 @@ function processSubscriptions($event_name, $details = '')
 
       $total=count($data2);
       for($i=0;$i<$total;$i++) {
-       
          $module_name    = $data2[$i]['module'];
          $filter_details = $data2[$i]['filter'];
+
+         //DebMes("Post event ".$event_name." to module ".$module_name,'process_subscription');
 
          $modulePath     = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
 
@@ -105,9 +108,10 @@ function processSubscriptions($event_name, $details = '')
             $module_object = new $module_name();
             if (method_exists($module_object, 'processSubscription'))
             {
-               DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
+               //DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
                verbose_log("Processing subscription to [".$event_name."] by [".$module_name."] (".(is_array($details) ? json_encode($details) : '').")");
                $module_object->processSubscription($event_name, $details);
+               //DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
             } else {
              DebMes("$module_name.processSubscription error (method not found)",'process_subscription');
             }
