@@ -727,7 +727,7 @@ function usual(&$out) {
     
  function addDevice($device_type, $options=0) {
      $this->setDictionary();
-     $type_details=$this->getTypeDetails($rec['TYPE']);
+     $type_details=$this->getTypeDetails($device_type);
 
      if (!is_array($options)) {
          $options=array();
