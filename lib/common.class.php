@@ -477,13 +477,10 @@ function timeOutExists($title)
  */
 function runScheduledJobs()
 {
-   SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . date('Y-m-d H:i:s') . "'");
-
-   $sqlQuery = "SELECT *
-                  FROM jobs
-                 WHERE PROCESSED = 0
-                   AND EXPIRED   = 0
-                   AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'";
+    $datefmt = date('Y-m-d H:i:s');
+    if (date('i',time()) == 0) SQLExec("DELETE FROM jobs WHERE EXPIRE <= '$datefmt'"); // очищаем раз в  час
+ 
+   $sqlQuery = "SELECT * FROM jobs WHERE PROCESSED = 0 AND RUNTIME   <= '$datefmt' AND EXPIRE >= '$datefmt'"; // выбраем с неистекшим таймаутом
 
    $jobs  = SQLSelect($sqlQuery);
    $total = count($jobs);
@@ -492,18 +489,24 @@ function runScheduledJobs()
    {
       //echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
       $jobs[$i]['PROCESSED'] = 1;
-      $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
+      $jobs[$i]['STARTED']   = $datefmt;
 
       SQLUpdate('jobs', $jobs[$i]);
-
-       if ($jobs[$i]['COMMANDS'] != '') {
-           $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-           $result = trim(getURL($url, 0));
-           $result = preg_replace('/<!--.+-->/is', '', $result);
-           if (!preg_match('/OK$/', $result)) {
-               //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-               DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
-           }
+      $code = $jobs[$i]['COMMANDS']; 
+      if ($code != '') {
+        try
+        {
+         $success = eval($code);
+         if ($success === false){ // php<7
+              DebMes("Error in scheduled job code: " . $code);
+              registerError('scheduled_jobs', "Error in scheduled job code: " . $code);
+         }
+        }
+        catch (Exception $e)
+        {
+           DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
+           registerError('scheduled_jobs', get_class($e) . ', ' . $e->getMessage());
+        }
        }
    }
 }
