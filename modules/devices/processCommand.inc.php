@@ -26,6 +26,8 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
     $dir = ROOT . 'lib/phpmorphy/dicts';
     if (SETTINGS_SITE_LANGUAGE == 'ru') {
         $lang = 'ru_RU';
+    } else if (SETTINGS_SITE_LANGUAGE == 'uk') {
+        $lang = 'uk_UA';
     } else {
         $lang = 'en_EN';
     }
