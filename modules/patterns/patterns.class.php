@@ -684,12 +684,13 @@ function generate_combinations(array $data, array &$all = array(), array $group 
         'graminfo_as_text' => true,
         );    
     $dir = ROOT . 'lib/phpmorphy/dicts';
-
-    if (SETTINGS_SITE_LANGUAGE=='ru') {
-     $lang = 'ru_RU';
-    } else {
-     $lang = 'en_EN';
-    }
+    if (SETTINGS_SITE_LANGUAGE == 'ru') {
+        $lang = 'ru_RU';
+      } else if (SETTINGS_SITE_LANGUAGE == 'uk') {
+        $lang = 'uk_UA';
+      } else {
+        $lang = 'en_EN';
+      }
 
     try {
         $morphy = new phpMorphy($dir, $lang, $opts);
