@@ -477,9 +477,8 @@ function timeOutExists($title)
  */
 function runScheduledJobs()
 {
-    $datefmt = date('Y-m-d H:i:s');
-    if (date('i',time()) == 0) SQLExec("DELETE FROM jobs WHERE EXPIRE <= '$datefmt'"); // очищаем раз в  час
- 
+   $datefmt = date('Y-m-d H:i:s');
+   if (date('i',time()) == 0) SQLExec("DELETE FROM jobs WHERE EXPIRE <= '$datefmt'"); // очищаем раз в  час
    $sqlQuery = "SELECT * FROM jobs WHERE PROCESSED = 0 AND RUNTIME   <= '$datefmt' AND EXPIRE >= '$datefmt'"; // выбраем с неистекшим таймаутом
 
    $jobs  = SQLSelect($sqlQuery);
@@ -497,7 +496,8 @@ function runScheduledJobs()
         try
         {
          $success = eval($code);
-         if ($success === false){ // php<7
+         if ($success === false)
+         {
               DebMes("Error in scheduled job code: " . $code);
               registerError('scheduled_jobs', "Error in scheduled job code: " . $code);
          }
