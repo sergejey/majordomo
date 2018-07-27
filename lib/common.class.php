@@ -288,6 +288,13 @@ function timeNow($tm = 0)
            $array = array("минута", "минуты", "минут");
            $ms = $m.' '.getNumberWord($m,$array);
        }
+   } elseif ($language == 'ua') {
+       $array = array("година", "години", "годин");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("хвилина", "хвилини", "хвилин");
+           $ms = $m.' '.getNumberWord($m,$array);
+       } 
    } elseif ($language == 'en' && $m == 0) {
        $hw = $h.' o\'clock';
    } else {
