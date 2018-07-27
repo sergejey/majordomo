@@ -12,6 +12,7 @@ $languages = array(
 	"Nederlands" => "nl",
 	"Русский" => "ru",
 	"Српски / Srpski" => "rs",
-	"Svenska" => "se"
+	"Svenska" => "se",
+	"Українська" => "uk",
 );
 ?>
