@@ -1133,6 +1133,18 @@ function processTitle($title, $object = 0)
 
          endMeasure('processTitlePropertiesReplace');
       }
+      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\w+?)%/uis', $title, $m)) {
+          startMeasure('processTitlePropertiesFunction');
+          $total = count($m[0]);
+          for($i=0;$i<$total;$i++) {
+              $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
+              if (function_exists($m[3][$i])) {
+                  $data=call_user_func($m[3][$i],$data);
+              }
+              $title = str_replace($m[0][$i], $data, $title);
+          }
+          endMeasure('processTitlePropertiesFunction');
+      }
       if (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
       {
          $total = count($m[0]);

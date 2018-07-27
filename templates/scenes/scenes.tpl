@@ -495,8 +495,18 @@ $.fn.customContextMenu = function(callBack){
 
                  {if $DRAGGABLE=="1"}
                     $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid: [5,5],
+                        start: function(e, ui) {
+                            var pos = ui.helper.offset();
+                            this.originalLeft=pos.left;
+                            this.originalTop=pos.top;
+                        },
                         stop: function(e, ui) {
-                         var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=dragged&element="+$(this).attr("id")+"&details="+encodeURIComponent(JSON.stringify(ui));
+                            var pos = ui.helper.offset();
+                            var dLeft=pos.left-this.originalLeft;
+                            var dTop=pos.top-this.originalTop;
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=dragged&element="+$(this).attr("id");
+                            url+='&dleft='+encodeURIComponent(dLeft);
+                            url+='&dtop='+encodeURIComponent(dTop);
                          {literal}
                          $.ajax({
                           url: url,
@@ -507,8 +517,14 @@ $.fn.customContextMenu = function(callBack){
                         }
                    }).resizable({literal}{grid: 5, {/literal}
                            stop: function(e, ui) {
-                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id")+"&details="+encodeURIComponent(JSON.stringify(ui));
-                            {literal}
+                               var dwidth=ui.size.width;
+                               var dheight=ui.size.height;
+
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id");
+                               url+='&dwidth='+encodeURIComponent(dwidth);
+                               url+='&dheight='+encodeURIComponent(dheight);
+
+                           {literal}
                             $.ajax({
                              url: url,
                              }).done(function(data) { 

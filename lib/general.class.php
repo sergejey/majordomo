@@ -568,6 +568,8 @@ function dprint($data = 0, $stop = 1) {
    if ($data!==0) {
       if (is_array($data)) {
          print_r($data);
+      } elseif (is_object($data)) {
+         var_dump($data);
       } else {
          echo $data;
       }

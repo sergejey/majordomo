@@ -380,10 +380,31 @@ function renderStructure() {
 }
 
 function processSubscription($event, &$details) {
-    if ($event == 'COMMAND') {
+    if ($event == 'COMMAND' && $details['member_id']) {
+        //DebMes("Processing event $event",'simple_devices');
         include_once(DIR_MODULES.'devices/processCommand.inc.php');
+        //DebMes("Processing event $event DONE",'simple_devices');
     }
 }
+
+    function computePermutations($array) {
+        $result = [];
+        $recurse = function($array, $start_i = 0) use (&$result, &$recurse) {
+            if ($start_i === count($array)-1) {
+                array_push($result, $array);
+            }
+            for ($i = $start_i; $i < count($array); $i++) {
+                //Swap array value at $i and $start_i
+                $t = $array[$i]; $array[$i] = $array[$start_i]; $array[$start_i] = $t;
+                //Recurse
+                $recurse($array, $start_i + 1);
+                //Restore old order
+                $t = $array[$i]; $array[$i] = $array[$start_i]; $array[$start_i] = $t;
+            }
+        };
+        $recurse($array);
+        return $result;
+    }
 
     /**
 
@@ -706,7 +727,7 @@ function usual(&$out) {
     
  function addDevice($device_type, $options=0) {
      $this->setDictionary();
-     $type_details=$this->getTypeDetails($device_type);
+     $type_details=$this->getTypeDetails($rec['TYPE']);
 
      if (!is_array($options)) {
          $options=array();

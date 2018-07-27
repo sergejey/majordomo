@@ -25,7 +25,6 @@ class MajordomoApplication extends Application
 
     public function onDisconnect($client)
     {
-        echo "Client disconnected\n";
         $id = $client->getClientId();           
         unset($this->_clients[$id]);
         echo "Client dicconnected (".$client->getClientIp()."). Total clients: ".count($this->_clients)."\n";
