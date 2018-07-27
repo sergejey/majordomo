@@ -7,7 +7,7 @@
 (function ($) {
     "use strict";
 
-    $.fn.select2.locales['uk'] = {
+    $.fn.select2.locales['ua'] = {
         formatMatches: function (matches) { return character(matches, "результат") + " знайдено, використовуйте клавіші зі стрілками вверх та вниз для навігації."; },
         formatNoMatches: function () { return "Нічого не знайдено"; },
         formatInputTooShort: function (input, min) { return "Введіть буль ласка ще " + character(min - input.length, "символ"); },
@@ -17,7 +17,7 @@
         formatSearching: function () { return "Пошук…"; }
     };
 
-    $.extend($.fn.select2.defaults, $.fn.select2.locales['uk']);
+    $.extend($.fn.select2.defaults, $.fn.select2.locales['ua']);
 
     function character (n, word) {
         return n + " " + word + (n%10 < 5 && n%10 > 0 && (n%100 < 5 || n%100 > 19) ? n%10 > 1 ? "и" : "" : "ів");
