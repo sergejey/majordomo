@@ -165,7 +165,16 @@ if ($phpmorphy_loaded) {
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
     $device_matched = 0;
-    if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $command)) {
+    $compare_title=$command;
+    if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $compare_title,$m)) {
+        $compare_title=trim(str_replace($m[0],' ',$compare_title));
+    }
+    if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title,$m)) {
+        $compare_title=trim(str_replace($m[0],' ',$compare_title));
+    }
+    if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
+        $device_matched = 1;
+    } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
         $device_matched = 1;
     } elseif ($phpmorphy_loaded) {
         if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
@@ -173,11 +182,15 @@ for ($i = 0; $i < $total; $i++) {
         }
     }
 
+    /*
+    if (preg_match('/свет над столом/uis',$devices[$i]['TITLE'])) {
+        dprint($devices[$i]['TITLE'].' - '.$compare_title.': '.$device_matched);
+    }
+    */
+
     if ($device_matched) {
 
         //found device
-        DebMes("Device found for $event",'simple_devices');
-
         $device_id = $devices[$i]['ID'];
         $device_type = $devices[$i]['TYPE'];
         if ($devices[$i]['ORIGINAL_TITLE']!='') {
@@ -185,6 +198,9 @@ for ($i = 0; $i < $total; $i++) {
         } else {
             $device_title = $devices[$i]['TITLE'];
         }
+
+        DebMes("Device found for $command ($device_title)",'simple_devices');
+
         $linked_object = $devices[$i]['LINKED_OBJECT'];
         if ($device_type == 'sensor_percentage' || $device_type == 'sensor_humidity') {
             sayReplySafe($device_title . ' ' . gg($linked_object . '.value') . '%', 2);
