@@ -552,6 +552,10 @@ function usual(&$out) {
     if ($location_id || $type) {
         $qry = "1";
         $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+        if (preg_match('/loc(\d+)/',$type,$m)) {
+            $location_id=$m[1];
+            $type='';
+        }
         if ($location_id) {
             if ($location_id!='all') {
                 $qry.=" AND devices.LOCATION_ID=".(int)$location_id;
@@ -622,13 +626,44 @@ function usual(&$out) {
     $total_devices=count($devices);
     if ($total_devices) {
         $favorite_devices=array();
+        $warning_devices=array();
+        $problem_devices=array();
         $devices_count = 0;
         for($idv=0;$idv<$total_devices;$idv++) {
             if ($devices[$idv]['FAVORITE']) {
-                $devices_count++;
                 $favorite_devices[]=$devices[$idv];
+            } elseif ($devices[$idv]['LINKED_OBJECT']) {
+
+                if (gg($devices[$idv]['LINKED_OBJECT'].'.normalValue')=='0' &&
+                    gg($devices[$idv]['LINKED_OBJECT'].'.notify')=='1') {
+                    $warning_devices[]=$devices[$idv];
+                    $warning_devices[0]['NEW_SECTION']=1;
+                    $warning_devices[0]['SECTION_TITLE']=LANG_WARNING;
+                } elseif (
+                ($devices[$idv]['TYPE']=='motion' ||
+                    $devices[$idv]['TYPE']=='openclose' ||
+                    $devices[$idv]['TYPE']=='leak' ||
+                    $devices[$idv]['TYPE']=='smoke' ||
+                    $devices[$idv]['TYPE']=='counter' ||
+                    $devices[$idv]['TYPE']=='sensor' ||
+                    $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS']=='SSensors'
+                ) && gg($devices[$idv]['LINKED_OBJECT'].'.alive')==='0') {
+                    $problem_devices[]=$devices[$idv];
+                    $problem_devices[0]['NEW_SECTION']=1;
+                    $problem_devices[0]['SECTION_TITLE']=LANG_OFFLINE;
+                }
             }
         }
+
+        foreach($warning_devices as $device) {
+            $favorite_devices[]=$device;
+        }
+        foreach($problem_devices as $device) {
+            $favorite_devices[]=$device;
+        }
+
+        $devices_count=count($favorite_devices);
+
         if ($devices_count>0) {
             $loc_rec=array();
             $loc_rec['ID']=0;
@@ -672,6 +707,18 @@ function usual(&$out) {
     usort($types, function($a,$b) {
         return strcmp($a["TITLE"], $b["TITLE"]);
     });
+
+
+    $list_locations=$locations;
+    usort($list_locations, function($a,$b) {
+        return strcmp($a["TITLE"], $b["TITLE"]);
+    });
+    $types[]=array('NAME'=>'','TITLE'=>LANG_LOCATION);
+    foreach($list_locations as $location) {
+        if ($location['TITLE']==LANG_FAVORITES) continue;
+        $types[]=array('NAME'=>'loc'.$location['ID'],'TITLE'=>$location['TITLE'],'TOTAL'=>$location['DEVICES_TOTAL']);
+    }
+
     $out['TYPES']=$types;
 
 
@@ -727,7 +774,7 @@ function usual(&$out) {
     
  function addDevice($device_type, $options=0) {
      $this->setDictionary();
-     $type_details=$this->getTypeDetails($device_type);
+     $type_details=$this->getTypeDetails($rec['TYPE']);
 
      if (!is_array($options)) {
          $options=array();

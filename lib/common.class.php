@@ -1,4 +1,22 @@
 <?php
+
+ function sayReplySafe($ph,$level = 0, $replyto = '') {
+     $data=array(
+         'sayReply'=>1,
+         'ph'=>$ph,
+         'level'=>$level,
+         'replyto'=>$replyto,
+     );
+     $url=BASE_URL.'/objects/?'.http_build_query($data);
+     if (is_array($params)) {
+         foreach($params as $k=>$v) {
+             $url.='&'.$k.'='.urlencode($v);
+         }
+     }
+     $result = getURLBackground($url,0);
+     return $result;
+ }
+
 /**
  * Summary of sayReply
  * @param mixed $ph        Phrase
@@ -34,8 +52,26 @@
     $rec['ID'] = SQLInsert('shouts', $rec);
    }
   }
-  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
+  processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
  }
+
+
+function sayToSafe($ph, $level = 0, $destination = '') {
+    $data=array(
+        'sayTo'=>1,
+        'ph'=>$ph,
+        'level'=>$level,
+        'destination'=>$destination,
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
 
 /**
  * Summary of sayTo
@@ -48,7 +84,7 @@
   if (!$destination) {
    return 0;
   }
-  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $processed=processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
 
   if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
@@ -89,6 +125,24 @@
   }
   return 0;
  }
+
+function saySafe($ph, $level = 0, $member_id = 0, $source = '') {
+    $data=array(
+        'say'=>1,
+        'ph'=>$ph,
+        'level'=>$level,
+        'member_id'=>$member_id,
+        'source'=>$source,
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
 
 /**
  * Summary of say
@@ -145,7 +199,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    setGlobal('lastSayTime', time());
    setGlobal('lastSayMessage', $ph);
-   processSubscriptions('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
+   processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
 
    if (!$noPatternMode)
    {
@@ -162,7 +216,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    $terminals=SQLSelect("SELECT NAME FROM terminals WHERE (IS_ONLINE=1 AND MAJORDROID_API=1) OR PLAYER_TYPE='googlehomenotifier'");
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
-    sayTo($ph, $level, $terminals[$i]['NAME']);
+    sayToSafe($ph, $level, $terminals[$i]['NAME']);
    }
 
 }
@@ -523,7 +577,7 @@ function runScheduledJobs()
 function textToNumbers($text)
 {
    $newtext = ($text);
-
+    
    return $newtext;
 }
 

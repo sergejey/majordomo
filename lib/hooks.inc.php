@@ -60,6 +60,25 @@ function unsubscribeFromEvent($module_name, $event_name = '')
    }
 }
 
+function processSubscriptionsSafe($event_name,$details='') {
+   if (!is_array($details)) {
+      $details=array();
+   }
+   $data=array(
+       'processSubscriptions'=>1,
+       'event'=>$event_name,
+       'params'=>json_encode($details),
+   );
+   $url=BASE_URL.'/objects/?'.http_build_query($data);
+   if (is_array($params)) {
+      foreach($params as $k=>$v) {
+         $url.='&'.$k.'='.urlencode($v);
+      }
+   }
+   $result = getURLBackground($url,0);
+   return $result;
+}
+
 /**
  * Summary of processSubscriptions
  * @param mixed $event_name Event name

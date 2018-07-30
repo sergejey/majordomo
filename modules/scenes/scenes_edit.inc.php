@@ -349,8 +349,8 @@
 
      $state_rec['ELEMENT_ID']=$element['ID'];
      $state_rec['TITLE']=$state_title_new;
-     $state_rec['IMAGE']=$image_new;
-     $state_rec['HTML']=$html_new;
+     $state_rec['IMAGE']=$image_new.'';
+     $state_rec['HTML']=$html_new.'';
      $state_rec['IS_DYNAMIC']=$is_dynamic_new;
      $state_rec['LINKED_OBJECT']=$linked_object_new.'';
      $state_rec['LINKED_PROPERTY']=$linked_property_new.'';

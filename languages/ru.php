@@ -1238,7 +1238,14 @@ $dictionary = array(
     'ADDON_FILE' => 'Файл дополнения',
     'UPLOAD_AND_INSTALL' => 'Загрузить и установить',
     'ADD_UPDATE_MANUALLY' =>'Добавить/обновить вручную',
-
+    'TURNING_ON' =>'Включаю',
+    'TURNING_OFF' =>'Выключаю',
+    'PATTERN_TIMER' => 'таймер',
+    'PATTERN_DO_AFTER' => 'через',
+    'PATTERN_DO_FOR' => 'на',
+    'PATTERN_SECOND' => 'секунд',
+    'PATTERN_MINUTE' => 'минут',
+    'PATTERN_HOUR' => 'час',
 
     /* end module names */
 

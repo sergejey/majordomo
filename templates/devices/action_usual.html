@@ -228,7 +228,7 @@
      <select name="type" onchange="this.form.submit();" class="form-control">
       <option value=""><#LANG_TYPE#></option>
       [#begin TYPES#]
-      <option value="[#NAME#]">[#TITLE#] ([#TOTAL#])</option>
+      <option value="[#NAME#]">[#TITLE#][#if TOTAL!=""#] ([#TOTAL#])[#endif#]</option>
       [#end TYPES#]
      </select>
     </form>
@@ -287,6 +287,9 @@
  <div id="group[#ID#]" class="swiper-slide" data-hash="group[#ID#]">
   <!--#<h4>[#TITLE#]</h4>#-->
   [#begin DEVICES#]
+  [#if NEW_SECTION="1"#]
+  <div class="row"><div class="col-md-12"><hr/>[#if SECTION_TITLE!=""#]<h2>[#SECTION_TITLE#]</h2>[#endif#]</div></div>
+  [#endif#]
   <div class="device[#ID#] col-md-3"><!-- cache_ignore_start -->[#HTML#]<!-- cache_ignore_end --></div>
   [#end DEVICES#]
  </div>

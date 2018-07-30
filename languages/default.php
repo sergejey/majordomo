@@ -1245,6 +1245,8 @@ $dictionary=array(
     'ADDON_FILE' => 'Addon package',
     'UPLOAD_AND_INSTALL' => 'Upload and Install',
     'ADD_UPDATE_MANUALLY' =>'Add/Update Manually',
+    'TURNING_ON' =>'Turning on',
+    'TURNING_OFF' =>'Turning off',
 
 'TEST'=>'test'
 
