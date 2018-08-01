@@ -8,25 +8,21 @@
  */
 
 
-
 $dictionary = array (
 
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Аліса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-	'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.
-		<br /><br />
-		Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a>
-		<br /><br />
-		<small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a>
+	'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.  <br /><br /> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a>
+		<br /><br /> <small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a>
 		</small>',
     'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
     'SELECT' => 'Обрати',
     'CONTROL_MENU' => 'Меню',
-    'YOU_ARE_HERE' => 'Ви тут',
+    'YOU_ARE_HERE' => 'Ви тут'
     'FRONTEND' => 'Веб-сайт',
     'MY_ACCOUNT' => 'Мій аккаунт',
     'LOGOFF' => 'Вийти',
@@ -1216,6 +1212,9 @@ $dictionary = array (
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_ALL_BY_TYPE' => 'Всі по типах',
     'DEVICES_ALL_BY_ROOM' => 'Всі по кімнатах',
+	    'DEVICES_LOAD_TIMEOUT'= 'Таймер зміни статусу навантаження',
+    'GROUPS' => 'Групи',
+    'APPLIES_TO' => 'В застосуванні до',
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
@@ -1233,9 +1232,7 @@ $dictionary = array (
     'ADDON_FILE' => 'Файл доповнення',
     'UPLOAD_AND_INSTALL' => 'Завантажити та встановити',
     'ADD_UPDATE_MANUALLY' =>'Додати / оновити вручну',
-	
-	
-'TURNING_ON' =>'Вмикаю',
+	'TURNING_ON' =>'Вмикаю',
     'TURNING_OFF' =>'Вимикаю',
     'PATTERN_TIMER' => 'таймер',
     'PATTERN_DO_AFTER' => 'через',
