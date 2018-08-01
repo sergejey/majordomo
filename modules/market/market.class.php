@@ -588,7 +588,7 @@ function admin(&$out) {
                  foreach($files_to_import as $file) {
                      $filename = $folder.'/import/scenes/'.$file;
                      if (is_file($filename)) {
-                         $scenes_module->import($filename,$plugin_name);
+                         $scenes_module->import_scene($filename,$plugin_name);
                      }
                  }
              }
