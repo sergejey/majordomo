@@ -8,6 +8,10 @@
     background-color:#aaaaaa;
 }
 
+.device-widget.warning {
+    border:1px solid red;
+}
+
 .device-icon {
     background-image: url(../cms/scenes/styles/button/i_button.png);
     background-repeat: no-repeat;

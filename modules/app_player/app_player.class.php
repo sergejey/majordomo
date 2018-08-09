@@ -137,12 +137,15 @@ function admin(&$out) {
 function usual(&$out) {
  global $play;
  global $rnd;
- global $rnd;
  global $session;
  global $play_terminal;
  global $terminal_id;
  global $volume;
 
+ $session_terminal=gr('session_terminal');
+ if ($session_terminal!='') {
+  $session->data['SESSION_TERMINAL']=$session_terminal;
+ }
 
  if ($this->play) {
   $play=$this->play;
@@ -157,14 +160,41 @@ function usual(&$out) {
   $session->data['PLAY_TERMINAL']=$terminal['NAME'];
  }
 
-
-
  if ($session->data['PLAY_TERMINAL']=='') {
   $session->data['PLAY_TERMINAL']=$session->data['TERMINAL'];
  }
 
  if ($play_terminal!='') {
   $session->data['PLAY_TERMINAL']=$play_terminal;
+ } else {
+  $play_terminal=$session->data['PLAY_TERMINAL'];
+ }
+
+ if (!$play && $session->data['LAST_PLAY']) {
+  $play=$session->data['LAST_PLAY'];
+  $out['LAST_PLAY']=1;
+ } elseif ($play) {
+  $session->data['LAST_PLAY']=$play;
+ }
+ if ($play!='') {
+  $out['PLAY']=$play;
+ }
+ if ($rnd!='') {
+  $out['RND']=$rnd;
+ }
+
+ $current_level=getGlobal('ThisComputer.volumeLevel');
+ for($i=0;$i<=100;$i+=5) {
+  $rec=array('VALUE'=>$i);
+  if ($i==$current_level) {
+   $rec['SELECTED']=1;
+  }
+  $out['VOLUMES'][]=$rec;
+ }
+
+ global $ajax;
+ if ($this->ajax) {
+  $ajax=1;
  }
 
  if ($session->data['PLAY_TERMINAL']!='') {
@@ -181,38 +211,6 @@ function usual(&$out) {
 
  if (!$terminal['CANPLAY']) {
   $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY IS_ONLINE DESC LIMIT 1");
- }
-
- if (!$play && $session->data['LAST_PLAY']) {
-  $play=$session->data['LAST_PLAY'];
-  $out['LAST_PLAY']=1;
- } elseif ($play) {
-  $session->data['LAST_PLAY']=$play;
- }
-
- if ($play!='') {
-  $out['PLAY']=$play;
- }
-
- if ($rnd!='') {
-  $out['RND']=$rnd;
- }
-
- $current_level=getGlobal('ThisComputer.volumeLevel');
- for($i=0;$i<=100;$i+=5) {
-  $rec=array('VALUE'=>$i);
-  if ($i==$current_level) {
-   $rec['SELECTED']=1;
-  }
-  $out['VOLUMES'][]=$rec;
- }
-
-
-
-
- global $ajax;
- if ($this->ajax) {
-  $ajax=1;
  }
 
 
@@ -243,52 +241,7 @@ function usual(&$out) {
    }
 
     if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
-
-      $terminal['PLAYER_PORT']='80';
-
-      if ($command=='refresh') {
-       $out['PLAY']=preg_replace('/\\\\$/is', '', $out['PLAY']);
-       $out['PLAY']=preg_replace('/\/$/is', '', $out['PLAY']);
-       if (preg_match('/^http/', $out['PLAY'])) {
-        $path=urlencode($out['PLAY']);
-       } else {
-        $path=urlencode(''.str_replace('/', "\\", ($out['PLAY'])));
-       }
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_play&param=".$path);
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='fullscreen') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_fullscreen");
-       $res=curl_exec($ch);
-      }
-
-
-      if ($command=='pause') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_pause");
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='next') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_next");
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='prev') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_prev");
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='close') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_close");
-       $res=curl_exec($ch);
-      }
-
-     if ($command=='volume') {
-       setGlobal('ThisComputer.volumeLevel', $volume);
-       callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
-      }
-
+     include(DIR_MODULES.'app_player/vlc.php');
    } elseif ($terminal['PLAYER_TYPE']=='xbmc') {
     include(DIR_MODULES.'app_player/xbmc.php');
     } elseif ($terminal['PLAYER_TYPE']=='ghn') {
@@ -300,21 +253,17 @@ function usual(&$out) {
    } elseif ($terminal['MAJORDROID_API'] || $terminal['PLAYER_TYPE']=='majordroid') {
    include(DIR_MODULES.'app_player/majordroid.php');
    } elseif (file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.php')) {
-     include(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.php');
-    }
-
+    include(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.php');
+   }
    // close cURL resource, and free up system resources
    curl_close($ch);    
 
   }
 
-
   if (!$this->intCall) {
-
    if ($session->data['PLAY_TERMINAL']!='') {
     echo " on ".$session->data['PLAY_TERMINAL'].' ';
    }
-
    echo "OK";
    if ($res) {
     echo " (".$res.")";
@@ -324,23 +273,27 @@ function usual(&$out) {
   }
  }
 
+   $session_terminals=array();
+   if ($session->data['SESSION_TERMINAL']!='') {
+    $session_terminals=explode(',',$session->data['SESSION_TERMINAL']);
+   } elseif ($session->data['PLAY_TERMINAL']) {
+    $session_terminals=array($session->data['PLAY_TERMINAL']);
+   }
    $terminals=SQLSelect("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY TITLE");
+   array_unshift($terminals,array('NAME'=>'html5','TITLE'=>'Web-browser'));
+   //$terminals[]=array('NAME'=>'html5','TITLE'=>'Web-browser');
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
-    if ($terminals[$i]['NAME']==$session->data['PLAY_TERMINAL']) {
+    if (in_array($terminals[$i]['NAME'],$session_terminals)) {
      $terminals[$i]['SELECTED']=1;
      $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
     }
    }
    $out['TERMINALS_TOTAL']=count($terminals);
-   if ($out['TERMINALS_TOTAL']==1 || !$session->data['PLAY_TERMINAL']) {
+   if ($out['TERMINALS_TOTAL']==1 || !count($session_terminals)) {
     $terminals[0]['SELECTED']=1;
    }
-
    $out['TERMINALS']=$terminals;
-
-
-
 }
 /**
 * Install

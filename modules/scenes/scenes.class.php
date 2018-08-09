@@ -341,7 +341,12 @@ function admin(&$out) {
 
  if ($this->view_mode=='import') {
   global $file;
-  $this->import_scene($file);
+  $id=$this->import_scene($file);
+  if ($id) {
+   $this->redirect("?view_mode=edit_scenes&id=".$id);
+  } else {
+   $this->redirect("?");
+  }
  }
 
 
@@ -471,11 +476,9 @@ function admin(&$out) {
     $filename=ROOT.$rec['WALLPAPER'];
     SaveFile($filename, base64_decode($data['WALLPAPER_IMAGE']));
    }
-   $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
+   return $rec['ID'];
   }
 
-  $this->redirect("?");
-  
  }
 
 /**
@@ -562,19 +565,28 @@ function usual(&$out) {
 
 
     if ($op=='resized' && $element['ID']) {
-     $details=json_decode($details, true);
-     $element['WIDTH']=$details['size']['width'];
-     $element['HEIGHT']=$details['size']['height'];
+     if ($details) {
+      $details=json_decode($details, true);
+      $element['WIDTH']=$details['size']['width'];
+      $element['HEIGHT']=$details['size']['height'];
+     } else {
+      $element['WIDTH']=gr('dwidth');
+      $element['HEIGHT']=gr('dheight');
+     }
      if ($element['WIDTH']>0 && $element['HEIGHT']>0) {
       SQLUpdate('elements', $element);
      }
     }
 
     if ($op=='dragged' && $element['ID']) {
-     $details=json_decode($details, true);
-     //echo "Dragged $element ".serialize($details);
-     $diff_top=$details['position']['top']-$details['originalPosition']['top'];
-     $diff_left=$details['position']['left']-$details['originalPosition']['left'];
+     if ($details) {
+      $details=json_decode($details, true);
+      $diff_top=$details['position']['top']-$details['originalPosition']['top'];
+      $diff_left=$details['position']['left']-$details['originalPosition']['left'];
+     } else {
+      $diff_top=gr('dtop');
+      $diff_left=gr('dleft');
+     }
      if ($diff_top!=0 || $diff_left!=0) {
       $element['TOP']+=$diff_top;
       $element['LEFT']+=$diff_left;

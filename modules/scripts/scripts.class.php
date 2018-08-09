@@ -516,9 +516,16 @@ class scripts extends module
  safe_execs: PRIORITY int(10) NOT NULL DEFAULT 0
  safe_execs: ADDED datetime
 
-
 EOD;
         parent::dbInstall($data);
+
+        $scripts = SQLSelect("SELECT * FROM scripts");
+        $total = count($scripts);
+        for($i=0;$i<$total;$i++) {
+            if ($scripts[$i]['EXECUTED']=='0000-00-00 00:00:00') {
+                SQLExec("UPDATE scripts SET EXECUTED=NOW() WHERE ID=".$scripts[$i]['ID']);
+            }
+        }
     }
 // --------------------------------------------------------------------
 }

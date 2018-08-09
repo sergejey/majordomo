@@ -14,6 +14,7 @@ function inIframe () {
 
  function report_js_error(msg, url, linenumber) {
   var stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
+  console.log('JAVASCRIPT ERROR: '+stuff);
   var tmp = new Image();
   tmp.src = "/write_error.php?error="+encodeURIComponent(stuff);
   return true;

@@ -60,4 +60,3 @@ if ($command == 'volume')
 
 $res = '';
 
-?>
