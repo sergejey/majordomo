@@ -382,6 +382,13 @@ function admin(&$out) {
    }
   }
  }
+ if ($this->view_mode=='timers') {
+  global $cmd;
+  global $timer;
+  if ($cmd=='stop' && $timer!='') {
+   clearScheduledJob($timer);
+  }
+ }
 
  if ($ajax) {
   global $op;
@@ -690,6 +697,7 @@ function admin(&$out) {
       echo '<td><b>TIMER</b></td>';
       echo '<td><b>COMMAND</b></td>';
       echo '<td><b>SCHEDULED</b></td>';
+      echo '<td></td>';
       echo '</tr>';
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
@@ -701,6 +709,10 @@ function admin(&$out) {
       echo '</td>';
       echo '<td>';
       echo $res[$i]['RUNTIME'].'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      $url=ROOTHTML.'panel/xray.html?view_mode=timers&timer='.urlencode($res[$i]['TITLE']);
+      echo '<a href="'.$url.'&cmd=stop" class="btn btn-default">Stop</a>';
       echo '</td>';
       echo '</tr>';
      }
