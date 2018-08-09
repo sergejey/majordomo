@@ -341,7 +341,12 @@ function admin(&$out) {
 
  if ($this->view_mode=='import') {
   global $file;
-  $this->import_scene($file);
+  $id=$this->import_scene($file);
+  if ($id) {
+   $this->redirect("?view_mode=edit_scenes&id=".$id);
+  } else {
+   $this->redirect("?");
+  }
  }
 
 
@@ -471,11 +476,9 @@ function admin(&$out) {
     $filename=ROOT.$rec['WALLPAPER'];
     SaveFile($filename, base64_decode($data['WALLPAPER_IMAGE']));
    }
-   $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
+   return $rec['ID'];
   }
 
-  $this->redirect("?");
-  
  }
 
 /**
