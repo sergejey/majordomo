@@ -11,15 +11,14 @@ if (!isset($params['statusUpdated'])) {
  }
 
  $motion_timeout=$this->getProperty('timeout'); // seconds timeout
- if (!$motion_timeout) {
-  $motion_timeout=20; // timeout by default
+ if ($motion_timeout) {
+  setTimeout($ot.'_motion_timer', 'setGlobal("'.$ot.'.status", 0);', $motion_timeout);
  }
  $nobodysHome=getGlobal('NobodyHomeMode.active');
 
  if (!isset($params['statusUpdated'])) {
   $this->setProperty('status', 1);
  }
- setTimeout($ot.'_motion_timer', 'setGlobal("'.$ot.'.status", 0);', $motion_timeout);
 
  if ($nobodysHome && $this->getProperty('ignoreNobodysHome')) {
   return;
