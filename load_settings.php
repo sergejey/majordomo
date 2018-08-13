@@ -15,6 +15,13 @@ if (IsSet($_GET['disable_websockets'])) {
  Define('DISABLE_WEBSOCKETS', 1);
 }
 
+if ($_GET['lang']) {
+    Define("SETTINGS_SITE_LANGUAGE",$_GET['lang']);
+    $_SESSION['lang']=SETTINGS_SITE_LANGUAGE;
+} elseif ($_SESSION['lang']) {
+    Define("SETTINGS_SITE_LANGUAGE",$_SESSION['lang']);
+}
+
 for ($i = 0; $i < $total; $i ++)
    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 
