@@ -134,6 +134,7 @@
    }
    playURL += '&play_terminal=' + encodeURIComponent(playTerminal);
    playURL += '&session_terminal=' + encodeURIComponent($("#selPlayTerminal").val());
+   console.log('Play URL: '+playURL);
    $.ajax({
     url: playURL
    }).done(function (data) {

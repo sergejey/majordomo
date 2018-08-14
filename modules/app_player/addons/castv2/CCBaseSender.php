@@ -29,6 +29,10 @@ class CCBaseSender {
 		preg_match("/\"appId\":\"([^\"]*)/",$s,$m);
 		$appid = $m[1];
 
+		if ($this->chromecast->sessionid) {
+			$this->mediaid=$this->chromecast->sessionid;
+		}
+
 
 		//$appid = 'undefined';
 
@@ -64,6 +68,8 @@ class CCBaseSender {
 			}
 			$this->chromecast->connect();
 		}
+
+
 	}
 	
 }

@@ -3,6 +3,7 @@ $address=$terminal['HOST']; // ip
 
 include_once(DIR_MODULES.'app_player/addons/castv2/Chromecast.php');
 
+//Define('CHROMECAST_DEBUG',1);
 $cc = new Chromecast($address,8009);
 $cc->requestId = time();
 
@@ -57,7 +58,7 @@ if ($command == 'prev')
 
 if ($command == 'close')
 {
-    $cc->DMP->Stop();
+    $cc->DMP->stop();
 }
 
 if ($command == 'volume') {

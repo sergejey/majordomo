@@ -289,6 +289,7 @@ class Chromecast
 	
 	function testLive()
 	{
+		//return;
 		// If there is a difference of 10 seconds or more between $this->lastactivetime and the current time, then we've been kicked off and need to reconnect
 		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
 			echo '<hr>TESTLIVE ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
@@ -303,6 +304,7 @@ class Chromecast
 			// Reconnect
 			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
 				echo '<hr>RECONNECT ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
+				exit;
 				flush();
 				flush();
 			}
@@ -392,7 +394,7 @@ class Chromecast
 	function getStatus()
 	{
 		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>GETTING STATUS' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
+			echo '<hr>GETTING STATUS ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
 			flush();
 			flush();
 		}
@@ -415,7 +417,9 @@ class Chromecast
 		$this->lastactivetime = time();
 		$this->requestId++;
 		$r = "";
-		while ($this->transportid == "") {
+		$wait_transport=3;
+		$wait_transport_started=time();
+		while ($this->transportid == "" && (time()-$wait_transport_started)<=$wait_transport) {
 			//echo '<hr>Waiting transport ID '.__FILE__.' ' .__LINE__.str_repeat(' ',2048);flush();flush();
 			$r = $this->getCastMessage();
 		}
@@ -440,6 +444,13 @@ class Chromecast
 		$c->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
 		$c->payloadtype = 0;
 		$c->payloadutf8 = '{"type":"CONNECT"}';
+
+		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
+			echo '<hr>connect: ' . $c->payloadutf8 . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
+			flush();
+			flush();
+		}
+
 		fwrite($this->socket, $c->encode());
 		fflush($this->socket);
 		$this->lastactivetime = time();
@@ -452,19 +463,23 @@ class Chromecast
 		// Later on we could update CCprotoBuf to decode this
 		// but for now all we need is the transport id  and session id if it is
 		// in the packet and we can read that directly.
+		/*
 		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
 			echo '<hr>getCastMessage ' . $message . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
 			flush();
 			flush();
 		}
+		*/
 
 		$this->testLive();
 
+		/*
 		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
 			echo '<hr>getCastMessage reading' . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
 			flush();
 			flush();
 		}
+		*/
 
 		$response = fread($this->socket, 2000);
 		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
@@ -483,22 +498,20 @@ class Chromecast
 				flush();
 				flush();
 			}
-
 			// Wait infinitely for a packet.
 			//set_time_limit(30);
 		}
-
+		/*
 		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
 			echo '<hr>RESPONSE ' . $response . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
 			flush();
 			flush();
 		}
-
+		*/
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->transportid = $matches;
-
 			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
 				echo '<hr>Transport id set to ' . $this->transportid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
 				flush();
@@ -506,18 +519,27 @@ class Chromecast
 			}
 
 		}
+		/*
 		if (preg_match("/sessionId/s", $response)) {
 			preg_match("/\"sessionId\"\:\"([^\"]*)/", $response, $r);
 			$this->sessionid = $r[1];
-
 			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>Session id set to ' . $this->transportid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
+				echo '<hr>Session id set to ' . $this->sessionid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
 				flush();
 				flush();
 			}
-
 		}
+		*/
 
+		if (preg_match("/mediaSessionId/s", $response)) {
+			preg_match("/\"mediaSessionId\"\:(\d+)/", $response, $r);
+			$this->sessionid = $r[1];
+			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
+				echo '<hr>Media Session id set to ' . $this->sessionid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
+				flush();
+				flush();
+			}
+		}
 		return $response;
 	}
 	
