@@ -839,7 +839,7 @@ function getHistoryValue($varname, $time, $nerest = false) {
 
     // Get val before
         $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') AND ADDED>=('".date('Y-m-d H:i:s', $time - 7*24*60*60)."') ORDER BY ADDED DESC LIMIT 1");
-        if (!$val1['VALUE'])     
+        if (!isset($val1['VALUE']))
             $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
         
         // Get val after        
