@@ -1,6 +1,7 @@
 <?php
 
  $ot=$this->object_title;
+ $ncno = $this->getProperty('ncno');
 
  $tm=time();
  $this->setProperty('updated', $tm);
@@ -25,6 +26,33 @@
   if ($linked_room) {
    callMethodSafe($linked_room.'.onActivity', array('sensor'=>$ot));
   }  
+ }
+ 
+ $description = $this->description;
+ if (!$description) {
+  $description = $ot;
+ } 
+ if ($this->getProperty('notify_status')) {
+  if (isset($params['NEW_VALUE']))
+  {
+   if (($params['NEW_VALUE'] && $ncno=='nc') || (!$params['NEW_VALUE'] && $ncno=='no'))
+    saySafe($description.' '.LANG_DEVICES_STATUS_OPEN, 2);
+   else
+    saySafe($description.' '.LANG_DEVICES_STATUS_CLOSED, 2);
+  }
+ }
+ if ($this->getProperty('notify_nc')) {
+  if (isset($params['NEW_VALUE']))
+  {
+   if (($params['NEW_VALUE'] && $ncno=='nc') || (!$params['NEW_VALUE'] && $ncno=='no'))
+   {
+    ClearTimeOut($ot . '_notify_timer');
+   }
+   else
+   {
+    setTimeout($ot . '_notify_timer', "saySafe('".$description." ".LANG_DEVICES_STATUS_OPEN."!!!', 5);", 5*60);
+   }
+  }
  }
 
 $this->callMethodSafe('logicAction');
