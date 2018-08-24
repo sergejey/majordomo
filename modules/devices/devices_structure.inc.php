@@ -171,6 +171,8 @@ $this->device_types=array(
         'PROPERTIES'=>array(
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+            'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
