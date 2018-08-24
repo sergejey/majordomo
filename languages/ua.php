@@ -77,6 +77,7 @@ $dictionary = array (
     'SECTION_DEVICES' => 'Пристрої',
     'SECTION_SETTINGS' => 'Налаштування',
     'SECTION_SYSTEM' => 'Система',
+    'SECTION_PANEL' => 'Панель',
 
     /* end general */
 
