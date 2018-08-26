@@ -16,6 +16,9 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 
+$started_time = time();
+$max_run_time = 2*60*60; // do restart in 2 hours
+
 set_time_limit(0);
 const CONNECT_HOST = 'connect.smartliving.ru';
 
@@ -56,7 +59,7 @@ while (1) {
     $host = CONNECT_HOST;
     $port = 1883;
 
-    $query = $username . '/incoming_urls,' . $username . '/menu_session';
+    $query = $username . '/incoming_urls,' . $username . '/menu_session,'. $username . '/reverse_urls';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new phpMQTT($host, $port, $client_name);
 
@@ -88,11 +91,17 @@ while (1) {
                 $menu_sent_time = time();
                 send_all_menu();
             }
+            if ((time()-$started_time)>$max_run_time) {
+                echo "Exit cycle CONNET... (reconnecting)";
+                $mqtt_client->close();
+                $db->Disconnect();
+                exit;
+            }
         }
         $mqtt_client->close();
 
     } else {
-        echo "Failed to connect ...\n";
+        echo date('Y-m-d H:i:s')." Failed to connect ...\n";
         sleep(10);
         continue;
     }
@@ -119,17 +128,27 @@ function procmsg($topic, $msg)
         $url = BASE_URL.$msg;
         echo date("Y-m-d H:i:s") . " Incoming url: $url\n";
         getURLBackground($url, 0);
+    } elseif (preg_match('/reverse_urls/is', $topic)) {
+        echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
+        send_reverse_result($msg,$result);
     }
     echo date("Y-m-d H:i:s") . " Topic:{$topic} $msg\n";
 }
 
 function send_menu_element($parent_id) {
-    echo "Sending menu element $parent_id\n";
+    echo date('Y-m-d H:i:s')." Sending menu element $parent_id\n";
     update_menu_data($parent_id);
 }
 
+function send_reverse_result($msg,$result) {
+    global $connect;
+    $url = BASE_URL.$msg;
+    $result = getURL($url, 0);
+    $connect->sendReverseURL($msg,$result);
+}
+
 function send_all_menu() {
-    echo "Sending full menu\n";
+    echo date('Y-m-d H:i:s')." Sending full menu\n";
     global $connect;
     update_menu_data(0);
     $connect->sendMenu(1);
