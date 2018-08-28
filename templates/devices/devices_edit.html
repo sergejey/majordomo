@@ -91,16 +91,20 @@
 
 
 <div class="form-group">
- <label class="col-lg-3 control-label">
+ <label class="col-lg-4 control-label">
   &nbsp;
  </label>
-        <div class="col-lg-3">
+        <div class="col-lg-6">
  [#if ID!=""#]
  <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
  [#else ID#]
  <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
  [#endif ID#]
  <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+
+         [#if ID!=""#]
+         <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
+         [#endif ID#]
 
 [#if SELECT_EXISTING="1"#]
 <a href="#" onclick="$('#frmEdit').hide();$('#existingList').show();return false;"><#LANG_DEVICES_CHOOSE_EXISTING#></a>
