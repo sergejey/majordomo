@@ -149,13 +149,10 @@ switch($command) {
 		}
 		break;
 	case 'volume':
-		global $value;
-		if(!isset($value)) {
-			// deprecated (backward compatibility)
-			$value = $volume * 3;
-		}
-		if(isset($value)) {
-			curl_setopt($ch, CURLOPT_URL, $playerAddr.'/requests/status.xml?command=volume&val='.intval($value));
+		global $volume;
+		$volume = round((int)$volume * 256 / 100);
+		if(isset($volume)) {
+			curl_setopt($ch, CURLOPT_URL, $playerAddr.'/requests/status.xml?command=volume&val='.intval($volume));
 			if($result = curl_exec($ch)) {
 				if($xml = new SimpleXMLElement($result)) {
 					$json['success'] = TRUE;
@@ -170,7 +167,7 @@ switch($command) {
 			}
 		} else {
 			$json['success'] = FALSE;
-			$json['message'] = 'val is missing';
+			$json['message'] = 'volume is missing';
 		}
 		break;
 	/*
