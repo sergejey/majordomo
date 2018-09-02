@@ -393,6 +393,9 @@ if ($rec['LINKED_OBJECT']) {
     $out['HTML']=$processed['HTML'];
 }
 
-  $out['TYPES']=$types;
+usort($types,function ($a,$b) {
+    return strcmp($a['TITLE'],$b['TITLE']);
+});
+$out['TYPES']=$types;
 
 $out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");

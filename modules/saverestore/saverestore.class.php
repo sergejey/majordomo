@@ -1347,6 +1347,12 @@ class saverestore extends module
             }
             @unlink(ROOT . "modules/control_modules/installed");
 
+            $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
+            $this->saveConfig();
+            sg('LatestUpdateId',$out['LATEST_ID']);
+            sg('LatestUpdateTimestamp',date('Y-m-d H:is'));
+
+
             if ($iframe) {
                 $this->echonow(" OK<br/> ", 'green');
             }
@@ -1358,8 +1364,6 @@ class saverestore extends module
                 $this->echonow(" OK<br/> ", 'green');
             }
 
-            $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
-            $this->saveConfig();
 
             if ($iframe) {
                 return 1;

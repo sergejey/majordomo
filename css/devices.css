@@ -66,6 +66,10 @@
     background-image: url(../cms/scenes/styles/informer/i_alarm.png);
 }
 
+.device-icon.leak {
+    background-image: url(../cms/scenes/styles/informer/i_water.png);
+}
+
 .device-icon.button {
     background-image: url(../cms/scenes/styles/button/i_knopka.png);
 }
@@ -79,6 +83,10 @@
 }
 
 .device-icon.smoke.on {
+    background-color:red;
+}
+
+.device-icon.leak.on {
     background-color:red;
 }
 

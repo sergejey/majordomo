@@ -38,6 +38,12 @@ function collectData() {
    $result['unixtime']=time();
    $result['timestamp']=date('Y-m-d H:i:s',$result['unixtime']);
 
+   if (defined('MASTER_UPDATE_URL')) {
+      $result['update_url']=MASTER_UPDATE_URL;
+   } else {
+      $result['update_url']='Default';
+   }
+
 
    $result['reboot']=array();
    if (file_exists('./reboot')) {
@@ -75,6 +81,10 @@ function collectData() {
    global $db; 
    $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
    if ($db) {
+
+      $result['LatestUpdateId']=gg('LatestUpdateId');
+      $result['LatestUpdateTimestamp']=gg('LatestUpdateTimestamp');
+
       include_once("./load_settings.php");
       $result['DB']['connection']='OK';
       $tables = SQLSelect("SHOW TABLE STATUS;");
