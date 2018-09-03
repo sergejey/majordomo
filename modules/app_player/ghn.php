@@ -3,8 +3,6 @@
 $port = (!empty($terminal['PLAYER_PORT'])?$terminal['PLAYER_PORT']:8091);
 $host = $terminal['HOST'];
 
-$language = SETTINGS_SITE_LANGUAGE;
-
 $json = array(
 	'play_terminal'		=> $play_terminal,
 	'session_terminal'	=> $play_terminal,
