@@ -37,3 +37,5 @@ if ($command=='volume') {
     callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
 }
 
+//$res = json_encode($json);
+//$res = '';
