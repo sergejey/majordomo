@@ -61,12 +61,12 @@ switch($command) {
 			// deprecated (backward compatibility)
 			$input = $out['PLAY'];
 		}
-		//$input = preg_replace('/\\\\$/is', '', $input);
-		//$input = preg_replace('/\/$/is', '', $input);
-		//if(!preg_match('/^http/', $input)) {
-		//	$input = str_replace('/', "\\", $input);
-		//}
 		if(isset($input)) {
+			//$input = preg_replace('/\\\\$/is', '', $input);
+			//$input = preg_replace('/\/$/is', '', $input);
+			//if(!preg_match('/^http/', $input)) {
+			//	$input = str_replace('/', "\\", $input);
+			//}
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			if($socket === false) {
 				$json['success'] = FALSE;

@@ -44,12 +44,12 @@ switch($command) {
 			// deprecated (backward compatibility)
 			$input = $out['PLAY'];
 		}
-		//$input = preg_replace('/\\\\$/is', '', $input);
-		//$input = preg_replace('/\/$/is', '', $input);
-		//if(!preg_match('/^http/', $input)) {
-		//	$input = str_replace('/', "\\", $input);
-		//}
 		if(isset($input)) {
+			//$input = preg_replace('/\\\\$/is', '', $input);
+			//$input = preg_replace('/\/$/is', '', $input);
+			//if(!preg_match('/^http/', $input)) {
+			//	$input = str_replace('/', "\\", $input);
+			//}
 			$url = 'http://'.$host.':'.$port.'/google-home-notifier?text='.urlencode($input);
 			if(getURL($url, 0)) {
 				$json['success'] = TRUE;
