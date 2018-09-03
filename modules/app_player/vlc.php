@@ -228,5 +228,5 @@ switch($command) {
 		}
 }
 
-//$res = json_encode($json);
-//$res = '';
+$res = json_encode($json);
+$res = '';
