@@ -66,22 +66,27 @@ switch($command) {
 		//if(!preg_match('/^http/', $input)) {
 		//	$input = str_replace('/', "\\", $input);
 		//}
-		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		if($socket === false) {
-			$json['success'] = FALSE;
-			$json['message'] = 'socket_create() failed: '.socket_strerror(socket_last_error());
-		} else {
-			$result = @socket_connect($socket, $address, $service_port);
-			if($result === false) {
+		if(isset($input)) {
+			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			if($socket === false) {
 				$json['success'] = FALSE;
-				$json['message'] = 'socket_connect() failed: '.socket_strerror(socket_last_error($socket));
+				$json['message'] = 'socket_create() failed: '.socket_strerror(socket_last_error());
 			} else {
-				$packet = 'play:'.$input;
-				socket_write($socket, $packet, strlen($packet));
-				$json['success'] = TRUE;
-				$json['message'] = 'OK';
+				$result = @socket_connect($socket, $address, $service_port);
+				if($result === false) {
+					$json['success'] = FALSE;
+					$json['message'] = 'socket_connect() failed: '.socket_strerror(socket_last_error($socket));
+				} else {
+					$packet = 'play:'.$input;
+					socket_write($socket, $packet, strlen($packet));
+					$json['success'] = TRUE;
+					$json['message'] = 'OK';
+				}
+				 socket_close($socket);
 			}
-			 socket_close($socket);
+		} else {
+			$json['success'] = FALSE;
+			$json['message'] = 'input is missing';
 		}
 		break;
 	case 'close': // deprecated (backward compatibility)
