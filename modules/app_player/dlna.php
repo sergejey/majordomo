@@ -116,7 +116,7 @@ switch($command) {
 		$json['success'] = FALSE;
 		$json['message'] = 'command is not supported for this player type';
 		break;
-	default: // Execute google-chrome-notifier command
+	default: // Execute dlna command
 		if(isset($command)) {
 			// FIXME
 			$json['success'] = FALSE;
