@@ -59,9 +59,6 @@ function getParams() {
         if(function_exists('ldap_connect') && is_file(ROOT.'modules/ldap_users/installed')) {
                 $out['LDAP_ON']=1;
         }
-
-
-
   if ($this->mode=='logoff') {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
@@ -69,8 +66,7 @@ function getParams() {
    UnSet($session->data['SITE_USERNAME']);
    UnSet($session->data['SITE_USER_ID']);
    Unset($session->data["cp_requested_url"]);
-   
-   $this->owner->redirect("/");
+   $this->redirect("/");
   }
 
   if ($this->action=="enter") {
@@ -212,8 +208,7 @@ function getParams() {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
    UnSet($session->data['USERNAME']);
-   $this->owner->redirect("?");
-
+   $this->redirect("/");
   } elseif ($this->action=="admin") {
    global $mode;
    global $mode2;
