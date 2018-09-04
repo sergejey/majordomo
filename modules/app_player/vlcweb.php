@@ -150,8 +150,8 @@ switch($command) {
 		break;
 	case 'volume':
 		global $volume;
-		$volume = round((int)$volume * 256 / 100);
 		if(isset($volume)) {
+			$volume = round((int)$volume * 256 / 100);
 			curl_setopt($ch, CURLOPT_URL, $playerAddr.'/requests/status.xml?command=volume&val='.intval($volume));
 			if($result = curl_exec($ch)) {
 				if($xml = new SimpleXMLElement($result)) {

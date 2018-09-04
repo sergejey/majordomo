@@ -38,7 +38,7 @@ class Chromecast
 		// use port forwarding!
 		$contextOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, ]];
 		$context = stream_context_create($contextOptions);
-		if ($this->socket = stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context)) {
+		if ($this->socket = @stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context)) {
 			stream_set_timeout($this->socket,5);
 		}
 		else {
