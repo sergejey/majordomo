@@ -118,7 +118,7 @@ function addErr($err){
 	if ($mpd_debug) echo 'error:>'.$err.'<br>';
 }
 
-class mpd {
+class mpd_player {
 	// TCP/Connection variables
 	var $host;
 	var $port;
@@ -165,11 +165,11 @@ class mpd {
 
     // =================== BEGIN OBJECT METHODS ================
 
-	/* mpd() : Constructor
+	/* mpd_player() : Constructor
 	 * 
 	 * Builds the MPD object, connects to the server, and refreshes all local object properties.
 	 */
-	function mpd($srv,$port,$pwd = NULL, $debug= FALSE ) {
+	function mpd_player($srv,$port,$pwd = NULL, $debug= FALSE ) {
 		$this->host = $srv;
 		$this->port = $port;
         $this->password = $pwd;
@@ -215,7 +215,7 @@ class mpd {
 	 */
 	function Connect() {
 		addLog( "mpd->Connect() / host: ".$this->host.", port: ".$this->port."\n" );
-		$this->mpd_sock = fsockopen($this->host,$this->port,$errNo,$errStr,10);
+		$this->mpd_sock = @fsockopen($this->host,$this->port,$errNo,$errStr,10);
 		if (!$this->mpd_sock) {
 			addErr("Socket Error: $errStr ($errNo)");
 			return NULL;
