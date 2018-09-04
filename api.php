@@ -103,6 +103,10 @@ if (!isset($request[0])) {
                 $result['data'][$v['TITLE']] = $object->getProperty($v['TITLE']);
             }
         }
+    } elseif ($method == 'POST') {
+        if (isset($tmp[1])) {
+            setGlobal($request[1], $input['data']);
+        }
     }
 } elseif (strtolower($request[0]) == 'history' && isset($request[1])) {
     $time_period = 0;
