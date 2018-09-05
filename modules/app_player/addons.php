@@ -41,7 +41,7 @@ class app_player_addon {
 		/*
 		Do not use directly
 		*/
-		return $this->not_supported($name);
+		return $this->command($name, $parameters[0]);
 	}
 	
 	// Command Not Supported

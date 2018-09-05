@@ -142,7 +142,7 @@ class app_player extends module {
 	* @access public
 	*/
 	function usual(&$out) {
-		global $play, $volume; // Deprecated (backward compatibility)
+		global $play; // Deprecated (backward compatibility)
 		global $rnd;
 		global $session;
 		global $play_terminal;
@@ -238,6 +238,11 @@ class app_player extends module {
 			
 			if($command != '') {
 
+				// Deprecated (backward compatibility)
+				global $volume;
+				if($command == 'volume' && isset($volume) && !empty($volume)) $param = $volume;
+				if($command == 'refresh' && isset($play) && !empty($play)) $param = $play;
+				
 				// Volume
 				if($terminal['NAME'] == 'MAIN' && $command == 'volume') {
 					setGlobal('ThisComputer.volumeLevel', $volume);
@@ -246,54 +251,28 @@ class app_player extends module {
 				// Addons main class
 				include_once(DIR_MODULES.'app_player/addons.php');
 				
+				// Default player type
+				if(empty($terminal['PLAYER_TYPE'])) {
+					$terminal['PLAYER_TYPE'] = 'vlc';
+				}
+				
 				// Load addon
 				if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
-					
+
 					include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
-					
+
 					if(class_exists($terminal['PLAYER_TYPE'])) {
-						
+
 						if($player = new $terminal['PLAYER_TYPE']($terminal)) {
-							
-							$supported_commands = array(
-								'status',
-								'refresh',
-								'play',
-								'pause',
-								'close',
-								'stop',
-								'next',
-								'prev',
-								'seek',
-								'fullscreen',
-								'volume',
-								'pl_get',
-								'pl_add',
-								'pl_delete',
-								'pl_empty',
-								'pl_play',
-								'pl_sort',
-								'pl_random',
-								'pl_loop',
-								'pl_repeat'
-							);
-							
-							// Deprecated (backward compatibility)
-							if($command == 'volume' && isset($volume) && !empty($volume)) $param = $volume;
-							if($command == 'refresh' && isset($play) && !empty($play)) $param = $play;
-							
+
 							// Execute command
-							if(in_array($command, $supported_commands) && method_exists($player, $command)) {
-								$result = $player->$command($param);
-							} else {
-								$result = $player->command($command, $param);
-							}
-							
+							$result = $player->$command($param);
+
 							// Get results
 							$json['success'] = $player->success;
 							$json['message'] = $player->message;
 							$json['data'] = $player->data;
-							
+
 							$player->destroy();
 						} else {
 							$json['success'] = FALSE;
@@ -309,7 +288,7 @@ class app_player extends module {
 				}
 			} else { // HTML5 Player
 				$json['success'] = TRUE;
-				$json['message'] = 'OK';
+				$json['message'] = 'Nothing to do.';
 			}
 			
 			// Return json
