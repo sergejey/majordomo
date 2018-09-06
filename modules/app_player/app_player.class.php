@@ -191,7 +191,7 @@ class app_player extends module {
 			$out['RND'] = $rnd;
 		}
 
-		$current_level = getGlobal('ThisComputer.volumeLevel');
+		$current_level = getGlobal('ThisComputer.volumeMediaLevel');
 		for($i = 0; $i <= 100; $i += 5) {
 			$rec = array('VALUE' => $i);
 			if($i == $current_level) {
@@ -240,21 +240,34 @@ class app_player extends module {
 
 				// Deprecated (backward compatibility)
 				global $volume;
-				if($command == 'volume' && isset($volume) && !empty($volume)) $param = $volume;
-				if($command == 'refresh' && isset($play) && !empty($play)) $param = $play;
+				if($command == 'volume' && isset($volume) && !empty($volume)) {
+					$command = 'set_volume';
+					$param = $volume;
+				} elseif($command == 'refresh' && isset($play) && !empty($play)) {
+					$command = 'play';
+					$param = $play;
+				} elseif($command == 'close') {
+					$command = 'stop';
+				} elseif($command == 'prev') {
+					$command = 'previous';
+				}
 				
-				// Volume
-				if($terminal['NAME'] == 'MAIN' && $command == 'volume') {
-					setGlobal('ThisComputer.volumeLevel', $volume);
+				// Set media volume level
+				if($command == 'set_volume' && !empty($param)) {
+					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
+						setGlobal('ThisComputer.volumeMediaLevelOld', (int)getGlobal('ThisComputer.volumeMediaLevel')); // For some types of players (e.g. VLC)
+						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
+						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
+					}
 				}
 
-				// Addons main class
-				include_once(DIR_MODULES.'app_player/addons.php');
-				
 				// Default player type
 				if(empty($terminal['PLAYER_TYPE'])) {
 					$terminal['PLAYER_TYPE'] = 'vlc';
 				}
+				
+				// Addons main class
+				include_once(DIR_MODULES.'app_player/addons.php');
 				
 				// Load addon
 				if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {

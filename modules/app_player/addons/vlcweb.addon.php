@@ -77,7 +77,7 @@ class vlcweb extends app_player_addon {
 		$this->reset_properties();
 		if(!empty($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=in_play&input='.rawurlencode($input));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=in_play&input='.urlencode($input));
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -174,8 +174,8 @@ class vlcweb extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Prev
-	function prev() {
+	// Previous
+	function previous() {
 		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_previous');
 		if($result = curl_exec($this->curl)) {
@@ -202,7 +202,7 @@ class vlcweb extends app_player_addon {
 	function seek($position) {
 		$this->reset_properties();
 		if(!empty($position)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=seek&val='.intval($position));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=seek&val='.(int)$position);
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -251,12 +251,12 @@ class vlcweb extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Volume
-	function volume($level) {
+	// Set volume
+	function set_volume($level) {
 		$this->reset_properties();
 		if(!empty($level)) {
 			$level = round((int)$level * 256 / 100);
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=volume&val='.intval($level));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=volume&val='.(int)$level);
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -290,6 +290,13 @@ class vlcweb extends app_player_addon {
 				if($xml = @ new SimpleXMLElement($result)) {
 					$this->success = TRUE;
 					$this->message = 'OK';
+					foreach($xml->node[0] as $item) {
+						$this->data[] = array(
+							'id'	=> (int)$item['id'],
+							'name'	=> (string)$item['name'],
+							'file'	=> (string)$item['uri'],
+						);
+					}
 				} else {
 					$this->success = FALSE;
 					$this->message = 'SimpleXMLElement error!';
@@ -310,7 +317,7 @@ class vlcweb extends app_player_addon {
 		$this->reset_properties();
 		if(!empty($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=in_enqueue&input='.rawurlencode($input));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=in_enqueue&input='.urlencode($input));
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -339,7 +346,7 @@ class vlcweb extends app_player_addon {
 	function pl_delete($id) {
 		$this->reset_properties();
 		if(!empty($id)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_delete&id='.intval($id));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_delete&id='.(int)$id);
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -392,7 +399,7 @@ class vlcweb extends app_player_addon {
 	function pl_play($id) {
 		$this->reset_properties();
 		if(!empty($id)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_play&id='.intval($id));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_play&id='.(int)$id);
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -430,7 +437,7 @@ class vlcweb extends app_player_addon {
 				default: $order[0] = 0; // id
 			}
 			$order[1] = (isset($order[1]) && $order[1] == 'desc'?1:0);
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_sort&id='.intval($order[1]).'&val='.intval($order[0]));
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_sort&id='.(int)$order[1].'&val='.(int)$order[0]);
 			if($result = curl_exec($this->curl)) {
 				try {
 					if($xml = @ new SimpleXMLElement($result)) {
@@ -456,97 +463,73 @@ class vlcweb extends app_player_addon {
 	}
 	
 	// Playlist: Random
-	function pl_random($enable) {
-		if($this->status()) {
-			if($this->data['random'] != $enable) {
-				$this->reset_properties();
-				curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_random');
-				if($result = curl_exec($this->curl)) {
-					try {
-						if($xml = @ new SimpleXMLElement($result)) {
-							$this->success = TRUE;
-							$this->message = 'OK';
-						} else {
-							$this->success = FALSE;
-							$this->message = 'SimpleXMLElement error!';
-						}
-					} catch(Exception $e) {
-						$this->success = FALSE;
-						$this->message = $e->getMessage();
-					}
+	function pl_random() {
+		$this->reset_properties();
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_random');
+		if($result = curl_exec($this->curl)) {
+			try {
+				if($xml = @ new SimpleXMLElement($result)) {
+					$this->success = TRUE;
+					$this->message = 'OK';
 				} else {
 					$this->success = FALSE;
-					$this->message = 'VLC HTTP interface not available!';
+					$this->message = 'SimpleXMLElement error!';
 				}
-			} else {
-				$this->reset_properties();
-				$this->success = TRUE;
-				$this->message = 'Random already '.($enable?'enabled':'disabled').'!';
+			} catch(Exception $e) {
+				$this->success = FALSE;
+				$this->message = $e->getMessage();
 			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'VLC HTTP interface not available!';
 		}
 		return $this->success;
 	}
 	
 	// Playlist: Loop
-	function pl_loop($enable) {
-		if($this->status()) {
-			if($this->data['loop'] != $enable) {
-				$this->reset_properties();
-				curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_loop');
-				if($result = curl_exec($this->curl)) {
-					try {
-						if($xml = @ new SimpleXMLElement($result)) {
-							$this->success = TRUE;
-							$this->message = 'OK';
-						} else {
-							$this->success = FALSE;
-							$this->message = 'SimpleXMLElement error!';
-						}
-					} catch(Exception $e) {
-						$this->success = FALSE;
-						$this->message = $e->getMessage();
-					}
+	function pl_loop() {
+		$this->reset_properties();
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_loop');
+		if($result = curl_exec($this->curl)) {
+			try {
+				if($xml = @ new SimpleXMLElement($result)) {
+					$this->success = TRUE;
+					$this->message = 'OK';
 				} else {
 					$this->success = FALSE;
-					$this->message = 'VLC HTTP interface not available!';
+					$this->message = 'SimpleXMLElement error!';
 				}
-			} else {
-				$this->reset_properties();
-				$this->success = TRUE;
-				$this->message = 'Loop already '.($enable?'enabled':'disabled').'!';
+			} catch(Exception $e) {
+				$this->success = FALSE;
+				$this->message = $e->getMessage();
 			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'VLC HTTP interface not available!';
 		}
 		return $this->success;
 	}
 	
 	// Playlist: Repeat
-	function pl_repeat($enable) {
-		if($this->status()) {
-			if($this->data['repeat'] != $enable) {
-				$this->reset_properties();
-				curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_repeat');
-				if($result = curl_exec($this->curl)) {
-					try {
-						if($xml = @ new SimpleXMLElement($result)) {
-							$this->success = TRUE;
-							$this->message = 'OK';
-						} else {
-							$this->success = FALSE;
-							$this->message = 'SimpleXMLElement error!';
-						}
-					} catch(Exception $e) {
-						$this->success = FALSE;
-						$this->message = $e->getMessage();
-					}
+	function pl_repeat() {
+		$this->reset_properties();
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_repeat');
+		if($result = curl_exec($this->curl)) {
+			try {
+				if($xml = @ new SimpleXMLElement($result)) {
+					$this->success = TRUE;
+					$this->message = 'OK';
 				} else {
 					$this->success = FALSE;
-					$this->message = 'VLC HTTP interface not available!';
+					$this->message = 'SimpleXMLElement error!';
 				}
-			} else {
-				$this->reset_properties();
-				$this->success = TRUE;
-				$this->message = 'Repeat already '.($enable?'enabled':'disabled').'!';
+			} catch(Exception $e) {
+				$this->success = FALSE;
+				$this->message = $e->getMessage();
 			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'VLC HTTP interface not available!';
 		}
 		return $this->success;
 	}
@@ -554,33 +537,28 @@ class vlcweb extends app_player_addon {
 	// Default command
 	function command($command, $parameter) {
 		$this->reset_properties();
-		if(!empty($command)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/vlm_cmd.xml?command='.rawurlencode($command.(empty($parameter)?'':' '.$parameter)));
-			if($result = curl_exec($this->curl)) {
-				try {
-					if($xml = @ new SimpleXMLElement($result)) {
-						if(empty((string)$xml->error)) {
-							$this->success = TRUE;
-							$this->message = 'OK';
-						} else {
-							$this->success = FALSE;
-							$this->message = (string)$xml->error;
-						}
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/vlm_cmd.xml?command='.urlencode($command.(empty($parameter)?'':' '.$parameter)));
+		if($result = curl_exec($this->curl)) {
+			try {
+				if($xml = @ new SimpleXMLElement($result)) {
+					if(empty((string)$xml->error)) {
+						$this->success = TRUE;
+						$this->message = 'OK';
 					} else {
 						$this->success = FALSE;
-						$this->message = 'SimpleXMLElement error!';
+						$this->message = (string)$xml->error;
 					}
-				} catch(Exception $e) {
+				} else {
 					$this->success = FALSE;
-					$this->message = $e->getMessage();
+					$this->message = 'SimpleXMLElement error!';
 				}
-			} else {
+			} catch(Exception $e) {
 				$this->success = FALSE;
-				$this->message = 'VLC HTTP interface not available!';
+				$this->message = $e->getMessage();
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Command is missing!';
+			$this->message = 'VLC HTTP interface not available!';
 		}
 		return $this->success;
 	}

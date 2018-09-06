@@ -35,57 +35,36 @@ class vlc extends app_player_addon {
 		curl_close($this->curl);
 	}
 
-	// Get player status
-	function status() {
-		$this->reset_properties();
-		$this->success = TRUE;
-		$this->message = 'OK';
-		$this->data = array(
-			'track_id'		=> -1,
-			'length'		=> 0,
-			'time'			=> 0,
-			'state'			=> 'unknown',
-			'fullscreen'	=> FALSE,
-			'volume'		=> (int)getGlobal('ThisComputer.VLCvolumeLevel'),
-			'random'		=> FALSE,
-			'loop'			=> FALSE,
-			'repeat'		=> FALSE,
-		);
-		return $this->success;
-	}
-	
-	// Deprecated (backward compatibility)
-	/*
-	function refresh($input) {
-		$this->reset_properties();
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_close');
-		curl_exec($this->curl);
-		return $this->play($input);
-	}
-	*/
-	
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		$input = preg_replace('/\\\\$/is', '', $input);
-		$input = preg_replace('/\/$/is', '', $input);
-		if(!preg_match('/^http/', $input)) {
-			$input = str_replace('/', "\\", $input);
-		}
-		$vlc_volume = round(intval(getGlobal('ThisComputer.VLCvolumeLevel')) / 100, 2);
-		$volume_params = '--no-volume-save --mmdevice-volume '.$vlc_volume.' --directx-volume '.$vlc_volume.' --waveout-volume '.$vlc_volume; // "--volume" not working (see https://trac.videolan.org/vlc/ticket/3913)
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_play&param='.rawurlencode($volume_params.(empty($input)?'':" '".$input."'")));
-		if($result = curl_exec($this->curl)) {
-			if($result == 'OK') {
-				$this->success = TRUE;
-				$this->message = 'OK';
+		if(!empty($input)) {
+			$input = preg_replace('/\\\\$/is', '', $input);
+			$input = preg_replace('/\/$/is', '', $input);
+			if(!preg_match('/^http/', $input)) {
+				$input = str_replace('/', "\\", $input);
+			}
+			$this->stop();
+			$vlc_volume = round((int)getGlobal('ThisComputer.volumeMediaLevel') / 100, 2);
+			// "--volume" not working (see https://trac.videolan.org/vlc/ticket/3913)
+			// The following parameters require last version of VLC (3.0.4):
+			$volume_params = '--no-volume-save --mmdevice-volume '.$vlc_volume.' --directx-volume '.$vlc_volume.' --waveout-volume '.$vlc_volume;
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_play&param='.urlencode($volume_params." '".$input."'"));
+			if($result = curl_exec($this->curl)) {
+				if($result == 'OK') {
+					$this->success = TRUE;
+					$this->message = 'OK';
+				} else {
+					$this->success = FALSE;
+					$this->message = $result;
+				}
 			} else {
 				$this->success = FALSE;
-				$this->message = $result;
+				$this->message = 'RC interface not available!';
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'RC interface not available!';
+			$this->message = 'Input is missing!';
 		}
 		return $this->success;
 	}
@@ -147,8 +126,8 @@ class vlc extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Prev
-	function prev() {
+	// Previous
+	function previous() {
 		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_prev');
 		if($result = curl_exec($this->curl)) {
@@ -166,7 +145,7 @@ class vlc extends app_player_addon {
 		return $this->success;
 	}
 
-	// Fullscreen
+	// Set fullscreen
 	function fullscreen() {
 		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_fullscreen');
@@ -185,14 +164,14 @@ class vlc extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Volume
-	function volume($level) {
+	// Set volume
+	function set_volume($level) {
 		$this->reset_properties();
 		if(!empty($level)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_volume&param='.rawurlencode(intval(getGlobal('ThisComputer.VLCvolumeLevel')).':'.intval($level)));
+			$old_level = getGlobal('ThisComputer.volumeMediaLevelOld');
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_volume&param='.urlencode((int)$old_level.':'.(int)$level));
 			if($result = curl_exec($this->curl)) {
 				if($result == 'OK') {
-					setGlobal('ThisComputer.VLCvolumeLevel', $level);
 					$this->success = TRUE;
 					$this->message = 'OK';
 				} else {
@@ -213,23 +192,18 @@ class vlc extends app_player_addon {
 	// Default command
 	function command($command, $parameter) {
 		$this->reset_properties();
-		if(!empty($command)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command='.rawurlencode($command).(empty($parameter)?'':'&param='.rawurlencode($parameter)));
-			if($result = curl_exec($this->curl)) {
-				if($result == 'OK') {
-					$json['success'] = TRUE;
-					$json['message'] = 'OK';
-				} else {
-					$json['success'] = FALSE;
-					$json['message'] = $result;
-				}
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command='.urlencode($command).(empty($parameter)?'':'&param='.urlencode($parameter)));
+		if($result = curl_exec($this->curl)) {
+			if($result == 'OK') {
+				$json['success'] = TRUE;
+				$json['message'] = 'OK';
 			} else {
-				$this->success = FALSE;
-				$this->message = 'RC interface not available!';
+				$json['success'] = FALSE;
+				$json['message'] = $result;
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Command is missing!';
+			$this->message = 'RC interface not available!';
 		}
 		return $this->success;
 	}

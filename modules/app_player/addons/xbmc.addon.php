@@ -18,8 +18,7 @@ class xbmc extends app_player_addon {
 	/*
 		В процессе портирования
 	*/
-	
-	
+
 }
 
 ?>

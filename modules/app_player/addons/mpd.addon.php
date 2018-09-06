@@ -24,19 +24,22 @@ class mpd extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		$mpd = new mpd_player($this->terminal['HOST'], $this->terminal['PLAYER_PORT'], $terminal['PLAYER_PASSWORD']);
-		if($mpd->connected) {
-			if(!empty($input)) {
-      			$mpd->PLClear();
-      			$mpd->DBRefresh();
+		if(!empty($input)) {
+			$mpd = new mpd_player($this->terminal['HOST'], $this->terminal['PLAYER_PORT'], $terminal['PLAYER_PASSWORD']);
+			if($mpd->connected) {
+				$mpd->PLClear();
+				$mpd->DBRefresh();
 				$mpd->PLAdd($input);
+				$mpd->Play();
+				$this->success = TRUE;
+				$this->message = 'OK';
+			} else {
+				$this->success = FALSE;
+				$this->message = 'Error connecting to MPD server!';
 			}
-			$mpd->Play();
-			$this->success = TRUE;
-			$this->message = 'OK';
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Error connecting to MPD server!';
+			$this->message = 'Input is missing!';
 		}
 		return $this->success;
 	}
@@ -71,8 +74,8 @@ class mpd extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Volume
-	function volume($level) {
+	// Set volume
+	function set_volume($level) {
 		$this->reset_properties();
 		if(!empty($level)) {
 			$mpd = new mpd_player($this->terminal['HOST'], $this->terminal['PLAYER_PORT'], $terminal['PLAYER_PASSWORD']);

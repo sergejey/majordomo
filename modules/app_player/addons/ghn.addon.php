@@ -26,12 +26,7 @@ class ghn extends app_player_addon {
 	function play($input) {
 		$this->reset_properties();
 		if(!empty($input)) {
-			//$input = preg_replace('/\\\\$/is', '', $input);
-			//$input = preg_replace('/\/$/is', '', $input);
-			//if(!preg_match('/^http/', $input)) {
-			//	$input = str_replace('/', "\\", $input);
-			//}
-			if(getURL($this->address.'/google-home-notifier?text='.rawurlencode($input), 0)) {
+			if(getURL($this->address.'/google-home-notifier?text='.urlencode($input), 0)) {
 				$this->success = TRUE;
 				$this->message = 'OK';
 			} else {
@@ -44,11 +39,11 @@ class ghn extends app_player_addon {
 		}
 		return $this->success;
 	}
-	
-	// Pause
-	function pause() {
+
+	// Stop
+	function stop() {
 		$this->reset_properties();
-		if(getURL($this->address.'/google-home-notifier?text='.rawurlencode('http://somefakeurl.stream/'), 0)) {
+		if(getURL($this->address.'/google-home-notifier?text='.urlencode('http://somefakeurl.stream/'), 0)) {
 			$this->success = TRUE;
 			$this->message = 'OK';
 		} else {
@@ -56,11 +51,6 @@ class ghn extends app_player_addon {
 			$this->message = 'Command execution error!';
 		}
 		return $this->success;
-	}
-
-	// Stop
-	function stop() {
-		return $this->pause();
 	}
 
 }

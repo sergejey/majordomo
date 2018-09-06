@@ -132,8 +132,8 @@ class chromecast extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Volume
-	function volume($level) {
+	// Set volume
+	function set_volume($level) {
 		$this->reset_properties();
 		if(!empty($level)) {
 			try {
