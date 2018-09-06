@@ -245,7 +245,7 @@ class app_player_addon {
 			$level - Volume level in percent. Integer.
 		*/
 		$this->reset_properties();
-		if(!empty($level)) {
+		if(strlen($level)) {
 			setGlobal('ThisComputer.volumeLevel', (int)$level);
 			callMethod('ThisComputer.VolumeLevelChanged', array('VALUE' => (int)$level, 'HOST' => $this->terminal['HOST']));
 			$this->success = TRUE;

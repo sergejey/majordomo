@@ -32,7 +32,7 @@ class foobar extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=EmptyPlaylist&param3=NoResponse');
 			curl_exec($this->curl);
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=Browse&param1='.urlencode($input).'&param2=EnqueueDirSubdirs&param3=NoResponse');
@@ -111,7 +111,7 @@ class foobar extends app_player_addon {
 	// Default command
 	function command($command, $parameter) {
 		$this->reset_properties();
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd='.urlencode($command).(empty($parameter)?'':'&param1='.urlencode($parameter)).'&param3=NoResponse');
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd='.urlencode($command).(strlen($parameter)?'&param1='.urlencode($parameter):'').'&param3=NoResponse');
 		if($result = curl_exec($this->curl)) {
 			$this->success = TRUE;
 			$this->message = 'OK';

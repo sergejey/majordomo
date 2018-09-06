@@ -25,7 +25,7 @@ class ghn extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			if(getURL($this->address.'/google-home-notifier?text='.urlencode($input), 0)) {
 				$this->success = TRUE;
 				$this->message = 'OK';

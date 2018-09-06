@@ -58,7 +58,7 @@ class chromecast extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			try {
 				$cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
 				$cc->requestId = time();
@@ -135,7 +135,7 @@ class chromecast extends app_player_addon {
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();
-		if(!empty($level)) {
+		if(strlen($level)) {
 			try {
 				$cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
 				$cc->requestId = time();

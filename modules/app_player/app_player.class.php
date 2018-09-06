@@ -221,7 +221,7 @@ class app_player extends module {
 			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `IS_ONLINE` DESC LIMIT 1');
 		}
 
-		if($ajax != '') {
+		if(isset($ajax)) {
 			global $command, $param;
 			$command = trim($command);
 			$param = trim($param);
@@ -236,14 +236,14 @@ class app_player extends module {
 				'data'				=> NULL,
 			);
 			
-			if($command != '') {
+			if(strlen($command)) {
 
 				// Deprecated (backward compatibility)
 				global $volume;
-				if($command == 'volume' && isset($volume) && !empty($volume)) {
+				if($command == 'volume') {
 					$command = 'set_volume';
-					$param = $volume;
-				} elseif($command == 'refresh' && isset($play) && !empty($play)) {
+					$param = (int)$volume;
+				} elseif($command == 'refresh') {
 					$command = 'play';
 					$param = $play;
 				} elseif($command == 'close') {
@@ -253,7 +253,7 @@ class app_player extends module {
 				}
 				
 				// Set media volume level
-				if($command == 'set_volume' && !empty($param)) {
+				if($command == 'set_volume' && strlen($param)) {
 					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
 						setGlobal('ThisComputer.volumeMediaLevelOld', (int)getGlobal('ThisComputer.volumeMediaLevel')); // For some types of players (e.g. VLC)
 						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
@@ -262,7 +262,7 @@ class app_player extends module {
 				}
 
 				// Default player type
-				if(empty($terminal['PLAYER_TYPE'])) {
+				if(!strlen($terminal['PLAYER_TYPE'])) {
 					$terminal['PLAYER_TYPE'] = 'vlc';
 				}
 				

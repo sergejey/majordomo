@@ -21,7 +21,7 @@ class majordroid extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			if($socket === false) {
 				$this->success = FALSE;
@@ -93,7 +93,7 @@ class majordroid extends app_player_addon {
 				$this->message = socket_strerror(socket_last_error($socket));
 				$this->message = iconv('CP1251', 'UTF-8', $this->message);
 			} else {
-				$packet = $command.(empty($parameter)?'':':'.$parameter);
+				$packet = $command.(strlen($parameter)?':'.$parameter:'');
 				socket_write($socket, $packet, strlen($packet));
 				$this->success = TRUE;
 				$this->message = 'OK';
