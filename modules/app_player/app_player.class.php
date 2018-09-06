@@ -319,7 +319,7 @@ class app_player extends module {
 		}
 		$terminals = SQLSelect('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `TITLE`');
 		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'Web-browser'));
-		//$terminals[] = array('NAME'=>'html5', 'TITLE'=>'Web-browser');
+		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'Системная громкость'));
 		$total = count($terminals);
 		for($i = 0 ; $i < $total ; $i++) {
 			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
