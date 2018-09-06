@@ -16,7 +16,7 @@
 			</select>
 		</td>
 		<td style="padding-left:5px">
-			<select name="volume" id='selVolume' onChange="playerCommand('volume')" class="form-control input-sm">
+			<select name="volume" id='selVolume' onChange="playerCommand('set_volume')" class="form-control input-sm">
 				[#begin VOLUMES#]
 				<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
 				[#end VOLUMES#]
@@ -25,7 +25,7 @@
 		[#if MODE="menu"#]</tr><tr>[#endif#]
 		<td[#if MODE="menu"#] colspan="2"[#endif#]>
 			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_pause.png" border="0"></a></div>
-			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("prev");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_prev.png" border="0"></a></div>
+			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("previous");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_prev.png" border="0"></a></div>
 			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("play");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_play.png" border="0"></a></div> 
 			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("next");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_next.png" border="0"></a></div>
 			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("fullscreen");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/eye.png" border="0"></a></div>
@@ -116,7 +116,7 @@
 				case 'next':
 					_nextSource(track);
 					break;
-				case 'prev':
+				case 'previous':
 					_prevSource(track);
 					break;
 				case 'stop':
@@ -142,7 +142,7 @@
 			playURL += '&command='+pcmd;
 			playURL += '&play_terminal='+encodeURIComponent(playTerminal);
 			playURL += '&session_terminal='+encodeURIComponent($("#selPlayTerminal").val());
-			if(pcmd == 'volume') {
+			if(pcmd == 'set_volume') {
 				playURL += '&param='+encodeURIComponent($("#selVolume").val());
 			} else {
 				playURL += '&param='+encodeURIComponent($("#hidPlayPath").val());

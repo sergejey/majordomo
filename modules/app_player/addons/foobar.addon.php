@@ -32,24 +32,22 @@ class foobar extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		$input = preg_replace('/\\\\$/is', '', $input);
-		$input = preg_replace('/\/$/is', '', $input);
-		if(!preg_match('/^http/', $input)) {
-			$input = str_replace('/', "\\", $input);
-		}
 		if(!empty($input)) {
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=EmptyPlaylist&param3=NoResponse');
 			curl_exec($this->curl);
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=Browse&param1='.rawurlencode($input).'&param2=EnqueueDirSubdirs&param3=NoResponse');
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=Browse&param1='.urlencode($input).'&param2=EnqueueDirSubdirs&param3=NoResponse');
 			curl_exec($this->curl);
-		}
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=Start&param1=0&param3=NoResponse');
-		if($result = curl_exec($this->curl)) {
-			$this->success = TRUE;
-			$this->message = 'OK';
+			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=Start&param1=0&param3=NoResponse');
+			if($result = curl_exec($this->curl)) {
+				$this->success = TRUE;
+				$this->message = 'OK';
+			} else {
+				$this->success = FALSE;
+				$this->message = 'HTTP interface not available!';
+			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'HTTP interface not available!';
+			$this->message = 'Input is missing!';
 		}
 		return $this->success;
 	}
@@ -96,8 +94,8 @@ class foobar extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Prev
-	function prev() {
+	// Previous
+	function previous() {
 		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd=StartPrevious&param3=NoResponse');
 		if($result = curl_exec($this->curl)) {
@@ -113,18 +111,13 @@ class foobar extends app_player_addon {
 	// Default command
 	function command($command, $parameter) {
 		$this->reset_properties();
-		if(!empty($command)) {
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd='.rawurlencode($command).(empty($parameter)?'':'&param1='.rawurlencode($parameter)).'&param3=NoResponse');
-			if($result = curl_exec($this->curl)) {
-				$this->success = TRUE;
-				$this->message = 'OK';
-			} else {
-				$this->success = FALSE;
-				$this->message = 'HTTP interface not available!';
-			}
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/default/?cmd='.urlencode($command).(empty($parameter)?'':'&param1='.urlencode($parameter)).'&param3=NoResponse');
+		if($result = curl_exec($this->curl)) {
+			$this->success = TRUE;
+			$this->message = 'OK';
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Command is missing!';
+			$this->message = 'HTTP interface not available!';
 		}
 		return $this->success;
 	}
