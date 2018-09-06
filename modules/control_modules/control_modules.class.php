@@ -167,11 +167,9 @@ function getParams() {
    }
   }
 
-   function cmp_modules($a, $b) {
-    return strcmp($a["FILENAME"], $b["FILENAME"]);
-   }
-
-  usort($lst, 'cmp_modules');
+  usort($lst, function ($a,$b) {
+   return strcmp($a["FILENAME"], $b["FILENAME"]);
+  });
 
   $this->modules=$lst;
   return $lst;

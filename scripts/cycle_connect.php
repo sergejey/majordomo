@@ -21,18 +21,15 @@ $max_run_time = 2*60*60; // do restart in 2 hours
 
 set_time_limit(0);
 const CONNECT_HOST = 'connect.smartliving.ru';
+const CONNECT_PORT = '8883';
+const CONNECT_CA_FILE = '/etc/ssl/certs';
+
 
 include_once(DIR_MODULES . 'connect/connect.class.php');
 
 $menu_sent_time = 0;
 
-$mqttLib = file_exists(ROOT . "lib/mqtt/phpMQTT.php");
-if (!$mqttLib) {
-    echo "MQTT application is not installed.";
-    exit;
-} else {
-    require("./lib/mqtt/phpMQTT.php");
-}
+include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
 
 while (1) {
@@ -57,11 +54,17 @@ while (1) {
     $username = strtolower($connect->config['CONNECT_USERNAME']);
     $password = $connect->config['CONNECT_PASSWORD'];
     $host = CONNECT_HOST;
-    $port = 1883;
+    $port = CONNECT_PORT;
+    if (defined('CONNECT_CA_FILE')) {
+        $ca_file=CONNECT_CA_FILE;
+    } else {
+        $ca_file=NULL;
+    }
+
 
     $query = $username . '/incoming_urls,' . $username . '/menu_session,'. $username . '/reverse_urls';
     $client_name = "MajorDoMo " . $username . " Connect";
-    $mqtt_client = new phpMQTT($host, $port, $client_name);
+    $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name,$ca_file);
 
     if ($mqtt_client->connect(true, NULL, $username, $password)) {
 

@@ -161,8 +161,8 @@ function run() {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password);
 
   //execute post
@@ -303,6 +303,57 @@ function admin(&$out) {
 
 }
 
+ function sendReverseURL($url_requested,$result) {
+  // POST TO SERVER
+  $url = 'https://connect.smartliving.ru/reverse_proxy.php';
+  $header = array('Content-Type: multipart/form-data');
+  $fields=array('url'=>$url_requested);
+  //$probably_binary = (is_string($result) === true && ctype_print($result) === false);
+  if (preg_match('/\.css$/is',$url_requested) || preg_match('/\.js$/is',$url_requested) || !mb_detect_encoding($result)) {
+   $binary_path=ROOT.'cms/cached/reverse';
+   if (!is_dir($binary_path)) {
+    umask(0);
+    mkdir($binary_path,0777);
+   }
+   $tmpfilename=$binary_path.'/'.preg_replace('/\W/','_',$url_requested);
+   SaveFile($tmpfilename,$result);
+
+   if (!function_exists('getCurlValue')) {
+    function getCurlValue($filename, $contentType, $postname)
+    {
+     if (function_exists('curl_file_create')) {
+      return curl_file_create($filename, $contentType, $postname);
+     }
+     $value = "@".$filename.";filename=" . $postname;
+     if ($contentType) {
+      $value .= ';type=' . $contentType;
+     }
+     return $value;
+    }
+   }
+   $cfile = getCurlValue($tmpfilename,'',basename($tmpfilename));
+   $fields['file']=$cfile;
+   $result='binary';
+  }
+  $fields['result'] = $result;
+
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_HTTPHEADER, $header);
+  curl_setopt($ch,CURLOPT_POST, 1);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+  //curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
+  //curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+  curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+  $result = curl_exec($ch);
+  curl_close($ch);
+  return $result;
+ }
+
  function sendMenuItems($items) {
   // POST TO SERVER
   $url = 'https://connect.smartliving.ru/upload/';
@@ -321,11 +372,10 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
-
   //execute post
   $result = curl_exec($ch);
   //close connection
@@ -387,8 +437,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
   curl_setopt($ch, CURLOPT_HEADER, 1);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
 
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
@@ -453,8 +503,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
 
@@ -585,8 +635,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
 
   //execute post

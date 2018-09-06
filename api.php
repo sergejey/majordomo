@@ -19,18 +19,111 @@ $result = array();
 
 if (!isset($request[0])) {
     $result['error'] = 'Incorrect usage';
+} elseif (strtolower($request[0]) == 'devices' && $request[1]) {
+    $devices=SQLSelect("SELECT * FROM devices WHERE ID=".(int)$request[1]);
+    $total = count($devices);
+    $cached_properties=array();
+    for ($i = 0; $i < $total; $i++) {
+        $device=array();
+        $device['id']=$devices[$i]['ID'];
+        $device['title']=$devices[$i]['TITLE'];
+        $device['object']=$devices[$i]['LINKED_OBJECT'];
+        $device['type']=$devices[$i]['TYPE'];
+        $obj = getObject($device['object']);
+        if (!isset($cached_properties[$obj->class_id])) {
+            $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
+        }
+        $properties = $cached_properties[$obj->class_id];
+        foreach($properties as $p) {
+            $device[$p['TITLE']]=getGlobal($device['object'].'.'.$p['TITLE']);
+        }
+        /*
+        $device['status']=getGlobal($device['object'].'.status');
+        $device['value']=getGlobal($device['object'].'.value');
+        */
+        $result['device']=$device;
+    }
 } elseif (strtolower($request[0]) == 'devices') {
     $devices=SQLSelect("SELECT * FROM devices ORDER BY TITLE");
     $result['devices']=array();
     $total = count($devices);
     for ($i = 0; $i < $total; $i++) {
         $device=array();
+        $device['id']=$devices[$i]['ID'];
         $device['title']=$devices[$i]['TITLE'];
         $device['object']=$devices[$i]['LINKED_OBJECT'];
         $device['type']=$devices[$i]['TYPE'];
-        $device['status']=getGlobal($device['object'].'.status');
-        $device['value']=getGlobal($device['object'].'.value');
+        $obj = getObject($device['object']);
+        if (!isset($cached_properties[$obj->class_id])) {
+            $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
+        }
+        $properties = $cached_properties[$obj->class_id];
+        foreach($properties as $p) {
+            $device[$p['TITLE']]=getGlobal($device['object'].'.'.$p['TITLE']);
+        }
         $result['devices'][]=$device;
+    }
+} elseif (strtolower($request[0]) == 'room' && (preg_match('/^\d+$/',$request[1])) && ($method=='DELETE')) {
+    $id = (int)$request[1];
+    $room_rec = SQLSelectOne("SELECT * FROM locations WHERE ID=".$id);
+    if ($room_rec['ID']) {
+        include_once(DIR_MODULES.'locations/locations.class.php');
+        $locations = new locations();
+        $locations->delete_locations($room_rec['ID']);
+        $result['result']=true;
+    } else {
+        $result['result']=false;
+        $result['error'] = 'Room not found';
+    }
+} elseif (strtolower($request[0]) == 'room' && (is_array($input)) && ($method=='POST')) {
+    $ok=1;
+    if ($input['id']) {
+        $room_rec = SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$input['id']);
+        if (!$room_rec['ID']) {
+            $ok=0;
+        }
+    }
+    $room_rec['TITLE']=$input['title'];
+    if (!$room_rec['TITLE']) {
+        $ok=0;
+    }
+    $max_priority = (int)current(SQLSelectOne("SELECT MAX(PRIORITY) FROM locations"));
+    if (isset($input['priority'])) {
+        $room_rec['PRIORITY']=$input['priority'];
+    }
+    if ($ok) {
+        if (!$room_rec['ID']) {
+            $room_rec['PRIORITY']=$max_priority+10;
+            $room_rec['ID'] = SQLInsert('locations',$room_rec);
+        } else {
+            SQLUpdate('locations',$room_rec);
+        }
+        $object_title=getRoomObjectByLocation($room_rec['ID'],1);
+        $result['id']=$room_rec['ID'];
+        $result['title']=$room_rec['TITLE'];
+        $result['object']=$object_title;
+        $result['priority']=$room_rec['PRIORITY'];
+        $result['result']=true;
+    } else {
+        $result['result']=false;
+    }
+
+
+
+} elseif (strtolower($request[0]) == 'rooms' && ($request[1]=='setOrder') && ($method=='POST')) {
+    if (is_array($input)) {
+        $total = count($input);
+        for($i=0;$i<$total;$i++) {
+            $room = SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$input[$i]['id']);
+            if ($room['ID']) {
+                $room['PRIORITY']=(int)$input[$i]['priority'];
+                SQLUpdate('locations',$room);
+            }
+        }
+        $result['result'] = true;
+    } else {
+        $result['error'] = 'Incorrect input data';
+        $result['result'] = false;
     }
 } elseif (strtolower($request[0]) == 'rooms' && ($request[1])) {
     $location=SQLSelectOne("SELECT * FROM locations WHERE ID=".(int)$request[1]);
@@ -42,13 +135,23 @@ if (!isset($request[0])) {
         $devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=".$location['ID']);
         $result['room']['devices']=array();
         $total = count($devices);
+        $cached_properties=array();
         for ($i = 0; $i < $total; $i++) {
             $device=array();
+            $device['id']=$devices[$i]['ID'];
             $device['title']=$devices[$i]['TITLE'];
             $device['object']=$devices[$i]['LINKED_OBJECT'];
             $device['type']=$devices[$i]['TYPE'];
-            $device['status']=getGlobal($device['object'].'.status');
-            $device['value']=getGlobal($device['object'].'.value');
+            $obj = getObject($device['object']);
+            if (!isset($cached_properties[$obj->class_id])) {
+                $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
+            }
+            $properties = $cached_properties[$obj->class_id];
+            foreach($properties as $p) {
+                $device[$p['TITLE']]=getGlobal($device['object'].'.'.$p['TITLE']);
+            }
+            //$device['status']=getGlobal($device['object'].'.status');
+            //$device['value']=getGlobal($device['object'].'.value');
             $result['room']['devices'][]=$device;
         }
     }
@@ -59,6 +162,7 @@ if (!isset($request[0])) {
         $location=array();
         $location['id']=$v['ID'];
         $location['title']=$v['TITLE'];
+        $location['priority']=$v['PRIORITY'];
         $location['object']=getRoomObjectByLocation($v['ID'],1);
         $result['rooms'][]=$location;
     }
@@ -102,6 +206,10 @@ if (!isset($request[0])) {
             foreach ($props as $k => $v) {
                 $result['data'][$v['TITLE']] = $object->getProperty($v['TITLE']);
             }
+        }
+    } elseif ($method == 'POST') {
+        if (isset($tmp[1])) {
+            setGlobal($request[1], $input['data']);
         }
     }
 } elseif (strtolower($request[0]) == 'history' && isset($request[1])) {
@@ -161,6 +269,12 @@ if (!isset($request[0])) {
     $result['error'] = 'Incorrect usage';
 }
 
+if ($result['error']!='') {
+    http_response_code(400);
+} else {
+    http_response_code(200);
+}
+header("Content-type:application/json");
 echo json_encode($result);
 
 // closing database connection

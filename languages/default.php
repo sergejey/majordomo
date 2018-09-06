@@ -75,6 +75,7 @@ $dictionary=array(
 'SECTION_DEVICES'=>'Devices',
 'SECTION_SETTINGS'=>'Settings',
 'SECTION_SYSTEM'=>'System',
+'SECTION_PANEL'=>'Panel',
 
 /* end general */
 
