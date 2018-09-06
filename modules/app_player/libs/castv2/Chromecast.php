@@ -7,7 +7,7 @@ require_once ("CCDefaultMediaPlayer.php");
 require_once ("CCPlexPlayer.php");
 require_once ("mdns.php");
 
-class Chromecast
+class GChromecast
 {
 	// Sends a picture or a video to a Chromecast using reverse
 	// engineered castV2 protocol
@@ -55,7 +55,7 @@ class Chromecast
 	public static function scan($wait = 15)
 	{
 		// Wrapper for scan
-		$result = Chromecast::scansub($wait);
+		$result = GChromecast::scansub($wait);
 		return $result;
 	}
 	

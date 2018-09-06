@@ -77,18 +77,29 @@
   }
   outHash($rec, $out);
 
- if (is_dir(DIR_MODULES.'app_player/addons')) {
-   $add_players = scandir(DIR_MODULES.'app_player/addons');
-   if (is_array($add_players)) {
-    foreach($add_players as $p) {
-     if (preg_match('/^(.+)\.php$/',$p,$m)) {
-      $addon_value = $m[1];
-      $addon_title = $addon_value;
-      $addon_title=ucfirst(str_replace('_',' ',$addon_title));
-      $out['PLAYER_ADDONS'][]=array('TITLE'=>$addon_title,'VALUE'=>$addon_value);
-     }
-    }
-   }
- }
+if(is_dir(DIR_MODULES.'app_player/addons')) {
+	include_once(DIR_MODULES.'app_player/addons.php');
+	$addons = scandir(DIR_MODULES.'app_player/addons');
+	if(is_array($addons)) {
+		foreach($addons as $addon_file) {
+			$addon_file = DIR_MODULES.'app_player/addons/'.$addon_file;
+			if(is_file($addon_file)) {
+				if(strtolower(substr($addon_file, -10)) == '.addon.php') {
+					$addon_name = basename($addon_file, '.addon.php');
+					include_once($addon_file);
+					if(class_exists($addon_name)) {
+						if($player = new $addon_name(NULL)) {
+							$out['PLAYER_ADDONS'][] = array(
+								'TITLE'			=> $player->title,
+								'VALUE'			=> $addon_name,
+								'DESCRIPTION'	=> $player->description,
+							);
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 ?>
