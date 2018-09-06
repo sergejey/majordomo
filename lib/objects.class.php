@@ -1333,3 +1333,27 @@ function objectClassChanged($object_id) {
         }
     }
 }
+
+function checkOperationsQueue($topic) {
+    $data=SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='".DBSafe($topic)."' ORDER BY ID");
+    if ($data[0]['ID']) {
+        SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($topic)."'");
+    }
+    return $data;
+}
+
+function addToOperationsQueue($topic, $dataname, $datavalue='', $uniq = false, $ttl=60) {
+    $rec=array();
+    $rec['TOPIC']=$topic;
+    $rec['DATANAME']=$dataname;
+    if (strlen($datavalue)<255) {
+        $rec['DATAVALUE']=$datavalue;
+    }
+    $rec['EXPIRE']=date('Y-m-d H:i:s',time()+$ttl);
+    if ($uniq) {
+        SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($rec['TOPIC'])."' AND DATANAME='".DBSafe($rec['DATANAME'])."'");
+    }
+    $rec['ID']=SQLInsert('operations_queue',$rec);
+    SQLExec("DELETE FROM operations_queue WHERE EXPIRE<NOW();");
+    return $rec['ID'];
+}

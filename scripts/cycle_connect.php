@@ -23,6 +23,8 @@ set_time_limit(0);
 const CONNECT_HOST = 'connect.smartliving.ru';
 const CONNECT_PORT = '8883';
 const CONNECT_CA_FILE = '/etc/ssl/certs';
+//const CONNECT_PORT = '1883';
+
 
 
 include_once(DIR_MODULES . 'connect/connect.class.php');
@@ -31,6 +33,8 @@ $menu_sent_time = 0;
 
 include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
+
+$saved_devices_data=array();
 
 while (1) {
     $connect = new connect();
@@ -90,6 +94,16 @@ while (1) {
                     exit;
                 }
             }
+            if (!defined('DISABLE_SIMPLE_DEVICES')) {
+                //$saved_devices_data
+                $devices_data=checkOperationsQueue('connect_device_data');
+                foreach($devices_data as $property_data) {
+                    if (!isset($saved_devices_data[$property_data['DATANAME']]) || $saved_devices_data[$property_data['DATANAME']]!=$property_data['DATAVALUE']) {
+                        $saved_devices_data[$property_data['DATANAME']]=$property_data['DATAVALUE'];
+                        send_device_property($property_data['DATANAME'],$property_data['DATAVALUE']);
+                    }
+                }
+            }
             if (time() - $menu_sent_time > 60 * 60) {
                 $menu_sent_time = time();
                 send_all_menu();
@@ -112,6 +126,7 @@ while (1) {
 
 function procmsg($topic, $msg)
 {
+    echo date("Y-m-d H:i:s") . " Topic:{$topic} $msg\n";
     if (preg_match('/menu_session/is', $topic)) {
         global $cmd_values;
         global $cmd_titles;
@@ -135,7 +150,12 @@ function procmsg($topic, $msg)
         echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
         send_reverse_result($msg,$result);
     }
-    echo date("Y-m-d H:i:s") . " Topic:{$topic} $msg\n";
+
+}
+
+function send_device_property($property,$value) {
+    global $connect;
+    $connect->sendDeviceProperty($property,$value);
 }
 
 function send_menu_element($parent_id) {

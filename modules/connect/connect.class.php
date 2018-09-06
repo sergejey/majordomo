@@ -161,8 +161,8 @@ function run() {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password);
 
   //execute post
@@ -345,13 +345,53 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-  //curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
-  //curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
   $result = curl_exec($ch);
   curl_close($ch);
   return $result;
+ }
+
+
+ function sendDeviceProperty($property,$value) {
+  // POST TO SERVER
+  $url = 'https://connect.smartliving.ru/sync_device_data.php';
+  $fields = array();
+  list($object_name,$property_name)=explode('.',$property);
+  $device_rec=SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE FROM devices WHERE LINKED_OBJECT='".DBSafe($object_name)."'");
+  $fields['object']=$object_name;
+  $fields['property']=$property_name;
+  $fields['value']=$value;
+  if ($device_rec['TITLE']) {
+   $fields['device_data']=json_encode($device_rec);
+  }
+  foreach($fields as $k=>$v) { $fields_string .= $k.'='.$v.'&'; }
+  rtrim($fields_string, '&');
+  DebMes("Posting $property = $value to $url",'device_sync');
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, count($fields));
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 5);
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC) ;
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+  $result = curl_exec($ch);
+  if (curl_errno($ch) && !$background) {
+   $errorInfo = curl_error($ch);
+   $info = curl_getinfo($ch);
+   DebMes("Error: ".$errorInfo,'device_sync');
+  } else {
+   DebMes("Result : ".$result,'device_sync');
+  }
+
+  curl_close($ch);
+
  }
 
  function sendMenuItems($items) {
@@ -372,8 +412,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
   //execute post
@@ -437,10 +477,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
   curl_setopt($ch, CURLOPT_HEADER, 1);
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
-
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
 
@@ -503,8 +541,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
 
@@ -635,8 +673,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
 
   //execute post
