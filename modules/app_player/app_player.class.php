@@ -278,13 +278,32 @@ class app_player extends module {
 
 						if($player = new $terminal['PLAYER_TYPE']($terminal)) {
 
-							// Execute command
-							$result = $player->$command($param);
+							if($command == 'features') {
+								
+								// Get features
+								$json['success'] = TRUE;
+								$json['message'] = 'OK';
+								$reflection = new ReflectionClass($player);
+								foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+									if($method->getDeclaringClass()->getName() == $reflection->getName()) {
+										$method_name = $method->getName();
+										if(substr($method_name, 0, 2) != '__' and !in_array($method_name, array('destroy', 'command'))) {
+											$json['data'][] = $method_name;
+										}
+									}
+								}
 
-							// Get results
-							$json['success'] = $player->success;
-							$json['message'] = $player->message;
-							$json['data'] = $player->data;
+							} else {
+							
+								// Execute command
+								$result = $player->$command($param);
+
+								// Get results
+								$json['success'] = $player->success;
+								$json['message'] = $player->message;
+								$json['data'] = $player->data;
+
+							}
 
 							$player->destroy();
 						} else {
