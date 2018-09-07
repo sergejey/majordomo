@@ -275,40 +275,47 @@ class app_player extends module {
 					include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
 
 					if(class_exists($terminal['PLAYER_TYPE'])) {
+						
+						if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
 
-						if($player = new $terminal['PLAYER_TYPE']($terminal)) {
+							if($player = new $terminal['PLAYER_TYPE']($terminal)) {
 
-							if($command == 'features') {
-								
-								// Get features
-								$json['success'] = TRUE;
-								$json['message'] = 'OK';
-								$reflection = new ReflectionClass($player);
-								foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-									if($method->getDeclaringClass()->getName() == $reflection->getName()) {
-										$method_name = $method->getName();
-										if(substr($method_name, 0, 2) != '__' and !in_array($method_name, array('destroy', 'command'))) {
-											$json['data'][] = $method_name;
+								if($command == 'features') {
+									
+									// Get features
+									$json['success'] = TRUE;
+									$json['message'] = 'OK';
+									$reflection = new ReflectionClass($player);
+									foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+										if($method->getDeclaringClass()->getName() == $reflection->getName()) {
+											$method_name = $method->getName();
+											if(substr($method_name, 0, 2) != '__' and !in_array($method_name, array('destroy', 'command'))) {
+												$json['data'][] = $method_name;
+											}
 										}
 									}
+
+								} else {
+								
+									// Execute command
+									$result = $player->$command($param);
+
+									// Get results
+									$json['success'] = $player->success;
+									$json['message'] = $player->message;
+									$json['data'] = $player->data;
+
 								}
 
+								$player->destroy();
 							} else {
-							
-								// Execute command
-								$result = $player->$command($param);
-
-								// Get results
-								$json['success'] = $player->success;
-								$json['message'] = $player->message;
-								$json['data'] = $player->data;
-
+								$json['success'] = FALSE;
+								$json['message'] = 'Error of the addon "'.$terminal['PLAYER_TYPE'].'" object!';
 							}
-
-							$player->destroy();
+						
 						} else {
 							$json['success'] = FALSE;
-							$json['message'] = 'Error of the addon "'.$terminal['PLAYER_TYPE'].'" object!';
+							$json['message'] = 'Addon "'.$terminal['PLAYER_TYPE'].'" does not inherit from class "app_player_addon"!';
 						}
 					} else {
 						$json['success'] = FALSE;
