@@ -120,10 +120,12 @@
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
 	<div class="form-group ">
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
+			<!--
 			<br>
 			[#if (PLAYER_TYPE=="vlcweb") || (PLAYER_TYPE=="xbmc") || (PLAYER_TYPE=="foobar")#]
 			(<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
-		[#endif#]
+			[#endif#]
+			-->
 		</label>
 		<div class="col-lg-5">
 			<select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">
