@@ -183,7 +183,8 @@ $dictionary=array(
 
 
 'NEW_OBJECT'=>'New Object', 
-'TITLE'=>'Title', 
+'TITLE'=>'Title',
+'ALT_TITLES'=>'Alternative titles (comma separated)',
 'CLASS'=>'Class', 
 'DESCRIPTION'=>'Description', 
 'LOCATION'=>'Location', 

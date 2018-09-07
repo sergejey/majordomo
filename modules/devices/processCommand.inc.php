@@ -103,7 +103,17 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
     $phpmorphy_loaded=1;
 }
 
-$devices = SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices");
+$devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices");
+foreach($devices as $device) {
+    if (trim($device['ALT_TITLES'])!='') {
+        $nicknames=explode(',',trim($device['ALT_TITLES']));
+        foreach($nicknames as $nickname) {
+            $add_rec=$device;
+            $add_rec['TITLE']=$nickname;
+            $devices[] = $add_rec;
+        }
+    }
+}
 $groups = SQLSelect("SELECT * FROM devices_groups");
 $total = count($groups);
 for($i=0;$i<$total;$i++) {

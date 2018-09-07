@@ -30,6 +30,7 @@ const CONNECT_CA_FILE = '/etc/ssl/certs';
 include_once(DIR_MODULES . 'connect/connect.class.php');
 
 $menu_sent_time = 0;
+$devices_sent_time = 0;
 
 include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
@@ -103,6 +104,11 @@ while (1) {
                         send_device_property($property_data['DATANAME'],$property_data['DATAVALUE']);
                     }
                 }
+                $sync_required=checkOperationsQueue('connect_sync_devices');
+                if ((time() - $devices_sent_time > 60 * 60) || is_array($sync_required[0])) {
+                    $devices_sent_time = time();
+                    send_all_devices();
+                }
             }
             if (time() - $menu_sent_time > 60 * 60) {
                 $menu_sent_time = time();
@@ -156,6 +162,12 @@ function procmsg($topic, $msg)
 function send_device_property($property,$value) {
     global $connect;
     $connect->sendDeviceProperty($property,$value);
+}
+
+function send_all_devices() {
+    echo date('Y-m-d H:i:s')." Sending all devices\n";
+    global $connect;
+    $connect->sendAllDevices();
 }
 
 function send_menu_element($parent_id) {

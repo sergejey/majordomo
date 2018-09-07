@@ -175,6 +175,7 @@ $dictionary = array(
 
     'NEW_OBJECT' => 'Новый объект',
     'TITLE' => 'Название',
+    'ALT_TITLES'=>'Синонимы (через запятую)',
     'CLASS' => 'Класс',
     'DESCRIPTION' => 'Описание',
     'LOCATION' => 'Местоположение',

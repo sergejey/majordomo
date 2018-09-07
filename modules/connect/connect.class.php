@@ -355,6 +355,54 @@ function admin(&$out) {
  }
 
 
+ function sendAllDevices() {
+// POST TO SERVER
+  $url = 'https://connect.smartliving.ru/sync_device_data.php';
+  $fields = array();
+  $devices=SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, SUBTYPE, LINKED_OBJECT FROM devices WHERE 1");
+  include_once(DIR_MODULES . 'classes/classes.class.php');
+  $cl = new classes();
+
+  foreach($devices as &$device) {
+   $object = getObject($device['LINKED_OBJECT']);
+   if (is_object($object)) {
+    $props = $cl->getParentProperties($object->class_id, '', 1);
+    $my_props = SQLSelect("SELECT ID,TITLE FROM properties WHERE OBJECT_ID='" . $object->id . "'");
+    if (IsSet($my_props[0])) {
+     foreach ($my_props as $p) {
+      $props[] = $p;
+     }
+    }
+    foreach ($props as $k => $v) {
+     $device['properties'][$v['TITLE']] = $object->getProperty($v['TITLE']);
+    }
+   }
+  }
+  $fields['devices_data']=json_encode($devices);
+  DebMes("Posting all devices to $url",'device_sync');
+  //DebMes($fields['devices_data'],'device_sync');
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, count($fields));
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC) ;
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+  $result = curl_exec($ch);
+  if (curl_errno($ch) && !$background) {
+   $errorInfo = curl_error($ch);
+   $info = curl_getinfo($ch);
+   DebMes("Error: ".$errorInfo,'device_sync');
+  } else {
+   //DebMes("Result : ".$result,'device_sync');
+  }
+  curl_close($ch);  
+ }
+ 
  function sendDeviceProperty($property,$value) {
   // POST TO SERVER
   $url = 'https://connect.smartliving.ru/sync_device_data.php';
@@ -369,7 +417,7 @@ function admin(&$out) {
   }
   foreach($fields as $k=>$v) { $fields_string .= $k.'='.$v.'&'; }
   rtrim($fields_string, '&');
-  DebMes("Posting $property = $value to $url",'device_sync');
+  //DebMes("Posting $property = $value to $url",'device_sync');
   $ch = curl_init();
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));
@@ -385,11 +433,10 @@ function admin(&$out) {
   if (curl_errno($ch) && !$background) {
    $errorInfo = curl_error($ch);
    $info = curl_getinfo($ch);
-   DebMes("Error: ".$errorInfo,'device_sync');
+   //DebMes("Error: ".$errorInfo,'device_sync');
   } else {
-   DebMes("Result : ".$result,'device_sync');
+   //DebMes("Result : ".$result,'device_sync');
   }
-
   curl_close($ch);
 
  }

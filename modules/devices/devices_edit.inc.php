@@ -218,6 +218,7 @@
           $out['TITLE']=$add_title;
       }
 
+
       if ($out['SOURCE_TABLE'] && !$rec['ID']) {
           $qry_devices=1;
           if ($out['TYPE']) {
@@ -245,6 +246,8 @@
     $out['ERR_TITLE']=1;
     $ok=0;
    }
+
+   $rec['ALT_TITLES']=gr('alt_titles','trim');
 
    $rec['TYPE']=$type;
    if ($rec['TYPE']=='') {
@@ -333,6 +336,7 @@
        }
 
     clearPropertiesCache();
+    addToOperationsQueue('connect_sync_devices','required');
 
     if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
