@@ -344,8 +344,8 @@ class app_player extends module {
 			$session_terminals = array($session->data['PLAY_TERMINAL']);
 		}
 		$terminals = SQLSelect('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `TITLE`');
-		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'Web-browser'));
-		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'Системная громкость'));
+		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
+		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
 		$total = count($terminals);
 		for($i = 0 ; $i < $total ; $i++) {
 			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
