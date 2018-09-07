@@ -88,12 +88,14 @@ if(is_dir(DIR_MODULES.'app_player/addons')) {
 					$addon_name = basename($addon_file, '.addon.php');
 					include_once($addon_file);
 					if(class_exists($addon_name)) {
-						if($player = new $addon_name(NULL)) {
-							$out['PLAYER_ADDONS'][] = array(
-								'TITLE'			=> $player->title,
-								'VALUE'			=> $addon_name,
-								'DESCRIPTION'	=> $player->description,
-							);
+						if(is_subclass_of($addon_name, 'app_player_addon', TRUE)) {
+							if($player = new $addon_name(NULL)) {
+								$out['PLAYER_ADDONS'][] = array(
+									'TITLE'			=> $player->title,
+									'VALUE'			=> $addon_name,
+									'DESCRIPTION'	=> $player->description,
+								);
+							}
 						}
 					}
 				}
