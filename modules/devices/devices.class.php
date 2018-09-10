@@ -1192,6 +1192,7 @@ devices -
   $data = <<<EOD
  devices: ID int(10) unsigned NOT NULL auto_increment
  devices: TITLE varchar(100) NOT NULL DEFAULT ''
+ devices: ALT_TITLES varchar(255) NOT NULL DEFAULT ''
  devices: TYPE varchar(100) NOT NULL DEFAULT ''
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  

@@ -303,6 +303,9 @@ function usual(&$out) {
    }
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
+   if (preg_match('/^sdevice(.+?)/',$rec['SYSTEM'],$m)) {
+    $this->device_id=$m[1];
+   }
    //$this->keep_history=$rec['KEEP_HISTORY'];
   } else {
    return false;
@@ -833,6 +836,14 @@ function usual(&$out) {
 
   saveToCache($cached_name, $value);
 
+  if (!defined('DISABLE_SIMPLE_DEVICES') &&
+      $this->device_id &&
+      $property!='updated' &&
+      $property!='updatedText'
+  ) {
+   addToOperationsQueue('connect_device_data',$this->object_title.'.'.$property,$value,true);
+  }
+
   if (function_exists('postToWebSocketQueue')) {
    startMeasure('setproperty_postwebsocketqueue');
    postToWebSocketQueue($this->object_title.'.'.$property, $value);
@@ -1001,7 +1012,17 @@ function usual(&$out) {
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
-  //echo ("Executing $sqlQuery\n");
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
+              (`ID` int(10) unsigned NOT NULL auto_increment,
+               `TOPIC`   char(255) NOT NULL,
+               `DATANAME` char(255) NOT NULL,
+               `DATAVALUE` char(255) NOT NULL,
+               `EXPIRE`    datetime  NOT NULL,
+                PRIMARY KEY (`ID`)
+              ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+
+
 
 /*
 objects - Objects

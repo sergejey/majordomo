@@ -20,22 +20,26 @@ $started_time = time();
 $max_run_time = 2*60*60; // do restart in 2 hours
 
 set_time_limit(0);
-const CONNECT_HOST = 'connect.smartliving.ru';
-const CONNECT_PORT = '8883';
-const CONNECT_CA_FILE = '/etc/ssl/certs';
+
 
 
 include_once(DIR_MODULES . 'connect/connect.class.php');
 
 $menu_sent_time = 0;
+$devices_sent_time = 0;
 
 include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
+
+
+$saved_devices_data=array();
+
+const CONNECT_HOST = 'connect.smartliving.ru';
 
 
 while (1) {
     $connect = new connect();
     $connect->getConfig();
-    
+
     if (!$connect->config['CONNECT_SYNC']) {
         echo "Connect sync turned off.";
         exit;
@@ -53,19 +57,23 @@ while (1) {
 
     $username = strtolower($connect->config['CONNECT_USERNAME']);
     $password = $connect->config['CONNECT_PASSWORD'];
+
     $host = CONNECT_HOST;
-    $port = CONNECT_PORT;
-    if (defined('CONNECT_CA_FILE')) {
-        $ca_file=CONNECT_CA_FILE;
-    } else {
+    if ($connect->config['CONNECT_INSECURE']) {
+        $port = '1883';
         $ca_file=NULL;
+    } else {
+        $port = '8883';
+        $ca_file= '/etc/ssl/certs';
     }
+
 
 
     $query = $username . '/incoming_urls,' . $username . '/menu_session,'. $username . '/reverse_urls';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name,$ca_file);
 
+    echo date('H:i:s') . " Connecting to $host:$port\n";
     if ($mqtt_client->connect(true, NULL, $username, $password)) {
 
         $query_list = explode(',', $query);
@@ -90,6 +98,21 @@ while (1) {
                     exit;
                 }
             }
+            if (!defined('DISABLE_SIMPLE_DEVICES')) {
+                //$saved_devices_data
+                $devices_data=checkOperationsQueue('connect_device_data');
+                foreach($devices_data as $property_data) {
+                    if (!isset($saved_devices_data[$property_data['DATANAME']]) || $saved_devices_data[$property_data['DATANAME']]!=$property_data['DATAVALUE']) {
+                        $saved_devices_data[$property_data['DATANAME']]=$property_data['DATAVALUE'];
+                        send_device_property($property_data['DATANAME'],$property_data['DATAVALUE']);
+                    }
+                }
+                $sync_required=checkOperationsQueue('connect_sync_devices');
+                if ((time() - $devices_sent_time > 60 * 60) || is_array($sync_required[0])) {
+                    $devices_sent_time = time();
+                    send_all_devices();
+                }
+            }
             if (time() - $menu_sent_time > 60 * 60) {
                 $menu_sent_time = time();
                 send_all_menu();
@@ -112,6 +135,7 @@ while (1) {
 
 function procmsg($topic, $msg)
 {
+    echo date("Y-m-d H:i:s") . " Topic:{$topic} $msg\n";
     if (preg_match('/menu_session/is', $topic)) {
         global $cmd_values;
         global $cmd_titles;
@@ -135,7 +159,18 @@ function procmsg($topic, $msg)
         echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
         send_reverse_result($msg,$result);
     }
-    echo date("Y-m-d H:i:s") . " Topic:{$topic} $msg\n";
+
+}
+
+function send_device_property($property,$value) {
+    global $connect;
+    $connect->sendDeviceProperty($property,$value);
+}
+
+function send_all_devices() {
+    echo date('Y-m-d H:i:s')." Sending all devices\n";
+    global $connect;
+    $connect->sendAllDevices();
 }
 
 function send_menu_element($parent_id) {
