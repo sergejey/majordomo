@@ -75,7 +75,7 @@ class vlcweb extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=in_play&input='.urlencode($input));
 			if($result = curl_exec($this->curl)) {
@@ -201,7 +201,7 @@ class vlcweb extends app_player_addon {
 	// Seek
 	function seek($position) {
 		$this->reset_properties();
-		if(!empty($position)) {
+		if(strlen($position)) {
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=seek&val='.(int)$position);
 			if($result = curl_exec($this->curl)) {
 				try {
@@ -254,7 +254,7 @@ class vlcweb extends app_player_addon {
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();
-		if(!empty($level)) {
+		if(strlen($level)) {
 			$level = round((int)$level * 256 / 100);
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=volume&val='.(int)$level);
 			if($result = curl_exec($this->curl)) {
@@ -315,7 +315,7 @@ class vlcweb extends app_player_addon {
 	// Playlist: Add
 	function pl_add($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=in_enqueue&input='.urlencode($input));
 			if($result = curl_exec($this->curl)) {
@@ -345,7 +345,7 @@ class vlcweb extends app_player_addon {
 	// Playlist: Delete
 	function pl_delete($id) {
 		$this->reset_properties();
-		if(!empty($id)) {
+		if(strlen($id)) {
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_delete&id='.(int)$id);
 			if($result = curl_exec($this->curl)) {
 				try {
@@ -398,7 +398,7 @@ class vlcweb extends app_player_addon {
 	// Playlist: Play
 	function pl_play($id) {
 		$this->reset_properties();
-		if(!empty($id)) {
+		if(strlen($id)) {
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/status.xml?command=pl_play&id='.(int)$id);
 			if($result = curl_exec($this->curl)) {
 				try {
@@ -427,7 +427,7 @@ class vlcweb extends app_player_addon {
 	// Playlist: Sort
 	function pl_sort($order) {
 		$this->reset_properties();
-		if(!empty($order)) {
+		if(strlen($order)) {
 			$order = explode(':', $order);
 			switch($order[0]) {
 				case 'name': $order[0] = 1; break;
@@ -537,16 +537,16 @@ class vlcweb extends app_player_addon {
 	// Default command
 	function command($command, $parameter) {
 		$this->reset_properties();
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/vlm_cmd.xml?command='.urlencode($command.(empty($parameter)?'':' '.$parameter)));
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/requests/vlm_cmd.xml?command='.urlencode($command.(strlen($parameter)?' '.$parameter:'')));
 		if($result = curl_exec($this->curl)) {
 			try {
 				if($xml = @ new SimpleXMLElement($result)) {
-					if(empty((string)$xml->error)) {
-						$this->success = TRUE;
-						$this->message = 'OK';
-					} else {
+					if(strlen((string)$xml->error)) {
 						$this->success = FALSE;
 						$this->message = (string)$xml->error;
+					} else {
+						$this->success = TRUE;
+						$this->message = 'OK';
 					}
 				} else {
 					$this->success = FALSE;

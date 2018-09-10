@@ -221,7 +221,7 @@ class app_player extends module {
 			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `IS_ONLINE` DESC LIMIT 1');
 		}
 
-		if($ajax != '') {
+		if(isset($ajax)) {
 			global $command, $param;
 			$command = trim($command);
 			$param = trim($param);
@@ -236,14 +236,14 @@ class app_player extends module {
 				'data'				=> NULL,
 			);
 			
-			if($command != '') {
+			if(strlen($command)) {
 
 				// Deprecated (backward compatibility)
 				global $volume;
-				if($command == 'volume' && isset($volume) && !empty($volume)) {
+				if($command == 'volume') {
 					$command = 'set_volume';
-					$param = $volume;
-				} elseif($command == 'refresh' && isset($play) && !empty($play)) {
+					$param = (int)$volume;
+				} elseif($command == 'refresh') {
 					$command = 'play';
 					$param = $play;
 				} elseif($command == 'close') {
@@ -253,7 +253,7 @@ class app_player extends module {
 				}
 				
 				// Set media volume level
-				if($command == 'set_volume' && !empty($param)) {
+				if($command == 'set_volume' && strlen($param)) {
 					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
 						setGlobal('ThisComputer.volumeMediaLevelOld', (int)getGlobal('ThisComputer.volumeMediaLevel')); // For some types of players (e.g. VLC)
 						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
@@ -262,7 +262,7 @@ class app_player extends module {
 				}
 
 				// Default player type
-				if(empty($terminal['PLAYER_TYPE'])) {
+				if(!strlen($terminal['PLAYER_TYPE'])) {
 					$terminal['PLAYER_TYPE'] = 'vlc';
 				}
 				
@@ -275,21 +275,47 @@ class app_player extends module {
 					include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
 
 					if(class_exists($terminal['PLAYER_TYPE'])) {
+						
+						if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
 
-						if($player = new $terminal['PLAYER_TYPE']($terminal)) {
+							if($player = new $terminal['PLAYER_TYPE']($terminal)) {
 
-							// Execute command
-							$result = $player->$command($param);
+								if($command == 'features') {
+									
+									// Get features
+									$json['success'] = TRUE;
+									$json['message'] = 'OK';
+									$reflection = new ReflectionClass($player);
+									foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+										if($method->getDeclaringClass()->getName() == $reflection->getName()) {
+											$method_name = $method->getName();
+											if(substr($method_name, 0, 2) != '__' and !in_array($method_name, array('destroy', 'command'))) {
+												$json['data'][] = $method_name;
+											}
+										}
+									}
 
-							// Get results
-							$json['success'] = $player->success;
-							$json['message'] = $player->message;
-							$json['data'] = $player->data;
+								} else {
+								
+									// Execute command
+									$result = $player->$command($param);
 
-							$player->destroy();
+									// Get results
+									$json['success'] = $player->success;
+									$json['message'] = $player->message;
+									$json['data'] = $player->data;
+
+								}
+
+								$player->destroy();
+							} else {
+								$json['success'] = FALSE;
+								$json['message'] = 'Error of the addon "'.$terminal['PLAYER_TYPE'].'" object!';
+							}
+						
 						} else {
 							$json['success'] = FALSE;
-							$json['message'] = 'Error of the addon "'.$terminal['PLAYER_TYPE'].'" object!';
+							$json['message'] = 'Addon "'.$terminal['PLAYER_TYPE'].'" does not inherit from class "app_player_addon"!';
 						}
 					} else {
 						$json['success'] = FALSE;
@@ -318,8 +344,8 @@ class app_player extends module {
 			$session_terminals = array($session->data['PLAY_TERMINAL']);
 		}
 		$terminals = SQLSelect('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `TITLE`');
-		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'Web-browser'));
-		//$terminals[] = array('NAME'=>'html5', 'TITLE'=>'Web-browser');
+		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
+		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
 		$total = count($terminals);
 		for($i = 0 ; $i < $total ; $i++) {
 			if(in_array($terminals[$i]['NAME'], $session_terminals)) {

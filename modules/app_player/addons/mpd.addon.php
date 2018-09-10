@@ -24,7 +24,7 @@ class mpd extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			$mpd = new mpd_player($this->terminal['HOST'], $this->terminal['PLAYER_PORT'], $terminal['PLAYER_PASSWORD']);
 			if($mpd->connected) {
 				$mpd->PLClear();
@@ -77,7 +77,7 @@ class mpd extends app_player_addon {
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();
-		if(!empty($level)) {
+		if(strlen($level)) {
 			$mpd = new mpd_player($this->terminal['HOST'], $this->terminal['PLAYER_PORT'], $terminal['PLAYER_PASSWORD']);
 			if($mpd->connected) {
 				$mpd->SetVolume($level);

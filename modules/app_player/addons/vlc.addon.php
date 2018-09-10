@@ -38,7 +38,7 @@ class vlc extends app_player_addon {
 	// Play
 	function play($input) {
 		$this->reset_properties();
-		if(!empty($input)) {
+		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
 			$input = preg_replace('/\/$/is', '', $input);
 			if(!preg_match('/^http/', $input)) {
@@ -167,7 +167,7 @@ class vlc extends app_player_addon {
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();
-		if(!empty($level)) {
+		if(strlen($level)) {
 			$old_level = getGlobal('ThisComputer.volumeMediaLevelOld');
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_volume&param='.urlencode((int)$old_level.':'.(int)$level));
 			if($result = curl_exec($this->curl)) {
@@ -192,7 +192,7 @@ class vlc extends app_player_addon {
 	// Default command
 	function command($command, $parameter) {
 		$this->reset_properties();
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command='.urlencode($command).(empty($parameter)?'':'&param='.urlencode($parameter)));
+		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command='.urlencode($command).(strlen($parameter)?'&param='.urlencode($parameter):''));
 		if($result = curl_exec($this->curl)) {
 			if($result == 'OK') {
 				$json['success'] = TRUE;
