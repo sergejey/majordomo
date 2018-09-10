@@ -94,6 +94,8 @@ function run() {
   $out=array();
   if ($this->action=='admin') {
    $this->admin($out);
+  } elseif ($this->action=='service') {
+   $this->service_control($out);
   } elseif ($this->action=='context' || $action=='context') {
    $this->context($out);
   } else {
@@ -116,6 +118,55 @@ function run() {
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 }
+
+ function service_control(&$out) {
+  $cycle=$this->cycle;
+  if (!$this->cycle) {
+   $this->cycle=gr('cycle');
+  }
+  $out['CYCLE']=$cycle;
+  $op=gr('op');
+  $ajax=gr('ajax');
+  if ($ajax) {
+   $result=array('cycle'=>$this->cycle);
+
+   $service = 'cycle_'.$this->cycle;
+
+   if ($op=='start') {
+    sg($service.'Run','');
+    sg($service.'Control','start');
+   } elseif ($op=='stop') {
+    sg($service.'Control','stop');
+   } elseif ($op=='restart') {
+    sg($service . 'Run', '');
+    sg($service . 'Control', 'restart');
+   }
+
+   header ("HTTP/1.0: 200 OK\n");
+   header ('Content-Type: application/json; charset=utf-8');
+
+   $updated=gg($service.'Run');
+   $control=gg($service.'Control');
+   $result['UPDATED']=$updated;
+   if ((time()-(int)$updated<30)) {
+    $result['ONLINE']=1;
+    $result['BODY']='<font color="green">ONLINE</font>';
+   } else {
+    $result['ONLINE']=0;
+    $result['BODY']='<font color="red">OFFLINE</font>';
+   }
+   if ($updated!='') {
+    $result['BODY'].=' ('.date('Y-m-d H:i:s',$updated).')';
+   }
+   if ($control!='') {
+    $result['BODY'].=' '.$control;
+   }
+
+
+   echo json_encode($result);
+   exit;
+  }
+ }
 
 /**
 * Title

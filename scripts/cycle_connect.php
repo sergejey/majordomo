@@ -20,10 +20,6 @@ $started_time = time();
 $max_run_time = 2*60*60; // do restart in 2 hours
 
 set_time_limit(0);
-const CONNECT_HOST = 'connect.smartliving.ru';
-const CONNECT_PORT = '8883';
-const CONNECT_CA_FILE = '/etc/ssl/certs';
-//const CONNECT_PORT = '1883';
 
 
 
@@ -37,10 +33,13 @@ include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
 $saved_devices_data=array();
 
+const CONNECT_HOST = 'connect.smartliving.ru';
+
+
 while (1) {
     $connect = new connect();
     $connect->getConfig();
-    
+
     if (!$connect->config['CONNECT_SYNC']) {
         echo "Connect sync turned off.";
         exit;
@@ -58,19 +57,23 @@ while (1) {
 
     $username = strtolower($connect->config['CONNECT_USERNAME']);
     $password = $connect->config['CONNECT_PASSWORD'];
+
     $host = CONNECT_HOST;
-    $port = CONNECT_PORT;
-    if (defined('CONNECT_CA_FILE')) {
-        $ca_file=CONNECT_CA_FILE;
-    } else {
+    if ($connect->config['CONNECT_INSECURE']) {
+        $port = '1883';
         $ca_file=NULL;
+    } else {
+        $port = '8883';
+        $ca_file= '/etc/ssl/certs';
     }
+
 
 
     $query = $username . '/incoming_urls,' . $username . '/menu_session,'. $username . '/reverse_urls';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name,$ca_file);
 
+    echo date('H:i:s') . " Connecting to $host:$port\n";
     if ($mqtt_client->connect(true, NULL, $username, $password)) {
 
         $query_list = explode(',', $query);

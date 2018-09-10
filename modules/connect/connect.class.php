@@ -194,6 +194,7 @@ function admin(&$out) {
  $out['CONNECT_PASSWORD']=$this->config['CONNECT_PASSWORD'];
  $out['CONNECT_SYNC']=$this->config['CONNECT_SYNC'];
  $out['CONNECT_BACKUP']=$this->config['CONNECT_BACKUP'];
+ $out['CONNECT_INSECURE']=$this->config['CONNECT_INSECURE'];
 
  $out['SEND_MENU']=$this->config['SEND_MENU'];
  $out['SEND_CLASSES']=$this->config['SEND_CLASSES'];
@@ -212,6 +213,7 @@ function admin(&$out) {
    $this->config['CONNECT_PASSWORD']=$connect_password;
    $this->config['CONNECT_SYNC']=(int)$connect_sync;
    $this->config['CONNECT_BACKUP']=(int)$connect_backup;
+   $this->config['CONNECT_INSECURE']=gr('connect_insecure','int');
    $this->config['CONNECT_BACKUP_HOUR']=(int)rand(0, 6);
 
    if ($this->config['CONNECT_BACKUP']) {
