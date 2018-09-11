@@ -304,7 +304,7 @@
            SQLUpdate('devices',$rec);
        }
 
-       $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT']);
+       $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT'],'sdevice'.$rec['ID']);
        $class_id=current(SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($type_details['CLASS'])."'"));
 
 
