@@ -66,6 +66,7 @@ define("MPD_CMD_PREV",        "previous");
 define("MPD_CMD_PLLIST",      "playlistinfo");
 define("MPD_CMD_PLADD",       "add");
 define("MPD_CMD_PLREMOVE",    "delete");
+define("MPD_CMD_PLREMOVEID",  "deleteid");
 define("MPD_CMD_PLCLEAR",     "clear");
 define("MPD_CMD_PLSHUFFLE",   "shuffle");
 define("MPD_CMD_PLLOAD",      "load");
@@ -577,6 +578,21 @@ class mpd_player {
 		}
 		if ( ! is_null($resp = $this->SendCommand(MPD_CMD_PLREMOVE,$id))) $this->RefreshInfo();
 		if ( $this->debugging ) echo "mpd->PLRemove() / return\n";
+		return $resp;
+	}
+	
+	/* PLRemoveId() 
+	 * 
+	 * Removes track <id> from the playlist.
+	 */
+	function PLRemoveId($id) {
+		if ( $this->debugging ) echo "mpd->PLRemoveId()\n";
+		if ( ! is_numeric($id) ) {
+			$this->errStr = "PLRemoveId() : argument 1 must be a numeric value";
+			return NULL;
+		}
+		if ( ! is_null($resp = $this->SendCommand(MPD_CMD_PLREMOVEID,$id))) $this->RefreshInfo();
+		if ( $this->debugging ) echo "mpd->PLRemoveId() / return\n";
 		return $resp;
 	}
 
