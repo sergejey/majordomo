@@ -58,6 +58,7 @@ define("MPD_CMD_STATISTICS",  "stats");
 define("MPD_CMD_VOLUME",      "volume");
 define("MPD_CMD_SETVOL",      "setvol");
 define("MPD_CMD_PLAY",        "play");
+define("MPD_CMD_PLAYID",      "playid");
 define("MPD_CMD_STOP",        "stop");
 define("MPD_CMD_PAUSE",       "pause");
 define("MPD_CMD_NEXT",        "next");
@@ -65,12 +66,14 @@ define("MPD_CMD_PREV",        "previous");
 define("MPD_CMD_PLLIST",      "playlistinfo");
 define("MPD_CMD_PLADD",       "add");
 define("MPD_CMD_PLREMOVE",    "delete");
+define("MPD_CMD_PLREMOVEID",  "deleteid");
 define("MPD_CMD_PLCLEAR",     "clear");
 define("MPD_CMD_PLSHUFFLE",   "shuffle");
 define("MPD_CMD_PLLOAD",      "load");
 define("MPD_CMD_PLSAVE",      "save");
 define("MPD_CMD_KILL",        "kill");
 define("MPD_CMD_REFRESH",     "update");
+define("MPD_CMD_SINGLE",      "single");
 define("MPD_CMD_REPEAT",      "repeat");
 define("MPD_CMD_LSDIR",       "lsinfo");
 define("MPD_CMD_SEARCH",      "search");
@@ -577,7 +580,35 @@ class mpd_player {
 		if ( $this->debugging ) echo "mpd->PLRemove() / return\n";
 		return $resp;
 	}
+	
+	/* PLRemoveId() 
+	 * 
+	 * Removes track <id> from the playlist.
+	 */
+	function PLRemoveId($id) {
+		if ( $this->debugging ) echo "mpd->PLRemoveId()\n";
+		if ( ! is_numeric($id) ) {
+			$this->errStr = "PLRemoveId() : argument 1 must be a numeric value";
+			return NULL;
+		}
+		if ( ! is_null($resp = $this->SendCommand(MPD_CMD_PLREMOVEID,$id))) $this->RefreshInfo();
+		if ( $this->debugging ) echo "mpd->PLRemoveId() / return\n";
+		return $resp;
+	}
 
+	/* SetSingle() 
+	 * 
+	 * Enables 'single' mode -- tells MPD to play only the current track. The <singVal> parameter 
+	 * is either 1 (on) or 0 (off).
+	 */
+	function SetSingle($singVal) {
+		if ( $this->debugging ) echo "mpd->SetSingle()\n";
+		$sing = $this->SendCommand(MPD_CMD_SINGLE,$singVal);
+		$this->single = $singVal;
+		if ( $this->debugging ) echo "mpd->SetSingle() / return\n";
+		return $sing;
+	}
+	
 	/* SetRepeat() 
 	 * 
 	 * Enables 'loop' mode -- tells MPD continually loop the playlist. The <repVal> parameter 
@@ -647,6 +678,21 @@ class mpd_player {
 		if ( ! is_null($rpt = $this->SendCommand(MPD_CMD_PLAY) )) $this->RefreshInfo();
 		if ( $this->debugging ) echo "mpd->Play() / return\n";
 		return $rpt;
+	}
+	
+	/* PlayId() 
+	 * 
+	 * Begins playing the song by id in the MPD playlist. 
+	 */
+	function PlayId($id) {
+		if ( $this->debugging ) echo "mpd->PlayId()\n";
+		if ( ! is_numeric($id) ) {
+			$this->errStr = "PlayId() : argument 1 must be a numeric value";
+			return NULL;
+		}
+		if ( ! is_null($pld = $this->SendCommand(MPD_CMD_PLAYID,$id))) $this->RefreshInfo();
+		if ( $this->debugging ) echo "mpd->PlayId() / return\n";
+		return $pld;
 	}
 
 	/* Stop() 
