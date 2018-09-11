@@ -71,6 +71,7 @@ define("MPD_CMD_PLLOAD",      "load");
 define("MPD_CMD_PLSAVE",      "save");
 define("MPD_CMD_KILL",        "kill");
 define("MPD_CMD_REFRESH",     "update");
+define("MPD_CMD_SINGLE",      "single");
 define("MPD_CMD_REPEAT",      "repeat");
 define("MPD_CMD_LSDIR",       "lsinfo");
 define("MPD_CMD_SEARCH",      "search");
@@ -578,6 +579,19 @@ class mpd_player {
 		return $resp;
 	}
 
+	/* SetSingle() 
+	 * 
+	 * Enables 'single' mode -- tells MPD to play only the current track. The <singVal> parameter 
+	 * is either 1 (on) or 0 (off).
+	 */
+	function SetSingle($singVal) {
+		if ( $this->debugging ) echo "mpd->SetSingle()\n";
+		$sing = $this->SendCommand(MPD_CMD_SINGLE,$singVal);
+		$this->single = $singVal;
+		if ( $this->debugging ) echo "mpd->SetSingle() / return\n";
+		return $sing;
+	}
+	
 	/* SetRepeat() 
 	 * 
 	 * Enables 'loop' mode -- tells MPD continually loop the playlist. The <repVal> parameter 
