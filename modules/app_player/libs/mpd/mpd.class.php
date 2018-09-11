@@ -58,6 +58,7 @@ define("MPD_CMD_STATISTICS",  "stats");
 define("MPD_CMD_VOLUME",      "volume");
 define("MPD_CMD_SETVOL",      "setvol");
 define("MPD_CMD_PLAY",        "play");
+define("MPD_CMD_PLAYID",      "playid");
 define("MPD_CMD_STOP",        "stop");
 define("MPD_CMD_PAUSE",       "pause");
 define("MPD_CMD_NEXT",        "next");
@@ -661,6 +662,21 @@ class mpd_player {
 		if ( ! is_null($rpt = $this->SendCommand(MPD_CMD_PLAY) )) $this->RefreshInfo();
 		if ( $this->debugging ) echo "mpd->Play() / return\n";
 		return $rpt;
+	}
+	
+	/* PlayId() 
+	 * 
+	 * Begins playing the song by id in the MPD playlist. 
+	 */
+	function PlayId($id) {
+		if ( $this->debugging ) echo "mpd->PlayId()\n";
+		if ( ! is_numeric($id) ) {
+			$this->errStr = "PlayId() : argument 1 must be a numeric value";
+			return NULL;
+		}
+		if ( ! is_null($pld = $this->SendCommand(MPD_CMD_PLAYID,$id))) $this->RefreshInfo();
+		if ( $this->debugging ) echo "mpd->PlayId() / return\n";
+		return $pld;
 	}
 
 	/* Stop() 
