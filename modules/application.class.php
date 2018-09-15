@@ -48,6 +48,17 @@ function getParams() {
 
    Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+   $theme = SETTINGS_THEME;
+   if ($this->action=='layouts' && $this->id) {
+    $layout_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$this->id);
+    if ($layout_rec['THEME']) {
+     $theme=$layout_rec['THEME'];
+    }
+    if ($layout_rec['BACKGROUND_IMAGE']) {
+     $out['BODY_CSS'].='background-image:url('.$layout_rec['BACKGROUND_IMAGE'].')';
+    }
+   }
+   Define('THEME',$theme);
 
    if ($this->action=='ajaxgetglobal') {
     header ("HTTP/1.0: 200 OK\n");

@@ -71,11 +71,12 @@ $check_folders=array(
     'freeboard' => '3rdparty/freeboard',
     'jquerymobile' => '3rdparty/jquerymobile',
     'jpgraph' => '3rdparty/jpgraph',
-    'pdw' => '3rdparty/pdw',
-    'js/threejs' => '3rdparty/threejs'
+    'js/threejs' => '3rdparty/threejs',
+    'pdw' => '3rdparty',
+    '3rdparty/pdw' => '3rdparty',
 );
 foreach($check_folders as $k=>$v) {
-   if (is_dir(ROOT.$v)) {
+   if (is_dir(ROOT.$v) && is_dir(ROOT.$k)) {
       echo "Removing ".ROOT.$k."\n";
       DebMes('Removing '.ROOT.$k);
       removeTree(ROOT.$k);

@@ -12,6 +12,11 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
+if ($_GET['theme']) {
+    $theme=$_GET['theme'];
+} else {
+    $theme=SETTINGS_THEME;
+}
 ?>
 <!DOCTYPE html>
 <!-- Dev Version links to full versions (non-minified) of javascript and css files -->
@@ -27,6 +32,32 @@ $ctl = new control_modules();
         <link href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
         <link href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
     <link href="lib/css/freeboard/styles.css" rel="stylesheet" />
+    <?php if ($theme=='light') {?>
+    <style>
+        body {
+            background-color:white;
+            color:black;
+            <?php
+            if ($_GET['background_image']) {
+            echo 'background-image:url('.$_GET['background_image'].')';
+            }
+            ?>
+        }
+        .gridster .gs_w {
+            background: #eeeeee;
+        }
+        .gridster header {
+            background: #bbbbbb;
+            color: #000000;
+        }
+        .modal {
+            color:white;
+        }
+        #toggle-header {
+            background-color:#bbbbbb;
+        }
+    </style>
+    <?php }?>
     <link href="/css/devices.css" rel="stylesheet" type="text/css"/>
 
     <?php

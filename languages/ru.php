@@ -1251,6 +1251,10 @@ $dictionary = array(
     'PATTERN_MINUTE' => 'минут',
     'PATTERN_HOUR' => 'час',
 
+    'THEME' => 'Тема',
+    'THEME_DARK' => 'Тёмная',
+    'THEME_LIGHT' => 'Светлая',
+
     /* end module names */
 
 

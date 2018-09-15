@@ -1,0 +1,48 @@
+{
+    "name": "sunhater/kcfinder",
+    "description": "KCFinder web file manager",
+    "version": "3.20-test2",
+    "type": "library",
+    "keywords": [
+        "kcfinder",
+        "finder",
+        "file",
+        "manager",
+        "explorer",
+        "file manager",
+        "file explorer"
+    ],
+    "homepage": "http://kcfinder.sunhater.com",
+    "time": "2014-08-24",
+    "license": [
+        "GPL-3.0+",
+        "LGPL-3.0+"
+    ],
+    "authors": [
+        {
+            "name": "Pavel Tzonkov",
+            "email": "sunhater@sunhater.com",
+            "homepage": "http://sunhater.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "sunhater@sunhater.com",
+        "issues": "https://github.com/sunhater/kcfinder/issues",
+        "source": "https://github.com/sunhater/kcfinder"
+    },
+    "require": {
+        "php": ">=5.3.0",
+        "ext-gd": "*"
+    },
+    "suggest": {
+        "ext-fileinfo": "*",
+        "ext-exif": "*",
+        "ext-curl": "*",
+        "ext-http": "*",
+        "ext-sockets": "*",
+        "ext-imagick": "*",
+        "ext-gmagick": "*",
+        "ext-zip": "*"
+    }
+}

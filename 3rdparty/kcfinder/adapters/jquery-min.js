@@ -1,0 +1,5 @@
+/*! jQuery adapter for KCFinder
+ *  http://kcfinder.sunhater.com
+ *  Pavel Tzonkov <sunhater@sunhater.com>
+ */
+(function(b){var a="browse.php";b.fn.kcfinder=function(d){var c,f,e=b(this).get(0),h={url:a,lang:"",theme:"",type:"",dir:"",callback:false,callbackMultiple:false},j=b("<iframe></iframe>"),g=["lang","theme","type","dir"];b.extend(true,h,d);c=h.url;c+=(c.indexOf("?")===-1)?"?":"&";for(f in g){f=g[f];if(h[f].length){c+=f+"="+encodeURIComponent(h[f])+"&"}}c=c.substr(0,c.length-1);j.css({margin:0,padding:0,width:b(e).innerWidth(),height:b(e).innerHeight(),border:"none"}).attr({src:c});b(e).html(j);if(b.isFunction(h.callback)||b.isFunction(h.callbackMultiple)){if(!window.KCFinder){window.KCFinder={}}if(b.isFunction(h.callback)){window.KCFinder.callBack=h.callback}else{if(window.KCFinder&&window.KCFinder.callback){delete window.KCFinder.callback}}if(b.isFunction(h.callbackMultiple)){window.KCFinder.callBackMultiple=h.callbackMultiple}else{if(window.KCFinder&&window.KCFinder.callbackMultiple){delete window.KCFinder.callbackMultiple}}}else{if(window.KCFinder){delete window.KCFinder}}}})(jQuery);
