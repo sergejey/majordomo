@@ -38,6 +38,9 @@
    global $url;
    $rec['URL']=$url.'';
 
+      $rec['BACKGROUND_IMAGE']=gr('background_image');
+      $rec['THEME']=gr('theme');
+
    global $delete_icon;
    if ($delete_icon) {
     if ($rec['ICON']!='') {

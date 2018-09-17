@@ -1252,6 +1252,10 @@ $dictionary=array(
     'TURNING_ON' =>'Turning on',
     'TURNING_OFF' =>'Turning off',
 
+    'THEME' => 'Theme',
+    'THEME_DARK' => 'Dark',
+    'THEME_LIGHT' => 'Light',
+
 'TEST'=>'test'
 
 

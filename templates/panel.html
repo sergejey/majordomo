@@ -49,8 +49,21 @@
 <script language="javascript">
 
     function openFileBrowser(id){
+        /*
         fileBrowserlink = "<#ROOTHTML#>3rdparty/pdw/index.php?editor=standalone&returnID=" + id;
         window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
+        */
+        window.KCFinder = {
+            callBack: function (url) {
+                window.KCFinder = null;
+                //alert(url);
+                $('#'+id).val(url);
+            }
+        };
+        window.open('<#ROOTHTML#>3rdparty/kcfinder/browse.php?dir=/',
+                'kcfinder_image', 'status=0, toolbar=0, location=0, menubar=0, ' +
+                'directories=0, resizable=1, scrollbars=0, width=800, height=600'
+        );
     }
 
 

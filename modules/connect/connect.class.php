@@ -372,11 +372,14 @@ function admin(&$out) {
     $my_props = SQLSelect("SELECT ID,TITLE FROM properties WHERE OBJECT_ID='" . $object->id . "'");
     if (IsSet($my_props[0])) {
      foreach ($my_props as $p) {
+      if ($p['TITLE']=='updated' || $p['TITLE']=='updatedText') continue;
       $props[] = $p;
      }
     }
     foreach ($props as $k => $v) {
-     $device['properties'][$v['TITLE']] = $object->getProperty($v['TITLE']);
+     $value = $object->getProperty($v['TITLE']);
+     if ($value === '') continue;
+     $device['properties'][$v['TITLE']] = $value;
     }
    }
   }
@@ -419,7 +422,7 @@ function admin(&$out) {
   }
   foreach($fields as $k=>$v) { $fields_string .= $k.'='.$v.'&'; }
   rtrim($fields_string, '&');
-  //DebMes("Posting $property = $value to $url",'device_sync');
+  DebMes("Posting $property = $value to $url",'device_sync');
   $ch = curl_init();
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));
@@ -435,7 +438,7 @@ function admin(&$out) {
   if (curl_errno($ch) && !$background) {
    $errorInfo = curl_error($ch);
    $info = curl_getinfo($ch);
-   //DebMes("Error: ".$errorInfo,'device_sync');
+   DebMes("Error: ".$errorInfo,'device_sync');
   } else {
    //DebMes("Result : ".$result,'device_sync');
   }

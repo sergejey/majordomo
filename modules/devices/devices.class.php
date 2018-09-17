@@ -377,6 +377,12 @@ function renderStructure() {
         callMethod($ot.'.updatePreview');
     }
 
+    //update objects sdevice
+    $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices");
+    foreach($devices as $device) {
+        SQLExec("UPDATE objects SET SYSTEM='sdevice".$device['ID']."' WHERE TITLE='".DBSafe($device['LINKED_OBJECT'])."' AND SYSTEM=''");
+    }
+
 }
 
 function processSubscription($event, &$details) {
