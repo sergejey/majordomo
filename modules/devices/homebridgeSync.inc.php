@@ -11,6 +11,7 @@ if ($device_id) {
 $devices=SQLSelect("SELECT * FROM devices WHERE $qry");
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
+    
     if ($devices[$i]['TYPE']=='relay') {
 
         $payload=array();
@@ -20,7 +21,16 @@ for ($i = 0; $i < $total; $i++) {
         $payload=array();
         $payload['name']=$devices[$i]['LINKED_OBJECT'];
         $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='Switch';
+        
+        $load_type=gg($devices[$i]['LINKED_OBJECT'].'.loadType');
+        if ($load_type=='light') {
+            $payload['service'] = 'Lightbulb';
+        } elseif ($load_type=='vent') {
+            $payload['service'] = 'Fan';
+        } else {
+            $payload['service']='Outlet';
+            //$payload['service']='Switch';
+        }
         sg('HomeBridge.to_add',json_encode($payload));
 
         $payload=array();
