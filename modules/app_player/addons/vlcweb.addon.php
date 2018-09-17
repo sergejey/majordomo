@@ -40,14 +40,12 @@ class vlcweb extends app_player_addon {
 	// Private: VLC-WEB request
 	private function vlcweb_request($path, $data=array()) {
 		$params = array();
-		while($item = current($data)) {
-			$key = key($data);
+		foreach($data as $key=>$value) {
 			if(is_string($key)) {
-				$params[] = key($data).'='.urlencode($item);
+				$params[] = $key.'='.urlencode($value);
 			} else {
-				$params[] = $item;
+				$params[] = $value;
 			}
-			next($data);
 		}
 		$params = implode('&', $params);
 		$this->reset_properties();
