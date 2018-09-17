@@ -37,11 +37,6 @@ if ($_GET['theme']) {
         body {
             background-color:white;
             color:black;
-            <?php
-            if ($_GET['background_image']) {
-            echo 'background-image:url('.$_GET['background_image'].')';
-            }
-            ?>
         }
         .gridster .gs_w {
             background: #eeeeee;
@@ -57,6 +52,13 @@ if ($_GET['theme']) {
             background-color:#bbbbbb;
         }
     </style>
+    <?php }?>
+    <?php if ($_GET['background_image']) {?>
+        <style>
+            body {
+                <?php echo 'background-image:url('.$_GET['background_image'].')';?>
+            }
+        </style>
     <?php }?>
     <link href="/css/devices.css" rel="stylesheet" type="text/css"/>
 
