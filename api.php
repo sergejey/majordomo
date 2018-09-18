@@ -187,6 +187,9 @@ if (!isset($request[0])) {
     $result['event_name']=$event_name;
     $result['params']=$_GET;
     $result['event_id']=registerEvent($event_name,$result['params']);
+} elseif (strtolower($request[0]) == 'objects' && isset($request[1])) {
+    $objects=getObjectsByClass($request[1]);
+    $result['objects'] = $objects;
 } elseif (strtolower($request[0]) == 'data' && isset($request[1])) {
     $tmp = explode('.', $request[1]);
     if ($method == 'GET') {
@@ -194,6 +197,7 @@ if (!isset($request[0])) {
             $result['data'] = getGlobal($request[1]);
         } else {
             $object = getObject($tmp[0]);
+            $result['object'] = $object;
             include_once(DIR_MODULES . 'classes/classes.class.php');
             $cl = new classes();
             $props = $cl->getParentProperties($object->class_id, '', 1);
