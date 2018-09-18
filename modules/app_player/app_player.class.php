@@ -143,7 +143,6 @@ class app_player extends module {
 	*/
 	function usual(&$out) {
 		global $play; // Deprecated (backward compatibility)
-		global $rnd;
 		global $session;
 		global $play_terminal;
 		global $terminal_id;
@@ -185,10 +184,6 @@ class app_player extends module {
 		
 		if($play != '') {
 			$out['PLAY'] = $play;
-		}
-		
-		if($rnd != '') {
-			$out['RND'] = $rnd;
 		}
 
 		$current_level = getGlobal('ThisComputer.volumeMediaLevel');

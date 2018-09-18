@@ -32,7 +32,6 @@
 			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_STOP#>" onClick='return playerCommand("stop");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/delete.png" border="0"></a></div>
 		</td>
 		<input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
-		<input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
 	</tr>
 </table>
 
@@ -147,7 +146,6 @@
 			} else {
 				playURL += '&param='+encodeURIComponent($("#hidPlayPath").val());
 			}
-			playURL += '&rnd=' + encodeURIComponent($("#hidPlayerRnd").val());
 			$.ajax({
 				url: playURL,
 				dataType: 'json'
