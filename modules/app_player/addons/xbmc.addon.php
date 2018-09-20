@@ -1,11 +1,8 @@
 <?php
-
 /*
 	Addon XBMC for app_player
 */
-
 class xbmc extends app_player_addon {
-
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'XBMC (Kodi)';
@@ -14,11 +11,7 @@ class xbmc extends app_player_addon {
 		$this->terminal = $terminal;
 		$this->reset_properties();
 	}
-
 	/*
 		В процессе портирования
 	*/
-
 }
-
-?>
