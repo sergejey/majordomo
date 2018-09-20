@@ -142,89 +142,89 @@ class app_player extends module {
 	* @access public
 	*/
 	function usual(&$out) {
-		global $play; // Deprecated (backward compatibility)
 		global $session;
-		global $play_terminal;
-		global $terminal_id;
 
-		$session_terminal = gr('session_terminal');
-		if($session_terminal != '') {
-			$session->data['SESSION_TERMINAL'] = $session_terminal;
-		}
-
+		// Deprecated (backward compatibility)
+		$play = gr('play');
 		if($this->play) {
 			$play = $this->play;
 		}
-
-		if($this->terminal_id) {
-			$terminal_id = $this->terminal_id;
-		}
-
-		if($terminal_id) {
-			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `ID` = '.(int)$terminal_id);
-			$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
-		}
-
-		if($session->data['PLAY_TERMINAL'] == '') {
-			$session->data['PLAY_TERMINAL'] = $session->data['TERMINAL'];
-		}
-
-		if($play_terminal != '') {
-			$session->data['PLAY_TERMINAL'] = $play_terminal;
-		} else {
-			$play_terminal = $session->data['PLAY_TERMINAL'];
-		}
-
 		if(!$play && $session->data['LAST_PLAY']) {
 			$play = $session->data['LAST_PLAY'];
 			$out['LAST_PLAY'] = 1;
 		} elseif($play) {
 			$session->data['LAST_PLAY'] = $play;
 		}
-		
 		if($play != '') {
 			$out['PLAY'] = $play;
 		}
+		// END Deprecated
 
-		$current_level = getGlobal('ThisComputer.volumeMediaLevel');
-		for($i = 0; $i <= 100; $i += 5) {
-			$rec = array('VALUE' => $i);
-			if($i == $current_level) {
-				$rec['SELECTED'] = 1;
+		// Play terminal
+		$play_terminal = gr('play_terminal');
+		$terminal_id = ($this->terminal_id?$this->terminal_id:gr('terminal_id'));
+		if($play_terminal != '') { // name in request
+			$session->data['PLAY_TERMINAL'] = $play_terminal;
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+		} elseif($terminal_id) { // id in request
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `ID` = '.(int)$terminal_id);
+			$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+		} elseif($session->data['TERMINAL'] != '') { // session -> data -> terminal
+			$session->data['PLAY_TERMINAL'] = $session->data['TERMINAL'];
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+		} else { // default
+			if($terminals = SQLSelect('SELECT * FROM `terminals` ORDER BY TITLE')) {
+				foreach($terminals as $terminal) {
+					$terminal_ip = ($terminal['HOST']=='localhost'?'127.0.0.1':$terminal['HOST']);
+					$user_ip = ($_SERVER['REMOTE_ADDR']=='::1'?'127.0.0.1':$_SERVER['REMOTE_ADDR']);
+					if(($terminal_ip != '') && ($terminal_ip == $user_ip)) {
+						$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+						break;
+					}
+				}
 			}
-			$out['VOLUMES'][] = $rec;
+			if($session->data['PLAY_TERMINAL'] == '') {
+				$session->data['PLAY_TERMINAL'] = 'MAIN';
+				$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+			}
+
 		}
 
-		global $ajax;
-		if($this->ajax) {
-			$ajax = 1;
+		// Session terminal
+		$session_terminal = gr('session_terminal');
+		if($session_terminal != '') { // name in request
+			$session->data['SESSION_TERMINAL'] = $session_terminal;
+		} elseif($session->data['SESSION_TERMINAL'] == '') { // default
+			$session->data['SESSION_TERMINAL'] = $session->data['PLAY_TERMINAL'];
 		}
-
-		if($session->data['PLAY_TERMINAL'] != '') {
-			$terminal=SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
-		}
-
+		
+		// Terminal defaults
 		if(!$terminal['HOST']) {
 			$terminal['HOST'] = 'localhost';
 		}
-
 		if(!$terminal['CANPLAY']) {
 			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \'HOME\' OR `NAME` = \'MAIN\'');
 		}
-
 		if(!$terminal['CANPLAY']) {
 			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `IS_ONLINE` DESC LIMIT 1');
 		}
+		if(!$terminal['PLAYER_TYPE']) {
+			$terminal['PLAYER_TYPE'] = 'vlc';
+		}
 
+		// AJAX
+		$ajax = gr('ajax');
+		if($this->ajax) {
+			$ajax = 1;
+		}
 		if(isset($ajax)) {
-			global $command, $param;
-			$command = trim($command);
-			$param = trim($param);
+			$command = trim(gr('command'));
+			$param = trim(gr('param'));
 			
 			// JSON default
 			$json = array(
-				'play_terminal'		=> $play_terminal,
-				'session_terminal'	=> $session_terminal,
+				'play_terminal'		=> $session->data['PLAY_TERMINAL'],
+				'session_terminal'	=> $session->data['SESSION_TERMINAL'],
 				'command'			=> $command,
 				'success'			=> FALSE,
 				'message'			=> NULL,
@@ -246,6 +246,7 @@ class app_player extends module {
 				} elseif($command == 'prev') {
 					$command = 'previous';
 				}
+				// END Deprecated
 				
 				// Set media volume level
 				if($command == 'set_volume' && strlen($param)) {
@@ -256,11 +257,6 @@ class app_player extends module {
 					}
 				}
 
-				// Default player type
-				if(!strlen($terminal['PLAYER_TYPE'])) {
-					$terminal['PLAYER_TYPE'] = 'vlc';
-				}
-				
 				// Addons main class
 				include_once(DIR_MODULES.'app_player/addons.php');
 				
@@ -332,6 +328,7 @@ class app_player extends module {
 			}
 		}
 
+		// List of terminals
 		$session_terminals = array();
 		if($session->data['SESSION_TERMINAL'] != '') {
 			$session_terminals = explode(',', $session->data['SESSION_TERMINAL']);
@@ -353,6 +350,17 @@ class app_player extends module {
 			$terminals[0]['SELECTED'] = 1;
 		}
 		$out['TERMINALS'] = $terminals;
+		
+		// Volume levels
+		$current_level = getGlobal('ThisComputer.volumeMediaLevel');
+		for($i = 0; $i <= 100; $i += 5) {
+			$rec = array('VALUE' => $i);
+			if($i == $current_level) {
+				$rec['SELECTED'] = 1;
+			}
+			$out['VOLUMES'][] = $rec;
+		}
+		
 	}
 	
 	/**
@@ -365,14 +373,7 @@ class app_player extends module {
 	function install($parent_name='') {
 		parent::install($parent_name);
 	}
-	
-	// --------------------------------------------------------------------
-}
 
-/*
-*
-* TW9kdWxlIGNyZWF0ZWQgRmViIDIzLCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
-*
-*/
+}
 
 ?>
