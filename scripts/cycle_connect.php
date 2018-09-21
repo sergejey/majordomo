@@ -64,7 +64,7 @@ while (1) {
         $ca_file=NULL;
     } else {
         $port = '8883';
-        $ca_file= '/etc/ssl/certs';
+        $ca_file= dirname(__FILE__).'/../modules/connect/cert.pem';
     }
 
 
