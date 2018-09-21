@@ -20,6 +20,9 @@ class kodi extends app_player_addon {
 		$this->curl = curl_init();
 		$this->address = 'http://'.$this->terminal['HOST'].':'.(empty($this->terminal['PLAYER_PORT'])?8080:$this->terminal['PLAYER_PORT']);
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+		// FIXME
+		curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 1);
+		curl_setopt($this->curl, CURLOPT_TIMEOUT, 5);
 		if($this->terminal['PLAYER_USERNAME'] || $this->terminal['PLAYER_PASSWORD']) {
 			curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($this->curl, CURLOPT_USERPWD, $this->terminal['PLAYER_USERNAME'].':'.$this->terminal['PLAYER_PASSWORD']);
@@ -33,8 +36,7 @@ class kodi extends app_player_addon {
 	
 	// Private: Kodi request
 	private function kodi_request($method, $params=array()) {
-		$uid = rand(1, 9999999);
-		$json = array('jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => $uid);
+		$json = array('jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => (int)$this->terminal['ID']);
 		$request = json_encode($json);
 		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/jsonrpc?request='.urlencode($request));
@@ -66,7 +68,7 @@ class kodi extends app_player_addon {
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Kodi HTTP interface not available!';
+			$this->message = curl_error($this->curl);
 		}
 		return $this->success;
 	}
@@ -126,25 +128,103 @@ class kodi extends app_player_addon {
 		}
 		return $this->success;
 	}
+	
+	// Private: Kodi get track position
+	private function kodi_track_position($track_id) {
+		if($this->pl_get()) {
+			$track_position = -1;
+			foreach($this->data as $key=>$value) {
+				if($value['id'] == $track_id) {
+					$track_position = $key;
+					break;
+				}
+			}
+			$this->reset_properties();
+			if($track_position >= 0) {
+				$this->success = TRUE;
+				$this->message = 'OK';
+				$this->data = $track_position;
+			} else {
+				$this->success = FALSE;
+				$this->message = 'No track with ID "'.$track_id.'"!';
+			}
+		}
+		return $this->success;
+	}
 
 	// Get player status
 	function status() {
-		// FIXME
+		// Defaults
+		$track_id	= -1;
+		$length		= 0;
+		$time		= 0;
+		$state		= 'unknown';
+		$fullscreen	= FALSE;
+		$volume		= 0;
+		$random		= FALSE;
+		$loop		= FALSE;
+		$repeat		= FALSE;
+		// Kodi: Player ID
+		$player_id = NULL;
+		if($this->kodi_player_id()) {
+			$player_id = $this->data;
+		} else { // State: stopped
+			if($this->message == 'No active players!') {
+				$state = 'stopped';
+			}
+		}
+		
+		var_dump(
+		
+			curl_error($this->curl)
+		
+		);
+		
+		// Track ID, Length
+		if($this->kodi_request('Player.GetItem', array('playerid'=>$player_id, 'properties'=>array('duration', 'streamdetails')))) {
+			$track_id = $this->data->result->item->id;
+			$length = $this->data->result->item->duration;
+		}
+		// Fullscreen
+		$fullscreen = FALSE;
+		if($this->kodi_request('GUI.GetProperties', array('properties'=>array('fullscreen')))) {
+			$fullscreen = $this->data->result->fullscreen;
+		}
+		// Volume
+		if($this->kodi_request('Application.GetProperties', array('properties'=>array('volume')))) {
+			$volume = $this->data->result->volume;
+		}
+		// State: playing/paused, Time, Random, Loop, Repeat
+		if($this->kodi_request('Player.GetProperties', array('playerid'=>$player_id, 'properties'=>array('speed', 'time', 'shuffled', 'repeat')))) {
+			$state = ($this->data->result->speed?'playing':'paused');
+			$time = ($this->data->result->time->hours*60*60) + ($this->data->result->time->minutes*60) + ($this->data->result->time->seconds) + round($this->data->result->time->milliseconds/1000);
+			$random = $this->data->result->shuffled;
+			$loop = ($this->data->result->repeat == 'all'?TRUE:FALSE);
+			$repeat = ($this->data->result->repeat == 'one'?TRUE:FALSE);
+		}
+		// Results
+		$this->success = TRUE;
+		$this->message = 'OK';
+		$this->data = array(
+			'track_id'		=> (int)$track_id,
+			'length'		=> (int)$length,
+			'time'			=> (int)$time,
+			'state'			=> (string)$state,
+			'fullscreen'	=> (boolean)$fullscreen,
+			'volume'		=> (int)$volume,
+			'random'		=> (boolean)$random,
+			'loop'			=> (boolean)$loop,
+			'repeat'		=> (boolean)$repeat,
+		);
 	}
 	
 	// Play
 	function play($input) {
 		$this->reset_properties();
 		if(strlen($input)) {
-			if($this->pl_empty()) {
-				if($this->pl_add($input)) {
-					if($this->kodi_player_id()) {
-						if($this->kodi_request('Player.GoTo', array('playerid'=>$this->data, 'to'=>0))) {
-							$this->success = TRUE;
-							$this->message = 'OK';
-						}
-					}
-				}
+			if($this->kodi_request('Player.Open', array('item'=>array('file'=>$input)))) {
+				$this->success = TRUE;
+				$this->message = 'OK';
 			}
 		} else {
 			$this->success = FALSE;
@@ -283,13 +363,16 @@ class kodi extends app_player_addon {
 	}
 	
 	// Playlist: Delete
-	function pl_delete($id) { // FIXME: id
+	function pl_delete($id) {
 		$this->reset_properties();
 		if(strlen($id)) {
-			if($this->kodi_playlist_id()) {
-				if($this->kodi_request('Playlist.Remove', array('playlistid'=>$this->data, 'position'=>$id))) {
-					$this->success = TRUE;
-					$this->message = 'OK';
+			if($this->kodi_track_position($id)) {
+				$track_position = $this->data;
+				if($this->kodi_playlist_id()) {
+					if($this->kodi_request('Playlist.Remove', array('playlistid'=>$this->data, 'position'=>$track_position))) {
+						$this->success = TRUE;
+						$this->message = 'OK';
+					}
 				}
 			}
 		} else {
@@ -311,13 +394,16 @@ class kodi extends app_player_addon {
 	}
 	
 	// Playlist: Play
-	function pl_play($id) { // FIXME: id
+	function pl_play($id) {
 		$this->reset_properties();
 		if(strlen($id)) {
-			if($this->kodi_playlist_id()) {
-				if($this->kodi_request('Player.GoTo', array('playlistid'=>$this->data, 'position'=>$id))) {
-					$this->success = TRUE;
-					$this->message = 'OK';
+			if($this->kodi_track_position($id)) {
+				$track_position = $this->data;
+				if($this->kodi_player_id()) {
+					if($this->kodi_request('Player.GoTo', array('playerid'=>$this->data, 'to'=>$track_position))) {
+						$this->success = TRUE;
+						$this->message = 'OK';
+					}
 				}
 			}
 		} else {
@@ -378,7 +464,10 @@ class kodi extends app_player_addon {
 	
 	// Default command
 	function command($command, $parameter) {
-		if($this->kodi_request($command, array($parameter))) { // FIXME: parameter
+		if(!$json = json_decode($parameter)) {
+			$json = array();
+		}
+		if($this->kodi_request($command, $json)) {
 			$this->success = TRUE;
 			$this->message = 'OK';
 		}
