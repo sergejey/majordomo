@@ -359,10 +359,10 @@ function admin(&$out) {
     $tmpdatac = count($tmpdata);
     if ($tmpdatac==1) {
       
-     $swro = (trim($data[0]) == 'RO');
+     $swro = (trim($tmpdata[0]) == 'RO');
      }
     if ($tmpdatac==3) {
-     $swro = (trim($data[2]) == 'RO');
+     $swro = (trim($tmpdata[2]) == 'RO');
      }
     
     if ( !($item['TYPE']=='switch' && $swro) ){
