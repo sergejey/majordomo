@@ -1039,6 +1039,8 @@ $dictionary = array(
     'PATTERN_CONDITIONAL' => 'На основе значений свойств',
     'CONDITION' => 'Условие',
     'ADD_EXIT_CODE' => 'Добавить код "выхода"',
+    'SMART_REPEAT'=>'Авто-повтор',
+    'READ_ONLY'=>'Только чтение',
     'ADVANCED_CONFIG' => 'Расширенная настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
 

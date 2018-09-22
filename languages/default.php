@@ -1041,6 +1041,7 @@ $dictionary=array(
 'CONDITION'=>'Condition',
 'ADD_EXIT_CODE'=>'Add "exit" code',
 'SMART_REPEAT'=>'Smart Repeat',
+'READ_ONLY'=>'Read Only',
 'ADVANCED_CONFIG'=>'Advanced config',
 'UPDATE_ALL_EXTENSIONS'=>'Update all extensions installed',
 

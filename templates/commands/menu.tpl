@@ -561,7 +561,7 @@
  function changedValue{$item.ID}_delay() {
   clearTimeout(item{$item.ID}_timer);
   var elem=document.getElementById('menu{$item.ID}_v');
-  item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
+  item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 5000);
   return false;
  }
 </script>
