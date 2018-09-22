@@ -355,11 +355,22 @@ function admin(&$out) {
      $item['LINKED_OBJECT']=$object_rec['TITLE'];
     }
 
-    if ($item['LINKED_PROPERTY']!='') {
-     sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
-    }
-
-    $params=array('VALUE'=>$item['CUR_VALUE'], 'OLD_VALUE'=>$old_value);
+    $tmpdata=explode("\n", str_replace("\r", "", $item['DATA'])); // находим признак RO на 1 или 3 позиции
+    $tmpdatac = count($tmpdata);
+    if ($tmpdatac==1) {
+      
+     $swro = (trim($tmpdata[0]) == 'RO');
+     }
+    if ($tmpdatac==3) {
+     $swro = (trim($tmpdata[2]) == 'RO');
+     }
+    
+    if ( !($item['TYPE']=='switch' && $swro) ){
+      if ($item['LINKED_PROPERTY']!='') {
+       sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
+       }
+      }
+      $params=array('VALUE'=>$item['CUR_VALUE'], 'OLD_VALUE'=>$old_value);
 
     if ($item['ONCHANGE_METHOD']!='') {
      if (!$item['LINKED_OBJECT']) {
@@ -748,15 +759,27 @@ function usual(&$out) {
     $res[$i]=$item;
    }
 
-   if ($item['TYPE']=='switch') {
+   if ($item['TYPE']=='switch') {     
+    $item['OFF_VALUE']=0;
+    $item['ON_VALUE']=1;
+
     if (trim($item['DATA'])) {
      $data=explode("\n", str_replace("\r", "", $item['DATA']));
-     $item['OFF_VALUE']=trim($data[0]);
-     $item['ON_VALUE']=trim($data[1]);
-    } else {
-     $item['OFF_VALUE']=0;
-     $item['ON_VALUE']=1;
-    }
+     $datac = count($data);
+     if ($datac==1) {
+      $item+= array('RO' => trim($data[0]));
+      }
+      if ($datac==2){
+        $item['OFF_VALUE']=trim($data[0]);
+        $item['ON_VALUE']=trim($data[1]);
+       }
+     if ($datac==3){
+       $item['OFF_VALUE']=trim($data[0]);
+       $item['ON_VALUE']=trim($data[1]);
+       $item+= array('RO'=> trim($data[2]));
+      }
+    } 
+    
     $res[$i]=$item;
    }
 
