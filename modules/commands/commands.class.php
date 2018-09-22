@@ -358,10 +358,11 @@ function admin(&$out) {
     $tmpdata=explode("\n", str_replace("\r", "", $item['DATA'])); // находим признак RO на 1 или 3 позиции
     $tmpdatac = count($tmpdata);
     if ($tmpdatac==1) {
-     $swro = ($tmpdata[0] == 'RO');
+      
+     $swro = (trim($data[0]) == 'RO');
      }
     if ($tmpdatac==3) {
-     $swro = ($tmpdata[2] == 'RO');
+     $swro = (trim($data[2]) == 'RO');
      }
     
     if ( !($item['TYPE']=='switch' && $swro) ){
