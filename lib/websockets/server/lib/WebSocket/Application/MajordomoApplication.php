@@ -184,8 +184,8 @@ class MajordomoApplication extends Application
               DebMes($this->_clients[$client_id]->getClientIp()." Watching:\n".json_encode($tmp),'websockets');
              }
             foreach($tmp as $property) {
-             $this->_clients[$client_id]->subscribedTo['properties'][mb_strtolower($property, 'UTF-8')]=1;
-             $this->_clients[$client_id]->watchedProperties[mb_strtolower($property, 'UTF-8')]['properties']=1;
+             $this->_clients[$client_id]->subscribedTo['properties'][$property]=1;
+             $this->_clients[$client_id]->watchedProperties[$property]['properties']=1;
             }
           } elseif ($data['TYPE']=='events') {
             if ($data['EVENTS']=='') {
@@ -252,10 +252,9 @@ class MajordomoApplication extends Application
 
          foreach($received_properties as $property_name) {
              $property_value=$received_values[$property_name];
-             $property_name=mb_strtolower($property_name, 'UTF-8');
-
+             
           if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
-           //DebMes("Update property ".$property_name,'websockets');
+             //DebMes("Update property ".$property_name,'websockets');
           }
 
           //process property update
@@ -263,7 +262,8 @@ class MajordomoApplication extends Application
           $found_subscribers=0;
 
           foreach($this->_clients as $client) {
-           if (IsSet($client->watchedProperties[$property_name])) {
+           $tmp=explode('.', $property_name);
+           if (IsSet($client->watchedProperties[$property_name]) || IsSet($client->watchedProperties[$tmp[0]])) {
             //scenes
             if (isset($client->watchedProperties[$property_name]['states'])) {
              $send_states=array();
@@ -377,6 +377,20 @@ class MajordomoApplication extends Application
               $client->send($encodedData);
              }
 
+            }
+            //object properties
+            $tmp=explode('.', $property_name);
+            if (isset($client->watchedProperties[$tmp[0]]['properties'])) {
+             $send_data=array();
+             $send_data[]=array('PROPERTY'=>$property_name, 'VALUE'=>getGlobal($property_name));
+             if (isset($send_data[0])) {
+              if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                  DebMes($client->getClientIp()." Sending updated properties\n".json_encode($send_data),'websockets');
+                  DebMes($client->getClientIp()." Sending updated properties\n".json_encode($send_data),'websockets');
+              }
+              $encodedData = $this->_encodeData('properties', json_encode($send_data));
+              $client->send($encodedData);
+             }
             }
            }
           }
