@@ -163,6 +163,7 @@ function admin(&$out) {
   if ($this->mode=='update_collection') {
    global $title;
    global $path;
+   $path = ((substr($path, -1) == '/')?$path:"$path/");
    $rec['TITLE']=$title;
    $rec['PATH']=$path;
    if ($rec['TITLE'] && $rec['PATH']) {
