@@ -10,6 +10,8 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
+
+
 $ctl = new control_modules();
 
 if ($_GET['theme']) {
@@ -88,6 +90,14 @@ if ($_GET['theme']) {
     echo $p->result;
     ?>
     <script type="text/javascript">
+        <?php
+            $constants=get_defined_constants();
+            foreach($constants as $k=>$v) {
+                if (preg_match('/^LANG_/',$k)) {
+                    echo "const $k = '".addcslashes($v,"'")."';\n";
+                }
+            }
+        ?>
         <?php if($_GET['layout_id']!='') {?>
         var layoutId='<?php
             echo $_GET['layout_id'];
@@ -115,20 +125,23 @@ if ($_GET['theme']) {
                 "lib/js/freeboard/freeboard.js",
 
                 "plugins/freeboard/freeboard.datasources.js",
+
+            <?php
+
+            $modules=SQLSelect("SELECT ID,NAME FROM project_modules");
+            $total = count($modules);
+            for ($i = 0; $i < $total; $i++) {
+                $path=DIR_MODULES.$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php';
+                if (file_exists($path)) {
+                    echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
+                }
+            }
+            ?>
+
                 "plugins/freeboard/freeboard.widgets.js",
                 "plugins/thirdparty/handlebars.js",
                 "plugins/thirdparty/actuator.js",
-        <?php
 
-        $modules=SQLSelect("SELECT ID,NAME FROM project_modules");
-        $total = count($modules);
-        for ($i = 0; $i < $total; $i++) {
-        $path=DIR_MODULES.$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php';
-        if (file_exists($path)) {
-            echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
-        }
-        }
-        ?>
             "../../js/scripts.js",
 
                 // *** Load more plugins here ***
@@ -202,7 +215,7 @@ if ($_GET['theme']) {
                 </div>
             </div>
             <div id="datasources">
-                <h2 class="title">DATASOURCES</h2>
+                <h2 class="title"><?php echo LANG_DATA;?></h2>
 
                 <div class="datasource-list-container">
                     <table class="table table-condensed sub-table" id="datasources-list" data-bind="if: datasources().length">
@@ -230,7 +243,7 @@ if ($_GET['theme']) {
                         </tbody>
                     </table>
                 </div>
-                <span class="text-button table-operation" data-bind="pluginEditor: {operation: 'add', type: 'datasource'}">ADD</span>
+                <span class="text-button table-operation" data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><?php echo LANG_ADD;?></span>
             </div>
         </div>
     </div>

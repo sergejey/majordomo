@@ -1256,6 +1256,12 @@ $dictionary=array(
     'THEME' => 'Theme',
     'THEME_DARK' => 'Dark',
     'THEME_LIGHT' => 'Light',
+    'DATA_SOURCE' => 'Data source',
+    'WIDGET' => 'Widget',
+    'PANE' => 'Pane',
+    'COLUMNS' => 'Columns',
+    'SIZE' => 'Size',
+    'CLOCK' => 'Clock',
 
 'TEST'=>'test'
 

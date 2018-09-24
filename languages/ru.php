@@ -1257,6 +1257,13 @@ $dictionary = array(
     'THEME_DARK' => 'Тёмная',
     'THEME_LIGHT' => 'Светлая',
 
+    'DATA_SOURCE' => 'Источник данных',
+    'WIDGET' => 'Виджет',
+    'PANE' => 'Панель',
+    'COLUMNS' => 'Колонки',
+    'SIZE' => 'Размер',
+    'CLOCK' => 'Часы',
+
     /* end module names */
 
 

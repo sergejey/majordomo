@@ -231,24 +231,24 @@ var freeboard = (function()
                         if(options.type == 'datasource')
                         {
                                 types = datasourcePlugins;
-                                title = "Datasource";
+                                title = LANG_DATA_SOURCE;
                         }
                         else if(options.type == 'widget')
                         {
                                 types = widgetPlugins;
-                                title = "Widget";
+                                title = LANG_WIDGET;
                         }
                         else if(options.type == 'pane')
                         {
-                                title = "Pane";
+                                title = LANG_PANE;
                         }
 
                         $(element).click(function(event)
                         {
                                 if(options.operation == 'delete')
                                 {
-                                        var phraseElement = $('<p>Are you sure you want to delete this ' + title + '?</p>');
-                                        new DialogBox(phraseElement, "Confirm Delete", "Yes", "No", function()
+                                        var phraseElement = $('<p>'+LANG_ARE_YOU_SURE+' ' + title + '</p>');
+                                        new DialogBox(phraseElement, LANG_DELETE_SELECTED, LANG_YES, LANG_NO, function()
                                         {
 
                                                 if(options.type == 'datasource')
@@ -310,12 +310,12 @@ var freeboard = (function()
                                                                 settings: [
                                                                         {
                                                                                 name        : "title",
-                                                                                display_name: "Title",
+                                                                                display_name: LANG_TITLE,
                                                                                 type        : "text"
                                                                         },
                                                                         {
                                                                                 name : "col_width",
-                                                                                display_name : "Columns",
+                                                                                display_name : LANG_COLUMNS,
                                                                                 type : "integer",
                                                                                 default_value : 1,
                                                                                 required : true

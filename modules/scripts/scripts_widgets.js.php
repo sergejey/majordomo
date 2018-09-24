@@ -19,13 +19,13 @@ function runScriptClicked(script) {
     freeboard.loadWidgetPlugin({
         // Same stuff here as with datasource plugin.
         "type_name"   : "scripts_plugin",
-        "display_name": "Scripts",
-        "description" : "MajorDoMo scripts",
+        "display_name": LANG_SCRIPTS,
+        "description" : "MajorDoMo "+LANG_SCRIPTS,
         "fill_size" : false,
         "settings"    : [
             {
                 "name"        : "script",
-                "display_name": "Script",
+                "display_name": LANG_SCRIPT,
                 "required" : true,
                 "type"        : "option",
                 <?php
@@ -44,7 +44,7 @@ function runScriptClicked(script) {
             },
             {
                 "name"         : "title",
-                "display_name" : "Title",
+                "display_name" : LANG_TITLE,
                 "type"         : "calculated",
                 "required" : true
             }
