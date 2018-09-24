@@ -36,7 +36,9 @@ class app_player_addon {
 	
 	// Destructor
 	public function destroy() {
-		$this->__destruct();
+		/*
+			Some code...
+		*/
 	}
 
 	
@@ -206,10 +208,21 @@ class app_player_addon {
 	*/
 	
 	// Reset properties
-	final public function reset_properties() {
+	final public function reset_properties($defaults=array()) {
+		/*
+			$defaults - Associative array with default property values.
+			Example:
+				array('message'=>'Hello')
+		*/
 		$this->success = FALSE;
 		$this->message = NULL;
 		$this->data = NULL;
+		foreach($defaults as $key=>$value) {
+			if(property_exists($this, $key)) {
+				$this->$key = $value;
+			}
+		}
+		return $this;
 	}
 	
 	// Unknown method
