@@ -50,6 +50,7 @@ class dnla extends app_player_addon {
              $current_dev = $device['location'];
             }
         //echo ($current_dev);
+        $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $this->success = $remote->stop();
         return $this->success;
@@ -64,6 +65,7 @@ class dnla extends app_player_addon {
              $current_dev = $device['location'];
             }
         //echo ($current_dev);
+        $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $this->success = $remote->next();
         return $this->success;
@@ -78,6 +80,7 @@ class dnla extends app_player_addon {
              $current_dev = $device['location'];
             }
         //echo ($current_dev);
+        $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $this->success = $remote->previous();
         return $this->success;
@@ -93,10 +96,11 @@ class dnla extends app_player_addon {
              $current_dev = $device['location'];
             }
         //DebMes($current_dev);
+        $current_dev = str_ireplace("Location:", "", $current_dev);
         $remotevolume = new MediaRendererVolume($current_dev);
-        //DebMes($level);
+        DebMes($level);
         $this->success = $remotevolume->SetVolume($level);
-        //DebMes($this->success);
+        DebMes($this->success);
         return $this->success;
     }  
 
