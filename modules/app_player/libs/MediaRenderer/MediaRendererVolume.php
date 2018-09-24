@@ -28,19 +28,18 @@ class MediaRendererVolume {
 	public function SetVolume($volume)
 	{
 		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredVolume' => $volume);
-echo ($this->service_type);
-		return $this->upnp->sendRequestToDevice('SetVolume',$args,$this->ctrlurl,$this->service_type);
+		return $this->sendRequestToDevice('SetVolume',$args,$this->ctrlurl,$this->service_type);
 	}
 
 	public function mute()
 	{
 		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredMute' => 1);
-		return $this->upnp->sendRequestToDevice('SetMute',$args,$this->ctrlurl,$this->service_type);
+		return $this->sendRequestToDevice('SetMute',$args,$this->ctrlurl,$this->service_type);
 	}
 	public function unmute()
 	{
 		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredMute' => 0);
-		return $this->upnp->sendRequestToDevice('SetMute',$args,$this->ctrlurl,$this->service_type);
+		return $this->sendRequestToDevice('SetMute',$args,$this->ctrlurl,$this->service_type);
 	}
 
 		//this should be moved to the upnp and renderer model
