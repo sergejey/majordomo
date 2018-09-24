@@ -1711,7 +1711,7 @@ PluginEditor = function(jsEditor, valueEditor)
                 }
 
 
-                new DialogBox(form, title, "Save", "Cancel", function()
+                new DialogBox(form, title, LANG_SUBMIT, LANG_CANCEL, function()
                 {
                         $(".validation-error").remove();
 
@@ -1749,10 +1749,10 @@ PluginEditor = function(jsEditor, valueEditor)
 
                 if(pluginTypeNames.length > 1)
                 {
-                        var typeRow = createSettingRow("plugin-types", "Type");
+                        var typeRow = createSettingRow("plugin-types", LANG_TYPE);
                         typeSelect = $('<select></select>').appendTo($('<div class="styled-select"></div>').appendTo(typeRow));
 
-                        typeSelect.append($("<option>Select a type...</option>").attr("value", "undefined"));
+                        typeSelect.append($("<option>"+LANG_TYPE+"...</option>").attr("value", "undefined"));
 
                         _.each(pluginTypes, function(pluginType)
                         {
@@ -2620,16 +2620,16 @@ var freeboard = (function()
                         if(options.type == 'datasource')
                         {
                                 types = datasourcePlugins;
-                                title = "Datasource";
+                                title = LANG_DATA_SOURCE;
                         }
                         else if(options.type == 'widget')
                         {
                                 types = widgetPlugins;
-                                title = "Widget";
+                                title = LANG_WIDGET;
                         }
                         else if(options.type == 'pane')
                         {
-                                title = "Pane";
+                                title = LANG_PANE;
                         }
 
                         $(element).click(function(event)
@@ -2637,7 +2637,7 @@ var freeboard = (function()
                                 if(options.operation == 'delete')
                                 {
                                         var phraseElement = $('<p>Are you sure you want to delete this ' + title + '?</p>');
-                                        new DialogBox(phraseElement, "Confirm Delete", "Yes", "No", function()
+                                        new DialogBox(phraseElement, "Confirm Delete", LANG_YES, LANG_NO, function()
                                         {
 
                                                 if(options.type == 'datasource')
@@ -2699,12 +2699,12 @@ var freeboard = (function()
                                                                 settings: [
                                                                         {
                                                                                 name        : "title",
-                                                                                display_name: "Title",
+                                                                                display_name: LANG_TITLE,
                                                                                 type        : "text"
                                                                         },
                                                                         {
                                                                                 name : "col_width",
-                                                                                display_name : "Columns",
+                                                                                display_name : LANG_COLUMNS,
                                                                                 type : "integer",
                                                                                 default_value : 1,
                                                                                 required : true

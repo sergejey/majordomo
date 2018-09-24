@@ -5,8 +5,8 @@ $this->device_types=array(
         'CLASS'=>'Rooms',
         'DESCRIPTION'=>'Rooms/Locations',
         'PROPERTIES'=>array(
-            'temperature'=>array('DESCRIPTION'=>'Temperature','KEEP_HISTORY'=>365),
-            'humidity'=>array('DESCRIPTION'=>'Humidity','KEEP_HISTORY'=>365),
+            'temperature'=>array('DESCRIPTION'=>'Temperature'),
+            'humidity'=>array('DESCRIPTION'=>'Humidity'),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
             'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),

@@ -384,7 +384,7 @@ function admin(&$out) {
    }
   }
   $fields['devices_data']=json_encode($devices);
-  DebMes("Posting all devices to $url",'device_sync');
+  //DebMes("Posting all devices to $url",'device_sync');
   //DebMes($fields['devices_data'],'device_sync');
   $ch = curl_init();
   curl_setopt($ch,CURLOPT_URL, $url);
@@ -422,7 +422,7 @@ function admin(&$out) {
   }
   foreach($fields as $k=>$v) { $fields_string .= $k.'='.$v.'&'; }
   rtrim($fields_string, '&');
-  DebMes("Posting $property = $value to $url",'device_sync');
+  //DebMes("Posting $property = $value to $url",'device_sync');
   $ch = curl_init();
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));

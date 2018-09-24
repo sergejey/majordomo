@@ -758,6 +758,7 @@ function usual(&$out) {
   startMeasure('setproperty_update');
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
+   $property = $prop['TITLE'];
    startMeasure('setproperty_update_getvalue');
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    endMeasure('setproperty_update_getvalue');

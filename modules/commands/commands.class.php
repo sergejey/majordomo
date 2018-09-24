@@ -346,7 +346,7 @@ function admin(&$out) {
    if ($item['ID']) {
     $old_value=$item['CUR_VALUE'];
     $item['CUR_VALUE']=$new_value;
-    if (!$dynamic_item) {
+    if (!$dynamic_item && !$item['READ_ONLY']) {
      SQLUpdate('commands', $item);
     }
 
@@ -355,7 +355,7 @@ function admin(&$out) {
      $item['LINKED_OBJECT']=$object_rec['TITLE'];
     }
 
-    if ($item['LINKED_PROPERTY']!='') {
+    if ($item['LINKED_PROPERTY']!='' && !$item['READ_ONLY']) {
      sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
     }
 
@@ -1137,6 +1137,7 @@ commands - Commands
  commands: RENDER_DATA text
  commands: RENDER_UPDATED datetime
  commands: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
+ commands: READ_ONLY int(3) NOT NULL DEFAULT '0'
 
  commands: ONCHANGE_OBJECT varchar(255) NOT NULL DEFAULT ''
  commands: ONCHANGE_METHOD varchar(255) NOT NULL DEFAULT ''
