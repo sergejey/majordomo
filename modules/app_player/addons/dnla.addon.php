@@ -35,9 +35,15 @@ class dnla extends app_player_addon {
               $current_dev = $device['location'];
               }
         $current_dev = str_ireplace("Location:", "", $current_dev);
-        //DebMes ("XML adress - ".$current_dev);
         $remote = new MediaRenderer($current_dev);
-        $this->success = $remote->play($input);
+        $answer = $remote->play($input);
+        if($answer) {
+            $this->success = TRUE;
+            $this->message = 'Play files';
+	    } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
         return $this->success;
     }
 
@@ -52,7 +58,36 @@ class dnla extends app_player_addon {
         //echo ($current_dev);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
-        $this->success = $remote->stop();
+        $answer = $remote->stop();
+        if($answer) {
+            $this->success = TRUE;
+            $this->message = 'Stop play';
+	    } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
+        return $this->success;
+    }
+
+    // Pause
+    function pause() {
+        $this->reset_properties();
+        $core= new Core();
+        $result = $core->search($this->terminal['HOST']);
+        foreach($result as $device){
+             $current_dev = $device['location'];
+            }
+        //echo ($current_dev);
+        $current_dev = str_ireplace("Location:", "", $current_dev);
+        $remote = new MediaRenderer($current_dev);
+        $answer = $remote->pause();
+        if($answer) {
+            $this->success = TRUE;
+            $this->message = 'Pause enabled';
+	    } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
         return $this->success;
     }
     
@@ -67,7 +102,14 @@ class dnla extends app_player_addon {
         //echo ($current_dev);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
-        $this->success = $remote->next();
+        $answer = $remote->next();
+        if($answer) {
+            $this->success = TRUE;
+            $this->message = 'Next file changed';
+	    } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
         return $this->success;
     }
     
@@ -82,7 +124,14 @@ class dnla extends app_player_addon {
         //echo ($current_dev);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
-        $this->success = $remote->previous();
+        $answer = $remote->previous();
+        if($answer) {
+            $this->success = TRUE;
+            $this->message = 'Previous file changed';
+	    } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
         return $this->success;
     }
 
@@ -99,8 +148,15 @@ class dnla extends app_player_addon {
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remotevolume = new MediaRendererVolume($current_dev);
         DebMes($level);
-        $this->success = $remotevolume->SetVolume($level);
-        DebMes($this->success);
+        $answer = $remotevolume->SetVolume($level);
+        //DebMes($this->success);
+        if($answer) {
+            $this->success = TRUE;
+            $this->message = 'Volume changed';
+	    } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
         return $this->success;
     }  
 
