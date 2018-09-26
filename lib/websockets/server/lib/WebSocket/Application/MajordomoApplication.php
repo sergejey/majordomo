@@ -184,8 +184,8 @@ class MajordomoApplication extends Application
               DebMes($this->_clients[$client_id]->getClientIp()." Watching:\n".json_encode($tmp),'websockets');
              }
             foreach($tmp as $property) {
-             $this->_clients[$client_id]->subscribedTo['properties'][$property]=1;
-             $this->_clients[$client_id]->watchedProperties[$property]['properties']=1;
+             $this->_clients[$client_id]->subscribedTo['properties'][mb_strtolower($property, 'UTF-8')]=1;
+             $this->_clients[$client_id]->watchedProperties[mb_strtolower($property, 'UTF-8')]['properties']=1;
             }
           } elseif ($data['TYPE']=='events') {
             if ($data['EVENTS']=='') {
