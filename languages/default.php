@@ -1141,6 +1141,7 @@ $dictionary=array(
     'DEVICES_LOADTYPE_CURTAINS' => 'Curtains',
     'DEVICES_LOADTYPE_GATES' => 'Gates',
     'DEVICES_LOADTYPE_LIGHT' => 'Light',
+    'DEVICES_LOADTYPE_LIGHT_ALT' => 'Light',
     'DEVICES_LOADTYPE_POWER' => 'Other',
 
     'DEVICES_ADD_MENU' => 'Add device to Menu',

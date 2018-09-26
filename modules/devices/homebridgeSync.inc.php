@@ -10,6 +10,7 @@ if ($device_id) {
 }
 $devices=SQLSelect("SELECT * FROM devices WHERE $qry");
 $total = count($devices);
+DebMes("Syncing devices (total: $total)",'homebridge');
 for ($i = 0; $i < $total; $i++) {
     
     if ($devices[$i]['TYPE']=='relay') {

@@ -69,9 +69,20 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         die('Error occured while creating phpMorphy instance: ' . PHP_EOL . $e);
     }
     $words = explode(' ', $command);
+    $words_filtered=array();
+    $filtered_count=0;
     $base_forms = array();
+    $base_forms_filtered = array();
     $totals = count($words);
     for ($is = 0; $is < $totals; $is++) {
+        $filtered=0;
+        $upper=mb_strtoupper($words[$is], 'UTF-8');
+        $len=mb_strlen($words[$is],'UTF-8');
+        if ($len>=3) {
+            $words_filtered[]=$words[$is];
+            $filtered=1;
+            $filtered_count++;
+        }
         if (preg_match('/^(\d+)$/', $words[$is])) {
             $base_forms[$is] = array($words[$is]);
         } elseif (!preg_match('/[\(\)\+\.]/', $words[$is])) {
@@ -81,8 +92,20 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         } else {
             $base_forms[$is] = array($words[$is]);
         }
+        if ($filtered) {
+            $base_forms_filtered[$filtered_count-1]=$base_forms[$is];
+        }
     }
     $combos = $this->generate_combinations($base_forms);
+
+    if ($filtered_count<$totals) {
+        $add_combos = $this->generate_combinations($base_forms_filtered);
+        foreach($add_combos as $cmb) {
+            $combos[]=$cmb;
+        }
+    }
+
+
     /*
     $phrases=array();
     foreach($combos as $combo) {
@@ -103,6 +126,7 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
     $phpmorphy_loaded=1;
 }
 
+
 $devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices");
 foreach($devices as $device) {
     if (trim($device['ALT_TITLES'])!='') {
@@ -120,6 +144,36 @@ for($i=0;$i<$total;$i++) {
     $add_rec=$groups[$i];
     $add_rec['TYPE']='group';
     $devices[] = $add_rec;
+}
+
+$rooms=SQLSelect("SELECT locations.ID, locations.TITLE, COUNT(*) as TOTAL FROM locations, devices WHERE locations.ID=devices.LOCATION_ID GROUP BY locations.ID");
+foreach($rooms as $room) {
+    //lights
+    //if ($room['TITLE']=='Кабинет') {
+        $device_types=array();
+        $room_devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=".$room['ID']." AND TYPE='relay'");
+        foreach($room_devices as $device) {
+            $loadType=gg($device['LINKED_OBJECT'].'.loadType');
+            $device_types[$loadType][]=$device;
+        }
+        if (isset($device_types['light'])) {
+            $add_rec=array();
+            $add_rec['TYPE']='group';
+            $add_rec['TITLE']=LANG_DEVICES_LOADTYPE_LIGHT.' '.$room['TITLE'];
+            $add_rec['DEVICES']=$device_types['light'];
+            $add_rec['APPLY_TYPES']='relay';
+            $devices[]=$add_rec;
+
+            $add_rec=array();
+            $add_rec['TYPE']='group';
+            $add_rec['TITLE']=LANG_DEVICES_LOADTYPE_LIGHT_ALT.' '.$room['TITLE'];
+            $add_rec['DEVICES']=$device_types['light'];
+            $add_rec['APPLY_TYPES']='relay';
+            $devices[]=$add_rec;
+        }
+    //}
+
+
 }
 
 if ($phpmorphy_loaded) {
@@ -171,6 +225,9 @@ if ($phpmorphy_loaded) {
         $devices[]=$device;
     }
 }
+
+//dprint($lines,false);
+//dprint($devices);
 
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
@@ -257,7 +314,16 @@ for ($i = 0; $i < $total; $i++) {
             }
         } elseif ($device_type == 'group') {
             $applies_to=explode(',',$devices[$i]['APPLY_TYPES']);
-            $devices_in_group=getObjectsByProperty('group'.$devices[$i]['SYS_NAME'],1);
+            if (is_array($devices[$i]['DEVICES'])) {
+                $devices_in_group=array();
+                foreach($devices[$i]['DEVICES'] as $group_device) {
+                    $devices_in_group[]=$group_device['LINKED_OBJECT'];
+                }
+            } else {
+                $devices_in_group=getObjectsByProperty('group'.$devices[$i]['SYS_NAME'],1);
+            }
+            //dprint($devices_in_group);
+
             if (!is_array($devices_in_group)) continue;
 
             if (in_array('relay',$applies_to) ||
