@@ -102,6 +102,7 @@
              foreach($onchanges as $k=>$v) {
                  callMethod($rec['LINKED_OBJECT'].'.'.$k);
              }
+             $this->homebridgeSync($rec['ID']);
          }
          //print_r($res_properties);exit;
          $out['PROPERTIES']=$res_properties;
@@ -342,7 +343,7 @@
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
     }
 
-    $this->homebridgeSync();
+    $this->homebridgeSync($rec['ID']);
 
     if ($added) {
       $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=settings");

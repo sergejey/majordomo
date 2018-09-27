@@ -1137,6 +1137,7 @@ $dictionary = array(
     'DEVICES_LOADTYPE_CURTAINS' => 'Шторы',
     'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
+    'DEVICES_LOADTYPE_LIGHT_ALT' => 'Свет',
     'DEVICES_LOADTYPE_POWER' => 'Разное',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
