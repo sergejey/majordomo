@@ -42,6 +42,6 @@ $websockets_script_started=time();
 $cycleName=str_replace('.php', '', basename(__FILE__)) . 'Run';
 setGlobal($cycleName, time(), 1);
 
-require_once('./lib/websockets/server/server.php');
+require_once('./lib/websockets/server.php');
 
 $db->Disconnect(); // closing database connection

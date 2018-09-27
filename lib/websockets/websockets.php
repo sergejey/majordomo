@@ -1,7 +1,7 @@
 <?php
 
 //require_once('./daemonize.php');
-//require_once('./users.php');
+require_once(__DIR__ . '/users.php');
 
 abstract class WebSocketServer {
 
@@ -170,6 +170,7 @@ abstract class WebSocketServer {
       }
 
       if ($triggerClosed) {
+        $this->stdout("Client disconnected. ".$disconnectedUser->socket);
         $this->closed($disconnectedUser);
         socket_close($disconnectedUser->socket);
       }
@@ -340,7 +341,7 @@ abstract class WebSocketServer {
     if ($length < 126) {
       $b2 = $length;
     } 
-    elseif ($length <= 65536) {
+    elseif ($length < 65536) {
       $b2 = 126;
       $hexLength = dechex($length);
       //$this->stdout("Hex Length: $hexLength");
@@ -399,8 +400,8 @@ abstract class WebSocketServer {
         if ($user->hasSentClose) {
           $this->disconnect($user->socket);
         } else {
-          if (preg_match('//u', $message)) {
-            //$this->stdout("Is UTF-8\n".$message); 
+          if ((preg_match('//u', $message)) || ($headers['opcode']==2)) {
+            //$this->stdout("Text msg encoded UTF-8 or Binary msg\n".$message); 
             $this->process($user, $message);
           } else {
             $this->stderr("not UTF-8\n");
@@ -475,19 +476,10 @@ abstract class WebSocketServer {
       socket_write($user->socket,$reply,strlen($reply));
       return false;
     }
-    if (extension_loaded('mbstring')) {
-      if ($headers['length'] > mb_strlen($this->applyMask($headers,$payload))) {
+    if ($headers['length'] > strlen($this->applyMask($headers,$payload))) {
         $user->handlingPartialPacket = true;
         $user->partialBuffer = $message;
         return false;
-      }
-    } 
-    else {
-      if ($headers['length'] > strlen($this->applyMask($headers,$payload))) {
-        $user->handlingPartialPacket = true;
-        $user->partialBuffer = $message;
-        return false;
-      }
     }
 
     $payload = $this->applyMask($headers,$payload);
