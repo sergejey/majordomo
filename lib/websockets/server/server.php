@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-if (!defined('WEBSOCKETS_PORT')) define('WEBSOCKETS_PORT',9000);
+if (!defined('WEBSOCKETS_PORT')) define('WEBSOCKETS_PORT',8001);
 
 require_once(__DIR__ . '/websockets.php');
 
