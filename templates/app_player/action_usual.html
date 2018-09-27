@@ -11,7 +11,7 @@
 		<td title="<#LANG_APP_PLAYER_PLAYING_TERMINALS#>"[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
 			<select name="play_terminal" id="selPlayTerminal" multiple>
 				[#begin TERMINALS#]
-				<option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]</option>
+				<option value="[#NAME#]" data-volume="15" [#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]</option>
 				[#end TERMINALS#]
 			</select>
 		</td>
@@ -40,10 +40,85 @@
 <script language="javascript">
 	$(function() {
 		[#if MODE!="menu"#]
-		$('#selPlayTerminal').multiselect();
+			var volumeLevel = 100; // FIXME: значения из системы
+			var volumeMediaLevel = 100; // FIXME: значения из системы
+			$.subscribe('wsData', function(_, response) {
+				if(response.action == 'properties') {
+					var obj = jQuery.parseJSON(response.data);
+					var objCnt = obj.length;
+					if(objCnt) {
+						for(var i=0;i<objCnt;i++) {
+							switch(obj[i]['PROPERTY']) {
+								case 'thiscomputer.volumelevel':
+									volumeLevel = parseInt(obj[i]['VALUE']);
+									// FIXME: выходим из for
+									break;
+								case 'thiscomputer.volumemedialevel':
+									volumeMediaLevel = parseInt(obj[i]['VALUE']);
+									// FIXME: выходим из for
+									break;
+							}
+						}
+					}
+				}
+			});
+			$('#selPlayTerminal').multiselect({
+				onLoad: function() {
+					$.subscribe('wsConnected', function(_) {
+						var payload;
+						payload = new Object();
+						payload.action = 'Subscribe';
+						payload.data = new Object();
+						payload.data.TYPE = 'properties';
+						payload.data.PROPERTIES = 'ThisComputer.volumeLevel,ThisComputer.volumeMediaLevel';
+						wsSocket.send(JSON.stringify(payload));
+					});
+				},
+				onOptionClick: function(element, option) {
+					if($(option).prop('checked')) {
+						if($(option).val() == 'system_volume') {
+							$(element).children('option:selected').not('[value="system_volume"]').each(function(i, opt) {
+								$('input[id^="ms-opt-"]').each(function(ms_i, ms_opt) {
+									if($(opt).val() == $(ms_opt).val()) {
+										$(ms_opt).click();
+										return false;
+									}
+								});
+							});
+						} else {
+							var system_volume = $('input[id^="ms-opt-"]').filter('[value="system_volume"]');
+							if($(system_volume).prop('checked')) {
+								$(system_volume).click();
+							}
+						}
+						// Устанавливаем соответствующий уровень громкости
+						/*
+						if($(option).val() == 'system_volume') {
+							var volume_level = 100;
+						} else {
+							var volume_level = 100;
+						}*/
+						
+						console.log(volumeMediaLevel);
+						
+						
+						/*
+						var volume_level = 100;
+						$(element).children('option:selected').each(function(i, opt) {
+							if($(opt).val() == $(option).val()) {
+								volume_level = $(opt).attr('data-volume');
+								return false;
+							}
+						});
+						
+						console.log(volume_level);
+						*/
+					}
+				}
+			});
 		[#endif#]
 		[#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
-		playerCommand('play');
+			playerCommand('play');
 		[#endif#]
 	});
 
@@ -168,7 +243,6 @@
 				});
 		}
 	}
-
 
 	function playerCommand(pcmd) {
 		if($("#selPlayTerminal").val() == '') return false;
