@@ -247,15 +247,6 @@ class app_player extends module {
 					$command = 'previous';
 				}
 				// END Deprecated
-				
-				// Set media volume level
-				if($command == 'set_volume' && strlen($param)) {
-					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
-						setGlobal('ThisComputer.volumeMediaLevelOld', (int)getGlobal('ThisComputer.volumeMediaLevel')); // For some types of players (e.g. VLC)
-						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
-						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
-					}
-				}
 
 				// Addons main class
 				include_once(DIR_MODULES.'app_player/addons.php');
@@ -316,6 +307,15 @@ class app_player extends module {
 					$json['success'] = FALSE;
 					$json['message'] = 'Addon "'.$terminal['PLAYER_TYPE'].'" is not installed!';
 				}
+				
+				// Set media volume level
+				if($command == 'set_volume' && strlen($param)) {
+					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
+						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
+						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
+					}
+				}
+				
 			} else { // HTML5 Player
 				$json['success'] = TRUE;
 				$json['message'] = 'Nothing to do.';

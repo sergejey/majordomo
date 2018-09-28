@@ -220,7 +220,7 @@ class vlc extends app_player_addon {
 	function set_volume($level) {
 		$this->reset_properties();
 		if(strlen($level)) {
-			$old_level = getGlobal('ThisComputer.volumeMediaLevelOld');
+			$old_level = getGlobal('ThisComputer.volumeMediaLevel');
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_volume&param='.urlencode((int)$old_level.':'.(int)$level));
 			if($result = curl_exec($this->curl)) {
 				if($result == 'OK') {

@@ -208,7 +208,7 @@ function install($parent_name = "")
 
          $installedFile = DIR_MODULES . $lst[$i]['FILENAME'] . "/installed";
          if (file_exists($installedFile))
-            unlink($installedFile);
+            @unlink($installedFile);
 
          include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
          $obj = "\$object$i";
