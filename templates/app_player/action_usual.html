@@ -40,8 +40,8 @@
 <script language="javascript">
 	$(function() {
 		[#if MODE!="menu"#]
-			var volumeLevel = %ThisComputer.volumeLevel%;
-			var volumeMediaLevel = %ThisComputer.volumeMediaLevel%;
+			var volumeLevel = parseInt('%ThisComputer.volumeLevel%');
+			var volumeMediaLevel = parseInt('%ThisComputer.volumeMediaLevel%');
 			$.subscribe('wsData', function(_, response) {
 				if(response.action == 'properties') {
 					var obj = jQuery.parseJSON(response.data);
