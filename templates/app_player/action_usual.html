@@ -40,8 +40,8 @@
 <script language="javascript">
 	$(function() {
 		[#if MODE!="menu"#]
-			var volumeLevel = 100; // FIXME: значения из системы
-			var volumeMediaLevel = 100; // FIXME: значения из системы
+			var volumeLevel = %ThisComputer.volumeLevel%;
+			var volumeMediaLevel = %ThisComputer.volumeMediaLevel%;
 			$.subscribe('wsData', function(_, response) {
 				if(response.action == 'properties') {
 					var obj = jQuery.parseJSON(response.data);
@@ -51,11 +51,9 @@
 							switch(obj[i]['PROPERTY']) {
 								case 'thiscomputer.volumelevel':
 									volumeLevel = parseInt(obj[i]['VALUE']);
-									// FIXME: выходим из for
 									break;
 								case 'thiscomputer.volumemedialevel':
 									volumeMediaLevel = parseInt(obj[i]['VALUE']);
-									// FIXME: выходим из for
 									break;
 							}
 						}
@@ -91,28 +89,13 @@
 								$(system_volume).click();
 							}
 						}
-						// Устанавливаем соответствующий уровень громкости
-						/*
-						if($(option).val() == 'system_volume') {
-							var volume_level = 100;
-						} else {
-							var volume_level = 100;
-						}*/
-						
-						console.log(volumeMediaLevel);
-						
-						
-						/*
-						var volume_level = 100;
-						$(element).children('option:selected').each(function(i, opt) {
-							if($(opt).val() == $(option).val()) {
-								volume_level = $(opt).attr('data-volume');
-								return false;
+						var volume_level = ($(option).val() == 'system_volume'?volumeLevel:volumeMediaLevel);
+						for(var i = 0; i <= 100; i += 5) {
+							if(i = volume_level) {
+								$('select#selVolume').val(i);
+								break;
 							}
-						});
-						
-						console.log(volume_level);
-						*/
+						}
 					}
 				}
 			});
