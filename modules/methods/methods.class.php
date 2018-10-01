@@ -18,7 +18,7 @@ class methods extends module {
 *
 * @access private
 */
-function methods() {
+function __construct() {
   $this->name="methods";
   $this->title="<#LANG_MODULE_METHODS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";

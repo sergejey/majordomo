@@ -1,4 +1,5 @@
 <?php
+
 /**
 * Media Player Application
 *
@@ -8,356 +9,381 @@
 */
 //
 //
+
 class app_player extends module {
-/**
-* player
-*
-* Module class constructor
-*
-* @access private
-*/
-function app_player() {
-  $this->name="app_player";
-  $this->title="<#LANG_APP_PLAYER#>";
-  $this->module_category="<#LANG_SECTION_APPLICATIONS#>";
-  $this->checkInstalled();
+	
+	/**
+	* player
+	*
+	* Module class constructor
+	*
+	* @access private
+	*/
+	function __construct() {
+		$this->name = 'app_player';
+		$this->title = '<#LANG_APP_PLAYER#>';
+		$this->module_category = '<#LANG_SECTION_APPLICATIONS#>';
+		$this->checkInstalled();
+	}
+	
+	/**
+	* saveParams
+	*
+	* Saving module parameters
+	*
+	* @access public
+	*/
+	function saveParams($data=1) {
+		$p = array();
+		if(isset($this->id)) {
+			$p['id'] = $this->id;
+		}
+		if(isset($this->view_mode)) {
+			$p['view_mode'] = $this->view_mode;
+		}
+		if(isset($this->edit_mode)) {
+			$p['edit_mode'] = $this->edit_mode;
+		}
+		if(isset($this->tab)) {
+			$p['tab'] = $this->tab;
+		}
+		return parent::saveParams($p);
+	}
+	
+	/**
+	* getParams
+	*
+	* Getting module parameters from query string
+	*
+	* @access public
+	*/
+	function getParams() {
+		global $id;
+		global $mode;
+		global $view_mode;
+		global $edit_mode;
+		global $tab;
+		if(isset($id)) {
+			$this->id = $id;
+		}
+		if(isset($mode)) {
+			$this->mode = $mode;
+		}
+		if(isset($view_mode)) {
+			$this->view_mode = $view_mode;
+		}
+		if(isset($edit_mode)) {
+			$this->edit_mode = $edit_mode;
+		}
+		if(isset($tab)) {
+			$this->tab = $tab;
+		}
+	}
+	
+	/**
+	* Run
+	*
+	* Description
+	*
+	* @access public
+	*/
+	function run() {
+		global $session;
+		$out = array();
+
+		if($this->action == 'admin') {
+			$this->admin($out);
+		} else {
+			$this->usual($out);
+		}
+		if(isset($this->owner->action)) {
+			$out['PARENT_ACTION'] = $this->owner->action;
+		}
+		if(isset($this->owner->name)) {
+			$out['PARENT_NAME'] = $this->owner->name;
+		}
+		$out['VIEW_MODE'] = $this->view_mode;
+		$out['EDIT_MODE'] = $this->edit_mode;
+		$out['MODE'] = $this->mode;
+		$out['ACTION'] = $this->action;
+		if($this->single_rec) {
+			$out['SINGLE_REC'] = 1;
+		}
+		$this->data = $out;
+		$p = new parser(DIR_TEMPLATES.$this->name.'/'.$this->name.'.html', $this->data, $this);
+		$this->result = $p->result;
+	}
+	
+	/**
+	* BackEnd
+	*
+	* Module backend
+	*
+	* @access public
+	*/
+	function admin(&$out) {
+		$this->getConfig();
+		if($this->mode == 'update') {
+			global $enabled;
+			$this->config['ENABLED'] = (int)$enabled;
+			$this->saveConfig();
+			$out['OK'] = 1;
+		}
+		$this->usual($out);
+		$out['MODE'] = $this->mode;
+		$out['ENABLED'] = (int)($this->config['ENABLED']);
+	}
+	
+	/**
+	* FrontEnd
+	*
+	* Module frontend
+	*
+	* @access public
+	*/
+	function usual(&$out) {
+		global $session;
+
+		// Deprecated (backward compatibility)
+		$play = gr('play');
+		if($this->play) {
+			$play = $this->play;
+		}
+		if(!$play && $session->data['LAST_PLAY']) {
+			$play = $session->data['LAST_PLAY'];
+			$out['LAST_PLAY'] = 1;
+		} elseif($play) {
+			$session->data['LAST_PLAY'] = $play;
+		}
+		if($play != '') {
+			$out['PLAY'] = $play;
+		}
+		// END Deprecated
+
+		// Play terminal
+		$play_terminal = gr('play_terminal');
+		$terminal_id = ($this->terminal_id?$this->terminal_id:gr('terminal_id'));
+		if($play_terminal != '') { // name in request
+			$session->data['PLAY_TERMINAL'] = $play_terminal;
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+		} elseif($terminal_id) { // id in request
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `ID` = '.(int)$terminal_id);
+			$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+		} elseif($session->data['TERMINAL'] != '') { // session -> data -> terminal
+			$session->data['PLAY_TERMINAL'] = $session->data['TERMINAL'];
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+		} else { // default
+			if($terminals = SQLSelect('SELECT * FROM `terminals` ORDER BY TITLE')) {
+				foreach($terminals as $terminal) {
+					$terminal_ip = ($terminal['HOST']=='localhost'?'127.0.0.1':$terminal['HOST']);
+					$user_ip = ($_SERVER['REMOTE_ADDR']=='::1'?'127.0.0.1':$_SERVER['REMOTE_ADDR']);
+					if(($terminal_ip != '') && ($terminal_ip == $user_ip)) {
+						$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+						break;
+					}
+				}
+			}
+			if($session->data['PLAY_TERMINAL'] == '') {
+				$session->data['PLAY_TERMINAL'] = 'MAIN';
+				$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+			}
+
+		}
+
+		// Session terminal
+		$session_terminal = gr('session_terminal');
+		if($session_terminal != '') { // name in request
+			$session->data['SESSION_TERMINAL'] = $session_terminal;
+		} elseif($session->data['SESSION_TERMINAL'] == '') { // default
+			$session->data['SESSION_TERMINAL'] = $session->data['PLAY_TERMINAL'];
+		}
+		
+		// Terminal defaults
+		if(!$terminal['HOST']) {
+			$terminal['HOST'] = 'localhost';
+		}
+		if(!$terminal['CANPLAY']) {
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \'HOME\' OR `NAME` = \'MAIN\'');
+		}
+		if(!$terminal['CANPLAY']) {
+			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `IS_ONLINE` DESC LIMIT 1');
+		}
+		if(!$terminal['PLAYER_TYPE']) {
+			$terminal['PLAYER_TYPE'] = 'vlc';
+		}
+
+		// AJAX
+		$ajax = gr('ajax');
+		if($this->ajax) {
+			$ajax = 1;
+		}
+		if(isset($ajax)) {
+			$command = trim(gr('command'));
+			$param = trim(gr('param'));
+			
+			// JSON default
+			$json = array(
+				'play_terminal'		=> $session->data['PLAY_TERMINAL'],
+				'session_terminal'	=> $session->data['SESSION_TERMINAL'],
+				'command'			=> $command,
+				'success'			=> FALSE,
+				'message'			=> NULL,
+				'data'				=> NULL,
+			);
+			
+			if(strlen($command)) {
+
+				// Deprecated (backward compatibility)
+				global $volume;
+				if($command == 'volume') {
+					$deprecated = true;
+					$command = 'set_volume';
+					$param = (int)$volume;
+				} elseif($command == 'refresh') {
+					$deprecated = true;
+					$command = 'play';
+					$param = $play;
+				} elseif($command == 'close') {
+					$deprecated = true;
+					$command = 'stop';
+				} elseif($command == 'prev') {
+					$deprecated = true;
+					$command = 'previous';
+				} else {
+					$deprecated = false;
+				}
+				// END Deprecated
+
+				// Addons main class
+				include_once(DIR_MODULES.'app_player/addons.php');
+				
+				// Load addon
+				if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
+
+					include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
+
+					if(class_exists($terminal['PLAYER_TYPE'])) {
+						
+						if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+
+							if($player = new $terminal['PLAYER_TYPE']($terminal)) {
+
+								if($command == 'features') {
+									
+									// Get features
+									$json['success'] = TRUE;
+									$json['message'] = 'OK';
+									$reflection = new ReflectionClass($player);
+									foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+										if($method->getDeclaringClass()->getName() == $reflection->getName()) {
+											$method_name = $method->getName();
+											if(substr($method_name, 0, 2) != '__' and !in_array($method_name, array('destroy', 'command'))) {
+												$json['data'][] = $method_name;
+											}
+										}
+									}
+
+								} else {
+								
+									// Execute command
+									$result = $player->$command($param);
+
+									// Get results
+									$json['success'] = $player->success;
+									$json['message'] = $player->message;
+									$json['data'] = $player->data;
+
+									// Deprecated message
+									if($deprecated) {
+										$json['message'] .= ' This command is deprecated. Please don\'t use it.';
+									}
+								}
+
+								$player->destroy();
+							} else {
+								$json['success'] = FALSE;
+								$json['message'] = 'Error of the addon "'.$terminal['PLAYER_TYPE'].'" object!';
+							}
+						
+						} else {
+							$json['success'] = FALSE;
+							$json['message'] = 'Addon "'.$terminal['PLAYER_TYPE'].'" does not inherit from class "app_player_addon"!';
+						}
+					} else {
+						$json['success'] = FALSE;
+						$json['message'] = 'Addon "'.$terminal['PLAYER_TYPE'].'" is damaged!';
+					}
+				} else {
+					$json['success'] = FALSE;
+					$json['message'] = 'Addon "'.$terminal['PLAYER_TYPE'].'" is not installed!';
+				}
+				
+				// Set media volume level
+				if($command == 'set_volume' && strlen($param)) {
+					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
+						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
+						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
+					}
+				}
+				
+			} else { // HTML5 Player
+				$json['success'] = TRUE;
+				$json['message'] = 'Nothing to do.';
+			}
+			
+			// Return json
+			if(!$this->intCall) {
+				$session->save();
+				die(json_encode($json));
+			}
+		}
+
+		// List of terminals
+		$session_terminals = array();
+		if($session->data['SESSION_TERMINAL'] != '') {
+			$session_terminals = explode(',', $session->data['SESSION_TERMINAL']);
+		} elseif($session->data['PLAY_TERMINAL']) {
+			$session_terminals = array($session->data['PLAY_TERMINAL']);
+		}
+		$terminals = SQLSelect('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `TITLE`');
+		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
+		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
+		$total = count($terminals);
+		for($i = 0 ; $i < $total ; $i++) {
+			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
+				$terminals[$i]['SELECTED'] = 1;
+				$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
+			}
+		}
+		$out['TERMINALS_TOTAL'] = count($terminals);
+		if($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
+			$terminals[0]['SELECTED'] = 1;
+		}
+		$out['TERMINALS'] = $terminals;
+		
+		// Volume levels
+		$current_level = getGlobal('ThisComputer.volumeMediaLevel');
+		for($i = 0; $i <= 100; $i += 5) {
+			$rec = array('VALUE' => $i);
+			if($i == $current_level) {
+				$rec['SELECTED'] = 1;
+			}
+			$out['VOLUMES'][] = $rec;
+		}
+		
+	}
+	
+	/**
+	* Install
+	*
+	* Module installation routine
+	*
+	* @access private
+	*/
+	function install($parent_name='') {
+		parent::install($parent_name);
+	}
+
 }
-/**
-* saveParams
-*
-* Saving module parameters
-*
-* @access public
-*/
-function saveParams($data=1) {
- $p=array();
- if (IsSet($this->id)) {
-  $p["id"]=$this->id;
- }
- if (IsSet($this->view_mode)) {
-  $p["view_mode"]=$this->view_mode;
- }
- if (IsSet($this->edit_mode)) {
-  $p["edit_mode"]=$this->edit_mode;
- }
- if (IsSet($this->tab)) {
-  $p["tab"]=$this->tab;
- }
- return parent::saveParams($p);
-}
-/**
-* getParams
-*
-* Getting module parameters from query string
-*
-* @access public
-*/
-function getParams() {
-  global $id;
-  global $mode;
-  global $view_mode;
-  global $edit_mode;
-  global $tab;
-  if (isset($id)) {
-   $this->id=$id;
-  }
-  if (isset($mode)) {
-   $this->mode=$mode;
-  }
-  if (isset($view_mode)) {
-   $this->view_mode=$view_mode;
-  }
-  if (isset($edit_mode)) {
-   $this->edit_mode=$edit_mode;
-  }
-  if (isset($tab)) {
-   $this->tab=$tab;
-  }
-}
-/**
-* Run
-*
-* Description
-*
-* @access public
-*/
-function run() {
- global $session;
-  $out=array();
 
-  if ($this->action=='admin') {
-   $this->admin($out);
-  } else {
-   $this->usual($out);
-  }
-  if (IsSet($this->owner->action)) {
-   $out['PARENT_ACTION']=$this->owner->action;
-  }
-  if (IsSet($this->owner->name)) {
-   $out['PARENT_NAME']=$this->owner->name;
-  }
-  $out['VIEW_MODE']=$this->view_mode;
-  $out['EDIT_MODE']=$this->edit_mode;
-  $out['MODE']=$this->mode;
-  $out['ACTION']=$this->action;
-  if ($this->single_rec) {
-   $out['SINGLE_REC']=1;
-  }
-  $this->data=$out;
-  $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
-  $this->result=$p->result;
-
-}
-/**
-* BackEnd
-*
-* Module backend
-*
-* @access public
-*/
-function admin(&$out) {
- $this->getConfig();
- if ($this->mode=='update') {
-  global $enabled;
-  $this->config['ENABLED']=(int)$enabled;
-  $this->saveConfig();
-  $out['OK']=1;
- }
- $this->usual($out);
- $out['MODE']=$this->mode;
- $out['ENABLED']=(int)($this->config['ENABLED']);
-}
-/**
-* FrontEnd
-*
-* Module frontend
-*
-* @access public
-*/
-function usual(&$out) {
- global $play;
- global $rnd;
- global $rnd;
- global $session;
- global $play_terminal;
- global $terminal_id;
- global $volume;
-
-
- if ($this->play) {
-  $play=$this->play;
- }
-
- if ($this->terminal_id) {
-  $terminal_id=$this->terminal_id;
- }
-
- if ($terminal_id) {
-  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE ID='".(int)$terminal_id."'");
-  $session->data['PLAY_TERMINAL']=$terminal['NAME'];
- }
-
-
-
- if ($session->data['PLAY_TERMINAL']=='') {
-  $session->data['PLAY_TERMINAL']=$session->data['TERMINAL'];
- }
-
- if ($play_terminal!='') {
-  $session->data['PLAY_TERMINAL']=$play_terminal;
- }
-
- if ($session->data['PLAY_TERMINAL']!='') {
-  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE NAME='".DBSafe($session->data['PLAY_TERMINAL'])."'");
- }
-
- if (!$terminal['HOST']) {
-  $terminal['HOST']='localhost';
- }
-
- if (!$terminal['CANPLAY']) {
-  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE NAME='HOME' OR NAME='MAIN'");
- }
-
- if (!$terminal['CANPLAY']) {
-  $terminal=SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY IS_ONLINE DESC LIMIT 1");
- }
-
- if (!$play && $session->data['LAST_PLAY']) {
-  $play=$session->data['LAST_PLAY'];
-  $out['LAST_PLAY']=1;
- } elseif ($play) {
-  $session->data['LAST_PLAY']=$play;
- }
-
- if ($play!='') {
-  $out['PLAY']=$play;
- }
-
- if ($rnd!='') {
-  $out['RND']=$rnd;
- }
-
- $current_level=getGlobal('ThisComputer.volumeLevel');
- for($i=0;$i<=100;$i+=5) {
-  $rec=array('VALUE'=>$i);
-  if ($i==$current_level) {
-   $rec['SELECTED']=1;
-  }
-  $out['VOLUMES'][]=$rec;
- }
-
-
-
-
- global $ajax;
- if ($this->ajax) {
-  $ajax=1;
- }
-
-
- if ($ajax!='') {
-  global $command;
-  if ($command!='') {
-   if (!$this->intCall) {
-    echo $command.' ';
-   }
-   $ch = curl_init();
-   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-   if ($terminal['PLAYER_USERNAME'] || $terminal['PLAYER_PASSWORD']) {
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-    curl_setopt($ch, CURLOPT_USERPWD, $terminal['PLAYER_USERNAME'].':'.$terminal['PLAYER_PASSWORD']);
-   }
-
-   if (!$terminal['PLAYER_PORT'] && $terminal['PLAYER_TYPE']=='foobar') {
-    $terminal['PLAYER_PORT']='8888';
-   } elseif (!$terminal['PLAYER_PORT'] && $terminal['PLAYER_TYPE']=='xbmc') {
-    $terminal['PLAYER_PORT']='8080';
-   } elseif (!$terminal['PLAYER_PORT']) {
-    $terminal['PLAYER_PORT']='80';
-   }
-
-   if ($terminal['NAME']=='MAIN' && $command=='volume') {
-    setGlobal('ThisComputer.volumeLevel', $volume);
-   }
-
-    if ($terminal['PLAYER_TYPE']=='vlc' || $terminal['PLAYER_TYPE']=='') {
-
-      $terminal['PLAYER_PORT']='80';
-
-      if ($command=='refresh') {
-       $out['PLAY']=preg_replace('/\\\\$/is', '', $out['PLAY']);
-       $out['PLAY']=preg_replace('/\/$/is', '', $out['PLAY']);
-       if (preg_match('/^http/', $out['PLAY'])) {
-        $path=urlencode($out['PLAY']);
-       } else {
-        $path=urlencode(''.str_replace('/', "\\", ($out['PLAY'])));
-       }
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_play&param=".$path);
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='fullscreen') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_fullscreen");
-       $res=curl_exec($ch);
-      }
-
-
-      if ($command=='pause') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_pause");
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='next') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_next");
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='prev') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_prev");
-       $res=curl_exec($ch);
-      }
-
-      if ($command=='close') {
-       curl_setopt($ch, CURLOPT_URL, "http://".$terminal['HOST'].":".$terminal['PLAYER_PORT']."/rc/?command=vlc_close");
-       $res=curl_exec($ch);
-      }
-
-     if ($command=='volume') {
-       setGlobal('ThisComputer.volumeLevel', $volume);
-       callMethod('ThisComputer.VolumeLevelChanged', array('VALUE'=>$volume, 'HOST'=>$terminal['HOST']));
-      }
-
-   } elseif ($terminal['PLAYER_TYPE']=='xbmc') {
-    include(DIR_MODULES.'app_player/xbmc.php');
-
-   } elseif ($terminal['PLAYER_TYPE']=='foobar') {
-    include(DIR_MODULES.'app_player/foobar.php');
-   } elseif ($terminal['PLAYER_TYPE']=='vlcweb') {
-    include(DIR_MODULES.'app_player/vlcweb.php');
-   } elseif ($terminal['PLAYER_TYPE']=='mpd') {
-    include(DIR_MODULES.'app_player/mpd.php');
-    } elseif ($terminal['PLAYER_TYPE']=='chromecast') {
-     include(DIR_MODULES.'app_player/chromecast.php');
-   } elseif ($terminal['MAJORDROID_API'] || $terminal['PLAYER_TYPE']=='majordroid') {
-   include(DIR_MODULES.'app_player/majordroid.php');
-   }
-
-   // close cURL resource, and free up system resources
-   curl_close($ch);    
-
-  }
-
-
-  if (!$this->intCall) {
-
-   if ($session->data['PLAY_TERMINAL']!='') {
-    echo " on ".$session->data['PLAY_TERMINAL'].' ';
-   }
-
-   echo "OK";
-   if ($res) {
-    echo " (".$res.")";
-   }
-   $session->save();
-   exit;
-  }
- }
-
-   $terminals=SQLSelect("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY TITLE");
-   $total=count($terminals);
-   for($i=0;$i<$total;$i++) {
-    if ($terminals[$i]['NAME']==$session->data['PLAY_TERMINAL']) {
-     $terminals[$i]['SELECTED']=1;
-     $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
-    }
-   }
-   $out['TERMINALS_TOTAL']=count($terminals);
-   if ($out['TERMINALS_TOTAL']==1 || !$session->data['PLAY_TERMINAL']) {
-    $terminals[0]['SELECTED']=1;
-   }
-
-   $out['TERMINALS']=$terminals;
-
-
-
-}
-/**
-* Install
-*
-* Module installation routine
-*
-* @access private
-*/
- function install($parent_name="") {
-  parent::install($parent_name);
- }
-// --------------------------------------------------------------------
-}
-/*
-*
-* TW9kdWxlIGNyZWF0ZWQgRmViIDIzLCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
-*
-*/
 ?>

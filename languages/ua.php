@@ -13,9 +13,14 @@ $dictionary = array (
 
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
-    'DEFAULT_COMPUTER_NAME' => 'Василіса',
+    'DEFAULT_COMPUTER_NAME' => 'Аліса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-    'WELCOME_TEXT' => 'Спасибі, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації. <br/> <br/> Дізнайтеся більше і приєднуйтесь до спільноти: <a href="<#LANG_WIKI_URL#> "target = _blank> Веб-сайт </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Форум </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> Facebook сторінка </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Панель управління </a> </ small> ',
+	'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.
+		<br /><br />
+		Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a>
+		<br /><br />
+		<small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a>
+		</small>',
     'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
@@ -58,7 +63,7 @@ $dictionary = array (
     'GENERAL_RESTORED_TO' => 'відновився на',
     'GENERAL_SYSTEM_STATE' => 'Системний статус',
     'GENERAL_SECURITY_STATE' => 'Статус безпеки',
-    'GENERAL_COMMUNICATION_STATE' => 'Статус зв\'язку',
+    'GENERAL_COMMUNICATION_STATE' => 'Статус зв’язку',
     'GENERAL_STOPPED' => 'зупинений',
     'GENERAL_CYCLE' => 'цикл',
     'GENERAL_NO_INTERNET_ACCESS' => 'Неможливо отримати доступ в Інтернет',
@@ -67,11 +72,12 @@ $dictionary = array (
     'GENERAL_INSIDE' => 'Будинки',
     'GENERAL_OUTSIDE' => 'На вулиці',
 
-    'SECTION_OBJECTS' => 'Об\'єкти',
+    'SECTION_OBJECTS' => 'Об’єкти',
     'SECTION_APPLICATIONS' => 'Додатки',
     'SECTION_DEVICES' => 'Пристрої',
     'SECTION_SETTINGS' => 'Налаштування',
     'SECTION_SYSTEM' => 'Система',
+    'SECTION_PANEL' => 'Панель',
 
     /* end general */
 
@@ -83,7 +89,7 @@ $dictionary = array (
     'APP_TDWIKI' => 'Блокнот',
     'APP_WEATHER' => 'Погода',
     'APP_CALENDAR' => 'Календар',
-    'APP_READIT' => 'прислів. посилання ',
+    'APP_READIT' => 'Завантаж. посилання',
     'APP_QUOTES' => 'Цитати',
     'APP_ALARMCLOCK' => 'Будильник',
     'APP_OPENWEATHER' => 'Погода від OpenWeatherMap',
@@ -91,10 +97,10 @@ $dictionary = array (
     'APP_YATRAFFIC' => 'Яндекс.Пробки ',
     'APP_CHATBOX' => 'Повідомлення',
 
-    'MODULE_OBJECTS_HISTORY' => 'Історія об\'єктів',
+    'MODULE_OBJECTS_HISTORY' => 'Історія об’єктів',
     'MODULE_BT_DEVICES' => 'Bluetooth-пристрої',
     'MODULE_CONTROL_MENU' => 'Меню управління',
-    'MODULE_OBJECTS' => 'Об\'єкти',
+    'MODULE_OBJECTS' => 'Об’єкти',
     'MODULE_PINGHOSTS' => 'Пристрої Online',
     'MODULE_SCRIPTS' => 'Сценарії',
     'MODULE_USB_DEVICES' => 'USB-пристрої',
@@ -110,6 +116,8 @@ $dictionary = array (
     'MODULE_MASTER_LOGIN' => 'Пароль доступу',
     'MODULE_SAVERESTORE' => 'Перевірка оновлень',
     'MODULE_WEBVARS' => 'Веб-змінні',
+    'MODULE_SHOUTBOX' => 'Рупор',
+	'MODULE_SKINS' => 'Дизайн скінів',
     'MODULE_PATTERNS' => 'Шаблони поведінки',
     'MODULE_ONEWIRE' => '1-Wire',
     'MODULE_SCENES' => 'Сцени',
@@ -171,26 +179,26 @@ $dictionary = array (
     'FILLOUT_REQURED' => 'Будь ласка, заповніть необхідні поля!',
 
 
-    'NEW_OBJECT' => 'Новий об\'єкт',
+    'NEW_OBJECT' => 'Новий об’єкт',
     'TITLE' => 'Назва',
     'CLASS' => 'Клас',
     'DESCRIPTION' => 'Опис',
     'LOCATION' => 'Місцезнаходження',
     'ADD' => 'Додати',
     'BACK' => 'Назад',
-    'OBJECT' => 'Об\'єкт',
+    'OBJECT' => 'Об’єкт',
     'DETAILS' => 'Деталі',
     'PROPERTIES' => 'Властивості',
     'METHODS' => 'Методи',
     'HISTORY' => 'Історія',
 
 
-    'ADD_NEW_OBJECT' => 'Додати новий об\'єкт',
+    'ADD_NEW_OBJECT' => 'Додати новий об’єкт',
     'PAGES' => 'Сторінки',
     'EDIT' => 'Редагувати',
 
 
-    'NO_OBJECTS_DEFINED' => 'Немає заданих об\'єктів',
+    'NO_OBJECTS_DEFINED' => 'Немає заданих об’єктів',
 
 
     'ADD_NEW_PROPERTY' => 'Додати нову властивість',
@@ -218,7 +226,7 @@ $dictionary = array (
 
     'RUN_IN' => 'Виконати через',
     'MINUTES' => 'хвилини',
-    'HOURS' => 'годинник',
+    'HOURS' => 'години',
     'PROCESSED' => 'оброблено',
 
 
@@ -248,8 +256,8 @@ $dictionary = array (
 
     'RESET_TO_DEFAULT' => 'Скинути',
     'SEARCH' => 'Пошук',
-    'USERNAME' => 'Ім\'я користувача',
-    'NAME' => 'Ім\'я',
+    'USERNAME' => 'Ім’я користувача',
+    'NAME' => 'Ім’я',
     'EMAIL' => 'E-mail',
     'SKYPE' => 'Skype',
 
@@ -262,12 +270,12 @@ $dictionary = array (
 
     'PARENT_METHODS' => 'Батьківські методи:',
     'OVERWRITE' => 'Переписати',
-    'ONLY_CLASSES' => 'Не імпортувати об\'єкти ',
+    'ONLY_CLASSES' => 'Не імпортувати об’єкти ',
 
     'NEW_METHOD' => 'Новий метод',
     'HOME' => 'Початок',
-    'OFF' => 'Вимкнути',
-    'ON' => 'Увімкнути',
+    'OFF' => 'Вимкн.',
+    'ON' => 'Увімк.',
 
 
     'ADD_NEW_SECTION' => 'Додати новий розділ',
@@ -331,7 +339,7 @@ $dictionary = array (
     'PROPERTY' => 'Властивість',
 
 
-    'ONCHANGE_OBJECT' => 'Запускати Об\'єкт',
+    'ONCHANGE_OBJECT' => 'Запускати Об’єкт',
     'ONCHANGE_METHOD' => 'Запускати метод при зміні',
     'METHOD' => 'Метод',
     'ONCHANGE_SCRIPT' => 'Сценарій',
@@ -380,7 +388,7 @@ $dictionary = array (
     'FOLDER' => 'Папка',
 
 
-    'YOUR_NAME' => 'Ваше ім\'я',
+    'YOUR_NAME' => 'Ваше ім’я',
     'YOUR_EMAIL' => 'Ваш e-mail',
     'NOTES' => 'Нотатки',
 
@@ -399,10 +407,10 @@ $dictionary = array (
 
 
     'ADD_NEW_CLASS' => 'Додати новий клас',
-    'OBJECTS' => 'Об\'єкти',
+    'OBJECTS' => 'Об’єкти',
     'EXPORT' => 'Експорт',
-    'EXPORT_CLASS_FULL' => 'Експорт Класу і Об\'єктів',
-    'EXPORT_CLASS_NO_OBJECTS' => 'Експорт Класу (без об\'єктів)',
+    'EXPORT_CLASS_FULL' => 'Експорт Класу і Об’єктів',
+    'EXPORT_CLASS_NO_OBJECTS' => 'Експорт Класу (без об’єктів)',
 
 
     'IMPORT_CLASS_FROM_FILE' => 'Імпортувати клас з файлу',
@@ -415,7 +423,7 @@ $dictionary = array (
     'PARENT_CLASS' => 'Батьківський клас',
 
 
-    'DO_NOT_SAVE_CLASS_ACTIVITY' => 'не зберігати активність об\'єктів класу в лог ',
+    'DO_NOT_SAVE_CLASS_ACTIVITY' => 'не зберігати активність об’єктів класу в лог ',
     'MAIN' => 'Основне',
 
 
@@ -532,7 +540,7 @@ $dictionary = array (
     'PREVIEW' => 'Перегляд',
 
 
-    'SYSTEM_NAME' => 'Системне ім\'я',
+    'SYSTEM_NAME' => 'Системне ім’я',
     'EVENT' => 'Подія',
     'TASK' => 'Завдання',
     'DONE' => 'Готово',
@@ -679,8 +687,8 @@ $dictionary = array (
     'CHECK_INTERVAL' => 'Інтервал перевірки',
 
 
-    'LINKED_OBJECT' => 'Зв\'язаний об\'єкт',
-    'LINKED_PROPERTY' => 'Пов\'язана вл-ть',
+    'LINKED_OBJECT' => 'Зв’язаний об’єкт',
+    'LINKED_PROPERTY' => 'Зв’язана вл-ть',
     'SET' => 'встановити',
 
 
@@ -704,7 +712,7 @@ $dictionary = array (
 
 
     'SOURCE_PAGE_ENCODING' => 'Кодування сторінки',
-    'OPTIONAL' => 'не обов\'язково',
+    'OPTIONAL' => 'не обов’язково',
 
 
     'BY_DEFAULT' => 'за замовчуванням',
@@ -789,10 +797,10 @@ $dictionary = array (
 
     'APPEAR_ANIMATION' => 'Анімація появи',
     'APPEAR_LEFTTORIGHT' => 'Зліва-на-право',
-    'APPEAR_RIGHTTOLEFT' => 'Праворуч-на-ліво',
+    'APPEAR_RIGHTTOLEFT' => 'Справа-на-ліво',
     'APPEAR_TOPTOBOTTOM' => 'Зверху-вниз',
     'APPEAR_BOTTOMTOTOP' => 'Знизу-вгору',
-    'APPEAR_BLINK' => 'Моргание',
+    'APPEAR_BLINK' => 'Моргання',
     'APPEAR_SCALE' => 'Масштаб',
 
 
@@ -811,7 +819,7 @@ $dictionary = array (
 
 
     'PLAYER_PORT' => 'Порт доступу до плеєра',
-    'PLAYER_USERNAME' => 'Ім користувача доступу до плеєра',
+    'PLAYER_USERNAME' => 'Ім’я користувача доступу до плеєра',
     'PLAYER_PASSWORD' => 'Пароль доступу до плеєра',
     'DEVICE' => 'Пристрій',
 
@@ -850,23 +858,23 @@ $dictionary = array (
     'GET_AT' => 'Додано',
     'MMHG' => 'мм рт.ст.',
     'HPA' => 'гПа',
-    'M_S' => 'м / с',
-    'N' => 'З',
-    'NNE' => 'ССВ',
-    'NE' => 'СВ',
-    'ENE' => 'ВСВ',
-    'E' => 'В',
-    'ESE' => 'ВЮВ',
-    'SE' => 'ЮВ',
-    'SSE' => 'ЮЮВ',
-    'S' => 'Ю',
-    'SSW' => 'Пд',
-    'SW' => 'С',
-    'WSW' => 'Пд',
+    'M_S' => 'м/с',
+    'N' => 'П',
+    'NNE' => 'ППС',
+    'NE' => 'ПС',
+    'ENE' => 'СПС',
+    'E' => 'С',
+    'ESE' => 'СПС',
+    'SE' => 'ПС',
+    'SSE' => 'ППС',
+    'S' => 'П',
+    'SSW' => 'ППЗ',
+    'SW' => 'ПЗ',
+    'WSW' => 'ЗПЗ',
     'W' => 'З',
-    'WNW' => 'Пд',
-    'NW' => 'Пн',
-    'NNW' => 'ПС',
+    'WNW' => 'ЗПЗ',
+    'NW' => 'ПЗ',
+    'NNW' => 'ППЗ',
 
 
     'LONG_OPERATION_WARNING' => 'Увага: дана операція може зайняти тривалий час (кілька хвилин). Будь ласка, дочекайтеся завершення після запуску. ',
@@ -875,13 +883,13 @@ $dictionary = array (
 
     'USE_BACKGROUND' => 'Використовувати фон',
     'YES' => 'Так',
-    'NO' => 'Немає',
+    'NO' => 'Ні',
 
     'USE_JAVASCRIPT' => 'Додатковий код JavaScript',
     'USE_CSS' => 'Додатковий код CSS',
 
     'PERIOD' => 'Період',
-    'PERIOD_TODAY' => 'Сегодня',
+    'PERIOD_TODAY' => 'Сьогодні',
     'PERIOD_DAY' => 'Доба (24 години)',
     'PERIOD_WEEK' => 'Тиждень',
     'PERIOD_MONTH' => 'Місяць',
@@ -889,7 +897,7 @@ $dictionary = array (
     'SEARCH' => 'Пошук',
     'SHOWHIDE' => 'Показати / Приховати',
 
-    'AUTO_UPDATE' => 'Авто обновл.',
+    'AUTO_UPDATE' => 'Авто оновл.',
     'CHANNEL' => 'Канал',
     'ADD_URL' => 'Додати URL',
     'OPEN' => 'Відкрити',
@@ -913,7 +921,7 @@ $dictionary = array (
 
     'ACCESS_CONTROL' => 'Контроль доступу',
 
-    'SECURITY_OBJECT_ID' => 'Об\'єкт захисту',
+    'SECURITY_OBJECT_ID' => 'Об’єкт захисту',
     'SECURITY_TERMINALS' => 'Доступ з терміналів',
     'SECURITY_USERS' => 'Доступно для користувачів',
     'SECURITY_TIMES' => 'Доступно в години',
@@ -927,12 +935,12 @@ $dictionary = array (
     'RUN_TIME' => 'Час запуску',
     'RUN_WEEKDAYS' => 'Дні тижня',
     'WEEK_SUN' => 'Неділя',
-    'WEEK_MON' => 'понеділок',
-    'WEEK_TUE' => 'вівторок',
-    'WEEK_WED' => 'середа',
-    'WEEK_THU' => 'четвер',
-    'WEEK_FRI' => 'п\'ятниця',
-    'WEEK_SAT' => 'субота',
+    'WEEK_MON' => 'Понеділок',
+    'WEEK_TUE' => 'Вівторок',
+    'WEEK_WED' => 'Середа',
+    'WEEK_THU' => 'Четвер',
+    'WEEK_FRI' => 'П’ятниця',
+    'WEEK_SAT' => 'Субота',
 
     'PARENT_CONTEXT' => 'Доступно в контексті',
     'IS_CONTEXT' => 'використовувати як контекст',
@@ -986,7 +994,7 @@ $dictionary = array (
 
     'WALLPAPER' => 'Шпалери',
 
-    'ADDITIONAL_STATES' => 'Додаткові стану',
+    'ADDITIONAL_STATES' => 'Додаткові стани',
     'MODE_SWITCH' => 'Індикатор режиму',
     'HIGH_ABOVE' => 'Значення вище',
     'LOW_BELOW' => 'Значення нижче',
@@ -1012,12 +1020,12 @@ $dictionary = array (
     'NOT_UPDATING' => 'Не оновлюється ',
 
     'SCRIPTS' => 'Сценарії',
-    'CLASSES' => 'Класи / об\'єкти',
+    'CLASSES' => 'Класи / об’єкти',
     'CLASS_PROPERTIES' => 'Властивості класу',
     'CLASS_METHODS' => 'Методи класу',
-    'CLASS_OBJECTS' => 'Об\'єкти класу',
-    'OBJECT_PROPERTIES' => 'Властивості об\'єкта',
-    'OBJECT_METHODS' => 'Методи об\'єкта',
+    'CLASS_OBJECTS' => 'Об’єкти класу',
+    'OBJECT_PROPERTIES' => 'Властивості об’єкта',
+    'OBJECT_METHODS' => 'Методи об’єкта',
     'PORT' => 'Порт',
     'USE_DEFAULT' => 'використовувати за замовчуванням',
 
@@ -1053,10 +1061,10 @@ $dictionary = array (
     'MODULES_UPDATES_AVAILABLE' => 'Доступні оновлення модулів',
     'SYSTEM_UPDATES_AVAILABLE' => 'Доступні оновлення системи',
     'ERRORS_SAVED' => 'Збережено помилки',
-    
+
     // DEVICES
     'DEVICES_MODULE_TITLE' => 'Прості пристрої',
-    'DEVICES_LINKED_WARNING' => 'Увага: вибір існуючого об\'єкта призведе до прив\'язки його до нового класу.',
+    'DEVICES_LINKED_WARNING' => 'Увага: вибір існуючого об’єкта призведе до прив’язки його до нового класу.',
     'DEVICES_RELAY' => 'Кероване реле / Вимикач',
     'DEVICES_DIMMER' => 'Керований диммер',
     'DEVICES_RGB' => 'RGB-контролер',
@@ -1081,11 +1089,11 @@ $dictionary = array (
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'тор',
+    'M_PRESSURE' => 'Торр',
     'M_WATT' => 'Вт',
 
 // ----
-    'DEVICES_LINKS' => 'Зміни, пов\'язані пристрої',
+    'DEVICES_LINKS' => 'Зв’язані пристрої',
 
     'DEVICES_STATUS' => 'Статус',
 
@@ -1128,11 +1136,11 @@ $dictionary = array (
     'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
     'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену',
 
-    'DEVICES_LINKS_NOT_ADDED' => 'Немає пов\'язаних пристроїв',
-    'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв\'язків',
-    'DEVICES_LINKS_COMMENT' => 'Коментар (не обов\'язково)',
-    'DEVICES_LINKS_LINKED_DEVICE' => 'Пов\'язаний пристрій',
-    'DEVICES_LINKS_ADDED' => 'Зміни, пов\'язані пристрої',
+    'DEVICES_LINKS_NOT_ADDED' => 'Немає пов’язаних пристроїв',
+    'DEVICES_LINKS_AVAILABLE' => 'Доступні типи зв’язків',
+    'DEVICES_LINKS_COMMENT' => 'Коментар (не обов’язково)',
+    'DEVICES_LINKS_LINKED_DEVICE' => 'Пов’язаний пристрій',
+    'DEVICES_LINKS_ADDED' => 'Зв’язані пристрої',
 
     'DEVICES_LINK_ACTION_TYPE' => 'Дія',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Ввімкнути',
@@ -1184,7 +1192,7 @@ $dictionary = array (
 
     'DEVICES_CAMERA' => 'IP-камера',
     'DEVICES_CAMERA_STREAM_URL' => 'URL відео-потоку',
-    'DEVICES_CAMERA_USERNAME' => 'Ім\'я користувача',
+    'DEVICES_CAMERA_USERNAME' => 'Ім’я користувача',
     'DEVICES_CAMERA_PASSWORD' => 'Пароль',
     'DEVICES_CAMERA_SNAPSHOT_URL' => 'URL статичного знімка',
     'DEVICES_CAMERA_SNAPSHOT' => 'Знімок',
@@ -1212,7 +1220,30 @@ $dictionary = array (
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
-
+	
+	'ROOMS' => 'Кімнати',
+    'APPEARANCE' => 'Зовнішній вигляд',
+    'MAINTENANCE' => 'Обслуговування',
+    'LIST' => 'Список',
+    'DATA_OPTIMIZING' => 'Оптимізація даних',
+    'DID_YOU_KNOW' => 'А чи знаєте ви що ...',
+    'NEWS' => 'Новини MajorDoMo',
+    'KNOWLEDGE_BASE' => 'База знань',
+    'ACTIVITIES' => 'Поведінка',
+    'COMMANDS' => 'Команди',
+    'ADDON_FILE' => 'Файл доповнення',
+    'UPLOAD_AND_INSTALL' => 'Завантажити та встановити',
+    'ADD_UPDATE_MANUALLY' =>'Додати / оновити вручну',
+	
+	
+'TURNING_ON' =>'Вмикаю',
+    'TURNING_OFF' =>'Вимикаю',
+    'PATTERN_TIMER' => 'таймер',
+    'PATTERN_DO_AFTER' => 'через',
+    'PATTERN_DO_FOR' => 'на',
+    'PATTERN_SECOND' => 'секунд',
+    'PATTERN_MINUTE' => 'хвилин',
+    'PATTERN_HOUR' => 'година',
      /* end module names */
 
 

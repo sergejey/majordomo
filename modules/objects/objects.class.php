@@ -19,7 +19,7 @@ class objects extends module {
 *
 * @access private
 */
-function objects() {
+function __construct() {
   $this->name="objects";
   $this->title="<#LANG_MODULE_OBJECT_INSTANCES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -303,6 +303,9 @@ function usual(&$out) {
    }
    $this->description=$rec['DESCRIPTION'];
    $this->location_id=$rec['LOCATION_ID'];
+   if (preg_match('/^sdevice(.+?)/',$rec['SYSTEM'],$m)) {
+    $this->device_id=$m[1];
+   }
    //$this->keep_history=$rec['KEEP_HISTORY'];
   } else {
    return false;
@@ -551,32 +554,6 @@ function usual(&$out) {
 
    if ($code!='') {
 
-    /*
-    if (defined('SETTINGS_DEBUG_HISTORY') && SETTINGS_DEBUG_HISTORY==1) {
-     $class_object=SQLSelectOne("SELECT NOLOG FROM classes WHERE ID='".$this->class_id."'");
-     if (!$class_object['NOLOG']) {
-
-      $prevLog=SQLSelectOne("SELECT ID, UNIX_TIMESTAMP(ADDED) as UNX FROM history WHERE OBJECT_ID='".$this->id."' AND METHOD_ID='".$method['ID']."' ORDER BY ID DESC LIMIT 1");
-      if ($prevLog['ID']) {
-       $prevRun=$prevLog['UNX'];
-       $prevRunPassed=time()-$prevLog['UNX'];
-      }
-
-      $h=array();
-      $h['ADDED']=date('Y-m-d H:i:s');
-      $h['OBJECT_ID']=$this->id;
-      $h['METHOD_ID']=$method['ID'];
-      $h['DETAILS']=serialize($params);
-      if ($parent) {
-       $h['DETAILS']='(parent method) '.$h['DETAILS'];
-      }
-      $h['DETAILS'].="\n".'code: '."\n".$code;
-      SQLInsert('history', $h);
-     }
-    }
-    */
-
-
      try {
        $success = eval($code);
        if ($success === false) {
@@ -681,7 +658,9 @@ function usual(&$out) {
     return $this->class_title;
    }
   }
-
+  if($property=='location_title') {
+    return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=".(int)$this->location_id));
+  }
   $id=$this->getPropertyByName($property, $this->class_id, $this->id);
   if ($id) {
    $value=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
@@ -755,7 +734,7 @@ function usual(&$out) {
    if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
     $path=LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'debmes';
+    $path = ROOT . 'cms/debmes';
    }
 
     $today_file=$path . '/'.date('Y-m-d').'.data';
@@ -779,6 +758,7 @@ function usual(&$out) {
   startMeasure('setproperty_update');
   if ($id) {
    $prop=SQLSelectOne("SELECT * FROM properties WHERE ID='".$id."'");
+   $property = $prop['TITLE'];
    startMeasure('setproperty_update_getvalue');
    $v=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".(int)$id."' AND OBJECT_ID='".(int)$this->id."'");
    endMeasure('setproperty_update_getvalue');
@@ -856,6 +836,14 @@ function usual(&$out) {
   endMeasure('setproperty_update');
 
   saveToCache($cached_name, $value);
+
+  if (!defined('DISABLE_SIMPLE_DEVICES') &&
+      $this->device_id &&
+      $property!='updated' &&
+      $property!='updatedText'
+  ) {
+   addToOperationsQueue('connect_device_data',$this->object_title.'.'.$property,$value,true);
+  }
 
   if (function_exists('postToWebSocketQueue')) {
    startMeasure('setproperty_postwebsocketqueue');
@@ -1025,7 +1013,17 @@ function usual(&$out) {
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
-  //echo ("Executing $sqlQuery\n");
+  $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
+              (`ID` int(10) unsigned NOT NULL auto_increment,
+               `TOPIC`   char(255) NOT NULL,
+               `DATANAME` char(255) NOT NULL,
+               `DATAVALUE` char(255) NOT NULL,
+               `EXPIRE`    datetime  NOT NULL,
+                PRIMARY KEY (`ID`)
+              ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+  SQLExec($sqlQuery);
+
+
 
 /*
 objects - Objects

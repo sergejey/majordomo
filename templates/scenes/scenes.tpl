@@ -495,8 +495,18 @@ $.fn.customContextMenu = function(callBack){
 
                  {if $DRAGGABLE=="1"}
                     $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid: [5,5],
+                        start: function(e, ui) {
+                            var pos = ui.helper.offset();
+                            this.originalLeft=pos.left;
+                            this.originalTop=pos.top;
+                        },
                         stop: function(e, ui) {
-                         var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=dragged&element="+$(this).attr("id")+"&details="+encodeURIComponent(JSON.stringify(ui));
+                            var pos = ui.helper.offset();
+                            var dLeft=pos.left-this.originalLeft;
+                            var dTop=pos.top-this.originalTop;
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=dragged&element="+$(this).attr("id");
+                            url+='&dleft='+encodeURIComponent(dLeft);
+                            url+='&dtop='+encodeURIComponent(dTop);
                          {literal}
                          $.ajax({
                           url: url,
@@ -507,8 +517,14 @@ $.fn.customContextMenu = function(callBack){
                         }
                    }).resizable({literal}{grid: 5, {/literal}
                            stop: function(e, ui) {
-                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id")+"&details="+encodeURIComponent(JSON.stringify(ui));
-                            {literal}
+                               var dwidth=ui.size.width;
+                               var dheight=ui.size.height;
+
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id");
+                               url+='&dwidth='+encodeURIComponent(dwidth);
+                               url+='&dheight='+encodeURIComponent(dheight);
+
+                           {literal}
                             $.ajax({
                              url: url,
                              }).done(function(data) { 
@@ -616,9 +632,9 @@ $.fn.customContextMenu = function(callBack){
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
    display:inline-block;"></div>
 
-<script language="javascript" src="{$smarty.const.ROOTHTML}js/threejs/libs/tween.min.js"></script>
-<script language="javascript" src="{$smarty.const.ROOTHTML}js/threejs/three.min.js"></script>
-<script src="{$smarty.const.ROOTHTML}js/threejs/loaders/SceneLoader.js" language="javascript"></script>
+<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/libs/tween.min.js"></script>
+<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/three.min.js"></script>
+<script src="{$smarty.const.ROOTHTML}3rdparty/threejs/loaders/SceneLoader.js" language="javascript"></script>
    <script language="javascript">
 
                         var container;
@@ -730,7 +746,7 @@ function onDocumentMouseDown( event ) {
    class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if $DRAGGABLE=="1" && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}" 
    id="state_{$STATE.ID}"
    {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""} 
-   {if $DRAGGABLE!="1"}
+   {if $DRAGGABLE!="1" && $ELEMENT.TYPE!="device"}
     onClick="stateClicked('{$STATE.ID}');"
    {/if}
    {/if} 

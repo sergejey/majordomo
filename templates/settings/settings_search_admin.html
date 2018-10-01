@@ -48,7 +48,9 @@ $(function() {
 <hr>
 [#endif#]
 <div class="form-group">
-        <label class="control-label">[#TITLE#]:</label>
+        <label class="control-label">[#TITLE#]:
+                <#LANG_HCB#>[#HINT_NAME#]<#LANG_HCE#>
+        </label>
         <div class="controls">
                 [#if TYPE="text"#]
                 [#if NAME=="SITE_TIMEZONE" || NAME=="SITE_LANGUAGE" || NAME=="THEME"#]
@@ -62,6 +64,29 @@ $(function() {
 
                 [#if TYPE="json"#]
                 <pre>[#VALUE#]</pre>
+                [#if OPTIONS#]
+                <table class="table">
+                        <thead>
+                        <tr>
+                                <th><#LANG_TITLE#></th>
+                                <th><#LANG_PRIORITY#></th>
+                                <!--#
+                                <th>Filter</th>
+                                #-->
+
+                        </tr>
+                        </thead>
+                        [#begin OPTIONS#]
+                        <tr>
+                                <td>[#OPTION_TITLE#]</td>
+                                <td><input type="text" name="[#OPTION_TITLE#]_<#RESULT.ID#>_priority" value="[#PRIORITY#]"></td>
+                                <!--#
+                                <td><input type="text" name="[#OPTION_TITLE#]_<#RESULT.ID#>_filter" value="[#FILTER#]"></td>
+                                #-->
+                        </tr>
+                        [#end OPTIONS#]
+                </table>
+                [#endif <OPTIONS></OPTIONS>#]
                 [#endif TYPE#]
 
                 [#if TYPE="path"#]

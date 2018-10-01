@@ -68,7 +68,8 @@ class custom_error
           <h3>Backtrace</h3>
           <div><pre>{$e->getTraceAsString()}</pre></div>
           <div>
-           <a href="#" class="btn btn-default" onclick="window.history.go(-1);return false;">&lt;&lt;&lt; Back</a>
+           <a href="#" class="btn btn-default" onclick="window.history.go(-1);return false;">&lt;&lt;&lt; Back</a>          
+           <a href="/diagnostic.php" class="btn btn-success">Submit Diagnostic info</a>
            <a href="#" class="btn btn-default" onclick="window.location.reload();return false;">Reload page</a>
            <a href="/admin.php?md=panel&action=saverestore" class="btn btn-default">Go to Backup section</a>
           </div>

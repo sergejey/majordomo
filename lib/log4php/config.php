@@ -15,7 +15,7 @@ return array(
              ),
          ),
          'params' => array(
-            'file' => 'debmes/%s.log',
+            'file' => 'cms/debmes/%s.log',
             'datePattern' => 'Y-m-d',
          )
       ),
@@ -28,7 +28,7 @@ return array(
              ),
          ),
          'params' => array(
-            'file' => 'debmes/%s.log',
+            'file' => 'cms/debmes/%s.log',
             'datePattern' => 'Y-m-d',
          )
       )

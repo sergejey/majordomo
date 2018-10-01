@@ -19,7 +19,7 @@ class connect extends module {
 *
 * @access private
 */
-function connect() {
+function __construct() {
   $this->name="connect";
   $this->title="<#LANG_MODULE_CONNECT#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -134,11 +134,11 @@ function run() {
   global $data;
   $data=1;
   $out=array();
-  $sv->removeTree(ROOT.'saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
   $tar_name=$sv->dump($out);
-  $sv->removeTree(ROOT.'saverestore/temp');
-  $sv->removeTree(ROOT.'saverestore/temp');
-  $dest_file=ROOT.'saverestore/'.$tar_name;
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
+  $dest_file=ROOT.'cms/saverestore/'.$tar_name;
   if ($dest_file && file_exists($dest_file) && filesize($dest_file)>0) {
   if (function_exists('curl_file_create')) { // php 5.6+
    $cfile = curl_file_create($dest_file);
@@ -149,7 +149,7 @@ function run() {
      'backupfile' => $cfile, 
      'force_data' => '1'
   );
-  $url='http://connect.smartliving.ru/upload/';
+  $url='https://connect.smartliving.ru/upload/';
   $ch = curl_init();
 
    DebMes("Cloudbackup file $dest_file to $url");
@@ -161,7 +161,9 @@ function run() {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-  curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password); 
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password);
 
   //execute post
   $result = curl_exec($ch);
@@ -192,6 +194,7 @@ function admin(&$out) {
  $out['CONNECT_PASSWORD']=$this->config['CONNECT_PASSWORD'];
  $out['CONNECT_SYNC']=$this->config['CONNECT_SYNC'];
  $out['CONNECT_BACKUP']=$this->config['CONNECT_BACKUP'];
+ $out['CONNECT_INSECURE']=$this->config['CONNECT_INSECURE'];
 
  $out['SEND_MENU']=$this->config['SEND_MENU'];
  $out['SEND_CLASSES']=$this->config['SEND_CLASSES'];
@@ -210,6 +213,7 @@ function admin(&$out) {
    $this->config['CONNECT_PASSWORD']=$connect_password;
    $this->config['CONNECT_SYNC']=(int)$connect_sync;
    $this->config['CONNECT_BACKUP']=(int)$connect_backup;
+   $this->config['CONNECT_INSECURE']=gr('connect_insecure','int');
    $this->config['CONNECT_BACKUP_HOUR']=(int)rand(0, 6);
 
    if ($this->config['CONNECT_BACKUP']) {
@@ -301,9 +305,150 @@ function admin(&$out) {
 
 }
 
+ function sendReverseURL($url_requested,$result) {
+  // POST TO SERVER
+  $url = 'https://connect.smartliving.ru/reverse_proxy.php';
+  $header = array('Content-Type: multipart/form-data');
+  $fields=array('url'=>$url_requested);
+  //$probably_binary = (is_string($result) === true && ctype_print($result) === false);
+  if (preg_match('/\.css$/is',$url_requested) || preg_match('/\.js$/is',$url_requested) || !mb_detect_encoding($result)) {
+   $binary_path=ROOT.'cms/cached/reverse';
+   if (!is_dir($binary_path)) {
+    umask(0);
+    mkdir($binary_path,0777);
+   }
+   $tmpfilename=$binary_path.'/'.preg_replace('/\W/','_',$url_requested);
+   SaveFile($tmpfilename,$result);
+
+   if (!function_exists('getCurlValue')) {
+    function getCurlValue($filename, $contentType, $postname)
+    {
+     if (function_exists('curl_file_create')) {
+      return curl_file_create($filename, $contentType, $postname);
+     }
+     $value = "@".$filename.";filename=" . $postname;
+     if ($contentType) {
+      $value .= ';type=' . $contentType;
+     }
+     return $value;
+    }
+   }
+   $cfile = getCurlValue($tmpfilename,'',basename($tmpfilename));
+   $fields['file']=$cfile;
+   $result='binary';
+  }
+  $fields['result'] = $result;
+
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_HTTPHEADER, $header);
+  curl_setopt($ch,CURLOPT_POST, 1);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
+  curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+  $result = curl_exec($ch);
+  curl_close($ch);
+  return $result;
+ }
+
+
+ function sendAllDevices() {
+// POST TO SERVER
+  $url = 'https://connect.smartliving.ru/sync_device_data.php';
+  $fields = array();
+  $devices=SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, SUBTYPE, LINKED_OBJECT FROM devices WHERE 1");
+  include_once(DIR_MODULES . 'classes/classes.class.php');
+  $cl = new classes();
+
+  foreach($devices as &$device) {
+   $object = getObject($device['LINKED_OBJECT']);
+   if (is_object($object)) {
+    $props = $cl->getParentProperties($object->class_id, '', 1);
+    $my_props = SQLSelect("SELECT ID,TITLE FROM properties WHERE OBJECT_ID='" . $object->id . "'");
+    if (IsSet($my_props[0])) {
+     foreach ($my_props as $p) {
+      if ($p['TITLE']=='updated' || $p['TITLE']=='updatedText') continue;
+      $props[] = $p;
+     }
+    }
+    foreach ($props as $k => $v) {
+     $value = $object->getProperty($v['TITLE']);
+     if ($value === '') continue;
+     $device['properties'][$v['TITLE']] = $value;
+    }
+   }
+  }
+  $fields['devices_data']=json_encode($devices);
+  //DebMes("Posting all devices to $url",'device_sync');
+  //DebMes($fields['devices_data'],'device_sync');
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, count($fields));
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC) ;
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+  $result = curl_exec($ch);
+  if (curl_errno($ch) && !$background) {
+   $errorInfo = curl_error($ch);
+   $info = curl_getinfo($ch);
+   DebMes("Error: ".$errorInfo,'device_sync');
+  } else {
+   //DebMes("Result : ".$result,'device_sync');
+  }
+  curl_close($ch);  
+ }
+ 
+ function sendDeviceProperty($property,$value) {
+  // POST TO SERVER
+  $url = 'https://connect.smartliving.ru/sync_device_data.php';
+  $fields = array();
+  list($object_name,$property_name)=explode('.',$property);
+  $device_rec=SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE FROM devices WHERE LINKED_OBJECT='".DBSafe($object_name)."'");
+  $fields['object']=$object_name;
+  $fields['property']=$property_name;
+  $fields['value']=$value;
+  if ($device_rec['TITLE']) {
+   $fields['device_data']=json_encode($device_rec);
+  }
+  foreach($fields as $k=>$v) { $fields_string .= $k.'='.$v.'&'; }
+  rtrim($fields_string, '&');
+  //DebMes("Posting $property = $value to $url",'device_sync');
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, count($fields));
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 5);
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC) ;
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+  $result = curl_exec($ch);
+  if (curl_errno($ch) && !$background) {
+   $errorInfo = curl_error($ch);
+   $info = curl_getinfo($ch);
+   DebMes("Error: ".$errorInfo,'device_sync');
+  } else {
+   //DebMes("Result : ".$result,'device_sync');
+  }
+  curl_close($ch);
+
+ }
+
  function sendMenuItems($items) {
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('force_data'=>1,'menu_items'=>1, 'items' => urlencode(serialize($items)));
 
   //url-ify the data for the POST
@@ -319,11 +464,10 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-
-
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
-
   //execute post
   $result = curl_exec($ch);
   //close connection
@@ -350,32 +494,59 @@ function admin(&$out) {
    }
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
-  $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
+  $url = 'https://connect.smartliving.ru/upload/';
 
-  //url-ify the data for the POST
-  foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-  rtrim($fields_string, '&');
+  $datafile_name=ROOT.'cms/cached/connect_data.txt';
+  SaveFile($datafile_name, serialize($data));
+
+  if (!function_exists('getCurlValue')) {
+   function getCurlValue($filename, $contentType, $postname)
+   {
+    if (function_exists('curl_file_create')) {
+     return curl_file_create($filename, $contentType, $postname);
+    }
+    $value = "@".$filename.";filename=" . $postname;
+    if ($contentType) {
+     $value .= ';type=' . $contentType;
+    }
+    return $value;
+   }
+  }
+
+  $cfile = getCurlValue($datafile_name,'text/plain','datafile.txt');
+  $fields = array(
+      'datafile' => $cfile,
+      'merge' => 1,
+      'force_data'=>$force_data
+  );
 
   //open connection
   $ch = curl_init();
-  //set the url, number of POST vars, POST data
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, count($fields));
-  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-
-
+  curl_setopt($ch, CURLOPT_HEADER, 1);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
+  curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
+
 
   //execute post
   $result = curl_exec($ch);
   //close connection
-  curl_close($ch);
 
+  if (curl_errno($ch)) {
+   $errorInfo = curl_error($ch);
+   $info = curl_getinfo($ch);
+   //DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info),'connect_menu');
+  }
+  curl_close($ch);
+  //DebMes('Connect sending menu request $url ('.$this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD'].'): '. json_encode($fields),'connect_menu');
+  //DebMes('Connect sending menu response: '.$result,'connect_menu');
  }
 
  function propertySetHandle($object, $property, $value) {
@@ -406,7 +577,7 @@ function admin(&$out) {
 
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
+  $url = 'https://connect.smartliving.ru/upload/';
   $fields = array('merge'=>1, 'data' => urlencode(serialize($data)), 'force_data'=>$force_data);
 
   //url-ify the data for the POST
@@ -422,8 +593,8 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 30);
   curl_setopt($ch,CURLOPT_TIMEOUT, 30);
-
-
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
   curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
 
@@ -520,10 +691,9 @@ function admin(&$out) {
   }
 
   // POST TO SERVER
-  $url = 'http://connect.smartliving.ru/upload/';
-  $datafile_name=ROOT.'cached/connect_data.txt';
+  $url = 'https://connect.smartliving.ru/upload/';
+  $datafile_name=ROOT.'cms/cached/connect_data.txt';
   SaveFile($datafile_name, serialize($data));
-
 
   if (!function_exists('getCurlValue')) {
    function getCurlValue($filename, $contentType, $postname)
@@ -541,26 +711,10 @@ function admin(&$out) {
 
   $cfile = getCurlValue($datafile_name,'text/plain','datafile.txt');
  
-//NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
-
   $fields = array(
      'datafile' => $cfile
   );
 
-  /*
-  $fields = array(
-     'datafile' => '@'.realpath($datafile_name).';filename=datafile.txt'
-  );
-  */
-
-  //print_r($fields);exit;
-
-
-  //url-ify the data for the POST
-  //foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-  //rtrim($fields_string, '&');
-
-  //sleep(1);
   //open connection
   $ch = curl_init();
   //set the url, number of POST vars, POST data
@@ -571,7 +725,9 @@ function admin(&$out) {
   curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
   curl_setopt($ch,CURLOPT_TIMEOUT, 120);
   curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-  curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']); 
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD']);
 
   //execute post
   $result = curl_exec($ch);

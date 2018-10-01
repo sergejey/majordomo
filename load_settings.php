@@ -15,6 +15,13 @@ if (IsSet($_GET['disable_websockets'])) {
  Define('DISABLE_WEBSOCKETS', 1);
 }
 
+if ($_GET['lang']) {
+    Define("SETTINGS_SITE_LANGUAGE",$_GET['lang']);
+    $_SESSION['lang']=SETTINGS_SITE_LANGUAGE;
+} elseif ($_SESSION['lang']) {
+    Define("SETTINGS_SITE_LANGUAGE",$_SESSION['lang']);
+}
+
 for ($i = 0; $i < $total; $i ++)
    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 
@@ -49,18 +56,19 @@ if (($_SERVER['REQUEST_METHOD']=='GET' || $_SERVER['REQUEST_METHOD']=='POST') &&
     defined('WAIT_FOR_MAIN_CYCLE') &&
     WAIT_FOR_MAIN_CYCLE==1 &&
     !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI']) &&
+    !preg_match('/diagnostic\.php/', $_SERVER['REQUEST_URI']) &&
     !defined('NO_DATABASE_CONNECTION'))
 {
  $maincycleUpdate=getGlobal('cycle_mainRun');
  if ((time()-$maincycleUpdate)>60) { //main cycle is offline
-  echo "Main cycle is down. Please check background processes status.";
+  echo "Main cycle is down. Please check background processes status. <a href='/diagnostic.php'>".LANG_SUBMIT_DIAGNOSTIC."</a>";
   exit;
  }
 }
 
 
 if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
- Define('SERVER_URL', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT']);
+ Define('SERVER_URL', 'http://' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT']);
  Define('SERVER_ADDR', $_SERVER['SERVER_ADDR']);
 } else {
  Define('SERVER_URL','http://localhost:80');

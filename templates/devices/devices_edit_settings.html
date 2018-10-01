@@ -14,10 +14,11 @@
 
  [#begin PROPERTIES#]
  <div class="form-group">
-  <label class="col-md-8 control-label">
+  <div class="col-md-5 text-right">
    [#DESCRIPTION#]
-   </label>
-  <div class="col-md-4">
+   [#if CONFIG_HELP!=""#]<#LANG_HCB#>[#CONFIG_HELP#]<#LANG_HCE#>[#endif#]
+  </div>
+  <div class="col-md-7">
    [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]
    <input type="text" value="[#VALUE#]" name="[#NAME#]_value" class="form-control">
    [#endif#]
@@ -28,15 +29,61 @@
 
    [#if CONFIG_TYPE="select"#]
    <select name="[#NAME#]_value" class="form-control">
+    <option value=""></option>
    [#begin OPTIONS#]
     <option value="[#VALUE#]"[#if VALUE="<#PROPERTIES.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
    [#end OPTIONS#]
    </select>
    [#endif#]
 
+   [#if CONFIG_TYPE="style_image"#]
+   <div id="style_image_set_[#NAME#]">
+    [#if VALUE!=""#]
+    <img src="[#VALUE#]" id="style_image_preview">
+    <a href="#" onclick="return setStyleImage_[#NAME#]('');"><i class="glyphicon glyphicon-remove"></i></a>
+    [#endif#]
+   </div>
+   <input type="hidden" name="[#NAME#]_value" id="[#NAME#]_value" value="[#VALUE#]">
+   <script type="text/javascript">
+    function setStyleImage_[#NAME#](url) {
+     $('#[#NAME#]_value').val(url);
+     if (url!='') {
+      $('#style_image_set_[#NAME#]').html('<img src="'+url+'"/>');
+     } else {
+      $('#style_image_set_[#NAME#]').html('');
+     }
+     return false;
+    }
+   </script>
+   [#begin FOLDERS#]
+     <a href="#" onclick="$('.style_images').hide();$('#style_[#TITLE#]').show();return false;">[#TITLE#]</a>
+   [#end FOLDERS#]
+   [#begin FOLDERS#]
+   <div id="style_[#TITLE#]" class="style_images" style="display:none">
+    [#begin STYLES#]
+    <a href="#" onclick="return setStyleImage_<#PROPERTIES.NAME#>('<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]');"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]"></a>
+    [#end STYLES#]
+   </div>
+   [#end FOLDERS#]
+   [#endif#]
+
   </div>
  </div>
  [#end PROPERTIES#]
+
+ [#if GROUPS#]
+ <div class="form-group">
+  <div class="col-md-5 text-right">
+   <#LANG_GROUPS#>:
+   <#LANG_HCB#>devicegroups<#LANG_HCE#>
+  </div>
+  <div class="col-md-7">
+   [#begin GROUPS#]
+   <input type="checkbox" name="apply_groups[]" value="[#SYS_NAME#]"[#if SELECTED="1"#] checked[#endif#]> [#TITLE#] (<#LANG_PROPERTY#> group[#SYS_NAME#])<br/>
+   [#end GROUPS#]
+  </div>
+ </div>
+ [#endif GROUPS#]
 
 <div class="form-group">
  <label class="col-md-8 control-label">

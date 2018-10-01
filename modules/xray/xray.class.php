@@ -19,7 +19,7 @@ class xray extends module {
 *
 * @access private
 */
-function xray() {
+function __construct() {
   $this->name="xray";
   $this->title="X-Ray";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -94,6 +94,8 @@ function run() {
   $out=array();
   if ($this->action=='admin') {
    $this->admin($out);
+  } elseif ($this->action=='service') {
+   $this->service_control($out);
   } elseif ($this->action=='context' || $action=='context') {
    $this->context($out);
   } else {
@@ -116,6 +118,55 @@ function run() {
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
 }
+
+ function service_control(&$out) {
+  $cycle=$this->cycle;
+  if (!$this->cycle) {
+   $this->cycle=gr('cycle');
+  }
+  $out['CYCLE']=$cycle;
+  $op=gr('op');
+  $ajax=gr('ajax');
+  if ($ajax) {
+   $result=array('cycle'=>$this->cycle);
+
+   $service = 'cycle_'.$this->cycle;
+
+   if ($op=='start') {
+    sg($service.'Run','');
+    sg($service.'Control','start');
+   } elseif ($op=='stop') {
+    sg($service.'Control','stop');
+   } elseif ($op=='restart') {
+    sg($service . 'Run', '');
+    sg($service . 'Control', 'restart');
+   }
+
+   header ("HTTP/1.0: 200 OK\n");
+   header ('Content-Type: application/json; charset=utf-8');
+
+   $updated=gg($service.'Run');
+   $control=gg($service.'Control');
+   $result['UPDATED']=$updated;
+   if ((time()-(int)$updated<30)) {
+    $result['ONLINE']=1;
+    $result['BODY']='<font color="green">ONLINE</font>';
+   } else {
+    $result['ONLINE']=0;
+    $result['BODY']='<font color="red">OFFLINE</font>';
+   }
+   if ($updated!='') {
+    $result['BODY'].=' ('.date('Y-m-d H:i:s',$updated).')';
+   }
+   if ($control!='') {
+    $result['BODY'].=' '.$control;
+   }
+
+
+   echo json_encode($result);
+   exit;
+  }
+ }
 
 /**
 * Title
@@ -368,6 +419,7 @@ function admin(&$out) {
   } elseif ($cmd=='restart' && $service!='') {
    sg($service.'Run','');
    sg($service.'Control','restart');
+   /*
   } elseif ($cmd=='switch_restart' && $service!='') {
    if (gg($service.'AutoRestart')) {
     sg($service.'AutoRestart',0);
@@ -380,6 +432,14 @@ function admin(&$out) {
    } else {
     sg($service.'Disabled',1);
    }
+   */
+  }
+ }
+ if ($this->view_mode=='timers') {
+  global $cmd;
+  global $timer;
+  if ($cmd=='stop' && $timer!='') {
+   clearScheduledJob($timer);
   }
  }
 
@@ -431,10 +491,10 @@ function admin(&$out) {
      if (!$file || $file=='xray') {
       $file=date('Y-m-d').'.log';
      }
-     $filename=ROOT.'debmes/'.$file;
+     $filename=ROOT.'cms/debmes/'.$file;
      if (!file_exists($filename)) {
       $file = date('Y-m-d').'_'.$file.'.log';
-      $filename=ROOT.'debmes/'.$file;
+      $filename=ROOT.'cms/debmes/'.$file;
      }
      $data=LoadFile($filename);
      $lines=explode("\n", $data);
@@ -619,8 +679,10 @@ function admin(&$out) {
      echo '<td><b>CYCLE</b></td>';
      echo '<td><b>LIVE</b></td>';
      echo '<td><b>CONTROL</b></td>';
+     /*
      echo '<td><b>DISABLED</b></td>';
      echo '<td><b>AUTO-RECOVERY</b></td>';
+     */
      echo '</tr>';
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
@@ -656,6 +718,7 @@ function admin(&$out) {
       echo '<a href="'.$url.'&cmd=restart" class="btn btn-default">Restart Now</a>&nbsp;';
       echo '</td>';
 
+      /*
       echo '<td>';
       if (getGlobal($title.'Disabled')) {
        echo "<font color='red'><b>".LANG_YES."</b></font>";
@@ -673,6 +736,7 @@ function admin(&$out) {
       }
       echo '&nbsp;<a href="'.$url.'&cmd=switch_restart" class="btn btn-default">Switch</a>&nbsp;';
       echo '</td>';
+      */
 
 
       echo '</tr>';
@@ -690,6 +754,7 @@ function admin(&$out) {
       echo '<td><b>TIMER</b></td>';
       echo '<td><b>COMMAND</b></td>';
       echo '<td><b>SCHEDULED</b></td>';
+      echo '<td></td>';
       echo '</tr>';
      for($i=0;$i<$total;$i++) {
       echo '<tr>';
@@ -701,6 +766,10 @@ function admin(&$out) {
       echo '</td>';
       echo '<td>';
       echo $res[$i]['RUNTIME'].'&nbsp;';
+      echo '</td>';
+      echo '<td>';
+      $url=ROOTHTML.'panel/xray.html?view_mode=timers&timer='.urlencode($res[$i]['TITLE']);
+      echo '<a href="'.$url.'&cmd=stop" class="btn btn-default">Stop</a>';
       echo '</td>';
       echo '</tr>';
      }
@@ -739,39 +808,46 @@ function admin(&$out) {
 
 }
 
- if ($this->view_mode=='') {
-  $path=ROOT.'debmes';
-   if ($handle = opendir($path)) {
-    $files=array();
-    while (false !== ($entry = readdir($handle))) {
-     if ($entry=='.' || $entry=='..') {
-      continue;
-     }
-     $files[]=array('TITLE'=>$entry);
-    }
-    sort($files);
+      if ($this->view_mode == '')
+      {
+         $path = ROOT . 'cms/debmes';
+      
+         if ($handle = opendir($path))
+         {
+            $files = array();
+    
+            while (false !== ($entry = readdir($handle)))
+            {
+               if ($entry == '.' || $entry == '..')
+                  continue;
+     
+               $files[] = array('TITLE' => $entry);
+            }
+    
+            sort($files);
+         }
+   
+         $out['FILES'] = $files;
+      }
    }
-   $out['FILES']=$files;
- }
 
+   /**
+    * FrontEnd
+    *
+    * Module frontend
+    *
+    * @access public
+    */
+   function usual(&$out)
+   {
+      $this->admin($out);
+   }
 
-}
-/**
-* FrontEnd
-*
-* Module frontend
-*
-* @access public
-*/
-function usual(&$out) {
- $this->admin($out);
-}
+   function dbInstall($data)
+   {
+      // watchfolders - Watchfolders
 
- function dbInstall($data) {
-/*
-watchfolders - Watchfolders
-*/
-  $data = <<<EOD
+      $data = <<<EOD
  performance_log: ID int(10) unsigned NOT NULL auto_increment
  performance_log: OPERATION varchar(255) NOT NULL DEFAULT ''
  performance_log: COUNTER int(10) NOT NULL DEFAULT '0'
@@ -780,8 +856,8 @@ watchfolders - Watchfolders
  performance_log: ADDED datetime
 
 EOD;
-  parent::dbInstall($data);
- }
+      parent::dbInstall($data);
+   }
 
 /**
 * Install
@@ -790,9 +866,10 @@ EOD;
 *
 * @access private
 */
- function install($parent_name="") {
-  parent::install($parent_name);
- }
+   function install($parent_name = "")
+   {
+      parent::install($parent_name);
+   }
 // --------------------------------------------------------------------
 }
 /*

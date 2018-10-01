@@ -16,7 +16,7 @@ class devices extends module {
 *
 * @access private
 */
-function devices() {
+function __construct() {
   $this->name="devices";
   $this->title="Devices";
   $this->module_category="<#LANG_SECTION_DEVICES#>";
@@ -183,6 +183,19 @@ function getLinkDetails($link_name) {
         }
     }
 }
+
+function getAllGroups($type) {
+    $groups=SQLSelect("SELECT * FROM devices_groups");
+    $res=array();
+    $total = count($groups);
+    for($i=0;$i<$total;$i++) {
+        $tmp=explode(',',$groups[$i]['APPLY_TYPES']);
+        if (in_array($type,$tmp)) {
+            $res[]=$groups[$i];
+        }
+    }
+    return $res;
+}    
     
 function getAllProperties($type) {
     $properties=$this->device_types[$type]['PROPERTIES'];
@@ -200,7 +213,25 @@ function getAllProperties($type) {
         }
     }
     return $properties;
-}    
+}
+
+    function getAllMethods($type) {
+        $methods=$this->device_types[$type]['METHODS'];
+        $parent_class=$this->device_types[$type]['PARENT_CLASS'];
+        if ($parent_class!='') {
+            foreach($this->device_types as $k=>$v) {
+                if ($v['CLASS']==$parent_class) {
+                    $parent_methods=$this->getAllMethods($k);
+                    foreach($parent_methods as $pk=>$pv) {
+                        if (!isset($methods[$pk])) {
+                            $methods[$pk]=$pv;
+                        }
+                    }
+                }
+            }
+        }
+        return $methods;
+    }
     
 function getNewObjectIndex($class) {
     $objects=getObjectsByClass($class);
@@ -226,6 +257,7 @@ function processDevice($device_id) {
     $result=array('HTML'=>'','DEVICE_ID'=>$device_rec['ID']);
 
     $template=getObjectClassTemplate($device_rec['LINKED_OBJECT']);
+
     $result['HTML']=processTitle($template,$this);
     if ($device_rec['TYPE']=='camera') {
         $result['HEIGHT']=5;
@@ -335,7 +367,7 @@ function renderStructure() {
           }
       }
   }
-  subscribeToEvent('devices', 'COMMAND', '', 100);
+  subscribeToEvent('devices', 'COMMAND');
 
   //update cameras
     $objects = getObjectsByClass('SCameras');
@@ -345,13 +377,40 @@ function renderStructure() {
         callMethod($ot.'.updatePreview');
     }
 
+    //update objects sdevice
+    $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices");
+    foreach($devices as $device) {
+        SQLExec("UPDATE objects SET SYSTEM='sdevice".$device['ID']."' WHERE TITLE='".DBSafe($device['LINKED_OBJECT'])."' AND SYSTEM=''");
+    }
+
 }
 
 function processSubscription($event, &$details) {
-    if ($event == 'COMMAND') {
+    if ($event == 'COMMAND' && $details['member_id']) {
+        //DebMes("Processing event $event",'simple_devices');
         include_once(DIR_MODULES.'devices/processCommand.inc.php');
+        //DebMes("Processing event $event DONE",'simple_devices');
     }
 }
+
+    function computePermutations($array) {
+        $result = [];
+        $recurse = function($array, $start_i = 0) use (&$result, &$recurse) {
+            if ($start_i === count($array)-1) {
+                array_push($result, $array);
+            }
+            for ($i = $start_i; $i < count($array); $i++) {
+                //Swap array value at $i and $start_i
+                $t = $array[$i]; $array[$i] = $array[$start_i]; $array[$start_i] = $t;
+                //Recurse
+                $recurse($array, $start_i + 1);
+                //Restore old order
+                $t = $array[$i]; $array[$i] = $array[$start_i]; $array[$start_i] = $t;
+            }
+        };
+        $recurse($array);
+        return $result;
+    }
 
     /**
 
@@ -414,6 +473,11 @@ function admin(&$out) {
           $out['ENABLE_HOMEBRIDGE']=1;
       }
   }
+
+  if ($this->view_mode=='manage_groups') {
+      $this->manage_groups($out);
+  }
+
   if ($this->view_mode=='edit_devices') {
    $this->edit_devices($out, $this->id);
   }
@@ -425,7 +489,7 @@ function admin(&$out) {
 
   if ($this->view_mode=='delete_devices') {
    $this->delete_devices($this->id);
-   $this->redirect("?");
+   $this->redirect("?type=".gr('type').'&location_id='.gr('location_id').'&group_name='.gr('group_name'));
   }
  }
 }
@@ -438,6 +502,11 @@ function isHomeBridgeAvailable() {
     } else {
         return false;
     }
+}
+
+
+function manage_groups(&$out) {
+    require(DIR_MODULES.$this->name.'/devices_manage_groups.inc.php');
 }
 
 /**
@@ -457,6 +526,24 @@ function usual(&$out) {
         if ($op=='get_device') {
             $res=$this->processDevice($id);
         }
+        if ($op=='loadAllDevicesHTML') {
+            /*
+            if (gr('favorite')) {
+                $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE=1");
+            } else {
+                $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE!=1");
+            }
+            */
+            $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE 1");
+            $total = count($devices);
+            for($i=0;$i<$total;$i++) {
+                if ($devices[$i]['LINKED_OBJECT']) {
+                    $processed=$this->processDevice($devices[$i]['ID']);
+                    $devices[$i]['HTML']=$processed['HTML'];
+                }
+            }
+            $res['DEVICES']=$devices;
+        }
         echo json_encode($res);
         exit;
     }
@@ -469,8 +556,12 @@ function usual(&$out) {
     global $type;
 
     if ($location_id || $type) {
-        $qry = 1;
+        $qry = "1";
         $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+        if (preg_match('/loc(\d+)/',$type,$m)) {
+            $location_id=$m[1];
+            $type='';
+        }
         if ($location_id) {
             if ($location_id!='all') {
                 $qry.=" AND devices.LOCATION_ID=".(int)$location_id;
@@ -518,28 +609,95 @@ function usual(&$out) {
         }
     } else {
         $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
-        $qry=" devices.FAVORITE=1";
+        //$qry=" devices.FAVORITE=1";
+        $qry="1";
         $devices=SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
     }
 
     if ($devices[0]['ID']) {
-        $total = count($devices);
-        for($i=0;$i<$total;$i++) {
-            if ($devices[$i]['LINKED_OBJECT']) {
-                $processed=$this->processDevice($devices[$i]['ID']);
-                $devices[$i]['HTML']=$processed['HTML'];
+        if ($location_id || $type || 1) {
+            $total = count($devices);
+            for($i=0;$i<$total;$i++) {
+                if ($devices[$i]['LINKED_OBJECT']) {
+                    $processed=$this->processDevice($devices[$i]['ID']);
+                    $devices[$i]['HTML']=$processed['HTML'];
+                }
             }
+
         }
         $out['DEVICES']=$devices;
     }
 
     $locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
+    $total_devices=count($devices);
+    if ($total_devices) {
+        $favorite_devices=array();
+        $warning_devices=array();
+        $problem_devices=array();
+        $devices_count = 0;
+        for($idv=0;$idv<$total_devices;$idv++) {
+            if ($devices[$idv]['FAVORITE']) {
+                $favorite_devices[]=$devices[$idv];
+            } elseif ($devices[$idv]['LINKED_OBJECT']) {
+
+                if (gg($devices[$idv]['LINKED_OBJECT'].'.normalValue')=='0' &&
+                    gg($devices[$idv]['LINKED_OBJECT'].'.notify')=='1') {
+                    $warning_devices[]=$devices[$idv];
+                    $warning_devices[0]['NEW_SECTION']=1;
+                    $warning_devices[0]['SECTION_TITLE']=LANG_WARNING;
+                } elseif (
+                ($devices[$idv]['TYPE']=='motion' ||
+                    $devices[$idv]['TYPE']=='openclose' ||
+                    $devices[$idv]['TYPE']=='leak' ||
+                    $devices[$idv]['TYPE']=='smoke' ||
+                    $devices[$idv]['TYPE']=='counter' ||
+                    $devices[$idv]['TYPE']=='sensor' ||
+                    $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS']=='SSensors'
+                ) && gg($devices[$idv]['LINKED_OBJECT'].'.alive')==='0') {
+                    $problem_devices[]=$devices[$idv];
+                    $problem_devices[0]['NEW_SECTION']=1;
+                    $problem_devices[0]['SECTION_TITLE']=LANG_OFFLINE;
+                }
+            }
+        }
+
+        foreach($warning_devices as $device) {
+            $favorite_devices[]=$device;
+        }
+        foreach($problem_devices as $device) {
+            $favorite_devices[]=$device;
+        }
+
+        $devices_count=count($favorite_devices);
+
+        if ($devices_count>0) {
+            $loc_rec=array();
+            $loc_rec['ID']=0;
+            $loc_rec['TITLE']=LANG_FAVORITES;
+            $loc_rec['DEVICES']=$favorite_devices;
+            $loc_rec['DEVICES_TOTAL']=$devices_count;
+            array_unshift($locations,$loc_rec);
+        }
+    }
+
     $total = count($locations);
     for ($i = 0; $i < $total; $i++) {
-        $devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
-        $locations[$i]['DEVICES_TOTAL']=$devices_count;
+        if ($locations[$i]['ID']) {
+            $devices_count = 0;
+            if ($total_devices) {
+                for($idv=0;$idv<$total_devices;$idv++) {
+                    if ($devices[$idv]['LOCATION_ID']==$locations[$i]['ID']) {
+                        $devices_count++;
+                        $locations[$i]['DEVICES'][]=$devices[$idv];
+                    }
+                }
+            }
+            $locations[$i]['DEVICES_TOTAL']=$devices_count;
+        }
+        //$devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
+        $locations[$i]['INDEX']=$i;
     }
-    $out['LOCATIONS']=$locations;
+    $out['GROUPS']=$locations;
 
     $types=array();
     foreach($this->device_types as $k=>$v) {
@@ -552,6 +710,21 @@ function usual(&$out) {
             }
         }
     }
+    usort($types, function($a,$b) {
+        return strcmp($a["TITLE"], $b["TITLE"]);
+    });
+
+
+    $list_locations=$locations;
+    usort($list_locations, function($a,$b) {
+        return strcmp($a["TITLE"], $b["TITLE"]);
+    });
+    $types[]=array('NAME'=>'','TITLE'=>LANG_LOCATION);
+    foreach($list_locations as $location) {
+        if ($location['TITLE']==LANG_FAVORITES) continue;
+        $types[]=array('NAME'=>'loc'.$location['ID'],'TITLE'=>$location['TITLE'],'TOTAL'=>$location['DEVICES_TOTAL']);
+    }
+
     $out['TYPES']=$types;
 
 
@@ -801,6 +974,9 @@ function usual(&$out) {
      $element_rec['EASY_CONFIG']=1;
      $linked_property_unit='';
 
+     $element_rec['TYPE']='device';
+     $element_rec['DEVICE_ID']=$rec['ID'];
+     /*
      if ($rec['TYPE']=='relay' || $rec['TYPE']=='dimmer' || $rec['TYPE']=='switch') {
          $element_rec['TYPE'] = 'switch';
          $element_rec['LINKED_PROPERTY'] = 'status';
@@ -819,7 +995,6 @@ function usual(&$out) {
      } else {
          $element_rec['TYPE']='object';
      }
-
      if ($rec['TYPE']=='sensor_temp' || $rec['TYPE']=='sensor_humidity') {
          $element_rec['TYPE'] = 'informer';
          $element_rec['LINKED_PROPERTY'] = 'value';
@@ -829,6 +1004,7 @@ function usual(&$out) {
          $wizard_data['STATE_LOW_VALUE']='%'.$element_rec['LINKED_OBJECT'].'.maxValue%';
          $wizard_data['UNIT']=$linked_property_unit;
      }
+     */
 
      $element_rec['WIZARD_DATA']=json_encode($wizard_data);
 
@@ -1022,6 +1198,7 @@ devices -
   $data = <<<EOD
  devices: ID int(10) unsigned NOT NULL auto_increment
  devices: TITLE varchar(100) NOT NULL DEFAULT ''
+ devices: ALT_TITLES varchar(255) NOT NULL DEFAULT ''
  devices: TYPE varchar(100) NOT NULL DEFAULT ''
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  
@@ -1039,7 +1216,12 @@ devices -
  devices_linked: DEVICE2_ID int(10) unsigned NOT NULL DEFAULT 0
  devices_linked: LINK_TYPE varchar(100) NOT NULL DEFAULT ''
  devices_linked: LINK_SETTINGS text
- devices_linked: COMMENT varchar(255) NOT NULL DEFAULT '' 
+ devices_linked: COMMENT varchar(255) NOT NULL DEFAULT ''
+  
+ devices_groups: ID int(10) unsigned NOT NULL auto_increment
+ devices_groups: SYS_NAME varchar(100) NOT NULL DEFAULT ''
+ devices_groups: TITLE varchar(255) NOT NULL DEFAULT ''
+ devices_groups: APPLY_TYPES text
 
 
 EOD;

@@ -1,4 +1,4 @@
-[#if ACTION!="context"#]
+[#if ACTION!="context" && ACTION!="service"#]
 
 <ul class="nav nav-tabs">
  <li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?view_mode=">Debug</a></li>
@@ -109,3 +109,48 @@
  findContext();
 </script>
 [#endif ACTION#]
+
+[#if ACTION="service"#]
+<div class="row" style="border:1px dashed black;padding:5px;">
+ <div class="col-md-3">
+  <b>Service: [#CYCLE#]</b>
+ </div>
+ <div class="col-md-4" id='status[#CYCLE#]Body'>
+  ...
+ </div>
+ <div class="col-md-5">
+  <a href="#" class="btn btn-default" onclick="return send[#CYCLE#]Command('restart');"><i class="glyphicon glyphicon-refresh"></i> Restart</a>
+  <a href="#" class="btn btn-default" onclick="return send[#CYCLE#]Command('stop');"><i class="glyphicon glyphicon-stop"></i> Stop</a>
+ </div>
+</div>
+
+<script language="javascript">
+ var [#CYCLE#]Status_timer=0;
+ function send[#CYCLE#]Command(cmd) {
+  var url="<#ROOTHTML#>ajax/xray.html?action=service";
+  $.post(url,
+          { action:"service", ajax: "1", "cycle": "[#CYCLE#]", "op": cmd},
+          function(data) {
+           console.log(data);
+          }
+  );
+  update[#CYCLE#]Status();
+  return false;
+ }
+ function update[#CYCLE#]Status() {
+  var url="<#ROOTHTML#>ajax/xray.html?action=service";
+  clearTimeout([#CYCLE#]Status_timer);
+  $.post(url,
+          { action:"service", ajax: "1", "cycle": "[#CYCLE#]"},
+          function(data) {
+           console.log(data);
+           $('#status[#CYCLE#]Body').html(data.BODY);
+           [#CYCLE#]Status_timer=setTimeout('update[#CYCLE#]Status()',2000);
+          }
+  );
+  return false;
+ }
+ update[#CYCLE#]Status();
+
+</script>
+[#endif#]

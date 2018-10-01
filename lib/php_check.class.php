@@ -17,12 +17,10 @@
 function php_syntax_error($code)
 {
    $code .= "\n echo 'zzz';";
-   $code  = '<?' . $code . '?>';
- 
+   $code  = '<?php ' . $code . '?>';
    //echo DOC_ROOT;exit;
-   
    $fileName = md5(time() . rand(0, 10000)) . '.php';
-   $filePath = DOC_ROOT . '/cached/' . $fileName;
+   $filePath = DOC_ROOT . '/cms/cached/' . $fileName;
  
    SaveFile($filePath, $code);
  

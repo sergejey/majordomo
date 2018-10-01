@@ -76,4 +76,62 @@
    }
   }
   outHash($rec, $out);
+
+if(is_dir(DIR_MODULES.'app_player/addons')) {
+	include_once(DIR_MODULES.'app_player/addons.php');
+	$addons = scandir(DIR_MODULES.'app_player/addons');
+	if(is_array($addons)) {
+		foreach($addons as $addon_file) {
+			$addon_file = DIR_MODULES.'app_player/addons/'.$addon_file;
+			if(is_file($addon_file)) {
+				if(strtolower(substr($addon_file, -10)) == '.addon.php') {
+					$addon_name = basename($addon_file, '.addon.php');
+					include_once($addon_file);
+					if(class_exists($addon_name)) {
+						if(is_subclass_of($addon_name, 'app_player_addon', TRUE)) {
+							if($player = new $addon_name(NULL)) {
+								// Get player features
+								/*
+								if($features = getURL('http://localhost/popup/app_player.html?ajax=1&command=features')) {
+									if($json = json_decode($features)) {
+										if($json->success) {
+											if(count($json->data)) {
+												$player->description .= '<p><b>Поддерживаемые команды:</b> '.implode(', ', $json->data).'.</p>';
+											} else {
+												$player->description .= '<p style="color: #b94a48;"><b>Внимание! Плеер не поддерживает ни одной команды.</b></p>';
+											}
+										}
+									}
+								}
+								*/
+								$features = array();
+								$reflection = new ReflectionClass($player);
+								foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+									if($method->getDeclaringClass()->getName() == $reflection->getName()) {
+										$method_name = $method->getName();
+										if(substr($method_name, 0, 2) != '__' and !in_array($method_name, array('destroy', 'command'))) {
+											$features[] = $method_name;
+										}
+									}
+								}
+								if(count($features)) {
+									$player->description .= '<p><b>Поддерживаемые команды:</b> '.implode(', ', $features).'.</p>';
+								} else {
+									$player->description .= '<p style="color: #b94a48;"><b>Внимание! Плеер не поддерживает ни одной команды.</b></p>';
+								}
+								// Results
+								$out['PLAYER_ADDONS'][] = array(
+									'TITLE'			=> $player->title,
+									'VALUE'			=> $addon_name,
+									'DESCRIPTION'	=> $player->description,
+								);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 ?>

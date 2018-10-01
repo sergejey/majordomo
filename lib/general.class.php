@@ -25,7 +25,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
 
    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
 
-   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1')
+   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr)!= '::1')
    {
       // password required
       //echo "password required for ".$remoteAddr;exit;
@@ -126,6 +126,20 @@ if (isset($_SERVER['REQUEST_METHOD']))
    }
 }
 
+
+function gr($var_name,$type='') {
+   $value = $_REQUEST[$var_name];
+   if (get_magic_quotes_gpc()) {
+      stripit($value);
+   }
+   if ($type=='int') {
+      $value=(int)$value;
+   } elseif ($type=='float') {
+      $value=(float)$value;
+   }
+   return $value;
+}
+
 /**
  * Summary of redirect
  * @param mixed $url    Url
@@ -174,14 +188,11 @@ function LoadFile($filename)
    // loading file
    $f     = fopen($filename, "r");
    $data  = "";
-   $fsize = filesize($filename);
-
-   if ($f && $fsize > 0)
-   {
+   if ($f) {
+      $fsize = filesize($filename);
       $data = fread($f, $fsize);
       fclose($f);
    }
-
    return $data;
 }
 
@@ -516,7 +527,13 @@ function DebMes($errorMessage, $logLevel = "debug")
    if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
     $path=LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'debmes';
+    $path = ROOT . 'cms/debmes';
+   }
+
+   if (defined('LOG_MAX_SIZE') && LOG_MAX_SIZE>0) {
+      $max_log_size = LOG_MAX_SIZE*1024*1024; // Mb
+   } else {
+      $max_log_size = 5*1024*1024; // 5 Mb, default
    }
 
    // DEBUG MESSAGE LOG
@@ -524,7 +541,6 @@ function DebMes($errorMessage, $logLevel = "debug")
    {
       mkdir($path, 0777);
    }
-
    if (is_array($errorMessage) || is_object($errorMessage)) {
       $errorMessage=json_encode($errorMessage, JSON_PRETTY_PRINT);
    }
@@ -534,6 +550,9 @@ function DebMes($errorMessage, $logLevel = "debug")
    } else {
       $today_file=$path.'/'.date('Y-m-d').'.log';
    }
+
+   if (file_exists($today_file) && filesize($today_file)>$max_log_size) return;
+
    $f=fopen($today_file, "a+");
    if ($f) {
                 $tmp=explode(' ', microtime());
@@ -541,6 +560,28 @@ function DebMes($errorMessage, $logLevel = "debug")
                 fputs($f, " ".$errorMessage."\n");
                 fclose($f);
                 @chmod($today_file, 0666);
+   }
+}
+
+function dprint($data = 0, $stop = 1) {
+   echo "<pre>";
+   if ($data!==0) {
+      if (is_array($data)) {
+         print_r($data);
+      } elseif (is_object($data)) {
+         var_dump($data);
+      } else {
+         echo $data;
+      }
+   } else {
+      echo date('Y-m-d H:i:s');
+   }
+   echo "</pre><hr/>";
+   echo str_repeat(' ',4096);
+   flush();flush();
+
+   if ($stop) {
+      exit;
    }
 }
 
@@ -668,13 +709,13 @@ function colorizeArray(&$ar, $every = 2)
  */
 function clearCache($verbose = 0)
 {
-   if ($handle = opendir(ROOT . 'cached'))
+   if ($handle = opendir(ROOT . 'cms/cached'))
    {
       while (false !== ($file = readdir($handle)))
       {
-         if (is_file(ROOT . 'cached/' . $file))
+         if (is_file(ROOT . 'cms/cached/' . $file))
          {
-            @unlink(ROOT . 'cached/' . $file);
+            @unlink(ROOT . 'cms/cached/' . $file);
 
             if ($verbose)
             {

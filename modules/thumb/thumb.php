@@ -2,7 +2,7 @@
 /*
 * @version 0.1 (auto-set)
 */
-error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
+//error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
 chdir('../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
@@ -16,7 +16,7 @@ if (!defined('PATH_TO_FFMPEG')) {
 }
 
 define("_I_CACHING","1");               //    Chaching enabled, 1 - yes, 0 - no
-define("_I_CACHE_PATH","./cached/"); //    Path to cache dir
+define("_I_CACHE_PATH","./cms/cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED","2592000");   //    Expired time for images in seconds, 0 - never expired
 
 
@@ -34,7 +34,11 @@ if (IsSet($url) && $url != '') {
             $resolution = $w.'x'.$h;
         }
         $cmd = 'fswebcam -r '.$resolution.' '.$img_tmp;
-        exec($cmd);
+        if ($_GET['debug']) {
+            echo $cmd.'<br/>';
+        } else {
+            exec($cmd);
+        }
         if (file_exists($img_tmp)) {
             rename($img_tmp, $img);
         }
@@ -289,7 +293,9 @@ if (file_exists($img)) {
  }
  //   Endof save
 
- Header("Content-type:image/jpeg");
- imageJpeg($new_image);
+
+        Header("Content-type:image/jpeg");
+        imageJpeg($new_image);
+
 
 }

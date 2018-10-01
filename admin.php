@@ -66,7 +66,7 @@ endMeasure('languageConstants');
 
 $result = str_replace("nf.php", "admin.php", $result);
 
-require(ROOT.'lib/utils/postprocess_result.inc.php');
+//require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 
 startMeasure('accelerationProcess');
@@ -94,7 +94,10 @@ if ($_GET['part_load']) {
       $cut_begin_index+=mb_strlen($cut_begin)+2;
       $res['CONTENT']=mb_substr($result,$cut_begin_index,($cut_end_index-$cut_begin_index));
       $res['NEED_RELOAD']=0;
-      if (headers_sent() || is_integer(mb_strpos($res['CONTENT'], '$(document).ready')) || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) { 
+      if (headers_sent()
+          || is_integer(mb_strpos($res['CONTENT'], '$(document).ready'))
+          || is_integer(mb_strpos($res['CONTENT'], '$(function('))
+          || is_integer(mb_strpos($res['CONTENT'], 'codemirror/'))) {
          $res['CONTENT']='';
          $res['NEED_RELOAD']=1;
       }

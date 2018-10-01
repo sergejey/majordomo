@@ -73,6 +73,7 @@
                      }
                  }
                  $v['NAME']=$k;
+                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP']=$v['_CONFIG_HELP'];
                  $v['CONFIG_TYPE']=$v['_CONFIG_TYPE'];
                  $v['VALUE']=getGlobal($rec['LINKED_OBJECT'].'.'.$k);
                  if ($v['CONFIG_TYPE']=='select') {
@@ -88,6 +89,11 @@
                          }
                          $v['OPTIONS'][]=array('VALUE'=>$value,'TITLE'=>$title);
                      }
+                 } elseif ($v['CONFIG_TYPE']=='style_image') {
+                     include_once(DIR_MODULES.'scenes/scenes.class.php');
+                     $scene_class = new scenes();
+                     $styles = $scene_class->getAllTypes();
+                     $v['FOLDERS']=$styles;
                  }
                  $res_properties[]=$v;
              }
@@ -96,9 +102,47 @@
              foreach($onchanges as $k=>$v) {
                  callMethod($rec['LINKED_OBJECT'].'.'.$k);
              }
+             $this->homebridgeSync($rec['ID']);
          }
          //print_r($res_properties);exit;
          $out['PROPERTIES']=$res_properties;
+     }
+     $groups=$this->getAllGroups($rec['TYPE']);
+
+     global $apply_groups;
+     if ($this->mode=='update') {
+         if (!is_array($apply_groups)) {
+             $apply_groups=array();
+         }
+     } else {
+         $apply_groups=array();
+     }
+
+     $total = count($groups);
+
+     $object_id=gg($rec['LINKED_OBJECT'].'.object_id');
+
+     if ($total>0) {
+         for($i=0;$i<$total;$i++) {
+             $property_title='group'.$groups[$i]['SYS_NAME'];
+             if ($this->mode=='update') {
+                 if (in_array($groups[$i]['SYS_NAME'],$apply_groups)) {
+                     sg($rec['LINKED_OBJECT'].'.'.$property_title,1);
+                 } elseif (gg($rec['LINKED_OBJECT'].'.'.$property_title)) {
+                     sg($rec['LINKED_OBJECT'].'.'.$property_title,0);
+                     $property_id=current(SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID=".(int)$object_id." AND TITLE='".DBSafe($property_title)."'"));
+                     if ($property_id) {
+                         SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID=".$property_id." AND OBJECT_ID=".$object_id);
+                         SQLExec("DELETE FROM properties WHERE ID=".$property_id);
+                     }
+                     //echo $property_id;exit;
+                 }
+             }
+             if (gg($rec['LINKED_OBJECT'].'.'.$property_title)){
+                 $groups[$i]['SELECTED']=1;
+             }
+         }
+         $out['GROUPS']=$groups;
      }
   }
 
@@ -175,6 +219,7 @@
           $out['TITLE']=$add_title;
       }
 
+
       if ($out['SOURCE_TABLE'] && !$rec['ID']) {
           $qry_devices=1;
           if ($out['TYPE']) {
@@ -202,6 +247,8 @@
     $out['ERR_TITLE']=1;
     $ok=0;
    }
+
+   $rec['ALT_TITLES']=gr('alt_titles','trim');
 
    $rec['TYPE']=$type;
    if ($rec['TYPE']=='') {
@@ -258,7 +305,7 @@
            SQLUpdate('devices',$rec);
        }
 
-       $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT']);
+       $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT'],'sdevice'.$rec['ID']);
        $class_id=current(SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($type_details['CLASS'])."'"));
 
 
@@ -290,12 +337,13 @@
        }
 
     clearPropertiesCache();
+    addToOperationsQueue('connect_sync_devices','required');
 
     if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
     }
 
-    $this->homebridgeSync();
+    $this->homebridgeSync($rec['ID']);
 
     if ($added) {
       $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=settings");
@@ -315,6 +363,27 @@
   }
   outHash($rec, $out);
 
+$show_methods=array();
+ if ($rec['TYPE']!='') {
+     $methods=$this->getAllMethods($rec['TYPE']);
+     if (is_array($methods)) {
+         foreach($methods as $k=>$v) {
+             if ($v['_CONFIG_SHOW']) {
+                 $v['NAME']=$k;
+                 $show_methods[]=$v;
+             }
+         }
+     }
+ }
+ if (isset($show_methods[0])) {
+     usort($show_methods,function($a,$b) {
+         if ($a['_CONFIG_SHOW'] == $b['_CONFIG_SHOW']) {
+             return 0;
+         }
+         return ($a['_CONFIG_SHOW'] > $b['_CONFIG_SHOW']) ? -1 : 1;
+     });
+     $out['SHOW_METHODS']=$show_methods;
+ }
 
   $types=array();
   foreach($this->device_types as $k=>$v) {
@@ -329,6 +398,9 @@ if ($rec['LINKED_OBJECT']) {
     $out['HTML']=$processed['HTML'];
 }
 
-  $out['TYPES']=$types;
+usort($types,function ($a,$b) {
+    return strcmp($a['TITLE'],$b['TITLE']);
+});
+$out['TYPES']=$types;
 
 $out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");

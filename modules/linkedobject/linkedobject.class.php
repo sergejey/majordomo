@@ -19,7 +19,7 @@ class linkedobject extends module {
 *
 * @access private
 */
-function linkedobject() {
+function __construct() {
   $this->name="linkedobject";
   $this->title="LinkedObject";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

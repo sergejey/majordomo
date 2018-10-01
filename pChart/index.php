@@ -88,6 +88,10 @@ if (!$type) {
  $type = '7d';
 }
 
+if ($_GET['group']) {
+    $group = $_GET['group'];
+}
+
 if (preg_match('/(\d+)d/', $type, $m)) {
         $total=(int)$m[1];
         $period=round(($total*24*60*60)/(($w-$w_delta)/$px_per_point)); // seconds
@@ -120,11 +124,31 @@ if ($total>0) {
                 $history_table = 'phistory';
         }
 
-        $history=SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) as UNX, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."') ORDER BY ADDED");
-        if (!$history[0]['ID'] && $op == 'log') {
-                $history = SQLSelect("SELECT ID, VALUE, UNIX_TIMESTAMP(ADDED) AS UNX, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+        if ($end_time == $start_time) {
+            $history = array();
+        } else {
+            $history=SQLSelect("SELECT ID, VALUE, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."')"); // ORDER BY ADDED
+            if (!$history[0]['ID'] && $op == 'log') {
+                $history = SQLSelect("SELECT ID, VALUE, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
                 $history = array_reverse($history);
+            }
+
+            if ($history[0]['ID']) {
+                $total = count($history);
+                for($i=0;$i<$total;$i++) {
+                    $history[$i]['UNX']=strtotime($history[$i]['ADDED']);
+                }
+                usort($history,function($a,$b) {
+                    if ($a['UNX'] == $b['UNX']) {
+                        return 0;
+                    }
+                    return ($a['UNX'] < $b['UNX']) ? -1 : 1;
+                });
+            }
         }
+
+    //echo "test";exit;
+
         $total_values=count($history);
         $start_time=$history[0]['UNX'];
 
@@ -183,32 +207,52 @@ if ($total>0) {
 
                  echo "<table width=100%><tr><td width='99%'>";
 
+          $_SERVER['REQUEST_URI']=preg_replace('/&subop=(\w+)/','',$_SERVER['REQUEST_URI']);
           echo '<a href="'.$_SERVER['REQUEST_URI'].'&subop=">H</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=1h">1h</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=24h">24h</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=7d">7d</a> ';
           echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=31d">31d</a> ';
-          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a>';
-          echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
-                 echo "</td><td>";
+          if (!$_GET['minimal']) {
+              echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=clear" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_CLEAR_ALL.'</a>';
+              echo ' | <a href="'.$_SERVER['REQUEST_URI'].'&subop=optimize" onClick="return confirm(\''.LANG_ARE_YOU_SURE.'\')">'.LANG_OPTIMIZE_LOG.'</a> ';
+          }
+                 echo "</td>";
+             if (!$_GET['minimal']) {
+                 echo "<td>";
                  echo '<a href="javascript:window.close();">X</a>';
-                 echo "</td></tr></table>";
-          echo '<br/>';
-          if ($_GET['subop']=='1h' || $_GET['subop']=='24h' || $_GET['subop']=='7d' || $_GET['subop']=='31d') {
+                 echo "</td>";
+             }
+             echo "</tr></table>";
+          //echo '<br/>';
+
+          if (preg_match('/^\d+\w$/',$_GET['subop'])) {
+
            if (file_exists(DIR_MODULES.'charts/charts.class.php')) {
+
+               $height = 400;
+               if ($_GET['minimal']) {
+                   $height = 500;
+               }
+
+
                if (!is_array($_GET['p'])) {
-                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&property='.urlencode($_GET['p']).'" width=100% height=400></iframe>';
+                $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).'&group='.$group.'&property='.urlencode($_GET['p']).'&height='.$height.'" width=100% height='.($height).'></iframe>';
                } else {
                    $p_url='';
                    foreach($_GET['p'] as $p) {
                        $p_url.='&properties[]='.urlencode($p);
                    }
-                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].$p_url.'" width=100% height=300></iframe>';
+                   $p_url.='&height='.$height;
+                   $code='<iframe src="'.ROOTHTML.'module/charts.html?id=config&period='.$_GET['subop'].'&chart_type='.urlencode($_GET['chart_type']).'&group='.$group.$p_url.'" width=100% height='.$height.'></iframe>';
                }
            } else {
-            $code='<img src="/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
+            $code='<img src="'.ROOTHTML.'3rdparty/jpgraph/?p='.$p.'&type='.$_GET['subop'].'&width=500&"/>';
            }
-           echo $code."<br/>".htmlspecialchars($code);
+           echo $code;
+              if (!$_GET['minimal']) {
+                  echo "<br/>".htmlspecialchars($code);
+              }
            exit;
           }
          }
@@ -233,7 +277,7 @@ if ($total>0) {
                         echo "<br/>";
                 }
                 if (!$_GET['full']) {
-                        echo ' <br/><a href="'.$_SERVER['REQUEST_URI'].'&full=1">Load all values</a> ';
+                        echo ' <br/><a href="'.$_SERVER['REQUEST_URI'].'&type=1&full=1">Load all values</a> ';
                 }
                 exit;
         }
@@ -641,7 +685,7 @@ if ($_GET['gtype']=='curve') { //������ ��������� 
   }
 
 /* Render the picture (choose the best way) */
-$path_to_file='./cached/'.md5($_SERVER['REQUEST_URI']).'.png';
+$path_to_file='./cms/cached/'.md5($_SERVER['REQUEST_URI']).'.png';
 imagepng($Test->autoOutput($path_to_file));
 
 if (file_exists($path_to_file)) {

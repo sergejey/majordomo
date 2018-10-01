@@ -28,7 +28,7 @@
  * **************************************************************************
  */
 define("PHPSVN_DIR", dirname(__FILE__));
-define("LOG_FILE", ROOT . 'saverestore/'. time() . ".log.html");
+define("LOG_FILE", ROOT . 'cms/saverestore/'. time() . ".log.html");
 
 require_once PHPSVN_DIR . "/http.php";
 require_once PHPSVN_DIR . "/xml_parser.php"; // to be dropped?

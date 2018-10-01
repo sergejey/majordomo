@@ -27,15 +27,14 @@
 </div>
 [#endif#]
 </div> <!-- end shout_box -->
-<script language="javascript">
+<script type="text/javascript">
 
 var shoutTimer;
 
  function updateShoutContent() {
   clearTimeout(shoutTimer);
 
-  var url="<#ROOTHTML#>popup/shoutbox.html?";
-
+   var url="<#ROOTHTML#>popup/shoutbox.html?";
    url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#]';
    $.ajax({
     url: url,
@@ -46,14 +45,8 @@ var shoutTimer;
        $('#shoutboxContent').html(data);
       }
      }
-
-  [#if (NOT_LOGGED!="1") || (MOBILE=="1")#]
-  shoutTimer=setTimeout("updateShoutContent('', '');", 10000);
-  [#endif NOT_LOGGED#]
-
-
+     shoutTimer=setTimeout("updateShoutContent();", 3000);
     });
-
  }
 
  function sendShoutMessage() {
@@ -64,10 +57,8 @@ var shoutTimer;
   url=url+'&limit=<#LIMIT#>&msg='+msg;
   $.ajax({
    url: url,
-   }).done(function(data) { 
-    if (data!='OK' && data!='') {
-     $('#shoutboxContent').html(data);
-    }
+   }).done(function(data) {
+    updateShoutContent();
    });
   return false;
  }
@@ -75,5 +66,5 @@ var shoutTimer;
 
 
 <script language="javascript">
-  updateShoutContent();
+ shoutTimer=setTimeout("updateShoutContent();", 3000);
 </script>

@@ -1,6 +1,6 @@
 
 <!-- Table 'devices' edit -->
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit" class="form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit" class="form">
     [#if OK#]
     <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
     [#endif OK#]
@@ -11,10 +11,10 @@
 
 
         <div class="form-group">
-            <label class="col-md-8 control-label">
+            <label class="control-label">
                 <#LANG_CODE#>
             </label>
-            <div class="col-md-4">
+            <div>
                 [#if ERRORS!=""#]<br><font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
                 <!--#
                 <a href="#" onClick="return editBlockly();"><#LANG_EDIT#></a>
@@ -28,10 +28,10 @@
 
 
         <div class="form-group">
-            <label class="col-md-8 control-label">
+            <label class="control-label">
                 &nbsp;
             </label>
-            <div class="col-md-4">
+            <div>
                 [#if ID!=""#]
                 <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
                 [#else ID#]

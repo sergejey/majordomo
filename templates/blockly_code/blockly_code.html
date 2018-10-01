@@ -4,7 +4,7 @@
      if (typeof editor!=="undefined") {
          editor.toTextArea();
      }
-  var blockly = window.open('<#ROOTHTML#>blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
+  var blockly = window.open('<#ROOTHTML#>3rdparty/blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
   blockly.creator=self;
   blockly.focus(); 
   return false;
@@ -43,27 +43,27 @@ $(function() {
 });
 </script>
 [#else#]
-<script src="<#ROOTHTML#>js/codemirror/lib/codemirror.js"></script>
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/lib/codemirror.css">
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.css">
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.css">
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.css">
+<script src="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
 
-<script src="<#ROOTHTML#>js/codemirror/addon/edit/matchbrackets.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/xml/xml.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/javascript/javascript.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/css/css.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/clike/clike.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/php/php.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/foldcode.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/brace-fold.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/comment-fold.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/edit/closebrackets.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/xml/xml.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/javascript/javascript.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/css/css.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/clike/clike.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/php/php.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldcode.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/brace-fold.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/comment-fold.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/closebrackets.js"></script>
 
 <script language="javascript">
 var editor;

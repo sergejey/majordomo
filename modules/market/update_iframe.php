@@ -25,6 +25,25 @@ if ($names!='') {
  $names=explode(',', $names);
 }
 
+if ($mode2=='uploaded' && $name!='') {
+ $out=array();
+ $mkt->admin($out);
+ $filename = ROOT.'cms/saverestore/'.$name;
+ if (file_exists($filename)) {
+  $mkt->echonow("Uploaded ".$name);
+  $folder=str_replace('.tgz','',$name);
+  $restore=$name;
+  $version='Unknown version';
+  $res=$mkt->upload($out, 1);
+  if ($res) {
+   $mkt->removeTree(ROOT.'cms/saverestore/temp');
+   //@SaveFile(ROOT.'reboot', 'updated');
+   $mkt->echonow("Redirecting to main page...");
+   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+  }
+ }
+}
+
 if ($mode2=='install' && $name!='') {
  // install/update one extension
  $out=array();
@@ -37,7 +56,7 @@ if ($mode2=='install' && $name!='') {
   $version=$mkt->version;
   $res=$mkt->upload($out, 1);
   if ($res) {
-   $mkt->removeTree(ROOT.'saverestore/temp');
+   $mkt->removeTree(ROOT.'cms/saverestore/temp');
    //@SaveFile(ROOT.'reboot', 'updated');
    $mkt->echonow("Redirecting to main page...");
    $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
@@ -50,7 +69,7 @@ if ($mode2=='install_multiple' && $names!='') {
  $mkt->admin($out);
  $res=$mkt->updateAll($mkt->selected_plugins, 1);
  if ($res) {
-  $mkt->removeTree(ROOT.'saverestore/temp');
+  $mkt->removeTree(ROOT.'cms/saverestore/temp');
   @SaveFile(ROOT.'reboot', 'updated');
   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
  }
@@ -61,7 +80,7 @@ if ($mode2=='update_all') {
  $mkt->admin($out);
  $res=$mkt->updateAll($mkt->can_be_updated, 1);
  if ($res) {
-  $mkt->removeTree(ROOT.'saverestore/temp');
+  $mkt->removeTree(ROOT.'cms/saverestore/temp');
   @SaveFile(ROOT.'reboot', 'updated');
   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
  }
@@ -91,7 +110,7 @@ if ($res) {
  if ($res) {
 
   $mkt->echonow("Removing temporary files ... ");
-  $mkt->removeTree(ROOT.'saverestore/temp');
+  $mkt->removeTree(ROOT.'cms/saverestore/temp');
   $mkt->echonow(" OK<br/> ", 'green');
 
   $mkt->echonow("<b>Main system updated!</b><br/>", 'green');

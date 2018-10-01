@@ -14,11 +14,8 @@
   var $member_id;
 
 // --------------------------------------------------------------------
-  function application() {
-   global $session;
-   global $db;
+  function __construct() {
    $this->name="application";
-   
  }
 
 // --------------------------------------------------------------------
@@ -51,6 +48,17 @@ function getParams() {
 
    Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+   $theme = SETTINGS_THEME;
+   if ($this->action=='layouts' && $this->id) {
+    $layout_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$this->id);
+    if ($layout_rec['THEME']) {
+     $theme=$layout_rec['THEME'];
+    }
+    if ($layout_rec['BACKGROUND_IMAGE']) {
+     $out['BODY_CSS'].='background-image:url('.$layout_rec['BACKGROUND_IMAGE'].')';
+    }
+   }
+   Define('THEME',$theme);
 
    if ($this->action=='ajaxgetglobal') {
     header ("HTTP/1.0: 200 OK\n");
@@ -92,14 +100,14 @@ function getParams() {
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
 
-    if ($dir = @opendir(ROOT."cached/voice")) { 
+    if ($dir = @opendir(ROOT."cms/cached/voice")) {
        while (($file = readdir($dir)) !== false) { 
        if (preg_match('/\.mp3$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice/".$file);
+        $mtime=filemtime(ROOT."cms/cached/voice/".$file);
         /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
-         unlink(ROOT."cached/voice".$file);
+         unlink(ROOT."cms/cached/voice".$file);
         } else {
         }
         */
@@ -107,11 +115,11 @@ function getParams() {
        }
 
        if (preg_match('/\.wav$/', $file)) {
-        $mtime=filemtime(ROOT."cached/voice/".$file);
+        $mtime=filemtime(ROOT."cms/cached/voice/".$file);
         /*
         if ((time()-$mtime)>60*60*24 && $mtime>0) {
          //old file, delete?
-         unlink(ROOT."cached/voice/".$file);
+         unlink(ROOT."cms/cached/voice/".$file);
         }
         */
        }
@@ -128,7 +136,7 @@ function getParams() {
          return ($a['MTIME'] > $b['MTIME']) ? -1 : 1; 
      }
      usort($files, 'sortFiles');
-     echo '/cached/voice/'.$files[0]['FILENAME'];
+     echo '/cms/cached/voice/'.$files[0]['FILENAME'];
     }
 
     global $db;
@@ -325,7 +333,7 @@ function getParams() {
    $days=array('Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота');
    
    $out['TODAY']=$days[date('w')].', '.date('d.m.Y');
-   Define(TODAY, $out['TODAY']);
+   Define('TODAY', $out['TODAY']);
    $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
 
    global $from_scene;

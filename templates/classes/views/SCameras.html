@@ -8,11 +8,11 @@
     }
     function showHistory%.object_title%() {
         var url="/pChart/?p=%.object_title%"+".snapshot&op=log";
-        $.fancybox.open({ href: url, type: 'iframe' });
+        $.fancybox.open({ src: url, type: 'iframe' });
         return false;
     }
     function showBigImage%.object_title%(url) {
-        $.fancybox.open({ href: url, type: 'iframe' });
+        $.fancybox.open({ src: url, type: 'iframe' });
         return false;
     }
 </script>

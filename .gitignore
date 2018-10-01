@@ -1,9 +1,6 @@
-config.php
 .idea*
 *~
 modules/*/installed
-cached/*
-debmes/*.txt
 reboot
 
 *.phpproj
@@ -13,4 +10,6 @@ reboot
 *.phpproj.user
 .vs/
 backup/
-debmes/
+/cms/debmes/*
+/cms/cached/*
+/config.php

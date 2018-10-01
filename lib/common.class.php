@@ -1,4 +1,22 @@
 <?php
+
+ function sayReplySafe($ph,$level = 0, $replyto = '') {
+     $data=array(
+         'sayReply'=>1,
+         'ph'=>$ph,
+         'level'=>$level,
+         'replyto'=>$replyto,
+     );
+     $url=BASE_URL.'/objects/?'.http_build_query($data);
+     if (is_array($params)) {
+         foreach($params as $k=>$v) {
+             $url.='&'.$k.'='.urlencode($v);
+         }
+     }
+     $result = getURLBackground($url,0);
+     return $result;
+ }
+
 /**
  * Summary of sayReply
  * @param mixed $ph        Phrase
@@ -34,8 +52,26 @@
     $rec['ID'] = SQLInsert('shouts', $rec);
    }
   }
-  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
+  processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
  }
+
+
+function sayToSafe($ph, $level = 0, $destination = '') {
+    $data=array(
+        'sayTo'=>1,
+        'ph'=>$ph,
+        'level'=>$level,
+        'destination'=>$destination,
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
 
 /**
  * Summary of sayTo
@@ -48,7 +84,7 @@
   if (!$destination) {
    return 0;
   }
-  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $processed=processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
 
   if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
@@ -60,27 +96,53 @@
    return 0;
   }
   if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
-   $service_port='7999';
-   $in='tts:'.$ph;
-   $address=$terminal_rec['HOST'];
-   if (!preg_match('/^\d/',$address)) return 0;
-   $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-   if ($socket === false) {
-    return 0;
-   }
-   $result = socket_connect($socket, $address, $service_port);
-   if ($result === false) {
-    return 0;
-   }
-   socket_write($socket, $in, strlen($in));
-   socket_close($socket);
+      $service_port = '7999';
+      $in = 'tts:' . $ph;
+      $address = $terminal_rec['HOST'];
+      if (!preg_match('/^\d/', $address)) return 0;
+      $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+      if ($socket === false) {
+          return 0;
+      }
+      $result = socket_connect($socket, $address, $service_port);
+      if ($result === false) {
+          return 0;
+      }
+      socket_write($socket, $in, strlen($in));
+      socket_close($socket);
+      return 1;
+  } elseif ($terminal_rec['PLAYER_TYPE']=='ghn') {
+      $port=$terminal_rec['PLAYER_PORT'];
+      $language = SETTINGS_SITE_LANGUAGE;
+      if (!$port) {
+          $port='8091';
+      }
+      $host=$terminal_rec['HOST'];
+      $url = 'http://'.$host.':'.$port.'/google-home-notifier?language='.$language.'&text='.urlencode($ph);
+      getURL($url,0);
+  } elseif ($processed) {
    return 1;
-  } elseif (!$processed) {
-   //say($ph,$level);
-   return 0;
   }
   return 0;
  }
+
+function saySafe($ph, $level = 0, $member_id = 0, $source = '') {
+    $data=array(
+        'say'=>1,
+        'ph'=>$ph,
+        'level'=>$level,
+        'member_id'=>$member_id,
+        'source'=>$source,
+    );
+    $url=BASE_URL.'/objects/?'.http_build_query($data);
+    if (is_array($params)) {
+        foreach($params as $k=>$v) {
+            $url.='&'.$k.'='.urlencode($v);
+        }
+    }
+    $result = getURLBackground($url,0);
+    return $result;
+}
 
 /**
  * Summary of say
@@ -108,7 +170,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    if ($member_id)
    {
-      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id));
+      $processed=processSubscriptions('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
        if (!$processed) {
            include_once(DIR_MODULES . 'patterns/patterns.class.php');
            $pt = new patterns();
@@ -137,7 +199,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    setGlobal('lastSayTime', time());
    setGlobal('lastSayMessage', $ph);
-   processSubscriptions('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
+   processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
 
    if (!$noPatternMode)
    {
@@ -151,10 +213,10 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
       eval(SETTINGS_HOOK_AFTER_SAY);
    }
 
-   $terminals=SQLSelect("SELECT NAME FROM terminals WHERE IS_ONLINE=1 AND MAJORDROID_API=1");
+   $terminals=SQLSelect("SELECT NAME FROM terminals WHERE (IS_ONLINE=1 AND MAJORDROID_API=1) OR PLAYER_TYPE='googlehomenotifier'");
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
-    sayTo($ph, $level, $terminals[$i]['NAME']);
+    sayToSafe($ph, $level, $terminals[$i]['NAME']);
    }
 
 }
@@ -174,11 +236,27 @@ function ask($prompt, $target = '') {
             }
         }
         socket_close($socket);
+    } elseif (preg_match('/^[a-zA-Z]+$/',$target)) {
+      $qry=1;
+      $qry.=" AND MAJORDROID_API=1";
+      $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
+      $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=$qry");
+      $total = count($terminals);
+      for ($i = 0; $i < $total; $i++) {
+          $address = $terminals[$i]['HOST'];
+          $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+          if ($socket) {
+              $result = socket_connect($socket, $address, $service_port);
+              if ($result) {
+                  socket_write($socket, $in, strlen($in));
+              }
+          }
+          socket_close($socket);
+      }
     } else {
         $qry=1;
         $qry.=" AND MAJORDROID_API=1";
-        $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
-        $terminals = SQLSelect("SELECT * FROM terminals WHERE $qry");
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=$qry");
         $total = count($terminals);
         for ($i = 0; $i < $total; $i++) {
             $address = $terminals[$i]['HOST'];
@@ -216,7 +294,7 @@ function processCommand($command)
 function timeConvert($tm)
 {
    $tm = trim($tm);
-   
+
    if (preg_match('/^(\d+):(\d+)$/', $tm, $m))
    {
       $hour     = $m[1];
@@ -264,6 +342,13 @@ function timeNow($tm = 0)
            $array = array("минута", "минуты", "минут");
            $ms = $m.' '.getNumberWord($m,$array);
        }
+   } elseif ($language == 'ua') {
+       $array = array("година", "години", "годин");
+       $hw = $h.' '.getNumberWord($h,$array);
+       if ($m>0) {
+           $array = array("хвилина", "хвилини", "хвилин");
+           $ms = $m.' '.getNumberWord($m,$array);
+       } 
    } elseif ($language == 'en' && $m == 0) {
        $hw = $h.' o\'clock';
    } else {
@@ -282,7 +367,7 @@ function isWeekEnd()
 {
    if (date('w') == 0 || date('w') == 6)
       return true; // sunday, saturday
-   
+
 
    return false;
 }
@@ -295,7 +380,7 @@ function isWeekDay()
 {
    if (IsWeekEnd())
       return false;
-   
+
    return true;
 }
 
@@ -308,7 +393,7 @@ function timeIs($tm)
 {
    if (date('H:i') == $tm)
       return true;
-   
+
    return false;
 }
 
@@ -320,10 +405,10 @@ function timeIs($tm)
 function timeBefore($tm)
 {
    $trueTime = timeConvert($tm);
-   
+
    if (time() <= $trueTime)
       return true;
-   
+
    return false;
 }
 
@@ -335,10 +420,10 @@ function timeBefore($tm)
 function timeAfter($tm)
 {
    $trueTime = timeConvert($tm);
-   
+
    if (time() >= $trueTime)
       return true;
-   
+
    return false;
 }
 
@@ -367,7 +452,7 @@ function timeBetween($tm1, $tm2)
 
    if ((time() >= $trueTime1) && (time() <= $trueTime2))
       return true;
-   
+
    return false;
 }
 
@@ -466,10 +551,10 @@ function runScheduledJobs()
 
    for ($i = 0; $i < $total; $i++)
    {
-      echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
+      //echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
       $jobs[$i]['PROCESSED'] = 1;
       $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
-      
+
       SQLUpdate('jobs', $jobs[$i]);
 
        if ($jobs[$i]['COMMANDS'] != '') {
@@ -492,7 +577,7 @@ function runScheduledJobs()
 function textToNumbers($text)
 {
    $newtext = ($text);
-   
+    
    return $newtext;
 }
 
@@ -535,7 +620,7 @@ function recognizeTime($text, &$newText)
    }
 
    $newText = ($newText);
-   
+
    if ($found)
    {
       $result = $new_time;
@@ -592,9 +677,9 @@ function registeredEventTime($eventName)
  */
 function getRandomLine($filename)
 {
-   if (file_exists(ROOT . 'texts/' . $filename . '.txt'))
+   if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt'))
    {
-      $filename = ROOT . 'texts/' . $filename . '.txt';
+      $filename = ROOT . 'cms/texts/' . $filename . '.txt';
    }
 
    if (file_exists($filename))
@@ -605,7 +690,7 @@ function getRandomLine($filename)
       $lines = mb_split("\n", $data);
       $total = count($lines);
       $line  = $lines[round(rand(0, $total - 1))];
-      
+
       if ($line != '')
       {
          return $line;
@@ -624,10 +709,10 @@ function playSound($filename, $exclusive = 0, $priority = 0)
 {
    global $ignoreSound;
 
-   if (file_exists(ROOT . 'sounds/' . $filename . '.mp3'))
-      $filename = ROOT . 'sounds/' . $filename . '.mp3';
-   elseif (file_exists(ROOT . 'sounds/' . $filename))
-      $filename = ROOT . 'sounds/' . $filename;
+   if (file_exists(ROOT . 'cms/sounds/' . $filename . '.mp3'))
+      $filename = ROOT . 'cms/sounds/' . $filename . '.mp3';
+   elseif (file_exists(ROOT . 'cms/sounds/' . $filename))
+      $filename = ROOT . 'cms/sounds/' . $filename;
 
    if (defined('SETTINGS_HOOK_BEFORE_PLAYSOUND') && SETTINGS_HOOK_BEFORE_PLAYSOUND != '')
       eval(SETTINGS_HOOK_BEFORE_PLAYSOUND);
@@ -685,7 +770,7 @@ function playMedia($path, $host = 'localhost')
 
    include_once(DIR_MODULES . 'app_player/app_player.class.php');
    $player = new app_player();
-   
+
    $player->terminal_id = $terminal['ID'];
    $player->play        = $path;
 
@@ -767,8 +852,8 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     if (strlen($filename_part)>200) {
         $filename_part=substr($filename_part,0,200).md5($filename_part);
     }
-   $cache_file = ROOT . 'cached/urls/' . $filename_part . '.html';
-   
+   $cache_file = ROOT . 'cms/cached/urls/' . $filename_part . '.html';
+
    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache))
    {
       try
@@ -781,9 +866,9 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
          curl_setopt($ch, CURLOPT_URL, $url);
          curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // connection timeout
+         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
          curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
-         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
          curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
@@ -829,7 +914,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
           }
          }
 
-         $tmpfname = ROOT . 'cached/cookie.txt';
+         $tmpfname = ROOT . 'cms/cached/cookie.txt';
          curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
          curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
@@ -854,7 +939,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
       if ($cache > 0)
       {
-         CreateDir(ROOT . 'cached/urls');
+         CreateDir(ROOT . 'cms/cached/urls');
          SaveFile($cache_file, $result);
       }
    }
@@ -899,10 +984,12 @@ function execInBackground($cmd)
       try
       {
          //pclose(popen("start /B ". $cmd, "r"));
-         system($cmd);
-         //$WshShell = new COM("WScript.Shell");
-         //$oExec = $WshShell->Run("cmd /C ".$cmd, 0, false);
-         //exec($cmd);
+          if (class_exists('COM')) {
+              $WshShell = new COM("WScript.Shell");
+              $oExec = $WshShell->Run("cmd /C \"".$cmd."\"", 0, false);
+          } else {
+              system($cmd);
+          }
       }
       catch (Exception $e)
       {
@@ -976,7 +1063,7 @@ function isOnline($host)
                   FROM pinghosts
                  WHERE HOSTNAME LIKE '" . DBSafe($host) . "'
                     OR TITLE LIKE    '" . DBSafe($host) . "'";
-   
+
    $rec = SQLSelectOne($sqlQuery);
    if (!$rec['STATUS'] || $rec['STATUS'] == 2)
    {
@@ -1021,7 +1108,7 @@ function registerError($code = 'custom', $details = '')
    }
 
    $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
-   
+
    if (!$error_rec['ID'])
    {
       $error_rec['CODE']         = $code;
@@ -1185,7 +1272,7 @@ function verbose_log($data) {
             $data = $data . ' ('.implode('<',$res_trace).')';
         }
      DebMes('th_'.$verbose_thread_id.' '.$data,'verbose');
-    }    
+    }
 }
 
 /**
@@ -1197,3 +1284,22 @@ function verbose_log($data) {
   $unit=array('b','kb','mb','gb','tb','pb');
   return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
  }
+
+function getPassedText($updatedTime) {
+    $passed = time() - $updatedTime;
+    $passedText = '';
+    if ($passed<10) {
+        $passedText = LANG_DEVICES_PASSED_NOW;
+    } elseif ($passed<60) {
+        $passedText = $passed.' '.LANG_DEVICES_PASSED_SECONDS_AGO;
+    } elseif ($passed<60*60) {
+        $passedText = round($passed/60).' '.LANG_DEVICES_PASSED_MINUTES_AGO;
+    } elseif ($passed<20*60*60) {
+        //just time
+        $passedText = date('H:i',$updatedTime);
+    } else {
+        //time and date
+        $passedText=date('d.m.Y H:i',$updatedTime);
+    }
+    return $passedText;
+}

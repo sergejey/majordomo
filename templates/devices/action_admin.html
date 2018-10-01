@@ -4,12 +4,21 @@
  [#if VIEW_MODE="search_devices" || VIEW_MODE=""#]
   [#inc devices_search_admin.html#]
  [#endif VIEW_MODE#]
+
+ [#if VIEW_MODE="manage_groups"#]
+ [#inc devices_mange_groups.html#]
+ [#endif VIEW_MODE#]
+
  <!-- / table devices search -->
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
  [#if ID!=""#]
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
- [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+ <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
+ <div class="row">
+     <div class="col-md-8">
+         <!--#
+         [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+         #-->
  <ul class="nav nav-tabs">
      <li[#if TAB=""#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
@@ -27,9 +36,11 @@
      <li[#if TAB="interface"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
      </li>
+     <!--#
      <li[#if TAB="preview"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#></a>
      </li>
+     #-->
      [#endif LINKED_OBJECT#]
  </ul>
  &nbsp;<br/>
@@ -55,6 +66,26 @@
  [#if TAB="preview"#]
   [#inc preview.html#]
  [#endif TAB#]
+
+     </div>
+     [#if LINKED_OBJECT!=""#]
+     <div class="col-md-4">
+         [#inc preview.html#]
+
+         [#if SHOW_METHODS#]
+         <hr>
+         <b><#LANG_METHODS#></b>:
+         [#begin SHOW_METHODS#]
+         <div><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);">[#NAME#]</a>
+         &mdash; [#DESCRIPTION#]
+             </div>&nbsp;
+         [#end SHOW_METHODS#]
+         [#endif SHOW_METHODS#]
+
+     </div>
+     [#endif#]
+ </div>
+
 
  [#endif VIEW_MODE#]
  <!-- / table devices edit -->

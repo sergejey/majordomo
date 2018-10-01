@@ -118,53 +118,53 @@
 </div>
 
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
-            <br>
-            [#if (PLAYER_TYPE=="vlcweb") || (PLAYER_TYPE=="xbmc") || (PLAYER_TYPE=="foobar")#]
-            (<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
-            [#endif#]
-        </label>
-        <div class="col-lg-5">
-                <select name="player_type" class="form-control">
-                        <option value=""><#LANG_DEFAULT#>
-                        <option value="vlc"[#if PLAYER_TYPE=="vlc"#] selected[#endif#]>VLC
-                        <option value="xbmc"[#if PLAYER_TYPE=="xbmc"#] selected[#endif#]>Kodi (XBMC)
-                        <option value="foobar"[#if PLAYER_TYPE=="foobar"#] selected[#endif#]>Foobar2000
-                        <option value="vlcweb"[#if PLAYER_TYPE=="vlcweb"#] selected[#endif#]>VLC over HTTP
-                        <option value="mpd"[#if PLAYER_TYPE=="mpd"#] selected[#endif#]>MPD
-                        <option value="majordroid"[#if PLAYER_TYPE=="majordroid"#] selected[#endif#]>MajorDroid
-                        <option value="chromecast"[#if PLAYER_TYPE=="chromecast"#] selected[#endif#]>ChromeCast / Google TV
-                </select>
-        </div>
+	<div class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
+			<!--
+			<br>
+			[#if (PLAYER_TYPE=="vlcweb") || (PLAYER_TYPE=="xbmc") || (PLAYER_TYPE=="foobar")#]
+			(<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
+			[#endif#]
+			-->
+		</label>
+		<div class="col-lg-5">
+			<select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">
+				<option value=""><#LANG_DEFAULT#>
+				[#begin PLAYER_ADDONS#]
+				<option value="[#VALUE#]"[#if VALUE="<#PLAYER_TYPE#>"#] selected[#endif#]>[#TITLE#]
+				[#end PLAYER_ADDONS#]
+			</select>
+			[#begin PLAYER_ADDONS#]
+			<small id="[#VALUE#]_description" class="addon-description form-text text-muted hidden">[#DESCRIPTION#]</small>
+			[#end PLAYER_ADDONS#]
+			<style type="text/css">
+				.addon-description { display: block; margin-top: 10px; }
+			</style>
+			<script type="text/javascript">
+				function player_type_select(type) {
+					$('small.addon-description').addClass('hidden');
+					$('small#'+type+'_description').removeClass('hidden');
+					return true;
+				}
+				$(document).ready(function() {
+					player_type_select('[#PLAYER_TYPE#]');
+				});
+			</script>
+		</div>
+	</div>
+	<div class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
+	</div>
+	<div class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
+	</div>
+	<div class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
+	</div>
 </div>
-
-[#if (PLAYER_TYPE!="chromecast") && (PLAYER_TYPE!="majordroid")#]
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
-</div>
-[#endif#]
-
-</div>
-
-
-
-
 
 <div class="form-group">
      <div class="col-lg-offset-2 col-lg-5">

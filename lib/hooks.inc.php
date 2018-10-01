@@ -14,7 +14,6 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
    if (!$rec['ID'])
    {
       $rec = array();
-      
       $rec['NAME']     = 'HOOK_EVENT_' . strtoupper($event_name);
       $rec['TITLE']    = $rec['NAME'];
       $rec['TYPE']     = 'json';
@@ -25,8 +24,10 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
    }
 
    $data = json_decode($rec['VALUE'], true);
-   
-   $data[$module_name] = array('priority'=>$priority, 'filter'=>$filter_details);
+   $data[$module_name] = array('filter'=>$filter_details);
+   if ($priority) {
+      $data[$module_name]['priority']=$priority;
+   }
    $rec['VALUE']       = json_encode($data);
    SQLUpdate('settings', $rec);
 }
@@ -59,6 +60,25 @@ function unsubscribeFromEvent($module_name, $event_name = '')
    }
 }
 
+function processSubscriptionsSafe($event_name,$details='') {
+   if (!is_array($details)) {
+      $details=array();
+   }
+   $data=array(
+       'processSubscriptions'=>1,
+       'event'=>$event_name,
+       'params'=>json_encode($details),
+   );
+   $url=BASE_URL.'/objects/?'.http_build_query($data);
+   if (is_array($params)) {
+      foreach($params as $k=>$v) {
+         $url.='&'.$k.'='.urlencode($v);
+      }
+   }
+   $result = getURLBackground($url,0);
+   return $result;
+}
+
 /**
  * Summary of processSubscriptions
  * @param mixed $event_name Event name
@@ -68,7 +88,9 @@ function unsubscribeFromEvent($module_name, $event_name = '')
 function processSubscriptions($event_name, $details = '')
 {
 
+   //DebMes("New event: ".$event_name,'process_subscription');
    postToWebSocketQueue($event_name, $details, 'PostEvent');
+   //DebMes("Post websocket event done: ".$event_name,'process_subscription');
 
    if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)))
    {
@@ -80,27 +102,22 @@ function processSubscriptions($event_name, $details = '')
    
    if (is_array($data))
    {
-
-      if (!function_exists('cmpSubscribers')) {
-       function cmpSubscribers ($a, $b) { 
-        if ($a['priority'] == $b['priority']) return 0; 
-        return ($a['priority'] > $b['priority']) ? -1 : 1; 
-       } 
-      }
-
-
       $data2=array();
       foreach($data as $k => $v) {
        $data2[]=array('module'=>$k, 'filter'=>$v['filter'], 'priority'=>(int)$v['priority']);
       }
 
-      usort($data2, 'cmpSubscribers');
+      usort($data2, function($a,$b) {
+         if ($a['priority'] == $b['priority']) return 0;
+         return ($a['priority'] > $b['priority']) ? -1 : 1;
+      });
 
       $total=count($data2);
       for($i=0;$i<$total;$i++) {
-       
          $module_name    = $data2[$i]['module'];
          $filter_details = $data2[$i]['filter'];
+
+         //DebMes("Post event ".$event_name." to module ".$module_name,'process_subscription');
 
          $modulePath     = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
 
@@ -108,21 +125,21 @@ function processSubscriptions($event_name, $details = '')
          {
             include_once($modulePath);
             $module_object = new $module_name();
-
             if (method_exists($module_object, 'processSubscription'))
             {
-               //DebMes("$module_name.processSubscription ($event_name)");
+               //DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
                verbose_log("Processing subscription to [".$event_name."] by [".$module_name."] (".(is_array($details) ? json_encode($details) : '').")");
                $module_object->processSubscription($event_name, $details);
+               //DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
             } else {
-             DebMes("$module_name.processSubscription error (method not found)");
+             DebMes("$module_name.processSubscription error (method not found)",'process_subscription');
             }
             if (!isset($details['BREAK'])) {
              $details['BREAK']=false;
             }
             if ($details['BREAK']) break;
          } else {
-          DebMes("$module_name.processSubscription error (module class not found)");
+          DebMes("$module_name.processSubscription error (module class not found)",'process_subscription');
          }
       }
 

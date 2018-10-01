@@ -50,7 +50,7 @@ class jTemplate
     * @param object $owner    Parser owner
     * @return void
     */
-   public function __construct($template, &$data, &$owner)
+   public function __construct($template, &$data, &$owner = '')
    {
       // set current directory for template includes
       if (strpos($template, "/") !== false)
@@ -459,7 +459,7 @@ class jTemplate
                   
                   // SELF-CALL FOR ARRAY ELEMENT
                   $searchStr  = "[#tree " . $matches[1][$i] . "#]";
-                  $replaceStr = "[#begin " . $matches[1][$i] . "#]" . $line1 . "[#end " . $matches[1][$i] . "#]";
+                  $replaceStr = $this->parse("[#begin " . $matches[1][$i] . "#]" . $line1 . "[#end " . $matches[1][$i] . "#]", $var[$k], $dir);
                   
                   $line2 = str_replace($searchStr, $replaceStr, $line2);
                   
@@ -579,11 +579,12 @@ class jTemplate
                $condition = preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);
+               $condition = preg_replace('/(\w+)[[:space:]](?=[=!<>])/', '$hash[\'\\1\']', $condition);
                $condition = preg_replace('/\((\w+)\)/', '($hash[\'\\1\'])', $condition);
                $condition = preg_replace('/\]=(?=[^\w=])/', ']==', $condition);
 
                $str = "if ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";
-               eval($str);
+               @eval($str);
 
                $bdy      = $res1;
                $res      = str_replace($bdy_old, $bdy, $res);

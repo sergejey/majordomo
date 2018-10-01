@@ -18,7 +18,7 @@ class shoutbox extends module {
 *
 * @access private
 */
-function shoutbox() {
+function __construct() {
   $this->name="shoutbox";
   $this->title="<#LANG_MODULE_SHOUTBOX#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";

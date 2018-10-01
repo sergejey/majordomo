@@ -53,8 +53,11 @@ function addClass($class_name, $parent_class = '')
     return '';
    }
    $class_file_path=DIR_TEMPLATES.'classes/views/'.$class['TITLE'].'.html';
+   $alt_class_file_path=ROOT.'templates_alt/classes/views/'.$class['TITLE'].'.html';
    if ($class['TEMPLATE']!='') {
     $data=$class['TEMPLATE'];
+   } elseif (file_exists($alt_class_file_path)) {
+       $data=LoadFile($alt_class_file_path);
    } elseif (file_exists($class_file_path)) {
     $data=LoadFile($class_file_path);
    } elseif ($class['PARENT_ID']) {
@@ -87,6 +90,7 @@ function getObjectClassTemplate($object_name) {
     $data=preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
     //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     return $data;
 }
@@ -834,7 +838,9 @@ function getHistoryValue($varname, $time, $nerest = false) {
     }
 
     // Get val before
-        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
+        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') AND ADDED>=('".date('Y-m-d H:i:s', $time - 7*24*60*60)."') ORDER BY ADDED DESC LIMIT 1");
+        if (!isset($val1['VALUE']))
+            $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
         
         // Get val after        
         $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
@@ -1066,7 +1072,7 @@ function processTitle($title, $object = 0)
          }
          else
          {
-            $jTempl = new jTemplate($title, $data, $this);
+            $jTempl = new jTemplate($title, $data);
          }
 
          $title = $jTempl->result;
@@ -1075,7 +1081,6 @@ function processTitle($title, $object = 0)
       }
 
       $title = preg_replace('/%rand%/is', rand(), $title);
-
 
       $title=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
       
@@ -1106,21 +1111,41 @@ function processTitle($title, $object = 0)
             $tmp=explode(';', $descr);
             $totald=count($tmp);
             $hsh=array();
-            for($id=0;$id<$totald;$id++) {
-             $item=trim($tmp[$id]);
-             if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
-              $search_value=$md[1];
-              $search_replace=$md[2];
-             } else {
-              $search_value=$id;
-              $search_replace=$item;
-             }
-             $hsh[$search_value]=$search_replace;
+            if ($totald==1) {
+                if ($data!='') {
+                    $hsh[$data]=$descr;
+                } else {
+                    $hsh[$data]='';
+                }
+            } else {
+                for($id=0;$id<$totald;$id++) {
+                    $item=trim($tmp[$id]);
+                    if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
+                        $search_value=$md[1];
+                        $search_replace=$md[2];
+                    } else {
+                        $search_value=$id;
+                        $search_replace=$item;
+                    }
+                    $hsh[$search_value]=$search_replace;
+                }
             }
             $title = str_replace($m[0][$i], $hsh[$data], $title);
          }
 
          endMeasure('processTitlePropertiesReplace');
+      }
+      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\w+?)%/uis', $title, $m)) {
+          startMeasure('processTitlePropertiesFunction');
+          $total = count($m[0]);
+          for($i=0;$i<$total;$i++) {
+              $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
+              if (function_exists($m[3][$i])) {
+                  $data=call_user_func($m[3][$i],$data);
+              }
+              $title = str_replace($m[0][$i], $data, $title);
+          }
+          endMeasure('processTitlePropertiesFunction');
       }
       if (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
       {
@@ -1307,4 +1332,28 @@ function objectClassChanged($object_id) {
             SQLExec("DELETE FROM properties WHERE ID='".$old_prop."'");
         }
     }
+}
+
+function checkOperationsQueue($topic) {
+    $data=SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='".DBSafe($topic)."' ORDER BY ID");
+    if ($data[0]['ID']) {
+        SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($topic)."'");
+    }
+    return $data;
+}
+
+function addToOperationsQueue($topic, $dataname, $datavalue='', $uniq = false, $ttl=60) {
+    $rec=array();
+    $rec['TOPIC']=$topic;
+    $rec['DATANAME']=$dataname;
+    if (strlen($datavalue)<255) {
+        $rec['DATAVALUE']=$datavalue;
+    }
+    $rec['EXPIRE']=date('Y-m-d H:i:s',time()+$ttl);
+    if ($uniq) {
+        SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($rec['TOPIC'])."' AND DATANAME='".DBSafe($rec['DATANAME'])."'");
+    }
+    $rec['ID']=SQLInsert('operations_queue',$rec);
+    SQLExec("DELETE FROM operations_queue WHERE EXPIRE<NOW();");
+    return $rec['ID'];
 }

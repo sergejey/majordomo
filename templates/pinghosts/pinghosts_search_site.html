@@ -1,0 +1,26 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+&nbsp;
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th><#LANG_TITLE#></th>
+        <th><#LANG_HOSTNAME#></th>
+        <th><#LANG_UPDATED#></th>
+    </tr>
+    </thead>
+    [#begin RESULT#]
+    <tr style="background-color:[#if STATUS="1"#]green[#endif#][#if STATUS="2"#]red[#endif#][#if STATUS="0"#]lightgrey[#endif#]">
+        <td>
+            [#if TITLE!=""#][#TITLE#][#endif#]
+        </td>
+    <td>
+        [#HOSTNAME#]
+    </td>
+    <td>
+        [#CHECK_LATEST#]
+    </td>
+    </tr>
+    [#end RESULT#]
+</table>

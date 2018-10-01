@@ -5,8 +5,8 @@ $this->device_types=array(
         'CLASS'=>'Rooms',
         'DESCRIPTION'=>'Rooms/Locations',
         'PROPERTIES'=>array(
-            'temperature'=>array('DESCRIPTION'=>'Temperature','KEEP_HISTORY'=>365),
-            'humidity'=>array('DESCRIPTION'=>'Humidity','KEEP_HISTORY'=>365),
+            'temperature'=>array('DESCRIPTION'=>'Temperature'),
+            'humidity'=>array('DESCRIPTION'=>'Humidity'),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
             'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),
@@ -22,7 +22,7 @@ $this->device_types=array(
         'PROPERTIES'=>array(
             'status'=>array('DESCRIPTION'=>LANG_DEVICES_STATUS, 'KEEP_HISTORY'=>365, 'ONCHANGE'=>'statusUpdated', 'DATA_KEY'=>1),
             'alive'=>array('DESCRIPTION'=>'Alive','KEEP_HISTORY'=>365),
-            'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num'),
+            'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdAliveTimeout'),
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
             'updatedText'=>array('DESCRIPTION'=>'Updated Time (text)'),
@@ -49,11 +49,19 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'DESCRIPTION'=>'Controllable device',
         'PROPERTIES'=>array(
-            'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno'),
-            'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno'),            
-            'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno'),
-            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
-            'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.',power='.LANG_DEVICES_LOADTYPE_POWER),
+            'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEco'),
+            'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEcoOn'),
+            'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunrise'),
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
+            'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,
+                '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdLoadType',
+                '_CONFIG_OPTIONS'=>'light='.LANG_DEVICES_LOADTYPE_LIGHT.
+                    ',heating='.LANG_DEVICES_LOADTYPE_HEATING.
+                    ',vent='.LANG_DEVICES_LOADTYPE_VENT.
+                    ',curtains='.LANG_DEVICES_LOADTYPE_CURTAINS.
+                    ',gates='.LANG_DEVICES_LOADTYPE_GATES.
+                    ',power='.LANG_DEVICES_LOADTYPE_POWER),
+            'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
         ),
         'METHODS'=>array(
             'turnOn'=>array('DESCRIPTION'=>'turnOn'),
@@ -74,10 +82,10 @@ $this->device_types=array(
             'relay_status'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_RELAY_STATUS,'KEEP_HISTORY'=>365,'DATA_KEY'=>1),
             'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
             'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1),
-            'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
-            'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
-            'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated'),
-            'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
+            'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
+            'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
+            'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
+            'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open','_CONFIG_HELP'=>'SdThermostat'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
@@ -91,9 +99,14 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SDimmers',
         'PROPERTIES'=>array(
-            'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1)),
+            'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1),
+            'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
+            'minWork'=>array('DESCRIPTION'=>'Min level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'maxWork'=>array('DESCRIPTION'=>'Max level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            ),
         'METHODS'=>array(
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
+            'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),
             'turnOn'=>array('DESCRIPTION'=>'Dimmer turnOn'),
             'turnOff'=>array('DESCRIPTION'=>'Dimmer turnOff'),
         )
@@ -118,8 +131,8 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SMotions',
         'PROPERTIES'=>array(
-            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno'),
-            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num')
+            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIgnoreNobodysHome'),
+            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdMotionTimeout')
         ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
@@ -130,15 +143,16 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SCameras',
         'PROPERTIES'=>array(
-            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (LQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
-            'streamURL_HQ'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (HQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
+            'streamURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (LQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCameraStreamUrl'),
+            'streamURL_HQ'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_URL.' (HQ)','ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCameraStreamUrl'),
             'cameraUsername'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_USERNAME,'_CONFIG_TYPE'=>'text'),
             'cameraPassword'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PASSWORD,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'text'),
-            'streamTransport'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_TRANSPORT,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'auto=Auto,udp=UDP,tcp=TCP'),
-            'previewType'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PREVIEW_TYPE,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'static='.LANG_DEVICES_CAMERA_PREVIEW_TYPE_STATIC.',slideshow='.LANG_DEVICES_CAMERA_PREVIEW_TYPE_SLIDESHOW),
-            'clickAction'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PREVIEW_ONCLICK,'ONCHANGE'=>'updatePreview','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'enlarge='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE.',stream='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL),            
-            'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text'),
+            'streamTransport'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_STREAM_TRANSPORT,'ONCHANGE'=>'updatePreview','_CONFIG_HELP'=>'SdCameraTransport','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'auto=Auto,udp=UDP,tcp=TCP'),
+            'previewType'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PREVIEW_TYPE,'ONCHANGE'=>'updatePreview','_CONFIG_HELP'=>'SdCameraPreviewType','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'static='.LANG_DEVICES_CAMERA_PREVIEW_TYPE_STATIC.',slideshow='.LANG_DEVICES_CAMERA_PREVIEW_TYPE_SLIDESHOW),
+            'clickAction'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_PREVIEW_ONCLICK,'ONCHANGE'=>'updatePreview','_CONFIG_HELP'=>'SdCameraClickType','_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'enlarge='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ENLARGE.',stream='.LANG_DEVICES_CAMERA_PREVIEW_ONCLICK_ORIGINAL),
+            'snapshotURL'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT_URL,'_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCameraSnapshotUrl'),
             'snapshot'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>365,'DATA_TYPE'=>5),
+            'series'=>array('DESCRIPTION'=>LANG_DEVICES_CAMERA_SNAPSHOT,'KEEP_HISTORY'=>30,'DATA_TYPE'=>5),
             'snapshotPreviewURL'=>array('DESCRIPTION'=>'Snapshot Preview URL'),
             'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
             'activeHTML'=>array('DESCRIPTION'=>'Active HTML',),
@@ -147,6 +161,7 @@ $this->device_types=array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
             'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
             'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+            'takeSeries'=>array('DESCRIPTION'=>'Takes image series'),
         )
     ),
     'openclose'=>array(
@@ -154,8 +169,10 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SOpenClose',
         'PROPERTIES'=>array(
-            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno'),
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+            'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
@@ -182,17 +199,27 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SCounters',
         'METHODS'=>array(
-            'valueUpdated'=>array('DESCRIPTION'=>'Value updated event')
+            'valueUpdated'=>array('DESCRIPTION'=>'Data Value updated event'),
+            'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event'),
+            'refreshStats'=>array('DESCRIPTION'=>'Refreshes daily/monthly stats','_CONFIG_SHOW'=>1),
         ),
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
-            'value'=>array('DESCRIPTION'=>'Current Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'valueWork'=>array('DESCRIPTION'=>'Work Value','ONCHANGE'=>'valueWorkUpdated','KEEP_HISTORY'=>0),
+            'valueHour'=>array('DESCRIPTION'=>'Hour Value','KEEP_HISTORY'=>365),
+            'valueDay'=>array('DESCRIPTION'=>'Day Value','KEEP_HISTORY'=>5*365),
+            'valueMonth'=>array('DESCRIPTION'=>'Month Value','KEEP_HISTORY'=>5*365),
+            'conversion'=>array('DESCRIPTION'=>'Conversion coefficient (work-to-data)','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdConversion'),
         ),
     ),
     'button'=>array(
         'TITLE'=>LANG_DEVICES_BUTTON,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SButtons',
+        'PROPERTIES'=>array(
+            'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
+        ),
         'METHODS'=>array(
             'pressed'=>array('DESCRIPTION'=>'Button pressed'),
         )
@@ -202,16 +229,26 @@ $this->device_types=array(
         'CLASS'=>'SSensors',
         'PROPERTIES'=>array(
             'value'=>array('DESCRIPTION'=>'Current Sensor Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
-            'minValue'=>array('DESCRIPTION'=>LANG_DEVICES_MIN_VALUE,'_CONFIG_TYPE'=>'num'),
-            'maxValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE,'_CONFIG_TYPE'=>'num'),
-            'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno'),
-            'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno'),
+            'minValue'=>array('DESCRIPTION'=>LANG_DEVICES_MIN_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
+            'maxValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
+            'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdSensorMinMax'),
+            'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdMainSensor'),
             'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>0),
+            'direction'=>array('DESCRIPTION'=>'Direction of changes','KEEP_HISTORY'=>0),
+            'directionTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_DIRECTION_TIMEOUT,'KEEP_HISTORY'=>0,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDirectionTimeout','ONCHANGE'=>'valueUpdated'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
         )
-    ),	
+    ),
+    'sensor_general'=>array(
+        'TITLE'=>LANG_DEVICES_GENERAL_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SGeneralSensors',
+        'PROPERTIES'=>array(
+            'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+        ),
+    ),
     'sensor_temp'=>array(
         'TITLE'=>LANG_DEVICES_TEMP_SENSOR,
         'PARENT_CLASS'=>'SSensors',
@@ -240,7 +277,14 @@ $this->device_types=array(
 	'sensor_power'=>array(
         'TITLE'=>LANG_DEVICES_POWER_SENSOR,
         'PARENT_CLASS'=>'SSensors',
-        'CLASS'=>'SPowerSensors' //fix
+        'CLASS'=>'SPowerSensors',
+        'PROPERTIES'=>array(
+            'loadStatusTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_LOAD_TIMEOUT,'_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdLoadTimeout'),
+        ),        
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'loadStatusChanged'=>array('DESCRIPTION'=>'Load Status Changed'),
+        )
     ),
 	'sensor_voltage'=>array(
         'TITLE'=>LANG_DEVICES_VOLTAGE_SENSOR,
@@ -261,3 +305,13 @@ $this->device_types=array(
             ),
     ),
 );
+
+$addons_dir=DIR_MODULES.$this->name.'/addons';
+if (is_dir($addons_dir)) {
+    $addon_files=scandir($addons_dir);
+    foreach($addon_files as $file) {
+        if (preg_match('/\_structure\.php$/',$file)) {
+            require($addons_dir.'/'.$file);
+        }
+    }
+}

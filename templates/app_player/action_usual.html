@@ -1,101 +1,240 @@
 <!--#
  @version 0.3
 #-->
-<script language="javascript">
-
- var track = new Audio();
- track.controls = true;   // Set to false to make it a hidden element
- var trackcontainer = document.getElementById("html5audio");
- trackcontainer.appendChild(track);
-
- function playerCommandProcessed(id, data) {
-  var elem=document.getElementById('playerStatus');
-  elem.innerHTML=data;  
-  return false;
- }
- var playElement=document.getElementById('html5audio_player');
- function playerCommand(pcmd) {
-  if ($("#selPlayTerminal").val()=='') return false;
-  if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
-  var elem=document.getElementById('playerStatus');
-  elem.innerHTML=pcmd+'...';
-  var playTerminal;
-  playTerminal = $("#selPlayTerminal").val();
-  if (playTerminal == 'html5') {
-   playerCommandProcessed('playerStatus',pcmd);
-
-   //alert(playElement);
-   //playElement.src = $("#hidPlayPath").val();
-   if (pcmd == 'refresh') {
-    track.src = $("#hidPlayPath").val();
-    track.play();
-   }
-   if (pcmd == 'pause') {
-    if (track.paused) {
-     track.play();
-    } else {
-     track.pause();
-    }
-   }
-  } else {
-   var url="<#ROOTHTML#>popup/app_player.html?ajax=1";
-   url+='&command='+pcmd;
-   url+='&play_terminal=' + playTerminal;
-   url+='&play='+URLencode($("#hidPlayPath").val());
-   url+='&rnd='+URLencode($("#hidPlayerRnd").val());
-   if (pcmd=='volume') {
-    url+='&volume='+URLencode($("#selVolume").val());
-   }
-   //prompt(url, url);
-   AJAXRequest(url, 'playerCommandProcessed', '');
-  }
-  return false;
- }
-</script>
-<div id="html5audio">
-</div>
-<table border="0" cellpadding="0" cellspacing="0">
- <tr>
-  <form action="?" method="get" name="frmPlayerControl" id="frmPlayerControl">
-  <td align="right">
-  <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
-   <select name="play_terminal" id="selPlayTerminal" class="form-control input-sm">
-    [#begin TERMINALS#]
-    <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
-    [#end TERMINALS#]
-    <option value="html5">Web Browser</option>
-   </select>
-  </div>
-  <div id='playerStatus'[#if MODE="menu"#] style="color:white"[#endif#]></div>
-<!--#
-[#if PLAY!=""#]
-<script language="javascript">
- playerCommand("refresh");
-</script>
+<div id="html5audio" style="display:none"></div>
+[#if (MODE!="header") && (PLAY!="")#]
+	<div>Stream: [#PLAY#]</div>
 [#endif#]
-#-->
-  </td>
-  [#if MODE="menu"#]</tr><tr>[#endif MODE#]
-  <td nowrap><select name="volume" id='selVolume' onChange="playerCommand('volume')" class="form-control input-sm">
-   [#begin VOLUMES#]
-   <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
-   [#end VOLUMES#]
-  </select></td>
-  <td valign="top">
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_pause.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("prev");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_prev.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("refresh");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_play.png" border="0"></a></div> 
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("next");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_next.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("fullscreen");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/eye.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("close");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/delete.png" border="0"></a></div>
-  </td>
- </tr>
- <input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
- <input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
- </form>
- [#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
- <script language="javascript">
-  playerCommand('refresh');
- </script>
- [#endif#]
+<div id="playerStatus" style="display:none;position:absolute;padding:10px; background-color:#dddddd;color:black;z-index:1000;"></div>
+<table>
+	<tr>
+		<td title="<#LANG_APP_PLAYER_PLAYING_TERMINALS#>"[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
+			<select name="play_terminal" id="selPlayTerminal" multiple>
+				[#begin TERMINALS#]
+				<option value="[#NAME#]" data-volume="15" [#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]</option>
+				[#end TERMINALS#]
+			</select>
+		</td>
+		<td style="padding-left:5px">
+			<select name="volume" title="<#LANG_APP_PLAYER_VOLUME_LEVEL#>" id="selVolume" onChange="playerCommand('set_volume')" class="form-control input-sm">
+				[#begin VOLUMES#]
+				<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
+				[#end VOLUMES#]
+			</select>
+		</td>
+		[#if MODE="menu"#]</tr><tr>[#endif#]
+		<td[#if MODE="menu"#] colspan="2"[#endif#]>
+		<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_PAUSE#>" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_pause.png" border="0"></a></div>
+			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_PREVIOUS#>" onClick='return playerCommand("previous");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_prev.png" border="0"></a></div>
+			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_PLAY#>" onClick='return playerCommand("play");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_play.png" border="0"></a></div> 
+			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_NEXT#>" onClick='return playerCommand("next");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_next.png" border="0"></a></div>
+			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_FULLSCREEN#>" onClick='return playerCommand("fullscreen");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/eye.png" border="0"></a></div>
+			<div style="float:left;width:48px;height:48px;text-align:center"><a href="#" title="<#LANG_APP_PLAYER_STOP#>" onClick='return playerCommand("stop");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/delete.png" border="0"></a></div>
+		</td>
+		<input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
+	</tr>
 </table>
+
+<link href="<#ROOTHTML#>3rdparty/jquery.multiselect/jquery.multiselect.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery.multiselect/jquery.multiselect.js"></script>
+<script language="javascript">
+	$(function() {
+		[#if MODE!="menu"#]
+			var volumeLevel = parseInt('%ThisComputer.volumeLevel%');
+			var volumeMediaLevel = parseInt('%ThisComputer.volumeMediaLevel%');
+			$.subscribe('wsData', function(_, response) {
+				if(response.action == 'properties') {
+					var obj = jQuery.parseJSON(response.data);
+					var objCnt = obj.length;
+					if(objCnt) {
+						for(var i=0;i<objCnt;i++) {
+							switch(obj[i]['PROPERTY']) {
+								case 'thiscomputer.volumelevel':
+									volumeLevel = parseInt(obj[i]['VALUE']);
+									break;
+								case 'thiscomputer.volumemedialevel':
+									volumeMediaLevel = parseInt(obj[i]['VALUE']);
+									break;
+							}
+						}
+					}
+				}
+			});
+			$('#selPlayTerminal').multiselect({
+				onLoad: function() {
+					$.subscribe('wsConnected', function(_) {
+						var payload;
+						payload = new Object();
+						payload.action = 'Subscribe';
+						payload.data = new Object();
+						payload.data.TYPE = 'properties';
+						payload.data.PROPERTIES = 'ThisComputer.volumeLevel,ThisComputer.volumeMediaLevel';
+						wsSocket.send(JSON.stringify(payload));
+					});
+				},
+				onOptionClick: function(element, option) {
+					if($(option).prop('checked')) {
+						if($(option).val() == 'system_volume') {
+							$(element).children('option:selected').not('[value="system_volume"]').each(function(i, opt) {
+								$('input[id^="ms-opt-"]').each(function(ms_i, ms_opt) {
+									if($(opt).val() == $(ms_opt).val()) {
+										$(ms_opt).click();
+										return false;
+									}
+								});
+							});
+						} else {
+							var system_volume = $('input[id^="ms-opt-"]').filter('[value="system_volume"]');
+							if($(system_volume).prop('checked')) {
+								$(system_volume).click();
+							}
+						}
+						var volume_level = ($(option).val() == 'system_volume'?volumeLevel:volumeMediaLevel);
+						for(var i = 0; i <= 100; i += 5) {
+							if(i = volume_level) {
+								$('select#selVolume').val(i);
+								break;
+							}
+						}
+					}
+				}
+			});
+		[#endif#]
+		[#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
+			playerCommand('play');
+		[#endif#]
+	});
+
+	var _getSourceIdx = function(elem) {
+		for(var i = 0; i < elem.sources.length; i++) {
+			if(elem.currentSrc == elem.sources[i]) return i;
+		}
+		return 0;
+	}
+
+	var _nextSource = function(elem) {
+		var sourceIdx  = _getSourceIdx(elem);
+		var nextSourceIdx = (sourceIdx == elem.sources.length -1 ) ? 0 : sourceIdx + 1;
+		elem.src = elem.sources[nextSourceIdx];
+		elem.play();
+	}
+
+	var _prevSource = function(elem) {
+		var sourceIdx  = _getSourceIdx(elem);
+		var nextSourceIdx = (sourceIdx == 0 ) ? 0 : sourceIdx - 1;
+		elem.src = elem.sources[nextSourceIdx];
+		elem.play();
+	}
+
+	var track = new Audio();
+	track.controls = true;   // Set to false to make it a hidden element
+
+	track.addEventListener('ended', function() {
+		_nextSource(this);
+	});
+
+	var trackcontainer = document.getElementById("html5audio");
+	trackcontainer.appendChild(track);
+
+	var playElement=document.getElementById('html5audio_player');
+
+	var playerStatusTimer = 0;
+	function playerStatus(status) {
+		clearTimeout(playerStatusTimer);
+		if(status == '') {
+			$('#playerStatus').hide();
+			return;
+		}
+		$('#playerStatus').html(status);
+		$('#playerStatus').show();
+		playerStatusTimer = setTimeout("playerStatus('');", 2000);
+	}
+
+	function sendPlayerCommand(playTerminal, pcmd) {
+		var playURL = "<#ROOTHTML#>popup/app_player.html?ajax=1";
+		var mediaURL = $("#hidPlayPath").val();
+		switch(playTerminal) {
+			case 'html5':
+				switch(pcmd) {
+					case 'play':
+						if(mediaURL.endsWith('m3u')) {
+							$.ajax({
+								url: mediaURL
+							}).done(function(data) {
+								track.sources = data.match(/^(?!#)(?!\s).*$/mg).filter(function(element){return (element);});
+								track.src = track.sources[0];
+								track.play();
+							});
+						} else {
+							track.src = mediaURL;
+							track.sources = [track.src];
+							track.play();
+						}
+						break;
+					case 'next':
+						_nextSource(track);
+						break;
+					case 'previous':
+						_prevSource(track);
+						break;
+					case 'stop':
+						track.pause();
+						break;
+					case 'pause':
+						if(track.paused) {
+							playerStatus('Web-browser play.');
+							track.play();
+						} else {
+							playerStatus('Web-browser pause.');
+							track.pause();
+						}
+						break;
+				}
+				playURL += '&play_terminal='+encodeURIComponent(playTerminal);
+				playURL += '&session_terminal='+encodeURIComponent($("#selPlayTerminal").val());
+				$.ajax({
+					url: playURL,
+					dataType: 'json'
+				});
+			break;
+			case 'system_volume':
+				if(pcmd == 'set_volume') {
+					playURL += '&command=set_system_volume';
+					playURL += '&param='+encodeURIComponent($("#selVolume").val());
+					$.ajax({
+						url: playURL,
+						dataType: 'json'
+					}).done(function(data) {
+						playerStatus(data.command+(data.success?'success':'error')+': '+data.message);
+					});
+				}
+			break;
+			default:
+				playURL += '&command='+pcmd;
+				playURL += '&play_terminal='+encodeURIComponent(playTerminal);
+				playURL += '&session_terminal='+encodeURIComponent($("#selPlayTerminal").val());
+				if(pcmd == 'set_volume') {
+					playURL += '&param='+encodeURIComponent($("#selVolume").val());
+				} else {
+					playURL += '&param='+encodeURIComponent($("#hidPlayPath").val());
+				}
+				$.ajax({
+					url: playURL,
+					dataType: 'json'
+				}).done(function(data) {
+					playerStatus((data.command.length > 0?data.command+' on ':'')+data.play_terminal+' '+(data.success?'success':'error')+': '+data.message);
+				});
+		}
+	}
+
+	function playerCommand(pcmd) {
+		if($("#selPlayTerminal").val() == '') return false;
+		if($("#hidPlayPath").val() == '' && pcmd=='refresh') return false;
+		playerStatus(pcmd);
+		var players = $("#selPlayTerminal").val();
+		for(var i=0;i<players.length;i++) {
+			sendPlayerCommand(players[i], pcmd);
+		}
+		return false;
+	}
+</script>

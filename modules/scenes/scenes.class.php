@@ -21,7 +21,7 @@ class scenes extends module {
 *
 * @access private
 */
-function scenes() {
+function __construct() {
   $this->name="scenes";
   $this->title="<#LANG_MODULE_SCENES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -138,11 +138,11 @@ function run() {
   */
    require_once ROOT.'lib/smarty/Smarty.class.php';
    $smarty = new Smarty;
-   $smarty->setCacheDir(ROOT.'cached/template_c');
+   $smarty->setCacheDir(ROOT.'cms/cached/template_c');
 
    $smarty->setTemplateDir(ROOT.'./templates')
-          ->setCompileDir(ROOT.'./cached/templates_c')
-          ->setCacheDir(ROOT.'./cached');
+          ->setCompileDir(ROOT.'./cms/cached/templates_c')
+          ->setCacheDir(ROOT.'./cms/cached');
 
    $smarty->debugging = false;
    $smarty->caching = true;
@@ -273,29 +273,10 @@ function admin(&$out) {
    $filename=urlencode('Elements'.date('H-i-s'));
 
    $ext = "elements";   // file extension
-   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-   ? 'application/octetstream'
-   : 'application/octet-stream';
-   header('Content-Type: ' . $mime_type);
-   if (PMA_USR_BROWSER_AGENT == 'IE')
-   {
-      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      print $data;
-   } else {
-      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Pragma: no-cache');
-      print $data;
-   }
 
-   exit;
-
-
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="'.($filename . '.' . $ext).'"');
+    echo ($data);
     exit;
    } else {
     $this->view_mode='edit_scenes';
@@ -335,6 +316,7 @@ function admin(&$out) {
 
 
  }
+
  if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
@@ -359,7 +341,13 @@ function admin(&$out) {
  }
 
  if ($this->view_mode=='import') {
-  $this->import_scene();
+  global $file;
+  $id=$this->import_scene($file);
+  if ($id) {
+   $this->redirect("?view_mode=edit_scenes&id=".$id);
+  } else {
+   $this->redirect("?");
+  }
  }
 
 
@@ -374,7 +362,8 @@ function admin(&$out) {
  * @access public
  */
  function export_scene($id) {
-  $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'"); 
+  $rec=SQLSelectOne("SELECT * FROM scenes WHERE ID='".(int)$id."'");
+  unset($rec['SYSTEM']);
   //elements
   $elements=SQLSelect("SELECT * FROM elements WHERE SCENE_ID='".(int)$id."'");
   $total=count($elements);
@@ -439,13 +428,20 @@ function admin(&$out) {
 *
 * @access public
 */
- function import_scene() {
-  global $file;
-  global $overwrite;
-
-  $data=unserialize(LoadFile($file));
-
+ function import_scene($file, $system = '') {
+  $text_data=LoadFile($file);
+  $data=unserialize($text_data);
+  if (!is_array($data)) {
+   $text_data=str_replace("\n","\r\n",$text_data);
+   $data=unserialize($text_data);
+  }
   if ($data['SCENE_DATA']) {
+   if ($system!='') {
+    $old_rec=SQLSelectOne("SELECT ID FROM scenes WHERE SYSTEM LIKE '".DBSafe($system)."'");
+    if ($old_rec['ID']) {
+     return;
+    }
+   }
    $rec=$data['SCENE_DATA'];
    if (!$rec['WALLPAPER']) {
     unset($rec['WALLPAPER']);
@@ -486,11 +482,9 @@ function admin(&$out) {
     $filename=ROOT.$rec['WALLPAPER'];
     SaveFile($filename, base64_decode($data['WALLPAPER_IMAGE']));
    }
-   $this->redirect("?view_mode=edit_scenes&id=".$rec['ID']);
+   return $rec['ID'];
   }
 
-  $this->redirect("?");
-  
  }
 
 /**
@@ -577,19 +571,28 @@ function usual(&$out) {
 
 
     if ($op=='resized' && $element['ID']) {
-     $details=json_decode($details, true);
-     $element['WIDTH']=$details['size']['width'];
-     $element['HEIGHT']=$details['size']['height'];
+     if ($details) {
+      $details=json_decode($details, true);
+      $element['WIDTH']=$details['size']['width'];
+      $element['HEIGHT']=$details['size']['height'];
+     } else {
+      $element['WIDTH']=gr('dwidth');
+      $element['HEIGHT']=gr('dheight');
+     }
      if ($element['WIDTH']>0 && $element['HEIGHT']>0) {
       SQLUpdate('elements', $element);
      }
     }
 
     if ($op=='dragged' && $element['ID']) {
-     $details=json_decode($details, true);
-     //echo "Dragged $element ".serialize($details);
-     $diff_top=$details['position']['top']-$details['originalPosition']['top'];
-     $diff_left=$details['position']['left']-$details['originalPosition']['left'];
+     if ($details) {
+      $details=json_decode($details, true);
+      $diff_top=$details['position']['top']-$details['originalPosition']['top'];
+      $diff_left=$details['position']['left']-$details['originalPosition']['left'];
+     } else {
+      $diff_top=gr('dtop');
+      $diff_left=gr('dleft');
+     }
      if ($diff_top!=0 || $diff_left!=0) {
       $element['TOP']+=$diff_top;
       $element['LEFT']+=$diff_left;
@@ -1115,18 +1118,26 @@ function usual(&$out) {
       for($ie=0;$ie<$totale;$ie++) {
 
        if ($elements[$ie]['TYPE']=='object') {
-        $state=array();
-
-        $state['ID']='element_'.($elements[$ie]['ID']);
-        $state['ELEMENT_ID']=$elements[$ie]['ID'];
-        $state['HTML']=getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
-        $state['TYPE']=$elements[$ie]['TYPE'];
-        $state['MENU_ITEM_ID']=0;
-        $state['HOMEPAGE_ID']=0;
-        $state['OPEN_SCENE_ID']=0;
-        $states=array($state);
-
-
+        $state = array();
+        $state['ID'] = 'element_' . ($elements[$ie]['ID']);
+        $state['ELEMENT_ID'] = $elements[$ie]['ID'];
+        $state['HTML'] = getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
+        $state['TYPE'] = $elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID'] = 0;
+        $state['HOMEPAGE_ID'] = 0;
+        $state['OPEN_SCENE_ID'] = 0;
+        $states = array($state);
+       } elseif ($elements[$ie]['TYPE']=='device') {
+        $device_rec=SQLSelectOne("SELECT * FROM devices WHERE ID=".(int)$elements[$ie]['DEVICE_ID']);
+        $state = array();
+        $state['ID'] = 'element_' . ($elements[$ie]['ID']);
+        $state['ELEMENT_ID'] = $elements[$ie]['ID'];
+        $state['HTML'] = '<div style="width:250px">'.getObjectClassTemplate($device_rec['LINKED_OBJECT']).'</div>';
+        $state['TYPE'] = $elements[$ie]['TYPE'];
+        $state['MENU_ITEM_ID'] = 0;
+        $state['HOMEPAGE_ID'] = 0;
+        $state['OPEN_SCENE_ID'] = 0;
+        $states = array($state);
        } else {
         $states=SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='".$elements[$ie]['ID']."' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
        }
@@ -1305,25 +1316,24 @@ function usual(&$out) {
 
   function getCSSImage($type, $style) {
    $styles=$this->getStyles($type);
-   $total=count($styles);
-   for($i=0;$i<$total;$i++) {
-    if ($styles[$i]['TITLE']==$style) {
-     return $styles[$i]['IMAGE'];
+   if (is_array($styles)) {
+    $total=count($styles);
+    for($i=0;$i<$total;$i++) {
+     if ($styles[$i]['TITLE']==$style) {
+      return $styles[$i]['IMAGE'];
+     }
     }
    }
 
    $styles=$this->getStyles('common');
-   $total=count($styles);
-   for($i=0;$i<$total;$i++) {
-    if ($styles[$i]['TITLE']==$style) {
-     return $styles[$i]['IMAGE'];
+   if (is_array($styles)) {
+    $total=count($styles);
+    for($i=0;$i<$total;$i++) {
+     if ($styles[$i]['TITLE']==$style) {
+      return $styles[$i]['IMAGE'];
+     }
     }
    }
-
-   /*
-   print_r($styles);
-   exit;
-   */
   }
 
 
@@ -1359,149 +1369,160 @@ function usual(&$out) {
   return array_merge($res1, $res2); 
  }
 
- function getStyles($type='') {
+function getStyles($type = '')
+{
+   startMeasure('getStyles');
+   $path = ROOT . 'cms/scenes/styles/' . $type;
 
-  startMeasure('getStyles');
-  $path=ROOT.'cms/scenes/styles/'.$type;
-
-  if (!is_dir($path)) {
-   return;
-  }
+   if (!is_dir($path))
+      return;
 
    $enable_style_caching = false;
-   $cache_file=ROOT.'cached/styles_'.$type.'.txt';
+   $cache_file = ROOT . 'cms/cached/styles_' . $type . '.txt';
 
-   if ($enable_style_caching && file_exists($cache_file) && (time()-filemtime($cache_file))<1*60*60) {
-    $styles_recs=unserialize(LoadFile($cache_file));
-   } else {
-   startMeasure('openAndReadDir');
-   if ($handle = opendir($path)) {
-    $styles_recs=array();
-    while (false !== ($entry = readdir($handle))) {
-       if (preg_match('/(.+?)\.png$/is', $entry, $m)) {
-        $style=$m[1];
-        $style=preg_replace('/^i\_/', '', $style);
+   if ($enable_style_caching && file_exists($cache_file) && (time() - filemtime($cache_file)) < 1 * 60 * 60)
+   {
+      $styles_recs = unserialize(LoadFile($cache_file));
+   }
+   else
+   {
+      startMeasure('openAndReadDir');
+   
+      if ($handle = opendir($path))
+      {
+         $styles_recs = array();
+    
+         while (false !== ($entry = readdir($handle)))
+         {
+            if (preg_match('/(.+?)\.png$/is', $entry, $m))
+            {
+               $style = $m[1];
+               $style = preg_replace('/^i\_/', '', $style);
 
-        if (preg_match('/^ign_/', $style)) {
-         continue;
-        }
+        
+               if (preg_match('/^ign_/', $style))
+                  continue;
 
-        if ($type=='common') {
-         $entry='../common/'.$entry;
-        }
-
-
-        $has_low=0;
-        if (preg_match('/\_lo$/', $style)) {
-         $style=preg_replace('/\_lo$/', '', $style);
-         $has_low=$entry;
-        }
-        $has_high=0;
-        if (preg_match('/\_hi$/', $style)) {
-         $style=preg_replace('/\_hi$/', '', $style);
-         $has_high=$entry;
-        }
-
-        $has_on=0;
-        if (preg_match('/\_on$/', $style)) {
-         $style=preg_replace('/\_on$/', '', $style);
-         $has_on=$entry;
-        }
-        $has_off=0;
-        if (preg_match('/\_off$/', $style)) {
-         $style=preg_replace('/\_off$/', '', $style);
-         $has_off=$entry;
-        }
-
-        $has_mid=0;
-        if (preg_match('/\_mid$/', $style)) {
-         $style=preg_replace('/\_mid$/', '', $style);
-         $has_mid=$entry;
-        }
-
-        $has_na=0;
-        if (preg_match('/\_na$/', $style)) {
-         $style=preg_replace('/\_na$/', '', $style);
-         $has_na=$entry;
-        }
+        
+               if ($type == 'common')
+                  $entry = '../common/' . $entry;
 
 
+               $has_low = 0;
+        
+               if (preg_match('/\_lo$/', $style))
+               {
+                  $style = preg_replace('/\_lo$/', '', $style);
+                  $has_low = $entry;
+               }
+        
+               $has_high = 0;
+        
+               if (preg_match('/\_hi$/', $style))
+               {
+                  $style = preg_replace('/\_hi$/', '', $style);
+                  $has_high = $entry;
+               }
 
-        if (is_array($this->all_styles) && !$this->all_styles[$style]) {
-         continue;
-        }
+               $has_on = 0;
+        
+               if (preg_match('/\_on$/', $style))
+               {
+                  $style = preg_replace('/\_on$/', '', $style);
+                  $has_on = $entry;
+               }
+        
+               $has_off = 0;
+               
+               if (preg_match('/\_off$/', $style))
+               {
+                  $style = preg_replace('/\_off$/', '', $style);
+                  $has_off = $entry;
+               }
 
+               $has_mid = 0;
+            
+               if (preg_match('/\_mid$/', $style))
+               {
+                  $style = preg_replace('/\_mid$/', '', $style);
+                  $has_mid = $entry;
+               }
 
-        $styles_recs[$style]['TITLE']=$style;
-        if ($has_low) {
-         $styles_recs[$style]['HAS_LOW']=$has_low;
-        }
-        if ($has_high) {
-         $styles_recs[$style]['HAS_HIGH']=$has_high;
-        }
-        if ($has_on) {
-         $styles_recs[$style]['HAS_ON']=$has_on;
-        }
-        if ($has_off) {
-         $styles_recs[$style]['HAS_OFF']=$has_off;
-        }
-        if ($has_mid) {
-         $styles_recs[$style]['HAS_MID']=$has_mid;
-        }
-        if ($has_na) {
-         $styles_recs[$style]['HAS_NA']=$has_na;
-        }
+               $has_na = 0;
+               
+               if (preg_match('/\_na$/', $style))
+               {
+                  $style=preg_replace('/\_na$/', '', $style);
+                  $has_na=$entry;
+               }
 
-        if (!$has_low && !$has_high && !$has_on && !$has_off && !$has_mid && !$has_na) {
-         $styles_recs[$style]['HAS_DEFAULT']=$entry;
-        }
+               if (is_array($this->all_styles) && !$this->all_styles[$style])
+                  continue;
 
-        if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on) {
-         $styles_recs[$style]['HAS_DEFAULT']=$has_on;
-        }
+               $styles_recs[$style]['TITLE'] = $style;
+        
+               if ($has_low)
+                  $styles_recs[$style]['HAS_LOW'] = $has_low;
+        
+               if ($has_high)
+                  $styles_recs[$style]['HAS_HIGH'] = $has_high;
+        
+               if ($has_on)
+                  $styles_recs[$style]['HAS_ON'] = $has_on;
+        
+               if ($has_off)
+                  $styles_recs[$style]['HAS_OFF'] = $has_off;
+        
+               if ($has_mid)
+                  $styles_recs[$style]['HAS_MID'] = $has_mid;
+            
+               if ($has_na)
+                  $styles_recs[$style]['HAS_NA'] = $has_na;
 
-       }
-    }
-    closedir($handle);
+               if (!$has_low && !$has_high && !$has_on && !$has_off && !$has_mid && !$has_na)
+                  $styles_recs[$style]['HAS_DEFAULT'] = $entry;
 
-    if (is_array($styles_recs)) {
-     foreach($styles_recs as $k=>$v) {
-      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/'.$v['TITLE'].'.png')) {
-       $styles_recs[$k]['IMAGE']=$type.'/'.$v['TITLE'].'.png';
+               if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on)
+                  $styles_recs[$style]['HAS_DEFAULT'] = $has_on;
+            }
+         }
+    
+         closedir($handle);
+
+         if (is_array($styles_recs))
+         {
+            foreach($styles_recs as $k => $v)
+            {
+               if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/' . $v['TITLE'] . '.png'))
+                  $styles_recs[$k]['IMAGE'] = $type . '/' . $v['TITLE'] . '.png';
+
+               if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/i_' . $v['TITLE'] . '.png'))
+                  $styles_recs[$k]['IMAGE'] = $type . '/i_' . $v['TITLE'] . '.png';
+
+               if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/i_' . $v['TITLE'] . '_on.png'))
+                  $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'_on.png';
+            }
+         }
+
+         if ($enable_style_caching && count($styles_recs) > 0)
+            SaveFile($cache_file, serialize($styles_recs));
+    
+         endMeasure('openAndReadDir');
       }
-      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/i_'.$v['TITLE'].'.png')) {
-       $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'.png';
-      }
-
-      if (!$styles_recs[$k]['IMAGE'] && file_exists($path.'/i_'.$v['TITLE'].'_on.png')) {
-       $styles_recs[$k]['IMAGE']=$type.'/i_'.$v['TITLE'].'_on.png';
-      }
-     }
-    }
-
-    if ($enable_style_caching && count($styles_recs)>0) {
-     SaveFile($cache_file, serialize($styles_recs));
-    }
-    endMeasure('openAndReadDir');
-
-    }
-
    }
 
 
-    if (is_array($styles_recs)) {
-     $res_styles=array();
-     foreach($styles_recs as $k=>$v) {
-      $res_styles[]=$v;
-     }
-    }
-
-
-
+   if (is_array($styles_recs))
+   {
+      $res_styles = array();
+     
+      foreach($styles_recs as $k => $v)
+         $res_styles[] = $v;
+   }
+   
    endMeasure('getStyles');
+   
    return $res_styles;
-
-  
  }
 
 
@@ -1602,6 +1623,7 @@ elm_states - Element states
  scenes: AUTO_SCALE int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
+ scenes: SYSTEM varchar(255) NOT NULL DEFAULT '' 
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'
@@ -1609,6 +1631,7 @@ elm_states - Element states
  elements: SYSTEM varchar(255) NOT NULL DEFAULT ''
  elements: TYPE varchar(255) NOT NULL DEFAULT ''
  elements: CSS_STYLE varchar(255) NOT NULL DEFAULT ''
+ elements: DEVICE_ID int(10) NOT NULL DEFAULT '0'
  elements: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  elements: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  elements: LINKED_METHOD varchar(255) NOT NULL DEFAULT ''

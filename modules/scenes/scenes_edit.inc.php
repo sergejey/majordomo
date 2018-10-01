@@ -227,6 +227,12 @@
      $element['EASY_CONFIG']=0;
     }
 
+    if ($element['TYPE']=='device') {
+     $element['EASY_CONFIG']=1;
+    }
+
+    $element['DEVICE_ID']=gr('device_id','int');
+
     global $linked_object;
     $element['LINKED_OBJECT']=$linked_object.'';
 
@@ -343,8 +349,8 @@
 
      $state_rec['ELEMENT_ID']=$element['ID'];
      $state_rec['TITLE']=$state_title_new;
-     $state_rec['IMAGE']=$image_new;
-     $state_rec['HTML']=$html_new;
+     $state_rec['IMAGE']=$image_new.'';
+     $state_rec['HTML']=$html_new.'';
      $state_rec['IS_DYNAMIC']=$is_dynamic_new;
      $state_rec['LINKED_OBJECT']=$linked_object_new.'';
      $state_rec['LINKED_PROPERTY']=$linked_property_new.'';
@@ -593,6 +599,9 @@
      $state_id=$state_rec['ID'];
 
 
+    } elseif (($element['TYPE']=='device') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
+
+     SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=".(int)$element['ID']);
 
     } elseif (($element['TYPE']=='object') && (!$state_rec['ID'] || $element['EASY_CONFIG'])) {
 
@@ -829,5 +838,6 @@
   $out['CONTAINERS']=$containers;
 
   $out['SCENES']=SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
+  $out['DEVICES']=SQLSelect("SELECT ID, TITLE FROM devices ORDER BY TITLE");
 
 

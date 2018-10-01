@@ -18,7 +18,7 @@ class dashboard extends module {
 *
 * @access private
 */
-function dashboard() {
+function __construct() {
   $this->name="dashboard";
   $this->title="Dashboard";
   $this->module_category="CMS";

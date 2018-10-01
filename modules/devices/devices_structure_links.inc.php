@@ -103,3 +103,13 @@ $this->device_links=array(
         )
     )
 );
+
+$addons_dir=DIR_MODULES.$this->name.'/addons';
+if (is_dir($addons_dir)) {
+    $addon_files=scandir($addons_dir);
+    foreach($addon_files as $file) {
+        if (preg_match('/\_links\.php$/',$file)) {
+            require($addons_dir.'/'.$file);
+        }
+    }
+}

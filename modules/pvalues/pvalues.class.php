@@ -18,7 +18,7 @@ class pvalues extends module {
 *
 * @access private
 */
-function pvalues() {
+function __construct() {
   $this->name="pvalues";
   $this->title="<#LANG_MODULE_PVALUES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";

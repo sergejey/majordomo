@@ -30,7 +30,7 @@ if ($backup) {
  if ($res) {
 
    $sv->echonow("Removing temporary files ... ");
-   $sv->removeTree(ROOT.'saverestore/temp');
+   $sv->removeTree(ROOT.'cms/saverestore/temp');
    $sv->echonow(" OK<br/> ", 'green');
 
 
@@ -60,7 +60,7 @@ if ($res) {
  if ($res) {
 
   $sv->echonow("Removing temporary files ... ");
-  $sv->removeTree(ROOT.'saverestore/temp');
+  $sv->removeTree(ROOT.'cms/saverestore/temp');
   @unlink(ROOT."modules/control_modules/installed");
   $sv->echonow(" OK<br/> ", 'green');
 

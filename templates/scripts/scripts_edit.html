@@ -29,11 +29,11 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+        <div class="col-lg-8"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
 </div>
 
 <div class="form-group ">
- <div class="col-lg-5 col-lg-offset-2">
+ <div class="col-lg-8 col-lg-offset-2">
 
 <label><input type="checkbox" name="run_periodically" value="1"[#if RUN_PERIODICALLY="1"#] checked[#endif#] onClick='$("#periocidally").toggle();'>
   <#LANG_RUN_PERIODICALLY#><#LANG_HCB#>script_runperiodically<#LANG_HCE#></label>
@@ -62,7 +62,7 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_CATEGORY#><#LANG_HCB#>script_category<#LANG_HCE#></label>
-        <div class="col-lg-5">
+        <div class="col-lg-8">
   <select name="category_id" class="form-control">
    <option value="0">
    [#begin CATEGORIES#]
@@ -75,15 +75,21 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#><#LANG_HCB#>description<#LANG_HCE#></label>
-        <div class="col-lg-5">
-  <textarea name="description" id="description" rows=3 cols=100 class="form-control">[#DESCRIPTION#]</textarea>
+        <div class="col-lg-8">
+            <div id="description_div_show">
+                <i>[#DESCRIPTION#]</i>
+                <a href="#" onclick="$('#description_div_show').hide();$('#description_div').show();return false;"><#LANG_EDIT#></a>
+            </div>
+   <div id="description_div" style="display:none">
+       <textarea name="description" id="description" rows=3 cols=100 class="form-control">[#DESCRIPTION#]</textarea>
+   </div>
  </div>
 </div>
 
 [#if ID!=""#]
 <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_CODE#><#LANG_HCB#>code<#LANG_HCE#></label>
-        <div class="col-lg-5">
+        <div class="col-lg-8">
 
  [#if ERRORS!=""#]<br><font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
  <!--#
@@ -99,7 +105,7 @@
 [#if AUTO_LINK_AVAILABLE="1"#]
     <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_AUTO_LINK#><#LANG_HCB#>script_autolink<#LANG_HCE#></label>
-        <div class="col-lg-5">
+        <div class="col-lg-8">
             <input type="radio" name="auto_link" value="1"[#if AUTO_LINK="1"#] checked[#endif#]> <#LANG_YES#>
             [#if LINKED_OBJECT!="" && LINKED_PROPERTY!=""#]
             (<#LANG_LINKED_OBJECT#>: [#LINKED_OBJECT#].[#LINKED_PROPERTY#])
@@ -112,7 +118,7 @@
 
 
 <div class="form-group ">
- <div class="col-lg-5 col-lg-offset-2">
+ <div class="col-lg-8 col-lg-offset-2">
 
 <label>
   <input type="checkbox" name="edit_run" id="chkRun" value="1"> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#>
@@ -141,6 +147,7 @@
  [#if ID!=""#]
  &nbsp;
  <a href="?id=<#ID#>&view_mode=clone" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a href="?ids[]=<#ID#>&view_mode=multiple" class="btn btn-default"><#LANG_EXPORT#></a>
  <a href="?id=<#ID#>&view_mode=delete_scripts" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
  [#endif ID#]
 
