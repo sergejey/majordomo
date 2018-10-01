@@ -110,6 +110,26 @@ for ($i = 0; $i < $total; $i++) {
         $payload['service']='Switch';
         sg('HomeBridge.to_add',json_encode($payload));
 
+    } elseif ($devices[$i]['TYPE']=='sensor_light') {
+
+        $payload=array();
+        $payload['name']=$devices[$i]['LINKED_OBJECT'];
+        sg('HomeBridge.to_remove',json_encode($payload));
+
+        $payload=array();
+        $payload['name']=$devices[$i]['LINKED_OBJECT'];
+        $payload['service_name']=$devices[$i]['TITLE'];
+        $payload['service']='LightSensor';
+        sg('HomeBridge.to_add',json_encode($payload));
+
+        $payload=array();
+        $payload['name']=$devices[$i]['LINKED_OBJECT'];
+        $payload['service_name']=$devices[$i]['TITLE'];
+        $payload['service']='LightSensor';
+        $payload['characteristic'] = 'CurrentAmbientLightLevel';
+        $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+        sg('HomeBridge.to_set',json_encode($payload));
+        
     }
 }
 
