@@ -236,15 +236,21 @@ class app_player extends module {
 				// Deprecated (backward compatibility)
 				global $volume;
 				if($command == 'volume') {
+					$deprecated = true;
 					$command = 'set_volume';
 					$param = (int)$volume;
 				} elseif($command == 'refresh') {
+					$deprecated = true;
 					$command = 'play';
 					$param = $play;
 				} elseif($command == 'close') {
+					$deprecated = true;
 					$command = 'stop';
 				} elseif($command == 'prev') {
+					$deprecated = true;
 					$command = 'previous';
+				} else {
+					$deprecated = false;
 				}
 				// END Deprecated
 
@@ -287,6 +293,10 @@ class app_player extends module {
 									$json['message'] = $player->message;
 									$json['data'] = $player->data;
 
+									// Deprecated message
+									if($deprecated) {
+										$json['message'] .= ' This command is deprecated. Please don\'t use it.';
+									}
 								}
 
 								$player->destroy();
