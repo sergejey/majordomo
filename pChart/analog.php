@@ -41,12 +41,12 @@ pChart analog.php v.1.0.0
 
 //period(!)
 &type=1z        - 1 �����
-&type=1d        - 1 ����
-&type=1h        - 1 ���
-&type=1m        - 1 ������
+&type=1d        - 1 день
+&type=1h        - 1 час
+&type=1m        - 1 месяц
 //custom period
-&start=13/02/6  - ���� ������
-&interva=86400  - ������ � �������� (1 ����)
+&start=13/02/6  - дата начала
+&interva=86400  - секунд в сутках (1 день)
 &resolution=900 - ���������� � ��������
 &today=         - 1/-* today (0:00-23:59), &type required
 
