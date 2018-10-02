@@ -4,9 +4,9 @@
 */
 
 $img=urldecode($_REQUEST['img']);
-$color=$_REQUEST['color'];
-$close=$_REQUEST['close'];
-$bgcolor=$_REQUEST['bgcolor'];
+$color=htmlspecialchars($_REQUEST['color'], ENT_QUOTES, 'UTF-8');
+$close=htmlspecialchars($_REQUEST['close'], ENT_QUOTES, 'UTF-8');
+$bgcolor=htmlspecialchars($_REQUEST['bgcolor'], ENT_QUOTES, 'UTF-8');
 
 $out="<a href='#' onClick='window.close()'><img src='".$img."' border=0></a>";
 
