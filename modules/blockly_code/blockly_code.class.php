@@ -237,8 +237,8 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS blockly_code');
-  parent::uninstall();
+   SQLDropTable('blockly_code');
+   parent::uninstall();
  }
 /**
 * dbInstall

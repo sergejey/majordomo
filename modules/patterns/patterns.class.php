@@ -826,7 +826,7 @@ function generate_combinations(array $data, array &$all = array(), array $group 
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS patterns');
+   SQLDropTable('patterns');
   parent::uninstall();
  }
 /**

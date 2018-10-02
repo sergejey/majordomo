@@ -983,7 +983,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS objects');
+   SQLDropTable('objects');
   parent::uninstall();
  }
 /**
@@ -995,7 +995,7 @@ function usual(&$out) {
 */
  function dbInstall($data) {
 
-  //SQLExec("DROP TABLE IF EXISTS `cached_values`;");
+  //SQLDropTable('cached_values');
   $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   char(100) NOT NULL,
                 `DATAVALUE` char(255) NOT NULL,

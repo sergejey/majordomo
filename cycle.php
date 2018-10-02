@@ -147,7 +147,7 @@ $ctl = new control_modules();
 
 //removing cached data
 echo "Clearing the cache.\n";
-SQLExec("TRUNCATE TABLE `cached_values`");
+TruncateTable('cached_values');
 
 if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE==1) {
    // split data into multiple tables

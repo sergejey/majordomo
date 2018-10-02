@@ -237,8 +237,8 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS myblocks');
-  SQLExec('DROP TABLE IF EXISTS myblocks_categories');
+   SQLDropTable('myblocks');
+   SQLDropTable('myblocks_categories');
   parent::uninstall();
  }
 /**

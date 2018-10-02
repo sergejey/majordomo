@@ -268,8 +268,8 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS system_errors');
-  SQLExec('DROP TABLE IF EXISTS system_errors_data');
+   SQLDropTable('system_errors');
+   SQLDropTable('system_errors_data');
   parent::uninstall();
  }
 /**
