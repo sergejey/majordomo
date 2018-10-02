@@ -103,11 +103,7 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     $values = substr($values, 0, strlen($values) - 2);
     $query = "INSERT INTO `$table`($fields) VALUES($values)";
 
-    if (function_exists('mysqli_query')) {
-        $res = mysqli_query($db->dbh, $query);
-    } else {
-        $res = mysql_query($query);
-    }
+    $res = $db->Exec($query);
     return $res;
     //SQLInsert('cached_ws', $rec);
 }

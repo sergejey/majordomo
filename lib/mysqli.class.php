@@ -103,7 +103,9 @@ class mysql
       $this->latestTransaction = time();
       $this->pingTimeout = 5*60;
 
-      $this->Connect();
+      // Чтобы не сломать сторонние модули, если они вдруг смотрять на этот параметр
+      $this->connected = true;
+      //$this->Connect(); // Коннект можно делать, только при первом запросе к базе. До этого он не нужен
    }
 
    public function __destruct()
@@ -124,6 +126,7 @@ class mysql
          $this->host='127.0.0.3';
       }
       */
+      if ($this->dbh) return true;
 
       if ($this->port) {
        $this->dbh = @mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
@@ -131,8 +134,6 @@ class mysql
        $this->dbh = @mysqli_connect(''.$this->host , $this->user, $this->password);
       }
 
-      $this->connected = false;      
-      
       if (!$this->dbh) {
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
@@ -148,7 +149,6 @@ class mysql
          return 0;
       } else
       {
-         $this->connected = true;
          $this->latestTransaction=time();
          $this->Exec("SET NAMES 'utf8';");
          $this->Exec("SET CHARACTER SET 'utf8';");
@@ -168,8 +168,8 @@ class mysql
     */
    public function Exec($query)
    {
-
-      if (!$this->connected) return false;
+      if (!$this->dbh && !$this->Connect()) return false;
+      
       if ((time()-$this->latestTransaction)>$this->pingTimeout) {
        $this->Ping();
       }
@@ -179,7 +179,7 @@ class mysql
       
       if (!$result)
       {
-         $this->Error($query);
+         $this->Error($query,0);
          return 0;
       }
       
@@ -197,9 +197,7 @@ class mysql
     */
    public function Select($query)
    {
-      if (!$this->connected) return false;
       $res = array();
-      
       if ($result = $this->Exec($query))
       {
          while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
@@ -226,7 +224,6 @@ class mysql
     */
    public function SelectOne($query)
    {
-      if (!$this->connected) return false;
       if ($result = $this->Exec($query))
       {
          $rec = mysqli_fetch_array($result, MYSQL_ASSOC);
@@ -242,21 +239,19 @@ class mysql
 
    public function Ping()
    {
-    $test_query = "SHOW TABLES FROM ".$this->dbName;
-    $result = @mysqli_query($this->dbh, $test_query);
-    $tblCnt = 0;
-    if ($result) {
-     while($tbl = mysqli_fetch_array($result)) {
-      $tblCnt++;
-     }
-    }
-    if ($tblCnt>0) {
-     return true;
-    } else {
-     $this->Disconnect();
-     $this->Connect();
-    }
-    
+      if (!$this->dbh && !$this->Connect()) return false;
+      
+      $test_query = "SHOW TABLES FROM ".$this->dbName;
+      $result = @mysqli_query($this->dbh, $test_query);
+      $tblCnt = 0;
+      if ($result) {
+         while($tbl = mysqli_fetch_array($result)) {
+            $tblCnt++;
+         }
+      }
+      if ($tblCnt>0) {
+         return true;
+      }
    }
 
 
@@ -273,7 +268,6 @@ class mysql
     */
    public function Update($table, $data, $ndx = "ID")
    {
-      if (!$this->connected) return false;
       $qry = "UPDATE `$table` SET ";
       
       foreach ($data as $field => $value)
@@ -315,7 +309,6 @@ class mysql
     */
    public function Insert($table, &$data)
    {
-      if (!$this->connected) return false;
       $fields = "";
       $values = "";
       foreach ($data as $field => $value)
@@ -347,10 +340,8 @@ class mysql
     */
    public function Disconnect()
    {
-      if (!$this->connected) return false;
       if ($this->dbh) mysqli_close($this->dbh);
       $this->dbh = null;
-      $this->connected = false;
    }
 
    /**
@@ -362,7 +353,6 @@ class mysql
     */
    public function DbSafe($str)
    {
-      if (!$this->connected) return $str;
       $str = mysqli_real_escape_string($this->dbh, $str);
       $str = str_replace("%", "\%", $str);
       return $str;
@@ -392,6 +382,7 @@ class mysql
     */
    public function Error($query = "", $stop = 0)
    {
+      if (!$this->dbh) return false;
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
       if (preg_match('/Unknown column/is',$err_details)) {
@@ -412,7 +403,7 @@ class mysql
     */
    public function get_mysql_def($table)
    {
-      $result = mysqli_query('SHOW CREATE TABLE ' . $table, $this->dbh);
+      $result = $this->Exec('SHOW CREATE TABLE ' . $table);
       
       if ($result)
       {
@@ -443,7 +434,7 @@ class mysql
    public function get_mysql_content($table)
    {
       $content = "";
-      $result  = mysqli_query("SELECT * FROM $table", $this->dbh);
+      $result  = $this->Exec("SELECT * FROM $table");
       
       while ($row = mysqli_fetch_row($result))
       {
@@ -495,7 +486,7 @@ function SQLExec($query)
 function DbSafe($in)
 {
    global $db;
-   if (is_object($db)) {
+   if ($db instanceof mysql) {
       return $db->DbSafe($in);
    } else {
       return $in;
@@ -514,7 +505,7 @@ function DbSafe($in)
 function SQLSelect($query)
 {
    global $db;
-   if (is_object($db)) {
+   if ($db instanceof mysql) {
       return $db->Select($query);
    } else {
       return false;
@@ -533,7 +524,7 @@ function SQLSelect($query)
 function SQLSelectOne($query)
 {
    global $db;
-   if (is_object($db)) {
+   if ($db instanceof mysql) {
       return $db->SelectOne($query);
    } else {
       return false;
@@ -553,7 +544,7 @@ function SQLSelectOne($query)
 function SQLInsert($table, &$record)
 {
    global $db;
-   if (is_object($db)) {
+   if ($db instanceof mysql) {
       return $db->Insert($table, $record);
    } else {
       return false;
@@ -570,7 +561,7 @@ function SQLInsert($table, &$record)
 function SQLUpdate($table, $record, $ndx = 'ID')
 {
    global $db;
-   if (is_object($db)) {
+   if ($db instanceof mysql) {
       return $db->Update($table, $record, $ndx);
    } else {
       return false;
@@ -594,7 +585,7 @@ function SQLUpdateInsert($table, &$record, $ndx = 'ID')
  
    if (isset($record[$ndx]))
    {
-      if (is_object($db)) {
+      if ($db instanceof mysql) {
          return $db->Update($table, $record, $ndx);
       } else {
          return false;
@@ -602,7 +593,7 @@ function SQLUpdateInsert($table, &$record, $ndx = 'ID')
    }
    else
    {
-      if (is_object($db)) {
+      if ($db instanceof mysql) {
          $record[$ndx] = $db->Insert($table, $record);
       } else {
          return false;
@@ -635,38 +626,40 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
 *
 * @access public
 */
- function SQLGetFields($table) {
-    global $db;
-    if (!is_object($db) || !$db->connected) {
-       return false;
-    }
-  $result = SQLExec("SHOW FIELDS FROM $table");  
-  $res=array();
-  while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
-   {
-   $res[] = $rec;
-  }
-  return $res;
- }
+function SQLGetFields($table) {
+   global $db;
+   if (!($db instanceof mysql)) return false;
 
- function SQLGetIndexes($table) {
-  $result = SQLExec("SHOW INDEX FROM $table");  
-  $res=array();
-  while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
+   $result = SQLExec("SHOW FIELDS FROM $table");  
+   $res=array();
+   while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
    {
-   $res[] = $rec;
-  }
-  return $res;
- }
+      $res[] = $rec;
+   }
+   return $res;
+}
 
- function SQLPing() {
-  global $db;
-  if (is_object($db)) {
-     return $db->Ping();
-  } else {
-     return false;
-  }
- }
+function SQLGetIndexes($table) {
+   global $db;
+   if (!($db instanceof mysql)) return false;
+   
+   $result = SQLExec("SHOW INDEX FROM $table");  
+   $res=array();
+   while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
+   {
+      $res[] = $rec;
+   }
+   return $res;
+}
+
+function SQLPing() {
+   global $db;
+   if ($db instanceof mysql) {
+      return $db->Ping();
+   } else {
+      return false;
+   }
+}
 
 
 /**

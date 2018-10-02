@@ -99,7 +99,9 @@ class mysql
       $this->latestTransaction = time();
       $this->pingTimeout = 5*60;
 
-      $this->Connect();
+      // Чтобы не сломать сторонние модули, если они вдруг смотрять на этот параметр
+      $this->connected = true;
+      //$this->Connect(); // Коннект можно делать, только при первом запросе к базе. До этого он не нужен
    }
 
    public function __destruct()
@@ -114,17 +116,27 @@ class mysql
     */
    public function Connect()
    {
+      if ($this->dbh) return true;
       // connects to database
-      $this->dbh = @mysql_connect($this->host . ":" . $this->port, $this->user, $this->password);
-      
+      if ($this->port) {
+         $this->dbh = @mysql_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
+      } else {
+         $this->dbh = @mysql_connect(''.$this->host , $this->user, $this->password);
+      }
+      if (!$this->dbh) {
+         Define('NO_DATABASE_CONNECTION',1);
+         registerError('sqlconn', "Error connection");
+         return 0;
+      }
       if (!@mysql_select_db($this->dbName, $this->dbh))
       {
-         $this->Error();
-         
+         Define('NO_DATABASE_CONNECTION',1);
+         $this->Error("Selecting db: ".$this->dbName, 0);
          return 0;
       }
       else
       {
+         $this->latestTransaction=time();
          mysql_query("SET NAMES 'utf8';", $this->dbh);
          mysql_query("SET CHARACTER SET 'utf8';", $this->dbh);
          mysql_query("set character_set_client='utf8';", $this->dbh);
@@ -143,18 +155,18 @@ class mysql
     */
    public function Exec($query)
    {
-
+      if (!$this->dbh && !$this->Connect()) return false;
+      
       if ((time()-$this->latestTransaction)>$this->pingTimeout) {
        $this->Ping();
       }
 
-      $this->latestTransaction=time(); 
+      $this->latestTransaction=time();
       $result = mysql_query($query, $this->dbh);
       
       if (!$result)
       {
-         $this->Error($query);
-         
+         $this->Error($query,0);
          return 0;
       }
       
@@ -174,7 +186,7 @@ class mysql
    {
       $res = array();
       
-      if ($result = mysql_query($query, $this->dbh))
+      if ($result = $this->Exec($query))
       {
          while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
          {
@@ -183,7 +195,7 @@ class mysql
       }
       else
       {
-         $this->Error($query);
+         $this->Error($query,0);
       }
 
       return $res;
@@ -200,7 +212,7 @@ class mysql
     */
    public function SelectOne($query)
    {
-      if ($result = mysql_query($query, $this->dbh))
+      if ($result = $this->Exec($query))
       {
          $rec = mysql_fetch_array($result, MYSQL_ASSOC);
          
@@ -214,21 +226,19 @@ class mysql
 
    public function Ping()
    {
-    //DebMes("mysql db ping");
-    $test_query = "SHOW TABLES FROM ".$this->dbName;
-    $result = @mysql_query($test_query, $this->dbh);
-    $tblCnt = 0;
-    if ($result) {
-     while($tbl = mysql_fetch_array($result)) {
-      $tblCnt++;
-     }
-    }
-    if ($tblCnt>0) {
-     return true;
-    } else {
-     $this->Disconnect();
-     $this->Connect();
-    }
+      if (!$this->dbh && !$this->Connect()) return false;
+      
+      $test_query = "SHOW TABLES FROM ".$this->dbName;
+      $result = @mysql_query($test_query,$this->dbh);
+      $tblCnt = 0;
+      if ($result) {
+         while($tbl = mysql_fetch_array($result)) {
+            $tblCnt++;
+         }
+      }
+      if ($tblCnt>0) {
+         return true;
+      }
    }
 
    /**
@@ -261,7 +271,7 @@ class mysql
       $qry .= " WHERE $ndx = '" . $data[$ndx] . "'";
 
      
-      if (!mysql_query($qry, $this->dbh))
+      if (!$this->Exec($qry))
       {
          $this->Error($qry);
          return 0;
@@ -299,9 +309,9 @@ class mysql
       
       $qry = "INSERT INTO `$table`($fields) VALUES($values)";
       
-      if (!mysql_query($qry, $this->dbh))
+      if (!$this->Exec($qry))
       {
-         $this->error($qry);
+         $this->Error($qry);
          return 0;
       }
       
@@ -354,14 +364,17 @@ class mysql
     * @access private
     * @return int
     */
-   public function Error($query = "")
+   public function Error($query = "", $stop = 0)
    {
-
+      if (!$this->dbh) return false;
       $err_no = mysql_errno();
       $err_details = mysql_error();
+      if (preg_match('/Unknown column/is',$err_details)) {
+         unlink(DIR_MODULES.'control_modules/installed');
+         //header("Location:".ROOTHTML);exit;
+      }
       registerError('sql', $err_no . ": " . $err_details . "\n$query");
-      new custom_error($err_no . ": " . $err_details . "<br>$query", 1);
-
+      new custom_error($err_no . ": " . $err_details . "<br>$query", $stop);
       return 1;
    }
 
@@ -374,7 +387,7 @@ class mysql
     */
    public function get_mysql_def($table)
    {
-      $result = mysql_query('SHOW CREATE TABLE ' . $table, $this->dbh);
+      $result = $this->Exec('SHOW CREATE TABLE ' . $table);
       
       if ($result)
       {
@@ -405,7 +418,7 @@ class mysql
    public function get_mysql_content($table)
    {
       $content = "";
-      $result  = mysql_query("SELECT * FROM $table", $this->dbh);
+      $result  = $this->Exec("SELECT * FROM $table");
       
       while ($row = mysql_fetch_row($result))
       {
@@ -457,7 +470,11 @@ function SQLExec($query)
 function DbSafe($in)
 {
    global $db;
-   return $db->DbSafe($in);
+   if ($db instanceof mysql) {
+      return $db->DbSafe($in);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -472,7 +489,11 @@ function DbSafe($in)
 function SQLSelect($query)
 {
    global $db;
-   return $db->Select($query);
+   if ($db instanceof mysql) {
+      return $db->Select($query);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -487,7 +508,11 @@ function SQLSelect($query)
 function SQLSelectOne($query)
 {
    global $db;
-   return $db->SelectOne($query);
+   if ($db instanceof mysql) {
+      return $db->SelectOne($query);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -503,7 +528,11 @@ function SQLSelectOne($query)
 function SQLInsert($table, &$record)
 {
    global $db;
-   return $db->Insert($table, $record);
+   if ($db instanceof mysql) {
+      return $db->Insert($table, $record);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -516,7 +545,11 @@ function SQLInsert($table, &$record)
 function SQLUpdate($table, $record, $ndx = 'ID')
 {
    global $db;
-   return $db->Update($table, $record, $ndx);
+   if ($db instanceof mysql) {
+      return $db->Update($table, $record, $ndx);
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -536,11 +569,19 @@ function SQLUpdateInsert($table, &$record, $ndx = 'ID')
  
    if (isset($record[$ndx]))
    {
-      return $db->Update($table, $record, $ndx);
+      if ($db instanceof mysql) {
+         return $db->Update($table, $record, $ndx);
+      } else {
+         return false;
+      }
    }
    else
    {
-      $record[$ndx] = $db->Insert($table, $record);
+      if ($db instanceof mysql) {
+         $record[$ndx] = $db->Insert($table, $record);
+      } else {
+         return false;
+      }
       return $record[$ndx];
    }
 }
@@ -569,33 +610,40 @@ function SQLInsertUpdate($table, &$record, $ndx = 'ID')
 *
 * @access public
 */
- function SQLGetFields($table) {
-  $result = SQLExec("SHOW FIELDS FROM $table");  
-  $res=array();
-  while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
+function SQLGetFields($table) {
+   global $db;
+   if (!($db instanceof mysql)) return false;
+
+   $result = SQLExec("SHOW FIELDS FROM $table");  
+   $res=array();
+   while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
    {
-   $res[] = $rec;
-  }
-  return $res;
- }
+      $res[] = $rec;
+   }
+   return $res;
+}
 
- function SQLGetIndexes($table) {
-  $result = SQLExec("SHOW INDEX FROM $table");  
-  $res=array();
-  while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
+function SQLGetIndexes($table) {
+   global $db;
+   if (!($db instanceof mysql)) return false;
+
+   $result = SQLExec("SHOW INDEX FROM $table");  
+   $res=array();
+   while ($rec = mysql_fetch_array($result, MYSQL_ASSOC))
    {
-   $res[] = $rec;
-  }
-  return $res;
- }
+      $res[] = $rec;
+   }
+   return $res;
+}
 
-
-
- function SQLPing() {
-  global $db;
-  return $db->Ping();
- }
-
+function SQLPing() {
+   global $db;
+   if ($db instanceof mysql) {
+      return $db->Ping();
+   } else {
+      return false;
+   }
+}
 
 /**
  * Converts date format from YYYY/MM/DD to MM/DD/YYYY

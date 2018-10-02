@@ -19,16 +19,12 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-$connected = 0;
+$connected = false;
 
 while (!$connected)
 {
    echo "Connecting to database..." . PHP_EOL;
-   if (function_exists('mysqli_connect')) {
-    $connected = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD);
-   } else {
-    $connected = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-   }
+   $connected = $db->Connect();
    sleep(5);
 }
 

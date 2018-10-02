@@ -219,7 +219,7 @@ function usual(&$out) {
   }
   echo json_encode($res);
 
-  global $db;$db->disconnect();
+  global $db;
   exit;
  }
 

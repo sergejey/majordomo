@@ -79,7 +79,6 @@ include("./pChart/pChart.class");
 
 //---------------------------- MySQL
 
-$db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 $settings=SQLSelect("SELECT NAME, VALUE FROM settings");
 $total=count($settings);
 for($i=0;$i<$total;$i++) {
