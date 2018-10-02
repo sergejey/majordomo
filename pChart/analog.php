@@ -40,14 +40,14 @@ pChart analog.php v.1.0.0
 &n9= - name of object9
 
 //period(!)
-&type=1z        - 1 месяц
-&type=1d        - 1 день
-&type=1h        - 1 час
-&type=1m        - 1 минута
+&type=1z        - 1 пїЅпїЅпїЅпїЅпїЅ
+&type=1d        - 1 пїЅпїЅпїЅпїЅ
+&type=1h        - 1 пїЅпїЅпїЅ
+&type=1m        - 1 пїЅпїЅпїЅпїЅпїЅпїЅ
 //custom period
-&start=13/02/6  - дата начала
-&interva=86400  - период в секундах (1 день)
-&resolution=900 - разрешение в секундах
+&start=13/02/6  - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+&interva=86400  - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (1 пїЅпїЅпїЅпїЅ)
+&resolution=900 - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 &today=         - 1/-* today (0:00-23:59), &type required
 
 //types of graphics(!)
@@ -141,7 +141,6 @@ bgcolor= - background graphics (-*)
  include_once("./config.php");
  include_once("./lib/loader.php");
  include_once(DIR_MODULES."application.class.php");
- $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); //connecting to database
  include_once("./load_settings.php");
  include("./pChart/pData.class");   
  include("./pChart/pChart.class");  
@@ -1013,7 +1012,3 @@ function filter02($val, $al, $fil) {
  Header("Content-type:image/png");
  imagepng($Test->Picture);
  //$Test->Render();
-
-//---------------------------- Disconnect
-
- $db->Disconnect(); // closing database connection

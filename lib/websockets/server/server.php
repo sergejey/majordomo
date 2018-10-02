@@ -415,8 +415,6 @@ class MajordomoWsServer extends WebSocketServer {
 
          if (file_exists('./reboot'))
          {
-             global $db;
-             $db->Disconnect();
              exit;
          }
 

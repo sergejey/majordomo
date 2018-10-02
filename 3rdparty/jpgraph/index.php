@@ -453,6 +453,3 @@ $graph->Stroke();
 
  //$Test->Render();
  */
-
-
- $db->Disconnect(); // closing database connection

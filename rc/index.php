@@ -3,7 +3,6 @@
 chdir('../');
 include_once('./config.php');
 include_once('./lib/loader.php');
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
 include_once('./load_settings.php');
 
 /*
@@ -58,8 +57,6 @@ if(!empty($command) && file_exists('./rc/commands/'.$command.'.bat')) {
 } elseif(!empty($command)) {
 	echo 'command not found';
 }
-
-$db->Disconnect(); // closing database connection
 
 if($done) {
 	die('OK');
