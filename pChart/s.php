@@ -958,5 +958,3 @@ if ($objtype == "generic") {
         
  Header("Content-type:image/png");
  imagepng($Test->Picture);
-
- $db->Disconnect(); // closing database connection

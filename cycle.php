@@ -32,8 +32,6 @@ while (!$connected)
    sleep(5);
 }
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 
 echo "CONNECTED TO DB" . PHP_EOL;
@@ -454,5 +452,4 @@ while (false !== ($result = $threads->iteration()))
 }
 
  unlink('./reboot');
- // closing database connection
- $db->Disconnect();
+

@@ -102,6 +102,11 @@ class mysql
       $this->Connect();
    }
 
+   public function __destruct()
+   {
+      $this->Disconnect();
+   }
+
    /**
     * Connects to database
     * @access private
@@ -311,7 +316,8 @@ class mysql
     */
    public function Disconnect()
    {
-      mysql_close($this->dbh);
+      if ($this->dbh) mysql_close($this->dbh);
+      $this->dbh = null;
    }
 
    /**

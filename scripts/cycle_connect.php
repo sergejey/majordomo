@@ -11,17 +11,12 @@ chdir(dirname(__FILE__) . '/../');
 include_once("./config.php");
 include_once("./lib/loader.php");
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 
 $started_time = time();
 $max_run_time = 2*60*60; // do restart in 2 hours
 
 set_time_limit(0);
-
-
 
 include_once(DIR_MODULES . 'connect/connect.class.php');
 
@@ -30,11 +25,9 @@ $devices_sent_time = 0;
 
 include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
-
 $saved_devices_data=array();
 
 const CONNECT_HOST = 'connect.smartliving.ru';
-
 
 while (1) {
     $connect = new connect();
@@ -94,7 +87,6 @@ while (1) {
                 $previousMillis = $currentMillis;
                 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
                 if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
-                    $db->Disconnect();
                     exit;
                 }
             }
@@ -120,7 +112,6 @@ while (1) {
             if ((time()-$started_time)>$max_run_time) {
                 echo "Exit cycle CONNET... (reconnecting)";
                 $mqtt_client->close();
-                $db->Disconnect();
                 exit;
             }
         }

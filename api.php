@@ -1,8 +1,6 @@
 <?php
 include_once("./config.php");
 include_once("./lib/loader.php");
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 
 header('Content-Type: text/html; charset=utf-8');
@@ -177,7 +175,6 @@ if (!isset($request[0])) {
             array_shift($params);
             array_shift($params);
             $module->api($params);
-            $db->Disconnect();
             exit;
         }
     }
@@ -280,7 +277,3 @@ if ($result['error']!='') {
 }
 header("Content-type:application/json");
 echo json_encode($result);
-
-// closing database connection
-$db->Disconnect();
-

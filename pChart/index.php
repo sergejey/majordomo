@@ -706,6 +706,3 @@ if (file_exists($path_to_file)) {
                 }
          }
 }
-
-
-$db->Disconnect(); // closing database connection

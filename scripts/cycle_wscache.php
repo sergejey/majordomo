@@ -7,9 +7,6 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 
 if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
@@ -72,13 +69,9 @@ while (1)
    }
    if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
-      $db->Disconnect();
       exit;
    }
    sleep(1);
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
-
-
-$db->Disconnect(); // closing database connection
