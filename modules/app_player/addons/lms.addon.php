@@ -62,33 +62,6 @@ class lms extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Private: LMS ANY-URL request
-	private function lms_anyurl_request($data) {
-		$params = array(
-			'_dc='.time(),
-			'player='.$this->terminal['PLAYER_USERNAME']
-		);
-		foreach($data as $key=>$value) {
-			if(is_string($key)) {
-				$params[] = $key.'='.urlencode($value);
-			} else {
-				$params[] = $value;
-			}
-		}
-		$this->reset_properties();
-		curl_setopt($this->curl, CURLOPT_POST, FALSE);
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/anyurl?'.implode('&', $params));
-		if($result = curl_exec($this->curl)) {
-			$this->success = TRUE;
-			$this->message = 'OK';
-			$this->data = $result;
-		} else {
-			$this->success = FALSE;
-			$this->message = 'LMS ANY-URL interface: '.curl_error($this->curl).'!';
-		}
-		return $this->success;
-	}
-	
 	// Private: LMS get track position
 	private function lms_get_track_position($id) {
 		if($this->pl_get()) {
@@ -99,6 +72,27 @@ class lms extends app_player_addon {
 					$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
 					$this->data = $i;
 					break;
+				}
+			}
+		}
+		return $this->success;
+	}
+	
+	// Private: LMS get track id
+	private function lms_get_track_id($position=-1) {
+		if($this->pl_get()) {
+			$playlist = $this->data;
+			$this->reset_properties(array('success'=>FALSE, 'message'=>"Track with position = $position not found!"));
+			if($position == -1) {
+				$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
+				$this->data = $playlist[count($playlist)-1]['id'];
+			} else {
+				foreach($playlist as $i=>$track) {
+					if($i == $position) {
+						$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
+						$this->data = $track['id'];
+						break;
+					}
 				}
 			}
 		}
@@ -134,11 +128,11 @@ class lms extends app_player_addon {
 	}
 
 	// Play
-	function play($input) { // FIXME: http://localhost/module/app_mediabrowser.html?play=...
+	function play($input) { // FIXME: не все ссылки воспроизводит
 		$this->reset_properties();
 		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
-			if($this->lms_anyurl_request(array('p0'=>'playlist', 'p1'=>'play', 'p2'=>$input))) {
+			if($this->lms_jsonrpc_request(array('playlist', 'play', $input))) {
 				if($this->status()) {
 					$track_id = $this->data['track_id'];
 				} else {
@@ -249,7 +243,7 @@ class lms extends app_player_addon {
 						$anchors = $track->getElementsByTagName('a');
 						foreach($anchors as $a) {
 							$href = $a->getAttribute('href');
-							if(preg_match('/^\/songinfo\.html\?item\=([0-9]+)&(.*)$/', $href, $matches)) {
+							if(preg_match('/^\/songinfo\.html\?item\=([-0-9]+)&(.*)$/', $href, $matches)) {
 								$track_id = (int)$matches[1];
 							}
 						}
@@ -266,7 +260,7 @@ class lms extends app_player_addon {
 								$anchors = $dom_song->getElementsByTagName('a');
 								foreach($anchors as $a) {
 									$href = $a->getAttribute('href');
-									if(preg_match('/^\/music\/([0-9]+)\/download$/', $href)) {
+									if(preg_match('/^\/music\/([-0-9]+)\/download$/', $href)) {
 										$track_file = trim($a->nodeValue);
 									}
 								}
@@ -293,6 +287,27 @@ class lms extends app_player_addon {
 		return $this->success;
 	}
 
+	// Playlist: Add
+	function pl_add($input) { // FIXME: не все ссылки воспроизводит
+		$this->reset_properties();
+		if(strlen($input)) {
+			$input = preg_replace('/\\\\$/is', '', $input);
+			if($this->lms_jsonrpc_request(array('playlist', 'add', $input))) {
+				if($this->lms_get_track_id()) {
+					$track_id = $this->data;
+				} else {
+					$track_id = -1;
+				}
+				$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
+				$this->data = (int)$track_id;
+			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'Input is missing!';
+		}
+		return $this->success;
+	}
+	
 	// Playlist: Delete
 	function pl_delete($id) {
 		$this->reset_properties();
