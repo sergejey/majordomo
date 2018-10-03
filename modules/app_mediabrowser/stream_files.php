@@ -24,7 +24,9 @@ if (is_file($play)) {
     header("Content-Type: audio/mpegurl");
     header("Content-Disposition: attachment; filename=media.m3u");
     foreach($res_files as $rec) {
-        echo 'http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.html?play=".urlencode($rec['FULL'])."\r\n";
+	    //$file_ext = 'm3u';
+	    $file_ext = 'html';
+        echo 'http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($rec['FULL'])."\r\n";
     }
     exit;
 }

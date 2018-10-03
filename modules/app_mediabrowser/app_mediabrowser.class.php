@@ -197,8 +197,8 @@ function usual(&$out) {
     else
         $run_linux=0;
 
-
    $play=gr('play');
+   $play = urlsafe_b64decode($play);
    if ($play!='') {
     require(DIR_MODULES.$this->name.'/stream_files.php');
    }
@@ -377,9 +377,14 @@ function usual(&$out) {
    //$out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
    $out['FULLFILE_S']=$out['FULLFILE'];
    if (is_dir(($path).$file)) {
-       $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.html?play=".urlencode($out['FULLFILE'])."&type=m3u";
+	   //$file_ext = 'm3u';
+	   $file_ext = 'html';
+       $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($out['FULLFILE'])."&type=m3u";
    } else {
-       $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.html?play=".urlencode($out['FULLFILE']);
+	   if(!$file_ext = pathinfo($out['FULLFILE'], PATHINFO_EXTENSION)) {
+		   $file_ext = 'html';
+	   }
+       $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($out['FULLFILE']);
    }
    //dprint($out['FULLFILE_URL']);
 
