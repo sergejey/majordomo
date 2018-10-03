@@ -128,7 +128,7 @@ class lms extends app_player_addon {
 	}
 
 	// Play
-	function play($input) { // FIXME: не все ссылки воспроизводит
+	function play($input) {
 		$this->reset_properties();
 		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
@@ -288,11 +288,12 @@ class lms extends app_player_addon {
 	}
 
 	// Playlist: Add
-	function pl_add($input) { // FIXME: не все ссылки воспроизводит
+	function pl_add($input) {
 		$this->reset_properties();
 		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
 			if($this->lms_jsonrpc_request(array('playlist', 'add', $input))) {
+				// FIXME: Get the ID without additional request
 				if($this->lms_get_track_id()) {
 					$track_id = $this->data;
 				} else {
@@ -312,6 +313,7 @@ class lms extends app_player_addon {
 	function pl_delete($id) {
 		$this->reset_properties();
 		if(strlen($id)) {
+			// FIXME: Request not by position number, but by track ID
 			if($this->lms_get_track_position($id)) {
 				$track_position = $this->data;
 				if($this->lms_jsonrpc_request(array('playlist', 'delete', (int)$track_position))) {
@@ -337,6 +339,7 @@ class lms extends app_player_addon {
 	function pl_play($id) {
 		$this->reset_properties();
 		if(strlen($id)) {
+			// FIXME: Request not by position number, but by track ID
 			if($this->lms_get_track_position($id)) {
 				$track_position = $this->data;
 				if($this->lms_jsonrpc_request(array('playlist', 'jump', (int)$track_position))) {
