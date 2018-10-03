@@ -114,7 +114,7 @@ class app_player_addon {
 		/*
 			$position - Position in seconds. Integer.
 			
-			$this->data format (integer): Current playback progress (in seconds). If unknown = 0.
+			$this->data format: NULL.
 		*/
 		return $this->not_supported();
 	}
@@ -133,7 +133,7 @@ class app_player_addon {
 		/*
 			$level - Volume level in percent. Integer.
 			
-			$this->data format (integer): Current volume level in percent.
+			$this->data format: NULL.
 		*/
 		return $this->not_supported();
 	}
@@ -183,7 +183,7 @@ class app_player_addon {
 		/*
 			$id - The track number to remove from the playlist. Integer. See status() function (track_id).
 			
-			$this->data format (integer): ID of deleting track (in playlist). If unknown = -1.
+			$this->data format: NULL.
 		*/
 		return $this->not_supported();
 	}
@@ -201,7 +201,7 @@ class app_player_addon {
 		/*
 			$id - The position of the playback track. Integer. See status() function (track_id).
 			
-			$this->data format (integer): ID of currently playing track (in playlist). If unknown = -1.
+			$this->data format: NULL.
 		*/
 		return $this->not_supported();
 	}
@@ -249,6 +249,7 @@ class app_player_addon {
 	final public function reset_properties($defaults=array()) {
 		/*
 			$defaults - Associative array with default property values.
+			
 			Example:
 				array('message'=>'Hello')
 		*/
@@ -293,7 +294,7 @@ class app_player_addon {
 		/*
 			$level - Volume level in percent. Integer.
 			
-			$this->data format (integer): Current volume level in percent.
+			$this->data format: NULL.
 		*/
 		$this->reset_properties();
 		if(strlen($level)) {
@@ -301,7 +302,6 @@ class app_player_addon {
 			callMethod('ThisComputer.VolumeLevelChanged', array('VALUE' => (int)$level, 'HOST' => $this->terminal['HOST']));
 			$this->success = TRUE;
 			$this->message = 'OK';
-			$this->data = (int)$level;
 		} else {
 			$this->success = FALSE;
 			$this->message = 'Level is missing!';
