@@ -2,11 +2,11 @@
  @version 0.6 (2010-08-30)
 #-->
 [#if ERR_MSG!=""#]
-<div style="border:2px solid red;padding:10px;"><big style="color:red">[#ERR_MSG#]</big></div>
+<div  class="alert alert-danger">[#ERR_MSG#]</div>
 [#endif ERR_MSG#]
 
 [#if OK_MSG!=""#]
-<div style="border:2px solid green;padding:10px;"><big style="color:green">[#OK_MSG#]</big></div>
+<div class="alert alert-success">[#OK_MSG#]</div>
 [#endif OK_MSG#]
 
 [#if CLEAR_FIRST!="1"#]
@@ -15,10 +15,20 @@
 <iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe>
 [#else MODE#]
 <div class="row">
- <div class="col-md-6">
+ <div class="col-md-5">
    <h3><#LANG_UPDATES#></h3>
 
-   <form action="?" method="post" enctype="multipart/form-data">
+   <form action="?" method="post" enctype="multipart/form-data" class="form">
+       <div class="form-group">
+           <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
+           <select name="set_update_url" id="set_update_url" class="form-control" onchange="this.form.submit();">
+               <option value="https://github.com/sergejey/majordomo/archive/master.tar.gz"[#if UPDATE_URL="https://github.com/sergejey/majordomo/archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
+               <option value="https://github.com/sergejey/majordomo/archive/alpha.tar.gz"[#if UPDATE_URL="https://github.com/sergejey/majordomo/archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
+           </select>
+       </div>
+   </form>
+
+   <form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
    [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
 
    [#if NO_NEED_TO_UPDATE#]<p><font color="green"><#LANG_USING_LATEST_VERSION#></font></p>[#endif#]
@@ -58,7 +68,7 @@
 
 
  </div>
- <div class="col-md-6">
+ <div class="col-md-7">
    <h3><#LANG_UPLOAD_BACKUP#></h3>
    <form action="?" method="post" enctype="multipart/form-data">
     <div>
@@ -73,6 +83,7 @@
 
    [#if FILES#]
    &nbsp;<br>
+     <div class="pre-scrollable">
    <table class="table">
    [#begin FILES#]
     <tr>
@@ -92,6 +103,7 @@
     </tr>
    [#end FILES#]
    </table>
+     </div>
    [#endif FILES#]
 
  </div>

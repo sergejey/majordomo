@@ -1264,6 +1264,13 @@ $dictionary=array(
     'SIZE' => 'Size',
     'CLOCK' => 'Clock',
 
+    'UPDATES_SOURCE' => 'Core updates source',
+    'UPDATES_SOURCE_MASTER' => 'Master (stable release)',
+    'UPDATES_SOURCE_ALPHA' => 'Alpha (latest updates)',
+    
+    'MAINCYCLEDOWN' => 'Main cycle is down',
+    'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
+
 'TEST'=>'test'
 
 

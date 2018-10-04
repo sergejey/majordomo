@@ -1137,9 +1137,15 @@ function registerError($code = 'custom', $details = '')
     */
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
-   if (!$error_rec['KEEP_HISTORY'])
-   {
-      SQLExec("DELETE FROM system_errors_data WHERE ID != '" . $history_rec['ID'] . "'");
+   if (!$error_rec['KEEP_HISTORY']) {
+      SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=".(int)$error_rec['ID']." AND ID != '" . $history_rec['ID'] . "'");
+   } else {
+       $tmp=SQLSelect("SELECT ID FROM system_errors_data WHERE ERROR_ID=".(int)$error_rec['ID']." ORDER BY ID DESC LIMIT 50");
+       if ($tmp[0]['ID'] && count($tmp)==50) {
+           $tmp=array_reverse($tmp);
+           SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=".(int)$error_rec['ID']." AND ID<" .$tmp[0]['ID']);
+       }
+
    }
 }
 

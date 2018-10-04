@@ -29,6 +29,8 @@ if (!$limit) {
 $checked_time = 0;
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
+$processed = array();
+
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
@@ -73,16 +75,12 @@ while (1) {
         }
 
         $total = count($queue);
-        $processed = array();
         for ($i = 0; $i < $total; $i++) {
             $q_rec = $queue[$i];
             $value = $q_rec['VALUE'];
             $old_value = $q_rec['OLD_VALUE'];
-
             debug_echo("Queue $i / $total");
-            
             SQLExec("DELETE FROM phistory_queue WHERE ID='" . $q_rec['ID'] . "'");
-
             if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
                 $table_name = 'phistory_value_'.$q_rec['VALUE_ID'];
             } else {
@@ -92,10 +90,11 @@ while (1) {
             if ($value != $old_value || (defined('HISTORY_NO_OPTIMIZE') && HISTORY_NO_OPTIMIZE == 1)) {
                 if (!isset($processed[$q_rec['VALUE_ID']])) {
                     $processed[$q_rec['VALUE_ID']]=time();
+                    //$processed[$q_rec['VALUE_ID']]=0;
                 }
-                if ((time() - $processed[$q_rec['VALUE_ID']]) > 8 * 60 * 60) {
+                if ((time() - $processed[$q_rec['VALUE_ID']]) > 4 * 60 * 60) {
                     $start_tm = date('Y-m-d H:i:s',(time()-(int)$q_rec['KEEP_HISTORY']*24*60*60));
-                    debug_echo("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n");
+                    //debmes("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n",'history_clean');
                     $v=SQLSelectOne("SELECT PROPERTY_ID FROM pvalues WHERE ID=".(int)$q_rec['VALUE_ID']);
                     $prop=SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$v['PROPERTY_ID']);
                     if ($prop['DATA_TYPE']==5) {
@@ -109,8 +108,6 @@ while (1) {
                     }
                     SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')");
                     $processed[$q_rec['VALUE_ID']] = time();
-
-
                     debug_echo(" Done ");
                 }
                 $h = array();
@@ -150,7 +147,7 @@ while (1) {
                     debug_echo(" Done ");
                 }
             }
-
+            // delete old data
         }
     }
     else
