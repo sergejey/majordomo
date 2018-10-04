@@ -54,7 +54,6 @@ class app_player_addon {
 			'length'	 -	Track length in seconds. Integer. If unknown = 0.
 			'time'		 -	Current playback progress (in seconds). If unknown = 0.
 			'state'		 -	Playback status. String: stopped/playing/paused/unknown
-			'fullscreen' -	Full screen mode. Boolean.
 			'volume'	 -	Volume level in percent. Integer. Some players may have values greater than 100.
 			'random'	 -	Random mode. Boolean.
 			'loop'		 -	Loop mode. Boolean.
@@ -115,15 +114,6 @@ class app_player_addon {
 			$position - Position in seconds. Integer.
 			
 			$this->data format: NULL.
-		*/
-		return $this->not_supported();
-	}
-	
-	// Set fullscreen mode on/off
-	// FIXME: remove this feature?
-	public function fullscreen() {
-		/*
-			$this->data format (boolean): fullscreen status (fullscreen = true, else = false).
 		*/
 		return $this->not_supported();
 	}

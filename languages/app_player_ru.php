@@ -14,7 +14,6 @@ $dictionary = array(
 	'APP_PLAYER_PREVIOUS'			=> 'Предыдущий',
 	'APP_PLAYER_PLAY'				=> 'Играть',
 	'APP_PLAYER_NEXT'				=> 'Следующий',
-	'APP_PLAYER_FULLSCREEN'			=> 'Полноэкранный режим',
 	'APP_PLAYER_STOP'				=> 'Стоп',
 );
 

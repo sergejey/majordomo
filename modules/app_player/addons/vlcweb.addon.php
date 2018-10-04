@@ -105,7 +105,6 @@ class vlcweb extends app_player_addon {
 					'length'		=> (int)$xml->length,
 					'time'			=> (int)$xml->time,
 					'state'			=> (string)$xml->state,
-					'fullscreen'	=> ($xml->fullscreen == 'true'?TRUE:FALSE),
 					'volume'		=> (round((int)$xml->volume * 100 / 256)),
 					'random'		=> ($xml->random == 'true'?TRUE:FALSE),
 					'loop'			=> ($xml->loop == 'true'?TRUE:FALSE),
@@ -200,19 +199,7 @@ class vlcweb extends app_player_addon {
 		}
 		return $this->success;
 	}
-	
-	// Fullscreen
-	function fullscreen() {
-		if($this->vlcweb_request('status.xml', array('command'=>'fullscreen'))) {
-			if($this->vlcweb_parse_xml($this->data)) {
-				$this->reset_properties();
-				$this->success = TRUE;
-				$this->message = 'OK';
-			}
-		}
-		return $this->success;
-	}
-	
+
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();
