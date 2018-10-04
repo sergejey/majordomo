@@ -197,25 +197,6 @@ class vlc extends app_player_addon {
 		return $this->success;
 	}
 
-	// Set fullscreen
-	function fullscreen() {
-		$this->reset_properties();
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_fullscreen');
-		if($result = curl_exec($this->curl)) {
-			if($result == 'OK') {
-				$this->success = TRUE;
-				$this->message = 'OK';
-			} else {
-				$this->success = FALSE;
-				$this->message = $result;
-			}
-		} else {
-			$this->success = FALSE;
-			$this->message = 'RC interface not available!';
-		}
-		return $this->success;
-	}
-	
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();

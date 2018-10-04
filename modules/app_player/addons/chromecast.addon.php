@@ -40,7 +40,6 @@ class chromecast extends app_player_addon {
 			//	'length'		=> 0,
 			//	'time'			=> 0,
 			//	'state'			=> 'unknown',
-			//	'fullscreen'	=> FALSE,
 			//	'volume'		=> 100,
 			//	'random'		=> FALSE,
 			//	'loop'			=> FALSE,

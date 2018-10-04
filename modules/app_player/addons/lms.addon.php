@@ -118,7 +118,6 @@ class lms extends app_player_addon {
 				'length'		=> (int)(($state == 'stopped' || $state == 'unknown')?0:round($json->duration)),
 				'time'			=> (int)(($state == 'stopped' || $state == 'unknown')?0:round($json->time)),
 				'state'			=> (string)$state,
-				'fullscreen'	=> (boolean)FALSE,
 				'volume'		=> (int)$json->{'mixer volume'},
 				'random'		=> (boolean)(($json->{'playlist shuffle'} == 0)?FALSE:TRUE),
 				'loop'			=> (boolean)(($json->{'playlist repeat'} == 2)?TRUE:FALSE),
