@@ -270,12 +270,8 @@ class lms extends app_player_addon {
 	function pl_delete($id) {
 		$this->reset_properties();
 		if(strlen($id)) {
-			// FIXME: Request not by position number, but by track ID
-			if($this->lms_get_track_position($id)) {
-				$track_position = $this->data;
-				if($this->lms_jsonrpc_request(array('playlist', 'delete', (int)$track_position))) {
-					$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
-				}
+			if($this->lms_jsonrpc_request(array('playlistcontrol', 'cmd:delete', 'track_id:'.(int)$id))) {
+				$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
 			}
 		} else {
 			$this->success = FALSE;
