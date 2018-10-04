@@ -228,61 +228,18 @@ class lms extends app_player_addon {
 	
 	// Playlist: Get
 	function pl_get() {
-		// Please...please!!!! fixme... It's awful!
-		curl_setopt($this->curl, CURLOPT_POST, FALSE);
-		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/playlist.html?player='.urlencode($this->terminal['PLAYER_USERNAME']));
-		if($result = curl_exec($this->curl)) {
-			$dom = new DOMDocument;
-			if(@$dom->loadHTML($result) !== FALSE) {
-				if($playList = $dom->getElementById('playList')) {
-					$xpath = new DomXPath($dom);
-					$tracks = $xpath->query("//*[contains(@class, 'draggableSong')]", $playList);
-					$this->reset_properties(array('success'=>TRUE, 'message'=>'OK', 'data'=>array()));
-					foreach($tracks as $track) {
-						$track_id = -1;
-						$anchors = $track->getElementsByTagName('a');
-						foreach($anchors as $a) {
-							$href = $a->getAttribute('href');
-							if(preg_match('/^\/songinfo\.html\?item\=([-0-9]+)&(.*)$/', $href, $matches)) {
-								$track_id = (int)$matches[1];
-							}
-						}
-						$track_name = 'Unknown';
-						$track_file = '';
-						curl_setopt($this->curl, CURLOPT_URL, $this->address.'/songinfo.html?player='.urlencode($this->terminal['PLAYER_USERNAME']).'&item='.$track_id);
-						if($result = curl_exec($this->curl)) {
-							$dom_song = new DOMDocument;
-							if(@$dom_song->loadHTML($result) !== FALSE) {
-								$title = $dom_song->getElementsByTagName('title');
-								if($title->item(0)->nodeValue) {
-									$track_name = trim($title->item(0)->nodeValue);
-								}
-								$anchors = $dom_song->getElementsByTagName('a');
-								foreach($anchors as $a) {
-									$href = $a->getAttribute('href');
-									if(preg_match('/^\/music\/([-0-9]+)\/download$/', $href)) {
-										$track_file = trim($a->nodeValue);
-									}
-								}
-							}
-						}
-						$this->data[] = array(
-							'id'	=> (int)$track_id,
-							'name'	=> (string)$track_name,
-							'file'	=> (string)$track_file,
-						);
-					}
-				} else {
-					$this->success = FALSE;
-					$this->message = 'Element with ID = "playList" not found!';
+		if($this->lms_jsonrpc_request(array('status', 0, PHP_INT_MAX, 'tags:u'))) {
+			$playlist = $this->data->playlist_loop;
+			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK', 'data'=>array()));
+			if($playlist) {
+				foreach($playlist as $track) {
+					$this->data[] = array(
+						'id'	=> (int)$track->id,
+						'name'	=> (string)(empty($track->title)?'Unknown':$track->title),
+						'file'	=> (string)trim($track->url, 'file:///'),
+					);
 				}
-			} else {
-				$this->success = FALSE;
-				$this->message = error_get_last()['message'];
 			}
-		} else {
-			$this->success = FALSE;
-			$this->message = 'LMS get playlist: '.curl_error($this->curl).'!';
 		}
 		return $this->success;
 	}
