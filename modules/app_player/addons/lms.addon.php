@@ -3,6 +3,7 @@
 /*
 	Addon Logitech Media Server for app_player
 	http://tutoriels.domotique-store.fr/content/54/95/fr/api-logitech-squeezebox-server-_-player-http.html
+	http://localhost:9000/html/docs/cli-api.html
 */
 
 class lms extends app_player_addon {
@@ -50,7 +51,7 @@ class lms extends app_player_addon {
 			if($json = json_decode($result)) {
 				$this->success = TRUE;
 				$this->message = 'OK';
-				$this->data = $json->result;
+				$this->data = ($json->result?$json->result:NULL);
 			} else {
 				$this->success = FALSE;
 				$this->message = 'JSON decode: '.json_last_error_msg().'!';
@@ -250,7 +251,6 @@ class lms extends app_player_addon {
 		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
 			if($this->lms_jsonrpc_request(array('playlist', 'add', $input))) {
-				// FIXME: Get the ID without additional request
 				if($this->lms_get_track_id()) {
 					$track_id = $this->data;
 				} else {
@@ -292,7 +292,6 @@ class lms extends app_player_addon {
 	function pl_play($id) {
 		$this->reset_properties();
 		if(strlen($id)) {
-			// FIXME: Request not by position number, but by track ID
 			if($this->lms_get_track_position($id)) {
 				$track_position = $this->data;
 				if($this->lms_jsonrpc_request(array('playlist', 'jump', (int)$track_position))) {
