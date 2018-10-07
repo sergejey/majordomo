@@ -1221,6 +1221,9 @@ $dictionary=array(
 
     'DEVICES_THERMOSTAT' => 'Thermostat',
     'DEVICES_THERMOSTAT_MODE' => 'Mode',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Normal',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Eco',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Off',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO mode',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Normal target temperature',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO target temperature',

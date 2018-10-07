@@ -86,12 +86,16 @@ $this->device_types=array(
             'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
             'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open','_CONFIG_HELP'=>'SdThermostat'),
+            'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
             'tempDown'=>array('DESCRIPTION'=>'Descrease target temperature'),
+            'switchEnable'=>array('DESCRIPTION'=>'Switch Enable'),
+            'enable'=>array('DESCRIPTION'=>'Enable'),
+            'disable'=>array('DESCRIPTION'=>'Disable'),
         )
     ),
     'dimmer'=>array(
