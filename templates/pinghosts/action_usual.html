@@ -7,6 +7,8 @@
  [#if VIEW_MODE="search_pinghosts" || VIEW_MODE=""#]
   [#if MOBILE="1"#]
   [#inc pinghosts_search_site_mobile.html#]
+  [#else#]
+  [#inc pinghosts_search_site.html#]
   [#endif MOBILE#]
  [#endif VIEW_MODE#]
  <!-- / table pinghosts search -->

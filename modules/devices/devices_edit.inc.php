@@ -102,6 +102,7 @@
              foreach($onchanges as $k=>$v) {
                  callMethod($rec['LINKED_OBJECT'].'.'.$k);
              }
+             $this->homebridgeSync($rec['ID']);
          }
          //print_r($res_properties);exit;
          $out['PROPERTIES']=$res_properties;
@@ -218,6 +219,7 @@
           $out['TITLE']=$add_title;
       }
 
+
       if ($out['SOURCE_TABLE'] && !$rec['ID']) {
           $qry_devices=1;
           if ($out['TYPE']) {
@@ -245,6 +247,8 @@
     $out['ERR_TITLE']=1;
     $ok=0;
    }
+
+   $rec['ALT_TITLES']=gr('alt_titles','trim');
 
    $rec['TYPE']=$type;
    if ($rec['TYPE']=='') {
@@ -301,7 +305,7 @@
            SQLUpdate('devices',$rec);
        }
 
-       $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT']);
+       $object_id=addClassObject($type_details['CLASS'],$rec['LINKED_OBJECT'],'sdevice'.$rec['ID']);
        $class_id=current(SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($type_details['CLASS'])."'"));
 
 
@@ -333,12 +337,13 @@
        }
 
     clearPropertiesCache();
+    addToOperationsQueue('connect_sync_devices','required');
 
     if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
         $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
     }
 
-    $this->homebridgeSync();
+    $this->homebridgeSync($rec['ID']);
 
     if ($added) {
       $this->redirect("?view_mode=edit_devices&id=".$rec['ID']."&tab=settings");
@@ -393,6 +398,9 @@ if ($rec['LINKED_OBJECT']) {
     $out['HTML']=$processed['HTML'];
 }
 
-  $out['TYPES']=$types;
+usort($types,function ($a,$b) {
+    return strcmp($a['TITLE'],$b['TITLE']);
+});
+$out['TYPES']=$types;
 
 $out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");

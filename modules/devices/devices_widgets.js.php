@@ -100,13 +100,13 @@ function requestDeviceHTML(device_id,widgetElement) {
     freeboard.loadWidgetPlugin({
         // Same stuff here as with datasource plugin.
         "type_name"   : "devices_plugin",
-        "display_name": "Device",
-        "description" : "MajorDoMo devices",
+        "display_name": LANG_DEVICE,
+        "description" : "MajorDoMo "+LANG_DEVICES,
         "fill_size" : false,
         "settings"    : [
             {
                 "name"        : "device_id",
-                "display_name": "Device",
+                "display_name": LANG_DEVICE,
                 "required" : true,
                 "type"        : "option",
                 <?php
@@ -125,7 +125,7 @@ function requestDeviceHTML(device_id,widgetElement) {
             },
             {
                 "name"        : "size",
-                "display_name": "Size",
+                "display_name": LANG_SIZE,
                 "type"        : "option",
                 "options"     : [
                     {"name" : "1","value": "1"},

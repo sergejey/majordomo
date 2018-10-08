@@ -26,13 +26,24 @@ class Threads
    public function closeThread($id) {
       $pstatus = proc_get_status($this->handles[$id]);
       $pid = $pstatus['pid'];
-      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("kill -9 $pid");
-      //proc_terminate($this->handles[$id]);
-      /*
-      fclose($this->pipes[$id][0]);
-      fclose($this->pipes[$id][1]);
-      proc_close($this->handles[$id]);
-      */
+      $cmd = $pstatus['command'];
+      DebMes("Closing thread $pid ($cmd)",'threads');
+      //if (!proc_terminate($this->handles[$id])) {
+         //DebMes("Cannot close process $pid ($cmd) with proc_terminate",'threads');
+         if (IsWindowsOS()) {
+            $exec_str="taskkill /F /T /PID $pid";
+         } else {
+            $exec_str="kill -9 $pid";
+         }
+         DebMes("Executing: ".$exec_str,'threads');
+         $output = array();
+         $result = exec($exec_str,$output);
+         DebMes("Result: ".implode("\n",$output),'threads');
+         /*
+      } else {
+         DebMes("Process $pid ($cmd) closed with proc_terminate",'threads');
+      }
+         */
    }
 
    /**

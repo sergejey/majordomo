@@ -838,7 +838,9 @@ function getHistoryValue($varname, $time, $nerest = false) {
     }
 
     // Get val before
-        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
+        $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') AND ADDED>=('".date('Y-m-d H:i:s', $time - 7*24*60*60)."') ORDER BY ADDED DESC LIMIT 1");
+        if (!isset($val1['VALUE']))
+            $val1 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED<=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED DESC LIMIT 1");
         
         // Get val after        
         $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='".$id."' AND ADDED>=('".date('Y-m-d H:i:s', $time)."') ORDER BY ADDED LIMIT 1");
@@ -1330,4 +1332,28 @@ function objectClassChanged($object_id) {
             SQLExec("DELETE FROM properties WHERE ID='".$old_prop."'");
         }
     }
+}
+
+function checkOperationsQueue($topic) {
+    $data=SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='".DBSafe($topic)."' ORDER BY ID");
+    if ($data[0]['ID']) {
+        SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($topic)."'");
+    }
+    return $data;
+}
+
+function addToOperationsQueue($topic, $dataname, $datavalue='', $uniq = false, $ttl=60) {
+    $rec=array();
+    $rec['TOPIC']=$topic;
+    $rec['DATANAME']=$dataname;
+    if (strlen($datavalue)<255) {
+        $rec['DATAVALUE']=$datavalue;
+    }
+    $rec['EXPIRE']=date('Y-m-d H:i:s',time()+$ttl);
+    if ($uniq) {
+        SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($rec['TOPIC'])."' AND DATANAME='".DBSafe($rec['DATANAME'])."'");
+    }
+    $rec['ID']=SQLInsert('operations_queue',$rec);
+    SQLExec("DELETE FROM operations_queue WHERE EXPIRE<NOW();");
+    return $rec['ID'];
 }

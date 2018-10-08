@@ -23,6 +23,11 @@ RewriteRule .* /nf.php
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+ReWriteCond %{REQUEST_URI} /module/app_mediabrowser\..*$
+RewriteRule .* /nf.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 ReWriteCond %{REQUEST_URI} \.xml$
 ReWriteCond %{REQUEST_URI} !fck
 ReWriteCond %{REQUEST_URI} !flashcoms

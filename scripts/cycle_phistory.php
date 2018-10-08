@@ -21,8 +21,15 @@ debug_echo("Optimizing phistory");
 SQLExec("OPTIMIZE TABLE phistory;");
 debug_echo("Done");
 
+$limit=(int)gg('phistory_queue_limit');
+if (!$limit) {
+  $limit=200;
+}
+
 $checked_time = 0;
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
+
+$processed = array();
 
 while (1) {
     if (time() - $checked_time > 5) {
@@ -51,28 +58,29 @@ while (1) {
         }
     }
     */
+    $queue_error_status=gg('phistory_queue_problem');
 
-    $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT 500");
+    $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory_queue;");
+    $count_queue = (int)$tmp['TOTAL'];
+        
+    $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT ". $limit);
     if ($queue[0]['ID']) {
+        if ($count_queue>$limit && !$queue_error_status) {
+                sg('phistory_queue_problem',1);
+                $txt = 'Properties history queue is too long ('.$count_queue.')';
+                echo date("H:i:s") . " " . $txt . "\n";
+                registerError('phistory_queue',$txt);
+        } elseif ($count_queue<=$limit && $queue_error_status) {
+            sg('phistory_queue_problem',0);
+        }
+
         $total = count($queue);
-        $processed = array();
         for ($i = 0; $i < $total; $i++) {
             $q_rec = $queue[$i];
             $value = $q_rec['VALUE'];
             $old_value = $q_rec['OLD_VALUE'];
-
             debug_echo("Queue $i / $total");
-
-            $queue_error_status=gg('phistory_queue_problem');
-            if ($total>200 && !$queue_error_status) {
-                sg('phistory_queue_problem',1);
-                registerError('phistory_queue','Properties history queue is too long ('.$total.')');
-            } elseif ($total<=200 && $queue_error_status) {
-                sg('phistory_queue_problem',0);
-            }
-
             SQLExec("DELETE FROM phistory_queue WHERE ID='" . $q_rec['ID'] . "'");
-
             if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
                 $table_name = 'phistory_value_'.$q_rec['VALUE_ID'];
             } else {
@@ -82,10 +90,11 @@ while (1) {
             if ($value != $old_value || (defined('HISTORY_NO_OPTIMIZE') && HISTORY_NO_OPTIMIZE == 1)) {
                 if (!isset($processed[$q_rec['VALUE_ID']])) {
                     $processed[$q_rec['VALUE_ID']]=time();
+                    //$processed[$q_rec['VALUE_ID']]=0;
                 }
-                if ((time() - $processed[$q_rec['VALUE_ID']]) > 8 * 60 * 60) {
+                if ((time() - $processed[$q_rec['VALUE_ID']]) > 4 * 60 * 60) {
                     $start_tm = date('Y-m-d H:i:s',(time()-(int)$q_rec['KEEP_HISTORY']*24*60*60));
-                    debug_echo("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n");
+                    //debmes("processing DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')\n",'history_clean');
                     $v=SQLSelectOne("SELECT PROPERTY_ID FROM pvalues WHERE ID=".(int)$q_rec['VALUE_ID']);
                     $prop=SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$v['PROPERTY_ID']);
                     if ($prop['DATA_TYPE']==5) {
@@ -99,15 +108,13 @@ while (1) {
                     }
                     SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND ADDED<('".$start_tm."')");
                     $processed[$q_rec['VALUE_ID']] = time();
-
-
                     debug_echo(" Done ");
                 }
                 $h = array();
                 $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                 $h['ADDED'] = $q_rec['ADDED'];
                 $h['VALUE'] = $value;
-                debug_echo(" Insert new value ".$h['VALUE_ID']);
+                debug_echo(" Insert new value ".$h['VALUE_ID']." ".$h['ADDED']." ".$value);
                 $h['ID'] = SQLInsert($table_name, $h);
                 debug_echo(" Done ");
             } elseif ($value == $old_value) {
@@ -140,15 +147,16 @@ while (1) {
                     debug_echo(" Done ");
                 }
             }
-
+            // delete old data
         }
     }
+    else
+        sleep(1);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         $db->Disconnect();
         exit;
     }
-    sleep(1);
 }
 
 function debug_echo($line) {

@@ -239,7 +239,7 @@ PluginEditor = function(jsEditor, valueEditor)
 					{
 						newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
 
-						var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">YES</span><span class="off">NO</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
+						var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">'+LANG_YES+'</span><span class="off">'+LANG_NO+'</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
 
 						var input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function()
 						{
@@ -423,7 +423,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		}
 
 
-		new DialogBox(form, title, "Save", "Cancel", function()
+		new DialogBox(form, title, LANG_SUBMIT, LANG_CANCEL, function()
 		{
 			$(".validation-error").remove();
 
@@ -461,10 +461,10 @@ PluginEditor = function(jsEditor, valueEditor)
 
 		if(pluginTypeNames.length > 1)
 		{
-			var typeRow = createSettingRow("plugin-types", "Type");
+			var typeRow = createSettingRow("plugin-types", LANG_TYPE);
 			typeSelect = $('<select></select>').appendTo($('<div class="styled-select"></div>').appendTo(typeRow));
 
-			typeSelect.append($("<option>Select a type...</option>").attr("value", "undefined"));
+			typeSelect.append($("<option>"+LANG_TYPE+"...</option>").attr("value", "undefined"));
 
 			_.each(pluginTypes, function(pluginType)
 			{

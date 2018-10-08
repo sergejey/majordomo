@@ -73,6 +73,7 @@ $dictionary = array(
     'SECTION_DEVICES' => 'Устройства',
     'SECTION_SETTINGS' => 'Настройки',
     'SECTION_SYSTEM' => 'Система',
+    'SECTION_PANEL'=>'Панель',
 
     /* end general */
 
@@ -174,6 +175,7 @@ $dictionary = array(
 
     'NEW_OBJECT' => 'Новый объект',
     'TITLE' => 'Название',
+    'ALT_TITLES'=>'Синонимы (через запятую)',
     'CLASS' => 'Класс',
     'DESCRIPTION' => 'Описание',
     'LOCATION' => 'Местоположение',
@@ -1037,6 +1039,8 @@ $dictionary = array(
     'PATTERN_CONDITIONAL' => 'На основе значений свойств',
     'CONDITION' => 'Условие',
     'ADD_EXIT_CODE' => 'Добавить код "выхода"',
+    'SMART_REPEAT'=>'Авто-повтор',
+    'READ_ONLY'=>'Только чтение',
     'ADVANCED_CONFIG' => 'Расширенная настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
 
@@ -1102,8 +1106,10 @@ $dictionary = array(
     'DEVICES_NOTIFY' => 'Уведомлять при выходе за порог',
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
     'DEVICES_DIRECTION_TIMEOUT' => 'Интервал времени расчета направления изменений (сек)',
+    'DEVICES_NOTIFY_STATUS' => 'Уведомлять при смене статуса',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
+    'DEVICES_NOTIFY_NOT_CLOSED' => 'Напоминать об открытом состоянии',
     'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',
     'DEVICES_MOTION_TIMEOUT' => 'Время активности (секунд)',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
@@ -1131,6 +1137,7 @@ $dictionary = array(
     'DEVICES_LOADTYPE_CURTAINS' => 'Шторы',
     'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
+    'DEVICES_LOADTYPE_LIGHT_ALT' => 'Свет',
     'DEVICES_LOADTYPE_POWER' => 'Разное',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
@@ -1209,6 +1216,9 @@ $dictionary = array(
 
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Обычный',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Эко',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Выкл',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Обычная целевая температура',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO целевая температура',
@@ -1246,6 +1256,25 @@ $dictionary = array(
     'PATTERN_SECOND' => 'секунд',
     'PATTERN_MINUTE' => 'минут',
     'PATTERN_HOUR' => 'час',
+
+    'THEME' => 'Тема',
+    'THEME_DARK' => 'Тёмная',
+    'THEME_LIGHT' => 'Светлая',
+
+    'DATA_SOURCE' => 'Источник данных',
+    'WIDGET' => 'Виджет',
+    'PANE' => 'Панель',
+    'COLUMNS' => 'Колонки',
+    'SIZE' => 'Размер',
+    'CLOCK' => 'Часы',
+
+    'UPDATES_SOURCE' => 'Источник обновлений ядра',
+    'UPDATES_SOURCE_MASTER' => 'Мастер (стабильная версия)',
+    'UPDATES_SOURCE_ALPHA' => 'Альфа (ранний доступ к обновлениям)',
+
+    'MAINCYCLEDOWN' => 'Отсановлен главный цикл системы',
+    'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
+
 
     /* end module names */
 

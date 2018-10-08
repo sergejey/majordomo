@@ -75,6 +75,7 @@ $dictionary=array(
 'SECTION_DEVICES'=>'Devices',
 'SECTION_SETTINGS'=>'Settings',
 'SECTION_SYSTEM'=>'System',
+'SECTION_PANEL'=>'Panel',
 
 /* end general */
 
@@ -182,7 +183,8 @@ $dictionary=array(
 
 
 'NEW_OBJECT'=>'New Object', 
-'TITLE'=>'Title', 
+'TITLE'=>'Title',
+'ALT_TITLES'=>'Alternative titles (comma separated)',
 'CLASS'=>'Class', 
 'DESCRIPTION'=>'Description', 
 'LOCATION'=>'Location', 
@@ -1039,13 +1041,14 @@ $dictionary=array(
 'CONDITION'=>'Condition',
 'ADD_EXIT_CODE'=>'Add "exit" code',
 'SMART_REPEAT'=>'Smart Repeat',
+'READ_ONLY'=>'Read Only',
 'ADVANCED_CONFIG'=>'Advanced config',
 'UPDATE_ALL_EXTENSIONS'=>'Update all extensions installed',
 
 'SAVE_CHANGES'=>'Save changes',
 'ADD_PANE'=>'Add Pane',
 
-'HCB'=>' <a href="http://majordomo.smartliving.ru/Hints/',
+'HCB'=>' <a href="https://majordomo.smartliving.ru/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 
     'DATA_KEY' => 'Key data',
@@ -1107,8 +1110,10 @@ $dictionary=array(
     'DEVICES_NOTIFY' => 'Notify when value out of range',
     'DEVICES_NORMAL_VALUE' => 'Value within range',
     'DEVICES_DIRECTION_TIMEOUT' => 'Direction tracking time period (seconds)',
+    'DEVICES_NOTIFY_STATUS' => 'Notify status',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Value is out of normal range',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Value is back to normal',
+    'DEVICES_NOTIFY_NOT_CLOSED' => 'Notify when left open',
     'DEVICES_MOTION_IGNORE' => 'Ignore device events when nobody\'s home',
     'DEVICES_MOTION_TIMEOUT' => 'Activity timeout (sec)',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
@@ -1136,6 +1141,7 @@ $dictionary=array(
     'DEVICES_LOADTYPE_CURTAINS' => 'Curtains',
     'DEVICES_LOADTYPE_GATES' => 'Gates',
     'DEVICES_LOADTYPE_LIGHT' => 'Light',
+    'DEVICES_LOADTYPE_LIGHT_ALT' => 'Light',
     'DEVICES_LOADTYPE_POWER' => 'Other',
 
     'DEVICES_ADD_MENU' => 'Add device to Menu',
@@ -1215,6 +1221,9 @@ $dictionary=array(
 
     'DEVICES_THERMOSTAT' => 'Thermostat',
     'DEVICES_THERMOSTAT_MODE' => 'Mode',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Normal',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Eco',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Off',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO mode',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Normal target temperature',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO target temperature',
@@ -1247,6 +1256,23 @@ $dictionary=array(
     'ADD_UPDATE_MANUALLY' =>'Add/Update Manually',
     'TURNING_ON' =>'Turning on',
     'TURNING_OFF' =>'Turning off',
+
+    'THEME' => 'Theme',
+    'THEME_DARK' => 'Dark',
+    'THEME_LIGHT' => 'Light',
+    'DATA_SOURCE' => 'Data source',
+    'WIDGET' => 'Widget',
+    'PANE' => 'Pane',
+    'COLUMNS' => 'Columns',
+    'SIZE' => 'Size',
+    'CLOCK' => 'Clock',
+
+    'UPDATES_SOURCE' => 'Core updates source',
+    'UPDATES_SOURCE_MASTER' => 'Master (stable release)',
+    'UPDATES_SOURCE_ALPHA' => 'Alpha (latest updates)',
+    
+    'MAINCYCLEDOWN' => 'Main cycle is down',
+    'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
 
 'TEST'=>'test'
 

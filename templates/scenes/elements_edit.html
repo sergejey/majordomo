@@ -392,12 +392,6 @@
                 <input type="text" name="s3d_scene" class="form-control" id="s3d_scene" value="[#ELEMENT_S3D_SCENE#]" onclick="openFileBrowser('s3d_scene');" size="40">
         </div>
 </div>
-<script type="text/javascript">
-     function openFileBrowser(id){
-          fileBrowserlink = "<#ROOTHTML#>3rdparty/pdw/index.php?editor=standalone&returnID=" + id;
-          window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
-     }
-</script>
 [#endif ELEMENT_TYPE#]
 
 [#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d") || (ELEMENT_TYPE=="menuitem")#]
@@ -516,12 +510,6 @@
                 </p>
         </div>
 </div>
-<script type="text/javascript">
-     function openFileBrowser(id){
-          fileBrowserlink = "<#ROOTHTML#>3rdparty/pdw/index.php?editor=standalone&returnID=" + id;
-          window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
-     }
-</script>
 [#endif ELEMENT_TYPE#]
 
 [#if ELEMENT_TYPE!="container" && ELEMENT_TYPE!="device"#]

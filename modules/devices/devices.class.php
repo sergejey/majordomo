@@ -377,6 +377,12 @@ function renderStructure() {
         callMethod($ot.'.updatePreview');
     }
 
+    //update objects sdevice
+    $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices");
+    foreach($devices as $device) {
+        SQLExec("UPDATE objects SET SYSTEM='sdevice".$device['ID']."' WHERE TITLE='".DBSafe($device['LINKED_OBJECT'])."' AND SYSTEM=''");
+    }
+
 }
 
 function processSubscription($event, &$details) {
@@ -1192,6 +1198,7 @@ devices -
   $data = <<<EOD
  devices: ID int(10) unsigned NOT NULL auto_increment
  devices: TITLE varchar(100) NOT NULL DEFAULT ''
+ devices: ALT_TITLES varchar(255) NOT NULL DEFAULT ''
  devices: TYPE varchar(100) NOT NULL DEFAULT ''
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  

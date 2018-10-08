@@ -576,7 +576,9 @@ function dprint($data = 0, $stop = 1) {
    } else {
       echo date('Y-m-d H:i:s');
    }
-   echo "</pre>";
+   echo "</pre><hr/>";
+   echo str_repeat(' ',4096);
+   flush();flush();
 
    if ($stop) {
       exit;

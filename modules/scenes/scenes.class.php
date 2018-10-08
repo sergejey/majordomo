@@ -316,6 +316,7 @@ function admin(&$out) {
 
 
  }
+
  if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
@@ -428,7 +429,12 @@ function admin(&$out) {
 * @access public
 */
  function import_scene($file, $system = '') {
-  $data=unserialize(LoadFile($file));
+  $text_data=LoadFile($file);
+  $data=unserialize($text_data);
+  if (!is_array($data)) {
+   $text_data=str_replace("\n","\r\n",$text_data);
+   $data=unserialize($text_data);
+  }
   if ($data['SCENE_DATA']) {
    if ($system!='') {
     $old_rec=SQLSelectOne("SELECT ID FROM scenes WHERE SYSTEM LIKE '".DBSafe($system)."'");

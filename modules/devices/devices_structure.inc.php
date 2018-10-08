@@ -5,8 +5,8 @@ $this->device_types=array(
         'CLASS'=>'Rooms',
         'DESCRIPTION'=>'Rooms/Locations',
         'PROPERTIES'=>array(
-            'temperature'=>array('DESCRIPTION'=>'Temperature','KEEP_HISTORY'=>365),
-            'humidity'=>array('DESCRIPTION'=>'Humidity','KEEP_HISTORY'=>365),
+            'temperature'=>array('DESCRIPTION'=>'Temperature'),
+            'humidity'=>array('DESCRIPTION'=>'Humidity'),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
             'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
         ),
@@ -86,12 +86,16 @@ $this->device_types=array(
             'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
             'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open','_CONFIG_HELP'=>'SdThermostat'),
+            'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
             'tempDown'=>array('DESCRIPTION'=>'Descrease target temperature'),
+            'switchEnable'=>array('DESCRIPTION'=>'Switch Enable'),
+            'enable'=>array('DESCRIPTION'=>'Enable'),
+            'disable'=>array('DESCRIPTION'=>'Disable'),
         )
     ),
     'dimmer'=>array(
@@ -171,6 +175,8 @@ $this->device_types=array(
         'PROPERTIES'=>array(
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+            'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')

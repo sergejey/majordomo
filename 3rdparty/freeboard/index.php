@@ -10,8 +10,15 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
+
+
 $ctl = new control_modules();
 
+if ($_GET['theme']) {
+    $theme=$_GET['theme'];
+} else {
+    $theme=SETTINGS_THEME;
+}
 ?>
 <!DOCTYPE html>
 <!-- Dev Version links to full versions (non-minified) of javascript and css files -->
@@ -27,6 +34,34 @@ $ctl = new control_modules();
         <link href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
         <link href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
     <link href="lib/css/freeboard/styles.css" rel="stylesheet" />
+    <?php if ($theme=='light') {?>
+    <style>
+        body {
+            background-color:white;
+            color:black;
+        }
+        .gridster .gs_w {
+            background: #eeeeee;
+        }
+        .gridster header {
+            background: #bbbbbb;
+            color: #000000;
+        }
+        .modal {
+            color:white;
+        }
+        #toggle-header {
+            background-color:#bbbbbb;
+        }
+    </style>
+    <?php }?>
+    <?php if ($_GET['background_image']) {?>
+        <style>
+            body {
+                <?php echo 'background-image:url('.$_GET['background_image'].')';?>
+            }
+        </style>
+    <?php }?>
     <link href="/css/devices.css" rel="stylesheet" type="text/css"/>
 
     <?php
@@ -55,6 +90,14 @@ $ctl = new control_modules();
     echo $p->result;
     ?>
     <script type="text/javascript">
+        <?php
+            $constants=get_defined_constants();
+            foreach($constants as $k=>$v) {
+                if (preg_match('/^LANG_/',$k)) {
+                    echo "const $k = '".addcslashes($v,"'")."';\n";
+                }
+            }
+        ?>
         <?php if($_GET['layout_id']!='') {?>
         var layoutId='<?php
             echo $_GET['layout_id'];
@@ -82,20 +125,23 @@ $ctl = new control_modules();
                 "lib/js/freeboard/freeboard.js",
 
                 "plugins/freeboard/freeboard.datasources.js",
+
+            <?php
+
+            $modules=SQLSelect("SELECT ID,NAME FROM project_modules");
+            $total = count($modules);
+            for ($i = 0; $i < $total; $i++) {
+                $path=DIR_MODULES.$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php';
+                if (file_exists($path)) {
+                    echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
+                }
+            }
+            ?>
+
                 "plugins/freeboard/freeboard.widgets.js",
                 "plugins/thirdparty/handlebars.js",
                 "plugins/thirdparty/actuator.js",
-        <?php
 
-        $modules=SQLSelect("SELECT ID,NAME FROM project_modules");
-        $total = count($modules);
-        for ($i = 0; $i < $total; $i++) {
-        $path=DIR_MODULES.$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php';
-        if (file_exists($path)) {
-            echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
-        }
-        }
-        ?>
             "../../js/scripts.js",
 
                 // *** Load more plugins here ***
@@ -169,7 +215,7 @@ $ctl = new control_modules();
                 </div>
             </div>
             <div id="datasources">
-                <h2 class="title">DATASOURCES</h2>
+                <h2 class="title"><?php echo LANG_DATA;?></h2>
 
                 <div class="datasource-list-container">
                     <table class="table table-condensed sub-table" id="datasources-list" data-bind="if: datasources().length">
@@ -197,7 +243,7 @@ $ctl = new control_modules();
                         </tbody>
                     </table>
                 </div>
-                <span class="text-button table-operation" data-bind="pluginEditor: {operation: 'add', type: 'datasource'}">ADD</span>
+                <span class="text-button table-operation" data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><?php echo LANG_ADD;?></span>
             </div>
         </div>
     </div>

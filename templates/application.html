@@ -9,7 +9,7 @@
 [#endif#]
 
   <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
-  <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
+  <link href="<#ROOTHTML#>css/stl_<#THEME#>.css" rel="stylesheet" type="text/css"/>
 
 
     <link href="<#ROOTHTML#>css/devices.css?v=2018-06-12" rel="stylesheet" type="text/css"/>
@@ -17,7 +17,7 @@
     <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
-    <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+    <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
     <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/jquery.gritter.css" />
@@ -33,8 +33,8 @@
     <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 
     [#if ACTION=""#]
-  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
-  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
+  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
   <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 [#endif#]
 
@@ -43,13 +43,13 @@
 </head>
 
 [#if POPUP!="1"#]
-<body style="margin:0px;padding:0px;">
+<body style="<#BODY_CSS#>">
 [#else POPUP#]
-<body bgcolor="transparent" style="margin:0px;padding:0px;">
+<body bgcolor="transparent" style="<#BODY_CSS#>">
 <script language="javascript">
 $(document).ready(function() {
  if (!inIframe()) {
-  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]#222222[#else#]white[#endif#]');
+  $("body").css('background-color', '[#if "<#THEME#>"=="dark"#]#222222[#else#]white[#endif#]');
  }
 });
 </script>
