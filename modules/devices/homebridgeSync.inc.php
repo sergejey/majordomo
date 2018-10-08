@@ -28,9 +28,10 @@ for ($i = 0; $i < $total; $i++) {
             $payload['service'] = 'Lightbulb';
         } elseif ($load_type=='vent') {
             $payload['service'] = 'Fan';
-        } else {
+         } elseif ($load_type=='switch') {
+            $payload['service'] = 'Switch';
+         } else {
             $payload['service']='Outlet';
-            //$payload['service']='Switch';
         }
         sg('HomeBridge.to_add',json_encode($payload));
 
