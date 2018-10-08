@@ -86,7 +86,7 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
       if($data['characteristic'] == 'ContactSensorState') {
          $payload['service']='ContactSensor';
          $payload['characteristic'] = 'ContactSensorState';
-         $payload['value']=1 - gg($device['LINKED_OBJECT'].'.status');
+         $payload['value']=gg($device['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($device['LINKED_OBJECT'].'.status') : gg($device['LINKED_OBJECT'].'.status');
       } elseif ($data['characteristic'] == 'StatusLowBattery') {
          $payload['service']='ContactSensor';
          $payload['characteristic'] = 'StatusLowBattery';

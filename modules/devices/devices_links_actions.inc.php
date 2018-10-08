@@ -48,7 +48,7 @@ if ($this->isHomeBridgeAvailable()) {
     } elseif ($device1['TYPE']=='openclose') {
          $payload['service']='ContactSensor';
          $payload['characteristic'] = 'ContactSensorState';
-         $payload['value']=1 - gg($device1['LINKED_OBJECT'].'.status');
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($device1['LINKED_OBJECT'].'.status') : gg($device1['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          $payload['characteristic'] = 'StatusLowBattery';
          $payload['value']=gg($device1['LINKED_OBJECT'].'.StatusLowBattery');
