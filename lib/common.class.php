@@ -1137,9 +1137,15 @@ function registerError($code = 'custom', $details = '')
     */
    $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
 
-   if (!$error_rec['KEEP_HISTORY'])
-   {
-      SQLExec("DELETE FROM system_errors_data WHERE ID != '" . $history_rec['ID'] . "'");
+   if (!$error_rec['KEEP_HISTORY']) {
+      SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=".(int)$error_rec['ID']." AND ID != '" . $history_rec['ID'] . "'");
+   } else {
+       $tmp=SQLSelect("SELECT ID FROM system_errors_data WHERE ERROR_ID=".(int)$error_rec['ID']." ORDER BY ID DESC LIMIT 50");
+       if ($tmp[0]['ID'] && count($tmp)==50) {
+           $tmp=array_reverse($tmp);
+           SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=".(int)$error_rec['ID']." AND ID<" .$tmp[0]['ID']);
+       }
+
    }
 }
 
@@ -1302,4 +1308,26 @@ function getPassedText($updatedTime) {
         $passedText=date('d.m.Y H:i',$updatedTime);
     }
     return $passedText;
+}
+
+/**
+ * Encode/Decode a string for safe transfer to a URL
+ * @param mixed $string String
+ * @return string
+ */
+function urlsafe_b64encode($string) {
+	$data = base64_encode($string);
+	$data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
+	$data = urlencode($data);
+	return $data;
+}
+
+function urlsafe_b64decode($string) {
+	$data = urldecode($data);
+	$data = str_replace(array('-', '_'), array('+', '/'), $string);
+	$mod4 = strlen($data) % 4;
+	if($mod4) {
+		$data .= substr('====', $mod4);
+	}
+	return base64_decode($data);
 }

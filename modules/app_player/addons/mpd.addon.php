@@ -62,7 +62,6 @@ class mpd extends app_player_addon {
 					'length'		=> (int)$this->mpd->current_track_length,
 					'time'			=> (int)$this->mpd->current_track_position,
 					'state'			=> (string)$status['state'],
-					'fullscreen'	=> FALSE,
 					'volume'		=> (int)$status['volume'],
 					'random'		=> ($status['random'] == '1'?TRUE:FALSE),
 					'loop'			=> ((($status['single'] == '0') && ($status['repeat'] == '1'))?TRUE:FALSE),

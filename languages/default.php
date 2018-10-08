@@ -1221,6 +1221,9 @@ $dictionary=array(
 
     'DEVICES_THERMOSTAT' => 'Thermostat',
     'DEVICES_THERMOSTAT_MODE' => 'Mode',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Normal',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Eco',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Off',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO mode',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Normal target temperature',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO target temperature',
@@ -1263,6 +1266,13 @@ $dictionary=array(
     'COLUMNS' => 'Columns',
     'SIZE' => 'Size',
     'CLOCK' => 'Clock',
+
+    'UPDATES_SOURCE' => 'Core updates source',
+    'UPDATES_SOURCE_MASTER' => 'Master (stable release)',
+    'UPDATES_SOURCE_ALPHA' => 'Alpha (latest updates)',
+    
+    'MAINCYCLEDOWN' => 'Main cycle is down',
+    'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
 
 'TEST'=>'test'
 

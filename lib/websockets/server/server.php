@@ -38,13 +38,13 @@ class MajordomoWsServer extends WebSocketServer {
   protected function connected ($user) {
      $id = $user->getClientId();
      $this->_clients[$id] = $user;
-     echo "Client connected (".$user->getClientIp()."). Total clients: ".count($this->_clients)."\n";
+     //echo "Client connected (".$user->getClientIp()."). Total clients: ".count($this->_clients)."\n";
   }
   
   protected function closed ($user) {
      $id = $user->getClientId();           
      unset($this->_clients[$id]);
-     echo "Client dicconnected (".$user->getClientIp()."). Total clients: ".count($this->_clients)."\n";
+     //echo "Client disconnected (".$user->getClientIp()."). Total clients: ".count($this->_clients)."\n";
   }
   
   protected function _decodeData($data)

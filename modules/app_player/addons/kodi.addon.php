@@ -160,7 +160,6 @@ class kodi extends app_player_addon {
 			$length		= 0;
 			$time		= 0;
 			$state		= 'unknown';
-			$fullscreen	= FALSE;
 			$volume		= 0;
 			$random		= FALSE;
 			$loop		= FALSE;
@@ -176,11 +175,6 @@ class kodi extends app_player_addon {
 					$track_id = $this->data->result->item->id;
 				}
 				$length = $this->data->result->item->duration;
-			}
-			// Fullscreen
-			$fullscreen = FALSE;
-			if($this->kodi_request('GUI.GetProperties', array('properties'=>array('fullscreen')))) {
-				$fullscreen = $this->data->result->fullscreen;
 			}
 			// Volume
 			if($this->kodi_request('Application.GetProperties', array('properties'=>array('volume')))) {
@@ -203,7 +197,6 @@ class kodi extends app_player_addon {
 				'length'		=> (int)$length,
 				'time'			=> (int)$time,
 				'state'			=> (string)$state,
-				'fullscreen'	=> (boolean)$fullscreen,
 				'volume'		=> (int)$volume,
 				'random'		=> (boolean)$random,
 				'loop'			=> (boolean)$loop,
@@ -321,18 +314,7 @@ class kodi extends app_player_addon {
 		}
 		return $this->success;
 	}
-	
-	// Fullscreen
-	function fullscreen() {
-		if($this->kodi_request('GUI.GetProperties', array('properties'=>array('fullscreen')))) {
-			if($this->kodi_request('GUI.SetFullscreen', array('fullscreen'=>!$this->data->result->fullscreen))) {
-				$this->success = TRUE;
-				$this->message = 'OK';
-			}
-		}
-		return $this->success;
-	}
-	
+
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();

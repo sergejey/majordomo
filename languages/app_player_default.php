@@ -14,7 +14,6 @@ $dictionary = array(
 	'APP_PLAYER_PREVIOUS'			=> 'Previous',
 	'APP_PLAYER_PLAY'				=> 'Play',
 	'APP_PLAYER_NEXT'				=> 'Next',
-	'APP_PLAYER_FULLSCREEN'			=> 'Fullscreen',
 	'APP_PLAYER_STOP'				=> 'Stop',
 );
 

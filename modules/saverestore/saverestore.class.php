@@ -1,17 +1,4 @@
 <?php
-/**
- * я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜
- *
- * Saverestore
- *
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 0.6 (2010-08-30) WINDOWS ONLY!
- */
-//
-//
-
-Define('UPDATER_URL', 'http://updates.au78.com/updates/');
 
 class saverestore extends module
 {
@@ -140,22 +127,26 @@ class saverestore extends module
             $out['OK_MSG'] = $ok_msg;
         }
 
+        $set_update_url=gr('set_update_url');
+            if ($set_update_url) {
+                $this->config['MASTER_UPDATE_URL']=$set_update_url;
+                $this->saveConfig();
+                $this->redirect("?ok_msg=".urlencode(LANG_DATA_SAVED));
+            }
+
         $this->getConfig();
 
         if (is_dir(ROOT . 'cms/saverestore/temp')) {
             $out['CLEAR_FIRST'] = 1;
         }
 
+        $update_url=$this->getUpdateURL();
+        $out['UPDATE_URL']=$update_url;
 
-        $this->getConfig();
-
-        if (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '') {
-            $github_feed_url = MASTER_UPDATE_URL;
+            $github_feed_url = $update_url;
             $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
             $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
-        } else {
-            $github_feed_url = 'https://github.com/sergejey/majordomo/commits/master.atom';
-        }
+
         $github_feed = getURL($github_feed_url, 30 * 60);
 
         if ($github_feed != '') {
@@ -382,6 +373,18 @@ class saverestore extends module
     }
 
 
+    function getUpdateURL() {
+        $this->getConfig();
+        if ($this->config['MASTER_UPDATE_URL']!='') {
+            $update_url=$this->config['MASTER_UPDATE_URL'];
+        } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '')  {
+            $update_url=MASTER_UPDATE_URL;
+        } else {
+            $update_url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+        }
+        return $update_url;
+    }
+
     /**
      * Title
      *
@@ -393,11 +396,7 @@ class saverestore extends module
     {
 
 
-        if (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '') {
-            $url = MASTER_UPDATE_URL;
-        } else {
-            $url = 'https://github.com/sergejey/majordomo/archive/master.tar.gz';
-        }
+        $url=$this->getUpdateURL();
         $this->url = $url;
 
         set_time_limit(0);

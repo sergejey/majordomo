@@ -1,5 +1,10 @@
 <?php
 
+$disabled=$this->getProperty('disabled');
+if ($disabled) {
+    return;
+}
+
 $status = $this->getProperty('status');
 $currentTemperature = $this->getProperty('value');
 $ncno = $this->getProperty('ncno');

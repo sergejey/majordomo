@@ -58,6 +58,24 @@
     background-color:yellow;
 }
 
+.thermostat .status_text {
+    color:#dddddd;
+}
+
+.thermostat .status_disabled {
+    color:#666666;
+    font-weight:bold;
+}
+.thermostat .status_eco_off_enabled {
+    color:green;
+    font-weight:bold;
+}
+.thermostat .status_normal_on_enabled {
+    color:blue;
+    font-weight:bold;
+}
+
+
 .device-icon.motion {
     background-image: url(../cms/scenes/styles/informer/i_motion.png);
 }

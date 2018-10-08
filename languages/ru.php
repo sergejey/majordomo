@@ -1216,6 +1216,9 @@ $dictionary = array(
 
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Обычный',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Эко',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Выкл',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Обычная целевая температура',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO целевая температура',
@@ -1264,6 +1267,14 @@ $dictionary = array(
     'COLUMNS' => 'Колонки',
     'SIZE' => 'Размер',
     'CLOCK' => 'Часы',
+
+    'UPDATES_SOURCE' => 'Источник обновлений ядра',
+    'UPDATES_SOURCE_MASTER' => 'Мастер (стабильная версия)',
+    'UPDATES_SOURCE_ALPHA' => 'Альфа (ранний доступ к обновлениям)',
+
+    'MAINCYCLEDOWN' => 'Отсановлен главный цикл системы',
+    'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
+
 
     /* end module names */
 
