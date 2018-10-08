@@ -112,41 +112,33 @@ for ($i = 0; $i < $total; $i++) {
         sg('HomeBridge.to_add',json_encode($payload));
 
     } elseif ($devices[$i]['TYPE']=='sensor_light') {
+         $payload=array();
+         $payload['name']=$devices[$i]['LINKED_OBJECT'];
+         sg('HomeBridge.to_remove',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
+         $payload['service_name']=$devices[$i]['TITLE'];
+         $payload['service']='LightSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
+            
+         $payload['characteristic'] = 'CurrentAmbientLightLevel';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='LightSensor';
-        sg('HomeBridge.to_add',json_encode($payload));
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='LightSensor';
-        $payload['characteristic'] = 'CurrentAmbientLightLevel';
-        $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
-        sg('HomeBridge.to_set',json_encode($payload));
     } elseif ($devices[$i]['TYPE']=='openclose') {
          $payload=array();
          $payload['name']=$devices[$i]['LINKED_OBJECT'];
          sg('HomeBridge.to_remove',json_encode($payload));
 
-         $payload=array();
-         $payload['name']=$devices[$i]['LINKED_OBJECT'];
          $payload['service_name']=$devices[$i]['TITLE'];
          $payload['service']='ContactSensor';
          sg('HomeBridge.to_add',json_encode($payload));
 
-         $payload=array();
-         $payload['name']=$devices[$i]['LINKED_OBJECT'];
-         $payload['service_name']=$devices[$i]['TITLE'];
-         $payload['service']='ContactSensor';
          $payload['characteristic'] = 'ContactSensorState';
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.state');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.StatusLowBattery');
          sg('HomeBridge.to_set',json_encode($payload));
     }
 }

@@ -9,7 +9,16 @@ if ($this->isHomeBridgeAvailable()) {
     $payload['service_name']=$device1['TITLE'];
 
     if ($device1['TYPE']=='relay') {
-        $payload['service']='Switch';
+         $load_type=gg($device1['LINKED_OBJECT'].'.loadType');
+         if ($load_type=='light') {
+            $payload['service'] = 'Lightbulb';
+         } elseif ($load_type=='vent') {
+            $payload['service'] = 'Fan';
+         } elseif ($load_type=='switch') {
+            $payload['service'] = 'Switch';
+         } else {
+            $payload['service']='Outlet';
+         }
         $payload['characteristic'] = 'On';
         if (gg($device1['LINKED_OBJECT'].'.status')) {
             $payload['value']=true;
@@ -40,6 +49,9 @@ if ($this->isHomeBridgeAvailable()) {
          $payload['service']='ContactSensor';
          $payload['characteristic'] = 'ContactSensorState';
          $payload['value']=gg($device1['LINKED_OBJECT'].'.state');
+         sg('HomeBridge.to_set',json_encode($payload));
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.StatusLowBattery');
      }
     if (isset($payload['value'])) {
         //DebMes('HB sending to_set: '.json_encode($payload));

@@ -50,13 +50,22 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
     $payload['name']=$device['LINKED_OBJECT'];
     $payload['service_name']=$device['TITLE'];
     if ($device['TYPE']=='relay' && $data['characteristic'] == 'On') {
-            $payload['service']='Switch';
-            $payload['characteristic'] = 'On';
-            if (gg($device['LINKED_OBJECT'].'.status')) {
-                $payload['value']=true;  
-            } else {
-                $payload['value']=false;
-            }
+         $load_type=gg($device['LINKED_OBJECT'].'.loadType');
+         if ($load_type=='light') {
+            $payload['service'] = 'Lightbulb';
+         } elseif ($load_type=='vent') {
+            $payload['service'] = 'Fan';
+         } elseif ($load_type=='switch') {
+            $payload['service'] = 'Switch';
+         } else {
+            $payload['service']='Outlet';
+         }
+         $payload['characteristic'] = 'On';
+         if (gg($device['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;  
+         } else {
+            $payload['value']=false;
+         }
     } elseif ($device['TYPE']=='sensor_temp' && $data['characteristic'] == 'CurrentTemperature') {
         $payload['service']='TemperatureSensor';
         $payload['characteristic'] = 'CurrentTemperature';
@@ -73,10 +82,16 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
         $payload['service']='LightSensor';
         $payload['characteristic'] = 'CurrentAmbientLightLevel';
         $payload['value']=gg($device['LINKED_OBJECT'].'.value');
-    } elseif ($device['TYPE']=='openclose' && $data['characteristic'] == 'ContactSensorState') {
-         $payload['service']='ContactSensor';
-         $payload['characteristic'] = 'ContactSensorState';
-         $payload['value']=gg($device['LINKED_OBJECT'].'.state');
+    } elseif ($device['TYPE']=='openclose')
+         if($data['characteristic'] == 'ContactSensorState') {
+            $payload['service']='ContactSensor';
+            $payload['characteristic'] = 'ContactSensorState';
+            $payload['value']=gg($device['LINKED_OBJECT'].'.state');
+         } elseif ($data['characteristic'] == 'StatusLowBattery') {
+            $payload['service']='ContactSensor';
+            $payload['characteristic'] = 'StatusLowBattery';
+            $payload['value']=gg($device['LINKED_OBJECT'].'.StatusLowBattery');
+         }
     }
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set',json_encode($payload));
