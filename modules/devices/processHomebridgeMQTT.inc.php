@@ -49,53 +49,74 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
     $payload=array();
     $payload['name']=$device['LINKED_OBJECT'];
     $payload['service_name']=$device['TITLE'];
-    if ($device['TYPE']=='relay' && $data['characteristic'] == 'On') {
-         $load_type=gg($device['LINKED_OBJECT'].'.loadType');
-         if ($load_type=='light') {
-            $payload['service'] = 'Lightbulb';
-         } elseif ($load_type=='vent') {
-            $payload['service'] = 'Fan';
-         } elseif ($load_type=='switch') {
-            $payload['service'] = 'Switch';
-         } else {
-            $payload['service']='Outlet';
+
+    switch($device['TYPE']) {
+      case 'relay':
+         if ($data['characteristic'] == 'On') {
+            $load_type=gg($device['LINKED_OBJECT'].'.loadType');
+            if     ($load_type=='light')  $payload['service'] = 'Lightbulb';
+            elseif ($load_type=='vent')   $payload['service'] = 'Fan';
+            elseif ($load_type=='switch') $payload['service'] = 'Switch';
+            else                          $payload['service'] = 'Outlet';
+            $payload['characteristic'] = 'On';
+            if (gg($device['LINKED_OBJECT'].'.status')) {
+               $payload['value']=true;
+            } else {
+               $payload['value']=false;
+            }
          }
-         $payload['characteristic'] = 'On';
-         if (gg($device['LINKED_OBJECT'].'.status')) {
-            $payload['value']=true;  
-         } else {
-            $payload['value']=false;
+         break;
+      case 'sensor_temp':
+         if ($data['characteristic'] == 'CurrentTemperature') {
+            $payload['service']='TemperatureSensor';
+            $payload['characteristic'] = 'CurrentTemperature';
+            $payload['value']=gg($device['LINKED_OBJECT'].'.value');
          }
-    } elseif ($device['TYPE']=='sensor_temp' && $data['characteristic'] == 'CurrentTemperature') {
-        $payload['service']='TemperatureSensor';
-        $payload['characteristic'] = 'CurrentTemperature';
-        $payload['value']=gg($device['LINKED_OBJECT'].'.value');
-    } elseif ($device['TYPE']=='sensor_humidity' && $data['characteristic'] == 'CurrentRelativeHumidity') {
-        $payload['service']='HumiditySensor';
-        $payload['characteristic'] = 'CurrentRelativeHumidity';
-        $payload['value']=gg($device['LINKED_OBJECT'].'.value');
-    } elseif ($device['TYPE']=='motion' && $data['characteristic'] == 'MotionDetected') {
-        $payload['service']='MotionSensor';
-        $payload['characteristic'] = 'MotionDetected';
-        $payload['value']=gg($device['LINKED_OBJECT'].'.status');
-    } elseif ($device['TYPE']=='sensor_light' && $data['characteristic'] == 'CurrentAmbientLightLevel') {
-        $payload['service']='LightSensor';
-        $payload['characteristic'] = 'CurrentAmbientLightLevel';
-        $payload['value']=gg($device['LINKED_OBJECT'].'.value');
-    } elseif ($device['TYPE']=='openclose') {
-      if($data['characteristic'] == 'ContactSensorState') {
-         $payload['service']='ContactSensor';
-         $payload['characteristic'] = 'ContactSensorState';
-         $payload['value']=gg($device['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($device['LINKED_OBJECT'].'.status') : gg($device['LINKED_OBJECT'].'.status');
-      } elseif ($data['characteristic'] == 'StatusLowBattery') {
-         $payload['service']='ContactSensor';
-         $payload['characteristic'] = 'StatusLowBattery';
-         $payload['value']=gg($device['LINKED_OBJECT'].'.StatusLowBattery');
-      }
+         break;
+      case 'sensor_humidity':
+         if ($data['characteristic'] == 'CurrentRelativeHumidity') {
+            $payload['service']='HumiditySensor';
+            $payload['characteristic'] = 'CurrentRelativeHumidity';
+            $payload['value']=gg($device['LINKED_OBJECT'].'.value');
+         }
+         break;
+      case 'motion':
+         if ($data['characteristic'] == 'MotionDetected') {
+            $payload['service']='MotionSensor';
+            $payload['characteristic'] = 'MotionDetected';
+            $payload['value']=gg($device['LINKED_OBJECT'].'.status');
+         }
+         break;
+      case 'sensor_light':
+         if ($data['characteristic'] == 'CurrentAmbientLightLevel') {
+            $payload['service']='LightSensor';
+            $payload['characteristic'] = 'CurrentAmbientLightLevel';
+            $payload['value']=gg($device['LINKED_OBJECT'].'.value');
+         }
+         break;
+      case 'openclose':
+         if($data['characteristic'] == 'ContactSensorState') {
+            $payload['service']='ContactSensor';
+            $payload['characteristic'] = 'ContactSensorState';
+            $nc = gg($device['LINKED_OBJECT'].'.ncno') == 'nc';
+            $payload['value'] = $nc ? 1 - gg($device['LINKED_OBJECT'].'.status') : gg($device['LINKED_OBJECT'].'.status');
+         }
+         break;
     }
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set',json_encode($payload));
     }
+
+    if ($data['characteristic'] == 'StatusLowBattery') {
+      $payload['service']='ContactSensor';
+      $payload['characteristic'] = 'StatusLowBattery';
+      $payload['value'] = null;
+      $payload['value']=gg($device['LINKED_OBJECT'].'.StatusLowBattery');
+      if (isset($payload['value'])) {
+         sg('HomeBridge.to_set',json_encode($payload));
+      }
+    }
+
 }
 
 // set status from HomeKit
