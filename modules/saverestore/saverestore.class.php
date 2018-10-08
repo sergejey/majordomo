@@ -380,7 +380,7 @@ class saverestore extends module
         } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '')  {
             $update_url=MASTER_UPDATE_URL;
         } else {
-            $update_url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+            $update_url=GIT_URL.'archive/master.tar.gz';
         }
         return $update_url;
     }
