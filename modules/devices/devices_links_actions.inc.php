@@ -32,6 +32,10 @@ if ($this->isHomeBridgeAvailable()) {
         } else {
             $payload['value']=false;
         }
+    } elseif ($device1['TYPE']=='sensor_light') {
+        $payload['service']='LightSensor';
+        $payload['characteristic'] = 'CurrentAmbientLightLevel';
+        $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
     }
     if (isset($payload['value'])) {
         //DebMes('HB sending to_set: '.json_encode($payload));

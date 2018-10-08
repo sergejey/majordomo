@@ -69,6 +69,10 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
         $payload['service']='MotionSensor';
         $payload['characteristic'] = 'MotionDetected';
         $payload['value']=gg($device['LINKED_OBJECT'].'.status');
+    } elseif ($device['TYPE']=='sensor_light' && $data['characteristic'] == 'CurrentAmbientLightLevel') {
+        $payload['service']='LightSensor';
+        $payload['characteristic'] = 'CurrentAmbientLightLevel';
+        $payload['value']=gg($device['LINKED_OBJECT'].'.value');
     }
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set',json_encode($payload));
