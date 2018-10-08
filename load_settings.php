@@ -32,6 +32,10 @@ if (!defined('SETTINGS_SITE_LANGUAGE')) {
 if (!defined('GIT_URL')) {
     Define('GIT_URL', 'https://github.com/sergejey/majordomo/');
 }
+if (!isset($aditional_git_urls)) {
+   $aditional_git_urls = array();
+}
+
 // language selection by settings
 if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php')) {
     include_once(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');

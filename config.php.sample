@@ -81,6 +81,10 @@ Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'
 Define('GIT_URL', 'https://github.com/sergejey/majordomo/');
 Define('MASTER_UPDATE_URL', GIT_URL.'archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
 
+$aditional_git_urls = array(
+   //'https://github.com/AKEB/majordomo/archive/alpha.tar.gz' => 'AKEB/alpha',
+   //'https://github.com/AKEB/majordomo/archive/master.tar.gz' => 'AKEB/master',
+);
 
 
 //Define('WAIT_FOR_MAIN_CYCLE', 1);

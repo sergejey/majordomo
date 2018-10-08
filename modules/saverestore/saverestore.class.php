@@ -143,6 +143,16 @@ class saverestore extends module
         $update_url=$this->getUpdateURL();
         $out['UPDATE_URL']=$update_url;
 
+        global $aditional_git_urls;
+        $out['ADITIONAL_GIT_URLS'] = array();
+        foreach ($aditional_git_urls as $url=>$title) {
+           $tmp = array();
+           $tmp['URL'] = $url;
+           $tmp['TITLE'] = $title;
+           $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
+           $out['ADITIONAL_GIT_URLS'][] = $tmp;
+        }
+        var_dump($out);
             $github_feed_url = $update_url;
             $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
             $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
@@ -335,7 +345,6 @@ class saverestore extends module
             $out['SAVE_FILES'] = $save_files;
             global $design;
             $out['DESIGN'] = $design;
-
         }
 
 

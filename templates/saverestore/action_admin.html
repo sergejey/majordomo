@@ -12,14 +12,18 @@
         <h3>
             <#LANG_UPDATES#>
         </h3>
-
         <form action="?" method="post" enctype="multipart/form-data" class="form">
             <div class="form-group">
                 <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
                 <select name="set_update_url" id="set_update_url" class="form-control" onchange="this.form.submit();">
-               <option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
-               <option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
-           </select>
+                  <option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
+                  <option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
+                  [#if ADITIONAL_GIT_URLS#]
+                     [#begin ADITIONAL_GIT_URLS#]
+                        <option value="[#URL#]" [#SELECTED#]>[#TITLE#]</option>
+                     [#end ADITIONAL_GIT_URLS#]
+                  [#endif#]
+               </select>
             </div>
         </form>
 
