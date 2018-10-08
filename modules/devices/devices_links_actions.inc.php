@@ -36,7 +36,11 @@ if ($this->isHomeBridgeAvailable()) {
         $payload['service']='LightSensor';
         $payload['characteristic'] = 'CurrentAmbientLightLevel';
         $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
-    }
+    } elseif ($device1['TYPE']=='openclose') {
+         $payload['service']='ContactSensor';
+         $payload['characteristic'] = 'ContactSensorState';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.state');
+     }
     if (isset($payload['value'])) {
         //DebMes('HB sending to_set: '.json_encode($payload));
         sg('HomeBridge.to_set',json_encode($payload));
