@@ -19,9 +19,6 @@ include_once(DIR_MODULES . "panel.class.php");
 
 $session = new session("prj");
 
-startMeasure('db connection');
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-endMeasure('db connection');
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
@@ -120,7 +117,6 @@ if ($_GET['part_load']) {
       header('Content-Type: text/html; charset=utf-8');
       echo $result;exit;
       $session->save();
-      $db->Disconnect(); // closing database connection
       exit;
 }
 
@@ -137,7 +133,6 @@ echo $result;
 endMeasure('echoall');
 
 $session->save();
-$db->Disconnect(); // closing database connection
 
 // end calculation of execution time
 endMeasure('TOTAL');

@@ -213,7 +213,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS jobs');
+   SQLDropTable('jobs');
   parent::uninstall();
  }
 /**

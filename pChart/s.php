@@ -93,7 +93,6 @@ include("./pChart/pChart.class");
 
 //---------------------------- MySQL
 
-$db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
 $settings=SQLSelect("SELECT NAME, VALUE FROM settings");
 
 $total=count($settings);
@@ -958,5 +957,3 @@ if ($objtype == "generic") {
         
  Header("Content-type:image/png");
  imagepng($Test->Picture);
-
- $db->Disconnect(); // closing database connection

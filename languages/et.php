@@ -670,6 +670,7 @@ $dictionary=array(
 'DEVICES_LEAK_SENSOR'=>'Niiskuseandur',
 'DEVICES_SMOKE_SENSOR'=>'Suitsuandur',
 'DEVICES_UNIT'=>'Ühikut',
+'DEVICES_BATTERY_LOW' => 'Low battery',
 'DEVICES_COUNTER'=>'Loendur',
 'M_VOLTAGE'=>'V',
 'M_CURRENT'=>'I',

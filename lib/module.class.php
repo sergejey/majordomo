@@ -652,7 +652,6 @@ class module
       $url = $this->makeRealURL($url);
 
       $session->save();
-      $db->Disconnect();
 
       if ($_GET['part_load']) {
        $res=array();

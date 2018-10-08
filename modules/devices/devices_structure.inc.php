@@ -26,6 +26,7 @@ $this->device_types=array(
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
             'updatedText'=>array('DESCRIPTION'=>'Updated Time (text)'),
+            'StatusLowBattery'=>array('DESCRIPTION'=>LANG_DEVICES_BATTERY_LOW, 'ONCHANGE'=>'statusUpdated',),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),

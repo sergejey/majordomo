@@ -15,9 +15,6 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 include_once(DIR_MODULES."control_modules/control_modules.class.php");
 
@@ -99,7 +96,6 @@ if ($sink->attached)
 
       if (file_exists('./reboot') || IsSet($_GET['onetime']))
       {
-         $db->Disconnect();
          exit;
       }
    }
@@ -196,6 +192,3 @@ class _ISkypeEvents
       }
    }
 }
-
-// closing database connection
-$db->Disconnect();

@@ -338,7 +338,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS security_rules');
+   SQLDropTable('security_rules');
   parent::uninstall();
  }
 /**

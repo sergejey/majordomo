@@ -7,15 +7,13 @@ include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
 set_time_limit(0);
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
-//SQLExec("TRUNCATE TABLE phistory_queue;");
+//SQLTruncateTable('phistory_queue');
 
 debug_echo("Optimizing phistory");
 SQLExec("OPTIMIZE TABLE phistory;");
@@ -154,7 +152,6 @@ while (1) {
         sleep(1);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
-        $db->Disconnect();
         exit;
     }
 }

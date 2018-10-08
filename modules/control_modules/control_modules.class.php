@@ -180,9 +180,9 @@ function install($parent_name = "")
    parent::install($parent_name);
 
    global $db;
- if (!is_object($db) || !$db->connected) {
-  return false;
- }
+   if (!is_object($db) || !$db->Connect()) {
+      return false;
+   }
 
    $this->getModulesList();
 

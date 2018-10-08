@@ -66,8 +66,6 @@ function getParams() {
     $_GET['var']=str_replace('%', '', $_GET['var']);
     $res['DATA']=getGlobal($_GET['var']);
     echo json_encode($res);
-    global $db;
-    $db->Disconnect();
     exit;
    }
 
@@ -78,8 +76,6 @@ function getParams() {
     setGlobal($_GET['var'], $_GET['value']);
     $res['DATA']='OK';
     echo json_encode($res);
-    global $db;
-    $db->Disconnect();
     exit;
    }
    
@@ -91,8 +87,6 @@ function getParams() {
     $res=array();
     $res['DATA']=$msg['MESSAGE'];
     echo json_encode($res);
-    global $db;
-    $db->Disconnect();
     exit;
    }
 
@@ -139,8 +133,6 @@ function getParams() {
      echo '/cms/cached/voice/'.$files[0]['FILENAME'];
     }
 
-    global $db;
-    $db->Disconnect();
     exit;
    }
 

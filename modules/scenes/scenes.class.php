@@ -1307,9 +1307,9 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS scenes');
-  SQLExec('DROP TABLE IF EXISTS elements');
-  SQLExec('DROP TABLE IF EXISTS elm_states');
+   SQLDropTable('scenes');
+   SQLDropTable('elements');
+   SQLDropTable('elm_states');
   parent::uninstall();
  }
 

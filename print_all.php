@@ -10,9 +10,6 @@
 include_once("./config.php");
 include_once("./lib/loader.php");
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 // get settings
 include_once("./load_settings.php");
 
@@ -196,9 +193,6 @@ echo $p->result;
 
 //registerError('custom', 'Some error details');
 //$tmp=SQLSelect("SELECT FROM unknown");
-
-// closing database connection
-$db->Disconnect();
 
 /**
  * Summary of buildTree_patterns

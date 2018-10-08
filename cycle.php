@@ -19,21 +19,15 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-$connected = 0;
+$connected = false;
 
 while (!$connected)
 {
    echo "Connecting to database..." . PHP_EOL;
-   if (function_exists('mysqli_connect')) {
-    $connected = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD);
-   } else {
-    $connected = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-   }
+   $connected = $db->Connect();
    sleep(5);
 }
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 
 echo "CONNECTED TO DB" . PHP_EOL;
@@ -153,7 +147,7 @@ $ctl = new control_modules();
 
 //removing cached data
 echo "Clearing the cache.\n";
-SQLExec("TRUNCATE TABLE `cached_values`");
+SQLTruncateTable('cached_values');
 
 if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE==1) {
    // split data into multiple tables
@@ -454,5 +448,4 @@ while (false !== ($result = $threads->iteration()))
 }
 
  unlink('./reboot');
- // closing database connection
- $db->Disconnect();
+
