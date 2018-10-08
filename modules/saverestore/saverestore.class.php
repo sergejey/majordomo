@@ -152,7 +152,7 @@ class saverestore extends module
            $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
            $out['ADITIONAL_GIT_URLS'][] = $tmp;
         }
-        var_dump($out);
+        
             $github_feed_url = $update_url;
             $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
             $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
