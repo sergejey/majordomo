@@ -82,16 +82,16 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
         $payload['service']='LightSensor';
         $payload['characteristic'] = 'CurrentAmbientLightLevel';
         $payload['value']=gg($device['LINKED_OBJECT'].'.value');
-    } elseif ($device['TYPE']=='openclose')
-         if($data['characteristic'] == 'ContactSensorState') {
-            $payload['service']='ContactSensor';
-            $payload['characteristic'] = 'ContactSensorState';
-            $payload['value']=gg($device['LINKED_OBJECT'].'.state');
-         } elseif ($data['characteristic'] == 'StatusLowBattery') {
-            $payload['service']='ContactSensor';
-            $payload['characteristic'] = 'StatusLowBattery';
-            $payload['value']=gg($device['LINKED_OBJECT'].'.StatusLowBattery');
-         }
+    } elseif ($device['TYPE']=='openclose') {
+      if($data['characteristic'] == 'ContactSensorState') {
+         $payload['service']='ContactSensor';
+         $payload['characteristic'] = 'ContactSensorState';
+         $payload['value']=1 - gg($device['LINKED_OBJECT'].'.status');
+      } elseif ($data['characteristic'] == 'StatusLowBattery') {
+         $payload['service']='ContactSensor';
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($device['LINKED_OBJECT'].'.StatusLowBattery');
+      }
     }
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set',json_encode($payload));

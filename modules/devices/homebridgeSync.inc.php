@@ -134,7 +134,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'ContactSensorState';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.state');
+         $payload['value']=1 - gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
 
          $payload['characteristic'] = 'StatusLowBattery';
