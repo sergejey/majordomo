@@ -75,7 +75,7 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS == 1) {
         return false;
     }
-    SQLExec("DELETE FROM cached_ws WHERE PROPERTY='" . DBSafe($property) . "'");
+    //SQLExec("DELETE FROM cached_ws WHERE PROPERTY='" . DBSafe($property) . "'");
     $rec = array();
     $rec['PROPERTY'] = $property;
     $rec['DATAVALUE'] = $value;
@@ -96,7 +96,7 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
 
     $fields = substr($fields, 0, strlen($fields) - 2);
     $values = substr($values, 0, strlen($values) - 2);
-    $query = "INSERT INTO `$table`($fields) VALUES($values)";
+    $query = "REPLACE INTO `$table`($fields) VALUES($values)";
 
     $res = SQLExec($query);
     return $res;
