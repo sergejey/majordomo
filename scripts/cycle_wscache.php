@@ -14,7 +14,7 @@ if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
    exit;
 }
 
-TruncateTable('cached_ws');
+SQLTruncateTable('cached_ws');
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 $latest_sent=time();
@@ -27,7 +27,7 @@ while (1)
       $checked_time = time();
       $queue=SQLSelect("SELECT * FROM cached_ws");
       if ($queue[0]['PROPERTY']) {
-         TruncateTable('cached_ws');
+         SQLTruncateTable('cached_ws');
          $total=count($queue);
          $sent_ok=1;
          $properties=array();
