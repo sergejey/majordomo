@@ -178,7 +178,7 @@ class settings extends module {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS settings');
+   SQLDropTable('settings');
   parent::uninstall();
  }
 /**

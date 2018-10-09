@@ -25,7 +25,8 @@ $dictionary=array(
 'CONSOLE'=>'Konsola',
 'CONSOLE_RETRY'=>'Powtarzanie',
 'MODULE_DESCRIPTION'=>'Opis modułu',
-'STILL_WORKING'=>'Wczytywanie danych...                  Kliknij',
+'STILL_WORKING'=>'Wczytywanie danych...
+                  Kliknij',
 'CLICK_HERE'=>'tutaj',
 'TAKES_TOO_LONG'=>', jeśli proces ładowania trwa zbyt długo.',
 'GENERAL_SENSORS'=>'Sensory',
@@ -657,6 +658,7 @@ $dictionary=array(
 'DEVICES_LEAK_SENSOR'=>'Czujnik nieszczelno?ci',
 'DEVICES_SMOKE_SENSOR'=>'Czujnik dymu',
 'DEVICES_UNIT'=>'Jednostka miary',
+'DEVICES_BATTERY_LOW' => 'Low battery',
 'DEVICES_COUNTER'=>'Counter',
 'M_VOLTAGE'=>'W',
 'M_CURRENT'=>'A',

@@ -79,7 +79,6 @@ function collectData() {
    $result['cycles']=$cycles;
 
    global $db; 
-   $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
    if ($db) {
 
       $result['LatestUpdateId']=gg('LatestUpdateId');

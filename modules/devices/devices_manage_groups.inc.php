@@ -17,7 +17,7 @@ if ($delete_id) {
         }
     }
     SQLExec("DELETE FROM devices_groups WHERE ID=".$rec['ID']);
-    clearPropertiesCache();
+    SQLTruncateTable('cached_values');
     $this->redirect("?view_mode=".$this->view_mode);
 }
 

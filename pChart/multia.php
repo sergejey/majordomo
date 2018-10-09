@@ -38,9 +38,9 @@ pChart multia.php v.1.0.0
 &n9= - name of period9
 
 //custom period(!)
-&start=13/02/6 - дата начала
-&period=86400  - период в секундах (1 день)
-&res=900       - разрешение в секундах
+&start=13/02/6 - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+&period=86400  - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (1 пїЅпїЅпїЅпїЅ)
+&res=900       - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 &start2= - start period 2
 &start3= - start period 3
@@ -147,7 +147,6 @@ bgcolor= - background graphics (-*)
  include_once("./config.php");
  include_once("./lib/loader.php");
  include_once(DIR_MODULES."application.class.php");
- $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); //connecting to database
  include_once("./load_settings.php");
  include("./pChart/pData.class");   
  include("./pChart/pChart.class");  
@@ -912,7 +911,3 @@ function filter02($val, $al, $fil) {
  Header("Content-type:image/png");
  imagepng($Test->Picture);
  //$Test->Render();
-
-//---------------------------- Disconnect
-
- $db->Disconnect(); // closing database connection

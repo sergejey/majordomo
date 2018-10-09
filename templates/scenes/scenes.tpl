@@ -197,10 +197,12 @@ $.fn.customContextMenu = function(callBack){
         function stateClicked(id) {
 
          var window_url;
-         
-         {if $smarty.const.SETTINGS_SCENES_CLICKSOUND!=""}
-         EvalSound('click_sound');
-         {/if}
+
+            {if $smarty.const.SETTINGS_SCENES_CLICKSOUND!=""}
+            setTimeout("EvalSound('click_sound')",100);
+            {/if}
+
+         $('#state_'+id).animate({ opacity: .5 }, 100).animate({ opacity: 1 }, 100);
 
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
@@ -326,7 +328,9 @@ $.fn.customContextMenu = function(callBack){
           }).done(function(data) { 
            processCheckStates(data);
           });
-         return false;
+
+
+            return false;
         }
 
 
@@ -746,7 +750,7 @@ function onDocumentMouseDown( event ) {
    class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if $DRAGGABLE=="1" && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}" 
    id="state_{$STATE.ID}"
    {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""} 
-   {if $DRAGGABLE!="1" && $ELEMENT.TYPE!="device"}
+   {if $DRAGGABLE!="1"}
     onClick="stateClicked('{$STATE.ID}');"
    {/if}
    {/if} 

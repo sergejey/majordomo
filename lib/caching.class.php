@@ -25,10 +25,10 @@ function saveToCache($key, $value, $ttl = 60)
       $rec = array('KEYWORD' => $key, 'DATAVALUE' => '(too big)', 'EXPIRE' => date('Y-m-d H:i:s', time() + $ttl));
    }
 
-   $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)
-                VALUES ('" . $db->DbSafe1($rec['KEYWORD']) . "',
-                        '" . $db->DbSafe1($rec['DATAVALUE']) . "',
-                        '" . $rec['EXPIRE'] . "')";
+   $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE) ".
+               " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', ".
+                        "'" . DbSafe1($rec['DATAVALUE']) . "',".
+                        "'" . $rec['EXPIRE'] . "')";
    SQLExec($sqlQuery);
 }
 
@@ -71,16 +71,11 @@ function checkFromCache($key)
    }
 }
 
-function clearPropertiesCache() {
-    SQLExec("TRUNCATE cached_values;");
-}
-
-
 function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS == 1) {
         return false;
     }
-    SQLExec("DELETE FROM cached_ws WHERE PROPERTY='" . DBSafe($property) . "'");
+    //SQLExec("DELETE FROM cached_ws WHERE PROPERTY='" . DBSafe($property) . "'");
     $rec = array();
     $rec['PROPERTY'] = $property;
     $rec['DATAVALUE'] = $value;
@@ -96,18 +91,14 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     foreach ($rec as $field => $value) {
         if (is_Numeric($field)) continue;
         $fields .= "`$field`, ";
-        $values .= "'" . $db->DBSafe1($value) . "', ";
+        $values .= "'" . DBSafe1($value) . "', ";
     }
 
     $fields = substr($fields, 0, strlen($fields) - 2);
     $values = substr($values, 0, strlen($values) - 2);
-    $query = "INSERT INTO `$table`($fields) VALUES($values)";
+    $query = "REPLACE INTO `$table`($fields) VALUES($values)";
 
-    if (function_exists('mysqli_query')) {
-        $res = mysqli_query($db->dbh, $query);
-    } else {
-        $res = mysql_query($query);
-    }
+    $res = SQLExec($query);
     return $res;
     //SQLInsert('cached_ws', $rec);
 }
@@ -214,6 +205,6 @@ function moveDataFromTableToMainHistory($value_id) {
     $qry = "phistory.VALUE_ID=".$value_id;
     SQLExec("DELETE FROM phistory WHERE $qry");
     SQLExec("INSERT INTO phistory (VALUE_ID,ADDED,VALUE,SOURCE) SELECT VALUE_ID,ADDED,VALUE,SOURCE FROM $table_name");
-    SQLExec("DROP TABLE $table_name");
+    SQLDropTable($table_name);
     return true;
 }

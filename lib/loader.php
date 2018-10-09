@@ -41,6 +41,11 @@ if ($lib_dir = @opendir("./lib"))
    closedir($lib_dir);
 }
 
+if (defined('DB_HOST') && DB_HOST) {
+   global $db;
+   $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
+}
+
 /*
 // Insert the path where you unpacked log4php
 require_once dirname(__FILE__) . '/log4php/Logger.php';

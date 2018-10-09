@@ -1181,7 +1181,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS devices');
+   SQLDropTable('devices');
   parent::uninstall();
  }
 /**

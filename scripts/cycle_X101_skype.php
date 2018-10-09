@@ -15,9 +15,6 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
@@ -62,8 +59,8 @@ for($i = 0; $i < 5; $i++)
    catch (Exception $e)
    {
       DebMes('Skype error : ' . $e->getCode() . '. Error message: ' . $e->getMessage());
-        $n = null;
-        }
+      $n = null;
+   }
 
    sleep(5);
 }
@@ -71,64 +68,63 @@ for($i = 0; $i < 5; $i++)
 if(i >= 5)
 {
    $n = $dbus = null;
-        DebMes('Skype error : 5 попыток');
-        $db->Disconnect();
-        exit;
+   DebMes('Skype error : 5 попыток');
+   exit;
 }
 
 //пишем класс по обработке нотификаций
 class phpSkype
 {
    /*
-         * Эту функцию мы будем использовать для проверки последних сообщений в скайпе.
-         * Если вы не хотите, чтобы программа реагировала на ваши сообщения, используйте
-         * preg_match('/RECEIVED/', $notify)
-        */
+    * Эту функцию мы будем использовать для проверки последних сообщений в скайпе.
+    * Если вы не хотите, чтобы программа реагировала на ваши сообщения, используйте
+    * preg_match('/RECEIVED/', $notify)
+    */
 
-        public static function notify ($notify)
+   public static function notify ($notify)
    {
-           //echo "$notify"."\n";
-                #if (preg_match('#RECEIVED|SENT#Uis', $notify)) {
-                if (preg_match('/RECEIVED/', $notify))
+      //echo "$notify"."\n";
+      #if (preg_match('#RECEIVED|SENT#Uis', $notify)) {
+      if (preg_match('/RECEIVED/', $notify))
       {
-                   $message_id = explode(' ', $notify);
+         $message_id = explode(' ', $notify);
          //Вызываем обработчик сообщений
-                   bot::get_details($message_id[1]);
-                }
-        }
+         bot::get_details($message_id[1]);
+      }
+   }
 }
 
 //пишем класс - бот по работе со скайпом
 class bot
 {
-        private static $last_id;
+   private static $last_id;
 
-        public static function get_details ($message_id)
-        {
-                global $n;
-                global $pt;
+   public static function get_details ($message_id)
+   {
+      global $n;
+      global $pt;
 
       //Получаем id чата, используется для ответа
-                $ch   = $n -> Invoke('GET CHATMESSAGE '.$message_id.' CHATNAME');
+      $ch   = $n -> Invoke('GET CHATMESSAGE '.$message_id.' CHATNAME');
       //Получаем текст сообщения
-                $mess = $n -> Invoke('GET CHATMESSAGE '.$message_id.' BODY');
+      $mess = $n -> Invoke('GET CHATMESSAGE '.$message_id.' BODY');
       //Получаем автора сообщения
-                $aut  = $n -> Invoke('GET CHATMESSAGE '.$message_id.' FROM_DISPNAME');
+      $aut  = $n -> Invoke('GET CHATMESSAGE '.$message_id.' FROM_DISPNAME');
 
-                /*
-                * Теперь мы получим из строк, которые мы только что получили, нужные нам данные.
-                * А именно: Автора сообщения, id чата и текст сообщения.
-                */
+      /*
+       * Теперь мы получим из строк, которые мы только что получили, нужные нам данные.
+       * А именно: Автора сообщения, id чата и текст сообщения.
+       */
 
-                $author  = explode('FROM_DISPNAME ', $aut);
-                $chat    = explode('CHATNAME ', $ch);
-                $message = explode('BODY ', $mess);
+      $author  = explode('FROM_DISPNAME ', $aut);
+      $chat    = explode('CHATNAME ', $ch);
+      $message = explode('BODY ', $mess);
 
       //Выводим в консоль автора и сообщение
-                #echo $author[1].': '.$message[1]."\n";
+      #echo $author[1].': '.$message[1]."\n";
 
-                //на ping отвечаем pong - для тестирования приема сообщений скриптом. Если ответа нет - скорее всего скрипт остановлися.
-                if (substr(strtolower($message[1]), 0, 4) == 'ping' )
+      //на ping отвечаем pong - для тестирования приема сообщений скриптом. Если ответа нет - скорее всего скрипт остановлися.
+      if (substr(strtolower($message[1]), 0, 4) == 'ping' )
       {
          $n->Invoke('CHATMESSAGE ' . $chat[1] . ' pong');
          return true;
@@ -136,17 +132,16 @@ class bot
 
       //обработаем сообщения, начинающиеся с восклицательного знака !
       //оставил возможность для примера - можно будет удалить
-                if ($message[1][0] == '!')
+      if ($message[1][0] == '!')
       {
-                   self::reply($chat[1], $message[1], $message_id);
-                        return true;
-                }
+         self::reply($chat[1], $message[1], $message_id);
+         return true;
+      }
 
-                //на остальные сообщения - выполняем обычную обработку через модуль MajorDoMo
+      //на остальные сообщения - выполняем обычную обработку через модуль MajorDoMo
       $user = SQLSelectOne("SELECT ID FROM users WHERE SKYPE LIKE '" . $author[1] . "'");
 
-      if (!$user['ID'])
-         $user = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
+      if (!$user['ID']) $user = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
 
       $user_id = $user['ID'];
 
@@ -155,27 +150,27 @@ class bot
 
       for($i = 0; $i < $total; $i++)
       {
-                $room_id = 0;
+         $room_id = 0;
 
          $rec = array();
-                $rec['ROOM_ID']   = (int)$room_id;
-                $rec['MEMBER_ID'] = $user_id;
-                $rec['MESSAGE']   = htmlspecialchars($qrys[$i]);
-                $rec['ADDED']     = date('Y-m-d H:i:s');
-                SQLInsert('shouts', $rec);
-                $pt->checkAllPatterns();
-                getObject("ThisComputer")->raiseEvent("commandReceived", array("command"=>$qrys[$i]));
+         $rec['ROOM_ID']   = (int)$room_id;
+         $rec['MEMBER_ID'] = $user_id;
+         $rec['MESSAGE']   = htmlspecialchars($qrys[$i]);
+         $rec['ADDED']     = date('Y-m-d H:i:s');
+         SQLInsert('shouts', $rec);
+         $pt->checkAllPatterns();
+         getObject("ThisComputer")->raiseEvent("commandReceived", array("command"=>$qrys[$i]));
       }
    }
 
-        public function reply ($chat, $message, $id)
-        {
+   public function reply ($chat, $message, $id)
+   {
       global $n;
 
-                /*
-                Ответы на специальные команды, начинающиеся с восклицательного знака !
-                Пока оставляю для примера. В дальнейшем можно удалить
-                */
+      /*
+        Ответы на специальные команды, начинающиеся с восклицательного знака !
+        Пока оставляю для примера. В дальнейшем можно удалить
+      */
 
       self::$last_id = $message;
 
@@ -183,59 +178,59 @@ class bot
       {
          $command = explode(' ', $message);
 
-                        switch ($command[0])
+         switch ($command[0])
          {
-                           case '!test':
-                                   $reply = 'It\'s work!';
-                                        break;
+            case '!test':
+               $reply = 'It\'s work!';
+               break;
 
-                                case '!help':
-                                   $comm = explode('!help ', $message);
-                                   $reply = '<здесь можно вывести какую-нибудь справку>';
-                                   break;
+            case '!help':
+               $comm = explode('!help ', $message);
+               $reply = '<здесь можно вывести какую-нибудь справку>';
+               break;
 
-                                default:
-                                   $reply = 'Используйте !help';
-                                   break;
-                        }
+            default:
+               $reply = 'Используйте !help';
+               break;
+         }
 
          //Посылаем сообщение
-                        if ($reply != '') $n -> Invoke('CHATMESSAGE '.$chat.' '.$reply);
-                }
+         if ($reply != '') $n -> Invoke('CHATMESSAGE '.$chat.' '.$reply);
+      }
       else
       {
-                   echo 'Уже отвечал!' . "\n";
-                }
-        }
+         echo 'Уже отвечал!' . "\n";
+      }
+   }
 
    public static function send_Message($to_name,$s_message)
    {
       global $n;
 
-        // Функция по имени пользователя должна отправить ему сообщение в чат
+      // Функция по имени пользователя должна отправить ему сообщение в чат
 
-        //создадим чат по имени пользователя
-        $tmp   = $n->Invoke('CHAT CREATE ' . $to_name);
-                $tchat = explode(' ', $tmp);
+      //создадим чат по имени пользователя
+      $tmp   = $n->Invoke('CHAT CREATE ' . $to_name);
+      $tchat = explode(' ', $tmp);
 
-                //если чат не создался - просто выходим
-                if (count($tchat) > 1)
+      //если чат не создался - просто выходим
+      if (count($tchat) > 1)
          $chat= $tchat[1];
       else
          return false;
 
       //отправляем сообщение, затем контролируем статус отправки
-                $tmp = $n->Invoke('CHATMESSAGE ' . $chat . ' ' . $s_message);
-                $res = explode('STATUS ', $tmp);
+      $tmp = $n->Invoke('CHATMESSAGE ' . $chat . ' ' . $s_message);
+      $res = explode('STATUS ', $tmp);
 
       if (count($res) > 1)
       {
          return ($res[1] == 'SENDING');
-                }
+      }
       else
       {
-                        return false;
-                }
+         return false;
+      }
    }
 }
 
@@ -258,27 +253,23 @@ while(1)
    {
       $old_message = $latest_message;
 
-                if (isset($tmp['IMPORTANCE']) && $tmp['IMPORTANCE'] > 0)
+      if (isset($tmp['IMPORTANCE']) && $tmp['IMPORTANCE'] > 0)
       {
-                        $users = SQLSelect("SELECT * FROM users WHERE SKYPE != ''");
-                        $total = count($users);
+         $users = SQLSelect("SELECT * FROM users WHERE SKYPE != ''");
+         $total = count($users);
 
          for($i = 0; $i < $total; $i++)
          {
-                           echo "Sending to " . $users[$i]['SKYPE'] . ": " . convert_cyr_string(iconv('UTF-8', 'WINDOWS-1251', $latest_message), 'w', 'd') ."\n";
-                                bot::send_Message(trim($users[$i]['SKYPE']), $latest_message);
-                        }
-                }
-        }
+            echo "Sending to " . $users[$i]['SKYPE'] . ": " . convert_cyr_string(iconv('UTF-8', 'WINDOWS-1251', $latest_message), 'w', 'd') ."\n";
+            bot::send_Message(trim($users[$i]['SKYPE']), $latest_message);
+         }
+      }
+   }
 
    if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
-           $n    = null;
-                $dbus = null;
-                $db->Disconnect();
-                exit;
-        }
+      $n    = null;
+      $dbus = null;
+      exit;
+   }
 }
-
-// закрываем соединение с БД
-$db->Disconnect();

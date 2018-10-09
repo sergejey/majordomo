@@ -51,8 +51,6 @@ include_once("./lib/loader.php");
 startMeasure('TOTAL'); // start calculation of execution time
 
 include_once(DIR_MODULES . "application.class.php");
-
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
 include_once("./load_settings.php");
 
 if ($argv[1] != '') {
@@ -172,8 +170,6 @@ if ($object != '') {
 } elseif ($script != '') {
    runScript($script, $_REQUEST);
 }
-
-$db->Disconnect(); // closing database connection
 
 endMeasure('TOTAL'); // end calculation of execution time
 //performanceReport(); // print performance report

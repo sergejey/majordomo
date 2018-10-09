@@ -1087,7 +1087,7 @@ $dictionary=array(
     'DEVICES_SMOKE_SENSOR' => 'Smoke detector',
     'DEVICES_UNIT' => 'Units',
     'DEVICES_COUNTER' => 'Meter/Counter',
-
+    'DEVICES_BATTERY_LOW' => 'Low battery',
 // Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',

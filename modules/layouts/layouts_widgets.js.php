@@ -2,7 +2,6 @@
 chdir(dirname(__FILE__) . '/../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 ?>
     (function()
@@ -328,7 +327,3 @@ var myTextElement = $("<iframe style='margin-top:20px;height:"+newHeight+"px' sr
     }
 
     }());
-
-<?php
-$db->Disconnect();
-?>

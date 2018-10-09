@@ -1070,7 +1070,7 @@ class market extends module
      */
     function uninstall()
     {
-        SQLExec('DROP TABLE IF EXISTS plugins');
+      SQLDropTable('plugins');
         parent::uninstall();
     }
 
