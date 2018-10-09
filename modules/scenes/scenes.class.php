@@ -693,7 +693,7 @@ function usual(&$out) {
      }
 
      $qry="1";
-     $qry.=" AND elements.ID=".$state['ELEMENT_ID'];
+     $qry.=" AND elements.ID=".(int)$state['ELEMENT_ID'];
 
       $states=array();
       $elements=$this->getDynamicElements($qry);
