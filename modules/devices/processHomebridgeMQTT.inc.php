@@ -106,17 +106,6 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set',json_encode($payload));
     }
-
-    if ($data['characteristic'] == 'StatusLowBattery') {
-      $payload['service']='ContactSensor';
-      $payload['characteristic'] = 'StatusLowBattery';
-      $payload['value'] = null;
-      $payload['value']=gg($device['LINKED_OBJECT'].'.StatusLowBattery');
-      if (isset($payload['value'])) {
-         sg('HomeBridge.to_set',json_encode($payload));
-      }
-    }
-
 }
 
 // set status from HomeKit

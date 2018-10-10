@@ -14,7 +14,7 @@ if ($this->isHomeBridgeAvailable()) {
          if     ($load_type=='light')  $payload['service'] = 'Lightbulb';
          elseif ($load_type=='vent')   $payload['service'] = 'Fan';
          elseif ($load_type=='switch') $payload['service'] = 'Switch';
-         else                          $payload['service']='Outlet';
+         else                          $payload['service'] = 'Outlet';
          $payload['characteristic'] = 'On';
          if (gg($device1['LINKED_OBJECT'].'.status')) {
                $payload['value']=true;
@@ -57,15 +57,6 @@ if ($this->isHomeBridgeAvailable()) {
       //DebMes('HB sending to_set: '.json_encode($payload));
       sg('HomeBridge.to_set',json_encode($payload));
    }
-
-   $payload['characteristic'] = 'StatusLowBattery';
-   $payload['value'] = null;
-   $payload['value']=gg($device1['LINKED_OBJECT'].'.StatusLowBattery');
-   if (isset($payload['value'])) {
-      sg('HomeBridge.to_set',json_encode($payload));
-   }
-
-
 }
 
 $value = (float)gg($device1['LINKED_OBJECT'].'.value');
@@ -96,7 +87,7 @@ for ($i = 0; $i < $total; $i++) {
             if ((int)$settings['action_delay']>0) {
                 $action_string='setTimeout(\''.$timer_name.'\',\''.$action_string.'\','.(int)$settings['action_delay'].');';
             }
-            // -----------------------------------------------------------------
+    // -----------------------------------------------------------------
     // -----------------------------------------------------------------
     } elseif ($link_type=='sensor_switch') {
         if ($settings['action_type']=='turnoff' && gg($object.'.status')) {
@@ -112,9 +103,9 @@ for ($i = 0; $i < $total; $i++) {
             //do nothing
             $action_string='';
         }
-    }  elseif ($link_type=='sensor_pass') {
+    } elseif ($link_type=='sensor_pass') {
         $action_string='sg("'.$object.'.value'.'","'.$value.'");';
-    }  elseif ($link_type=='thermostat_switch') {
+    } elseif ($link_type=='thermostat_switch') {
         $set_value=0;
         $current_relay_status = gg($device1['LINKED_OBJECT'].'.relay_status');
         $ncno = gg($device1['LINKED_OBJECT'].'.ncno');
