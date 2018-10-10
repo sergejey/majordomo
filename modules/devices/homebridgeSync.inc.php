@@ -80,15 +80,8 @@ for ($i = 0; $i < $total; $i++) {
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($devices[$i]['LINKED_OBJECT'].'.status') : gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
-   }
 
-   $payload['characteristic'] = 'StatusLowBattery';
-   $payload['value'] = null;
-   $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.StatusLowBattery');
-   if (isset($payload['value'])) {
-      sg('HomeBridge.to_set',json_encode($payload));
    }
-   
 }
 
 sg('HomeBridge.to_get','{"name": "*"}');
