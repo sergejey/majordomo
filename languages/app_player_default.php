@@ -9,6 +9,7 @@ $dictionary = array(
 	'APP_PLAYER_WEB_BROWSER'		=> 'Web-browser',
 	'APP_PLAYER_SYSTEM_VOLUME'		=> 'System volume',
 	'APP_PLAYER_PLAYING_TERMINALS'	=> 'Playing terminals',
+	'APP_PLAYER_SELECT_TERMINALS'	=> 'Select a terminal...',
 	'APP_PLAYER_VOLUME_LEVEL'		=> 'Volume level',
 	'APP_PLAYER_PAUSE'				=> 'Pause',
 	'APP_PLAYER_PREVIOUS'			=> 'Previous',

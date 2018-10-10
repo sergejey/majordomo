@@ -371,6 +371,7 @@ class app_player extends module {
 			$out['VOLUMES'][] = $rec;
 		}
 		
+		$out['APP_PLAYER_ID'] = uniqid('app_player_');
 	}
 	
 	/**
