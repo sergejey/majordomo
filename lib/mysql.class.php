@@ -125,7 +125,9 @@ class mysql
       }
       if (!$this->dbh) {
          Define('NO_DATABASE_CONNECTION',1);
-         registerError('sqlconn', "Error connection");
+         $bt = debug_backtrace();
+         die($err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
+         //registerError('sqlconn', "Error connection");
          return 0;
       }
       if (!@mysql_select_db($this->dbName, $this->dbh))
