@@ -147,6 +147,7 @@ class mysql
       $db_select = mysqli_select_db($this->dbh, $this->dbName);
       if (!$db_select) {
          Define('NO_DATABASE_CONNECTION',1);
+         $bt = debug_backtrace();
          die("Selecting db: ".$this->dbName." backtrace:" . json_encode($bt));
          //$this->Error("Selecting db: ".$this->dbName, 0);
          //exit(1);
