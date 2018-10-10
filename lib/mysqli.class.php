@@ -129,24 +129,27 @@ class mysql
       if ($this->dbh) return true;
 
       if ($this->port) {
-       $this->dbh = @mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
+       $this->dbh = mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
       } else {
-       $this->dbh = @mysqli_connect(''.$this->host , $this->user, $this->password);
+       $this->dbh = mysqli_connect(''.$this->host , $this->user, $this->password);
       }
 
       if (!$this->dbh) {
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
-         registerError('sqlconn', $err_no . ": " . $err_details);
+         $bt = debug_backtrace();
+         die($err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
+         //registerError('sqlconn', $err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
          //new custom_error($err_no . ": " . $err_details, 1);
-         return 0;
+         //exit(1);
       }
       $db_select = mysqli_select_db($this->dbh, $this->dbName);
       if (!$db_select) {
          Define('NO_DATABASE_CONNECTION',1);
-         $this->Error("Selecting db: ".$this->dbName, 0);
-         return 0;
+         die("Selecting db: ".$this->dbName." backtrace:" . json_encode($bt));
+         //$this->Error("Selecting db: ".$this->dbName, 0);
+         //exit(1);
       } else
       {
          $this->latestTransaction=time();
