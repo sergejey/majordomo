@@ -81,6 +81,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'rgb':
+         DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
          $payload['service']='Lightbulb';
          sg('HomeBridge.to_add',json_encode($payload));
          
@@ -104,7 +105,26 @@ for ($i = 0; $i < $total; $i++) {
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.brightness');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
+      /*
+      case 'sensor_battery':
+         $payload['service']='BatteryService';
+         sg('HomeBridge.to_add',json_encode($payload));
+         // Characteristic.BatteryLevel;
+         // Characteristic.ChargingState; 0 - NOT_CHARGING, 1 - CHARGING, 2 - NOT_CHARGEABLE
+         // Characteristic.StatusLowBattery;
+         $payload['characteristic'] = 'BatteryLevel';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
 
+         $payload['characteristic'] = 'ChargingState';
+         $payload['value']=2;
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.normalValue') ? 0 : 1;
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      */
    }
 }
 
