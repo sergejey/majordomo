@@ -102,6 +102,29 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
             $payload['value'] = $nc ? 1 - gg($device['LINKED_OBJECT'].'.status') : gg($device['LINKED_OBJECT'].'.status');
          }
          break;
+      case 'rgb':
+         if ($data['characteristic'] == 'On') {
+            $payload['service'] = 'Lightbulb';
+            $payload['characteristic'] = 'On';
+            if (gg($device['LINKED_OBJECT'].'.status')) {
+               $payload['value']=true;
+            } else {
+               $payload['value']=false;
+            }
+         } elseif ($data['characteristic'] == 'Hue') {
+            $payload['service'] = 'Lightbulb';
+            $payload['characteristic'] = 'Hue';
+            $payload['value'] = gg($device['LINKED_OBJECT'].'.hue');
+         } elseif ($data['characteristic'] == 'Saturation') {
+            $payload['service'] = 'Lightbulb';
+            $payload['characteristic'] = 'Saturation';
+            $payload['value'] = gg($device['LINKED_OBJECT'].'.saturation');
+         } elseif ($data['characteristic'] == 'Brightness') {
+            $payload['service'] = 'Lightbulb';
+            $payload['characteristic'] = 'Brightness';
+            $payload['value'] = gg($device['LINKED_OBJECT'].'.brightness');
+         }
+         break;
     }
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set',json_encode($payload));
@@ -110,7 +133,7 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
 
 // set status from HomeKit
 if ($params['PROPERTY']=='from_set' && $device['ID']) {
-    if ($device['TYPE']=='relay') {
+    if (in_array($device['TYPE'], array('relay'))) {
         if ($data['characteristic']=='On') {
             if ($data['value']) {
                 callMethodSafe($device['LINKED_OBJECT'].'.turnOn');
@@ -118,6 +141,36 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
                 callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
             }
         }
+    }
+    if (in_array($device['TYPE'], array('rgb'))) {
+      if ($data['characteristic']=='On') {
+         if ($data['value']) callMethodSafe($device['LINKED_OBJECT'].'.turnOn');
+         else callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
+      }
+      if ($data['characteristic']=='Brightness') {
+         if ($data['value']) {
+            callMethodSafe($device['LINKED_OBJECT'].'.turnOn');
+            sg($device['LINKED_OBJECT'].'.brightness', $data['value']);
+         } else {
+            callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
+            sg($device['LINKED_OBJECT'].'.brightness', 0);
+         }
+      }
+      if ($data['characteristic']=='Hue') {
+         sg($device['LINKED_OBJECT'].'.hue', $data['value']);
+      }
+      if ($data['characteristic']=='Saturation') {
+         sg($device['LINKED_OBJECT'].'.saturation', $data['value']);
+      }
+      $h = gg($device['LINKED_OBJECT'].'.hue');
+      $s = gg($device['LINKED_OBJECT'].'.saturation');
+      $b = gg($device['LINKED_OBJECT'].'.brightness');
+      $color = hsvToHex($h, $s, $b);
+      sg($device['LINKED_OBJECT'].'.color', $color);
+      if ($color!='000000') {
+         sg($device['LINKED_OBJECT'].'.colorSaved', $color);
+      }
+      callMethodSafe($device['LINKED_OBJECT'].'.Refresh');
     }
     if ($device['TYPE']=='button') {
         if ($data['characteristic']=='ProgrammableSwitchEvent' || $data['characteristic']=='On') {
