@@ -11,45 +11,48 @@
  * @global object mysql database object
  * @return mixed execution result (0 - failed)
  */
+if (!function_exists('SQLExec')) {
 function SQLExec($query)
-{
-   if (($query{0} == "#") || ($query == "")) return;
-   global $db;
-   return $db->Exec($query);
+   {
+      if (($query{0} == "#") || ($query == "")) return;
+      global $db;
+      return $db->Exec($query);
+   }
 }
-
 /**
  * Used to strip "bad" symbols from sql query results
  * @param mixed $in String to make "safe"
  * @global object mysql database object
  * @return string
  */
-function DbSafe($in)
-{
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->DbSafe($in);
-   } else {
-      return false;
+if (!function_exists('DbSafe')) {
+   function DbSafe($in)
+   {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->DbSafe($in);
+      } else {
+         return false;
+      }
    }
 }
-
 /**
  * Used to strip "bad" symbols from sql query results
  * @param mixed $in String to make "safe"
  * @global object mysql database object
  * @return string
  */
-function DbSafe1($in)
-{
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->DbSafe1($in);
-   } else {
-      return false;
+if (!function_exists('DbSafe1')) {
+   function DbSafe1($in)
+   {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->DbSafe1($in);
+      } else {
+         return false;
+      }
    }
 }
-
 /**
  * Execute SQL SELECT query and return all records
  *
@@ -59,16 +62,17 @@ function DbSafe1($in)
  * @global object mysql database object
  * @return array execution result
  */
-function SQLSelect($query)
-{
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->Select($query);
-   } else {
-      return false;
+if (!function_exists('SQLSelect')) {
+   function SQLSelect($query)
+   {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->Select($query);
+      } else {
+         return false;
+      }
    }
 }
-
 /**
  * Execute SQL SELECT query and return first record
  *
@@ -78,16 +82,17 @@ function SQLSelect($query)
  * @global object mysql database object
  * @return array execution result
  */
-function SQLSelectOne($query)
-{
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->SelectOne($query);
-   } else {
-      return false;
+if (!function_exists('SQLSelectOne')) {
+   function SQLSelectOne($query)
+   {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->SelectOne($query);
+      } else {
+         return false;
+      }
    }
 }
-
 /**
  * Execute SQL INSERT query for one record
  *
@@ -98,16 +103,17 @@ function SQLSelectOne($query)
  * @global object Mysql database object
  * @return int Execution result (0 - if failed, INSERT ID - if succeed)
  */
-function SQLInsert($table, &$record)
-{
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->Insert($table, $record);
-   } else {
-      return false;
+if (!function_exists('SQLInsert')) {
+   function SQLInsert($table, &$record)
+   {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->Insert($table, $record);
+      } else {
+         return false;
+      }
    }
 }
-
 /**
  * Execute SQL UPDATE query for one record
  * @param mixed $table  Table to update
@@ -115,16 +121,17 @@ function SQLInsert($table, &$record)
  * @param mixed $ndx    Update by this key (default ID)
  * @return int
  */
-function SQLUpdate($table, $record, $ndx = 'ID')
-{
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->Update($table, $record, $ndx);
-   } else {
-      return false;
+if (!function_exists('SQLUpdate')) {
+   function SQLUpdate($table, $record, $ndx = 'ID')
+   {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->Update($table, $record, $ndx);
+      } else {
+         return false;
+      }
    }
 }
-
 /**
  * Execute SQL UPDATE or INSERT query for one record
  *
@@ -136,29 +143,30 @@ function SQLUpdate($table, $record, $ndx = 'ID')
  * @global object mysql database object
  * @return int
  */
-function SQLUpdateInsert($table, &$record, $ndx = 'ID')
-{
-   global $db;
- 
-   if (isset($record[$ndx]))
+if (!function_exists('SQLUpdateInsert')) {
+   function SQLUpdateInsert($table, &$record, $ndx = 'ID')
    {
-      if ($db instanceof mysql) {
-         return $db->Update($table, $record, $ndx);
-      } else {
-         return false;
+      global $db;
+   
+      if (isset($record[$ndx]))
+      {
+         if ($db instanceof mysql) {
+            return $db->Update($table, $record, $ndx);
+         } else {
+            return false;
+         }
       }
-   }
-   else
-   {
-      if ($db instanceof mysql) {
-         $record[$ndx] = $db->Insert($table, $record);
-      } else {
-         return false;
+      else
+      {
+         if ($db instanceof mysql) {
+            $record[$ndx] = $db->Insert($table, $record);
+         } else {
+            return false;
+         }
+         return $record[$ndx];
       }
-      return $record[$ndx];
    }
 }
-
 /**
  * Alias for SQLUpdateInsert
  * Execute SQL UPDATE or INSERT query for one record
@@ -171,31 +179,34 @@ function SQLUpdateInsert($table, &$record, $ndx = 'ID')
  * @global object mysql database object
  * @return int
  */
-function SQLInsertUpdate($table, &$record, $ndx = 'ID')
-{
-   return SQLUpdateInsert($table, $record, $ndx);
+if (!function_exists('SQLInsertUpdate')) {
+   function SQLInsertUpdate($table, &$record, $ndx = 'ID')
+   {
+      return SQLUpdateInsert($table, $record, $ndx);
+   }
 }
-
 /**
  * Truncate table in mysql
  *
  * @param string $table    Table name
  * @return mixed execution result (0 - failed)
  */
-function SQLTruncateTable($table) {
-   return SQLExec("TRUNCATE TABLE `".$table."`");
+if (!function_exists('SQLTruncateTable')) {
+   function SQLTruncateTable($table) {
+      return SQLExec("TRUNCATE TABLE `".$table."`");
+   }
 }
-
 /**
  * Drop table in mysql
  *
  * @param string $table    Table name
  * @return mixed execution result (0 - failed)
  */
-function SQLDropTable($table) {
-   return SQLExec("DROP TABLE IF EXISTS `".$table."`");
+if (!function_exists('SQLDropTable')) {
+   function SQLDropTable($table) {
+      return SQLExec("DROP TABLE IF EXISTS `".$table."`");
+   }
 }
-
 /**
 * Title
 *
@@ -203,23 +214,27 @@ function SQLDropTable($table) {
 *
 * @access public
 */
-function SQLGetFields($table) {
-   return SQLSelect("SHOW FIELDS FROM `$table`");
+if (!function_exists('SQLGetFields')) {
+   function SQLGetFields($table) {
+      return SQLSelect("SHOW FIELDS FROM `$table`");
+   }
 }
-
-function SQLGetIndexes($table) {
-   return SQLSelect("SHOW INDEX FROM `$table`");
-}
-
-function SQLPing() {
-   global $db;
-   if ($db instanceof mysql) {
-      return $db->Ping();
-   } else {
-      return false;
+if (!function_exists('SQLGetIndexes')) {
+   function SQLGetIndexes($table) {
+      return SQLSelect("SHOW INDEX FROM `$table`");
    }
 }
 
+if (!function_exists('SQLPing')) {
+   function SQLPing() {
+      global $db;
+      if ($db instanceof mysql) {
+         return $db->Ping();
+      } else {
+         return false;
+      }
+   }
+}
 /**
  * Converts date format from YYYY/MM/DD to MM/DD/YYYY
  * @param mixed $source    Source date
@@ -227,17 +242,18 @@ function SQLPing() {
  * @param mixed $dst_delim Destination delimiter
  * @return string
  */
-function fromDBDate($source, $delim = '-', $dst_delim = '/')
-{
-   $tmp = explode($delim, $source);
-   
-   $str  = str_pad($tmp[1], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[0], 2, "0", STR_PAD_LEFT);
+if (!function_exists('fromDBDate')) {
+   function fromDBDate($source, $delim = '-', $dst_delim = '/')
+   {
+      $tmp = explode($delim, $source);
+      
+      $str  = str_pad($tmp[1], 2, "0", STR_PAD_LEFT) . $dst_delim;
+      $str .= str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim;
+      $str .= str_pad($tmp[0], 2, "0", STR_PAD_LEFT);
 
-   return $str;
+      return $str;
+   }
 }
-
 /**
  * Converts date format from MM/DD/YYYY to YYYY-MM-DD
  *
@@ -246,13 +262,15 @@ function fromDBDate($source, $delim = '-', $dst_delim = '/')
  * @param string $dst_delim Destination delimiter
  * @return string
  */
-function toDBDate($source, $delim = '/', $dst_delim = '-')
-{
-   $tmp = explode($delim, $source);
-   
-   $str  = str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[0], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[1], 2, "0", STR_PAD_LEFT);
-   
-   return $str;
+if (!function_exists('toDBDate')) {
+   function toDBDate($source, $delim = '/', $dst_delim = '-')
+   {
+      $tmp = explode($delim, $source);
+      
+      $str  = str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim;
+      $str .= str_pad($tmp[0], 2, "0", STR_PAD_LEFT) . $dst_delim;
+      $str .= str_pad($tmp[1], 2, "0", STR_PAD_LEFT);
+      
+      return $str;
+   }
 }
