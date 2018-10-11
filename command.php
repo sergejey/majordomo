@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
-
 include_once("./config.php");
 include_once("./lib/loader.php");
 
@@ -29,9 +28,6 @@ startMeasure('TOTAL'); // start calculation of execution time
 include_once(DIR_MODULES . "application.class.php");
 
 $session = new session("prj");
-
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 include_once("./load_settings.php");
 

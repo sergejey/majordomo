@@ -5,8 +5,6 @@
 
 
  include_once(DIR_MODULES."application.class.php");
-
- $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
  include_once("./load_settings.php");
 
 
@@ -453,6 +451,3 @@ $graph->Stroke();
 
  //$Test->Render();
  */
-
-
- $db->Disconnect(); // closing database connection

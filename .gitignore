@@ -13,3 +13,4 @@ backup/
 /cms/debmes/*
 /cms/cached/*
 /config.php
+.uploadrc

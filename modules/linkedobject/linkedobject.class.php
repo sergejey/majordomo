@@ -127,7 +127,13 @@ function run() {
   if ($op=='redirect') {
    global $object;
    global $sub;
+   if (!$object) {
+      redirect(ROOTHTML);
+   }
    $obj=getObject($object);
+   if (!$obj) {
+      redirect(ROOTHTML);
+   }
    if ($sub!='') {
     redirect(ROOTHTML.'panel/class/'.$obj->class_id.'/object/'.$obj->id.'/'.$sub.'.html');
    } else {
@@ -154,47 +160,57 @@ function run() {
    }
 
    if ($op=='properties') {
-    $res=array();
-    $obj=getObject($object);
-    $properties=array();
-    $parent_properties=$obj->getParentProperties($obj->class_id, '', 1);
-    if ($parent_properties[0]['TITLE']) {
-     foreach($parent_properties as $v) {
-      $properties[]=$v;
-     }
-    }
-    $tmp=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='".(int)$obj->id."'");
-    $total=count($tmp);
-    for($i=0;$i<$total;$i++) {
-     $properties[]=$tmp[$i];
-    }
-    $res['PROPERTIES']=$properties;
-    echo json_encode($res);
+      $res=array();
+      $properties=array();
+      do {
+         if (!$object) break;
+         $obj=getObject($object);
+         if (!$obj) break;
+         $parent_properties=$obj->getParentProperties($obj->class_id, '', 1);
+         if ($parent_properties && is_array($parent_properties)) {
+            foreach($parent_properties as $v) {
+               $properties[]=$v;
+            }
+         }
+         $tmp=SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='".(int)$obj->id."'");
+         if ($tmp && is_array($tmp)) {
+            foreach($tmp as $i) {
+               $properties[]=$i;
+            }
+         }
+      } while(0);
+      $res['PROPERTIES']=$properties;
+      echo json_encode($res);
    }
 
    if ($op=='methods') {
-    $res=array();
-    $obj=getObject($object);
-    $properties=array();
-    $parent_properties=$obj->getParentMethods($obj->class_id, '', 1);
-    if ($parent_properties[0]['TITLE']) {
-     foreach($parent_properties as $v) {
-      if (!$seen[$v['TITLE']]) {
-       $properties[]=$v;
-       $seen[$v['TITLE']]=1;
-      }
-     }
-    }
-    $tmp=SQLSelect("SELECT * FROM methods WHERE OBJECT_ID='".(int)$obj->id."'");
-    $total=count($tmp);
-    for($i=0;$i<$total;$i++) {
-     if (!$seen[$tmp[$i]['TITLE']]) {
-      $properties[]=$tmp[$i];
-      $seen[$tmp[$i]['TITLE']]=1;
-     }
-    }
-    $res['METHODS']=$properties;
-    echo json_encode($res);
+      $res=array();
+      $properties=array();
+      do {
+         if (!$object) break;
+         $obj=getObject($object);
+         if (!$obj) break;
+         $parent_properties=$obj->getParentMethods($obj->class_id, '', 1);
+         if ($parent_properties && is_array($parent_properties)) {
+            foreach($parent_properties as $v) {
+               if (!$seen[$v['TITLE']]) {
+                  $properties[]=$v;
+                  $seen[$v['TITLE']]=1;
+               }
+            }
+         }
+         $tmp=SQLSelect("SELECT * FROM methods WHERE OBJECT_ID='".(int)$obj->id."'");
+         if ($tmp && is_array($tmp)) {
+            foreach($tmp as $i) {
+               if (!$seen[$i['TITLE']]) {
+                  $properties[]=$i;
+                  $seen[$i['TITLE']]=1;
+               }
+            }
+         }
+      } while(0);
+      $res['METHODS']=$properties;
+      echo json_encode($res);
    }
 
 

@@ -16,9 +16,6 @@ startMeasure('TOTAL');
 
 include_once(DIR_MODULES . "application.class.php");
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 include_once(DIR_MODULES . 'backup/backup.class.php');
 
@@ -26,9 +23,6 @@ $b = new backup();
 $b->create_backup();
 
 echo "DONE";
-
-// closing database connection
-$db->Disconnect();
 
 // end calculation of execution time
 endMeasure('TOTAL');

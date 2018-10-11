@@ -656,6 +656,7 @@ $dictionary=array(
 'DEVICES_LEAK_SENSOR'=>'Senzor úniku',
 'DEVICES_SMOKE_SENSOR'=>'Detektor kouře',
 'DEVICES_UNIT'=>'Měrná jednotka',
+'DEVICES_BATTERY_LOW' => 'Low battery',
 'DEVICES_COUNTER'=>'Počítadlo',
 'M_VOLTAGE'=>'V',
 'M_CURRENT'=>'A',

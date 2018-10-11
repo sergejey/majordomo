@@ -2,118 +2,132 @@
  @version 0.6 (2010-08-30)
 #-->
 [#if ERR_MSG!=""#]
-<div  class="alert alert-danger">[#ERR_MSG#]</div>
-[#endif ERR_MSG#]
-
-[#if OK_MSG!=""#]
+<div class="alert alert-danger">[#ERR_MSG#]</div>
+[#endif ERR_MSG#] [#if OK_MSG!=""#]
 <div class="alert alert-success">[#OK_MSG#]</div>
-[#endif OK_MSG#]
-
-[#if CLEAR_FIRST!="1"#]
-
-[#if MODE="getlatest_iframe"#]
-<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe>
-[#else MODE#]
+[#endif OK_MSG#] [#if CLEAR_FIRST!="1"#] [#if MODE="getlatest_iframe"#]
+<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe> [#else MODE#]
 <div class="row">
- <div class="col-md-5">
-   <h3><#LANG_UPDATES#></h3>
+    <div class="col-md-5">
+        <h3>
+            <#LANG_UPDATES#>
+        </h3>
+        <form action="?" method="post" enctype="multipart/form-data" class="form">
+            <div class="form-group">
+                <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
+                <select name="set_update_url" id="set_update_url" class="form-control" onchange="this.form.submit();">
+                  <option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
+                  <option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
+                  [#if ADITIONAL_GIT_URLS#]
+                     [#begin ADITIONAL_GIT_URLS#]
+                        <option value="[#URL#]" [#SELECTED#]>[#TITLE#]</option>
+                     [#end ADITIONAL_GIT_URLS#]
+                  [#endif#]
+               </select>
+            </div>
+        </form>
 
-   <form action="?" method="post" enctype="multipart/form-data" class="form">
-       <div class="form-group">
-           <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
-           <select name="set_update_url" id="set_update_url" class="form-control" onchange="this.form.submit();">
-               <option value="https://github.com/sergejey/majordomo/archive/master.tar.gz"[#if UPDATE_URL="https://github.com/sergejey/majordomo/archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
-               <option value="https://github.com/sergejey/majordomo/archive/alpha.tar.gz"[#if UPDATE_URL="https://github.com/sergejey/majordomo/archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
-           </select>
-       </div>
-   </form>
+        <form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
+            [#if ERROR_MESSAGE!=""#]
+            <p>
+                <font color="red"><b>[#ERROR_MESSAGE#]</b></font>
+            </p>[#endif#] [#if NO_NEED_TO_UPDATE#]
+            <p>
+                <font color="green">
+                    <#LANG_USING_LATEST_VERSION#>
+                </font>
+            </p>[#endif#]
 
-   <form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
-   [#if ERROR_MESSAGE!=""#]<p><font color="red"><b>[#ERROR_MESSAGE#]</b></font></p>[#endif#]
+            <p>
+                <#LANG_LONG_OPERATION_WARNING#>
+            </p>
 
-   [#if NO_NEED_TO_UPDATE#]<p><font color="green"><#LANG_USING_LATEST_VERSION#></font></p>[#endif#]
+            <div>
+                <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-primary"> &nbsp;
+                <input type="checkbox" name="with_extensions" value="1">
+                <#LANG_UPDATE_ALL_EXTENSIONS#>
+            </div>
 
-   <p><#LANG_LONG_OPERATION_WARNING#></p>
+            <input type="hidden" name="mode" value="getlatest_iframe">
+        </form>
 
-    <div>
-   <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-primary">
-   &nbsp;
-   <input type="checkbox" name="with_extensions" value="1"> <#LANG_UPDATE_ALL_EXTENSIONS#>
+        [#if UPDATES#]
+        <hr>
+        <b><#LANG_LATEST_UPDATES#>:</b> [#begin UPDATES#]
+        <p>[#UPDATE_TEXT#] <b>[#TITLE#]</b> (by [#AUTHOR#])
+            <a href="[#LINK#]" target=_blank>
+                <#LANG_MORE_DETAILS#>...</a>
+        </p>
+        [#end UPDATES#]
+        <hr> [#endif UPDATES#]
+
+
+        <h3>
+            <#LANG_SAVE_BACKUP#>
+        </h3>
+
+        <form action="?" method="post" enctype="multipart/form-data">
+            <label><input type="checkbox" name="design" value="1"> <#LANG_DESIGN#> (templates, css, images)</label><br>
+            <label><input type="checkbox" name="code" value="1"> <#LANG_CODE#> (modules)</label><br>
+            <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database)</label><br>
+            <label><input type="checkbox" name="save_files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
+            <input type="hidden" name="backup" value="1">
+            <input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#> &gt;&gt;&gt;" class="btn btn-default">
+            <input type="hidden" name="mode" value="getlatest_iframe">
+        </form>
+
+
+    </div>
+    <div class="col-md-7">
+        <h3>
+            <#LANG_UPLOAD_BACKUP#>
+        </h3>
+        <form action="?" method="post" enctype="multipart/form-data">
+            <div>
+                File: <input type="file" name="file">
+            </div>
+            &nbsp;
+            <div>
+                <input type="submit" name="submit" value="<#LANG_CONTINUE#> &gt;&gt;&gt;" class="btn btn-default">
+            </div>
+            <input type="hidden" name="mode" value="upload">
+        </form>
+
+        [#if FILES#] &nbsp;
+        <br>
+        <div class="pre-scrollable">
+            <table class="table">
+                [#begin FILES#]
+                <tr>
+                    <td>[#TITLE#]</td>
+                    <td nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
+                    [#if "
+                    <#CLEAR_FIRST#>"!="1"#]
+                        <td valign="top">
+                            <a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default">
+                                <#LANG_RESTORE#>
+                            </a>
+                        </td>
+                        [#endif#] [#if FILESIZE!=""#]
+                        <td><a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
+                        <td>
+                            <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                        </td>
+                        [#else#]
+                        <td colspan="3">&nbsp;</td>
+                        [#endif#]
+                </tr>
+                [#end FILES#]
+            </table>
+        </div>
+        [#endif FILES#]
+
     </div>
 
-   <input type="hidden" name="mode" value="getlatest_iframe">
-   </form>
-
-   [#if UPDATES#]
-   <hr>
-   <b><#LANG_LATEST_UPDATES#>:</b>
-   [#begin UPDATES#]
-   <p>[#UPDATE_TEXT#] <b>[#TITLE#]</b> (by [#AUTHOR#]) <a href="[#LINK#]" target=_blank><#LANG_MORE_DETAILS#>...</a></p>
-   [#end UPDATES#]
-   <hr>
-   [#endif UPDATES#]
-
-
-   <h3><#LANG_SAVE_BACKUP#></h3>
-
-   <form action="?" method="post" enctype="multipart/form-data">
-   <label><input type="checkbox" name="design" value="1"> <#LANG_DESIGN#> (templates, css, images)</label><br>
-   <label><input type="checkbox" name="code" value="1"> <#LANG_CODE#> (modules)</label><br>
-   <label><input type="checkbox" name="data" value="1"> <#LANG_DATA#> (database)</label><br>
-   <label><input type="checkbox" name="save_files" value="1"> <#LANG_FILES_UPLOADED#></label><br>
-   <input type="hidden" name="backup" value="1">
-   <input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#> &gt;&gt;&gt;" class="btn btn-default">
-   <input type="hidden" name="mode" value="getlatest_iframe">
-   </form>
-
-
- </div>
- <div class="col-md-7">
-   <h3><#LANG_UPLOAD_BACKUP#></h3>
-   <form action="?" method="post" enctype="multipart/form-data">
-    <div>
-   File: <input type="file" name="file">
-    </div>
-    &nbsp;
-    <div>
-   <input type="submit" name="submit" value="<#LANG_CONTINUE#> &gt;&gt;&gt;" class="btn btn-default">
-    </div>
-   <input type="hidden" name="mode" value="upload">
-   </form>
-
-   [#if FILES#]
-   &nbsp;<br>
-     <div class="pre-scrollable">
-   <table class="table">
-   [#begin FILES#]
-    <tr>
-     <td>[#TITLE#]</td>
-     <td nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
-     [#if "<#CLEAR_FIRST#>"!="1"#]
-     <td valign="top"><a href="?mode=upload&restore=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><#LANG_RESTORE#></a></td>
-     [#endif#]
-     [#if FILESIZE!=""#]
-     <td><a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
-     <td>
-      <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-     </td>
-     [#else#]
-     <td colspan="3">&nbsp;</td>
-     [#endif#]
-    </tr>
-   [#end FILES#]
-   </table>
-     </div>
-   [#endif FILES#]
-
- </div>
-
-[#endif MODE#]
-
-[#else CLEAR_FIRSTS#]
-   <br>&nbsp;
-   <form action="?" method="post" enctype="multipart/form-data">
-   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
-   <input type="hidden" name="mode" value="clear">
-   </form>
-   [#endif CLEAR_FIRSTS#]
+    [#endif MODE#] [#else CLEAR_FIRSTS#]
+    <br>&nbsp;
+    <form action="?" method="post" enctype="multipart/form-data">
+        <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
+        <input type="hidden" name="mode" value="clear">
+    </form>
+    [#endif CLEAR_FIRSTS#]

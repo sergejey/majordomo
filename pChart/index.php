@@ -48,7 +48,6 @@ $fil01=0;
 include_once("./config.php");
 include_once("./lib/loader.php");
 include_once(DIR_MODULES."application.class.php");
-$db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
 include_once("./load_settings.php");
 include(dirname(__FILE__)."/class/pDraw.class.php");
 include(dirname(__FILE__)."/class/pImage.class.php");
@@ -706,6 +705,3 @@ if (file_exists($path_to_file)) {
                 }
          }
 }
-
-
-$db->Disconnect(); // closing database connection

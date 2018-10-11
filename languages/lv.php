@@ -669,6 +669,7 @@ $dictionary=array(
 'DEVICES_LEAK_SENSOR'=>'Noplūdes detektors',
 'DEVICES_SMOKE_SENSOR'=>'Dūmu detektors',
 'DEVICES_UNIT'=>'Mērvienības',
+'DEVICES_BATTERY_LOW' => 'Low battery',
 'DEVICES_COUNTER'=>'Mērītājs/Skaitītājs',
 'M_VOLTAGE'=>'V',
 'M_CURRENT'=>'I',

@@ -351,7 +351,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS pinghosts');
+   SQLDropTable('pinghosts');
   parent::uninstall();
  }
 /**

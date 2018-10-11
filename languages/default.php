@@ -1087,7 +1087,7 @@ $dictionary=array(
     'DEVICES_SMOKE_SENSOR' => 'Smoke detector',
     'DEVICES_UNIT' => 'Units',
     'DEVICES_COUNTER' => 'Meter/Counter',
-
+    'DEVICES_BATTERY_LOW' => 'Low battery',
 // Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',
@@ -1221,6 +1221,9 @@ $dictionary=array(
 
     'DEVICES_THERMOSTAT' => 'Thermostat',
     'DEVICES_THERMOSTAT_MODE' => 'Mode',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Normal',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Eco',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Off',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO mode',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Normal target temperature',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO target temperature',

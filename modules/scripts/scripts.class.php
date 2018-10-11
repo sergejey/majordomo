@@ -471,7 +471,7 @@ class scripts extends module
      */
     function uninstall()
     {
-        SQLExec('DROP TABLE IF EXISTS scripts');
+      SQLDropTable('scripts');
         parent::uninstall();
     }
 

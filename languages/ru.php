@@ -1083,7 +1083,8 @@ $dictionary = array(
     'DEVICES_SMOKE_SENSOR' => 'Датчик дыма',
     'DEVICES_COUNTER' => 'Счётчик',
     'DEVICES_UNIT' => 'Единица измерения',
-
+    'DEVICES_BATTERY_LOW' => 'Низкий уровень заряда батареи',
+    
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
@@ -1216,6 +1217,9 @@ $dictionary = array(
 
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Обычный',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Эко',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Выкл',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Обычная целевая температура',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO целевая температура',
