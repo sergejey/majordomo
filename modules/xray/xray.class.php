@@ -690,7 +690,7 @@ class xray extends module
                 }
 
                 if ($this->view_mode == 'services') {
-                    $qry = "1 AND TITLE LIKE 'cycle%Run'";
+                    $qry = "OBJECT_ID=".getObject('Computer.ThisComputer')->id." AND TITLE LIKE 'cycle%Run'";
                     $res = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
                     $total = count($res);
                     $seen = array();
