@@ -633,6 +633,8 @@ function usual(&$out) {
  function getProperty($property) {
 
   $property = trim($property);
+  
+  if (!strcasecmp($this->object_title.'.'.$property, "ThisComputer.timeNow")) return date("H:i");
 
   if ($this->object_title) {
    $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($this->object_title.'.'.$property)."'");
@@ -695,6 +697,8 @@ function usual(&$out) {
   startMeasure('setProperty ('.$property.')');
 
   $property = trim($property);
+
+  if (!strcasecmp($this->object_title.'.'.$property, "ThisComputer.timeNow")) return;
 
   if (is_null($value)) {
    $value='';
