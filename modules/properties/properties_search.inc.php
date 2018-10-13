@@ -48,7 +48,7 @@
   if (!$sortby) $sortby="TITLE";
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT * FROM properties WHERE $qry ORDER BY $sortby");
+  $res=SQLSelect("SELECT * FROM properties WHERE $qry ORDER BY $sortby LIMIT 1000");
   if ($res[0]['ID']) {
    colorizeArray($res);
    $total=count($res);
