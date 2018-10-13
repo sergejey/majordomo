@@ -424,6 +424,8 @@ while (false !== ($result = $threads->iteration()))
                unset($to_stop[$cycle_title]);
                setGlobal($cycle_title.'Run','');
                if (in_array($cycle_title,$auto_restarts)) {
+                  $index=array_search($cycle_title,$auto_restarts);
+                  array_splice($auto_restarts, $index, 1);
                   $need_restart=1;
                }
             }
@@ -441,6 +443,7 @@ while (false !== ($result = $threads->iteration()))
                   registerError('cycle_stop', $closed_thread."\n".$result);
                }
                $to_start[$cycle_title]=time()+2;
+               $started_when[$cycle_title]=$to_start[$cycle_title];
             }
          }
       }
