@@ -530,7 +530,7 @@ class saverestore extends module
         }
 
         // packing into tar.gz
-        $tar_name = 'submit_' . date('Y-m-d__h-i-s') . '.tgz';
+        $tar_name = 'submit_' . date('Y-m-d__H-i-s') . '.tgz';
 
         chdir(ROOT . 'cms/saverestore/temp');
         exec('tar cvzf ../' . $tar_name . ' .');
@@ -1501,7 +1501,7 @@ class saverestore extends module
 
 
             // packing into tar.gz
-            $tar_name .= date('Y-m-d__h-i-s');
+            $tar_name .= date('Y-m-d__H-i-s');
             $tar_name .= IsWindowsOS() ? '.tar' : '.tgz';
 
             if (isset($out['BACKUP']))

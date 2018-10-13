@@ -121,7 +121,8 @@ $this->device_types=array(
         'CLASS'=>'SRGB',
         'PROPERTIES'=>array(
             'color'=>array('DESCRIPTION'=>'Current color','ONCHANGE'=>'colorUpdated','DATA_KEY'=>1),
-            'colorSaved'=>array('DESCRIPTION'=>'Saved color')
+            'colorSaved'=>array('DESCRIPTION'=>'Saved color'),
+            'brightness' => array('DESCRIPTION'=>'Current brightness','ONCHANGE'=>'colorUpdated'),
         ),
         'METHODS'=>array(
             'colorUpdated'=>array('DESCRIPTION'=>'Color Updated'),
