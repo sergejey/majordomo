@@ -133,12 +133,22 @@ for ($i = 0; $i < $total; $i++) {
 
 setGlobal('ThisComputer.started_time', time());
 if (time() >= getGlobal('ThisComputer.started_time')) {
-    SQLExec("DELETE FROM events WHERE ADDED > NOW()");
-    SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
-    SQLExec("DELETE FROM history WHERE ADDED > NOW()");
-    SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
-    SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
-    SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+	SQLExec("DELETE FROM events WHERE ADDED > NOW()");
+	SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
+	SQLExec("DELETE FROM history WHERE ADDED > NOW()");
+	SQLExec("DELETE FROM shouts WHERE ADDED > NOW()");
+	SQLExec("DELETE FROM jobs WHERE PROCESSED = 1");
+	SQLExec("DELETE FROM history WHERE (TO_DAYS(NOW()) - TO_DAYS(ADDED)) >= 5");
+        
+	SQLExec('delete from pvalues where OBJECT_ID not in (select objects.ID from objects)');
+	SQLExec('delete from phistory WHERE VALUE_ID not in (SELECT pvalues.ID fROM pvalues)');
+	SQLExec('delete from properties where OBJECT_ID not in (select objects.ID from objects)');
+	SQLExec('delete from properties where methods not in (select id from classes )');
+
+
+
+
+
 }
 
 
