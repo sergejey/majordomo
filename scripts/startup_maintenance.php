@@ -142,7 +142,7 @@ if (time() >= getGlobal('ThisComputer.started_time')) {
         
 	SQLExec('delete from pvalues where OBJECT_ID not in (select objects.ID from objects)');
 	SQLExec('delete from phistory WHERE VALUE_ID not in (SELECT pvalues.ID fROM pvalues)');
-	SQLExec('delete from properties where OBJECT_ID not in (select objects.ID from objects)');
+	SQLExec('delete from properties where OBJECT_ID not in ( select objects.ID from objects) and class_id not in (select classes.ID from classes)');
 	SQLExec('delete from methods where class_id not in (select id from classes )');
 
 
