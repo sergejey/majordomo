@@ -63,6 +63,7 @@ while (1) {
 
 
     $query = $username . '/incoming_urls,' . $username . '/menu_session,'. $username . '/reverse_urls';
+    $ping_topic = $username . '/ping';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name,$ca_file);
 
@@ -81,6 +82,7 @@ while (1) {
             echo date('H:i:s') . " Subscribing to: $k\n";
         }
         $mqtt_client->subscribe($topics, 0);
+        $ping_timestamp=0;
         while ($mqtt_client->proc()) {
             $currentMillis = round(microtime(true) * 10000);
             if ($currentMillis - $previousMillis > 10000) {
@@ -110,9 +112,13 @@ while (1) {
                 send_all_menu();
             }
             if ((time()-$started_time)>$max_run_time) {
-                echo "Exit cycle CONNET... (reconnecting)";
+                echo "Exit cycle CONNECT... (reconnecting)";
                 $mqtt_client->close();
                 exit;
+            }
+            if ((time()-$ping_timestamp)>60) {
+                $ping_timestamp=time();
+                $mqtt_client->publish($ping_topic,time());
             }
         }
         $mqtt_client->close();

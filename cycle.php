@@ -312,10 +312,10 @@ while (false !== ($result = $threads->iteration()))
       $last_cycles_control_check=time();
 
 //      $auto_restarts=array();
-      $qry="1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
-      $cycles=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+      $qry = "OBJECT_ID=".getObject('Computer.ThisComputer')->id." AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
+      $cycles = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+
       $total = count($cycles);
-      
       $seen=array();
       for ($i = 0; $i < $total; $i++) {
          $title = $cycles[$i]['TITLE'];
@@ -359,6 +359,13 @@ while (false !== ($result = $threads->iteration()))
          if ((time()-$started_when[$title])>30 && !in_array($title,$auto_restarts)) {
             DebMes("Adding $title to auto-recovery list",'threads');
             $auto_restarts[]=$title;
+         }
+         $cycle_updated_timestamp=getGlobal($title.'Run');
+         if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>15*60)) {
+            DebMes("Looks like $title is dead. Need to recovery",'threads');
+            registerError('cycle_hang', $title);
+            $to_stop[$title]=time();
+            $to_start[$title]=time()+5;
          }
       }
    }
