@@ -586,7 +586,6 @@ function getGlobal($varname)
    {
       $object_name = 'ThisComputer';
    }
-   if (!strcasecmp($object_name.'.'.$varname, "ThisComputer.timeNow")) return date("H:i"); // to not save into the cache
    $cached_name  = 'MJD:' . $object_name . '.' . $varname;
    $cached_value = checkFromCache($cached_name);
 
@@ -601,7 +600,6 @@ function getGlobal($varname)
    {
       $value = $obj->getProperty($varname);
       saveToCache($cached_name, $value);
-      
       return $value;
    }
    else
