@@ -26,7 +26,7 @@ class dnla extends app_player_addon {
     // Play
     function play($input) {
         $this->reset_properties();
-        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRES']);
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $answer = $remote->play($input);
@@ -43,7 +43,7 @@ class dnla extends app_player_addon {
     // Stop
     function stop() {
         $this->reset_properties();
-        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRES']);
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $answer = $remote->stop();
@@ -60,12 +60,7 @@ class dnla extends app_player_addon {
     // Pause
     function pause() {
         $this->reset_properties();
-        $core= new Core();
-        $result = $core->search($this->terminal['HOST']);
-        foreach($result as $device){
-             $current_dev = $device['location'];
-            }
-        //echo ($current_dev);
+       $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $answer = $remote->pause();
@@ -82,7 +77,7 @@ class dnla extends app_player_addon {
     // Next
     function next() {
         $this->reset_properties();
-        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRES']);
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $answer = $remote->next();
@@ -99,7 +94,7 @@ class dnla extends app_player_addon {
     // Previous
     function previous() {
         $this->reset_properties();
-        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRES']);
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $answer = $remote->previous();
@@ -117,7 +112,7 @@ class dnla extends app_player_addon {
     // Set volume
     function set_volume($level) {
         $this->reset_properties();
-        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRES']);
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remotevolume = new MediaRendererVolume($current_dev);
         //DebMes($level);
