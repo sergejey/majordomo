@@ -43,8 +43,8 @@
    global $level_linked_property;
    $rec['LEVEL_LINKED_PROPERTY']=$level_linked_property;
 
-   global $controll_addres;
-   $rec['PLAYER_CONTROL_ADDRES']=$controll_addres;
+   global $controll_address;
+   $rec['PLAYER_CONTROL_ADDRESS']=$controll_address;
 
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
