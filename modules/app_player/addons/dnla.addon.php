@@ -27,13 +27,7 @@ class dnla extends app_player_addon {
     // Play
     function play($input) {
         $this->reset_properties();
-        $core= new Core();
-        //Debmes ("IP terminal - ".$this->terminal['HOST']);
-        //Debmes ("URL - ".$input);
-        $result = $core->search($this->terminal['HOST']);
-        foreach($result as $device){
-              $current_dev = $device['location'];
-              }
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRES']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remote = new MediaRenderer($current_dev);
         $answer = $remote->play($input);
