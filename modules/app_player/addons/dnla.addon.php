@@ -20,7 +20,6 @@ class dnla extends app_player_addon {
         // MediaRenderer
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
-        include_once(DIR_MODULES.'app_player/libs/MediaRenderer/Core.php');
         }
     
 
