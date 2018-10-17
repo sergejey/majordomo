@@ -693,7 +693,7 @@ function usual(&$out) {
      }
 
      $qry="1";
-     $qry.=" AND elements.ID=".$state['ELEMENT_ID'];
+     $qry.=" AND elements.ID=".(int)$state['ELEMENT_ID'];
 
       $states=array();
       $elements=$this->getDynamicElements($qry);
@@ -1307,9 +1307,9 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS scenes');
-  SQLExec('DROP TABLE IF EXISTS elements');
-  SQLExec('DROP TABLE IF EXISTS elm_states');
+   SQLDropTable('scenes');
+   SQLDropTable('elements');
+   SQLDropTable('elm_states');
   parent::uninstall();
  }
 

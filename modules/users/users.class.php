@@ -195,7 +195,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS users');
+   SQLDropTable('users');
   parent::uninstall();
  }
 /**

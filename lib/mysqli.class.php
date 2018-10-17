@@ -103,7 +103,14 @@ class mysql
       $this->latestTransaction = time();
       $this->pingTimeout = 5*60;
 
+      // Чтобы не сломать сторонние модули, если они вдруг смотрять на этот параметр
+      $this->connected = true;
       $this->Connect();
+   }
+
+   public function __destruct()
+   {
+      $this->Disconnect();
    }
 
    /**
@@ -119,31 +126,33 @@ class mysql
          $this->host='127.0.0.3';
       }
       */
+      if ($this->dbh) return true;
 
       if ($this->port) {
-       $this->dbh = @mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
+       $this->dbh = mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
       } else {
-       $this->dbh = @mysqli_connect(''.$this->host , $this->user, $this->password);
+       $this->dbh = mysqli_connect(''.$this->host , $this->user, $this->password);
       }
 
-      $this->connected = false;      
-      
       if (!$this->dbh) {
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
-         registerError('sqlconn', $err_no . ": " . $err_details);
+         $bt = debug_backtrace();
+         die($err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
+         //registerError('sqlconn', $err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
          //new custom_error($err_no . ": " . $err_details, 1);
-         return 0;
+         //exit(1);
       }
       $db_select = mysqli_select_db($this->dbh, $this->dbName);
       if (!$db_select) {
          Define('NO_DATABASE_CONNECTION',1);
-         $this->Error("Selecting db: ".$this->dbName, 0);
-         return 0;
+         $bt = debug_backtrace();
+         die("Selecting db: ".$this->dbName." backtrace:" . json_encode($bt));
+         //$this->Error("Selecting db: ".$this->dbName, 0);
+         //exit(1);
       } else
       {
-         $this->connected = true;
          $this->latestTransaction=time();
          $this->Exec("SET NAMES 'utf8';");
          $this->Exec("SET CHARACTER SET 'utf8';");
@@ -163,8 +172,8 @@ class mysql
     */
    public function Exec($query)
    {
-
-      if (!$this->connected) return false;
+      if (!$this->dbh && !$this->Connect()) return false;
+      
       if ((time()-$this->latestTransaction)>$this->pingTimeout) {
        $this->Ping();
       }
@@ -174,7 +183,7 @@ class mysql
       
       if (!$result)
       {
-         $this->Error($query);
+         $this->Error($query,0);
          return 0;
       }
       
@@ -192,9 +201,7 @@ class mysql
     */
    public function Select($query)
    {
-      if (!$this->connected) return false;
       $res = array();
-      
       if ($result = $this->Exec($query))
       {
          while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
@@ -221,7 +228,6 @@ class mysql
     */
    public function SelectOne($query)
    {
-      if (!$this->connected) return false;
       if ($result = $this->Exec($query))
       {
          $rec = mysqli_fetch_array($result, MYSQL_ASSOC);
@@ -237,21 +243,19 @@ class mysql
 
    public function Ping()
    {
-    $test_query = "SHOW TABLES FROM ".$this->dbName;
-    $result = @mysqli_query($this->dbh, $test_query);
-    $tblCnt = 0;
-    if ($result) {
-     while($tbl = mysqli_fetch_array($result)) {
-      $tblCnt++;
-     }
-    }
-    if ($tblCnt>0) {
-     return true;
-    } else {
-     $this->Disconnect();
-     $this->Connect();
-    }
-    
+      if (!$this->dbh && !$this->Connect()) return false;
+      
+      $test_query = "SHOW TABLES FROM ".$this->dbName;
+      $result = @mysqli_query($this->dbh, $test_query);
+      $tblCnt = 0;
+      if ($result) {
+         while($tbl = mysqli_fetch_array($result)) {
+            $tblCnt++;
+         }
+      }
+      if ($tblCnt>0) {
+         return true;
+      }
    }
 
 
@@ -268,7 +272,6 @@ class mysql
     */
    public function Update($table, $data, $ndx = "ID")
    {
-      if (!$this->connected) return false;
       $qry = "UPDATE `$table` SET ";
       
       foreach ($data as $field => $value)
@@ -310,7 +313,6 @@ class mysql
     */
    public function Insert($table, &$data)
    {
-      if (!$this->connected) return false;
       $fields = "";
       $values = "";
       foreach ($data as $field => $value)
@@ -342,8 +344,8 @@ class mysql
     */
    public function Disconnect()
    {
-      if (!$this->connected) return false;
-      mysqli_close($this->dbh);
+      if ($this->dbh) mysqli_close($this->dbh);
+      $this->dbh = null;
    }
 
    /**
@@ -355,7 +357,6 @@ class mysql
     */
    public function DbSafe($str)
    {
-      if (!$this->connected) return $str;
       $str = mysqli_real_escape_string($this->dbh, $str);
       $str = str_replace("%", "\%", $str);
       return $str;
@@ -385,6 +386,7 @@ class mysql
     */
    public function Error($query = "", $stop = 0)
    {
+      if (!$this->dbh) return false;
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
       if (preg_match('/Unknown column/is',$err_details)) {
@@ -405,7 +407,7 @@ class mysql
     */
    public function get_mysql_def($table)
    {
-      $result = mysqli_query('SHOW CREATE TABLE ' . $table, $this->dbh);
+      $result = $this->Exec('SHOW CREATE TABLE ' . $table);
       
       if ($result)
       {
@@ -436,7 +438,7 @@ class mysql
    public function get_mysql_content($table)
    {
       $content = "";
-      $result  = mysqli_query("SELECT * FROM $table", $this->dbh);
+      $result  = $this->Exec("SELECT * FROM $table");
       
       while ($row = mysqli_fetch_row($result))
       {
@@ -459,243 +461,3 @@ class mysql
       return $content;
    }
 }
-
-// --------------------------------------------------------------------
-// DATABASE FUNCTIONS
-// easy database manipulation
-// --------------------------------------------------------------------
-
-/**
- * Execute SQL query
- *
- * @param string $query SQL query
- * @global object mysql database object
- * @return mixed execution result (0 - failed)
- */
-function SQLExec($query)
-{
-   if (($query{0} == "#") || ($query == "")) return;
-   global $db;
-   return $db->Exec($query);
-}
-
-/**
- * Used to strip "bad" symbols from sql query results
- * @param mixed $in String to make "safe"
- * @global object mysql database object
- * @return string
- */
-function DbSafe($in)
-{
-   global $db;
-   if (is_object($db)) {
-      return $db->DbSafe($in);
-   } else {
-      return $in;
-   }
-}
-
-/**
- * Execute SQL SELECT query and return all records
- *
- * This function returns records as array of assosiated arrays (by field names)
- *
- * @param string $query SQL SELECT query
- * @global object mysql database object
- * @return array execution result
- */
-function SQLSelect($query)
-{
-   global $db;
-   if (is_object($db)) {
-      return $db->Select($query);
-   } else {
-      return false;
-   }
-}
-
-/**
- * Execute SQL SELECT query and return first record
- *
- * This function returns record assosiated array (by field names)
- *
- * @param string $query SQL SELECT query
- * @global object mysql database object
- * @return array execution result
- */
-function SQLSelectOne($query)
-{
-   global $db;
-   if (is_object($db)) {
-      return $db->SelectOne($query);
-   } else {
-      return false;
-   }
-}
-
-/**
- * Execute SQL INSERT query for one record
- *
- * Record is defined by assosiated array
- *
- * @param string $table  Table for new record
- * @param array  $record Record to insert
- * @global object Mysql database object
- * @return int Execution result (0 - if failed, INSERT ID - if succeed)
- */
-function SQLInsert($table, &$record)
-{
-   global $db;
-   if (is_object($db)) {
-      return $db->Insert($table, $record);
-   } else {
-      return false;
-   }
-}
-
-/**
- * Execute SQL UPDATE query for one record
- * @param mixed $table  Table to update
- * @param mixed $record Record to update (assosiated array)
- * @param mixed $ndx    Update by this key (default ID)
- * @return int
- */
-function SQLUpdate($table, $record, $ndx = 'ID')
-{
-   global $db;
-   if (is_object($db)) {
-      return $db->Update($table, $record, $ndx);
-   } else {
-      return false;
-   }
-}
-
-/**
- * Execute SQL UPDATE or INSERT query for one record
- *
- * If ID field is defined record will be updated else it will be inserted
- *
- * @param string $table  Table to update
- * @param array  $record Record to update
- * @param mixed  $ndx    Update or insert by this key (default ID)
- * @global object mysql database object
- * @return int
- */
-function SQLUpdateInsert($table, &$record, $ndx = 'ID')
-{
-   global $db;
- 
-   if (isset($record[$ndx]))
-   {
-      if (is_object($db)) {
-         return $db->Update($table, $record, $ndx);
-      } else {
-         return false;
-      }
-   }
-   else
-   {
-      if (is_object($db)) {
-         $record[$ndx] = $db->Insert($table, $record);
-      } else {
-         return false;
-      }
-      return $record[$ndx];
-   }
-}
-
-/**
- * Alias for SQLUpdateInsert
- * Execute SQL UPDATE or INSERT query for one record
- *
- * If ID field is defined record will be updated else it will be inserted
- *
- * @param string $table  Table to update
- * @param array  $record Record to update
- * @param mixed  $ndx    Update or insert by this key (default ID)
- * @global object mysql database object
- * @return int
- */
-function SQLInsertUpdate($table, &$record, $ndx = 'ID')
-{
-   return SQLUpdateInsert($table, $record, $ndx);
-}
-
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
- function SQLGetFields($table) {
-    global $db;
-    if (!is_object($db) || !$db->connected) {
-       return false;
-    }
-  $result = SQLExec("SHOW FIELDS FROM $table");  
-  $res=array();
-  while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
-   {
-   $res[] = $rec;
-  }
-  return $res;
- }
-
- function SQLGetIndexes($table) {
-  $result = SQLExec("SHOW INDEX FROM $table");  
-  $res=array();
-  while ($rec = mysqli_fetch_array($result, MYSQL_ASSOC))
-   {
-   $res[] = $rec;
-  }
-  return $res;
- }
-
- function SQLPing() {
-  global $db;
-  if (is_object($db)) {
-     return $db->Ping();
-  } else {
-     return false;
-  }
- }
-
-
-/**
- * Converts date format from YYYY/MM/DD to MM/DD/YYYY
- * @param mixed $source    Source date
- * @param mixed $delim     Source delimiter
- * @param mixed $dst_delim Destination delimiter
- * @return string
- */
-function fromDBDate($source, $delim = '-', $dst_delim = '/')
-{
-   $tmp = explode($delim, $source);
-   
-   $str  = str_pad($tmp[1], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[0], 2, "0", STR_PAD_LEFT);
-
-   return $str;
-}
-
-/**
- * Converts date format from MM/DD/YYYY to YYYY-MM-DD
- *
- * @param string $source    Source date to convert
- * @param string $delim     Source delimiter
- * @param string $dst_delim Destination delimiter
- * @return string
- */
-function toDBDate($source, $delim = '/', $dst_delim = '-')
-{
-   $tmp = explode($delim, $source);
-   
-   $str  = str_pad($tmp[2], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[0], 2, "0", STR_PAD_LEFT) . $dst_delim;
-   $str .= str_pad($tmp[1], 2, "0", STR_PAD_LEFT);
-   
-   return $str;
-}
-

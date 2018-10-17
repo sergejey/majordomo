@@ -669,6 +669,7 @@ $dictionary=array(
 'DEVICES_LEAK_SENSOR'=>'Senzor scurgere',
 'DEVICES_SMOKE_SENSOR'=>'Detector fum',
 'DEVICES_UNIT'=>'Unitate de măsură',
+'DEVICES_BATTERY_LOW' => 'Low battery',
 'DEVICES_COUNTER'=>'Contor',
 'M_VOLTAGE'=>'V',
 'M_CURRENT'=>'A',

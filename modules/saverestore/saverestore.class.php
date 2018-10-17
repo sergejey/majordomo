@@ -143,6 +143,16 @@ class saverestore extends module
         $update_url=$this->getUpdateURL();
         $out['UPDATE_URL']=$update_url;
 
+        global $aditional_git_urls;
+        $out['ADITIONAL_GIT_URLS'] = array();
+        foreach ($aditional_git_urls as $url=>$title) {
+           $tmp = array();
+           $tmp['URL'] = $url;
+           $tmp['TITLE'] = $title;
+           $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
+           $out['ADITIONAL_GIT_URLS'][] = $tmp;
+        }
+        
             $github_feed_url = $update_url;
             $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
             $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
@@ -335,7 +345,6 @@ class saverestore extends module
             $out['SAVE_FILES'] = $save_files;
             global $design;
             $out['DESIGN'] = $design;
-
         }
 
 
@@ -380,7 +389,7 @@ class saverestore extends module
         } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '')  {
             $update_url=MASTER_UPDATE_URL;
         } else {
-            $update_url='https://github.com/sergejey/majordomo/archive/master.tar.gz';
+            $update_url=GIT_URL.'archive/master.tar.gz';
         }
         return $update_url;
     }
@@ -521,7 +530,7 @@ class saverestore extends module
         }
 
         // packing into tar.gz
-        $tar_name = 'submit_' . date('Y-m-d__h-i-s') . '.tgz';
+        $tar_name = 'submit_' . date('Y-m-d__H-i-s') . '.tgz';
 
         chdir(ROOT . 'cms/saverestore/temp');
         exec('tar cvzf ../' . $tar_name . ' .');
@@ -1492,7 +1501,7 @@ class saverestore extends module
 
 
             // packing into tar.gz
-            $tar_name .= date('Y-m-d__h-i-s');
+            $tar_name .= date('Y-m-d__H-i-s');
             $tar_name .= IsWindowsOS() ? '.tar' : '.tgz';
 
             if (isset($out['BACKUP']))

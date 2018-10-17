@@ -13,124 +13,119 @@ $total = count($devices);
 DebMes("Syncing devices (total: $total)",'homebridge');
 for ($i = 0; $i < $total; $i++) {
     
-    if ($devices[$i]['TYPE']=='relay') {
+   $payload=array();
+   $payload['name']=$devices[$i]['LINKED_OBJECT'];
+   sg('HomeBridge.to_remove',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
+   $payload['service_name']=$devices[$i]['TITLE'];
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        
-        $load_type=gg($devices[$i]['LINKED_OBJECT'].'.loadType');
-        if ($load_type=='light') {
-            $payload['service'] = 'Lightbulb';
-        } elseif ($load_type=='vent') {
-            $payload['service'] = 'Fan';
-        } else {
-            $payload['service']='Outlet';
-            //$payload['service']='Switch';
-        }
-        sg('HomeBridge.to_add',json_encode($payload));
+   switch($devices[$i]['TYPE']) {
+      case 'relay':
+         $load_type=gg($devices[$i]['LINKED_OBJECT'].'.loadType');
+         if     ($load_type=='light')  $payload['service'] = 'Lightbulb';
+         elseif ($load_type=='vent')   $payload['service'] = 'Fan';
+         elseif ($load_type=='switch') $payload['service'] = 'Switch';
+         else                          $payload['service'] = 'Outlet';
+         sg('HomeBridge.to_add',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='Switch';
-        $payload['characteristic'] = 'On';
-        if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
+         $payload['characteristic'] = 'On';
+         if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
             $payload['value']=true;
-        } else {
+         } else {
             $payload['value']=false;
-        }
-        sg('HomeBridge.to_set',json_encode($payload));
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'sensor_temp':
+         $payload['service']='TemperatureSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
 
-    } elseif ($devices[$i]['TYPE']=='sensor_temp') {
+         $payload['characteristic'] = 'CurrentTemperature';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'sensor_humidity':
+         $payload['service']='HumiditySensor';
+         sg('HomeBridge.to_add',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
+         $payload['characteristic'] = 'CurrentRelativeHumidity';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'motion':
+         $payload['service']='MotionSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='TemperatureSensor';
-        sg('HomeBridge.to_add',json_encode($payload));
+         $payload['characteristic'] = 'MotionDetected';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'button':
+         $payload['service']='Switch';
+         sg('HomeBridge.to_add',json_encode($payload));
+         break;
+      case 'sensor_light':
+         $payload['service']='LightSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
+            
+         $payload['characteristic'] = 'CurrentAmbientLightLevel';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'openclose':
+         $payload['service']='ContactSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='TemperatureSensor';
-        $payload['characteristic'] = 'CurrentTemperature';
-        $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
-        sg('HomeBridge.to_set',json_encode($payload));
+         $payload['characteristic'] = 'ContactSensorState';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($devices[$i]['LINKED_OBJECT'].'.status') : gg($devices[$i]['LINKED_OBJECT'].'.status');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'rgb':
+         DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
+         $payload['service']='Lightbulb';
+         sg('HomeBridge.to_add',json_encode($payload));
+         
+         $payload['characteristic'] = 'On';
+         if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;
+         } else {
+            $payload['value']=false;
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
 
-    } elseif ($devices[$i]['TYPE']=='sensor_humidity') {
+         $payload['characteristic'] = 'Hue';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.hue');
+         sg('HomeBridge.to_set',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
+         $payload['characteristic'] = 'Saturation';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.saturation');
+         sg('HomeBridge.to_set',json_encode($payload));
+         
+         $payload['characteristic'] = 'Brightness';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.brightness');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      /*
+      case 'sensor_battery':
+         $payload['service']='BatteryService';
+         sg('HomeBridge.to_add',json_encode($payload));
+         // Characteristic.BatteryLevel;
+         // Characteristic.ChargingState; 0 - NOT_CHARGING, 1 - CHARGING, 2 - NOT_CHARGEABLE
+         // Characteristic.StatusLowBattery;
+         $payload['characteristic'] = 'BatteryLevel';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='HumiditySensor';
-        sg('HomeBridge.to_add',json_encode($payload));
+         $payload['characteristic'] = 'ChargingState';
+         $payload['value']=2;
+         sg('HomeBridge.to_set',json_encode($payload));
 
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='HumiditySensor';
-        $payload['characteristic'] = 'CurrentRelativeHumidity';
-        $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
-        sg('HomeBridge.to_set',json_encode($payload));
-
-    } elseif ($devices[$i]['TYPE']=='motion') {
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='MotionSensor';
-        sg('HomeBridge.to_add',json_encode($payload));
-
-    } elseif ($devices[$i]['TYPE']=='button') {
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='Switch';
-        sg('HomeBridge.to_add',json_encode($payload));
-
-    } elseif ($devices[$i]['TYPE']=='sensor_light') {
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        sg('HomeBridge.to_remove',json_encode($payload));
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='LightSensor';
-        sg('HomeBridge.to_add',json_encode($payload));
-
-        $payload=array();
-        $payload['name']=$devices[$i]['LINKED_OBJECT'];
-        $payload['service_name']=$devices[$i]['TITLE'];
-        $payload['service']='LightSensor';
-        $payload['characteristic'] = 'CurrentAmbientLightLevel';
-        $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
-        sg('HomeBridge.to_set',json_encode($payload));
-        
-    }
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.normalValue') ? 0 : 1;
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      */
+   }
 }
 
 sg('HomeBridge.to_get','{"name": "*"}');

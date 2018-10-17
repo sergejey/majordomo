@@ -79,7 +79,6 @@ function collectData() {
    $result['cycles']=$cycles;
 
    global $db; 
-   $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
    if ($db) {
 
       $result['LatestUpdateId']=gg('LatestUpdateId');
@@ -179,7 +178,7 @@ if (isset($_POST['send'])) {
             copy($log_path.'/'.$file,'./cms/saverestore/temp/cms/debmes/'.$file);
          }
       }
-      $tar_name .= 'diagnostic_'.date('Y-m-d__h-i-s');
+      $tar_name .= 'diagnostic_'.date('Y-m-d__H-i-s');
       $tar_name .= IsWindowsOS() ? '.tar' : '.tgz';
       if (IsWindowsOS()) {
          $result = exec('tar.exe --strip-components=2 -C ./cms/saverestore/temp/ -cvf ./cms/saverestore/' . $tar_name . ' ./');

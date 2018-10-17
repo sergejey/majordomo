@@ -219,7 +219,7 @@ function usual(&$out) {
   }
   echo json_encode($res);
 
-  global $db;$db->disconnect();
+  global $db;
   exit;
  }
 
@@ -633,7 +633,7 @@ function usual(&$out) {
  function getProperty($property) {
 
   $property = trim($property);
-
+  
   if ($this->object_title) {
    $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($this->object_title.'.'.$property)."'");
    if (isset($value['VALUE'])) {
@@ -847,7 +847,7 @@ function usual(&$out) {
 
   if (function_exists('postToWebSocketQueue')) {
    startMeasure('setproperty_postwebsocketqueue');
-   postToWebSocketQueue($this->object_title.'.'.$property, $value);
+   postToWebSocketQueue(mb_strtolower($this->object_title.'.'.$property,'UTF-8'), $value);
    endMeasure('setproperty_postwebsocketqueue');
   }
 
@@ -983,7 +983,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS objects');
+   SQLDropTable('objects');
   parent::uninstall();
  }
 /**
@@ -995,7 +995,7 @@ function usual(&$out) {
 */
  function dbInstall($data) {
 
-  //SQLExec("DROP TABLE IF EXISTS `cached_values`;");
+  //SQLDropTable('cached_values');
   $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   char(100) NOT NULL,
                 `DATAVALUE` char(255) NOT NULL,

@@ -3,41 +3,106 @@
 //DebMes("Checking linked actions for device ".$device1['ID']);
 
 if ($this->isHomeBridgeAvailable()) {
-    // send updated status to HomeKit
-    $payload=array();
-    $payload['name']=$device1['LINKED_OBJECT'];
-    $payload['service_name']=$device1['TITLE'];
+   // send updated status to HomeKit
+   $payload=array();
+   $payload['name']=$device1['LINKED_OBJECT'];
+   $payload['service_name']=$device1['TITLE'];
 
-    if ($device1['TYPE']=='relay') {
-        $payload['service']='Switch';
-        $payload['characteristic'] = 'On';
-        if (gg($device1['LINKED_OBJECT'].'.status')) {
+   switch($device1['TYPE']) {
+      case 'relay':
+         $load_type=gg($device1['LINKED_OBJECT'].'.loadType');
+         if     ($load_type=='light')  $payload['service'] = 'Lightbulb';
+         elseif ($load_type=='vent')   $payload['service'] = 'Fan';
+         elseif ($load_type=='switch') $payload['service'] = 'Switch';
+         else                          $payload['service'] = 'Outlet';
+         $payload['characteristic'] = 'On';
+         if (gg($device1['LINKED_OBJECT'].'.status')) {
+               $payload['value']=true;
+         } else {
+               $payload['value']=false;
+         }
+         break;
+      case 'sensor_temp':
+         $payload['service']='TemperatureSensor';
+         $payload['characteristic'] = 'CurrentTemperature';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+         break;
+      case 'sensor_humidity':
+         $payload['service']='HumiditySensor';
+         $payload['characteristic'] = 'CurrentRelativeHumidity';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+         break;
+      case 'motion':
+         $payload['service']='MotionSensor';
+         $payload['characteristic'] = 'MotionDetected';
+         if (gg($device1['LINKED_OBJECT'].'.status')) {
+             $payload['value']=true;
+         } else {
+             $payload['value']=false;
+         }
+         break;
+      case 'sensor_light':
+         $payload['service']='LightSensor';
+         $payload['characteristic'] = 'CurrentAmbientLightLevel';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+         break;
+      case 'openclose':
+         $payload['service']='ContactSensor';
+         $payload['characteristic'] = 'ContactSensorState';
+         $nc = gg($device1['LINKED_OBJECT'].'.ncno') == 'nc';
+         $payload['value'] = $nc ? 1 - gg($device1['LINKED_OBJECT'].'.status') : gg($device1['LINKED_OBJECT'].'.status');
+         break;
+      case 'rgb':
+         DebMes('Update '.$device1['TITLE'].' from MJD');
+         $payload['service']='Lightbulb';
+         sg('HomeBridge.to_add',json_encode($payload));
+         
+         $payload['characteristic'] = 'On';
+         if (gg($device1['LINKED_OBJECT'].'.status')) {
             $payload['value']=true;
-        } else {
+         } else {
             $payload['value']=false;
-        }
-    } elseif ($device1['TYPE']=='sensor_temp') {
-        $payload['service']='TemperatureSensor';
-        $payload['characteristic'] = 'CurrentTemperature';
-        $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
-    } elseif ($device1['TYPE']=='sensor_humidity') {
-        $payload['service']='HumiditySensor';
-        $payload['characteristic'] = 'CurrentRelativeHumidity';
-        $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
-    } elseif ($device1['TYPE']=='motion') {
-        $payload['service']='MotionSensor';
-        $payload['characteristic'] = 'MotionDetected';
-        if (gg($device1['LINKED_OBJECT'].'.status')) {
-            $payload['value']=true;
-        } else {
-            $payload['value']=false;
-        }
-    }
-    if (isset($payload['value'])) {
-        //DebMes('HB sending to_set: '.json_encode($payload));
-        sg('HomeBridge.to_set',json_encode($payload));
-    }
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
 
+         $payload['characteristic'] = 'Hue';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.hue');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'Saturation';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.saturation');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'Brightness';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.brightness');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      /*
+      case 'sensor_battery':
+         $payload['service']='BatteryService';
+         sg('HomeBridge.to_add',json_encode($payload));
+         // Characteristic.BatteryLevel;
+         // Characteristic.ChargingState; 0 - NOT_CHARGING, 1 - CHARGING, 2 - NOT_CHARGEABLE
+         // Characteristic.StatusLowBattery;
+         $payload['characteristic'] = 'BatteryLevel';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'ChargingState';
+         $payload['value']=2;
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.normalValue') ? 0 : 1;
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         break;
+      */
+   }
+   if (isset($payload['value'])) {
+      //DebMes('HB sending to_set: '.json_encode($payload));
+      sg('HomeBridge.to_set',json_encode($payload));
+   }
 }
 
 $value = (float)gg($device1['LINKED_OBJECT'].'.value');
@@ -68,7 +133,7 @@ for ($i = 0; $i < $total; $i++) {
             if ((int)$settings['action_delay']>0) {
                 $action_string='setTimeout(\''.$timer_name.'\',\''.$action_string.'\','.(int)$settings['action_delay'].');';
             }
-            // -----------------------------------------------------------------
+    // -----------------------------------------------------------------
     // -----------------------------------------------------------------
     } elseif ($link_type=='sensor_switch') {
         if ($settings['action_type']=='turnoff' && gg($object.'.status')) {
@@ -84,9 +149,9 @@ for ($i = 0; $i < $total; $i++) {
             //do nothing
             $action_string='';
         }
-    }  elseif ($link_type=='sensor_pass') {
+    } elseif ($link_type=='sensor_pass') {
         $action_string='sg("'.$object.'.value'.'","'.$value.'");';
-    }  elseif ($link_type=='thermostat_switch') {
+    } elseif ($link_type=='thermostat_switch') {
         $set_value=0;
         $current_relay_status = gg($device1['LINKED_OBJECT'].'.relay_status');
         $ncno = gg($device1['LINKED_OBJECT'].'.ncno');

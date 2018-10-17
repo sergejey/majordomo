@@ -361,16 +361,8 @@ class app_player extends module {
 		}
 		$out['TERMINALS'] = $terminals;
 		
-		// Volume levels
-		$current_level = getGlobal('ThisComputer.volumeMediaLevel');
-		for($i = 0; $i <= 100; $i += 5) {
-			$rec = array('VALUE' => $i);
-			if($i == $current_level) {
-				$rec['SELECTED'] = 1;
-			}
-			$out['VOLUMES'][] = $rec;
-		}
-		
+		// Unique ID
+		$out['APP_PLAYER_ID'] = uniqid('app_player_');
 	}
 	
 	/**

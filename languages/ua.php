@@ -1080,7 +1080,7 @@ $dictionary = array (
     'DEVICES_SMOKE_SENSOR' => 'Датчик диму',
     'DEVICES_COUNTER' => 'Лічильник',
     'DEVICES_UNIT' => 'Одиниця виміру',
-
+    'DEVICES_BATTERY_LOW' => 'Низький рівень заряду батареї',
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',

@@ -187,7 +187,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS shoutrooms');
+   SQLDropTable('shoutrooms');
   parent::uninstall();
  }
 /**

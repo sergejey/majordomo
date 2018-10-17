@@ -193,7 +193,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS methods');
+   SQLDropTable('methods');
   parent::uninstall();
  }
 /**

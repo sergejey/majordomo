@@ -11,17 +11,12 @@ chdir(dirname(__FILE__) . '/../');
 include_once("./config.php");
 include_once("./lib/loader.php");
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 
 $started_time = time();
 $max_run_time = 2*60*60; // do restart in 2 hours
 
 set_time_limit(0);
-
-
 
 include_once(DIR_MODULES . 'connect/connect.class.php');
 
@@ -30,11 +25,9 @@ $devices_sent_time = 0;
 
 include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
-
 $saved_devices_data=array();
 
 const CONNECT_HOST = 'connect.smartliving.ru';
-
 
 while (1) {
     $connect = new connect();
@@ -70,6 +63,7 @@ while (1) {
 
 
     $query = $username . '/incoming_urls,' . $username . '/menu_session,'. $username . '/reverse_urls';
+    $ping_topic = $username . '/ping';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name,$ca_file);
 
@@ -88,13 +82,13 @@ while (1) {
             echo date('H:i:s') . " Subscribing to: $k\n";
         }
         $mqtt_client->subscribe($topics, 0);
+        $ping_timestamp=0;
         while ($mqtt_client->proc()) {
             $currentMillis = round(microtime(true) * 10000);
             if ($currentMillis - $previousMillis > 10000) {
                 $previousMillis = $currentMillis;
                 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
                 if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
-                    $db->Disconnect();
                     exit;
                 }
             }
@@ -118,10 +112,13 @@ while (1) {
                 send_all_menu();
             }
             if ((time()-$started_time)>$max_run_time) {
-                echo "Exit cycle CONNET... (reconnecting)";
+                echo "Exit cycle CONNECT... (reconnecting)";
                 $mqtt_client->close();
-                $db->Disconnect();
                 exit;
+            }
+            if ((time()-$ping_timestamp)>60) {
+                $ping_timestamp=time();
+                $mqtt_client->publish($ping_topic,time());
             }
         }
         $mqtt_client->close();

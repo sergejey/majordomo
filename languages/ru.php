@@ -1083,7 +1083,8 @@ $dictionary = array(
     'DEVICES_SMOKE_SENSOR' => 'Датчик дыма',
     'DEVICES_COUNTER' => 'Счётчик',
     'DEVICES_UNIT' => 'Единица измерения',
-
+    'DEVICES_BATTERY_LOW' => 'Низкий уровень заряда батареи',
+    
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
