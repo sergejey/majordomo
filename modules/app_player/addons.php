@@ -309,6 +309,16 @@ class app_player_addon {
 		return $this->success;
 	}
 	
+	// Play the specified file without breaking the current playlist
+	final public function safe_play($input) {
+		/*
+			$input - The path to the file for playback. String.
+			
+			$this->data format (boolean): Playback result (TRUE = successful, FALSE = unable to safely play)
+		*/
+		return $this->play($input); // FIXME
+	}
+	
 }
 
 ?>
