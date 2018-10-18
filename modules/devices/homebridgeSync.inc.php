@@ -80,7 +80,51 @@ for ($i = 0; $i < $total; $i++) {
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($devices[$i]['LINKED_OBJECT'].'.status') : gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
+      case 'rgb':
+         DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
+         $payload['service']='Lightbulb';
+         sg('HomeBridge.to_add',json_encode($payload));
+         
+         $payload['characteristic'] = 'On';
+         if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;
+         } else {
+            $payload['value']=false;
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
 
+         $payload['characteristic'] = 'Hue';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.hue');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'Saturation';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.saturation');
+         sg('HomeBridge.to_set',json_encode($payload));
+         
+         $payload['characteristic'] = 'Brightness';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.brightness');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      /*
+      case 'sensor_battery':
+         $payload['service']='BatteryService';
+         sg('HomeBridge.to_add',json_encode($payload));
+         // Characteristic.BatteryLevel;
+         // Characteristic.ChargingState; 0 - NOT_CHARGING, 1 - CHARGING, 2 - NOT_CHARGEABLE
+         // Characteristic.StatusLowBattery;
+         $payload['characteristic'] = 'BatteryLevel';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'ChargingState';
+         $payload['value']=2;
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.normalValue') ? 0 : 1;
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      */
    }
 }
 

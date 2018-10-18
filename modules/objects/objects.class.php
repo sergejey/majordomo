@@ -633,7 +633,7 @@ function usual(&$out) {
  function getProperty($property) {
 
   $property = trim($property);
-
+  
   if ($this->object_title) {
    $value=SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '".DBSafe($this->object_title.'.'.$property)."'");
    if (isset($value['VALUE'])) {
@@ -847,7 +847,7 @@ function usual(&$out) {
 
   if (function_exists('postToWebSocketQueue')) {
    startMeasure('setproperty_postwebsocketqueue');
-   postToWebSocketQueue($this->object_title.'.'.$property, $value);
+   postToWebSocketQueue(mb_strtolower($this->object_title.'.'.$property,'UTF-8'), $value);
    endMeasure('setproperty_postwebsocketqueue');
   }
 

@@ -144,6 +144,11 @@
 				function player_type_select(type) {
 					$('small.addon-description').addClass('hidden');
 					$('small#'+type+'_description').removeClass('hidden');
+                                        if (type == 'dnla') {
+                                           $('#device_control_address').show();
+                                           } else {
+                                           $('#device_control_address').hide();
+                                           }
 					return true;
 				}
 				$(document).ready(function() {
@@ -164,6 +169,12 @@
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
 		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
 	</div>
+
+	<div id='device_control_address' style="display:none" class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle">Control address:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_control_address" value="[#PLAYER_CONTROL_ADDRESS#]"></div>
+	</div>
+        
 </div>
 
 <div class="form-group">

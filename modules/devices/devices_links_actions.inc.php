@@ -52,6 +52,52 @@ if ($this->isHomeBridgeAvailable()) {
          $nc = gg($device1['LINKED_OBJECT'].'.ncno') == 'nc';
          $payload['value'] = $nc ? 1 - gg($device1['LINKED_OBJECT'].'.status') : gg($device1['LINKED_OBJECT'].'.status');
          break;
+      case 'rgb':
+         DebMes('Update '.$device1['TITLE'].' from MJD');
+         $payload['service']='Lightbulb';
+         sg('HomeBridge.to_add',json_encode($payload));
+         
+         $payload['characteristic'] = 'On';
+         if (gg($device1['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;
+         } else {
+            $payload['value']=false;
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'Hue';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.hue');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'Saturation';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.saturation');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'Brightness';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.brightness');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      /*
+      case 'sensor_battery':
+         $payload['service']='BatteryService';
+         sg('HomeBridge.to_add',json_encode($payload));
+         // Characteristic.BatteryLevel;
+         // Characteristic.ChargingState; 0 - NOT_CHARGING, 1 - CHARGING, 2 - NOT_CHARGEABLE
+         // Characteristic.StatusLowBattery;
+         $payload['characteristic'] = 'BatteryLevel';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'ChargingState';
+         $payload['value']=2;
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'StatusLowBattery';
+         $payload['value']=gg($device1['LINKED_OBJECT'].'.normalValue') ? 0 : 1;
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         break;
+      */
    }
    if (isset($payload['value'])) {
       //DebMes('HB sending to_set: '.json_encode($payload));

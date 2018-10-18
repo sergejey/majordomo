@@ -485,7 +485,7 @@ class market extends module
                     $file = basename($filename);
                     DebMes("Installing/updating plugin $name ($version)");
 
-                    chdir(ROOT . 'cms/saverestore/temp');
+                    @chdir(ROOT . 'cms/saverestore/temp');
 
                     if ($frame) {
                         $this->echonow("Unpacking '$file' ..");

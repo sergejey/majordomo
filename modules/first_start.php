@@ -16,6 +16,7 @@
  $languages[]=array('TITLE'=>'ro','CAPTION'=>'Romanian');
  $languages[]=array('TITLE'=>'cs','CAPTION'=>'Czech');
  $languages[]=array('TITLE'=>'pl','CAPTION'=>'Polish');
+ $languages[]=array('TITLE'=>'he','CAPTION'=>'Hebrew');
 
  function cmp_languages($a, $b) {
   return strcmp($a["CAPTION"], $b["CAPTION"]);

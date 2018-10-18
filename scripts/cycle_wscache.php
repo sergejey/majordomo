@@ -33,7 +33,7 @@ while (1)
          $properties=array();
          $values=array();
          for($i=0;$i<$total;$i++) {
-            $queue[$i]['PROPERTY']=mb_strtolower($queue[$i]['PROPERTY'],'UTF-8');
+            //$queue[$i]['PROPERTY']=mb_strtolower($queue[$i]['PROPERTY'],'UTF-8');
             if ($queue[$i]['POST_ACTION']=='PostProperty') {
                $properties[]=$queue[$i]['PROPERTY'];
                $values[]=$queue[$i]['DATAVALUE'];
