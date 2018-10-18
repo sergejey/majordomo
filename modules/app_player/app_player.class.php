@@ -213,14 +213,28 @@ class app_player extends module {
 		}
 
 		// AJAX
-		$ajax = gr('ajax');
 		if($this->ajax) {
-			$ajax = 1;
+			$ajax = TRUE;
+		} else {
+			$ajax = gr('ajax');
 		}
+		
 		if(isset($ajax)) {
-			$command = trim(gr('command'));
-			$param = trim(gr('param'));
 			
+			// Command
+			if($this->command) {
+				$command = $this->command;
+			} else {
+				$command = trim(gr('command'));
+			}
+			
+			// Param
+			if($this->param) {
+				$param = $this->param;
+			} else {
+				$param = trim(gr('param'));
+			}
+
 			// JSON default
 			$json = array(
 				'play_terminal'		=> $session->data['PLAY_TERMINAL'],
@@ -332,7 +346,9 @@ class app_player extends module {
 			}
 			
 			// Return json
-			if(!$this->intCall) {
+			if($this->intCall) {
+				$this->json = $json;
+			} else {
 				$session->save();
 				die(json_encode($json));
 			}
