@@ -13,7 +13,13 @@ class MediaRenderer
   public $service_type;
   public function __construct($server) {
     $control_url = str_ireplace("Location:", "", $server);
-    $xml=simplexml_load_file($control_url);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $control_url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $content = curl_exec($ch);
+    libxml_use_internal_errors(true); 
+    $xml = simplexml_load_string($content);
     foreach($xml->device->serviceList->service as $service){
           if($service->serviceId == 'urn:upnp-org:serviceId:AVTransport'){
                 $chek_url = (substr($service->controlURL,0,1));
