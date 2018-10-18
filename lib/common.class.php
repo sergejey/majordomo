@@ -738,50 +738,37 @@ function playSound($filename, $exclusive = 0, $priority = 0)
  * @param mixed $host Host (default 'localhost')
  * @return int
  */
-function playMedia($path, $host = 'localhost')
-{
-   if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '')
-   {
-      eval(SETTINGS_HOOK_PLAYMEDIA);
-   }
+function playMedia($path, $host = 'localhost', $safe_play = FALSE) {
+	if(defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '') {
+		eval(SETTINGS_HOOK_PLAYMEDIA);
+	}
 
-   $sqlQuery = "SELECT *
-                  FROM terminals
-                 WHERE HOST LIKE '" . DBSafe($host) . "'
-                    OR NAME LIKE '" . DBSafe($host) . "'
-                    OR TITLE LIKE '" . DBSafe($host) . "'";
+	$sqlQuery = "SELECT * FROM terminals WHERE HOST LIKE '".DBSafe($host)."' OR NAME LIKE '".DBSafe($host)."' OR TITLE LIKE '".DBSafe($host)."'";
+	$terminal = SQLSelectOne($sqlQuery);
 
-   $terminal = SQLSelectOne($sqlQuery);
+	if(!$terminal['ID']) {
+		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY = 1 ORDER BY ID");
+	}
 
-   if (!$terminal['ID'])
-   {
-      $terminal = SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY = 1 ORDER BY ID");
-   }
+	if(!$terminal['ID']) {
+		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE 1 ORDER BY ID");
+	}
 
-   if (!$terminal['ID'])
-   {
-      $terminal = SQLSelectOne("SELECT * FROM terminals WHERE 1 ORDER BY ID");
-   }
+	if(!$terminal['ID']) {
+		return 0;
+	}
 
-   if (!$terminal['ID'])
-   {
-      return 0;
-   }
+	include_once(DIR_MODULES.'app_player/app_player.class.php');
+	
+	$player = new app_player();
+	$player->terminal_id	= $terminal['ID'];
+	$player->command		= ($safe_play?'safe_play':'play');
+	$player->param			= $path;
+	$player->ajax			= TRUE;
+	$player->intCall		= TRUE;
+	$player->usual($out);
 
-   include_once(DIR_MODULES . 'app_player/app_player.class.php');
-   $player = new app_player();
-
-   $player->terminal_id = $terminal['ID'];
-   $player->play        = $path;
-
-   global $ajax;
-   $ajax = 1;
-
-   global $command;
-   $command = 'refresh';
-
-   $player->intCall = 1;
-   $player->usual($out);
+	return $player->json['success'];
 }
 
 /**
