@@ -159,16 +159,18 @@ function usual(&$out) {
  function edit_terminals(&$out, $id) {
   require(DIR_MODULES.$this->name.'/terminals_edit.inc.php');
  }
-/**
-* terminals delete record
-*
-* @access public
-*/
- function delete_terminals($id) {
-  $rec=SQLSelectOne("SELECT * FROM terminals WHERE ID='$id'");
-  // some action for related tables
-  SQLExec("DELETE FROM terminals WHERE ID='".$rec['ID']."'");
- }
+
+	/**
+	* terminals delete record
+	*
+	* @access public
+	*/
+	function delete_terminals($id) {
+		if($rec = getTerminalByID($id)) {
+			SQLExec('DELETE FROM `terminals` WHERE `ID` = '.$rec['ID']);
+		}
+	}
+
 /**
 * Install
 *
