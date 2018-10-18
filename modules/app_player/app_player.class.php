@@ -164,32 +164,20 @@ class app_player extends module {
 		$play_terminal = gr('play_terminal');
 		$terminal_id = ($this->terminal_id?$this->terminal_id:gr('terminal_id'));
 		if($play_terminal != '') { // name in request
-			$session->data['PLAY_TERMINAL'] = $play_terminal;
-			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+			$terminal = getTerminalsByName($play_terminal, 1, 'LATEST_ACTIVITY', 'DESC')[0];
 		} elseif($terminal_id) { // id in request
-			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `ID` = '.(int)$terminal_id);
-			$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+			$terminal = getTerminalByID($terminal_id);
 		} elseif($session->data['TERMINAL'] != '') { // session -> data -> terminal
-			$session->data['PLAY_TERMINAL'] = $session->data['TERMINAL'];
-			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
+			$terminal = getTerminalsByName($session->data['TERMINAL'], 1, 'LATEST_ACTIVITY', 'DESC')[0];
 		} else { // default
-			if($terminals = SQLSelect('SELECT * FROM `terminals` ORDER BY TITLE')) {
-				foreach($terminals as $terminal) {
-					$terminal_ip = ($terminal['HOST']=='localhost'?'127.0.0.1':$terminal['HOST']);
-					$user_ip = ($_SERVER['REMOTE_ADDR']=='::1'?'127.0.0.1':$_SERVER['REMOTE_ADDR']);
-					if(($terminal_ip != '') && ($terminal_ip == $user_ip)) {
-						$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
-						break;
-					}
+			if(!$terminal = getTerminalsByHost($_SERVER['REMOTE_ADDR'], 1, 'LATEST_ACTIVITY', 'DESC')[0]) {
+				if(!$terminal = getMainTerminal()) {
+					$terminal = getAllTerminals(1, 'LATEST_ACTIVITY', 'DESC')[0];
 				}
 			}
-			if($session->data['PLAY_TERMINAL'] == '') {
-				$session->data['PLAY_TERMINAL'] = 'MAIN';
-				$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \''.DBSafe($session->data['PLAY_TERMINAL']).'\'');
-			}
-
 		}
-
+		$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+		
 		// Session terminal
 		$session_terminal = gr('session_terminal');
 		if($session_terminal != '') { // name in request
@@ -203,10 +191,10 @@ class app_player extends module {
 			$terminal['HOST'] = 'localhost';
 		}
 		if(!$terminal['CANPLAY']) {
-			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `NAME` = \'HOME\' OR `NAME` = \'MAIN\'');
+			$terminal = getMainTerminal();
 		}
 		if(!$terminal['CANPLAY']) {
-			$terminal = SQLSelectOne('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `IS_ONLINE` DESC LIMIT 1');
+			$terminal = getTerminalsCanPlay(1, 'LATEST_ACTIVITY', 'DESC')[0];
 		}
 		if(!$terminal['PLAYER_TYPE']) {
 			$terminal['PLAYER_TYPE'] = 'vlc';
@@ -361,7 +349,7 @@ class app_player extends module {
 		} elseif($session->data['PLAY_TERMINAL']) {
 			$session_terminals = array($session->data['PLAY_TERMINAL']);
 		}
-		$terminals = SQLSelect('SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `TITLE`');
+		$terminals = getTerminalsCanPlay(-1, 'TITLE', 'ASC');
 		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
 		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
 		$total = count($terminals);
