@@ -85,7 +85,7 @@ function sayToSafe($ph, $level = 0, $destination = '') {
    return 0;
   }
   $processed=processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
-  $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($destination)."'");
+  $terminal_rec = getTerminalsByName($destination, 1)[0];
 
   if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
    $min_level=(int)getGlobal($terminal_rec['LINKED_OBJECT'].'.'.$terminal_rec['LEVEL_LINKED_PROPERTY']);
@@ -743,15 +743,20 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE) {
 		eval(SETTINGS_HOOK_PLAYMEDIA);
 	}
 
-	$sqlQuery = "SELECT * FROM terminals WHERE HOST LIKE '".DBSafe($host)."' OR NAME LIKE '".DBSafe($host)."' OR TITLE LIKE '".DBSafe($host)."'";
-	$terminal = SQLSelectOne($sqlQuery);
-
-	if(!$terminal['ID']) {
-		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE CANPLAY = 1 ORDER BY ID");
+	if(!$terminal = getTerminalsByName($host, 1)[0]) {
+		$terminal = getTerminalsByHost($host, 1)[0];
 	}
 
 	if(!$terminal['ID']) {
-		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE 1 ORDER BY ID");
+		$terminal = getTerminalsCanPlay(1)[0];
+	}
+
+	if(!$terminal['ID']) {
+		$terminal = getMainTerminal();
+	}
+	
+	if(!$terminal['ID']) {
+		$terminal = getAllTerminals(1)[0];
 	}
 
 	if(!$terminal['ID']) {

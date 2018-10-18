@@ -6,7 +6,9 @@ function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
@@ -23,7 +25,9 @@ function getTerminalsByName($name, $limit = -1, $order = 'ID', $sort = 'ASC') {
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
@@ -47,7 +51,9 @@ function getTerminalsByHost($host, $limit = -1, $order = 'ID', $sort = 'ASC') {
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
@@ -57,7 +63,9 @@ function getTerminalsCanPlay($limit = -1, $order = 'ID', $sort = 'ASC') {
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
@@ -67,7 +75,9 @@ function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC'
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
@@ -84,7 +94,9 @@ function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
@@ -94,7 +106,9 @@ function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
-	$terminals = SQLSelect($sqlQuery);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
 	return $terminals;
 }
 
