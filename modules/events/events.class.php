@@ -198,7 +198,7 @@ function usual(&$out) {
    postToWebSocketQueue('TERMINAL_EVENT', $event, 'PostEvent');
   }
 
-   $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
+   $terminals = getAllTerminals(-1, 'TITLE');
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {

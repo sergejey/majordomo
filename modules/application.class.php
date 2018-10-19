@@ -194,7 +194,7 @@ function getParams() {
    }
 
 
-   $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
+   $terminals = getAllTerminals(-1, 'TITLE');
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     //!$session->data['TERMINAL'] &&  

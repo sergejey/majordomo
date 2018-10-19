@@ -29,7 +29,7 @@
   if ($this->action=='' && $session->data['logged_user'] && $msg!='') {
 
    if ($session->data['TERMINAL']) {
-    $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '".DBSafe($session->data['TERMINAL'])."'");
+    $terminal_rec = getTerminalsByName($session->data['TERMINAL'], 1)[0];
 
     if ($terminal_rec['ID']) {
      $terminal_rec['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
