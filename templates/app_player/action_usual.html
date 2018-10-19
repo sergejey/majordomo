@@ -1,41 +1,41 @@
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-draggable.js"></script>
 <style type="text/css">
-	#[#APP_PLAYER_ID#] { height: auto; min-width: 390px; width: 390px; border-radius: 3px; }
+	#[#APP_PLAYER_ID#] { height: auto; min-width: 435px; width: 435px; border-style: solid; border-width: 1px; border-radius: 3px; }
 	#[#APP_PLAYER_ID#] #html5audio { display: none; }
 	#[#APP_PLAYER_ID#] .content { padding: 0; }
-	#[#APP_PLAYER_ID#] .content .controls { height: 33px; display: flex; display: -webkit-flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
+	#[#APP_PLAYER_ID#] .content .controls { height: 32px; display: flex; display: -webkit-flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
 	#[#APP_PLAYER_ID#] .content .controls .column { margin: 0 10px; background-size: contain; cursor: pointer; }
-	#[#APP_PLAYER_ID#] .content .controls .column.button { width: 16px; height: 16px; z-index: 1; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button { width: 24px; height: 24px; z-index: 1; }
 	#[#APP_PLAYER_ID#] .content .controls .column.button.volume { z-index: 2; }
 	#[#APP_PLAYER_ID#] .content .controls .column.select { z-index: 2; }
-	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { width: 150px; text-align: left; padding: 4px 10px 3px 10px; border: 1px; border-style: solid; border-radius: 3px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { width: 150px; text-align: left; padding: 2px 10px 0px 10px; border: 1px; border-style: solid; border-radius: 3px; }
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { float: left; }
-	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { font: 10px Arial, Helvetica, sans-serif; display: block; padding: 5px; white-space: nowrap; overflow: hidden; font-weight: bold; line-height: 1; text-align: left; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { font: 12px Arial, Helvetica, sans-serif; display: block; padding: 6px; white-space: nowrap; overflow: hidden; font-weight: bold; line-height: 1; text-align: left; }
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { z-index: inherit; display: none; cursor: default; position: absolute; width: 150px; height: 104px; border: 1px; border-radius: 0px 0px 3px 3px; overflow: auto; border-style: solid; border-top-style: hidden; }
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul { text-align: left; margin: 5px; padding: 0 0 0 0; list-style-position: outside; list-style-type: none; }
-	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li { font-size: 12px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li { font-size: 14px; }
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input { cursor: pointer; }
-	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { z-index: inherit; position: absolute; display: none; cursor: default; width: 25px; height: 101px; margin-top: 9px; margin-left: -4px; border: 1px; border-radius: 0px 0px 3px 3px; border-style: solid; border-top-style: hidden; }
-	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { position: relative; float: left; top: 5px; left: 12px; width: 1px; height: 90px; }
-	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { position: absolute; cursor: pointer; top: 0px; left: -4px; width: 9px; height: 9px; border: 1px; border-radius: 9px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { z-index: inherit; position: absolute; display: none; cursor: default; width: 34px; height: 101px; margin-top: 4px; margin-left: -5px; border: 1px; border-radius: 0px 0px 3px 3px; border-style: solid; border-top-style: hidden; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { position: relative; float: left; top: 5px; left: 15px; width: 2px; height: 90px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { position: absolute; cursor: pointer; top: 0px; left: -6px; width: 15px; height: 15px; border: 1px; border-radius: 15px; }
 	[#if "<#SETTINGS_THEME#>"=="dark"#]
 		#[#APP_PLAYER_ID#] { color: #ffffff; background-color: #464545; border-color: #464545; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #686868; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button img, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:hover, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:focus, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:active { background-color: #2c2c2c; border-color: #272727; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { color: #fff; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { background-color: #464545; border-color: #686868; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { background-color: #464545; border-color: #686868; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { background-color: whitesmoke; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { background-color: white; }
 	[#else#]
-		#[#APP_PLAYER_ID#] { color: #333; background-color: #fff; border-color: #ccc; border-style: solid; border-width: 1px; }
-		#[#APP_PLAYER_ID#] .content .controls { height: 28px; }
+		#[#APP_PLAYER_ID#] { color: #333; background-color: #fff; border-color: #ccc; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #ccc; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button img, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { filter: invert(1) contrast(0.5); }
-		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { padding: 2px 10px 0px 10px; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:hover, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:focus, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:active { background-color: #ebebeb; border-color: #adadad; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { color: #333; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { background-color: #fff; border-color: #ccc; }
-		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { margin-top: 6px; background-color: #fff; border-color: #ccc; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { background-color: #fff; border-color: #ccc; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { background-color: #a4a4a4; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { background-color: #404040; }
 	[#endif#]
@@ -56,7 +56,7 @@
 			[#if MODE="menu"#]<div class="line_container">[#endif#]
 			<div class="column select terminal" title="<#LANG_APP_PLAYER_PLAYING_TERMINALS#>">
 				<div class="container" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel').slideToggle();">
-					<img src="<#ROOTHTML#>img/icons/terminal.png" width="16" height="16" />
+					<img src="<#ROOTHTML#>img/icons/terminal.png" width="24" height="24" />
 					<div class="label"></div>
 				</div>
 				<div class="slide_panel">
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 			<div class="column button volume" title="<#LANG_APP_PLAYER_VOLUME_LEVEL#>">
-				<img src="<#ROOTHTML#>img/icons/volume.png" width="16" height="16" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideToggle();" />
+				<img src="<#ROOTHTML#>img/icons/volume.png" width="24" height="24" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideToggle();" />
 				<div class="slide_panel">
 					<div class="progress_bar">
 						<div class="scrubber"></div>
@@ -77,19 +77,19 @@
 			</div>
 			[#if MODE="menu"#]</div><div class="line_container">[#endif#]
 			<div class="column button previous" title="<#LANG_APP_PLAYER_PREVIOUS#>">
-				<img src="<#ROOTHTML#>img/icons/previous.png" width="16" height="16" onClick="[#APP_PLAYER_ID#]_action('previous');" />
+				<img src="<#ROOTHTML#>img/icons/previous.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('previous');" />
 			</div>
 			<div class="column button pause" title="<#LANG_APP_PLAYER_PAUSE#>">
-				<img src="<#ROOTHTML#>img/icons/pause.png" width="16" height="16" onClick="[#APP_PLAYER_ID#]_action('pause');" />
+				<img src="<#ROOTHTML#>img/icons/pause.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('pause');" />
 			</div>
 			<div class="column button play" title="<#LANG_APP_PLAYER_PLAY#>">
-				<img src="<#ROOTHTML#>img/icons/play.png" width="16" height="16" onClick="[#APP_PLAYER_ID#]_action('play');" />
+				<img src="<#ROOTHTML#>img/icons/play.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('play');" />
 			</div>
 			<div class="column button next" title="<#LANG_APP_PLAYER_NEXT#>">
-				<img src="<#ROOTHTML#>img/icons/next.png" width="16" height="16" onClick="[#APP_PLAYER_ID#]_action('next');" />
+				<img src="<#ROOTHTML#>img/icons/next.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('next');" />
 			</div>
 			<div class="column button stop" title="<#LANG_APP_PLAYER_STOP#>">
-				<img src="<#ROOTHTML#>img/icons/stop.png" width="16" height="16" onClick="[#APP_PLAYER_ID#]_action('stop');" />
+				<img src="<#ROOTHTML#>img/icons/stop.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('stop');" />
 			</div>
 			[#if MODE="menu"#]</div>[#endif#]
 		</div>
