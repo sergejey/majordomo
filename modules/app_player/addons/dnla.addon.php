@@ -17,7 +17,16 @@ class dnla extends app_player_addon {
         $this->description .= 'на всех устройства поддерживающих такой протокол. ';
         $this->terminal = $terminal;
         $this->reset_properties();
-        // MediaRenderer
+        // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
+        if ($this->terminal['HOST'] and !$this->terminal['PLAYER_CONTROL_ADDRESS']) {
+            $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
+            $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+            $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
+            if ($rec['HOST']) {
+                SQLUpdate('terminals', $rec); // update
+                DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+            }
+        }
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         }
@@ -33,7 +42,7 @@ class dnla extends app_player_addon {
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Play files';
-	    } else {
+         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
@@ -50,7 +59,7 @@ class dnla extends app_player_addon {
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Stop play';
-	    } else {
+         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
@@ -67,7 +76,7 @@ class dnla extends app_player_addon {
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Pause enabled';
-	    } else {
+         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
@@ -84,7 +93,7 @@ class dnla extends app_player_addon {
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Next file changed';
-	    } else {
+         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
@@ -101,7 +110,7 @@ class dnla extends app_player_addon {
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Previous file changed';
-	    } else {
+         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
@@ -121,14 +130,50 @@ class dnla extends app_player_addon {
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Volume changed';
-	    } else {
+         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
         return $this->success;
     }  
 
-      
-}
+	// функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
+     function search($ip = '255.255.255.255') {
+        //create the socket
+        $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
+        socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
 
+        //all
+        $request = 'M-SEARCH * HTTP/1.1'."\r\n";
+        $request .= 'HOST: 239.255.255.250:1900'."\r\n";
+        $request .= 'MAN: "ssdp:discover"'."\r\n";
+        $request .= 'MX: 2'."\r\n";
+        $request .= 'ST: ssdp:all'."\r\n";
+        $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
+        $request .= "\r\n";
+        
+        socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
+
+        // send the data from socket
+        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
+        $response = array();
+        do {
+            $buf = null;
+            if (($len = @socket_recvfrom($socket, $buf, 2048, 0, $ip, $port)) == -1) {
+                echo "socket_read() failed: " . socket_strerror(socket_last_error()) . "\n";
+            }
+            if(!is_null($buf)){
+                $messages = explode("\r\n", $buf);
+                    foreach( $messages as $row ) {
+                         if( stripos( $row, 'loca') === 0 ) {
+                              $response = str_ireplace( 'location: ', '', $row );
+                         }
+                    }
+            }
+        } while(!is_null($buf));
+        socket_close($socket);
+          $response = str_ireplace("Location:", "", $response);
+        return $response;
+    } 
+}
 ?>
