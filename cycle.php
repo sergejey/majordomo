@@ -361,7 +361,7 @@ while (false !== ($result = $threads->iteration()))
             $auto_restarts[]=$title;
          }
          $cycle_updated_timestamp=getGlobal($title.'Run');
-         if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>15*60)) {
+         if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
             DebMes("Looks like $title is dead. Need to recovery",'threads');
             registerError('cycle_hang', $title);
             $to_stop[$title]=time();
