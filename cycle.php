@@ -364,8 +364,9 @@ while (false !== ($result = $threads->iteration()))
          if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
             DebMes("Looks like $title is dead. Need to recovery",'threads');
             registerError('cycle_hang', $title);
-            $to_stop[$title]=time();
-            $to_start[$title]=time()+5;
+            setGlobal($title.'Control','restart');
+            //$to_stop[$title]=time();
+            //$to_start[$title]=time()+5;
          }
       }
    }
