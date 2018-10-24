@@ -1,4 +1,3 @@
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-draggable.js"></script>
 <style type="text/css">
 	#[#APP_PLAYER_ID#] { height: auto; min-width: 435px; width: 435px; border-style: solid; border-width: 1px; border-radius: 3px; }
 	#[#APP_PLAYER_ID#] #html5audio { display: none; }
@@ -16,8 +15,7 @@
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li { font-size: 14px; }
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input { cursor: pointer; }
 	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { z-index: inherit; position: absolute; display: none; cursor: default; width: 34px; height: 101px; margin-top: 4px; margin-left: -5px; border: 1px; border-radius: 0px 0px 3px 3px; border-style: solid; border-top-style: hidden; }
-	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { position: relative; float: left; top: 5px; left: 15px; width: 2px; height: 90px; }
-	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { position: absolute; cursor: pointer; top: 0px; left: -6px; width: 15px; height: 15px; border: 1px; border-radius: 15px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[type=range][orient=vertical] { position: relative; float: left; writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 100%; height: 100%; padding: 5px; border-style: none; }
 	[#if "<#SETTINGS_THEME#>"=="dark"#]
 		#[#APP_PLAYER_ID#] { color: #ffffff; background-color: #464545; border-color: #464545; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #686868; }
@@ -26,8 +24,6 @@
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { color: #fff; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { background-color: #464545; border-color: #686868; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { background-color: #464545; border-color: #686868; }
-		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { background-color: whitesmoke; }
-		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { background-color: white; }
 	[#else#]
 		#[#APP_PLAYER_ID#] { color: #333; background-color: #fff; border-color: #ccc; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #ccc; }
@@ -36,8 +32,6 @@
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { color: #333; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { background-color: #fff; border-color: #ccc; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { background-color: #fff; border-color: #ccc; }
-		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar { background-color: #a4a4a4; }
-		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber { background-color: #404040; }
 	[#endif#]
 	[#if MODE="menu"#]
 		#[#APP_PLAYER_ID#] { width: auto; min-width: auto; }
@@ -46,7 +40,7 @@
 		#[#APP_PLAYER_ID#] .content .controls .line_container { height: 33px; display: flex; display: -webkit-flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { width: 130px; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { position: fixed; }
-		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { position: fixed; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { position: absolute; margin: auto; width: 270px; left: 50%; margin-left: -135px; height: 50px; top: 50%; margin-top: -35px; padding: 10px 0px; border-style: none; }
 	[#endif#]
 </style>
 <div id="[#APP_PLAYER_ID#]">
@@ -70,9 +64,7 @@
 			<div class="column button volume" title="<#LANG_APP_PLAYER_VOLUME_LEVEL#>">
 				<img src="<#ROOTHTML#>img/icons/volume.png" width="24" height="24" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideToggle();" />
 				<div class="slide_panel">
-					<div class="progress_bar">
-						<div class="scrubber"></div>
-					</div>
+					<input type="range" name="volume_control" value="%ThisComputer.volumeMediaLevel%" min="0" max="100" orient="vertical" data-highlight="true" />
 				</div>
 			</div>
 			[#if MODE="menu"#]</div><div class="line_container">[#endif#]
@@ -119,20 +111,13 @@
 				}
 			}
 		});
-		$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber').draggable({
-			axis: 'y',
-			containment: $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar'),
-			create: function() {
-				[#APP_PLAYER_ID#]_set_volume_scrubber([#APP_PLAYER_ID#]_volumeMediaLevel);
-			},
-			stop: function() {
-				[#APP_PLAYER_ID#]_action('set_volume');
-			}
-		});
 		$(document).click(function(event) {
 			if($(event.target).closest('#[#APP_PLAYER_ID#] .content .controls .column.button.volume').length) return;
 			$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideUp();
 			event.stopPropagation();
+		});
+		$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').on('change', function() {
+			[#APP_PLAYER_ID#]_action('set_volume');
 		});
 		// Terminals
 		[#APP_PLAYER_ID#]_terminals_label();
@@ -144,10 +129,13 @@
 					$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').filter('[value="system_volume"]').prop('checked', false);
 				}
 				if($(this).val() == 'system_volume') {
-					[#APP_PLAYER_ID#]_set_volume_scrubber([#APP_PLAYER_ID#]_volumeLevel);
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeLevel);
 				} else {
-					[#APP_PLAYER_ID#]_set_volume_scrubber([#APP_PLAYER_ID#]_volumeMediaLevel);
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeMediaLevel);
 				}
+				[#if MODE="menu"#]
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').slider('refresh');
+				[#endif#]
 			}
 			[#APP_PLAYER_ID#]_terminals_label();
 		});
@@ -180,12 +168,6 @@
 		var scrubber_length = $(volume_scrubber).outerHeight(false);
 		var scrubber_top = Math.round((100-level)*((volume_length-scrubber_length)/100));
 		$(volume_scrubber).css('top', scrubber_top+'px');
-	}
-	function [#APP_PLAYER_ID#]_get_volume_scrubber() {
-		var volume_scrubber = $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber');
-		var volume_length = $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar').outerHeight(false);
-		var scrubber_length = $(volume_scrubber).outerHeight(false);
-		return 100-Math.round(parseInt($(volume_scrubber).css('top'), 10)/((volume_length-scrubber_length)/100));
 	}
 	// HTML5-Audio
 	var [#APP_PLAYER_ID#]_html5audio = new Audio();
@@ -222,7 +204,7 @@
 				param = $('#[#APP_PLAYER_ID#] .content input[name="play"]').val();
 				break;
 			case 'set_volume':
-				param = [#APP_PLAYER_ID#]_get_volume_scrubber();
+				param = $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val();
 				break;
 			default:
 				param = '';
@@ -266,7 +248,6 @@
 							}
 							break;
 						case 'set_volume':
-							console.log(param);
 							[#APP_PLAYER_ID#]_html5audio.volume = parseInt(param, 10)/100;
 							break;
 					}
