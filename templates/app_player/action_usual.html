@@ -64,7 +64,7 @@
 			<div class="column button volume" title="<#LANG_APP_PLAYER_VOLUME_LEVEL#>">
 				<img src="<#ROOTHTML#>img/icons/volume.png" width="24" height="24" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideToggle();" />
 				<div class="slide_panel">
-					<input type="range" name="volume_control" value="%ThisComputer.volumeMediaLevel%" min="0" max="100" orient="vertical" data-highlight="true" />
+					<input type="range" name="volume_control" value="%ThisComputer.volumeMediaLevel%" title="%ThisComputer.volumeMediaLevel%%" min="0" max="100" orient="vertical" data-highlight="true" />
 				</div>
 			</div>
 			[#if MODE="menu"#]</div><div class="line_container">[#endif#]
@@ -118,6 +118,7 @@
 		});
 		$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').on('change', function() {
 			[#APP_PLAYER_ID#]_action('set_volume');
+			$(this).attr('title', $(this).val()+'%');
 		});
 		// Terminals
 		[#APP_PLAYER_ID#]_terminals_label();
@@ -129,9 +130,9 @@
 					$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').filter('[value="system_volume"]').prop('checked', false);
 				}
 				if($(this).val() == 'system_volume') {
-					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeLevel);
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeLevel).attr('title', [#APP_PLAYER_ID#]_volumeLevel+'%');
 				} else {
-					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeMediaLevel);
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeMediaLevel).attr('title', [#APP_PLAYER_ID#]_volumeMediaLevel+'%');
 				}
 				[#if MODE="menu"#]
 					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').slider('refresh');
@@ -160,14 +161,6 @@
 			label = '<#LANG_APP_PLAYER_SELECT_TERMINALS#>';
 		}
 		$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label').text(label);
-	}
-	// Volume scrubber
-	function [#APP_PLAYER_ID#]_set_volume_scrubber(level) {
-		var volume_scrubber = $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar .scrubber');
-		var volume_length = $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel .progress_bar').outerHeight(false);
-		var scrubber_length = $(volume_scrubber).outerHeight(false);
-		var scrubber_top = Math.round((100-level)*((volume_length-scrubber_length)/100));
-		$(volume_scrubber).css('top', scrubber_top+'px');
 	}
 	// HTML5-Audio
 	var [#APP_PLAYER_ID#]_html5audio = new Audio();
