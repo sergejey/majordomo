@@ -1,5 +1,4 @@
 <?php
-
 chdir(dirname(__FILE__) . '/../../');
 
 include_once("./config.php");
@@ -7,7 +6,6 @@ include_once("./lib/loader.php");
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-
 
 
 $ctl = new control_modules();
@@ -74,11 +72,24 @@ if ($_GET['theme']) {
     }
     ?>
 
-    <script src="lib/js/thirdparty/head.js"></script>
-    <script src="lib/js/thirdparty/jquery.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="/3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
-    <script type="text/javascript" src="/3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
+
+    <script src="<?php echo ROOTHTML;?>3rdparty/freeboard/lib/js/thirdparty/jquery.js"></script>
+    <!--#
+    <script src="<?php echo ROOTHTML;?>3rdparty/freeboard/lib/js/thirdparty/head.js"></script>
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
+
+    #-->
+
+    <script src="<?php echo ROOTHTML;?>3rdparty/freeboard/lib/js/thirdparty/head.min.js"></script>
+
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
 
 
     <?php
@@ -124,6 +135,12 @@ if ($_GET['theme']) {
 
                 "plugins/freeboard/freeboard.datasources.js",
 
+                "plugins/freeboard/freeboard.widgets.js",
+                "plugins/thirdparty/handlebars.js",
+                "plugins/thirdparty/actuator.js",
+
+            "../../js/scripts.js",
+
             <?php
 
             $modules=SQLSelect("SELECT ID,NAME FROM project_modules");
@@ -134,13 +151,8 @@ if ($_GET['theme']) {
                     echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
                 }
             }
+
             ?>
-
-                "plugins/freeboard/freeboard.widgets.js",
-                "plugins/thirdparty/handlebars.js",
-                "plugins/thirdparty/actuator.js",
-
-            "../../js/scripts.js",
 
                 // *** Load more plugins here ***
                 function(){

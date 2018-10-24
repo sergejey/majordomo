@@ -3,6 +3,13 @@
  <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls">Public Calls</a></li>
 </ul><br>
 
+[#if OK_MSG!=""#]
+<div class="alert alert-success">[#OK_MSG#]</div>
+[#endif#]
+
+[#if ERR_MSG!=""#]
+<div class="alert alert-danger">[#ERR_MSG#]</div>
+[#endif#]
 
 [#if TAB==""#]
 
@@ -91,49 +98,35 @@
   <div>
    <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
     <fieldset>
-
-
      <div class="form-group">
-      <div class="controls">
-
         <input type="checkbox" name="send_menu" value="1"[#if SEND_MENU="1"#] checked[#endif#]>
         <#LANG_MODULE_CONTROL_MENU#>
-      </div>
      </div>
 
      <div class="form-group">
-      <div class="controls">
 
         <input type="checkbox" name="send_classes" value="1"[#if SEND_CLASSES="1"#] checked[#endif#]>
         Classes
-      </div>
+
      </div>
 
      <div class="form-group">
-      <div class="controls">
-        <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]>
+             <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]>
         <#LANG_OBJECTS#>
-      </div>
-     </div>
+          </div>
 
      <div class="form-group">
-      <div class="controls">
-
         <input type="checkbox" name="send_scripts" value="1"[#if SEND_SCRIPTS="1"#] checked[#endif#]>
         <#LANG_MODULE_SCRIPTS#>
-      </div>
      </div>
 
      <div class="form-group">
-      <div class="controls">
-
         <input type="checkbox" name="send_patterns" value="1"[#if SEND_PATTERNS="1"#] checked[#endif#]>
         <#LANG_MODULE_PATTERNS#>
-      </div>
      </div>
 
 
-     <div class="form-actions">
+     <div class="form-goup">
       <button type="submit" name="subm" value="Submit" class="btn btn-primary">Send to CONNECT</button>
       <input type="hidden" name="view_mode" value="send_data">
       <input type="hidden" name="mode" value="update">
@@ -141,6 +134,19 @@
     </fieldset>
    </form>
   </div>
+
+  [#if CONNECT_BACKUP="1"#]
+  &nbsp;
+  <h3>Cloud Backup</h3>
+  <div>
+   <a href="https://connect.smartliving.ru/members/backup.html" target="_blank">Manage backups</a>
+  </div>
+  &nbsp;
+  <div>
+  <a href="?mode=sendbackup" class="btn btn-default">Cloud Backup Now</a>
+  </div>
+  [#endif#]
+
   [#endif#]
 
  </div>

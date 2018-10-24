@@ -152,7 +152,7 @@ function run() {
   $url='https://connect.smartliving.ru/upload/';
   $ch = curl_init();
 
-   DebMes("Cloudbackup file $dest_file to $url");
+   DebMes("Cloudbackup file $dest_file to $url",'cloudbackup');
 
   curl_setopt($ch,CURLOPT_URL, $url);
   curl_setopt($ch,CURLOPT_POST, 1);
@@ -170,9 +170,14 @@ function run() {
   //close connection
   curl_close($ch);
 
+   DebMes("Cloudbackup result: ".$result,'cloudbackup');
+
   //echo "POST RESULT: ".$result;
   if ($result=='OK') {
    @unlink($dest_file);
+   return true;
+  } else {
+   return false;
   }
 
   }
@@ -187,6 +192,14 @@ function run() {
 * @access public
 */
 function admin(&$out) {
+
+
+ if (gr('ok_msg')) {
+  $out['OK_MSG']=gr('ok_msg');
+ }
+ if (gr('err_msg')) {
+  $out['ERR_MSG']=gr('err_msg');
+ }
 
  $this->getConfig();
 
@@ -224,6 +237,15 @@ function admin(&$out) {
    $this->saveConfig();
    setGlobal('cycle_connectControl', 'restart');
    $this->redirect("?");
+ }
+
+ if ($this->mode=='sendbackup') {
+  $result=$this->cloudBackup();
+  if ($result) {
+   $this->redirect("?ok_msg=".urlencode('Backup sent'));
+  } else {
+   $this->redirect("?err_msg=".urlencode('Error sending backup'));
+  }
  }
 
  if ($this->view_mode=='send_data') {
