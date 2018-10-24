@@ -172,6 +172,91 @@ function usual(&$out) {
 	}
 
 /**
+* terminals subscription events
+*
+* @access public
+*/
+function processSubscription($event, $details='') {
+    $this->getConfig();
+    if ($event=='SAYTO') {
+        if($this->debug == 1) debmes('mpt sayto start');
+        $level=$details['level'];
+        $message=$details['message'];
+        $target = $details['destination'];
+	if(!$target) return 0;
+        //DebMes($details);
+        $level = $details['level'];
+        $message = $details['message'];
+        $levelmes = getGlobal('ThisComputer.minMsgLevel');
+        }
+    	
+    	
+    if ($event=='ASK') {
+       $tartget = $this->targetToIp($details['target']);
+       if(!$target) return 0;
+       $message=$details['prompt'];
+       $this->send_mpt('ask', $message, $target);
+       if($this->debug == 1) debmes('mpt ask ' . $message . '; target = ' . $target);
+       //DebMes($details);
+       $level = $details['level'];
+       $message = $details['message'];
+       $levelmes = getGlobal('ThisComputer.minMsgLevel');
+       }
+    
+    if ($event=='SAYREPLY') {
+       $level=$details['level'];
+       $message=$details['message'];
+       $source=$details['source'];
+       $target = $this->targetToIp($details['replyto']);
+       if(!$target) return 0;
+       $this->send_mpt('tts', $message, $target);
+       $levelmes = getGlobal('ThisComputer.minMsgLevel');
+       if($this->debug == 1) debmes('mpt sayto ' . $message . '; level = ' . $level . '; to = ' . $destination);
+       } 
+ 
+    // chek the level message for nigth or darknest mode 
+    if ($levelmes<$level){
+        // main play instruction with generate message for terminals when not installed TTS 
+        // check the existed files generated from tts 
+        if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
+            $cached_filename = '/cms/cached/voice/' . md5($message) . '_google.mp3';
+        } else if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_yandex.mp3')) {
+            $cached_filename = '/cms/cached/voice/' . md5($message) . '_yandex.mp3';
+        } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.mp3')) {
+            $cached_filename = '/cms/cached/voice/rh_' . md5($message) . '.mp3';
+        } else {
+            // generate message from google tts
+            $filename = md5($message) . '_google.mp3';
+            $cachedVoiceDir = ROOT . 'cms/cached/voice';
+            $cachedFileName = $cachedVoiceDir . '/' . $filename;
+            $base_url = 'https://translate.google.com/translate_tts?';
+            $lang = SETTINGS_SITE_LANGUAGE;
+            if ($lang == 'ua') { 
+                $lang = 'uk';
+            }else if ($lang == 'ru') {
+     	       $lang = 'ru';
+            }else {
+     	       $lang = 'en';
+            }
+            $qs = http_build_query([ 'ie' => 'UTF-8', 'client' => 'tw-ob', 'q' => $message, 'tl' => $lang,]);
+            try {
+               $contents = file_get_contents($base_url . $qs);
+            } catch (Exception $e) {
+               registerError('ssdp_finder', get_class($e) . ', ' . $e->getMessage());
+            }
+            if (isset($contents)) {
+               CreateDir($cachedVoiceDir);
+               SaveFile($cachedFileName, $contents);
+            }
+            $cached_filename = '/cms/cached/voice/' . md5($message) . '_google.mp3';
+       	   }
+         playMedia($cached_filename, $target, true);
+     }
+}
+    
+
+
+/**
 * Install
 *
 * Module installation routine
@@ -179,7 +264,11 @@ function usual(&$out) {
 * @access private
 */
  function install($parent_name="") {
+  subscribeToEvent($this->name, 'SAYREPLY','',99);
+  subscribeToEvent($this->name, 'SAYTO','',99);
+  subscribeToEvent($this->name, 'ASK','',99);
   parent::install($parent_name);
+
  }
 /**
 * Uninstall
@@ -190,6 +279,9 @@ function usual(&$out) {
 */
  function uninstall() {
    SQLDropTable('terminals');
+   unsubscribeFromEvent($this->name, 'SAYTO');
+   unsubscribeFromEvent($this->name, 'ASK');
+   unsubscribeFromEvent($this->name, 'SAYREPLY');
   parent::uninstall();
  }
 /**
