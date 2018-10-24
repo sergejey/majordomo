@@ -17,6 +17,7 @@ class dnla extends app_player_addon {
         $this->description .= 'на всех устройства поддерживающих такой протокол. ';
         $this->terminal = $terminal;
         $this->reset_properties();
+
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
         if ($this->terminal['HOST'] and !$this->terminal['PLAYER_CONTROL_ADDRESS']) {
             $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
@@ -26,7 +27,32 @@ class dnla extends app_player_addon {
                 SQLUpdate('terminals', $rec); // update
                 DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
             }
-        }
+        } else {
+            // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
+            // проверяем на правильность PLAYER_CONTROL_ADDRESS некоторые устройства могут их изменять
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $content = curl_exec($ch);
+    
+            // proverka na otvet
+            $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+    
+            // если не получен ответ делаем поиск устройства по новой
+             if ($retcode!=200) {
+                $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
+                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+                if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
+                $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
+                if ($rec['HOST']) {
+                    SQLUpdate('terminals', $rec); // update
+                    DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                    }
+                }
+              }
+
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         }
@@ -137,7 +163,7 @@ class dnla extends app_player_addon {
         return $this->success;
     }  
 
-	// функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
+    // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
      function search($ip = '255.255.255.255') {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
@@ -152,7 +178,7 @@ class dnla extends app_player_addon {
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
         $request .= "\r\n";
         
-        socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
+        @socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
 
         // send the data from socket
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
