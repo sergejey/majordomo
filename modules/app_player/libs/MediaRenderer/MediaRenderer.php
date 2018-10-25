@@ -124,7 +124,7 @@ class MediaRenderer {
 &lt;upnp:artist&gt;tarasfrompir&lt;/upnp:artist&gt;
 &lt;upnp:albumArtURI&gt;&lt;/upnp:albumArtURI&gt;
 &lt;upnp:album&gt;Stream&lt;/upnp:album&gt;
-&lt;res protocolInfo="http-get:*:audio/mpeg:DLNA.ORG_OP=00;DLNA.ORG_FLAGS=017000000000000 00000000000000000"&gt;' . $url . '&lt;/res&gt;
+&lt;res protocolInfo="http-get:*:'.$content_type.':DLNA.ORG_OP=00;DLNA.ORG_FLAGS=017000000000000 00000000000000000"&gt;' . $url . '&lt;/res&gt;
 &lt;/item&gt;
 &lt;/DIDL-Lite&gt;';
         $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
