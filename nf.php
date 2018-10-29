@@ -126,7 +126,7 @@ if ($link != '')
          $tmp2 = explode('=', $pair);
          if (isset($tmp2[1])) {
             $_REQUEST[$tmp2[0]] = $tmp2[1];
-            //${$tmp2[0]}     = $tmp2[1];
+            ${$tmp2[0]}     = $tmp2[1];
          }
       }
    }
