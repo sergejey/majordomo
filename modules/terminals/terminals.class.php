@@ -216,7 +216,7 @@ function processSubscription($event, $details='') {
        } 
  
     // chek the level message for nigth or darknest mode 
-    if ($levelmes<$level){
+    if ($levelmes>=$level){
         // main play instruction with generate message for terminals when not installed TTS 
         // check the existed files generated from tts 
         if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
