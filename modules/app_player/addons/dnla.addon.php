@@ -60,7 +60,7 @@ class dnla extends app_player_addon {
 
     // Play
     function play($input) {
-        DebMes('ssilka с плеера -'.$input.'-');
+        DebMes('Ссылка подана на плеер - '.$input);
         $this->reset_properties();
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
