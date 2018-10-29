@@ -23,6 +23,7 @@ function __construct() {
   $this->title="<#LANG_MODULE_TERMINALS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
+  $this->serverip=$this->getLocalIp();
 }
 /**
 * saveParams
@@ -250,8 +251,7 @@ function processSubscription($event, $details='') {
             }
             $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
        	   }
-	 DebMes('Ссылка на воспроизведение терминалом'.$cached_filename);
-	 DebMes('Терминал - '.$target);
+       	 DebMes ('Терминалы отправили - '.$cached_filename);
          playMedia($cached_filename, $target, true);
      }
 }
@@ -267,8 +267,11 @@ function getLocalIp() {
   socket_getsockname($s, $local_ip_address, $port);
   @socket_shutdown($s, 2);
   socket_close($s);
+  
   return $local_ip_address; 
 }
+
+
 /**
 * Install
 *
