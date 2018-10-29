@@ -131,7 +131,7 @@ function gr($var_name,$type='') {
    if (isset($_REQUEST[$var_name])) {
       $value = $_REQUEST[$var_name];
    } else {
-      return '';
+      return;
    }
    if (get_magic_quotes_gpc()) {
       stripit($value);
