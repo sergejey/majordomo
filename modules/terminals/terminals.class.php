@@ -248,7 +248,7 @@ function processSubscription($event, $details='') {
                CreateDir($cachedVoiceDir);
                SaveFile($cachedFileName, $contents);
             }
-            $cached_filename = 'http://'. $this->getLocalIp(). '/cms/cached/voice/' . md5($message) . '_google.mp3';
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
        	   }
 	 DebMes('Ссылка на воспроизведение терминалом'.$cached_filename);
 	 DebMes('Терминал - '.$target);
