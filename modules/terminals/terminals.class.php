@@ -23,6 +23,7 @@ function __construct() {
   $this->title="<#LANG_MODULE_TERMINALS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
+  $this->serverip=$this->getLocalIp();
 }
 /**
 * saveParams
@@ -215,15 +216,15 @@ function processSubscription($event, $details='') {
        } 
  
     // chek the level message for nigth or darknest mode 
-    if ($levelmes<$level){
+    if ($levelmes>=$level){
         // main play instruction with generate message for terminals when not installed TTS 
         // check the existed files generated from tts 
         if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
-            $cached_filename = '/cms/cached/voice/' . md5($message) . '_google.mp3';
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
         } else if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_yandex.mp3')) {
-            $cached_filename = '/cms/cached/voice/' . md5($message) . '_yandex.mp3';
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_yandex.mp3';
         } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.mp3')) {
-            $cached_filename = '/cms/cached/voice/rh_' . md5($message) . '.mp3';
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/rh_' . md5($message) . '.mp3';
         } else {
             // generate message from google tts
             $filename = md5($message) . '_google.mp3';
@@ -248,12 +249,27 @@ function processSubscription($event, $details='') {
                CreateDir($cachedVoiceDir);
                SaveFile($cachedFileName, $contents);
             }
-            $cached_filename = '/cms/cached/voice/' . md5($message) . '_google.mp3';
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
        	   }
+       	 DebMes ('Терминалы отправили - '.$cached_filename);
          playMedia($cached_filename, $target, true);
      }
 }
     
+/**
+* get local IP 
+*
+* @access public
+*/
+function getLocalIp() { 
+  $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+  socket_connect($s ,'8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
+  socket_getsockname($s, $local_ip_address, $port);
+  @socket_shutdown($s, 2);
+  socket_close($s);
+  
+  return $local_ip_address; 
+}
 
 
 /**

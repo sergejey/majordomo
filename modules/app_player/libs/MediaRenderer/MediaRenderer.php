@@ -26,7 +26,7 @@ class MediaRenderer {
         curl_close($ch);
 
         // если не получен ответ делаем поиск устройства по новой
-	// сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
+    // сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
         if ($retcode!=200) {
             $crl = $this->search($this->ip);
             // получаем айпи и порт устройства по новой
@@ -60,12 +60,12 @@ class MediaRenderer {
         }
     }
 
-    private function instanceOnly($command, $id = 0) {
+    private function instanceOnly ($command, $id = 0) {
         $args = array('InstanceID' => $id);
         return $this->sendRequestToDevice($command, $args);
     }
 
-    private function sendRequestToDevice($command, $arguments) {
+    private function sendRequestToDevice ($command, $arguments) {
         $body = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>'."\r\n";
         $body.= '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">';
         $body.= '<s:Body>';
@@ -112,7 +112,7 @@ class MediaRenderer {
             return self::unpause();
         }
  
-	// neobhodimo ostanovit vosproizvedenie
+        // neobhodimo ostanovit vosproizvedenie
         $this->instanceOnly('Stop');
 
         // proverem est li rashirenie
@@ -126,25 +126,21 @@ class MediaRenderer {
             $urimetadata = $this->get_urihead($content_type);
         }
         //var_dump($urimetadata);
-    	$MetaData ='&lt;?xml version="1.0" encoding="UTF-8"?&gt;';
-        $MetaData.='&lt;DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" ';
-        $MetaData.='xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dlna="urn:schemas-dlna-org:metadata-1-0/"'; 
-        $MetaData.='xmlns:sec="http://www.sec.co.kr/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"&gt;';
-        $MetaData.='&lt;item id="0" parentID="-1" restricted="0"&gt;';
+        $MetaData ='&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;';
+        $MetaData.='&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
+        $MetaData.='&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;0&quot;&gt;';
         $MetaData.='&lt;upnp:class&gt;'.$urimetadata['item'].'&lt;/upnp:class&gt;';
         $MetaData.='&lt;dc:title&gt;Majordomo mesage&lt;/dc:title&gt;';
         $MetaData.='&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;';
-        $MetaData.='&lt;res protocolInfo="'.$urimetadata['httphead'].'"&gt;' . $url . '&lt;/res&gt;';
+        $MetaData.='&lt;res protocolInfo=&quot;'.$urimetadata['httphead'].'&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData.='&lt;/item&gt;';
         $MetaData.='&lt;/DIDL-Lite&gt;';
-
+        
         $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-        var_dump($response);
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
-        var_dump($response);
-	return $response;
+    return $response;
     }
 
     public function seek($unit = 'TRACK_NR', $target = 0) {
@@ -256,53 +252,53 @@ class MediaRenderer {
 // dorabativaem
 private function get_urihead($uri_head){
     $avmetadatauri = array(
-	'video/avi'=>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/avi:DLNA.ORG_PN=PV_DIVX_DX50;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-	'video/x-ms-asf' =>		array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'video/x-ms-wmv' =>		array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'video/mp4'=>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mp4:*'),
-	'video/mpeg' =>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-	'video/mpeg2'=>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mpeg2:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'video/mp2t' =>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'video/mp2p' =>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'video/quicktime'=>		array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/quicktime:*'),
-	'video/x-mkv'=>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-matroska:*'), 
-	'video/3gpp' =>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/3gpp:*'),
-	'video/x-flv'=>			array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-flv:*'),
-	'audio/x-aac'=>			array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-aac:*'),
-	'audio/x-ac3'=>			array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ac3:DLNA.ORG_PN=AC3;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'audio/mpeg' =>			array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'application/ogg'=>		array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ogg:*'),
-	'audio/x-ms-wma' =>		array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-	'application/octet-stream' =>	array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'video/avi'=>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/avi:DLNA.ORG_PN=PV_DIVX_DX50;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'video/x-ms-asf' =>        array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'video/x-ms-wmv' =>        array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'video/mp4'=>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mp4:*'),
+    'video/mpeg' =>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'video/mpeg2'=>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mpeg2:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'video/mp2t' =>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'video/mp2p' =>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'video/quicktime'=>        array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/quicktime:*'),
+    'video/x-mkv'=>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-matroska:*'), 
+    'video/3gpp' =>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/3gpp:*'),
+    'video/x-flv'=>            array('item'=>'object.item.videoItem', 'httphead'=>'http-get:*:video/x-flv:*'),
+    'audio/x-aac'=>            array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-aac:*'),
+    'audio/x-ac3'=>            array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ac3:DLNA.ORG_PN=AC3;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'audio/mpeg' =>            array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'application/ogg'=>        array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ogg:*'),
+    'audio/x-ms-wma' =>        array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'application/octet-stream' =>    array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
 /// proba
-	'audio/aacp'=>			array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:video/x-flv:*'),
+    'audio/aacp'=>            array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:video/x-flv:*'),
 
-	);
+    );
     return $avmetadatauri[$uri_head];
     }
 // get headers with extends files
 private function get_extfile($ext){
     $extmetadatauri = array(
-    'avi'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/avi:DLNA.ORG_PN=PV_DIVX_DX50;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'asf'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000 '), 
-    'wmv'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'mp4'=> 	array('item'=>'object.item.videoItem',		'httphead'=>'http-get:*:video/mp4:*'),
-    'mpeg'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'mpeg_ts' => array('item'=>'object.item.videoItem',		'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000 '),
-    'mpeg1' => 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG1;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-    'mpeg2' => 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/mpeg2:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'ts'  => 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'mp2t' => 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'mp2p' => 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
-    'mov'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/quicktime:*'),
-    'mkv'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/x-matroska:*'),
-    '3gp'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/3gpp:*'), 
-    'flv'=> 	array('item'=>'object.item.videoItem', 		'httphead'=>'http-get:*:video/x-flv:*'),
-    'aac'=> 	array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-aac:*'),
-    'ac3'=> 	array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ac3:DLNA.ORG_PN=AC3;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-    'mp3'=> 	array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-    'ogg'=> 	array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ogg:*'),
-    'wma'=> 	array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'avi'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/avi:DLNA.ORG_PN=PV_DIVX_DX50;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'asf'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000 '), 
+    'wmv'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'mp4'=>     array('item'=>'object.item.videoItem',        'httphead'=>'http-get:*:video/mp4:*'),
+    'mpeg'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'mpeg_ts' => array('item'=>'object.item.videoItem',        'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000 '),
+    'mpeg1' =>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/mpeg:DLNA.ORG_PN=MPEG1;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'mpeg2' =>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/mpeg2:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'ts'  =>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'mp2t' =>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'mp2p' =>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/mp2t:DLNA.ORG_PN=MPEG_TS_HD_NA;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'), 
+    'mov'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/quicktime:*'),
+    'mkv'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/x-matroska:*'),
+    '3gp'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/3gpp:*'), 
+    'flv'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/x-flv:*'),
+    'aac'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-aac:*'),
+    'ac3'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ac3:DLNA.ORG_PN=AC3;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'mp3'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'ogg'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ogg:*'),
+    'wma'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
 );
     return $extmetadatauri[$ext];
     }
