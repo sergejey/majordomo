@@ -48,7 +48,7 @@ if ($params['PROPERTY']=='from_response' && gg('HomeBridge.mode')=='list') {
 if ($params['PROPERTY']=='from_get' && $device['ID']) {
     $payload=array();
     $payload['name']=$device['LINKED_OBJECT'];
-    $payload['service_name']=$device['TITLE'];
+    $payload['service_name']=processTitle($device['TITLE']);
 
     switch($device['TYPE']) {
       case 'relay':
@@ -201,7 +201,7 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
             if ($data['characteristic'] == 'On') {
                 $payload=array();
                 $payload['name']=$device['LINKED_OBJECT'];
-                $payload['service_name']=$device['TITLE'];
+                $payload['service_name']=processTitle($device['TITLE']);
                 //$payload['service'] = 'Switch';
                 $payload['characteristic'] = 'On';
                 $payload['value'] = false;
