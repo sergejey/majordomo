@@ -121,12 +121,11 @@ if ($link != '')
       $pd    = $matches[1];
       $other = $matches[2];
       $tmp   = explode('&', $other);
-
       foreach ($tmp as $pair)
       {
          $tmp2 = explode('=', $pair);
          if (isset($tmp2[1])) {
-            $_GET[$tmp2[0]] = $tmp2[1];
+            $_REQUEST[$tmp2[0]] = $tmp2[1];
             ${$tmp2[0]}     = $tmp2[1];
          }
       }
@@ -135,6 +134,7 @@ if ($link != '')
    {
       $pd = $matches[1];
    }
+   $_REQUEST['pd']=$pd;
 }
 else
 {

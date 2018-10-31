@@ -23,6 +23,7 @@ function __construct() {
   $this->title="<#LANG_MODULE_TERMINALS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
   $this->checkInstalled();
+  $this->serverip=$this->getLocalIp();
 }
 /**
 * saveParams
@@ -159,16 +160,118 @@ function usual(&$out) {
  function edit_terminals(&$out, $id) {
   require(DIR_MODULES.$this->name.'/terminals_edit.inc.php');
  }
+
+	/**
+	* terminals delete record
+	*
+	* @access public
+	*/
+	function delete_terminals($id) {
+		if($rec = getTerminalByID($id)) {
+			SQLExec('DELETE FROM `terminals` WHERE `ID` = '.$rec['ID']);
+		}
+	}
+
 /**
-* terminals delete record
+* terminals subscription events
 *
 * @access public
 */
- function delete_terminals($id) {
-  $rec=SQLSelectOne("SELECT * FROM terminals WHERE ID='$id'");
-  // some action for related tables
-  SQLExec("DELETE FROM terminals WHERE ID='".$rec['ID']."'");
- }
+function processSubscription($event, $details='') {
+    $this->getConfig();
+    if ($event=='SAYTO') {
+        if($this->debug == 1) debmes('mpt sayto start');
+        $level=$details['level'];
+        $message=$details['message'];
+        $target = $details['destination'];
+	if(!$target) return 0;
+        //DebMes($details);
+        $level = $details['level'];
+        $message = $details['message'];
+        $levelmes = getGlobal('ThisComputer.minMsgLevel');
+        }
+    	
+    	
+    if ($event=='ASK') {
+       $tartget = $this->targetToIp($details['target']);
+       if(!$target) return 0;
+       $message=$details['prompt'];
+       $this->send_mpt('ask', $message, $target);
+       if($this->debug == 1) debmes('mpt ask ' . $message . '; target = ' . $target);
+       //DebMes($details);
+       $level = $details['level'];
+       $message = $details['message'];
+       $levelmes = getGlobal('ThisComputer.minMsgLevel');
+       }
+    
+    if ($event=='SAYREPLY') {
+       $levelMes=$details['level'];
+       $message=$details['message'];
+       $source=$details['source'];
+       $target = $this->targetToIp($details['replyto']);
+       if(!$target) return 0;
+       $this->send_mpt('tts', $message, $target);
+       $minMsgLevel = getGlobal('ThisComputer.minMsgLevel');
+       if($this->debug == 1) debmes('mpt sayto ' . $message . '; level = ' . $level . '; to = ' . $destination);
+       } 
+ 
+    // chek the level message for nigth or darknest mode 
+    if ( $minMsgLevel >= $levelMes ){
+        // main play instruction with generate message for terminals when not installed TTS 
+        // check the existed files generated from tts 
+        if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
+        } else if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_yandex.mp3')) {
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_yandex.mp3';
+        } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.mp3')) {
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/rh_' . md5($message) . '.mp3';
+        } else {
+            // generate message from google tts
+            $filename = md5($message) . '_google.mp3';
+            $cachedVoiceDir = ROOT . 'cms/cached/voice';
+            $cachedFileName = $cachedVoiceDir . '/' . $filename;
+            $base_url = 'https://translate.google.com/translate_tts?';
+            $lang = SETTINGS_SITE_LANGUAGE;
+            if ($lang == 'ua') { 
+                $lang = 'uk';
+            }else if ($lang == 'ru') {
+     	       $lang = 'ru';
+            }else {
+     	       $lang = 'en';
+            }
+            $qs = http_build_query([ 'ie' => 'UTF-8', 'client' => 'tw-ob', 'q' => $message, 'tl' => $lang,]);
+            try {
+               $contents = file_get_contents($base_url . $qs);
+            } catch (Exception $e) {
+               registerError($this->name, get_class($e) . ', ' . $e->getMessage());
+            }
+            if (isset($contents)) {
+               CreateDir($cachedVoiceDir);
+               SaveFile($cachedFileName, $contents);
+            }
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
+       	   }
+       	 DebMes ('Терминалы отправили - '.$cached_filename);
+         playMedia($cached_filename, $target, true);
+     }
+}
+    
+/**
+* get local IP 
+*
+* @access public
+*/
+function getLocalIp() { 
+  $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+  socket_connect($s ,'8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
+  socket_getsockname($s, $local_ip_address, $port);
+  @socket_shutdown($s, 2);
+  socket_close($s);
+  
+  return $local_ip_address; 
+}
+
+
 /**
 * Install
 *
@@ -177,7 +280,11 @@ function usual(&$out) {
 * @access private
 */
  function install($parent_name="") {
+  subscribeToEvent($this->name, 'SAYREPLY','',99);
+  subscribeToEvent($this->name, 'SAYTO','',99);
+  subscribeToEvent($this->name, 'ASK','',99);
   parent::install($parent_name);
+
  }
 /**
 * Uninstall
@@ -188,6 +295,9 @@ function usual(&$out) {
 */
  function uninstall() {
    SQLDropTable('terminals');
+   unsubscribeFromEvent($this->name, 'SAYTO');
+   unsubscribeFromEvent($this->name, 'ASK');
+   unsubscribeFromEvent($this->name, 'SAYREPLY');
   parent::uninstall();
  }
 /**
@@ -211,6 +321,7 @@ terminals - Terminals
  terminals: PLAYER_PORT varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_USERNAME varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_PASSWORD varchar(255) NOT NULL DEFAULT ''
+ terminals: PLAYER_CONTROL_ADDRESS varchar(255) NOT NULL DEFAULT ''
  terminals: IS_ONLINE int(3) NOT NULL DEFAULT '0'
  terminals: MAJORDROID_API int(3) NOT NULL DEFAULT '0'
  terminals: LATEST_REQUEST varchar(255) NOT NULL DEFAULT ''

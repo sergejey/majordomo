@@ -138,8 +138,7 @@ class mysql
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
-         $bt = debug_backtrace();
-         die($err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
+         die('Can\'t connect to database ('.$err_no . ": " . $err_details.')');
          //registerError('sqlconn', $err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
          //new custom_error($err_no . ": " . $err_details, 1);
          //exit(1);
@@ -147,8 +146,7 @@ class mysql
       $db_select = mysqli_select_db($this->dbh, $this->dbName);
       if (!$db_select) {
          Define('NO_DATABASE_CONNECTION',1);
-         $bt = debug_backtrace();
-         die("Selecting db: ".$this->dbName." backtrace:" . json_encode($bt));
+         die("Selecting db: ".$this->dbName);
          //$this->Error("Selecting db: ".$this->dbName, 0);
          //exit(1);
       } else

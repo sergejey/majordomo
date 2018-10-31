@@ -256,7 +256,7 @@ function usual(&$out) {
   if ($rule['TERMINALS']) {
    $terminals_matched=false;
    if ($session->data['TERMINAL']) {// && !$session->data['TERMINAL_ID']
-    $terminal=SQLSelectOne("SELECT ID FROM terminals WHERE NAME='".$session->data['TERMINAL']."'");
+    $terminal = getTerminalsByName($session->data['TERMINAL'], 1);
     if ($terminal['ID']) {
      $session->data['TERMINAL_ID']=$terminal['ID'];
     }

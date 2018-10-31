@@ -341,7 +341,7 @@ while (false !== ($result = $threads->iteration()))
             */
             } elseif ($control=='restart' || $control=='start') {
                $to_stop[$title]=time();
-               $to_start[$title]=time()+5;
+               $to_start[$title]=time()+30;
             }
             setGlobal($title.'Control','');
          }
@@ -361,11 +361,12 @@ while (false !== ($result = $threads->iteration()))
             $auto_restarts[]=$title;
          }
          $cycle_updated_timestamp=getGlobal($title.'Run');
-         if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>15*60)) {
+         if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
             DebMes("Looks like $title is dead. Need to recovery",'threads');
             registerError('cycle_hang', $title);
-            $to_stop[$title]=time();
-            $to_start[$title]=time()+5;
+            setGlobal($title.'Control','restart');
+            //$to_stop[$title]=time();
+            //$to_start[$title]=time()+5;
          }
       }
    }
@@ -408,6 +409,8 @@ while (false !== ($result = $threads->iteration()))
             $pipe_id = $threads->newThread($cmd);
             $is_running[$title]=$pipe_id;
             $started_when[$title]=time();
+         } else {
+            DebMes("Got to_start command for ".$title.' but looks like it is already running','threads');
          }
          unset($to_stop[$title]);
          unset($to_start[$title]);
@@ -433,6 +436,8 @@ while (false !== ($result = $threads->iteration()))
                if (in_array($cycle_title,$auto_restarts)) {
                   $index=array_search($cycle_title,$auto_restarts);
                   array_splice($auto_restarts, $index, 1);
+                  $need_restart=1;
+               } elseif ($to_start[$cycle_title]) {
                   $need_restart=1;
                }
             }

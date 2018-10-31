@@ -49,7 +49,7 @@ if ($qry != '' && $qry != $lastest_word)
     $session->data['TERMINAL']=$terminal;
    }
 
-   $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
+   $terminals = getAllTerminals(-1, 'TITLE');
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {

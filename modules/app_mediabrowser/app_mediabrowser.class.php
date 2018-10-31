@@ -203,7 +203,7 @@ function usual(&$out) {
     require(DIR_MODULES.$this->name.'/stream_files.php');
    }
 
-   $terminals=SQLSelect("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY TITLE");
+   $terminals = getTerminalsCanPlay(-1, 'TITLE');
    $total=count($terminals);
    //for($i=0;$i<$total;$i++) {
     //if ($terminals[$i]['NAME']==$session->data['PLAY_TERMINAL']) {
