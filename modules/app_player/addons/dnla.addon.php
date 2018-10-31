@@ -183,7 +183,7 @@ class dnla extends app_player_addon {
         @socket_sendto($socket, $request, strlen($request), 0, '239.255.255.250', 1900);
 
         // send the data from socket
-        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'2', 'usec'=>'128'));
+        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
         $response = array();
         do {
             $buf = null;
