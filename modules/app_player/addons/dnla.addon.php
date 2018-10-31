@@ -41,9 +41,9 @@ class dnla extends app_player_addon {
             curl_close($ch);
     
             // если не получен ответ делаем поиск устройства по новой
-             if ($retcode!=200) {
+            if ($retcode!=200) {
                 $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search();
                 if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if ($rec['HOST']) {
@@ -51,7 +51,7 @@ class dnla extends app_player_addon {
                     DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
                     }
                 }
-              }
+            }
 
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
@@ -166,7 +166,7 @@ class dnla extends app_player_addon {
     }  
 
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
-     function search($ip = '255.255.255.255') {
+     function search() {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
@@ -180,10 +180,10 @@ class dnla extends app_player_addon {
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
         $request .= "\r\n";
         
-        @socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
+        @socket_sendto($socket, $request, strlen($request), 0, '239.255.255.250', 1900);
 
         // send the data from socket
-        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
+        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'2', 'usec'=>'128'));
         $response = array();
         do {
             $buf = null;
@@ -193,7 +193,10 @@ class dnla extends app_player_addon {
             if(!is_null($buf)){
                 $messages = explode("\r\n", $buf);
                     foreach( $messages as $row ) {
-                         if( stripos( $row, 'loca') === 0 ) {
+                        if( stripos( $row, 'AVTransport') ) {
+                              break;
+                         }
+                        if( stripos( $row, 'loca') === 0 and stripos( $row, $this->terminal['HOST'])) {
                               $response = str_ireplace( 'location: ', '', $row );
                          }
                     }
