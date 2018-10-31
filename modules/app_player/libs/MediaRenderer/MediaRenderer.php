@@ -138,6 +138,8 @@ class MediaRenderer {
         
         $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
+        // wait for stream
+        sleep(1);
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
     return $response;
@@ -267,13 +269,13 @@ private function get_urihead($uri_head){
     'audio/x-aac'=>            array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-aac:*'),
     'audio/x-ac3'=>            array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ac3:DLNA.ORG_PN=AC3;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
     'audio/mpeg' =>            array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-    'application/ogg'=>        array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ogg:*'),
-    'audio/x-ms-wma' =>        array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-    'application/octet-stream' =>    array('item'=>'object.item.audioItem.musicTrack', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-/// proba
+    'application/ogg'=>        array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ogg:*'),
+    'audio/x-ms-wma' =>        array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    'application/octet-stream' =>    array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+    /// provereno
     'audio/aacp'=>            array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:video/x-flv:*'),
-
     );
+	
     return $avmetadatauri[$uri_head];
     }
 // get headers with extends files
@@ -296,10 +298,13 @@ private function get_extfile($ext){
     'flv'=>     array('item'=>'object.item.videoItem',         'httphead'=>'http-get:*:video/x-flv:*'),
     'aac'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-aac:*'),
     'ac3'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ac3:DLNA.ORG_PN=AC3;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-    'mp3'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
     'ogg'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ogg:*'),
     'wma'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL;DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
-);
+    // provereno
+    'mp3'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
+
+    );
+
     return $extmetadatauri[$ext];
     }
 
