@@ -243,7 +243,7 @@ function processSubscription($event, $details='') {
             try {
                $contents = file_get_contents($base_url . $qs);
             } catch (Exception $e) {
-               registerError('ssdp_finder', get_class($e) . ', ' . $e->getMessage());
+               registerError($this->name, get_class($e) . ', ' . $e->getMessage());
             }
             if (isset($contents)) {
                CreateDir($cachedVoiceDir);
