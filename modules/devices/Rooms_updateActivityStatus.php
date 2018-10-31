@@ -37,7 +37,11 @@ if (getGlobal('NobodyHomeMode.active')) {
             $res_rooms[] = $rooms[$i]['room'];
         }
     }
-    $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME." ". LANG_DEVICES_ROOMS_ACTIVITY . " " . implode(", ", $res_rooms);
+    $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME.'.';
+    if (count($res_rooms)>0) {
+        $somebodyHomeText.=" ". LANG_DEVICES_ROOMS_ACTIVITY . ": " . implode(", ", $res_rooms);
+    }
+
 }
 
 echo $somebodyHomeText;

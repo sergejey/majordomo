@@ -18,6 +18,6 @@ for ($i = 0; $i < $total; $i++) {
     if (!$alive) {
         $object_rec=SQLSelectOne("SELECT DESCRIPTION FROM objects WHERE ID=".$res_objects[$i]['ID']);
         $yellow_state=1;
-        $details[]=$res_objects[$i]['TITLE'].' ('.$object_rec['DESCRIPTION'].') '.LANG_DEVICES_NOT_UPDATING;
+        $details[]=$res_objects[$i]['TITLE'].' ('.processTitle($object_rec['DESCRIPTION']).') '.LANG_DEVICES_NOT_UPDATING;
     }
 }
