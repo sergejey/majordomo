@@ -205,18 +205,18 @@ function processSubscription($event, $details='') {
        }
     
     if ($event=='SAYREPLY') {
-       $level=$details['level'];
+       $levelMes=$details['level'];
        $message=$details['message'];
        $source=$details['source'];
        $target = $this->targetToIp($details['replyto']);
        if(!$target) return 0;
        $this->send_mpt('tts', $message, $target);
-       $levelmes = getGlobal('ThisComputer.minMsgLevel');
+       $minMsgLevel = getGlobal('ThisComputer.minMsgLevel');
        if($this->debug == 1) debmes('mpt sayto ' . $message . '; level = ' . $level . '; to = ' . $destination);
        } 
  
     // chek the level message for nigth or darknest mode 
-    if (($levelmes>=$level and getGlobal(DarknessMode.active)==1) or getGlobal(DarknessMode.active)==0){
+    if ( $minMsgLevel >= $levelMes ){
         // main play instruction with generate message for terminals when not installed TTS 
         // check the existed files generated from tts 
         if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
