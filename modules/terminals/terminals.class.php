@@ -216,7 +216,7 @@ function processSubscription($event, $details='') {
        } 
  
     // chek the level message for nigth or darknest mode 
-    if ( $minMsgLevel >= $levelMes ){
+    if ( $minMsgLevel >= $levelMes and ($event=='SAYTO' or $event=='ASK' or $event=='SAYREPLY')){
         // main play instruction with generate message for terminals when not installed TTS 
         // check the existed files generated from tts 
         if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
@@ -225,6 +225,8 @@ function processSubscription($event, $details='') {
             $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_yandex.mp3';
         } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.mp3')) {
             $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/rh_' . md5($message) . '.mp3';
+        } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.wav')) {
+            $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/rh_' . md5($message) . '.wav';
         } else {
             // generate message from google tts
             $filename = md5($message) . '_google.mp3';
