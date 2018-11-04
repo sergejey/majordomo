@@ -215,6 +215,9 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    $terminals=SQLSelect("SELECT NAME FROM terminals WHERE (IS_ONLINE=1 AND MAJORDROID_API=1) OR PLAYER_TYPE='googlehomenotifier'");
    $total=count($terminals);
+   if (!$total){ 
+       return;
+   }
    for($i=0;$i<$total;$i++) {
     sayToSafe($ph, $level, $terminals[$i]['NAME']);
    }
