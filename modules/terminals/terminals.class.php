@@ -214,8 +214,15 @@ function processSubscription($event, $details='') {
        $minMsgLevel = getGlobal('ThisComputer.minMsgLevel');
        if($this->debug == 1) debmes('mpt sayto ' . $message . '; level = ' . $level . '; to = ' . $destination);
        } 
- 
-    // chek the level message for nigth or darknest mode 
+   //предполагается, что терминал приходит именем или хостом
+   if(!$terminal = getTerminalsByName($target, 1)[0]) {
+       $terminal = getTerminalsByHost($target, 1)[0];
+       }
+    //если терминал не найден или с дроидом или не может играть медиа выход
+    if(!$terminal[ID] || $terminal[MAJORDROID_API]==1 || $terminal[CANPLAY] == 0) {
+        return;
+        }
+    // проверим уровень сообщений для необходимости его воспроизведения через терминал
     if ( $minMsgLevel >= $levelMes and ($event=='SAYTO' or $event=='ASK' or $event=='SAYREPLY')){
         // main play instruction with generate message for terminals when not installed TTS 
         // check the existed files generated from tts 
