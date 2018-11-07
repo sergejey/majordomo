@@ -202,6 +202,7 @@ class dnla extends app_player_addon {
             $this->success = TRUE;
             $this->message = 'Volume changed';
          } else {
+	    DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
