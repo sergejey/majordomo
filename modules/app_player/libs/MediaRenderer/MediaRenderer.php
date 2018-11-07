@@ -6,7 +6,7 @@
  */
 
 class MediaRenderer {
-   public function __construct($server) {
+    public function __construct($server) {
         $crl = str_ireplace("Location:", "", $server);
 
         // получаем айпи и порт устройства
@@ -26,7 +26,7 @@ class MediaRenderer {
         curl_close($ch);
 
         // если не получен ответ делаем поиск устройства по новой
-    // сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
+        // сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
         if ($retcode!=200) {
             $crl = $this->search($this->ip);
             // получаем айпи и порт устройства по новой
@@ -94,16 +94,6 @@ class MediaRenderer {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
         curl_close($ch);
-        // создает документ хмл
-        $doc = new \DOMDocument();
-        //  загружет его
-        $doc->loadXML($response);
-        //  выбирает поле соответсвтуещее
-        $result = $doc->getElementsByTagName($command.'Response');
-        if(is_object($result->item(0))){
-          return $command.' ok';
-        }
-        
         return $response;
     }
 
@@ -142,7 +132,7 @@ class MediaRenderer {
         sleep(2);
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
-    return $response;
+        return $response;
     }
 
     public function seek($unit = 'TRACK_NR', $target = 0) {
@@ -169,19 +159,7 @@ class MediaRenderer {
     }
 
     public function getMedia() {
-        $response = $this->instanceOnly('GetMediaInfo');
-
-        // создает документ хмл
-        $doc = new \DOMDocument();
-        //  загружет его
-        $doc->loadXML($response);
-        //  выбирает поле соответсвтуещее
-        $result = $doc->getElementsByTagName('CurrentURI');
-        foreach($result as $item) {
-            $track = $item->nodeValue;
-        }
-
-        return $track;
+        return $this->instanceOnly('GetMediaInfo');
     }
 
     public function stop() {
@@ -248,7 +226,7 @@ class MediaRenderer {
             }
         } while(!is_null($buf));
         socket_close($socket);
-          $response = str_ireplace("Location:", "", $response);
+        $response = str_ireplace("Location:", "", $response);
         return $response;
     } 
 // dorabativaem
@@ -275,7 +253,7 @@ private function get_urihead($uri_head){
     /// provereno
     'audio/aacp'=>            array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:video/x-flv:*'),
     );
-	
+    
     return $avmetadatauri[$uri_head];
     }
 // get headers with extends files
@@ -304,7 +282,6 @@ private function get_extfile($ext){
     'mp3'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=11;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000'),
     'm3u'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/m3u:*'),
     );
-
     return $extmetadatauri[$ext];
     }
 

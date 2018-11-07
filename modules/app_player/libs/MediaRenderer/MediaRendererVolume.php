@@ -22,11 +22,11 @@ class MediaRendererVolume {
         $content = curl_exec($ch);
 
         // proverka na otvet
-        $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $retcode = @curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         // если не получен ответ делаем поиск устройства по новой
-	// сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
+        // сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
         if ($retcode!=200) {
             $crl = $this->search($this->ip);
             // получаем айпи и порт устройства по новой
@@ -66,13 +66,17 @@ class MediaRendererVolume {
 		return $this->sendRequestToDevice('SetVolume',$args);
 	}
 
-	public function mute()
+	public function GetVolume()
 	{
+		$args = array('InstanceId' => 0,'Channel' => 'Master');
+		return $this->sendRequestToDevice('GetVolume',$args);
+	}
+
+	public function mute() {
 		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredMute' => 1);
 		return $this->sendRequestToDevice('SetMute',$args);
 	}
-	public function unmute()
-	{
+	public function unmute() {
 		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredMute' => 0);
 		return $this->sendRequestToDevice('SetMute',$args);
 	}
@@ -106,22 +110,12 @@ class MediaRendererVolume {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
         curl_close($ch);
-        // создает документ хмл
-        $doc = new \DOMDocument();
-        //  загружет его
-        $doc->loadXML($response);
-        //  выбирает поле соответсвтуещее
-        $result = $doc->getElementsByTagName($command.'Response');
-        if(is_object($result->item(0))){
-          return $command.' ok';
-        }
-        
-        return $result;
+        return $response;
     }
 
     
     // функция получения CONTROL_ADDRESS при его отсутствии или его ге правильности
-     private function search($ip = '255.255.255.255') {
+    private function search($ip = '255.255.255.255') {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
