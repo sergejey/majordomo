@@ -64,12 +64,11 @@ class dnla extends app_player_addon {
         $current_dev = str_ireplace("Location:", "", $current_dev);
         // создаем хмл документ
         $doc = new \DOMDocument();
-        //  для получения уровня громкости TO DO
+        //  для получения уровня громкости
         $remotevolume = new MediaRendererVolume($current_dev);
         $response = $remotevolume->GetVolume();
         $doc->loadXML($response);
         $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
-        DebMes('Current volume in device - '.$volume);
         // Для получения состояния плеера
         $remote = new MediaRenderer($current_dev);
         $response = $remote->getPosition();
@@ -78,17 +77,16 @@ class dnla extends app_player_addon {
         $length = $this->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
         $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
-        DebMes('Current link in device - '.$doc->getElementsByTagName('TrackURI')->item(0)->nodeValue);
 	// Results
 	$this->reset_properties();
 	$this->success = TRUE;
 	$this->message = 'OK';
 	$this->data = array(
 		'track_id'		=> (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-		'length'		=> (int)$length, //Track length in seconds. Integer. If unknown = 0. // TO DO
-		'time'			=> (int)$time, //Current playback progress (in seconds). If unknown = 0. // TO DO
+		'length'		=> (int)$length, //Track length in seconds. Integer. If unknown = 0. 
+		'time'			=> (int)$time, //Current playback progress (in seconds). If unknown = 0. 
 		'state'			=> (string)$state, //Playback status. String: stopped/playing/paused/unknown 
-		'volume'		=> (int)$volume, // TO DO  Volume level in percent. Integer. Some players may have values greater than 100.
+		'volume'		=> (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
 		'random'		=> (boolean)$random, // Random mode. Boolean. 
 		'loop'			=> (boolean)$loop, // Loop mode. Boolean.
 		'repeat'		=> (boolean)$repeat, //Repeat mode. Boolean.
