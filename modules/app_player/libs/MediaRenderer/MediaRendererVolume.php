@@ -22,11 +22,11 @@ class MediaRendererVolume {
         $content = curl_exec($ch);
 
         // proverka na otvet
-        $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $retcode = @curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         // если не получен ответ делаем поиск устройства по новой
-	// сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
+    // сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
         if ($retcode!=200) {
             $crl = $this->search($this->ip);
             // получаем айпи и порт устройства по новой
@@ -64,6 +64,12 @@ class MediaRendererVolume {
 	{
 		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredVolume' => $volume);
 		return $this->sendRequestToDevice('SetVolume',$args);
+	}
+
+	public function GetVolume()
+	{
+		$args = array('InstanceId' => 0,'Channel' => 'Master');
+		return $this->sendRequestToDevice('GetVolume',$args);
 	}
 
 	public function mute()
@@ -116,11 +122,11 @@ class MediaRendererVolume {
           return $command.' ok';
         }
         
-        return $result;
+        return $response;
     }
 
     
-    // функция получения CONTROL_ADDRESS при его отсутствии или его ге правильности
+     // функция получения CONTROL_ADDRESS при его отсутствии или его ге правильности
      private function search($ip = '255.255.255.255') {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
@@ -155,5 +161,5 @@ class MediaRendererVolume {
         socket_close($socket);
           $response = str_ireplace("Location:", "", $response);
         return $response;
-    } 
+    }  
 }
