@@ -91,7 +91,6 @@ class dnla extends app_player_addon {
 		'loop'			=> (boolean)$loop, // Loop mode. Boolean.
 		'repeat'		=> (boolean)$repeat, //Repeat mode. Boolean.
 			);
-        DebMes($this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue));
 	return $this->success;	
     }
 
