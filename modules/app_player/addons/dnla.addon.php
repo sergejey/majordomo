@@ -57,6 +57,36 @@ class dnla extends app_player_addon {
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         }
     
+    // Get player status
+    public function status() {
+        $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $current_dev = str_ireplace("Location:", "", $current_dev);
+        //  для получения уровня громкости
+        // $remotevolume = new MediaRendererVolume($current_dev);
+        //DebMes($level);
+        $answer = $remotevolume->SetVolume($level);
+        // Для получения состояния
+        $remote = new MediaRenderer($current_dev);
+        $response = $remote->getPosition();
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        DebMes('Track '.$doc->getElementsByTagName('TrackURI')->item(0)->nodeValue);
+	// Results
+	$this->reset_properties();
+	$this->success = TRUE;
+	$this->message = 'OK';
+	$this->data = array(
+		'track_id'		=> (int)$doc->getElementsByTagName('Track')->item(0)->nodeValue, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+		'length'		=> (int)$doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue, //Track length in seconds. Integer. If unknown = 0. // TO DO
+		'time'			=> (int)$doc->getElementsByTagName('RelTime')->item(0)->nodeValue, //Current playback progress (in seconds). If unknown = 0. // TO DO
+		'state'			=> (string)$state, //Playback status. String: stopped/playing/paused/unknown 
+		'volume'		=> (int)$volume, // TO DO  Volume level in percent. Integer. Some players may have values greater than 100.
+		'random'		=> (boolean)false, // Random mode. Boolean. 
+		'loop'			=> (boolean)false, // Loop mode. Boolean.
+		'repeat'		=> (boolean)false, //Repeat mode. Boolean.
+			);
+	return $this->success;	
+    }
 
     // Play
     function play($input) {
