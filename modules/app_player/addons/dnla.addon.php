@@ -196,7 +196,7 @@ class dnla extends app_player_addon {
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-        DebMes($response);
+        //DebMes($response);
         if($doc->getElementsByTagName('SetVolumeResponse')) {
             DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
             $this->success = TRUE;
