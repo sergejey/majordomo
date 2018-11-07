@@ -224,8 +224,8 @@ class dnla extends app_player_addon {
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
         $request .= "\r\n";
         
-        @socket_sendto($socket, $request, strlen($request), 0, '239.255.255.250', 1900);
         @socket_sendto($socket, $request, strlen($request), 0, '255.255.255.255', 1900);
+	@socket_sendto($socket, $request, strlen($request), 0, '239.255.255.250', 1900);
 
         // send the data from socket
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
