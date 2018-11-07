@@ -96,7 +96,6 @@ class dnla extends app_player_addon {
 
     // Play
     function play($input) {
-        $this->status();
         $this->reset_properties();
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
@@ -193,8 +192,13 @@ class dnla extends app_player_addon {
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remotevolume = new MediaRendererVolume($current_dev);
-        $answer = $remotevolume->SetVolume($level);
-        if($answer) {
+        $response = $remotevolume->SetVolume($level);
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        DebMes($response);
+        if($doc->getElementsByTagName('SetVolumeResponse')) {
+            DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
             $this->success = TRUE;
             $this->message = 'Volume changed';
          } else {
