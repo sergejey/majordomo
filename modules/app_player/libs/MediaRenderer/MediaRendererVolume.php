@@ -112,21 +112,11 @@ class MediaRendererVolume {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
         curl_close($ch);
-        // создает документ хмл
-        $doc = new \DOMDocument();
-        //  загружет его
-        $doc->loadXML($response);
-        //  выбирает поле соответсвтуещее
-        $result = $doc->getElementsByTagName($command.'Response');
-        if(is_object($result->item(0))){
-          return $command.' ok';
-        }
-        
         return $response;
     }
 
     
-     // функция получения CONTROL_ADDRESS при его отсутствии или его ге правильности
+    // функция получения CONTROL_ADDRESS при его отсутствии или его ге правильности
      private function search($ip = '255.255.255.255') {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
@@ -161,5 +151,5 @@ class MediaRendererVolume {
         socket_close($socket);
           $response = str_ireplace("Location:", "", $response);
         return $response;
-    }  
+    } 
 }
