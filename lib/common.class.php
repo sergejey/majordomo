@@ -52,7 +52,7 @@
     $rec['ID'] = SQLInsert('shouts', $rec);
    }
   }
-  processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
+  processSubscriptions('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
  }
 
 
@@ -84,7 +84,7 @@ function sayToSafe($ph, $level = 0, $destination = '') {
   if (!$destination) {
    return 0;
   }
-  $processed=processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   $terminal_rec = getTerminalsByName($destination, 1)[0];
 
   if ($terminal_rec['LINKED_OBJECT'] && $terminal_rec['LEVEL_LINKED_PROPERTY']) {
@@ -199,7 +199,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
    setGlobal('lastSayTime', time());
    setGlobal('lastSayMessage', $ph);
-   processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
+   processSubscriptions('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'ignoreVoice'=>$ignoreVoice));
 
    if (!$noPatternMode)
    {
