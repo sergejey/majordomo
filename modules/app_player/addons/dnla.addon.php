@@ -62,21 +62,23 @@ class dnla extends app_player_addon {
     public function status() {
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
-
+        // создаем хмл документ
+        $doc = new \DOMDocument();
         //  для получения уровня громкости TO DO
-        // $remotevolume = new MediaRendererVolume($current_dev);
-        //DebMes($level);
-        //$answer = $remotevolume->SetVolume($level);
-
-        // Для получения состояния
+        $remotevolume = new MediaRendererVolume($current_dev);
+        $response = $remotevolume->GetVolume();
+        $doc->loadXML($response);
+        $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        DebMes('Current volume in device - '.$volume);
+        // Для получения состояния плеера
         $remote = new MediaRenderer($current_dev);
         $response = $remote->getPosition();
-        $doc = new \DOMDocument();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
         $length = $this->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
         $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-        //DebMes('Track '.$doc->getElementsByTagName('TrackURI')->item(0)->nodeValue);
+        $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
+        DebMes('Current link in device - '.$doc->getElementsByTagName('TrackURI')->item(0)->nodeValue);
 	// Results
 	$this->reset_properties();
 	$this->success = TRUE;
@@ -97,6 +99,7 @@ class dnla extends app_player_addon {
 
     // Play
     function play($input) {
+        $this->status();
         $this->reset_properties();
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
@@ -193,9 +196,7 @@ class dnla extends app_player_addon {
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         $remotevolume = new MediaRendererVolume($current_dev);
-        //DebMes($level);
         $answer = $remotevolume->SetVolume($level);
-        //DebMes($this->success);
         if($answer) {
             $this->success = TRUE;
             $this->message = 'Volume changed';
