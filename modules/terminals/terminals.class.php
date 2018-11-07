@@ -219,7 +219,7 @@ function processSubscription($event, $details='') {
        $terminal = getTerminalsByHost($target, 1)[0];
        }
     //если терминал не найден или с дроидом или не может играть медиа выход
-    if(!$terminal[ID] || $terminal[MAJORDROID_API]==1 || $terminal[CANPLAY] == 0) {
+    if(!$terminal['ID'] || $terminal['MAJORDROID_API']==1 || $terminal['CANPLAY'] == 0) {
         return;
         }
     // проверим уровень сообщений для необходимости его воспроизведения через терминал
