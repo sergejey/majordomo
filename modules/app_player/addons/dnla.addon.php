@@ -60,6 +60,18 @@ class dnla extends app_player_addon {
 
     // Get player status
     public function status() {
+        // Defaults
+        $track_id      = -1;
+        $length        = 0;
+        $time          = 0;
+        $state         = 'unknown';
+        $volume        = 0;
+        $random        = FALSE;
+        $loop          = FALSE;
+        $repeat        = FALSE;
+        $current_speed = 1;
+        $curren_url    = '';
+        
         $current_dev = ($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $current_dev = str_ireplace("Location:", "", $current_dev);
         // создаем хмл документ

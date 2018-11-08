@@ -192,7 +192,7 @@ function processSubscription($event, $details='') {
         }
     	
     	
-    if ($event=='ASK') {
+/*     if ($event=='ASK') {
        $tartget = $this->targetToIp($details['target']);
        if(!$target) return 0;
        $message=$details['prompt'];
@@ -214,6 +214,7 @@ function processSubscription($event, $details='') {
        $minMsgLevel = getGlobal('ThisComputer.minMsgLevel');
        if($this->debug == 1) debmes('mpt sayto ' . $message . '; level = ' . $level . '; to = ' . $destination);
        } 
+*/
    //предполагается, что терминал приходит именем или хостом
    if(!$terminal = getTerminalsByName($target, 1)[0]) {
        $terminal = getTerminalsByHost($target, 1)[0];
