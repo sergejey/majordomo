@@ -203,12 +203,12 @@ class terminals extends module
         }
         if ($terminal_rec['CANPLAY'] && $terminal_rec['PLAYER_TYPE']!='') {
             if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
-                $main_terminal=getTerminalsByName('MAIN')[0];
-                if ($main_terminal['HOST']) {
-                    $cached_filename='http://'.$main_terminal['HOST'].$m[0];
-                } else {
-                    DebMes("Main terminal (server) not found", 'terminals');
+                $server_ip = $this->getLocalIp();
+                if (!$server_ip) {
+                    DebMes("Server IP not found", 'terminals');
                     return false;
+                } else {
+                    $cached_filename='http://'.$server_ip.$m[0];
                 }
             } else {
                 DebMes("Unknown file path format: " . $cached_filename, 'terminals');
@@ -221,7 +221,6 @@ class terminals extends module
 
     function terminalSay($terminal_rec, $message, $level)
     {
-        DebMes("Saying to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $message, 'terminals');
         $min_level = getGlobal('ThisComputer.minMsgLevel');
         if ($terminal_rec['MIN_MSG_LEVEL']) {
             $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
@@ -229,6 +228,7 @@ class terminals extends module
         if ($level < $min_level) {
             return false;
         }
+        DebMes("Saying to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $message, 'terminals');
         //if (!$terminal_rec['IS_ONLINE']) return false;
         if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
             $service_port = '7999';
@@ -428,12 +428,24 @@ class terminals extends module
      */
     function getLocalIp()
     {
-        $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-        socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
-        socket_getsockname($s, $local_ip_address, $port);
-        @socket_shutdown($s, 2);
-        socket_close($s);
-
+        if (isset($this->localIP_address)) {
+            $local_ip_address=$this->localIP_address;
+        } else {
+            $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+            socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
+            socket_getsockname($s, $local_ip_address, $port);
+            @socket_shutdown($s, 2);
+            socket_close($s);
+            if (!$local_ip_address) {
+                $main_terminal=getTerminalsByName('MAIN')[0];
+                if ($main_terminal['HOST']) {
+                    $local_ip_address=$main_terminal['HOST'];
+                }
+            }
+            if ($local_ip_address) {
+                $this->localIP_address=$local_ip_address;
+            }
+        }
         return $local_ip_address;
     }
 
