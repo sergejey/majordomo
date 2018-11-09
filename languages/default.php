@@ -842,6 +842,8 @@ $dictionary = array(
 
 
     'CAN_PLAY_MEDIA' => 'can play media',
+    'CAN_TTS' => 'can receive notification messages',
+    'MIN_MSG_LEVEL' => 'Minimum message importance level',
 
 
     'PLAYER_TYPE' => 'Player type',

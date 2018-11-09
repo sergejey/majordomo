@@ -79,7 +79,7 @@
 <div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
 
 
-
+<!--#
 <div class="form-group">
   <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
    <div class="col-lg-5">
@@ -90,8 +90,9 @@
      </div>
     </div>
 </div>
+#-->
 
-[#module name="linkedobject" object_field="linked_object" property_field="level_linked_property"#]
+[#module name="linkedobject" object_field="linked_object"#]
 
 </div>
 
@@ -104,7 +105,32 @@
   }
   return false;
  }
+ function canTTSChanged() {
+     if ($('#cantts').is(':checked')) {
+         $('#ttsDetails').show();
+     } else {
+         $('#ttsDetails').hide();
+     }
+     return false;
+ }
 </script>
+
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-5 ">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
+        <div class="form-group ">
+            <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#>:</label>
+            <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
+        </div>
+    </div>
 
 
 <div class="form-group">
@@ -120,12 +146,6 @@
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
 	<div class="form-group ">
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
-			<!--
-			<br>
-			[#if (PLAYER_TYPE=="vlcweb") || (PLAYER_TYPE=="xbmc") || (PLAYER_TYPE=="foobar")#]
-			(<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
-			[#endif#]
-			-->
 		</label>
 		<div class="col-lg-5">
 			<select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">

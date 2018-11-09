@@ -61,6 +61,7 @@
   <b>
    [#TITLE#]
   </a></b>
+  [#if CANTTS="1"#](+notifications[#if MIN_MSG_LEVEL!=""#], min level: [#MIN_MSG_LEVEL#][#endif#])[#endif#]
   [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
   [#if MAJORDROID_API="1"#](+MajorDroidAPI)[#endif#]
  </td>

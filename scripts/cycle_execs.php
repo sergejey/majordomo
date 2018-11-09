@@ -53,9 +53,13 @@ while (1)
       SQLExec($sqlQuery);
 
       echo date("H:i:s") . " Executing (exclusive): " . $command . "\n";
-      DebMes("Executing (exclusive): " . $command);
+      DebMes("Executing (exclusive): " . $command,'execs');
 
       exec($command);
+      if ($safe_execs[$i]['ON_COMPLETE']) {
+         DebMes("On complete code: ".$safe_execs[$i]['ON_COMPLETE'],'execs');
+         eval($safe_execs[$i]['ON_COMPLETE']);
+      }
    }
 
    $sqlQuery = "SELECT *
@@ -80,9 +84,13 @@ while (1)
       SQLExec($sqlQuery);
 
       echo date("H:i:s") . " Executing: " . $command . "\n";
-      DebMes("Executing: " . $command);
+      DebMes("Executing: " . $command,'execs');
 
       execInBackground($command);
+      if ($safe_execs[$i]['ON_COMPLETE']) {
+         DebMes("On complete code: ".$safe_execs[$i]['ON_COMPLETE'],'execs');
+         eval($safe_execs[$i]['ON_COMPLETE']);
+      }
    }
 
    if (file_exists('./reboot') || IsSet($_GET['onetime']))

@@ -512,6 +512,7 @@ class scripts extends module
 
  safe_execs: ID int(10) unsigned NOT NULL auto_increment
  safe_execs: COMMAND text
+ safe_execs: ON_COMPLETE text
  safe_execs: EXCLUSIVE int(3) NOT NULL DEFAULT 0
  safe_execs: PRIORITY int(10) NOT NULL DEFAULT 0
  safe_execs: ADDED datetime
