@@ -165,10 +165,11 @@ class mysql
    /**
     * Execute SQL query
     * @param string $query SQL query
+    * @param boolean $ignore_errors Ignore SQL errors
     * @return mixed execution result (0 - failed)
     * @access public
     */
-   public function Exec($query)
+   public function Exec($query, $ignore_errors = false)
    {
       if (!$this->dbh && !$this->Connect()) return false;
       
@@ -179,7 +180,7 @@ class mysql
       $this->latestTransaction=time(); 
       $result = mysqli_query($this->dbh, $query);
       
-      if (!$result)
+      if (!$result && !$ignore_errors)
       {
          $this->Error($query,0);
          return 0;

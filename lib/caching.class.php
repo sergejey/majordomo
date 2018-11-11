@@ -86,8 +86,6 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     $values = "";
     $table = 'cached_ws';
 
-    global $db;
-
     foreach ($rec as $field => $value) {
         if (is_Numeric($field)) continue;
         $fields .= "`$field`, ";
@@ -97,8 +95,8 @@ function postToWebSocketQueue($property, $value, $post_action='PostProperty') {
     $fields = substr($fields, 0, strlen($fields) - 2);
     $values = substr($values, 0, strlen($values) - 2);
     $query = "REPLACE INTO `$table`($fields) VALUES($values)";
-
-    $res = SQLExec($query);
+    
+    $res = SQLExec($query, true);
     return $res;
     //SQLInsert('cached_ws', $rec);
 }
