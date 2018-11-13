@@ -266,7 +266,7 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         $this->getConfig();
-
+        DebMes("Processing $event: ".json_encode($details),'terminals');
         if ($event == 'SAY') {
             $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1");
             foreach ($terminals as $terminal_rec) {

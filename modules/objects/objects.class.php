@@ -1014,8 +1014,7 @@ function usual(&$out) {
   SQLExec($sqlQuery);
 
   $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
-              (`ID` int(10) unsigned NOT NULL auto_increment,
-               `TOPIC`   char(255) NOT NULL,
+              (`TOPIC`   char(255) NOT NULL,
                `DATANAME` char(255) NOT NULL,
                `DATAVALUE` char(255) NOT NULL,
                `EXPIRE`    datetime  NOT NULL,
@@ -1023,6 +1022,8 @@ function usual(&$out) {
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
+  $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN IF EXISTS `ID`;";
+  SQLExec($sqlQuery);
 
 
 /*

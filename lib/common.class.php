@@ -169,55 +169,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 }
 
 function ask($prompt, $target = '') {
-    processSubscriptions('ASK', array('prompt' => $prompt, 'message'=>$prompt, 'target' => $target, 'destination'=>$target));
-    /*
-    $service_port='7999';
-    $in='ask:'.$prompt;
-
-    if (preg_match('/^[\d\.]+$/',$target)) {
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if ($socket) {
-            $result = socket_connect($socket, $target, $service_port);
-            if ($result) {
-                socket_write($socket, $in, strlen($in));
-            }
-        }
-        socket_close($socket);
-    } elseif (preg_match('/^[a-zA-Z]+$/',$target)) {
-      $qry=1;
-      $qry.=" AND MAJORDROID_API=1";
-      $qry.=" AND (NAME LIKE '".DBSafe($target)."' OR TITLE LIKE '".DBSafe($target)."')";
-      $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=$qry");
-      $total = count($terminals);
-      for ($i = 0; $i < $total; $i++) {
-          $address = $terminals[$i]['HOST'];
-          $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-          if ($socket) {
-              $result = socket_connect($socket, $address, $service_port);
-              if ($result) {
-                  socket_write($socket, $in, strlen($in));
-              }
-          }
-          socket_close($socket);
-      }
-    } else {
-        $qry=1;
-        $qry.=" AND MAJORDROID_API=1";
-        $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=$qry");
-        $total = count($terminals);
-        for ($i = 0; $i < $total; $i++) {
-            $address = $terminals[$i]['HOST'];
-            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-            if ($socket) {
-                $result = socket_connect($socket, $address, $service_port);
-                if ($result) {
-                    socket_write($socket, $in, strlen($in));
-                }
-            }
-            socket_close($socket);
-        }
-    }
-    */
+    processSubscriptionsSafe('ASK', array('prompt' => $prompt, 'message'=>$prompt, 'target' => $target, 'destination'=>$target));
 }
 
 /**
@@ -711,17 +663,25 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE) {
 		return 0;
 	}
 
-	include_once(DIR_MODULES.'app_player/app_player.class.php');
-	
-	$player = new app_player();
-	$player->terminal_id	= $terminal['ID'];
-	$player->command		= ($safe_play?'safe_play':'play');
-	$player->param			= $path;
-	$player->ajax			= TRUE;
-	$player->intCall		= TRUE;
-	$player->usual($out);
+    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
+    $url .= "&command=".($safe_play?'safe_play':'play');
+    $url .= "&terminal_id=".$terminal['ID'];
+    $url .= "&param=" . urlencode($path);
+    //DebMes($url,'playmedia');
+    getURLBackground($url);
+    return 1;
 
-	return $player->json['success'];
+    /*
+    include_once(DIR_MODULES.'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->terminal_id	= $terminal['ID'];
+    $player->command		= ($safe_play?'safe_play':'play');
+    $player->param			= $path;
+    $player->ajax			= TRUE;
+    $player->intCall		= TRUE;
+    $player->usual($out);
+    return $player->json['success'];
+    */
 }
 
 /**
@@ -775,7 +735,24 @@ function callScript($id, $params = '')
 }
 
 function getURLBackground($url, $cache = 0, $username = '', $password = '') {
-  getURL($url, $cache, $username, $password, true);
+    getURL($url, $cache, $username, $password, true);
+    /*
+    if (strlen($url)>=255) {
+        getURL($url, $cache, $username, $password, true);
+    } else {
+        $data = array();
+        if ($cache) {
+            $data['cache']=$cache;
+        }
+        if ($username) {
+            $data['username']=$username;
+        }
+        if ($password) {
+            $data['password']=$password;
+        }
+        addToOperationsQueue('getURLBackground',$url,json_encode($data),false,5*60);
+    }
+    */
 }
 
 /**
@@ -815,7 +792,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
           if ($background) {
               curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1000);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
           }
 
          if ($username != '' || $password != '')

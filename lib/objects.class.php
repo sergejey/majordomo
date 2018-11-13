@@ -1333,8 +1333,8 @@ function objectClassChanged($object_id) {
 }
 
 function checkOperationsQueue($topic) {
-    $data=SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='".DBSafe($topic)."' ORDER BY ID");
-    if ($data[0]['ID']) {
+    $data=SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='".DBSafe($topic)."' ORDER BY EXPIRE");
+    if ($data[0]['TOPIC']) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='".DBSafe($topic)."'");
     }
     return $data;

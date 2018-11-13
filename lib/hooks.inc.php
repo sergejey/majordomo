@@ -76,7 +76,8 @@ function processSubscriptionsSafe($event_name,$details='') {
          $url.='&'.$k.'='.urlencode($v);
       }
    }
-   $result = getURL($url,0);
+   $result = getURLBackground($url,0);
+   //$result = getURL($url,0);
    return $result;
 }
 

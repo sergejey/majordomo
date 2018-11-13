@@ -91,6 +91,7 @@ if (!$request && $commandLine) {
 
 //echo "object: $object op: $op m: $m status: $status ";exit;
 if (!$commandLine) {
+   ignore_user_abort(1);
    header('Content-Type: text/html; charset=utf-8');
 }
 

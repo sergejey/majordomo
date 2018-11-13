@@ -362,6 +362,7 @@ function getParams() {
     global $ajax;
     $ajax=1;
     if (file_exists(DIR_MODULES.$this->action)) {
+     ignore_user_abort(1);
      include_once(DIR_MODULES.$this->action.'/'.$this->action.'.class.php');
      $obj="\$object$i";
      $code="";
