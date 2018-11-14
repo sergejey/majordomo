@@ -297,7 +297,8 @@ class terminals extends module
             if ($source_event == 'SAY') {
                 $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1");
                 foreach ($terminals as $terminal_rec) {
-                    $this->terminalSayByCache($terminal_rec, $filename, $details['level']);
+                    //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
+                    $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename);
                 }
             } elseif ($source_event == 'SAYTO' || $source_event == 'ASK') {
                 $terminal_rec = array();
@@ -312,7 +313,8 @@ class terminals extends module
                 if ($source_event == 'ASK') {
                     $details['level']=9999;
                 }
-                $this->terminalSayByCache($terminal_rec, $filename, $details['level']);
+                //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
+                $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename);
             }
 
         } elseif ($event == 'HOURLY') {
@@ -320,107 +322,110 @@ class terminals extends module
             $terminals=SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach($terminals as $terminal) {
                 if (ping($terminal['HOST'])) {
-                    $terminals['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
-                    $terminals['IS_ONLINE']=1;
+                    $terminal['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+                    $terminal['IS_ONLINE']=1;
                     SQLUpdate('terminals',$terminal);
                 }
             }
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)'); //
         } elseif ($event == 'SAYREPLY') {
         }
-
-        /*
-        if ($event=='SAYTO') {
-            if($this->debug == 1) debmes('mpt sayto start');
-            $level=$details['level'];
-            $message=$details['message'];
-            $target = $details['destination'];
-        if(!$target) return 0;
-            //DebMes($details);
-            $level = $details['level'];
-            $message = $details['message'];
-            $levelmes = getGlobal('ThisComputer.minMsgLevel');
-            }
-        */
-
-
-        /*     if ($event=='ASK') {
-               $tartget = $this->targetToIp($details['target']);
-               if(!$target) return 0;
-               $message=$details['prompt'];
-               $this->send_mpt('ask', $message, $target);
-               if($this->debug == 1) debmes('mpt ask ' . $message . '; target = ' . $target);
-               //DebMes($details);
-               $level = $details['level'];
-               $message = $details['message'];
-               $levelmes = getGlobal('ThisComputer.minMsgLevel');
-               }
-
-            if ($event=='SAYREPLY') {
-               $levelMes=$details['level'];
-               $message=$details['message'];
-               $source=$details['source'];
-               $target = $this->targetToIp($details['replyto']);
-               if(!$target) return 0;
-               $this->send_mpt('tts', $message, $target);
-               $minMsgLevel = getGlobal('ThisComputer.minMsgLevel');
-               if($this->debug == 1) debmes('mpt sayto ' . $message . '; level = ' . $level . '; to = ' . $destination);
-               }
-        */
-
-        /*
-       //предполагается, что терминал приходит именем или хостом
-       if(!$terminal = getTerminalsByName($target, 1)[0]) {
-           $terminal = getTerminalsByHost($target, 1)[0];
-           }
-        //если терминал не найден или с дроидом или не может играть медиа выход
-        if(!$terminal['ID'] || $terminal['MAJORDROID_API']==1 || $terminal['CANPLAY'] == 0) {
-            return;
-            }
-        // проверим уровень сообщений для необходимости его воспроизведения через терминал
-        if ( $minMsgLevel >= $levelMes and ($event=='SAYTO' or $event=='ASK' or $event=='SAYREPLY')){
-            // main play instruction with generate message for terminals when not installed TTS
-            // check the existed files generated from tts
-            if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_google.mp3')) {
-                $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
-            } else if (file_exists(ROOT.'/cms/cached/voice/' . md5($message) . '_yandex.mp3')) {
-                $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_yandex.mp3';
-            } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.mp3')) {
-                $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/rh_' . md5($message) . '.mp3';
-            } else if (file_exists(ROOT.'/cms/cached/voice/rh_' . md5($message) . '.wav')) {
-                $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/rh_' . md5($message) . '.wav';
-            } else {
-                // generate message from google tts
-                $filename = md5($message) . '_google.mp3';
-                $cachedVoiceDir = ROOT . 'cms/cached/voice';
-                $cachedFileName = $cachedVoiceDir . '/' . $filename;
-                $base_url = 'https://translate.google.com/translate_tts?';
-                $lang = SETTINGS_SITE_LANGUAGE;
-                if ($lang == 'ua') {
-                    $lang = 'uk';
-                }else if ($lang == 'ru') {
-                    $lang = 'ru';
-                }else {
-                    $lang = 'en';
-                }
-                $qs = http_build_query([ 'ie' => 'UTF-8', 'client' => 'tw-ob', 'q' => $message, 'tl' => $lang,]);
-                try {
-                   $contents = file_get_contents($base_url . $qs);
-                } catch (Exception $e) {
-                   registerError($this->name, get_class($e) . ', ' . $e->getMessage());
-                }
-                if (isset($contents)) {
-                   CreateDir($cachedVoiceDir);
-                   SaveFile($cachedFileName, $contents);
-                }
-                $cached_filename = 'http://'. $this->serverip. '/cms/cached/voice/' . md5($message) . '_google.mp3';
-                  }
-                DebMes ('Терминалы отправили - '.$cached_filename);
-             playMedia($cached_filename, $target, true);
-         }
-        */
     }
 
+/**
+* очередь сообщений 
+*
+* @access public
+*/
+function terminalSayByCacheQueue($target, $levelMes, $cached_filename) { 
+   // berem vse soobsheniya po urovnyu
+   $l_level_mesage = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'."%' ORDER BY `TITLE`");
+
+   ///  last mesage for levelmes
+   $last_mesage = max(array_column($l_level_mesage,'TITLE'));
+
+   // opredelyaem posledniy nomer soobsheniya esli ih netu to poluchim #001
+   $pos = strripos($last_mesage, '-');
+   $last_number = substr($last_mesage, $pos+1)+1;
+   if ($last_number<1 ){
+      $last_number='001';
+    } else if ($last_number<10 ) {
+      $last_number='00'.$last_number;
+    } else {
+      $last_number='0'.$last_number;
+    }
+
+    // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
+    if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
+        $server_ip = $this->getLocalIp();
+        if (!$server_ip) {
+            DebMes("Server IP not found", 'terminals');
+            return false;
+        } else {
+            $cached_filename='http://'.$server_ip.$m[0];
+        }
+    } else {
+        DebMes("Unknown file path format: " . $cached_filename, 'terminals');
+        return false;
+    }
+
+    // esli net soobsheniy dlya takogo urovnya to sozdaem pervoe s takim urovnem
+    if (!$last_mesage) {
+       $time_shift =  $this->getDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
+       DebMes("Create first mesage",'terminals');
+       addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
+    } else {
+    // esli soobsheniya sushestvuyut to vstavlayem svoe poslednim po spisku s uchetom urovnya soobsheniya
+        $time_shift =  $this->getDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
+        DebMes("Add new message".$last_mesage,'terminals');
+        addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+100, $time_shift);
+    }
+
+    // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
+    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.'%-number-'."%' ORDER BY `TITLE`");
+    $first_fields = reset($all_messages);
+    $runtime = (strtotime($first_fields['RUNTIME']));
+    foreach ($all_messages as $message) {
+      $expire = (strtotime($message['EXPIRE']))-(strtotime($message['RUNTIME']));
+      $rec['ID']       = $message['ID'];
+      $rec['TITLE']    = $message['TITLE'];
+      $rec['COMMANDS'] = $message['COMMANDS'];
+      $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
+      $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime+$expire);
+      $runtime = $runtime + $expire;
+      SQLUpdate('jobs', $rec);
+     }
+     DebMes("Timers sorted",'terminals');
+   }
+    
+ /**
+ * Get duration in seconds of media file from ffmpeg
+ * @param $file
+ * @return bool|string
+ */
+
+function getDurationSeconds($file){
+if (!defined('PATH_TO_FFMPEG')) {
+ if (IsWindowsOS()) {
+  define("PATH_TO_FFMPEG", SERVER_ROOT.'/apps/ffmpeg/ffmpeg.exe');
+ } else {
+  define("PATH_TO_FFMPEG", 'ffmpeg');
+ }
+}
+   $dur = shell_exec(PATH_TO_FFMPEG." -i ".$file." 2>&1");
+   if(preg_match("/: Invalid /", $dur)){
+      return false;
+   }
+   preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
+   if(!isset($duration[1])){
+      return false;
+   }
+   $hours = $duration[1];
+   $minutes = $duration[2];
+   $seconds = $duration[3];
+   return $seconds + ($minutes*60) + ($hours*60*60)+3; // zadergka eksperementalnaya
+}
+    
     /**
      * get local IP
      *
