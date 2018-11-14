@@ -123,7 +123,7 @@ class dnla extends app_player_addon {
         if( stripos( $input, '?userid=0&setst') ) {
             $input = stristr($input, '&setst', True);
             }
-        DebMes('Ссылка '.$input.' подана на терминал - '.$this->terminal['NAME']);
+        //DebMes('Ссылка '.$input.' подана на терминал - '.$this->terminal['NAME']);
         $response = $remote->play($input);
         // создаем хмл документ
         $doc = new \DOMDocument();
