@@ -1017,8 +1017,7 @@ function usual(&$out) {
               (`TOPIC`   char(255) NOT NULL,
                `DATANAME` char(255) NOT NULL,
                `DATAVALUE` char(255) NOT NULL,
-               `EXPIRE`    datetime  NOT NULL,
-                PRIMARY KEY (`ID`)
+               `EXPIRE`    datetime  NOT NULL
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
