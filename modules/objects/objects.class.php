@@ -1021,8 +1021,8 @@ function usual(&$out) {
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
-  $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN IF EXISTS `ID`;";
-  SQLExec($sqlQuery);
+  $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
+  SQLExec($sqlQuery,true);
 
 
 /*
