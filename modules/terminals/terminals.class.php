@@ -385,7 +385,6 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
     $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.'%-number-'."%' ORDER BY `TITLE`");
     $first_fields = reset($all_messages);
     $runtime = (strtotime($first_fields['RUNTIME']));
-    DebMes($runtime); 
     foreach ($all_messages as $message) {
       $expire = (strtotime($message['EXPIRE']))-(strtotime($message['RUNTIME']));
       $rec['ID']       = $message['ID'];
