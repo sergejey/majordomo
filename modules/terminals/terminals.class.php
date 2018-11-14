@@ -320,8 +320,8 @@ class terminals extends module
             $terminals=SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach($terminals as $terminal) {
                 if (ping($terminal['HOST'])) {
-                    $terminals['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
-                    $terminals['IS_ONLINE']=1;
+                    $terminal['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
+                    $terminal['IS_ONLINE']=1;
                     SQLUpdate('terminals',$terminal);
                 }
             }
