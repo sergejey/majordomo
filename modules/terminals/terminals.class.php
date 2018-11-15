@@ -25,7 +25,7 @@ class terminals extends module
         $this->title = "<#LANG_MODULE_TERMINALS#>";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
         $this->checkInstalled();
-        $this->serverip = $this->getLocalIp();
+        $this->serverip = getLocalIp();
     }
 
     /**
@@ -203,7 +203,7 @@ class terminals extends module
         }
         if ($terminal_rec['CANPLAY'] && $terminal_rec['PLAYER_TYPE']!='') {
             if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
-                $server_ip = $this->getLocalIp();
+                $server_ip = getLocalIp();
                 if (!$server_ip) {
                     DebMes("Server IP not found", 'terminals');
                     return false;
@@ -357,7 +357,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
 
     // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
     if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
-        $server_ip = $this->getLocalIp();
+        $server_ip = getLocalIp();
         if (!$server_ip) {
             DebMes("Server IP not found", 'terminals');
             return false;
@@ -371,12 +371,12 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
 
     // esli net soobsheniy dlya takogo urovnya to sozdaem pervoe s takim urovnem
     if (!$last_mesage) {
-       $time_shift =  $this->getDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
+       $time_shift =  getMediaDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
        DebMes("Create first mesage",'terminals');
        addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
     } else {
     // esli soobsheniya sushestvuyut to vstavlayem svoe poslednim po spisku s uchetom urovnya soobsheniya
-        $time_shift =  $this->getDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
+        $time_shift =  getMediaDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
         DebMes("Add new message".$last_mesage,'terminals');
         addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+100, $time_shift);
     }
@@ -398,62 +398,6 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
      DebMes("Timers sorted",'terminals');
    }
     
- /**
- * Get duration in seconds of media file from ffmpeg
- * @param $file
- * @return bool|string
- */
-
-function getDurationSeconds($file){
-if (!defined('PATH_TO_FFMPEG')) {
- if (IsWindowsOS()) {
-  define("PATH_TO_FFMPEG", SERVER_ROOT.'/apps/ffmpeg/ffmpeg.exe');
- } else {
-  define("PATH_TO_FFMPEG", 'ffmpeg');
- }
-}
-   $dur = shell_exec(PATH_TO_FFMPEG." -i ".$file." 2>&1");
-   if(preg_match("/: Invalid /", $dur)){
-      return false;
-   }
-   preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
-   if(!isset($duration[1])){
-      return false;
-   }
-   $hours = $duration[1];
-   $minutes = $duration[2];
-   $seconds = $duration[3];
-   return $seconds + ($minutes*60) + ($hours*60*60)+3; // zadergka eksperementalnaya
-}
-    
-    /**
-     * get local IP
-     *
-     * @access public
-     */
-    function getLocalIp()
-    {
-        if (isset($this->localIP_address)) {
-            $local_ip_address=$this->localIP_address;
-        } else {
-            $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-            socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
-            socket_getsockname($s, $local_ip_address, $port);
-            @socket_shutdown($s, 2);
-            socket_close($s);
-            if (!$local_ip_address) {
-                $main_terminal=getTerminalsByName('MAIN')[0];
-                if ($main_terminal['HOST']) {
-                    $local_ip_address=$main_terminal['HOST'];
-                }
-            }
-            if ($local_ip_address) {
-                $this->localIP_address=$local_ip_address;
-            }
-        }
-        return $local_ip_address;
-    }
-
 
     /**
      * Install

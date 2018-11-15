@@ -1229,6 +1229,28 @@ function getPassedText($updatedTime) {
     return $passedText;
 }
 
+function getMediaDurationSeconds($file){
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT.'/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $dur = shell_exec(PATH_TO_FFMPEG." -i ".$file." 2>&1");
+    if(preg_match("/: Invalid /", $dur)){
+        return false;
+    }
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
+    if(!isset($duration[1])){
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3];
+    return $seconds + ($minutes*60) + ($hours*60*60)+3;
+}
+
 /**
  * Encode/Decode a string for safe transfer to a URL
  * @param mixed $string String
