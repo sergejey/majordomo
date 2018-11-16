@@ -154,7 +154,7 @@ class mysql
     * @return mixed execution result (0 - failed)
     * @access public
     */
-   public function Exec($query)
+   public function Exec($query, $ignore_errors = false)
    {
       if (!$this->dbh && !$this->Connect()) return false;
       
@@ -165,7 +165,7 @@ class mysql
       $this->latestTransaction=time();
       $result = mysql_query($query, $this->dbh);
       
-      if (!$result)
+      if (!$result && !$ignore_errors)
       {
          $this->Error($query,0);
          return 0;

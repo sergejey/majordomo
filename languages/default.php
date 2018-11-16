@@ -1076,6 +1076,8 @@ $dictionary = array(
     'READ_ONLY' => 'Read Only',
     'ADVANCED_CONFIG' => 'Advanced config',
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
+    'MARKET_CATEGORY_INSTALLED' => 'Installed',
+    'MARKET_CATEGORY_OWNED' => 'Owned',
 
     'SAVE_CHANGES' => 'Save changes',
     'ADD_PANE' => 'Add Pane',

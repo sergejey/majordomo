@@ -12,6 +12,8 @@ include_once("./load_settings.php");
 include_once(DIR_MODULES . "market/market.class.php");
 
 $mkt=new market();
+$mkt->category_id='all';
+$_GET['op']='iframe';
 
 echo "<html>";
 echo "<body>";
