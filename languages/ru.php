@@ -1077,6 +1077,7 @@ $dictionary = array(
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
     'MARKET_CATEGORY_INSTALLED' => 'Установлено',
     'MARKET_CATEGORY_OWNED' => 'Приобретено',
+    'MARKET_CONNECT_NOTE' => 'Доступ к приобретённым дополнениям открывается только при корректных настройках имени пользователя и пароля для сервиса <a href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Сохранить изменения',
     'ADD_PANE' => 'Добавить панель',

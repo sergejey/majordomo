@@ -47,6 +47,9 @@ if ($mode2=='install' && $name!='') {
  // install/update one extension
  $out=array();
  $mkt->admin($out);
+ if (!$mkt->url) {
+  echo "Error getting download URL";exit;
+ }
  $res=$mkt->getLatest($out, $mkt->url, $name, $mkt->version, 1);
  if ($res) {
   //$this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version)."&list=".urlencode($list));

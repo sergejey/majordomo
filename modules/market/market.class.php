@@ -235,7 +235,7 @@ class market extends module
         }
 
         if ($_GET['op']=='') {
-            $result = $this->marketRequest('op=categories');
+            $result = $this->marketRequest('op=categories',120);
             $data = json_decode($result,true);
             if (SETTINGS_SITE_LANGUAGE=='ru') {
                 $title_field='CATEGORY_RU';
@@ -246,8 +246,10 @@ class market extends module
                 foreach($data as $item) {
                     $out['CATEGORIES'][]=array('ID'=>$item['ID'],'TITLE'=>$item[$title_field]);
                 }
+            } else {
+                $out['CATEGORIES']=array();
             }
-            //array_unshift($out['CATEGORIES'],array('ID'=>'owned','TITLE'=>LANG_MARKET_CATEGORY_OWNED));
+            array_unshift($out['CATEGORIES'],array('ID'=>'owned','TITLE'=>LANG_MARKET_CATEGORY_OWNED));
             array_unshift($out['CATEGORIES'],array('ID'=>'installed','TITLE'=>LANG_MARKET_CATEGORY_INSTALLED));
             $out['CATEGORIES'][]=array('ID'=>'custom','TITLE'=>'Custom');
             return;
@@ -549,7 +551,7 @@ class market extends module
 
     }
 
-    function marketRequest($details = '', $cache_timeout = 120)
+    function marketRequest($details = '', $cache_timeout = 0)
     {
         $serial = gg('Serial');
         if (!$serial || $serial == '0') {
@@ -580,10 +582,18 @@ class market extends module
         $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
-        $result = getURL($data_url, $cache_timeout);
-        if (!$result && $cache_timeout > 0) {
-            $result = getURL($data_url, 0);
+        $username='';
+        $password='';
+        include_once(DIR_MODULES . 'connect/connect.class.php');
+        $connect = new connect();
+        $connect->getConfig();
+        $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+        $connect_password = $connect->config['CONNECT_PASSWORD'];
+        if ($connect_username!='' && $connect_password!='') {
+            $username=$connect_username;
+            $password=$connect_password;
         }
+        $result = getURL($data_url, $cache_timeout,$username,$password);
         return $result;
 
     }
@@ -883,6 +893,17 @@ class market extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
+
+        include_once(DIR_MODULES . 'connect/connect.class.php');
+        $connect = new connect();
+        $connect->getConfig();
+        $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+        $connect_password = $connect->config['CONNECT_PASSWORD'];
+        if ($connect_username!='' && $connect_password!='') {
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+        }
+
         $incoming = curl_exec($ch);
 
         curl_close($ch);

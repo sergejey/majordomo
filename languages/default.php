@@ -1078,6 +1078,7 @@ $dictionary = array(
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
     'MARKET_CATEGORY_INSTALLED' => 'Installed',
     'MARKET_CATEGORY_OWNED' => 'Owned',
+    'MARKET_CONNECT_NOTE' => 'Please make sure you have specified correct username/password for <a href="/panel/connect.html">CONNECT</a> service.',
 
     'SAVE_CHANGES' => 'Save changes',
     'ADD_PANE' => 'Add Pane',

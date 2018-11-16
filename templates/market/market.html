@@ -82,6 +82,11 @@
 <script type="text/javascript">
 
     function refreshPluginsList(category_id,search_text) {
+        if (category_id=='owned') {
+            $('#connect_sync_note').show();
+        } else {
+            $('#connect_sync_note').hide();
+        }
         $('#search_result').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0">');
         var url="<#ROOTHTML#>ajax/market.html?op=list&category_id="+category_id+"&search="+encodeURIComponent(search_text);
         $.ajax({
@@ -103,6 +108,9 @@
 	[#end CATEGORIES#]
 </ul>
 	&nbsp;
+<div id="connect_sync_note" class="alert alert-info" style="display:none">
+    <#LANG_MARKET_CONNECT_NOTE#>
+</div>
 <div class="tab-content" id="search_result">
 
 </div>
