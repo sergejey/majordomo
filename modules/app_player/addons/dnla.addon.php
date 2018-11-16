@@ -110,7 +110,7 @@ class dnla extends app_player_addon {
             'speed'           => (float)$current_speed, //Current speed for playing media. float.
             'link'            => (string)$curren_url, //Current link for media in device. String.
             );
-        return $this->success;    
+        return $this->data;    
     }
 
     // Play
