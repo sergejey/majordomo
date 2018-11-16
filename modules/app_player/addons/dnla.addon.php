@@ -102,7 +102,7 @@ class dnla extends app_player_addon {
             'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
             'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0. 
             'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0. 
-            'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown 
+            'state'           => (string)$state, //Playback status. String: STOPPED/PLAYING/PAUSED/TRANSITIONING/UNKNOWN 
             'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
             'random'          => (boolean)$random, // Random mode. Boolean. 
             'loop'            => (boolean)$loop, // Loop mode. Boolean.
