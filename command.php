@@ -62,7 +62,7 @@ if ($qry != '' && $qry != $lastest_word)
 
 
    if ($username) {
-       $user    = SQLSelectOne("SELECT ID FROM users WHERE USERNAME LIKE '".DBSafe(trim($username))."'");
+       $user    = SQLSelectOne("SELECT ID FROM users WHERE USERNAME = '".DBSafe(trim($username))."'");
        $user_id = (int)$user['ID'];
    }
 

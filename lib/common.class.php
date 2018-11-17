@@ -383,7 +383,7 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
  */
 function clearScheduledJob($title)
 {
-   SQLExec("DELETE FROM jobs WHERE TITLE LIKE '" . DBSafe($title) . "'");
+   SQLExec("DELETE FROM jobs WHERE TITLE = '" . DBSafe($title) . "'");
 }
 
 /**
@@ -428,7 +428,7 @@ function clearTimeOut($title)
  */
 function timeOutExists($title)
 {
-   $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . DBSafe($title) . "'");
+   $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DBSafe($title) . "'");
    return (int)$job['ID'];
 }
 
@@ -980,8 +980,8 @@ function isOnline($host)
 {
    $sqlQuery = "SELECT *
                   FROM pinghosts
-                 WHERE HOSTNAME LIKE '" . DBSafe($host) . "'
-                    OR TITLE LIKE    '" . DBSafe($host) . "'";
+                 WHERE HOSTNAME = '" . DBSafe($host) . "'
+                    OR TITLE =    '" . DBSafe($host) . "'";
 
    $rec = SQLSelectOne($sqlQuery);
    if (!$rec['STATUS'] || $rec['STATUS'] == 2)
@@ -1026,7 +1026,7 @@ function registerError($code = 'custom', $details = '')
     return 0;
    }
 
-   $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
+   $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE = '" . DBSafe($code) . "'");
 
    if (!$error_rec['ID'])
    {
