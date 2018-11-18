@@ -382,7 +382,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
     }
 
     // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.'%-number-'."%' ORDER BY `TITLE`");
+    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.'%-number-'."%' ORDER BY `TITLE` , 'RUNTIME'");
     $first_fields = reset($all_messages);
     $runtime = (strtotime($first_fields['RUNTIME']));
     foreach ($all_messages as $message) {
