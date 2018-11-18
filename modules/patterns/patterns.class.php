@@ -541,7 +541,7 @@ class patterns extends module
 
     function propertySetHandle($object, $property, $value)
     {
-        $patterns = SQLSelect("SELECT ID FROM patterns WHERE PATTERN_TYPE=1 AND LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
+        $patterns = SQLSelect("SELECT ID FROM patterns WHERE PATTERN_TYPE=1 AND LINKED_OBJECT = '" . DBSafe($object) . "' AND LINKED_PROPERTY = '" . DBSafe($property) . "'");
         $total = count($patterns);
         if ($total) {
             for ($i = 0; $i < $total; $i++) {

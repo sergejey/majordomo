@@ -215,7 +215,7 @@ function admin(&$out) {
   if (is_array($records)) {
    $total=count($records);
    for($i=0;$i<$total;$i++) {
-    $old_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($records[$i]['TITLE'])."'");
+    $old_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE = '".DBSafe($records[$i]['TITLE'])."'");
     $total_o=0;
     if ($old_class['ID']) {
      $old_objects=SQLSelect("SELECT * FROM objects WHERE CLASS_ID='".$old_class['ID']."'");
@@ -239,7 +239,7 @@ function admin(&$out) {
     $properties=$records[$i]['PROPERTIES'];
     unset($records[$i]['PROPERTIES']);
     if ($records[$i]['PARENT_CLASS']) {
-     $parent_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($records[$i]['PARENT_CLASS'])."'");
+     $parent_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE = '".DBSafe($records[$i]['PARENT_CLASS'])."'");
      if ($parent_class['ID']) {
       $records[$i]['PARENT_ID']=$parent_class['ID'];
      }
