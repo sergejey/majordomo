@@ -46,7 +46,7 @@ class dnla extends app_player_addon {
                 $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search();
                 if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
-                if ($rec['HOST']) {
+                if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
                     SQLUpdate('terminals', $rec); // update
                     DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
                     }
