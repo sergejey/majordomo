@@ -407,8 +407,8 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setHTML($body);
-   $mail->setHTMLCharset('windows-1251');
-   $mail->setHeadCharset('windows-1251');
+   $mail->setHTMLCharset('UTF-8');
+   $mail->setHeadCharset('UTF-8'); 
 
    if (is_array($attach))
    {
