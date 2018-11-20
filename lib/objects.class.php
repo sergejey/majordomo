@@ -48,7 +48,18 @@ function addClass($class_name, $parent_class = '')
  * @return mixed
  */
  function getClassTemplate($class_id) {
-   $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);  
+
+     $can_cache=false;
+     if (isset($_SERVER['REQUEST_URI'])) {
+         $can_cache=true;
+         global $class_templates_cached;
+     }
+
+     if ($can_cache && isset($class_templates_cached[$class_id])) {
+         return $class_templates_cached[$class_id];
+     }
+
+   $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);
    if (!$class['ID']) {
     return '';
    }
@@ -75,6 +86,11 @@ function addClass($class_name, $parent_class = '')
            }
        }
    }
+
+     if ($can_cache) {
+         $class_templates_cached[$class_id]=$data;
+     }
+
    return $data;
  }
 
@@ -84,14 +100,42 @@ function addClass($class_name, $parent_class = '')
  * @return mixed
  */
 function getObjectClassTemplate($object_name) {
-    $object=getObject($object_name);
+    startMeasure('getObjectClassTemplate');
+    startMeasure('getObject');
+    if (isset($_SERVER['REQUEST_URI'])) {
+        global $all_objects_cached;
+        if (!isset($all_objects_cached)) {
+            $objects=SQLSelect("SELECT * FROM objects");
+            foreach($objects as $object) {
+                $all_objects_cached[strtolower($object['TITLE'])]=$object;
+            }
+        }
+        $rec=$all_objects_cached[strtolower($object_name)];
+    } else {
+        $sqlQuery = "SELECT objects.*
+                     FROM objects
+                    WHERE TITLE = '" . DBSafe($object_name) . "'";
+        $rec = SQLSelectOne($sqlQuery);
+    }
+    //$object=getObject($object_name);
+    $object = new stdClass();
+    if (!$rec['ID']) {
+        return '';
+    }
+    $object->id=$rec['ID'];
+    $object->class_id=$rec['CLASS_ID'];
+    $object->description=$rec['DESCRIPTION'];
+    endMeasure('getObject');
+    startMeasure('getClassTemplate');
     $data=getClassTemplate((int)$object->class_id);
+    endMeasure('getClassTemplate');
     $data=preg_replace('/%\.object_title%/uis', $object_name, $data);
     $data=preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
     //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    endMeasure('getObjectClassTemplate');
     return $data;
 }
 
@@ -363,8 +407,6 @@ function removeLinkedProperty($object, $property, $module)
  */
 function getObject($name)
 {
-   $qry = '1';
-
    if (preg_match('/^(.+?)\.(.+?)$/', $name, $m))
    {
       $class_name  = $m[1];
@@ -383,20 +425,15 @@ function getObject($name)
       $sqlQuery = "SELECT objects.*
                      FROM objects
                     WHERE TITLE = '" . DBSafe($name) . "'";
-
       $rec = SQLSelectOne($sqlQuery);
       //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
    }
-   
    if ($rec['ID'])
    {
       include_once(DIR_MODULES . 'objects/objects.class.php');
-
       $obj = new objects();
-
       $obj->id = $rec['ID'];
       $obj->loadObject($rec['ID']);
-      
       return $obj;
    }
 
