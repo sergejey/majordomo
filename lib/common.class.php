@@ -85,7 +85,16 @@ function sayToSafe($ph, $level = 0, $destination = '') {
   if (!$destination) {
    return 0;
   }
-  $processed=processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+  // add message to chat
+  $rec = array();
+  $rec['MESSAGE']   = $ph;
+  $rec['ADDED']     = date('Y-m-d H:i:s');
+  $rec['ROOM_ID']   = 0;
+  $rec['MEMBER_ID'] = 0;
+  if ($level > 0) $rec['IMPORTANCE'] = $level;
+  $rec['ID'] = SQLInsert('shouts', $rec);
+  
+  $processed=processSubscriptions('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   return 1;
  }
 
@@ -158,7 +167,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    setGlobal('lastSayMessage', $ph);
 
    $details=array('level' => $level, 'message' => $ph, 'member_id' => $member_id);
-   processSubscriptionsSafe('SAY', $details); //, 'ignoreVoice'=>$ignoreVoice
+   processSubscriptions('SAY', $details); //, 'ignoreVoice'=>$ignoreVoice
 
 
    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '')
