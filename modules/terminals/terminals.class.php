@@ -371,12 +371,12 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
 
     // esli net soobsheniy dlya takogo urovnya to sozdaem pervoe s takim urovnem
     if (!$last_mesage) {
-       $time_shift =  getMediaDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
+       $time_shift = 4 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
        DebMes("Create first mesage",'terminals');
        addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
     } else {
     // esli soobsheniya sushestvuyut to vstavlayem svoe poslednim po spisku s uchetom urovnya soobsheniya
-        $time_shift =  getMediaDurationSeconds($cached_filename); // тут надо получить всремя сообщения через ффмпег
+        $time_shift = 4 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
         DebMes("Add new message".$last_mesage,'terminals');
         addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+100, $time_shift);
     }
