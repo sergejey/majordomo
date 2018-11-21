@@ -253,6 +253,7 @@ function getNewObjectIndex($class) {
 }
 
 function processDevice($device_id) {
+    startMeasure('processDevice');
     $device_rec=SQLSelectOne("SELECT * FROM devices WHERE ID=".(int)$device_id);
     $result=array('HTML'=>'','DEVICE_ID'=>$device_rec['ID']);
 
@@ -262,7 +263,7 @@ function processDevice($device_id) {
     if ($device_rec['TYPE']=='camera') {
         $result['HEIGHT']=5;
     }
-
+    endMeasure('processDevice');
     return $result;
 }
 

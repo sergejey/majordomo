@@ -92,7 +92,8 @@
  <style>
   .swiper-container {
    width: 100%;
-   height: auto;
+   height: calc(100vh - 140px);;
+   overflow-y: auto;
   }
 
   .swiper-container-header {
@@ -290,7 +291,7 @@
   [#if NEW_SECTION="1"#]
   <div class="row"><div class="col-md-12"><hr/>[#if SECTION_TITLE!=""#]<h2>[#SECTION_TITLE#]</h2>[#endif#]</div></div>
   [#endif#]
-  <div class="device[#ID#] col-md-3"><!-- cache_ignore_start -->[#HTML#]<!-- cache_ignore_end --></div>
+  <div class="device[#ID#] col-md-3" style="margin-bottom:5px"><!-- cache_ignore_start -->[#HTML#]<!-- cache_ignore_end --></div>
   [#end DEVICES#]
  </div>
  [#end GROUPS#]

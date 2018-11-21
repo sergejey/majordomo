@@ -88,8 +88,9 @@
      $('#times_select').toggle(this.checked);
   }).change();
   });
- </script></div>
+ </script>
 </div>
+
 
 <!-- CONDITIO (varchar) -->
 <div class="form-group">
@@ -97,6 +98,7 @@
  <#LANG_CONDITION#>:
  </label>
  <div class="controls"><label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#></label>
+
  <div id='condition_select'>
   &nbsp;
 
@@ -106,7 +108,7 @@
                 <input type="text" class="form-control" name="condition_linked_object" id="condition_linked_object" size="10" value="[#CONDITION_LINKED_OBJECT#]">
         </div>
    </div>
-     
+
         <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
         <div class="controls">
@@ -138,6 +140,7 @@
 [#module name="linkedobject" object_field="condition_linked_object" property_field="condition_linked_property"#]
 
  </div>
+
  </div>
  <script language="javascript">
   $(function () {
@@ -145,7 +148,7 @@
      $('#condition_select').toggle(this.checked);
   }).change();
   });
- </script></div>
+ </script>
 </div>
 
 

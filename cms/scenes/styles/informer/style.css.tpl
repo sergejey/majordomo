@@ -18,9 +18,8 @@
 
 .type_informer span {
  display:inline-block;
- width:52px;
+ width:62px;
  height:28px;
- 
  position:relative;
  padding-left:25px;
  padding-top:9px;

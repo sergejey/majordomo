@@ -12,11 +12,11 @@
  * @return mixed execution result (0 - failed)
  */
 if (!function_exists('SQLExec')) {
-function SQLExec($query)
+function SQLExec($query,$ignore_errors = false)
    {
       if (($query{0} == "#") || ($query == "")) return;
       global $db;
-      return $db->Exec($query);
+      return $db->Exec($query, $ignore_errors);
    }
 }
 /**

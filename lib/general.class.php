@@ -128,7 +128,11 @@ if (isset($_SERVER['REQUEST_METHOD']))
 
 
 function gr($var_name,$type='') {
-   $value = $_REQUEST[$var_name];
+   if (isset($_REQUEST[$var_name])) {
+      $value = $_REQUEST[$var_name];
+   } else {
+      return;
+   }
    if (get_magic_quotes_gpc()) {
       stripit($value);
    }

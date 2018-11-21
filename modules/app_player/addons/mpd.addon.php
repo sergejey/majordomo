@@ -77,7 +77,12 @@ class mpd extends app_player_addon {
 			}
 			$this->mpd->Disconnect();
 		}
-		return $this->success;
+		if ($this->success) {
+			return $this->data;
+		} else {
+			return $this->success;
+		}
+
 	}
 	
 	// Play

@@ -228,17 +228,27 @@ if ($phpmorphy_loaded) {
 
 //dprint($lines,false);
 //dprint($devices);
+$compare_title=$command;
+if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $compare_title,$m)) {
+    $compare_title=trim(str_replace($m[0],' ',$compare_title));
+}
+if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title,$m)) {
+    $compare_title=trim(str_replace($m[0],' ',$compare_title));
+}
+
+$compare_title = trim(preg_replace('/^ть /','',$compare_title));
+
+if ($compare_title == '') {
+    return;
+}
+
+
 
 $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
     $device_matched = 0;
-    $compare_title=$command;
-    if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $compare_title,$m)) {
-        $compare_title=trim(str_replace($m[0],' ',$compare_title));
-    }
-    if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title,$m)) {
-        $compare_title=trim(str_replace($m[0],' ',$compare_title));
-    }
+
+
     if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
         $device_matched = 1;
     } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
@@ -383,4 +393,6 @@ if ($reply_confirm) {
 
 if ($processed) {
     $details['PROCESSED'] = 1;
+} else {
+    //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }

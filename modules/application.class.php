@@ -197,7 +197,6 @@ function getParams() {
    $terminals = getAllTerminals(-1, 'TITLE');
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
-    //!$session->data['TERMINAL'] &&  
     if ($terminals[$i]['HOST']!='' && $_SERVER['REMOTE_ADDR']==$terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
      $session->data['TERMINAL']=$terminals[$i]['NAME'];
     }
@@ -208,6 +207,15 @@ function getParams() {
      $out['TERMINAL_TITLE']=$terminals[$i]['TITLE'];
      $terminals[$i]['SELECTED']=1;
     }
+   }
+
+   $main_terminal=getTerminalsByName('MAIN')[0];
+   if (!$main_terminal['ID']) {
+    $main_terminal=array();
+    $main_terminal['NAME']='MAIN';
+    $main_terminal['TITLE']='MAIN';
+    $main_terminal['HOST']=$_SERVER['SERVER_ADDR'];
+    SQLInsert('terminals',$main_terminal);
    }
 
    if (!$out['TERMINAL_TITLE'] && $session->data['TERMINAL']) {
@@ -228,7 +236,6 @@ function getParams() {
     $out['HIDE_TERMINALS']=1;
     $session->data['TERMINAL']=$terminals[0]['NAME'];
    }
-   SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 30 MINUTE)');
 
    $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
    $total=count($users);
@@ -355,6 +362,7 @@ function getParams() {
     global $ajax;
     $ajax=1;
     if (file_exists(DIR_MODULES.$this->action)) {
+     ignore_user_abort(1);
      include_once(DIR_MODULES.$this->action.'/'.$this->action.'.class.php');
      $obj="\$object$i";
      $code="";

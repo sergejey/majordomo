@@ -21,7 +21,7 @@ function getTerminalByID($id) {
 
 // Get terminal by name
 function getTerminalsByName($name, $limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` LIKE '".DBSafe($name)."' OR `TITLE` LIKE '".DBSafe($name)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
+	$sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = '".DBSafe($name)."' OR `TITLE` = '".DBSafe($name)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
 	}
@@ -44,9 +44,9 @@ function getTerminalsByHost($host, $limit = -1, $order = 'ID', $sort = 'ASC') {
 		'0:0:0:0:0:0:0:1',
 	);
 	if(in_array(strtolower($host), $localhost)) {
-		$sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` LIKE '".implode("' OR `HOST` LIKE '", $localhost)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
+		$sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` = '".implode("' OR `HOST` = '", $localhost)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
 	} else {
-		$sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` LIKE '".DBSafe($host)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
+		$sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` = '".DBSafe($host)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
 	}
 	if($limit >= 0) {
 		$sqlQuery .= ' LIMIT '.intval($limit);
@@ -83,7 +83,7 @@ function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC'
 
 // Get main terminal
 function getMainTerminal() {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` LIKE 'MAIN'";
+	$sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = 'MAIN'";
 	$terminal = SQLSelectOne($sqlQuery);
 	return $terminal;
 }
@@ -112,4 +112,25 @@ function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 	return $terminals;
 }
 
-?>
+function getLocalIp() {
+	global $local_ip_address_cached;
+	if (isset($local_ip_address_cached)) {
+		$local_ip_address=$local_ip_address_cached;
+	} else {
+		$s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+		socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
+		socket_getsockname($s, $local_ip_address, $port);
+		@socket_shutdown($s, 2);
+		socket_close($s);
+		if (!$local_ip_address) {
+			$main_terminal=getTerminalsByName('MAIN')[0];
+			if ($main_terminal['HOST']) {
+				$local_ip_address=$main_terminal['HOST'];
+			}
+		}
+		if ($local_ip_address) {
+			$local_ip_address_cached=$local_ip_address;
+		}
+	}
+	return $local_ip_address;
+}

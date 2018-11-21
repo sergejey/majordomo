@@ -209,12 +209,13 @@ function install($parent_name = "")
          $installedFile = DIR_MODULES . $lst[$i]['FILENAME'] . "/installed";
          if (file_exists($installedFile))
             @unlink($installedFile);
-
+         startMeasure('Installing '.$lst[$i]['FILENAME']);
          include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
          $obj = "\$object$i";
          $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
          //echo "Installing ".$lst[$i]['FILENAME']."\n";
          @eval("$code");
+         endMeasure('Installing '.$lst[$i]['FILENAME']);
       }
    }
 

@@ -57,6 +57,7 @@ $requests = array(
    "/^\/panel\/devices\/(\d+)\.html/is"   => '?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=\1',
    "/^\/panel\/app_gpstrack\/action_(\d+)\.html/is"=> '?(panel:{action=app_gpstrack})&md=app_gpstrack&data_source=gpsactions&view_mode=edit_gpsactions&id=\1',
    "/^\/panel\/pattern\/(\d+)\.html/is" => '?(panel:{action=patterns})&md=patterns&view_mode=edit_patterns&id=\1',
+    "/^\/panel\/(\w+?)\.html/is" => '?(panel:{action=\1})&md=\1',
    "/^\/menu\.html/is"                  => '?(application:{action=menu})',
    "/^\/pages\.html/is"                 => '?(application:{action=pages})',
    "/^\/menu\/(\d+?)\.html/is"          => '?(application:{action=menu, parent_item=\1})',
@@ -121,12 +122,11 @@ if ($link != '')
       $pd    = $matches[1];
       $other = $matches[2];
       $tmp   = explode('&', $other);
-
       foreach ($tmp as $pair)
       {
          $tmp2 = explode('=', $pair);
          if (isset($tmp2[1])) {
-            $_GET[$tmp2[0]] = $tmp2[1];
+            $_REQUEST[$tmp2[0]] = $tmp2[1];
             ${$tmp2[0]}     = $tmp2[1];
          }
       }
@@ -135,6 +135,7 @@ if ($link != '')
    {
       $pd = $matches[1];
    }
+   $_REQUEST['pd']=$pd;
 }
 else
 {
