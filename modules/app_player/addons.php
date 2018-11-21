@@ -58,8 +58,6 @@ class app_player_addon {
 			'random'	 -	Random mode. Boolean.
 			'loop'		 -	Loop mode. Boolean.
 			'repeat'	 -	Repeat mode. Boolean.
-			'speed'          -      Current speed for playing media. float.
-                        'link'           -      Link to current media in device. String.
 		*/
 		return $this->not_supported();
 	}
