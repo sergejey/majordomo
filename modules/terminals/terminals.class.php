@@ -298,7 +298,7 @@ class terminals extends module
                 $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1");
                 foreach ($terminals as $terminal_rec) {
                     //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
-                    $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename);
+                    $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename,$details['message']);
                 }
             } elseif ($source_event == 'SAYTO' || $source_event == 'ASK') {
                 $terminal_rec = array();
@@ -314,7 +314,7 @@ class terminals extends module
                     $details['level']=9999;
                 }
                 //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
-                $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename);
+                $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename,$details['message']);
             }
 
         } elseif ($event == 'HOURLY') {
@@ -337,26 +337,9 @@ class terminals extends module
 *
 * @access public
 */
-function terminalSayByCacheQueue($target, $levelMes, $cached_filename) { 
-   // berem vse soobsheniya po urovnyu
-   $l_level_mesage = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'."%' ORDER BY `TITLE`");
+function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) { 
 
-   ///  get last mesage for levelmes
-   if ($last_mesage) {
-       $last_mesage = max(array_column($l_level_mesage,'TITLE'));
-       }
-   // opredelyaem posledniy nomer soobsheniya esli ih netu to poluchim #001
-   $pos = strripos($last_mesage, '-');
-   $last_number = substr($last_mesage, $pos+1)+1;
-   if ($last_number<1 ){
-      $last_number='001';
-    } else if ($last_number<10 ) {
-      $last_number='00'.$last_number;
-    } else {
-      $last_number='0'.$last_number;
-    }
-
-    // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
+   // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
     if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
         $server_ip = getLocalIp();
         if (!$server_ip) {
@@ -370,20 +353,25 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename) {
         return false;
     }
 
-    // esli net soobsheniy dlya takogo urovnya to sozdaem pervoe s takim urovnem
-    if (!$last_mesage) {
-       $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
-       DebMes("Create first mesage",'terminals');
-       addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
-    } else {
-    // esli soobsheniya sushestvuyut to vstavlayem svoe poslednim po spisku s uchetom urovnya soobsheniya
-        $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
-        DebMes("Add new message".$last_mesage,'terminals');
-        addScheduledJob('sayTo-timers-'.$target['TITLE'].'-level-'.$levelMes.'-number-'.$last_number, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+100, $time_shift);
-    }
+   // berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
+   $messages = SQLSelect("SELECT * FROM shouts ORDER BY ID DESC LIMIT 0 , 100");
+   foreach ( $messages as $message ) {
+     if ($ph==$message['MESSAGE']) { 
+         $number_message = $message['ID'];
+         break;
+     }
+   }
+    
+    // dobavlyaem soobshenie v konec potom otsortituem
+    if ($levelMes<10 ) {
+       $levelMes ='0'.$levelMes;
+    } 
+    $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
+    DebMes("Add new message".$last_mesage,'terminals');
+    addScheduledJob($levelMes.'-level-allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
 
     // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'sayTo-timers-'.$target['TITLE'].'-level-'.'%-number-'."%' ORDER BY `TITLE` , 'RUNTIME'");
+    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'%-level-allsay-target-'.$target['TITLE'].'-number-'."%' ORDER BY `TITLE` ASC");
     $first_fields = reset($all_messages);
     $runtime = (strtotime($first_fields['RUNTIME']));
     foreach ($all_messages as $message) {
