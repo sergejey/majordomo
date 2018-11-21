@@ -274,7 +274,7 @@ class dnla extends app_player_addon {
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $name = $doc->getElementsByTagName('TrackMetaData')->item(0)->nodeValue;
+        $name = 'Played url om the device';
         $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
         if ($response) {
             // Results
