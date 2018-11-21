@@ -113,7 +113,7 @@ class dnla extends app_player_addon {
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         // для радио 101 ру
         if( stripos( $input, '?userid=0&setst') ) {
-            $input = stristr($input, '&setst', True);
+            $input = stristr($input, '&setst', True).'.mp4';
             }
         //DebMes('Ссылка '.$input.' подана на терминал - '.$this->terminal['NAME']);
         $response = $remote->play($input);
