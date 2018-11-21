@@ -1349,16 +1349,9 @@ function hsvToHex ( $h, $s, $v ) {
 /**
  * Summary of player status 
  * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @return  'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0. 
- *          'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0. 
- *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/transporting/unknown 
- *          'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
- *          'random'          => (boolean)$random, // Random mode. Boolean. 
- *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
- *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
- *          'speed'           => (float)$current_speed, //Current speed for playing media. float.
- *          'link'            => (string)$curren_url, //Current link for media in device. String.
+ * @return  'id'              => (int), //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+ *          'name'            => (string), //Playback status. String: stopped/playing/paused/transporting/unknown 
+ *          'file'            => (string), //Current link for media in device. String.
  */
 function getPlayerStatus ($host = 'localhost') {
     if(!$terminal = getTerminalsByName($host, 1)[0]) {
@@ -1367,9 +1360,24 @@ function getPlayerStatus ($host = 'localhost') {
     if(!$terminal) {
 	return;
 	}
-    include_once(DIR_MODULES . 'app_player/addons.php');
-    include_once(DIR_MODULES . 'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');	
-    $player = new $terminal['PLAYER_TYPE']($terminal);
-    //DebMes( $player->status());
-    return $player->status();
+    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->play_terminal = $terminal['NAME']; // Имя терминала
+    $player->command  = 'pl_get'; // Команда
+    //$player->command  = 'status'; // Команда
+    $player->ajax   = TRUE;
+    $player->intCall  = TRUE;
+    $player->usual($out);
+
+    if($player->json['success']) {
+        // Если команда успешно выполнена, то сообщаем об этом
+        //echo 'Готово!';
+		//DebMes($player->json['data']);
+		return($player->json['data']);
+        // Так же, можно вывести данные, полученные в результате выполнения команды
+        // Они хранятся в $player->json['data'] и их формат различается для каждой из команд (см.выше)
+    } else {
+        // Если произошла ошибка, выводим ее описание
+        return($player->json['message']);
+    }
 }
