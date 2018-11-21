@@ -363,15 +363,12 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
    }
     
     // dobavlyaem soobshenie v konec potom otsortituem
-    if ($levelMes<10 ) {
-       $levelMes ='0'.$levelMes;
-    } 
     $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
     DebMes("Add new message".$last_mesage,'terminals');
-    addScheduledJob($levelMes.'-level-allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
+    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
 
     // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'%-level-allsay-target-'.$target['TITLE'].'-number-'."%' ORDER BY `TITLE` ASC");
+    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."%' ORDER BY `TITLE` ASC");
     $first_fields = reset($all_messages);
     $runtime = (strtotime($first_fields['RUNTIME']));
     foreach ($all_messages as $message) {
@@ -386,6 +383,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
      }
      DebMes("Timers sorted",'terminals');
    }
+
     
 
     /**
