@@ -232,7 +232,7 @@ class terminals extends module
         //if (!$terminal_rec['IS_ONLINE']) return false;
         if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
             $service_port = '7999';
-            $in = 'tts:' . $ph;
+            $in = 'tts:' . $message;
             $address = $terminal_rec['HOST'];
             if (!preg_match('/^\d/', $address)) return 0;
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
