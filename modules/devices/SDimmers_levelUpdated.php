@@ -14,9 +14,9 @@
   $this->setProperty('status', 1);
   if ($minWork!=$maxWork) {
    $levelWork=$minWork+round(($maxWork-$minWork)*$level/100);
-   $this->setProperty('levelWork',(int)$levelWork,true);
+   $this->setProperty('levelWork',(int)$levelWork);
   }
  } else {
   $this->setProperty('status', 0);
-  $this->setProperty('levelWork',(int)$minWork,true);
+  $this->setProperty('levelWork',(int)$minWork);
  }
