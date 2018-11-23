@@ -161,7 +161,7 @@ class app_player extends module {
 		// END Deprecated
 
 		// Play terminal
-		$play_terminal = gr('play_terminal');
+		$play_terminal = ($this->play_terminal?$this->play_terminal:gr('play_terminal'));
 		$terminal_id = ($this->terminal_id?$this->terminal_id:gr('terminal_id'));
 		if($play_terminal != '') { // name in request
 			$terminal = getTerminalsByName($play_terminal, 1, 'LATEST_ACTIVITY', 'DESC')[0];
@@ -179,7 +179,7 @@ class app_player extends module {
 		$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
 		
 		// Session terminal
-		$session_terminal = gr('session_terminal');
+		$session_terminal = ($this->session_terminal?$this->session_terminal:gr('session_terminal'));
 		if($session_terminal != '') { // name in request
 			$session->data['SESSION_TERMINAL'] = $session_terminal;
 		} elseif($session->data['SESSION_TERMINAL'] == '') { // default

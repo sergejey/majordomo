@@ -169,3 +169,17 @@ for ($i = 0; $i < $total; $i++) {
 
     SQLUpdate('pvalues', $rec);
 }
+
+// SET SERIAL
+$serial_data='';
+$current_serial=gg('ThisComputer.Serial');
+if (IsWindowsOS()) {
+    
+} else {
+    $serial_data=trim(exec("cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2"));
+    $serial_data=ltrim($data,'0');
+}
+
+if ($serial_data!='') {
+    sg('ThisComputer.Serial', $serial_data);
+}

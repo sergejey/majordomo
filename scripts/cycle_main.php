@@ -25,7 +25,7 @@ getObject('ThisComputer')->raiseEvent("StartUp");
 
 $sqlQuery = "SELECT *
                FROM classes
-              WHERE TITLE LIKE 'timer'";
+              WHERE TITLE = 'timer'";
 
 $timerClass = SQLSelectOne($sqlQuery);
 $o_qry = 1;

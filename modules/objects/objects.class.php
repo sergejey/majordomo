@@ -406,7 +406,7 @@ function usual(&$out) {
   function getMethodByName($name, $class_id, $id) {
 
    if ($id) {
-    $meth=SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='".(int)$id."' AND TITLE LIKE '".DBSafe($name)."'");
+    $meth=SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='".(int)$id."' AND TITLE = '".DBSafe($name)."'");
     if ($meth['ID']) {
      return $meth['ID'];
     }
@@ -600,7 +600,7 @@ function usual(&$out) {
 * @access public
 */
  function getPropertyByName($name, $class_id, $object_id) {
-  $rec=SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='".(int)$object_id."' AND TITLE LIKE '".DBSafe($name)."'");
+  $rec=SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='".(int)$object_id."' AND TITLE = '".DBSafe($name)."'");
   if ($rec['ID']) {
    return $rec['ID'];
   }
@@ -1014,15 +1014,15 @@ function usual(&$out) {
   SQLExec($sqlQuery);
 
   $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
-              (`ID` int(10) unsigned NOT NULL auto_increment,
-               `TOPIC`   char(255) NOT NULL,
+              (`TOPIC`   char(255) NOT NULL,
                `DATANAME` char(255) NOT NULL,
                `DATAVALUE` char(255) NOT NULL,
-               `EXPIRE`    datetime  NOT NULL,
-                PRIMARY KEY (`ID`)
+               `EXPIRE`    datetime  NOT NULL
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
+  $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
+  SQLExec($sqlQuery,true);
 
 
 /*

@@ -57,6 +57,7 @@ $requests = array(
    "/^\/panel\/devices\/(\d+)\.html/is"   => '?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=\1',
    "/^\/panel\/app_gpstrack\/action_(\d+)\.html/is"=> '?(panel:{action=app_gpstrack})&md=app_gpstrack&data_source=gpsactions&view_mode=edit_gpsactions&id=\1',
    "/^\/panel\/pattern\/(\d+)\.html/is" => '?(panel:{action=patterns})&md=patterns&view_mode=edit_patterns&id=\1',
+    "/^\/panel\/(\w+?)\.html/is" => '?(panel:{action=\1})&md=\1',
    "/^\/menu\.html/is"                  => '?(application:{action=menu})',
    "/^\/pages\.html/is"                 => '?(application:{action=pages})',
    "/^\/menu\/(\d+?)\.html/is"          => '?(application:{action=menu, parent_item=\1})',

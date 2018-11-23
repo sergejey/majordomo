@@ -85,7 +85,7 @@ class chromecast extends app_player_addon {
 				if(!$content_type) {
 					$content_type = 'audio/mpeg';
 				}
-				$cc->DMP->play($input, 'LIVE', $content_type, true, 0);
+				$cc->DMP->play($input, 'BUFFERED', $content_type, true, 0);
 				$this->success = TRUE;
 				$this->message = 'OK';
 			} catch (Exception $e) {

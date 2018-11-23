@@ -18,11 +18,13 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 $last_backup = time();
 $timeout = 15 * 60; // 15 minutes
 
-if (!is_dir(ROOT . '/database_backup'))
-   mkdir(ROOT . '/database_backup', 0777);
+if (!is_dir(ROOT . 'database_backup')) {
+   umask(0);
+   mkdir(ROOT . 'database_backup', 0777);
+}
 
 
-$filename  = ROOT . '/database_backup/db.sql';
+$filename  = ROOT . 'database_backup/db.sql';
 
 if (defined('PATH_TO_MYSQLDUMP'))
    $mysqlDumpPath = PATH_TO_MYSQLDUMP;

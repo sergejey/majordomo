@@ -842,6 +842,8 @@ $dictionary = array(
 
 
     'CAN_PLAY_MEDIA' => 'can play media',
+    'CAN_TTS' => 'can receive notification messages',
+    'MIN_MSG_LEVEL' => 'Minimum message importance level',
 
 
     'PLAYER_TYPE' => 'Player type',
@@ -1074,6 +1076,9 @@ $dictionary = array(
     'READ_ONLY' => 'Read Only',
     'ADVANCED_CONFIG' => 'Advanced config',
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
+    'MARKET_CATEGORY_INSTALLED' => 'Installed',
+    'MARKET_CATEGORY_OWNED' => 'Owned',
+    'MARKET_CONNECT_NOTE' => 'Please make sure you have specified correct username/password for <a href="/panel/connect.html">CONNECT</a> service.',
 
     'SAVE_CHANGES' => 'Save changes',
     'ADD_PANE' => 'Add Pane',

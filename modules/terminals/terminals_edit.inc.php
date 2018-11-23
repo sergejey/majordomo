@@ -15,51 +15,37 @@ if($this->mode == 'update') {
 	$ok = 1;
 	
 	//updating 'NAME' (varchar, required)
-	global $name;
-	$rec['NAME'] = $name;
+	$rec['NAME'] = gr('name');
 	if($rec['NAME'] == '') {
 		$out['ERR_NAME'] = 1;
 		$ok = 0;
 	}
 	
 	//updating 'TITLE' (varchar, required)
-	global $title;
-	$rec['TITLE'] = $title;
-
-	global $canplay;
-	$rec['CANPLAY'] = (int)$canplay;
-
-	global $majordroid_api;
-	$rec['MAJORDROID_API'] = (int)$majordroid_api;
-
-	global $player_type;
-	$rec['PLAYER_TYPE'] = $player_type;
-
-	global $player_port;
-	$rec['PLAYER_PORT'] = $player_port;
-	
-	global $player_username;
-	$rec['PLAYER_USERNAME'] = $player_username;
-	
-	global $player_password;
-	$rec['PLAYER_PASSWORD'] = $player_password;
-
-	global $linked_object;
-	$rec['LINKED_OBJECT'] = $linked_object;
-
-	global $level_linked_property;
-	$rec['LEVEL_LINKED_PROPERTY'] = $level_linked_property;
-
-	global $player_control_address;
-	$rec['PLAYER_CONTROL_ADDRESS'] = $player_control_address;
-
+	$rec['TITLE'] = gr('title');
 	if($rec['TITLE'] == '') {
 		$out['ERR_TITLE'] = 1;
 		$ok = 0;
 	}
 
-	global $host;
-	$rec['HOST'] = $host;
+	$rec['CANPLAY']=gr('canplay','int');
+	$rec['CANTTS']=gr('cantts','int');
+
+	$rec['MIN_MSG_LEVEL']=gr('min_msg_level');
+
+	$rec['MAJORDROID_API'] = gr('majordroid_api','int');
+	$rec['PLAYER_TYPE'] = gr('player_type');
+	$rec['PLAYER_PORT'] = gr('player_port');
+	$rec['PLAYER_USERNAME'] = gr('player_username');
+	$rec['PLAYER_PASSWORD'] = gr('player_password');
+	$rec['LINKED_OBJECT'] = gr('linked_object');
+	/*
+	global $level_linked_property;
+	$rec['LEVEL_LINKED_PROPERTY'] = $level_linked_property;
+	*/
+	$rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
+
+	$rec['HOST'] = gr('host');
 	if(!$rec['HOST']) {
 		$out['ERR_HOST'] = 1;
 		$ok = 0;

@@ -8,6 +8,7 @@
  $languages[]=array('TITLE'=>'ru','CAPTION'=>'Russian');
  $languages[]=array('TITLE'=>'ua','CAPTION'=>'Ukrainian');
  $languages[]=array('TITLE'=>'lt','CAPTION'=>'Lithuanian');
+ $languages[]=array('TITLE'=>'el','CAPTION'=>'Greek');
  $languages[]=array('TITLE'=>'es','CAPTION'=>'Spanish');
  $languages[]=array('TITLE'=>'et','CAPTION'=>'Estonian');
  $languages[]=array('TITLE'=>'it','CAPTION'=>'Italian');

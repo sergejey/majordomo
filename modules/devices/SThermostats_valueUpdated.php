@@ -1,5 +1,12 @@
 <?php
 
+$this->setProperty('alive', 1);
+$alive_timeout=(int)$this->getProperty('aliveTimeout')*60*60;
+if (!$alive_timeout) {
+    $alive_timeout=2*24*60*60; // 2 days alive timeout by default
+}
+setTimeout($ot.'_alive_timer', 'setGlobal("'.$ot.'.alive", 0);', $alive_timeout);
+
 $disabled=$this->getProperty('disabled');
 if ($disabled) {
     return;
@@ -30,7 +37,7 @@ if ($currentTemperature > ($targetTemperature+$threshold)) { // temperature too 
     } else {
         $this->setProperty('relay_status',0); // turn off
     }
-} elseif ($currentTemperature < ($targetTemperature-$threshold)) { // temperture too low
+} elseif ($currentTemperature < ($targetTemperature-$threshold)) { // temperature too low
     $need_action = 1;
     if ($ncno == 'no') {
         $this->setProperty('relay_status',0); // turn off

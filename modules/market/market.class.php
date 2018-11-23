@@ -234,9 +234,175 @@ class market extends module
             exit;
         }
 
+        if ($_GET['op']=='') {
+            $result = $this->marketRequest('op=categories',120);
+            $data = json_decode($result,true);
+            if (SETTINGS_SITE_LANGUAGE=='ru') {
+                $title_field='CATEGORY_RU';
+            } else {
+                $title_field='CATEGORY_EN';
+            }
+            if (is_array($data[0])) {
+                foreach($data as $item) {
+                    $out['CATEGORIES'][]=array('ID'=>$item['ID'],'TITLE'=>$item[$title_field]);
+                }
+            } else {
+                $out['CATEGORIES']=array();
+            }
+            array_unshift($out['CATEGORIES'],array('ID'=>'owned','TITLE'=>LANG_MARKET_CATEGORY_OWNED));
+            array_unshift($out['CATEGORIES'],array('ID'=>'installed','TITLE'=>LANG_MARKET_CATEGORY_INSTALLED));
+            $out['CATEGORIES'][]=array('ID'=>'custom','TITLE'=>'Custom');
+            return;
+        }
+
+
+
+        if (isset($this->category_id)) {
+            $category_id=$this->category_id;
+        } else {
+            $category_id=gr('category_id');
+        }
+            $search=gr('search');
+
+            $plugins=array();
+            $params='';
+            $missing=array();
+
+        $data= new stdClass();
+
+            if ($category_id=='owned') {
+                $params='own=1';
+            } elseif ($category_id == 'all') {
+                $params='all=1';
+            } elseif ($category_id == 'custom') {
+                $data->PLUGINS=array();
+                $added_plugins = SQLSelect("SELECT MODULE_NAME FROM plugins");
+                $modules_list=array_map('current',$added_plugins);
+                $seen=array();
+                $params='';
+                foreach($modules_list as $module) {
+                    if ($module=='control_modules') continue;
+                    if ($module=='control_access') continue;
+                    if (!$seen[$module]) {
+                        $params.='&c[]='.urlencode($module);
+                    }
+                    $seen[$module]=1;
+                }
+            } elseif ($search) {
+                $params='search='.urlencode($search);
+            } elseif (is_numeric($category_id)) {
+                $params='category_id='.$category_id;
+            } else {
+                //installed
+                $modules_in_db=SQLSelect("SELECT NAME FROM project_modules");
+                foreach($modules_in_db as $module_in_db) {
+                    if (!is_dir(DIR_MODULES.$module_in_db['NAME'])) {
+                        $missing[$module_in_db['NAME']]=1;
+                    }
+                }
+                $modules_list=array_map('current',$modules_in_db);
+                $seen=array();
+                $params='';
+                foreach($modules_list as $module) {
+                    if ($module=='control_modules') continue;
+                    if ($module=='control_access') continue;
+                    if (!$seen[$module]) {
+                        $params.='&m[]='.urlencode($module);
+                    }
+                    $seen[$module]=1;
+                }
+                //dprint($modules_in_db);
+            }
+
+            if ($params) {
+                $result = $this->marketRequest($params);
+                $data = json_decode($result);
+            }
+
+
+                if (!$data->PLUGINS) {
+                    $out['ERR'] = 1;
+                } else {
+                    $this->can_be_updated=array();
+                    $total = count($data->PLUGINS);
+                    for ($i = 0; $i < $total; $i++) {
+                        $rec = (array)$data->PLUGINS[$i];
+                        $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
+                        if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec['ID']) {
+                            $rec['EXISTS'] = 1;
+                            if ($plugin_rec['ID']) {
+                                $rec['INSTALLED_VERSION'] = $plugin_rec['CURRENT_VERSION'];
+                            }
+                            $ignore_rec = SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
+                            if ($ignore_rec['ID']) {
+                                $rec['IGNORE_UPDATE'] = 1;
+                            }
+                        }
+
+                        //if ($rec['MODULE_NAME']==$name) {
+                        //unset($rec['LATEST_VERSION']);
+
+                        if (!isset($rec['LATEST_VERSION_URL'])) {
+                            if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
+                                $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
+                                $github_feed = getURL($git_url, 5 * 60);
+                                @$tmp = GetXMLTree($github_feed);
+                                @$items_data = XMLTreeToArray($tmp);
+                                @$items = $items_data['feed']['entry'];
+                                if (is_array($items)) {
+                                    $latest_item = $items[0];
+                                    //print_r($latest_item);exit;
+                                    $updated = strtotime($latest_item['updated']['textvalue']);
+                                    $rec['LATEST_VERSION'] = date('Y-m-d H:i:s', $updated);
+                                    $rec['LATEST_VERSION_COMMENT'] = $latest_item['title']['textvalue'];
+                                    $rec['LATEST_VERSION_URL'] = $latest_item['link']['href'];
+                                }
+                            }
+                        }
+                        if ($rec['MODULE_NAME'] == $name) {
+                            //$this->url=$rec['REPOSITORY_URL'];
+                            $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                            $this->version = $rec['LATEST_VERSION'];
+                        }
+                        if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
+                            $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
+                        }
+                        /*
+                        if (in_array($rec['MODULE_NAME'], $names)) {
+                            $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
+                        }
+                        */
+                        if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION']!='') {
+                            $this->have_updates[] = $rec['MODULE_NAME'];
+                        }
+                        $plugins[] = $rec;
+                    }
+                }
+
+
+
+
+            if (count($plugins)>0) {
+                usort($plugins, function($a,$b) {
+                    return strcmp($a['TITLE'],$b['TITLE']);
+                });
+                $out['PLUGINS']=$plugins;
+            }
+
+            if ($this->ajax) {
+                $p = new parser(DIR_TEMPLATES . $this->name . "/list.html", $out, $this);
+                //echo $params."<br/>";
+                echo $p->result;
+                exit;
+
+            }
+
+        return;
+
         // $data_url='https://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
         $result = $this->marketRequest();
         $data = json_decode($result);
+
         if (!$data->PLUGINS) {
             $out['ERR'] = 1;
             return;
@@ -385,7 +551,7 @@ class market extends module
 
     }
 
-    function marketRequest($details = '', $cache_timeout = 120)
+    function marketRequest($details = '', $cache_timeout = 0)
     {
         $serial = gg('Serial');
         if (!$serial || $serial == '0') {
@@ -416,10 +582,18 @@ class market extends module
         $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
-        $result = getURL($data_url, $cache_timeout);
-        if (!$result && $cache_timeout > 0) {
-            $result = getURL($data_url, 0);
+        $username='';
+        $password='';
+        include_once(DIR_MODULES . 'connect/connect.class.php');
+        $connect = new connect();
+        $connect->getConfig();
+        $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+        $connect_password = $connect->config['CONNECT_PASSWORD'];
+        if ($connect_username!='' && $connect_password!='') {
+            $username=$connect_username;
+            $password=$connect_password;
         }
+        $result = getURL($data_url, $cache_timeout,$username,$password);
         return $result;
 
     }
@@ -719,6 +893,17 @@ class market extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
+
+        include_once(DIR_MODULES . 'connect/connect.class.php');
+        $connect = new connect();
+        $connect->getConfig();
+        $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+        $connect_password = $connect->config['CONNECT_PASSWORD'];
+        if ($connect_username!='' && $connect_password!='') {
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+        }
+
         $incoming = curl_exec($ch);
 
         curl_close($ch);
