@@ -1352,6 +1352,14 @@ function hsvToHex ( $h, $s, $v ) {
  * @return  'id'              => (int), //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
  *          'name'            => (string), //Playback status. String: stopped/playing/paused/transporting/unknown 
  *          'file'            => (string), //Current link for media in device. String.
+ *          'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+ *          'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0. 
+ *          'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0. 
+ *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown
+ *          'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+ *          'random'          => (boolean)$random, // Random mode. Boolean. 
+ *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
+ *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
  */
 function getPlayerStatus ($host = 'localhost') {
     if(!$terminal = getTerminalsByName($host, 1)[0]) {
@@ -1364,20 +1372,31 @@ function getPlayerStatus ($host = 'localhost') {
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command  = 'pl_get'; // Команда
-    //$player->command  = 'status'; // Команда
-    $player->ajax   = TRUE;
+
+    $player->ajax     = TRUE;
     $player->intCall  = TRUE;
     $player->usual($out);
-
+    $terminal = array();
     if($player->json['success']) {
-        // Если команда успешно выполнена, то сообщаем об этом
-        //echo 'Готово!';
+		$terminal = array_merge($terminal, $player->json['data']);
 		//DebMes($player->json['data']);
-		return($player->json['data']);
-        // Так же, можно вывести данные, полученные в результате выполнения команды
-        // Они хранятся в $player->json['data'] и их формат различается для каждой из команд (см.выше)
+    } else {
+        // Если произошла ошибка, выводим ее описание
+        return($player->json['message']);
+    }
+	
+	$player->command  = 'status'; // Команда
+    $player->ajax     = TRUE;
+    $player->intCall  = TRUE;
+    $player->usual($out);
+    if($player->json['success']) {
+		$terminal = array_merge($terminal, $player->json['data']);
+		//DebMes($player->json['data']);
+		DebMes($terminal);
+		return ($terminal);
     } else {
         // Если произошла ошибка, выводим ее описание
         return($player->json['message']);
     }
 }
+
