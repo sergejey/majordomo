@@ -221,6 +221,11 @@ class terminals extends module
 
     function terminalSay($terminal_rec, $message, $level)
     {
+        $asking=0;
+        if ($level=='ask') {
+            $level=9999;
+            $asking=1;
+        }
         $min_level = getGlobal('ThisComputer.minMsgLevel');
         if ($terminal_rec['MIN_MSG_LEVEL']) {
             $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
@@ -232,7 +237,11 @@ class terminals extends module
         //if (!$terminal_rec['IS_ONLINE']) return false;
         if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
             $service_port = '7999';
-            $in = 'tts:' . $message;
+            if ($asking) {
+                $in = 'ask:' . $message;
+            } else {
+                $in = 'tts:' . $message;
+            }
             $address = $terminal_rec['HOST'];
             if (!preg_match('/^\d/', $address)) return 0;
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -283,7 +292,7 @@ class terminals extends module
                 return false;
             }
             if ($event == 'ASK') {
-                $details['level']=9999;
+                $details['level']='ask';
             }
             $this->terminalSay($terminal_rec, $details['message'], $details['level']);
         } elseif ($event == 'SAY_CACHED_READY') {
