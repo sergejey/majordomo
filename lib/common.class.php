@@ -44,13 +44,13 @@
    if (!$said_status) {
     say($ph, $level);
    } else {
-    $rec = array();
-    $rec['MESSAGE']   = $ph;
-    $rec['ADDED']     = date('Y-m-d H:i:s');
-    $rec['ROOM_ID']   = 0;
-    $rec['MEMBER_ID'] = 0;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
+    //$rec = array();
+    //$rec['MESSAGE']   = $ph;
+    //$rec['ADDED']     = date('Y-m-d H:i:s');
+    //$rec['ROOM_ID']   = 0;
+    //$rec['MEMBER_ID'] = 0;
+    //if ($level > 0) $rec['IMPORTANCE'] = $level;
+    //$rec['ID'] = SQLInsert('shouts', $rec);
    }
   }
   processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
