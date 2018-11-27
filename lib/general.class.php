@@ -568,7 +568,11 @@ function DebMes($errorMessage, $logLevel = "debug")
 }
 
 function dprint($data = 0, $stop = 1) {
-   echo "<pre>";
+   if (isset($_SERVER['REQUEST_METHOD'])) {
+      echo "<pre>";
+   } else {
+      echo "\n".date('Y-m-d H:i:s ');
+   }
    if ($data!==0) {
       if (is_array($data)) {
          print_r($data);
@@ -580,9 +584,13 @@ function dprint($data = 0, $stop = 1) {
    } else {
       echo date('Y-m-d H:i:s');
    }
-   echo "</pre><hr/>";
-   echo str_repeat(' ',4096);
-   flush();flush();
+   if (isset($_SERVER['REQUEST_METHOD'])) {
+      echo "</pre><hr/>";
+      echo str_repeat(' ',4096);
+      flush();flush();
+   } else {
+      echo "\n---------------------------------\n";
+   }
 
    if ($stop) {
       exit;

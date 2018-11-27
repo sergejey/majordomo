@@ -18,7 +18,7 @@ class devices extends module {
 */
 function __construct() {
   $this->name="devices";
-  $this->title="Devices";
+  $this->title="<#LANG_SECTION_DEVICES#>";
   $this->module_category="<#LANG_SECTION_DEVICES#>";
   $this->checkInstalled();
 

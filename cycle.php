@@ -28,8 +28,6 @@ while (!$connected)
    sleep(5);
 }
 
-include_once("./load_settings.php");
-
 echo "CONNECTED TO DB" . PHP_EOL;
 
 $old_mask = umask(0);
@@ -113,6 +111,8 @@ if (file_exists($filename))
    $mysqlParam .= " " . DB_NAME . " <" . $filename;
    exec($mysql_path . $mysqlParam);
 }
+
+include_once("./load_settings.php"); //
 
 //reinstalling modules
 /*
