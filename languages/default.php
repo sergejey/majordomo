@@ -1123,7 +1123,9 @@ $dictionary = array(
     'DEVICES_UNIT' => 'Units',
     'DEVICES_COUNTER' => 'Meter/Counter',
     'DEVICES_BATTERY_LOW' => 'Low battery',
-// Measure
+    'DEVICES_UNKNOW_COMMAND'=>'Unknow command...',
+    
+    // Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',
     'M_PRESSURE' => 'Tor',
