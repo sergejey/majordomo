@@ -1119,6 +1119,7 @@ $dictionary = array(
     'DEVICES_COUNTER' => 'Счётчик',
     'DEVICES_UNIT' => 'Единица измерения',
     'DEVICES_BATTERY_LOW' => 'Низкий уровень заряда батареи',
+    'DEVICES_UNKNOW_COMMAND'=>'Неизвестная команда...',
     
 // Measure
     'M_VOLTAGE' => 'В',
