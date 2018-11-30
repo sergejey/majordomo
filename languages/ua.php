@@ -8,14 +8,14 @@
  */
 
 
-
 $dictionary = array (
 
     /* general */
     'WIKI_URL' => 'http://smartliving.ru/',
+    'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Аліса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-	'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.<br /><br />Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a><br /><br /><small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
+    'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.<br /><br />Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a><br /><br /><small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
     'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
@@ -31,6 +31,7 @@ $dictionary = array (
     'STILL_WORKING' => 'Завантажуються дані ... Натисніть',
     'CLICK_HERE' => 'тут',
     'TAKES_TOO_LONG' => ', якщо процес завантаження займає надто багато часу.',
+    'SUBMIT_DIAGNOSTIC'=>'Відправка даних для діагностики...',
 
     'GENERAL_SENSORS' => 'Сенсори',
     'GENERAL_OPERATIONAL_MODES' => 'Режими роботи',
@@ -66,6 +67,36 @@ $dictionary = array (
     'GENERAL_CONTROL' => 'Управління',
     'GENERAL_INSIDE' => 'Будинки',
     'GENERAL_OUTSIDE' => 'На вулиці',
+    'GENERAL_LIGHT' => 'Світло',
+    'GENERAL_TURNOFF_EVERYTHING' => 'Вимкнути все',
+    'GENERAL_DAYTIME' =>'Світло',
+    'GENERAL_NIGHTTIME' =>'Темно',
+    'GENERAL_MESSAGES' =>'Повідомлення',
+    'GENERAL_TOMORROW' =>'Завтра',
+    'GENERAL_MINMAX' => 'Мін/Макс',
+    'GENERAL_METERS_PER_SECOND' => 'м/с',
+    'GENERAL_CHART' => 'Графік',
+    'GENERAL_ROOM_BATHROOM' => 'Ванна',
+    'GENERAL_ROOM_LIVINGROOM' => 'Гостьова',
+    'GENERAL_ROOM_HALL' => 'Коридор',
+    'GENERAL_ROOM_KITCHEN' => 'Кухня',
+    'GENERAL_ROOM_BEDROOM' => 'Спальня',
+    'GENERAL_ROOM_TOILET' => 'Туалет',
+    'GENERAL_SYSTEM_SHUTDOWN_REBOOT' => 'Перезавантаження/вимкнення',
+    'GENERAL_SYSTEM_SHUTDOWN_WARNING' => 'Будь-ласка, зачекайте 30 секунд після запуску команди до вимкнення енергії.',
+    'GENERAL_SYSTEM_SHUTDOWN' => 'Вимкнути систему',
+    'GENERAL_SYSTEM_REBOOT' => 'Перезавантаження системи',
+    'GENERAL_STARTING' => 'початок',
+    'GENERAL_ENDING' => 'кінець',
+    'GENERAL_CLOCKCHIME' => 'Кукушка',
+    'GENERAL_LANGUAGE_TIMEZONE' => 'Мова/годинниковий пояс',
+    'GENERAL_ACTIVATED' => 'активовано',
+    'GENERAL_DEACTIVATED' => 'деактивовано',
+    'GENERAL_STARTING_REBOOT' => 'Виконується процедура перезавантаження.',
+    'GENERAL_STARTING_SHUTDOWN' => 'Виконується процедура вимкнення.',
+    'GENERAL_IP_ADDRESS' => 'Ай-пи адреса',
+    'GENERAL_SECURITY' => 'Безпека',
+    'GENERAL_RUNNING_OUT_SPACE' => 'Недостатньо місця на диску',
 
     'SECTION_OBJECTS' => 'Об’єкти',
     'SECTION_APPLICATIONS' => 'Додатки',
@@ -112,7 +143,7 @@ $dictionary = array (
     'MODULE_SAVERESTORE' => 'Перевірка оновлень',
     'MODULE_WEBVARS' => 'Веб-змінні',
     'MODULE_SHOUTBOX' => 'Рупор',
-	'MODULE_SKINS' => 'Дизайн скінів',
+    'MODULE_SKINS' => 'Дизайн скінів',
     'MODULE_PATTERNS' => 'Шаблони поведінки',
     'MODULE_ONEWIRE' => '1-Wire',
     'MODULE_SCENES' => 'Сцени',
@@ -176,6 +207,7 @@ $dictionary = array (
 
     'NEW_OBJECT' => 'Новий об’єкт',
     'TITLE' => 'Назва',
+    'ALT_TITLES'=>'Альтернативні назви (через кому)',
     'CLASS' => 'Клас',
     'DESCRIPTION' => 'Опис',
     'LOCATION' => 'Місцезнаходження',
@@ -804,6 +836,8 @@ $dictionary = array (
 
 
     'CAN_PLAY_MEDIA' => 'може програвати медіа-контент',
+    'CAN_TTS' => 'может програвати повідомлення від ситеми',
+    'MIN_MSG_LEVEL' => 'Мінімальний рівень важності сповіщень',
 
 
     'PLAYER_TYPE' => 'Тип плеєра',
@@ -888,7 +922,7 @@ $dictionary = array (
     'PERIOD_DAY' => 'Доба (24 години)',
     'PERIOD_WEEK' => 'Тиждень',
     'PERIOD_MONTH' => 'Місяць',
-    'PERIOD_CUSTOM' => 'Вибрати',
+    'PERIOD_CUSTOM' => 'Обрати',
     'SEARCH' => 'Пошук',
     'SHOWHIDE' => 'Показати / Приховати',
 
@@ -1039,8 +1073,13 @@ $dictionary = array (
     'PATTERN_CONDITIONAL' => 'На основі значень властивостей',
     'CONDITION' => 'Умова',
     'ADD_EXIT_CODE' => 'Додати код виходу',
-    'ADVANCED_CONFIG' => 'Розширена настройка',
+    'SMART_REPEAT'=>'Авто-повтор',
+    'READ_ONLY'=>'Тільки читання',
+    'ADVANCED_CONFIG' => 'Розширене налаштування',
     'UPDATE_ALL_EXTENSIONS' => 'Оновити всі встановлені додатки',
+    'MARKET_CATEGORY_INSTALLED' => 'Встановлено',
+    'MARKET_CATEGORY_OWNED' => 'Придбано',
+    'MARKET_CONNECT_NOTE' => 'Доступ до придбаних додатківвідкривається тількт при коректних налаштуваннях імені користувач та паролю для сервіса <a href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Зберегти зміни',
     'ADD_PANE' => 'Додати панель',
@@ -1067,6 +1106,7 @@ $dictionary = array (
     'DEVICES_BUTTON' => 'Кнопка',
     'DEVICES_SWITCH' => 'Вимикач',
     'DEVICES_OPENCLOSE' => 'Датчик відкриття / закриття',
+    'DEVICES_GENERAL_SENSOR' => 'Загальний датчик',
     'DEVICES_TEMP_SENSOR' => 'Датчик температури',
     'DEVICES_HUM_SENSOR' => 'Датчик вологості',
     'DEVICES_STATE_SENSOR' => 'Датчик стану',
@@ -1081,13 +1121,14 @@ $dictionary = array (
     'DEVICES_COUNTER' => 'Лічильник',
     'DEVICES_UNIT' => 'Одиниця виміру',
     'DEVICES_BATTERY_LOW' => 'Низький рівень заряду батареї',
-// Measure
+
+     // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
     'M_PRESSURE' => 'Торр',
     'M_WATT' => 'Вт',
 
-// ----
+    // ----
     'DEVICES_LINKS' => 'Зв’язані пристрої',
 
     'DEVICES_STATUS' => 'Статус',
@@ -1102,9 +1143,13 @@ $dictionary = array (
     'DEVICES_MAX_VALUE' => 'Верхній поріг',
     'DEVICES_NOTIFY' => 'Повідомляти при виході за поріг',
     'DEVICES_NORMAL_VALUE' => 'Значення в нормальних межах',
+    'DEVICES_DIRECTION_TIMEOUT' => 'Інтервал часу розрахунку зміни напрямків (сек)',
+    'DEVICES_NOTIFY_STATUS' => 'Повідомляти при зміні статусу',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значення датчика вийшло за поріг',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значення датчика повернулося до норми',
+    'DEVICES_NOTIFY_NOT_CLOSED' => 'Нагадувати про відкритий стан',
     'DEVICES_MOTION_IGNORE' => 'Ігнорувати події від пристрою, коли нікого немає вдома',
+    'DEVICES_MOTION_TIMEOUT' => 'Час активності (секунд)',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимий час відсутності даних (годин)',
     'DEVICES_MAIN_SENSOR' => 'Основний сенсор приміщення',
     'DEVICES_NOT_UPDATING' => 'не оновлюється',
@@ -1123,9 +1168,14 @@ $dictionary = array (
     'DEVICES_GROUP_ECO_ON' => 'Вмикати при виході з режиму економії',
     'DEVICES_GROUP_SUNRISE' => 'Вимикати на світанку',
     'DEVICES_IS_ACTIVITY' => 'Зміна означає активність в приміщенні',
-    'DEVICES_NCNO' => 'Тип пристрою / сенсора',
+    'DEVICES_NCNO' => 'Тип пристрою/сенсора',
     'DEVICES_LOADTYPE' => 'Тип пристрою',
+    'DEVICES_LOADTYPE_VENT' => 'Вентиляція',
+    'DEVICES_LOADTYPE_HEATING' => 'Обігрів',
+    'DEVICES_LOADTYPE_CURTAINS' => 'Штори',
+    'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освітлення',
+    'DEVICES_LOADTYPE_LIGHT_ALT' => 'Світло',
     'DEVICES_LOADTYPE_POWER' => 'Різне',
 
     'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
@@ -1173,6 +1223,7 @@ $dictionary = array (
     'DEVICES_DEGREES' => 'градусів',
     'DEVICES_STATUS_OPEN' => 'відкритий',
     'DEVICES_STATUS_CLOSED' => 'закритий',
+    'DEVICES_STATUS_ALARM' => 'стан тривоги',
     'DEVICES_COMMAND_CONFIRMATION' => 'Готово | Зроблено | Як побажаєте',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
@@ -1203,6 +1254,9 @@ $dictionary = array (
 
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Звичайний',
+    'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Вимк.',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Звичайна цільова температура',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO цільова температура',
@@ -1212,11 +1266,14 @@ $dictionary = array (
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_ALL_BY_TYPE' => 'Всі по типах',
     'DEVICES_ALL_BY_ROOM' => 'Всі по кімнатах',
+    'DEVICES_LOAD_TIMEOUT'=>'Таймер зміни статусу навантаження',
+    'GROUPS' => 'Групи',
+    'APPLIES_TO' => 'Застосовано до',
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
 	
-	'ROOMS' => 'Кімнати',
+    'ROOMS' => 'Кімнати',
     'APPEARANCE' => 'Зовнішній вигляд',
     'MAINTENANCE' => 'Обслуговування',
     'LIST' => 'Список',
@@ -1229,9 +1286,7 @@ $dictionary = array (
     'ADDON_FILE' => 'Файл доповнення',
     'UPLOAD_AND_INSTALL' => 'Завантажити та встановити',
     'ADD_UPDATE_MANUALLY' =>'Додати / оновити вручну',
-	
-	
-'TURNING_ON' =>'Вмикаю',
+    'TURNING_ON' =>'Вмикаю',
     'TURNING_OFF' =>'Вимикаю',
     'PATTERN_TIMER' => 'таймер',
     'PATTERN_DO_AFTER' => 'через',
@@ -1239,6 +1294,26 @@ $dictionary = array (
     'PATTERN_SECOND' => 'секунд',
     'PATTERN_MINUTE' => 'хвилин',
     'PATTERN_HOUR' => 'година',
+
+    'THEME' => 'Тема',
+    'THEME_DARK' => 'Темна',
+    'THEME_LIGHT' => 'свытла',
+
+    'DATA_SOURCE' => 'Источник данных',
+    'WIDGET' => 'Віджет',
+    'PANE' => 'Панель',
+    'COLUMNS' => 'Колонки',
+    'SIZE' => 'Розмір',
+    'CLOCK' => 'Годинник',
+
+    'UPDATES_SOURCE' => 'Источник оновлень ядра',
+    'UPDATES_SOURCE_MASTER' => 'Майстер (стабільна версія)',
+    'UPDATES_SOURCE_ALPHA' => 'Альфа (ранній доступ до оновлень)',
+
+    'MAINCYCLEDOWN' => 'Зупинено головний цикл системи',
+    'MAINCYCLEDOWN_DETAILS' => '<b>Без паніки! :)</b><br/>Зупинено головний процес системи MajorDoMo.<Br/>Можливо, буде достатньо зачекати кілька секунд і робота відновиться, але якщо помилка залишиться, то скористуйтеся будь-ласка однією з опцій наведених нижче.',
+
+
      /* end module names */
 
 
