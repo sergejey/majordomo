@@ -69,7 +69,7 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'
     !preg_match('/xray\.html/', $_SERVER['REQUEST_URI']) &&
     !defined('NO_DATABASE_CONNECTION')
 ) {
-    $maincycleUpdate = getGlobal('cycle_mainRun');
+    $maincycleUpdate = (int)getGlobal('cycle_mainRun');
     $maincycleTimeout = 60;
     if ((time() - $maincycleUpdate) > $maincycleTimeout) { //main cycle is offline
         echo "<html><head>

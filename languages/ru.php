@@ -1077,6 +1077,13 @@ $dictionary = array(
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
     'MARKET_CATEGORY_INSTALLED' => 'Установлено',
     'MARKET_CATEGORY_OWNED' => 'Приобретено',
+    'MARKET_CATEGORY_HAVE_UPDATES' => 'Обновления',
+    'MARKET_CATEGORY_HARDWARE' => 'Оборудование',
+    'MARKET_CATEGORY_MULTIMEDIA' => 'Мультимедиа',
+    'MARKET_CATEGORY_INFORMATION' => 'Информация',
+    'MARKET_CATEGORY_INTERACTION' => 'Взаимодействие',
+    'MARKET_CATEGORY_SYSTEM' => 'Система',
+    'MARKET_CATEGORY_CUSTOMIZING' => 'Модификации',
     'MARKET_CONNECT_NOTE' => 'Доступ к приобретённым дополнениям открывается только при корректных настройках имени пользователя и пароля для сервиса <a href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Сохранить изменения',
@@ -1119,7 +1126,7 @@ $dictionary = array(
     'DEVICES_COUNTER' => 'Счётчик',
     'DEVICES_UNIT' => 'Единица измерения',
     'DEVICES_BATTERY_LOW' => 'Низкий уровень заряда батареи',
-    'DEVICES_UNKNOW_COMMAND'=>'Неизвестная команда...',
+    'DEVICES_UNKNOWN_COMMAND'=>'Неизвестная команда...',
     
 // Measure
     'M_VOLTAGE' => 'В',
@@ -1309,7 +1316,7 @@ $dictionary = array(
     'UPDATES_SOURCE_MASTER' => 'Мастер (стабильная версия)',
     'UPDATES_SOURCE_ALPHA' => 'Альфа (ранний доступ к обновлениям)',
 
-    'MAINCYCLEDOWN' => 'Остановлен главный цикл системы',
+    'MAINCYCLEDOWN' => 'Отсановлен главный цикл системы',
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
 
 

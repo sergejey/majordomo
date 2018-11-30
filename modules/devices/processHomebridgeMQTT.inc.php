@@ -109,6 +109,20 @@ if ($params['PROPERTY']=='from_get' && $device['ID']) {
             $payload['value'] = $nc ? 1 - gg($device['LINKED_OBJECT'].'.status') : gg($device['LINKED_OBJECT'].'.status');
          }
          break;
+      case 'dimmer':
+          $payload['service'] = 'Lightbulb';
+          if ($data['characteristic'] == 'On') {
+              $payload['characteristic'] = 'On';
+              if (gg($device['LINKED_OBJECT'].'.status')) {
+                  $payload['value']=true;
+              } else {
+                  $payload['value']=false;
+              }
+          } elseif ($data['characteristic'] == 'Brightness') {
+              $payload['characteristic'] = 'Brightness';
+              $payload['value'] = gg($device['LINKED_OBJECT'].'.level');
+          }
+          break;
       case 'rgb':
          $payload['service'] = 'Lightbulb';
          if ($data['characteristic'] == 'On') {
@@ -153,6 +167,22 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
         if ($data['characteristic']=='On') {
             if ($data['value']) {
                 callMethodSafe($device['LINKED_OBJECT'].'.turnOn');
+            } else {
+                callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
+            }
+        }
+    }
+    if (in_array($device['TYPE'], array('dimmer'))) {
+        if ($data['characteristic']=='On') {
+            if ($data['value']) {
+                if (gg($device['LINKED_OBJECT'].'.status') == 0) callMethodSafe($device['LINKED_OBJECT'].'.turnOn');
+            } else {
+                if (gg($device['LINKED_OBJECT'].'.status') == 1) callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
+            }
+        }
+        if ($data['characteristic']=='Brightness') {
+            if ($data['value']) {
+                sg($device['LINKED_OBJECT'].'.level', $data['value']);
             } else {
                 callMethodSafe($device['LINKED_OBJECT'].'.turnOff');
             }

@@ -244,12 +244,18 @@ class market extends module
             }
             if (is_array($data[0])) {
                 foreach($data as $item) {
-                    $out['CATEGORIES'][]=array('ID'=>$item['ID'],'TITLE'=>$item[$title_field]);
+                    if (defined('LANG_MARKET_CATEGORY_'.strtoupper($item['CATEGORY_SYSTEM_NAME']))) {
+                        $category_title=constant('LANG_MARKET_CATEGORY_'.strtoupper($item['CATEGORY_SYSTEM_NAME']));
+                    } else {
+                        $category_title=$item[$title_field];
+                    }
+                    $out['CATEGORIES'][]=array('ID'=>$item['ID'],'TITLE'=>$category_title);
                 }
             } else {
                 $out['CATEGORIES']=array();
             }
             array_unshift($out['CATEGORIES'],array('ID'=>'owned','TITLE'=>LANG_MARKET_CATEGORY_OWNED));
+            array_unshift($out['CATEGORIES'],array('ID'=>'updates','TITLE'=>LANG_MARKET_CATEGORY_HAVE_UPDATES));
             array_unshift($out['CATEGORIES'],array('ID'=>'installed','TITLE'=>LANG_MARKET_CATEGORY_INSTALLED));
             $out['CATEGORIES'][]=array('ID'=>'custom','TITLE'=>'Custom');
             return;
@@ -374,6 +380,8 @@ class market extends module
                         */
                         if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION']!='') {
                             $this->have_updates[] = $rec['MODULE_NAME'];
+                        } elseif ($category_id=='updates') {
+                            continue;
                         }
                         $plugins[] = $rec;
                     }

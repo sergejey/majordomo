@@ -1078,6 +1078,13 @@ $dictionary = array(
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
     'MARKET_CATEGORY_INSTALLED' => 'Installed',
     'MARKET_CATEGORY_OWNED' => 'Owned',
+    'MARKET_CATEGORY_HAVE_UPDATES' => 'Updates',
+    'MARKET_CATEGORY_HARDWARE' => 'Hardware',
+    'MARKET_CATEGORY_MULTIMEDIA' => 'Multimedia',
+    'MARKET_CATEGORY_INFORMATION' => 'Information',
+    'MARKET_CATEGORY_INTERACTION' => 'Interaction',
+    'MARKET_CATEGORY_SYSTEM' => 'System',
+    'MARKET_CATEGORY_CUSTOMIZING' => 'Customizing',
     'MARKET_CONNECT_NOTE' => 'Please make sure you have specified correct username/password for <a href="/panel/connect.html">CONNECT</a> service.',
 
     'SAVE_CHANGES' => 'Save changes',
@@ -1123,9 +1130,9 @@ $dictionary = array(
     'DEVICES_UNIT' => 'Units',
     'DEVICES_COUNTER' => 'Meter/Counter',
     'DEVICES_BATTERY_LOW' => 'Low battery',
-    'DEVICES_UNKNOW_COMMAND'=>'Unknow command...',
-    
-    // Measure
+    'DEVICES_UNKNOWN_COMMAND'=>'Unknown command...',
+
+// Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',
     'M_PRESSURE' => 'Tor',
