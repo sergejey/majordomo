@@ -396,6 +396,4 @@ if ($processed) {
 } else {
     //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }
-if (!$details['PROCESSED']) {
-    sayReplySafe(LANG_DEVICES_UNKNOW_COMMAND,2);
-}
+
