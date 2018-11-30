@@ -396,4 +396,3 @@ if ($processed) {
 } else {
     //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }
-
