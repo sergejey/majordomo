@@ -15,7 +15,7 @@ $dictionary = array (
     'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Аліса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-    'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.<br /><br />Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a><br /><br /><small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
+    'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.<br /><br/>Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a><br /><br /><small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
     'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
@@ -1079,7 +1079,7 @@ $dictionary = array (
     'UPDATE_ALL_EXTENSIONS' => 'Оновити всі встановлені додатки',
     'MARKET_CATEGORY_INSTALLED' => 'Встановлено',
     'MARKET_CATEGORY_OWNED' => 'Придбано',
-    'MARKET_CONNECT_NOTE' => 'Доступ до придбаних додатківвідкривається тількт при коректних налаштуваннях імені користувач та паролю для сервіса <a href="/panel/connect.html">CONNECT</a>',
+    'MARKET_CONNECT_NOTE' => 'Доступ до придбаних додатків відкривається тількт при коректних налаштуваннях імені користувач та паролю для сервіса <a href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Зберегти зміни',
     'ADD_PANE' => 'Додати панель',
@@ -1219,13 +1219,13 @@ $dictionary = array (
     'DEVICES_UPDATE_CLASSSES' => 'Оновити класи',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Створити автоматично',
 
-    'DEVICES_PATTERN_TURNON' => 'включи | запали | ввімкни',
-    'DEVICES_PATTERN_TURNOFF' => 'вимкни | потушкуй | відключи',
+    'DEVICES_PATTERN_TURNON' => 'включи|запали|ввімкни',
+    'DEVICES_PATTERN_TURNOFF' => 'вимкни|потушкуй|відключи|виключи',
     'DEVICES_DEGREES' => 'градусів',
     'DEVICES_STATUS_OPEN' => 'відкритий',
     'DEVICES_STATUS_CLOSED' => 'закритий',
     'DEVICES_STATUS_ALARM' => 'стан тривоги',
-    'DEVICES_COMMAND_CONFIRMATION' => 'Готово | Зроблено | Як побажаєте',
+    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Зроблено|Як побажаєте',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є.',
@@ -1297,8 +1297,8 @@ $dictionary = array (
     'PATTERN_HOUR' => 'година',
 
     'THEME' => 'Тема',
-    'THEME_DARK' => 'Темна',
-    'THEME_LIGHT' => 'свытла',
+    'THEME_DARK' => 'темна',
+    'THEME_LIGHT' => 'світла',
 
     'DATA_SOURCE' => 'Источник данных',
     'WIDGET' => 'Віджет',
@@ -1307,7 +1307,7 @@ $dictionary = array (
     'SIZE' => 'Розмір',
     'CLOCK' => 'Годинник',
 
-    'UPDATES_SOURCE' => 'Источник оновлень ядра',
+    'UPDATES_SOURCE' => 'Джерело оновлень ядра',
     'UPDATES_SOURCE_MASTER' => 'Майстер (стабільна версія)',
     'UPDATES_SOURCE_ALPHA' => 'Альфа (ранній доступ до оновлень)',
 
