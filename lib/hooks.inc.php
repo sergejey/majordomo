@@ -154,6 +154,7 @@ function processSubscriptions($event_name, $details = '')
       if (!isset($details['PROCESSED'])) {
        $details['PROCESSED']=false;
       }
+      if (!$details['PROCESSED'] && $event_name == 'COMMAND') { sayReplySafe(LANG_DEVICES_UNKNOW_COMMAND,2);}
       return (int)$details['PROCESSED'];
    }
    return 0;
