@@ -156,7 +156,7 @@ function processSubscriptions($event_name, $details = '')
       }
       return (int)$details['PROCESSED'];
    }
-   sayReplySafe(LANG_DEVICES_UNKNOW_COMMAND,2);
+   if ($event_name == 'COMMAND') { sayReplySafe(LANG_DEVICES_UNKNOW_COMMAND,2);}
    return 0;
 
 }
