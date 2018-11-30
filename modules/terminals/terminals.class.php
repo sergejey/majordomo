@@ -222,7 +222,7 @@ class terminals extends module
     function terminalSay($terminal_rec, $message, $level)
     {
         $asking=0;
-        if ($level=='ask') {
+        if ($level==='ask') {
             $level=9999;
             $asking=1;
         }
