@@ -404,3 +404,10 @@ usort($types,function ($a,$b) {
 $out['TYPES']=$types;
 
 $out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+
+if ($rec['LOCATION_ID']) {
+    $location_rec=SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=".$rec['LOCATION_ID']);
+    $out['LOCATION_TITLE']=processTitle($location_rec['TITLE']);
+    $other_devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=".(int)$rec['LOCATION_ID']);
+    $out['OTHER_DEVICES']=$other_devices;
+}
