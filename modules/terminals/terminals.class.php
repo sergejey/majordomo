@@ -347,8 +347,14 @@ class terminals extends module
 * @access public
 */
 function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) { 
-
-   // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
+    
+    // если скеширован файл а терминал не может воспроизводить сообщение  то возвращаемся без воспроизведения...
+    $CANTTS = SQLSelectOne('"SELECT CANTTS FROM terminals WHERE NAME='.$target['NAME'].'"');
+	if (!$CANTTS) { 
+        return;
+    }
+   
+    // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
     if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
         $server_ip = getLocalIp();
         if (!$server_ip) {
