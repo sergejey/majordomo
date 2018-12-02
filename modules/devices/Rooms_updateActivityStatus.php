@@ -28,22 +28,22 @@ if (!function_exists('cmpRoomsActivity')) {
 }
 usort($rooms, "cmpRoomsActivity");
 
-if (getGlobal('NobodyHomeMode.active')) {
-    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";
-} else {
-    $res_rooms = array();
+$res_rooms = array();
     for ($i = 0; $i < $total; $i++) {
         if ($rooms[$i]['active']) {
             $res_rooms[] = $rooms[$i]['room'];
+			$countactiverooms = $countactiverooms+1;
         }
     }
-    $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME.'.';
-    if (count($res_rooms)>0) {
-        $somebodyHomeText.=" ". LANG_DEVICES_ROOMS_ACTIVITY . ": " . implode(", ", $res_rooms);
-    }
 
+
+if (!$countactiverooms) {
+	//поскольку нету активности в доме то включает режим економии а также получает статус никого нет дома
+	callMethodSafe('NobodyHomeMode.activate');
+	//callMethodSafe('EconomMode.activate');
+    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";
+} else {
+    $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME." ". LANG_DEVICES_ROOMS_ACTIVITY . " " . implode(", ", $res_rooms);
 }
-
-echo $somebodyHomeText;
 
 setGlobal('somebodyHomeText', $somebodyHomeText);
