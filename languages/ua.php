@@ -104,9 +104,7 @@ $dictionary = array (
     'SECTION_SETTINGS' => 'Налаштування',
     'SECTION_SYSTEM' => 'Система',
     'SECTION_PANEL' => 'Панель',
-
     /* end general */
-
     /* module names */
     'APP_GPSTRACK' => 'GPS-трекер',
     'APP_PLAYER' => 'Плеєр',
@@ -1079,6 +1077,13 @@ $dictionary = array (
     'UPDATE_ALL_EXTENSIONS' => 'Оновити всі встановлені додатки',
     'MARKET_CATEGORY_INSTALLED' => 'Встановлено',
     'MARKET_CATEGORY_OWNED' => 'Придбано',
+    'MARKET_CATEGORY_HAVE_UPDATES' => 'Оновлення',
+    'MARKET_CATEGORY_HARDWARE' => 'Пристрої',
+    'MARKET_CATEGORY_MULTIMEDIA' => 'Мультимедіа',
+    'MARKET_CATEGORY_INFORMATION' => 'Інформація',
+    'MARKET_CATEGORY_INTERACTION' => 'Взаємодія',
+    'MARKET_CATEGORY_SYSTEM' => 'Система',
+    'MARKET_CATEGORY_CUSTOMIZING' => 'Модифікації',
     'MARKET_CONNECT_NOTE' => 'Доступ до придбаних додатків відкривається тількт при коректних налаштуваннях імені користувач та паролю для сервіса <a href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Зберегти зміни',
