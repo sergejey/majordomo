@@ -376,7 +376,16 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
          break;
      }
    }
-    
+   
+   // получаем данные оплеере для восстановления проигрываемого контента
+    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999999'");
+    if (!$chek_restore ) {
+        $played = getPlayerStatus($target['NAME']);
+	if ($played['state']=='playing' and !strpos($played['file'],$server_ip)) {
+	    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "playMedia('".$played['file']."', '".$target['TITLE']."');", time()+100, 5);
+	}
+     }
+	
     // dobavlyaem soobshenie v konec potom otsortituem
     $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
     DebMes("Add new message".$last_mesage,'terminals');
@@ -393,7 +402,14 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
       $rec['COMMANDS'] = $message['COMMANDS'];
       $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
       $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime+$expire);
+      // proverka i udaleniye odinakovih soobsheniy
+      if ($prev_message['TITLE'] == $message['TITLE']) {
+         SQLExec("DELETE FROM jobs WHERE ID='".$rec['ID']."'"); 
+      } else {
+         SQLUpdate('jobs', $rec);
+      }
       $runtime = $runtime + $expire;
+      $prev_message = $message;
       SQLUpdate('jobs', $rec);
      }
      DebMes("Timers sorted",'terminals');
