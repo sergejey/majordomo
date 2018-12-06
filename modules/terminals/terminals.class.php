@@ -381,7 +381,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
     $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999999'");
     if (!$chek_restore ) {
         $played = getPlayerStatus($target['NAME']);
-	if ($played['state']=='playing' and !strpos($played['file'],$server_ip)) {
+	if ($played['state']=='playing' ) {
 	    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "playMedia('".$played['file']."', '".$target['TITLE']."');", time()+100, 5);
 	}
      }
