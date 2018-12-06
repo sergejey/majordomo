@@ -410,7 +410,6 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
       }
       $runtime = $runtime + $expire;
       $prev_message = $message;
-      SQLUpdate('jobs', $rec);
      }
      DebMes("Timers sorted",'terminals');
    }
