@@ -349,7 +349,7 @@ class terminals extends module
 function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) { 
     
     // если скеширован файл а терминал не может воспроизводить сообщение  то возвращаемся без воспроизведения...
-    $CANTTS = SQLSelectOne('"SELECT CANTTS FROM terminals WHERE NAME='.$target['NAME'].'"');
+    $CANTTS = SQLSelectOne('SELECT CANTTS FROM terminals WHERE NAME="'.$target['NAME'].'"');
 	if (!$CANTTS) { 
         return;
     }
