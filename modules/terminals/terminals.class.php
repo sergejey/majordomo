@@ -348,9 +348,17 @@ class terminals extends module
 */
 function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) { 
     
+    // исключаем все сообщения что ниже нужного уровня
+    $min_level = getGlobal('ThisComputer.minMsgLevel');
+    if ($target['MIN_MSG_LEVEL']) {
+        $min_level = (int)$target['MIN_MSG_LEVEL'];
+    }
+    if ($levelMes < $min_level) {
+        return false;
+    }
+
     // если скеширован файл а терминал не может воспроизводить сообщение  то возвращаемся без воспроизведения...
-    $CANTTS = SQLSelectOne('SELECT CANTTS FROM terminals WHERE NAME="'.$target['NAME'].'"');
-	if (!$CANTTS) { 
+    if (!$target['CANTTS'] or !$target['PLAYER_TYPE'] or $target['MAJORDROID_API'] or $target['PLAYER_TYPE'] == 'ghn') { 
         return;
     }
    
