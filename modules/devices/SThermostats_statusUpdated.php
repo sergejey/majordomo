@@ -27,4 +27,4 @@ if ($linked_room && $this->getProperty('isActivity')) {
     }
 }
 
-$this->callMethod('valueUpdated');
+$this->callMethodSafe('valueUpdated');
