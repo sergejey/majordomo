@@ -881,7 +881,7 @@ function usual(&$out) {
             $linked_method='motionDetected';
         }
         if ($rec['TYPE']=='button') {
-           $linked_property='';
+           $linked_property='status';
            $linked_method='pressed';
         }
        if ($rec['TYPE']=='switch' || $rec['TYPE']=='openclose') {

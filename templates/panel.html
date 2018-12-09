@@ -331,6 +331,7 @@ jQuery.fn.center = function () {
 
              var urlCommand="?";
              urlCommand+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+             $('#console_output').html('&nbsp;<br/><img src="<#ROOTHTML#>img/ajax-loader.gif"/>');
 
              $.ajax({
                  url: urlCommand
@@ -623,6 +624,29 @@ jQuery.fn.center = function () {
 
 <script language="javascript">
 
+    var dynids='';
+    var dynids_timer=0;
+    function dynamicContentRefresh() {
+        clearTimeout(dynids_timer);
+        var url=window.location.href;
+        var dURL = url.replace(/#$/, '');
+        if (dURL.indexOf('?') !== -1) {
+            dURL+=dynids;
+        } else {
+            dURL+='?'+dynids;
+        }
+        //alert(url);
+        $.ajax({
+            url: dURL
+        }).done(function(data) {
+            for(var i=0;i<data.blocks.length;i++) {
+                $('#'+data.blocks[i].name).html(data.blocks[i].content);
+                //$('#'+data.blocks[i].name).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            }
+            dynids_timer=setTimeout('dynamicContentRefresh();',3000);
+        });
+    }
+
  $(document).ready(function() {
 
         $(".wiki_hint").fancybox({
@@ -654,6 +678,16 @@ jQuery.fn.center = function () {
      $('input[name=filter_modules]').keyup(function() {
          filterModules();
      });
+
+     $('.dynamic_content').each(function() {
+         if ($(this).attr('id')) {
+             var dyn_id = $(this).attr('id');
+             dynids+='&dynids[]='+dyn_id;
+         }
+     });
+     if (dynids!='') {
+         dynamicContentRefresh();
+     }
 
      localStorage.clear();
 
