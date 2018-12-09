@@ -1,7 +1,7 @@
 <?php
 
-$this->callMethodSafe('statusUpdated');
-$this->callMethodSafe('logicAction');
+$this->callMethod('statusUpdated');
+$this->callMethod('logicAction');
 
 $ot=$this->object_title;
 $linked_room=$this->getProperty('linkedRoom');

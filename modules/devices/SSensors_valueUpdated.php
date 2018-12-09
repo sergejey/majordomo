@@ -1,6 +1,6 @@
 <?php
 
- $this->callMethodSafe('statusUpdated');
+ $this->callMethod('statusUpdated');
  //$this->callMethod('logicAction');
 
  $ot=$this->object_title;
