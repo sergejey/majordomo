@@ -126,10 +126,16 @@ class MediaRenderer {
         $MetaData.='&lt;/item&gt;';
         $MetaData.='&lt;/DIDL-Lite&gt;';
         
-        $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
+        $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => '');
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-        // wait for stream
-        sleep(2);
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        //DebMes($response);
+        if(!$doc->getElementsByTagName('PlayResponse')) {
+            $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
+            $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
+         }
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
         return $response;
