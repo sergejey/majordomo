@@ -18,6 +18,7 @@ if ($delete_id) {
     }
     SQLExec("DELETE FROM devices_groups WHERE ID=".$rec['ID']);
     SQLTruncateTable('cached_values');
+    $this->updateGroupObjects();
     $this->redirect("?view_mode=".$this->view_mode);
 }
 
@@ -50,6 +51,7 @@ if ($id) {
                 $rec['SYS_NAME']='Num'.$rec['ID'];
                 SQLUpdate('devices_groups',$rec);
             }
+            $this->updateGroupObjects();
             $this->redirect("?view_mode=".$this->view_mode);
         }
     }
@@ -78,6 +80,12 @@ if ($id) {
 
 } else {
     $groups=SQLSelect("SELECT * FROM devices_groups ORDER BY TITLE");
+    foreach($groups as &$group) {
+        $object_rec=getObject('group'.$group['SYS_NAME']);
+        if ($object_rec->object_title) {
+            $group['OBJECT_TITLE']=$object_rec->object_title;
+        }
+    }
     $out['GROUPS']=$groups;
 }
 

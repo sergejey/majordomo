@@ -244,15 +244,20 @@ function addClassObject($class_name, $object_name, $system='')
    $sqlQuery = "SELECT ID
                   FROM objects
                  WHERE TITLE = '" . DBSafe($object_name) . "'";
-   
    $object = SQLSelectOne($sqlQuery);
-   
    if ($object['ID'])
       return $object['ID'];
-   
-   
-   $object = array();
 
+   if ($system!='') {
+       $sqlQuery = "SELECT ID
+                  FROM objects
+                 WHERE SYSTEM = '" . DBSafe($system) . "'";
+       $object = SQLSelectOne($sqlQuery);
+       if ($object['ID'])
+           return $object['ID'];
+   }
+
+   $object = array();
    $object['TITLE']    = $object_name;
    $object['CLASS_ID'] = $class_id;
    $object['SYSTEM']   = $system.'';
@@ -428,6 +433,14 @@ function getObject($name)
       $rec = SQLSelectOne($sqlQuery);
       //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
    }
+    
+   if (!$rec['ID']) {
+       $sqlQuery = "SELECT objects.*
+                     FROM objects
+                    WHERE TITLE = '" . DBSafe($name) . "'";
+       $rec = SQLSelectOne($sqlQuery);
+   } 
+    
    if ($rec['ID'])
    {
       include_once(DIR_MODULES . 'objects/objects.class.php');

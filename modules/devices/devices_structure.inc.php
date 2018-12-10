@@ -69,6 +69,19 @@ $this->device_types=array(
             'switch'=>array('DESCRIPTION'=>'Switch'),
         )
     ),
+    'group'=>array(
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SGroups',
+        'PROPERTIES'=>array(
+            'groupName'=>array('DESCRIPTION'=>'Group system name'),
+        ),
+        'METHODS'=>array(
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF),
+            'switch'=>array('DESCRIPTION'=>'Switch'),
+            'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
+        )
+    ),
     'relay'=>array(
         'TITLE'=>LANG_DEVICES_RELAY,
         'PARENT_CLASS'=>'SControllers',
