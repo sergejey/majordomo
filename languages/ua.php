@@ -1139,6 +1139,7 @@ $dictionary = array (
     'DEVICES_STATUS' => 'Статус',
 
     'DEVICES_LOGIC_ACTION' => 'Дії',
+    'DEVICES_SCHEDULE' => 'Розклад керування',
 
     'DEVICES_CURRENT_VALUE' => 'Поточне значення',
     'DEVICES_CURRENT_HUMIDITY' => 'Вологість',
