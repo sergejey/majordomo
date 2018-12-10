@@ -369,6 +369,7 @@ function renderStructure() {
       }
   }
   subscribeToEvent('devices', 'COMMAND');
+  subscribeToEvent('devices', 'MINUTELY');
 
   //update cameras
     $objects = getObjectsByClass('SCameras');
@@ -391,6 +392,29 @@ function processSubscription($event, &$details) {
         //DebMes("Processing event $event",'simple_devices');
         include_once(DIR_MODULES.'devices/processCommand.inc.php');
         //DebMes("Processing event $event DONE",'simple_devices');
+    }
+    if ($event == 'MINUTELY') {
+        $points = SQLSelect("SELECT devices_scheduler_points.*, devices.LINKED_OBJECT FROM devices_scheduler_points LEFT JOIN devices ON devices_scheduler_points.DEVICE_ID=devices.ID WHERE ACTIVE=1");
+        $total = count($points);
+        for ($i = 0; $i < $total; $i++) {
+            $rec = $points[$i];
+            if ($rec['SET_DAYS'] === '') {
+                continue;
+            }
+            $run_days = explode(',', $rec['SET_DAYS']);
+            if (!in_array(date('w'), $run_days)) {
+                continue;
+            }
+            $tm = strtotime(date('Y-m-d') . ' ' . $rec['SET_TIME']);
+            $diff = time() - $tm;
+            if ($diff < 0 || $diff >= 10 * 60) {
+                continue;
+            }
+            callMethodSafe($rec['LINKED_OBJECT'].'.'.$rec['LINKED_METHOD']);
+            unset($rec['LINKED_OBJECT']);
+            $rec['LATEST_RUN']=date('Y-m-d H:i:s');
+            SQLUpdate('devices_scheduler_points',$rec);
+        }
     }
 }
 
@@ -1224,6 +1248,14 @@ devices -
  devices_groups: TITLE varchar(255) NOT NULL DEFAULT ''
  devices_groups: APPLY_TYPES text
 
+ devices_scheduler_points: ID int(10) unsigned NOT NULL auto_increment
+ devices_scheduler_points: LINKED_METHOD varchar(255) NOT NULL DEFAULT ''
+ devices_scheduler_points: VALUE varchar(255) NOT NULL DEFAULT ''
+ devices_scheduler_points: SET_TIME varchar(50) NOT NULL DEFAULT ''
+ devices_scheduler_points: SET_DAYS varchar(50) NOT NULL DEFAULT '' 
+ devices_scheduler_points: DEVICE_ID int(10) NOT NULL DEFAULT '0'
+ devices_scheduler_points: ACTIVE int(3) NOT NULL DEFAULT '1'
+ devices_scheduler_points: LATEST_RUN datetime
 
 EOD;
   parent::dbInstall($data);

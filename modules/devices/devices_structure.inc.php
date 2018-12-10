@@ -64,8 +64,8 @@ $this->device_types=array(
             'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
         ),
         'METHODS'=>array(
-            'turnOn'=>array('DESCRIPTION'=>'turnOn'),
-            'turnOff'=>array('DESCRIPTION'=>'turnOff'),
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF,'_CONFIG_SHOW'=>1),
             'switch'=>array('DESCRIPTION'=>'Switch'),
         )
     ),
@@ -95,7 +95,9 @@ $this->device_types=array(
             'tempDown'=>array('DESCRIPTION'=>'Descrease target temperature'),
             'switchEnable'=>array('DESCRIPTION'=>'Switch Enable'),
             'enable'=>array('DESCRIPTION'=>'Enable'),
-            'disable'=>array('DESCRIPTION'=>'Disable'),
+            'disable'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_MODE.': '.LANG_DEVICES_THERMOSTAT_MODE_OFF,'_CONFIG_SHOW'=>1),
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_MODE.': '.LANG_DEVICES_THERMOSTAT_MODE_NORMAL,'_CONFIG_SHOW'=>1),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_MODE.': '.LANG_DEVICES_THERMOSTAT_MODE_ECO,'_CONFIG_SHOW'=>1),
         )
     ),
     'dimmer'=>array(
@@ -111,8 +113,8 @@ $this->device_types=array(
         'METHODS'=>array(
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),
-            'turnOn'=>array('DESCRIPTION'=>'Dimmer turnOn'),
-            'turnOff'=>array('DESCRIPTION'=>'Dimmer turnOff'),
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF,'_CONFIG_SHOW'=>1),
         )
     ),
     'rgb'=>array(
@@ -226,7 +228,7 @@ $this->device_types=array(
             'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
         ),
         'METHODS'=>array(
-            'pressed'=>array('DESCRIPTION'=>'Button pressed'),
+            'pressed'=>array('DESCRIPTION'=>LANG_DEVICES_PRESS,'_CONFIG_SHOW'=>1),
         )
     ),
     'sensor'=>array(

@@ -9,6 +9,36 @@
   $rec=SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
 
+$show_methods=array();
+if ($rec['TYPE']!='') {
+    $methods=$this->getAllMethods($rec['TYPE']);
+    if (is_array($methods)) {
+        foreach($methods as $k=>$v) {
+            if ($v['_CONFIG_SHOW']) {
+                $v['NAME']=$k;
+                $show_methods[]=$v;
+            }
+        }
+    }
+}
+if (isset($show_methods[0])) {
+    usort($show_methods,function($a,$b) {
+        if ($a['_CONFIG_SHOW'] == $b['_CONFIG_SHOW']) {
+            return 0;
+        }
+        return ($a['_CONFIG_SHOW'] > $b['_CONFIG_SHOW']) ? -1 : 1;
+    });
+    $out['SHOW_METHODS']=$show_methods;
+}
+
+if (gr('ok_msg')) {
+    $out['OK_MSG']=gr('ok_msg');
+}
+if (gr('err_msg')) {
+    $out['ERR_MSG']=gr('err_msg');
+}
+
+
   if ($this->tab=='logic') {
       $object=getObject($rec['LINKED_OBJECT']);
       $method_id=$object->getMethodByName('logicAction',$object->class_id,$object->id);
@@ -239,6 +269,10 @@
       include_once(DIR_MODULES.'devices/devices_links.inc.php');
   }
 
+if ($this->tab=='schedule') {
+    include_once(DIR_MODULES.'devices/devices_schedule.inc.php');
+}
+
   if ($this->mode=='update' && $this->tab=='') {
    $ok=1;
    global $title;
@@ -363,27 +397,7 @@
   }
   outHash($rec, $out);
 
-$show_methods=array();
- if ($rec['TYPE']!='') {
-     $methods=$this->getAllMethods($rec['TYPE']);
-     if (is_array($methods)) {
-         foreach($methods as $k=>$v) {
-             if ($v['_CONFIG_SHOW']) {
-                 $v['NAME']=$k;
-                 $show_methods[]=$v;
-             }
-         }
-     }
- }
- if (isset($show_methods[0])) {
-     usort($show_methods,function($a,$b) {
-         if ($a['_CONFIG_SHOW'] == $b['_CONFIG_SHOW']) {
-             return 0;
-         }
-         return ($a['_CONFIG_SHOW'] > $b['_CONFIG_SHOW']) ? -1 : 1;
-     });
-     $out['SHOW_METHODS']=$show_methods;
- }
+
 
   $types=array();
   foreach($this->device_types as $k=>$v) {

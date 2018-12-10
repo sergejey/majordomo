@@ -127,7 +127,7 @@ if (isset($_SERVER['REQUEST_METHOD']))
 }
 
 
-function gr($var_name,$type='') {
+function gr($var_name,$type='trim') {
    if (isset($_REQUEST[$var_name])) {
       $value = $_REQUEST[$var_name];
    } else {
@@ -140,6 +140,8 @@ function gr($var_name,$type='') {
       $value=(int)$value;
    } elseif ($type=='float') {
       $value=(float)$value;
+   } elseif ($type=='trim' && !is_array($value)) {
+      $value=trim($value);
    }
    return $value;
 }

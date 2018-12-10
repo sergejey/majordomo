@@ -237,6 +237,7 @@ if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title,$m)) 
 }
 
 $compare_title = trim(preg_replace('/^ть /','',$compare_title));
+$compare_title = trim(preg_replace('/^те /','',$compare_title));
 
 if ($compare_title == '') {
     return;
