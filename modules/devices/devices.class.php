@@ -334,7 +334,11 @@ class devices extends module
     function renderStructure()
     {
 
-        if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
+        if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) { 
+            unsubscribeFromEvent('devices', 'COMMAND'); 
+            unsubscribeFromEvent('devices', 'MINUTELY');
+            return;
+        }
 
         foreach ($this->device_types as $k => $v) {
             //$v['CLASS']
