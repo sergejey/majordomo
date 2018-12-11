@@ -433,11 +433,11 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
      */
     function install($parent_name = "")
     {
-        subscribeToEvent($this->name, 'SAY', '', 99);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 99);
-        subscribeToEvent($this->name, 'SAYTO', '', 99);
-        subscribeToEvent($this->name, 'ASK', '', 99);
-        subscribeToEvent($this->name, 'SAY_CACHED_READY',99);
+        subscribeToEvent($this->name, 'SAY', '', 0);
+        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
+        subscribeToEvent($this->name, 'SAYTO', '', 0);
+        subscribeToEvent($this->name, 'ASK', '', 0);
+        subscribeToEvent($this->name, 'SAY_CACHED_READY',0);
         subscribeToEvent($this->name, 'HOURLY');
         parent::install($parent_name);
 
