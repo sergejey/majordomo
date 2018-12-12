@@ -390,12 +390,13 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
     if (!$chek_restore ) {
         $played = getPlayerStatus($target['NAME']);
 	if ($played['state']=='playing' ) {
-	    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "playMedia('".$played['file']."', '".$target['TITLE']."');", time()+100, 5);
+            DebMes("Saved played media".$played['file'],'terminals');
+	    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "playMedia('".$played['file']."', '".$target['TITLE']."',1); sleep(1); seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+100, 2);
 	}
      }
 	
     // dobavlyaem soobshenie v konec potom otsortituem
-    $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
+    $time_shift = 2 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
     DebMes("Add new message".$last_mesage,'terminals');
     addScheduledJob('allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
 
@@ -421,8 +422,6 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
      }
      DebMes("Timers sorted",'terminals');
    }
-
-    
 
     /**
      * Install
