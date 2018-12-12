@@ -26,8 +26,8 @@ if (!isset($params['statusUpdated'])) {
  }
 
  //$this->callMethod('logicAction');
- ClearTimeOut("nobodyHome");
- SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);
+ //ClearTimeOut("nobodyHome");
+ //SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);
 
  $linked_room=$this->getProperty('linkedRoom');
  if ($linked_room) {
