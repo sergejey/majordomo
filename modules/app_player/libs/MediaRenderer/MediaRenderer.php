@@ -141,9 +141,13 @@ class MediaRenderer {
         return $response;
     }
 
-    public function seek($unit = 'TRACK_NR', $target = 0) {
-        $response = $this->sendRequestToDevice('Seek', $args);
-        return $response['s:Body']['u:SeekResponse'];
+    public function seek($target = 0) {
+         $args = array(
+            'InstanceID' => 0,
+            'Unit' => 'REL_TIME',
+            'Target' => $target
+        );
+        return $this->sendRequestToDevice('Seek', $args);
     }
 
     public function setNext($url) {

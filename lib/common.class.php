@@ -1400,3 +1400,32 @@ function getPlayerStatus ($host = 'localhost') {
     }
 }
 
+/**
+ * This function change  position on the played media in player
+ * @param mixed $host Host (default 'localhost') name or ip of terminal
+ * @param mixed $time second (default 0) to positon from start time
+ */
+function seekPlayerPosition($host = 'localhost',$time=0) {
+    if(!$terminal = getTerminalsByName($host, 1)[0]) {
+	$terminal = getTerminalsByHost($host, 1)[0];
+	}
+    if(!$terminal) {
+	return;
+	}
+    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->play_terminal = $terminal['NAME']; // Имя терминала
+    $player->command  = 'seek'; // Команда
+    $player->param   = $time; // Параметр
+    DebMes($time);
+    $player->ajax     = TRUE;
+    $player->intCall  = TRUE;
+    $player->usual($out);
+    
+    if($player->json['success']) {
+         return $player->json['message'];
+    } else {
+         return $player->json['message'];
+    }
+}
+
