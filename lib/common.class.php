@@ -1372,28 +1372,25 @@ function getPlayerStatus ($host = 'localhost') {
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command  = 'pl_get'; // Команда
-
     $player->ajax     = TRUE;
     $player->intCall  = TRUE;
     $player->usual($out);
     $terminal = array();
     if($player->json['success']) {
-		$terminal = array_merge($terminal, $player->json['data']);
-		//DebMes($player->json['data']);
+	$terminal = array_merge($terminal, $player->json['data']);
+	//DebMes($player->json['data']);
     } else {
         // Если произошла ошибка, выводим ее описание
         return($player->json['message']);
     }
-	
-	$player->command  = 'status'; // Команда
+    $player->command  = 'status'; // Команда
     $player->ajax     = TRUE;
     $player->intCall  = TRUE;
     $player->usual($out);
     if($player->json['success']) {
-		$terminal = array_merge($terminal, $player->json['data']);
-		//DebMes($player->json['data']);
-		DebMes($terminal);
-		return ($terminal);
+	$terminal = array_merge($terminal, $player->json['data']);
+	//DebMes($player->json['data']);
+	return ($terminal);
     } else {
         // Если произошла ошибка, выводим ее описание
         return($player->json['message']);
@@ -1417,7 +1414,6 @@ function seekPlayerPosition($host = 'localhost',$time=0) {
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command  = 'seek'; // Команда
     $player->param   = $time; // Параметр
-    DebMes($time);
     $player->ajax     = TRUE;
     $player->intCall  = TRUE;
     $player->usual($out);
