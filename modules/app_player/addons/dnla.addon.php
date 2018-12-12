@@ -210,7 +210,30 @@ class dnla extends app_player_addon {
         return $this->success;
     }
 
-    
+    // Seek
+    function seek($position) {
+        $this->reset_properties();
+		// преобразуем в часы минуты и секунды
+        $hours = floor($position / 3600);
+        $minutes = floor($position % 3600 / 60);
+        $seconds = $position % 60;
+
+		DebMes($hours.':'.$minutes.':'.$seconds);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->seek($hours.':'.$minutes.':'.$seconds);
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        //DebMes($response);
+        if($doc->getElementsByTagName('SeekResponse')) {
+            $this->success = TRUE;
+            $this->message = 'Position changed';
+         } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
+        return $this->success;
+    }
     // Set volume
     function set_volume($level) {
         $this->reset_properties();
@@ -228,7 +251,7 @@ class dnla extends app_player_addon {
             DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
             $this->success = FALSE;
             $this->message = 'Command execution error!';
-            }
+        }
         return $this->success;
     }  
 
@@ -257,6 +280,10 @@ class dnla extends app_player_addon {
             if ($this->data) {
                 $this->success = TRUE;
                 $this->message = 'Volume get';
+            } else {
+            DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
             }
         }
         return $this->success;
