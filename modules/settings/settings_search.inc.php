@@ -234,6 +234,10 @@
      if ($res[$i]['TYPE']=='json' && preg_match('/^hook/is',$res[$i]['NAME'])) {
       $data = json_decode($res[$i]['VALUE'], true);
       foreach($data as $k=>$v) {
+       $data[$k]['filter']=gr($k.'_'.$res[$i]['ID'].'_filter');
+       if ($data[$k]['filter']=='') {
+        unset($data[$k]['filter']);
+       }
        $data[$k]['priority']=gr($k.'_'.$res[$i]['ID'].'_priority','int');
       }
       ${'value_'.$res[$i]['ID']} = json_encode($data);
