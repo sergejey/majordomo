@@ -366,13 +366,13 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
     if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
         $server_ip = getLocalIp();
         if (!$server_ip) {
-            DebMes("Server IP not found", 'terminals');
+            //DebMes("Server IP not found", 'terminals');
             return false;
         } else {
             $cached_filename='http://'.$server_ip.$m[0];
         }
     } else {
-        DebMes("Unknown file path format: " . $cached_filename, 'terminals');
+        //DebMes("Unknown file path format: " . $cached_filename, 'terminals');
         return false;
     }
 
@@ -389,16 +389,15 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
     $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999998'");
     if (!$chek_restore ) {
         $played = getPlayerStatus($target['NAME']);
-        DebMes("Saved played media".$played['file']);
         if (($played['state']=='playing') and (stristr($played['file'], 'cms\cached\voice') === FALSE)) {
-	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 4);
+	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 3);
 	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+110, 4);
 	    }
      }
 	
     // dobavlyaem soobshenie v konec potom otsortituem
     $time_shift = 2 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
-    DebMes("Add new message".$last_mesage,'terminals');
+    //DebMes("Add new message".$last_mesage,'terminals');
     addScheduledJob('allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
 
     // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
@@ -421,7 +420,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
       $runtime = $runtime + $expire;
       $prev_message = $message;
      }
-     DebMes("Timers sorted",'terminals');
+     //DebMes("Timers sorted",'terminals');
    }
 
     /**
