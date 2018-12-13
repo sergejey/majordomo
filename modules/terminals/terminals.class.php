@@ -386,17 +386,18 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
    }
    
    // получаем данные оплеере для восстановления проигрываемого контента
-    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999999'");
+    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999998'");
     if (!$chek_restore ) {
         $played = getPlayerStatus($target['NAME']);
-	if ($played['state']=='playing' ) {
-            DebMes("Saved played media".$played['file'],'terminals');
-	    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "playMedia('".$played['file']."', '".$target['TITLE']."',1); sleep(4); seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+100, 2);
-	}
+        DebMes("Saved played media".$played['file']);
+        if (($played['state']=='playing') and (stristr($played['file'], 'cms\cached\voice') === FALSE)) {
+	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 4);
+	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+110, 4);
+	    }
      }
 	
     // dobavlyaem soobshenie v konec potom otsortituem
-    $time_shift = 4 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
+    $time_shift = 2 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
     DebMes("Add new message".$last_mesage,'terminals');
     addScheduledJob('allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
 
