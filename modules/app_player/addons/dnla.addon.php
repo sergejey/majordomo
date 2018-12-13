@@ -25,7 +25,7 @@ class dnla extends app_player_addon {
             $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
             if ($rec['HOST']) {
                 SQLUpdate('terminals', $rec); // update
-                DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
             }
         } else {
             // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
@@ -48,7 +48,7 @@ class dnla extends app_player_addon {
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
                     SQLUpdate('terminals', $rec); // update
-                    DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                    //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
                     }
                 }
             }
@@ -84,8 +84,8 @@ class dnla extends app_player_addon {
         $response = $remote->getState();
         $doc->loadXML($response);
         $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
-		if ($state == 'TRANSITIONING' ) {$state = 'playing';}
-		//Debmes ('current_speed '.$current_speed);
+	if ($state == 'TRANSITIONING' ) {$state = 'playing';}
+	//Debmes ('current_speed '.$current_speed);
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
@@ -244,11 +244,11 @@ class dnla extends app_player_addon {
         $doc->loadXML($response);
         //DebMes($response);
         if($doc->getElementsByTagName('SetVolumeResponse')) {
-            DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
+            //DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
             $this->success = TRUE;
             $this->message = 'Volume changed';
          } else {
-            DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
+            //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
             $this->success = FALSE;
             $this->message = 'Command execution error!';
         }
@@ -257,9 +257,9 @@ class dnla extends app_player_addon {
 
     // Get media volume level
     function get_volume() {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';        
-            if($this->status()) {
+        $this->success = FALSE;
+        $this->message = 'Command execution error!';        
+        if($this->status()) {
             $volume = $this->data['volume'];
             $this->success = TRUE;
             $this->message = 'Volume get';
@@ -281,9 +281,9 @@ class dnla extends app_player_addon {
                 $this->success = TRUE;
                 $this->message = 'Volume get';
             } else {
-            DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
+                //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
+                $this->success = FALSE;
+                $this->message = 'Command execution error!';
             }
         }
         return $this->success;
