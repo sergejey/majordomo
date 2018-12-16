@@ -63,18 +63,20 @@ class Threads
 
       $params = addcslashes(serialize($params), '"');
 
-      //if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
-      $fileToWrite = DOC_ROOT . '/cms/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
-      $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
-
+      if (defined('LOG_CYCLES') && LOG_CYCLES == '1') {
+         $fileToWrite = DOC_ROOT . '/cms/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+         $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
+      } else {
+         $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '"';
+         if (IsWindowsOS()) {
+            $command.=' > NUL';
+         } else {
+            $command.=' > /dev/null 2>&1';
+         }
+      }
       if (!IsWindowsOS()) {
        $command='exec '.$command;
       }
-
-      /*} else {
-      $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'"';
-      }
-       */
       ++$this->lastId;
 
       echo date('H:i:s') . " Starting thread: " . $command . "\n";
