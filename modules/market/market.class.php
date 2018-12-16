@@ -791,7 +791,7 @@ class market extends module
                     foreach ($files_to_import as $file) {
                         $filename = $folder . '/import/scenes/' . $file;
                         if (is_file($filename)) {
-                            $scenes_module->import_scene($filename, $plugin_name);
+                            $scenes_module->import_scene($filename, $plugin_name.'_'.strtolower($file));
                         }
                     }
                 }

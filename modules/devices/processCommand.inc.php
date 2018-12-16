@@ -394,6 +394,7 @@ if ($reply_confirm) {
 
 if ($processed) {
     $details['PROCESSED'] = 1;
+    $details['BREAK']=1;
 } else {
     //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }

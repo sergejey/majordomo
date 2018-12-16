@@ -251,7 +251,7 @@ function addClassObject($class_name, $object_name, $system='')
    if ($system!='') {
        $sqlQuery = "SELECT ID
                   FROM objects
-                 WHERE SYSTEM = '" . DBSafe($system) . "'";
+                 WHERE `SYSTEM` = '" . DBSafe($system) . "'";
        $object = SQLSelectOne($sqlQuery);
        if ($object['ID'])
            return $object['ID'];

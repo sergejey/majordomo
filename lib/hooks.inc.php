@@ -24,8 +24,10 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
    }
 
    $data = json_decode($rec['VALUE'], true);
-   if(!$data[$module_name]) {
+   if(!isset($data[$module_name])) {
        $data[$module_name] = array();
+   } else {
+      return;
    }
    $data[$module_name]['filter'] = $filter_details;
    if ($priority) {

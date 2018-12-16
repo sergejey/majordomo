@@ -427,7 +427,7 @@ class devices extends module
         //update objects sdevice
         $devices = SQLSelect("SELECT ID, LINKED_OBJECT FROM devices");
         foreach ($devices as $device) {
-            SQLExec("UPDATE objects SET SYSTEM='sdevice" . $device['ID'] . "' WHERE TITLE='" . DBSafe($device['LINKED_OBJECT']) . "' AND SYSTEM=''");
+            SQLExec("UPDATE objects SET `SYSTEM`='sdevice" . $device['ID'] . "' WHERE TITLE='" . DBSafe($device['LINKED_OBJECT']) . "' AND `SYSTEM`=''");
         }
 
         $this->updateGroupObjects();
@@ -846,14 +846,14 @@ class devices extends module
         $rec = SQLSelectOne("SELECT * FROM devices WHERE ID='$id'");
         // some action for related tables
 
-        $elements = SQLSelect("SELECT * FROM elements WHERE SYSTEM='sdevice" . $rec['ID'] . "'");
+        $elements = SQLSelect("SELECT * FROM elements WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
         $total = count($elements);
         for ($i = 0; $i < $total; $i++) {
             SQLExec("DELETE FROM elm_states WHERE ELEMENT_ID=" . $elements[$i]['ID']);
             SQLExec("DELETE FROM elements WHERE ID=" . $elements[$i]['ID']);
         }
 
-        $objects = SQLSelect("SELECT ID FROM objects WHERE SYSTEM='sdevice" . $rec['ID'] . "'");
+        $objects = SQLSelect("SELECT ID FROM objects WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
 
         $total = count($objects);
         for ($i = 0; $i < $total; $i++) {
@@ -863,7 +863,7 @@ class devices extends module
         $tables = array('commands');
         $total = count($tables);
         for ($i = 0; $i < $total; $i++) {
-            SQLExec("DELETE FROM " . $tables[$i] . " WHERE SYSTEM='sdevice" . $rec['ID'] . "'");
+            SQLExec("DELETE FROM " . $tables[$i] . " WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
@@ -994,7 +994,7 @@ class devices extends module
         if (!$rec['ID']) {
             return 0;
         }
-        $menu_rec = SQLSelectOne("SELECT * FROM commands WHERE SYSTEM='" . 'sdevice' . $rec['ID'] . "'");
+        $menu_rec = SQLSelectOne("SELECT * FROM commands WHERE `SYSTEM`='" . 'sdevice' . $rec['ID'] . "'");
         if (!$menu_rec['ID']) {
             $menu_rec = array();
         }
@@ -1047,7 +1047,7 @@ class devices extends module
             }
         }
 
-        $element_rec = SQLSelectOne("SELECT * FROM elements WHERE SCENE_ID=" . (int)$add_scene_id . " AND SYSTEM='" . 'sdevice' . $rec['ID'] . "'");
+        $element_rec = SQLSelectOne("SELECT * FROM elements WHERE SCENE_ID=" . (int)$add_scene_id . " AND `SYSTEM`='" . 'sdevice' . $rec['ID'] . "'");
         if (!$element_rec['ID']) {
             $element_rec = array();
             $wizard_data = array();
