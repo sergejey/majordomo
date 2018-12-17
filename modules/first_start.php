@@ -16,6 +16,7 @@
  $languages[]=array('TITLE'=>'lv','CAPTION'=>'Latvian');
  $languages[]=array('TITLE'=>'ro','CAPTION'=>'Romanian');
  $languages[]=array('TITLE'=>'cs','CAPTION'=>'Czech');
+ $languages[]=array('TITLE'=>'zh','CAPTION'=>'Chinese');
  $languages[]=array('TITLE'=>'pl','CAPTION'=>'Polish');
  $languages[]=array('TITLE'=>'he','CAPTION'=>'Hebrew');
 
