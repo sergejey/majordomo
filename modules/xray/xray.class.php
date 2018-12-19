@@ -821,6 +821,67 @@ class xray extends module
                     echo '</table>';
                 }
 
+
+
+                if ($this->view_mode == 'dead') {
+
+  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
+  $total=count($pRecs);
+  if (!$total) {
+   return 0;
+  }
+  $found=array();
+  for($i=0;$i<$total;$i++) {
+   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."'");
+   $totalv=count($pValues);
+   for($iv=0;$iv<$totalv;$iv++) {
+    $v=$pValues[$iv]['VALUE'];
+
+if ($v=='0')
+{
+//$found[$pValues[$iv]['TITLE']]=1;	
+$found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATED']); 
+
+}
+
+  }
+}
+/*
+  $res=array();
+  foreach($found as $k=>$v) {
+   $res[]=$k;
+  }
+*/
+ $res=$found;
+
+
+//  print_r($res);
+      $total = count($res);
+                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+                    echo '<tr>';
+                    echo '<td><b>Title</b></td>';
+                    echo '<td><b>UPDATED</b></td>';
+                    echo '<td></td>';
+                    echo '</tr>';
+                    for ($i = 0; $i < $total; $i++) {
+                        echo '<tr>';
+                        echo '<td>';
+
+echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'].'&sub=properties"  target="_blank"  title="Open object">'.$res[$i]['TITLE'].'</a>';
+
+                        echo '</td>';
+                        echo '<td>';
+                        echo htmlspecialchars($res[$i]['UPDATED']);
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                    echo '</table>';
+
+
+
+                }
+
+
                 if ($this->view_mode == 'events') {
                     $qry = "1";
                     if ($filter) {
