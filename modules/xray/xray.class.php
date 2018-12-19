@@ -824,7 +824,7 @@ class xray extends module
 
 
                 if ($this->view_mode == 'dead') {
-
+                        $qry .= " AND (objects.TITLE LIKE '%" . DBSafe($filter) . "%')";
   $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
   $total=count($pRecs);
   if (!$total) {
@@ -832,7 +832,7 @@ class xray extends module
   }
   $found=array();
   for($i=0;$i<$total;$i++) {
-   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."'");
+   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."' ".$qry." order by UPDATED");
    $totalv=count($pValues);
    for($iv=0;$iv<$totalv;$iv++) {
     $v=$pValues[$iv]['VALUE'];
@@ -861,7 +861,7 @@ $found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATE
                     echo '<tr>';
                     echo '<td><b>Title</b></td>';
                     echo '<td><b>UPDATED</b></td>';
-                    echo '<td></td>';
+
                     echo '</tr>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
