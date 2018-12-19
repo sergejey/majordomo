@@ -824,7 +824,7 @@ class xray extends module
 
 
                 if ($this->view_mode == 'dead') {
-                        $qry .= " AND (objects.TITLE LIKE '%" . DBSafe($filter) . "%')";
+        $qry .= " AND ((objects.TITLE LIKE '%" . DBSafe($filter) . "%')"." or (objects.DESCRIPTION LIKE '%" . DBSafe($filter) . "%'))";
   $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
   $total=count($pRecs);
   if (!$total) {
@@ -832,7 +832,7 @@ class xray extends module
   }
   $found=array();
   for($i=0;$i<$total;$i++) {
-   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."' ".$qry." order by UPDATED");
+   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED , objects.DESCRIPTION,  locations.TITLE LOCATIONTITLE   FROM locations,pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."' and LOCATION_ID=locations.ID  ".$qry." order by UPDATED");
    $totalv=count($pValues);
    for($iv=0;$iv<$totalv;$iv++) {
     $v=$pValues[$iv]['VALUE'];
@@ -840,7 +840,7 @@ class xray extends module
 if ($v=='0')
 {
 //$found[$pValues[$iv]['TITLE']]=1;	
-$found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATED']); 
+$found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATED'], 'DESCRIPTION'=>$pValues[$iv]['DESCRIPTION'], 'LOCATIONTITLE'=>$pValues[$iv]['LOCATIONTITLE']); 
 
 }
 
@@ -860,6 +860,8 @@ $found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATE
                     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
                     echo '<tr>';
                     echo '<td><b>Title</b></td>';
+                    echo '<td><b>DESCRIPTION</b></td>';
+                    echo '<td><b>LOCATION</b></td>';
                     echo '<td><b>UPDATED</b></td>';
 
                     echo '</tr>';
@@ -870,6 +872,14 @@ $found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATE
 echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'].'&sub=properties"  target="_blank"  title="Open object">'.$res[$i]['TITLE'].'</a>';
 
                         echo '</td>';
+
+                        echo '<td>';
+                        echo htmlspecialchars($res[$i]['DESCRIPTION']);
+                        echo '</td>';
+                        echo '<td>';
+                        echo htmlspecialchars($res[$i]['LOCATIONTITLE']);
+                        echo '</td>';
+
                         echo '<td>';
                         echo htmlspecialchars($res[$i]['UPDATED']);
                         echo '</td>';
