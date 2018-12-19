@@ -60,7 +60,7 @@ class terminals extends module
      *
      * @access public
      */
-    function getParams()
+    function getParams($data = 1)
     {
         global $id;
         global $mode;
