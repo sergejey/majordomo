@@ -43,10 +43,10 @@
 
 
    global $is_admin;
-   $rec['IS_ADMIN']=$is_admin;
+   $rec['IS_ADMIN']=(int) $is_admin;
 
    global $is_default;
-   $rec['IS_DEFAULT']=$is_default;
+   $rec['IS_DEFAULT']=(int) $is_default;
 
    global $password;
    $rec['PASSWORD']=$password;
