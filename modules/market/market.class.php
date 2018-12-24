@@ -1169,7 +1169,7 @@ class market extends module
                         }
                     }
                     if ($ok_to_copy) {
-                        $res = copy($source . "/" . $file, $destination . "/" . $file);
+                        @$res = copy($source . "/" . $file, $destination . "/" . $file);
                     }
                 }
             }
