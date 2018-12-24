@@ -213,6 +213,17 @@ if (!isset($request[0])) {
             setGlobal($request[1], $input['data']);
         }
     }
+} elseif (strtolower($request[0]) == 'data') {
+    if ($method == 'GET') {
+    $objects=SQLSelect("SELECT * FROM objects ORDER BY TITLE");
+    $result['objects']=array();
+    $total = count($objects);
+        for ($i = 0; $i < $total; $i++) {
+            $object=array();
+            $object['title']=$objects[$i]['TITLE'];
+            $result['objects'][]=$object;
+        }
+    }    
 } elseif (strtolower($request[0]) == 'history' && isset($request[1])) {
     $time_period = 0;
     if (!isset($request[2])) {
