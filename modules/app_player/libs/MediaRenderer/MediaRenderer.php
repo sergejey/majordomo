@@ -126,18 +126,28 @@ class MediaRenderer {
         $MetaData.='&lt;/item&gt;';
         $MetaData.='&lt;/DIDL-Lite&gt;';
         
-        $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
+        $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => '');
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-        // wait for stream
-        sleep(2);
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        //DebMes($response);
+        if(!$doc->getElementsByTagName('PlayResponse')) {
+            $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
+            $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
+         }
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
         return $response;
     }
 
-    public function seek($unit = 'TRACK_NR', $target = 0) {
-        $response = $this->sendRequestToDevice('Seek', $args);
-        return $response['s:Body']['u:SeekResponse'];
+    public function seek($target = 0) {
+         $args = array(
+            'InstanceID' => 0,
+            'Unit' => 'REL_TIME',
+            'Target' => $target
+        );
+        return $this->sendRequestToDevice('Seek', $args);
     }
 
     public function setNext($url) {

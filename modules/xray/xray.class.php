@@ -821,6 +821,77 @@ class xray extends module
                     echo '</table>';
                 }
 
+
+
+                if ($this->view_mode == 'dead') {
+        $qry .= " AND ((objects.TITLE LIKE '%" . DBSafe($filter) . "%')"." or (objects.DESCRIPTION LIKE '%" . DBSafe($filter) . "%'))";
+  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
+  $total=count($pRecs);
+  if (!$total) {
+   return 0;
+  }
+  $found=array();
+  for($i=0;$i<$total;$i++) {
+   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED , objects.DESCRIPTION,  locations.TITLE LOCATIONTITLE   FROM locations,pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."' and LOCATION_ID=locations.ID  ".$qry." order by UPDATED");
+   $totalv=count($pValues);
+   for($iv=0;$iv<$totalv;$iv++) {
+    $v=$pValues[$iv]['VALUE'];
+
+if ($v=='0')
+{
+//$found[$pValues[$iv]['TITLE']]=1;	
+$found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATED'], 'DESCRIPTION'=>$pValues[$iv]['DESCRIPTION'], 'LOCATIONTITLE'=>$pValues[$iv]['LOCATIONTITLE']); 
+
+}
+
+  }
+}
+/*
+  $res=array();
+  foreach($found as $k=>$v) {
+   $res[]=$k;
+  }
+*/
+ $res=$found;
+
+
+//  print_r($res);
+      $total = count($res);
+                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
+                    echo '<tr>';
+                    echo '<td><b>Title</b></td>';
+                    echo '<td><b>DESCRIPTION</b></td>';
+                    echo '<td><b>LOCATION</b></td>';
+                    echo '<td><b>UPDATED</b></td>';
+
+                    echo '</tr>';
+                    for ($i = 0; $i < $total; $i++) {
+                        echo '<tr>';
+                        echo '<td>';
+
+echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'].'&sub=properties"  target="_blank"  title="Open object">'.$res[$i]['TITLE'].'</a>';
+
+                        echo '</td>';
+
+                        echo '<td>';
+                        echo htmlspecialchars($res[$i]['DESCRIPTION']);
+                        echo '</td>';
+                        echo '<td>';
+                        echo htmlspecialchars($res[$i]['LOCATIONTITLE']);
+                        echo '</td>';
+
+                        echo '<td>';
+                        echo htmlspecialchars($res[$i]['UPDATED']);
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                    echo '</table>';
+
+
+
+                }
+
+
                 if ($this->view_mode == 'events') {
                     $qry = "1";
                     if ($filter) {

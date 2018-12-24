@@ -60,7 +60,7 @@ class terminals extends module
      *
      * @access public
      */
-    function getParams()
+    function getParams($data = 1)
     {
         global $id;
         global $mode;
@@ -221,6 +221,11 @@ class terminals extends module
 
     function terminalSay($terminal_rec, $message, $level)
     {
+        $asking=0;
+        if ($level==='ask') {
+            $level=9999;
+            $asking=1;
+        }
         $min_level = getGlobal('ThisComputer.minMsgLevel');
         if ($terminal_rec['MIN_MSG_LEVEL']) {
             $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
@@ -232,7 +237,11 @@ class terminals extends module
         //if (!$terminal_rec['IS_ONLINE']) return false;
         if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
             $service_port = '7999';
-            $in = 'tts:' . $message;
+            if ($asking) {
+                $in = 'ask:' . $message;
+            } else {
+                $in = 'tts:' . $message;
+            }
             $address = $terminal_rec['HOST'];
             if (!preg_match('/^\d/', $address)) return 0;
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -283,7 +292,7 @@ class terminals extends module
                 return false;
             }
             if ($event == 'ASK') {
-                $details['level']=9999;
+                $details['level']='ask';
             }
             $this->terminalSay($terminal_rec, $details['message'], $details['level']);
         } elseif ($event == 'SAY_CACHED_READY') {
@@ -338,18 +347,32 @@ class terminals extends module
 * @access public
 */
 function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) { 
+    
+    // исключаем все сообщения что ниже нужного уровня
+    $min_level = getGlobal('ThisComputer.minMsgLevel');
+    if ($target['MIN_MSG_LEVEL']) {
+        $min_level = (int)$target['MIN_MSG_LEVEL'];
+    }
+    if ($levelMes < $min_level) {
+        return false;
+    }
 
-   // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
+    // если скеширован файл а терминал не может воспроизводить сообщение  то возвращаемся без воспроизведения...
+    if (!$target['CANTTS'] or !$target['PLAYER_TYPE'] or $target['MAJORDROID_API'] or $target['PLAYER_TYPE'] == 'ghn') { 
+        return;
+    }
+   
+    // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
     if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
         $server_ip = getLocalIp();
         if (!$server_ip) {
-            DebMes("Server IP not found", 'terminals');
+            //DebMes("Server IP not found", 'terminals');
             return false;
         } else {
             $cached_filename='http://'.$server_ip.$m[0];
         }
     } else {
-        DebMes("Unknown file path format: " . $cached_filename, 'terminals');
+        //DebMes("Unknown file path format: " . $cached_filename, 'terminals');
         return false;
     }
 
@@ -361,10 +384,20 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
          break;
      }
    }
-    
+   
+   // получаем данные оплеере для восстановления проигрываемого контента
+    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999998'");
+    if (!$chek_restore ) {
+        $played = getPlayerStatus($target['NAME']);
+        if (($played['state']=='playing') and (stristr($played['file'], 'cms\cached\voice') === FALSE)) {
+	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 3);
+	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+110, 4);
+	    }
+     }
+	
     // dobavlyaem soobshenie v konec potom otsortituem
-    $time_shift = 5 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
-    DebMes("Add new message".$last_mesage,'terminals');
+    $time_shift = 2 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
+    //DebMes("Add new message".$last_mesage,'terminals');
     addScheduledJob('allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
 
     // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
@@ -378,13 +411,17 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
       $rec['COMMANDS'] = $message['COMMANDS'];
       $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
       $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime+$expire);
+      // proverka i udaleniye odinakovih soobsheniy
+      if ($prev_message['TITLE'] == $message['TITLE']) {
+         SQLExec("DELETE FROM jobs WHERE ID='".$rec['ID']."'"); 
+      } else {
+         SQLUpdate('jobs', $rec);
+      }
       $runtime = $runtime + $expire;
-      SQLUpdate('jobs', $rec);
+      $prev_message = $message;
      }
-     DebMes("Timers sorted",'terminals');
+     //DebMes("Timers sorted",'terminals');
    }
-
-    
 
     /**
      * Install
@@ -395,11 +432,11 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
      */
     function install($parent_name = "")
     {
-        subscribeToEvent($this->name, 'SAY', '', 99);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 99);
-        subscribeToEvent($this->name, 'SAYTO', '', 99);
-        subscribeToEvent($this->name, 'ASK', '', 99);
-        subscribeToEvent($this->name, 'SAY_CACHED_READY',99);
+        subscribeToEvent($this->name, 'SAY', '', 0);
+        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
+        subscribeToEvent($this->name, 'SAYTO', '', 0);
+        subscribeToEvent($this->name, 'ASK', '', 0);
+        subscribeToEvent($this->name, 'SAY_CACHED_READY',0);
         subscribeToEvent($this->name, 'HOURLY');
         parent::install($parent_name);
 

@@ -122,6 +122,22 @@ if ($_GET['part_load']) {
 
 startMeasure('echoall');
 
+
+if (is_array($_GET['dynids'])) {
+
+   $data = array();
+   foreach ($_GET['dynids'] as $data_id) {
+      if (preg_match('/id="' . $data_id . '">(.+?)<!--\/dynamic_content-->/uis', $result, $m)) {
+         $data['blocks'][] = array('name' => $data_id, 'content' => $m[1]);
+      }
+
+   }
+   header("Content-type: application/json");
+   echo json_encode($data);
+   exit;
+}
+
+
 if (!headers_sent())
 {
    header("HTTP/1.0: 200 OK\n");

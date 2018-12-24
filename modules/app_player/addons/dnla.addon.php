@@ -25,7 +25,7 @@ class dnla extends app_player_addon {
             $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
             if ($rec['HOST']) {
                 SQLUpdate('terminals', $rec); // update
-                DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
             }
         } else {
             // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
@@ -48,7 +48,7 @@ class dnla extends app_player_addon {
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
                     SQLUpdate('terminals', $rec); // update
-                    DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                    //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
                     }
                 }
             }
@@ -80,30 +80,33 @@ class dnla extends app_player_addon {
         $doc->loadXML($response);
         $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
         // Для получения состояния плеера
-        $remote = new MediaRenderer($current_dev);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->getState();
         $doc->loadXML($response);
         $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
-        //Debmes ('current_speed '.$current_speed);
+	if ($state == 'TRANSITIONING' ) {$state = 'playing';}
+	//Debmes ('current_speed '.$current_speed);
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
         $length = $this->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
         $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         // Results
-        $this->reset_properties();
-        $this->success = TRUE;
-        $this->message = 'OK';
-        $this->data = array(
+        if ($response) {
+			$this->reset_properties();
+            $this->success = TRUE;
+            $this->message = 'OK';
+            $this->data = array(
             'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
             'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0. 
             'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0. 
-            'state'           => (string)$state, //Playback status. String: STOPPED/PLAYING/PAUSED/TRANSITIONING/UNKNOWN 
+            'state'           => (string)strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
             'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
             'random'          => (boolean)$random, // Random mode. Boolean. 
             'loop'            => (boolean)$loop, // Loop mode. Boolean.
             'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
             );
+		}
         return $this->success;    
     }
 
@@ -207,7 +210,29 @@ class dnla extends app_player_addon {
         return $this->success;
     }
 
-    
+    // Seek
+    function seek($position) {
+        $this->reset_properties();
+		// преобразуем в часы минуты и секунды
+        $hours = floor($position / 3600);
+        $minutes = floor($position % 3600 / 60);
+        $seconds = $position % 60;
+	//DebMes($hours.':'.$minutes.':'.$seconds);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->seek($hours.':'.$minutes.':'.$seconds);
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        //DebMes($response);
+        if($doc->getElementsByTagName('SeekResponse')) {
+            $this->success = TRUE;
+            $this->message = 'Position changed';
+         } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
+        return $this->success;
+    }
     // Set volume
     function set_volume($level) {
         $this->reset_properties();
@@ -218,22 +243,22 @@ class dnla extends app_player_addon {
         $doc->loadXML($response);
         //DebMes($response);
         if($doc->getElementsByTagName('SetVolumeResponse')) {
-            DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
+            //DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
             $this->success = TRUE;
             $this->message = 'Volume changed';
          } else {
-            DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
+            //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
             $this->success = FALSE;
             $this->message = 'Command execution error!';
-            }
+        }
         return $this->success;
     }  
 
     // Get media volume level
     function get_volume() {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';        
-            if($this->status()) {
+        $this->success = FALSE;
+        $this->message = 'Command execution error!';        
+        if($this->status()) {
             $volume = $this->data['volume'];
             $this->success = TRUE;
             $this->message = 'Volume get';
@@ -254,6 +279,10 @@ class dnla extends app_player_addon {
             if ($this->data) {
                 $this->success = TRUE;
                 $this->message = 'Volume get';
+            } else {
+                //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
+                $this->success = FALSE;
+                $this->message = 'Command execution error!';
             }
         }
         return $this->success;
@@ -282,7 +311,7 @@ class dnla extends app_player_addon {
             $this->success = TRUE;
             $this->message = 'OK';
             $this->data = array(
-               'id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'name'      => (string)$name, //Current speed for playing media. float.
                 'file'      => (string)$curren_url, //Current link for media in device. String.
                 );

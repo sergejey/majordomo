@@ -70,19 +70,14 @@ $(function() {
                         <tr>
                                 <th><#LANG_TITLE#></th>
                                 <th><#LANG_PRIORITY#></th>
-                                <!--#
                                 <th>Filter</th>
-                                #-->
-
                         </tr>
                         </thead>
                         [#begin OPTIONS#]
                         <tr>
                                 <td>[#OPTION_TITLE#]</td>
                                 <td><input type="text" name="[#OPTION_TITLE#]_<#RESULT.ID#>_priority" value="[#PRIORITY#]"></td>
-                                <!--#
                                 <td><input type="text" name="[#OPTION_TITLE#]_<#RESULT.ID#>_filter" value="[#FILTER#]"></td>
-                                #-->
                         </tr>
                         [#end OPTIONS#]
                 </table>

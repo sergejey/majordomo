@@ -24,7 +24,12 @@ function subscribeToEvent($module_name, $event_name, $filter_details = '', $prio
    }
 
    $data = json_decode($rec['VALUE'], true);
-   $data[$module_name] = array('filter'=>$filter_details);
+   if(!isset($data[$module_name])) {
+       $data[$module_name] = array();
+   } else {
+      return;
+   }
+   $data[$module_name]['filter'] = $filter_details;
    if ($priority) {
       $data[$module_name]['priority']=$priority;
    }
@@ -154,6 +159,7 @@ function processSubscriptions($event_name, $details = '')
       if (!isset($details['PROCESSED'])) {
        $details['PROCESSED']=false;
       }
+      if (!$details['PROCESSED'] && $event_name == 'COMMAND') { sayReplySafe(LANG_DEVICES_UNKNOWN_COMMAND,2);}
       return (int)$details['PROCESSED'];
    }
    return 0;
