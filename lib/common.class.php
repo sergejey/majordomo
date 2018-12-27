@@ -35,23 +35,13 @@
   } else {
    $terminal_rec=SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST_TIME>=(NOW() - INTERVAL 5 SECOND) ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
   }
-  if (!$terminal_rec) {
-   $source='terminal_not_found';
-   say($ph, $level);
-  } else {
+  if ($terminal_rec) {
    $source='terminal'.$terminal_rec['ID'];
    $said_status=sayTo($ph, $level, $terminal_rec['NAME']);
-   if (!$said_status) {
-    say($ph, $level);
-   } else {
-    //$rec = array();
-    //$rec['MESSAGE']   = $ph;
-    //$rec['ADDED']     = date('Y-m-d H:i:s');
-    //$rec['ROOM_ID']   = 0;
-    //$rec['MEMBER_ID'] = 0;
-    //if ($level > 0) $rec['IMPORTANCE'] = $level;
-    //$rec['ID'] = SQLInsert('shouts', $rec);
-   }
+  }
+  if (!$said_status OR !$terminal_rec){
+   $source='terminal_not_found';
+   say($ph, $level);
   }
   processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
  }
@@ -1424,4 +1414,3 @@ function seekPlayerPosition($host = 'localhost',$time=0) {
          return $player->json['message'];
     }
 }
-
