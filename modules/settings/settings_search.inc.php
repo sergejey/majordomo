@@ -50,6 +50,7 @@
     $tmp['TYPE']='text';
     $tmp['DEFAULTVALUE']='';
     $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -74,6 +75,7 @@
     $tmp['TYPE']='text';
     $tmp['DEFAULTVALUE']='';
     $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -92,6 +94,7 @@
     $tmp['TYPE']='onoff';
     $tmp['DEFAULTVALUE']='0';
     $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -113,6 +116,7 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='path';
     $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -131,6 +135,7 @@
     $tmp['TYPE']='onoff';
     $tmp['DEFAULTVALUE']='0';
     $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -152,6 +157,7 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
     $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
