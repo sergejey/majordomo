@@ -40,7 +40,7 @@
    $said_status=sayTo($ph, $level, $terminal_rec['NAME']);
   }
   if (!$said_status OR !$terminal_rec){
-   $source='terminal_not_found';
+   $source='terminal_not_found_or_dont_sayed';
    say($ph, $level);
   }
   processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
