@@ -130,11 +130,11 @@ if (isset($_SERVER['REQUEST_METHOD']))
 function gr($var_name,$type='trim') {
    if (isset($_REQUEST[$var_name])) {
       $value = $_REQUEST[$var_name];
+      if (get_magic_quotes_gpc()) {
+         stripit($value);
+      }
    } else {
-      return;
-   }
-   if (get_magic_quotes_gpc()) {
-      stripit($value);
+      $value='';
    }
    if ($type=='int') {
       $value=(int)$value;

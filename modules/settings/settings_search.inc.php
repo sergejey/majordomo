@@ -49,6 +49,7 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
     $tmp['DEFAULTVALUE']='';
+    $tmp['NOTES']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -72,6 +73,7 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
     $tmp['DEFAULTVALUE']='';
+    $tmp['NOTES']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -89,6 +91,7 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='onoff';
     $tmp['DEFAULTVALUE']='0';
+    $tmp['NOTES']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -109,6 +112,7 @@
     $tmp['NAME']=$k;
     $tmp['TITLE']=$v;
     $tmp['TYPE']='path';
+    $tmp['NOTES']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -126,6 +130,7 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='onoff';
     $tmp['DEFAULTVALUE']='0';
+    $tmp['NOTES']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -146,6 +151,7 @@
     $tmp['NAME']=$k;
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
+    $tmp['NOTES']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -303,4 +309,3 @@
    $this->redirect("?updated=1&filter_name=".$this->filter_name);
   }
 
-?>
