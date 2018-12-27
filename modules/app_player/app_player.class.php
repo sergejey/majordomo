@@ -206,8 +206,8 @@ class app_player extends module {
 		} else {
 			$ajax = gr('ajax');
 		}
-		
-		if(isset($ajax)) {
+
+		if($ajax) {
 			
 			// Command
 			if($this->command) {
