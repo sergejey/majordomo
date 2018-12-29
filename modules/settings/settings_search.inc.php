@@ -49,6 +49,8 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
     $tmp['DEFAULTVALUE']='';
+    $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -72,6 +74,8 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
     $tmp['DEFAULTVALUE']='';
+    $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -89,6 +93,8 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='onoff';
     $tmp['DEFAULTVALUE']='0';
+    $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -109,6 +115,8 @@
     $tmp['NAME']=$k;
     $tmp['TITLE']=$v;
     $tmp['TYPE']='path';
+    $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -126,6 +134,8 @@
     $tmp['TITLE']=$v;
     $tmp['TYPE']='onoff';
     $tmp['DEFAULTVALUE']='0';
+    $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -146,6 +156,8 @@
     $tmp['NAME']=$k;
     $tmp['TITLE']=$v;
     $tmp['TYPE']='text';
+    $tmp['NOTES']='';
+    $tmp['DATA']='';
     SQLInsert('settings', $tmp);
    }
   }
@@ -234,6 +246,10 @@
      if ($res[$i]['TYPE']=='json' && preg_match('/^hook/is',$res[$i]['NAME'])) {
       $data = json_decode($res[$i]['VALUE'], true);
       foreach($data as $k=>$v) {
+       $data[$k]['filter']=gr($k.'_'.$res[$i]['ID'].'_filter');
+       if ($data[$k]['filter']=='') {
+        unset($data[$k]['filter']);
+       }
        $data[$k]['priority']=gr($k.'_'.$res[$i]['ID'].'_priority','int');
       }
       ${'value_'.$res[$i]['ID']} = json_encode($data);
@@ -299,4 +315,3 @@
    $this->redirect("?updated=1&filter_name=".$this->filter_name);
   }
 
-?>

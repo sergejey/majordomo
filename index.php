@@ -88,7 +88,6 @@ require(ROOT.'lib/utils/postprocess_result.inc.php');
 function echobig($string, $bufferSize = 8192)
 {
    $chars = strlen($string) - 1;
-   
    for ($start = 0; $start <= $chars; $start += $bufferSize)
    {
       echo substr($string,$start,$bufferSize);
@@ -103,7 +102,7 @@ if (!headers_sent())
    header("HTTP/1.0: 200 OK\n");
    header('Content-Type: text/html; charset=utf-8');
    header('Access-Control-Allow-Origin: *');  
-   //ob_start("ob_gzhandler"); // should be un-commented for production server
+   if(!ob_start("ob_gzhandler")) ob_start();
 }
 
 echobig($result);
@@ -127,4 +126,4 @@ endMeasure('TOTAL');
 // print performance report
 performanceReport();
 
-// ob_end_flush();
+ob_end_flush();

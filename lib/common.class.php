@@ -44,13 +44,13 @@
    if (!$said_status) {
     say($ph, $level);
    } else {
-    $rec = array();
-    $rec['MESSAGE']   = $ph;
-    $rec['ADDED']     = date('Y-m-d H:i:s');
-    $rec['ROOM_ID']   = 0;
-    $rec['MEMBER_ID'] = 0;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
+    //$rec = array();
+    //$rec['MESSAGE']   = $ph;
+    //$rec['ADDED']     = date('Y-m-d H:i:s');
+    //$rec['ROOM_ID']   = 0;
+    //$rec['MEMBER_ID'] = 0;
+    //if ($level > 0) $rec['IMPORTANCE'] = $level;
+    //$rec['ID'] = SQLInsert('shouts', $rec);
    }
   }
   processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source'=>$source));
@@ -85,6 +85,15 @@ function sayToSafe($ph, $level = 0, $destination = '') {
   if (!$destination) {
    return 0;
   }
+  // add message to chat
+  $rec = array();
+  $rec['MESSAGE']   = $ph;
+  $rec['ADDED']     = date('Y-m-d H:i:s');
+  $rec['ROOM_ID']   = 0;
+  $rec['MEMBER_ID'] = 0;
+  if ($level > 0) $rec['IMPORTANCE'] = $level;
+  $rec['ID'] = SQLInsert('shouts', $rec);
+  
   $processed=processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
   return 1;
  }
@@ -383,7 +392,7 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
  */
 function clearScheduledJob($title)
 {
-   SQLExec("DELETE FROM jobs WHERE TITLE LIKE '" . DBSafe($title) . "'");
+   SQLExec("DELETE FROM jobs WHERE TITLE = '" . DBSafe($title) . "'");
 }
 
 /**
@@ -428,7 +437,7 @@ function clearTimeOut($title)
  */
 function timeOutExists($title)
 {
-   $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . DBSafe($title) . "'");
+   $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DBSafe($title) . "'");
    return (int)$job['ID'];
 }
 
@@ -980,8 +989,8 @@ function isOnline($host)
 {
    $sqlQuery = "SELECT *
                   FROM pinghosts
-                 WHERE HOSTNAME LIKE '" . DBSafe($host) . "'
-                    OR TITLE LIKE    '" . DBSafe($host) . "'";
+                 WHERE HOSTNAME = '" . DBSafe($host) . "'
+                    OR TITLE =    '" . DBSafe($host) . "'";
 
    $rec = SQLSelectOne($sqlQuery);
    if (!$rec['STATUS'] || $rec['STATUS'] == 2)
@@ -1026,7 +1035,7 @@ function registerError($code = 'custom', $details = '')
     return 0;
    }
 
-   $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE LIKE '" . DBSafe($code) . "'");
+   $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE = '" . DBSafe($code) . "'");
 
    if (!$error_rec['ID'])
    {
@@ -1248,7 +1257,7 @@ function getMediaDurationSeconds($file){
     $hours = $duration[1];
     $minutes = $duration[2];
     $seconds = $duration[3];
-    return $seconds + ($minutes*60) + ($hours*60*60)+3;
+    return $seconds + ($minutes*60) + ($hours*60*60);
 }
 
 /**
@@ -1340,16 +1349,17 @@ function hsvToHex ( $h, $s, $v ) {
 /**
  * Summary of player status 
  * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @return  'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+ * @return  'id'              => (int), //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+ *          'name'            => (string), //Playback status. String: stopped/playing/paused/transporting/unknown 
+ *          'file'            => (string), //Current link for media in device. String.
+ *          'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
  *          'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0. 
  *          'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0. 
- *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown 
+ *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown
  *          'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
  *          'random'          => (boolean)$random, // Random mode. Boolean. 
  *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
  *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
- *          'speed'           => (float)$current_speed, //Current speed for playing media. float.
- *          'link'            => (string)$curren_url, //Current link for media in device. String.
  */
 function getPlayerStatus ($host = 'localhost') {
     if(!$terminal = getTerminalsByName($host, 1)[0]) {
@@ -1358,9 +1368,60 @@ function getPlayerStatus ($host = 'localhost') {
     if(!$terminal) {
 	return;
 	}
-    include_once(DIR_MODULES . 'app_player/addons.php');
-    include_once(DIR_MODULES . 'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');	
-    $player = new $terminal['PLAYER_TYPE']($terminal);
-    //DebMes( $player->status());
-    return $player->status();
+    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->play_terminal = $terminal['NAME']; // Имя терминала
+    $player->command  = 'pl_get'; // Команда
+    $player->ajax     = TRUE;
+    $player->intCall  = TRUE;
+    $player->usual($out);
+    $terminal = array();
+    if($player->json['success']) {
+	$terminal = array_merge($terminal, $player->json['data']);
+	//DebMes($player->json['data']);
+    } else {
+        // Если произошла ошибка, выводим ее описание
+        return($player->json['message']);
+    }
+    $player->command  = 'status'; // Команда
+    $player->ajax     = TRUE;
+    $player->intCall  = TRUE;
+    $player->usual($out);
+    if($player->json['success']) {
+	$terminal = array_merge($terminal, $player->json['data']);
+	//DebMes($player->json['data']);
+	return ($terminal);
+    } else {
+        // Если произошла ошибка, выводим ее описание
+        return($player->json['message']);
+    }
 }
+
+/**
+ * This function change  position on the played media in player
+ * @param mixed $host Host (default 'localhost') name or ip of terminal
+ * @param mixed $time second (default 0) to positon from start time
+ */
+function seekPlayerPosition($host = 'localhost',$time=0) {
+    if(!$terminal = getTerminalsByName($host, 1)[0]) {
+	$terminal = getTerminalsByHost($host, 1)[0];
+	}
+    if(!$terminal) {
+	return;
+	}
+    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->play_terminal = $terminal['NAME']; // Имя терминала
+    $player->command  = 'seek'; // Команда
+    $player->param   = $time; // Параметр
+    $player->ajax     = TRUE;
+    $player->intCall  = TRUE;
+    $player->usual($out);
+    
+    if($player->json['success']) {
+         return $player->json['message'];
+    } else {
+         return $player->json['message'];
+    }
+}
+

@@ -237,6 +237,7 @@ if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title,$m)) 
 }
 
 $compare_title = trim(preg_replace('/^ть /','',$compare_title));
+$compare_title = trim(preg_replace('/^те /','',$compare_title));
 
 if ($compare_title == '') {
     return;
@@ -393,6 +394,7 @@ if ($reply_confirm) {
 
 if ($processed) {
     $details['PROCESSED'] = 1;
+    $details['BREAK']=1;
 } else {
     //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }

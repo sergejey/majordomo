@@ -22,7 +22,7 @@ function addClass($class_name, $parent_class = '')
 
    $sqlQuery = "SELECT ID
                   FROM classes
-                 WHERE TITLE LIKE '" . DBSafe($class_name) . "'";
+                 WHERE TITLE = '" . DBSafe($class_name) . "'";
 
    $class = SQLSelectOne($sqlQuery);
 
@@ -48,7 +48,18 @@ function addClass($class_name, $parent_class = '')
  * @return mixed
  */
  function getClassTemplate($class_id) {
-   $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);  
+
+     $can_cache=false;
+     if (isset($_SERVER['REQUEST_URI'])) {
+         $can_cache=true;
+         global $class_templates_cached;
+     }
+
+     if ($can_cache && isset($class_templates_cached[$class_id])) {
+         return $class_templates_cached[$class_id];
+     }
+
+   $class=SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=".$class_id);
    if (!$class['ID']) {
     return '';
    }
@@ -75,6 +86,11 @@ function addClass($class_name, $parent_class = '')
            }
        }
    }
+
+     if ($can_cache) {
+         $class_templates_cached[$class_id]=$data;
+     }
+
    return $data;
  }
 
@@ -84,14 +100,42 @@ function addClass($class_name, $parent_class = '')
  * @return mixed
  */
 function getObjectClassTemplate($object_name) {
-    $object=getObject($object_name);
+    startMeasure('getObjectClassTemplate');
+    startMeasure('getObject');
+    if (isset($_SERVER['REQUEST_URI'])) {
+        global $all_objects_cached;
+        if (!isset($all_objects_cached)) {
+            $objects=SQLSelect("SELECT * FROM objects");
+            foreach($objects as $object) {
+                $all_objects_cached[strtolower($object['TITLE'])]=$object;
+            }
+        }
+        $rec=$all_objects_cached[strtolower($object_name)];
+    } else {
+        $sqlQuery = "SELECT objects.*
+                     FROM objects
+                    WHERE TITLE = '" . DBSafe($object_name) . "'";
+        $rec = SQLSelectOne($sqlQuery);
+    }
+    //$object=getObject($object_name);
+    $object = new stdClass();
+    if (!$rec['ID']) {
+        return '';
+    }
+    $object->id=$rec['ID'];
+    $object->class_id=$rec['CLASS_ID'];
+    $object->description=$rec['DESCRIPTION'];
+    endMeasure('getObject');
+    startMeasure('getClassTemplate');
     $data=getClassTemplate((int)$object->class_id);
+    endMeasure('getClassTemplate');
     $data=preg_replace('/%\.object_title%/uis', $object_name, $data);
     $data=preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
     //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
     $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    endMeasure('getObjectClassTemplate');
     return $data;
 }
 
@@ -111,7 +155,7 @@ function addClassMethod($class_name, $method_name, $code = '', $key = '')
       $sqlQuery = "SELECT * 
                      FROM methods
                     WHERE CLASS_ID = '" . $class_id . "'
-                      AND TITLE LIKE '" . DBSafe($method_name) . "'
+                      AND TITLE = '" . DBSafe($method_name) . "'
                       AND OBJECT_ID = 0";
 
       $method = SQLSelectOne($sqlQuery);
@@ -168,7 +212,7 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
 
    $sqlQuery = "SELECT ID
                   FROM properties
-                 WHERE TITLE LIKE '" . DBSafe($property_name) . "'
+                 WHERE TITLE = '" . DBSafe($property_name) . "'
                    AND OBJECT_ID = 0
                    AND CLASS_ID  = '" . $class_id . "'";
 
@@ -199,16 +243,21 @@ function addClassObject($class_name, $object_name, $system='')
    $class_id = addClass($class_name);
    $sqlQuery = "SELECT ID
                   FROM objects
-                 WHERE TITLE LIKE '" . DBSafe($object_name) . "'";
-   
+                 WHERE TITLE = '" . DBSafe($object_name) . "'";
    $object = SQLSelectOne($sqlQuery);
-   
    if ($object['ID'])
       return $object['ID'];
-   
-   
-   $object = array();
 
+   if ($system!='') {
+       $sqlQuery = "SELECT ID
+                  FROM objects
+                 WHERE `SYSTEM` = '" . DBSafe($system) . "'";
+       $object = SQLSelectOne($sqlQuery);
+       if ($object['ID'])
+           return $object['ID'];
+   }
+
+   $object = array();
    $object['TITLE']    = $object_name;
    $object['CLASS_ID'] = $class_id;
    $object['SYSTEM']   = $system.'';
@@ -363,8 +412,6 @@ function removeLinkedProperty($object, $property, $module)
  */
 function getObject($name)
 {
-   $qry = '1';
-
    if (preg_match('/^(.+?)\.(.+?)$/', $name, $m))
    {
       $class_name  = $m[1];
@@ -373,8 +420,8 @@ function getObject($name)
       $sqlQuery = "SELECT objects.*
                      FROM objects
                      LEFT JOIN classes ON objects.CLASS_ID = classes.ID
-                    WHERE objects.TITLE LIKE '" . DBSafe($object_name) . "'
-                      AND classes.TITLE LIKE '" . DBSafe($class_name) . "'";
+                    WHERE objects.TITLE = '" . DBSafe($object_name) . "'
+                      AND classes.TITLE = '" . DBSafe($class_name) . "'";
 
       $rec = SQLSelectOne($sqlQuery);
    }
@@ -382,21 +429,24 @@ function getObject($name)
    {
       $sqlQuery = "SELECT objects.*
                      FROM objects
-                    WHERE TITLE LIKE '" . DBSafe($name) . "'";
-
+                    WHERE TITLE = '" . DBSafe($name) . "'";
       $rec = SQLSelectOne($sqlQuery);
-      //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE LIKE '".DBSafe($name)."'");
+      //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
    }
-   
+    
+   if (!$rec['ID']) {
+       $sqlQuery = "SELECT objects.*
+                     FROM objects
+                    WHERE TITLE = '" . DBSafe($name) . "'";
+       $rec = SQLSelectOne($sqlQuery);
+   } 
+    
    if ($rec['ID'])
    {
       include_once(DIR_MODULES . 'objects/objects.class.php');
-
       $obj = new objects();
-
       $obj->id = $rec['ID'];
       $obj->loadObject($rec['ID']);
-      
       return $obj;
    }
 
@@ -414,7 +464,7 @@ function getObjectsByProperty($property_name, $condition='', $condition_value=''
         $condition_value=$condition;
         $condition='==';
     }
-  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($property_name)."'");
+  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE = '".DBSafe($property_name)."'");
   $total=count($pRecs);
   if (!$total) {
    return 0;
@@ -460,7 +510,7 @@ function getObjectsByClass($class_name)
 {
    $sqlQuery = "SELECT ID
                   FROM classes
-                 WHERE (TITLE LIKE '" . DBSafe(trim($class_name)) . "'
+                 WHERE (TITLE = '" . DBSafe(trim($class_name)) . "'
                         OR ID = " . (int)$class_name . "
                        )";
 
@@ -516,7 +566,7 @@ function getClassProperties($class_id, $def='') {
     global $cached_class_properties;
     if (isset($cached_class_properties[$class_id])) return $cached_class_properties[$class_id];
 
-    $class=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='".(int)$class_id."' OR TITLE LIKE '".DBSafe($class_id)."')");
+    $class=SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='".(int)$class_id."' OR TITLE = '".DBSafe($class_id)."')");
     $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$class['ID']."' AND OBJECT_ID=0");
     $res=$properties;
     if (!is_array($def)) {
@@ -1256,7 +1306,7 @@ function getRoomObjectByLocation($location_id,$auto_add=0) {
     if (!$location_title) {
         $location_title='Room'.$location_id;
     }
-    $room_object=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($location_title)."'");
+    $room_object=SQLSelectOne("SELECT * FROM objects WHERE TITLE = '".DBSafe($location_title)."'");
     if ($room_object['ID']) return $room_object['TITLE'];
 
     $class_id=addClass("Rooms");
@@ -1278,7 +1328,7 @@ function getUserObjectByTitle($user_id,$auto_add=0) {
     if (!$user_title) {
         $user_title='User'.$user_id;
     }
-    $user_object=SQLSelectOne("SELECT * FROM objects WHERE (TITLE LIKE '".DBSafe($user_title)."' OR (DESCRIPTION!='' AND DESCRIPTION LIKE '".$user_rec['NAME']."'))");
+    $user_object=SQLSelectOne("SELECT * FROM objects WHERE (TITLE = '".DBSafe($user_title)."' OR (DESCRIPTION!='' AND DESCRIPTION = '".$user_rec['NAME']."'))");
     if ($user_object['ID']) return $user_object['TITLE'];
     if ($auto_add) {
         $object_id=addClassObject("Users",$user_title);
@@ -1290,7 +1340,7 @@ function getUserObjectByTitle($user_id,$auto_add=0) {
 }
 
 function deleteObject($object_id) {
-    $object_rec=SQLSelectOne("SELECT ID FROM objects WHERE ID=".(int)$object_id." OR TITLE LIKE '".DBSafe($object_id)."'");
+    $object_rec=SQLSelectOne("SELECT ID FROM objects WHERE ID=".(int)$object_id." OR TITLE = '".DBSafe($object_id)."'");
     if ($object_rec['ID']) {
         include_once(DIR_MODULES.'objects/objects.class.php');
         $obj=new objects();
@@ -1322,7 +1372,7 @@ function objectClassChanged($object_id) {
     $properties=$obj->getParentProperties($rec['CLASS_ID'], '', 1);
     $total=count($properties);
     for($i=0;$i<$total;$i++) {
-        $pvalue=SQLSelectOne("SELECT pvalues.* FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID=0 AND pvalues.OBJECT_ID='".$rec['ID']."' AND properties.TITLE LIKE '".DBSafe($properties[$i]['TITLE'])."'");
+        $pvalue=SQLSelectOne("SELECT pvalues.* FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE properties.CLASS_ID=0 AND pvalues.OBJECT_ID='".$rec['ID']."' AND properties.TITLE = '".DBSafe($properties[$i]['TITLE'])."'");
         if ($pvalue['ID']) {
             $old_prop=$pvalue['PROPERTY_ID'];
             $pvalue['PROPERTY_ID']=$properties[$i]['ID'];

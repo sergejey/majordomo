@@ -7,6 +7,7 @@
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;"/>
 
         <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
         <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
@@ -331,6 +332,7 @@ jQuery.fn.center = function () {
 
              var urlCommand="?";
              urlCommand+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+             $('#console_output').html('&nbsp;<br/><img src="<#ROOTHTML#>img/ajax-loader.gif"/>');
 
              $.ajax({
                  url: urlCommand
@@ -404,7 +406,7 @@ jQuery.fn.center = function () {
 
 <!--# top  #-->
 
-<nav class="navbar navbar-default navbar-static-top" role="navigation" style="z-index:1;">
+<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
    <div class="navbar-header">
     <button type=button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
     <span class="icon-bar"></span>
@@ -414,41 +416,67 @@ jQuery.fn.center = function () {
   <a class="navbar-brand" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo_small.png" height="25"> MajorDoMo </a>
   </div>
   <div class="collapse navbar-collapse" id="responsive-menu">
-    <ul class="nav navbar-nav navbar-right" >
-      <li>
-        <a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a>
-      </li>
-      <li>
-        <a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a>
-      </li>
+      <form class="navbar-form navbar-left" name="frmFilterModules">
+          <div class="form-group">
+              <input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+              <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;position:absolute;background-color:white;border:1px solid black;padding:5px'>...</div>
+          </div>
+      </form>
+      <ul class="nav navbar-nav navbar-left" >
+        [#begin SUB_MODULES#]
+        [#if NEW_CATEGORY#]
         <li>
-            <a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a>
-        </li>
-      <li>
-        <a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a>
-      </li>
-      <li>
-        <a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a>
-      </li>
-      <li>
-        <a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a>
-      </li>
-        [#if APP_TDWIKI_INSTALLED="1"#]
-        <li>
-            <a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                [#CATEGORY#]
+                    <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                        [#endif NEW_CATEGORY#]
+                        [#if !DENIED#]
+                        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+                        [#endif DENIED#]
+                        [#if LAST_IN_CATEGORY#]
+            </ul>
         </li>
         [#endif#]
+        [#end SUB_MODULES#]
+
+        <li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <#LANG_MARKET_CATEGORY_INFORMATION#>
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
+                <li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+                <li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+                <li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+                <li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+                [#if APP_TDWIKI_INSTALLED="1"#]
+                <li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+                [#endif#]
+                <li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+                </ul>
+        </li>
+
+        <li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <#LANG_TOOLS#>
+                    <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
+                <li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
+            </ul>
+        </li>
+
+
       <li>
-        <a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a>
-      </li>
-      <li>
-        <a href="?md=control_access&mode=logoff"><i class="glyphicon glyphicon-log-out"></i> <#LANG_LOGOFF#></a>
+        <a href="?md=control_access&mode=logoff"><#LANG_LOGOFF#></a>
       </li>
    </ul>
   </div>
 </nav>
 
 <!--# .top  #-->
+&nbsp;<br/>&nbsp;<br/>&nbsp;
 
 <div id='console' style='display:none'>
     &nbsp;
@@ -487,84 +515,80 @@ jQuery.fn.center = function () {
 
 <!--main-->
 <div class="row" id="content">
+    <!--#
+[#if ACTION=""#]
 [#if PRINT!="1"#]
-<div class="col-sm-2 well well-sm " id="left_block"><!--left_main-->
-<form id="filterModules" class="form-horizontal" name="frmFilterModules"><div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-search"> </i></span>
-<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_FILTER#>"></div></form>
-
-<div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;'>...</div>
-
+<div class="col-sm-2 well well-sm " id="left_block">
 <script language="javascript">
- function toggleCategory(id) {
-  var vl=getCookie('sub_'+id);
-  if (vl=='on') {
-   setCookie('sub_'+id, 'off');
-  } else {
-   setCookie('sub_'+id, 'on');
-  }
-  $('#row_'+id).collapse("toggle");
-  return false;
- }
+function toggleCategory(id) {
+var vl=getCookie('sub_'+id);
+if (vl=='on') {
+setCookie('sub_'+id, 'off');
+} else {
+setCookie('sub_'+id, 'on');
+}
+$('#row_'+id).collapse("toggle");
+return false;
+}
 
- function checkCategory(id) {
-  var vl=getCookie('sub_'+id);
-  if (vl=='on') {
-   $('#row_'+id).collapse("show");
-  }
-  return false;
- }
+function checkCategory(id) {
+var vl=getCookie('sub_'+id);
+if (vl=='on') {
+$('#row_'+id).collapse("show");
+}
+return false;
+}
 </script>
 
-            <!--[menu]-->
+
 <div class="panel-group">
 [#begin SUB_MODULES#]
-   [#if NEW_CATEGORY#]
-    <div class="panel panel-default">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            <a href="#" onClick="return toggleCategory('[#CATEGORY_ID#]');">[#CATEGORY#]</a>
-        </h4>
-    </div>
-    <div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
-    <div class="panel-body" style="padding-left:5px;padding-right:5px">
-        <ul class="nav nav-list">
-        
-   [#endif NEW_CATEGORY#]
-   
-   [#if !DENIED#]
-        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
-   [#endif DENIED#]
-   
-   [#if LAST_IN_CATEGORY#]
-        </ul>
-   </div>
-   </div>
-   </div>
-   [#endif#]
+[#if NEW_CATEGORY#]
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h4 class="panel-title">
+        <a href="#" onClick="return toggleCategory('[#CATEGORY_ID#]');">[#CATEGORY#]</a>
+    </h4>
+</div>
+<div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
+<div class="panel-body" style="padding-left:5px;padding-right:5px">
+    <ul class="nav nav-list">
+
+[#endif NEW_CATEGORY#]
+
+[#if !DENIED#]
+    <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+[#endif DENIED#]
+
+[#if LAST_IN_CATEGORY#]
+    </ul>
+</div>
+</div>
+</div>
+[#endif#]
 [#end SUB_MODULES#]
 </div>
-   [#begin SUB_MODULES#]
-   [#if NEW_CATEGORY#]
-   <script language='javascript'>
-    checkCategory('[#CATEGORY_ID#]');
-   </script>
-   [#endif NEW_CATEGORY#]
-   [#end SUB_MODULES#]
+[#begin SUB_MODULES#]
+[#if NEW_CATEGORY#]
+<script language='javascript'>
+checkCategory('[#CATEGORY_ID#]');
+</script>
+[#endif NEW_CATEGORY#]
+[#end SUB_MODULES#]
 
-            <!--[/menu]-->
 
-            <!--/left_main-->
+<script language="javascript">
+var vl=getCookie('adminLeftPanel');
+if (vl=='off') {
+$('#left_block').hide();
+}
+</script>
 
-  <script language="javascript">
-  var vl=getCookie('adminLeftPanel');
-  if (vl=='off') {
-   $('#left_block').hide();
-  }
-  </script>
-
-        </div>
+    </div>
 [#endif PRINT#]
-<div class="col-sm-10" id="main-content">
+[#endif ACTION#]
+#-->
+<div class="container" id="main-content">
     <div>
         <!--#
             <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"></a>
@@ -623,6 +647,29 @@ jQuery.fn.center = function () {
 
 <script language="javascript">
 
+    var dynids='';
+    var dynids_timer=0;
+    function dynamicContentRefresh() {
+        clearTimeout(dynids_timer);
+        var url=window.location.href;
+        var dURL = url.replace(/#$/, '');
+        if (dURL.indexOf('?') !== -1) {
+            dURL+=dynids;
+        } else {
+            dURL+='?'+dynids;
+        }
+        //alert(url);
+        $.ajax({
+            url: dURL
+        }).done(function(data) {
+            for(var i=0;i<data.blocks.length;i++) {
+                $('#'+data.blocks[i].name).html(data.blocks[i].content);
+                //$('#'+data.blocks[i].name).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            }
+            dynids_timer=setTimeout('dynamicContentRefresh();',3000);
+        });
+    }
+
  $(document).ready(function() {
 
         $(".wiki_hint").fancybox({
@@ -654,6 +701,16 @@ jQuery.fn.center = function () {
      $('input[name=filter_modules]').keyup(function() {
          filterModules();
      });
+
+     $('.dynamic_content').each(function() {
+         if ($(this).attr('id')) {
+             var dyn_id = $(this).attr('id');
+             dynids+='&dynids[]='+dyn_id;
+         }
+     });
+     if (dynids!='') {
+         dynamicContentRefresh();
+     }
 
      localStorage.clear();
 

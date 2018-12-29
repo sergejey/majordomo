@@ -437,7 +437,7 @@ function admin(&$out) {
   }
   if ($data['SCENE_DATA']) {
    if ($system!='') {
-    $old_rec=SQLSelectOne("SELECT ID FROM scenes WHERE SYSTEM LIKE '".DBSafe($system)."'");
+    $old_rec=SQLSelectOne("SELECT ID FROM scenes WHERE `SYSTEM` = '".DBSafe($system)."'");
     if ($old_rec['ID']) {
      return;
     }
@@ -447,6 +447,7 @@ function admin(&$out) {
     unset($rec['WALLPAPER']);
    }
    $rec['TITLE'].=' (imported)';
+   $rec['SYSTEM']=$system;
    $elements=$rec['ELEMENTS'];
    unset($rec['ID']);
    unset($rec['ELEMENTS']);

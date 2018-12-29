@@ -25,7 +25,7 @@ getObject('ThisComputer')->raiseEvent("StartUp");
 
 $sqlQuery = "SELECT *
                FROM classes
-              WHERE TITLE LIKE 'timer'";
+              WHERE TITLE = 'timer'";
 
 $timerClass = SQLSelectOne($sqlQuery);
 $o_qry = 1;
@@ -65,6 +65,7 @@ while (1) {
 
     #NewMinute
     if ($m != $old_minute) {
+        processSubscriptionsSafe('MINUTELY');
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
@@ -77,31 +78,26 @@ while (1) {
             getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
             getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
         }
-
         $old_minute = $m;
     }
 
     #NewHour
     if ($h != $old_hour) {
-
+        processSubscriptionsSafe('HOURLY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewHour\n";
             getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
         }
-
-        processSubscriptionsSafe('HOURLY');
         $old_hour = $h;
     }
 
     #NewDay
     if ($dt != $old_date) {
-
+        processSubscriptionsSafe('DAILY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewDay\n";
             getObject($objects[$i]['TITLE'])->raiseEvent("onNewDay");
         }
-
-        processSubscriptionsSafe('DAILY');
         $old_date = $dt;
     }
 

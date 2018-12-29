@@ -26,16 +26,14 @@ if (!isset($params['statusUpdated'])) {
  }
 
  //$this->callMethod('logicAction');
-
- $linked_room=$this->getProperty('linkedRoom');
- if ($nobodysHome) {
-  callMethodSafe('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));
- }
- ClearTimeOut("nobodyHome"); 
+ ClearTimeOut("nobodyHome");
  SetTimeOut("nobodyHome","callMethodSafe('NobodyHomeMode.activate');", 1*60*60);
 
+ $linked_room=$this->getProperty('linkedRoom');
  if ($linked_room) {
   callMethodSafe($linked_room.'.onActivity', array('sensor'=>$ot));
+ } elseif ($nobodysHome) {
+  callMethodSafe('NobodyHomeMode.deactivate', array('sensor'=>$ot, 'room'=>$linked_room));
  }
 
 /*

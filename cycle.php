@@ -28,8 +28,6 @@ while (!$connected)
    sleep(5);
 }
 
-include_once("./load_settings.php");
-
 echo "CONNECTED TO DB" . PHP_EOL;
 
 $old_mask = umask(0);
@@ -113,6 +111,8 @@ if (file_exists($filename))
    $mysqlParam .= " " . DB_NAME . " <" . $filename;
    exec($mysql_path . $mysqlParam);
 }
+
+include_once("./load_settings.php"); //
 
 //reinstalling modules
 /*
@@ -450,11 +450,13 @@ while (false !== ($result = $threads->iteration()))
             }
             */
             if ($need_restart && $cycle_title) {
-               DebMes("AUTO-RECOVERY: " . $closed_thread,'threads');
-               if (!preg_match('/websockets/is', $closed_thread) && !preg_match('/connect/is', $closed_thread)) {
-                  registerError('cycle_stop', $closed_thread."\n".$result);
+               if (!$to_start[$cycle_title]) {
+                  DebMes("AUTO-RECOVERY: " . $closed_thread,'threads');
+                  if (!preg_match('/websockets/is', $closed_thread) && !preg_match('/connect/is', $closed_thread)) {
+                     registerError('cycle_stop', $closed_thread."\n".$result);
+                  }
+                  $to_start[$cycle_title]=time()+2;
                }
-               $to_start[$cycle_title]=time()+2;
                $started_when[$cycle_title]=$to_start[$cycle_title];
             }
          }

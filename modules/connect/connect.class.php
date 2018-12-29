@@ -110,7 +110,7 @@ function run() {
   $this->result=$p->result;
 }
 
- function processSubscription($event_name, $details='') {
+ function processSubscription($event_name, &$details) {
   if ($event_name=='HOURLY') {
    //...
    $this->getConfig();
@@ -118,8 +118,42 @@ function run() {
     $this->cloudBackup();
    }
   }
+  if ($event_name=='SAY') {
+   $level = (int)$details['level'];
+   $message = $details['message'];
+   $this->sendMessageToConnect($message,$level);
+  }
  }
 
+ function sendMessageToConnect($message,$level) {
+  $this->getConfig();
+  $connect_username=$this->config['CONNECT_USERNAME']; //username
+  $connect_password=$this->config['CONNECT_PASSWORD'];
+  $connect_sync = $this->config['CONNECT_SYNC'];
+  if (!$connect_sync || !$connect_username || !$connect_password) {
+   return false;
+  }
+  //DebMes("Sending message to connect: $message ($level)",'connect_push');
+  $fields = array(
+      'message' => $message,
+      'level' => (int)$level
+  );
+  $url = 'https://connect.smartliving.ru/sync_device_data.php';
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL, $url);
+  curl_setopt($ch,CURLOPT_POST, 1);
+  curl_setopt($ch,CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 60);
+  curl_setopt($ch,CURLOPT_TIMEOUT, 120);
+  curl_setopt($ch,CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($ch,CURLOPT_USERPWD, $connect_username.":".$connect_password);
+  $result = curl_exec($ch);
+  curl_close($ch);
+  //DebMes("Sending message result: $result",'connect_push');
+ }
 
  function cloudBackup() {
   $connect_username=$this->config['CONNECT_USERNAME']; //username
@@ -780,7 +814,8 @@ function usual(&$out) {
 * @access private
 */
  function install($data='') {
-  subscribeToEvent($this->name, 'HOURLY');  
+  subscribeToEvent($this->name, 'HOURLY');
+  subscribeToEvent($this->name, 'SAY');
   parent::install();
  }
 

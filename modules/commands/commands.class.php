@@ -875,7 +875,7 @@ function usual(&$out) {
 * @access public
 */
  function propertySetHandle($object, $property, $value) {
-   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT = '".DBSafe($object)."' AND LINKED_PROPERTY = '".DBSafe($property)."'");
    $total=count($commands);
    for($i=0;$i<$total;$i++) {
     $commands[$i]['CUR_VALUE']=$value;
