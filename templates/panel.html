@@ -424,7 +424,7 @@ jQuery.fn.center = function () {
 <!--# top  #-->
 
 <!--# top  #-->
-<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
+<nav class="navbar navbar-fixed-top navbar-default" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
    <div class="navbar-header">
     <button type=button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
     <span class="icon-bar"></span>
@@ -497,7 +497,7 @@ jQuery.fn.center = function () {
 
 
       <li>
-        <a href="?action=control_access&&mode=logoff"><#LANG_LOGOFF#></a>
+        <a href="?action=control_access&&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
       </li>
    </ul>
   </div>
