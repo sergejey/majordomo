@@ -405,7 +405,6 @@ jQuery.fn.center = function () {
 <!--# top  #-->
 
 <!--# top  #-->
-
 <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
    <div class="navbar-header">
     <button type=button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
@@ -413,13 +412,13 @@ jQuery.fn.center = function () {
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
     </button>
-  <a class="navbar-brand" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo_small.png" height="25"> MajorDoMo </a>
+  <a class="navbar-brand" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo_small.png" height="25"></a>
   </div>
   <div class="collapse navbar-collapse" id="responsive-menu">
       <form class="navbar-form navbar-left" name="frmFilterModules">
           <div class="form-group">
               <input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
-              <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;position:absolute;background-color:white;border:1px solid black;padding:5px'>...</div>
+              <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;position:absolute;background-color:white;border:1px solid black;padding:5px;z-index:1000;'>...</div>
           </div>
       </form>
       <ul class="nav navbar-nav navbar-left" >
@@ -445,10 +444,14 @@ jQuery.fn.center = function () {
                 <#LANG_MARKET_CATEGORY_INFORMATION#>
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
+                <li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
+                <li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
+                <li role="separator" class="divider"></li>
                 <li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
                 <li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
                 <li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
                 <li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+                <li role="separator" class="divider"></li>
                 <li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
                 [#if APP_TDWIKI_INSTALLED="1"#]
                 <li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
@@ -457,15 +460,6 @@ jQuery.fn.center = function () {
                 </ul>
         </li>
 
-        <li>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                <#LANG_TOOLS#>
-                    <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
-                <li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
-            </ul>
-        </li>
 
 
       <li>
