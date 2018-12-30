@@ -40,8 +40,20 @@ class panel extends module
         global $session;
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
-        global $action;
 
+        if (gr('toggleLeftPanel')) {
+            if (gg('HideLeftPanelAdmin')) {
+                sg('HideLeftPanelAdmin',0);
+            } else {
+                sg('HideLeftPanelAdmin',1);
+            }
+
+            $uri=str_replace('toggleLeftPanel=1','',$_SERVER['REQUEST_URI']);
+            $this->redirect($uri);
+        }
+        $out['HIDE_LEFT_PANEL']=gg('HideLeftPanelAdmin');
+
+        global $action;
         $out['TAB']=gr('tab');
 
         if (defined('NO_DATABASE_CONNECTION')) {
