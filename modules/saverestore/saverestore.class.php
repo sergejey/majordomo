@@ -1357,8 +1357,8 @@ class saverestore extends module
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
             $this->saveConfig();
-            sg('LatestUpdateId',$out['LATEST_ID']);
-            sg('LatestUpdateTimestamp',date('Y-m-d H:is'));
+            setGlobal('LatestUpdateId', $out['LATEST_ID']);
+            setGlobal('LatestUpdateTimestamp', date('Y-m-d H:i:s'));
 
 
             if ($iframe) {

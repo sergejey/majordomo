@@ -30,6 +30,11 @@
      <li[#if TAB="links"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=links"><#LANG_DEVICES_LINKS#></a>
      </li>
+     [#if SHOW_METHODS#]
+     <li[#if TAB="schedule"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=schedule"><#LANG_DEVICES_SCHEDULE#></a>
+     </li>
+     [#endif SHOW_METHODS#]
      <li[#if TAB="logic"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=logic"><#LANG_DEVICES_LOGIC_ACTION#></a>
      </li>
@@ -45,6 +50,15 @@
  </ul>
  &nbsp;<br/>
  [#endif ID#]
+
+[#if OK_MSG!=""#]
+<div class="alert alert-success">[#OK_MSG#]</div>
+[#endif OK_MSG#]
+
+[#if ERR_MSG!=""#]
+<div class="alert alert-danger">[#ERR_MSG#]</div>
+[#endif ERR_MSG#]
+
  [#if TAB=""#]
    [#inc devices_edit.html#]
  [#endif TAB#]
@@ -63,6 +77,14 @@
  [#inc devices_edit_logic.html#]
  [#endif TAB#]
 
+
+         [#if TAB="schedule"#]
+         [#inc devices_edit_schedule.html#]
+         [#endif TAB#]
+
+
+
+
  [#if TAB="preview"#]
   [#inc preview.html#]
  [#endif TAB#]
@@ -76,11 +98,17 @@
          <hr>
          <b><#LANG_METHODS#></b>:
          [#begin SHOW_METHODS#]
-         <div><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);">[#NAME#]</a>
-         &mdash; [#DESCRIPTION#]
-             </div>&nbsp;
+         <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);return false;">[#NAME#] &mdash; [#DESCRIPTION#]</a>
+             </div>
          [#end SHOW_METHODS#]
          [#endif SHOW_METHODS#]
+
+         [#if OTHER_DEVICES#]
+         <h4>[#LOCATION_TITLE#]</h4>
+         [#begin OTHER_DEVICES#]
+         <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
+         [#end OTHER_DEVICES#]
+         [#endif#]
 
      </div>
      [#endif#]

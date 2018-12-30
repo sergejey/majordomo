@@ -8,4 +8,4 @@ $this->setProperty('activeHTML', $this->getProperty('previewHTML'));
 $motion_timeout=20; // seconds timeout
 setTimeout($ot.'_motion_timer', 'setGlobal("'.$ot.'.status", 0);setGlobal("'.$ot.'.activeHTML", \'\');', $motion_timeout);
 
-$this->callMethod('logicAction');
+$this->callMethodSafe('logicAction');

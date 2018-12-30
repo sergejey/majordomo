@@ -80,6 +80,20 @@ for ($i = 0; $i < $total; $i++) {
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($devices[$i]['LINKED_OBJECT'].'.status') : gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
+      case 'dimmer':
+         $payload['service']='Lightbulb';
+         sg('HomeBridge.to_add',json_encode($payload));
+         $payload['characteristic'] = 'On';
+         if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
+            $payload['value']=true;
+         } else {
+            $payload['value']=false;
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
+         $payload['characteristic'] = 'Brightness';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.level');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
       case 'rgb':
          DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
          $payload['service']='Lightbulb';

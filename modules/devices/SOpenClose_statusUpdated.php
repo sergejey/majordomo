@@ -5,7 +5,7 @@
 
  $tm=time();
  $this->setProperty('updated', $tm);
- $this->callMethod('setUpdatedText');
+ $this->callMethodSafe('setUpdatedText');
  $this->setProperty('alive', 1);
 
  $alive_timeout=(int)$this->getProperty('aliveTimeout')*60*60;

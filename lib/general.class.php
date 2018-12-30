@@ -127,19 +127,21 @@ if (isset($_SERVER['REQUEST_METHOD']))
 }
 
 
-function gr($var_name,$type='') {
+function gr($var_name,$type='trim') {
    if (isset($_REQUEST[$var_name])) {
       $value = $_REQUEST[$var_name];
+      if (get_magic_quotes_gpc()) {
+         stripit($value);
+      }
    } else {
-      return;
-   }
-   if (get_magic_quotes_gpc()) {
-      stripit($value);
+      $value='';
    }
    if ($type=='int') {
       $value=(int)$value;
    } elseif ($type=='float') {
       $value=(float)$value;
+   } elseif ($type=='trim' && !is_array($value)) {
+      $value=trim($value);
    }
    return $value;
 }
@@ -568,7 +570,11 @@ function DebMes($errorMessage, $logLevel = "debug")
 }
 
 function dprint($data = 0, $stop = 1) {
-   echo "<pre>";
+   if (isset($_SERVER['REQUEST_METHOD'])) {
+      echo "<pre>";
+   } else {
+      echo "\n".date('Y-m-d H:i:s ');
+   }
    if ($data!==0) {
       if (is_array($data)) {
          print_r($data);
@@ -580,9 +586,13 @@ function dprint($data = 0, $stop = 1) {
    } else {
       echo date('Y-m-d H:i:s');
    }
-   echo "</pre><hr/>";
-   echo str_repeat(' ',4096);
-   flush();flush();
+   if (isset($_SERVER['REQUEST_METHOD'])) {
+      echo "</pre><hr/>";
+      echo str_repeat(' ',4096);
+      flush();flush();
+   } else {
+      echo "\n---------------------------------\n";
+   }
 
    if ($stop) {
       exit;

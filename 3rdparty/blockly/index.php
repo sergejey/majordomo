@@ -414,6 +414,7 @@ $ctl = new control_modules();
     }
 
     $locations = SQLSelect("SELECT * FROM locations ORDER BY TITLE");
+    $locations[$i]=array('ID'=>0,'TITLE'=>'');
     $totall=count($locations);
     for($il=0;$il<$totall;$il++) {
     $res=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=".(int)$locations[$il]['ID']." ORDER BY TITLE");
@@ -421,7 +422,12 @@ $ctl = new control_modules();
       if (!$total) {
         continue;
       }
-    echo '<category name="'.LANG_DEVICES_MODULE_TITLE.' - '.$locations[$i]['TITLE'].'">'."\n";
+      if ($locations[$il]['TITLE']) {
+        echo '<category name="'.LANG_DEVICES.' - '.$locations[$il]['TITLE'].'">'."\n";
+      } else {
+        echo '<category name="'.LANG_DEVICES.'">'."\n";
+      }
+
     for ($i = 0; $i < $total; $i++) {
       if ($res[$i]['TYPE']=='relay') {
       } elseif ($res[$i]['TYPE']=='dimmer') {
