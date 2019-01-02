@@ -1231,7 +1231,7 @@ $dictionary = array(
     'DEVICES_STATUS_OPEN' => 'открыт',
     'DEVICES_STATUS_CLOSED' => 'закрыт',
     'DEVICES_STATUS_ALARM' => 'состояние тревоги',
-    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете',
+    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете|Хорошо',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
@@ -1317,7 +1317,7 @@ $dictionary = array(
     'UPDATES_SOURCE_MASTER' => 'Мастер (стабильная версия)',
     'UPDATES_SOURCE_ALPHA' => 'Альфа (ранний доступ к обновлениям)',
 
-    'MAINCYCLEDOWN' => 'Отсановлен главный цикл системы',
+    'MAINCYCLEDOWN' => 'Остановлен главный цикл системы', //
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
 
 

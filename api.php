@@ -180,6 +180,9 @@ if (!isset($request[0])) {
     }
 } elseif (strtolower($request[0]) == 'events' && isset($request[1])) {
     array_shift($request);
+    foreach($request as &$request_item) {
+        $request_item=urldecode($request_item);
+    }
     $event_name=implode('/',$request);
     $result['event_name']=$event_name;
     $result['params']=$_GET;
