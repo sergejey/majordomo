@@ -1231,7 +1231,7 @@ $dictionary = array(
     'DEVICES_STATUS_OPEN' => 'открыт',
     'DEVICES_STATUS_CLOSED' => 'закрыт',
     'DEVICES_STATUS_ALARM' => 'состояние тревоги',
-    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете',
+    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете|Хорошо',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
