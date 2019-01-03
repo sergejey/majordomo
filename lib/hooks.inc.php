@@ -74,8 +74,13 @@ function processSubscriptionsSafe($event_name,$details='') {
        'processSubscriptions'=>1,
        'event'=>$event_name,
        'params'=>json_encode($details),
+
    );
+   if (session_id()) {
+      $data[session_name()]=session_id();
+   }
    $url=BASE_URL.'/objects/?'.http_build_query($data);
+   DebMes("URL: $url",'pattern');
    if (is_array($params)) {
       foreach($params as $k=>$v) {
          $url.='&'.$k.'='.urlencode($v);
@@ -94,7 +99,6 @@ function processSubscriptionsSafe($event_name,$details='') {
  */
 function processSubscriptions($event_name, $details = '')
 {
-
    //DebMes("New event: ".$event_name,'process_subscription');
    postToWebSocketQueue($event_name, $details, 'PostEvent');
    //DebMes("Post websocket event done: ".$event_name,'process_subscription');

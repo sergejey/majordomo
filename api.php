@@ -3,6 +3,8 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./load_settings.php");
 
+$session = new session("prj");
+
 header('Content-Type: text/html; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'];

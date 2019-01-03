@@ -473,6 +473,9 @@ function usual(&$out) {
       'm'=>$name,
       'm_c_s'=>$call_stack
   );
+  if (session_id()) {
+   $data[session_name()]=session_id();
+  }
   $url=BASE_URL.'/objects/?'.http_build_query($data);
   if (is_array($params)) {
    foreach($params as $k=>$v) {
