@@ -7,6 +7,9 @@
          'level'=>$level,
          'replyto'=>$replyto,
      );
+     if (session_id()) {
+         $data[session_name()]=session_id();
+     }
      $url=BASE_URL.'/objects/?'.http_build_query($data);
      if (is_array($params)) {
          foreach($params as $k=>$v) {
@@ -64,6 +67,9 @@ function sayToSafe($ph, $level = 0, $destination = '') {
         'level'=>$level,
         'destination'=>$destination,
     );
+    if (session_id()) {
+        $data[session_name()]=session_id();
+    }
     $url=BASE_URL.'/objects/?'.http_build_query($data);
     if (is_array($params)) {
         foreach($params as $k=>$v) {
@@ -106,6 +112,9 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '') {
         'member_id'=>$member_id,
         'source'=>$source,
     );
+    if (session_id()) {
+        $data[session_name()]=session_id();
+    }
     $url=BASE_URL.'/objects/?'.http_build_query($data);
     if (is_array($params)) {
         foreach($params as $k=>$v) {
@@ -722,6 +731,9 @@ function runScriptSafe($id, $params = '') {
         'script'=>$id,
         'm_c_s'=>$call_stack
     );
+    if (session_id()) {
+        $data[session_name()]=session_id();
+    }
     $url=BASE_URL.'/objects/?'.http_build_query($data);
     if (is_array($params)) {
         foreach($params as $k=>$v) {
