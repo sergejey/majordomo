@@ -1203,6 +1203,11 @@ $dictionary = array(
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Управление другим устройством по событию',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Задержка выполнения (секунд)',
 
+    'DEVICES_LINK_SWITCH_TIMER' => 'Включить на время',
+    'DEVICES_LINK_SWITCH_TIMER_DESCRIPTION' => 'Включить другое устройство на некоторое время по событию',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY' => 'Включить на какое время (секунд)',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME' => 'Только в тёмное время',
+
     'DEVICES_LINK_SET_COLOR' => 'Установить цвет',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Цвет',

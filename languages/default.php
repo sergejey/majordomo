@@ -1207,6 +1207,11 @@ $dictionary = array(
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Control another devices when action triggered',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Delay (seconds)',
 
+    'DEVICES_LINK_SWITCH_TIMER' => 'Turn on for some time',
+    'DEVICES_LINK_SWITCH_TIMER_DESCRIPTION' => 'Turn on another devices for some time when action triggered',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY' => 'For how long (seconds)',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME' => 'Only when it\'s dark',
+
     'DEVICES_LINK_SET_COLOR' => 'Set Color',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Change color when action triggered',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Color',

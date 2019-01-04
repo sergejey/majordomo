@@ -128,6 +128,16 @@ for ($i = 0; $i < $total; $i++) {
         if ((int)$settings['action_delay'] > 0) {
             $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
         }
+    } elseif ($link_type=='switch_timer') {
+        $action_string='';
+        if ($settings['darktime']) {
+            $action_string.='if (gg("DarknessMode.active")) {';
+        }
+        $action_string.= 'callMethod("' . $object . '.turnOn' . '");';
+        $action_string.= 'setTimeout(\'' . $timer_name . '\',\'' . 'callMethod("' . $object . '.turnOff' . '");' . '\',' . (int)$settings['action_delay'] . ');';
+        if ($settings['darktime']) {
+            $action_string.='}';
+        }
     } elseif ($link_type=='set_color') {
             $action_string='callMethod("'.$object.'.setColor'.'",array("color"=>"'.$settings['action_color'].'"));';
             if ((int)$settings['action_delay']>0) {
