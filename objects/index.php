@@ -54,7 +54,9 @@ startMeasure('TOTAL'); // start calculation of execution time
 include_once(DIR_MODULES . "application.class.php");
 include_once("./load_settings.php");
 
-$session = new session("prj");
+if (gr('prj')) {
+   $session = new session("prj");
+}
 
 if ($argv[1] != '') {
    $commandLine = 1;
