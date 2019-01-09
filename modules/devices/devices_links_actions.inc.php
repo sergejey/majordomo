@@ -129,6 +129,7 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
         }
     } elseif ($link_type=='switch_timer') {
+        $timer_name=$object.'_switch_timer';
         $action_string='';
         if ($settings['darktime']) {
             $action_string.='if (gg("DarknessMode.active")) {';
