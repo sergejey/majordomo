@@ -136,7 +136,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 {
 
     verbose_log("SAY (level: $level; member: $member; source: $source): ".$ph);
-    DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
+    //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
    $rec = array();
    $rec['MESSAGE']   = $ph;
@@ -756,24 +756,8 @@ function callScript($id, $params = '')
 }
 
 function getURLBackground($url, $cache = 0, $username = '', $password = '') {
+    //DebMes("URL: ".$url,'debug1');
     getURL($url, $cache, $username, $password, true);
-    /*
-    if (strlen($url)>=255) {
-        getURL($url, $cache, $username, $password, true);
-    } else {
-        $data = array();
-        if ($cache) {
-            $data['cache']=$cache;
-        }
-        if ($username) {
-            $data['username']=$username;
-        }
-        if ($password) {
-            $data['password']=$password;
-        }
-        addToOperationsQueue('getURLBackground',$url,json_encode($data),false,5*60);
-    }
-    */
 }
 
 /**

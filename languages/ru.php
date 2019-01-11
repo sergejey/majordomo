@@ -1239,8 +1239,8 @@ $dictionary = array(
     'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете|Хорошо',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
-    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
-    'DEVICES_ROOMS_ACTIVITY' => 'Активность:',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть',
+    'DEVICES_ROOMS_ACTIVITY' => 'Активность',
 
     'DEVICES_PASSED_NOW' => 'только что',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
