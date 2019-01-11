@@ -8,3 +8,10 @@ $total = count($objects);
 for ($i = 0; $i < $total; $i++) {
     callMethodSafe($objects[$i].'.turnOn');
 }
+
+$objects=getObjectsByProperty('groupEco','=',1);
+$total = count($objects);
+for ($i = 0; $i < $total; $i++) {
+    ClearTimeOut($objects[$i].'_checkAutoOff');
+    sleep(1);
+}

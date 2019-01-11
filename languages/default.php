@@ -1176,6 +1176,7 @@ $dictionary = array(
     'DEVICES_SET_COLOR' => 'Set Color',
 
     'DEVICES_GROUP_ECO' => 'Turn it off in ECO mode',
+    'DEVICES_TIMEOUT_AUTO_OFF' => 'Timeout automatic turn off in ECO mode(min)',
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',

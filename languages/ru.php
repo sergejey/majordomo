@@ -1172,6 +1172,7 @@ $dictionary = array(
     'DEVICES_SET_COLOR' => 'Установить цвет',
 
     'DEVICES_GROUP_ECO' => 'Выключать в режиме экономии',
+    'DEVICES_TIMEOUT_AUTO_OFF' => 'Задержка автовыключения в режиме экономии(мин)',
     'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',

@@ -50,6 +50,7 @@ $this->device_types=array(
         'DESCRIPTION'=>'Controllable device',
         'PROPERTIES'=>array(
             'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEco'),
+            'autoOffEcoValue'=>array('DESCRIPTION'=>LANG_DEVICES_TIMEOUT_AUTO_OFF,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdAutoOffEcoValue'),
             'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEcoOn'),
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunrise'),
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
@@ -64,8 +65,10 @@ $this->device_types=array(
             'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
         ),
         'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
             'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF,'_CONFIG_SHOW'=>1),
+            'checkAutoOff'=>array('DESCRIPTION'=>'Auto off'),
             'switch'=>array('DESCRIPTION'=>'Switch'),
         )
     ),
