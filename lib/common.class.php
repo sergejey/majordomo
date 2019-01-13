@@ -770,6 +770,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '') {
  */
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
+   // DebMes($url,'urls');
    $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part)>200) {
         $filename_part=substr($filename_part,0,200).md5($filename_part);
@@ -797,7 +798,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
           if ($background) {
               curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 50);
           }
 
          if ($username != '' || $password != '')

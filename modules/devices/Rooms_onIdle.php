@@ -1,3 +1,3 @@
 <?php
 
-$this->callMethodSafe("updateActivityStatus");
+$this->callMethod("updateActivityStatus");

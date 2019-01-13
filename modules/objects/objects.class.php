@@ -871,7 +871,6 @@ function usual(&$out) {
    SQLInsert('phistory_queue', $q_rec);
   }
 
-
   if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
    global $property_linked_history;
    if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
@@ -881,8 +880,8 @@ function usual(&$out) {
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
     $params['SOURCE']=(string)$source;
-    //$this->callMethod($prop['ONCHANGE'], $params);
-    $this->callMethodSafe($prop['ONCHANGE'], $params);
+    $this->callMethod($prop['ONCHANGE'], $params); //
+    //$this->callMethodSafe($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
   }

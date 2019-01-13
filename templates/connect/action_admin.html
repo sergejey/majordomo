@@ -13,7 +13,7 @@
 
 [#if TAB==""#]
 
-<!-- table zwave_devices search -->
+[#if CONNECT_SYNC="1"#]
 <div class="row">
  <div class="col-md-6">
   [#module name="xray" action="service" cycle="connect"#]
@@ -22,6 +22,7 @@
   &nbsp;
  </div>
 </div>
+[#endif CONNECT_SYNC#]
 &nbsp;
 <div class="row">
  <div class="col-md-6">

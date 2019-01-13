@@ -27,16 +27,16 @@ if ($currentValue>=$min_value) {
     if (!$status) {
         clearTimeout($timerOff);
         if (!timeOutExists($timerOn)) {
-            setTimeout($timerOn,'setGlobal("'.$ot.'.status",1);callMethodSafe("'.$ot.'.loadStatusChanged",array("status"=>1));',$onTimeout);
+            setTimeout($timerOn,'setGlobal("'.$ot.'.status",1);callMethod("'.$ot.'.loadStatusChanged",array("status"=>1));',$onTimeout);
         }
     }
 } elseif ($currentValue<$min_value) {
     if ($status) {
         clearTimeOut($timerOn);
         if (!timeOutExists($timerOff)) {
-            setTimeout($timerOff, 'setGlobal("' . $ot . '.status",0);callMethodSafe("' . $ot . '.loadStatusChanged",array("status"=>0));', $offTimeout);
+            setTimeout($timerOff, 'setGlobal("' . $ot . '.status",0);callMethod("' . $ot . '.loadStatusChanged",array("status"=>0));', $offTimeout);
         }
     }
 }
 
-$this->callMethodSafe('statusUpdated');
+$this->callMethod('statusUpdated');

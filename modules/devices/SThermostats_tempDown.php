@@ -16,4 +16,4 @@ $targetTemperature = $this->getProperty($targetTitle);
 $targetTemperature-=$threshold;
 $this->setProperty($targetTitle,$targetTemperature);
 
-$this->callMethodSafe('valueUpdated');
+$this->callMethod('valueUpdated');
