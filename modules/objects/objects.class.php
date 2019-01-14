@@ -873,14 +873,14 @@ function usual(&$out) {
 
   if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
    global $property_linked_history;
-   if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
-    $property_linked_history[$property][$prop['ONCHANGE']]=1;
+   if (!$property_linked_history[$this->object_title.'.'.$property][$prop['ONCHANGE']]) {
+    $property_linked_history[$this->object_title.'.'.$property][$prop['ONCHANGE']]=1;
     $params=array();
     $params['PROPERTY']=$property;
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
     $params['SOURCE']=(string)$source;
-    $this->callMethod($prop['ONCHANGE'], $params); //
+    $this->callMethod($prop['ONCHANGE'], $params);
     //$this->callMethodSafe($prop['ONCHANGE'], $params);
     unset($property_linked_history[$property][$prop['ONCHANGE']]);
    }
