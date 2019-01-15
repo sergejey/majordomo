@@ -882,7 +882,7 @@ function usual(&$out) {
     $params['SOURCE']=(string)$source;
     $this->callMethod($prop['ONCHANGE'], $params);
     //$this->callMethodSafe($prop['ONCHANGE'], $params);
-    unset($property_linked_history[$property][$prop['ONCHANGE']]);
+    unset($property_linked_history[$this->object_title.'.'.$property][$prop['ONCHANGE']]);
    }
   }
 
