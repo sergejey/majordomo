@@ -175,9 +175,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    setGlobal('lastSayTime', time());
    setGlobal('lastSayMessage', $ph);
 
-   $details=array('level' => $level, 'message' => $ph, 'member_id' => $member_id);
-   processSubscriptionsSafe('SAY', $details); //, 'ignoreVoice'=>$ignoreVoice
-
+   processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
 
    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '')
    {
