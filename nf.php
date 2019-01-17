@@ -42,7 +42,7 @@ $requests = array(
    "/^\/panel\/command\/(\d+)\.html/is" => '?(panel:{action=commands})&md=commands&view_mode=edit_commands&id=\1',
    "/^\/panel\/xray\.html/is" => '?(panel:{action=xray})&md=xray',
    "/^\/panel\/linkedobject.html/is"    => '?(panel:{action=linkedobject})',
-   "/^\/panel\/popup\/(.+?).html/is"   => '?(panel:{action=\1})&print=1',
+   "/^\/panel\/popup\/(.+?).html/is"   => '?(panel:{action=\1,print=1})&print=1',
    "/^\/panel\/class\/(\d+)\.html/is"   => '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1',
    "/^\/panel\/class\/(\d+)\/properties\.html/is"=> '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1&tab=properties',
    "/^\/panel\/class\/(\d+)\/methods\.html/is"=> '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1&tab=methods',

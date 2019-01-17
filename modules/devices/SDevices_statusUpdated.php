@@ -25,8 +25,14 @@ if ($this->class_title == 'SMotions' && $params['NEW_VALUE'] && !timeOutExists($
 }
 
 if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
-    ClearTimeOut("nobodyHome");
-    SetTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", 1 * 60 * 60);
+    $nobodyhome_timeout=1*60*60;
+    if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
+        $nobodyhome_timeout=SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
+    }
+    if ($nobodyhome_timeout) {
+        ClearTimeOut("nobodyHome");
+        SetTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
+    }
     if ($linked_room) {
         callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
     } else {

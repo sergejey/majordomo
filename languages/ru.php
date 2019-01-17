@@ -980,6 +980,9 @@ $dictionary = array(
 
     'SETTINGS_SECTION_' => 'Общие',
     'SETTINGS_SECTION_HOOK' => 'Обработчики',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Поведение',
+    'SETTINGS_SECTION_BACKUP' => 'Резервное копирование',
+    'SETTINGS_SECTION_SCENES' => 'Сцены',
 
     'DEVICE_ID' => 'ID устройства',
     'REQUEST_TYPE' => 'Тип запроса',

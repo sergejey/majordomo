@@ -605,10 +605,10 @@ checkCategory('[#CATEGORY_ID#]');
     </div>
 [#endif PRINT#]
 <div class="col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#]" id="main-content">
+    [#if PRINT!="1"#]
     <div>
 
             <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"></a>
-
             <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>
                 [#if ACTION!=""#]
                 / <#ACTION#>
@@ -640,6 +640,7 @@ checkCategory('[#CATEGORY_ID#]');
 
     </div>
     &nbsp;
+    [#endif PRINT#]
 
             <!--right_main-->
 

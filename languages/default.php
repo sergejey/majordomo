@@ -984,6 +984,9 @@ $dictionary = array(
 
     'SETTINGS_SECTION_' => 'General',
     'SETTINGS_SECTION_HOOK' => 'Hooks',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Behavior',
+    'SETTINGS_SECTION_BACKUP' => 'Backup',
+    'SETTINGS_SECTION_SCENES' => 'Scenes',
 
     'DEVICE_ID' => 'Device ID',
     'REQUEST_TYPE' => 'Request type',
