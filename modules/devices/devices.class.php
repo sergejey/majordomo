@@ -458,10 +458,10 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60) {
                     continue;
                 }
-                callMethodSafe($rec['LINKED_OBJECT'] . '.' . $rec['LINKED_METHOD']);
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
+                callMethodSafe($rec['LINKED_OBJECT'] . '.' . $rec['LINKED_METHOD']);
             }
         }
     }
@@ -604,10 +604,16 @@ class devices extends module
         if ($this->ajax) {
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
-            global $op;
-            global $id;
+            $op=gr('op');
             $res = array();
+            if ($op == 'clicked') {
+                $object=gr('object');
+                if ($object !='') {
+                    SQLExec("UPDATE devices SET CLICKED=NOW() WHERE LINKED_OBJECT='".DBSafe($object)."'");
+                }
+            }
             if ($op == 'get_device') {
+                $id=gr('id');
                 $res = $this->processDevice($id);
             }
             if ($op == 'loadAllDevicesHTML') {
@@ -696,6 +702,7 @@ class devices extends module
             //$qry=" devices.FAVORITE=1";
             $qry = "1";
             $devices = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
+            $recent_devices=SQLSelect("SELECT devices.* FROM devices WHERE !IsNull(CLICKED) ORDER BY CLICKED DESC LIMIT 10");
         }
 
         if ($devices[0]['ID']) {
@@ -747,9 +754,24 @@ class devices extends module
                 }
             }
 
+
+
             foreach ($warning_devices as $device) {
                 $favorite_devices[] = $device;
             }
+
+            if ($recent_devices[0]['ID']) {
+                $recent_devices[0]['NEW_SECTION']=1;
+                $recent_devices[0]['SECTION_TITLE']=LANG_RECENTLY_USED;
+                foreach($recent_devices as &$device) {
+                    if ($device['LINKED_OBJECT']) {
+                        $processed = $this->processDevice($device['ID']);
+                        $device['HTML'] = $processed['HTML'];
+                    }
+                    $favorite_devices[] = $device;
+                }
+            }
+
             foreach ($problem_devices as $device) {
                 $favorite_devices[] = $device;
             }
@@ -1305,6 +1327,7 @@ class devices extends module
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  
  devices: FAVORITE int(3) unsigned NOT NULL DEFAULT 0 
+ devices: CLICKED datetime DEFAULT NULL
 
  devices: SYSTEM varchar(255) NOT NULL DEFAULT ''
  devices: SUBTYPE varchar(100) NOT NULL DEFAULT ''

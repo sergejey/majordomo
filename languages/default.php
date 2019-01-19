@@ -1327,6 +1327,8 @@ $dictionary = array(
     'MAINCYCLEDOWN' => 'Main cycle is down',
     'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
 
+    'RECENTLY_USED' => 'Recent',
+
     'TEST' => 'test'
 
 
