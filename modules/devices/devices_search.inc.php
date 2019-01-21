@@ -94,7 +94,7 @@ usort($types, function($a,$b) {
 });
 $out['TYPES']=$types;
 
-$locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+$locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
 $total = count($locations);
 for ($i = 0; $i < $total; $i++) {
   $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices WHERE LOCATION_ID='".$locations[$i]['ID']."'");

@@ -239,6 +239,29 @@ if ($params['PROPERTY']=='from_set' && $device['ID']) {
             }
         }
     }
+    if ($device['TYPE']=='thermostat') {
+        if ($data['characteristic']=='TargetTemperature') {
+            sg($device['LINKED_OBJECT'].'.currentTargetValue', $data['value']);
+            if (gg($device['LINKED_OBJECT'].'.status')) {
+                sg($device['LINKED_OBJECT'].'.normalTargetValue', $data['value']);
+            } else {
+                sg($device['LINKED_OBJECT'].'.ecoTargetValue', $data['value']);
+            }
+        }
+        if ($data['characteristic']=='TargetHeatingCoolingState') {
+            if ($data['value']==0) { // off
+                sg($device['LINKED_OBJECT'].'.disabled', 1);
+            } elseif ($data['value']==1) { // heat
+                sg($device['LINKED_OBJECT'].'.disabled', 0);
+                sg($device['LINKED_OBJECT'].'.status', 1);
+            } elseif ($data['value']==2) { // cool
+                sg($device['LINKED_OBJECT'].'.disabled', 0);
+                sg($device['LINKED_OBJECT'].'.status', 0);
+            } elseif ($data['value']==3) { // auto
+                sg($device['LINKED_OBJECT'].'.disabled', 0);
+            }
+        }
+    }
 }
 
 /*

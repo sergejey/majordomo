@@ -417,7 +417,7 @@ usort($types,function ($a,$b) {
 });
 $out['TYPES']=$types;
 
-$out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+$out['LOCATIONS']=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
 
 if ($rec['LOCATION_ID']) {
     $location_rec=SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=".$rec['LOCATION_ID']);

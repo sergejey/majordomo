@@ -95,7 +95,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'rgb':
-         DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
+         //DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
          $payload['service']='Lightbulb';
          sg('HomeBridge.to_add',json_encode($payload));
          
@@ -118,6 +118,44 @@ for ($i = 0; $i < $total; $i++) {
          $payload['characteristic'] = 'Brightness';
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.brightness');
          sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'thermostat':
+         $payload['service']='Thermostat';
+         sg('HomeBridge.to_add',json_encode($payload));
+
+         $payload['characteristic'] = 'CurrentTemperature';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'TargetTemperature';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.currentTargetValue');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         /*
+         $payload['characteristic'] = 'TemperatureDisplayUnits';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.currentTargetValue');
+         sg('HomeBridge.to_set',json_encode($payload));
+         */
+         $payload['characteristic'] = 'CurrentHeatingCoolingState'; //off = 0, heat = 1, and cool = 2
+         //$payload['value']=3;
+         if (!gg($devices[$i]['LINKED_OBJECT'].'.disabled')) {
+            if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
+               $payload['value']=1;
+            } else {
+               $payload['value']=2;
+            }
+         } else {
+            $payload['value']=0;
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
+         //TargetHeatingCoolingState
+
+
+         //CoolingThresholdTemperature
+         //HeatingThresholdTemperature
+         //Name
+
+
          break;
       /*
       case 'sensor_battery':
