@@ -74,8 +74,13 @@ function processSubscriptionsSafe($event_name,$details='') {
        'processSubscriptions'=>1,
        'event'=>$event_name,
        'params'=>json_encode($details),
+
    );
+   if (session_id()) {
+      $data[session_name()]=session_id();
+   }
    $url=BASE_URL.'/objects/?'.http_build_query($data);
+   //DebMes("URL: $url",'process_subscriptions');
    if (is_array($params)) {
       foreach($params as $k=>$v) {
          $url.='&'.$k.'='.urlencode($v);
@@ -94,7 +99,6 @@ function processSubscriptionsSafe($event_name,$details='') {
  */
 function processSubscriptions($event_name, $details = '')
 {
-
    //DebMes("New event: ".$event_name,'process_subscription');
    postToWebSocketQueue($event_name, $details, 'PostEvent');
    //DebMes("Post websocket event done: ".$event_name,'process_subscription');
@@ -106,7 +110,7 @@ function processSubscriptions($event_name, $details = '')
    }
 
    $data = json_decode(constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), true);
-   DebMes("Subscription data for ".'SETTINGS_HOOK_EVENT_' . strtoupper($event_name).": ".serialize($data),'process_subscription');
+   //DebMes("Subscription data for ".'SETTINGS_HOOK_EVENT_' . strtoupper($event_name).": ".serialize($data),'process_subscription');
 
    if (!is_array($data)) {
       DebMes("Incorrect data for ".'SETTINGS_HOOK_EVENT_' . strtoupper($event_name).':'.constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)),'process_subscription');
@@ -126,7 +130,7 @@ function processSubscriptions($event_name, $details = '')
          $module_name    = $data2[$i]['module'];
          $filter_details = $data2[$i]['filter'];
 
-         DebMes("Post event ".$event_name." to module ".$module_name. " (details: ".json_encode($details).")",'process_subscription');
+         //DebMes("Post event ".$event_name." to module ".$module_name. " (details: ".json_encode($details).")",'process_subscription');
 
          $modulePath     = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
 
@@ -143,7 +147,7 @@ function processSubscriptions($event_name, $details = '')
                } catch (Exception $e) {
                   DebMes('Error in processing "%s": ' . $e->getMessage(),'process_subscription');
                }
-               DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
+               //DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
             } else {
              DebMes("$module_name.processSubscription error (method not found)",'process_subscription');
             }

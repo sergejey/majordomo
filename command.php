@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+        header("Access-Control-Allow-Headers:{$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
     exit(0);
 }
 
@@ -31,17 +31,20 @@ $session = new session("prj");
 
 include_once("./load_settings.php");
 
+//DebMes("Command received: ".$qry,'debug1');
+
 Define('DEVIDER', 'и');
 
+/*
 $sqlQuery = "SELECT MESSAGE
                FROM shouts
               WHERE MEMBER_ID = 0
               ORDER BY ID DESC
               LIMIT 1";
-
 $lastest_word = current(SQLSelectOne($sqlQuery));
+*/
 
-if ($qry != '' && $qry != $lastest_word) {
+if ($qry != '') { // && $qry != $lastest_word
 
     $terminal = gr('terminal');
     if ($terminal) {
@@ -72,13 +75,34 @@ if ($qry != '' && $qry != $lastest_word) {
     $user_id = 0;
     $username = gr('username');
     if ($username) {
-        $user = SQLSelectOne("SELECT ID FROM users WHERE USERNAME = '" . DBSafe(trim($username)) . "'");
+        $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
+        if (!$user['PASSWORD']) {
+            $session->data['SITE_USERNAME']=$user['USERNAME'];
+            $session->data['SITE_USER_ID']=$user['ID'];
+        } else {
+            if (!isset($_SERVER['PHP_AUTH_USER'])) {
+                header('WWW-Authenticate: Basic realm="MajorDoMo"');
+                header('HTTP/1.0 401 Unauthorized');
+                echo 'Password required!';
+                exit;
+            } else {
+                if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && $_SERVER['PHP_AUTH_PW'] == $user['PASSWORD']) {
+                    $session->data['SITE_USERNAME'] = $user['USERNAME'];
+                    $session->data['SITE_USER_ID'] = $user['ID'];
+                } else {
+                    header('WWW-Authenticate: Basic realm="MajorDoMo"');
+                    header('HTTP/1.0 401 Unauthorized');
+                    echo 'Incorrect username/password!';
+                    exit;
+                }
+            }
+        }
         $user_id = (int)$user['ID'];
     }
 
     if (!$user_id) {
-        if ($session->data['logged_user']) {
-            $user_id = $session->data['logged_user'];
+        if ($session->data['SITE_USER_ID']) {
+            $user_id = $session->data['SITE_USER_ID'];
         } else {
             $user = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
             $user_id = $user['ID'];
@@ -89,13 +113,10 @@ if ($qry != '' && $qry != $lastest_word) {
         $user_id = $params['user_id'];
     }
 
-    /*
-    include_once(DIR_MODULES . 'patterns/patterns.class.php');
-    $pt = new patterns();
-    */
-
     $qrys = explode(' ' . DEVIDER . ' ', $qry);
     $total = count($qrys);
+
+    $session->save();
 
     for ($i = 0; $i < $total; $i++) {
         $room_id = 0;
@@ -112,6 +133,8 @@ if ($qry != '' && $qry != $lastest_word) {
 
         if ($source) {
             $say_source = $source;
+        } else {
+            $say_source = 'command.php';
         }
 
         say(htmlspecialchars($qrys[$i]), 0, $user_id, $say_source);

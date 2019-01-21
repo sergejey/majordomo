@@ -70,7 +70,7 @@ if ($group_name=='manage_groups') {
      $res[$i]['HTML']=$processed['HTML'];
     }
     $res[$i]['TYPE_TITLE']=$this->device_types[$res[$i]['TYPE']]['TITLE'];
-       $linked=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE DEVICE1_ID=".$res[$i]['ID']);
+       $linked=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE (DEVICE1_ID=".$res[$i]['ID']." OR DEVICE2_ID=".$res[$i]['ID'].")");
        if ($linked['TOTAL']) {
            $res[$i]['LINKED']=$linked['TOTAL'];
        }
@@ -94,7 +94,7 @@ usort($types, function($a,$b) {
 });
 $out['TYPES']=$types;
 
-$locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE");
+$locations=SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
 $total = count($locations);
 for ($i = 0; $i < $total; $i++) {
   $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices WHERE LOCATION_ID='".$locations[$i]['ID']."'");

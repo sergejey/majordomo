@@ -179,7 +179,7 @@ for ($i = 0; $i < $total; $i++) {
 }
 
 $run_days = array();
-if ($rec['RUN_DAYS']) {
+if ($rec['RUN_DAYS']!=='') {
     $run_days = explode(',', $rec['RUN_DAYS']);
 }
 

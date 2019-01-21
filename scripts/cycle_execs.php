@@ -53,11 +53,11 @@ while (1)
       SQLExec($sqlQuery);
 
       echo date("H:i:s") . " Executing (exclusive): " . $command . "\n";
-      DebMes("Executing (exclusive): " . $command,'execs');
+      //DebMes("Executing (exclusive): " . $command,'execs');
 
       exec($command);
       if ($safe_execs[$i]['ON_COMPLETE']) {
-         DebMes("On complete code: ".$safe_execs[$i]['ON_COMPLETE'],'execs');
+         //DebMes("On complete code: ".$safe_execs[$i]['ON_COMPLETE'],'execs');
          eval($safe_execs[$i]['ON_COMPLETE']);
       }
    }

@@ -980,6 +980,9 @@ $dictionary = array(
 
     'SETTINGS_SECTION_' => 'Общие',
     'SETTINGS_SECTION_HOOK' => 'Обработчики',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Поведение',
+    'SETTINGS_SECTION_BACKUP' => 'Резервное копирование',
+    'SETTINGS_SECTION_SCENES' => 'Сцены',
 
     'DEVICE_ID' => 'ID устройства',
     'REQUEST_TYPE' => 'Тип запроса',
@@ -1203,6 +1206,11 @@ $dictionary = array(
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Управление другим устройством по событию',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Задержка выполнения (секунд)',
 
+    'DEVICES_LINK_SWITCH_TIMER' => 'Включить на время',
+    'DEVICES_LINK_SWITCH_TIMER_DESCRIPTION' => 'Включить другое устройство на некоторое время по событию',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY' => 'Включить на какое время (секунд)',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME' => 'Только в тёмное время',
+
     'DEVICES_LINK_SET_COLOR' => 'Установить цвет',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Цвет',
@@ -1231,11 +1239,11 @@ $dictionary = array(
     'DEVICES_STATUS_OPEN' => 'открыт',
     'DEVICES_STATUS_CLOSED' => 'закрыт',
     'DEVICES_STATUS_ALARM' => 'состояние тревоги',
-    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете',
+    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете|Хорошо',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
-    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
-    'DEVICES_ROOMS_ACTIVITY' => 'Активность:',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть',
+    'DEVICES_ROOMS_ACTIVITY' => 'Активность',
 
     'DEVICES_PASSED_NOW' => 'только что',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
@@ -1320,7 +1328,7 @@ $dictionary = array(
     'MAINCYCLEDOWN' => 'Остановлен главный цикл системы', //
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
 
-
+    'RECENTLY_USED' => 'Недавнее',
     /* end module names */
 
 

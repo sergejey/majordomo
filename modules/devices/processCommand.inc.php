@@ -1,6 +1,6 @@
 <?php
 
-if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
 /*
  * array('level' => $level, 'message' => $ph, 'member_id' => $member_id)
@@ -11,40 +11,41 @@ if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
 
 $command = $details['message'];
 
-$run_code='';
-$opposite_code='';
-$add_phrase='';
-$period_delay=0;
-$period_run_for=0;
+$run_code = '';
+$opposite_code = '';
+$add_phrase = '';
+$period_delay = 0;
+$period_run_for = 0;
 
-if (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+?) ('.LANG_PATTERN_SECOND.'|'.LANG_PATTERN_MINUTE.'|'.LANG_PATTERN_HOUR.')/uis',textToNumbers($command),$m)) {
-    $period_number=$m[1];
-    $add_phrase=' '.$m[0];
-    if (preg_match('/'.LANG_PATTERN_SECOND.'/uis',$m[2])) {
-        $period_delay=$period_number;
-    } elseif (preg_match('/'.LANG_PATTERN_MINUTE.'/uis',$m[2])) {
-        $period_delay=$period_number*60;
-    } elseif (preg_match('/'.LANG_PATTERN_HOUR.'/uis',$m[2])) {
-        $period_delay=$period_number*60*60;
+if (preg_match('/' . LANG_PATTERN_DO_AFTER . ' (\d+?) (' . LANG_PATTERN_SECOND . '|' . LANG_PATTERN_MINUTE . '|' . LANG_PATTERN_HOUR . ')/uis', textToNumbers($command), $m)) {
+    $period_number = $m[1];
+    $add_phrase = ' ' . $m[0];
+    if (preg_match('/' . LANG_PATTERN_SECOND . '/uis', $m[2])) {
+        $period_delay = $period_number;
+    } elseif (preg_match('/' . LANG_PATTERN_MINUTE . '/uis', $m[2])) {
+        $period_delay = $period_number * 60;
+    } elseif (preg_match('/' . LANG_PATTERN_HOUR . '/uis', $m[2])) {
+        $period_delay = $period_number * 60 * 60;
     }
-    $command=trim(str_replace($m[0],'',textToNumbers($command)));
-} elseif (preg_match('/'.LANG_PATTERN_DO_FOR.' (\d+?) ('.LANG_PATTERN_SECOND.'|'.LANG_PATTERN_MINUTE.'|'.LANG_PATTERN_HOUR.')/uis',textToNumbers($command),$m)) {
-    $period_number=$m[1];
-    $add_phrase=' '.$m[0];
-    if (preg_match('/'.LANG_PATTERN_SECOND.'/uis',$m[2])) {
-        $period_run_for=$period_number;
-    } elseif (preg_match('/'.LANG_PATTERN_MINUTE.'/uis',$m[2])) {
-        $period_run_for=$period_number*60;
-    } elseif (preg_match('/'.LANG_PATTERN_HOUR.'/uis',$m[2])) {
-        $period_run_for=$period_number*60*60;
+    $command = trim(str_replace($m[0], '', textToNumbers($command)));
+} elseif (preg_match('/' . LANG_PATTERN_DO_FOR . ' (\d+?) (' . LANG_PATTERN_SECOND . '|' . LANG_PATTERN_MINUTE . '|' . LANG_PATTERN_HOUR . ')/uis', textToNumbers($command), $m)) {
+    $period_number = $m[1];
+    $add_phrase = ' ' . $m[0];
+    if (preg_match('/' . LANG_PATTERN_SECOND . '/uis', $m[2])) {
+        $period_run_for = $period_number;
+    } elseif (preg_match('/' . LANG_PATTERN_MINUTE . '/uis', $m[2])) {
+        $period_run_for = $period_number * 60;
+    } elseif (preg_match('/' . LANG_PATTERN_HOUR . '/uis', $m[2])) {
+        $period_run_for = $period_number * 60 * 60;
     }
-    $command=trim(str_replace($m[0],'',textToNumbers($command)));
+    $command = trim(str_replace($m[0], '', textToNumbers($command)));
 }
 
 $processed = 0;
 $reply_confirm = 0;
+$reply_say = '';
 
-$phpmorphy_loaded=0;
+$phpmorphy_loaded = 0;
 
 if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
     require_once(ROOT . "lib/phpmorphy/common.php");
@@ -69,18 +70,18 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         die('Error occured while creating phpMorphy instance: ' . PHP_EOL . $e);
     }
     $words = explode(' ', $command);
-    $words_filtered=array();
-    $filtered_count=0;
+    $words_filtered = array();
+    $filtered_count = 0;
     $base_forms = array();
     $base_forms_filtered = array();
     $totals = count($words);
     for ($is = 0; $is < $totals; $is++) {
-        $filtered=0;
-        $upper=mb_strtoupper($words[$is], 'UTF-8');
-        $len=mb_strlen($words[$is],'UTF-8');
-        if ($len>=3) {
-            $words_filtered[]=$words[$is];
-            $filtered=1;
+        $filtered = 0;
+        $upper = mb_strtoupper($words[$is], 'UTF-8');
+        $len = mb_strlen($words[$is], 'UTF-8');
+        if ($len >= 3) {
+            $words_filtered[] = $words[$is];
+            $filtered = 1;
             $filtered_count++;
         }
         if (preg_match('/^(\d+)$/', $words[$is])) {
@@ -93,15 +94,15 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
             $base_forms[$is] = array($words[$is]);
         }
         if ($filtered) {
-            $base_forms_filtered[$filtered_count-1]=$base_forms[$is];
+            $base_forms_filtered[$filtered_count - 1] = $base_forms[$is];
         }
     }
     $combos = $this->generate_combinations($base_forms);
 
-    if ($filtered_count<$totals) {
+    if ($filtered_count < $totals) {
         $add_combos = $this->generate_combinations($base_forms_filtered);
-        foreach($add_combos as $cmb) {
-            $combos[]=$cmb;
+        foreach ($add_combos as $cmb) {
+            $combos[] = $cmb;
         }
     }
 
@@ -123,126 +124,125 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         $lines[] = implode(' ', $combos[$is]);
     }
     //dprint($lines);
-    $phpmorphy_loaded=1;
+    $phpmorphy_loaded = 1;
 }
 
 
 $devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices");
-foreach($devices as $device) {
-    if (trim($device['ALT_TITLES'])!='') {
-        $nicknames=explode(',',trim($device['ALT_TITLES']));
-        foreach($nicknames as $nickname) {
-            $add_rec=$device;
-            $add_rec['TITLE']=$nickname;
+foreach ($devices as $device) {
+    if (trim($device['ALT_TITLES']) != '') {
+        $nicknames = explode(',', trim($device['ALT_TITLES']));
+        foreach ($nicknames as $nickname) {
+            $add_rec = $device;
+            $add_rec['TITLE'] = $nickname;
             $devices[] = $add_rec;
         }
     }
 }
 $groups = SQLSelect("SELECT * FROM devices_groups");
 $total = count($groups);
-for($i=0;$i<$total;$i++) {
-    $add_rec=$groups[$i];
-    $add_rec['TYPE']='group';
+for ($i = 0; $i < $total; $i++) {
+    $add_rec = $groups[$i];
+    $add_rec['TYPE'] = 'group';
     $devices[] = $add_rec;
 }
 
-$rooms=SQLSelect("SELECT locations.ID, locations.TITLE, COUNT(*) as TOTAL FROM locations, devices WHERE locations.ID=devices.LOCATION_ID GROUP BY locations.ID");
-foreach($rooms as $room) {
+$rooms = SQLSelect("SELECT locations.ID, locations.TITLE, COUNT(*) AS TOTAL FROM locations, devices WHERE locations.ID=devices.LOCATION_ID GROUP BY locations.ID");
+foreach ($rooms as $room) {
     //lights
     //if ($room['TITLE']=='Кабинет') {
-        $device_types=array();
-        $room_devices=SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=".$room['ID']." AND TYPE='relay'");
-        foreach($room_devices as $device) {
-            $loadType=gg($device['LINKED_OBJECT'].'.loadType');
-            $device_types[$loadType][]=$device;
-        }
-        if (isset($device_types['light'])) {
-            $add_rec=array();
-            $add_rec['TYPE']='group';
-            $add_rec['TITLE']=LANG_DEVICES_LOADTYPE_LIGHT.' '.$room['TITLE'];
-            $add_rec['DEVICES']=$device_types['light'];
-            $add_rec['APPLY_TYPES']='relay';
-            $devices[]=$add_rec;
+    $device_types = array();
+    $room_devices = SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=" . $room['ID'] . " AND TYPE='relay'");
+    foreach ($room_devices as $device) {
+        $loadType = gg($device['LINKED_OBJECT'] . '.loadType');
+        $device_types[$loadType][] = $device;
+    }
+    if (isset($device_types['light'])) {
+        $add_rec = array();
+        $add_rec['TYPE'] = 'group';
+        $add_rec['TITLE'] = LANG_DEVICES_LOADTYPE_LIGHT . ' ' . $room['TITLE'];
+        $add_rec['DEVICES'] = $device_types['light'];
+        $add_rec['APPLY_TYPES'] = 'relay';
+        $devices[] = $add_rec;
 
-            $add_rec=array();
-            $add_rec['TYPE']='group';
-            $add_rec['TITLE']=LANG_DEVICES_LOADTYPE_LIGHT_ALT.' '.$room['TITLE'];
-            $add_rec['DEVICES']=$device_types['light'];
-            $add_rec['APPLY_TYPES']='relay';
-            $devices[]=$add_rec;
-        }
+        $add_rec = array();
+        $add_rec['TYPE'] = 'group';
+        $add_rec['TITLE'] = LANG_DEVICES_LOADTYPE_LIGHT_ALT . ' ' . $room['TITLE'];
+        $add_rec['DEVICES'] = $device_types['light'];
+        $add_rec['APPLY_TYPES'] = 'relay';
+        $devices[] = $add_rec;
+    }
     //}
 
 
 }
 
 if ($phpmorphy_loaded) {
-        $total=count($devices);
-        $add_devices=array();
-        for($i=0;$i<$total;$i++) {
-            $device_title = $devices[$i]['TITLE'];
-            $words = explode(' ', mb_strtoupper($device_title, 'UTF-8'));
-            $base_forms = array();
-            $totals = count($words);
-            for ($is = 0; $is < $totals; $is++) {
-                if (preg_match('/^(\d+)$/', $words[$is])) {
-                    $base_forms[$is] = array($words[$is]);
-                } elseif (!preg_match('/[\(\)\+\.]/', $words[$is])) {
-                    $Word = mb_strtoupper($words[$is], 'UTF-8');
-                    $base_form = $morphy->getBaseForm($Word);
-                    if (is_array($base_form)) {
-                        $base_forms[$is]=$base_form;
-                    } else {
-                        $base_forms[$is]=array();
-                    }
-                    if (!in_array($words[$is],$base_forms[$is])) {
-                        $base_forms[$is][] = $words[$is];
-                    }
+    $total = count($devices);
+    $add_devices = array();
+    for ($i = 0; $i < $total; $i++) {
+        $device_title = $devices[$i]['TITLE'];
+        $words = explode(' ', mb_strtoupper($device_title, 'UTF-8'));
+        $base_forms = array();
+        $totals = count($words);
+        for ($is = 0; $is < $totals; $is++) {
+            if (preg_match('/^(\d+)$/', $words[$is])) {
+                $base_forms[$is] = array($words[$is]);
+            } elseif (!preg_match('/[\(\)\+\.]/', $words[$is])) {
+                $Word = mb_strtoupper($words[$is], 'UTF-8');
+                $base_form = $morphy->getBaseForm($Word);
+                if (is_array($base_form)) {
+                    $base_forms[$is] = $base_form;
                 } else {
-                    $base_forms[$is] = array($words[$is]);
+                    $base_forms[$is] = array();
                 }
-            }
-            $combos = $this->generate_combinations($base_forms);
-            $phrases=array();
-            foreach($combos as $combo) {
-                $mutations=$this->computePermutations($combo);
-                foreach($mutations as $m) {
-                    $phrases[]=implode(' ',$m);
+                if (!in_array($words[$is], $base_forms[$is])) {
+                    $base_forms[$is][] = $words[$is];
                 }
-            }
-            $device_titles = array();
-            $totals = count($phrases);
-            for ($is = 0; $is < $totals; $is++) {
-                $new_title = $phrases[$is];
-                $device_titles[]=$new_title;
-                $new_device=$devices[$i];
-                $new_device['TITLE']=$new_title;
-                $new_device['ORIGINAL_TITLE']=$device_title;
-                $add_devices[]=$new_device;
+            } else {
+                $base_forms[$is] = array($words[$is]);
             }
         }
-    foreach($add_devices as $device) {
-        $devices[]=$device;
+        $combos = $this->generate_combinations($base_forms);
+        $phrases = array();
+        foreach ($combos as $combo) {
+            $mutations = $this->computePermutations($combo);
+            foreach ($mutations as $m) {
+                $phrases[] = implode(' ', $m);
+            }
+        }
+        $device_titles = array();
+        $totals = count($phrases);
+        for ($is = 0; $is < $totals; $is++) {
+            $new_title = $phrases[$is];
+            $device_titles[] = $new_title;
+            $new_device = $devices[$i];
+            $new_device['TITLE'] = $new_title;
+            $new_device['ORIGINAL_TITLE'] = $device_title;
+            $add_devices[] = $new_device;
+        }
+    }
+    foreach ($add_devices as $device) {
+        $devices[] = $device;
     }
 }
 
 //dprint($lines,false);
 //dprint($devices);
-$compare_title=$command;
-if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $compare_title,$m)) {
-    $compare_title=trim(str_replace($m[0],' ',$compare_title));
+$compare_title = $command;
+if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $compare_title, $m)) {
+    $compare_title = trim(str_replace($m[0], ' ', $compare_title));
 }
-if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title,$m)) {
-    $compare_title=trim(str_replace($m[0],' ',$compare_title));
+if (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $compare_title, $m)) {
+    $compare_title = trim(str_replace($m[0], ' ', $compare_title));
 }
 
-$compare_title = trim(preg_replace('/^ть /','',$compare_title));
-$compare_title = trim(preg_replace('/^те /','',$compare_title));
+$compare_title = trim(preg_replace('/^ть /', '', $compare_title));
+$compare_title = trim(preg_replace('/^те /', '', $compare_title));
 
 if ($compare_title == '') {
     return;
 }
-
 
 
 $total = count($devices);
@@ -271,38 +271,38 @@ for ($i = 0; $i < $total; $i++) {
         //found device
         $device_id = $devices[$i]['ID'];
         $device_type = $devices[$i]['TYPE'];
-        if ($devices[$i]['ORIGINAL_TITLE']!='') {
+        if ($devices[$i]['ORIGINAL_TITLE'] != '') {
             $device_title = $devices[$i]['ORIGINAL_TITLE'];
         } else {
             $device_title = $devices[$i]['TITLE'];
         }
 
-        DebMes("Device found for $command ($device_title)",'simple_devices');
+        DebMes("Device found for $command ($device_title)", 'simple_devices');
 
         $linked_object = $devices[$i]['LINKED_OBJECT'];
         if ($device_type == 'sensor_percentage' || $device_type == 'sensor_humidity') {
-            sayReplySafe($device_title . ' ' . gg($linked_object . '.value') . '%', 2);
+            $reply_say = $device_title . ' ' . gg($linked_object . '.value') . '%';
             $processed = 1;
         } elseif ($device_type == 'sensor_light') {
-            sayReplySafe($device_title . ' ' . gg($linked_object . '.value'), 2);
+            $reply_say = $device_title . ' ' . gg($linked_object . '.value');
             $processed = 1;
         } elseif ($device_type == 'sensor_temp') {
-            sayReplySafe($device_title . ' ' . gg($linked_object . '.value') . ' ' . LANG_DEVICES_DEGREES, 2);
+            $reply_say = $device_title . ' ' . gg($linked_object . '.value') . ' ' . LANG_DEVICES_DEGREES;
             $processed = 1;
         } elseif (preg_match('/sensor/', $device_type)) {
-            sayReplySafe($device_title . ' ' . gg($linked_object . '.value') . '', 2);
+            $reply_say = $device_title . ' ' . gg($linked_object . '.value') . '';
             $processed = 1;
         } elseif ($device_type == 'counter') {
-            sayReplySafe($device_title . ' ' . gg($linked_object . '.value') . ' ' . gg($linked_object . '.unit'), 2);
+            $reply_say = $device_title . ' ' . gg($linked_object . '.value') . ' ' . gg($linked_object . '.unit');
             $processed = 1;
         } elseif ($device_type == 'openclose') {
-            sayReplySafe($device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_CLOSED : LANG_DEVICES_STATUS_OPEN), 2);
+            $reply_say = $device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_CLOSED : LANG_DEVICES_STATUS_OPEN);
             $processed = 1;
         } elseif ($device_type == 'smoke' || $device_type == 'leak') {
-            sayReplySafe($device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_ALARM : LANG_DEVICES_NORMAL_VALUE), 2);
+            $reply_say = $device_title . ' ' . (gg($linked_object . '.status') ? LANG_DEVICES_STATUS_ALARM : LANG_DEVICES_NORMAL_VALUE);
             $processed = 1;
         } elseif ($device_type == 'button') {
-            $run_code.="callMethodSafe('$linked_object.pressed');";
+            $run_code .= "callMethod('$linked_object.pressed');";
             $processed = 1;
             $reply_confirm = 1;
         } elseif ($device_type == 'controller' ||
@@ -311,50 +311,50 @@ for ($i = 0; $i < $total; $i++) {
             $device_type == 'rgb'
         ) {
             if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $command)) {
-                sayReplySafe(LANG_TURNING_ON.' '.$device_title.$add_phrase,2);
-                $run_code.="callMethodSafe('$linked_object.turnOn');";
-                $opposite_code.="callMethodSafe('$linked_object.turnOff');";
+                $reply_say = LANG_TURNING_ON . ' ' . $device_title . $add_phrase;
+                $run_code .= "callMethod('$linked_object.turnOn');";
+                $opposite_code .= "callMethod('$linked_object.turnOff');";
                 $processed = 1;
                 //$reply_confirm = 1;
             } elseif (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $command)) {
-                sayReplySafe(LANG_TURNING_OFF.' '.$device_title.$add_phrase,2);
-                $run_code.="callMethodSafe('$linked_object.turnOff');";
-                $opposite_code.="callMethodSafe('$linked_object.turnOn');";
+                $reply_say = LANG_TURNING_OFF . ' ' . $device_title . $add_phrase;
+                $run_code .= "callMethod('$linked_object.turnOff');";
+                $opposite_code .= "callMethod('$linked_object.turnOn');";
                 $processed = 1;
                 //$reply_confirm = 1;
             }
         } elseif ($device_type == 'group') {
-            $applies_to=explode(',',$devices[$i]['APPLY_TYPES']);
+            $applies_to = explode(',', $devices[$i]['APPLY_TYPES']);
             if (is_array($devices[$i]['DEVICES'])) {
-                $devices_in_group=array();
-                foreach($devices[$i]['DEVICES'] as $group_device) {
-                    $devices_in_group[]=$group_device['LINKED_OBJECT'];
+                $devices_in_group = array();
+                foreach ($devices[$i]['DEVICES'] as $group_device) {
+                    $devices_in_group[] = $group_device['LINKED_OBJECT'];
                 }
             } else {
-                $devices_in_group=getObjectsByProperty('group'.$devices[$i]['SYS_NAME'],1);
+                $devices_in_group = getObjectsByProperty('group' . $devices[$i]['SYS_NAME'], 1);
             }
             //dprint($devices_in_group);
 
             if (!is_array($devices_in_group)) continue;
 
-            if (in_array('relay',$applies_to) ||
-                in_array('dimmer',$applies_to) ||
-                in_array('rgb',$applies_to) ||
+            if (in_array('relay', $applies_to) ||
+                in_array('dimmer', $applies_to) ||
+                in_array('rgb', $applies_to) ||
                 0
             ) {
                 if (preg_match('/' . LANG_DEVICES_PATTERN_TURNON . '/uis', $command)) {
-                    sayReplySafe(LANG_TURNING_ON.' '.$device_title.$add_phrase,2);
-                    foreach($devices_in_group as $linked_object) {
-                        $run_code.="callMethodSafe('$linked_object.turnOn');";
-                        $opposite_code.="callMethodSafe('$linked_object.turnOff');";
+                    $reply_say = LANG_TURNING_ON . ' ' . $device_title . $add_phrase;
+                    foreach ($devices_in_group as $linked_object) {
+                        $run_code .= "callMethod('$linked_object.turnOn');";
+                        $opposite_code .= "callMethod('$linked_object.turnOff');";
                     }
                     $processed = 1;
                     //$reply_confirm = 1;
                 } elseif (preg_match('/' . LANG_DEVICES_PATTERN_TURNOFF . '/uis', $command)) {
-                    sayReplySafe(LANG_TURNING_OFF.' '.$device_title.$add_phrase,2);
-                    foreach($devices_in_group as $linked_object) {
-                        $run_code.="callMethodSafe('$linked_object.turnOff');";
-                        $opposite_code.="callMethodSafe('$linked_object.turnOn');";
+                    $reply_say = LANG_TURNING_OFF . ' ' . $device_title . $add_phrase;
+                    foreach ($devices_in_group as $linked_object) {
+                        $run_code .= "callMethod('$linked_object.turnOff');";
+                        $opposite_code .= "callMethod('$linked_object.turnOn');";
                     }
                     $processed = 1;
                     //$reply_confirm = 1;
@@ -362,12 +362,12 @@ for ($i = 0; $i < $total; $i++) {
             }
         }
 
-        $addons_dir=DIR_MODULES.$this->name.'/addons';
+        $addons_dir = DIR_MODULES . $this->name . '/addons';
         if (is_dir($addons_dir)) {
-            $addon_files=scandir($addons_dir);
-            foreach($addon_files as $file) {
-                if (preg_match('/\_commands\.php$/',$file)) {
-                    require($addons_dir.'/'.$file);
+            $addon_files = scandir($addons_dir);
+            foreach ($addon_files as $file) {
+                if (preg_match('/\_commands\.php$/', $file)) {
+                    require($addons_dir . '/' . $file);
                 }
             }
         }
@@ -375,26 +375,30 @@ for ($i = 0; $i < $total; $i++) {
     if ($processed) break;
 }
 
-if ($run_code!='' && $period_delay>0) {
-    setTimeout('delay'.md5($run_code), $run_code, $period_delay);
-} elseif ($run_code!='' && $period_run_for>0 && $opposite_code!='') {
+if ($run_code != '' && $period_delay > 0) {
+    setTimeout('delay' . md5($run_code), $run_code, $period_delay);
+} elseif ($run_code != '' && $period_run_for > 0 && $opposite_code != '') {
     eval($run_code);
-    setTimeout('opposite'.md5($run_code), $opposite_code, $period_run_for);
-} elseif ($run_code!='') {
+    setTimeout('opposite' . md5($run_code), $opposite_code, $period_run_for);
+} elseif ($run_code != '') {
+    //DebMes("Running: ".$run_code,'debug1');
     eval($run_code);
+}
+
+if ($reply_say != '') {
+    //DebMes("Replying: ".$reply_say,'debug1');
+    sayReplySafe($reply_say, 2);
 }
 
 if ($reply_confirm) {
     $items = explode('|', LANG_DEVICES_COMMAND_CONFIRMATION);
     $items = array_map('trim', $items);
-    DebMes("Device reply for $event",'simple_devices');
     sayReplySafe($items[array_rand($items)], 2);
-    DebMes("Device reply DONE for $event",'simple_devices');
 }
 
 if ($processed) {
     $details['PROCESSED'] = 1;
-    $details['BREAK']=1;
+    $details['BREAK'] = 1;
 } else {
     //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }

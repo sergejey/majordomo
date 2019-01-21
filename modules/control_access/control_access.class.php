@@ -45,6 +45,11 @@ function getParams() {
    exit;
   }
 
+     if (!$this->mode && gr('mode')) {
+         $this->mode=gr('mode');
+     }
+
+
         if ($this->id=='1') {
                 $this->mode='edit';
                 global $id;
@@ -59,6 +64,8 @@ function getParams() {
         if(function_exists('ldap_connect') && is_file(ROOT.'modules/ldap_users/installed')) {
                 $out['LDAP_ON']=1;
         }
+
+
   if ($this->mode=='logoff') {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);

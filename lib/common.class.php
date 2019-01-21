@@ -7,6 +7,9 @@
          'level'=>$level,
          'replyto'=>$replyto,
      );
+     if (session_id()) {
+         $data[session_name()]=session_id();
+     }
      $url=BASE_URL.'/objects/?'.http_build_query($data);
      if (is_array($params)) {
          foreach($params as $k=>$v) {
@@ -64,6 +67,9 @@ function sayToSafe($ph, $level = 0, $destination = '') {
         'level'=>$level,
         'destination'=>$destination,
     );
+    if (session_id()) {
+        $data[session_name()]=session_id();
+    }
     $url=BASE_URL.'/objects/?'.http_build_query($data);
     if (is_array($params)) {
         foreach($params as $k=>$v) {
@@ -106,6 +112,9 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '') {
         'member_id'=>$member_id,
         'source'=>$source,
     );
+    if (session_id()) {
+        $data[session_name()]=session_id();
+    }
     $url=BASE_URL.'/objects/?'.http_build_query($data);
     if (is_array($params)) {
         foreach($params as $k=>$v) {
@@ -127,7 +136,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 {
 
     verbose_log("SAY (level: $level; member: $member; source: $source): ".$ph);
-    DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
+    //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
    $rec = array();
    $rec['MESSAGE']   = $ph;
@@ -166,9 +175,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
    setGlobal('lastSayTime', time());
    setGlobal('lastSayMessage', $ph);
 
-   $details=array('level' => $level, 'message' => $ph, 'member_id' => $member_id);
-   processSubscriptionsSafe('SAY', $details); //, 'ignoreVoice'=>$ignoreVoice
-
+   processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
 
    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '')
    {
@@ -722,6 +729,9 @@ function runScriptSafe($id, $params = '') {
         'script'=>$id,
         'm_c_s'=>$call_stack
     );
+    if (session_id()) {
+        $data[session_name()]=session_id();
+    }
     $url=BASE_URL.'/objects/?'.http_build_query($data);
     if (is_array($params)) {
         foreach($params as $k=>$v) {
@@ -744,24 +754,8 @@ function callScript($id, $params = '')
 }
 
 function getURLBackground($url, $cache = 0, $username = '', $password = '') {
+    //DebMes("URL: ".$url,'debug1');
     getURL($url, $cache, $username, $password, true);
-    /*
-    if (strlen($url)>=255) {
-        getURL($url, $cache, $username, $password, true);
-    } else {
-        $data = array();
-        if ($cache) {
-            $data['cache']=$cache;
-        }
-        if ($username) {
-            $data['username']=$username;
-        }
-        if ($password) {
-            $data['password']=$password;
-        }
-        addToOperationsQueue('getURLBackground',$url,json_encode($data),false,5*60);
-    }
-    */
 }
 
 /**
@@ -774,6 +768,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '') {
  */
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
+   // DebMes($url,'urls');
    $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part)>200) {
         $filename_part=substr($filename_part,0,200).md5($filename_part);
@@ -801,7 +796,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
           if ($background) {
               curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+              curl_setopt($ch, CURLOPT_TIMEOUT_MS, 50);
           }
 
          if ($username != '' || $password != '')

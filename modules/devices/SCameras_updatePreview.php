@@ -29,7 +29,8 @@ $thumb_params.= 'username="' . $cameraUsername . '" password="' . $cameraPasswor
 $thumb_params.= ' width="250"';
 $thumb_params.= ' url="' . $streamURL . '"';
 if ($this->getProperty('previewType')=='slideshow') {
-    $thumb_params.= ' live="1"';
+    //$thumb_params.= ' live="1"';
+    $thumb_params.= ' slideshow="1"';
 }
 
 $streamTransport = $this->getProperty('streamTransport');

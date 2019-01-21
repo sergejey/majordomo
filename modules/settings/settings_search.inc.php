@@ -16,7 +16,7 @@
 
 
  $sections=array();
- $filters=array('', 'scenes', 'calendar', 'hook', 'backup');
+ $filters=array('','behavior', 'scenes', 'calendar', 'hook', 'backup');
  $total=count($filters);
  for($i=0;$i<$total;$i++) {
   $rec=array();
@@ -54,6 +54,32 @@
     SQLInsert('settings', $tmp);
    }
   }
+ }
+
+ if ($this->filter_name=='behavior' && !defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
+
+  $options=array(
+      'BEHAVIOR_NOBODYHOME_TIMEOUT'=>array(
+          'TITLE'=>'NobodyHome mode activation timeout (minutes)',
+          'DEFAULTVALUE'=>60,
+          'NOTES'=>'Set 0 to disable'
+      )
+  );
+
+  foreach($options as $k=>$v) {
+   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+   if (!$tmp['ID']) {
+    $tmp=array();
+    $tmp['NAME']=$k;
+    $tmp['TITLE']=$v['TITLE'];
+    $tmp['TYPE']='text';
+    $tmp['DEFAULTVALUE']=$v['DEFAULTVALUE'];
+    $tmp['NOTES']=$v['NOTES'];
+    $tmp['DATA']='';
+    SQLInsert('settings', $tmp);
+   }
+  }
+
  }
 
  if ($this->filter_name=='hook' && !defined('SETTINGS_HOOK_BARCODE')) {
@@ -181,6 +207,7 @@
    $qry.=" AND NAME LIKE '%".DBSafe($this->filter_name)."%'";
    $out['FILTER_NAME']=$this->filter_name;
   }
+
 
   if ($this->filter_exname!='') {
    $qry.=" AND NAME NOT LIKE '%".DBSafe($this->filter_exname)."%'";

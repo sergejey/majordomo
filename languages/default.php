@@ -984,6 +984,9 @@ $dictionary = array(
 
     'SETTINGS_SECTION_' => 'General',
     'SETTINGS_SECTION_HOOK' => 'Hooks',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Behavior',
+    'SETTINGS_SECTION_BACKUP' => 'Backup',
+    'SETTINGS_SECTION_SCENES' => 'Scenes',
 
     'DEVICE_ID' => 'Device ID',
     'REQUEST_TYPE' => 'Request type',
@@ -1207,6 +1210,11 @@ $dictionary = array(
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Control another devices when action triggered',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Delay (seconds)',
 
+    'DEVICES_LINK_SWITCH_TIMER' => 'Turn on for some time',
+    'DEVICES_LINK_SWITCH_TIMER_DESCRIPTION' => 'Turn on another devices for some time when action triggered',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY' => 'For how long (seconds)',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME' => 'Only when it\'s dark',
+
     'DEVICES_LINK_SET_COLOR' => 'Set Color',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Change color when action triggered',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Color',
@@ -1318,6 +1326,8 @@ $dictionary = array(
 
     'MAINCYCLEDOWN' => 'Main cycle is down',
     'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
+
+    'RECENTLY_USED' => 'Recent',
 
     'TEST' => 'test'
 

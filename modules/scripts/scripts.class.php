@@ -170,6 +170,11 @@ class scripts extends module
      */
     function admin(&$out)
     {
+
+        if ($this->mode=='scheduled') {
+            $this->checkScheduledScripts();
+        }
+
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
         }
@@ -396,7 +401,6 @@ class scripts extends module
     {
         $scripts = SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>1200");
 
-
         $total = count($scripts);
         for ($i = 0; $i < $total; $i++) {
 
@@ -406,8 +410,10 @@ class scripts extends module
                 continue;
             }
 
+
             $run_days = explode(',', $rec['RUN_DAYS']);
-            if (!in_array(date('w'), $run_days)) {
+            $today=date('w');
+            if (!in_array($today, $run_days)) {
                 continue;
             }
 

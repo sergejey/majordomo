@@ -39,12 +39,17 @@ class session
    {
       $this->name = $name;
 
-      ini_set('session.use_only_cookies', '1');
+      if ($_GET['no_session']) return false;
+
+      ini_set('session.use_only_cookies', '0'); //not only cookies
 
       if (!isset($_SERVER['HTTP_USER_AGENT']) || $this->checkBot($_SERVER['HTTP_USER_AGENT']))
       {
          session_set_cookie_params(0); // current browser session only
          session_name($name);
+         if (gr($name)) {
+            session_id(gr($name));
+         }
          @session_start();
 
          // setting expiration time for session (the easiest way)
