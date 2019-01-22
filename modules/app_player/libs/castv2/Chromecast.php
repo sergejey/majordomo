@@ -38,8 +38,8 @@ class GChromecast
 		// use port forwarding!
 		$contextOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, ]];
 		$context = stream_context_create($contextOptions);
-		if ($this->socket = @stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context)) {
-			stream_set_timeout($this->socket,5);
+		if ($this->socket = @stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context)) {
+			stream_set_timeout($this->socket,0,64);
 		}
 		else {
 			throw new Exception("Failed to connect to remote Chromecast");
@@ -291,23 +291,12 @@ class GChromecast
 	{
 		//return;
 		// If there is a difference of 10 seconds or more between $this->lastactivetime and the current time, then we've been kicked off and need to reconnect
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>TESTLIVE ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
 		if ($this->lastip == "") {
 			return;
 		}
 		$diff = time() - $this->lastactivetime;
 		if ($diff > 15) {
 			// Reconnect
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>RECONNECT ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				exit;
-				flush();
-				flush();
-			}
 			$contextOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, ]];
 			$context = stream_context_create($contextOptions);
 			if ($this->socket = stream_socket_client('ssl://' . $this->lastip . ":" . $this->lastport, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context)) {
@@ -323,19 +312,15 @@ class GChromecast
 	
 	function cc_connect($tl = 0)
 	{
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>CC Connect ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
+
 		// CONNECT TO CHROMECAST
 		// This connects to the chromecast in general.
 		// Generally this is called by launch($appid) automatically upon launching an app
 		// but if you want to connect to an existing running application then call this first,
 		// then call getStatus() to make sure you get a transportid.
-		if ($tl == 0) {
-			$this->testLive();
-		};
+		//if ($tl == 0) {
+		//	$this->testLive();
+		//};
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = "receiver-0";
@@ -351,11 +336,7 @@ class GChromecast
 	{
 		// Launches the chromecast app on the connected chromecast
 		// CONNECT
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo 'Launching '.$appid.'<hr>' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
+
 		$this->cc_connect();
 		$this->getStatus();
 		// LAUNCH
@@ -365,53 +346,31 @@ class GChromecast
 		$c->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$c->payloadtype = 0;
 		$c->payloadutf8 = '{"type":"LAUNCH","appId":"' . $appid . '","requestId":' . $this->requestId . '}';
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>Sending launch: ' .$c->payloadutf8 . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
+
 		fwrite($this->socket, $c->encode());
 		fflush($this->socket);
 		$this->lastactivetime = time();
 		$this->requestId++;
 		$oldtransportid = $this->transportid;
 		while ($this->transportid == "" || $this->transportid == $oldtransportid) {
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>Incorrect transport id '.$this->transportid.' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				flush();
-				flush();
-			}
 			$r = $this->getCastMessage();
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>New castmessage '.$r.' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				flush();
-				flush();
-			}
-			sleep(1);
+			usleep(10);
 		}
 	}
 	
 	function getStatus()
 	{
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>GETTING STATUS ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
+
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
-		$this->testLive();
+		//$this->testLive();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = "receiver-0";
 		$c->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$c->payloadtype = 0;
 		$c->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>SENDING REQUEST '. $c->payloadutf8 . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
+
 		$c = fwrite($this->socket, $c->encode());
 		fflush($this->socket);
 		$this->lastactivetime = time();
@@ -422,12 +381,9 @@ class GChromecast
 		while ($this->transportid == "" && (time()-$wait_transport_started)<=$wait_transport) {
 			//echo '<hr>Waiting transport ID '.__FILE__.' ' .__LINE__.str_repeat(' ',2048);flush();flush();
 			$r = $this->getCastMessage();
+			usleep(10);
 		}
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>STATUS ' . $r . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
+
 		return $r;
 	}
 	
@@ -435,21 +391,15 @@ class GChromecast
 	{
 		// This connects to the transport of the currently running app
 		// (you need to have launched it yourself or connected and got the status)
-		if ($tl == 0) {
-			$this->testLive();
-		};
+		//if ($tl == 0) {
+		//	$this->testLive();
+		//};
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = $this->transportid;
 		$c->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
 		$c->payloadtype = 0;
 		$c->payloadutf8 = '{"type":"CONNECT"}';
-
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>connect: ' . $c->payloadutf8 . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
 
 		fwrite($this->socket, $c->encode());
 		fflush($this->socket);
@@ -463,82 +413,33 @@ class GChromecast
 		// Later on we could update CCprotoBuf to decode this
 		// but for now all we need is the transport id  and session id if it is
 		// in the packet and we can read that directly.
-		/*
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>getCastMessage ' . $message . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
-		*/
 
-		$this->testLive();
 
-		/*
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>getCastMessage reading' . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
-		*/
+		//$this->testLive();
+
 
 		$response = fread($this->socket, 2000);
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>msgresponse ' . $response . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
 
 		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response)) {
 			$this->pong();
 			//$this->getCastMessage();
-			sleep(3);
+			usleep(10);
 			$response = fread($this->socket, 2000);
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>msgresponse ' . $response . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				flush();
-				flush();
-			}
+
 			// Wait infinitely for a packet.
 			//set_time_limit(30);
 		}
-		/*
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>RESPONSE ' . $response . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
-		*/
+
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->transportid = $matches;
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>Transport id set to ' . $this->transportid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				flush();
-				flush();
-			}
-
 		}
-		/*
-		if (preg_match("/sessionId/s", $response)) {
-			preg_match("/\"sessionId\"\:\"([^\"]*)/", $response, $r);
-			$this->sessionid = $r[1];
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>Session id set to ' . $this->sessionid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				flush();
-				flush();
-			}
-		}
-		*/
 
 		if (preg_match("/mediaSessionId/s", $response)) {
 			preg_match("/\"mediaSessionId\"\:(\d+)/", $response, $r);
 			$this->sessionid = $r[1];
-			if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-				echo '<hr>Media Session id set to ' . $this->sessionid . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-				flush();
-				flush();
-			}
+
 		}
 		return $response;
 	}
@@ -546,12 +447,8 @@ class GChromecast
 	public function sendMessage($urn, $message)
 	{
 		// Send the given message to the given urn
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>SENDING MESSAGE ' . $message . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
-		$this->testLive();
+
+		//$this->testLive();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = $this->transportid;
@@ -601,14 +498,6 @@ class GChromecast
 		$c->urnnamespace = "urn:x-cast:com.google.cast.tp.heartbeat";
 		$c->payloadtype = 0;
 		$c->payloadutf8 = '{"type":"PONG"}';
-
-		if (Defined('CHROMECAST_DEBUG') && CHROMECAST_DEBUG) {
-			echo '<hr>PONG ' . $c->payloadutf8 . ' ' . __FILE__ . ' ' . __LINE__ .' '. __METHOD__. str_repeat(' ', 2048);
-			flush();
-			flush();
-		}
-
-
 		fwrite($this->socket, $c->encode());
 		fflush($this->socket);
 		$this->lastactivetime = time();
