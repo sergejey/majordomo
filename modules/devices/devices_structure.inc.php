@@ -176,6 +176,8 @@ $this->device_types=array(
             'snapshotPreviewURL'=>array('DESCRIPTION'=>'Snapshot Preview URL'),
             'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
             'activeHTML'=>array('DESCRIPTION'=>'Active HTML',),
+            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIgnoreNobodysHome'),
+            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdMotionTimeout')
         ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
