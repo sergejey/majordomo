@@ -719,7 +719,7 @@ class devices extends module
             $out['DEVICES'] = $devices;
         }
 
-        $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
+        $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE+0");
         $total_devices = count($devices);
         if ($total_devices) {
             $favorite_devices = array();
@@ -1269,7 +1269,7 @@ class devices extends module
         if (!$device1['ID']) {
             return 0;
         }
-        include_once(DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        require (DIR_MODULES . 'devices/devices_links_actions.inc.php');
         return 1;
     }
 

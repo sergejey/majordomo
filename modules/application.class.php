@@ -190,7 +190,10 @@ function getParams() {
     if ($this->app_action) {
      $out['APP_ACTION']=1;
     }
+   }
 
+   if ($this->app_action=='panel') {
+    $this->redirect(ROOTHTML.'admin.php');
    }
 
 
@@ -280,7 +283,6 @@ function getParams() {
     Define('USER_TITLE', '');
     Define('USER_AVATAR', '');
    }
-
 
    if ($out["DOC_NAME"]) {
     //$doc=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME LIKE '".DBSafe($out['DOC_NAME'])."'");

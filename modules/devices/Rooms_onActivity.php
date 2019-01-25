@@ -10,6 +10,7 @@ $this->setProperty('LatestActivityTime',date('H:i'));
 
 if (!$this->getProperty('SomebodyHere')) {
     $this->setProperty('SomebodyHere',1);
+    $this->callMethod("updateActivityStatus");
 }
 
 if ($this->getProperty("IdleDelay")) {
@@ -19,8 +20,6 @@ if ($this->getProperty("IdleDelay")) {
 }
 clearTimeOut($ot."_activity_timeout");
 setTimeOut($ot."_activity_timeout","callMethod('".$ot.".onIdle');",$activity_timeout);
-
-$this->callMethod("updateActivityStatus");
 
 if (getGlobal('NobodyHomeMode.active')) {
     callMethod('NobodyHomeMode.deactivate',array('sensor'=>$params['sensor'],'room'=>$ot));
