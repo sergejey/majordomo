@@ -18,7 +18,7 @@ if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
 // END: begincut endcut placecut
 
 // BEGIN: filter output
-if ($filterblock != '')
+if (isset($filterblock) && $filterblock != '')
 {
    $matchPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($matchPattern, $result, $match);

@@ -39,7 +39,7 @@ class session
    {
       $this->name = $name;
 
-      if ($_GET['no_session']) return false;
+      if (isset($_GET['no_session'])) return false;
 
       ini_set('session.use_only_cookies', '0'); //not only cookies
 
