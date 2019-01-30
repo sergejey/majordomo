@@ -390,7 +390,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
     if (!$chek_restore ) {
         $played = getPlayerStatus($target['NAME']);
         if (($played['state']=='playing') and (stristr($played['file'], 'cms\cached\voice') === FALSE)) {
-	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 3);
+	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 4);
 	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+110, 4);
 	    }
      }
