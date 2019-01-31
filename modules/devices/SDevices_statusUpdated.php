@@ -43,11 +43,6 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
 }
 
 if ($need_call_logic_action) {
-    /*
-    if ($this->class_title == 'SRelays') {
-     DebMes($this->object_title.' '.$params['NEW_VALUE'],'logic_test');
-    }
-    */
     $this->callMethod('logicAction');
     include_once(DIR_MODULES . 'devices/devices.class.php');
     $dv = new devices();

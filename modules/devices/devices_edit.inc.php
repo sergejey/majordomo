@@ -425,3 +425,8 @@ if ($rec['LOCATION_ID']) {
     $other_devices=SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=".(int)$rec['LOCATION_ID']);
     $out['OTHER_DEVICES']=$other_devices;
 }
+
+if ($rec['TYPE']) {
+    $other_devices_type=SQLSelect("SELECT ID, TITLE FROM devices WHERE TYPE='".$rec['TYPE']."'");
+    $out['OTHER_DEVICES_TYPE']=$other_devices_type;
+}

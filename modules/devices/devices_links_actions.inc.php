@@ -219,7 +219,7 @@ for ($i = 0; $i < $total; $i++) {
 
     // -----------------------------------------------------------------
     if ($action_string != '') {
-        //DebMes("Action string: ".$action_string);
+        //DebMes("Action string: ".$action_string,'logic_test');
         try {
             $code = $action_string;
             $success = eval($code);
