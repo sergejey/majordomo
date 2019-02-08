@@ -107,7 +107,7 @@
  [#else ID#]
  <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
  [#endif ID#]
- <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+         <a href="?" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
 
          [#if ID!=""#]
          <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>

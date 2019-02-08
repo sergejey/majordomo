@@ -7,30 +7,31 @@
 [#if ACTION="link"#]
 <script type="text/javascript">
  function addClicked[#UNIQ#]() {
-  var wdth=950;
-  var hdth=600;
   var window_url='<#ROOTHTML#>panel/popup/devices.html?md=devices&view_mode=edit_devices&source_table=<#SOURCE_TABLE#>&source_table_id=<#SOURCE_TABLE_ID#>&linked_object=<#LINKED_OBJECT#>&type=<#TYPE#>&prefix=<#PREFIX#>&add_title=<#ADD_TITLE#>';
-  var jWindowObjElement[#UNIQ#] = $.jWindow({
-   id: 'windowEdit[#UNIQ#]',
-   title: 'Settings',
-   width: wdth,
-   height: hdth,
-   type: 'iframe',
-   marginTop:0,
-   marginBottom:0,
-   marginLeft:0,
-   marginRight:0,
-   url: window_url,
-   onClose:function () {
-    window.location.reload();
-   },
-   modal: true });
-  jWindowObjElement[#UNIQ#].show();
-  jWindowObjElement[#UNIQ#].update();
+  $.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload(); }});
   return false;
  }
 </script>
 [#if OK#]
+[#if HTML!=""#]
+<script type="text/javascript">
+ function httpRefreshDevice[#ID#]() {
+  clearTimeout(deviceRefreshTimer[#ID#]);
+  var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=[#ID#]";
+  ajaxManager.addReq({
+   type: 'GET',
+   url: baseURL,
+   success: function(data){
+    var obj=jQuery.parseJSON(data);
+    $('#devicepreview[#ID#]').html(obj.HTML);
+   }
+  });
+  deviceRefreshTimer[#ID#] = setTimeout('httpRefreshDevice[#ID#]()',3000);
+ }
+ deviceRefreshTimer[#ID#] = setTimeout('httpRefreshDevice[#ID#]()',3000);
+</script>
+<div id="devicepreview[#ID#]">[#HTML#]</div><div>&nbsp;</div>
+[#endif#]
 <a href="#" onclick="addClicked[#UNIQ#]();">[#if TITLE!=""#][#TITLE#][#else#]<#LANG_ADD#>[#endif#]</a>
 [#else OK#]
 Usage error

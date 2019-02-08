@@ -154,6 +154,11 @@ class devices extends module
             $device_rec = SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($this->linked_object) . "'");
             if ($device_rec['TITLE']) {
                 $out['TITLE'] = $device_rec['TITLE'];
+                if ($this->preview) {
+                    $data=$this->processDevice($device_rec['ID']);
+                    $out['HTML']=$data['HTML'];
+                }
+                $out['ID']=$device_rec['ID'];
             }
             $out['LINKED_OBJECT'] = $this->linked_object;
         }

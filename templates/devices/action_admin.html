@@ -13,9 +13,11 @@
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
  [#if ID!=""#]
+ [#if NO_NAV!="1"#]
  <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
+ [#endif NO_NAV#]
  <div class="row">
-     <div class="col-md-8">
+     <div [#if LINKED_OBJECT!="" && NO_NAV!="1"#]class="col-md-8"[#endif#]>
          <!--#
          [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
          #-->
@@ -28,7 +30,7 @@
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=settings"><#LANG_SECTION_SETTINGS#></a>
      </li>
      <li[#if TAB="links"#] class="active"[#endif#]>
-     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=links"><#LANG_DEVICES_LINKS#></a>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=links&no_nav=<#NO_NAV#>"><#LANG_DEVICES_LINKS#></a>
      </li>
      [#if SHOW_METHODS#]
      <li[#if TAB="schedule"#] class="active"[#endif#]>
@@ -90,7 +92,7 @@
  [#endif TAB#]
 
      </div>
-     [#if LINKED_OBJECT!=""#]
+     [#if LINKED_OBJECT!="" && NO_NAV!="1"#]
      <div class="col-md-4">
          [#inc preview.html#]
 

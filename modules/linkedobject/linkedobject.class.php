@@ -155,7 +155,7 @@ function run() {
     //$tmp=SQLSelectOne("SELECT TITLE FROM objects ORDER BY ID DESC LIMIT 1");
     //$res['LATEST_OBJECT']=$tmp['TITLE'];
     $res['LATEST_OBJECT']='';
-
+    header('Content-type:application/json');
     echo json_encode($res);
    }
 
@@ -180,6 +180,7 @@ function run() {
          }
       } while(0);
       $res['PROPERTIES']=$properties;
+      header('Content-type:application/json');
       echo json_encode($res);
    }
 
@@ -210,6 +211,7 @@ function run() {
          }
       } while(0);
       $res['METHODS']=$properties;
+      header('Content-type:application/json');
       echo json_encode($res);
    }
 
