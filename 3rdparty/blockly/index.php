@@ -117,7 +117,12 @@ $ctl = new control_modules();
     }
     if (xmlDom) {
       Blockly.mainWorkspace.clear();
-      Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+      try {
+       Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+      } catch (e) {
+        Blockly.mainWorkspace.clear();
+        alert('Error loading script: ' + e);
+      }
     }
 
   }
