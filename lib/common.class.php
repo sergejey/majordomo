@@ -1400,27 +1400,3 @@ function seekPlayerPosition($host = 'localhost', $time = 0)
         return $player->json['message'];
     }
 }
-
-function getLocalIP()
-{
-    global $local_ip_address_cached;
-    if (isset($local_ip_address_cached)) {
-        $local_ip_address=$local_ip_address_cached;
-    } else {
-        $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-        socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
-        socket_getsockname($s, $local_ip_address, $port);
-        @socket_shutdown($s, 2);
-        socket_close($s);
-        if (!$local_ip_address) {
-            $main_terminal=getTerminalsByName('MAIN')[0];
-            if ($main_terminal['HOST']) {
-                $local_ip_address=$main_terminal['HOST'];
-            }
-        }
-        if ($local_ip_address) {
-            $local_ip_address_cached=$local_ip_address;
-        }
-    }
-   return $local_ip_address;
-}
