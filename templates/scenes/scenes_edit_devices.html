@@ -1,0 +1,57 @@
+<h4><#LANG_ADDED#></h4>
+<table class="table">
+    [#begin ADDED_DEVICES#]
+    <tr>
+        <td>
+            [#TITLE#]
+        </td>
+        <td>
+            <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=delete_device&device_id=[#ID#]&top=<#TOP#>&left=<#LEFT#>&search=<#SEARCH_URL#>&type=<#TYPE#>&location_id=<#LOCATION_ID#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-trash"></i></a>
+        </td>
+    </tr>
+    [#end ADDED_DEVICES#]
+</table>
+<h4><#LANG_OTHER#></h4>
+<a name="devices_form"></a>
+<form action="?#devices_form" class="form-inline" method="get">
+    <div class="form-group">
+        <input type="text" name="search" value="<#SEARCH#>" placeholder="<#LANG_SEARCH#>" class="form-control">
+    </div>
+    <div class="form-group">
+        <select name="type" class="form-control">
+            <option value=""><#LANG_TYPE#></option>
+            [#begin TYPES#]
+            <option value="[#TYPE#]"[#if TYPE="<#TYPE#>"#] selected[#endif#]>[#TYPE#]</option>
+            [#end TYPES#]
+        </select>
+    </div>
+    <div class="form-group">
+        <select name="location_id" class="form-control">
+            <option value=""><#LANG_LOCATION#></option>
+            [#begin LOCATIONS#]
+            <option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+            [#end LOCATIONS#]
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="<#LANG_SEARCH#>" class="btn bnt-default btn-primary">
+    </div>
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="top" value="<#TOP#>">
+    <input type="hidden" name="left" value="<#LEFT#>">
+</form>
+&nbsp;
+<table class="table">
+    [#begin OTHER_DEVICES#]
+    <tr>
+        <td>
+            [#TITLE#]
+        </td>
+        <td>
+            <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=add_device&device_id=[#ID#]&top=<#TOP#>&left=<#LEFT#>&search=<#SEARCH_URL#>&type=<#TYPE#>&location_id=<#LOCATION_ID#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i></a>
+        </td>
+    </tr>
+    [#end OTHER_DEVICES#]
+</table>

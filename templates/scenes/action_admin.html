@@ -28,8 +28,7 @@
 
 
    [#if ID!=""#]
-   <h3>[#TITLE#]</h3>
-        
+
         <ul class="nav nav-tabs">
         <li[#if TAB=""#] class="active"[#endif#]>
         <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a>
@@ -37,8 +36,11 @@
         <li[#if TAB="elements"#] class="active"[#endif#]>
         <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=elements"><#LANG_ELEMENTS#></a>
         </li>
+            <li[#if TAB="devices"#] class="active"[#endif#]>
+            <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=devices"><#LANG_DEVICES#></a>
+            </li>
         <li[#if TAB="preview"#] class="active"[#endif#]>
-        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#> &amp; <#LANG_EDIT#></a>
+        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#> / <#LANG_EDIT#></a>
         </li>
 
         </ul>
@@ -50,6 +52,10 @@
    [#if TAB="elements"#]
     [#inc scenes_edit_elements.html#]
    [#endif TAB#]
+
+[#if TAB="devices"#]
+[#inc scenes_edit_devices.html#]
+[#endif TAB#]
 
    [#if TAB="preview"#]
    &nbsp;

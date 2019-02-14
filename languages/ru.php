@@ -318,7 +318,7 @@ $dictionary = array(
 
 
     'JS_COMMAND' => 'JavaScript команда',
-    'BUTTON' => 'Кнопка',
+    'BUTTON' => 'Клавиша',
 
 
     'ON_OFF_SWITCH' => 'Выключатель',
@@ -1107,14 +1107,14 @@ $dictionary = array(
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
-    'DEVICES_RELAY' => 'Управляемое реле/Выключатель',
-    'DEVICES_DIMMER' => 'Управляемый диммер',
-    'DEVICES_RGB' => 'RGB-контроллер',
+    'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
+    'DEVICES_DIMMER' => 'Освещение (Диммер)',
+    'DEVICES_RGB' => 'Освещение (RGB)',
     'DEVICES_MOTION' => 'Датчик движения',
-    'DEVICES_BUTTON' => 'Кнопка',
+    'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
-    'DEVICES_GENERAL_SENSOR' => 'Общий датчик',
+    'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности',
     'DEVICES_STATE_SENSOR' => 'Датчик состояния',
@@ -1251,7 +1251,7 @@ $dictionary = array(
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
     'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
 
-    'DEVICES_CAMERA' =>'IP-камера',
+    'DEVICES_CAMERA' =>'Камера (IP)',
     'DEVICES_CAMERA_STREAM_URL' =>'URL видео-потока',
     'DEVICES_CAMERA_USERNAME' =>'Имя пользователя',
     'DEVICES_CAMERA_PASSWORD' =>'Пароль',
