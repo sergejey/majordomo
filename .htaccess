@@ -14,11 +14,6 @@ RewriteRule .* /api.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 ReWriteCond %{REQUEST_URI} \.html$
-ReWriteCond %{REQUEST_URI} !index\.html$
-ReWriteCond %{REQUEST_URI} !fckeditor
-ReWriteCond %{REQUEST_URI} !banner\.html$
-ReWriteCond %{REQUEST_URI} !flashcoms
-ReWriteCond %{REQUEST_URI} !google
 RewriteRule .* /nf.php
 
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -29,8 +24,6 @@ RewriteRule .* /nf.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 ReWriteCond %{REQUEST_URI} \.xml$
-ReWriteCond %{REQUEST_URI} !fck
-ReWriteCond %{REQUEST_URI} !flashcoms
 RewriteRule .* /nf.php
 
 </IfModule>
