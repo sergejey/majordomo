@@ -171,6 +171,7 @@ $dictionary = array(
     'MODULE_SYSTEM_ERRORS' => 'System Errors',
     'MODULE_MODULES' => 'Modules',
     'MODULE_USERLOG' => 'User log',
+    'MODULE_PLANS' => 'Plans',
 
     'SETUP' => 'Setup',
 
@@ -1328,6 +1329,22 @@ $dictionary = array(
     'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
 
     'RECENTLY_USED' => 'Recent',
+
+    'PLAN_ZOOM_CONTROL' => 'Zoom Control',
+    'PLAN_AUTO_ZOOM' => 'Auto Zoom',
+    'CSS_CLASS' => 'Style Class',
+    'IMAGE_ITEM' => 'Image Element',
+    'STYLE_TO_APPLY' => 'Style to apply',
+    'STYLE_TO_APPLY_INVERSE' => 'Style to apply (if not true)',
+    'EMBED_CODE' => 'Embed Code',
+
+    'STYLE_SHOW_IT' => 'Show element',
+    'STYLE_HIDE_IT' => 'Hide element',
+    'STYLE_BLINK_IT' => 'Blinking',
+    'STYLE_FADEOUT50' => 'Opacity 50%',
+    'STYLE_FADEOUT30' => 'Opacity 30%',
+    'STYLE_FADEOUT10' => 'Opacity 10%',
+    'SEE_ALSO' => 'See also',
 
     'TEST' => 'test'
 

@@ -707,6 +707,9 @@ function usual(&$out) {
    $source=$no_linked;
    $no_linked=0;
   }
+  if (!$source && $_SERVER['REQUEST_URI']) {
+   $source = $_SERVER['REQUEST_URI'];
+  }
 
   if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES==1) {
    $save=1;
