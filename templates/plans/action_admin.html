@@ -16,6 +16,8 @@
  <ul class="nav nav-tabs">
      <li[#if TAB=""#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab="><#LANG_GENERAL#></a></li>
      <li[#if TAB="states"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=states"><#LANG_STATES#></a></li>
+     <li[#if TAB="css"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=css"><#LANG_USE_CSS#></a></li>
+     <li[#if TAB="javascript"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=javascript"><#LANG_USE_JAVASCRIPT#></a></li>
      <li[#if TAB="preview"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=preview"><#LANG_PREVIEW#></a></li>
  </ul>
  <div>&nbsp;</div>
@@ -40,6 +42,14 @@
 
  [#if TAB="preview"#]
  [#inc plans_preview.html#]
+ [#endif TAB#]
+
+ [#if TAB="css"#]
+ [#inc plans_css.html#]
+ [#endif TAB#]
+
+ [#if TAB="javascript"#]
+ [#inc plans_javascript.html#]
  [#endif TAB#]
 
 

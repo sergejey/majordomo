@@ -16,6 +16,20 @@ if ($this->tab == 'states') {
     include_once(DIR_MODULES.$this->name.'/states.inc.php');
 }
 
+if ($this->mode=='update' && $this->tab=='css') {
+    $rec['CUSTOM_CSS']=gr('css');
+    SQLUpdate('plans',$rec);
+    $out['OK']=1;
+    $this->redirect("?view_mode=".$this->view_mode."&id=".$rec['ID']."&tab=preview");
+}
+
+if ($this->mode=='update' && $this->tab=='javascript') {
+    $rec['CUSTOM_JAVASCRIPT']=gr('javascript');
+    SQLUpdate('plans',$rec);
+    $out['OK']=1;
+    $this->redirect("?view_mode=".$this->view_mode."&id=".$rec['ID']."&tab=preview");
+}
+
 if ($this->mode == 'update' && $this->tab=='') {
     $ok = 1;
     //updating '<%LANG_TITLE%>' (varchar, required)
@@ -50,6 +64,7 @@ if ($this->mode == 'update' && $this->tab=='') {
 
 
         $out['OK'] = 1;
+        $this->redirect("?view_mode=".$this->view_mode."&id=".$rec['ID']."&tab=preview");
     } else {
         $out['ERR'] = 1;
     }
@@ -62,3 +77,7 @@ if (is_array($rec)) {
     }
 }
 outHash($rec, $out);
+
+if ($rec['ID'] && ($this->tab=='css' || $this->tab=='javascript')) {
+    $out['ITEMS']=$this->getImageItems($rec['ID']);
+}

@@ -182,9 +182,11 @@ class plans extends module
             exit;
         }
 
-        if (isset($this->id)) {
-            $this->embedd=1;
+        /*
+        if ($this->id && !$_GET['id']) {
+            $this->embed=1;
         }
+        */
 
         if (gr('id','int')) {
             $this->id=gr('id','int');
@@ -231,12 +233,14 @@ class plans extends module
         $content=LoadFile(ROOT.'cms/plans/'.$rec['IMAGE']);
         $out['PLAN_ID']=$rec['ID'];
         $out['PLAN_NEED_ZOOM']=$rec['NEED_ZOOM'];
-        if ($this->width || $this->height || $this->embedd) {
+        if ($this->width || $this->height || $this->embed) {
             $rec['AUTO_ZOOM']=0;
             if ($this->width) $out['WIDTH']=$this->width;
             if ($this->height) $out['HEIGHT']=$this->height;
         }
         $out['PLAN_AUTO_ZOOM']=$rec['AUTO_ZOOM'];
+        $out['PLAN_CUSTOM_JAVASCRIPT']=$rec['CUSTOM_JAVASCRIPT'];
+        $out['PLAN_CUSTOM_CSS']=$rec['CUSTOM_CSS'];
         $dynData=$this->findDynamicText($content);
         foreach($dynData as $dynItem) {
             $content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
@@ -466,6 +470,8 @@ class plans extends module
  plans: IMAGE varchar(255) NOT NULL DEFAULT ''
  plans: NEED_ZOOM int(3) NOT NULL DEFAULT '0'
  plans: AUTO_ZOOM int(3) NOT NULL DEFAULT '0'
+ plans: CUSTOM_CSS text
+ plans: CUSTOM_JAVASCRIPT text
  
  plan_states: ID int(10) unsigned NOT NULL auto_increment
  plan_states: TITLE varchar(255) NOT NULL DEFAULT ''
