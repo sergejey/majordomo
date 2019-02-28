@@ -278,7 +278,16 @@ function usual(&$out) {
   // some action for related tables
   SQLExec("DELETE FROM history WHERE OBJECT_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM methods WHERE OBJECT_ID='".$rec['ID']."'");
-  SQLExec("DELETE FROM pvalues WHERE OBJECT_ID='".$rec['ID']."'");
+  $pvalues=SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID=".$rec['ID']);
+  foreach($pvalues as $pvalue) {
+   if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+    $history_table = createHistoryTable($pvalue['ID']);
+   } else {
+    $history_table = 'phistory';
+   }
+   SQLExec("DELETE FROM $history_table WHERE VALUE_ID=".$pvalue['ID']);
+   SQLExec("DELETE FROM pvalues WHERE ID='".$pvalue['ID']."'");
+  }
   SQLExec("DELETE FROM properties WHERE OBJECT_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'");
  }
