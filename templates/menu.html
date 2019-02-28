@@ -2,28 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+ <title><#LANG_CONTROL_MENU#></title>
 
- <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
- <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
+ [#inc common_header.html#]
+ <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+ <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+ <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 
+ <script type="text/javascript" src="<#ROOTHTML#>js/jquery.jplayer.min.js"></script>
  <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/jquerymobile/jquery.mobile-1.4.5.min.css" />
  <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquerymobile/jquery.mobile-1.4.5.min.js"></script>
  <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquerymobile/custom-scripting.js"></script>
-
  <link href="<#ROOTHTML#>css/menu_custom.css" rel="stylesheet" type="text/css"/>
- <link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
 
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.jplayer.min.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-
- <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
- <script type="text/javascript" src="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
-
-<title><#LANG_CONTROL_MENU#></title>
-<script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
 
 [#inc websockets.html#]
 </head>

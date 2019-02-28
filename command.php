@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+        header("Access-Control-Allow-Headers:{$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
     exit(0);
 }
 
@@ -31,17 +31,20 @@ $session = new session("prj");
 
 include_once("./load_settings.php");
 
+//DebMes("Command received: ".$qry,'debug1');
+
 Define('DEVIDER', 'и');
 
+/*
 $sqlQuery = "SELECT MESSAGE
                FROM shouts
               WHERE MEMBER_ID = 0
               ORDER BY ID DESC
               LIMIT 1";
-
 $lastest_word = current(SQLSelectOne($sqlQuery));
+*/
 
-if ($qry != '' && $qry != $lastest_word) {
+if ($qry != '') { // && $qry != $lastest_word
 
     $terminal = gr('terminal');
     if ($terminal) {
@@ -130,6 +133,8 @@ if ($qry != '' && $qry != $lastest_word) {
 
         if ($source) {
             $say_source = $source;
+        } else {
+            $say_source = 'command.php';
         }
 
         say(htmlspecialchars($qrys[$i]), 0, $user_id, $say_source);

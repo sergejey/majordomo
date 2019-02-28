@@ -81,6 +81,6 @@ Blockly.PHP['majordomo_settimeout'] = function(block) {
   var delay = Blockly.PHP.valueToCode(block, 'DELAY',Blockly.PHP.ORDER_NONE) || '60';
   var branch = Blockly.PHP.statementToCode(block, 'DO');
   branch=branch.replace(new RegExp('\n', 'g'), '');
-  var code = 'setTimeOut('+timer+', "'+branch+'", (int)('+delay+'));\n';
+  var code = 'setTimeOut('+timer+', \''+branch+'\', (int)('+delay+'));\n';
   return code;
 };

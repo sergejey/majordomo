@@ -69,6 +69,7 @@
             [#else POINT_ID#]
             <input type="submit" class="btn btn-default" value="<#LANG_ADD#>">
             [#endif POINT_ID#]
+            <a href="?" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
         </div>
     </div>
     <input type="hidden" name="id" value="<#ID#>">

@@ -16,15 +16,15 @@
 
   global $open;
   if ($open!='') {
-
    if ($open=='new') {
     $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&view_mode2=edit_elements&element_id=&top=".$_GET['top']."&left=".$_GET['left']);
    }
-
    $element_id=0;
    if (preg_match('/state_(\d+)/', $open, $m)) {
     $state=SQLSelectOne("SELECT ID, ELEMENT_ID FROM elm_states WHERE ID='".(int)$m[1]."'");
     $element_id=(int)$state['ELEMENT_ID'];
+   } elseif (preg_match('/state_element_(\d+)/', $open, $m)) {
+    $element_id=(int)$m[1];
    } elseif (preg_match('/container_(\d+)/', $open, $m)) {
     $element_id=(int)$m[1];
    }
@@ -34,6 +34,10 @@
   }
 
   global $state_id;
+
+if ($this->tab=='devices') {
+ include DIR_MODULES.'scenes/devices.inc.php';
+}
 
 
   if ($view_mode2=='') {
@@ -84,6 +88,7 @@
   if ($this->tab=='visual') {
    //updating visual
   }
+   
 
   //UPDATING RECORD
    if ($ok) {

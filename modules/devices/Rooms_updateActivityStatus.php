@@ -17,16 +17,12 @@ for ($i = 0; $i < $total; $i++) {
     $rooms[$i]['diff'] = time() - $rooms[$i]['time'];
 }
 
-if (!function_exists('cmpRoomsActivity')) {
-    function cmpRoomsActivity($a, $b)
-    {
-        if ($a['diff'] == $b['diff']) {
-            return 0;
-        }
-        return ($a['diff'] < $b['diff']) ? -1 : 1;
+usort($rooms, function ($a,$b) {
+    if ($a['diff'] == $b['diff']) {
+        return 0;
     }
-}
-usort($rooms, "cmpRoomsActivity");
+    return ($a['diff'] < $b['diff']) ? -1 : 1;
+});
 
 if (getGlobal('NobodyHomeMode.active')) {
     $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";

@@ -38,6 +38,7 @@ for ($i = 0; $i < $total; $i++) {
          break;
       case 'sensor_temp':
          $payload['service']='TemperatureSensor';
+         $payload['CurrentTemperature']['minValue']=-40;
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'CurrentTemperature';
@@ -95,7 +96,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'rgb':
-         DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
+         //DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
          $payload['service']='Lightbulb';
          sg('HomeBridge.to_add',json_encode($payload));
          
@@ -118,6 +119,103 @@ for ($i = 0; $i < $total; $i++) {
          $payload['characteristic'] = 'Brightness';
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.brightness');
          sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'thermostat':
+         $payload['service']='Thermostat';
+         sg('HomeBridge.to_add',json_encode($payload));
+
+         $payload['characteristic'] = 'CurrentTemperature';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'TargetTemperature';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.currentTargetValue');
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         /*
+         $payload['characteristic'] = 'TemperatureDisplayUnits';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.currentTargetValue');
+         sg('HomeBridge.to_set',json_encode($payload));
+         */
+         $payload['characteristic'] = 'CurrentHeatingCoolingState'; //off = 0, heat = 1, and cool = 2
+         //$payload['value']=3;
+         if (!gg($devices[$i]['LINKED_OBJECT'].'.disabled')) {
+            if (gg($devices[$i]['LINKED_OBJECT'].'.status')) {
+               $payload['value']=1;
+            } else {
+               $payload['value']=2;
+            }
+         } else {
+            $payload['value']=0;
+         }
+         sg('HomeBridge.to_set',json_encode($payload));
+         //TargetHeatingCoolingState
+
+
+         //CoolingThresholdTemperature
+         //HeatingThresholdTemperature
+         //Name
+
+
+         break;
+      case 'camera':
+         /*
+         $cameraUsername = gg($devices[$i]['LINKED_OBJECT'].'.cameraUsername');
+         $cameraPassword = gg($devices[$i]['LINKED_OBJECT'].'.cameraPassword');
+         $snapshot_url = gg($devices[$i]['LINKED_OBJECT'].'.snapshotURL');
+         $stream_url = gg($devices[$i]['LINKED_OBJECT'].'.streamURL');
+         $stream_url_hq = gg($devices[$i]['LINKED_OBJECT'].'.streamURL_HQ');
+         if ($snapshot_url) {
+            $stream_url=$snapshot_url;
+         } elseif (!$stream_url && $stream_url_hq) {
+            $stream_url = $stream_url_hq;
+         }
+         $thumb_params ='';
+         $thumb_params.= 'username="' . $cameraUsername . '" password="' . $cameraPassword . '"';
+         $thumb_params.= ' width="1024"';
+         $thumb_params.= ' url="' . $stream_url . '"';
+         $streamTransport = gg($devices[$i]['LINKED_OBJECT'].'.streamTransport');
+         if ($streamTransport!='auto' && $streamTransport!='') {
+            $thumb_params.= ' transport="'.$streamTransport.'"';
+         }
+         $body = '[#module name="thumb" '. $thumb_params. '#]';
+         $body = processTitle($body, $this);
+         if (preg_match('/img src="(.+?)"/is',$body,$m)) {
+            $snapshotPreviewURL=$m[1];
+            $snapshotPreviewURL = preg_replace('/&w=(\d+?)/','', $snapshotPreviewURL);
+            $snapshotPreviewURL = preg_replace('/&h=(\d+?)/','', $snapshotPreviewURL);
+         } else {
+            $snapshotPreviewURL='';
+         }
+         $snapshotPreviewURL='http://'.getLocalIP().$snapshotPreviewURL;
+
+         $payload['service']='CameraRTPStreamManagement';
+         sg('HomeBridge.to_add',json_encode($payload));
+
+         $payload['characteristic'] = 'SupportedVideoStreamConfiguration';
+         $payload['value']='';
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'SupportedAudioStreamConfiguration';
+         $payload['value']='';
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'SupportedRTPConfiguration';
+         $payload['value']='';
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'SelectedRTPStreamConfiguration';
+         $payload['value']='';
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'StreamingStatus';
+         $payload['value']='';
+         sg('HomeBridge.to_set',json_encode($payload));
+
+         $payload['characteristic'] = 'SetupEndpoints';
+         $payload['value']='';
+         sg('HomeBridge.to_set',json_encode($payload));
+*/
          break;
       /*
       case 'sensor_battery':

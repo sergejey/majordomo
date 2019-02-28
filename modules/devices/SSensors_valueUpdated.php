@@ -1,6 +1,5 @@
 <?php
 
- $this->callMethod('statusUpdated');
  //$this->callMethod('logicAction');
 
  $ot=$this->object_title;
@@ -56,6 +55,7 @@
   }
  }
 
+$this->callMethod('statusUpdated');
 /*
 include_once(DIR_MODULES.'devices/devices.class.php');
 $dv=new devices();

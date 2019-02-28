@@ -569,7 +569,7 @@ function DebMes($errorMessage, $logLevel = "debug")
    }
 }
 
-function dprint($data = 0, $stop = 1) {
+function dprint($data = 0, $stop = 1, $show_history = 0) {
    if (isset($_SERVER['REQUEST_METHOD'])) {
       echo "<pre>";
    } else {
@@ -586,6 +586,12 @@ function dprint($data = 0, $stop = 1) {
    } else {
       echo date('Y-m-d H:i:s');
    }
+
+   if ($show_history) {
+      $e = new \Exception;
+      echo ' ('.$e->getTraceAsString().')';
+   }
+
    if (isset($_SERVER['REQUEST_METHOD'])) {
       echo "</pre><hr/>";
       echo str_repeat(' ',4096);

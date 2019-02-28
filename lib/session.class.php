@@ -39,6 +39,8 @@ class session
    {
       $this->name = $name;
 
+      if (isset($_GET['no_session'])) return false;
+
       ini_set('session.use_only_cookies', '0'); //not only cookies
 
       if (!isset($_SERVER['HTTP_USER_AGENT']) || $this->checkBot($_SERVER['HTTP_USER_AGENT']))

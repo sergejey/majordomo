@@ -158,6 +158,7 @@ $dictionary = array(
     'MODULE_SYSTEM_ERRORS' => 'Ошибки системы',
     'MODULE_MODULES' => 'Модули',
     'MODULE_USERLOG' => 'Журнал действий',
+    'MODULE_PLANS' => 'Планы',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
@@ -318,7 +319,7 @@ $dictionary = array(
 
 
     'JS_COMMAND' => 'JavaScript команда',
-    'BUTTON' => 'Кнопка',
+    'BUTTON' => 'Клавиша',
 
 
     'ON_OFF_SWITCH' => 'Выключатель',
@@ -980,6 +981,9 @@ $dictionary = array(
 
     'SETTINGS_SECTION_' => 'Общие',
     'SETTINGS_SECTION_HOOK' => 'Обработчики',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Поведение',
+    'SETTINGS_SECTION_BACKUP' => 'Резервное копирование',
+    'SETTINGS_SECTION_SCENES' => 'Сцены',
 
     'DEVICE_ID' => 'ID устройства',
     'REQUEST_TYPE' => 'Тип запроса',
@@ -1104,14 +1108,14 @@ $dictionary = array(
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
-    'DEVICES_RELAY' => 'Управляемое реле/Выключатель',
-    'DEVICES_DIMMER' => 'Управляемый диммер',
-    'DEVICES_RGB' => 'RGB-контроллер',
+    'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
+    'DEVICES_DIMMER' => 'Освещение (Диммер)',
+    'DEVICES_RGB' => 'Освещение (RGB)',
     'DEVICES_MOTION' => 'Датчик движения',
-    'DEVICES_BUTTON' => 'Кнопка',
+    'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
-    'DEVICES_GENERAL_SENSOR' => 'Общий датчик',
+    'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности',
     'DEVICES_STATE_SENSOR' => 'Датчик состояния',
@@ -1239,8 +1243,8 @@ $dictionary = array(
     'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете|Хорошо',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
-    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
-    'DEVICES_ROOMS_ACTIVITY' => 'Активность:',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть',
+    'DEVICES_ROOMS_ACTIVITY' => 'Активность',
 
     'DEVICES_PASSED_NOW' => 'только что',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
@@ -1248,7 +1252,7 @@ $dictionary = array(
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
     'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
 
-    'DEVICES_CAMERA' =>'IP-камера',
+    'DEVICES_CAMERA' =>'Камера (IP)',
     'DEVICES_CAMERA_STREAM_URL' =>'URL видео-потока',
     'DEVICES_CAMERA_USERNAME' =>'Имя пользователя',
     'DEVICES_CAMERA_PASSWORD' =>'Пароль',
@@ -1325,6 +1329,23 @@ $dictionary = array(
     'MAINCYCLEDOWN' => 'Остановлен главный цикл системы', //
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
 
+    'RECENTLY_USED' => 'Недавнее',
+
+    'PLAN_ZOOM_CONTROL' => 'Управление масштабом',
+    'PLAN_AUTO_ZOOM' => 'Авто-масштабирование',
+    'CSS_CLASS' => 'Класс стиля',
+    'IMAGE_ITEM' => 'Элемент изображения',
+    'STYLE_TO_APPLY' => 'Применить стиль',
+    'STYLE_TO_APPLY_INVERSE' => 'Применить стиль ("иначе")',
+    'EMBED_CODE' => 'Код встраивания',
+
+    'STYLE_SHOW_IT' => 'Показать',
+    'STYLE_HIDE_IT' => 'Спрятать',
+    'STYLE_BLINK_IT' => 'Моргание',
+    'STYLE_FADEOUT50' => 'Прозрачность 50%',
+    'STYLE_FADEOUT30' => 'Прозрачность 30%',
+    'STYLE_FADEOUT10' => 'Прозрачность 10%',
+    'SEE_ALSO' => 'Смотрите также',
 
     /* end module names */
 

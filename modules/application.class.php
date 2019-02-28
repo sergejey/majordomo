@@ -22,15 +22,19 @@
 
 function saveParams($data = 1) {
  $p=array();
- $p["action"]=$this->action;
- $p['doc_name']=$this->doc_name;
- if ($this->ajax) {
+ if (isset($this->action) && $this->action) {
+  $p["action"]=$this->action;
+ }
+ if (isset($this->doc_name) && $this->doc_name) {
+  $p['doc_name']=$this->doc_name;
+ }
+ if (isset($this->ajax) && $this->ajax) {
   $p['ajax']=$this->ajax;
  }
- if ($this->popup) {
+ if (isset($this->popup) && $this->popup) {
   $p['popup']=$this->popup;
  }
- if ($this->app_action) {
+ if (isset($this->app_action) && $this->app_action) {
   $p['app_action']=$this->app_action;
  }
  return parent::saveParams($p);
@@ -190,7 +194,10 @@ function getParams() {
     if ($this->app_action) {
      $out['APP_ACTION']=1;
     }
+   }
 
+   if ($this->app_action=='panel') {
+    $this->redirect(ROOTHTML.'admin.php');
    }
 
 
@@ -280,7 +287,6 @@ function getParams() {
     Define('USER_TITLE', '');
     Define('USER_AVATAR', '');
    }
-
 
    if ($out["DOC_NAME"]) {
     //$doc=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME LIKE '".DBSafe($out['DOC_NAME'])."'");

@@ -1,3 +1,4 @@
+<?php    header("Content-type:application/x-javascript");    ?>
 'use strict';
 
 goog.provide('Blockly.PHP.majordomo_scripts');

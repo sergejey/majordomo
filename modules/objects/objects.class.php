@@ -278,7 +278,16 @@ function usual(&$out) {
   // some action for related tables
   SQLExec("DELETE FROM history WHERE OBJECT_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM methods WHERE OBJECT_ID='".$rec['ID']."'");
-  SQLExec("DELETE FROM pvalues WHERE OBJECT_ID='".$rec['ID']."'");
+  $pvalues=SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID=".$rec['ID']);
+  foreach($pvalues as $pvalue) {
+   if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+    $history_table = createHistoryTable($pvalue['ID']);
+   } else {
+    $history_table = 'phistory';
+   }
+   SQLExec("DELETE FROM $history_table WHERE VALUE_ID=".$pvalue['ID']);
+   SQLExec("DELETE FROM pvalues WHERE ID='".$pvalue['ID']."'");
+  }
   SQLExec("DELETE FROM properties WHERE OBJECT_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'");
  }
@@ -707,6 +716,9 @@ function usual(&$out) {
    $source=$no_linked;
    $no_linked=0;
   }
+  if (!$source && $_SERVER['REQUEST_URI']) {
+   $source = $_SERVER['REQUEST_URI'];
+  }
 
   if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES==1) {
    $save=1;
@@ -871,19 +883,18 @@ function usual(&$out) {
    SQLInsert('phistory_queue', $q_rec);
   }
 
-
   if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
    global $property_linked_history;
-   if (!$property_linked_history[$property][$prop['ONCHANGE']]) {
-    $property_linked_history[$property][$prop['ONCHANGE']]=1;
+   if (!$property_linked_history[$this->object_title.'.'.$property][$prop['ONCHANGE']]) {
+    $property_linked_history[$this->object_title.'.'.$property][$prop['ONCHANGE']]=1;
     $params=array();
     $params['PROPERTY']=$property;
     $params['NEW_VALUE']=(string)$value;
     $params['OLD_VALUE']=(string)$old_value;
     $params['SOURCE']=(string)$source;
-    //$this->callMethod($prop['ONCHANGE'], $params);
-    $this->callMethodSafe($prop['ONCHANGE'], $params);
-    unset($property_linked_history[$property][$prop['ONCHANGE']]);
+    $this->callMethod($prop['ONCHANGE'], $params);
+    //$this->callMethodSafe($prop['ONCHANGE'], $params);
+    unset($property_linked_history[$this->object_title.'.'.$property][$prop['ONCHANGE']]);
    }
   }
 
