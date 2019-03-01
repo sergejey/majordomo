@@ -159,8 +159,10 @@ class plans extends module
                 }
                 $content=LoadFile(ROOT.'cms/plans/'.$rec['IMAGE']);
                 $dynData=$this->findDynamicText($content);
-                foreach($dynData as $dynItem) {
-                    $states[]=$dynItem;
+                if (is_array($dynData)) {
+                    foreach($dynData as $dynItem) {
+                        $states[]=$dynItem;
+                    }
                 }
                 $result = $states;
                 echo json_encode($result);
@@ -242,8 +244,10 @@ class plans extends module
         $out['PLAN_CUSTOM_JAVASCRIPT']=$rec['CUSTOM_JAVASCRIPT'];
         $out['PLAN_CUSTOM_CSS']=$rec['CUSTOM_CSS'];
         $dynData=$this->findDynamicText($content);
-        foreach($dynData as $dynItem) {
-            $content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
+        if (is_array($dynData)) {
+            foreach($dynData as $dynItem) {
+                $content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
+            }
         }
         $out['SVG_CONTENT']=$content;
         $p = new parser(DIR_TEMPLATES . $this->name . "/preview.html", $out, $this);
@@ -251,7 +255,7 @@ class plans extends module
     }
 
     function findDynamicText($content,$process = 1) {
-
+        $result = array();
         $p = xml_parser_create();
         xml_parse_into_struct($p, $content, $vals, $index);
         xml_parser_free($p);
@@ -338,10 +342,12 @@ class plans extends module
         foreach($plans as $rec) {
             $content=LoadFile(ROOT.'cms/plans/'.$rec['IMAGE']);
             $dynData=$this->findDynamicText($content,false);
-            foreach($dynData as $dynItem) {
-                //$content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
-                foreach($dynItem['PROPERTIES'] as $property) {
-                    $properties[]=array('PROPERTY'=>mb_strtolower($property,'UTF-8'),'STATE_ID'=>$dynItem['ITEM'],'TEMPLATE'=>$dynItem['TEMPLATE']);
+            if (is_array($dynData)) {
+                foreach($dynData as $dynItem) {
+                    //$content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
+                    foreach($dynItem['PROPERTIES'] as $property) {
+                        $properties[]=array('PROPERTY'=>mb_strtolower($property,'UTF-8'),'STATE_ID'=>$dynItem['ITEM'],'TEMPLATE'=>$dynItem['TEMPLATE']);
+                    }
                 }
             }
         }
