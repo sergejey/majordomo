@@ -420,6 +420,17 @@ $.fn.customContextMenu = function(callBack){
         function checkAllStates() {
          clearTimeout(checkTimer);
 
+            if (firstRun==1) {
+                {if $TOTAL_SCENES!="1"}
+                 $("#slider").easySlider({
+                 auto: false,
+                 numeric: true,
+                {if $smarty.const.SETTINGS_SCENES_VERTICAL_NAV=="1"}numericId: 'controls_vertical',{/if}
+                 continuous: false
+                 });
+                {/if}
+            }
+
          if (subscribedWebSockets==1) {
           firstRun=0;
           checkTimer=setTimeout('checkAllStates();', 3000);
@@ -433,17 +444,6 @@ $.fn.customContextMenu = function(callBack){
           url: url,
           }).done(function(data) { 
            processCheckStates(data);
-           {if $TOTAL_SCENES!="1"}
-           if (firstRun==1) {
-                        $("#slider").easySlider({
-                                auto: false, 
-                                numeric: true,
-                                {if $smarty.const.SETTINGS_SCENES_VERTICAL_NAV=="1"}numericId: 'controls_vertical',{/if}
-                                continuous: false
-                        });
-           }
-
-           {/if}
            firstRun=0;
            refreshRun=0;
            //tryWebSockets();
@@ -598,8 +598,6 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                 {/if}
                  
                  checkAllStates();
-
-
 
 
 

@@ -11,9 +11,11 @@
                 /* 
                         define width and height of list item (slide)
                         entire slider area will adjust according to the parameters provided here
-                */ 
-                width:<#SETTINGS_SCENES_WIDTH#>px;
-                height:<#SETTINGS_SCENES_HEIGHT#>px;
+                */
+{/literal}
+                width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;
+                height:{$smarty.const.SETTINGS_SCENES_HEIGHT}px;
+{literal}
                 overflow:hidden; 
                 }       
         #prevBtn, #nextBtn,
