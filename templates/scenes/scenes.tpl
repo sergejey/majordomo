@@ -98,7 +98,7 @@
 {/if}
         {if $TOTAL_SCENES!="1"}
         <style>{include './slider.css'}</style>
-        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js"></script>
+        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js?v=2019-02-27"></script>
         {/if}
 
         <script type="text/javascript" language="javascript">
