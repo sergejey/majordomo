@@ -1346,6 +1346,17 @@ $dictionary = array(
     'STYLE_FADEOUT10' => 'Opacity 10%',
     'SEE_ALSO' => 'See also',
 
+    'CONNECT_LOGIN_FAILED' => 'Could not login into CONNECT service. Please check username/password.',
+    'CONNECT_ABOUT' => 'CONNECT service allows you to organize easy access to your smarthome system by Internet. Also it provides tools for other cloud-based services like Cloud Backup, voice assistants, etc. More details available <a href="https://connect.smartliving.ru/services/s2.html">by the link</a>',
+    'CONNECT_REGISTER' => 'Register at CONNECT',
+    'CONNECT_PUBLISH_DATA' => 'Publish Data',
+    'CONNECT_CLOUD_BACKUP' => 'Cloud Backup',
+    'CONNECT_MANAGE_BACKUPS' => 'Manage backups',
+    'CONNECT_BACKUP_NOW' => 'Backup now',
+    'CONNECT_ENABLE_CLOUDSYNC' => 'Enable Cloud Sync',
+    'CONNECT_ENABLE_CLOUDBACKUPC' => 'Enable Cloud Backup',
+    'CONNECT_DISABLE_SECURE_CONNECTION' => 'Disable secure connection',
+
     'TEST' => 'test'
 
 
