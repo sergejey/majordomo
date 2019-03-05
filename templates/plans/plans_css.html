@@ -1,0 +1,75 @@
+<form class="form" action="?" method="post">
+    <div class="form-group">
+    <textarea name="css" id="css" class="form-control" rows="15">[#CUSTOM_CSS#]</textarea>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default">
+    </div>
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="mode" value="update">
+</form>
+
+<div>
+    Image elements (ID):
+    [#begin ITEMS#]
+    #[#ITEM#];
+    [#end ITEMS#]
+</div>
+
+<script src="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
+
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/xml/xml.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/javascript/javascript.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/css/css.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/clike/clike.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldcode.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/brace-fold.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/comment-fold.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/closebrackets.js"></script>
+
+<script language="javascript">
+    var editor;
+    var myTextArea;
+    $(document).ready(function() {
+        var myTextArea = document.getElementById('css');
+        editor = CodeMirror.fromTextArea(myTextArea, {
+            value: myTextArea.value,
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: "css",
+            htmlMode: true,
+            indentUnit: 1,
+            indentWithTabs: false,
+            autoCloseBrackets: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            extraKeys: {
+                "F11": function (cm) {
+                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                "Ctrl-S": function (instance) {
+                    document.getElementById('css').form.submit();
+                },
+                "Esc": function (cm) {
+                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                },
+                "Ctrl-Space": "autocomplete",
+                "Ctrl-Q": function (cm) {
+                    cm.foldCode(cm.getCursor());
+                }
+            }
+        });
+    });
+</script>
