@@ -27,8 +27,23 @@
     50% { opacity: 0; }
 }
 
+@-webkit-keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
 .svg_content .blink_it {
     animation: blink 1s linear infinite;
+}
+
+.svg_content .spin_it {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    -webkit-animation: rotation 2s infinite linear;
 }
 
 .svg_content .hide_it {

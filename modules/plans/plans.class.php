@@ -416,6 +416,7 @@ class plans extends module
         $classes[]=array('CLASS'=>'show_it','TITLE'=>LANG_STYLE_SHOW_IT);
         $classes[]=array('CLASS'=>'hide_it','TITLE'=>LANG_STYLE_HIDE_IT);
         $classes[]=array('CLASS'=>'blink_it','TITLE'=>LANG_STYLE_BLINK_IT);
+        $classes[]=array('CLASS'=>'spin_it','TITLE'=>LANG_STYLE_SPIN_IT);
         $classes[]=array('CLASS'=>'fadeout50','TITLE'=>LANG_STYLE_FADEOUT50);
         $classes[]=array('CLASS'=>'fadeout30','TITLE'=>LANG_STYLE_FADEOUT30);
         $classes[]=array('CLASS'=>'fadeout10','TITLE'=>LANG_STYLE_FADEOUT10);

@@ -1343,6 +1343,7 @@ $dictionary = array(
     'STYLE_SHOW_IT' => 'Показать',
     'STYLE_HIDE_IT' => 'Спрятать',
     'STYLE_BLINK_IT' => 'Моргание',
+    'STYLE_SPIN_IT' => 'Вращение',
     'STYLE_FADEOUT50' => 'Прозрачность 50%',
     'STYLE_FADEOUT30' => 'Прозрачность 30%',
     'STYLE_FADEOUT10' => 'Прозрачность 10%',

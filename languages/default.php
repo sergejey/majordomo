@@ -1342,6 +1342,7 @@ $dictionary = array(
     'STYLE_SHOW_IT' => 'Show element',
     'STYLE_HIDE_IT' => 'Hide element',
     'STYLE_BLINK_IT' => 'Blinking',
+    'STYLE_SPIN_IT' => 'Spinning',
     'STYLE_FADEOUT50' => 'Opacity 50%',
     'STYLE_FADEOUT30' => 'Opacity 30%',
     'STYLE_FADEOUT10' => 'Opacity 10%',
