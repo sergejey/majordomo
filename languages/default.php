@@ -1010,6 +1010,7 @@ $dictionary = array(
 
     'SCENE_HIDDEN' => 'Do not include in to the swappable list of scenes',
     'SCENE_AUTO_SCALE' => 'Auto zoom scene to device with',
+    'SCENE_DEVICES_BACKGROUND' => 'Background for Devices',
 
     'DO_NOTHING' => 'Do nothing',
     'DO_ONCLICK' => 'On click',

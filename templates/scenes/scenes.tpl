@@ -623,6 +623,18 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 <div id="slider">
 {if $TOTAL_SCENES!="1"}<ul>{/if}
 {foreach $RESULT as $SCENE}
+    <style>
+        {if $SCENE.DEVICES_BACKGROUND=="dark"}
+        #scene_background_{$SCENE.ID} > .type_device {
+            background-color:#222222;
+        }
+        {/if}
+        {if $SCENE.DEVICES_BACKGROUND=="light"}
+        #scene_background_{$SCENE.ID} > .type_device {
+            background-color:#dddddd;
+        }
+        {/if}
+    </style>
 {if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
  <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
