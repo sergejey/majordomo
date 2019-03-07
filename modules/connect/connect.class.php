@@ -485,6 +485,8 @@ class connect extends module
             }
         }
         $fields['devices_data'] = json_encode($devices);
+        $fields['local_url'] = getLocalIp();
+
         //DebMes("Posting all devices to $url",'device_sync');
         //DebMes($fields['devices_data'],'device_sync');
         $ch = curl_init();
@@ -626,8 +628,10 @@ class connect extends module
         $fields = array(
             'datafile' => $cfile,
             'merge' => 1,
-            'force_data' => $force_data
+            'force_data' => $force_data,
+            'local_url' => getLocalIp()
         );
+
 
         //open connection
         $ch = curl_init();

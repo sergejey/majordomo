@@ -408,6 +408,9 @@ class plans extends module
     }
 
     function getCSSClasses($plan_id) {
+
+        $plan_rec=SQLSelectOne("SELECT * FROM plans WHERE ID=".(int)$plan_id);
+
         $classes=array();
 
         $classes[]=array('CLASS'=>'show_it','TITLE'=>LANG_STYLE_SHOW_IT);
@@ -416,6 +419,14 @@ class plans extends module
         $classes[]=array('CLASS'=>'fadeout50','TITLE'=>LANG_STYLE_FADEOUT50);
         $classes[]=array('CLASS'=>'fadeout30','TITLE'=>LANG_STYLE_FADEOUT30);
         $classes[]=array('CLASS'=>'fadeout10','TITLE'=>LANG_STYLE_FADEOUT10);
+
+        if ($plan_rec['CUSTOM_CSS']!='') {
+            if (preg_match_all('/\.([^\s{\n\.]+)/is',$plan_rec['CUSTOM_CSS'],$m)) {
+                foreach($m[1] as $class) {
+                    $classes[]=array('CLASS'=>$class,'TITLE'=>'CSS: '.$class);
+                }
+            }
+        }
 
         return $classes;
 
