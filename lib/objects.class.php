@@ -133,8 +133,8 @@ function getObjectClassTemplate($object_name) {
     $data=preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
     //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
-    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
-    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    //$data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    $data=preg_replace('/%\.([\w\_\d\-]+)/uis', '%'.$object_name.'.\1'.'', $data);
     endMeasure('getObjectClassTemplate');
     return $data;
 }
