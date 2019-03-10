@@ -42,8 +42,12 @@
         <li[#if TAB="preview"#] class="active"[#endif#]>
         <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#> / <#LANG_EDIT#></a>
         </li>
-
+            <li>
+            <a href="<#ROOTHTML#>popup/scenes/<#ID#>.html" target="_blank"><#LANG_PREVIEW#></a>
+            </li>
         </ul>
+
+<div>&nbsp;</div>
 
    [#endif ID#]
    [#if TAB=""#]
@@ -58,9 +62,7 @@
 [#endif TAB#]
 
    [#if TAB="preview"#]
-   &nbsp;
     <iframe width="100%" height="800" src="<#ROOTHTML#>popup/scenes/[#ID#].html?draggable=1"></iframe>
-    <br/><a href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank class="btn btn-default"><#LANG_PREVIEW#></a>
    [#endif TAB#]
 
 

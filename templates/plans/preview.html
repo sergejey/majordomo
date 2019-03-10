@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<#ROOTHTML#>templates/plans/basic.css">
+<link rel="stylesheet" href="<#ROOTHTML#>templates/plans/basic.css?v=2019-03-07">
 [#if PLAN_NEED_ZOOM="1"#]
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/hammer/hammer.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/svg-pan-zoom/svg-pan-zoom.min.js"></script>
@@ -110,7 +110,7 @@
             window_url='[#EXT_URL#]';
             [#endif EXT_URL#]
             if (window_url!='') {
-                $.fancybox.open({ src: window_url, type: 'iframe'});
+                $.fancybox.open({ src: window_url, type: 'iframe', iframe:{preload:false}});
             } else {
                 var url="<#ROOTHTML#>ajax/plans.html?op=click&id=[#ID#]";
                 $.ajax({

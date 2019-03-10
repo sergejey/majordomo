@@ -13,7 +13,8 @@
             //url='/module/charts.html?id=config&period=24h&chart_type=column&group=hour&property=%.object_title%'+'.valueHour&height=500';
             url=('/pChart/?p=%.object_title%'+'.valueHour&op=log&minimal=1&chart_type=column&subop=24h&group=hour');
         }
-        parent.$.fancybox.open({ src: '<div style="width:1000px;"><iframe src="'+url+'" width="100%" height="500"></div>', type: 'html' });
+        //parent.$.fancybox.open({ src: '<div style="width:1000px;"><iframe src="'+url+'" width="100%" height="500"></div>', type: 'html' });
+        parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false}});
         //$('#%.object_title%_iframe').attr('src',url);
         return false;
     }

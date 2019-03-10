@@ -190,7 +190,7 @@ class plans extends module
         }
         */
 
-        if (gr('id','int')) {
+        if (!$this->id && gr('id','int')) {
             $this->id=gr('id','int');
         }
         if ($this->id) {
@@ -226,7 +226,7 @@ class plans extends module
     function getPreview($id) {
         $out = array();
         $rec=SQLSelectOne("SELECT * FROM plans WHERE ID=".(int)$id);
-        $states = SQLSelect("SELECT * FROM plan_states WHERE PLAN_ID=".$rec['ID']);
+        $states = SQLSelect("SELECT * FROM plan_states WHERE PLAN_ID=".(int)$rec['ID']);
         foreach($states as &$state) {
             $this->processState($state);
             $state['CAN_BE_CLICKED']=1;
@@ -416,12 +416,13 @@ class plans extends module
         $classes[]=array('CLASS'=>'show_it','TITLE'=>LANG_STYLE_SHOW_IT);
         $classes[]=array('CLASS'=>'hide_it','TITLE'=>LANG_STYLE_HIDE_IT);
         $classes[]=array('CLASS'=>'blink_it','TITLE'=>LANG_STYLE_BLINK_IT);
+        $classes[]=array('CLASS'=>'spin_it','TITLE'=>LANG_STYLE_SPIN_IT);
         $classes[]=array('CLASS'=>'fadeout50','TITLE'=>LANG_STYLE_FADEOUT50);
         $classes[]=array('CLASS'=>'fadeout30','TITLE'=>LANG_STYLE_FADEOUT30);
         $classes[]=array('CLASS'=>'fadeout10','TITLE'=>LANG_STYLE_FADEOUT10);
 
         if ($plan_rec['CUSTOM_CSS']!='') {
-            if (preg_match_all('/\.([^\s{\n\.]+)/is',$plan_rec['CUSTOM_CSS'],$m)) {
+            if (preg_match_all('/\.([^\s{\n\.]+)\s+{/is',$plan_rec['CUSTOM_CSS'],$m)) {
                 foreach($m[1] as $class) {
                     $classes[]=array('CLASS'=>$class,'TITLE'=>'CSS: '.$class);
                 }

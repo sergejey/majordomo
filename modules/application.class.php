@@ -364,6 +364,23 @@ function getParams() {
     $template_file=DIR_TEMPLATES."scenes.html";
    }
 
+   if (!$this->action && defined('SETTINGS_GENERAL_START_LAYOUT') && SETTINGS_GENERAL_START_LAYOUT!='') {
+   
+    if (SETTINGS_GENERAL_START_LAYOUT=='homepages') {
+     $this->redirect(ROOTHTML.'pages.html');
+    }
+    if (SETTINGS_GENERAL_START_LAYOUT=='menu') {
+     $this->redirect(ROOTHTML.'menu.html');
+    }
+    if (SETTINGS_GENERAL_START_LAYOUT=='apps') {
+     $this->redirect(ROOTHTML.'apps.html');
+    }
+    if (SETTINGS_GENERAL_START_LAYOUT=='cp') {
+     $this->redirect(ROOTHTML.'admin.php');
+    }
+   }
+
+
    if ($this->ajax && $this->action) {
     global $ajax;
     $ajax=1;

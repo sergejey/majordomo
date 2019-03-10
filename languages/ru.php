@@ -162,6 +162,7 @@ $dictionary = array(
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
+    'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
 
     'SETUP' => 'Настроить',
 
@@ -1342,6 +1343,7 @@ $dictionary = array(
     'STYLE_SHOW_IT' => 'Показать',
     'STYLE_HIDE_IT' => 'Спрятать',
     'STYLE_BLINK_IT' => 'Моргание',
+    'STYLE_SPIN_IT' => 'Вращение',
     'STYLE_FADEOUT50' => 'Прозрачность 50%',
     'STYLE_FADEOUT30' => 'Прозрачность 30%',
     'STYLE_FADEOUT10' => 'Прозрачность 10%',
