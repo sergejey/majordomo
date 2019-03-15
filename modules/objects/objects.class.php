@@ -852,10 +852,10 @@ function usual(&$out) {
 
   saveToCache($cached_name, $value);
 
+  $p_lower=strtolower($property);
   if (!defined('DISABLE_SIMPLE_DEVICES') &&
       $this->device_id &&
-      $property!='updated' &&
-      $property!='updatedText'
+      ($p_lower=='value' || $p_lower=='status')
   ) {
    addToOperationsQueue('connect_device_data',$this->object_title.'.'.$property,$value,true);
   }
