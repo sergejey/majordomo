@@ -166,6 +166,8 @@ function admin(&$out) {
 
  }
 
+ $out['DEVICES']=SQLSelect("SELECT ID,TITLE,TYPE,LINKED_OBJECT FROM devices WHERE TYPE IN ('relay','dimmer','button','thermostat') ORDER BY TITLE");
+
  if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
