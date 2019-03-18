@@ -83,7 +83,7 @@ class switch_sample extends plan_component {
         return $svg;
     }
     
-    function getJavascript()
+    function getJavascript($attributes)
     {
         $data=$this->getData();
         $prop_name=strtolower($data['value']['LINKED_OBJECT'].'.'.$data['value']['LINKED_PROPERTY']);

@@ -63,7 +63,7 @@ class plan_component extends stdClass
         }
     }
 
-    function getJavascript()
+    function getJavascript($attributes)
     {
     }
 

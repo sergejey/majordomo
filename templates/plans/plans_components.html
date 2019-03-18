@@ -44,7 +44,7 @@
                                 [#end OPTIONS#]
                             </select>
                             [#endif TYPE#]
-                            [#if TYPE=="int" || TYPE=="text"#]
+                            [#if TYPE=="int" || TYPE=="text" || TYPE=="float"#]
                             <input type="text" name="property_[#NAME#]" value="[#VALUE#]" class="form-control" placeholder="[#DEFAULT#]">
                             [#endif TYPE#]
                             [#if TYPE=="rgb"#]
@@ -169,7 +169,7 @@
 
         [#if COMPONENT_ID!="new"#]
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&component_id=[#ID#]&duplicate=1" class="btn btn-default" onclick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>');"><#LANG_MAKE_COPY#></a>
+        <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&component_id=[#COMPONENT_ID#]&duplicate=1" class="btn btn-default" onclick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>');"><#LANG_MAKE_COPY#></a>
         [#endif ELEMENT_ID#]
     </div>
     <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">

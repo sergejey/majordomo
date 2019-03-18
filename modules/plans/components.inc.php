@@ -14,7 +14,7 @@ if ($component_id) {
         $component['REPLACE_NAME']='';
         $component['ID']=SQLInsert('plan_components',$component);
 
-        $old_data=SQLSelect("SELECT * plan_components_data WHERE COMPONENT_ID=".$old_id);
+        $old_data=SQLSelect("SELECT * FROM plan_components_data WHERE COMPONENT_ID=".$old_id);
         foreach($old_data as $data_item) {
             unset($data_item['ID']);
             $data_item['COMPONENT_ID']=$component['ID'];
@@ -102,6 +102,8 @@ if ($component_id) {
                 $property_rec['PROPERTY_NAME']=$property['NAME'];
                 if ($property['TYPE']=='int') {
                     $property_rec['PROPERTY_VALUE'] = gr('property_'.$property['NAME'], 'int');
+                } elseif ($property['TYPE']=='float') {
+                    $property_rec['PROPERTY_VALUE'] = gr('property_'.$property['NAME'], 'float');
                 } elseif ($property['TYPE']=='linked_property') {
                     $property_rec['LINKED_OBJECT'] = gr('property_'.$property['NAME'] . '_linked_object');
                     $property_rec['LINKED_PROPERTY'] = gr('property_'.$property['NAME'] . '_linked_property');

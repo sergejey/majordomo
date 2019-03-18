@@ -320,12 +320,12 @@ class plans extends module
                             $attributes[strtolower($k)]=$v;
                         }
                         if ($attributes['id']==$component['REPLACE_NAME']) {
-                            $out['PLAN_CUSTOM_CSS'].="\n#".$attributes['id']." {display:none}";
+                            $out['PLAN_CUSTOM_CSS'].="\n#".$attributes['id']." {display:none !important}";
                             //dprint($vals[$i]);
                             include_once (DIR_MODULES.$this->name.'/components/'.$component['COMPONENT_NAME'].'.class.php');
                             $object=new $component['COMPONENT_NAME']($component['ID']);
                             $svg='<g id="component'.$component['ID'].'">'.$object->getSVG($attributes).'</g>';
-                            $js=$object->getJavascript();
+                            $js=$object->getJavascript($attributes);
                             if ($js!='') {
                                 $out['PLAN_CUSTOM_JAVASCRIPT'].="\n".$js;
                             }
