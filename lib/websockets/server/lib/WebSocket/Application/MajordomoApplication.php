@@ -325,13 +325,19 @@ class MajordomoApplication extends Application
                             }
                             $seen_plan_state[$k] = 1;
                             //$state = $this->_scenesDynamicElements[$k];
-                            $state=array('ID'=>$k);
+                            $state=array('ID'=>$k,'PROPERTY_NAME'=>$property_name,'PROPERTY_VALUE'=>$property_value);
                             if ($v['TEMPLATE']!='') {
                                 $state['TEMPLATE']=$v['TEMPLATE'];
                                 $state['ITEM']=$k;
                             }
+                            if (preg_match('/^component(\d+)$/',$k,$m)) {
+                                $state['COMPONENT_ID']=$m[1];
+                                $state['ITEM']=$k;
+                            }
                             $plans->processState($state);
-                            $state['TEMPLATE']='';
+                            if ($state['TEMPLATE']) {
+                                unset($state['TEMPLATE']);
+                            }
                             $send_plan_states[] = $state;
                         }
 

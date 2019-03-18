@@ -23,6 +23,22 @@
         document.body.style.zoom = zoom+"%"
     }
 
+    function reloadComponent(element_id,component_id) {
+        var url="<#ROOTHTML#>ajax/plans.html?op=getComponent&id="+component_id;
+        $.ajax({
+            url: url,
+        }).done(function(data) {
+            //alert(data);
+            var obj=jQuery.parseJSON(data);
+            if (typeof obj.SVG !== "undefined") {
+                //alert(obj.SVG);
+                $('#'+element_id+' svg').remove();
+                $('#'+element_id).append(obj.SVG);
+            }
+        });
+        //alert('reloading '+component_id);
+    }
+
     function processPlanStates(data) {
         var obj=jQuery.parseJSON(data);
         if (typeof obj !='object') return false;
@@ -32,6 +48,16 @@
         if (objCnt) {
             for (var i = 0; i < objCnt; i++) {
                 var elem=$('#'+obj[i].ITEM);
+                if (typeof obj[i].COMPONENT_ID !== "undefined") {
+                    var function_name = 'componentUpdated'+obj[i].COMPONENT_ID;
+                    if (typeof obj[i].PROPERTY_NAME!=="undefined" && eval("typeof "+function_name) === 'function') {
+                        var code=function_name+'("'+obj[i].PROPERTY_NAME+'","'+obj[i].PROPERTY_VALUE+'")';
+                        eval(code);
+                    } else {
+                        reloadComponent(obj[i].ITEM,obj[i].COMPONENT_ID);
+                    }
+                    continue;
+                }
                 if (typeof obj[i].CONTENT === "undefined") {
                     elem.attr("class", "");
                     if (obj[i].SET_CLASS!='') {
@@ -80,6 +106,10 @@
         subscribeToPlan();
     });
 
+    $.subscribe('wsDisconnected', function (_) {
+        subscribedPlanWebSockets=0;
+    });
+
     $.subscribe('wsData', function (_, response) {
         if (response.action=='subscribed') {
             console.log('Plan Subscription confirmed.');
@@ -122,6 +152,33 @@
         });
         [#endif CAN_BE_CLICKED#]
         [#end STATES#]
+
+        [#begin COMPONENTS#]
+        [#if CAN_BE_CLICKED="1"#]
+        $('#component[#ID#]').click(function (e) {
+            var window_url='';
+            [#if MENU_ITEM_ID!="0"#]
+            window_url='<#ROOTHTML#>menu.html?parent=[#MENU_ITEM_ID#]';
+            [#endif MENU_ITEM_ID#]
+            [#if HOMEPAGE_ID!="0"#]
+            window_url='<#ROOTHTML#>page/[#HOMEPAGE_ID#].html';
+            [#endif HOMEPAGE_ID#]
+            [#if EXT_URL!=""#]
+            window_url='[#EXT_URL#]';
+            [#endif EXT_URL#]
+            if (window_url!='') {
+                $.fancybox.open({ src: window_url, type: 'iframe', iframe:{preload:false}});
+            } else {
+                var url="<#ROOTHTML#>ajax/plans.html?op=click_component&id=[#ID#]";
+                $.ajax({
+                    url: url,
+                }).done(function(data) {
+                    checkAllPlanStates();
+                });
+            }
+        });
+        [#endif CAN_BE_CLICKED#]
+        [#end COMPONENTS#]
 
         $('#plan[#PLAN_ID#]').show();
         [#if PLAN_NEED_ZOOM="1"#]

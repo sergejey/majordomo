@@ -16,6 +16,10 @@ if ($this->tab == 'states') {
     include_once(DIR_MODULES.$this->name.'/states.inc.php');
 }
 
+if ($this->tab == 'components') {
+    include_once(DIR_MODULES.$this->name.'/components.inc.php');
+}
+
 if ($this->mode=='update' && $this->tab=='css') {
     $rec['CUSTOM_CSS']=gr('css');
     SQLUpdate('plans',$rec);

@@ -164,6 +164,10 @@ class plans extends module
                         $states[]=$dynItem;
                     }
                 }
+                $components=SQLSelect("SELECT ID,REPLACE_NAME FROM plan_components WHERE PLAN_ID=".$plan_id);
+                foreach($components as $component) {
+                    $states[]=array('COMPONENT_ID'=>$component['ID'],'ITEM'=>'component'.$component['ID']);
+                }
                 $result = $states;
                 echo json_encode($result);
             }
@@ -180,6 +184,50 @@ class plans extends module
                     eval($state['CODE']);
                 }
                 echo "OK";
+            }
+            if ($op=='click_component') {
+                $id=gr('id','int');
+                $component=SQLSelectOne("SELECT * FROM plan_components WHERE ID=".$id);
+                if ($component['ACTION_OBJECT']!='' && $component['ACTION_METHOD']!='') {
+                    callMethod($component['ACTION_OBJECT'].'.'.$component['ACTION_METHOD']);
+                }
+                if ($component['SCRIPT_ID']) {
+                    runScript($component['SCRIPT_ID']);
+                }
+                if ($component['CODE']!='') {
+                    eval($component['CODE']);
+                }
+                echo "OK";
+            }
+            if ($op=='getComponent') {
+                $id=gr('id','int');
+                $component=SQLSelectOne("SELECT * FROM plan_components WHERE ID=".$id);
+                $result=array();
+                if ($component['ID']) {
+                    $rec=SQLSelectOne("SELECT * FROM plans WHERE ID=".$component['PLAN_ID']);
+                    $content=LoadFile(ROOT.'cms/plans/'.$rec['IMAGE']);
+                    $p = xml_parser_create();
+                    xml_parse_into_struct($p, $content, $vals, $index);
+                    xml_parser_free($p);
+                    $total=count($vals);
+                    for($i=0;$i<$total;$i++) {
+                        $attributes=array();
+                        if (is_array($vals[$i]['attributes'])) {
+                            foreach($vals[$i]['attributes'] as $k=>$v) {
+                                $attributes[strtolower($k)]=$v;
+                            }
+                            if ($attributes['id']==$component['REPLACE_NAME']) {
+                                include_once (DIR_MODULES.$this->name.'/components/'.$component['COMPONENT_NAME'].'.class.php');
+                                $object=new $component['COMPONENT_NAME']($component['ID']);
+                                $svg=$object->getSVG($attributes);
+                                $result['SVG']=$svg;
+                                break;
+                            }
+                        }
+                    }
+                    //$result=$component;
+                }
+                echo json_encode($result);
             }
             exit;
         }
@@ -249,6 +297,51 @@ class plans extends module
                 $content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
             }
         }
+
+        $components=SQLSelect("SELECT * FROM plan_components WHERE PLAN_ID=".$rec['ID']);
+        if ($components[0]['ID']) {
+            $p = xml_parser_create();
+            xml_parse_into_struct($p, $content, $vals, $index);
+            xml_parser_free($p);
+
+            foreach($components as &$component) {
+                /*
+                if ($component['MENU_ITEM_ID'] || $component['HOMEPAGE_ID'] || $component['EXT_URL'] ||
+                $component['CODE'] || $component['ACTION_OBJECT'] || $component['SCRIPT_ID']) {
+
+                }
+                */
+                $component['CAN_BE_CLICKED']=1;
+                $total=count($vals);
+                for($i=0;$i<$total;$i++) {
+                    $attributes=array();
+                    if (is_array($vals[$i]['attributes'])) {
+                        foreach($vals[$i]['attributes'] as $k=>$v) {
+                            $attributes[strtolower($k)]=$v;
+                        }
+                        if ($attributes['id']==$component['REPLACE_NAME']) {
+                            $out['PLAN_CUSTOM_CSS'].="\n#".$attributes['id']." {display:none}";
+                            //dprint($vals[$i]);
+                            include_once (DIR_MODULES.$this->name.'/components/'.$component['COMPONENT_NAME'].'.class.php');
+                            $object=new $component['COMPONENT_NAME']($component['ID']);
+                            $svg='<g id="component'.$component['ID'].'">'.$object->getSVG($attributes).'</g>';
+                            $js=$object->getJavascript();
+                            if ($js!='') {
+                                $out['PLAN_CUSTOM_JAVASCRIPT'].="\n".$js;
+                            }
+                            $content=preg_replace('/<\w+[^<>]+id=["\']'.$component['REPLACE_NAME'].'["\']/is',$svg.'\0',$content);
+                            break;
+                        }
+                    }
+                }
+                //dprint($svg);
+            }
+            $out['COMPONENTS']=$components;
+        }
+
+
+
+
         $out['SVG_CONTENT']=$content;
         $p = new parser(DIR_TEMPLATES . $this->name . "/preview.html", $out, $this);
         return $p->result;
@@ -331,11 +424,17 @@ class plans extends module
 
         $properties=array();
         $total=count($states);
-
         for($i=0;$i<$total;$i++) {
             // linked object.property
             if ($states[$i]['LINKED_OBJECT'] && $states[$i]['LINKED_PROPERTY']) {
                 $properties[]=array('PROPERTY'=>mb_strtolower($states[$i]['LINKED_OBJECT'].'.'.$states[$i]['LINKED_PROPERTY'], 'UTF-8'), 'STATE_ID'=>$states[$i]['ID']);
+            }
+        }
+
+        $components=SQLSelect("SELECT plan_components_data.* FROM plan_components_data LEFT JOIN plan_components ON plan_components_data.COMPONENT_ID=plan_components.ID WHERE $qry AND plan_components_data.LINKED_OBJECT!='' AND plan_components_data.LINKED_PROPERTY!=''");
+        foreach($components as $component) {
+            if ($component['LINKED_OBJECT'] && $component['LINKED_PROPERTY']) {
+                $properties[]=array('PROPERTY'=>mb_strtolower($component['LINKED_OBJECT'].'.'.$component['LINKED_PROPERTY'], 'UTF-8'),'STATE_ID'=>'component'.$component['COMPONENT_ID']);
             }
         }
 
@@ -366,6 +465,11 @@ class plans extends module
                 $state['SET_CLASS']=$state['CSS_CLASS'];
             } else {
                 $state['SET_CLASS']=$state['CSS_CLASS_INVERSE'];
+            }
+        } elseif (preg_match('/^component(\d+)$/',$state['ID'],$m)) {
+            $component=SQLSelectOne("SELECT * FROM plan_components WHERE ID=".$m[1]);
+            if ($component['ID']) {
+                //...
             }
         } elseif ($state['TEMPLATE']) {
             $state['CONTENT']=processTitle($state['TEMPLATE']);
@@ -433,50 +537,54 @@ class plans extends module
 
     }
 
-    /**
-     * plans delete record
-     *
-     * @access public
-     */
+    function getComponentTypes() {
+        $types=array();
+
+        $files=scandir(DIR_MODULES.$this->name.'/components');
+        foreach($files as $filename) {
+            if (preg_match('/(.+?)\.class\.php/',$filename,$m)) {
+                $tmp=explode('_',$m[1]);
+                foreach($tmp as &$mname) {
+                    $mname=ucfirst($mname);
+                }
+                $title=implode(' ',$tmp);
+                $types[]=array(
+                    'NAME'=>$m[1],
+                    'TITLE'=>$title
+                );
+            }
+        }
+
+        return $types;
+    }
+
     function delete_plans($id)
     {
         $rec = SQLSelectOne("SELECT * FROM plans WHERE ID='$id'");
         // some action for related tables
+        SQLExec("DELETE FROM plan_states WHERE PLAN_ID='" . $rec['ID'] . "'");
+        $components=SQLSelect("SELECT ID FROM plan_components WHERE PLAN_ID=".$rec['ID']);
+        foreach($components as $component) {
+            SQLExec("DELETE FROM plan_components_data WHERE COMPONENT_ID='" . $component['ID'] . "'");
+            SQLExec("DELETE FROM plan_components WHERE ID='" . $component['ID'] . "'");
+        }
         SQLExec("DELETE FROM plans WHERE ID='" . $rec['ID'] . "'");
     }
 
-    /**
-     * Install
-     *
-     * Module installation routine
-     *
-     * @access private
-     */
     function install($data = '')
     {
         parent::install();
     }
 
-    /**
-     * Uninstall
-     *
-     * Module uninstall routine
-     *
-     * @access public
-     */
     function uninstall()
     {
         SQLExec('DROP TABLE IF EXISTS plans');
+        SQLExec('DROP TABLE IF EXISTS plan_states');
+        SQLExec('DROP TABLE IF EXISTS plan_components');
+        SQLExec('DROP TABLE IF EXISTS plan_components_data');
         parent::uninstall();
     }
 
-    /**
-     * dbInstall
-     *
-     * Database installation routine
-     *
-     * @access private
-     */
     function dbInstall($data)
     {
         /*
@@ -511,10 +619,32 @@ class plans extends module
  plan_states: HOMEPAGE_ID int(10) NOT NULL DEFAULT '0'
  plan_states: EXT_URL varchar(255) NOT NULL DEFAULT ''
  
+ plan_components: ID int(10) unsigned NOT NULL auto_increment
+ plan_components: PLAN_ID int(10) NOT NULL DEFAULT '0'
+ plan_components: TITLE varchar(255) NOT NULL DEFAULT ''
+ plan_components: COMPONENT_NAME varchar(255) NOT NULL DEFAULT ''
+ plan_components: REPLACE_NAME varchar(255) NOT NULL DEFAULT ''
+ 
+ plan_components: ACTION_OBJECT varchar(255) NOT NULL DEFAULT ''
+ plan_components: ACTION_METHOD varchar(255) NOT NULL DEFAULT ''
+ plan_components: CODE text
+ plan_components: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
+ plan_components: MENU_ITEM_ID int(10) NOT NULL DEFAULT '0'
+ plan_components: HOMEPAGE_ID int(10) NOT NULL DEFAULT '0'
+ plan_components: EXT_URL varchar(255) NOT NULL DEFAULT ''
+ 
+ 
+ plan_components_data: ID int(10) unsigned NOT NULL auto_increment
+ plan_components_data: COMPONENT_ID int(10) NOT NULL DEFAULT '0'
+ plan_components_data: PROPERTY_NAME varchar(255) NOT NULL DEFAULT ''
+ plan_components_data: PROPERTY_VALUE varchar(255) NOT NULL DEFAULT ''
+ plan_components_data: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ plan_components_data: LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ 
 EOD;
         parent::dbInstall($data);
     }
-// --------------------------------------------------------------------
+
 }
 /*
 *
