@@ -177,6 +177,26 @@ class MajordomoApplication extends Application
                 }
             }
 
+            if ($data['TYPE'] == 'devices_data') {
+                if ($data['DEVICE_ID'] == '') {
+                    $data['DEVICE_ID'] = '0';
+                }
+                if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
+                    DebMes($this->_clients[$client_id]->getClientIp() . " Subscribing to device data: " . $data['DEVICE_ID'], 'websockets');
+                }
+                $this->_clients[$client_id]->subscribedTo['devices_data']['DEVICE_ID'] = $data['DEVICE_ID'];
+                global $devices;
+                $properties = $devices->getWatchedProperties($this->_clients[$client_id]->subscribedTo['devices_data']['DEVICE_ID']);
+                if (is_array($properties)) {
+                    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
+                        DebMes($this->_clients[$client_id]->getClientIp() . " Watching:\n" . json_encode($properties), 'websockets');
+                    }
+                    foreach ($properties as $v) {
+                        $this->_clients[$client_id]->watchedProperties[$v['PROPERTY']]['devices_data'][$v['DEVICE_ID']] = 1;
+                    }
+                }
+            }
+
             if ($data['TYPE'] == 'objects') {
                 if ($data['OBJECT_ID'] == '') {
                     $data['OBJECT_ID'] = '0';
@@ -400,6 +420,52 @@ class MajordomoApplication extends Application
                                 DebMes($client->getClientIp() . " Sending updated device items\n" . json_encode($send_data), 'websockets');
                             }
                             $encodedData = $this->_encodeData('devices', json_encode($send_data));
+                            $client->send($encodedData);
+                        }
+                    }
+
+                    //devices data
+                    if (isset($client->watchedProperties[$property_name]['devices_data'])) {
+                        $send_values=array();
+                        $seen_devices=array();
+                        foreach($client->watchedProperties[$property_name]['devices_data'] as $k=>$v) {
+                            if (isset($seen_devices[$k])) {
+                                continue;
+                            }
+                            $seen_devices[$k]=1;
+                            if ($k>0) {
+                                $devices_=SQLSelect("SELECT * FROM devices WHERE ID=".$k);
+                                $total = count($devices_);
+                                $cached_properties=array();
+                                for ($i = 0; $i < $total; $i++) {
+                                    $device=array();
+                                    $device['id']=$devices_[$i]['ID'];
+                                    $device['title']=$devices_[$i]['TITLE'];
+                                    $device['object']=$devices_[$i]['LINKED_OBJECT'];
+                                    $device['type']=$devices_[$i]['TYPE'];
+                                    $device['favorite']=$devices_[$i]['FAVORITE'];
+                                    $obj = getObject($device['object']);
+                                    if (!isset($cached_properties[$obj->class_id])) {
+                                        $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
+                                    }
+                                    $properties = $cached_properties[$obj->class_id];
+                                    foreach($properties as $p) {
+                                        $device[$p['TITLE']]=getGlobal($device['object'].'.'.$p['TITLE']);
+                                    }
+                                    $send_values[]=$device;
+                                }
+                            }
+                            //  $item=$devices->processDevice($k);
+                            if (isset($item['HTML'])) {
+                                //  $send_values[]=array('DEVICE_ID'=>$item['DEVICE_ID'], 'DATA'=>$item);
+                            }
+                        }
+                        if (isset($send_values[0])) {
+                            $send_data=array('DATA'=>$send_values);
+                            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS==1) {
+                                DebMes($client->getClientIp()." Sending updated device data items\n".json_encode($send_data),'websockets');
+                            }
+                            $encodedData = $this->_encodeData('devices_data', json_encode($send_data));
                             $client->send($encodedData);
                         }
                     }

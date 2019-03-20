@@ -336,9 +336,6 @@ while (false !== ($result = $threads->iteration()))
             DebMes("Got control command '$control' for ".$title,'threads');
             if ($control=='stop') {
                $to_stop[$title]=time();
-            /*} elseif ($control=='start') {
-               $to_start[$title]=time();
-            */
             } elseif ($control=='restart' || $control=='start') {
                $to_stop[$title]=time();
                $to_start[$title]=time()+30;
@@ -361,7 +358,7 @@ while (false !== ($result = $threads->iteration()))
             $auto_restarts[]=$title;
          }
          $cycle_updated_timestamp=getGlobal($title.'Run');
-         if ($cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
+         if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
             DebMes("Looks like $title is dead. Need to recovery",'threads');
             registerError('cycle_hang', $title);
             setGlobal($title.'Control','restart');
