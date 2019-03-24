@@ -164,11 +164,47 @@
 				function player_type_select(type) {
 					$('small.addon-description').addClass('hidden');
 					$('small#'+type+'_description').removeClass('hidden');
-                                        if (type == 'dnla') {
-                                           $('#device_control_address').show();
-                                           } else {
-                                           $('#device_control_address').hide();
-                                           }
+                        if (type == 'dnla') {
+                            $('#device_control_address').show();
+                            $('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').hide();
+						} else if (type == 'chromecast') {
+                            $('#device_control_address').hide();
+    						$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'foobar') {
+                            $('#device_control_address').hide();
+    						$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'ghn') {
+                            $('#device_control_address').hide();
+    						$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'majordroid') {
+                            $('#device_control_address').hide();
+							$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').hide();
+						} else if (type == 'mpd') {
+                            $('#device_control_address').hide();
+							$('#player_name').hide();
+							$('#player_password').show();
+                            $('#player_port').show();
+						} else if (type == 'mpd') {
+                            $('#device_control_address').hide();
+							$('#player_name').hide();
+							$('#player_password').show();
+                            $('#player_port').show();
+						} else {
+                            $('#device_control_address').hide();
+                            $('#player_name').show();
+							$('#player_password').show();
+							$('#player_port').show();
+                        }
 					return true;
 				}
 				$(document).ready(function() {
@@ -177,15 +213,15 @@
 			</script>
 		</div>
 	</div>
-	<div class="form-group ">
+	<div id='player_port' class="form-group ">
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
 		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
 	</div>
-	<div class="form-group ">
+	<div id='player_name' class="form-group ">
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
 		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
 	</div>
-	<div class="form-group ">
+	<div id='player_password' class="form-group ">
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
 		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
 	</div>
