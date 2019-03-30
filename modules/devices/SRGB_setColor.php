@@ -19,7 +19,10 @@ if (isset($transform[$color])) {
 if ($color == '000000') {
     $this->callMethodSafe('turnOff');
 } else {
+    if (!$this->getProperty('status')) {
+        $this->callMethod('turnOn');
+    }
     $this->setProperty('color',$color);
     $this->setProperty('colorSaved',$color);
-    $this->callMethodSafe('turnOn');
+    //
 }

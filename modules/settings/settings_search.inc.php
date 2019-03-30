@@ -40,7 +40,6 @@
   $options=array(
    'GENERAL_ALICE_NAME'=>'Computer\'s name'
   );
-
   foreach($options as $k=>$v) {
    $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
    if (!$tmp['ID']) {
@@ -55,6 +54,25 @@
    }
   }
  }
+
+if ($this->filter_name=='' && !defined('SETTINGS_GENERAL_START_LAYOUT')) {
+ $options=array(
+     'GENERAL_START_LAYOUT'=>'Homepage Layout'
+ );
+ foreach($options as $k=>$v) {
+  $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+  if (!$tmp['ID']) {
+   $tmp=array();
+   $tmp['NAME']=$k;
+   $tmp['TITLE']=$v;
+   $tmp['TYPE']='select';
+   $tmp['DEFAULTVALUE']='';
+   $tmp['NOTES']='';
+   $tmp['DATA']='=Default|homepages=Home Pages|menu=Menu|apps=Applications|cp=Control Panel';
+   SQLInsert('settings', $tmp);
+  }
+ }
+}
 
  if ($this->filter_name=='behavior' && !defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
 

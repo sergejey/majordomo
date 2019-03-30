@@ -1,7 +1,19 @@
 <ul class="nav nav-tabs">
  <li [#if TAB==""#]class="active"[#endif#]><a href="?"><#LANG_GENERAL#></a></li>
  <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls">Public Calls</a></li>
-</ul><br>
+</ul>
+
+[#if STATUS!=""#]
+<div class="alert alert-info">[#STATUS#]</div>
+[#endif#]
+
+<div class="alert alert-light"><p><#LANG_CONNECT_ABOUT#></p>
+ [#if CONNECT_USERNAME=""#]
+ <p>
+ <a href="https://connect.smartliving.ru/members.html" target="_blank" class="btn btn-default btn-primary"><#LANG_CONNECT_REGISTER#></a>
+ </p>
+ [#endif#]
+</div>
 
 [#if OK_MSG!=""#]
 <div class="alert alert-success">[#OK_MSG#]</div>
@@ -13,20 +25,13 @@
 
 [#if TAB==""#]
 
-[#if CONNECT_SYNC="1"#]
 <div class="row">
  <div class="col-md-6">
+  <h4><#LANG_SECTION_SETTINGS#></h4>
+  [#if CONNECT_SYNC="1"#]
   [#module name="xray" action="service" cycle="connect"#]
- </div>
- <div class="col-md-6">
   &nbsp;
- </div>
-</div>
-[#endif CONNECT_SYNC#]
-&nbsp;
-<div class="row">
- <div class="col-md-6">
-  <h3><#LANG_SECTION_SETTINGS#></h3>
+  [#endif CONNECT_SYNC#]
   <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
    <fieldset>
 
@@ -34,7 +39,7 @@
      <label class="control-label" for="username">
       <#LANG_USERNAME#>:
      </label>
-     <div class="col-md-6">
+     <div class="col-md-7">
       <input type="text" name="connect_username" value="<#CONNECT_USERNAME#>" class="form-control" id="username">
      </div>
     </div>
@@ -43,32 +48,32 @@
      <label class="control-label" for="password">
       <#LANG_PASSWORD#>:
      </label>
-     <div class="col-md-6">
+     <div class="col-md-7">
       <input type="password" name="connect_password" id="password" value="<#CONNECT_PASSWORD#>" class="form-control">
      </div>
     </div>
 
     <div class="form-group">
      <label class="control-label">&nbsp;</label>
-     <div class="col-md-6">
+     <div class="col-md-7">
       <input type="checkbox" name="connect_sync" value="1"[#if CONNECT_SYNC="1"#] checked[#endif#]>
-      Enable cloud sync <a href="https://connect.smartliving.ru/services/s2.html" target=_blank>(?)</a>
+      <#LANG_CONNECT_ENABLE_CLOUDSYNC#> <a href="https://connect.smartliving.ru/services/s2.html" target=_blank>(?)</a>
      </div>
     </div>
 
     <div class="form-group">
      <label class="control-label">&nbsp;</label>
-     <div class="col-md-6">
+     <div class="col-md-7">
       <input type="checkbox" name="connect_backup" value="1"[#if CONNECT_BACKUP="1"#] checked[#endif#]>
-      Enable cloud backup <a href="https://connect.smartliving.ru/services/s2.html" target=_blank>(?)</a>
+      <#LANG_CONNECT_ENABLE_CLOUDBACKUP#> <a href="https://connect.smartliving.ru/services/s2.html" target=_blank>(?)</a>
      </div>
     </div>
 
     <div class="form-group">
      <label class="control-label">&nbsp;</label>
-     <div class="col-md-6">
+     <div class="col-md-7">
       <input type="checkbox" name="connect_insecure" value="1"[#if CONNECT_INSECURE="1"#] checked[#endif#]>
-      Disable secure connection
+      <#LANG_CONNECT_DISABLE_SECURE_CONNECTION#>
      </div>
     </div>
 
@@ -83,7 +88,7 @@
  </div>
  <div class="col-md-6">
   [#if CONNECT_USERNAME!=""#]
-  <h3><#LANG_SEND#></h3>
+  <h4><#LANG_SEND#></h4>
   [#if UPLOADED="1"#]
 
   <p>
@@ -128,7 +133,7 @@
 
 
      <div class="form-goup">
-      <button type="submit" name="subm" value="Submit" class="btn btn-primary">Send to CONNECT</button>
+      <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_CONNECT_PUBLISH_DATA#></button>
       <input type="hidden" name="view_mode" value="send_data">
       <input type="hidden" name="mode" value="update">
      </div>
@@ -138,13 +143,13 @@
 
   [#if CONNECT_BACKUP="1"#]
   &nbsp;
-  <h3>Cloud Backup</h3>
+  <h3><#LANG_CONNECT_CLOUD_BACKUP#></h3>
   <div>
-   <a href="https://connect.smartliving.ru/members/backup.html" target="_blank">Manage backups</a>
+   <a href="https://connect.smartliving.ru/members/backup.html" target="_blank"><#LANG_CONNECT_MANAGE_BACKUPS#></a>
   </div>
   &nbsp;
   <div>
-  <a href="?mode=sendbackup" class="btn btn-default">Cloud Backup Now</a>
+  <a href="?mode=sendbackup" class="btn btn-default"><#LANG_CONNECT_BACKUP_NOW#></a>
   </div>
   [#endif#]
 

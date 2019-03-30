@@ -20,6 +20,9 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 include_once(DIR_MODULES . 'scenes/scenes.class.php');
 $scenes = new scenes();
 
+include_once(DIR_MODULES . 'plans/plans.class.php');
+$plans= new plans();
+
 include_once(DIR_MODULES . 'commands/commands.class.php');
 $commands = new commands();
 

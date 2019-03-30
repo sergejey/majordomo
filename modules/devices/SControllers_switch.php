@@ -2,7 +2,7 @@
 
 $currentStatus=$this->getProperty('status');
 if ($currentStatus) {
- $this->callMethodSafe('turnOff');
+ $this->callmethodSafe('turnOff');
 } else {
- $this->callMethodSafe('turnOn');
+ $this->callmethodSafe('turnOn');
 }

@@ -235,6 +235,9 @@ function usual(&$out) {
    exit;
    //$this->redirect($url);
   }
+  if ($rec['TYPE']=='url') {
+   $this->redirect($rec['URL']);
+  }
   outHash($rec, $out);
  }
 

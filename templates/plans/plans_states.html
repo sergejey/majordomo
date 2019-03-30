@@ -1,0 +1,244 @@
+[#if STATE_ID!=""#]
+
+<form class="form" action="?" method="post">
+    <div class="form-group[#if ERR_TITLE#] has-error [#endif ERR_TITLE#]">
+        <label for="state_title"><#LANG_TITLE#>:</label>
+        <input type="text" name="state_title" id="state_title" value="[#STATE_TITLE#]" class="form-control" required>
+    </div>
+    <div class="form-group[#if ERR_ITEM#] has-error [#endif ERR_ITEM#]">
+        <label for="state_item"><#LANG_IMAGE_ITEM#>:</label>
+        <select name="state_item" id="state_item" class="form-control">
+            <option value=""></option>
+            [#begin ITEMS#]
+            <option value="[#ITEM#]"[#if ITEM="<#STATE_ITEM#>"#] selected[#endif#]>[#TITLE#]</option>
+            [#end ITEMS#]
+        </select>
+        <!--#
+        <input type="text" name="state_item" id="state_item" value="[#STATE_ITEM#]" class="form-control" required>
+        #-->
+    </div>
+
+
+    <div class="form-group>
+        <label for="state_linked_object"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
+        <input type="text" name="state_linked_object" id="state_linked_object" value="[#STATE_LINKED_OBJECT#]" class="form-control">
+    .
+        <input type="text" name="state_linked_property" id="state_linked_property" value="[#STATE_LINKED_PROPERTY#]" class="form-control">
+    </div>
+        [#module name="linkedobject" object_field="state_linked_object" property_field="state_linked_property"#]
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
+        <div class="controls">
+            <select name="state_condition" class="form-control">
+                <option value="1"[#if STATE_CONDITION="1"#] selected[#endif#]>=
+                <option value="2"[#if STATE_CONDITION="2"#] selected[#endif#]>&gt;
+                <option value="3"[#if STATE_CONDITION="3"#] selected[#endif#]>&lt;
+                <option value="4"[#if STATE_CONDITION="4"#] selected[#endif#]>&lt;&gt;
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_VALUE#></label>
+        <div class="controls">
+            <input type="text" class="form-control" name="state_condition_value" size="10" value="[#STATE_CONDITION_VALUE#]">
+        </div>
+    </div>
+
+    <div class="form-group[#if ERR_CSS_CLASS#] has-error [#endif ERR_CSS_CLASS#]">
+        <label for="state_css_class"><#LANG_STYLE_TO_APPLY#></label>
+        <select name="state_css_class" id="state_css_class" class="form-control">
+            <option value=""></option>
+            [#begin CLASSES#]
+            <option value="[#CLASS#]"[#if CLASS="<#STATE_CSS_CLASS#>"#] selected[#endif#]>[#TITLE#]</option>
+            [#end CLASSES#]
+        </select>
+
+    </div>
+    <div class="form-group">
+        <label for="state_css_class_inverse"><#LANG_STYLE_TO_APPLY_INVERSE#>:</label>
+
+        <select name="state_css_class_inverse" id="state_css_class_inverse" class="form-control">
+            <option value=""></option>
+            [#begin CLASSES#]
+            <option value="[#CLASS#]"[#if CLASS="<#STATE_CSS_CLASS_INVERSE#>"#] selected[#endif#]>[#TITLE#]</option>
+            [#end CLASSES#]
+        </select>
+    </div>
+
+    <script language="javascript">
+        function do_on_click_change(val) {
+            $('.click_fields').hide();
+            $('#'+val+'_field').show();
+            return false;
+        }
+    </script>
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_DO_ONCLICK#></label>
+        <div class="controls">
+            <select name="do_on_click" class="form-control" onChange="do_on_click_change(this.value);">
+                <option value="0"><#LANG_DO_NOTHING#>
+                <option value="run_script"[#if STATE_SCRIPT_ID!="0" && STATE_SCRIPT_ID!=""#] selected[#endif#]><#LANG_RUN_SCRIPT_ON_CLICK#>
+                <option value="run_method"[#if STATE_ACTION_OBJECT!=""#] selected[#endif#]><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>
+                <option value="run_code"[#if STATE_CODE!=""#] selected[#endif#]><#LANG_ONCHANGE_CODE#>
+                <option value="open_menu"[#if STATE_MENU_ITEM_ID!="0" && STATE_MENU_ITEM_ID!=""#] selected[#endif#]><#LANG_SHOW_MENU_ON_CLICK#>
+                <option value="show_homepage"[#if STATE_HOMEPAGE_ID!="0" && STATE_HOMEPAGE_ID!=""#] selected[#endif#]><#LANG_SHOW_HOMEPAGE_ON_CLICK#>
+                <option value="show_url"[#if STATE_EXT_URL!=""#] selected[#endif#]><#LANG_SHOW_URL_ON_CLICK#>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="form-group click_fields"[#if STATE_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
+        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
+
+            <textarea name="code" rows="5" cols="50" class="form-control">[#STATE_CODE#]</textarea>
+
+    </div>
+
+
+    <div class="form-group click_fields"[#if STATE_SCRIPT_ID="0" || STATE_SCRIPT_ID=""#] style="display:none"[#endif#] id='run_script_field'>
+        <label class="col-lg-4 control-label"><#LANG_RUN_SCRIPT_ON_CLICK#></label>
+        <div class="controls">
+            <select name="script_id" class="form-control">
+                <option value="0">
+                    [#begin SCRIPTS#]
+                <option value="[#ID#]"[#if ID="<#STATE_SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end SCRIPTS#]
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if STATE_MENU_ITEM_ID="0" || STATE_MENU_ITEM_ID=""#] style="display:none"[#endif#] id='open_menu_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_MENU_ON_CLICK#></label>
+        <div class="controls">
+            <select name="menu_item_id" class="form-control">
+                <option value="0">
+                    [#begin MENU_ITEMS#]
+                <option value="[#ID#]"[#if ID="<#STATE_MENU_ITEM_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end MENU_ITEMS#]
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if STATE_HOMEPAGE_ID="0" || STATE_HOMEPAGE_ID=""#] style="display:none"[#endif#] id='show_homepage_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_HOMEPAGE_ON_CLICK#></label>
+        <div class="controls">
+            <select name="homepage_id" class="form-control">
+                <option value="0">
+                    [#begin HOMEPAGES#]
+                <option value="[#ID#]"[#if ID="<#STATE_HOMEPAGE_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end HOMEPAGES#]
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if STATE_EXT_URL=""#] style="display:none"[#endif#] id='show_url_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_URL_ON_CLICK#></label>
+        <div class="controls">
+            <input type="text" class="form-control" name="ext_url" value="[#STATE_EXT_URL#]">
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if STATE_ACTION_OBJECT=""#] style="display:none"[#endif#] id='run_method_field'>
+        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
+            <input type="text" class="form-control" name="action_object" id="action_object" value="[#STATE_ACTION_OBJECT#]"> .
+            <input type="text" class="form-control" name="action_method" id="action_method" value="[#STATE_ACTION_METHOD#]">
+    </div>
+    [#module name="linkedobject" object_field="action_object" method_field="action_method"#]
+
+
+    &nbsp;
+    <div class="form-group">
+        [#if ELEMENT_ID!="new"#]
+        <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
+        [#else#]
+        <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
+        [#endif#]
+        <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&" class="btn btn-default"><#LANG_CANCEL#></a>
+
+        [#if ELEMENT_ID!="new"#]
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&state_id=[#STATE_ID#]&duplicate=1" class="btn btn-default" onclick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>');"><#LANG_MAKE_COPY#></a>
+        [#endif ELEMENT_ID#]
+    </div>
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="state_id" value="<#STATE_ID#>">
+    <input type="hidden" name="mode" value="update">
+</form>
+
+[#if OTHER_ITEMS#]
+<#LANG_SEE_ALSO#>:
+    [#begin OTHER_ITEMS#]
+    <div>
+    [#if ID="<#STATE_ID#>"#]<b>[#else#]<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&state_id=[#ID#]">[#endif#]
+    [#TITLE#]</a></b>
+    </div>
+    [#end OTHER_ITEMS#]
+[#endif OTHER_ITEMS#]
+
+[#else STATE_ID#]
+
+        <form class="form-inline" action="?" method="get">
+            <div class="form-group">
+                <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&state_id=new" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+            </div>
+            <div class="form-group">
+                <input type="text" name="search" value="<#SEARCH#>" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="<#LANG_SEARCH#>" class="btn btn-default btn-primary">
+            </div>
+            [#if SEARCH!=""#]
+            <div class="form-group">
+                <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>" class="btn btn-default"><#LANG_CANCEL#></a>
+            </div>
+            [#endif SEARCH#]
+            <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+            <input type="hidden" name="tab" value="<#TAB#>">
+            <input type="hidden" name="id" value="<#ID#>">
+        </form>
+&nbsp;
+
+<table class="table">
+    <thead>
+    <tr>
+        <th><#LANG_TITLE#></th>
+        <th><#LANG_IMAGE_ITEM#></th>
+        <th><#LANG_CSS_CLASS#></th>
+        <th><#LANG_CONDITION#></th>
+        <th>&nbsp;</th>
+    </tr>
+    </thead>
+    [#begin STATES#]
+    <tr>
+        <td>[#TITLE#]</td>
+        <td>[#ITEM#]</td>
+        <td>
+            [#CSS_CLASS#]
+            [#if CSS_CLASS_INVERSE!=""#]
+            /
+            [#CSS_CLASS_INVERSE#]
+            [#endif#]
+        </td>
+        <td>
+            [#LINKED_OBJECT#].[#LINKED_PROPERTY#]
+            [#if CONDITION="1"#]=[#endif#]
+            [#if CONDITION="2"#]&gt;[#endif#]
+            [#if CONDITION="3"#]&lt;[#endif#]
+            [#if CONDITION="4"#]&lt;&gt;[#endif#]
+            [#CONDITION_VALUE#]
+        </td>
+        <td>
+            <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&state_id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a>
+            <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&state_id=[#ID#]&delete=1" class="btn btn-default" onclick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>');"><#LANG_DELETE#></a>
+        </td>
+    </tr>
+    [#end STATES#]
+</table>
+
+[#endif STATE_ID#]

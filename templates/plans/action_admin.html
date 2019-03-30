@@ -1,0 +1,67 @@
+
+ <!-- action usual -->
+ <!-- table plans search -->
+ [#if VIEW_MODE="search_plans" || VIEW_MODE=""#]
+  [#inc plans_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table plans search -->
+ <!-- table plans edit -->
+ [#if VIEW_MODE="edit_plans"#]
+ [#if ID!=""#]
+ <p>
+ <a href="?"><#LANG_BACK#></a>
+ </p>
+ <legend>[#TITLE#]</legend>
+
+ <ul class="nav nav-tabs">
+     <li[#if TAB=""#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab="><#LANG_GENERAL#></a></li>
+     <li[#if TAB="states"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=states"><#LANG_STATES#></a></li>
+     <li[#if TAB="components"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=components"><#LANG_PLAN_COMPONENTS#></a></li>
+     <li[#if TAB="css"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=css"><#LANG_USE_CSS#></a></li>
+     <li[#if TAB="javascript"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=javascript"><#LANG_USE_JAVASCRIPT#></a></li>
+     <li[#if TAB="preview"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=preview"><#LANG_PREVIEW#></a></li>
+ </ul>
+ <div>&nbsp;</div>
+
+ [#if OK#]
+ <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+ [#endif OK#]
+ [#if ERR#]
+ <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+ [#endif ERR#]
+
+
+ [#endif#]
+
+ [#if TAB=""#]
+   [#inc plans_edit.html#]
+ [#endif TAB#]
+
+ [#if TAB="states"#]
+ [#inc plans_states.html#]
+ [#endif TAB#]
+
+ [#if TAB="components"#]
+ [#inc plans_components.html#]
+ [#endif TAB#]
+
+ [#if TAB="preview"#]
+ [#inc plans_preview.html#]
+ [#endif TAB#]
+
+ [#if TAB="css"#]
+ [#inc plans_css.html#]
+ [#endif TAB#]
+
+ [#if TAB="javascript"#]
+ [#inc plans_javascript.html#]
+ [#endif TAB#]
+
+
+ [#endif VIEW_MODE#]
+ <!-- / table plans edit -->
+ <!-- table plans view --> 
+ [#if VIEW_MODE="view_plans"#]
+   [#inc plans_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table plans view -->

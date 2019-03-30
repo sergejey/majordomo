@@ -81,15 +81,12 @@ class phpMQTT {
 
 
 		if ($this->cafile) {
-			if (file_exists($this->cafile)) {
-				$socketContext = stream_context_create(["ssl" => [
-					"verify_peer_name" => true,
-					"cafile" => $this->cafile
+			$socketContext = stream_context_create(["ssl" => [
+				'verify_peer' => false,
+				"verify_peer_name" => false,
+				"cafile" => $this->cafile
 				]]);
-				$this->socket = stream_socket_client("tls://" . $this->address . ":" . $this->port, $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $socketContext);
-			} else {
-				$this->socket = stream_socket_client("tls://" . $this->address . ":" . $this->port, $errno, $errstr, 60, STREAM_CLIENT_CONNECT);
-			}
+			$this->socket = stream_socket_client("tls://" . $this->address . ":" . $this->port, $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $socketContext);
 		} else {
 			$this->socket = stream_socket_client("tcp://" . $this->address . ":" . $this->port, $errno, $errstr, 60, STREAM_CLIENT_CONNECT);
 		}
@@ -228,6 +225,7 @@ class phpMQTT {
 			$head = chr(0xc0);		
 			$head .= chr(0x00);
 			fwrite($this->socket, $head, 2);
+			$this->timesinceping = time();
 			if($this->debug) echo "ping sent\n";
 	}
 
@@ -349,8 +347,6 @@ class phpMQTT {
 							$this->message($string);
 						break;
 					}
-
-					$this->timesinceping = time();
 				}
 			}
 

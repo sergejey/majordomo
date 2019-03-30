@@ -98,7 +98,7 @@
 {/if}
         {if $TOTAL_SCENES!="1"}
         <style>{include './slider.css'}</style>
-        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js"></script>
+        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js?v=2019-02-27"></script>
         {/if}
 
         <script type="text/javascript" language="javascript">
@@ -420,6 +420,17 @@ $.fn.customContextMenu = function(callBack){
         function checkAllStates() {
          clearTimeout(checkTimer);
 
+            if (firstRun==1) {
+                {if $TOTAL_SCENES!="1"}
+                 $("#slider").easySlider({
+                 auto: false,
+                 numeric: true,
+                {if $smarty.const.SETTINGS_SCENES_VERTICAL_NAV=="1"}numericId: 'controls_vertical',{/if}
+                 continuous: false
+                 });
+                {/if}
+            }
+
          if (subscribedWebSockets==1) {
           firstRun=0;
           checkTimer=setTimeout('checkAllStates();', 3000);
@@ -433,17 +444,6 @@ $.fn.customContextMenu = function(callBack){
           url: url,
           }).done(function(data) { 
            processCheckStates(data);
-           {if $TOTAL_SCENES!="1"}
-           if (firstRun==1) {
-                        $("#slider").easySlider({
-                                auto: false, 
-                                numeric: true,
-                                {if $smarty.const.SETTINGS_SCENES_VERTICAL_NAV=="1"}numericId: 'controls_vertical',{/if}
-                                continuous: false
-                        });
-           }
-
-           {/if}
            firstRun=0;
            refreshRun=0;
            //tryWebSockets();
@@ -602,8 +602,6 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
 
-
-
                 });
 
 
@@ -625,6 +623,18 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 <div id="slider">
 {if $TOTAL_SCENES!="1"}<ul>{/if}
 {foreach $RESULT as $SCENE}
+    <style>
+        {if $SCENE.DEVICES_BACKGROUND=="dark"}
+        #scene_background_{$SCENE.ID} > .type_device {
+            background-color:#222222;
+        }
+        {/if}
+        {if $SCENE.DEVICES_BACKGROUND=="light"}
+        #scene_background_{$SCENE.ID} > .type_device {
+            background-color:#dddddd;
+        }
+        {/if}
+    </style>
 {if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
  <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">

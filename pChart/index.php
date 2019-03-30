@@ -126,9 +126,9 @@ if ($total>0) {
         if ($end_time == $start_time) {
             $history = array();
         } else {
-            $history=SQLSelect("SELECT ID, VALUE, ADDED FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."')"); // ORDER BY ADDED
+            $history=SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='".$pvalue['ID']."' AND ADDED>=('".date('Y-m-d H:i:s', $start_time)."') AND ADDED<=('".date('Y-m-d H:i:s', $end_time)."')"); // ORDER BY ADDED
             if (!$history[0]['ID'] && $op == 'log') {
-                $history = SQLSelect("SELECT ID, VALUE, ADDED FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+                $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
                 $history = array_reverse($history);
             }
 
@@ -203,7 +203,6 @@ if ($total>0) {
            header('Location:'.str_replace('&subop=optimize', '', $_SERVER['REQUEST_URI']));
            exit;
           }
-
                  echo "<table width=100%><tr><td width='99%'>";
 
           $_SERVER['REQUEST_URI']=preg_replace('/&subop=(\w+)/','',$_SERVER['REQUEST_URI']);

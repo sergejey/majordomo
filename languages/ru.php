@@ -158,9 +158,11 @@ $dictionary = array(
     'MODULE_SYSTEM_ERRORS' => 'Ошибки системы',
     'MODULE_MODULES' => 'Модули',
     'MODULE_USERLOG' => 'Журнал действий',
+    'MODULE_PLANS' => 'Планы',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
+    'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
 
     'SETUP' => 'Настроить',
 
@@ -1329,6 +1331,36 @@ $dictionary = array(
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
 
     'RECENTLY_USED' => 'Недавнее',
+
+    'PLAN_ZOOM_CONTROL' => 'Управление масштабом',
+    'PLAN_AUTO_ZOOM' => 'Авто-масштабирование',
+    'CSS_CLASS' => 'Класс стиля',
+    'IMAGE_ITEM' => 'Элемент изображения',
+    'STYLE_TO_APPLY' => 'Применить стиль',
+    'STYLE_TO_APPLY_INVERSE' => 'Применить стиль ("иначе")',
+    'EMBED_CODE' => 'Код встраивания',
+
+    'STYLE_SHOW_IT' => 'Показать',
+    'STYLE_HIDE_IT' => 'Спрятать',
+    'STYLE_BLINK_IT' => 'Моргание',
+    'STYLE_SPIN_IT' => 'Вращение',
+    'STYLE_FADEOUT50' => 'Прозрачность 50%',
+    'STYLE_FADEOUT30' => 'Прозрачность 30%',
+    'STYLE_FADEOUT10' => 'Прозрачность 10%',
+    'SEE_ALSO' => 'Смотрите также',
+    'PLAN_COMPONENTS' => 'Компоненты',
+    
+    'CONNECT_LOGIN_FAILED' => 'Не удалось подключиться к сервису CONNECT. Пожалуйста, проверьте указанные имя пользователя и пароль',
+    'CONNECT_ABOUT' => 'Cервис CONNECT позволяет Вам с помощью Облачной Синхронизации организовать простой доступ к домашней системе через сеть Интернет, а так же обеспечить работу других облачных сервисов (резервная копия, работа голосовых помощников и т.п.). Подробная информация о сервисе доступна <a href="https://connect.smartliving.ru/services/s2.html">по ссылке</a>',
+    'CONNECT_REGISTER' => 'Регистрация на сервисе CONNECT',
+    'CONNECT_PUBLISH_DATA' => 'Опубликовать данные',
+    'CONNECT_CLOUD_BACKUP' => 'Облачная резервная копия',
+    'CONNECT_MANAGE_BACKUPS' => 'Управление копиями',
+    'CONNECT_BACKUP_NOW' => 'Сохранить копию',
+    'CONNECT_ENABLE_CLOUDSYNC' => 'Включить облачную синхронизацию',
+    'CONNECT_ENABLE_CLOUDBACKUP' => 'Включить облачную резервную копию',
+    'CONNECT_DISABLE_SECURE_CONNECTION' => 'Разрешить подключение без шифрования',
+
     /* end module names */
 
 

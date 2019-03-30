@@ -38,6 +38,7 @@ for ($i = 0; $i < $total; $i++) {
          break;
       case 'sensor_temp':
          $payload['service']='TemperatureSensor';
+         $payload['CurrentTemperature']['minValue']=-40;
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'CurrentTemperature';

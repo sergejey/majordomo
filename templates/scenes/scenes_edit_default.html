@@ -1,55 +1,3 @@
-<br>
-<!--#
-<script src="<#ROOTHTML#>js/jquery.event.drag-2.2.js"></script>
-<script>
-$(function() {
-        $("div.element-preview").drag(
-                function(ev,dd){
-                        $(this).css({
-                                top: dd.offsetY,
-                                left: dd.offsetX
-                        });
-                },
-                {
-                        relative: true,
-                        not: ".resize-handler"
-                }
-        )
-        .drag("start", function() {
-                $(this).addClass("drag-active");
-        })
-        .drag("end", function() {
-                $(this).removeClass("drag-active");
-        });
-        $(".resize-handler").drag(
-                function(ev,dd){
-                        var e = $(this).parent();
-                        e[0].style.height = dd.initialHeight + dd.deltaY + 'px';
-                        e[0].style.width = dd.initialWidth + dd.deltaX + 'px';
-                }
-        )
-        .drag("start", function(ev, dd) {
-                dd.initialHeight = $(this).parent().innerHeight();
-                dd.initialWidth = $(this).parent().innerWidth();
-        })
-        $("form#frmEdit").submit(function() {
-                var e = [];
-                $("div.element-preview").each(function(index, element) {
-                        var t = element.style;
-                        e.push({
-                                WIDTH: t.width,
-                                HEIGHT: t.height,
-                                TOP: t.top,
-                                LEFT: t.left,
-                                ID: $(element).data('id')
-                        });
-                });
-                e = JSON.stringify(e);
-                $(this).find("input[name=elements]").val(e);
-        });
-});
-</script>
-#-->
 <!-- Table 'scenes' edit -->
 <form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit" class="form-horizontal">
 [#if OK#]
@@ -188,6 +136,18 @@ $(function() {
 [#endif#]
 #-->
 
+    <div class="form-group">
+        <label class="control-label"><#LANG_SCENE_DEVICES_BACKGROUND#> (<#LANG_THEME#>):<#LANG_HCB#>devices_background<#LANG_HCE#></label>
+        <div class="controls">
+            <select name="devices_background" class="form-control">
+                <option value=""><#LANG_NO#></option>
+                <option value="dark"[#if DEVICES_BACKGROUND="dark"#] selected[#endif#]><#LANG_THEME_DARK#></option>
+                <!--#
+                <option value="light"[#if DEVICES_BACKGROUND="light"#] selected[#endif#]><#LANG_THEME_LIGHT#></option>
+                #-->
+            </select>
+        </div>
+    </div>
 
 [#if ID!=""#]
 <div class="form-group">
