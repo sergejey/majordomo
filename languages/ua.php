@@ -1177,6 +1177,7 @@ $dictionary = array (
     'DEVICES_GROUP_ECO' => 'Вимикати в режимі економії',
     'DEVICES_GROUP_ECO_ON' => 'Вмикати при виході з режиму економії',
     'DEVICES_GROUP_SUNRISE' => 'Вимикати на світанку',
+    'DEVICES_GROUP_SUNSET' => 'Вмикати при заході сонця',
     'DEVICES_IS_ACTIVITY' => 'Зміна означає активність в приміщенні',
     'DEVICES_NCNO' => 'Тип пристрою/сенсора',
     'DEVICES_LOADTYPE' => 'Тип пристрою',
