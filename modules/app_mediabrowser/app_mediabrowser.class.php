@@ -119,6 +119,7 @@ function run() {
   }
   $this->data=$out;
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
+
   $this->result=$p->result;
 
 }
@@ -388,8 +389,6 @@ function usual(&$out) {
    }
    //dprint($out['FULLFILE_URL']);
 
-
-
    if ($this->mode=='play') {
     //FULLFILE_S
     $rec=array();
@@ -408,6 +407,11 @@ function usual(&$out) {
      $ids[]=$last10[$i]['ID'];
     }
     SQLExec("DELETE FROM media_history WHERE ID NOT IN (".implode(',', $ids).")");
+
+    if ($_GET['full_url']) {
+     echo $out['FULLFILE_URL'];
+     exit;
+    }
 
    }
 
@@ -448,9 +452,11 @@ function usual(&$out) {
   }
 
 
+ /*
    function sort_files($a, $b) {
     return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"])); 
    }
+*/
 
 
   $dirs=array();
@@ -501,7 +507,9 @@ function usual(&$out) {
 
 
   //$dirs=mysort_array($dirs, "TITLE");
-  usort($dirs, 'sort_files');
+  usort($dirs, function($a,$b) {
+   return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"]));
+  });
 
   //print_r($dirs);
 
@@ -562,7 +570,9 @@ function usual(&$out) {
   }
 
   //$files=mysort_array($files, "TITLE");
-  usort($files, 'sort_files');
+  usort($files, function($a,$b) {
+   return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"]));
+  });
 
   if (count($files)>0) {
    $total=count($files);
