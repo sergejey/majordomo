@@ -11,7 +11,7 @@
             } else {
                     serverUrl = "ws:";
             }
-            serverUrl += "//" + loc.host + ':<#WEBSOCKETS_PORT#>/majordomo';
+            serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo';
             try {
                 console.log('Conneting to '+serverUrl);
              if (window.MozWebSocket) {
