@@ -8,6 +8,7 @@
 */
 
 $dictionary=array(
+'SETTINGS_SITE_LANGUAGE_CODE' => 'it-IT',
 'DEFAULT_COMPUTER_NAME'=>'Alice',
 'WELCOME_GREETING'=>'Benvenuto!',
 'WELCOME_TEXT'=>'Grazie per aver scelto MajorDoMo, una piattaforma di automazione domestica aperta. <br/><br/>Scopri di più e unisciti alla community:<a href="<#LANG_WIKI_URL#>" target=_blank>Web-site</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forum</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook page</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Puoi modificare o eliminare questa pagina via <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Control Panel</a></small>',
