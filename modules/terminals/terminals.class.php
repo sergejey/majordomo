@@ -457,6 +457,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
         unsubscribeFromEvent($this->name, 'ASK');
         unsubscribeFromEvent($this->name, 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
+        unsubscribeFromEvent($this->name, 'HOURLY');
         parent::uninstall();
     }
 
