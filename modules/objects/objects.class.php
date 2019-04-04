@@ -1038,6 +1038,7 @@ function usual(&$out) {
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
+  // Если вы дошли до этой записи, при проявлении ошибки, то данная ошибка проявляется на MariDB
   $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
   SQLExec($sqlQuery,true);
 
