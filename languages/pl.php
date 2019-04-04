@@ -8,6 +8,7 @@
 */
 
 $dictionary=array(
+'SETTINGS_SITE_LANGUAGE_CODE' => 'pl-PL',
 'WIKI_URL'=>'http://smartliving.ru/',
 'KB_URL'=>'https://kb.smartliving.ru/',
 'DEFAULT_COMPUTER_NAME'=>'Alicja',
