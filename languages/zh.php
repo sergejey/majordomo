@@ -8,6 +8,7 @@
 */
 
 $dictionary=array(
+'SETTINGS_SITE_LANGUAGE_CODE' => 'zh-HK',
 'WIKI_URL'=>'http://majordomohome.com/',
 'KB_URL'=>'https://kb.smartliving.ru/',
 'DEFAULT_COMPUTER_NAME'=>'爱丽丝',
