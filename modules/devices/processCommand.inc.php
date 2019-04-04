@@ -56,13 +56,7 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         'graminfo_as_text' => true,
     );
     $dir = ROOT . 'lib/phpmorphy/dicts';
-    if (SETTINGS_SITE_LANGUAGE == 'ru') {
-        $lang = 'ru_RU';
-    } else if (SETTINGS_SITE_LANGUAGE == 'ua') {
-        $lang = 'uk_UA';
-    } else {
-        $lang = 'en_EN';
-    }
+    $lang = SETTINGS_SITE_LANGUAGE_CODE;
     try {
         $morphy = new phpMorphy($dir, $lang, $opts);
         $this->morphy =& $morphy;
