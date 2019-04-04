@@ -57,7 +57,7 @@ while (1) {
         $ca_file=NULL;
     } else {
         $port = '8883';
-        $ca_file= dirname(__FILE__).'/../modules/connect/cert.pem';
+        $ca_file= dirname(__FILE__).'/../modules/connect/fullchain.pem';
     }
 
 
@@ -154,7 +154,7 @@ function procmsg($topic, $msg)
         getURLBackground($url, 0);
     } elseif (preg_match('/reverse_urls/is', $topic)) {
         echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
-        send_reverse_result($msg,$result);
+        send_reverse_result($msg);
     }
 
 }
@@ -175,11 +175,11 @@ function send_menu_element($parent_id) {
     update_menu_data($parent_id);
 }
 
-function send_reverse_result($msg,$result) {
-    global $connect;
-    $url = BASE_URL.$msg;
-    $result = getURL($url, 0);
-    $connect->sendReverseURL($msg,$result);
+function send_reverse_result($msg) {
+    DebMes("Requesting reverse-proxy: ".$url,'reverse_urls');
+    $base_url = BASE_URL;
+    $url = $base_url.'/ajax/connect.html?no_session=1&op=reverse_request&msg='.urlencode($msg);
+    getURLBackground($url);
 }
 
 function send_all_menu() {
