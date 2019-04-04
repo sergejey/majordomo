@@ -191,8 +191,12 @@ if (!isset($request[0])) {
     $result['event_name']=$event_name;
     $result['params']=$_GET;
     $result['event_id']=registerEvent($event_name,$result['params']);
-} elseif (strtolower($request[0]) == 'objects' && isset($request[1])) {
-    $objects=getObjectsByClass($request[1]);
+} elseif (strtolower($request[0]) == 'objects') {
+    if (isset($request[1])) {
+        $objects=getObjectsByClass($request[1]);
+    } else {
+        $objects=SQLSelect("SELECT ID, TITLE FROM objects ORDER BY TITLE");
+    }
     $result['objects'] = $objects;
 } elseif (strtolower($request[0]) == 'data' && isset($request[1])) {
     $tmp = explode('.', $request[1]);
