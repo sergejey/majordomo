@@ -8,6 +8,7 @@
 */
 
 $dictionary=array(
+ 'SETTINGS_SITE_LANGUAGE_CODE' => 'hr-HR',
 'WIKI_URL'=>'אתר הבית מג\'ורדומו',
 'KB_URL'=>'https://kb.smartliving.ru/',
 'DEFAULT_COMPUTER_NAME'=>'אליסה',
