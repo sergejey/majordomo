@@ -1362,7 +1362,8 @@ $dictionary = array(
     'CONNECT_ENABLE_CLOUDSYNC' => 'Включить облачную синхронизацию',
     'CONNECT_ENABLE_CLOUDBACKUP' => 'Включить облачную резервную копию',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Разрешить подключение без шифрования',
-
+    'OCLOC_ARRAY'=>array("час", "часа", "часов"),
+	'MINUTE_ARRAY'=>array("минута", "минуты", "минут"),
     /* end module names */
 
 

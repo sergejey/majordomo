@@ -247,22 +247,13 @@ function timeNow($tm = 0)
 
     $language = SETTINGS_SITE_LANGUAGE;
 
-    if ($language == 'ru') {
-        $array = array("час", "часа", "часов");
+    if (LANG_OCLOC_ARRAY and LANG_MINUTE_ARRAY) {
+        $array = LANG_OCLOC_ARRAY;
         $hw = $h . ' ' . getNumberWord($h, $array);
         if ($m > 0) {
-            $array = array("минута", "минуты", "минут");
+            $array = LANG_MINUTE_ARRAY;
             $ms = $m . ' ' . getNumberWord($m, $array);
         }
-    } elseif ($language == 'ua') {
-        $array = array("година", "години", "годин");
-        $hw = $h . ' ' . getNumberWord($h, $array);
-        if ($m > 0) {
-            $array = array("хвилина", "хвилини", "хвилин");
-            $ms = $m . ' ' . getNumberWord($m, $array);
-        }
-    } elseif ($language == 'en' && $m == 0) {
-        $hw = $h . ' o\'clock';
     } else {
         $hw = date('H:i', $tm);
     }
