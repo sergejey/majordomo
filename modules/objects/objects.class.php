@@ -153,6 +153,7 @@ function admin(&$out) {
   $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".$id."'");
   $rec['TITLE']=$rec['TITLE'].' (copy)';
   unset($rec['ID']);
+  $rec['SYSTEM']='';
   $rec['ID']=SQLInsert('objects', $rec);
 
   $seen_pvalues=array();
