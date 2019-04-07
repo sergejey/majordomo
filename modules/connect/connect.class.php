@@ -404,6 +404,21 @@ class connect extends module
         return $result;
     }
 
+    function requestReverseURL($msg) {
+        ignore_user_abort(1);
+        $url = BASE_URL.$msg;
+        if (preg_match('/\?/',$url)) {
+            $url.='&no_session=1';
+        } else {
+            $url.='?no_session=1';
+        }
+        //debmes("Sending request $url",'reverse_urls');
+        $result = getURL($url);
+        //debmes("Sending result to Connect",'reverse_urls');
+        $this->sendReverseURL($msg,$result);
+        //debmes("Sending $msg DONE",'reverse_urls');
+    }
+
     function sendReverseURL($url_requested, $result)
     {
         // POST TO SERVER
@@ -867,7 +882,14 @@ class connect extends module
      */
     function usual(&$out)
     {
-        $this->admin($out);
+        $this->getConfig();
+        if ($this->ajax) {
+            $op = gr('op');
+            $msg = gr('msg');
+            if ($op=='reverse_request') {
+               $this->requestReverseURL($msg);
+            }
+        }
     }
 
     /**

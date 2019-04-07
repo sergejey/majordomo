@@ -43,6 +43,14 @@ if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LA
 
 include_once(ROOT . 'languages/default.php');
 
+if (LANG_SETTINGS_SITE_LANGUAGE_CODE) {
+    Define ('SETTINGS_SITE_LANGUAGE_CODE', LANG_SETTINGS_SITE_LANGUAGE_CODE);
+} elseif (SETTINGS_SITE_LANGUAGE=='en') {
+    Define ('SETTINGS_SITE_LANGUAGE_CODE', 'en_GB');
+} else {
+    Define ('SETTINGS_SITE_LANGUAGE_CODE', '');
+}
+
 if (!defined('SETTINGS_SITE_TIMEZONE')) {
     Define('SETTINGS_SITE_TIMEZONE', 'Europe/Minsk');
 }

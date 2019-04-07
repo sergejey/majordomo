@@ -11,6 +11,7 @@
 $dictionary = array(
 
     /* general */
+    'SETTINGS_SITE_LANGUAGE_CODE' => 'ru_RU',
     'WIKI_URL' => 'http://smartliving.ru/',
     'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Алиса',
@@ -1179,6 +1180,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO' => 'Выключать в режиме экономии',
     'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
+    'DEVICES_GROUP_SUNSET' => 'Включать с закатом',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип устройства/сенсора',
     'DEVICES_LOADTYPE' => 'Тип устройства',
@@ -1348,6 +1350,7 @@ $dictionary = array(
     'STYLE_FADEOUT30' => 'Прозрачность 30%',
     'STYLE_FADEOUT10' => 'Прозрачность 10%',
     'SEE_ALSO' => 'Смотрите также',
+    'PLAN_COMPONENTS' => 'Компоненты',
     
     'CONNECT_LOGIN_FAILED' => 'Не удалось подключиться к сервису CONNECT. Пожалуйста, проверьте указанные имя пользователя и пароль',
     'CONNECT_ABOUT' => 'Cервис CONNECT позволяет Вам с помощью Облачной Синхронизации организовать простой доступ к домашней системе через сеть Интернет, а так же обеспечить работу других облачных сервисов (резервная копия, работа голосовых помощников и т.п.). Подробная информация о сервисе доступна <a href="https://connect.smartliving.ru/services/s2.html">по ссылке</a>',
@@ -1359,7 +1362,8 @@ $dictionary = array(
     'CONNECT_ENABLE_CLOUDSYNC' => 'Включить облачную синхронизацию',
     'CONNECT_ENABLE_CLOUDBACKUP' => 'Включить облачную резервную копию',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Разрешить подключение без шифрования',
-
+    'OCLOC_ARRAY'=>array("час", "часа", "часов"),
+	'MINUTE_ARRAY'=>array("минута", "минуты", "минут"),
     /* end module names */
 
 

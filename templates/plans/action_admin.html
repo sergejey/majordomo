@@ -16,6 +16,7 @@
  <ul class="nav nav-tabs">
      <li[#if TAB=""#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab="><#LANG_GENERAL#></a></li>
      <li[#if TAB="states"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=states"><#LANG_STATES#></a></li>
+     <li[#if TAB="components"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=components"><#LANG_PLAN_COMPONENTS#></a></li>
      <li[#if TAB="css"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=css"><#LANG_USE_CSS#></a></li>
      <li[#if TAB="javascript"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=javascript"><#LANG_USE_JAVASCRIPT#></a></li>
      <li[#if TAB="preview"#] class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=preview"><#LANG_PREVIEW#></a></li>
@@ -38,6 +39,10 @@
 
  [#if TAB="states"#]
  [#inc plans_states.html#]
+ [#endif TAB#]
+
+ [#if TAB="components"#]
+ [#inc plans_components.html#]
  [#endif TAB#]
 
  [#if TAB="preview"#]

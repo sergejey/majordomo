@@ -257,8 +257,8 @@ function usual(&$out) {
    $terminals_matched=false;
    if ($session->data['TERMINAL']) {// && !$session->data['TERMINAL_ID']
     $terminal = getTerminalsByName($session->data['TERMINAL'], 1);
-    if ($terminal['ID']) {
-     $session->data['TERMINAL_ID']=$terminal['ID'];
+    if ($terminal[0]['ID']) {
+     $session->data['TERMINAL_ID']=$terminal[0]['ID'];
     }
    }
    $terminal_id=(int)$session->data['TERMINAL_ID'];

@@ -11,6 +11,7 @@
 $dictionary = array (
 
     /* general */
+    'SETTINGS_SITE_LANGUAGE_CODE' => 'uk_UA',
     'WIKI_URL' => 'http://smartliving.ru/',
     'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Аліса',
@@ -105,6 +106,7 @@ $dictionary = array (
     'SECTION_SYSTEM' => 'Система',
     'SECTION_PANEL' => 'Панель',
     /* end general */
+
     /* module names */
     'APP_GPSTRACK' => 'GPS-трекер',
     'APP_PLAYER' => 'Плеєр',
@@ -140,8 +142,6 @@ $dictionary = array (
     'MODULE_MASTER_LOGIN' => 'Пароль доступу',
     'MODULE_SAVERESTORE' => 'Перевірка оновлень',
     'MODULE_WEBVARS' => 'Веб-змінні',
-    'MODULE_SHOUTBOX' => 'Рупор',
-    'MODULE_SKINS' => 'Дизайн скінів',
     'MODULE_PATTERNS' => 'Шаблони поведінки',
     'MODULE_ONEWIRE' => '1-Wire',
     'MODULE_SCENES' => 'Сцени',
@@ -158,9 +158,11 @@ $dictionary = array (
     'MODULE_SYSTEM_ERRORS' => 'Помилки системи',
     'MODULE_MODULES' => 'Модулі',
     'MODULE_USERLOG' => 'Журнал дій',
+    'MODULE_PLANS' => 'Плани',
 
     'SCENE_HIDDEN' => 'Не включати до переліку сцен, що перемикаються',
     'SCENE_AUTO_SCALE' => 'Автоматично змінювати розмір сцени по ширині екрану',
+    'SCENE_DEVICES_BACKGROUND' => 'Тло для пристроїв',
 
     'SETUP' => 'Налаштувати',
 
@@ -921,7 +923,6 @@ $dictionary = array (
     'PERIOD_WEEK' => 'Тиждень',
     'PERIOD_MONTH' => 'Місяць',
     'PERIOD_CUSTOM' => 'Обрати',
-    'SEARCH' => 'Пошук',
     'SHOWHIDE' => 'Показати / Приховати',
 
     'AUTO_UPDATE' => 'Авто оновл.',
@@ -980,6 +981,9 @@ $dictionary = array (
 
     'SETTINGS_SECTION_' => 'Загальні',
     'SETTINGS_SECTION_HOOK' => 'Обробники',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Поведінка',
+    'SETTINGS_SECTION_BACKUP' => 'Резервне копіювання',
+    'SETTINGS_SECTION_SCENES' => 'Сцени',
 
     'DEVICE_ID' => 'ID пристрою',
     'REQUEST_TYPE' => 'Тип запиту',
@@ -1126,8 +1130,9 @@ $dictionary = array (
     'DEVICES_COUNTER' => 'Лічильник',
     'DEVICES_UNIT' => 'Одиниця виміру',
     'DEVICES_BATTERY_LOW' => 'Низький рівень заряду батареї',
+    'DEVICES_UNKNOWN_COMMAND' => 'Невідома команда...',
 
-     // Measure
+    // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
     'M_PRESSURE' => 'Торр',
@@ -1159,7 +1164,6 @@ $dictionary = array (
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимий час відсутності даних (годин)',
     'DEVICES_MAIN_SENSOR' => 'Основний сенсор приміщення',
     'DEVICES_NOT_UPDATING' => 'не оновлюється',
-    'DEVICES_UNKNOWN_COMMAND'=>'Невідома команда...',
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрито',
@@ -1174,6 +1178,7 @@ $dictionary = array (
     'DEVICES_GROUP_ECO' => 'Вимикати в режимі економії',
     'DEVICES_GROUP_ECO_ON' => 'Вмикати при виході з режиму економії',
     'DEVICES_GROUP_SUNRISE' => 'Вимикати на світанку',
+    'DEVICES_GROUP_SUNSET' => 'Вмикати при заході сонця',
     'DEVICES_IS_ACTIVITY' => 'Зміна означає активність в приміщенні',
     'DEVICES_NCNO' => 'Тип пристрою/сенсора',
     'DEVICES_LOADTYPE' => 'Тип пристрою',
@@ -1202,6 +1207,11 @@ $dictionary = array (
     'DEVICES_LINK_SWITCH_IT' => 'Ввімкнути / Вимкнути',
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Використання іншого пристроєм за подією',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Затримка виконання (секунд)',
+
+    'DEVICES_LINK_SWITCH_TIMER' => 'Ввімкнути на час',
+    'DEVICES_LINK_SWITCH_TIMER_DESCRIPTION' => 'Ввімкнути інший пристрій на деякий час за подією',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY' => 'Ввімкнути на який час (секунд)',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME' => 'Тільки в темний час',
 
     'DEVICES_LINK_SET_COLOR' => 'Встановити колір',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Встановити колір за подією',
@@ -1262,7 +1272,7 @@ $dictionary = array (
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
     'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Звичайний',
-    'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Еко',
     'DEVICES_THERMOSTAT_MODE_OFF' => 'Вимк.',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Звичайна цільова температура',
@@ -1279,7 +1289,7 @@ $dictionary = array (
 
     'AUTO_LINK' => 'Автоматичний запуск сценарію',
     'FAVORITE_DEVICE' => 'У списку швидкого доступу',
-	
+
     'ROOMS' => 'Кімнати',
     'APPEARANCE' => 'Зовнішній вигляд',
     'MAINTENANCE' => 'Обслуговування',
@@ -1320,8 +1330,39 @@ $dictionary = array (
     'MAINCYCLEDOWN' => 'Зупинено головний цикл системи',
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паніки! :)</b><br/>Зупинено головний процес системи MajorDoMo.<Br/>Можливо, буде достатньо зачекати кілька секунд і робота відновиться, але якщо помилка залишиться, то скористуйтеся будь-ласка однією з опцій наведених нижче.',
 
+    'RECENTLY_USED' => 'Нещодавнє',
 
-     /* end module names */
+    'PLAN_ZOOM_CONTROL' => 'Управління масштабом',
+    'PLAN_AUTO_ZOOM' => 'Авто-масштабування',
+    'CSS_CLASS' => 'Клас стилю',
+    'IMAGE_ITEM' => 'Элемент зображення',
+    'STYLE_TO_APPLY' => 'Застосувати стиль',
+    'STYLE_TO_APPLY_INVERSE' => 'Застосувати стиль ("інакше")',
+    'EMBED_CODE' => 'Код вбудовування',
+
+    'STYLE_SHOW_IT' => 'Показати',
+    'STYLE_HIDE_IT' => 'Приховати',
+    'STYLE_BLINK_IT' => 'Моргання',
+    'STYLE_SPIN_IT' => 'Обертання',
+    'STYLE_FADEOUT50' => 'Прозорість 50%',
+    'STYLE_FADEOUT30' => 'Прозорість 30%',
+    'STYLE_FADEOUT10' => 'Прозорість 10%',
+    'SEE_ALSO' => 'Дивіться також',
+
+    'CONNECT_LOGIN_FAILED' => 'Не вдалося під\'єднатися до сервісу CONNECT. Будь ласка, перевірте вказані ім\'я користувача та пароль',
+    'CONNECT_ABOUT' => 'Cервіс CONNECT дозволяє Вам за допомогою Хмарної Синхронізації організувати простий доступ до домашньої системи через мережу Інтернет, а також забезпечити роботу інших хмарних сервісів (резервна копія, робота голосових помічників і т.п.). Детальна інформація про сервіс доступна <a href="https://connect.smartliving.ru/services/s2.html">за посиланням</a>',
+    'CONNECT_REGISTER' => 'Реєстрація у сервісі CONNECT',
+    'CONNECT_PUBLISH_DATA' => 'Оприлюднити дані',
+    'CONNECT_CLOUD_BACKUP' => 'Хмарна резервна копія',
+    'CONNECT_MANAGE_BACKUPS' => 'Управління копіями',
+    'CONNECT_BACKUP_NOW' => 'Зберегти копію',
+    'CONNECT_ENABLE_CLOUDSYNC' => 'Ввімкнути хмарну синхронізацію',
+    'CONNECT_ENABLE_CLOUDBACKUP' => 'Ввімкнути хмарну резервну копію',
+    'CONNECT_DISABLE_SECURE_CONNECTION' => 'Дозволити підключення без шифрування',
+    'OCLOC_ARRAY'=>array("година", "години", "годин"),
+    'MINUTE_ARRAY'=>array("хвилина", "хвилини", "хвилин"),
+
+    /* end module names */
 
 
 );

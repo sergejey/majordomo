@@ -1113,7 +1113,6 @@ function processTitle($title, $object = 0)
       if (preg_match('/\[#.+?#\]/is', $title))
       {
          startMeasure('processTitleJTemplate');
-
          if ($object)
          {
             $jTempl = new jTemplate($title, $object->data, $object);
@@ -1124,13 +1123,17 @@ function processTitle($title, $object = 0)
          }
 
          $title = $jTempl->result;
-         
          endMeasure('processTitleJTemplate');
+          return $title;
       }
 
       $title = preg_replace('/%rand%/is', rand(), $title);
 
       $title=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
+
+
+
+
       
       if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/uis', $title, $m))
       {

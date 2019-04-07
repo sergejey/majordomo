@@ -463,10 +463,15 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60) {
                     continue;
                 }
+                $tmlr = strtotime($rec['LATEST_RUN']);
+                $diff_run = time() - $tmlr;
+                if ($diff_run <= 20*60)
+                    continue;
+                $linked_object = $rec['LINKED_OBJECT'];
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
-                callMethodSafe($rec['LINKED_OBJECT'] . '.' . $rec['LINKED_METHOD']);
+                callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
             }
         }
     }

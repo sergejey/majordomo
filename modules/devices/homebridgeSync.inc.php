@@ -61,6 +61,22 @@ for ($i = 0; $i < $total; $i++) {
          $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
+      case 'smoke':
+         $payload['service']='SmokeSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
+
+         $payload['characteristic'] = 'SmokeDetected';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
+      case 'leak':
+         $payload['service']='LeakSensor';
+         sg('HomeBridge.to_add',json_encode($payload));
+
+         $payload['characteristic'] = 'LeakDetected';
+         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
+         sg('HomeBridge.to_set',json_encode($payload));
+         break;
       case 'button':
          $payload['service']='Switch';
          sg('HomeBridge.to_add',json_encode($payload));

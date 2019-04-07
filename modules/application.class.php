@@ -319,6 +319,8 @@ function getParams() {
      $out['LAYOUTS'][$i]['NUM']=$i;
     }
     $out['TOTAL_LAYOUTS']=count($out['LAYOUTS']);
+   } else {
+    $out['TOTAL_LAYOUTS']=0;
    }
 
    if ($this->doc) $this->doc_id=$this->doc;

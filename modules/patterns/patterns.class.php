@@ -717,11 +717,7 @@ class patterns extends module
                 );
                 $dir = ROOT . 'lib/phpmorphy/dicts';
 
-                if (SETTINGS_SITE_LANGUAGE == 'ru') {
-                    $lang = 'ru_RU';
-                } else {
-                    $lang = 'en_EN';
-                }
+                $lang = SETTINGS_SITE_LANGUAGE_CODE;
 
                 try {
                     $morphy = new phpMorphy($dir, $lang, $opts);

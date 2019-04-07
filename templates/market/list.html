@@ -5,6 +5,14 @@
         <!--#
         <td valign="top"><input type="checkbox" name="names[]" value="[#MODULE_NAME#]"></td>
         #-->
+        <style>
+            .addon_icon {
+                width: 70px;
+            }
+        </style>
+        <td class="addon_icon" valign="top">
+            <img width="64" height="64" src='https://connect.smartliving.ru/cms/addons/[#ID#]_icon.png' onerror="this.src='/img/modules/default.png'"/>
+        </td>
         <td valign="top">
 
             [#if URL!=""#]
@@ -38,10 +46,10 @@
         </td>
         <td valign="top">
             [#if URL!=""#]
-            <a class="btn btn-default btn-sm" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-globe"></i> Info[#if PRICE!=""#] ([#PRICE#])[#endif PRICE#]</a>
+            <a class="btn btn-default btn-sm" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-globe"></i> Info[#if PRICE!=""#] ([#PRICE#])[#endif PRICE#]</a><br>
             [#endif URL#]
             [#if CAN_DOWNLOAD="1"#]
-            <a class="btn btn-default btn-sm" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> <#LANG_UPDATE#>[#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+            <a class="btn btn-default btn-sm" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> <#LANG_UPDATE#>[#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a><br>
             [#endif CAN_DOWNLOAD#]
 
 

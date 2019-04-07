@@ -1183,6 +1183,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO' => 'Turn it off in ECO mode',
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
+    'DEVICES_GROUP_SUNRISE' => 'Turn it on with Sunset',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
@@ -1347,6 +1348,7 @@ $dictionary = array(
     'STYLE_FADEOUT30' => 'Opacity 30%',
     'STYLE_FADEOUT10' => 'Opacity 10%',
     'SEE_ALSO' => 'See also',
+    'PLAN_COMPONENTS' => 'Components',
 
     'CONNECT_LOGIN_FAILED' => 'Could not login into CONNECT service. Please check username/password.',
     'CONNECT_ABOUT' => 'CONNECT service allows you to organize easy access to your smarthome system by Internet. Also it provides tools for other cloud-based services like Cloud Backup, voice assistants, etc. More details available <a href="https://connect.smartliving.ru/services/s2.html">by the link</a>',
@@ -1358,6 +1360,8 @@ $dictionary = array(
     'CONNECT_ENABLE_CLOUDSYNC' => 'Enable Cloud Sync',
     'CONNECT_ENABLE_CLOUDBACKUPC' => 'Enable Cloud Backup',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Disable secure connection',
+    'OCLOC_ARRAY'=>array("oclock", "oclock", "oclock"),
+    'MINUTE_ARRAY'=>array("minuts", "minuts", "minuts"),
 
     'TEST' => 'test'
 
