@@ -245,13 +245,11 @@ function timeNow($tm = 0)
     $m = (int)date('i', $tm);
     $ms = '';
 
-    $language = SETTINGS_SITE_LANGUAGE;
-
-    if (LANG_OCLOC_ARRAY and LANG_MINUTE_ARRAY) {
-        $array = LANG_OCLOC_ARRAY;
+    if (LANG_HOURS_ARRAY and LANG_MINUTE_ARRAY) {
+        $array = explode(',', LANG_HOURS_ARRAY);
         $hw = $h . ' ' . getNumberWord($h, $array);
         if ($m > 0) {
-            $array = LANG_MINUTE_ARRAY;
+            $array = explode(',', LANG_MINUTE_ARRAY);
             $ms = $m . ' ' . getNumberWord($m, $array);
         }
     } else {
