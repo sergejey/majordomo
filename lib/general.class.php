@@ -47,13 +47,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
             header("HTTP/1.0 401 Unauthorized");
             echo "Authorization required\n";
             
-            if(!is_dir(ROOT . 'debmes')) {
-                mkdir(ROOT . 'debmes', 0777);
-            }
-            $file = ROOT . 'cms/debmes/auth.log';
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " .
-                $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
-            file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+            DebMes($data,'auth');
             
             exit;
          }
