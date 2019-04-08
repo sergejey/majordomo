@@ -365,6 +365,7 @@ function timeBetween($tm1, $tm2)
  */
 function addScheduledJob($title, $commands, $datetime, $expire = 1800)
 {
+    clearScheduledJob($title);
     $rec = array();
     $rec['TITLE'] = $title;
     $rec['COMMANDS'] = $commands;
@@ -382,7 +383,7 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
  */
 function clearScheduledJob($title)
 {
-    SQLExec("DELETE FROM jobs WHERE TITLE = '" . DBSafe($title) . "'");
+    SQLExec("DELETE FROM jobs WHERE TITLE LIKE '" . DBSafe($title) . "'");
 }
 
 /**
