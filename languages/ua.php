@@ -1359,8 +1359,8 @@ $dictionary = array (
     'CONNECT_ENABLE_CLOUDSYNC' => 'Ввімкнути хмарну синхронізацію',
     'CONNECT_ENABLE_CLOUDBACKUP' => 'Ввімкнути хмарну резервну копію',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Дозволити підключення без шифрування',
-    'OCLOC_ARRAY'=>array("година", "години", "годин"),
-    'MINUTE_ARRAY'=>array("хвилина", "хвилини", "хвилин"),
+    'HOURS_ARRAY'=>'година,години,годин',
+    'MINUTE_ARRAY'=>'хвилина,хвилини,хвилин',
 
     /* end module names */
 
