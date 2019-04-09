@@ -125,7 +125,7 @@ $dictionary = array (
 
     'MODULE_OBJECTS_HISTORY' => 'Історія об’єктів',
     'MODULE_BT_DEVICES' => 'Bluetooth-пристрої',
-    'MODULE_CONTROL_MENU' => 'Меню управління',
+    'MODULE_CONTROL_MENU' => 'Меню керування',
     'MODULE_OBJECTS' => 'Об’єкти',
     'MODULE_PINGHOSTS' => 'Пристрої Online',
     'MODULE_SCRIPTS' => 'Сценарії',
@@ -1310,7 +1310,7 @@ $dictionary = array (
     'PATTERN_DO_FOR' => 'на',
     'PATTERN_SECOND' => 'секунд',
     'PATTERN_MINUTE' => 'хвилин',
-    'PATTERN_HOUR' => 'година',
+    'PATTERN_HOUR' => 'годин',
 
     'THEME' => 'Тема',
     'THEME_DARK' => 'темна',
