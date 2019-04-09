@@ -1312,6 +1312,12 @@ $dictionary = array(
     'ADD_UPDATE_MANUALLY' => 'Add/Update Manually',
     'TURNING_ON' => 'Turning on',
     'TURNING_OFF' => 'Turning off',
+    'PATTERN_TIMER' => 'timer',
+    'PATTERN_DO_AFTER' => 'after',
+    'PATTERN_DO_FOR' => 'for',
+    'PATTERN_SECOND' => 'seconds',
+    'PATTERN_MINUTE' => 'minutes',
+    'PATTERN_HOUR' => 'hours',
 
     'THEME' => 'Theme',
     'THEME_DARK' => 'Dark',
@@ -1361,7 +1367,7 @@ $dictionary = array(
     'CONNECT_ENABLE_CLOUDBACKUPC' => 'Enable Cloud Backup',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Disable secure connection',
     'HOURS_ARRAY'=>'oclock,oclock,oclock',
-    'MINUTE_ARRAY'=>'minutes,minutes,minutes',
+    'MINUTE_ARRAY'=>'minut,minutes,minutes',
 
     'TEST' => 'test'
 
