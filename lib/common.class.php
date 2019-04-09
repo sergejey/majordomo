@@ -491,15 +491,15 @@ function recognizeTime($text, &$newText)
     $new_time = time();
     $text = ($text);
 
-    if (preg_match('/через (\d+) '.LANG_PATTERN_SECOND.'.?/isu', $text, $m)) {
+    if (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+) '.LANG_PATTERN_SECOND.'.?/isu', $text, $m)) {
         $new_time = time() + $m[1];
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/через (\d+) '.LANG_PATTERN_MINUTE.'.?/isu', $text, $m)) {
+    } elseif (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+) '.LANG_PATTERN_MINUTE.'.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60;
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/через (\d+) '.LANG_PATTERN_HOUR.'.?/isu', $text, $m)) {
+    } elseif (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+) '.LANG_PATTERN_HOUR.'.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60 * 60;
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
