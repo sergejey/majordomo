@@ -338,7 +338,8 @@ if ($this->mode == 'update' && $this->tab == '') {
 
         $type_details = $this->getTypeDetails($rec['TYPE']);
         if (!$rec['LINKED_OBJECT'] && $out['ADD_OBJECT']) {
-            $new_object_title = $out['PREFIX'] . ucfirst($rec['TYPE']) . $this->getNewObjectIndex($type_details['CLASS']);
+            $prefix = $out['PREFIX'] . ucfirst($rec['TYPE']);
+            $new_object_title = $prefix . $this->getNewObjectIndex($type_details['CLASS'],$prefix);
             $object_id = addClassObject($type_details['CLASS'], $new_object_title, 'sdevice' . $rec['ID']);
             $rec['LINKED_OBJECT'] = $new_object_title;
             SQLUpdate('devices', $rec);
