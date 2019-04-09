@@ -245,13 +245,11 @@ function timeNow($tm = 0)
     $m = (int)date('i', $tm);
     $ms = '';
 
-    $language = SETTINGS_SITE_LANGUAGE;
-
-    if (LANG_OCLOC_ARRAY and LANG_MINUTE_ARRAY) {
-        $array = LANG_OCLOC_ARRAY;
+    if (LANG_HOURS_ARRAY and LANG_MINUTE_ARRAY) {
+        $array = explode(',', LANG_HOURS_ARRAY);
         $hw = $h . ' ' . getNumberWord($h, $array);
         if ($m > 0) {
-            $array = LANG_MINUTE_ARRAY;
+            $array = explode(',', LANG_MINUTE_ARRAY);
             $ms = $m . ' ' . getNumberWord($m, $array);
         }
     } else {
@@ -493,15 +491,15 @@ function recognizeTime($text, &$newText)
     $new_time = time();
     $text = ($text);
 
-    if (preg_match('/через (\d+) секунд.?/isu', $text, $m)) {
+    if (preg_match('/через (\d+) '.LANG_PATTERN_SECOND.'.?/isu', $text, $m)) {
         $new_time = time() + $m[1];
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/через (\d+) минут.?/isu', $text, $m)) {
+    } elseif (preg_match('/через (\d+) '.LANG_PATTERN_MINUTE.'.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60;
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/через (\d+) час.?/isu', $text, $m)) {
+    } elseif (preg_match('/через (\d+) '.LANG_PATTERN_HOUR.'.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60 * 60;
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;

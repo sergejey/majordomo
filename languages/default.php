@@ -1360,8 +1360,8 @@ $dictionary = array(
     'CONNECT_ENABLE_CLOUDSYNC' => 'Enable Cloud Sync',
     'CONNECT_ENABLE_CLOUDBACKUPC' => 'Enable Cloud Backup',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Disable secure connection',
-    'OCLOC_ARRAY'=>array("oclock", "oclock", "oclock"),
-    'MINUTE_ARRAY'=>array("minutes", "minutes", "minutes"),
+    'HOURS_ARRAY'=>'oclock,oclock,oclock',
+    'MINUTE_ARRAY'=>'minutes,minutes,minutes',
 
     'TEST' => 'test'
 

@@ -46,6 +46,11 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
             header("HTTP/1.0 401 Unauthorized");
             echo "Authorization required\n";
+            
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " .
+                $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            DebMes($data,'auth');
+            
             exit;
          }
       }
