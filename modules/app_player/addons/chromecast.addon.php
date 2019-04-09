@@ -13,46 +13,25 @@ class chromecast extends app_player_addon {
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
-		
 		// Network
 		$this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT'])?8009:$this->terminal['PLAYER_PORT']);
 		
 		// Chromecast
 		include_once(DIR_MODULES.'app_player/libs/castv2/Chromecast.php');
 	}
-
-	/*
 	// Get player status
 	function status() {
 		$this->reset_properties();
-		try {
-			$cc = new GChromecast($this->terminal['HOST'], this->terminal['PLAYER_PORT']);
-			$cc->requestId = time();
-			
-			var_dump(
-				$cc->DMP->getStatus() // TODO
-			);
-			
-			//$this->success = TRUE;
-			//$this->message = 'OK';
-			//$this->data = array(
-			//	'track_id'		=> -1,
-			//	'length'		=> 0,
-			//	'time'			=> 0,
-			//	'state'			=> 'unknown',
-			//	'volume'		=> 100,
-			//	'random'		=> FALSE,
-			//	'loop'			=> FALSE,
-			//	'repeat'		=> FALSE,
-			//);
-			
-		} catch (Exception $e) {
-			$this->success = FALSE;
-			$this->message = $e->getMessage();
-		}
+		$cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+		$cc->requestId = time();
+		DebMes($cc->DMP->getStatus());
+		// дает ответ надо его распарсить
+
+		// ответ от гуглохома "{\"type\":\"MEDIA_STATUS\",\"status\":[{\"mediaSessionId\":11,\"playbackRate\":1,\"playerState\":\"PLAYING\",\"currentTime\":1321.325804,\"supportedMediaCommands\":274447,\"volume\":{\"level\":1,\"muted\":false},\"activeTrackIds\":[],\"media\":{\"contentId\":\"http:\/\/ic7.101.ru:8000\/a175?userid=0&setst=spo4a4n0ggd4bu5v1qt989dvgl&tok=10750927MnRZbklCa2ZJbSs2MEQxT2UwT25wcVdFNStzMDZ0cGcxNnc3RUd1TjhaT09pQ254cktXby9odE53Z3B0bTFCUA%3D%3D3\",\"streamType\":\"BUFFERED\",\"contentType\":\"audio\/aacp\",\"duration\":null,\"tracks\":[{\"trackId\":1,\"type\":\"AUDIO\"}],\"breakClips\":[],\"breaks\":[]},\"currentItemId\":11,\"items\":[{\"itemId\":11,\"media\":{\"contentId\":\"http:\/\/ic7.101.ru:8000\/a175?userid=0&setst=spo4a4n0ggd4bu5v1qt989dvgl&tok=10750927MnRZbklCa2ZJbSs2MEQxT2UwT25wcVdFNStzMDZ0cGcxNnc3RUd1TjhaT09pQ254cktXby9odE53Z3B0bTFCUA%3D%3D3\",\"streamType\":\"BUFFERED\",\"contentType\":\"audio\/aacp\",\"duration\":null},\"autoplay\":1,\"orderId\":0}],\"repeatMode\":\"REPEAT_OFF\"}],\"requestId\":1554844363}"
+
 		return $this->success;
 	}
-	*/
+
 	
 	// Play
 	function play($input) {
