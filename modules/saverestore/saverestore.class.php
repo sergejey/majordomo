@@ -1364,18 +1364,12 @@ class saverestore extends module
             if ($iframe) {
                 $this->echonow(" OK<br/> ", 'green');
             }
-            if ($iframe) {
-                $this->echonow("Rebooting system ... ");
-            }
-            @SaveFile(ROOT . 'reboot', 'updated');
-            if ($iframe) {
-                $this->echonow(" OK<br/> ", 'green');
-            }
 
 
             if ($iframe) {
                 return 1;
             } else {
+                @SaveFile(ROOT . 'reboot', 'updated');
                 $this->redirect("?mode=clear&ok_msg=" . urlencode("Updates Installed!") . "&with_extensions=" . $with_extensions);
             }
 

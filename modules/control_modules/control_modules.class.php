@@ -210,11 +210,19 @@ function install($parent_name = "")
          if (file_exists($installedFile))
             @unlink($installedFile);
          startMeasure('Installing '.$lst[$i]['FILENAME']);
+          $url = BASE_URL.'/module/'.$lst[$i]['FILENAME'].'.html';
+          if (!isset($_SERVER['REQUEST_METHOD'])) {
+              echo 'Installing '.$lst[$i]['FILENAME']." ($url)\n";
+          }
+          DebMes('Installing '.$lst[$i]['FILENAME']." ($url)",'reinstall');
+          $data = getURL($url);
+          /*
          include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
          $obj = "\$object$i";
          $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
          //echo "Installing ".$lst[$i]['FILENAME']."\n";
          @eval("$code");
+          */
          endMeasure('Installing '.$lst[$i]['FILENAME']);
       }
    }
