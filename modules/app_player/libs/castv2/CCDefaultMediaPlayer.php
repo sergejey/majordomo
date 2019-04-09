@@ -14,20 +14,17 @@ class CCDefaultMediaPlayer extends CCBaseSender
 		$this->launch();
 		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"' . $streamType . '","contentType":"' . $contentType . '"},"autoplay":' . $autoPlay . ',"currentTime":' . $currentTime . ',"requestId":'.$this->chromecast->requestId.'}';
 		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media", $json);
-		/*
 		$r = "";
 		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
 			$r = $this->chromecast->getCastMessage();
 		}
-		*/
-		// Grab the mediaSessionId
-		/*
+			DebMes($r);
+			// Grab the mediaSessionId
 		preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m);
 		$this->mediaid = $m[1];
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
-		*/
 	}
 
 	public function getMediaSession() {
@@ -76,10 +73,14 @@ class CCDefaultMediaPlayer extends CCBaseSender
 	public function getStatus() {
 		// Stop
 		$this->launch(); // Auto-reconnects
+		$this->getMediaSession();
 		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->chromecast->requestId.'}');
 		$r = $this->chromecast->getCastMessage();
-		preg_match("/{\"type.*/",$r,$m);
-		return json_decode($m[0]);
+		while (!preg_match("/\"mediaSessionId\":([^\,]*)/",$r)) {
+			$r = $this->chromecast->getCastMessage();
+		}
+        $r = substr($r, strpos($r,'{"type'),50000);
+                return json_encode($r);
 	}
 	
 	public function Mute() {
