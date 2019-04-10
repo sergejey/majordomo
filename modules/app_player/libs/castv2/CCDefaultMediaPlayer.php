@@ -75,8 +75,10 @@ class CCDefaultMediaPlayer extends CCBaseSender
 		// Stop
 		$this->launch(); // Auto-reconnects
 		$this->getMediaSession();
-        if (!$this->mediaid){
-			return 'nothing starting';
+                if (!$this->mediaid){
+                    // nothing starting
+                    // надо подумать что отправлять
+		    return false;
 		}
 		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->chromecast->requestId.'}');
 		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$r)) {
