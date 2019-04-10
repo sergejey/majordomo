@@ -22,7 +22,6 @@ class CCDefaultMediaPlayer extends CCBaseSender
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
 			$this->mediaid = $m[1];
 		}
-		preg_match("/\"volume\":([^\,]*)/",$r,$m);
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
