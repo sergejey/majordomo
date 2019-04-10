@@ -280,8 +280,7 @@ if ($this->tab == 'schedule') {
 
 if ($this->mode == 'update' && $this->tab == '') {
     $ok = 1;
-    global $title;
-    $rec['TITLE'] = $title;
+    $rec['TITLE'] = gr('title','trim');
     if ($rec['TITLE'] == '') {
         $out['ERR_TITLE'] = 1;
         $ok = 0;

@@ -16,11 +16,9 @@ if ($this->mode == 'update') {
     // step: default
     if ($this->tab == '') {
         //updating 'TITLE' (varchar, required)
-        global $title;
 
-        $rec['TITLE'] = $title;
-
-        $rec['TITLE'] = str_replace(' ', '', trim($rec['TITLE']));
+        $rec['TITLE'] = gr('title','trim');
+        $rec['TITLE'] = str_replace(' ', '', $rec['TITLE']);
 
         $tmp = SQLSelectOne("SELECT ID FROM objects WHERE TITLE LIKE '" . DBSafe($rec['TITLE']) . "' AND ID!=" . (int)$rec['ID']);
         if ($tmp['ID']) {
@@ -122,8 +120,9 @@ if ($this->tab == 'properties') {
     }
 
     if ($this->mode == 'update') {
-        global $new_property;
-        global $new_value;
+        $new_property = gr('new_property','trim');
+        $new_property = str_replace(' ','',$new_property);
+        $new_value = gr('new_value');
 
         if ($new_property != '') {
             $tmp = array();

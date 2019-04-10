@@ -11,7 +11,7 @@
    $ok=1;
   //updating 'TITLE' (varchar, required)
    global $title;
-   $rec['TITLE']=$title;
+   $rec['TITLE']=gr('title','trim');
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;
