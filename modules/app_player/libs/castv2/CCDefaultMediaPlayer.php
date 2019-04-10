@@ -18,8 +18,7 @@ class CCDefaultMediaPlayer extends CCBaseSender
 		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
 			$r = $this->chromecast->getCastMessage();
 		}
-			DebMes($r);
-			// Grab the mediaSessionId
+                // Grab the mediaSessionId
 		preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m);
 		$this->mediaid = $m[1];
 		if (!$this->mediaid) {
@@ -79,7 +78,7 @@ class CCDefaultMediaPlayer extends CCBaseSender
 		while (!preg_match("/\"mediaSessionId\":([^\,]*)/",$r)) {
 			$r = $this->chromecast->getCastMessage();
 		}
-        $r = substr($r, strpos($r,'{"type'),50000);
+                $r = substr($r, strpos($r,'{"type'),50000);
                 return json_encode($r);
 	}
 	
