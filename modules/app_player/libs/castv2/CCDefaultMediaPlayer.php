@@ -14,26 +14,24 @@ class CCDefaultMediaPlayer extends CCBaseSender
 		$this->launch();
 		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"' . $streamType . '","contentType":"' . $contentType . '"},"autoplay":' . $autoPlay . ',"currentTime":' . $currentTime . ',"requestId":'.$this->chromecast->requestId.'}';
 		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media", $json);
-		/*
 		$r = "";
 		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
 			$r = $this->chromecast->getCastMessage();
 		}
-		*/
 		// Grab the mediaSessionId
-		/*
-		preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m);
-		$this->mediaid = $m[1];
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+			$this->mediaid = $m[1];
+		}
+		preg_match("/\"volume\":([^\,]*)/",$r,$m);
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
-		*/
 	}
 
 	public function getMediaSession() {
 		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->chromecast->requestId.'}');
 		$request_started=time();
-		while ((time()-$request_started)<5 && !$this->chromecast->sessionid) {
+		while ((time()-$request_started)<2 && !$this->chromecast->sessionid) {
 			$this->chromecast->getCastMessage();
 		}
 		$this->mediaid=$this->chromecast->sessionid;
@@ -76,10 +74,16 @@ class CCDefaultMediaPlayer extends CCBaseSender
 	public function getStatus() {
 		// Stop
 		$this->launch(); // Auto-reconnects
+		$this->getMediaSession();
+        if (!$this->mediaid){
+			return 'nothing starting';
+		}
 		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->chromecast->requestId.'}');
-		$r = $this->chromecast->getCastMessage();
-		preg_match("/{\"type.*/",$r,$m);
-		return json_decode($m[0]);
+		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$r)) {
+			$r = $this->chromecast->getCastMessage();
+		}
+        $r = substr($r, strpos($r,'{"type'),50000);
+        return json_decode($r,TRUE);
 	}
 	
 	public function Mute() {
