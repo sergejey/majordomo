@@ -62,11 +62,9 @@ class chromecast extends app_player_addon {
         $name          = 'unknow';
         $curren_url    = '';
 
-		$cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-		$cc->requestId = time();
-		$result = $cc->DMP->getStatus();
-		// дает ответ надо его распарсить
-		DebMes ($result['status'][0]['media']['duration']);
+	$cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+	$cc->requestId = time();
+	$result = $cc->DMP->getStatus();
 		
         if ($result) {
             // Results
