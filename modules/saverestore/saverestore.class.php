@@ -1338,12 +1338,10 @@ class saverestore extends module
                 $this->echonow(" OK<br/> ", 'green');
             }
 
-
+            /*
             if ($iframe) {
                 $this->echonow("Re-installing modules ... ");
             }
-
-            //if (is_dir(ROOT.'cms/saverestore/temp/'.$folder.'modules')) {
             // code restore
             $source = ROOT . 'modules';
             if ($dir = @opendir($source)) {
@@ -1354,6 +1352,7 @@ class saverestore extends module
                 }
             }
             @unlink(ROOT . "modules/control_modules/installed");
+            */
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
             $this->saveConfig();

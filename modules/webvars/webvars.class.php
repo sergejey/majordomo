@@ -306,7 +306,7 @@ function usual(&$out) {
    SQLUpdate('webvars', $host);
 
    if ($host['LINKED_OBJECT']!='' && $host['LINKED_PROPERTY']!='') {
-    getObject($host['LINKED_OBJECT'])->setProperty($host['LINKED_PROPERTY'], $new_status);
+    setGlobal($host['LINKED_OBJECT'].'.'.$host['LINKED_PROPERTY'],$new_status);
    }
 
    if ($old_status!=$new_status && $old_status!='') {
