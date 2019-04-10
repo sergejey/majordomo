@@ -866,7 +866,7 @@ function usual(&$out) {
 
   if (function_exists('postToWebSocketQueue')) {
    startMeasure('setproperty_postwebsocketqueue');
-   postToWebSocketQueue(mb_strtolower($this->object_title.'.'.$property,'UTF-8'), $value);
+   postToWebSocketQueue($this->object_title.'.'.$property, $value);
    endMeasure('setproperty_postwebsocketqueue');
   }
 
