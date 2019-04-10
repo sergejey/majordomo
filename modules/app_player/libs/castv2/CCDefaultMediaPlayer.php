@@ -19,8 +19,9 @@ class CCDefaultMediaPlayer extends CCBaseSender
 			$r = $this->chromecast->getCastMessage();
 		}
                 // Grab the mediaSessionId
-		preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m);
-		$this->mediaid = $m[1];
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+                    $this->mediaid = $m[1];
+		}
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
