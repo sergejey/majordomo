@@ -1349,6 +1349,7 @@ $dictionary = array(
     'STYLE_FADEOUT50' => 'Прозрачность 50%',
     'STYLE_FADEOUT30' => 'Прозрачность 30%',
     'STYLE_FADEOUT10' => 'Прозрачность 10%',
+    'STYLE_FADEOUT0' => 'Прозрачность 0%',
     'SEE_ALSO' => 'Смотрите также',
     'PLAN_COMPONENTS' => 'Компоненты',
     

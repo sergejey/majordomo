@@ -174,7 +174,7 @@ EOD;
         
     function componentUpdated{$this->component_id}(property_name,property_value) {
     
-        if (property_name=='$prop_name') {
+        if (property_name.toLowerCase()=='$prop_name') {
           gauge{$this->component_id}.redraw(property_value);
         }
     }

@@ -99,7 +99,7 @@
 				var objCnt = obj.length;
 				if(objCnt) {
 					for(var i=0;i<objCnt;i++) {
-						switch(obj[i]['PROPERTY']) {
+						switch(obj[i]['PROPERTY'].toLowerCase()) {
 							case 'thiscomputer.volumelevel':
 								[#APP_PLAYER_ID#]_volumeLevel = parseInt(obj[i]['VALUE']);
 								break;

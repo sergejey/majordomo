@@ -1347,6 +1347,7 @@ $dictionary = array(
     'STYLE_FADEOUT50' => 'Opacity 50%',
     'STYLE_FADEOUT30' => 'Opacity 30%',
     'STYLE_FADEOUT10' => 'Opacity 10%',
+    'STYLE_FADEOUT0' => 'Opacity 0%',
     'SEE_ALSO' => 'See also',
     'PLAN_COMPONENTS' => 'Components',
 
