@@ -74,7 +74,8 @@ $ctl = new control_modules();
        var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
        var elem1=doc.getElementById('<?php echo $_GET['code_field'];?>');
-       elem1.value=code;
+       var newCode = code.replace(/\n\s+EOT;/,"\nEOT;");
+       elem1.value=newCode;
 
        var elem2=doc.getElementById('xml_code');
        elem2.value=xmlText;
