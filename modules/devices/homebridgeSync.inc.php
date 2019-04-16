@@ -58,7 +58,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'MotionDetected';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
+         $payload['value']=(int)gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'smoke':
@@ -66,7 +66,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'SmokeDetected';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
+         $payload['value']=(int)gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'leak':
@@ -74,7 +74,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'LeakDetected';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.status');
+         $payload['value']=(int)gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'button':
@@ -86,7 +86,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_add',json_encode($payload));
             
          $payload['characteristic'] = 'CurrentAmbientLightLevel';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.value');
+         $payload['value']=(int)gg($devices[$i]['LINKED_OBJECT'].'.value');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'openclose':
@@ -94,7 +94,7 @@ for ($i = 0; $i < $total; $i++) {
          sg('HomeBridge.to_add',json_encode($payload));
 
          $payload['characteristic'] = 'ContactSensorState';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($devices[$i]['LINKED_OBJECT'].'.status') : gg($devices[$i]['LINKED_OBJECT'].'.status');
+         $payload['value']=(int)gg($devices[$i]['LINKED_OBJECT'].'.ncno') == 'nc' ? 1 - gg($devices[$i]['LINKED_OBJECT'].'.status') : gg($devices[$i]['LINKED_OBJECT'].'.status');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'dimmer':
@@ -108,7 +108,7 @@ for ($i = 0; $i < $total; $i++) {
          }
          sg('HomeBridge.to_set',json_encode($payload));
          $payload['characteristic'] = 'Brightness';
-         $payload['value']=gg($devices[$i]['LINKED_OBJECT'].'.level');
+         $payload['value']=(int)gg($devices[$i]['LINKED_OBJECT'].'.level');
          sg('HomeBridge.to_set',json_encode($payload));
          break;
       case 'rgb':
