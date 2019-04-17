@@ -67,7 +67,7 @@ $result = str_replace("nf.php", "admin.php", $result);
 
 
 startMeasure('accelerationProcess');
-if (!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1) {
+if ((!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1)) {
  $result = preg_replace('/href="(\/admin\.php.+?)">/is','href="\1" onclick="return partLoad(this.href);">',$result);
 }
 endMeasure('accelerationProcess');

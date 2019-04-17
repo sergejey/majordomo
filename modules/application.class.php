@@ -22,15 +22,19 @@
 
 function saveParams($data = 1) {
  $p=array();
- $p["action"]=$this->action;
- $p['doc_name']=$this->doc_name;
- if ($this->ajax) {
+ if (isset($this->action) && $this->action) {
+  $p["action"]=$this->action;
+ }
+ if (isset($this->doc_name) && $this->doc_name) {
+  $p['doc_name']=$this->doc_name;
+ }
+ if (isset($this->ajax) && $this->ajax) {
   $p['ajax']=$this->ajax;
  }
- if ($this->popup) {
+ if (isset($this->popup) && $this->popup) {
   $p['popup']=$this->popup;
  }
- if ($this->app_action) {
+ if (isset($this->app_action) && $this->app_action) {
   $p['app_action']=$this->app_action;
  }
  return parent::saveParams($p);
@@ -190,7 +194,10 @@ function getParams() {
     if ($this->app_action) {
      $out['APP_ACTION']=1;
     }
+   }
 
+   if ($this->app_action=='panel') {
+    $this->redirect(ROOTHTML.'admin.php');
    }
 
 
@@ -281,7 +288,6 @@ function getParams() {
     Define('USER_AVATAR', '');
    }
 
-
    if ($out["DOC_NAME"]) {
     //$doc=SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME LIKE '".DBSafe($out['DOC_NAME'])."'");
     if ($doc['ID']) {
@@ -313,6 +319,8 @@ function getParams() {
      $out['LAYOUTS'][$i]['NUM']=$i;
     }
     $out['TOTAL_LAYOUTS']=count($out['LAYOUTS']);
+   } else {
+    $out['TOTAL_LAYOUTS']=0;
    }
 
    if ($this->doc) $this->doc_id=$this->doc;
@@ -357,6 +365,23 @@ function getParams() {
    if ($this->action=='scenes') {
     $template_file=DIR_TEMPLATES."scenes.html";
    }
+
+   if (!$this->action && defined('SETTINGS_GENERAL_START_LAYOUT') && SETTINGS_GENERAL_START_LAYOUT!='') {
+   
+    if (SETTINGS_GENERAL_START_LAYOUT=='homepages') {
+     $this->redirect(ROOTHTML.'pages.html');
+    }
+    if (SETTINGS_GENERAL_START_LAYOUT=='menu') {
+     $this->redirect(ROOTHTML.'menu.html');
+    }
+    if (SETTINGS_GENERAL_START_LAYOUT=='apps') {
+     $this->redirect(ROOTHTML.'apps.html');
+    }
+    if (SETTINGS_GENERAL_START_LAYOUT=='cp') {
+     $this->redirect(ROOTHTML.'admin.php');
+    }
+   }
+
 
    if ($this->ajax && $this->action) {
     global $ajax;

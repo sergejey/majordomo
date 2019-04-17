@@ -171,6 +171,7 @@ $dictionary = array(
     'MODULE_SYSTEM_ERRORS' => 'System Errors',
     'MODULE_MODULES' => 'Modules',
     'MODULE_USERLOG' => 'User log',
+    'MODULE_PLANS' => 'Plans',
 
     'SETUP' => 'Setup',
 
@@ -1009,6 +1010,7 @@ $dictionary = array(
 
     'SCENE_HIDDEN' => 'Do not include in to the swappable list of scenes',
     'SCENE_AUTO_SCALE' => 'Auto zoom scene to device with',
+    'SCENE_DEVICES_BACKGROUND' => 'Background for Devices',
 
     'DO_NOTHING' => 'Do nothing',
     'DO_ONCLICK' => 'On click',
@@ -1181,6 +1183,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO' => 'Turn it off in ECO mode',
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
+    'DEVICES_GROUP_SUNRISE' => 'Turn it on with Sunset',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
@@ -1309,6 +1312,12 @@ $dictionary = array(
     'ADD_UPDATE_MANUALLY' => 'Add/Update Manually',
     'TURNING_ON' => 'Turning on',
     'TURNING_OFF' => 'Turning off',
+    'PATTERN_TIMER' => 'timer',
+    'PATTERN_DO_AFTER' => 'after',
+    'PATTERN_DO_FOR' => 'for',
+    'PATTERN_SECOND' => 'seconds',
+    'PATTERN_MINUTE' => 'minutes',
+    'PATTERN_HOUR' => 'hours',
 
     'THEME' => 'Theme',
     'THEME_DARK' => 'Dark',
@@ -1328,6 +1337,38 @@ $dictionary = array(
     'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
 
     'RECENTLY_USED' => 'Recent',
+
+    'PLAN_ZOOM_CONTROL' => 'Zoom Control',
+    'PLAN_AUTO_ZOOM' => 'Auto Zoom',
+    'CSS_CLASS' => 'Style Class',
+    'IMAGE_ITEM' => 'Image Element',
+    'STYLE_TO_APPLY' => 'Style to apply',
+    'STYLE_TO_APPLY_INVERSE' => 'Style to apply (if not true)',
+    'EMBED_CODE' => 'Embed Code',
+
+    'STYLE_SHOW_IT' => 'Show element',
+    'STYLE_HIDE_IT' => 'Hide element',
+    'STYLE_BLINK_IT' => 'Blinking',
+    'STYLE_SPIN_IT' => 'Spinning',
+    'STYLE_FADEOUT50' => 'Opacity 50%',
+    'STYLE_FADEOUT30' => 'Opacity 30%',
+    'STYLE_FADEOUT10' => 'Opacity 10%',
+    'STYLE_FADEOUT0' => 'Opacity 0%',
+    'SEE_ALSO' => 'See also',
+    'PLAN_COMPONENTS' => 'Components',
+
+    'CONNECT_LOGIN_FAILED' => 'Could not login into CONNECT service. Please check username/password.',
+    'CONNECT_ABOUT' => 'CONNECT service allows you to organize easy access to your smarthome system by Internet. Also it provides tools for other cloud-based services like Cloud Backup, voice assistants, etc. More details available <a href="https://connect.smartliving.ru/services/s2.html">by the link</a>',
+    'CONNECT_REGISTER' => 'Register at CONNECT',
+    'CONNECT_PUBLISH_DATA' => 'Publish Data',
+    'CONNECT_CLOUD_BACKUP' => 'Cloud Backup',
+    'CONNECT_MANAGE_BACKUPS' => 'Manage backups',
+    'CONNECT_BACKUP_NOW' => 'Backup now',
+    'CONNECT_ENABLE_CLOUDSYNC' => 'Enable Cloud Sync',
+    'CONNECT_ENABLE_CLOUDBACKUPC' => 'Enable Cloud Backup',
+    'CONNECT_DISABLE_SECURE_CONNECTION' => 'Disable secure connection',
+    'HOURS_ARRAY'=>'oclock,oclock,oclock',
+    'MINUTE_ARRAY'=>'minute,minutes,minutes',
 
     'TEST' => 'test'
 

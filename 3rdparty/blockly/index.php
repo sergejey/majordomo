@@ -22,6 +22,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks/majordomo.js"></script>
     <script type="text/javascript" src="blocks/majordomo_objects.js"></script>
     <script type="text/javascript" src="blocks/majordomo_time.js"></script>
+    <script type="text/javascript" src="blocks/majordomo_states.js.php"></script>
     <script type="text/javascript" src="blocks/majordomo_scripts.js.php"></script>
     <script type="text/javascript" src="blocks/majordomo_myblocks.js.php"></script>
     <?php
@@ -34,6 +35,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_objects.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_time.js"></script>
+    <script type="text/javascript" src="generators/php/majordomo_states.js.php"></script>
     <script type="text/javascript" src="generators/php/colour.js"></script>
     <script type="text/javascript" src="generators/php/lists.js"></script>
     <script type="text/javascript" src="generators/php/logic.js"></script>
@@ -72,7 +74,8 @@ $ctl = new control_modules();
        var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
        var elem1=doc.getElementById('<?php echo $_GET['code_field'];?>');
-       elem1.value=code;
+       var newCode = code.replace(/\n\s+EOT;/,"\nEOT;");
+       elem1.value=newCode;
 
        var elem2=doc.getElementById('xml_code');
        elem2.value=xmlText;
@@ -117,7 +120,12 @@ $ctl = new control_modules();
     }
     if (xmlDom) {
       Blockly.mainWorkspace.clear();
-      Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+      try {
+       Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+      } catch (e) {
+        Blockly.mainWorkspace.clear();
+        alert('Error loading script: ' + e);
+      }
     }
 
   }
@@ -187,6 +195,15 @@ $ctl = new control_modules();
           <block type="text"></block>
         </value>
       </block>
+    </category>
+
+    <category name="<?php echo LANG_STATES;?>">
+      <?php
+      $objects=getObjectsByClass('OperationalModes');
+      foreach($objects as $object) {
+        echo "<block type=\"majordomo_".$object['TITLE']."\"></block>";
+      }
+      ?>
     </category>
 
     <category name="<?php echo LANG_SECTION_OBJECTS;?>">

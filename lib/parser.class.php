@@ -135,7 +135,7 @@ class parser
    {
       define('SMARTY_DIR',ROOT . 'lib/smarty/');
       
-      require(SMARTY_DIR . 'Smarty.class.php');
+      require_once(SMARTY_DIR . 'Smarty.class.php');
 
       $smarty = new Smarty;
       

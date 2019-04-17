@@ -18,7 +18,7 @@ if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
 // END: begincut endcut placecut
 
 // BEGIN: filter output
-if ($filterblock != '')
+if (isset($filterblock) && $filterblock != '')
 {
    $matchPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($matchPattern, $result, $match);
@@ -57,7 +57,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
       }
       $seen[$var]=1;
       $id = 'var_' . preg_replace('/\W/', '_', $var);
-      $sub_js.="if (obj[i]['PROPERTY']=='$var') {\$('.$id').html(obj[i]['VALUE']);$.publish('$var.updated', obj[i]['VALUE']);}\n";
+      $sub_js.="if (obj[i]['PROPERTY'].toLowerCase()=='$var') {\$('.$id').html(obj[i]['VALUE']);$.publish('$var.updated', obj[i]['VALUE']);}\n";
       $result = str_replace($m[0][$i], '<span class="'.$id.'">'.getGlobal($var).'</span>', $result);
    }
    $js="<script language='javascript'>\$.subscribe('wsConnected', function (_) {

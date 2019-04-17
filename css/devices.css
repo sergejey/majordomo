@@ -2,6 +2,13 @@
     max-width:350px;
     padding:5px;
     border:1px solid transparent;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
 .device-widget.offline {
@@ -213,4 +220,8 @@
     padding-top:10px;
     vertical-align:middle;
     white-space: nowrap;
+}
+
+.noselect {
+
 }

@@ -41,6 +41,24 @@ if ($this->isHomeBridgeAvailable()) {
                 $payload['value'] = false;
             }
             break;
+        case 'smoke':
+            $payload['service'] = 'SmokeSensor';
+            $payload['characteristic'] = 'SmokeDetected';
+            if (gg($device1['LINKED_OBJECT'] . '.status')) {
+                $payload['value'] = true;
+            } else {
+                $payload['value'] = false;
+            }
+            break;
+        case 'leak':
+            $payload['service'] = 'LeakSensor';
+            $payload['characteristic'] = 'LeakDetected';
+            if (gg($device1['LINKED_OBJECT'] . '.status')) {
+                $payload['value'] = true;
+            } else {
+                $payload['value'] = false;
+            }
+            break;
         case 'sensor_light':
             $payload['service'] = 'LightSensor';
             $payload['characteristic'] = 'CurrentAmbientLightLevel';
@@ -219,7 +237,7 @@ for ($i = 0; $i < $total; $i++) {
 
     // -----------------------------------------------------------------
     if ($action_string != '') {
-        //DebMes("Action string: ".$action_string);
+        //DebMes("Action string: ".$action_string,'logic_test');
         try {
             $code = $action_string;
             $success = eval($code);
@@ -232,4 +250,3 @@ for ($i = 0; $i < $total; $i++) {
     }
 
 }
-

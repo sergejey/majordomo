@@ -102,7 +102,7 @@ if ($_GET['theme']) {
         <?php
             $constants=get_defined_constants();
             foreach($constants as $k=>$v) {
-                if (preg_match('/^LANG_/',$k)) {
+                if (preg_match('/^LANG_/',$k) && !is_array($v)) {
                     echo "const $k = '".addcslashes($v,"'")."';\n";
                 }
             }

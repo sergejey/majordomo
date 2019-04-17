@@ -153,6 +153,7 @@ function admin(&$out) {
   $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='".$id."'");
   $rec['TITLE']=$rec['TITLE'].' (copy)';
   unset($rec['ID']);
+  $rec['SYSTEM']='';
   $rec['ID']=SQLInsert('objects', $rec);
 
   $seen_pvalues=array();
@@ -278,7 +279,16 @@ function usual(&$out) {
   // some action for related tables
   SQLExec("DELETE FROM history WHERE OBJECT_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM methods WHERE OBJECT_ID='".$rec['ID']."'");
-  SQLExec("DELETE FROM pvalues WHERE OBJECT_ID='".$rec['ID']."'");
+  $pvalues=SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID=".$rec['ID']);
+  foreach($pvalues as $pvalue) {
+   if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+    $history_table = createHistoryTable($pvalue['ID']);
+   } else {
+    $history_table = 'phistory';
+   }
+   SQLExec("DELETE FROM $history_table WHERE VALUE_ID=".$pvalue['ID']);
+   SQLExec("DELETE FROM pvalues WHERE ID='".$pvalue['ID']."'");
+  }
   SQLExec("DELETE FROM properties WHERE OBJECT_ID='".$rec['ID']."'");
   SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'");
  }
@@ -707,6 +717,12 @@ function usual(&$out) {
    $source=$no_linked;
    $no_linked=0;
   }
+  if (!$source && $_SERVER['REQUEST_URI']) {
+   $source = $_SERVER['REQUEST_URI'];
+  }
+  if (strlen($source)>250) {
+   $source=substr($source,0,250).'...';
+  }
 
   if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES==1) {
    $save=1;
@@ -840,17 +856,17 @@ function usual(&$out) {
 
   saveToCache($cached_name, $value);
 
+  $p_lower=strtolower($property);
   if (!defined('DISABLE_SIMPLE_DEVICES') &&
       $this->device_id &&
-      $property!='updated' &&
-      $property!='updatedText'
+      ($p_lower=='value' || $p_lower=='status')
   ) {
    addToOperationsQueue('connect_device_data',$this->object_title.'.'.$property,$value,true);
   }
 
   if (function_exists('postToWebSocketQueue')) {
    startMeasure('setproperty_postwebsocketqueue');
-   postToWebSocketQueue(mb_strtolower($this->object_title.'.'.$property,'UTF-8'), $value);
+   postToWebSocketQueue($this->object_title.'.'.$property, $value);
    endMeasure('setproperty_postwebsocketqueue');
   }
 
@@ -1023,6 +1039,7 @@ function usual(&$out) {
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
   SQLExec($sqlQuery);
 
+  // Если вы дошли до этой записи, при проявлении ошибки, то данная ошибка проявляется на MariDB
   $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
   SQLExec($sqlQuery,true);
 
@@ -1058,7 +1075,7 @@ objects - Objects
  pvalues: OBJECT_ID int(10) NOT NULL DEFAULT '0'
  pvalues: VALUE text
  pvalues: UPDATED datetime
- pvalues: SOURCE varchar(20) NOT NULL DEFAULT ''
+ pvalues: SOURCE varchar(255) NOT NULL DEFAULT ''
  pvalues: LINKED_MODULES varchar(255) NOT NULL DEFAULT ''
  pvalues: INDEX (PROPERTY_ID)
  pvalues: INDEX (OBJECT_ID)
@@ -1066,7 +1083,7 @@ objects - Objects
 
  phistory: ID int(10) unsigned NOT NULL auto_increment
  phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
- phistory: SOURCE varchar(20) NOT NULL DEFAULT ''
+ phistory: SOURCE varchar(255) NOT NULL DEFAULT ''
  phistory: ADDED datetime
  phistory: INDEX (VALUE_ID)
 
@@ -1075,12 +1092,16 @@ objects - Objects
  phistory_queue: VALUE text
  phistory_queue: OLD_VALUE text
  phistory_queue: KEEP_HISTORY int(10) unsigned NOT NULL DEFAULT '0'
- phistory_queue: SOURCE varchar(20) NOT NULL DEFAULT ''
+ phistory_queue: SOURCE varchar(255) NOT NULL DEFAULT ''
  phistory_queue: ADDED datetime
-
 
 EOD;
   parent::dbInstall($data);
+
+  SQLExec("ALTER TABLE `pvalues` CHANGE `SOURCE` `SOURCE` varchar(255) NOT NULL DEFAULT ''");
+  SQLExec("ALTER TABLE `phistory` CHANGE `SOURCE` `SOURCE` varchar(255) NOT NULL DEFAULT ''");
+  SQLExec("ALTER TABLE `phistory_queue` CHANGE `SOURCE` `SOURCE` varchar(255) NOT NULL DEFAULT ''");
+
  }
 // --------------------------------------------------------------------
 }

@@ -46,6 +46,11 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
             header("HTTP/1.0 401 Unauthorized");
             echo "Authorization required\n";
+            
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " .
+                $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            DebMes($data,'auth');
+            
             exit;
          }
       }
@@ -569,7 +574,7 @@ function DebMes($errorMessage, $logLevel = "debug")
    }
 }
 
-function dprint($data = 0, $stop = 1) {
+function dprint($data = 0, $stop = 1, $show_history = 0) {
    if (isset($_SERVER['REQUEST_METHOD'])) {
       echo "<pre>";
    } else {
@@ -586,6 +591,12 @@ function dprint($data = 0, $stop = 1) {
    } else {
       echo date('Y-m-d H:i:s');
    }
+
+   if ($show_history) {
+      $e = new \Exception;
+      echo ' ('.$e->getTraceAsString().')';
+   }
+
    if (isset($_SERVER['REQUEST_METHOD'])) {
       echo "</pre><hr/>";
       echo str_repeat(' ',4096);

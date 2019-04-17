@@ -1,51 +1,14 @@
-<!--#
- @version 0.4 (auto-set)
-#--><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<title>{#TITLE#}</title>
-<meta name="keywords" content="">
-<meta name="description" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;"/>
-
-        <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
-        <link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
-        <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
-        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.autocomplete.css" type="text/css">
-        <link rel="stylesheet" href="<#ROOTHTML#>css/jquery.betterTooltip.css" type="text/css">
-        <link href="<#ROOTHTML#>css/devices.css" rel="stylesheet" type="text/css"/>
-
-    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
-
-    <script language="javascript" src="<#ROOTHTML#>js/scripts.js?v=1"></script>
-    <!--#
-    <script language="javascript" src="<#ROOTHTML#>js/system.js"></script>
-    <script language="javascript" src="<#ROOTHTML#>js/admin.js?v=1"></script>
-    [#inc scripts.js#]
-    #-->
-    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.bgiframe.js"></script>
-    <script type="text/javascript" src="<#ROOTHTML#>js/jquery.betterTooltip.js"></script>
-    <script type="text/javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
-    <script type="text/javascript" src="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<title>{#TITLE#}</title>
+[#inc common_header.html#]
+<link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
 [#inc websockets.html#]
 </head>
 
 <body>
-
-
-
 [#if AUTHORIZED#]
 <script language="javascript">
 
@@ -282,6 +245,7 @@ jQuery.fn.center = function () {
 
          function partLoad(link) {
 
+             [#if PRINT=="1"#]return true;[#endif#]
              if (typeof link == 'undefined') return;
 
              requestCounter++;
@@ -424,7 +388,7 @@ jQuery.fn.center = function () {
 <!--# top  #-->
 
 <!--# top  #-->
-<nav class="navbar navbar-fixed-top navbar-default" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
+<nav class="navbar navbar-default" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
    <div class="navbar-header">
     <button type=button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
     <span class="icon-bar"></span>
@@ -432,15 +396,15 @@ jQuery.fn.center = function () {
     <span class="icon-bar"></span>
     </button>
   <a class="navbar-brand" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo_small.png" height="25"></a>
-  </div>
-  <div class="collapse navbar-collapse" id="responsive-menu">
       <form class="navbar-form navbar-left" name="frmFilterModules">
           <div class="form-group">
               <input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
               <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;position:absolute;background-color:white;border:1px solid black;padding:5px;z-index:1000;'>...</div>
           </div>
       </form>
-      <ul class="nav navbar-nav navbar-left" >
+  </div>
+    <div class="collapse navbar-collapse" id="responsive-menu">
+    <ul class="nav navbar-nav navbar-left" >
 
         [#if HIDE_LEFT_PANEL="1"#]
         [#begin SUB_MODULES#]
@@ -504,10 +468,8 @@ jQuery.fn.center = function () {
 </nav>
 
 <!--# .top  #-->
-&nbsp;<br/>&nbsp;<br/>&nbsp;
-
 <div id='console' style='display:none'>
-    &nbsp;
+
     <div class="row">
 <div class="col-md-5">
 <form class="form-inline" role="form" action="?" method="get" onSubmit="return sendConsoleCommand();">
@@ -609,10 +571,8 @@ checkCategory('[#CATEGORY_ID#]');
     <div>
 
             <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"></a>
-            <#LANG_YOU_ARE_HERE#>: <a href="?"><#LANG_CONTROL_PANEL#></a>
-                [#if ACTION!=""#]
-                / <#ACTION#>
-                    [#endif#]
+            <a href="?"><#LANG_CONTROL_PANEL#></a>
+                [#if ACTION!=""#]/ <a href="?action=<#ACTION#>"><#ACTION#></a>[#endif#]
         <div class="float-right" style="padding-right:30px">
             <i class="glyphicon glyphicon-question-sign"></i>
             [#if ACTION!=""#]
@@ -689,6 +649,8 @@ checkCategory('[#CATEGORY_ID#]');
 
  $(document).ready(function() {
 
+     $('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
+
         $(".wiki_hint").fancybox({
                 type            : 'iframe',
                 maxWidth        : 800,
@@ -738,6 +700,7 @@ checkCategory('[#CATEGORY_ID#]');
      */
 
      localStorage.clear();
+     ajaxManager.run();
 
 });
 </script>

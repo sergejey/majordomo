@@ -717,11 +717,7 @@ class patterns extends module
                 );
                 $dir = ROOT . 'lib/phpmorphy/dicts';
 
-                if (SETTINGS_SITE_LANGUAGE == 'ru') {
-                    $lang = 'ru_RU';
-                } else {
-                    $lang = 'en_EN';
-                }
+                $lang = SETTINGS_SITE_LANGUAGE_CODE;
 
                 try {
                     $morphy = new phpMorphy($dir, $lang, $opts);
@@ -765,9 +761,11 @@ class patterns extends module
                 $is_common = (int)$parent_rec['IS_COMMON_CONTEXT'];
             }
 
+            /*
             if (context_getcurrent()) {
                 $history = context_get_history() . ' ' . $history;
             }
+            */
 
             if ($rec['IS_CONTEXT']) {
                 context_activate($rec['ID'], 1, $history);

@@ -52,6 +52,7 @@ $this->device_types=array(
             'groupEco'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEco'),
             'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEcoOn'),
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunrise'),
+            'groupSunset'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNSET,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunset'),
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,
                 '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdLoadType',
@@ -119,11 +120,13 @@ $this->device_types=array(
         'CLASS'=>'SDimmers',
         'PROPERTIES'=>array(
             'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1),
+            'levelSaved'=>array('DESCRIPTION'=>'Latest level saved'),
             'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
             'minWork'=>array('DESCRIPTION'=>'Min level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
             'maxWork'=>array('DESCRIPTION'=>'Max level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
             ),
         'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),
             'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
@@ -176,6 +179,8 @@ $this->device_types=array(
             'snapshotPreviewURL'=>array('DESCRIPTION'=>'Snapshot Preview URL'),
             'previewHTML'=>array('DESCRIPTION'=>'Preview HTML',),
             'activeHTML'=>array('DESCRIPTION'=>'Active HTML',),
+            'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIgnoreNobodysHome'),
+            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdMotionTimeout')
         ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),

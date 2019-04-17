@@ -1625,6 +1625,7 @@ elm_states - Element states
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
  scenes: SYSTEM varchar(255) NOT NULL DEFAULT '' 
+ scenes: DEVICES_BACKGROUND varchar(10) NOT NULL DEFAULT '' 
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'

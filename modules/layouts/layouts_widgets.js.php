@@ -1,4 +1,5 @@
 <?php
+header("Content-type:application/javascript");
 chdir(dirname(__FILE__) . '/../../');
 include_once("./config.php");
 include_once("./lib/loader.php");

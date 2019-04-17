@@ -1,0 +1,10 @@
+[#if ID!=""#]
+[#PREVIEW#]
+[#else ID#]
+[#begin PLANS#]
+<div>
+    <a href="?id=[#ID#]"><h4>[#TITLE#]</h4></a>
+</div>
+[#end PLANS#]
+
+[#endif ID#]

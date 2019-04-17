@@ -38,11 +38,6 @@
         $('mTerminals').show();
     }
     */
-</script>
-
-
-
-<script language="javascript">
 
 function gup( name )
 {
@@ -65,10 +60,39 @@ function gup( name )
   }
   return false;
  }
-</script>
+
+ function playMediaNow(href) {
 
 
-<script language="javascript">
+  var function_found=false;
+
+  var function_name = 'playerMediaStart';
+  if (eval("typeof "+function_name) === 'function') {
+   //playerMediaStart(path);
+   function_found=true;
+  }
+  function_name = 'parent.playerMediaStart';
+  if (eval("typeof "+function_name) === 'function') {
+   //parent.playerMediaStart(path);
+   function_found=true;
+  }
+
+  if (function_found) {
+   $.ajax({
+    url: href+'&full_url=1'
+   }).done(function(data) {
+    //alert(data);
+    var code=function_name+'("'+data+'");';
+    setTimeout(code,1000);
+    //eval(code);
+   });
+   return false;
+  } else {
+   return true;
+  }
+
+
+ }
 
  function removeFromFavorites_processed(id, data) {
   var elem1=document.getElementById('favorites_add');
@@ -160,7 +184,7 @@ function gup( name )
 <table class="table">
  <tr>
   <td>   <span>
-   <a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
+   <a href="?folder=[#CURRENT_DIR_HTML#]&file=[#CURRENT_DIR_HTML#]&collection_id=<#COLLECTION_ID#>&mode=play" onclick="return playMediaNow(this.href);"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
    </span>
 </td>
   <td><h1>[#CURRENT_DIR_TITLE#]</h1></td>
@@ -183,7 +207,7 @@ function gup( name )
 <table class="table table-bordered">
  [#begin FAVORITES#]
  <tr>
-  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0" align="abs_middle"></a>
+  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play" onclick="return playMediaNow(this.href);"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0" align="abs_middle"></a>
   <img src="<#ROOTHTML#>img/btn/favorite.png" border="0" align="abs_middle">
   <a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]" class="btn">[#TITLE#]</a>
   </td>
@@ -200,7 +224,7 @@ function gup( name )
 <table class="table table-bordered">
  [#begin MEDIA_HISTORY#]
  <tr>
-  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0" align="abs_middle"></a>
+  <td><a href="?folder=[#PATH#]&file=[#PATH#]&collection_id=[#COLLECTION_ID#]&mode=play" onclick="return playMediaNow(this.href);"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0" align="abs_middle"></a>
   <a href="?folder=[#PATH#]&collection_id=[#COLLECTION_ID#]" class="btn">[#TITLE#]</a></td>
  </tr>
  [#end MEDIA_HISTORY#]

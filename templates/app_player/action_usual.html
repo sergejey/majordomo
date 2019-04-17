@@ -99,7 +99,7 @@
 				var objCnt = obj.length;
 				if(objCnt) {
 					for(var i=0;i<objCnt;i++) {
-						switch(obj[i]['PROPERTY']) {
+						switch(obj[i]['PROPERTY'].toLowerCase()) {
 							case 'thiscomputer.volumelevel':
 								[#APP_PLAYER_ID#]_volumeLevel = parseInt(obj[i]['VALUE']);
 								break;
@@ -189,6 +189,12 @@
 		elem.src = elem.sources[nextSourceIdx];
 		elem.play();
 	}
+
+	function playerMediaStart(url) {
+		$('#[#APP_PLAYER_ID#] .content input[name="play"]').val(url);
+		[#APP_PLAYER_ID#]_action('play');
+	}
+
 	// Actions
 	function [#APP_PLAYER_ID#]_action(command, callback) {
 		//setTimeout("$('#[#APP_PLAYER_ID#] .content .controls .column.button."+command+"').show();",200);

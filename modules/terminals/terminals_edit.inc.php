@@ -15,7 +15,8 @@ if($this->mode == 'update') {
 	$ok = 1;
 	
 	//updating 'NAME' (varchar, required)
-	$rec['NAME'] = gr('name');
+	$rec['NAME'] = gr('name','trim');
+	$rec['NAME'] = str_replace(' ','',$rec['NAME']);
 	if($rec['NAME'] == '') {
 		$out['ERR_NAME'] = 1;
 		$ok = 0;

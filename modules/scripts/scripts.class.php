@@ -146,8 +146,12 @@ class scripts extends module
             SQLUpdate('scripts', $rec);
 
             try {
-                $code = $rec['CODE'];
-                $success = eval($code);
+                $code = trim($rec['CODE']);
+                if ($code!='') {
+                    $success = eval($code);
+                } else {
+                    $success = true;
+                }
                 if ($success === false) {
                     //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
                     registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
@@ -447,6 +451,19 @@ class scripts extends module
         }
     }
 
+    function processSubscription($event, &$details)
+    {
+        if ($event == 'COMMAND' && $details['member_id']) {
+            $command = $details['message'];
+            $script = SQLSelectOne("SELECT ID FROM scripts WHERE TITLE LIKE '".DBSafe($command)."'");
+            if ($script['ID']) {
+                $this->runScript($script['ID']);
+                $details['PROCESSED'] = 1;
+                $details['BREAK'] = 1;
+            }
+        }
+    }
+
 
     function delete_categories($id)
     {
@@ -533,6 +550,9 @@ EOD;
                 SQLExec("UPDATE scripts SET EXECUTED=NOW() WHERE ID=".$scripts[$i]['ID']);
             }
         }
+
+        subscribeToEvent('scripts', 'COMMAND');
+
     }
 // --------------------------------------------------------------------
 }

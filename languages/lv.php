@@ -8,6 +8,7 @@
 */
 
 $dictionary=array(
+'SETTINGS_SITE_LANGUAGE_CODE' => 'lv-LV',
 'WIKI_URL'=>'http://smartliving.ru/',
 'DEFAULT_COMPUTER_NAME'=>'Alise',
 'WELCOME_GREETING'=>'Labdien',

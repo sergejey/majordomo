@@ -154,6 +154,11 @@ class devices extends module
             $device_rec = SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($this->linked_object) . "'");
             if ($device_rec['TITLE']) {
                 $out['TITLE'] = $device_rec['TITLE'];
+                if ($this->preview) {
+                    $data=$this->processDevice($device_rec['ID']);
+                    $out['HTML']=$data['HTML'];
+                }
+                $out['ID']=$device_rec['ID'];
             }
             $out['LINKED_OBJECT'] = $this->linked_object;
         }
@@ -247,9 +252,15 @@ class devices extends module
         return $methods;
     }
 
-    function getNewObjectIndex($class)
+    function getNewObjectIndex($class, $prefix = '')
     {
         $objects = getObjectsByClass($class);
+        if ($prefix!='') {
+            $other_objects=SQLSelect("SELECT TITLE FROM objects WHERE TITLE LIKE '".$prefix."%'");
+            foreach($other_objects as $obj) {
+                $objects[]=$obj;
+            }
+        }
         $index = 0;
         $total = count($objects);
         for ($i = 0; $i < $total; $i++) {
@@ -458,10 +469,15 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60) {
                     continue;
                 }
+                $tmlr = strtotime($rec['LATEST_RUN']);
+                $diff_run = time() - $tmlr;
+                if ($diff_run <= 20*60)
+                    continue;
+                $linked_object = $rec['LINKED_OBJECT'];
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
-                callMethodSafe($rec['LINKED_OBJECT'] . '.' . $rec['LINKED_METHOD']);
+                callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
             }
         }
     }
@@ -719,7 +735,7 @@ class devices extends module
             $out['DEVICES'] = $devices;
         }
 
-        $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
+        $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE+0");
         $total_devices = count($devices);
         if ($total_devices) {
             $favorite_devices = array();
@@ -934,7 +950,8 @@ class devices extends module
         }
 
         if (!$rec['LINKED_OBJECT']) {
-            $new_object_title = ucfirst($rec['TYPE']) . $this->getNewObjectIndex($type_details['CLASS']);
+            $prefix=ucfirst($rec['TYPE']);
+            $new_object_title =  $prefix . $this->getNewObjectIndex($type_details['CLASS']);
             $object_id = addClassObject($type_details['CLASS'], $new_object_title, 'sdevice' . $rec['ID']);
             $rec['LINKED_OBJECT'] = $new_object_title;
             if (preg_match('/New device .+/', $rec['TITLE'])) {
@@ -1269,7 +1286,7 @@ class devices extends module
         if (!$device1['ID']) {
             return 0;
         }
-        include_once(DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        require (DIR_MODULES . 'devices/devices_links_actions.inc.php');
         return 1;
     }
 

@@ -133,8 +133,8 @@ function getObjectClassTemplate($object_name) {
     $data=preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data=preg_replace('/%\.object_description%/uis', $object->description, $data);
     //$data=preg_replace('/%\.([\w\-]+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
-    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
-    $data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    //$data=preg_replace('/%\.(.+?)%/uis', '%'.$object_name.'.\1'.'%', $data);
+    $data=preg_replace('/%\.([\w\_\d\-]+)/uis', '%'.$object_name.'.\1'.'', $data);
     endMeasure('getObjectClassTemplate');
     return $data;
 }
@@ -1113,7 +1113,6 @@ function processTitle($title, $object = 0)
       if (preg_match('/\[#.+?#\]/is', $title))
       {
          startMeasure('processTitleJTemplate');
-
          if ($object)
          {
             $jTempl = new jTemplate($title, $object->data, $object);
@@ -1124,91 +1123,92 @@ function processTitle($title, $object = 0)
          }
 
          $title = $jTempl->result;
-         
          endMeasure('processTitleJTemplate');
-      }
+         // return $title;
+      } else {
 
-      $title = preg_replace('/%rand%/is', rand(), $title);
+          $title = preg_replace('/%rand%/is', rand(), $title);
+          $title=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
+          if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/uis', $title, $m))
+          {
+              startMeasure('processTitleProperties');
 
-      $title=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
-      
-      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/uis', $title, $m))
-      {
-         startMeasure('processTitleProperties');
-         
-         $total = count($m[0]);
-         
-         for ($i = 0; $i < $total; $i++)
-         {
-            $title = str_replace($m[0][$i], getGlobal($m[1][$i] . '.' . $m[2][$i]), $title);
-         }
+              $total = count($m[0]);
 
-         endMeasure('processTitleProperties');
-      }
-      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|"(.+?)"%/uis', $title, $m))
-      {
-         startMeasure('processTitlePropertiesReplace');
-         
-         $total = count($m[0]);
-         
-         for ($i = 0; $i < $total; $i++)
-         {
-            $data=getGlobal($m[1][$i] . '.' . $m[2][$i]);
-            if ($data == '') $data = 0;
-            $descr=$m[3][$i];
-            $tmp=explode(';', $descr);
-            $totald=count($tmp);
-            $hsh=array();
-            if ($totald==1) {
-                if ($data!='') {
-                    $hsh[$data]=$descr;
-                } else {
-                    $hsh[$data]='';
-                }
-            } else {
-                for($id=0;$id<$totald;$id++) {
-                    $item=trim($tmp[$id]);
-                    if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
-                        $search_value=$md[1];
-                        $search_replace=$md[2];
-                    } else {
-                        $search_value=$id;
-                        $search_replace=$item;
-                    }
-                    $hsh[$search_value]=$search_replace;
-                }
-            }
-            $title = str_replace($m[0][$i], $hsh[$data], $title);
-         }
-
-         endMeasure('processTitlePropertiesReplace');
-      }
-      if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\w+?)%/uis', $title, $m)) {
-          startMeasure('processTitlePropertiesFunction');
-          $total = count($m[0]);
-          for($i=0;$i<$total;$i++) {
-              $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
-              if (function_exists($m[3][$i])) {
-                  $data=call_user_func($m[3][$i],$data);
+              for ($i = 0; $i < $total; $i++)
+              {
+                  $title = str_replace($m[0][$i], getGlobal($m[1][$i] . '.' . $m[2][$i]), $title);
               }
-              $title = str_replace($m[0][$i], $data, $title);
+
+              endMeasure('processTitleProperties');
           }
-          endMeasure('processTitlePropertiesFunction');
-      }
-      if (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
-      {
-         $total = count($m[0]);
+          if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|"(.+?)"%/uis', $title, $m))
+          {
+              startMeasure('processTitlePropertiesReplace');
 
-         for ($i = 0; $i < $total; $i++)
-         {
-            if (preg_match('/^%\d/is', $m[0][$i]))
-            {
-               continue; // dirty hack, sorry for that
-            }
+              $total = count($m[0]);
 
-            $title = str_replace($m[0][$i], getGlobal($m[1][$i]), $title);
-         }
+              for ($i = 0; $i < $total; $i++)
+              {
+                  $data=getGlobal($m[1][$i] . '.' . $m[2][$i]);
+                  if ($data == '') $data = 0;
+                  $descr=$m[3][$i];
+                  $tmp=explode(';', $descr);
+                  $totald=count($tmp);
+                  $hsh=array();
+                  if ($totald==1) {
+                      if ($data!='') {
+                          $hsh[$data]=$descr;
+                      } else {
+                          $hsh[$data]='';
+                      }
+                  } else {
+                      for($id=0;$id<$totald;$id++) {
+                          $item=trim($tmp[$id]);
+                          if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
+                              $search_value=$md[1];
+                              $search_replace=$md[2];
+                          } else {
+                              $search_value=$id;
+                              $search_replace=$item;
+                          }
+                          $hsh[$search_value]=$search_replace;
+                      }
+                  }
+                  $title = str_replace($m[0][$i], $hsh[$data], $title);
+              }
+
+              endMeasure('processTitlePropertiesReplace');
+          }
+          if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\w+?)%/uis', $title, $m)) {
+              startMeasure('processTitlePropertiesFunction');
+              $total = count($m[0]);
+              for($i=0;$i<$total;$i++) {
+                  $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
+                  if (function_exists($m[3][$i])) {
+                      $data=call_user_func($m[3][$i],$data);
+                  }
+                  $title = str_replace($m[0][$i], $data, $title);
+              }
+              endMeasure('processTitlePropertiesFunction');
+          }
+          if (preg_match_all('/%([\w\d\.]+?)%/is', $title, $m))
+          {
+              $total = count($m[0]);
+
+              for ($i = 0; $i < $total; $i++)
+              {
+                  if (preg_match('/^%\d/is', $m[0][$i]))
+                  {
+                      continue; // dirty hack, sorry for that
+                  }
+
+                  $title = str_replace($m[0][$i], getGlobal($m[1][$i]), $title);
+              }
+          }
+
       }
+
 
       if (preg_match_all('/<#LANG_(\w+?)#>/is', $title, $m))
       {
@@ -1219,7 +1219,6 @@ function processTitle($title, $object = 0)
             $title = str_replace($m[0][$i], constant('LANG_' . $m[1][$i]), $title);
          }
       }
-
       if (preg_match_all('/\&#060#LANG_(.+?)#\&#062/is', $title, $m))
       {
          $total = count($m[0]);

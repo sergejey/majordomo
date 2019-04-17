@@ -3,9 +3,11 @@
 $ot = $this->object_title;
 $linked_room = $this->getProperty('linkedRoom');
 
-$tm = time();
-$this->setProperty('updated', $tm);
-$this->callMethod('setUpdatedText');
+if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
+    $tm = time();
+    $this->setProperty('updated', $tm);
+    $this->callMethod('setUpdatedText');
+}
 $this->setProperty('alive', 1);
 
 
@@ -17,6 +19,7 @@ if (!$alive_timeout) {
 setTimeout($ot . '_alive_timer', 'setGlobal("' . $ot . '.alive", 0);', $alive_timeout);
 
 $need_call_logic_action = 1;
+
 
 if ($this->class_title == 'SMotions' && $params['NEW_VALUE'] && !timeOutExists($ot . '_motion_timer_status')) {
     $this->callMethodSafe('motionDetected', array('statusUpdated' => 1));
@@ -43,11 +46,6 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
 }
 
 if ($need_call_logic_action) {
-    /*
-    if ($this->class_title == 'SRelays') {
-     DebMes($this->object_title.' '.$params['NEW_VALUE'],'logic_test');
-    }
-    */
     $this->callMethod('logicAction');
     include_once(DIR_MODULES . 'devices/devices.class.php');
     $dv = new devices();
