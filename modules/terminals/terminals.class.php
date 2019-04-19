@@ -190,7 +190,8 @@ class terminals extends module
     }
 
 
-    function terminalSayByCache($terminal_rec, $cached_filename, $level) {
+    function terminalSayByCache($terminal_rec, $cached_filename, $level)
+    {
         $min_level = getGlobal('ThisComputer.minMsgLevel');
         if ($terminal_rec['MIN_MSG_LEVEL']) {
             $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
@@ -201,30 +202,30 @@ class terminals extends module
         if ($terminal_rec['MAJORDROID_API'] || $terminal_rec['PLAYER_TYPE'] == 'ghn') {
             return;
         }
-        if ($terminal_rec['CANPLAY'] && $terminal_rec['PLAYER_TYPE']!='') {
-            if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
+        if ($terminal_rec['CANPLAY'] && $terminal_rec['PLAYER_TYPE'] != '') {
+            if (preg_match('/\/cms\/cached.+/', $cached_filename, $m)) {
                 $server_ip = getLocalIp();
                 if (!$server_ip) {
                     DebMes("Server IP not found", 'terminals');
                     return false;
                 } else {
-                    $cached_filename='http://'.$server_ip.$m[0];
+                    $cached_filename = 'http://' . $server_ip . $m[0];
                 }
             } else {
                 DebMes("Unknown file path format: " . $cached_filename, 'terminals');
                 return false;
             }
             DebMes("Playing cached to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $cached_filename, 'terminals');
-            playMedia($cached_filename,$terminal_rec['TITLE']);
+            playMedia($cached_filename, $terminal_rec['TITLE']);
         }
     }
 
     function terminalSay($terminal_rec, $message, $level)
     {
-        $asking=0;
-        if ($level==='ask') {
-            $level=9999;
-            $asking=1;
+        $asking = 0;
+        if ($level === 'ask') {
+            $level = 9999;
+            $asking = 1;
         }
         $min_level = getGlobal('ThisComputer.minMsgLevel');
         if ($terminal_rec['MIN_MSG_LEVEL']) {
@@ -234,37 +235,20 @@ class terminals extends module
             return false;
         }
         DebMes("Saying to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $message, 'terminals');
-        //if (!$terminal_rec['IS_ONLINE']) return false;
-        if ($terminal_rec['MAJORDROID_API'] && $terminal_rec['HOST']) {
-            $service_port = '7999';
+        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
+        if (file_exists($addon_file)) {
+            include_once($addon_file);
+            $tts = new $terminal_rec['TTS_TYPE']($terminal_rec);
             if ($asking) {
-                $in = 'ask:' . $message;
+                $result = $tts->ask($message, $level);
             } else {
-                $in = 'tts:' . $message;
+                $result = $tts->say($message, $level);
             }
-            $address = $terminal_rec['HOST'];
-            if (!preg_match('/^\d/', $address)) return 0;
-            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-            if ($socket === false) {
-                return 0;
-            }
-            $result = socket_connect($socket, $address, $service_port);
-            if ($result === false) {
-                return 0;
-            }
-            socket_write($socket, $in, strlen($in));
-            socket_close($socket);
-            return 1;
-        } elseif ($terminal_rec['PLAYER_TYPE'] == 'ghn') {
-            $port = $terminal_rec['PLAYER_PORT'];
-            $language = SETTINGS_SITE_LANGUAGE;
-            if (!$port) {
-                $port = '8091';
-            }
-            $host = $terminal_rec['HOST'];
-            $url = 'http://' . $host . ':' . $port . '/google-home-notifier?language=' . $language . '&text=' . urlencode($ph);
-            getURL($url, 0);
+        } else {
+            DebMes("Could not find $addon_file", 'terminals');
         }
+        return $result;
     }
 
     /**
@@ -275,9 +259,9 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         $this->getConfig();
-        DebMes("Processing $event: ".json_encode($details),'terminals');
+        DebMes("Processing $event: " . json_encode($details), 'terminals');
         if ($event == 'SAY') {
-            $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1");
+            $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1 AND TTS_TYPE!=''");
             foreach ($terminals as $terminal_rec) {
                 $this->terminalSay($terminal_rec, $details['message'], $details['level']);
             }
@@ -292,7 +276,7 @@ class terminals extends module
                 return false;
             }
             if ($event == 'ASK') {
-                $details['level']='ask';
+                $details['level'] = 'ask';
             }
             $this->terminalSay($terminal_rec, $details['message'], $details['level']);
         } elseif ($event == 'SAY_CACHED_READY') {
@@ -307,7 +291,7 @@ class terminals extends module
                 $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1");
                 foreach ($terminals as $terminal_rec) {
                     //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
-                    $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename,$details['message']);
+                    $this->terminalSayByCacheQueue($terminal_rec, $details['level'], $filename, $details['message']);
                 }
             } elseif ($source_event == 'SAYTO' || $source_event == 'ASK') {
                 $terminal_rec = array();
@@ -320,20 +304,20 @@ class terminals extends module
                     return false;
                 }
                 if ($source_event == 'ASK') {
-                    $details['level']=9999;
+                    $details['level'] = 9999;
                 }
                 //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
-                $this->terminalSayByCacheQueue($terminal_rec,$details['level'],$filename,$details['message']);
+                $this->terminalSayByCacheQueue($terminal_rec, $details['level'], $filename, $details['message']);
             }
 
         } elseif ($event == 'HOURLY') {
             // check terminals
-            $terminals=SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
-            foreach($terminals as $terminal) {
+            $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
+            foreach ($terminals as $terminal) {
                 if (ping($terminal['HOST'])) {
-                    $terminal['LATEST_ACTIVITY']=date('Y-m-d H:i:s');
-                    $terminal['IS_ONLINE']=1;
-                    SQLUpdate('terminals',$terminal);
+                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                    $terminal['IS_ONLINE'] = 1;
+                    SQLUpdate('terminals', $terminal);
                 }
             }
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)'); //
@@ -341,87 +325,34 @@ class terminals extends module
         }
     }
 
-/**
-* очередь сообщений 
-*
-* @access public
-*/
-function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) { 
-    
-    // исключаем все сообщения что ниже нужного уровня
-    $min_level = getGlobal('ThisComputer.minMsgLevel');
-    if ($target['MIN_MSG_LEVEL']) {
-        $min_level = (int)$target['MIN_MSG_LEVEL'];
-    }
-    if ($levelMes < $min_level) {
-        return false;
-    }
+    /**
+     * очередь сообщений
+     *
+     * @access public
+     */
+    function terminalSayByCacheQueue($terminal_rec, $level, $cached_filename, $message)
+    {
 
-    // если скеширован файл а терминал не может воспроизводить сообщение  то возвращаемся без воспроизведения...
-    if (!$target['CANTTS'] or !$target['PLAYER_TYPE'] or $target['MAJORDROID_API'] or $target['PLAYER_TYPE'] == 'ghn') { 
-        return;
-    }
-   
-    // poluchaem adress cashed files dlya zapuska ego na vosproizvedeniye
-    if (preg_match('/\/cms\/cached.+/',$cached_filename,$m)) {
-        $server_ip = getLocalIp();
-        if (!$server_ip) {
-            //DebMes("Server IP not found", 'terminals');
-            return false;
-        } else {
-            $cached_filename='http://'.$server_ip.$m[0];
+        $min_level = getGlobal('ThisComputer.minMsgLevel');
+        if ($terminal_rec['MIN_MSG_LEVEL']) {
+            $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
         }
-    } else {
-        //DebMes("Unknown file path format: " . $cached_filename, 'terminals');
-        return false;
+        if ($level < $min_level) {
+            return false;
+        }
+        DebMes("Saying cached to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $message . " (file: $cached_filename)", 'terminals');
+        $result = false;
+        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
+        if (file_exists($addon_file)) {
+            include_once($addon_file);
+            $tts = new $terminal_rec['TTS_TYPE']($terminal_rec);
+            $result = $tts->sayCached($message, $level, $cached_filename);
+        } else {
+            DebMes("Could not find $addon_file", 'terminals');
+        }
+        return $result;
     }
-
-   // berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
-   $messages = SQLSelect("SELECT * FROM shouts ORDER BY ID DESC LIMIT 0 , 100");
-   foreach ( $messages as $message ) {
-     if ($ph==$message['MESSAGE']) { 
-         $number_message = $message['ID'];
-         break;
-     }
-   }
-   
-   // получаем данные оплеере для восстановления проигрываемого контента
-    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."99999999998'");
-    if (!$chek_restore ) {
-        $played = getPlayerStatus($target['NAME']);
-        if (($played['state']=='playing') and (stristr($played['file'], 'cms\cached\voice') === FALSE)) {
-	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999998', "playMedia('".$played['file']."', '".$target['TITLE']."',1);", time()+100, 4);
-	        addScheduledJob('allsay-target-'.$target['TITLE'].'-number-99999999999', "seekPlayerPosition('".$target['TITLE']."',".$played['time'].");", time()+110, 4);
-	    }
-     }
-	
-    // dobavlyaem soobshenie v konec potom otsortituem
-    $time_shift = 2 + getMediaDurationSeconds($cached_filename); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
-    //DebMes("Add new message".$last_mesage,'terminals');
-    addScheduledJob('allsay-target-'.$target['TITLE'].'-number-'.$number_message, "playMedia('".$cached_filename."', '".$target['TITLE']."');", time()+1, $time_shift);
-
-    // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'".'allsay-target-'.$target['TITLE'].'-number-'."%' ORDER BY `TITLE` ASC");
-    $first_fields = reset($all_messages);
-    $runtime = (strtotime($first_fields['RUNTIME']));
-    foreach ($all_messages as $message) {
-      $expire = (strtotime($message['EXPIRE']))-(strtotime($message['RUNTIME']));
-      $rec['ID']       = $message['ID'];
-      $rec['TITLE']    = $message['TITLE'];
-      $rec['COMMANDS'] = $message['COMMANDS'];
-      $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
-      $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime+$expire);
-      // proverka i udaleniye odinakovih soobsheniy
-      if ($prev_message['TITLE'] == $message['TITLE']) {
-         SQLExec("DELETE FROM jobs WHERE ID='".$rec['ID']."'"); 
-      } else {
-         SQLUpdate('jobs', $rec);
-      }
-      $runtime = $runtime + $expire;
-      $prev_message = $message;
-     }
-     //DebMes("Timers sorted",'terminals');
-   }
 
     /**
      * Install
@@ -436,7 +367,7 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
         subscribeToEvent($this->name, 'SAYREPLY', '', 0);
         subscribeToEvent($this->name, 'SAYTO', '', 0);
         subscribeToEvent($this->name, 'ASK', '', 0);
-        subscribeToEvent($this->name, 'SAY_CACHED_READY',0);
+        subscribeToEvent($this->name, 'SAY_CACHED_READY', 0);
         subscribeToEvent($this->name, 'HOURLY');
         parent::install($parent_name);
 
@@ -481,7 +412,8 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
  terminals: CANPLAY int(3) NOT NULL DEFAULT '0'
  terminals: CANTTS int(3) NOT NULL DEFAULT '0'
  terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
- terminals: PLAYER_TYPE char(10) NOT NULL DEFAULT ''
+ terminals: TTS_TYPE char(20) NOT NULL DEFAULT '' 
+ terminals: PLAYER_TYPE char(20) NOT NULL DEFAULT ''
  terminals: PLAYER_PORT varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_USERNAME varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_PASSWORD varchar(255) NOT NULL DEFAULT ''
@@ -495,6 +427,17 @@ function terminalSayByCacheQueue($target, $levelMes, $cached_filename, $ph) {
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 EOD;
         parent::dbInstall($data);
+
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE TTS_TYPE='' AND CANTTS=1");
+        foreach ($terminals as $terminal) {
+            if ($terminal['MAJORDROID_API']) {
+                $terminal['TTS_TYPE'] = 'majordroid';
+            } else {
+                $terminal['TTS_TYPE'] = 'mediaplayer';
+            }
+            SQLUpdate('terminals', $terminal);
+        }
+
     }
 // --------------------------------------------------------------------
 }

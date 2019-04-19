@@ -1365,6 +1365,12 @@ $dictionary = array(
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Разрешить подключение без шифрования',
     'HOURS_ARRAY'=>'час,часа,часов',
     'MINUTE_ARRAY'=>'минута,минуты,минут',
+
+    'FEATURES_SUPPORTED' => 'Поддерживаемые возможности',
+    'NO_FEATURES_WARNING' => 'Извините, поддерживаемые возможности не найдены',
+    'TTS_TYPE' => 'Тип TTS',
+    'NONE' => 'Нет',
+
     /* end module names */
 
 

@@ -140,6 +140,8 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
 
+    //dprint(date('Y-m-d H:i:s')." Say started",false);
+
     verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
@@ -180,6 +182,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
         eval(SETTINGS_HOOK_AFTER_SAY);
     }
+    //dprint(date('Y-m-d H:i:s')." Say OK",false);
 
 }
 
