@@ -134,11 +134,14 @@ function admin(&$out) {
 
  $rec=SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME LIKE '".DBSafe($this->system_name)."'");
  $out['CODE_TYPE']=(int)$rec['CODE_TYPE'];
- if ($rec['ID']) {
-  $out['XML']=$rec['XML'];
- } elseif ($this->owner->xml) {
-  $out['XML']=$this->owner->xml;
+ if (!$rec['ID'] && $this->owner->xml) {
+  $rec['XML']=$this->owner->xml;
  }
+
+ if (!$rec['ID']) {
+  $rec['CODE_TYPE']=2;
+ }
+
 
  if ($_SERVER['REQUEST_METHOD']=='POST' && $out['TYPE']=='php') {
   global $xml;
@@ -154,17 +157,18 @@ function admin(&$out) {
   if (isset(${$this->code_field."_code_type"})) {
    $rec['CODE_TYPE']=(int)${$this->code_field."_code_type"};
   } else {
-   $rec['CODE_TYPE']=1;
+   $rec['CODE_TYPE']=2;
   }
   if (!$rec['CODE_TYPE']) {
    //$rec['XML']='';
   }
   $rec['ID']=SQLInsert('blockly_code', $rec);
 
-  $out['XML']=$rec['XML'];
-  $out['CODE_TYPE']=(int)$rec['CODE_TYPE'];
-
  }
+
+ $out['XML']=$rec['XML'];
+ $out['CODE_TYPE']=(int)$rec['CODE_TYPE'];
+
 
  $out['DEVICES']=SQLSelect("SELECT ID,TITLE,TYPE,LINKED_OBJECT FROM devices WHERE TYPE IN ('relay','dimmer','button','thermostat') ORDER BY TITLE");
 

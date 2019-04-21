@@ -24,8 +24,8 @@
    */
    }
   //updating 'Titile' (varchar, required)
-   global $title;
-   $rec['TITLE']=$title;
+   $rec['TITLE']=gr('title','trim');
+   $rec['TITLE']=str_replace(' ','',$rec['TITLE']);
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;

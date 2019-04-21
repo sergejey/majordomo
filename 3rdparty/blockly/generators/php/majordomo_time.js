@@ -80,7 +80,7 @@ Blockly.PHP['majordomo_settimeout'] = function(block) {
   var timer = Blockly.PHP.valueToCode(block, 'TIMER',Blockly.PHP.ORDER_NONE) || 'none';
   var delay = Blockly.PHP.valueToCode(block, 'DELAY',Blockly.PHP.ORDER_NONE) || '60';
   var branch = Blockly.PHP.statementToCode(block, 'DO');
-  branch=branch.replace(new RegExp('\n', 'g'), '');
-  var code = 'setTimeOut('+timer+', \''+branch+'\', (int)('+delay+'));\n';
+  //branch=branch.replace(new RegExp('\n', 'g'), '');
+  var code = '$timerCode=<<<EOT\n'+branch+'\nEOT;\nsetTimeOut('+timer+', $timerCode, (int)('+delay+'));\n';
   return code;
 };

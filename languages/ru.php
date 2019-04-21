@@ -1349,6 +1349,7 @@ $dictionary = array(
     'STYLE_FADEOUT50' => 'Прозрачность 50%',
     'STYLE_FADEOUT30' => 'Прозрачность 30%',
     'STYLE_FADEOUT10' => 'Прозрачность 10%',
+    'STYLE_FADEOUT0' => 'Прозрачность 0%',
     'SEE_ALSO' => 'Смотрите также',
     'PLAN_COMPONENTS' => 'Компоненты',
     
@@ -1364,6 +1365,12 @@ $dictionary = array(
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Разрешить подключение без шифрования',
     'HOURS_ARRAY'=>'час,часа,часов',
     'MINUTE_ARRAY'=>'минута,минуты,минут',
+
+    'FEATURES_SUPPORTED' => 'Поддерживаемые возможности',
+    'NO_FEATURES_WARNING' => 'Извините, поддерживаемые возможности не найдены',
+    'TTS_TYPE' => 'Тип TTS',
+    'NONE' => 'Нет',
+
     /* end module names */
 
 

@@ -302,6 +302,7 @@ class MajordomoApplication extends Application
 
 
         foreach ($received_properties as $property_name) {
+            $property_name_lc = mb_strtolower($property_name,'UTF-8');
             $property_value = $received_values[$property_name];
             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
                 //DebMes("Update property ".$property_name,'websockets');
@@ -310,13 +311,13 @@ class MajordomoApplication extends Application
             $found_subscribers = 0;
 
             foreach ($this->_clients as $client) {
-                $tmp = explode('.', $property_name);
-                if (IsSet($client->watchedProperties[$property_name]) || IsSet($client->watchedProperties[$tmp[0]])) {
+                $tmp = explode('.', $property_name_lc);
+                if (IsSet($client->watchedProperties[$property_name_lc]) || IsSet($client->watchedProperties[$tmp[0]])) {
                     //scenes
-                    if (isset($client->watchedProperties[$property_name]['states'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['states'])) {
                         $send_states = array();
                         $seen_state = array();
-                        foreach ($client->watchedProperties[$property_name]['states'] as $k => $v) {
+                        foreach ($client->watchedProperties[$property_name_lc]['states'] as $k => $v) {
                             if (isset($seen_state[$k])) {
                                 continue;
                             }
@@ -336,10 +337,10 @@ class MajordomoApplication extends Application
                     }
 
                     //plans
-                    if (isset($client->watchedProperties[$property_name]['plan_states'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['plan_states'])) {
                         $send_plan_states = array();
                         $seen_plan_state = array();
-                        foreach ($client->watchedProperties[$property_name]['plan_states'] as $k => $v) {
+                        foreach ($client->watchedProperties[$property_name_lc]['plan_states'] as $k => $v) {
                             if (isset($seen_plan_state[$k])) {
                                 continue;
                             }
@@ -371,11 +372,11 @@ class MajordomoApplication extends Application
                     }
 
                     //commands (menu)
-                    if (isset($client->watchedProperties[$property_name]['commands'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['commands'])) {
                         $send_values = array();
                         $send_labels = array();
                         $seen_commands = array();
-                        foreach ($client->watchedProperties[$property_name]['commands'] as $k => $v) {
+                        foreach ($client->watchedProperties[$property_name_lc]['commands'] as $k => $v) {
                             if (isset($seen_commands[$k])) {
                                 continue;
                             }
@@ -400,10 +401,10 @@ class MajordomoApplication extends Application
                     }
 
                     //devices
-                    if (isset($client->watchedProperties[$property_name]['devices'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['devices'])) {
                         $send_values = array();
                         $seen_devices = array();
-                        foreach ($client->watchedProperties[$property_name]['devices'] as $k => $v) {
+                        foreach ($client->watchedProperties[$property_name_lc]['devices'] as $k => $v) {
                             if (isset($seen_devices[$k])) {
                                 continue;
                             }
@@ -425,10 +426,10 @@ class MajordomoApplication extends Application
                     }
 
                     //devices data
-                    if (isset($client->watchedProperties[$property_name]['devices_data'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['devices_data'])) {
                         $send_values=array();
                         $seen_devices=array();
-                        foreach($client->watchedProperties[$property_name]['devices_data'] as $k=>$v) {
+                        foreach($client->watchedProperties[$property_name_lc]['devices_data'] as $k=>$v) {
                             if (isset($seen_devices[$k])) {
                                 continue;
                             }
@@ -471,10 +472,10 @@ class MajordomoApplication extends Application
                     }
 
                     //objects
-                    if (isset($client->watchedProperties[$property_name]['objects'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['objects'])) {
                         $send_values = array();
                         $seen_objects = array();
-                        foreach ($client->watchedProperties[$property_name]['objects'] as $k => $v) {
+                        foreach ($client->watchedProperties[$property_name_lc]['objects'] as $k => $v) {
                             if (isset($seen_objects[$k])) {
                                 continue;
                             }
@@ -496,12 +497,11 @@ class MajordomoApplication extends Application
                     }
 
                     //properties
-                    if (isset($client->watchedProperties[$property_name]['properties'])) {
+                    if (isset($client->watchedProperties[$property_name_lc]['properties'])) {
                         $send_data = array();
                         $send_data[] = array('PROPERTY' => $property_name, 'VALUE' => getGlobal($property_name));
                         if (isset($send_data[0])) {
                             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
-                                DebMes($client->getClientIp() . " Sending updated properties\n" . json_encode($send_data), 'websockets');
                                 DebMes($client->getClientIp() . " Sending updated properties\n" . json_encode($send_data), 'websockets');
                             }
                             $encodedData = $this->_encodeData('properties', json_encode($send_data));
@@ -511,7 +511,7 @@ class MajordomoApplication extends Application
                     }
 
                     //object properties
-                    $tmp = explode('.', $property_name);
+                    $tmp = explode('.', $property_name_lc);
                     if (isset($client->watchedProperties[$tmp[0]]['properties'])) {
                         $send_data = array();
                         $send_data[] = array('PROPERTY' => $property_name, 'VALUE' => getGlobal($property_name));

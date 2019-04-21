@@ -8,6 +8,11 @@
     to { opacity:0; }
 }
 
+@keyframes fadeOut0 {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
 @keyframes fadeOut10 {
     from { opacity:1; }
     to { opacity:0.1; }
@@ -54,6 +59,14 @@
     display:block;
     opacity:0;
     animation:fadeIn ease-in 1;
+    animation-fill-mode:forwards;
+    animation-duration:0.6s;
+}
+
+.svg_content .fadeout0 {
+    display:block;
+    opacity:1;
+    animation:fadeOut0 ease-in 1;
     animation-fill-mode:forwards;
     animation-duration:0.6s;
 }

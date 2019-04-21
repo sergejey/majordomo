@@ -524,6 +524,7 @@ class plans extends module
         $classes[]=array('CLASS'=>'fadeout50','TITLE'=>LANG_STYLE_FADEOUT50);
         $classes[]=array('CLASS'=>'fadeout30','TITLE'=>LANG_STYLE_FADEOUT30);
         $classes[]=array('CLASS'=>'fadeout10','TITLE'=>LANG_STYLE_FADEOUT10);
+        $classes[]=array('CLASS'=>'fadeout0','TITLE'=>LANG_STYLE_FADEOUT0);
 
         if ($plan_rec['CUSTOM_CSS']!='') {
             if (preg_match_all('/\.([^\s{\n\.]+)\s+{/is',$plan_rec['CUSTOM_CSS'],$m)) {

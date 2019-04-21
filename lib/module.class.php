@@ -316,8 +316,10 @@ class module
 
             $rec = SQLSelectOne($sqlQuery);
 
-            if (!isset($rec["ID"]))
+            if (!isset($rec["ID"])) {
                 $this->install();
+            }
+
         }
     }
 
@@ -396,6 +398,7 @@ class module
         } else {
             SQLUpdate("project_modules", $rec);
         }
+        SQLExec("DELETE FROM project_modules WHERE NAME = '".$this->name."' AND ID!=".$rec["ID"]);
 
         if (!file_exists(DIR_MODULES . $this->name . "/installed"))
             SaveFile(DIR_MODULES . $this->name . "/installed", date("H:m d.M.Y"));

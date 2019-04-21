@@ -252,9 +252,15 @@ class devices extends module
         return $methods;
     }
 
-    function getNewObjectIndex($class)
+    function getNewObjectIndex($class, $prefix = '')
     {
         $objects = getObjectsByClass($class);
+        if ($prefix!='') {
+            $other_objects=SQLSelect("SELECT TITLE FROM objects WHERE TITLE LIKE '".$prefix."%'");
+            foreach($other_objects as $obj) {
+                $objects[]=$obj;
+            }
+        }
         $index = 0;
         $total = count($objects);
         for ($i = 0; $i < $total; $i++) {
@@ -944,7 +950,8 @@ class devices extends module
         }
 
         if (!$rec['LINKED_OBJECT']) {
-            $new_object_title = ucfirst($rec['TYPE']) . $this->getNewObjectIndex($type_details['CLASS']);
+            $prefix=ucfirst($rec['TYPE']);
+            $new_object_title =  $prefix . $this->getNewObjectIndex($type_details['CLASS']);
             $object_id = addClassObject($type_details['CLASS'], $new_object_title, 'sdevice' . $rec['ID']);
             $rec['LINKED_OBJECT'] = $new_object_title;
             if (preg_match('/New device .+/', $rec['TITLE'])) {

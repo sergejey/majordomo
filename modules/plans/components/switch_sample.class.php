@@ -89,7 +89,7 @@ class switch_sample extends plan_component {
         $prop_name=strtolower($data['value']['LINKED_OBJECT'].'.'.$data['value']['LINKED_PROPERTY']);
         $code = <<<EOD
     function componentUpdated{$this->component_id}(property_name,property_value) {
-        if (property_name=='$prop_name') {
+        if (property_name.toLowerCase()=='$prop_name') {
         var elem=$('#procElem{$this->component_id}');
         if (property_value=='1') {
         elem.attr('widthNum','5');

@@ -198,6 +198,31 @@ if (!isset($request[0])) {
         $objects=SQLSelect("SELECT ID, TITLE FROM objects ORDER BY TITLE");
     }
     $result['objects'] = $objects;
+} elseif (strtolower($request[0]) == 'data' && !isset($request[1]) && is_array($input['properties']) && $method=='POST') {
+    $properties=$input['properties'];
+    foreach($properties as $property) {
+        $tmp = explode('.', $property);
+        if (isset($tmp[1])) {
+            $result['data'][$property]=getGlobal($property);
+        } else {
+            $object=getObject($property);
+            if (is_object($object)) {
+                include_once(DIR_MODULES . 'classes/classes.class.php');
+                $cl = new classes();
+                $props = $cl->getParentProperties($object->class_id, '', 1);
+                $my_props = SQLSelect("SELECT ID,TITLE FROM properties WHERE OBJECT_ID='" . $object->id . "'");
+                if (IsSet($my_props[0])) {
+                    foreach ($my_props as $p) {
+                        $props[] = $p;
+                    }
+                }
+                foreach ($props as $k => $v) {
+                    $result['data'][$property.'.'.$v['TITLE']] = $object->getProperty($v['TITLE']);
+                }
+            }
+        }
+    }
+    //dprint($input);
 } elseif (strtolower($request[0]) == 'data' && isset($request[1])) {
     $tmp = explode('.', $request[1]);
     if ($method == 'GET') {

@@ -1312,6 +1312,12 @@ $dictionary = array(
     'ADD_UPDATE_MANUALLY' => 'Add/Update Manually',
     'TURNING_ON' => 'Turning on',
     'TURNING_OFF' => 'Turning off',
+    'PATTERN_TIMER' => 'timer',
+    'PATTERN_DO_AFTER' => 'after',
+    'PATTERN_DO_FOR' => 'for',
+    'PATTERN_SECOND' => 'seconds',
+    'PATTERN_MINUTE' => 'minutes',
+    'PATTERN_HOUR' => 'hours',
 
     'THEME' => 'Theme',
     'THEME_DARK' => 'Dark',
@@ -1347,6 +1353,7 @@ $dictionary = array(
     'STYLE_FADEOUT50' => 'Opacity 50%',
     'STYLE_FADEOUT30' => 'Opacity 30%',
     'STYLE_FADEOUT10' => 'Opacity 10%',
+    'STYLE_FADEOUT0' => 'Opacity 0%',
     'SEE_ALSO' => 'See also',
     'PLAN_COMPONENTS' => 'Components',
 
@@ -1361,7 +1368,12 @@ $dictionary = array(
     'CONNECT_ENABLE_CLOUDBACKUPC' => 'Enable Cloud Backup',
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Disable secure connection',
     'HOURS_ARRAY'=>'oclock,oclock,oclock',
-    'MINUTE_ARRAY'=>'minutes,minutes,minutes',
+    'MINUTE_ARRAY'=>'minute,minutes,minutes',
+
+    'FEATURES_SUPPORTED' => 'Features supported',
+    'NO_FEATURES_WARNING' => 'Sorry, no features supported',
+    'TTS_TYPE' => 'TTS type',
+    'NONE' => 'None',
 
     'TEST' => 'test'
 
