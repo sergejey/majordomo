@@ -575,8 +575,8 @@
 {/if}
 
 {if $item.TYPE=='color'}
-<script src='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.js'></script>
-<link rel='stylesheet' href='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.css' />
+<script src='{$smarty.const.ROOTHTML}3rdparty/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='{$smarty.const.ROOTHTML}3rdparty/spectrum/spectrum.min.css' />
 <script language="javascript">
  var item{$item.ID}_timer=0;
  function changedValue{$item.ID}_delay() {

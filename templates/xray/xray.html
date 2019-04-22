@@ -119,16 +119,16 @@
 [#endif ACTION#]
 
 [#if ACTION="service"#]
-<div class="row" style="border:1px dashed black;padding:5px;">
+<div class="row" style="border:1px dashed black;padding:5px;display: flex;align-items: center;">
  <div class="col-md-3">
-  <b>Service: [#CYCLE#]</b>
+  Service: <b>[#CYCLE#]</b>
  </div>
- <div class="col-md-4" id='status[#CYCLE#]Body'>
+ <div class="col-md-6" id='status[#CYCLE#]Body'>
   ...
  </div>
- <div class="col-md-5">
-  <a href="#" class="btn btn-default" onclick="return send[#CYCLE#]Command('restart');"><i class="glyphicon glyphicon-refresh"></i> Restart</a>
-  <a href="#" class="btn btn-default" onclick="return send[#CYCLE#]Command('stop');"><i class="glyphicon glyphicon-stop"></i> Stop</a>
+ <div class="col-md-3 text-right">
+  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('restart');"><i class="glyphicon glyphicon-refresh"></i> Restart</a>
+  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('stop');"><i class="glyphicon glyphicon-stop"></i> Stop</a>
  </div>
 </div>
 

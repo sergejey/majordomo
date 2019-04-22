@@ -1370,6 +1370,11 @@ $dictionary = array(
     'HOURS_ARRAY'=>'oclock,oclock,oclock',
     'MINUTE_ARRAY'=>'minute,minutes,minutes',
 
+    'FEATURES_SUPPORTED' => 'Features supported',
+    'NO_FEATURES_WARNING' => 'Sorry, no features supported',
+    'TTS_TYPE' => 'TTS type',
+    'NONE' => 'None',
+
     'TEST' => 'test'
 
 

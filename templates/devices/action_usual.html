@@ -44,17 +44,15 @@
   });
 
 
-  var trackedDevices = [];
-  $(function() {
-   ajaxManager.run();
-   [#begin RESULT#]
-   trackedDevices.push([#ID#]);
-   [#end RESULT#]
-  });
 
   function httpRefreshDevices() {
    clearTimeout(httpRefreshTimer);
    var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
+   /*
+   for(var i=0;i<trackedDevices.length;i++) {
+    alert(trackedDevices[i]);
+   }
+   */
    trackedDevices.forEach(function(item, index) {
     var url = baseURL + item;
     ajaxManager.addReq({
@@ -66,11 +64,16 @@
      }
     });
    });
-   httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
+   httpRefreshTimer = setTimeout('httpRefreshDevices();',3000);
   }
-  httpRefreshTimer = setTimeout('httpRefreshDevices()',5000);
 
+  var trackedDevices = [];
   $(function() {
+   ajaxManager.run();
+   [#begin DEVICES#]
+   trackedDevices.push([#ID#]);
+   [#end DEVICES#]
+   httpRefreshTimer = setTimeout('httpRefreshDevices();',5000);
    $('.devicecol').on('long-press',function(e) {
     var elem_id=(jQuery(this).attr("id"));
     var url='/panel/popup/devices.html?md=devices&view_mode=edit_devices&tab=settings&no_nav=1&id='+encodeURIComponent(elem_id.replace('devicecol',''));

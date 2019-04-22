@@ -44,16 +44,7 @@
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
 </div>
 
-<script language="javascript">
- function majordroidChanged() {
-  if ($('#majordroid_api').is(':checked')) {
-   $('#majordroidDetails').show();
-  } else {
-   $('#majordroidDetails').hide();
-  }
-  return false;
- }
-</script>
+
 
 <div class="form-group">
   <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object_terminal<#LANG_HCE#></label>
@@ -65,36 +56,49 @@
      </div>
     </div>
 </div>
+    [#module name="linkedobject" object_field="linked_object"#]
 
-<div class="form-group">
-        <div class="col-lg-offset-2 col-lg-5 ">
-                <div class="checkbox">
-                        <label>
-                                <input type="checkbox" value="1" id='majordroid_api' onClick='majordroidChanged();' name="majordroid_api" [#if MAJORDROID_API="1"#] checked[#endif#]> MajorDroid API
-                        </label>
-                </div>
-        </div>
-</div>
+    <!--#
+        <script language="javascript">
+            function majordroidChanged() {
+                if ($('#majordroid_api').is(':checked')) {
+                    $('#majordroidDetails').show();
+                } else {
+                    $('#majordroidDetails').hide();
+                }
+                return false;
+            }
+        </script>
 
-<div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
-
-
-<!--#
-<div class="form-group">
-  <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
-   <div class="col-lg-5">
-     <div class="form-inline">
-      <div class="form-group col-lg-5">
-       <input type="text" name="level_linked_property" id="level_linked_property" value="[#LEVEL_LINKED_PROPERTY#]"  class="form-control">
-      </div>
-     </div>
+    <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-5 ">
+                    <div class="checkbox">
+                            <label>
+                                    <input type="checkbox" value="1" id='majordroid_api' onClick='majordroidChanged();' name="majordroid_api" [#if MAJORDROID_API="1"#] checked[#endif#]> MajorDroid API
+                            </label>
+                    </div>
+            </div>
     </div>
-</div>
-#-->
 
-[#module name="linkedobject" object_field="linked_object"#]
+    <div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
 
-</div>
+
+
+    <div class="form-group">
+      <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
+       <div class="col-lg-5">
+         <div class="form-inline">
+          <div class="form-group col-lg-5">
+           <input type="text" name="level_linked_property" id="level_linked_property" value="[#LEVEL_LINKED_PROPERTY#]"  class="form-control">
+          </div>
+         </div>
+        </div>
+    </div>
+
+
+
+    </div>
+    #-->
 
 <script language="javascript">
  function canPlayChanged() {
@@ -125,7 +129,19 @@
         </div>
     </div>
 
+
     <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
+        <div class="form-group">
+            <label class="col-lg-4 control-label" for="tts_type"><#LANG_TTS_TYPE#>:</label>
+            <div class="col-lg-5">
+                <select id="tts_type" name="tts_type" class="form-control">
+                    <option value=""><#LANG_NONE#></option>
+                    [#begin TTS_ADDONS#]
+                    <option value="[#NAME#]"[#if NAME="<#TTS_TYPE#>"#] selected[#endif#]>[#NAME#]</option>
+                    [#end TTS_ADDONS#]
+                </select>
+            </div>
+        </div>
         <div class="form-group ">
             <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#>:</label>
             <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>

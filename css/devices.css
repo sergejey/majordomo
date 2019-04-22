@@ -211,7 +211,7 @@
 }
 
 .device-icon.pressed {
-    background-color:greenyellow;
+    background-color:greenyellow !important;;
 }
 
 .camera-widget {
