@@ -1025,6 +1025,55 @@ function callMethodSafe($method_name, $params = 0)
     }
 }
 
+function callAPI($api_url, $method = 'GET',$params = 0) {
+
+    /*
+    $api_call_type = 'http';
+    if ($api_call_type == 'cmd') {
+        if (defined('PATH_TO_PHP'))
+            $phpPath = PATH_TO_PHP;
+        else
+            $phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
+
+        $filename = dirname(__FILE__).'/../api.php';
+        $data=array();
+        $data['REQUEST_URI']=$api_url;
+        $data['REQUEST_METHOD']=$method;
+        if (is_array($params)) {
+            foreach($params as $k=>$v) {
+                $data[$k]=$v;
+            }
+        }
+        $cmdParams = addcslashes(serialize(json_encode($data)), '"');
+        $command = $phpPath . ' -q ' . $filename . ' --params "' . $cmdParams . '"';
+        if (!IsWindowsOS()) {
+            $command='exec '.$command;
+        }
+        $descriptorSpec = array(
+            0 => array('pipe', 'r'),
+            1 => array('pipe', 'w')
+        );
+        $new_proc = proc_open($command, $descriptorSpec, $pipes);
+        stream_set_blocking($pipes[0], 0);
+        stream_set_blocking($pipes[1], 0);
+        return $new_proc;
+    }
+    */
+
+    //if ($api_call_type == 'http') {
+        $url=BASE_URL.$api_url;
+        if (is_array($params)) {
+            $url.='?'.http_build_query($params);
+        }
+        $url = str_replace('/api/','/api.php/',$url);
+        if ($method == 'GET') {
+            //DebMes("API query: ".$url,'api_query');
+            getURLBackground($url);
+        }
+    //}
+
+}
+
 function injectObjectMethodCode($method_name,$key,$code) {
     $tmp = explode('.', $method_name);
     if (IsSet($tmp[2]))

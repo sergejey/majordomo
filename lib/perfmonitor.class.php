@@ -112,12 +112,14 @@ function EndMeasure($mpoint, $save_to_db = 0)
  * @param mixed $hidden n/a (default 1)
  * @return void
  */
-function PerformanceReport($hidden = 1)
+function PerformanceReport($hidden = 0)
 {
    global $perf_data;
-   
-   echo "<!-- BEGIN PERFORMANCE REPORT\n";
-   
+
+   if (!$hidden) {
+      echo "<!-- BEGIN PERFORMANCE REPORT\n";
+   }
+
    foreach ($perf_data as $k => $v)
    {
       if (!$v['NUM'])
@@ -153,8 +155,10 @@ function PerformanceReport($hidden = 1)
       $tmp[] = $rs;
    }
 
-   echo implode("\n", $tmp);
-   echo "\n END PERFORMANCE REPORT -->";
+   if (!$hidden) {
+      echo implode("\n", $tmp);
+      echo "\n END PERFORMANCE REPORT -->";
+   }
+   return $tmp;
 }
 
-?>
