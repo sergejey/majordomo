@@ -315,6 +315,18 @@ class devices extends module
                     $properties[] = array('PROPERTY' => mb_strtolower($devices[$i]['LINKED_OBJECT'] . '.' . $k, 'UTF-8'), 'DEVICE_ID' => $devices[$i]['ID']);
                 }
             }
+            if ($devices[$i]['TYPE']=='html') {
+                $content=getGlobal($devices[$i]['LINKED_OBJECT'].'.data');
+                $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+                $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $content);
+                $content=preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|".+?"%/uis', '%\1.\2%', $content);
+                if (preg_match_all('/%([\w\d\.]+?)%/is', $content, $m)) {
+                    $totalm=count($m[1]);
+                    for($im=0;$im<$totalm;$im++) {
+                        $properties[]=array('PROPERTY'=>mb_strtolower($m[1][$im], 'UTF-8'), 'DEVICE_ID' => $devices[$i]['ID']);
+                    }
+                }
+            }
         }
         return $properties;
     }
@@ -717,6 +729,7 @@ class devices extends module
             $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
             //$qry=" devices.FAVORITE=1";
             $qry = "1";
+            $out['ALL_DEVICES']=1;
             $devices = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
             $recent_devices=SQLSelect("SELECT devices.* FROM devices WHERE !IsNull(CLICKED) ORDER BY CLICKED DESC LIMIT 10");
         }
@@ -771,6 +784,14 @@ class devices extends module
             }
 
 
+            if (count($favorite_devices)>0) {
+                usort($favorite_devices,function ($a,$b) {
+                    if ($a['FAVORITE'] == $b['FAVORITE']) {
+                        return 0;
+                    }
+                    return ($a['FAVORITE'] > $b['FAVORITE']) ? -1 : 1;
+                });
+            }
 
             foreach ($warning_devices as $device) {
                 $favorite_devices[] = $device;
@@ -795,6 +816,7 @@ class devices extends module
             $devices_count = count($favorite_devices);
 
             if ($devices_count > 0) {
+
                 $loc_rec = array();
                 $loc_rec['ID'] = 0;
                 $loc_rec['TITLE'] = LANG_FAVORITES;
