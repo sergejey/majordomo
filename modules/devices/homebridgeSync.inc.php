@@ -20,6 +20,8 @@ for ($i = 0; $i < $total; $i++) {
    $payload['name']=$devices[$i]['LINKED_OBJECT'];
    sg('HomeBridge.to_remove',json_encode($payload));
 
+   $payload['service_name']=processTitle($devices[$i]['TITLE']);
+
    switch($devices[$i]['TYPE']) {
       case 'relay':
          $load_type=gg($devices[$i]['LINKED_OBJECT'].'.loadType');
