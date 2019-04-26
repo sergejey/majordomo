@@ -228,6 +228,11 @@ if ($this->tab == 'interface') {
 
 
 if ($this->tab == '') {
+
+    for($i=1;$i<100;$i++) {
+        $out['PRIORITIES'][]=array('VALUE'=>$i);
+    }
+
     global $prefix;
     $out['PREFIX'] = $prefix;
     global $source_table;
@@ -297,8 +302,12 @@ if ($this->mode == 'update' && $this->tab == '') {
     global $location_id;
     $rec['LOCATION_ID'] = (int)$location_id;
 
-    global $favorite;
-    $rec['FAVORITE'] = (int)$favorite;
+    if (gr('favorite','int')) {
+        $rec['FAVORITE'] = gr('favorite_priority','int');
+    } else {
+        $rec['FAVORITE'] = 0;
+    }
+
 
     $rec['LINKED_OBJECT'] = $linked_object;
     if ($rec['LINKED_OBJECT'] && !$rec['ID']) {

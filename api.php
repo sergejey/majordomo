@@ -1,11 +1,28 @@
 <?php
-include_once("./config.php");
-include_once("./lib/loader.php");
-include_once("./load_settings.php");
 
-$session = new session("prj");
+if ($argv[0]!='') {
+    set_time_limit(60);
+    ignore_user_abort(1);
+    foreach($argv as $param) {
+        $tmp=json_decode(unserialize($param),true);
+        if (is_array($tmp)) {
+            foreach($tmp as $k=>$v) {
+                if ($k=='REQUEST_URI') {
+                    $_SERVER['REQUEST_URI']=$v;
+                    continue;
+                }
+                if ($k=='REQUEST_METHOD') {
+                    $_SERVER['REQUEST_METHOD']=$v;
+                    continue;
+                }
+                $_REQUEST[$k]=$v;
+                $_GET[$k]=$v;
+            }
+        }
+    }
+}
 
-header('Content-Type: text/html; charset=utf-8');
+//DebMes("URL: ".$_SERVER['REQUEST_URI'].' '.json_encode($_REQUEST),'api_request');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
@@ -16,6 +33,23 @@ array_shift($request);
 $input = json_decode(file_get_contents('php://input'), true);
 
 $result = array();
+$result['request']['url']=$url;
+$result['request']['params']=$_REQUEST;
+
+if (isset($request[0])) {
+    include_once("./config.php");
+    include_once("./lib/loader.php");
+    include_once("./load_settings.php");
+
+    StartMeasure('TOTAL');
+    $startedTime=getmicrotime();
+    register_shutdown_function('apiShutdown');
+
+
+    if (gr('prj')) {
+        $session = new session("prj");
+    }
+}
 
 if (!isset($request[0])) {
     $result['error'] = 'Incorrect usage';
@@ -34,6 +68,7 @@ if (!isset($request[0])) {
         if (!isset($cached_properties[$obj->class_id])) {
             $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
         }
+        }
         $properties = $cached_properties[$obj->class_id];
         foreach($properties as $p) {
             $device[$p['TITLE']]=getGlobal($device['object'].'.'.$p['TITLE']);
@@ -43,7 +78,6 @@ if (!isset($request[0])) {
         $device['value']=getGlobal($device['object'].'.value');
         */
         $result['device']=$device;
-    }
 } elseif (strtolower($request[0]) == 'devices') {
     $devices=SQLSelect("SELECT * FROM devices ORDER BY TITLE");
     $result['devices']=array();
@@ -178,8 +212,21 @@ if (!isset($request[0])) {
             $params = $request;
             array_shift($params);
             array_shift($params);
-            $module->api($params);
-            exit;
+            $result['apiHandleResult']=$module->api($params);
+        }
+    }
+} elseif (strtolower($request[0]) == 'modulepropertyset' && isset($request[1])) {
+    $module_name = $request[1];
+    $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
+    $object = gr('object');
+    $property = gr('property');
+    $value = gr('value');
+    if (file_exists($module_file) && $object && $property) {
+        include_once($module_file);
+        $module = new $module_name;
+        if (method_exists($module,'propertySetHandle')) {
+            $result['setHandleResult']=$module->propertySetHandle($object,$property,$value);
+            $result['result'] = true;
         }
     }
 } elseif (strtolower($request[0]) == 'events' && isset($request[1])) {
@@ -191,6 +238,7 @@ if (!isset($request[0])) {
     $result['event_name']=$event_name;
     $result['params']=$_GET;
     $result['event_id']=registerEvent($event_name,$result['params']);
+    $result['result'] = true;
 } elseif (strtolower($request[0]) == 'objects') {
     if (isset($request[1])) {
         $objects=getObjectsByClass($request[1]);
@@ -207,6 +255,7 @@ if (!isset($request[0])) {
         } else {
             $object=getObject($property);
             if (is_object($object)) {
+                $result['result'] = true;
                 include_once(DIR_MODULES . 'classes/classes.class.php');
                 $cl = new classes();
                 $props = $cl->getParentProperties($object->class_id, '', 1);
@@ -306,10 +355,32 @@ if (!isset($request[0])) {
     $result['error'] = 'Incorrect usage';
 }
 
-if ($result['error']!='') {
+if (isset($result['error'])) {
     http_response_code(400);
 } else {
     http_response_code(200);
 }
+
+if (function_exists('getmicrotime')) {
+    $endTime=getmicrotime();
+    $result['passed']=round($endTime-$startedTime,4);
+}
+
+endMeasure('TOTAL');
+
+if ($_GET['performance']) {
+    $result['performance']=PerformanceReport(1);
+}
+
 header("Content-type:application/json");
 echo json_encode($result);
+
+function apiShutdown() {
+    global $result;
+    $a=error_get_last();
+    if (isset($a['type']) && ($last_error['type'] === E_ERROR)) {
+        DebMes("Result ".$_SERVER['REQUEST_URI'].' '.json_encode($a),'api_error');
+    } elseif (isset($result['passed']) && $result['passed']>5) {
+        DebMes("Result [".$result['passed']."] of : ".$_SERVER['REQUEST_URI'].' '.json_encode($result),'api_slow');
+    }
+}

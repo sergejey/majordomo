@@ -12,7 +12,15 @@
    payload.action = 'Subscribe';
    payload.data = new Object();
    payload.data.TYPE='devices';
+   //alert(trackedDevices.length);
+   [#if ALL_DEVICES="1"#]
    payload.data.DEVICE_ID='0';
+   [#else#]
+   if (trackedDevices.length>0) {
+    payload.data.DEVICE_ID=trackedDevices.join(',');
+   }
+   [#endif#]
+
    wsSocket.send(JSON.stringify(payload));
    subscribedWebSocketsTimer=setTimeout('subscribeToDevices();', 3000);
    return false;
@@ -68,11 +76,12 @@
   }
 
   var trackedDevices = [];
+  [#begin DEVICES#]
+  trackedDevices.push([#ID#]);
+  [#end DEVICES#]
+
   $(function() {
    ajaxManager.run();
-   [#begin DEVICES#]
-   trackedDevices.push([#ID#]);
-   [#end DEVICES#]
    httpRefreshTimer = setTimeout('httpRefreshDevices();',5000);
    $('.devicecol').on('long-press',function(e) {
     var elem_id=(jQuery(this).attr("id"));

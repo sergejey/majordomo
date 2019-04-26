@@ -15,9 +15,9 @@
 <#LANG_CODE_TYPE#>:<br>
 
 <div>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> PHP <#LANG_HCB#>codePhp<#LANG_HCE#>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
  <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
+ <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
+ <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> PHP <#LANG_HCB#>codePhp<#LANG_HCE#>
 </div>
 
  <script language="javascript">
@@ -81,6 +81,7 @@ $(function() {
 var editor;
 var myTextArea[#CODE_FIELD#];
 $(document).ready(function(){
+
 var myTextArea[#CODE_FIELD#]=document.getElementById('[#CODE_FIELD#]');
 editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
  value: myTextArea[#CODE_FIELD#].value,

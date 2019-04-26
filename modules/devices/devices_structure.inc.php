@@ -122,8 +122,9 @@ $this->device_types=array(
             'level'=>array('DESCRIPTION'=>'Current brightness level','ONCHANGE'=>'levelUpdated','DATA_KEY'=>1),
             'levelSaved'=>array('DESCRIPTION'=>'Latest level saved'),
             'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
-            'minWork'=>array('DESCRIPTION'=>'Min level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
-            'maxWork'=>array('DESCRIPTION'=>'Max level (work)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'minWork'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_MIN_WORK,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'maxWork'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_MAX_WORK,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'setMaxTurnOn'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SET_MAX,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSetMax'),
             ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),

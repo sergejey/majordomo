@@ -12,7 +12,10 @@ $devices=SQLSelect("SELECT * FROM devices WHERE $qry");
 $total = count($devices);
 DebMes("Syncing devices (total: $total)",'homebridge');
 for ($i = 0; $i < $total; $i++) {
-    
+
+   if ($devices[$i]['LINKED_OBJECT']=='') {
+      continue;
+   }
    $payload=array();
    $payload['name']=$devices[$i]['LINKED_OBJECT'];
    sg('HomeBridge.to_remove',json_encode($payload));

@@ -1291,6 +1291,10 @@ $dictionary = array(
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
     'DEVICES_LOAD_TIMEOUT' => 'Load status timeout',
 
+    'DEVICES_DIMMER_MIN_WORK' => 'Min level (work)',
+    'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
+    'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
+
     'GROUPS' => 'Groups',
     'APPLIES_TO' => 'Applies to',
 

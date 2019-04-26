@@ -91,8 +91,17 @@
  <div class="form-group ">
   <label class="col-lg-4 control-label"><#LANG_FAVORITE_DEVICE#>: <#LANG_HCB#>favorite_device<#LANG_HCE#></label>
   <div class="col-lg-4">
-   <input type="radio" name="favorite" value="1"[#if FAVORITE="1"#] checked[#endif#]> <#LANG_YES#>
-   <input type="radio" name="favorite" value="0"[#if FAVORITE!="1"#] checked[#endif#]> <#LANG_NO#>
+   <input type="radio" name="favorite" value="1"[#if FAVORITE!="0"#] checked[#endif#]> <#LANG_YES#>
+      <span id="favorite_priority">
+    (<#LANG_PRIORITY#>
+    <select name="favorite_priority">
+     [#begin PRIORITIES#]
+     <option value="[#VALUE#]"[#if VALUE="<#FAVORITE#>"#] selected[#endif#]>[#VALUE#]</option>
+     [#end PRIORITIES#]
+    </select>)
+
+   <input type="radio" name="favorite" value="0"[#if (FAVORITE=="0") || (FAVORITE=="")#] checked[#endif#]> <#LANG_NO#>
+   </span>
   </div>
  </div>
 
