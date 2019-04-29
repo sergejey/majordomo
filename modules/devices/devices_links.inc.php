@@ -2,6 +2,7 @@
 
 if ($this->edit_mode=='delete_link') {
     global $link_id;
+    SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='sdevice' AND OBJECT_ID=".(int)$link_id);
     SQLExec("DELETE FROM devices_linked WHERE ID=".(int)$link_id);
     $this->redirect("?id=".$rec['ID']."&tab=".$this->tab."&view_mode=".$this->view_mode);
 }
