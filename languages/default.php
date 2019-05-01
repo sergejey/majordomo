@@ -11,6 +11,7 @@
 $dictionary = array(
 
     /* general */
+    'SETTINGS_SITE_LANGUAGE_CODE'=>'en_GB',
     'WIKI_URL' => 'http://majordomohome.com/',
     'KB_URL' => 'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Alice',
