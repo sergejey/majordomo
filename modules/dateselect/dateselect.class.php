@@ -44,7 +44,7 @@ function run() {
   $out['FIELD']=$this->field;
   if (!$this->format) $this->format='en';
   $out['FORMAT']=$this->format;
-  $out['UID']=rand(1, 99999999999999);
+  $out['UID']=rand(1, 999999);
   $this->data=$out;
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;

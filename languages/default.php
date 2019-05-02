@@ -11,6 +11,7 @@
 $dictionary = array(
 
     /* general */
+    'SETTINGS_SITE_LANGUAGE_CODE'=>'en_GB',
     'WIKI_URL' => 'http://majordomohome.com/',
     'KB_URL' => 'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Alice',
@@ -1183,7 +1184,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO' => 'Turn it off in ECO mode',
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
-    'DEVICES_GROUP_SUNRISE' => 'Turn it on with Sunset',
+    'DEVICES_GROUP_SUNSET' => 'Turn it on with Sunset',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
@@ -1291,11 +1292,16 @@ $dictionary = array(
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
     'DEVICES_LOAD_TIMEOUT' => 'Load status timeout',
 
+    'DEVICES_DIMMER_MIN_WORK' => 'Min level (work)',
+    'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
+    'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
+
     'GROUPS' => 'Groups',
     'APPLIES_TO' => 'Applies to',
 
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
+    'SYSTEM_DEVICE' => 'System device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',

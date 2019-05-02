@@ -138,7 +138,7 @@ function admin(&$out) {
   $rec['XML']=$this->owner->xml;
  }
 
- if (!$rec['ID']) {
+ if (!$rec['ID'] && !$this->type) {
   $rec['CODE_TYPE']=2;
  }
 

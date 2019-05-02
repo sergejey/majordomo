@@ -1289,8 +1289,13 @@ $dictionary = array(
     'GROUPS' => 'Группы',
     'APPLIES_TO' => 'Применительно к',
 
+    'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
+    'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
+    'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
+
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
+    'SYSTEM_DEVICE' => 'Системное устройство',
 
     'ROOMS' => 'Комнаты',
     'APPEARANCE' => 'Внешний вид',

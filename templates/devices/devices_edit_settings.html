@@ -27,6 +27,12 @@
    <input type="radio" value="0" name="[#NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
    [#endif#]
 
+   [#if CONFIG_TYPE="html"#]
+   <textarea name="[#NAME#]_value" id="data" rows="5" cols="50" class="form-control">[#VALUE#]</textarea>
+   [#module name="blockly_code" code_field="data" action="" type="html"#]
+
+   [#endif#]
+
    [#if CONFIG_TYPE="select"#]
    <select name="[#NAME#]_value" class="form-control">
     <option value=""></option>

@@ -8,10 +8,10 @@ if ($this->owner->name == 'panel') {
 $table_name = 'devices';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 if (!$id && gr('linked_object')) {
-    $rec = SQLSelectOne("SELECT * FROM $table_name WHERE LINKED_OBJECT='".DBSafe(gr('linked_object'))."'");
+    $rec = SQLSelectOne("SELECT * FROM $table_name WHERE LINKED_OBJECT='" . DBSafe(gr('linked_object')) . "'");
 }
-if ($this->owner->print==1) {
-    $out['NO_NAV']=1;
+if ($this->owner->print == 1) {
+    $out['NO_NAV'] = 1;
 }
 
 $show_methods = array();
@@ -228,6 +228,11 @@ if ($this->tab == 'interface') {
 
 
 if ($this->tab == '') {
+
+    for ($i = 1; $i < 100; $i++) {
+        $out['PRIORITIES'][] = array('VALUE' => $i);
+    }
+
     global $prefix;
     $out['PREFIX'] = $prefix;
     global $source_table;
@@ -280,7 +285,7 @@ if ($this->tab == 'schedule') {
 
 if ($this->mode == 'update' && $this->tab == '') {
     $ok = 1;
-    $rec['TITLE'] = gr('title','trim');
+    $rec['TITLE'] = gr('title', 'trim');
     if ($rec['TITLE'] == '') {
         $out['ERR_TITLE'] = 1;
         $ok = 0;
@@ -297,8 +302,14 @@ if ($this->mode == 'update' && $this->tab == '') {
     global $location_id;
     $rec['LOCATION_ID'] = (int)$location_id;
 
-    global $favorite;
-    $rec['FAVORITE'] = (int)$favorite;
+    if (gr('favorite', 'int')) {
+        $rec['FAVORITE'] = gr('favorite_priority', 'int');
+    } else {
+        $rec['FAVORITE'] = 0;
+    }
+
+    $rec['SYSTEM_DEVICE'] = gr('system_device', 'int');
+
 
     $rec['LINKED_OBJECT'] = $linked_object;
     if ($rec['LINKED_OBJECT'] && !$rec['ID']) {
@@ -338,7 +349,7 @@ if ($this->mode == 'update' && $this->tab == '') {
         $type_details = $this->getTypeDetails($rec['TYPE']);
         if (!$rec['LINKED_OBJECT'] && $out['ADD_OBJECT']) {
             $prefix = $out['PREFIX'] . ucfirst($rec['TYPE']);
-            $new_object_title = $prefix . $this->getNewObjectIndex($type_details['CLASS'],$prefix);
+            $new_object_title = $prefix . $this->getNewObjectIndex($type_details['CLASS'], $prefix);
             $object_id = addClassObject($type_details['CLASS'], $new_object_title, 'sdevice' . $rec['ID']);
             $rec['LINKED_OBJECT'] = $new_object_title;
             SQLUpdate('devices', $rec);

@@ -149,6 +149,7 @@ $status = (float)gg($device1['LINKED_OBJECT'] . '.status');
 $links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE DEVICE1_ID=" . (int)$device1['ID']);
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
+    if (!checkAccess('sdevice',$links[$i]['ID'])) continue;
     $link_type = $links[$i]['LINK_TYPE'];
     $object = $links[$i]['LINKED_OBJECT'];
     $settings = unserialize($links[$i]['LINK_SETTINGS']);
@@ -157,11 +158,11 @@ for ($i = 0; $i < $total; $i++) {
     // -----------------------------------------------------------------
     if ($link_type == 'switch_it') {
         if ($settings['action_type'] == 'turnoff') {
-            $action_string = 'callMethod("' . $object . '.turnOff' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '");';
         } elseif ($settings['action_type'] == 'turnon') {
-            $action_string = 'callMethod("' . $object . '.turnOn' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '");';
         } elseif ($settings['action_type'] == 'switch') {
-            $action_string = 'callMethod("' . $object . '.switch' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.switch' . '");';
         }
         if ((int)$settings['action_delay'] > 0) {
             $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
@@ -172,13 +173,13 @@ for ($i = 0; $i < $total; $i++) {
         if ($settings['darktime']) {
             $action_string .= 'if (gg("DarknessMode.active")) {';
         }
-        $action_string .= 'callMethod("' . $object . '.turnOn' . '");';
+        $action_string .= 'callMethodSafe("' . $object . '.turnOn' . '");';
         $action_string .= 'setTimeout(\'' . $timer_name . '\',\'' . 'callMethod("' . $object . '.turnOff' . '");' . '\',' . (int)$settings['action_delay'] . ');';
         if ($settings['darktime']) {
             $action_string .= '}';
         }
     } elseif ($link_type == 'set_color') {
-        $action_string = 'callMethod("' . $object . '.setColor' . '",array("color"=>"' . $settings['action_color'] . '"));';
+        $action_string = 'callMethodSafe("' . $object . '.setColor' . '",array("color"=>"' . $settings['action_color'] . '"));';
         if ((int)$settings['action_delay'] > 0) {
             $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
         }
@@ -186,9 +187,9 @@ for ($i = 0; $i < $total; $i++) {
         // -----------------------------------------------------------------
     } elseif ($link_type == 'sensor_switch') {
         if ($settings['action_type'] == 'turnoff' && gg($object . '.status')) {
-            $action_string = 'callMethod("' . $object . '.turnOff' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '");';
         } elseif ($settings['action_type'] == 'turnon' && !gg($object . '.status')) {
-            $action_string = 'callMethod("' . $object . '.turnOn' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '");';
         }
         if ($settings['condition_type'] == 'above' && $value >= (float)$settings['condition_value']) {
             //do the action
@@ -218,10 +219,10 @@ for ($i = 0; $i < $total; $i++) {
         }
         if ($set_value && !$current_target_status) {
             // turn on
-            $action_string = 'callMethod("' . $object . '.turnOn' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '");';
         } elseif (!$set_value && $current_target_status) {
             // turn off
-            $action_string = 'callMethod("' . $object . '.turnOff' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '");';
         }
     }
 

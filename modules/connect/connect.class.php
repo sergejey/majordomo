@@ -477,7 +477,7 @@ class connect extends module
 // POST TO SERVER
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
-        $devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, SUBTYPE, LINKED_OBJECT FROM devices WHERE 1");
+        $devices = SQLSelect("SELECT devices.ID, devices.TITLE, devices.ALT_TITLES, devices.TYPE, devices.SUBTYPE, devices.LINKED_OBJECT, locations.TITLE as ROOM_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE devices.SYSTEM_DEVICE=0");
         include_once(DIR_MODULES . 'classes/classes.class.php');
         $cl = new classes();
 
@@ -496,6 +496,9 @@ class connect extends module
                     $value = $object->getProperty($v['TITLE']);
                     if ($value === '') continue;
                     $device['properties'][$v['TITLE']] = $value;
+                    if (strtolower($v['TITLE'])=='linkedroom') {
+                        $device['ROOM_OBJECT']=$value;
+                    }
                 }
             }
         }
@@ -532,7 +535,8 @@ class connect extends module
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
         list($object_name, $property_name) = explode('.', $property);
-        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "'");
+        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0");
+        if (!$device_rec['ID']) return;
         $fields['object'] = $object_name;
         $fields['property'] = $property_name;
         $fields['value'] = $value;
