@@ -652,7 +652,7 @@ class devices extends module
                     $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE!=1");
                 }
                 */
-                $devices = SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE 1");
+                $devices = SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE SYSTEM_DEVICE=0");
                 $total = count($devices);
                 for ($i = 0; $i < $total; $i++) {
                     if ($devices[$i]['LINKED_OBJECT']) {
@@ -674,7 +674,7 @@ class devices extends module
         global $type;
 
         if ($location_id || $type) {
-            $qry = "1";
+            $qry = "1 AND SYSTEM_DEVICE=0";
             $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
             if (preg_match('/loc(\d+)/', $type, $m)) {
                 $location_id = $m[1];
@@ -728,7 +728,7 @@ class devices extends module
         } else {
             $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
             //$qry=" devices.FAVORITE=1";
-            $qry = "1";
+            $qry = "1 AND SYSTEM_DEVICE=0";
             $out['ALL_DEVICES']=1;
             $devices = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
             $recent_devices=SQLSelect("SELECT devices.* FROM devices WHERE !IsNull(CLICKED) ORDER BY CLICKED DESC LIMIT 10");
@@ -849,7 +849,7 @@ class devices extends module
         foreach ($this->device_types as $k => $v) {
             if ($v['TITLE']) {
                 $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
-                $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE TYPE='" . $k . "'");
+                $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE SYSTEM_DEVICE=0 AND TYPE='" . $k . "'");
                 $type_rec['TOTAL'] = (int)$tmp['TOTAL'];
                 if ($type_rec['TOTAL'] > 0) {
                     $types[] = $type_rec;
@@ -1366,6 +1366,7 @@ class devices extends module
  devices: LINKED_OBJECT varchar(100) NOT NULL DEFAULT ''
  devices: LOCATION_ID int(10) unsigned NOT NULL DEFAULT 0  
  devices: FAVORITE int(3) unsigned NOT NULL DEFAULT 0 
+ devices: SYSTEM_DEVICE int(3) unsigned NOT NULL DEFAULT 0
  devices: CLICKED datetime DEFAULT NULL
 
  devices: SYSTEM varchar(255) NOT NULL DEFAULT ''

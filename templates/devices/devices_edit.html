@@ -105,6 +105,15 @@
   </div>
  </div>
 
+ <div class="form-group ">
+  <label class="col-lg-4 control-label"><#LANG_SYSTEM_DEVICE#>: <#LANG_HCB#>system_device<#LANG_HCE#></label>
+  <div class="col-lg-4">
+   <input type="radio" name="system_device" value="1"[#if SYSTEM_DEVICE!="0"#] checked[#endif#]> <#LANG_YES#>
+   <input type="radio" name="system_device" value="0"[#if (SYSTEM_DEVICE=="0") || (SYSTEM_DEVICE=="")#] checked[#endif#]> <#LANG_NO#>
+   </span>
+  </div>
+ </div>
+
 
 <div class="form-group">
  <label class="col-lg-4 control-label">
