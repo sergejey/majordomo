@@ -316,7 +316,8 @@ var ajaxManager = (function() {
 
  return {
   addReq:  function(opt) {
-   requests.push(opt);
+   if( !($.inArray(opt, requests) > -1) )
+    requests.push(opt);
   },
   removeReq:  function(opt) {
    if( $.inArray(opt, requests) > -1 )

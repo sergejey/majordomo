@@ -254,6 +254,7 @@ jQuery.fn.center = function () {
              [#if PRINT=="1"#]return true;[#endif#]
              if (typeof link == 'undefined') return;
 
+             ajaxManager.stop();
              requestCounter++;
              var seqNumber=requestCounter;
              var urlPartLoad=link;
