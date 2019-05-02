@@ -26,8 +26,7 @@ if ($this->getProperty('isActivity')) {
         $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
     }
     if ($nobodyhome_timeout) {
-        ClearTimeOut("nobodyHome");
-        SetTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
+        setTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
     }
     if ($linked_room) {
         callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
