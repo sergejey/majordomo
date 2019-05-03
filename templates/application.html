@@ -156,21 +156,16 @@ $(document).ready(function() {
   return false;
  }
 
- function getLatestNoteReceived(id, data) {
+  function getLatestNoteReceived(id, data) {
   var obj=jQuery.parseJSON(data);
-  if (obj.DATA!='') {
-   if (noteLatest!=obj.DATA) {
-    if (noteLatest!='') {
+  if (obj.DATA!='' && noteLatest!=obj.DATA && noteLatest!='') {
      $.gritter.add({
          title: '[#if "<#SETTINGS_GENERAL_ALICE_NAME#>"!=""#]<#SETTINGS_GENERAL_ALICE_NAME#>[#else#]<#LANG_DEFAULT_COMPUTER_NAME#>[#endif#]',
          text: obj.DATA, 
          sticky: false, 
          time: 8000
       });
-    }
     noteLatest=obj.DATA;
-   }
-
   }
  }
 
