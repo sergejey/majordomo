@@ -838,6 +838,8 @@ class market extends module
             if ($frame) {
                 $this->echonow(" OK<br/>", 'green');
             }
+            $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
+            eval($code);
             $this->removeTree(ROOT . 'modules/' . $name);
             $this->removeTree(ROOT . 'templates/' . $name);
             if ($name == 'scheduler') {
@@ -849,8 +851,6 @@ class market extends module
                 @unlink($cycle_name);
             }
             removeMissingSubscribers();
-            $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
-            eval($code);
         }
         $ok_msg = 'Uninstalled';
         if ($frame) {
