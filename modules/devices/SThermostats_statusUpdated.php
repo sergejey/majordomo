@@ -5,8 +5,10 @@ $linked_room=$this->getProperty('linkedRoom');
 
 $tm=time();
 $this->setProperty('updated', $tm);
-$this->callMethod('setUpdatedText');
-$this->setProperty('alive', 1);
+
+if ($this->getProperty('alive') == 0) {
+ $this->setProperty('alive', 1);
+}
 
 
 $alive_timeout=(int)$this->getProperty('aliveTimeout')*60*60;
@@ -33,3 +35,4 @@ if ($linked_room && $this->getProperty('isActivity')) {
 }
 
 $this->callMethod('valueUpdated');
+$this->callMethod('setUpdatedText');
