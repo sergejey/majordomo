@@ -8,7 +8,9 @@ if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
     $this->setProperty('updated', $tm);
     $this->callMethod('setUpdatedText');
 }
-$this->setProperty('alive', 1);
+if ($this->getProperty('alive') == 0) {
+ $this->setProperty('alive', 1);
+}
 
 
 $alive_timeout = (int)$this->getProperty('aliveTimeout') * 60 * 60;

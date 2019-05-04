@@ -18,7 +18,6 @@ if ($this->getProperty("IdleDelay")) {
 } else {
     $activity_timeout=10*60;
 }
-clearTimeOut($ot."_activity_timeout");
 setTimeOut($ot."_activity_timeout","callMethod('".$ot.".onIdle');",$activity_timeout);
 
 if (getGlobal('NobodyHomeMode.active')) {
