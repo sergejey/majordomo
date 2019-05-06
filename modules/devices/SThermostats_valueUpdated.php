@@ -9,7 +9,7 @@ if (!$alive_timeout) {
 }
 setTimeout($ot.'_alive_timer', 'setGlobal("'.$ot.'.alive", 0);', $alive_timeout);
 
-$disabled=$this->getProperty('disabled');
+$disabled = $this->getProperty('disabled');
 if ($disabled) {
     return;
 }
@@ -30,17 +30,17 @@ if ($status) {
 
 $this->setProperty('currentTargetValue',$targetTemperature);
 
-$need_action = 0;
+//$need_action = 0;
 
 if ($currentTemperature > ($targetTemperature+$threshold)) { // temperature too high
-    $need_action = 1;
+    //$need_action = 1;
     if ($ncno == 'no') {
         $this->setProperty('relay_status',1); // turn on
     } else {
         $this->setProperty('relay_status',0); // turn off
     }
 } elseif ($currentTemperature < ($targetTemperature-$threshold)) { // temperature too low
-    $need_action = 1;
+    //$need_action = 1;
     if ($ncno == 'no') {
         $this->setProperty('relay_status',0); // turn off
     } else {
