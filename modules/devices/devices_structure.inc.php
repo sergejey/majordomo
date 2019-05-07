@@ -146,8 +146,8 @@ $this->device_types=array(
         'METHODS'=>array(
             'colorUpdated'=>array('DESCRIPTION'=>'Color Updated'),
             'setColor'=>array('DESCRIPTION'=>'Color Set'),
-            'turnOn'=>array('DESCRIPTION'=>'RGB turnOn'),
-            'turnOff'=>array('DESCRIPTION'=>'RGB turnOff'),
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF,'_CONFIG_SHOW'=>1),
         )
     ),
     'motion'=>array(
