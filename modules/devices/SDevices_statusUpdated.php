@@ -9,7 +9,7 @@ if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
     $this->callMethod('setUpdatedText');
 }
 if ($this->getProperty('alive') == 0) {
- $this->setProperty('alive', 1);
+    $this->setProperty('alive', 1);
 }
 
 
