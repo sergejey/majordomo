@@ -20,7 +20,7 @@ if (!$alive_timeout) {
 
 setTimeout($ot . '_alive_timer', 'setGlobal("' . $ot . '.alive", 0);', $alive_timeout);
 
-$need_call_logic_action = 1;
+//$need_call_logic_action = 1;
 
 
 if ($this->class_title == 'SMotions' && $params['NEW_VALUE'] && !timeOutExists($ot . '_motion_timer_status')) {
@@ -46,9 +46,9 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
     }
 }
 
-if ($need_call_logic_action) {
+//if ($need_call_logic_action) {
     $this->callMethod('logicAction');
     include_once(DIR_MODULES . 'devices/devices.class.php');
     $dv = new devices();
     $dv->checkLinkedDevicesAction($this->object_title, $value);
-}
+//}
