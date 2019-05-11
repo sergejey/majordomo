@@ -8,7 +8,11 @@ $objects = getObjectsByProperty('group' . $group_name, 1);
 foreach($objects as $object_title) {
   if (getGlobal($object_title . '.status') != $status) {
     usleep(50000);
-    setGlobal($object_title . '.status', $status);
+    if ($status) {
+      callMethodSafe($object_title . '.turnOn', array('sourse' => $params['ORIGINAL_OBJECT_TITLE']));
+    } else {
+      callMethodSafe($object_title . '.turnOff', array('sourse' => $params['ORIGINAL_OBJECT_TITLE']));
+    }
     //sleep(1);
   }
 }
