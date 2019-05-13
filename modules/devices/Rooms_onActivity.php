@@ -2,7 +2,7 @@
 
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
 
-$ot = $params['object'];
+$ot = $this->object_title;
 
 //$latestActivity = $this->getProperty('LatestActivity');
 $this->setProperty('LatestActivity', time());

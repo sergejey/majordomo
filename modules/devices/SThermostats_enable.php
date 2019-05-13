@@ -1,3 +1,3 @@
 <?php
 
-    $this->setProperty('disabled',0);
+$this->setProperty('disabled', 0);
