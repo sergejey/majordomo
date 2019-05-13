@@ -38,8 +38,7 @@ if ($data1 > $value) {
 } elseif ($data1 < $value) {
   $direction = 1;
 }
-$currentDirection = $this->getProperty('direction');
-if ($currentDirection != $direction) {
+if ($this->getProperty('direction') != $direction) {
   $this->setProperty('direction', $direction);
 }
 

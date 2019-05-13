@@ -4,8 +4,7 @@ $ot = $this->object_title;
 $linked_room = $this->getProperty('linkedRoom');
 
 if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
-    $tm = time();
-    $this->setProperty('updated', $tm);
+    $this->setProperty('updated', time());
     $this->callMethod('setUpdatedText');
 }
 if ($this->getProperty('alive') == 0) {
