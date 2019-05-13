@@ -3,8 +3,7 @@
 $ot = $this->object_title;
 $ncno = $this->getProperty('ncno');
 
-$tm = time();
-$this->setProperty('updated', $tm);
+$this->setProperty('updated', time());
 $this->callMethodSafe('setUpdatedText');
 if ($this->getProperty('alive') == 0) {
  $this->setProperty('alive', 1);
@@ -28,7 +27,7 @@ if ($this->getProperty('isActivity')) {
         $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
     }
     if ($nobodyhome_timeout) {
-        setTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
+        setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
     }
     if ($linked_room) {
         callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
@@ -65,4 +64,4 @@ $this->callMethodSafe('logicAction');
 
 include_once(DIR_MODULES . 'devices/devices.class.php');
 $dv = new devices();
-$dv->checkLinkedDevicesAction($this->object_title, $this->getProperty('status'));
+$dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
