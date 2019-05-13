@@ -8,7 +8,7 @@ $total = count($objects);
 for ($i = 0; $i < $total; $i++) {
   if (getGlobal($objects[$i] . '.status')) {
     usleep(50000);
-    callMethodSafe($objects[$i] . '.turnOff', array('sourse' => $params['object']));
+    callMethodSafe($objects[$i] . '.turnOff', array('sourse' => 'DarknessMode'));
     //sleep(1);
   }
 }
