@@ -24,6 +24,10 @@ define("_I_CACHE_EXPIRED", "2592000");   //    Expired time for images in second
 
 if (IsSet($url) && $url != '') {
     $tmp_url = base64_decode($url);
+    if (!$img) {
+        $filename = 'thumb_' . md5($tmp_url) . basename(preg_replace('/\W/', '', $tmp_url));
+        $img = _I_CACHE_PATH . $filename;
+    }
     if ($tmp_url == 'usb') {
         $url = "";
         $img_tmp = $img . '_tmp';
