@@ -459,7 +459,7 @@ function runScheduledJobs()
 
         if ($jobs[$i]['COMMANDS'] != '') {
             $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
-            $result = trim(getURL($url, 0));
+            $result = trim(getURLBackground($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
                 //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
