@@ -30,7 +30,7 @@ $nobodyhome_timeout = 1 * 60 * 60;
 if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
     $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
 }
-if ($nobodyhome_timeout) {
+if ($nobodyhome_timeout && !$this->getProperty('resetNobodysHome')) {
     setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
 }
 

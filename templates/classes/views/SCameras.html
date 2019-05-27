@@ -1,6 +1,7 @@
-<div class="camera-widget">
-<div>%.previewHTML%</div>
+<div class="camera-widget" id="camera%.object_title%">
+<div class="camera-preview-html">%.previewHTML%</div>
 <script type="text/javascript">
+
     function takeSnapshot%.object_title%() {
         callMethod('%.object_title%'+'.takeSnapshot');
         $('#%.object_title%_snap').html(' OK');
