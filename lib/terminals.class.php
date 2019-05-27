@@ -111,7 +111,15 @@ function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 	}
 	return $terminals;
 }
-
+// Get terminals by CANTTS
+function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
+	$sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '".DBSafe('1')."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
+	if(!$terminals = SQLSelect($sqlQuery)) {
+		$terminals = array(NULL);
+	}
+	return $terminals;
+}
+// Get local ip 
 function getLocalIp() {
 	global $local_ip_address_cached;
 	if (isset($local_ip_address_cached)) {

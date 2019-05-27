@@ -149,6 +149,7 @@ $status = (float)gg($device1['LINKED_OBJECT'] . '.status');
 $links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE DEVICE1_ID=" . (int)$device1['ID']);
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
+    if (!checkAccess('sdevice',$links[$i]['ID'])) continue;
     $link_type = $links[$i]['LINK_TYPE'];
     $object = $links[$i]['LINKED_OBJECT'];
     $settings = unserialize($links[$i]['LINK_SETTINGS']);

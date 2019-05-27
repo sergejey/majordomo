@@ -21,7 +21,7 @@ $this->device_types=array(
         'DESCRIPTION'=>'General Devices Class',
         'PROPERTIES'=>array(
             'status'=>array('DESCRIPTION'=>LANG_DEVICES_STATUS, 'KEEP_HISTORY'=>365, 'ONCHANGE'=>'statusUpdated', 'DATA_KEY'=>1),
-            'alive'=>array('DESCRIPTION'=>'Alive','KEEP_HISTORY'=>365),
+            'alive'=>array('DESCRIPTION'=>'Alive'),
             'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdAliveTimeout'),
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
@@ -146,8 +146,8 @@ $this->device_types=array(
         'METHODS'=>array(
             'colorUpdated'=>array('DESCRIPTION'=>'Color Updated'),
             'setColor'=>array('DESCRIPTION'=>'Color Set'),
-            'turnOn'=>array('DESCRIPTION'=>'RGB turnOn'),
-            'turnOff'=>array('DESCRIPTION'=>'RGB turnOff'),
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF,'_CONFIG_SHOW'=>1),
         )
     ),
     'motion'=>array(
@@ -156,6 +156,7 @@ $this->device_types=array(
         'CLASS'=>'SMotions',
         'PROPERTIES'=>array(
             'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIgnoreNobodysHome'),
+            'resetNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_RESET,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdResetNobodysHome'),
             'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdMotionTimeout')
         ),
         'METHODS'=>array(

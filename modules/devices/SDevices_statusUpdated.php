@@ -4,11 +4,12 @@ $ot = $this->object_title;
 $linked_room = $this->getProperty('linkedRoom');
 
 if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
-    $tm = time();
-    $this->setProperty('updated', $tm);
+    $this->setProperty('updated', time());
     $this->callMethod('setUpdatedText');
 }
-$this->setProperty('alive', 1);
+if ($this->getProperty('alive') == 0) {
+    $this->setProperty('alive', 1);
+}
 
 
 $alive_timeout = (int)$this->getProperty('aliveTimeout') * 60 * 60;
@@ -18,7 +19,7 @@ if (!$alive_timeout) {
 
 setTimeout($ot . '_alive_timer', 'setGlobal("' . $ot . '.alive", 0);', $alive_timeout);
 
-$need_call_logic_action = 1;
+//$need_call_logic_action = 1;
 
 
 if ($this->class_title == 'SMotions' && $params['NEW_VALUE'] && !timeOutExists($ot . '_motion_timer_status')) {
@@ -33,8 +34,7 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
         $nobodyhome_timeout=SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
     }
     if ($nobodyhome_timeout) {
-        ClearTimeOut("nobodyHome");
-        SetTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
+        setTimeOut("nobodyHome", "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
     }
     if ($linked_room) {
         callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
@@ -45,9 +45,9 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
     }
 }
 
-if ($need_call_logic_action) {
+//if ($need_call_logic_action) {
     $this->callMethod('logicAction');
     include_once(DIR_MODULES . 'devices/devices.class.php');
     $dv = new devices();
-    $dv->checkLinkedDevicesAction($this->object_title, $value);
-}
+    $dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
+//}

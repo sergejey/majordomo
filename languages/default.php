@@ -11,6 +11,7 @@
 $dictionary = array(
 
     /* general */
+    'SETTINGS_SITE_LANGUAGE_CODE'=>'en_GB',
     'WIKI_URL' => 'http://majordomohome.com/',
     'KB_URL' => 'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Alice',
@@ -1165,6 +1166,7 @@ $dictionary = array(
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Value is back to normal',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Notify when left open',
     'DEVICES_MOTION_IGNORE' => 'Ignore device events when nobody\'s home',
+    'DEVICES_MOTION_RESET' => 'Reset "nobody home" status w/o setting timer',
     'DEVICES_MOTION_TIMEOUT' => 'Activity timeout (sec)',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
     'DEVICES_MAIN_SENSOR' => 'Main sensor for the room',
@@ -1183,7 +1185,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO' => 'Turn it off in ECO mode',
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
-    'DEVICES_GROUP_SUNRISE' => 'Turn it on with Sunset',
+    'DEVICES_GROUP_SUNSET' => 'Turn it on with Sunset',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
@@ -1300,6 +1302,7 @@ $dictionary = array(
 
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
+    'SYSTEM_DEVICE' => 'System device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',

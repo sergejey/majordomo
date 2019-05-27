@@ -142,19 +142,25 @@ jQuery.fn.center = function () {
 
  // ----------------------------------------------------------------------
  function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
+     /*
   var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
   jWindowObj.show();
   jWindowObj.update();
   $('#usersWindow').center();
+  */
+  parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
   return false;
  }
 
 
  function openModalTWindow(winId, winTitle, pageURL, wdth, hdth) {
+     /*
   var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, minimiseButton:false, maximiseButton:false, draggable:false, resizeable:false, modal: true });
    jWindowObj.show();
    jWindowObj.update();
    $('#usersWindow').center();
+   */
+   parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
    return false;
  }
 
@@ -248,6 +254,7 @@ jQuery.fn.center = function () {
              [#if PRINT=="1"#]return true;[#endif#]
              if (typeof link == 'undefined') return;
 
+             ajaxManager.stop();
              requestCounter++;
              var seqNumber=requestCounter;
              var urlPartLoad=link;

@@ -24,6 +24,10 @@ define("_I_CACHE_EXPIRED", "2592000");   //    Expired time for images in second
 
 if (IsSet($url) && $url != '') {
     $tmp_url = base64_decode($url);
+    if (!$img) {
+        $filename = 'thumb_' . md5($tmp_url) . basename(preg_replace('/\W/', '', $tmp_url));
+        $img = _I_CACHE_PATH . $filename;
+    }
     if ($tmp_url == 'usb') {
         $url = "";
         $img_tmp = $img . '_tmp';
@@ -31,6 +35,7 @@ if (IsSet($url) && $url != '') {
         if ($w && $h) {
             $resolution = $w . 'x' . $h;
         }
+        //-re -f v4l2 -video_size 1280x720 -i /dev/video0
         $cmd = 'fswebcam -r ' . $resolution . ' ' . $img_tmp;
         if ($_GET['debug']) {
             echo $cmd . '<br/>';
@@ -63,7 +68,7 @@ if (IsSet($url) && $url != '') {
         $url = str_replace('://', '://' . $username . ':' . $password . '@', $url);
     }
 
-    if (preg_match('/^rtsp:/is', $url)) {
+    if (preg_match('/^rtsp:/is', $url) || preg_match('/\/dev/',$url)) {
         //-rtsp_transport tcp // -rtsp_transport tcp
         $stream_options = '-timelimit 15 -y -i "' . $url . '"' . $resize . ' -r 5 -f image2 -vframes 1'; //-ss 00:00:01.500
         if ($_GET['debug']) {

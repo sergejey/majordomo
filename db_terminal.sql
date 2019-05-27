@@ -184,6 +184,7 @@ INSERT INTO `cached_values` (`KEYWORD`, `DATAVALUE`, `EXPIRE`) VALUES
 ('MJD:ThisComputer.isDark', '0', '2015-12-03 14:44:00'),
 ('MJD:ThisComputer.AlarmStatus', '', '2015-12-03 14:44:00'),
 ('MJD:ThisComputer.volumeLevel', '90', '2015-12-03 14:44:28'),
+('MJD:ThisComputer.volumeMediaLevel', '90', '2015-12-03 14:44:28'),
 ('MJD:ThisComputer.TempOutside', '-0.9', '2015-12-03 14:44:28'),
 ('MJD:ThisComputer.textBoxTest', '0', '2015-12-03 14:46:01'),
 ('MJD:ThisComputer.AlarmTime', '09:30', '2015-12-03 14:46:01'),
@@ -932,6 +933,7 @@ CREATE TABLE IF NOT EXISTS `layouts` (
   `DETAILS` text,
   `REFRESH` int(10) NOT NULL DEFAULT '0',
   `ICON` varchar(50) NOT NULL DEFAULT '',
+  `HIDDEN` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
 
@@ -1623,6 +1625,7 @@ INSERT INTO `properties` (`ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `OBJECT_ID`,
 (77, 0, 'stateTitle', NULL, 18, 0, ''),
 (78, 0, 'stateTitle', NULL, 16, 0, ''),
 (83, 0, 'volumeLevel', NULL, 7, 0, ''),
+(152, 0, 'volumeMediaLevel', NULL, 7, 0, ''),
 (119, 30, 'linkedRoom', '', 0, 0, ''),
 (98, 0, 'somebodyHome', NULL, 7, 0, ''),
 (118, 30, 'aliveTimeOut', '', 0, 0, ''),
@@ -2284,6 +2287,7 @@ CREATE TABLE IF NOT EXISTS `terminals` (
   `PLAYER_USERNAME` varchar(255) NOT NULL DEFAULT '',
   `PLAYER_PASSWORD` varchar(255) NOT NULL DEFAULT '',
   `LATEST_ACTIVITY` date DEFAULT NULL,
+  `IS_ONLINE` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 

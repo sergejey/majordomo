@@ -589,7 +589,7 @@ function usual(&$out) {
    if ($tmp['ID']) {
     return;
    }
-
+  SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='menu' AND OBJECT_ID=".(int)$rec['ID']);
   SQLExec("DELETE FROM commands WHERE ID='".$rec['ID']."'");
  }
 /**

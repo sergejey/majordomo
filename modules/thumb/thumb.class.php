@@ -173,4 +173,3 @@ class thumb extends module
 
 }
 
-?>
