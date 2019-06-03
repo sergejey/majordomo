@@ -364,7 +364,7 @@ function timeBetween($tm1, $tm2)
  * @param mixed $expire Expire time (default 60)
  * @return mixed
  */
-function addScheduledJob($title, $commands, $datetime, $expire = 1800)
+function addScheduledJob($title, $commands, $datetime, $expire = 1800, $on_complete = '')
 {
     clearScheduledJob($title);
     $rec = array();
@@ -372,8 +372,8 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
     $rec['COMMANDS'] = $commands;
     $rec['RUNTIME'] = date('Y-m-d H:i:s', $datetime);
     $rec['EXPIRE'] = date('Y-m-d H:i:s', $datetime + $expire);
+	$rec['ON_COMPLETE'] = $on_complete;
     $rec['ID'] = SQLInsert('jobs', $rec);
-
     return $rec['ID'];
 }
 
