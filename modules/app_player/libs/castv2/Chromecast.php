@@ -50,14 +50,14 @@ class GChromecast
 		$this->Plex = new CCPlexPlayer($this);
 	}
 	
-	public static function scan($wait = 15)
+	public static function scan($wait = 3)
 	{
 		// Wrapper for scan
-		$result = Chromecast::scansub($wait);
+		$result = GChromecast::scansub($wait);
 		return $result;
 	}
 	
-	public static function scansub($wait = 15)
+	public static function scansub($wait = 3)
 	{
 		// Performs an mdns scan of the network to find chromecasts and returns an array
 		// Let's test by finding Google Chromecasts
@@ -292,7 +292,7 @@ class GChromecast
 			return;
 		}
 		$diff = time() - $this->lastactivetime;
-		if ($diff > 9) {
+		if ($diff > 30) {
 			// Reconnect
 			$contextOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, ]];
 			$context = stream_context_create($contextOptions);
@@ -343,7 +343,6 @@ class GChromecast
 		$oldtransportid = $this->transportid;
 		while ($this->transportid == "" || $this->transportid == $oldtransportid) {
 			$r = $this->getCastMessage();
-			sleep(1);
 		}
 	}
 	
