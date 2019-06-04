@@ -1,5 +1,4 @@
 <?php
-
 // Chris Ridings
 // www.chrisridings.com
 require_once ("CCprotoBuf.php");
@@ -38,8 +37,7 @@ class GChromecast
 		// use port forwarding!
 		$contextOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, ]];
 		$context = stream_context_create($contextOptions);
-		if ($this->socket = @stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context)) {
-			stream_set_timeout($this->socket,0,64);
+		if ($this->socket = stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context)) {
 		}
 		else {
 			throw new Exception("Failed to connect to remote Chromecast");
@@ -55,7 +53,7 @@ class GChromecast
 	public static function scan($wait = 15)
 	{
 		// Wrapper for scan
-		$result = GChromecast::scansub($wait);
+		$result = Chromecast::scansub($wait);
 		return $result;
 	}
 	
@@ -353,7 +351,7 @@ class GChromecast
 	{
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
-		$this->testLive();
+		//$this->testLive();
 		$this->cc_connect();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
@@ -366,7 +364,7 @@ class GChromecast
 		$this->lastactivetime = time();
 		$this->requestId++;
 		$r = "";
-		while ($this->transportid == "") {
+		while (!preg_match("/RECEIVER_STATUS/s", $r)) {
 			$r = $this->getCastMessage();
 		}
 		if (preg_match("/RECEIVER_STATUS/s", $r)) {
@@ -446,7 +444,24 @@ class GChromecast
 		return $response;
 	}
 	
-
+	public function pingpong()
+	{
+		// Officially you should run this every 5 seconds or so to keep
+		// the device alive. Doesn't seem to be necessary if an app is running
+		// that doesn't have a short timeout.
+		$c = new CastMessage();
+		$c->source_id = "sender-0";
+		$c->receiver_id = "receiver-0";
+		$c->urnnamespace = "urn:x-cast:com.google.cast.tp.heartbeat";
+		$c->payloadtype = 0;
+		$c->payloadutf8 = '{"type":"PING"}';
+		fwrite($this->socket, $c->encode());
+		fflush($this->socket);
+		$this->lastactivetime = time();
+		$this->requestId++;
+		$response = $this->getCastMessage();
+	}
+	
 	public function pong()
 	{
 		// To answer a pingpong
@@ -461,5 +476,7 @@ class GChromecast
 		$this->lastactivetime = time();
 		$this->requestId++;
 	}
+	
+
 }
 ?>
