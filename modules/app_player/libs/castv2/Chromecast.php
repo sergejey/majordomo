@@ -366,8 +366,6 @@ class GChromecast
 		$r = "";
 		while (!preg_match("/RECEIVER_STATUS/s", $r)) {
 			$r = $this->getCastMessage();
-		}
-		if (preg_match("/RECEIVER_STATUS/s", $r)) {
 			$r = substr($r, strpos($r,'"requestId"'),50000);
 		}
 		DebMes($r);
