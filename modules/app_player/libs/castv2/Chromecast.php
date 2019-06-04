@@ -369,6 +369,9 @@ class GChromecast
 		while ($this->transportid == "") {
 			$r = $this->getCastMessage();
 		}
+		if (preg_match("/RECEIVER_STATUS/s", $r)) {
+			$r = substr($r, strpos($r,'"requestId"'),50000);
+		}
 		DebMes($r);
 		return $r;
 	}
@@ -413,9 +416,7 @@ class GChromecast
 			$matches = $matches[1];
 			$this->transportid = $matches;
 		}
-		if (preg_match("/RECEIVER_STATUS/s", $response)) {
-			$response = substr($response, strpos($response,'"requestId"'),50000);
-		}
+
 		return $response;
 	}
 	
