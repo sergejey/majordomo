@@ -407,8 +407,10 @@ function deleteScheduledJob($id)
  */
 function setTimeOut($title, $commands, $timeout)
 {
+    startMeasure('setTimeout');
     clearTimeOut($title);
     $res = addScheduledJob($title, $commands, time() + $timeout);
+    endMeasure('setTimeout');
     return $res;
 }
 
@@ -739,6 +741,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
  */
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
+    startMeasure('getURL');
     // DebMes($url,'urls');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part) > 200) {
@@ -750,8 +753,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
         try {
 
             //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
-            $startTime = getmicrotime();
-
+            startMeasure('curl_prepare');
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
@@ -807,10 +809,14 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
+            endMeasure('curl_prepare');
+            startMeasure('curl_exec');
             $result = curl_exec($ch);
+            endMeasure('curl_exec');
 
 
-            if (curl_errno($ch) && !$background) {
+            startMeasure('curl_post');
+            if (!$background && curl_errno($ch)) {
                 $errorInfo = curl_error($ch);
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
@@ -818,6 +824,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
             }
             curl_close($ch);
+            endMeasure('curl_post');
 
 
         } catch (Exception $e) {
@@ -831,6 +838,9 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     } else {
         $result = LoadFile($cache_file);
     }
+
+
+    endMeasure('getURL');
 
     return $result;
 }
@@ -951,9 +961,28 @@ function isOnline($host)
  */
 function checkAccess($object_type, $object_id)
 {
+
+    global $access_rules_cached;
+
+    startMeasure('checkAccess');
+
+    if (!isset($access_rules_cached)) {
+        $all_rules=SQLSelect("SELECT OBJECT_TYPE, OBJECT_ID FROM security_rules");
+        foreach($all_rules as $rule) {
+            $access_rules_cached[$rule['OBJECT_TYPE'].$rule['OBJECT_ID']]=1;
+        }
+    }
+
+    if (!isset($access_rules_cached[$object_type.$object_id])) {
+        endMeasure('checkAccess');
+        return true;
+    }
+
     include_once(DIR_MODULES . 'security_rules/security_rules.class.php');
     $sc = new security_rules();
-    return $sc->checkAccess($object_type, $object_id);
+    $result = $sc->checkAccess($object_type, $object_id);
+    endMeasure('checkAccess');
+    return $result;
 }
 
 /**

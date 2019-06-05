@@ -16,12 +16,14 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 
 // start calculation of execution time
-
+startMeasure('prepare');
 include_once(DIR_MODULES . "application.class.php");
 
 $session = new session("prj");
 
+startMeasure('load_settings');
 include_once("./load_settings.php");
+endMeasure('load_settings');
 
 $use_caching   = 0;
 $cache_expire  = 60 * 60; // 60 minutes cache expiration time
@@ -49,6 +51,7 @@ if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) &&
    }
 }
 
+endMeasure('prepare');
 if ($cached_result == '')
 {
    if (!file_exists(DIR_MODULES . 'control_modules/installed'))

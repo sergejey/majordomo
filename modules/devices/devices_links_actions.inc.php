@@ -1,7 +1,7 @@
 <?php
 
 //DebMes("Checking linked actions for device ".$device1['ID']);
-
+startMeasure('homebridge_update');
 if ($this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
     $payload = array();
@@ -142,7 +142,9 @@ if ($this->isHomeBridgeAvailable()) {
         sg('HomeBridge.to_set', json_encode($payload));
     }
 }
+endMeasure('homebridge_update');
 
+startMeasure('checkingLinks');
 $value = (float)gg($device1['LINKED_OBJECT'] . '.value');
 $status = (float)gg($device1['LINKED_OBJECT'] . '.status');
 
@@ -249,5 +251,7 @@ for ($i = 0; $i < $total; $i++) {
             registerError('linked_device', sprintf('Error in script "%s": ' . $e->getMessage(), $link_type));
         }
     }
+
+    endMeasure('checkingLinks');
 
 }

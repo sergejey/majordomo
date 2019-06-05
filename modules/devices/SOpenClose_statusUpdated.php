@@ -1,5 +1,6 @@
 <?php
 
+startMeasure('statusUpdated');
 $ot = $this->object_title;
 $ncno = $this->getProperty('ncno');
 
@@ -8,7 +9,6 @@ $this->callMethodSafe('setUpdatedText');
 if ($this->getProperty('alive') == 0) {
  $this->setProperty('alive', 1);
 }
-
 $alive_timeout = (int)$this->getProperty('aliveTimeout') * 60 * 60;
 if (!$alive_timeout) {
     $alive_timeout = 2 * 24 * 60 * 60; // 2 days alive timeout by default
@@ -60,8 +60,14 @@ if ($this->getProperty('notify_nc')) {
     }
 }
 
+
 $this->callMethodSafe('logicAction');
 
+startMeasure('statusUpdatedLinkedDevices');
 include_once(DIR_MODULES . 'devices/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
+endMeasure('statusUpdatedLinkedDevices');
+
+
+endMeasure('statusUpdated');

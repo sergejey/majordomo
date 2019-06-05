@@ -1302,13 +1302,15 @@ class devices extends module
     }
 
 
-    function checkLinkedDevicesAction($object_title, $value = 0)
-    {
+    function checkLinkedDevicesAction($object_title, $value = 0) {
+        startMeasure('checkLinkedDevicesAction');
         $device1 = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '" . $object_title . "'");
         if (!$device1['ID']) {
+            endMeasure('checkLinkedDevicesAction');
             return 0;
         }
-        require (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        require_once (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        endMeasure('checkLinkedDevicesAction');
         return 1;
     }
 

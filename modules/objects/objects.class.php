@@ -496,6 +496,7 @@ class objects extends module
 
     function callMethodSafe($name, $params = 0)
     {
+        startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
         $call_stack = array();
         if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
@@ -532,6 +533,7 @@ class objects extends module
         }
         $params['m_c_s'] = $call_stack;
         $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
+        endMeasure('callMethodSafe');
         return $result;
     }
 
@@ -948,8 +950,8 @@ class objects extends module
                 $params['NEW_VALUE'] = (string)$value;
                 $params['OLD_VALUE'] = (string)$old_value;
                 $params['SOURCE'] = (string)$source;
-                $this->callMethod($prop['ONCHANGE'], $params);
-                //$this->callMethodSafe($prop['ONCHANGE'], $params);
+                //$this->callMethod($prop['ONCHANGE'], $params);
+                $this->callMethodSafe($prop['ONCHANGE'], $params);
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }
