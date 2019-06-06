@@ -394,7 +394,7 @@ class GChromecast
 			$this->appid = $matches;
 			DebMes ($this->appid);
 		}
-        DebMes($response);
+                //DebMes($response);
 		return $response;
 	}
 	
@@ -450,7 +450,7 @@ class GChromecast
 			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->appid = $matches;
-			DebMes ($this->appid);
+			//DebMes ($this->appid);
 		}
 
 		if (preg_match("/mediaSessionId/s", $response)) {
