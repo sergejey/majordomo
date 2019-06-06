@@ -129,9 +129,9 @@ class mysql
       if ($this->dbh) return true;
 
       if ($this->port) {
-       $this->dbh = mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
+       $this->dbh = mysqli_connect('p:'.$this->host . ":" . $this->port, $this->user, $this->password);
       } else {
-       $this->dbh = mysqli_connect(''.$this->host , $this->user, $this->password);
+       $this->dbh = mysqli_connect('p:'.$this->host , $this->user, $this->password);
       }
 
       if (!$this->dbh) {

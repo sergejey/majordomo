@@ -10,7 +10,7 @@ $this->setProperty('LatestActivityTime', date('H:i'));
 
 if (!$this->getProperty('SomebodyHere')) {
     $this->setProperty('SomebodyHere', 1);
-    $this->callMethod('updateActivityStatus');
+    $this->callMethodSafe('updateActivityStatus');
 }
 
 if ($this->getProperty('IdleDelay')) {

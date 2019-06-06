@@ -41,9 +41,9 @@ if (!$description) {
 if ($this->getProperty('notify_status')) {
     if (isset($params['NEW_VALUE'])) {
         if (($params['NEW_VALUE'] && $ncno == 'no') || (!$params['NEW_VALUE'] && $ncno == 'nc'))
-            say($description . ' ' . LANG_DEVICES_STATUS_OPEN, 2);
+            saySafe($description . ' ' . LANG_DEVICES_STATUS_OPEN, 2);
         else
-            say($description . ' ' . LANG_DEVICES_STATUS_CLOSED, 2);
+            saySafe($description . ' ' . LANG_DEVICES_STATUS_CLOSED, 2);
     }
 }
 if ($this->getProperty('notify_nc')) {
