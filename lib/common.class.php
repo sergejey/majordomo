@@ -1373,7 +1373,7 @@ function getPlayerStatus($host = 'localhost')
     $player->intCall = TRUE;
     $player->usual($out);
     $terminal = array();
-    if ($player->json['success']) {
+    if ($player->json['success'] && is_array($player->json['data'])) {
         $terminal = array_merge($terminal, $player->json['data']);
         //DebMes($player->json['data']);
     } else {
@@ -1384,7 +1384,7 @@ function getPlayerStatus($host = 'localhost')
     $player->ajax = TRUE;
     $player->intCall = TRUE;
     $player->usual($out);
-    if ($player->json['success']) {
+    if ($player->json['success'] && is_array($player->json['data'])) {
         $terminal = array_merge($terminal, $player->json['data']);
         //DebMes($player->json['data']);
         return ($terminal);
