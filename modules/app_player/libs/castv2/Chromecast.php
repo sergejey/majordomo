@@ -386,13 +386,13 @@ class GChromecast
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->transportid = $matches;
-			DebMes ($this->transportid);
+			//DebMes ($this->transportid);
 		}
 		if (preg_match("/appId/s", $response)) {
 			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->appid = $matches;
-			DebMes ($this->appid);
+			//DebMes ($this->appid);
 		}
                 //DebMes($response);
 		return $response;
