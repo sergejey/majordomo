@@ -1416,9 +1416,5 @@ function seekPlayerPosition($host = 'localhost', $time = 0)
     $player->intCall = TRUE;
     $player->usual($out);
 
-    if ($player->json['success']) {
-        return $player->json['message'];
-    } else {
-        return $player->json['message'];
-    }
+    return $player->json['message'];
 }
