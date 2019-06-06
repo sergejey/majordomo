@@ -57,7 +57,7 @@ function StartMeasure($mpoint)
  * @param mixed $save_to_db Save to DB (Default 0) Currently not used
  * @return void
  */
-function EndMeasure($mpoint)
+function EndMeasure($mpoint, $save_to_db = 0)
 {
     global $perf_data;
 
