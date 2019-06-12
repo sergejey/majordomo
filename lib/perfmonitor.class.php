@@ -84,6 +84,7 @@ function EndMeasure($mpoint)
     $perf_data[$mpoint]['NUM']++;
 
     //$save_to_db=1;
+    /*
     if ($save_to_db) {
         global $db;
         if ($db->dbh) {
@@ -100,7 +101,7 @@ function EndMeasure($mpoint)
             SQLInsert('performance_log', $rec);
         }
     }
-
+*/
 }
 
 /**
