@@ -165,10 +165,10 @@ if ($object != '') {
 } elseif ($method != '') {
    $method=str_replace('%', '', $method);
    callMethod($method, $_REQUEST);
-} elseif (gr('sayReply')!= '') {
+} elseif (gr('sayReply')) {
   sayReply(gr('ph'), gr('level'), gr('replyto'));
 } elseif (gr('say')) {
-  say(gr('ph'),gr('level'),gr('replyto'));
+  say(gr('ph'),gr('level'),gr('member_id'),gr('source'));
 } elseif (gr('sayTo')) {
    sayTo(gr('ph'),gr('level'),gr('destination'));
 } elseif (gr('processSubscriptions')) {
