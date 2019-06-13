@@ -18,7 +18,7 @@ for ($i = 0; $i < $total; $i++) {
    }
    $payload=array();
    $payload['name']=$devices[$i]['LINKED_OBJECT'];
-   sg('HomeBridge.to_remove',json_encode($payload));
+   //sg('HomeBridge.to_remove',json_encode($payload));
 
    if ($devices[$i]['SYSTEM_DEVICE']) continue;
 

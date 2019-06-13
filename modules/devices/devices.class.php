@@ -904,6 +904,12 @@ class devices extends module
     function delete_devices($id)
     {
         $rec = SQLSelectOne("SELECT * FROM devices WHERE ID='$id'");
+
+        $payload=array();
+        $payload['name']=$rec['LINKED_OBJECT'];
+        sg('HomeBridge.to_remove',json_encode($payload));
+
+
         // some action for related tables
 
         $elements = SQLSelect("SELECT * FROM elements WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
@@ -927,7 +933,6 @@ class devices extends module
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
-        $this->homebridgeSync();
     }
 
     function addDevice($device_type, $options = 0)
