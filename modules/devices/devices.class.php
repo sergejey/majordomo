@@ -904,6 +904,12 @@ class devices extends module
     function delete_devices($id)
     {
         $rec = SQLSelectOne("SELECT * FROM devices WHERE ID='$id'");
+
+        $payload=array();
+        $payload['name']=$rec['LINKED_OBJECT'];
+        sg('HomeBridge.to_remove',json_encode($payload));
+
+
         // some action for related tables
 
         $elements = SQLSelect("SELECT * FROM elements WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
@@ -927,7 +933,6 @@ class devices extends module
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
-        $this->homebridgeSync();
     }
 
     function addDevice($device_type, $options = 0)
@@ -1302,13 +1307,15 @@ class devices extends module
     }
 
 
-    function checkLinkedDevicesAction($object_title, $value = 0)
-    {
+    function checkLinkedDevicesAction($object_title, $value = 0) {
+        startMeasure('checkLinkedDevicesAction');
         $device1 = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '" . $object_title . "'");
         if (!$device1['ID']) {
+            endMeasure('checkLinkedDevicesAction');
             return 0;
         }
-        require (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        require_once (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        endMeasure('checkLinkedDevicesAction');
         return 1;
     }
 

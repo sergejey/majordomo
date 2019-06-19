@@ -4,7 +4,7 @@
 // www.chrisridings.com
 require_once ("CCprotoBuf.php");
 require_once ("CCDefaultMediaPlayer.php");
-require_once ("CCPlexPlayer.php");
+//require_once ("CCAllPlayer.php");
 require_once ("mdns.php");
 
 class GChromecast
@@ -49,7 +49,7 @@ class GChromecast
 		$this->lastactivetime = time();
 		// Create an instance of the DMP for this CCDefaultMediaPlayer
 		$this->DMP = new CCDefaultMediaPlayer($this);
-		$this->Plex = new CCPlexPlayer($this);
+		//$this->All = new CCAllPlayer($this);
 	}
 	
 	public static function scan($wait = 15)
@@ -363,6 +363,7 @@ class GChromecast
 
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
+		$this->cc_connect();
 		//$this->testLive();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
@@ -376,15 +377,25 @@ class GChromecast
 		$this->lastactivetime = time();
 		$this->requestId++;
 		$r = "";
-		$wait_transport=3;
-		$wait_transport_started=time();
-		while ($this->transportid == "" && (time()-$wait_transport_started)<=$wait_transport) {
-			//echo '<hr>Waiting transport ID '.__FILE__.' ' .__LINE__.str_repeat(' ',2048);flush();flush();
+		while (!preg_match("/RECEIVER_STATUS/s", $r)) {
 			$r = $this->getCastMessage();
-			usleep(10);
+			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
-
-		return $r;
+		
+		if (preg_match("/transportId/s", $response)) {
+			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
+			$matches = $matches[1];
+			$this->transportid = $matches;
+			//DebMes ($this->transportid);
+		}
+		if (preg_match("/appId/s", $response)) {
+			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
+			$matches = $matches[1];
+			$this->appid = $matches;
+			//DebMes ($this->appid);
+		}
+                //DebMes($response);
+		return $response;
 	}
 	
 	function connect($tl = 0)
@@ -419,7 +430,7 @@ class GChromecast
 
 
 		$response = fread($this->socket, 2000);
-
+/* 
 		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response)) {
 			$this->pong();
 			//$this->getCastMessage();
@@ -428,12 +439,18 @@ class GChromecast
 
 			// Wait infinitely for a packet.
 			//set_time_limit(30);
-		}
+		} */
 
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->transportid = $matches;
+		}
+		if (preg_match("/appId/s", $response)) {
+			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
+			$matches = $matches[1];
+			$this->appid = $matches;
+			//DebMes ($this->appid);
 		}
 
 		if (preg_match("/mediaSessionId/s", $response)) {

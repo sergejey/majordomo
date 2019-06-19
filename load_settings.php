@@ -1,7 +1,8 @@
 <?php
-error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
 
+error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
 mb_internal_encoding("UTF-8");
+
 
 // get settings
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
@@ -22,6 +23,7 @@ if ($_GET['lang']) {
     Define("SETTINGS_SITE_LANGUAGE", $_SESSION['lang']);
 }
 
+
 for ($i = 0; $i < $total; $i++)
     Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 
@@ -40,7 +42,6 @@ if (!isset($aditional_git_urls)) {
 if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php')) {
     include_once(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php');
 }
-
 include_once(ROOT . 'languages/default.php');
 
 if (LANG_SETTINGS_SITE_LANGUAGE_CODE) {
@@ -54,6 +55,7 @@ if (LANG_SETTINGS_SITE_LANGUAGE_CODE) {
 if (!defined('SETTINGS_SITE_TIMEZONE')) {
     Define('SETTINGS_SITE_TIMEZONE', 'Europe/Minsk');
 }
+
 
 ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
 date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
@@ -73,11 +75,14 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'
     WAIT_FOR_MAIN_CYCLE == 1 &&
     !preg_match('/clear_all_history\.php/', $_SERVER['REQUEST_URI']) &&
     !preg_match('/diagnostic\.php/', $_SERVER['REQUEST_URI']) &&
+    !preg_match('/\/ajax\//', $_SERVER['REQUEST_URI']) &&
+    !preg_match('/\/api/', $_SERVER['REQUEST_URI']) &&
     !preg_match('/admin\.php/', $_SERVER['REQUEST_URI']) &&
     !preg_match('/xray\.html/', $_SERVER['REQUEST_URI']) &&
     !defined('NO_DATABASE_CONNECTION')
 ) {
-    $maincycleUpdate = (int)getGlobal('cycle_mainRun');
+
+    $maincycleUpdate = (int)getGlobal('ThisComputer.cycle_mainRun');
     $maincycleTimeout = 60;
     if ((time() - $maincycleUpdate) > $maincycleTimeout) { //main cycle is offline
         echo "<html><head>

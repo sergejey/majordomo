@@ -11,7 +11,7 @@ if (!$directionTimeout) {
   $directionTimeout = 1*60*60;
 }
 
-$value = (float)$params['NEW_VALUE'];
+$value = (float)$this->getProperty('value');
 $minValue = (float)$this->getProperty('minValue');
 $maxValue = (float)$this->getProperty('maxValue');
 $is_normal = (int)$this->getProperty('normalValue');
