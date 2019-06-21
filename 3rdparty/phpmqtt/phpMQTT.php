@@ -80,7 +80,7 @@ class phpMQTT {
 		if($password) $this->password = $password;
 
 
-		if ($this->cafile) {
+		if ($this->cafile && ping('connect.smartliving.ru')) {
 			$socketContext = stream_context_create(["ssl" => [
 				'verify_peer' => false,
 				"verify_peer_name" => false,
