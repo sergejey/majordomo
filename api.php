@@ -366,7 +366,9 @@ if (function_exists('getmicrotime')) {
     $result['passed']=round($endTime-$startedTime,4);
 }
 
-endMeasure('TOTAL');
+if (function_exists('endMeasure')) {
+    endMeasure('TOTAL');
+}
 
 if ($_GET['performance']) {
     $result['performance']=PerformanceReport(1);
