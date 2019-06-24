@@ -15,6 +15,7 @@ $sv = new saverestore();
 
 global $with_extensions;
 
+header('X-Accel-Buffering: no');
 echo "<html>";
 echo "<body>";
 

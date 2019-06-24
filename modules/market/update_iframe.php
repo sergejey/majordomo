@@ -15,6 +15,7 @@ $mkt=new market();
 $mkt->category_id='all';
 $_GET['op']='iframe';
 
+header('X-Accel-Buffering: no');
 echo "<html>";
 echo "<body>";
 
