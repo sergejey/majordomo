@@ -1,6 +1,8 @@
 AddDefaultCharset UTF-8
 DirectoryIndex index.html index.htm index.php default.html
 
+Options -Indexes
+
 <IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /
