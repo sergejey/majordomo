@@ -45,7 +45,7 @@ class dnla extends app_player_addon {
             // если не получен ответ делаем поиск устройства по новой
             if ($retcode!=200) {
                 $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+                $this->terminal['PLAYER_CONTROL_ADDRESS'] = search($this->terminal['HOST']);
                 if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
