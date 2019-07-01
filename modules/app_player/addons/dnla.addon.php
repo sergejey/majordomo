@@ -12,16 +12,18 @@ class dnla extends app_player_addon {
     
     // Constructor
     function __construct($terminal) {
-        $this->title = 'DNLA media player';
-        $this->description = 'Проигрывание видео - аудио ';
-        $this->description .= 'на всех устройства поддерживающих такой протокол. ';
+        $this->title = 'Устройства с поддержкой протокола DLNA';
+        $this->description = 'Описание: Проигрывание видео - аудио ';
+        $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
         $this->terminal = $terminal;
         $this->reset_properties();
-
+ 
+		
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
-        if ($this->terminal['HOST'] and !$this->terminal['PLAYER_CONTROL_ADDRESS']) {
+        if ($this->terminal['HOST'] and !filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
+			DebMes($this->terminal['HOST']);
             $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-            $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+            $this->terminal['PLAYER_CONTROL_ADDRESS'] = search($this->terminal['HOST']);
             $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
             if ($rec['HOST']) {
                 SQLUpdate('terminals', $rec); // update
@@ -43,7 +45,7 @@ class dnla extends app_player_addon {
             // если не получен ответ делаем поиск устройства по новой
             if ($retcode!=200) {
                 $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search();
+                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
                 if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
@@ -52,9 +54,9 @@ class dnla extends app_player_addon {
                     }
                 }
             }
-
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
+
         }
     
 
@@ -93,7 +95,7 @@ class dnla extends app_player_addon {
         $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         // Results
         if ($response) {
-			$this->reset_properties();
+	    $this->reset_properties();
             $this->success = TRUE;
             $this->message = 'OK';
             $this->data = array(
@@ -110,6 +112,46 @@ class dnla extends app_player_addon {
         return $this->success;    
     }
 
+	// Say
+    function sayToMedia($message_link, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
+
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+		DebMes ($message_link);
+			
+		// получаем данные оплеере для восстановления проигрываемого контента
+		//$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
+		//if (!$chek_restore) {
+		//	$played = getPlayerStatus($terminal);
+		//}
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->play($message_link);
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        $doc->loadXML($response);
+        //DebMes($response);
+        if($doc->getElementsByTagName('PlayResponse')) {
+            $this->success = TRUE;
+            $this->message = 'Say message';
+	      //if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+	      //    addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 4);
+	      //    addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+8, 4);
+	      //}
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+            }
+        return $this->success;
+    }
+	
     // Play
     function play($input) {
         $this->reset_properties();
@@ -320,11 +362,11 @@ class dnla extends app_player_addon {
     }
     
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
-    private function search() {
+    private function search($ip = '239.255.255.250') {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
-
+        DebMes('ip-'.$ip);
         //all
         $request = 'M-SEARCH * HTTP/1.1'."\r\n";
         $request .= 'HOST: 239.255.255.250:1900'."\r\n";
@@ -334,8 +376,7 @@ class dnla extends app_player_addon {
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
         $request .= "\r\n";
         
-        @socket_sendto($socket, $request, strlen($request), 0, '255.255.255.255', 1900);
-        @socket_sendto($socket, $request, strlen($request), 0, '239.255.255.250', 1900);
+        @socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
 
         // send the data from socket
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
