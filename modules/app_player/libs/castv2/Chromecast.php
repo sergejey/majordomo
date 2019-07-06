@@ -3,8 +3,6 @@
 // Chris Ridings
 // www.chrisridings.com
 require_once ("CCprotoBuf.php");
-require_once ("CCDefaultMediaPlayer.php");
-//require_once ("CCAllPlayer.php");
 require_once ("mdns.php");
 
 class GChromecast
@@ -19,10 +17,7 @@ class GChromecast
 	// The transportid of our connection
 	public $sessionid = "";
 	// Session id for any media sessions
-	public $DMP;
-	// Represents an instance of the Default Media Player.
-	public $Plex;
-	// Represents an instance of the Plex player
+
 	public $lastip = "";
 	// Store the last connected IP
 	public $lastport;
@@ -47,244 +42,6 @@ class GChromecast
 		$this->lastip = $ip;
 		$this->lastport = $port;
 		$this->lastactivetime = time();
-		// Create an instance of the DMP for this CCDefaultMediaPlayer
-		$this->DMP = new CCDefaultMediaPlayer($this);
-		//$this->All = new CCAllPlayer($this);
-	}
-	
-	public static function scan($wait = 15)
-	{
-		// Wrapper for scan
-		$result = GChromecast::scansub($wait);
-		return $result;
-	}
-	
-	public static function scansub($wait = 15)
-	{
-		// Performs an mdns scan of the network to find chromecasts and returns an array
-		// Let's test by finding Google Chromecasts
-		$mdns = new mDNS();
-		// Search for chromecast devices
-		// For a bit more surety, send multiple search requests
-		$firstresponsetime = - 1;
-		$lastpackettime = - 1;
-		$starttime = round(microtime(true) * 1000);
-		$mdns->query("_googlecast._tcp.local", 1, 12, "");
-		$mdns->query("_googlecast._tcp.local", 1, 12, "");
-		$mdns->query("_googlecast._tcp.local", 1, 12, "");
-		$cc = $wait;
-		$filetoget = 1;
-		$dontrequery = 0;
-		set_time_limit($wait * 2);
-		$chromecasts = array();
-		while ($cc > 0) {
-			$inpacket = "";
-			while ($inpacket == "") {
-				$inpacket = $mdns->readIncoming();
-				if ($inpacket <> "") {
-					if ($inpacket->packetheader->getQuestions() > 0) {
-						$inpacket = "";
-					}
-				}
-				if ($lastpackettime <> - 1) {
-					// If we get to here then we have a valid last packet time
-					$timesincelastpacket = round(microtime(true) * 1000) - $lastpackettime;
-					if ($timesincelastpacket > ($firstresponsetime * 5) && $firstresponsetime != - 1) {
-						return $chromecasts;
-					}
-				}
-				if ($inpacket <> "") {
-					$lastpackettime = round(microtime(true) * 1000);
-				}
-				$timetohere = round(microtime(true) * 1000) - $starttime;
-				// Maximum five second rule
-				if ($timetohere > 5000) {
-					return $chromecasts;
-				}
-			}
-			// If our packet has answers, then read them
-			// $mdns->printPacket($inpacket);
-			if ($inpacket->packetheader->getAnswerRRs() > 0) {
-				$dontrequery = 0;
-				// $mdns->printPacket($inpacket);
-				for ($x = 0; $x < sizeof($inpacket->answerrrs); $x++) {
-					if ($inpacket->answerrrs[$x]->qtype == 12) {
-						// print_r($inpacket->answerrrs[$x]);
-						if ($inpacket->answerrrs[$x]->name == "_googlecast._tcp.local") {
-							if ($firstresponsetime == - 1) {
-								$firstresponsetime = round(microtime(true) * 1000) - $starttime;
-							}
-							$name = "";
-							for ($y = 0; $y < sizeof($inpacket->answerrrs[$x]->data); $y++) {
-								$name.= chr($inpacket->answerrrs[$x]->data[$y]);
-							}
-							// The chromecast itself fills in additional rrs. So if that's there then we have a quicker method of
-							// processing the results.
-							// First build any missing entries with any 33 packets we find.
-							for ($p = 0; $p < sizeof($inpacket->additionalrrs); $p++) {
-								if ($inpacket->additionalrrs[$p]->qtype == 33) {
-									$d = $inpacket->additionalrrs[$p]->data;
-									$port = ($d[4] * 256) + $d[5];
-									// We need the target from the data
-									$offset = 6;
-									$size = $d[$offset];
-									$offset++;
-									$target = "";
-									for ($z = 0; $z < $size; $z++) {
-										$target.= chr($d[$offset + $z]);
-									}
-									$target.= ".local";
-									if (!isset($chromecasts[$inpacket->additionalrrs[$p]->name])) {
-										$chromecasts[$inpacket->additionalrrs[$x]->name] = array(
-											"port" => $port,
-											"ip" => "",
-											"target" => "",
-											"friendlyname" => ""
-										);
-									}
-									$chromecasts[$inpacket->additionalrrs[$x]->name]['target'] = $target;
-								}
-							}
-							// Next repeat the process for 16
-							for ($p = 0; $p < sizeof($inpacket->additionalrrs); $p++) {
-								if ($inpacket->additionalrrs[$p]->qtype == 16) {
-									$fn = "";
-									for ($q = 0; $q < sizeof($inpacket->additionalrrs[$p]->data); $q++) {
-										$fn.= chr($inpacket->additionalrrs[$p]->data[$q]);
-									}
-									$stp = strpos($fn, "fn=") + 3;
-									$etp = strpos($fn, "ca=");
-									$fn = substr($fn, $stp, $etp - $stp - 1);
-									if (!isset($chromecasts[$inpacket->additionalrrs[$p]->name])) {
-										$chromecasts[$inpacket->additionalrrs[$x]->name] = array(
-											"port" => 8009,
-											"ip" => "",
-											"target" => "",
-											"friendlyname" => ""
-										);
-									}
-									$chromecasts[$inpacket->additionalrrs[$x]->name]['friendlyname'] = $fn;
-								}
-							}
-							// And finally repeat again for 1
-							for ($p = 0; $p < sizeof($inpacket->additionalrrs); $p++) {
-								if ($inpacket->additionalrrs[$p]->qtype == 1) {
-									$d = $inpacket->additionalrrs[$p]->data;
-									$ip = $d[0] . "." . $d[1] . "." . $d[2] . "." . $d[3];
-									foreach($chromecasts as $key => $value) {
-										if ($value['target'] == $inpacket->additionalrrs[$p]->name) {
-											$value['ip'] = $ip;
-											$chromecasts[$key] = $value;
-										}
-									}
-								}
-							}
-							$dontrequery = 1;
-							// Check our item. If it doesn't exist then it wasn't in the additionals, so send requests.
-							// If it does exist then check it has all the items. If not, send the requests.
-							if (isset($chromecasts[$name])) {
-								$xx = $chromecasts[$name];
-								if ($xx['target'] == "") {
-									// Send a 33 request
-									$mdns->query($name, 1, 33, "");
-									$dontrequery = 0;
-								}
-								if ($xx['friendlyname'] == "") {
-									// Send a 16 request
-									$mdns->query($name, 1, 16, "");
-									$dontrequery = 0;
-								}
-								if ($xx['target'] != "" && $xx['friendlyname'] != "" && $xx['ip'] == "") {
-									// Only missing the ip address for the target.
-									$mdns->query($xx['target'], 1, 1, "");
-									$dontrequery = 0;
-								}
-							}
-							else {
-								// Send queries. These'll trigger a 1 query when we have a target name.
-								$mdns->query($name, 1, 33, "");
-								$mdns->query($name, 1, 16, "");
-								$dontrequery = 0;
-							}
-							if ($dontrequery == 0) {
-								$cc = $wait;
-							}
-							set_time_limit($wait * 2);
-						}
-					}
-					if ($inpacket->answerrrs[$x]->qtype == 33) {
-						$d = $inpacket->answerrrs[$x]->data;
-						$port = ($d[4] * 256) + $d[5];
-						// We need the target from the data
-						$offset = 6;
-						$size = $d[$offset];
-						$offset++;
-						$target = "";
-						for ($z = 0; $z < $size; $z++) {
-							$target.= chr($d[$offset + $z]);
-						}
-						$target.= ".local";
-						if (!isset($chromecasts[$inpacket->answerrrs[$x]->name])) {
-							$chromecasts[$inpacket->answerrrs[$x]->name] = array(
-								"port" => $port,
-								"ip" => "",
-								"target" => $target,
-								"friendlyname" => ""
-							);
-						}
-						else {
-							$chromecasts[$inpacket->answerrrs[$x]->name]['target'] = $target;
-						}
-						// We know the name and port. Send an A query for the IP address
-						$mdns->query($target, 1, 1, "");
-						$cc = $wait;
-						set_time_limit($wait * 2);
-					}
-					if ($inpacket->answerrrs[$x]->qtype == 16) {
-						$fn = "";
-						for ($q = 0; $q < sizeof($inpacket->answerrrs[$x]->data); $q++) {
-							$fn.= chr($inpacket->answerrrs[$x]->data[$q]);
-						}
-						$stp = strpos($fn, "fn=") + 3;
-						$etp = strpos($fn, "ca=");
-						$fn = substr($fn, $stp, $etp - $stp - 1);
-						if (!isset($chromecasts[$inpacket->answerrrs[$x]->name])) {
-							$chromecasts[$inpacket->answerrrs[$x]->name] = array(
-								"port" => 8009,
-								"ip" => "",
-								"target" => "",
-								"friendlyname" => $fn
-							);
-						}
-						else {
-							$chromecasts[$inpacket->answerrrs[$x]->name]['friendlyname'] = $fn;
-						}
-						$mdns->query($chromecasts[$inpacket->answerrrs[$x]->name]['target'], 1, 1, "");
-						$cc = $wait;
-						set_time_limit($wait * 2);
-					}
-					if ($inpacket->answerrrs[$x]->qtype == 1) {
-						$d = $inpacket->answerrrs[$x]->data;
-						$ip = $d[0] . "." . $d[1] . "." . $d[2] . "." . $d[3];
-						// Loop through the chromecasts and fill in the ip
-						foreach($chromecasts as $key => $value) {
-							if ($value['target'] == $inpacket->answerrrs[$x]->name) {
-								$value['ip'] = $ip;
-								$chromecasts[$key] = $value;
-								// If we have an IP address but no friendly name, try and get the friendly name again!
-								if (strlen($value['friendlyname']) < 1) {
-									$mdns->query($key, 1, 16, "");
-									$cc = $wait;
-									set_time_limit($wait * 2);
-								}
-							}
-						}
-					}
-				}
-			}
-			$cc--;
-		}
-		return $chromecasts;
 	}
 	
 	function testLive()
@@ -305,8 +62,8 @@ class GChromecast
 			else {
 				throw new Exception("Failed to connect to remote Chromecast");
 			}
-			$this->cc_connect(1);
-			$this->connect(1);
+			$this->cc_connect();
+			$this->connect();
 		}
 	}
 	
@@ -364,7 +121,7 @@ class GChromecast
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
 		$this->cc_connect();
-		//$this->testLive();
+		$this->testLive();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = "receiver-0";
@@ -381,24 +138,50 @@ class GChromecast
 			$r = $this->getCastMessage();
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
-		
-		if (preg_match("/transportId/s", $response)) {
-			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->transportid = $matches;
-			//DebMes ($this->transportid);
-		}
-		if (preg_match("/appId/s", $response)) {
-			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->appid = $matches;
-			//DebMes ($this->appid);
-		}
-                //DebMes($response);
 		return $response;
 	}
 	
-	function connect($tl = 0)
+	public function getMediaSession() {
+		$this->getStatus(); 
+		if ($this->appid) {
+			$this->connect(); // Auto-reconnects
+		} else {
+			$this->launch('CC1AD845');
+			$this->connect(); // Auto-reconnects
+		}
+        $zeit60 = time()+2;
+		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->requestId.'}');
+		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response) or time() > $zeit60) {
+			$response = $this->getCastMessage();
+		}
+		// Grab the mediaSessionId
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$response,$m)) {
+			$this->mediaid = $m[1];
+		}
+		if (!$this->mediaid) {
+			$this->mediaid=1;
+		}
+
+		// playaer state
+		if (preg_match("/playerState/s", $response)) {
+			preg_match("/playerState\"\:\"([^\"]*)/", $response, $matches);
+			$this->state = $matches[1];
+		}
+
+		// played url
+		if (preg_match("/contentId/s", $response)) {
+			preg_match("/contentId\"\:\"([^\"]*)/", $response, $matches);
+			$this->contentid = $matches[1];
+		}
+	    if ($response){
+		    $response = substr($response, strpos($response,'{"type'),50000);
+            return json_decode($response,TRUE);
+		} else {
+			return ;
+		}
+	}
+	
+	function connect()
 	{
 		// This connects to the transport of the currently running app
 		// (you need to have launched it yourself or connected and got the status)
@@ -430,33 +213,25 @@ class GChromecast
 
 
 		$response = fread($this->socket, 2000);
-/* 
 		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response)) {
 			$this->pong();
-			//$this->getCastMessage();
 			usleep(10);
 			$response = fread($this->socket, 2000);
 
 			// Wait infinitely for a packet.
 			//set_time_limit(30);
-		} */
-
+		} 
+		// get transport id
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->transportid = $matches;
+			$this->transportid = $matches[1];
+			//DebMes ($this->transportid);
 		}
+		// get app id
 		if (preg_match("/appId/s", $response)) {
 			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->appid = $matches;
+			$this->appid = $matches[1];
 			//DebMes ($this->appid);
-		}
-
-		if (preg_match("/mediaSessionId/s", $response)) {
-			preg_match("/\"mediaSessionId\"\:(\d+)/", $response, $r);
-			$this->sessionid = $r[1];
-
 		}
 		return $response;
 	}
@@ -519,6 +294,126 @@ class GChromecast
 		fflush($this->socket);
 		$this->lastactivetime = time();
 		$this->requestId++;
+	}
+	
+	public function Mute() {
+		// Mute a video
+		$this->getMediaSession(); // Auto-reconnects
+		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
+		$this->getCastMessage();
+	}
+	
+	public function UnMute() {
+		
+		$this->getMediaSession(); // Auto-reconnects
+		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
+		$this->getCastMessage();
+	}
+	
+	public function SetVolume($volume) {
+		// Mute a video
+        $this->getMediaSession(); // Auto-reconnects
+		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
+		$this->getCastMessage();
+	}
+	
+	public function seek($secs) {
+		// Seek
+        $this->getMediaSession(); // Auto-reconnects
+		if ($this->mediaid) {
+		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
+		    $this->getCastMessage();
+		}
+	}
+	
+	public function stop() {
+		// Stop
+		$this->getMediaSession(); // Auto-reconnects
+		if ($this->mediaid) {
+			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+			$this->getCastMessage();
+		}
+	}
+	
+	public function pause() {
+		// Pause
+		$this->getMediaSession(); // Auto-reconnects
+		DebMes($this->state);
+		if ($this->mediaid and $this->state != 'PAUSED') {
+			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+		} else if ($this->mediaid and $this->state == 'PAUSED') {
+			$this->play();
+		}
+		$this->getCastMessage();
+	}
+	
+	public function play() {
+		// Restart (after pause)
+		$this->getMediaSession(); // Auto-reconnects
+		if ($this->mediaid) {
+			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+		}
+		$this->getCastMessage();
+	}
+	
+	public function load1() {
+		$this->getMediaSession(); // Auto-reconnects
+		$json = '{"type":"LOAD", "media":{"contentId":"http://ic4.101.ru:8000/a175","streamType":"BUFFERED","contentType":"audio/mp3"},"autoplay":"false","currentTime":"0","requestId":'.$this->requestId.'}';
+		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
+		$r = "";
+		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
+			$r = $this->getCastMessage();
+		}
+		// Grab the mediaSessionId
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+			$this->mediaid = $m[1];
+		}
+		if (!$this->mediaid) {
+			$this->mediaid=1;
+		}
+		DebMes ($this->mediaid);
+	}
+	
+	public function load($url, $currentTime) {
+		$this->getMediaSession(); // Auto-reconnects
+		
+		if (preg_match('/\.mp3/', $url)) {
+            $content_type = 'audio/mp3';
+        } elseif (preg_match('/mp4/', $url)) {
+            $content_type = 'video/mp4';
+        } elseif (preg_match('/m4a/', $url)) {
+            $content_type = 'audio/mp4';
+        } elseif (preg_match('/^http/', $url)) {
+            $content_type = '';
+            if ($fp = fopen($url, 'r')) {
+                $meta = stream_get_meta_data($fp);
+                if (is_array($meta['wrapper_data'])) {
+                    $items = $meta['wrapper_data'];
+                    foreach ($items as $line) {
+                        if (preg_match('/Content-Type:(.+)/is', $line, $m)) {
+                            $content_type = trim($m[1]);
+                        }
+                    }
+                }
+                fclose($fp);
+            }
+        }
+        if (!$content_type) {
+            $content_type = 'audio/mpeg';
+        }
+		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
+		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
+		$r = "";
+		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
+			$r = $this->getCastMessage();
+		}
+		// Grab the mediaSessionId
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+			$this->mediaid = $m[1];
+		}
+		if (!$this->mediaid) {
+			$this->mediaid=1;
+		}
 	}
 }
 ?>
