@@ -35,3 +35,13 @@ deny from all
 <FILES debmes.txt>
 deny from all
 </FILES>
+
+<IfModule mod_expires.c>
+  <FilesMatch \.(gif|png|jpg|jpeg|ogg|mp4|mkv|flv|swf|wmv|asf|asx|wma|wax|wmx|wm)$>
+    ExpiresDefault "access plus 7 day"
+  </FilesMatch>
+  ExpiresActive on
+  ExpiresByType image/jpeg "access plus 7 day"
+  ExpiresByType image/gif "access plus 7 day"
+  ExpiresByType image/png "access plus 7 day"
+</IfModule>
