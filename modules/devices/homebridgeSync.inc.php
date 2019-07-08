@@ -18,9 +18,11 @@ for ($i = 0; $i < $total; $i++) {
    }
    $payload=array();
    $payload['name']=$devices[$i]['LINKED_OBJECT'];
-   //sg('HomeBridge.to_remove',json_encode($payload));
 
-   if ($devices[$i]['SYSTEM_DEVICE']) continue;
+   if ($devices[$i]['SYSTEM_DEVICE']) {
+      sg('HomeBridge.to_remove',json_encode($payload));
+      continue;
+   }
 
    $payload['service_name']=processTitle($devices[$i]['TITLE']);
 
