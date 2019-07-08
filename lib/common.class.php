@@ -1,5 +1,29 @@
 <?php
 
+function getSystemSerial($force_update = 0) {
+    $serial = gg('Serial');
+    if (!$serial || $serial == '0' || $force_update) {
+        $serial = '';
+        if (IsWindowsOS()) {
+            $data = exec('vol c:');
+            if (preg_match('/[\w]+\-[\w]+/', $data, $m)) {
+                $serial = strtolower($m[0]);
+            }
+        } else {
+            $data = trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
+            if ($data == '') {
+                $data = trim(exec("sudo cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
+            }
+            $serial = ltrim($data, '0');
+        }
+        if (!$serial) {
+            $serial = uniqid('uniq');
+        }
+        sg('Serial', $serial);
+    }
+    return $serial;
+}
+
 function sayReplySafe($ph, $level = 0, $replyto = '')
 {
     $data = array(

@@ -205,7 +205,7 @@ class market extends module
         }
 
         if ($this->ajax && $_GET['op'] == 'news') {
-            $result = $this->marketRequest('op=news', 5 * 60);
+            $result = $this->marketRequest('op=news', 15*60); //15*60
             $data = json_decode($result, true);
             //echo json_encode($data);
             if (is_array($data)) {
@@ -561,30 +561,16 @@ class market extends module
 
     function marketRequest($details = '', $cache_timeout = 0)
     {
-        $serial = gg('Serial');
-        if (!$serial || $serial == '0') {
-            $serial = '';
-            if (IsWindowsOS()) {
-                $data = exec('vol c:');
-                if (preg_match('/[\w]+\-[\w]+/', $data, $m)) {
-                    $serial = strtolower($m[0]);
-                }
-            } else {
-                $data = trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
-                $serial = ltrim($data, '0');
-            }
-            if (!$serial) {
-                $serial = uniqid('uniq');
-            }
-            sg('Serial', $serial);
-        }
-
+        $serial = getSystemSerial();
         if (IsWindowsOS()) {
             $os = 'Windows';
         } else {
             $os = trim(exec("uname -a"));
             if (!$os) {
-                $os = 'Linux';
+                $os = trim(exec("sudo uname -a"));
+                if (!$os) {
+                    $os = 'Linux';
+                }
             }
         }
         $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
