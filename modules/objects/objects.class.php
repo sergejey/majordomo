@@ -321,7 +321,7 @@ class objects extends module
      */
     function loadObject($id)
     {
-        $rec = SQLSelectOne("SELECT * FROM objects WHERE ID='" . DBSafe($id) . "'");
+        $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=".(int)$id);
         if (IsSet($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];

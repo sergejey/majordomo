@@ -28,7 +28,14 @@ $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
 $url = preg_replace('/\?.+/', '', $url);
 $request = explode('/', trim($url, '/'));
+
 array_shift($request);
+
+if (is_array($request)) {
+    foreach($request as &$param) {
+        $param=urldecode($param);
+    }
+}
 
 $input = json_decode(file_get_contents('php://input'), true);
 
