@@ -8,6 +8,8 @@ if ($this->getProperty('setMaxTurnOn')) {
 }
 if ($status > 0 && !$level && $levelSaved) {
     $this->setProperty('level', $levelSaved);
+} if ($status == 0 && $level > 0 && $levelSaved) {
+    $this->setProperty('level', 0);
 } else {
     $this->callMethod('logicAction');
     include_once(DIR_MODULES . 'devices/devices.class.php');
