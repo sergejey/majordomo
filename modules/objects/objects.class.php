@@ -510,24 +510,6 @@ class objects extends module
         }
 
         $call_stack[] = $current_call;
-        /*
-        $data=array(
-         'object'=>$this->object_title,
-            'op'=>'m',
-            'm'=>$name,
-            'm_c_s'=>$call_stack
-        );
-        if (session_id()) {
-         $data[session_name()]=session_id();
-        }
-        $url=BASE_URL.'/objects/?'.http_build_query($data);
-        if (is_array($params)) {
-         foreach($params as $k=>$v) {
-          $url.='&'.$k.'='.urlencode($v);
-         }
-        }
-        $result = getURLBackground($url,0);
-        */
         if (!is_array($params)) {
             $params = array();
         }

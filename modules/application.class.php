@@ -396,7 +396,7 @@ function getParams() {
      $code.=$obj."->getParams();\n";
      $code.=$obj."->ajax=1;\n";
      $code.=$obj."->run();\n";
-     StartMeasure("module_".$this->action); 
+     startMeasure("module_".$this->action);
      eval($code);
      endMeasure("module_".$this->action); 
 
