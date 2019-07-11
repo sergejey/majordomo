@@ -211,6 +211,10 @@ class terminals extends module
                 } else {
                     $cached_filename = 'http://' . $server_ip . $m[0];
                 }
+                //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
+                if (!file_exists( $cached_filename)) {
+                     $cached_filename = BASE_URL . $m[0];
+                }
             } else {
                 DebMes("Unknown file path format: " . $cached_filename, 'terminals');
                 return false;
