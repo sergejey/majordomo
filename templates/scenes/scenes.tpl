@@ -606,8 +606,16 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
             function sceneZoom() {
-                zoom = $(window).width()/$("#slider").width()*100;
-                document.body.style.zoom = zoom+"%"
+                zoomw = $(window).width();
+                if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
+                zoomw = zoomw/$("#slider").width()*100;
+                zoomh = $(window).height();
+                if(window.innerHeight > 0 && window.innerHeight < zoomh) zoomh = window.innerHeight;
+                zoomh = zoomh/$("#slider").height()*100;
+                if(zoomh < zoomw)
+                    document.body.style.zoom = zoomh+"%"
+                else
+                    document.body.style.zoom = zoomw+"%"
             }
 
 
