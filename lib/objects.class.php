@@ -1112,7 +1112,9 @@ function processTitle($title, $object = 0)
                     $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
                     if ($data == '') $data = 0;
                     $descr = $m[3][$i];
-                    $tmp = explode(';', $descr);
+                    $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
+                    $descr = preg_replace('#\\\;#', ";", $descr); 
+                    $tmp = explode(';-;;-;', $descr);
                     $totald = count($tmp);
                     $hsh = array();
                     if ($totald == 1) {
