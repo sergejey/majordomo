@@ -685,21 +685,32 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE)
     $url .= "&command=" . ($safe_play ? 'safe_play' : 'play');
     $url .= "&terminal_id=" . $terminal['ID'];
     $url .= "&param=" . urlencode($path);
-    //DebMes($url,'playmedia');
     getURLBackground($url);
     return 1;
+}
 
-    /*
-    include_once(DIR_MODULES.'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->terminal_id	= $terminal['ID'];
-    $player->command		= ($safe_play?'safe_play':'play');
-    $player->param			= $path;
-    $player->ajax			= TRUE;
-    $player->intCall		= TRUE;
-    $player->usual($out);
-    return $player->json['success'];
-    */
+function stopMedia($host = 'localhost')
+{
+    if (!$terminal = getTerminalsByName($host, 1)[0]) {
+        $terminal = getTerminalsByHost($host, 1)[0];
+    }
+    if (!$terminal['ID']) {
+        $terminal = getTerminalsCanPlay(1)[0];
+    }
+    if (!$terminal['ID']) {
+        $terminal = getMainTerminal();
+    }
+    if (!$terminal['ID']) {
+        $terminal = getAllTerminals(1)[0];
+    }
+    if (!$terminal['ID']) {
+        return 0;
+    }
+    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
+    $url .= "&command=stop";
+    $url .= "&terminal_id=" . $terminal['ID'];
+    getURLBackground($url);
+    return 1;
 }
 
 /**
