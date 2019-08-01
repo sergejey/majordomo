@@ -2295,9 +2295,6 @@ CREATE TABLE IF NOT EXISTS `terminals` (
 -- Dumping data for table `terminals`
 --
 
-INSERT INTO `terminals` (`ID`, `NAME`, `TITLE`, `HOST`, `CANPLAY`, `PLAYER_TYPE`, `PLAYER_PORT`, `PLAYER_USERNAME`, `PLAYER_PASSWORD`) VALUES
-(2, 'MAIN', 'Server', 'localhost', 1, '', '', '', '');
-
 -- --------------------------------------------------------
 
 --
