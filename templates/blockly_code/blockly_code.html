@@ -15,9 +15,9 @@
 <#LANG_CODE_TYPE#>:<br>
 
 <div>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
  <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> PHP <#LANG_HCB#>codePhp<#LANG_HCE#>
+ <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
+ <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
 </div>
 
  <script language="javascript">
@@ -46,13 +46,14 @@
 [#endif TYPE#]
 
 
-[#if CODE_TYPE="1" || CODE_TYPE="2"#]
 <script language="javascript" type="text/javascript">
 $(function() {
- $('#[#CODE_FIELD#]_area').hide();
+//    alert([#CODE_TYPE#]);
+    [#if CODE_TYPE="1" || CODE_TYPE="2"#]
+     $('#[#CODE_FIELD#]_area').hide();
+    [#endif CODE_TYPE#]
 });
 </script>
-[#endif CODE_TYPE#]
 
 [#if CODE_TYPE="0"#]
 <script src="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.js"></script>

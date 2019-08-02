@@ -481,14 +481,19 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60) {
                     continue;
                 }
+                //DebMes("Checking point: ".json_encode($rec,JSON_PRETTY_PRINT),'devices_schedule');
                 $tmlr = strtotime($rec['LATEST_RUN']);
                 $diff_run = time() - $tmlr;
-                if ($diff_run <= 20*60)
+                if ($diff_run <= 20*60) {
+                    //DebMes("Skipping point (diff_run: $diff_run): ".json_encode($rec,JSON_PRETTY_PRINT),'devices_schedule');
                     continue;
+                }
+
                 $linked_object = $rec['LINKED_OBJECT'];
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
+                DebMes("Running point: ".$linked_object.'.'.$rec['LINKED_METHOD'],'devices_schedule');
                 callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
             }
         }
