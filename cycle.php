@@ -114,19 +114,6 @@ if (file_exists($filename))
 
 include_once("./load_settings.php"); //
 
-//reinstalling modules
-/*
-        $source=ROOT.'modules';
-        if ($dir = @opendir($source)) {
-          while (($file = readdir($dir)) !== false) {
-           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
-            @unlink(ROOT."modules/".$file."/installed");
-           }
-          }
-         }
-*/
-
-
 echo "Checking modules.\n";
 
         //force check installed data
@@ -134,11 +121,11 @@ echo "Checking modules.\n";
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 
            if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) {
-            @unlink(ROOT."modules/".$file."/installed");
+            @unlink(ROOT."cms/modules_installed/".$file.".installed");
            }
           }
          }
-         @unlink(ROOT."modules/control_modules/installed");
+         @unlink(ROOT."cms/modules_installed/control_modules.installed");
 
 // continue startup
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");

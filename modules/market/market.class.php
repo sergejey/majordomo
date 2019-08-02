@@ -737,12 +737,12 @@ class market extends module
         $source = ROOT . 'modules';
         if ($dir = @opendir($source)) {
             while (($file = readdir($dir)) !== false) {
-                if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) { // && !file_exists($source."/".$file."/installed")
-                    @unlink(ROOT . "modules/" . $file . "/installed");
+                if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                    @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
                 }
             }
         }
-        @unlink(ROOT . "modules/control_modules/installed");
+        @unlink(ROOT . "cms/modules_installed/control_modules.installed");
 
         if ($frame) {
             return ("Updates Installed!");
@@ -1008,12 +1008,12 @@ class market extends module
             $source = ROOT . 'modules';
             if ($dir = @opendir($source)) {
                 while (($file = readdir($dir)) !== false) {
-                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) { // && !file_exists($source."/".$file."/installed")
-                        @unlink(ROOT . "modules/" . $file . "/installed");
+                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                        @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
                     }
                 }
             }
-            @unlink(ROOT . "modules/control_modules/installed");
+            @unlink(ROOT . "cms/modules_installed/control_modules.installed");
 
             if ($frame) {
                 $this->echonow(" OK <br/>", 'green');

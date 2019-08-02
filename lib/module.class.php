@@ -307,7 +307,9 @@ class module
      */
     public function checkInstalled()
     {
-        if (!file_exists(DIR_MODULES . $this->name . "/installed")) {
+
+        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        if (!file_exists($flag_filename)) {
             $this->install();
         } else {
             $sqlQuery = "SELECT *
@@ -400,8 +402,12 @@ class module
         }
         SQLExec("DELETE FROM project_modules WHERE NAME = '".$this->name."' AND ID!=".$rec["ID"]);
 
-        if (!file_exists(DIR_MODULES . $this->name . "/installed"))
-            SaveFile(DIR_MODULES . $this->name . "/installed", date("H:m d.M.Y"));
+        if (!is_dir(ROOT.'cms/modules_installed')) {
+            umask(0);
+            mkdir(ROOT.'cms/modules_installed',0777);
+        }
+        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        if (!file_exists($flag_filename)) SaveFile($flag_filename, date("H:m d.M.Y"));
     }
 
     /**
@@ -427,8 +433,8 @@ class module
             SQLExec($sqlQuery);
         }
 
-        if (file_exists(DIR_MODULES . $this->name . "/installed"))
-            unlink(DIR_MODULES . $this->name . "/installed");
+        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        if (file_exists($flag_filename)) unlink($flag_filename);
     }
 
 

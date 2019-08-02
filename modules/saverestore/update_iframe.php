@@ -59,7 +59,7 @@ if ($backup) {
 
             $sv->echonow("Removing temporary files ... ");
             $sv->removeTree(ROOT . 'cms/saverestore/temp');
-            @unlink(ROOT . "modules/control_modules/installed");
+            @unlink(ROOT . "cms/modules_installed/control_modules.installed");
             $sv->echonow(" OK<br/> ", 'green');
 
             $sv->echonow("<b>Main system updated!</b><br/>", 'green');

@@ -381,11 +381,11 @@ function checkGeneral($field)
 function SendMail($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
-
+   $mail->setHeadCharset('UTF-8');
+   $mail->setTextCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setText($body);
-   $mail->setTextCharset('windows-1251');
 
    if ($attach != '')
    {
@@ -411,11 +411,11 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
 
+   $mail->setHeadCharset('UTF-8');
+   $mail->setHTMLCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setHTML($body);
-   $mail->setHTMLCharset('windows-1251');
-   $mail->setHeadCharset('windows-1251');
 
    if (is_array($attach))
    {

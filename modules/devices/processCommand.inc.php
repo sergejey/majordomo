@@ -100,27 +100,13 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         }
     }
 
-
-    /*
-    $phrases=array();
-    foreach($combos as $combo) {
-        $mutations=$this->computePermutations($combo);
-        foreach($mutations as $m) {
-            $phrases[]=implode(' ',$m);
-        }
-    }
-    $lines=$phrases;
-    dprint($phrases,false);
-    */
     $lines = array();
     $totals = count($combos);
     for ($is = 0; $is < $totals; $is++) {
         $lines[] = implode(' ', $combos[$is]);
     }
-    //dprint($lines);
     $phpmorphy_loaded = 1;
 }
-
 
 $devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices");
 foreach ($devices as $device) {
@@ -375,12 +361,10 @@ if ($run_code != '' && $period_delay > 0) {
     eval($run_code);
     setTimeout('opposite' . md5($run_code), $opposite_code, $period_run_for);
 } elseif ($run_code != '') {
-    //DebMes("Running: ".$run_code,'debug1');
     eval($run_code);
 }
 
 if ($reply_say != '') {
-    //DebMes("Replying: ".$reply_say,'debug1');
     sayReplySafe($reply_say, 2);
 }
 
@@ -393,6 +377,4 @@ if ($reply_confirm) {
 if ($processed) {
     $details['PROCESSED'] = 1;
     $details['BREAK'] = 1;
-} else {
-    //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }

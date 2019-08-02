@@ -277,7 +277,7 @@ class saverestore extends module
         if ($this->mode == 'clear') {
             set_time_limit(0);
             $this->removeTree(ROOT . 'cms/saverestore/temp');
-            @unlink(ROOT."modules/control_modules/installed");
+            @unlink(ROOT."cms/modules_installed/control_modules.installed");
             global $with_extensions;
             if ($with_extensions) {
                 $this->redirect("?(panel:{action=market})&md=market&mode=update_all");
@@ -1337,22 +1337,6 @@ class saverestore extends module
                 $this->restoredatabase(ROOT . 'cms/saverestore/temp' . $folder . '/dump.sql');
                 $this->echonow(" OK<br/> ", 'green');
             }
-
-            /*
-            if ($iframe) {
-                $this->echonow("Re-installing modules ... ");
-            }
-            // code restore
-            $source = ROOT . 'modules';
-            if ($dir = @opendir($source)) {
-                while (($file = readdir($dir)) !== false) {
-                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) { // && !file_exists($source."/".$file."/installed")
-                        @unlink(ROOT . "modules/" . $file . "/installed");
-                    }
-                }
-            }
-            @unlink(ROOT . "modules/control_modules/installed");
-            */
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
             $this->saveConfig();
