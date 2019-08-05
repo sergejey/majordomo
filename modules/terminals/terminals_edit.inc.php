@@ -4,6 +4,8 @@
 * @version 0.3 (auto-set)
 */
 
+$typeterminals = array('chromecast'=>'mediaplayer', 'dnla'=>'mediaplayer', 'foobar'=>'mediaplayer', 'ghn'=>'googlehomenotifier', 'kodi'=>'mediaplayer', 'lms'=>'mediaplayer', 'majordroid'=>'majordroid','mpd'=>'mediaplayer', 'vlc'=>'mediaplayer', 'vlcweb'=>'mediaplayer');
+
 if ($this->owner->name == 'panel') {
     $out['CONTROLPANEL'] = 1;
 }
@@ -36,7 +38,9 @@ if ($this->mode == 'update') {
 
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
     
-    $rec['TTS_TYPE'] = gr('tts_type');
+    //$rec['TTS_TYPE'] = gr('tts_type');
+    $rec['TTS_TYPE'] = $typeterminals[$rec['PLAYER_TYPE']];
+    
     $rec['PLAYER_TYPE'] = gr('player_type');
     $rec['PLAYER_PORT'] = gr('player_port');
     $rec['PLAYER_USERNAME'] = gr('player_username');
