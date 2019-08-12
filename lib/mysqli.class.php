@@ -128,10 +128,18 @@ class mysql
       */
       if ($this->dbh) return true;
 
-      if ($this->port) {
-       $this->dbh = mysqli_connect('p:'.$this->host . ":" . $this->port, $this->user, $this->password);
+      if (IsWindowsOS()) {
+         if ($this->port) {
+            $this->dbh = mysqli_connect($this->host . ":" . $this->port, $this->user, $this->password);
+         } else {
+            $this->dbh = mysqli_connect($this->host , $this->user, $this->password);
+         }
       } else {
-       $this->dbh = mysqli_connect('p:'.$this->host , $this->user, $this->password);
+         if ($this->port) {
+            $this->dbh = mysqli_connect('p:'.$this->host . ":" . $this->port, $this->user, $this->password);
+         } else {
+            $this->dbh = mysqli_connect('p:'.$this->host , $this->user, $this->password);
+         }
       }
 
       if (!$this->dbh) {
@@ -421,7 +429,7 @@ class mysql
          
          $strs = trim($row[1]);
             
-         return (empty($strs)) ? '' : 'DROP TABLE IF EXISTS ' . $table . ';' . "\n" . $row[1] . ';' . "\n";
+         return (empty($strs))?'':'DROP TABLE IF EXISTS '.$table.';'."\n".$row[1].';'."\n";
       }
       
       return '';

@@ -145,6 +145,7 @@ $dictionary = array(
     'MODULE_MASTER_LOGIN' => 'Panel Login',
     'MODULE_SAVERESTORE' => 'Check updates',
     'MODULE_WEBVARS' => 'Web Variables',
+    'MODULE_ACTIONS_LOG' => 'Actions history',
 
     'MODULE_DASHBOARD' => 'Dashboard',
     'MODULE_DATESELECTOR' => 'Dateselector',
@@ -1381,6 +1382,8 @@ $dictionary = array(
     'NO_FEATURES_WARNING' => 'Sorry, no features supported',
     'TTS_TYPE' => 'TTS type',
     'NONE' => 'None',
+    'PREVIOUS' => 'Prev',
+    'NEXT' => 'Next',
 
     'TEST' => 'test'
 

@@ -21,7 +21,8 @@ include("./scripts/startup_maintenance.php");
 $run_from_start = 0;
 
 setGlobal('ThisComputer.started_time', time());
-getObject('ThisComputer')->raiseEvent("StartUp");
+callMethod('ThisComputer.StartUp');
+processSubscriptionsSafe('startup');
 
 $sqlQuery = "SELECT *
                FROM classes
@@ -56,7 +57,29 @@ while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        setGlobal('ThisComputer.uptime', time() - getGlobal('ThisComputer.started_time'));
+
+        $timestamp = time() - getGlobal('ThisComputer.started_time');
+        setGlobal('ThisComputer.uptime', $timestamp);
+
+        $years = floor($timestamp / 31536000);
+        $days = floor(($timestamp - ($years*31536000)) / 86400);
+        $hours = floor(($timestamp - ($years*31536000 + $days*86400)) / 3600);
+        $minutes = floor(($timestamp - ($years*31536000 + $days*86400 + $hours*3600)) / 60);
+        $timestring = '';
+        if ($years > 0){
+            $timestring .= $years . ' y ';
+        }
+        if ($days > 0) {
+            $timestring .= $days . ' d ';
+        }
+        if ($hours > 0) {
+            $timestring .= $hours . ' h';
+        }
+        if ($minutes > 0) {
+            $timestring .= $minutes . ' m';
+        }
+        setGlobal('ThisComputer.uptimeText', trim($timestring));
+
     }
 
     $m = date('i');

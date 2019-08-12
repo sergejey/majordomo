@@ -642,7 +642,12 @@ class devices extends module
             if ($op == 'clicked') {
                 $object=gr('object');
                 if ($object !='') {
-                    SQLExec("UPDATE devices SET CLICKED=NOW() WHERE LINKED_OBJECT='".DBSafe($object)."'");
+                    $device_rec=SQLSelect("SELECT ID, TITLE FROM devices WHERE LINKED_OBJECT='".DBSafe($object)."'");
+                    if ($device_rec['ID']) {
+                        SQLExec("UPDATE devices SET CLICKED=NOW() WHERE ID='".$device_rec['ID']."'");
+                        logAction('device_clicked',$device_rec['TITLE']);
+                    }
+
                 }
             }
             if ($op == 'get_device') {

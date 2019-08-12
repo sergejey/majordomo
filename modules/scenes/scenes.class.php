@@ -677,6 +677,10 @@ class scenes extends module
 
 
                 $state = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$real_part . "'");
+                $element = SQLSelectOne("SELECT * FROM elements WHERE ID=".(int)$state['ELEMENT_ID']);
+                $scene = SQLSelectOne("SELECT * FROM scenes WHERE ID=".(int)$element['SCENE_ID']);
+
+                logAction('scene_clicked',$scene['TITLE'].'.'.$element['TITLE'].'.'.$state['TITLE']);
 
                 $params = array('STATE' => $state['TITLE']);
                 if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) {

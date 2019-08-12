@@ -601,6 +601,7 @@ function dprint($data = 0, $stop = 1, $show_history = 0) {
       echo "</pre><hr/>";
       echo str_repeat(' ',4096);
       flush();flush();
+      echo "<script type='text/javascript'>window.scrollTo(0,document.body.scrollHeight);</script>";
    } else {
       echo "\n---------------------------------\n";
    }

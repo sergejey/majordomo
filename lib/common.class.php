@@ -1470,3 +1470,25 @@ function remote_file_exists($url){
     if( $httpCode == 200 ){return true;}
     return false;
 }
+
+function logAction($action_type,$details='') {
+    global $session;
+    $rec=array();
+    $rec['ADDED']=date('Y-m-d H:i:s');
+    if ($session->data['SITE_USERNAME']) {
+        $rec['USER']=$session->data['SITE_USERNAME'];
+    } elseif (preg_match('/^\/admin\.php/',$_SERVER['REQUEST_URI'])) {
+        $rec['USER']='Control Panel';
+    }
+    if ($session->data['TERMINAL']) {
+        $rec['TERMINAL']=$session->data['TERMINAL'];
+    } else {
+        $rec['TERMINAL']='';
+    }
+    $rec['ACTION_TYPE']=$action_type;
+    $rec['TITLE']=$details;
+    $rec['TITLE']=mb_substr($rec['TITLE'],0,250,'utf-8');
+    $rec['IP']=$_SERVER['REMOTE_ADDR'];
+    SQLInsert('actions_log',$rec);
+
+}

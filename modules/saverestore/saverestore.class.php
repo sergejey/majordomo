@@ -1286,6 +1286,7 @@ class saverestore extends module
                 $this->redirect("?mode=clear&ok_msg=" . urlencode("Database restored!"));
             }
         } elseif ($file != '') {
+            logAction('system_restore',$file);
             // unpack archive
             umask(0);
             @mkdir(ROOT . 'cms/saverestore/temp', 0777);

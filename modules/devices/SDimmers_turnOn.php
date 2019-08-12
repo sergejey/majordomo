@@ -1,9 +1,10 @@
 <?php
 
 $this->setProperty('status', 1);
+$levelSaved=$this->getProperty('levelSaved');
 
-if ($this->getProperty('level') == 0) {
-  $this->setProperty('level', 100);
+if ($levelSaved>0) {
+  $this->setProperty('level', $levelSaved);
 } else {
-  $this->setProperty('level', $this->getProperty('level'));
+  $this->setProperty('level', 100);
 }
