@@ -317,7 +317,7 @@ function stopMedia($host = 'localhost')
  * @param mixed $host Host (default 'localhost') name or ip of terminal
  * @param mixed $level level of volume (default 0) to positon from start time
  */
-function seekPlayerPosition($host = 'localhost', $level = 0)
+function setPlayerVolume($host = 'localhost', $level = 0)
 {
     if (!$terminal = getTerminalsByName($host, 1)[0]) {
         $terminal = getTerminalsByHost($host, 1)[0];
