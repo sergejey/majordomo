@@ -674,6 +674,25 @@ function getHistory($varname, $start_time, $stop_time = 0)
     return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
 }
 
+function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
+{
+    if ($start_time <= 0) $start_time = (time() + $start_time);
+    if ($stop_time <= 0) $stop_time = (time() + $stop_time);
+
+    // Get hist val id
+    $id = getHistoryValueId($varname);
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+    // Get data
+    return SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+}
+
+
 /**
  * getHistoryMin
  *
