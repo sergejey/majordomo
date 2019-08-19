@@ -98,6 +98,7 @@ class panel extends module
                 $session->data['USER_LEVEL'] = $user['PRIVATE'];
                 $session->data['USER_ID'] = $user['ID'];
                 $session->data["AUTHORIZED"] = 1;
+                logAction('control_panel_enter',$session->data['USER_NAME']);
             }
         }
 

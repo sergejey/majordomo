@@ -674,6 +674,25 @@ function getHistory($varname, $start_time, $stop_time = 0)
     return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
 }
 
+function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
+{
+    if ($start_time <= 0) $start_time = (time() + $start_time);
+    if ($stop_time <= 0) $stop_time = (time() + $stop_time);
+
+    // Get hist val id
+    $id = getHistoryValueId($varname);
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+    // Get data
+    return SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+}
+
+
 /**
  * getHistoryMin
  *
@@ -962,40 +981,6 @@ function callMethodSafe($method_name, $params = 0)
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
 
-    /*
-    $api_call_type = 'http';
-    if ($api_call_type == 'cmd') {
-        if (defined('PATH_TO_PHP'))
-            $phpPath = PATH_TO_PHP;
-        else
-            $phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
-
-        $filename = dirname(__FILE__).'/../api.php';
-        $data=array();
-        $data['REQUEST_URI']=$api_url;
-        $data['REQUEST_METHOD']=$method;
-        if (is_array($params)) {
-            foreach($params as $k=>$v) {
-                $data[$k]=$v;
-            }
-        }
-        $cmdParams = addcslashes(serialize(json_encode($data)), '"');
-        $command = $phpPath . ' -q ' . $filename . ' --params "' . $cmdParams . '"';
-        if (!IsWindowsOS()) {
-            $command='exec '.$command;
-        }
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w')
-        );
-        $new_proc = proc_open($command, $descriptorSpec, $pipes);
-        stream_set_blocking($pipes[0], 0);
-        stream_set_blocking($pipes[1], 0);
-        return $new_proc;
-    }
-    */
-
-    //if ($api_call_type == 'http') {
     startMeasure('callAPI');
     $url = BASE_URL . $api_url;
 
@@ -1003,29 +988,37 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         $params = array();
     }
     $params['no_session']=1;
-    $url .= '?' . http_build_query($params);
-    $url = str_replace('/api/', '/api.php/', $url);
-    if ($method == 'GET') {
-        //DebMes("API query: ".$url,'api_query');
-        //getURLBackground($url);
-        global $api_ch;
-        if (!isset($api_ch)) {
-            $api_ch = curl_init();
-            curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
-            curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-            curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
-            curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-            curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-            curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
-        }
-        curl_setopt($api_ch, CURLOPT_URL, $url);
-        curl_exec($api_ch);
+
+    $method=strtoupper($method);
+
+    global $api_ch;
+    if (!isset($api_ch)) {
+        $api_ch = curl_init();
+        curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+        curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+        curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+        curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
     }
+    if ($method == 'GET') {
+        $url .= '?' . http_build_query($params);
+        curl_setopt($api_ch, CURLOPT_POSTFIELDS, 0);
+        curl_setopt($api_ch, CURLOPT_POST, 0);
+    } elseif ($method == 'POST') {
+        curl_setopt($api_ch, CURLOPT_POST, 1);
+        curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
+    }
+    $url = str_replace('/api/', '/api.php/', $url);
+    curl_setopt($api_ch, CURLOPT_URL, $url);
+    curl_exec($api_ch);
+
     endMeasure('callAPI');
-    //}
+    
+    return true;
 
 }
 
@@ -1138,7 +1131,9 @@ function processTitle($title, $object = 0)
                     $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
                     if ($data == '') $data = 0;
                     $descr = $m[3][$i];
-                    $tmp = explode(';', $descr);
+                    $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
+                    $descr = preg_replace('#\\\;#', ";", $descr); 
+                    $tmp = explode(';-;;-;', $descr);
                     $totald = count($tmp);
                     $hsh = array();
                     if ($totald == 1) {

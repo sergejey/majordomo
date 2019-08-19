@@ -650,59 +650,6 @@ function playSound($filename, $exclusive = 0, $priority = 0)
 }
 
 /**
- * Summary of playMedia
- * @param mixed $path Path
- * @param mixed $host Host (default 'localhost')
- * @return int
- */
-function playMedia($path, $host = 'localhost', $safe_play = FALSE)
-{
-    if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '') {
-        eval(SETTINGS_HOOK_PLAYMEDIA);
-    }
-
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-
-    if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
-    }
-
-    if (!$terminal['ID']) {
-        $terminal = getMainTerminal();
-    }
-
-    if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
-    }
-
-    if (!$terminal['ID']) {
-        return 0;
-    }
-
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=" . ($safe_play ? 'safe_play' : 'play');
-    $url .= "&terminal_id=" . $terminal['ID'];
-    $url .= "&param=" . urlencode($path);
-    //DebMes($url,'playmedia');
-    getURLBackground($url);
-    return 1;
-
-    /*
-    include_once(DIR_MODULES.'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->terminal_id	= $terminal['ID'];
-    $player->command		= ($safe_play?'safe_play':'play');
-    $player->param			= $path;
-    $player->ajax			= TRUE;
-    $player->intCall		= TRUE;
-    $player->usual($out);
-    return $player->json['success'];
-    */
-}
-
-/**
  * Summary of runScript
  * @param mixed $id ID
  * @param mixed $params Params (default '')
@@ -1235,29 +1182,6 @@ function getPassedText($updatedTime)
     return $passedText;
 }
 
-function getMediaDurationSeconds($file)
-{
-    if (!defined('PATH_TO_FFMPEG')) {
-        if (IsWindowsOS()) {
-            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-        } else {
-            define("PATH_TO_FFMPEG", 'ffmpeg');
-        }
-    }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
-    if (preg_match("/: Invalid /", $dur)) {
-        return false;
-    }
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
-    if (!isset($duration[1])) {
-        return false;
-    }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3];
-    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
-}
-
 /**
  * Encode/Decode a string for safe transfer to a URL
  * @param mixed $string String
@@ -1373,79 +1297,96 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-/**
- * Summary of player status
- * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @return  'id'              => (int), //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'name'            => (string), //Playback status. String: stopped/playing/paused/transporting/unknown
- *          'file'            => (string), //Current link for media in device. String.
- *          'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0.
- *          'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0.
- *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown
- *          'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
- *          'random'          => (boolean)$random, // Random mode. Boolean.
- *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
- *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
- */
-function getPlayerStatus($host = 'localhost')
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-    if (!$terminal) {
-        return;
-    }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->play_terminal = $terminal['NAME']; // Имя терминала
-    $player->command = 'pl_get'; // Команда
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
-    $terminal = array();
-    if ($player->json['success'] && is_array($player->json['data'])) {
-        $terminal = array_merge($terminal, $player->json['data']);
-        //DebMes($player->json['data']);
-    } else {
-        // Если произошла ошибка, выводим ее описание
-        return ($player->json['message']);
-    }
-    $player->command = 'status'; // Команда
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
-    if ($player->json['success'] && is_array($player->json['data'])) {
-        $terminal = array_merge($terminal, $player->json['data']);
-        //DebMes($player->json['data']);
-        return ($terminal);
-    } else {
-        // Если произошла ошибка, выводим ее описание
-        return ($player->json['message']);
-    }
+function remote_file_exists($url){
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode == 200 ){return true;}
+    return false;
 }
 
-/**
- * This function change  position on the played media in player
- * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @param mixed $time second (default 0) to positon from start time
- */
-function seekPlayerPosition($host = 'localhost', $time = 0)
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function logAction($action_type,$details='') {
+    global $session;
+    $rec=array();
+    $rec['ADDED']=date('Y-m-d H:i:s');
+    if ($session->data['SITE_USERNAME']) {
+        $rec['USER']=$session->data['SITE_USERNAME'];
+    } elseif (preg_match('/^\/admin\.php/',$_SERVER['REQUEST_URI'])) {
+        $rec['USER']='Control Panel';
     }
-    if (!$terminal) {
-        return;
+    if ($session->data['TERMINAL']) {
+        $rec['TERMINAL']=$session->data['TERMINAL'];
+    } else {
+        $rec['TERMINAL']='';
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->play_terminal = $terminal['NAME']; // Имя терминала
-    $player->command = 'seek'; // Команда
-    $player->param = $time; // Параметр
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
+    $rec['ACTION_TYPE']=$action_type;
+    $rec['TITLE']=$details;
+    $rec['TITLE']=mb_substr($rec['TITLE'],0,250,'utf-8');
+    $rec['IP']=$_SERVER['REMOTE_ADDR'];
+    SQLInsert('actions_log',$rec);
 
-    return $player->json['message'];
+}
+
+function get_media_info($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    //DebMes ($data);
+    if (preg_match("/: Invalid /", $data)) {
+        return false;
+    }
+    //get duration
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
+
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3]+1;
+	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+	// get all info about codec
+	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
+    
+	if ($format) {
+		$out['Audio_format'] = $format[1];
+		$out['Audio_sample_rate'] = $format[2];
+		$out['Audio_type'] = $format[3];
+		$out['Audio_codec'] = $format[4];
+		$out['Audio_bitrate'] = $format[5];
+		if ($out['Audio_type'] == 'mono' ) {
+			$out['Audio_chanel'] = 1;
+		} else {
+			$out['Audio_chanel'] = 2;
+		}	
+	}
+    preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
+    if ($formatv) {
+		$out['Video_format'] = $formatv[1];
+	    $out['Video_size'] = $formatv[2];
+	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
+	    $out['Video_fps'] = $formatv[5];
+	}
+    return $out;
+}
+
+function get_remote_filesize($url)
+{
+    $head = array_change_key_case(get_headers($url, 1));
+    // content-length of download (in bytes), read from Content-Length: field
+    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+    // cannot retrieve file size, return "-1"
+    if (!$clen) {
+        return '0';
+    }
+    return $clen; // return size in bytes
 }

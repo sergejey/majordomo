@@ -1,0 +1,17 @@
+
+ <!-- action usual -->
+ <!-- table actions_log search -->
+ [#if VIEW_MODE="search_actions_log" || VIEW_MODE=""#]
+  [#inc actions_log_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table actions_log search -->
+ <!-- table actions_log edit -->
+ [#if VIEW_MODE="edit_actions_log"#]
+   [#inc actions_log_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table actions_log edit -->
+ <!-- table actions_log view --> 
+ [#if VIEW_MODE="view_actions_log"#]
+   [#inc actions_log_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table actions_log view -->

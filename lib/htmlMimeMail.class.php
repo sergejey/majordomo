@@ -667,6 +667,7 @@ class htmlMimeMail
     */
    function _encodeHeader($input, $charset = 'ISO-8859-1')
    {
+      /*
       preg_match_all('/(\s?\w*[\x80-\xFF]+\w*\s?)/', $input, $matches);
 
       foreach ($matches[1] as $value)
@@ -674,7 +675,7 @@ class htmlMimeMail
          $replacement = preg_replace('/([\x20\x80-\xFF])/e', '"=" . strtoupper(dechex(ord("\1")))', $value);
          $input = str_replace($value, '=?' . $charset . '?Q?' . $replacement . '?=', $input);
       }
-
+      */
       return $input;
    }
 

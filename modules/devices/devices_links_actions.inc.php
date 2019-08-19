@@ -2,7 +2,7 @@
 
 //DebMes("Checking linked actions for device ".$device1['ID']);
 startMeasure('homebridge_update');
-if ($this->isHomeBridgeAvailable()) {
+if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
     $payload = array();
     $payload['name'] = $device1['LINKED_OBJECT'];

@@ -139,7 +139,8 @@ function admin(&$out) {
  }
 
  if (!$rec['ID'] && !$this->type) {
-  $rec['CODE_TYPE']=2;
+  $rec['CODE_TYPE']=0;
+  $rec['CODE_TYPE_UNKNOWN']=1;
  }
 
 

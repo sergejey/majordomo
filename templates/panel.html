@@ -254,6 +254,12 @@ jQuery.fn.center = function () {
              [#if PRINT=="1"#]return true;[#endif#]
              if (typeof link == 'undefined') return;
 
+
+             var maxId=setTimeout(function(){}, 0);
+             for(var i=0;i<maxId;i+=1) {
+                 clearTimeout(i);
+             }
+
              ajaxManager.stop();
              requestCounter++;
              var seqNumber=requestCounter;

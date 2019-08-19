@@ -160,6 +160,7 @@ $dictionary = array(
     'MODULE_MODULES' => 'Модули',
     'MODULE_USERLOG' => 'Журнал действий',
     'MODULE_PLANS' => 'Планы',
+    'MODULE_ACTIONS_LOG' => 'История действий',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
@@ -1376,6 +1377,9 @@ $dictionary = array(
     'NO_FEATURES_WARNING' => 'Извините, поддерживаемые возможности не найдены',
     'TTS_TYPE' => 'Тип TTS',
     'NONE' => 'Нет',
+
+    'PREVIOUS' => 'Пред.',
+    'NEXT' => 'След.',
 
     /* end module names */
 

@@ -83,7 +83,7 @@ function getParams() {
    } elseif ($mode2=="install") {
     $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$name."'");
     SQLExec("DELETE FROM project_modules WHERE NAME='".$name."'");
-    @unlink(DIR_MODULES.$name."/installed");
+    @unlink(ROOT.'cms/modules_installed/'.$name.".installed");
     include_once(DIR_MODULES.$name."/".$name.".class.php");
     $obj="\$object$i";
     $code.="$obj=new ".$name.";\n";
@@ -104,7 +104,7 @@ function getParams() {
     $this->redirect("?name=$name&mode=edit");
    } elseif ($mode2=='uninstall') {
     SQLExec("DELETE FROM project_modules WHERE NAME='".$name."'");
-    @unlink(DIR_MODULES.$name."/installed");
+    @unlink(ROOT.'cms/modules_installed/'.$name.".installed");
 
     if (file_exists(DIR_MODULES.$name."/".$name.".class.php")) {
      include_once(DIR_MODULES.$name."/".$name.".class.php");
@@ -206,7 +206,7 @@ function install($parent_name = "")
          if ($lst[$i]['FILENAME'] == 'control_modules')
             continue;
 
-         $installedFile = DIR_MODULES . $lst[$i]['FILENAME'] . "/installed";
+         $installedFile = ROOT . 'cms/modules_installed/' . $lst[$i]['FILENAME'] . ".installed";
          if (file_exists($installedFile))
             @unlink($installedFile);
          startMeasure('Installing '.$lst[$i]['FILENAME']);

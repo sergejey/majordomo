@@ -439,8 +439,9 @@ $ctl = new control_modules();
       if (!$total) {
         continue;
       }
-      if ($locations[$il]['TITLE']) {
-        echo '<category name="'.LANG_DEVICES.' - '.$locations[$il]['TITLE'].'">'."\n";
+      $location_title = processTitle($locations[$il]['TITLE']);
+      if ($location_title) {
+        echo '<category name="'.LANG_DEVICES.' - '.$location_title.'">'."\n";
       } else {
         echo '<category name="'.LANG_DEVICES.'">'."\n";
       }
