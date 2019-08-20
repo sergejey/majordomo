@@ -355,5 +355,5 @@ function setTerminalMML($host = 'localhost', $mml=0) {
     }
 	$terminal['MIN_MSG_LEVEL'] = $mml;
 	SQLUpdate('terminals', $terminal);
-	return $terminal;
+	return true;
 }
