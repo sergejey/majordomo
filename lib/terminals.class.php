@@ -337,7 +337,7 @@ function setPlayerVolume($host = 'localhost', $level = 0)
     return $player->json['message'];
 }
 
-function setTerminalMML($host = 'localhost', $mml) {
+function setTerminalMML($host = 'localhost', $mml=0) {
     if (!$terminal = getTerminalsByName($host, 1)[0]) {
         $terminal = getTerminalsByHost($host, 1)[0];
     }
