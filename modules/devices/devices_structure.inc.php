@@ -209,6 +209,12 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_LEAK_SENSOR,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SLeak',
+
+        'PROPERTIES'=>array(
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+        ),
+
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
         )
@@ -217,6 +223,10 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_SMOKE_SENSOR,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SSmoke',
+        'PROPERTIES'=>array(
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+        ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
         )
