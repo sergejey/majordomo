@@ -1,5 +1,7 @@
 <?php
 
+
+
 $ot = $this->object_title;
 
 $tm = time();
@@ -7,6 +9,29 @@ $this->setProperty('updated', $tm);
 $this->setProperty('updatedText', date('H:i', $tm));
 if ($this->getProperty('alive') == 0) {
  $this->setProperty('alive', 1);
+}
+
+
+$description = $this->description;
+if (!$description) {
+    $description = $ot;
+}
+
+
+$sql=' select *, locations.TITLE TITLELOC from objects, locations, devices where objects.LOCATION_ID=locations.ID and objects.id='.$this->id.' and devices.LINKED_OBJECT=objects.TITLE ';
+$loc=SQLSelectOne($sql)['TITLELOC'];
+//say ($this->getProperty('notify_status'), 2);
+if ($this->getProperty('notify_status')) {
+    if (isset($params['NEW_VALUE'])) {
+        if ($params['NEW_VALUE']==1) 
+{
+saySafe(LANG_ALERT.' '.LANG_SENSOR_ALARM.' '.mb_strtolower(LANG_DEVICES_LEAK_SENSOR).' '.LANG_IN.' '.mb_strtolower($loc) , 2); 
+//say('111', 2); 
+}
+else 
+{saySafe(LANG_DEVICES_LEAK_SENSOR.' '.LANG_IN.' '.mb_strtolower($loc).' ' .mb_strtolower(LANG_SENSOR_NORMAL), 2); 
+}
+}
 }
 
 $alive_timeout = (int)$this->getProperty('aliveTimeout')*60*60;
