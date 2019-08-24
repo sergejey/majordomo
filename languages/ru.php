@@ -1021,6 +1021,10 @@ $dictionary = array(
 
     'NAV_LINK' => 'Нав. ссылка (новое окно)',
     'WARNING' => 'Уведомление',
+    'ALERT' => 'Внимание!!!',
+    'SENSOR_ALARM' => 'Сработал сенсор',
+    'SENSOR_NORMAL' => 'перешел в нормальный режим',
+    'IN' => 'в',
     'NAV_LINK_GO' => 'Нав. ссылка (переход)',
 
     'TOOLS' => 'Инструменты',
@@ -1159,6 +1163,7 @@ $dictionary = array(
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
     'DEVICES_DIRECTION_TIMEOUT' => 'Интервал времени расчета направления изменений (сек)',
     'DEVICES_NOTIFY_STATUS' => 'Уведомлять при смене статуса',
+    'DEVICES_NOTIFY_ELIMINATED' => 'Уведомлять до смены статуса',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Напоминать об открытом состоянии',
