@@ -929,8 +929,10 @@ class objects extends module
                 $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
                 $params = array();
                 $params['PROPERTY'] = $property;
-                $params['NEW_VALUE'] = (string)$value;
-                $params['OLD_VALUE'] = (string)$old_value;
+                if ($value!=$old_value) {
+                    $params['NEW_VALUE'] = (string)$value;
+                    $params['OLD_VALUE'] = (string)$old_value;
+                }
                 $params['SOURCE'] = (string)$source;
                 //$this->callMethod($prop['ONCHANGE'], $params);
                 $this->callMethodSafe($prop['ONCHANGE'], $params);
