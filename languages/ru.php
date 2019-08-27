@@ -1383,6 +1383,8 @@ $dictionary = array(
     'PREVIOUS' => 'Пред.',
     'NEXT' => 'След.',
 
+    'LOCATED_IN_ROOM' => 'расположеный в комнате',
+
     /* end module names */
 
 

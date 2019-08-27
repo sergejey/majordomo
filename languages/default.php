@@ -1386,6 +1386,7 @@ $dictionary = array(
     'NONE' => 'None',
     'PREVIOUS' => 'Prev',
     'NEXT' => 'Next',
+    'LOCATED_IN_ROOM' => 'located in',
 
     'TEST' => 'test'
 

@@ -7,6 +7,11 @@ if (!$description) {
     $description = $ot;
 }
 
+$location_title=$this->getProperty('location_title');
+if ($location_title) {
+    $description.=' '.LANG_LOCATED_IN_ROOM.' '.$location_title;
+}
+
 $alert_timer_title = $ot.'_alert';
 
 say(LANG_DEVICES_SENSOR_ALERT.': '.$description,100);
