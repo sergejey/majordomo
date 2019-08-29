@@ -410,8 +410,8 @@ class Gradient {
         $bdelta=($to_color[2]-$from_color[2])/$numcols;
         $colorsperstep = $numcols/$arr_size;
         $prevcolnum = -1;
-        $from_alpha = $from_color[3];
-        $to_alpha = $to_color[3];
+        $from_alpha = floatval($from_color[3]);
+        $to_alpha = floatval($to_color[3]);
         $adelta = ( $to_alpha - $from_alpha ) / $numcols ;
         for ($i=0; $i < $arr_size; ++$i) {
             $colnum = floor($colorsperstep*$i);

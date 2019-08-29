@@ -1011,7 +1011,10 @@ $dictionary = array(
     'FUNCTIONS' => 'Functions',
 
     'SCENE_HIDDEN' => 'Do not include in to the swappable list of scenes',
-    'SCENE_AUTO_SCALE' => 'Auto zoom scene to device with',
+    'SCENE_AUTO_SCALE' => 'Auto zoom scene',
+    'SCALE_WIDTH' => 'By screen width',
+    'SCALE_HEIGHT' => 'By screen height',
+    'SCALE_BOTH' => 'Both (fit to screen)',
     'SCENE_DEVICES_BACKGROUND' => 'Background for Devices',
 
     'DO_NOTHING' => 'Do nothing',

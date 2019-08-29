@@ -423,6 +423,7 @@ class PolarAxis extends Axis {
                         $this->img->Line($x1,$y1,$x2,$y2);
                     }
                 }
+                $a = (int) $a;
                 $a += $this->angle_step;
             }
         }
@@ -487,6 +488,7 @@ class PolarAxis extends Axis {
                 if( $this->show_angle_tick ) {
                     $this->img->Line($x1,$y1,$x2,$y2);
                 }
+                $a = (int) $a;
                 $a += $this->angle_step;
             }
         }
@@ -816,10 +818,8 @@ class PolarGraph extends Graph {
         }
 
         // Stroke all plots for Y1 axis
-        $plotsCnt = count($this->plots);
-        for($i=0; $i < $plotsCnt; ++$i)
-        {
-           $this->plots[$i]->Stroke($this->img,$this->scale);
+        for($i=0; $i < count($this->plots); ++$i) {
+            $this->plots[$i]->Stroke($this->img,$this->scale);
         }
 
 
@@ -864,10 +864,8 @@ class PolarGraph extends Graph {
             $aa = $this->img->SetAngle(0);
             $this->StrokeTitles();
         }
-        
-        $plotsCnt = count($this->plots);
-        for($i=0; $i < $plotsCnt; ++$i )
-        {
+
+        for($i=0; $i < count($this->plots) ; ++$i ) {
             $this->plots[$i]->Legend($this);
         }
 

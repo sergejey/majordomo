@@ -155,7 +155,7 @@ class JpGraphException extends Exception {
     	}
         $errobj->Raise($this->getMessage());
     }
-    static public function defaultHandler(Exception $exception) {
+    static public function defaultHandler(Throwable $exception) {
         global $__jpg_OldHandler;
         if( $exception instanceof JpGraphException ) {
             $exception->Stroke();
