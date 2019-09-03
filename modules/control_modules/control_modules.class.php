@@ -215,9 +215,9 @@ class control_modules extends module
                 startMeasure('Installing ' . $lst[$i]['FILENAME']);
                 $url = BASE_URL . '/module/' . $lst[$i]['FILENAME'] . '.html';
                 if (!isset($_SERVER['REQUEST_METHOD'])) {
-                    echo 'Installing ' . $lst[$i]['FILENAME'] . " ($url)\n";
+                    echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
                 }
-                DebMes('Installing ' . $lst[$i]['FILENAME'] . " ($url)", 'reinstall');
+                DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
                 //$data = getURL($url); //
                 include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
                 $obj = "\$object$i";
@@ -226,6 +226,9 @@ class control_modules extends module
                 @eval("$code");
 
                 endMeasure('Installing ' . $lst[$i]['FILENAME']);
+                if (!isset($_SERVER['REQUEST_METHOD'])) {
+                    echo " OK\n";
+                }
             }
         }
 
