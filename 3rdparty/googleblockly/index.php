@@ -17,6 +17,13 @@ $ctl = new control_modules();
 <html>
   <head>
     <meta charset="utf-8">
+
+    <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
+
+    <link rel="stylesheet" href="<?php echo ROOTHTML;?>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/bootstrap/js/bootstrap.min.js"></script>
+
     <script type="text/javascript" src="blockly_compressed.js"></script>
     <script type="text/javascript" src="blocks_compressed.js"></script>
     <script type="text/javascript" src="blocks/majordomo.js"></script>
@@ -102,6 +109,14 @@ $ctl = new control_modules();
         return false;
        }
 
+      function SaveAndRun() {
+        var doc=window.opener.document;
+        var elemRun=doc.getElementById('chkRun');
+        elemRun.checked = true;
+        saveCode();
+        return false;
+      }
+
        function SaveAndContinue() {
         saveCode();
         return false;
@@ -111,7 +126,14 @@ $ctl = new control_modules();
 
       function init() {
         Blockly.inject(document.body,
-            {path: './', toolbox: document.getElementById('toolbox')});
+            {path: './', toolbox: document.getElementById('toolbox'),
+              zoom:
+              {controls: true,
+                wheel: false,
+                startScale: 1.0,
+                maxScale: 3,
+                minScale: 0.3,
+                scaleSpeed: 1.2}});
         // Let the top-level application know that Blockly is ready.
     //    window.parent.blocklyLoaded(Blockly);
 
@@ -141,14 +163,29 @@ $ctl = new control_modules();
 
   }
 
+        //setTimeout("alert(window.width);",2000);
+        //alert(document.body.clientWidth);
+        var doc=window.opener.document;
+        var elemRun=doc.getElementById('chkRun');
+        if (elemRun!==null) {
+          $('#btnSaveRun').show();
+        }
+
+        $('#custom_controls').css('left',(document.body.clientWidth-$('#custom_controls').width()-10)+'px');
 
       }
     </script>
   </head>
   <body onload="init()">
-  <div align="right">
-  <input type="button" onClick="return SaveAndClose();" value="OK">
-  <input type="button" onClick="window.close();" value="<?php echo LANG_CANCEL;?>">
+
+  <div id="custom_controls" style="position:absolute;top:10px;left:10px;z-index:1000;">
+    <a href="#"  onClick="return SaveAndClose();" class="btn btn-default btn-primary">
+      <i class="glyphicon glyphicon-floppy-disk"></i>
+      <?php echo LANG_SUBMIT;?></a>
+    <a href="#"  onClick="return SaveAndRun();" class="btn btn-default" style="display:none" id="btnSaveRun">
+      <i class="glyphicon glyphicon-play"></i>
+      <?php echo LANG_RUN_SCRIPT;?></a>
+    <a href="#"  onClick="return window.close();" class="btn btn-default"><?php echo LANG_CANCEL;?></a>
   </div>
 
 
