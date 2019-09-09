@@ -47,6 +47,36 @@ class majordroid extends app_player_addon {
 		}
 		return $this->success;
 	}
+
+	// Volume
+	function set_volume($volume) {
+		$this->reset_properties();
+		if(strlen($volume)) {
+			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			if($socket === false) {
+				$this->success = FALSE;
+				$this->message = socket_strerror(socket_last_error());
+				$this->message = iconv('CP1251', 'UTF-8', $this->message);
+			} else {
+				$result = @socket_connect($socket, $this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+				if($result === false) {
+					$this->success = FALSE;
+					$this->message = socket_strerror(socket_last_error($socket));
+					$this->message = iconv('CP1251', 'UTF-8', $this->message);
+				} else {
+					$packet = 'volume:'.$volume;
+					socket_write($socket, $packet, strlen($packet));
+					$this->success = TRUE;
+					$this->message = 'OK';
+				}
+				socket_close($socket);
+			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'Input is missing!';
+		}
+		return $this->success;
+	}
 	
 	// Pause
 	function pause() {
