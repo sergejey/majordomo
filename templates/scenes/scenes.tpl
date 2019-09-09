@@ -606,7 +606,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
             function sceneZoom() {
-                var zoomMode = {$SCENE_AUTO_SCALE};
+                var zoomMode = parseInt('{$SCENE_AUTO_SCALE}');
                 var zoomw = $(window).width();
                 if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
                 zoomw = zoomw/$("#slider").width()*100;
