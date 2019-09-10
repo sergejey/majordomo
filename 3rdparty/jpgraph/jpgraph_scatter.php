@@ -136,7 +136,7 @@ class ScatterPlot extends Plot {
     //---------------
     // CONSTRUCTOR
     function __construct($datay,$datax=false) {
-        if( (count($datax) != count($datay)) && is_array($datax)) {
+        if( is_array($datax) && (count($datax) != count($datay)) ) {
         	JpGraphError::RaiseL(20003);//("Scatterplot must have equal number of X and Y points.");
         }
         parent::__construct($datay,$datax);

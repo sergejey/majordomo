@@ -15,16 +15,20 @@ $value = (float)$this->getProperty('value');
 $minValue = (float)$this->getProperty('minValue');
 $maxValue = (float)$this->getProperty('maxValue');
 $is_normal = (int)$this->getProperty('normalValue');
+
+$alert_timer_title = $ot.'_alert';
+
 if ($maxValue == 0 && $minValue == 0 && !$is_normal) {
   $this->setProperty('normalValue', 1);
 } elseif (($value > $maxValue || $value < $minValue) && $is_normal) {
   $this->setProperty('normalValue', 0);
   if ($this->getProperty('notify')) {
     //out of range notify
-    say(LANG_DEVICES_NOTIFY_OUTOFRANGE . ' (' . $description . ' ' . $value . ')', 2);
+    $this->callMethod('alert');
   }
 } elseif (($value <= $maxValue && $value >= $minValue) && !$is_normal) {
   $this->setProperty('normalValue', 1);
+  clearTimeOut($alert_timer_title);
   if ($this->getProperty('notify')) {
     //back to normal notify
     say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);

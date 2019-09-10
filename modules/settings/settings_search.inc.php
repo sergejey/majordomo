@@ -41,7 +41,7 @@
    'GENERAL_ALICE_NAME'=>'Computer\'s name'
   );
   foreach($options as $k=>$v) {
-   $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
+  $tmp=SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '".$k."'");
    if (!$tmp['ID']) {
     $tmp=array();
     $tmp['NAME']=$k;
@@ -242,7 +242,16 @@ if ($this->filter_name=='' && !defined('SETTINGS_GENERAL_START_LAYOUT')) {
 
   if ($this->section_title!='') {
    $out['SECTION_TITLE']=$this->section_title;
+
+
   }
+
+  if (($this->filter_name=='') and ($this->name=='settings')) {
+$qry.=" and NAME IN('GENERAL_START_LAYOUT','SCENES_WIDTH','SCENES_HEIGHT','VOICE_LANGUAGE','THEME','SPEAK_SIGNAL','HOOK_BEFORE_SAY',	
+'HOOK_AFTER_SAY','BACKUP_PATH',	'GENERAL_ALICE_NAME','SITE_TIMEZONE','TTS_GOOGLE','SITE_LANGUAGE','HOOK_EVENT_SAY','HOOK_EVENT_HOURLY',
+'HOOK_BARCODE',	'HOOK_PLAYMEDIA','HOOK_BEFORE_PLAYSOUND','HOOK_AFTER_PLAYSOUND','HOOK_EVENT_COMMAND','HOOK_EVENT_SAYREPLY','HOOK_EVENT_SAYTO','HOOK_EVENT_ASK')";
+}
+
   // QUERY READY
   
   // QUERY READY
@@ -276,7 +285,12 @@ if ($this->filter_name=='' && !defined('SETTINGS_GENERAL_START_LAYOUT')) {
   // SEARCH RESULTS
   
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT * FROM settings WHERE $qry ORDER BY $sortby");
+
+
+$sql="SELECT * FROM settings WHERE $qry ORDER BY $sortby";
+  $res=SQLSelect($sql);
+debmes($sql,'settings');
+
   if ($res[0]['ID']) {
    $total=count($res);
    for($i=0;$i<$total;$i++) {

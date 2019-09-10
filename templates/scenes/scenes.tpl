@@ -589,7 +589,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                   }
                  }
                  {/if}
-                    {if $SCENE_AUTO_SCALE=="1" && $DRAGGABLE!="1"}
+                    {if $SCENE_AUTO_SCALE!="0" && $DRAGGABLE!="1"}
                     setTimeout('sceneZoom();',2000);
                     $(window).on('resize', function(){
                         sceneZoom();
@@ -606,16 +606,27 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
             function sceneZoom() {
-                zoomw = $(window).width();
+                var zoomMode = parseInt('{$SCENE_AUTO_SCALE}');
+                var zoomw = $(window).width();
                 if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
                 zoomw = zoomw/$("#slider").width()*100;
-                zoomh = $(window).height();
+                var zoomh = $(window).height();
                 if(window.innerHeight > 0 && window.innerHeight < zoomh) zoomh = window.innerHeight;
                 zoomh = zoomh/$("#slider").height()*100;
-                if(zoomh < zoomw)
+                if (zoomMode == 3) { // height
                     document.body.style.zoom = zoomh+"%"
-                else
+                }
+                if (zoomMode == 2) { // width
                     document.body.style.zoom = zoomw+"%"
+                }
+                if (zoomMode == 1) { // both
+                    if(zoomh < zoomw) {
+                        document.body.style.zoom = zoomh+"%"
+                    } else {
+                        document.body.style.zoom = zoomw+"%"
+                    }
+                }
+
             }
 
 

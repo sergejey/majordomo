@@ -67,16 +67,16 @@ while (1) {
         $minutes = floor(($timestamp - ($years*31536000 + $days*86400 + $hours*3600)) / 60);
         $timestring = '';
         if ($years > 0){
-            $timestring .= $years . ' y ';
+            $timestring .= $years . 'y ';
         }
         if ($days > 0) {
-            $timestring .= $days . ' d ';
+            $timestring .= $days . 'd ';
         }
         if ($hours > 0) {
-            $timestring .= $hours . ' h';
+            $timestring .= $hours . 'h ';
         }
         if ($minutes > 0) {
-            $timestring .= $minutes . ' m';
+            $timestring .= $minutes . 'm ';
         }
         setGlobal('ThisComputer.uptimeText', trim($timestring));
 

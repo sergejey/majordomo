@@ -141,10 +141,16 @@ class GTextTableCell {
     }
 
     function SetGridWeight($aLeft=null,$aTop=null,$aBottom=null,$aRight=null) {
-        if( $aLeft !== null ) $this->iGridWeight[0] = $aLeft;
-        if( $aTop !== null ) $this->iGridWeight[1] = $aTop;
-        if( $aBottom !== null ) $this->iGridWeight[2] = $aBottom;
-        if( $aRight !== null ) $this->iGridWeight[3] = $aRight;
+        $weight_arr = array($aLeft, $aTop, $aBottom, $aRight);
+        for ($i = 0; $i < count($weight_arr); $i++) {
+            if ($weight_arr[$i] === "") {
+                $weight_arr[$i] = 0;
+            }
+        }
+        if( $aLeft !== null ) $this->iGridWeight[0] = $weight_arr[0];
+        if( $aTop !== null ) $this->iGridWeight[1] = $weight_arr[1];
+        if( $aBottom !== null ) $this->iGridWeight[2] = $weight_arr[2];
+        if( $aRight !== null ) $this->iGridWeight[3] = $weight_arr[3];
     }
 
     function SetMargin($aLeft,$aRight,$aTop,$aBottom) {

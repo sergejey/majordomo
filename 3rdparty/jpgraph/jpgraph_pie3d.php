@@ -440,15 +440,12 @@ class PiePlot3D extends PiePlot {
         // indication of the inclination angle
         $h = ($angle/90.0)*$d;
         $sum = 0;
-        
-        $dataCnt = count($data);
-        for($i=0; $i < $dataCnt; ++$i )
-        {
+        for($i=0; $i<count($data); ++$i ) {
             $sum += $data[$i];
         }
 
         // Special optimization
-        if ($sum == 0 ) return;
+        if( $sum==0 ) return;
 
         if( $this->labeltype == 2 ) {
             $this->adjusted_data = $this->AdjPercentage($data);
@@ -463,11 +460,9 @@ class PiePlot3D extends PiePlot {
         // Step 1 . Split all slices that crosses 90 or 270
         //
         $idx=0;
-        $adjexplode = array();
-        $numcolors  = count($colors);
-        $dataCnt    = count($data);
-
-        for ($i = 0; $i < $dataCnt; ++$i, ++$idx ) {
+        $adjexplode=array();
+        $numcolors = count($colors);
+        for($i=0; $i<count($data); ++$i, ++$idx ) {
             $da = $data[$i]/$sum * 360;
 
             if( empty($this->explode_radius[$i]) ) {
@@ -654,10 +649,8 @@ class PiePlot3D extends PiePlot {
         if( $aaoption !== 1 ) {
             // Now print possible labels and add csim
             $this->value->ApplyFont($img);
-            
-            $margin = $img->GetFontHeight() / 2 + $this->value->margin;
-            $dataCnt = count($data);
-            for($i=0; $i < $dataCnt; ++$i ) {
+            $margin = $img->GetFontHeight()/2 + $this->value->margin ;
+            for($i=0; $i < count($data); ++$i ) {
                 $la = $labeldata[$i][0];
                 $x = $labeldata[$i][1] + cos($la*M_PI/180)*($d+$margin)*$this->ilabelposadj;
                 $y = $labeldata[$i][2] - sin($la*M_PI/180)*($h+$margin)*$this->ilabelposadj;
@@ -697,23 +690,22 @@ class PiePlot3D extends PiePlot {
 
         $a *= M_PI/180.0;
 
-        $idx=0;;
+        $idx=0;
         $img->PushColor($edgecolor);
         $img->SetLineWeight($edgeweight);
 
         $fulledge = true;
-        $dataCnt  = count($data);
-
-        for ($i = 0; $i < $dataCnt && $fulledge; ++$i)
-        {
-            if (empty($this->explode_radius[$i]))
-               $this->explode_radius[$i] = 0;
-            
-            if ($this->explode_radius[$i] > 0)
-               $fulledge = false;
+        for($i=0; $i < count($data) && $fulledge; ++$i ) {
+            if( empty($this->explode_radius[$i]) ) {
+                $this->explode_radius[$i]=0;
+            }
+            if( $this->explode_radius[$i] > 0 ) {
+                $fulledge = false;
+            }
         }
+         
 
-        for($i=0; $i < $dataCnt; ++$i, ++$idx ) {
+        for($i=0; $i < count($data); ++$i, ++$idx ) {
 
             $da = $data[$i]/$sum * 2*M_PI;
             $this->StrokeFullSliceFrame($img,$xc,$yc,$a,$a+$da,$d,$h,$z,$edgecolor,

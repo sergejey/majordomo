@@ -209,16 +209,24 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_LEAK_SENSOR,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SLeak',
+        'PROPERTIES'=>array(
+            'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
+        ),
         'METHODS'=>array(
-            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'alert'=>array('DESCRIPTION'=>'Sensor alert'),
         )
     ),
     'smoke'=>array(
         'TITLE'=>LANG_DEVICES_SMOKE_SENSOR,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SSmoke',
+        'PROPERTIES'=>array(
+            'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
+        ),
         'METHODS'=>array(
-            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'alert'=>array('DESCRIPTION'=>'Sensor alert'),
         )
     ),
     'counter'=>array(
@@ -259,6 +267,7 @@ $this->device_types=array(
             'minValue'=>array('DESCRIPTION'=>LANG_DEVICES_MIN_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
             'maxValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
             'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdSensorMinMax'),
+            'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
             'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdMainSensor'),
             'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>0),
             'direction'=>array('DESCRIPTION'=>'Direction of changes','KEEP_HISTORY'=>0),
@@ -266,6 +275,7 @@ $this->device_types=array(
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'alert'=>array('DESCRIPTION'=>'Sensor alert'),
         )
     ),
     'sensor_general'=>array(

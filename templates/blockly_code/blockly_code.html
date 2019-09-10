@@ -4,7 +4,7 @@
      if (typeof editor!=="undefined") {
          editor.toTextArea();
      }
-  var blockly = window.open('<#ROOTHTML#>3rdparty/blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
+  var blockly = window.open('<#ROOTHTML#>3rdparty/googleblockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
   blockly.creator=self;
   blockly.focus(); 
   return false;
@@ -141,8 +141,12 @@ editor.on('keyup', function(){
 
 [#if TYPE=="php"#]
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
-[ <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();"><#LANG_EDIT#></a> ]
-<textarea name="xml" id="xml_code" rows="5" cols="60" class="span10" style="display:none">[#XML#]</textarea>
+<a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();" class="btn btn-default btn-success"><#LANG_EDIT#></a>
+    <br/>
+    <small><a href="#" onClick="$('#xml_area').toggle();return false;"><#LANG_SHOW#> XML</a></small>
+    <div id="xml_area" style="display:none">
+     <textarea name="xml" id="xml_code" rows="5" cols="60" class="form-control">[#XML#]</textarea>
+    </div>
 </div>
 [#endif TYPE#]
 

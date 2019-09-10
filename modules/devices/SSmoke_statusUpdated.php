@@ -15,6 +15,15 @@ if (!$alive_timeout) {
 
 setTimeout($ot . '_alive_timer', 'setGlobal("' . $ot . '.alive", 0);', $alive_timeout);
 
+$alert_timer_title = $ot.'_alert';
+if (isset($params['NEW_VALUE']) ) {
+    if ($params['NEW_VALUE']) {
+        $this->callMethod('alert');
+    } else {
+        clearTimeOut($alert_timer_title);
+        say(LANG_DEVICES_NOTIFY_BACKTONORMAL.': '.$this->description,100);
+    }
+}
 
 $this->callMethodSafe('logicAction');
 

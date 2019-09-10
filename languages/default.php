@@ -1011,7 +1011,10 @@ $dictionary = array(
     'FUNCTIONS' => 'Functions',
 
     'SCENE_HIDDEN' => 'Do not include in to the swappable list of scenes',
-    'SCENE_AUTO_SCALE' => 'Auto zoom scene to device with',
+    'SCENE_AUTO_SCALE' => 'Auto zoom scene',
+    'SCALE_WIDTH' => 'By screen width',
+    'SCALE_HEIGHT' => 'By screen height',
+    'SCALE_BOTH' => 'Both (fit to screen)',
     'SCENE_DEVICES_BACKGROUND' => 'Background for Devices',
 
     'DO_NOTHING' => 'Do nothing',
@@ -1163,6 +1166,8 @@ $dictionary = array(
     'DEVICES_NORMAL_VALUE' => 'Value within range',
     'DEVICES_DIRECTION_TIMEOUT' => 'Direction tracking time period (seconds)',
     'DEVICES_NOTIFY_STATUS' => 'Notify status',
+    'DEVICES_NOTIFY_ELIMINATED' => 'Notify every minute until problem solved',
+    'DEVICES_SENSOR_ALERT' => 'Attention! Alert signal from sensor',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Value is out of normal range',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Value is back to normal',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Notify when left open',
@@ -1384,6 +1389,7 @@ $dictionary = array(
     'NONE' => 'None',
     'PREVIOUS' => 'Prev',
     'NEXT' => 'Next',
+    'LOCATED_IN_ROOM' => 'located in',
 
     'TEST' => 'test'
 

@@ -639,6 +639,7 @@
   var obj=jQuery.parseJSON(data);
   if (obj.DATA!='') {
    $('#label_{$item.ID}').html(obj.DATA);
+   $('#label_{$item.ID}').trigger( "create" );
   }
   return false;
  }

@@ -163,7 +163,10 @@ $dictionary = array(
     'MODULE_ACTIONS_LOG' => 'История действий',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
-    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
+    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены',
+    'SCALE_WIDTH' => 'По ширине экрана',
+    'SCALE_HEIGHT' => 'По высоте экрана',
+    'SCALE_BOTH' => 'По ширине и высоте',
     'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
 
     'SETUP' => 'Настроить',
@@ -1159,6 +1162,8 @@ $dictionary = array(
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
     'DEVICES_DIRECTION_TIMEOUT' => 'Интервал времени расчета направления изменений (сек)',
     'DEVICES_NOTIFY_STATUS' => 'Уведомлять при смене статуса',
+    'DEVICES_NOTIFY_ELIMINATED' => 'Уведомлять каждую минуту до восстановления статуса',
+    'DEVICES_SENSOR_ALERT' => 'Внимание! Сигнал тревоги от датчика',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Напоминать об открытом состоянии',
@@ -1380,6 +1385,8 @@ $dictionary = array(
 
     'PREVIOUS' => 'Пред.',
     'NEXT' => 'След.',
+
+    'LOCATED_IN_ROOM' => 'расположеный в комнате',
 
     /* end module names */
 

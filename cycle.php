@@ -178,6 +178,7 @@ $cycles_records=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER 
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
    //DebMes("Removing property ThisComputer.$property",'threads');
+   echo "Removing ThisComputer.$property (object ".$thisCompObject->id.")";
    $property=$cycles_records[$i]['TITLE'];
    $property_id = $thisCompObject->getPropertyByName($property, $thisCompObject->class_id, $thisCompObject->id);
    //DebMes("Property id: $property_id",'threads');
@@ -191,8 +192,11 @@ for ($i = 0; $i < $total; $i++) {
          //DebMes("Pvalue: ".$pvalue['ID'],'threads');
          SQLExec("DELETE FROM phistory WHERE VALUE_ID=".$pvalue['ID']);
          SQLExec("DELETE FROM pvalues WHERE ID=".$pvalue['ID']);
-         SQLExec("DELETE FROM properties WHERE ID=".$property_id);
       }
+      SQLExec("DELETE FROM properties WHERE ID=".$property_id);
+      echo " REMOVED $property_id\n";
+   } else {
+      echo " FAILED\n";
    }
 }
 

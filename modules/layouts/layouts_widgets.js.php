@@ -45,7 +45,7 @@ include_once("./load_settings.php");
 
 
 
-            var stateElement = $('<div><div class="clock"><div id="clock_date"></div><ul><li id="clock_hours"> </li><li id="point">:</li><li id="clock_min"> </li></ul></div></div>');
+            var stateElement = $('<div><div class="clock dark"><div id="clock_date"></div><ul><li id="clock_hours"> </li><li id="point">:</li><li id="clock_min"> </li></ul></div></div>');
             //<li id="point">:</li><li id="clock_sec"></li>
 
             self.render = function(element)
