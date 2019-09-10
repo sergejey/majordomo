@@ -154,7 +154,7 @@ $ctl = new control_modules();
     if (xmlDom) {
       Blockly.mainWorkspace.clear();
       try {
-       Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+       Blockly.Xml.domToWorkspace(xmlDom,Blockly.mainWorkspace);
       } catch (e) {
         Blockly.mainWorkspace.clear();
         alert('Error loading script: ' + e);

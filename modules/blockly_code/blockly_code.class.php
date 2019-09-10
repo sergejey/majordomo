@@ -168,6 +168,10 @@ function admin(&$out) {
  }
 
  $out['XML']=$rec['XML'];
+ //$out['XML']='';
+
+ //dprint($rec);
+
  $out['CODE_TYPE']=(int)$rec['CODE_TYPE'];
 
 

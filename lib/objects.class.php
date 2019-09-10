@@ -1012,7 +1012,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_POST, 1);
         curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
     }
-    $url = str_replace('/api/', '/api.php/', $url);
+    $url = preg_replace('/^\/api\//', ROOTHTML.'api.php/', $url);
     curl_setopt($api_ch, CURLOPT_URL, $url);
     curl_exec($api_ch);
 

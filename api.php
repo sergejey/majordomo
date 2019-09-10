@@ -26,6 +26,9 @@ if ($argv[0]!='') {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
+if (preg_match('/\/api\.php\?/',$url)) {
+    $url=preg_replace('/\/api\.php\?/','/api.php/',$url);
+}
 $url = preg_replace('/\?.+/', '', $url);
 $request = explode('/', trim($url, '/'));
 
@@ -48,7 +51,7 @@ if (isset($request[0])) {
     include_once("./lib/loader.php");
     include_once("./load_settings.php");
 
-    StartMeasure('TOTAL');
+    startMeasure('TOTAL');
     $startedTime=getmicrotime();
     register_shutdown_function('apiShutdown');
 
@@ -204,7 +207,7 @@ if (!isset($request[0])) {
     foreach($locations as $k=>$v) {
         $location=array();
         $location['id']=$v['ID'];
-        $location['title']=$v['TITLE'];
+        $location['title']=processTitle($v['TITLE']);
         $location['priority']=$v['PRIORITY'];
         $location['object']=getRoomObjectByLocation($v['ID'],1);
         $result['rooms'][]=$location;
