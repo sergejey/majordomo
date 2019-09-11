@@ -982,8 +982,6 @@ function callAPI($api_url, $method = 'GET', $params = 0)
 {
 
     startMeasure('callAPI');
-    $url = BASE_URL . $api_url;
-
     if (!is_array($params)) {
         $params = array();
     }
@@ -1012,7 +1010,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_POST, 1);
         curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
     }
-    $url = preg_replace('/^\/api\//', ROOTHTML.'api.php/', $url);
+    $url = preg_replace('/^\/api\//', BASE_URL.ROOTHTML.'api.php/', $api_url);
     curl_setopt($api_ch, CURLOPT_URL, $url);
     curl_exec($api_ch);
 
