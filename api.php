@@ -1,6 +1,6 @@
 <?php
 
-if ($argv[0]!='') {
+if (isset($argv[0]) && $argv[0]!='') {
     set_time_limit(60);
     ignore_user_abort(1);
     foreach($argv as $param) {
