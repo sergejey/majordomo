@@ -987,8 +987,9 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     }
     $params['no_session']=1;
 
-    $method=strtoupper($method);
+    $url = preg_replace('/^\/api\//', BASE_URL.ROOTHTML.'api.php/', $api_url); //
 
+    $method=strtoupper($method);
     global $api_ch;
     if (!isset($api_ch)) {
         $api_ch = curl_init();
@@ -1010,7 +1011,6 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_POST, 1);
         curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
     }
-    $url = preg_replace('/^\/api\//', BASE_URL.ROOTHTML.'api.php/', $api_url);
     curl_setopt($api_ch, CURLOPT_URL, $url);
     curl_exec($api_ch);
 
