@@ -23,19 +23,17 @@ function context_getuser()
  * Summary of context_getcurrent
  * @return int|string
  */
-function context_getcurrent()
+function context_getcurrent($from_user_id = 0)
 {
-   $user_id = context_getuser();
-
+   if (!$from_user_id) {
+      $from_user_id = context_getuser();
+   }
    $sqlQuery = "SELECT ID, ACTIVE_CONTEXT_ID, ACTIVE_CONTEXT_EXTERNAL
                   FROM users
-                 WHERE ID = '" . (int)$user_id . "'";
-
+                 WHERE ID = '" . (int)$from_user_id . "'";
    $user = SQLSelectOne($sqlQuery);
-   
    if (!$user['ID'])
       return 0;
-
    if ($user['ACTIVE_CONTEXT_EXTERNAL'])
    {
       return 'ext' . (int)$user['ACTIVE_CONTEXT_ID'];

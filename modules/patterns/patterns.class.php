@@ -252,18 +252,11 @@ class patterns extends module
      */
     function checkAllPatterns($from_user_id = 0)
     {
-        global $session;
-
-        $current_context = context_getcurrent();
-
+        $current_context = context_getcurrent($from_user_id);
         //DebMes("current context:".$current_context);
-
         if ($from_user_id && preg_match('/^ext(\d+)/', $current_context, $m)) {
-
             $res = $this->checkExtPatterns($m[1]);
-
         } else {
-
             $patterns = SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='" . (int)$current_context . "' AND PATTERN_TYPE=0 ORDER BY PRIORITY DESC, TITLE");
             $total = count($patterns);
             $res = 0;
@@ -753,7 +746,7 @@ class patterns extends module
 
         if ($condition_matched) {
 
-            DebMes("Pattern matched: ".$rec['TITLE'],'patterns');
+            DebMes("Pattern matched: " . $rec['TITLE'], 'patterns');
 
             $is_common = 0;
             if ($rec['PARENT_ID']) {
@@ -843,7 +836,7 @@ class patterns extends module
     function processSubscription($event, &$details)
     {
         if ($event == 'SAY' || $event == 'COMMAND') {
-            $member_id = $details['member_id'];
+            $member_id = (int)$details['member_id'];
             $res = $this->checkAllPatterns($member_id);
             if ($event == 'COMMAND' && $res) {
                 $details['BREAK'] = true;
