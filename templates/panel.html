@@ -205,7 +205,7 @@ jQuery.fn.center = function () {
 
          function updateConsoleDebug() {
              //$('#console_debug').html('mmm');
-             var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&limit=10";
+             var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
              $.ajax({
                  url: urlDebug,
              }).done(function(data) {
@@ -416,6 +416,49 @@ jQuery.fn.center = function () {
           </div>
       </form>
   </div>
+    <style>
+        .dropdown-submenu {
+            position:relative;
+        }
+        .dropdown-submenu>.dropdown-menu {
+            top:0;
+            left:100%;
+            margin-top:-6px;
+            margin-left:-1px;
+            -webkit-border-radius:0 6px 6px 6px;
+            -moz-border-radius:0 6px 6px 6px;
+            border-radius:0 6px 6px 6px;
+        }
+        .dropdown-submenu:hover>.dropdown-menu {
+            display:block;
+        }
+        .dropdown-submenu>a:after {
+            display:block;
+            content:" ";
+            float:right;
+            width:0;
+            height:0;
+            border-color:transparent;
+            border-style:solid;
+            border-width:5px 0 5px 5px;
+            border-left-color:#cccccc;
+            margin-top:5px;
+            margin-right:-10px;
+        }
+        .dropdown-submenu:hover>a:after {
+            border-left-color:#ffffff;
+        }
+        .dropdown-submenu.pull-left {
+            float:none;
+        }
+        .dropdown-submenu.pull-left>.dropdown-menu {
+            left:-100%;
+            margin-left:10px;
+            -webkit-border-radius:6px 0 6px 6px;
+            -moz-border-radius:6px 0 6px 6px;
+            border-radius:6px 0 6px 6px;
+        }
+    </style>
     <div class="collapse navbar-collapse" id="responsive-menu">
     <ul class="nav navbar-nav navbar-left" >
 
@@ -429,7 +472,18 @@ jQuery.fn.center = function () {
             <ul class="dropdown-menu">
                         [#endif NEW_CATEGORY#]
                         [#if !DENIED#]
-                        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+
+                            [#if LINKS#]
+                            <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
+                            <ul class="dropdown-menu">
+                            [#begin LINKS#]
+                                <li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
+                            [#end LINKS#]
+                            </ul>
+                            </li>
+                            [#else LINKS#]
+                            <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+                            [#endif LINKS#]
                         [#endif DENIED#]
                         [#if LAST_IN_CATEGORY#]
             </ul>
@@ -468,11 +522,6 @@ jQuery.fn.center = function () {
           <li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
           [#endif#]
         [#endif HIDE_LEFT_PANEL#]
-
-
-
-
-
       <li>
         <a href="?action=control_access&&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
       </li>

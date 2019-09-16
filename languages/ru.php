@@ -1388,6 +1388,9 @@ $dictionary = array(
 
     'LOCATED_IN_ROOM' => 'расположеный в комнате',
 
+    'BLOCK_SENSOR' => 'Блокировать датчик',
+    'UNBLOCK_SENSOR' => 'Разблокировать датчик',
+
     /* end module names */
 
 

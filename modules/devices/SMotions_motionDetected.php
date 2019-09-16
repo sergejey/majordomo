@@ -38,6 +38,11 @@ if ($nobodyhome_timeout && !$resetNobodysHome) {
     clearTimeout('nobodyHome');
 }
 
+$is_blocked=(int)$this->getProperty('blocked');
+if ($is_blocked) {
+    return;
+}
+
 $linked_room = $this->getProperty('linkedRoom');
 if ($linked_room) {
     callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));

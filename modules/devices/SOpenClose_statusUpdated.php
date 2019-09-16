@@ -16,6 +16,10 @@ if (!$alive_timeout) {
 
 setTimeout($ot . '_alive_timer', 'setGlobal("' . $ot . '.alive", 0);', $alive_timeout);
 
+$is_blocked=(int)$this->getProperty('blocked');
+if ($is_blocked) {
+    return;
+}
 
 if ($this->getProperty('isActivity')) {
     $linked_room = $this->getProperty('linkedRoom');

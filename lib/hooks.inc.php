@@ -95,14 +95,16 @@ function processSubscriptionsSafe($event_name, $details = '')
  * @param mixed $details Details (default '')
  * @return int|void
  */
-function processSubscriptions($event_name, $details = '')
+function processSubscriptions($event_name, $details = '', $return_output = false)
 {
     //DebMes("New event: ".$event_name,'process_subscription');
-    postToWebSocketQueue($event_name, $details, 'PostEvent');
+    if (!$return_output) {
+        postToWebSocketQueue($event_name, $details, 'PostEvent');
+    }
     //DebMes("Post websocket event done: ".$event_name,'process_subscription');
 
     if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name))) {
-        DebMes("Processing not defined for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name), 'process_subscription');
+        //DebMes("Processing not defined for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name), 'process_subscription');
         return 0;
     }
 
@@ -110,25 +112,22 @@ function processSubscriptions($event_name, $details = '')
     //DebMes("Subscription data for ".'SETTINGS_HOOK_EVENT_' . strtoupper($event_name).": ".serialize($data),'process_subscription');
 
     if (!is_array($data)) {
-        DebMes("Incorrect data for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name) . ':' . constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), 'process_subscription');
+        //DebMes("Incorrect data for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name) . ':' . constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), 'process_subscription');
     } else {
         $data2 = array();
         foreach ($data as $k => $v) {
             $data2[] = array('module' => $k, 'filter' => $v['filter'], 'priority' => (int)$v['priority']);
         }
-
         usort($data2, function ($a, $b) {
             if ($a['priority'] == $b['priority']) return 0;
             return ($a['priority'] > $b['priority']) ? -1 : 1;
         });
-
+        $output = '';
         $total = count($data2);
         for ($i = 0; $i < $total; $i++) {
             $module_name = $data2[$i]['module'];
             $filter_details = $data2[$i]['filter'];
-
             //DebMes("Post event ".$event_name." to module ".$module_name. " (details: ".json_encode($details).")",'process_subscription');
-
             $modulePath = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
 
             if (file_exists($modulePath)) {
@@ -138,30 +137,34 @@ function processSubscriptions($event_name, $details = '')
                     //DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
                     verbose_log("Processing subscription to [" . $event_name . "] by [" . $module_name . "] (" . (is_array($details) ? json_encode($details) : '') . ")");
                     try {
-                        $module_object->processSubscription($event_name, $details);
+                        $output .= $module_object->processSubscription($event_name, $details);
                     } catch (Exception $e) {
-                        DebMes('Error in processing "%s": ' . $e->getMessage(), 'process_subscription');
+                        //DebMes('Error in processing "%s": ' . $e->getMessage(), 'process_subscription');
                     }
                     //DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
                 } else {
-                    DebMes("$module_name.processSubscription error (method not found)", 'process_subscription');
+                    //DebMes("$module_name.processSubscription error (method not found)", 'process_subscription');
                 }
                 if (!isset($details['BREAK'])) {
                     $details['BREAK'] = false;
                 }
                 if ($details['BREAK']) break;
             } else {
-                DebMes("$module_name.processSubscription error (module class not found)", 'process_subscription');
+                //DebMes("$module_name.processSubscription error (module class not found)", 'process_subscription');
             }
         }
 
         if (!isset($details['PROCESSED'])) {
             $details['PROCESSED'] = false;
         }
-        /*
-        if (!$details['PROCESSED'] && $event_name == 'COMMAND') { sayReplySafe(LANG_DEVICES_UNKNOWN_COMMAND,2);}
-        */
-        return (int)$details['PROCESSED'];
+
+        //if (!$details['PROCESSED'] && $event_name == 'COMMAND') { sayReplySafe(LANG_DEVICES_UNKNOWN_COMMAND,2);}
+
+        if ($return_output) {
+            return $output;
+        } else {
+            return (int)$details['PROCESSED'];
+        }
     }
     return 0;
 
