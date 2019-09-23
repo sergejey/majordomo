@@ -9,3 +9,6 @@
 .ui-listview>li>a.ui-btn {
     padding: 0.3em 1em;
 }
+select {
+	background-color: Gray;
+}
