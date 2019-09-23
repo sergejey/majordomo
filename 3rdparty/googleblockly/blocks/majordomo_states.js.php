@@ -36,29 +36,33 @@ chdir(dirname(__FILE__) . '/../../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
 
-$session=new session("prj");
+$session = new session("prj");
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
-    $objects = getObjectsByClass('OperationalModes');
+$objects = getObjectsByClass('OperationalModes');
 
-    foreach($objects as $object) {
-        $object = SQLSelectOne("SELECT * FROM objects WHERE ID=".$object['ID']);
-        ?>
+
+foreach($objects as $object) {
+$object = SQLSelectOne("SELECT * FROM objects WHERE ID=" . $object['ID']);
+if (!$object['DESCRIPTION']) {
+    $object['DESCRIPTION']=$object['TITLE'];
+}
+?>
 
 Blockly.Blocks['majordomo_<?php echo $object['TITLE']?>'] = {
-    init: function() {
+    init: function () {
         var thisBlock = this;
         this.setColour(220);
         this.appendDummyInput()
-            .appendField('<?php echo addcslashes($object['DESCRIPTION'],"'")?>');
+            .appendField('<?php echo addcslashes($object['DESCRIPTION'], "'")?>');
         this.setOutput(true);
         this.setTooltip('');
     }
 };
 
 <?php
-    }
+}
 
 $session->save();

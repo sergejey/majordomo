@@ -511,7 +511,7 @@ class objects extends module
 
         $call_stack[] = $current_call;
         if (!is_array($params)) {
-            $params = array($params);
+            $params = array();
         }
         $params['m_c_s'] = $call_stack;
         $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);

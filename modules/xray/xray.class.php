@@ -445,6 +445,11 @@ class xray extends module
                 }
                 */
             }
+
+            if ($cmd!='') {
+                $this->redirect(ROOTHTML."panel/xray.html?view_mode=".$this->view_mode);
+            }
+
         }
         if ($this->view_mode == 'timers') {
             global $cmd;
@@ -548,7 +553,7 @@ class xray extends module
 
                     header("HTTP/1.0: 200 OK\n");
                     header('Content-Type: text/html; charset=utf-8');
-                    $limit = $out['LIMIT'];
+                    $limit = $out['LINES'];
                     $filter = $out['FILTER'];
                     if (!$limit) {
                         $limit = 50;
