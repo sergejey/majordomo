@@ -123,6 +123,47 @@
     background-color:yellow;
 }
 
+.opentype_curtains .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_shtory_off.png);
+}
+.opentype_curtains .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_shtory_on.png);
+}
+
+.opentype_window .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_window_off.png);
+}
+.opentype_window .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_window_on.png);
+}
+
+.opentype_door .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_door_off.png);
+}
+.opentype_door .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_door_on.png);
+}
+
+.opentype_shutters .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_jaluzi_off.png);
+}
+.opentype_shutters .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_jaluzi_on.png);
+}
+
+.opentype_gates .device-icon {
+    background-image: url(../cms/scenes/styles/switch/i_gate_off.png);
+}
+.opentype_gates .device-icon.on {
+    background-color:yellow;
+    background-image: url(../cms/scenes/styles/switch/i_gate_on.png);
+}
+
+
 .device-icon.temperature {
     background-image: url(../cms/scenes/styles/informer/i_temp.png);
 }

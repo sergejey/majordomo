@@ -45,15 +45,40 @@ if (gr('err_msg')) {
 
 
 if ($this->tab == 'logic') {
+
+    $method_name = gr('method');
+    if (!$method_name) {
+        $method_name='logicAction';
+    }
+
+    $out['METHOD']=$method_name;
+
     $object = getObject($rec['LINKED_OBJECT']);
-    $method_id = $object->getMethodByName('logicAction', $object->class_id, $object->id);
+
+
+    $methods = $object->getParentMethods($object->class_id,'',1);
+    $total=count($methods);
+    for($i=0;$i<$total;$i++) {
+        if ($methods[$i]['TITLE']==$out['METHOD']) {
+            $methods[$i]['SELECTED']=1;
+        }
+        if ($methods[$i]['DESCRIPTION']!='') {
+            $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'].' - '.$methods[$i]['DESCRIPTION'];
+        } else {
+            $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'];
+        }
+    }
+    $out['METHODS']=$methods;
+
+    $method_id = $object->getMethodByName($method_name, $object->class_id, $object->id);
 
     $method_rec = SQLSelectOne("SELECT * FROM methods WHERE ID=" . (int)$method_id);
 
     if ($method_rec['OBJECT_ID'] != $object->id) {
         $method_rec = array();
         $method_rec['OBJECT_ID'] = $object->id;
-        $method_rec['TITLE'] = 'logicAction';
+        $method_rec['TITLE'] = $method_name;
+        $method_rec['CALL_PARENT'] = 1;
         $method_rec['ID'] = SQLInsert('methods', $method_rec);
     }
     if ($this->mode == 'update') {
@@ -80,7 +105,7 @@ if ($this->tab == 'logic') {
     $out['CODE'] = htmlspecialchars($method_rec['CODE']);
     $out['OBJECT_ID'] = $method_rec['OBJECT_ID'];
 
-    $parent_method_id = $object->getMethodByName('logicAction', $object->class_id, 0);
+    $parent_method_id = $object->getMethodByName($method_name, $object->class_id, 0);
     if ($parent_method_id) {
         $out['METHOD_ID'] = $parent_method_id;
     } else {

@@ -1121,6 +1121,7 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
+    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности',
@@ -1198,6 +1199,13 @@ $dictionary = array(
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
     'DEVICES_LOADTYPE_LIGHT_ALT' => 'Свет',
     'DEVICES_LOADTYPE_POWER' => 'Разное',
+
+    'DEVICES_OPENTYPE' => 'Тип устройства',
+    'DEVICES_OPENTYPE_CURTAINS' => 'Шторы',
+    'DEVICES_OPENTYPE_SHUTTERS' => 'Ставни',
+    'DEVICES_OPENTYPE_GATES' => 'Ворота',
+    'DEVICES_OPENTYPE_WINDOW' => 'Окно',
+    'DEVICES_OPENTYPE_DOOR' => 'Дверь',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
     'DEVICES_ADD_SCENE' => 'Добавить устройство на Сцену',

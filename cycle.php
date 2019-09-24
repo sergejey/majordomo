@@ -19,13 +19,19 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
+$db_filename  = ROOT . 'database_backup/db.sql';
 $connected = false;
-
-while (!$connected)
-{
+while (!$connected) {
    echo "Connecting to database..." . PHP_EOL;
+   if (file_exists($db_filename) && !IsWindowsOS()) {
+      echo "Restarting mysql service..." . PHP_EOL;
+      exec("sudo service mysql restart"); // trying to restart mysql
+      sleep(5);
+   }
    $connected = $db->Connect();
-   sleep(5);
+   if (!$connected) {
+      sleep(5);
+   }
 }
 
 echo "CONNECTED TO DB" . PHP_EOL;
@@ -100,15 +106,14 @@ foreach ($dirs_to_check as $d) {
 
 
 //restoring database backup (if was saving periodically)
-$filename  = ROOT . 'database_backup/db.sql';
-if (file_exists($filename))
+if (file_exists($db_filename))
 {
-   echo "Running: mysql restore from file: " . $filename . PHP_EOL;
-   DebMes("Running: mysql restore from file: " . $filename);
+   echo "Running: mysql restore from file: " . $db_filename . PHP_EOL;
+   DebMes("Running: mysql restore from file: " . $db_filename);
    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
    $mysqlParam = " -u " . DB_USER;
    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
-   $mysqlParam .= " " . DB_NAME . " <" . $filename;
+   $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
    exec($mysql_path . $mysqlParam);
 }
 
