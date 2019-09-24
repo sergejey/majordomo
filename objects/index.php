@@ -173,6 +173,11 @@ if ($object != '') {
    sayTo(gr('ph'),gr('level'),gr('destination'));
 } elseif (gr('processSubscriptions')) {
    processSubscriptions(gr('event'), json_decode(gr('params'),true));
+} elseif (gr('processSubscriptionsOutput')) {
+   $output = processSubscriptions(gr('event'), json_decode(gr('params'),true),true);
+   if ($output) {
+      echo $output;
+   }
 } elseif ($script != '') {
    runScript($script, $_REQUEST);
 }

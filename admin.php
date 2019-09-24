@@ -63,6 +63,8 @@ endMeasure('languageConstants');
 
 $result = str_replace("nf.php", "admin.php", $result);
 
+require(ROOT.'lib/utils/postprocess_general.inc.php');
+require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
 //require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 

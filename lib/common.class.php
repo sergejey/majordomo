@@ -707,6 +707,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
 {
     //DebMes("URL: ".$url,'debug1');
     getURL($url, $cache, $username, $password, true);
+    return true;
 }
 
 /**

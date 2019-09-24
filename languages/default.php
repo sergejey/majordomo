@@ -1390,6 +1390,8 @@ $dictionary = array(
     'PREVIOUS' => 'Prev',
     'NEXT' => 'Next',
     'LOCATED_IN_ROOM' => 'located in',
+    'BLOCK_SENSOR' => 'Block sensor',
+    'UNBLOCK_SENSOR' => 'Un-block sensor',
 
     'TEST' => 'test'
 
