@@ -211,6 +211,29 @@ $this->device_types=array(
             'unblockSensor'=>array('DESCRIPTION'=>LANG_UNBLOCK_SENSOR,'_CONFIG_SHOW'=>1),
         )
     ),
+    'openable'=>array(
+        'TITLE'=>LANG_DEVICES_OPENABLE,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SOpenable',
+        'PROPERTIES'=>array(
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+            'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
+            'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
+                '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdOpenType',
+                '_CONFIG_OPTIONS'=>
+                    'gates='.LANG_DEVICES_OPENTYPE_GATES.
+                    ',window='.LANG_DEVICES_OPENTYPE_WINDOW.
+                    ',door='.LANG_DEVICES_OPENTYPE_DOOR.
+                    ',curtains='.LANG_DEVICES_OPENTYPE_CURTAINS.
+                    ',shutters='.LANG_DEVICES_OPENTYPE_SHUTTERS)
+        ),
+        'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'switch'=>array('DESCRIPTION'=>'Switch'),
+            'open'=>array('DESCRIPTION'=>'Open','_CONFIG_SHOW'=>1),
+            'close'=>array('DESCRIPTION'=>'Close','_CONFIG_SHOW'=>1),
+        )
+    ),
     'leak'=>array(
         'TITLE'=>LANG_DEVICES_LEAK_SENSOR,
         'PARENT_CLASS'=>'SDevices',

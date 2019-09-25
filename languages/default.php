@@ -1125,6 +1125,7 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Button',
     'DEVICES_SWITCH' => 'Switch',
     'DEVICES_OPENCLOSE' => 'Open/Close sensor',
+    'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_GENERAL_SENSOR' => 'General sensor',
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
@@ -1202,6 +1203,13 @@ $dictionary = array(
     'DEVICES_LOADTYPE_LIGHT' => 'Light',
     'DEVICES_LOADTYPE_LIGHT_ALT' => 'Light',
     'DEVICES_LOADTYPE_POWER' => 'Other',
+
+    'DEVICES_OPENTYPE' => 'Device type',
+    'DEVICES_OPENTYPE_CURTAINS' => 'Curtains',
+    'DEVICES_OPENTYPE_SHUTTERS' => 'Shutters',
+    'DEVICES_OPENTYPE_GATES' => 'Gates',
+    'DEVICES_OPENTYPE_WINDOW' => 'Window',
+    'DEVICES_OPENTYPE_DOOR' => 'Door',
 
     'DEVICES_ADD_MENU' => 'Add device to Menu',
     'DEVICES_ADD_SCENE' => 'Add device to Scene',

@@ -203,6 +203,8 @@ for ($i = 0; $i < $total; $i++) {
         }
     } elseif ($link_type == 'sensor_pass') {
         $action_string = 'sg("' . $object . '.value' . '","' . $value . '");';
+    } elseif ($link_type == 'open_sensor_pass') {
+        $action_string = 'sg("' . $object . '.status' . '","' . $status . '");';
     } elseif ($link_type == 'thermostat_switch') {
         $set_value = 0;
         $current_relay_status = gg($device1['LINKED_OBJECT'] . '.relay_status');
