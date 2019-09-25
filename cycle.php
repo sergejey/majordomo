@@ -21,16 +21,17 @@ set_time_limit(0);
 
 $db_filename  = ROOT . 'database_backup/db.sql';
 $connected = false;
+$total_restarts = 0;
 while (!$connected) {
    echo "Connecting to database..." . PHP_EOL;
-   if (file_exists($db_filename) && !IsWindowsOS()) {
-      echo "Restarting mysql service..." . PHP_EOL;
-      exec("sudo service mysql restart"); // trying to restart mysql
-      sleep(5);
-   }
    $connected = $db->Connect();
    if (!$connected) {
-      sleep(5);
+      if (file_exists($db_filename) && !IsWindowsOS() && $total_restarts<3) {
+         $total_restarts++;
+         echo "Restarting mysql service..." . PHP_EOL;
+         exec("sudo service mysql restart"); // trying to restart mysql
+      }
+      sleep(10);
    }
 }
 
