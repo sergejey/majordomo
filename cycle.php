@@ -27,11 +27,13 @@ while (!$connected) {
    $connected = $db->Connect();
    if (!$connected) {
       if (file_exists($db_filename) && !IsWindowsOS() && $total_restarts<3) {
-         $total_restarts++;
          echo "Restarting mysql service..." . PHP_EOL;
          exec("sudo service mysql restart"); // trying to restart mysql
+         $total_restarts++;
+         sleep(10);
+      } else {
+         sleep(5);
       }
-      sleep(10);
    }
 }
 
