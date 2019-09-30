@@ -61,7 +61,7 @@ while (1) {
     }
 
 
-    $query = $username . '/incoming_urls,' . $username . '/menu_session,' . $username . '/reverse_urls';
+    $query = $username . '/incoming_urls,' . $username . '/menu_session,' . $username . '/reverse_requests';
     $ping_topic = $username . '/ping';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name, $ca_file);
@@ -156,6 +156,10 @@ function procmsg($topic, $msg)
     } elseif (preg_match('/reverse_urls/is', $topic)) {
         $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request&msg=' . urlencode($msg);
         echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
+        getURLBackground($url, 0);
+    } elseif (preg_match('/reverse_requests/is', $topic)) {
+        $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request_full&msg=' . urlencode($msg);
+        echo date("Y-m-d H:i:s") . " Incoming reverse request: $msg\n";
         getURLBackground($url, 0);
     }
 

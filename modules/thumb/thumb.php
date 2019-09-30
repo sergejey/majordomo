@@ -13,7 +13,7 @@ if (!defined('PATH_TO_FFMPEG')) {
     }
 }
 
-define("_I_CACHING", "1");               //    Chaching enabled, 1 - yes, 0 - no
+define("_I_CACHING", "0");               //    Chaching enabled, 1 - yes, 0 - no
 define("_I_CACHE_PATH", "./cms/cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED", "2592000");   //    Expired time for images in seconds, 0 - never expired
 
@@ -87,7 +87,7 @@ if (IsSet($url) && $url != '') {
             header("Content-type: multipart/x-mixed-replace; boundary=$boundary");
             print "--$boundary\n";
             set_time_limit(0);
-            @apache_setenv('no-gzip', 1);
+            //@apache_setenv('no-gzip', 1);
             @ini_set('zlib.output_compression', 0);
             @ini_set('implicit_flush', 1);
 

@@ -404,6 +404,49 @@ class connect extends module
         return $result;
     }
 
+    function requestReverseFull($msg) {
+        $data = json_decode($msg,true);
+        $url = $data['url'];
+        $method = $data['method'];
+        if ($data['params']) {
+            $params = unserialize($data['params']);
+        } else {
+            $params = array();
+        }
+        ignore_user_abort(1);
+
+        $url = BASE_URL.$url;
+        if (preg_match('/\?/',$url)) {
+            $url.='&no_session=1';
+        } else {
+            $url.='?no_session=1';
+        }
+        if ($method=='GET') {
+            $result = getURL($url);
+        } else {
+            //DebMes("$method request to $url: ".$msg,'connect_post');
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            //curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+            @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            $tmpfname = ROOT . 'cms/cached/cookie.txt';
+            curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
+            $result = curl_exec($ch);
+            $data['content_type'] = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            curl_close($ch);
+        }
+        $this->sendReverseURL($data,$result);
+    }
+    
     function requestReverseURL($msg) {
         ignore_user_abort(1);
         $url = BASE_URL.$msg;
@@ -412,21 +455,28 @@ class connect extends module
         } else {
             $url.='?no_session=1';
         }
-        //debmes("Sending request $url",'reverse_urls');
+        $data=array();
+        $data['url']=$msg;
         $result = getURL($url);
-        //debmes("Sending result to Connect",'reverse_urls');
-        $this->sendReverseURL($msg,$result);
-        //debmes("Sending $msg DONE",'reverse_urls');
+        $this->sendReverseURL($data,$result);
     }
-
-    function sendReverseURL($url_requested, $result)
+    
+    function sendReverseURL($data, $result)
     {
         // POST TO SERVER
         $url = 'https://connect.smartliving.ru/reverse_proxy.php';
         $header = array('Content-Type: multipart/form-data');
+        $url_requested = $data['url'];
         $fields = array('url' => $url_requested);
-        //$probably_binary = (is_string($result) === true && ctype_print($result) === false);
-        if (preg_match('/\.css$/is', $url_requested) || preg_match('/\.js$/is', $url_requested) || !mb_detect_encoding($result)) {
+        if (IsSet($data['watermark'])) {
+            $fields['watermark']=$data['watermark'];
+        }
+        if (IsSet($data['content_type'])) {
+            $fields['content_type']=$data['content_type'];
+        }
+        if (preg_match('/\.css$/is', $url_requested)
+            || preg_match('/\.js$/is', $url_requested)
+            || !mb_detect_encoding($result)) {
             $binary_path = ROOT . 'cms/cached/reverse';
             if (!is_dir($binary_path)) {
                 umask(0);
@@ -434,7 +484,6 @@ class connect extends module
             }
             $tmpfilename = $binary_path . '/' . preg_replace('/\W/', '_', $url_requested);
             SaveFile($tmpfilename, $result);
-
             if (!function_exists('getCurlValue')) {
                 function getCurlValue($filename, $contentType, $postname)
                 {
@@ -894,6 +943,9 @@ class connect extends module
             if ($op=='reverse_request') {
                $this->requestReverseURL($msg);
             }
+            if ($op=='reverse_request_full') {
+                $this->requestReverseFull($msg);
+            }            
         }
     }
 
