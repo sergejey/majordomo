@@ -1399,6 +1399,12 @@ $dictionary = array(
     'BLOCK_SENSOR' => 'Блокировать датчик',
     'UNBLOCK_SENSOR' => 'Разблокировать датчик',
 
+    'VALIDATION_TYPE' => 'Проверка значений',
+    'VALIDATION_TYPE_NUMBER' => 'Число в диапазоне',
+    'VALIDATION_TYPE_BINARY' => 'Бинарное значение (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'По словарю',
+    'VALIDATION_TYPE_CUSTOM' => 'Расширенный (кодом)',
+
     /* end module names */
 
 

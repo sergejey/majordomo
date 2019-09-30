@@ -813,6 +813,31 @@ class objects extends module
         startMeasure('setproperty_update');
         if ($id) {
             $prop = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $id . "'");
+
+            if ($prop['VALIDATION_TYPE']==1) {
+                if (!is_numeric($value)) return false;
+                if ($prop['VALIDATION_NUM_MIN']!='' && (float)$value<(float)$prop['VALIDATION_NUM_MIN']) {
+                    return false;
+                }
+                if ($prop['VALIDATION_NUM_MAX']!='' && (float)$value>(float)$prop['VALIDATION_NUM_MAX']) {
+                    return false;
+                }
+            }
+            if ($prop['VALIDATION_TYPE']==2) {
+                if ($value!='1' && $value!='0') {
+                    return false;
+                }
+            }
+            if ($prop['VALIDATION_TYPE']==3) {
+                $items=explode(',',$prop['VALIDATION_LIST']);
+                if (!in_array(mb_strtolower($value,'UTF-8'),$items)) return false;
+            }
+
+            if ($prop['VALIDATION_TYPE']==100) {
+                eval($prop['VALIDATION_CODE']);
+                if (is_null($value)) return false;
+            }
+
             $property = $prop['TITLE'];
             startMeasure('setproperty_update_getvalue');
             $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id );
@@ -1117,6 +1142,11 @@ class objects extends module
  properties: DATA_KEY int(3) NOT NULL DEFAULT '0' 
  properties: DATA_TYPE int(3) NOT NULL DEFAULT '0' 
  properties: DESCRIPTION text
+ properties: VALIDATION_TYPE int(3) NOT NULL DEFAULT '0'
+ properties: VALIDATION_NUM_MIN varchar(20) NOT NULL DEFAULT ''
+ properties: VALIDATION_NUM_MAX varchar(20) NOT NULL DEFAULT ''
+ properties: VALIDATION_LIST varchar(255) NOT NULL DEFAULT ''
+ properties: VALIDATION_CODE text
  properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
  properties: INDEX (CLASS_ID)
  properties: INDEX (OBJECT_ID)

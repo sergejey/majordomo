@@ -1401,6 +1401,12 @@ $dictionary = array(
     'BLOCK_SENSOR' => 'Block sensor',
     'UNBLOCK_SENSOR' => 'Un-block sensor',
 
+    'VALIDATION_TYPE' => 'Value validation',
+    'VALIDATION_TYPE_NUMBER' => 'Number (in range)',
+    'VALIDATION_TYPE_BINARY' => 'Binary value (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'Dictionary match',
+    'VALIDATION_TYPE_CUSTOM' => 'Custom (code)',
+
     'TEST' => 'test'
 
 
