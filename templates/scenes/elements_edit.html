@@ -85,11 +85,12 @@
     $('#linked_object_field').hide();
    }
 
-     if (easy_config==1 && (new_type=='device')) {
+     if (new_type=='device') {
          $('#device_field').show();
      } else {
          $('#device_field').hide();
      }
+
 
    if (easy_config==1 && (new_type=='informer' || new_type=='warning')) {
     $('#linked_property_field').show();
@@ -161,6 +162,20 @@
         </div>
 </div>
 
+
+    <div class="form-group" id="device_field" [#if ELEMENT_TYPE!="device"#]style="display:none"[#endif ELEMENT_TYPE#]>
+        <label class="col-lg-4 control-label"><#LANG_DEVICE#></label>
+        <div class="controls">
+            <select name="device_id" class="form-control">
+                <option value="0"></option>
+                [#begin DEVICES#]
+                <option value="[#ID#]"[#if ID="<#ELEMENT_DEVICE_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+                [#end DEVICES#]
+            </select>
+        </div>
+    </div>
+
+
 <div class="form-group" id='advanced_config_block' style="display:none">
         <label class="col-lg-4 control-label"><#LANG_ADVANCED_CONFIG#><#LANG_HCB#>element_advanced_config<#LANG_HCE#></label>
         <div class="controls">
@@ -171,19 +186,6 @@
 </div>
 [#endif ELEMENT_TYPE#]
 
-
-[#if ELEMENT_ID="" || ELEMENT_EASY_CONFIG="1"#]
-<div class="form-group" id="device_field" style="display:none">
-        <label class="col-lg-4 control-label"><#LANG_DEVICE#></label>
-        <div class="controls">
-            <select name="device_id" class="form-control">
-                <option value="0"></option>
-                [#begin DEVICES#]
-                <option value="[#ID#]"[#if ID="<#ELEMENT_DEVICE_ID#>"#] selected[#endif#]>[#TITLE#]</option>
-                [#end DEVICES#]
-            </select>
-        </div>
-</div>
 
 <div class="form-group" id="linked_object_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>

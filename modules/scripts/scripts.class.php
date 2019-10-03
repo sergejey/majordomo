@@ -401,43 +401,29 @@ class scripts extends module
      *
      * @access public
      */
-    function checkScheduledScripts()
-    {
-        $scripts = SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>1200");
+    function checkScheduledScripts() {
+        $scripts = SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND ((UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>60 OR IsNull(EXECUTED))");
 
         $total = count($scripts);
         for ($i = 0; $i < $total; $i++) {
-
             $rec = $scripts[$i];
-
-            if ($rec['RUN_DAYS'] === '') {
+            if ($rec['RUN_DAYS'] == '') {
                 continue;
             }
-
-
             $run_days = explode(',', $rec['RUN_DAYS']);
             $today=date('w');
             if (!in_array($today, $run_days)) {
                 continue;
             }
-
-            $tm = strtotime(date('Y-m-d') . ' ' . $rec['RUN_TIME']);
-
+            $tm = strtotime(date('Y-m-d') . ' ' . $rec['RUN_TIME']. ':00');
             $diff = time() - $tm;
-
-            if ($diff < 0 || $diff >= 10 * 60) {
+            if ($diff < 0 || $diff > 60) {
                 continue;
             }
-
+            DebMes("Running scheduled script ".$rec['TITLE'],'scripts');
             runScriptSafe($rec['TITLE']);
-
             $rec['DIFF'] = $diff;
-
-            //print_r($rec);
-
         }
-        //print_r($scripts);
-
     }
 
     function propertySetHandle($object, $property, $value)

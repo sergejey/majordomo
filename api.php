@@ -219,9 +219,11 @@ if (!isset($request[0])) {
         include_once($module_file);
         $module = new $module_name;
         if (method_exists($module,'api')) {
-            $params = $request;
-            array_shift($params);
-            array_shift($params);
+            $params = $_REQUEST;
+            $r = $request;
+            array_shift($r);
+            array_shift($r);
+            $params['request']=$r;
             $result['apiHandleResult']=$module->api($params);
         }
     }

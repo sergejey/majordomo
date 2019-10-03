@@ -535,6 +535,8 @@ function setLocalTime($now_date, $diff = 0)
 function DebMes($errorMessage, $logLevel = "debug")
 {
 
+   if (defined('SETTINGS_SYSTEM_DISABLE_DEBMES') && SETTINGS_SYSTEM_DISABLE_DEBMES==1) return;
+
    if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
     $path=LOG_DIRECTORY;
    } else {
