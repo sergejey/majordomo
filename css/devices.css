@@ -1,4 +1,5 @@
 .device-widget {
+    min-width:250px;
     max-width:350px;
     padding:5px;
     border:1px solid transparent;
@@ -9,6 +10,14 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.device-widget.mini {
+    padding:5px;
+    min-width:140px;
+    max-width:140px;
+    width:140px;
+    border:none;
 }
 
 .device-widget.offline {
@@ -28,6 +37,15 @@
     height:40px;
     float:left;
 }
+
+.mini .device-icon {
+    margin-right:3px;
+}
+
+.mini .device-header {
+    margin-top:8px;
+}
+
 .device-header {
     font-size:18px;
 }

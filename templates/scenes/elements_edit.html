@@ -163,7 +163,8 @@
 </div>
 
 
-    <div class="form-group" id="device_field" [#if ELEMENT_TYPE!="device"#]style="display:none"[#endif ELEMENT_TYPE#]>
+    <div id="device_field" [#if ELEMENT_TYPE!="device"#]style="display:none"[#endif ELEMENT_TYPE#]>
+    <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_DEVICE#></label>
         <div class="controls">
             <select name="device_id" class="form-control">
@@ -172,6 +173,16 @@
                 <option value="[#ID#]"[#if ID="<#ELEMENT_DEVICE_ID#>"#] selected[#endif#]>[#TITLE#]</option>
                 [#end DEVICES#]
             </select>
+        </div>
+    </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label"><#LANG_CLASS_TEMPLATE#></label>
+            <div class="controls">
+                <select name="class_template" class="form-control">
+                    <option value="">Normal</option>
+                    <option value="mini"[#if "<#ELEMENT_CLASS_TEMPLATE#>"=="mini"#] selected[#endif#]>Mini</option>
+                </select>
+            </div>
         </div>
     </div>
 

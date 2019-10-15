@@ -9,6 +9,7 @@ $device_id = gr('device_id', 'int');
 $search = gr('search', 'trim');
 $type = gr('type', 'trim');
 $location_id = gr('location_id', 'trim');
+$class_template = gr('class_template','trim');
 
 
 $scene_id = $rec['ID'];
@@ -21,6 +22,8 @@ if ($this->mode == 'add_device') {
         $element['TYPE']='device';
         $element['DEVICE_ID']=$device_id;
         $element['TITLE']=$device_rec['TITLE'];
+        $element['CLASS_TEMPLATE']=$class_template;
+        $element['BACKGROUND']=0;
         if ($top && $left) {
             $element['TOP']=$top;
             $element['LEFT']=$left;
@@ -45,6 +48,10 @@ $added_ids = array_map('current', $elements);
 $added_ids[] = 0;
 
 $added_devices = SQLSelect("SELECT ID,TITLE FROM devices WHERE ID IN (" . implode(',', $added_ids) . ") ORDER BY TITLE");
+$total = count($added_devices);
+for($i=0;$i<$total;$i++) {
+    $added_devices[$i]['ELEMENT_ID']=current(SQLSelectOne("SELECT ID FROM elements WHERE DEVICE_ID=".$added_devices[$i]['ID']));
+}
 $out['ADDED_DEVICES'] = $added_devices;
 
 $qry = "1";
