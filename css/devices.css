@@ -14,10 +14,22 @@
 
 .device-widget.mini {
     padding:5px;
-    min-width:140px;
-    max-width:140px;
-    width:140px;
+    min-width:145px;
+    max-width:145px;
+    width:145px;
     border:none;
+}
+
+.device-widget.mini.controller {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
+}
+
+.device-widget.mini.motion {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
 }
 
 .device-widget.offline {

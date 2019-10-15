@@ -23,13 +23,19 @@ if ($this->mode == 'add_device') {
         $element['DEVICE_ID']=$device_id;
         $element['TITLE']=$device_rec['TITLE'];
         $element['CLASS_TEMPLATE']=$class_template;
-        $element['BACKGROUND']=0;
+        $element['BACKGROUND']=gr('background','int');
         if ($top && $left) {
             $element['TOP']=$top;
             $element['LEFT']=$left;
         } else {
-            $element['TOP']=50;
-            $element['LEFT']=50;
+            $old_element=SQLSelectOne("SELECT * FROM elements WHERE SCENE_ID=".(int)$scene_id." AND TYPE='device' ORDER BY ID DESC LIMIT 1");
+            if ($old_element['ID']) {
+                $element['TOP']=$old_element['TOP']+40;
+                $element['LEFT']=$old_element['LEFT'];
+            } else {
+                $element['TOP']=50;
+                $element['LEFT']=50;
+            }
         }
         $element['ID']=SQLInsert('elements',$element);
         $this->redirect("?id=".$scene_id."&view_mode=".$this->view_mode."&tab=".$this->tab."&top=".($element['TOP']+20)."&left=".$left."&search=".urlencode($search)."&type=".$type."&location_id=".$location_id);
