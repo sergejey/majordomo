@@ -14,9 +14,9 @@
 
 .device-widget.mini {
     padding:5px;
-    min-width:145px;
-    max-width:145px;
-    width:145px;
+    min-width:150px; //
+    max-width:150px;
+    width:150px;
     border:none;
 }
 

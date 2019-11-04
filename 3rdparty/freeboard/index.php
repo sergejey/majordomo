@@ -148,7 +148,7 @@ if ($_GET['theme']) {
             for ($i = 0; $i < $total; $i++) {
                 $path=DIR_MODULES.$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php';
                 if (file_exists($path)) {
-                    echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
+                    echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php?theme='.$_GET['theme'].'",';
                 }
             }
 
