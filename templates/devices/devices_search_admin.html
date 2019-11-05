@@ -112,6 +112,15 @@
   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
   trackedDevices.forEach(function(item, index) {
    var url = baseURL + item;
+
+   $.ajax({
+    url: url
+   }).done(function(data) {
+    var obj=jQuery.parseJSON(data);
+    $('.device'+item).html(obj.HTML);
+   });
+
+   /*
    ajaxManager.addReq({
     type: 'GET',
     url: url,
@@ -120,6 +129,7 @@
      $('.device'+item).html(obj.HTML);
     }
    });
+   */
   });
   httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
  }
