@@ -146,7 +146,8 @@ class mysql
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
-         die('Can\'t connect to database ('.$err_no . ": " . $err_details.')');
+         return 0;
+         //die('Can\'t connect to database ('.$err_no . ": " . $err_details.')');
          //registerError('sqlconn', $err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
          //new custom_error($err_no . ": " . $err_details, 1);
          //exit(1);
