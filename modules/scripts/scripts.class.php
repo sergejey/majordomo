@@ -140,6 +140,11 @@ class scripts extends module
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
         if ($rec['ID']) {
             $rec['EXECUTED'] = date('Y-m-d H:i:s');
+            $source = $_SERVER['REQUEST_URI'];
+            if (strlen($source) > 250) {
+                $source = substr($source, 0, 250) . '...';
+            }
+            $rec['EXECUTED_SRC'] = $source;
             if ($params) {
                 $rec['EXECUTED_PARAMS'] = serialize($params);
             }
@@ -341,6 +346,7 @@ class scripts extends module
         $rec['TITLE'] .= '_copy';
         unset($rec['ID']);
         unset($rec['EXECUTED']);
+        unset($rec['EXECUTED_SRC']);
         $rec['ID'] = SQLInsert('scripts', $rec);
         $this->redirect("?view_mode=edit_scripts&id=" . $rec['ID']);
     }
@@ -507,6 +513,7 @@ class scripts extends module
  scripts: UPDATED datetime
  scripts: EXECUTED datetime
  scripts: EXECUTED_PARAMS varchar(255)
+ scripts: EXECUTED_SRC varchar(255)
  scripts: RUN_PERIODICALLY int(3) unsigned NOT NULL DEFAULT 0
  scripts: RUN_DAYS char(30) NOT NULL DEFAULT ''
  scripts: RUN_TIME char(30) NOT NULL DEFAULT ''

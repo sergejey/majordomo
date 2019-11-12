@@ -555,7 +555,7 @@ class devices extends module
         return $all;
     }
 
-    function homebridgeSync($device_id = 0)
+    function homebridgeSync($device_id = 0, $force_refresh = 0)
     {
         if ($this->isHomeBridgeAvailable()) {
             include_once(DIR_MODULES . 'devices/homebridgeSync.inc.php');

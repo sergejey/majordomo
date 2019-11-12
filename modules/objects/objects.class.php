@@ -552,6 +552,14 @@ class objects extends module
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
 
             $method['EXECUTED'] = date('Y-m-d H:i:s');
+
+            $source = $_SERVER['REQUEST_URI'];
+            if (strlen($source) > 250) {
+                $source = substr($source, 0, 250) . '...';
+            }
+            $method['EXECUTED_SRC']=$source;
+
+
             if (!$method['OBJECT_ID']) {
                 if (!$params) {
                     $params = array();

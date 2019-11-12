@@ -528,6 +528,7 @@ class xray extends module
                     echo '<th>PROPERTY</th>';
                     echo '<th>VALUE</th>';
                     echo '<th>UPDATED</th>';
+                    echo '<th>SOURCE</th>';
                     echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
@@ -537,11 +538,14 @@ class xray extends module
                             echo "<br><small style='font-size:9px'>" . $res[$i]['OBJECT_DESCRIPTION'] . "</small>";
                         }
                         echo '</td>';
-                        echo '<td>';
+                        echo '<td style="word-wrap: break-word;max-width: 500px; ">';
                         echo htmlspecialchars($res[$i]['VALUE']) . '&nbsp;';
                         echo '</td>';
                         echo '<td>';
                         echo $res[$i]['UPDATED'] . '&nbsp;';
+                        echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['SOURCE'] . '&nbsp;';
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -694,6 +698,7 @@ class xray extends module
                     echo '<th>METHOD</th>';
                     echo '<th>PARAMS</th>';
                     echo '<th>EXECUTED</th>';
+                    echo '<th>SOURCE</th>';
                     echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
@@ -717,6 +722,9 @@ class xray extends module
                         echo '<td>';
                         echo $res[$i]['EXECUTED'] . '&nbsp;';
                         echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['EXECUTED_SRC'] . '&nbsp;';
+                        echo '</td>';
                         echo '</tr>';
                     }
                     echo '</table>';
@@ -734,6 +742,7 @@ class xray extends module
                     echo '<th>SCRIPT</th>';
                     echo '<th>PARAMS</th>';
                     echo '<th>EXECUTED</th>';
+                    echo '<th>SOURCE</th>';
                     echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
@@ -748,6 +757,9 @@ class xray extends module
                         echo '</td>';
                         echo '<td>';
                         echo $res[$i]['EXECUTED'] . '&nbsp;';
+                        echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['EXECUTED_SRC'] . '&nbsp;';
                         echo '</td>';
                         echo '</tr>';
                     }

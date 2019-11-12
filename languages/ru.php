@@ -1405,6 +1405,8 @@ $dictionary = array(
     'VALIDATION_TYPE_DICTIONARY' => 'По словарю',
     'VALIDATION_TYPE_CUSTOM' => 'Расширенный (кодом)',
 
+    'REMINDER_INTRO' => 'Напоминаю, что',
+
     /* end module names */
 
 

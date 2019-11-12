@@ -1406,6 +1406,7 @@ $dictionary = array(
     'VALIDATION_TYPE_BINARY' => 'Binary value (1/0)',
     'VALIDATION_TYPE_DICTIONARY' => 'Dictionary match',
     'VALIDATION_TYPE_CUSTOM' => 'Custom (code)',
+    'REMINDER_INTRO' => 'May I remind you that',
 
     'TEST' => 'test'
 

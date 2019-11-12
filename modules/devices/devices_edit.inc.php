@@ -418,7 +418,7 @@ if ($this->mode == 'update' && $this->tab == '') {
             $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
         }
 
-        $this->homebridgeSync($rec['ID']);
+        $this->homebridgeSync($rec['ID'],1);
 
         if ($added) {
             $this->redirect("?view_mode=edit_devices&id=" . $rec['ID'] . "&tab=settings");
