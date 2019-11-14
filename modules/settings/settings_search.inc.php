@@ -95,6 +95,54 @@ if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DISABLE_DEBMES')
     }
 }
 
+if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DEBMES_PATH')) {
+    $options = array(
+        'SYSTEM_DEBMES_PATH' => 'Path to DebMes logs'
+    );
+    foreach ($options as $k => $v) {
+        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+        if (!$tmp['ID']) {
+            $tmp = array();
+            $tmp['NAME'] = $k;
+            $tmp['TITLE'] = $v;
+            $tmp['TYPE'] = 'text';
+            $tmp['DEFAULTVALUE'] = '';
+            $tmp['NOTES'] = '';
+            $tmp['DATA'] = '';
+            SQLInsert('settings', $tmp);
+        }
+    }
+}
+
+if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DB_MAIN_SAVE_PERIOD')) {
+    $options = array(
+        'SYSTEM_DB_MAIN_SAVE_PERIOD' => array(
+            'TITLE' => 'Database save period (main data), minutes',
+            'DEFAULTVALUE' => 15,
+            'NOTES' => ''
+        ),
+        'SYSTEM_DB_HISTORY_SAVE_PERIOD' => array(
+            'TITLE' => 'Database save period (history data), minutes',
+            'DEFAULTVALUE' => 60,
+            'NOTES' => ''
+        )
+    );
+
+    foreach ($options as $k => $v) {
+        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+        if (!$tmp['ID']) {
+            $tmp = array();
+            $tmp['NAME'] = $k;
+            $tmp['TITLE'] = $v['TITLE'];
+            $tmp['TYPE'] = 'text';
+            $tmp['DEFAULTVALUE'] = $v['DEFAULTVALUE'];
+            $tmp['NOTES'] = '';
+            $tmp['DATA'] = '';
+            SQLInsert('settings', $tmp);
+        }
+    }
+}
+
 if ($this->filter_name == 'behavior' && !defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
 
     $options = array(
@@ -380,15 +428,11 @@ if ($res[0]['ID']) {
 
 // some action for every record if required
 if ($this->mode == 'update') {
-    /*
-    if ($all_settings['GROWL_ENABLE']) {
-     include_once(ROOT.'lib/growl/growl.gntp.php');
-     $growl = new Growl($all_settings['GROWL_HOST'], $all_settings['GROWL_PASSWORD']);
-     $growl->setApplication('MajorDoMo','Notifications');
-     $growl->registerApplication('https://connect.smartliving.ru/img/logo.png');
-     $growl->notify('Test!');
+    if ($this->filter_name == 'system' && file_exists(ROOT.'scripts/cycle_db_save.php')) {
+        $service = 'cycle_db_save';
+        sg($service . 'Run', '');
+        sg($service . 'Control', 'restart');
     }
-    */
     $this->redirect("?updated=1&filter_name=" . $this->filter_name);
 }
 

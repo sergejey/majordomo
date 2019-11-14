@@ -483,7 +483,13 @@ class xray extends module
         }
 
         if ($this->view_mode == '') {
-            $path = ROOT . 'cms/debmes';
+            if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+                $path = SETTINGS_SYSTEM_DEBMES_PATH;
+            } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+                $path = LOG_DIRECTORY;
+            } else {
+                $path = ROOT . 'cms/debmes';
+            }
             if ($handle = opendir($path)) {
                 $files = array();
                 while (false !== ($entry = readdir($handle))) {
@@ -565,13 +571,21 @@ class xray extends module
 
                     $files = $out['FILES'];
 
+                    if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+                        $path = SETTINGS_SYSTEM_DEBMES_PATH;
+                    } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+                        $path = LOG_DIRECTORY;
+                    } else {
+                        $path = ROOT . 'cms/debmes';
+                    }
+
 
                     $result = array();
 
                     foreach ($files as $file_item) {
                         if ($file_item['SELECTED']) {
                             $file = $file_item['TITLE'];
-                            $filename = ROOT . 'cms/debmes/' . $file;
+                            $filename = $path . '/' . $file;
                             if (file_exists($filename)) {
                                 $data = LoadFile($filename);
                             } else {

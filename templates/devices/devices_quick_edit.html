@@ -1,0 +1,74 @@
+<p>
+    <a href="?"><#LANG_BACK#></a>
+</p>
+
+<script type="text/javascript">
+
+    function getRandomId() {
+        return parseInt(Math.random()*100000000);
+    }
+
+    function addLocation() {
+        var location_id = getRandomId();
+        $('#locations').append('<tr><td><div class="col-md-8"><input type="text" name="location'+location_id+'" value="" class="form-control"></div><div class="col-md-4"><a href="#" onclick="return addDevice('+location_id+');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#>: <#LANG_DEVICE#></a></div></td><td><table id="location'+location_id+'_devices"></table></td></tr>');
+        return false;
+    }
+
+    function deleteDevice(device_id) {
+        $('#newrow'+device_id).remove();
+        return false;
+    }
+
+    function addDevice(location_id) {
+        var device_id = getRandomId()+'_l'+location_id;
+        $('#location'+location_id+'_devices').prepend(
+                '<tr id="newrow'+device_id+'"><td><input type="text" name="newdevice'+device_id+'" class="form-control"></td><td><select name="newtype'+device_id+'" class="form-control">[#TYPES_OPTIONS#]</select></td><td><a href="#" onclick="return deleteDevice(\''+device_id+'\');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-trash"></i></a></a></td></tr>');
+        return false;
+    }
+
+</script>
+
+<form method="post" class="form" action="?">
+    <table class="table" id="locations">
+    <thead>
+    <tr>
+        <th><#LANG_LOCATION#></th>
+        <th><#LANG_DEVICES#></th>
+    </tr>
+    </thead>
+    [#begin LOCATIONS#]
+    <tr>
+        <td>
+            <div class="row">
+                <div class="col-md-8"><input type="text" name="location[#ID#]" value="[#TITLE#]" class="form-control"></div>
+                <div class="col-md-4"><a href="#" onclick="return addDevice([#ID#]);" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#>: <#LANG_DEVICE#></a></div>
+            </div>
+
+        </td>
+        <td>
+            <table id="location[#ID#]_devices">
+                [#begin DEVICES#]
+                <tr>
+                    <td>
+                        <input type="text" name="device[#ID#]" value="[#TITLE#]" class="form-control">
+                    </td>
+                    <td>[#TYPE#]</td>
+                    <td>&nbsp;</td>
+                </tr>
+                [#end DEVICES#]
+            </table>
+
+        </td>
+    </tr>
+    [#end LOCATIONS#]
+</table>
+    <p>
+        <a href="#" onclick="return addLocation();" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#>: <#LANG_LOCATION#></a>
+    </p>
+    <div class="form-group">
+    <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
+    <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="mode" value="update">
+    </div>
+</form>

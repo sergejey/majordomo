@@ -596,6 +596,10 @@ class devices extends module
                 $this->edit_devices($out, $this->id);
             }
 
+            if ($this->view_mode == 'quick_edit') {
+                $this->quick_edit($out);
+            }
+
             if ($this->view_mode == 'render_structure') {
                 $this->renderStructure();
                 $this->redirect("?");
@@ -923,6 +927,11 @@ class devices extends module
     function edit_devices(&$out, $id)
     {
         require(DIR_MODULES . $this->name . '/devices_edit.inc.php');
+    }
+
+    function quick_edit(&$out)
+    {
+        require(DIR_MODULES . $this->name . '/devices_quick_edit.inc.php');
     }
 
     /**

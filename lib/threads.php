@@ -64,7 +64,14 @@ class Threads
       $params = addcslashes(serialize($params), '"');
 
       if (defined('LOG_CYCLES') && LOG_CYCLES == '1') {
-         $fileToWrite = DOC_ROOT . '/cms/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+         if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+            $path = SETTINGS_SYSTEM_DEBMES_PATH;
+         } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+            $path = LOG_DIRECTORY;
+         } else {
+            $path = ROOT . 'cms/debmes';
+         }
+         $fileToWrite = $path.'/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
          $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
       } else {
          $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '"';
