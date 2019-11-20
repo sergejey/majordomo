@@ -602,17 +602,20 @@ class objects extends module
 
 
             if ($code != '') {
-                try {
-                    $success = eval($code);
-                    if ($success === false) {
-                        //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
-                        registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
+                if (isItPythonCode($code)) {
+                    python_run_code($code,$params,$this->object_title);
+                } else {
+                    try {
+                        $success = eval($code);
+                        if ($success === false) {
+                            //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
+                            registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
+                        }
+                    } catch (Exception $e) {
+                        //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
+                        registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
                     }
-                } catch (Exception $e) {
-                    //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
-                    registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
                 }
-
             }
             endMeasure('callMethod', 1);
             endMeasure('callMethod (' . $original_method_name . ')', 1);
@@ -893,6 +896,9 @@ class objects extends module
 
             $v['VALUE'] = $value . '';
             $v['SOURCE'] = $source . '';
+            if (!$v['PROPERTY_NAME']) {
+                $v['PROPERTY_NAME']=$this->object_title.'.'.$property;
+            }
             if ($v['ID']) {
                 $v['UPDATED'] = date('Y-m-d H:i:s');
                 //if ($old_value!=$value) {
@@ -916,6 +922,7 @@ class objects extends module
             //$prop['VALUE']='';
             $prop['ID'] = SQLInsert('properties', $prop);
 
+            $v['PROPERTY_NAME']=$this->object_title.'.'.$property;
             $v['PROPERTY_ID'] = $prop['ID'];
             $v['OBJECT_ID'] = $this->id;
             $v['VALUE'] = $value . '';

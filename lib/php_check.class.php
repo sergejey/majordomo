@@ -16,39 +16,40 @@
  */
 function php_syntax_error($code)
 {
-   $code .= "\n echo 'zzz';";
-   $code  = '<?php ' . $code . '?>';
-   //echo DOC_ROOT;exit;
-   $fileName = md5(time() . rand(0, 10000)) . '.php';
-   $filePath = DOC_ROOT . '/cms/cached/' . $fileName;
- 
-   SaveFile($filePath, $code);
- 
-   if (substr(php_uname(), 0, 7) == "Windows")
-   {
-      $cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
-   }
-   else
-   {
-      $cmd = 'php -l ' . $filePath;
-   }
+   if (isItPythonCode($code)) {
+      return python_syntax_error($code);
+   } else {
+      $code .= "\n echo 'zzz';";
+      $code  = '<?php ' . $code . '?>';
+      //echo DOC_ROOT;exit;
+      $fileName = md5(time() . rand(0, 10000)) . '.php';
+      $filePath = DOC_ROOT . '/cms/cached/' . $fileName;
+      SaveFile($filePath, $code);
+      if (substr(php_uname(), 0, 7) == "Windows")
+      {
+         $cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
+      }
+      else
+      {
+         $cmd = 'php -l ' . $filePath;
+      }
+      exec($cmd, $out);
+      unlink($filePath);
+      if (preg_match('/no syntax errors detected/is', $out[0]))
+      {
+         return false;
+      }
+      elseif (!trim(implode("\n", $out)))
+      {
+         return false;
+      }
+      else
+      {
+         $res = implode("\n", $out);
+         $res = preg_replace('/Errors parsing.+/is', '', $res);
 
-   exec($cmd, $out);
-   unlink($filePath);
-
-   if (preg_match('/no syntax errors detected/is', $out[0]))
-   {
-      return false;
-   }
-   elseif (!trim(implode("\n", $out)))
-   {
-      return false;
-   }
-   else
-   {
-      $res = implode("\n", $out);
-      $res = preg_replace('/Errors parsing.+/is', '', $res);
-  
-      return trim($res) . "\n";
+         return trim($res) . "\n";
+      }
    }
 }
+

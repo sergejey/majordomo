@@ -307,7 +307,11 @@ if (!isset($request[0])) {
         }
     } elseif ($method == 'POST') {
         if (isset($tmp[1])) {
-            setGlobal($request[1], $input['data']);
+            if (isset($_POST['data'])) {
+                setGlobal($request[1], $_POST['data']);
+            } else {
+                setGlobal($request[1], $input['data']);
+            }
         }
     }
 } elseif (strtolower($request[0]) == 'history' && isset($request[1])) {

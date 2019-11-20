@@ -150,21 +150,25 @@ class scripts extends module
             }
             SQLUpdate('scripts', $rec);
 
-            try {
-                $code = trim($rec['CODE']);
-                if ($code!='') {
-                    $success = eval($code);
-                } else {
-                    $success = true;
+            if (isItPythonCode($rec['CODE'])) {
+                python_run_code($rec['CODE'], $params);
+            } else {
+                try {
+                    $code = trim($rec['CODE']);
+                    if ($code!='') {
+                        $success = eval($code);
+                    } else {
+                        $success = true;
+                    }
+                    if ($success === false) {
+                        //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+                        registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+                    }
+                    return $success;
+                } catch (Exception $e) {
+                    //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
+                    registerError('script', sprintf('Error in script "%s": ' . $e->getMessage(), $rec['TITLE']));
                 }
-                if ($success === false) {
-                    //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
-                    registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
-                }
-                return $success;
-            } catch (Exception $e) {
-                //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
-                registerError('script', sprintf('Error in script "%s": ' . $e->getMessage(), $rec['TITLE']));
             }
 
         }
