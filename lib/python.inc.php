@@ -1,6 +1,7 @@
 <?php
 
 function python_run_code($code, $params = '', $object = '') {
+    //DebMes("Running python code: ".$code,'python');
     $python_path = '';
     if (defined('PYTHON_PATH')) {
         $python_path = PYTHON_PATH;
@@ -140,8 +141,11 @@ function python_syntax_error($code) {
 }
 
 function isItPythonCode($code) {
+    if (preg_match('/^#python/ui',$code)) return true;
+    $code = str_replace("\r","",$code);
     $tmp=explode("\n",$code);
     if (count($tmp)==1) return false;
+    if (preg_match('/\);/ui',$code)) return false;
     if (preg_match('/;$/ui',$code)) return false;
     if (preg_match('/;\\n/ui',$code)) return false;
     if (preg_match('/\$\w+.+;/ui',$code)) return false;
