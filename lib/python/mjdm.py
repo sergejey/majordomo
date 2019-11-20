@@ -59,8 +59,6 @@ def getGlobal(property):
         db_result = cur.fetchone()
         if (db_result):
             result = db_result[0]
-    except mdb.Error, e:
-        print "Error %d: %s" % (e.args[0],e.args[1])
     finally:
         if con:
             con.close()
