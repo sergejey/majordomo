@@ -21,7 +21,11 @@ function python_run_code($code, $params = '', $object = '') {
         $filePath = DOC_ROOT . '/cms/python/' . $fileName;
         $cmd = $python_path." ".$filePath.' \''.json_encode($params).'\' 2>&1';
 
-        $currentMd5=md5(LoadFile($filePath));
+        if (file_exists($filePath)) {
+            $currentMd5=md5(LoadFile($filePath));
+        } else {
+            $currentMd5='';
+        }
         if (md5($result_code)!=$currentMd5) {
             SaveFile($filePath,$result_code);
         }
@@ -63,7 +67,11 @@ function python_make_full_code($code, $object = '') {
         mkdir(DOC_ROOT . '/cms/python/',0777);
     }
     $constants_fileName = DOC_ROOT . '/cms/python/mjd_constants.py';
-    $current_md5=md5(LoadFile($constants_fileName));
+    if (file_exists($constants_fileName)) {
+        $current_md5=md5(LoadFile($constants_fileName));
+    } else {
+        $current_md5='';
+    }
     if ($current_md5!=md5($constants)) {
         SaveFile($constants_fileName,$constants);
     }

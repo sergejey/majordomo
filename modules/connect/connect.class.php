@@ -160,6 +160,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         curl_close($ch);
         //DebMes("Sending message result: $result",'connect_push');
@@ -209,7 +215,12 @@ class connect extends module
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
-
+            if (defined('USE_PROXY') && USE_PROXY != '') {
+                curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                }
+            }
             //execute post
             $result = curl_exec($ch);
             //close connection
@@ -399,6 +410,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
@@ -440,6 +457,12 @@ class connect extends module
             $tmpfname = ROOT . 'cms/cached/cookie.txt';
             curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
+            if (defined('USE_PROXY') && USE_PROXY != '') {
+                curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                }
+            }
             $result = curl_exec($ch);
             $data['content_type'] = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
             curl_close($ch);
@@ -515,6 +538,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
@@ -567,6 +596,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         if (curl_errno($ch) && !$background) {
             $errorInfo = curl_error($ch);
@@ -609,6 +644,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         if (curl_errno($ch) && !$background) {
             $errorInfo = curl_error($ch);
@@ -646,6 +687,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
         //close connection
@@ -716,7 +763,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
 
-
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
         //close connection
@@ -783,7 +835,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
-
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
 
@@ -915,7 +972,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
-
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
         //close connection
