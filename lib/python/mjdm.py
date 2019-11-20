@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from mjd_constants import *
 import urllib
-import urllib2
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 import re
 import MySQLdb as mdb
 import sys
