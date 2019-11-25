@@ -1189,6 +1189,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
     'DEVICES_GROUP_SUNSET' => 'Включать с закатом',
+    'DEVICES_GROUP_NIGHT' => 'Выключать при входе в ночной режим',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип устройства/сенсора',
     'DEVICES_LOADTYPE' => 'Тип устройства',

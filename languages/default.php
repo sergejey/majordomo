@@ -1193,6 +1193,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
     'DEVICES_GROUP_SUNSET' => 'Turn it on with Sunset',
+    'DEVICES_GROUP_NIGHT' => 'Turn it off entering Night mode',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',

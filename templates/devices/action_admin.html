@@ -16,12 +16,11 @@
  <!-- / table devices search -->
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
- [#if ID!=""#]
  [#if NO_NAV!="1"#]
  <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
  [#endif NO_NAV#]
  <div class="row">
-     <div [#if LINKED_OBJECT!="" && NO_NAV!="1"#]class="col-md-8"[#endif#]>
+     <div [#if NO_NAV!="1"#]class="col-md-8"[#endif#]>
          <!--#
          [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
          #-->
@@ -55,7 +54,7 @@
      [#endif LINKED_OBJECT#]
  </ul>
  &nbsp;<br/>
- [#endif ID#]
+
 
 [#if OK_MSG!=""#]
 <div class="alert alert-success">[#OK_MSG#]</div>
@@ -96,9 +95,12 @@
  [#endif TAB#]
 
      </div>
-     [#if LINKED_OBJECT!="" && NO_NAV!="1"#]
+     [#if NO_NAV!="1"#]
      <div class="col-md-4">
+
+         [#if LINKED_OBJECT!=""#]
          [#inc preview.html#]
+         [#endif LINKED_OBJECT#]
 
          [#if SHOW_METHODS#]
          <hr>
@@ -109,17 +111,23 @@
          [#end SHOW_METHODS#]
          [#endif SHOW_METHODS#]
 
+
          [#if OTHER_DEVICES#]
          <hr>
-         <h4>[#LOCATION_TITLE#]</h4>
+         <h4><#LANG_LOCATION#>: [#LOCATION_TITLE#]</h4>
          [#begin OTHER_DEVICES#]
          <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
          [#end OTHER_DEVICES#]
+         [#if ID!=""#]
+         &nbsp;<div>
+         <a href="?view_mode=edit_devices&location_id=<#LOCATION_ID#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+         </div>
+         [#endif ID#]
          [#endif#]
 
          [#if OTHER_DEVICES_TYPE#]
          <hr>
-         <h4>[#TYPE#]</h4>
+         <h4><#LANG_TYPE#>: [#TYPE_TITLE#]</h4>
          [#begin OTHER_DEVICES_TYPE#]
          <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
          [#end OTHER_DEVICES_TYPE#]
@@ -128,9 +136,8 @@
      </div>
      [#endif#]
  </div>
-
-
  [#endif VIEW_MODE#]
+
  <!-- / table devices edit -->
  <!-- table devices view --> 
  [#if VIEW_MODE="view_devices"#]

@@ -512,7 +512,6 @@ class xray extends module
                     $item['SELECTED'] = 1;
                 }
             }
-            $out['FILTER'] = gr('filter');
             $out['LINES'] = gr('lines');
         }
 
@@ -1047,6 +1046,7 @@ class xray extends module
             }
 
         }
+        $out['FILTER'] = gr('filter'); //
 
 
     }
