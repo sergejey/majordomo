@@ -105,6 +105,7 @@ $this->device_types=array(
             'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
+            'setTargetTemperature'=>array('DESCRIPTION'=>'Set target temperature'),
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
@@ -129,6 +130,7 @@ $this->device_types=array(
             'setMaxTurnOn'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SET_MAX,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSetMax'),
             ),
         'METHODS'=>array(
+            'setLevel'=>array('DESCRIPTION'=>'Set brightness level'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),

@@ -6,14 +6,19 @@ if ($threshold == 0) {
     $threshold = 0.25;
 }
 */
-$threshold = 0.5;
+if (isset($params['value'])) {
+    $threshold = $params['value'];
+} else {
+    $threshold = -0.5;
+}
 if ($status) {
     $targetTitle='normalTargetValue';
 } else {
     $targetTitle='ecoTargetValue';
 }
+
 $targetTemperature = $this->getProperty($targetTitle);
-$targetTemperature-=$threshold;
+$targetTemperature+=$threshold;
 $this->setProperty($targetTitle,$targetTemperature);
 
 $this->callMethod('valueUpdated');
