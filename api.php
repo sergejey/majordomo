@@ -213,22 +213,26 @@ if (!isset($request[0])) {
         $result['rooms'][]=$location;
     }
 } elseif (strtolower($request[0]) == 'module') {
-    $module_name = $request[1];
-    $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
+    $module_name = find_module($request[1]);
+	$module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
     if (file_exists($module_file)) {
         include_once($module_file);
         $module = new $module_name;
         if (method_exists($module,'api')) {
             $params = $_REQUEST;
             $r = $request;
-            array_shift($r);
+			array_shift($r);
             array_shift($r);
             $params['request']=$r;
-            $result['apiHandleResult']=$module->api($params);
+			$result['apiHandleResult']=$module->api($params);
         }
+		else
+			$result['error']="Not supported";
     }
+	else
+		$result['error']="Not found module";
 } elseif (strtolower($request[0]) == 'modulepropertyset' && isset($request[1])) {
-    $module_name = $request[1];
+    $module_name = find_module($request[1]);
     $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
     $object = gr('object');
     $property = gr('property');
@@ -401,4 +405,17 @@ function apiShutdown() {
     } elseif (isset($result['passed']) && $result['passed']>5) {
         DebMes("Result [".$result['passed']."] of : ".$_SERVER['REQUEST_URI'].' '.json_encode($result),'api_slow');
     }
+}
+
+
+function find_module($module_name) {
+
+    foreach (scandir(DIR_MODULES) as $f) 
+    {
+      if (strtolower($f) == strtolower($module_name))
+      {
+          return $f;
+      }
+    }
+    return '';
 }
