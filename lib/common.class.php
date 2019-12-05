@@ -1396,7 +1396,7 @@ function get_remote_filesize($url)
  * Возвращает число прописью
  */
 function num2str($num) {
-	if (!$num) return;
+    if (!$num OR !LANG_NUMBER_TO_STRING_UNIT) return;
     list($whole,$tenths) = explode('.',sprintf("%014.1f", floatval($num)));
     $out = array();
     if (intval($whole)>0) {
