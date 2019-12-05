@@ -1391,3 +1391,51 @@ function get_remote_filesize($url)
     }
     return $clen; // return size in bytes
 }
+
+/**
+ * Возвращает число прописью
+ */
+function num2str($num) {
+	if (!$num) return;
+    list($whole,$tenths) = explode('.',sprintf("%014.1f", floatval($num)));
+    $out = array();
+    if (intval($whole)>0) {
+        foreach(str_split($whole,3) as $uk=>$v) { // by 3 symbols
+            if (!intval($v)) continue;
+            $uk = sizeof(LANG_NUMBER_TO_STRING_UNIT)-$uk-1; // unit key
+            $gender = LANG_NUMBER_TO_STRING_UNIT[$uk][3];
+            list($i1,$i2,$i3) = array_map('intval',str_split($v,1));
+            // mega-logic
+            $out[] = LANG_NUMBER_TO_STRING_HUNDRED[$i1]; # 1xx-9xx
+			if ($tenths!=0) {
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 20-99
+                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 10-19 | 1-9
+			} else {
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_2TEN[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 20-99
+                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 10-19 | 1-9
+			}
+            // units without rub & kop
+            if ($uk>1) $out[]= num2straddon($v,LANG_NUMBER_TO_STRING_UNIT[$uk][0],LANG_NUMBER_TO_STRING_UNIT[$uk][1],LANG_NUMBER_TO_STRING_UNIT[$uk][2]);
+        } //foreach
+    }
+    else $out[] = LANG_NUMBER_TO_STRING_NULL;
+	if ($tenths!=0) {
+	    $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][1],LANG_NUMBER_TO_STRING_UNIT[1][2],LANG_NUMBER_TO_STRING_UNIT[1][2]); 
+        $out[] = LANG_NUMBER_TO_STRING_1TEN[1][$tenths].' '.num2straddon($tenths,LANG_NUMBER_TO_STRING_UNIT[0][0],LANG_NUMBER_TO_STRING_UNIT[0][1],LANG_NUMBER_TO_STRING_UNIT[0][1]); 
+	} else {
+	    $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0]); 
+	}
+    return trim(preg_replace('/ {2,}/', ' ', join(' ',$out)));
+}
+ 
+/**
+ * Склоняем словоформу
+ */
+function num2straddon($n, $f1, $f2, $f5) {
+    $n = abs(intval($n)) % 100;
+    if ($n>10 && $n<20) return $f5;
+    $n = $n % 10;
+    if ($n>1 && $n<5) return $f2;
+    if ($n==1) return $f1;
+    return $f5;
+}
