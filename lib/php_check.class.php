@@ -25,12 +25,13 @@ function php_syntax_error($code)
       $fileName = md5(time() . rand(0, 10000)) . '.php';
       $filePath = DOC_ROOT . '/cms/cached/' . $fileName;
       SaveFile($filePath, $code);
-      if (substr(php_uname(), 0, 7) == "Windows")
-      {
-         $cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
-      }
-      else
-      {
+      if (substr(php_uname(), 0, 7) == "Windows") {
+          if (defined('PATH_TO_PHP')) {
+             $cmd = PATH_TO_PHP . ' -l ' . $filePath;
+          } else {
+             $cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
+          }
+      } else {
          $cmd = 'php -l ' . $filePath;
       }
       exec($cmd, $out);
