@@ -1401,7 +1401,7 @@ $dictionary = array(
     'BLOCK_SENSOR' => 'Block sensor',
     'UNBLOCK_SENSOR' => 'Un-block sensor',
 
-    'TEST' => 'test'
+    'TEST' => 'test',
 
 
     /* end module names */
