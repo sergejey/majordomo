@@ -937,7 +937,14 @@ class objects extends module
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             $this->device_id &&
-            ($p_lower == 'value' || $p_lower == 'status' || $p_lower == 'disabled')
+            ($p_lower == 'value' ||
+                $p_lower == 'status' ||
+                $p_lower == 'disabled' ||
+                $p_lower == 'level' ||
+                $p_lower == 'volume' ||
+                $p_lower == 'channel' ||
+                $p_lower == 'mode' ||
+                $p_lower == 'currenttargetvalue') //
         ) {
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);
         }

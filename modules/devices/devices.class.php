@@ -647,7 +647,7 @@ class devices extends module
             if ($op == 'clicked') {
                 $object=gr('object');
                 if ($object !='') {
-                    $device_rec=SQLSelect("SELECT ID, TITLE FROM devices WHERE LINKED_OBJECT='".DBSafe($object)."'");
+                    $device_rec=SQLSelectOne("SELECT ID, TITLE FROM devices WHERE LINKED_OBJECT='".DBSafe($object)."'");
                     if ($device_rec['ID']) {
                         SQLExec("UPDATE devices SET CLICKED=NOW() WHERE ID='".$device_rec['ID']."'");
                         logAction('device_clicked',$device_rec['TITLE']);
@@ -689,6 +689,14 @@ class devices extends module
         global $type;
 
         $qry="1";
+
+        $linked_object = gr('linked_object');
+        if ($linked_object) {
+            $device_rec=SQLSelectOne("SELECT ID FROM devices WHERE LINKED_OBJECT='".DbSafe($linked_object)."'");
+            if ($device_rec['ID']) {
+                $this->id=$device_rec['ID'];
+            }
+        }
 
         $out['UNIQ']=uniqid('dev'.$this->id);
         
