@@ -31,6 +31,7 @@ $this->device_types=array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
             'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
+            'keepAlive'=>array('DESCRIPTION'=>'Alive update'),
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(

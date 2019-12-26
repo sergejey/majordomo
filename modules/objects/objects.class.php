@@ -499,22 +499,31 @@ class objects extends module
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
         $call_stack = array();
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
-            $call_stack = $_GET['m_c_s'];
-        }
 
+        global $m_c_s;
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+            $m_c_s = $_GET['m_c_s'];
+        }
+        if (is_array($m_c_s)) {
+            $call_stack = $m_c_s;
+        }
         if (in_array($current_call, $call_stack)) {
             $call_stack[] = $current_call;
             DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
             return 0;
         }
-
         $call_stack[] = $current_call;
+        $m_c_s = $call_stack;
+
         if (!is_array($params)) {
             $params = array();
         }
-        $params['m_c_s'] = $call_stack;
-        $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
+        if (isSet($_SERVER['REQUEST_URI'])) {
+            $result = $this->callMethod($name, $params);
+        } else {
+            $params['m_c_s'] = $call_stack;
+            $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
+        }
         endMeasure('callMethodSafe');
         return $result;
     }

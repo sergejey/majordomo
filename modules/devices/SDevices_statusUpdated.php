@@ -7,17 +7,9 @@ if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
     $this->setProperty('updated', time());
     $this->callMethodSafe('setUpdatedText');
 }
-if ($this->getProperty('alive') == 0) {
-    $this->setProperty('alive', 1);
-}
 
 
-$alive_timeout = (int)$this->getProperty('aliveTimeout') * 60 * 60;
-if (!$alive_timeout) {
-    $alive_timeout = 2 * 24 * 60 * 60; // 2 days alive timeout by default
-}
-
-setTimeout($ot . '_alive_timer', 'setGlobal("' . $ot . '.alive", 0);', $alive_timeout);
+$this->callMethod('keepAlive');
 
 //$need_call_logic_action = 1;
 

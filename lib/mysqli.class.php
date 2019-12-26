@@ -130,15 +130,15 @@ class mysql
 
       if (IsWindowsOS()) {
          if ($this->port) {
-            $this->dbh = mysqli_connect($this->host . ":" . $this->port, $this->user, $this->password);
+            $this->dbh = mysqli_connect($this->host, $this->user, $this->password, $this->dbName,$this->port);
          } else {
-            $this->dbh = mysqli_connect($this->host , $this->user, $this->password);
+            $this->dbh = mysqli_connect($this->host , $this->user, $this->password, $this->dbName);
          }
       } else {
          if ($this->port) {
-            $this->dbh = mysqli_connect('p:'.$this->host . ":" . $this->port, $this->user, $this->password);
+            $this->dbh = mysqli_connect('p:'.$this->host, $this->user, $this->password,$this->dbName,$this->port);
          } else {
-            $this->dbh = mysqli_connect('p:'.$this->host , $this->user, $this->password);
+            $this->dbh = mysqli_connect('p:'.$this->host , $this->user, $this->password,$this->dbName);
          }
       }
 
@@ -147,17 +147,12 @@ class mysql
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
          return 0;
-         //die('Can\'t connect to database ('.$err_no . ": " . $err_details.')');
-         //registerError('sqlconn', $err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
-         //new custom_error($err_no . ": " . $err_details, 1);
-         //exit(1);
       }
-      $db_select = mysqli_select_db($this->dbh, $this->dbName);
+      //$db_select = mysqli_select_db($this->dbh, $this->dbName);
+      $db_select = true;
       if (!$db_select) {
          Define('NO_DATABASE_CONNECTION',1);
          die("Selecting db: ".$this->dbName);
-         //$this->Error("Selecting db: ".$this->dbName, 0);
-         //exit(1);
       } else
       {
          $this->latestTransaction=time();

@@ -985,6 +985,23 @@ function callMethodSafe($method_name, $params = 0)
 
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
+    $is_child = false;
+
+    if (function_exists('pcntl_fork')) {
+        $child_pid = pcntl_fork();
+        if ($child_pid == -1) {
+            //error
+        } elseif ($child_pid) {
+            // parent
+            pcntl_wait($status, WNOHANG);
+            return true;
+        } else {
+            // child
+            $is_child = true;
+            register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+        }
+    }
+
 
     startMeasure('callAPI');
     if (!is_array($params)) {
@@ -1020,6 +1037,17 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     curl_exec($api_ch);
 
     endMeasure('callAPI');
+
+    if ($is_child) {
+        exit();
+        /*
+        if (function_exists('posix_kill')) {
+            posix_kill(getmypid(), SIGKILL);
+        } else {
+            exit();
+        }
+        */
+    }
     
     return true;
 
