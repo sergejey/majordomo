@@ -20,7 +20,7 @@ def callAPI(api_url, method = "GET", params = ""):
     params['no_session']=1
     url = re.sub(r"^/api/", BASE_URL+ROOTHTML+'api.php/', api_url)
 
-    data = urllib.urlencode(params)
+    data = urllib.parse.urlencode(params)
     if (method == "POST"):
         req = urllib2.Request(url, data)
         response = urllib2.urlopen(req)
