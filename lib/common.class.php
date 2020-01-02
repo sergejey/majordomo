@@ -665,6 +665,9 @@ function runScript($id, $params = '')
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
+    if (is_array($params)) {
+        $current_call.='.'.md5(json_encode($params));
+    }
     $call_stack = array();
     global $m_c_s;
     if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {

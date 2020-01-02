@@ -43,7 +43,7 @@
      for(var i=0;i<objCnt;i++) {
       var device_id=obj.DATA[i].DEVICE_ID;
       var html=obj.DATA[i].DATA;
-      $('.device'+device_id).html(html);
+      $('.device<#UNIQ#>_'+device_id).html(html);
      }
     }
    }

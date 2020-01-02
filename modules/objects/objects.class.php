@@ -498,6 +498,9 @@ class objects extends module
     {
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
+        if (is_array($params)) {
+            $current_call.='.'.md5(json_encode($params));
+        }
         $call_stack = array();
 
         global $m_c_s;
