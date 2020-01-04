@@ -496,6 +496,7 @@ class objects extends module
 
     function callMethodSafe($name, $params = 0)
     {
+        //
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
         if (is_array($params)) {
@@ -512,7 +513,7 @@ class objects extends module
         }
         if (in_array($current_call, $call_stack)) {
             $call_stack[] = $current_call;
-            DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
+            DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> ", $call_stack)."\n URL: ".$_SERVER['REQUEST_URI']);
             return 0;
         }
         $call_stack[] = $current_call;
@@ -543,9 +544,13 @@ class objects extends module
 
         if (!$parentClassId) {
             verbose_log("Method [" . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")");
+            //dprint("Method [" . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")",false);
         } else {
             verbose_log("Class method [" . $this->class_title . '/' . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")");
+            //dprint("Class method [" . $this->class_title . '/' . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")",false);
         }
+        //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        //echo "<hr>";
         startMeasure('callMethod');
 
         $original_method_name = $this->object_title . '.' . $name;
