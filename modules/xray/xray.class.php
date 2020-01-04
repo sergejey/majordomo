@@ -483,7 +483,13 @@ class xray extends module
         }
 
         if ($this->view_mode == '') {
-            $path = ROOT . 'cms/debmes';
+            if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+                $path = SETTINGS_SYSTEM_DEBMES_PATH;
+            } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+                $path = LOG_DIRECTORY;
+            } else {
+                $path = ROOT . 'cms/debmes';
+            }
             if ($handle = opendir($path)) {
                 $files = array();
                 while (false !== ($entry = readdir($handle))) {
@@ -506,7 +512,6 @@ class xray extends module
                     $item['SELECTED'] = 1;
                 }
             }
-            $out['FILTER'] = gr('filter');
             $out['LINES'] = gr('lines');
         }
 
@@ -528,6 +533,7 @@ class xray extends module
                     echo '<th>PROPERTY</th>';
                     echo '<th>VALUE</th>';
                     echo '<th>UPDATED</th>';
+                    echo '<th>SOURCE</th>';
                     echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
@@ -537,11 +543,14 @@ class xray extends module
                             echo "<br><small style='font-size:9px'>" . $res[$i]['OBJECT_DESCRIPTION'] . "</small>";
                         }
                         echo '</td>';
-                        echo '<td>';
+                        echo '<td style="word-wrap: break-word;max-width: 500px; ">';
                         echo htmlspecialchars($res[$i]['VALUE']) . '&nbsp;';
                         echo '</td>';
                         echo '<td>';
                         echo $res[$i]['UPDATED'] . '&nbsp;';
+                        echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['SOURCE'] . '&nbsp;';
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -561,13 +570,21 @@ class xray extends module
 
                     $files = $out['FILES'];
 
+                    if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+                        $path = SETTINGS_SYSTEM_DEBMES_PATH;
+                    } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+                        $path = LOG_DIRECTORY;
+                    } else {
+                        $path = ROOT . 'cms/debmes';
+                    }
+
 
                     $result = array();
 
                     foreach ($files as $file_item) {
                         if ($file_item['SELECTED']) {
                             $file = $file_item['TITLE'];
-                            $filename = ROOT . 'cms/debmes/' . $file;
+                            $filename = $path . '/' . $file;
                             if (file_exists($filename)) {
                                 $data = LoadFile($filename);
                             } else {
@@ -694,6 +711,7 @@ class xray extends module
                     echo '<th>METHOD</th>';
                     echo '<th>PARAMS</th>';
                     echo '<th>EXECUTED</th>';
+                    echo '<th>SOURCE</th>';
                     echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
@@ -717,6 +735,9 @@ class xray extends module
                         echo '<td>';
                         echo $res[$i]['EXECUTED'] . '&nbsp;';
                         echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['EXECUTED_SRC'] . '&nbsp;';
+                        echo '</td>';
                         echo '</tr>';
                     }
                     echo '</table>';
@@ -734,6 +755,7 @@ class xray extends module
                     echo '<th>SCRIPT</th>';
                     echo '<th>PARAMS</th>';
                     echo '<th>EXECUTED</th>';
+                    echo '<th>SOURCE</th>';
                     echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
@@ -748,6 +770,9 @@ class xray extends module
                         echo '</td>';
                         echo '<td>';
                         echo $res[$i]['EXECUTED'] . '&nbsp;';
+                        echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['EXECUTED_SRC'] . '&nbsp;';
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -1021,6 +1046,7 @@ class xray extends module
             }
 
         }
+        $out['FILTER'] = gr('filter'); //
 
 
     }

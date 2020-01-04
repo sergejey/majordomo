@@ -418,7 +418,7 @@ if ($this->mode == 'update' && $this->tab == '') {
             $this->addDeviceToSourceTable($out['SOURCE_TABLE'], $out['SOURCE_TABLE_ID'], $rec['ID']);
         }
 
-        $this->homebridgeSync($rec['ID']);
+        $this->homebridgeSync($rec['ID'],1);
 
         if ($added) {
             $this->redirect("?view_mode=edit_devices&id=" . $rec['ID'] . "&tab=settings");
@@ -436,6 +436,12 @@ if (is_array($rec)) {
         }
     }
 }
+
+if (!$rec['LOCATION_ID']) {
+    $rec['LOCATION_ID']=gr('location_id','int');
+}
+
+
 outHash($rec, $out);
 
 
@@ -443,6 +449,9 @@ $types = array();
 foreach ($this->device_types as $k => $v) {
     if ($v['TITLE']) {
         $types[] = array('NAME' => $k, 'TITLE' => $v['TITLE']);
+    }
+    if ($k==$rec['TYPE'] && $rec['TYPE']!='') {
+        $out['TYPE_TITLE']=$v['TITLE'];
     }
 }
 
@@ -458,6 +467,7 @@ usort($types, function ($a, $b) {
 $out['TYPES'] = $types;
 
 $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
+
 
 if ($rec['LOCATION_ID']) {
     $location_rec = SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=" . $rec['LOCATION_ID']);

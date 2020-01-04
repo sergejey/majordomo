@@ -109,4 +109,14 @@ function simplisticErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
     }
 }
 
+function phpShutDownFunction() {
+    $error = error_get_last();
+    if ($error['type'] === E_ERROR) {
+        DebMes("PHP shutdown error: ".$error['message'],'error');
+        $err = new custom_error($error['message']);
+    }
+}
+
+register_shutdown_function('phpShutDownFunction');
+
 //set_error_handler("simplisticErrorHandler");

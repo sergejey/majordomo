@@ -1189,6 +1189,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
     'DEVICES_GROUP_SUNSET' => 'Включать с закатом',
+    'DEVICES_GROUP_NIGHT' => 'Выключать при входе в ночной режим',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип устройства/сенсора',
     'DEVICES_LOADTYPE' => 'Тип устройства',
@@ -1399,9 +1400,27 @@ $dictionary = array(
     'BLOCK_SENSOR' => 'Блокировать датчик',
     'UNBLOCK_SENSOR' => 'Разблокировать датчик',
 
+    'VALIDATION_TYPE' => 'Проверка значений',
+    'VALIDATION_TYPE_NUMBER' => 'Число в диапазоне',
+    'VALIDATION_TYPE_BINARY' => 'Бинарное значение (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'По словарю',
+    'VALIDATION_TYPE_CUSTOM' => 'Расширенный (кодом)',
+
+    'REMINDER_INTRO' => 'Напоминаю, что',
+
     /* end module names */
 
-
+    /* start array for convert number to string */
+    
+	'NUMBER_TO_STRING_1TEN' => array(array('','один','два','три','четыре','пять','шесть','семь', 'восемь','девять'), array('','одна','две','три','четыре','пять','шесть','семь', 'восемь','девять')),
+	'NUMBER_TO_STRING_2TEN' => array('десять','одиннадцать','двенадцать','тринадцать','четырнадцать' ,'пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать'),
+	'NUMBER_TO_STRING_TENS' => array(2=>'двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят' ,'восемьдесят','девяносто'),
+	'NUMBER_TO_STRING_HUNDRED' => array('','сто','двести','триста','четыреста','пятьсот','шестьсот', 'семьсот','восемьсот','девятьсот'),
+	'NUMBER_TO_STRING_UNIT' => array(array('десятая' ,'десятых' ,	 1), array(' '   ,' целая'   ,'целых '    ,0), array('тысяча'  ,'тысячи'  ,'тысяч'     ,1), array('миллион' ,'миллиона','миллионов' ,0), array('миллиард','милиарда','миллиардов',0)),
+	'NUMBER_TO_STRING_NULL' => 'ноль',
+	
+    /* end array for convert number to string  */
+    
 );
 
 foreach ($dictionary as $k => $v) {

@@ -239,6 +239,7 @@ if ($view_mode2 == 'edit_elements') {
         }
 
         $element['DEVICE_ID'] = gr('device_id', 'int');
+        $element['CLASS_TEMPLATE'] = gr('class_template');
 
         global $linked_object;
         $element['LINKED_OBJECT'] = $linked_object . '';

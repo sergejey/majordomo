@@ -451,6 +451,7 @@ class module
      */
     public function dbInstall($data)
     {
+
         $need_optimzation = array();
         $table_defined = array();
 
@@ -515,9 +516,7 @@ class module
                 if (!isset($tbl_indexes[$table][$key_name])) {
                     $definition = str_replace('`', '', $definition);
                     $sql = "ALTER TABLE $table ADD $definition;";
-
                     SQLExec($sql);
-
                     $to_optimize[] = $table;
                 }
             } elseif (!isset($tbl_fields[$table][$field])) {

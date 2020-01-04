@@ -57,10 +57,3 @@ if (defined('DB_HOST') && DB_HOST) {
     $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
     endMeasure('db_connection');
 }
-
-/*
-// Insert the path where you unpacked log4php
-require_once dirname(__FILE__) . '/log4php/Logger.php';
-// Tell log4php to use our configuration file.
-Logger::configure(dirname(__FILE__) . '/log4php/config.php');
-*/

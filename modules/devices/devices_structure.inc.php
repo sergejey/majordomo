@@ -31,6 +31,7 @@ $this->device_types=array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
             'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
+            'keepAlive'=>array('DESCRIPTION'=>'Alive update'),
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(
@@ -38,6 +39,7 @@ $this->device_types=array(
                 'EconomMode.deactivate'=>'econommode_deactivate',
                 'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
+                'NightMode.activate'=>'nightmode_activate',
                 'DarknessMode.activate'=>'darknessmode_activate',
                 'DarknessMode.deactivate'=>'darknessmode_deactivate',
                 'System.checkstate'=>'system_checkstate',
@@ -53,6 +55,7 @@ $this->device_types=array(
             'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEcoOn'),
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunrise'),
             'groupSunset'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNSET,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunset'),
+            'groupNight'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_NIGHT,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupNight'),
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,
                 '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdLoadType',
@@ -103,6 +106,7 @@ $this->device_types=array(
             'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
+            'setTargetTemperature'=>array('DESCRIPTION'=>'Set target temperature'),
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
@@ -127,6 +131,7 @@ $this->device_types=array(
             'setMaxTurnOn'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SET_MAX,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSetMax'),
             ),
         'METHODS'=>array(
+            'setLevel'=>array('DESCRIPTION'=>'Set brightness level'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),

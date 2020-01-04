@@ -83,6 +83,7 @@ if ($component_id) {
                 SQLUpdate('plan_components',$component);
             } else {
                 $component['ID']=SQLInsert('plan_components',$component);
+                $component_id = $component['ID'];
             }
             $out['OK']=1;
             //$this->redirect("?view_mode=".$this->view_mode."&id=".$plan_id."&tab=".$this->tab);

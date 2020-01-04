@@ -165,7 +165,7 @@ class control_modules extends module
         $dir = openDir(DIR_MODULES);
         $lst = array();
         while ($file = readDir($dir)) {
-            if ((Is_Dir(DIR_MODULES . "$file")) && ($file != ".") && ($file != "..")) {
+            if ((Is_Dir(DIR_MODULES . $file)) && ($file != ".") && ($file != "..")) {
                 $rec = array();
                 $rec['FILENAME'] = $file;
                 $lst[] = $rec;

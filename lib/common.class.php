@@ -665,9 +665,16 @@ function runScript($id, $params = '')
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
+    if (is_array($params)) {
+        $current_call.='.'.md5(json_encode($params));
+    }
     $call_stack = array();
+    global $m_c_s;
     if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
-        $call_stack = $_GET['m_c_s'];
+        $m_c_s = $_GET['m_c_s'];
+    }
+    if (is_array($m_c_s)) {
+        $call_stack = $m_c_s;
     }
     if (in_array($current_call, $call_stack)) {
         $call_stack[] = $current_call;
@@ -675,20 +682,19 @@ function runScriptSafe($id, $params = '')
         return 0;
     }
     $call_stack[] = $current_call;
-    $data = array(
-        'script' => $id,
-        'm_c_s' => $call_stack
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
+    $m_c_s = $call_stack;
+    if (!is_array($params)) {
+        $params = array();
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
+    if (isSet($_SERVER['REQUEST_URI'])) {
+        $result = runScript($id,$params);
+    } else {
+        $params['m_c_s'] = $call_stack;
+        if (session_id()) {
+            $params[session_name()] = session_id();
         }
+        $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
     }
-    $result = getURLBackground($url, 0);
     return $result;
 }
 
@@ -1390,4 +1396,56 @@ function get_remote_filesize($url)
         return '0';
     }
     return $clen; // return size in bytes
+}
+
+/**
+ * Returns number spelling
+ */
+function num2str($num) {
+
+    if (!$num) return;
+
+    if (!defined('LANG_NUMBER_TO_STRING_UNIT')) return $num;
+
+    list($whole,$tenths) = explode('.',sprintf("%014.1f", floatval($num)));
+    $out = array();
+    if (intval($whole)>0) {
+        foreach(str_split($whole,3) as $uk=>$v) { // by 3 symbols
+            if (!intval($v)) continue;
+            $uk = sizeof(LANG_NUMBER_TO_STRING_UNIT)-$uk-1; // unit key
+            $gender = LANG_NUMBER_TO_STRING_UNIT[$uk][3];
+            list($i1,$i2,$i3) = array_map('intval',str_split($v,1));
+            // mega-logic
+            $out[] = LANG_NUMBER_TO_STRING_HUNDRED[$i1]; # 1xx-9xx
+            if ($tenths!=0) {
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 20-99
+                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 10-19 | 1-9
+            } else {
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_2TEN[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 20-99
+                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 10-19 | 1-9
+            }
+            // units without rub & kop
+            if ($uk>1) $out[]= num2straddon($v,LANG_NUMBER_TO_STRING_UNIT[$uk][0],LANG_NUMBER_TO_STRING_UNIT[$uk][1],LANG_NUMBER_TO_STRING_UNIT[$uk][2]);
+        } //foreach
+    }
+    else $out[] = LANG_NUMBER_TO_STRING_NULL;
+    if ($tenths!=0) {
+        $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][1],LANG_NUMBER_TO_STRING_UNIT[1][2],LANG_NUMBER_TO_STRING_UNIT[1][2]);
+        $out[] = LANG_NUMBER_TO_STRING_1TEN[1][$tenths].' '.num2straddon($tenths,LANG_NUMBER_TO_STRING_UNIT[0][0],LANG_NUMBER_TO_STRING_UNIT[0][1],LANG_NUMBER_TO_STRING_UNIT[0][1]);
+    } else {
+        $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0]);
+    }
+    return trim(preg_replace('/ {2,}/', ' ', join(' ',$out)));
+}
+
+/**
+ * Addition to num2str
+ */
+function num2straddon($n, $f1, $f2, $f5) {
+    $n = abs(intval($n)) % 100;
+    if ($n>10 && $n<20) return $f5;
+    $n = $n % 10;
+    if ($n>1 && $n<5) return $f2;
+    if ($n==1) return $f1;
+    return $f5;
 }

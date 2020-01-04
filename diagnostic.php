@@ -170,7 +170,13 @@ if (isset($_POST['send'])) {
       mkdir('./cms/saverestore/temp/cms',0777);
       mkdir('./cms/saverestore/temp/cms/debmes',0777);
       $log_expire=24*60*60;
-      $log_path='./cms/debmes';
+      if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+         $log_path = SETTINGS_SYSTEM_DEBMES_PATH;
+      } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+         $log_path = LOG_DIRECTORY;
+      } else {
+         $log_path = ROOT . 'cms/debmes';
+      }
       $files=scandir($log_path);
       foreach($files as $file) {
          if (is_file($log_path.'/'.$file) && (time()-filemtime($log_path.'/'.$file)<$log_expire)) {

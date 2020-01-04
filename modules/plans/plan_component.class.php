@@ -60,6 +60,7 @@ class plan_component extends stdClass
             } else {
                 $property['VALUE'] = $property['DEFAULT'];
             }
+            $property['VALUE_HTML']=htmlspecialchars($property['VALUE']);
         }
     }
 

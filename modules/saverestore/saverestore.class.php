@@ -1302,6 +1302,10 @@ class saverestore extends module
             }
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/config.php');
 
+            if (file_exists(ROOT.'scripts/cycle_db_save.php') && file_exists(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php')) {
+                rename(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php',ROOT . 'cms/saverestore/temp' . $folder . '/scripts/cycle_db_save.php');
+            }
+
             if ($iframe) {
                 $this->echonow(" OK<br/> ", 'green');
             }

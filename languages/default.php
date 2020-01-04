@@ -1193,6 +1193,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
     'DEVICES_GROUP_SUNSET' => 'Turn it on with Sunset',
+    'DEVICES_GROUP_NIGHT' => 'Turn it off entering Night mode',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
@@ -1401,10 +1402,27 @@ $dictionary = array(
     'BLOCK_SENSOR' => 'Block sensor',
     'UNBLOCK_SENSOR' => 'Un-block sensor',
 
-    'TEST' => 'test'
+    'VALIDATION_TYPE' => 'Value validation',
+    'VALIDATION_TYPE_NUMBER' => 'Number (in range)',
+    'VALIDATION_TYPE_BINARY' => 'Binary value (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'Dictionary match',
+    'VALIDATION_TYPE_CUSTOM' => 'Custom (code)',
+    'REMINDER_INTRO' => 'May I remind you that',
 
-
+    'TEST' => 'test',
+    
     /* end module names */
+
+    /* start array for convert number to string */
+    
+	'NUMBER_TO_STRING_1TEN' => array( array('','one','two','three','four','five','six','seven', 'eight','nine'), array('','one','two','three','four','five','six','seven', 'eight','nine')),
+	'NUMBER_TO_STRING_2TEN' => array('ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'),
+	'NUMBER_TO_STRING_TENS' => array(2=>'twenty ',' thirty ',' forty ',' fifty ',' sixty ',' seventy ',' eighty ',' ninety '),
+	'NUMBER_TO_STRING_HUNDRED' => array('','one hundred','two hundred','three hundred','four hundred','five hundred','six hundred', 'seven hundred','eight hundred','nine hundred'),
+	'NUMBER_TO_STRING_UNIT' => array(array(' ' ,' ' , 1), array(' ' ,' point'   ,' point' ,0),array('thousand ',' thousands', 'thousands'     ,1), array('million ',' million ',' millions' ,0), array('billion', 'billion', 'billion',0)),
+	'NUMBER_TO_STRING_NULL' => 'zero',
+	
+    /* end array for convert number to string  */
 
 
 );

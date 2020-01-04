@@ -535,10 +535,14 @@ function setLocalTime($now_date, $diff = 0)
 function DebMes($errorMessage, $logLevel = "debug")
 {
 
-   if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
-    $path=LOG_DIRECTORY;
+   if (defined('SETTINGS_SYSTEM_DISABLE_DEBMES') && SETTINGS_SYSTEM_DISABLE_DEBMES==1) return;
+
+   if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+      $path = SETTINGS_SYSTEM_DEBMES_PATH;
+   } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+      $path = LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'cms/debmes';
+      $path = ROOT . 'cms/debmes';
    }
 
    if (defined('LOG_MAX_SIZE') && LOG_MAX_SIZE>0) {
@@ -550,6 +554,7 @@ function DebMes($errorMessage, $logLevel = "debug")
    // DEBUG MESSAGE LOG
    if (!is_dir($path))
    {
+      umask(0);
       mkdir($path, 0777);
    }
    if (is_array($errorMessage) || is_object($errorMessage)) {

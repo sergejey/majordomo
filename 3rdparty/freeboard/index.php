@@ -58,7 +58,7 @@ if ($_GET['theme']) {
             }
         </style>
     <?php }?>
-    <link href="/css/devices.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/devices.css?v=19-10-15" rel="stylesheet" type="text/css"/>
 
     <?php
 
@@ -148,7 +148,7 @@ if ($_GET['theme']) {
             for ($i = 0; $i < $total; $i++) {
                 $path=DIR_MODULES.$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php';
                 if (file_exists($path)) {
-                    echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php",';
+                    echo '"'.ROOTHTML."modules/".$modules[$i]['NAME'].'/'.$modules[$i]['NAME'].'_widgets.js.php?theme='.$_GET['theme'].'",';
                 }
             }
 

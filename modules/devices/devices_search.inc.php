@@ -32,10 +32,14 @@ if ($group_name=='manage_groups') {
         $object_names=array(0);
     }
     $total = count($object_names);
-    for($i=0;$i<$total;$i++) {
-        $object_names[$i]="'".$object_names[$i]."'";
+    if ($total>0) {
+        for($i=0;$i<$total;$i++) {
+            $object_names[$i]="'".$object_names[$i]."'";
+        }
+        $qry.=" AND devices.LINKED_OBJECT IN (".implode(',',$object_names).")";
+    } else {
+        $qry.=" AND 0";
     }
-    $qry.=" AND devices.LINKED_OBJECT IN (".implode(',',$object_names).")";
     $out['GROUP_NAME']=$group_name;
 }
 
@@ -104,4 +108,9 @@ $out['LOCATIONS']=$locations;
 //var_dump($this->getWatchedProperties(0));exit;
 
 $groups = SQLSelect("SELECT * FROM devices_groups ORDER BY TITLE");
+$groups[] = array('SYS_NAME'=>'Eco','TITLE'=>LANG_DEVICES_GROUP_ECO);
+$groups[] = array('SYS_NAME'=>'EcoOn','TITLE'=>LANG_DEVICES_GROUP_ECO_ON);
+$groups[] = array('SYS_NAME'=>'Sunrise','TITLE'=>LANG_DEVICES_GROUP_SUNRISE);
+$groups[] = array('SYS_NAME'=>'Sunset','TITLE'=>LANG_DEVICES_GROUP_SUNSET);
+$groups[] = array('SYS_NAME'=>'Night','TITLE'=>LANG_DEVICES_GROUP_NIGHT);
 $out['GROUPS']=$groups;

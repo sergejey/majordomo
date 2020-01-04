@@ -1,4 +1,5 @@
 .device-widget {
+    min-width:250px;
     max-width:350px;
     padding:5px;
     border:1px solid transparent;
@@ -9,6 +10,32 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.device-widget.mini {
+    padding:5px;
+    min-width:150px; //
+    max-width:150px;
+    width:150px;
+    border:none;
+}
+
+.device-widget.mini.controller {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
+}
+
+.device-widget.mini.motion {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
+}
+
+.device-widget.mini.camera {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
 }
 
 .device-widget.offline {
@@ -28,6 +55,15 @@
     height:40px;
     float:left;
 }
+
+.mini .device-icon {
+    margin-right:3px;
+}
+
+.mini .device-header {
+    margin-top:8px;
+}
+
 .device-header {
     font-size:18px;
 }
@@ -82,6 +118,9 @@
     font-weight:bold;
 }
 
+.device-icon.camera {
+    background-image: url(../cms/scenes/styles/common/i_camera_on.png);
+}
 
 .device-icon.motion {
     background-image: url(../cms/scenes/styles/informer/i_motion.png);

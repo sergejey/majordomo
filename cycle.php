@@ -20,6 +20,8 @@ include_once("./lib/threads.php");
 set_time_limit(0);
 
 $db_filename  = ROOT . 'database_backup/db.sql';
+$db_history_filename  = ROOT . 'database_backup/db_history.sql';
+
 $connected = false;
 $total_restarts = 0;
 while (!$connected) {
@@ -95,9 +97,20 @@ $dirs_to_check = array(
     ROOT . 'cms/cached/templates_c',
 );
 
+if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+   $path = SETTINGS_SYSTEM_DEBMES_PATH;
+} elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+   $path = LOG_DIRECTORY;
+} else {
+   $path = ROOT . 'cms/debmes';
+}
+$dirs_to_check[]=$path;
+
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
    $dirs_to_check[]=SETTINGS_BACKUP_PATH;
 }
+
+
 
 foreach ($dirs_to_check as $d) {
    if (!is_dir($d)) {
@@ -111,13 +124,23 @@ foreach ($dirs_to_check as $d) {
 //restoring database backup (if was saving periodically)
 if (file_exists($db_filename))
 {
-   echo "Running: mysql restore from file: " . $db_filename . PHP_EOL;
-   DebMes("Running: mysql restore from file: " . $db_filename);
+   echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
+   DebMes("Running: mysql main db restore from file: " . $db_filename);
    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
    $mysqlParam = " -u " . DB_USER;
    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
    $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
    exec($mysql_path . $mysqlParam);
+   
+   if (file_exists($db_history_filename)) {
+      echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
+      DebMes("Running: mysql history db restore from file: " . $db_history_filename);
+      $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+      $mysqlParam = " -u " . DB_USER;
+      if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+      $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
+      exec($mysql_path . $mysqlParam);
+   }
 }
 
 include_once("./load_settings.php"); //

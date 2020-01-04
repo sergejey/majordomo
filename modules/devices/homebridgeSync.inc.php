@@ -25,6 +25,10 @@ for ($i = 0; $i < $total; $i++) {
         continue;
     }
 
+    if ($force_refresh) {
+        sg('HomeBridge.to_remove', json_encode($payload));
+    }
+
     $payload['service_name'] = processTitle($devices[$i]['TITLE']);
 
     switch ($devices[$i]['TYPE']) {

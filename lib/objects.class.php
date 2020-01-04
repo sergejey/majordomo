@@ -41,7 +41,7 @@ function addClass($class_name, $parent_class = '')
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getClassTemplate($class_id)
+function getClassTemplate($class_id,$view='')
 {
 
     $can_cache = false;
@@ -50,16 +50,21 @@ function getClassTemplate($class_id)
         global $class_templates_cached;
     }
 
-    if ($can_cache && isset($class_templates_cached[$class_id])) {
-        return $class_templates_cached[$class_id];
+    if ($can_cache && isset($class_templates_cached[$class_id.'_'.$view])) {
+        return $class_templates_cached[$class_id.'_'.$view];
     }
 
     $class = SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=" . $class_id);
     if (!$class['ID']) {
         return '';
     }
-    $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '.html';
-    $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '.html';
+    if ($view!='' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html')) {
+        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html';
+        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_'.$view.'.html';
+    } else {
+        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '.html';
+        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '.html';
+    }
     if ($class['TEMPLATE'] != '') {
         $data = $class['TEMPLATE'];
     } elseif (file_exists($alt_class_file_path)) {
@@ -67,7 +72,7 @@ function getClassTemplate($class_id)
     } elseif (file_exists($class_file_path)) {
         $data = LoadFile($class_file_path);
     } elseif ($class['PARENT_ID']) {
-        $data = getClassTemplate($class['PARENT_ID']);
+        $data = getClassTemplate($class['PARENT_ID'],$view);
     } else {
         //$data='Template for ['.$class['TITLE'].'] not found';
         $data = '<b>%.object_title%</b>';
@@ -83,7 +88,7 @@ function getClassTemplate($class_id)
     }
 
     if ($can_cache) {
-        $class_templates_cached[$class_id] = $data;
+        $class_templates_cached[$class_id.'_'.$view] = $data;
     }
 
     return $data;
@@ -94,7 +99,7 @@ function getClassTemplate($class_id)
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getObjectClassTemplate($object_name)
+function getObjectClassTemplate($object_name,$view='')
 {
     startMeasure('getObjectClassTemplate');
     startMeasure('getObject');
@@ -123,7 +128,7 @@ function getObjectClassTemplate($object_name)
     $object->description = $rec['DESCRIPTION'];
     endMeasure('getObject');
     startMeasure('getClassTemplate');
-    $data = getClassTemplate((int)$object->class_id);
+    $data = getClassTemplate((int)$object->class_id,$view);
     endMeasure('getClassTemplate');
     $data = preg_replace('/%\.object_title%/uis', $object_name, $data);
     $data = preg_replace('/%\.object_id%/uis', $object->id, $data);
@@ -980,6 +985,23 @@ function callMethodSafe($method_name, $params = 0)
 
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
+    $is_child = false;
+
+    if (function_exists('pcntl_fork')) {
+        $child_pid = pcntl_fork();
+        if ($child_pid == -1) {
+            //error
+        } elseif ($child_pid) {
+            // parent
+            pcntl_wait($status, WNOHANG);
+            return true;
+        } else {
+            // child
+            $is_child = true;
+            register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+        }
+    }
+
 
     startMeasure('callAPI');
     if (!is_array($params)) {
@@ -1015,6 +1037,17 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     curl_exec($api_ch);
 
     endMeasure('callAPI');
+
+    if ($is_child) {
+        exit();
+        /*
+        if (function_exists('posix_kill')) {
+            posix_kill(getmypid(), SIGKILL);
+        } else {
+            exit();
+        }
+        */
+    }
     
     return true;
 
