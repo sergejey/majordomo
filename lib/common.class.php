@@ -669,20 +669,17 @@ function runScriptSafe($id, $params = '')
         $current_call.='.'.md5(json_encode($params));
     }
     $call_stack = array();
-    global $m_c_s;
-    if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
-        $m_c_s = $_GET['m_c_s'];
-    }
-    if (is_array($m_c_s)) {
-        $call_stack = $m_c_s;
-    }
-    if (in_array($current_call, $call_stack)) {
-        $call_stack[] = $current_call;
-        DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
-        return 0;
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+            $call_stack = $_GET['m_c_s'];
+        }
+        if (in_array($current_call, $call_stack)) {
+            $call_stack[] = $current_call;
+            DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
+            return 0;
+        }
     }
     $call_stack[] = $current_call;
-    $m_c_s = $call_stack;
     if (!is_array($params)) {
         $params = array();
     }
