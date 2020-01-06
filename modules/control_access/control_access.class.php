@@ -60,12 +60,6 @@ function getParams() {
         }
 
 
-// LDAP inicial
-        if(function_exists('ldap_connect') && is_file(ROOT.'modules/ldap_users/installed')) {
-                $out['LDAP_ON']=1;
-        }
-
-
   if ($this->mode=='logoff') {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
@@ -92,15 +86,6 @@ function getParams() {
     $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='".DBSafe($login)."' AND PASSWORD='".DBSafe(md5($psw))."'");
 
 //    $user=SQLSelectOne("SELECT * FROM admin_users WHERE 1");
-
-// LDAP logining
-        if($out['LDAP_ON']!=false && ($user==false || $psw=='this_ldap_admin')) {
-                include_once ROOT.'modules/ldap_users/ldap_users.class.php';
-                $ldap=new ldap_users;
-                $user=$ldap->ctrl_access();
-        }
-// LDAP loginig
-
 
     if (!IsSet($user['ID'])) {
      $out["ERRMESS"]="Wrong username and/or password";

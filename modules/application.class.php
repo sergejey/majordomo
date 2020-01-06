@@ -337,7 +337,7 @@ function getParams() {
    $out['AJAX']=$this->ajax;
    $out['POPUP']=$this->popup;
    
-   $days=array('Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота');
+   $days=array(LANG_WEEK_SUN,LANG_WEEK_MON,LANG_WEEK_TUE,LANG_WEEK_WED,LANG_WEEK_THU,LANG_WEEK_FRI,LANG_WEEK_SAT);
    
    $out['TODAY']=$days[date('w')].', '.date('d.m.Y');
    Define('TODAY', $out['TODAY']);
@@ -396,7 +396,7 @@ function getParams() {
      $code.=$obj."->getParams();\n";
      $code.=$obj."->ajax=1;\n";
      $code.=$obj."->run();\n";
-     StartMeasure("module_".$this->action); 
+     startMeasure("module_".$this->action);
      eval($code);
      endMeasure("module_".$this->action); 
 

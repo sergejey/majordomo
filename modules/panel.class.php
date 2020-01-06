@@ -98,6 +98,7 @@ class panel extends module
                 $session->data['USER_LEVEL'] = $user['PRIVATE'];
                 $session->data['USER_ID'] = $user['ID'];
                 $session->data["AUTHORIZED"] = 1;
+                logAction('control_panel_enter',$session->data['USER_NAME']);
             }
         }
 
@@ -171,6 +172,17 @@ class panel extends module
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
+                }
+                if ($modules[$i]['NAME']=='devices') {
+                    $devices = SQLSelect("SELECT devices.LOCATION_ID, locations.TITLE, COUNT(devices.ID) as TOTAL FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE locations.ID>0 GROUP BY devices.LOCATION_ID ORDER BY locations.TITLE");
+                    if (is_array($devices)) {
+                        $links=array();
+                        $links[]=array('TITLE'=>LANG_ALL,'LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME']);
+                        foreach($devices as $device) {
+                            $links[]=array('TITLE'=>processTitle($device['TITLE']).' ('.$device['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&location_id='.$device['LOCATION_ID']);
+                        }
+                        $modules[$i]['LINKS']=$links;
+                    }
                 }
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;

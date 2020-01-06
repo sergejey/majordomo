@@ -277,7 +277,7 @@ class saverestore extends module
         if ($this->mode == 'clear') {
             set_time_limit(0);
             $this->removeTree(ROOT . 'cms/saverestore/temp');
-            @unlink(ROOT."modules/control_modules/installed");
+            @unlink(ROOT."cms/modules_installed/control_modules.installed");
             global $with_extensions;
             if ($with_extensions) {
                 $this->redirect("?(panel:{action=market})&md=market&mode=update_all");
@@ -1286,6 +1286,7 @@ class saverestore extends module
                 $this->redirect("?mode=clear&ok_msg=" . urlencode("Database restored!"));
             }
         } elseif ($file != '') {
+            logAction('system_restore',$file);
             // unpack archive
             umask(0);
             @mkdir(ROOT . 'cms/saverestore/temp', 0777);
@@ -1300,6 +1301,10 @@ class saverestore extends module
                 exec('tar xzvf ../' . $file, $output, $res);
             }
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/config.php');
+
+            if (file_exists(ROOT.'scripts/cycle_db_save.php') && file_exists(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php')) {
+                rename(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php',ROOT . 'cms/saverestore/temp' . $folder . '/scripts/cycle_db_save.php');
+            }
 
             if ($iframe) {
                 $this->echonow(" OK<br/> ", 'green');
@@ -1337,22 +1342,6 @@ class saverestore extends module
                 $this->restoredatabase(ROOT . 'cms/saverestore/temp' . $folder . '/dump.sql');
                 $this->echonow(" OK<br/> ", 'green');
             }
-
-            /*
-            if ($iframe) {
-                $this->echonow("Re-installing modules ... ");
-            }
-            // code restore
-            $source = ROOT . 'modules';
-            if ($dir = @opendir($source)) {
-                while (($file = readdir($dir)) !== false) {
-                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) { // && !file_exists($source."/".$file."/installed")
-                        @unlink(ROOT . "modules/" . $file . "/installed");
-                    }
-                }
-            }
-            @unlink(ROOT . "modules/control_modules/installed");
-            */
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
             $this->saveConfig();

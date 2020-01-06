@@ -43,7 +43,16 @@ echo "Full backup: " . $full_backup . PHP_EOL;
 sleep(5);
 
 //removing old log files
-$dir = ROOT . "cms/debmes/";
+if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+    $path = SETTINGS_SYSTEM_DEBMES_PATH;
+} elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+    $path = LOG_DIRECTORY;
+} else {
+    $path = ROOT . 'cms/debmes';
+}
+
+$dir = $path . "/";
+
 foreach (glob($dir . "*") as $file) {
     if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
         DebMes("Removing log file " . $file);

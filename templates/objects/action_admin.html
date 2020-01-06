@@ -13,7 +13,13 @@
 
    &nbsp;
 <ol class="breadcrumb">
-  <li class="active"><#LANG_OBJECT#>: [#TITLE#]</li>
+  <li class="active"><#LANG_OBJECT#>:
+      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>">[#TITLE#]</a>
+      [#if DEVICE_ID!=""#]
+      / <#LANG_DEVICE#>:
+      <a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=[#DEVICE_ID#]">[#DEVICE_TITLE#]</a>
+      [#endif DEVICE_ID#]
+  </li>
 </ol>
 
 <ul class="nav nav-tabs">

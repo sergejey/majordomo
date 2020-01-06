@@ -218,6 +218,7 @@ methods - Methods
  methods: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  methods: EXECUTED datetime
  methods: EXECUTED_PARAMS varchar(255)
+ methods: EXECUTED_SRC varchar(255)
  methods: INDEX (OBJECT_ID)
  methods: INDEX (CLASS_ID)
 EOD;

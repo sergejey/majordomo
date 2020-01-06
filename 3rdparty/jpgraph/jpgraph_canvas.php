@@ -32,22 +32,14 @@ class CanvasGraph extends Graph {
     }
 
     // Method description
-    function Stroke($aStrokeFileName = "")
-    {
-       if ($this->texts != null )
-       {
-          $textsCnt = count($this->texts);
-          for ($i = 0; $i < $textsCnt; ++$i)
-          {
-              $this->texts[$i]->Stroke($this->img);
-          }
-       }
-       
-       if ($this->iTables !== null )
-       {
-          $iTablesCnt = count($this->iTables);
-
-          for ($i = 0; $i < $iTablesCnt; ++$i) {
+    function Stroke($aStrokeFileName="") {
+        if( $this->texts != null ) {
+            for($i=0; $i < count($this->texts); ++$i) {
+                $this->texts[$i]->Stroke($this->img);
+            }
+        }
+        if( $this->iTables !== null ) {
+            for($i=0; $i < count($this->iTables); ++$i) {
                 $this->iTables[$i]->Stroke($this->img);
             }
         }

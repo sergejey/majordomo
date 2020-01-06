@@ -20,36 +20,37 @@
  */
 class custom_error
 {
-   /**
-    * @var string error code
-    */
-   var $code;
-   /**
-    * @var string error description
-    */
-   var $description;
+    /**
+     * @var string error code
+     */
+    var $code;
+    /**
+     * @var string error description
+     */
+    var $description;
 
-   /**
-    * Object constructor
-    *
-    * @access public
-    *
-    * @param string $description Error description
-    * @param int    $stop        Stop (0 - stop script execution, 1 - show warning and continue script execution)
-    * @param int    $short       Short (default 0)
-    * @return void
-    */
-   public function __construct($description, $stop = 0)
-   {
-      $script      = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+    /**
+     * Object constructor
+     *
+     * @access public
+     *
+     * @param string $description Error description
+     * @param int $stop Stop (0 - stop script execution, 1 - show warning and continue script execution)
+     * @param int $short Short (default 0)
+     * @return void
+     */
+    public function __construct($description, $stop = 0)
+    {
+        $script = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 
-      if (!mb_detect_encoding($description, 'UTF-8', true)) {
-         $description = iconv('windows-1251','UTF-8',$description);
-      }
+        if (!mb_detect_encoding($description, 'UTF-8', true)) {
+            $description = iconv('windows-1251', 'UTF-8', $description);
+        }
 
-      $e = new \Exception;
-      if (defined("DEBUG_MODE")) {
-         $content=<<<FF
+        $e = new \Exception;
+        if (defined("DEBUG_MODE")) {
+            if (isset($_SERVER['REQUEST_URI'])) {
+                $content = <<<FF
          <html>
           <head>
           <title>Error</title>
@@ -77,11 +78,14 @@ class custom_error
           </body>
          </html>
 FF;
-         echo $content;
-      }
-      //sendmail("errors@" . PROJECT_DOMAIN, PROJECT_BUGTRACK, "Error reporting: $script", $description);
-      if ($stop) exit;
-   }
+            } else {
+                $content = "ERROR: $script\n$description\n\n";
+            }
+            echo $content;
+        }
+        //sendmail("errors@" . PROJECT_DOMAIN, PROJECT_BUGTRACK, "Error reporting: $script", $description);
+        if ($stop) exit;
+    }
 
 }
 
@@ -89,20 +93,30 @@ FF;
  * Custom PHP Error Handler
  * Used for custom handling of PHP errors
  *
- * @param mixed $errno    Error number
- * @param mixed $errmsg   Error message
+ * @param mixed $errno Error number
+ * @param mixed $errmsg Error message
  * @param mixed $filename File name
- * @param mixed $linenum  Line num
- * @param mixed $vars     Variables
+ * @param mixed $linenum Line num
+ * @param mixed $vars Variables
  * @return void
  */
 function simplisticErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 {
-   if (( $errno != E_NOTICE ) ) //&& ( $errno != E_WARNING)
-   {
-      $err = "PHP warning: $errmsg in $filename on line $linenum\n";
-      $err = new custom_error($err, 0, 1);
-   }
+    if (($errno != E_NOTICE)) //&& ( $errno != E_WARNING)
+    {
+        $err = "PHP warning: $errmsg in $filename on line $linenum\n";
+        $err = new custom_error($err, 0, 1);
+    }
 }
+
+function phpShutDownFunction() {
+    $error = error_get_last();
+    if ($error['type'] === E_ERROR) {
+        DebMes("PHP shutdown error: ".$error['message'],'error');
+        $err = new custom_error($error['message']);
+    }
+}
+
+register_shutdown_function('phpShutDownFunction');
 
 //set_error_handler("simplisticErrorHandler");

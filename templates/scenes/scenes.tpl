@@ -589,7 +589,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                   }
                  }
                  {/if}
-                    {if $SCENE_AUTO_SCALE=="1" && $DRAGGABLE!="1"}
+                    {if $SCENE_AUTO_SCALE!="0" && $DRAGGABLE!="1"}
                     setTimeout('sceneZoom();',2000);
                     $(window).on('resize', function(){
                         sceneZoom();
@@ -606,8 +606,27 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
             function sceneZoom() {
-                zoom = $(window).width()/$("#slider").width()*100;
-                document.body.style.zoom = zoom+"%"
+                var zoomMode = parseInt('{$SCENE_AUTO_SCALE}');
+                var zoomw = $(window).width();
+                if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
+                zoomw = zoomw/$("#slider").width()*100;
+                var zoomh = $(window).height();
+                if(window.innerHeight > 0 && window.innerHeight < zoomh) zoomh = window.innerHeight;
+                zoomh = zoomh/$("#slider").height()*100;
+                if (zoomMode == 3) { // height
+                    document.body.style.zoom = zoomh+"%"
+                }
+                if (zoomMode == 2) { // width
+                    document.body.style.zoom = zoomw+"%"
+                }
+                if (zoomMode == 1) { // both
+                    if(zoomh < zoomw) {
+                        document.body.style.zoom = zoomh+"%"
+                    } else {
+                        document.body.style.zoom = zoomw+"%"
+                    }
+                }
+
             }
 
 
@@ -645,7 +664,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
  {if $ELEMENT.ELEMENTS}
  <div 
    class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if $ELEMENT.BACKGROUND=="1"} container_background{/if}{if $DRAGGABLE=="1"} draggable{/if}"
-   style="position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;
+   style="{if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
    {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
    {if $ELEMENT.STATE!="1"}display:none;{/if}

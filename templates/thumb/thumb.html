@@ -30,24 +30,61 @@
  var imageOrig[#UNIQ#] = document.getElementById("imgelem[#UNIQ#]");
  var imageOrig[#UNIQ#]URL = imageOrig[#UNIQ#].src;
  var imgNew[#UNIQ#] = new Image();
+
+ function checkImageOnScreen[#UNIQ#]() {
+
+  var elem=$('#imgelem[#UNIQ#]');
+
+  var height = elem.outerHeight();
+  var width = elem.outerWidth();
+
+  if(!width || !height){
+   return false;
+  }
+
+  var win = $(window);
+
+  var viewport = {
+   top : win.scrollTop(),
+   left : win.scrollLeft()
+  };
+  viewport.right = viewport.left + win.width();
+  viewport.bottom = viewport.top + win.height();
+
+  var bounds = elem.offset();
+  bounds.right = bounds.left + width;
+  bounds.bottom = bounds.top + height;
+
+  var showing = {
+   top : viewport.bottom - bounds.top,
+   left: viewport.right - bounds.left,
+   bottom: bounds.bottom - viewport.top,
+   right: bounds.right - viewport.left
+  };
+
+  return showing.top > 0
+          && showing.left > 0
+          && showing.right > 0
+          && showing.bottom > 0;
+ }
+
+ function reloadSlideShowImage[#UNIQ#]() {
+  if (checkImageOnScreen[#UNIQ#]()) {
+   //console.log('loading image');
+   imageOrig[#UNIQ#].src=imgNew[#UNIQ#].src;
+   var srcURL=imageOrig[#UNIQ#]URL+ "&" + new Date().getTime();
+   imgNew[#UNIQ#].src = srcURL;
+  } else {
+   //console.log('skipping load');
+   setTimeout('reloadSlideShowImage[#UNIQ#]();',1000);
+  }
+ }
+
  imgNew[#UNIQ#].onload = function () {
-  imageOrig[#UNIQ#].src=imgNew[#UNIQ#].src;
-  var srcURL=imageOrig[#UNIQ#]URL+ "&" + new Date().getTime();
-  imgNew[#UNIQ#].src = srcURL;
+  reloadSlideShowImage[#UNIQ#]();
  }
  imgNew[#UNIQ#].src = imageOrig[#UNIQ#]URL;
 
- /*
- window.onload = function() {
-  var image[#UNIQ#] = document.getElementById("imgelem[#UNIQ#]");
-  function updateImage[#UNIQ#]() {
-   alert('updating');
-   console.log(image[#UNIQ#]);
-   image[#UNIQ#].src = image[#UNIQ#].src+"&" + new Date().getTime();
-  }
-  setInterval(updateImage[#UNIQ#], 1000);
- }
- */
 </script>
 [#endif#]
 

@@ -123,6 +123,14 @@ $this->device_links=array(
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
             'TARGET_CLASS'=>'SThermostats',
         )
+    ),
+    'SOpenClose' =>array(
+        array (
+            'LINK_NAME'=>'open_sensor_pass',
+            'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_PASS,
+            'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
+            'TARGET_CLASS'=>'SOpenable',
+        )
     )
 );
 

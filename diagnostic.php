@@ -134,8 +134,7 @@ function collectData() {
    if (!IsWindowsOS()) {
       $max_usage=90; //%
       $output = array();
-      exec('df', $output);
-
+      exec('df -h', $output);
       $result['DF_OUTPUT']=implode("\n",$output);
 
       foreach ($output as $line) {
@@ -171,14 +170,20 @@ if (isset($_POST['send'])) {
       mkdir('./cms/saverestore/temp/cms',0777);
       mkdir('./cms/saverestore/temp/cms/debmes',0777);
       $log_expire=24*60*60;
-      $log_path='./cms/debmes';
+      if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+         $log_path = SETTINGS_SYSTEM_DEBMES_PATH;
+      } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+         $log_path = LOG_DIRECTORY;
+      } else {
+         $log_path = ROOT . 'cms/debmes';
+      }
       $files=scandir($log_path);
       foreach($files as $file) {
          if (is_file($log_path.'/'.$file) && (time()-filemtime($log_path.'/'.$file)<$log_expire)) {
             copy($log_path.'/'.$file,'./cms/saverestore/temp/cms/debmes/'.$file);
          }
       }
-      $tar_name .= 'diagnostic_'.date('Y-m-d__H-i-s');
+      $tar_name .= 'diagnostic_'.date('Y-m-d__h-i-s');
       $tar_name .= IsWindowsOS() ? '.tar' : '.tgz';
       if (IsWindowsOS()) {
          $result = exec('tar.exe --strip-components=2 -C ./cms/saverestore/temp/ -cvf ./cms/saverestore/' . $tar_name . ' ./');

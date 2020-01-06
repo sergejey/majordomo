@@ -1,9 +1,10 @@
 <?php
 
-$this->callMethod('statusUpdated');
-$this->callMethod('logicAction');
-
 $ot=$this->object_title;
+
+$this->callMethodSafe('statusUpdated');
+$this->callMethodSafe('logicAction');
+
 $linked_room=$this->getProperty('linkedRoom');
 
 if (!isset($params['NEW_VALUE'])) {

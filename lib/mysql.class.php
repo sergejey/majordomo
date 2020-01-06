@@ -371,7 +371,7 @@ class mysql
       $err_no = mysql_errno();
       $err_details = mysql_error();
       if (preg_match('/Unknown column/is',$err_details)) {
-         unlink(DIR_MODULES.'control_modules/installed');
+         unlink(ROOT.'cms/modules_installed/control_modules.installed');
          //header("Location:".ROOTHTML);exit;
       }
       registerError('sql', $err_no . ": " . $err_details . "\n$query");

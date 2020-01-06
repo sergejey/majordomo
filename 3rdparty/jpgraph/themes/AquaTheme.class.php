@@ -127,12 +127,11 @@ class AquaTheme extends Theme
     function PreStrokeApply($graph) {
         if ($graph->legend->HasItems()) {
             $img = $graph->img;
-            $height = $img->height;
             $graph->SetMargin(
                 $img->raw_left_margin, 
                 $img->raw_right_margin, 
                 $img->raw_top_margin, 
-                $height * 0.25
+                is_numeric($img->raw_bottom_margin) ? $img->raw_bottom_margin : $img->height * 0.25
             );
         }
     }

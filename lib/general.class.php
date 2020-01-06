@@ -381,11 +381,11 @@ function checkGeneral($field)
 function SendMail($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
-
+   $mail->setHeadCharset('UTF-8');
+   $mail->setTextCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setText($body);
-   $mail->setTextCharset('windows-1251');
 
    if ($attach != '')
    {
@@ -411,11 +411,11 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
 
+   $mail->setHeadCharset('UTF-8');
+   $mail->setHTMLCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setHTML($body);
-   $mail->setHTMLCharset('windows-1251');
-   $mail->setHeadCharset('windows-1251');
 
    if (is_array($attach))
    {
@@ -535,10 +535,14 @@ function setLocalTime($now_date, $diff = 0)
 function DebMes($errorMessage, $logLevel = "debug")
 {
 
-   if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
-    $path=LOG_DIRECTORY;
+   if (defined('SETTINGS_SYSTEM_DISABLE_DEBMES') && SETTINGS_SYSTEM_DISABLE_DEBMES==1) return;
+
+   if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+      $path = SETTINGS_SYSTEM_DEBMES_PATH;
+   } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+      $path = LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'cms/debmes';
+      $path = ROOT . 'cms/debmes';
    }
 
    if (defined('LOG_MAX_SIZE') && LOG_MAX_SIZE>0) {
@@ -550,6 +554,7 @@ function DebMes($errorMessage, $logLevel = "debug")
    // DEBUG MESSAGE LOG
    if (!is_dir($path))
    {
+      umask(0);
       mkdir($path, 0777);
    }
    if (is_array($errorMessage) || is_object($errorMessage)) {
@@ -601,6 +606,7 @@ function dprint($data = 0, $stop = 1, $show_history = 0) {
       echo "</pre><hr/>";
       echo str_repeat(' ',4096);
       flush();flush();
+      echo "<script type='text/javascript'>window.scrollTo(0,document.body.scrollHeight);</script>";
    } else {
       echo "\n---------------------------------\n";
    }

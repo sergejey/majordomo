@@ -30,8 +30,17 @@ $nobodyhome_timeout = 1 * 60 * 60;
 if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
     $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
 }
-if ($nobodyhome_timeout) {
+
+$resetNobodysHome=$this->getProperty('resetNobodysHome');
+if ($nobodyhome_timeout && !$resetNobodysHome) {
     setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
+} elseif ($resetNobodysHome) {
+    clearTimeout('nobodyHome');
+}
+
+$is_blocked=(int)$this->getProperty('blocked');
+if ($is_blocked) {
+    return;
 }
 
 $linked_room = $this->getProperty('linkedRoom');

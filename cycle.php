@@ -19,13 +19,24 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-$connected = false;
+$db_filename  = ROOT . 'database_backup/db.sql';
+$db_history_filename  = ROOT . 'database_backup/db_history.sql';
 
-while (!$connected)
-{
+$connected = false;
+$total_restarts = 0;
+while (!$connected) {
    echo "Connecting to database..." . PHP_EOL;
    $connected = $db->Connect();
-   sleep(5);
+   if (!$connected) {
+      if (file_exists($db_filename) && !IsWindowsOS() && $total_restarts<3) {
+         echo "Restarting mysql service..." . PHP_EOL;
+         exec("sudo service mysql restart"); // trying to restart mysql
+         $total_restarts++;
+         sleep(10);
+      } else {
+         sleep(5);
+      }
+   }
 }
 
 echo "CONNECTED TO DB" . PHP_EOL;
@@ -86,9 +97,20 @@ $dirs_to_check = array(
     ROOT . 'cms/cached/templates_c',
 );
 
+if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+   $path = SETTINGS_SYSTEM_DEBMES_PATH;
+} elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+   $path = LOG_DIRECTORY;
+} else {
+   $path = ROOT . 'cms/debmes';
+}
+$dirs_to_check[]=$path;
+
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
    $dirs_to_check[]=SETTINGS_BACKUP_PATH;
 }
+
+
 
 foreach ($dirs_to_check as $d) {
    if (!is_dir($d)) {
@@ -100,32 +122,28 @@ foreach ($dirs_to_check as $d) {
 
 
 //restoring database backup (if was saving periodically)
-$filename  = ROOT . 'database_backup/db.sql';
-if (file_exists($filename))
+if (file_exists($db_filename))
 {
-   echo "Running: mysql restore from file: " . $filename . PHP_EOL;
-   DebMes("Running: mysql restore from file: " . $filename);
+   echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
+   DebMes("Running: mysql main db restore from file: " . $db_filename);
    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
    $mysqlParam = " -u " . DB_USER;
    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
-   $mysqlParam .= " " . DB_NAME . " <" . $filename;
+   $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
    exec($mysql_path . $mysqlParam);
+   
+   if (file_exists($db_history_filename)) {
+      echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
+      DebMes("Running: mysql history db restore from file: " . $db_history_filename);
+      $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+      $mysqlParam = " -u " . DB_USER;
+      if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+      $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
+      exec($mysql_path . $mysqlParam);
+   }
 }
 
 include_once("./load_settings.php"); //
-
-//reinstalling modules
-/*
-        $source=ROOT.'modules';
-        if ($dir = @opendir($source)) {
-          while (($file = readdir($dir)) !== false) {
-           if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) { // && !file_exists($source."/".$file."/installed")
-            @unlink(ROOT."modules/".$file."/installed");
-           }
-          }
-         }
-*/
-
 
 echo "Checking modules.\n";
 
@@ -134,11 +152,11 @@ echo "Checking modules.\n";
         if ($dir = @opendir($source)) { 
           while (($file = readdir($dir)) !== false) { 
            if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) {
-            @unlink(ROOT."modules/".$file."/installed");
+            @unlink(ROOT."cms/modules_installed/".$file.".installed");
            }
           }
          }
-         @unlink(ROOT."modules/control_modules/installed");
+         @unlink(ROOT."cms/modules_installed/control_modules.installed");
 
 // continue startup
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
@@ -191,6 +209,7 @@ $cycles_records=SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER 
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
    //DebMes("Removing property ThisComputer.$property",'threads');
+   echo "Removing ThisComputer.$property (object ".$thisCompObject->id.")";
    $property=$cycles_records[$i]['TITLE'];
    $property_id = $thisCompObject->getPropertyByName($property, $thisCompObject->class_id, $thisCompObject->id);
    //DebMes("Property id: $property_id",'threads');
@@ -204,8 +223,11 @@ for ($i = 0; $i < $total; $i++) {
          //DebMes("Pvalue: ".$pvalue['ID'],'threads');
          SQLExec("DELETE FROM phistory WHERE VALUE_ID=".$pvalue['ID']);
          SQLExec("DELETE FROM pvalues WHERE ID=".$pvalue['ID']);
-         SQLExec("DELETE FROM properties WHERE ID=".$property_id);
       }
+      SQLExec("DELETE FROM properties WHERE ID=".$property_id);
+      echo " REMOVED $property_id\n";
+   } else {
+      echo " FAILED\n";
    }
 }
 

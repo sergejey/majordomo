@@ -128,27 +128,31 @@ class mysql
       */
       if ($this->dbh) return true;
 
-      if ($this->port) {
-       $this->dbh = mysqli_connect(''.$this->host . ":" . $this->port, $this->user, $this->password);
+      if (IsWindowsOS()) {
+         if ($this->port) {
+            $this->dbh = mysqli_connect($this->host, $this->user, $this->password, $this->dbName,$this->port);
+         } else {
+            $this->dbh = mysqli_connect($this->host , $this->user, $this->password, $this->dbName);
+         }
       } else {
-       $this->dbh = mysqli_connect(''.$this->host , $this->user, $this->password);
+         if ($this->port) {
+            $this->dbh = mysqli_connect('p:'.$this->host, $this->user, $this->password,$this->dbName,$this->port);
+         } else {
+            $this->dbh = mysqli_connect('p:'.$this->host , $this->user, $this->password,$this->dbName);
+         }
       }
 
       if (!$this->dbh) {
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
-         die('Can\'t connect to database ('.$err_no . ": " . $err_details.')');
-         //registerError('sqlconn', $err_no . ": " . $err_details . " backtrace:" . json_encode($bt));
-         //new custom_error($err_no . ": " . $err_details, 1);
-         //exit(1);
+         return 0;
       }
-      $db_select = mysqli_select_db($this->dbh, $this->dbName);
+      //$db_select = mysqli_select_db($this->dbh, $this->dbName);
+      $db_select = true;
       if (!$db_select) {
          Define('NO_DATABASE_CONNECTION',1);
          die("Selecting db: ".$this->dbName);
-         //$this->Error("Selecting db: ".$this->dbName, 0);
-         //exit(1);
       } else
       {
          $this->latestTransaction=time();
@@ -389,7 +393,7 @@ class mysql
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
       if (preg_match('/Unknown column/is',$err_details)) {
-         unlink(DIR_MODULES.'control_modules/installed');
+         unlink(ROOT.'cms/modules_installed/control_modules.installed');
          //header("Location:".ROOTHTML);exit;
       }
       registerError('sql', $err_no . ": " . $err_details . "\n$query");
@@ -421,7 +425,7 @@ class mysql
          
          $strs = trim($row[1]);
             
-         return (empty($strs)) ? '' : 'DROP TABLE IF EXISTS ' . $table . ';' . "\n" . $row[1] . ';' . "\n";
+         return (empty($strs))?'':'DROP TABLE IF EXISTS '.$table.';'."\n".$row[1].';'."\n";
       }
       
       return '';

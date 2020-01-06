@@ -278,13 +278,13 @@ class devices extends module
         return $index;
     }
 
-    function processDevice($device_id)
+    function processDevice($device_id, $view = '')
     {
         startMeasure('processDevice');
         $device_rec = SQLSelectOne("SELECT * FROM devices WHERE ID=" . (int)$device_id);
         $result = array('HTML' => '', 'DEVICE_ID' => $device_rec['ID']);
 
-        $template = getObjectClassTemplate($device_rec['LINKED_OBJECT']);
+        $template = getObjectClassTemplate($device_rec['LINKED_OBJECT'],$view);
 
         $result['HTML'] = processTitle($template, $this);
         if ($device_rec['TYPE'] == 'camera') {
@@ -481,14 +481,19 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60) {
                     continue;
                 }
+                //DebMes("Checking point: ".json_encode($rec,JSON_PRETTY_PRINT),'devices_schedule');
                 $tmlr = strtotime($rec['LATEST_RUN']);
                 $diff_run = time() - $tmlr;
-                if ($diff_run <= 20*60)
+                if ($diff_run <= 20*60) {
+                    //DebMes("Skipping point (diff_run: $diff_run): ".json_encode($rec,JSON_PRETTY_PRINT),'devices_schedule');
                     continue;
+                }
+
                 $linked_object = $rec['LINKED_OBJECT'];
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
+                DebMes("Running point: ".$linked_object.'.'.$rec['LINKED_METHOD'],'devices_schedule');
                 callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
             }
         }
@@ -550,7 +555,7 @@ class devices extends module
         return $all;
     }
 
-    function homebridgeSync($device_id = 0)
+    function homebridgeSync($device_id = 0, $force_refresh = 0)
     {
         if ($this->isHomeBridgeAvailable()) {
             include_once(DIR_MODULES . 'devices/homebridgeSync.inc.php');
@@ -589,6 +594,10 @@ class devices extends module
 
             if ($this->view_mode == 'edit_devices') {
                 $this->edit_devices($out, $this->id);
+            }
+
+            if ($this->view_mode == 'quick_edit') {
+                $this->quick_edit($out);
             }
 
             if ($this->view_mode == 'render_structure') {
@@ -633,16 +642,22 @@ class devices extends module
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
             $op=gr('op');
+            $view = gr('view');
             $res = array();
             if ($op == 'clicked') {
                 $object=gr('object');
                 if ($object !='') {
-                    SQLExec("UPDATE devices SET CLICKED=NOW() WHERE LINKED_OBJECT='".DBSafe($object)."'");
+                    $device_rec=SQLSelectOne("SELECT ID, TITLE FROM devices WHERE LINKED_OBJECT='".DBSafe($object)."'");
+                    if ($device_rec['ID']) {
+                        SQLExec("UPDATE devices SET CLICKED=NOW() WHERE ID='".$device_rec['ID']."'");
+                        logAction('device_clicked',$device_rec['TITLE']);
+                    }
+
                 }
             }
             if ($op == 'get_device') {
                 $id=gr('id');
-                $res = $this->processDevice($id);
+                $res = $this->processDevice($id,$view);
             }
             if ($op == 'loadAllDevicesHTML') {
                 /*
@@ -656,7 +671,7 @@ class devices extends module
                 $total = count($devices);
                 for ($i = 0; $i < $total; $i++) {
                     if ($devices[$i]['LINKED_OBJECT']) {
-                        $processed = $this->processDevice($devices[$i]['ID']);
+                        $processed = $this->processDevice($devices[$i]['ID'],$view);
                         $devices[$i]['HTML'] = $processed['HTML'];
                     }
                 }
@@ -672,6 +687,24 @@ class devices extends module
 
         global $location_id;
         global $type;
+
+        $qry="1";
+
+        $linked_object = gr('linked_object');
+        if ($linked_object) {
+            $device_rec=SQLSelectOne("SELECT ID FROM devices WHERE LINKED_OBJECT='".DbSafe($linked_object)."'");
+            if ($device_rec['ID']) {
+                $this->id=$device_rec['ID'];
+            }
+        }
+
+        $out['UNIQ']=uniqid('dev'.$this->id);
+        
+        if ($this->id) {
+            $qry.=" AND devices.ID=".(int)$this->id;
+            $out['SINGLE_DEVICE']=1;
+            $out['VIEW']=$this->view;
+        }
 
         if ($location_id || $type) {
             $qry = "1 AND SYSTEM_DEVICE=0";
@@ -728,24 +761,28 @@ class devices extends module
         } else {
             $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
             //$qry=" devices.FAVORITE=1";
-            $qry = "1 AND SYSTEM_DEVICE=0";
+            $qry.= " AND SYSTEM_DEVICE=0";
             $out['ALL_DEVICES']=1;
             $devices = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY $orderby");
             $recent_devices=SQLSelect("SELECT devices.* FROM devices WHERE !IsNull(CLICKED) ORDER BY CLICKED DESC LIMIT 10");
         }
+
 
         if ($devices[0]['ID']) {
             if ($location_id || $type || 1) {
                 $total = count($devices);
                 for ($i = 0; $i < $total; $i++) {
                     if ($devices[$i]['LINKED_OBJECT']) {
-                        $processed = $this->processDevice($devices[$i]['ID']);
+                        $processed = $this->processDevice($devices[$i]['ID'],$this->view);
                         $devices[$i]['HTML'] = $processed['HTML'];
                     }
                 }
 
             }
             $out['DEVICES'] = $devices;
+            if ($this->id) {
+                return;
+            }
         }
 
         $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE+0");
@@ -846,29 +883,33 @@ class devices extends module
         $out['GROUPS'] = $locations;
 
         $types = array();
-        foreach ($this->device_types as $k => $v) {
-            if ($v['TITLE']) {
-                $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
-                $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE SYSTEM_DEVICE=0 AND TYPE='" . $k . "'");
-                $type_rec['TOTAL'] = (int)$tmp['TOTAL'];
-                if ($type_rec['TOTAL'] > 0) {
-                    $types[] = $type_rec;
+        if (is_array($this->device_types)) {
+            foreach ($this->device_types as $k => $v) {
+                if ($v['TITLE']) {
+                    $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
+                    $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE SYSTEM_DEVICE=0 AND TYPE='" . $k . "'");
+                    $type_rec['TOTAL'] = (int)$tmp['TOTAL'];
+                    if ($type_rec['TOTAL'] > 0) {
+                        $types[] = $type_rec;
+                    }
                 }
             }
+            usort($types, function ($a, $b) {
+                return strcmp($a["TITLE"], $b["TITLE"]);
+            });
         }
-        usort($types, function ($a, $b) {
-            return strcmp($a["TITLE"], $b["TITLE"]);
-        });
 
 
         $list_locations = $locations;
-        usort($list_locations, function ($a, $b) {
-            return strcmp($a["TITLE"], $b["TITLE"]);
-        });
-        $types[] = array('NAME' => '', 'TITLE' => LANG_LOCATION);
-        foreach ($list_locations as $location) {
-            if ($location['TITLE'] == LANG_FAVORITES) continue;
-            $types[] = array('NAME' => 'loc' . $location['ID'], 'TITLE' => $location['TITLE'], 'TOTAL' => $location['DEVICES_TOTAL']);
+        if (is_array($list_locations)) {
+            usort($list_locations, function ($a, $b) {
+                return strcmp($a["TITLE"], $b["TITLE"]);
+            });
+            $types[] = array('NAME' => '', 'TITLE' => LANG_LOCATION);
+            foreach ($list_locations as $location) {
+                if ($location['TITLE'] == LANG_FAVORITES) continue;
+                $types[] = array('NAME' => 'loc' . $location['ID'], 'TITLE' => $location['TITLE'], 'TOTAL' => $location['DEVICES_TOTAL']);
+            }
         }
 
         $out['TYPES'] = $types;
@@ -896,6 +937,11 @@ class devices extends module
         require(DIR_MODULES . $this->name . '/devices_edit.inc.php');
     }
 
+    function quick_edit(&$out)
+    {
+        require(DIR_MODULES . $this->name . '/devices_quick_edit.inc.php');
+    }
+
     /**
      * devices delete record
      *
@@ -904,6 +950,12 @@ class devices extends module
     function delete_devices($id)
     {
         $rec = SQLSelectOne("SELECT * FROM devices WHERE ID='$id'");
+
+        $payload=array();
+        $payload['name']=$rec['LINKED_OBJECT'];
+        sg('HomeBridge.to_remove',json_encode($payload));
+
+
         // some action for related tables
 
         $elements = SQLSelect("SELECT * FROM elements WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
@@ -927,7 +979,6 @@ class devices extends module
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
-        $this->homebridgeSync();
     }
 
     function addDevice($device_type, $options = 0)
@@ -1302,13 +1353,15 @@ class devices extends module
     }
 
 
-    function checkLinkedDevicesAction($object_title, $value = 0)
-    {
+    function checkLinkedDevicesAction($object_title, $value = 0) {
+        startMeasure('checkLinkedDevicesAction');
         $device1 = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '" . $object_title . "'");
         if (!$device1['ID']) {
+            endMeasure('checkLinkedDevicesAction');
             return 0;
         }
-        require (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        require_once (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        endMeasure('checkLinkedDevicesAction');
         return 1;
     }
 

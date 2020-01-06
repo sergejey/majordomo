@@ -31,6 +31,7 @@ $this->device_types=array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
             'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
+            'keepAlive'=>array('DESCRIPTION'=>'Alive update'),
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(
@@ -38,6 +39,7 @@ $this->device_types=array(
                 'EconomMode.deactivate'=>'econommode_deactivate',
                 'NobodyHomeMode.activate'=>'nobodyhomemode_activate',
                 'NobodyHomeMode.deactivate'=>'nobodyhomemode_deactivate',
+                'NightMode.activate'=>'nightmode_activate',
                 'DarknessMode.activate'=>'darknessmode_activate',
                 'DarknessMode.deactivate'=>'darknessmode_deactivate',
                 'System.checkstate'=>'system_checkstate',
@@ -53,6 +55,7 @@ $this->device_types=array(
             'groupEcoOn'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_ECO_ON,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupEcoOn'),
             'groupSunrise'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNRISE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunrise'),
             'groupSunset'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_SUNSET,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupSunset'),
+            'groupNight'=>array('DESCRIPTION'=>LANG_DEVICES_GROUP_NIGHT,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdGroupNight'),
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'loadType'=>array('DESCRIPTION'=>LANG_DEVICES_LOADTYPE,
                 '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdLoadType',
@@ -103,6 +106,7 @@ $this->device_types=array(
             'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
+            'setTargetTemperature'=>array('DESCRIPTION'=>'Set target temperature'),
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
@@ -127,6 +131,7 @@ $this->device_types=array(
             'setMaxTurnOn'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SET_MAX,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSetMax'),
             ),
         'METHODS'=>array(
+            'setLevel'=>array('DESCRIPTION'=>'Set brightness level'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'levelWorkUpdated'=>array('DESCRIPTION'=>'Level Work Updated'),
@@ -146,8 +151,8 @@ $this->device_types=array(
         'METHODS'=>array(
             'colorUpdated'=>array('DESCRIPTION'=>'Color Updated'),
             'setColor'=>array('DESCRIPTION'=>'Color Set'),
-            'turnOn'=>array('DESCRIPTION'=>'RGB turnOn'),
-            'turnOff'=>array('DESCRIPTION'=>'RGB turnOff'),
+            'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_ON,'_CONFIG_SHOW'=>1),
+            'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_TURN_OFF,'_CONFIG_SHOW'=>1),
         )
     ),
     'motion'=>array(
@@ -156,10 +161,14 @@ $this->device_types=array(
         'CLASS'=>'SMotions',
         'PROPERTIES'=>array(
             'ignoreNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_IGNORE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIgnoreNobodysHome'),
-            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdMotionTimeout')
+            'resetNobodysHome'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_RESET,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdResetNobodysHome'),
+            'timeout'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdMotionTimeout'),
+            'blocked'=>array('DESCRIPTION'=>'Is blocked'),
         ),
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
+            'blockSensor'=>array('DESCRIPTION'=>LANG_BLOCK_SENSOR,'_CONFIG_SHOW'=>1),
+            'unblockSensor'=>array('DESCRIPTION'=>LANG_UNBLOCK_SENSOR,'_CONFIG_SHOW'=>1),
         )
     ),
     'camera'=>array(
@@ -199,25 +208,65 @@ $this->device_types=array(
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open'),
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
+            'blocked'=>array('DESCRIPTION'=>'Is blocked'),
         ),
         'METHODS'=>array(
-            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'blockSensor'=>array('DESCRIPTION'=>LANG_BLOCK_SENSOR,'_CONFIG_SHOW'=>1),
+            'unblockSensor'=>array('DESCRIPTION'=>LANG_UNBLOCK_SENSOR,'_CONFIG_SHOW'=>1),
+        )
+    ),
+    'openable'=>array(
+        'TITLE'=>LANG_DEVICES_OPENABLE,
+        'PARENT_CLASS'=>'SDevices',
+        'CLASS'=>'SOpenable',
+        'PROPERTIES'=>array(
+            'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
+            'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
+            'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
+                '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdOpenType',
+                '_CONFIG_OPTIONS'=>
+                    'gates='.LANG_DEVICES_OPENTYPE_GATES.
+                    ',window='.LANG_DEVICES_OPENTYPE_WINDOW.
+                    ',door='.LANG_DEVICES_OPENTYPE_DOOR.
+                    ',curtains='.LANG_DEVICES_OPENTYPE_CURTAINS.
+                    ',shutters='.LANG_DEVICES_OPENTYPE_SHUTTERS)
+        ),
+        'METHODS'=>array(
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'switch'=>array('DESCRIPTION'=>'Switch'),
+            'open'=>array('DESCRIPTION'=>'Open','_CONFIG_SHOW'=>1),
+            'close'=>array('DESCRIPTION'=>'Close','_CONFIG_SHOW'=>1),
         )
     ),
     'leak'=>array(
         'TITLE'=>LANG_DEVICES_LEAK_SENSOR,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SLeak',
+        'PROPERTIES'=>array(
+            'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
+            'blocked'=>array('DESCRIPTION'=>'Is blocked'),
+        ),
         'METHODS'=>array(
-            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'alert'=>array('DESCRIPTION'=>'Sensor alert'),
+            'blockSensor'=>array('DESCRIPTION'=>LANG_BLOCK_SENSOR,'_CONFIG_SHOW'=>1),
+            'unblockSensor'=>array('DESCRIPTION'=>LANG_UNBLOCK_SENSOR,'_CONFIG_SHOW'=>1),
         )
     ),
     'smoke'=>array(
         'TITLE'=>LANG_DEVICES_SMOKE_SENSOR,
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SSmoke',
+        'PROPERTIES'=>array(
+            'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
+            'blocked'=>array('DESCRIPTION'=>'Is blocked'),
+        ),
         'METHODS'=>array(
-            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event')
+            'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'alert'=>array('DESCRIPTION'=>'Sensor alert'),
+            'blockSensor'=>array('DESCRIPTION'=>LANG_BLOCK_SENSOR,'_CONFIG_SHOW'=>1),
+            'unblockSensor'=>array('DESCRIPTION'=>LANG_UNBLOCK_SENSOR,'_CONFIG_SHOW'=>1),
         )
     ),
     'counter'=>array(
@@ -258,13 +307,18 @@ $this->device_types=array(
             'minValue'=>array('DESCRIPTION'=>LANG_DEVICES_MIN_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
             'maxValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
             'notify'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdSensorMinMax'),
+            'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
             'mainSensor'=>array('DESCRIPTION'=>LANG_DEVICES_MAIN_SENSOR,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdMainSensor'),
             'normalValue'=>array('DESCRIPTION'=>LANG_DEVICES_NORMAL_VALUE,'KEEP_HISTORY'=>0),
             'direction'=>array('DESCRIPTION'=>'Direction of changes','KEEP_HISTORY'=>0),
             'directionTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_DIRECTION_TIMEOUT,'KEEP_HISTORY'=>0,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDirectionTimeout','ONCHANGE'=>'valueUpdated'),
+            'blocked'=>array('DESCRIPTION'=>'Is blocked'),
         ),
         'METHODS'=>array(
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'alert'=>array('DESCRIPTION'=>'Sensor alert'),
+            'blockSensor'=>array('DESCRIPTION'=>LANG_BLOCK_SENSOR,'_CONFIG_SHOW'=>1),
+            'unblockSensor'=>array('DESCRIPTION'=>LANG_UNBLOCK_SENSOR,'_CONFIG_SHOW'=>1),
         )
     ),
     'sensor_general'=>array(

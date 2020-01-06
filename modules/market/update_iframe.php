@@ -15,6 +15,7 @@ $mkt=new market();
 $mkt->category_id='all';
 $_GET['op']='iframe';
 
+header('X-Accel-Buffering: no');
 echo "<html>";
 echo "<body>";
 
@@ -29,6 +30,7 @@ if ($mode2=='uploaded' && $name!='') {
  $mkt->admin($out);
  $filename = ROOT.'cms/saverestore/'.$name;
  if (file_exists($filename)) {
+  logAction('market_install',$name);
   $mkt->echonow("Uploaded ".$name);
   $folder=str_replace('.tgz','',$name);
   $restore=$name;
@@ -52,6 +54,7 @@ if ($mode2=='install' && $name!='') {
  }
  $res=$mkt->getLatest($out, $mkt->url, $name, $mkt->version, 1);
  if ($res) {
+  logAction('market_install',$name);
   //$this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version)."&list=".urlencode($list));
   $folder=$name;
   $restore=$name.'.tgz';
@@ -68,6 +71,7 @@ if ($mode2=='install' && $name!='') {
 
 if ($mode2=='install_multiple' && $names!='') {
  // install/update multiple extensions
+ logAction('market_update',implode(', ',$names));
  $mkt->admin($out);
  $res=$mkt->updateAll($mkt->selected_plugins, 1);
  if ($res) {
@@ -81,6 +85,7 @@ if ($mode2=='install_multiple' && $names!='') {
 
 if ($mode2=='update_all') {
  // update all extensions
+ logAction('market_update','Update all');
  $mkt->admin($out);
  $res=$mkt->updateAll($mkt->can_be_updated, 1);
  if ($res) {
@@ -94,6 +99,7 @@ if ($mode2=='update_all') {
 
 if ($mode2=='uninstall' && $name!='') {
  // remove one extension
+ logAction('market_uninstall',$name);
  $res=$mkt->uninstallPlugin($name, 1);
  if ($res) {
    $mkt->echonow("Redirecting to main page...");

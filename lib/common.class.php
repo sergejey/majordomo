@@ -1,5 +1,29 @@
 <?php
 
+function getSystemSerial($force_update = 0) {
+    $serial = gg('Serial');
+    if (!$serial || $serial == '0' || $force_update) {
+        $serial = '';
+        if (IsWindowsOS()) {
+            $data = exec('vol c:');
+            if (preg_match('/[\w]+\-[\w]+/', $data, $m)) {
+                $serial = strtolower($m[0]);
+            }
+        } else {
+            $data = trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
+            if ($data == '') {
+                $data = trim(exec("sudo cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
+            }
+            $serial = ltrim($data, '0');
+        }
+        if (!$serial) {
+            $serial = uniqid('uniq');
+        }
+        sg('Serial', $serial);
+    }
+    return $serial;
+}
+
 function sayReplySafe($ph, $level = 0, $replyto = '')
 {
     $data = array(
@@ -407,8 +431,10 @@ function deleteScheduledJob($id)
  */
 function setTimeOut($title, $commands, $timeout)
 {
+    startMeasure('setTimeout');
     clearTimeOut($title);
     $res = addScheduledJob($title, $commands, time() + $timeout);
+    endMeasure('setTimeout');
     return $res;
 }
 
@@ -607,66 +633,20 @@ function playSound($filename, $exclusive = 0, $priority = 0)
         if (file_exists($filename)) {
             if (IsWindowsOS())
                 safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
-            else
-                safe_exec('mplayer ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
+            else {
+                if (defined('AUDIO_PLAYER') && AUDIO_PLAYER!='') {
+                    $audio_player = AUDIO_PLAYER;
+                } else {
+                    $audio_player = 'mplayer';
+                }
+                safe_exec($audio_player.' ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
+            }
+
         }
     }
 
     if (defined('SETTINGS_HOOK_AFTER_PLAYSOUND') && SETTINGS_HOOK_AFTER_PLAYSOUND != '')
         eval(SETTINGS_HOOK_AFTER_PLAYSOUND);
-}
-
-/**
- * Summary of playMedia
- * @param mixed $path Path
- * @param mixed $host Host (default 'localhost')
- * @return int
- */
-function playMedia($path, $host = 'localhost', $safe_play = FALSE)
-{
-    if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '') {
-        eval(SETTINGS_HOOK_PLAYMEDIA);
-    }
-
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-
-    if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
-    }
-
-    if (!$terminal['ID']) {
-        $terminal = getMainTerminal();
-    }
-
-    if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
-    }
-
-    if (!$terminal['ID']) {
-        return 0;
-    }
-
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=" . ($safe_play ? 'safe_play' : 'play');
-    $url .= "&terminal_id=" . $terminal['ID'];
-    $url .= "&param=" . urlencode($path);
-    //DebMes($url,'playmedia');
-    getURLBackground($url);
-    return 1;
-
-    /*
-    include_once(DIR_MODULES.'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->terminal_id	= $terminal['ID'];
-    $player->command		= ($safe_play?'safe_play':'play');
-    $player->param			= $path;
-    $player->ajax			= TRUE;
-    $player->intCall		= TRUE;
-    $player->usual($out);
-    return $player->json['success'];
-    */
 }
 
 /**
@@ -685,30 +665,33 @@ function runScript($id, $params = '')
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
-    $call_stack = array();
-    if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
-        $call_stack = $_GET['m_c_s'];
-    }
-    if (in_array($current_call, $call_stack)) {
-        $call_stack[] = $current_call;
-        DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
-        return 0;
-    }
-    $call_stack[] = $current_call;
-    $data = array(
-        'script' => $id,
-        'm_c_s' => $call_stack
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
-    }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
     if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
+        $current_call.='.'.md5(json_encode($params));
+    }
+    $call_stack = array();
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+            $call_stack = $_GET['m_c_s'];
+        }
+        if (in_array($current_call, $call_stack)) {
+            $call_stack[] = $current_call;
+            DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
+            return 0;
         }
     }
-    $result = getURLBackground($url, 0);
+    $call_stack[] = $current_call;
+    if (!is_array($params)) {
+        $params = array();
+    }
+    if (isSet($_SERVER['REQUEST_URI'])) {
+        $result = runScript($id,$params);
+    } else {
+        $params['m_c_s'] = $call_stack;
+        if (session_id()) {
+            $params[session_name()] = session_id();
+        }
+        $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
+    }
     return $result;
 }
 
@@ -727,6 +710,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
 {
     //DebMes("URL: ".$url,'debug1');
     getURL($url, $cache, $username, $password, true);
+    return true;
 }
 
 /**
@@ -739,6 +723,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
  */
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
+    startMeasure('getURL');
     // DebMes($url,'urls');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part) > 200) {
@@ -750,8 +735,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
         try {
 
             //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
-            $startTime = getmicrotime();
-
+            startMeasure('curl_prepare');
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
@@ -807,10 +791,14 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
+            endMeasure('curl_prepare');
+            startMeasure('curl_exec');
             $result = curl_exec($ch);
+            endMeasure('curl_exec');
 
 
-            if (curl_errno($ch) && !$background) {
+            startMeasure('curl_post');
+            if (!$background && curl_errno($ch)) {
                 $errorInfo = curl_error($ch);
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
@@ -818,6 +806,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
             }
             curl_close($ch);
+            endMeasure('curl_post');
 
 
         } catch (Exception $e) {
@@ -831,6 +820,9 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     } else {
         $result = LoadFile($cache_file);
     }
+
+
+    endMeasure('getURL');
 
     return $result;
 }
@@ -951,9 +943,28 @@ function isOnline($host)
  */
 function checkAccess($object_type, $object_id)
 {
+
+    global $access_rules_cached;
+
+    startMeasure('checkAccess');
+
+    if (!isset($access_rules_cached)) {
+        $all_rules=SQLSelect("SELECT OBJECT_TYPE, OBJECT_ID FROM security_rules");
+        foreach($all_rules as $rule) {
+            $access_rules_cached[$rule['OBJECT_TYPE'].$rule['OBJECT_ID']]=1;
+        }
+    }
+
+    if (!isset($access_rules_cached[$object_type.$object_id])) {
+        endMeasure('checkAccess');
+        return true;
+    }
+
     include_once(DIR_MODULES . 'security_rules/security_rules.class.php');
     $sc = new security_rules();
-    return $sc->checkAccess($object_type, $object_id);
+    $result = $sc->checkAccess($object_type, $object_id);
+    endMeasure('checkAccess');
+    return $result;
 }
 
 /**
@@ -1175,29 +1186,6 @@ function getPassedText($updatedTime)
     return $passedText;
 }
 
-function getMediaDurationSeconds($file)
-{
-    if (!defined('PATH_TO_FFMPEG')) {
-        if (IsWindowsOS()) {
-            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-        } else {
-            define("PATH_TO_FFMPEG", 'ffmpeg');
-        }
-    }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
-    if (preg_match("/: Invalid /", $dur)) {
-        return false;
-    }
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
-    if (!isset($duration[1])) {
-        return false;
-    }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3];
-    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
-}
-
 /**
  * Encode/Decode a string for safe transfer to a URL
  * @param mixed $string String
@@ -1313,83 +1301,148 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-/**
- * Summary of player status
- * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @return  'id'              => (int), //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'name'            => (string), //Playback status. String: stopped/playing/paused/transporting/unknown
- *          'file'            => (string), //Current link for media in device. String.
- *          'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0.
- *          'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0.
- *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown
- *          'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
- *          'random'          => (boolean)$random, // Random mode. Boolean.
- *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
- *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
- */
-function getPlayerStatus($host = 'localhost')
+function remote_file_exists($url){
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode == 200 ){return true;}
+    return false;
+}
+
+function logAction($action_type,$details='') {
+    global $session;
+    $rec=array();
+    $rec['ADDED']=date('Y-m-d H:i:s');
+    if ($session->data['SITE_USERNAME']) {
+        $rec['USER']=$session->data['SITE_USERNAME'];
+    } elseif (preg_match('/^\/admin\.php/',$_SERVER['REQUEST_URI'])) {
+        $rec['USER']='Control Panel';
+    }
+    if ($session->data['TERMINAL']) {
+        $rec['TERMINAL']=$session->data['TERMINAL'];
+    } else {
+        $rec['TERMINAL']='';
+    }
+    $rec['ACTION_TYPE']=$action_type;
+    $rec['TITLE']=$details;
+    $rec['TITLE']=mb_substr($rec['TITLE'],0,250,'utf-8');
+    $rec['IP']=$_SERVER['REMOTE_ADDR'];
+    SQLInsert('actions_log',$rec);
+
+}
+
+function get_media_info($file)
 {
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
     }
-    if (!$terminal) {
-        return;
+    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    //DebMes ($data);
+    if (preg_match("/: Invalid /", $data)) {
+        return false;
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->play_terminal = $terminal['NAME']; // Имя терминала
-    $player->command = 'pl_get'; // Команда
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
-    $terminal = array();
-    if ($player->json['success']) {
-        $terminal = array_merge($terminal, $player->json['data']);
-        //DebMes($player->json['data']);
-    } else {
-        // Если произошла ошибка, выводим ее описание
-        return ($player->json['message']);
+    //get duration
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
+
+    if (!isset($duration[1])) {
+        return false;
     }
-    $player->command = 'status'; // Команда
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
-    if ($player->json['success']) {
-        $terminal = array_merge($terminal, $player->json['data']);
-        //DebMes($player->json['data']);
-        return ($terminal);
-    } else {
-        // Если произошла ошибка, выводим ее описание
-        return ($player->json['message']);
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3]+1;
+	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+	// get all info about codec
+	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
+    
+	if ($format) {
+		$out['Audio_format'] = $format[1];
+		$out['Audio_sample_rate'] = $format[2];
+		$out['Audio_type'] = $format[3];
+		$out['Audio_codec'] = $format[4];
+		$out['Audio_bitrate'] = $format[5];
+		if ($out['Audio_type'] == 'mono' ) {
+			$out['Audio_chanel'] = 1;
+		} else {
+			$out['Audio_chanel'] = 2;
+		}	
+	}
+    preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
+    if ($formatv) {
+		$out['Video_format'] = $formatv[1];
+	    $out['Video_size'] = $formatv[2];
+	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
+	    $out['Video_fps'] = $formatv[5];
+	}
+    return $out;
+}
+
+function get_remote_filesize($url)
+{
+    $head = array_change_key_case(get_headers($url, 1));
+    // content-length of download (in bytes), read from Content-Length: field
+    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+    // cannot retrieve file size, return "-1"
+    if (!$clen) {
+        return '0';
     }
+    return $clen; // return size in bytes
 }
 
 /**
- * This function change  position on the played media in player
- * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @param mixed $time second (default 0) to positon from start time
+ * Returns number spelling
  */
-function seekPlayerPosition($host = 'localhost', $time = 0)
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-    if (!$terminal) {
-        return;
-    }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->play_terminal = $terminal['NAME']; // Имя терминала
-    $player->command = 'seek'; // Команда
-    $player->param = $time; // Параметр
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
+function num2str($num) {
 
-    if ($player->json['success']) {
-        return $player->json['message'];
-    } else {
-        return $player->json['message'];
+    if (!$num) return;
+
+    if (!defined('LANG_NUMBER_TO_STRING_UNIT')) return $num;
+
+    list($whole,$tenths) = explode('.',sprintf("%014.1f", floatval($num)));
+    $out = array();
+    if (intval($whole)>0) {
+        foreach(str_split($whole,3) as $uk=>$v) { // by 3 symbols
+            if (!intval($v)) continue;
+            $uk = sizeof(LANG_NUMBER_TO_STRING_UNIT)-$uk-1; // unit key
+            $gender = LANG_NUMBER_TO_STRING_UNIT[$uk][3];
+            list($i1,$i2,$i3) = array_map('intval',str_split($v,1));
+            // mega-logic
+            $out[] = LANG_NUMBER_TO_STRING_HUNDRED[$i1]; # 1xx-9xx
+            if ($tenths!=0) {
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 20-99
+                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 10-19 | 1-9
+            } else {
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_2TEN[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 20-99
+                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 10-19 | 1-9
+            }
+            // units without rub & kop
+            if ($uk>1) $out[]= num2straddon($v,LANG_NUMBER_TO_STRING_UNIT[$uk][0],LANG_NUMBER_TO_STRING_UNIT[$uk][1],LANG_NUMBER_TO_STRING_UNIT[$uk][2]);
+        } //foreach
     }
+    else $out[] = LANG_NUMBER_TO_STRING_NULL;
+    if ($tenths!=0) {
+        $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][1],LANG_NUMBER_TO_STRING_UNIT[1][2],LANG_NUMBER_TO_STRING_UNIT[1][2]);
+        $out[] = LANG_NUMBER_TO_STRING_1TEN[1][$tenths].' '.num2straddon($tenths,LANG_NUMBER_TO_STRING_UNIT[0][0],LANG_NUMBER_TO_STRING_UNIT[0][1],LANG_NUMBER_TO_STRING_UNIT[0][1]);
+    } else {
+        $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0]);
+    }
+    return trim(preg_replace('/ {2,}/', ' ', join(' ',$out)));
+}
+
+/**
+ * Addition to num2str
+ */
+function num2straddon($n, $f1, $f2, $f5) {
+    $n = abs(intval($n)) % 100;
+    if ($n>10 && $n<20) return $f5;
+    $n = $n % 10;
+    if ($n>1 && $n<5) return $f2;
+    if ($n==1) return $f1;
+    return $f5;
 }

@@ -197,8 +197,6 @@ function usual(&$out) {
 */
  function checkAccess($object_type, $object_id) {
 
-  global $session;
-
   $rule=SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='".$object_type."' AND OBJECT_ID='".(int)$object_id."'");
   if (!$rule['ID']) {
    return true;

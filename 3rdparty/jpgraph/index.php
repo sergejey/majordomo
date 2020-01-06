@@ -283,11 +283,18 @@ $xdata=&$t_times;
 
 $graph = new Graph($w,$h);
 
+/*
 if (SETTINGS_THEME=='light' || $_GET['bg']=='light') {
+ require_once ('./3rdparty/jpgraph/themes/UniversalTheme.class.php');
  $theme_class = new UniversalTheme; //new OceanTheme; // new AquaTheme(); UniversalTheme VividTheme
 } else {
+ require_once ('./3rdparty/jpgraph/themes/DarkTheme.class.php');
  $theme_class = new DarkTheme;
 }
+*/
+
+require_once ('./3rdparty/jpgraph/themes/UniversalTheme.class.php');
+$theme_class = new UniversalTheme; //new OceanTheme; // new AquaTheme(); UniversalTheme VividTheme
 
 $graph->SetScale('datlin');
 $graph->SetTheme($theme_class);

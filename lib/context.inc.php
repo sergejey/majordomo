@@ -6,14 +6,17 @@
  */
 function context_getuser()
 {
+   global $context_user_id;
+   if ($context_user_id) {
+      return $context_user_id;
+   }
+
    global $session;
-   if ($session->data['SITE_USER_ID'])
-   {
-      return $session->data['SITE_USER_ID'];
+   if ($session->data['SITE_USER_ID']) {
+      return (int)$session->data['SITE_USER_ID'];
    }
 
    $user = SQLSelectOne("SELECT ID FROM users WHERE IS_DEFAULT=1");
-   
    $session->data['SITE_USER_ID'] = $user['ID'];
    
    return (int)$user['ID'];
@@ -23,19 +26,17 @@ function context_getuser()
  * Summary of context_getcurrent
  * @return int|string
  */
-function context_getcurrent()
+function context_getcurrent($from_user_id = 0)
 {
-   $user_id = context_getuser();
-
+   if (!$from_user_id) {
+      $from_user_id = context_getuser();
+   }
    $sqlQuery = "SELECT ID, ACTIVE_CONTEXT_ID, ACTIVE_CONTEXT_EXTERNAL
                   FROM users
-                 WHERE ID = '" . (int)$user_id . "'";
-
+                 WHERE ID = '" . (int)$from_user_id . "'";
    $user = SQLSelectOne($sqlQuery);
-   
    if (!$user['ID'])
       return 0;
-
    if ($user['ACTIVE_CONTEXT_EXTERNAL'])
    {
       return 'ext' . (int)$user['ACTIVE_CONTEXT_ID'];
@@ -50,10 +51,11 @@ function context_getcurrent()
  * Summary of context_get_history
  * @return mixed
  */
-function context_get_history()
+function context_get_history($user_id = 0)
 {
-   $user_id = context_getuser();
-
+   if (!$user_id) {
+      $user_id = context_getuser();
+   }
    $sqlQuery = "SELECT ID, ACTIVE_CONTEXT_ID, ACTIVE_CONTEXT_EXTERNAL, ACTIVE_CONTEXT_HISTORY
                   FROM users
                  WHERE ID = '" . (int)$user_id . "'";
@@ -70,10 +72,13 @@ function context_get_history()
  * Summary of context_clear
  * @return void
  */
-function context_clear()
+function context_clear($user_id=0)
 {
-   $user_id = context_getuser();
-   
+
+   if (!$user_id) {
+      $user_id = context_getuser();
+   }
+
    $user = SQLSelectOne("SELECT * FROM users WHERE ID = '" . (int)$user_id . "'");
    
    $user['ACTIVE_CONTEXT_ID']       = 0;
@@ -91,9 +96,11 @@ function context_clear()
  * @param mixed $history   History (default '')
  * @return void
  */
-function context_activate($id, $no_action = 0, $history = '')
+function context_activate($id, $no_action = 0, $history = '', $user_id = 0)
 {
-   $user_id = context_getuser();
+   if (!$user_id) {
+      $user_id = context_getuser();
+   }
    $user    = SQLSelectOne("SELECT * FROM users WHERE ID = '" . (int)$user_id . "'");
    
    $user['ACTIVE_CONTEXT_ID']       = $id;
@@ -127,7 +134,7 @@ function context_activate($id, $no_action = 0, $history = '')
    }
    else
    {
-      context_clear();
+      context_clear($user_id);
       clearTimeOut('user_' . $user_id . '_contexttimeout');
    }
 }
@@ -140,9 +147,12 @@ function context_activate($id, $no_action = 0, $history = '')
  * @param mixed $timeout_context_id Timeout context id (default 0)
  * @return void
  */
-function context_activate_ext($id, $timeout = 0, $timeout_code = '', $timeout_context_id = 0)
+function context_activate_ext($id, $timeout = 0, $timeout_code = '', $timeout_context_id = 0, $user_id = 0)
 {
-   $user_id = context_getuser();
+
+   if (!$user_id) {
+      $user_id = context_getuser();
+   }
    $user    = SQLSelectOne("SELECT * FROM users WHERE ID = '" . (int)$user_id . "'");
    
    $user['ACTIVE_CONTEXT_ID']       = $id;
@@ -176,7 +186,7 @@ function context_activate_ext($id, $timeout = 0, $timeout_code = '', $timeout_co
    }
    else
    {
-      context_clear();
+      context_clear($user_id);
       clearTimeOut('user_' . $user_id . '_contexttimeout');
    }
 }
@@ -187,18 +197,22 @@ function context_activate_ext($id, $timeout = 0, $timeout_code = '', $timeout_co
  * @param mixed $user_id User ID
  * @return void
  */
-function context_timeout($id, $user_id)
+function context_timeout($id, $user_id = 0)
 {
-   global $session;
 
-   $user = SQLSelectOne("SELECT * FROM users WHERE ID = '" . (int)$user_id . "'");
-   
-   $session->data['SITE_USER_ID'] = $user['ID'];
+   if (!$user_id) {
+      $user_id = context_getuser();
+   } else {
+      global $context_user_id;
+      $context_user_id = $user_id;
+   }
+   //global $session;
+   //$user = SQLSelectOne("SELECT * FROM users WHERE ID = '" . (int)$user_id . "'");
+   //$session->data['SITE_USER_ID'] = $user['ID'];
 
    $context = SQLSelectOne("SELECT * FROM patterns WHERE ID = '" . (int)$id . "'");
    
-   if (!$context['TIMEOUT_CONTEXT_ID'])
-      context_activate(0);
+   if (!$context['TIMEOUT_CONTEXT_ID']) context_activate(0,0,'',$user_id);
 
    if ($context['TIMEOUT_SCRIPT'])
    {
@@ -221,7 +235,7 @@ function context_timeout($id, $user_id)
    }
 
    if ($context['TIMEOUT_CONTEXT_ID'])
-      context_activate((int)$context['TIMEOUT_CONTEXT_ID']);
+      context_activate((int)$context['TIMEOUT_CONTEXT_ID'],0,'',$user_id);
 }
 
 /**

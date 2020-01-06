@@ -11,25 +11,10 @@ if (!$directionTimeout) {
   $directionTimeout = 1*60*60;
 }
 
-$value = (float)$params['NEW_VALUE'];
+$value = (float)$this->getProperty('value');
 $minValue = (float)$this->getProperty('minValue');
 $maxValue = (float)$this->getProperty('maxValue');
 $is_normal = (int)$this->getProperty('normalValue');
-if ($maxValue == 0 && $minValue == 0 && !$is_normal) {
-  $this->setProperty('normalValue', 1);
-} elseif (($value > $maxValue || $value < $minValue) && $is_normal) {
-  $this->setProperty('normalValue', 0);
-  if ($this->getProperty('notify')) {
-    //out of range notify
-    say(LANG_DEVICES_NOTIFY_OUTOFRANGE . ' (' . $description . ' ' . $value . ')', 2);
-  }
-} elseif (($value <= $maxValue && $value >= $minValue) && !$is_normal) {
-  $this->setProperty('normalValue', 1);
-  if ($this->getProperty('notify')) {
-    //back to normal notify
-    say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);
-  }
-}
 
 $data1 = getHistoryValue($this->object_title . '.value', time() - $directionTimeout);
 $direction = 0;
@@ -40,6 +25,29 @@ if ($data1 > $value) {
 }
 if ($this->getProperty('direction') != $direction) {
   $this->setProperty('direction', $direction);
+}
+
+$is_blocked=(int)$this->getProperty('blocked');
+if ($is_blocked) {
+  return;
+}
+
+$alert_timer_title = $ot.'_alert';
+if ($maxValue == 0 && $minValue == 0 && !$is_normal) {
+  $this->setProperty('normalValue', 1);
+} elseif (($value > $maxValue || $value < $minValue) && $is_normal) {
+  $this->setProperty('normalValue', 0);
+  if ($this->getProperty('notify')) {
+    //out of range notify
+    $this->callMethod('alert');
+  }
+} elseif (($value <= $maxValue && $value >= $minValue) && !$is_normal) {
+  $this->setProperty('normalValue', 1);
+  clearTimeOut($alert_timer_title);
+  if ($this->getProperty('notify')) {
+    //back to normal notify
+    say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);
+  }
 }
 
 $linked_room = $this->getProperty('linkedRoom');

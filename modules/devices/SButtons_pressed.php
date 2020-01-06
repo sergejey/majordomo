@@ -14,6 +14,8 @@ if ($linked_room) {
   callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
 }
 
+/*
 include_once(DIR_MODULES . 'devices/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $this->getProperty('status'));
+*/

@@ -1,5 +1,5 @@
 <!-- Table 'scenes' edit -->
-<form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit" class="form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit">
 [#if OK#]
 <div class="alert alert-success">
 <#LANG_DATA_SAVED#>
@@ -40,12 +40,18 @@
         </div>
 </div>
 
-<div class="form-group">
+    <div class="form-group">
+        <label class="control-label"><#LANG_SCENE_AUTO_SCALE#> <#LANG_HCB#>scene_auto_scale<#LANG_HCE#></label>
         <div class="controls">
-                <input type="checkbox" name="auto_scale" value="1"[#if AUTO_SCALE="1"#] checked[#endif#]>
-                <#LANG_SCENE_AUTO_SCALE#> <#LANG_HCB#>scene_auto_scale<#LANG_HCE#>
+            <select name="auto_scale" class="form-control">
+                <option value="0"><#LANG_NO#></option>
+                <option value="1"[#if AUTO_SCALE="1"#] selected[#endif#]><#LANG_SCALE_BOTH#></option>
+                <option value="2"[#if AUTO_SCALE="2"#] selected[#endif#]><#LANG_SCALE_WIDTH#></option>
+                <option value="3"[#if AUTO_SCALE="3"#] selected[#endif#]><#LANG_SCALE_HEIGHT#></option>
+            </select>
         </div>
-</div>
+    </div>
+
 
 
 <!-- BACKGROUND (varchar) -->
@@ -62,6 +68,7 @@
 <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#BACKGROUND#]" width="300"></a>
 [#endif#]
 </td>
+     <!--#
  <td valign="top" width=90%>
  [#if ELEMENTS#]
  <ul>
@@ -72,6 +79,7 @@
  </ul>
  [#endif ELEMENTS#]
  </td>
+ #-->
  </tr>
 </table>
 </div>

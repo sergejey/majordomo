@@ -205,7 +205,7 @@ class market extends module
         }
 
         if ($this->ajax && $_GET['op'] == 'news') {
-            $result = $this->marketRequest('op=news', 5 * 60);
+            $result = $this->marketRequest('op=news', 15*60); //15*60
             $data = json_decode($result, true);
             //echo json_encode($data);
             if (is_array($data)) {
@@ -561,30 +561,16 @@ class market extends module
 
     function marketRequest($details = '', $cache_timeout = 0)
     {
-        $serial = gg('Serial');
-        if (!$serial || $serial == '0') {
-            $serial = '';
-            if (IsWindowsOS()) {
-                $data = exec('vol c:');
-                if (preg_match('/[\w]+\-[\w]+/', $data, $m)) {
-                    $serial = strtolower($m[0]);
-                }
-            } else {
-                $data = trim(exec("cat /proc/cpuinfo | grep Serial | cut -d '':'' -f 2"));
-                $serial = ltrim($data, '0');
-            }
-            if (!$serial) {
-                $serial = uniqid('uniq');
-            }
-            sg('Serial', $serial);
-        }
-
+        $serial = getSystemSerial();
         if (IsWindowsOS()) {
             $os = 'Windows';
         } else {
             $os = trim(exec("uname -a"));
             if (!$os) {
-                $os = 'Linux';
+                $os = trim(exec("sudo uname -a"));
+                if (!$os) {
+                    $os = 'Linux';
+                }
             }
         }
         $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -751,12 +737,12 @@ class market extends module
         $source = ROOT . 'modules';
         if ($dir = @opendir($source)) {
             while (($file = readdir($dir)) !== false) {
-                if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) { // && !file_exists($source."/".$file."/installed")
-                    @unlink(ROOT . "modules/" . $file . "/installed");
+                if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                    @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
                 }
             }
         }
-        @unlink(ROOT . "modules/control_modules/installed");
+        @unlink(ROOT . "cms/modules_installed/control_modules.installed");
 
         if ($frame) {
             return ("Updates Installed!");
@@ -838,6 +824,8 @@ class market extends module
             if ($frame) {
                 $this->echonow(" OK<br/>", 'green');
             }
+            $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
+            eval($code);
             $this->removeTree(ROOT . 'modules/' . $name);
             $this->removeTree(ROOT . 'templates/' . $name);
             if ($name == 'scheduler') {
@@ -849,8 +837,6 @@ class market extends module
                 @unlink($cycle_name);
             }
             removeMissingSubscribers();
-            $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
-            eval($code);
         }
         $ok_msg = 'Uninstalled';
         if ($frame) {
@@ -1022,12 +1008,12 @@ class market extends module
             $source = ROOT . 'modules';
             if ($dir = @opendir($source)) {
                 while (($file = readdir($dir)) !== false) {
-                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) { // && !file_exists($source."/".$file."/installed")
-                        @unlink(ROOT . "modules/" . $file . "/installed");
+                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                        @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
                     }
                 }
             }
-            @unlink(ROOT . "modules/control_modules/installed");
+            @unlink(ROOT . "cms/modules_installed/control_modules.installed");
 
             if ($frame) {
                 $this->echonow(" OK <br/>", 'green');

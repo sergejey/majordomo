@@ -111,6 +111,7 @@ while (1) {
                 $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                 $h['ADDED'] = $q_rec['ADDED'];
                 $h['VALUE'] = $value;
+                $h['SOURCE'] = $q_rec['SOURCE'];
                 debug_echo(" Insert new value ".$h['VALUE_ID']." ".$h['ADDED']." ".$value);
                 $h['ID'] = SQLInsert($table_name, $h);
                 debug_echo(" Done ");
@@ -140,6 +141,7 @@ while (1) {
                     $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                     $h['ADDED'] = $q_rec['ADDED'];
                     $h['VALUE'] = $value;
+                    $h['SOURCE'] = $q_rec['SOURCE'];
                     $h['ID'] = SQLInsert($table_name, $h);
                     debug_echo(" Done ");
                 }

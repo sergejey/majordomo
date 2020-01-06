@@ -1,6 +1,6 @@
 <?php
 
-if ($argv[0]!='') {
+if (isset($argv[0]) && $argv[0]!='') {
     set_time_limit(60);
     ignore_user_abort(1);
     foreach($argv as $param) {
@@ -26,9 +26,19 @@ if ($argv[0]!='') {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
+if (preg_match('/\/api\.php\?/',$url)) {
+    $url=preg_replace('/\/api\.php\?/','/api.php/',$url);
+}
 $url = preg_replace('/\?.+/', '', $url);
 $request = explode('/', trim($url, '/'));
+
 array_shift($request);
+
+if (is_array($request)) {
+    foreach($request as &$param) {
+        $param=urldecode($param);
+    }
+}
 
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -41,7 +51,7 @@ if (isset($request[0])) {
     include_once("./lib/loader.php");
     include_once("./load_settings.php");
 
-    StartMeasure('TOTAL');
+    startMeasure('TOTAL');
     $startedTime=getmicrotime();
     register_shutdown_function('apiShutdown');
 
@@ -197,26 +207,32 @@ if (!isset($request[0])) {
     foreach($locations as $k=>$v) {
         $location=array();
         $location['id']=$v['ID'];
-        $location['title']=$v['TITLE'];
+        $location['title']=processTitle($v['TITLE']);
         $location['priority']=$v['PRIORITY'];
         $location['object']=getRoomObjectByLocation($v['ID'],1);
         $result['rooms'][]=$location;
     }
 } elseif (strtolower($request[0]) == 'module') {
-    $module_name = $request[1];
-    $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
+    $module_name = find_module($request[1]);
+	$module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
     if (file_exists($module_file)) {
         include_once($module_file);
         $module = new $module_name;
         if (method_exists($module,'api')) {
-            $params = $request;
-            array_shift($params);
-            array_shift($params);
-            $result['apiHandleResult']=$module->api($params);
+            $params = $_REQUEST;
+            $r = $request;
+			array_shift($r);
+            array_shift($r);
+            $params['request']=$r;
+			$result['apiHandleResult']=$module->api($params);
         }
+		else
+			$result['error']="Not supported";
     }
+	else
+		$result['error']="Not found module";
 } elseif (strtolower($request[0]) == 'modulepropertyset' && isset($request[1])) {
-    $module_name = $request[1];
+    $module_name = find_module($request[1]);
     $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
     $object = gr('object');
     $property = gr('property');
@@ -295,7 +311,11 @@ if (!isset($request[0])) {
         }
     } elseif ($method == 'POST') {
         if (isset($tmp[1])) {
-            setGlobal($request[1], $input['data']);
+            if (isset($_POST['data'])) {
+                setGlobal($request[1], $_POST['data']);
+            } else {
+                setGlobal($request[1], $input['data']);
+            }
         }
     }
 } elseif (strtolower($request[0]) == 'history' && isset($request[1])) {
@@ -366,7 +386,9 @@ if (function_exists('getmicrotime')) {
     $result['passed']=round($endTime-$startedTime,4);
 }
 
-endMeasure('TOTAL');
+if (function_exists('endMeasure')) {
+    endMeasure('TOTAL');
+}
 
 if ($_GET['performance']) {
     $result['performance']=PerformanceReport(1);
@@ -383,4 +405,17 @@ function apiShutdown() {
     } elseif (isset($result['passed']) && $result['passed']>5) {
         DebMes("Result [".$result['passed']."] of : ".$_SERVER['REQUEST_URI'].' '.json_encode($result),'api_slow');
     }
+}
+
+
+function find_module($module_name) {
+
+    foreach (scandir(DIR_MODULES) as $f) 
+    {
+      if (strtolower($f) == strtolower($module_name))
+      {
+          return $f;
+      }
+    }
+    return '';
 }

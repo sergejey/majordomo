@@ -9,6 +9,7 @@ $device_id = gr('device_id', 'int');
 $search = gr('search', 'trim');
 $type = gr('type', 'trim');
 $location_id = gr('location_id', 'trim');
+$class_template = gr('class_template','trim');
 
 
 $scene_id = $rec['ID'];
@@ -21,12 +22,20 @@ if ($this->mode == 'add_device') {
         $element['TYPE']='device';
         $element['DEVICE_ID']=$device_id;
         $element['TITLE']=$device_rec['TITLE'];
+        $element['CLASS_TEMPLATE']=$class_template;
+        $element['BACKGROUND']=gr('background','int');
         if ($top && $left) {
             $element['TOP']=$top;
             $element['LEFT']=$left;
         } else {
-            $element['TOP']=50;
-            $element['LEFT']=50;
+            $old_element=SQLSelectOne("SELECT * FROM elements WHERE SCENE_ID=".(int)$scene_id." AND TYPE='device' ORDER BY ID DESC LIMIT 1");
+            if ($old_element['ID']) {
+                $element['TOP']=$old_element['TOP']+40;
+                $element['LEFT']=$old_element['LEFT'];
+            } else {
+                $element['TOP']=50;
+                $element['LEFT']=50;
+            }
         }
         $element['ID']=SQLInsert('elements',$element);
         $this->redirect("?id=".$scene_id."&view_mode=".$this->view_mode."&tab=".$this->tab."&top=".($element['TOP']+20)."&left=".$left."&search=".urlencode($search)."&type=".$type."&location_id=".$location_id);
@@ -45,6 +54,10 @@ $added_ids = array_map('current', $elements);
 $added_ids[] = 0;
 
 $added_devices = SQLSelect("SELECT ID,TITLE FROM devices WHERE ID IN (" . implode(',', $added_ids) . ") ORDER BY TITLE");
+$total = count($added_devices);
+for($i=0;$i<$total;$i++) {
+    $added_devices[$i]['ELEMENT_ID']=current(SQLSelectOne("SELECT ID FROM elements WHERE DEVICE_ID=".$added_devices[$i]['ID']));
+}
 $out['ADDED_DEVICES'] = $added_devices;
 
 $qry = "1";

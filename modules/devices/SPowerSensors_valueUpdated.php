@@ -39,4 +39,4 @@ if ($currentValue >= $min_value) {
     }
 }
 
-$this->callMethod('statusUpdated');
+//$this->callMethod('statusUpdated');

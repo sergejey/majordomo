@@ -7,40 +7,18 @@
 
 class MediaRendererVolume {
     public function __construct($server) {
-        $crl = str_ireplace("Location:", "", $server);
-
         // получаем айпи и порт устройства
-        $url = parse_url($crl);
+        $url = parse_url($server);
         $this->ip = $url['host'];
         $this->port = $url['port'];
 
         // получаем XML
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $crl);
+        curl_setopt($ch, CURLOPT_URL, $server);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $content = curl_exec($ch);
-
-        // proverka na otvet
-        $retcode = @curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
-        // если не получен ответ делаем поиск устройства по новой
-        // сделано специально для тех устройств которые периодически меняют свои порты и ссылки 
-        if ($retcode!=200) {
-            $crl = $this->search($this->ip);
-            // получаем айпи и порт устройства по новой
-            $url = parse_url($crl);
-            $this->ip = $url['host'];
-            $this->port = $url['port'];
-            // получаем XML по новой
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $crl);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $content = curl_exec($ch);
-            curl_close($ch);
-            }
 
         // загружаем xml
         libxml_use_internal_errors(true);
@@ -52,9 +30,9 @@ class MediaRendererVolume {
                 $chek_url = (substr($service->controlURL, 0, 1));
                 $this->service_type = ($service->serviceType);
                 if ($chek_url == '/') {
-                    $this->ctrlurl = ($url['scheme'] . '://' . $url['host'] . ':' . $url['port'] . $service->controlURL);
+                    $this->ctrlurl = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . $service->controlURL);
                 } else {
-                    $this->ctrlurl = ($url['scheme'] . '://' . $url['host'] . ':' . $url['port'] . '/' . $service->controlURL);
+                    $this->ctrlurl = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
                 }
             }
         }
@@ -62,14 +40,21 @@ class MediaRendererVolume {
 
 	public function SetVolume($volume)
 	{
-		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredVolume' => $volume);
-		return $this->sendRequestToDevice('SetVolume',$args);
+		$response = $this->sendRequestToDevice('SetVolume',array('InstanceId' => 0,'Channel' => 'Master','DesiredVolume' => $volume));
+		// создаем хмл документ
+        $doc = new \DOMDocument();
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('SetVolumeResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
 	}
 
 	public function GetVolume()
 	{
-		$args = array('InstanceId' => 0,'Channel' => 'Master');
-		return $this->sendRequestToDevice('GetVolume',$args);
+		return $this->sendRequestToDevice('GetVolume',array('InstanceId' => 0,'Channel' => 'Master'));
 	}
 
 	public function mute() {
@@ -112,42 +97,4 @@ class MediaRendererVolume {
         curl_close($ch);
         return $response;
     }
-
-    
-    // функция получения CONTROL_ADDRESS при его отсутствии или его ге правильности
-    private function search($ip = '255.255.255.255') {
-        //create the socket
-        $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
-        socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
-        //all
-        $request  = 'M-SEARCH * HTTP/1.1'."\r\n";
-        $request .= 'HOST: 239.255.255.250:1900'."\r\n";
-        $request .= 'MAN: "ssdp:discover"'."\r\n";
-        $request .= 'MX: 2'."\r\n";
-        $request .= 'ST: ssdp:all'."\r\n";
-        $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
-        $request .= "\r\n";
-        
-        socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
-        // send the data from socket
-        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
-        $response = array();
-        do {
-            $buf = null;
-            if (($len = @socket_recvfrom($socket, $buf, 2048, 0, $ip, $port)) == -1) {
-                echo "socket_read() failed: " . socket_strerror(socket_last_error()) . "\n";
-            }
-            if(!is_null($buf)){
-                $messages = explode("\r\n", $buf);
-                    foreach( $messages as $row ) {
-                         if( stripos( $row, 'loca') === 0 ) {
-                              $response = str_ireplace( 'location: ', '', $row );
-                         }
-                    }
-            }
-        } while(!is_null($buf));
-        socket_close($socket);
-          $response = str_ireplace("Location:", "", $response);
-        return $response;
-    } 
 }

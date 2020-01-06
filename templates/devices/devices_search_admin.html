@@ -4,7 +4,8 @@
 <form class="form-inline" name="frmFilter">
 
  <div class="form-group">
-  <a href="?view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+  <a href="?view_mode=edit_devices&location_id=<#LOCATION_ID#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+  <a href="?view_mode=quick_edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i> Quick Edit</a>
   [#if ENABLE_HOMEBRIDGE="1"#]
   <a href="?mode=homebridgesync" class="btn btn-default">HomeBridge Sync</a>
   [#endif#]
@@ -112,6 +113,15 @@
   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
   trackedDevices.forEach(function(item, index) {
    var url = baseURL + item;
+
+   $.ajax({
+    url: url
+   }).done(function(data) {
+    var obj=jQuery.parseJSON(data);
+    $('.device'+item).html(obj.HTML);
+   });
+
+   /*
    ajaxManager.addReq({
     type: 'GET',
     url: url,
@@ -120,6 +130,7 @@
      $('.device'+item).html(obj.HTML);
     }
    });
+   */
   });
   httpRefreshTimer = setTimeout('httpRefreshDevices()',3000);
  }

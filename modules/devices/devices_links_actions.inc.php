@@ -1,8 +1,8 @@
 <?php
 
 //DebMes("Checking linked actions for device ".$device1['ID']);
-
-if ($this->isHomeBridgeAvailable()) {
+startMeasure('homebridge_update');
+if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
     $payload = array();
     $payload['name'] = $device1['LINKED_OBJECT'];
@@ -142,7 +142,9 @@ if ($this->isHomeBridgeAvailable()) {
         sg('HomeBridge.to_set', json_encode($payload));
     }
 }
+endMeasure('homebridge_update');
 
+startMeasure('checkingLinks');
 $value = (float)gg($device1['LINKED_OBJECT'] . '.value');
 $status = (float)gg($device1['LINKED_OBJECT'] . '.status');
 
@@ -158,11 +160,11 @@ for ($i = 0; $i < $total; $i++) {
     // -----------------------------------------------------------------
     if ($link_type == 'switch_it') {
         if ($settings['action_type'] == 'turnoff') {
-            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         } elseif ($settings['action_type'] == 'turnon') {
-            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         } elseif ($settings['action_type'] == 'switch') {
-            $action_string = 'callMethodSafe("' . $object . '.switch' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.switch' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         }
         if ((int)$settings['action_delay'] > 0) {
             $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
@@ -173,13 +175,13 @@ for ($i = 0; $i < $total; $i++) {
         if ($settings['darktime']) {
             $action_string .= 'if (gg("DarknessMode.active")) {';
         }
-        $action_string .= 'callMethodSafe("' . $object . '.turnOn' . '");';
-        $action_string .= 'setTimeout(\'' . $timer_name . '\',\'' . 'callMethod("' . $object . '.turnOff' . '");' . '\',' . (int)$settings['action_delay'] . ');';
+        $action_string .= 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
+        $action_string .= 'setTimeout(\'' . $timer_name . '\',\'' . 'callMethod("' . $object . '.turnOff' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));' . '\',' . (int)$settings['action_delay'] . ');';
         if ($settings['darktime']) {
             $action_string .= '}';
         }
     } elseif ($link_type == 'set_color') {
-        $action_string = 'callMethodSafe("' . $object . '.setColor' . '",array("color"=>"' . $settings['action_color'] . '"));';
+        $action_string = 'callMethodSafe("' . $object . '.setColor' . '",array("color"=>"' . $settings['action_color'] . '","link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         if ((int)$settings['action_delay'] > 0) {
             $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . (int)$settings['action_delay'] . ');';
         }
@@ -187,9 +189,9 @@ for ($i = 0; $i < $total; $i++) {
         // -----------------------------------------------------------------
     } elseif ($link_type == 'sensor_switch') {
         if ($settings['action_type'] == 'turnoff' && gg($object . '.status')) {
-            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         } elseif ($settings['action_type'] == 'turnon' && !gg($object . '.status')) {
-            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         }
         if ($settings['condition_type'] == 'above' && $value >= (float)$settings['condition_value']) {
             //do the action
@@ -201,6 +203,8 @@ for ($i = 0; $i < $total; $i++) {
         }
     } elseif ($link_type == 'sensor_pass') {
         $action_string = 'sg("' . $object . '.value' . '","' . $value . '");';
+    } elseif ($link_type == 'open_sensor_pass') {
+        $action_string = 'sg("' . $object . '.status' . '","' . $status . '");';
     } elseif ($link_type == 'thermostat_switch') {
         $set_value = 0;
         $current_relay_status = gg($device1['LINKED_OBJECT'] . '.relay_status');
@@ -219,10 +223,10 @@ for ($i = 0; $i < $total; $i++) {
         }
         if ($set_value && !$current_target_status) {
             // turn on
-            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         } elseif (!$set_value && $current_target_status) {
             // turn off
-            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '");';
+            $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
         }
     }
 
@@ -249,5 +253,7 @@ for ($i = 0; $i < $total; $i++) {
             registerError('linked_device', sprintf('Error in script "%s": ' . $e->getMessage(), $link_type));
         }
     }
+
+    endMeasure('checkingLinks');
 
 }

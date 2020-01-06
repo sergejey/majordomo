@@ -321,7 +321,7 @@ class objects extends module
      */
     function loadObject($id)
     {
-        $rec = SQLSelectOne("SELECT * FROM objects WHERE ID='" . DBSafe($id) . "'");
+        $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
         if (IsSet($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
@@ -357,10 +357,10 @@ class objects extends module
 
         global $class_properties_cached;
         if (isset($class_properties_cached[$id])) {
-            $properties=$class_properties_cached[$id];
+            $properties = $class_properties_cached[$id];
         } else {
             $properties = SQLSelect("SELECT properties.*, classes.TITLE AS CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='" . $id . "' AND OBJECT_ID=0");
-            $class_properties_cached[$id]=$properties;
+            $class_properties_cached[$id] = $properties;
         }
 
         if ($include_self) {
@@ -494,44 +494,34 @@ class objects extends module
         $this->callMethod($name, $params, 1);
     }
 
-    function callMethodSafe($name, $params = 0)
-    {
+    function callMethodSafe($name, $params = 0) {
+        startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
-        $call_stack = array();
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
-            $call_stack = $_GET['m_c_s'];
-        }
-
-        if (in_array($current_call, $call_stack)) {
-            $call_stack[] = $current_call;
-            DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
-            return 0;
-        }
-
-        $call_stack[] = $current_call;
-        /*
-        $data=array(
-         'object'=>$this->object_title,
-            'op'=>'m',
-            'm'=>$name,
-            'm_c_s'=>$call_stack
-        );
-        if (session_id()) {
-         $data[session_name()]=session_id();
-        }
-        $url=BASE_URL.'/objects/?'.http_build_query($data);
         if (is_array($params)) {
-         foreach($params as $k=>$v) {
-          $url.='&'.$k.'='.urlencode($v);
-         }
+            $current_call .= '.' . md5(json_encode($params));
         }
-        $result = getURLBackground($url,0);
-        */
+        $call_stack = array();
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+                $call_stack = $_GET['m_c_s'];
+            }
+            if (in_array($current_call, $call_stack)) {
+                $call_stack[] = $current_call;
+                DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
+                return 0;
+            }
+        }
+        $call_stack[] = $current_call;
         if (!is_array($params)) {
             $params = array();
         }
-        $params['m_c_s'] = $call_stack;
-        $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+            $result = $this->callMethod($name, $params);
+        } else {
+            $params['m_c_s'] = $call_stack;
+            $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
+        }
+        endMeasure('callMethodSafe');
         return $result;
     }
 
@@ -547,9 +537,13 @@ class objects extends module
 
         if (!$parentClassId) {
             verbose_log("Method [" . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")");
+            //dprint("Method [" . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")",false);
         } else {
             verbose_log("Class method [" . $this->class_title . '/' . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")");
+            //dprint("Class method [" . $this->class_title . '/' . $this->object_title . ".$name] (" . (is_array($params) ? json_encode($params) : '') . ")",false);
         }
+        //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        //echo "<hr>";
         startMeasure('callMethod');
 
         $original_method_name = $this->object_title . '.' . $name;
@@ -568,6 +562,14 @@ class objects extends module
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
 
             $method['EXECUTED'] = date('Y-m-d H:i:s');
+
+            $source = $_SERVER['REQUEST_URI'];
+            if (strlen($source) > 250) {
+                $source = substr($source, 0, 250) . '...';
+            }
+            $method['EXECUTED_SRC'] = $source;
+
+
             if (!$method['OBJECT_ID']) {
                 if (!$params) {
                     $params = array();
@@ -610,17 +612,20 @@ class objects extends module
 
 
             if ($code != '') {
-                try {
-                    $success = eval($code);
-                    if ($success === false) {
-                        //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
-                        registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
+                if (isItPythonCode($code)) {
+                    python_run_code($code, $params, $this->object_title);
+                } else {
+                    try {
+                        $success = eval($code);
+                        if ($success === false) {
+                            //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
+                            registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
+                        }
+                    } catch (Exception $e) {
+                        //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
+                        registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
                     }
-                } catch (Exception $e) {
-                    //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
-                    registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
                 }
-
             }
             endMeasure('callMethod', 1);
             endMeasure('callMethod (' . $original_method_name . ')', 1);
@@ -802,7 +807,9 @@ class objects extends module
                 }
 
 
-                if (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
+                if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
+                    $path = SETTINGS_SYSTEM_DEBMES_PATH;
+                } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
                     $path = LOG_DIRECTORY;
                 } else {
                     $path = ROOT . 'cms/debmes';
@@ -829,9 +836,34 @@ class objects extends module
         startMeasure('setproperty_update');
         if ($id) {
             $prop = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $id . "'");
+
+            if ($prop['VALIDATION_TYPE'] == 1) {
+                if (!is_numeric($value)) return false;
+                if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) {
+                    return false;
+                }
+                if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) {
+                    return false;
+                }
+            }
+            if ($prop['VALIDATION_TYPE'] == 2) {
+                if ($value != '1' && $value != '0') {
+                    return false;
+                }
+            }
+            if ($prop['VALIDATION_TYPE'] == 3) {
+                $items = explode(',', $prop['VALIDATION_LIST']);
+                if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
+            }
+
+            if ($prop['VALIDATION_TYPE'] == 100) {
+                eval($prop['VALIDATION_CODE']);
+                if (is_null($value)) return false;
+            }
+
             $property = $prop['TITLE'];
             startMeasure('setproperty_update_getvalue');
-            $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id );
+            $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
             endMeasure('setproperty_update_getvalue');
             $old_value = $v['VALUE'];
 
@@ -874,6 +906,9 @@ class objects extends module
 
             $v['VALUE'] = $value . '';
             $v['SOURCE'] = $source . '';
+            if (!$v['PROPERTY_NAME']) {
+                $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
+            }
             if ($v['ID']) {
                 $v['UPDATED'] = date('Y-m-d H:i:s');
                 //if ($old_value!=$value) {
@@ -897,6 +932,7 @@ class objects extends module
             //$prop['VALUE']='';
             $prop['ID'] = SQLInsert('properties', $prop);
 
+            $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
             $v['PROPERTY_ID'] = $prop['ID'];
             $v['OBJECT_ID'] = $this->id;
             $v['VALUE'] = $value . '';
@@ -911,7 +947,14 @@ class objects extends module
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             $this->device_id &&
-            ($p_lower == 'value' || $p_lower == 'status')
+            ($p_lower == 'value' ||
+                $p_lower == 'status' ||
+                $p_lower == 'disabled' ||
+                $p_lower == 'level' ||
+                $p_lower == 'volume' ||
+                $p_lower == 'channel' ||
+                $p_lower == 'mode' ||
+                $p_lower == 'currenttargetvalue') //
         ) {
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);
         }
@@ -948,8 +991,8 @@ class objects extends module
                 $params['NEW_VALUE'] = (string)$value;
                 $params['OLD_VALUE'] = (string)$old_value;
                 $params['SOURCE'] = (string)$source;
-                $this->callMethod($prop['ONCHANGE'], $params);
-                //$this->callMethodSafe($prop['ONCHANGE'], $params);
+                //$this->callMethod($prop['ONCHANGE'], $params);
+                $this->callMethodSafe($prop['ONCHANGE'], $params);
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }
@@ -1133,6 +1176,11 @@ class objects extends module
  properties: DATA_KEY int(3) NOT NULL DEFAULT '0' 
  properties: DATA_TYPE int(3) NOT NULL DEFAULT '0' 
  properties: DESCRIPTION text
+ properties: VALIDATION_TYPE int(3) NOT NULL DEFAULT '0'
+ properties: VALIDATION_NUM_MIN varchar(20) NOT NULL DEFAULT ''
+ properties: VALIDATION_NUM_MAX varchar(20) NOT NULL DEFAULT ''
+ properties: VALIDATION_LIST varchar(255) NOT NULL DEFAULT ''
+ properties: VALIDATION_CODE text
  properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
  properties: INDEX (CLASS_ID)
  properties: INDEX (OBJECT_ID)

@@ -63,6 +63,69 @@
         </div>
     </div>
 
+    <script type="text/javascript">
+        function validationTypeUpdated() {
+            var vType=$('#validation_type').val();
+            $('#validation_min_max').hide();
+            $('#validation_dictionary').hide();
+            $('#validation_code').hide();
+            if (vType=='1') {
+                $('#validation_min_max').show();
+            }
+            if (vType=='3') {
+                $('#validation_dictionary').show();
+            }
+            if (vType=='100') {
+                $('#validation_code').show();
+            }
+            //validation_min_max
+            //validation_dictionary
+            //validation_code
+        }
+    </script>
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_VALIDATION_TYPE#>:<#LANG_HCB#>validationtype<#LANG_HCE#></label>
+        <div class="col-lg-4">
+            <select name="validation_type" id="validation_type" class="form-control" onchange="validationTypeUpdated();">
+                <option value="0"[#if VALIDATION_TYPE="0"#] selected[#endif#]><#LANG_NO#>
+                <option value="1"[#if VALIDATION_TYPE="1"#] selected[#endif#]><#LANG_VALIDATION_TYPE_NUMBER#></option>
+                <option value="2"[#if VALIDATION_TYPE="2"#] selected[#endif#]><#LANG_VALIDATION_TYPE_BINARY#></option>
+                <option value="3"[#if VALIDATION_TYPE="3"#] selected[#endif#]><#LANG_VALIDATION_TYPE_DICTIONARY#></option>
+                <option value="100"[#if VALIDATION_TYPE="100"#] selected[#endif#]><#LANG_VALIDATION_TYPE_CUSTOM#></option>
+            </select>
+        </div>
+    </div>
+
+    <div id="validation_min_max"[#if VALIDATION_TYPE!="1"#] style="display:none"[#endif#]>
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_MIN_VALUE#>:</label>
+        <div class="col-lg-4">
+             <input type="text" name="validation_num_min" value="[#VALIDATION_NUM_MIN#]" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_MAX_VALUE#>:</label>
+        <div class="col-lg-4">
+            <input type="text" name="validation_num_max" value="[#VALIDATION_NUM_MAX#]" class="form-control">
+        </div>
+    </div>
+    </div>
+
+    <div class="form-group[#if ERR_VALIDATION_LIST="1"#] has-error[#endif#]" id="validation_dictionary"[#if VALIDATION_TYPE!="3"#] style="display:none"[#endif#]>
+        <label class="col-lg-4 control-label"><#LANG_VALIDATION_TYPE_DICTIONARY#>:</label>
+        <div class="col-lg-4">
+            <input type="text" name="validation_list" value="[#VALIDATION_LIST#]" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-group[#if ERR_VALIDATION_CODE!=""#] has-error[#endif#]" id="validation_code"[#if VALIDATION_TYPE!="100"#] style="display:none"[#endif#]>
+        <label class="col-lg-4 control-label"><#LANG_CODE#>:</label>
+        <div class="col-lg-4">
+            [#if ERR_VALIDATION_CODE!=""#]<div>[#ERR_VALIDATION_CODE#]</div>[#endif#]
+            <textarea name="validation_code" rows="4" class="form-control" placeholder="$value">[#VALIDATION_CODE#]</textarea>
+        </div>
+    </div>
+
     <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_DATA_KEY#>:<#LANG_HCB#>datakey<#LANG_HCE#></label>
         <div class="col-lg-4">
