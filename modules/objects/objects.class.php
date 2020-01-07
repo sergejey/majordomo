@@ -563,7 +563,7 @@ class objects extends module
 
             $method['EXECUTED'] = date('Y-m-d H:i:s');
 
-            $source = $_SERVER['REQUEST_URI'];
+            $source = urldecode($_SERVER['REQUEST_URI']);
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
@@ -579,7 +579,8 @@ class objects extends module
             if ($params) {
                 $saved_params = $params;
                 unset($saved_params['m_c_s']);
-                $method['EXECUTED_PARAMS'] = json_encode($saved_params);
+                unset($saved_params['SOURCE']);
+                $method['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
                 if (strlen($method['EXECUTED_PARAMS']) > 250) {
                     $method['EXECUTED_PARAMS'] = substr($method['EXECUTED_PARAMS'], 0, 250);
                 }
@@ -775,7 +776,7 @@ class objects extends module
             $no_linked = 0;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = $_SERVER['REQUEST_URI'];
+            $source = urldecode($_SERVER['REQUEST_URI']);
         }
         if (strlen($source) > 250) {
             $source = substr($source, 0, 250) . '...';
