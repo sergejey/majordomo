@@ -776,7 +776,7 @@ class objects extends module
             $no_linked = 0;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = $_SERVER['REQUEST_URI'];
+            $source = urldecode($_SERVER['REQUEST_URI']);
         }
         if (strlen($source) > 250) {
             $source = substr($source, 0, 250) . '...';
