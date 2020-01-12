@@ -856,7 +856,6 @@ class objects extends module
                 $items = explode(',', $prop['VALIDATION_LIST']);
                 if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
             }
-
             if ($prop['VALIDATION_TYPE'] == 100) {
                 eval($prop['VALIDATION_CODE']);
                 if (is_null($value)) return false;
@@ -912,11 +911,7 @@ class objects extends module
             }
             if ($v['ID']) {
                 $v['UPDATED'] = date('Y-m-d H:i:s');
-                //if ($old_value!=$value) {
                 SQLUpdate('pvalues', $v);
-                //} else {
-                // SQLExec("UPDATE pvalues SET UPDATED='".$v['UPDATED']."' WHERE ID='".$v['ID']."'");
-                //}
             } else {
                 $v['PROPERTY_ID'] = $id;
                 $v['OBJECT_ID'] = $this->id;
@@ -925,12 +920,10 @@ class objects extends module
                 $v['UPDATED'] = date('Y-m-d H:i:s');
                 $v['ID'] = SQLInsert('pvalues', $v);
             }
-            //DebMes(" $id to $value ");
         } else {
             $prop = array();
             $prop['OBJECT_ID'] = $this->id;
             $prop['TITLE'] = $property;
-            //$prop['VALUE']='';
             $prop['ID'] = SQLInsert('properties', $prop);
 
             $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
@@ -960,17 +953,42 @@ class objects extends module
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);
         }
 
+        if (IsSet($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
+            if (!is_array($no_linked) && $no_linked) {
+                return;
+            } elseif (!is_array($no_linked)) {
+                $no_linked = array();
+            }
+
+
+            $tmp = explode(',', $v['LINKED_MODULES']);
+            $total = count($tmp);
+
+            startMeasure('linkedModulesProcessing');
+            for ($i = 0; $i < $total; $i++) {
+                $linked_module = trim($tmp[$i]);
+                if (isset($no_linked[$linked_module])) {
+                    continue;
+                }
+                startMeasure('linkedModule' . $linked_module);
+                if (file_exists(DIR_MODULES . $linked_module . '/' . $linked_module . '.class.php')) {
+                    $params = array();
+                    $params['object'] = $this->object_title;
+                    $params['property'] = $property;
+                    $params['value'] = $value;
+                    $url = '/api/modulePropertySet/' . urlencode($linked_module);
+                    callAPI($url, 'GET', $params);
+                }
+                endMeasure('linkedModule' . $linked_module);
+            }
+            endMeasure('linkedModulesProcessing');
+        }
+
         if (function_exists('postToWebSocketQueue')) {
             startMeasure('setproperty_postwebsocketqueue');
             postToWebSocketQueue($this->object_title . '.' . $property, $value);
             endMeasure('setproperty_postwebsocketqueue');
         }
-
-        /*
-        if ($this->keep_history>0) {
-         $prop['KEEP_HISTORY']=$this->keep_history;
-        }
-        */
 
         if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
             $q_rec = array();
@@ -997,58 +1015,6 @@ class objects extends module
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }
-
-        if (IsSet($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
-            if (!is_array($no_linked) && $no_linked) {
-                return;
-            } elseif (!is_array($no_linked)) {
-                $no_linked = array();
-            }
-
-
-            $tmp = explode(',', $v['LINKED_MODULES']);
-            $total = count($tmp);
-
-
-            startMeasure('linkedModulesProcessing');
-            for ($i = 0; $i < $total; $i++) {
-                $linked_module = trim($tmp[$i]);
-
-                if (isset($no_linked[$linked_module])) {
-                    continue;
-                }
-                startMeasure('linkedModule' . $linked_module);
-                if (file_exists(DIR_MODULES . $linked_module . '/' . $linked_module . '.class.php')) {
-                    $params = array();
-                    $params['object'] = $this->object_title;
-                    $params['property'] = $property;
-                    $params['value'] = $value;
-                    $url = '/api/modulePropertySet/' . urlencode($linked_module);
-                    //DebMes("Calling API: ".$url,'api_module');
-                    callAPI($url, 'GET', $params);
-                    /*
-                       include_once(DIR_MODULES.$linked_module.'/'.$linked_module.'.class.php');
-                       $module_object=new $linked_module;
-                       if (method_exists($module_object, 'propertySetHandle')) {
-                        $module_object->propertySetHandle($this->object_title, $property, $value);
-                       }
-                     */
-                }
-                endMeasure('linkedModule' . $linked_module);
-            }
-            endMeasure('linkedModulesProcessing');
-        }
-
-        /*
-         $h=array();
-         $h['ADDED']=date('Y-m-d H:i:s');
-         $h['OBJECT_ID']=$this->id;
-         $h['VALUE_ID']=$v['ID'];
-         $h['OLD_VALUE']=$old_value;
-         $h['NEW_VALUE']=$value;
-         SQLInsert('history', $h);
-        */
-
 
         endMeasure('setProperty (' . $property . ')', 1);
         endMeasure('setProperty', 1);

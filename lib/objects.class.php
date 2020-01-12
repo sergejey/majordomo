@@ -1023,7 +1023,9 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
+        if (!$is_child) {
+            curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
+        }
     }
     if ($method == 'GET') {
         $url .= '?' . http_build_query($params);
@@ -1040,15 +1042,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
 
     if ($is_child) {
         exit();
-        /*
-        if (function_exists('posix_kill')) {
-            posix_kill(getmypid(), SIGKILL);
-        } else {
-            exit();
-        }
-        */
     }
-    
     return true;
 
 }
