@@ -408,7 +408,8 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
  */
 function clearScheduledJob($title)
 {
-    SQLExec("DELETE FROM jobs WHERE TITLE LIKE '" . DBSafe($title) . "'");
+    $title = str_replace("_", "\_", dbsafe1($title)); //dbfsafe1 не экранирует %, тут  добавил экранирование \_ (часто встречается в названиях джобов)	
+    SQLExec("DELETE FROM jobs WHERE TITLE LIKE '" . $title . "'");
 }
 
 /**
