@@ -1360,7 +1360,7 @@ class devices extends module
             endMeasure('checkLinkedDevicesAction');
             return 0;
         }
-        require_once (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        include(DIR_MODULES . 'devices/devices_links_actions.inc.php');
         endMeasure('checkLinkedDevicesAction');
         return 1;
     }

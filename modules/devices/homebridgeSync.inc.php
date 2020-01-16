@@ -62,6 +62,7 @@ for ($i = 0; $i < $total; $i++) {
                 $payload['service'] = 'WindowCovering';
             }
             if ($payload['service']) {
+                DebMes("HomeBridge.to_add: ".json_encode($payload),'homebridge');
                 sg('HomeBridge.to_add', json_encode($payload));
                 if ($open_type == 'gates') {
                     if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
@@ -76,6 +77,7 @@ for ($i = 0; $i < $total; $i++) {
                         $payload['CurrentPosition'] = 0;
                     }
                 }
+                DebMes("HomeBridgeSync.to_set: ".json_encode($payload),'homebridge');
                 sg('HomeBridge.to_set', json_encode($payload));
             }
             break;
