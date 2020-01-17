@@ -2,6 +2,8 @@
 
 startMeasure('homebridge_update');
 
+$debug_sync = 0;
+
 //DebMes("homebridgesync for ".$device1['TITLE'],'homebridge');
 
 if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
@@ -90,18 +92,39 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
             if ($payload['service']) {
                 if ($open_type == 'gates') {
                     if (gg($device1['LINKED_OBJECT'] . '.status')) {
-                        $payload['CurrentDoorState'] = 1;
+                        $payload['value'] = "1";
                     } else {
-                        $payload['CurrentDoorState'] = 0;
+                        $payload['value'] = "0";
                     }
+
+                    $payload['characteristic'] = 'CurrentDoorState';
+                    if ($debug_sync) {
+                        DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
+                    }
+                    sg('HomeBridge.to_set', json_encode($payload));
+                    /*
+                    if ($debug_sync) {
+                        DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
+                    }
+                    $payload['characteristic'] = 'TargetDoorState';
+                    */
+
+                    unset($payload['service']);
                 } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains'  || $open_type == 'shutters') {
+                    $payload['characteristic'] = 'CurrentPosition';
                     if (gg($device1['LINKED_OBJECT'] . '.status')) {
-                        $payload['CurrentPosition'] = 100;
+                        $payload['value'] = "100";
                     } else {
-                        $payload['CurrentPosition'] = 0;
+                        $payload['value'] = "0";
                     }
+                    if ($debug_sync) {
+                        DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
+                    }
+                    sg('HomeBridge.to_set', json_encode($payload));
+                    //$payload['characteristic'] = 'TargetPosition';
+                    //sg('HomeBridge.to_set', json_encode($payload));
+                    unset($payload['service']);
                 }
-                //DebMes("OPENABLE HomeBridge.to_set: ".json_encode($payload),'homebridge');
             }
             break;
         case 'rgb':
@@ -127,6 +150,7 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
             $payload['characteristic'] = 'Brightness';
             $payload['value'] = gg($device1['LINKED_OBJECT'] . '.brightness');
             sg('HomeBridge.to_set', json_encode($payload));
+            unset($payload['service']);
             break;
         case 'thermostat':
             $payload['characteristic'] = 'CurrentTemperature';
@@ -170,7 +194,9 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
         */
     }
     if (isset($payload['service'])) {
-        //DebMes('HB sending to_set: '.json_encode($payload),'homebridge');
+        if ($debug_sync) {
+            DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
+        }
         sg('HomeBridge.to_set', json_encode($payload));
     }
 }

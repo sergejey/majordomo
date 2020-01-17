@@ -39,6 +39,7 @@ if ($this->getProperty('notify_nc')) {
 }
 
 
+DebMes("Calling logicAction for $ot",'openable');
 $this->callMethodSafe('logicAction');
 
 startMeasure('statusUpdatedLinkedDevices');
