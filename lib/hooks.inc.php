@@ -101,6 +101,10 @@ function processSubscriptions($event_name, $details = '', $return_output = false
     }
     //DebMes("Post websocket event done: ".$event_name,'process_subscription');
 
+    if (!is_array($details)) {
+        $details = array();
+    } 
+    
     if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name))) {
         //DebMes("Processing not defined for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name), 'process_subscription');
         return 0;
