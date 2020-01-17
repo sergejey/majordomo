@@ -78,14 +78,12 @@ function processSubscriptionsSafe($event_name, $details = '')
         $data[session_name()] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
-    //DebMes("URL: $url",'process_subscriptions');
     if (is_array($params)) {
         foreach ($params as $k => $v) {
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
     $result = getURLBackground($url, 0);
-    //$result = getURL($url,0);
     return $result;
 }
 

@@ -475,18 +475,7 @@ class objects extends module
      */
     function raiseEvent($name, $params = 0, $parent = 0)
     {
-
-        $p = '';
-        $url = BASE_URL . '/objects/?object=' . urlencode($this->object_title) . '&op=m&m=' . urlencode($name);
-        if (is_array($params)) {
-            foreach ($params as $k => $v) {
-                $p .= utf2win(' ' . $k . ':"' . $v . '"');
-                $url .= '&' . urlencode($k) . '=' . urlencode($v);
-            }
-        }
-
-        $data = getURL($url, 0);
-
+        $this->callMethodSafe($name,$params);
     }
 
     function callClassMethod($name, $params = 0)

@@ -986,8 +986,15 @@ function callMethodSafe($method_name, $params = 0)
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
     $is_child = false;
+    $fork_disabled = false;
 
-    if (function_exists('pcntl_fork')) {
+    if (defined('DISABLE_FORK') && DISABLE_FORK) {
+        $fork_disabled = true;
+    } elseif (!function_exists('pcntl_fork')) {
+        $fork_disabled = true;
+    }
+
+    if (!$fork_disabled) {
         $child_pid = pcntl_fork();
         if ($child_pid == -1) {
             //error
