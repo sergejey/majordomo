@@ -1312,6 +1312,10 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
 
+    'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Is open now',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Heating now',
+
     'GROUPS' => 'Groups',
     'APPLIES_TO' => 'Applies to',
 

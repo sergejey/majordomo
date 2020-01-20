@@ -1309,6 +1309,10 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
+    'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Сейчас открыто',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Сейчас греет',
+
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
