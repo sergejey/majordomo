@@ -409,13 +409,16 @@ function apiShutdown() {
 
 
 function find_module($module_name) {
+    if(empty($module_name))
+        return '';
 
+    $moduleName = strtolower($module_name);
+    
     foreach (scandir(DIR_MODULES) as $f) 
     {
-      if (strtolower($f) == strtolower($module_name))
-      {
-          return $f;
-      }
+      if (strtolower($f) == $moduleName)
+         return $f;
     }
+
     return '';
 }
