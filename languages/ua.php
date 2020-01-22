@@ -1160,6 +1160,7 @@ $dictionary = array (
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значення датчика повернулося до норми',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Нагадувати про відкритий стан',
     'DEVICES_MOTION_IGNORE' => 'Ігнорувати події від пристрою, коли нікого немає вдома',
+    'DEVICES_MOTION_NOBODYS'=>'Відключити зміни статусу "нікого немає вдома"',
     'DEVICES_MOTION_TIMEOUT' => 'Час активності (секунд)',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимий час відсутності даних (годин)',
     'DEVICES_MAIN_SENSOR' => 'Основний сенсор приміщення',
