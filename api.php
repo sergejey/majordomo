@@ -415,7 +415,7 @@ function find_module($module_name) {
     $moduleName = strtolower($module_name);
     $moduleArr = scandir(DIR_MODULES);
 
-    if (count($moduleArr == 0))
+    if (count($moduleArr) == 0)
       return '';
 
     foreach ($moduleArr as $f) 
