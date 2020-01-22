@@ -413,8 +413,12 @@ function find_module($module_name) {
         return '';
 
     $moduleName = strtolower($module_name);
-    
-    foreach (scandir(DIR_MODULES) as $f) 
+    $moduleArr = scandir(DIR_MODULES);
+
+    if (count($moduleArr == 0))
+      return '';
+
+    foreach ($moduleArr as $f) 
     {
       if (strtolower($f) == $moduleName)
          return $f;
