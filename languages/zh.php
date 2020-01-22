@@ -728,6 +728,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_BACKTONORMAL'=>'值是回到正常的',
 'DEVICES_NOTIFY_NOT_CLOSED'=>'通知时左边打开',
 'DEVICES_MOTION_IGNORE'=>'忽略装置的事件时，没有人',
+'DEVICES_MOTION_NOBODYS'=>'禁用状态更改“没有人在家”',
 'DEVICES_MOTION_TIMEOUT'=>'活动超时(sec)',
 'DEVICES_ALIVE_TIMEOUT'=>'可能的活动超时(小时)',
 'DEVICES_MAIN_SENSOR'=>'主要传感器，用于房间',

@@ -689,6 +689,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Valoarea senzorului a depășit pragul',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Valoarea senzorului a revenit la normal',
 'DEVICES_MOTION_IGNORE'=>'Ignorați evenimentele de pe dispozitiv când nimeni nu este acasă',
+'DEVICES_MOTION_NOBODYS'=>'Dezactivați modificările de stare „nimeni nu este acasă”',
 'DEVICES_ALIVE_TIMEOUT'=>'Timpul permis de absență a datelor (ore)',
 'DEVICES_MAIN_SENSOR'=>'Senzorul principal al încăperii',
 'DEVICES_IS_ON'=>'Conectat',

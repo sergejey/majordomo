@@ -689,6 +689,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'הערך הוא מחוץ לטווח הרגיל',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'הערך חוזר לקדמותו',
 'DEVICES_MOTION_IGNORE'=>'התעלם מאירועי המכשיר כשאף אחד לא בבית',
+'DEVICES_MOTION_NOBODYS'=>'השבת שינויים בסטטוס "אף אחד לא בבית"',
 'DEVICES_MOTION_TIMEOUT'=>'פסק זמן פעילות (שניות)',
 'DEVICES_ALIVE_TIMEOUT'=>'זמן חוסר פעילות אפשרי (שעות)',
 'DEVICES_MAIN_SENSOR'=>'חיישן ראשי לחדר',

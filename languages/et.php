@@ -689,6 +689,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Anduri väärtus väljus piiridest',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Anduri väärtus taastus piiridesse',
 'DEVICES_MOTION_IGNORE'=>'Ignoreerida sündmust seadmel kui kedagi ei ole kodus',
+'DEVICES_MOTION_NOBODYS'=>'Keela oleku muutused "kedagi pole kodus"',
 'DEVICES_MOTION_TIMEOUT'=>'Aktiivne aeg (sekundit)',
 'DEVICES_ALIVE_TIMEOUT'=>'Lubatud andmete puudumise aeg (tundi)',
 'DEVICES_MAIN_SENSOR'=>'Peamine andur ruumis',

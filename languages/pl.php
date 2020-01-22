@@ -678,6 +678,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Warto?? czujnika przekroczy?a pr?g',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Warto?? czujnika powr?ci?a do normy',
 'DEVICES_MOTION_IGNORE'=>'Ignoruj ??zdarzenia z urz?dzenia, gdy nikogo nie ma w domu',
+'DEVICES_MOTION_NOBODYS'=>'Wyłącz zmiany statusu „nikogo nie ma w domu”',
 'DEVICES_MOTION_TIMEOUT'=>'Czas aktywno?ci (sekundy)',
 'DEVICES_ALIVE_TIMEOUT'=>'Dopuszczalny czas braku danych (godziny)',
 'DEVICES_MAIN_SENSOR'=>'G??wny czujnik pokojowy',

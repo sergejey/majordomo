@@ -688,6 +688,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Стойноста на датчика излиза извън гранниците',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Стойноста на датчика се върна в нормални гранници',
 'DEVICES_MOTION_IGNORE'=>'Игнорирай събития от устройствата когато няма никой в къщи',
+'DEVICES_MOTION_NOBODYS'=>'Деактивирайте промените в състоянието "никой не е вкъщи"',
 'DEVICES_ALIVE_TIMEOUT'=>'Допустимо време за отсъствие на данни(часове)',
 'DEVICES_MAIN_SENSOR'=>'Основен сензор на помещението',
 'DEVICES_IS_ON'=>'Включено',

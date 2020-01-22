@@ -689,6 +689,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Vērtība ir ārpus diapazona',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Vērtība ir normāla',
 'DEVICES_MOTION_IGNORE'=>'Ignorēt ierīces notikumus, kad neviens nav mājās',
+'DEVICES_MOTION_NOBODYS'=>'Atspējot statusa izmaiņas "neviens nav mājās"',
 'DEVICES_ALIVE_TIMEOUT'=>'Iespējamais aktivitātes laiks (stundas)',
 'DEVICES_MAIN_SENSOR'=>'Galvenais telpas sensors',
 'DEVICES_IS_ON'=>'ir ieslēgts',

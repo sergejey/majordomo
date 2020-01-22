@@ -725,6 +725,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Valor de sensor volvió a la normalidad',
 'DEVICES_NOTIFY_NOT_CLOSED'=>'Notificar cuando se deja abierto',
 'DEVICES_MOTION_IGNORE'=>'Ignorar los eventos del dispositivo cuando no haya nadie en casa',
+'DEVICES_MOTION_NOBODYS'=>'Desactivar los cambios de estado "no hay nadie en casa"',
 'DEVICES_MOTION_TIMEOUT'=>'Tiempo de actividad finalizado (seg)',
 'DEVICES_ALIVE_TIMEOUT'=>'Tiempo permitido de ausencia de datos (horas)',
 'DEVICES_MAIN_SENSOR'=>'Sensor principal de la habitación',

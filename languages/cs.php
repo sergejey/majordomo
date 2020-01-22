@@ -675,6 +675,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Hodnota snímače překročila prahovou hodnotu',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Hodnota snímače se vrátila do normálu',
 'DEVICES_MOTION_IGNORE'=>'Ignoruje události ze zařízení, když nikdo není doma',
+'DEVICES_MOTION_NOBODYS'=>'Zakázat změny stavu „nikdo není doma“',
 'DEVICES_MOTION_TIMEOUT'=>'Čas aktivity (sekundy)',
 'DEVICES_ALIVE_TIMEOUT'=>'Přípustná doba nepřítomnosti dat (hodiny)',
 'DEVICES_MAIN_SENSOR'=>'Hlavní pokojový snímač',

@@ -682,6 +682,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Reišmė už ribų',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Jutiklio duomenys grįžo į normą',
 'DEVICES_MOTION_IGNORE'=>'Ignoruoti įrenginio signalus, kai nieko nėra namuose',
+'DEVICES_MOTION_NOBODYS'=>'Išjungti būsenos pakeitimus „niekas nėra namuose“',
 'DEVICES_ALIVE_TIMEOUT'=>'Galimas neveiklumo laikas (valandos)',
 'DEVICES_MAIN_SENSOR'=>'Pagrindinis kambario jutiklis',
 'DEVICES_IS_ON'=>'Įjungta',

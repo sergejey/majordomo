@@ -672,6 +672,7 @@ $dictionary=array(
 'DEVICES_NOTIFY_OUTOFRANGE'=>'Il valore del sensore ha superato la soglia',
 'DEVICES_NOTIFY_BACKTONORMAL'=>'Il valore del sensore è tornato normale',
 'DEVICES_MOTION_IGNORE'=>'Ignora eventi dal dispositivo quando nessuno è a casa',
+'DEVICES_MOTION_NOBODYS'=>'Disabilita i cambiamenti di stato "nessuno è a casa"',
 'DEVICES_ALIVE_TIMEOUT'=>'Ammissibile periodo d\'assenza di dati (ore)',
 'DEVICES_MAIN_SENSOR'=>'Sensore della stanza principale',
 'DEVICES_IS_ON'=>'Acceso',

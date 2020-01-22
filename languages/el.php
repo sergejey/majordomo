@@ -1126,6 +1126,7 @@ $dictionary = array(
 'DEVICES_NOTIFY_BACKTONORMAL' => 'Η τιμή του αισθητήρα επέστρεψε στο κανονικό',
 'DEVICES_NOTIFY_NOT_CLOSED' => 'Υπενθύμιση για την ανοιχτή κατάσταση',
 'DEVICES_MOTION_IGNORE' => 'Παράβλεψη συμβάντων από τη συσκευή όταν κανείς δεν είναι στο σπίτι',
+'DEVICES_MOTION_NOBODYS' => 'Απενεργοποίηση αλλαγών κατάστασης "κανείς δεν είναι σπίτι"',
 'DEVICES_MOTION_TIMEOUT' => 'Χρόνος δραστηριότητας (δευτερόλεπτα)',
 'DEVICES_ALIVE_TIMEOUT' => 'Επιτρεπτός χρόνος για δεδομένα που λείπουν (ώρες)',
 'DEVICES_MAIN_SENSOR' => 'Κύριος αισθητήρας δωματίου',
