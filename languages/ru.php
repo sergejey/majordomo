@@ -1424,6 +1424,10 @@ $dictionary = array(
 	'NUMBER_TO_STRING_NULL' => 'ноль',
 	
     /* end array for convert number to string  */
+
+    'ENABLE_AUTO_UPDATE' => 'Включить автоматическое обновление',
+    'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
+    'AUTO_UPDATE_TIME' => 'Время проверки и установки обновлений',
     
 );
 

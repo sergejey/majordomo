@@ -1428,6 +1428,10 @@ $dictionary = array(
 	
     /* end array for convert number to string  */
 
+    'ENABLE_AUTO_UPDATE' => 'Enable automatic updates',
+    'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
+    'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
+
 
 );
 
