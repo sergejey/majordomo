@@ -28,8 +28,9 @@ if (isset($argv[0]) && $argv[0]!='') {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
-if (preg_match('/^'.ROOTHTMLSLASHES.'/', $url)) {
-    $url=preg_replace('/^'.ROOTHTMLSLASHES.'/', '/', $url);
+$rootHTML=preg_replace('/\//', '\/', ROOTHTML);
+if (preg_match('/^' . $rootHTML . '/', $url)) {
+    $url=preg_replace('/^' . $rootHTML . '/', '/', $url);
 }
 if (preg_match('/\/api\.php\?/',$url)) {
     $url=preg_replace('/\/api\.php\?/','/api.php/',$url);
