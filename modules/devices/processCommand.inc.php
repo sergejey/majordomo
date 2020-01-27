@@ -245,6 +245,7 @@ for ($i = 0; $i < $total; $i++) {
           if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
                $i = $key;
                $device_matched = 1;
+               break ;
             }
         }
         if (!$device_matched ) {
@@ -252,6 +253,7 @@ for ($i = 0; $i < $total; $i++) {
             foreach($devices as $key => $value) {
                 if(in_array($compare_title, $value)) {
                     $i = $key;
+                    break ;
                 }
             }
         }
