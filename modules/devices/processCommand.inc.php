@@ -238,21 +238,27 @@ $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
     $device_matched = 0;
 
-	// если есть местоположение терминала 
-	if ($location_id) {
-		// ищем строгое соответствие по названию и местоположению
-		foreach($devices as $key => $value) {
-		  if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
-			   $i = $key;
-			}
-		}
-		// ищем строгое соответствие по названию
-		foreach($devices as $key => $value) {
-		  if(in_array($compare_title, $value)) {
-			   $i = $key;
-			}
-		}
-	}
+   // если есть местоположение терминала 
+    if ($location_id) {
+        // ищем строгое соответствие по названию и местоположению
+        foreach($devices as $key => $value) {
+          if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
+               $i = $key;
+               $device_matched = 1;
+               break ;
+            }
+        }
+        if (!$device_matched ) {
+            // ищем строгое соответствие по названию
+            foreach($devices as $key => $value) {
+                if(in_array($compare_title, $value)) {
+                    $i = $key;
+                    $device_matched = 1;
+                    break ;
+                }
+            }
+        }
+    }
 
     // ищем по старому принципу
     if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
