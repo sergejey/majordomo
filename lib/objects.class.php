@@ -1017,7 +1017,9 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     }
     $params['no_session']=1;
 
-    $url = preg_replace('/^\/api\//', BASE_URL.'api.php/', $api_url); //
+
+    $url = preg_replace('/^\/api\//', BASE_URL.'/api.php/', $api_url);
+    $url = str_replace('//','/',$url);
 
     $method=strtoupper($method);
     global $api_ch;
