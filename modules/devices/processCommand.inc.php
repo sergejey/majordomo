@@ -3,11 +3,20 @@
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
 /*
- * array('level' => $level, 'message' => $ph, 'member_id' => $member_id)
+ * array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source)
  * $details['BREAK'] = 1 / 0
  */
 @include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
 @include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+
+if ($details['source']) {
+	$terminal = getTerminalByID(str_replace("terminal", "", $details['source']));
+	if ($location = gg($terminal['LINKED_OBJECT'].'.linkedRoom')) {
+		if ($rec = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $location . "'")) {
+			$location_id = $rec['ID'];
+		}
+	}
+} 
 
 $command = $details['message'];
 
@@ -108,7 +117,7 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
     $phpmorphy_loaded = 1;
 }
 
-$devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices");
+$devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT, LOCATION_ID FROM devices");
 foreach ($devices as $device) {
     if (trim($device['ALT_TITLES']) != '') {
         $nicknames = explode(',', trim($device['ALT_TITLES']));
@@ -229,7 +238,23 @@ $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
     $device_matched = 0;
 
+	// если есть местоположение терминала 
+	if ($location_id) {
+		// ищем строгое соответствие по названию и местоположению
+		foreach($devices as $key => $value) {
+		  if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
+			   $i = $key;
+			}
+		}
+		// ищем строгое соответствие по названию
+		foreach($devices as $key => $value) {
+		  if(in_array($compare_title, $value)) {
+			   $i = $key;
+			}
+		}
+	}
 
+    // ищем по старому принципу
     if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
         $device_matched = 1;
     } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
