@@ -1418,7 +1418,7 @@ function num2str($num) {
                 if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 20-99
                 else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 10-19 | 1-9
             } else {
-                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_2TEN[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 20-99
+                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 20-99
                 else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 10-19 | 1-9
             }
             // units without rub & kop

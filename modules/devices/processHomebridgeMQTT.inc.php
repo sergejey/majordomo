@@ -3,8 +3,12 @@
     $params['PROPERTY']=$property;
     $params['NEW_VALUE']=(string)$value;
 */
-DebMes("HB property: " . $params['PROPERTY'], 'homebridge');
-DebMes("HB value: " . $params['NEW_VALUE'], 'homebridge');
+
+$debug_sync = 0;
+
+if ($debug_sync) {
+    DebMes("MQTT ".$params['PROPERTY'].": " . $params['NEW_VALUE'], 'homebridge');
+}
 
 $data = json_decode($params['NEW_VALUE'], true);
 
@@ -21,7 +25,9 @@ if ($params['PROPERTY'] == 'from_response' && gg('HomeBridge.mode') == 'list') {
     }
     $total = count($devices);
     if ($total > 0) {
-        DebMes("Got devices list", 'homebridge');
+        if ($debug_sync) {
+            DebMes("Got devices list", 'homebridge');
+        }
         sg('HomeBridge.mode', '');
         $to_remove = array();
         for ($i = 0; $i < $total; $i++) {
@@ -35,11 +41,15 @@ if ($params['PROPERTY'] == 'from_response' && gg('HomeBridge.mode') == 'list') {
             for ($i = 0; $i < $total; $i++) {
                 $payload = array();
                 $payload['name'] = $to_remove[$i];
-                DebMes("Homebridge: removing unknown device " . $payload['name'], 'homebridge');
+                if ($debug_sync) {
+                    DebMes("Homebridge: removing unknown device " . $payload['name'], 'homebridge');
+                }
                 sg('HomeBridge.to_remove', json_encode($payload));
             }
         } else {
-            DebMes("Nothing to remove", 'homebridge');
+            if ($debug_sync) {
+                DebMes("Nothing to remove", 'homebridge');
+            }
         }
     }
 }
@@ -201,7 +211,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
 
 // set status from HomeKit
 if ($params['PROPERTY'] == 'from_set' && $device['ID']) {
-    DebMes($device['TITLE'] . ' set ' . $data['characteristic'] . ' to ' . $data['value'], 'homebridge');
+    if ($debug_sync) {
+        DebMes($device['TITLE'] . ' set ' . $data['characteristic'] . ' to ' . $data['value'], 'homebridge');
+    }
     if (in_array($device['TYPE'], array('relay'))) {
         if ($data['characteristic'] == 'On') {
             if ($data['value']) {

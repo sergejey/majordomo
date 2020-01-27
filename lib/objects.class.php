@@ -987,8 +987,15 @@ function callMethodSafe($method_name, $params = 0)
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
     $is_child = false;
+    $fork_disabled = false;
 
-    if (function_exists('pcntl_fork')) {
+    if (defined('DISABLE_FORK') && DISABLE_FORK) {
+        $fork_disabled = true;
+    } elseif (!function_exists('pcntl_fork')) {
+        $fork_disabled = true;
+    }
+
+    if (!$fork_disabled) {
         $child_pid = pcntl_fork();
         if ($child_pid == -1) {
             //error
@@ -1024,7 +1031,9 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
+        if (!$is_child) {
+            curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
+        }
     }
     if ($method == 'GET') {
         $url .= '?' . http_build_query($params);
@@ -1041,15 +1050,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
 
     if ($is_child) {
         exit();
-        /*
-        if (function_exists('posix_kill')) {
-            posix_kill(getmypid(), SIGKILL);
-        } else {
-            exit();
-        }
-        */
     }
-    
     return true;
 
 }

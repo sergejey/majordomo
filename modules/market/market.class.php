@@ -261,8 +261,6 @@ class market extends module
             return;
         }
 
-
-
         if (isset($this->category_id)) {
             $category_id=$this->category_id;
         } else {
@@ -1226,6 +1224,7 @@ class market extends module
 
     function echonow($msg, $color = '')
     {
+        DebMes(strip_tags($msg),'auto_update');
         if ($color) {
             echo '<font color="' . $color . '">';
         }

@@ -419,6 +419,9 @@ class xray extends module
     {
         global $ajax;
 
+        $out['FILTER'] = gr('filter');
+        $out['LINES'] = gr('lines');
+
         if ($this->view_mode == 'services') {
             global $cmd;
             global $service;
@@ -512,7 +515,6 @@ class xray extends module
                     $item['SELECTED'] = 1;
                 }
             }
-            $out['LINES'] = gr('lines');
         }
 
         if ($ajax) {

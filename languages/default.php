@@ -1312,6 +1312,10 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
 
+    'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Is open now',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Heating now',
+
     'GROUPS' => 'Groups',
     'APPLIES_TO' => 'Applies to',
 
@@ -1424,11 +1428,15 @@ $dictionary = array(
 	
     /* end array for convert number to string  */
 
+    'ENABLE_AUTO_UPDATE' => 'Enable automatic updates',
+    'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
+    'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
+
 
 );
 
 foreach ($dictionary as $k => $v) {
     if (!defined('LANG_' . $k)) {
-        define('LANG_' . $k, $v);
+        @define('LANG_' . $k, $v);
     }
 }
