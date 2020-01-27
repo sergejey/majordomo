@@ -2,7 +2,7 @@
 onClick='$(".icon%.object_id%_openable").addClass("pressed");
 setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);
 callMethod("%.object_title%.switch");
-$.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
+$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
 <div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable""></div>
 <div class="device-header">%.object_description%</div>
 <div class="device-details">%.updatedText%</div>

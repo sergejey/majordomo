@@ -8,7 +8,7 @@
         return false;
     }
     function showHistory%.object_title%() {
-        var url="/pChart/?p=%.object_title%"+".snapshot&op=log";
+        var url="<#ROOTHTML#>pChart/?p=%.object_title%"+".snapshot&op=log";
         parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false}});
         return false;
     }
