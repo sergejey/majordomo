@@ -130,6 +130,7 @@ function getObjectClassTemplate($object_name,$view='')
     startMeasure('getClassTemplate');
     $data = getClassTemplate((int)$object->class_id,$view);
     endMeasure('getClassTemplate');
+    $data = preg_replace('/<#ROOTHTML#>/uis', ROOTHTML, $data);
     $data = preg_replace('/%\.object_title%/uis', $object_name, $data);
     $data = preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data = preg_replace('/%\.object_description%/uis', $object->description, $data);
@@ -1016,7 +1017,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     }
     $params['no_session']=1;
 
-    $url = preg_replace('/^\/api\//', BASE_URL.ROOTHTML.'api.php/', $api_url); //
+    $url = preg_replace('/^\/api\//', BASE_URL.'api.php/', $api_url); //
 
     $method=strtoupper($method);
     global $api_ch;

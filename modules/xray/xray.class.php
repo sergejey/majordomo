@@ -302,7 +302,7 @@ class xray extends module
                             $rec = array();
                             $rec['TYPE'] = 'script';
                             $rec['TITLE'] = $scripts[$i]['TITLE'];
-                            $rec['LINK'] = '/admin.php?action=scripts&md=scripts&inst=adm&view_mode=edit_scripts&id=' . $scripts[$i]['ID'];
+                            $rec['LINK'] = ROOTHTML . 'admin.php?action=scripts&md=scripts&inst=adm&view_mode=edit_scripts&id=' . $scripts[$i]['ID'];
                             $found['script' . $scripts[$i]['ID']] = $rec;
                         }
                     }
@@ -317,7 +317,7 @@ class xray extends module
                             $rec['LINK'] = "?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=" . $objects[$i]['CLASS_ID'] . "})&md=objects&view_mode=edit_objects&id=" . $objects[$i]['ID'];
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['object' . $objects[$i]['ID']] = $rec;
                         }
@@ -339,7 +339,7 @@ class xray extends module
                             }
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['method' . $methods[$i]['ID']] = $rec;
                         }
@@ -361,7 +361,7 @@ class xray extends module
                             }
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['property' . $properties[$i]['ID'] . '_' . $properties[$i]['OBJECT_ID']] = $rec;
                         }
@@ -378,7 +378,7 @@ class xray extends module
                             $rec['LINK'] = "?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=" . $pvalues[$i]['CLASS_ID'] . "})&md=objects&view_mode=edit_objects&id=" . $pvalues[$i]['OBJECT_ID'] . "&tab=properties";
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['property' . $pvalues[$i]['PROPERTY_ID'] . '_' . $pvalues[$i]['OBJECT_ID']] = $rec;
                         }
@@ -762,7 +762,7 @@ class xray extends module
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
-                        echo "<a href='/panel/script/" . $res[$i]['ID'] . ".html' target=_blank>" . $res[$i]['TITLE'] . "</a>";
+                        echo "<a href='" . ROOTHTML . "panel/script/" . $res[$i]['ID'] . ".html' target=_blank>" . $res[$i]['TITLE'] . "</a>";
                         if ($res[$i]['DESCRIPTION'] != '') {
                             echo "<br><small style='font-size:9px'>" . $res[$i]['DESCRIPTION'] . "</small>";
                         }
@@ -959,7 +959,7 @@ class xray extends module
                         echo '<tr>';
                         echo '<td>';
 
-                        echo ' <a href="/panel/linkedobject.html?op=redirect&object=' . $res[$i]['TITLE'] . '&sub=properties"  target="_blank"  title="Open object">' . $res[$i]['TITLE'] . '</a>';
+                        echo ' <a href="' . ROOTHTML . 'panel/linkedobject.html?op=redirect&object=' . $res[$i]['TITLE'] . '&sub=properties"  target="_blank"  title="Open object">' . $res[$i]['TITLE'] . '</a>';
 
                         echo '</td>';
 
