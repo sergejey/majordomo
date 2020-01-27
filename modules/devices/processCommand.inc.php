@@ -253,6 +253,7 @@ for ($i = 0; $i < $total; $i++) {
             foreach($devices as $key => $value) {
                 if(in_array($compare_title, $value)) {
                     $i = $key;
+                    $device_matched = 1;
                     break ;
                 }
             }
