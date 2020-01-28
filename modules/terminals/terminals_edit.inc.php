@@ -45,7 +45,10 @@ if ($this->mode == 'update') {
 	
     if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . gr('location') . "'")) {
         $rec['LOCATION_ID'] = $location_id['ID'];
-		$out['LOCATION_TITLE'] = gr('location');
+        $out['LOCATION_TITLE'] = gr('location');
+    } else {
+        $rec['LOCATION_ID'] = 0;
+        $out['LOCATION_TITLE'] = gr('location');		
     }
     
     $rec['TTS_TYPE'] = gr('tts_type');
