@@ -392,10 +392,12 @@ class mysql
       if (!$this->dbh) return false;
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
-      if (preg_match('/server has gone away/is',$err_details)) {
-         $stop = 1;
+      $stop = 1;
+      if (preg_match('/You have an error in your SQL syntax/is',$err_details)) {
+         $stop = 0;
       } elseif (preg_match('/unknown column/is',$err_details)) {
          unlink(ROOT.'cms/modules_installed/control_modules.installed');
+         $stop = 0;
       }
       registerError('sql', $err_no . ": " . $err_details . "\n$query");
       new custom_error($err_no . ": " . $err_details . "<br>$query", $stop);
