@@ -14,7 +14,7 @@ $rec = getTerminalByID($id);
 
 $out['LOCATIONS'] = SQLSelect("SELECT TITLE FROM locations ORDER BY TITLE+0");
 if ($location_id = $rec['LOCATION_ID']) {
-	$location_title = SQLSelectOne("SELECT TITLE FROM locations WHERE ID = '". $location_id ."'");
+    $location_title = SQLSelectOne("SELECT TITLE FROM locations WHERE ID = '". $location_id ."'");
     $out['LOCATION_TITLE'] = $location_title['TITLE'];
 }
 
