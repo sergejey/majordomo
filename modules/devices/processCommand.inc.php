@@ -11,10 +11,8 @@ if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
 if ($details['source']) {
 	$terminal = getTerminalByID(str_replace("terminal", "", $details['source']));
-	if ($location = gg($terminal['LINKED_OBJECT'].'.linkedRoom')) {
-		if ($rec = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $location . "'")) {
-			$location_id = $rec['ID'];
-		}
+	if ($terminal['LOCATION_ID']) {
+		$location_id = $terminal['LOCATION_ID'];
 	}
 } 
 
