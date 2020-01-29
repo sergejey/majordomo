@@ -515,12 +515,14 @@ class module
                     $definition = str_replace('`', '', $definition);
                     $sql = "ALTER TABLE $table ADD $definition;";
                     SQLExec($sql);
+                    SQLExec("FLUSH TABLES ".$table.";");
                     $to_optimize[] = $table;
                 }
             } elseif (!isset($tbl_fields[$table][$field])) {
                 // new field
                 $sql = "ALTER TABLE $table ADD $definition;";
                 SQLExec($sql);
+                SQLExec("FLUSH TABLES ".$table.";");
             }
         }
 

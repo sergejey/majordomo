@@ -146,6 +146,10 @@ class mysql
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
+         if ($_SERVER['REQUEST_URI']!='') {
+            $stop = 1;
+            new custom_error($err_no . ": " . $err_details, $stop);
+         }
          return 0;
       }
       //$db_select = mysqli_select_db($this->dbh, $this->dbName);
@@ -361,6 +365,10 @@ class mysql
     */
    public function DbSafe($str)
    {
+      if (!$this->connected) {
+         echo "Database is not connected!";
+         exit;
+      }
       $str = mysqli_real_escape_string($this->dbh, $str);
       $str = str_replace("%", "\%", $str);
       return $str;
@@ -374,6 +382,10 @@ class mysql
     */
    public function DbSafe1($str)
    {
+      if (!$this->connected) {
+         echo "Database is not connected!";
+         exit;
+      }
       if (is_array($str)) {
        $str=json_encode($str);
       }
