@@ -317,7 +317,6 @@ class module
                        WHERE NAME = '" . $this->name . "'";
 
             $rec = SQLSelectOne($sqlQuery);
-
             if (!isset($rec["ID"])) {
                 $this->install();
             }
@@ -451,7 +450,6 @@ class module
      */
     public function dbInstall($data)
     {
-
         $need_optimzation = array();
         $table_defined = array();
 

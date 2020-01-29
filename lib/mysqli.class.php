@@ -175,6 +175,7 @@ class mysql
     */
    public function Exec($query, $ignore_errors = false)
    {
+
       if (!$this->dbh && !$this->Connect()) return false;
       
       if ((time()-$this->latestTransaction)>$this->pingTimeout) {

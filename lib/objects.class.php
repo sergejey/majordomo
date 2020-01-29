@@ -398,7 +398,6 @@ function getObject($name)
                      LEFT JOIN classes ON objects.CLASS_ID = classes.ID
                     WHERE objects.TITLE = '" . DBSafe($object_name) . "'
                       AND classes.TITLE = '" . DBSafe($class_name) . "'";
-
         $rec = SQLSelectOne($sqlQuery);
     } else {
         $sqlQuery = "SELECT objects.*
