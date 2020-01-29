@@ -954,6 +954,11 @@ function callMethod($method_name, $params = 0)
     } else {
         $object_name = 'ThisComputer';
     }
+
+    if ($object_name == 'AllScripts') {
+        return runScript($method_name,$params);
+    }
+
     $obj = getObject($object_name);
 
     if ($obj) {
@@ -974,6 +979,9 @@ function callMethodSafe($method_name, $params = 0)
         $method_name = $tmp[1];
     } else {
         $object_name = 'ThisComputer';
+    }
+    if ($object_name == 'AllScripts') {
+        return runScriptSafe($method_name,$params);
     }
     $obj = getObject($object_name);
 
