@@ -9,6 +9,7 @@
 
 Define('DB_HOST', 'localhost');
 Define('DB_NAME', 'db_terminal');
+Define('DB_PORT', '3306');
 Define('DB_USER', 'root');
 Define('DB_PASSWORD', '');
 
