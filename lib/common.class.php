@@ -268,7 +268,7 @@ function timeNow($tm = 0)
         $tm = time();
     }
 
-    $h = (int)date('G', $tm);
+    $h = (strlen(strval($tm)) < 10) ? (int)gmdate('G', $tm) : (int)date('G', $tm);
     $m = (int)date('i', $tm);
     $ms = '';
 
@@ -280,7 +280,7 @@ function timeNow($tm = 0)
             $ms = $m . ' ' . getNumberWord($m, $array);
         }
     } else {
-        $hw = date('H:i', $tm);
+        $hw = (strlen(strval($tm)) < 10) ? (int)gmdate('H:i', $tm) : (int)date('H:i', $tm);
     }
 
     $res = trim($hw . " " . $ms);
