@@ -21,12 +21,9 @@
 
   if (!$session->data['SITE_USERNAME']) {
    $out['NOT_LOGGED']=1;
-  } else {
-   $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME='".DBSafe($session->data['SITE_USERNAME'])."'");
-   $session->data['logged_user']=$user['ID'];
   }
 
-  if ($this->action=='' && $session->data['logged_user'] && $msg!='') {
+  if ($this->action=='' && $session->data['SITE_USER_ID'] && $msg!='') {
 
    if ($session->data['TERMINAL']) {
     $terminal_rec = getTerminalsByName($session->data['TERMINAL'], 1)[0];
@@ -39,7 +36,7 @@
      SQLUpdate('terminals', $terminal_rec);
     }
    }
-   say(htmlspecialchars($msg), 0, $session->data['logged_user'], 'terminal'.$terminal_rec['ID']);
+   say(htmlspecialchars($msg), 0, $session->data['SITE_USER_ID'], 'terminal'.$terminal_rec['ID']);
    /*
    $rec=array();
    $rec['ROOM_ID']=(int)$room_id;

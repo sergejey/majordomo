@@ -125,7 +125,7 @@ function admin(&$out) {
 
  global $delete_room;
  if ($delete_room!='' && LOGGED_USER) {
-  $room=SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='".(int)$delete_room."' AND ADDED_BY=".(int)$session->data['logged_user']);
+  $room=SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='".(int)$delete_room."' AND ADDED_BY=".(int)$session->data['SITE_USER_ID']);
   if ($room['ID']) {
    SQLExec("DELETE FROM shouts WHERE ROOM_ID=".$room['ID']);
    SQLExec("DELETE FROM shoutrooms WHERE ID='".$room['ID']."'");
@@ -146,12 +146,12 @@ function admin(&$out) {
         $this->redirect("/chat/room".$room['ID'].'.html');
  }
  
- if ($this->mode=='newroom' && $session->data['logged_user']) {
+ if ($this->mode=='newroom' && $session->data['LOGGED_USER_ID']) {
   $rec=array();
   global $room_title;
   global $make_public;
   $rec['TITLE']=htmlspecialchars($room_title);
-  $rec['ADDED_BY']=$session->data['logged_user'];
+  $rec['ADDED_BY']=$session->data['LOGGED_USER_ID'];
   $rec['ADDED']=date('Y-m-d H:i:s');
   $rec['IS_PUBLIC']=(int)$make_public;
   if ($rec['TITLE']) {
