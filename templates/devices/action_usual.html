@@ -11,12 +11,12 @@
    payload.action = 'Subscribe';
    payload.data = new Object();
    payload.data.TYPE='devices';
-   //alert(trackedDevices.length);
+   //alert(trackedDevices<#UNIQ#>.length);
    [#if ALL_DEVICES="1"#]
    payload.data.DEVICE_ID='0';
    [#else#]
-   if (trackedDevices.length>0) {
-    payload.data.DEVICE_ID=trackedDevices.join(',');
+   if (trackedDevices<#UNIQ#>.length>0) {
+    payload.data.DEVICE_ID=trackedDevices<#UNIQ#>.join(',');
    }
    [#endif#]
    wsSocket.send(JSON.stringify(payload));
@@ -125,7 +125,7 @@
  [#end DEVICES#]
  [#else SINGLE_DEVICE#]
 
-[#if (LOCATION_ID!="") || (TYPE!="")#]
+[#if (LOCATION_ID!="") || (TYPE!="") || (COLLECTION!="")#]
  <p><a href="<#ROOTHTML#>apps/devices.html" class="btn btn-default"><#LANG_BACK#></a></p>
  <h1>[#TITLE#]</h1>
  [#begin DEVICES#]

@@ -1,7 +1,7 @@
 <div class="device-widget button" onClick='callMethod("%.object_title%.pressed");
                                            $(".icon%.object_id%_light").addClass("pressed");
                                            setTimeout("$(\".icon%.object_id%_light\").removeClass(\"pressed\");",300);
-                                           $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
+                                           $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
     <div class="device-icon button icon%.object_id%_light" id="icon%.object_id%_light" style='%.icon|"background-image:url(%.icon%)"%'></div>
 <div class="device-header">%.object_description%</div>
 </div>

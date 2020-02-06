@@ -2,7 +2,10 @@
 
 startMeasure('statusUpdated');
 $ot = $this->object_title;
+
 $ncno = $this->getProperty('ncno');
+
+//DebMes("Updated $ot - ".$ncno . " new value: ".$params['NEW_VALUE'],'openclose');
 
 $this->setProperty('updated', time());
 $this->callMethodSafe('setUpdatedText');
@@ -11,6 +14,7 @@ $this->callMethod('keepAlive');
 
 $is_blocked=(int)$this->getProperty('blocked');
 if ($is_blocked) {
+    //DebMes("Blocked $ot",'openclose');
     return;
 }
 
@@ -60,8 +64,10 @@ if ($this->getProperty('notify_nc')) {
 }
 
 
+//DebMes("LogicAction $ot",'openclose');
 $this->callMethodSafe('logicAction');
 
+//DebMes("LinkedDevices $ot",'openclose');
 startMeasure('statusUpdatedLinkedDevices');
 include_once(DIR_MODULES . 'devices/devices.class.php');
 $dv = new devices();

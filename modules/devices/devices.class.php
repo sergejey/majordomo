@@ -685,8 +685,9 @@ class devices extends module
             //$this->redirect(ROOTHTML."module/devices.html");
         }
 
-        global $location_id;
-        global $type;
+        $location_id = gr('location_id');
+        $type = gr('type');
+        $collection = gr('collection');
 
         $qry="1";
 
@@ -706,11 +707,15 @@ class devices extends module
             $out['VIEW']=$this->view;
         }
 
-        if ($location_id || $type) {
+        if ($location_id || $type || $collection) {
             $qry = "1 AND SYSTEM_DEVICE=0";
             $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
             if (preg_match('/loc(\d+)/', $type, $m)) {
                 $location_id = $m[1];
+                $type = '';
+            }
+            if (preg_match('/col\_(\w+)/', $type, $m)) {
+                $collection = $m[1];
                 $type = '';
             }
             if ($location_id) {
@@ -735,6 +740,12 @@ class devices extends module
                     $orderby = 'TYPE, locations.PRIORITY DESC, LOCATION_ID, TITLE';
                 }
                 $out['TYPE'] = $type;
+            }
+            if ($collection!='') {
+                $ids=$this->getCollectionIds($collection);
+                $qry.=" AND devices.ID IN (".implode(',',$ids).")";
+                $out['TITLE']=constant('LANG_DEVICES_COLLECTION_'.strtoupper($collection));
+                $out['COLLECTION'] = $collection;
             }
             $location_title = '';
             $type_title = '';
@@ -767,7 +778,6 @@ class devices extends module
             $recent_devices=SQLSelect("SELECT devices.* FROM devices WHERE !IsNull(CLICKED) ORDER BY CLICKED DESC LIMIT 10");
         }
 
-
         if ($devices[0]['ID']) {
             if ($location_id || $type || 1) {
                 $total = count($devices);
@@ -791,7 +801,6 @@ class devices extends module
             $favorite_devices = array();
             $warning_devices = array();
             $problem_devices = array();
-            $devices_count = 0;
             for ($idv = 0; $idv < $total_devices; $idv++) {
                 if ($devices[$idv]['FAVORITE']) {
                     $favorite_devices[] = $devices[$idv];
@@ -883,6 +892,8 @@ class devices extends module
         $out['GROUPS'] = $locations;
 
         $types = array();
+
+
         if (is_array($this->device_types)) {
             foreach ($this->device_types as $k => $v) {
                 if ($v['TITLE']) {
@@ -900,6 +911,25 @@ class devices extends module
         }
 
 
+
+        $col_name = 'is_heating';
+        $col_ids=$this->getCollectionIds($col_name);
+        $col_total = count($col_ids)-1;
+        $col=array('NAME'=>'col_'.$col_name,'TITLE'=>LANG_DEVICES_COLLECTION_IS_HEATING,'TOTAL'=>$col_total);
+        if ($col_total>0) array_unshift($types,$col);
+
+        $col_name = 'is_on';
+        $col_ids=$this->getCollectionIds($col_name);
+        $col_total = count($col_ids)-1;
+        $col=array('NAME'=>'col_'.$col_name,'TITLE'=>LANG_DEVICES_COLLECTION_IS_ON,'TOTAL'=>$col_total);
+        if ($col_total>0) array_unshift($types,$col);
+
+        $col_name = 'is_open';
+        $col_ids=$this->getCollectionIds($col_name);
+        $col_total = count($col_ids)-1;
+        $col=array('NAME'=>'col_'.$col_name,'TITLE'=>LANG_DEVICES_COLLECTION_IS_OPEN,'TOTAL'=>$col_total);
+        if ($col_total>0) array_unshift($types,$col);
+
         $list_locations = $locations;
         if (is_array($list_locations)) {
             usort($list_locations, function ($a, $b) {
@@ -915,6 +945,33 @@ class devices extends module
         $out['TYPES'] = $types;
 
 
+    }
+
+    function getCollectionIds($collection) {
+        $ids = array(0);
+        if ($collection=='is_on') {
+            $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE devices.TYPE IN ('relay','dimmer','rgb')");
+            foreach($devices as $device) {
+                if (gg($device['LINKED_OBJECT'].'.status')) {
+                    $ids[]=$device['ID'];
+                }
+            }
+        } elseif ($collection == 'is_open') {
+            $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE devices.TYPE IN ('openable','openclose')");
+            foreach($devices as $device) {
+                if (!gg($device['LINKED_OBJECT'].'.status')) {
+                    $ids[]=$device['ID'];
+                }
+            }
+        } elseif ($collection == 'is_heating') {
+            $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE devices.TYPE IN ('thermostat')");
+            foreach($devices as $device) {
+                if (gg($device['LINKED_OBJECT'].'.relay_status')) {
+                    $ids[]=$device['ID'];
+                }
+            }
+        }
+        return $ids;
     }
 
     /**
@@ -984,7 +1041,7 @@ class devices extends module
     function addDevice($device_type, $options = 0)
     {
         $this->setDictionary();
-        $type_details = $this->getTypeDetails($rec['TYPE']);
+        $type_details = $this->getTypeDetails($device_type);
 
         if (!is_array($options)) {
             $options = array();
@@ -1360,7 +1417,7 @@ class devices extends module
             endMeasure('checkLinkedDevicesAction');
             return 0;
         }
-        require_once (DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        include(DIR_MODULES . 'devices/devices_links_actions.inc.php');
         endMeasure('checkLinkedDevicesAction');
         return 1;
     }

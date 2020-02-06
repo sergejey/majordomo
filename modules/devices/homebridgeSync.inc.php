@@ -3,6 +3,8 @@
 
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
+$debug_sync = 0;
+
 $qry = "1";
 
 if ($device_id) {
@@ -21,11 +23,17 @@ for ($i = 0; $i < $total; $i++) {
 
 
     if ($devices[$i]['SYSTEM_DEVICE']) {
+        if ($debug_sync) {
+            DebMes("HomeBridge.to_remove: ".json_encode($payload),'homebridge');
+        }
         sg('HomeBridge.to_remove', json_encode($payload));
         continue;
     }
 
     if ($force_refresh) {
+        if ($debug_sync) {
+            DebMes("HomeBridge.to_remove: " . json_encode($payload), 'homebridge');
+        }
         sg('HomeBridge.to_remove', json_encode($payload));
     }
 
@@ -64,19 +72,28 @@ for ($i = 0; $i < $total; $i++) {
             if ($payload['service']) {
                 sg('HomeBridge.to_add', json_encode($payload));
                 if ($open_type == 'gates') {
+                    $payload['characteristic'] = 'CurrentDoorState';
                     if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
-                        $payload['CurrentDoorState'] = 1;
+                        $payload['value'] = "1";
                     } else {
-                        $payload['CurrentDoorState'] = 0;
+                        $payload['value'] = "0";
                     }
+                    sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'TargetDoorState';
+                    $payload['value'] = "1";
+                    sg('HomeBridge.to_set', json_encode($payload));
                 } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains'  || $open_type == 'shutters') {
+                    $payload['characteristic'] = 'CurrentPosition';
                     if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
-                        $payload['CurrentPosition'] = 100;
+                        $payload['value'] = "100";
                     } else {
-                        $payload['CurrentPosition'] = 0;
+                        $payload['value'] = "0";
                     }
+                    sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'TargetPosition';
+                    $payload['value'] = "100";
+                    sg('HomeBridge.to_set', json_encode($payload));
                 }
-                sg('HomeBridge.to_set', json_encode($payload));
             }
             break;
         case 'sensor_temp':

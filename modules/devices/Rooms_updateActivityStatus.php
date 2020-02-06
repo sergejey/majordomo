@@ -14,7 +14,7 @@ for ($i = 0; $i < $total; $i++) {
     if (!$rooms[$i]['time']) {
         $rooms[$i]['time'] = 0;
     }
-    $rooms[$i]['diff'] = time() - $rooms[$i]['time'];
+    $rooms[$i]['diff'] = time() - (int)$rooms[$i]['time'];
 }
 
 usort($rooms, function ($a,$b) {

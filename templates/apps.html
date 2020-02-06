@@ -3,8 +3,8 @@
 <div style="padding:10px">
     <div>
         <div style="float:right">
-            <a href="/apps.html" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
-            <a href="/panel/popup/<#APP_ACTION#>.html" target="_blank" class="btn btn-default"><i class="glyphicon glyphicon-wrench"></i></a>
+            <a href="<#ROOTHTML#>apps.html" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a>
+            <a href="<#ROOTHTML#>panel/popup/<#APP_ACTION#>.html" target="_blank" class="btn btn-default"><i class="glyphicon glyphicon-wrench"></i></a>
             <a href="<#LANG_WIKI_URL#>Main/module_<#APP_ACTION#>" target=_blank class="btn btn-default"><i class="glyphicon glyphicon-question-sign"></i></a>
         </div>
         <h3>[#APP_TITLE#]</h3>
@@ -20,8 +20,8 @@
 <div>
 [#begin APPS#]
 <div style="width:100px;height:100px;padding:2px;margin:2px;text-align:center;float:left;">
-<div style="margin:3px"><a href="/apps/[#NAME#].html"><img src="<#ROOTHTML#>img/modules/[#ICON#]" width="60" height="60" border="0"></a></div>
-<a href="/apps/[#NAME#].html">[#TITLE#]</a></div>
+<div style="margin:3px"><a href="<#ROOTHTML#>apps/[#NAME#].html"><img src="<#ROOTHTML#>img/modules/[#ICON#]" width="60" height="60" border="0"></a></div>
+<a href="<#ROOTHTML#>apps/[#NAME#].html">[#TITLE#]</a></div>
 [#end APPS#]
 </div>
 [#endif APP_ACTION#]

@@ -131,9 +131,7 @@ if ($qry != '') { // && $qry != $lastest_word
             SQLUpdate('terminals', $terminal_rec);
         }
 
-        if ($source) {
-            $say_source = $source;
-        } else {
+        if (!$say_source) {
             $say_source = 'command.php';
         }
 

@@ -121,7 +121,7 @@ $(document).ready(function() {
   }
 
   eventState='requesting';
-  AJAXRequest('/getnextevent.html', 'getNextEventReceived', '');
+  AJAXRequest('<#ROOTHTML#>getnextevent.html', 'getNextEventReceived', '');
   return false;
  }
 
@@ -144,7 +144,7 @@ $(document).ready(function() {
   if (startedWebSockets==1) {
    return false;
   }
-  AJAXRequest('/getlatestnote.html', 'getLatestNoteReceived', '');
+  AJAXRequest('<#ROOTHTML#>getlatestnote.html', 'getLatestNoteReceived', '');
   return false;
  }
 
@@ -156,7 +156,7 @@ $(document).ready(function() {
 
  // ----------------------------------------------------------------------
  function addEvent(type, win, details, terminal_to, user_to) {
-  var url='/popup/addevent.html?mode=update&type='+URLencode(type)+'&window='+URLencode(win)+'&details='+URLencode(details)+'&terminal_to='+URLencode(terminal_to)+'&user_to='+URLencode(user_to);
+  var url='<#ROOTHTML#>popup/addevent.html?mode=update&type='+URLencode(type)+'&window='+URLencode(win)+'&details='+URLencode(details)+'&terminal_to='+URLencode(terminal_to)+'&user_to='+URLencode(user_to);
   AJAXRequest(url, 'addEventProcessed', '');
   return false;
  }

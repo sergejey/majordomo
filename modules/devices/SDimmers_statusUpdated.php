@@ -6,6 +6,9 @@ $levelSaved = $this->getProperty('levelSaved');
 if ($this->getProperty('setMaxTurnOn')) {
     $levelSaved = 100;
 }
+
+//DebMes("DimmerStatusUpdated: Status $status; Level $level; LevelSaved $levelSaved",'dimming');
+
 if ($status > 0 && !$level && $levelSaved) {
     $this->setProperty('level', $levelSaved);
 } else {

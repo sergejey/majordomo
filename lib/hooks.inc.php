@@ -78,15 +78,38 @@ function processSubscriptionsSafe($event_name, $details = '')
         $data[session_name()] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
-    //DebMes("URL: $url",'process_subscriptions');
     if (is_array($params)) {
         foreach ($params as $k => $v) {
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
     $result = getURLBackground($url, 0);
-    //$result = getURL($url,0);
     return $result;
+}
+
+function processSubscriptionByModule($module_name,$event_name, &$details) {
+    $modulePath = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
+    $output = '';
+    if (file_exists($modulePath)) {
+        include_once($modulePath);
+        $module_object = new $module_name();
+        if (method_exists($module_object, 'processSubscription')) {
+            //DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
+            verbose_log("Processing subscription to [" . $event_name . "] by [" . $module_name . "] (" . (is_array($details) ? json_encode($details) : '') . ")");
+            try {
+                $output = $module_object->processSubscription($event_name, $details);
+            } catch (Exception $e) {
+                //DebMes('Error in processing "%s": ' . $e->getMessage(), 'process_subscription');
+            }
+            //DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
+        } else {
+            //DebMes("$module_name.processSubscription error (method not found)", 'process_subscription');
+        }
+        unset($module_object);
+    } else {
+        //DebMes("$module_name.processSubscription error (module class not found)", 'process_subscription');
+    }
+    return $output;
 }
 
 /**
@@ -97,23 +120,17 @@ function processSubscriptionsSafe($event_name, $details = '')
  */
 function processSubscriptions($event_name, $details = '', $return_output = false)
 {
-    //DebMes("New event: ".$event_name,'process_subscription');
     if (!$return_output) {
         postToWebSocketQueue($event_name, $details, 'PostEvent');
     }
-    //DebMes("Post websocket event done: ".$event_name,'process_subscription');
-
+    if (!is_array($details)) {
+        $details = array();
+    } 
     if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name))) {
-        //DebMes("Processing not defined for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name), 'process_subscription');
         return 0;
     }
-
     $data = json_decode(constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), true);
-    //DebMes("Subscription data for ".'SETTINGS_HOOK_EVENT_' . strtoupper($event_name).": ".serialize($data),'process_subscription');
-
-    if (!is_array($data)) {
-        //DebMes("Incorrect data for " . 'SETTINGS_HOOK_EVENT_' . strtoupper($event_name) . ':' . constant('SETTINGS_HOOK_EVENT_' . strtoupper($event_name)), 'process_subscription');
-    } else {
+    if (is_array($data)) {
         $data2 = array();
         foreach ($data as $k => $v) {
             $data2[] = array('module' => $k, 'filter' => $v['filter'], 'priority' => (int)$v['priority']);
@@ -127,39 +144,17 @@ function processSubscriptions($event_name, $details = '', $return_output = false
         for ($i = 0; $i < $total; $i++) {
             $module_name = $data2[$i]['module'];
             $filter_details = $data2[$i]['filter'];
-            //DebMes("Post event ".$event_name." to module ".$module_name. " (details: ".json_encode($details).")",'process_subscription');
-            $modulePath = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
-
-            if (file_exists($modulePath)) {
-                include_once($modulePath);
-                $module_object = new $module_name();
-                if (method_exists($module_object, 'processSubscription')) {
-                    //DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
-                    verbose_log("Processing subscription to [" . $event_name . "] by [" . $module_name . "] (" . (is_array($details) ? json_encode($details) : '') . ")");
-                    try {
-                        $output .= $module_object->processSubscription($event_name, $details);
-                    } catch (Exception $e) {
-                        //DebMes('Error in processing "%s": ' . $e->getMessage(), 'process_subscription');
-                    }
-                    //DebMes("$module_name.processSubscription ($event_name) DONE",'process_subscription');
-                } else {
-                    //DebMes("$module_name.processSubscription error (method not found)", 'process_subscription');
-                }
-                if (!isset($details['BREAK'])) {
-                    $details['BREAK'] = false;
-                }
-                if ($details['BREAK']) break;
-            } else {
-                //DebMes("$module_name.processSubscription error (module class not found)", 'process_subscription');
+            $output .= processSubscriptionByModule($module_name,$event_name,$details);
+            if (!isset($details['BREAK'])) {
+                $details['BREAK'] = false;
             }
+            if ($details['BREAK']) break;
         }
 
         if (!isset($details['PROCESSED'])) {
             $details['PROCESSED'] = false;
         }
-
         //if (!$details['PROCESSED'] && $event_name == 'COMMAND') { sayReplySafe(LANG_DEVICES_UNKNOWN_COMMAND,2);}
-
         if ($return_output) {
             return $output;
         } else {
