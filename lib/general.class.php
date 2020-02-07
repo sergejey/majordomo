@@ -40,7 +40,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
       }
       else
       {
-         if ($_SERVER['PHP_AUTH_USER'] != EXT_ACCESS_USERNAME || $_SERVER['PHP_AUTH_PW'] != EXT_ACCESS_PASSWORD)
+         if ($_SERVER['PHP_AUTH_USER'] != EXT_ACCESS_USERNAME || hash('sha512', $_SERVER['PHP_AUTH_PW']) != EXT_ACCESS_PASSWORD)
          {
             // header("Location:$PHP_SELF\n\n");
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
