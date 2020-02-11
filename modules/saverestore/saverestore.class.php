@@ -133,6 +133,7 @@ class saverestore extends module
         }
 
         if (gr('mode') == 'auto_update_settings') {
+            $this->config['MASTER_UPDATE_URL'] = gr('set_update_url');
             $this->config['UPDATE_AUTO'] = gr('update_auto');
             $this->config['UPDATE_AUTO_DELAY'] = gr('update_auto_delay');
             $this->config['UPDATE_AUTO_TIME'] = gr('update_auto_time');
@@ -146,12 +147,14 @@ class saverestore extends module
             $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
         }
 
+        /*
         $set_update_url = gr('set_update_url');
         if ($set_update_url) {
             $this->config['MASTER_UPDATE_URL'] = $set_update_url;
             $this->saveConfig();
             $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
         }
+        */
 
         $this->getConfig();
 
@@ -303,7 +306,7 @@ class saverestore extends module
             @unlink(ROOT . "cms/modules_installed/control_modules.installed");
             global $with_extensions;
             if ($with_extensions) {
-                $this->redirect("?(panel:{action=market})&md=market&mode=update_all");
+                $this->redirect("?(panel:{action=market})&md=market&mode=update_new");
             }
             $this->redirect("?err_msg=" . urlencode($err_msg) . "&ok_msg=" . urlencode($ok_msg));
         }
@@ -345,8 +348,15 @@ class saverestore extends module
         }
 
         if ($this->mode == 'delete') {
-            global $file;
-            @unlink(ROOT . 'cms/saverestore/' . $file);
+            $file = gr('file');
+            if ($file!='') {
+                if (is_dir($file)) { //s
+                    $this->removeTree($file);
+                } elseif (is_file(ROOT . 'cms/saverestore/' . $file)) {
+                    @unlink(ROOT . 'cms/saverestore/' . $file);
+                }
+            }
+
             $this->redirect("?");
         }
 
@@ -1871,7 +1881,7 @@ class saverestore extends module
                     $mkt->category_id='all';
                     $mkt->admin($out);
                     logAction('market_update','Auto-update');
-                    $res=$mkt->updateAll($mkt->can_be_updated,1);
+                    $res=$mkt->updateAll($mkt->can_be_updated_new,1);
                     if ($res) {
                         $mkt->removeTree(ROOT . 'cms/saverestore/temp',1);
                     }

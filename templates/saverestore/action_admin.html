@@ -12,6 +12,8 @@
         <h3>
             <#LANG_UPDATES#>
         </h3>
+
+        <!--#
         <form action="?" method="post" enctype="multipart/form-data" class="form">
             <div class="form-group">
                 <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
@@ -26,6 +28,7 @@
                </select>
             </div>
         </form>
+        #-->
 
         <div>
         <a href="#" onclick="$('#advanced_update').toggle();return false;"><#LANG_ADVANCED_CONFIG#></a>
@@ -33,6 +36,18 @@
 
         <div id="advanced_update" style="display:none">
             <form action="?" method="post" enctype="multipart/form-data" class="form">
+                <div class="form-group">
+                    <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
+                    <select name="set_update_url" id="set_update_url" class="form-control" onchange="this.form.submit();">
+                        <option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
+                        <option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
+                        [#if ADITIONAL_GIT_URLS#]
+                        [#begin ADITIONAL_GIT_URLS#]
+                        <option value="[#URL#]" [#SELECTED#]>[#TITLE#]</option>
+                        [#end ADITIONAL_GIT_URLS#]
+                        [#endif#]
+                    </select>
+                </div>
                 <div class="form-group">
                     <label><#LANG_ENABLE_AUTO_UPDATE#>:</label>
                     <#LANG_HCB#>system_auto_update<#LANG_HCE#>
@@ -179,14 +194,13 @@
                                 <#LANG_RESTORE#>
                             </a>
                         </td>
-                        [#endif#] [#if FILESIZE!=""#]
-                        <td><a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
-                        <td>
-                            <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-                        </td>
-                        [#else#]
-                        <td colspan="3">&nbsp;</td>
                         [#endif#]
+                        [#if FILESIZE!=""#]
+                        <td><a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
+                        [#else#]
+                        <td>&nbsp;</td>
+                        [#endif#]
+                        <td><a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a></td>
                 </tr>
                 [#end FILES#]
             </table>
