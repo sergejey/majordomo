@@ -14,8 +14,8 @@ body {
   height:100%;
   overflow:hidden;;
 */
-  //display:block;
-  //overflow:hidden;
+/*  //display:block;
+  //overflow:hidden; */
   z-index:0;
   box-sizing:border-box;
     -webkit-box-sizing:border-box;
@@ -213,10 +213,10 @@ li{
     display:block;
     opacity:1;
     width:100%;
-   // min-width:  1000px;
-   // table-layout:fixed;
+   /* // min-width:  1000px;
+   // table-layout:fixed;*/
     overflow:auto;
-   //background-color:red;
+   /* //background-color:red;*/
 }
 
 
@@ -225,7 +225,7 @@ li{
     padding:4px;
     vertical-align: middle;
     font-size:12px;
-  //font-weight:bold;
+  /* //font-weight:bold;*/
     text-align:center;
     min-width: 70px;
     width:150px;
