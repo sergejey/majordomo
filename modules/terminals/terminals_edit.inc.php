@@ -11,6 +11,13 @@ if ($this->owner->name == 'panel') {
 $table_name = 'terminals';
 
 $rec = getTerminalByID($id);
+
+$out['LOCATIONS'] = SQLSelect("SELECT TITLE FROM locations ORDER BY TITLE+0");
+if ($location_id = $rec['LOCATION_ID']) {
+    $location_title = SQLSelectOne("SELECT TITLE FROM locations WHERE ID = '". $location_id ."'");
+    $out['LOCATION_TITLE'] = $location_title['TITLE'];
+}
+
 if ($this->mode == 'update') {
     $ok = 1;
 
@@ -35,6 +42,14 @@ if ($this->mode == 'update') {
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
 
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
+	
+    if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . gr('location') . "'")) {
+        $rec['LOCATION_ID'] = $location_id['ID'];
+        $out['LOCATION_TITLE'] = gr('location');
+    } else {
+        $rec['LOCATION_ID'] = 0;
+        $out['LOCATION_TITLE'] = gr('location');		
+    }
     
     $rec['TTS_TYPE'] = gr('tts_type');
     $rec['PLAYER_TYPE'] = gr('player_type');

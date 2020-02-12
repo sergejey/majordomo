@@ -10,7 +10,7 @@
  <option value="">
  <option value="[add]">[ <#LANG_ADD#> ]
  [#begin OBJECTS#]
- <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#]- [#DESCRIPTION#][#endif#]
+ <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
  [#end OBJECTS#]
 </select>
 <a href="#" id="linked_object_link<#UNIQ#>" style='display:none'>#</a>
@@ -50,7 +50,7 @@
  function linked_property_chaged<#UNIQ#>() {
   if (selected_object<#UNIQ#>!='') {
    $('#linked_property_link<#UNIQ#>').show();
-   $('#linked_property_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=properties");
+   $('#linked_property_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=properties");
   } else {
    $('#linked_property_link<#UNIQ#>').hide();
   }
@@ -59,7 +59,7 @@
  function linked_method_chaged<#UNIQ#>() {
   if (selected_object<#UNIQ#>!='') {
    $('#linked_method_link<#UNIQ#>').show();
-   $('#linked_method_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=methods");
+   $('#linked_method_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=methods");
   } else {
    $('#linked_method_link<#UNIQ#>').hide();
   }
@@ -69,7 +69,7 @@
   selected_object<#UNIQ#>=$("#linked_object_copy<#UNIQ#>").val();
 
   if (selected_object<#UNIQ#>=='[add]') {
-   var window_url='/admin.php?&md=panel&action=classes&print=1';
+   var window_url='<#ROOTHTML#>admin.php?&md=panel&action=classes&print=1';
          $.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() {
              var url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=objects";
              $.get( url, function( obj )
@@ -107,7 +107,7 @@
    return;
   }
 
-  $('#linked_object_link<#UNIQ#>').attr("href", "/panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
+  $('#linked_object_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
   $('#linked_object_link<#UNIQ#>').show();
   [#if PROPERTY_FIELD!=""#]
   if (skip_property<#UNIQ#>!=1) {

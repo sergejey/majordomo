@@ -2,16 +2,16 @@
     function showChart%.object_title%(chart_type) {
         var url='';
         if (chart_type=='month') {
-            //url='/module/charts.html?id=config&period=365d&chart_type=column&group=month&property=%.object_title%'+'.valueMonth&height=500';
-            url=('/pChart/?p=%.object_title%'+'.valueMonth&op=log&minimal=1&chart_type=column&subop=365d&group=month');
+            //url='<#ROOTHTML#>module/charts.html?id=config&period=365d&chart_type=column&group=month&property=%.object_title%'+'.valueMonth&height=500';
+            url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.valueMonth&op=log&minimal=1&chart_type=column&subop=365d&group=month');
         }
         if (chart_type=='day') {
-            //url='/module/charts.html?id=config&period=31d&chart_type=column&group=day&property=%.object_title%'+'.valueDay&height=500';
-            url=('/pChart/?p=%.object_title%'+'.valueDay&op=log&minimal=1&chart_type=column&subop=31d&group=day');
+            //url='<#ROOTHTML#>module/charts.html?id=config&period=31d&chart_type=column&group=day&property=%.object_title%'+'.valueDay&height=500';
+            url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.valueDay&op=log&minimal=1&chart_type=column&subop=31d&group=day');
         }
         if (chart_type=='hour') {
-            //url='/module/charts.html?id=config&period=24h&chart_type=column&group=hour&property=%.object_title%'+'.valueHour&height=500';
-            url=('/pChart/?p=%.object_title%'+'.valueHour&op=log&minimal=1&chart_type=column&subop=24h&group=hour');
+            //url='<#ROOTHTML#>module/charts.html?id=config&period=24h&chart_type=column&group=hour&property=%.object_title%'+'.valueHour&height=500';
+            url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.valueHour&op=log&minimal=1&chart_type=column&subop=24h&group=hour');
         }
         //parent.$.fancybox.open({ src: '<div style="width:1000px;"><iframe src="'+url+'" width="100%" height="500"></div>', type: 'html' });
         parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false}});

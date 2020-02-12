@@ -34,7 +34,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks/majordomo_myblocks.js.php"></script>
     <?php
     if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
-      echo '<script type="text/javascript" src="blocks/majordomo_devices.js.php"></script>';
+      echo '<script type="text/javascript" src="blocks/majordomo_devices.js.php?2020-01-29-1"></script>';
     }
     ?>
     <script type="text/javascript" src="msg/js/<?php echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
@@ -66,7 +66,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="generators/php/majordomo_myblocks.js.php"></script>
     <?php
     if (file_exists(DIR_MODULES.'devices/devices.class.php')) {
-     echo '<script type="text/javascript" src="generators/php/majordomo_devices.js.php"></script>';
+     echo '<script type="text/javascript" src="generators/php/majordomo_devices.js.php?2020-01-29-1"></script>';
     }
     ?>
     <style>
@@ -511,8 +511,9 @@ $ctl = new control_modules();
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_press"></block>'."\n";
       }
       if ($dev->device_types[$res[$i]['TYPE']]['PARENT_CLASS']=='SControllers') {
-        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOn"></block>'."\n";
-        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOff"></block>'."\n";
+        echo '<block type="majordomo_device_'.$res[$i]['ID'].'_switch"></block>'."\n";
+        //echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOn"></block>'."\n";
+        //echo '<block type="majordomo_device_'.$res[$i]['ID'].'_turnOff"></block>'."\n";
         echo '<block type="majordomo_device_'.$res[$i]['ID'].'_currentStatus"></block>'."\n";
       }
       if ($res[$i]['TYPE']=='rgb') {

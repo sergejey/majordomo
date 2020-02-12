@@ -83,6 +83,26 @@ if ($mode2=='install_multiple' && $names!='') {
  }
 }
 
+
+if ($mode2=='update_new') {
+ logAction('market_update','Update new');
+ $mkt->admin($out);
+ if (count($mkt->can_be_updated_new)>0) {
+  $res=$mkt->updateAll($mkt->can_be_updated_new, 1);
+  if ($res) {
+   $mkt->removeTree(ROOT.'cms/saverestore/temp');
+   $mkt->echonow("Rebooting system ... ");
+   @SaveFile(ROOT . 'reboot', 'updated');
+   $mkt->echonow(" OK<br/> ", 'green');
+   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+  }
+ } else {
+  $res = 'Nothing to update.';
+  $mkt->echonow("Nothing to update ... ");
+  $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+ }
+}
+
 if ($mode2=='update_all') {
  // update all extensions
  logAction('market_update','Update all');

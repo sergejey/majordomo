@@ -1,5 +1,7 @@
 <?php
 
+include_once("./config.php");
+
 if (isset($argv[0]) && $argv[0]!='') {
     set_time_limit(60);
     ignore_user_abort(1);
@@ -26,6 +28,10 @@ if (isset($argv[0]) && $argv[0]!='') {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
+$rootHTML=preg_replace('/\//', '\/', ROOTHTML);
+if (preg_match('/^' . $rootHTML . '/', $url)) {
+    $url=preg_replace('/^' . $rootHTML . '/', '/', $url);
+}
 if (preg_match('/\/api\.php\?/',$url)) {
     $url=preg_replace('/\/api\.php\?/','/api.php/',$url);
 }
@@ -400,7 +406,7 @@ echo json_encode($result);
 function apiShutdown() {
     global $result;
     $a=error_get_last();
-    if (isset($a['type']) && ($last_error['type'] === E_ERROR)) {
+    if (isset($a['type']) && ($a['type'] === E_ERROR)) {
         DebMes("Result ".$_SERVER['REQUEST_URI'].' '.json_encode($a),'api_error');
     } elseif (isset($result['passed']) && $result['passed']>5) {
         DebMes("Result [".$result['passed']."] of : ".$_SERVER['REQUEST_URI'].' '.json_encode($result),'api_slow');
@@ -409,13 +415,20 @@ function apiShutdown() {
 
 
 function find_module($module_name) {
+    if(empty($module_name))
+        return '';
 
-    foreach (scandir(DIR_MODULES) as $f) 
+    $moduleName = strtolower($module_name);
+    $moduleArr = scandir(DIR_MODULES);
+
+    if (count($moduleArr) == 0)
+      return '';
+
+    foreach ($moduleArr as $f) 
     {
-      if (strtolower($f) == strtolower($module_name))
-      {
-          return $f;
-      }
+      if (strtolower($f) == $moduleName)
+         return $f;
     }
+
     return '';
 }

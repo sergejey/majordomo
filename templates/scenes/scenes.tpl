@@ -342,7 +342,7 @@ $.fn.customContextMenu = function(callBack){
            if (objCnt) {
              for(var i=0;i<objCnt;i++) {
               var elem=$('#state_'+obj[i].ID);
-              if ((typeof obj[i].HTML!= 'undefined') && (obj[i].HTML!=null) && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
+              if ((typeof obj[i].HTML!= 'undefined') && (obj[i].TYPE!='container') && (obj[i].HTML!=null) && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
                elem.html('<span>'+obj[i].HTML+'</span>');
                codeHash['code'+obj[i].ID]=obj[i].HTML;
               }
