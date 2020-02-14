@@ -1025,7 +1025,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
 
 
     $url = preg_replace('/^\/api\//', BASE_URL.'/api.php/', $api_url);
-    $url = str_replace('//','/',$url);
+    $url = preg_replace('/([^:])\/\//','\1/',$url);
 
     $method=strtoupper($method);
     global $api_ch;
