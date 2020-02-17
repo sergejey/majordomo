@@ -489,7 +489,7 @@ function runScheduledJobs()
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
                 //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-                DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
+                DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')','errors');
             }
         }
     }
@@ -1446,3 +1446,100 @@ function num2straddon($n, $f1, $f2, $f5) {
     if ($n==1) return $f1;
     return $f5;
 }
+
+function date2str($date)
+    {
+        if (empty($date)) {
+            return '';
+        }
+        
+        $thousands = array(
+            1 => 'одна тысяча',
+            2 => 'две тысячи',
+        );
+        
+        $hundreds = array(
+            0 => '',
+            9 => 'девятьсот',
+        );
+        
+        $days = array(
+            1 => 'первое',
+            2 => 'второе',
+            3 => 'третье',
+            4 => 'четвертое',
+            5 => 'пятое',
+            6 => 'шестое',
+            7 => 'седьмое',
+            8 => 'восьмое',
+            9 => 'девятое',
+            10 => 'десятое',
+            11 => 'одиннадцатое',
+            12 => 'двенадцатое',
+            13 => 'тринадцатое',
+            14 => 'четырнадцатое',
+            15 => 'пятнадцатое',
+            16 => 'шестнадцатое',
+            17 => 'семнадцатое',
+            18 => 'восемнадцатое',
+            19 => 'девятнадцатое',
+            20 => 'двадцатое',
+            30 => 'тридцатое',
+            40 => 'сороковое',
+        );
+        
+        $tens = array(
+            20 => 'двадцать',
+            30 => 'тридцать',
+            40 => 'сорок',
+        ); 
+        
+        foreach ($tens as $d => $ten) {
+            for ($day = 1; $day < 10; $day++) {
+                $days[$d + $day] = $ten . ' ' . $days[$day];
+            }
+        }
+        
+        $months = array(
+            0 => 'нулября',
+            1 => 'января',
+            2 => 'февраля',
+            3 => 'марта',
+            4 => 'апреля',
+            5 => 'мая',
+            6 => 'июня',
+            7 => 'июля',
+            8 => 'августа',
+            9 => 'сентября',
+            10 => 'октября',
+            11 => 'ноября',
+            12 => 'декабря',
+        );
+        
+        list($year, $month, $day) = explode('-', $date);
+
+        $monthStr = $months[(int)$month];
+        $dayStr = $days[(int)$day];
+        
+        $yearPart = $days[(int)mb_substr($year, -2)];
+        $endYear = mb_substr($yearPart, -2);
+        
+        switch ($endYear) {
+            case 'ое':
+                $yearPart = mb_substr($yearPart, 0, -2) . 'ого';
+                break;
+            case 'ье':
+                $yearPart .= 'го';
+                break;
+        }
+        
+        $yearParts = array(
+            $thousands[(int)$year[0]],
+            $hundreds[(int)$year[1]],
+            $yearPart
+        );
+        
+        $yearStr = implode(' ', array_filter(array_map('trim', $yearParts)));
+        
+        return implode(' ', array($dayStr, $monthStr, $yearStr));
+    }

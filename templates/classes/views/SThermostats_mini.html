@@ -3,12 +3,12 @@
 <div class="device-details">
     <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                                                         callMethod("%.object_title%.tempDown");
-                                                        $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                                                         return false;'>-</a>
     %.currentTargetValue%
     <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                                                         callMethod("%.object_title%.tempUp");
-                                                        $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                                                         return false;'>+</a>
 </div>
 </div>

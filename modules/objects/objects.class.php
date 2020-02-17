@@ -1170,9 +1170,9 @@ class objects extends module
 EOD;
         parent::dbInstall($data);
 
-        SQLExec("ALTER TABLE `pvalues` CHANGE `SOURCE` `SOURCE` VARCHAR(255) NOT NULL DEFAULT ''");
-        SQLExec("ALTER TABLE `phistory` CHANGE `SOURCE` `SOURCE` VARCHAR(255) NOT NULL DEFAULT ''");
-        SQLExec("ALTER TABLE `phistory_queue` CHANGE `SOURCE` `SOURCE` VARCHAR(255) NOT NULL DEFAULT ''");
+        //SQLExec("ALTER TABLE `pvalues` CHANGE `SOURCE` `SOURCE` VARCHAR(255) NOT NULL DEFAULT ''");
+        //SQLExec("ALTER TABLE `phistory` CHANGE `SOURCE` `SOURCE` VARCHAR(255) NOT NULL DEFAULT ''");
+        //SQLExec("ALTER TABLE `phistory_queue` CHANGE `SOURCE` `SOURCE` VARCHAR(255) NOT NULL DEFAULT ''");
 
     }
 // --------------------------------------------------------------------

@@ -127,12 +127,34 @@ class saverestore extends module
             $out['OK_MSG'] = $ok_msg;
         }
 
-        $set_update_url=gr('set_update_url');
-            if ($set_update_url) {
-                $this->config['MASTER_UPDATE_URL']=$set_update_url;
-                $this->saveConfig();
-                $this->redirect("?ok_msg=".urlencode(LANG_DATA_SAVED));
+        if (gr('mode')=='force_update') {
+            unset($_REQUEST['mode']);
+            $this->autoUpdateSystem();
+        }
+
+        if (gr('mode') == 'auto_update_settings') {
+            $this->config['MASTER_UPDATE_URL'] = gr('set_update_url');
+            $this->config['UPDATE_AUTO'] = gr('update_auto');
+            $this->config['UPDATE_AUTO_DELAY'] = gr('update_auto_delay');
+            $this->config['UPDATE_AUTO_TIME'] = gr('update_auto_time');
+            $this->config['UPDATE_AUTO_PLUGINS'] = gr('update_auto_plugins');
+            if ($this->config['UPDATE_AUTO']) {
+                subscribeToEvent($this->name, 'HOURLY');
+            } else {
+                unsubscribeFromEvent($this->name, 'HOURLY');
             }
+            $this->saveConfig();
+            $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
+        }
+
+        /*
+        $set_update_url = gr('set_update_url');
+        if ($set_update_url) {
+            $this->config['MASTER_UPDATE_URL'] = $set_update_url;
+            $this->saveConfig();
+            $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
+        }
+        */
 
         $this->getConfig();
 
@@ -140,23 +162,27 @@ class saverestore extends module
             $out['CLEAR_FIRST'] = 1;
         }
 
-        $update_url=$this->getUpdateURL();
-        $out['UPDATE_URL']=$update_url;
+        $update_url = $this->getUpdateURL();
+        $out['UPDATE_URL'] = $update_url;
+
+        $out['UPDATE_AUTO'] = $this->config['UPDATE_AUTO'];
+        $out['UPDATE_AUTO_DELAY'] = $this->config['UPDATE_AUTO_DELAY'];
+        $out['UPDATE_AUTO_TIME'] = $this->config['UPDATE_AUTO_TIME'];
+        $out['UPDATE_AUTO_PLUGINS'] = $this->config['UPDATE_AUTO_PLUGINS'];
 
         global $aditional_git_urls;
         $out['ADITIONAL_GIT_URLS'] = array();
-        foreach ($aditional_git_urls as $url=>$title) {
-           $tmp = array();
-           $tmp['URL'] = $url;
-           $tmp['TITLE'] = $title;
-           $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
-           $out['ADITIONAL_GIT_URLS'][] = $tmp;
+        foreach ($aditional_git_urls as $url => $title) {
+            $tmp = array();
+            $tmp['URL'] = $url;
+            $tmp['TITLE'] = $title;
+            $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
+            $out['ADITIONAL_GIT_URLS'][] = $tmp;
         }
-        
-            $github_feed_url = $update_url;
-            $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
-            $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
 
+        $github_feed_url = $update_url;
+        $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
+        $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
         $github_feed = getURL($github_feed_url, 30 * 60);
 
         if ($github_feed != '') {
@@ -184,7 +210,7 @@ class saverestore extends module
                     if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $this->config['LATEST_UPDATED_ID']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
-                    if ($this->ajax && $_GET['op']=='check_updates') {
+                    if ($this->ajax && $_GET['op'] == 'check_updates') {
                         if (!$out['NO_NEED_TO_UPDATE']) {
                             echo "1";
                         } else {
@@ -277,10 +303,10 @@ class saverestore extends module
         if ($this->mode == 'clear') {
             set_time_limit(0);
             $this->removeTree(ROOT . 'cms/saverestore/temp');
-            @unlink(ROOT."cms/modules_installed/control_modules.installed");
+            @unlink(ROOT . "cms/modules_installed/control_modules.installed");
             global $with_extensions;
             if ($with_extensions) {
-                $this->redirect("?(panel:{action=market})&md=market&mode=update_all");
+                $this->redirect("?(panel:{action=market})&md=market&mode=update_new");
             }
             $this->redirect("?err_msg=" . urlencode($err_msg) . "&ok_msg=" . urlencode($ok_msg));
         }
@@ -322,8 +348,15 @@ class saverestore extends module
         }
 
         if ($this->mode == 'delete') {
-            global $file;
-            @unlink(ROOT . 'cms/saverestore/' . $file);
+            $file = gr('file');
+            if ($file!='') {
+                if (is_dir($file)) { //s
+                    $this->removeTree($file);
+                } elseif (is_file(ROOT . 'cms/saverestore/' . $file)) {
+                    @unlink(ROOT . 'cms/saverestore/' . $file);
+                }
+            }
+
             $this->redirect("?");
         }
 
@@ -353,15 +386,15 @@ class saverestore extends module
         chdir($source);
         array_multisort(array_map('filemtime', ($files = glob("*.*"))), SORT_DESC, $files);
         if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
-            $backups_dir=SETTINGS_BACKUP_PATH;
+            $backups_dir = SETTINGS_BACKUP_PATH;
         } else {
-            $backups_dir=DOC_ROOT . '/backup';
+            $backups_dir = DOC_ROOT . '/backup';
         }
         chdir($backups_dir);
         $backups = glob("*");
         if (is_array($backups)) {
-            foreach($backups as $backup_folder) {
-                $files[]=$backups_dir.'/'.$backup_folder;
+            foreach ($backups as $backup_folder) {
+                $files[] = $backups_dir . '/' . $backup_folder;
             }
         }
         chdir($currentdir);
@@ -371,9 +404,10 @@ class saverestore extends module
             $tmp['FILENAME'] = $file;
             if (is_file($source . "/" . $file)) {
                 $tmp['FILESIZE'] = number_format((filesize($source . "/" . $file) / 1024 / 1024), 2);
-                $tmp['TITLE']=basename($file);
+                $tmp['UPDATED'] = date('Y-m-d H:i:s',filemtime($source . "/" . $file));
+                $tmp['TITLE'] = basename($file);
             } else {
-                $tmp['TITLE']='Backup '.basename($file);
+                $tmp['TITLE'] = 'Backup ' . basename($file);
             }
             $out['FILES'][] = $tmp;
         }
@@ -382,14 +416,15 @@ class saverestore extends module
     }
 
 
-    function getUpdateURL() {
+    function getUpdateURL()
+    {
         $this->getConfig();
-        if ($this->config['MASTER_UPDATE_URL']!='') {
-            $update_url=$this->config['MASTER_UPDATE_URL'];
-        } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '')  {
-            $update_url=MASTER_UPDATE_URL;
+        if ($this->config['MASTER_UPDATE_URL'] != '') {
+            $update_url = $this->config['MASTER_UPDATE_URL'];
+        } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '') {
+            $update_url = MASTER_UPDATE_URL;
         } else {
-            $update_url=GIT_URL.'archive/master.tar.gz';
+            $update_url = GIT_URL . 'archive/master.tar.gz';
         }
         return $update_url;
     }
@@ -405,7 +440,7 @@ class saverestore extends module
     {
 
 
-        $url=$this->getUpdateURL();
+        $url = $this->getUpdateURL();
         $this->url = $url;
 
         set_time_limit(0);
@@ -485,6 +520,7 @@ class saverestore extends module
 
     function echonow($msg, $color = '')
     {
+        DebMes(strip_tags($msg),'auto_update');
         if ($color) {
             echo '<font color="' . $color . '">';
         }
@@ -1197,7 +1233,7 @@ class saverestore extends module
                     $fl = array();
                     $fl['FILENAME'] = str_replace('//', '/', $destination . "/" . $file);
                     $fl['FILENAME_SHORT'] = str_replace('//', '/', $file);
-                    $fl['MTIME']=filemtime($fl['FILENAME']);
+                    $fl['MTIME'] = filemtime($fl['FILENAME']);
                     $fl['SIZE'] = filesize($fl['FILENAME']);
                     if (preg_match('/' . $pattern . '/is', $fl['FILENAME_SHORT']) && ($ex_pattern == '' || !preg_match('/' . $ex_pattern . '/is', $fl['FILENAME_SHORT']))) {
                         $res[] = $fl;
@@ -1243,7 +1279,6 @@ class saverestore extends module
         }
 
 
-
         if ($iframe) {
             $this->echonow("<b>Applying updates.</b><br/>");
         }
@@ -1264,13 +1299,13 @@ class saverestore extends module
             }
         } elseif ($file != '' && is_dir($file)) {
             if ($iframe) {
-                $this->echonow("Updating files ... ");
+                $this->echonow("Updating files (from $file to ".ROOT.")... ");
             }
             $this->copyTree($file, ROOT, 1); // restore all files
             if ($iframe) {
                 $this->echonow(" OK<br/> ", 'green');
             }
-            $db_filename=$file.'/'.DB_NAME . ".sql";
+            $db_filename = $file . '/' . DB_NAME . ".sql";
             if (file_exists($db_filename)) {
                 if ($iframe) {
                     $this->echonow("Restoring database from $db_filename ... ");
@@ -1286,7 +1321,7 @@ class saverestore extends module
                 $this->redirect("?mode=clear&ok_msg=" . urlencode("Database restored!"));
             }
         } elseif ($file != '') {
-            logAction('system_restore',$file);
+            logAction('system_restore', $file);
             // unpack archive
             umask(0);
             @mkdir(ROOT . 'cms/saverestore/temp', 0777);
@@ -1302,8 +1337,8 @@ class saverestore extends module
             }
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/config.php');
 
-            if (file_exists(ROOT.'scripts/cycle_db_save.php') && file_exists(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php')) {
-                rename(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php',ROOT . 'cms/saverestore/temp' . $folder . '/scripts/cycle_db_save.php');
+            if (file_exists(ROOT . 'scripts/cycle_db_save.php') && file_exists(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php')) {
+                rename(ROOT . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php', ROOT . 'cms/saverestore/temp' . $folder . '/scripts/cycle_db_save.php');
             }
 
             if ($iframe) {
@@ -1324,7 +1359,7 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                $this->echonow("Updating files ... ");
+                $this->echonow("Updating files (".ROOT . 'cms/saverestore/temp' . $folder." to ".ROOT.") ... ");
             }
 
             // UPDATING FILES DIRECTLY
@@ -1350,7 +1385,7 @@ class saverestore extends module
 
 
             if ($iframe) {
-                $this->echonow(" OK<br/> ", 'green');
+                $this->echonow(" DONE<br/> ", 'green');
             }
 
 
@@ -1467,15 +1502,16 @@ class saverestore extends module
                 }
                 $tar_name .= 'files_';
 
-                $cms_dirs=scandir(ROOT.'cms');
-                foreach($cms_dirs as $d) {
-                    if ($d=='.' ||
-                        $d=='..' ||
-                        $d=='cached' ||
-                        $d=='debmes' ||
-                        $d=='saverestore') continue;
-                    $this->copyTree(ROOT.'cms/'.$d, ROOT . 'cms/saverestore/temp/cms/'.$d);
-                }                
+                $cms_dirs = scandir(ROOT . 'cms');
+                foreach ($cms_dirs as $d) {
+                    if ($d == '.' ||
+                        $d == '..' ||
+                        $d == 'cached' ||
+                        $d == 'debmes' ||
+                        $d == 'saverestore'
+                    ) continue;
+                    $this->copyTree(ROOT . 'cms/' . $d, ROOT . 'cms/saverestore/temp/cms/' . $d);
+                }
                 if ($iframe) {
                     $this->echonow(" OK<br/>", 'green');
                 }
@@ -1543,7 +1579,7 @@ class saverestore extends module
         $mysqlParam .= " " . DB_NAME . " <" . $filename;
         exec($mysql_path . $mysqlParam);
         SQLExec("DELETE FROM cached_values");
-        setGlobal('cycle_mainRun',time());
+        setGlobal('cycle_mainRun', time());
     }
 
     /**
@@ -1560,7 +1596,7 @@ class saverestore extends module
         else
             $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
 
-        $cmd = $pathToMysqlDump . " -h " . DB_HOST ." --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
+        $cmd = $pathToMysqlDump . " -h " . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
         exec($cmd);
     }
 
@@ -1628,7 +1664,7 @@ class saverestore extends module
         }
 
         if (!Is_Dir($destination)) {
-            if (!mkdir($destination,0777,true)) {
+            if (!mkdir($destination, 0777, true)) {
                 return 0; // cannot create destination path
             }
         }
@@ -1780,6 +1816,93 @@ class saverestore extends module
         return $res;
     }
 
+    function autoUpdateSystem()
+    {
+        $this->getConfig();
+        $delay = $this->config['UPDATE_AUTO_DELAY'];
+        if (!$delay) $delay = 1;
+        DebMes("Starting auto update ($delay)", 'auto_update');
+
+        $update_url = $this->getUpdateURL();
+
+        $github_feed_url = $update_url;
+        $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
+        $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
+        $github_feed = getURL($github_feed_url, 30 * 60);
+
+        if ($github_feed != '') {
+            @$tmp = GetXMLTree($github_feed);
+            @$data = XMLTreeToArray($tmp);
+            @$items = $data['feed']['entry'];
+            if (is_array($items)) {
+                $latest_id = preg_replace('/.+Commit\//is', '', trim($items[0]['id']['textvalue']));
+                $latest_tm = strtotime($items[0]['updated']['textvalue']);
+                //$latest_id = 'force_new_id';
+                if ($latest_id && ($latest_id == $this->config['LATEST_UPDATED_ID'])) {
+                    DebMes("Already updated to the latest version ($latest_id)", 'auto_update');
+                    return 0;
+                } else {
+                    DebMes("Need to update to $latest_id on top of ".$this->config['LATEST_UPDATED_ID'], 'auto_update');
+                }
+                $current_delay = round((time()-$latest_tm)/(24*60*60),2);
+                if ($latest_tm && $current_delay<$delay) {
+                    DebMes("Update is too fresh ($current_delay vs $delay)", 'auto_update');
+                    return 0;
+                }
+                // ok, downloading update
+                set_time_limit(0);
+                // updating main system
+                logAction('system_update','Auto-update');
+                $out=array();
+                $res = $this->admin($out);
+                DebMes("Getting latest version and making backup",'auto_update');
+                $res = $this->getLatest($out,1);
+                global $restore;
+                global $folder;
+                $restore = 'master.tgz';
+                $folder = 'majordomo-master';
+                $basename = basename($this->url);
+                if ($basename != 'master.tar.gz') {
+                    $basename = str_replace('.tar.gz', '', $basename);
+                    $folder = str_replace('master', $basename, $folder);
+                }
+                DebMes("Applying update $basename from $folder",'auto_update');
+                $res = $this->upload($out,1);
+                $this->removeTree(ROOT . 'cms/saverestore/temp',1);
+                // now downloading updates for modules
+                if ($this->config['UPDATE_AUTO_PLUGINS']) {
+                    DebMes("Getting updates for modules",'auto_update');
+                    global $mode;
+                    $mode = '';
+                    $_GET['op']='iframe';
+                    $out=array();
+                    include_once(DIR_MODULES . "market/market.class.php");
+                    $mkt=new market();
+                    $mkt->category_id='all';
+                    $mkt->admin($out);
+                    logAction('market_update','Auto-update');
+                    $res=$mkt->updateAll($mkt->can_be_updated_new,1);
+                    if ($res) {
+                        $mkt->removeTree(ROOT . 'cms/saverestore/temp',1);
+                    }
+                }
+                DebMes("Update installed, need to reboot",'auto_update');
+                @SaveFile(ROOT . 'reboot', 'updated');
+            }
+        }
+    }
+
+    function processSubscription($event_name, $details = '')
+    {
+        if ($event_name == 'HOURLY') {
+            $this->getConfig();
+            if ($this->config['UPDATE_AUTO'] && (int)date('H') == $this->config['UPDATE_AUTO_TIME']) {
+                DebMes("Processing auto update", 'auto_update');
+                $this->autoUpdateSystem();
+            }
+
+        }
+    }
 
     /**
      * FrontEnd

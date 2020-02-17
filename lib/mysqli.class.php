@@ -146,6 +146,10 @@ class mysql
          $err_no = mysqli_connect_errno();
          $err_details = mysqli_connect_error();
          Define('NO_DATABASE_CONNECTION',1);
+         if ($_SERVER['REQUEST_URI']!='') {
+            $stop = 1;
+            new custom_error($err_no . ": " . $err_details, $stop);
+         }
          return 0;
       }
       //$db_select = mysqli_select_db($this->dbh, $this->dbName);
@@ -175,6 +179,7 @@ class mysql
     */
    public function Exec($query, $ignore_errors = false)
    {
+
       if (!$this->dbh && !$this->Connect()) return false;
       
       if ((time()-$this->latestTransaction)>$this->pingTimeout) {
@@ -360,6 +365,10 @@ class mysql
     */
    public function DbSafe($str)
    {
+      if (!$this->connected) {
+         echo "Database is not connected!";
+         exit;
+      }
       $str = mysqli_real_escape_string($this->dbh, $str);
       $str = str_replace("%", "\%", $str);
       return $str;
@@ -373,6 +382,10 @@ class mysql
     */
    public function DbSafe1($str)
    {
+      if (!$this->connected) {
+         echo "Database is not connected!";
+         exit;
+      }
       if (is_array($str)) {
        $str=json_encode($str);
       }
@@ -392,10 +405,12 @@ class mysql
       if (!$this->dbh) return false;
       $err_no = mysqli_errno($this->dbh);
       $err_details = mysqli_error($this->dbh);
-      if (preg_match('/server has gone away/is',$err_details)) {
-         $stop = 1;
+      $stop = 1;
+      if (preg_match('/You have an error in your SQL syntax/is',$err_details)) {
+         $stop = 0;
       } elseif (preg_match('/unknown column/is',$err_details)) {
          unlink(ROOT.'cms/modules_installed/control_modules.installed');
+         $stop = 0;
       }
       registerError('sql', $err_no . ": " . $err_details . "\n$query");
       new custom_error($err_no . ": " . $err_details . "<br>$query", $stop);

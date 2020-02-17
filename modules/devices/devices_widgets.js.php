@@ -29,7 +29,7 @@ $.subscribe('wsData', function (_, response) {
 });
 
 function refreshDevicesHTTP() {
-    var baseURL = "/ajax/devices.html?op=get_device&id=";
+    var baseURL = ROOTHTML + "ajax/devices.html?op=get_device&id=";
     activeDevices.forEach(function(item, index) {
         var url = baseURL + item;
         $.ajax({

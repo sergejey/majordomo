@@ -317,7 +317,6 @@ class module
                        WHERE NAME = '" . $this->name . "'";
 
             $rec = SQLSelectOne($sqlQuery);
-
             if (!isset($rec["ID"])) {
                 $this->install();
             }
@@ -451,7 +450,6 @@ class module
      */
     public function dbInstall($data)
     {
-
         $need_optimzation = array();
         $table_defined = array();
 
@@ -517,12 +515,14 @@ class module
                     $definition = str_replace('`', '', $definition);
                     $sql = "ALTER TABLE $table ADD $definition;";
                     SQLExec($sql);
+                    SQLExec("FLUSH TABLES ".$table.";");
                     $to_optimize[] = $table;
                 }
             } elseif (!isset($tbl_fields[$table][$field])) {
                 // new field
                 $sql = "ALTER TABLE $table ADD $definition;";
                 SQLExec($sql);
+                SQLExec("FLUSH TABLES ".$table.";");
             }
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+include_once("./config.php");
+
 if (isset($argv[0]) && $argv[0]!='') {
     set_time_limit(60);
     ignore_user_abort(1);
@@ -26,6 +28,10 @@ if (isset($argv[0]) && $argv[0]!='') {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
+$rootHTML=preg_replace('/\//', '\/', ROOTHTML);
+if (preg_match('/^' . $rootHTML . '/', $url)) {
+    $url=preg_replace('/^' . $rootHTML . '/', '/', $url);
+}
 if (preg_match('/\/api\.php\?/',$url)) {
     $url=preg_replace('/\/api\.php\?/','/api.php/',$url);
 }
@@ -413,8 +419,12 @@ function find_module($module_name) {
         return '';
 
     $moduleName = strtolower($module_name);
-    
-    foreach (scandir(DIR_MODULES) as $f) 
+    $moduleArr = scandir(DIR_MODULES);
+
+    if (count($moduleArr) == 0)
+      return '';
+
+    foreach ($moduleArr as $f) 
     {
       if (strtolower($f) == $moduleName)
          return $f;

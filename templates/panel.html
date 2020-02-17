@@ -524,7 +524,7 @@ jQuery.fn.center = function () {
           [#endif#]
         [#endif HIDE_LEFT_PANEL#]
       <li>
-        <a href="?action=control_access&&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
+        <a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
       </li>
    </ul>
   </div>
@@ -637,9 +637,11 @@ checkCategory('[#CATEGORY_ID#]');
             <a href="?"><#LANG_CONTROL_PANEL#></a>
                 [#if ACTION!=""#]/ <a href="?action=<#ACTION#>"><#ACTION#></a>[#endif#]
         <div class="float-right" style="padding-right:30px">
-            <i class="glyphicon glyphicon-question-sign"></i>
             [#if ACTION!=""#]
-            <a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            <i class="glyphicon glyphicon-question-sign"></i>
+            <a href="https://connect.smartliving.ru/addons.html?redirect=<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            /
+            <a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#else#]
             <a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#endif#]

@@ -147,6 +147,40 @@ class blockly_code extends module
         if (!$rec['ID'] && $this->owner->xml) {
             $rec['XML'] = $this->owner->xml;
         }
+        if (preg_match_all('/<block type="(.+?)\_turnoff"(.+?)>/uis',$rec['XML'],$m)) {
+            $total = count($m[0]);
+            for($i=0;$i<$total;$i++) {
+                $new_line = $m[0][$i];
+                $closed_block = 0;
+                if (preg_match('/\/>/',$new_line)) {
+                    $closed_block = 1;
+                }
+                $new_line = str_replace('_turnOff','_switch',$new_line);
+                $new_line .= "\n<field name=\"MODE\">OFF</field>";
+                if ($closed_block) {
+                    $new_line = str_replace('/>','>',$new_line);
+                    $new_line.="\n</block>";
+                }
+                $rec['XML'] = str_replace($m[0][$i],$new_line,$rec['XML']);
+            }
+        }
+        if (preg_match_all('/<block type="(.+?)\_turnOn"(.+?)>/uis',$rec['XML'],$m)) {
+            $total = count($m[0]);
+            for($i=0;$i<$total;$i++) {
+                $new_line = $m[0][$i];
+                $closed_block = 0;
+                if (preg_match('/\/>/',$new_line)) {
+                    $closed_block = 1;
+                }
+                $new_line = str_replace('_turnOn','_switch',$new_line);
+                $new_line .= "\n<field name=\"MODE\">ON</field>";
+                if ($closed_block) {
+                    $new_line = str_replace('/>','>',$new_line);
+                    $new_line.="\n</block>";
+                }
+                $rec['XML'] = str_replace($m[0][$i],$new_line,$rec['XML']);
+            }
+        }
 
         if (!$rec['ID'] && !$this->type) {
             $rec['CODE_TYPE'] = 0;

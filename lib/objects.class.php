@@ -130,6 +130,7 @@ function getObjectClassTemplate($object_name,$view='')
     startMeasure('getClassTemplate');
     $data = getClassTemplate((int)$object->class_id,$view);
     endMeasure('getClassTemplate');
+    $data = preg_replace('/<#ROOTHTML#>/uis', ROOTHTML, $data);
     $data = preg_replace('/%\.object_title%/uis', $object_name, $data);
     $data = preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data = preg_replace('/%\.object_description%/uis', $object->description, $data);
@@ -397,7 +398,6 @@ function getObject($name)
                      LEFT JOIN classes ON objects.CLASS_ID = classes.ID
                     WHERE objects.TITLE = '" . DBSafe($object_name) . "'
                       AND classes.TITLE = '" . DBSafe($class_name) . "'";
-
         $rec = SQLSelectOne($sqlQuery);
     } else {
         $sqlQuery = "SELECT objects.*
@@ -953,6 +953,11 @@ function callMethod($method_name, $params = 0)
     } else {
         $object_name = 'ThisComputer';
     }
+
+    if ($object_name == 'AllScripts') {
+        return runScript($method_name,$params);
+    }
+
     $obj = getObject($object_name);
 
     if ($obj) {
@@ -974,6 +979,9 @@ function callMethodSafe($method_name, $params = 0)
     } else {
         $object_name = 'ThisComputer';
     }
+    if ($object_name == 'AllScripts') {
+        return runScriptSafe($method_name,$params);
+    }
     $obj = getObject($object_name);
 
     if ($obj) {
@@ -986,12 +994,10 @@ function callMethodSafe($method_name, $params = 0)
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
     $is_child = false;
-    $fork_disabled = false;
+    $fork_disabled = true;
 
-    if (defined('DISABLE_FORK') && DISABLE_FORK) {
-        $fork_disabled = true;
-    } elseif (!function_exists('pcntl_fork')) {
-        $fork_disabled = true;
+    if (defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
+        $fork_disabled = false;
     }
 
     if (!$fork_disabled) {
@@ -1006,6 +1012,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
             // child
             $is_child = true;
             register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            set_time_limit(60);
         }
     }
 
@@ -1016,7 +1023,9 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     }
     $params['no_session']=1;
 
-    $url = preg_replace('/^\/api\//', BASE_URL.ROOTHTML.'api.php/', $api_url); //
+
+    $url = preg_replace('/^\/api\//', BASE_URL.'/api.php/', $api_url);
+    $url = preg_replace('/([^:])\/\//','\1/',$url);
 
     $method=strtoupper($method);
     global $api_ch;

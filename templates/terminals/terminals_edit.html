@@ -58,6 +58,15 @@
 </div>
     [#module name="linkedobject" object_field="linked_object"#]
 
+<div class="form-group ">
+  <label class="col-lg-4 control-label"><#LANG_LOCATION#> терминала: <#LANG_HCB#>location<#LANG_HCE#></label>
+  <div class="col-lg-4"><select name="location" class="form-control">
+   <option value="">Выберите местоположение терминала
+    [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select></div>
+</div>
+
     <!--#
         <script language="javascript">
             function majordroidChanged() {

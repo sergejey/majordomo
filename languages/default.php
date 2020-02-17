@@ -1086,6 +1086,7 @@ $dictionary = array(
     'READ_ONLY' => 'Read Only',
     'ADVANCED_CONFIG' => 'Advanced config',
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
+    'UPDATE_NEW_EXTENSIONS' => 'Install updates',
     'MARKET_CATEGORY_INSTALLED' => 'Installed',
     'MARKET_CATEGORY_OWNED' => 'Owned',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Updates',
@@ -1427,6 +1428,10 @@ $dictionary = array(
 	'NUMBER_TO_STRING_NULL' => 'zero',
 	
     /* end array for convert number to string  */
+
+    'ENABLE_AUTO_UPDATE' => 'Enable automatic updates',
+    'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
+    'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
 
 
 );
