@@ -32,30 +32,14 @@
     $ok=0;
    }
 
-   global $skype;
-   $rec['SKYPE']=$skype;
-
-   global $mobile;
-   $rec['MOBILE']=$mobile;
-
-   global $color;
-   $rec['COLOR']=$color;
-
-
-   global $is_admin;
-   $rec['IS_ADMIN']=(int) $is_admin;
-
-   global $is_default;
-   $rec['IS_DEFAULT']=(int) $is_default;
-
-   global $password;
-   $rec['PASSWORD']=$password;
-
-   global $linked_object;
-   $rec['LINKED_OBJECT']=trim($linked_object);
-
-   global $host;
-   $rec['HOST']=$host;
+   $rec['SKYPE']=gr('skype');
+   $rec['MOBILE']=gr('mobile');
+   $rec['COLOR']=gr('color');
+   $rec['IS_ADMIN']=(int)gr('is_admin');
+   $rec['IS_DEFAULT']=(int)gr('is_default');
+   $rec['PASSWORD']=hash('sha512', gr('password'));
+   $rec['LINKED_OBJECT']=trim(gr('linked_object'));
+   $rec['HOST']=gr('host');
 
    global $avatar;
    global $avatar_name;

@@ -15,6 +15,9 @@ $ctl = new control_modules();
 
 $checked_time = 0;
 
+$objects = getObjectsByClass('systemStates');
+$total = count($objects);
+
 if ($_GET['once'])
 {
    $last_run = getGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run');
@@ -22,7 +25,11 @@ if ($_GET['once'])
    if ((time() - $last_run) > 5 * 60)
    {
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-      cycleBody();
+
+      for ($i = 0; $i < $total; $i++)
+      {
+         callMethod($objects[$i]['TITLE'] . '.checkState');
+      }
    }
 
    echo "OK";
@@ -37,7 +44,10 @@ else
       {
          setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
          $checked_time = time();
-         cycleBody();
+         for ($i = 0; $i < $total; $i++)
+         {
+            callMethod($objects[$i]['TITLE'] . '.checkState');
+         }
       }
 
       if (file_exists('./reboot') || IsSet($_GET['onetime']))
@@ -49,30 +59,4 @@ else
    }
 
    DebMes("Unexpected close of cycle: " . basename(__FILE__));
-}
-
-/**
- * Summary of cycleBody
- * @return void
- */
-function cycleBody()
-{
-   // check main system states
-   $objects = getObjectsByClass('systemStates');
-   $total = count($objects);
-
-   for ($i = 0; $i < $total; $i++)
-   {
-      $oldState = getGlobal($objects[$i]['TITLE'] . '.stateColor');
-      callMethod($objects[$i]['TITLE'] . '.checkState');
-      $newState = getGlobal($objects[$i]['TITLE'] . '.stateColor');
-
-      if ($newState != $oldState)
-      {
-         echo $objects[$i]['TITLE'] . " state changed to " . $newState . PHP_EOL;
-
-         $params = array('STATE' => $newState);
-         callMethod($objects[$i]['TITLE'] . '.stateChanged', $params);
-      }
-   }
 }

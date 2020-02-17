@@ -4,31 +4,31 @@
 <div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP#>:<br/>
     <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                                                         callMethod("%.object_title%.tempDown");
-                                                        $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                                                         return false;'>-</a>
     %.currentTargetValue%
     <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                                                         callMethod("%.object_title%.tempUp");
-                                                        $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                                                         return false;'>+</a>
 </div>
-<div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TEMP#>: %.value% [<a href="#"  onclick="var url=('/pChart/?p[]=%.object_title%'+'.value&p[]=%.object_title%'+'.relay_status&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;"><#LANG_HISTORY#></a>]</div>
+<div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TEMP#>: %.value% [<a href="#"  onclick="var url=('<#ROOTHTML#>pChart/?p[]=%.object_title%'+'.value&p[]=%.object_title%'+'.relay_status&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;"><#LANG_HISTORY#></a>]</div>
 <div class="device-details"><#LANG_DEVICES_THERMOSTAT_MODE#>:
     <a href="#" onClick='callMethod("%.object_title%.switchEnable");
-                         $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                         $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                          $(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                          return false;' class="status_text status_%.disabled|"enabled;disabled"%"><#LANG_DEVICES_THERMOSTAT_MODE_OFF#></a>
         &nbsp;&nbsp;
     <a href="#" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                          callMethod("%.object_title%.enable");
                          callMethod("%.object_title%.turnOff");
-                         $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                         $.get("<ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                          return false;' class="status_text status_eco_%.status|"off;on"%_%.disabled|"enabled;disabled"%"><#LANG_DEVICES_THERMOSTAT_MODE_ECO#></a>
         &nbsp;&nbsp;
     <a href="#" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                          callMethod("%.object_title%.enable");
                          callMethod("%.object_title%.turnOn");
-                         $.get("/ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                         $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                          return false;' class="status_text status_normal_%.status|"off;on"%_%.disabled|"enabled;disabled"%"><#LANG_DEVICES_THERMOSTAT_MODE_NORMAL#></a>
 </div>
 </div>

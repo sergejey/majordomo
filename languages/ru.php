@@ -1085,6 +1085,7 @@ $dictionary = array(
     'READ_ONLY'=>'Только чтение',
     'ADVANCED_CONFIG' => 'Расширенная настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
+    'UPDATE_NEW_EXTENSIONS' => 'Установить обновления',
     'MARKET_CATEGORY_INSTALLED' => 'Установлено',
     'MARKET_CATEGORY_OWNED' => 'Приобретено',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Обновления',
@@ -1309,6 +1310,10 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
+    'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Сейчас открыто',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Сейчас греет',
+
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
@@ -1420,11 +1425,15 @@ $dictionary = array(
 	'NUMBER_TO_STRING_NULL' => 'ноль',
 	
     /* end array for convert number to string  */
+
+    'ENABLE_AUTO_UPDATE' => 'Включить автоматическое обновление',
+    'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
+    'AUTO_UPDATE_TIME' => 'Время проверки и установки обновлений',
     
 );
 
 foreach ($dictionary as $k => $v) {
     if (!defined('LANG_' . $k)) {
-        define('LANG_' . $k, $v);
+        @define('LANG_' . $k, $v);
     }
 }

@@ -209,6 +209,16 @@ function usual(&$out) {
 /*
 users - Users
 */
+   
+ // update password for users
+ $users=SQLSelect("SELECT * FROM users");
+ foreach ($users as $user) {
+     if (strlen ($user['PASSWORD']) < 128 ) {
+          $user['PASSWORD'] = hash('sha512', $user['PASSWORD']);
+          SQLUpdate ('users', $user);
+      }
+  }
+   
   $data = <<<EOD
  users: ID int(10) unsigned NOT NULL auto_increment
  users: USERNAME varchar(255) NOT NULL DEFAULT ''

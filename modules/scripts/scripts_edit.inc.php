@@ -72,37 +72,35 @@ if ($this->mode == 'update') {
 
     //UPDATING RECORD
     if ($ok) {
-
         $linked_object = '';
         $linked_property = '';
-        if (preg_match('/^if(.+?){/is', $rec['CODE'], $m)) {
-            $conditions = trim($m[1], '()');
-            if (preg_match('/getglobal\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
-                $linked_object=$m2[1];
-                $linked_property=$m2[2];
-            } elseif (preg_match('/gg\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
-                $linked_object=$m2[1];
-                $linked_property=$m2[2];
-            } elseif (preg_match('/timeis/is', $conditions) ||
-                      preg_match('/timebefore/is', $conditions) ||
-                      preg_match('/timeafter/is', $conditions) ||
-                      preg_match('/timebetween/is', $conditions)) {
-                $linked_object='ClockChime';
-                $linked_property='time';
-            }
-        }
 
-        if ($linked_object!='' && $linked_property!='') {
-            $rec['AUTO_LINK_AVAILABLE']=1;
-            if (!$old_code) {
+        if (!isset($_REQUEST['auto_link']) || $_REQUEST['auto_link']==1) {
+            if (preg_match('/^if(.+?){/is', $rec['CODE'], $m)) {
+                $conditions = trim($m[1], '()');
+                if (preg_match('/getglobal\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
+                    $linked_object=$m2[1];
+                    $linked_property=$m2[2];
+                } elseif (preg_match('/gg\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
+                    $linked_object=$m2[1];
+                    $linked_property=$m2[2];
+                } elseif (preg_match('/timeis/is', $conditions) ||
+                    preg_match('/timebefore/is', $conditions) ||
+                    preg_match('/timeafter/is', $conditions) ||
+                    preg_match('/timebetween/is', $conditions)) {
+                    $linked_object='ClockChime';
+                    $linked_property='time';
+                }
+            }
+
+            if ($linked_object!='' && $linked_property!='') {
+                $rec['AUTO_LINK_AVAILABLE']=1;
                 $rec['AUTO_LINK']=1;
+            } else {
+                $rec['AUTO_LINK_AVAILABLE']=0;
             }
         } else {
-            $rec['AUTO_LINK_AVAILABLE']=0;
-        }
-        if (!$rec['AUTO_LINK']) {
-            $linked_object='';
-            $linked_property='';
+            $rec['AUTO_LINK']=0;
         }
 
         $rec['LINKED_OBJECT'] = $linked_object;

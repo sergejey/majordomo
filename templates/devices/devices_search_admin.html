@@ -113,7 +113,10 @@
   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
   trackedDevices.forEach(function(item, index) {
    var url = baseURL + item;
-
+   var device_type = $('#device_type'+item).html();
+   if (device_type=='camera') {
+    url +='&view=mini';
+   }
    $.ajax({
     url: url
    }).done(function(data) {
@@ -152,7 +155,7 @@
   [#TYPE_TITLE#] [#LINKED_OBJECT#][#if LOCATION_TITLE!=""#], [#LOCATION_TITLE#][#endif LOCATION_TITLE#]
   [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
  </div>
- <div class="col-md-5"><div class="device[#ID#]">[#HTML#]</div></div>
+ <div class="col-md-5"><div class="device[#ID#]">[#HTML#]</div><span id="device_type[#ID#]" style="display:none">[#TYPE#]</span></div>
  <div class="col-md-3" nowrap>
   [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>

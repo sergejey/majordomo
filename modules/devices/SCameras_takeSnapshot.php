@@ -32,6 +32,10 @@ if (preg_match('/img src="(.+?)"/is',$body,$m)) {
 } else {
     $snapshotPreviewURL='';
 }
+$rootHTML=preg_replace('/\//', '\/', ROOTHTML);
+if (preg_match('/^' . $rootHTML . '/', $snapshotPreviewURL)) {
+    $snapshotPreviewURL=preg_replace('/^' . $rootHTML . '/', '/', $snapshotPreviewURL);
+}
 $image_url=BASE_URL.$snapshotPreviewURL;
 
 //echo $image_url."!";

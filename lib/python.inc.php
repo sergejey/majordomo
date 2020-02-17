@@ -146,6 +146,7 @@ function isItPythonCode($code) {
     $tmp=explode("\n",$code);
     if (count($tmp)==1) return false;
     if (preg_match('/\);/ui',$code)) return false;
+    if (preg_match('/{\\n/uis',$code)) return false;
     if (preg_match('/;$/ui',$code)) return false;
     if (preg_match('/;\\n/ui',$code)) return false;
     if (preg_match('/\$\w+.+;/ui',$code)) return false;

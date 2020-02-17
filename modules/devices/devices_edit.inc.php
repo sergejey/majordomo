@@ -162,7 +162,7 @@ if ($this->tab == 'settings') {
             foreach ($onchanges as $k => $v) {
                 callMethod($rec['LINKED_OBJECT'] . '.' . $k);
             }
-            $this->homebridgeSync($rec['ID']);
+            $this->homebridgeSync($rec['ID'], 1);
         }
         //print_r($res_properties);exit;
         $out['PROPERTIES'] = $res_properties;

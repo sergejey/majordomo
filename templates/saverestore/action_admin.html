@@ -12,6 +12,8 @@
         <h3>
             <#LANG_UPDATES#>
         </h3>
+
+        <!--#
         <form action="?" method="post" enctype="multipart/form-data" class="form">
             <div class="form-group">
                 <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
@@ -26,6 +28,89 @@
                </select>
             </div>
         </form>
+        #-->
+
+        <div>
+        <a href="#" onclick="$('#advanced_update').toggle();return false;"><#LANG_ADVANCED_CONFIG#></a>
+        </div>
+
+        <div id="advanced_update" style="display:none">
+            <form action="?" method="post" enctype="multipart/form-data" class="form">
+                <div class="form-group">
+                    <label for="set_update_url"><#LANG_UPDATES_SOURCE#>:</label>
+                    <select name="set_update_url" id="set_update_url" class="form-control" onchange="this.form.submit();">
+                        <option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
+                        <option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
+                        [#if ADITIONAL_GIT_URLS#]
+                        [#begin ADITIONAL_GIT_URLS#]
+                        <option value="[#URL#]" [#SELECTED#]>[#TITLE#]</option>
+                        [#end ADITIONAL_GIT_URLS#]
+                        [#endif#]
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><#LANG_ENABLE_AUTO_UPDATE#>:</label>
+                    <#LANG_HCB#>system_auto_update<#LANG_HCE#>
+                    <select name="update_auto" class="form-control">
+                        <option value="1"[#if UPDATE_AUTO="1"#] selected[#endif#]><#LANG_YES#></option>
+                        <option value="0"[#if UPDATE_AUTO!="1"#] selected[#endif#]><#LANG_NO#></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><#LANG_AUTO_UPDATE_DELAY#>:</label>
+                    <select name="update_auto_delay" class="form-control">
+                        <option value="14"[#if UPDATE_AUTO_DELAY="14"#] selected[#endif#]>14 ... OK</option>
+                        <option value="7"[#if UPDATE_AUTO_DELAY="7"#] selected[#endif#]>7 ... pretty risky</option>
+                        <option value="3"[#if UPDATE_AUTO_DELAY="3"#] selected[#endif#]>3 ... dangerous!</option>
+                        <!--#
+<option value="1"[#if UPDATE_AUTO_DELAY="1"#] selected[#endif#]>1 ... just insane!!!</option>
+#-->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><#LANG_AUTO_UPDATE_TIME#>:</label>
+                    <select name="update_auto_time" class="form-control">
+                        <option value="0">00:00</option>
+                        <option value="1"[#if UPDATE_AUTO_TIME="1"#] selected[#endif#]>01:00</option>
+                        <option value="2"[#if UPDATE_AUTO_TIME="2"#] selected[#endif#]>02:00</option>
+                        <option value="3"[#if UPDATE_AUTO_TIME="3"#] selected[#endif#]>03:00</option>
+                        <option value="4"[#if UPDATE_AUTO_TIME="4"#] selected[#endif#]>04:00</option>
+                        <option value="5"[#if UPDATE_AUTO_TIME="5"#] selected[#endif#]>05:00</option>
+                        <option value="6"[#if UPDATE_AUTO_TIME="6"#] selected[#endif#]>06:00</option>
+                        <option value="7"[#if UPDATE_AUTO_TIME="7"#] selected[#endif#]>07:00</option>
+                        <option value="8"[#if UPDATE_AUTO_TIME="8"#] selected[#endif#]>08:00</option>
+                        <option value="9"[#if UPDATE_AUTO_TIME="9"#] selected[#endif#]>09:00</option>
+                        <option value="10"[#if UPDATE_AUTO_TIME="10"#] selected[#endif#]>10:00</option>
+                        <option value="11"[#if UPDATE_AUTO_TIME="11"#] selected[#endif#]>11:00</option>
+                        <option value="12"[#if UPDATE_AUTO_TIME="12"#] selected[#endif#]>12:00</option>
+                        <option value="13"[#if UPDATE_AUTO_TIME="13"#] selected[#endif#]>13:00</option>
+                        <option value="14"[#if UPDATE_AUTO_TIME="14"#] selected[#endif#]>14:00</option>
+                        <option value="15"[#if UPDATE_AUTO_TIME="15"#] selected[#endif#]>15:00</option>
+                        <option value="16"[#if UPDATE_AUTO_TIME="16"#] selected[#endif#]>16:00</option>
+                        <option value="17"[#if UPDATE_AUTO_TIME="17"#] selected[#endif#]>17:00</option>
+                        <option value="18"[#if UPDATE_AUTO_TIME="18"#] selected[#endif#]>18:00</option>
+                        <option value="19"[#if UPDATE_AUTO_TIME="19"#] selected[#endif#]>19:00</option>
+                        <option value="20"[#if UPDATE_AUTO_TIME="20"#] selected[#endif#]>20:00</option>
+                        <option value="21"[#if UPDATE_AUTO_TIME="21"#] selected[#endif#]>21:00</option>
+                        <option value="22"[#if UPDATE_AUTO_TIME="22"#] selected[#endif#]>22:00</option>
+                        <option value="23"[#if UPDATE_AUTO_TIME="23"#] selected[#endif#]>23:00</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><#LANG_UPDATE_ALL_EXTENSIONS#>:</label>
+                    <select name="update_auto_plugins" class="form-control">
+                        <option value="1"[#if UPDATE_AUTO_PLUGINS="1"#] selected[#endif#]><#LANG_YES#></option>
+                        <option value="0"[#if UPDATE_AUTO_PLUGINS!="1"#] selected[#endif#]><#LANG_NO#></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+                    <a href="#" onclick="$('#advanced_update').hide();return false;" class="btn btn-default"><#LANG_CANCEL#></a>
+                </div>
+                <input type="hidden" name="mode" value="auto_update_settings">
+            </form>
+            <hr>
+        </div>
 
         <form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
             [#if ERROR_MESSAGE!=""#]
@@ -101,6 +186,7 @@
                 <tr>
                     <td>[#TITLE#]</td>
                     <td nowrap>[#if FILESIZE!=""#][#FILESIZE#] Mb[#else#]&nbsp;[#endif#]</td>
+                    <td>[#UPDATED#]</td>
                     [#if "
                     <#CLEAR_FIRST#>"!="1"#]
                         <td valign="top">
@@ -108,14 +194,13 @@
                                 <#LANG_RESTORE#>
                             </a>
                         </td>
-                        [#endif#] [#if FILESIZE!=""#]
-                        <td><a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
-                        <td>
-                            <a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-                        </td>
-                        [#else#]
-                        <td colspan="3">&nbsp;</td>
                         [#endif#]
+                        [#if FILESIZE!=""#]
+                        <td><a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-default">Download</a></td>
+                        [#else#]
+                        <td>&nbsp;</td>
+                        [#endif#]
+                        <td><a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a></td>
                 </tr>
                 [#end FILES#]
             </table>

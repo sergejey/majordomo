@@ -324,14 +324,15 @@ jQuery.fn.center = function () {
 
          function sendConsoleCommand() {
              var cmd=$('#command').val();
-             //$('#command').val('');
 
              var urlCommand="?";
-             urlCommand+='&ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+             urlCommand+='ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
              $('#console_output').html('&nbsp;<br/><img src="<#ROOTHTML#>img/ajax-loader.gif"/>');
-
              $.ajax({
-                 url: urlCommand
+                 //url: urlCommand
+				 type: "POST",
+				 url: "/admin.php",
+				 data: urlCommand,
              }).done(function(data) {
                  //$('#console_output').html('<pre>Command: <b>'+cmd+'</b> <a href="#" onClick="$(\'#command\').val(\''+cmd+'\');sendConsoleCommand();"><#LANG_CONSOLE_RETRY#></a><br/>Result:<br/>'+data+'</pre>');
                  $('#console_output').html('&nbsp;<br/><pre>'+data+'</pre>');
@@ -523,7 +524,7 @@ jQuery.fn.center = function () {
           [#endif#]
         [#endif HIDE_LEFT_PANEL#]
       <li>
-        <a href="?action=control_access&&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
+        <a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
       </li>
    </ul>
   </div>
@@ -534,7 +535,7 @@ jQuery.fn.center = function () {
 
     <div class="row">
 <div class="col-md-5">
-<form class="form-inline" role="form" action="?" method="get" onSubmit="return sendConsoleCommand();">
+<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
   <div class="form-group col-md-10">
     <input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
   </div>
@@ -636,9 +637,11 @@ checkCategory('[#CATEGORY_ID#]');
             <a href="?"><#LANG_CONTROL_PANEL#></a>
                 [#if ACTION!=""#]/ <a href="?action=<#ACTION#>"><#ACTION#></a>[#endif#]
         <div class="float-right" style="padding-right:30px">
-            <i class="glyphicon glyphicon-question-sign"></i>
             [#if ACTION!=""#]
-            <a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            <i class="glyphicon glyphicon-question-sign"></i>
+            <a href="https://connect.smartliving.ru/addons.html?redirect=<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
+            /
+            <a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#else#]
             <a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
             [#endif#]

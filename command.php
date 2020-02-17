@@ -86,7 +86,7 @@ if ($qry != '') { // && $qry != $lastest_word
                 echo 'Password required!';
                 exit;
             } else {
-                if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && $_SERVER['PHP_AUTH_PW'] == $user['PASSWORD']) {
+                if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
                     $session->data['SITE_USERNAME'] = $user['USERNAME'];
                     $session->data['SITE_USER_ID'] = $user['ID'];
                 } else {
@@ -131,9 +131,7 @@ if ($qry != '') { // && $qry != $lastest_word
             SQLUpdate('terminals', $terminal_rec);
         }
 
-        if ($source) {
-            $say_source = $source;
-        } else {
+        if (!$say_source) {
             $say_source = 'command.php';
         }
 
