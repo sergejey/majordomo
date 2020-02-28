@@ -163,7 +163,7 @@ function getParams() {
      $session->data['SITE_USER_ID']=$user['ID'];
     } else {
      if (!isset($_SERVER['PHP_AUTH_USER'])) {
-      header('WWW-Authenticate: Basic realm="MajorDoMo"');
+      header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
       header('HTTP/1.0 401 Unauthorized');
       echo 'Password required!';
       exit;
@@ -172,7 +172,7 @@ function getParams() {
        $session->data['SITE_USERNAME']=$user['USERNAME'];
        $session->data['SITE_USER_ID']=$user['ID'];
       } else {
-       header('WWW-Authenticate: Basic realm="MajorDoMo"');
+       header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
        header('HTTP/1.0 401 Unauthorized');
        echo 'Incorrect username/password!';
        exit;
