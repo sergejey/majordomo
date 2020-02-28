@@ -1543,3 +1543,41 @@ function date2str($date)
         
         return implode(' ', array($dayStr, $monthStr, $yearStr));
     }
+
+function chekUser($username = '', $password = '') {
+    // проверка запуска метода на сеть и пользователя
+    if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])) {
+        $p = preg_quote(HOME_NETWORK);    
+        $p = str_replace('\*', '\d+?', $p);
+        $p = str_replace(',', ' ', $p);
+        $p = str_replace('  ', ' ', $p);
+        $p = str_replace(' ', '|', $p);
+        $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
+        if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
+            if ($username) {
+                $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
+                if ($username == $user['USERNAME'] && $password == $user['PASSWORD']) {
+                    $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . "User Call method " . $name . ". Login: " . $username . " Password: " . $password . "\n";
+                    DebMes($data, 'auth');
+                } else {
+                    $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Not autorized user try call method " . $name . ". Login: " . $username . " Password: " . $password . "\n";
+                    DebMes($data, 'auth');
+                    return false;
+                }
+            } else {
+                $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($_SERVER['PHP_AUTH_USER'])."'");
+                if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
+                    $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . "User Call method " . $name . ". Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . hash('sha512', $_SERVER['PHP_AUTH_PW']) . "\n";
+                    DebMes($data, 'auth');
+                    //добавляем в параметры пользователя для запуска метода через callMethod
+                    $username = $_SERVER['PHP_AUTH_USER'];
+                    $password = hash('sha512', $_SERVER['PHP_AUTH_PW']);
+                } else {
+                    $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Not autorized user try call method " . $name . ". Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+                    DebMes($data, 'auth');
+                    return false;
+                }
+            }
+        }
+    }
+}
