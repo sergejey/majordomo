@@ -484,6 +484,7 @@ class objects extends module
     }
 
     function callMethodSafe($name, $params = 0) {
+        // $params['password'] - обязательно должен приходить в хешированом виде
         // проверка запуска метода на сеть и пользователя
         if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])) {
             $p = preg_quote(HOME_NETWORK);
@@ -506,7 +507,7 @@ class objects extends module
                 } else {
                     $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($_SERVER['PHP_AUTH_USER'])."'");
                     if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
-                        $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . "User Call method " . $name . ". Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+                        $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . "User Call method " . $name . ". Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . hash('sha512', $_SERVER['PHP_AUTH_PW']) . "\n";
                         DebMes($data, 'auth');
                         //добавляем в параметры пользователя для запуска метода через callMethod
                         $params['username'] = $_SERVER['PHP_AUTH_USER'];
@@ -581,7 +582,7 @@ class objects extends module
                 } else {
                     $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($_SERVER['PHP_AUTH_USER'])."'");
                     if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
-                        $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . "User Call method " . $name . ". Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+                        $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . "User Call method " . $name . ". Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . hash('sha512', $_SERVER['PHP_AUTH_PW']) . "\n";
                         DebMes($data, 'auth');
                         //добавляем в параметры пользователя для запуска метода через callMethod
                         $params['username'] = $_SERVER['PHP_AUTH_USER'];
