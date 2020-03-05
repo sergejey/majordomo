@@ -375,7 +375,7 @@ function postURLBackground($url, $query = array(), $cache = 0, $username = '', $
  */
 function postURL($url, $query = array(), $cache = 0, $username = '', $password = '', $background = false)
 {
-    startMeasure('getURL');
+    startMeasure('postURL');
     // DebMes($url,'urls');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part) > 200) {
@@ -476,7 +476,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
     }
 
 
-    endMeasure('getURL');
+    endMeasure('postURL');
 
     return $result;
 }
