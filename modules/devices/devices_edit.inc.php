@@ -388,7 +388,17 @@ if ($this->mode == 'update' && $this->tab == '') {
         $object_rec['DESCRIPTION'] = $rec['TITLE'];
         $object_rec['LOCATION_ID'] = $rec['LOCATION_ID'];
         $class_changed = 0;
-        if ($object_rec['CLASS_ID'] != $class_id) {
+        
+        $class_2b_changed = 1;
+        $tmp_class_id = $object_rec['CLASS_ID'];
+        while(IsSet($tmp_class_id)) {
+            if ($tmp_class_id == $class_id) {
+                $class_2b_changed = 0;
+                break;
+            }
+            $tmp_class_id = current(SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID=" . (int)$tmp_class_id));
+        }
+        if ($class_2b_changed) {
             //move object to new class
             $object_rec['CLASS_ID'] = $class_id;
             $class_changed = 1;
