@@ -37,7 +37,11 @@
    $rec['COLOR']=gr('color');
    $rec['IS_ADMIN']=(int)gr('is_admin');
    $rec['IS_DEFAULT']=(int)gr('is_default');
-   $rec['PASSWORD']=hash('sha512', gr('password'));
+   if (strlen (gr('password')) < 128 ) {
+       $rec['PASSWORD']=hash('sha512', gr('password'));
+   } else {
+       $rec['PASSWORD']=gr('password');
+   }
    $rec['LINKED_OBJECT']=trim(gr('linked_object'));
    $rec['HOST']=gr('host');
 
