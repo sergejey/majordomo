@@ -115,6 +115,7 @@ function phpShutDownFunction() {
         DebMes("PHP shutdown error: ".$error['message'],'error');
         $err = new custom_error($error['message']);
     }
+    return false;
 }
 
 register_shutdown_function('phpShutDownFunction');
