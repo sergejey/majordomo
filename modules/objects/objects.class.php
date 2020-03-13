@@ -505,7 +505,23 @@ class objects extends module
             $params = array();
         }
         if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-            $result = $this->callMethod($name, $params);
+		    $data = array(
+				'object' => $this->object_title,
+				'op' => 'm',
+				'm' => $name,
+				'm_c_s' => $call_stack,
+			);
+			if (session_id()) {
+				$data[session_name()] = session_id();
+			}
+			$url = BASE_URL . '/objects/?' . http_build_query($data);
+			if (is_array($params)) {
+				foreach ($params as $k => $v) {
+					$url .= '&' . $k . '=' . urlencode($v);
+				}
+			}
+			$result = getURLBackground($url, 0);
+            //$result = $this->callMethod($name, $params);
         } else {
             $params['m_c_s'] = $call_stack;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
