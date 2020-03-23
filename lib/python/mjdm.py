@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from mjd_constants import *
-import urllib
+
 try:
     import urllib.request as urllib2
+    from urllib.parse import urlencode
 except ImportError:
     import urllib2
+    from urllib import urlencode
 import re
 import MySQLdb as mdb
 import sys
@@ -20,7 +22,7 @@ def callAPI(api_url, method = "GET", params = ""):
     params['no_session']=1
     url = re.sub(r"^/api/", BASE_URL+ROOTHTML+'api.php/', api_url)
 
-    data = urllib.urlencode(params)
+    data = urlencode(params).encode('utf-8')
     if (method == "POST"):
         req = urllib2.Request(url, data)
         response = urllib2.urlopen(req)
