@@ -189,8 +189,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     }
 
 
-    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
-        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
+    if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
+        if ($level >= (int)getGlobal('minMsgLevel') && !$member_id) { // && !$ignoreVoice
             $passed = time() - (int)getGlobal('lastSayTime');
             if ($passed > 20) {
                 playSound('dingdong', 1, $level);
