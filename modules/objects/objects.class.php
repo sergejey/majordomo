@@ -504,12 +504,8 @@ class objects extends module
         if (!is_array($params)) {
             $params = array();
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-            $result = $this->callMethod($name, $params);
-        } else {
-            $params['m_c_s'] = $call_stack;
-            $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
-        }
+        $params['m_c_s'] = $call_stack;
+        $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         endMeasure('callMethodSafe');
         return $result;
     }
