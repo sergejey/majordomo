@@ -98,17 +98,17 @@ function switchSelected(selected) {
 
           [#if TYPE="app"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes" allowfullscreen="yes"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="url"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes" allowfullscreen="yes"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="html" || TYPE="dashboard"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes" allowfullscreen="yes"></iframe>');
            }
           [#endif TYPE#]
          }

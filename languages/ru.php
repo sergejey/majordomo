@@ -1085,6 +1085,7 @@ $dictionary = array(
     'READ_ONLY'=>'Только чтение',
     'ADVANCED_CONFIG' => 'Расширенная настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
+    'UPDATE_NEW_EXTENSIONS' => 'Установить обновления',
     'MARKET_CATEGORY_INSTALLED' => 'Установлено',
     'MARKET_CATEGORY_OWNED' => 'Приобретено',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Обновления',
