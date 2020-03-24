@@ -149,6 +149,7 @@ class market extends module
         }
 
         $this->can_be_updated = array();
+        $this->can_be_updated_new = array();
         $this->have_updates = array();
 
 
@@ -323,11 +324,11 @@ class market extends module
                 $data = json_decode($result);
             }
 
-
                 if (!$data->PLUGINS) {
                     $out['ERR'] = 1;
                 } else {
                     $this->can_be_updated=array();
+                    $this->can_be_updated_new=array();
                     $total = count($data->PLUGINS);
                     for ($i = 0; $i < $total; $i++) {
                         $rec = (array)$data->PLUGINS[$i];
@@ -345,7 +346,6 @@ class market extends module
 
                         //if ($rec['MODULE_NAME']==$name) {
                         //unset($rec['LATEST_VERSION']);
-
                         if (!isset($rec['LATEST_VERSION_URL'])) {
                             if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
                                 $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
@@ -378,6 +378,7 @@ class market extends module
                         */
                         if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION']!='') {
                             $this->have_updates[] = $rec['MODULE_NAME'];
+                            $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                         } elseif ($category_id=='updates') {
                             continue;
                         }
@@ -502,7 +503,6 @@ class market extends module
                 $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                 $this->version = $rec['LATEST_VERSION'];
             }
-
             if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
                 $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
             }
@@ -511,6 +511,7 @@ class market extends module
             }
             if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION']) {
                 $cat[$cat_id]['NEW_VERSION'] = 1;
+                $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                 $this->have_updates[] = $rec['MODULE_NAME'];
             }
             $cat[$cat_id]['PLUGINS'][] = $rec;
@@ -535,6 +536,10 @@ class market extends module
 
         if ($this->mode == 'update_all') {
             $this->updateAll($this->can_be_updated);
+        }
+        
+        if ($this->mode == 'update_new') {
+            $this->updateAll($this->can_be_updated_new);
         }
 
         if ($this->mode == 'install' && $this->url) {
@@ -589,7 +594,8 @@ class market extends module
         return $result;
 
     }
-
+    
+    
     /**
      * Title
      *

@@ -77,14 +77,9 @@ function processSubscriptionsSafe($event_name, $details = '')
     if (session_id()) {
         $data[session_name()] = session_id();
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    $result = getURLBackground($url, 0);
-    return $result;
+    $url = BASE_URL . ROOTHTML . 'objects/?';
+    postURLBackground($url, $data);
+    return 1;
 }
 
 function processSubscriptionByModule($module_name,$event_name, &$details) {

@@ -7,7 +7,7 @@
  function report_js_error(msg, url, linenumber) {
   stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
   tmp = new Image();
-  tmp.src = "/write_error.php?error="+stuff;
+  tmp.src = ROOTHTML+"write_error.php?error="+stuff;
   return true;
  }
 

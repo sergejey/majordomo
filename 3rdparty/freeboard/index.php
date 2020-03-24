@@ -99,6 +99,9 @@ if ($_GET['theme']) {
     echo $p->result;
     ?>
     <script type="text/javascript">
+
+        ROOTHTML = '<?php echo ROOTHTML;?>';
+
         <?php
             $constants=get_defined_constants();
             foreach($constants as $k=>$v) {

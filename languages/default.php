@@ -1086,6 +1086,7 @@ $dictionary = array(
     'READ_ONLY' => 'Read Only',
     'ADVANCED_CONFIG' => 'Advanced config',
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
+    'UPDATE_NEW_EXTENSIONS' => 'Install updates',
     'MARKET_CATEGORY_INSTALLED' => 'Installed',
     'MARKET_CATEGORY_OWNED' => 'Owned',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Updates',
