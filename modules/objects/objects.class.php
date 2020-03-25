@@ -484,30 +484,29 @@ class objects extends module
         // обьявляем массив стека вызовов
         $call_stack = array();
 		
-		// надо получить из массива $params['m_c_s'] = $call_stack поскольку callMethodSafe может запускать другой метод через callMethodSafe и там уже может быть включено $params['m_c_s']
-		if (is_array($params) && $params['m_c_s']) {
-            $call_stack[] = $params['m_c_s'];
-			// убираем из параметров $params['m_c_s'] - поскольку они изменяют md5 вызываемого метода
-			unset($params['m_c_s']);
-			//DebMes(' v massive est ' . $call_stack);
+        // надо получить из массива $params['m_c_s'] = $call_stack поскольку callMethodSafe может запускать другой метод через callMethodSafe и там уже может быть включено $params['m_c_s']
+        if (is_array($params) && $params['m_c_s']) {
+            $call_stack = $params['m_c_s'];
+            // убираем из параметров $params['m_c_s'] - поскольку они изменяют md5 вызываемого метода
+            unset($params['m_c_s']);
+            //DebMes(' v massive est ' . $call_stack);
         } else if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
-			// если вызов метода происходит через урл то получаем стек вызовов оттуда
+            // если вызов метода происходит через урл то получаем стек вызовов оттуда
             $call_stack = $_GET['m_c_s'];
-			//DebMes('v ssilke est' . $call_stack);
-			
+            //DebMes('v ssilke est' . $call_stack);		
         } 
 
-		// имя вызываемого метода
+        // имя вызываемого метода
         $current_call = $this->object_title . '.' . $name;
-		//DebMes($current_call);
-		// terminal_dlna.MessageError
+        //DebMes($current_call);
+        // terminal_dlna.MessageError
 		
         // получаем мд5 вызываемого метода и приплюсовываем его к названию вызываемого метода уже за отсутсвием $params['m_c_s']
-		if (is_array($params)) {
+        if (is_array($params)) {
             $current_call .= '.' . md5(json_encode($params));
         }
-		//DebMes($current_call);
-		// terminal_dlna.MessageError.06725d5312c25323185a0e3e36e4e9a9 если есть параметры
+        //DebMes($current_call);
+        // terminal_dlna.MessageError.06725d5312c25323185a0e3e36e4e9a9 если есть параметры
 
         //если в массиве вызовов есть текущий вызов метода тогда стопорим его
         if (in_array($current_call, $call_stack)) {
@@ -516,28 +515,28 @@ class objects extends module
             return 0;
         }
 		
-		//проверяем параметры на массив
-		if (!is_array($params)) {
+        //проверяем параметры на массив
+        if (!is_array($params)) {
             $params = array();
         }
 
         // если стек вызова присутсвует то он уже запущен как отдельный поток через callAPI - смотрим ниже
         if (is_array($call_stack) && count($call_stack)) {
-    		// прибавляем к стеку вызовов текущий вызов
-	        $call_stack[] = $current_call;
-			// добавляем параметр стека вызовов
+            // прибавляем к стеку вызовов текущий вызов
+            $call_stack[] = $current_call;
+            // добавляем параметр стека вызовов
             $params['m_c_s'] = $call_stack;
-			// запускаем метод напрямую потому что он уже в отдельном потоке
-			//DebMes('запуск метода напрямую поскольку он уже в отдельном потоке');
+            // запускаем метод напрямую потому что он уже в отдельном потоке
+            //DebMes('запуск метода напрямую поскольку он уже в отдельном потоке');
             $result = $this->callMethod($name, $params);
         } else {
-    		// прибавляем к стеку вызовов текущий вызов
-	        $call_stack[] = $current_call;
-			// добавляем параметр стека вызовов
+            // прибавляем к стеку вызовов текущий вызов
+            $call_stack[] = $current_call;
+            // добавляем параметр стека вызовов
             $params['m_c_s'] = $call_stack;
-			// запускаем метод через callAPI - поскольку это первый запуск метода
-			// callAPI проводит вызов метода через отдельный поток
-			//DebMes('запуск метода через callAPI');
+            // запускаем метод через callAPI - поскольку это первый запуск метода
+            // callAPI проводит вызов метода через отдельный поток
+            //DebMes('запуск метода через callAPI');
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
