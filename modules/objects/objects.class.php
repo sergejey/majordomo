@@ -478,7 +478,8 @@ class objects extends module
         $this->callMethodSafe($name,$params);
     }
 
-    function callMethodSafe($name, $params = 0) {
+    function callMethodSafe($name, $params)
+    {
         startMeasure('callMethodSafe');
 
         // обьявляем массив стека вызовов
