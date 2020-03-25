@@ -478,8 +478,12 @@ class objects extends module
         $this->callMethodSafe($name,$params);
     }
 
-    function callMethodSafe($name, $params)
+    function callClassMethod($name, $params = 0)
     {
+        $this->callMethod($name, $params, 1);
+    }
+
+    function callMethodSafe($name, $params) {
         startMeasure('callMethodSafe');
 
         // обьявляем массив стека вызовов
@@ -490,30 +494,26 @@ class objects extends module
             $call_stack = $params['m_c_s'];
             // убираем из параметров $params['m_c_s'] - поскольку они изменяют md5 вызываемого метода
             unset($params['m_c_s']);
-            //DebMes(' v massive est ' . $call_stack);
         } else if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
             // если вызов метода происходит через урл то получаем стек вызовов оттуда
-            $call_stack = $_GET['m_c_s'];
-            //DebMes('v ssilke est' . $call_stack);		
+            $call_stack = $_GET['m_c_s'];		
         } 
 
         // имя вызываемого метода
         $current_call = $this->object_title . '.' . $name;
         //DebMes($current_call);
-        // terminal_dlna.MessageError
 		
         // получаем мд5 вызываемого метода и приплюсовываем его к названию вызываемого метода уже за отсутсвием $params['m_c_s']
         if (is_array($params)) {
             $current_call .= '.' . md5(json_encode($params));
         }
         //DebMes($current_call);
-        // terminal_dlna.MessageError.06725d5312c25323185a0e3e36e4e9a9 если есть параметры
-
+            
         //если в массиве вызовов есть текущий вызов метода тогда стопорим его
         if (in_array($current_call, $call_stack)) {
             $call_stack[] = $current_call;
             DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
-            return 0;
+            return true;
         }
 		
         //проверяем параметры на массив
