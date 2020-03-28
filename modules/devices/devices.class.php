@@ -818,8 +818,9 @@ class devices extends module
                             $devices[$idv]['TYPE'] == 'leak' ||
                             $devices[$idv]['TYPE'] == 'smoke' ||
                             $devices[$idv]['TYPE'] == 'counter' ||
-                            $devices[$idv]['TYPE'] == 'sensor' ||
-                            $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors'
+                            preg_match('/^sensor/',$devices[$idv]['TYPE']) ||
+                            $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors' ||
+                            (int)gg($devices[$idv]['LINKED_OBJECT'] . '.aliveTimeout')>0
                         ) && gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === '0'
                     ) {
                         $problem_devices[] = $devices[$idv];

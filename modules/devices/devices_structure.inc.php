@@ -294,6 +294,7 @@ $this->device_types=array(
         'CLASS'=>'SButtons',
         'PROPERTIES'=>array(
             'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
         ),
         'METHODS'=>array(
             'pressed'=>array('DESCRIPTION'=>LANG_DEVICES_PRESS,'_CONFIG_SHOW'=>1),

@@ -181,7 +181,9 @@ function LoadFile($filename)
    $data  = "";
    if ($f) {
       $fsize = filesize($filename);
-      $data = fread($f, $fsize);
+      if ($fsize>0) {
+         $data = fread($f, $fsize);
+      }
       fclose($f);
    }
    return $data;

@@ -1,33 +1,39 @@
-<form action="?" method="get" class="form-inline">
+<div class="row">
+ <div class="col-md-8">
+  <form action="?" method="get" class="form-inline">
+   <div class="form-group">
+    <select name="action_type" class="form-control">
+     <option value=""><#LANG_ACTION#></option>
+     [#begin ACTION_TYPES#]
+     <option value="[#ACTION_TYPE#]"[#if ACTION_TYPE="<#ACTION_TYPE#>"#] selected[#endif#]>[#ACTION_TYPE#]</option>
+     [#end ACTION_TYPES#]
+    </select>
+   </div>
+   <div class="form-group">
+    <input type="text" name="search" value="<#SEARCH#>" placeholder="<#LANG_SEARCH#>" class="form-control">
+   </div>
+   <div class="form-group">
+    <input id="time_start" name="from" value="[#FROM#]" type="text" placeholder="<#LANG_GENERAL_STARTING#>" class="form-control datepicker">
+   </div>
+   <div class="form-group">
+    <input id="time_start" name="to" value="[#TO#]" type="text" placeholder="<#LANG_GENERAL_ENDING#>" class="form-control datepicker">
+   </div>
 
+   <div class="form-group">
+    <input type="submit" name="submit" value="<#LANG_SEARCH#>" class="btn btn-default btn-primary">
+   </div>
+   [#if FROM!="" || TO!="" OR SEARCH!="" OR ACTION_TYPE!=""#]
+   <div class="form-group">
+    <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+   </div>
+   [#endif#]
+  </form>
 
- <div class="form-group">
-  <select name="action_type" class="form-control">
-   <option value=""><#LANG_ACTION#></option>
-   [#begin ACTION_TYPES#]
-   <option value="[#ACTION_TYPE#]"[#if ACTION_TYPE="<#ACTION_TYPE#>"#] selected[#endif#]>[#ACTION_TYPE#]</option>
-   [#end ACTION_TYPES#]
-  </select>
  </div>
- <div class="form-group">
-  <input type="text" name="search" value="<#SEARCH#>" placeholder="<#LANG_SEARCH#>" class="form-control">
+ <div class="col-md-4 text-right">
+  <a href="?clear_history=1" class="btn btn-default btn-danger" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_CLEAR_ALL#></a>
  </div>
- <div class="form-group">
-  <input id="time_start" name="from" value="[#FROM#]" type="text" placeholder="<#LANG_GENERAL_STARTING#>" class="form-control datepicker">
- </div>
- <div class="form-group">
-  <input id="time_start" name="to" value="[#TO#]" type="text" placeholder="<#LANG_GENERAL_ENDING#>" class="form-control datepicker">
- </div>
-
- <div class="form-group">
-  <input type="submit" name="submit" value="<#LANG_SEARCH#>" class="btn btn-default btn-primary">
- </div>
- [#if FROM!="" || TO!="" OR SEARCH!="" OR ACTION_TYPE!=""#]
- <div class="form-group">
-  <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
- </div>
- [#endif#]
-</form>
+</div>
 <!-- table actions_log search -->
 <!-- results -->
 [#if RESULT#]
@@ -68,9 +74,10 @@
 [#PAGINATOR#]
 <!-- / paging -->
 [#else RESULT#]
-<p>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
+&nbsp;
+<div class="alert alert-warning">
+<#LANG_NO_RECORDS_FOUND#>
+</div>
 [#endif RESULT#]
 <!-- / results -->
 
