@@ -499,7 +499,7 @@ class objects extends module
         if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
             if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
-				$raiseEvent = $_GET['raiseEvent'];
+                $raiseEvent = $_GET['raiseEvent'];
             }
             if (in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
@@ -511,22 +511,20 @@ class objects extends module
         if (!is_array($params)) {
             $params = array();
         }
-       
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && isset($call_stack)) {
-            $call_stack[] = $current_call;
-            $params['raiseEvent'] = $raiseEvent;	 
-            $params['m_c_s'] = $call_stack;
+
+        $call_stack[] = $current_call;
+        $params['raiseEvent'] = $raiseEvent;	 
+        $params['m_c_s'] = $call_stack;       
+
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && count($call_stack)>1) {
             $result = $this->callMethod($name, $params);
         } else {
-            $call_stack[] = $current_call;
-            $params['raiseEvent'] = $raiseEvent;	 
-            $params['m_c_s'] = $call_stack;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
         return $result;
     }
-
+	
     /**
      * Title
      *
