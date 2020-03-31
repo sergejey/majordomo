@@ -512,7 +512,7 @@ class objects extends module
             $params = array();
         }
        
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && !isset($call_stack)) {
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && isset($call_stack)) {
 			$call_stack[] = $current_call;
 			$params['raiseEvent'] = $raiseEvent;	 
 			$params['m_c_s'] = $call_stack;
