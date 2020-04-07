@@ -61,6 +61,7 @@ if ($linked_room && $this->getProperty('mainSensor')) {
   }
 }
 
+$this->callMethodSafe('keepAlive');
 $this->callMethod('statusUpdated');
 /*
 include_once(DIR_MODULES.'devices/devices.class.php');

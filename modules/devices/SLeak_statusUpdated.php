@@ -3,6 +3,7 @@
 $ot = $this->object_title;
 
 $tm = time();
+$this->callMethodSafe('keepAlive');
 $this->setProperty('updated', $tm);
 $this->setProperty('updatedText', date('H:i', $tm));
 

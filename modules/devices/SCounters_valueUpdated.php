@@ -2,6 +2,7 @@
 
 $ot=$this->object_title;
 
+$this->callMethodSafe('keepAlive');
 $this->callMethodSafe('statusUpdated');
 $this->callMethodSafe('logicAction');
 

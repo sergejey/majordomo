@@ -9,8 +9,6 @@ if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
 }
 
 
-$this->callMethod('keepAlive');
-
 //$need_call_logic_action = 1;
 
 $is_blocked = (int)$this->getProperty('blocked');

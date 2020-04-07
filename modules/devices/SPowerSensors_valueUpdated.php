@@ -2,6 +2,7 @@
 
 $ot = $this->object_title;
 
+$this->callMethodSafe('keepAlive');
 $status = $this->getProperty('status');
 $currentValue = $this->getProperty('value');
 $min_value = (float)$this->getProperty('minValue');
