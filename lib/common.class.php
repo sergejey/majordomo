@@ -668,11 +668,14 @@ function runScriptSafe($id, $params = '')
     $current_call = 'script.' . $id;
     $call_stack = array();
     if (is_array($params)) {
+        if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+            $call_stack = $params['m_c_s'];
+        }
+        unset($params['m_c_s']);
         $current_call .= '.' . md5(json_encode($params));
-        $call_stack = $params['m_c_s'];
     }
     if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
         if (in_array($current_call, $call_stack)) {
