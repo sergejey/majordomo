@@ -500,8 +500,8 @@ class objects extends module
             unset($params['m_c_s']);
             $current_call .= '.' . md5(json_encode($params));
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !empty($_GET['m_c_s'])) {
-            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
             }
             $raiseEvent = $_GET['raiseEvent'];
