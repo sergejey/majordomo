@@ -492,15 +492,19 @@ class objects extends module
         $current_call = $this->object_title . '.' . $name;
         $call_stack = array();
         if (is_array($params)) {
-            $current_call .= '.' . md5(json_encode($params));
-            $call_stack = $params['m_c_s'];
+            if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+                $call_stack = $params['m_c_s'];
+            }
             $raiseEvent = $params['raiseEvent'];
+            unset($params['raiseEvent']);
+            unset($params['m_c_s']);
+            $current_call .= '.' . md5(json_encode($params));
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !empty($_GET['m_c_s'])) {
             if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
-                $raiseEvent = $_GET['raiseEvent'];
             }
+            $raiseEvent = $_GET['raiseEvent'];
             if (in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
                 DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
