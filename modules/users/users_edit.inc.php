@@ -42,6 +42,8 @@
    } else if (gr('passwordnew') AND gr('passwordnew') != gr('passwordrepeat')) {
        $out['ERR_PASSWORD']=1;
        $ok=0;
+   } else if (gr('passwordnew') =='' AND gr('passwordrepeat') == '') {
+       $rec['PASSWORD']=hash('sha512', '');
    }
    $rec['LINKED_OBJECT']=trim(gr('linked_object'));
    $rec['HOST']=gr('host');
