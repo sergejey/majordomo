@@ -240,7 +240,7 @@ for ($i = 0; $i < $total; $i++) {
     if ($location_id) {
         // ищем строгое соответствие по названию и местоположению
         foreach($devices as $key => $value) {
-          if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
+          if(in_array($location_id, $value) && strtolower($devices[$key]['TITLE']) == strtolower ($compare_title)) {
                $i = $key;
                $device_matched = 1;
                break ;
@@ -249,7 +249,7 @@ for ($i = 0; $i < $total; $i++) {
         if (!$device_matched ) {
             // ищем строгое соответствие по названию
             foreach($devices as $key => $value) {
-                if(in_array($compare_title, $value)) {
+                if(in_array(strtolower ($compare_title), strtolower ($value))) {
                     $i = $key;
                     $device_matched = 1;
                     break ;
