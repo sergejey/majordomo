@@ -875,7 +875,11 @@ function execInBackground($cmd)
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
         }
     } else {
-        exec($cmd . " > /dev/null &");
+        try {
+            exec($cmd . " > /dev/null &");
+	} catch (Exception $e) {
+            DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
+        }
     }
 }
 
