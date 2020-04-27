@@ -580,7 +580,13 @@ class objects extends module
                 }
                 $params['ORIGINAL_OBJECT_TITLE'] = $this->object_title;
             }
-            if ($params) {
+	    
+	    if (is_string($params)) {
+		    DebMes("Warning: params of method " . $name . " is WRONG!"); 
+		    registerError('Method error', "Error in params of method  -  params is string: " . $params);
+	    }
+            
+	    if ($params) {
                 $saved_params = $params;
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
