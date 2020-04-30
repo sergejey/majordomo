@@ -160,9 +160,13 @@ $dictionary = array(
     'MODULE_MODULES' => 'Модули',
     'MODULE_USERLOG' => 'Журнал действий',
     'MODULE_PLANS' => 'Планы',
+    'MODULE_ACTIONS_LOG' => 'История действий',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
-    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
+    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены',
+    'SCALE_WIDTH' => 'По ширине экрана',
+    'SCALE_HEIGHT' => 'По высоте экрана',
+    'SCALE_BOTH' => 'По ширине и высоте',
     'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
 
     'SETUP' => 'Настроить',
@@ -1081,6 +1085,7 @@ $dictionary = array(
     'READ_ONLY'=>'Только чтение',
     'ADVANCED_CONFIG' => 'Расширенная настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
+    'UPDATE_NEW_EXTENSIONS' => 'Установить обновления',
     'MARKET_CATEGORY_INSTALLED' => 'Установлено',
     'MARKET_CATEGORY_OWNED' => 'Приобретено',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Обновления',
@@ -1117,6 +1122,7 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
+    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности',
@@ -1158,6 +1164,8 @@ $dictionary = array(
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
     'DEVICES_DIRECTION_TIMEOUT' => 'Интервал времени расчета направления изменений (сек)',
     'DEVICES_NOTIFY_STATUS' => 'Уведомлять при смене статуса',
+    'DEVICES_NOTIFY_ELIMINATED' => 'Уведомлять каждую минуту до восстановления статуса',
+    'DEVICES_SENSOR_ALERT' => 'Внимание! Сигнал тревоги от датчика',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Напоминать об открытом состоянии',
@@ -1182,6 +1190,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
     'DEVICES_GROUP_SUNSET' => 'Включать с закатом',
+    'DEVICES_GROUP_NIGHT' => 'Выключать при входе в ночной режим',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип устройства/сенсора',
     'DEVICES_LOADTYPE' => 'Тип устройства',
@@ -1192,6 +1201,13 @@ $dictionary = array(
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
     'DEVICES_LOADTYPE_LIGHT_ALT' => 'Свет',
     'DEVICES_LOADTYPE_POWER' => 'Разное',
+
+    'DEVICES_OPENTYPE' => 'Тип устройства',
+    'DEVICES_OPENTYPE_CURTAINS' => 'Шторы',
+    'DEVICES_OPENTYPE_SHUTTERS' => 'Ставни',
+    'DEVICES_OPENTYPE_GATES' => 'Ворота',
+    'DEVICES_OPENTYPE_WINDOW' => 'Окно',
+    'DEVICES_OPENTYPE_DOOR' => 'Дверь',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
     'DEVICES_ADD_SCENE' => 'Добавить устройство на Сцену',
@@ -1294,6 +1310,10 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
+    'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Сейчас открыто',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Сейчас греет',
+
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
@@ -1377,13 +1397,43 @@ $dictionary = array(
     'TTS_TYPE' => 'Тип TTS',
     'NONE' => 'Нет',
 
+    'PREVIOUS' => 'Пред.',
+    'NEXT' => 'След.',
+
+    'LOCATED_IN_ROOM' => 'расположеный в комнате',
+
+    'BLOCK_SENSOR' => 'Блокировать датчик',
+    'UNBLOCK_SENSOR' => 'Разблокировать датчик',
+
+    'VALIDATION_TYPE' => 'Проверка значений',
+    'VALIDATION_TYPE_NUMBER' => 'Число в диапазоне',
+    'VALIDATION_TYPE_BINARY' => 'Бинарное значение (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'По словарю',
+    'VALIDATION_TYPE_CUSTOM' => 'Расширенный (кодом)',
+
+    'REMINDER_INTRO' => 'Напоминаю, что',
+
     /* end module names */
 
+    /* start array for convert number to string */
+    
+	'NUMBER_TO_STRING_1TEN' => array(array('','один','два','три','четыре','пять','шесть','семь', 'восемь','девять'), array('','одна','две','три','четыре','пять','шесть','семь', 'восемь','девять')),
+	'NUMBER_TO_STRING_2TEN' => array('десять','одиннадцать','двенадцать','тринадцать','четырнадцать' ,'пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать'),
+	'NUMBER_TO_STRING_TENS' => array(2=>'двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят' ,'восемьдесят','девяносто'),
+	'NUMBER_TO_STRING_HUNDRED' => array('','сто','двести','триста','четыреста','пятьсот','шестьсот', 'семьсот','восемьсот','девятьсот'),
+	'NUMBER_TO_STRING_UNIT' => array(array('десятая' ,'десятых' ,	 1), array(' '   ,' целая'   ,'целых '    ,0), array('тысяча'  ,'тысячи'  ,'тысяч'     ,1), array('миллион' ,'миллиона','миллионов' ,0), array('миллиард','милиарда','миллиардов',0)),
+	'NUMBER_TO_STRING_NULL' => 'ноль',
+	
+    /* end array for convert number to string  */
 
+    'ENABLE_AUTO_UPDATE' => 'Включить автоматическое обновление',
+    'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
+    'AUTO_UPDATE_TIME' => 'Время проверки и установки обновлений',
+    
 );
 
 foreach ($dictionary as $k => $v) {
     if (!defined('LANG_' . $k)) {
-        define('LANG_' . $k, $v);
+        @define('LANG_' . $k, $v);
     }
 }

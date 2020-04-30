@@ -252,18 +252,11 @@ class patterns extends module
      */
     function checkAllPatterns($from_user_id = 0)
     {
-        global $session;
-
-        $current_context = context_getcurrent();
-
+        $current_context = context_getcurrent($from_user_id);
         //DebMes("current context:".$current_context);
-
         if ($from_user_id && preg_match('/^ext(\d+)/', $current_context, $m)) {
-
-            $res = $this->checkExtPatterns($m[1]);
-
+            $res = $this->checkExtPatterns($m[1],$from_user_id);
         } else {
-
             $patterns = SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='" . (int)$current_context . "' AND PATTERN_TYPE=0 ORDER BY PRIORITY DESC, TITLE");
             $total = count($patterns);
             $res = 0;
@@ -320,7 +313,7 @@ class patterns extends module
     }
 
 
-    function checkExtPatterns($ext_context_id)
+    function checkExtPatterns($ext_context_id, $user_id=0)
     {
 
         $message = SQLSelectOne("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT 1");
@@ -407,7 +400,7 @@ class patterns extends module
                     playMedia($data['MEDIA_URL']);
                 }
 
-                context_activate_ext($data['NEW_CONTEXT'], (int)$data['TIMEOUT'], $data['TIMEOUT_CODE'], (int)$data['TIMEOUT_CONTEXT_ID']);
+                context_activate_ext($data['NEW_CONTEXT'], (int)$data['TIMEOUT'], $data['TIMEOUT_CODE'], (int)$data['TIMEOUT_CONTEXT_ID'],$user_id);
 
                 return $data['MATCHED_CONTEXT'];
 
@@ -753,7 +746,7 @@ class patterns extends module
 
         if ($condition_matched) {
 
-            DebMes("Pattern matched: ".$rec['TITLE'],'patterns');
+            DebMes("Pattern matched: " . $rec['TITLE'], 'patterns');
 
             $is_common = 0;
             if ($rec['PARENT_ID']) {
@@ -768,11 +761,11 @@ class patterns extends module
             */
 
             if ($rec['IS_CONTEXT']) {
-                context_activate($rec['ID'], 1, $history);
+                context_activate($rec['ID'], 1, $history,$from_user_id);
             } elseif ($rec['MATCHED_CONTEXT_ID']) {
-                context_activate($rec['MATCHED_CONTEXT_ID'], 0, $history);
+                context_activate($rec['MATCHED_CONTEXT_ID'], 0, $history,$from_user_id);
             } elseif (!$is_common) {
-                context_activate(0);
+                context_activate(0,0,'',$from_user_id);
             }
 
             $rec['LOG'] = date('Y-m-d H:i:s') . ' Pattern matched' . "\n" . $rec['LOG'];
@@ -843,7 +836,11 @@ class patterns extends module
     function processSubscription($event, &$details)
     {
         if ($event == 'SAY' || $event == 'COMMAND') {
-            $member_id = $details['member_id'];
+            $member_id = (int)$details['member_id'];
+
+            global $context_user_id;
+            $context_user_id = $member_id;
+
             $res = $this->checkAllPatterns($member_id);
             if ($event == 'COMMAND' && $res) {
                 $details['BREAK'] = true;

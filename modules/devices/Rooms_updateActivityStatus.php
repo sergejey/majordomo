@@ -6,11 +6,11 @@ $rooms = getObjectsByClass("Rooms");
 $total = count($rooms);
 for ($i = 0; $i < $total; $i++) {
     $rooms[$i]['room'] = getGlobal($rooms[$i]['TITLE'] . '.Title');
-    if (!$rooms[$i]['room']) {
+    if ($rooms[$i]['room'] == '') {
         $rooms[$i]['room'] = $rooms[$i]['TITLE'];
     }
     $rooms[$i]['active'] = getGlobal($rooms[$i]['TITLE'] . '.SomebodyHere');
-    $rooms[$i]['time'] = getGlobal($rooms[$i]['TITLE'] . '.LatestActivity');
+    $rooms[$i]['time'] = (int)getGlobal($rooms[$i]['TITLE'] . '.LatestActivity');
     if (!$rooms[$i]['time']) {
         $rooms[$i]['time'] = 0;
     }

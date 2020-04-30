@@ -137,7 +137,7 @@ class app_player_addon {
 			$volume = $this->data['volume'];
 			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
 			$this->data = $volume;
-		} elseif(strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
+		} elseif(strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1' || $this->terminal['NAME'] == 'MAIN') {
 			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
 			$this->data = (int)getGlobal('ThisComputer.volumeMediaLevel');
 		} else {

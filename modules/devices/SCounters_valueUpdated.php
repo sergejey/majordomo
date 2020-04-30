@@ -1,9 +1,10 @@
 <?php
 
-$this->callMethod('statusUpdated');
-$this->callMethod('logicAction');
-
 $ot = $this->object_title;
+
+$this->callMethodSafe('keepAlive');
+$this->callMethodSafe('statusUpdated');
+$this->callMethodSafe('logicAction');
 
 if (!isset($params['NEW_VALUE']))
 {

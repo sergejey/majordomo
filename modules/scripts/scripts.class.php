@@ -140,26 +140,35 @@ class scripts extends module
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
         if ($rec['ID']) {
             $rec['EXECUTED'] = date('Y-m-d H:i:s');
+            $source = urldecode($_SERVER['REQUEST_URI']);
+            if (strlen($source) > 250) {
+                $source = substr($source, 0, 250) . '...';
+            }
+            $rec['EXECUTED_SRC'] = $source;
             if ($params) {
                 $rec['EXECUTED_PARAMS'] = serialize($params);
             }
             SQLUpdate('scripts', $rec);
 
-            try {
-                $code = trim($rec['CODE']);
-                if ($code!='') {
-                    $success = eval($code);
-                } else {
-                    $success = true;
+            if (isItPythonCode($rec['CODE'])) {
+                python_run_code($rec['CODE'], $params);
+            } else {
+                try {
+                    $code = trim($rec['CODE']);
+                    if ($code!='') {
+                        $success = eval($code);
+                    } else {
+                        $success = true;
+                    }
+                    if ($success === false) {
+                        //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+                        registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
+                    }
+                    return $success;
+                } catch (Exception $e) {
+                    //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
+                    registerError('script', sprintf('Error in script "%s": ' . $e->getMessage(), $rec['TITLE']));
                 }
-                if ($success === false) {
-                    //getLogger($this)->error(sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
-                    registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
-                }
-                return $success;
-            } catch (Exception $e) {
-                //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
-                registerError('script', sprintf('Error in script "%s": ' . $e->getMessage(), $rec['TITLE']));
             }
 
         }
@@ -341,6 +350,7 @@ class scripts extends module
         $rec['TITLE'] .= '_copy';
         unset($rec['ID']);
         unset($rec['EXECUTED']);
+        unset($rec['EXECUTED_SRC']);
         $rec['ID'] = SQLInsert('scripts', $rec);
         $this->redirect("?view_mode=edit_scripts&id=" . $rec['ID']);
     }
@@ -401,43 +411,29 @@ class scripts extends module
      *
      * @access public
      */
-    function checkScheduledScripts()
-    {
-        $scripts = SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND (UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>1200");
+    function checkScheduledScripts() {
+        $scripts = SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND ((UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>60 OR IsNull(EXECUTED))");
 
         $total = count($scripts);
         for ($i = 0; $i < $total; $i++) {
-
             $rec = $scripts[$i];
-
-            if ($rec['RUN_DAYS'] === '') {
+            if ($rec['RUN_DAYS'] == '') {
                 continue;
             }
-
-
             $run_days = explode(',', $rec['RUN_DAYS']);
             $today=date('w');
             if (!in_array($today, $run_days)) {
                 continue;
             }
-
-            $tm = strtotime(date('Y-m-d') . ' ' . $rec['RUN_TIME']);
-
+            $tm = strtotime(date('Y-m-d') . ' ' . $rec['RUN_TIME']. ':00');
             $diff = time() - $tm;
-
-            if ($diff < 0 || $diff >= 10 * 60) {
+            if ($diff < 0 || $diff > 60) {
                 continue;
             }
-
+            DebMes("Running scheduled script ".$rec['TITLE'],'scripts');
             runScriptSafe($rec['TITLE']);
-
             $rec['DIFF'] = $diff;
-
-            //print_r($rec);
-
         }
-        //print_r($scripts);
-
     }
 
     function propertySetHandle($object, $property, $value)
@@ -521,6 +517,7 @@ class scripts extends module
  scripts: UPDATED datetime
  scripts: EXECUTED datetime
  scripts: EXECUTED_PARAMS varchar(255)
+ scripts: EXECUTED_SRC varchar(255)
  scripts: RUN_PERIODICALLY int(3) unsigned NOT NULL DEFAULT 0
  scripts: RUN_DAYS char(30) NOT NULL DEFAULT ''
  scripts: RUN_TIME char(30) NOT NULL DEFAULT ''

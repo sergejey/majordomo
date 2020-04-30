@@ -344,6 +344,9 @@ function admin(&$out) {
    global $new_value;
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$real_part."'");
    if ($item['ID']) {
+
+    logAction('menu_clicked',$item['TITLE']);
+
     $old_value=$item['CUR_VALUE'];
     $item['CUR_VALUE']=$new_value;
     if (!$dynamic_item && !$item['READ_ONLY']) {

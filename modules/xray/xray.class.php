@@ -302,7 +302,7 @@ class xray extends module
                             $rec = array();
                             $rec['TYPE'] = 'script';
                             $rec['TITLE'] = $scripts[$i]['TITLE'];
-                            $rec['LINK'] = '/admin.php?action=scripts&md=scripts&inst=adm&view_mode=edit_scripts&id=' . $scripts[$i]['ID'];
+                            $rec['LINK'] = ROOTHTML . 'admin.php?action=scripts&md=scripts&inst=adm&view_mode=edit_scripts&id=' . $scripts[$i]['ID'];
                             $found['script' . $scripts[$i]['ID']] = $rec;
                         }
                     }
@@ -317,7 +317,7 @@ class xray extends module
                             $rec['LINK'] = "?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=" . $objects[$i]['CLASS_ID'] . "})&md=objects&view_mode=edit_objects&id=" . $objects[$i]['ID'];
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['object' . $objects[$i]['ID']] = $rec;
                         }
@@ -339,7 +339,7 @@ class xray extends module
                             }
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['method' . $methods[$i]['ID']] = $rec;
                         }
@@ -361,7 +361,7 @@ class xray extends module
                             }
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['property' . $properties[$i]['ID'] . '_' . $properties[$i]['OBJECT_ID']] = $rec;
                         }
@@ -378,7 +378,7 @@ class xray extends module
                             $rec['LINK'] = "?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=" . $pvalues[$i]['CLASS_ID'] . "})&md=objects&view_mode=edit_objects&id=" . $pvalues[$i]['OBJECT_ID'] . "&tab=properties";
                             $result = $mdl->parseLinks("<a href=\"" . $rec['LINK'] . "\">");
                             if (preg_match('/\?pd=.+"/', $result, $m)) {
-                                $rec['LINK'] = '/admin.php' . $m[0];
+                                $rec['LINK'] = ROOTHTML . 'admin.php' . $m[0];
                             }
                             $found['property' . $pvalues[$i]['PROPERTY_ID'] . '_' . $pvalues[$i]['OBJECT_ID']] = $rec;
                         }
@@ -419,6 +419,9 @@ class xray extends module
     {
         global $ajax;
 
+        $out['FILTER'] = gr('filter');
+        $out['LINES'] = gr('lines');
+
         if ($this->view_mode == 'services') {
             global $cmd;
             global $service;
@@ -445,6 +448,11 @@ class xray extends module
                 }
                 */
             }
+
+            if ($cmd!='') {
+                $this->redirect(ROOTHTML."panel/xray.html?view_mode=".$this->view_mode);
+            }
+
         }
         if ($this->view_mode == 'timers') {
             global $cmd;
@@ -454,25 +462,57 @@ class xray extends module
             }
         }
         if ($this->view_mode == 'database') {
-            $analyze=gr('analyze');
-            if ($analyze!='') {
-                $result=SQLSelectOne("ANALYZE TABLE ".$analyze.";");
-                foreach($result as $k=>$v) {
-                    $out['RESULT'].=$k.': '.$v."\n";
+            $analyze = gr('analyze');
+            if ($analyze != '') {
+                $result = SQLSelectOne("ANALYZE TABLE " . $analyze . ";");
+                foreach ($result as $k => $v) {
+                    $out['RESULT'] .= $k . ': ' . $v . "\n";
                 }
             }
-            $repair=gr('repair');
-            if ($repair!='') {
-                $result=SQLSelectOne("REPAIR TABLE ".$repair.";");
-                foreach($result as $k=>$v) {
-                    $out['RESULT'].=$k.': '.$v."\n";
+            $repair = gr('repair');
+            if ($repair != '') {
+                $result = SQLSelectOne("REPAIR TABLE " . $repair . ";");
+                foreach ($result as $k => $v) {
+                    $out['RESULT'] .= $k . ': ' . $v . "\n";
                 }
             }
-            $optimize=gr('optimize');
-            if ($optimize!='') {
-                $result=SQLSelectOne("OPTIMIZE TABLE ".$optimize.";");
-                foreach($result as $k=>$v) {
-                    $out['RESULT'].=$k.': '.$v."\n";
+            $optimize = gr('optimize');
+            if ($optimize != '') {
+                $result = SQLSelectOne("OPTIMIZE TABLE " . $optimize . ";");
+                foreach ($result as $k => $v) {
+                    $out['RESULT'] .= $k . ': ' . $v . "\n";
+                }
+            }
+        }
+
+        if ($this->view_mode == '') {
+            if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+                $path = SETTINGS_SYSTEM_DEBMES_PATH;
+            } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+                $path = LOG_DIRECTORY;
+            } else {
+                $path = ROOT . 'cms/debmes';
+            }
+            if ($handle = opendir($path)) {
+                $files = array();
+                while (false !== ($entry = readdir($handle))) {
+                    if ($entry == '.' || $entry == '..')
+                        continue;
+                    $files[] = array('TITLE' => $entry);
+                }
+                sort($files);
+                $files = array_reverse($files);
+            }
+            $out['FILES'] = $files;
+            $selected = gr('files');
+            if (!is_array($selected)) {
+                $selected = array(date('Y-m-d') . '.log');
+            }
+            $total_selected_files = 0;
+            foreach ($out['FILES'] as &$item) {
+                if (in_array($item['TITLE'], $selected)) {
+                    $total_selected_files++;
+                    $item['SELECTED'] = 1;
                 }
             }
         }
@@ -490,12 +530,13 @@ class xray extends module
                     }
                     $res = SQLSelect("SELECT pvalues.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, properties.TITLE as PROPERTY, properties.DESCRIPTION FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID WHERE $qry ORDER BY pvalues.UPDATED DESC");
                     $total = count($res);
-                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
-                    echo '<tr>';
-                    echo '<td><b>PROPERTY</b></td>';
-                    echo '<td><b>VALUE</b></td>';
-                    echo '<td><b>UPDATED</b></td>';
-                    echo '</tr>';
+                    echo '<table class="table table-striped">';
+                    echo '<thead><tr>';
+                    echo '<th>PROPERTY</th>';
+                    echo '<th>VALUE</th>';
+                    echo '<th>UPDATED</th>';
+                    echo '<th>SOURCE</th>';
+                    echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
@@ -504,11 +545,14 @@ class xray extends module
                             echo "<br><small style='font-size:9px'>" . $res[$i]['OBJECT_DESCRIPTION'] . "</small>";
                         }
                         echo '</td>';
-                        echo '<td>';
+                        echo '<td style="word-wrap: break-word;max-width: 500px; ">';
                         echo htmlspecialchars($res[$i]['VALUE']) . '&nbsp;';
                         echo '</td>';
                         echo '<td>';
                         echo $res[$i]['UPDATED'] . '&nbsp;';
+                        echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['SOURCE'] . '&nbsp;';
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -518,53 +562,94 @@ class xray extends module
 
                 if ($this->view_mode == '') {
 
-                    global $limit;
+                    header("HTTP/1.0: 200 OK\n");
+                    header('Content-Type: text/html; charset=utf-8');
+                    $limit = $out['LINES'];
+                    $filter = $out['FILTER'];
                     if (!$limit) {
                         $limit = 50;
                     }
 
-                    global $file;
-                    if (!$file || $file == 'xray') {
-                        $file = date('Y-m-d') . '.log';
-                    }
-                    $filename = ROOT . 'cms/debmes/' . $file;
-                    if (!file_exists($filename)) {
-                        $file = date('Y-m-d') . '_' . $file . '.log';
-                        $filename = ROOT . 'cms/debmes/' . $file;
-                    }
-                    $data = LoadFile($filename);
-                    $lines = explode("\n", $data);
-                    //$lines=array_reverse($lines);
-                    $lines = array_slice($lines, -1 * ($limit), $limit);
-                    $res_lines = array();
-                    $total = count($lines);
-                    $added = 0;
-                    for ($i = 0; $i < $total; $i++) {
+                    $files = $out['FILES'];
 
-                        if (trim($lines[$i]) == '') {
-                            continue;
-                        }
+                    if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+                        $path = SETTINGS_SYSTEM_DEBMES_PATH;
+                    } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+                        $path = LOG_DIRECTORY;
+                    } else {
+                        $path = ROOT . 'cms/debmes';
+                    }
 
-                        if ($filter && preg_match('/' . preg_quote($filter) . '/is', $lines[$i])) {
-                            $res_lines[] = htmlspecialchars($lines[$i]);
-                            $added++;
-                        } elseif (!$filter) {
-                            if (!preg_match('/^\d+:\d+:\d+/is', $lines[$i]) && $added > 0) {
-                                $res_lines[$added - 1] .= "\n" . htmlspecialchars($lines[$i]);
+
+                    $result = array();
+
+                    foreach ($files as $file_item) {
+                        if ($file_item['SELECTED']) {
+                            $file = $file_item['TITLE'];
+                            $filename = $path . '/' . $file;
+                            if (file_exists($filename)) {
+                                $data = LoadFile($filename);
                             } else {
-                                $line = htmlspecialchars($lines[$i]);
-                                if (preg_match('/^(\d+:\d+:\d+ [\d\.]+)/', $line)) {
-                                    $line = preg_replace('/^(\d+:\d+:\d+ [\d\.]+)/is', '<b>\1</b>', $line);
-                                } elseif (preg_match('/^(\d+:\d+:\d+)/', $line)) {
-                                    $line = preg_replace('/^(\d+:\d+:\d+)/is', '<b>\1</b>', $line);
+                                $data = '';
+                            }
+                            $res_lines = array();
+                            $lines = explode("\n", $data);
+                            $lines = array_slice($lines, -1 * ($limit), $limit);
+                            $total = count($lines);
+                            $added = 0;
+                            for ($i = 0; $i < $total; $i++) {
+                                if (trim($lines[$i]) == '') {
+                                    continue;
                                 }
-                                $res_lines[] = $line;
-                                $added++;
+                                if ($filter && preg_match('/' . preg_quote($filter) . '/is', $lines[$i])) {
+                                    $res_lines[] = htmlspecialchars($lines[$i]);
+                                    $added++;
+                                } elseif (!$filter) {
+                                    if (!preg_match('/^\d+:\d+:\d+ [\d\.]+/is', $lines[$i]) && $added > 0) {
+                                        $res_lines[$added - 1] .= "\n" . htmlspecialchars($lines[$i]);
+                                    } else {
+                                        $line = htmlspecialchars($lines[$i]);
+                                        if ($total_selected_files > 1) {
+                                            $fname = '<small>(' . $file . ')</small>';
+                                        } else {
+                                            $fname = '';
+                                        }
+                                        if (preg_match('/^(\d+:\d+:\d+ \d+)/is', $line)) {
+                                            $line = preg_replace('/^(\d+:\d+:\d+ [\d\.]+)/is', '<b>\1</b> ' . $fname, $line);
+                                        }
+                                        $res_lines[] = $line;
+                                        $added++;
+                                    }
+                                }
+                                if ($added >= $limit) {
+                                    break;
+                                }
+                            }
+                            if (!$filter) {
+
+                                foreach ($res_lines as $line) {
+                                    if (preg_match('/<b>(\d+?:\d+?:\d+?) ([\d\.]+)<\\/b>/uis', $line, $m)) {
+                                        $tm = strtotime(date('Y-m-d', filemtime($filename)) . ' ' . $m[1]) + (float)$m[1];
+                                        $result[] = array('TM' => $tm + (float)$m2, 'CONTENT' => $line);
+                                    }
+                                }
+                            } else {
+                                $tm = 0;
+                                foreach ($res_lines as $line) {
+                                    $result[] = array('TM' => $tm, 'CONTENT' => $line);
+                                    $tm++;
+                                }
                             }
                         }
-                        if ($added >= $limit) {
-                            break;
-                        }
+                    }
+                    usort($result, function ($a, $b) {
+                        if ($a['TM'] == $b['TM']) return 0;
+                        if ($a['TM'] < $b['TM']) return -1;
+                        return 1;
+                    });
+                    $res_lines = array();
+                    foreach ($result as $item) {
+                        $res_lines[] = $item['CONTENT'];
                     }
 
                     $total = count($res_lines);
@@ -585,7 +670,7 @@ class xray extends module
                     if ($filter) {
                         $qry .= " AND (OPERATION LIKE '%" . DBSafe($filter) . "%')";
                     }
-                    $time_start = date('Y-m-d H:i:s', time() - 10);
+                    $time_start = date('Y-m-d H:i:s', time() - 60);
                     $res = SQLSelect("SELECT OPERATION, SUM(COUNTER) as TOTAL, SUM(TIMEUSED) as TIME_TOTAL FROM performance_log WHERE ADDED>='" . $time_start . "' AND $qry GROUP BY OPERATION ORDER BY TIME_TOTAL DESC ");//methods.OBJECT_ID<>0
                     $total = count($res);
                     echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
@@ -623,12 +708,13 @@ class xray extends module
                     }
                     $res = SQLSelect("SELECT methods.*, objects.TITLE as OBJECT, objects.DESCRIPTION as OBJECT_DESCRIPTION, methods.DESCRIPTION FROM methods LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE $qry ORDER BY methods.EXECUTED DESC");//methods.OBJECT_ID<>0
                     $total = count($res);
-                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
-                    echo '<tr>';
-                    echo '<td><b>METHOD</b></td>';
-                    echo '<td><b>PARAMS</b></td>';
-                    echo '<td><b>EXECUTED</b></td>';
-                    echo '</tr>';
+                    echo '<table class="table table-striped">';
+                    echo '<thead><tr>';
+                    echo '<th>METHOD</th>';
+                    echo '<th>PARAMS</th>';
+                    echo '<th>EXECUTED</th>';
+                    echo '<th>SOURCE</th>';
+                    echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
@@ -646,10 +732,13 @@ class xray extends module
                         }
                         echo '</td>';
                         echo '<td>';
-                        echo str_replace(';', '; ', htmlspecialchars($res[$i]['EXECUTED_PARAMS'])) . '&nbsp;';
+                        echo htmlspecialchars(str_replace(',"', ', "', $res[$i]['EXECUTED_PARAMS']));
                         echo '</td>';
                         echo '<td>';
                         echo $res[$i]['EXECUTED'] . '&nbsp;';
+                        echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['EXECUTED_SRC'] . '&nbsp;';
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -663,16 +752,17 @@ class xray extends module
                     }
                     $res = SQLSelect("SELECT scripts.* FROM scripts WHERE $qry ORDER BY scripts.EXECUTED DESC");
                     $total = count($res);
-                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
-                    echo '<tr>';
-                    echo '<td><b>SCRIPT</b></td>';
-                    echo '<td><b>PARAMS</b></td>';
-                    echo '<td><b>EXECUTED</b></td>';
-                    echo '</tr>';
+                    echo '<table class="table table-striped">';
+                    echo '<thead><tr>';
+                    echo '<th>SCRIPT</th>';
+                    echo '<th>PARAMS</th>';
+                    echo '<th>EXECUTED</th>';
+                    echo '<th>SOURCE</th>';
+                    echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
-                        echo "<a href='/panel/script/" . $res[$i]['ID'] . ".html' target=_blank>" . $res[$i]['TITLE'] . "</a>";
+                        echo "<a href='" . ROOTHTML . "panel/script/" . $res[$i]['ID'] . ".html' target=_blank>" . $res[$i]['TITLE'] . "</a>";
                         if ($res[$i]['DESCRIPTION'] != '') {
                             echo "<br><small style='font-size:9px'>" . $res[$i]['DESCRIPTION'] . "</small>";
                         }
@@ -683,6 +773,9 @@ class xray extends module
                         echo '<td>';
                         echo $res[$i]['EXECUTED'] . '&nbsp;';
                         echo '</td>';
+                        echo '<td>';
+                        echo $res[$i]['EXECUTED_SRC'] . '&nbsp;';
+                        echo '</td>';
                         echo '</tr>';
                     }
                     echo '</table>';
@@ -690,7 +783,7 @@ class xray extends module
                 }
 
                 if ($this->view_mode == 'services') {
-                    $qry = "OBJECT_ID=".getObject('Computer.ThisComputer')->id." AND TITLE LIKE 'cycle%Run'";
+                    $qry = "OBJECT_ID=" . getObject('Computer.ThisComputer')->id . " AND TITLE LIKE 'cycle%Run'";
                     $res = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
                     $total = count($res);
                     $seen = array();
@@ -794,13 +887,13 @@ class xray extends module
                     }
                     $res = SQLSelect("SELECT jobs.* FROM jobs WHERE EXPIRED!=1 AND PROCESSED!=1 AND $qry ORDER BY jobs.RUNTIME");
                     $total = count($res);
-                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
-                    echo '<tr>';
-                    echo '<td><b>TIMER</b></td>';
-                    echo '<td><b>COMMAND</b></td>';
-                    echo '<td><b>SCHEDULED</b></td>';
-                    echo '<td></td>';
-                    echo '</tr>';
+                    echo '<table class="table table-striped">';
+                    echo '<thead><tr>';
+                    echo '<th>TIMER</th>';
+                    echo '<th>COMMAND</th>';
+                    echo '<th>SCHEDULED</th>';
+                    echo '<th></th>';
+                    echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
@@ -814,62 +907,59 @@ class xray extends module
                         echo '</td>';
                         echo '<td>';
                         $url = ROOTHTML . 'panel/xray.html?view_mode=timers&timer=' . urlencode($res[$i]['TITLE']);
-                        echo '<a href="' . $url . '&cmd=stop" class="btn btn-default">Stop</a>';
+                        echo '<a href="' . $url . '&cmd=stop" class="btn btn-default">' . LANG_CANCEL . '</a>';
                         echo '</td>';
                         echo '</tr>';
                     }
                     echo '</table>';
                 }
 
-
-
                 if ($this->view_mode == 'dead') {
-        $qry .= " AND ((objects.TITLE LIKE '%" . DBSafe($filter) . "%')"." or (objects.DESCRIPTION LIKE '%" . DBSafe($filter) . "%'))";
-  $pRecs=SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
-  $total=count($pRecs);
-  if (!$total) {
-   return 0;
-  }
-  $found=array();
-  for($i=0;$i<$total;$i++) {
-   $pValues=SQLSelect("SELECT objects.TITLE, VALUE, UPDATED , objects.DESCRIPTION,  locations.TITLE LOCATIONTITLE   FROM locations,pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='".$pRecs[$i]['ID']."' and LOCATION_ID=locations.ID  ".$qry." order by UPDATED");
-   $totalv=count($pValues);
-   for($iv=0;$iv<$totalv;$iv++) {
-    $v=$pValues[$iv]['VALUE'];
+                    $qry .= " AND ((objects.TITLE LIKE '%" . DBSafe($filter) . "%')" . " or (objects.DESCRIPTION LIKE '%" . DBSafe($filter) . "%'))";
+                    $pRecs = SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
+                    $total = count($pRecs);
+                    if (!$total) {
+                        return 0;
+                    }
+                    $found = array();
+                    for ($i = 0; $i < $total; $i++) {
+                        $pValues = SQLSelect("SELECT objects.TITLE, VALUE, UPDATED , objects.DESCRIPTION,  locations.TITLE LOCATIONTITLE   FROM locations,pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='" . $pRecs[$i]['ID'] . "' AND LOCATION_ID=locations.ID  " . $qry . " ORDER BY UPDATED");
+                        $totalv = count($pValues);
+                        for ($iv = 0; $iv < $totalv; $iv++) {
+                            $v = $pValues[$iv]['VALUE'];
 
-if ($v=='0')
-{
+                            if ($v == '0') {
 //$found[$pValues[$iv]['TITLE']]=1;	
-$found[]=array("TITLE"=>$pValues[$iv]['TITLE'], 'UPDATED'=>$pValues[$iv]['UPDATED'], 'DESCRIPTION'=>$pValues[$iv]['DESCRIPTION'], 'LOCATIONTITLE'=>$pValues[$iv]['LOCATIONTITLE']); 
+                                $found[] = array("TITLE" => $pValues[$iv]['TITLE'], 'UPDATED' => $pValues[$iv]['UPDATED'], 'DESCRIPTION' => $pValues[$iv]['DESCRIPTION'], 'LOCATIONTITLE' => $pValues[$iv]['LOCATIONTITLE']);
 
-}
+                            }
 
-  }
-}
-/*
-  $res=array();
-  foreach($found as $k=>$v) {
-   $res[]=$k;
-  }
-*/
- $res=$found;
+                        }
+                    }
+                    /*
+                      $res=array();
+                      foreach($found as $k=>$v) {
+                       $res[]=$k;
+                      }
+                    */
+                    $res = $found;
 
 
 //  print_r($res);
-      $total = count($res);
-                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
-                    echo '<tr>';
-                    echo '<td><b>Title</b></td>';
-                    echo '<td><b>DESCRIPTION</b></td>';
-                    echo '<td><b>LOCATION</b></td>';
-                    echo '<td><b>UPDATED</b></td>';
+                    $total = count($res);
+                    echo '<table class="table table-striped">';
+                    echo '<thead><tr>';
+                    echo '<th>Title</th>';
+                    echo '<th>DESCRIPTION</th>';
+                    echo '<th>LOCATION</th>';
+                    echo '<th>UPDATED</th>';
 
-                    echo '</tr>';
+                    echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
 
-echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'].'&sub=properties"  target="_blank"  title="Open object">'.$res[$i]['TITLE'].'</a>';
+                        echo ' <a href="' . ROOTHTML . 'panel/linkedobject.html?op=redirect&object=' . $res[$i]['TITLE'] . '&sub=properties"  target="_blank"  title="Open object">' . $res[$i]['TITLE'] . '</a>';
 
                         echo '</td>';
 
@@ -888,9 +978,7 @@ echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'
                     echo '</table>';
 
 
-
                 }
-
 
                 if ($this->view_mode == 'events') {
                     $qry = "1";
@@ -899,12 +987,12 @@ echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'
                     }
                     $res = SQLSelect("SELECT events.* FROM events WHERE $qry ORDER BY events.ADDED DESC LIMIT 30");
                     $total = count($res);
-                    echo '<table border=1 cellspacing=4 cellpadding=4 width=100%>';
-                    echo '<tr>';
-                    echo '<td><b>EVENT</b></td>';
-                    echo '<td><b>DETAILS</b></td>';
-                    echo '<td><b>ADDED</b></td>';
-                    echo '</tr>';
+                    echo '<table class="table table-striped">';
+                    echo '<thead><tr>';
+                    echo '<th>EVENT</th>';
+                    echo '<th>DETAILS</th>';
+                    echo '<th>ADDED</th>';
+                    echo '</tr></thead>';
                     for ($i = 0; $i < $total; $i++) {
                         echo '<tr>';
                         echo '<td>';
@@ -924,23 +1012,30 @@ echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'
 
                 if ($this->view_mode == 'database') {
 
-                    $tables=SQLSelect("SHOW TABLE STATUS;");
+                    $tables = SQLSelect("SHOW TABLE STATUS;");
                     if (!$tables) {
                         echo "DATABASE IS OFFLINE";
                     } else {
-                        echo "<table class='table'>";
+
+                        usort($tables, function ($a, $b) {
+                            if ($a['Rows'] == $b['Rows']) return 0;
+                            if ($a['Rows'] > $b['Rows']) return -1;
+                            return 1;
+                        });
+
+                        echo "<table class='table table-striped'>";
                         echo "<thead><tr><th>Table</th><th>Engine</th><th>Rows</th><th>Updated</th><th>&nbsp;</th></tr></thead>";
-                        foreach($tables as $table) {
-                            if ($filter!='' && !preg_match('/'.preg_quote($filter).'/is',$table['Name'])) continue;
+                        foreach ($tables as $table) {
+                            if ($filter != '' && !preg_match('/' . preg_quote($filter) . '/is', $table['Name'])) continue;
                             echo "<tr>";
-                            echo "<td>".$table['Name']."</td>";
-                            echo "<td>".$table['Engine']."</td>";
-                            echo "<td>".$table['Rows']."</td>";
-                            echo "<td>".$table['Update_time']."</td>";
+                            echo "<td>" . $table['Name'] . "</td>";
+                            echo "<td>" . $table['Engine'] . "</td>";
+                            echo "<td>" . $table['Rows'] . "</td>";
+                            echo "<td>" . $table['Update_time'] . "</td>";
                             echo "<td>
-                                <a href='".ROOTHTML."panel/xray.html?view_mode=database&analyze=".urlencode($table['Name'])."' class='btn btn-default'>Analyze</a>
-                                <a href='".ROOTHTML."panel/xray.html?view_mode=database&optimize=".urlencode($table['Name'])."' class='btn btn-default'>Optimize</a>                        
-                                <a href='".ROOTHTML."panel/xray.html?view_mode=database&repair=".urlencode($table['Name'])."' class='btn btn-default'>Repair</a>
+                                <a href='" . ROOTHTML . "panel/xray.html?view_mode=database&analyze=" . urlencode($table['Name']) . "' class='btn btn-default'>Analyze</a>
+                                <a href='" . ROOTHTML . "panel/xray.html?view_mode=database&optimize=" . urlencode($table['Name']) . "' class='btn btn-default'>Optimize</a>                        
+                                <a href='" . ROOTHTML . "panel/xray.html?view_mode=database&repair=" . urlencode($table['Name']) . "' class='btn btn-default'>Repair</a>
                                 </td>";
 
                             echo "</tr>";
@@ -953,25 +1048,9 @@ echo   ' <a href="/panel/linkedobject.html?op=redirect&object='.$res[$i]['TITLE'
             }
 
         }
+        $out['FILTER'] = gr('filter'); //
 
-        if ($this->view_mode == '') {
-            $path = ROOT . 'cms/debmes';
 
-            if ($handle = opendir($path)) {
-                $files = array();
-
-                while (false !== ($entry = readdir($handle))) {
-                    if ($entry == '.' || $entry == '..')
-                        continue;
-
-                    $files[] = array('TITLE' => $entry);
-                }
-
-                sort($files);
-            }
-
-            $out['FILES'] = $files;
-        }
     }
 
     /**

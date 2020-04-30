@@ -30,6 +30,7 @@ if ($mode2=='uploaded' && $name!='') {
  $mkt->admin($out);
  $filename = ROOT.'cms/saverestore/'.$name;
  if (file_exists($filename)) {
+  logAction('market_install',$name);
   $mkt->echonow("Uploaded ".$name);
   $folder=str_replace('.tgz','',$name);
   $restore=$name;
@@ -39,7 +40,7 @@ if ($mode2=='uploaded' && $name!='') {
    $mkt->removeTree(ROOT.'cms/saverestore/temp');
    //@SaveFile(ROOT.'reboot', 'updated');
    $mkt->echonow("Redirecting to main page...");
-   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+   $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
   }
  }
 }
@@ -53,6 +54,7 @@ if ($mode2=='install' && $name!='') {
  }
  $res=$mkt->getLatest($out, $mkt->url, $name, $mkt->version, 1);
  if ($res) {
+  logAction('market_install',$name);
   //$this->redirect("?mode=upload&restore=".urlencode($name.'.tgz')."&folder=".urlencode($name)."&name=".urlencode($name)."&version=".urlencode($version)."&list=".urlencode($list));
   $folder=$name;
   $restore=$name.'.tgz';
@@ -62,13 +64,14 @@ if ($mode2=='install' && $name!='') {
    $mkt->removeTree(ROOT.'cms/saverestore/temp');
    //@SaveFile(ROOT.'reboot', 'updated');
    $mkt->echonow("Redirecting to main page...");
-   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+   $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
   }
  }
 }
 
 if ($mode2=='install_multiple' && $names!='') {
  // install/update multiple extensions
+ logAction('market_update',implode(', ',$names));
  $mkt->admin($out);
  $res=$mkt->updateAll($mkt->selected_plugins, 1);
  if ($res) {
@@ -76,12 +79,33 @@ if ($mode2=='install_multiple' && $names!='') {
   $mkt->echonow("Rebooting system ... ");
   @SaveFile(ROOT . 'reboot', 'updated');
   $mkt->echonow(" OK<br/> ", 'green');
-  $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+  $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+ }
+}
+
+
+if ($mode2=='update_new') {
+ logAction('market_update','Update new');
+ $mkt->admin($out);
+ if (count($mkt->can_be_updated_new)>0) {
+  $res=$mkt->updateAll($mkt->can_be_updated_new, 1);
+  if ($res) {
+   $mkt->removeTree(ROOT.'cms/saverestore/temp');
+   $mkt->echonow("Rebooting system ... ");
+   @SaveFile(ROOT . 'reboot', 'updated');
+   $mkt->echonow(" OK<br/> ", 'green');
+   $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+  }
+ } else {
+  $res = 'Nothing to update.';
+  $mkt->echonow("Nothing to update ... ");
+  $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
  }
 }
 
 if ($mode2=='update_all') {
  // update all extensions
+ logAction('market_update','Update all');
  $mkt->admin($out);
  $res=$mkt->updateAll($mkt->can_be_updated, 1);
  if ($res) {
@@ -89,16 +113,17 @@ if ($mode2=='update_all') {
   $mkt->echonow("Rebooting system ... ");
   @SaveFile(ROOT . 'reboot', 'updated');
   $mkt->echonow(" OK<br/> ", 'green');
-  $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+  $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
  }
 }
 
 if ($mode2=='uninstall' && $name!='') {
  // remove one extension
+ logAction('market_uninstall',$name);
  $res=$mkt->uninstallPlugin($name, 1);
  if ($res) {
    $mkt->echonow("Redirecting to main page...");
-   $mkt->echonow('<script language="javascript">window.top.location.href="/admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
+   $mkt->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=market&ok_msg='.urlencode($res).'";</script>');
  }
 }
 

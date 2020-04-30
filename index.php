@@ -54,7 +54,7 @@ if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) &&
 endMeasure('prepare');
 if ($cached_result == '')
 {
-   if (!file_exists(DIR_MODULES . 'control_modules/installed'))
+   if (!file_exists(ROOT . 'cms/modules_installed/control_modules.installed'))
    {
       include_once(DIR_MODULES . "control_modules/control_modules.class.php");
       $ctl = new control_modules();
@@ -80,6 +80,8 @@ else
    $result = $cached_result;
 }
 
+require(ROOT.'lib/utils/postprocess_general.inc.php');
+require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
 require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 /**

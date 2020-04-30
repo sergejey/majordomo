@@ -2,13 +2,13 @@
 
 
 // BEGIN: begincut endcut placecut
-if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
+if (preg_match_all('/<!--placecut (\w+?)-->/is', $result, $matches))
 {
    $matchesCount = count($matches[1]);
    for ($i = 0; $i < $matchesCount; $i++)
    {
       $block = $matches[1][$i];
-      if (preg_match('/<!-- begincut ' . $block . ' -->(.*?)<!-- endcut ' . $block . ' -->/is', $result, $matches2))
+      if (preg_match('/<!--begincut ' . $block . ' -->(.*?)<!--endcut ' . $block . '-->/is', $result, $matches2))
       {
          $result = str_replace($matches[0][$i], $matches2[1], $result);
          $result = str_replace($matches2[0], '', $result);
@@ -20,7 +20,7 @@ if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
 // BEGIN: filter output
 if (isset($filterblock) && $filterblock != '')
 {
-   $matchPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
+   $matchPattern = '/<!--begin_data \[' . $filterblock . '\]-->(.*?)<!--end_data \[' . $filterblock . '\]-->/is';
    preg_match($matchPattern, $result, $match);
    $result = $match[1];
 }
@@ -115,7 +115,6 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
   }
 
 }
-
 // END GLOBALS
 
 // BEGIN: language constants

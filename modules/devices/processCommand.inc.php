@@ -3,11 +3,18 @@
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
 /*
- * array('level' => $level, 'message' => $ph, 'member_id' => $member_id)
+ * array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source)
  * $details['BREAK'] = 1 / 0
  */
 @include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
 @include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+
+if ($details['source']) {
+	$terminal = getTerminalByID(str_replace("terminal", "", $details['source']));
+	if ($terminal['LOCATION_ID']) {
+		$location_id = $terminal['LOCATION_ID'];
+	}
+} 
 
 $command = $details['message'];
 
@@ -100,29 +107,15 @@ if (file_exists(ROOT . "lib/phpmorphy/common.php")) {
         }
     }
 
-
-    /*
-    $phrases=array();
-    foreach($combos as $combo) {
-        $mutations=$this->computePermutations($combo);
-        foreach($mutations as $m) {
-            $phrases[]=implode(' ',$m);
-        }
-    }
-    $lines=$phrases;
-    dprint($phrases,false);
-    */
     $lines = array();
     $totals = count($combos);
     for ($is = 0; $is < $totals; $is++) {
         $lines[] = implode(' ', $combos[$is]);
     }
-    //dprint($lines);
     $phpmorphy_loaded = 1;
 }
 
-
-$devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices");
+$devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT, LOCATION_ID FROM devices");
 foreach ($devices as $device) {
     if (trim($device['ALT_TITLES']) != '') {
         $nicknames = explode(',', trim($device['ALT_TITLES']));
@@ -243,7 +236,29 @@ $total = count($devices);
 for ($i = 0; $i < $total; $i++) {
     $device_matched = 0;
 
+   // если есть местоположение терминала 
+    if ($location_id) {
+        // ищем строгое соответствие по названию и местоположению
+        foreach($devices as $key => $value) {
+          if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
+               $i = $key;
+               $device_matched = 1;
+               break ;
+            }
+        }
+        if (!$device_matched ) {
+            // ищем строгое соответствие по названию
+            foreach($devices as $key => $value) {
+                if(in_array($compare_title, $value)) {
+                    $i = $key;
+                    $device_matched = 1;
+                    break ;
+                }
+            }
+        }
+    }
 
+    // ищем по старому принципу
     if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
         $device_matched = 1;
     } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
@@ -375,12 +390,10 @@ if ($run_code != '' && $period_delay > 0) {
     eval($run_code);
     setTimeout('opposite' . md5($run_code), $opposite_code, $period_run_for);
 } elseif ($run_code != '') {
-    //DebMes("Running: ".$run_code,'debug1');
     eval($run_code);
 }
 
 if ($reply_say != '') {
-    //DebMes("Replying: ".$reply_say,'debug1');
     sayReplySafe($reply_say, 2);
 }
 
@@ -393,6 +406,4 @@ if ($reply_confirm) {
 if ($processed) {
     $details['PROCESSED'] = 1;
     $details['BREAK'] = 1;
-} else {
-    //DebMes('Device not found for command: ['.$compare_title.']','devices');
 }

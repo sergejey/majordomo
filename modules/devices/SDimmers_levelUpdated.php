@@ -9,6 +9,9 @@
 $level = $this->getProperty('level');
 $minWork = $this->getProperty('minWork');
 $maxWork = $this->getProperty('maxWork');
+$levelWork = $this->getProperty('levelWork');
+
+//DebMes("Level updated to " . $level, 'dimming');
 
 $statusUpdated = 0;
 
@@ -19,7 +22,7 @@ if ($level > 0) {
         $this->setProperty('status', 1, false);
     }
     if ($minWork != $maxWork) {
-        DebMes("Level updated to " . $level, 'dimming');
+        DebMes("Level updated to " . $level ." ".$_SERVER['REQUEST_URI'], 'dimming');
         $levelWork = round($minWork + round(($maxWork - $minWork) * $level / 100));
         if ($this->getProperty('levelWork') != $levelWork) {
             DebMes("Setting new levelWork to " . (int)$levelWork, 'dimming');
@@ -31,7 +34,9 @@ if ($level > 0) {
         $statusUpdated = 1;
         $this->setProperty('status', 0);
     }
-    $this->setProperty('levelWork', (int)$minWork);
+    if ($levelWork>0) {
+        $this->setProperty('levelWork', 0);
+    }
 }
 
 if (!$statusUpdated) {

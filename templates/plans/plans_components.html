@@ -45,7 +45,7 @@
                             </select>
                             [#endif TYPE#]
                             [#if TYPE=="int" || TYPE=="text" || TYPE=="float"#]
-                            <input type="text" name="property_[#NAME#]" value="[#VALUE#]" class="form-control" placeholder="[#DEFAULT#]">
+                            <input type="text" name="property_[#NAME#]" value="[#VALUE_HTML#]" class="form-control" placeholder="[#DEFAULT#]">
                             [#endif TYPE#]
                             [#if TYPE=="rgb"#]
                             <input type="text" name="property_[#NAME#]" id="property_[#NAME#]" value="[#VALUE#]" class="form-control" placeholder="[#DEFAULT#]">

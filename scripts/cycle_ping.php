@@ -29,7 +29,7 @@ while (1)
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
       // checking all hosts
-      $pinghosts->checkAllHosts(1);
+      $pinghosts->checkAllHosts();
    }
 
    if (file_exists('./reboot') || IsSet($_GET['onetime']))

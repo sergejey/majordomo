@@ -1,6 +1,9 @@
 <?php
 
 $ot = $this->object_title;
+
+$this->callMethodSafe('keepAlive');
+
 if (!isset($params['statusUpdated'])) {
     setTimeout($ot . '_motion_timer_status', '', 3);
 }
@@ -36,6 +39,11 @@ if ($nobodyhome_timeout && !$resetNobodysHome) {
     setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
 } elseif ($resetNobodysHome) {
     clearTimeout('nobodyHome');
+}
+
+$is_blocked=(int)$this->getProperty('blocked');
+if ($is_blocked) {
+    return;
 }
 
 $linked_room = $this->getProperty('linkedRoom');

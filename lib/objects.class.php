@@ -41,7 +41,7 @@ function addClass($class_name, $parent_class = '')
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getClassTemplate($class_id)
+function getClassTemplate($class_id,$view='')
 {
 
     $can_cache = false;
@@ -50,16 +50,21 @@ function getClassTemplate($class_id)
         global $class_templates_cached;
     }
 
-    if ($can_cache && isset($class_templates_cached[$class_id])) {
-        return $class_templates_cached[$class_id];
+    if ($can_cache && isset($class_templates_cached[$class_id.'_'.$view])) {
+        return $class_templates_cached[$class_id.'_'.$view];
     }
 
     $class = SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=" . $class_id);
     if (!$class['ID']) {
         return '';
     }
-    $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '.html';
-    $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '.html';
+    if ($view!='' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html')) {
+        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html';
+        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_'.$view.'.html';
+    } else {
+        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '.html';
+        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '.html';
+    }
     if ($class['TEMPLATE'] != '') {
         $data = $class['TEMPLATE'];
     } elseif (file_exists($alt_class_file_path)) {
@@ -67,7 +72,7 @@ function getClassTemplate($class_id)
     } elseif (file_exists($class_file_path)) {
         $data = LoadFile($class_file_path);
     } elseif ($class['PARENT_ID']) {
-        $data = getClassTemplate($class['PARENT_ID']);
+        $data = getClassTemplate($class['PARENT_ID'],$view);
     } else {
         //$data='Template for ['.$class['TITLE'].'] not found';
         $data = '<b>%.object_title%</b>';
@@ -83,7 +88,7 @@ function getClassTemplate($class_id)
     }
 
     if ($can_cache) {
-        $class_templates_cached[$class_id] = $data;
+        $class_templates_cached[$class_id.'_'.$view] = $data;
     }
 
     return $data;
@@ -94,7 +99,7 @@ function getClassTemplate($class_id)
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getObjectClassTemplate($object_name)
+function getObjectClassTemplate($object_name,$view='')
 {
     startMeasure('getObjectClassTemplate');
     startMeasure('getObject');
@@ -123,8 +128,9 @@ function getObjectClassTemplate($object_name)
     $object->description = $rec['DESCRIPTION'];
     endMeasure('getObject');
     startMeasure('getClassTemplate');
-    $data = getClassTemplate((int)$object->class_id);
+    $data = getClassTemplate((int)$object->class_id,$view);
     endMeasure('getClassTemplate');
+    $data = preg_replace('/<#ROOTHTML#>/uis', ROOTHTML, $data);
     $data = preg_replace('/%\.object_title%/uis', $object_name, $data);
     $data = preg_replace('/%\.object_id%/uis', $object->id, $data);
     $data = preg_replace('/%\.object_description%/uis', $object->description, $data);
@@ -392,7 +398,6 @@ function getObject($name)
                      LEFT JOIN classes ON objects.CLASS_ID = classes.ID
                     WHERE objects.TITLE = '" . DBSafe($object_name) . "'
                       AND classes.TITLE = '" . DBSafe($class_name) . "'";
-
         $rec = SQLSelectOne($sqlQuery);
     } else {
         $sqlQuery = "SELECT objects.*
@@ -674,6 +679,25 @@ function getHistory($varname, $start_time, $stop_time = 0)
     return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
 }
 
+function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
+{
+    if ($start_time <= 0) $start_time = (time() + $start_time);
+    if ($stop_time <= 0) $stop_time = (time() + $stop_time);
+
+    // Get hist val id
+    $id = getHistoryValueId($varname);
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = createHistoryTable($id);
+    } else {
+        $table_name = 'phistory';
+    }
+
+    // Get data
+    return SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+}
+
+
 /**
  * getHistoryMin
  *
@@ -929,6 +953,11 @@ function callMethod($method_name, $params = 0)
     } else {
         $object_name = 'ThisComputer';
     }
+
+    if ($object_name == 'AllScripts') {
+        return runScript($method_name,$params);
+    }
+
     $obj = getObject($object_name);
 
     if ($obj) {
@@ -950,6 +979,9 @@ function callMethodSafe($method_name, $params = 0)
     } else {
         $object_name = 'ThisComputer';
     }
+    if ($object_name == 'AllScripts') {
+        return runScriptSafe($method_name,$params);
+    }
     $obj = getObject($object_name);
 
     if ($obj) {
@@ -961,71 +993,73 @@ function callMethodSafe($method_name, $params = 0)
 
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
+    $is_child = false;
+    $fork_disabled = true;
 
-    /*
-    $api_call_type = 'http';
-    if ($api_call_type == 'cmd') {
-        if (defined('PATH_TO_PHP'))
-            $phpPath = PATH_TO_PHP;
-        else
-            $phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
-
-        $filename = dirname(__FILE__).'/../api.php';
-        $data=array();
-        $data['REQUEST_URI']=$api_url;
-        $data['REQUEST_METHOD']=$method;
-        if (is_array($params)) {
-            foreach($params as $k=>$v) {
-                $data[$k]=$v;
-            }
-        }
-        $cmdParams = addcslashes(serialize(json_encode($data)), '"');
-        $command = $phpPath . ' -q ' . $filename . ' --params "' . $cmdParams . '"';
-        if (!IsWindowsOS()) {
-            $command='exec '.$command;
-        }
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w')
-        );
-        $new_proc = proc_open($command, $descriptorSpec, $pipes);
-        stream_set_blocking($pipes[0], 0);
-        stream_set_blocking($pipes[1], 0);
-        return $new_proc;
+    if (defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
+        $fork_disabled = false;
     }
-    */
 
-    //if ($api_call_type == 'http') {
+    if (!$fork_disabled) {
+        $child_pid = pcntl_fork();
+        if ($child_pid == -1) {
+            //error
+        } elseif ($child_pid) {
+            // parent
+            pcntl_wait($status, WNOHANG);
+            return true;
+        } else {
+            // child
+            $is_child = true;
+            register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            set_time_limit(60);
+        }
+    }
+
+
     startMeasure('callAPI');
-    $url = BASE_URL . $api_url;
-
     if (!is_array($params)) {
         $params = array();
     }
     $params['no_session']=1;
-    $url .= '?' . http_build_query($params);
-    $url = str_replace('/api/', '/api.php/', $url);
-    if ($method == 'GET') {
-        //DebMes("API query: ".$url,'api_query');
-        //getURLBackground($url);
-        global $api_ch;
-        if (!isset($api_ch)) {
-            $api_ch = curl_init();
-            curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
-            curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-            curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
-            curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-            curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
+
+
+    $url = preg_replace('/^\/api\//', BASE_URL.'/api.php/', $api_url);
+    $url = preg_replace('/([^:])\/\//','\1/',$url);
+
+    $method=strtoupper($method);
+    global $api_ch;
+    if (!isset($api_ch)) {
+        $api_ch = curl_init();
+        curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+        curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+        curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+        curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
+        if (!$is_child) {
             curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
         }
-        curl_setopt($api_ch, CURLOPT_URL, $url);
-        curl_exec($api_ch);
     }
+    if ($method == 'GET') {
+        $url .= '?' . http_build_query($params);
+        curl_setopt($api_ch, CURLOPT_POSTFIELDS, 0);
+        curl_setopt($api_ch, CURLOPT_POST, 0);
+    } elseif ($method == 'POST') {
+        curl_setopt($api_ch, CURLOPT_POST, 1);
+        curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
+    }
+    curl_setopt($api_ch, CURLOPT_URL, $url);
+    curl_exec($api_ch);
+
     endMeasure('callAPI');
-    //}
+
+    if ($is_child) {
+        exit();
+    }
+    return true;
 
 }
 
@@ -1135,7 +1169,8 @@ function processTitle($title, $object = 0)
                 $total = count($m[0]);
 
                 for ($i = 0; $i < $total; $i++) {
-                    $data = getGlobal($m[1][$i] . '.' . $m[2][$i]);
+                    $property_name = $m[1][$i] . '.' . $m[2][$i];
+                    $data = getGlobal($property_name);
                     if ($data == '') $data = 0;
                     $descr = $m[3][$i];
                     $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
@@ -1152,8 +1187,11 @@ function processTitle($title, $object = 0)
                     } else {
                         for ($id = 0; $id < $totald; $id++) {
                             $item = trim($tmp[$id]);
-                            if (preg_match('/(.+?)=(.+)/uis', $item, $md)) {
+                            if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
+                                if ($search_value=='') {
+                                    $search_value='<empty>';
+                                }
                                 $search_replace = $md[2];
                             } else {
                                 $search_value = $id;
@@ -1161,6 +1199,7 @@ function processTitle($title, $object = 0)
                             }
                             $hsh[$search_value] = $search_replace;
                         }
+                        if ($data == '') $data='<empty>';
                     }
                     $title = str_replace($m[0][$i], $hsh[$data], $title);
                 }

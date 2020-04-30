@@ -64,7 +64,14 @@ class Threads
       $params = addcslashes(serialize($params), '"');
 
       if (defined('LOG_CYCLES') && LOG_CYCLES == '1') {
-         $fileToWrite = DOC_ROOT . '/cms/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+         if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+            $path = SETTINGS_SYSTEM_DEBMES_PATH;
+         } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+            $path = LOG_DIRECTORY;
+         } else {
+            $path = ROOT . 'cms/debmes';
+         }
+         $fileToWrite = $path.'/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
          $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
       } else {
          $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '"';
@@ -162,7 +169,7 @@ class Threads
       //echo date('H:i:s')." Selecting streams"."\n";
       if (false === ($number_of_streams = stream_select($read, $write, $except, $this->timeout)))
       {
-         DebMes("No active streams");
+         DebMes("No active streams",'threads');
          return 0;
       }
 
@@ -209,7 +216,7 @@ class Threads
          {
             //feof($stream)
             echo date('H:i:s') . " Closing thread: " . $this->commandLines[$id] . "\n";
-            DebMes("Closing thread: " . $this->commandLines[$id]);
+            DebMes("Closing thread: " . $this->commandLines[$id],'threads');
             
             $result .= "THREAD CLOSED: [" . $this->commandLines[$id] . "]\n";
             

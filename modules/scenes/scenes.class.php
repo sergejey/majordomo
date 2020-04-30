@@ -677,6 +677,10 @@ class scenes extends module
 
 
                 $state = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$real_part . "'");
+                $element = SQLSelectOne("SELECT * FROM elements WHERE ID=".(int)$state['ELEMENT_ID']);
+                $scene = SQLSelectOne("SELECT * FROM scenes WHERE ID=".(int)$element['SCENE_ID']);
+
+                logAction('scene_clicked',$scene['TITLE'].'.'.$element['TITLE'].'.'.$state['TITLE']);
 
                 $params = array('STATE' => $state['TITLE']);
                 if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) {
@@ -1154,7 +1158,7 @@ class scenes extends module
                 $state = array();
                 $state['ID'] = 'element_' . ($elements[$ie]['ID']);
                 $state['ELEMENT_ID'] = $elements[$ie]['ID'];
-                $state['HTML'] = getObjectClassTemplate($elements[$ie]['LINKED_OBJECT']);
+                $state['HTML'] = getObjectClassTemplate($elements[$ie]['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
                 $state['TYPE'] = $elements[$ie]['TYPE'];
                 $state['MENU_ITEM_ID'] = 0;
                 $state['HOMEPAGE_ID'] = 0;
@@ -1165,7 +1169,7 @@ class scenes extends module
                 $state = array();
                 $state['ID'] = 'element_' . ($elements[$ie]['ID']);
                 $state['ELEMENT_ID'] = $elements[$ie]['ID'];
-                $state['HTML'] = '<div style="width:250px">' . getObjectClassTemplate($device_rec['LINKED_OBJECT']) . '</div>';
+                $state['HTML'] = getObjectClassTemplate($device_rec['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
                 $state['TYPE'] = $elements[$ie]['TYPE'];
                 $state['MENU_ITEM_ID'] = 0;
                 $state['HOMEPAGE_ID'] = 0;
@@ -1685,6 +1689,7 @@ class scenes extends module
  elements: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
  elements: EASY_CONFIG int(3) NOT NULL DEFAULT '0'
  elements: APPEAR_ANIMATION int(3) NOT NULL DEFAULT '0'
+ elements: CLASS_TEMPLATE varchar(50) NOT NULL DEFAULT ''
 
  elm_states: ID int(10) unsigned NOT NULL auto_increment
  elm_states: ELEMENT_ID int(10) NOT NULL DEFAULT '0'

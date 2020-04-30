@@ -4,235 +4,242 @@
 */
 
 /**
-* @package project
-* @author Serge Dzheigalo <jey@unit.local>
-*/
+ * @package project
+ * @author Serge Dzheigalo <jey@unit.local>
+ */
 // modules installed control
-class control_modules extends module {
- var $modules; // all modules list
-// --------------------------------------------------------------------
- function __construct() {
-  // setting module name
-  $this->name="control_modules";
-  $this->title="<#LANG_MODULE_MODULES#>";
-  $this->module_category="<#LANG_SECTION_SYSTEM#>";
-  $this->checkInstalled();
- }
-
-// --------------------------------------------------------------------
-function saveParams($data=1) {
- // saving current module data and data of all parent modules
- $p=array();
- return parent::saveParams($p);
-}
-
-function getParams() {
-  global $action; // getting param
-  global $mode;
-  $this->mode=$mode;
-  $this->action=$action;
-}
-
-// --------------------------------------------------------------------
- function run() {
-  // running current module
-  global $mode;
-  global $name;
-
-  $rep_ext="";
-  if (preg_match('/\.dev/is', $_SERVER['HTTP_HOST'])) $rep_ext='.dev';
-  if (preg_match('/\.jbk/is', $_SERVER['HTTP_HOST'])) $rep_ext='.jbk';
-  if (preg_match('/\.bk/is', $_SERVER['HTTP_HOST'])) $rep_ext='.bk';
-
-  if ($rep_ext) {
-   $out['LOCAL_PROJECT']=1;
-   $out['REP_EXT']=$rep_ext;
-   $out['HOST']=$_SERVER['HTTP_HOST'];
-   $out['DOCUMENT_ROOT']=dirname($_SERVER['SCRIPT_FILENAME']);
-  }
-
-  if ($mode=="edit") {
-   global $mode2;
-   $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$name."'");
-   $rec['NAME']=$name;
-   if ($mode2 == "update") {
-    global $title;
-    global $category;
-    $rec['TITLE']=$title;
-    $rec['CATEGORY']=$category;
-    SQLUpdate("project_modules", $rec);
-    $this->redirect("?name=$name&mode=edit");
-   } elseif ($mode2=="show") {
-    if ($rec['HIDDEN']) {
-     $rec['HIDDEN']=0;
-    } else {
-     $rec['HIDDEN']=1;
-    }
-    SQLUpdate('project_modules', $rec);
-    $this->redirect("?");
-
-   } elseif ($mode2=="ignore") {
-    SQLExec("DELETE FROM ignore_updates WHERE NAME LIKE '".DBSafe($rec['NAME'])."'");
-    $tmp=array();
-    $tmp['NAME']=$rec['NAME'];
-    SQLInsert('ignore_updates', $tmp);
-    $this->redirect("?");
-   } elseif ($mode2=="unignore") {
-    SQLExec("DELETE FROM ignore_updates WHERE NAME LIKE '".DBSafe($rec['NAME'])."'");
-    $this->redirect("?");
-   } elseif ($mode2=="install") {
-    $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$name."'");
-    SQLExec("DELETE FROM project_modules WHERE NAME='".$name."'");
-    @unlink(DIR_MODULES.$name."/installed");
-    include_once(DIR_MODULES.$name."/".$name.".class.php");
-    $obj="\$object$i";
-    $code.="$obj=new ".$name.";\n";
-    @eval($code);
-    // add module to control access
-    global $session;
-    $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='".DBSafe($session->data["USER_NAME"])."'");
-    if ($user['ID'] && !Is_Integer(strpos($user["ACCESS"], $name))) {
-     if ($user["ACCESS"]!='') {
-      $user["ACCESS"].=",$name";
-     } else {
-      $user["ACCESS"]=$name;
-     }
-     SQLUpdate('admin_users', $user);
-    }
-    SQLExec("UPDATE project_modules SET HIDDEN='".(int)$rec['HIDDEN']."' WHERE NAME='".$name."'");
-    // redirect to edit
-    $this->redirect("?name=$name&mode=edit");
-   } elseif ($mode2=='uninstall') {
-    SQLExec("DELETE FROM project_modules WHERE NAME='".$name."'");
-    @unlink(DIR_MODULES.$name."/installed");
-
-    if (file_exists(DIR_MODULES.$name."/".$name.".class.php")) {
-     include_once(DIR_MODULES.$name."/".$name.".class.php");
-     $obj="\$object$i";
-     $code.="$obj=new ".$name.";\n";
-     $code.="$obj"."->uninstall();";
-     eval ($code);
-    }
-
-
-    if ($out['LOCAL_PROJECT']) {
-     $this->redirect("?mode=repository_uninstall&module=$name");
-    } else {
-     $this->redirect("?");
-    }
-   }
-   outHash($rec, $out);
-  }
-
-  if ($mode=='repository_uninstall') {
-    global $module;
-    $out['MODULE']=$module;
-  }
-
-  $out["MODE"]=$mode;
-
-  $this->getModulesList();
-  $lst=$this->modules;
-  $lstCnt = count($lst);
-
-  for ($i = 0; $i < $lstCnt ;$i++)
-  {
-   $rec=SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%M %d, %Y (%H:%i)') as DAT FROM project_modules WHERE NAME='".$lst[$i]['FILENAME']."'");
-   if (IsSet($rec['ID'])) {
-    outHash($rec, $lst[$i]);
-   }
-   $ignored=SQLSelectOne("SELECT ID FROM ignore_updates WHERE NAME LIKE '".DBSafe($lst[$i]['NAME'])."'");
-   if ($ignored['ID']) {
-    $lst[$i]['IGNORED']=1;
-   }
-  }
-
-  $out["MODULES"]=$lst;
-
-  $this->data=$out;
-  $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
-  $this->result=$p->result;
-
- }
-
-// --------------------------------------------------------------------
- function getModulesList() {
-  $dir=openDir(DIR_MODULES);
-  $lst=array();
-  while ($file = readDir($dir)) {
-   if ((Is_Dir(DIR_MODULES."$file")) && ($file!=".") && ($file!="..")) {
-    $rec=array();
-    $rec['FILENAME']=$file;
-    $lst[]=$rec;
-   }
-  }
-
-  usort($lst, function ($a,$b) {
-   return strcmp($a["FILENAME"], $b["FILENAME"]);
-  });
-
-  $this->modules=$lst;
-  return $lst;
- }
-
-function install($parent_name = "")
+class control_modules extends module
 {
-   parent::install($parent_name);
-
-   global $db;
-   if (!is_object($db) || !$db->Connect()) {
-      return false;
-   }
-
-   $this->getModulesList();
-
-   $lst    = $this->modules;
-
-   $prelist=array('settings','objects', 'devices');
-   $prelist=array_reverse($prelist);
-   foreach($prelist as $v) {
-    $rec=array('FILENAME'=>$v);
-    array_unshift($lst, $rec);
-   }
-
-   $lstCnt = count($lst);
-
-   SQLExec("ALTER TABLE `project_modules` CHANGE `ID` `ID` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT");
-
-   for ($i = 0; $i < $lstCnt; $i++)
-   {
-      if (file_exists(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php"))
-      {
-         if ($lst[$i]['FILENAME'] == 'control_modules')
-            continue;
-
-         $installedFile = DIR_MODULES . $lst[$i]['FILENAME'] . "/installed";
-         if (file_exists($installedFile))
-            @unlink($installedFile);
-         startMeasure('Installing '.$lst[$i]['FILENAME']);
-          $url = BASE_URL.'/module/'.$lst[$i]['FILENAME'].'.html';
-          if (!isset($_SERVER['REQUEST_METHOD'])) {
-              echo 'Installing '.$lst[$i]['FILENAME']." ($url)\n";
-          }
-          DebMes('Installing '.$lst[$i]['FILENAME']." ($url)",'reinstall');
-          //$data = getURL($url); //
-         include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
-         $obj = "\$object$i";
-         $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
-         //echo "Installing ".$lst[$i]['FILENAME']."\n";
-         @eval("$code");
-
-         endMeasure('Installing '.$lst[$i]['FILENAME']);
-      }
-   }
-
-
-   SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '" . $this->name . "'");
-}
+    var $modules; // all modules list
 
 // --------------------------------------------------------------------
- function dbInstall($data) {
-  $data = <<<EOD
+    function __construct()
+    {
+        // setting module name
+        $this->name = "control_modules";
+        $this->title = "<#LANG_MODULE_MODULES#>";
+        $this->module_category = "<#LANG_SECTION_SYSTEM#>";
+        $this->checkInstalled();
+    }
+
+// --------------------------------------------------------------------
+    function saveParams($data = 1)
+    {
+        // saving current module data and data of all parent modules
+        $p = array();
+        return parent::saveParams($p);
+    }
+
+    function getParams()
+    {
+        global $action; // getting param
+        global $mode;
+        $this->mode = $mode;
+        $this->action = $action;
+    }
+
+// --------------------------------------------------------------------
+    function run()
+    {
+        // running current module
+        global $mode;
+        global $name;
+
+        $rep_ext = "";
+        if (preg_match('/\.dev/is', $_SERVER['HTTP_HOST'])) $rep_ext = '.dev';
+        if (preg_match('/\.jbk/is', $_SERVER['HTTP_HOST'])) $rep_ext = '.jbk';
+        if (preg_match('/\.bk/is', $_SERVER['HTTP_HOST'])) $rep_ext = '.bk';
+
+        if ($rep_ext) {
+            $out['LOCAL_PROJECT'] = 1;
+            $out['REP_EXT'] = $rep_ext;
+            $out['HOST'] = $_SERVER['HTTP_HOST'];
+            $out['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
+        }
+
+        if ($mode == "edit") {
+            global $mode2;
+            $rec = SQLSelectOne("SELECT * FROM project_modules WHERE NAME='" . $name . "'");
+            $rec['NAME'] = $name;
+            if ($mode2 == "update") {
+                global $title;
+                global $category;
+                $rec['TITLE'] = $title;
+                $rec['CATEGORY'] = $category;
+                SQLUpdate("project_modules", $rec);
+                $this->redirect("?name=$name&mode=edit");
+            } elseif ($mode2 == "show") {
+                if ($rec['HIDDEN']) {
+                    $rec['HIDDEN'] = 0;
+                } else {
+                    $rec['HIDDEN'] = 1;
+                }
+                SQLUpdate('project_modules', $rec);
+                $this->redirect("?");
+
+            } elseif ($mode2 == "ignore") {
+                SQLExec("DELETE FROM ignore_updates WHERE NAME LIKE '" . DBSafe($rec['NAME']) . "'");
+                $tmp = array();
+                $tmp['NAME'] = $rec['NAME'];
+                SQLInsert('ignore_updates', $tmp);
+                $this->redirect("?");
+            } elseif ($mode2 == "unignore") {
+                SQLExec("DELETE FROM ignore_updates WHERE NAME LIKE '" . DBSafe($rec['NAME']) . "'");
+                $this->redirect("?");
+            } elseif ($mode2 == "install") {
+                $rec = SQLSelectOne("SELECT * FROM project_modules WHERE NAME='" . $name . "'");
+                SQLExec("DELETE FROM project_modules WHERE NAME='" . $name . "'");
+                @unlink(ROOT . 'cms/modules_installed/' . $name . ".installed");
+                include_once(DIR_MODULES . $name . "/" . $name . ".class.php");
+                $obj = "\$object$i";
+                $code .= "$obj=new " . $name . ";\n";
+                @eval($code);
+                // add module to control access
+                global $session;
+                $user = SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='" . DBSafe($session->data["USER_NAME"]) . "'");
+                if ($user['ID'] && !Is_Integer(strpos($user["ACCESS"], $name))) {
+                    if ($user["ACCESS"] != '') {
+                        $user["ACCESS"] .= ",$name";
+                    } else {
+                        $user["ACCESS"] = $name;
+                    }
+                    SQLUpdate('admin_users', $user);
+                }
+                SQLExec("UPDATE project_modules SET HIDDEN='" . (int)$rec['HIDDEN'] . "' WHERE NAME='" . $name . "'");
+                // redirect to edit
+                $this->redirect("?name=$name&mode=edit");
+            } elseif ($mode2 == 'uninstall') {
+                SQLExec("DELETE FROM project_modules WHERE NAME='" . $name . "'");
+                @unlink(ROOT . 'cms/modules_installed/' . $name . ".installed");
+                if (is_dir(DIR_MODULES . $name)) {
+                    include_once(DIR_MODULES . $name . '/' . $name . '.class.php');
+                    SQLExec("DELETE FROM project_modules WHERE NAME LIKE '" . DBSafe($name) . "'");
+                    $code = '$plugin = new ' . $name . '();$plugin->uninstall();';
+                    eval($code);
+                    removeTree(DIR_MODULES . $name);
+                    removeTree(DIR_TEMPLATES . $name);
+                    $cycle_name = ROOT . 'scripts/cycle_' . $name . '.php';
+                    if (file_exists($cycle_name)) {
+                        @unlink($cycle_name);
+                    }
+                    removeMissingSubscribers();
+                }
+                $this->redirect("?");
+            }
+            outHash($rec, $out);
+        }
+
+        if ($mode == 'repository_uninstall') {
+            global $module;
+            $out['MODULE'] = $module;
+        }
+
+        $out["MODE"] = $mode;
+
+        $this->getModulesList();
+        $lst = $this->modules;
+        $lstCnt = count($lst);
+
+        for ($i = 0; $i < $lstCnt; $i++) {
+            $rec = SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%M %d, %Y (%H:%i)') AS DAT FROM project_modules WHERE NAME='" . $lst[$i]['FILENAME'] . "'");
+            if (IsSet($rec['ID'])) {
+                outHash($rec, $lst[$i]);
+            }
+            $ignored = SQLSelectOne("SELECT ID FROM ignore_updates WHERE NAME LIKE '" . DBSafe($lst[$i]['NAME']) . "'");
+            if ($ignored['ID']) {
+                $lst[$i]['IGNORED'] = 1;
+            }
+        }
+
+        $out["MODULES"] = $lst;
+
+        $this->data = $out;
+        $p = new parser(DIR_TEMPLATES . $this->name . "/" . $this->name . ".html", $this->data, $this);
+        $this->result = $p->result;
+
+    }
+
+// --------------------------------------------------------------------
+    function getModulesList()
+    {
+        $dir = openDir(DIR_MODULES);
+        $lst = array();
+        while ($file = readDir($dir)) {
+            if ((Is_Dir(DIR_MODULES . $file)) && ($file != ".") && ($file != "..")) {
+                $rec = array();
+                $rec['FILENAME'] = $file;
+                $lst[] = $rec;
+            }
+        }
+
+        usort($lst, function ($a, $b) {
+            return strcmp($a["FILENAME"], $b["FILENAME"]);
+        });
+
+        $this->modules = $lst;
+        return $lst;
+    }
+
+    function install($parent_name = "")
+    {
+        parent::install($parent_name);
+
+        global $db;
+        if (!is_object($db) || !$db->Connect()) {
+            return false;
+        }
+
+        $this->getModulesList();
+
+        $lst = $this->modules;
+
+        $prelist = array('settings', 'objects', 'devices');
+        $prelist = array_reverse($prelist);
+        foreach ($prelist as $v) {
+            $rec = array('FILENAME' => $v);
+            array_unshift($lst, $rec);
+        }
+
+        $lstCnt = count($lst);
+
+        SQLExec("ALTER TABLE `project_modules` CHANGE `ID` `ID` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT");
+
+        for ($i = 0; $i < $lstCnt; $i++) {
+            if (file_exists(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php")) {
+                if ($lst[$i]['FILENAME'] == 'control_modules')
+                    continue;
+
+                $installedFile = ROOT . 'cms/modules_installed/' . $lst[$i]['FILENAME'] . ".installed";
+                if (file_exists($installedFile))
+                    @unlink($installedFile);
+                startMeasure('Installing ' . $lst[$i]['FILENAME']);
+                $url = BASE_URL . '/module/' . $lst[$i]['FILENAME'] . '.html';
+                if (!isset($_SERVER['REQUEST_METHOD'])) {
+                    echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
+                }
+                DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
+                //$data = getURL($url); //
+                include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
+                $obj = "\$object$i";
+                $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
+                //echo "Installing ".$lst[$i]['FILENAME']."\n";
+                @eval("$code");
+
+                endMeasure('Installing ' . $lst[$i]['FILENAME']);
+                if (!isset($_SERVER['REQUEST_METHOD'])) {
+                    echo " OK\n";
+                }
+            }
+        }
+
+
+        SQLExec("UPDATE project_modules SET HIDDEN=0 WHERE NAME LIKE '" . $this->name . "'");
+    }
+
+// --------------------------------------------------------------------
+    function dbInstall($data)
+    {
+        $data = <<<EOD
 
    project_modules: ID tinyint(3) unsigned NOT NULL auto_increment
    project_modules: NAME varchar(50)  DEFAULT '' NOT NULL
@@ -249,8 +256,8 @@ function install($parent_name = "")
 
 
 EOD;
-  parent::dbInstall($data);
- }
+        parent::dbInstall($data);
+    }
 
 // --------------------------------------------------------------------
 }

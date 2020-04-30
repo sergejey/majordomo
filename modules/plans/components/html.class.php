@@ -49,8 +49,8 @@ class html extends plan_component
 
         $bgcolor = $data['bgcolor']['VALUE'];
 
-        //$content = processTitle($data['content']['VALUE']);
-        $content = ($data['content']['VALUE']);
+        $content = processTitle($data['content']['VALUE']);
+        //$content = ($data['content']['VALUE']);
         $scaleProc=(int)$data['scale']['VALUE'];
         if (!$scaleProc) {
             $scaleProc=100;

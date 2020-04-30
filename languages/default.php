@@ -145,6 +145,7 @@ $dictionary = array(
     'MODULE_MASTER_LOGIN' => 'Panel Login',
     'MODULE_SAVERESTORE' => 'Check updates',
     'MODULE_WEBVARS' => 'Web Variables',
+    'MODULE_ACTIONS_LOG' => 'Actions history',
 
     'MODULE_DASHBOARD' => 'Dashboard',
     'MODULE_DATESELECTOR' => 'Dateselector',
@@ -1010,7 +1011,10 @@ $dictionary = array(
     'FUNCTIONS' => 'Functions',
 
     'SCENE_HIDDEN' => 'Do not include in to the swappable list of scenes',
-    'SCENE_AUTO_SCALE' => 'Auto zoom scene to device with',
+    'SCENE_AUTO_SCALE' => 'Auto zoom scene',
+    'SCALE_WIDTH' => 'By screen width',
+    'SCALE_HEIGHT' => 'By screen height',
+    'SCALE_BOTH' => 'Both (fit to screen)',
     'SCENE_DEVICES_BACKGROUND' => 'Background for Devices',
 
     'DO_NOTHING' => 'Do nothing',
@@ -1082,6 +1086,7 @@ $dictionary = array(
     'READ_ONLY' => 'Read Only',
     'ADVANCED_CONFIG' => 'Advanced config',
     'UPDATE_ALL_EXTENSIONS' => 'Update all extensions installed',
+    'UPDATE_NEW_EXTENSIONS' => 'Install updates',
     'MARKET_CATEGORY_INSTALLED' => 'Installed',
     'MARKET_CATEGORY_OWNED' => 'Owned',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Updates',
@@ -1121,6 +1126,7 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Button',
     'DEVICES_SWITCH' => 'Switch',
     'DEVICES_OPENCLOSE' => 'Open/Close sensor',
+    'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_GENERAL_SENSOR' => 'General sensor',
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
@@ -1162,6 +1168,8 @@ $dictionary = array(
     'DEVICES_NORMAL_VALUE' => 'Value within range',
     'DEVICES_DIRECTION_TIMEOUT' => 'Direction tracking time period (seconds)',
     'DEVICES_NOTIFY_STATUS' => 'Notify status',
+    'DEVICES_NOTIFY_ELIMINATED' => 'Notify every minute until problem solved',
+    'DEVICES_SENSOR_ALERT' => 'Attention! Alert signal from sensor',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Value is out of normal range',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Value is back to normal',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Notify when left open',
@@ -1186,6 +1194,7 @@ $dictionary = array(
     'DEVICES_GROUP_ECO_ON' => 'Turn it on leaving ECO mode',
     'DEVICES_GROUP_SUNRISE' => 'Turn it off with Sunrise',
     'DEVICES_GROUP_SUNSET' => 'Turn it on with Sunset',
+    'DEVICES_GROUP_NIGHT' => 'Turn it off entering Night mode',
     'DEVICES_IS_ACTIVITY' => 'Status change means activity in the room',
     'DEVICES_NCNO' => 'Device/Sensor type',
     'DEVICES_LOADTYPE' => 'Device type',
@@ -1196,6 +1205,13 @@ $dictionary = array(
     'DEVICES_LOADTYPE_LIGHT' => 'Light',
     'DEVICES_LOADTYPE_LIGHT_ALT' => 'Light',
     'DEVICES_LOADTYPE_POWER' => 'Other',
+
+    'DEVICES_OPENTYPE' => 'Device type',
+    'DEVICES_OPENTYPE_CURTAINS' => 'Curtains',
+    'DEVICES_OPENTYPE_SHUTTERS' => 'Shutters',
+    'DEVICES_OPENTYPE_GATES' => 'Gates',
+    'DEVICES_OPENTYPE_WINDOW' => 'Window',
+    'DEVICES_OPENTYPE_DOOR' => 'Door',
 
     'DEVICES_ADD_MENU' => 'Add device to Menu',
     'DEVICES_ADD_SCENE' => 'Add device to Scene',
@@ -1297,6 +1313,10 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
 
+    'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Is open now',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Heating now',
+
     'GROUPS' => 'Groups',
     'APPLIES_TO' => 'Applies to',
 
@@ -1381,17 +1401,43 @@ $dictionary = array(
     'NO_FEATURES_WARNING' => 'Sorry, no features supported',
     'TTS_TYPE' => 'TTS type',
     'NONE' => 'None',
+    'PREVIOUS' => 'Prev',
+    'NEXT' => 'Next',
+    'LOCATED_IN_ROOM' => 'located in',
+    'BLOCK_SENSOR' => 'Block sensor',
+    'UNBLOCK_SENSOR' => 'Un-block sensor',
 
-    'TEST' => 'test'
+    'VALIDATION_TYPE' => 'Value validation',
+    'VALIDATION_TYPE_NUMBER' => 'Number (in range)',
+    'VALIDATION_TYPE_BINARY' => 'Binary value (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'Dictionary match',
+    'VALIDATION_TYPE_CUSTOM' => 'Custom (code)',
+    'REMINDER_INTRO' => 'May I remind you that',
 
-
+    'TEST' => 'test',
+    
     /* end module names */
+
+    /* start array for convert number to string */
+    
+	'NUMBER_TO_STRING_1TEN' => array( array('','one','two','three','four','five','six','seven', 'eight','nine'), array('','one','two','three','four','five','six','seven', 'eight','nine')),
+	'NUMBER_TO_STRING_2TEN' => array('ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'),
+	'NUMBER_TO_STRING_TENS' => array(2=>'twenty ',' thirty ',' forty ',' fifty ',' sixty ',' seventy ',' eighty ',' ninety '),
+	'NUMBER_TO_STRING_HUNDRED' => array('','one hundred','two hundred','three hundred','four hundred','five hundred','six hundred', 'seven hundred','eight hundred','nine hundred'),
+	'NUMBER_TO_STRING_UNIT' => array(array(' ' ,' ' , 1), array(' ' ,' point'   ,' point' ,0),array('thousand ',' thousands', 'thousands'     ,1), array('million ',' million ',' millions' ,0), array('billion', 'billion', 'billion',0)),
+	'NUMBER_TO_STRING_NULL' => 'zero',
+	
+    /* end array for convert number to string  */
+
+    'ENABLE_AUTO_UPDATE' => 'Enable automatic updates',
+    'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
+    'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
 
 
 );
 
 foreach ($dictionary as $k => $v) {
     if (!defined('LANG_' . $k)) {
-        define('LANG_' . $k, $v);
+        @define('LANG_' . $k, $v);
     }
 }

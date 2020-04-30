@@ -54,11 +54,25 @@ if ($this->mode == 'update') {
 
     if ($rec['TYPE'] == 'plusminus' || $rec['TYPE'] == 'sliderbox') {
         global $min_value;
-        $rec['MIN_VALUE'] = $min_value;
+        if ($min_value != '') {
+            $rec['MIN_VALUE'] = $min_value;
+        } else {
+            $rec['MIN_VALUE'] = 0;
+        }
+
         global $max_value;
-        $rec['MAX_VALUE'] = $max_value;
+        if ($max_value != '') {
+            $rec['MAX_VALUE'] = $max_value;
+        } else {
+            $rec['MAX_VALUE'] = 0;
+        }
+
         global $step_value;
-        $rec['STEP_VALUE'] = $step_value;
+        if ($step_value != '') {
+            $rec['STEP_VALUE'] = $step_value;
+        } else {
+            $rec['STEP_VALUE'] = 0;
+        }
     }
 
     global $delete_icon;

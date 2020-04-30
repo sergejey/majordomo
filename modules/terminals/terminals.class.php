@@ -259,7 +259,7 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         $this->getConfig();
-        DebMes("Processing $event: " . json_encode($details), 'terminals');
+        DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
         if ($event == 'SAY') {
             $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1 AND TTS_TYPE!=''");
             foreach ($terminals as $terminal_rec) {
@@ -425,6 +425,7 @@ class terminals extends module
  terminals: LATEST_ACTIVITY datetime
  terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ terminals: LOCATION_ID int(5) NOT NULL DEFAULT '0' 
 EOD;
         parent::dbInstall($data);
 

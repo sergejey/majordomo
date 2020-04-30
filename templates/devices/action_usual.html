@@ -1,41 +1,39 @@
-<div>
  [#if DEVICES#]
  <script type="text/javascript">
-  var httpRefreshTimer = 0;
-  var subscribedWebSockets=0;
-  var subscribedWebSocketsTimer;
-  var requestSent = Math.round(+new Date()/1000);
-  function subscribeToDevices() {
+  var httpRefreshTimer<#UNIQ#> = 0;
+  var subscribedWebSockets<#UNIQ#>=0;
+  var subscribedWebSocketsTimer<#UNIQ#>;
+  var requestSent<#UNIQ#> = Math.round(+new Date()/1000);
+  function subscribeToDevices<#UNIQ#>() {
    console.log('Sending devices subscription request...');
    var payload;
    payload = new Object();
    payload.action = 'Subscribe';
    payload.data = new Object();
    payload.data.TYPE='devices';
-   //alert(trackedDevices.length);
+   //alert(trackedDevices<#UNIQ#>.length);
    [#if ALL_DEVICES="1"#]
    payload.data.DEVICE_ID='0';
    [#else#]
-   if (trackedDevices.length>0) {
-    payload.data.DEVICE_ID=trackedDevices.join(',');
+   if (trackedDevices<#UNIQ#>.length>0) {
+    payload.data.DEVICE_ID=trackedDevices<#UNIQ#>.join(',');
    }
    [#endif#]
-
    wsSocket.send(JSON.stringify(payload));
-   subscribedWebSocketsTimer=setTimeout('subscribeToDevices();', 3000);
+   subscribedWebSocketsTimer<#UNIQ#>=setTimeout('subscribeToDevices<#UNIQ#>();', 3000);
    return false;
   }
 
   $.subscribe('wsConnected', function (_) {
-   clearTimeout(httpRefreshTimer);
-   subscribeToDevices();
+   clearTimeout(httpRefreshTimer<#UNIQ#>);
+   subscribeToDevices<#UNIQ#>();
   });
 
   $.subscribe('wsData', function (_, response) {
    if (response.action=='subscribed') {
     console.log('Subscription to devices confirmed.');
-    clearTimeout(subscribedWebSocketsTimer);
-    subscribedWebSockets=1;
+    clearTimeout(subscribedWebSocketsTimer<#UNIQ#>);
+    subscribedWebSockets<#UNIQ#>=1;
    }
    if (response.action=='devices') {
     var obj=jQuery.parseJSON(response.data);
@@ -45,7 +43,7 @@
      for(var i=0;i<objCnt;i++) {
       var device_id=obj.DATA[i].DEVICE_ID;
       var html=obj.DATA[i].DATA;
-      $('.device'+device_id).html(html);
+      $('.device<#UNIQ#>_'+device_id).html(html);
      }
     }
    }
@@ -53,36 +51,44 @@
 
 
 
-  function httpRefreshDevices() {
-   clearTimeout(httpRefreshTimer);
-   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&id=";
+  function httpRefreshDevices<#UNIQ#>() {
+   clearTimeout(httpRefreshTimer<#UNIQ#>);
+   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&view=<#VIEW#>&id=";
    /*
-   for(var i=0;i<trackedDevices.length;i++) {
+   for(var i=0;i<trackedDevices<#UNIQ#>.length;i++) {
     alert(trackedDevices[i]);
    }
    */
-   trackedDevices.forEach(function(item, index) {
+   trackedDevices<#UNIQ#>.forEach(function(item, index) {
     var url = baseURL + item;
+    $.ajax({
+     url: url
+    }).done(function(data) {
+     var obj=jQuery.parseJSON(data);
+     $('.device<#UNIQ#>_'+item).html(obj.HTML);
+    });
+    /*
     ajaxManager.addReq({
      type: 'GET',
      url: url,
      success: function(data){
       var obj=jQuery.parseJSON(data);
-      $('.device'+item).html(obj.HTML);
+      $('.device_<#UNIQ#>'+item).html(obj.HTML);
      }
     });
+    */
    });
-   httpRefreshTimer = setTimeout('httpRefreshDevices();',3000);
+   httpRefreshTimer<#UNIQ#> = setTimeout('httpRefreshDevices<#UNIQ#>();',5000);
   }
 
-  var trackedDevices = [];
+  var trackedDevices<#UNIQ#> = [];
   [#begin DEVICES#]
-  trackedDevices.push([#ID#]);
+  trackedDevices<#UNIQ#>.push([#ID#]);
   [#end DEVICES#]
 
   $(function() {
    ajaxManager.run();
-   httpRefreshTimer = setTimeout('httpRefreshDevices();',5000);
+   httpRefreshTimer<#UNIQ#> = setTimeout('httpRefreshDevices<#UNIQ#>();',5000);
    $('.devicecol').on('long-press',function(e) {
     var elem_id=(jQuery(this).attr("id"));
     var url='/panel/popup/devices.html?md=devices&view_mode=edit_devices&tab=settings&no_nav=1&id='+encodeURIComponent(elem_id.replace('devicecol',''));
@@ -91,11 +97,35 @@
    });
   });
 
+  function processAllDevicesData<#UNIQ#>(data) {
+   var obj=jQuery.parseJSON(data);
+   if (typeof obj.DEVICES != 'undefined') {
+    for(var i=0;i<obj.DEVICES.length;i++) {
+     $('.device<#UNIQ#>_'+obj.DEVICES[i].ID).html(obj.DEVICES[i].HTML);
+    }
+   }
+  }
+
+  function loadAllDevicesHTML<#UNIQ#>() {
+   var url="<#ROOTHTML#>ajax/devices.html?op=loadAllDevicesHTML&view=<#VIEW#>";
+   $.ajax({
+    url: url
+   }).done(function(data) {
+    //localStorage.setItem('allDevicesList',data);
+    processAllDevicesData<#UNIQ#>(data);
+   });
+  }
 
  </script>
  [#endif DEVICES#]
 
-[#if (LOCATION_ID!="") || (TYPE!="")#]
+ [#if SINGLE_DEVICE="1"#]
+ [#begin DEVICES#]
+ <div class="device<#UNIQ#>_[#ID#]"><!-- cache_ignore_start -->[#HTML#]<!-- cache_ignore_end --></div>
+ [#end DEVICES#]
+ [#else SINGLE_DEVICE#]
+
+[#if (LOCATION_ID!="") || (TYPE!="") || (COLLECTION!="")#]
  <p><a href="<#ROOTHTML#>apps/devices.html" class="btn btn-default"><#LANG_BACK#></a></p>
  <h1>[#TITLE#]</h1>
  [#begin DEVICES#]
@@ -105,7 +135,7 @@
  <div style="clear:both"></div>
  [#endif#]
  [#if NEW_TYPE="1"#]<div style="clear:both"></div>[#endif#]
- <div class="device[#ID#] devicecol col-md-3" id="devicecol[#ID#]">[#HTML#]</div>
+ <div class="device<#UNIQ#>_[#ID#] devicecol col-md-3" id="devicecol[#ID#]">[#HTML#]</div>
  [#end DEVICES#]
 
  [#else LOCATION_ID#]
@@ -198,26 +228,6 @@
 
 
 
-  function processAllDevicesData(data) {
-   var obj=jQuery.parseJSON(data);
-   if (typeof obj.DEVICES != 'undefined') {
-    for(var i=0;i<obj.DEVICES.length;i++) {
-     $('.device'+obj.DEVICES[i].ID).html(obj.DEVICES[i].HTML);
-    }
-   }
-  }
-
-  function loadAllDevicesHTML() {
-   var url="<#ROOTHTML#>ajax/devices.html?op=loadAllDevicesHTML";
-   $.ajax({
-    url: url
-   }).done(function(data) {
-    //localStorage.setItem('allDevicesList',data);
-    processAllDevicesData(data);
-   });
-
-  }
-
   function quickNavUpdated() {
    var groupSelectedIdx=$('#sliderQuickNav').val();
    mySwiper.slideTo(groupSelectedIdx);
@@ -293,7 +303,6 @@
    </div>
   </div>
 
-
  <div class="swiper-container-nav">
   <div class="swiper-wrapper">
    [#begin GROUPS#]
@@ -301,7 +310,6 @@
    [#end GROUPS#]
   </div>
  </div>
-
  <!-- Slider main container -->
  <div class="swiper-container" style="margin-left:15px;maring-right:15px;">
   <div class="swiper-wrapper">
@@ -311,34 +319,16 @@
   <!--#<h4>[#TITLE#]</h4>#-->
   [#begin DEVICES#]
   [#if NEW_SECTION="1"#]
+  <div style="clear:both"></div>
   <div class="row"><div class="col-md-12"><hr/>[#if SECTION_TITLE!=""#]<h2>[#SECTION_TITLE#]</h2>[#endif#]</div></div>
   [#endif#]
-  <div class="device[#ID#] col-md-3 devicecol" id="devicecol[#ID#]" style="margin-bottom:5px"><!-- cache_ignore_start -->[#HTML#]<!-- cache_ignore_end --></div>
+  <div class="device<#UNIQ#>_[#ID#] col-md-3 devicecol" id="devicecol[#ID#]" style="margin-bottom:5px"><!-- cache_ignore_start -->[#HTML#]<!-- cache_ignore_end --></div>
   [#end DEVICES#]
  </div>
  [#end GROUPS#]
    </div>
   </div>
  [#endif GROUPS#]
-
- <!--#
- [#if DEVICES#]
- &nbsp;
- <div style="clear:both"></div>
- [#begin DEVICES#]
- <div id="device[#ID#]" class="col-sm-3">[#HTML#]</div>
- [#end DEVICES#]
- <div style="clear:both"></div>
- [#endif DEVICES#]
-
-[#begin LOCATIONS#]
- [#if DEVICES_TOTAL!="0"#]
-<p>
- <a href="?location_id=[#ID#]"><h2>[#TITLE#] ([#DEVICES_TOTAL#])</h2></a>
-</p>
- [#endif#]
-[#end LOCATIONS#]
-#-->
 [#endif LOCATION_ID#]
+[#endif SINGLE_DEVICE#]
 
-</div>

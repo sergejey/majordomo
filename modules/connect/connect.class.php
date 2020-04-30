@@ -160,6 +160,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         curl_close($ch);
         //DebMes("Sending message result: $result",'connect_push');
@@ -209,7 +215,12 @@ class connect extends module
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
-
+            if (defined('USE_PROXY') && USE_PROXY != '') {
+                curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                }
+            }
             //execute post
             $result = curl_exec($ch);
             //close connection
@@ -399,11 +410,66 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
     }
 
+    function requestReverseFull($msg) {
+        $data = json_decode($msg,true);
+        $url = $data['url'];
+        $method = $data['method'];
+        if ($data['params']) {
+            $params = unserialize($data['params']);
+        } else {
+            $params = array();
+        }
+        ignore_user_abort(1);
+
+        $url = BASE_URL.$url;
+        if (preg_match('/\?/',$url)) {
+            $url.='&no_session=1';
+        } else {
+            $url.='?no_session=1';
+        }
+        if ($method=='GET') {
+            $result = getURL($url);
+        } else {
+            //DebMes("$method request to $url: ".$msg,'connect_post');
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            //curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+            @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            $tmpfname = ROOT . 'cms/cached/cookie.txt';
+            curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
+            if (defined('USE_PROXY') && USE_PROXY != '') {
+                curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                }
+            }
+            $result = curl_exec($ch);
+            $data['content_type'] = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            curl_close($ch);
+        }
+        $this->sendReverseURL($data,$result);
+    }
+    
     function requestReverseURL($msg) {
         ignore_user_abort(1);
         $url = BASE_URL.$msg;
@@ -412,21 +478,28 @@ class connect extends module
         } else {
             $url.='?no_session=1';
         }
-        //debmes("Sending request $url",'reverse_urls');
+        $data=array();
+        $data['url']=$msg;
         $result = getURL($url);
-        //debmes("Sending result to Connect",'reverse_urls');
-        $this->sendReverseURL($msg,$result);
-        //debmes("Sending $msg DONE",'reverse_urls');
+        $this->sendReverseURL($data,$result);
     }
-
-    function sendReverseURL($url_requested, $result)
+    
+    function sendReverseURL($data, $result)
     {
         // POST TO SERVER
         $url = 'https://connect.smartliving.ru/reverse_proxy.php';
         $header = array('Content-Type: multipart/form-data');
+        $url_requested = $data['url'];
         $fields = array('url' => $url_requested);
-        //$probably_binary = (is_string($result) === true && ctype_print($result) === false);
-        if (preg_match('/\.css$/is', $url_requested) || preg_match('/\.js$/is', $url_requested) || !mb_detect_encoding($result)) {
+        if (IsSet($data['watermark'])) {
+            $fields['watermark']=$data['watermark'];
+        }
+        if (IsSet($data['content_type'])) {
+            $fields['content_type']=$data['content_type'];
+        }
+        if (preg_match('/\.css$/is', $url_requested)
+            || preg_match('/\.js$/is', $url_requested)
+            || !mb_detect_encoding($result)) {
             $binary_path = ROOT . 'cms/cached/reverse';
             if (!is_dir($binary_path)) {
                 umask(0);
@@ -434,7 +507,6 @@ class connect extends module
             }
             $tmpfilename = $binary_path . '/' . preg_replace('/\W/', '_', $url_requested);
             SaveFile($tmpfilename, $result);
-
             if (!function_exists('getCurlValue')) {
                 function getCurlValue($filename, $contentType, $postname)
                 {
@@ -466,6 +538,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
@@ -518,6 +596,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         if (curl_errno($ch) && !$background) {
             $errorInfo = curl_error($ch);
@@ -535,11 +619,12 @@ class connect extends module
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
         list($object_name, $property_name) = explode('.', $property);
-        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0");
-        if (!$device_rec['ID']) return;
+        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE, SYSTEM_DEVICE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0");
+        if (!$device_rec['ID'] || $device_rec['SYSTEM_DEVICE']) return;
         $fields['object'] = $object_name;
         $fields['property'] = $property_name;
         $fields['value'] = $value;
+        unset($device_rec['SYSTEM_DEVICE']);
         if ($device_rec['TITLE']) {
             $fields['device_data'] = json_encode($device_rec);
         }
@@ -559,6 +644,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $result = curl_exec($ch);
         if (curl_errno($ch) && !$background) {
             $errorInfo = curl_error($ch);
@@ -596,6 +687,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
         //close connection
@@ -666,7 +763,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
 
-
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
         //close connection
@@ -733,7 +835,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
-
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
 
@@ -865,7 +972,12 @@ class connect extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
-
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         //execute post
         $result = curl_exec($ch);
         //close connection
@@ -893,6 +1005,9 @@ class connect extends module
             if ($op=='reverse_request') {
                $this->requestReverseURL($msg);
             }
+            if ($op=='reverse_request_full') {
+                $this->requestReverseFull($msg);
+            }            
         }
     }
 

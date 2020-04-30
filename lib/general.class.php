@@ -9,52 +9,32 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
-    && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI'])
-       || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])
-       || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']))
-       || $_REQUEST['op'] != '')
-    && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])
-    && 1)
-{
-   $p = preg_quote(HOME_NETWORK);
-   $p = str_replace('\*', '\d+?', $p);
-   $p = str_replace(',', ' ', $p);
-   $p = str_replace('  ', ' ', $p);
-   $p = str_replace(' ', '|', $p);
-
-   $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
-
-   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr)!= '::1')
-   {
-      // password required
-      //echo "password required for ".$remoteAddr;exit;
-      //DebMes("checking access for ".$remoteAddr);
-
-      if (!isset($_SERVER['PHP_AUTH_USER']))
-      {
-         header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-         header("HTTP/1.0 401 Unauthorized");
-         echo "Authorization required\n";
-         exit;
-      }
-      else
-      {
-         if ($_SERVER['PHP_AUTH_USER'] != EXT_ACCESS_USERNAME || $_SERVER['PHP_AUTH_PW'] != EXT_ACCESS_PASSWORD)
-         {
+if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '') && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI']) && 1) {
+    $p = preg_quote(HOME_NETWORK);
+    $p = str_replace('\*', '\d+?', $p);
+    $p = str_replace(',', ' ', $p);
+    $p = str_replace('  ', ' ', $p);
+    $p = str_replace(' ', '|', $p);
+    
+    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
+    
+    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
+        if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            DebMes($data, 'auth');
+        } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
+            DebMes($data, 'auth');
+        } else {
             // header("Location:$PHP_SELF\n\n");
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
             header("HTTP/1.0 401 Unauthorized");
             echo "Authorization required\n";
-            
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " .
-                $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
-            DebMes($data,'auth');
-            
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            DebMes($data, 'auth');
             exit;
-         }
-      }
-   }
+        }
+    }
 }
 
 if (isset($_SERVER['REQUEST_METHOD']))
@@ -201,7 +181,9 @@ function LoadFile($filename)
    $data  = "";
    if ($f) {
       $fsize = filesize($filename);
-      $data = fread($f, $fsize);
+      if ($fsize>0) {
+         $data = fread($f, $fsize);
+      }
       fclose($f);
    }
    return $data;
@@ -381,11 +363,11 @@ function checkGeneral($field)
 function SendMail($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
-
+   $mail->setHeadCharset('UTF-8');
+   $mail->setTextCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setText($body);
-   $mail->setTextCharset('windows-1251');
 
    if ($attach != '')
    {
@@ -411,11 +393,11 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
 
+   $mail->setHeadCharset('UTF-8');
+   $mail->setHTMLCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setHTML($body);
-   $mail->setHTMLCharset('windows-1251');
-   $mail->setHeadCharset('windows-1251');
 
    if (is_array($attach))
    {
@@ -535,10 +517,14 @@ function setLocalTime($now_date, $diff = 0)
 function DebMes($errorMessage, $logLevel = "debug")
 {
 
-   if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
-    $path=LOG_DIRECTORY;
+   if (defined('SETTINGS_SYSTEM_DISABLE_DEBMES') && SETTINGS_SYSTEM_DISABLE_DEBMES==1) return;
+
+   if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+      $path = SETTINGS_SYSTEM_DEBMES_PATH;
+   } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+      $path = LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'cms/debmes';
+      $path = ROOT . 'cms/debmes';
    }
 
    if (defined('LOG_MAX_SIZE') && LOG_MAX_SIZE>0) {
@@ -550,6 +536,7 @@ function DebMes($errorMessage, $logLevel = "debug")
    // DEBUG MESSAGE LOG
    if (!is_dir($path))
    {
+      umask(0);
       mkdir($path, 0777);
    }
    if (is_array($errorMessage) || is_object($errorMessage)) {
@@ -601,6 +588,7 @@ function dprint($data = 0, $stop = 1, $show_history = 0) {
       echo "</pre><hr/>";
       echo str_repeat(' ',4096);
       flush();flush();
+      echo "<script type='text/javascript'>window.scrollTo(0,document.body.scrollHeight);</script>";
    } else {
       echo "\n---------------------------------\n";
    }

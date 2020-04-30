@@ -2,6 +2,7 @@
 
 $ot = $this->object_title;
 
+$this->callMethodSafe('keepAlive');
 $status = $this->getProperty('status');
 $currentValue = $this->getProperty('value');
 $min_value = (float)$this->getProperty('minValue');
@@ -39,4 +40,4 @@ if ($currentValue >= $min_value) {
     }
 }
 
-$this->callMethod('statusUpdated');
+//$this->callMethod('statusUpdated');

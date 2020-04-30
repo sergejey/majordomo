@@ -16,7 +16,7 @@ function inIframe () {
   var stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
   console.log('JAVASCRIPT ERROR: '+stuff);
   var tmp = new Image();
-  tmp.src = "/write_error.php?error="+encodeURIComponent(stuff);
+  tmp.src = ROOTHTML+"write_error.php?error="+encodeURIComponent(stuff);
   return true;
  }
 
@@ -235,7 +235,7 @@ function startFlashing(block_id) {
 
  function callMethod(method_name, optional_params) {
   if (typeof optional_params === 'undefined') { optional_params = ''; }
-  var url="/";
+  var url=ROOTHTML;
   url+='objects/?method='+encodeURIComponent(method_name)+'&'+optional_params;
   $.ajax({
    url: url
@@ -246,7 +246,7 @@ function startFlashing(block_id) {
 
  function runScript(script_name, optional_params) {
   if (typeof optional_params === 'undefined') { optional_params = ''; }
-  var url="/";
+  var url=ROOTHTML;
   url+='objects/?script='+encodeURIComponent(script_name)+'&'+optional_params;
   $.ajax({
    url: url
@@ -256,7 +256,7 @@ function startFlashing(block_id) {
  }
 
  function ajaxGetGlobal(varname, id, timeout) {
-  var url="/";
+  var url=ROOTHTML;
   url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);
   $.ajax({
    url: url
@@ -274,7 +274,7 @@ function startFlashing(block_id) {
 
 
  function ajaxSetGlobal(varname, value) {
-  var url="/";
+  var url=ROOTHTML;
   url+='?md=application&action=ajaxsetglobal&var='+encodeURIComponent(varname)+'&value='+encodeURIComponent(value);
   $.ajax({
    url: url
@@ -307,7 +307,7 @@ function getCookie(Name) {
 
 
 function setCookie(name, value) {
- var expire = "0, 01-01-2020 00:00:00 GMT"
+ var expire = "0, 01-01-2099 00:00:00 GMT"; // fix it someday in 2099 :)
  document.cookie = name + "=" + escape(value) + "; expires=" + expire + "; path=/";
 }
 
