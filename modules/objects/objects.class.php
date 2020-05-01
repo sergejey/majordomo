@@ -706,17 +706,21 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
+            startMeasure('getPropertyCached2');
+            if (SETTINGS_SYSTEM_USE_CASH && false !== $value = checkFromCache('MJD:' . $this->object_title . '.' . $property) ) {
+                return $value;
+            }
+            endMeasure('getPropertyCached2', 1);
+            
+            startMeasure('getProperty');
+            startMeasure('getProperty (' . $property . ')');
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
-                startMeasure('getPropertyCached2');
-                endMeasure('getPropertyCached2', 1);
-                endMeasure('getProperty (' . $property . ')', 1);
-                endMeasure('getProperty', 1);
                 return $value['VALUE'];
             }
-        }
-
-        if ($this->object_title) {
+            endMeasure('getProperty (' . $property . ')', 1);
+            endMeasure('getProperty', 1);
+            
             if ($property == 'object_title') {
                 return $this->object_title;
             } elseif ($property == 'object_description') {
@@ -727,6 +731,7 @@ class objects extends module
                 return $this->class_title;
             }
         }
+
         if ($property == 'location_title') {
             return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=" . (int)$this->location_id));
         }
@@ -762,8 +767,12 @@ class objects extends module
      */
     function setProperty($property, $value, $no_linked = 0, $source = '')
     {
-
-        if (!preg_match('/cycle/is', $property) && function_exists('verbose_log')) {
+        if (is_array($value)) {
+            //DebMes ('Wrong property ' . $property . ' cannot to be  array');
+            return ;
+        }
+        
+        if (stripos($property, 'cycle_') === false) {
             verbose_log('Property [' . $this->object_title . '.' . $property . '] set to \'' . $value . '\'');
         }
         startMeasure('setProperty');
@@ -835,8 +844,6 @@ class objects extends module
         $id = $this->getPropertyByName($property, $this->class_id, $this->id);
         endMeasure('getPropertyByName');
         $old_value = '';
-
-        $cached_name = 'MJD:' . $this->object_title . '.' . $property;
 
         startMeasure('setproperty_update');
         if ($id) {
@@ -939,8 +946,9 @@ class objects extends module
             $v['ID'] = SQLInsert('pvalues', $v);
         }
         endMeasure('setproperty_update');
-
-        saveToCache($cached_name, $value);
+		
+        $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+        if (SETTINGS_SYSTEM_USE_CASH) saveToCache($cached_name, $value);
 
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
@@ -1061,6 +1069,18 @@ class objects extends module
     }
 
     /**
+     * terminals subscription events
+     *
+     * @access public
+     */
+    function processSubscription($event, $details = '') {
+        if ($event == 'DAILY') {
+            // почистим кеш 
+	        SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
+		}
+ 
+    }
+    /**
      * Install
      *
      * Module installation routine
@@ -1069,6 +1089,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
+        subscribeToEvent($this->name, 'HOURLY');
         parent::install($parent_name);
     }
 
@@ -1081,6 +1102,7 @@ class objects extends module
      */
     function uninstall()
     {
+        unsubscribeFromEvent($this->name, 'DAILY');
         SQLDropTable('objects');
         parent::uninstall();
     }

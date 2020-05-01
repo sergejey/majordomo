@@ -4,10 +4,10 @@
  * Summary of saveToCache
  * @param mixed $key Key
  * @param mixed $value Value
- * @param mixed $ttl TTL (default 60)
+ * @param mixed $ttl TTL (24)
  * @return void
  */
-function saveToCache($key, $value, $ttl = 60)
+function saveToCache($key, $value, $ttl = 148)
 {
     if (is_array($value) || strlen($value) > 255) return;
     
@@ -16,14 +16,12 @@ function saveToCache($key, $value, $ttl = 60)
         $memory_cache[$key] = $value;
     }
     
-	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value, 'EXPIRE' => date('Y-m-d H:i:s', time() + $ttl*60));
+	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value, 'EXPIRE' => date('Y-m-d H:i:s', time() + $ttl*60*60));
     $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE) " .
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
         "'" . DbSafe1($rec['DATAVALUE']) . "'," .
         "'" . $rec['EXPIRE'] . "')";
     SQLExec($sqlQuery);
-	// почистим кеш
-	SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
 }
 
 /**
