@@ -789,7 +789,8 @@ class objects extends module
             $no_linked = 0;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = urldecode($_SERVER['REQUEST_URI']);
+	    // обрежем до 100 символов больше точно не нужно - ведь для этого надо конкретно разбиратся в мдм
+            $source = substr(urldecode($_SERVER['REQUEST_URI']), 0 , 100);
         }
         if (strlen($source) > 250) {
             $source = substr($source, 0, 250) . '...';
