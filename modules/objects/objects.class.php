@@ -1069,17 +1069,17 @@ class objects extends module
     }
 
     /**
-     * terminals subscription events
+     * Objects subscription events
      *
      * @access public
      */
     function processSubscription($event, $details = '') {
         if ($event == 'DAILY') {
             // почистим кеш 
-	        SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
-		}
- 
+            SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
+        }
     }
+
     /**
      * Install
      *
@@ -1089,7 +1089,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
-        subscribeToEvent($this->name, 'HOURLY');
+        subscribeToEvent($this->name, 'DAILY');
         parent::install($parent_name);
     }
 
