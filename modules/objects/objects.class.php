@@ -905,7 +905,7 @@ class objects extends module
                 if ($value != '' && $old_value != '' && !$prop['KEEP_HISTORY'] && file_exists(ROOT . 'cms/images/' . $old_value)) {
                     @unlink(ROOT . 'cms/images/' . $old_value);
                 }
-                if ($value == '') $value = $old_value;
+                //if ($value == '') $value = $old_value;
             }
 
             $v['VALUE'] = $value . '';
