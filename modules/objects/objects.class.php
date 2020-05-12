@@ -940,11 +940,12 @@ class objects extends module
         }
         endMeasure('setproperty_update');
 
-        // esli staroe znachenie ne ravno novomu to  - peresmotret
-        if (isset($old_value) && $old_value != $value) {
-
-            // zapishem v kesh - nothing to change
-            if (defined('SETTINGS_SYSTEM_USE_CASH') && SETTINGS_SYSTEM_USE_CASH) saveToCache ('MJD:' . $this->object_title . '.' . $property, $value);
+        // esli staroe znachenie ravno novomu to  - peresmotret
+        if (isset($old_value) && $old_value == $value) {
+            verbose_log('Property [' . $this->object_title . '.' . $property . '] no change');
+        } else {
+            // zapishem v kesh
+            if (defined('SETTINGS_SYSTEM_USE_CASH') && SETTINGS_SYSTEM_USE_CASHE) saveToCache ('MJD:' . $this->object_title . '.' . $property, $value);
         
             //zapostim  v websockety
             startMeasure('setproperty_postwebsocketqueue');
