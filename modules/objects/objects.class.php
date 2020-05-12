@@ -706,6 +706,9 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
+            if (defined('SETTINGS_SYSTEM_USE_CASH') && SETTINGS_SYSTEM_USE_CASH && false !== $value = checkFromCache('MJD:' . $this->object_title . '.' . $property) ) {
+                return $value;
+            }
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
                 startMeasure('getPropertyCached2');
@@ -760,10 +763,13 @@ class objects extends module
      *
      * @access public
      */
-    function setProperty($property, $value, $no_linked = 0, $source = '')
+    function setProperty($property, $value='', $no_linked = 0, $source = '')
     {
-
-        if (!preg_match('/cycle/is', $property) && function_exists('verbose_log')) {
+        if (is_array($value)) {
+            DebMes ('WARNING!!! Wrong property ' . $property . ' cannot to be  array', 'property');
+            return ;
+        }
+        if (stripos($property, 'cycle_') === false) {
             verbose_log('Property [' . $this->object_title . '.' . $property . '] set to \'' . $value . '\'');
         }
         startMeasure('setProperty');
@@ -771,20 +777,19 @@ class objects extends module
 
         $property = trim($property);
 
-        if (is_null($value)) {
-            $value = '';
-        }
-
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
             $no_linked = 0;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = urldecode($_SERVER['REQUEST_URI']);
+            $source = substr(urldecode($_SERVER['REQUEST_URI']), 0, 100);
         }
-        if (strlen($source) > 250) {
-            $source = substr($source, 0, 250) . '...';
+        if (strlen($source) > 247) {
+            $source = substr($source, 0, 247) . '...';
         }
+
+        $property = trim($property);
+        $value = trim($value);
 
         if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES == 1) {
             $save = 1;
@@ -834,42 +839,37 @@ class objects extends module
         startMeasure('getPropertyByName');
         $id = $this->getPropertyByName($property, $this->class_id, $this->id);
         endMeasure('getPropertyByName');
-        $old_value = '';
-
-        $cached_name = 'MJD:' . $this->object_title . '.' . $property;
 
         startMeasure('setproperty_update');
         if ($id) {
             $prop = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $id . "'");
 
-            if ($prop['VALIDATION_TYPE'] == 1) {
-                if (!is_numeric($value)) return false;
-                if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) {
-                    return false;
-                }
-                if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) {
-                    return false;
-                }
-            }
-            if ($prop['VALIDATION_TYPE'] == 2) {
-                if ($value != '1' && $value != '0') {
-                    return false;
-                }
-            }
-            if ($prop['VALIDATION_TYPE'] == 3) {
-                $items = explode(',', $prop['VALIDATION_LIST']);
-                if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
-            }
-            if ($prop['VALIDATION_TYPE'] == 100) {
-                eval($prop['VALIDATION_CODE']);
-                if (is_null($value)) return false;
+            // proverki na validnost dannih - nothing to change
+            switch ($prop['VALIDATION_TYPE']) {
+                case 1:
+                    if (!is_numeric($value)) return false;
+                    if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) return false;
+                    if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) return false;
+                    break;
+                case 2:
+                    if ($value != '1' && $value != '0') return false;
+                    break;
+                case 3:
+                    $items = explode(',', $prop['VALIDATION_LIST']);
+                    if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
+                    break;
+                case 100:
+                    eval($prop['VALIDATION_CODE']);
+                    if (is_null($value)) return false;
+                    break;
             }
 
             $property = $prop['TITLE'];
             startMeasure('setproperty_update_getvalue');
             $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
             endMeasure('setproperty_update_getvalue');
-            $old_value = $v['VALUE'];
+
+            if ($v['ID']) $old_value = $v['VALUE'];
 
             if ($prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
                 $path_parts = pathinfo($value);
@@ -940,7 +940,44 @@ class objects extends module
         }
         endMeasure('setproperty_update');
 
-        saveToCache($cached_name, $value);
+        // esli staroe znachenie ne ravno novomu to  - peresmotret
+        if (isset($old_value) && $old_value != $value) {
+
+            // zapishem v kesh - nothing to change
+            if (defined('SETTINGS_SYSTEM_USE_CASH') && SETTINGS_SYSTEM_USE_CASH) saveToCache ('MJD:' . $this->object_title . '.' . $property, $value);
+        
+            //zapostim  v websockety
+            startMeasure('setproperty_postwebsocketqueue');
+            postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            endMeasure('setproperty_postwebsocketqueue');
+            
+            // esli nado sohranyat istoriy to pyshem
+            if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+                $q_rec = array();
+                $q_rec['VALUE_ID'] = $v['ID'];
+                $q_rec['ADDED'] = date('Y-m-d H:i:s');
+                $q_rec['VALUE'] = $value . '';
+                $q_rec['SOURCE'] = $source . '';
+                $q_rec['OLD_VALUE'] = $old_value;
+                $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
+                SQLInsert('phistory_queue', $q_rec);
+            }
+		
+            if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
+                global $property_linked_history;
+                if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+                    $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
+                    $params = array();
+                    $params['PROPERTY'] = $property;
+                    $params['NEW_VALUE'] = (string)$value;
+                    $params['OLD_VALUE'] = (string)$old_value;
+                    $params['SOURCE'] = (string)$source;
+                    //$this->callMethod($prop['ONCHANGE'], $params);
+                    $this->callMethodSafe($prop['ONCHANGE'], $params);
+                    unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+                }
+            }
+	}
 
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
@@ -988,38 +1025,6 @@ class objects extends module
             endMeasure('linkedModulesProcessing');
         }
 
-        if (function_exists('postToWebSocketQueue')) {
-            startMeasure('setproperty_postwebsocketqueue');
-            postToWebSocketQueue($this->object_title . '.' . $property, $value);
-            endMeasure('setproperty_postwebsocketqueue');
-        }
-
-        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
-            $q_rec = array();
-            $q_rec['VALUE_ID'] = $v['ID'];
-            $q_rec['ADDED'] = date('Y-m-d H:i:s');
-            $q_rec['VALUE'] = $value . '';
-            $q_rec['SOURCE'] = $source . '';
-            $q_rec['OLD_VALUE'] = $old_value;
-            $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
-            SQLInsert('phistory_queue', $q_rec);
-        }
-
-        if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
-            global $property_linked_history;
-            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
-                $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
-                $params = array();
-                $params['PROPERTY'] = $property;
-                $params['NEW_VALUE'] = (string)$value;
-                $params['OLD_VALUE'] = (string)$old_value;
-                $params['SOURCE'] = (string)$source;
-                //$this->callMethod($prop['ONCHANGE'], $params);
-                $this->callMethodSafe($prop['ONCHANGE'], $params);
-                unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
-            }
-        }
-
         endMeasure('setProperty (' . $property . ')', 1);
         endMeasure('setProperty', 1);
 
@@ -1061,6 +1066,19 @@ class objects extends module
     }
 
     /**
+     * terminals subscription events
+     *
+     * @access public
+     */
+    function processSubscription($event, $details = '') {
+        if ($event == 'DAILY') {
+            // почистим кеш 
+            SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
+        }
+
+    }
+
+    /**
      * Install
      *
      * Module installation routine
@@ -1069,6 +1087,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
+        subscribeToEvent($this->name, 'DAILY');
         parent::install($parent_name);
     }
 
@@ -1081,6 +1100,7 @@ class objects extends module
      */
     function uninstall()
     {
+        unsubscribeFromEvent($this->name, 'DAILY');
         SQLDropTable('objects');
         parent::uninstall();
     }
