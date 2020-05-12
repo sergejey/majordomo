@@ -601,7 +601,7 @@ function getGlobal($varname)
         $object_name = 'ThisComputer';
     }
 
-    if (defined('SETTINGS_SYSTEM_USE_CASH') && SETTINGS_SYSTEM_USE_CASH && false !== $value = checkFromCache('MJD:' . $object_name . '.' . $property) ) {
+    if (defined('SETTINGS_SYSTEM_USE_CASHE') && SETTINGS_SYSTEM_USE_CASHE && false !== $value = checkFromCache('MJD:' . $object_name . '.' . $property) ) {
         return $value;
     }
 
