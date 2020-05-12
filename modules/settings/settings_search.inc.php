@@ -95,9 +95,9 @@ if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DISABLE_DEBMES')
     }
 }
 
-if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_USE_CASH')) {
+if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_USE_CASHE')) {
     $options = array(
-        'SYSTEM_USE_CASH' => 'Use memory to store data about objects and their properties',
+        'SYSTEM_USE_CASHE' => 'Use memory to store data about objects and their properties',
     );
     foreach ($options as $k => $v) {
         $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
