@@ -706,7 +706,7 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
-            if (defined('SETTINGS_SYSTEM_USE_CASHE') && SETTINGS_SYSTEM_USE_CASHE && false !== $value = checkFromCache('MJD:' . $this->object_title . '.' . $property) ) {
+            if (defined('SYSTEM_DISABLE_CACHE') && SYSTEM_DISABLE_CACHE && false !== $value = checkFromCache('MJD:' . $this->object_title . '.' . $property) ) {
                 return $value;
             }
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
@@ -945,7 +945,7 @@ class objects extends module
             verbose_log('Property [' . $this->object_title . '.' . $property . '] no change');
         } else {
             // zapishem v kesh
-            if (defined('SETTINGS_SYSTEM_USE_CASHE') && SETTINGS_SYSTEM_USE_CASHE) saveToCache ('MJD:' . $this->object_title . '.' . $property, $value);
+            if (defined('SYSTEM_DISABLE_CACHE') && SYSTEM_DISABLE_CACHE) saveToCache ('MJD:' . $this->object_title . '.' . $property, $value);
         
             //zapostim  v websockety
             startMeasure('setproperty_postwebsocketqueue');
