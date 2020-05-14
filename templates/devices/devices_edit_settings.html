@@ -19,6 +19,22 @@
    [#if CONFIG_HELP!=""#]<#LANG_HCB#>[#CONFIG_HELP#]<#LANG_HCE#>[#endif#]
   </div>
   <div class="col-md-7">
+   [#if CONFIG_TYPE="readonly"#]
+   [#VALUE#]
+   [#endif#]
+   [#if CONFIG_TYPE="rgb"#]
+   <script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
+   <link rel='stylesheet' href='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.css' />
+   <input type="text" value="[#VALUE#]" name="[#NAME#]_value" id="[#NAME#]_value" class="form-control colorpicker">
+   <script>
+    $("#[#NAME#]_value").spectrum({
+        preferredFormat: "hex",
+        showInput: true,
+        chooseText: "OK",
+        cancelText: "<#LANG_CANCEL#>"
+    });
+   </script>
+   [#endif#]
    [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]
    <input type="text" value="[#VALUE#]" name="[#NAME#]_value" class="form-control">
    [#endif#]
