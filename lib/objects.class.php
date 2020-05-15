@@ -600,18 +600,15 @@ function getGlobal($varname)
     } else {
         $object_name = 'ThisComputer';
     }
-    $cached_name = 'MJD:' . $object_name . '.' . $varname;
-    $cached_value = checkFromCache($cached_name);
 
-    if ($cached_value !== false) {
-        return $cached_value;
+    if (defined('SYSTEM_DISABLE_CACHE') && SYSTEM_DISABLE_CACHE && false !== $value = checkFromCache('MJD:' . $object_name . '.' . $property) ) {
+        return $value;
     }
 
     $obj = getObject($object_name);
 
     if ($obj) {
         $value = $obj->getProperty($varname);
-        saveToCache($cached_name, $value);
         return $value;
     } else {
         return 0;
@@ -931,7 +928,7 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
     if ($obj) {
         return $obj->setProperty($varname, $value, $no_linked, $source);
     } else {
-        return 0;
+        return false;
     }
 }
 

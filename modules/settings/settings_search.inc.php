@@ -95,6 +95,26 @@ if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DISABLE_DEBMES')
     }
 }
 
+if ($this->filter_name == 'system' && !defined('SYSTEM_DISABLE_CACHE')) {
+    $options = array(
+        'SYSTEM_DISABLE_CACHE' => 'Disable caching for objects and properties',
+    );
+    foreach ($options as $k => $v) {
+        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+        if (!$tmp['ID']) {
+            $tmp = array();
+            $tmp['NAME'] = $k;
+            $tmp['TITLE'] = $v;
+            $tmp['TYPE'] = 'onoff';
+            $tmp['DEFAULTVALUE'] = '1';
+            $tmp['NOTES'] = '';
+            $tmp['VALUE'] = '1';
+            $tmp['DATA'] = '';
+            SQLInsert('settings', $tmp);
+        }
+    }
+}
+
 if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DEBMES_PATH')) {
     $options = array(
         'SYSTEM_DEBMES_PATH' => 'Path to DebMes logs'
