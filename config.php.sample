@@ -6,7 +6,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 1.1
 */
-
+Привсет оттарас 
 Define('DB_HOST', 'localhost');
 Define('DB_NAME', 'db_terminal');
 Define('DB_USER', 'root');
