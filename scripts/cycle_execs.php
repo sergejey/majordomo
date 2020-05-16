@@ -17,88 +17,61 @@ $checked_time = 0;
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 SQLExec("DELETE FROM safe_execs");
 
-while (1)
-{
-   if (time() - $checked_time > 10)
-   {
-      $checked_time = time();
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-   }
+while (1) {
+    if (time() - $checked_time > 20) {
+        $checked_time = time();
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+    }
 
-   $sqlQuery = "DELETE
-                  FROM safe_execs
-                 WHERE ADDED < '" . date('Y-m-d H:i:s', time() - 180) . "'";
+    if ($exclusive = SQLSelectOne("SELECT * FROM safe_execs WHERE EXCLUSIVE = 1 ORDER BY PRIORITY DESC, ID")) {
+        if (IsWindowsOS()) {
+            $command = utf2win($exclusive['COMMAND']);
+        } else {
+            $command = $exclusive['COMMAND'];
+        }
+        SQLExec("DELETE FROM safe_execs WHERE ID = '" . $exclusive['ID'] . "'");
+        //DebMes("Executing (exclusive): " . $command,'execs');
+        try {
+            exec($command);
+        } catch (Exception $e) {
+            DebMes('Command - '. $command . '. Error: exception ' . get_class($e) . ', ' . $e->getMessage() ,'execs');
+        }    
+        if ($exclusive['ON_COMPLETE']) {
+            //DebMes("On complete code: ".$exclusive['ON_COMPLETE'], 'execs');
+            try {
+                eval($exclusive['ON_COMPLETE']);
+            } catch (Exception $e) {
+                DebMes('ON_COMPLETE command - '. $exclusive['ON_COMPLETE'] . ' for command - '.$command.' have error. Error: exception ' . get_class($e) . ', ' . $e->getMessage() ,'execs');
+            }
+        }
+        continue ;
+    }
 
-   SQLExec($sqlQuery);
+    if ($safe_execs = SQLSelectOne("SELECT * FROM safe_execs ORDER BY PRIORITY DESC, ID")) {
+        if (IsWindowsOS()) {
+            $command = utf2win($safe_execs['COMMAND']);
+        } else {
+            $command = $safe_execs['COMMAND'];
+        }
+        SQLExec("DELETE FROM safe_execs WHERE ID = '" . $safe_execs['ID'] . "'");
+        //DebMes("Executing : " . $command,'execs');
+        execInBackground($command);
+        if ($safe_execs['ON_COMPLETE']) {
+            //DebMes("On complete code: ".$safe_execs['ON_COMPLETE'], 'execs');
+            try {
+                eval($safe_execs['ON_COMPLETE']);
+            } catch (Exception $e) {
+                DebMes('ON_COMPLETE command - '. $safe_execs['ON_COMPLETE'] . ' for command - '.$command.' have error. Error: exception ' . get_class($e) . ', ' . $e->getMessage() ,'execs');
+            }
+        }
+        continue ;
+    }
 
-   $sqlQuery = "SELECT *
-                  FROM safe_execs
-                 WHERE EXCLUSIVE = 1
-                 ORDER BY PRIORITY DESC, ID LIMIT 5";
+    if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+        exit;
+    }
 
-   $safe_execs = SQLSelect($sqlQuery);
-   $total = count($safe_execs);
-
-   for ($i = 0; $i < $total; $i++)
-   {
-      if (IsWindowsOS()) {
-       $command = utf2win($safe_execs[$i]['COMMAND']);
-      } else {
-       $command = $safe_execs[$i]['COMMAND'];
-      }
-      $sqlQuery = "DELETE
-                     FROM safe_execs
-                    WHERE ID = '" . $safe_execs[$i]['ID'] . "'";
-
-      SQLExec($sqlQuery);
-
-      echo date("H:i:s") . " Executing (exclusive): " . $command . "\n";
-      //DebMes("Executing (exclusive): " . $command,'execs');
-
-      exec($command);
-      if ($safe_execs[$i]['ON_COMPLETE']) {
-         //DebMes("On complete code: ".$safe_execs[$i]['ON_COMPLETE'],'execs');
-         eval($safe_execs[$i]['ON_COMPLETE']);
-      }
-   }
-
-   $sqlQuery = "SELECT *
-                  FROM safe_execs
-                 WHERE EXCLUSIVE = 0
-                 ORDER BY PRIORITY DESC, ID";
-
-   $safe_execs = SQLSelect($sqlQuery);
-   $total = count($safe_execs);
-
-   for ($i = 0; $i < $total; $i++)
-   {
-      if (IsWindowsOS()) {
-       $command = utf2win($safe_execs[$i]['COMMAND']);
-      } else {
-       $command = $safe_execs[$i]['COMMAND'];
-      }
-      $sqlQuery = "DELETE
-                     FROM safe_execs
-                    WHERE ID = '" . $safe_execs[$i]['ID'] . "'";
-
-      SQLExec($sqlQuery);
-
-      echo date("H:i:s") . " Executing: " . $command . "\n";
-      DebMes("Executing: " . $command,'execs');
-
-      execInBackground($command);
-      if ($safe_execs[$i]['ON_COMPLETE']) {
-         DebMes("On complete code: ".$safe_execs[$i]['ON_COMPLETE'],'execs');
-         eval($safe_execs[$i]['ON_COMPLETE']);
-      }
-   }
-
-   if (file_exists('./reboot') || IsSet($_GET['onetime']))
-   {
-      exit;
-   }
-
-   sleep(1);
+    sleep(1);
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));

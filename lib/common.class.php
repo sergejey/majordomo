@@ -662,15 +662,20 @@ function runScript($id, $params = '')
     return $sc->runScript($id, $params);
 }
 
+
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
-    if (is_array($params)) {
-        $current_call.='.'.md5(json_encode($params));
-    }
     $call_stack = array();
+    if (is_array($params)) {
+        if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+            $call_stack = $params['m_c_s'];
+        }
+        unset($params['m_c_s']);
+        $current_call .= '.' . md5(json_encode($params));
+    }
     if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
         if (in_array($current_call, $call_stack)) {
@@ -679,19 +684,19 @@ function runScriptSafe($id, $params = '')
             return 0;
         }
     }
-    $call_stack[] = $current_call;
+  
     if (!is_array($params)) {
         $params = array();
     }
-    if (isSet($_SERVER['REQUEST_URI'])) {
+
+    $call_stack[] = $current_call;
+    $params['m_c_s'] = $call_stack;       
+
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && count($call_stack)>1) {
         $result = runScript($id,$params);
     } else {
-        $params['m_c_s'] = $call_stack;
-        if (session_id()) {
-            $params[session_name()] = session_id();
-        }
         $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
-    }
+    }  
     return $result;
 }
 
@@ -870,7 +875,11 @@ function execInBackground($cmd)
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
         }
     } else {
-        exec($cmd . " > /dev/null &");
+        try {
+            exec($cmd . " > /dev/null &");
+	} catch (Exception $e) {
+            DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
+        }
     }
 }
 
