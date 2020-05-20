@@ -1235,6 +1235,8 @@ $dictionary = array (
     'DEVICES_UPDATE_CLASSSES' => 'Оновити класи',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Створити автоматично',
 
+    'DEVICES_PATTERN_OPEN' => 'відкрий',
+    'DEVICES_PATTERN_CLOSE' => 'закрий',
     'DEVICES_PATTERN_TURNON' => 'включи|запали|ввімкни',
     'DEVICES_PATTERN_TURNOFF' => 'вимкни|потушкуй|відключи|виключи',
     'DEVICES_DEGREES' => 'градусів',
@@ -1305,6 +1307,8 @@ $dictionary = array (
     'ADD_UPDATE_MANUALLY' =>'Додати / оновити вручну',
     'TURNING_ON' =>'Вмикаю',
     'TURNING_OFF' =>'Вимикаю',
+    'TURNING_OPEN' =>'Відкриваю',
+    'TURNING_CLOSE' =>'Закриваю',
     'PATTERN_TIMER' => 'таймер',
     'PATTERN_DO_AFTER' => 'через',
     'PATTERN_DO_FOR' => 'на',
