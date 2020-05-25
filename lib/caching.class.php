@@ -22,8 +22,6 @@ function saveToCache($key, $value, $ttl = 60)
         "'" . DbSafe1($rec['DATAVALUE']) . "'," .
         "'" . $rec['EXPIRE'] . "')";
     SQLExec($sqlQuery);
-	// почистим кеш
-	SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
 }
 
 /**
@@ -187,5 +185,3 @@ function moveDataFromTableToMainHistory($value_id)
     SQLExec("DELETE FROM phistory WHERE $qry");
     SQLExec("INSERT INTO phistory (VALUE_ID,ADDED,VALUE,SOURCE) SELECT VALUE_ID,ADDED,VALUE,SOURCE FROM $table_name");
     SQLDropTable($table_name);
-    return true;
-}
