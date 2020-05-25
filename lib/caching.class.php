@@ -22,8 +22,6 @@ function saveToCache($key, $value, $ttl = 60)
         "'" . DbSafe1($rec['DATAVALUE']) . "'," .
         "'" . $rec['EXPIRE'] . "')";
     SQLExec($sqlQuery);
-	// почистим кеш
-	SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
 }
 
 /**
