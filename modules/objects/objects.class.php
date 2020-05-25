@@ -1061,7 +1061,7 @@ class objects extends module
     }
 
     /**
-     * terminals subscription events
+     * objects subscription events
      *
      * @access public
      */
