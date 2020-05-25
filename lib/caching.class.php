@@ -185,3 +185,5 @@ function moveDataFromTableToMainHistory($value_id)
     SQLExec("DELETE FROM phistory WHERE $qry");
     SQLExec("INSERT INTO phistory (VALUE_ID,ADDED,VALUE,SOURCE) SELECT VALUE_ID,ADDED,VALUE,SOURCE FROM $table_name");
     SQLDropTable($table_name);
+    return true;
+}
