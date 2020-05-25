@@ -1061,6 +1061,19 @@ class objects extends module
     }
 
     /**
+     * terminals subscription events
+     *
+     * @access public
+     */
+    function processSubscription($event, $details = '') {
+        if ($event == 'DAILY') {
+            // почистим кеш 
+            SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
+        }
+
+    }
+
+    /**
      * Install
      *
      * Module installation routine
@@ -1069,6 +1082,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
+        subscribeToEvent($this->name, 'DAILY');
         parent::install($parent_name);
     }
 
@@ -1081,6 +1095,7 @@ class objects extends module
      */
     function uninstall()
     {
+        unsubscribeFromEvent($this->name, 'DAILY');
         SQLDropTable('objects');
         parent::uninstall();
     }
