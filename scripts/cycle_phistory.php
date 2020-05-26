@@ -150,7 +150,7 @@ while (1) {
         }
     }
     else
-        sleep(1);
+        sleep(2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
