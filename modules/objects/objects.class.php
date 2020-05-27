@@ -944,8 +944,16 @@ class objects extends module
         }
         endMeasure('setproperty_update');
 
-        saveToCache($cached_name, $value);
-
+	// esli staroe znachenie ravno novomu 
+        if ($old_value != $value) {
+            // zapishem v kesh
+            saveToCache($cached_name, $value);
+            //zapostim  v websockety
+            startMeasure('setproperty_postwebsocketqueue');
+            postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            endMeasure('setproperty_postwebsocketqueue');
+	}
+        
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             $this->device_id &&
@@ -990,12 +998,6 @@ class objects extends module
                 endMeasure('linkedModule' . $linked_module);
             }
             endMeasure('linkedModulesProcessing');
-        }
-
-        if (function_exists('postToWebSocketQueue')) {
-            startMeasure('setproperty_postwebsocketqueue');
-            postToWebSocketQueue($this->object_title . '.' . $property, $value);
-            endMeasure('setproperty_postwebsocketqueue');
         }
 
         if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
