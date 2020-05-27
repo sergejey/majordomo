@@ -706,9 +706,7 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
-	    
-	    $cached_name = $this->object_title . '.' . $property;
-    	    $cached_value = checkFromCache($cached_name);
+    	    $cached_value = checkFromCache('MJD:' . $this->object_title . '.' . $property);
             if ($cached_value !== false) {
                 return $cached_value;
             }
