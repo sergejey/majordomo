@@ -707,7 +707,7 @@ class objects extends module
 
         if ($this->object_title) {
 	    
-	    $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+	    $cached_name = $this->object_title . '.' . $property;
     	    $cached_value = checkFromCache($cached_name);
             if ($cached_value !== false) {
                 return $cached_value;
