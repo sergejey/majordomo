@@ -23,8 +23,8 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
             $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
             DebMes($data, 'auth');
         } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
-            DebMes($data, 'auth');
+            //$data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
+            //DebMes($data, 'auth');
         } else {
             // header("Location:$PHP_SELF\n\n");
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
