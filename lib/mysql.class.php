@@ -138,12 +138,7 @@ class mysql
       else
       {
          $this->latestTransaction=time();
-         mysql_query("SET NAMES 'utf8';", $this->dbh);
-         mysql_query("SET CHARACTER SET 'utf8';", $this->dbh);
-         mysql_query("set character_set_client='utf8';", $this->dbh);
-         mysql_query("set character_set_results='utf8';", $this->dbh);
-         mysql_query("set collation_connection='utf8_general_ci';", $this->dbh);
-         
+         mysql_query("set NAMES 'utf8', CHARACTER SET 'utf8', character_set_client='utf8', character_set_results='utf8', collation_connection='utf8_general_ci';");
          return 1;
       }
    }
