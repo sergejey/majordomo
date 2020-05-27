@@ -600,12 +600,11 @@ function getGlobal($varname)
     } else {
         $object_name = 'ThisComputer';
     }
-    //$cached_name = 'MJD:' . $object_name . '.' . $varname;
-    //$cached_value = checkFromCache($cached_name);
+    $cached_value = checkFromCache('MJD:' . $object_name . '.' . $varname);
 
-    //if ($cached_value !== false) {
-       //return $cached_value;
-    //}
+    if ($cached_value !== false) {
+       return $cached_value;
+    }
 
     $obj = getObject($object_name);
 
