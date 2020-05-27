@@ -600,21 +600,21 @@ function getGlobal($varname)
     } else {
         $object_name = 'ThisComputer';
     }
-    $cached_name = 'MJD:' . $object_name . '.' . $varname;
-    $cached_value = checkFromCache($cached_name);
+    //$cached_name = 'MJD:' . $object_name . '.' . $varname;
+    //$cached_value = checkFromCache($cached_name);
 
-    if ($cached_value !== false) {
-        return $cached_value;
-    }
+    //if ($cached_value !== false) {
+       //return $cached_value;
+    //}
 
     $obj = getObject($object_name);
 
     if ($obj) {
         $value = $obj->getProperty($varname);
-        saveToCache($cached_name, $value);
+        //saveToCache($cached_name, $value);
         return $value;
     } else {
-        return 0;
+        return false;
     }
 }
 
