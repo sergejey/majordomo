@@ -706,6 +706,12 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
+	    
+	    $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+    	    $cached_value = checkFromCache($cached_name);
+            if ($cached_value !== false) {
+                return $cached_value;
+            }
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
                 startMeasure('getPropertyCached2');
@@ -714,9 +720,9 @@ class objects extends module
                 endMeasure('getProperty', 1);
                 return $value['VALUE'];
             }
-        }
+        //}
 
-        if ($this->object_title) {
+        //if ($this->object_title) {
             if ($property == 'object_title') {
                 return $this->object_title;
             } elseif ($property == 'object_description') {
