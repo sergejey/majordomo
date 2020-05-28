@@ -952,6 +952,20 @@ class objects extends module
             startMeasure('setproperty_postwebsocketqueue');
             postToWebSocketQueue($this->object_title . '.' . $property, $value);
             endMeasure('setproperty_postwebsocketqueue');
+            if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
+                global $property_linked_history;
+                if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+                    $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
+                    $params = array();
+                    $params['PROPERTY'] = $property;
+                    $params['NEW_VALUE'] = (string)$value;
+                    $params['OLD_VALUE'] = (string)$old_value;
+                    $params['SOURCE'] = (string)$source;
+                    //$this->callMethod($prop['ONCHANGE'], $params);
+                    $this->callMethodSafe($prop['ONCHANGE'], $params);
+                    unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+                }
+            }
 	}
         
         $p_lower = strtolower($property);
@@ -1009,21 +1023,6 @@ class objects extends module
             $q_rec['OLD_VALUE'] = $old_value;
             $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
             SQLInsert('phistory_queue', $q_rec);
-        }
-
-        if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
-            global $property_linked_history;
-            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
-                $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
-                $params = array();
-                $params['PROPERTY'] = $property;
-                $params['NEW_VALUE'] = (string)$value;
-                $params['OLD_VALUE'] = (string)$old_value;
-                $params['SOURCE'] = (string)$source;
-                //$this->callMethod($prop['ONCHANGE'], $params);
-                $this->callMethodSafe($prop['ONCHANGE'], $params);
-                unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
-            }
         }
 
         endMeasure('setProperty (' . $property . ')', 1);
