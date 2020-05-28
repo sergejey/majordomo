@@ -966,6 +966,16 @@ class objects extends module
                     unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
                 }
             }
+	    if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+                $q_rec = array();
+                $q_rec['VALUE_ID'] = $v['ID'];
+                $q_rec['ADDED'] = date('Y-m-d H:i:s');
+                $q_rec['VALUE'] = $value . '';
+                $q_rec['SOURCE'] = $source . '';
+                $q_rec['OLD_VALUE'] = $old_value;
+                $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
+                SQLInsert('phistory_queue', $q_rec);
+            }
 	}
         
         $p_lower = strtolower($property);
@@ -1012,17 +1022,6 @@ class objects extends module
                 endMeasure('linkedModule' . $linked_module);
             }
             endMeasure('linkedModulesProcessing');
-        }
-
-        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
-            $q_rec = array();
-            $q_rec['VALUE_ID'] = $v['ID'];
-            $q_rec['ADDED'] = date('Y-m-d H:i:s');
-            $q_rec['VALUE'] = $value . '';
-            $q_rec['SOURCE'] = $source . '';
-            $q_rec['OLD_VALUE'] = $old_value;
-            $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
-            SQLInsert('phistory_queue', $q_rec);
         }
 
         endMeasure('setProperty (' . $property . ')', 1);
