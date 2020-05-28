@@ -845,27 +845,24 @@ class objects extends module
         if ($id) {
             $prop = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $id . "'");
 
-            if ($prop['VALIDATION_TYPE'] == 1) {
-                if (!is_numeric($value)) return false;
-                if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) {
-                    return false;
-                }
-                if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) {
-                    return false;
-                }
-            }
-            if ($prop['VALIDATION_TYPE'] == 2) {
-                if ($value != '1' && $value != '0') {
-                    return false;
-                }
-            }
-            if ($prop['VALIDATION_TYPE'] == 3) {
-                $items = explode(',', $prop['VALIDATION_LIST']);
-                if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
-            }
-            if ($prop['VALIDATION_TYPE'] == 100) {
-                eval($prop['VALIDATION_CODE']);
-                if (is_null($value)) return false;
+     // proverki na validnost dannih - nothing to change
+            switch ($prop['VALIDATION_TYPE']) {
+                case 1:
+                    if (!is_numeric($value)) return false;
+                    if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) return false;
+                    if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) return false;
+                    break;
+                case 2:
+                    if ($value != '1' && $value != '0') return false;
+                    break;
+                case 3:
+                    $items = explode(',', $prop['VALIDATION_LIST']);
+                    if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
+                    break;
+                case 100:
+                    eval($prop['VALIDATION_CODE']);
+                    if (is_null($value)) return false;
+                    break;
             }
 
             $property = $prop['TITLE'];
