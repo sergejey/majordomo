@@ -764,10 +764,13 @@ class objects extends module
      *
      * @access public
      */
-    function setProperty($property, $value, $no_linked = 0, $source = '')
+    function setProperty($property, $value='', $no_linked = 0, $source = '')
     {
-
-        if (!preg_match('/cycle/is', $property) && function_exists('verbose_log')) {
+        if (is_array($value)) {
+            DebMes ('WARNING!!! Wrong property ' . $property . ' cannot to be  array', 'property');
+            return ;
+        }
+        if (stripos($property, 'cycle_') === false) {
             verbose_log('Property [' . $this->object_title . '.' . $property . '] set to \'' . $value . '\'');
         }
         startMeasure('setProperty');
@@ -775,19 +778,15 @@ class objects extends module
 
         $property = trim($property);
 
-        if (is_null($value)) {
-            $value = '';
-        }
-
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
             $no_linked = 0;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = urldecode($_SERVER['REQUEST_URI']);
+            $source = substr(urldecode($_SERVER['REQUEST_URI']), 0, 100);
         }
-        if (strlen($source) > 250) {
-            $source = substr($source, 0, 250) . '...';
+        if (strlen($source) > 100) {
+            $source = substr($source, 0, 100) . '...';
         }
 
         if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES == 1) {
