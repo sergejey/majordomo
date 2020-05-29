@@ -13,7 +13,8 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
-setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 echo "Running startup maintenance" . PHP_EOL;
 $run_from_start = 1;
@@ -56,7 +57,8 @@ echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+//        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:$cycleVarName', '$checked_time','".date('Y-m-d H:i:s',$checked_time+60)."')");
 
         $timestamp = time() - getGlobal('ThisComputer.started_time');
         setGlobal('ThisComputer.uptime', $timestamp);
@@ -78,7 +80,7 @@ while (1) {
         if ($minutes > 0) {
             $timestring .= $minutes . 'm ';
         }
-        setGlobal('ThisComputer.uptimeText', trim($timestring));
+//        setGlobal('ThisComputer.uptimeText', trim($timestring));
 
     }
 
