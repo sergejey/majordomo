@@ -25,6 +25,9 @@ if (!$limit) {
 }
 
 $checked_time = 0;
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
 $processed = array();
@@ -32,7 +35,8 @@ $processed = array();
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+//        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:$cycleVarName', '$checked_time','".date('Y-m-d H:i:s',$checked_time+60)."')");
     }
 
 
@@ -59,7 +63,7 @@ while (1) {
 
     $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory_queue;");
     $count_queue = (int)$tmp['TOTAL'];
-        
+
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT ". $limit);
     if ($queue[0]['ID']) {
         if ($count_queue>$limit && !$queue_error_status) {
