@@ -29,7 +29,7 @@ while (1)
    {
       $checked_time = time();
       //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-      SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:$cycleVarName', '$checked_time','".date('Y-m-d H:i:s',$checked_time+60)."')");
+      saveToCache("MJD:$cycleVarName", $checked_time);
       // checking all hosts
       $pinghosts->checkAllHosts();
    }
