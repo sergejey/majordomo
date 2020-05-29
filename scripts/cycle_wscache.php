@@ -28,8 +28,7 @@ while (1)
         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
         saveToCache("MJD:$cycleVarName", $checked_time);
    }
-   if (time() - $checked_time > 5)
-   {
+   if (time() - $checked_time > 5) {
       $checked_time = time();
       $queue=SQLSelect("SELECT * FROM cached_ws");
       if ($queue[0]['PROPERTY']) {
