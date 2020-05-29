@@ -61,7 +61,7 @@ while (1)
 
          if ($sent_ok) {
          $latest_sent=time();
-         SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:$cycleVarName', '$latest_sent','".date('Y-m-d H:i:s',$latest_sent+60)."')");
+         saveToCache("MJD:$cycleVarName", $latest_sent);
 
          //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
          setTimeout('restartWebSocket','sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60); //registerError("websockets","Error posting to websocket daemon.");
