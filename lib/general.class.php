@@ -869,7 +869,7 @@ function pingbt($host)
 {
     if (IsWindowsOS()) {
         $answer      = '';
-        $connect     = shell_exec(SERVER_ROOT . '/apps/blutoothscan/btdiscovery -d%a%%c%');
+        $connect     = shell_exec(ROOT . 'rc/bluetools/btdiscovery.exe -d%a%%c%');
         $PCREpattern = '/\r\n|\r|\n/u';
         $connected   = preg_replace($PCREpattern, '', $connect);
         $pos         = stripos($connected, $host);
