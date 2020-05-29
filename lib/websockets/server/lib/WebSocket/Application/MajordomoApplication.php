@@ -71,7 +71,7 @@ class MajordomoApplication extends Application
         if ($cycleName) {
 //            setGlobal($cycleName, time(), 1);
             $checked_time = time();
-            SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:ThisComputer.$cycleName', '$checked_time','".date('Y-m-d H:i:s',$checked_time+60)."')");
+            saveToCache("MJD:$cycleVarName", $checked_time);
             $ws_clients_total = count($this->_clients);
             $old_value = gg('WSClientsTotal');
             if ($ws_clients_total != $old_value) {
