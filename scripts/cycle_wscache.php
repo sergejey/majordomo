@@ -28,7 +28,7 @@ while (1)
         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
         saveToCache("MJD:$cycleVarName", $checked_time);
    }
-   if (time() - $checked_time > 5) {
+   if (time() - $checked_time > 2) {
       $checked_time = time();
       $queue=SQLSelect("SELECT * FROM cached_ws");
       if ($queue[0]['PROPERTY']) {
@@ -63,7 +63,7 @@ while (1)
           
          if ($sent_ok) {
          $latest_sent=time();
-         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
+         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
          setTimeout('restartWebSocket','sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60); //registerError("websockets","Error posting to websocket daemon.");
          } else {
          echo date("H:i:s") . ' Error while posting to websocket.'."\n";
