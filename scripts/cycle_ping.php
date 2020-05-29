@@ -23,10 +23,10 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 while (1)
 {
-   if (time() - $checked_time > 60)
-   {
-      $checked_time = time();
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+    if (time() - $checked_time > 30) {
+        //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        saveToCache("MJD:$cycleVarName", $checked_time);
+        $checked_time = time();
    }
    // checking all hosts
    $pinghosts->checkAllHosts();
@@ -34,7 +34,7 @@ while (1)
    {
       exit;
    }
-   sleep(20);
+   sleep(10);
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
