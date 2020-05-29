@@ -23,8 +23,6 @@ $limit=(int)gg('phistory_queue_limit');
 if (!$limit) {
   $limit=200;
 }
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 $checked_time = 0;
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
@@ -32,9 +30,9 @@ echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 $processed = array();
 
 while (1) {
-    if (time() - $checked_time > 30) {
-        //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        saveToCache("MJD:$cycleVarName", $checked_time);
+    if (time() - $checked_time > 5) {
+        $checked_time = time();
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
 
 
@@ -152,7 +150,7 @@ while (1) {
         }
     }
     else
-        sleep(2);
+        sleep(1);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
@@ -162,5 +160,3 @@ while (1) {
 function debug_echo($line) {
     //echo date('Y-m-d H:i:s').' '.$line."\n";
 }
-
-DebMes("Unexpected close of cycle: " . basename(__FILE__));
