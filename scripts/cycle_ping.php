@@ -18,6 +18,8 @@ include_once(DIR_MODULES . 'pinghosts/pinghosts.class.php');
 $pinghosts = new pinghosts();
 
 $checked_time = 0;
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
@@ -26,8 +28,8 @@ while (1)
    if (time() - $checked_time > 10)
    {
       $checked_time = time();
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-
+      //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+      SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:$cycleVarName', '$checked_time','".date('Y-m-d H:i:s',$checked_time+60)."')");
       // checking all hosts
       $pinghosts->checkAllHosts();
    }
