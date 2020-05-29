@@ -22,7 +22,7 @@ SQLExec("DELETE FROM safe_execs");
 while (1) {
     if (time() - $checked_time > 20) {
         $checked_time = time();
-        SQLExec("REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE)  VALUES ('MJD:$cycleVarName', '$checked_time','".date('Y-m-d H:i:s',$checked_time+60)."')");
+        saveToCache("MJD:$cycleVarName", $checked_time);
     }
 
     if ($exclusive = SQLSelectOne("SELECT * FROM safe_execs WHERE EXCLUSIVE = 1 ORDER BY PRIORITY DESC, ID")) {
