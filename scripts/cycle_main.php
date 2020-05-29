@@ -80,7 +80,7 @@ while (1) {
         if ($minutes > 0) {
             $timestring .= $minutes . 'm ';
         }
-//        setGlobal('ThisComputer.uptimeText', trim($timestring));
+        setGlobal('ThisComputer.uptimeText', trim($timestring));
 
     }
 
