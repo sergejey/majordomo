@@ -150,7 +150,7 @@ while (1) {
         }
     }
     else
-        sleep(1);
+        sleep(2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
@@ -160,3 +160,5 @@ while (1) {
 function debug_echo($line) {
     //echo date('Y-m-d H:i:s').' '.$line."\n";
 }
+
+DebMes("Unexpected close of cycle: " . basename(__FILE__));
