@@ -162,9 +162,9 @@ class mysql
          $this->latestTransaction=time();
          $this->Exec("SET NAMES 'utf8';");
          $this->Exec("SET CHARACTER SET 'utf8';");
-         $this->Exec("set character_set_client='utf8';");
-         $this->Exec("set character_set_results='utf8';");
-         $this->Exec("set collation_connection='utf8_general_ci';");
+         $this->Exec("set character_set_client='utf8mb4';");
+         $this->Exec("set character_set_results='utf8mb4';");
+         $this->Exec("set collation_connection='utf8mb4_unicode_ci';");
          return 1;
       }
 
