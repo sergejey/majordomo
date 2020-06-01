@@ -39,6 +39,7 @@ while (!$connected) {
    }
 }
 
+
 echo "CONNECTED TO DB" . PHP_EOL;
 
 $old_mask = umask(0);
@@ -131,7 +132,7 @@ if (file_exists($db_filename))
    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
    $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
    exec($mysql_path . $mysqlParam);
-   
+
    if (file_exists($db_history_filename)) {
       echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
       DebMes("Running: mysql history db restore from file: " . $db_history_filename);
@@ -149,8 +150,8 @@ echo "Checking modules.\n";
 
         //force check installed data
         $source=ROOT.'modules';
-        if ($dir = @opendir($source)) { 
-          while (($file = readdir($dir)) !== false) { 
+        if ($dir = @opendir($source)) {
+          while (($file = readdir($dir)) !== false) {
            if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) {
             @unlink(ROOT."cms/modules_installed/".$file.".installed");
            }
@@ -166,6 +167,7 @@ $ctl = new control_modules();
 //removing cached data
 echo "Clearing the cache.\n";
 SQLTruncateTable('cached_values');
+
 
 if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE==1) {
    // split data into multiple tables
@@ -366,8 +368,7 @@ while (false !== ($result = $threads->iteration()))
          }
 
       }
-
-   }
+  }
 
    $is_running=array();
    foreach($threads->commandLines as $id=>$cmd) {

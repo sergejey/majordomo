@@ -18,6 +18,9 @@ SQLTruncateTable('cached_ws');
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 $latest_sent=time();
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+
 clearTimeout('restartWebSocket');
 
 while (1)
@@ -55,10 +58,12 @@ while (1)
                $sent_ok=0;
             }
          }
-          
+
          if ($sent_ok) {
          $latest_sent=time();
-         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
+         saveToCache("MJD:$cycleVarName", $latest_sent);
+
+         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
          setTimeout('restartWebSocket','sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60); //registerError("websockets","Error posting to websocket daemon.");
          } else {
          echo date("H:i:s") . ' Error while posting to websocket.'."\n";

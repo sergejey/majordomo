@@ -13,6 +13,8 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 $checked_time = 0;
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 $cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
@@ -23,7 +25,6 @@ SQLExec("DELETE FROM safe_execs");
 while (1) {
     if (time() - $checked_time > 30) {
         $checked_time = time();
-        //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
         saveToCache("MJD:$cycleVarName", $checked_time);
     }
 

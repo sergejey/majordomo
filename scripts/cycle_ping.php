@@ -18,6 +18,8 @@ include_once(DIR_MODULES . 'pinghosts/pinghosts.class.php');
 $pinghosts = new pinghosts();
 
 $checked_time = 0;
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
