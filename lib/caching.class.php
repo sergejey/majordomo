@@ -9,7 +9,10 @@
  */
 function saveToCache($key, $value, $ttl = 532800)
 {
-    if (is_array($value) || strlen($value) > 255) return;
+    if (is_array($value) || strlen($value) > 255) {
+        SQLExec("DELETE FROM cached_values WHERE KEYWORD='".$key."'");
+        return;
+    }
     
     if (isset($_SERVER['REQUEST_METHOD'])) {
         global $memory_cache;
