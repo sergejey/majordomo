@@ -368,26 +368,25 @@ while (false !== ($result = $threads->iteration()))
          }
 
       }
-//
-      $is_running=array();
-      foreach($threads->commandLines as $id=>$cmd) {
-         if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
-            $title=$m[1];
-            $is_running[$title]=$id;
-            if (!isset($started_when[$title])) $started_when[$title]=time();
-            if ((time()-$started_when[$title])>30 && !in_array($title,$auto_restarts)) {
-               DebMes("Adding $title to auto-recovery list",'threads');
-               $auto_restarts[]=$title;
-            }
-            $cycle_updated_timestamp=getGlobal($title.'Run');
-   
-            if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
-               DebMes("Looks like $title is dead. Need to recovery",'threads');
-               registerError('cycle_hang', $title);
-               setGlobal($title.'Control','restart');
-               //$to_stop[$title]=time();
-               //$to_start[$title]=time()+5;
-            }
+  }
+
+   $is_running=array();
+   foreach($threads->commandLines as $id=>$cmd) {
+      if (preg_match('/(cycle_.+?)\.php/is',$cmd,$m)) {
+         $title=$m[1];
+         $is_running[$title]=$id;
+         if (!isset($started_when[$title])) $started_when[$title]=time();
+         if ((time()-$started_when[$title])>80 && !in_array($title,$auto_restarts)) {
+            DebMes("Adding $title to auto-recovery list",'threads');
+            $auto_restarts[]=$title;
+         }
+         $cycle_updated_timestamp=getGlobal($title.'Run');
+         if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title,$auto_restarts) && ((time()-$cycle_updated_timestamp)>30*60)) { //
+            DebMes("Looks like $title is dead. Need to recovery",'threads');
+            registerError('cycle_hang', $title);
+            setGlobal($title.'Control','restart');
+            //$to_stop[$title]=time();
+            //$to_start[$title]=time()+5;
          }
       }
    }
