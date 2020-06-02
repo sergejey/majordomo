@@ -16,41 +16,33 @@
  */
 function php_syntax_error($code)
 {
-   if (isItPythonCode($code)) {
-      return python_syntax_error($code);
-   } else {
-      $code .= "\n echo 'zzz';";
-      $code  = '<?php ' . $code . '?>';
-      //echo DOC_ROOT;exit;
-      $fileName = md5(time() . rand(0, 10000)) . '.php';
-      $filePath = DOC_ROOT . '/cms/cached/' . $fileName;
-      SaveFile($filePath, $code);
-      if (substr(php_uname(), 0, 7) == "Windows") {
-          if (defined('PATH_TO_PHP')) {
-             $cmd = PATH_TO_PHP . ' -l ' . $filePath;
-          } else {
-             $cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
-          }
-      } else {
-         $cmd = 'php -l ' . $filePath;
-      }
-      exec($cmd, $out);
-      unlink($filePath);
-      if (preg_match('/no syntax errors detected/is', $out[0]))
-      {
-         return false;
-      }
-      elseif (!trim(implode("\n", $out)))
-      {
-         return false;
-      }
-      else
-      {
-         $res = implode("\n", $out);
-         $res = preg_replace('/Errors parsing.+/is', '', $res);
+	if (isItPythonCode($code)) {
+		return python_syntax_error($code);
+	} else {
+		$code .= "\n echo 'welldone';";
+		$code  = '<?php ' . $code . '?>';
 
-         return trim($res) . "\n";
-      }
-   }
+		$fileName = md5(time() . rand(0, 10000)) . '.php';
+		$filePath = DOC_ROOT . '/cms/cached/' . $fileName;
+		SaveFile($filePath, $code);
+		if (substr(php_uname(), 0, 7) == "Windows") {
+			if (defined('PATH_TO_PHP')) {
+				$cmd = PATH_TO_PHP . ' -l ' . $filePath;
+			} else {
+				$cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
+			}
+		} else {
+			$cmd = 'php -l ' . $filePath.' 2>&1';
+		}
+		exec($cmd, $out);
+		unlink($filePath);
+		$res = implode("\n", $out);
+		
+		if(preg_match("/\.php on line \b/i", $res)) 
+			
+			return trim($res) . "\n";
+		if (preg_match("/welldone\b/i", $res)) {
+			return false;
+		}
+	}
 }
-
