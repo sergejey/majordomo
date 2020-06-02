@@ -3,13 +3,21 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 300px;
+  max-height: 20000px;
+  border: 2px solid #f7f7f7;
+  border-radius: 5px;
   color: black;
   direction: ltr;
 }
 
 /* PADDING */
-
+::-webkit-scrollbar { width: 2px; height: 7px; outline: none;}
+::-webkit-scrollbar-button {  display:none;  outline: none;}
+::-webkit-scrollbar-track {  background-color: #868686; outline: none;}
+::-webkit-scrollbar-track-piece { background-color: #ffffff; outline: none;}
+::-webkit-scrollbar-thumb { height: 50px; background-color: #868686; border-radius: 3px; outline: none;}
+::-webkit-scrollbar-corner { background-color: #868686; outline: none;}
+::-webkit-resizer { background-color: #868686; outline: none;}
 .CodeMirror-lines {
   padding: 4px 0; /* Vertical padding around content */
 }
@@ -25,20 +33,21 @@
 
 .CodeMirror-gutters {
   border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  background-color: #868686;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
-  min-width: 20px;
-  text-align: right;
-  color: #999;
-  white-space: nowrap;
+    min-width: 20px;
+    text-align: right;
+    color: #fff;
+    white-space: nowrap;
+    background: #868686 !important;
 }
 
 .CodeMirror-guttermarker { color: black; }
-.CodeMirror-guttermarker-subtle { color: #999; }
+.CodeMirror-guttermarker-subtle { color: #FFEB3B; }
 
 /* CURSOR */
 
