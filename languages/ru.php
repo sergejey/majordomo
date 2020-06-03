@@ -1254,6 +1254,8 @@ $dictionary = array(
     'DEVICES_UPDATE_CLASSSES' => 'Обновить классы',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Создать автоматически',
 
+    'DEVICES_PATTERN_OPEN' => 'открой',
+    'DEVICES_PATTERN_CLOSE' => 'закрой',
     'DEVICES_PATTERN_TURNON' => 'включи|зажги',
     'DEVICES_PATTERN_TURNOFF' => 'выключи|потуши|отключи',
     'DEVICES_DEGREES' => 'градусов',
@@ -1333,6 +1335,8 @@ $dictionary = array(
     'ADD_UPDATE_MANUALLY' =>'Добавить/обновить вручную',
     'TURNING_ON' =>'Включаю',
     'TURNING_OFF' =>'Выключаю',
+    'TURNING_OPEN' =>'Открываю',
+    'TURNING_CLOSE' =>'Закрываю',
     'PATTERN_TIMER' => 'таймер',
     'PATTERN_DO_AFTER' => 'через',
     'PATTERN_DO_FOR' => 'на',
@@ -1414,17 +1418,6 @@ $dictionary = array(
     'REMINDER_INTRO' => 'Напоминаю, что',
 
     /* end module names */
-
-    /* start array for convert number to string */
-    
-	'NUMBER_TO_STRING_1TEN' => array(array('','один','два','три','четыре','пять','шесть','семь', 'восемь','девять'), array('','одна','две','три','четыре','пять','шесть','семь', 'восемь','девять')),
-	'NUMBER_TO_STRING_2TEN' => array('десять','одиннадцать','двенадцать','тринадцать','четырнадцать' ,'пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать'),
-	'NUMBER_TO_STRING_TENS' => array(2=>'двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят' ,'восемьдесят','девяносто'),
-	'NUMBER_TO_STRING_HUNDRED' => array('','сто','двести','триста','четыреста','пятьсот','шестьсот', 'семьсот','восемьсот','девятьсот'),
-	'NUMBER_TO_STRING_UNIT' => array(array('десятая' ,'десятых' ,	 1), array(' '   ,' целая'   ,'целых '    ,0), array('тысяча'  ,'тысячи'  ,'тысяч'     ,1), array('миллион' ,'миллиона','миллионов' ,0), array('миллиард','милиарда','миллиардов',0)),
-	'NUMBER_TO_STRING_NULL' => 'ноль',
-	
-    /* end array for convert number to string  */
 
     'ENABLE_AUTO_UPDATE' => 'Включить автоматическое обновление',
     'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
