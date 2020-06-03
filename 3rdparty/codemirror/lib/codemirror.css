@@ -3,7 +3,9 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 300px;
+  max-height: 20000px;
+  border: 2px solid #f7f7f7;
+  border-radius: 5px;
   color: black;
   direction: ltr;
 }
@@ -25,20 +27,21 @@
 
 .CodeMirror-gutters {
   border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  background-color: #868686;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
-  min-width: 20px;
-  text-align: right;
-  color: #999;
-  white-space: nowrap;
+    min-width: 20px;
+    text-align: right;
+    color: #fff;
+    white-space: nowrap;
+    background: #868686 !important;
 }
 
 .CodeMirror-guttermarker { color: black; }
-.CodeMirror-guttermarker-subtle { color: #999; }
+.CodeMirror-guttermarker-subtle { color: #FFEB3B; }
 
 /* CURSOR */
 
