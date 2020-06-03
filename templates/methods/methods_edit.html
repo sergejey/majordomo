@@ -10,7 +10,7 @@
 [#endif OK#]
 
 [#if ERR#]
-  <div class="alert alert-danger">Ошибка сохранения! Ошибка синтаксиса в строке: [#ERR_LINE#]</div>
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
   <script>
 $(window).load(function() {
 	find = $('div pre.CodeMirror-line:eq([#ERR_LINE#])');
