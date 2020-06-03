@@ -22,24 +22,23 @@ setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 $cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 while (1)
 {
-   if (time() - $checked_time > 30) {
-        $checked_time = time();
-        //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        saveToCache("MJD:$cycleVarName", $checked_time);
-       // checking all hosts
-       $pinghosts->checkAllHosts();
+   if (time() - $checked_time > 100)
+   {
+      $checked_time = time();
+      //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+      saveToCache("MJD:$cycleVarName", $checked_time);
+      // checking all hosts
+      $pinghosts->checkAllHosts();
    }
 
    if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
       exit;
    }
-   sleep(5);
+   sleep(1);
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
