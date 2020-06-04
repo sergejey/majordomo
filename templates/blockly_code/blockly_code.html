@@ -61,6 +61,7 @@ $(function() {
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
+[#if SETTINGS_CODEEDITOR_THEME != 'codemirror'#]<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css">[#endif#]
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
@@ -82,35 +83,41 @@ $(function() {
 var editor;
 var myTextArea[#CODE_FIELD#];
 $(document).ready(function(){
-
-var myTextArea[#CODE_FIELD#]=document.getElementById('[#CODE_FIELD#]');
-editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
- value: myTextArea[#CODE_FIELD#].value,
- lineNumbers: true,
-        matchBrackets: true,
-        [#if TYPE=="php"#]
-        mode: "text/x-php",
-        [#else TYPE#]
-        mode: "xml",
-        htmlMode: true,
-        [#endif TYPE#]
-        indentUnit: 1,
-        indentWithTabs: false,
-        autoCloseBrackets: true,
-        foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      extraKeys: {
-        "F11": function(cm) {
-          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-        },
-        "Ctrl-S": function(instance) { document.getElementById('[#CODE_FIELD#]').form.submit(); },
-        "Esc": function(cm) {
-          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-        },
-        "Ctrl-Space": "autocomplete",
-        "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
-      }
- });
+	var myTextArea[#CODE_FIELD#] = document.getElementById('[#CODE_FIELD#]');
+	editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
+		value: myTextArea[#CODE_FIELD#].value,
+		lineNumbers: true,
+		matchBrackets: true,
+		indentUnit: 0,
+		tabSize: 4,
+		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
+		scrollbarStyle: 'native',
+		autofocus: true,
+		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_THEME != ''#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
+		
+		[#if TYPE=="php"#]
+		mode: "text/x-php",
+		[#else TYPE#]
+		mode: "xml",
+		htmlMode: true,
+		[#endif TYPE#]
+		
+		indentWithTabs: false,
+		autoCloseBrackets: [#if SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES == 1#]true[#else#]false[#endif#],
+		foldGutter: true,
+		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+		extraKeys: {
+			"F11": function(cm) {
+				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Ctrl-S": function(instance) { document.getElementById('[#CODE_FIELD#]').form.submit(); },
+			"Esc": function(cm) {
+				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			},
+			"Ctrl-Space": "autocomplete",
+			"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
+		}
+	});
 
 /*
 CodeMirror.hint.javascript = function(cm) {

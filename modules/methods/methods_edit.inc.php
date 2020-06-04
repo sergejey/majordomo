@@ -2,7 +2,15 @@
 /*
 * @version 0.1 (auto-set)
 */
-
+//Code editor settings
+if(SETTINGS_CODEEDITOR_TURNONSETTINGS == 1) {
+	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+	//Calculate max line
+	$out['SETTINGS_CODEEDITOR_SHOWLINE'] = SETTINGS_CODEEDITOR_SHOWLINE*20;
+	$out['SETTINGS_CODEEDITOR_MIXLINE'] = SETTINGS_CODEEDITOR_MIXLINE*25;
+	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+}
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
@@ -64,10 +72,14 @@
     if ($errors) {
             $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
             $out['ERR_CODE'] = 1;
-			$errorStr = explode('PHP Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
-			$errorStr = explode('Errors parsing', $errorStr[1]);
-			$errorStr = explode(' in ', $errorStr[0]);
-            $out['ERRORS'] = $errorStr[0];
+			if($out['ERR_LINE'] != '-2') {
+				$errorStr = explode('Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
+				$errorStr = explode('Errors parsing', $errorStr[1]);
+				$errorStr = explode(' in ', $errorStr[0]);
+				$out['ERRORS'] = $errorStr[0];
+			} else {
+				$out['ERRORS'] = $errors;
+			}
             $ok = 0;
         }
    }

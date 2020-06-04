@@ -1423,6 +1423,10 @@ $dictionary = array(
     'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
     'AUTO_UPDATE_TIME' => 'Время проверки и установки обновлений',
     
+	'CODEEDITOR_NOTY_TURNOFF' => 'Расширьте возможности редактора кода в настройках системы, <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">перейти в настройки</a>',
+	'RUN_SCRIPT_BTN' => 'Выполнить',
+	'SCRIPT_HOW_TO_RUN' => 'Как запустить?',
+	'SCRIPT_RUN_IN_METHOD' => 'Из метода (PHP)',
 );
 
 foreach ($dictionary as $k => $v) {

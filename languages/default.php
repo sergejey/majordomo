@@ -1422,7 +1422,11 @@ $dictionary = array(
     'ENABLE_AUTO_UPDATE' => 'Enable automatic updates',
     'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
     'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
-
+	
+	'CODEEDITOR_NOTY_TURNOFF' => 'Expand the capabilities of the code editor in the system settings, <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">go to settings</a>',
+	'RUN_SCRIPT_BTN' => 'RUN',
+	'SCRIPT_HOW_TO_RUN' => 'How to run?',
+	'SCRIPT_RUN_IN_METHOD' => 'From method (PHP)',
 
 );
 

@@ -16,7 +16,7 @@ if ($filter_name) {
 
 
 $sections = array();
-$filters = array('', 'system', 'behavior', 'hook', 'backup', 'scenes', 'calendar');
+$filters = array('', 'system', 'behavior', 'hook', 'backup', 'scenes', 'calendar', 'codeeditor');
 $total = count($filters);
 for ($i = 0; $i < $total; $i++) {
     $rec = array();
@@ -193,6 +193,51 @@ if ($this->filter_name == 'hook' && !defined('SETTINGS_HOOK_BARCODE')) {
         }
     }
 }
+
+if ($this->filter_name == 'codeeditor' && !defined('SETTINGS_CODEEDITOR')) {
+	
+	$options = array(
+		'CODEEDITOR_TURNONSETTINGS' => 'Enable these settings',
+        'CODEEDITOR_SHOWLINE' => 'Show line',
+        'CODEEDITOR_MIXLINE' => 'Minimal show line',
+        'CODEEDITOR_UPTOLINE' => 'Up to line whith error',
+        'CODEEDITOR_SHOWERROR' => 'Show error hint under line',
+        'CODEEDITOR_AUTOCLOSEQUOTES' => 'Close automatically: ()[]""',
+        'CODEEDITOR_WRAPLINES' => 'Wrap long lines',
+        'CODEEDITOR_THEME' => 'Code area theme'
+    );
+	
+	
+    foreach ($options as $k => $v) {
+        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+        if (!$tmp['ID']) {
+            $tmp = array();
+            $tmp['NAME'] = $k;
+            $tmp['TITLE'] = $v;
+			$tmp['DATA'] = '';
+			$tmp['DEFAULTVALUE'] = '';
+			
+			if ($k == 'CODEEDITOR_SHOWLINE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = '10=10|35=35|45=45|100=100|500=500|1000=1000|9999999=By code height';
+			} elseif ($k == 'CODEEDITOR_MIXLINE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = '1=1|5=5|10=10|25=25|40=40|9999999=By code height';
+			} elseif ($k == 'CODEEDITOR_THEME') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = 'codemirror=Default|smoke_theme=SmoKE xD Theme|ambiance=Ambiance|base16-light=base16-light|dracula=Dracula|icecoder=Icecoder|material=Material|moxer=Moxer|neat=Neat';
+				$tmp['DEFAULTVALUE'] = 'codemirror';
+			} else {
+				$tmp['TYPE'] = 'onoff';
+			}
+			
+			
+            $tmp['NOTES'] = '';
+            SQLInsert('settings', $tmp);
+        }
+    }
+}
+
 
 if ($this->filter_name == 'scenes' && !defined('SETTINGS_SCENES_VERTICAL_NAV')) {
     $options = array(

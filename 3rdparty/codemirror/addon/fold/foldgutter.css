@@ -7,7 +7,6 @@
 }
 .CodeMirror-foldgutter {
   width: .7em;
-  background: #868686 !important;
 }
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded {

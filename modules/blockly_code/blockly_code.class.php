@@ -141,7 +141,11 @@ class blockly_code extends module
         }
 
         $out['CODE_FIELD'] = $this->code_field;
-
+		 //Code editor settings
+		(defined('SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES')) ? $out['SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES'] = SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES : $out['SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES'] = 1;
+		(defined('SETTINGS_CODEEDITOR_WRAPLINES')) ? $out['SETTINGS_CODEEDITOR_WRAPLINES'] = SETTINGS_CODEEDITOR_WRAPLINES : $out['SETTINGS_CODEEDITOR_WRAPLINES'] = 0;
+		(defined('SETTINGS_CODEEDITOR_THEME')) ? $out['SETTINGS_CODEEDITOR_THEME'] = SETTINGS_CODEEDITOR_THEME : $out['SETTINGS_CODEEDITOR_THEME'] = 'codemirror';
+		
         $rec = SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME LIKE '" . DBSafe($this->system_name) . "'");
         $out['CODE_TYPE'] = (int)$rec['CODE_TYPE'];
         if (!$rec['ID'] && $this->owner->xml) {
