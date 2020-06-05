@@ -82,10 +82,9 @@
 
 
 <div id="code_option"[#if SCRIPT_ID!="0"#] style="display:none"[#endif#]>
-
- [#if ERRORS!=""#]<font color='red'>[#ERRORS#]</font><br>[#endif ERRORS#]
  [#module name="blockly_code" system_name="method<#ID#>" code_field="code" action=""#]
- <div id="code_area">
+ [#if ERRORS#]<div style="margin-top: 10px;color: red;border: 1px solid;border-radius: 5px;padding: 5px;background: #f2dede;width: 100%;"><b>Ошибка в коде -></b> [#ERR_FULL#]</div>[#endif ERRORS#]
+ <div id="code_area" style="margin-top: 10px;">
  [#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
 	<div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-top: 10px;margin-bottom: 10px;background: #fffdc7;">
 		<#LANG_CODEEDITOR_NOTY_TURNOFF#>

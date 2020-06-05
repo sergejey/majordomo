@@ -77,6 +77,7 @@ if(SETTINGS_CODEEDITOR_TURNONSETTINGS == 1) {
 				$errorStr = explode('Errors parsing', $errorStr[1]);
 				$errorStr = explode(' in ', $errorStr[0]);
 				$out['ERRORS'] = $errorStr[0];
+				$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
 			} else {
 				$out['ERRORS'] = $errors;
 			}
