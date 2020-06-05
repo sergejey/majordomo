@@ -44,13 +44,12 @@ if($res[0]['ID']) {
 	paging($res, 50, $out); // search result paging
 	colorizeArray($res);
 	$total = count($res);
-	/*
 	for($i=0;$i<$total;$i++) {
-		// some action for every record if required
+		if (!checkAccess('terminal', $res[$i]['ID'])) {
+			continue;// some action for every record if required
+		}
+		$out['RESULT'][] = $res[$i];
 	}
-	*/
-	$out['RESULT'] = $res;
-
 }
 
 ?>
