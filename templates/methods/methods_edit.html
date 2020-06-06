@@ -12,22 +12,20 @@
 [#if ERR#]
 	  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div> 
 	  <script>
-		$(window).load(function() {
-			find = $('div pre.CodeMirror-line:eq([#ERR_LINE#])');
-			
-			[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
-				find.attr('style', 'background: #f2dede;');
-				find.attr('id', 'errorline');
-			
-				var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
-				$('div pre.CodeMirror-line:eq([#ERR_LINE#])').append(newElems);
-			[#endif#]
-			
-			[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
-				location.href='#errorline';
-			[#endif SETTINGS_CODEEDITOR_UPTOLINE#]
-		});
-		</script>
+			$(window).load(function() {
+				[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+					find = $('div pre.CodeMirror-line:eq([#ERR_LINE#])');
+					find.attr('id', 'errorline_[#ERR_LINE#]');
+				
+					var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+					$('div pre.CodeMirror-line:eq([#ERR_LINE#])').append(newElems);
+				[#endif#]
+				
+				[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+					location.href='#errorline_[#ERR_LINE#]';
+				[#endif#]
+			});
+			</script>
 [#endif ERR#]
 
 	<style>
