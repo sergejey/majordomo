@@ -61,6 +61,7 @@ $(function() {
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
+[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css">[#endif#]
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
@@ -82,35 +83,150 @@ $(function() {
 var editor;
 var myTextArea[#CODE_FIELD#];
 $(document).ready(function(){
+	var myTextArea[#CODE_FIELD#] = document.getElementById('[#CODE_FIELD#]');
+	editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
+		value: myTextArea[#CODE_FIELD#].value,
+		lineNumbers: true,
+		matchBrackets: true,
+		indentUnit: 0,
+		tabSize: 4,
+		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
+		scrollbarStyle: 'native',
+		autofocus: true,
+		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
+		
+		[#if TYPE=="php"#]
+		mode: "text/x-php",
+		[#else TYPE#]
+		mode: "xml",
+		htmlMode: true,
+		[#endif TYPE#]
+		
+		indentWithTabs: false,
+		autoCloseBrackets: [#if SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES == 1#]true[#else#]false[#endif#],
+		foldGutter: true,
+		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+		extraKeys: {
+			"F11": function(cm) {
+				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Ctrl-S": function(instance) { document.getElementById('[#CODE_FIELD#]').form.submit(); },
+			"Esc": function(cm) {
+				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			},
+			[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
+			"Ctrl-Space": "autocomplete",
+			'"': "autocomplete",
+			[#endif#]
+			"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
+		}
+	});
+	
+	
+	[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
+	CodeMirror.registerHelper('hint', 'ajax', (mirror, callback) => {
+		let words = [[#CODEEDITOR_AUTOCOMPLETE_WORDS#]];
+		let cur = mirror.getCursor();
+		let range = mirror.findWordAt(cur);
+		let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
 
-var myTextArea[#CODE_FIELD#]=document.getElementById('[#CODE_FIELD#]');
-editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
- value: myTextArea[#CODE_FIELD#].value,
- lineNumbers: true,
-        matchBrackets: true,
-        [#if TYPE=="php"#]
-        mode: "text/x-php",
-        [#else TYPE#]
-        mode: "xml",
-        htmlMode: true,
-        [#endif TYPE#]
-        indentUnit: 1,
-        indentWithTabs: false,
-        autoCloseBrackets: true,
-        foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      extraKeys: {
-        "F11": function(cm) {
-          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-        },
-        "Ctrl-S": function(instance) { document.getElementById('[#CODE_FIELD#]').form.submit(); },
-        "Esc": function(cm) {
-          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-        },
-        "Ctrl-Space": "autocomplete",
-        "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
-      }
- });
+		callback({
+			list: words.filter(w => w.toLowerCase().indexOf(fragment) === 0),
+			from: range.anchor,
+			to: range.head
+		});
+	});
+	CodeMirror.hint.ajax.async = true;
+
+	CodeMirror.commands.autocomplete = function(mirror) {
+		mirror.showHint({ 
+			hint: CodeMirror.hint.ajax,
+			
+		});
+	};
+	
+	var ExcludedIntelliSenseTriggerKeys =
+	{
+		"8": "backspace",
+		"9": "tab",
+		"13": "enter",
+		"16": "shift",
+		"17": "ctrl",
+		"18": "alt",
+		"19": "pause",
+		"20": "capslock",
+		"27": "escape",
+		"33": "pageup",
+		"34": "pagedown",
+		"35": "end",
+		"36": "home",
+		"37": "left",
+		"38": "up",
+		"39": "right",
+		"40": "down",
+		"45": "insert",
+		"46": "delete",
+		"91": "left window key",
+		"92": "right window key",
+		"93": "select",
+		"107": "add",
+		"109": "subtract",
+		"110": "decimal point",
+		"111": "divide",
+		"112": "f1",
+		"113": "f2",
+		"114": "f3",
+		"115": "f4",
+		"116": "f5",
+		"117": "f6",
+		"118": "f7",
+		"119": "f8",
+		"120": "f9",
+		"121": "f10",
+		"122": "f11",
+		"123": "f12",
+		"144": "numlock",
+		"145": "scrolllock",
+		"186": "semicolon",
+		"187": "equalsign",
+		"188": "comma",
+		"191": "slash",
+		"192": "graveaccent",
+		"220": "backslash",
+		"222": "quote"
+	}
+
+	editor.on("keyup", function(editor, event)
+	{
+		var __Cursor = editor.getDoc().getCursor();
+		var __Token = editor.getTokenAt(__Cursor);
+
+		if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
+			CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+		}
+	});
+	[#endif#]
+	
+	editor.on('update', editor => {
+		totalLine = editor.lineCount();
+		classList = $('.CodeMirror').attr("class").split(' ');
+		//console.log(classList[4]);
+		if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList[4] != 'CodeMirror-fullscreen') {
+			setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
+			$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
+		} else if(classList[4] != 'CodeMirror-fullscreen') {
+			if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
+				setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
+				$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
+			} else {
+				$('.CodeMirror').attr('style', 'height: auto;');
+			}
+			
+		} else {
+			$('.CodeMirror').removeAttr('style');
+		}
+	});
+
 
 /*
 CodeMirror.hint.javascript = function(cm) {
@@ -132,7 +248,6 @@ editor.on('keyup', function(){
          editor.foldCode({line: l, ch: 0}, null, "fold");
     }); 
 */
-
 });
 
 
