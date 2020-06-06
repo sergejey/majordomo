@@ -186,6 +186,9 @@ if ($this->tab == 'methods') {
 
     global $overwrite;
     global $delete_meth;
+	
+	if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS') && SETTINGS_CODEEDITOR_TURNONSETTINGS == 1) $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = 1;
+	
     if ($delete_meth) {
         $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . (int)$delete_meth . "'");
         $my_meth = SQLSelectOne("SELECT * FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($method['TITLE']) . "'");

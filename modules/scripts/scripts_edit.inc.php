@@ -8,6 +8,8 @@ if ($this->owner->name == 'panel') {
 $table_name = 'scripts';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
+if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS') && SETTINGS_CODEEDITOR_TURNONSETTINGS == 1) $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = 1;
+
 if ($this->mode == 'update') {
 
     //print_r($_REQUEST);exit;

@@ -3,6 +3,9 @@
 * @version 0.1 (auto-set)
 */
 //Code editor settings
+	if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS') && SETTINGS_CODEEDITOR_TURNONSETTINGS == 1) $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = 1;
+	
+	
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
