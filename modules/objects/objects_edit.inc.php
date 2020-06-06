@@ -186,15 +186,6 @@ if ($this->tab == 'methods') {
 
     global $overwrite;
     global $delete_meth;
-	//Code editor settings
-	if(SETTINGS_CODEEDITOR_TURNONSETTINGS == 1) {
-		$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
-		//Calculate max line
-		$out['SETTINGS_CODEEDITOR_SHOWLINE'] = SETTINGS_CODEEDITOR_SHOWLINE*20;
-		$out['SETTINGS_CODEEDITOR_MIXLINE'] = SETTINGS_CODEEDITOR_MIXLINE*25;
-		$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
-		$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
-	}
     if ($delete_meth) {
         $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . (int)$delete_meth . "'");
         $my_meth = SQLSelectOne("SELECT * FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($method['TITLE']) . "'");
