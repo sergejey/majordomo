@@ -363,7 +363,13 @@ class app_player extends module {
 		if($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
 			$terminals[0]['SELECTED'] = 1;
 		}
-		$out['TERMINALS'] = $terminals;
+		foreach ($terminals as $temp_terminal) {
+			if (!checkAccess('terminal', $temp_terminal['ID'])) {
+				continue;// some action for every record if required
+			}
+			$out['TERMINALS'][] = $temp_terminal;
+		}
+		//$out['TERMINALS'] = $terminals;
 		
 		// Unique ID
 		$out['APP_PLAYER_ID'] = uniqid('app_player_');
