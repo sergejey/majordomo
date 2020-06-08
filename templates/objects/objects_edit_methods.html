@@ -66,7 +66,13 @@
 			</div>
 		    <div id="code_option" style="margin-top: 10px; margin-bottom: 10px;[#if SCRIPT_ID!="0"#]display:none;[#endif#]">
 				[#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
-				[#if ERRORS#]<div style="margin-top: 10px;color: red;border: 1px solid;border-radius: 5px;padding: 5px;background: #f2dede;width: 100%;"><b>Ошибка в коде -></b> [#ERRORS#]</div>[#endif ERRORS#]
+				[#if ERRORS#]
+					<div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+						<b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERRORS#]
+						<div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+					</div>
+					<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE#]</textarea>
+				[#endif ERRORS#]
 				<div id="code_area"  onclick="$('#lofak').html('...' + $('.CodeMirror-line').length);" style="margin-top: 10px;">
 					<textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
 				</div>

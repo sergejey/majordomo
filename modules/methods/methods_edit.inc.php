@@ -52,7 +52,8 @@
    $rec['DESCRIPTION']=$description;
   //updating 'Code' (text)
    global $code;
-   $rec['CODE']=$code;
+   $old_code=$rec['CODE'];
+    $rec['CODE'] = $code;
 
    global $run_type;
 
@@ -76,6 +77,7 @@
 				$errorStr = explode(' in ', $errorStr[0]);
 				$out['ERRORS'] = $errorStr[0];
 				$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+				$out['ERR_OLD_CODE'] = $old_code;
 			} else {
 				$out['ERRORS'] = $errors;
 			}

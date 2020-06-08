@@ -1423,6 +1423,30 @@ $dictionary = array(
     'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
     'AUTO_UPDATE_TIME' => 'Время проверки и установки обновлений',
     
+	'CODEEDITOR_NOTY_TURNOFF' => 'Расширьте возможности редактора кода в настройках системы, <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">перейти в настройки</a>',
+	'RUN_SCRIPT_BTN' => 'Выполнить',
+	'SCRIPT_HOW_TO_RUN' => 'Как запустить?',
+	'SCRIPT_RUN_IN_METHOD' => 'Из метода (PHP)',
+	
+	'CODEEDITOR_TURNONSETTINGS' => 'Включить эти настройки',
+	'CODEEDITOR_SHOWLINE' => 'Показывать строк без скролла',
+	'CODEEDITOR_MIXLINE' => 'Минимальное количество строк для отображения',
+	'CODEEDITOR_UPTOLINE' => '"Прыгать" к строке с ошибкой',
+	'CODEEDITOR_SHOWERROR' => 'Показывать ошибку под строкой',
+	'CODEEDITOR_AUTOCLOSEQUOTES' => 'Автозакрытие ()[]""',
+	'CODEEDITOR_WRAPLINES' => 'Перенос длинных строк',
+	'CODEEDITOR_THEME' => 'Тема для редактора',
+	'CODEEDITOR_BYCODEHEIGHT' => 'По высоте кода',
+	'CODEEDITOR_AUTOCOMPLETE' => 'Показывать окно автозавершения',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE' => 'Тип подсказок автозавершения',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP' => 'Только PHP',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM' => 'PHP + MJDM Функции',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER' => 'MJDM Функции + Пользовательские свойства/методы/скрипты',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_USER' => 'Пользовательские свойства/методы/скрипты',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER' => 'Всё',
+	'CODEEDITOR_AUTOSAVE_CODE' => 'Код сохранен автоматически',
+	'CODEEDITOR_ERROR_IN_CODE' => 'Ошибка в коде',
+	'CODEEDITOR_ERROR_RESTORE_CODE' => 'Вы можете восстановить предыдущий код, <a style="color: #ff574b;font-weight: bold;text-decoration: underline;" href="javascript://" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) (editor.setValue($(\'#error_old_code\').text(), $(\'#error_noty\').hide()));">восстановить?</a>',
 );
 
 foreach ($dictionary as $k => $v) {

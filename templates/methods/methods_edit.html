@@ -70,7 +70,13 @@
 
 <div id="code_option"[#if SCRIPT_ID!="0"#] style="display:none"[#endif#]>
  [#module name="blockly_code" system_name="method<#ID#>" code_field="code" action=""#]
- [#if ERRORS#]<div style="margin-top: 10px;color: red;border: 1px solid;border-radius: 5px;padding: 5px;background: #f2dede;width: 100%;"><b>Ошибка в коде -></b> [#ERR_FULL#]</div>[#endif ERRORS#]
+ [#if ERRORS#]
+	<div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+		<b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERRORS#]
+		<div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+	</div>
+	<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE#]</textarea>
+[#endif ERRORS#]
  <div id="code_area" style="margin-top: 10px;">
  [#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
 	<div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-top: 10px;margin-bottom: 10px;background: #fffdc7;">

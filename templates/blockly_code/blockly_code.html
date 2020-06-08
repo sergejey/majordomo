@@ -112,7 +112,10 @@ $(document).ready(function(){
 			"F11": function(cm) {
 				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
 			},
-			"Ctrl-S": function(instance) { document.getElementById('[#CODE_FIELD#]').form.submit(); },
+			"Ctrl-S": function(instance) { 
+				//autosave('save');
+				document.getElementById('[#CODE_FIELD#]').form.submit(); 
+			},
 			"Esc": function(cm) {
 				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
 			},
@@ -168,6 +171,7 @@ $(document).ready(function(){
 			"40": "down",
 			"45": "insert",
 			"46": "delete",
+			"83": "s",
 			"91": "left window key",
 			"92": "right window key",
 			"93": "select",
@@ -263,11 +267,26 @@ $(document).ready(function(){
 				codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
 			}
 		});
-		[#endif#]
+		[#endif#]	
 	[#endif#]
 });
 
-
+function autosave(action) {
+	//Отправляем код POST
+	id = $('input[name*="id"]').val();
+	md = $('input[name*="md"]:eq(2)').val();
+	code = editor.getValue();
+	
+	$.ajax({
+		type: "POST",
+		url: "/modules/blockly_code/autosave.php",
+		data: "id="+id+"&md="+md+"&code="+code+"&action="+action,
+		success: function(responce){
+			$('#autosave_code_in_time_div').show('slow');
+			$('#autosave_code_in_time').text(responce);
+		}
+	});	
+}
 </script>
 [#endif CODE_TYPE#]
 

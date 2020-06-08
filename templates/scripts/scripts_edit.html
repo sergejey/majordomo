@@ -16,7 +16,6 @@
 	</li>
 </ul>
 
-
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit"  class="form-horizontal">
 	[#if OK#]
 		<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
@@ -36,10 +35,8 @@
 				[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
 					location.href='#errorline_[#ERR_LINE#]';
 				[#endif#]
-				
-				
 			});
-
+					
 			</script>
 	[#endif ERR#]
 
@@ -85,13 +82,23 @@
 			<label class="col-lg-4 control-label"><#LANG_CODE#><#LANG_HCB#>code<#LANG_HCE#></label>
 			<div class="col-lg-8">
 				[#module name="blockly_code" system_name="script<#ID#>" code_field="code" action=""#]
-				[#if ERRORS#]<div style="margin-top: 10px;color: red;border: 1px solid;border-radius: 5px;padding: 5px;background: #f2dede;width: 100%;"><b>Ошибка в коде -></b> [#ERR_FULL#]</div>[#endif ERRORS#]
+				[#if ERRORS#]
+					<div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+						<b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERR_FULL#]
+						<div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+					</div>
+					<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE#]</textarea>
+				[#endif ERRORS#]
 				<div id="code_area" style="margin-top: 10px;">
 				[#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
 					<div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-top: 10px;margin-bottom: 10px;background: #fffdc7;">
 						<#LANG_CODEEDITOR_NOTY_TURNOFF#>
 					</div>
 				[#endif SETTINGS_CODEEDITOR_TURNONSETTINGS#]
+				
+				<div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;">
+					<#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>
+				</div>
 				<textarea name="code" id="code" rows=30 cols=100 class="form-control">[#CODE#]</textarea>
 				</div>
 			</div>

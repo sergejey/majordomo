@@ -60,6 +60,7 @@ if ($this->mode == 'update') {
 			//var_dump($errorStr);
             $out['ERRORS'] = $errorStr[0];
 			$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+			$out['ERR_OLD_CODE'] = $old_code;
             $ok = 0;
         }
     }

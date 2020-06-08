@@ -224,8 +224,9 @@ if ($this->tab == 'methods') {
             global $call_parent;
             global $run_type;
 
-
-            $my_meth['CODE'] = $code;
+			$old_code=$my_meth['CODE'];
+			$my_meth['CODE'] = $code;
+			
             $my_meth['CALL_PARENT'] = $call_parent;
             $my_meth['TITLE'] = $method['TITLE'];
             $my_meth['OBJECT_ID'] = $rec['ID'];
@@ -252,6 +253,7 @@ if ($this->tab == 'methods') {
 					$out['ERRORS'] = $errorStr[0];
 					$ok = 0;
 					$out['OK'] = $ok;
+					$out['ERR_OLD_CODE'] = $old_code;
 				}
 				
                 $out['CODE'] = $my_meth['CODE'];
