@@ -1,5 +1,9 @@
 /* BASICS */
 
+.line-error {
+	background: #f2dede !important;
+}
+
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;

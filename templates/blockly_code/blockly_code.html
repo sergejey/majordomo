@@ -90,10 +90,12 @@ $(document).ready(function(){
 		matchBrackets: true,
 		indentUnit: 0,
 		tabSize: 4,
+		[#if TYPE=="php"#]
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
 		scrollbarStyle: 'native',
 		autofocus: true,
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
+		[#endif#]
 		
 		[#if TYPE=="php"#]
 		mode: "text/x-php",
@@ -103,7 +105,7 @@ $(document).ready(function(){
 		[#endif TYPE#]
 		
 		indentWithTabs: false,
-		autoCloseBrackets: [#if SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES == 1#]true[#else#]false[#endif#],
+		[#if TYPE=="php"#]autoCloseBrackets: [#if SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES == 1#]true[#else#]false[#endif#],[#endif#]
 		foldGutter: true,
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		extraKeys: {
@@ -122,145 +124,146 @@ $(document).ready(function(){
 		}
 	});
 	
-	
-	[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
-	CodeMirror.registerHelper('hint', 'ajax', (mirror, callback) => {
-		let words = [[#CODEEDITOR_AUTOCOMPLETE_WORDS#]];
-		let cur = mirror.getCursor();
-		let range = mirror.findWordAt(cur);
-		let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
+	[#if TYPE=="php"#]
+		[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
+		CodeMirror.registerHelper('hint', 'ajax', (mirror, callback) => {
+			let words = [[#CODEEDITOR_AUTOCOMPLETE_WORDS#]];
+			let cur = mirror.getCursor();
+			let range = mirror.findWordAt(cur);
+			let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
 
-		callback({
-			list: words.filter(w => w.toLowerCase().indexOf(fragment) === 0),
-			from: range.anchor,
-			to: range.head
+			callback({
+				list: words.filter(w => w.toLowerCase().indexOf(fragment) === 0),
+				from: range.anchor,
+				to: range.head
+			});
 		});
-	});
-	CodeMirror.hint.ajax.async = true;
+		CodeMirror.hint.ajax.async = true;
 
-	CodeMirror.commands.autocomplete = function(mirror) {
-		mirror.showHint({ 
-			hint: CodeMirror.hint.ajax,
-			
-		});
-	};
-	
-	var ExcludedIntelliSenseTriggerKeys =
-	{
-		"8": "backspace",
-		"9": "tab",
-		"13": "enter",
-		"16": "shift",
-		"17": "ctrl",
-		"18": "alt",
-		"19": "pause",
-		"20": "capslock",
-		"27": "escape",
-		"33": "pageup",
-		"34": "pagedown",
-		"35": "end",
-		"36": "home",
-		"37": "left",
-		"38": "up",
-		"39": "right",
-		"40": "down",
-		"45": "insert",
-		"46": "delete",
-		"91": "left window key",
-		"92": "right window key",
-		"93": "select",
-		"107": "add",
-		"109": "subtract",
-		"110": "decimal point",
-		"111": "divide",
-		"112": "f1",
-		"113": "f2",
-		"114": "f3",
-		"115": "f4",
-		"116": "f5",
-		"117": "f6",
-		"118": "f7",
-		"119": "f8",
-		"120": "f9",
-		"121": "f10",
-		"122": "f11",
-		"123": "f12",
-		"144": "numlock",
-		"145": "scrolllock",
-		"186": "semicolon",
-		"187": "equalsign",
-		"188": "comma",
-		"191": "slash",
-		"192": "graveaccent",
-		"220": "backslash",
-		"222": "quote"
-	}
-
-	editor.on("keyup", function(editor, event)
-	{
-		var __Cursor = editor.getDoc().getCursor();
-		var __Token = editor.getTokenAt(__Cursor);
-
-		if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
-			CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
-		}
-	});
-	[#endif#]
-	
-	editor.on('update', editor => {
-		totalLine = editor.lineCount();
+		CodeMirror.commands.autocomplete = function(mirror) {
+			mirror.showHint({ 
+				hint: CodeMirror.hint.ajax,
+				
+			});
+		};
 		
-		classList = $('.CodeMirror').attr("class").split(' ');
-		//console.log(classList[4]);
-		if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList[4] != 'CodeMirror-fullscreen') {
-			setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
-			$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
-		} else if(classList[4] != 'CodeMirror-fullscreen') {
-			if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
-				setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
-				$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
-			} else {
-				$('.CodeMirror').attr('style', 'height: auto;');
+		var ExcludedIntelliSenseTriggerKeys =
+		{
+			"8": "backspace",
+			"9": "tab",
+			"13": "enter",
+			"16": "shift",
+			"17": "ctrl",
+			"18": "alt",
+			"19": "pause",
+			"20": "capslock",
+			"27": "escape",
+			"33": "pageup",
+			"34": "pagedown",
+			"35": "end",
+			"36": "home",
+			"37": "left",
+			"38": "up",
+			"39": "right",
+			"40": "down",
+			"45": "insert",
+			"46": "delete",
+			"91": "left window key",
+			"92": "right window key",
+			"93": "select",
+			"107": "add",
+			"109": "subtract",
+			"110": "decimal point",
+			"111": "divide",
+			"112": "f1",
+			"113": "f2",
+			"114": "f3",
+			"115": "f4",
+			"116": "f5",
+			"117": "f6",
+			"118": "f7",
+			"119": "f8",
+			"120": "f9",
+			"121": "f10",
+			"122": "f11",
+			"123": "f12",
+			"144": "numlock",
+			"145": "scrolllock",
+			"186": "semicolon",
+			"187": "equalsign",
+			"188": "comma",
+			"191": "slash",
+			"192": "graveaccent",
+			"220": "backslash",
+			"222": "quote"
+		}
+
+		editor.on("keyup", function(editor, event)
+		{
+			var __Cursor = editor.getDoc().getCursor();
+			var __Token = editor.getTokenAt(__Cursor);
+
+			if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
+				CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
 			}
-			
-		} else {
-			$('.CodeMirror').removeAttr('style');
-		}
-	});
-	
-	[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
-	editor.on('focus', editor => {
-		anc = window.location.hash.replace("#","");
-		actualLineNumber = Number(anc.split('_')[1]);
-		if(actualLineNumber) {
-			//Покажем ошибку
-			console.log('Ошибка в строке: '+ actualLineNumber);
-			myEditor = $(".CodeMirror");
-			codeMirrorEditor = myEditor[0].CodeMirror;
-			codeMirrorEditor.addLineClass(actualLineNumber-1, null, 'line-error');
-			codeMirrorEditor.addLineClass(actualLineNumber, null, 'line-error');
-			codeMirrorEditor.addLineClass(actualLineNumber+1, null, 'line-error');
-		}
-	});
-	//Обработчик событий чтобы удалить пометку строки
-	editor.on('cursorActivity', editor => {
-		//Найдем анкер
-		anc = window.location.hash.replace("#","");
-		//Сплит и получим номер строки
-		actualLineNumber = Number(anc.split('_')[1]);
-		//Найдем где курсор в редакторе
-		getCursorStart = editor.getCursor().line-1;
-		getCursorEnd = getCursorStart+2;
+		});
+		[#endif#]
 		
-		if(getCursorStart <= actualLineNumber && getCursorEnd >= actualLineNumber) {
-			//Удалим класс
-			myEditor = $(".CodeMirror");
-			codeMirrorEditor = myEditor[0].CodeMirror;
-			codeMirrorEditor.removeLineClass(actualLineNumber-1, null, 'line-error');
-			codeMirrorEditor.removeLineClass(actualLineNumber, null, 'line-error');
-			codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
-		}
-	});
+		editor.on('update', editor => {
+			totalLine = editor.lineCount();
+			
+			classList = $('.CodeMirror').attr("class").split(' ');
+			//console.log(classList[4]);
+			if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList[4] != 'CodeMirror-fullscreen') {
+				setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
+				$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
+			} else if(classList[4] != 'CodeMirror-fullscreen') {
+				if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
+					setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
+					$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
+				} else {
+					$('.CodeMirror').attr('style', 'height: auto;');
+				}
+				
+			} else {
+				$('.CodeMirror').removeAttr('style');
+			}
+		});
+		
+		[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+		editor.on('focus', editor => {
+			anc = window.location.hash.replace("#","");
+			actualLineNumber = Number(anc.split('_')[1]);
+			if(actualLineNumber) {
+				//Покажем ошибку
+				console.log('Ошибка в строке: '+ actualLineNumber);
+				myEditor = $(".CodeMirror");
+				codeMirrorEditor = myEditor[0].CodeMirror;
+				codeMirrorEditor.addLineClass(actualLineNumber-1, null, 'line-error');
+				codeMirrorEditor.addLineClass(actualLineNumber, null, 'line-error');
+				codeMirrorEditor.addLineClass(actualLineNumber+1, null, 'line-error');
+			}
+		});
+		//Обработчик событий чтобы удалить пометку строки
+		editor.on('cursorActivity', editor => {
+			//Найдем анкер
+			anc = window.location.hash.replace("#","");
+			//Сплит и получим номер строки
+			actualLineNumber = Number(anc.split('_')[1]);
+			//Найдем где курсор в редакторе
+			getCursorStart = editor.getCursor().line-1;
+			getCursorEnd = getCursorStart+2;
+			
+			if(getCursorStart <= actualLineNumber && getCursorEnd >= actualLineNumber) {
+				//Удалим класс
+				myEditor = $(".CodeMirror");
+				codeMirrorEditor = myEditor[0].CodeMirror;
+				codeMirrorEditor.removeLineClass(actualLineNumber-1, null, 'line-error');
+				codeMirrorEditor.removeLineClass(actualLineNumber, null, 'line-error');
+				codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
+			}
+		});
+		[#endif#]
 	[#endif#]
 });
 
