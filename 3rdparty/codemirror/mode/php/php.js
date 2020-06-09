@@ -79,7 +79,8 @@
     return "string";
   }
 
-  var phpKeywords = "abstract and array as break case catch class clone const continue declare default " +
+	
+   var phpKeywords = "abstract and array as break case catch class clone const continue declare default " +
     "do else elseif enddeclare endfor endforeach endif endswitch endwhile extends final " +
     "for foreach function global goto if implements interface instanceof namespace " +
     "new or private protected public static switch throw trait try use var while xor " +
@@ -133,6 +134,11 @@
       '"': function(_stream, state) {
         (state.tokStack || (state.tokStack = [])).push('"', 0);
         state.tokenize = phpString('"');
+        return "string";
+      },
+	  "'": function(_stream, state) {
+        (state.tokStack || (state.tokStack = [])).push("'", 0);
+        state.tokenize = phpString("'");
         return "string";
       },
       "{": function(_stream, state) {

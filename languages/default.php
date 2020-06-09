@@ -1423,7 +1423,30 @@ $dictionary = array(
     'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
     'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
 
-
+	'CODEEDITOR_NOTY_TURNOFF' => 'Expand the capabilities of the code editor in the system settings, <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">go to settings</a>',
+	'RUN_SCRIPT_BTN' => 'RUN',
+	'SCRIPT_HOW_TO_RUN' => 'How to run?',
+	'SCRIPT_RUN_IN_METHOD' => 'From method (PHP)',
+	
+	'CODEEDITOR_TURNONSETTINGS' => 'Enable these settings',
+	'CODEEDITOR_SHOWLINE' => 'Show line',
+	'CODEEDITOR_MIXLINE' => 'Minimal show line',
+	'CODEEDITOR_UPTOLINE' => 'Up to line whith error',
+	'CODEEDITOR_SHOWERROR' => 'Show error hint under line',
+	'CODEEDITOR_AUTOCLOSEQUOTES' => 'Close automatically: ()[]""',
+	'CODEEDITOR_WRAPLINES' => 'Wrap long lines',
+	'CODEEDITOR_THEME' => 'Code area theme',
+	'CODEEDITOR_BYCODEHEIGHT' => 'By code height',
+	'CODEEDITOR_AUTOCOMPLETE' => 'Show autocompletion window',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE' => 'Autocompletion type',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP' => 'Only PHP',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM' => 'PHP+MJDM Function',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER' => 'MJDM Function+USER Method/Scripts',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_USER' => 'USER Method/Scripts',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER' => 'All',
+	'CODEEDITOR_AUTOSAVE_CODE' => 'The code is saved automatically',
+	'CODEEDITOR_ERROR_IN_CODE' => 'Error in code',
+	'CODEEDITOR_ERROR_RESTORE_CODE' => 'Can you restore the previous code, <a style="color: #ff574b;font-weight: bold;text-decoration: underline;" href="javascript://" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) (editor.setValue($(\'#error_old_code\').text(), $(\'#error_noty\').hide()));">restore?</a>',
 );
 
 foreach ($dictionary as $k => $v) {
