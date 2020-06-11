@@ -4,6 +4,10 @@
   Website:    https://material-theme.site/
 */
 
+.line-error {
+	background: #773535 !important;
+}
+
 .cm-s-material.CodeMirror {
   background-color: #263238;
   color: #EEFFFF;

@@ -1,7 +1,8 @@
-/* Based on https://github.com/dempfi/ayu */
+
+.cm-matchhighlight {background-color: #c3c3c3;outline: none;border: 1px dotted;}
 
 .cm-s-smoke_theme.CodeMirror { background: #ffffff; color: #000000; }
-.cm-s-smoke_theme div.CodeMirror-selected { background: #bfbfbf;}
+.cm-s-smoke_theme div.CodeMirror-selected { background: #e4e4e4;}
 .cm-s-smoke_theme .CodeMirror-line::selection, .cm-s-smoke_theme .CodeMirror-line > span::selection, .cm-s-smoke_theme .CodeMirror-line > span > span::selection { background: rgba(241, 241, 241, 0.28); }
 .cm-s-smoke_theme .CodeMirror-line::-moz-selection, .cm-s-smoke_theme .CodeMirror-line > span::-moz-selection, .cm-s-smoke_theme .CodeMirror-line > span > span::-moz-selection { background: rgba(241, 241, 241, 0.28)); }
 .cm-s-smoke_theme .CodeMirror-gutters { background: #868686; border-right: 0px; }
@@ -24,7 +25,7 @@
 .cm-s-smoke_theme span.cm-builtin { color: #14712d; }
 .cm-s-smoke_theme span.cm-string { color: #d64747; }
 
-.cm-s-smoke_theme span.cm-variable { color: #25a016; }
+.cm-s-smoke_theme span.cm-variable { color: #000000; }
 .cm-s-smoke_theme span.cm-variable-2 { color: #1000ff;font-weight: bold; }
 .cm-s-smoke_theme span.cm-variable-3 { color: #39bae6; }
 .cm-s-smoke_theme span.cm-type { color: #ff8f40; }
@@ -33,7 +34,7 @@
 .cm-s-smoke_theme span.cm-tag { color: rgba(57, 186, 230, 80); }
 .cm-s-smoke_theme span.cm-header { color: #c2d94c; }
 .cm-s-smoke_theme span.cm-link { color: #39bae6; }
-.cm-s-smoke_theme span.cm-error { color: #ff3333; } 
+.cm-s-smoke_theme div.cm-error { color: #ff3333; } 
 
 .cm-s-smoke_theme .CodeMirror-activeline-background { background: #01060e; }
 .cm-s-smoke_theme .CodeMirror-matchingbracket {

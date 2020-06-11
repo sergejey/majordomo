@@ -152,6 +152,7 @@ class blockly_code extends module
 		(defined('SETTINGS_CODEEDITOR_SHOWLINE')) ? $out['SETTINGS_CODEEDITOR_SHOWLINE'] = SETTINGS_CODEEDITOR_SHOWLINE : $out['SETTINGS_CODEEDITOR_SHOWLINE'] = '20';
 		(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) ? $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS : $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = '0';
 		(defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE')) ? $out['SETTINGS_CODEEDITOR_AUTOCOMPLETE'] = SETTINGS_CODEEDITOR_AUTOCOMPLETE : $out['SETTINGS_CODEEDITOR_AUTOCOMPLETE'] = '0';
+		(defined('SETTINGS_CODEEDITOR_AUTOSAVE')) ? $out['SETTINGS_CODEEDITOR_AUTOSAVE'] = SETTINGS_CODEEDITOR_AUTOSAVE : $out['SETTINGS_CODEEDITOR_AUTOSAVE'] = '0';
 		if(defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE')) {
 			$typeAutocomplete = SETTINGS_CODEEDITOR_AUTOCOMPLETE_TYPE;
 			
@@ -199,7 +200,7 @@ class blockly_code extends module
 					$words .= "'->getProperty(\"".$value['title']."\")', ";
 				}
 				
-				$out['CODEEDITOR_AUTOCOMPLETE_WORDS'] = $words;
+				$out['CODEEDITOR_AUTOCOMPLETE_WORDS'] = "' ', ".$words;
 			}				
 			
 		}
@@ -264,7 +265,7 @@ class blockly_code extends module
             if (isset(${$this->code_field . "_code_type"})) {
                 $rec['CODE_TYPE'] = (int)${$this->code_field . "_code_type"};
             } else {
-                $rec['CODE_TYPE'] = 2;
+                $rec['CODE_TYPE'] = 0;
             }
             if (!$rec['CODE_TYPE']) {
                 //$rec['XML']='';

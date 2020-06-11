@@ -4,6 +4,10 @@
   Website:    https://github.com/moxer-theme/moxer-code
 */
 
+.line-error {
+	background: #773535 !important;
+}
+
 .cm-s-moxer.CodeMirror {
   background-color: #090A0F;
   color: #8E95B4;

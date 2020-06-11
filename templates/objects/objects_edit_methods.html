@@ -45,11 +45,8 @@
 				
 				[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
 					location.href='#errorline_[#ERR_LINE#]';
-				[#endif#]
-				
-				
+				[#endif#]				
 			});
-
 			</script>
 		[#endif ERR#]
 		<form action="?" method="post" name="frmEdit" id="frmEdit">
@@ -73,7 +70,10 @@
 					</div>
 					<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE#]</textarea>
 				[#endif ERRORS#]
-				<div id="code_area"  onclick="$('#lofak').html('...' + $('.CodeMirror-line').length);" style="margin-top: 10px;">
+				<div id="code_area" style="margin-top: 10px;">
+					<div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;margin-left: 5px;margin-bottom: 4px;">
+						<i class="glyphicon glyphicon-floppy-saved" style="vertical-align: top;"></i> <#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>. <#LANG_CODEEDITOR_AUTOSAVE_CODE_HELP#>
+					</div>
 					<textarea name="code" id="code" rows=20 cols=100 class="field span10">[#CODE#]</textarea>
 				</div>
 			</div>
@@ -85,6 +85,7 @@
 			<label><input type="radio" name="call_parent" value="0"[#if CALL_PARENT="0"#] checked[#endif#]> <#LANG_NEVER#></label>
 			<br><br>
 			<button type="submit" name="ok" value="<#LANG_UPDATE#>" class="btn btn-success"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_SUBMIT#></button>
+			<a href="javascript://" onclick="ajaxAutosave('checkcode');" id="checkCodeBtn" class="btn btn-info"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> <#LANG_CODEEDITOR_CHECK_ON_ERROR_BTN#></a>
 			<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>" class="btn btn-default"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> <#LANG_CANCEL#></a>
 			<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_meth=<#METHOD_ID#>" class="btn btn-danger" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> <#LANG_DELETE#></a>
 			<a href="<#ROOTHTML#>objects/?object=<#OBJECT_TITLE_URL#>&op=m&m=<#METHOD_TITLE_URL#>" target="_blank" class="btn btn-primary" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-play-circle" aria-hidden="true"></i> <#LANG_RUN_SCRIPT_BTN#></a>
