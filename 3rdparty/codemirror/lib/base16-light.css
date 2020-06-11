@@ -8,6 +8,10 @@
 
 */
 
+.line-error {
+	background: #000000 !important;
+}
+
 .cm-s-base16-light.CodeMirror { background: #f5f5f5; color: #202020; }
 .cm-s-base16-light div.CodeMirror-selected { background: #e0e0e0; }
 .cm-s-base16-light .CodeMirror-line::selection, .cm-s-base16-light .CodeMirror-line > span::selection, .cm-s-base16-light .CodeMirror-line > span > span::selection { background: #e0e0e0; }
@@ -32,7 +36,7 @@
 .cm-s-base16-light span.cm-bracket { color: #202020; }
 .cm-s-base16-light span.cm-tag { color: #ac4142; }
 .cm-s-base16-light span.cm-link { color: #aa759f; }
-.cm-s-base16-light span.cm-error { background: #ac4142; color: #505050; }
+.cm-s-base16-light div.cm-error { color: #ffffff; }
 
 .cm-s-base16-light .CodeMirror-activeline-background { background: #DDDCDC; }
 .cm-s-base16-light .CodeMirror-matchingbracket { color: #f5f5f5 !important; background-color: #6A9FB5 !important}

@@ -81,19 +81,35 @@ if ($this->tab == 'logic') {
         $method_rec['CALL_PARENT'] = 1;
         $method_rec['ID'] = SQLInsert('methods', $method_rec);
     }
+	
+	if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+		$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+		$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+		$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+	}
+	
     if ($this->mode == 'update') {
         global $code;
-        $method_rec['CODE'] = $code;
-
+		
+		$old_code=$method_rec['CODE'];
+		$method_rec['CODE'] = $code;
+		
         $ok = 1;
         if ($method_rec['CODE'] != '') {
-            //echo $content;
             $errors = php_syntax_error($method_rec['CODE']);
-            if ($errors) {
-                $out['ERR_CODE'] = 1;
-                $out['ERRORS'] = nl2br($errors);
-                $ok = 0;
-            }
+		
+			if ($errors) {
+				$out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+				$out['ERR_CODE'] = 1;
+				$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+				$errorStr = explode('Errors parsing', $errorStr[1]);
+				$errorStr = explode(' in ', $errorStr[0]);
+				//var_dump($errorStr);
+				$out['ERRORS'] = $errorStr[0];
+				$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+				$out['ERR_OLD_CODE'] = $old_code;
+				$ok = 0;
+			}
         }
         if ($ok) {
             SQLUpdate('methods', $method_rec);

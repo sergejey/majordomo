@@ -83,6 +83,9 @@
 		<#LANG_CODEEDITOR_NOTY_TURNOFF#>
 	</div>
 [#endif SETTINGS_CODEEDITOR_TURNONSETTINGS#]
+	<div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;margin-left: 5px;margin-bottom: 4px;">
+		<i class="glyphicon glyphicon-floppy-saved" style="vertical-align: top;"></i> <#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>. <#LANG_CODEEDITOR_AUTOSAVE_CODE_HELP#>
+	</div>
   <textarea name="code" id="code" rows=30 cols=100 class="form-control">[#CODE#]</textarea>
  </div>
 </div>
@@ -117,6 +120,7 @@
 		[#else ID#]
 			<button class="btn btn-default btn-success" type="submit" name="subm" value="<#LANG_ADD#>"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_ADD#></button>
 		[#endif ID#]
+		<a href="javascript://" onclick="ajaxAutosave('checkcode');" id="checkCodeBtn" class="btn btn-info"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> <#LANG_CODEEDITOR_CHECK_ON_ERROR_BTN#></a>
 		<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> <#LANG_CANCEL#></a>
     </div>
 </div>
