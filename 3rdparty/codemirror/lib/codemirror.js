@@ -3172,7 +3172,12 @@
       if (top < 0) { top = 0; }
       top = Math.round(top);
       bottom = Math.round(bottom);
-      fragment.appendChild(elt("div", null, "CodeMirror-selected", ("position: absolute; \n                             top: " + top + "px; width: " + (width == null ? rightSide : width+15) + "px;\n                             height: " + (bottom - top) + "px")));
+	  if(left == 9) {
+		  left = 4;
+		  if(width != null) width = width+5;
+	  }
+	  
+      fragment.appendChild(elt("div", null, "CodeMirror-selected", ("position: absolute; left: " + left + "px;\n                             top: " + top + "px; width: " + (width == null ? rightSide - left : width) + "px;\n                             height: " + (bottom - top) + "px")));
     }
 
     function drawForLine(line, fromArg, toArg) {

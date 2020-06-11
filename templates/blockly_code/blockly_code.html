@@ -199,6 +199,16 @@ $(document).ready(function(){
 			"40": "down",
 			"45": "insert",
 			"46": "delete",
+			"48": "0",
+			"49": "1",
+			"50": "2",
+			"51": "3",
+			"52": "4",
+			"53": "5",
+			"54": "6",
+			"55": "7",
+			"56": "8",
+			"57": "9",
 			"91": "left window key",
 			"92": "right window key",
 			"93": "select",
@@ -247,7 +257,7 @@ $(document).ready(function(){
 			
 			classList = $('.CodeMirror').attr("class").split(' ');
 			if(!actualLineNumber) {
-				if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList[4] != 'CodeMirror-fullscreen') {
+				if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList.indexOf('CodeMirror-fullscreen') == '-1') {
 					setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
 					$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
 				} else if(classList[4] != 'CodeMirror-fullscreen') {
