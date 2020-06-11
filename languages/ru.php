@@ -1445,8 +1445,21 @@ $dictionary = array(
 	'CODEEDITOR_AUTOCOMPLETE_TYPE_USER' => 'Пользовательские свойства/методы/скрипты',
 	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER' => 'Всё',
 	'CODEEDITOR_AUTOSAVE_CODE' => 'Код сохранен автоматически',
+	'CODEEDITOR_AUTOSAVE_CODE_HELP' => 'Нажмите <code>CTRL+R</code> для восстановления!',
 	'CODEEDITOR_ERROR_IN_CODE' => 'Ошибка в коде',
 	'CODEEDITOR_ERROR_RESTORE_CODE' => 'Вы можете восстановить предыдущий код, <a style="color: #ff574b;font-weight: bold;text-decoration: underline;" href="javascript://" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) (editor.setValue($(\'#error_old_code\').text(), $(\'#error_noty\').hide()));">восстановить?</a>',
+	'CODEEDITOR_CHECK_ON_ERROR_BTN' => 'Проверить на ошибки',
+	'CODEEDITOR_RESTORE' => 'Восстановить',
+	'CODEEDITOR_CLOSE_BTN' => 'Закрыть',
+	'CODEEDITOR_CREATE' => 'Создан',
+	'CODEEDITOR_AUTOSAVE' => 'Автосохранение кода',
+	'CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS' => 'Только вручную (CTRL+O)',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5' => 'Через 5 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10' => 'Через 10 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15' => 'Через 15 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Через 30 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Через 1 минуту',
+	
 );
 
 foreach ($dictionary as $k => $v) {

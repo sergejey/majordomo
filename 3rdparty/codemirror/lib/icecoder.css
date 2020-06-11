@@ -2,6 +2,10 @@
 ICEcoder default theme by Matt Pass, used in code editor available at https://icecoder.net
 */
 
+.line-error {
+	background: #9e9e9e !important;
+}
+
 .cm-s-icecoder { color: #666; background: #1d1d1b; }
 
 .cm-s-icecoder span.cm-keyword { color: #eee; font-weight:bold; }  /* off-white 1 */
@@ -33,7 +37,7 @@ ICEcoder default theme by Matt Pass, used in code editor available at https://ic
 .cm-s-icecoder span.cm-quote { color: #186718; }                   /* dark green */
 .cm-s-icecoder span.cm-hr { color: #888; }                         /* mid-grey */
 .cm-s-icecoder span.cm-link { color: #e1c76e; }                    /* yellow */
-.cm-s-icecoder span.cm-error { color: #d00; }                      /* red */
+.cm-s-icecoder div.cm-error { color: #d00; }                      /* red */
 
 .cm-s-icecoder .CodeMirror-cursor { border-left: 1px solid white; }
 .cm-s-icecoder div.CodeMirror-selected { color: #fff; background: #037; }

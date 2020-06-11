@@ -11,13 +11,11 @@
  }
 </script>
 
-
-<#LANG_CODE_TYPE#>:<br>
-
-<div>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
+<div style="margin-top: 3px;">
+	<#LANG_CODE_TYPE#>:
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
 </div>
 
  <script language="javascript">
@@ -28,16 +26,19 @@
       if (thisCheck.val()==0) {
           $('#xml_row').hide();
           $('#[#CODE_FIELD#]_area').show();
+          $('#checkCodeBtn').show();
           $('#[#CODE_FIELD#]_devices').hide();
       }
       if (thisCheck.val()==1) {
         $('#xml_row').show();
         $('#[#CODE_FIELD#]_area').hide();
+        $('#checkCodeBtn').hide();
         $('#[#CODE_FIELD#]_devices').hide();
       }
       if (thisCheck.val()==2) {
           $('#xml_row').hide();
           $('#[#CODE_FIELD#]_area').hide();
+          $('#checkCodeBtn').hide();
           $('#[#CODE_FIELD#]_devices').show();
       }
   }
@@ -78,6 +79,10 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/comment-fold.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/closebrackets.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/match-highlighter.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/search.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/dialog.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 
 <script language="javascript">
 var editor;
@@ -90,6 +95,7 @@ $(document).ready(function(){
 		matchBrackets: true,
 		indentUnit: 0,
 		tabSize: 4,
+		
 		[#if TYPE=="php"#]
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
 		scrollbarStyle: 'native',
@@ -113,9 +119,31 @@ $(document).ready(function(){
 				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
 			},
 			"Ctrl-S": function(instance) { 
-				//autosave('save');
+				[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
 				document.getElementById('[#CODE_FIELD#]').form.submit(); 
+				return;
 			},
+			"Ctrl-E": function(cm) { 
+				ajaxAutosave('checkcode');
+				return;
+			},
+			"Ctrl-O": function(cm) { 
+				ajaxAutosave('save');
+				return;
+			},
+			"Ctrl-R": function(cm) { 
+				modalRestoreCode();
+				return;
+			},
+			"Ctrl-D": function(cm) { 
+				var current_cursor = cm.doc.getCursor();
+				var line_content = cm.doc.getLine(current_cursor.line);
+				CodeMirror.commands.goLineEnd(cm);
+				CodeMirror.commands.newlineAndIndent(cm);
+				cm.doc.replaceSelection(line_content);
+				cm.doc.setCursor(current_cursor.line + 1, current_cursor.ch);
+			},
+			"Ctrl-F": "findPersistent",
 			"Esc": function(cm) {
 				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
 			},
@@ -171,7 +199,6 @@ $(document).ready(function(){
 			"40": "down",
 			"45": "insert",
 			"46": "delete",
-			"83": "s",
 			"91": "left window key",
 			"92": "right window key",
 			"93": "select",
@@ -202,8 +229,7 @@ $(document).ready(function(){
 			"222": "quote"
 		}
 
-		editor.on("keyup", function(editor, event)
-		{
+		editor.on("keyup", function(editor, event) {
 			var __Cursor = editor.getDoc().getCursor();
 			var __Token = editor.getTokenAt(__Cursor);
 
@@ -214,23 +240,29 @@ $(document).ready(function(){
 		[#endif#]
 		
 		editor.on('update', editor => {
+			anc = window.location.hash.replace("#","");
+			actualLineNumber = Number(anc.split('_')[1]);
+			
 			totalLine = editor.lineCount();
 			
 			classList = $('.CodeMirror').attr("class").split(' ');
-			//console.log(classList[4]);
-			if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList[4] != 'CodeMirror-fullscreen') {
-				setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
-				$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
-			} else if(classList[4] != 'CodeMirror-fullscreen') {
-				if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
-					setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
-					$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
+			if(!actualLineNumber) {
+				if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList[4] != 'CodeMirror-fullscreen') {
+					setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
+					$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
+				} else if(classList[4] != 'CodeMirror-fullscreen') {
+					if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
+						setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
+						$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
+					} else {
+						$('.CodeMirror').attr('style', 'height: auto;');
+					}
+					
 				} else {
-					$('.CodeMirror').attr('style', 'height: auto;');
+					$('.CodeMirror').removeAttr('style');
 				}
-				
 			} else {
-				$('.CodeMirror').removeAttr('style');
+				$('.CodeMirror').attr('style', 'height: auto;');
 			}
 		});
 		
@@ -240,7 +272,6 @@ $(document).ready(function(){
 			actualLineNumber = Number(anc.split('_')[1]);
 			if(actualLineNumber) {
 				//Покажем ошибку
-				console.log('Ошибка в строке: '+ actualLineNumber);
 				myEditor = $(".CodeMirror");
 				codeMirrorEditor = myEditor[0].CodeMirror;
 				codeMirrorEditor.addLineClass(actualLineNumber-1, null, 'line-error');
@@ -267,30 +298,171 @@ $(document).ready(function(){
 				codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
 			}
 		});
+		editor.on('dblclick', editor => {
+			editor.setOption('highlightSelectionMatches', {showToken: false, wordsOnly: false, annotateScrollbar: false});
+		});
+		[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]
+		editor.on('change', editor => {
+			clearInterval(getCookie('autosavetimerid'));
+			document.cookie = 'autosavetimerid='+setTimeout(function() { ajaxAutosave('save'); }, [#SETTINGS_CODEEDITOR_AUTOSAVE#]000);
+		});
+		[#endif#]
 		[#endif#]	
 	[#endif#]
 });
 
-function autosave(action) {
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+	"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function escapeHtml(text, type='scape') {
+	if(type == 'scape') { 
+		var map = {
+			'&': '!amp',
+			'<': '!lt',
+			'>': '!gt',
+			'"': '!quot',
+			"'": '!039',
+			"(": '!lpar',
+			")": '!rpar',
+			"\\": '!bsol',
+			"#": '!num',
+			";": '!endline',
+			"\n": '!newline',
+			"+": '!plus',
+			"-": '!minus',
+		};
+		
+		return text.replace(/[&<>()\+\-#;\n\"']/g, function(m) { return map[m]; });
+	} else if(type == 'unscape') {
+		var map = {
+			'!amp': '&',
+			'!lt': '<',
+			'!gt': '>',
+			'!quot': '"',
+			'!039': "'",
+			'!lpar' : "(",
+			'!rpar' : ")",
+			'!bsol' : "\\",
+			'!num' : "#",
+			'!endline' : ";",
+			"!newline": '\n',
+			"!plus": '+',
+			"!minis": '-',
+		};
+		
+		return text.replace(/!amp|!lt|!gt|!quot|!039|!lpar|!rpar|!bsol|!num|!endline|!newline|!plus|!minis/g, function(m) { return map[m]; });
+	}
+}
+
+function ajaxAutosave(action) {
 	//Отправляем код POST
 	id = $('input[name*="id"]').val();
 	md = $('input[name*="md"]:eq(2)').val();
 	code = editor.getValue();
+	code = escapeHtml(code);
 	
 	$.ajax({
 		type: "POST",
 		url: "/modules/blockly_code/autosave.php",
 		data: "id="+id+"&md="+md+"&code="+code+"&action="+action,
 		success: function(responce){
-			$('#autosave_code_in_time_div').show('slow');
-			$('#autosave_code_in_time').text(responce);
+			responce = JSON.parse(responce);
+			if(responce.status != 'ok') return;
+			
+			if(action == 'checkcode') {
+				$('#autosave_check_code_div').show('slow');
+				if(responce.msg) {
+					alert('В коде есть ошибка: '+responce.msg);
+				} else {
+					alert('Ошибок в коде нет!');
+				}
+			}
+			if(action == 'save') {
+				$('#autosave_code_in_time_div').show('slow');
+				$('#autosave_code_in_time').html(responce.msg);
+			}
+			if(action == 'restore') {
+				let i = 0;
+				responseArray = responce.msg;
+				
+				$("#restoreCodeList").html('');
+				while (i <= responseArray.length) {
+					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-warning btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
+					i++;
+				}
+			}
 		}
 	});	
+}
+
+function setValueEditor(code) {
+	ajaxAutosave('save');
+	var code = escapeHtml(code, 'unscape');
+	editor.setValue(code);
+	clearInterval(getCookie('autosavetimerid'));
+}
+
+function seeCodeFunc(code) {
+	var code = escapeHtml(code, 'unscape');
+	$('#restoreCodeTable').hide();
+	$('#seeRestoreCode').html(code);
+	$('#seeRestoreCodeDiv').show();
+}
+
+function modalRestoreCode() {
+	ajaxAutosave('restore');
+	$('#showAutosaveModal').modal('show')
 }
 </script>
 [#endif CODE_TYPE#]
 
 [#if TYPE=="php"#]
+<div class="modal fade" tabindex="-1" role="dialog" id="showAutosaveModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Восстановить код</h4>
+			</div>
+			<div class="modal-body" style="padding: 20px 20px 0px 20px;">
+				<div style="row">
+					<div style="max-height: 350px;overflow: auto;" id="restoreCodeTable">
+						<table class="table" style="font-size: 1.2rem;text-align: center;">
+							<thead class="thead-dark">
+								<tr>
+									<th scope="col"><#LANG_NAME#></th>
+									<th scope="col" style="text-align: center;"><#LANG_CODEEDITOR_CREATE#></th>
+									<th scope="col" style="text-align: center;"><#LANG_PREVIEW#></th>
+									<th scope="col" style="text-align: center;"></th>
+								</tr>
+							</thead>
+							<tbody id="restoreCodeList">
+							
+							</tbody>
+						</table>
+					</div>
+					
+					<div id="seeRestoreCodeDiv" style="display:none;"> 
+						<textarea id="seeRestoreCode" style="width: 100%;height: 400px;border: 1px solid #ddd;padding: 5px;border-radius: 5px;resize: none;">
+							
+						</textarea>
+						<center>
+							<button type="button" class="btn btn-default btn-sm" style="margin-top: 15px;" onclick="$('#seeRestoreCodeDiv').hide();$('#restoreCodeTable').show();"><#LANG_BACK#></button>
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal"><#LANG_CODEEDITOR_CLOSE_BTN#></button>	
+			</div>
+		</div>
+	</div>
+</div>
+
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
 <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();" class="btn btn-default btn-success"><#LANG_EDIT#></a>
     <br/>

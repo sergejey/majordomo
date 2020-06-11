@@ -7,6 +7,11 @@
 
 */
 
+.line-error {
+	background: #4a1212 !important;
+}
+
+.cm-matchhighlight {background-color: #3F51B5;outline: none;border: 1px dotted;}
 
 .cm-s-dracula.CodeMirror, .cm-s-dracula .CodeMirror-gutters {
   background-color: #282a36 !important;

@@ -199,7 +199,17 @@ if ($this->filter_name == 'hook' && !defined('SETTINGS_HOOK_BARCODE')) {
     }
 }
 
-if ($this->filter_name == 'codeeditor' && !defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+if ($this->filter_name == 'codeeditor') {
+	
+	if(!defined('SETTINGS_CODEEDITOR_TURNONSETTINGS') || !defined('SETTINGS_CODEEDITOR_SHOWLINE') || 
+		!defined('SETTINGS_CODEEDITOR_MIXLINE') || !defined('SETTINGS_CODEEDITOR_UPTOLINE') || 
+		!defined('SETTINGS_CODEEDITOR_SHOWERROR') || !defined('SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES') || 
+		!defined('SETTINGS_CODEEDITOR_WRAPLINES') || !defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE') || 
+		!defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE_TYPE') || !defined('SETTINGS_CODEEDITOR_THEME') || !defined('SETTINGS_CODEEDITOR_AUTOSAVE')) {
+			
+			$cmd = "DELETE FROM `settings` WHERE `NAME` LIKE '%CODEEDITOR_%'";
+			SQLExec($cmd);
+	}
 	
 	$options = array(
 		'CODEEDITOR_TURNONSETTINGS' => LANG_CODEEDITOR_TURNONSETTINGS,
@@ -212,6 +222,7 @@ if ($this->filter_name == 'codeeditor' && !defined('SETTINGS_CODEEDITOR_TURNONSE
         'CODEEDITOR_AUTOCOMPLETE' => LANG_CODEEDITOR_AUTOCOMPLETE,
         'CODEEDITOR_AUTOCOMPLETE_TYPE' => LANG_CODEEDITOR_AUTOCOMPLETE_TYPE,
 		'CODEEDITOR_THEME' => LANG_CODEEDITOR_THEME,
+		'CODEEDITOR_AUTOSAVE' => LANG_CODEEDITOR_AUTOSAVE,
     );
 	
 	
@@ -230,6 +241,9 @@ if ($this->filter_name == 'codeeditor' && !defined('SETTINGS_CODEEDITOR_TURNONSE
 			} elseif ($k == 'CODEEDITOR_MIXLINE') {
 				$tmp['TYPE'] = 'select';
 				$tmp['DATA'] = '5=5|10=10|25=25|40=40|1='.LANG_CODEEDITOR_BYCODEHEIGHT;
+			} elseif ($k == 'CODEEDITOR_AUTOSAVE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = '0='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS.'|5='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5.'|10='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10.'|15='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15.'|30='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30.'|60='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60;
 			} elseif ($k == 'CODEEDITOR_THEME') {
 				$tmp['TYPE'] = 'select';
 				$tmp['DATA'] = 'codemirror='.LANG_DEFAULT.'|smoke_theme=SmoKE xD Theme|ambiance=Ambiance|base16-light=base16-light|dracula=Dracula|icecoder=Icecoder|material=Material|moxer=Moxer|neat=Neat';
@@ -489,10 +503,4 @@ if ($this->mode == 'update') {
         sg($service . 'Control', 'restart');
     }
     $this->redirect("?updated=1&filter_name=" . $this->filter_name);
-}
-
-if($this->filter_name == 'codeeditor' && $this->clear_codeeditor == '1') {
-	$cmd = "DELETE FROM `settings` WHERE `NAME` LIKE '%CODEEDITOR_%'";
-	SQLExec($cmd);
-	$this->redirect("?filter_name=" . $this->filter_name);
 }
