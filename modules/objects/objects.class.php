@@ -766,10 +766,21 @@ class objects extends module
      */
     function setProperty($property, $value='', $no_linked = 0, $source = '')
     {
+        // chek value as array
         if (is_array($value)) {
-            DebMes ('WARNING!!! Wrong property ' . $property . ' cannot to be  array', 'property');
+            DebMes ('WARNING!!! Wrong property ' . $property .' is set  property '. serialize($value). ' cannot to be  array', 'property');
             return ;
         }
+        // chek property as NULL
+        if ($property === NULL) {
+            DebMes ('WARNING!!! Wrong property ' . $property . ' is set '. $value . ' cannot to be  NULL', 'property');
+            return ;
+        }
+        // chek value as NULL
+        if ($value === NULL) {
+            DebMes ('WARNING!!! Wrong property ' . $property . ' is set value '. $value . ' cannot to be  NULL', 'property');
+            return ;
+        } 
         if (stripos($property, 'cycle_') === false) {
             verbose_log('Property [' . $this->object_title . '.' . $property . '] set to \'' . $value . '\'');
         }
