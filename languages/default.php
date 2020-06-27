@@ -1143,6 +1143,9 @@ $dictionary = array(
     'DEVICES_COUNTER' => 'Meter/Counter',
     'DEVICES_BATTERY_LOW' => 'Low battery',
     'DEVICES_UNKNOWN_COMMAND'=>'Unknown command...',
+    'DEVICES_MSG_OPENING'=>'Opening message text',
+    'DEVICES_MSG_CLOSING'=>'Closing message text',
+    'DEVICES_MSG_REMINDER'=>'Reminder message text',
 
 // Measure
     'M_VOLTAGE' => 'V',
