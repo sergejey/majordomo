@@ -182,11 +182,17 @@ if ($this->tab == 'properties') {
 }
 // step: methods
 if ($this->tab == 'methods') {
-
+	
 
     global $overwrite;
     global $delete_meth;
-
+	
+	if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+		$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+		$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+		$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+	}
+	
     if ($delete_meth) {
         $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . (int)$delete_meth . "'");
         $my_meth = SQLSelectOne("SELECT * FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($method['TITLE']) . "'");
@@ -218,8 +224,9 @@ if ($this->tab == 'methods') {
             global $call_parent;
             global $run_type;
 
-
-            $my_meth['CODE'] = $code;
+			$old_code=$my_meth['CODE'];
+			$my_meth['CODE'] = $code;
+			
             $my_meth['CALL_PARENT'] = $call_parent;
             $my_meth['TITLE'] = $method['TITLE'];
             $my_meth['OBJECT_ID'] = $rec['ID'];
@@ -233,17 +240,26 @@ if ($this->tab == 'methods') {
 
             if ($run_type == 'code' && $my_meth['CODE'] != '') {
                 //echo $content;
-                $errors = php_syntax_error($my_meth['CODE']);
-                if ($errors) {
-                    $out['ERR_CODE'] = 1;
-                    $out['ERRORS'] = nl2br($errors);
-                    $ok = 0;
-                }
+                
+				$errors = php_syntax_error($my_meth['CODE']);
+		
+				if ($errors) {
+					$out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+					$out['ERR_CODE'] = 1;
+					$errorStr = explode('Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
+					$errorStr = explode('Errors parsing', $errorStr[1]);
+					$errorStr = explode(' in ', $errorStr[0]);
+					//var_dump($errorStr);
+					$out['ERRORS'] = $errorStr[0];
+					$ok = 0;
+					$out['OK'] = $ok;
+					$out['ERR_OLD_CODE'] = $old_code;
+				}
+				
                 $out['CODE'] = $my_meth['CODE'];
             }
 
             if ($ok) {
-
                 if ($my_meth['ID']) {
                     SQLUpdate('methods', $my_meth);
                 } else {
@@ -252,7 +268,6 @@ if ($this->tab == 'methods') {
                 $out['OK'] = 1;
 
             }
-
         }
         if (!$my_meth['ID']) {
             $out['CALL_PARENT'] = 1;

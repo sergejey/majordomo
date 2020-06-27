@@ -104,3 +104,4 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('DISABLE_SIMPLE_DEVICES',1); // disables simple devices behavior
 //Define('AUDIO_PLAYER','omxplayer --no-osd'); // audio-player for linux
 //Define('ENABLE_FORK',1); // enables process fork (consumes more memory but speeds up some operations)
+//Define('PYTHON_PATH','python'); // path to python

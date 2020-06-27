@@ -318,6 +318,7 @@ $to_start = array();
 $to_stop = array();
 $started_when = array();
 
+$thisComputerObject = getObject('Computer.ThisComputer');
 
 while (false !== ($result = $threads->iteration())) {
 
@@ -325,7 +326,7 @@ while (false !== ($result = $threads->iteration())) {
 
         $last_cycles_control_check = time();
 
-        $qry = "OBJECT_ID=" . getObject('Computer.ThisComputer')->id . " AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
+        $qry = "OBJECT_ID=" . $thisComputerObject->id . " AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
         $cycles = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
 
         $total = count($cycles);

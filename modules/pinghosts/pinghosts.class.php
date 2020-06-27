@@ -246,7 +246,7 @@ function usual(&$out) {
     if ($host['COUNTER_CURRENT']>=$host['COUNTER_REQUIRED']) {
      $host['STATUS']=$host['STATUS_EXPECTED'];
      $host['COUNTER_CURRENT']=0;
-    } else {
+    } elseif ($old_status!=$new_status) {
      $interval=min($online_interval, $offline_interval, 20);
      $online_interval=$interval;
      $offline_interval=$interval;
