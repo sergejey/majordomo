@@ -359,7 +359,7 @@ while (false !== ($result = $threads->iteration())) {
                 $title = $m[1];
                 $is_running[$title] = $id;
                 if (!isset($started_when[$title])) $started_when[$title] = time();
-                if ((time() - $started_when[$title]) > 30 && !in_array($title, $auto_restarts)) {
+                if ((time() - $started_when[$title]) > 120 && !in_array($title, $auto_restarts)) {
                     DebMes("Adding $title to auto-recovery list", 'threads');
                     $auto_restarts[] = $title;
                 }
@@ -457,4 +457,3 @@ while (false !== ($result = $threads->iteration())) {
 }
 
 unlink('./reboot');
-
