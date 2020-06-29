@@ -62,10 +62,14 @@
     //echo $content;
     $errors=php_syntax_error($code);
     if ($errors) {
-     $out['ERR_CODE']=1;
-     $out['ERRORS']=nl2br($errors);
-     $ok=0;
-    }
+            $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+            $out['ERR_CODE'] = 1;
+			$errorStr = explode('PHP Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
+			$errorStr = explode('Errors parsing', $errorStr[1]);
+			$errorStr = explode(' in ', $errorStr[0]);
+            $out['ERRORS'] = $errorStr[0];
+            $ok = 0;
+        }
    }
 
   //UPDATING RECORD

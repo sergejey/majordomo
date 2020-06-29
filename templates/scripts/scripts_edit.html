@@ -25,8 +25,20 @@
 [#endif OK#]
 [#if ERR#]
   <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
+  <script>
+$(window).load(function() {
+	find = $('div pre.CodeMirror-line:eq([#ERR_LINE#])');
+	find.attr('style', 'background: #f2dede;');
+	find.attr('id', 'errorline');
 
+	var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+   
+    $('div pre.CodeMirror-line:eq([#ERR_LINE#])').append(newElems); 
+	
+	location.href='#errorline';
+}); 
+</script>
+[#endif ERR#]
 
 <div class="form-group ">
         <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
