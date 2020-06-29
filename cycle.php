@@ -43,32 +43,13 @@ while (!$connected) {
 echo "CONNECTED TO DB" . PHP_EOL;
 
 $old_mask = umask(0);
-if (is_dir(ROOT . 'cached')) {
-    DebMes("Removing cache from " . ROOT . 'cached');
-    removeTree(ROOT . 'chached');
-}
-if (is_dir(ROOT . 'cms/cached')) {
-    DebMes("Removing cache from " . ROOT . 'cms/cached');
-    removeTree(ROOT . 'cms/chached');
-}
 
-// moving some folders to ./cms/
-$move_folders = array(
-    'debmes',
-    'saverestore',
-    'sounds',
-    'texts');
-foreach ($move_folders as $folder) {
-    if (is_dir(ROOT . $folder)) {
-        echo "Moving " . ROOT . $folder . ' to ' . ROOT . 'cms/' . $folder . "\n";
-        DebMes('Moving ' . ROOT . $folder . ' to ' . ROOT . 'cms/' . $folder);
-        copyTree(ROOT . $folder, ROOT . 'cms/' . $folder);
-        removeTree(ROOT . $folder);
-    }
-}
-
-// removing some 3rd-party directories
+// moving some folders 
 $check_folders = array(
+    'debmes' => 'cms/debmes',
+    'sounds' => 'cms/sounds',
+    'texts' => 'cms/texts',
+    'saverestore' => 'cms/saverestore',
     'blockly' => '3rdparty/blockly',
     'bootstrap' => '3rdparty/bootstrap',
     'js/codemirror' => '3rdparty/codemirror',
@@ -91,7 +72,6 @@ foreach ($check_folders as $k => $v) {
 // check/recreate folders
 $dirs_to_check = array(
     ROOT . 'backup',
-    ROOT . 'cms/debmes',
     ROOT . 'cms/cached',
     ROOT . 'cms/cached/voice',
     ROOT . 'cms/cached/urls',
