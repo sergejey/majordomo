@@ -7,7 +7,7 @@ if (!$description) {
     $description = $ot;
 }
 
-$location_title=$this->getProperty('location_title');
+$location_title=processTitle($this->getProperty('location_title'));
 if ($location_title) {
     $description.=' '.LANG_LOCATED_IN_ROOM.' '.$location_title;
 }

@@ -230,7 +230,10 @@ $this->device_types=array(
                     ',window='.LANG_DEVICES_OPENTYPE_WINDOW.
                     ',door='.LANG_DEVICES_OPENTYPE_DOOR.
                     ',curtains='.LANG_DEVICES_OPENTYPE_CURTAINS.
-                    ',shutters='.LANG_DEVICES_OPENTYPE_SHUTTERS)
+                    ',shutters='.LANG_DEVICES_OPENTYPE_SHUTTERS),
+            'notify_msg_opening'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_OPENING,'_CONFIG_TYPE'=>'text'),
+            'notify_msg_closing'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_CLOSING,'_CONFIG_TYPE'=>'text'),
+            'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
@@ -294,6 +297,7 @@ $this->device_types=array(
         'CLASS'=>'SButtons',
         'PROPERTIES'=>array(
             'icon'=>array('DESCRIPTION'=>LANG_IMAGE,'_CONFIG_TYPE'=>'style_image','_CONFIG_HELP'=>'SdIcon'),
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
         ),
         'METHODS'=>array(
             'pressed'=>array('DESCRIPTION'=>LANG_DEVICES_PRESS,'_CONFIG_SHOW'=>1),

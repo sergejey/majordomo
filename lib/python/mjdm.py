@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from mjd_constants import *
-import urllib
+
 try:
     import urllib.request as urllib2
+    from urllib.parse import urlencode
 except ImportError:
     import urllib2
+    from urllib import urlencode
 import re
 import MySQLdb as mdb
 import sys
@@ -13,14 +15,12 @@ def getURL(url):
     response = urllib2.urlopen(url).read()
     return response
 
-def callAPI(api_url, method = "GET", params = ""):
-    if ((type(params) is not dict)):
-        params = {}
+def callAPI(api_url, method = "GET", **params):
 
     params['no_session']=1
     url = re.sub(r"^/api/", BASE_URL+ROOTHTML+'api.php/', api_url)
 
-    data = urllib.urlencode(params)
+    data = urlencode(params).encode('utf-8')
     if (method == "POST"):
         req = urllib2.Request(url, data)
         response = urllib2.urlopen(req)
@@ -32,20 +32,16 @@ def callAPI(api_url, method = "GET", params = ""):
     #print the_page
     return the_page
 
-def runScript(script_name, params = ""):
-    if ((type(params) is not dict)):
-        params = {}
+def runScript(script_name, **params):
     callAPI("/api/script/"+script_name,"GET",params)
     return 1
 
-def callMethod(method_name, params = ""):
-    if ((type(params) is not dict)):
-        params = {}
+def callMethod(method_name, **params):
     callAPI("/api/method/"+method_name,"GET",params)
     return 1
 
 def setGlobal(property, value):
-    callAPI("/api/data/"+property, "POST", {"data":value})
+    callAPI("/api/data/"+property, "POST", data=value)
     return 1
 
 def sg(property, value):
@@ -85,8 +81,6 @@ class mjdObject:
         result =  getGlobal(self.object_name+"."+property_name)
         return result
 
-    def callMethod(self, method_name, params = ""):
-        if ((type(params) is not dict)):
-            params = {}
+    def callMethod(self, method_name, **params):
         result =  callMethod(self.object_name+"."+method_name, params)
         return result

@@ -1143,6 +1143,9 @@ $dictionary = array(
     'DEVICES_COUNTER' => 'Meter/Counter',
     'DEVICES_BATTERY_LOW' => 'Low battery',
     'DEVICES_UNKNOWN_COMMAND'=>'Unknown command...',
+    'DEVICES_MSG_OPENING'=>'Opening message text',
+    'DEVICES_MSG_CLOSING'=>'Closing message text',
+    'DEVICES_MSG_REMINDER'=>'Reminder message text',
 
 // Measure
     'M_VOLTAGE' => 'V',
@@ -1418,22 +1421,47 @@ $dictionary = array(
     
     /* end module names */
 
-    /* start array for convert number to string */
-    
-	'NUMBER_TO_STRING_1TEN' => array( array('','one','two','three','four','five','six','seven', 'eight','nine'), array('','one','two','three','four','five','six','seven', 'eight','nine')),
-	'NUMBER_TO_STRING_2TEN' => array('ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'),
-	'NUMBER_TO_STRING_TENS' => array(2=>'twenty ',' thirty ',' forty ',' fifty ',' sixty ',' seventy ',' eighty ',' ninety '),
-	'NUMBER_TO_STRING_HUNDRED' => array('','one hundred','two hundred','three hundred','four hundred','five hundred','six hundred', 'seven hundred','eight hundred','nine hundred'),
-	'NUMBER_TO_STRING_UNIT' => array(array(' ' ,' ' , 1), array(' ' ,' point'   ,' point' ,0),array('thousand ',' thousands', 'thousands'     ,1), array('million ',' million ',' millions' ,0), array('billion', 'billion', 'billion',0)),
-	'NUMBER_TO_STRING_NULL' => 'zero',
-	
-    /* end array for convert number to string  */
 
     'ENABLE_AUTO_UPDATE' => 'Enable automatic updates',
     'AUTO_UPDATE_DELAY' => 'Auto-update safety delay (days)',
     'AUTO_UPDATE_TIME' => 'Auto-update check and install time',
 
-
+	'CODEEDITOR_NOTY_TURNOFF' => 'Expand the capabilities of the code editor in the system settings, <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">go to settings</a>',
+	'RUN_SCRIPT_BTN' => 'RUN',
+	'SCRIPT_HOW_TO_RUN' => 'How to run?',
+	'SCRIPT_RUN_IN_METHOD' => 'From method (PHP)',
+	
+	'CODEEDITOR_TURNONSETTINGS' => 'Enable these settings',
+	'CODEEDITOR_SHOWLINE' => 'Show line',
+	'CODEEDITOR_MIXLINE' => 'Minimal show line',
+	'CODEEDITOR_UPTOLINE' => 'Up to line whith error',
+	'CODEEDITOR_SHOWERROR' => 'Show error hint under line',
+	'CODEEDITOR_AUTOCLOSEQUOTES' => 'Close automatically: ()[]""',
+	'CODEEDITOR_WRAPLINES' => 'Wrap long lines',
+	'CODEEDITOR_THEME' => 'Code area theme',
+	'CODEEDITOR_BYCODEHEIGHT' => 'By code height',
+	'CODEEDITOR_AUTOCOMPLETE' => 'Show autocompletion window',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE' => 'Autocompletion type',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP' => 'Only PHP',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM' => 'PHP+MJDM Function',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER' => 'MJDM Function+USER Method/Scripts',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_USER' => 'USER Method/Scripts',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER' => 'All',
+	'CODEEDITOR_AUTOSAVE_CODE' => 'The code is saved automatically',
+	'CODEEDITOR_AUTOSAVE_CODE_HELP' => 'Press <code>CTRL+R</code> for restore!',
+	'CODEEDITOR_ERROR_IN_CODE' => 'Error in code',
+	'CODEEDITOR_ERROR_RESTORE_CODE' => 'Can you restore the previous code, <a style="color: #ff574b;font-weight: bold;text-decoration: underline;" href="javascript://" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) (editor.setValue($(\'#error_old_code\').text(), $(\'#error_noty\').hide()));">restore?</a>',
+	'CODEEDITOR_CHECK_ON_ERROR_BTN' => 'Check on error',
+	'CODEEDITOR_RESTORE' => 'Restore',
+	'CODEEDITOR_CLOSE_BTN' => 'Close',
+	'CODEEDITOR_CREATE' => 'Create',
+	'CODEEDITOR_AUTOSAVE' => 'Autosave code',
+	'CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS' => 'Only manual (CTRL+O)',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5' => 'Every 5 seconds',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10' => 'Every 10 seconds',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15' => 'Every 15 seconds',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Every 30 seconds',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Every 60 seconds',
 );
 
 foreach ($dictionary as $k => $v) {

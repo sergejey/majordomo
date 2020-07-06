@@ -1,51 +1,10 @@
 /* BASICS */
 
-.line-error {
-	background: #f2dede;
-}
-
-.cm-matchhighlight {background-color: #beffbe; outline: none;}
-
-.CodeMirror-dialog {
-  position: absolute;
-  left: 0; right: 0;
-  background: inherit;
-  z-index: 15;
-  padding: .1em .8em;
-  overflow: hidden;
-  color: inherit;
-}
-
-.CodeMirror-dialog-top {
-  border-bottom: 1px solid #eee;
-  top: 0;
-  background: antiquewhite;
-  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
-}
-
-.CodeMirror-dialog-bottom {
-  border-top: 1px solid #eee;
-  bottom: 0;
-}
-
-.CodeMirror-dialog input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 20em;
-  color: inherit;
-  font-family: monospace;
-}
-
-.CodeMirror-dialog button {
-  font-size: 70%;
-}
-
-
-
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
+  border: 2px solid #f7f7f7;
+  border-radius: 5px;
   color: black;
   direction: ltr;
 }
@@ -55,8 +14,7 @@
 .CodeMirror-lines {
   padding: 4px 0; /* Vertical padding around content */
 }
-.CodeMirror pre.CodeMirror-line,
-.CodeMirror pre.CodeMirror-line-like {
+.CodeMirror pre {
   padding: 0 4px; /* Horizontal padding of content */
 }
 
@@ -68,20 +26,21 @@
 
 .CodeMirror-gutters {
   border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  background-color: #868686;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
-  min-width: 20px;
-  text-align: right;
-  color: #999;
-  white-space: nowrap;
+    min-width: 20px;
+    text-align: right;
+    color: #fff;
+    white-space: nowrap;
+    background: #868686 !important;
 }
 
 .CodeMirror-guttermarker { color: black; }
-.CodeMirror-guttermarker-subtle { color: #999; }
+.CodeMirror-guttermarker-subtle { color: #FFEB3B; }
 
 /* CURSOR */
 
@@ -139,7 +98,7 @@
 
 .CodeMirror-rulers {
   position: absolute;
-  left: 0; right: 0; top: -50px; bottom: 0;
+  left: 0; right: 0; top: -50px; bottom: -20px;
   overflow: hidden;
 }
 .CodeMirror-ruler {
@@ -206,17 +165,17 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 
 .CodeMirror-scroll {
   overflow: scroll !important; /* Things will break if this is overridden */
-  /* 50px is the magic margin used to hide the element's real scrollbars */
+  /* 30px is the magic margin used to hide the element's real scrollbars */
   /* See overflow: hidden in .CodeMirror */
-  margin-bottom: -50px; margin-right: -50px;
-  padding-bottom: 50px;
+  margin-bottom: -30px; margin-right: -30px;
+  padding-bottom: 30px;
   height: 100%;
   outline: none; /* Prevent dragging from highlighting the element */
   position: relative;
 }
 .CodeMirror-sizer {
   position: relative;
-  border-right: 50px solid transparent;
+  border-right: 30px solid transparent;
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling
@@ -254,7 +213,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   height: 100%;
   display: inline-block;
   vertical-align: top;
-  margin-bottom: -50px;
+  margin-bottom: -30px;
 }
 .CodeMirror-gutter-wrapper {
   position: absolute;
@@ -279,8 +238,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   cursor: text;
   min-height: 1px; /* prevents collapsing before first draw */
 }
-.CodeMirror pre.CodeMirror-line,
-.CodeMirror pre.CodeMirror-line-like {
+.CodeMirror pre {
   /* Reset some styles that the rest of the page might have set */
   -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
   border-width: 0;
@@ -299,8 +257,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   -webkit-font-variant-ligatures: contextual;
   font-variant-ligatures: contextual;
 }
-.CodeMirror-wrap pre.CodeMirror-line,
-.CodeMirror-wrap pre.CodeMirror-line-like {
+.CodeMirror-wrap pre {
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: normal;
