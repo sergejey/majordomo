@@ -1,5 +1,4 @@
 <?php
-
 function getSystemSerial($force_update = 0) {
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
@@ -30,7 +29,7 @@ function sayReplySafe($ph, $level = 0, $replyto = '')
         'sayReply' => 1,
         'ph' => $ph,
         'level' => $level,
-        'replyto' => $replyto,
+        'replyto' => $replyto
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -55,9 +54,11 @@ function sayReplySafe($ph, $level = 0, $replyto = '')
 function sayReply($ph, $level = 0, $replyto = '')
 {
     $source = '';
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     if ($replyto) {
         $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%" . DBSafe($replyto) . "%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-        $orig_msg = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
+        $orig_msg     = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
         if ($orig_msg['ID']) {
             $source = $orig_msg['SOURCE'];
         }
@@ -68,21 +69,11 @@ function sayReply($ph, $level = 0, $replyto = '')
         $source = 'terminal_not_found';
         say($ph, $level);
     } else {
-        $source = 'terminal' . $terminal_rec['ID'];
-        $said_status = sayTo($ph, $level, $terminal_rec['NAME']);
-        if (!$said_status) {
-            say($ph, $level);
-        } else {
-            //$rec = array();
-            //$rec['MESSAGE']   = $ph;
-            //$rec['ADDED']     = date('Y-m-d H:i:s');
-            //$rec['ROOM_ID']   = 0;
-            //$rec['MEMBER_ID'] = 0;
-            //if ($level > 0) $rec['IMPORTANCE'] = $level;
-            //$rec['ID'] = SQLInsert('shouts', $rec);
-        }
+        $source = 'terminal - ' . $terminal_rec['ID'];
+        sayTo($ph, $level, $terminal_rec['NAME']);
     }
-    processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
+    // запуск этой функции уже будет в функции САЙ или САЙТУ - небходимо исключить этот вариант из возможности подписки
+    //processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
 }
 
 
@@ -92,7 +83,7 @@ function sayToSafe($ph, $level = 0, $destination = '')
         'sayTo' => 1,
         'ph' => $ph,
         'level' => $level,
-        'destination' => $destination,
+        'destination' => $destination
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -116,20 +107,57 @@ function sayToSafe($ph, $level = 0, $destination = '')
  */
 function sayTo($ph, $level = 0, $destination = '')
 {
-    if (!$destination) {
-        return 0;
-    }
+    if (!$destination) say($ph, $level);
+    
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    if (!$level) $level=0;
+    
     // add message to chat
-    $rec = array();
-    $rec['MESSAGE'] = $ph;
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['ROOM_ID'] = 0;
-    $rec['MEMBER_ID'] = 0;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = 0;
+    $rec['IMPORTANCE'] = $level;
+    
+    $terminals = array();
+    if ($destination) {
+        if (!$terminals = getTerminalsByName($destination, 1)) {
+            $terminals = getTerminalsByHost($destination, 1);
+        }
+    } else {
+        $terminals = getTerminalsByCANTTS();
+    }
+
+    foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
+            DebMes("No information of terminal " . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if ($terminal['USE_SYSTEM_MML']) {
+            if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } else  {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } 
+    }
+    
+    $rec['EVENT'] = 'SAYTO';
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    $processed = processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
-    return 1;
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+  
+    return true;
 }
 
 function saySafe($ph, $level = 0, $member_id = 0, $source = '')
@@ -139,7 +167,7 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
         'ph' => $ph,
         'level' => $level,
         'member_id' => $member_id,
-        'source' => $source,
+        'source' => $source
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -163,56 +191,100 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  */
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
-
-    //dprint(date('Y-m-d H:i:s')." Say started",false);
-
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    if (!$level) $level=0;
+    
     verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
-
-    $rec = array();
-    $rec['MESSAGE'] = $ph;
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['ROOM_ID'] = 0;
-    $rec['MEMBER_ID'] = $member_id;
-    $rec['SOURCE'] = $source;
-
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
-
+    
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = $member_id;
+    $rec['SOURCE']     = $source;
+    $rec['IMPORTANCE'] = $level;
+    $rec['EVENT'] = 'SAY';
+    $rec['ID']    = SQLInsert('shouts', $rec);
+    
+    // если это не комманда из чата - то запускаем на все модуля подписанные на процесс COMMAND
     if ($member_id) {
-        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
-        return;
+        $processed = processSubscriptionsSafe('COMMAND', array(
+            'level' => $level,
+            'message' => $ph,
+            'member_id' => $member_id,
+            'source' => $source
+        ));
+        return false;
     }
-
+    
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
         eval(SETTINGS_HOOK_BEFORE_SAY);
     }
-
-
-    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
-        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
-            $passed = time() - (int)getGlobal('lastSayTime');
-            if ($passed > 20) {
-                playSound('dingdong', 1, $level);
-            }
+    
+    
+    // добавляем список терминалов на которые надо говорить - если это не комманда из чата
+    $terminals = array();
+    $terminals = getTerminalsByCANTTS();
+    
+    foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
+            DebMes("No information of terminal " . $terminal['NAME'], 'terminals');
+            continue;
         }
+        if ($terminal['USE_SYSTEM_MML']) {
+            if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } else  {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } 
     }
 
+    SQLUpdate('shouts', $rec);
+    
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+    
+    DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+    processSubscriptionsSafe('SAY', $rec); //, 'ignoreVoice'=>$ignoreVoice
+    
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
-
-    processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
-
+    
+    
     if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
         eval(SETTINGS_HOOK_AFTER_SAY);
     }
     //dprint(date('Y-m-d H:i:s')." Say OK",false);
-
+    return true;
 }
 
-function ask($prompt, $target = '')
+function ask($ph, $destination = '')
 {
-    processSubscriptionsSafe('ASK', array('prompt' => $prompt, 'message' => $prompt, 'target' => $target, 'destination' => $target));
+	if (!$destination) {
+        return 0;
+    }
+   if ($destination) {
+        if (!$terminals = getTerminalsByName($destination, 1)) {
+            $terminals = getTerminalsByHost($destination, 1);
+        }
+    }
+    foreach ($terminals as $terminal) {
+        if (!$terminal['IS_ONLINE']) {
+            pingTerminalSafe($terminal['NAME'], $terminal);
+        } 
+		processSubscriptionsSafe('ASK', array('message' => $ph, 'destination' => $terminal));
+	    DebMes("Make Message - " . $ph . " with EVENT ASK ", 'terminals');
+    }
+
 }
 
 /**
@@ -489,7 +561,7 @@ function runScheduledJobs()
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
                 //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-                DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')','errors');
+                DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')');
             }
         }
     }
@@ -665,12 +737,16 @@ function runScript($id, $params = '')
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
-    if (is_array($params)) {
-        $current_call.='.'.md5(json_encode($params));
-    }
     $call_stack = array();
+    if (is_array($params)) {
+        if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+            $call_stack = $params['m_c_s'];
+        }
+        unset($params['m_c_s']);
+        $current_call .= '.' . md5(json_encode($params));
+    }
     if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
         if (in_array($current_call, $call_stack)) {
@@ -679,21 +755,22 @@ function runScriptSafe($id, $params = '')
             return 0;
         }
     }
-    $call_stack[] = $current_call;
+  
     if (!is_array($params)) {
         $params = array();
     }
-    if (isSet($_SERVER['REQUEST_URI'])) {
+
+    $call_stack[] = $current_call;
+    $params['m_c_s'] = $call_stack;       
+
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && count($call_stack)>1) {
         $result = runScript($id,$params);
     } else {
-        $params['m_c_s'] = $call_stack;
-        if (session_id()) {
-            $params[session_name()] = session_id();
-        }
         $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
-    }
+    }  
     return $result;
 }
+
 
 /**
  * Summary of callScript
@@ -710,7 +787,6 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
 {
     //DebMes("URL: ".$url,'debug1');
     getURL($url, $cache, $username, $password, true);
-    return true;
 }
 
 /**
@@ -1191,7 +1267,8 @@ function getPassedText($updatedTime)
  * @param mixed $string String
  * @return string
  */
-function urlsafe_b64encode($string)
+//function urlsafe_b64encode($string)
+function urlsafebase64encode($string)
 {
     $data = base64_encode($string);
     $data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
@@ -1367,14 +1444,14 @@ function get_media_info($file)
 		$out['Audio_codec'] = $format[4];
 		$out['Audio_bitrate'] = $format[5];
 		if ($out['Audio_type'] == 'mono' ) {
-			$out['Audio_chanel'] = 1;
+                     $out['Audio_chanel'] = 1;
 		} else {
-			$out['Audio_chanel'] = 2;
+                     $out['Audio_chanel'] = 2;
 		}	
 	}
     preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
     if ($formatv) {
-		$out['Video_format'] = $formatv[1];
+            $out['Video_format'] = $formatv[1];
 	    $out['Video_size'] = $formatv[2];
 	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
 	    $out['Video_fps'] = $formatv[5];
@@ -1452,78 +1529,31 @@ function date2str($date)
         if (empty($date)) {
             return '';
         }
-        
-        $thousands = array(
-            1 => 'одна тысяча',
-            2 => 'две тысячи',
-        );
-        
-        $hundreds = array(
-            0 => '',
-            9 => 'девятьсот',
-        );
-        
-        $days = array(
-            1 => 'первое',
-            2 => 'второе',
-            3 => 'третье',
-            4 => 'четвертое',
-            5 => 'пятое',
-            6 => 'шестое',
-            7 => 'седьмое',
-            8 => 'восьмое',
-            9 => 'девятое',
-            10 => 'десятое',
-            11 => 'одиннадцатое',
-            12 => 'двенадцатое',
-            13 => 'тринадцатое',
-            14 => 'четырнадцатое',
-            15 => 'пятнадцатое',
-            16 => 'шестнадцатое',
-            17 => 'семнадцатое',
-            18 => 'восемнадцатое',
-            19 => 'девятнадцатое',
-            20 => 'двадцатое',
-            30 => 'тридцатое',
-            40 => 'сороковое',
-        );
-        
-        $tens = array(
-            20 => 'двадцать',
-            30 => 'тридцать',
-            40 => 'сорок',
-        ); 
-        
+
+        $thousands = LANG_DATE_TO_STRING_THOUSANDS;
+
+        $hundreds = LANG_DATE_TO_STRING_HUNDREDS;
+
+        $days = LANG_DATE_TO_STRING_DAYS;
+
+        $tens = LANG_NUMBER_TO_STRING_TENS; 
+
         foreach ($tens as $d => $ten) {
             for ($day = 1; $day < 10; $day++) {
                 $days[$d + $day] = $ten . ' ' . $days[$day];
             }
         }
-        
-        $months = array(
-            0 => 'нулября',
-            1 => 'января',
-            2 => 'февраля',
-            3 => 'марта',
-            4 => 'апреля',
-            5 => 'мая',
-            6 => 'июня',
-            7 => 'июля',
-            8 => 'августа',
-            9 => 'сентября',
-            10 => 'октября',
-            11 => 'ноября',
-            12 => 'декабря',
-        );
-        
+
+        $months = LANG_NUMBER_TO_STRING_MONTH;
+
         list($year, $month, $day) = explode('-', $date);
 
         $monthStr = $months[(int)$month];
         $dayStr = $days[(int)$day];
-        
+
         $yearPart = $days[(int)mb_substr($year, -2)];
         $endYear = mb_substr($yearPart, -2);
-        
+
         switch ($endYear) {
             case 'ое':
                 $yearPart = mb_substr($yearPart, 0, -2) . 'ого';
@@ -1532,14 +1562,120 @@ function date2str($date)
                 $yearPart .= 'го';
                 break;
         }
-        
+
         $yearParts = array(
             $thousands[(int)$year[0]],
             $hundreds[(int)$year[1]],
             $yearPart
         );
-        
+
         $yearStr = implode(' ', array_filter(array_map('trim', $yearParts)));
-        
+
         return implode(' ', array($dayStr, $monthStr, $yearStr));
     }
+
+// say to all terminal where User = $user 
+function sayToUser($ph, $level = 0, $user = '')
+{
+    if (!$user) return false;
+
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    if (!$level) $level=0;
+
+    // get room ID
+    $users = SQLSelectOne("SELECT * FROM `users` WHERE `USERNAME` LIKE '" . $user. "' OR `NAME` LIKE '" . $user. "'");
+    // add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = $users['ID'];
+    $rec['IMPORTANCE'] = $level;
+    
+    $terminals = array();
+    if (!$users OR !$terminals = getTerminalsByUser($user)) return false;
+	
+    foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if ($terminal['USE_SYSTEM_MML']) {
+            if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } else  {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } 
+    }
+    
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+
+    
+    return true;
+}
+
+// say to all terminal where location = $destination 
+function sayToLocation($ph, $level = 0, $destination = '')
+{
+    if (!$destination) return false;
+    
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    if (!$level) $level=0;
+    
+    // get room ID
+    $location = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
+
+    // add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = $location['ID'];
+    $rec['MEMBER_ID']  = 0;
+    $rec['IMPORTANCE'] = $level;
+   
+    if (!$location OR !$terminals = getTerminalsByLocationId($location['ID'])) return false;
+
+    foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if ($terminal['USE_SYSTEM_MML']) {
+            if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } else  {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } 
+    }
+    
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+   
+    return true;
+}
+
