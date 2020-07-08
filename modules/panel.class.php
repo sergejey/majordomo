@@ -13,7 +13,7 @@ class panel extends module
     var $action;
 
 // --------------------------------------------------------------------
-    function panel()
+    function __construct()
     {
         $this->name = "panel";
     }
@@ -40,7 +40,21 @@ class panel extends module
         global $session;
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+
+        if (gr('toggleLeftPanel')) {
+            if (gg('HideLeftPanelAdmin')) {
+                sg('HideLeftPanelAdmin',0);
+            } else {
+                sg('HideLeftPanelAdmin',1);
+            }
+
+            $uri=str_replace('toggleLeftPanel=1','',$_SERVER['REQUEST_URI']);
+            $this->redirect($uri);
+        }
+        $out['HIDE_LEFT_PANEL']=gg('HideLeftPanelAdmin');
+
         global $action;
+        $out['TAB']=gr('tab');
 
         if (defined('NO_DATABASE_CONNECTION')) {
          if (!$action) $action = 'saverestore';
@@ -84,6 +98,7 @@ class panel extends module
                 $session->data['USER_LEVEL'] = $user['PRIVATE'];
                 $session->data['USER_ID'] = $user['ID'];
                 $session->data["AUTHORIZED"] = 1;
+                logAction('control_panel_enter',$session->data['USER_NAME']);
             }
         }
 
@@ -153,10 +168,21 @@ class panel extends module
                     $last_allow = $i;
                 }
 
-                if (file_exists(ROOT . 'img/admin/icons/ico_' . $modules[$i]['NAME'] . '_sm.gif')) {
-                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/admin/icons/ico_' . $modules[$i]['NAME'] . '_sm.gif';
+                if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
+                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
-                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/admin/icons/ico_default_sm.gif';
+                    $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
+                }
+                if ($modules[$i]['NAME']=='devices') {
+                    $devices = SQLSelect("SELECT devices.LOCATION_ID, locations.TITLE, COUNT(devices.ID) as TOTAL FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE locations.ID>0 GROUP BY devices.LOCATION_ID ORDER BY locations.TITLE");
+                    if (is_array($devices)) {
+                        $links=array();
+                        $links[]=array('TITLE'=>LANG_ALL,'LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME']);
+                        foreach($devices as $device) {
+                            $links[]=array('TITLE'=>processTitle($device['TITLE']).' ('.$device['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&location_id='.$device['LOCATION_ID']);
+                        }
+                        $modules[$i]['LINKS']=$links;
+                    }
                 }
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
@@ -165,6 +191,9 @@ class panel extends module
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {
             $out['APP_TDWIKI_INSTALLED'] = 1;
+        }
+        if (is_dir(DIR_MODULES . 'optimizer')) {
+            $out['OPTIMIZER_INSTALLED'] = 1;
         }
 
         $out["ACTION"] = $this->action;

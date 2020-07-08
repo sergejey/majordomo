@@ -197,8 +197,6 @@ function usual(&$out) {
 */
  function checkAccess($object_type, $object_id) {
 
-  global $session;
-
   $rule=SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='".$object_type."' AND OBJECT_ID='".(int)$object_id."'");
   if (!$rule['ID']) {
    return true;
@@ -256,9 +254,9 @@ function usual(&$out) {
   if ($rule['TERMINALS']) {
    $terminals_matched=false;
    if ($session->data['TERMINAL']) {// && !$session->data['TERMINAL_ID']
-    $terminal=SQLSelectOne("SELECT ID FROM terminals WHERE NAME='".$session->data['TERMINAL']."'");
-    if ($terminal['ID']) {
-     $session->data['TERMINAL_ID']=$terminal['ID'];
+    $terminal = getTerminalsByName($session->data['TERMINAL'], 1);
+    if ($terminal[0]['ID']) {
+     $session->data['TERMINAL_ID']=$terminal[0]['ID'];
     }
    }
    $terminal_id=(int)$session->data['TERMINAL_ID'];
@@ -338,7 +336,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS security_rules');
+   SQLDropTable('security_rules');
   parent::uninstall();
  }
 /**

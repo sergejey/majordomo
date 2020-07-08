@@ -1,57 +1,5 @@
-<br>
-<!--#
-<script src="<#ROOTHTML#>js/jquery.event.drag-2.2.js"></script>
-<script>
-$(function() {
-        $("div.element-preview").drag(
-                function(ev,dd){
-                        $(this).css({
-                                top: dd.offsetY,
-                                left: dd.offsetX
-                        });
-                },
-                {
-                        relative: true,
-                        not: ".resize-handler"
-                }
-        )
-        .drag("start", function() {
-                $(this).addClass("drag-active");
-        })
-        .drag("end", function() {
-                $(this).removeClass("drag-active");
-        });
-        $(".resize-handler").drag(
-                function(ev,dd){
-                        var e = $(this).parent();
-                        e[0].style.height = dd.initialHeight + dd.deltaY + 'px';
-                        e[0].style.width = dd.initialWidth + dd.deltaX + 'px';
-                }
-        )
-        .drag("start", function(ev, dd) {
-                dd.initialHeight = $(this).parent().innerHeight();
-                dd.initialWidth = $(this).parent().innerWidth();
-        })
-        $("form#frmEdit").submit(function() {
-                var e = [];
-                $("div.element-preview").each(function(index, element) {
-                        var t = element.style;
-                        e.push({
-                                WIDTH: t.width,
-                                HEIGHT: t.height,
-                                TOP: t.top,
-                                LEFT: t.left,
-                                ID: $(element).data('id')
-                        });
-                });
-                e = JSON.stringify(e);
-                $(this).find("input[name=elements]").val(e);
-        });
-});
-</script>
-#-->
 <!-- Table 'scenes' edit -->
-<form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit" class="form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" id="frmEdit" name="frmEdit">
 [#if OK#]
 <div class="alert alert-success">
 <#LANG_DATA_SAVED#>
@@ -92,12 +40,18 @@ $(function() {
         </div>
 </div>
 
-<div class="form-group">
+    <div class="form-group">
+        <label class="control-label"><#LANG_SCENE_AUTO_SCALE#> <#LANG_HCB#>scene_auto_scale<#LANG_HCE#></label>
         <div class="controls">
-                <input type="checkbox" name="auto_scale" value="1"[#if AUTO_SCALE="1"#] checked[#endif#]>
-                <#LANG_SCENE_AUTO_SCALE#> <#LANG_HCB#>scene_auto_scale<#LANG_HCE#>
+            <select name="auto_scale" class="form-control">
+                <option value="0"><#LANG_NO#></option>
+                <option value="1"[#if AUTO_SCALE="1"#] selected[#endif#]><#LANG_SCALE_BOTH#></option>
+                <option value="2"[#if AUTO_SCALE="2"#] selected[#endif#]><#LANG_SCALE_WIDTH#></option>
+                <option value="3"[#if AUTO_SCALE="3"#] selected[#endif#]><#LANG_SCALE_HEIGHT#></option>
+            </select>
         </div>
-</div>
+    </div>
+
 
 
 <!-- BACKGROUND (varchar) -->
@@ -114,6 +68,7 @@ $(function() {
 <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#BACKGROUND#]" width="300"></a>
 [#endif#]
 </td>
+     <!--#
  <td valign="top" width=90%>
  [#if ELEMENTS#]
  <ul>
@@ -124,6 +79,7 @@ $(function() {
  </ul>
  [#endif ELEMENTS#]
  </td>
+ #-->
  </tr>
 </table>
 </div>
@@ -188,6 +144,18 @@ $(function() {
 [#endif#]
 #-->
 
+    <div class="form-group">
+        <label class="control-label"><#LANG_SCENE_DEVICES_BACKGROUND#> (<#LANG_THEME#>):<#LANG_HCB#>devices_background<#LANG_HCE#></label>
+        <div class="controls">
+            <select name="devices_background" class="form-control">
+                <option value=""><#LANG_NO#></option>
+                <option value="dark"[#if DEVICES_BACKGROUND="dark"#] selected[#endif#]><#LANG_THEME_DARK#></option>
+                <!--#
+                <option value="light"[#if DEVICES_BACKGROUND="light"#] selected[#endif#]><#LANG_THEME_LIGHT#></option>
+                #-->
+            </select>
+        </div>
+    </div>
 
 [#if ID!=""#]
 <div class="form-group">

@@ -19,7 +19,7 @@ class soundfiles extends module {
 *
 * @access private
 */
-function soundfiles() {
+function __construct() {
   $this->name="soundfiles";
   $this->title="<#LANG_MODULE_SOUNDFILES#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
@@ -125,7 +125,7 @@ function admin(&$out) {
    global $file;
    global $file_name;
    if ($file!='' && preg_match('/\.mp3/is', $file_name)) {
-    copy($file, ROOT.'sounds/'.strtolower($file_name));
+    copy($file, ROOT.'cms/sounds/'.strtolower($file_name));
     $out['OK']=1;
    }
   
@@ -135,7 +135,7 @@ function admin(&$out) {
 
   $files=array();
 
- $dir=ROOT.'sounds';
+ $dir=ROOT.'cms/sounds';
  $handle = opendir( $dir );
  while ( false !== $thing = readdir( $handle ) ) { 
   if( $thing == '.' || $thing == '..' ) continue;
@@ -149,7 +149,7 @@ function admin(&$out) {
   $out['FILES']=$files;
 
  } elseif ($this->view_mode=='delete_file' && $file!='') {
-  @unlink(ROOT.'sounds/'.$file.".mp3");
+  @unlink(ROOT.'cms/sounds/'.$file.".mp3");
   $this->redirect("?");
 
  } elseif ($this->view_mode=='edit_file') {
@@ -181,8 +181,8 @@ function usual(&$out) {
 */
  function install($data='') {
  @umask(0);
-  if (!Is_Dir(ROOT."./sounds")) {
-   mkdir(ROOT."./sounds", 0777);
+  if (!Is_Dir(ROOT."./cms/sounds")) {
+   mkdir(ROOT."./cms/sounds", 0777);
   }
   parent::install();
  }

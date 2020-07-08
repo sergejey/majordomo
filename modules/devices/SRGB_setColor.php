@@ -2,8 +2,8 @@
 
 if (!$params['color']) return;
 
-$color=strtolower($params['color']);
-$color=preg_replace('/^#/','',$color);
+$color = strtolower($params['color']);
+$color = preg_replace('/^#/','',$color);
 
 $transform=array(
     'red'=>'ff0000',
@@ -13,13 +13,15 @@ $transform=array(
 );
 
 if (isset($transform[$color])) {
-    $color=$transform[$color];
+    $color = $transform[$color];
 }
 
 if ($color == '000000') {
     $this->callMethodSafe('turnOff');
 } else {
-    $this->setProperty('color',$color);
-    $this->setProperty('colorSaved',$color);
-    $this->callMethodSafe('turnOn');
+    if (!$this->getProperty('status')) {
+        $this->callMethod('turnOn');
+    }
+    $this->setProperty('color', $color);
+    $this->setProperty('colorSaved', $color);
 }

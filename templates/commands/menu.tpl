@@ -10,6 +10,7 @@
  var labelsCollected='';
  var valuesCollected='';
  var first_run=1;
+ var initialLabels = '';
 
  var labelsCollected_sent='';
  var valuesCollected_sent='';
@@ -70,6 +71,9 @@
     var labels=obj.LABELS;
     for (var i = 0; i < objLabelsCnt; i++) {
      try {
+       if (labels[i].ID == '360') {
+        //alert(JSON.stringify(labels[i]));
+       }
        window["updateLabel"+labels[i].ID+"_Ready"](labels[i].ID, JSON.stringify(labels[i]));
      }
      catch(err) {
@@ -220,9 +224,6 @@
 {/if}
 
 
-{*
- @version 0.4 (auto-set)
-*}
         <div id="home" class="current">
 {if $ONE_ITEM_MODE!='1'}
 {if $PARENT_TITLE!=''}
@@ -268,11 +269,12 @@
 
 <div data-role="content"{if $FROM_SCENE==1} style='margin:0px;padding:0px;'{/if}>
 
-{*
+
+<!--
 <li>
 <div id="debugField" style="white-space:normal;">...</div>
 </li>
-*}
+-->
 
 
 {if $RESULT}
@@ -289,9 +291,9 @@
 
 {foreach $items as $item}
 {if $item.SUB_PRELOAD=='1'}
-
  <div data-role="collapsible" data-iconpos="right">
-  <h2><span  id="label_{$item.ID}">{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" style="margin-right:10px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;vertical-align:middle;">{/if}{$item.TITLE}</span></h2>
+  <h2>{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="item_icon">{/if}<span id="label_{$item.ID}">{$item.TITLE}</span></h2>
+  <!--  -->
   <ul data-role="listview" data-inset="true">
   {if $item.RESULT}
   {menu items=$item.RESULT}
@@ -301,17 +303,17 @@
 {else}
 {if $item.TYPE=='' || $item.TYPE=='command' || $item.TYPE=='window' || $item.TYPE=='url'}
 <li{if $item.VISIBLE_DELAY!='0'} class='visible_delay'{/if} id='item{$item.ID}'>
-<a
- {if !$item.RESULT_TOTAL}
- href="#" 
- onClick="return menuClicked('{$item.ID}', '{$item.PARENT_ID}', '{$item.SUB_LIST}', '{$item.WINDOW}', '{$item.TITLE_SAFE}', '{$item.COMMAND}', '{$item.URL}'{if $item.TYPE=='window'}, '{$item.WIDTH}', '{$item.HEIGHT}'{else},0,0{/if});"
- {else}
- href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
- {/if}
- {if $item.SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
->
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
-<span id="label_{$item.ID}">{$item.TITLE}</span>{*{if $item.RESULT_TOTAL} <span class="ui-li-count">{$item.RESULT_TOTAL}</span>{/if}*}</a>
+ <a
+         {if !$item.RESULT_TOTAL}
+          href="#"
+          onClick="return menuClicked('{$item.ID}', '{$item.PARENT_ID}', '{$item.SUB_LIST}', '{$item.WINDOW}', '{$item.TITLE_SAFE}', '{$item.COMMAND}', '{$item.URL}'{if $item.TYPE=='window'}, '{$item.WIDTH}', '{$item.HEIGHT}'{else},0,0{/if});"
+         {else}
+          href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
+         {/if}
+         {if $item.SUB_PRELOAD=='1'} onClick="$('#sublist{$item.ID}').toggle();return false;"{/if}
+ >
+<h2>{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon item_icon" style="margin-bottom:0px;margin-top:0px;">{/if}
+ <span id="label_{$item.ID}">{$item.TITLE}</span></h2>{*{if $item.RESULT_TOTAL} <span class="ui-li-count">{$item.RESULT_TOTAL}</span>{/if}*}</a>
 </li>
 {/if}
 
@@ -324,7 +326,7 @@
  href="{$smarty.const.ROOTHTML}menu/{$item.ID}.html"
  {/if}
 >
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon" style="left:4px;top:0.4em;max-height:32px;max-width:32px;height:32px;width:32px;">{/if}
+{if $item.ICON!=''}<span><img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" alt="" class="ui-li-icon item_icon"></span>{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span></a>
 </li>
 
@@ -559,7 +561,7 @@
  function changedValue{$item.ID}_delay() {
   clearTimeout(item{$item.ID}_timer);
   var elem=document.getElementById('menu{$item.ID}_v');
-  item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 500);
+  item{$item.ID}_timer=setTimeout('itemValueChanged("{$item.ID}", "'+elem.value+'")', 5000);
   return false;
  }
 </script>
@@ -573,8 +575,8 @@
 {/if}
 
 {if $item.TYPE=='color'}
-<script src='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.js'></script>
-<link rel='stylesheet' href='{$smarty.const.ROOTHTML}js/spectrum/spectrum.min.css' />
+<script src='{$smarty.const.ROOTHTML}3rdparty/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='{$smarty.const.ROOTHTML}3rdparty/spectrum/spectrum.min.css' />
 <script language="javascript">
  var item{$item.ID}_timer=0;
  function changedValue{$item.ID}_delay() {
@@ -604,9 +606,7 @@
 
 {if $item.TYPE=='label'}
 <li data-role="list-divider"{if $item.VISIBLE_DELAY!='0'}  class='visible_delay'{/if} id='item{$item.ID}'>
-{*
-{if $item.ICON!=''}<img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" border="0">{/if}
-*}
+{if $item.ICON!=''}<span><img src="{$smarty.const.ROOTHTML}cms/icons/{$item.ICON}" border="0" class="ui-icon item_icon"></span>{/if}
 <span id="label_{$item.ID}">{$item.TITLE}</span>
 </li>
 {/if}
@@ -633,14 +633,13 @@
   valueChangedFlag['item{$item.ID}']=0;
 </script>
 
-{if $item.AUTO_UPDATE!='0'}
 <script language="javascript">
  var label{$item.ID}_timer;
  function updateLabel{$item.ID}_Ready(id, data) {
-  var elem=document.getElementById('label_{$item.ID}');
   var obj=jQuery.parseJSON(data);
   if (obj.DATA!='') {
-   elem.innerHTML=obj.DATA;
+   $('#label_{$item.ID}').html(obj.DATA);
+   $('#label_{$item.ID}').trigger( "create" );
   }
   return false;
  }
@@ -668,6 +667,20 @@
    }
   {/if}
 
+  {if $item.TYPE=='timebox'}
+  var dataList = data.split(':');
+  var data1=dataList[0];
+  var data2=dataList[1];
+  if ($('#menu{$item.ID}_v1').val()!=data1) {
+   $('#menu{$item.ID}_v1').val(data1);
+   $('#menu{$item.ID}_v1').selectmenu("refresh");
+  }
+  if ($('#menu{$item.ID}_v2').val()!=data2) {
+   $('#menu{$item.ID}_v2').val(data2);
+   $('#menu{$item.ID}_v2').selectmenu("refresh");
+  }
+  {/if}
+
 
   {if $item.TYPE=='plusminus'}
   $('#menu{$item.ID}_vv').html(data);
@@ -676,8 +689,6 @@
   {if $item.TYPE=='radiobox'}
    var $selected = $('.radiobox{$item.ID}:checked');
    if (!$selected.length || $selected.val()!=data) {
-    //alert('zz');
-    //$selected.attr('checked', false).checkboxradio("refresh");
     $( ".radiobox{$item.ID}" ).each(function( index ) {
      if ($( this ).val()!=data) {
       //alert('not found: '+$( this ).val()+' != '+data)
@@ -687,14 +698,7 @@
       $( this ).prop('checked', true).checkboxradio("refresh");
      }
     });
-    //$(".radiobox{$item.ID}").checkboxradio("refresh");
-    //$(".radiobox{$item.ID}:first").attr("checked",true).checkboxradio("refresh");
    }
-   /*
-   if ($('#menu{$item.ID}_v').val()!=data) {
-    $('#menu{$item.ID}_v').val(data);
-   }
-   */
   {/if}
 
 
@@ -728,12 +732,18 @@
   {if $item.TYPE=='switch' || $item.TYPE=='textbox' || $item.TYPE=='sliderbox' || $item.TYPE=='selectbox' || $item.TYPE=='radiobox'}
   collectValue('{$item.ID}');
   {/if}
+  {if $item.AUTO_UPDATE!='0'}
   label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', ({$item.AUTO_UPDATE}*1000));
   return false;
+  {/if}
  }
- label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', ({$item.AUTO_UPDATE}*1000));
+
+ {if $item.AUTO_UPDATE!='0'}
+ label{$item.ID}_timer=setTimeout('updateLabel{$item.ID}()', (1000));
+ initialLabels = initialLabels + ',{$item.ID}';
+ {/if}
+
 </script>
-{/if}
 
 {/foreach}
 {/function}
@@ -741,7 +751,6 @@
 {menu items=$RESULT}
 
 {if $ONE_ITEM_MODE!='1'}</ul>{/if}
-
 <!-- / search results (list) -->
 {else}
 <p>
@@ -750,6 +759,23 @@
 {/if}
 
 </div>
+
+<script type="text/javascript">
+ /*
+ var url="{$smarty.const.ROOTHTML}ajax/commands.html";
+ $.ajax({
+  url: url,
+  type: "POST",
+  data: {
+   op: 'get_details',
+   labels: initialLabels,
+   values: initialLabels
+  }
+ }).done(function(data) {
+  sendRequestForUpdates_processed(0,data);
+ });
+ */
+</script>
 
 {if $VISIBLE_DELAYS}
 <script language="javascript">
@@ -785,10 +811,13 @@
   return false;
  }
 
- $( document ).bind( "pageinit", function( event, data ){
+ $(document ).bind("pageinit", function( event, data ){
     $('.visible_delay').hide();
     visible_delay_carusel();
 });
 </script>
 {/if}
 
+<script type="text/javascript">
+ //update all labels and values
+</script>

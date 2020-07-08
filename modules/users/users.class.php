@@ -18,7 +18,7 @@ class users extends module {
 *
 * @access private
 */
-function users() {
+function __construct() {
   $this->name="users";
   $this->title="<#LANG_MODULE_USERS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
@@ -195,7 +195,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS users');
+   SQLDropTable('users');
   parent::uninstall();
  }
 /**
@@ -209,6 +209,16 @@ function usual(&$out) {
 /*
 users - Users
 */
+   
+ // update password for users
+ $users=SQLSelect("SELECT * FROM users");
+ foreach ($users as $user) {
+     if (strlen ($user['PASSWORD']) < 128 ) {
+          $user['PASSWORD'] = hash('sha512', $user['PASSWORD']);
+          SQLUpdate ('users', $user);
+      }
+  }
+   
   $data = <<<EOD
  users: ID int(10) unsigned NOT NULL auto_increment
  users: USERNAME varchar(255) NOT NULL DEFAULT ''

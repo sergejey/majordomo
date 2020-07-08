@@ -1,3 +1,9 @@
+
+function simple_hash(s) {
+ return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+}
+
+
 function inIframe () {
     try {
         return window.self !== window.top;
@@ -7,15 +13,14 @@ function inIframe () {
 }
 
  function report_js_error(msg, url, linenumber) {
-  stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
-  /*
-  tmp = new Image();
-  tmp.src = "write_error.php?error="+stuff;
-  */
+  var stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
+  console.log('JAVASCRIPT ERROR: '+stuff);
+  var tmp = new Image();
+  tmp.src = ROOTHTML+"write_error.php?error="+encodeURIComponent(stuff);
   return true;
  }
 
-window.onerror=report_js_error
+window.onerror=report_js_error;
 
 
 var bV=parseInt(navigator.appVersion);
@@ -36,11 +41,11 @@ var flashing=0;
 function Win2Escape(AStr){
 var Result='';
 for(var i=0;i<AStr.length;i++)
-if(AStr.charAt(i)>='À' && AStr.charAt(i)<='ÿ')
+if(AStr.charAt(i)>='ï¿½' && AStr.charAt(i)<='ï¿½')
 Result+=Letters[AStr.charCodeAt(i)-0x0410];
-else if(AStr.charAt(i)=='¨')
+else if(AStr.charAt(i)=='ï¿½')
 Result+=Letters[64];
-else if(AStr.charAt(i)=='¸')
+else if(AStr.charAt(i)=='ï¿½')
 Result+=Letters[65];
 else if(AStr.charAt(i)=='=')
 Result+='%3D';
@@ -230,7 +235,7 @@ function startFlashing(block_id) {
 
  function callMethod(method_name, optional_params) {
   if (typeof optional_params === 'undefined') { optional_params = ''; }
-  var url="/";
+  var url=ROOTHTML;
   url+='objects/?method='+encodeURIComponent(method_name)+'&'+optional_params;
   $.ajax({
    url: url
@@ -241,7 +246,7 @@ function startFlashing(block_id) {
 
  function runScript(script_name, optional_params) {
   if (typeof optional_params === 'undefined') { optional_params = ''; }
-  var url="/";
+  var url=ROOTHTML;
   url+='objects/?script='+encodeURIComponent(script_name)+'&'+optional_params;
   $.ajax({
    url: url
@@ -251,7 +256,7 @@ function startFlashing(block_id) {
  }
 
  function ajaxGetGlobal(varname, id, timeout) {
-  var url="/";
+  var url=ROOTHTML;
   url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);
   $.ajax({
    url: url
@@ -269,7 +274,7 @@ function startFlashing(block_id) {
 
 
  function ajaxSetGlobal(varname, value) {
-  var url="/";
+  var url=ROOTHTML;
   url+='?md=application&action=ajaxsetglobal&var='+encodeURIComponent(varname)+'&value='+encodeURIComponent(value);
   $.ajax({
    url: url
@@ -286,5 +291,63 @@ function startFlashing(block_id) {
   ajaxSetGlobal(varname, value);
  }
 
+function getCookie(Name) {
+ var search = Name + "="
+ if (document.cookie.length > 0)
+ { // if there are any cookies
+  offset = document.cookie.indexOf(search)
+  if (offset != -1) { // if cookie exists
+   offset += search.length          // set index of beginning of value
+   end = document.cookie.indexOf(";", offset)          // set index of end of cookie value
+   if (end == -1) end = document.cookie.length
+   return unescape(document.cookie.substring(offset, end))
+  }
+ }
+}
+
+
+function setCookie(name, value) {
+ var expire = "0, 01-01-2099 00:00:00 GMT"; // fix it someday in 2099 :)
+ document.cookie = name + "=" + escape(value) + "; expires=" + expire + "; path=/";
+}
+
+var ajaxManager = (function() {
+ var requests = [];
+
+ return {
+  addReq:  function(opt) {
+   if( !($.inArray(opt, requests) > -1) )
+    requests.push(opt);
+  },
+  removeReq:  function(opt) {
+   if( $.inArray(opt, requests) > -1 )
+    requests.splice($.inArray(opt, requests), 1);
+  },
+  run: function() {
+   var self = this,
+       oriSuc;
+
+   if( requests.length ) {
+    oriSuc = requests[0].complete;
+
+    requests[0].complete = function() {
+     if( typeof(oriSuc) === 'function' ) oriSuc();
+     requests.shift();
+     self.run.apply(self, []);
+    };
+
+    $.ajax(requests[0]);
+   } else {
+    self.tid = setTimeout(function() {
+     self.run.apply(self, []);
+    }, 1000);
+   }
+  },
+  stop:  function() {
+   requests = [];
+   clearTimeout(this.tid);
+  }
+ };
+}());
 
 // </AJAX>

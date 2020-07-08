@@ -1,0 +1,60 @@
+<script type="text/javascript">
+    var dimmer%.object_id%Level=%.level%;
+    var dimmer%.object_id%Timer=0;
+    function sendNewLevel%.object_id%() {
+        setGlobal("%.object_title%.level",dimmer%.object_id%Level);
+    }
+    function dimmerSet%.object_id%(val) {
+        dimmer%.object_id%Level=val;
+        $('#dimmer%.object_id%_level').html(dimmer%.object_id%Level);
+        sendNewLevel%.object_id%();
+        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+    }
+    function dimmerChange%.object_id%(d) {
+        if (d=='+') {
+            dimmer%.object_id%Level+=10;
+            if (dimmer%.object_id%Level>100) {
+                dimmer%.object_id%Level=100;
+            }
+        } else {
+            dimmer%.object_id%Level-=10;
+            if (dimmer%.object_id%Level<0) {
+                dimmer%.object_id%Level=0;
+            }
+        }
+        $('#dimmer%.object_id%_level').html(dimmer%.object_id%Level);
+        clearTimeout(dimmer%.object_id%Timer);
+        dimmer%.object_id%Timer=setTimeout('sendNewLevel%.object_id%()',1000);
+        return false;
+    }
+</script>
+<div class="device-widget controller loadtype_%.loadType%">
+<div onClick='$(".icon%.object_id%_light").addClass("pressed");setTimeout("$(\".icon%.object_id%_light\").removeClass(\"pressed\");",300);
+               callMethod("%.object_title%.switch");
+               $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
+ <div class="device-icon %.status|"off;on"% icon%.object_id%_light" id="icon%.object_id%_light" style='%.icon|"background-image:url(%.icon%)"%'></div>
+ <div class="device-header">%.object_description%</div>
+</div>
+<div class="device-details"> <span id="dimmer%.object_id%_level">%.level%</span>%
+    &nbsp;
+    <!--#
+    <a href="#" onclick="return dimmerChange%.object_id%('-');" style="font-weight:bold;text-decoration:none">[-]</a>
+    #-->
+    <select id="dimmerSelect%.object_id%" onchange="dimmerSet%.object_id%(this.value);" style="color:black">
+        <option value=""><#LANG_SET#></option>
+        <option value="10">10%</option>
+        <option value="20">20%</option>
+        <option value="30">30%</option>
+        <option value="40">40%</option>
+        <option value="50">50%</option>
+        <option value="60">60%</option>
+        <option value="70">70%</option>
+        <option value="80">80%</option>
+        <option value="90">90%</option>
+        <option value="100">100%</option>
+    </select>
+    <!--#
+    <a href="#" onclick="return dimmerChange%.object_id%('+');" style="font-weight:bold;text-decoration:none">[+]</a>
+    #-->
+</div>
+</div>

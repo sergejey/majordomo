@@ -11,7 +11,9 @@
 $dictionary = array(
 
     /* general */
+    'SETTINGS_SITE_LANGUAGE_CODE' => 'ru_RU',
     'WIKI_URL' => 'http://smartliving.ru/',
+    'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Алиса',
     'WELCOME_GREETING' => 'Добро пожаловать!',
     'WELCOME_TEXT' => 'Спасибо, что пользуйтесь MajorDoMo -- открытой платформой домашней автоматизации. <br/><br/>Узнайте больше и присоединяйтесь к сообществу: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вы можете изменить или удалить эту страницу через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель управления</a></small>',
@@ -30,6 +32,7 @@ $dictionary = array(
     'STILL_WORKING' => 'Загружаются данные... Нажмите',
     'CLICK_HERE' => 'здесь',
     'TAKES_TOO_LONG' => ', если процесс загрузки занимает слишком много времени.',
+    'SUBMIT_DIAGNOSTIC'=>'Отправка данных диагностики',
 
     'GENERAL_SENSORS' => 'Сенсоры',
     'GENERAL_OPERATIONAL_MODES' => 'Режимы работы',
@@ -65,12 +68,43 @@ $dictionary = array(
     'GENERAL_CONTROL' => 'Управление',
     'GENERAL_INSIDE' => 'Дома',
     'GENERAL_OUTSIDE' => 'На улице',
+    'GENERAL_LIGHT' => 'Свет',
+    'GENERAL_TURNOFF_EVERYTHING' => 'Выключить всё',
+    'GENERAL_DAYTIME' =>'Светло',
+    'GENERAL_NIGHTTIME' =>'Темно',
+    'GENERAL_MESSAGES' =>'Сообщения',
+    'GENERAL_TOMORROW' =>'Завтра',
+    'GENERAL_MINMAX' => 'Мин/Макс',
+    'GENERAL_METERS_PER_SECOND' => 'м/с',
+    'GENERAL_CHART' => 'График',
+    'GENERAL_ROOM_BATHROOM' => 'Ванная',
+    'GENERAL_ROOM_LIVINGROOM' => 'Гостиная',
+    'GENERAL_ROOM_HALL' => 'Коридор',
+    'GENERAL_ROOM_KITCHEN' => 'Кухня',
+    'GENERAL_ROOM_BEDROOM' => 'Спальня',
+    'GENERAL_ROOM_TOILET' => 'Туалет',
+    'GENERAL_SYSTEM_SHUTDOWN_REBOOT' => 'Перезагрузка/отключение',
+    'GENERAL_SYSTEM_SHUTDOWN_WARNING' => 'Пожалуйста, подождите 30 секунд после запуска команды до отключения питания.',
+    'GENERAL_SYSTEM_SHUTDOWN' => 'Выключить систему',
+    'GENERAL_SYSTEM_REBOOT' => 'Перезагрузка системы',
+    'GENERAL_STARTING' => 'начало',
+    'GENERAL_ENDING' => 'конец',
+    'GENERAL_CLOCKCHIME' => 'Кукушка',
+    'GENERAL_LANGUAGE_TIMEZONE' => 'Язык/часовой пояс',
+    'GENERAL_ACTIVATED' => 'активировано',
+    'GENERAL_DEACTIVATED' => 'деактивировано',
+    'GENERAL_STARTING_REBOOT' => 'Выполняется процедура перезагрузки.',
+    'GENERAL_STARTING_SHUTDOWN' => 'Выполняется процедура отключения.',
+    'GENERAL_IP_ADDRESS' => 'Ай-пи адрес',
+    'GENERAL_SECURITY' => 'Безопасность',
+    'GENERAL_RUNNING_OUT_SPACE' => 'Недостаточно места на диске',
 
     'SECTION_OBJECTS' => 'Объекты',
     'SECTION_APPLICATIONS' => 'Приложения',
     'SECTION_DEVICES' => 'Устройства',
     'SECTION_SETTINGS' => 'Настройки',
     'SECTION_SYSTEM' => 'Система',
+    'SECTION_PANEL'=>'Панель',
 
     /* end general */
 
@@ -125,9 +159,15 @@ $dictionary = array(
     'MODULE_SYSTEM_ERRORS' => 'Ошибки системы',
     'MODULE_MODULES' => 'Модули',
     'MODULE_USERLOG' => 'Журнал действий',
+    'MODULE_PLANS' => 'Планы',
+    'MODULE_ACTIONS_LOG' => 'История действий',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
-    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены по ширине экрана',
+    'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены',
+    'SCALE_WIDTH' => 'По ширине экрана',
+    'SCALE_HEIGHT' => 'По высоте экрана',
+    'SCALE_BOTH' => 'По ширине и высоте',
+    'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
 
     'SETUP' => 'Настроить',
 
@@ -172,6 +212,7 @@ $dictionary = array(
 
     'NEW_OBJECT' => 'Новый объект',
     'TITLE' => 'Название',
+    'ALT_TITLES'=>'Синонимы (через запятую)',
     'CLASS' => 'Класс',
     'DESCRIPTION' => 'Описание',
     'LOCATION' => 'Местоположение',
@@ -284,7 +325,7 @@ $dictionary = array(
 
 
     'JS_COMMAND' => 'JavaScript команда',
-    'BUTTON' => 'Кнопка',
+    'BUTTON' => 'Клавиша',
 
 
     'ON_OFF_SWITCH' => 'Выключатель',
@@ -800,6 +841,8 @@ $dictionary = array(
 
 
     'CAN_PLAY_MEDIA' => 'может проигрывать медиа-контент',
+    'CAN_TTS' => 'может принимать уведомления от системы',
+    'MIN_MSG_LEVEL' => 'Минимальный уровень важности сообщений',
 
 
     'PLAYER_TYPE' => 'Тип плеера',
@@ -944,6 +987,9 @@ $dictionary = array(
 
     'SETTINGS_SECTION_' => 'Общие',
     'SETTINGS_SECTION_HOOK' => 'Обработчики',
+    'SETTINGS_SECTION_BEHAVIOR' => 'Поведение',
+    'SETTINGS_SECTION_BACKUP' => 'Резервное копирование',
+    'SETTINGS_SECTION_SCENES' => 'Сцены',
 
     'DEVICE_ID' => 'ID устройства',
     'REQUEST_TYPE' => 'Тип запроса',
@@ -1035,8 +1081,21 @@ $dictionary = array(
     'PATTERN_CONDITIONAL' => 'На основе значений свойств',
     'CONDITION' => 'Условие',
     'ADD_EXIT_CODE' => 'Добавить код "выхода"',
+    'SMART_REPEAT'=>'Авто-повтор',
+    'READ_ONLY'=>'Только чтение',
     'ADVANCED_CONFIG' => 'Расширенная настройка',
     'UPDATE_ALL_EXTENSIONS' => 'Обновить все установленные дополнения',
+    'UPDATE_NEW_EXTENSIONS' => 'Установить обновления',
+    'MARKET_CATEGORY_INSTALLED' => 'Установлено',
+    'MARKET_CATEGORY_OWNED' => 'Приобретено',
+    'MARKET_CATEGORY_HAVE_UPDATES' => 'Обновления',
+    'MARKET_CATEGORY_HARDWARE' => 'Оборудование',
+    'MARKET_CATEGORY_MULTIMEDIA' => 'Мультимедиа',
+    'MARKET_CATEGORY_INFORMATION' => 'Информация',
+    'MARKET_CATEGORY_INTERACTION' => 'Взаимодействие',
+    'MARKET_CATEGORY_SYSTEM' => 'Система',
+    'MARKET_CATEGORY_CUSTOMIZING' => 'Модификации',
+    'MARKET_CONNECT_NOTE' => 'Доступ к приобретённым дополнениям открывается только при корректных настройках имени пользователя и пароля для сервиса <a href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Сохранить изменения',
     'ADD_PANE' => 'Добавить панель',
@@ -1056,13 +1115,15 @@ $dictionary = array(
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
-    'DEVICES_RELAY' => 'Управляемое реле/Выключатель',
-    'DEVICES_DIMMER' => 'Управляемый диммер',
-    'DEVICES_RGB' => 'RGB-контроллер',
+    'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
+    'DEVICES_DIMMER' => 'Освещение (Диммер)',
+    'DEVICES_RGB' => 'Освещение (RGB)',
     'DEVICES_MOTION' => 'Датчик движения',
-    'DEVICES_BUTTON' => 'Кнопка',
+    'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
+    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
+    'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности',
     'DEVICES_STATE_SENSOR' => 'Датчик состояния',
@@ -1076,7 +1137,12 @@ $dictionary = array(
     'DEVICES_SMOKE_SENSOR' => 'Датчик дыма',
     'DEVICES_COUNTER' => 'Счётчик',
     'DEVICES_UNIT' => 'Единица измерения',
-
+    'DEVICES_BATTERY_LOW' => 'Низкий уровень заряда батареи',
+    'DEVICES_UNKNOWN_COMMAND'=>'Неизвестная команда...',
+    'DEVICES_MSG_OPENING'=>'Сообщение при открытии',
+    'DEVICES_MSG_CLOSING'=>'Сообщение при закрытии',
+    'DEVICES_MSG_REMINDER'=>'Сообщение при напоминании',
+    
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
@@ -1089,6 +1155,7 @@ $dictionary = array(
     'DEVICES_STATUS' => 'Статус',
 
     'DEVICES_LOGIC_ACTION' => 'Действия',
+    'DEVICES_SCHEDULE' => 'Расписание',
 
     'DEVICES_CURRENT_VALUE' => 'Текущее значение',
     'DEVICES_CURRENT_HUMIDITY' => 'Влажность',
@@ -1096,11 +1163,18 @@ $dictionary = array(
 
     'DEVICES_MIN_VALUE' => 'Нижний порог',
     'DEVICES_MAX_VALUE' => 'Верхний порог',
-    'DEVICES_NOTIFY' => 'Умедомлять при выходе за порог',
+    'DEVICES_NOTIFY' => 'Уведомлять при выходе за порог',
     'DEVICES_NORMAL_VALUE' => 'Значение в нормальных пределах',
+    'DEVICES_DIRECTION_TIMEOUT' => 'Интервал времени расчета направления изменений (сек)',
+    'DEVICES_NOTIFY_STATUS' => 'Уведомлять при смене статуса',
+    'DEVICES_NOTIFY_ELIMINATED' => 'Уведомлять каждую минуту до восстановления статуса',
+    'DEVICES_SENSOR_ALERT' => 'Внимание! Сигнал тревоги от датчика',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значение датчика вышло за порог',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значение датчика вернулось к норме',
+    'DEVICES_NOTIFY_NOT_CLOSED' => 'Напоминать об открытом состоянии',
     'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',
+    'DEVICES_MOTION_RESET' => 'Сброс статуса "никого нет дома" без таймера установки',
+    'DEVICES_MOTION_TIMEOUT' => 'Время активности (секунд)',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
     'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
     'DEVICES_NOT_UPDATING' => 'не обновляется',
@@ -1118,11 +1192,25 @@ $dictionary = array(
     'DEVICES_GROUP_ECO' => 'Выключать в режиме экономии',
     'DEVICES_GROUP_ECO_ON' => 'Включать при выходе из режима экономии',
     'DEVICES_GROUP_SUNRISE' => 'Выключать с рассветом',
+    'DEVICES_GROUP_SUNSET' => 'Включать с закатом',
+    'DEVICES_GROUP_NIGHT' => 'Выключать при входе в ночной режим',
     'DEVICES_IS_ACTIVITY' => 'Изменение означает активность в помещении',
     'DEVICES_NCNO' => 'Тип устройства/сенсора',
     'DEVICES_LOADTYPE' => 'Тип устройства',
+    'DEVICES_LOADTYPE_VENT' => 'Вентиляция',
+    'DEVICES_LOADTYPE_HEATING' => 'Обогрев',
+    'DEVICES_LOADTYPE_CURTAINS' => 'Шторы',
+    'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
+    'DEVICES_LOADTYPE_LIGHT_ALT' => 'Свет',
     'DEVICES_LOADTYPE_POWER' => 'Разное',
+
+    'DEVICES_OPENTYPE' => 'Тип устройства',
+    'DEVICES_OPENTYPE_CURTAINS' => 'Шторы',
+    'DEVICES_OPENTYPE_SHUTTERS' => 'Ставни',
+    'DEVICES_OPENTYPE_GATES' => 'Ворота',
+    'DEVICES_OPENTYPE_WINDOW' => 'Окно',
+    'DEVICES_OPENTYPE_DOOR' => 'Дверь',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
     'DEVICES_ADD_SCENE' => 'Добавить устройство на Сцену',
@@ -1141,6 +1229,11 @@ $dictionary = array(
     'DEVICES_LINK_SWITCH_IT' => 'Включить/Выключить',
     'DEVICES_LINK_SWITCH_IT_DESCRIPTION' => 'Управление другим устройством по событию',
     'DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY' => 'Задержка выполнения (секунд)',
+
+    'DEVICES_LINK_SWITCH_TIMER' => 'Включить на время',
+    'DEVICES_LINK_SWITCH_TIMER_DESCRIPTION' => 'Включить другое устройство на некоторое время по событию',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY' => 'Включить на какое время (секунд)',
+    'DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME' => 'Только в тёмное время',
 
     'DEVICES_LINK_SET_COLOR' => 'Установить цвет',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
@@ -1164,16 +1257,19 @@ $dictionary = array(
     'DEVICES_UPDATE_CLASSSES' => 'Обновить классы',
     'DEVICES_ADD_OBJECT_AUTOMATICALLY' => 'Создать автоматически',
 
+    'DEVICES_PATTERN_OPEN' => 'открой',
+    'DEVICES_PATTERN_CLOSE' => 'закрой',
     'DEVICES_PATTERN_TURNON' => 'включи|зажги',
     'DEVICES_PATTERN_TURNOFF' => 'выключи|потуши|отключи',
     'DEVICES_DEGREES' => 'градусов',
     'DEVICES_STATUS_OPEN' => 'открыт',
     'DEVICES_STATUS_CLOSED' => 'закрыт',
-    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете',
+    'DEVICES_STATUS_ALARM' => 'состояние тревоги',
+    'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Сделано|Как пожелаете|Хорошо',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Никого нет.',
-    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть.',
-    'DEVICES_ROOMS_ACTIVITY' => 'Активность:',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Кто-то есть',
+    'DEVICES_ROOMS_ACTIVITY' => 'Активность',
 
     'DEVICES_PASSED_NOW' => 'только что',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
@@ -1181,7 +1277,7 @@ $dictionary = array(
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
     'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
 
-    'DEVICES_CAMERA' =>'IP-камера',
+    'DEVICES_CAMERA' =>'Камера (IP)',
     'DEVICES_CAMERA_STREAM_URL' =>'URL видео-потока',
     'DEVICES_CAMERA_USERNAME' =>'Имя пользователя',
     'DEVICES_CAMERA_PASSWORD' =>'Пароль',
@@ -1199,6 +1295,9 @@ $dictionary = array(
 
     'DEVICES_THERMOSTAT' => 'Термостат',
     'DEVICES_THERMOSTAT_MODE' => 'Режим',
+    'DEVICES_THERMOSTAT_MODE_NORMAL' => 'Обычный',
+    'DEVICES_THERMOSTAT_MODE_ECO' => 'Эко',
+    'DEVICES_THERMOSTAT_MODE_OFF' => 'Выкл',
     'DEVICES_THERMOSTAT_ECO_MODE' => 'ECO режим',
     'DEVICES_THERMOSTAT_NORMAL_TEMP' => 'Обычная целевая температура',
     'DEVICES_THERMOSTAT_ECO_TEMP' => 'ECO целевая температура',
@@ -1208,17 +1307,166 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
+    'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',
+    'GROUPS' => 'Группы',
+    'APPLIES_TO' => 'Применительно к',
+
+    'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
+    'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
+    'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
+
+    'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
+    'DEVICES_COLLECTION_IS_OPEN' => 'Сейчас открыто',
+    'DEVICES_COLLECTION_IS_HEATING' => 'Сейчас греет',
 
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
+    'SYSTEM_DEVICE' => 'Системное устройство',
+
+    'ROOMS' => 'Комнаты',
+    'APPEARANCE' => 'Внешний вид',
+    'MAINTENANCE' => 'Обслуживание',
+    'LIST' => 'Список',
+    'DATA_OPTIMIZING' => 'Оптимизация данных',
+    'DID_YOU_KNOW' => 'А знаете ли вы что...',
+    'NEWS' => 'Новости MajorDoMo',
+    'KNOWLEDGE_BASE' => 'База знаний',
+    'ACTIVITIES' => 'Поведение',
+    'COMMANDS' => 'Команды',
+    'ADDON_FILE' => 'Файл дополнения',
+    'UPLOAD_AND_INSTALL' => 'Загрузить и установить',
+    'ADD_UPDATE_MANUALLY' =>'Добавить/обновить вручную',
+    'TURNING_ON' =>'Включаю',
+    'TURNING_OFF' =>'Выключаю',
+    'TURNING_OPEN' =>'Открываю',
+    'TURNING_CLOSE' =>'Закрываю',
+    'PATTERN_TIMER' => 'таймер',
+    'PATTERN_DO_AFTER' => 'через',
+    'PATTERN_DO_FOR' => 'на',
+    'PATTERN_SECOND' => 'секунд',
+    'PATTERN_MINUTE' => 'минут',
+    'PATTERN_HOUR' => 'час',
+
+    'THEME' => 'Тема',
+    'THEME_DARK' => 'Тёмная',
+    'THEME_LIGHT' => 'Светлая',
+
+    'DATA_SOURCE' => 'Источник данных',
+    'WIDGET' => 'Виджет',
+    'PANE' => 'Панель',
+    'COLUMNS' => 'Колонки',
+    'SIZE' => 'Размер',
+    'CLOCK' => 'Часы',
+
+    'UPDATES_SOURCE' => 'Источник обновлений ядра',
+    'UPDATES_SOURCE_MASTER' => 'Мастер (стабильная версия)',
+    'UPDATES_SOURCE_ALPHA' => 'Альфа (ранний доступ к обновлениям)',
+
+    'MAINCYCLEDOWN' => 'Остановлен главный цикл системы', //
+    'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
+
+    'RECENTLY_USED' => 'Недавнее',
+
+    'PLAN_ZOOM_CONTROL' => 'Управление масштабом',
+    'PLAN_AUTO_ZOOM' => 'Авто-масштабирование',
+    'CSS_CLASS' => 'Класс стиля',
+    'IMAGE_ITEM' => 'Элемент изображения',
+    'STYLE_TO_APPLY' => 'Применить стиль',
+    'STYLE_TO_APPLY_INVERSE' => 'Применить стиль ("иначе")',
+    'EMBED_CODE' => 'Код встраивания',
+
+    'STYLE_SHOW_IT' => 'Показать',
+    'STYLE_HIDE_IT' => 'Спрятать',
+    'STYLE_BLINK_IT' => 'Моргание',
+    'STYLE_SPIN_IT' => 'Вращение',
+    'STYLE_FADEOUT50' => 'Прозрачность 50%',
+    'STYLE_FADEOUT30' => 'Прозрачность 30%',
+    'STYLE_FADEOUT10' => 'Прозрачность 10%',
+    'STYLE_FADEOUT0' => 'Прозрачность 0%',
+    'SEE_ALSO' => 'Смотрите также',
+    'PLAN_COMPONENTS' => 'Компоненты',
+    
+    'CONNECT_LOGIN_FAILED' => 'Не удалось подключиться к сервису CONNECT. Пожалуйста, проверьте указанные имя пользователя и пароль',
+    'CONNECT_ABOUT' => 'Cервис CONNECT позволяет Вам с помощью Облачной Синхронизации организовать простой доступ к домашней системе через сеть Интернет, а так же обеспечить работу других облачных сервисов (резервная копия, работа голосовых помощников и т.п.). Подробная информация о сервисе доступна <a href="https://connect.smartliving.ru/services/s2.html">по ссылке</a>',
+    'CONNECT_REGISTER' => 'Регистрация на сервисе CONNECT',
+    'CONNECT_PUBLISH_DATA' => 'Опубликовать данные',
+    'CONNECT_CLOUD_BACKUP' => 'Облачная резервная копия',
+    'CONNECT_MANAGE_BACKUPS' => 'Управление копиями',
+    'CONNECT_BACKUP_NOW' => 'Сохранить копию',
+    'CONNECT_ENABLE_CLOUDSYNC' => 'Включить облачную синхронизацию',
+    'CONNECT_ENABLE_CLOUDBACKUP' => 'Включить облачную резервную копию',
+    'CONNECT_DISABLE_SECURE_CONNECTION' => 'Разрешить подключение без шифрования',
+    'HOURS_ARRAY'=>'час,часа,часов',
+    'MINUTE_ARRAY'=>'минута,минуты,минут',
+
+    'FEATURES_SUPPORTED' => 'Поддерживаемые возможности',
+    'NO_FEATURES_WARNING' => 'Извините, поддерживаемые возможности не найдены',
+    'TTS_TYPE' => 'Тип TTS',
+    'NONE' => 'Нет',
+
+    'PREVIOUS' => 'Пред.',
+    'NEXT' => 'След.',
+
+    'LOCATED_IN_ROOM' => 'расположеный в комнате',
+
+    'BLOCK_SENSOR' => 'Блокировать датчик',
+    'UNBLOCK_SENSOR' => 'Разблокировать датчик',
+
+    'VALIDATION_TYPE' => 'Проверка значений',
+    'VALIDATION_TYPE_NUMBER' => 'Число в диапазоне',
+    'VALIDATION_TYPE_BINARY' => 'Бинарное значение (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'По словарю',
+    'VALIDATION_TYPE_CUSTOM' => 'Расширенный (кодом)',
+
+    'REMINDER_INTRO' => 'Напоминаю, что',
 
     /* end module names */
 
-
+    'ENABLE_AUTO_UPDATE' => 'Включить автоматическое обновление',
+    'AUTO_UPDATE_DELAY' => 'Задержка автоматического обновлния (дней)',
+    'AUTO_UPDATE_TIME' => 'Время проверки и установки обновлений',
+    
+	'CODEEDITOR_NOTY_TURNOFF' => 'Расширьте возможности редактора кода в настройках системы, <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">перейти в настройки</a>',
+	'RUN_SCRIPT_BTN' => 'Выполнить',
+	'SCRIPT_HOW_TO_RUN' => 'Как запустить?',
+	'SCRIPT_RUN_IN_METHOD' => 'Из метода (PHP)',
+	
+	'CODEEDITOR_TURNONSETTINGS' => 'Включить эти настройки',
+	'CODEEDITOR_SHOWLINE' => 'Показывать строк без скролла',
+	'CODEEDITOR_MIXLINE' => 'Минимальное количество строк для отображения',
+	'CODEEDITOR_UPTOLINE' => '"Прыгать" к строке с ошибкой',
+	'CODEEDITOR_SHOWERROR' => 'Показывать ошибку под строкой',
+	'CODEEDITOR_AUTOCLOSEQUOTES' => 'Автозакрытие ()[]""',
+	'CODEEDITOR_WRAPLINES' => 'Перенос длинных строк',
+	'CODEEDITOR_THEME' => 'Тема для редактора',
+	'CODEEDITOR_BYCODEHEIGHT' => 'По высоте кода',
+	'CODEEDITOR_AUTOCOMPLETE' => 'Показывать окно автозавершения',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE' => 'Тип подсказок автозавершения',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP' => 'Только PHP',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM' => 'PHP + MJDM Функции',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER' => 'MJDM Функции + Пользовательские свойства/методы/скрипты',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_USER' => 'Пользовательские свойства/методы/скрипты',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER' => 'Всё',
+	'CODEEDITOR_AUTOSAVE_CODE' => 'Код сохранен автоматически',
+	'CODEEDITOR_AUTOSAVE_CODE_HELP' => 'Нажмите <code>CTRL+R</code> для восстановления!',
+	'CODEEDITOR_ERROR_IN_CODE' => 'Ошибка в коде',
+	'CODEEDITOR_ERROR_RESTORE_CODE' => 'Вы можете восстановить предыдущий код, <a style="color: #ff574b;font-weight: bold;text-decoration: underline;" href="javascript://" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) (editor.setValue($(\'#error_old_code\').text(), $(\'#error_noty\').hide()));">восстановить?</a>',
+	'CODEEDITOR_CHECK_ON_ERROR_BTN' => 'Проверить на ошибки',
+	'CODEEDITOR_RESTORE' => 'Восстановить',
+	'CODEEDITOR_CLOSE_BTN' => 'Закрыть',
+	'CODEEDITOR_CREATE' => 'Создан',
+	'CODEEDITOR_AUTOSAVE' => 'Автосохранение кода',
+	'CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS' => 'Только вручную (CTRL+O)',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5' => 'Через 5 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10' => 'Через 10 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15' => 'Через 15 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Через 30 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Через 1 минуту',
+	
 );
 
 foreach ($dictionary as $k => $v) {
     if (!defined('LANG_' . $k)) {
-        define('LANG_' . $k, $v);
+        @define('LANG_' . $k, $v);
     }
 }

@@ -1,8 +1,8 @@
 <?php
+header("Content-type:application/javascript");
 chdir(dirname(__FILE__) . '/../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 ?>
 
@@ -29,7 +29,7 @@ $.subscribe('wsData', function (_, response) {
 });
 
 function refreshDevicesHTTP() {
-    var baseURL = "/ajax/devices.html?op=get_device&id=";
+    var baseURL = ROOTHTML + "ajax/devices.html?op=get_device&id=";
     activeDevices.forEach(function(item, index) {
         var url = baseURL + item;
         $.ajax({
@@ -100,13 +100,13 @@ function requestDeviceHTML(device_id,widgetElement) {
     freeboard.loadWidgetPlugin({
         // Same stuff here as with datasource plugin.
         "type_name"   : "devices_plugin",
-        "display_name": "Device",
-        "description" : "MajorDoMo devices",
+        "display_name": LANG_DEVICE,
+        "description" : "MajorDoMo "+LANG_DEVICES,
         "fill_size" : false,
         "settings"    : [
             {
                 "name"        : "device_id",
-                "display_name": "Device",
+                "display_name": LANG_DEVICE,
                 "required" : true,
                 "type"        : "option",
                 <?php
@@ -125,7 +125,7 @@ function requestDeviceHTML(device_id,widgetElement) {
             },
             {
                 "name"        : "size",
-                "display_name": "Size",
+                "display_name": LANG_SIZE,
                 "type"        : "option",
                 "options"     : [
                     {"name" : "1","value": "1"},
@@ -191,7 +191,3 @@ function requestDeviceHTML(device_id,widgetElement) {
 
 
 }());
-
-<?php
-$db->Disconnect();
-?>

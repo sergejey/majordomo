@@ -19,7 +19,7 @@ class layouts extends module {
 *
 * @access private
 */
-function layouts() {
+function __construct() {
   $this->name="layouts";
   $this->title="<#LANG_MODULE_LAYOUTS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
@@ -219,7 +219,24 @@ function usual(&$out) {
    }
   }
   if ($rec['TYPE']=='dashboard') {
-   $this->redirect(ROOTHTML."freeboard/?layout_id=".$rec['ID']);
+   $url=ROOTHTML."3rdparty/freeboard/?layout_id=".$rec['ID'];
+   if ($_GET['theme']) {
+    $url.="&theme=".$_GET['theme'];
+   } elseif ($rec['THEME']) {
+    $url.="&theme=".$rec['THEME'];
+   }
+   if ($rec['BACKGROUND_IMAGE']) {
+    $url.="&background_image=".urlencode($rec['BACKGROUND_IMAGE']);
+   }
+   echo "<head>      
+    <title>Page</title>      
+    <meta http-equiv=\"refresh\" content=\"0;URL='".$url."'\" />    
+  </head><body>Redirecting...</body>";
+   exit;
+   //$this->redirect($url);
+  }
+  if ($rec['TYPE']=='url') {
+   $this->redirect($rec['URL']);
   }
   outHash($rec, $out);
  }
@@ -280,7 +297,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS layouts');
+   SQLDropTable('layouts');
   parent::uninstall();
  }
 /**
@@ -306,6 +323,8 @@ layouts - Layouts
  layouts: REFRESH int(10) NOT NULL DEFAULT '0'
  layouts: DETAILS text
  layouts: HIDDEN int(3) NOT NULL DEFAULT '0'
+ layouts: BACKGROUND_IMAGE varchar(255) NOT NULL DEFAULT ''
+ layouts: THEME varchar(50) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

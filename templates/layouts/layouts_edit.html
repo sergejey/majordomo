@@ -1,6 +1,3 @@
-<!--#
- @version 0.2 (auto-set)
-#-->
 
 <!-- Table 'layouts' edit -->
 <ul class="breadcrumb">
@@ -103,7 +100,6 @@
 
 <!-- CODE (text) -->
 [#if TYPE="html"#]
-
 <div class="form-group">
         <label class="control-label"><#LANG_CODE#></label>
         <div class="controls">
@@ -115,8 +111,6 @@
 [#endif TYPE#]
 [#if TYPE="app"#]
 <!-- APP (varchar) -->
-
-
 <div class="form-group">
         <label class="control-label"><#LANG_APP#></label>
         <div class="controls">
@@ -126,15 +120,33 @@
 
 [#endif TYPE#]
 [#if TYPE="url"#]
-
 <div class="form-group">
         <label class="control-label"><#LANG_URL#></label>
         <div class="controls">
-                <input type="text" class="form-control" name="url" value="[#URL#][#if URL=""#]http://[#endif#]">
+                <input type="text" class="form-control" name="url" value="[#URL#]">
         </div>
 </div>
-
 [#endif TYPE#]
+
+[#if TYPE=="html" || TYPE="dashboard"#]
+        <div class="form-group">
+                <label class="control-label"><#LANG_THEME#></label>
+                <div class="controls">
+                        <select name="theme" class="form-control">
+                                <option value=""><#LANG_DEFAULT#></option>
+                                <option value="dark"[#if THEME="dark"#] selected[#endif#]><#LANG_THEME_DARK#></option>
+                                <option value="light"[#if THEME="light"#] selected[#endif#]><#LANG_THEME_LIGHT#></option>
+                        </select>
+                </div>
+        </div>
+        <div class="form-group">
+                <label class="control-label"><#LANG_BACKGROUND#></label>
+                <div class="controls">
+                        <input type="text" class="form-control" name="background_image" value="[#BACKGROUND_IMAGE#]" id="background_image" onclick="openFileBrowser('background_image');">
+
+                </div>
+        </div>
+[#endif#]
 
 [#if ID!=""#]
 <div class="form-group">

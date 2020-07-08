@@ -1,4 +1,13 @@
-[#if ACTION!="context"#]
+<link href="<#ROOTHTML#>3rdparty/select2/css/select2.min.css" rel="stylesheet" />
+<script src="<#ROOTHTML#>3rdparty/select2/js/select2.min.js"></script>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+  $('.select2').select2();
+ });
+</script>
+
+[#if ACTION!="context" && ACTION!="service"#]
 
 <ul class="nav nav-tabs">
  <li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?view_mode=">Debug</a></li>
@@ -8,7 +17,9 @@
  <li [#if VIEW_MODE="timers"#]class="active"[#endif#]><a href="?view_mode=timers">Timers</a></li>
  <li [#if VIEW_MODE="events"#]class="active"[#endif#]><a href="?view_mode=events">Events</a></li>
  <li [#if VIEW_MODE="services"#]class="active"[#endif#]><a href="?view_mode=services">Services</a></li>
+ <li [#if VIEW_MODE="database"#]class="active"[#endif#]><a href="?view_mode=database">Database</a></li>
  <li [#if VIEW_MODE="performance"#]class="active"[#endif#]><a href="?view_mode=performance">Performance</a></li>
+ <li [#if VIEW_MODE="dead"#]class="active"[#endif#]><a href="?view_mode=dead">Not alive</a></li>
  <li><a href="print_all.php" target=_blank>Structure</a></li>
 </ul>
 
@@ -18,6 +29,42 @@
  <tr>
   <td valign="top" colspan=7>
    [#if VIEW_MODE!="services"#]
+
+   <form action="?" method="get" class="form-inline">
+    [#if VIEW_MODE=""#]
+    <div class="form-group" style="width:50%">
+     <select name="files[]" id='files' class="select2" multiple="multiple" style="width:100%">
+      <option value="">
+       [#begin FILES#]
+      <option value="[#TITLE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]
+       [#end FILES#]
+     </select>
+    </div>
+    <div class="form-group">
+     <select name="limit" id='limit' class="form-control">
+      <option value="">Lines</option>
+      <option value="50"[#if LINES="50"#] selected[#endif#]>50
+      <option value="100"[#if LINES="100"#] selected[#endif#]>100
+      <option value="200"[#if LINES="200"#] selected[#endif#]>200
+      <option value="500"[#if LINES="500"#] selected[#endif#]>500
+      <option value="1000"[#if LINES="1000"#] selected[#endif#]>1000
+     </select>
+    </div>
+    [#endif VIEW_MODE#]
+    <div class="form-group">
+     <input type="text" name="filter" id="filter" value="<#FILTER#>" placeholder="filter" class="form-control">
+    </div>
+    <div class="form-group">
+     <input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+    </div>
+    <div class="form-group">
+     <a href="#" class="btn btn-default" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> Pause</a>
+    </div>
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+   </form>
+
+   <!--#
    <table width="100%" border="0">
     <tr>
      <td valign="top" width="50%">
@@ -49,15 +96,23 @@
      </td>
     </tr>
    </table>
+   #-->
    [#endif VIEW_MODE#]
-  
+
+   [#if RESULT!=""#]&nbsp;<pre>[#RESULT#]</pre>[#endif#]
+&nbsp;
   <div id="xrayContent">Loading...</div>
   </td>
  </tr>
 </table>
 <script language="javascript">
         var checkTimer;
+        var checkTimeout=5000;
         var playingXray;
+
+        [#if VIEW_MODE=="database"#]
+        checkTimeout=60000;
+        [#endif#]
 
         function playPauseXRay() {
          if (playingXray==1) {
@@ -74,14 +129,15 @@
         function checkAllStates() {
          playingXray=1;
          clearTimeout(checkTimer);
-
-         var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val())+"&limit="+$('#limit').val()+"&file="+$('#file').val();
+         //var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val())+"&limit="+$('#limit').val()+"&file="+$('#file').val();
+         var url=window.location.href;
+         url+='&ajax=1&op=getcontent';
          $.ajax({
           url: url,
           }).done(function(data) { 
           //var currentContent=$('#xrayContent').html();
           $('#xrayContent').html(data);
-          checkTimer=setTimeout('checkAllStates()', 5000);
+          checkTimer=setTimeout('checkAllStates()', checkTimeout);
          });
   return false;
  }
@@ -109,3 +165,48 @@
  findContext();
 </script>
 [#endif ACTION#]
+
+[#if ACTION="service"#]
+<div class="row" style="border:1px dashed black;padding:5px;display: flex;align-items: center;">
+ <div class="col-md-3">
+  Service: <b>[#CYCLE#]</b>
+ </div>
+ <div class="col-md-6" id='status[#CYCLE#]Body'>
+  ...
+ </div>
+ <div class="col-md-3 text-right">
+  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('restart');"><i class="glyphicon glyphicon-refresh"></i> Restart</a>
+  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('stop');"><i class="glyphicon glyphicon-stop"></i> Stop</a>
+ </div>
+</div>
+
+<script language="javascript">
+ var [#CYCLE#]Status_timer=0;
+ function send[#CYCLE#]Command(cmd) {
+  var url="<#ROOTHTML#>ajax/xray.html?action=service";
+  $.post(url,
+          { action:"service", ajax: "1", "cycle": "[#CYCLE#]", "op": cmd},
+          function(data) {
+           //console.log(data);
+          }
+  );
+  update[#CYCLE#]Status();
+  return false;
+ }
+ function update[#CYCLE#]Status() {
+  var url="<#ROOTHTML#>ajax/xray.html?action=service";
+  clearTimeout([#CYCLE#]Status_timer);
+  $.post(url,
+          { action:"service", ajax: "1", "cycle": "[#CYCLE#]"},
+          function(data) {
+           //console.log(data);
+           $('#status[#CYCLE#]Body').html(data.BODY);
+           [#CYCLE#]Status_timer=setTimeout('update[#CYCLE#]Status()',2000);
+          }
+  );
+  return false;
+ }
+ update[#CYCLE#]Status();
+
+</script>
+[#endif#]

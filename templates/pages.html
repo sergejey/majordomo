@@ -1,21 +1,12 @@
-<!--#
- @version 0.4 (auto-set)
- <#LANG_WIKI_URL#>
-#-->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>MajorDoMo</title>
-<meta name="keywords" content="{#if CMS_KEYWORDS!=""#}{#CMS_KEYWORDS#}{#endif#}">
-<meta name="description" content="{#if CMS_DESCRIPTION!=""#}{#CMS_DESCRIPTION#}{#endif#}">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+[#inc common_header.html#]
 <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
 <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
-<link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <style>
 #body_background {
@@ -107,17 +98,17 @@ function switchSelected(selected) {
 
           [#if TYPE="app"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>popup/[#APP#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes" allowfullscreen="yes"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="url"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="[#URL#]" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes" allowfullscreen="yes"></iframe>');
            }
           [#endif TYPE#]
           [#if TYPE="html" || TYPE="dashboard"#]
            if ($('#tab-[#ID#]').html()=='...') {
-            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes"></iframe>');
+            $('#tab-[#ID#]').html('<iframe src="<#ROOTHTML#>page/[#ID#].html" width=100% height="'+iFrameHeight+'" border="0" frameborder="0" class="tab_iframe" allowtransparency="yes" allowfullscreen="yes"></iframe>');
            }
           [#endif TYPE#]
          }

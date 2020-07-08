@@ -7,6 +7,12 @@ if ($this->owner->name == 'panel') {
 }
 $table_name = 'scripts';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
+
+if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+}
 if ($this->mode == 'update') {
 
     //print_r($_REQUEST);exit;
@@ -39,13 +45,22 @@ if ($this->mode == 'update') {
 
     $old_code=$rec['CODE'];
     $rec['CODE'] = $code;
-
+	
     if ($rec['CODE'] != '') {
         //echo $content;
+		
         $errors = php_syntax_error($rec['CODE']);
+		
         if ($errors) {
+            $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
             $out['ERR_CODE'] = 1;
-            $out['ERRORS'] = nl2br($errors);
+			$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+			$errorStr = explode('Errors parsing', $errorStr[1]);
+			$errorStr = explode(' in ', $errorStr[0]);
+			//var_dump($errorStr);
+            $out['ERRORS'] = $errorStr[0];
+			$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+			$out['ERR_OLD_CODE'] = $old_code;
             $ok = 0;
         }
     }
@@ -72,37 +87,35 @@ if ($this->mode == 'update') {
 
     //UPDATING RECORD
     if ($ok) {
-
         $linked_object = '';
         $linked_property = '';
-        if (preg_match('/^if(.+?){/is', $rec['CODE'], $m)) {
-            $conditions = trim($m[1], '()');
-            if (preg_match('/getglobal\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
-                $linked_object=$m2[1];
-                $linked_property=$m2[2];
-            } elseif (preg_match('/gg\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
-                $linked_object=$m2[1];
-                $linked_property=$m2[2];
-            } elseif (preg_match('/timeis/is', $conditions) ||
-                      preg_match('/timebefore/is', $conditions) ||
-                      preg_match('/timeafter/is', $conditions) ||
-                      preg_match('/timebetween/is', $conditions)) {
-                $linked_object='ClockChime';
-                $linked_property='time';
-            }
-        }
 
-        if ($linked_object!='' && $linked_property!='') {
-            $rec['AUTO_LINK_AVAILABLE']=1;
-            if (!$old_code) {
+        if (!isset($_REQUEST['auto_link']) || $_REQUEST['auto_link']==1) {
+            if (preg_match('/^if(.+?){/is', $rec['CODE'], $m)) {
+                $conditions = trim($m[1], '()');
+                if (preg_match('/getglobal\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
+                    $linked_object=$m2[1];
+                    $linked_property=$m2[2];
+                } elseif (preg_match('/gg\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
+                    $linked_object=$m2[1];
+                    $linked_property=$m2[2];
+                } elseif (preg_match('/timeis/is', $conditions) ||
+                    preg_match('/timebefore/is', $conditions) ||
+                    preg_match('/timeafter/is', $conditions) ||
+                    preg_match('/timebetween/is', $conditions)) {
+                    $linked_object='ClockChime';
+                    $linked_property='time';
+                }
+            }
+
+            if ($linked_object!='' && $linked_property!='') {
+                $rec['AUTO_LINK_AVAILABLE']=1;
                 $rec['AUTO_LINK']=1;
+            } else {
+                $rec['AUTO_LINK_AVAILABLE']=0;
             }
         } else {
-            $rec['AUTO_LINK_AVAILABLE']=0;
-        }
-        if (!$rec['AUTO_LINK']) {
-            $linked_object='';
-            $linked_property='';
+            $rec['AUTO_LINK']=0;
         }
 
         $rec['LINKED_OBJECT'] = $linked_object;
@@ -111,6 +124,7 @@ if ($this->mode == 'update') {
             addLinkedProperty($linked_object, $linked_property, $this->name);
         }
 
+        $rec['UPDATED']=date('Y-m-d H:i:s');
 
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
@@ -178,7 +192,7 @@ for ($i = 0; $i < $total; $i++) {
 }
 
 $run_days = array();
-if ($rec['RUN_DAYS']) {
+if ($rec['RUN_DAYS']!=='') {
     $run_days = explode(',', $rec['RUN_DAYS']);
 }
 

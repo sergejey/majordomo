@@ -11,7 +11,7 @@ abstract class WebSocketServer {
   protected $sockets                              = array();
   protected $users                                = array();
   protected $heldMessages                         = array();
-  protected $interactive                          = true;
+  protected $interactive                          = false; //
   protected $headerOriginRequired                 = false;
   protected $headerSecWebSocketProtocolRequired   = false;
   protected $headerSecWebSocketExtensionsRequired = false;

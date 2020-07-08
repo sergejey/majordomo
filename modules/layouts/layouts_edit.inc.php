@@ -11,7 +11,7 @@
    $ok=1;
   //updating 'TITLE' (varchar, required)
    global $title;
-   $rec['TITLE']=$title;
+   $rec['TITLE']=gr('title','trim');
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;
@@ -37,6 +37,9 @@
   //updating 'URL' (url)
    global $url;
    $rec['URL']=$url.'';
+
+      $rec['BACKGROUND_IMAGE']=gr('background_image');
+      $rec['THEME']=gr('theme');
 
    global $delete_icon;
    if ($delete_icon) {

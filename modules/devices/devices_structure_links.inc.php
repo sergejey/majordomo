@@ -1,7 +1,29 @@
 <?php
 
 $this->device_links=array(
-    'SMotions,SButtons'=>array(
+    'SMotions,SButtons,SOpenClose,SCameras'=>array(
+        array(
+            'LINK_NAME'=>'switch_timer',
+            'LINK_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER,
+            'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SWITCH_TIMER_DESCRIPTION,
+            'TARGET_CLASS'=>'SControllers',
+            'PARAMS'=>array(
+                array(
+                    'PARAM_NAME'=>'action_delay',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY,
+                    'PARAM_TYPE'=>'num'
+                ),
+                array(
+                    'PARAM_NAME'=>'darktime',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER_PARAM_DARKTIME,
+                    'PARAM_TYPE'=>'select',
+                    'PARAM_OPTIONS'=>array(
+                        array('TITLE'=>LANG_NO,'VALUE'=>'0'),
+                        array('TITLE'=>LANG_YES,'VALUE'=>'1')
+                    )
+                )
+            )
+        ),
         array(
             'LINK_NAME'=>'switch_it',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT,
@@ -101,5 +123,23 @@ $this->device_links=array(
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
             'TARGET_CLASS'=>'SThermostats',
         )
+    ),
+    'SOpenClose' =>array(
+        array (
+            'LINK_NAME'=>'open_sensor_pass',
+            'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_PASS,
+            'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
+            'TARGET_CLASS'=>'SOpenable',
+        )
     )
 );
+
+$addons_dir=DIR_MODULES.$this->name.'/addons';
+if (is_dir($addons_dir)) {
+    $addon_files=scandir($addons_dir);
+    foreach($addon_files as $file) {
+        if (preg_match('/\_links\.php$/',$file)) {
+            require($addons_dir.'/'.$file);
+        }
+    }
+}

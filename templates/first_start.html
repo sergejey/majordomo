@@ -1,5 +1,5 @@
 <div align="center">
-<div align="left" style="width:400px;padding-top:150px">
+<div align="left" style="width:500px;padding-top:150px">
 <h1>Hello, world! :)</h1>
 &nbsp;<br>&nbsp;<br>
 <form action="?" method="get">
@@ -15,10 +15,10 @@ Time zone:<br>
 <div class="row">
 Language:<Br>
 [#begin LANGUAGES#]
-<div class="col-md-3">
+<div class="col-md-4">
     <label for="lang_[#TITLE#]">
 <input type="radio" name="language" id="lang_[#TITLE#]" value="[#TITLE#]"[#if TITLE="<#SETTINGS_SITE_LANGUAGE#>"#] checked[#endif#]>
-<img src="<#ROOTHTML#>img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" height="30" align="absmiddle"> [#TITLE#]
+<img src="<#ROOTHTML#>img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" height="30" align="absmiddle"> [#CAPTION#]
     </label>
 </div>
 [#end LANGUAGES#]

@@ -18,7 +18,7 @@ class properties extends module {
 *
 * @access private
 */
-function properties() {
+function __construct() {
   $this->name="properties";
   $this->title="<#LANG_MODULE_PROPERTIES#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -197,7 +197,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS properties');
+   SQLDropTable('properties');
   parent::uninstall();
  }
 /**

@@ -8,27 +8,26 @@ include_once("./lib/threads.php");
 
 set_time_limit(0);
 
-// connecting to database
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $ctl = new control_modules();
 
-setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
+echo "Running startup maintenance" . PHP_EOL;
 $run_from_start = 1;
 include("./scripts/startup_maintenance.php");
 $run_from_start = 0;
 
 setGlobal('ThisComputer.started_time', time());
-getObject('ThisComputer')->raiseEvent("StartUp");
-
+callMethod('ThisComputer.StartUp');
+processSubscriptionsSafe('startup');
 
 $sqlQuery = "SELECT *
                FROM classes
-              WHERE TITLE LIKE 'timer'";
+              WHERE TITLE = 'timer'";
 
 $timerClass = SQLSelectOne($sqlQuery);
 $o_qry = 1;
@@ -58,16 +57,40 @@ echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        setGlobal('ThisComputer.uptime', time() - getGlobal('ThisComputer.started_time'));
+//        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        saveToCache("MJD:$cycleVarName", $checked_time);
+
+        $timestamp = time() - getGlobal('ThisComputer.started_time');
+        setGlobal('ThisComputer.uptime', $timestamp);
+
+        $years = floor($timestamp / 31536000);
+        $days = floor(($timestamp - ($years*31536000)) / 86400);
+        $hours = floor(($timestamp - ($years*31536000 + $days*86400)) / 3600);
+        $minutes = floor(($timestamp - ($years*31536000 + $days*86400 + $hours*3600)) / 60);
+        $timestring = '';
+        if ($years > 0){
+            $timestring .= $years . 'y ';
+        }
+        if ($days > 0) {
+            $timestring .= $days . 'd ';
+        }
+        if ($hours > 0) {
+            $timestring .= $hours . 'h ';
+        }
+        if ($minutes > 0) {
+            $timestring .= $minutes . 'm ';
+        }
+        setGlobal('ThisComputer.uptimeText', trim($timestring));
+
     }
 
     $m = date('i');
     $h = date('h');
     $dt = date('Y-m-d');
 
+    #NewMinute
     if ($m != $old_minute) {
-        //echo "new minute\n";
+        processSubscriptionsSafe('MINUTELY');
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects
                     WHERE $o_qry";
@@ -80,97 +103,30 @@ while (1) {
             getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
             getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
         }
-
         $old_minute = $m;
     }
 
+    #NewHour
     if ($h != $old_hour) {
-        $sqlQuery = "SELECT ID, TITLE
-                     FROM objects
-                    WHERE $o_qry";
-
-        //echo "new hour\n";
-        $old_hour = $h;
-        $objects = SQLSelect($sqlQuery);
-        $total = count($objects);
-
+        processSubscriptionsSafe('HOURLY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewHour\n";
             getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
         }
-
-        processSubscriptions('HOURLY');
-
+        $old_hour = $h;
     }
 
-    $keep = SQLSelect("SELECT DISTINCT VALUE_ID, KEEP_HISTORY FROM phistory_queue");
-    if ($keep[0]['VALUE_ID']) {
-        $total = count($keep);
-        for ($i = 0; $i < $total; $i++) {
-            $keep_rec = $keep[$i];
-            if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
-                $table_name = createHistoryTable($keep_rec['VALUE_ID']);
-            } else {
-                $table_name = 'phistory';
-            }
-            if ($keep_rec['KEEP_HISTORY'] == 0) continue;
-            SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $keep_rec['VALUE_ID'] . "' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>" . (int)$keep_rec['KEEP_HISTORY']);
-        }
-    }
-
-    $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT 500");
-    if ($queue[0]['ID']) {
-        $total = count($queue);
-        $processed = array();
-        for ($i = 0; $i < $total; $i++) {
-            $q_rec = $queue[$i];
-            $value = $q_rec['VALUE'];
-            $old_value = $q_rec['OLD_VALUE'];
-
-            SQLExec("DELETE FROM phistory_queue WHERE ID='" . $q_rec['ID'] . "'");
-
-            if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
-                $table_name = 'phistory_value_'.$q_rec['VALUE_ID'];
-            } else {
-                $table_name = 'phistory';
-            }
-
-            if ($value != $old_value || (defined('HISTORY_NO_OPTIMIZE') && HISTORY_NO_OPTIMIZE == 1)) {
-                if (!$processed[$q_rec['VALUE_ID']] || ((time() - $processed[$q_rec['VALUE_ID']]) > 8 * 60 * 60)) {
-                    SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>" . (int)$q_rec['KEEP_HISTORY']);
-                    $processed[$q_rec['VALUE_ID']] = time();
-                }
-                $h = array();
-                $h['VALUE_ID'] = $q_rec['VALUE_ID'];
-                $h['ADDED'] = $q_rec['ADDED'];
-                $h['VALUE'] = $value;
-                $h['ID'] = SQLInsert($table_name, $h);
-            } elseif ($value == $old_value) {
-                $tmp_history = SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' ORDER BY ID DESC LIMIT 2");
-                $prev_value = $tmp_history[0]['VALUE'];
-                $prev_prev_value = $tmp_history[1]['VALUE'];
-                if ($prev_value == $prev_prev_value) {
-                    $tmp_history[0]['ADDED'] = $q_rec['ADDED'];
-                    SQLUpdate($table_name, $tmp_history[0]);
-                } else {
-                    $h = array();
-                    $h['VALUE_ID'] = $q_rec['VALUE_ID'];
-                    $h['ADDED'] = $q_rec['ADDED'];
-                    $h['VALUE'] = $value;
-                    $h['ID'] = SQLInsert($table_name, $h);
-                }
-            }
-
-        }
-    }
-
+    #NewDay
     if ($dt != $old_date) {
-        //echo "new day\n";
+        processSubscriptionsSafe('DAILY');
+        for ($i = 0; $i < $total; $i++) {
+            echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewDay\n";
+            getObject($objects[$i]['TITLE'])->raiseEvent("onNewDay");
+        }
         $old_date = $dt;
     }
 
-    if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
-        $db->Disconnect();
+    if (file_exists('./reboot') || isset($_GET['onetime'])) {
         exit;
     }
 

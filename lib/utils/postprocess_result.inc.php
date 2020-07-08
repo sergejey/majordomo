@@ -2,13 +2,13 @@
 
 
 // BEGIN: begincut endcut placecut
-if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
+if (preg_match_all('/<!--placecut (\w+?)-->/is', $result, $matches))
 {
    $matchesCount = count($matches[1]);
    for ($i = 0; $i < $matchesCount; $i++)
    {
       $block = $matches[1][$i];
-      if (preg_match('/<!-- begincut ' . $block . ' -->(.*?)<!-- endcut ' . $block . ' -->/is', $result, $matches2))
+      if (preg_match('/<!--begincut ' . $block . ' -->(.*?)<!--endcut ' . $block . '-->/is', $result, $matches2))
       {
          $result = str_replace($matches[0][$i], $matches2[1], $result);
          $result = str_replace($matches2[0], '', $result);
@@ -18,9 +18,9 @@ if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
 // END: begincut endcut placecut
 
 // BEGIN: filter output
-if ($filterblock != '')
+if (isset($filterblock) && $filterblock != '')
 {
-   $matchPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
+   $matchPattern = '/<!--begin_data \[' . $filterblock . '\]-->(.*?)<!--end_data \[' . $filterblock . '\]-->/is';
    preg_match($matchPattern, $result, $match);
    $result = $match[1];
 }
@@ -57,7 +57,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
       }
       $seen[$var]=1;
       $id = 'var_' . preg_replace('/\W/', '_', $var);
-      $sub_js.="if (obj[i]['PROPERTY']=='$var') {\$('.$id').html(obj[i]['VALUE']);$.publish('$var.updated', obj[i]['VALUE']);}\n";
+      $sub_js.="if (obj[i]['PROPERTY'].toLowerCase()=='$var') {\$('.$id').html(obj[i]['VALUE']);$.publish('$var.updated', obj[i]['VALUE']);}\n";
       $result = str_replace($m[0][$i], '<span class="'.$id.'">'.getGlobal($var).'</span>', $result);
    }
    $js="<script language='javascript'>\$.subscribe('wsConnected', function (_) {
@@ -115,7 +115,6 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
   }
 
 }
-
 // END GLOBALS
 
 // BEGIN: language constants

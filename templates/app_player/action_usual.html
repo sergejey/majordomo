@@ -1,101 +1,290 @@
-<!--#
- @version 0.3
-#-->
-<script language="javascript">
-
- var track = new Audio();
- track.controls = true;   // Set to false to make it a hidden element
- var trackcontainer = document.getElementById("html5audio");
- trackcontainer.appendChild(track);
-
- function playerCommandProcessed(id, data) {
-  var elem=document.getElementById('playerStatus');
-  elem.innerHTML=data;  
-  return false;
- }
- var playElement=document.getElementById('html5audio_player');
- function playerCommand(pcmd) {
-  if ($("#selPlayTerminal").val()=='') return false;
-  if ($("#hidPlayPath").val()=='' && pcmd=='refresh') return false;
-  var elem=document.getElementById('playerStatus');
-  elem.innerHTML=pcmd+'...';
-  var playTerminal;
-  playTerminal = $("#selPlayTerminal").val();
-  if (playTerminal == 'html5') {
-   playerCommandProcessed('playerStatus',pcmd);
-
-   //alert(playElement);
-   //playElement.src = $("#hidPlayPath").val();
-   if (pcmd == 'refresh') {
-    track.src = $("#hidPlayPath").val();
-    track.play();
-   }
-   if (pcmd == 'pause') {
-    if (track.paused) {
-     track.play();
-    } else {
-     track.pause();
-    }
-   }
-  } else {
-   var url="<#ROOTHTML#>popup/app_player.html?ajax=1";
-   url+='&command='+pcmd;
-   url+='&play_terminal=' + playTerminal;
-   url+='&play='+URLencode($("#hidPlayPath").val());
-   url+='&rnd='+URLencode($("#hidPlayerRnd").val());
-   if (pcmd=='volume') {
-    url+='&volume='+URLencode($("#selVolume").val());
-   }
-   //prompt(url, url);
-   AJAXRequest(url, 'playerCommandProcessed', '');
-  }
-  return false;
- }
-</script>
-<div id="html5audio">
+<style type="text/css">
+	#[#APP_PLAYER_ID#] { height: auto; min-width: 435px; width: 435px; border-style: solid; border-width: 1px; border-radius: 3px; }
+	#[#APP_PLAYER_ID#] #html5audio { display: none; }
+	#[#APP_PLAYER_ID#] .content { padding: 0; }
+	#[#APP_PLAYER_ID#] .content .controls { height: 32px; display: flex; display: -webkit-flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
+	#[#APP_PLAYER_ID#] .content .controls .column { margin: 0 10px; background-size: contain; cursor: pointer; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button { width: 24px; height: 24px; z-index: 1;}
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume { z-index: 2; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select { z-index: 2; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { width: 150px; text-align: left; padding: 2px 10px 0px 10px; border: 1px; border-style: solid; border-radius: 3px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { float: left; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { font: 12px Arial, Helvetica, sans-serif; display: block; padding: 6px; white-space: nowrap; overflow: hidden; font-weight: bold; line-height: 1; text-align: left; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { z-index: inherit; display: none; cursor: default; position: absolute; width: 150px; /*height: 104px;*/ border: 1px; border-radius: 0px 0px 3px 3px; overflow: auto; border-style: solid; border-top-style: hidden; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul { text-align: left; margin: 5px; padding: 0 0 0 0; list-style-position: outside; list-style-type: none; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li { font-size: 14px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input { cursor: pointer; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { z-index: inherit; position: absolute; display: none; cursor: default; width: 34px; height: 101px; margin-top: 4px; margin-left: -5px; border: 1px; border-radius: 0px 0px 3px 3px; border-style: solid; border-top-style: hidden; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[type=range][orient=vertical] { position: relative; float: left; writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 100%; height: 100%; padding: 5px; border-style: none; }
+	[#if "<#SETTINGS_THEME#>"=="dark"#]
+		#[#APP_PLAYER_ID#] { color: #ffffff; background-color: #464545; border-color: #464545; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #686868; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button img, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:hover, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:focus, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:active { background-color: #2c2c2c; border-color: #272727; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { color: #fff; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { background-color: #464545; border-color: #686868; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { background-color: #464545; border-color: #686868; }
+	[#else#]
+		#[#APP_PLAYER_ID#] { color: #333; background-color: #fff; border-color: #ccc; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #ccc; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button img, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { filter: invert(1) contrast(0.5); }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:hover, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:focus, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container:active { background-color: #ebebeb; border-color: #adadad; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { color: #333; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { background-color: #fff; border-color: #ccc; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { background-color: #fff; border-color: #ccc; }
+	[#endif#]
+	[#if MODE="menu"#]
+		#[#APP_PLAYER_ID#] { width: auto; min-width: auto; }
+		#[#APP_PLAYER_ID#] .content { text-align: center; }
+		#[#APP_PLAYER_ID#] .content .controls { height: 70px; display: block; padding: 5px; }
+		#[#APP_PLAYER_ID#] .content .controls .line_container { height: 33px; display: flex; display: -webkit-flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { width: 130px; }
+		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { position: fixed; }
+		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { position: absolute; margin: auto; width: 270px; left: 50%; margin-left: -135px; height: 50px; top: 50%; margin-top: -35px; padding: 10px 0px; border-style: none; }
+	[#endif#]
+</style>
+<div id="[#APP_PLAYER_ID#]">
+	<div id="html5audio"></div>
+	<div class="content">
+		<div class="controls">
+			[#if MODE="menu"#]<div class="line_container">[#endif#]
+			<div class="column select terminal" title="<#LANG_APP_PLAYER_PLAYING_TERMINALS#>">
+				<div class="container" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel').slideToggle();">
+					<img src="<#ROOTHTML#>img/icons/terminal.png" width="24" height="24" />
+					<div class="label"></div>
+				</div>
+				<div class="slide_panel">
+					<ul>
+					[#begin TERMINALS#]
+					<li><input data-role="none" type="checkbox" name="session_terminals[]" value="[#NAME#]" [#if SELECTED#] checked[#endif SELECTED#]> [#TITLE#]</li>
+					[#end TERMINALS#]
+					</ul>
+				</div>
+			</div>
+			<div class="column button volume" title="<#LANG_APP_PLAYER_VOLUME_LEVEL#>">
+				<img src="<#ROOTHTML#>img/icons/volume.png" width="24" height="24" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideToggle();" />
+				<div class="slide_panel">
+					<input type="range" name="volume_control" value="%ThisComputer.volumeMediaLevel%" title="%ThisComputer.volumeMediaLevel%" min="0" max="100" orient="vertical" data-highlight="true" />
+				</div>
+			</div>
+			[#if MODE="menu"#]</div><div class="line_container">[#endif#]
+			<div class="column button previous" title="<#LANG_APP_PLAYER_PREVIOUS#>">
+				<img src="<#ROOTHTML#>img/icons/previous.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('previous');" />
+			</div>
+			<div class="column button pause" title="<#LANG_APP_PLAYER_PAUSE#>">
+				<img src="<#ROOTHTML#>img/icons/pause.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('pause');" />
+			</div>
+			<div class="column button play" title="<#LANG_APP_PLAYER_PLAY#>">
+				<img src="<#ROOTHTML#>img/icons/play.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('play');" />
+			</div>
+			<div class="column button next" title="<#LANG_APP_PLAYER_NEXT#>">
+				<img src="<#ROOTHTML#>img/icons/next.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('next');" />
+			</div>
+			<div class="column button stop" title="<#LANG_APP_PLAYER_STOP#>">
+				<img src="<#ROOTHTML#>img/icons/stop.png" width="24" height="24" onClick="[#APP_PLAYER_ID#]_action('stop');" />
+			</div>
+			[#if MODE="menu"#]</div>[#endif#]
+		</div>
+		<input type="hidden" name="play" value="[#PLAY#]" />
+	</div>
 </div>
-<table border="0" cellpadding="0" cellspacing="0">
- <tr>
-  <form action="?" method="get" name="frmPlayerControl" id="frmPlayerControl">
-  <td align="right">
-  <div[#if TERMINALS_TOTAL="1" || TERMINALS_TOTAL="0"#] style="display:none"[#endif#]>
-   <select name="play_terminal" id="selPlayTerminal" class="form-control input-sm">
-    [#begin TERMINALS#]
-    <option value="[#NAME#]"[#if SELECTED#] selected[#endif SELECTED#]>[#TITLE#]
-    [#end TERMINALS#]
-    <option value="html5">Web Browser</option>
-   </select>
-  </div>
-  <div id='playerStatus'[#if MODE="menu"#] style="color:white"[#endif#]></div>
-<!--#
-[#if PLAY!=""#]
 <script language="javascript">
- playerCommand("refresh");
+	var [#APP_PLAYER_ID#]_volumeLevel = parseInt('%ThisComputer.volumeLevel%');
+	var [#APP_PLAYER_ID#]_volumeMediaLevel = parseInt('%ThisComputer.volumeMediaLevel%');
+	$(function() {
+		// Volume
+		$.subscribe('wsData', function(_, response) {
+			if(response.action == 'properties') {
+				var obj = jQuery.parseJSON(response.data);
+				var objCnt = obj.length;
+				if(objCnt) {
+					for(var i=0;i<objCnt;i++) {
+						switch(obj[i]['PROPERTY'].toLowerCase()) {
+							case 'thiscomputer.volumelevel':
+								[#APP_PLAYER_ID#]_volumeLevel = parseInt(obj[i]['VALUE']);
+								break;
+							case 'thiscomputer.volumemedialevel':
+								[#APP_PLAYER_ID#]_volumeMediaLevel = parseInt(obj[i]['VALUE']);
+								break;
+						}
+					}
+				}
+			}
+		});
+		$(document).click(function(event) {
+			if($(event.target).closest('#[#APP_PLAYER_ID#] .content .controls .column.button.volume').length) return;
+			$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideUp();
+			event.stopPropagation();
+		});
+		$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').on('change', function() {
+			[#APP_PLAYER_ID#]_action('set_volume');
+			$(this).attr('title', $(this).val()+'%');
+		});
+		// Terminals
+		[#APP_PLAYER_ID#]_terminals_label();
+		$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').click(function() {
+			if($(this).prop('checked')) {
+				if($(this).val() == 'system_volume') {
+					$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').not('[value="system_volume"]').prop('checked', false);
+				} else {
+					$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').filter('[value="system_volume"]').prop('checked', false);
+				}
+				if($(this).val() == 'system_volume') {
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeLevel).attr('title', [#APP_PLAYER_ID#]_volumeLevel+'%');
+				} else {
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val([#APP_PLAYER_ID#]_volumeMediaLevel).attr('title', [#APP_PLAYER_ID#]_volumeMediaLevel+'%');
+				}
+				[#if MODE="menu"#]
+					$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').slider('refresh');
+				[#endif#]
+			}
+			[#APP_PLAYER_ID#]_terminals_label();
+		});
+		$(document).click(function(event) {
+			if($(event.target).closest('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal').length) return;
+			$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel').slideUp();
+			event.stopPropagation();
+		});
+		// Autoplay
+		[#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
+			[#APP_PLAYER_ID#]_action('play');
+		[#endif#]
+	});
+	// Terminals label
+	function [#APP_PLAYER_ID#]_terminals_label() {
+		var terminals = new Array();
+		$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').filter(':checked').each(function(i, element) {
+			terminals.push($(element).closest('li').text());	
+		});
+		var label = terminals.join().trim();
+		if(label.length == 0) {
+			label = '<#LANG_APP_PLAYER_SELECT_TERMINALS#>';
+		}
+		$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label').text(label);
+	}
+	// HTML5-Audio
+	var [#APP_PLAYER_ID#]_html5audio = new Audio();
+	[#APP_PLAYER_ID#]_html5audio.controls = false;
+	[#APP_PLAYER_ID#]_html5audio.volume = [#APP_PLAYER_ID#]_volumeMediaLevel/100;
+	[#APP_PLAYER_ID#]_html5audio.addEventListener('ended', function() {
+		[#APP_PLAYER_ID#]_html5audio_nextSource(this);
+	});
+	var [#APP_PLAYER_ID#]_html5audio_container = document.getElementById('html5audio');
+	[#APP_PLAYER_ID#]_html5audio_container.appendChild([#APP_PLAYER_ID#]_html5audio);
+	var [#APP_PLAYER_ID#]_html5audio_getSourceIdx = function(elem) {
+		for(var i = 0; i < elem.sources.length; i++) {
+			if(elem.currentSrc == elem.sources[i]) return i;
+		}
+		return 0;
+	}
+	var [#APP_PLAYER_ID#]_html5audio_nextSource = function(elem) {
+		var sourceIdx  = [#APP_PLAYER_ID#]_html5audio_getSourceIdx(elem);
+		var nextSourceIdx = (sourceIdx == elem.sources.length -1 ) ? 0 : sourceIdx + 1;
+		elem.src = elem.sources[nextSourceIdx];
+		elem.play();
+	}
+	var [#APP_PLAYER_ID#]_html5audio_prevSource = function(elem) {
+		var sourceIdx  = [#APP_PLAYER_ID#]_html5audio_getSourceIdx(elem);
+		var nextSourceIdx = (sourceIdx == 0 ) ? 0 : sourceIdx - 1;
+		elem.src = elem.sources[nextSourceIdx];
+		elem.play();
+	}
+
+	function playerMediaStart(url) {
+		$('#[#APP_PLAYER_ID#] .content input[name="play"]').val(url);
+		[#APP_PLAYER_ID#]_action('play');
+	}
+
+	// Actions
+	function [#APP_PLAYER_ID#]_action(command, callback) {
+		//setTimeout("$('#[#APP_PLAYER_ID#] .content .controls .column.button."+command+"').show();",200);
+		var param = '';
+		switch(command) {
+			case 'play':
+				param = $('#[#APP_PLAYER_ID#] .content input[name="play"]').val();
+				break;
+			case 'set_volume':
+				param = $('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[name=volume_control]').val();
+				break;
+			default:
+				param = '';
+		}
+		$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').filter(':checked').each(function(i, element) {
+			var terminal = $(element).val();
+			switch(terminal) {
+				case 'html5':
+					switch(command) {
+						case 'play':
+							var a = document.createElement('a');
+							a.href = param;
+							if(a.pathname.endsWith('m3u')) {
+								$.ajax({
+									url: param
+								}).done(function(data) {
+									[#APP_PLAYER_ID#]_html5audio.sources = data.match(/^(?!#)(?!\s).*$/mg).filter(function(element){return (element);});
+									[#APP_PLAYER_ID#]_html5audio.src = [#APP_PLAYER_ID#]_html5audio.sources[0];
+									[#APP_PLAYER_ID#]_html5audio.play();
+								});
+							} else {
+								[#APP_PLAYER_ID#]_html5audio.src = param;
+								[#APP_PLAYER_ID#]_html5audio.sources = [[#APP_PLAYER_ID#]_html5audio.src];
+								[#APP_PLAYER_ID#]_html5audio.play();
+							}
+							break;
+						case 'next':
+							[#APP_PLAYER_ID#]_html5audio_nextSource([#APP_PLAYER_ID#]_html5audio);
+							break;
+						case 'previous':
+							[#APP_PLAYER_ID#]_html5audio_prevSource([#APP_PLAYER_ID#]_html5audio);
+							break;
+						case 'stop':
+							track.pause();
+							break;
+						case 'pause':
+							if([#APP_PLAYER_ID#]_html5audio.paused) {
+								[#APP_PLAYER_ID#]_html5audio.play();
+							} else {
+								[#APP_PLAYER_ID#]_html5audio.pause();
+							}
+							break;
+						case 'set_volume':
+							[#APP_PLAYER_ID#]_html5audio.volume = parseInt(param, 10)/100;
+							break;
+					}
+					break;
+				case 'system_volume':
+					if(command == 'set_volume') {
+						[#APP_PLAYER_ID#]_cmd('set_system_volume', param, '', callback);
+					}
+					break;
+				default:
+					[#APP_PLAYER_ID#]_cmd(command, param, terminal, callback);
+			}
+		});
+		$('#[#APP_PLAYER_ID#] .content .controls .column.button.'+command).animate({opacity:0.25},100).animate({opacity:1},100);
+	}
+	// Back-end
+	function [#APP_PLAYER_ID#]_cmd(command, param, terminal, callback) {
+		var session_terminals = new Array();
+		$('#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input[name="session_terminals[]"]').filter(':checked').each(function(i, element) {
+			session_terminals.push($(element).val());	
+		});
+		var session_terminal = session_terminals.join();
+		$.ajax({
+			url: '<#ROOTHTML#>popup/app_player.html?ajax=1&command='+encodeURIComponent(command)+'&param='+encodeURIComponent(param)+'&play_terminal='+encodeURIComponent(terminal)+'&session_terminal='+encodeURIComponent(session_terminal),
+			dataType: 'json'
+		}).done(function(data, textStatus, jqXHR) {
+			if(!data.success) {
+				console.warn('[#APP_PLAYER_ID#]_cmd(\''+command+'\', \''+param+'\', \''+terminal+'\'): '+data.message);
+			} else {
+				console.log('[#APP_PLAYER_ID#]_cmd(\''+command+'\', \''+param+'\', \''+terminal+'\'): '+data.message);
+			}
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			console.error('[#APP_PLAYER_ID#]_cmd(\''+command+'\', \''+param+'\', \''+terminal+'\'): '+textStatus+' '+jqXHR.status+' - '+errorThrown);
+		}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
+			if(!!callback) {
+				callback(data_jqXHR, textStatus, jqXHR_errorThrown);
+			}
+		});
+	}
 </script>
-[#endif#]
-#-->
-  </td>
-  [#if MODE="menu"#]</tr><tr>[#endif MODE#]
-  <td nowrap><select name="volume" id='selVolume' onChange="playerCommand('volume')" class="form-control input-sm">
-   [#begin VOLUMES#]
-   <option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#VALUE#]%
-   [#end VOLUMES#]
-  </select></td>
-  <td valign="top">
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("pause");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_pause.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("prev");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_prev.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("refresh");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_play.png" border="0"></a></div> 
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("next");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/playback_next.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("fullscreen");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/eye.png" border="0"></a></div>
-   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick='return playerCommand("close");' style="padding:0;margin:0;display:inline;"><img src="<#ROOTHTML#>img/icons/delete.png" border="0"></a></div>
-  </td>
- </tr>
- <input type="hidden" name="play" value="[#PLAY#]" id="hidPlayPath">
- <input type="hidden" name="rnd" value="[#RND#]" id="hidPlayerRnd">
- </form>
- [#if PLAY!="" && TERMINALS_TOTAL="1" && LAST_PLAY!="1"#]
- <script language="javascript">
-  playerCommand('refresh');
- </script>
- [#endif#]
-</table>

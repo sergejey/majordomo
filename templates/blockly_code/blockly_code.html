@@ -4,19 +4,18 @@
      if (typeof editor!=="undefined") {
          editor.toTextArea();
      }
-  var blockly = window.open('<#ROOTHTML#>blockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
+  var blockly = window.open('<#ROOTHTML#>3rdparty/googleblockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
   blockly.creator=self;
   blockly.focus(); 
   return false;
  }
 </script>
 
-
-<#LANG_CODE_TYPE#>:<br>
-
-<div>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE!="1"#] checked[#endif#]> PHP <#LANG_HCB#>codePhp<#LANG_HCE#>
- <input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
+<div style="margin-top: 3px;">
+	<#LANG_CODE_TYPE#>:
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
 </div>
 
  <script language="javascript">
@@ -24,110 +23,580 @@
   $('.[#CODE_FIELD#]_code_type').click (function ()
   {
   var thisCheck = $(this);
-   if (thisCheck.val()==1) {
-    $('#xml_row').show();
-    $('#[#CODE_FIELD#]_area').hide();
-   } else {
-    $('#xml_row').hide();
-    $('#[#CODE_FIELD#]_area').show();
-   }
+      if (thisCheck.val()==0) {
+          $('#xml_row').hide();
+          $('#[#CODE_FIELD#]_area').show();
+          $('#checkCodeBtn').show();
+          $('#[#CODE_FIELD#]_devices').hide();
+      }
+      if (thisCheck.val()==1) {
+        $('#xml_row').show();
+        $('#[#CODE_FIELD#]_area').hide();
+        $('#checkCodeBtn').hide();
+        $('#[#CODE_FIELD#]_devices').hide();
+      }
+      if (thisCheck.val()==2) {
+          $('#xml_row').hide();
+          $('#[#CODE_FIELD#]_area').hide();
+          $('#checkCodeBtn').hide();
+          $('#[#CODE_FIELD#]_devices').show();
+      }
   }
   );
  </script>
 [#endif TYPE#]
 
-[#if CODE_TYPE="1"#]
+
 <script language="javascript" type="text/javascript">
 $(function() {
- $('#[#CODE_FIELD#]_area').hide();
+//    alert([#CODE_TYPE#]);
+    [#if CODE_TYPE="1" || CODE_TYPE="2"#]
+     $('#[#CODE_FIELD#]_area').hide();
+    [#endif CODE_TYPE#]
 });
 </script>
-[#else#]
-<script src="<#ROOTHTML#>js/codemirror/lib/codemirror.js"></script>
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/lib/codemirror.css">
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.css">
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.css">
-<link rel="stylesheet" href="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.css">
 
-<script src="<#ROOTHTML#>js/codemirror/addon/edit/matchbrackets.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/xml/xml.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/javascript/javascript.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/css/css.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/clike/clike.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/php/php.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/display/fullscreen.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/foldcode.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/foldgutter.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/brace-fold.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/fold/comment-fold.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/hint/show-hint.js"></script>
-<script src="<#ROOTHTML#>js/codemirror/addon/edit/closebrackets.js"></script>
+[#if CODE_TYPE="0"#]
+<script src="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
+[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css">[#endif#]
+
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/xml/xml.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/javascript/javascript.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/css/css.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/clike/clike.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/php/php.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldcode.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/brace-fold.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/comment-fold.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/closebrackets.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/match-highlighter.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/search.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/dialog.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 
 <script language="javascript">
 var editor;
 var myTextArea[#CODE_FIELD#];
 $(document).ready(function(){
-var myTextArea[#CODE_FIELD#]=document.getElementById('[#CODE_FIELD#]');
-editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
- value: myTextArea[#CODE_FIELD#].value,
- lineNumbers: true,
-        matchBrackets: true,
-        [#if TYPE=="php"#]
-        mode: "text/x-php",
-        [#else TYPE#]
-        mode: "xml",
-        htmlMode: true,
-        [#endif TYPE#]
-        indentUnit: 1,
-        indentWithTabs: false,
-        autoCloseBrackets: true,
-        foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      extraKeys: {
-        "F11": function(cm) {
-          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-        },
-        "Ctrl-S": function(instance) { document.getElementById('[#CODE_FIELD#]').form.submit(); },
-        "Esc": function(cm) {
-          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-        },
-        "Ctrl-Space": "autocomplete",
-        "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
-      }
- });
+	var myTextArea[#CODE_FIELD#] = document.getElementById('[#CODE_FIELD#]');
+	editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
+		value: myTextArea[#CODE_FIELD#].value,
+		lineNumbers: true,
+		matchBrackets: true,
+		indentUnit: 0,
+		tabSize: 4,
+		
+		[#if TYPE=="php"#]
+		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
+		scrollbarStyle: 'native',
+		autofocus: true,
+		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
+		[#endif#]
+		
+		[#if TYPE=="php"#]
+		mode: "text/x-php",
+		[#else TYPE#]
+		mode: "xml",
+		htmlMode: true,
+		[#endif TYPE#]
+		
+		indentWithTabs: false,
+		[#if TYPE=="php"#]autoCloseBrackets: [#if SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES == 1#]true[#else#]false[#endif#],[#endif#]
+		foldGutter: true,
+		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+		extraKeys: {
+			"F11": function(cm) {
+				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Ctrl-S": function(instance) { 
+				[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
+				document.getElementById('[#CODE_FIELD#]').form.submit(); 
+				return;
+			},
+			"Ctrl-E": function(cm) { 
+				ajaxAutosave('checkcode');
+				return;
+			},
+			"Ctrl-O": function(cm) { 
+				ajaxAutosave('save');
+				return;
+			},
+			"Ctrl-R": function(cm) { 
+				modalRestoreCode();
+				return;
+			},
+			"Ctrl-D": function(cm) { 
+				var current_cursor = cm.doc.getCursor();
+				var line_content = cm.doc.getLine(current_cursor.line);
+				CodeMirror.commands.goLineEnd(cm);
+				CodeMirror.commands.newlineAndIndent(cm);
+				cm.doc.replaceSelection(line_content);
+				cm.doc.setCursor(current_cursor.line + 1, current_cursor.ch);
+			},
+			"Ctrl-F": "findPersistent",
+			"Esc": function(cm) {
+				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			},
+			[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
+			"Ctrl-Space": "autocomplete",
+			'"': "autocomplete",
+			[#endif#]
+			"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
+		}
+	});
+	
+	[#if TYPE=="php"#]
+		[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
+		CodeMirror.registerHelper('hint', 'ajax', (mirror, callback) => {
+			let words = [[#CODEEDITOR_AUTOCOMPLETE_WORDS#]];
+			let cur = mirror.getCursor();
+			let range = mirror.findWordAt(cur);
+			let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
 
-/*
-CodeMirror.hint.javascript = function(cm) {
-  var inner = orig(cm) || {from: cm.getCursor(), to: cm.getCursor(), list: []};
-  inner.list.push("bozo");
-  return inner.
-};
-*/
-/*
-editor.on('keyup', function(){
-    CodeMirror.commands.autocomplete(editor);
+			callback({
+				list: words.filter(w => w.toLowerCase().indexOf(fragment) === 0),
+				from: range.anchor,
+				to: range.head
+			});
+		});
+		CodeMirror.hint.ajax.async = true;
+
+		CodeMirror.commands.autocomplete = function(mirror) {
+			mirror.showHint({ 
+				hint: CodeMirror.hint.ajax,
+				
+			});
+		};
+		
+		var ExcludedIntelliSenseTriggerKeys =
+		{
+			"8": "backspace",
+			"9": "tab",
+			"13": "enter",
+			"16": "shift",
+			"17": "ctrl",
+			"18": "alt",
+			"19": "pause",
+			"20": "capslock",
+			"27": "escape",
+			"33": "pageup",
+			"34": "pagedown",
+			"35": "end",
+			"36": "home",
+			"37": "left",
+			"38": "up",
+			"39": "right",
+			"40": "down",
+			"45": "insert",
+			"46": "delete",
+			"48": "0",
+			"49": "1",
+			"50": "2",
+			"51": "3",
+			"52": "4",
+			"53": "5",
+			"54": "6",
+			"55": "7",
+			"56": "8",
+			"57": "9",
+			"91": "left window key",
+			"92": "right window key",
+			"93": "select",
+			"107": "add",
+			"109": "subtract",
+			"110": "decimal point",
+			"111": "divide",
+			"112": "f1",
+			"113": "f2",
+			"114": "f3",
+			"115": "f4",
+			"116": "f5",
+			"117": "f6",
+			"118": "f7",
+			"119": "f8",
+			"120": "f9",
+			"121": "f10",
+			"122": "f11",
+			"123": "f12",
+			"144": "numlock",
+			"145": "scrolllock",
+			"186": "semicolon",
+			"187": "equalsign",
+			"188": "comma",
+			"191": "slash",
+			"192": "graveaccent",
+			"220": "backslash",
+			"222": "quote"
+		}
+
+		editor.on("keyup", function(editor, event) {
+			var __Cursor = editor.getDoc().getCursor();
+			var __Token = editor.getTokenAt(__Cursor);
+
+			if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
+				CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+			}
+		});
+		[#endif#]
+		
+		editor.on('update', editor => {
+			anc = window.location.hash.replace("#","");
+			actualLineNumber = Number(anc.split('_')[1]);
+			
+			totalLine = editor.lineCount();
+			
+			classList = $('.CodeMirror').attr("class").split(' ');
+			if(!actualLineNumber) {
+				if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList.indexOf('CodeMirror-fullscreen') == '-1') {
+					setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
+					$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
+				} else if(classList[4] != 'CodeMirror-fullscreen') {
+					if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
+						setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
+						$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
+					} else {
+						$('.CodeMirror').attr('style', 'height: auto;');
+					}
+					
+				} else {
+					$('.CodeMirror').removeAttr('style');
+				}
+			} else {
+				$('.CodeMirror').attr('style', 'height: auto;');
+			}
+		});
+		
+		[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+		editor.on('focus', editor => {
+			anc = window.location.hash.replace("#","");
+			actualLineNumber = Number(anc.split('_')[1]);
+			if(actualLineNumber) {
+				//Покажем ошибку
+				myEditor = $(".CodeMirror");
+				codeMirrorEditor = myEditor[0].CodeMirror;
+				codeMirrorEditor.addLineClass(actualLineNumber-1, null, 'line-error');
+				codeMirrorEditor.addLineClass(actualLineNumber, null, 'line-error');
+				codeMirrorEditor.addLineClass(actualLineNumber+1, null, 'line-error');
+			}
+		});
+		//Обработчик событий чтобы удалить пометку строки
+		editor.on('cursorActivity', editor => {
+			//Найдем анкер
+			anc = window.location.hash.replace("#","");
+			//Сплит и получим номер строки
+			actualLineNumber = Number(anc.split('_')[1]);
+			//Найдем где курсор в редакторе
+			getCursorStart = editor.getCursor().line-1;
+			getCursorEnd = getCursorStart+2;
+			
+			if(getCursorStart <= actualLineNumber && getCursorEnd >= actualLineNumber) {
+				//Удалим класс
+				myEditor = $(".CodeMirror");
+				codeMirrorEditor = myEditor[0].CodeMirror;
+				codeMirrorEditor.removeLineClass(actualLineNumber-1, null, 'line-error');
+				codeMirrorEditor.removeLineClass(actualLineNumber, null, 'line-error');
+				codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
+			}
+		});
+		editor.on('dblclick', editor => {
+			editor.setOption('highlightSelectionMatches', {showToken: false, wordsOnly: false, annotateScrollbar: false});
+		});
+		[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]
+		editor.on('change', editor => {
+			clearInterval(getCookie('autosavetimerid'));
+			document.cookie = 'autosavetimerid='+setTimeout(function() { ajaxAutosave('save'); }, [#SETTINGS_CODEEDITOR_AUTOSAVE#]000);
+		});
+		[#endif#]
+		[#endif#]	
+	[#endif#]
 });
-*/
 
 
-/*
-     editor.operation(function() {
-       for (var l = editor.firstLine(); l <= editor.lastLine(); ++l)
-         editor.foldCode({line: l, ch: 0}, null, "fold");
-    }); 
-*/
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+	"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
 
-});
+function escapeHtml(text, type='scape') {
+	if(type == 'scape') { 
+		var map = {
+			'&': '!amp',
+			'<': '!lt',
+			'>': '!gt',
+			'"': '!quot',
+			"'": '!039',
+			"(": '!lpar',
+			")": '!rpar',
+			"\\": '!bsol',
+			"#": '!num',
+			";": '!endline',
+			"\n": '!newline',
+			"+": '!plus',
+			"-": '!minus',
+		};
+		
+		return text.replace(/[&<>()\+\-#;\n\"']/g, function(m) { return map[m]; });
+	} else if(type == 'unscape') {
+		var map = {
+			'!amp': '&',
+			'!lt': '<',
+			'!gt': '>',
+			'!quot': '"',
+			'!039': "'",
+			'!lpar' : "(",
+			'!rpar' : ")",
+			'!bsol' : "\\",
+			'!num' : "#",
+			'!endline' : ";",
+			"!newline": '\n',
+			"!plus": '+',
+			"!minis": '-',
+		};
+		
+		return text.replace(/!amp|!lt|!gt|!quot|!039|!lpar|!rpar|!bsol|!num|!endline|!newline|!plus|!minis/g, function(m) { return map[m]; });
+	}
+}
 
+function ajaxAutosave(action) {
+	//Отправляем код POST
+	id = $('input[name*="id"]').val();
+	md = $('input[name*="md"]:eq(2)').val();
+	code = editor.getValue();
+	code = escapeHtml(code);
+	
+	$.ajax({
+		type: "POST",
+		url: "/modules/blockly_code/autosave.php",
+		data: "id="+id+"&md="+md+"&code="+code+"&action="+action,
+		success: function(responce){
+			responce = JSON.parse(responce);
+			if(responce.status != 'ok') return;
+			
+			if(action == 'checkcode') {
+				$('#autosave_check_code_div').show('slow');
+				if(responce.msg) {
+					alert('В коде есть ошибка: '+responce.msg);
+				} else {
+					alert('Ошибок в коде нет!');
+				}
+			}
+			if(action == 'save') {
+				$('#autosave_code_in_time_div').show('slow');
+				$('#autosave_code_in_time').html(responce.msg);
+			}
+			if(action == 'restore') {
+				let i = 0;
+				responseArray = responce.msg;
+				
+				$("#restoreCodeList").html('');
+				while (i <= responseArray.length) {
+					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-warning btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
+					i++;
+				}
+			}
+		}
+	});	
+}
 
+function setValueEditor(code) {
+	ajaxAutosave('save');
+	var code = escapeHtml(code, 'unscape');
+	editor.setValue(code);
+	clearInterval(getCookie('autosavetimerid'));
+}
+
+function seeCodeFunc(code) {
+	var code = escapeHtml(code, 'unscape');
+	$('#restoreCodeTable').hide();
+	$('#seeRestoreCode').html(code);
+	$('#seeRestoreCodeDiv').show();
+}
+
+function modalRestoreCode() {
+	ajaxAutosave('restore');
+	$('#showAutosaveModal').modal('show')
+}
 </script>
-[#endif#]
+[#endif CODE_TYPE#]
 
 [#if TYPE=="php"#]
+<div class="modal fade" tabindex="-1" role="dialog" id="showAutosaveModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Восстановить код</h4>
+			</div>
+			<div class="modal-body" style="padding: 20px 20px 0px 20px;">
+				<div style="row">
+					<div style="max-height: 350px;overflow: auto;" id="restoreCodeTable">
+						<table class="table" style="font-size: 1.2rem;text-align: center;">
+							<thead class="thead-dark">
+								<tr>
+									<th scope="col"><#LANG_NAME#></th>
+									<th scope="col" style="text-align: center;"><#LANG_CODEEDITOR_CREATE#></th>
+									<th scope="col" style="text-align: center;"><#LANG_PREVIEW#></th>
+									<th scope="col" style="text-align: center;"></th>
+								</tr>
+							</thead>
+							<tbody id="restoreCodeList">
+							
+							</tbody>
+						</table>
+					</div>
+					
+					<div id="seeRestoreCodeDiv" style="display:none;"> 
+						<textarea id="seeRestoreCode" style="width: 100%;height: 400px;border: 1px solid #ddd;padding: 5px;border-radius: 5px;resize: none;">
+							
+						</textarea>
+						<center>
+							<button type="button" class="btn btn-default btn-sm" style="margin-top: 15px;" onclick="$('#seeRestoreCodeDiv').hide();$('#restoreCodeTable').show();"><#LANG_BACK#></button>
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal"><#LANG_CODEEDITOR_CLOSE_BTN#></button>	
+			</div>
+		</div>
+	</div>
+</div>
+
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
-[ <a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();"><#LANG_EDIT#></a> ]
-<textarea name="xml" id="xml_code" rows="5" cols="60" class="span10" style="display:none">[#XML#]</textarea>
+<a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();" class="btn btn-default btn-success"><#LANG_EDIT#></a>
+    <br/>
+    <small><a href="#" onClick="$('#xml_area').toggle();return false;"><#LANG_SHOW#> XML</a></small>
+    <div id="xml_area" style="display:none">
+     <textarea name="xml" id="xml_code" rows="5" cols="60" class="form-control">[#XML#]</textarea>
+    </div>
 </div>
 [#endif TYPE#]
+
+    <link href="<#ROOTHTML#>3rdparty/select2/css/select2.min.css" rel="stylesheet" />
+    <script src="<#ROOTHTML#>3rdparty/select2/js/select2.min.js"></script>
+
+<div id="[#CODE_FIELD#]_devices"[#if CODE_TYPE!="2"#] style="display:none"[#endif#]>
+    <table id="devices_table" cellpadding="5" cellspacing="5">
+
+    </table>
+    <select name="add_device_id" id="add_device_id" onchange="addDevice();" style="width:300px">
+        <option value="0"><#LANG_DEVICE#></option>
+        [#begin DEVICES#]
+        <option value="[#ID#]" device-type="[#TYPE#]" device-object="[#LINKED_OBJECT#]">[#TITLE#]</option>
+        [#end DEVICES#]
+    </select>
+    <input type="button" name="add_device" class="btn btn-default btn-sm" value="<#LANG_ADD#>" onclick="return addDevice();">
+
+    <script type="text/javascript">
+
+        $(function() {
+            $('#add_device_id').select2();
+        });
+
+        var devices_data=[];
+        var savedJson=$('#xml_code').val();
+        if (savedJson!='') {
+            var tmp=JSON.parse(savedJson);
+            if (typeof tmp === 'object') {
+                devices_data=tmp;
+                renderCode();
+                renderView();
+            }
+        }
+
+        function renderCode() {
+            var result_code='';
+            for(var i=0;i<devices_data.length;i++) {
+                if (devices_data[i].action!='' && devices_data[i].object!='') {
+                    result_code+="callMethod('"+devices_data[i].object+'.'+devices_data[i].action+"');\n";
+                }
+            }
+            $('#[#CODE_FIELD#]').val(result_code);
+            $('#xml_code').val(JSON.stringify(devices_data));
+            //alert(result_code);
+        }
+        function renderView() {
+            $("#devices_table tr").remove();
+            for(var i=0;i<devices_data.length;i++) {
+                //alert(devices_data[i].id);
+                var row = $("<tr />")
+                $("#devices_table").append(row);
+                row.append($("<td>" + devices_data[i].title + "</td>"));
+
+                var td_content="<td>";
+                td_content+="<select class='form-control' id='device"+devices_data[i].id+"_action' onchange='deviceUpdated("+devices_data[i].id+");'>";
+                if (devices_data[i].type=='relay' || devices_data[i].type=='dimmer' || devices_data[i].type=='thermostat') {
+                    td_content+="<option value='turnon'";
+                    if (devices_data[i].action=='turnon') {
+                        td_content+=" selected";
+                    }
+                    td_content+="><#LANG_DEVICES_TURN_ON#></option>";
+                    td_content+="<option value='turnoff'";
+                    if (devices_data[i].action=='turnoff') {
+                        td_content+=" selected";
+                    }
+                    td_content+="><#LANG_DEVICES_TURN_OFF#></option>";
+                }
+                if (devices_data[i].type=='button') {
+                    td_content+="<option value='pressed'><#LANG_DEVICES_PRESS#></option>";
+                }
+                td_content+="</select>";
+                td_content+="</td>";
+
+                row.append($(td_content));
+                row.append($("<td><a href='#' class='btn btn-default' onclick='deleteDevice("+devices_data[i].id+");return false;'><i class='glyphicon glyphicon-trash'></i></a></td>"));
+            }
+        }
+        function deviceUpdated(device_id) {
+            for(var i=0;i<devices_data.length;i++) {
+                if (devices_data[i].id==device_id) {
+                    devices_data[i].action=$('#device'+device_id+'_action').val();
+                }
+            }
+            renderCode();
+            renderView();
+        }
+        function addDevice() {
+            var device_id=$('#add_device_id').val();
+            var device_title = $("#add_device_id option:selected").text();
+            var device_type = $("#add_device_id option:selected").attr('device-type');
+            var device_object= $("#add_device_id option:selected").attr('device-object');
+
+            var action='turnon';
+            if (device_type=='button') {
+                action='pressed';
+            }
+            if (device_id==0) return false;
+            devices_data.push({
+                id: device_id,
+                title: device_title,
+                type: device_type,
+                object: device_object,
+                action: action,
+            });
+            renderCode();
+            renderView();
+            return false;
+        }
+        function deleteDevice(device_id) {
+            for(var i=0;i<devices_data.length;i++) {
+                if (devices_data[i].id==device_id) {
+                    devices_data.splice(i, 1);
+                }
+            }
+            renderCode();
+            renderView();
+        }
+    </script>
+</div>

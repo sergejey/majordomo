@@ -1,6 +1,8 @@
 AddDefaultCharset UTF-8
 DirectoryIndex index.html index.htm index.php default.html
 
+Options -Indexes
+
 <IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /
@@ -14,18 +16,16 @@ RewriteRule .* /api.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 ReWriteCond %{REQUEST_URI} \.html$
-ReWriteCond %{REQUEST_URI} !index\.html$
-ReWriteCond %{REQUEST_URI} !fckeditor
-ReWriteCond %{REQUEST_URI} !banner\.html$
-ReWriteCond %{REQUEST_URI} !flashcoms
-ReWriteCond %{REQUEST_URI} !google
+RewriteRule .* /nf.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+ReWriteCond %{REQUEST_URI} /module/app_mediabrowser\..*$
 RewriteRule .* /nf.php
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 ReWriteCond %{REQUEST_URI} \.xml$
-ReWriteCond %{REQUEST_URI} !fck
-ReWriteCond %{REQUEST_URI} !flashcoms
 RewriteRule .* /nf.php
 
 </IfModule>
@@ -37,3 +37,13 @@ deny from all
 <FILES debmes.txt>
 deny from all
 </FILES>
+
+<IfModule mod_expires.c>
+  <FilesMatch \.(gif|png|jpg|jpeg|ogg|mp4|mkv|flv|swf|wmv|asf|asx|wma|wax|wmx|wm)$>
+    ExpiresDefault "access plus 7 day"
+  </FilesMatch>
+  ExpiresActive on
+  ExpiresByType image/jpeg "access plus 7 day"
+  ExpiresByType image/gif "access plus 7 day"
+  ExpiresByType image/png "access plus 7 day"
+</IfModule>

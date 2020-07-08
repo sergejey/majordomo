@@ -86,51 +86,21 @@
 
 [#if MODE=""#]
 
-[#if LOCAL_PROJECT#]
-<table border=0 align=center width=90%><tr><td width=50% valign=top>
-<b>* <a href="?mode=repository">Install additional modules from repository</a>
-<br>
-&nbsp;
-(<a href="http://installer<#REP_EXT#>/installer.php?host=<#HOST#>&doc_root=<#DOCUMENT_ROOT#>" target=_blank>new window</a>)
-</b>
-<br>&nbsp;<br>
-<b>* <a href="?mode=wizard">Use wizard to build new module</a> 
-<br>
-&nbsp;
-(<a href="http://installer<#REP_EXT#>/index.php?host=<#HOST#>&doc_root=<#DOCUMENT_ROOT#>" target=_blank>new window</a>)</b>
-</td>
-<td width=50% valign=top>
-<b>* <a href="?mode=updatelib" onClick='return confirm("Warning: all changes to current library files will be lost!\n(Only standard library files will be overwritten)")'>Update library files</a>
-<br>
-&nbsp;
-(<a href="http://installer<#REP_EXT#>/updatelib.php?host=<#HOST#>&doc_root=<#DOCUMENT_ROOT#>&mode=update"  onClick='return confirm("Warning: all changes to current library files will be lost!\n(Only standard library files will be overwritten)")' target=_blank>new window</a>)
-</b>
-<br>&nbsp;<br>
-<b>* <a href="?mode=makedoc" onClick='return confirm("Warning: it could take a lot of time to complete doc building.")'>Create modules development doc</a>
-<br>
-&nbsp;
-(<a href="http://installer<#REP_EXT#>/makedoc.php?host=<#HOST#>&doc_root=<#DOCUMENT_ROOT#>&mode=update" onClick='return confirm("Warning: it could take a lot of time to complete doc building.")' target=_blank>new window</a>)
-(<a href="<#ROOTHTML#>phpdoc/" target=_blank>open</a>)</b>
-</tr></td></table>
-&nbsp;
-[#endif#]
-
-<table border=1 cellpadding=3 align=center width=90%>
+<table class="table">
+ <thead>
 <tr>
- <td align=center><b>File</td>
- <td align=center><b><#LANG_TITLE#></td>
- <td align=center><b><#LANG_CATEGORY#></td>
- <td align=center><b>Installed</td>
- [#if LOCAL_PROJECT#] 
- <td>&nbsp;</td>
- [#endif LOCAL_PROJECT#]
- <td>&nbsp;</td>
- <td>&nbsp;</td>
+ <th><b>File</th>
+ <th><b><#LANG_TITLE#></th>
+ <th><b><#LANG_CATEGORY#></th>
+ <th><b>Installed</th>
+ <th>&nbsp;</th>
+ <th>&nbsp;</th>
 </tr>
+ </thead>
 [#begin MODULES#]
 [#if (FILENAME!="control_access") && (FILENAME!="control_modules")#]
 <tr>
- <td align=center><b><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#FILENAME#]</a></b>
+ <td><b><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#FILENAME#]</a></b>
  </td>
  <td>[#TITLE#]
  [#if "<#LOCAL_PROJECT#>"=="1"#]
@@ -138,22 +108,12 @@
  [#endif#]
 
  </td>
- <td align=center>[#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]Unfiled[#endif CATEGORY#]</td>
- <td align=center>[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</td>
-
- [#if "<#LOCAL_PROJECT#>"=="1"#]
- 
- <td align=center>
- [#if TITLE!=""#]   
- <a href="?mode=edit&mode2=uninstall&name=[#FILENAME#]" onClick="return confirm('Continue with uninstall?')">Uninstall</a>
- [#else#]
- <a href="?mode=edit&mode2=install&name=[#FILENAME#]">Install</a>
- [#endif#]
- &nbsp;
- </td>
- [#endif LOCAL_PROJECT#]
- <td valign="top" align="center"><a href="?mode=edit&mode2=show&name=[#FILENAME#]">[#if HIDDEN="1"#]<font color='red'><#LANG_SHOW#></font>[#else#]<#LANG_HIDE#>[#endif#]</a></td>
- <td valign="top" align="center">[#if IGNORED="1"#]<a href="?mode=edit&mode2=unignore&name=[#FILENAME#]"><font color='red'><#LANG_NOT_UPDATING#></font></a>[#else#]
+ <td>[#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]Unfiled[#endif CATEGORY#]</td>
+ <td>[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</td>
+ <td>
+  <a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-default"><#LANG_EDIT#></a>
+  <a href="?mode=edit&mode2=show&name=[#FILENAME#]" class="btn btn-default">[#if HIDDEN="1"#]<font color='red'><#LANG_SHOW#></font>[#else#]<#LANG_HIDE#>[#endif#]</a></td>
+ <td>[#if IGNORED="1"#]<a href="?mode=edit&mode2=unignore&name=[#FILENAME#]"><font color='red'><#LANG_NOT_UPDATING#></font></a>[#else#]
  <a href="?mode=edit&mode2=ignore&name=[#FILENAME#]"><#LANG_UPDATING#></a>[#endif#]</td>
 </tr>
 [#endif#]

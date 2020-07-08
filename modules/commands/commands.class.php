@@ -18,7 +18,7 @@ class commands extends module {
 *
 * @access private
 */
-function commands() {
+function __construct() {
   $this->name="commands";
   $this->title="<#LANG_MODULE_CONTROL_MENU#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -115,11 +115,11 @@ function run() {
 
    require_once ROOT.'lib/smarty/Smarty.class.php';
    $smarty = new Smarty;
-   $smarty->setCacheDir(ROOT.'cached/template_c');
+   $smarty->setCacheDir(ROOT.'cms/cached/template_c');
 
    $smarty->setTemplateDir(ROOT.'./templates')
-          ->setCompileDir(ROOT.'./cached/templates_c')
-          ->setCacheDir(ROOT.'./cached');
+          ->setCompileDir(ROOT.'./cms/cached/templates_c')
+          ->setCacheDir(ROOT.'./cms/cached');
 
    $smarty->debugging = false;
    $smarty->caching = true;
@@ -182,6 +182,7 @@ function admin(&$out) {
    //echo "Debug labels: $labels \nValues: $values\n";
 
    $res['LABELS']=array();
+
    $labels=explode(',', $labels);
    $total=count($labels);
    $seen=array();
@@ -214,28 +215,27 @@ function admin(&$out) {
 
     if ($item['ID']) {
      if ($item['TYPE']=='custom') {
-      $item['DATA']=processTitle($item['DATA'], $this);
-      $data=$item['DATA'];
+      $ajax = 0;
+      $item['DATA'] = processTitle($item['DATA'], $this);
+      $data = $item['DATA'];
+     } elseif ($item['TYPE']=='object') {
+      $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
+      $data=processTitle($item['DATA'], $this);
+      //$data = '';
      } else {
       $item['TITLE']=processTitle($item['TITLE'], $this);
       $data=$item['TITLE'];
      }
      /*
-     if (($item['RENDER_DATA']!=$item['DATA'] || $item['RENDER_TITLE']!=$item['TITLE']) && (!$dynamic_item)) {
-      $tmp=SQLSelectOne("SELECT * FROM commands WHERE ID='".$item['ID']."'");
-      $tmp['RENDER_TITLE']=$item['TITLE'];
-      $tmp['RENDER_DATA']=$item['DATA'];
-      $tmp['RENDER_UPDATED']=date('Y-m-d H:i:s');
-      SQLUpdate('commands', $tmp);
-     }
-     */
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
      }
+     */
      $res['LABELS'][]=array('ID'=>$item_id, 'DATA'=>$data);
     }
    }
+
 
    $res['VALUES']=array();
    $values=explode(',', $values);
@@ -297,6 +297,9 @@ function admin(&$out) {
     if ($item['TYPE']=='custom') {
      $item['DATA']=processTitle($item['DATA'], $this);
      $res['DATA']=$item['DATA'];
+    } elseif ($item['TYPE']=='object') {
+     $item['DATA']=getObjectClassTemplate($item['LINKED_OBJECT']);
+     $res['DATA']=processTitle($item['DATA'], $this);
     } else {
      $item['TITLE']=processTitle($item['TITLE'], $this);
      $res['DATA']=$item['TITLE'];
@@ -341,9 +344,12 @@ function admin(&$out) {
    global $new_value;
    $item=SQLSelectOne("SELECT * FROM commands WHERE ID='".(int)$real_part."'");
    if ($item['ID']) {
+
+    logAction('menu_clicked',$item['TITLE']);
+
     $old_value=$item['CUR_VALUE'];
     $item['CUR_VALUE']=$new_value;
-    if (!$dynamic_item) {
+    if (!$dynamic_item && !$item['READ_ONLY']) {
      SQLUpdate('commands', $item);
     }
 
@@ -352,7 +358,7 @@ function admin(&$out) {
      $item['LINKED_OBJECT']=$object_rec['TITLE'];
     }
 
-    if ($item['LINKED_PROPERTY']!='') {
+    if ($item['LINKED_PROPERTY']!='' && !$item['READ_ONLY']) {
      sg($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $item['CUR_VALUE'], array($this->name=>'ID!='.$item['ID']));
     }
 
@@ -420,29 +426,12 @@ endMeasure('TOTAL');
 
   $data=serialize($res);
 
-   $filename=urlencode('items'.date('H-i-s'));
+   $filename=urlencode('items'.date('H-i-s')).'.menu';
 
-   $ext = "menu";   // file extension
-   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-   ? 'application/octetstream'
-   : 'application/octet-stream';
-   header('Content-Type: ' . $mime_type);
-   if (PMA_USR_BROWSER_AGENT == 'IE')
-   {
-      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      print $data;
-   } else {
-      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Pragma: no-cache');
-      print $data;
-   }
-
+   header('Content-Type: application/octet-stream');
+   header('Content-Disposition: attachment; filename="'.($filename).'"');
+   header('Expires: 0');
+   echo $data;
    exit;
 
    } else {
@@ -603,7 +592,7 @@ function usual(&$out) {
    if ($tmp['ID']) {
     return;
    }
-
+  SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='menu' AND OBJECT_ID=".(int)$rec['ID']);
   SQLExec("DELETE FROM commands WHERE ID='".$rec['ID']."'");
  }
 /**
@@ -782,7 +771,7 @@ function usual(&$out) {
      $line=trim($line);
      if ($line!='') {
       $option=array();
-      if (preg_match('/=/', $line)) {
+      if (preg_match('/^[\w\d\-]+=/', $line)) {
        $tmp=explode('=', $line);
       } else {
        $tmp=explode('|', $line);
@@ -805,6 +794,10 @@ function usual(&$out) {
    }
 
    if ($this->owner->name!='panel') {
+
+    //$res[$i]['TITLE']='';
+    //$res[$i]['DATA']='';
+
     $res[$i]['TITLE']=processTitle($res[$i]['TITLE'], $this);
     if ($res[$i]['TYPE']=='custom') {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
@@ -814,10 +807,13 @@ function usual(&$out) {
      $res[$i]['DATA']=processTitle($res[$i]['DATA'], $this);
     }
 
+    /*
      if (preg_match('/#[\w\d]{6}/is', $res[$i]['TITLE'], $m)) {
       $color=$m[0];
       $res[$i]['TITLE']=trim(str_replace($m[0], '<style>#item'.$res[$i]['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $res[$i]['TITLE']));
      }
+    */
+
 
 
 
@@ -836,7 +832,7 @@ function usual(&$out) {
 
     if (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA'])) {
      $res[$i]['AUTO_UPDATE']=0;
-    } elseif (!$res[$i]['AUTO_UPDATE'] && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
+    } elseif (!$res[$i]['AUTO_UPDATE'] && $res[$i]['TYPE']!='object' && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)) {
      $res[$i]['AUTO_UPDATE']=10;
     }
 
@@ -882,7 +878,7 @@ function usual(&$out) {
 * @access public
 */
  function propertySetHandle($object, $property, $value) {
-   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT LIKE '".DBSafe($object)."' AND LINKED_PROPERTY LIKE '".DBSafe($property)."'");
+   $commands=SQLSelect("SELECT * FROM commands WHERE LINKED_OBJECT = '".DBSafe($object)."' AND LINKED_PROPERTY = '".DBSafe($property)."'");
    $total=count($commands);
    for($i=0;$i<$total;$i++) {
     $commands[$i]['CUR_VALUE']=$value;
@@ -995,6 +991,8 @@ function usual(&$out) {
      $item['ID']=$item_id;
      if ($object_part) {
       $data=getGlobal($object_rec['TITLE'].'.'.$item['LINKED_PROPERTY']);
+     } elseif($item['LINKED_OBJECT'] && $item['LINKED_PROPERTY']) {
+      $data=getGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
      } else {
       if ($set_value) {
        $item['CUR_VALUE']=$new_value;
@@ -1021,10 +1019,13 @@ function usual(&$out) {
      }
      $data=processTitle($data, $this);
 
+     /*
      if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
       $color=$m[0];
       $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
      }
+     */
+
      $item['LABEL']=$data;
 
 
@@ -1098,7 +1099,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS commands');
+   SQLDropTable('commands');
   parent::uninstall();
  }
 /**
@@ -1139,6 +1140,7 @@ commands - Commands
  commands: RENDER_DATA text
  commands: RENDER_UPDATED datetime
  commands: SMART_REPEAT int(3) NOT NULL DEFAULT '0'
+ commands: READ_ONLY int(3) NOT NULL DEFAULT '0'
 
  commands: ONCHANGE_OBJECT varchar(255) NOT NULL DEFAULT ''
  commands: ONCHANGE_METHOD varchar(255) NOT NULL DEFAULT ''

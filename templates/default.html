@@ -32,10 +32,9 @@
                             </td>
                         </table>
                     </td>
-                    <td align="center">
-                        [#module name="app_player"#]
+                    <td align="right">
+                        [#module name="app_player" mode="header"#]
                     </td>
-
                     <td align="center">
                         <a href="<#ROOTHTML#>admin.php" class="btn btn-default btn-sm"><#LANG_CONTROL_PANEL#></a>
                     </td>
@@ -65,6 +64,9 @@
                                                        alt="[#USER_TITLE#]"></a>
                         [#endif#]
                     </td>
+                    <td align="center">
+					                 	    <a href="<#ROOTHTML#>admin.php?pd=pz_&amp;md=panel&amp;inst=&amp;action=control_access&amp;mode=logoff" onclick="return partLoad(this.href);"><i class="glyphicon glyphicon-log-out"></i> Выйти</a>
+					                </td>
                 </tr>
             </table>
 
@@ -81,7 +83,7 @@
   </div>
   #-->
   </td>
-  <td valign="top" width="100%">
+  <td valign="top">
 
 
 <div id="tabs">

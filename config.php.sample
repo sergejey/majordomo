@@ -51,7 +51,7 @@ else
 
 Define('ROOT', DOC_ROOT."/");
 Define('ROOTHTML', "/");
-Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
+Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname("n"));
 
 // 1-wire OWFS server
 //Define('ONEWIRE_SERVER', 'tcp://localhost:8234');    
@@ -78,8 +78,14 @@ Define('PROJECT_DOMAIN', $_SERVER['SERVER_NAME']);
 
  //Define('HISTORY_NO_OPTIMIZE', 1);
 
+Define('GIT_URL', 'https://github.com/sergejey/majordomo/');
+Define('MASTER_UPDATE_URL', GIT_URL.'archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
 
-Define('MASTER_UPDATE_URL', 'https://github.com/sergejey/majordomo/archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
+$aditional_git_urls = array(
+   //'https://github.com/AKEB/majordomo/archive/alpha.tar.gz' => 'AKEB/alpha',
+   //'https://github.com/AKEB/majordomo/archive/master.tar.gz' => 'AKEB/master',
+);
+
 
 //Define('WAIT_FOR_MAIN_CYCLE', 1);
 //Define('TRACK_DATA_CHANGES', 1);                                   // TRACK EVENTS
@@ -89,8 +95,13 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 
 //Define('SEPARATE_HISTORY_STORAGE',1);                 // STORE HISTORY DATA IN DIFFERENT TABLES
 //Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS
+//Define('LOG_MAX_SIZE', 2);                 // MAXIMUM LOG FILE SIZE, MB
+//Define('LOG_CYCLES',1);             // Save working cycle log (or send to /dev/null if not defined)
 //Define('PATH_TO_FFMPEG','avconv');
 //Define('DISABLE_PANEL_ACCELERATION', 1);
 //Define('VERBOSE_LOG',1); // STORE SYSTEM ACTIVITY IN VERBOSE LOG
 //Define('VERBOSE_LOG_IGNORE','.checkstate, ThisComputer.uptime'); // IGNORE SOME DATA
 //Define('DISABLE_SIMPLE_DEVICES',1); // disables simple devices behavior
+//Define('AUDIO_PLAYER','omxplayer --no-osd'); // audio-player for linux
+//Define('ENABLE_FORK',1); // enables process fork (consumes more memory but speeds up some operations)
+//Define('PYTHON_PATH','python'); // path to python

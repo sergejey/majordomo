@@ -1,0 +1,65 @@
+
+<!-- Table 'plans' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+[#if ID=""#]
+<legend><#LANG_NEW_RECORD#></legend>
+[#endif ID#]
+<!-- TITLE (varchar) -->
+<div class="form-group[#if ERR_TITLE#] has-error[#endif#]">
+ <label for="title" class="col-lg-3 control-label">
+ <#LANG_TITLE#>:
+ (*)
+ </label>
+ <div class="col-lg-9"><input id="title" name="title" value="[#TITLE#]" type="text" class="form-control"></div>
+</div>
+
+ <div class="form-group[#if ERR_IMAGE#] has-error[#endif#]">
+  <label for="image" class="col-lg-3 control-label">
+   <#LANG_IMAGE#>:
+    (*)
+  </label>
+  <div class="col-lg-9">
+   [#if IMAGE!=""#]
+   <div><a href="<#ROOTHTML#>cms/plans/[#IMAGE#]" target="_blank">[#IMAGE#]</a></div>
+   [#endif IMAGE#]
+   <input id="image" name="image" type="file" class="form-control" accept="image/svg+xml">
+  </div>
+ </div>
+
+ <div class="form-group">
+  <label class="col-lg-3 control-label">
+   <#LANG_PLAN_ZOOM_CONTROL#>:
+  </label>
+  <div class="col-lg-9">
+   <input type="radio" name="need_zoom" value="1"[#if NEED_ZOOM="1"#] checked[#endif#]> <#LANG_YES#>
+   <input type="radio" name="need_zoom" value="0"[#if NEED_ZOOM!="1"#] checked[#endif#]> <#LANG_NO#>
+  </div>
+ </div>
+
+ <div class="form-group">
+  <label class="col-lg-3 control-label">
+   <#LANG_PLAN_AUTO_ZOOM#>:
+  </label>
+  <div class="col-lg-9">
+   <input type="radio" name="auto_zoom" value="1"[#if AUTO_ZOOM="1"#] checked[#endif#]> <#LANG_YES#>
+   <input type="radio" name="auto_zoom" value="0"[#if AUTO_ZOOM!="1"#] checked[#endif#]> <#LANG_NO#>
+  </div>
+ </div>
+
+<div class="form-group">
+        <div class="col-lg-offset-3 col-lg-4">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+ [#endif ID#]
+ <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+        </div>
+</div>
+</fieldset>
+</form>

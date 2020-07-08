@@ -1,0 +1,210 @@
+[#if COMPONENT_ID!=""#]
+<script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.css' />
+<form class="form" action="?" method="post">
+    <div class="form-group[#if ERR_TITLE#] has-error [#endif ERR_TITLE#]">
+        <label for="component_title"><#LANG_TITLE#>:</label>
+        <input type="text" name="component_title" id="component_title" value="[#COMPONENT_TITLE#]" class="form-control" required>
+    </div>
+    <div class="form-group[#if ERR_COMPONENT_NAME#] has-error [#endif ERR_COMPONENT_NAME#]">
+        <label for="component_component_name"><#LANG_TYPE#>:</label>
+        <select name="component_component_name" id="component_component_name" class="form-control">
+            <option value=""></option>
+            [#begin TYPES#]
+            <option value="[#NAME#]"[#if NAME="<#COMPONENT_COMPONENT_NAME#>"#] selected[#endif#]>[#TITLE#]</option>
+            [#end TYPES#]
+        </select>
+    </div>
+    <div class="form-group[#if ERR_ITEM#] has-error [#endif ERR_ITEM#]">
+        <label for="component_replace_name"><#LANG_IMAGE_ITEM#>:</label>
+        <select name="component_replace_name" id="component_replace_name" class="form-control">
+            <option value=""></option>
+            [#begin ITEMS#]
+            <option value="[#ITEM#]"[#if ITEM="<#COMPONENT_REPLACE_NAME#>"#] selected[#endif#]>[#TITLE#]</option>
+            [#end ITEMS#]
+
+        </select>
+    </div>
+
+    [#if PROPERTIES#]
+    <div class="form-group">
+        <label><#LANG_SECTION_SETTINGS#></label>
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table">
+                [#begin PROPERTIES#]
+                    <tr>
+                        <td>[#TITLE#]</td>
+                        <td>([#NAME#])</td>
+                        <td>
+                            [#if TYPE="select"#]
+                            <select name="property_[#NAME#]" class="form-control">
+                                [#begin OPTIONS#]
+                                <option value="[#VALUE#]"[#if VALUE=="<#PROPERTIES.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
+                                [#end OPTIONS#]
+                            </select>
+                            [#endif TYPE#]
+                            [#if TYPE=="int" || TYPE=="text" || TYPE=="float"#]
+                            <input type="text" name="property_[#NAME#]" value="[#VALUE_HTML#]" class="form-control" placeholder="[#DEFAULT#]">
+                            [#endif TYPE#]
+                            [#if TYPE=="rgb"#]
+                            <input type="text" name="property_[#NAME#]" id="property_[#NAME#]" value="[#VALUE#]" class="form-control" placeholder="[#DEFAULT#]">
+                            <script>
+                                $("#property_[#NAME#]").spectrum({
+                                    preferredFormat: "hex",
+                                    showInput: true,
+                                    chooseText: "OK",
+                                    cancelText: "<#LANG_CANCEL#>"
+                                });
+                            </script>
+                            [#endif TYPE#]
+                            [#if TYPE=="linked_property"#]
+                            <input type="text" name="property_[#NAME#]_linked_object" id="property_[#NAME#]_linked_object" value="[#LINKED_OBJECT#]">
+                            <input type="text" name="property_[#NAME#]_linked_property" id="property_[#NAME#]_linked_property" value="[#LINKED_PROPERTY#]">
+                            [#module name="linkedobject" object_field="property_<#PROPERTIES.NAME#>_linked_object" property_field="property_<#PROPERTIES.NAME#>_linked_property"#]
+                            [#endif TYPE#]
+                        </td>
+                    </tr>
+                [#end PROPERTIES#]
+                </table>
+            </div>
+            <div class="col-md-4">
+                [#RENDER_SVG#]
+            </div>
+        </div>
+    </div>
+    [#endif PROPERTIES#]
+
+    <script language="javascript">
+        function do_on_click_change(val) {
+            $('.click_fields').hide();
+            $('#'+val+'_field').show();
+            return false;
+        }
+    </script>
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_DO_ONCLICK#></label>
+        <div class="controls">
+            <select name="do_on_click" class="form-control" onChange="do_on_click_change(this.value);">
+                <option value="0"><#LANG_DO_NOTHING#>
+                <option value="run_script"[#if COMPONENT_SCRIPT_ID!="0" && COMPONENT_SCRIPT_ID!=""#] selected[#endif#]><#LANG_RUN_SCRIPT_ON_CLICK#>
+                <option value="run_method"[#if COMPONENT_ACTION_OBJECT!=""#] selected[#endif#]><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>
+                <option value="run_code"[#if COMPONENT_CODE!=""#] selected[#endif#]><#LANG_ONCHANGE_CODE#>
+                <option value="open_menu"[#if COMPONENT_MENU_ITEM_ID!="0" && COMPONENT_MENU_ITEM_ID!=""#] selected[#endif#]><#LANG_SHOW_MENU_ON_CLICK#>
+                <option value="show_homepage"[#if COMPONENT_HOMEPAGE_ID!="0" && COMPONENT_HOMEPAGE_ID!=""#] selected[#endif#]><#LANG_SHOW_HOMEPAGE_ON_CLICK#>
+                <option value="show_url"[#if COMPONENT_EXT_URL!=""#] selected[#endif#]><#LANG_SHOW_URL_ON_CLICK#>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="form-group click_fields"[#if COMPONENT_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
+        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
+
+        <textarea name="code" rows="5" cols="50" class="form-control">[#COMPONENT_CODE#]</textarea>
+
+    </div>
+
+
+    <div class="form-group click_fields"[#if COMPONENT_SCRIPT_ID="0" || COMPONENT_SCRIPT_ID=""#] style="display:none"[#endif#] id='run_script_field'>
+        <label class="col-lg-4 control-label"><#LANG_RUN_SCRIPT_ON_CLICK#></label>
+        <div class="controls">
+            <select name="script_id" class="form-control">
+                <option value="0">
+                    [#begin SCRIPTS#]
+                <option value="[#ID#]"[#if ID="<#COMPONENT_SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end SCRIPTS#]
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if COMPONENT_MENU_ITEM_ID="0" || COMPONENT_MENU_ITEM_ID=""#] style="display:none"[#endif#] id='open_menu_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_MENU_ON_CLICK#></label>
+        <div class="controls">
+            <select name="menu_item_id" class="form-control">
+                <option value="0">
+                    [#begin MENU_ITEMS#]
+                <option value="[#ID#]"[#if ID="<#COMPONENT_MENU_ITEM_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end MENU_ITEMS#]
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if COMPONENT_HOMEPAGE_ID="0" || COMPONENT_HOMEPAGE_ID=""#] style="display:none"[#endif#] id='show_homepage_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_HOMEPAGE_ON_CLICK#></label>
+        <div class="controls">
+            <select name="homepage_id" class="form-control">
+                <option value="0">
+                    [#begin HOMEPAGES#]
+                <option value="[#ID#]"[#if ID="<#COMPONENT_HOMEPAGE_ID#>"#] selected[#endif#]>[#TITLE#]
+                    [#end HOMEPAGES#]
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if COMPONENT_EXT_URL=""#] style="display:none"[#endif#] id='show_url_field'>
+        <label class="col-lg-4 control-label"><#LANG_SHOW_URL_ON_CLICK#></label>
+        <div class="controls">
+            <input type="text" class="form-control" name="ext_url" value="[#COMPONENT_EXT_URL#]">
+        </div>
+    </div>
+
+    <div class="form-group click_fields"[#if COMPONENT_ACTION_OBJECT=""#] style="display:none"[#endif#] id='run_method_field'>
+        <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#></label>
+        <input type="text" class="form-control" name="action_object" id="action_object" value="[#COMPONENT_ACTION_OBJECT#]"> .
+        <input type="text" class="form-control" name="action_method" id="action_method" value="[#COMPONENT_ACTION_METHOD#]">
+    </div>
+    [#module name="linkedobject" object_field="action_object" method_field="action_method"#]
+
+
+    &nbsp;
+    <div class="form-group">
+        [#if COMPONENT_ID!="new"#]
+        <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
+        [#else#]
+        <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
+        [#endif#]
+        <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&" class="btn btn-default"><#LANG_CANCEL#></a>
+
+        [#if COMPONENT_ID!="new"#]
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&component_id=[#COMPONENT_ID#]&duplicate=1" class="btn btn-default" onclick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>');"><#LANG_MAKE_COPY#></a>
+        [#endif ELEMENT_ID#]
+    </div>
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="component_id" value="<#COMPONENT_ID#>">
+    <input type="hidden" name="mode" value="update">
+</form>
+
+    [#else COMPONENT_ID#]
+
+<div>
+<a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&component_id=new" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+</div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th><#LANG_TITLE#></th>
+            <th><#LANG_TYPE#></th>
+            <th><#LANG_IMAGE_ITEM#></th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        [#begin COMPONENTS#]
+        <tr>
+            <td>[#TITLE#]</td>
+            <td>[#COMPONENT_NAME#]</td>
+            <td>[#REPLACE_NAME#]</td>
+            <td>
+                <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&component_id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a>
+                <a href="?view_mode=<#VIEW_MODE#>&tab=<#TAB#>&id=<#ID#>&component_id=[#ID#]&delete=1" class="btn btn-default" onclick="return confirm('<#LANG_STRING_DELETE_CONFIRM#>');"><#LANG_DELETE#></a>
+            </td>
+        </tr>
+        [#end COMPONENTS#]
+    </table>
+
+    [#endif COMPONENT_ID#]

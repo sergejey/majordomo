@@ -19,9 +19,6 @@ include_once(DIR_MODULES . "panel.class.php");
 
 $session = new session("prj");
 
-startMeasure('db connection');
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
-endMeasure('db connection');
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
@@ -38,16 +35,15 @@ $result = $app->run();
 endMeasure('apprun');
 
 startMeasure('part2');
-// BEGIN: filter output
+
 if ($filterblock != '')
 {
    $blockPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($blockPattern, $result, $match);
    $result = $match[1];
 }
-// END: filter output
 
-// BEGIN: language constants
+startMeasure('languageConstants');
 if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
 {
    $total = count($matches[0]);
@@ -63,22 +59,20 @@ if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
       }
    }
 }
-// END: language constants
+endMeasure('languageConstants');
 
 $result = str_replace("nf.php", "admin.php", $result);
 
-require(ROOT.'lib/utils/postprocess_result.inc.php');
+require(ROOT.'lib/utils/postprocess_general.inc.php');
+require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
+//require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 
-if (!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1) {
- if (preg_match_all('/href="(\/admin\.php.+?)">/is',$result,$matches)) {
-    $total = count($matches[1]);
-    for ($i = 0; $i < $total; $i++) {
-       $result=str_replace($matches[0][$i],'href="'.$matches[1][$i].'" onclick="return partLoad(this.href);">',$result);
-    }
- }
+startMeasure('accelerationProcess');
+if ((!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1)) {
+ $result = preg_replace('/href="(\/admin\.php.+?)">/is','href="\1" onclick="return partLoad(this.href);">',$result);
 }
-
+endMeasure('accelerationProcess');
 
 endMeasure('part2');
 
@@ -99,7 +93,10 @@ if ($_GET['part_load']) {
       $cut_begin_index+=mb_strlen($cut_begin)+2;
       $res['CONTENT']=mb_substr($result,$cut_begin_index,($cut_end_index-$cut_begin_index));
       $res['NEED_RELOAD']=0;
-      if (headers_sent() || is_integer(mb_strpos($res['CONTENT'], '$(document).ready')) || is_integer(mb_strpos($res['CONTENT'], 'js/codemirror'))) { 
+      if (headers_sent()
+          || is_integer(mb_strpos($res['CONTENT'], '$(document).ready'))
+          || is_integer(mb_strpos($res['CONTENT'], '$(function('))
+          || is_integer(mb_strpos($res['CONTENT'], 'codemirror/'))) {
          $res['CONTENT']='';
          $res['NEED_RELOAD']=1;
       }
@@ -122,12 +119,26 @@ if ($_GET['part_load']) {
       header('Content-Type: text/html; charset=utf-8');
       echo $result;exit;
       $session->save();
-      $db->Disconnect(); // closing database connection
       exit;
-
 }
 
 startMeasure('echoall');
+
+
+if (is_array($_GET['dynids'])) {
+
+   $data = array();
+   foreach ($_GET['dynids'] as $data_id) {
+      if (preg_match('/id="' . $data_id . '">(.+?)<!--\/dynamic_content-->/uis', $result, $m)) {
+         $data['blocks'][] = array('name' => $data_id, 'content' => $m[1]);
+      }
+
+   }
+   header("Content-type: application/json");
+   echo json_encode($data);
+   exit;
+}
+
 
 if (!headers_sent())
 {
@@ -140,7 +151,6 @@ echo $result;
 endMeasure('echoall');
 
 $session->save();
-$db->Disconnect(); // closing database connection
 
 // end calculation of execution time
 endMeasure('TOTAL');

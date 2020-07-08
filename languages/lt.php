@@ -8,6 +8,7 @@
 */
 
 $dictionary=array(
+'SETTINGS_SITE_LANGUAGE_CODE' => 'lt-LT',
 'WIKI_URL'=>'http://smartliving.ru/',
 'DEFAULT_COMPUTER_NAME'=>'Alisa',
 'WELCOME_GREETING'=>'Sveiki!',
@@ -19,7 +20,7 @@ $dictionary=array(
 'CONTROL_MENU'=>'Meniu',
 'YOU_ARE_HERE'=>'Jūs esate čia',
 'FRONTEND'=>'Tinklapis',
-'MY_ACCOUNT'=>'Mano sąskaita',
+'MY_ACCOUNT'=>'Mano paskyra',
 'LOGOFF'=>'Išeiti',
 'CONSOLE'=>'Konsolė',
 'CONSOLE_RETRY'=>'Pakartoti',
@@ -216,9 +217,9 @@ $dictionary=array(
 'STEP_VALUE'=>'Keitimo žingsnis',
 'DATA'=>'Duomenys',
 'INTERFACE'=>'Sąsaja',
-'AUTO_UPDATE_PERIOD'=>'Automatinių antaujinimų periodas',
+'AUTO_UPDATE_PERIOD'=>'Automatinių atnaujinimų periodas',
 'POLLING_PERIOD'=>'Apklausos laikotarpis',
-'CURRENT_VALUE'=>'Dabadtinė vertė',
+'CURRENT_VALUE'=>'Dabartinė vertė',
 'PROPERTY'=>'Savybė',
 'ONCHANGE_OBJECT'=>'Leisti objektą',
 'ONCHANGE_METHOD'=>'Leisti metoda keitimo metu',
@@ -662,6 +663,7 @@ $dictionary=array(
 'DEVICES_LEAK_SENSOR'=>'Pratekėjimo jutiklis',
 'DEVICES_SMOKE_SENSOR'=>'Dūmų jutiklis',
 'DEVICES_UNIT'=>'Matavimo vienetai',
+'DEVICES_BATTERY_LOW' => 'Low battery',
 'DEVICES_COUNTER'=>'Skaitiklis',
 'M_VOLTAGE'=>'V',
 'M_CURRENT'=>'A',

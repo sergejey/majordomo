@@ -9,47 +9,32 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])
-    && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI'])
-       || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI'])
-       || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']))
-       || $_REQUEST['op'] != '')
-    && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])
-    && 1)
-{
-   $p = preg_quote(HOME_NETWORK);
-   $p = str_replace('\*', '\d+?', $p);
-   $p = str_replace(',', ' ', $p);
-   $p = str_replace('  ', ' ', $p);
-   $p = str_replace(' ', '|', $p);
-
-   $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
-
-   if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1')
-   {
-      // password required
-      //echo "password required for ".$remoteAddr;exit;
-      //DebMes("checking access for ".$remoteAddr);
-
-      if (!isset($_SERVER['PHP_AUTH_USER']))
-      {
-         header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-         header("HTTP/1.0 401 Unauthorized");
-         echo "Authorization required\n";
-         exit;
-      }
-      else
-      {
-         if ($_SERVER['PHP_AUTH_USER'] != EXT_ACCESS_USERNAME || $_SERVER['PHP_AUTH_PW'] != EXT_ACCESS_PASSWORD)
-         {
+if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '') && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI']) && 1) {
+    $p = preg_quote(HOME_NETWORK);
+    $p = str_replace('\*', '\d+?', $p);
+    $p = str_replace(',', ' ', $p);
+    $p = str_replace('  ', ' ', $p);
+    $p = str_replace(' ', '|', $p);
+    
+    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
+    
+    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
+        if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            DebMes($data, 'auth');
+        } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
+            DebMes($data, 'auth');
+        } else {
             // header("Location:$PHP_SELF\n\n");
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
             header("HTTP/1.0 401 Unauthorized");
             echo "Authorization required\n";
+            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            DebMes($data, 'auth');
             exit;
-         }
-      }
-   }
+        }
+    }
 }
 
 if (isset($_SERVER['REQUEST_METHOD']))
@@ -126,6 +111,26 @@ if (isset($_SERVER['REQUEST_METHOD']))
    }
 }
 
+
+function gr($var_name,$type='trim') {
+   if (isset($_REQUEST[$var_name])) {
+      $value = $_REQUEST[$var_name];
+      if (get_magic_quotes_gpc()) {
+         stripit($value);
+      }
+   } else {
+      $value='';
+   }
+   if ($type=='int') {
+      $value=(int)$value;
+   } elseif ($type=='float') {
+      $value=(float)$value;
+   } elseif ($type=='trim' && !is_array($value)) {
+      $value=trim($value);
+   }
+   return $value;
+}
+
 /**
  * Summary of redirect
  * @param mixed $url    Url
@@ -174,14 +179,13 @@ function LoadFile($filename)
    // loading file
    $f     = fopen($filename, "r");
    $data  = "";
-   $fsize = filesize($filename);
-
-   if ($f && $fsize > 0)
-   {
-      $data = fread($f, $fsize);
+   if ($f) {
+      $fsize = filesize($filename);
+      if ($fsize>0) {
+         $data = fread($f, $fsize);
+      }
       fclose($f);
    }
-
    return $data;
 }
 
@@ -359,11 +363,11 @@ function checkGeneral($field)
 function SendMail($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
-
+   $mail->setHeadCharset('UTF-8');
+   $mail->setTextCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setText($body);
-   $mail->setTextCharset('windows-1251');
 
    if ($attach != '')
    {
@@ -389,11 +393,11 @@ function SendMail_HTML($from, $to, $subj, $body, $attach = "")
 {
    $mail = new htmlMimeMail();
 
+   $mail->setHeadCharset('UTF-8');
+   $mail->setHTMLCharset('UTF-8');
    $mail->setFrom($from);
    $mail->setSubject($subj);
    $mail->setHTML($body);
-   $mail->setHTMLCharset('windows-1251');
-   $mail->setHeadCharset('windows-1251');
 
    if (is_array($attach))
    {
@@ -513,18 +517,28 @@ function setLocalTime($now_date, $diff = 0)
 function DebMes($errorMessage, $logLevel = "debug")
 {
 
-   if (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
-    $path=LOG_DIRECTORY;
+   if (defined('SETTINGS_SYSTEM_DISABLE_DEBMES') && SETTINGS_SYSTEM_DISABLE_DEBMES==1) return;
+
+   if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+      $path = SETTINGS_SYSTEM_DEBMES_PATH;
+   } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+      $path = LOG_DIRECTORY;
    } else {
-    $path = ROOT . 'debmes';
+      $path = ROOT . 'cms/debmes';
+   }
+
+   if (defined('LOG_MAX_SIZE') && LOG_MAX_SIZE>0) {
+      $max_log_size = LOG_MAX_SIZE*1024*1024; // Mb
+   } else {
+      $max_log_size = 5*1024*1024; // 5 Mb, default
    }
 
    // DEBUG MESSAGE LOG
    if (!is_dir($path))
    {
+      umask(0);
       mkdir($path, 0777);
    }
-
    if (is_array($errorMessage) || is_object($errorMessage)) {
       $errorMessage=json_encode($errorMessage, JSON_PRETTY_PRINT);
    }
@@ -534,6 +548,9 @@ function DebMes($errorMessage, $logLevel = "debug")
    } else {
       $today_file=$path.'/'.date('Y-m-d').'.log';
    }
+
+   if (file_exists($today_file) && filesize($today_file)>$max_log_size) return;
+
    $f=fopen($today_file, "a+");
    if ($f) {
                 $tmp=explode(' ', microtime());
@@ -541,6 +558,43 @@ function DebMes($errorMessage, $logLevel = "debug")
                 fputs($f, " ".$errorMessage."\n");
                 fclose($f);
                 @chmod($today_file, 0666);
+   }
+}
+
+function dprint($data = 0, $stop = 1, $show_history = 0) {
+   if (isset($_SERVER['REQUEST_METHOD'])) {
+      echo "<pre>";
+   } else {
+      echo "\n".date('Y-m-d H:i:s ');
+   }
+   if ($data!==0) {
+      if (is_array($data)) {
+         print_r($data);
+      } elseif (is_object($data)) {
+         var_dump($data);
+      } else {
+         echo $data;
+      }
+   } else {
+      echo date('Y-m-d H:i:s');
+   }
+
+   if ($show_history) {
+      $e = new \Exception;
+      echo ' ('.$e->getTraceAsString().')';
+   }
+
+   if (isset($_SERVER['REQUEST_METHOD'])) {
+      echo "</pre><hr/>";
+      echo str_repeat(' ',4096);
+      flush();flush();
+      echo "<script type='text/javascript'>window.scrollTo(0,document.body.scrollHeight);</script>";
+   } else {
+      echo "\n---------------------------------\n";
+   }
+
+   if ($stop) {
+      exit;
    }
 }
 
@@ -668,13 +722,13 @@ function colorizeArray(&$ar, $every = 2)
  */
 function clearCache($verbose = 0)
 {
-   if ($handle = opendir(ROOT . 'cached'))
+   if ($handle = opendir(ROOT . 'cms/cached'))
    {
       while (false !== ($file = readdir($handle)))
       {
-         if (is_file(ROOT . 'cached/' . $file))
+         if (is_file(ROOT . 'cms/cached/' . $file))
          {
-            @unlink(ROOT . 'cached/' . $file);
+            @unlink(ROOT . 'cms/cached/' . $file);
 
             if ($verbose)
             {

@@ -1,0 +1,279 @@
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/d3/d3.min.js"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>templates/plans/basic.css?v=2019-03-07">
+[#if PLAN_NEED_ZOOM="1"#]
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/hammer/hammer.min.js"></script>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/svg-pan-zoom/svg-pan-zoom.min.js"></script>
+[#endif#]
+
+[#if PLAN_CUSTOM_CSS!=""#]
+<style>
+[#PLAN_CUSTOM_CSS#]
+</style>
+[#endif#]
+
+<div id="plan[#PLAN_ID#]" style="display:none;" class="svg_content">[#SVG_CONTENT#]</div>
+<script type="application/javascript">
+
+    var noPlanUpdatesTimer=0;
+    var checkPlanTimer=0;
+    var subscribedPlanWebSockets=0;
+    var subscribedPlanWebSocketsTimer = 0;
+
+    function planZoom() {
+        var zoom = $(window).width()/$("#plan[#PLAN_ID#] svg").first().width()*100;
+        document.body.style.zoom = zoom+"%"
+    }
+
+    function reloadComponent(element_id,component_id) {
+        var url="<#ROOTHTML#>ajax/plans.html?op=getComponent&id="+component_id;
+        $.ajax({
+            url: url,
+        }).done(function(data) {
+            //alert(data);
+            var obj=jQuery.parseJSON(data);
+            if (typeof obj.SVG !== "undefined") {
+                //alert(obj.SVG);
+                $('#'+element_id+' svg').remove();
+                $('#'+element_id).append(obj.SVG);
+            }
+        });
+        //alert('reloading '+component_id);
+    }
+
+    function processPlanStates(data) {
+        var obj=jQuery.parseJSON(data);
+        if (typeof obj !='object') return false;
+        clearTimeout(noPlanUpdatesTimer);
+        noPlanUpdatesTimer=setTimeout("$.publish('plansNoUpdates');", 30*60*1000);
+        var objCnt = obj.length;
+        if (objCnt) {
+            for (var i = 0; i < objCnt; i++) {
+                var elem=$('#'+obj[i].ITEM);
+                if (typeof obj[i].COMPONENT_ID !== "undefined") {
+                    var function_name = 'componentUpdated'+obj[i].COMPONENT_ID;
+                    if (typeof obj[i].PROPERTY_NAME!=="undefined" && eval("typeof "+function_name) === 'function') {
+                        var code=function_name+'("'+obj[i].PROPERTY_NAME+'","'+obj[i].PROPERTY_VALUE+'")';
+                        eval(code);
+                    } else {
+                        reloadComponent(obj[i].ITEM,obj[i].COMPONENT_ID);
+                    }
+                    continue;
+                }
+                if (typeof obj[i].CONTENT === "undefined") {
+                    elem.attr("class", "");
+                    if (obj[i].SET_CLASS!='') {
+                        elem.addClass(obj[i].SET_CLASS);
+                    } else {
+                        //elem.attr("class", "");
+                        //elem.removeClass();
+                    }
+                } else {
+                    elem.text(obj[i].CONTENT);
+                }
+            }
+        }
+    }
+
+    function checkAllPlanStates() {
+        clearTimeout(checkPlanTimer);
+        if (subscribedPlanWebSockets==1) {
+            checkPlanTimer=setTimeout('checkAllPlanStates();', 10000);
+            return;
+        }
+        var url="<#ROOTHTML#>ajax/plans.html?op=checkAllStates&plan_id=<#PLAN_ID#>";
+        $.ajax({
+            url: url,
+        }).done(function(data) {
+            processPlanStates(data);
+            checkPlanTimer=setTimeout('checkAllPlanStates();', 10000);
+        });
+        return false;
+    }
+
+    function subscribeToPlan() {
+        console.log('Sending plan subscription request...');
+        var payload;
+        payload = new Object();
+        payload.action = 'Subscribe';
+        payload.data = new Object();
+        payload.data.TYPE='plans';
+        payload.data.PLAN_ID='[#PLAN_ID#]';
+        wsSocket.send(JSON.stringify(payload));
+        subscribedPlanWebSocketsTimer=setTimeout('subscribeToPlan();', 3000);
+        return false;
+    }
+
+    $.subscribe('wsConnected', function (_) {
+        subscribeToPlan();
+    });
+
+    $.subscribe('wsDisconnected', function (_) {
+        subscribedPlanWebSockets=0;
+    });
+
+    $.subscribe('wsData', function (_, response) {
+        if (response.action=='subscribed') {
+            console.log('Plan Subscription confirmed.');
+            clearTimeout(subscribedPlanWebSocketsTimer);
+            subscribedPlanWebSockets=1;
+        }
+        if (response.action=='plan_states') {
+            processPlanStates(response.data);
+        }
+    });
+
+    var panZoom=0;
+    $(document).ready(function(){
+        [#begin STATES#]
+        [#if SET_CLASS!=""#]
+        $('#[#ITEM#]').addClass('[#SET_CLASS#]');
+        [#endif#]
+        [#if CAN_BE_CLICKED="1"#]
+        $('#[#ITEM#]').click(function (e) {
+            var window_url='';
+            [#if MENU_ITEM_ID!="0"#]
+            window_url='<#ROOTHTML#>menu.html?parent=[#MENU_ITEM_ID#]';
+            [#endif MENU_ITEM_ID#]
+            [#if HOMEPAGE_ID!="0"#]
+            window_url='<#ROOTHTML#>page/[#HOMEPAGE_ID#].html';
+            [#endif MENU_ITEM_ID#]
+            [#if EXT_URL!=""#]
+            window_url='[#EXT_URL#]';
+            [#endif EXT_URL#]
+            if (window_url!='') {
+                $.fancybox.open({ src: window_url, type: 'iframe', iframe:{preload:false}});
+            } else {
+                var url="<#ROOTHTML#>ajax/plans.html?op=click&id=[#ID#]";
+                $.ajax({
+                    url: url,
+                }).done(function(data) {
+                    checkAllPlanStates();
+                });
+            }
+        });
+        [#endif CAN_BE_CLICKED#]
+        [#end STATES#]
+
+        [#begin COMPONENTS#]
+        [#if CAN_BE_CLICKED="1"#]
+        $('#component[#ID#]').click(function (e) {
+            var window_url='';
+            [#if MENU_ITEM_ID!="0"#]
+            window_url='<#ROOTHTML#>menu.html?parent=[#MENU_ITEM_ID#]';
+            [#endif MENU_ITEM_ID#]
+            [#if HOMEPAGE_ID!="0"#]
+            window_url='<#ROOTHTML#>page/[#HOMEPAGE_ID#].html';
+            [#endif HOMEPAGE_ID#]
+            [#if EXT_URL!=""#]
+            window_url='[#EXT_URL#]';
+            [#endif EXT_URL#]
+            if (window_url!='') {
+                $.fancybox.open({ src: window_url, type: 'iframe', iframe:{preload:false}});
+            } else {
+                var url="<#ROOTHTML#>ajax/plans.html?op=click_component&id=[#ID#]";
+                $.ajax({
+                    url: url,
+                }).done(function(data) {
+                    checkAllPlanStates();
+                });
+            }
+        });
+        [#endif CAN_BE_CLICKED#]
+        [#end COMPONENTS#]
+
+        $('#plan[#PLAN_ID#]').show();
+        [#if PLAN_NEED_ZOOM="1"#]
+
+        eventsHandler = {
+            haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel']
+            , init: function(options) {
+                var instance = options.instance
+                        , initialScale = 1
+                        , pannedX = 0
+                        , pannedY = 0
+
+                // Init Hammer
+                // Listen only for pointer and touch events
+                this.hammer = Hammer(options.svgElement, {
+                    inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput
+                })
+
+                // Enable pinch
+                this.hammer.get('pinch').set({enable: true})
+
+                // Handle double tap
+                this.hammer.on('doubletap', function(ev){
+                    instance.zoomIn()
+                })
+
+                // Handle pan
+                this.hammer.on('panstart panmove', function(ev){
+                    // On pan start reset panned variables
+                    if (ev.type === 'panstart') {
+                        pannedX = 0
+                        pannedY = 0
+                    }
+
+                    // Pan only the difference
+                    instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
+                    pannedX = ev.deltaX
+                    pannedY = ev.deltaY
+                })
+
+                // Handle pinch
+                this.hammer.on('pinchstart pinchmove', function(ev){
+                    // On pinch start remember initial zoom
+                    if (ev.type === 'pinchstart') {
+                        initialScale = instance.getZoom()
+                        instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                    }
+
+                    instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                })
+
+                // Prevent moving the page on some devices when panning over SVG
+                options.svgElement.addEventListener('touchmove', function(e){ e.preventDefault(); });
+            }
+
+            , destroy: function(){
+                this.hammer.destroy()
+            }
+        }
+
+        var options = {
+            zoomEnabled: true
+            , controlIconsEnabled: true
+            , customEventsHandler: eventsHandler
+            , fit:1
+        };
+
+        var svgElement = $('#plan[#PLAN_ID#] svg')[0];
+        panZoom=svgPanZoom(svgElement,options);
+        //var panZoom = svgPanZoom('#plan[#PLAN_ID#] svg');
+        [#endif#]
+        checkPlanTimer=setTimeout('checkAllPlanStates();', 5000);
+
+        [#if PLAN_AUTO_ZOOM="1"#]
+        setTimeout('planZoom();',2000);
+        var supportsOrientationChange = "onorientationchange" in window,
+                orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
+
+        window.addEventListener(orientationEvent, function() {
+            setTimeout('planZoom();', 1000);
+        }, false);
+        [#endif#]
+
+
+        [#if WIDTH!=""#]
+        $("#plan[#PLAN_ID#] svg").first().width('[#WIDTH#]');
+        $("#plan[#PLAN_ID#]").width('[#WIDTH#]');
+        [#endif#]
+        [#if HEIGHT!=""#]
+        $("#plan[#PLAN_ID#] svg").first().height('[#HEIGHT#]');
+        $("#plan[#PLAN_ID#]").height('[#HEIGHT#]');
+        [#endif#]
+
+    });
+
+    [#if PLAN_CUSTOM_JAVASCRIPT!=""#][#PLAN_CUSTOM_JAVASCRIPT#][#endif#]
+</script>

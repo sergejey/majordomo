@@ -1,133 +1,164 @@
 <ul class="nav nav-tabs">
  <li [#if TAB==""#]class="active"[#endif#]><a href="?"><#LANG_GENERAL#></a></li>
  <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls">Public Calls</a></li>
-</ul><br>
+</ul>
 
+[#if STATUS!=""#]
+<div class="alert alert-info">[#STATUS#]</div>
+[#endif#]
+
+<div class="alert alert-light"><p><#LANG_CONNECT_ABOUT#></p>
+ [#if CONNECT_USERNAME=""#]
+ <p>
+ <a href="https://connect.smartliving.ru/members.html" target="_blank" class="btn btn-default btn-primary"><#LANG_CONNECT_REGISTER#></a>
+ </p>
+ [#endif#]
+</div>
+
+[#if OK_MSG!=""#]
+<div class="alert alert-success">[#OK_MSG#]</div>
+[#endif#]
+
+[#if ERR_MSG!=""#]
+<div class="alert alert-danger">[#ERR_MSG#]</div>
+[#endif#]
 
 [#if TAB==""#]
-<!-- table zwave_devices search -->
-<div>
- CONNECT [ <a href="#" onClick="$('#api_settings').toggle();return false;"><#LANG_SETUP#></a> ]
- [ <a href="http://connect.smartliving.ru/" target=_blank>More info...</a>]
-</div>
-<div style="display:none" id='api_settings'>
-&nbsp;
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
-<fieldset>
 
-<div class="form-group">
- <label class="control-label"[#if ERR_CONNECT_USERNAME#] style="color:red;font-weight:bold"[#endif#]>
- Username:
- </label>
- <div class="controls"><input type="text" name="connect_username" value="<#CONNECT_USERNAME#>" class="input"></div>
-</div>
+<div class="row">
+ <div class="col-md-6">
+  <h4><#LANG_SECTION_SETTINGS#></h4>
+  [#if CONNECT_SYNC="1"#]
+  [#module name="xray" action="service" cycle="connect"#]
+  &nbsp;
+  [#endif CONNECT_SYNC#]
+  <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+   <fieldset>
 
-<div class="form-group">
- <label class="control-label"[#if ERR_CONNECT_PASSWORD#] style="color:red;font-weight:bold"[#endif#]>
- Password:
- </label>
- <div class="controls"><input type="password" name="connect_password" value="<#CONNECT_PASSWORD#>" class="input"></div>
-</div>
+    <div class="form-group[#if ERR_CONNECT_USERNAME#] has-error[#endif#]">
+     <label class="control-label" for="username">
+      <#LANG_USERNAME#>:
+     </label>
+     <div class="col-md-7">
+      <input type="text" name="connect_username" value="<#CONNECT_USERNAME#>" class="form-control" id="username">
+     </div>
+    </div>
 
-<div class="form-group">
- <div class="controls">
- <label>
- <input type="checkbox" name="connect_sync" value="1"[#if CONNECT_SYNC="1"#] checked[#endif#]> 
- Enable cloud sync <a href="http://smartliving.ru/Main/CloudSync" target=_blank>(?)</a></label>
+    <div class="form-group[#if ERR_CONNECT_PASSWORD#] has-error[#endif#]">
+     <label class="control-label" for="password">
+      <#LANG_PASSWORD#>:
+     </label>
+     <div class="col-md-7">
+      <input type="password" name="connect_password" id="password" value="<#CONNECT_PASSWORD#>" class="form-control">
+     </div>
+    </div>
+
+    <div class="form-group">
+     <label class="control-label">&nbsp;</label>
+     <div class="col-md-7">
+      <input type="checkbox" name="connect_sync" value="1"[#if CONNECT_SYNC="1"#] checked[#endif#]>
+      <#LANG_CONNECT_ENABLE_CLOUDSYNC#> <a href="https://connect.smartliving.ru/services/s2.html" target=_blank>(?)</a>
+     </div>
+    </div>
+
+    <div class="form-group">
+     <label class="control-label">&nbsp;</label>
+     <div class="col-md-7">
+      <input type="checkbox" name="connect_backup" value="1"[#if CONNECT_BACKUP="1"#] checked[#endif#]>
+      <#LANG_CONNECT_ENABLE_CLOUDBACKUP#> <a href="https://connect.smartliving.ru/services/s2.html" target=_blank>(?)</a>
+     </div>
+    </div>
+
+    <div class="form-group">
+     <label class="control-label">&nbsp;</label>
+     <div class="col-md-7">
+      <input type="checkbox" name="connect_insecure" value="1"[#if CONNECT_INSECURE="1"#] checked[#endif#]>
+      <#LANG_CONNECT_DISABLE_SECURE_CONNECTION#>
+     </div>
+    </div>
+
+    <div class="form-actions">
+     <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
+     <input type="hidden" name="view_mode" value="update_settings">
+     <input type="hidden" name="mode" value="update">
+    </div>
+   </fieldset>
+  </form>
+
  </div>
-</div>
+ <div class="col-md-6">
+  [#if CONNECT_USERNAME!=""#]
+  <h4><#LANG_SEND#></h4>
+  [#if UPLOADED="1"#]
 
-<div class="form-group">
- <div class="controls">
- <label>
- <input type="checkbox" name="connect_backup" value="1"[#if CONNECT_BACKUP="1"#] checked[#endif#]> 
- Enable cloud backup <a href="http://smartliving.ru/Main/CloudBackup" target=_blank>(?)</a></label>
- </div>
-</div>
+  <p>
+   [#if RESULT="OK"#]
+  <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+  [#else RESULT#]
+  <div class="alert alert-error">Error[#if RESULT!=""#]: [#RESULT#][#endif#]</div>
+  [#endif RESULT#]
+  </p>
+
+  [#endif UPLOADED#]
+
+  <div>
+   <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+    <fieldset>
+     <div class="form-group">
+        <input type="checkbox" name="send_menu" value="1"[#if SEND_MENU="1"#] checked[#endif#]>
+        <#LANG_MODULE_CONTROL_MENU#>
+     </div>
+
+     <div class="form-group">
+
+        <input type="checkbox" name="send_classes" value="1"[#if SEND_CLASSES="1"#] checked[#endif#]>
+        Classes
+
+     </div>
+
+     <div class="form-group">
+             <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]>
+        <#LANG_OBJECTS#>
+          </div>
+
+     <div class="form-group">
+        <input type="checkbox" name="send_scripts" value="1"[#if SEND_SCRIPTS="1"#] checked[#endif#]>
+        <#LANG_MODULE_SCRIPTS#>
+     </div>
+
+     <div class="form-group">
+        <input type="checkbox" name="send_patterns" value="1"[#if SEND_PATTERNS="1"#] checked[#endif#]>
+        <#LANG_MODULE_PATTERNS#>
+     </div>
 
 
-
-<div class="form-actions">
-<button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
-<input type="hidden" name="view_mode" value="update_settings">
-<input type="hidden" name="mode" value="update">
-</div>
-</fieldset>
-</form>
-</div>
-
-
-[#if CONNECT_USERNAME!=""#]
-[#if UPLOADED="1"#]
-
-<p>
-[#if RESULT="OK"#]
-<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#else RESULT#]
-<div class="alert alert-error">Error[#if RESULT!=""#]: [#RESULT#][#endif#]</div>
-[#endif RESULT#]
-</p>
-
-[#endif UPLOADED#]
-&nbsp;
-<div>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
-<fieldset>
-
-<div>
-Please select items to be sent:
-</div>
-
-<div class="form-group">
- <div class="controls">
- <label>
- <input type="checkbox" name="send_menu" value="1"[#if SEND_MENU="1"#] checked[#endif#]> 
- <#LANG_MODULE_CONTROL_MENU#></label>
- </div>
-</div>
-
- <div class="form-group">
-  <div class="controls">
-   <label>
-    <input type="checkbox" name="send_classes" value="1"[#if SEND_CLASSES="1"#] checked[#endif#]>
-    Classes</label>
+     <div class="form-goup">
+      <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_CONNECT_PUBLISH_DATA#></button>
+      <input type="hidden" name="view_mode" value="send_data">
+      <input type="hidden" name="mode" value="update">
+     </div>
+    </fieldset>
+   </form>
   </div>
- </div>
 
-<div class="form-group">
- <div class="controls">
- <label>
- <input type="checkbox" name="send_objects" value="1"[#if SEND_OBJECTS="1"#] checked[#endif#]> 
- <#LANG_OBJECTS#></label>
- </div>
-</div>
+  [#if CONNECT_BACKUP="1"#]
+  &nbsp;
+  <h3><#LANG_CONNECT_CLOUD_BACKUP#></h3>
+  <div>
+   <a href="https://connect.smartliving.ru/members/backup.html" target="_blank"><#LANG_CONNECT_MANAGE_BACKUPS#></a>
+  </div>
+  &nbsp;
+  <div>
+  <a href="?mode=sendbackup" class="btn btn-default"><#LANG_CONNECT_BACKUP_NOW#></a>
+  </div>
+  [#endif#]
 
-<div class="form-group">
- <div class="controls">
- <label>
- <input type="checkbox" name="send_scripts" value="1"[#if SEND_SCRIPTS="1"#] checked[#endif#]> 
- <#LANG_MODULE_SCRIPTS#></label>
- </div>
-</div>
+  [#endif#]
 
-<div class="form-group">
- <div class="controls">
- <label>
- <input type="checkbox" name="send_patterns" value="1"[#if SEND_PATTERNS="1"#] checked[#endif#]> 
- <#LANG_MODULE_PATTERNS#></label>
  </div>
 </div>
 
 
-<div class="form-actions">
-<button type="submit" name="subm" value="Submit" class="btn btn-primary">Send to CONNECT</button>
-<input type="hidden" name="view_mode" value="send_data">
-<input type="hidden" name="mode" value="update">
-</div>
-</fieldset>
-</form>
-</div>
-[#endif#]
 
 [#endif TAB#]
 

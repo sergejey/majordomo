@@ -121,7 +121,7 @@
 
   outHash($rec, $out);
 
-  $terminals_list=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
+  $terminals_list = getAllTerminals(-1, 'TITLE');
   $terminals_list[]=array('ID'=>'0', 'TITLE'=>'<i>Unknown</i>');
   $tmp=explode(',', $rec['TERMINALS']);
   $total=count($terminals_list);

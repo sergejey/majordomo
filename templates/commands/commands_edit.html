@@ -181,8 +181,13 @@ Action URL:
 <div class="form-group">
         <label class="control-label"><#LANG_DATA#>:<#LANG_HCB#>menu_data<#LANG_HCE#>[#if TYPE=="switch"#]<br/>(<#LANG_OPTIONAL#>)[#endif TYPE#]</label>
         <div class="col-lg-5">
+            [#if DATA=""#]<a href="#" id="data_set_link" onclick="$('#data_text').show();$('#data_set_link').hide();return false;"><#LANG_SET#></a>[#endif#]
+            <div id="data_text" [#if DATA=""#] style="display:none"[#endif#]>
                 <textarea name="data" id="data" cols="50" rows="[#if TYPE=="switch"#]2[#else#]10[#endif#]"  class="form-control">[#DATA#]</textarea>
+                [#if DATA!=""#]
                 [#module name="blockly_code" code_field="data" action="" type="html"#]
+                [#endif DATA#]
+            </div>
         </div>
 </div>
 
@@ -250,6 +255,14 @@ Action URL:
     </div>
 </div>
 
+    <div class="form-group">
+        <label class="control-label"><#LANG_READ_ONLY#>:<#LANG_HCB#>menu_readonly<#LANG_HCE#></label>
+        <div class="col-lg-5">
+            <label><input type="radio" name="read_only" value="1"[#if READ_ONLY="1"#] checked[#endif#]> <#LANG_YES#></label>
+            <label><input type="radio" name="read_only" value="0"[#if READ_ONLY!="1"#] checked[#endif#]> <#LANG_NO#></label>
+        </div>
+    </div>
+
 <div class="form-group">
         <label class="control-label"><#LANG_SMART_REPEAT#>:<#LANG_HCB#>menu_smartrepeat<#LANG_HCE#></label>
         <div class="col-lg-5">
@@ -298,19 +311,13 @@ Action URL:
 <div class="form-group">
         <label class="control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>onchange_code<#LANG_HCE#> [#ERRORS#]</label>
         <div class="col-lg-5">
-<!--#
-                <textarea name="code" id="code" rows="5" cols="50" class="form-control">[#CODE#]</textarea>
-#-->
-
- [#module name="blockly_code" system_name="command<#ID#>" code_field="code" action=""#]
- <div id="code_area">
+            [#module name="blockly_code" system_name="command<#ID#>" code_field="code" action=""#]
+  <div id="code_area">
   <textarea name="code" id="code" rows=20 cols=100 class="form-control">[#CODE#]</textarea>
  </div>
 
         </div>
 </div>
-
-
 [#endif TYPE#]
 
 [#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="onchange_method"#]

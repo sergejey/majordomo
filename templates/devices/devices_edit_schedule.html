@@ -1,0 +1,81 @@
+[#if POINTS#]
+<table class="table">
+    <thead>
+    <tr>
+        <th><#LANG_RUN_TIME#></th>
+        <th><#LANG_RUN_WEEKDAYS#></th>
+        <th><#LANG_ACTION#></th>
+        <th><#LANG_EXECUTED#></th>
+        <th>&nbsp;</th>
+    </tr>
+    </thead>
+    [#begin POINTS#]
+    <tr>
+        <td>[#SET_TIME#]</td>
+        <td>[#SET_DAYS#]</td>
+        <td>[#LINKED_METHOD#]</td>
+        <td>[#LATEST_RUN#]</td>
+        <td>
+            <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&point_id=[#ID#]" class="btn btn-default btn-sm"><#LANG_EDIT#></a>
+            <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&delete_id=[#ID#]" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');" class="btn btn-default btn-sm"><#LANG_DELETE#></a>
+        </td>
+
+    </tr>
+    [#end POINTS#]
+</table>
+<hr/>
+[#endif POINTS#]
+
+<form class="form form-horizontal" method="post">
+    <div class="form-group[#if ERR_METHOD#] has-error[#endif#]">
+        <label for="linked_method" class="control-label col-sm-2"><#LANG_ACTION#>:</label>
+        <div class="col-sm-4">
+            <select name="linked_method" id="linked_method" class="form-control">
+                [#begin SHOW_METHODS#]
+                <option[#if NAME="<#POINT_LINKED_METHOD#>"#] selected[#endif#] value="[#NAME#]">[#DESCRIPTION#]</option>
+                [#end SHOW_METHODS#]
+            </select>
+        </div>
+    </div>
+    <div class="form-group[#if ERR_SET_TIME#] has-error[#endif#]">
+        <label for="set_time" class="control-label col-sm-2"><#LANG_RUN_TIME#>:</label>
+        <div class="col-sm-4">
+            <select name="hour">
+                [#begin HOURS#]
+                <option[#if VALUE="<#HOUR#>"#] selected[#endif#]>[#VALUE#]</option>
+                [#end HOURS#]
+            </select>
+            :
+            <select name="minute">
+                [#begin MINUTES#]
+                <option[#if VALUE="<#MINUTE#>"#] selected[#endif#]>[#VALUE#]</option>
+                [#end MINUTES#]
+            </select>
+        </div>
+    </div>
+    <div class="form-group[#if ERR_SET_DAYS#] has-error[#endif#]">
+        <label for="set_days" class="control-label col-sm-2"><#LANG_RUN_WEEKDAYS#>:</label>
+        <div class="col-sm-4">
+            [#begin DAYS#]
+            <div><input type="checkbox" name="set_days[]" value="[#VALUE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</div>
+            [#end DAYS#]
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">&nbsp;</label>
+        <div class="col-sm-4">
+            [#if POINT_ID!=""#]
+            <input type="submit" class="btn btn-default" value="<#LANG_SUBMIT#>">
+            [#else POINT_ID#]
+            <input type="submit" class="btn btn-default" value="<#LANG_ADD#>">
+            [#endif POINT_ID#]
+            <a href="?" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
+        </div>
+    </div>
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="mode" value="update">
+    <input type="hidden" name="point_id" value="[#if POINT_ID!=""#][#POINT_ID#][#else#]new[#endif#]">
+</form>
+

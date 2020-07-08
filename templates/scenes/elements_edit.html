@@ -66,7 +66,7 @@
 
    var easy_config=$('input:radio[name=easy_config]:checked').val();
 
-   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem' || new_type=='object') {
+   if (new_type=='switch' || new_type=='informer' || new_type=='warning' || new_type=='menuitem' || new_type=='object' || new_type=='device') {
     $('#advanced_config_block').show();
     if (easy_config==1) {
      $('.advanced_options').hide();
@@ -84,6 +84,13 @@
    } else {
     $('#linked_object_field').hide();
    }
+
+     if (new_type=='device') {
+         $('#device_field').show();
+     } else {
+         $('#device_field').hide();
+     }
+
 
    if (easy_config==1 && (new_type=='informer' || new_type=='warning')) {
     $('#linked_property_field').show();
@@ -120,6 +127,7 @@
         [#if ELEMENT_ID=""#]
                 <select class="form-control" name="type" required  onChange="element_type_switched();">
                         <option value="" disabled selected>select
+                        <option value="device"[#if ELEMENT_TYPE=="device"#] selected[#endif#]><#LANG_DEVICE#>
                         <option value="switch"[#if ELEMENT_TYPE=="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
                         <option value="informer"[#if ELEMENT_TYPE=="informer"#] selected[#endif#]><#LANG_INFORMER#>
                         <option value="warning"[#if ELEMENT_TYPE=="warning"#] selected[#endif#]><#LANG_WARNING#>
@@ -135,6 +143,7 @@
                         <option value="object"[#if ELEMENT_TYPE=="object"#] selected[#endif#]><#LANG_OBJECT#>
                 </select>
         [#else ELEMENT_ID#]
+        [#if ELEMENT_TYPE=="device"#]<#LANG_DEVICE#>[#endif#]
         [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
         [#if ELEMENT_TYPE=="html"#]HTML[#endif#]
         [#if ELEMENT_TYPE=="container"#]<#LANG_CONTAINER#>[#endif#]
@@ -153,6 +162,31 @@
         </div>
 </div>
 
+
+    <div id="device_field" [#if ELEMENT_TYPE!="device"#]style="display:none"[#endif ELEMENT_TYPE#]>
+    <div class="form-group">
+        <label class="col-lg-4 control-label"><#LANG_DEVICE#></label>
+        <div class="controls">
+            <select name="device_id" class="form-control">
+                <option value="0"></option>
+                [#begin DEVICES#]
+                <option value="[#ID#]"[#if ID="<#ELEMENT_DEVICE_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+                [#end DEVICES#]
+            </select>
+        </div>
+    </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label"><#LANG_CLASS_TEMPLATE#></label>
+            <div class="controls">
+                <select name="class_template" class="form-control">
+                    <option value="">Normal</option>
+                    <option value="mini"[#if "<#ELEMENT_CLASS_TEMPLATE#>"=="mini"#] selected[#endif#]>Mini</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
 <div class="form-group" id='advanced_config_block' style="display:none">
         <label class="col-lg-4 control-label"><#LANG_ADVANCED_CONFIG#><#LANG_HCB#>element_advanced_config<#LANG_HCE#></label>
         <div class="controls">
@@ -164,7 +198,6 @@
 [#endif ELEMENT_TYPE#]
 
 
-[#if ELEMENT_ID="" || ELEMENT_EASY_CONFIG="1"#]
 <div class="form-group" id="linked_object_field" style="display:none">
         <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
         <div class="controls">
@@ -224,6 +257,7 @@
 <!--#
 [#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="navgo" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
 #-->
+[#if ELEMENT_TYPE!="device"#]
 [#if STYLES || COMMON_STYLES#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_STYLE#><#LANG_HCB#>elemen_style<#LANG_HCE#></label>
@@ -254,6 +288,9 @@
 [#else STYLES#]
 <input type="hidden" name="css_style" value='default'>
 [#endif STYLES#]
+[#else ELEMET_TYPE#]
+<input type="hidden" name="css_style" value='default'>
+[#endif ELEMENT_TYPE#]
 
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_APPEAR_ANIMATION#><#LANG_HCB#>appear_animation<#LANG_HCE#></label>
@@ -368,15 +405,9 @@
                 <input type="text" name="s3d_scene" class="form-control" id="s3d_scene" value="[#ELEMENT_S3D_SCENE#]" onclick="openFileBrowser('s3d_scene');" size="40">
         </div>
 </div>
-<script type="text/javascript">
-     function openFileBrowser(id){
-          fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;
-          window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
-     }
-</script>
-[#endif#]
+[#endif ELEMENT_TYPE#]
 
-[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d") || (ELEMENT_TYPE=="menuitem")#]
+[#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d") || (ELEMENT_TYPE=="menuitem") || (ELEMENT_TYPE=="device")#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#><#LANG_HCB#>element_usebackgound<#LANG_HCE#></label>
         <div class="controls">
@@ -409,7 +440,7 @@
 </div>
 [#endif ELEMENT_TYPE#]
 
-[#if (ELEMENT_TYPE!="container") && (ELEMENT_TYPE!="s3d")#]
+[#if (ELEMENT_TYPE!="container") && (ELEMENT_TYPE!="s3d") && (ELEMENT_TYPE!="device")#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_SMART_REPEAT#><#LANG_HCB#>element_smartrepeat<#LANG_HCE#></label>
         <div class="controls">
@@ -419,6 +450,7 @@
         </div>
 </div>
 [#endif ELEMENT_TYPE#]
+</div>
 
 [#if ELEMENT_ID!=""#]
 <div class="form-group">
@@ -427,15 +459,17 @@
                 <a href="?(panel:{action=security_rules})&object_type=scene_elements&object_id=<#ELEMENT_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>
 </div>
-[#endif ID#]
+[#endif ELEMENT_ID#]
 
 
-[#if ELEMENT_ID!="" && ELEMENT_TYPE!="container"#]
 
+[#if ELEMENT_ID!=""#]
+
+[#if ELEMENT_TYPE!="container" && ELEMENT_TYPE!="device"#]
 <h3><#LANG_STATES#></h3><#LANG_HCB#>element_states<#LANG_HCE#>
 <ul>
 [#begin STATES#]
-<li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#TITLE#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>
+<li><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if ID="<#STATE_ID#>"#]<b>[#endif#][#if TITLE=""#]Default[#else#][#TITLE#][#endif#][#if ID="<#STATE_ID#>"#]</b>[#endif#]</a></li>
 [#end STATES#]
 </ul>
 
@@ -446,6 +480,7 @@
 <a class="btn btn-default" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_clone=1&state_id=[#STATE_ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
 <br><br>
 [#endif STATE_ID#]
+
 
 <div class="form-group">
         <label class="col-lg-4 control-label">State <#LANG_TITLE#><#LANG_HCB#>title<#LANG_HCE#></label>
@@ -461,10 +496,11 @@
                 <label class="checkbox"><input  type="checkbox" name="state_delete" value="1"> <#LANG_DELETE#></label>
         </div>
 </div>
-[#endif#]
+[#endif STATE_ID#]
+[#endif ELEMENT_TYPE#]
 
 
-[#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container" && "<#ELEMENT_TYPE#>"!="s3d"#]
+[#if "<#ELEMENT_TYPE#>"!="img" && "<#ELEMENT_TYPE#>"!="container" && "<#ELEMENT_TYPE#>"!="s3d" && "<#ELEMENT_TYPE#>"!="device"#]
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_CODE#><#LANG_HCB#>element_code<#LANG_HCE#></label>
         <div class="controls">
@@ -473,7 +509,7 @@
                  <br>(CSS class: <i>type_<#ELEMENT_TYPE#> style_<#ELEMENT_CSS_STYLE#> state_[#STATE_TITLE#] element_<#ELEMENT_ID#></i>, CSS id: <i>state_[#STATE_ID#]</i>)
         </div>
 </div>
-[#endif#]
+[#endif ELEMENT_TYPE#]
 
 [#if "<#ELEMENT_TYPE#>"=="img"#]
 <div class="form-group">
@@ -487,14 +523,9 @@
                 </p>
         </div>
 </div>
-<script type="text/javascript">
-     function openFileBrowser(id){
-          fileBrowserlink = "<#ROOTHTML#>pdw/index.php?editor=standalone&returnID=" + id;
-          window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
-     }
-</script>
-[#endif#]
+[#endif ELEMENT_TYPE#]
 
+[#if ELEMENT_TYPE!="container" && ELEMENT_TYPE!="device"#]
 <script language="javascript">
  function do_on_click_change(val) {
   $('.click_fields').hide();
@@ -518,6 +549,7 @@
                 </select>
         </div>
 </div>
+
 
 <div class="form-group click_fields"[#if STATE_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
         <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
@@ -593,6 +625,8 @@
         </div>
 </div>
 [#module name="linkedobject" object_field="action_object_new" method_field="action_method_new"#]
+
+[#endif ELEMENT_TYPE#]
 
 <div class="form-group">
         <label class="col-lg-4 control-label"><#LANG_DISPLAY_CONDITION#><#LANG_HCB#>element_condition<#LANG_HCE#></label>
@@ -716,7 +750,7 @@
         [#endif#]
         </div>
 </div>
-[#endif#]
+[#endif ELEMENT_TYPE#]
 
 <div class="form-group click_fields" id='element_priority_field'>
         <label class="col-lg-4 control-label"><#LANG_PRIORITY#><#LANG_HCB#>priority<#LANG_HCE#></label>
@@ -727,11 +761,9 @@
 
 
 <input type="hidden" name="state_id" value="[#STATE_ID#]">
-</div>
+
 [#module name="linkedobject" object_field="linked_object_new" property_field="linked_property_new"#]
 [#endif ID#]
-</div>
-
 
 <div class="form-actions">
  [#if ID!=""#]
@@ -741,8 +773,7 @@
  [#endif ID#]
 
  <a class="btn btn-default" href="?tab=elements&id=<#ID#>&view_mode=edit_scenes"><#LANG_CANCEL#></a>
-
- [#if ID!=""#]
+ [#if ELEMENT_ID!=""#]
  <a class="btn btn-default" href="?tab=elements&id=<#ID#>&view_mode=<#VIEW_MODE#>&edit_mode=<#EDIT_MODE#>&view_mode2=clone_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
  <a class="btn btn-default" href="?view_mode=edit_scenes&id=<#ID#>&tab=<#TAB#>&view_mode2=delete_elements&element_id=<#ELEMENT_ID#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
  [#endif ID#]

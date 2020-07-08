@@ -18,7 +18,7 @@ class classes extends module {
 *
 * @access private
 */
-function classes() {
+function __construct() {
   $this->name="classes";
   $this->title="<#LANG_MODULE_OBJECTS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -142,7 +142,11 @@ function admin(&$out) {
   }
 
   if ($this->view_mode=='import_classes') {
-   $this->import_classes($out);
+   global $file;
+   global $overwrite;
+   global $only_classes;
+   $this->import_classes($file,$overwrite,$only_classes);
+   $this->redirect("?");
   }
 
   if ($this->view_mode=='edit_classes') {
@@ -203,10 +207,7 @@ function admin(&$out) {
 *
 * @access public
 */
- function import_classes(&$out) {
-  global $file;
-  global $overwrite;
-  global $only_classes;
+ function import_classes($file,$overwrite=0,$only_classes=0) {
 
   $data=LoadFile($file);
   $records=unserialize($data);
@@ -214,7 +215,7 @@ function admin(&$out) {
   if (is_array($records)) {
    $total=count($records);
    for($i=0;$i<$total;$i++) {
-    $old_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".DBSafe($records[$i]['TITLE'])."'");
+    $old_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE = '".DBSafe($records[$i]['TITLE'])."'");
     $total_o=0;
     if ($old_class['ID']) {
      $old_objects=SQLSelect("SELECT * FROM objects WHERE CLASS_ID='".$old_class['ID']."'");
@@ -224,8 +225,9 @@ function admin(&$out) {
       SQLUpdate('objects', $old_objects[$io]);
      }
      if ($overwrite) {
-      $this->delete_classes($old_class['ID']);
-      $records[$i]['ID']=$old_class['ID'];
+      if (!$this->delete_classes($old_class['ID'])) {
+       $records[$i]['ID']=$old_class['ID'];
+      }
      } else {
       $records[$i]['TITLE']=$records[$i]['TITLE'].rand(0, 500);
      }
@@ -236,8 +238,20 @@ function admin(&$out) {
     unset($records[$i]['METHODS']);
     $properties=$records[$i]['PROPERTIES'];
     unset($records[$i]['PROPERTIES']);
+    if ($records[$i]['PARENT_CLASS']) {
+     $parent_class=SQLSelectOne("SELECT ID FROM classes WHERE TITLE = '".DBSafe($records[$i]['PARENT_CLASS'])."'");
+     if ($parent_class['ID']) {
+      $records[$i]['PARENT_ID']=$parent_class['ID'];
+     }
+     unset($records[$i]['PARENT_CLASS']);
+    }
 
-    $records[$i]['ID']=SQLInsert('classes', $records[$i]);
+    if ($records[$i]['ID']) {
+     SQLUpdate('classes', $records[$i]);
+    } else {
+     $records[$i]['ID']=SQLInsert('classes', $records[$i]);
+    }
+
 
     if ($total_o) {
      for($io=0;$io<$total_o;$io++) {
@@ -303,7 +317,6 @@ function admin(&$out) {
   }
 
   $this->updateTree_classes();
-  $this->redirect("?");
 
  }
 
@@ -396,35 +409,21 @@ function admin(&$out) {
 
    $records[$i]['OBJECTS']=$objects;
    unset($records[$i]['ID']);
-   unset($records[$i]['PARENT_ID']);
+   if ($records[$i]['PARENT_ID']) {
+    $parent_class=SQLSelectOne("SELECT * FROM classes WHERE ID=".(int)$records[$i]['PARENT_ID']);
+    $records[$i]['PARENT_CLASS']=$parent_class['TITLE'];
+    unset($records[$i]['PARENT_ID']);
+   }
    unset($records[$i]['PARENT_LIST']);
    unset($records[$i]['SUB_LIST']);
   }
 
   $data=serialize($records);
-
-   $filename=urlencode($records[0]['TITLE']);
-
-   $ext = "txt";   // file extension
-   $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-   ? 'application/octetstream'
-   : 'application/octet-stream';
-   header('Content-Type: ' . $mime_type);
-   if (PMA_USR_BROWSER_AGENT == 'IE')
-   {
-      header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      print $data;
-   } else {
-      header('Content-Disposition: attachment; filename="' . $filename . '.' . $ext . '"');
-      header("Content-Transfer-Encoding: binary");
-      header('Expires: 0');
-      header('Pragma: no-cache');
-      print $data;
-   }
+  $filename=urlencode($records[0]['TITLE']).'.txt';
+  header('Content-Type: application/octet-stream');
+  header('Content-Disposition: attachment; filename="'.($filename).'"');
+  header('Expires: 0');
+  echo $data;
 
 
   exit;
@@ -547,7 +546,7 @@ function usual(&$out) {
   $rec=SQLSelectOne("SELECT * FROM classes WHERE ID='$id'");
   // some action for related tables
   if ($rec['SUB_LIST']!='' && $rec['SUB_LIST']!=$rec['ID'] && $rec['SUB_LIST']!='') {
-   return;
+   return 0;
   }
   SQLExec("DELETE FROM properties WHERE CLASS_ID='".$rec['ID']."' AND OBJECT_ID=0");
   SQLExec("DELETE FROM methods WHERE CLASS_ID='".$rec['ID']."' AND OBJECT_ID=0");
@@ -560,6 +559,7 @@ function usual(&$out) {
   }
   SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
   $this->updateTree_classes();
+  return 1;
  }
 /**
 * classes build tree
@@ -638,7 +638,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS classes');
+   SQLDropTable('classes');
   parent::uninstall();
  }
 /**

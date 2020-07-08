@@ -4,14 +4,18 @@
 <table class="table">
     [#begin LINKS#]
     <tr>
-        <td><b>[#TITLE#]</b></td>
+        <td>
+            <b><a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>">[#DEVICE1_TITLE#]</a></b>
+            &rarr;
+            <b><a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE2_ID#]&tab=<#TAB#>">[#TITLE#]</a></b>
+        </td>
         <td>
             [#if COMMENT!=""#][#COMMENT#]<br/>[#endif#]
             [#LINK_TYPE#] ([#LINK_SETTINGS#])
         </td>
         <td>
-            <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&edit_mode=edit_link&link_id=[#ID#]&link_name=[#LINK_TYPE#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-            <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&edit_mode=delete_link&link_id=[#ID#]" class="btn btn-default" onclick="return confirm('Are you sure?');"><i class="glyphicon glyphicon-remove"></i></a>
+            <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=edit_link&link_id=[#ID#]&link_name=[#LINK_TYPE#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=delete_link&link_id=[#ID#]" class="btn btn-default" onclick="return confirm('Are you sure?');"><i class="glyphicon glyphicon-remove"></i></a>
         </td>
     </tr>
     [#end LINKS#]
@@ -74,8 +78,8 @@
                 <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control">
                 [#endif#]
                 [#if PARAM_TYPE="color"#]
-                <script src='<#ROOTHTML#>js/spectrum/spectrum.min.js'></script>
-                <link rel='stylesheet' href='<#ROOTHTML#>js/spectrum/spectrum.min.css' />
+                <script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
+                <link rel='stylesheet' href='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.css' />
                 <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control" id="[#PARAM_NAME#]_value">
                 <script type="text/javascript">
                     $("#[#PARAM_NAME#]_value").spectrum({
@@ -100,6 +104,15 @@
             </div>
         </div>
         [#end LINK_DETAILS_PARAMS#]
+
+        [#if LINK_ID!=""#]
+        <div class="form-group">
+            <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
+            <div class="col-lg-5">
+                <a href="?(panel:{action=security_rules})&object_type=sdevice&object_id=<#LINK_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+            </div>
+        </div>
+        [#endif#]
 
         <div class="form-group">
             <label class="col-md-4 control-label">

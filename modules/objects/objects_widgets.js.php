@@ -1,8 +1,8 @@
 <?php
+header("Content-type:application/javascript");
 chdir(dirname(__FILE__) . '/../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 ?>
 
@@ -85,8 +85,8 @@ function requestObjectHTML(object_id,widgetElement) {
     freeboard.loadWidgetPlugin({
         // Same stuff here as with datasource plugin.
         "type_name"   : "objects_plugin",
-        "display_name": "Object",
-        "description" : "MajorDoMo objects",
+        "display_name": LANG_OBJECT,
+        "description" : "MajorDoMo "+LANG_SECTION_OBJECTS,
         "fill_size" : false,
         "settings"    : [
             {
@@ -110,7 +110,7 @@ function requestObjectHTML(object_id,widgetElement) {
             },
             {
                 "name"        : "size",
-                "display_name": "Size",
+                "display_name": LANG_SIZE,
                 "type"        : "option",
                 "options"     : [
                     {"name" : "1","value": "1"},
@@ -176,7 +176,3 @@ function requestObjectHTML(object_id,widgetElement) {
 
 
 }());
-
-<?php
-$db->Disconnect();
-?>

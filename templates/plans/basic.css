@@ -1,0 +1,96 @@
+@keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@keyframes fadeOut {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
+@keyframes fadeOut0 {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
+@keyframes fadeOut10 {
+    from { opacity:1; }
+    to { opacity:0.1; }
+}
+
+@keyframes fadeOut30 {
+    from { opacity:1; }
+    to { opacity:0.3; }
+}
+
+@keyframes fadeOut50 {
+    from { opacity:1; }
+    to { opacity:0.5; }
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+@-webkit-keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+.svg_content .blink_it {
+    animation: blink 1s linear infinite;
+}
+
+.svg_content .spin_it {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    -webkit-animation: rotation 2s infinite linear;
+}
+
+.svg_content .hide_it {
+    display:none;
+}
+
+.svg_content .show_it {
+    display:block;
+    opacity:0;
+    animation:fadeIn ease-in 1;
+    animation-fill-mode:forwards;
+    animation-duration:0.6s;
+}
+
+.svg_content .fadeout0 {
+    display:block;
+    opacity:1;
+    animation:fadeOut0 ease-in 1;
+    animation-fill-mode:forwards;
+    animation-duration:0.6s;
+}
+
+.svg_content .fadeout10 {
+    display:block;
+    opacity:1;
+    animation:fadeOut10 ease-in 1;
+    animation-fill-mode:forwards;
+    animation-duration:0.6s;
+}
+
+.svg_content .fadeout30 {
+    display:block;
+    opacity:1;
+    animation:fadeOut30 ease-in 1;
+    animation-fill-mode:forwards;
+    animation-duration:0.6s;
+}
+
+.svg_content .fadeout50 {
+    display:block;
+    opacity:1;
+    animation:fadeOut50 ease-in 1;
+    animation-fill-mode:forwards;
+    animation-duration:0.6s;
+}

@@ -2,6 +2,7 @@
 
 if ($this->edit_mode=='delete_link') {
     global $link_id;
+    SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='sdevice' AND OBJECT_ID=".(int)$link_id);
     SQLExec("DELETE FROM devices_linked WHERE ID=".(int)$link_id);
     $this->redirect("?id=".$rec['ID']."&tab=".$this->tab."&view_mode=".$this->view_mode);
 }
@@ -18,10 +19,12 @@ if ($this->edit_mode=='edit_link') {
         $out['LINK_ID']=$link_rec['ID'];
         $out['COMMENT']=$link_rec['COMMENT'];
         $settings=unserialize($link_rec['LINK_SETTINGS']);
+        if (is_array($link_details['PARAMS'])) {
         foreach($link_details['PARAMS'] as &$p) {
             if (isset($settings[$p['PARAM_NAME']])) {
                 $p['VALUE']=$settings[$p['PARAM_NAME']];
             }
+        }
         }
     }
 
@@ -62,9 +65,10 @@ if ($this->edit_mode=='edit_link') {
     }
     $target_classes=explode(',',$link_details['TARGET_CLASS']);
     $target_classes=array_map('trim',$target_classes);
+    $second_devices=array();
+
     $other_devices=SQLSelect("SELECT * FROM devices WHERE ID!=".(int)$rec['ID']." ORDER BY TITLE");
     $total = count($other_devices);
-    $second_devices=array();
     for ($i = 0; $i < $total; $i++) {
         $type_details=$this->getTypeDetails($other_devices[$i]['TYPE']);
         if (in_array($type_details['CLASS'],$target_classes) || in_array($type_details['PARENT_CLASS'],$target_classes)) {
@@ -76,10 +80,12 @@ if ($this->edit_mode=='edit_link') {
     //print_r($link_details);exit;
 }
 
-$links=SQLSelect("SELECT devices_linked.*, devices.TITLE FROM devices_linked LEFT JOIN devices ON devices.ID=DEVICE2_ID WHERE DEVICE1_ID=".(int)$rec['ID']." ORDER BY ID");
+$links=SQLSelect("SELECT devices_linked.*, devices.TITLE FROM devices_linked LEFT JOIN devices ON devices.ID=DEVICE2_ID WHERE (DEVICE1_ID=".(int)$rec['ID']." OR DEVICE2_ID=".(int)$rec['ID'].") ORDER BY ID");
 if ($links[0]['ID']) {
     $total = count($links);
     for ($i = 0; $i < $total; $i++) {
+        $device1=SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=".(int)$links[$i]['DEVICE1_ID']);
+        $links[$i]['DEVICE1_TITLE']=$device1['TITLE'];
         if ($links[$i]['LINK_SETTINGS']!='') {
             $settings=unserialize($links[$i]['LINK_SETTINGS']);
             $new_settings='';

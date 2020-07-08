@@ -133,9 +133,9 @@ class parser
     */
    public function smarty_parse($template_file, &$data)
    {
-      define(SMARTY_DIR,ROOT . 'smarty/');
+      define('SMARTY_DIR',ROOT . 'lib/smarty/');
       
-      require(SMARTY_DIR . 'Smarty.class.php');
+      require_once(SMARTY_DIR . 'Smarty.class.php');
 
       $smarty = new Smarty;
       
@@ -150,7 +150,7 @@ class parser
 
       foreach ($data as $k => $v)
       {
-         $smarty->assign_by_ref($k, $data[$k]);
+         $smarty->assign($k, $data[$k]);
       }
 
       if (is_object($this->owner))

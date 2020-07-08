@@ -1,0 +1,8 @@
+<div class="device-widget mini sensor %.alive|"offline;online"%"
+onclick="var url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.value&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false}});return false;"
+title="%.object_description%">
+<div class="device-icon humidity"></div>
+<div class="device-header">%.value%%
+    <span style="%.direction|"-1=color:blue;1=color:red;"%">%.direction|"-1=&#9660;1=&#9650;0=&#8801"%</span>
+</div>
+</div>

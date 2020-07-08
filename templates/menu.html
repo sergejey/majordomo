@@ -2,17 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
-<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/custom-scripting.js"></script>               
-<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.jplayer.min.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-<title><#LANG_CONTROL_MENU#></title>
-<script language="javascript" src="<#ROOTHTML#>js/scripts.js"></script>
+ <title><#LANG_CONTROL_MENU#></title>
+
+ [#inc common_header.html#]
+ <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+ <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+ <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
+
+ <script type="text/javascript" src="<#ROOTHTML#>js/jquery.jplayer.min.js"></script>
+ <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/jquerymobile/jquery.mobile-1.4.5.min.css" />
+ <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquerymobile/jquery.mobile-1.4.5.min.js"></script>
+ <script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquerymobile/custom-scripting.js"></script>
+ <link href="<#ROOTHTML#>css/menu_custom.css" rel="stylesheet" type="text/css"/>
+
 
 [#inc websockets.html#]
 </head>
@@ -21,7 +23,7 @@
  .ui-field-contain {border-bottom:none}
 </style>
 [#endif#]
-<body[#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#]>
+<body[#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#][#if "<#SETTINGS_THEME#>"=="dark"#] style="background-color:#252525"[#endif#]>
 <div data-role="page" id="mainPage" [#if "<#SETTINGS_THEME#>"=="dark"#] data-theme="b"[#endif#][#if FROM_SCENE="1"#] style="background:none transparent;"[#endif#]>
         [#module name="commands" action="" pda="1"#]
 </div>

@@ -18,7 +18,7 @@ class settings extends module {
 *
 * @access private
 */
- function settings() {
+ function __construct() {
   $this->name="settings";
   $this->title="<#LANG_MODULE_SETTINGS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
@@ -118,6 +118,8 @@ class settings extends module {
  function admin(&$out) {
  global $updated;
 
+
+
  if ($updated) {
   $out['UPDATED']=1;
  }
@@ -168,7 +170,7 @@ class settings extends module {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS settings');
+   SQLDropTable('settings');
   parent::uninstall();
  }
 /**
@@ -190,7 +192,7 @@ $data = <<<EOD
  settings: TYPE varchar(59) NOT NULL DEFAULT ''          // Setting value type
  settings: NOTES text NOT NULL DEFAULT ''                // Setting Notes / Description
  settings: DATA text NOT NULL DEFAULT ''                 // Additional data
- settings: VALUE varchar(255) NOT NULL DEFAULT ''        // Setting Value
+ settings: VALUE text NOT NULL DEFAULT ''                // Setting Value
  settings: DEFAULTVALUE varchar(255) NOT NULL DEFAULT '' // Setting Default Value
  settings: URL varchar(255) NOT NULL DEFAULT ''          // URL for more details
  settings: URL_TITLE varchar(255) NOT NULL DEFAULT ''    // URL description
@@ -198,6 +200,18 @@ $data = <<<EOD
 EOD;
 
 parent::dbInstall($data);
+
+  SQLExec("ALTER TABLE `settings` CHANGE `VALUE` `VALUE` text");
+
+  $to_remove = array('BLUETOOTH_CYCLE','SKYPE_CYCLE','TWITTER_CKEY','TWITTER_CSECRET','TWITTER_ATOKEN','TWITTER_ASECRET','TTS_ENGINE','PUSHOVER_USER_KEY',
+      'PUSHOVER_LEVEL','GROWL_ENABLE','GROWL_HOST','GROWL_PASSWORD','GROWL_LEVEL','PUSHBULLET_KEY','PUSHBULLET_LEVEL','PUSHBULLET_DEVICE_ID',
+      'PUSHBULLET_PREFIX','YANDEX_TTS_KEY','TTS_GOOGLE','LOGGER_DESTINATION','SITE_DOMAIN','DEBUG_HISTORY','SITE_EMAIL');
+  $total = count($to_remove);
+  for($i=0;$i<$total;$i++) {
+   $to_remove[$i]="'".$to_remove[$i]."'";
+  }
+  SQLExec("DELETE FROM settings WHERE `NAME` IN (".implode(',',$to_remove).")");
+
  }
 // --------------------------------------------------------------------
 }

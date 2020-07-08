@@ -5,7 +5,12 @@
 
   global $parent_id;
   $out['PARENT_ID']=$parent_id;
-
+  
+  if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+	}
 
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
@@ -27,14 +32,25 @@
   //updating 'SCRIPT_ID' (int)
 
    global $script;
-   $rec['SCRIPT']=trim($script);
+
+   $old_code=$rec['SCRIPT'];
+   $rec['SCRIPT'] = trim($script);
+   
    if ($rec['SCRIPT']!='') {
-    $errors=php_syntax_error($rec['SCRIPT']);
-    if ($errors) {
-     $out['ERR_SCRIPT']=1;
-     $out['ERRORS_SCRIPT']=nl2br($errors);
-     $ok=0;
-    }
+	   $errors = php_syntax_error($rec['SCRIPT']);
+		
+        if ($errors) {
+            $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+            $out['ERR_CODE'] = 1;
+			$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+			$errorStr = explode('Errors parsing', $errorStr[1]);
+			$errorStr = explode(' in ', $errorStr[0]);
+			//var_dump($errorStr);
+            $out['ERRORS'] = $errorStr[0];
+			$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+			$out['ERR_OLD_CODE'] = $old_code;
+            $ok = 0;
+        }
    }
 
 

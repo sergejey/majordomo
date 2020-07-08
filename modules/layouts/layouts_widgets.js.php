@@ -1,8 +1,8 @@
 <?php
+header("Content-type:application/javascript");
 chdir(dirname(__FILE__) . '/../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
-$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 include_once("./load_settings.php");
 ?>
     (function()
@@ -11,7 +11,7 @@ include_once("./load_settings.php");
         freeboard.loadWidgetPlugin({
             // Same stuff here as with datasource plugin.
             "type_name"   : "clock_plugin",
-            "display_name": "Clock",
+            "display_name": LANG_CLOCK,
             "description" : "",
             "fill_size" : false,
             "settings"    : [
@@ -45,7 +45,7 @@ include_once("./load_settings.php");
 
 
 
-            var stateElement = $('<div><div class="clock"><div id="clock_date"></div><ul><li id="clock_hours"> </li><li id="point">:</li><li id="clock_min"> </li></ul></div></div>');
+            var stateElement = $('<div><div class="clock dark"><div id="clock_date"></div><ul><li id="clock_hours"> </li><li id="point">:</li><li id="clock_min"> </li></ul></div></div>');
             //<li id="point">:</li><li id="clock_sec"></li>
 
             self.render = function(element)
@@ -96,13 +96,13 @@ include_once("./load_settings.php");
 freeboard.loadWidgetPlugin({
                 // Same stuff here as with datasource plugin.
                 "type_name"   : "application_plugin",
-                "display_name": "Application",
-        "description" : "MajorDoMo application",
+                "display_name": LANG_APP,
+        "description" : "MajorDoMo "+LANG_SECTION_APPLICATIONS,
                 "fill_size" : true,
                 "settings"    : [
                         {
                                 "name"        : "app",
-                                "display_name": "Application",
+                                "display_name": LANG_APP,
                                 "type"        : "option",
                                 <?php
 
@@ -157,7 +157,7 @@ foreach($res as $k=>$v) {
 },
 {
 "name"        : "size",
-"display_name": "Size",
+"display_name": LANG_SIZE,
 "type"        : "option",
 "options"     : [
 {"name" : "1","value": "1"},
@@ -235,7 +235,7 @@ var myTextElement = $("<iframe style='margin-top:20px;height:"+newHeight+"px' sr
     },
     {
     "name"        : "size",
-    "display_name": "Size",
+    "display_name": LANG_SIZE,
     "type"        : "option",
     "options"     : [
     {
@@ -328,7 +328,3 @@ var myTextElement = $("<iframe style='margin-top:20px;height:"+newHeight+"px' sr
     }
 
     }());
-
-<?php
-$db->Disconnect();
-?>

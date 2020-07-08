@@ -26,13 +26,24 @@ class Threads
    public function closeThread($id) {
       $pstatus = proc_get_status($this->handles[$id]);
       $pid = $pstatus['pid'];
-      stripos(php_uname('s'), 'win')>-1  ? safe_exec("taskkill /F /T /PID $pid") : safe_exec("kill -9 $pid");
-      //proc_terminate($this->handles[$id]);
-      /*
-      fclose($this->pipes[$id][0]);
-      fclose($this->pipes[$id][1]);
-      proc_close($this->handles[$id]);
-      */
+      $cmd = $pstatus['command'];
+      DebMes("Closing thread $pid ($cmd)",'threads');
+      //if (!proc_terminate($this->handles[$id])) {
+         //DebMes("Cannot close process $pid ($cmd) with proc_terminate",'threads');
+         if (IsWindowsOS()) {
+            $exec_str="taskkill /F /T /PID $pid";
+         } else {
+            $exec_str="kill -9 $pid";
+         }
+         DebMes("Executing: ".$exec_str,'threads');
+         $output = array();
+         $result = exec($exec_str,$output);
+         DebMes("Result: ".implode("\n",$output),'threads');
+         /*
+      } else {
+         DebMes("Process $pid ($cmd) closed with proc_terminate",'threads');
+      }
+         */
    }
 
    /**
@@ -52,18 +63,27 @@ class Threads
 
       $params = addcslashes(serialize($params), '"');
 
-      //if (defined('LOG_CYCLES') && LOG_CYCLES=='1') {
-      $fileToWrite = DOC_ROOT . '/debmes/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
-      $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
-
+      if (defined('LOG_CYCLES') && LOG_CYCLES == '1') {
+         if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
+            $path = SETTINGS_SYSTEM_DEBMES_PATH;
+         } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
+            $path = LOG_DIRECTORY;
+         } else {
+            $path = ROOT . 'cms/debmes';
+         }
+         $fileToWrite = $path.'/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
+         $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
+      } else {
+         $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '"';
+         if (IsWindowsOS()) {
+            $command.=' > NUL';
+         } else {
+            $command.=' > /dev/null 2>&1';
+         }
+      }
       if (!IsWindowsOS()) {
        $command='exec '.$command;
       }
-
-      /*} else {
-      $command = $this->phpPath.' -q '.$filename.' --params "'.$params.'"';
-      }
-       */
       ++$this->lastId;
 
       echo date('H:i:s') . " Starting thread: " . $command . "\n";
@@ -149,7 +169,7 @@ class Threads
       //echo date('H:i:s')." Selecting streams"."\n";
       if (false === ($number_of_streams = stream_select($read, $write, $except, $this->timeout)))
       {
-         DebMes("No active streams");
+         DebMes("No active streams",'threads');
          return 0;
       }
 
@@ -196,7 +216,7 @@ class Threads
          {
             //feof($stream)
             echo date('H:i:s') . " Closing thread: " . $this->commandLines[$id] . "\n";
-            DebMes("Closing thread: " . $this->commandLines[$id]);
+            DebMes("Closing thread: " . $this->commandLines[$id],'threads');
             
             $result .= "THREAD CLOSED: [" . $this->commandLines[$id] . "]\n";
             

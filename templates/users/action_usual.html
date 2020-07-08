@@ -1,8 +1,14 @@
 <script language="javascript">
  function switchTo(username) {
-  window.parent.location='/?username='+username;
-  return false;
- }
+  $.ajax({                                      
+    url: ROOTHTML+'index.php',       
+    type: "POST",
+    data: { "username": username } 
+}).done(function( msg ) {
+    window.parent.location=ROOTHTML;
+  
+});
+}
 </script>
 <table width="100%" border="0" cellpadding="5">
  [#begin USERS#]

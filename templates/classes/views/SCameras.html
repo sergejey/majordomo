@@ -1,19 +1,19 @@
-<link rel='stylesheet' href='/css/devices.css' />
-<div class="camera-widget">
-<div>%.previewHTML%</div>
+<div class="camera-widget" id="camera%.object_title%">
+<div class="camera-preview-html">%.previewHTML%</div>
 <script type="text/javascript">
+
     function takeSnapshot%.object_title%() {
         callMethod('%.object_title%'+'.takeSnapshot');
         $('#%.object_title%_snap').html(' OK');
         return false;
     }
     function showHistory%.object_title%() {
-        var url="/pChart/?p=%.object_title%"+".snapshot&op=log";
-        $.fancybox.open({ href: url, type: 'iframe' });
+        var url="<#ROOTHTML#>pChart/?p=%.object_title%"+".snapshot&op=log";
+        parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false}});
         return false;
     }
     function showBigImage%.object_title%(url) {
-        $.fancybox.open({ href: url, type: 'iframe' });
+        parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false}});
         return false;
     }
 </script>

@@ -49,12 +49,17 @@
 [#begin RESULT#]
 <tr class="hover_btn2">
  <td>
+   [#if AVATAR!=""#]
+   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" border="0" height="30"></a>
+   [#else#]
+   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>img/icons/user.png" border="0" height="30"></a>
+   [#endif#] 
    [#USERNAME#]
  </td>
  <td
    >
   <b>
-   [#NAME#]
+   [#NAME#][#if COLOR!=""#] <span class="badge" style="background-color:[#COLOR#];"> </span>[#endif#] 
   </a></b>
  </td>
  <td

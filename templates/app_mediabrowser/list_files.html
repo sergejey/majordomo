@@ -6,19 +6,19 @@
 <tr>
 
  <td class=plain>
- <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play" align="abs_middle"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
+ <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play" align="abs_middle" onclick="return playMediaNow(this.href);"><img src="<#ROOTHTML#>img/btn/btn_play.png" border="0"></a>
  <!--#
  <nobr><a href="[#PATH#]" title="[#TITLE#]"></b></a>
  #-->
- <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play" class="btn">[#TITLE_SHORT#]</a>
+ <a href="?folder=<#CURRENT_DIR_HTML#>&file=[#PATH#]&collection_id=<#COLLECTION_ID#>&mode=play" class="btn" onclick="return playMediaNow(this.href);">[#TITLE_SHORT#]</a>
  </td>
 
  <!--#
  <td class=plain width=1% valign=top bgcolor="#EEEEEE">
-  <a href="javascript:describeIt('[#TITLE#]', '[#DESCR#]')" align=center><img src="<#ROOTHTML#>img/notes.gif" alt="Описать" border=0></a>
+  <a href="javascript:describeIt('[#TITLE#]', '[#DESCR#]')" align=center><img src="<#ROOTHTML#>img/notes.gif" alt="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" border=0></a>
  </td>
  <td class=plain width=1% valign=top bgcolor="#EEEEEE">
-  <a href="file:<#SHARE#><#CURRENT_DIR#>[#TITLE#]"><img src="<#ROOTHTML#>img/explore.gif" alt="Перейти" border=0></a>
+  <a href="file:<#SHARE#><#CURRENT_DIR#>[#TITLE#]"><img src="<#ROOTHTML#>img/explore.gif" alt="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" border=0></a>
  </td>
  <td class=plain width=10% valign=top bgcolor="#EEEEEE">
  <nobr>[#SIZE#]

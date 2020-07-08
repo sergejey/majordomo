@@ -19,7 +19,7 @@ class system_errors extends module {
 *
 * @access private
 */
-function system_errors() {
+function __construct() {
   $this->name="system_errors";
   $this->title="<#LANG_MODULE_SYSTEM_ERRORS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -268,8 +268,8 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS system_errors');
-  SQLExec('DROP TABLE IF EXISTS system_errors_data');
+   SQLDropTable('system_errors');
+   SQLDropTable('system_errors_data');
   parent::uninstall();
  }
 /**

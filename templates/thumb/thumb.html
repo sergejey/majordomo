@@ -2,10 +2,11 @@
  @version 0.1 (auto-set)
 #-->
 [#if SRC!=""#]
+
 [#if ENLARGE!="1"#]
-<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&live=[#LIVE#]&username=[#USERNAME#]&password=[#PASSWORD#]&transport=[#TRANSPORT#]">
+<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&live=[#LIVE#]&username=[#USERNAME#]&password=[#PASSWORD#]&transport=[#TRANSPORT#]" id="imgelem[#UNIQ#]">
 [#else#]
-<script language="javascript">
+<script type="text/javascript">
  function enlarge[#UNIQ#]() {
   [#if REAL_WIDTH!="" && REAL_HEIGHT!=""#]
    wdth=[#REAL_WIDTH#];
@@ -21,8 +22,72 @@
   wnd=window.open("<#ROOTHTML#>modules/thumb/enlarge.php?img=[#SRC_REAL#]&color=[#COLOR#]&close=[#CLOSE#]&bgcolor=[#BGCOLOR#]", "img[#UNIQ#]", settings);
  }
 </script>
-<a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&username=[#USERNAME#]&password=[#PASSWORD#]&live=[#LIVE#]&transport=[#TRANSPORT#]" border=0></a>
+<a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&username=[#USERNAME#]&password=[#PASSWORD#]&live=[#LIVE#]&transport=[#TRANSPORT#]" id="imgelem[#UNIQ#]" border=0></a>
 [#endif#]
+
+[#if SLIDESHOW="1"#]
+<script type="text/javascript">
+ var imageOrig[#UNIQ#] = document.getElementById("imgelem[#UNIQ#]");
+ var imageOrig[#UNIQ#]URL = imageOrig[#UNIQ#].src;
+ var imgNew[#UNIQ#] = new Image();
+
+ function checkImageOnScreen[#UNIQ#]() {
+
+  var elem=$('#imgelem[#UNIQ#]');
+
+  var height = elem.outerHeight();
+  var width = elem.outerWidth();
+
+  if(!width || !height){
+   return false;
+  }
+
+  var win = $(window);
+
+  var viewport = {
+   top : win.scrollTop(),
+   left : win.scrollLeft()
+  };
+  viewport.right = viewport.left + win.width();
+  viewport.bottom = viewport.top + win.height();
+
+  var bounds = elem.offset();
+  bounds.right = bounds.left + width;
+  bounds.bottom = bounds.top + height;
+
+  var showing = {
+   top : viewport.bottom - bounds.top,
+   left: viewport.right - bounds.left,
+   bottom: bounds.bottom - viewport.top,
+   right: bounds.right - viewport.left
+  };
+
+  return showing.top > 0
+          && showing.left > 0
+          && showing.right > 0
+          && showing.bottom > 0;
+ }
+
+ function reloadSlideShowImage[#UNIQ#]() {
+  if (checkImageOnScreen[#UNIQ#]()) {
+   //console.log('loading image');
+   imageOrig[#UNIQ#].src=imgNew[#UNIQ#].src;
+   var srcURL=imageOrig[#UNIQ#]URL+ "&" + new Date().getTime();
+   imgNew[#UNIQ#].src = srcURL;
+  } else {
+   //console.log('skipping load');
+   setTimeout('reloadSlideShowImage[#UNIQ#]();',1000);
+  }
+ }
+
+ imgNew[#UNIQ#].onload = function () {
+  reloadSlideShowImage[#UNIQ#]();
+ }
+ imgNew[#UNIQ#].src = imageOrig[#UNIQ#]URL;
+
+</script>
+[#endif#]
+
 [#else SRC#]
 image not found ([#REQUESTED#])
 [#endif SRC#]

@@ -18,7 +18,7 @@ class history extends module {
 *
 * @access private
 */
-function history() {
+function __construct() {
   $this->name="history";
   $this->title="<#LANG_MODULE_OBJECTS_HISTORY#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -197,7 +197,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS history');
+   SQLDropTable('history');
   parent::uninstall();
  }
 /**

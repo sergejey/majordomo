@@ -11,7 +11,7 @@
 class control_access extends module {
  var $id;
 // --------------------------------------------------------------------
- function control_access() {
+ function __construct() {
   // setting module name
   $this->name="control_access";
   $this->title="Control Access";
@@ -45,6 +45,11 @@ function getParams() {
    exit;
   }
 
+     if (!$this->mode && gr('mode')) {
+         $this->mode=gr('mode');
+     }
+
+
         if ($this->id=='1') {
                 $this->mode='edit';
                 global $id;
@@ -55,13 +60,6 @@ function getParams() {
         }
 
 
-// LDAP inicial
-        if(function_exists('ldap_connect') && is_file(ROOT.'modules/ldap_users/installed')) {
-                $out['LDAP_ON']=1;
-        }
-
-
-
   if ($this->mode=='logoff') {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
@@ -69,8 +67,7 @@ function getParams() {
    UnSet($session->data['SITE_USERNAME']);
    UnSet($session->data['SITE_USER_ID']);
    Unset($session->data["cp_requested_url"]);
-   
-   $this->owner->redirect("/");
+   $this->redirect("/");
   }
 
   if ($this->action=="enter") {
@@ -89,15 +86,6 @@ function getParams() {
     $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='".DBSafe($login)."' AND PASSWORD='".DBSafe(md5($psw))."'");
 
 //    $user=SQLSelectOne("SELECT * FROM admin_users WHERE 1");
-
-// LDAP logining
-        if($out['LDAP_ON']!=false && ($user==false || $psw=='this_ldap_admin')) {
-                include_once ROOT.'modules/ldap_users/ldap_users.class.php';
-                $ldap=new ldap_users;
-                $user=$ldap->ctrl_access();
-        }
-// LDAP loginig
-
 
     if (!IsSet($user['ID'])) {
      $out["ERRMESS"]="Wrong username and/or password";
@@ -212,8 +200,7 @@ function getParams() {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
    UnSet($session->data['USERNAME']);
-   $this->owner->redirect("?");
-
+   $this->redirect("/");
   } elseif ($this->action=="admin") {
    global $mode;
    global $mode2;

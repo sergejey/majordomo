@@ -184,6 +184,7 @@ INSERT INTO `cached_values` (`KEYWORD`, `DATAVALUE`, `EXPIRE`) VALUES
 ('MJD:ThisComputer.isDark', '0', '2015-12-03 14:44:00'),
 ('MJD:ThisComputer.AlarmStatus', '', '2015-12-03 14:44:00'),
 ('MJD:ThisComputer.volumeLevel', '90', '2015-12-03 14:44:28'),
+('MJD:ThisComputer.volumeMediaLevel', '90', '2015-12-03 14:44:28'),
 ('MJD:ThisComputer.TempOutside', '-0.9', '2015-12-03 14:44:28'),
 ('MJD:ThisComputer.textBoxTest', '0', '2015-12-03 14:46:01'),
 ('MJD:ThisComputer.AlarmTime', '09:30', '2015-12-03 14:46:01'),
@@ -427,7 +428,7 @@ INSERT INTO `country` (`COUNTRY_ID`, `COUNTRY_GUID`, `COUNTRY_NAME`, `LM_DATE`, 
 (16, '1C37B968-7D44-2AED-7171-116232E0376F', 'Bosnia and Herzegovina', '2015-04-14 12:09:36', 'BA', '387', NULL, NULL),
 (17, '784A4C7F-8B44-353A-8B27-996E1B38791C', 'Barbados', '2015-04-14 12:09:36', 'BB', '1246', NULL, NULL),
 (18, '735D20D8-45D8-B861-6B2B-9F1B22F86447', 'Bangladesh', '2015-04-14 12:09:36', 'BD', '880', NULL, NULL),
-(19, '3B71F5B5-2AC2-9154-404D-191ABFBC4729', 'Belgium', '0000-00-00 00:00:00', '2015-04-', '32', NULL, NULL),
+(19, '3B71F5B5-2AC2-9154-404D-191ABFBC4729', 'Belgium', '2015-04-14 12:09:36', 'BE', '32', NULL, NULL),
 (20, 'B5CB258B-4F64-D109-E9D5-60A78ED0A637', 'Burkina Faso', '2015-04-14 12:09:36', 'BF', '226', NULL, NULL),
 (21, '1B6E6DAD-F17E-C6C0-61A4-41B20394BDBE', 'Bulgaria', '2015-04-14 12:09:36', 'BG', '359', NULL, NULL),
 (22, '6AB06D58-6177-06A7-0937-AA363E22FE30', 'Bahrain', '2015-04-14 12:09:36', 'BH', '973', NULL, NULL),
@@ -932,6 +933,7 @@ CREATE TABLE IF NOT EXISTS `layouts` (
   `DETAILS` text,
   `REFRESH` int(10) NOT NULL DEFAULT '0',
   `ICON` varchar(50) NOT NULL DEFAULT '',
+  `HIDDEN` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
 
@@ -1095,7 +1097,7 @@ INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `C
 (70, 0, 26, 'turnOff', '', '$this->setProperty("status",0);', 0, 0, '2015-12-03 14:46:13', 'a:2:{s:5:"STATE";s:2:"on";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
 (71, 0, 26, 'turnOn', '', '$this->setProperty("status",1);', 0, 0, '2015-12-03 14:46:12', 'a:2:{s:5:"STATE";s:3:"off";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
 (72, 0, 19, 'tempChanged', '', '//$params[''t'']\r\n $this->setProperty("updated",time());\r\n $this->setProperty("updatedTime",date("H:i",time()));\r\n $this->setProperty("alive",1); \r\n \r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=30*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout); \r\n\r\nif (!isset($params[''t''])) {\r\n return;\r\n}\r\n\r\n\r\n$old_temp=$this->getProperty(''temp'');\r\n$t=round($params[''t''],1);\r\n\r\nif ($t>110) return;\r\n\r\n$this->setProperty(''temp'',$t);\r\nif ($params[''uptime'']) {\r\n $this->setProperty(''uptime'',$params[''uptime'']);\r\n}\r\n\r\nif ($t>$old_temp) {\r\n $d=1;\r\n} elseif ($t<$old_temp) {\r\n $d=-1;\r\n} else {\r\n $d=0;\r\n}\r\n$this->setProperty(''direction'',$d);\r\n\r\n$linked_room=$this->getProperty("LinkedRoom");\r\nif ($linked_room) {\r\n setGlobal($linked_room.''.Temperature'',$t);\r\n}', 0, 0, '2014-09-05 12:54:30', 'a:2:{s:1:"t";d:22.5;s:21:"ORIGINAL_OBJECT_TITLE";s:12:"TempSensor03";}'),
-(73, 17, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
+(73, 17, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
 (74, 18, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
 (75, 16, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
 (77, 0, 10, 'VolumeLevelChanged', '', '$volume=round(65535*$params[''VALUE'']/100);\r\n$this->setProperty(''volumeLevel'',$params[''VALUE'']);\r\nsafe_exec(''..\\\\apps\\\\nircmd\\\\nircmdc setsysvolume ''.$volume);\r\nsay("Изменилась громкость до ".$params[''VALUE'']." процентов");', 0, 0, '2014-07-31 21:15:03', 'a:3:{s:5:"VALUE";s:2:"90";s:4:"HOST";s:9:"localhost";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
@@ -1623,6 +1625,7 @@ INSERT INTO `properties` (`ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `OBJECT_ID`,
 (77, 0, 'stateTitle', NULL, 18, 0, ''),
 (78, 0, 'stateTitle', NULL, 16, 0, ''),
 (83, 0, 'volumeLevel', NULL, 7, 0, ''),
+(152, 0, 'volumeMediaLevel', NULL, 7, 0, ''),
 (119, 30, 'linkedRoom', '', 0, 0, ''),
 (98, 0, 'somebodyHome', NULL, 7, 0, ''),
 (118, 30, 'aliveTimeOut', '', 0, 0, ''),
@@ -1704,21 +1707,21 @@ INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PR
 (62, 21, 7, '09:30', '2014-10-30 15:02:45', 'ThisComputer.AlarmTime', 'commands'),
 (63, 22, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.textBoxTest', 'commands'),
 (64, 23, 7, '4', '2014-10-30 15:02:45', 'ThisComputer.1w_temp', ''),
-(65, 24, 15, '', '0000-00-00 00:00:00', 'ws.tempOutside', ''),
-(66, 25, 15, '', '0000-00-00 00:00:00', 'ws.relHumOutside', ''),
-(67, 26, 15, '', '0000-00-00 00:00:00', 'ws.dewPoint', ''),
-(68, 27, 15, '', '0000-00-00 00:00:00', 'ws.windLatest', ''),
-(69, 28, 15, '', '0000-00-00 00:00:00', 'ws.windAverage', ''),
-(70, 29, 15, '', '0000-00-00 00:00:00', 'ws.rainfallRate', ''),
-(71, 30, 15, '', '0000-00-00 00:00:00', 'ws.rainfallHour', ''),
-(72, 31, 15, '', '0000-00-00 00:00:00', 'ws.rainfall24', ''),
-(73, 32, 15, '', '0000-00-00 00:00:00', 'ws.pressure', ''),
-(74, 33, 15, '', '0000-00-00 00:00:00', 'ws.pressureTrend', ''),
-(75, 34, 15, '', '0000-00-00 00:00:00', 'ws.windDirection', ''),
-(76, 35, 15, '', '0000-00-00 00:00:00', 'ws.windDirectionAverage', ''),
+(65, 24, 15, '', '1970-01-01 00:00:00', 'ws.tempOutside', ''),
+(66, 25, 15, '', '1970-01-01 00:00:00', 'ws.relHumOutside', ''),
+(67, 26, 15, '', '1970-01-01 00:00:00', 'ws.dewPoint', ''),
+(68, 27, 15, '', '1970-01-01 00:00:00', 'ws.windLatest', ''),
+(69, 28, 15, '', '1970-01-01 00:00:00', 'ws.windAverage', ''),
+(70, 29, 15, '', '1970-01-01 00:00:00', 'ws.rainfallRate', ''),
+(71, 30, 15, '', '1970-01-01 00:00:00', 'ws.rainfallHour', ''),
+(72, 31, 15, '', '1970-01-01 00:00:00', 'ws.rainfall24', ''),
+(73, 32, 15, '', '1970-01-01 00:00:00', 'ws.pressure', ''),
+(74, 33, 15, '', '1970-01-01 00:00:00', 'ws.pressureTrend', ''),
+(75, 34, 15, '', '1970-01-01 00:00:00', 'ws.windDirection', ''),
+(76, 35, 15, '', '1970-01-01 00:00:00', 'ws.windDirectionAverage', ''),
 (77, 36, 15, '26', '2014-09-03 12:12:37', 'ws.TempInside', ''),
-(78, 37, 15, '', '0000-00-00 00:00:00', 'ws.relHumInside', ''),
-(79, 38, 15, '0', '0000-00-00 00:00:00', 'ws.pressureRt', ''),
+(78, 37, 15, '', '1970-01-01 00:00:00', 'ws.relHumInside', ''),
+(79, 38, 15, '0', '1970-01-01 00:00:00', 'ws.pressureRt', ''),
 (81, 44, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.Econom', ''),
 (82, 45, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.securityMode', ''),
 (83, 46, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.nobodyHome', ''),
@@ -1991,13 +1994,13 @@ INSERT INTO `scripts` (`ID`, `TITLE`, `CODE`, `DESCRIPTION`, `TYPE`, `XML`, `CAT
 (3, 'rssProcess', '/*\r\n$params[''URL''] --link\r\n$params[''TITLE''] -- title\r\n$params[''BODY''] -- body\r\n$params[''CHANNEL_ID''] -- channel ID\r\n$params[''CHANNEL_TITLE''] -- channed title\r\n\r\n*/\r\n\r\n//say($params[''TITLE'']); // reading news', '', 0, '', 0, '2014-10-30 14:57:24', 'a:10:{s:10:"CHANNEL_ID";s:1:"4";s:5:"ADDED";s:19:"2014-10-16 16:36:00";s:5:"TITLE";s:184:"Белтелерадиокомпания: Надеемся, решение украинской стороны о закрытии "Беларусь 24" не окончательное";s:4:"BODY";s:386:"<img src="http://img.tyt.by/thumbnails/n/07/2', 0, '', ''),
 (10, 'test', 'setTimeOut(''testTimer'',''say("Hello world!");'',30);', '', 0, '', 3, '2012-11-17 15:19:54', '', 0, '', ''),
 (11, 'easyRF', '$device_id=$params[''did''];\r\n$destination_id=$params[''dest''];\r\n$packet_id=$params[''pid''];\r\n$command_id=$params[''c''];\r\n$data=$params[''d''];\r\n\r\nif ($device_id==0) {\r\n if ($command_id==10) {\r\n  //temp\r\n setGlobal(''ws.tempInside'',round($data/100));\r\n } elseif ($command_id==12) {\r\n  //motion\r\n  callMethod(''intSensor.statusChanged'',array(''status''=>1));\r\n  clearTimeOut($id.''_move'');\r\n  setTimeOut($id.''_move'',"callMethod(''intSensor.statusChanged'',array(''status''=>0));",20);  \r\n }\r\n}', '', 0, '', 5, '2014-09-03 12:12:37', 'a:6:{s:6:"script";s:6:"easyRF";s:3:"did";s:1:"0";s:4:"dest";s:1:"0";s:3:"pid";s:4:"8339";s:1:"c";s:2:"10";s:1:"d";s:4:"2600";}', 0, '', '00:00'),
-(12, 'RCSwitch', '$id=$params[''rcswitch''];\r\nif ($id==''12345'') {\r\n //sensor 1\r\n}', '', 0, '', 5, '0000-00-00 00:00:00', 'a:2:{s:6:"script";s:8:"RCSwitch";s:8:"rcswitch";s:7:"7689557";}', 0, '', '00:00'),
-(15, 'readWeatherToday', '$weather.="Сегодня ожидается ".str_replace(''&deg;'','' '',getGlobal(''weatherToday''));\r\n$weather.=". Завтра ".str_replace(''&deg;'','' '',getGlobal(''weatherTomorrow''));\r\n$weather.=". Сейчас на улице ".getGlobal(''TempOutside'').''.'';\r\n$weather=str_replace(''&deg;'','''',$weather);\r\nsay($weather,2);', '', 0, '', 0, '0000-00-00 00:00:00', 'a:2:{i:0;s:12:"погода";i:1;s:2:"а";}', 0, '', '00:00'),
-(18, 'playFavoriteMusic', '// вытягиваем историю из переменной\r\n$alreadyPlayed=gg("AlreadyPlayedMusic");\r\nif (!$alreadyPlayed) {\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n// выбираем случайную папку\r\n$rec=SQLSelectOne("SELECT * FROM media_favorites WHERE ID NOT IN (".$alreadyPlayed.") ORDER BY RAND()");\r\n\r\nif (!$rec[''ID'']) {\r\n // папок больше не осталось, поэтому выбираем случайную и сбрасываем истоирю\r\n $rec=SQLSelectOne("SELECT * FROM media_favorites ORDER BY RAND()");\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n\r\nif ($rec[''ID'']) {\r\n\r\n // добавляем выбранную папку в историю\r\n $alreadyPlayed.='',''.$rec[''ID''];\r\n sg("AlreadyPlayedMusic",$alreadyPlayed);\r\n\r\n // запускаем на проигрывание\r\n $collection=SQLSelectOne("SELECT * FROM collections WHERE ID=".(int)$rec[''COLLECTION_ID'']);\r\n $path=$collection[''PATH''].$rec[''PATH''];\r\n playMedia($path);\r\n //setTimeOut(''VLCPlayer_update'',"callMethod(''VLCPlayer.update'');",10);\r\n\r\n}', '', 0, '', 0, '0000-00-00 00:00:00', '', 0, '', '00:00'),
-(22, 'Greeting', 'runScript("reportStatus", array());\r\n', '', 0, '', 0, '0000-00-00 00:00:00', '', 0, '', '00:00'),
-(19, 'playPause', 'getURL(''http://localhost/rc/?command=vlc_pause'',0);', '', 0, '', 0, '0000-00-00 00:00:00', '', 0, '', '00:00'),
-(20, 'Watching movie', 'say(LANG_GENERAL_SETTING_UP_LIGHTS,2);\r\n// to-do', '', 0, '', 6, '0000-00-00 00:00:00', '', 0, '', '00:00'),
-(21, 'reportStatus', '$res='''';\r\n if (gg(''Security.stateColor'')==''green'' && gg(''System.stateColor'')==''green'' && gg(''Communication.stateColor'')==''green'') {\r\n  $res=''Все системы работают в штатном режиме'';\r\n } else {\r\n  if (gg(''Security.stateColor'')!=''green'') {\r\n   $res.=" Проблема безопасности: ".getGlobal(''Security.stateDetails'');\r\n  }\r\n  if (gg(''System.stateColor'')!=''green'') {\r\n   $res.=" Системная проблема: ".getGlobal(''System.stateDetails'');\r\n  }  \r\n  if (gg(''Communication.stateColor'')!=''green'') {\r\n   $res.=" Проблема связи: ".getGlobal(''Communication.stateDetails'');\r\n  }  \r\n }\r\n say($res,5);', '', 0, '', 0, '0000-00-00 00:00:00', 'a:1:{i:0;s:27:"статус системы";}', 0, '', '00:00');
+(12, 'RCSwitch', '$id=$params[''rcswitch''];\r\nif ($id==''12345'') {\r\n //sensor 1\r\n}', '', 0, '', 5, '1970-01-01 00:00:00', 'a:2:{s:6:"script";s:8:"RCSwitch";s:8:"rcswitch";s:7:"7689557";}', 0, '', '00:00'),
+(15, 'readWeatherToday', '$weather.="Сегодня ожидается ".str_replace(''&deg;'','' '',getGlobal(''weatherToday''));\r\n$weather.=". Завтра ".str_replace(''&deg;'','' '',getGlobal(''weatherTomorrow''));\r\n$weather.=". Сейчас на улице ".getGlobal(''TempOutside'').''.'';\r\n$weather=str_replace(''&deg;'','''',$weather);\r\nsay($weather,2);', '', 0, '', 0, '1970-01-01 00:00:00', 'a:2:{i:0;s:12:"погода";i:1;s:2:"а";}', 0, '', '00:00'),
+(18, 'playFavoriteMusic', '// вытягиваем историю из переменной\r\n$alreadyPlayed=gg("AlreadyPlayedMusic");\r\nif (!$alreadyPlayed) {\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n// выбираем случайную папку\r\n$rec=SQLSelectOne("SELECT * FROM media_favorites WHERE ID NOT IN (".$alreadyPlayed.") ORDER BY RAND()");\r\n\r\nif (!$rec[''ID'']) {\r\n // папок больше не осталось, поэтому выбираем случайную и сбрасываем истоирю\r\n $rec=SQLSelectOne("SELECT * FROM media_favorites ORDER BY RAND()");\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n\r\nif ($rec[''ID'']) {\r\n\r\n // добавляем выбранную папку в историю\r\n $alreadyPlayed.='',''.$rec[''ID''];\r\n sg("AlreadyPlayedMusic",$alreadyPlayed);\r\n\r\n // запускаем на проигрывание\r\n $collection=SQLSelectOne("SELECT * FROM collections WHERE ID=".(int)$rec[''COLLECTION_ID'']);\r\n $path=$collection[''PATH''].$rec[''PATH''];\r\n playMedia($path);\r\n //setTimeOut(''VLCPlayer_update'',"callMethod(''VLCPlayer.update'');",10);\r\n\r\n}', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00'),
+(22, 'Greeting', 'runScript("reportStatus", array());\r\n', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00'),
+(19, 'playPause', 'getURL(''http://localhost/rc/?command=vlc_pause'',0);', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00'),
+(20, 'Watching movie', 'say(LANG_GENERAL_SETTING_UP_LIGHTS,2);\r\n// to-do', '', 0, '', 6, '1970-01-01 00:00:00', '', 0, '', '00:00'),
+(21, 'reportStatus', '$res='''';\r\n if (gg(''Security.stateColor'')==''green'' && gg(''System.stateColor'')==''green'' && gg(''Communication.stateColor'')==''green'') {\r\n  $res=''Все системы работают в штатном режиме'';\r\n } else {\r\n  if (gg(''Security.stateColor'')!=''green'') {\r\n   $res.=" Проблема безопасности: ".getGlobal(''Security.stateDetails'');\r\n  }\r\n  if (gg(''System.stateColor'')!=''green'') {\r\n   $res.=" Системная проблема: ".getGlobal(''System.stateDetails'');\r\n  }  \r\n  if (gg(''Communication.stateColor'')!=''green'') {\r\n   $res.=" Проблема связи: ".getGlobal(''Communication.stateDetails'');\r\n  }  \r\n }\r\n say($res,5);', '', 0, '', 0, '1970-01-01 00:00:00', 'a:1:{i:0;s:27:"статус системы";}', 0, '', '00:00');
 
 -- --------------------------------------------------------
 
@@ -2283,15 +2286,14 @@ CREATE TABLE IF NOT EXISTS `terminals` (
   `PLAYER_PORT` varchar(255) NOT NULL DEFAULT '',
   `PLAYER_USERNAME` varchar(255) NOT NULL DEFAULT '',
   `PLAYER_PASSWORD` varchar(255) NOT NULL DEFAULT '',
+  `LATEST_ACTIVITY` datetime DEFAULT NULL,
+  `IS_ONLINE` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `terminals`
 --
-
-INSERT INTO `terminals` (`ID`, `NAME`, `TITLE`, `HOST`, `CANPLAY`, `PLAYER_TYPE`, `PLAYER_PORT`, `PLAYER_USERNAME`, `PLAYER_PASSWORD`) VALUES
-(2, 'MAIN', 'Server', 'localhost', 1, '', '', '', '');
 
 -- --------------------------------------------------------
 

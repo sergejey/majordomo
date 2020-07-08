@@ -119,6 +119,7 @@ function run() {
   }
   $this->data=$out;
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
+
   $this->result=$p->result;
 
 }
@@ -163,6 +164,7 @@ function admin(&$out) {
   if ($this->mode=='update_collection') {
    global $title;
    global $path;
+   $path = ((substr($path, -1) == DIRECTORY_SEPARATOR)?$path:$path.DIRECTORY_SEPARATOR);
    $rec['TITLE']=$title;
    $rec['PATH']=$path;
    if ($rec['TITLE'] && $rec['PATH']) {
@@ -196,9 +198,13 @@ function usual(&$out) {
     else
         $run_linux=0;
 
+   $play=gr('play');
+   $play = urlsafe_b64decode($play);
+   if ($play!='') {
+    require(DIR_MODULES.$this->name.'/stream_files.php');
+   }
 
-
-   $terminals=SQLSelect("SELECT * FROM terminals WHERE CANPLAY=1 ORDER BY TITLE");
+   $terminals = getTerminalsCanPlay(-1, 'TITLE');
    $total=count($terminals);
    //for($i=0;$i<$total;$i++) {
     //if ($terminals[$i]['NAME']==$session->data['PLAY_TERMINAL']) {
@@ -287,7 +293,7 @@ function usual(&$out) {
    if(!$run_linux){
     $total=count($favorites);
     for($i=0;$i<$total;$i++) {
-     $favorites[$i]['PATH']=urlencode(utf2win($favorites[$i]['PATH']));
+     $favorites[$i]['PATH']=urlencode(($favorites[$i]['PATH']));
     }
    }
    $out['FAVORITES']=$favorites;
@@ -298,7 +304,7 @@ function usual(&$out) {
    if(!$run_linux){
     $total=count($media_history);
     for($i=0;$i<$total;$i++) {
-     $media_history[$i]['PATH']=urlencode(utf2win($media_history[$i]['PATH']));
+     $media_history[$i]['PATH']=urlencode(($media_history[$i]['PATH']));
     }
    }
    $out['MEDIA_HISTORY']=$media_history;
@@ -312,13 +318,9 @@ function usual(&$out) {
 
   $act_dir=$path.$folder;
 
-  if($act_dir{0}=='/'){
+
       $out['MEDIA_PATH']=$path;
       $out['CURRENT_DIR']='./'.$folder;
-  } else {
-      $out['MEDIA_PATH']=win2utf($path);
-      $out['CURRENT_DIR']=win2utf('./'.$folder);
-  }
 
 
 
@@ -337,10 +339,7 @@ function usual(&$out) {
     $tmp_rec['TITLE']=$tmp[$i];
     $spath.='/'.$tmp_rec['TITLE'];
     $spath=str_replace('././', './', $spath);
-    if($run_linux)
-        $tmp_rec['PATH']=urlencode($spath.'/');
-    else 
-        $tmp_rec['PATH']=urlencode(utf2win($spath).'/');
+    $tmp_rec['PATH']=urlencode($spath.'/');
 
 
     if ($tmp_rec['TITLE']=='.') {
@@ -370,20 +369,31 @@ function usual(&$out) {
           //$file=str_replace('/', '\\', $file);
           $out['FULLFILE']=addslashes($path).$file;
       } else {
-          $out['FILE']=win2utf($file);
-          $out['BASEFILE']=win2utf(basename($file));
+          $out['FILE']=($file);
+          $out['BASEFILE']=(basename($file));
           $file=str_replace('/', '\\', $file);
-          $out['FULLFILE']=win2utf(($path).$file);
+          $out['FULLFILE']=(($path).$file);
       }
 
    //$out['FULLFILE_S']=str_replace('\\\\', '\\', $out['FULLFILE']);
    $out['FULLFILE_S']=$out['FULLFILE'];
+   if (is_dir(($path).$file)) {
+	   //$file_ext = 'm3u';
+	   $file_ext = 'html';
+       $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($out['FULLFILE'])."&type=m3u";
+   } else {
+	   if(!$file_ext = pathinfo($out['FULLFILE'], PATHINFO_EXTENSION)) {
+		   $file_ext = 'html';
+	   }
+       $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($out['FULLFILE']);
+   }
+   //dprint($out['FULLFILE_URL']);
 
    if ($this->mode=='play') {
     //FULLFILE_S
     $rec=array();
     $rec['TITLE']=$out['CURRENT_DIR_TITLE'];
-    $rec['PATH']=win2utf($folder);
+    $rec['PATH']=($folder);
     $rec['LIST_ID']=(int)$list_id;
     $rec['COLLECTION_ID']=$collection_id;
     $rec['PLAYED']=date('Y-m-d H:i:s');
@@ -397,6 +407,11 @@ function usual(&$out) {
      $ids[]=$last10[$i]['ID'];
     }
     SQLExec("DELETE FROM media_history WHERE ID NOT IN (".implode(',', $ids).")");
+
+    if ($_GET['full_url']) {
+     echo $out['FULLFILE_URL'];
+     exit;
+    }
 
    }
 
@@ -437,9 +452,11 @@ function usual(&$out) {
   }
 
 
+ /*
    function sort_files($a, $b) {
     return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"])); 
    }
+*/
 
 
   $dirs=array();
@@ -469,13 +486,8 @@ function usual(&$out) {
      $rec['TITLE_SHORT']=substr($rec['TITLE_SHORT'], 0, 50).'...';
     }
 
-    if($run_linux){
         $rec['TITLE']=$rec['TITLE'];
         $rec['TITLE_SHORT']=$rec['TITLE_SHORT'];
-    } else {
-        $rec['TITLE']=win2utf($rec['TITLE']);
-        $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
-    }
 
 
 
@@ -495,7 +507,9 @@ function usual(&$out) {
 
 
   //$dirs=mysort_array($dirs, "TITLE");
-  usort($dirs, 'sort_files');
+  usort($dirs, function($a,$b) {
+   return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"]));
+  });
 
   //print_r($dirs);
 
@@ -529,13 +543,8 @@ function usual(&$out) {
      $rec['TITLE_SHORT']=$rec['TITLE'];
     }
 
-    if($run_linux){
         $rec['TITLE']=$rec['TITLE'];
         $rec['TITLE_SHORT']=$rec['TITLE_SHORT'];
-    } else {
-        $rec['TITLE']=win2utf($rec['TITLE']);
-        $rec['TITLE_SHORT']=win2utf($rec['TITLE_SHORT']);
-    }
 
     $rec['REAL_PATH']=($folder.$file);
     $rec['PATH']=urlencode($folder.$file);
@@ -561,7 +570,9 @@ function usual(&$out) {
   }
 
   //$files=mysort_array($files, "TITLE");
-  usort($files, 'sort_files');
+  usort($files, function($a,$b) {
+   return strcmp(strtoupper($a["TITLE"]), strtoupper($b["TITLE"]));
+  });
 
   if (count($files)>0) {
    $total=count($files);

@@ -18,7 +18,7 @@ class jobs extends module {
 *
 * @access private
 */
-function jobs() {
+function __construct() {
   $this->name="jobs";
   $this->title="<#LANG_MODULE_JOBS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -213,7 +213,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS jobs');
+   SQLDropTable('jobs');
   parent::uninstall();
  }
 /**

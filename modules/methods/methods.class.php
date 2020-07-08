@@ -18,7 +18,7 @@ class methods extends module {
 *
 * @access private
 */
-function methods() {
+function __construct() {
   $this->name="methods";
   $this->title="<#LANG_MODULE_METHODS#>";
   $this->module_category="<#LANG_SECTION_OBJECTS#>";
@@ -193,7 +193,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS methods');
+   SQLDropTable('methods');
   parent::uninstall();
  }
 /**
@@ -218,6 +218,7 @@ methods - Methods
  methods: SCRIPT_ID int(10) NOT NULL DEFAULT '0'
  methods: EXECUTED datetime
  methods: EXECUTED_PARAMS varchar(255)
+ methods: EXECUTED_SRC varchar(255)
  methods: INDEX (OBJECT_ID)
  methods: INDEX (CLASS_ID)
 EOD;

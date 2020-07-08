@@ -1,5 +1,13 @@
-<style>
+{if $DRAGGABLE=="1"}
+    <link rel="stylesheet" href="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.contextMenu.min.css">
+    <script type="text/javascript" src="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.contextMenu.min.js"></script>
+    <script type="text/javascript" src="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.ui.position.min.js"></script>
+    <!--
+    <div id='contextMenuDiv' style="display:none;width:100px;height:20px;background-color:white;position:absolute;border: 1px solid black;z-index:10000;top:200px;left:300px;padding:10px;text-align:center"><a href="#" onClick="stateClickedEdit('new');return false;">{$smarty.const.LANG_ADD}</a></div>
+    -->
+{/if}
 
+<style>
 @keyframes lefttoright  {
   0% { transform: translateX(-500px); }
   45% { transform: translateX(40px); }
@@ -90,11 +98,12 @@
 {/if}
         {if $TOTAL_SCENES!="1"}
         <style>{include './slider.css'}</style>
-        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js"></script>
+        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js?v=2019-02-27"></script>
         {/if}
 
         <script type="text/javascript" language="javascript">
 
+            /*
 $.fn.customContextMenu = function(callBack){
     $(this).each(function(){
         $(this).bind("contextmenu",function(e){
@@ -103,6 +112,7 @@ $.fn.customContextMenu = function(callBack){
         });
     }); 
 }
+*/
 
 
 
@@ -159,48 +169,34 @@ $.fn.customContextMenu = function(callBack){
 
 
         function stateClickedEdit(id) {
-
           var window_url=window.parent.location.href;
-
-          var wdth=850;
-          var hdth=600;
-
           window_url=window_url.replace('tab=preview', 'tab=elements')+'&open='+id+'&print=1';
           if (id=='new') {
            window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
           }
-
-          var jWindowObjElement = $.jWindow({ 
-           id: 'windowEdit'+id, 
-           title: 'Settings', 
-           width: wdth, 
-           height: hdth, 
-           type: 'iframe', 
-           marginTop:0, 
-           marginBottom:0, 
-           marginLeft:0, 
-           marginRight:0, 
-           url: window_url,
-           onClose:function () {
-            window.location.href=window.location.href;
-           },
-           modal: true });
-          jWindowObjElement.show();
-          jWindowObjElement.update();
-
-
-         return false;
+          parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload(); }});
+          return false;
         }
+
+            function addDeviceClicked(id) {
+                var window_url=window.parent.location.href;
+                window_url=window_url.replace('tab=preview', 'tab=devices')+'&open='+id+'&print=1';
+                window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
+                parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload(); }});
+                return false;
+            }
 
 
 
         function stateClicked(id) {
 
          var window_url;
-         
-         {if $smarty.const.SETTINGS_SCENES_CLICKSOUND!=""}
-         EvalSound('click_sound');
-         {/if}
+
+            {if $smarty.const.SETTINGS_SCENES_CLICKSOUND!=""}
+            setTimeout("EvalSound('click_sound')",100);
+            {/if}
+
+         $('#state_'+id).animate({ opacity: .5 }, 100).animate({ opacity: 1 }, 100);
 
         {foreach $RESULT as $SCENE}
         {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
@@ -326,7 +322,9 @@ $.fn.customContextMenu = function(callBack){
           }).done(function(data) { 
            processCheckStates(data);
           });
-         return false;
+
+
+            return false;
         }
 
 
@@ -344,7 +342,7 @@ $.fn.customContextMenu = function(callBack){
            if (objCnt) {
              for(var i=0;i<objCnt;i++) {
               var elem=$('#state_'+obj[i].ID);
-              if ((typeof obj[i].HTML!= 'undefined') && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
+              if ((typeof obj[i].HTML!= 'undefined') && (obj[i].TYPE!='container') && (obj[i].HTML!=null) && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
                elem.html('<span>'+obj[i].HTML+'</span>');
                codeHash['code'+obj[i].ID]=obj[i].HTML;
               }
@@ -422,6 +420,17 @@ $.fn.customContextMenu = function(callBack){
         function checkAllStates() {
          clearTimeout(checkTimer);
 
+            if (firstRun==1) {
+                {if $TOTAL_SCENES!="1"}
+                 $("#slider").easySlider({
+                 auto: false,
+                 numeric: true,
+                {if $smarty.const.SETTINGS_SCENES_VERTICAL_NAV=="1"}numericId: 'controls_vertical',{/if}
+                 continuous: false
+                 });
+                {/if}
+            }
+
          if (subscribedWebSockets==1) {
           firstRun=0;
           checkTimer=setTimeout('checkAllStates();', 3000);
@@ -435,17 +444,6 @@ $.fn.customContextMenu = function(callBack){
           url: url,
           }).done(function(data) { 
            processCheckStates(data);
-           {if $TOTAL_SCENES!="1"}
-           if (firstRun==1) {
-                        $("#slider").easySlider({
-                                auto: false, 
-                                numeric: true,
-                                {if $smarty.const.SETTINGS_SCENES_VERTICAL_NAV=="1"}numericId: 'controls_vertical',{/if}
-                                continuous: false
-                        });
-           }
-
-           {/if}
            firstRun=0;
            refreshRun=0;
            //tryWebSockets();
@@ -494,9 +492,44 @@ $.fn.customContextMenu = function(callBack){
                 {if $TOTAL_SCENES=="1"}
 
                  {if $DRAGGABLE=="1"}
-                    $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid: [5,5],
+
+
+                    $.contextMenu({
+                        selector: '.context-menu-one',
+                        zIndex: 1000,
+                        callback: function(key, options) {
+                            contextLeft=event.pageX;
+                            contextTop=event.pageY;
+                            if (key == 'add') {
+                                stateClickedEdit('new');
+                            }
+                            if (key == 'adddevice') {
+                                addDeviceClicked();
+                            }
+                            //var m = "clicked: " + key;
+                            //window.console && console.log(m) || alert(m);
+                        },
+                        items: {
+                            {literal}"add": {name:{/literal}"{$smarty.const.LANG_ADD_NEW_ELEMENT}", icon: "add"},
+                            {literal}"adddevice": {name:{/literal}"{$smarty.const.LANG_DEVICES_ADD_SCENE}", icon: "add"},
+                        }
+                });
+
+
+
+$(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid: [5,5],
+                        start: function(e, ui) {
+                            var pos = ui.helper.offset();
+                            this.originalLeft=pos.left;
+                            this.originalTop=pos.top;
+                        },
                         stop: function(e, ui) {
-                         var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=dragged&element="+$(this).attr("id")+"&details="+encodeURIComponent(JSON.stringify(ui));
+                            var pos = ui.helper.offset();
+                            var dLeft=pos.left-this.originalLeft;
+                            var dTop=pos.top-this.originalTop;
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=dragged&element="+$(this).attr("id");
+                            url+='&dleft='+encodeURIComponent(dLeft);
+                            url+='&dtop='+encodeURIComponent(dTop);
                          {literal}
                          $.ajax({
                           url: url,
@@ -507,8 +540,14 @@ $.fn.customContextMenu = function(callBack){
                         }
                    }).resizable({literal}{grid: 5, {/literal}
                            stop: function(e, ui) {
-                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id")+"&details="+encodeURIComponent(JSON.stringify(ui));
-                            {literal}
+                               var dwidth=ui.size.width;
+                               var dheight=ui.size.height;
+
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id");
+                               url+='&dwidth='+encodeURIComponent(dwidth);
+                               url+='&dheight='+encodeURIComponent(dheight);
+
+                           {literal}
                             $.ajax({
                              url: url,
                              }).done(function(data) { 
@@ -524,6 +563,7 @@ $.fn.customContextMenu = function(callBack){
       });
 
       {foreach $RESULT as $SCENE}
+                    /*
       $("#scene_wallpaper_{$SCENE.ID}").customContextMenu(function(e){
        contextTop=e.pageY;
        contextLeft=e.pageX;
@@ -532,6 +572,7 @@ $.fn.customContextMenu = function(callBack){
        contextTimeout=setTimeout("$('#contextMenuDiv').hide();", 3*1000);
        return false;
       });
+      */
       {/foreach}
  
                  {/if}
@@ -548,7 +589,7 @@ $.fn.customContextMenu = function(callBack){
                   }
                  }
                  {/if}
-                    {if $SCENE_AUTO_SCALE=="1" && $DRAGGABLE!="1"}
+                    {if $SCENE_AUTO_SCALE!="0" && $DRAGGABLE!="1"}
                     setTimeout('sceneZoom();',2000);
                     $(window).on('resize', function(){
                         sceneZoom();
@@ -561,14 +602,31 @@ $.fn.customContextMenu = function(callBack){
 
 
 
-
-
                 });
 
 
             function sceneZoom() {
-                zoom = $(window).width()/$("#slider").width()*100;
-                document.body.style.zoom = zoom+"%"
+                var zoomMode = parseInt('{$SCENE_AUTO_SCALE}');
+                var zoomw = $(window).width();
+                if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
+                zoomw = zoomw/$("#slider").width()*100;
+                var zoomh = $(window).height();
+                if(window.innerHeight > 0 && window.innerHeight < zoomh) zoomh = window.innerHeight;
+                zoomh = zoomh/$("#slider").height()*100;
+                if (zoomMode == 3) { // height
+                    document.body.style.zoom = zoomh+"%"
+                }
+                if (zoomMode == 2) { // width
+                    document.body.style.zoom = zoomw+"%"
+                }
+                if (zoomMode == 1) { // both
+                    if(zoomh < zoomw) {
+                        document.body.style.zoom = zoomh+"%"
+                    } else {
+                        document.body.style.zoom = zoomw+"%"
+                    }
+                }
+
             }
 
 
@@ -580,10 +638,22 @@ $.fn.customContextMenu = function(callBack){
 <table  border="0" cellpadding="0" cellspacing="0">
  <tr>
   <td valign="top">
-<div style="{if $TOTAL_SCENES!="1"}width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;{/if};position:relative;">
+<div style="{if $TOTAL_SCENES!="1"}width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;{/if};position:relative;" class="context-menu-one">
 <div id="slider">
 {if $TOTAL_SCENES!="1"}<ul>{/if}
 {foreach $RESULT as $SCENE}
+    <style>
+        {if $SCENE.DEVICES_BACKGROUND=="dark"}
+        #scene_background_{$SCENE.ID} > .type_device {
+            background-color:#222222;
+        }
+        {/if}
+        {if $SCENE.DEVICES_BACKGROUND=="light"}
+        #scene_background_{$SCENE.ID} > .type_device {
+            background-color:#dddddd;
+        }
+        {/if}
+    </style>
 {if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
  <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
@@ -594,11 +664,12 @@ $.fn.customContextMenu = function(callBack){
  {if $ELEMENT.ELEMENTS}
  <div 
    class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if $ELEMENT.BACKGROUND=="1"} container_background{/if}{if $DRAGGABLE=="1"} draggable{/if}"
-   style="position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;
+   style="{if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
    {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
+   {if $ELEMENT.STATE!="1"}display:none;{/if}
    "
-   id="container_{$ELEMENT.ID}"
+   id="state_{$ELEMENT.STATE_ID}"
    >
   {elements items=$ELEMENT.ELEMENTS}
  </div>
@@ -615,9 +686,9 @@ $.fn.customContextMenu = function(callBack){
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
    display:inline-block;"></div>
 
-<script language="javascript" src="{$smarty.const.ROOTHTML}js/threejs/libs/tween.min.js"></script>
-<script language="javascript" src="{$smarty.const.ROOTHTML}js/threejs/three.min.js"></script>
-<script src="{$smarty.const.ROOTHTML}js/threejs/loaders/SceneLoader.js" language="javascript"></script>
+<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/libs/tween.min.js"></script>
+<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/three.min.js"></script>
+<script src="{$smarty.const.ROOTHTML}3rdparty/threejs/loaders/SceneLoader.js" language="javascript"></script>
    <script language="javascript">
 
                         var container;
@@ -775,6 +846,3 @@ function onDocumentMouseDown( event ) {
 </table>
 </div>
 
-{if $DRAGGABLE=="1"}
-<div id='contextMenuDiv' style="display:none;width:100px;height:20px;background-color:white;position:absolute;border: 1px solid black;z-index:10000;top:200px;left:300px;padding:10px;text-align:center"><a href="#" onClick="stateClickedEdit('new');return false;">{$smarty.const.LANG_ADD}</a></div>
-{/if}

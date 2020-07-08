@@ -1,0 +1,71 @@
+[#if ID!=""#]
+<form class="form-horizontal" action="?" method="post">
+    <div class="form-group[#if ERR_TITLE#] has-errors[#endif#]">
+        <label for="title" class="control-label col-sm-4"><#LANG_TITLE#> (*):</label>
+        <div class="col-sm-8">
+        <input type="text" name="title" class="form-control" required id="title" value="[#TITLE#]">
+        </div>
+    </div>
+    <div class="form-group[#if ERR_SYS_NAME#] has-errors[#endif#]">
+        <label for="sys_name" class="control-label col-sm-4"><#LANG_SYSTEM_NAME#>:</label>
+        <div class="col-sm-8">
+            <input type="text" name="sys_name" class="form-control" id="sys_name" value="[#SYS_NAME#]">
+        </div>
+    </div>
+    <div class="form-group[#if ERR_TYPES#] has-errors[#endif#]">
+        <label class="control-label col-sm-4"><#LANG_APPLIES_TO#>:</label>
+        <div class="col-sm-8">
+            [#begin TYPES#]
+            <input type="checkbox" name="types[]" value="[#NAME#]"[#if SELECTED="1"#] checked[#endif#]> [#TITLE#]<br/>
+            [#end TYPES#]
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4">&nbsp;</div>
+        <div class="col-sm-8">
+        [#if ID!=""#]
+        <input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-primary">
+        [#else ID#]
+        <input type="submit" value="<#LANG_ADD#>" class="btn btn-primary">
+        [#endif ID#]
+        <a href="?view_mode=<#VIEW_MODE#>" class="btn btn-default"><#LANG_CANCEL#></a>
+        </div>
+    </div>
+    <input type="hidden" name="mode" value="update">
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="id" value="<#ID#>">
+</form>
+[#else GROUP_ID#]
+ <p>
+     <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+ </p>
+ <p>
+     <a href="?view_mode=<#VIEW_MODE#>&id=new" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+ </p>
+ <table class="table">
+     <thead>
+     <tr>
+         <th><#LANG_TITLE#></th>
+         <th><#LANG_SYSTEM_NAME#></th>
+         <th>&nbsp;</th>
+     </tr>
+     </thead>
+     [#begin GROUPS#]
+     <tr>
+         <td>[#TITLE#]</td>
+         <td>[#SYS_NAME#] <a href="#" onclick="$('#sample[#ID#]').toggle();return false;">Code Sample</a>
+<div id="sample[#ID#]" style="display:none">
+    <pre>setGlobal('[#OBJECT_TITLE#].status',1);</pre>
+    <pre>$objects = getObjectsByProperty('group[#SYS_NAME#]',1);
+foreach($objects as $object_title) {
+    callMethod($object_title.'.turnOn');
+}</pre></div>
+         </td>
+         <td>
+             <a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></a>
+             <a href="?view_mode=<#VIEW_MODE#>&delete_id=[#ID#]" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+         </td>
+     </tr>
+     [#end GROUPS#]
+ </table>
+[#endif GROUP_ID#]

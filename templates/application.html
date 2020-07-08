@@ -1,48 +1,33 @@
-<!--#
- @version 0.4 (auto-set)
- <#LANG_WIKI_URL#>
-#-->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><#SETTINGS_SITE_TITLE#></title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-[#if POPUP="1"#]
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<!--#
-[#if ACTION="scenes"#]<meta http-equiv="refresh" content="3600">[#endif ACTION#]
-#-->
-[#endif#]
-<link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
-<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
-<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
-<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/jquery.gritter.css" />
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
-<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
-<script type="text/javascript" src="<#ROOTHTML#>jquerymobile/jquery-1.10.2.min.js"></script>
-<link rel="stylesheet" href="<#ROOTHTML#>jquerymobile/jquery.mobile-1.4.0.min.css" />
-<link rel="stylesheet" href="<#ROOTHTML#>bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+<title><#PROJECT_TITLE#></title>
+    [#inc common_header.html#]
+    <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
+    <link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
+    <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+    <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+    <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 
-<script type="text/javascript" src="<#ROOTHTML#>bootstrap/js/bootstrap.min.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery.gritter.js"></script>
-<script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
-<script type="text/javascript" src="<#ROOTHTML#>js/jquery.fancybox/jquery.fancybox.js"></script>
+
+[#if ACTION=""#]
+  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+  <link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/ui.tabs.paging.css"/>
+[#endif#]
+
+
+
 [#inc websockets.html#]
 </head>
 
 [#if POPUP!="1"#]
-<body style="margin:0px;padding:0px;">
+<body style="<#BODY_CSS#>">
 [#else POPUP#]
-<body bgcolor="transparent" style="margin:0px;padding:0px;">
+<body bgcolor="transparent" style="<#BODY_CSS#>">
 <script language="javascript">
 $(document).ready(function() {
  if (!inIframe()) {
-  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]#222222[#else#]white[#endif#]');
+  $("body").css('background-color', '[#if "<#THEME#>"=="dark"#]#222222[#else#]white[#endif#]');
  }
 });
 </script>
@@ -136,25 +121,20 @@ $(document).ready(function() {
   }
 
   eventState='requesting';
-  AJAXRequest('/getnextevent.html', 'getNextEventReceived', '');
+  AJAXRequest('<#ROOTHTML#>getnextevent.html', 'getNextEventReceived', '');
   return false;
  }
 
- function getLatestNoteReceived(id, data) {
+  function getLatestNoteReceived(id, data) {
   var obj=jQuery.parseJSON(data);
-  if (obj.DATA!='') {
-   if (noteLatest!=obj.DATA) {
-    if (noteLatest!='') {
+  if (obj.DATA!='' && noteLatest!=obj.DATA && noteLatest!='') {
      $.gritter.add({
          title: '[#if "<#SETTINGS_GENERAL_ALICE_NAME#>"!=""#]<#SETTINGS_GENERAL_ALICE_NAME#>[#else#]<#LANG_DEFAULT_COMPUTER_NAME#>[#endif#]',
          text: obj.DATA, 
          sticky: false, 
          time: 8000
       });
-    }
     noteLatest=obj.DATA;
-   }
-
   }
  }
 
@@ -164,7 +144,7 @@ $(document).ready(function() {
   if (startedWebSockets==1) {
    return false;
   }
-  AJAXRequest('/getlatestnote.html', 'getLatestNoteReceived', '');
+  AJAXRequest('<#ROOTHTML#>getlatestnote.html', 'getLatestNoteReceived', '');
   return false;
  }
 
@@ -176,7 +156,7 @@ $(document).ready(function() {
 
  // ----------------------------------------------------------------------
  function addEvent(type, win, details, terminal_to, user_to) {
-  var url='/popup/addevent.html?mode=update&type='+URLencode(type)+'&window='+URLencode(win)+'&details='+URLencode(details)+'&terminal_to='+URLencode(terminal_to)+'&user_to='+URLencode(user_to);
+  var url='<#ROOTHTML#>popup/addevent.html?mode=update&type='+URLencode(type)+'&window='+URLencode(win)+'&details='+URLencode(details)+'&terminal_to='+URLencode(terminal_to)+'&user_to='+URLencode(user_to);
   AJAXRequest(url, 'addEventProcessed', '');
   return false;
  }

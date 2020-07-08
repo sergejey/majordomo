@@ -24,8 +24,8 @@
    */
    }
   //updating 'Titile' (varchar, required)
-   global $title;
-   $rec['TITLE']=$title;
+   $rec['TITLE']=gr('title','trim');
+   $rec['TITLE']=str_replace(' ','',$rec['TITLE']);
    if ($rec['TITLE']=='') {
     $out['ERR_TITLE']=1;
     $ok=0;
@@ -56,6 +56,33 @@
 
    global $data_type;
    $rec['DATA_TYPE']=(int)$data_type;
+
+   $rec['VALIDATION_TYPE']=gr('validation_type','int');
+   $rec['VALIDATION_NUM_MIN']=gr('validation_num_min');
+   $rec['VALIDATION_NUM_MAX']=gr('validation_num_max');
+   if ($rec['VALIDATION_TYPE']==3) {
+    $rec['VALIDATION_LIST']=gr('validation_list');
+    if (!$rec['VALIDATION_LIST']) {
+     $out['ERR_VALIDATION_LIST']=1;
+     $ok=0;
+    } else {
+     $tmp=explode(',',$rec['VALIDATION_LIST']);
+     $total = count($tmp);
+     for($i=0;$i<$total;$i++) {
+      $tmp[$i]=trim($tmp[$i]);
+      $tmp[$i]=mb_strtolower($tmp[$i],'UTF-8');
+     }
+     $rec['VALIDATION_LIST']=implode(',',$tmp);
+    }
+   }
+   if ($rec['VALIDATION_TYPE']==100) {
+    $rec['VALIDATION_CODE']=gr('validation_code');
+    $errors=php_syntax_error($rec['VALIDATION_CODE']);
+    if ($errors) {
+     $out['ERR_VALIDATION_CODE']=$errors;
+     $ok=0;
+    }
+   }
 
   //updating 'Description' (text)
    global $description;

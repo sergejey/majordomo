@@ -18,7 +18,7 @@ class events extends module {
 *
 * @access private
 */
-function events() {
+function __construct() {
   $this->name="events";
   $this->title="<#LANG_MODULE_EVENTS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -198,7 +198,7 @@ function usual(&$out) {
    postToWebSocketQueue('TERMINAL_EVENT', $event, 'PostEvent');
   }
 
-   $terminals=SQLSelect("SELECT * FROM terminals ORDER BY TITLE");
+   $terminals = getAllTerminals(-1, 'TITLE');
    $total=count($terminals);
    for($i=0;$i<$total;$i++) {
     if ($terminals[$i]['NAME']==$session->data['TERMINAL']) {
@@ -397,7 +397,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS events');
+  SQLDropTable('events');
   parent::uninstall();
  }
 /**

@@ -9,10 +9,17 @@
   $qry="1";
   // search filters
   //searching 'TITLE' (varchar)
+
+  $recently=gr('recently_updated','int');
+  if ($recently) {
+   $this->redirect("?view_mode=edit_scripts&id=".$recently);
+  }
+
   global $title;
   if ($title!='') {
-   $qry.=" AND scripts.TITLE LIKE '%".DBSafe($title)."%'";
+   $qry.=" AND (scripts.TITLE LIKE '%".DBSafe($title)."%' OR scripts.DESCRIPTION LIKE '%".DBSafe($title)."%' OR scripts.CODE LIKE '%".DBSafe($title)."%')";
    $out['TITLE']=$title;
+   $out['ALL_OPEN']=1;
   }
   // QUERY READY
   global $save_qry;
@@ -40,6 +47,7 @@
   $out['SORTBY']=$sortby;
   $out['TOTAL_CATEGORIES']=0;
   // SEARCH RESULTS
+//echo $qry;exit;
   $res=SQLSelect("SELECT scripts.*, script_categories.TITLE as CATEGORY FROM scripts LEFT JOIN script_categories ON scripts.CATEGORY_ID=script_categories.ID WHERE $qry ORDER BY $sortby");
   $old_category='';
   if ($res[0]['ID']) {
@@ -49,6 +57,11 @@
      $res[$i]['CATEGORY']=LANG_OTHER;
     }
     $res[$i]['DESCRIPTION']=nl2br(htmlspecialchars($res[$i]['DESCRIPTION']));
+
+    $executed_tm=strtotime($res[$i]['EXECUTED']);
+    if ($executed_tm>0) {
+     $res[$i]['EXECUTED_PASSED']=getPassedText($executed_tm);
+    }
 
     if ($res[$i]['CATEGORY']!=$old_category) {
      $out['TOTAL_CATEGORIES']++;
@@ -65,4 +78,15 @@
   }
 
 
-?>
+$recently_updated = SQLSelect("SELECT ID, TITLE, UPDATED FROM scripts ORDER BY UPDATED DESC, ID DESC LIMIT 20");
+if ($recently_updated[0]['ID']) {
+ $total = count($recently_updated);
+ for($i=0;$i<$total;$i++) {
+  if ($recently_updated[$i]['UPDATED']) {
+   $recently_updated[$i]['PASSED']=getPassedText(strtotime($recently_updated[$i]['UPDATED']));
+  } else {
+   $recently_updated[$i]['PASSED']='...';
+  }
+ }
+ $out['RECENTLY_UPDATED']=$recently_updated;
+}

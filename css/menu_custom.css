@@ -1,0 +1,15 @@
+.item_icon {
+    margin-top:-5px;
+    margin-bottom:-5px;
+    margin-right:8px;
+    max-height:32px;
+    max-width:32px;
+    vertical-align:middle;
+}
+.ui-listview>li>a.ui-btn {
+    padding: 0.3em 1em;
+}
+select {
+	background-color: Gray;
+}
+

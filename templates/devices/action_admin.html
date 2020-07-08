@@ -4,12 +4,26 @@
  [#if VIEW_MODE="search_devices" || VIEW_MODE=""#]
   [#inc devices_search_admin.html#]
  [#endif VIEW_MODE#]
+
+ [#if VIEW_MODE="manage_groups"#]
+ [#inc devices_mange_groups.html#]
+ [#endif VIEW_MODE#]
+
+ [#if VIEW_MODE="quick_edit"#]
+ [#inc devices_quick_edit.html#]
+ [#endif VIEW_MODE#]
+
  <!-- / table devices search -->
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
- [#if ID!=""#]
- <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
- [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+ [#if NO_NAV!="1"#]
+ <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
+ [#endif NO_NAV#]
+ <div class="row">
+     <div [#if NO_NAV!="1"#]class="col-md-8"[#endif#]>
+         <!--#
+         [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+         #-->
  <ul class="nav nav-tabs">
      <li[#if TAB=""#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
@@ -19,21 +33,37 @@
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=settings"><#LANG_SECTION_SETTINGS#></a>
      </li>
      <li[#if TAB="links"#] class="active"[#endif#]>
-     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=links"><#LANG_DEVICES_LINKS#></a>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=links&no_nav=<#NO_NAV#>"><#LANG_DEVICES_LINKS#></a>
      </li>
+     [#if SHOW_METHODS#]
+     <li[#if TAB="schedule"#] class="active"[#endif#]>
+     <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=schedule"><#LANG_DEVICES_SCHEDULE#></a>
+     </li>
+     [#endif SHOW_METHODS#]
      <li[#if TAB="logic"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=logic"><#LANG_DEVICES_LOGIC_ACTION#></a>
      </li>
      <li[#if TAB="interface"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=interface"><#LANG_INTERFACE#></a>
      </li>
+     <!--#
      <li[#if TAB="preview"#] class="active"[#endif#]>
      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#></a>
      </li>
+     #-->
      [#endif LINKED_OBJECT#]
  </ul>
  &nbsp;<br/>
- [#endif ID#]
+
+
+[#if OK_MSG!=""#]
+<div class="alert alert-success">[#OK_MSG#]</div>
+[#endif OK_MSG#]
+
+[#if ERR_MSG!=""#]
+<div class="alert alert-danger">[#ERR_MSG#]</div>
+[#endif ERR_MSG#]
+
  [#if TAB=""#]
    [#inc devices_edit.html#]
  [#endif TAB#]
@@ -52,11 +82,62 @@
  [#inc devices_edit_logic.html#]
  [#endif TAB#]
 
+
+         [#if TAB="schedule"#]
+         [#inc devices_edit_schedule.html#]
+         [#endif TAB#]
+
+
+
+
  [#if TAB="preview"#]
   [#inc preview.html#]
  [#endif TAB#]
 
+     </div>
+     [#if NO_NAV!="1"#]
+     <div class="col-md-4">
+
+         [#if LINKED_OBJECT!=""#]
+         [#inc preview.html#]
+         [#endif LINKED_OBJECT#]
+
+         [#if SHOW_METHODS#]
+         <hr>
+         <b><#LANG_METHODS#></b>:
+         [#begin SHOW_METHODS#]
+         <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);return false;">[#NAME#] &mdash; [#DESCRIPTION#]</a>
+             </div>
+         [#end SHOW_METHODS#]
+         [#endif SHOW_METHODS#]
+
+
+         [#if OTHER_DEVICES#]
+         <hr>
+         <h4><#LANG_LOCATION#>: [#LOCATION_TITLE#]</h4>
+         [#begin OTHER_DEVICES#]
+         <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
+         [#end OTHER_DEVICES#]
+         [#if ID!=""#]
+         &nbsp;<div>
+         <a href="?view_mode=edit_devices&location_id=<#LOCATION_ID#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+         </div>
+         [#endif ID#]
+         [#endif#]
+
+         [#if OTHER_DEVICES_TYPE#]
+         <hr>
+         <h4><#LANG_TYPE#>: [#TYPE_TITLE#]</h4>
+         [#begin OTHER_DEVICES_TYPE#]
+         <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
+         [#end OTHER_DEVICES_TYPE#]
+         [#endif#]
+
+     </div>
+     [#endif#]
+ </div>
  [#endif VIEW_MODE#]
+
  <!-- / table devices edit -->
  <!-- table devices view --> 
  [#if VIEW_MODE="view_devices"#]

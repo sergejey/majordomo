@@ -44,16 +44,7 @@
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
 </div>
 
-<script language="javascript">
- function majordroidChanged() {
-  if ($('#majordroid_api').is(':checked')) {
-   $('#majordroidDetails').show();
-  } else {
-   $('#majordroidDetails').hide();
-  }
-  return false;
- }
-</script>
+
 
 <div class="form-group">
   <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object_terminal<#LANG_HCE#></label>
@@ -65,35 +56,58 @@
      </div>
     </div>
 </div>
+    [#module name="linkedobject" object_field="linked_object"#]
 
-<div class="form-group">
-        <div class="col-lg-offset-2 col-lg-5 ">
-                <div class="checkbox">
-                        <label>
-                                <input type="checkbox" value="1" id='majordroid_api' onClick='majordroidChanged();' name="majordroid_api" [#if MAJORDROID_API="1"#] checked[#endif#]> MajorDroid API
-                        </label>
-                </div>
-        </div>
+<div class="form-group ">
+  <label class="col-lg-4 control-label"><#LANG_LOCATION#> терминала: <#LANG_HCB#>location<#LANG_HCE#></label>
+  <div class="col-lg-4"><select name="location" class="form-control">
+   <option value="">Выберите местоположение терминала
+    [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select></div>
 </div>
 
-<div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
+    <!--#
+        <script language="javascript">
+            function majordroidChanged() {
+                if ($('#majordroid_api').is(':checked')) {
+                    $('#majordroidDetails').show();
+                } else {
+                    $('#majordroidDetails').hide();
+                }
+                return false;
+            }
+        </script>
 
-
-
-<div class="form-group">
-  <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
-   <div class="col-lg-5">
-     <div class="form-inline">
-      <div class="form-group col-lg-5">
-       <input type="text" name="level_linked_property" id="level_linked_property" value="[#LEVEL_LINKED_PROPERTY#]"  class="form-control">
-      </div>
-     </div>
+    <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-5 ">
+                    <div class="checkbox">
+                            <label>
+                                    <input type="checkbox" value="1" id='majordroid_api' onClick='majordroidChanged();' name="majordroid_api" [#if MAJORDROID_API="1"#] checked[#endif#]> MajorDroid API
+                            </label>
+                    </div>
+            </div>
     </div>
-</div>
 
-[#module name="linkedobject" object_field="linked_object" property_field="level_linked_property"#]
+    <div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
 
-</div>
+
+
+    <div class="form-group">
+      <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
+       <div class="col-lg-5">
+         <div class="form-inline">
+          <div class="form-group col-lg-5">
+           <input type="text" name="level_linked_property" id="level_linked_property" value="[#LEVEL_LINKED_PROPERTY#]"  class="form-control">
+          </div>
+         </div>
+        </div>
+    </div>
+
+
+
+    </div>
+    #-->
 
 <script language="javascript">
  function canPlayChanged() {
@@ -104,7 +118,44 @@
   }
   return false;
  }
+ function canTTSChanged() {
+     if ($('#cantts').is(':checked')) {
+         $('#ttsDetails').show();
+     } else {
+         $('#ttsDetails').hide();
+     }
+     return false;
+ }
 </script>
+
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-5 ">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
+        <div class="form-group">
+            <label class="col-lg-4 control-label" for="tts_type"><#LANG_TTS_TYPE#>:</label>
+            <div class="col-lg-5">
+                <select id="tts_type" name="tts_type" class="form-control">
+                    <option value=""><#LANG_NONE#></option>
+                    [#begin TTS_ADDONS#]
+                    <option value="[#NAME#]"[#if NAME="<#TTS_TYPE#>"#] selected[#endif#]>[#NAME#]</option>
+                    [#end TTS_ADDONS#]
+                </select>
+            </div>
+        </div>
+        <div class="form-group ">
+            <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#>:</label>
+            <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
+        </div>
+    </div>
 
 
 <div class="form-group">
@@ -118,54 +169,104 @@
 </div>
 
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
+	<div class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
+		</label>
+		<div class="col-lg-5">
+			<select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">
+				<option value=""><#LANG_DEFAULT#>
+				[#begin PLAYER_ADDONS#]
+				<option value="[#VALUE#]"[#if VALUE="<#PLAYER_TYPE#>"#] selected[#endif#]>[#TITLE#]
+				[#end PLAYER_ADDONS#]
+			</select>
+			[#begin PLAYER_ADDONS#]
+			<small id="[#VALUE#]_description" class="addon-description form-text text-muted hidden">[#DESCRIPTION#]</small>
+			[#end PLAYER_ADDONS#]
+			<style type="text/css">
+				.addon-description { display: block; margin-top: 10px; }
+			</style>
+			<script type="text/javascript">
+				function player_type_select(type) {
+					$('small.addon-description').addClass('hidden');
+					$('small#'+type+'_description').removeClass('hidden');
+                        if (type == 'dnla') {
+                            $('#device_control_address').show();
+                            $('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').hide();
+						} else if (type == 'chromecast') {
+                            $('#device_control_address').hide();
+    						$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'foobar') {
+                            $('#device_control_address').hide();
+    						$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'ghn') {
+                            $('#device_control_address').hide();
+    						$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'majordroid') {
+                            $('#device_control_address').hide();
+							$('#player_name').hide();
+							$('#player_password').hide();
+                            $('#player_port').show();
+						} else if (type == 'mpd') {
+                            $('#device_control_address').hide();
+							$('#player_name').hide();
+							$('#player_password').show();
+                            $('#player_port').show();
+						} else if (type == 'mpd') {
+                            $('#device_control_address').hide();
+							$('#player_name').hide();
+							$('#player_password').show();
+                            $('#player_port').show();
+						} else {
+                            $('#device_control_address').hide();
+                            $('#player_name').show();
+							$('#player_password').show();
+							$('#player_port').show();
+                        }
+					return true;
+				}
+				$(document).ready(function() {
+					player_type_select('[#PLAYER_TYPE#]');
+				});
+			</script>
+		</div>
+	</div>
+	<div id='player_port' class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
+	</div>
+	<div id='player_name' class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
+	</div>
+	<div id='player_password' class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
+	</div>
 
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
-            <br>
-            [#if (PLAYER_TYPE=="vlcweb") || (PLAYER_TYPE=="xbmc") || (PLAYER_TYPE=="foobar")#]
-            (<#LANG_MAKE_SURE_YOU_HAVE_CONTROL_OVER_HTTP_ENABLED#>)
-            [#endif#]
-        </label>
+	<div id='device_control_address' style="display:none" class="form-group ">
+		<label class="col-lg-4 control-label" for="inputTitle">Control address:</label>
+		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_control_address" value="[#PLAYER_CONTROL_ADDRESS#]"></div>
+	</div>
+        
+</div>
+<!-- разграничение прав доступа к терминалам -->		
+[#if ID!=""#]
+    <div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="col-lg-5">
-                <select name="player_type" class="form-control">
-                        <option value=""><#LANG_DEFAULT#>
-                        <option value="vlc"[#if PLAYER_TYPE=="vlc"#] selected[#endif#]>VLC
-                        <option value="xbmc"[#if PLAYER_TYPE=="xbmc"#] selected[#endif#]>Kodi (XBMC)
-                        <option value="foobar"[#if PLAYER_TYPE=="foobar"#] selected[#endif#]>Foobar2000
-                        <option value="vlcweb"[#if PLAYER_TYPE=="vlcweb"#] selected[#endif#]>VLC over HTTP
-                        <option value="mpd"[#if PLAYER_TYPE=="mpd"#] selected[#endif#]>MPD
-                        <option value="majordroid"[#if PLAYER_TYPE=="majordroid"#] selected[#endif#]>MajorDroid
-                        <option value="chromecast"[#if PLAYER_TYPE=="chromecast"#] selected[#endif#]>ChromeCast / Google TV
-                </select>
+            <a class="btn btn-default " href="?(panel:{action=security_rules})&object_type=terminal&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
         </div>
-</div>
-
-[#if (PLAYER_TYPE!="chromecast") && (PLAYER_TYPE!="majordroid")#]
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
-</div>
-[#endif#]
-
-</div>
-
-
-
-
-
+    </div>
+[#endif ID#]
+<!-- разграничение прав доступа к терминалам -->
 <div class="form-group">
      <div class="col-lg-offset-2 col-lg-5">
  [#if ID!=""#]
