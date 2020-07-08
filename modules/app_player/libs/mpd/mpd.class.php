@@ -172,21 +172,31 @@ class mpd_player {
 	 * 
 	 * Builds the MPD object, connects to the server, and refreshes all local object properties.
 	 */
-	function mpd_player($srv,$port,$pwd = NULL, $debug= FALSE ) {
+	function mpd_player($srv,$port,$pwd = NULL, $debug = FALSE ) {
 		$this->host = $srv;
 		$this->port = $port;
         $this->password = $pwd;
         $this->debugging = $debug;
         
+        //$file = '/var/www/html/debug.log';
+        //$line = "\n\n... mpd_player (HOST: $srv, PLAYER_PORT: $port, PLAYER_PASSWORD: $pwd)";
+        //file_put_contents($file, $line, FILE_APPEND | LOCK_EX);
+
         global $mpd_debug;
         $mpd_debug = $debug;
 
 		$resp = $this->Connect();
 		if ( is_null($resp) ) {
             addErr( "Could not connect" );
-			return;
+            
+            file_put_contents($file, "\n... Could not connect", FILE_APPEND | LOCK_EX);
+			
+            return;
 		} else {
 			addLog( "connected");
+
+            //file_put_contents($file, "\n... connected: $resp", FILE_APPEND | LOCK_EX);
+
 			list ( $this->mpd_version ) = sscanf($resp, MPD_RESPONSE_OK . " MPD %s\n");
             if ( ! is_null($pwd) ) {
                 if ( is_null($this->SendCommand(MPD_CMD_PASSWORD,$pwd)) ) {
@@ -207,6 +217,7 @@ class mpd_player {
                 }
             }
 		}
+        $this->connected = TRUE;
 	}
 	
 	
@@ -913,6 +924,8 @@ class mpd_player {
 	 * listed in the table, allow it by default.
 	*/
 	private function _checkCompatibility($cmd) {
+        return TRUE;
+        
         // Check minimum compatibility
 		if (isset($this->COMPATIBILITY_MIN_TBL[$cmd])){
 			$req_ver_low = $this->COMPATIBILITY_MIN_TBL[$cmd];
