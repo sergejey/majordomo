@@ -75,7 +75,7 @@ if ($this->filter_name == '' && !defined('SETTINGS_GENERAL_START_LAYOUT')) {
             $tmp['TYPE'] = 'select';
             $tmp['DEFAULTVALUE'] = '';
             $tmp['NOTES'] = '';
-            $tmp['DATA'] = '=Default|homepages=Home Pages=pages.html|menu=Menu=menu.html|apps=Applications=apps.html|cp=Control Panel=admin.php';
+            $tmp['DATA'] = '=Default|homepages=Home Pages|menu=Menu|apps=Applications|cp=Control Panel';
             SQLInsert('settings', $tmp);
         }
     }

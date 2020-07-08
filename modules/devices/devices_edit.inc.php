@@ -351,6 +351,7 @@ if ($this->mode == 'update' && $this->tab == '') {
 
     $rec['SYSTEM_DEVICE'] = gr('system_device', 'int');
 
+
     $rec['LINKED_OBJECT'] = $linked_object;
     if ($rec['LINKED_OBJECT'] && !$rec['ID']) {
         $other_device = SQLSelectOne("SELECT ID FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($rec['LINKED_OBJECT']) . "'");
