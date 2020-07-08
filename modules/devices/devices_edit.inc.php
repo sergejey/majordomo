@@ -350,7 +350,6 @@ if ($this->mode == 'update' && $this->tab == '') {
     }
 
     $rec['SYSTEM_DEVICE'] = gr('system_device', 'int');
-	sg($linked_object . '.' . 'isSystem', $rec['SYSTEM_DEVICE']);
 
     $rec['LINKED_OBJECT'] = $linked_object;
     if ($rec['LINKED_OBJECT'] && !$rec['ID']) {

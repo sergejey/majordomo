@@ -1428,7 +1428,6 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `OBJECT_ID`, `KEEP_HISTORY`, `ONCHANGE`, `SYSTEM`, `DATA_KEY`, `DATA_TYPE`, `VALIDATION_TYPE`, `VALIDATION_NUM_MIN`, `VALIDATION_NUM_MAX`, `VALIDATION_LIST`, `VALIDATION_CODE`) VALUES
-(246, 34, 'isSystem', 'System device', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
 (255, 0, 'cycle_wscacheRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
 (256, 0, 'WSClientsTotal', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
 (10, 10, 'checked', 'время последней проверки', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
