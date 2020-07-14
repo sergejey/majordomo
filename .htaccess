@@ -38,6 +38,7 @@ deny from all
  Order Allow,Deny
  Deny from all
  </FilesMatch>
+ 
 <FILES debmes.txt>
 deny from all
 </FILES>
