@@ -141,7 +141,11 @@ if ($this->tab == 'settings') {
                 if ($this->mode == 'update') {
                     global ${$k . '_value'};
                     if (isset(${$k . '_value'})) {
-                        setGlobal($rec['LINKED_OBJECT'] . '.' . $k, trim(${$k . '_value'}));
+                        if (is_array(${$k . '_value'})) {
+                            setGlobal($rec['LINKED_OBJECT'] . '.' . $k, implode(',',${$k . '_value'}));
+                        } else {
+                            setGlobal($rec['LINKED_OBJECT'] . '.' . $k, trim(${$k . '_value'}));
+                        }
                     }
                     $out['OK'] = 1;
                     if ($v['ONCHANGE'] != '') {
@@ -152,7 +156,8 @@ if ($this->tab == 'settings') {
                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP'] = $v['_CONFIG_HELP'];
                 $v['CONFIG_TYPE'] = $v['_CONFIG_TYPE'];
                 $v['VALUE'] = getGlobal($rec['LINKED_OBJECT'] . '.' . $k);
-                if ($v['CONFIG_TYPE'] == 'select') {
+                if ($v['CONFIG_TYPE'] == 'select' || $v['CONFIG_TYPE'] == 'multi_select') {
+                    $selected_options = explode(',',gg($rec['LINKED_OBJECT'] . '.' . $k));
                     $tmp = explode(',', $v['_CONFIG_OPTIONS']);
                     $total = count($tmp);
                     for ($i = 0; $i < $total; $i++) {
@@ -163,7 +168,9 @@ if ($this->tab == 'settings') {
                         } else {
                             $title = $value;
                         }
-                        $v['OPTIONS'][] = array('VALUE' => $value, 'TITLE' => $title);
+                        $option = array('VALUE' => $value, 'TITLE' => $title);
+                        if (in_array($value,$selected_options)) $option['SELECTED']=1;
+                        $v['OPTIONS'][] = $option;
                     }
                 } elseif ($v['CONFIG_TYPE'] == 'style_image') {
                     include_once(DIR_MODULES . 'scenes/scenes.class.php');
@@ -426,6 +433,14 @@ if ($this->mode == 'update' && $this->tab == '') {
 
         if ($location_title) {
             setGlobal($object_rec['TITLE'] . '.linkedRoom', $location_title);
+        }
+
+        if ($added && is_array($type_details['PROPERTIES'])) {
+            foreach($type_details['PROPERTIES'] as $property=>$details) {
+                if (IsSet($details['_CONFIG_DEFAULT'])) {
+                    setGlobal($object_rec['TITLE'] . '.'.$property, $details['_CONFIG_DEFAULT']);
+                }
+            }
         }
 
         if ($added && $rec['TYPE'] == 'sensor_temp') {
