@@ -52,12 +52,15 @@ $old_date = date('Y-m-d');
 $checked_time = 0;
 $started_time = time();
 
-echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
+
+echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+
 
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
-//        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
         saveToCache("MJD:$cycleVarName", $checked_time);
 
         $timestamp = time() - getGlobal('ThisComputer.started_time');
