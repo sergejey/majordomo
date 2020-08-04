@@ -94,6 +94,11 @@
 <div style="display:none">
 <audio id="click_sound" src="{$smarty.const.SETTINGS_SCENES_CLICKSOUND}" controls preload="auto" autobuffer>
 </audio>
+<script type="text/javascript">
+    var thissound=document.getElementById('click_sound');
+    thissound.play();
+    setTimeout(thissound.pause.bind(thissound), 10);
+</script>
 </div>
 {/if}
         {if $TOTAL_SCENES!="1"}
@@ -193,7 +198,7 @@ $.fn.customContextMenu = function(callBack){
          var window_url;
 
             {if $smarty.const.SETTINGS_SCENES_CLICKSOUND!=""}
-            setTimeout("EvalSound('click_sound')",100);
+            setTimeout("EvalSound('click_sound')",10);
             {/if}
 
          $('#state_'+id).animate({ opacity: .5 }, 100).animate({ opacity: 1 }, 100);

@@ -995,6 +995,8 @@ class objects extends module
                 $p_lower == 'volume' ||
                 $p_lower == 'channel' ||
                 $p_lower == 'mode' ||
+                $p_lower == 'thermostatmode' ||
+                $p_lower == 'fanspeedmode' ||
                 $p_lower == 'currenttargetvalue') //
         ) {
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);

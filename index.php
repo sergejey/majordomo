@@ -25,7 +25,6 @@ startMeasure('load_settings');
 include_once("./load_settings.php");
 endMeasure('load_settings');
 
-$use_caching   = 0;
 $cache_expire  = 60 * 60; // 60 minutes cache expiration time
 $cached_result = '';
 
@@ -34,7 +33,7 @@ $req_url = $_SERVER['REQUEST_URI'];
 if ($req_url == '/')
    $req_url = '/index.html';
 
-if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) && $_SERVER['REQUEST_METHOD'] != 'POST')
+if (defined('USE_CASHING') && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) && $_SERVER['REQUEST_METHOD'] != 'POST')
 {
    $cache_filename = preg_replace('/\W/', '_', $matches[1]) . '.html';
    
