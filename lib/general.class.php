@@ -16,10 +16,9 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
     $p = str_replace('  ', ' ', $p);
     $p = str_replace(' ', '|', $p);
     
-    if (($_SERVER["REMOTE_ADDR"] == '127.0.0.1') || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) {
+    $remoteAddr=$_SERVER["REMOTE_ADDR"];
+    if ((($_SERVER["REMOTE_ADDR"] == '127.0.0.1') || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
         $remoteAddr=getenv('HTTP_X_FORWARDED_FOR');
-    } else {
-        $remoteAddr=$_SERVER["REMOTE_ADDR"];
     }
     
     if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
