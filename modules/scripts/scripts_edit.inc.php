@@ -7,6 +7,12 @@ if ($this->owner->name == 'panel') {
 }
 $table_name = 'scripts';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
+
+if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+}
 if ($this->mode == 'update') {
 
     //print_r($_REQUEST);exit;
@@ -39,13 +45,22 @@ if ($this->mode == 'update') {
 
     $old_code=$rec['CODE'];
     $rec['CODE'] = $code;
-
+	
     if ($rec['CODE'] != '') {
         //echo $content;
+		
         $errors = php_syntax_error($rec['CODE']);
+		
         if ($errors) {
+            $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
             $out['ERR_CODE'] = 1;
-            $out['ERRORS'] = nl2br($errors);
+			$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+			$errorStr = explode('Errors parsing', $errorStr[1]);
+			$errorStr = explode(' in ', $errorStr[0]);
+			//var_dump($errorStr);
+            $out['ERRORS'] = $errorStr[0];
+			$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+			$out['ERR_OLD_CODE'] = $old_code;
             $ok = 0;
         }
     }

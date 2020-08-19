@@ -1,48 +1,63 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.9
--- http://www.phpmyadmin.net
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Dec 03, 2015 at 03:49 PM
--- Server version: 5.1.46
--- PHP Version: 5.4.30
+-- Хост: mysql:3306
+-- Время создания: Июл 08 2020 г., 14:55
+-- Версия сервера: 10.4.12-MariaDB-1:10.4.12+maria~bionic-log
+-- Версия PHP: 7.4.4
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_terminal`
+-- База данных: `db_terminal`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin_users`
+-- Структура таблицы `actions_log`
 --
 
-DROP TABLE IF EXISTS `admin_users`;
-CREATE TABLE IF NOT EXISTS `admin_users` (
-  `ID` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `actions_log` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `ADDED` datetime DEFAULT NULL,
+  `ACTION_TYPE` varchar(100) NOT NULL DEFAULT '',
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `USER` varchar(255) NOT NULL DEFAULT '',
+  `TERMINAL` varchar(255) NOT NULL DEFAULT '',
+  `IP` varchar(100) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `admin_users`
+--
+
+CREATE TABLE `admin_users` (
+  `ID` tinyint(3) UNSIGNED NOT NULL,
   `NAME` varchar(100) NOT NULL DEFAULT '',
   `LOGIN` varchar(100) NOT NULL DEFAULT '',
   `PASSWORD` varchar(100) NOT NULL DEFAULT '',
   `EMAIL` varchar(100) NOT NULL DEFAULT '',
-  `COMMENTS` text,
-  `ACCESS` text,
-  `PRIVATE` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `EMAIL_ORDERS` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `EMAIL_INVENTORY` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `COMMENTS` text DEFAULT NULL,
+  `ACCESS` text DEFAULT NULL,
+  `PRIVATE` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `EMAIL_ORDERS` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `EMAIL_INVENTORY` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `admin_users`
+-- Дамп данных таблицы `admin_users`
 --
 
 INSERT INTO `admin_users` (`ID`, `NAME`, `LOGIN`, `PASSWORD`, `EMAIL`, `COMMENTS`, `ACCESS`, `PRIVATE`, `EMAIL_ORDERS`, `EMAIL_INVENTORY`) VALUES
@@ -51,348 +66,241 @@ INSERT INTO `admin_users` (`ID`, `NAME`, `LOGIN`, `PASSWORD`, `EMAIL`, `COMMENTS
 -- --------------------------------------------------------
 
 --
--- Table structure for table `app_quotes`
+-- Структура таблицы `blockly_code`
 --
 
-DROP TABLE IF EXISTS `app_quotes`;
-CREATE TABLE IF NOT EXISTS `app_quotes` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `BODY` text,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `blockly_code`
---
-
-DROP TABLE IF EXISTS `blockly_code`;
-CREATE TABLE IF NOT EXISTS `blockly_code` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `blockly_code` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `SYSTEM_NAME` varchar(255) NOT NULL DEFAULT '',
-  `CODE_TYPE` int(3) NOT NULL DEFAULT '0',
-  `CODE` text,
-  `XML` text,
-  `UPDATED` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=85 ;
+  `CODE_TYPE` int(3) NOT NULL DEFAULT 0,
+  `CODE` text DEFAULT NULL,
+  `XML` text DEFAULT NULL,
+  `UPDATED` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `blockly_code`
+-- Дамп данных таблицы `blockly_code`
 --
 
 INSERT INTO `blockly_code` (`ID`, `SYSTEM_NAME`, `CODE_TYPE`, `CODE`, `XML`, `UPDATED`) VALUES
 (1, 'script14', 0, '', '', '2014-09-03 12:28:53'),
-(2, 'method87', 0, '//$params[''t'']\r\n $this->setProperty("updated",time());\r\n $this->setProperty("updatedTime",date("H:i",time()));\r\n $this->setProperty("alive",1); \r\n \r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=30*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout); \r\n\r\nif (!isset($params[''h''])) {\r\n return;\r\n}\r\n\r\n\r\n$old_temp=$this->getProperty(''humidity'');\r\n$t=round($params[''h''],1);\r\n\r\nif ($t>100) return;\r\n\r\n$this->setProperty(''humidity'',$t);\r\nif ($params[''uptime'']) {\r\n $this->setProperty(''uptime'',$params[''uptime'']);\r\n}\r\n\r\nif ($t>$old_temp) {\r\n $d=1;\r\n} elseif ($t<$old_temp) {\r\n $d=-1;\r\n} else {\r\n $d=0;\r\n}\r\n$this->setProperty(''direction'',$d);\r\n\r\n$linked_room=$this->getProperty("LinkedRoom");\r\nif ($linked_room) {\r\n setGlobal($linked_room.''.Humidity'',$t);\r\n}', '', '2014-09-03 13:51:53'),
-(7, 'script16', 0, '// got data\r\n$sensor=$params[''sensor''];\r\nif (!$sensor) return 0;\r\n\r\n$hum=(int)str_replace(''-'','''',$params[''other_params''][6]);\r\nif ($hum>0 && $hum<=100) {\r\n callMethod(''hum''.$sensor.''.humChanged'',array(''h''=>$hum));\r\n}\r\n\r\n//$temp=((int)str_replace(''-'','''',$params[''other_params''][4]))/10;\r\n$b1 =(int)str_replace(''-'','''',$params[''other_params''][4]);\r\n$b2 =(int)str_replace(''-'','''',$params[''other_params''][5]);\r\n$y_temp=256*($b2 & 15)+$b1;\r\nif  (($b2 & 8) != 0 ) { // отрицательное значение температуры\r\n $y_temp=4096-$y_temp;\r\n $temp = -1*($y_temp)/10;\r\n} else { // положительное значение температуры\r\n $temp = $y_temp/10;\r\n}\r\n\r\nif ($temp>-30 && $temp<=100) {\r\n callMethod(''temp''.$sensor.''.tempChanged'',array(''t''=>$temp));\r\n}', '', '2014-09-03 16:07:57'),
-(10, 'method88', 0, '$rooms=getObjectsByClass("Rooms");\r\n$total=count($rooms);\r\nfor($i=0;$i<$total;$i++) {\r\n $rooms[$i][''room'']=getGlobal($rooms[$i][''TITLE''].''.Title'');\r\n if (!$rooms[$i][''room'']) {\r\n  $rooms[$i][''room'']=$rooms[$i][''TITLE''];\r\n } \r\n $rooms[$i][''active'']=getGlobal($rooms[$i][''TITLE''].''.SomebodyHere'');\r\n $rooms[$i][''time'']=getGlobal($rooms[$i][''TITLE''].''.LatestActivity''); \r\n $rooms[$i][''diff'']=time()-$rooms[$i][''time''];\r\n} \r\n\r\nfunction rooms_cmp($a, $b)\r\n{\r\n    if ($a[''diff''] == $b[''diff'']) {\r\n        return 0;\r\n    }\r\n    return ($a[''diff''] < $b[''diff'']) ? -1 : 1;\r\n}\r\nusort($rooms,"rooms_cmp");\r\n\r\nif (!$rooms[0][''active'']) {\r\n $somebodyHomeText="Никого нет дома. Были в ".date(''H:i'',$rooms[0][''time''])." (".$rooms[0][''room''].")";\r\n} else {\r\n $res_rooms=array();\r\n for($i=0;$i<$total;$i++) {\r\n  if ($rooms[$i][''active'']) {\r\n   $res_rooms[]=$rooms[$i][''room''];\r\n  } \r\n }\r\n $somebodyHomeText="Кто-то дома: ".implode(", ",$res_rooms); \r\n}\r\nsetGlobal(''somebodyHomeText'',$somebodyHomeText);\r\n//echo "Updated";', '', '2014-09-04 16:05:37'),
-(9, 'method66', 0, '$latestActivity=$this->getProperty(''LatestActivity'');\r\n$this->setProperty(''LatestActivity'',time());\r\n$this->setProperty(''LatestActivityTime'',date(''H:i''));\r\n\r\n$this->setProperty(''SomebodyHere'',1);\r\n$ot=$this->object_title;\r\nif ($this->getProperty("IdleDelay")) {\r\n $activity_timeout=(int)$this->getProperty("IdleDelay");\r\n} else {\r\n $activity_timeout=10*60;\r\n}\r\nclearTimeOut($ot."_activity_timeout");\r\nsetTimeOut($ot."_activity_timeout","callMethod(''".$ot.".onIdle'');",$activity_timeout);\r\n$this->callMethod("updateActivityStatus");\r\n', '', '2014-09-04 16:05:03'),
-(11, 'method89', 0, '$cmdline=''"c:\\Program Files\\nooLite\\nooLite.exe" -api ''.$params[''command''];\r\n$last_called=gg(''NoolightCommandSend'');\r\n$min_delay=3;\r\n$now=time();\r\nif (($now-$last_called)>$min_delay) {\r\n //safe_exec($cmdline);\r\n $last_callled=$now; \r\n sg(''NoolightCommandSend'',$last_called);\r\n DebMes("Noolite instant exec: ".$cmdline);\r\n system($cmdline);\r\n //exec($cmdline);\r\n} else {\r\n if ($last_callled<$now) {\r\n  $last_callled=$now;\r\n }\r\n $last_called+=$min_delay;\r\n sg(''NoolightCommandSend'',$last_called);\r\n DebMes("Noolite scheduled job for ".date(''H:i:s'',$last_called));\r\n AddScheduledJob("noolight".md5($cmdline),"safe_exec(''".$cmdline."'');",$last_called);\r\n}\r\n\r\n', '', '2014-09-04 16:11:33'),
-(12, 'method90', 0, '$this->setProperty("status",0);\r\n//safe_exec(''"c:\\Program Files\\nooLite\\noolite.exe" -api -off_ch''.$this->getProperty("channel"));\r\n$this->callMethod("sendCommand",array(''command''=>''-off_ch''.$this->getProperty("channel")));', '', '2014-09-04 16:12:35'),
-(13, 'method91', 0, '$this->setProperty("status",1);\r\n$this->callMethod("sendCommand",array(''command''=>''-on_ch''.$this->getProperty("channel")));', '', '2014-09-04 16:13:08'),
-(14, 'method92', 0, '', '', '2014-09-04 16:26:02'),
-(15, 'method93', 0, '', '', '2014-09-04 16:26:13'),
-(16, 'method94', 0, '', '', '2014-09-04 16:26:24'),
-(17, 'method95', 0, '', '', '2014-09-04 16:26:34'),
-(18, 'method96', 0, '', '', '2014-09-04 16:27:00'),
-(84, 'object17_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2015-12-03 14:46:44'),
+(7, 'script16', 0, '// got data\r\n$sensor=$params[\'sensor\'];\r\nif (!$sensor) return 0;\r\n\r\n$hum=(int)str_replace(\'-\',\'\',$params[\'other_params\'][6]);\r\nif ($hum>0 && $hum<=100) {\r\n callMethod(\'hum\'.$sensor.\'.humChanged\',array(\'h\'=>$hum));\r\n}\r\n\r\n//$temp=((int)str_replace(\'-\',\'\',$params[\'other_params\'][4]))/10;\r\n$b1 =(int)str_replace(\'-\',\'\',$params[\'other_params\'][4]);\r\n$b2 =(int)str_replace(\'-\',\'\',$params[\'other_params\'][5]);\r\n$y_temp=256*($b2 & 15)+$b1;\r\nif  (($b2 & 8) != 0 ) { // отрицательное значение температуры\r\n $y_temp=4096-$y_temp;\r\n $temp = -1*($y_temp)/10;\r\n} else { // положительное значение температуры\r\n $temp = $y_temp/10;\r\n}\r\n\r\nif ($temp>-30 && $temp<=100) {\r\n callMethod(\'temp\'.$sensor.\'.tempChanged\',array(\'t\'=>$temp));\r\n}', '', '2014-09-03 16:07:57'),
+(10, 'method88', 0, '$rooms=getObjectsByClass(\"Rooms\");\r\n$total=count($rooms);\r\nfor($i=0;$i<$total;$i++) {\r\n $rooms[$i][\'room\']=getGlobal($rooms[$i][\'TITLE\'].\'.Title\');\r\n if (!$rooms[$i][\'room\']) {\r\n  $rooms[$i][\'room\']=$rooms[$i][\'TITLE\'];\r\n } \r\n $rooms[$i][\'active\']=getGlobal($rooms[$i][\'TITLE\'].\'.SomebodyHere\');\r\n $rooms[$i][\'time\']=getGlobal($rooms[$i][\'TITLE\'].\'.LatestActivity\'); \r\n $rooms[$i][\'diff\']=time()-$rooms[$i][\'time\'];\r\n} \r\n\r\nfunction rooms_cmp($a, $b)\r\n{\r\n    if ($a[\'diff\'] == $b[\'diff\']) {\r\n        return 0;\r\n    }\r\n    return ($a[\'diff\'] < $b[\'diff\']) ? -1 : 1;\r\n}\r\nusort($rooms,\"rooms_cmp\");\r\n\r\nif (!$rooms[0][\'active\']) {\r\n $somebodyHomeText=\"Никого нет дома. Были в \".date(\'H:i\',$rooms[0][\'time\']).\" (\".$rooms[0][\'room\'].\")\";\r\n} else {\r\n $res_rooms=array();\r\n for($i=0;$i<$total;$i++) {\r\n  if ($rooms[$i][\'active\']) {\r\n   $res_rooms[]=$rooms[$i][\'room\'];\r\n  } \r\n }\r\n $somebodyHomeText=\"Кто-то дома: \".implode(\", \",$res_rooms); \r\n}\r\nsetGlobal(\'somebodyHomeText\',$somebodyHomeText);\r\n//echo \"Updated\";', '', '2014-09-04 16:05:37'),
+(9, 'method66', 0, '$latestActivity=$this->getProperty(\'LatestActivity\');\r\n$this->setProperty(\'LatestActivity\',time());\r\n$this->setProperty(\'LatestActivityTime\',date(\'H:i\'));\r\n\r\n$this->setProperty(\'SomebodyHere\',1);\r\n$ot=$this->object_title;\r\nif ($this->getProperty(\"IdleDelay\")) {\r\n $activity_timeout=(int)$this->getProperty(\"IdleDelay\");\r\n} else {\r\n $activity_timeout=10*60;\r\n}\r\nclearTimeOut($ot.\"_activity_timeout\");\r\nsetTimeOut($ot.\"_activity_timeout\",\"callMethod(\'\".$ot.\".onIdle\');\",$activity_timeout);\r\n$this->callMethod(\"updateActivityStatus\");\r\n', '', '2014-09-04 16:05:03'),
+(84, 'object17_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(\'states\'=>\'states\',\'main\'=>\'main\',\'execs\'=>\'exec\',\'scheduler\'=>\'scheduler\');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(\'ThisComputer.cycle_\'.$k.\'Run\');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v.\" \".LANG_GENERAL_CYCLE.\" \".LANG_GENERAL_STOPPED.\".\";\r\n }\r\n}\r\n\r\n$cycles=array(\'ping\'=>\'ping\',\'webvars\'=>\'webvars\');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(\'ThisComputer.cycle_\'.$k.\'Run\');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v.\" \".LANG_GENERAL_CYCLE.\" \".LANG_GENERAL_STOPPED.\".\";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_SYSTEM_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', '', '2015-12-03 14:46:44'),
 (74, 'pattern6', 0, '', '', '2014-10-31 15:22:41'),
 (75, 'pattern5', 0, '', '', '2014-10-31 15:22:55'),
-(73, 'object18_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 15:10:21'),
-(60, 'script15', 0, '$weather.="Сегодня ожидается ".str_replace(''&deg;'','' '',getGlobal(''weatherToday''));\r\n$weather.=". Завтра ".str_replace(''&deg;'','' '',getGlobal(''weatherTomorrow''));\r\n$weather.=". Сейчас на улице ".getGlobal(''TempOutside'').''.'';\r\n$weather=str_replace(''&deg;'','''',$weather);\r\nsay($weather,2);', '', '2014-10-30 15:32:00'),
-(24, 'method97', 0, '$this->setProperty(''updated'',time());\r\n$this->setProperty(''updatedTime'',date(''H:i''));', '', '2014-09-04 17:34:10'),
-(26, 'object72_method97', 0, 'say("Нажата на пульте кнопка Цэ!",2);', '', '2014-09-04 17:38:10'),
-(27, 'object70_method97', 0, 'say("Нажата на пульте кнопка А!",2);', '', '2014-09-04 17:38:30'),
-(28, 'object71_method97', 0, 'say("Нажата на пульте кнопка Бэ!",2);', '', '2014-09-04 17:38:48'),
-(61, 'script17', 0, '$lastRead=getGlobal(''lastNewsRead'');\r\n$limit=10;\r\n\r\n$items=SQLSelect("SELECT TITLE FROM rss_items WHERE ADDED>''".date(''Y-m-d H:i:s'',$lastRead)."'' ORDER BY ADDED DESC LIMIT $limit");\r\n$total=count($items);\r\nif ($total==0) {\r\n $items=SQLSelect("SELECT TITLE FROM rss_items WHERE 1 ORDER BY ADDED DESC LIMIT 2");\r\n $total=count($items); \r\n}\r\n\r\n$res=array_reverse($items);\r\nfor($i=0;$i<$total;$i++) {\r\n say($res[$i][''TITLE''],2);\r\n}\r\nsetGlobal(''lastNewsRead'',time());', '', '2014-10-30 15:32:13'),
-(35, 'object72_method98', 0, 'say("Нажата на пульте кнопка Цэ!",2);\r\nrunScript(''readLatestNews'');', '', '2014-09-04 18:04:04'),
-(63, 'script18', 0, '// вытягиваем историю из переменной\r\n$alreadyPlayed=gg("AlreadyPlayedMusic");\r\nif (!$alreadyPlayed) {\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n// выбираем случайную папку\r\n$rec=SQLSelectOne("SELECT * FROM media_favorites WHERE ID NOT IN (".$alreadyPlayed.") ORDER BY RAND()");\r\n\r\nif (!$rec[''ID'']) {\r\n // папок больше не осталось, поэтому выбираем случайную и сбрасываем историю\r\n $rec=SQLSelectOne("SELECT * FROM media_favorites ORDER BY RAND()");\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n\r\nif ($rec[''ID'']) {\r\n\r\n // добавляем выбранную папку в историю\r\n $alreadyPlayed.='',''.$rec[''ID''];\r\n sg("AlreadyPlayedMusic",$alreadyPlayed);\r\n\r\n // запускаем на проигрывание\r\n $collection=SQLSelectOne("SELECT * FROM collections WHERE ID=".(int)$rec[''COLLECTION_ID'']);\r\n $path=$collection[''PATH''].$rec[''PATH''];\r\n playMedia($path);\r\n //setTimeOut(''VLCPlayer_update'',"callMethod(''VLCPlayer.update'');",10);\r\n\r\n}', '', '2014-10-30 15:32:40'),
-(62, 'script19', 0, 'getURL(''http://localhost/rc/?command=vlc_pause'',0);', '', '2014-10-30 15:32:28'),
-(39, 'object19_method64', 0, 'callMethod(''noo1.turnOff''); // выключаем тёплый пол\r\ncallMethod(''noo2.turnOff''); // выключаем бойлер на кухне', '', '2014-09-05 11:10:07'),
-(40, 'object19_method65', 0, 'callMethod(''noo1.turnOn''); // включаем тёплый пол\r\ncallMethod(''noo2.turnOn''); // включаем бойлер на кухне', '', '2014-09-05 11:10:32'),
+(73, 'object18_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(\'Internet\')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', '', '2014-10-31 15:10:21'),
+(60, 'script15', 0, '$weather.=\"Сегодня ожидается \".str_replace(\'&deg;\',\' \',getGlobal(\'weatherToday\'));\r\n$weather.=\". Завтра \".str_replace(\'&deg;\',\' \',getGlobal(\'weatherTomorrow\'));\r\n$weather.=\". Сейчас на улице \".getGlobal(\'TempOutside\').\'.\';\r\n$weather=str_replace(\'&deg;\',\'\',$weather);\r\nsay($weather,2);', '', '2014-10-30 15:32:00'),
+(26, 'object72_method97', 0, 'say(\"Нажата на пульте кнопка Цэ!\",2);', '', '2014-09-04 17:38:10'),
+(27, 'object70_method97', 0, 'say(\"Нажата на пульте кнопка А!\",2);', '', '2014-09-04 17:38:30'),
+(28, 'object71_method97', 0, 'say(\"Нажата на пульте кнопка Бэ!\",2);', '', '2014-09-04 17:38:48'),
+(61, 'script17', 0, '$lastRead=getGlobal(\'lastNewsRead\');\r\n$limit=10;\r\n\r\n$items=SQLSelect(\"SELECT TITLE FROM rss_items WHERE ADDED>\'\".date(\'Y-m-d H:i:s\',$lastRead).\"\' ORDER BY ADDED DESC LIMIT $limit\");\r\n$total=count($items);\r\nif ($total==0) {\r\n $items=SQLSelect(\"SELECT TITLE FROM rss_items WHERE 1 ORDER BY ADDED DESC LIMIT 2\");\r\n $total=count($items); \r\n}\r\n\r\n$res=array_reverse($items);\r\nfor($i=0;$i<$total;$i++) {\r\n say($res[$i][\'TITLE\'],2);\r\n}\r\nsetGlobal(\'lastNewsRead\',time());', '', '2014-10-30 15:32:13'),
+(35, 'object72_method98', 0, 'say(\"Нажата на пульте кнопка Цэ!\",2);\r\nrunScript(\'readLatestNews\');', '', '2014-09-04 18:04:04'),
+(63, 'script18', 0, '// вытягиваем историю из переменной\r\n$alreadyPlayed=gg(\"AlreadyPlayedMusic\");\r\nif (!$alreadyPlayed) {\r\n $alreadyPlayed=\'0\';\r\n}\r\n\r\n// выбираем случайную папку\r\n$rec=SQLSelectOne(\"SELECT * FROM media_favorites WHERE ID NOT IN (\".$alreadyPlayed.\") ORDER BY RAND()\");\r\n\r\nif (!$rec[\'ID\']) {\r\n // папок больше не осталось, поэтому выбираем случайную и сбрасываем историю\r\n $rec=SQLSelectOne(\"SELECT * FROM media_favorites ORDER BY RAND()\");\r\n $alreadyPlayed=\'0\';\r\n}\r\n\r\n\r\nif ($rec[\'ID\']) {\r\n\r\n // добавляем выбранную папку в историю\r\n $alreadyPlayed.=\',\'.$rec[\'ID\'];\r\n sg(\"AlreadyPlayedMusic\",$alreadyPlayed);\r\n\r\n // запускаем на проигрывание\r\n $collection=SQLSelectOne(\"SELECT * FROM collections WHERE ID=\".(int)$rec[\'COLLECTION_ID\']);\r\n $path=$collection[\'PATH\'].$rec[\'PATH\'];\r\n playMedia($path);\r\n //setTimeOut(\'VLCPlayer_update\',\"callMethod(\'VLCPlayer.update\');\",10);\r\n\r\n}', '', '2014-10-30 15:32:40'),
+(62, 'script19', 0, 'getURL(\'http://localhost/rc/?command=vlc_pause\',0);', '', '2014-10-30 15:32:28'),
+(39, 'object19_method64', 0, 'callMethod(\'noo1.turnOff\'); // выключаем тёплый пол\r\ncallMethod(\'noo2.turnOff\'); // выключаем бойлер на кухне', '', '2014-09-05 11:10:07'),
+(40, 'object19_method65', 0, 'callMethod(\'noo1.turnOn\'); // включаем тёплый пол\r\ncallMethod(\'noo2.turnOn\'); // включаем бойлер на кухне', '', '2014-09-05 11:10:32'),
 (76, 'script20', 0, 'say(LANG_GENERAL_SETTING_UP_LIGHTS,2);\r\n// to-do', '', '2014-10-31 15:25:11'),
-(69, 'object17_method73', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states cycle'',''main''=>''main cycle'',''execs''=>''exec cycle'',''scheduler''=>''scheduler cycle'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." stopped.";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping cycle'',''webvars''=>''webvars cycle'',''watchfolders''=>''watch folders cycle'',''rss''=>''RSS cycle'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." stopped.";\r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=''Red''; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=''Yellow'';  \r\n} else {\r\n $state=''green'';\r\n $state_title=''Green'';   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say("System state changed to ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say("System state restored to ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-30 15:44:01'),
-(70, 'object16_method75', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 14:57:24'),
-(59, 'script21', 0, '$res='''';\r\n if (gg(''Security.stateColor'')==''green'' && gg(''System.stateColor'')==''green'' && gg(''Communication.stateColor'')==''green'') {\r\n  $res=''Все системы работают в штатном режиме'';\r\n } else {\r\n  if (gg(''Security.stateColor'')!=''green'') {\r\n   $res.=" Проблема безопасности: ".getGlobal(''Security.stateDetails'');\r\n  }\r\n  if (gg(''System.stateColor'')!=''green'') {\r\n   $res.=" Системная проблема: ".getGlobal(''System.stateDetails'');\r\n  }  \r\n  if (gg(''Communication.stateColor'')!=''green'') {\r\n   $res.=" Проблема связи: ".getGlobal(''Communication.stateDetails'');\r\n  }  \r\n }\r\n say($res,5);', '', '2014-10-30 15:31:46'),
-(48, 'script1', 0, 'say(getRandomLine(''morning''),2);\r\n//runScript(''readWunderTasks'');\r\nrunScript(''readWeatherToday'');\r\nrunScript(''reportStatus'');', '<xml xmlns="http://www.w3.org/1999/xhtml">\r\n  <block type="majordomo_say" inline="false" x="140" y="51">\r\n    <value name="TEXT">\r\n      <block type="text">\r\n        <title name="TEXT">Good morning!</title>\r\n      </block>\r\n    </value>\r\n    <next>\r\n      <block type="controls_if" inline="false">\r\n        <value name="IF0">\r\n          <block type="logic_negate" inline="false">\r\n            <value name="BOOL">\r\n              <block type="majordomo_getglobal">\r\n                <title name="TEXT">ThisComputer.WeHaveGuests</title>\r\n              </block>\r\n            </value>\r\n          </block>\r\n        </value>\r\n        <statement name="DO0">\r\n          <block type="majordomo_runscript" inline="false">\r\n            <title name="TEXT">sayTodayAgenda</title>\r\n            <next>\r\n              <block type="majordomo_runscript" inline="false">\r\n                <title name="TEXT">playFavoriteMusic</title>\r\n              </block>\r\n            </next>\r\n          </block>\r\n        </statement>\r\n      </block>\r\n    </next>\r\n  </block>\r\n</xml>', '2014-09-05 12:30:58'),
-(47, 'script13', 0, 'say(getRandomLine(''evening''),2);\r\nrunScript(''reportStatus'');', '<xml xmlns="http://www.w3.org/1999/xhtml">\r\n  <block type="majordomo_say" inline="false" x="140" y="51">\r\n    <value name="TEXT">\r\n      <block type="text">\r\n        <title name="TEXT">Good morning!</title>\r\n      </block>\r\n    </value>\r\n    <next>\r\n      <block type="controls_if" inline="false">\r\n        <value name="IF0">\r\n          <block type="logic_negate" inline="false">\r\n            <value name="BOOL">\r\n              <block type="majordomo_getglobal">\r\n                <title name="TEXT">ThisComputer.WeHaveGuests</title>\r\n              </block>\r\n            </value>\r\n          </block>\r\n        </value>\r\n        <statement name="DO0">\r\n          <block type="majordomo_runscript" inline="false">\r\n            <title name="TEXT">sayTodayAgenda</title>\r\n            <next>\r\n              <block type="majordomo_runscript" inline="false">\r\n                <title name="TEXT">playFavoriteMusic</title>\r\n              </block>\r\n            </next>\r\n          </block>\r\n        </statement>\r\n      </block>\r\n    </next>\r\n  </block>\r\n</xml>', '2014-09-05 12:30:34'),
-(52, 'script12', 0, '$id=$params[''rcswitch''];\r\nif ($id==''12345'') {\r\n //sensor 1\r\n}', '', '2014-10-30 15:10:27'),
+(69, 'object17_method73', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(\'states\'=>\'states cycle\',\'main\'=>\'main cycle\',\'execs\'=>\'exec cycle\',\'scheduler\'=>\'scheduler cycle\');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(\'ThisComputer.cycle_\'.$k.\'Run\');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v.\" stopped.\";\r\n }\r\n}\r\n\r\n$cycles=array(\'ping\'=>\'ping cycle\',\'webvars\'=>\'webvars cycle\',\'watchfolders\'=>\'watch folders cycle\',\'rss\'=>\'RSS cycle\');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(\'ThisComputer.cycle_\'.$k.\'Run\');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v.\" stopped.\";\r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=\'Red\'; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=\'Yellow\';  \r\n} else {\r\n $state=\'green\';\r\n $state_title=\'Green\';   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(\"System state changed to \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(\"System state restored to \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', '', '2014-10-30 15:44:01'),
+(70, 'object16_method75', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_SYSTEM_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', '', '2014-10-31 14:57:24'),
+(59, 'script21', 0, '$res=\'\';\r\n if (gg(\'Security.stateColor\')==\'green\' && gg(\'System.stateColor\')==\'green\' && gg(\'Communication.stateColor\')==\'green\') {\r\n  $res=\'Все системы работают в штатном режиме\';\r\n } else {\r\n  if (gg(\'Security.stateColor\')!=\'green\') {\r\n   $res.=\" Проблема безопасности: \".getGlobal(\'Security.stateDetails\');\r\n  }\r\n  if (gg(\'System.stateColor\')!=\'green\') {\r\n   $res.=\" Системная проблема: \".getGlobal(\'System.stateDetails\');\r\n  }  \r\n  if (gg(\'Communication.stateColor\')!=\'green\') {\r\n   $res.=\" Проблема связи: \".getGlobal(\'Communication.stateDetails\');\r\n  }  \r\n }\r\n say($res,5);', '', '2014-10-30 15:31:46'),
+(48, 'script1', 0, 'say(getRandomLine(\'morning\'),2);\r\n//runScript(\'readWunderTasks\');\r\nrunScript(\'readWeatherToday\');\r\nrunScript(\'reportStatus\');', '<xml xmlns=\"http://www.w3.org/1999/xhtml\">\r\n  <block type=\"majordomo_say\" inline=\"false\" x=\"140\" y=\"51\">\r\n    <value name=\"TEXT\">\r\n      <block type=\"text\">\r\n        <title name=\"TEXT\">Good morning!</title>\r\n      </block>\r\n    </value>\r\n    <next>\r\n      <block type=\"controls_if\" inline=\"false\">\r\n        <value name=\"IF0\">\r\n          <block type=\"logic_negate\" inline=\"false\">\r\n            <value name=\"BOOL\">\r\n              <block type=\"majordomo_getglobal\">\r\n                <title name=\"TEXT\">ThisComputer.WeHaveGuests</title>\r\n              </block>\r\n            </value>\r\n          </block>\r\n        </value>\r\n        <statement name=\"DO0\">\r\n          <block type=\"majordomo_runscript\" inline=\"false\">\r\n            <title name=\"TEXT\">sayTodayAgenda</title>\r\n            <next>\r\n              <block type=\"majordomo_runscript\" inline=\"false\">\r\n                <title name=\"TEXT\">playFavoriteMusic</title>\r\n              </block>\r\n            </next>\r\n          </block>\r\n        </statement>\r\n      </block>\r\n    </next>\r\n  </block>\r\n</xml>', '2014-09-05 12:30:58'),
+(47, 'script13', 0, 'say(getRandomLine(\'evening\'),2);\r\nrunScript(\'reportStatus\');', '<xml xmlns=\"http://www.w3.org/1999/xhtml\">\r\n  <block type=\"majordomo_say\" inline=\"false\" x=\"140\" y=\"51\">\r\n    <value name=\"TEXT\">\r\n      <block type=\"text\">\r\n        <title name=\"TEXT\">Good morning!</title>\r\n      </block>\r\n    </value>\r\n    <next>\r\n      <block type=\"controls_if\" inline=\"false\">\r\n        <value name=\"IF0\">\r\n          <block type=\"logic_negate\" inline=\"false\">\r\n            <value name=\"BOOL\">\r\n              <block type=\"majordomo_getglobal\">\r\n                <title name=\"TEXT\">ThisComputer.WeHaveGuests</title>\r\n              </block>\r\n            </value>\r\n          </block>\r\n        </value>\r\n        <statement name=\"DO0\">\r\n          <block type=\"majordomo_runscript\" inline=\"false\">\r\n            <title name=\"TEXT\">sayTodayAgenda</title>\r\n            <next>\r\n              <block type=\"majordomo_runscript\" inline=\"false\">\r\n                <title name=\"TEXT\">playFavoriteMusic</title>\r\n              </block>\r\n            </next>\r\n          </block>\r\n        </statement>\r\n      </block>\r\n    </next>\r\n  </block>\r\n</xml>', '2014-09-05 12:30:34'),
+(52, 'script12', 0, '$id=$params[\'rcswitch\'];\r\nif ($id==\'12345\') {\r\n //sensor 1\r\n}', '', '2014-10-30 15:10:27'),
 (54, 'object8_method', 0, '', '', '2014-10-30 15:29:14'),
 (55, 'object7_method', 0, '', '', '2014-10-30 15:29:39'),
-(56, 'object6_method', 0, '', '', '2014-10-30 15:30:05'),
-(57, 'object5_method', 0, '', '', '2014-10-30 15:30:17'),
-(58, 'object1_method', 0, '', '', '2014-10-30 15:30:59'),
-(67, 'script22', 1, 'runScript("reportStatus", array());\r\n', '<xml xmlns="http://www.w3.org/1999/xhtml">\r\n  <block type="majordomo_script_21" id="7" inline="true" x="148" y="87"></block>\r\n</xml>', '2014-10-30 15:35:12'),
-(66, 'method62', 0, '$this->setProperty(''status'',$params[''status'']); // выставляем статус сенсора\r\n$this->setProperty(''updatedTimestamp'',time()); // выставляем время срабатывания сенсора\r\n\r\n$this->setProperty(''alive'',1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=24*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);\r\n\r\nif ($params[''status'']) {\r\n \r\n $this->setProperty(''motionDetected'',1);\r\n clearTimeOut($this->object_title.''_detected''); \r\n setTimeOut($this->object_title.''_detected'',"setGlobal(''".$this->object_title.".motionDetected'',0);",30);\r\n\r\n $linked_room=$this->getProperty(''LinkedRoom'');\r\n if ($linked_room!='''') {\r\n  callMethod($linked_room.''.onActivity'');\r\n }\r\n\r\n if ($this->object_title==''sensorMovement3'' || $this->object_title==''sensorMovementRemote1'' || $this->object_title==''sensorMovementRemote2'') {\r\n  //|| $this->object_title==''sensorMovement5''\r\n  return; // не реагируем на движение в спальне, по ip-сенсорам и по сенсору на втором этаже\r\n }\r\n\r\n ClearTimeOut("nobodyHome"); \r\n SetTimeOut("nobodyHome","callMethod(''NobodyHomeMode.activate'');", 1*60*60); // выполняем, если целый час никого не было\r\n\r\n if (getGlobal(''NobodyHomeMode.active'')) {\r\n  callMethod(''NobodyHomeMode.deactivate'');\r\n }\r\n\r\n $last_register=registeredEventTime(''inhouseMovement''); // проверяем, когда в последний раз срабатывало событие "движение внутри дома"\r\n  registerEvent(''inhouseMovement'',$this->name,2); // регистрируем событие "движение внутри дома" \r\n  if (timeBetween(''05:00'', ''12:00'') && ((time()-$last_register)>2*60*60)) {\r\n   runScript(''Greeting''); // запускаем скрипт "доброе утро"\r\n  }\r\n}', '', '2014-10-30 15:34:47'),
-(68, 'object6_method18', 0, '$h=(int)date(''G'',time());\r\n$m=date(''i'',time());\r\n\r\n\r\nif (isWeekDay()) {\r\n\r\n}\r\n\r\n\r\nif (($h>=8) && getGlobal(''clockChimeEnabled'')) {\r\n if ($m=="00") {\r\n   say(timeNow(),1);\r\n }\r\n}\r\n\r\n\r\nsetGlobal(''timeNow'',date(''H:i''));\r\n\r\n$homeStatus=date(''H:i'');\r\nif (getGlobal(''NobodyHomeMode.active'')) {\r\n $homeStatus.='' Дома никого'';\r\n} else {\r\n $homeStatus.='' Дома кто-то есть'';\r\n}\r\n\r\n$homeStatus.='' ''.getGlobal(''Security.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''System.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''Communication.stateDetails'');\r\nsetGlobal(''HomeStatus'',$homeStatus);\r\n\r\n if (timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')=="1") {\r\n  setGlobal("isDark",0);\r\n  callMethod(''DarknessMode.deactivate'');  \r\n } elseif (!timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')!="1") {\r\n  setGlobal("isDark",1);\r\n  callMethod(''DarknessMode.activate'');    \r\n }\r\n \r\n  if (timeIs(getGlobal(''SunRiseTime''))) {\r\n  say(''Всходит солнце'');\r\n }\r\n if (timeIs(getGlobal(''SunSetTime''))) {\r\n  say(''Солнце заходит'',2);\r\n }\r\n \r\nif (timeIs("23:30") && (gg("EconomMode.active")!="1") && (gg("NobodyHomeMode.active")=="1")) {\r\n say("Похоже никого нет сегодня, можно сэкономить немного.");\r\n callMethod(''EconomMode.activate'');\r\n}\r\n\r\nif (timeIs(''20:00'')) {\r\n callMethod(''NightMode.activate'');\r\n} elseif (timeIs(''08:00'')) {\r\n callMethod(''NightMode.deactivate'');\r\n}\r\n\r\nif (timeIs("03:00")) {\r\n runScript("systemMaintenance");\r\n}\r\n\r\nif (gg(''ThisComputer.AlarmStatus'') && timeIs(gg(''ThisComputer.AlarmTime''))) {\r\n runScript(''MorningAlarm'');\r\n}', '', '2014-10-30 15:38:26'),
-(71, 'object16_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 15:02:09'),
-(78, 'object18_method74', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', '', '2014-10-31 15:33:53'),
+(67, 'script22', 1, 'runScript(\"reportStatus\", array());\r\n', '<xml xmlns=\"http://www.w3.org/1999/xhtml\">\r\n  <block type=\"majordomo_script_21\" id=\"7\" inline=\"true\" x=\"148\" y=\"87\"></block>\r\n</xml>', '2014-10-30 15:35:12'),
+(68, 'object6_method18', 0, '$h=(int)date(\'G\',time());\r\n$m=date(\'i\',time());\r\n\r\n\r\nif (isWeekDay()) {\r\n\r\n}\r\n\r\n\r\nif (($h>=8) && getGlobal(\'clockChimeEnabled\')) {\r\n if ($m==\"00\") {\r\n   say(timeNow(),1);\r\n }\r\n}\r\n\r\n\r\nsetGlobal(\'timeNow\',date(\'H:i\'));\r\n\r\n$homeStatus=date(\'H:i\');\r\nif (getGlobal(\'NobodyHomeMode.active\')) {\r\n $homeStatus.=\' Дома никого\';\r\n} else {\r\n $homeStatus.=\' Дома кто-то есть\';\r\n}\r\n\r\n$homeStatus.=\' \'.getGlobal(\'Security.stateDetails\');\r\n$homeStatus.=\' \'.getGlobal(\'System.stateDetails\');\r\n$homeStatus.=\' \'.getGlobal(\'Communication.stateDetails\');\r\nsetGlobal(\'HomeStatus\',$homeStatus);\r\n\r\n if (timeBetween(getGlobal(\'SunRiseTime\'),getGlobal(\'SunSetTime\')) && getGlobal(\'isDark\')==\"1\") {\r\n  setGlobal(\"isDark\",0);\r\n  callMethod(\'DarknessMode.deactivate\');  \r\n } elseif (!timeBetween(getGlobal(\'SunRiseTime\'),getGlobal(\'SunSetTime\')) && getGlobal(\'isDark\')!=\"1\") {\r\n  setGlobal(\"isDark\",1);\r\n  callMethod(\'DarknessMode.activate\');    \r\n }\r\n \r\n  if (timeIs(getGlobal(\'SunRiseTime\'))) {\r\n  say(\'Всходит солнце\');\r\n }\r\n if (timeIs(getGlobal(\'SunSetTime\'))) {\r\n  say(\'Солнце заходит\',2);\r\n }\r\n \r\nif (timeIs(\"23:30\") && (gg(\"EconomMode.active\")!=\"1\") && (gg(\"NobodyHomeMode.active\")==\"1\")) {\r\n say(\"Похоже никого нет сегодня, можно сэкономить немного.\");\r\n callMethod(\'EconomMode.activate\');\r\n}\r\n\r\nif (timeIs(\'20:00\')) {\r\n callMethod(\'NightMode.activate\');\r\n} elseif (timeIs(\'08:00\')) {\r\n callMethod(\'NightMode.deactivate\');\r\n}\r\n\r\nif (timeIs(\"03:00\")) {\r\n runScript(\"systemMaintenance\");\r\n}\r\n\r\nif (gg(\'ThisComputer.AlarmStatus\') && timeIs(gg(\'ThisComputer.AlarmTime\'))) {\r\n runScript(\'MorningAlarm\');\r\n}', '', '2014-10-30 15:38:26'),
+(71, 'object16_method59', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_SECURITY_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', '', '2014-10-31 15:02:09'),
+(78, 'object18_method74', 0, '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(\'Internet\')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', '', '2014-10-31 15:33:53'),
 (80, 'pattern8', 0, '', '', '2014-10-31 15:38:58'),
-(81, 'pattern9', 0, '', '', '2014-10-31 15:39:25'),
-(82, 'method61', 0, 'if ($params[''status'']) {\r\n $this->setProperty(''status'',$params[''status'']);\r\n}\r\n$this->setProperty(''updatedTimestamp'',time());\r\n\r\n$this->setProperty("alive",1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=12*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);', '', '2015-01-29 11:29:50'),
-(83, 'command108', 0, '', '', '2015-12-03 14:45:18');
+(81, 'pattern9', 0, '', '', '2014-10-31 15:39:25');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cached_values`
+-- Структура таблицы `cached_values`
 --
 
-DROP TABLE IF EXISTS `cached_values`;
-CREATE TABLE IF NOT EXISTS `cached_values` (
+CREATE TABLE `cached_values` (
   `KEYWORD` char(100) NOT NULL,
   `DATAVALUE` char(255) NOT NULL,
-  `EXPIRE` datetime NOT NULL,
-  PRIMARY KEY (`KEYWORD`)
+  `EXPIRE` datetime NOT NULL
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `cached_values`
---
-
-INSERT INTO `cached_values` (`KEYWORD`, `DATAVALUE`, `EXPIRE`) VALUES
-('MJD:ThisComputer.weatherFull', '(too big)', '2015-12-03 14:49:23'),
-('MJD:ThisComputer.started_time', '1449142973', '2015-12-03 14:43:53'),
-('MJD:Livingroom.Temperature', '22.4', '2015-12-03 14:43:56'),
-('MJD:Livingroom.Humidity', '42', '2015-12-03 14:43:56'),
-('MJD:ThisComputer.cycle_execsRun', '1449143362', '2015-12-03 14:50:22'),
-('MJD:ThisComputer.cycle_mainRun', '1449143367', '2015-12-03 14:50:27'),
-('MJD:ThisComputer.cycle_schedulerRun', '1449143363', '2015-12-03 14:50:23'),
-('MJD:ThisComputer.timeNow', '14:49', '2015-12-03 14:50:00'),
-('MJD:Security.stateColor', 'green', '2015-12-03 14:43:59'),
-('MJD:Security.stateDetails', '', '2015-12-03 14:43:59'),
-('MJD:System.stateColor', 'green', '2015-12-03 14:47:48'),
-('MJD:System.stateDetails', '', '2015-12-03 14:47:48'),
-('MJD:Communication.stateColor', 'green', '2015-12-03 14:43:59'),
-('MJD:Communication.stateDetails', '', '2015-12-03 14:43:59'),
-('MJD:ThisComputer.somebodyHomeText', '', '2015-12-03 14:43:59'),
-('MJD:admin.seenAt', 'Home', '2015-12-03 14:48:55'),
-('MJD:admin.CoordinatesUpdated', '10:00', '2015-12-03 14:48:55'),
-('MJD:ThisComputer.uptime', '394', '2015-12-03 14:50:27'),
-('MJD:ThisComputer.cycle_statesRun', '1449143365', '2015-12-03 14:50:25'),
-('MJD:ThisComputer.cycle_rssRun', '1449143365', '2015-12-03 14:50:25'),
-('MJD:ThisComputer.cycle_pingRun', '1449143366', '2015-12-03 14:50:26'),
-('MJD:ThisComputer.cycle_webvarsRun', '1449143365', '2015-12-03 14:50:25'),
-('MJD:ThisComputer.cycle_watchfoldersRun', '1447849728', '2015-12-03 14:44:00'),
-('MJD:ClockChime.time', '2015-12-03 14:49:00', '2015-12-03 14:50:00'),
-('MJD:ThisComputer.clockChimeEnabled', '1', '2015-12-03 14:44:00'),
-('MJD:NobodyHomeMode.active', '0', '2015-12-03 14:44:00'),
-('MJD:ThisComputer.HomeStatus', '14:49 Дома кто-то есть', '2015-12-03 14:50:00'),
-('MJD:ThisComputer.SunRiseTime', '09:12', '2015-12-03 14:44:00'),
-('MJD:ThisComputer.SunSetTime', '16:45', '2015-12-03 14:44:00'),
-('MJD:ThisComputer.isDark', '0', '2015-12-03 14:44:00'),
-('MJD:ThisComputer.AlarmStatus', '', '2015-12-03 14:44:00'),
-('MJD:ThisComputer.volumeLevel', '90', '2015-12-03 14:44:28'),
-('MJD:ThisComputer.volumeMediaLevel', '90', '2015-12-03 14:44:28'),
-('MJD:ThisComputer.TempOutside', '-0.9', '2015-12-03 14:44:28'),
-('MJD:ThisComputer.textBoxTest', '0', '2015-12-03 14:46:01'),
-('MJD:ThisComputer.AlarmTime', '09:30', '2015-12-03 14:46:01'),
-('MJD:Switch1.status', '0', '2015-12-03 14:47:13'),
-('MJD:System.stateTitle', 'Зелёный', '2015-12-03 14:47:48'),
-('MJD:ThisComputer.minMsgLevel', '1', '2015-12-03 14:47:48'),
-('MJD:admin.atHome', '', '2015-12-03 14:48:55'),
-('MJD:admin.Coordinates', '', '2015-12-03 14:48:55'),
-('MJD:admin.CoordinatesUpdatedTimestamp', '', '2015-12-03 14:48:55'),
-('MJD:admin.fullName', '', '2015-12-03 14:48:55'),
-('MJD:admin.isMoving', '', '2015-12-03 14:48:55');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `calendar_categories`
+-- Структура таблицы `cached_ws`
 --
 
-DROP TABLE IF EXISTS `calendar_categories`;
-CREATE TABLE IF NOT EXISTS `calendar_categories` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `cached_ws` (
+  `PROPERTY` char(100) NOT NULL,
+  `DATAVALUE` varchar(20000) NOT NULL,
+  `POST_ACTION` char(100) NOT NULL,
+  `ADDED` datetime NOT NULL
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `classes`
+--
+
+CREATE TABLE `classes` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `ACTIVE` int(255) NOT NULL DEFAULT '0',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `ICON` varchar(70) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `PARENT_ID` int(10) NOT NULL DEFAULT 0,
+  `SUB_LIST` text DEFAULT NULL,
+  `PARENT_LIST` text DEFAULT NULL,
+  `NOLOG` int(3) NOT NULL DEFAULT 0,
+  `DESCRIPTION` text DEFAULT NULL,
+  `TEMPLATE` text DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `classes`
+--
+
+INSERT INTO `classes` (`ID`, `TITLE`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`, `NOLOG`, `DESCRIPTION`, `TEMPLATE`) VALUES
+(7, 'Timer', 0, '7', '0', 1, '', NULL),
+(10, 'Computer', 0, '10', '0', 0, '', NULL),
+(21, 'systemStates', 0, '21', '0', 0, '', NULL),
+(24, 'OperationalModes', 0, '24', '0', 0, '', NULL),
+(25, 'Rooms', 0, '25', '0', 0, 'Rooms/Locations', NULL),
+(32, 'Users', 0, '32', '0', 0, '', NULL),
+(34, 'SDevices', 0, '35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60', '0', 0, 'General Devices Class', NULL),
+(35, 'SControllers', 34, '36,37,38,39,40', '34', 0, 'Controllable device', NULL),
+(36, 'SGroups', 35, '36', '34,35', 0, NULL, NULL),
+(37, 'SRelays', 35, '37', '34,35', 0, NULL, NULL),
+(38, 'SThermostats', 35, '38', '34,35', 0, NULL, NULL),
+(39, 'SDimmers', 35, '39', '34,35', 0, NULL, NULL),
+(40, 'SRGB', 35, '40', '34,35', 0, NULL, NULL),
+(41, 'SMotions', 34, '41', '34', 0, NULL, NULL),
+(42, 'SCameras', 34, '42', '34', 0, NULL, NULL),
+(43, 'SOpenClose', 34, '43', '34', 0, NULL, NULL),
+(44, 'SOpenable', 34, '44', '34', 0, NULL, NULL),
+(45, 'SLeak', 34, '45', '34', 0, NULL, NULL),
+(46, 'SSmoke', 34, '46', '34', 0, NULL, NULL),
+(47, 'SCounters', 34, '47', '34', 0, NULL, NULL),
+(48, 'SButtons', 34, '48', '34', 0, NULL, NULL),
+(49, 'SSensors', 34, '50,51,52,53,54,55,56,57,58,59', '34', 0, NULL, NULL),
+(50, 'SGeneralSensors', 49, '50', '34,49', 0, NULL, NULL),
+(51, 'STempSensors', 49, '51', '34,49', 0, NULL, NULL),
+(52, 'SHumSensors', 49, '52', '34,49', 0, NULL, NULL),
+(53, 'SStateSensors', 49, '53', '34,49', 0, NULL, NULL),
+(54, 'SPercentageSensors', 49, '54', '34,49', 0, NULL, NULL),
+(55, 'SPressureSensors', 49, '55', '34,49', 0, NULL, NULL),
+(56, 'SPowerSensors', 49, '56', '34,49', 0, NULL, NULL),
+(57, 'SVoltageSensors', 49, '57', '34,49', 0, NULL, NULL),
+(58, 'SCurrentSensors', 49, '58', '34,49', 0, NULL, NULL),
+(59, 'SLightSensors', 49, '59', '34,49', 0, NULL, NULL),
+(60, 'SHTML', 34, '60', '34', 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `calendar_events`
+-- Структура таблицы `collections`
 --
 
-DROP TABLE IF EXISTS `calendar_events`;
-CREATE TABLE IF NOT EXISTS `calendar_events` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `SYSTEM` varchar(255) NOT NULL DEFAULT '',
-  `NOTES` text,
-  `DUE` date DEFAULT NULL,
-  `ADDED` datetime DEFAULT NULL,
-  `DONE_WHEN` datetime DEFAULT NULL,
-  `IS_TASK` int(3) NOT NULL DEFAULT '0',
-  `IS_DONE` int(3) NOT NULL DEFAULT '0',
-  `IS_NODATE` int(3) NOT NULL DEFAULT '0',
-  `IS_REPEATING` int(3) NOT NULL DEFAULT '0',
-  `REPEAT_TYPE` int(3) NOT NULL DEFAULT '0',
-  `WEEK_DAYS` varchar(255) NOT NULL DEFAULT '',
-  `IS_REPEATING_AFTER` int(3) NOT NULL DEFAULT '0',
-  `REPEAT_IN` int(10) NOT NULL DEFAULT '0',
-  `USER_ID` int(10) NOT NULL DEFAULT '0',
-  `LOCATION_ID` int(10) NOT NULL DEFAULT '0',
-  `CALENDAR_CATEGORY_ID` int(10) NOT NULL DEFAULT '0',
-  `DONE_SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  `DONE_CODE` text,
-  `LOG` text,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `classes`
---
-
-DROP TABLE IF EXISTS `classes`;
-CREATE TABLE IF NOT EXISTS `classes` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `PARENT_ID` int(10) NOT NULL DEFAULT '0',
-  `SUB_LIST` text,
-  `PARENT_LIST` text,
-  `NOLOG` int(3) NOT NULL DEFAULT '0',
-  `DESCRIPTION` text,
-  PRIMARY KEY (`ID`),
-  KEY `PARENT_ID` (`PARENT_ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
-
---
--- Dumping data for table `classes`
---
-
-INSERT INTO `classes` (`ID`, `TITLE`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`, `NOLOG`, `DESCRIPTION`) VALUES
-(12, 'Skype', 0, '12', '0', 0, ''),
-(19, 'tempSensors', 0, '19', '0', 0, ''),
-(7, 'Timer', 0, '7', '0', 1, ''),
-(18, 'BlueToothDevice', 0, '18', '0', 0, ''),
-(9, 'USBDevice', 0, '9', '0', 0, ''),
-(10, 'Computer', 0, '10', '0', 0, ''),
-(20, 'WeatherStations', 0, '20', '0', 0, ''),
-(21, 'systemStates', 0, '21', '0', 0, ''),
-(22, 'keySensors', 0, '23', '0', 0, ''),
-(23, 'inhouseMovementSensors', 22, '23', '22', 0, ''),
-(24, 'OperationalModes', 0, '24', '0', 0, ''),
-(25, 'Rooms', 0, '25', '0', 0, ''),
-(26, 'Relays', 0, '29,31', '0', 0, ''),
-(29, 'RCSwitches', 26, '29', '26', 0, ''),
-(30, 'humiditySensors', 0, '30', '0', 0, 'Humidity Sensors'),
-(31, 'Noolight', 26, '31', '26', 0, ''),
-(32, 'Users', 0, '32', '0', 0, '');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `collections`
---
-
-DROP TABLE IF EXISTS `collections`;
-CREATE TABLE IF NOT EXISTS `collections` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `collections` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `PATH` varchar(255) NOT NULL DEFAULT '',
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `TITLE` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `commands`
+-- Структура таблицы `commands`
 --
 
-DROP TABLE IF EXISTS `commands`;
-CREATE TABLE IF NOT EXISTS `commands` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `commands` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
   `COMMAND` varchar(255) NOT NULL DEFAULT '',
   `URL` varchar(255) NOT NULL DEFAULT '',
-  `WIDTH` int(10) NOT NULL DEFAULT '0',
-  `HEIGHT` int(10) NOT NULL DEFAULT '0',
-  `PARENT_ID` int(10) NOT NULL DEFAULT '0',
-  `SUB_LIST` text,
-  `PARENT_LIST` text,
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
+  `WIDTH` int(10) NOT NULL DEFAULT 0,
+  `HEIGHT` int(10) NOT NULL DEFAULT 0,
+  `PARENT_ID` int(10) NOT NULL DEFAULT 0,
+  `SUB_LIST` text DEFAULT NULL,
+  `PARENT_LIST` text DEFAULT NULL,
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
   `WINDOW` varchar(255) NOT NULL DEFAULT '',
-  `AUTOSTART` int(3) NOT NULL DEFAULT '0',
+  `AUTOSTART` int(3) NOT NULL DEFAULT 0,
   `TYPE` char(50) NOT NULL DEFAULT '',
-  `MIN_VALUE` float NOT NULL DEFAULT '0',
-  `MAX_VALUE` float NOT NULL DEFAULT '0',
+  `MIN_VALUE` float NOT NULL DEFAULT 0,
+  `MAX_VALUE` float NOT NULL DEFAULT 0,
   `CUR_VALUE` varchar(255) NOT NULL DEFAULT '',
-  `STEP_VALUE` float NOT NULL DEFAULT '0',
+  `STEP_VALUE` float NOT NULL DEFAULT 0,
   `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
   `ONCHANGE_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `ONCHANGE_METHOD` varchar(255) NOT NULL DEFAULT '',
   `ICON` varchar(50) NOT NULL DEFAULT '',
-  `DATA` text,
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  `AUTO_UPDATE` int(10) NOT NULL DEFAULT '0',
-  `CODE` text,
+  `DATA` text DEFAULT NULL,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
+  `AUTO_UPDATE` int(10) NOT NULL DEFAULT 0,
+  `CODE` text DEFAULT NULL,
   `SYSTEM` varchar(255) NOT NULL DEFAULT '',
-  `EXT_ID` int(10) NOT NULL DEFAULT '0',
-  `VISIBLE_DELAY` int(10) NOT NULL DEFAULT '0',
-  `INLINE` int(3) NOT NULL DEFAULT '0',
-  `SUB_PRELOAD` int(3) NOT NULL DEFAULT '0',
+  `EXT_ID` int(10) NOT NULL DEFAULT 0,
+  `VISIBLE_DELAY` int(10) NOT NULL DEFAULT 0,
+  `INLINE` int(3) NOT NULL DEFAULT 0,
+  `SUB_PRELOAD` int(3) NOT NULL DEFAULT 0,
   `RENDER_TITLE` varchar(255) NOT NULL DEFAULT '',
-  `RENDER_DATA` text,
+  `RENDER_DATA` text DEFAULT NULL,
   `RENDER_UPDATED` datetime DEFAULT NULL,
-  `SMART_REPEAT` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=118 ;
+  `SMART_REPEAT` int(3) NOT NULL DEFAULT 0,
+  `READ_ONLY` int(3) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `commands`
+-- Дамп данных таблицы `commands`
 --
 
-INSERT INTO `commands` (`ID`, `TITLE`, `COMMAND`, `URL`, `WIDTH`, `HEIGHT`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`, `PRIORITY`, `WINDOW`, `AUTOSTART`, `TYPE`, `MIN_VALUE`, `MAX_VALUE`, `CUR_VALUE`, `STEP_VALUE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `ONCHANGE_OBJECT`, `ONCHANGE_METHOD`, `ICON`, `DATA`, `SCRIPT_ID`, `AUTO_UPDATE`, `CODE`, `SYSTEM`, `EXT_ID`, `VISIBLE_DELAY`, `INLINE`, `SUB_PRELOAD`, `RENDER_TITLE`, `RENDER_DATA`, `RENDER_UPDATED`, `SMART_REPEAT`) VALUES
-(1, '<#LANG_APP_MEDIA_BROWSER#>', '', '', 0, 0, 0, '2,3', '0', 6000, '', 0, '', 0, 0, '0', 0, '', '', '', '', '1_iPhone_MUSIC_5_sm.png', '', 0, 0, '', '', 0, 0, 0, 0, 'Медиа', '', '2015-12-03 14:42:25', 0),
-(2, 'Browse', '', '/popup/app_mediabrowser.html', 0, 0, 1, '2', '1', 100, '', 0, 'url', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Browse', '', '2014-07-15 21:13:34', 0),
-(3, 'Player control', '', '', 0, 0, 1, '3', '1', 90, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '[#module name="app_player" mode="menu"#]', 0, 0, '', '', 0, 0, 0, 0, 'Player control', '<!-- begin of file inner_code --><!-- begin of file ./templates/app_player/app_player.html -->\n\n<!-- Frontend -->\n <!-- begin of file ./templates/app_player/action_usual.html -->\n<script language="javascript">\n function playerCommandProcessed(id, data) {\n  var elem=document.getElementById(''playerStatus'');\n  elem.innerHTML=data;  \n  return false;\n }\n function playerCommand(pcmd) {\n  if ($("#selPlayTerminal").val()=='''') return false;\n  if ($("#hidPlayPath").val()=='''' && pcmd==''refresh'') return false;\n  var elem=document.getElementById(''playerStatus'');\n  elem.innerHTML=pcmd+''...'';\n  var url="/popup/app_player.html?ajax=1";\n  url+=''&command=''+pcmd;\n  url+=''&play_terminal=''+$("#selPlayTerminal").val();\n  url+=''&play=''+URLencode($("#hidPlayPath").val());\n  url+=''&rnd=''+URLencode($("#hidPlayerRnd").val());\n  if (pcmd==''volume'') {\n   url+=''&volume=''+URLencode($("#selVolume").val());\n  }\n  //prompt(url, url);\n  AJAXRequest(url, ''playerCommandProcessed'', '''');\n  return false;\n }\n</script>\n<table border="0" cellpadding="0" cellspacing="0">\n <tr>\n  <form action="/nf.php?pd=pz_Y29tbWFuZHM6e3BhcmVudF9pdGVtPTF9pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=app_player&inst=&" method="get" name="frmPlayerControl" id="frmPlayerControl">\n  <td align="right" style="vertical-align:middle">\n  <div style="display:none">\n   <select name="play_terminal" id="selPlayTerminal">\n    <option value="">\n    \n    <option value="MAIN" selected>Server\n    \n   </select>\n  </div>\n   <div id=''playerStatus'' style="color:white"></div>\n\n  </td>\n  </tr><tr>\n  <td nowrap><select name="volume" id=''selVolume'' onChange="playerCommand(''volume'')">\n   \n   <option value="0">0%\n   \n   <option value="5">5%\n   \n   <option value="10">10%\n   \n   <option value="15">15%\n   \n   <option value="20">20%\n   \n   <option value="25">25%\n   \n   <option value="30">30%\n   \n   <option value="35">35%\n   \n   <option value="40">40%\n   \n   <option value="45">45%\n   \n   <option value="50">50%\n   \n   <option value="55">55%\n   \n   <option value="60">60%\n   \n   <option value="65">65%\n   \n   <option value="70">70%\n   \n   <option value="75">75%\n   \n   <option value="80">80%\n   \n   <option value="85">85%\n   \n   <option value="90" selected>90%\n   \n   <option value="95">95%\n   \n   <option value="100">100%\n   \n  </select></td>\n  <td valign="top">\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("pause");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_pause.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("prev");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_prev.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("refresh");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_play.png" border="0"></a></div> \n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("next");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/playback_next.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("fullscreen");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/eye.png" border="0"></a></div>\n   <div style="float:left;width:48px;height:48px;text-align:center"><a href="#" onClick=''return playerCommand("close");'' style="padding:0;margin:0;display:inline;"><img src="/img/icons/delete.png" border="0"></a></div>\n  </td>\n </tr>\n <input type="hidden" name="play" value="" id="hidPlayPath">\n <input type="hidden" name="rnd" value="" id="hidPlayerRnd">\n <input type="hidden" name="pd" value="pz_Y29tbWFuZHM6e3BhcmVudF9pdGVtPTF9pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_">\n<input type="hidden" name="md" value="app_player">\n<input type="hidden" name="inst" value="">\n</FORM><!-- modified -->\n</table>\n<!-- end of file ./templates/app_player/action_usual.html -->\n\n\n<!-- end of file ./templates/app_player/app_player.html --><!-- end of file inner_code -->', '2014-10-30 15:42:22', 0),
-(75, '<#LANG_MODULE_LAYOUTS#>', '', '', 0, 0, 86, '75', '86', 1000, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '[#module name="layouts"#]', 0, 60, '', '', 0, 0, 0, 0, 'Домашние страницы', '<!-- begin of file inner_code --><!-- begin of file ./templates/layouts/layouts.html -->\n\n\n<!-- Frontend -->\n <!-- begin of file ./templates/layouts/action_usual.html -->\n\n <!-- action usual -->\n <!-- table layouts search -->\n \n  <!-- begin of file ./templates/layouts/layouts_search_site.html --><!-- results -->\n\n\n<ul data-role="listview">\n\n <li>\n  \n  <a href="/page/8.html" target=_blank>Добро пожаловать!</a>\n  \n  \n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/scenes.html" target=_blank>Сцены</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_mediabrowser.html" target=_blank>Медиа</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_calendar.html" target=_blank>Календарь</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_products.html" target=_blank>Продукты</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href="/popup/app_gpstrack.html" target=_blank>GPS</a>\n  \n  </li>\n\n</ul>\n\n<!-- end of file ./templates/layouts/layouts_search_site.html -->\n \n <!-- / table layouts search -->\n <!-- table layouts edit -->\n \n <!-- / table layouts edit -->\n <!-- table layouts view --> \n \n <!-- / table layouts view -->\n<!-- end of file ./templates/layouts/action_usual.html -->\n\n\n<!-- end of file ./templates/layouts/layouts.html --><!-- end of file inner_code -->', '2014-10-30 14:58:15', 0),
-(82, '<#LANG_GENERAL_EVENTS_LOG#>', '', '', 0, 0, 0, '82', '0', 10, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'История событий', '', '2015-12-03 14:42:25', 0),
-(63, '%ClockChime.time%', '', '', 0, 0, 66, '63', '86,66', 10000, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '%ClockChime.time%<br>\r\nhello! <a href="/test">test</a>', 0, 60, '', '', 0, 0, 0, 0, '2014-10-30 14:58:00', '2014-10-30 14:58:00<br>\r\nhello! <a href="/test">test</a>', '2014-10-30 14:58:15', 0),
-(66, 'Demo controls', '', '', 0, 0, 86, '63,67,68,69,70,71,72,73,77,78,80', '86', 0, '', 0, '', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Demo controls', '', '2014-07-15 12:25:40', 0),
-(67, '<#LANG_LABEL#>', '', '', 0, 0, 66, '67', '86,66', 9000, '', 0, 'label', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Подпись', '', '2014-09-04 16:17:08', 0),
-(68, 'New window', '', 'http://google.com/', 600, 600, 66, '68', '86,66', 8000, '', 0, 'window', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'New window', '', '2014-09-04 16:17:08', 0),
-(69, '<#LANG_URL#>', '', 'http://google.com/', 0, 0, 66, '69', '86,66', 7000, '', 0, 'url', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Ссылка', '', '2014-09-04 16:17:08', 0),
-(70, 'Buttons', '', '', 0, 0, 66, '70', '86,66', 6000, '', 0, 'button', 0, 0, 'clicked', 0, '', '', '', '', '', '', 0, 0, 'say("Привет");', '', 0, 0, 0, 0, 'Buttons', '', '2014-09-04 16:17:08', 0),
-(71, '<#LANG_ON_OFF_SWITCH#>', '', '', 0, 0, 66, '71', '86,66', 5000, '', 0, 'switch', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Выключатель', '', '2014-09-04 16:17:08', 0),
-(72, 'Select box', '', '', 0, 0, 66, '72', '86,66', 4000, '', 0, 'selectbox', 0, 0, '2', 0, '', '', '', '', '', '1|Item 1\r\n2|Item 2\r\n3|Item 3', 0, 0, '', '', 0, 0, 0, 0, 'Select box', '1|Item 1\r\n2|Item 2\r\n3|Item 3', '2014-09-04 16:17:08', 0),
-(73, 'Plus minus box', '', '', 0, 0, 66, '73', '86,66', 3000, '', 0, 'plusminus', 0, 5, '3', 1, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Plus minus box', '', '2014-09-04 16:17:08', 0),
-(74, '<#LANG_GENERAL_EVENTS_LOG#> (code)', '', '', 0, 0, 0, '74', '0', 9, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '<div style="text-shadow:none;font-weight:normal;">[#module name="shoutbox" limit="10" reverse="1" mobile="1"#]</div>', 0, 60, '', '', 0, 0, 0, 0, 'История событий (code)', '<!-- begin of file inner_code --><div style="text-shadow:none;font-weight:normal;"><!-- begin of file ./templates/shoutbox/shoutbox.html -->\n\r\n<!-- Frontend -->\r\n \n\r\n <!-- action usual -->\r\n <!-- table shouts search -->\r\n \r\n  \r\n<!-- table shouts search -->\r\n<!-- results -->\r\n\r\n<div class="shout_box">  <!-- begin shout_box -->\r\n\r\n<!-- search results (list) -->\r\n<div id="shoutboxContent" class="shout_content">\r\nЗагрузка......\r\n</div>\r\n<!-- / search results (list) -->\r\n<!-- / results -->\r\n\r\n\r\n<div class="shout_form">\r\n<form action="/nf.php?pd=pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=shoutbox&inst=&" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit=''return false;''>\r\n<input type="text" name="message" class="shout_input" placeholder="Команда"><input type="submit" name="submit" value="Отправить" onClick="return sendShoutMessage();"  class="shout_button">\r\n<input type="hidden" name="pd" value="pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_">\n<input type="hidden" name="md" value="shoutbox">\n<input type="hidden" name="inst" value="">\n</FORM><!-- modified -->\r\n</div>\r\n\r\n</div> <!-- end shout_box -->\r\n<script language="javascript">\r\n\r\nvar shoutTimer;\r\n\r\n function updateShoutContent() {\r\n  clearTimeout(shoutTimer);\r\n\r\n  var url="/popup/shoutbox.html?";\r\n\r\n   url=url+''&limit=10&getdata=1&reverse=1'';\r\n   $.ajax({\r\n    url: url,\r\n    }).done(function(data) { \r\n     if (data!='''') {\r\n      old_data=$(''#shoutboxContent'').html();\r\n      if (old_data!=data) {\r\n       $(''#shoutboxContent'').html(data);\r\n      }\r\n     }\r\n\r\n  \r\n  shoutTimer=setTimeout("updateShoutContent('''', '''');", 10000);\r\n  \r\n\r\n\r\n    });\r\n\r\n }\r\n\r\n function sendShoutMessage() {\r\n  if (document.frmShoutBoxMsg.message.value == '''') return false; \r\n  var msg=URLencode(document.frmShoutBoxMsg.message.value);\r\n  document.frmShoutBoxMsg.message.value='''';\r\n  var url="/popup/shoutbox.html?";\r\n  url=url+''&limit=10&msg=''+msg;\r\n  $.ajax({\r\n   url: url,\r\n   }).done(function(data) { \r\n    if (data!=''OK'' && data!='''') {\r\n     $(''#shoutboxContent'').html(data);\r\n    }\r\n   });\r\n  return false;\r\n }\r\n</script>\r\n\r\n\r\n<script language="javascript">\r\n  updateShoutContent();\r\n</script>\r\n\r\n \r\n <!-- / table shouts search -->\r\n <!-- table shouts edit -->\r\n \r\n <!-- / table shouts edit -->\r\n <!-- table shouts view --> \r\n \r\n <!-- / table shouts view -->\r\n\r\n\r\n\r\n<!-- end of file ./templates/shoutbox/shoutbox.html --></div><!-- end of file inner_code -->', '2015-12-03 14:48:23', 0),
-(77, 'Alarm time', '', '', 0, 0, 66, '77', '86,66', 0, '', 0, 'timebox', 0, 0, '09:30', 0, 'ThisComputer', 'AlarmTime', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Alarm time', '', '2014-09-04 16:17:08', 0),
-(78, '<#LANG_TEXT_BOX#>', '', '', 0, 0, 66, '78', '86,66', 0, '', 0, 'textbox', 0, 0, '0', 0, 'ThisComputer', 'textBoxTest', '', '', '', '', 0, 10, '', '', 0, 0, 0, 0, 'Текстовое поле', '', '2014-10-30 14:58:15', 0),
-(80, '<#LANG_SLIDER_BOX#>', '', '', 0, 0, 66, '80', '86,66', 0, '', 0, 'sliderbox', 0, 10, '0', 1, 'ThisComputer', 'textBoxTest', '', '', '', '', 0, 5, '', '', 0, 0, 0, 0, 'Слайдер', '', '2014-10-30 14:58:15', 0),
-(86, '<#LANG_GENERAL_SERVICE#>', '', '', 0, 0, 0, '75,66,63,67,68,69,70,71,72,73,77,78,80,98,99', '0', 2, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Сервис', '', '2015-12-03 14:42:25', 0),
-(106, '<#LANG_GENERAL_CONTROL#>', '', '', 0, 0, 0, '108', '0', 7000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 1, 'Управление', '', '2015-12-03 14:42:25', 0),
-(114, 'Admin (status)', '', '', 0, 0, 110, '114', '110', 950, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%Admin.seenAt% (%Admin.CoordinatesUpdated%)\r\n<br><br>\r\n<a href="http://maps.google.com/maps?q=loc:%Admin.Coordinates%" target=_blank><img src="http://maps.googleapis.com/maps/api/staticmap?center=%Admin.Coordinates%&size=300x300&maptype=hybrid&sensor=false&zoom=16&markers=%Admin.Coordinates%"></a>', 0, 0, '', '', 0, 0, 0, 0, 'Admin (status)', ' ()\r\n<br><br>\r\n<a href="http://maps.google.com/maps?q=loc:" target=_blank><img src="http://maps.googleapis.com/maps/api/staticmap?center=&size=300x300&maptype=hybrid&sensor=false&zoom=16&markers="></a>', '2014-10-30 15:40:58', 0),
-(91, '<#LANG_GENERAL_CLIMATE#> (<#LANG_GENERAL_OUTSIDE#>: %ThisComputer.TempOutside%°C / <#LANG_GENERAL_INSIDE#>: %Livingroom.Temperature%°C)', '', '', 0, 0, 0, '92,93,104,105', '0', 8000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 60, '', '', 0, 0, 0, 1, 'Климат (На улице: -0.9°C / Дома: 22.4°C)', '', '2015-12-03 14:43:28', 0),
-(92, '<#LANG_GENERAL_WEATHER_FORECAST#> (code)', '', '', 0, 0, 91, '92', '91', 1000, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%ThisComputer.weatherFull%', 0, 0, '', '', 0, 0, 0, 0, 'Прогноз погоды (code)', '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:43:28', 0),
-(93, '<#LANG_GENERAL_WEATHER_FORECAST#>', '', '', 0, 0, 91, '93', '91', 1001, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Прогноз погоды', '', '2015-12-03 14:42:25', 0),
-(104, '<#LANG_GENERAL_INSIDE#>', '', '', 0, 0, 91, '104', '91', 2000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Дома', '', '2015-12-03 14:42:25', 0),
-(105, '<#LANG_GENERAL_INSIDE#> (data)', '', '', 0, 0, 91, '105', '91', 1900, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', 'Livingroom: %Livingroom.Temperature%&deg;C / %Livingroom.Humidity%%', 0, 30, '', '', 0, 0, 0, 0, 'Дома (data)', 'Livingroom: 22.4&deg;C / 42%', '2015-12-03 14:43:28', 0),
-(97, 'State', '', '', 0, 0, 0, '97', '0', 100010, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '<big style="font-size:24px">%ThisComputer.timeNow%</big>\r\n\r\n<img src="/img/icons/status/lock_32_%Security.stateColor%.png" align="absmiddle"> %Security.stateDetails%\r\n<img src="/img/icons/status/system_32_%System.stateColor%.png" align="absmiddle"> %System.stateDetails%\r\n<img src="/img/icons/status/network_32_%Communication.stateColor%.png" align="absmiddle"> %Communication.stateDetails%\r\n<br/>\r\n%ThisComputer.somebodyHomeText%\r\n<br/>\r\nAdmin -- %Admin.seenAt% (%Admin.CoordinatesUpdated%)', 0, 10, '', '', 0, 0, 0, 0, 'State', '<big style="font-size:24px">14:48</big>\r\n\r\n<img src="/img/icons/status/lock_32_green.png" align="absmiddle"> \r\n<img src="/img/icons/status/system_32_green.png" align="absmiddle"> \r\n<img src="/img/icons/status/network_32_green.png" align="absmiddle"> \r\n<br/>\r\n\r\n<br/>\r\nAdmin -- Home (10:00)', '2015-12-03 14:48:02', 0),
-(98, '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, 86, '99', '86', 20000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Настройки', '', '2014-08-25 17:04:27', 0),
-(99, 'Говорить время', '', '', 0, 0, 98, '99', '86,98', 1000, '', 0, 'switch', 0, 0, '1', 0, 'ThisComputer', 'clockChimeEnabled', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Говорить время', '', '2014-08-25 17:04:33', 0),
-(108, 'Switch 1', '', '', 0, 0, 106, '108', '106', 0, '', 0, 'switch', 0, 0, '0', 0, 'Switch1', 'status', '', 'refresh', '', '', 0, 300, '', '', 0, 0, 0, 0, 'Switch 1', '', '2014-10-31 15:30:26', 0),
-(110, '<#LANG_MODULE_USERS#>', '', '', 0, 0, 0, '114,111', '0', 5000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Пользователи', '', '2015-12-03 14:42:25', 0),
-(111, 'Admin', '', '', 0, 0, 110, '111', '110', 1000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Admin', '', '2014-10-30 15:40:58', 0);
+INSERT INTO `commands` (`ID`, `TITLE`, `COMMAND`, `URL`, `WIDTH`, `HEIGHT`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`, `PRIORITY`, `WINDOW`, `AUTOSTART`, `TYPE`, `MIN_VALUE`, `MAX_VALUE`, `CUR_VALUE`, `STEP_VALUE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `ONCHANGE_OBJECT`, `ONCHANGE_METHOD`, `ICON`, `DATA`, `SCRIPT_ID`, `AUTO_UPDATE`, `CODE`, `SYSTEM`, `EXT_ID`, `VISIBLE_DELAY`, `INLINE`, `SUB_PRELOAD`, `RENDER_TITLE`, `RENDER_DATA`, `RENDER_UPDATED`, `SMART_REPEAT`, `READ_ONLY`) VALUES
+(1, '<#LANG_APP_MEDIA_BROWSER#>', '', '', 0, 0, 0, '2,3', '0', 6000, '', 0, '', 0, 0, '0', 0, '', '', '', '', '1_iPhone_MUSIC_5_sm.png', '', 0, 0, '', '', 0, 0, 0, 0, 'Медиа', '', '2015-12-03 14:42:25', 0, 0),
+(2, 'Browse', '', '/popup/app_mediabrowser.html', 0, 0, 1, '2', '1', 100, '', 0, 'url', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Browse', '', '2014-07-15 21:13:34', 0, 0),
+(3, 'Player control', '', '', 0, 0, 1, '3', '1', 90, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '[#module name=\"app_player\" mode=\"menu\"#]', 0, 0, '', '', 0, 0, 0, 0, 'Player control', '<!-- begin of file inner_code --><!-- begin of file ./templates/app_player/app_player.html -->\n\n<!-- Frontend -->\n <!-- begin of file ./templates/app_player/action_usual.html -->\n<script language=\"javascript\">\n function playerCommandProcessed(id, data) {\n  var elem=document.getElementById(\'playerStatus\');\n  elem.innerHTML=data;  \n  return false;\n }\n function playerCommand(pcmd) {\n  if ($(\"#selPlayTerminal\").val()==\'\') return false;\n  if ($(\"#hidPlayPath\").val()==\'\' && pcmd==\'refresh\') return false;\n  var elem=document.getElementById(\'playerStatus\');\n  elem.innerHTML=pcmd+\'...\';\n  var url=\"/popup/app_player.html?ajax=1\";\n  url+=\'&command=\'+pcmd;\n  url+=\'&play_terminal=\'+$(\"#selPlayTerminal\").val();\n  url+=\'&play=\'+URLencode($(\"#hidPlayPath\").val());\n  url+=\'&rnd=\'+URLencode($(\"#hidPlayerRnd\").val());\n  if (pcmd==\'volume\') {\n   url+=\'&volume=\'+URLencode($(\"#selVolume\").val());\n  }\n  //prompt(url, url);\n  AJAXRequest(url, \'playerCommandProcessed\', \'\');\n  return false;\n }\n</script>\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n <tr>\n  <form action=\"/nf.php?pd=pz_Y29tbWFuZHM6e3BhcmVudF9pdGVtPTF9pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=app_player&inst=&\" method=\"get\" name=\"frmPlayerControl\" id=\"frmPlayerControl\">\n  <td align=\"right\" style=\"vertical-align:middle\">\n  <div style=\"display:none\">\n   <select name=\"play_terminal\" id=\"selPlayTerminal\">\n    <option value=\"\">\n    \n    <option value=\"MAIN\" selected>Server\n    \n   </select>\n  </div>\n   <div id=\'playerStatus\' style=\"color:white\"></div>\n\n  </td>\n  </tr><tr>\n  <td nowrap><select name=\"volume\" id=\'selVolume\' onChange=\"playerCommand(\'volume\')\">\n   \n   <option value=\"0\">0%\n   \n   <option value=\"5\">5%\n   \n   <option value=\"10\">10%\n   \n   <option value=\"15\">15%\n   \n   <option value=\"20\">20%\n   \n   <option value=\"25\">25%\n   \n   <option value=\"30\">30%\n   \n   <option value=\"35\">35%\n   \n   <option value=\"40\">40%\n   \n   <option value=\"45\">45%\n   \n   <option value=\"50\">50%\n   \n   <option value=\"55\">55%\n   \n   <option value=\"60\">60%\n   \n   <option value=\"65\">65%\n   \n   <option value=\"70\">70%\n   \n   <option value=\"75\">75%\n   \n   <option value=\"80\">80%\n   \n   <option value=\"85\">85%\n   \n   <option value=\"90\" selected>90%\n   \n   <option value=\"95\">95%\n   \n   <option value=\"100\">100%\n   \n  </select></td>\n  <td valign=\"top\">\n   <div style=\"float:left;width:48px;height:48px;text-align:center\"><a href=\"#\" onClick=\'return playerCommand(\"pause\");\' style=\"padding:0;margin:0;display:inline;\"><img src=\"/img/icons/playback_pause.png\" border=\"0\"></a></div>\n   <div style=\"float:left;width:48px;height:48px;text-align:center\"><a href=\"#\" onClick=\'return playerCommand(\"prev\");\' style=\"padding:0;margin:0;display:inline;\"><img src=\"/img/icons/playback_prev.png\" border=\"0\"></a></div>\n   <div style=\"float:left;width:48px;height:48px;text-align:center\"><a href=\"#\" onClick=\'return playerCommand(\"refresh\");\' style=\"padding:0;margin:0;display:inline;\"><img src=\"/img/icons/playback_play.png\" border=\"0\"></a></div> \n   <div style=\"float:left;width:48px;height:48px;text-align:center\"><a href=\"#\" onClick=\'return playerCommand(\"next\");\' style=\"padding:0;margin:0;display:inline;\"><img src=\"/img/icons/playback_next.png\" border=\"0\"></a></div>\n   <div style=\"float:left;width:48px;height:48px;text-align:center\"><a href=\"#\" onClick=\'return playerCommand(\"fullscreen\");\' style=\"padding:0;margin:0;display:inline;\"><img src=\"/img/icons/eye.png\" border=\"0\"></a></div>\n   <div style=\"float:left;width:48px;height:48px;text-align:center\"><a href=\"#\" onClick=\'return playerCommand(\"close\");\' style=\"padding:0;margin:0;display:inline;\"><img src=\"/img/icons/delete.png\" border=\"0\"></a></div>\n  </td>\n </tr>\n <input type=\"hidden\" name=\"play\" value=\"\" id=\"hidPlayPath\">\n <input type=\"hidden\" name=\"rnd\" value=\"\" id=\"hidPlayerRnd\">\n <input type=\"hidden\" name=\"pd\" value=\"pz_Y29tbWFuZHM6e3BhcmVudF9pdGVtPTF9pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_\">\n<input type=\"hidden\" name=\"md\" value=\"app_player\">\n<input type=\"hidden\" name=\"inst\" value=\"\">\n</FORM><!-- modified -->\n</table>\n<!-- end of file ./templates/app_player/action_usual.html -->\n\n\n<!-- end of file ./templates/app_player/app_player.html --><!-- end of file inner_code -->', '2014-10-30 15:42:22', 0, 0),
+(75, '<#LANG_MODULE_LAYOUTS#>', '', '', 0, 0, 86, '75', '86', 1000, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '[#module name=\"layouts\"#]', 0, 60, '', '', 0, 0, 0, 0, 'Домашние страницы', '<!-- begin of file inner_code --><!-- begin of file ./templates/layouts/layouts.html -->\n\n\n<!-- Frontend -->\n <!-- begin of file ./templates/layouts/action_usual.html -->\n\n <!-- action usual -->\n <!-- table layouts search -->\n \n  <!-- begin of file ./templates/layouts/layouts_search_site.html --><!-- results -->\n\n\n<ul data-role=\"listview\">\n\n <li>\n  \n  <a href=\"/page/8.html\" target=_blank>Добро пожаловать!</a>\n  \n  \n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href=\"/popup/scenes.html\" target=_blank>Сцены</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href=\"/popup/app_mediabrowser.html\" target=_blank>Медиа</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href=\"/popup/app_calendar.html\" target=_blank>Календарь</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href=\"/popup/app_products.html\" target=_blank>Продукты</a>\n  \n  </li>\n\n <li>\n  \n  \n  \n  <a href=\"/popup/app_gpstrack.html\" target=_blank>GPS</a>\n  \n  </li>\n\n</ul>\n\n<!-- end of file ./templates/layouts/layouts_search_site.html -->\n \n <!-- / table layouts search -->\n <!-- table layouts edit -->\n \n <!-- / table layouts edit -->\n <!-- table layouts view --> \n \n <!-- / table layouts view -->\n<!-- end of file ./templates/layouts/action_usual.html -->\n\n\n<!-- end of file ./templates/layouts/layouts.html --><!-- end of file inner_code -->', '2014-10-30 14:58:15', 0, 0),
+(82, '<#LANG_GENERAL_EVENTS_LOG#>', '', '', 0, 0, 0, '82', '0', 10, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'История событий', '', '2015-12-03 14:42:25', 0, 0),
+(63, '%ClockChime.time%', '', '', 0, 0, 66, '63', '86,66', 10000, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '%ClockChime.time%<br>\r\nhello! <a href=\"/test\">test</a>', 0, 60, '', '', 0, 0, 0, 0, '2014-10-30 14:58:00', '2014-10-30 14:58:00<br>\r\nhello! <a href=\"/test\">test</a>', '2014-10-30 14:58:15', 0, 0),
+(66, 'Demo controls', '', '', 0, 0, 86, '63,67,68,69,70,71,72,73,77,78,80', '86', 0, '', 0, '', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Demo controls', '', '2014-07-15 12:25:40', 0, 0),
+(67, '<#LANG_LABEL#>', '', '', 0, 0, 66, '67', '86,66', 9000, '', 0, 'label', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Подпись', '', '2014-09-04 16:17:08', 0, 0),
+(68, 'New window', '', 'http://google.com/', 600, 600, 66, '68', '86,66', 8000, '', 0, 'window', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'New window', '', '2014-09-04 16:17:08', 0, 0),
+(69, '<#LANG_URL#>', '', 'http://google.com/', 0, 0, 66, '69', '86,66', 7000, '', 0, 'url', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Ссылка', '', '2014-09-04 16:17:08', 0, 0),
+(70, 'Buttons', '', '', 0, 0, 66, '70', '86,66', 6000, '', 0, 'button', 0, 0, 'clicked', 0, '', '', '', '', '', '', 0, 0, 'say(\"Привет\");', '', 0, 0, 0, 0, 'Buttons', '', '2014-09-04 16:17:08', 0, 0),
+(71, '<#LANG_ON_OFF_SWITCH#>', '', '', 0, 0, 66, '71', '86,66', 5000, '', 0, 'switch', 0, 0, '0', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Выключатель', '', '2014-09-04 16:17:08', 0, 0),
+(72, 'Select box', '', '', 0, 0, 66, '72', '86,66', 4000, '', 0, 'selectbox', 0, 0, '2', 0, '', '', '', '', '', '1|Item 1\r\n2|Item 2\r\n3|Item 3', 0, 0, '', '', 0, 0, 0, 0, 'Select box', '1|Item 1\r\n2|Item 2\r\n3|Item 3', '2014-09-04 16:17:08', 0, 0),
+(73, 'Plus minus box', '', '', 0, 0, 66, '73', '86,66', 3000, '', 0, 'plusminus', 0, 5, '3', 1, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Plus minus box', '', '2014-09-04 16:17:08', 0, 0),
+(74, '<#LANG_GENERAL_EVENTS_LOG#> (code)', '', '', 0, 0, 0, '74', '0', 9, '', 0, 'custom', 0, 0, '0', 0, '', '', '', '', '', '<div style=\"text-shadow:none;font-weight:normal;\">[#module name=\"shoutbox\" limit=\"10\" reverse=\"1\" mobile=\"1\"#]</div>', 0, 60, '', '', 0, 0, 0, 0, 'История событий (code)', '<!-- begin of file inner_code --><div style=\"text-shadow:none;font-weight:normal;\"><!-- begin of file ./templates/shoutbox/shoutbox.html -->\n\r\n<!-- Frontend -->\r\n \n\r\n <!-- action usual -->\r\n <!-- table shouts search -->\r\n \r\n  \r\n<!-- table shouts search -->\r\n<!-- results -->\r\n\r\n<div class=\"shout_box\">  <!-- begin shout_box -->\r\n\r\n<!-- search results (list) -->\r\n<div id=\"shoutboxContent\" class=\"shout_content\">\r\nЗагрузка......\r\n</div>\r\n<!-- / search results (list) -->\r\n<!-- / results -->\r\n\r\n\r\n<div class=\"shout_form\">\r\n<form action=\"/nf.php?pd=pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_&md=shoutbox&inst=&\" name=\"frmShoutBoxMsg\" method=\"get\" style=\"margin:0px\" onSubmit=\'return false;\'>\r\n<input type=\"text\" name=\"message\" class=\"shout_input\" placeholder=\"Команда\"><input type=\"submit\" name=\"submit\" value=\"Отправить\" onClick=\"return sendShoutMessage();\"  class=\"shout_button\">\r\n<input type=\"hidden\" name=\"pd\" value=\"pz_pz_YXBwbGljYXRpb246e2FjdGlvbj1tZW51fQ%3D%3Dpz_\">\n<input type=\"hidden\" name=\"md\" value=\"shoutbox\">\n<input type=\"hidden\" name=\"inst\" value=\"\">\n</FORM><!-- modified -->\r\n</div>\r\n\r\n</div> <!-- end shout_box -->\r\n<script language=\"javascript\">\r\n\r\nvar shoutTimer;\r\n\r\n function updateShoutContent() {\r\n  clearTimeout(shoutTimer);\r\n\r\n  var url=\"/popup/shoutbox.html?\";\r\n\r\n   url=url+\'&limit=10&getdata=1&reverse=1\';\r\n   $.ajax({\r\n    url: url,\r\n    }).done(function(data) { \r\n     if (data!=\'\') {\r\n      old_data=$(\'#shoutboxContent\').html();\r\n      if (old_data!=data) {\r\n       $(\'#shoutboxContent\').html(data);\r\n      }\r\n     }\r\n\r\n  \r\n  shoutTimer=setTimeout(\"updateShoutContent(\'\', \'\');\", 10000);\r\n  \r\n\r\n\r\n    });\r\n\r\n }\r\n\r\n function sendShoutMessage() {\r\n  if (document.frmShoutBoxMsg.message.value == \'\') return false; \r\n  var msg=URLencode(document.frmShoutBoxMsg.message.value);\r\n  document.frmShoutBoxMsg.message.value=\'\';\r\n  var url=\"/popup/shoutbox.html?\";\r\n  url=url+\'&limit=10&msg=\'+msg;\r\n  $.ajax({\r\n   url: url,\r\n   }).done(function(data) { \r\n    if (data!=\'OK\' && data!=\'\') {\r\n     $(\'#shoutboxContent\').html(data);\r\n    }\r\n   });\r\n  return false;\r\n }\r\n</script>\r\n\r\n\r\n<script language=\"javascript\">\r\n  updateShoutContent();\r\n</script>\r\n\r\n \r\n <!-- / table shouts search -->\r\n <!-- table shouts edit -->\r\n \r\n <!-- / table shouts edit -->\r\n <!-- table shouts view --> \r\n \r\n <!-- / table shouts view -->\r\n\r\n\r\n\r\n<!-- end of file ./templates/shoutbox/shoutbox.html --></div><!-- end of file inner_code -->', '2015-12-03 14:48:23', 0, 0),
+(77, 'Alarm time', '', '', 0, 0, 66, '77', '86,66', 0, '', 0, 'timebox', 0, 0, '09:30', 0, 'ThisComputer', 'AlarmTime', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Alarm time', '', '2014-09-04 16:17:08', 0, 0),
+(78, '<#LANG_TEXT_BOX#>', '', '', 0, 0, 66, '78', '86,66', 0, '', 0, 'textbox', 0, 0, '0', 0, 'ThisComputer', 'textBoxTest', '', '', '', '', 0, 10, '', '', 0, 0, 0, 0, 'Текстовое поле', '', '2014-10-30 14:58:15', 0, 0),
+(80, '<#LANG_SLIDER_BOX#>', '', '', 0, 0, 66, '80', '86,66', 0, '', 0, 'sliderbox', 0, 10, '0', 1, 'ThisComputer', 'textBoxTest', '', '', '', '', 0, 5, '', '', 0, 0, 0, 0, 'Слайдер', '', '2014-10-30 14:58:15', 0, 0),
+(86, '<#LANG_GENERAL_SERVICE#>', '', '', 0, 0, 0, '75,66,63,67,68,69,70,71,72,73,77,78,80,98,99', '0', 2, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Сервис', '', '2015-12-03 14:42:25', 0, 0),
+(106, '<#LANG_GENERAL_CONTROL#>', '', '', 0, 0, 0, '108', '0', 7000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 1, 'Управление', '', '2015-12-03 14:42:25', 0, 0),
+(114, 'Admin (status)', '', '', 0, 0, 110, '114', '110', 950, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%Admin.seenAt% (%Admin.CoordinatesUpdated%)\r\n<br><br>\r\n<a href=\"http://maps.google.com/maps?q=loc:%Admin.Coordinates%\" target=_blank><img src=\"http://maps.googleapis.com/maps/api/staticmap?center=%Admin.Coordinates%&size=300x300&maptype=hybrid&sensor=false&zoom=16&markers=%Admin.Coordinates%\"></a>', 0, 0, '', '', 0, 0, 0, 0, 'Admin (status)', ' ()\r\n<br><br>\r\n<a href=\"http://maps.google.com/maps?q=loc:\" target=_blank><img src=\"http://maps.googleapis.com/maps/api/staticmap?center=&size=300x300&maptype=hybrid&sensor=false&zoom=16&markers=\"></a>', '2014-10-30 15:40:58', 0, 0),
+(91, '<#LANG_GENERAL_CLIMATE#> (<#LANG_GENERAL_OUTSIDE#>: %ThisComputer.TempOutside%°C / <#LANG_GENERAL_INSIDE#>: %Livingroom.Temperature%°C)', '', '', 0, 0, 0, '92,93,104,105', '0', 8000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 60, '', '', 0, 0, 0, 1, 'Климат (На улице: -0.9°C / Дома: 22.4°C)', '', '2015-12-03 14:43:28', 0, 0),
+(92, '<#LANG_GENERAL_WEATHER_FORECAST#> (code)', '', '', 0, 0, 91, '92', '91', 1000, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '%ThisComputer.weatherFull%', 0, 0, '', '', 0, 0, 0, 0, 'Прогноз погоды (code)', '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:43:28', 0, 0),
+(93, '<#LANG_GENERAL_WEATHER_FORECAST#>', '', '', 0, 0, 91, '93', '91', 1001, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Прогноз погоды', '', '2015-12-03 14:42:25', 0, 0),
+(104, '<#LANG_GENERAL_INSIDE#>', '', '', 0, 0, 91, '104', '91', 2000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Дома', '', '2015-12-03 14:42:25', 0, 0),
+(105, '<#LANG_GENERAL_INSIDE#> (data)', '', '', 0, 0, 91, '105', '91', 1900, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', 'Livingroom: %Livingroom.Temperature%&deg;C / %Livingroom.Humidity%%', 0, 30, '', '', 0, 0, 0, 0, 'Дома (data)', 'Livingroom: 22.4&deg;C / 42%', '2015-12-03 14:43:28', 0, 0),
+(97, 'State', '', '', 0, 0, 0, '97', '0', 100010, '', 0, 'custom', 0, 0, '', 0, '', '', '', '', '', '<big style=\"font-size:24px\">%ThisComputer.timeNow%</big>\r\n\r\n<img src=\"/img/icons/status/lock_32_%Security.stateColor%.png\" align=\"absmiddle\"> %Security.stateDetails%\r\n<img src=\"/img/icons/status/system_32_%System.stateColor%.png\" align=\"absmiddle\"> %System.stateDetails%\r\n<img src=\"/img/icons/status/network_32_%Communication.stateColor%.png\" align=\"absmiddle\"> %Communication.stateDetails%\r\n<br/>\r\n%ThisComputer.somebodyHomeText%\r\n<br/>\r\nAdmin -- %Admin.seenAt% (%Admin.CoordinatesUpdated%)', 0, 10, '', '', 0, 0, 0, 0, 'State', '<big style=\"font-size:24px\">14:48</big>\r\n\r\n<img src=\"/img/icons/status/lock_32_green.png\" align=\"absmiddle\"> \r\n<img src=\"/img/icons/status/system_32_green.png\" align=\"absmiddle\"> \r\n<img src=\"/img/icons/status/network_32_green.png\" align=\"absmiddle\"> \r\n<br/>\r\n\r\n<br/>\r\nAdmin -- Home (10:00)', '2015-12-03 14:48:02', 0, 0),
+(98, '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, 86, '99', '86', 20000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Настройки', '', '2014-08-25 17:04:27', 0, 0),
+(99, 'Говорить время', '', '', 0, 0, 98, '99', '86,98', 1000, '', 0, 'switch', 0, 0, '1', 0, 'ThisComputer', 'clockChimeEnabled', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Говорить время', '', '2014-08-25 17:04:33', 0, 0),
+(108, 'Switch 1', '', '', 0, 0, 106, '108', '106', 0, '', 0, 'switch', 0, 0, '0', 0, 'Switch1', 'status', '', 'refresh', '', '', 0, 300, '', '', 0, 0, 0, 0, 'Switch 1', '', '2014-10-31 15:30:26', 0, 0),
+(110, '<#LANG_MODULE_USERS#>', '', '', 0, 0, 0, '114,111', '0', 5000, '', 0, '', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Пользователи', '', '2015-12-03 14:42:25', 0, 0),
+(111, 'Admin', '', '', 0, 0, 110, '111', '110', 1000, '', 0, 'label', 0, 0, '', 0, '', '', '', '', '', '', 0, 0, '', '', 0, 0, 0, 0, 'Admin', '', '2014-10-30 15:40:58', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `country`
+-- Структура таблицы `country`
 --
 
-DROP TABLE IF EXISTS `country`;
-CREATE TABLE IF NOT EXISTS `country` (
+CREATE TABLE `country` (
   `COUNTRY_ID` int(10) NOT NULL,
   `COUNTRY_GUID` varchar(48) NOT NULL,
   `COUNTRY_NAME` varchar(64) NOT NULL,
@@ -400,13 +308,11 @@ CREATE TABLE IF NOT EXISTS `country` (
   `COUNTRY_CODE` varchar(8) DEFAULT NULL,
   `COUNTRY_PHONE_CODE` varchar(8) DEFAULT NULL,
   `LATITUDE` float(18,5) DEFAULT NULL,
-  `LONGITUDE` float(18,5) DEFAULT NULL,
-  PRIMARY KEY (`COUNTRY_ID`),
-  KEY `AK_COUNTRY__GUID` (`COUNTRY_GUID`)
+  `LONGITUDE` float(18,5) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `country`
+-- Дамп данных таблицы `country`
 --
 
 INSERT INTO `country` (`COUNTRY_ID`, `COUNTRY_GUID`, `COUNTRY_NAME`, `LM_DATE`, `COUNTRY_CODE`, `COUNTRY_PHONE_CODE`, `LATITUDE`, `LONGITUDE`) VALUES
@@ -657,828 +563,794 @@ INSERT INTO `country` (`COUNTRY_ID`, `COUNTRY_GUID`, `COUNTRY_NAME`, `LM_DATE`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `elements`
+-- Структура таблицы `devices`
 --
 
-DROP TABLE IF EXISTS `elements`;
-CREATE TABLE IF NOT EXISTS `elements` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `SCENE_ID` int(10) NOT NULL DEFAULT '0',
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `TYPE` varchar(255) NOT NULL DEFAULT '',
-  `TOP` int(10) NOT NULL DEFAULT '0',
-  `LEFT` int(255) NOT NULL DEFAULT '0',
-  `WIDTH` int(255) NOT NULL DEFAULT '0',
-  `HEIGHT` int(255) NOT NULL DEFAULT '0',
-  `CROSS_SCENE` int(3) NOT NULL DEFAULT '0',
-  `BACKGROUND` int(3) NOT NULL DEFAULT '1',
-  `JAVASCRIPT` text,
-  `CSS` text,
-  `DX` int(10) NOT NULL DEFAULT '0',
-  `DY` int(10) NOT NULL DEFAULT '0',
-  `LINKED_ELEMENT_ID` int(10) NOT NULL DEFAULT '0',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `CSS_STYLE` varchar(255) NOT NULL DEFAULT '',
-  `POSITION_TYPE` int(3) NOT NULL DEFAULT '0',
-  `CONTAINER_ID` int(10) NOT NULL DEFAULT '0',
-  `S3D_SCENE` varchar(255) NOT NULL DEFAULT '',
-  `SMART_REPEAT` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `elements`
---
-
-INSERT INTO `elements` (`ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, `BACKGROUND`, `JAVASCRIPT`, `CSS`, `DX`, `DY`, `LINKED_ELEMENT_ID`, `PRIORITY`, `CSS_STYLE`, `POSITION_TYPE`, `CONTAINER_ID`, `S3D_SCENE`, `SMART_REPEAT`) VALUES
-(1, 1, 'Webcam Sample', 'html', 55, 392, 270, 210, 0, 1, NULL, NULL, 0, 0, 0, 0, '', 0, 0, '', 0),
-(6, 1, 'Switch 1', 'switch', 405, 465, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 'default', 0, 0, '', 0);
+CREATE TABLE `devices` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(100) NOT NULL DEFAULT '',
+  `ALT_TITLES` varchar(255) NOT NULL DEFAULT '',
+  `TYPE` varchar(100) NOT NULL DEFAULT '',
+  `LINKED_OBJECT` varchar(100) NOT NULL DEFAULT '',
+  `LOCATION_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `FAVORITE` int(3) UNSIGNED NOT NULL DEFAULT 0,
+  `SYSTEM_DEVICE` int(3) UNSIGNED NOT NULL DEFAULT 0,
+  `CLICKED` datetime DEFAULT NULL,
+  `SYSTEM` varchar(255) NOT NULL DEFAULT '',
+  `SUBTYPE` varchar(100) NOT NULL DEFAULT '',
+  `ENDPOINT_MODULE` varchar(255) NOT NULL DEFAULT '',
+  `ENDPOINT_NAME` varchar(255) NOT NULL DEFAULT '',
+  `ENDPOINT_TITLE` varchar(255) NOT NULL DEFAULT '',
+  `ROLES` varchar(100) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `elm_states`
+-- Структура таблицы `devices_groups`
 --
 
-DROP TABLE IF EXISTS `elm_states`;
-CREATE TABLE IF NOT EXISTS `elm_states` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ELEMENT_ID` int(10) NOT NULL DEFAULT '0',
+CREATE TABLE `devices_groups` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `SYS_NAME` varchar(100) NOT NULL DEFAULT '',
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `IMAGE` varchar(255) NOT NULL DEFAULT '',
-  `HTML` text,
-  `IS_DYNAMIC` int(3) NOT NULL DEFAULT '0',
-  `CURRENT_STATE` int(3) NOT NULL DEFAULT '0',
+  `APPLY_TYPES` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `devices_linked`
+--
+
+CREATE TABLE `devices_linked` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `DEVICE1_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `DEVICE2_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `LINK_TYPE` varchar(100) NOT NULL DEFAULT '',
+  `LINK_SETTINGS` text DEFAULT NULL,
+  `COMMENT` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `devices_scheduler_points`
+--
+
+CREATE TABLE `devices_scheduler_points` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `LINKED_METHOD` varchar(255) NOT NULL DEFAULT '',
+  `VALUE` varchar(255) NOT NULL DEFAULT '',
+  `SET_TIME` varchar(50) NOT NULL DEFAULT '',
+  `SET_DAYS` varchar(50) NOT NULL DEFAULT '',
+  `DEVICE_ID` int(10) NOT NULL DEFAULT 0,
+  `ACTIVE` int(3) NOT NULL DEFAULT 1,
+  `LATEST_RUN` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `elements`
+--
+
+CREATE TABLE `elements` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `SCENE_ID` int(10) NOT NULL DEFAULT 0,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `TYPE` varchar(255) NOT NULL DEFAULT '',
+  `TOP` int(10) NOT NULL DEFAULT 0,
+  `LEFT` int(255) NOT NULL DEFAULT 0,
+  `WIDTH` int(255) NOT NULL DEFAULT 0,
+  `HEIGHT` int(255) NOT NULL DEFAULT 0,
+  `CROSS_SCENE` int(3) NOT NULL DEFAULT 0,
+  `BACKGROUND` int(3) NOT NULL DEFAULT 1,
+  `JAVASCRIPT` text DEFAULT NULL,
+  `CSS` text DEFAULT NULL,
+  `DX` int(10) NOT NULL DEFAULT 0,
+  `DY` int(10) NOT NULL DEFAULT 0,
+  `LINKED_ELEMENT_ID` int(10) NOT NULL DEFAULT 0,
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `CSS_STYLE` varchar(255) NOT NULL DEFAULT '',
+  `POSITION_TYPE` int(3) NOT NULL DEFAULT 0,
+  `CONTAINER_ID` int(10) NOT NULL DEFAULT 0,
+  `S3D_SCENE` varchar(255) NOT NULL DEFAULT '',
+  `SMART_REPEAT` int(3) NOT NULL DEFAULT 0,
+  `SYSTEM` varchar(255) NOT NULL DEFAULT '',
+  `DEVICE_ID` int(10) NOT NULL DEFAULT 0,
   `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
-  `CONDITION` int(3) NOT NULL DEFAULT '0',
-  `CONDITION_VALUE` varchar(255) NOT NULL DEFAULT '',
-  `CONDITION_ADVANCED` text,
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  `SWITCH_SCENE` int(3) NOT NULL DEFAULT '0',
-  `CURRENT_STATUS` int(3) NOT NULL DEFAULT '0',
-  `ACTION_OBJECT` varchar(255) NOT NULL DEFAULT '',
-  `ACTION_METHOD` varchar(255) NOT NULL DEFAULT '',
-  `MENU_ITEM_ID` int(10) NOT NULL DEFAULT '0',
-  `WINDOW_POSX` int(10) NOT NULL DEFAULT '0',
-  `WINDOW_POSY` int(10) NOT NULL DEFAULT '0',
-  `WINDOW_WIDTH` int(10) NOT NULL DEFAULT '0',
-  `WINDOW_HEIGHT` int(10) NOT NULL DEFAULT '0',
-  `HOMEPAGE_ID` int(10) NOT NULL DEFAULT '0',
-  `EXT_URL` varchar(255) NOT NULL DEFAULT '',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `CODE` text,
-  `OPEN_SCENE_ID` int(10) NOT NULL DEFAULT '0',
-  `S3D_OBJECT` varchar(255) NOT NULL DEFAULT '',
-  `S3D_CAMERA` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+  `LINKED_METHOD` varchar(255) NOT NULL DEFAULT '',
+  `WIZARD_DATA` text DEFAULT NULL,
+  `EASY_CONFIG` int(3) NOT NULL DEFAULT 0,
+  `APPEAR_ANIMATION` int(3) NOT NULL DEFAULT 0,
+  `CLASS_TEMPLATE` varchar(50) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `elm_states`
+-- Дамп данных таблицы `elements`
+--
+
+INSERT INTO `elements` (`ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, `BACKGROUND`, `JAVASCRIPT`, `CSS`, `DX`, `DY`, `LINKED_ELEMENT_ID`, `PRIORITY`, `CSS_STYLE`, `POSITION_TYPE`, `CONTAINER_ID`, `S3D_SCENE`, `SMART_REPEAT`, `SYSTEM`, `DEVICE_ID`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `LINKED_METHOD`, `WIZARD_DATA`, `EASY_CONFIG`, `APPEAR_ANIMATION`, `CLASS_TEMPLATE`) VALUES
+(1, 1, 'Webcam Sample', 'html', 55, 392, 270, 210, 0, 1, NULL, NULL, 0, 0, 0, 0, '', 0, 0, '', 0, '', 0, '', '', '', NULL, 0, 0, ''),
+(6, 1, 'Switch 1', 'switch', 405, 465, 0, 0, 0, 0, '', '', 0, 0, 0, 0, 'default', 0, 0, '', 0, '', 0, '', '', '', NULL, 0, 0, '');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `elm_states`
+--
+
+CREATE TABLE `elm_states` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `ELEMENT_ID` int(10) NOT NULL DEFAULT 0,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `IMAGE` varchar(255) NOT NULL DEFAULT '',
+  `HTML` text DEFAULT NULL,
+  `IS_DYNAMIC` int(3) NOT NULL DEFAULT 0,
+  `CURRENT_STATE` int(3) NOT NULL DEFAULT 0,
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
+  `CONDITION` int(3) NOT NULL DEFAULT 0,
+  `CONDITION_VALUE` varchar(255) NOT NULL DEFAULT '',
+  `CONDITION_ADVANCED` text DEFAULT NULL,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
+  `SWITCH_SCENE` int(3) NOT NULL DEFAULT 0,
+  `CURRENT_STATUS` int(3) NOT NULL DEFAULT 0,
+  `ACTION_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `ACTION_METHOD` varchar(255) NOT NULL DEFAULT '',
+  `MENU_ITEM_ID` int(10) NOT NULL DEFAULT 0,
+  `WINDOW_POSX` int(10) NOT NULL DEFAULT 0,
+  `WINDOW_POSY` int(10) NOT NULL DEFAULT 0,
+  `WINDOW_WIDTH` int(10) NOT NULL DEFAULT 0,
+  `WINDOW_HEIGHT` int(10) NOT NULL DEFAULT 0,
+  `HOMEPAGE_ID` int(10) NOT NULL DEFAULT 0,
+  `EXT_URL` varchar(255) NOT NULL DEFAULT '',
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `CODE` text DEFAULT NULL,
+  `OPEN_SCENE_ID` int(10) NOT NULL DEFAULT 0,
+  `S3D_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `S3D_CAMERA` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `elm_states`
 --
 
 INSERT INTO `elm_states` (`ID`, `ELEMENT_ID`, `TITLE`, `IMAGE`, `HTML`, `IS_DYNAMIC`, `CURRENT_STATE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `CONDITION`, `CONDITION_VALUE`, `CONDITION_ADVANCED`, `SCRIPT_ID`, `SWITCH_SCENE`, `CURRENT_STATUS`, `ACTION_OBJECT`, `ACTION_METHOD`, `MENU_ITEM_ID`, `WINDOW_POSX`, `WINDOW_POSY`, `WINDOW_WIDTH`, `WINDOW_HEIGHT`, `HOMEPAGE_ID`, `EXT_URL`, `PRIORITY`, `CODE`, `OPEN_SCENE_ID`, `S3D_OBJECT`, `S3D_CAMERA`) VALUES
-(1, 1, 'Default', '', '<img src="http://abclocal.go.com/three/wabc/webcam/skycpk.jpg" width="270">', 0, 1, '', '', 1, '', '', 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', ''),
+(1, 1, 'Default', '', '<img src=\"http://abclocal.go.com/three/wabc/webcam/skycpk.jpg\" width=\"270\">', 0, 1, '', '', 1, '', '', 0, 0, 0, '', '', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', ''),
 (4, 6, 'off', '', 'Switch 1', 1, 1, 'Switch1', 'status', 4, '1', NULL, 0, 0, 0, 'Switch1', 'turnOn', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', ''),
 (5, 6, 'on', '', 'Switch 1', 1, 0, 'Switch1', 'status', 1, '1', NULL, 0, 0, 0, 'Switch1', 'turnOff', 0, 0, 0, 0, 0, 0, '', 0, NULL, 0, '', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `events`
+-- Структура таблицы `events`
 --
 
-DROP TABLE IF EXISTS `events`;
-CREATE TABLE IF NOT EXISTS `events` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `events` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `EVENT_TYPE` varchar(10) NOT NULL DEFAULT '',
   `TERMINAL_FROM` varchar(255) NOT NULL DEFAULT '',
   `TERMINAL_TO` varchar(255) NOT NULL DEFAULT '',
   `USER_FROM` varchar(255) NOT NULL DEFAULT '',
   `USER_TO` varchar(255) NOT NULL DEFAULT '',
   `WINDOW` varchar(255) NOT NULL DEFAULT '',
-  `DETAILS` text,
+  `DETAILS` text DEFAULT NULL,
   `ADDED` datetime DEFAULT NULL,
   `EXPIRE` datetime DEFAULT NULL,
-  `PROCESSED` int(3) NOT NULL DEFAULT '0',
+  `PROCESSED` int(3) NOT NULL DEFAULT 0,
   `EVENT_NAME` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
---
--- Dumping data for table `events`
---
-
-INSERT INTO `events` (`ID`, `EVENT_TYPE`, `TERMINAL_FROM`, `TERMINAL_TO`, `USER_FROM`, `USER_TO`, `WINDOW`, `DETAILS`, `ADDED`, `EXPIRE`, `PROCESSED`, `EVENT_NAME`) VALUES
-(1, 'system', '', '', '', '', '', 'objects', '2014-09-05 13:01:00', '2014-09-07 13:01:00', 1, 'inhouseMovement');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gpsactions`
---
-
-DROP TABLE IF EXISTS `gpsactions`;
-CREATE TABLE IF NOT EXISTS `gpsactions` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `LOCATION_ID` int(10) NOT NULL DEFAULT '0',
-  `USER_ID` int(10) NOT NULL DEFAULT '0',
-  `ACTION_TYPE` int(255) NOT NULL DEFAULT '0',
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  `CODE` text,
-  `LOG` text,
-  `EXECUTED` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `LOCATION_ID` (`LOCATION_ID`),
-  KEY `USER_ID` (`USER_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gpsdevices`
---
-
-DROP TABLE IF EXISTS `gpsdevices`;
-CREATE TABLE IF NOT EXISTS `gpsdevices` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `USER_ID` int(10) NOT NULL DEFAULT '0',
-  `LAT` varchar(255) NOT NULL DEFAULT '',
-  `LON` varchar(255) NOT NULL DEFAULT '',
-  `UPDATED` datetime DEFAULT NULL,
-  `DEVICEID` varchar(255) NOT NULL DEFAULT '',
-  `TOKEN` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`),
-  KEY `USER_ID` (`USER_ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gpslocations`
---
-
-DROP TABLE IF EXISTS `gpslocations`;
-CREATE TABLE IF NOT EXISTS `gpslocations` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `LAT` float NOT NULL DEFAULT '0',
-  `LON` float NOT NULL DEFAULT '0',
-  `RANGE` float NOT NULL DEFAULT '0',
-  `VIRTUAL_USER_ID` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
-
---
--- Dumping data for table `gpslocations`
---
-
-INSERT INTO `gpslocations` (`ID`, `TITLE`, `LAT`, `LON`, `RANGE`, `VIRTUAL_USER_ID`) VALUES
-(11, 'Location 1', 52.9471, 21.668, 500, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gpslog`
---
-
-DROP TABLE IF EXISTS `gpslog`;
-CREATE TABLE IF NOT EXISTS `gpslog` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ADDED` datetime DEFAULT NULL,
-  `LAT` float NOT NULL DEFAULT '0',
-  `LON` float NOT NULL DEFAULT '0',
-  `ALT` float NOT NULL DEFAULT '0',
-  `PROVIDER` varchar(30) NOT NULL DEFAULT '',
-  `SPEED` float NOT NULL DEFAULT '0',
-  `BATTLEVEL` int(3) NOT NULL DEFAULT '0',
-  `CHARGING` int(3) NOT NULL DEFAULT '0',
-  `DEVICEID` varchar(255) NOT NULL DEFAULT '',
-  `DEVICE_ID` int(10) NOT NULL DEFAULT '0',
-  `LOCATION_ID` int(10) NOT NULL DEFAULT '0',
-  `ACCURACY` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`),
-  KEY `DEVICE_ID` (`DEVICE_ID`),
-  KEY `LOCATION_ID` (`LOCATION_ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2912 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `history`
---
-
-DROP TABLE IF EXISTS `history`;
-CREATE TABLE IF NOT EXISTS `history` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ADDED` datetime DEFAULT NULL,
-  `OBJECT_ID` int(10) NOT NULL DEFAULT '0',
-  `METHOD_ID` int(10) NOT NULL DEFAULT '0',
-  `VALUE_ID` int(10) NOT NULL DEFAULT '0',
-  `OLD_VALUE` varchar(255) NOT NULL DEFAULT '',
-  `NEW_VALUE` varchar(255) NOT NULL DEFAULT '',
-  `DETAILS` text,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2521 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ignore_updates`
---
-
-DROP TABLE IF EXISTS `ignore_updates`;
-CREATE TABLE IF NOT EXISTS `ignore_updates` (
-  `ID` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `jobs`
---
-
-DROP TABLE IF EXISTS `jobs`;
-CREATE TABLE IF NOT EXISTS `jobs` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `COMMANDS` text NOT NULL,
-  `RUNTIME` datetime DEFAULT NULL,
-  `EXPIRE` datetime DEFAULT NULL,
-  `PROCESSED` int(3) NOT NULL DEFAULT '0',
-  `STARTED` datetime DEFAULT NULL,
-  `EXPIRED` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=180729 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `layouts`
---
-
-DROP TABLE IF EXISTS `layouts`;
-CREATE TABLE IF NOT EXISTS `layouts` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `TYPE` varchar(255) NOT NULL DEFAULT '',
-  `CODE` text,
-  `APP` varchar(255) NOT NULL DEFAULT '',
-  `URL` char(255) NOT NULL DEFAULT '',
-  `DETAILS` text,
-  `REFRESH` int(10) NOT NULL DEFAULT '0',
-  `ICON` varchar(50) NOT NULL DEFAULT '',
-  `HIDDEN` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
-
---
--- Dumping data for table `layouts`
---
-
-INSERT INTO `layouts` (`ID`, `TITLE`, `PRIORITY`, `TYPE`, `CODE`, `APP`, `URL`, `DETAILS`, `REFRESH`, `ICON`) VALUES
-(6, '<#LANG_APP_PRODUCTS#>', 70, 'app', '', 'app_products', '', '', 0, ''),
-(7, '<#LANG_MODULE_SCENES#>', 550, 'app', '', 'scenes', '', '', 0, ''),
-(8, '<#LANG_WELCOME_GREETING#>', 1000, 'html', '<div style="padding-left:50px;padding-top:30px">\r\n<h1><#LANG_WELCOME_GREETING#></h1>\r\n&nbsp;\r\n<p style="font-size:14px">\r\n<#LANG_WELCOME_TEXT#>\r\n</p>\r\n</div>', '', '', '', 0, ''),
-(9, '<#LANG_APP_CALENDAR#>', 100, 'app', '', 'app_calendar', '', '', 0, ''),
-(10, '<#LANG_APP_MEDIA_BROWSER#>', 200, 'app', '', 'app_mediabrowser', '', '', 0, ''),
-(12, 'GPS', 0, 'app', '', 'app_gpstrack', '', '', 0, '');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `locations`
---
-
-DROP TABLE IF EXISTS `locations`;
-CREATE TABLE IF NOT EXISTS `locations` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
-
---
--- Dumping data for table `locations`
---
-
-INSERT INTO `locations` (`ID`, `TITLE`) VALUES
-(1, 'Kitchen'),
-(4, 'Livingroom'),
-(5, 'Bedroom'),
-(6, 'Hall'),
-(7, 'Bathroom'),
-(8, 'Toilet'),
-(10, 'Child''s bedroom');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `log4php_log`
---
-
-DROP TABLE IF EXISTS `log4php_log`;
-CREATE TABLE IF NOT EXISTS `log4php_log` (
-  `timestamp` datetime DEFAULT NULL,
-  `logger` varchar(256) DEFAULT NULL,
-  `level` varchar(32) DEFAULT NULL,
-  `message` varchar(4000) DEFAULT NULL,
-  `thread` int(11) DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
-  `line` varchar(10) DEFAULT NULL
+  `DESCRIPTION` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `media_favorites`
+-- Структура таблицы `events_params`
 --
 
-DROP TABLE IF EXISTS `media_favorites`;
-CREATE TABLE IF NOT EXISTS `media_favorites` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PATH` varchar(255) NOT NULL DEFAULT '',
+CREATE TABLE `events_params` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `EVENT_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `LIST_ID` int(10) unsigned NOT NULL DEFAULT '0',
-  `COLLECTION_ID` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `media_favorites`
---
-
-INSERT INTO `media_favorites` (`ID`, `PATH`, `TITLE`, `LIST_ID`, `COLLECTION_ID`) VALUES
-(2, './music/Beyonce - Beyonce (2013)/', 'music/Beyonce - Beyonce (2013)', 0, 9);
+  `VALUE` varchar(255) NOT NULL DEFAULT '',
+  `UPDATED` datetime DEFAULT NULL,
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_METHOD` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `media_history`
+-- Структура таблицы `history`
 --
 
-DROP TABLE IF EXISTS `media_history`;
-CREATE TABLE IF NOT EXISTS `media_history` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PATH` varchar(255) NOT NULL DEFAULT '',
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `LIST_ID` int(10) unsigned NOT NULL DEFAULT '0',
-  `COLLECTION_ID` int(10) unsigned NOT NULL DEFAULT '0',
-  `PLAYED` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+CREATE TABLE `history` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `ADDED` datetime DEFAULT NULL,
+  `OBJECT_ID` int(10) NOT NULL DEFAULT 0,
+  `METHOD_ID` int(10) NOT NULL DEFAULT 0,
+  `VALUE_ID` int(10) NOT NULL DEFAULT 0,
+  `OLD_VALUE` varchar(255) NOT NULL DEFAULT '',
+  `NEW_VALUE` varchar(255) NOT NULL DEFAULT '',
+  `DETAILS` text DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `methods`
+-- Структура таблицы `ignore_updates`
 --
 
-DROP TABLE IF EXISTS `methods`;
-CREATE TABLE IF NOT EXISTS `methods` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `OBJECT_ID` int(10) NOT NULL DEFAULT '0',
-  `CLASS_ID` int(10) NOT NULL DEFAULT '0',
+CREATE TABLE `ignore_updates` (
+  `ID` tinyint(3) UNSIGNED NOT NULL,
+  `NAME` varchar(50) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `DESCRIPTION` text,
-  `CODE` text,
-  `CALL_PARENT` int(3) NOT NULL DEFAULT '0',
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
+  `COMMANDS` text NOT NULL,
+  `RUNTIME` datetime DEFAULT NULL,
+  `EXPIRE` datetime DEFAULT NULL,
+  `PROCESSED` int(3) NOT NULL DEFAULT 0,
+  `STARTED` datetime DEFAULT NULL,
+  `EXPIRED` int(3) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `layouts`
+--
+
+CREATE TABLE `layouts` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `TYPE` varchar(255) NOT NULL DEFAULT '',
+  `CODE` text DEFAULT NULL,
+  `APP` varchar(255) NOT NULL DEFAULT '',
+  `URL` char(255) NOT NULL DEFAULT '',
+  `DETAILS` text DEFAULT NULL,
+  `REFRESH` int(10) NOT NULL DEFAULT 0,
+  `ICON` varchar(50) NOT NULL DEFAULT '',
+  `HIDDEN` int(1) NOT NULL DEFAULT 0,
+  `BACKGROUND_IMAGE` varchar(255) NOT NULL DEFAULT '',
+  `THEME` varchar(50) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `layouts`
+--
+
+INSERT INTO `layouts` (`ID`, `TITLE`, `PRIORITY`, `TYPE`, `CODE`, `APP`, `URL`, `DETAILS`, `REFRESH`, `ICON`, `HIDDEN`, `BACKGROUND_IMAGE`, `THEME`) VALUES
+(7, '<#LANG_MODULE_SCENES#>', 550, 'app', '', 'scenes', '', '', 0, '', 0, '', ''),
+(8, '<#LANG_WELCOME_GREETING#>', 1000, 'html', '<div style=\"padding-left:50px;padding-top:30px\">\r\n<h1><#LANG_WELCOME_GREETING#></h1>\r\n&nbsp;\r\n<p style=\"font-size:14px\">\r\n<#LANG_WELCOME_TEXT#>\r\n</p>\r\n</div>', '', '', '', 0, '', 0, '', ''),
+(10, '<#LANG_APP_MEDIA_BROWSER#>', 200, 'app', '', 'app_mediabrowser', '', '', 0, '', 0, '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `locations`
+--
+
+CREATE TABLE `locations` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `PRIORITY` int(10) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `locations`
+--
+
+INSERT INTO `locations` (`ID`, `TITLE`, `PRIORITY`) VALUES
+(1, 'Kitchen', 0),
+(4, 'Livingroom', 0),
+(5, 'Bedroom', 0),
+(6, 'Hall', 0),
+(7, 'Bathroom', 0),
+(8, 'Toilet', 0),
+(10, 'Child\'s bedroom', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `media_favorites`
+--
+
+CREATE TABLE `media_favorites` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `PATH` varchar(255) NOT NULL DEFAULT '',
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `LIST_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `COLLECTION_ID` int(10) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `media_history`
+--
+
+CREATE TABLE `media_history` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `PATH` varchar(255) NOT NULL DEFAULT '',
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `LIST_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `COLLECTION_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `PLAYED` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `methods`
+--
+
+CREATE TABLE `methods` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `OBJECT_ID` int(10) NOT NULL DEFAULT 0,
+  `CLASS_ID` int(10) NOT NULL DEFAULT 0,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `DESCRIPTION` text DEFAULT NULL,
+  `CODE` text DEFAULT NULL,
+  `CALL_PARENT` int(3) NOT NULL DEFAULT 0,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
   `EXECUTED` datetime DEFAULT NULL,
   `EXECUTED_PARAMS` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `OBJECT_ID` (`OBJECT_ID`),
-  KEY `CLASS_ID` (`CLASS_ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=103 ;
+  `EXECUTED_SRC` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `methods`
+-- Дамп данных таблицы `methods`
 --
 
-INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `CODE`, `CALL_PARENT`, `SCRIPT_ID`, `EXECUTED`, `EXECUTED_PARAMS`) VALUES
-(1, 0, 1, 'KeyPressed', 'событие, возникающее при нажатии на кнопку', '$this->setProperty("lastTimePressed",time());', 0, 0, NULL, NULL),
-(23, 0, 11, 'say', '', 'echo "notify: ".utf2win($params[''say''])."<br>";\r\n$say=utf2win($params[''say'']);\r\n$say=str_replace('' '',''..'',$say);\r\necho (''"c:\\\\program files\\\\Growl for windows\\\\growlnotify.com" /t:Alice ''.$say.'''');\r\nexec(''"c:\\\\program files\\\\Growl for windows\\\\growlnotify.com" /t:Alice ''.$say.'''');', 0, 0, NULL, NULL),
-(14, 0, 7, 'onNewMinute', '', '', 0, 0, '2015-12-03 14:49:00', 'a:4:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:11:"onNewMinute";s:21:"ORIGINAL_OBJECT_TITLE";s:10:"ClockChime";}'),
-(15, 0, 7, 'onNewHour', '', '', 0, 0, '2015-02-04 15:00:00', 'a:4:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:9:"onNewHour";s:21:"ORIGINAL_OBJECT_TITLE";s:10:"ClockChime";}'),
-(16, 0, 9, 'Connected', '', '', 0, 0, NULL, NULL),
-(55, 0, 18, 'Lost', '', '', 0, 0, NULL, NULL),
-(18, 6, 0, 'onNewMinute', '', '$h=(int)date(''G'',time());\r\n$m=date(''i'',time());\r\n\r\n\r\nif (isWeekDay()) {\r\n\r\n}\r\n\r\n\r\nif (($h>=8) && getGlobal(''clockChimeEnabled'')) {\r\n if ($m=="00") {\r\n   say(timeNow(),1);\r\n }\r\n}\r\n\r\n\r\nsetGlobal(''timeNow'',date(''H:i''));\r\n\r\n$homeStatus=date(''H:i'');\r\nif (getGlobal(''NobodyHomeMode.active'')) {\r\n $homeStatus.='' Дома никого'';\r\n} else {\r\n $homeStatus.='' Дома кто-то есть'';\r\n}\r\n\r\n$homeStatus.='' ''.getGlobal(''Security.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''System.stateDetails'');\r\n$homeStatus.='' ''.getGlobal(''Communication.stateDetails'');\r\nsetGlobal(''HomeStatus'',$homeStatus);\r\n\r\n if (timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')=="1") {\r\n  setGlobal("isDark",0);\r\n  callMethod(''DarknessMode.deactivate'');  \r\n } elseif (!timeBetween(getGlobal(''SunRiseTime''),getGlobal(''SunSetTime'')) && getGlobal(''isDark'')!="1") {\r\n  setGlobal("isDark",1);\r\n  callMethod(''DarknessMode.activate'');    \r\n }\r\n \r\n  if (timeIs(getGlobal(''SunRiseTime''))) {\r\n  say(''Всходит солнце'');\r\n }\r\n if (timeIs(getGlobal(''SunSetTime''))) {\r\n  say(''Солнце заходит'',2);\r\n }\r\n \r\nif (timeIs("23:30") && (gg("EconomMode.active")!="1") && (gg("NobodyHomeMode.active")=="1")) {\r\n say("Похоже никого нет сегодня, можно сэкономить немного.");\r\n callMethod(''EconomMode.activate'');\r\n}\r\n\r\nif (timeIs(''20:00'')) {\r\n callMethod(''NightMode.activate'');\r\n} elseif (timeIs(''08:00'')) {\r\n callMethod(''NightMode.deactivate'');\r\n}\r\n\r\nif (timeIs("03:00")) {\r\n runScript("systemMaintenance");\r\n}\r\n\r\nif (gg(''ThisComputer.AlarmStatus'') && timeIs(gg(''ThisComputer.AlarmTime''))) {\r\n runScript(''MorningAlarm'');\r\n}', 1, 0, '2015-12-03 14:49:00', 'a:3:{s:6:"object";s:10:"ClockChime";s:2:"op";s:1:"m";s:1:"m";s:11:"onNewMinute";}'),
-(19, 4, 0, 'Connected', '', 'if ($params[''serial'']=='''' && $params[''devname'']!='''') {\r\n $params[''serial'']=$params[''devname''];\r\n}\r\n\r\n$device=SQLSelectOne("SELECT * FROM usbdevices WHERE SERIAL LIKE ''".$params[''serial'']."''");\r\nif (!$device[''ID'']) {\r\n // new device connected\r\n //say("Подключено новое устройство",1);\r\n $device=array();\r\n $device[''SERIAL'']=$params[''serial''];\r\n $device[''TITLE'']=''устройство ''.$params[''devname''];\r\n $device[''FIRST_FOUND'']=date(''Y-m-d H:i:s'');\r\n $device[''LAST_FOUND'']=date(''Y-m-d H:i:s'');\r\n $device[''LOG''].=$device[''FIRST_FOUND''].'' подключено (впервые)''."\\n";\r\n $device[''ID'']=SQLInsert(''usbdevices'',$device);\r\n} else {\r\n // device already in our database\r\n //say("Подключено ".$device[''TITLE''],1);\r\n if ($device[''USER_ID'']) {\r\n  $user=SQLSelectOne("SELECT * FROM users WHERE ID=''".$device[''USER_ID'']."''");\r\n  if ($user[''ID'']) {\r\n    //$user[''NAME'']; // теперь мы знаем имя пользователя, связанного с этим устройством\r\n  }\r\n }\r\n $device[''LAST_FOUND'']=date(''Y-m-d H:i:s'');\r\n $device[''LOG'']=$device[''LAST_FOUND''].'' подключено''."\\n".$device[''LOG''];\r\n SQLUpdate(''usbdevices'',$device);\r\n if ($device[''SCRIPT_ID'']!='''') {\r\n  runScript($device[''SCRIPT_ID''],$params);\r\n } elseif ($device[''SCRIPT'']!='''') {\r\n  eval($device[''SCRIPT'']);\r\n }\r\n}', 1, 0, NULL, NULL),
-(20, 0, 10, 'WakedUp', '', '', 0, 0, NULL, NULL),
-(25, 0, 10, 'onIdle', '', '', 0, 0, NULL, NULL),
-(27, 0, 10, 'StartUp', '', '', 0, 0, '2015-12-03 14:42:54', 'a:4:{s:6:"object";s:12:"ThisComputer";s:2:"op";s:1:"m";s:1:"m";s:7:"StartUp";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
-(29, 0, 10, 'commandReceived', 'получение новой команды', '', 0, 0, '2014-09-05 12:07:08', 'a:2:{s:7:"command";s:14:"статусы";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
-(30, 7, 0, 'commandReceived', '', '$command=$params[''command''];\r\n\r\n$short_command='''';\r\n$dt=recognizeTime($command,$short_command);\r\n\r\nif (preg_match(''/скажи сколько врем/is'',$command)) {\r\n if ($dt>0) {\r\n  addScheduledJob("command".$dt,"processCommand(''".$short_command."'');",$dt);\r\n  say(''Задача принята'',2);\r\n  return;\r\n }\r\n global $voicemode;\r\n $voicemode=''on'';\r\n say(''Сейчас ''.timeNow(),2);\r\n} elseif (preg_match(''/сколько время/is'',$command)) {\r\n if ($dt>0) {\r\n  addScheduledJob("command".$dt,"processCommand(''".$short_command."'');",$dt);\r\n  say(''Задача принята'');\r\n  echo $short_command;\r\n  return;\r\n }\r\n say(''Сейчас ''.timeNow());\r\n} elseif (preg_match(''/повтори (.+)/is'',$command,$m) || preg_match(''/скажи (.+)/is'',$command,$m)) {\r\n if ($dt>0) {\r\n  addScheduledJob("command".$dt,"processCommand(''".$short_command."'');",$dt);\r\n  say(''Задача принята'',2);\r\n  return;\r\n }\r\n global $voicemode;\r\n $voicemode=''on'';\r\n say($m[1],2);\r\n} else {\r\n say(''Неизвестная команда...'',2);\r\n}', 1, 0, '2014-09-05 12:07:08', 'a:1:{s:7:"command";s:14:"статусы";}'),
-(31, 0, 12, 'onNewMessage', '', '', 0, 0, NULL, NULL),
-(32, 0, 12, 'onStatusChange', '', '', 0, 0, NULL, NULL),
-(33, 10, 0, 'onStatusChange', NULL, 'echo "status received: ".$params[''status''];', 1, 0, NULL, NULL),
-(34, 10, 0, 'onNewMessage', '', ' global $voicemode;\r\n $voicemode=''off'';\r\n processCommand($params[''message'']);', 1, 0, NULL, NULL),
-(45, 0, 10, 'powerConnected', '', '', 0, 0, NULL, NULL),
-(46, 0, 10, 'powerDisconnected', '', '', 0, 0, NULL, NULL),
-(48, 7, 0, 'powerDisconnected', NULL, 'say("Отключено питание");', 1, 0, NULL, NULL),
-(54, 0, 18, 'Found', '', '', 0, 0, NULL, NULL),
-(56, 13, 0, 'Found', '', '// new device\r\n\r\n$tm=registeredEventTime(''btcall''); \r\nif ((time()-$tm)>60 || $tm<0) {\r\n registerEvent(''btcall''); \r\n}\r\n\r\n\r\nif ($params[''new'']) {\r\n //say(''Обнаружено новое блютуз устройство'');\r\n}\r\nif ($params[''user'']!='''') {\r\n //say($params[''user''].'' где-то рядом'');\r\n}', 1, 0, NULL, NULL),
-(57, 13, 0, 'Lost', '', '// device lost\r\n', 1, 1, NULL, NULL),
-(59, 0, 21, 'checkState', '', ' ', 0, 0, '2015-12-03 14:49:25', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:13:"Communication";}'),
-(60, 0, 21, 'stateChanged', '', '', 0, 0, '2015-12-03 14:46:48', 'a:2:{s:5:"STATE";s:5:"green";s:21:"ORIGINAL_OBJECT_TITLE";s:6:"System";}'),
-(61, 0, 22, 'statusChanged', '', 'if ($params[''status'']) {\r\n $this->setProperty(''status'',$params[''status'']);\r\n}\r\n$this->setProperty(''updatedTimestamp'',time());\r\n\r\n$this->setProperty("alive",1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=12*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);', 0, 0, '0000-00-00 00:00:00', ''),
-(62, 0, 23, 'statusChanged', '', '$this->setProperty(''status'',$params[''status'']); // выставляем статус сенсора\r\n$this->setProperty(''updatedTimestamp'',time()); // выставляем время срабатывания сенсора\r\n\r\n$this->setProperty(''alive'',1);\r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=24*60*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout);\r\n\r\nif ($params[''status'']) {\r\n \r\n $this->setProperty(''motionDetected'',1);\r\n clearTimeOut($this->object_title.''_detected''); \r\n setTimeOut($this->object_title.''_detected'',"setGlobal(''".$this->object_title.".motionDetected'',0);",30);\r\n\r\n $linked_room=$this->getProperty(''LinkedRoom'');\r\n if ($linked_room!='''') {\r\n  callMethod($linked_room.''.onActivity'');\r\n }\r\n\r\n if ($this->object_title==''sensorMovement3'' || $this->object_title==''sensorMovementRemote1'' || $this->object_title==''sensorMovementRemote2'') {\r\n  //|| $this->object_title==''sensorMovement5''\r\n  return; // не реагируем на движение в спальне, по ip-сенсорам и по сенсору на втром этаже\r\n }\r\n\r\n ClearTimeOut("nobodyHome"); \r\n SetTimeOut("nobodyHome","callMethod(''NobodyHomeMode.activate'');", 1*60*60); // выполняем если целый час никого не было\r\n\r\n if (getGlobal(''NobodyHomeMode.active'')) {\r\n  callMethod(''NobodyHomeMode.deactivate'');\r\n }\r\n\r\n $last_register=registeredEventTime(''inhouseMovement''); // проверяем когда в последний раз срабатывало событие "движение внутри дома"\r\n  registerEvent(''inhouseMovement'',$this->name,2); // регистрируем событие "движение внутри дома" \r\n  if (timeBetween(''05:00'', ''12:00'') && ((time()-$last_register)>2*60*60)) {\r\n   runScript(''Greeting''); // запускаем скрипт "доброе утро"\r\n  }\r\n}', 0, 0, '2014-09-05 13:00:59', 'a:5:{s:2:"op";s:1:"m";s:6:"object";s:13:"MotionSensor4";s:1:"m";s:13:"statusChanged";s:6:"status";s:1:"1";s:21:"ORIGINAL_OBJECT_TITLE";s:13:"MotionSensor4";}'),
-(63, 0, 24, 'modeChanged', '', '$this->setProperty("updated",time());\r\n$this->setProperty("updatedTime",date(''H:i''));\r\nif ($this->getProperty(''active'')) {\r\n say("Режим ".$this->getProperty(''title'')." активирован.");\r\n} else {\r\n say("Режим ".$this->getProperty(''title'')." выключен.");\r\n}', 0, 0, '2015-01-29 12:51:00', 'a:4:{s:8:"PROPERTY";s:6:"active";s:9:"NEW_VALUE";s:1:"0";s:9:"OLD_VALUE";s:1:"1";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"DarknessMode";}'),
-(64, 0, 24, 'activate', '', '$this->setProperty(''active'',1);', 0, 0, '2015-01-29 08:50:00', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:12:"DarknessMode";}'),
-(65, 0, 24, 'deactivate', '', '$this->setProperty(''active'',0);', 0, 0, '2015-01-29 12:51:00', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:12:"DarknessMode";}'),
-(66, 0, 25, 'onActivity', '', '$latestActivity=$this->getProperty(''LatestActivity'');\r\n$this->setProperty(''LatestActivity'',time());\r\n$this->setProperty(''LatestActivityTime'',date(''H:i''));\r\n\r\n$this->setProperty(''SomebodyHere'',1);\r\n$ot=$this->object_title;\r\nif ($this->getProperty("IdleDelay")) {\r\n $activity_timeout=(int)$this->getProperty("IdleDelay");\r\n} else {\r\n $activity_timeout=10*60;\r\n}\r\nclearTimeOut($ot."_activity_timeout");\r\nsetTimeOut($ot."_activity_timeout","callMethod(''".$ot.".onIdle'');",$activity_timeout);\r\n$this->callMethod("updateActivityStatus");\r\n', 0, 0, '2014-09-05 13:01:00', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:10:"Kinderroom";}'),
-(67, 0, 25, 'onIdle', '', '$this->setProperty(''SomebodyHere'',0);', 0, 0, '2014-09-05 12:24:46', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:10:"Kinderroom";}'),
-(68, 0, 26, 'refresh', '', '$status=$this->getProperty("status");\r\nif ($status) {\r\n $this->callMethod(''turnOn'');\r\n} else {\r\n $this->callMethod(''turnOff'');\r\n}', 0, 0, '2015-12-03 14:46:02', 'a:3:{s:5:"VALUE";s:1:"1";s:9:"OLD_VALUE";s:0:"";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
-(69, 0, 26, 'switch', '', '$status=$this->getProperty("status");\r\nif ($status) {\r\n $this->callMethod(''turnOff'');\r\n} else {\r\n $this->callMethod(''turnOn'');\r\n}', 0, 0, NULL, NULL),
-(70, 0, 26, 'turnOff', '', '$this->setProperty("status",0);', 0, 0, '2015-12-03 14:46:13', 'a:2:{s:5:"STATE";s:2:"on";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
-(71, 0, 26, 'turnOn', '', '$this->setProperty("status",1);', 0, 0, '2015-12-03 14:46:12', 'a:2:{s:5:"STATE";s:3:"off";s:21:"ORIGINAL_OBJECT_TITLE";s:7:"Switch1";}'),
-(72, 0, 19, 'tempChanged', '', '//$params[''t'']\r\n $this->setProperty("updated",time());\r\n $this->setProperty("updatedTime",date("H:i",time()));\r\n $this->setProperty("alive",1); \r\n \r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=30*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout); \r\n\r\nif (!isset($params[''t''])) {\r\n return;\r\n}\r\n\r\n\r\n$old_temp=$this->getProperty(''temp'');\r\n$t=round($params[''t''],1);\r\n\r\nif ($t>110) return;\r\n\r\n$this->setProperty(''temp'',$t);\r\nif ($params[''uptime'']) {\r\n $this->setProperty(''uptime'',$params[''uptime'']);\r\n}\r\n\r\nif ($t>$old_temp) {\r\n $d=1;\r\n} elseif ($t<$old_temp) {\r\n $d=-1;\r\n} else {\r\n $d=0;\r\n}\r\n$this->setProperty(''direction'',$d);\r\n\r\n$linked_room=$this->getProperty("LinkedRoom");\r\nif ($linked_room) {\r\n setGlobal($linked_room.''.Temperature'',$t);\r\n}', 0, 0, '2014-09-05 12:54:30', 'a:2:{s:1:"t";d:22.5;s:21:"ORIGINAL_OBJECT_TITLE";s:12:"TempSensor03";}'),
-(73, 17, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(''states''=>''states'',''main''=>''main'',''execs''=>''exec'',''scheduler''=>''scheduler'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";\r\n }\r\n}\r\n\r\n$cycles=array(''ping''=>''ping'',''webvars''=>''webvars'');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(''ThisComputer.cycle_''.$k.''Run'');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v." ".LANG_GENERAL_CYCLE." ".LANG_GENERAL_STOPPED.".";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
-(74, 18, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(''Internet'')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
-(75, 16, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=''red'';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=''yellow'';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=''green'';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(". ",$details);\r\nif ($this->getProperty("stateDetails")!=$new_details) {\r\n $this->setProperty(''stateDetails'',$new_details);\r\n}\r\n\r\nif ($this->getProperty(''stateColor'')!=$state) {\r\n $this->setProperty(''stateColor'',$state);\r\n $this->setProperty(''stateTitle'',$state_title);\r\n if ($state!=''green'') {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_CHANGED_TO." ".$state_title.".");\r\n  say(implode(". ",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE." ".LANG_GENERAL_RESTORED_TO." ".$state_title);\r\n }\r\n $this->callMethod(''stateChanged'');\r\n}', 1, 0, '2015-12-03 14:49:25', ''),
-(77, 0, 10, 'VolumeLevelChanged', '', '$volume=round(65535*$params[''VALUE'']/100);\r\n$this->setProperty(''volumeLevel'',$params[''VALUE'']);\r\nsafe_exec(''..\\\\apps\\\\nircmd\\\\nircmdc setsysvolume ''.$volume);\r\nsay("Изменилась громкость до ".$params[''VALUE'']." процентов");', 0, 0, '2014-07-31 21:15:03', 'a:3:{s:5:"VALUE";s:2:"90";s:4:"HOST";s:9:"localhost";s:21:"ORIGINAL_OBJECT_TITLE";s:12:"ThisComputer";}'),
-(86, 0, 29, 'turnOn', '', '$code1=$this->getProperty(''Code1'');\r\n$code2=$this->getProperty(''Code2'');\r\nsafe_exec("c:\\_majordomo\\apps\\arduino_gw\\arduino_gw.exe rcon$code1:$code2;");\r\n$this->setProperty("status",1);', 0, 0, '2014-08-27 23:28:35', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:7:"OutletB";}'),
-(81, 47, 0, 'activate', '', 'setGlobal(''minMsgLevel'',''2'');', 1, 0, '2014-09-04 20:00:00', ''),
-(82, 47, 0, 'deactivate', '', 'setGlobal(''minMsgLevel'',''1'');', 1, 0, '2014-09-05 08:00:00', ''),
-(85, 0, 29, 'turnOff', '', '$code1=$this->getProperty(''Code1'');\r\n$code2=$this->getProperty(''Code2'');\r\nsafe_exec("c:\\_majordomo\\apps\\arduino_gw\\arduino_gw.exe rcoff$code1:$code2;");\r\n$this->setProperty("status",0);', 0, 0, '2014-08-27 23:28:01', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:7:"OutletB";}'),
-(88, 0, 25, 'updateActivityStatus', '', '$rooms=getObjectsByClass("Rooms");\r\n$total=count($rooms);\r\nfor($i=0;$i<$total;$i++) {\r\n $rooms[$i][''room'']=getGlobal($rooms[$i][''TITLE''].''.Title'');\r\n if (!$rooms[$i][''room'']) {\r\n  $rooms[$i][''room'']=$rooms[$i][''TITLE''];\r\n } \r\n $rooms[$i][''active'']=getGlobal($rooms[$i][''TITLE''].''.SomebodyHere'');\r\n $rooms[$i][''time'']=getGlobal($rooms[$i][''TITLE''].''.LatestActivity''); \r\n $rooms[$i][''diff'']=time()-$rooms[$i][''time''];\r\n} \r\n\r\nfunction rooms_cmp($a, $b)\r\n{\r\n    if ($a[''diff''] == $b[''diff'']) {\r\n        return 0;\r\n    }\r\n    return ($a[''diff''] < $b[''diff'']) ? -1 : 1;\r\n}\r\nusort($rooms,"rooms_cmp");\r\n\r\nif (!$rooms[0][''active'']) {\r\n $somebodyHomeText="Никого нет дома. Были в ".date(''H:i'',$rooms[0][''time''])." (".$rooms[0][''room''].")";\r\n} else {\r\n $res_rooms=array();\r\n for($i=0;$i<$total;$i++) {\r\n  if ($rooms[$i][''active'']) {\r\n   $res_rooms[]=$rooms[$i][''room''];\r\n  } \r\n }\r\n $somebodyHomeText="Кто-то дома: ".implode(", ",$res_rooms); \r\n}\r\nsetGlobal(''somebodyHomeText'',$somebodyHomeText);\r\n//echo "Updated";', 0, 0, '2014-09-05 13:01:00', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:10:"Kinderroom";}'),
-(87, 0, 30, 'humChanged', '', '//$params[''t'']\r\n $this->setProperty("updated",time());\r\n $this->setProperty("updatedTime",date("H:i",time()));\r\n $this->setProperty("alive",1); \r\n \r\n$ot=$this->object_title;\r\n$alive_timeout=(int)$this->getProperty("aliveTimeOut");\r\nif (!$alive_timeout) {\r\n $alive_timeout=30*60;\r\n}\r\nclearTimeOut($ot."_alive");\r\nsetTimeOut($ot."_alive","sg(''".$ot.".alive'',0);",$alive_timeout); \r\n\r\nif (!isset($params[''h''])) {\r\n return;\r\n}\r\n\r\n\r\n$old_temp=$this->getProperty(''humidity'');\r\n$t=round($params[''h''],1);\r\n\r\nif ($t>100) return;\r\n\r\n$this->setProperty(''humidity'',$t);\r\nif ($params[''uptime'']) {\r\n $this->setProperty(''uptime'',$params[''uptime'']);\r\n}\r\n\r\nif ($t>$old_temp) {\r\n $d=1;\r\n} elseif ($t<$old_temp) {\r\n $d=-1;\r\n} else {\r\n $d=0;\r\n}\r\n$this->setProperty(''direction'',$d);\r\n\r\n$linked_room=$this->getProperty("LinkedRoom");\r\nif ($linked_room) {\r\n setGlobal($linked_room.''.Humidity'',$t);\r\n}', 0, 0, '2014-09-05 12:54:30', 'a:2:{s:1:"h";i:42;s:21:"ORIGINAL_OBJECT_TITLE";s:11:"humSensor03";}'),
-(89, 0, 31, 'sendCommand', '', '$cmdline=''"c:\\Program Files\\nooLite\\nooLite.exe" -api ''.$params[''command''];\r\n$last_called=gg(''NoolightCommandSend'');\r\n$min_delay=3;\r\n$now=time();\r\nif (($now-$last_called)>$min_delay) {\r\n //safe_exec($cmdline);\r\n $last_callled=$now; \r\n sg(''NoolightCommandSend'',$last_called);\r\n DebMes("Noolite instant exec: ".$cmdline);\r\n system($cmdline);\r\n //exec($cmdline);\r\n} else {\r\n if ($last_callled<$now) {\r\n  $last_callled=$now;\r\n }\r\n $last_called+=$min_delay;\r\n sg(''NoolightCommandSend'',$last_called);\r\n DebMes("Noolite scheduled job for ".date(''H:i:s'',$last_called));\r\n AddScheduledJob("noolight".md5($cmdline),"safe_exec(''".$cmdline."'');",$last_called);\r\n}\r\n\r\n', 0, 0, '2014-09-05 11:01:41', 'a:2:{s:7:"command";s:8:"-off_ch2";s:21:"ORIGINAL_OBJECT_TITLE";s:4:"noo2";}'),
-(90, 0, 31, 'turnOff', '', '$this->setProperty("status",0);\r\n//safe_exec(''"c:\\Program Files\\nooLite\\noolite.exe" -api -off_ch''.$this->getProperty("channel"));\r\n$this->callMethod("sendCommand",array(''command''=>''-off_ch''.$this->getProperty("channel")));', 0, 0, '2014-09-05 11:01:41', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:4:"noo2";}'),
-(91, 0, 31, 'turnOn', '', '$this->setProperty("status",1);\r\n$this->callMethod("sendCommand",array(''command''=>''-on_ch''.$this->getProperty("channel")));', 0, 0, '2014-09-05 11:01:30', 'a:1:{s:21:"ORIGINAL_OBJECT_TITLE";s:4:"noo2";}'),
-(92, 0, 32, 'alarm', '', '', 0, 0, NULL, NULL),
-(93, 0, 32, 'goingHome', '', '', 0, 0, NULL, NULL),
-(94, 0, 32, 'gotHome', '', '', 0, 0, NULL, NULL),
-(95, 0, 32, 'Moving', '', '', 0, 0, NULL, NULL),
-(96, 0, 32, 'outOfHome', '', '', 0, 0, NULL, NULL);
+INSERT INTO `methods` (`ID`, `OBJECT_ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `CODE`, `CALL_PARENT`, `SCRIPT_ID`, `EXECUTED`, `EXECUTED_PARAMS`, `EXECUTED_SRC`) VALUES
+(14, 0, 7, 'onNewMinute', '', '', 0, 0, '2015-12-03 14:49:00', 'a:4:{s:6:\"object\";s:10:\"ClockChime\";s:2:\"op\";s:1:\"m\";s:1:\"m\";s:11:\"onNewMinute\";s:21:\"ORIGINAL_OBJECT_TITLE\";s:10:\"ClockChime\";}', NULL),
+(15, 0, 7, 'onNewHour', '', '', 0, 0, '2015-02-04 15:00:00', 'a:4:{s:6:\"object\";s:10:\"ClockChime\";s:2:\"op\";s:1:\"m\";s:1:\"m\";s:9:\"onNewHour\";s:21:\"ORIGINAL_OBJECT_TITLE\";s:10:\"ClockChime\";}', NULL),
+(18, 6, 0, 'onNewMinute', '', '$h=(int)date(\'G\',time());\r\n$m=date(\'i\',time());\r\n\r\n\r\nif (isWeekDay()) {\r\n\r\n}\r\n\r\n\r\nif (($h>=8) && getGlobal(\'clockChimeEnabled\')) {\r\n if ($m==\"00\") {\r\n   say(timeNow(),1);\r\n }\r\n}\r\n\r\n\r\nsetGlobal(\'timeNow\',date(\'H:i\'));\r\n\r\n$homeStatus=date(\'H:i\');\r\nif (getGlobal(\'NobodyHomeMode.active\')) {\r\n $homeStatus.=\' Дома никого\';\r\n} else {\r\n $homeStatus.=\' Дома кто-то есть\';\r\n}\r\n\r\n$homeStatus.=\' \'.getGlobal(\'Security.stateDetails\');\r\n$homeStatus.=\' \'.getGlobal(\'System.stateDetails\');\r\n$homeStatus.=\' \'.getGlobal(\'Communication.stateDetails\');\r\nsetGlobal(\'HomeStatus\',$homeStatus);\r\n\r\n if (timeBetween(getGlobal(\'SunRiseTime\'),getGlobal(\'SunSetTime\')) && getGlobal(\'isDark\')==\"1\") {\r\n  setGlobal(\"isDark\",0);\r\n  callMethod(\'DarknessMode.deactivate\');  \r\n } elseif (!timeBetween(getGlobal(\'SunRiseTime\'),getGlobal(\'SunSetTime\')) && getGlobal(\'isDark\')!=\"1\") {\r\n  setGlobal(\"isDark\",1);\r\n  callMethod(\'DarknessMode.activate\');    \r\n }\r\n \r\n  if (timeIs(getGlobal(\'SunRiseTime\'))) {\r\n  say(\'Всходит солнце\');\r\n }\r\n if (timeIs(getGlobal(\'SunSetTime\'))) {\r\n  say(\'Солнце заходит\',2);\r\n }\r\n \r\nif (timeIs(\"23:30\") && (gg(\"EconomMode.active\")!=\"1\") && (gg(\"NobodyHomeMode.active\")==\"1\")) {\r\n say(\"Похоже никого нет сегодня, можно сэкономить немного.\");\r\n callMethod(\'EconomMode.activate\');\r\n}\r\n\r\nif (timeIs(\'20:00\')) {\r\n callMethod(\'NightMode.activate\');\r\n} elseif (timeIs(\'08:00\')) {\r\n callMethod(\'NightMode.deactivate\');\r\n}\r\n\r\nif (timeIs(\"03:00\")) {\r\n runScript(\"systemMaintenance\");\r\n}\r\n\r\nif (gg(\'ThisComputer.AlarmStatus\') && timeIs(gg(\'ThisComputer.AlarmTime\'))) {\r\n runScript(\'MorningAlarm\');\r\n}', 1, 0, '2015-12-03 14:49:00', 'a:3:{s:6:\"object\";s:10:\"ClockChime\";s:2:\"op\";s:1:\"m\";s:1:\"m\";s:11:\"onNewMinute\";}', NULL),
+(20, 0, 10, 'WakedUp', '', '', 0, 0, NULL, NULL, NULL),
+(25, 0, 10, 'onIdle', '', '', 0, 0, NULL, NULL, NULL),
+(27, 0, 10, 'StartUp', '', '', 0, 0, '2020-07-08 17:55:15', '{\"ORIGINAL_OBJECT_TITLE\":\"ThisComputer\"}', ''),
+(29, 0, 10, 'commandReceived', 'получение новой команды', '', 0, 0, '2014-09-05 12:07:08', 'a:2:{s:7:\"command\";s:14:\"статусы\";s:21:\"ORIGINAL_OBJECT_TITLE\";s:12:\"ThisComputer\";}', NULL),
+(45, 0, 10, 'powerConnected', '', '', 0, 0, NULL, NULL, NULL),
+(46, 0, 10, 'powerDisconnected', '', '', 0, 0, NULL, NULL, NULL),
+(48, 7, 0, 'powerDisconnected', NULL, 'say(\"Отключено питание\");', 1, 0, NULL, NULL, NULL),
+(59, 0, 21, 'checkState', '', ' ', 0, 0, '2020-07-08 17:55:40', '{\"ORIGINAL_OBJECT_TITLE\":\"Communication\"}', ''),
+(60, 0, 21, 'stateChanged', '', '', 0, 0, '2015-12-03 14:46:48', 'a:2:{s:5:\"STATE\";s:5:\"green\";s:21:\"ORIGINAL_OBJECT_TITLE\";s:6:\"System\";}', NULL),
+(63, 0, 24, 'modeChanged', '', '$this->setProperty(\"updated\",time());\r\n$this->setProperty(\"updatedTime\",date(\'H:i\'));\r\nif ($this->getProperty(\'active\')) {\r\n say(\"Режим \".$this->getProperty(\'title\').\" активирован.\");\r\n} else {\r\n say(\"Режим \".$this->getProperty(\'title\').\" выключен.\");\r\n}', 0, 0, '2015-01-29 12:51:00', 'a:4:{s:8:\"PROPERTY\";s:6:\"active\";s:9:\"NEW_VALUE\";s:1:\"0\";s:9:\"OLD_VALUE\";s:1:\"1\";s:21:\"ORIGINAL_OBJECT_TITLE\";s:12:\"DarknessMode\";}', NULL),
+(64, 0, 24, 'activate', '', '$this->setProperty(\'active\',1);', 0, 0, '2015-01-29 08:50:00', 'a:1:{s:21:\"ORIGINAL_OBJECT_TITLE\";s:12:\"DarknessMode\";}', NULL),
+(65, 0, 24, 'deactivate', '', '$this->setProperty(\'active\',0);', 0, 0, '2015-01-29 12:51:00', 'a:1:{s:21:\"ORIGINAL_OBJECT_TITLE\";s:12:\"DarknessMode\";}', NULL),
+(66, 0, 25, 'onActivity', 'Rooms Activity', '$latestActivity=$this->getProperty(\'LatestActivity\');\r\n$this->setProperty(\'LatestActivity\',time());\r\n$this->setProperty(\'LatestActivityTime\',date(\'H:i\'));\r\n\r\n$this->setProperty(\'SomebodyHere\',1);\r\n$ot=$this->object_title;\r\nif ($this->getProperty(\"IdleDelay\")) {\r\n $activity_timeout=(int)$this->getProperty(\"IdleDelay\");\r\n} else {\r\n $activity_timeout=10*60;\r\n}\r\nclearTimeOut($ot.\"_activity_timeout\");\r\nsetTimeOut($ot.\"_activity_timeout\",\"callMethod(\'\".$ot.\".onIdle\');\",$activity_timeout);\r\n$this->callMethod(\"updateActivityStatus\");\r\n\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/Rooms_onActivity.php\');\n/* end injection of {SDevices} */', 0, 0, '2014-09-05 13:01:00', 'a:1:{s:21:\"ORIGINAL_OBJECT_TITLE\";s:10:\"Kinderroom\";}', NULL),
+(67, 0, 25, 'onIdle', 'Rooms Idle', '$this->setProperty(\'SomebodyHere\',0);\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/Rooms_onIdle.php\');\n/* end injection of {SDevices} */', 0, 0, '2014-09-05 12:24:46', 'a:1:{s:21:\"ORIGINAL_OBJECT_TITLE\";s:10:\"Kinderroom\";}', NULL),
+(73, 17, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\n$cycles=array(\'states\'=>\'states\',\'main\'=>\'main\',\'execs\'=>\'exec\',\'scheduler\'=>\'scheduler\');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(\'ThisComputer.cycle_\'.$k.\'Run\');\r\n if (time()-$tm>5*60) {\r\n  $red_state=1;\r\n  $details[]=$v.\" \".LANG_GENERAL_CYCLE.\" \".LANG_GENERAL_STOPPED.\".\";\r\n }\r\n}\r\n\r\n$cycles=array(\'ping\'=>\'ping\');\r\nforeach($cycles as $k=>$v) {\r\n $tm=getGlobal(\'ThisComputer.cycle_\'.$k.\'Run\');\r\n if (time()-$tm>10*60) {\r\n  $yellow_state=1;\r\n  $details[]=$v.\" \".LANG_GENERAL_CYCLE.\" \".LANG_GENERAL_STOPPED.\".\";  \r\n }\r\n}\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_SYSTEM_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_SYSTEM_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/system_checkstate.php\');\n/* end injection of {SDevices} */', 1, 0, '2020-07-08 17:55:40', '', ''),
+(74, 18, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif (!isOnline(\'Internet\')) {\r\n $yellow_state=1;\r\n $details[]=LANG_GENERAL_NO_INTERNET_ACCESS;\r\n}\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_COMMUNICATION_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', 1, 0, '2020-07-08 17:55:40', '', ''),
+(75, 16, 0, 'checkState', '', '$details=array();\r\n$red_state=0;\r\n$yellow_state=0;\r\n\r\nif ($red_state) {\r\n $state=\'red\';\r\n $state_title=LANG_GENERAL_RED; \r\n} elseif ($yellow_state) {\r\n $state=\'yellow\';\r\n $state_title=LANG_GENERAL_YELLOW;  \r\n} else {\r\n $state=\'green\';\r\n $state_title=LANG_GENERAL_GREEN;   \r\n}\r\n\r\n$new_details=implode(\". \",$details);\r\nif ($this->getProperty(\"stateDetails\")!=$new_details) {\r\n $this->setProperty(\'stateDetails\',$new_details);\r\n}\r\n\r\nif ($this->getProperty(\'stateColor\')!=$state) {\r\n $this->setProperty(\'stateColor\',$state);\r\n $this->setProperty(\'stateTitle\',$state_title);\r\n if ($state!=\'green\') {\r\n  say(LANG_GENERAL_SECURITY_STATE.\" \".LANG_GENERAL_CHANGED_TO.\" \".$state_title.\".\");\r\n  say(implode(\". \",$details));\r\n } else {\r\n  say(LANG_GENERAL_SECURITY_STATE.\" \".LANG_GENERAL_RESTORED_TO.\" \".$state_title);\r\n }\r\n $this->callMethod(\'stateChanged\');\r\n}', 1, 0, '2020-07-08 17:55:40', '', ''),
+(77, 0, 10, 'VolumeLevelChanged', '', '$volume=round(65535*$params[\'VALUE\']/100);\r\n$this->setProperty(\'volumeLevel\',$params[\'VALUE\']);\r\nsafe_exec(\'..\\\\apps\\\\nircmd\\\\nircmdc setsysvolume \'.$volume);\r\nsay(\"Изменилась громкость до \".$params[\'VALUE\'].\" процентов\");', 0, 0, '2014-07-31 21:15:03', 'a:3:{s:5:\"VALUE\";s:2:\"90\";s:4:\"HOST\";s:9:\"localhost\";s:21:\"ORIGINAL_OBJECT_TITLE\";s:12:\"ThisComputer\";}', NULL),
+(81, 47, 0, 'activate', '', 'setGlobal(\'minMsgLevel\',\'2\');\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/nightmode_activate.php\');\n/* end injection of {SDevices} */', 1, 0, '2014-09-04 20:00:00', '', NULL),
+(82, 47, 0, 'deactivate', '', 'setGlobal(\'minMsgLevel\',\'1\');', 1, 0, '2014-09-05 08:00:00', '', NULL),
+(88, 0, 25, 'updateActivityStatus', 'Update activity status', '$rooms=getObjectsByClass(\"Rooms\");\r\n$total=count($rooms);\r\nfor($i=0;$i<$total;$i++) {\r\n $rooms[$i][\'room\']=getGlobal($rooms[$i][\'TITLE\'].\'.Title\');\r\n if (!$rooms[$i][\'room\']) {\r\n  $rooms[$i][\'room\']=$rooms[$i][\'TITLE\'];\r\n } \r\n $rooms[$i][\'active\']=getGlobal($rooms[$i][\'TITLE\'].\'.SomebodyHere\');\r\n $rooms[$i][\'time\']=getGlobal($rooms[$i][\'TITLE\'].\'.LatestActivity\'); \r\n $rooms[$i][\'diff\']=time()-$rooms[$i][\'time\'];\r\n} \r\n\r\nfunction rooms_cmp($a, $b)\r\n{\r\n    if ($a[\'diff\'] == $b[\'diff\']) {\r\n        return 0;\r\n    }\r\n    return ($a[\'diff\'] < $b[\'diff\']) ? -1 : 1;\r\n}\r\nusort($rooms,\"rooms_cmp\");\r\n\r\nif (!$rooms[0][\'active\']) {\r\n $somebodyHomeText=\"Никого нет дома. Были в \".date(\'H:i\',$rooms[0][\'time\']).\" (\".$rooms[0][\'room\'].\")\";\r\n} else {\r\n $res_rooms=array();\r\n for($i=0;$i<$total;$i++) {\r\n  if ($rooms[$i][\'active\']) {\r\n   $res_rooms[]=$rooms[$i][\'room\'];\r\n  } \r\n }\r\n $somebodyHomeText=\"Кто-то дома: \".implode(\", \",$res_rooms); \r\n}\r\nsetGlobal(\'somebodyHomeText\',$somebodyHomeText);\r\n//echo \"Updated\";\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/Rooms_updateActivityStatus.php\');\n/* end injection of {SDevices} */', 0, 0, '2014-09-05 13:01:00', 'a:1:{s:21:\"ORIGINAL_OBJECT_TITLE\";s:10:\"Kinderroom\";}', NULL),
+(92, 0, 32, 'alarm', '', '', 0, 0, NULL, NULL, NULL),
+(93, 0, 32, 'goingHome', '', '', 0, 0, NULL, NULL, NULL),
+(94, 0, 32, 'gotHome', '', '', 0, 0, NULL, NULL, NULL),
+(95, 0, 32, 'Moving', '', '', 0, 0, NULL, NULL, NULL),
+(96, 0, 32, 'outOfHome', '', '', 0, 0, NULL, NULL, NULL),
+(103, 0, 34, 'statusUpdated', 'Status updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDevices_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(104, 0, 34, 'setUpdatedText', 'Change updated text', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDevices_setUpdatedText.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(105, 0, 34, 'logicAction', 'Logic Action', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDevices_logicAction.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(106, 0, 34, 'keepAlive', 'Alive update', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDevices_keepAlive.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(107, 19, 0, 'activate', NULL, '\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/econommode_activate.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(108, 19, 0, 'deactivate', NULL, '\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/econommode_deactivate.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(109, 20, 0, 'activate', NULL, '\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/nobodyhomemode_activate.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(110, 20, 0, 'deactivate', NULL, '\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/nobodyhomemode_deactivate.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(111, 23, 0, 'activate', NULL, '\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/darknessmode_activate.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(112, 23, 0, 'deactivate', NULL, '\n/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/darknessmode_deactivate.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(113, 0, 35, 'turnOn', 'Turn On', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SControllers_turnOn.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(114, 0, 35, 'turnOff', 'Turn Off', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SControllers_turnOff.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(115, 0, 35, 'switch', 'Switch', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SControllers_switch.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(116, 0, 36, 'turnOn', 'Turn On', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SGroups_turnOn.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(117, 0, 36, 'turnOff', 'Turn Off', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SGroups_turnOff.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(118, 0, 36, 'switch', 'Switch', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SGroups_switch.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(119, 0, 36, 'statusUpdated', 'Status Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SGroups_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(120, 0, 38, 'setTargetTemperature', 'Set target temperature', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_setTargetTemperature.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(121, 0, 38, 'valueUpdated', 'Value Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_valueUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(122, 0, 38, 'statusUpdated', 'Status Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(123, 0, 38, 'tempUp', 'Increase target temperature', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_tempUp.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(124, 0, 38, 'tempDown', 'Descrease target temperature', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_tempDown.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(125, 0, 38, 'switchEnable', 'Switch Enable', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_switchEnable.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(126, 0, 38, 'enable', 'Enable', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_enable.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(127, 0, 38, 'disable', 'Mode: Off', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_disable.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(128, 0, 38, 'turnOn', 'Mode: Normal', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_turnOn.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(129, 0, 38, 'turnOff', 'Mode: Eco', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SThermostats_turnOff.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(130, 0, 39, 'setLevel', 'Set brightness level', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDimmers_setLevel.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(131, 0, 39, 'statusUpdated', 'Status Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDimmers_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(132, 0, 39, 'levelUpdated', 'Level Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDimmers_levelUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(133, 0, 39, 'levelWorkUpdated', 'Level Work Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDimmers_levelWorkUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(134, 0, 39, 'turnOn', 'Turn On', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDimmers_turnOn.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(135, 0, 39, 'turnOff', 'Turn Off', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SDimmers_turnOff.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(136, 0, 40, 'colorUpdated', 'Color Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SRGB_colorUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(137, 0, 40, 'setColor', 'Color Set', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SRGB_setColor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(138, 0, 40, 'turnOn', 'Turn On', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SRGB_turnOn.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(139, 0, 40, 'turnOff', 'Turn Off', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SRGB_turnOff.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(140, 0, 41, 'motionDetected', 'Motion Detected', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SMotions_motionDetected.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(141, 0, 41, 'blockSensor', 'Block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SMotions_blockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(142, 0, 41, 'unblockSensor', 'Un-block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SMotions_unblockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(143, 0, 42, 'motionDetected', 'Motion Detected', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCameras_motionDetected.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(144, 0, 42, 'updatePreview', 'Update preview code', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCameras_updatePreview.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(145, 0, 42, 'takeSnapshot', 'Takes snapshot', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCameras_takeSnapshot.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(146, 0, 42, 'takeSeries', 'Takes image series', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCameras_takeSeries.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(147, 0, 43, 'statusUpdated', 'Status updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenClose_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(148, 0, 43, 'blockSensor', 'Block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenClose_blockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(149, 0, 43, 'unblockSensor', 'Un-block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenClose_unblockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(150, 0, 44, 'statusUpdated', 'Status updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenable_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(151, 0, 44, 'switch', 'Switch', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenable_switch.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(152, 0, 44, 'open', 'Open', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenable_open.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(153, 0, 44, 'close', 'Close', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SOpenable_close.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(154, 0, 45, 'statusUpdated', 'Status updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SLeak_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(155, 0, 45, 'alert', 'Sensor alert', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SLeak_alert.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(156, 0, 45, 'blockSensor', 'Block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SLeak_blockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(157, 0, 45, 'unblockSensor', 'Un-block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SLeak_unblockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(158, 0, 46, 'statusUpdated', 'Status updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSmoke_statusUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(159, 0, 46, 'alert', 'Sensor alert', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSmoke_alert.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(160, 0, 46, 'blockSensor', 'Block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSmoke_blockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(161, 0, 46, 'unblockSensor', 'Un-block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSmoke_unblockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(162, 0, 47, 'valueUpdated', 'Data Value updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCounters_valueUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(163, 0, 47, 'valueWorkUpdated', 'Work Value updated event', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCounters_valueWorkUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(164, 0, 47, 'refreshStats', 'Refreshes daily/monthly stats', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SCounters_refreshStats.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(165, 0, 48, 'pressed', 'Press', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SButtons_pressed.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(166, 0, 49, 'valueUpdated', 'Value Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSensors_valueUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(167, 0, 49, 'alert', 'Sensor alert', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSensors_alert.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(168, 0, 49, 'blockSensor', 'Block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSensors_blockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(169, 0, 49, 'unblockSensor', 'Un-block sensor', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SSensors_unblockSensor.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(170, 0, 56, 'valueUpdated', 'Value Updated', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SPowerSensors_valueUpdated.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(171, 0, 56, 'loadStatusChanged', 'Load Status Changed', '/* begin injection of {SDevices} */\nrequire(DIR_MODULES.\'devices/SPowerSensors_loadStatusChanged.php\');\n/* end injection of {SDevices} */', 0, 0, NULL, NULL, NULL),
+(174, 0, 32, 'enteredLocation', NULL, '//$params[\"LOCATION_OBJECT\"], $params[\"LOCATION\"]\n', 0, 0, NULL, NULL, NULL),
+(175, 0, 32, 'leftLocation', NULL, '//$params[\"LOCATION_OBJECT\"], $params[\"LOCATION\"]\n', 0, 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `myblocks`
+-- Структура таблицы `myblocks`
 --
 
-DROP TABLE IF EXISTS `myblocks`;
-CREATE TABLE IF NOT EXISTS `myblocks` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `myblocks` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `CATEGORY_ID` int(10) NOT NULL DEFAULT '0',
+  `CATEGORY_ID` int(10) NOT NULL DEFAULT 0,
   `BLOCK_TYPE` char(10) NOT NULL DEFAULT '',
-  `BLOCK_COLOR` int(10) NOT NULL DEFAULT '0',
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
+  `BLOCK_COLOR` int(10) NOT NULL DEFAULT 0,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
   `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  `SYSTEM` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `myblocks_categories`
+-- Структура таблицы `myblocks_categories`
 --
 
-DROP TABLE IF EXISTS `myblocks_categories`;
-CREATE TABLE IF NOT EXISTS `myblocks_categories` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `myblocks_categories` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `SYSTEM` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `newsletter`
+-- Структура таблицы `objects`
 --
 
-DROP TABLE IF EXISTS `newsletter`;
-CREATE TABLE IF NOT EXISTS `newsletter` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `EMAIL` varchar(255) NOT NULL DEFAULT '',
-  `LIST` varchar(255) NOT NULL DEFAULT '',
-  `ADDED` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `objects`
---
-
-DROP TABLE IF EXISTS `objects`;
-CREATE TABLE IF NOT EXISTS `objects` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `objects` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `CLASS_ID` int(10) NOT NULL DEFAULT '0',
-  `DESCRIPTION` text,
-  `LOCATION_ID` int(10) NOT NULL DEFAULT '0',
-  `KEEP_HISTORY` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=75 ;
+  `CLASS_ID` int(10) NOT NULL DEFAULT 0,
+  `DESCRIPTION` text DEFAULT NULL,
+  `LOCATION_ID` int(10) NOT NULL DEFAULT 0,
+  `KEEP_HISTORY` int(10) NOT NULL DEFAULT 0,
+  `SYSTEM` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `objects`
+-- Дамп данных таблицы `objects`
 --
 
-INSERT INTO `objects` (`ID`, `TITLE`, `CLASS_ID`, `DESCRIPTION`, `LOCATION_ID`, `KEEP_HISTORY`) VALUES
-(4, 'USBDev', 9, '', 0, 0),
-(13, 'BlueDev', 18, '', 0, 0),
-(6, 'ClockChime', 7, '', 0, 0),
-(7, 'ThisComputer', 10, '', 0, 0),
-(10, 'mySkype', 12, '', 0, 0),
-(15, 'ws', 20, '', 0, 0),
-(16, 'Security', 21, '', 0, 0),
-(17, 'System', 21, '', 0, 0),
-(18, 'Communication', 21, '', 0, 0),
-(19, 'EconomMode', 24, '', 0, 0),
-(20, 'NobodyHomeMode', 24, '', 0, 0),
-(21, 'SecurityArmedMode', 24, '', 0, 0),
-(22, 'GuestsMode', 24, '', 0, 0),
-(23, 'DarknessMode', 24, '', 0, 0),
-(24, 'Livingroom', 25, '', 4, 0),
-(26, 'TempSensor01', 19, '', 1, 0),
-(28, 'Bedroom', 25, '', 5, 0),
-(29, 'Kitchen', 25, '', 1, 0),
-(30, 'Hall', 25, '', 6, 0),
-(53, 'Bathroom', 25, '', 7, 0),
-(47, 'NightMode', 24, '', 0, 0),
-(52, 'humSensor01', 30, '', 1, 0),
-(51, 'MotionSensor1', 23, '', 6, 0),
-(54, 'Kinderroom', 25, '', 10, 0),
-(55, 'Toilet', 25, '', 8, 0),
-(68, 'admin', 32, '', 0, 0),
-(74, 'Switch1', 26, '', 0, 3);
+INSERT INTO `objects` (`ID`, `TITLE`, `CLASS_ID`, `DESCRIPTION`, `LOCATION_ID`, `KEEP_HISTORY`, `SYSTEM`) VALUES
+(6, 'ClockChime', 7, '', 0, 0, ''),
+(7, 'ThisComputer', 10, '', 0, 0, ''),
+(16, 'Security', 21, '', 0, 0, ''),
+(17, 'System', 21, '', 0, 0, ''),
+(18, 'Communication', 21, '', 0, 0, ''),
+(19, 'EconomMode', 24, '', 0, 0, ''),
+(20, 'NobodyHomeMode', 24, '', 0, 0, ''),
+(21, 'SecurityArmedMode', 24, '', 0, 0, ''),
+(22, 'GuestsMode', 24, '', 0, 0, ''),
+(23, 'DarknessMode', 24, '', 0, 0, ''),
+(24, 'Livingroom', 25, '', 4, 0, ''),
+(28, 'Bedroom', 25, '', 5, 0, ''),
+(29, 'Kitchen', 25, '', 1, 0, ''),
+(30, 'Hall', 25, '', 6, 0, ''),
+(53, 'Bathroom', 25, '', 7, 0, ''),
+(47, 'NightMode', 24, '', 0, 0, ''),
+(54, 'Kinderroom', 25, '', 10, 0, ''),
+(55, 'Toilet', 25, '', 8, 0, ''),
+(68, 'admin', 32, '', 0, 0, '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `patterns`
+-- Структура таблицы `operations_queue`
 --
 
-DROP TABLE IF EXISTS `patterns`;
-CREATE TABLE IF NOT EXISTS `patterns` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `operations_queue` (
+  `TOPIC` char(255) NOT NULL,
+  `DATANAME` char(255) NOT NULL,
+  `DATAVALUE` char(255) NOT NULL,
+  `EXPIRE` datetime NOT NULL
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `patterns`
+--
+
+CREATE TABLE `patterns` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `PATTERN` text,
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  `SCRIPT` text,
-  `LOG` text,
-  `TIME_LIMIT` int(245) NOT NULL DEFAULT '0',
-  `EXECUTED` int(10) NOT NULL DEFAULT '0',
-  `IS_CONTEXT` int(3) NOT NULL DEFAULT '0',
-  `IS_COMMON_CONTEXT` int(3) NOT NULL DEFAULT '0',
-  `MATCHED_CONTEXT_ID` int(10) NOT NULL DEFAULT '0',
-  `TIMEOUT` int(10) NOT NULL DEFAULT '0',
-  `TIMEOUT_CONTEXT_ID` int(10) NOT NULL DEFAULT '0',
-  `TIMEOUT_SCRIPT` text,
-  `PARENT_ID` int(10) NOT NULL DEFAULT '0',
-  `IS_LAST` int(3) NOT NULL DEFAULT '0',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `SCRIPT_EXIT` text,
-  `SKIPSYSTEM` int(3) NOT NULL DEFAULT '0',
-  `ONETIME` int(3) NOT NULL DEFAULT '0',
-  `PATTERN_TYPE` int(3) NOT NULL DEFAULT '0',
+  `PATTERN` text DEFAULT NULL,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
+  `SCRIPT` text DEFAULT NULL,
+  `LOG` text DEFAULT NULL,
+  `TIME_LIMIT` int(245) NOT NULL DEFAULT 0,
+  `EXECUTED` int(10) NOT NULL DEFAULT 0,
+  `IS_CONTEXT` int(3) NOT NULL DEFAULT 0,
+  `IS_COMMON_CONTEXT` int(3) NOT NULL DEFAULT 0,
+  `MATCHED_CONTEXT_ID` int(10) NOT NULL DEFAULT 0,
+  `TIMEOUT` int(10) NOT NULL DEFAULT 0,
+  `TIMEOUT_CONTEXT_ID` int(10) NOT NULL DEFAULT 0,
+  `TIMEOUT_SCRIPT` text DEFAULT NULL,
+  `PARENT_ID` int(10) NOT NULL DEFAULT 0,
+  `IS_LAST` int(3) NOT NULL DEFAULT 0,
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `SCRIPT_EXIT` text DEFAULT NULL,
+  `SKIPSYSTEM` int(3) NOT NULL DEFAULT 0,
+  `ONETIME` int(3) NOT NULL DEFAULT 0,
+  `PATTERN_TYPE` int(3) NOT NULL DEFAULT 0,
   `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
-  `CONDITION` int(3) NOT NULL DEFAULT '0',
+  `CONDITION` int(3) NOT NULL DEFAULT 0,
   `CONDITION_VALUE` varchar(255) NOT NULL DEFAULT '',
   `LATEST_VALUE` varchar(255) NOT NULL DEFAULT '',
-  `ACTIVE_STATE` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `ACTIVE_STATE` int(3) NOT NULL DEFAULT 0,
+  `USEMORPHY` int(3) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `patterns`
+-- Дамп данных таблицы `patterns`
 --
 
-INSERT INTO `patterns` (`ID`, `TITLE`, `PATTERN`, `SCRIPT_ID`, `SCRIPT`, `LOG`, `TIME_LIMIT`, `EXECUTED`, `IS_CONTEXT`, `IS_COMMON_CONTEXT`, `MATCHED_CONTEXT_ID`, `TIMEOUT`, `TIMEOUT_CONTEXT_ID`, `TIMEOUT_SCRIPT`, `PARENT_ID`, `IS_LAST`, `PRIORITY`, `SCRIPT_EXIT`, `SKIPSYSTEM`, `ONETIME`, `PATTERN_TYPE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `CONDITION`, `CONDITION_VALUE`, `LATEST_VALUE`, `ACTIVE_STATE`) VALUES
-(9, '(start|play) music', '', 0, 'runScript(''playFavoriteMusic'');', '', 0, 1409904443, 0, 0, 0, 0, 0, '', 0, 0, 0, NULL, 0, 0, 0, '', '', 0, '', '', 0),
-(8, 'report system state', '', 21, '', '2014-09-05 12:07:19 Pattern matched\n', 0, 1409908039, 0, 0, 0, 0, 0, '', 0, 0, 0, NULL, 0, 0, 0, '', '', 0, '', '', 0);
+INSERT INTO `patterns` (`ID`, `TITLE`, `PATTERN`, `SCRIPT_ID`, `SCRIPT`, `LOG`, `TIME_LIMIT`, `EXECUTED`, `IS_CONTEXT`, `IS_COMMON_CONTEXT`, `MATCHED_CONTEXT_ID`, `TIMEOUT`, `TIMEOUT_CONTEXT_ID`, `TIMEOUT_SCRIPT`, `PARENT_ID`, `IS_LAST`, `PRIORITY`, `SCRIPT_EXIT`, `SKIPSYSTEM`, `ONETIME`, `PATTERN_TYPE`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `CONDITION`, `CONDITION_VALUE`, `LATEST_VALUE`, `ACTIVE_STATE`, `USEMORPHY`) VALUES
+(9, '(start|play) music', '', 0, 'runScript(\'playFavoriteMusic\');', '', 0, 1409904443, 0, 0, 0, 0, 0, '', 0, 0, 0, NULL, 0, 0, 0, '', '', 0, '', '', 0, 0),
+(8, 'report system state', '', 21, '', '2014-09-05 12:07:19 Pattern matched\n', 0, 1409908039, 0, 0, 0, 0, 0, '', 0, 0, 0, NULL, 0, 0, 0, '', '', 0, '', '', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `performance_log`
+-- Структура таблицы `performance_log`
 --
 
-DROP TABLE IF EXISTS `performance_log`;
-CREATE TABLE IF NOT EXISTS `performance_log` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `performance_log` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `OPERATION` varchar(255) NOT NULL DEFAULT '',
-  `COUNTER` int(10) NOT NULL DEFAULT '0',
-  `TIMEUSED` float NOT NULL DEFAULT '0',
+  `COUNTER` int(10) NOT NULL DEFAULT 0,
+  `TIMEUSED` float NOT NULL DEFAULT 0,
   `SOURCE` char(10) NOT NULL DEFAULT '',
-  `ADDED` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `ADDED` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `phistory`
+-- Структура таблицы `phistory`
 --
 
-DROP TABLE IF EXISTS `phistory`;
-CREATE TABLE IF NOT EXISTS `phistory` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `VALUE_ID` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `phistory` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `VALUE_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `ADDED` datetime DEFAULT NULL,
   `VALUE` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `VALUE_ID` (`VALUE_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `SOURCE` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pinghosts`
+-- Структура таблицы `phistory_queue`
 --
 
-DROP TABLE IF EXISTS `pinghosts`;
-CREATE TABLE IF NOT EXISTS `pinghosts` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `phistory_queue` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `VALUE_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `VALUE` text DEFAULT NULL,
+  `OLD_VALUE` text DEFAULT NULL,
+  `KEEP_HISTORY` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `SOURCE` varchar(255) NOT NULL DEFAULT '',
+  `ADDED` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `pinghosts`
+--
+
+CREATE TABLE `pinghosts` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `HOSTNAME` varchar(255) NOT NULL DEFAULT '',
-  `TYPE` int(30) NOT NULL DEFAULT '0',
-  `STATUS` int(3) NOT NULL DEFAULT '0',
+  `TYPE` int(30) NOT NULL DEFAULT 0,
+  `STATUS` int(3) NOT NULL DEFAULT 0,
   `SEARCH_WORD` varchar(255) NOT NULL DEFAULT '',
   `CHECK_LATEST` datetime DEFAULT NULL,
   `CHECK_NEXT` datetime DEFAULT NULL,
-  `SCRIPT_ID_ONLINE` int(10) NOT NULL DEFAULT '0',
-  `CODE_ONLINE` text,
-  `SCRIPT_ID_OFFLINE` int(10) NOT NULL DEFAULT '0',
-  `CODE_OFFLINE` text,
-  `OFFLINE_INTERVAL` int(10) NOT NULL DEFAULT '0',
-  `ONLINE_INTERVAL` int(10) NOT NULL DEFAULT '0',
+  `SCRIPT_ID_ONLINE` int(10) NOT NULL DEFAULT 0,
+  `CODE_ONLINE` text DEFAULT NULL,
+  `SCRIPT_ID_OFFLINE` int(10) NOT NULL DEFAULT 0,
+  `CODE_OFFLINE` text DEFAULT NULL,
+  `OFFLINE_INTERVAL` int(10) NOT NULL DEFAULT 0,
+  `ONLINE_INTERVAL` int(10) NOT NULL DEFAULT 0,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `LOG` text,
+  `LOG` text DEFAULT NULL,
   `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
-  `COUNTER_CURRENT` int(10) NOT NULL DEFAULT '0',
-  `COUNTER_REQUIRED` int(10) NOT NULL DEFAULT '0',
-  `STATUS_EXPECTED` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+  `COUNTER_CURRENT` int(10) NOT NULL DEFAULT 0,
+  `COUNTER_REQUIRED` int(10) NOT NULL DEFAULT 0,
+  `STATUS_EXPECTED` int(3) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 --
--- Dumping data for table `pinghosts`
+-- Дамп таблицы `pinghosts`
 --
 
 INSERT INTO `pinghosts` (`ID`, `HOSTNAME`, `TYPE`, `STATUS`, `SEARCH_WORD`, `CHECK_LATEST`, `CHECK_NEXT`, `SCRIPT_ID_ONLINE`, `CODE_ONLINE`, `SCRIPT_ID_OFFLINE`, `CODE_OFFLINE`, `OFFLINE_INTERVAL`, `ONLINE_INTERVAL`, `TITLE`, `LOG`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `COUNTER_CURRENT`, `COUNTER_REQUIRED`, `STATUS_EXPECTED`) VALUES
-(8, 'tut.by', 0, 1, '', '2015-12-03 14:42:32', '2015-12-03 14:52:32', 0, '', 0, '', 600, 600, 'Internet', '2014-10-30 15:01:22 Host is online\n2014-09-05 00:41:06 Host is online\n2014-09-05 00:31:05 Host is offline\n2014-09-04 16:36:02 Host is online\n2014-09-03 16:37:00 Host is online\n2014-09-03 16:26:47 Host is offline\n2014-09-03 14:45:29 Host is online\n2014-09-03 14:35:26 Host is offline\n2014-09-03 12:54:33 Host is online\n2014-09-03 12:44:31 Host is offline\n2014-08-21 06:25:53 Host is online\n2014-08-21 06:15:49 Host is offline\n2014-08-19 15:16:17 Host is online\n2014-08-19 15:06:14 Host is offline\n2014-08-19 09:52:20 Host is online\n2014-08-19 09:42:18 Host is offline\n2014-08-19 09:32:10 Host is online\n2014-08-19 09:22:07 Host is offline\n2014-08-18 17:34:00 Host is online\n2014-08-18 17:23:59 Host is offline\n2014-08-18 05:58:14 Host is online\n2014-08-18 05:48:13 Host is offline\n2014-08-13 02:45:56 Host is online\n2014-08-13 02:35:50 Host is offline\n2014-08-06 09:25:20 Host is online\n2014-08-06 09:15:17 Host is offline\n2014-08-05 22:39:57 Host is online\n2014-08-05 22:29:56 Host is offline\n2014-08-01 16:29:12 Host is online\n2014-08-01 15:28:44 Host is offline\n2014-07-31 21:19:39 Host is online\n2014-07-31 21:09:29 Host is offline\n2014-07-28 13:34:03 Host is online\n2014-07-28 13:23:56 Host is offline\n2014-07-28 12:33:17 Host is online\n2014-07-28 12:13:03 Host is offline\n2014-07-28 04:39:08 Host is online\n2014-07-28 04:29:00 Host is offline\n2014-07-28 00:57:07 Host is online\n2014-07-28 00:37:00 Host is offline\n2014-07-27 22:25:52 Host is online\n2014-07-27 21:35:01 Host is offline\n2014-07-27 21:24:49 Host is online\n2014-07-27 21:14:47 Host is offline\n2014-07-27 21:04:39 Host is online\n2014-07-27 20:44:15 Host is offline\n2014-07-27 19:53:42 Host is online\n2014-07-27 19:43:39 Host is offline\n2014-07-27 19:33:32 Host is online\n2014-07-27 19:23:30 Host is offline\n2014-07-27 17:42:36 Host is online\n2014-07-27 17:22:22 Host is offline\n2014-07-27 16:31:49 Host is online\n2014-07-27 16:21:47 Host is offline\n2014-07-27 16:11:39 Host is online\n2014-07-27 16:01:37 Host is offline\n2014-07-27 12:49:59 Host is online\n2014-07-27 12:39:57 Host is offline\n2014-07-27 10:28:49 Host is online\n2014-07-27 10:18:43 Host is offline\n2014-07-27 09:38:13 Host is online\n2014-07-27 09:28:11 Host is offline\n2014-07-27 09:07:57 Host is online\n2014-07-27 08:37:46 Host is offline\n2014-07-27 08:27:37 Host is online\n2014-07-27 08:17:35 Host is offline\n2014-07-27 07:06:58 Host is online\n2014-07-27 06:56:54 Host is offline\n2014-07-27 06:26:37 Host is online\n2014-07-27 06:16:28 Host is offline\n2014-07-27 05:56:11 Host is online\n2014-07-27 05:15:53 Host is offline\n2014-07-27 04:25:26 Host is online\n2014-07-27 03:54:46 Host is offline\n2014-07-27 02:54:08 Host is online\n2014-07-27 02:44:06 Host is offline\n2014-07-27 00:22:52 Host is online\n2014-07-27 00:12:50 Host is offline\n2014-07-26 23:52:37 Host is online\n2014-07-26 23:42:35 Host is offline\n2014-07-26 23:32:27 Host is online\n2014-07-26 23:12:09 Host is offline\n2014-07-26 13:07:06 Host is online\n2014-07-26 12:57:04 Host is offline\n2014-07-26 12:36:53 Host is online\n2014-07-26 12:26:48 Host is offline\n2014-07-26 12:16:41 Host is online\n2014-07-26 11:46:28 Host is offline\n2014-07-24 20:47:09 Host is online\n2014-07-24 20:37:04 Host is offline\n2014-07-24 17:05:19 Host is online\n2014-07-24 16:55:18 Host is offline\n2014-07-24 14:03:49 Host is online\n2014-07-24 13:53:48 Host is offline\n2014-07-24 04:08:54 Host is online\n2014-07-24 03:58:45 Host is offline\n2014-07-24 03:38:28 Host is online\n2014-07-24 03:28:20 Host is offline\n2014-07-24 01:17:07 Host is online\n2014-07-24 01:06:58 Host is offline\n2014-07-23 22:45:41 Host is online\n2014-07-23 22:35:32 Host is offline\n2014-07-23 19:23:50 Host is online\n2014-07-23 19:13:48 Host is offline\n2014-07-23 15:52:04 Host is online\n2014-07-23 15:42:03 Host is offline\n2014-07-23 15:21:49 Host is online\n2014-07-23 15:11:47 Host is offline\n2014-07-22 22:26:00 Host is online\n2014-07-22 22:15:54 Host is offline\n2014-07-22 21:45:34 Host is online\n2014-07-22 21:35:34 Host is offline\n2014-07-22 21:25:22 Host is online\n2014-07-22 21:15:19 Host is offline\n2014-07-22 19:44:22 Host is online\n2014-07-22 19:34:21 Host is offline\n2014-07-21 22:22:24 Host is online\n2014-07-21 21:41:45 Host is offline\n2014-07-21 03:21:41 Host is online\n2014-07-21 03:11:30 Host is offline\n2014-07-21 02:41:09 Host is online\n2014-07-21 02:31:07 Host is offline\n2014-07-21 02:20:55 Host is online\n2014-07-21 01:29:40 Host is offline\n2014-07-21 01:19:30 Host is online\n2014-07-21 00:59:02 Host is offline\n2014-07-21 00:48:52 Host is online\n2014-07-21 00:38:41 Host is offline\n2014-07-21 00:08:19 Host is online\n2014-07-20 23:47:53 Host is offline\n2014-07-20 23:37:40 Host is online\n2014-07-20 22:36:27 Host is offline\n2014-07-20 17:53:48 Host is online\n2014-07-20 17:43:46 Host is offline\n2014-07-20 17:23:32 Host is online\n2014-07-20 17:13:30 Host is offline\n2014-07-20 13:41:35 Host is online\n2014-07-20 13:31:32 Host is offline\n2014-07-18 19:28:59 Host is online\n2014-07-18 15:26:15 Host is offline\n2014-07-18 11:54:25 Host is online\n2014-07-18 11:44:19 Host is offline\n2014-07-18 02:39:13 Host is online\n2014-07-18 02:29:11 Host is offline\n2014-07-17 20:46:03 Host is online\n2014-07-17 20:35:53 Host is offline\n2014-07-17 16:33:40 Host is online\n2014-07-17 16:23:32 Host is offline\n2014-07-17 10:50:39 Host is online\n2014-07-17 10:40:29 Host is offline\n2014-07-17 10:30:18 Host is online\n2014-07-17 10:20:08 Host is offline\n2014-07-17 06:28:07 Host is online\n2014-07-17 06:18:06 Host is offline\n2014-07-16 22:14:02 Host is online\n2014-07-16 22:04:01 Host is offline\n2014-07-16 21:53:51 Host is online\n2014-07-16 21:43:41 Host is offline\n2014-07-16 10:07:48 Host is online\n2014-07-16 09:57:38 Host is offline\n2014-07-16 09:47:28 Host is online\n2014-07-16 09:27:02 Host is offline\n2014-07-16 08:36:30 Host is online\n2014-07-16 08:26:20 Host is offline\n2012-11-17 14:47:08 Host is online\n2012-11-17 14:37:06 Host is offline\n2012-11-17 14:27:05 Host is online\n2012-11-16 17:29:14 Host is offline\n2012-11-16 16:59:02 Host is online\n2012-11-16 16:49:01 Host is offline\n2012-11-16 15:08:49 Host is online\n2012-11-16 14:58:45 Host is offline\n2012-10-31 09:59:11 Host is online\n2012-10-31 09:49:11 Host is offline\n2012-10-29 09:48:24 Host is online\n2012-10-29 06:37:11 Host is offline\n2012-10-29 06:27:07 Host is online\n2012-10-29 05:46:55 Host is offline\n2012-10-29 05:26:51 Host is online\n2012-10-29 05:16:51 Host is offline\n2012-10-29 05:06:47 Host is online\n2012-10-29 04:06:27 Host is offline\n2012-10-29 03:56:23 Host is online\n2012-10-29 03:46:23 Host is offline\n2012-10-29 03:36:19 Host is online\n2012-10-29 03:16:15 Host is offline\n2012-10-29 03:06:11 Host is online\n2012-10-29 01:25:44 Host is offline\n2012-10-29 01:15:41 Host is online\n2012-10-29 00:05:17 Host is offline\n2012-10-23 14:53:36 Host is online\n2012-10-23 14:23:28 Host is offline\n2012-10-19 06:11:55 Host is online\n2012-10-19 06:01:55 Host is offline\n2012-10-16 11:55:17 Host is online\n', '', '', 0, 0, 1);
+(1, 'tut.by', 0, 1, '', '2015-12-03 14:42:32', '2015-12-03 14:52:32', 0, '', 0, '', 600, 600, 'Internet', '', '', '', 0, 0, 1);
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `plans`
+--
+
+CREATE TABLE `plans` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `IMAGE` varchar(255) NOT NULL DEFAULT '',
+  `NEED_ZOOM` int(3) NOT NULL DEFAULT 0,
+  `AUTO_ZOOM` int(3) NOT NULL DEFAULT 0,
+  `CUSTOM_CSS` text DEFAULT NULL,
+  `CUSTOM_JAVASCRIPT` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `plugins`
+-- Структура таблицы `plan_components`
 --
 
-DROP TABLE IF EXISTS `plugins`;
-CREATE TABLE IF NOT EXISTS `plugins` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `plan_components` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `PLAN_ID` int(10) NOT NULL DEFAULT 0,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `COMPONENT_NAME` varchar(255) NOT NULL DEFAULT '',
+  `REPLACE_NAME` varchar(255) NOT NULL DEFAULT '',
+  `ACTION_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `ACTION_METHOD` varchar(255) NOT NULL DEFAULT '',
+  `CODE` text DEFAULT NULL,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
+  `MENU_ITEM_ID` int(10) NOT NULL DEFAULT 0,
+  `HOMEPAGE_ID` int(10) NOT NULL DEFAULT 0,
+  `EXT_URL` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `plan_components_data`
+--
+
+CREATE TABLE `plan_components_data` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `COMPONENT_ID` int(10) NOT NULL DEFAULT 0,
+  `PROPERTY_NAME` varchar(255) NOT NULL DEFAULT '',
+  `PROPERTY_VALUE` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `plan_states`
+--
+
+CREATE TABLE `plan_states` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `PLAN_ID` int(10) NOT NULL DEFAULT 0,
+  `ITEM` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
+  `CONDITION` int(3) NOT NULL DEFAULT 0,
+  `CONDITION_VALUE` varchar(255) NOT NULL DEFAULT '',
+  `CONDITION_ADVANCED` text DEFAULT NULL,
+  `CSS_CLASS` varchar(255) NOT NULL DEFAULT '',
+  `CSS_CLASS_INVERSE` varchar(255) NOT NULL DEFAULT '',
+  `ACTION_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `ACTION_METHOD` varchar(255) NOT NULL DEFAULT '',
+  `CODE` text DEFAULT NULL,
+  `SCRIPT_ID` int(10) NOT NULL DEFAULT 0,
+  `MENU_ITEM_ID` int(10) NOT NULL DEFAULT 0,
+  `HOMEPAGE_ID` int(10) NOT NULL DEFAULT 0,
+  `EXT_URL` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `plugins`
+--
+
+CREATE TABLE `plugins` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
   `MODULE_NAME` varchar(255) NOT NULL DEFAULT '',
   `REPOSITORY_URL` char(255) NOT NULL DEFAULT '',
   `AUTHOR` varchar(255) NOT NULL DEFAULT '',
   `SUPPORT_URL` char(255) NOT NULL DEFAULT '',
-  `DESCRIPTION_RU` text,
-  `DESCRIPTION_EN` text,
+  `DESCRIPTION_RU` text DEFAULT NULL,
+  `DESCRIPTION_EN` text DEFAULT NULL,
   `CURRENT_VERSION` varchar(255) NOT NULL DEFAULT '',
   `LATEST_VERSION` varchar(255) NOT NULL DEFAULT '',
-  `IS_INSTALLED` int(3) NOT NULL DEFAULT '0',
-  `WHATSNEW` text,
-  `LATEST_UPDATE` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `IS_INSTALLED` int(3) NOT NULL DEFAULT 0,
+  `WHATSNEW` text DEFAULT NULL,
+  `LATEST_UPDATE` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Структура таблицы `project_modules`
 --
 
-DROP TABLE IF EXISTS `products`;
-CREATE TABLE IF NOT EXISTS `products` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `COMMENTS` varchar(255) NOT NULL DEFAULT '',
-  `CATEGORY_ID` int(10) NOT NULL DEFAULT '0',
-  `INSTOCK` int(3) NOT NULL DEFAULT '0',
-  `IMAGE` varchar(70) NOT NULL DEFAULT '',
-  `WILL_EXPIRE` int(3) NOT NULL DEFAULT '0',
-  `EXPIRE_DATE` date DEFAULT NULL,
-  `EXPIRE_DEFAULT` int(10) NOT NULL DEFAULT '0',
-  `UPDATED` datetime DEFAULT NULL,
-  `QTY` int(10) NOT NULL DEFAULT '0',
-  `MIN_QTY` int(10) NOT NULL DEFAULT '0',
-  `DETAILS` text,
-  `DEFAULT_PRICE` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `product_categories`
---
-
-DROP TABLE IF EXISTS `product_categories`;
-CREATE TABLE IF NOT EXISTS `product_categories` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `PARENT_ID` int(10) NOT NULL DEFAULT '0',
-  `SUB_LIST` text,
-  `PARENT_LIST` text,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
-
---
--- Dumping data for table `product_categories`
---
-
-INSERT INTO `product_categories` (`ID`, `TITLE`, `PRIORITY`, `PARENT_ID`, `SUB_LIST`, `PARENT_LIST`) VALUES
-(1, '<#LANG_APP_PRODUCTS#>', 0, 0, '2,3,4,5,7,8', '0');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `product_codes`
---
-
-DROP TABLE IF EXISTS `product_codes`;
-CREATE TABLE IF NOT EXISTS `product_codes` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `CODE` varchar(255) NOT NULL DEFAULT '',
-  `PRODUCT_ID` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=35 ;
-
---
--- Dumping data for table `product_codes`
---
-
-INSERT INTO `product_codes` (`ID`, `TITLE`, `CODE`, `PRODUCT_ID`) VALUES
-(33, 'ХЛЕБ ', '4811002027133', 1),
-(34, 'МОЛОЧНАЯ КАША ДЛЯ ДЕТСКОГО ПИТАНИЯ ', '4606272002061', 2);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `product_log`
---
-
-DROP TABLE IF EXISTS `product_log`;
-CREATE TABLE IF NOT EXISTS `product_log` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `PRODUCT_ID` int(10) NOT NULL DEFAULT '0',
-  `CODE_ID` int(10) NOT NULL DEFAULT '0',
-  `ACTION` char(10) NOT NULL DEFAULT '',
-  `UPDATED` datetime DEFAULT NULL,
-  `QTY` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `prod_categories`
---
-
-DROP TABLE IF EXISTS `prod_categories`;
-CREATE TABLE IF NOT EXISTS `prod_categories` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `project_modules`
---
-
-DROP TABLE IF EXISTS `project_modules`;
-CREATE TABLE IF NOT EXISTS `project_modules` (
-  `ID` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `project_modules` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `NAME` varchar(50) NOT NULL DEFAULT '',
   `TITLE` varchar(100) NOT NULL DEFAULT '',
   `CATEGORY` varchar(50) NOT NULL DEFAULT '',
   `PARENT_NAME` varchar(50) NOT NULL DEFAULT '',
-  `DATA` text,
-  `HIDDEN` int(3) NOT NULL DEFAULT '0',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `ADDED` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=108 ;
+  `DATA` text DEFAULT NULL,
+  `HIDDEN` int(3) NOT NULL DEFAULT 0,
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `ADDED` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `project_modules`
+-- Дамп данных таблицы `project_modules`
 --
 
 INSERT INTO `project_modules` (`ID`, `NAME`, `TITLE`, `CATEGORY`, `PARENT_NAME`, `DATA`, `HIDDEN`, `PRIORITY`, `ADDED`) VALUES
@@ -1487,20 +1359,19 @@ INSERT INTO `project_modules` (`ID`, `NAME`, `TITLE`, `CATEGORY`, `PARENT_NAME`,
 (4, 'control_access', 'Control Access', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2011-09-29 18:16:01'),
 (7, 'master', '<#LANG_MODULE_MASTER_LOGIN#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2014-10-30 11:57:40'),
 (70, 'pinghosts', '<#LANG_MODULE_PINGHOSTS#>', '<#LANG_SECTION_DEVICES#>', '', '', 0, 0, '2011-01-05 22:02:57'),
-(20, 'saverestore', '<#LANG_MODULE_SAVERESTORE#>', '<#LANG_SECTION_SYSTEM#>', '', 'a:1:{s:17:"LATEST_UPDATED_ID";s:40:"14d4bd4fd3c4cfc18f28094d3cb9eaa4861c62c1";}', 0, 0, '2009-02-07 11:35:05'),
+(20, 'saverestore', '<#LANG_MODULE_SAVERESTORE#>', '<#LANG_SECTION_SYSTEM#>', '', 'a:1:{s:17:\"LATEST_UPDATED_ID\";s:40:\"14d4bd4fd3c4cfc18f28094d3cb9eaa4861c62c1\";}', 0, 0, '2009-02-07 11:35:05'),
 (21, 'userlog', '<#LANG_MODULE_USERLOG#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2009-02-07 11:45:52'),
 (22, 'skins', '<#LANG_MODULE_SKINS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2009-02-07 12:02:54'),
 (23, 'settings', '<#LANG_MODULE_SETTINGS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2009-02-07 12:05:40'),
 (24, 'dateselect', 'Date Selector', 'System', '', '', 1, 0, '2009-02-07 12:47:32'),
 (25, 'thumb', '<#LANG_MODULE_THUMB#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2009-02-07 12:48:32'),
-(74, 'app_gpstrack', '<#LANG_APP_GPSTRACK#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2011-07-25 11:27:19'),
 (73, 'app_player', '<#LANG_APP_PLAYER#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2011-05-03 11:02:57'),
-(28, 'dashboard', 'Dashboard', 'CMS', '', 'a:5:{s:12:"CPANEL_STATS";i:0;s:15:"CPANEL_USERNAME";s:0:"";s:15:"CPANEL_PASSWORD";s:0:"";s:13:"CPANEL_DOMAIN";s:0:"";s:10:"CPANEL_URL";s:0:"";}', 1, 0, '2009-02-23 10:15:23'),
-(29, 'events', '<#LANG_MODULE_EVENTS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2014-10-30 11:57:40'),
+(28, 'dashboard', 'Dashboard', 'CMS', '', 'a:5:{s:12:\"CPANEL_STATS\";i:0;s:15:\"CPANEL_USERNAME\";s:0:\"\";s:15:\"CPANEL_PASSWORD\";s:0:\"\";s:13:\"CPANEL_DOMAIN\";s:0:\"\";s:10:\"CPANEL_URL\";s:0:\"\";}', 1, 0, '2009-02-23 10:15:23'),
+(29, 'events', '<#LANG_MODULE_EVENTS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 0, 0, '2020-07-08 14:02:17'),
 (30, 'users', '<#LANG_MODULE_USERS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2009-03-27 13:08:07'),
 (31, 'terminals', '<#LANG_MODULE_TERMINALS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2009-03-27 13:10:00'),
 (34, 'commands', '<#LANG_MODULE_CONTROL_MENU#>', '<#LANG_SECTION_OBJECTS#>', '', '', 0, 0, '2009-04-11 03:14:03'),
-(37, 'classes', '<#LANG_MODULE_OBJECTS#>', '<#LANG_SECTION_OBJECTS#>', '', 'a:3:{s:12:"DEFAULT_VIEW";s:0:"";s:15:"FILTER_CLASS_ID";i:25;s:18:"FILTER_LOCATION_ID";i:0;}', 0, 0, '2009-05-22 10:09:27'),
+(37, 'classes', '<#LANG_MODULE_OBJECTS#>', '<#LANG_SECTION_OBJECTS#>', '', 'a:3:{s:12:\"DEFAULT_VIEW\";s:0:\"\";s:15:\"FILTER_CLASS_ID\";i:0;s:18:\"FILTER_LOCATION_ID\";i:0;}', 0, 0, '2009-05-22 10:09:27'),
 (38, 'history', '<#LANG_MODULE_OBJECTS_HISTORY#>', '<#LANG_SECTION_OBJECTS#>', '', '', 1, 0, '2009-05-22 10:09:51'),
 (39, 'locations', '<#LANG_MODULE_LOCATIONS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2009-05-22 10:11:01'),
 (40, 'methods', '<#LANG_MODULE_METHODS#>', '<#LANG_SECTION_OBJECTS#>', '', '', 1, 0, '2009-05-22 10:11:23'),
@@ -1510,20 +1381,13 @@ INSERT INTO `project_modules` (`ID`, `NAME`, `TITLE`, `CATEGORY`, `PARENT_NAME`,
 (44, 'shoutbox', '<#LANG_MODULE_SHOUTBOX#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2009-07-29 13:53:13'),
 (45, 'shoutrooms', '<#LANG_MODULE_SHOUTROOMS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2009-07-29 13:53:28'),
 (46, 'jobs', '<#LANG_MODULE_JOBS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2014-10-30 11:57:40'),
-(80, 'app_calendar', '<#LANG_APP_CALENDAR#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2012-06-25 09:34:08'),
 (81, 'scenes', '<#LANG_MODULE_SCENES#>', '<#LANG_SECTION_OBJECTS#>', '', '', 0, 0, '2012-06-25 09:34:26'),
-(49, 'usbdevices', '<#LANG_MODULE_USB_DEVICES#>', '<#LANG_SECTION_DEVICES#>', '', '', 0, 0, '2010-03-22 12:18:32'),
-(68, 'rss_channels', '<#LANG_MODULE_RSS_CHANNELS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2010-09-22 10:54:52'),
 (61, 'app_mediabrowser', '<#LANG_APP_MEDIA_BROWSER#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2010-08-31 09:09:33'),
-(64, 'app_tdwiki', '<#LANG_APP_TDWIKI#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2010-08-31 09:11:38'),
-(63, 'app_products', '<#LANG_APP_PRODUCTS#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2010-08-31 09:11:24'),
 (66, 'layouts', '<#LANG_MODULE_LAYOUTS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2010-09-13 15:03:49'),
-(82, 'webvars', '<#LANG_MODULE_WEBVARS#>', '<#LANG_SECTION_OBJECTS#>', '', '', 0, 0, '2012-11-06 08:49:14'),
 (77, 'patterns', '<#LANG_MODULE_PATTERNS#>', '<#LANG_SECTION_OBJECTS#>', '', '', 0, 0, '2011-12-13 14:36:03'),
 (83, 'xray', 'X-Ray', '<#LANG_SECTION_SYSTEM#>', '', '', 0, 0, '2012-11-16 14:59:57'),
-(87, 'app_readit', '<#LANG_APP_READIT#>', '<#LANG_SECTION_APPLICATIONS#>', '', '', 0, 0, '2013-03-06 12:25:29'),
 (88, 'security_rules', '<#LANG_MODULE_SECURITY_RULES#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2013-05-18 11:31:37'),
-(90, 'connect', '<#LANG_MODULE_CONNECT#>', '<#LANG_SECTION_SYSTEM#>', '', 'a:7:{s:16:"CONNECT_USERNAME";s:0:"";s:16:"CONNECT_PASSWORD";s:0:"";s:12:"CONNECT_SYNC";i:0;s:9:"SEND_MENU";i:1;s:12:"SEND_OBJECTS";i:1;s:12:"SEND_SCRIPTS";i:1;s:13:"SEND_PATTERNS";i:1;}', 0, 0, '2013-08-09 10:02:04'),
+(90, 'connect', '<#LANG_MODULE_CONNECT#>', '<#LANG_SECTION_SYSTEM#>', '', 'a:7:{s:16:\"CONNECT_USERNAME\";s:0:\"\";s:16:\"CONNECT_PASSWORD\";s:0:\"\";s:12:\"CONNECT_SYNC\";i:0;s:9:\"SEND_MENU\";i:1;s:12:\"SEND_OBJECTS\";i:1;s:12:\"SEND_SCRIPTS\";i:1;s:13:\"SEND_PATTERNS\";i:1;}', 0, 0, '2013-08-09 10:02:04'),
 (93, 'market', '<#LANG_MODULE_MARKET#>', '<#LANG_SECTION_SYSTEM#>', '', '', 0, 0, '2014-01-25 14:04:20'),
 (97, 'blockly_code', 'Blockly code', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2014-09-03 09:28:23'),
 (98, 'myblocks', '<#LANG_MODULE_MYBLOCKS#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2014-10-30 11:57:40'),
@@ -1531,492 +1395,455 @@ INSERT INTO `project_modules` (`ID`, `NAME`, `TITLE`, `CATEGORY`, `PARENT_NAME`,
 (100, 'textfiles', '<#LANG_MODULE_TEXTFILES#>', '<#LANG_SECTION_SETTINGS#>', '', '', 0, 0, '2014-10-30 11:57:41'),
 (101, 'linkedobject', 'LinkedObject', '<#LANG_SECTION_SYSTEM#>', '', '', 1, 0, '2015-01-29 08:24:25'),
 (102, 'system_errors', '<#LANG_MODULE_SYSTEM_ERRORS#>', '<#LANG_SECTION_SYSTEM#>', '', '', 0, 0, '2015-01-29 08:24:26'),
-(107, 'app_quotes', '<#LANG_APP_QUOTES#>', '<#LANG_SECTION_APPLICATIONS#>', '', NULL, 0, 0, '2015-12-03 11:42:24');
+(108, 'devices', 'Simple Devices', '<#LANG_SECTION_DEVICES#>', '', NULL, 0, 0, '2020-07-08 14:55:07'),
+(109, 'actions_log', '<#LANG_MODULE_ACTIONS_LOG#>', '<#LANG_SECTION_SYSTEM#>', '', NULL, 0, 0, '2020-07-08 14:02:17'),
+(110, 'plans', '<#LANG_MODULE_PLANS#>', '<#LANG_SECTION_OBJECTS#>', '', NULL, 0, 0, '2020-07-08 14:02:18');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `properties`
+-- Структура таблицы `properties`
 --
 
-DROP TABLE IF EXISTS `properties`;
-CREATE TABLE IF NOT EXISTS `properties` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CLASS_ID` int(10) NOT NULL DEFAULT '0',
+CREATE TABLE `properties` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `CLASS_ID` int(10) NOT NULL DEFAULT 0,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `DESCRIPTION` text,
-  `OBJECT_ID` int(10) NOT NULL DEFAULT '0',
-  `KEEP_HISTORY` int(10) NOT NULL DEFAULT '0',
+  `DESCRIPTION` text DEFAULT NULL,
+  `OBJECT_ID` int(10) NOT NULL DEFAULT 0,
+  `KEEP_HISTORY` int(10) NOT NULL DEFAULT 0,
   `ONCHANGE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`),
-  KEY `CLASS_ID` (`CLASS_ID`),
-  KEY `OBJECT_ID` (`OBJECT_ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=151 ;
+  `SYSTEM` varchar(255) NOT NULL DEFAULT '',
+  `DATA_KEY` int(3) NOT NULL DEFAULT 0,
+  `DATA_TYPE` int(3) NOT NULL DEFAULT 0,
+  `VALIDATION_TYPE` int(3) NOT NULL DEFAULT 0,
+  `VALIDATION_NUM_MIN` varchar(20) NOT NULL DEFAULT '',
+  `VALIDATION_NUM_MAX` varchar(20) NOT NULL DEFAULT '',
+  `VALIDATION_LIST` varchar(255) NOT NULL DEFAULT '',
+  `VALIDATION_CODE` text DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `properties`
+-- Дамп данных таблицы `properties`
 --
 
-INSERT INTO `properties` (`ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `OBJECT_ID`, `KEEP_HISTORY`, `ONCHANGE`) VALUES
-(1, 1, 'lastTimePressed', 'когда нажималась в последний раз', 0, 0, ''),
-(8, 5, 'СтепеньКрасноты', '', 0, 0, ''),
-(10, 10, 'checked', 'время последней проверки', 0, 0, ''),
-(17, 0, 'testProp', NULL, 7, 0, ''),
-(12, 7, 'time', 'текущее время', 0, 0, ''),
-(18, 10, 'minMsgLevel', '', 0, 0, ''),
-(19, 19, 'temp', '', 0, 7, ''),
-(20, 0, 'weatherFull', NULL, 7, 0, ''),
-(21, 0, 'AlarmTime', NULL, 7, 0, ''),
-(22, 0, 'textBoxTest', NULL, 7, 0, ''),
-(23, 0, '1w_temp', NULL, 7, 0, ''),
-(24, 20, 'tempOutside', NULL, 0, 7, ''),
-(25, 20, 'relHumOutside', NULL, 0, 7, ''),
-(26, 20, 'dewPoint', NULL, 0, 7, ''),
-(27, 20, 'windLatest', NULL, 0, 7, ''),
-(28, 20, 'windAverage', NULL, 0, 7, ''),
-(29, 20, 'rainfallRate', NULL, 0, 7, ''),
-(30, 20, 'rainfallHour', NULL, 0, 7, ''),
-(31, 20, 'rainfall24', NULL, 0, 7, ''),
-(32, 20, 'pressure', NULL, 0, 7, ''),
-(33, 20, 'pressureTrend', NULL, 0, 7, ''),
-(34, 20, 'windDirection', NULL, 0, 7, ''),
-(35, 20, 'windDirectionAverage', NULL, 0, 7, ''),
-(36, 20, 'tempInside', NULL, 0, 7, ''),
-(37, 20, 'relHumInside', NULL, 0, 7, ''),
-(38, 20, 'pressureRt', NULL, 0, 7, ''),
-(39, 20, 'updatedTime', NULL, 0, 7, ''),
-(40, 20, 'updatedDate', NULL, 0, 7, ''),
-(41, 21, 'stateDetails', 'details for the state', 0, 0, ''),
-(42, 21, 'stateColor', 'green / yellow / red', 0, 0, ''),
-(43, 0, 'TempOutside', NULL, 7, 0, ''),
-(44, 0, 'Econom', NULL, 7, 0, ''),
-(45, 0, 'securityMode', NULL, 7, 0, ''),
-(46, 0, 'nobodyHome', NULL, 7, 0, ''),
-(47, 0, 'WeHaveGuests', NULL, 7, 0, ''),
-(48, 0, 'cycle_statesRun', NULL, 7, 0, ''),
-(49, 22, 'alive', '', 0, 0, ''),
-(50, 22, 'aliveTimeOut', '', 0, 0, ''),
-(51, 22, 'status', '', 0, 0, ''),
-(52, 22, 'statusText', '', 0, 0, ''),
-(53, 22, 'updatedTimestamp', '', 0, 0, ''),
-(54, 23, 'LinkedRoom', '', 0, 0, ''),
-(55, 24, 'active', '', 0, 0, 'modeChanged'),
-(56, 24, 'title', '', 0, 0, ''),
-(57, 24, 'updated', '', 0, 0, ''),
-(58, 24, 'updatedTime', '', 0, 0, ''),
-(59, 25, 'LatestActivity', '', 0, 0, ''),
-(60, 25, 'LatestActivityTime', '', 0, 0, ''),
-(61, 25, 'SomebodyHere', '', 0, 0, ''),
-(62, 25, 'Temperature', '', 0, 0, ''),
-(63, 26, 'status', '', 0, 0, ''),
-(64, 19, 'LinkedRoom', '', 0, 0, ''),
-(65, 19, 'alive', '', 0, 0, ''),
-(66, 19, 'aliveTimeOut', '', 0, 0, ''),
-(67, 19, 'updated', '', 0, 0, ''),
-(68, 19, 'updatedTime', '', 0, 0, ''),
-(69, 0, 'cycle_execsRun', NULL, 7, 0, ''),
-(70, 0, 'cycle_mainRun', NULL, 7, 0, ''),
-(71, 0, 'cycle_rssRun', NULL, 7, 0, ''),
-(72, 0, 'cycle_pingRun', NULL, 7, 0, ''),
-(73, 0, 'cycle_watchfoldersRun', NULL, 7, 0, ''),
-(74, 0, 'cycle_schedulerRun', NULL, 7, 0, ''),
-(75, 0, 'cycle_webvarsRun', NULL, 7, 0, ''),
-(76, 0, 'stateTitle', NULL, 17, 0, ''),
-(77, 0, 'stateTitle', NULL, 18, 0, ''),
-(78, 0, 'stateTitle', NULL, 16, 0, ''),
-(83, 0, 'volumeLevel', NULL, 7, 0, ''),
-(152, 0, 'volumeMediaLevel', NULL, 7, 0, ''),
-(119, 30, 'linkedRoom', '', 0, 0, ''),
-(98, 0, 'somebodyHome', NULL, 7, 0, ''),
-(118, 30, 'aliveTimeOut', '', 0, 0, ''),
-(117, 30, 'alive', '', 0, 0, ''),
-(101, 0, 'timeNow', NULL, 7, 0, ''),
-(102, 0, 'HomeStatus', NULL, 7, 0, ''),
-(103, 0, 'isDark', NULL, 7, 0, ''),
-(104, 0, 'SunSetTime', NULL, 7, 0, ''),
-(105, 0, 'SunRiseTime', NULL, 7, 0, ''),
-(106, 0, 'somebodyHomeText', NULL, 7, 0, ''),
-(107, 0, 'cycle_connectRun', NULL, 7, 0, ''),
-(108, 0, 'wunderHost', NULL, 7, 0, ''),
-(109, 0, 'cycle_connect_manualRun', NULL, 7, 0, ''),
-(110, 0, 'weatherTomorrow', NULL, 7, 0, ''),
-(111, 0, 'weatherTomorrowweatherToday', NULL, 7, 0, ''),
-(112, 0, 'weatherToday', NULL, 7, 0, ''),
-(113, 0, 'connect_manualRun', NULL, 7, 0, ''),
-(114, 0, 'clockChimeEnabled', NULL, 7, 0, ''),
-(115, 29, 'Code1', '', 0, 0, ''),
-(116, 29, 'Code2', '', 0, 0, ''),
-(120, 30, 'humidity', '', 0, 0, ''),
-(121, 30, 'updated', '', 0, 0, ''),
-(122, 30, 'updatedTime', '', 0, 0, ''),
-(124, 23, 'motionDetected', '', 0, 0, ''),
-(125, 0, 'direction', NULL, 52, 0, ''),
-(126, 0, 'direction', NULL, 26, 0, ''),
-(127, 25, 'Humidity', 'влажность', 0, 0, ''),
-(132, 25, 'Title', '', 0, 0, ''),
-(133, 31, 'channel', 'Канал noolight устройства', 0, 0, ''),
-(134, 32, 'atHome', '', 0, 0, ''),
-(135, 32, 'Coordinates', '', 0, 0, ''),
-(136, 32, 'CoordinatesUpdated', '', 0, 0, ''),
-(137, 32, 'CoordinatesUpdatedTimestamp', '', 0, 0, ''),
-(138, 32, 'fullName', '', 0, 0, ''),
-(139, 32, 'isMoving', '', 0, 0, ''),
-(140, 32, 'seenAt', '', 0, 0, ''),
-(143, 0, 'lastNewsRead', NULL, 7, 0, ''),
-(144, 0, 'NoolightCommandSend', NULL, 7, 0, ''),
-(145, 0, 'AlreadyPlayedMusic', NULL, 7, 0, ''),
-(146, 0, 'cycle_modbusRun', NULL, 7, 0, ''),
-(147, 0, 'cycle_zwaveRun', NULL, 7, 0, ''),
-(148, 0, 'lastSayTime', NULL, 7, 0, ''),
-(149, 0, 'uptime', NULL, 7, 0, ''),
-(150, 0, 'started_time', NULL, 7, 0, '');
+INSERT INTO `properties` (`ID`, `CLASS_ID`, `TITLE`, `DESCRIPTION`, `OBJECT_ID`, `KEEP_HISTORY`, `ONCHANGE`, `SYSTEM`, `DATA_KEY`, `DATA_TYPE`, `VALIDATION_TYPE`, `VALIDATION_NUM_MIN`, `VALIDATION_NUM_MAX`, `VALIDATION_LIST`, `VALIDATION_CODE`) VALUES
+(255, 0, 'cycle_wscacheRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(256, 0, 'WSClientsTotal', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(10, 10, 'checked', 'время последней проверки', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(17, 0, 'testProp', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(12, 7, 'time', 'текущее время', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(18, 10, 'minMsgLevel', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(20, 0, 'weatherFull', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(21, 0, 'AlarmTime', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(22, 0, 'textBoxTest', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(23, 0, '1w_temp', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(257, 0, 'uptimeText', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(41, 21, 'stateDetails', 'details for the state', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(42, 21, 'stateColor', 'green / yellow / red', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(43, 0, 'TempOutside', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(44, 0, 'Econom', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(45, 0, 'securityMode', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(46, 0, 'nobodyHome', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(47, 0, 'WeHaveGuests', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(250, 0, 'cycle_pingRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(55, 24, 'active', '', 0, 0, 'modeChanged', '', 0, 0, 0, '', '', '', NULL),
+(56, 24, 'title', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(57, 24, 'updated', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(58, 24, 'updatedTime', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(59, 25, 'LatestActivity', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(60, 25, 'LatestActivityTime', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(61, 25, 'SomebodyHere', 'Somebody in the room', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(62, 25, 'Temperature', 'Temperature', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(253, 0, 'cycle_phistoryRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(251, 0, 'cycle_statesRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(249, 0, 'cycle_mainRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(248, 0, 'cycle_schedulerRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(76, 0, 'stateTitle', NULL, 17, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(77, 0, 'stateTitle', NULL, 18, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(78, 0, 'stateTitle', NULL, 16, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(83, 0, 'volumeLevel', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(152, 0, 'volumeMediaLevel', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(98, 0, 'somebodyHome', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(101, 0, 'timeNow', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(102, 0, 'HomeStatus', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(103, 0, 'isDark', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(104, 0, 'SunSetTime', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(105, 0, 'SunRiseTime', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(106, 0, 'somebodyHomeText', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(254, 0, 'cycle_connectRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(108, 0, 'wunderHost', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(110, 0, 'weatherTomorrow', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(111, 0, 'weatherTomorrowweatherToday', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(112, 0, 'weatherToday', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(113, 0, 'connect_manualRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(114, 0, 'clockChimeEnabled', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(127, 25, 'Humidity', 'Humidity', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(132, 25, 'Title', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(134, 32, 'atHome', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(135, 32, 'Coordinates', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(136, 32, 'CoordinatesUpdated', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(137, 32, 'CoordinatesUpdatedTimestamp', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(138, 32, 'fullName', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(139, 32, 'isMoving', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(140, 32, 'seenAt', '', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(143, 0, 'lastNewsRead', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(144, 0, 'NoolightCommandSend', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(145, 0, 'AlreadyPlayedMusic', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(252, 0, 'cycle_websocketsRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(247, 0, 'cycle_execsRun', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(148, 0, 'lastSayTime', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(149, 0, 'uptime', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(150, 0, 'started_time', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(153, 25, 'IdleDelay', 'Nobody here idle delay', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(154, 34, 'status', 'Status', 0, 365, 'statusUpdated', '', 1, 0, 0, '', '', '', NULL),
+(155, 34, 'alive', 'Alive', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(156, 34, 'aliveTimeout', 'Possible inactivity timeout (hours)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(157, 34, 'linkedRoom', 'LinkedRoom', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(158, 34, 'updated', 'Updated Timestamp', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(159, 34, 'updatedText', 'Updated Time (text)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(160, 35, 'groupEco', 'Turn it off in ECO mode', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(161, 35, 'groupEcoOn', 'Turn it on leaving ECO mode', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(162, 35, 'groupSunrise', 'Turn it off with Sunrise', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(163, 35, 'groupSunset', 'Turn it on with Sunset', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(164, 35, 'groupNight', 'Turn it off entering Night mode', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(165, 35, 'isActivity', 'Status change means activity in the room', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(166, 35, 'loadType', 'Device type', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(167, 35, 'icon', 'Image', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(168, 36, 'groupName', 'Group system name', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(169, 38, 'relay_status', 'Relay status', 0, 365, '', '', 1, 0, 0, '', '', '', NULL),
+(170, 38, 'value', 'Current temperature', 0, 365, 'valueUpdated', '', 1, 0, 0, '', '', '', NULL),
+(171, 38, 'currentTargetValue', 'Current target temperature', 0, 0, '', '', 1, 0, 0, '', '', '', NULL),
+(172, 38, 'normalTargetValue', 'Normal target temperature', 0, 0, 'valueUpdated', '', 0, 0, 0, '', '', '', NULL),
+(173, 38, 'ecoTargetValue', 'ECO target temperature', 0, 0, 'valueUpdated', '', 0, 0, 0, '', '', '', NULL),
+(174, 38, 'threshold', 'Temperature threshold (0.25 by default)', 0, 0, 'valueUpdated', '', 0, 0, 0, '', '', '', NULL),
+(175, 38, 'ncno', 'Device/Sensor type', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(176, 38, 'disabled', 'Disabled', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(177, 39, 'level', 'Current brightness level', 0, 0, 'levelUpdated', '', 1, 0, 0, '', '', '', NULL),
+(178, 39, 'levelSaved', 'Latest level saved', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(179, 39, 'levelWork', 'Brightness level (work)', 0, 0, 'levelWorkUpdated', '', 0, 0, 0, '', '', '', NULL),
+(180, 39, 'minWork', 'Min level (work)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(181, 39, 'maxWork', 'Max level (work)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(182, 39, 'setMaxTurnOn', 'Set maximum level when turning on', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(183, 40, 'color', 'Current color', 0, 0, 'colorUpdated', '', 1, 0, 0, '', '', '', NULL),
+(184, 40, 'colorSaved', 'Saved color', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(185, 40, 'brightness', 'Current brightness', 0, 0, 'colorUpdated', '', 0, 0, 0, '', '', '', NULL),
+(186, 41, 'ignoreNobodysHome', 'Ignore device events when nobody\'s home', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(187, 41, 'resetNobodysHome', 'Reset \"nobody home\" status w/o setting timer', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(188, 41, 'timeout', 'Activity timeout (sec)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(189, 41, 'blocked', 'Is blocked', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(190, 42, 'streamURL', 'Stream URL (LQ)', 0, 0, 'updatePreview', '', 0, 0, 0, '', '', '', NULL),
+(191, 42, 'streamURL_HQ', 'Stream URL (HQ)', 0, 0, 'updatePreview', '', 0, 0, 0, '', '', '', NULL),
+(192, 42, 'cameraUsername', 'Camera Username', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(193, 42, 'cameraPassword', 'Camera Password', 0, 0, 'updatePreview', '', 0, 0, 0, '', '', '', NULL),
+(194, 42, 'streamTransport', 'Stream transport', 0, 0, 'updatePreview', '', 0, 0, 0, '', '', '', NULL),
+(195, 42, 'previewType', 'Preview image', 0, 0, 'updatePreview', '', 0, 0, 0, '', '', '', NULL),
+(196, 42, 'clickAction', 'OnClick action', 0, 0, 'updatePreview', '', 0, 0, 0, '', '', '', NULL),
+(197, 42, 'snapshotURL', 'Snapshot URL', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(198, 42, 'snapshot', 'Snapshot', 0, 365, '', '', 0, 5, 0, '', '', '', NULL),
+(199, 42, 'series', 'Snapshot', 0, 30, '', '', 0, 5, 0, '', '', '', NULL),
+(200, 42, 'snapshotPreviewURL', 'Snapshot Preview URL', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(201, 42, 'previewHTML', 'Preview HTML', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(202, 42, 'activeHTML', 'Active HTML', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(203, 42, 'ignoreNobodysHome', 'Ignore device events when nobody\'s home', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(204, 42, 'timeout', 'Activity timeout (sec)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(205, 43, 'isActivity', 'Status change means activity in the room', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(206, 43, 'ncno', 'Device/Sensor type', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(207, 43, 'notify_status', 'Notify status', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(208, 43, 'notify_nc', 'Notify when left open', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(209, 43, 'blocked', 'Is blocked', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(210, 44, 'notify_status', 'Notify status', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(211, 44, 'notify_nc', 'Notify when left open', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(212, 44, 'openType', 'Device type', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(213, 44, 'notify_msg_opening', 'Opening message text', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(214, 44, 'notify_msg_closing', 'Closing message text', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(215, 44, 'notify_msg_reminder', 'Reminder message text', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(216, 45, 'notify_eliminated', 'Notify every minute until problem solved', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(217, 45, 'blocked', 'Is blocked', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(218, 46, 'notify_eliminated', 'Notify every minute until problem solved', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(219, 46, 'blocked', 'Is blocked', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(220, 47, 'unit', 'Units', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(221, 47, 'value', 'Data Value', 0, 365, 'valueUpdated', '', 1, 0, 0, '', '', '', NULL),
+(222, 47, 'valueWork', 'Work Value', 0, 0, 'valueWorkUpdated', '', 0, 0, 0, '', '', '', NULL),
+(223, 47, 'valueHour', 'Hour Value', 0, 365, '', '', 0, 0, 0, '', '', '', NULL),
+(224, 47, 'valueDay', 'Day Value', 0, 1825, '', '', 0, 0, 0, '', '', '', NULL),
+(225, 47, 'valueMonth', 'Month Value', 0, 1825, '', '', 0, 0, 0, '', '', '', NULL),
+(226, 47, 'conversion', 'Conversion coefficient (work-to-data)', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(227, 48, 'icon', 'Image', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(228, 48, 'isActivity', 'Status change means activity in the room', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(229, 49, 'value', 'Current Sensor Value', 0, 365, 'valueUpdated', '', 1, 0, 0, '', '', '', NULL),
+(230, 49, 'minValue', 'Minimum value', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(231, 49, 'maxValue', 'Maximum value', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(232, 49, 'notify', 'Notify when value out of range', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(233, 49, 'notify_eliminated', 'Notify every minute until problem solved', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(234, 49, 'mainSensor', 'Main sensor for the room', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(235, 49, 'normalValue', 'Value within range', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(236, 49, 'direction', 'Direction of changes', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(237, 49, 'directionTimeout', 'Direction tracking time period (seconds)', 0, 0, 'valueUpdated', '', 0, 0, 0, '', '', '', NULL),
+(238, 49, 'blocked', 'Is blocked', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(239, 50, 'unit', 'Units', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(240, 56, 'loadStatusTimeout', 'Load status timeout', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(241, 59, 'unit', 'Units', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(242, 60, 'data', 'Data', 0, 0, '', '', 0, 0, 0, '', '', '', NULL),
+(243, 0, 'Serial', NULL, 7, 0, '', '', 0, 0, 0, '', '', '', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pvalues`
+-- Структура таблицы `public_calls`
 --
 
-DROP TABLE IF EXISTS `pvalues`;
-CREATE TABLE IF NOT EXISTS `pvalues` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PROPERTY_ID` int(10) NOT NULL DEFAULT '0',
-  `OBJECT_ID` int(10) NOT NULL DEFAULT '0',
+CREATE TABLE `public_calls` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_METHOD` varchar(255) NOT NULL DEFAULT '',
+  `PUBLIC_USERNAME` varchar(255) NOT NULL DEFAULT '',
+  `PUBLIC_PASSWORD` varchar(255) NOT NULL DEFAULT '',
+  `PUBLIC_KEY` varchar(255) NOT NULL DEFAULT '',
+  `PROTECTED` int(3) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `pvalues`
+--
+
+CREATE TABLE `pvalues` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `PROPERTY_ID` int(10) NOT NULL DEFAULT 0,
+  `OBJECT_ID` int(10) NOT NULL DEFAULT 0,
   `VALUE` text NOT NULL,
   `UPDATED` datetime DEFAULT NULL,
   `PROPERTY_NAME` varchar(100) NOT NULL DEFAULT '',
   `LINKED_MODULES` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`),
-  KEY `PROPERTY_ID` (`PROPERTY_ID`),
-  KEY `OBJECT_ID` (`OBJECT_ID`),
-  KEY `PROPERTY_NAME` (`PROPERTY_NAME`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=315 ;
+  `SOURCE` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `pvalues`
+-- Дамп данных таблицы `pvalues`
 --
 
-INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PROPERTY_NAME`, `LINKED_MODULES`) VALUES
-(59, 18, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.minMsgLevel', ''),
-(60, 17, 7, '-15', '2014-10-30 15:02:45', 'ThisComputer.testProp', ''),
-(58, 10, 7, '1346415251', '2014-10-30 15:02:45', 'ThisComputer.checked', ''),
-(24, 12, 6, '2015-12-03 14:49:00', '2015-12-03 14:49:00', 'ClockChime.time', ''),
-(61, 20, 7, '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:42:32', 'ThisComputer.weatherFull', ''),
-(186, 54, 51, 'Hall', '2014-09-04 12:12:08', 'MotionSensor1.LinkedRoom', ''),
-(80, 43, 7, '-0.9', '2015-12-03 14:42:33', 'ThisComputer.TempOutside', ''),
-(62, 21, 7, '09:30', '2014-10-30 15:02:45', 'ThisComputer.AlarmTime', 'commands'),
-(63, 22, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.textBoxTest', 'commands'),
-(64, 23, 7, '4', '2014-10-30 15:02:45', 'ThisComputer.1w_temp', ''),
-(65, 24, 15, '', '1970-01-01 00:00:00', 'ws.tempOutside', ''),
-(66, 25, 15, '', '1970-01-01 00:00:00', 'ws.relHumOutside', ''),
-(67, 26, 15, '', '1970-01-01 00:00:00', 'ws.dewPoint', ''),
-(68, 27, 15, '', '1970-01-01 00:00:00', 'ws.windLatest', ''),
-(69, 28, 15, '', '1970-01-01 00:00:00', 'ws.windAverage', ''),
-(70, 29, 15, '', '1970-01-01 00:00:00', 'ws.rainfallRate', ''),
-(71, 30, 15, '', '1970-01-01 00:00:00', 'ws.rainfallHour', ''),
-(72, 31, 15, '', '1970-01-01 00:00:00', 'ws.rainfall24', ''),
-(73, 32, 15, '', '1970-01-01 00:00:00', 'ws.pressure', ''),
-(74, 33, 15, '', '1970-01-01 00:00:00', 'ws.pressureTrend', ''),
-(75, 34, 15, '', '1970-01-01 00:00:00', 'ws.windDirection', ''),
-(76, 35, 15, '', '1970-01-01 00:00:00', 'ws.windDirectionAverage', ''),
-(77, 36, 15, '26', '2014-09-03 12:12:37', 'ws.TempInside', ''),
-(78, 37, 15, '', '1970-01-01 00:00:00', 'ws.relHumInside', ''),
-(79, 38, 15, '0', '1970-01-01 00:00:00', 'ws.pressureRt', ''),
-(81, 44, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.Econom', ''),
-(82, 45, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.securityMode', ''),
-(83, 46, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.nobodyHome', ''),
-(84, 47, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.WeHaveGuests', ''),
-(85, 48, 7, '1449143365', '2015-12-03 14:49:25', 'ThisComputer.cycle_statesRun', ''),
-(86, 69, 7, '1449143362', '2015-12-03 14:49:22', 'ThisComputer.cycle_execsRun', ''),
-(87, 70, 7, '1449143367', '2015-12-03 14:49:27', 'ThisComputer.cycle_mainRun', ''),
-(88, 71, 7, '1449143365', '2015-12-03 14:49:25', 'ThisComputer.cycle_rssRun', ''),
-(89, 72, 7, '1449143366', '2015-12-03 14:49:26', 'ThisComputer.cycle_pingRun', ''),
-(90, 73, 7, '1447849728', '2015-11-18 15:28:48', 'ThisComputer.cycle_watchfoldersRun', ''),
-(91, 74, 7, '1449143363', '2015-12-03 14:49:23', 'ThisComputer.cycle_schedulerRun', ''),
-(92, 75, 7, '1449143365', '2015-12-03 14:49:25', 'ThisComputer.cycle_webvarsRun', ''),
-(93, 42, 17, 'green', '2015-12-03 14:46:48', 'System.stateColor', ''),
-(94, 76, 17, 'Зелёный', '2015-12-03 14:46:48', 'System.stateTitle', ''),
-(95, 42, 18, 'green', '2014-10-31 15:33:55', 'Communication.stateColor', ''),
-(96, 77, 18, 'Green', '2014-10-31 15:33:55', 'Communication.stateTitle', ''),
-(97, 42, 16, 'green', '2013-08-09 13:29:00', 'Security.stateColor', ''),
-(98, 78, 16, 'Green', '2013-08-09 13:29:00', 'Security.stateTitle', ''),
-(99, 41, 17, '', '2015-12-03 14:46:48', 'System.stateDetails', ''),
-(310, 136, 68, '10:00', '2015-12-03 14:47:55', '', ''),
-(308, 134, 68, '', '2015-12-03 14:47:55', '', ''),
-(309, 135, 68, '', '2015-12-03 14:47:55', '', ''),
-(100, 83, 7, '90', '2014-10-30 15:02:45', 'ThisComputer.volumeLevel', ''),
-(157, 110, 7, ' +4&deg;...+6&deg;, пасмурно', '2015-12-03 14:42:36', 'ThisComputer.weatherTomorrow', ''),
-(191, 62, 29, '22.5', '2014-09-05 12:44:59', 'Kitchen.Temperature', ''),
-(189, 64, 26, 'Kitchen', '2014-09-04 12:14:26', 'TempSensor01.LinkedRoom', ''),
-(188, 52, 51, '', '2014-09-04 12:12:08', 'MotionSensor1.statusText', ''),
-(187, 50, 51, '', '2014-09-04 12:12:08', 'MotionSensor1.aliveTimeOut', ''),
-(185, 126, 26, '1', '2014-09-05 12:44:59', 'TempSensor01.direction', ''),
-(182, 68, 26, '12:44', '2014-09-05 12:44:59', 'TempSensor01.updatedTime', ''),
-(183, 65, 26, '1', '2014-09-05 12:44:59', 'TempSensor01.alive', ''),
-(184, 19, 26, '22.5', '2014-09-05 12:44:59', 'TempSensor01.temp', ''),
-(120, 59, 30, '1409901138', '2014-09-05 10:12:18', 'Hall.LatestActivity', ''),
-(121, 60, 30, '10:12', '2014-09-05 10:12:18', 'Hall.LatestActivityTime', ''),
-(122, 61, 30, '0', '2014-09-05 10:22:19', 'Hall.SomebodyHere', ''),
-(123, 98, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.somebodyHome', ''),
-(124, 55, 20, '0', '2014-09-05 10:12:16', 'NobodyHomeMode.active', ''),
-(125, 57, 20, '1409901136', '2014-09-05 10:12:16', 'NobodyHomeMode.updated', ''),
-(126, 58, 20, '10:12', '2014-09-05 10:12:16', 'NobodyHomeMode.updatedTime', ''),
-(190, 66, 26, '', '2014-09-04 12:14:26', 'TempSensor01.aliveTimeOut', ''),
-(128, 59, 24, '1409838134', '2014-09-04 16:42:14', 'Livingroom.LatestActivity', ''),
-(129, 60, 24, '16:42', '2014-09-04 16:42:14', 'Livingroom.LatestActivityTime', ''),
-(130, 61, 24, '0', '2014-09-04 16:52:14', 'Livingroom.SomebodyHere', ''),
-(181, 67, 26, '1409910299', '2014-09-05 12:44:59', 'TempSensor01.updated', ''),
-(132, 59, 29, '1409838113', '2014-09-04 16:41:53', 'Kitchen.LatestActivity', ''),
-(133, 60, 29, '16:41', '2014-09-04 16:41:53', 'Kitchen.LatestActivityTime', ''),
-(134, 61, 29, '0', '2014-09-04 16:51:53', 'Kitchen.SomebodyHere', ''),
-(135, 56, 20, 'Никого нет дома', '2014-07-21 12:43:30', 'NobodyHomeMode.title', ''),
-(136, 55, 19, '0', '2014-09-05 10:12:16', 'EconomMode.active', ''),
-(137, 57, 19, '1409901136', '2014-09-05 10:12:16', 'EconomMode.updated', ''),
-(138, 58, 19, '10:12', '2014-09-05 10:12:16', 'EconomMode.updatedTime', ''),
-(139, 56, 19, 'Экономия', '2014-07-21 12:44:15', 'EconomMode.title', ''),
-(140, 55, 23, '0', '2015-01-29 12:51:00', 'DarknessMode.active', ''),
-(141, 57, 23, '1422521460', '2015-01-29 12:51:00', 'DarknessMode.updated', ''),
-(142, 58, 23, '12:51', '2015-01-29 12:51:00', 'DarknessMode.updatedTime', ''),
-(143, 56, 23, 'Темное время суток', '2014-07-21 12:44:48', 'DarknessMode.title', ''),
-(144, 101, 7, '14:49', '2015-12-03 14:49:00', 'ThisComputer.timeNow', ''),
-(145, 102, 7, '14:49 Дома кто-то есть   ', '2015-12-03 14:49:00', 'ThisComputer.HomeStatus', ''),
-(146, 103, 7, '0', '2015-01-29 12:51:00', 'ThisComputer.isDark', ''),
-(147, 55, 47, '0', '2014-09-05 08:00:00', 'NightMode.active', ''),
-(148, 57, 47, '1409893200', '2014-09-05 08:00:00', 'NightMode.updated', ''),
-(149, 58, 47, '08:00', '2014-09-05 08:00:00', 'NightMode.updatedTime', ''),
-(150, 56, 47, 'Ночной', '2014-07-21 12:51:25', 'NightMode.title', ''),
-(151, 104, 7, '16:45', '2015-12-03 14:42:34', 'ThisComputer.SunSetTime', ''),
-(152, 105, 7, '09:12', '2015-12-03 14:42:35', 'ThisComputer.SunRiseTime', ''),
-(153, 106, 7, '', '2014-10-30 15:02:45', 'ThisComputer.somebodyHomeText', ''),
-(154, 107, 7, '1409911299', '2014-10-30 15:02:45', 'ThisComputer.cycle_connectRun', ''),
-(158, 111, 7, ' +31°...+33°, переменная облачность', '2014-10-30 15:02:45', 'ThisComputer.weatherTomorrowweatherToday', ''),
-(156, 109, 7, '1407146995', '2014-10-30 15:02:45', 'ThisComputer.cycle_connect_manualRun', ''),
-(155, 108, 7, '', '2014-10-30 15:02:45', 'ThisComputer.wunderHost', ''),
-(159, 112, 7, ' +0&deg;...+2&deg;, пасмурно, туман', '2015-12-03 14:42:37', 'ThisComputer.weatherToday', ''),
-(160, 113, 7, '1407249215', '2014-10-30 15:02:45', 'ThisComputer.connect_manualRun', ''),
-(180, 125, 52, '1', '2014-09-05 12:44:59', 'humSensor01.direction', ''),
-(179, 120, 52, '43', '2014-09-05 12:44:59', 'humSensor01.humidity', ''),
-(161, 114, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.clockChimeEnabled', 'commands'),
-(178, 117, 52, '1', '2014-09-05 12:44:59', 'humSensor01.alive', ''),
-(177, 122, 52, '12:44', '2014-09-05 12:44:59', 'humSensor01.updatedTime', ''),
-(176, 121, 52, '1409910299', '2014-09-05 12:44:59', 'humSensor01.updated', ''),
-(175, 124, 51, '0', '2014-09-05 10:12:48', 'MotionSensor1.motionDetected', ''),
-(173, 49, 51, '1', '2014-09-05 11:26:54', 'MotionSensor1.alive', ''),
-(172, 53, 51, '1409905614', '2014-09-05 11:26:54', 'MotionSensor1.updatedTimestamp', ''),
-(171, 51, 51, '0', '2014-09-05 11:26:54', 'MotionSensor1.status', ''),
-(213, 59, 54, '1409911260', '2014-09-05 13:01:00', 'Kinderroom.LatestActivity', ''),
-(214, 60, 54, '13:01', '2014-09-05 13:01:00', 'Kinderroom.LatestActivityTime', ''),
-(215, 61, 54, '1', '2014-09-05 13:01:00', 'Kinderroom.SomebodyHere', ''),
-(223, 59, 28, '1409838048', '2014-09-04 16:40:48', 'Bedroom.LatestActivity', ''),
-(224, 60, 28, '16:40', '2014-09-04 16:40:48', 'Bedroom.LatestActivityTime', ''),
-(225, 61, 28, '0', '2014-09-04 16:50:48', 'Bedroom.SomebodyHere', ''),
-(239, 119, 52, 'Kitchen', '2014-09-04 15:45:22', 'humSensor01.LinkedRoom', ''),
-(240, 118, 52, '', '2014-09-04 15:45:22', 'humSensor01.aliveTimeOut', ''),
-(242, 62, 24, '22.4', '2014-09-05 12:26:26', 'Livingroom.Temperature', ''),
-(243, 127, 29, '43', '2014-09-05 12:44:59', 'Kitchen.Humidity', ''),
-(251, 62, 28, '22.5', '2014-09-05 12:54:30', 'Bedroom.Temperature', ''),
-(253, 127, 24, '42', '2014-09-05 12:26:26', 'Livingroom.Humidity', ''),
-(266, 59, 53, '', '2014-09-04 16:07:54', 'Bathroom.LatestActivity', ''),
-(267, 60, 53, '', '2014-09-04 16:07:54', 'Bathroom.LatestActivityTime', ''),
-(268, 61, 53, '', '2014-09-04 16:07:54', 'Bathroom.SomebodyHere', ''),
-(269, 62, 53, '', '2014-09-04 16:07:54', 'Bathroom.Temperature', ''),
-(270, 127, 53, '', '2014-09-04 16:07:54', 'Bathroom.Humidity', ''),
-(271, 132, 53, 'Ванная', '2014-09-04 16:07:54', 'Bathroom.Title', ''),
-(272, 127, 28, '42', '2014-09-05 12:54:30', 'Bedroom.Humidity', ''),
-(273, 132, 28, 'Спальня', '2014-09-04 16:08:08', 'Bedroom.Title', ''),
-(274, 62, 30, '', '2014-09-04 16:08:23', 'Hall.Temperature', ''),
-(275, 127, 30, '', '2014-09-04 16:08:23', 'Hall.Humidity', ''),
-(276, 132, 30, 'Коридор', '2014-09-04 16:08:23', 'Hall.Title', ''),
-(277, 62, 54, '', '2014-09-04 16:08:36', 'Kinderroom.Temperature', ''),
-(278, 127, 54, '', '2014-09-04 16:08:36', 'Kinderroom.Humidity', ''),
-(279, 132, 54, 'Детская', '2014-09-04 16:08:36', 'Kinderroom.Title', ''),
-(280, 132, 29, 'Кухня', '2014-09-04 16:08:48', 'Kitchen.Title', ''),
-(281, 132, 24, 'Гостиная', '2014-09-04 16:09:01', 'Livingroom.Title', ''),
-(282, 59, 55, '', '2014-09-04 16:09:14', 'Toilet.LatestActivity', ''),
-(283, 60, 55, '', '2014-09-04 16:09:14', 'Toilet.LatestActivityTime', ''),
-(284, 61, 55, '', '2014-09-04 16:09:14', 'Toilet.SomebodyHere', ''),
-(285, 62, 55, '', '2014-09-04 16:09:14', 'Toilet.Temperature', ''),
-(286, 127, 55, '', '2014-09-04 16:09:14', 'Toilet.Humidity', ''),
-(287, 132, 55, 'Туалет', '2014-09-04 16:09:14', 'Toilet.Title', ''),
-(294, 41, 18, '', '2014-10-31 15:33:55', 'Communication.stateDetails', ''),
-(299, 143, 7, '1409902937', '2014-10-30 15:02:45', 'ThisComputer.lastNewsRead', ''),
-(300, 144, 7, '', '2014-10-30 15:02:45', 'ThisComputer.NoolightCommandSend', ''),
-(301, 145, 7, '0,2', '2014-10-30 15:02:45', 'ThisComputer.AlreadyPlayedMusic', ''),
-(302, 146, 7, '1414670249', '2014-10-30 15:02:45', 'ThisComputer.cycle_modbusRun', ''),
-(303, 147, 7, '1414670247', '2014-10-30 15:02:45', 'ThisComputer.cycle_zwaveRun', ''),
-(304, 148, 7, '1423047600', '2015-02-04 15:00:00', 'ThisComputer.lastSayTime', ''),
-(305, 149, 7, '394', '2015-12-03 14:49:27', 'ThisComputer.uptime', ''),
-(306, 150, 7, '1449142973', '2015-12-03 14:42:53', 'ThisComputer.started_time', ''),
-(307, 63, 74, '0', '2015-12-03 14:46:13', 'Switch1.status', 'commands'),
-(311, 137, 68, '', '2015-12-03 14:47:55', '', ''),
-(312, 138, 68, '', '2015-12-03 14:47:55', '', ''),
-(313, 139, 68, '', '2015-12-03 14:47:55', '', ''),
-(314, 140, 68, 'Home', '2015-12-03 14:47:55', '', '');
+INSERT INTO `pvalues` (`ID`, `PROPERTY_ID`, `OBJECT_ID`, `VALUE`, `UPDATED`, `PROPERTY_NAME`, `LINKED_MODULES`, `SOURCE`) VALUES
+(59, 18, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.minMsgLevel', '', ''),
+(60, 17, 7, '-15', '2014-10-30 15:02:45', 'ThisComputer.testProp', '', ''),
+(58, 10, 7, '1346415251', '2014-10-30 15:02:45', 'ThisComputer.checked', '', ''),
+(24, 12, 6, '2015-12-03 14:49:00', '2015-12-03 14:49:00', 'ClockChime.time', '', ''),
+(61, 20, 7, '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:42:32', 'ThisComputer.weatherFull', '', ''),
+(80, 43, 7, '-0.9', '2015-12-03 14:42:33', 'ThisComputer.TempOutside', '', ''),
+(62, 21, 7, '09:30', '2014-10-30 15:02:45', 'ThisComputer.AlarmTime', 'commands', ''),
+(63, 22, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.textBoxTest', 'commands', ''),
+(64, 23, 7, '4', '2014-10-30 15:02:45', 'ThisComputer.1w_temp', '', ''),
+(326, 257, 7, '', '2020-07-08 17:55:45', 'ThisComputer.uptimeText', '', ''),
+(81, 44, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.Econom', '', ''),
+(82, 45, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.securityMode', '', ''),
+(83, 46, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.nobodyHome', '', ''),
+(84, 47, 7, '0', '2014-10-30 15:02:45', 'ThisComputer.WeHaveGuests', '', ''),
+(320, 251, 7, '1594220111', '2020-07-08 17:55:11', 'ThisComputer.cycle_statesRun', '', '/scripts/cycle_states.php?once=1'),
+(321, 252, 7, '1594220107', '2020-07-08 17:55:07', 'ThisComputer.cycle_websocketsRun', '', ''),
+(322, 253, 7, '1594220108', '2020-07-08 17:55:08', 'ThisComputer.cycle_phistoryRun', '', ''),
+(323, 254, 7, '', '2020-07-08 17:55:10', 'ThisComputer.cycle_connectRun', '', ''),
+(318, 249, 7, '1594220107', '2020-07-08 17:55:07', 'ThisComputer.cycle_mainRun', '', ''),
+(319, 250, 7, '1594220107', '2020-07-08 17:55:07', 'ThisComputer.cycle_pingRun', '', ''),
+(317, 248, 7, '1594220107', '2020-07-08 17:55:07', 'ThisComputer.cycle_schedulerRun', '', ''),
+(93, 42, 17, 'green', '2015-12-03 14:46:48', 'System.stateColor', '', ''),
+(94, 76, 17, 'Зелёный', '2015-12-03 14:46:48', 'System.stateTitle', '', ''),
+(95, 42, 18, 'green', '2014-10-31 15:33:55', 'Communication.stateColor', '', ''),
+(96, 77, 18, 'Green', '2014-10-31 15:33:55', 'Communication.stateTitle', '', ''),
+(97, 42, 16, 'green', '2013-08-09 13:29:00', 'Security.stateColor', '', ''),
+(98, 78, 16, 'Green', '2013-08-09 13:29:00', 'Security.stateTitle', '', ''),
+(99, 41, 17, '', '2015-12-03 14:46:48', 'System.stateDetails', '', ''),
+(310, 136, 68, '10:00', '2015-12-03 14:47:55', 'admin.CoordinatesUpdated', '', ''),
+(308, 134, 68, '', '2015-12-03 14:47:55', 'admin.atHome', '', ''),
+(309, 135, 68, '', '2015-12-03 14:47:55', 'admin.Coordinates', '', ''),
+(100, 83, 7, '90', '2014-10-30 15:02:45', 'ThisComputer.volumeLevel', '', ''),
+(157, 110, 7, ' +4&deg;...+6&deg;, пасмурно', '2015-12-03 14:42:36', 'ThisComputer.weatherTomorrow', '', ''),
+(191, 62, 29, '22.5', '2014-09-05 12:44:59', 'Kitchen.Temperature', '', ''),
+(120, 59, 30, '1409901138', '2014-09-05 10:12:18', 'Hall.LatestActivity', '', ''),
+(121, 60, 30, '10:12', '2014-09-05 10:12:18', 'Hall.LatestActivityTime', '', ''),
+(122, 61, 30, '0', '2014-09-05 10:22:19', 'Hall.SomebodyHere', '', ''),
+(123, 98, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.somebodyHome', '', ''),
+(124, 55, 20, '0', '2014-09-05 10:12:16', 'NobodyHomeMode.active', '', ''),
+(125, 57, 20, '1409901136', '2014-09-05 10:12:16', 'NobodyHomeMode.updated', '', ''),
+(126, 58, 20, '10:12', '2014-09-05 10:12:16', 'NobodyHomeMode.updatedTime', '', ''),
+(128, 59, 24, '1409838134', '2014-09-04 16:42:14', 'Livingroom.LatestActivity', '', ''),
+(129, 60, 24, '16:42', '2014-09-04 16:42:14', 'Livingroom.LatestActivityTime', '', ''),
+(130, 61, 24, '0', '2014-09-04 16:52:14', 'Livingroom.SomebodyHere', '', ''),
+(132, 59, 29, '1409838113', '2014-09-04 16:41:53', 'Kitchen.LatestActivity', '', ''),
+(133, 60, 29, '16:41', '2014-09-04 16:41:53', 'Kitchen.LatestActivityTime', '', ''),
+(134, 61, 29, '0', '2014-09-04 16:51:53', 'Kitchen.SomebodyHere', '', ''),
+(135, 56, 20, 'Никого нет дома', '2014-07-21 12:43:30', 'NobodyHomeMode.title', '', ''),
+(136, 55, 19, '0', '2014-09-05 10:12:16', 'EconomMode.active', '', ''),
+(137, 57, 19, '1409901136', '2014-09-05 10:12:16', 'EconomMode.updated', '', ''),
+(138, 58, 19, '10:12', '2014-09-05 10:12:16', 'EconomMode.updatedTime', '', ''),
+(139, 56, 19, 'Экономия', '2014-07-21 12:44:15', 'EconomMode.title', '', ''),
+(140, 55, 23, '0', '2015-01-29 12:51:00', 'DarknessMode.active', '', ''),
+(141, 57, 23, '1422521460', '2015-01-29 12:51:00', 'DarknessMode.updated', '', ''),
+(142, 58, 23, '12:51', '2015-01-29 12:51:00', 'DarknessMode.updatedTime', '', ''),
+(143, 56, 23, 'Темное время суток', '2014-07-21 12:44:48', 'DarknessMode.title', '', ''),
+(144, 101, 7, '14:49', '2015-12-03 14:49:00', 'ThisComputer.timeNow', '', ''),
+(145, 102, 7, '14:49 Дома кто-то есть   ', '2015-12-03 14:49:00', 'ThisComputer.HomeStatus', '', ''),
+(146, 103, 7, '0', '2015-01-29 12:51:00', 'ThisComputer.isDark', '', ''),
+(147, 55, 47, '0', '2014-09-05 08:00:00', 'NightMode.active', '', ''),
+(148, 57, 47, '1409893200', '2014-09-05 08:00:00', 'NightMode.updated', '', ''),
+(149, 58, 47, '08:00', '2014-09-05 08:00:00', 'NightMode.updatedTime', '', ''),
+(150, 56, 47, 'Ночной', '2014-07-21 12:51:25', 'NightMode.title', '', ''),
+(151, 104, 7, '16:45', '2015-12-03 14:42:34', 'ThisComputer.SunSetTime', '', ''),
+(152, 105, 7, '09:12', '2015-12-03 14:42:35', 'ThisComputer.SunRiseTime', '', ''),
+(153, 106, 7, '', '2014-10-30 15:02:45', 'ThisComputer.somebodyHomeText', '', ''),
+(158, 111, 7, ' +31°...+33°, переменная облачность', '2014-10-30 15:02:45', 'ThisComputer.weatherTomorrowweatherToday', '', ''),
+(325, 256, 7, '2', '2020-07-08 17:55:15', 'ThisComputer.WSClientsTotal', '', ''),
+(155, 108, 7, '', '2014-10-30 15:02:45', 'ThisComputer.wunderHost', '', ''),
+(159, 112, 7, ' +0&deg;...+2&deg;, пасмурно, туман', '2015-12-03 14:42:37', 'ThisComputer.weatherToday', '', ''),
+(160, 113, 7, '1407249215', '2014-10-30 15:02:45', 'ThisComputer.connect_manualRun', '', ''),
+(161, 114, 7, '1', '2014-10-30 15:02:45', 'ThisComputer.clockChimeEnabled', 'commands', ''),
+(213, 59, 54, '1409911260', '2014-09-05 13:01:00', 'Kinderroom.LatestActivity', '', ''),
+(214, 60, 54, '13:01', '2014-09-05 13:01:00', 'Kinderroom.LatestActivityTime', '', ''),
+(215, 61, 54, '1', '2014-09-05 13:01:00', 'Kinderroom.SomebodyHere', '', ''),
+(223, 59, 28, '1409838048', '2014-09-04 16:40:48', 'Bedroom.LatestActivity', '', ''),
+(224, 60, 28, '16:40', '2014-09-04 16:40:48', 'Bedroom.LatestActivityTime', '', ''),
+(225, 61, 28, '0', '2014-09-04 16:50:48', 'Bedroom.SomebodyHere', '', ''),
+(242, 62, 24, '22.4', '2014-09-05 12:26:26', 'Livingroom.Temperature', '', ''),
+(243, 127, 29, '43', '2014-09-05 12:44:59', 'Kitchen.Humidity', '', ''),
+(251, 62, 28, '22.5', '2014-09-05 12:54:30', 'Bedroom.Temperature', '', ''),
+(253, 127, 24, '42', '2014-09-05 12:26:26', 'Livingroom.Humidity', '', ''),
+(266, 59, 53, '', '2014-09-04 16:07:54', 'Bathroom.LatestActivity', '', ''),
+(267, 60, 53, '', '2014-09-04 16:07:54', 'Bathroom.LatestActivityTime', '', ''),
+(268, 61, 53, '', '2014-09-04 16:07:54', 'Bathroom.SomebodyHere', '', ''),
+(269, 62, 53, '', '2014-09-04 16:07:54', 'Bathroom.Temperature', '', ''),
+(270, 127, 53, '', '2014-09-04 16:07:54', 'Bathroom.Humidity', '', ''),
+(271, 132, 53, 'Ванная', '2014-09-04 16:07:54', 'Bathroom.Title', '', ''),
+(272, 127, 28, '42', '2014-09-05 12:54:30', 'Bedroom.Humidity', '', ''),
+(273, 132, 28, 'Спальня', '2014-09-04 16:08:08', 'Bedroom.Title', '', ''),
+(274, 62, 30, '', '2014-09-04 16:08:23', 'Hall.Temperature', '', ''),
+(275, 127, 30, '', '2014-09-04 16:08:23', 'Hall.Humidity', '', ''),
+(276, 132, 30, 'Коридор', '2014-09-04 16:08:23', 'Hall.Title', '', ''),
+(277, 62, 54, '', '2014-09-04 16:08:36', 'Kinderroom.Temperature', '', ''),
+(278, 127, 54, '', '2014-09-04 16:08:36', 'Kinderroom.Humidity', '', ''),
+(279, 132, 54, 'Детская', '2014-09-04 16:08:36', 'Kinderroom.Title', '', ''),
+(280, 132, 29, 'Кухня', '2014-09-04 16:08:48', 'Kitchen.Title', '', ''),
+(281, 132, 24, 'Гостиная', '2014-09-04 16:09:01', 'Livingroom.Title', '', ''),
+(282, 59, 55, '', '2014-09-04 16:09:14', 'Toilet.LatestActivity', '', ''),
+(283, 60, 55, '', '2014-09-04 16:09:14', 'Toilet.LatestActivityTime', '', ''),
+(284, 61, 55, '', '2014-09-04 16:09:14', 'Toilet.SomebodyHere', '', ''),
+(285, 62, 55, '', '2014-09-04 16:09:14', 'Toilet.Temperature', '', ''),
+(286, 127, 55, '', '2014-09-04 16:09:14', 'Toilet.Humidity', '', ''),
+(287, 132, 55, 'Туалет', '2014-09-04 16:09:14', 'Toilet.Title', '', ''),
+(294, 41, 18, '', '2014-10-31 15:33:55', 'Communication.stateDetails', '', ''),
+(299, 143, 7, '1409902937', '2014-10-30 15:02:45', 'ThisComputer.lastNewsRead', '', ''),
+(300, 144, 7, '', '2014-10-30 15:02:45', 'ThisComputer.NoolightCommandSend', '', ''),
+(301, 145, 7, '0,2', '2014-10-30 15:02:45', 'ThisComputer.AlreadyPlayedMusic', '', ''),
+(324, 255, 7, '1594220108', '2020-07-08 17:55:08', 'ThisComputer.cycle_wscacheRun', '', ''),
+(316, 247, 7, '1594220107', '2020-07-08 17:55:07', 'ThisComputer.cycle_execsRun', '', ''),
+(304, 148, 7, '1423047600', '2015-02-04 15:00:00', 'ThisComputer.lastSayTime', '', ''),
+(305, 149, 7, '31', '2020-07-08 17:55:45', 'ThisComputer.uptime', '', ''),
+(306, 150, 7, '1594220114', '2020-07-08 17:55:15', 'ThisComputer.started_time', '', ''),
+(311, 137, 68, '', '2015-12-03 14:47:55', 'admin.CoordinatesUpdatedTimestamp', '', ''),
+(312, 138, 68, '', '2015-12-03 14:47:55', 'admin.fullName', '', ''),
+(313, 139, 68, '', '2015-12-03 14:47:55', 'admin.isMoving', '', ''),
+(314, 140, 68, 'Home', '2015-12-03 14:47:55', 'admin.seenAt', '', ''),
+(315, 243, 7, 'uniq5f05d1f1970e9', '2020-07-08 17:02:25', 'ThisComputer.Serial', '', '/ajax/market.html?op=check_updates');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `readit_channels`
+-- Структура таблицы `safe_execs`
 --
 
-DROP TABLE IF EXISTS `readit_channels`;
-CREATE TABLE IF NOT EXISTS `readit_channels` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `readit_urls`
---
-
-DROP TABLE IF EXISTS `readit_urls`;
-CREATE TABLE IF NOT EXISTS `readit_urls` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `URL` char(255) NOT NULL DEFAULT '',
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `FAVORITE` int(3) NOT NULL DEFAULT '0',
-  `ADDED` datetime DEFAULT NULL,
-  `SYS_ID` varchar(255) NOT NULL DEFAULT '',
-  `CHANNEL_ID` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `rss_channels`
---
-
-DROP TABLE IF EXISTS `rss_channels`;
-CREATE TABLE IF NOT EXISTS `rss_channels` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `URL` char(255) NOT NULL DEFAULT '',
-  `NEXT_UPDATE` datetime DEFAULT NULL,
-  `LAST_UPDATE` datetime DEFAULT NULL,
-  `UPDATE_EVERY` int(10) NOT NULL DEFAULT '0',
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `rss_items`
---
-
-DROP TABLE IF EXISTS `rss_items`;
-CREATE TABLE IF NOT EXISTS `rss_items` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `BODY` text,
-  `URL` char(255) NOT NULL DEFAULT '',
-  `GUID` varchar(255) NOT NULL DEFAULT '',
-  `ADDED` varchar(255) NOT NULL DEFAULT '',
-  `CHANNEL_ID` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11992 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `safe_execs`
---
-
-DROP TABLE IF EXISTS `safe_execs`;
-CREATE TABLE IF NOT EXISTS `safe_execs` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `safe_execs` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `COMMAND` text NOT NULL,
   `ADDED` datetime DEFAULT NULL,
-  `EXCLUSIVE` int(3) NOT NULL DEFAULT '0',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1615 ;
+  `EXCLUSIVE` int(3) NOT NULL DEFAULT 0,
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `ON_COMPLETE` text DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `scenes`
+-- Структура таблицы `scenes`
 --
 
-DROP TABLE IF EXISTS `scenes`;
-CREATE TABLE IF NOT EXISTS `scenes` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `scenes` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
   `BACKGROUND` varchar(255) NOT NULL DEFAULT '',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `HIDDEN` int(3) NOT NULL DEFAULT '0',
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `HIDDEN` int(3) NOT NULL DEFAULT 0,
   `WALLPAPER` varchar(255) NOT NULL DEFAULT '',
-  `WALLPAPER_FIXED` int(3) NOT NULL DEFAULT '0',
-  `WALLPAPER_NOREPEAT` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+  `WALLPAPER_FIXED` int(3) NOT NULL DEFAULT 0,
+  `WALLPAPER_NOREPEAT` int(3) NOT NULL DEFAULT 0,
+  `AUTO_SCALE` int(3) NOT NULL DEFAULT 0,
+  `SYSTEM` varchar(255) NOT NULL DEFAULT '',
+  `DEVICES_BACKGROUND` varchar(10) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `scenes`
+-- Дамп данных таблицы `scenes`
 --
 
-INSERT INTO `scenes` (`ID`, `TITLE`, `BACKGROUND`, `PRIORITY`, `HIDDEN`, `WALLPAPER`, `WALLPAPER_FIXED`, `WALLPAPER_NOREPEAT`) VALUES
-(1, 'Scene 1', '/cms/scenes/backgrounds/photolib.png', 100, 0, '', 0, 0);
+INSERT INTO `scenes` (`ID`, `TITLE`, `BACKGROUND`, `PRIORITY`, `HIDDEN`, `WALLPAPER`, `WALLPAPER_FIXED`, `WALLPAPER_NOREPEAT`, `AUTO_SCALE`, `SYSTEM`, `DEVICES_BACKGROUND`) VALUES
+(1, 'Scene 1', '/cms/scenes/backgrounds/photolib.png', 100, 0, '', 0, 0, 0, '', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `scripts`
+-- Структура таблицы `scripts`
 --
 
-DROP TABLE IF EXISTS `scripts`;
-CREATE TABLE IF NOT EXISTS `scripts` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `scripts` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `CODE` text,
-  `DESCRIPTION` text,
-  `TYPE` int(3) unsigned NOT NULL DEFAULT '0',
-  `XML` text,
-  `CATEGORY_ID` int(10) unsigned NOT NULL DEFAULT '0',
+  `CODE` text DEFAULT NULL,
+  `DESCRIPTION` text DEFAULT NULL,
+  `TYPE` int(3) UNSIGNED NOT NULL DEFAULT 0,
+  `XML` text DEFAULT NULL,
+  `CATEGORY_ID` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `EXECUTED` datetime DEFAULT NULL,
   `EXECUTED_PARAMS` varchar(255) DEFAULT NULL,
-  `RUN_PERIODICALLY` int(3) unsigned NOT NULL DEFAULT '0',
+  `RUN_PERIODICALLY` int(3) UNSIGNED NOT NULL DEFAULT 0,
   `RUN_DAYS` char(30) NOT NULL DEFAULT '',
   `RUN_TIME` char(30) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+  `UPDATED` datetime DEFAULT NULL,
+  `EXECUTED_SRC` varchar(255) DEFAULT NULL,
+  `AUTO_LINK` int(3) UNSIGNED NOT NULL DEFAULT 0,
+  `AUTO_LINK_AVAILABLE` int(3) UNSIGNED NOT NULL DEFAULT 0,
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `scripts`
+-- Дамп данных таблицы `scripts`
 --
 
-INSERT INTO `scripts` (`ID`, `TITLE`, `CODE`, `DESCRIPTION`, `TYPE`, `XML`, `CATEGORY_ID`, `EXECUTED`, `EXECUTED_PARAMS`, `RUN_PERIODICALLY`, `RUN_DAYS`, `RUN_TIME`) VALUES
-(8, 'timeNow', 'say(timeNow());', NULL, 0, NULL, 3, NULL, NULL, 0, '', ''),
-(3, 'rssProcess', '/*\r\n$params[''URL''] --link\r\n$params[''TITLE''] -- title\r\n$params[''BODY''] -- body\r\n$params[''CHANNEL_ID''] -- channel ID\r\n$params[''CHANNEL_TITLE''] -- channed title\r\n\r\n*/\r\n\r\n//say($params[''TITLE'']); // reading news', '', 0, '', 0, '2014-10-30 14:57:24', 'a:10:{s:10:"CHANNEL_ID";s:1:"4";s:5:"ADDED";s:19:"2014-10-16 16:36:00";s:5:"TITLE";s:184:"Белтелерадиокомпания: Надеемся, решение украинской стороны о закрытии "Беларусь 24" не окончательное";s:4:"BODY";s:386:"<img src="http://img.tyt.by/thumbnails/n/07/2', 0, '', ''),
-(10, 'test', 'setTimeOut(''testTimer'',''say("Hello world!");'',30);', '', 0, '', 3, '2012-11-17 15:19:54', '', 0, '', ''),
-(11, 'easyRF', '$device_id=$params[''did''];\r\n$destination_id=$params[''dest''];\r\n$packet_id=$params[''pid''];\r\n$command_id=$params[''c''];\r\n$data=$params[''d''];\r\n\r\nif ($device_id==0) {\r\n if ($command_id==10) {\r\n  //temp\r\n setGlobal(''ws.tempInside'',round($data/100));\r\n } elseif ($command_id==12) {\r\n  //motion\r\n  callMethod(''intSensor.statusChanged'',array(''status''=>1));\r\n  clearTimeOut($id.''_move'');\r\n  setTimeOut($id.''_move'',"callMethod(''intSensor.statusChanged'',array(''status''=>0));",20);  \r\n }\r\n}', '', 0, '', 5, '2014-09-03 12:12:37', 'a:6:{s:6:"script";s:6:"easyRF";s:3:"did";s:1:"0";s:4:"dest";s:1:"0";s:3:"pid";s:4:"8339";s:1:"c";s:2:"10";s:1:"d";s:4:"2600";}', 0, '', '00:00'),
-(12, 'RCSwitch', '$id=$params[''rcswitch''];\r\nif ($id==''12345'') {\r\n //sensor 1\r\n}', '', 0, '', 5, '1970-01-01 00:00:00', 'a:2:{s:6:"script";s:8:"RCSwitch";s:8:"rcswitch";s:7:"7689557";}', 0, '', '00:00'),
-(15, 'readWeatherToday', '$weather.="Сегодня ожидается ".str_replace(''&deg;'','' '',getGlobal(''weatherToday''));\r\n$weather.=". Завтра ".str_replace(''&deg;'','' '',getGlobal(''weatherTomorrow''));\r\n$weather.=". Сейчас на улице ".getGlobal(''TempOutside'').''.'';\r\n$weather=str_replace(''&deg;'','''',$weather);\r\nsay($weather,2);', '', 0, '', 0, '1970-01-01 00:00:00', 'a:2:{i:0;s:12:"погода";i:1;s:2:"а";}', 0, '', '00:00'),
-(18, 'playFavoriteMusic', '// вытягиваем историю из переменной\r\n$alreadyPlayed=gg("AlreadyPlayedMusic");\r\nif (!$alreadyPlayed) {\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n// выбираем случайную папку\r\n$rec=SQLSelectOne("SELECT * FROM media_favorites WHERE ID NOT IN (".$alreadyPlayed.") ORDER BY RAND()");\r\n\r\nif (!$rec[''ID'']) {\r\n // папок больше не осталось, поэтому выбираем случайную и сбрасываем истоирю\r\n $rec=SQLSelectOne("SELECT * FROM media_favorites ORDER BY RAND()");\r\n $alreadyPlayed=''0'';\r\n}\r\n\r\n\r\nif ($rec[''ID'']) {\r\n\r\n // добавляем выбранную папку в историю\r\n $alreadyPlayed.='',''.$rec[''ID''];\r\n sg("AlreadyPlayedMusic",$alreadyPlayed);\r\n\r\n // запускаем на проигрывание\r\n $collection=SQLSelectOne("SELECT * FROM collections WHERE ID=".(int)$rec[''COLLECTION_ID'']);\r\n $path=$collection[''PATH''].$rec[''PATH''];\r\n playMedia($path);\r\n //setTimeOut(''VLCPlayer_update'',"callMethod(''VLCPlayer.update'');",10);\r\n\r\n}', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00'),
-(22, 'Greeting', 'runScript("reportStatus", array());\r\n', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00'),
-(19, 'playPause', 'getURL(''http://localhost/rc/?command=vlc_pause'',0);', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00'),
-(20, 'Watching movie', 'say(LANG_GENERAL_SETTING_UP_LIGHTS,2);\r\n// to-do', '', 0, '', 6, '1970-01-01 00:00:00', '', 0, '', '00:00'),
-(21, 'reportStatus', '$res='''';\r\n if (gg(''Security.stateColor'')==''green'' && gg(''System.stateColor'')==''green'' && gg(''Communication.stateColor'')==''green'') {\r\n  $res=''Все системы работают в штатном режиме'';\r\n } else {\r\n  if (gg(''Security.stateColor'')!=''green'') {\r\n   $res.=" Проблема безопасности: ".getGlobal(''Security.stateDetails'');\r\n  }\r\n  if (gg(''System.stateColor'')!=''green'') {\r\n   $res.=" Системная проблема: ".getGlobal(''System.stateDetails'');\r\n  }  \r\n  if (gg(''Communication.stateColor'')!=''green'') {\r\n   $res.=" Проблема связи: ".getGlobal(''Communication.stateDetails'');\r\n  }  \r\n }\r\n say($res,5);', '', 0, '', 0, '1970-01-01 00:00:00', 'a:1:{i:0;s:27:"статус системы";}', 0, '', '00:00');
+INSERT INTO `scripts` (`ID`, `TITLE`, `CODE`, `DESCRIPTION`, `TYPE`, `XML`, `CATEGORY_ID`, `EXECUTED`, `EXECUTED_PARAMS`, `RUN_PERIODICALLY`, `RUN_DAYS`, `RUN_TIME`, `UPDATED`, `EXECUTED_SRC`, `AUTO_LINK`, `AUTO_LINK_AVAILABLE`, `LINKED_OBJECT`, `LINKED_PROPERTY`) VALUES
+(8, 'timeNow', 'say(timeNow());', NULL, 0, NULL, 3, NULL, NULL, 0, '', '', NULL, NULL, 0, 0, '', ''),
+(3, 'rssProcess', '/*\r\n$params[\'URL\'] --link\r\n$params[\'TITLE\'] -- title\r\n$params[\'BODY\'] -- body\r\n$params[\'CHANNEL_ID\'] -- channel ID\r\n$params[\'CHANNEL_TITLE\'] -- channed title\r\n\r\n*/\r\n\r\n//say($params[\'TITLE\']); // reading news', '', 0, '', 0, '2014-10-30 14:57:24', 'a:10:{s:10:\"CHANNEL_ID\";s:1:\"4\";s:5:\"ADDED\";s:19:\"2014-10-16 16:36:00\";s:5:\"TITLE\";s:184:\"Белтелерадиокомпания: Надеемся, решение украинской стороны о закрытии \"Беларусь 24\" не окончательное\";s:4:\"BODY\";s:386:\"<img src=\"http://img.tyt.by/thumbnails/n/07/2', 0, '', '', NULL, NULL, 0, 0, '', ''),
+(10, 'test', 'setTimeOut(\'testTimer\',\'say(\"Hello world!\");\',30);', '', 0, '', 3, '2012-11-17 15:19:54', '', 0, '', '', NULL, NULL, 0, 0, '', ''),
+(11, 'easyRF', '$device_id=$params[\'did\'];\r\n$destination_id=$params[\'dest\'];\r\n$packet_id=$params[\'pid\'];\r\n$command_id=$params[\'c\'];\r\n$data=$params[\'d\'];\r\n\r\nif ($device_id==0) {\r\n if ($command_id==10) {\r\n  //temp\r\n setGlobal(\'ws.tempInside\',round($data/100));\r\n } elseif ($command_id==12) {\r\n  //motion\r\n  callMethod(\'intSensor.statusChanged\',array(\'status\'=>1));\r\n  clearTimeOut($id.\'_move\');\r\n  setTimeOut($id.\'_move\',\"callMethod(\'intSensor.statusChanged\',array(\'status\'=>0));\",20);  \r\n }\r\n}', '', 0, '', 5, '2014-09-03 12:12:37', 'a:6:{s:6:\"script\";s:6:\"easyRF\";s:3:\"did\";s:1:\"0\";s:4:\"dest\";s:1:\"0\";s:3:\"pid\";s:4:\"8339\";s:1:\"c\";s:2:\"10\";s:1:\"d\";s:4:\"2600\";}', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(12, 'RCSwitch', '$id=$params[\'rcswitch\'];\r\nif ($id==\'12345\') {\r\n //sensor 1\r\n}', '', 0, '', 5, '1970-01-01 00:00:00', 'a:2:{s:6:\"script\";s:8:\"RCSwitch\";s:8:\"rcswitch\";s:7:\"7689557\";}', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(15, 'readWeatherToday', '$weather.=\"Сегодня ожидается \".str_replace(\'&deg;\',\' \',getGlobal(\'weatherToday\'));\r\n$weather.=\". Завтра \".str_replace(\'&deg;\',\' \',getGlobal(\'weatherTomorrow\'));\r\n$weather.=\". Сейчас на улице \".getGlobal(\'TempOutside\').\'.\';\r\n$weather=str_replace(\'&deg;\',\'\',$weather);\r\nsay($weather,2);', '', 0, '', 0, '1970-01-01 00:00:00', 'a:2:{i:0;s:12:\"погода\";i:1;s:2:\"а\";}', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(18, 'playFavoriteMusic', '// вытягиваем историю из переменной\r\n$alreadyPlayed=gg(\"AlreadyPlayedMusic\");\r\nif (!$alreadyPlayed) {\r\n $alreadyPlayed=\'0\';\r\n}\r\n\r\n// выбираем случайную папку\r\n$rec=SQLSelectOne(\"SELECT * FROM media_favorites WHERE ID NOT IN (\".$alreadyPlayed.\") ORDER BY RAND()\");\r\n\r\nif (!$rec[\'ID\']) {\r\n // папок больше не осталось, поэтому выбираем случайную и сбрасываем истоирю\r\n $rec=SQLSelectOne(\"SELECT * FROM media_favorites ORDER BY RAND()\");\r\n $alreadyPlayed=\'0\';\r\n}\r\n\r\n\r\nif ($rec[\'ID\']) {\r\n\r\n // добавляем выбранную папку в историю\r\n $alreadyPlayed.=\',\'.$rec[\'ID\'];\r\n sg(\"AlreadyPlayedMusic\",$alreadyPlayed);\r\n\r\n // запускаем на проигрывание\r\n $collection=SQLSelectOne(\"SELECT * FROM collections WHERE ID=\".(int)$rec[\'COLLECTION_ID\']);\r\n $path=$collection[\'PATH\'].$rec[\'PATH\'];\r\n playMedia($path);\r\n //setTimeOut(\'VLCPlayer_update\',\"callMethod(\'VLCPlayer.update\');\",10);\r\n\r\n}', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(22, 'Greeting', 'runScript(\"reportStatus\", array());\r\n', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(19, 'playPause', 'getURL(\'http://localhost/rc/?command=vlc_pause\',0);', '', 0, '', 0, '1970-01-01 00:00:00', '', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(20, 'Watching movie', 'say(LANG_GENERAL_SETTING_UP_LIGHTS,2);\r\n// to-do', '', 0, '', 6, '1970-01-01 00:00:00', '', 0, '', '00:00', NULL, NULL, 0, 0, '', ''),
+(21, 'reportStatus', '$res=\'\';\r\n if (gg(\'Security.stateColor\')==\'green\' && gg(\'System.stateColor\')==\'green\' && gg(\'Communication.stateColor\')==\'green\') {\r\n  $res=\'Все системы работают в штатном режиме\';\r\n } else {\r\n  if (gg(\'Security.stateColor\')!=\'green\') {\r\n   $res.=\" Проблема безопасности: \".getGlobal(\'Security.stateDetails\');\r\n  }\r\n  if (gg(\'System.stateColor\')!=\'green\') {\r\n   $res.=\" Системная проблема: \".getGlobal(\'System.stateDetails\');\r\n  }  \r\n  if (gg(\'Communication.stateColor\')!=\'green\') {\r\n   $res.=\" Проблема связи: \".getGlobal(\'Communication.stateDetails\');\r\n  }  \r\n }\r\n say($res,5);', '', 0, '', 0, '1970-01-01 00:00:00', 'a:1:{i:0;s:27:\"статус системы\";}', 0, '', '00:00', NULL, NULL, 0, 0, '', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `script_categories`
+-- Структура таблицы `script_categories`
 --
 
-DROP TABLE IF EXISTS `script_categories`;
-CREATE TABLE IF NOT EXISTS `script_categories` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+CREATE TABLE `script_categories` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `TITLE` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `script_categories`
+-- Дамп данных таблицы `script_categories`
 --
 
 INSERT INTO `script_categories` (`ID`, `TITLE`) VALUES
@@ -2028,318 +1855,178 @@ INSERT INTO `script_categories` (`ID`, `TITLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `security_rules`
+-- Структура таблицы `security_rules`
 --
 
-DROP TABLE IF EXISTS `security_rules`;
-CREATE TABLE IF NOT EXISTS `security_rules` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `security_rules` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `OBJECT_TYPE` char(20) NOT NULL DEFAULT '',
-  `OBJECT_ID` int(10) NOT NULL DEFAULT '0',
+  `OBJECT_ID` int(10) NOT NULL DEFAULT 0,
   `TERMINALS` varchar(255) NOT NULL DEFAULT '',
-  `TERMINALS_EXCEPT` int(3) NOT NULL DEFAULT '0',
+  `TERMINALS_EXCEPT` int(3) NOT NULL DEFAULT 0,
   `USERS` varchar(255) NOT NULL DEFAULT '',
-  `USERS_EXCEPT` int(3) NOT NULL DEFAULT '0',
+  `USERS_EXCEPT` int(3) NOT NULL DEFAULT 0,
   `TIMES` varchar(255) NOT NULL DEFAULT '',
-  `TIMES_EXCEPT` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `TIMES_EXCEPT` int(3) NOT NULL DEFAULT 0,
+  `CONDITION_ACTIVE` int(3) NOT NULL DEFAULT 0,
+  `CONDITION_LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `CONDITION_LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
+  `CONDITION` int(3) NOT NULL DEFAULT 0,
+  `CONDITION_VALUE` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `settings`
+-- Структура таблицы `settings`
 --
 
-DROP TABLE IF EXISTS `settings`;
-CREATE TABLE IF NOT EXISTS `settings` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PRIORITY` int(3) unsigned NOT NULL DEFAULT '0',
-  `HR` int(3) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `settings` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `PRIORITY` int(3) UNSIGNED NOT NULL DEFAULT 0,
+  `HR` int(3) UNSIGNED NOT NULL DEFAULT 0,
   `TITLE` varchar(255) NOT NULL DEFAULT '',
   `NAME` varchar(50) NOT NULL DEFAULT '',
   `TYPE` varchar(59) NOT NULL DEFAULT '',
   `NOTES` text NOT NULL,
-  `VALUE` varchar(255) NOT NULL DEFAULT '',
+  `VALUE` text DEFAULT NULL,
   `DEFAULTVALUE` varchar(255) NOT NULL DEFAULT '',
   `URL` varchar(255) NOT NULL DEFAULT '',
   `URL_TITLE` varchar(255) NOT NULL DEFAULT '',
-  `DATA` text NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=79 ;
+  `DATA` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `settings`
+-- Дамп данных таблицы `settings`
 --
 
 INSERT INTO `settings` (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`, `VALUE`, `DEFAULTVALUE`, `URL`, `URL_TITLE`, `DATA`) VALUES
-(2, 254, 0, 'Site Domain Name', 'SITE_DOMAIN', 'text', '', 'domain.com', 'domain.com', '', '', ''),
-(3, 0, 0, 'Contact E-mail', 'SITE_EMAIL', 'text', '', 'info@domain.com', 'info@domain.com', '', '', ''),
-(7, 0, 0, 'Days to show in "soon" section', 'APP_CALENDAR_SOONLIMIT', 'text', '', '6', '6', '', '', ''),
+(7, 0, 0, 'Days to show in \"soon\" section', 'APP_CALENDAR_SOONLIMIT', 'text', '', '6', '6', '', '', ''),
 (8, 0, 0, 'Show recently done items', 'APP_CALENDAR_SHOWDONE', 'yesno', '', '1', '1', '', '', ''),
 (9, 0, 0, 'Scene width', 'SCENES_WIDTH', 'text', '', '803', '803', '', '', ''),
 (24, 0, 0, 'Scene height', 'SCENES_HEIGHT', 'text', '', '606', '606', '', '', ''),
-(29, 100, 0, 'Run bluetooth scanner', 'BLUETOOTH_CYCLE', 'onoff', '', '0', '0', '', '', ''),
-(30, 100, 0, 'Run Skype script', 'SKYPE_CYCLE', 'onoff', '', '0', '0', '', '', ''),
-(31, 30, 0, 'Twitter Consumer key', 'TWITTER_CKEY', 'text', '', '', '', '', '', ''),
-(32, 29, 0, 'Twitter Consumer secret', 'TWITTER_CSECRET', 'text', '', '', '', '', '', ''),
-(33, 28, 0, 'Twitter Access token', 'TWITTER_ATOKEN', 'text', '', '', '', '', '', ''),
-(34, 27, 0, 'Twitter Access token secret', 'TWITTER_ASECRET', 'text', '', '', '', '', '', ''),
-(35, 0, 0, 'Save debug information to history', 'DEBUG_HISTORY', 'onoff', '', '0', '0', '', '', ''),
+(88, 0, 0, 'Homepage Layout', 'GENERAL_START_LAYOUT', 'select', '', NULL, '', '', '', '=Default|homepages=Home Pages|menu=Menu|apps=Applications|cp=Control Panel'),
+(87, 0, 0, 'HOOK_EVENT_SAY_CACHED_READY', 'HOOK_EVENT_SAY_CACHED_READY', 'json', '', '{\"terminals\":{\"filter\":0}}', '', '', '', ''),
+(86, 0, 0, 'HOOK_EVENT_ASK', 'HOOK_EVENT_ASK', 'json', '', '{\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),
 (61, 0, 0, 'Voice notifications language', 'VOICE_LANGUAGE', 'text', '', 'ru', 'en', '', '', ''),
 (62, 0, 0, 'Color theme', 'THEME', 'text', '', 'light', 'dark', '', '', ''),
 (44, 0, 0, 'Play sound signal before speaking', 'SPEAK_SIGNAL', 'onoff', '', '1', '1', '', '', ''),
-(45, 0, 0, 'Pushover.net user key', 'PUSHOVER_USER_KEY', 'text', '', '', '', '', '', ''),
-(46, 0, 0, 'Pushover.net message minimum level', 'PUSHOVER_LEVEL', 'text', '', '1', '1', '', '', ''),
-(75, 60, 0, 'Text-to-speech engine', 'TTS_ENGINE', 'select', '', '', '', '', '', '=Default|google=Google|yandex=Yandex'),
-(54, 43, 0, 'Forward notification to Growl service', 'GROWL_ENABLE', 'onoff', '', '0', '0', '', '', ''),
-(55, 42, 0, 'Growl service hostname', 'GROWL_HOST', 'text', '', '', '', '', '', ''),
-(56, 41, 0, 'Growl service password (optional)', 'GROWL_PASSWORD', 'text', '', '', '', '', '', ''),
-(57, 40, 0, 'Growl notification minimum level', 'GROWL_LEVEL', 'text', '', '1', '1', '', '', ''),
-(59, 30, 0, 'Before SAY (code)', 'HOOK_BEFORE_SAY', 'text', '', '', '', '', '', ''),
+(85, 0, 0, 'HOOK_EVENT_SAYTO', 'HOOK_EVENT_SAYTO', 'json', '', '{\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),
+(84, 0, 0, 'HOOK_EVENT_SAYREPLY', 'HOOK_EVENT_SAYREPLY', 'json', '', '{\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),
+(83, 0, 0, 'HOOK_EVENT_SAY', 'HOOK_EVENT_SAY', 'json', '', '{\"connect\":{\"filter\":\"\"},\"patterns\":{\"filter\":\"\"},\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),
 (60, 29, 0, 'After SAY (code)', 'HOOK_AFTER_SAY', 'text', '', '', '', '', '', ''),
-(65, 0, 0, 'Pushbullet API Key', 'PUSHBULLET_KEY', 'text', '', '', '', '', '', ''),
-(66, 0, 0, 'Pushbullet message minimum level', 'PUSHBULLET_LEVEL', 'text', '', '1', '1', '', '', ''),
-(67, 0, 0, 'Pushbullet Device ID (optional)', 'PUSHBULLET_DEVICE_ID', 'text', '', '', '', '', '', ''),
-(68, 0, 0, 'Pushbullet notifiaction prefix (optional)', 'PUSHBULLET_PREFIX', 'text', '', '', '', '', '', ''),
+(82, 0, 0, 'HOOK_EVENT_HOURLY', 'HOOK_EVENT_HOURLY', 'json', '', '{\"connect\":{\"filter\":\"\"},\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),
+(81, 0, 0, 'HOOK_EVENT_MINUTELY', 'HOOK_EVENT_MINUTELY', 'json', '', '{\"devices\":{\"filter\":\"\"}}', '', '', '', ''),
 (69, 0, 0, 'Path to store backup', 'BACKUP_PATH', 'text', '', '', '', '', '', ''),
-(72, 0, 0, 'Computer''s name', 'GENERAL_ALICE_NAME', 'text', '', '', '', '', '', ''),
-(74, 0, 0, 'Time zone', 'SITE_TIMEZONE', 'text', '', 'Indian/Mayotte', 'Europe/Moscow', '', '', ''),
-(76, 55, 0, 'Yandex TTS key', 'YANDEX_TTS_KEY', 'text', '', '', '', '', '', ''),
-(78, 60, 0, 'Use Google Text-to-Speech engine', 'TTS_GOOGLE', 'onoff', '', '1', '1', '', '', '');
+(72, 0, 0, 'Computer\'s name', 'GENERAL_ALICE_NAME', 'text', '', '', '', '', '', ''),
+(80, 0, 0, 'HOOK_EVENT_COMMAND', 'HOOK_EVENT_COMMAND', 'json', '', '{\"devices\":{\"filter\":\"\"},\"patterns\":{\"filter\":\"\"},\"scripts\":{\"filter\":\"\"}}', '', '', '', ''),
+(79, 0, 0, 'HOOK_EVENT_DAILY', 'HOOK_EVENT_DAILY', 'json', '', '{\"objects\":{\"filter\":\"\"}}', '', '', '', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shoplist`
+-- Структура таблицы `shoutrooms`
 --
 
-DROP TABLE IF EXISTS `shoplist`;
-CREATE TABLE IF NOT EXISTS `shoplist` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shopping_list_items`
---
-
-DROP TABLE IF EXISTS `shopping_list_items`;
-CREATE TABLE IF NOT EXISTS `shopping_list_items` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `PRODUCT_ID` int(10) NOT NULL DEFAULT '0',
-  `PRICE` float NOT NULL DEFAULT '0',
-  `CODE` varchar(255) NOT NULL DEFAULT '',
-  `IN_CART` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shoutrooms`
---
-
-DROP TABLE IF EXISTS `shoutrooms`;
-CREATE TABLE IF NOT EXISTS `shoutrooms` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `shoutrooms` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `TITLE` varchar(250) NOT NULL DEFAULT '',
-  `PRIORITY` int(10) NOT NULL DEFAULT '0',
-  `ADDED_BY` int(10) NOT NULL DEFAULT '0',
+  `PRIORITY` int(10) NOT NULL DEFAULT 0,
+  `ADDED_BY` int(10) NOT NULL DEFAULT 0,
   `ADDED` datetime DEFAULT NULL,
-  `IS_PUBLIC` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `IS_PUBLIC` int(3) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shouts`
+-- Структура таблицы `shouts`
 --
 
-DROP TABLE IF EXISTS `shouts`;
-CREATE TABLE IF NOT EXISTS `shouts` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ROOM_ID` int(10) NOT NULL DEFAULT '0',
-  `MEMBER_ID` int(10) NOT NULL DEFAULT '0',
+CREATE TABLE `shouts` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `ROOM_ID` int(10) NOT NULL DEFAULT 0,
+  `MEMBER_ID` int(10) NOT NULL DEFAULT 0,
   `MESSAGE` varchar(255) NOT NULL DEFAULT '',
   `ADDED` datetime DEFAULT NULL,
-  `IMPORTANCE` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `IMPORTANCE` int(10) NOT NULL DEFAULT 0,
+  `SOURCE` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `system_errors`
+-- Структура таблицы `system_errors`
 --
 
-DROP TABLE IF EXISTS `system_errors`;
-CREATE TABLE IF NOT EXISTS `system_errors` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `system_errors` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `CODE` varchar(50) NOT NULL DEFAULT '',
   `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `DETAILS` text,
-  `ACTIVE` int(3) NOT NULL DEFAULT '0',
+  `DETAILS` text DEFAULT NULL,
+  `ACTIVE` int(3) NOT NULL DEFAULT 0,
   `LATEST_UPDATE` datetime DEFAULT NULL,
-  `KEEP_HISTORY` int(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
-
---
--- Dumping data for table `system_errors`
---
-
-INSERT INTO `system_errors` (`ID`, `CODE`, `TITLE`, `DETAILS`, `ACTIVE`, `LATEST_UPDATE`, `KEEP_HISTORY`) VALUES
-(3, 'sql', '', '', 2, '2015-12-03 15:42:04', 1),
-(1, 'cycle_stop', '', '', 7, '2015-12-03 15:42:07', 1),
-(2, 'sql', '', NULL, 1, '2015-11-18 15:28:48', 1),
-(4, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
-(5, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
-(6, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
-(7, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
-(8, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1),
-(9, 'sql', '', NULL, 1, '2015-12-03 15:42:04', 1);
+  `KEEP_HISTORY` int(3) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `system_errors_data`
+-- Структура таблицы `system_errors_data`
 --
 
-DROP TABLE IF EXISTS `system_errors_data`;
-CREATE TABLE IF NOT EXISTS `system_errors_data` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ERROR_ID` int(10) NOT NULL DEFAULT '0',
-  `COMMENTS` text,
+CREATE TABLE `system_errors_data` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `ERROR_ID` int(10) NOT NULL DEFAULT 0,
+  `COMMENTS` text DEFAULT NULL,
   `ADDED` datetime DEFAULT NULL,
-  `PROPERTIES_DATA` text,
-  `METHODS_DATA` text,
-  `SCRIPTS_DATA` text,
-  `TIMERS_DATA` text,
-  `EVENTS_DATA` text,
-  `DEBUG_DATA` text,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
-
---
--- Dumping data for table `system_errors_data`
---
-
-INSERT INTO `system_errors_data` (`ID`, `ERROR_ID`, `COMMENTS`, `ADDED`, `PROPERTIES_DATA`, `METHODS_DATA`, `SCRIPTS_DATA`, `TIMERS_DATA`, `EVENTS_DATA`, `DEBUG_DATA`) VALUES
-(3, 7, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 5, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 4, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 3, '1146: Table ''db_terminal.system_errors_data'' doesn''t exist\nINSERT INTO `system_errors_data`(`ERROR_ID`, `COMMENTS`, `ADDED`) VALUES(''6'', ''1146: Table \\''db_terminal.system_errors\\'' doesn\\''t exist\\nSELECT * FROM system_errors WHERE CODE LIKE \\''sql\\'''', ''2015-12-03 15:42:04'')', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 3, '1146: Table ''db_terminal.system_errors_data'' doesn''t exist\nINSERT INTO `system_errors_data`(`ERROR_ID`, `COMMENTS`, `ADDED`) VALUES(''3'', ''1146: Table \\''db_terminal.system_errors\\'' doesn\\''t exist\\nSELECT * FROM system_errors WHERE CODE LIKE \\''sql\\'''', ''2015-12-03 15:42:04'')', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(1, 1, './scripts/cycle_main.php', '2015-11-18 15:15:51', NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 2, '1146: Table ''db_terminal.watchfolders'' doesn''t exist\nSELECT ID FROM watchfolders WHERE CHECK_NEXT<NOW()', '2015-11-18 15:28:48', NULL, NULL, NULL, NULL, NULL, NULL),
-(8, 8, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(9, 9, '1146: Table ''db_terminal.system_errors'' doesn''t exist\nSELECT * FROM system_errors WHERE CODE LIKE ''sql''', '2015-12-03 15:42:04', NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 1, './scripts/cycle_execs.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
-(11, 1, './scripts/cycle_main.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
-(12, 1, './scripts/cycle_ping.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
-(13, 1, './scripts/cycle_scheduler.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
-(14, 1, './scripts/cycle_states.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL),
-(15, 1, './scripts/cycle_webvars.php', '2015-12-03 15:42:07', NULL, NULL, NULL, NULL, NULL, NULL);
+  `PROPERTIES_DATA` text DEFAULT NULL,
+  `METHODS_DATA` text DEFAULT NULL,
+  `SCRIPTS_DATA` text DEFAULT NULL,
+  `TIMERS_DATA` text DEFAULT NULL,
+  `EVENTS_DATA` text DEFAULT NULL,
+  `DEBUG_DATA` text DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tdwiki`
+-- Структура таблицы `terminals`
 --
 
-DROP TABLE IF EXISTS `tdwiki`;
-CREATE TABLE IF NOT EXISTS `tdwiki` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(100) NOT NULL DEFAULT '',
-  `CONTENT` text,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `tdwiki`
---
-
-INSERT INTO `tdwiki` (`ID`, `NAME`, `CONTENT`) VALUES
-(1, '', '<!--#\n @version 0.1 (auto-set)\n#-->\n<div tiddler="DefaultTiddlers" modified="200610311519" modifier="Serge J." tags="">[[Notes]]</div>\r\n<div tiddler="MainMenu" modified="200610311519" modifier="Serge J." tags="">[[Notes]]  [[FormattingInstructions]] [[MainMenu]] [[DefaultTiddlers]]</div>\r\n<div tiddler="FormattingInstructions" modified="200607061334" modifier="YourName" tags="">TiddlyWiki uses Wiki style markup, a way of lightly &quot;tagging&quot; plain text so it can be transformed into HTML. Edit this Tiddler to see samples.\\n\\n! Header Samples\\n!Header 1\\n!!Header 2\\n!!!Header 3\\n!!!!Header 4\\n!!!!!Header 5\\n\\n! Unordered Lists:\\n* Lists are where it''s at\\n* Just use an asterisk and you''re set\\n** To nest lists just add more asterisks...\\n***...like this\\n* The circle makes a great bullet because once you''ve printed a list you can mark off completed items\\n* You can also nest mixed list types\\n## Like this\\n\\n! Ordered Lists\\n# Ordered lists are pretty neat too\\n# If you''re handy with HTML and CSS you could customize the [[numbering scheme|http://www.w3schools.com/css/pr_list-style-type.asp]]\\n## To nest, just add more octothorpes (pound signs)...\\n### Like this\\n* You can also\\n** Mix list types\\n*** like this\\n# Pretty neat don''t you think?\\n\\n! Tiddler links\\nTo create a Tiddler link, just use mixed-case WikiWord, or use [[brackets]] for NonWikiWordLinks. This is how the GTD style [[@Action]] lists are created. \\n\\nNote that existing Tiddlers are in bold and empty Tiddlers are in italics. See CreatingTiddlers for details.\\n\\n! External Links\\nYou can link to [[external sites|http://google.com]] with brackets. You can also LinkToFolders on your machine or network shares.\\n\\n! Images\\nEdit this tiddler to see how it''s done.\\n[img[http://img110.echo.cx/img110/139/gorilla8nw.jpg]]\\n\\n!Tables\\n|!th1111111111|!th2222222222|\\n|&gt;| colspan |\\n| rowspan |left|\\n|~| right|\\n|colored| center |\\n|caption|c\\n\\nFor a complex table example, see PeriodicTable.\\n\\n! Horizontal Rules\\nYou can divide a tiddler into\\n----\\nsections by typing four dashes on a line by themselves.\\n\\n! Blockquotes\\n&lt;&lt;&lt;\\nThis is how you do an extended, wrapped blockquote so you don''t have to put angle quotes on every line.\\n&lt;&lt;&lt;\\n&gt;level 1\\n&gt;level 1\\n&gt;&gt;level 2\\n&gt;&gt;level 2\\n&gt;&gt;&gt;level 3\\n&gt;&gt;&gt;level 3\\n&gt;&gt;level 2\\n&gt;level 1\\n\\n! Other Formatting\\n''''Bold''''\\n==Strike==\\n__Underline__\\n//Italic//\\nSuperscript: 2^^3^^=8\\nSubscript: a~~ij~~ = -a~~ji~~\\n@@highlight@@ Unfortunately highlighting is broken right now.\\n@@color(green):green colored@@\\n@@bgcolor(#ff0000):color(#ffffff):red colored@@ Hex colors are also broken right now.\\n</div>'),
-(2, 'default', '<!--#\n @version 0.1 (auto-set)\n#-->\n<div tiddler="DefaultTiddlers" modified="200610311519" modifier="Serge J." tags="">[[Notes]]</div>\r\n<div tiddler="MainMenu" modified="200610311519" modifier="Serge J." tags="">[[Notes]]  [[FormattingInstructions]] [[MainMenu]] [[DefaultTiddlers]]</div>\r\n<div tiddler="FormattingInstructions" modified="200607061334" modifier="YourName" tags="">TiddlyWiki uses Wiki style markup, a way of lightly &quot;tagging&quot; plain text so it can be transformed into HTML. Edit this Tiddler to see samples.\\n\\n! Header Samples\\n!Header 1\\n!!Header 2\\n!!!Header 3\\n!!!!Header 4\\n!!!!!Header 5\\n\\n! Unordered Lists:\\n* Lists are where it''s at\\n* Just use an asterisk and you''re set\\n** To nest lists just add more asterisks...\\n***...like this\\n* The circle makes a great bullet because once you''ve printed a list you can mark off completed items\\n* You can also nest mixed list types\\n## Like this\\n\\n! Ordered Lists\\n# Ordered lists are pretty neat too\\n# If you''re handy with HTML and CSS you could customize the [[numbering scheme|http://www.w3schools.com/css/pr_list-style-type.asp]]\\n## To nest, just add more octothorpes (pound signs)...\\n### Like this\\n* You can also\\n** Mix list types\\n*** like this\\n# Pretty neat don''t you think?\\n\\n! Tiddler links\\nTo create a Tiddler link, just use mixed-case WikiWord, or use [[brackets]] for NonWikiWordLinks. This is how the GTD style [[@Action]] lists are created. \\n\\nNote that existing Tiddlers are in bold and empty Tiddlers are in italics. See CreatingTiddlers for details.\\n\\n! External Links\\nYou can link to [[external sites|http://google.com]] with brackets. You can also LinkToFolders on your machine or network shares.\\n\\n! Images\\nEdit this tiddler to see how it''s done.\\n[img[http://img110.echo.cx/img110/139/gorilla8nw.jpg]]\\n\\n!Tables\\n|!th1111111111|!th2222222222|\\n|&gt;| colspan |\\n| rowspan |left|\\n|~| right|\\n|colored| center |\\n|caption|c\\n\\nFor a complex table example, see PeriodicTable.\\n\\n! Horizontal Rules\\nYou can divide a tiddler into\\n----\\nsections by typing four dashes on a line by themselves.\\n\\n! Blockquotes\\n&lt;&lt;&lt;\\nThis is how you do an extended, wrapped blockquote so you don''t have to put angle quotes on every line.\\n&lt;&lt;&lt;\\n&gt;level 1\\n&gt;level 1\\n&gt;&gt;level 2\\n&gt;&gt;level 2\\n&gt;&gt;&gt;level 3\\n&gt;&gt;&gt;level 3\\n&gt;&gt;level 2\\n&gt;level 1\\n\\n! Other Formatting\\n''''Bold''''\\n==Strike==\\n__Underline__\\n//Italic//\\nSuperscript: 2^^3^^=8\\nSubscript: a~~ij~~ = -a~~ji~~\\n@@highlight@@ Unfortunately highlighting is broken right now.\\n@@color(green):green colored@@\\n@@bgcolor(#ff0000):color(#ffffff):red colored@@ Hex colors are also broken right now.\\n</div>');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `terminals`
---
-
-DROP TABLE IF EXISTS `terminals`;
-CREATE TABLE IF NOT EXISTS `terminals` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `terminals` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `NAME` varchar(255) NOT NULL DEFAULT '',
   `TITLE` varchar(255) NOT NULL DEFAULT '',
   `HOST` varchar(255) NOT NULL DEFAULT '',
-  `CANPLAY` int(3) NOT NULL DEFAULT '0',
+  `CANPLAY` int(3) NOT NULL DEFAULT 0,
   `PLAYER_TYPE` char(10) NOT NULL DEFAULT '',
   `PLAYER_PORT` varchar(255) NOT NULL DEFAULT '',
   `PLAYER_USERNAME` varchar(255) NOT NULL DEFAULT '',
   `PLAYER_PASSWORD` varchar(255) NOT NULL DEFAULT '',
   `LATEST_ACTIVITY` datetime DEFAULT NULL,
-  `IS_ONLINE` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  `IS_ONLINE` int(1) NOT NULL DEFAULT 0,
+  `CANTTS` int(3) NOT NULL DEFAULT 0,
+  `MIN_MSG_LEVEL` varchar(255) NOT NULL DEFAULT '',
+  `TTS_TYPE` char(20) NOT NULL DEFAULT '',
+  `PLAYER_CONTROL_ADDRESS` varchar(255) NOT NULL DEFAULT '',
+  `MAJORDROID_API` int(3) NOT NULL DEFAULT 0,
+  `LATEST_REQUEST` varchar(255) NOT NULL DEFAULT '',
+  `LATEST_REQUEST_TIME` datetime DEFAULT NULL,
+  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
+  `LEVEL_LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
+  `LOCATION_ID` int(5) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `terminals`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `usbdevices`
---
-
-DROP TABLE IF EXISTS `usbdevices`;
-CREATE TABLE IF NOT EXISTS `usbdevices` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `SERIAL` varchar(255) NOT NULL DEFAULT '',
-  `LOG` text NOT NULL,
-  `LAST_FOUND` datetime DEFAULT NULL,
-  `FIRST_FOUND` datetime DEFAULT NULL,
-  `USER_ID` int(10) NOT NULL DEFAULT '0',
-  `SCRIPT` text NOT NULL,
-  `SCRIPT_ID` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=67 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `userlog`
+-- Структура таблицы `users`
 --
 
-DROP TABLE IF EXISTS `userlog`;
-CREATE TABLE IF NOT EXISTS `userlog` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `USER_ID` int(10) NOT NULL DEFAULT '0',
-  `MESSAGE` varchar(100) NOT NULL DEFAULT '',
-  `IP` varchar(20) NOT NULL DEFAULT '',
-  `ADDED` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `ID` int(10) UNSIGNED NOT NULL,
   `USERNAME` varchar(255) NOT NULL DEFAULT '',
   `NAME` varchar(255) NOT NULL DEFAULT '',
   `EMAIL` varchar(255) NOT NULL DEFAULT '',
@@ -2347,66 +2034,673 @@ CREATE TABLE IF NOT EXISTS `users` (
   `MOBILE` varchar(255) NOT NULL DEFAULT '',
   `AVATAR` varchar(255) NOT NULL DEFAULT '',
   `PASSWORD` varchar(255) NOT NULL DEFAULT '',
-  `IS_ADMIN` tinyint(3) NOT NULL DEFAULT '0',
-  `IS_DEFAULT` tinyint(3) NOT NULL DEFAULT '0',
+  `IS_ADMIN` tinyint(3) NOT NULL DEFAULT 0,
+  `IS_DEFAULT` tinyint(3) NOT NULL DEFAULT 0,
   `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
   `HOST` varchar(255) NOT NULL DEFAULT '',
-  `ACTIVE_CONTEXT_ID` int(10) NOT NULL DEFAULT '0',
-  `ACTIVE_CONTEXT_EXTERNAL` int(3) NOT NULL DEFAULT '0',
+  `ACTIVE_CONTEXT_ID` int(10) NOT NULL DEFAULT 0,
+  `ACTIVE_CONTEXT_EXTERNAL` int(3) NOT NULL DEFAULT 0,
   `ACTIVE_CONTEXT_UPDATED` datetime DEFAULT NULL,
-  `ACTIVE_CONTEXT_HISTORY` text,
-  `COLOR` char(20) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `ACTIVE_CONTEXT_HISTORY` text DEFAULT NULL,
+  `COLOR` char(20) NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `users`
+-- Дамп данных таблицы `users`
 --
 
 INSERT INTO `users` (`ID`, `USERNAME`, `NAME`, `EMAIL`, `SKYPE`, `MOBILE`, `AVATAR`, `PASSWORD`, `IS_ADMIN`, `IS_DEFAULT`, `LINKED_OBJECT`, `HOST`, `ACTIVE_CONTEXT_ID`, `ACTIVE_CONTEXT_EXTERNAL`, `ACTIVE_CONTEXT_UPDATED`, `ACTIVE_CONTEXT_HISTORY`, `COLOR`) VALUES
-(1, 'admin', 'Admin', 'admin@smartliving.com', '', '', '', '', 1, 1, 'admin', '', 0, 0, '2014-09-05 12:07:19', NULL, '');
-
--- --------------------------------------------------------
+(1, 'admin', 'Admin', 'admin@smartliving.com', '', '', '', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 1, 1, 'admin', '', 0, 0, '2014-09-05 12:07:19', NULL, '');
 
 --
--- Table structure for table `webvars`
+-- Индексы сохранённых таблиц
 --
 
-DROP TABLE IF EXISTS `webvars`;
-CREATE TABLE IF NOT EXISTS `webvars` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `TITLE` varchar(255) NOT NULL DEFAULT '',
-  `HOSTNAME` varchar(255) NOT NULL DEFAULT '',
-  `TYPE` int(30) NOT NULL DEFAULT '0',
-  `SEARCH_PATTERN` varchar(255) NOT NULL DEFAULT '',
-  `CHECK_PATTERN` varchar(255) NOT NULL DEFAULT '',
-  `LATEST_VALUE` text NOT NULL,
-  `CHECK_LATEST` datetime DEFAULT NULL,
-  `CHECK_NEXT` datetime DEFAULT NULL,
-  `SCRIPT_ID` int(10) NOT NULL DEFAULT '0',
-  `ONLINE_INTERVAL` int(10) NOT NULL DEFAULT '0',
-  `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',
-  `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',
-  `CODE` text,
-  `LOG` text,
-  `ENCODING` varchar(50) NOT NULL DEFAULT '',
-  `AUTH` int(3) NOT NULL DEFAULT '0',
-  `USERNAME` varchar(100) NOT NULL DEFAULT '',
-  `PASSWORD` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+--
+-- Индексы таблицы `actions_log`
+--
+ALTER TABLE `actions_log`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ACTION_TYPE` (`ACTION_TYPE`);
 
 --
--- Dumping data for table `webvars`
+-- Индексы таблицы `admin_users`
+--
+ALTER TABLE `admin_users`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `blockly_code`
+--
+ALTER TABLE `blockly_code`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `cached_values`
+--
+ALTER TABLE `cached_values`
+  ADD PRIMARY KEY (`KEYWORD`);
+
+--
+-- Индексы таблицы `cached_ws`
+--
+ALTER TABLE `cached_ws`
+  ADD PRIMARY KEY (`PROPERTY`);
+
+--
+-- Индексы таблицы `classes`
+--
+ALTER TABLE `classes`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `PARENT_ID` (`PARENT_ID`);
+
+--
+-- Индексы таблицы `collections`
+--
+ALTER TABLE `collections`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `commands`
+--
+ALTER TABLE `commands`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `country`
+--
+ALTER TABLE `country`
+  ADD PRIMARY KEY (`COUNTRY_ID`),
+  ADD KEY `AK_COUNTRY__GUID` (`COUNTRY_GUID`);
+
+--
+-- Индексы таблицы `devices`
+--
+ALTER TABLE `devices`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `devices_groups`
+--
+ALTER TABLE `devices_groups`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `devices_linked`
+--
+ALTER TABLE `devices_linked`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `devices_scheduler_points`
+--
+ALTER TABLE `devices_scheduler_points`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `elements`
+--
+ALTER TABLE `elements`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `elm_states`
+--
+ALTER TABLE `elm_states`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `events`
+--
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `events_params`
+--
+ALTER TABLE `events_params`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `history`
+--
+ALTER TABLE `history`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `ignore_updates`
+--
+ALTER TABLE `ignore_updates`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `layouts`
+--
+ALTER TABLE `layouts`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `locations`
+--
+ALTER TABLE `locations`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `media_favorites`
+--
+ALTER TABLE `media_favorites`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `media_history`
+--
+ALTER TABLE `media_history`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `methods`
+--
+ALTER TABLE `methods`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `OBJECT_ID` (`OBJECT_ID`),
+  ADD KEY `CLASS_ID` (`CLASS_ID`);
+
+--
+-- Индексы таблицы `myblocks`
+--
+ALTER TABLE `myblocks`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `myblocks_categories`
+--
+ALTER TABLE `myblocks_categories`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `objects`
+--
+ALTER TABLE `objects`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `patterns`
+--
+ALTER TABLE `patterns`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `performance_log`
+--
+ALTER TABLE `performance_log`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `phistory`
+--
+ALTER TABLE `phistory`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `VALUE_ID` (`VALUE_ID`);
+
+--
+-- Индексы таблицы `phistory_queue`
+--
+ALTER TABLE `phistory_queue`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `pinghosts`
+--
+ALTER TABLE `pinghosts`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `plans`
+--
+ALTER TABLE `plans`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `plan_components`
+--
+ALTER TABLE `plan_components`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `plan_components_data`
+--
+ALTER TABLE `plan_components_data`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `plan_states`
+--
+ALTER TABLE `plan_states`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `plugins`
+--
+ALTER TABLE `plugins`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `project_modules`
+--
+ALTER TABLE `project_modules`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `properties`
+--
+ALTER TABLE `properties`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `CLASS_ID` (`CLASS_ID`),
+  ADD KEY `OBJECT_ID` (`OBJECT_ID`);
+
+--
+-- Индексы таблицы `public_calls`
+--
+ALTER TABLE `public_calls`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `pvalues`
+--
+ALTER TABLE `pvalues`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `PROPERTY_ID` (`PROPERTY_ID`),
+  ADD KEY `OBJECT_ID` (`OBJECT_ID`),
+  ADD KEY `PROPERTY_NAME` (`PROPERTY_NAME`);
+
+--
+-- Индексы таблицы `safe_execs`
+--
+ALTER TABLE `safe_execs`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `scenes`
+--
+ALTER TABLE `scenes`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `scripts`
+--
+ALTER TABLE `scripts`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `script_categories`
+--
+ALTER TABLE `script_categories`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `security_rules`
+--
+ALTER TABLE `security_rules`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `shoutrooms`
+--
+ALTER TABLE `shoutrooms`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `shouts`
+--
+ALTER TABLE `shouts`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `system_errors`
+--
+ALTER TABLE `system_errors`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `system_errors_data`
+--
+ALTER TABLE `system_errors_data`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `terminals`
+--
+ALTER TABLE `terminals`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Индексы таблицы `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- AUTO_INCREMENT для сохранённых таблиц
 --
 
-INSERT INTO `webvars` (`ID`, `TITLE`, `HOSTNAME`, `TYPE`, `SEARCH_PATTERN`, `CHECK_PATTERN`, `LATEST_VALUE`, `CHECK_LATEST`, `CHECK_NEXT`, `SCRIPT_ID`, `ONLINE_INTERVAL`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `CODE`, `LOG`, `ENCODING`, `AUTH`, `USERNAME`, `PASSWORD`) VALUES
-(1, '<#LANG_GENERAL_WEATHER_FORECAST#>', 'http://pogoda.tut.by/city/26850?pda=1', 0, '<\\/a><br><br \\/>(.+?)<a', '', '\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n', '2015-12-03 14:42:32', '2015-12-03 16:42:32', 0, 7200, 'ThisComputer', 'weatherFull', '', '2015-12-03 14:42:32 new value:\n<b>Сегодня:</b><br />\nднем: +0&deg;...+2&deg;, пасмурно, туман, ночью: +0&deg;...-2&deg;, переменная облачность, туман, ветер: ЮЗ — 3-5 м/с, давление: 770 мм.рт.ст, влажность: 100%<br />\n<br />\n<b>Завтра:</b><br />\nднем: +4&deg;...+6&deg;, пасмурно, ночью: +2&deg;...+4&deg;, пасмурно, без существенных осадков, ветер: Ю — 6-8 м/с, давление: 768 мм.рт.ст, влажность: 100%<br />\n<br />\n<br />\n\n2015-11-18 15:15:59 incorrect value:\n<b>Завтра:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +19&deg;...+21&deg;,\nпеременная облачность, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-31 08:45:40 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +27&deg;...+29&deg;, облачно с прояснениями, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 759 мм.рт.ст, влажность: 45%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 760 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-31 00:45:20 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nоблачно с прояснениями, ветер: ЮЗ — 3-5 м/с, давление: 760 мм.рт.ст, влажность: 40%<br /><br />\n\n2014-07-30 20:45:10 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +30&deg;...+32&deg;, ясно, ночью: +16&deg;...+18&deg;,\nясно, ветер: Ю — 5-7 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +31&deg;...+33&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 30%<br /><br />\n\n2014-07-30 08:44:40 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +27&deg;...+29&deg;, ясно, ночью: +16&deg;...+18&deg;,\nясно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 35%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +18&deg;...+20&deg;,\nясно, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-30 00:44:20 new value:\n<br>  \n<b>Сегодня:</b><br />днем: +28&deg;...+30&deg;, ясно, ночью: +18&deg;...+20&deg;,\nмалооблачно, ветер: Ю — 4-6 м/с, давление: 761 мм.рт.ст, влажность: 30%<br /><br />\n<b>Завтра:</b><br />днем: +30&deg;...+32&deg;, переменная облачность, ночью: +20&deg;...+22&deg;,\nоблачно с прояснениями, ветер: Ю — 7-9 м/с, давление: 758 мм.рт.ст, влажность: 35%<br /><br />\n\n2014-07-29 20:44:10 new value:\n<br>  ', '', 0, '', ''),
-(4, '<#LANG_GENERAL_TEMPERATURE_OUTSIDE#>', 'http://pogoda.by/pda/?city=26850', 0, 'погода фактическая.+?Температура воздуха (.+?)[°&]', '', '-0.9', '2015-12-03 14:42:33', '2015-12-03 15:22:33', 0, 2400, 'ThisComputer', 'TempOutside', '', '2015-12-03 14:42:33 new value:-0.9\n2015-11-18 15:15:59 new value:+7.7\n2014-08-31 15:54:25 new value:+19.1\n2014-08-31 13:13:49 new value:+15.4\n2014-08-31 09:53:03 new value:+13.8\n2014-08-31 07:12:25 new value:+13.1\n2014-08-31 03:51:40 new value:+13.4\n2014-08-31 01:11:01 new value:+13.9\n2014-08-30 21:50:24 new value:+17.5\n2014-08-30 19:09:46 new value:+19.5\n2014-08-30 15:49:01 new value:+20.7\n2014-08-30 13:08:26 new value:+18.5\n2014-08-30 09:47:37 new value:+13.2\n2014-08-30 07:07:01 new value:+8.4\n2014-08-30 03:46:14 new value:+9.9\n2014-08-30 01:05:46 new value:+11.8\n2014-08-29 21:45:01 new value:+14.4\n2014-08-29 19:04:22 new value:+16.8\n2014-08-29 15:43:36 new value:+17.4\n2014-08-29 13:02:59 new value:+14.6\n2014-08-29 10:22:43 new value:+11.2\n2014-08-29 07:02:35 new value:+10.8\n2014-08-29 03:42:06 new value:+11.0\n2014-08-29 01:01:50 new value:+12.2\n2014-08-28 21:41:38 new value:+13.4\n2014-08-28 19:01:32 new value:+12.8\n2014-08-28 15:40:57 new value:+16.6\n2014-08-28 13:00:54 new value:+13.0\n2014-08-28 09:40:36 new value:+12.6\n2014-08-28 07:00:33 new value:+12.2\n2014-08-28 03:40:30 new value:+12.8\n2014-08-28 01:00:18 new value:+13.2\n2014-08-27 21:39:32 new value:+14.0\n2014-08-27 18:59:04 new value:+16.0\n2014-08-27 15:38:40 new value:+16.6\n2014-08-27 12:58:19 new value:+14.2\n2014-08-27 09:38:04 new value:+10.5\n2014-08-27 06:57:40 new value:+9.7\n2014-08-27 03:37:23 new value:+11.2\n2014-08-27 00:57:05 new value:+11.4\n2014-08-26 21:36:49 new value:+12.5\n2014-08-26 18:56:28 new value:+13.8\n2014-08-26 15:36:03 new value:+15.8\n2014-08-26 12:55:49 new value:+14.8\n2014-08-26 10:15:19 new value:+10.6\n2014-08-26 06:54:47 new value:+8.8\n2014-08-26 04:14:17 new value:+9.3\n2014-08-26 00:53:45 new value:+11.1\n2014-08-25 22:13:33 new value:+12.6\n2014-08-25 18:53:03 new value:+12.4', 'windows-1251', 0, '', ''),
-(5, 'Sunset Time', 'http://pogoda.by/', 0, 'заход: (\\d+:\\d+) \\[местное\\]', '', '16:45', '2015-12-03 14:42:34', '2015-12-03 19:42:34', 0, 18000, 'ThisComputer', 'SunSetTime', '', '2015-12-03 14:42:34 new value:16:45\n2015-11-18 15:16:00 new value:17:02\n2014-10-30 15:30:21 new value:17:35\n2014-10-30 14:57:24 new value:17:35\n2014-09-05 04:55:15 new value:19:46\n2014-09-04 08:54:59 new value:19:48\n2014-09-03 02:54:30 new value:19:51\n2014-09-02 01:53:47 new value:19:53\n2014-09-01 00:53:07 new value:19:56\n2014-08-31 09:52:41 new value:19:58\n2014-08-30 08:52:08 new value:20:00\n2014-08-29 02:51:26 new value:20:03\n2014-08-28 01:50:55 new value:20:05\n2014-08-27 00:50:39 new value:20:08\n2014-08-26 04:50:25 new value:20:10\n2014-08-25 03:49:45 new value:20:12\n2014-08-24 22:49:37 new value:20:15\n2014-08-22 01:07:56 new value:20:19\n2014-08-21 00:07:40 new value:20:21\n2014-08-20 04:07:24 new value:20:24\n2014-08-19 03:07:07 new value:20:26\n2014-08-18 02:06:39 new value:20:28\n2014-08-17 01:06:15 new value:20:30\n2014-08-16 00:02:37 new value:20:32\n2014-08-15 04:01:08 new value:20:35\n2014-08-14 03:00:47 new value:20:37\n2014-08-13 02:00:13 new value:20:39\n2014-08-12 00:59:37 new value:20:41\n2014-08-11 04:59:08 new value:20:43\n2014-08-10 03:58:29 new value:20:45\n2014-08-09 02:57:53 new value:20:47\n2014-08-08 01:57:16 new value:20:49\n2014-08-07 00:56:40 new value:20:51\n2014-08-06 04:56:08 new value:20:53\n2014-08-05 03:55:34 new value:20:55\n2014-08-04 02:55:00 new value:20:57\n2014-08-03 01:54:22 new value:20:59\n2014-08-02 00:53:43 new value:21:01\n2014-08-01 02:09:41 new value:21:02\n2014-07-31 03:42:49 new value:21:04\n2014-07-30 02:42:13 new value:21:06\n2014-07-29 01:41:32 new value:21:08\n2014-07-28 00:40:55 new value:21:09\n2014-07-27 09:40:31 new value:21:11\n2014-07-27 04:40:26 incorrect value:\n2014-07-26 03:39:58 new value:21:13\n2014-07-25 02:02:30 new value:21:14\n2014-07-24 01:01:53 new value:21:16\n2014-07-23 15:01:41 new value:21:17\n2014-07-22 09:02:03 new value:21:19', 'windows-1251', 0, '', ''),
-(6, 'Sunrise Time', 'http://pogoda.by/', 0, 'Восход: (\\d+:\\d+),', '', '09:12', '2015-12-03 14:42:35', '2015-12-03 19:42:35', 0, 18000, 'ThisComputer', 'SunRiseTime', '', '2015-12-03 14:42:35 new value:09:12\n2015-11-18 15:16:00 new value:08:47\n2014-10-30 15:30:10 new value:08:10\n2014-10-30 14:57:24 new value:08:10\n2014-09-05 04:55:15 new value:06:29\n2014-09-04 08:54:59 new value:06:27\n2014-09-03 02:54:30 new value:06:25\n2014-09-02 01:53:47 new value:06:24\n2014-09-01 00:53:07 new value:06:22\n2014-08-31 09:52:41 new value:06:20\n2014-08-30 08:52:08 new value:06:18\n2014-08-29 02:51:26 new value:06:17\n2014-08-28 01:50:55 new value:06:15\n2014-08-27 00:50:39 new value:06:13\n2014-08-26 04:50:25 new value:06:11\n2014-08-25 03:49:45 new value:06:10\n2014-08-24 22:49:37 new value:06:08\n2014-08-22 01:07:56 new value:06:04\n2014-08-21 00:07:40 new value:06:03\n2014-08-20 04:07:24 new value:06:01\n2014-08-19 03:07:07 new value:05:59\n2014-08-18 02:06:39 new value:05:57\n2014-08-17 01:06:15 new value:05:56\n2014-08-16 00:02:37 new value:05:54\n2014-08-15 04:01:08 new value:05:52\n2014-08-14 03:00:47 new value:05:50\n2014-08-13 02:00:13 new value:05:49\n2014-08-12 00:59:37 new value:05:47\n2014-08-11 04:59:08 new value:05:45\n2014-08-10 03:58:29 new value:05:43\n2014-08-09 02:57:53 new value:05:42\n2014-08-08 01:57:16 new value:05:40\n2014-08-07 00:56:40 new value:05:38\n2014-08-06 04:56:08 new value:05:36\n2014-08-05 03:55:34 new value:05:35\n2014-08-04 02:55:00 new value:05:33\n2014-08-03 01:54:22 new value:05:31\n2014-08-02 00:53:44 new value:05:30\n2014-08-01 02:09:41 new value:05:28\n2014-07-31 03:42:49 new value:05:26\n2014-07-30 02:42:13 new value:05:25\n2014-07-29 01:41:32 new value:05:23\n2014-07-28 00:40:55 new value:05:21\n2014-07-27 09:40:31 new value:05:20\n2014-07-27 04:40:26 incorrect value:\n2014-07-26 03:39:58 new value:05:18\n2014-07-25 02:02:30 new value:05:17\n2014-07-24 01:01:54 new value:05:15\n2014-07-23 15:01:41 new value:05:14\n2014-07-22 04:02:50 new value:05:12', 'windows-1251', 0, '', ''),
-(7, 'Weather Tomorrow', 'http://pogoda.tut.by/city/26850?pda=1', 0, 'город<\\/a><br>.+?Завтра.+?днем:(.+?), ночью', '', ' +4&deg;...+6&deg;, пасмурно', '2015-12-03 14:42:36', '2015-12-03 16:42:36', 0, 7200, 'ThisComputer', 'weatherTomorrow', '', '2015-12-03 14:42:36 new value: +4&deg;...+6&deg;, пасмурно\n2015-11-18 15:16:00 new value: +6&deg;...+8&deg;, пасмурно, небольшой дождь\n2014-08-20 21:17:49 new value: +16&deg;...+18&deg;, пасмурно\n2014-08-20 09:17:11 new value: +16&deg;...+18&deg;, пасмурно, дождь, гроза\n2014-08-20 01:16:42 new value: +14&deg;...+16&deg;, облачно с прояснениями, дождь, гроза \n2014-08-19 09:16:02 new value: +21&deg;...+23&deg;, переменная облачность, дождь, гроза \n2014-08-19 01:15:39 new value: +22&deg;...+24&deg;, малооблачно\n2014-08-18 21:15:22 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-18 09:15:01 new value: +19&deg;...+21&deg;, переменная облачность, дождь, гроза \n2014-08-18 01:14:35 new value: +19&deg;...+21&deg;, переменная облачность, небольшой дождь\n2014-08-17 09:13:49 new value: +19&deg;...+21&deg;, переменная облачность\n2014-08-17 01:13:19 new value: +18&deg;...+20&deg;, переменная облачность\n2014-08-16 21:13:07 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-16 09:11:44 new value: +17&deg;...+19&deg;, облачно с прояснениями, небольшой дождь\n2014-08-16 01:11:13 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-15 09:08:57 new value: +20&deg;...+22&deg;, малооблачно, возможна гроза\n2014-08-15 01:07:29 new value: +19&deg;...+21&deg;, малооблачно, возможна гроза\n2014-08-14 21:07:25 new value: +21&deg;...+23&deg;, ясно\n2014-08-14 01:06:23 new value: +20&deg;...+22&deg;, переменная облачность\n2014-08-13 21:06:10 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-13 09:05:38 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-13 01:05:12 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-12 09:04:34 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-12 01:04:12 new value: +19&deg;...+21&deg;, пасмурно\n2014-08-11 21:04:02 new value: +20&deg;...+22&deg;, облачно с прояснениями, дождь, гроза \n2014-08-11 09:03:32 new value: +22&deg;...+24&deg;, переменная облачность, дождь, гроза \n2014-08-11 01:03:10 new value: +21&deg;...+23&deg;, переменная облачность, дождь, гроза \n2014-08-10 09:02:28 new value: +27&deg;...+29&deg;, ясно\n2014-08-10 01:02:07 new value: +27&deg;...+29&deg;, малооблачно\n2014-08-08 21:00:55 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-08 09:00:24 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-08 01:00:04 new value: +27&deg;...+29&deg;, переменная облачность, дождь, гроза \n2014-08-07 20:59:54 new value: +27&deg;...+29&deg;, ясно\n2014-08-07 08:59:23 new value: +26&deg;...+28&deg;, переменная облачность, небольшой дождь\n2014-08-07 00:59:02 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-06 20:58:52 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 08:58:21 new value: +25&deg;...+27&deg;, переменная облачность, дождь, гроза \n2014-08-06 06:58:14 incorrect value:\n2014-08-06 00:57:59 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-05 20:57:50 new value: +27&deg;...+29&deg;, малооблачно, возможна гроза\n2014-08-05 08:57:22 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-05 00:57:00 new value: +25&deg;...+27&deg;, малооблачно, возможен дождь\n2014-08-04 00:56:02 new value: +27&deg;...+29&deg;, переменная облачность\n2014-08-03 20:55:51 new value: +30&deg;...+32&deg;, малооблачно\n2014-08-03 08:55:20 new value: +28&deg;...+30&deg;, переменная облачность, небольшой дождь\n2014-08-03 00:54:58 new value: +31&deg;...+33&deg;, ясно\n2014-08-02 20:54:47 new value: +32&deg;...+34&deg;, ясно\n2014-08-02 08:54:16 new value: +32&deg;...+34&deg;, малооблачно\n2014-08-02 00:53:54 new value: +33&deg;...+35&deg;, ясно\n2014-08-01 20:53:45 new value: +32&deg;...+34&deg;, переменная облачность', '', 0, '', ''),
-(8, 'Weather Today', 'http://pogoda.tut.by/city/26850?pda=1', 0, 'город<\\/a><br>.+?днем:(.+?), ночью', '', ' +0&deg;...+2&deg;, пасмурно, туман', '2015-12-03 14:42:37', '2015-12-03 16:42:37', 0, 7200, 'ThisComputer', 'weatherToday', '', '2015-12-03 14:42:37 new value: +0&deg;...+2&deg;, пасмурно, туман\n2015-11-18 15:16:00 new value: +7&deg;...+9&deg;, пасмурно, небольшой дождь\n2014-08-19 21:16:31 new value: +22&deg;...+24&deg;, малооблачно\n2014-08-19 09:16:02 new value: +21&deg;...+23&deg;, переменная облачность\n2014-08-19 01:15:40 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-18 21:15:22 new value: +20&deg;...+22&deg;, переменная облачность\n2014-08-18 01:14:36 new value: +19&deg;...+21&deg;, переменная облачность\n2014-08-17 21:14:24 new value: +18&deg;...+20&deg;, переменная облачность\n2014-08-17 01:13:19 new value: +17&deg;...+19&deg;, переменная облачность, небольшой дождь\n2014-08-16 09:11:44 new value: +20&deg;...+22&deg;, переменная облачность, дождь, гроза \n2014-08-16 01:11:13 new value: +20&deg;...+22&deg;, малооблачно, возможна гроза\n2014-08-15 21:10:42 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-15 09:08:57 new value: +20&deg;...+22&deg;, переменная облачность, небольшой дождь\n2014-08-15 01:07:29 new value: +21&deg;...+23&deg;, ясно\n2014-08-14 21:07:25 new value: +25&deg;...+27&deg;, переменная облачность\n2014-08-14 11:06:49 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-14 01:06:23 new value: +24&deg;...+26&deg;, переменная облачность, дождь, гроза \n2014-08-13 09:05:38 new value: +22&deg;...+24&deg;, переменная облачность\n2014-08-13 01:05:12 new value: +21&deg;...+23&deg;, малооблачно\n2014-08-12 21:05:02 new value: +19&deg;...+21&deg;, пасмурно, дождь, гроза\n2014-08-12 09:04:34 new value: +22&deg;...+24&deg;, пасмурно, дождь, гроза\n2014-08-12 01:04:12 new value: +20&deg;...+22&deg;, облачно с прояснениями, дождь, гроза \n2014-08-11 21:04:02 new value: +28&deg;...+30&deg;, ясно\n2014-08-11 01:03:10 new value: +27&deg;...+29&deg;, ясно\n2014-08-10 21:03:01 new value: +25&deg;...+27&deg;, переменная облачность\n2014-08-10 09:02:28 new value: +23&deg;...+25&deg;, малооблачно\n2014-08-10 01:02:07 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-09 21:01:57 new value: +23&deg;...+25&deg;, переменная облачность, небольшой дождь\n2014-08-09 09:01:27 new value: +24&deg;...+26&deg;, переменная облачность\n2014-08-09 01:01:06 new value: +24&deg;...+26&deg;, переменная облачность, небольшой дождь\n2014-08-08 21:00:55 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-08 09:00:24 new value: +26&deg;...+28&deg;, малооблачно, возможна гроза\n2014-08-07 08:59:23 new value: +27&deg;...+29&deg;, ясно\n2014-08-07 00:59:02 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 20:58:52 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-06 08:58:21 new value: +26&deg;...+28&deg;, переменная облачность, дождь, гроза \n2014-08-06 06:58:14 incorrect value:\n2014-08-06 00:57:59 new value: +27&deg;...+29&deg;, малооблачно, возможна гроза\n2014-08-05 20:57:50 new value: +30&deg;...+32&deg;, ясно\n2014-08-05 08:57:22 new value: +28&deg;...+30&deg;, малооблачно\n2014-08-05 00:57:00 new value: +27&deg;...+29&deg;, переменная облачность\n2014-08-04 20:56:50 new value: +32&deg;...+34&deg;, ясно\n2014-08-04 08:56:21 new value: +31&deg;...+33&deg;, ясно\n2014-08-04 00:56:02 new value: +30&deg;...+32&deg;, малооблачно\n2014-08-03 20:55:51 new value: +33&deg;...+35&deg;, ясно\n2014-08-03 00:54:58 new value: +32&deg;...+34&deg;, ясно\n2014-08-02 20:54:48 new value: +32&deg;...+34&deg;, малооблачно\n2014-08-02 08:54:16 new value: +31&deg;...+33&deg;, малооблачно\n2014-08-02 00:53:54 new value: +32&deg;...+34&deg;, переменная облачность\n2014-08-01 14:53:27 new value: +31&deg;...+33&deg;, переменная облачность', '', 0, '', '');
+--
+-- AUTO_INCREMENT для таблицы `actions_log`
+--
+ALTER TABLE `actions_log`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `admin_users`
+--
+ALTER TABLE `admin_users`
+  MODIFY `ID` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT для таблицы `blockly_code`
+--
+ALTER TABLE `blockly_code`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+
+--
+-- AUTO_INCREMENT для таблицы `classes`
+--
+ALTER TABLE `classes`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+
+--
+-- AUTO_INCREMENT для таблицы `collections`
+--
+ALTER TABLE `collections`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `commands`
+--
+ALTER TABLE `commands`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+
+--
+-- AUTO_INCREMENT для таблицы `devices`
+--
+ALTER TABLE `devices`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `devices_groups`
+--
+ALTER TABLE `devices_groups`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `devices_linked`
+--
+ALTER TABLE `devices_linked`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `devices_scheduler_points`
+--
+ALTER TABLE `devices_scheduler_points`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `elements`
+--
+ALTER TABLE `elements`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT для таблицы `elm_states`
+--
+ALTER TABLE `elm_states`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT для таблицы `events`
+--
+ALTER TABLE `events`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT для таблицы `events_params`
+--
+ALTER TABLE `events_params`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `history`
+--
+ALTER TABLE `history`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `ignore_updates`
+--
+ALTER TABLE `ignore_updates`
+  MODIFY `ID` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `layouts`
+--
+ALTER TABLE `layouts`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT для таблицы `locations`
+--
+ALTER TABLE `locations`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT для таблицы `media_favorites`
+--
+ALTER TABLE `media_favorites`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `media_history`
+--
+ALTER TABLE `media_history`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `methods`
+--
+ALTER TABLE `methods`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
+
+--
+-- AUTO_INCREMENT для таблицы `myblocks`
+--
+ALTER TABLE `myblocks`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `myblocks_categories`
+--
+ALTER TABLE `myblocks_categories`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `objects`
+--
+ALTER TABLE `objects`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+
+--
+-- AUTO_INCREMENT для таблицы `patterns`
+--
+ALTER TABLE `patterns`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT для таблицы `performance_log`
+--
+ALTER TABLE `performance_log`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `phistory`
+--
+ALTER TABLE `phistory`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `phistory_queue`
+--
+ALTER TABLE `phistory_queue`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `pinghosts`
+--
+ALTER TABLE `pinghosts`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT для таблицы `plans`
+--
+ALTER TABLE `plans`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `plan_components`
+--
+ALTER TABLE `plan_components`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `plan_components_data`
+--
+ALTER TABLE `plan_components_data`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `plan_states`
+--
+ALTER TABLE `plan_states`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `plugins`
+--
+ALTER TABLE `plugins`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT для таблицы `project_modules`
+--
+ALTER TABLE `project_modules`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+
+--
+-- AUTO_INCREMENT для таблицы `properties`
+--
+ALTER TABLE `properties`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=258;
+
+--
+-- AUTO_INCREMENT для таблицы `public_calls`
+--
+ALTER TABLE `public_calls`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `pvalues`
+--
+ALTER TABLE `pvalues`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=327;
+
+--
+-- AUTO_INCREMENT для таблицы `safe_execs`
+--
+ALTER TABLE `safe_execs`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `scenes`
+--
+ALTER TABLE `scenes`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT для таблицы `scripts`
+--
+ALTER TABLE `scripts`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT для таблицы `script_categories`
+--
+ALTER TABLE `script_categories`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT для таблицы `security_rules`
+--
+ALTER TABLE `security_rules`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+
+--
+-- AUTO_INCREMENT для таблицы `shoutrooms`
+--
+ALTER TABLE `shoutrooms`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `shouts`
+--
+ALTER TABLE `shouts`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `system_errors`
+--
+ALTER TABLE `system_errors`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT для таблицы `system_errors_data`
+--
+ALTER TABLE `system_errors_data`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT для таблицы `terminals`
+--
+ALTER TABLE `terminals`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT для таблицы `users`
+--
+ALTER TABLE `users`
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -9,14 +9,17 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '') && !preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI']) && 1) {
+if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '')) {
     $p = preg_quote(HOME_NETWORK);
     $p = str_replace('\*', '\d+?', $p);
     $p = str_replace(',', ' ', $p);
     $p = str_replace('  ', ' ', $p);
     $p = str_replace(' ', '|', $p);
     
-    $remoteAddr = getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : $_SERVER["REMOTE_ADDR"];
+    $remoteAddr=$_SERVER["REMOTE_ADDR"];
+    if ((($_SERVER["REMOTE_ADDR"] == '127.0.0.1') || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
+        $remoteAddr=getenv('HTTP_X_FORWARDED_FOR');
+    }
     
     if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
         if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {

@@ -29,6 +29,9 @@ $saved_devices_data = array();
 
 const CONNECT_HOST = 'connect.smartliving.ru';
 
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+
 while (1) {
     $connect = new connect();
     $connect->getConfig();
@@ -87,7 +90,9 @@ while (1) {
             $currentMillis = round(microtime(true) * 10000);
             if ($currentMillis - $previousMillis > 10000) {
                 $previousMillis = $currentMillis;
-                setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+                $checked_time=time();
+                //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+                saveToCache("MJD:$cycleVarName", $checked_time);
                 if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
                     exit;
                 }
@@ -233,4 +238,3 @@ function update_menu_data($element_id = 0)
         //echo "Items not changed\n";
     }
 }
-
