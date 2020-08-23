@@ -4,7 +4,9 @@ $status = $this->getProperty('status');
 if (isset($params['value'])) {
     $threshold = $params['value'];
 } else {
-    $threshold = -0.5;
+    $threshold = $this->getProperty('tempStep');
+    if (!$threshold) $threshold=1;
+    $threshold = $threshold * (-1);
 }
 
 $targetTitle='currentTargetValue';

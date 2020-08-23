@@ -1,5 +1,23 @@
 <?php
 
+function isRebootRequired() {
+    $path_to_flag = ROOT . 'reboot';
+    return file_exists($path_to_flag);
+}
+
+function setRebootRequired($reason = '') {
+    $path_to_flag = ROOT . 'reboot';
+    if (!$reason) $reason = time();
+    @SaveFile($path_to_flag,$reason);
+}
+
+function resetRebootRequired() {
+    $path_to_flag = ROOT . 'reboot';
+    if (file_exists($path_to_flag)) {
+        @unlink($path_to_flag);
+    }
+}
+
 function getSystemSerial($force_update = 0) {
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
@@ -484,7 +502,7 @@ function runScheduledJobs()
         SQLUpdate('jobs', $jobs[$i]);
 
         if ($jobs[$i]['COMMANDS'] != '') {
-            $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+            $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'];
             $result = trim(getURL($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {

@@ -1392,7 +1392,7 @@ class saverestore extends module
             if ($iframe) {
                 return 1;
             } else {
-                @SaveFile(ROOT . 'reboot', 'updated');
+                setRebootRequired('updated');
                 $this->redirect("?mode=clear&ok_msg=" . urlencode("Updates Installed!") . "&with_extensions=" . $with_extensions);
             }
 

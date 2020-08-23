@@ -9,13 +9,11 @@
 
 chdir(dirname(__FILE__));
 
-if (file_exists('./reboot'))
-    unlink('./reboot');
-
-
 include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
+
+resetRebootRequired();
 
 set_time_limit(0);
 
@@ -30,6 +28,7 @@ while (!$connected) {
     if (!$connected) {
         if (file_exists($db_filename) && !IsWindowsOS() && $total_restarts < 3) {
             echo "Restarting mysql service..." . PHP_EOL;
+            DebMes('Restarting mysql service...');
             exec("sudo service mysql restart"); // trying to restart mysql
             $total_restarts++;
             sleep(10);
@@ -366,7 +365,7 @@ while (false !== ($result = $threads->iteration())) {
                 $cycle_updated_timestamp = getGlobal($title . 'Run');
 
                 if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
-                    DebMes("Looks like $title is dead. Need to recovery", 'threads');
+                    DebMes("Looks like $title is dead (updated: ".date('Y-m-d H:i:s',$cycle_updated_timestamp)."). Need to recovery", 'threads');
                     registerError('cycle_hang', $title);
                     setGlobal($title . 'Control', 'restart');
                 }
@@ -374,7 +373,7 @@ while (false !== ($result = $threads->iteration())) {
         }
     }
 
-    if (file_exists(ROOT . 'reboot')) {
+    if (isRebootRequired()) {
         if (!$reboot_timer) {
             $reboot_timer = time();
         } elseif ((time() - $reboot_timer) > 10) {
@@ -422,7 +421,7 @@ while (false !== ($result = $threads->iteration())) {
 
     if (!empty($result)) {
         $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
-        if (preg_match_all($closePattern, $result, $matches) && !file_exists('./reboot')) {
+        if (preg_match_all($closePattern, $result, $matches) && !isRebootRequired()) {
             $total_m = count($matches[1]);
             for ($im = 0; $im < $total_m; $im++) {
                 $closed_thread = $matches[1][$im];
@@ -456,5 +455,5 @@ while (false !== ($result = $threads->iteration())) {
     }
 }
 
-unlink('./reboot');
+resetRebootRequired();
 
