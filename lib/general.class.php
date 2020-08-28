@@ -17,7 +17,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
     $p = str_replace(' ', '|', $p);
     
     $remoteAddr=$_SERVER["REMOTE_ADDR"];
-    if ((($_SERVER["REMOTE_ADDR"] == '127.0.0.1') || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
+    if (getenv('HTTP_X_FORWARDED_FOR') != '') {
         $remoteAddr=getenv('HTTP_X_FORWARDED_FOR');
     }
     
