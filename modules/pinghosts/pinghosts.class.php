@@ -233,25 +233,26 @@ function usual(&$out) {
 
    $old_status=$host['STATUS'];
 
-   if ($host['COUNTER_REQUIRED']) {
+   if ($host['COUNTER_REQUIRED'] and $new_status!=1) {
     $old_status_expected=$host['STATUS_EXPECTED'];
     $host['STATUS_EXPECTED']=$new_status;
     if ($old_status_expected!=$host['STATUS_EXPECTED']) {
      $host['COUNTER_CURRENT']=0;
-     $host['LOG']=date('Y-m-d H:i:s').' tries counter reset (status: '.$host['STATUS_EXPECTED'].')'."\n".$host['LOG'];
+     $host['LOG']=date('Y-m-d H:i:s').' tries counter reset (status: '.str_replace('2', 'offline', $host['STATUS_EXPECTED']).')'."\n".$host['LOG'];
     } elseif ($host['STATUS']!=$host['STATUS_EXPECTED']) {
      $host['COUNTER_CURRENT']++;
-     $host['LOG']=date('Y-m-d H:i:s').' tries counter increased to '.$host['COUNTER_CURRENT'].' (status: '.$host['STATUS_EXPECTED'].')'."\n".$host['LOG'];
+     $host['LOG']=date('Y-m-d H:i:s').' tries counter increased to '.$host['COUNTER_CURRENT'].' (status: '.str_replace('2', 'offline', $host['STATUS_EXPECTED']).')'."\n".$host['LOG'];
     }
     if ($host['COUNTER_CURRENT']>=$host['COUNTER_REQUIRED']) {
      $host['STATUS']=$host['STATUS_EXPECTED'];
      $host['COUNTER_CURRENT']=0;
     } elseif ($old_status!=$new_status) {
-     $interval=min($online_interval, $offline_interval, 20);
-     $online_interval=$interval;
-     $offline_interval=$interval;
+     $online_interval=min($online_interval, 20);
     }
    } else {
+    if ($host['COUNTER_REQUIRED'] and $old_status==1 and $host['STATUS_EXPECTED']==2 and $new_status==1) {
+     $host['LOG']=date('Y-m-d H:i:s').' Host is still online'."\n".$host['LOG'];
+    }
     $host['STATUS']=$new_status;
     $host['STATUS_EXPECTED']=$host['STATUS'];
     $host['COUNTER_CURRENT']=0;
