@@ -125,7 +125,8 @@ $this->device_types=array(
         'PROPERTIES'=>array(
             'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
             'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'_CONFIG_DEFAULT'=>22),
-            'fanSpeed'=>array('DESCRIPTION'=>'Fan Speed','_CONFIG_DEFAULT'=>'auto'),
+            'tempStep'=>array('DESCRIPTION'=>LANG_DEVICES_AC_TEMP_STEP,'_CONFIG_TYPE'=>'text'),
+            'fanSpeed'=>array('DESCRIPTION'=>'Fan Speed','_CONFIG_DEFAULT'=>'auto','ONCHANGE'=>'fanSpeedUpdated'),
             'fanSpeedModes'=>array('DESCRIPTION'=>LANG_DEVICES_AC_FAN_SPEED,
                 '_CONFIG_TYPE'=>'multi_select',
                 '_CONFIG_OPTIONS'=>'high='.LANG_DEVICES_AC_FAN_SPEED_HIGH.',medium='.LANG_DEVICES_AC_FAN_SPEED_MEDIUM.',low='.LANG_DEVICES_AC_FAN_SPEED_LOW.',auto='.LANG_DEVICES_AC_FAN_SPEED_AUTO,

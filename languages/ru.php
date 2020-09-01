@@ -1323,6 +1323,7 @@ $dictionary = array(
     'DEVICES_AC_THERMOSTAT_COOL'=>'Охлаждение',
     'DEVICES_AC_THERMOSTAT_DRY'=>'Осушение',
     'DEVICES_AC_THERMOSTAT_AUTO'=>'Авто',
+    'DEVICES_AC_TEMP_STEP'=>'Шаг изменения температуры',
 
     'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',

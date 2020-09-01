@@ -1324,6 +1324,7 @@ $dictionary = array(
     'DEVICES_AC_THERMOSTAT_COOL'=>'Cool',
     'DEVICES_AC_THERMOSTAT_DRY'=>'Dry',
     'DEVICES_AC_THERMOSTAT_AUTO'=>'Auto',
+    'DEVICES_AC_TEMP_STEP'=>'Temperature change step',
 
     'DEVICES_DIMMER_MIN_WORK' => 'Min level (work)',
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',

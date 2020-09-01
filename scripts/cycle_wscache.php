@@ -61,16 +61,16 @@ while (1)
 
          if ($sent_ok) {
          $latest_sent=time();
-         saveToCache("MJD:$cycleVarName", $latest_sent);
+         // saveToCache("MJD:$cycleVarName", $latest_sent);
 
-         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
+         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
          setTimeout('restartWebSocket','sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");',5*60); //registerError("websockets","Error posting to websocket daemon.");
          } else {
          echo date("H:i:s") . ' Error while posting to websocket.'."\n";
          }
       }
    }
-   if (file_exists('./reboot') || IsSet($_GET['onetime']))
+   if (isRebootRequired() || IsSet($_GET['onetime']))
    {
       exit;
    }
