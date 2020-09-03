@@ -3,52 +3,6 @@
  * @version 0.1 (auto-set)
  */
 
-
-/*
-Установка переменных, которые можно использовать в коммандах
-
-SET PROJECTS_DIR=D:/jey/projects
-
-Игнорирование папок и файлов, которые включают указанное слово
-
-IGNORE project_files
-
-Синхронизация (добавление новых и измененных файлов)
-
-LOCAL_DIR/wiki => PROJECTS_DIR/jeywork/wiki
-LOCAL_DIR/wiki <= PROJECTS_DIR/jeywork/wiki
-
-Перемещение всех файлов из одной папки в другую
-
-f:/video/daily <- /video_daily
-/video_daily -> f:/video/daily
-
-Добавление только файлов, определенной давности (более ранние файлы игнорируются)
-
-/music/podcasts <+ D:/jey/handled/music/Podcasts 2 DAYS OLD
-
-Удаление файлов старше определенного "возраста"
-
-CLEAR D:/jey/handled/music/Podcasts 2 DAYS OLD
-
-Синхронизация с полным зеркалирование, т.е. на месте назначения будут удаляться файлы и папки, которых нет на источнике
-
-SOURCE/dir !> DESTINATION/dir
-SOURCE/dir <! DESTINATION/dir
-
-Типы путей
-
-D:/jey/handled/music/Podcasts
-/jey/sync
-NET:pas/work
-
-В путях можно использовать обозначения даты как в команде PHP date(), но с символами % или $
-например:
-d:/jey/foto => d:/jey/foto2/%Y/%m-%F (файлы из первой папки будут разбросаны по годам и месяцам во второй)
-при этом если используется %, то в качестве времени берется время модификации файла, а если $, то текущее время
-
- */
-
 /**
  * Summary of preparePathTime
  * @param mixed $s     String
@@ -985,4 +939,44 @@ function clearCache($verbose = 0)
 
         closedir($handle);
     }
+}
+
+/**
+ * Summary of getFilesTree
+ * @param mixed $destination Destination
+ * @param mixed $sort Sort (default 'name')
+ * @return array
+ */
+function getFilesTree($destination, $sort = 'name')
+{
+    if (substr($destination, -1) == '/' || substr($destination, -1) == '\\') {
+        $destination = substr($destination, 0, strlen($destination) - 1);
+    }
+
+    $res = array();
+
+    if (!is_dir($destination))
+        return $res;
+
+    if ($dir = @opendir($destination)) {
+        while (($file = readdir($dir)) !== false) {
+            if (is_dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $tmp = getFilesTree($destination . "/" . $file);
+                if (is_array($tmp)) {
+                    foreach ($tmp as $elem) {
+                        $res[] = $elem;
+                    }
+                }
+            } elseif (is_file($destination . "/" . $file)) {
+                $res[] = ($destination . "/" . $file);
+            }
+        }
+        closedir($dir);
+    }
+
+    if ($sort == 'name') {
+        sort($res, SORT_STRING);
+    }
+
+    return $res;
 }
