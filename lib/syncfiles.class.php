@@ -819,3 +819,170 @@ function keepLatestLimitedBySize($path, $max_size, $removeEmptyFolders = true) {
    }
 }
 
+/**
+ * Summary of getRandomLine
+ * @param mixed $filename File name
+ * @return mixed
+ */
+function getRandomLine($filename)
+{
+    if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt')) {
+        $filename = ROOT . 'cms/texts/' . $filename . '.txt';
+    }
+
+    if (file_exists($filename)) {
+        $data = LoadFile($filename);
+        $data = str_replace("\r", '', $data);
+        $data = str_replace("\n\n", "\n", $data);
+        $lines = mb_split("\n", $data);
+        $total = count($lines);
+        $line = $lines[round(rand(0, $total - 1))];
+
+        if ($line != '') {
+            return $line;
+        }
+    }
+}
+
+function remote_file_exists($url){
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode == 200 ){return true;}
+    return false;
+}
+
+function get_media_info($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+
+    if (preg_match("/: Invalid /", $data)) {
+        return false;
+    }
+    //get duration
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
+
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3]+1;
+	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+	// get all info about codec
+	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
+    
+	if ($format) {
+		$out['Audio_format'] = $format[1];
+		$out['Audio_sample_rate'] = $format[2];
+		$out['Audio_type'] = $format[3];
+		$out['Audio_codec'] = $format[4];
+		$out['Audio_bitrate'] = $format[5];
+		if ($out['Audio_type'] == 'mono' ) {
+			$out['Audio_chanel'] = 1;
+		} else {
+			$out['Audio_chanel'] = 2;
+		}	
+	}
+    preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
+    if ($formatv) {
+		$out['Video_format'] = $formatv[1];
+	    $out['Video_size'] = $formatv[2];
+	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
+	    $out['Video_fps'] = $formatv[5];
+	}
+    return $out;
+}
+
+function get_remote_filesize($url)
+{
+    $head = array_change_key_case(get_headers($url, 1));
+    // content-length of download (in bytes), read from Content-Length: field
+    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+    // cannot retrieve file size, return "-1"
+    if (!$clen) {
+        return '0';
+    }
+    return $clen; // return size in bytes
+}
+
+/**
+ * Summary of LoadFile
+ *
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @return string
+ */
+function LoadFile($filename)
+{
+    // loading file
+    $f = fopen($filename, "r");
+    $data = "";
+    if ($f) {
+        $fsize = filesize($filename);
+        if ($fsize > 0) {
+            $data = fread($f, $fsize);
+        }
+        fclose($f);
+    }
+    return $data;
+}
+
+/**
+ * Summary of SaveFile
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @param mixed $data Content
+ * @return int
+ */
+function SaveFile($filename, $data)
+{
+    // saving file
+    $f = fopen("$filename", "w+");
+
+    if ($f) {
+        flock($f, 2);
+        fwrite($f, $data);
+        flock($f, 3);
+        fclose($f);
+        @chmod($filename, 0666);
+
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Summary of clearCache
+ * @param mixed $verbose Verbode (default 0)
+ * @return void
+ */
+function clearCache($verbose = 0)
+{
+    if ($handle = opendir(ROOT . 'cms/cached')) {
+        while (false !== ($file = readdir($handle))) {
+            if (is_file(ROOT . 'cms/cached/' . $file)) {
+                @unlink(ROOT . 'cms/cached/' . $file);
+
+                if ($verbose) {
+                    echo "File : " . $file . " <b>removed</b><br>\n";
+                }
+            }
+        }
+
+        closedir($handle);
+    }
+}
