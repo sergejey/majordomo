@@ -154,55 +154,6 @@ function redirect($url, $owner = "", $no_sid = 0)
 }
 
 /**
- * Summary of LoadFile
- *
- * @access public
- *
- * @param mixed $filename File name
- * @return string
- */
-function LoadFile($filename)
-{
-    // loading file
-    $f = fopen($filename, "r");
-    $data = "";
-    if ($f) {
-        $fsize = filesize($filename);
-        if ($fsize > 0) {
-            $data = fread($f, $fsize);
-        }
-        fclose($f);
-    }
-    return $data;
-}
-
-/**
- * Summary of SaveFile
- * @access public
- *
- * @param mixed $filename File name
- * @param mixed $data Content
- * @return int
- */
-function SaveFile($filename, $data)
-{
-    // saving file
-    $f = fopen("$filename", "w+");
-
-    if ($f) {
-        flock($f, 2);
-        fwrite($f, $data);
-        flock($f, 3);
-        fclose($f);
-        @chmod($filename, 0666);
-
-        return 1;
-    }
-
-    return 0;
-}
-
-/**
  * Summary of outHash
  * @param mixed $var Var
  * @param mixed $hash Hash
@@ -676,28 +627,6 @@ function colorizeArray(&$ar, $every = 2)
 }
 
 /**
- * Summary of clearCache
- * @param mixed $verbose Verbode (default 0)
- * @return void
- */
-function clearCache($verbose = 0)
-{
-    if ($handle = opendir(ROOT . 'cms/cached')) {
-        while (false !== ($file = readdir($handle))) {
-            if (is_file(ROOT . 'cms/cached/' . $file)) {
-                @unlink(ROOT . 'cms/cached/' . $file);
-
-                if ($verbose) {
-                    echo "File : " . $file . " <b>removed</b><br>\n";
-                }
-            }
-        }
-
-        closedir($handle);
-    }
-}
-
-/**
  * Summary of checkBadwords
  * @param mixed $s String
  * @param mixed $replace Replace (default 1)
@@ -742,23 +671,6 @@ function checkBadwords($s, $replace = 1)
     } else {
         return 0;
     }
-}
-
-/**
- * Ping host
- * @param mixed $host Host address
- * @return bool
- */
-function ping($host)
-{
-    if (IsWindowsOS())
-        exec(sprintf('ping -n 1 %s', escapeshellarg($host)), $res, $rval);
-    elseif (substr(php_uname(), 0, 7) === "FreeBSD")
-        exec(sprintf('ping -c 1 -t 5 %s', escapeshellarg($host)), $res, $rval);
-    else
-        exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
-
-    return $rval === 0 && preg_match('/ttl/is', join('', $res));
 }
 
 /**

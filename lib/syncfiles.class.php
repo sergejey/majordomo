@@ -3,52 +3,6 @@
  * @version 0.1 (auto-set)
  */
 
-
-/*
-Установка переменных, которые можно использовать в коммандах
-
-SET PROJECTS_DIR=D:/jey/projects
-
-Игнорирование папок и файлов, которые включают указанное слово
-
-IGNORE project_files
-
-Синхронизация (добавление новых и измененных файлов)
-
-LOCAL_DIR/wiki => PROJECTS_DIR/jeywork/wiki
-LOCAL_DIR/wiki <= PROJECTS_DIR/jeywork/wiki
-
-Перемещение всех файлов из одной папки в другую
-
-f:/video/daily <- /video_daily
-/video_daily -> f:/video/daily
-
-Добавление только файлов, определенной давности (более ранние файлы игнорируются)
-
-/music/podcasts <+ D:/jey/handled/music/Podcasts 2 DAYS OLD
-
-Удаление файлов старше определенного "возраста"
-
-CLEAR D:/jey/handled/music/Podcasts 2 DAYS OLD
-
-Синхронизация с полным зеркалирование, т.е. на месте назначения будут удаляться файлы и папки, которых нет на источнике
-
-SOURCE/dir !> DESTINATION/dir
-SOURCE/dir <! DESTINATION/dir
-
-Типы путей
-
-D:/jey/handled/music/Podcasts
-/jey/sync
-NET:pas/work
-
-В путях можно использовать обозначения даты как в команде PHP date(), но с символами % или $
-например:
-d:/jey/foto => d:/jey/foto2/%Y/%m-%F (файлы из первой папки будут разбросаны по годам и месяцам во второй)
-при этом если используется %, то в качестве времени берется время модификации файла, а если $, то текущее время
-
- */
-
 /**
  * Summary of preparePathTime
  * @param mixed $s     String
@@ -819,3 +773,304 @@ function keepLatestLimitedBySize($path, $max_size, $removeEmptyFolders = true) {
    }
 }
 
+/**
+ * Summary of getRandomLine
+ * @param mixed $filename File name
+ * @return mixed
+ */
+function getRandomLine($filename)
+{
+    if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt')) {
+        $filename = ROOT . 'cms/texts/' . $filename . '.txt';
+    }
+
+    if (file_exists($filename)) {
+        $data = LoadFile($filename);
+        $data = str_replace("\r", '', $data);
+        $data = str_replace("\n\n", "\n", $data);
+        $lines = mb_split("\n", $data);
+        $total = count($lines);
+        $line = $lines[round(rand(0, $total - 1))];
+
+        if ($line != '') {
+            return $line;
+        }
+    }
+}
+
+function remote_file_exists($url){
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode == 200 ){return true;}
+    return false;
+}
+
+function getMediaDurationSeconds($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    if (preg_match("/: Invalid /", $dur)) {
+        return false;
+    }
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3];
+    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
+}
+
+function get_media_info($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+
+    if (preg_match("/: Invalid /", $data)) {
+        return false;
+    }
+    //get duration
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
+
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3]+1;
+	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+	// get all info about codec
+	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
+    
+	if ($format) {
+		$out['Audio_format'] = $format[1];
+		$out['Audio_sample_rate'] = $format[2];
+		$out['Audio_type'] = $format[3];
+		$out['Audio_codec'] = $format[4];
+		$out['Audio_bitrate'] = $format[5];
+		if ($out['Audio_type'] == 'mono' ) {
+			$out['Audio_chanel'] = 1;
+		} else {
+			$out['Audio_chanel'] = 2;
+		}	
+	}
+    preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
+    if ($formatv) {
+		$out['Video_format'] = $formatv[1];
+	    $out['Video_size'] = $formatv[2];
+	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
+	    $out['Video_fps'] = $formatv[5];
+	}
+    return $out;
+}
+
+function get_remote_filesize($url)
+{
+    $head = array_change_key_case(get_headers($url, 1));
+    // content-length of download (in bytes), read from Content-Length: field
+    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+    // cannot retrieve file size, return "-1"
+    if (!$clen) {
+        return '0';
+    }
+    return $clen; // return size in bytes
+}
+
+/**
+ * Summary of LoadFile
+ *
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @return string
+ */
+function LoadFile($filename)
+{
+    // loading file
+    $f = fopen($filename, "r");
+    $data = "";
+    if ($f) {
+        $fsize = filesize($filename);
+        if ($fsize > 0) {
+            $data = fread($f, $fsize);
+        }
+        fclose($f);
+    }
+    return $data;
+}
+
+/**
+ * Summary of SaveFile
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @param mixed $data Content
+ * @return int
+ */
+function SaveFile($filename, $data)
+{
+    // saving file
+    $f = fopen("$filename", "w+");
+
+    if ($f) {
+        flock($f, 2);
+        fwrite($f, $data);
+        flock($f, 3);
+        fclose($f);
+        @chmod($filename, 0666);
+
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Summary of clearCache
+ * @param mixed $verbose Verbode (default 0)
+ * @return void
+ */
+function clearCache($verbose = 0)
+{
+    if ($handle = opendir(ROOT . 'cms/cached')) {
+        while (false !== ($file = readdir($handle))) {
+            if (is_file(ROOT . 'cms/cached/' . $file)) {
+                @unlink(ROOT . 'cms/cached/' . $file);
+
+                if ($verbose) {
+                    echo "File : " . $file . " <b>removed</b><br>\n";
+                }
+            }
+        }
+
+        closedir($handle);
+    }
+}
+
+/**
+ * Summary of getFilesTree
+ * @param mixed $destination Destination
+ * @param mixed $sort Sort (default 'name')
+ * @return array
+ */
+function getFilesTree($destination, $sort = 'name')
+{
+    if (substr($destination, -1) == '/' || substr($destination, -1) == '\\') {
+        $destination = substr($destination, 0, strlen($destination) - 1);
+    }
+
+    $res = array();
+
+    if (!is_dir($destination))
+        return $res;
+
+    if ($dir = @opendir($destination)) {
+        while (($file = readdir($dir)) !== false) {
+            if (is_dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $tmp = getFilesTree($destination . "/" . $file);
+                if (is_array($tmp)) {
+                    foreach ($tmp as $elem) {
+                        $res[] = $elem;
+                    }
+                }
+            } elseif (is_file($destination . "/" . $file)) {
+                $res[] = ($destination . "/" . $file);
+            }
+        }
+        closedir($dir);
+    }
+
+    if ($sort == 'name') {
+        sort($res, SORT_STRING);
+    }
+
+    return $res;
+}
+
+function get_mime_type($filename) {
+    $idx = explode( '.', $filename );
+    $count_explode = count($idx);
+    $idx = strtolower($idx[$count_explode-1]);
+
+    $mimet = array(
+        'txt' => 'text/plain',
+        'htm' => 'text/html',
+        'html' => 'text/html',
+        'php' => 'text/html',
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'swf' => 'application/x-shockwave-flash',
+        'flv' => 'video/x-flv',
+
+        // images
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'ico' => 'image/vnd.microsoft.icon',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+
+        // archives
+        'zip' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        'exe' => 'application/x-msdownload',
+        'msi' => 'application/x-msdownload',
+        'cab' => 'application/vnd.ms-cab-compressed',
+
+        // audio/video
+        'mp3' => 'audio/mpeg',
+        'qt' => 'video/quicktime',
+        'mov' => 'video/quicktime',
+
+        // adobe
+        'pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+
+        // ms office
+        'doc' => 'application/msword',
+        'rtf' => 'application/rtf',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'docx' => 'application/msword',
+        'xlsx' => 'application/vnd.ms-excel',
+        'pptx' => 'application/vnd.ms-powerpoint',
+
+
+        // open office
+        'odt' => 'application/vnd.oasis.opendocument.text',
+        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+    );
+
+    if (isset( $mimet[$idx] )) {
+        return $mimet[$idx];
+    } else {
+        return 'application/octet-stream';
+    }
+}
