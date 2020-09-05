@@ -25,13 +25,13 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 while (1) {
    if ((time()-$checked_time)>30) {
       $checked_time = time();
-      //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-      saveToCache("MJD:$cycleVarName", $checked_time);
+      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+      // saveToCache("MJD:$cycleVarName", $checked_time);
 
    }
    runScheduledJobs();
    $sc->checkScheduledScripts();
-   if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+   if (isRebootRequired() || IsSet($_GET['onetime'])) {
       exit;
    }
    sleep(1);

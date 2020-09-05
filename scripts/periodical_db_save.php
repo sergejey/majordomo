@@ -58,7 +58,7 @@ while (1)
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
-   if ((time() - $last_backup_main) > $timeout_main || file_exists('./reboot')) {
+   if ((time() - $last_backup_main) > $timeout_main || isRebootRequired()) {
       echo "Running main db save...";
       if (file_exists($filename_main)) rename($filename_main, $filename_main . '.prev');
       $add_params = '--ignore-table='.DB_NAME.'.phistory --ignore-table='.DB_NAME.'.cached_values';
@@ -72,7 +72,7 @@ while (1)
       }
       echo "OK\n";
    }
-   if ((time() - $last_backup_history) > $timeout_history || file_exists('./reboot')) {
+   if ((time() - $last_backup_history) > $timeout_history || isRebootRequired()) {
       echo "Running history db save...";
       if (file_exists($filename_history)) rename($filename_history, $filename_history . '.prev');
       $add_params = 'phistory';
@@ -81,7 +81,7 @@ while (1)
       $last_backup_history = time();
       echo "OK\n";
    }
-   if (file_exists('./reboot') || IsSet($_GET['onetime']))
+   if (isRebootRequired() || IsSet($_GET['onetime']))
    {
       exit;
    }

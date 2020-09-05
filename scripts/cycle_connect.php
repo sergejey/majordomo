@@ -91,9 +91,9 @@ while (1) {
             if ($currentMillis - $previousMillis > 10000) {
                 $previousMillis = $currentMillis;
                 $checked_time=time();
-                //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-                saveToCache("MJD:$cycleVarName", $checked_time);
-                if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+                setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+                // saveToCache("MJD:$cycleVarName", $checked_time);
+                if (isRebootRequired() || IsSet($_GET['onetime'])) {
                     exit;
                 }
             }
