@@ -14,7 +14,7 @@ if ($status > 0 && !$level && $levelSaved) {
     $this->setProperty('level', $levelSaved);
 } else {
     $this->callMethod('logicAction');
-    include_once(DIR_MODULES . 'devices/devices.class.php');
+    include_once(dirname(__FILE__) . '/devices.class.php');
     $dv = new devices();
     $dv->checkLinkedDevicesAction($this->object_title, $level);
 }

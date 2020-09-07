@@ -505,7 +505,7 @@ class objects extends module
                 $call_stack = $_GET['m_c_s'];
             }
             $raiseEvent = $_GET['raiseEvent'];
-            if (in_array($current_call, $call_stack)) {
+            if (is_array($call_stack) && in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
                 DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
                 return 0;
@@ -564,10 +564,12 @@ class objects extends module
         if ($id) {
 
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
-
             $method['EXECUTED'] = date('Y-m-d H:i:s');
-
-            $source = urldecode($_SERVER['REQUEST_URI']);
+            if (defined('CALL_SOURCE')) {
+                $source = CALL_SOURCE;
+            } else {
+                $source = urldecode($_SERVER['REQUEST_URI']);
+            }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
@@ -778,6 +780,9 @@ class objects extends module
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
             $no_linked = 0;
+        }
+        if (!$source && defined('CALL_SOURCE')) {
+            $source = CALL_SOURCE;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
             $source = urldecode($_SERVER['REQUEST_URI']);

@@ -17,12 +17,19 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
     $p = str_replace(' ', '|', $p);
 
     $remoteAddr = $_SERVER["REMOTE_ADDR"];
-    if ((($_SERVER["REMOTE_ADDR"] == '127.0.0.1') || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
+
+    if (defined('LOCAL_IP') && LOCAL_IP!='') {
+        $local_ip = LOCAL_IP;
+    } else {
+        $local_ip = '127.0.0.1';
+    }
+
+    if ((($_SERVER["REMOTE_ADDR"] == $local_ip) || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
         $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
     }
 
 
-    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
+    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
         if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
             $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
             DebMes($data, 'auth');
