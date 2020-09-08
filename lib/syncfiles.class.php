@@ -1074,3 +1074,17 @@ function get_mime_type($filename) {
         return 'application/octet-stream';
     }
 }
+
+function getDirFiles($dir, &$results = array()){
+   $isdir = is_dir($dir);
+   if ($isdir) {
+     $files = scandir($dir);
+     foreach($files as $key => $value){
+       $path = realpath($dir."/".$value);
+       if(!is_dir($path) && $value != ".htaccess" && $value != "." && $value != "..") {
+         $results[] = array('NAME'=>$value, 'FILENAME'=>$path,'DT'=>date('Y-m-d H:i:s',filemtime($path)),'TM'=>filemtime($path),'SIZE'=>filesize($path));
+       } 
+     }
+   }
+   return $results;
+}
