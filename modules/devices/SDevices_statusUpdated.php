@@ -40,7 +40,7 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
 }
 
 $this->callMethod('logicAction');
-include_once(DIR_MODULES . 'devices/devices.class.php');
+include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
 

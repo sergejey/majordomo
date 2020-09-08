@@ -422,7 +422,7 @@ $this->device_types=array(
     ),
 );
 
-$addons_dir=DIR_MODULES.$this->name.'/addons';
+$addons_dir=dirname(__FILE__).'/addons';
 if (is_dir($addons_dir)) {
     $addon_files=scandir($addons_dir);
     foreach($addon_files as $file) {
