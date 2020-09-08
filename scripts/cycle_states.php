@@ -44,9 +44,9 @@ else
    {
       if (time() - $checked_time > 10)
       {
-         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
          $checked_time = time();
-         saveToCache("MJD:$cycleVarName", $checked_time);
+         // saveToCache("MJD:$cycleVarName", $checked_time);
 
          for ($i = 0; $i < $total; $i++)
          {

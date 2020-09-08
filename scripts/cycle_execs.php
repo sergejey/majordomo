@@ -16,16 +16,14 @@ $checked_time = 0;
 setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 $cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
-
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 SQLExec("DELETE FROM safe_execs");
 
 while (1) {
-    if (time() - $checked_time > 30) {
+    if (time() - $checked_time > 20) {
         $checked_time = time();
-        saveToCache("MJD:$cycleVarName", $checked_time);
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        // saveToCache("MJD:$cycleVarName", $checked_time);
     }
 
     if ($exclusive = SQLSelectOne("SELECT * FROM safe_execs WHERE EXCLUSIVE = 1 ORDER BY PRIORITY DESC, ID")) {
@@ -72,7 +70,7 @@ while (1) {
         continue ;
     }
 
-    if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+    if (isRebootRequired() || IsSet($_GET['onetime'])) {
         exit;
     }
 
