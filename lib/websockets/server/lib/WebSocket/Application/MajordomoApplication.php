@@ -72,11 +72,11 @@ class MajordomoApplication extends Application
 //            setGlobal($cycleName, time(), 1);
             $checked_time = time();
             saveToCache('MJD:ThisComputer.'.$cycleName, $checked_time);
-            $ws_clients_total = count($this->_clients);
-            $old_value = gg('WSClientsTotal');
-            if ($ws_clients_total != $old_value) {
-                setGlobal('WSClientsTotal', $ws_clients_total, 1);
-            }
+            //$ws_clients_total = count($this->_clients);
+            //$old_value = gg('WSClientsTotal');
+            //if ($ws_clients_total != $old_value) {
+                //setGlobal('WSClientsTotal', $ws_clients_total, 1);
+            //}
         }
         global $websockets_script_started;
         if ($websockets_script_started > 0 && (time() - $websockets_script_started) > 6 * 60 * 60) {
