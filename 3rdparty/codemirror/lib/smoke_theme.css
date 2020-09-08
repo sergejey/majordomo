@@ -1,0 +1,45 @@
+
+.cm-matchhighlight {background-color: #c3c3c3;outline: none;border: 1px dotted;}
+
+.cm-s-smoke_theme.CodeMirror { background: #ffffff; color: #000000; }
+.cm-s-smoke_theme div.CodeMirror-selected { background: #e4e4e4;}
+.cm-s-smoke_theme .CodeMirror-line::selection, .cm-s-smoke_theme .CodeMirror-line > span::selection, .cm-s-smoke_theme .CodeMirror-line > span > span::selection { background: rgba(241, 241, 241, 0.28); }
+.cm-s-smoke_theme .CodeMirror-line::-moz-selection, .cm-s-smoke_theme .CodeMirror-line > span::-moz-selection, .cm-s-smoke_theme .CodeMirror-line > span > span::-moz-selection { background: rgba(241, 241, 241, 0.28)); }
+.cm-s-smoke_theme .CodeMirror-gutters { background: #868686; border-right: 0px; }
+.cm-s-smoke_theme .CodeMirror-guttermarker { color: white; }
+.cm-s-smoke_theme .CodeMirror-guttermarker-subtle { color: #ffe000; }
+.cm-s-smoke_theme .CodeMirror-linenumber { color: #ffffff; text-align:center; }
+.cm-s-smoke_theme .CodeMirror-cursor { border-left: 1px solid #14712d; }
+
+.cm-s-smoke_theme span.cm-comment { color: #afafaf;font-style: italic; }
+.cm-s-smoke_theme span.cm-atom { color: #9C27B0; }
+.cm-s-smoke_theme span.cm-number { color: #14712d; }
+
+.cm-s-smoke_theme span.cm-comment.cm-attribute { color: #ffb454; }
+.cm-s-smoke_theme span.cm-comment.cm-def { color: rgba(57, 186, 230, 80); }
+.cm-s-smoke_theme span.cm-comment.cm-tag { color: #39bae6; }
+.cm-s-smoke_theme span.cm-comment.cm-type { color: #5998a6; }
+
+.cm-s-smoke_theme span.cm-property, .cm-s-smoke_theme span.cm-attribute { color: #ffb454; }  
+.cm-s-smoke_theme span.cm-keyword { color: #ff0000; } 
+.cm-s-smoke_theme span.cm-builtin { color: #14712d; }
+.cm-s-smoke_theme span.cm-string { color: #d64747; }
+
+.cm-s-smoke_theme span.cm-variable { color: #000000; }
+.cm-s-smoke_theme span.cm-variable-2 { color: #1000ff;font-weight: bold; }
+.cm-s-smoke_theme span.cm-variable-3 { color: #39bae6; }
+.cm-s-smoke_theme span.cm-type { color: #ff8f40; }
+.cm-s-smoke_theme span.cm-def { color: #ffee99; }
+.cm-s-smoke_theme span.cm-bracket { color: #f8f8f2; }
+.cm-s-smoke_theme span.cm-tag { color: rgba(57, 186, 230, 80); }
+.cm-s-smoke_theme span.cm-header { color: #c2d94c; }
+.cm-s-smoke_theme span.cm-link { color: #39bae6; }
+.cm-s-smoke_theme div.cm-error { color: #ff3333; } 
+
+.cm-s-smoke_theme .CodeMirror-activeline-background { background: #01060e; }
+.cm-s-smoke_theme .CodeMirror-matchingbracket {
+  text-decoration: underline;
+}
+.CodeMirror-foldgutter {
+  background: #868686 !important;
+}

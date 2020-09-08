@@ -43,7 +43,7 @@ if ($currentTemperature > ($targetTemperature+$threshold)) { // temperature too 
 //echo "current: $currentTemperature target: $targetTemperature action: $need_action <br/>";
 
 //if ($need_action) {
-    include_once(DIR_MODULES.'devices/devices.class.php');
+    include_once(dirname(__FILE__).'/devices.class.php');
     $dv=new devices();
     $dv->checkLinkedDevicesAction($this->object_title, $currentTemperature);
     $this->callMethod('logicAction');

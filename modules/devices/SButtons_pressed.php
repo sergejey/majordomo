@@ -15,7 +15,7 @@ if ($linked_room && $this->getProperty('isActivity')) {
 }
 
 /*
-include_once(DIR_MODULES . 'devices/devices.class.php');
+include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $this->getProperty('status'));
 */

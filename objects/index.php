@@ -140,6 +140,7 @@ if ($object != '') {
    $job = SQLSelectOne("SELECT * FROM jobs WHERE ID='" . (int)$job . "'");
    
    if ($job['ID']) {
+      define('CALL_SOURCE','Job: '.$job['TITLE']);
       try {
          verbose_log("Scheduled job [".$job['TITLE']."]");
          $code = $job['COMMANDS'];

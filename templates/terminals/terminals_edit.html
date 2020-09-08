@@ -257,7 +257,16 @@
 	</div>
         
 </div>
-
+<!-- разграничение прав доступа к терминалам -->		
+[#if ID!=""#]
+    <div class="form-group ">
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
+        <div class="col-lg-5">
+            <a class="btn btn-default " href="?(panel:{action=security_rules})&object_type=terminal&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+        </div>
+    </div>
+[#endif ID#]
+<!-- разграничение прав доступа к терминалам -->
 <div class="form-group">
      <div class="col-lg-offset-2 col-lg-5">
  [#if ID!=""#]
