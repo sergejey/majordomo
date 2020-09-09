@@ -461,7 +461,7 @@ class saverestore extends module
         }
 
         if ($iframe) {
-            $this->echonow("Downloading $url ... ");
+            echonow("Downloading $url ... ");
         }
 
         $ch = curl_init();
@@ -479,7 +479,7 @@ class saverestore extends module
         if (file_exists($filename)) {
 
             if ($iframe) {
-                $this->echonow(" OK<br/>", "green");
+                echonow(" OK<br/>", "green");
             }
 
 
@@ -509,7 +509,7 @@ class saverestore extends module
         } else {
 
             if ($iframe) {
-                $this->echonow("Cannot download file<br/>", "red");
+                echonow("Cannot download file<br/>", "red");
                 exit;
             } else {
                 $this->redirect("?err_msg=" . urlencode("Cannot download " . $url));
@@ -517,21 +517,6 @@ class saverestore extends module
         }
     }
 
-
-    function echonow($msg, $color = '')
-    {
-        DebMes(strip_tags($msg),'auto_update');
-        if ($color) {
-            echo '<font color="' . $color . '">';
-        }
-        echo $msg;
-        if ($color) {
-            echo '</font>';
-        }
-        echo str_repeat(' ', 16 * 1024);
-        flush();
-        ob_flush();
-    }
 
     /**
      * Title
@@ -1240,17 +1225,17 @@ class saverestore extends module
 
 
         if ($iframe) {
-            $this->echonow("<b>Applying updates.</b><br/>");
+            echonow("<b>Applying updates.</b><br/>");
         }
 
         if ($file != '' && preg_match('/\.sql$/', $file_name) && file_exists(ROOT . 'cms/saverestore/' . $file)) {
             // restore database only
             if ($iframe) {
-                $this->echonow("Restoring database from $file ... ");
+                echonow("Restoring database from $file ... ");
             }
             $this->restoredatabase(ROOT . 'cms/saverestore/' . $file);
             if ($iframe) {
-                $this->echonow(" OK<br/> ", 'green');
+                echonow(" OK<br/> ", 'green');
             }
             if ($iframe) {
                 return 1;
@@ -1259,20 +1244,20 @@ class saverestore extends module
             }
         } elseif ($file != '' && is_dir($file)) {
             if ($iframe) {
-                $this->echonow("Updating files (from $file to ".ROOT.")... ");
+                echonow("Updating files (from $file to ".ROOT.")... ");
             }
             copyTree($file, ROOT, 1); // restore all files
             if ($iframe) {
-                $this->echonow(" OK<br/> ", 'green');
+                echonow(" OK<br/> ", 'green');
             }
             $db_filename = $file . '/' . DB_NAME . ".sql";
             if (file_exists($db_filename)) {
                 if ($iframe) {
-                    $this->echonow("Restoring database from $db_filename ... ");
+                    echonow("Restoring database from $db_filename ... ");
                 }
                 $this->restoredatabase($db_filename);
                 if ($iframe) {
-                    $this->echonow(" OK<br/> ", 'green');
+                    echonow(" OK<br/> ", 'green');
                 }
             }
             if ($iframe) {
@@ -1287,7 +1272,7 @@ class saverestore extends module
             @mkdir(ROOT . 'cms/saverestore/temp', 0777);
             chdir(ROOT . 'cms/saverestore/temp');
             if ($iframe) {
-                $this->echonow("Unpacking $file ... ");
+                echonow("Unpacking $file ... ");
             }
             if (IsWindowsOS()) {
                 exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
@@ -1302,7 +1287,7 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                $this->echonow(" OK<br/> ", 'green');
+                echonow(" OK<br/> ", 'green');
             }
 
             chdir('../../../');
@@ -1319,23 +1304,23 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                $this->echonow("Updating files (".ROOT . 'cms/saverestore/temp' . $folder." to ".ROOT.") ... ");
+                echonow("Updating files (".ROOT . 'cms/saverestore/temp' . $folder." to ".ROOT.") ... ");
             }
 
             // UPDATING FILES DIRECTLY
             copyTree(ROOT . 'cms/saverestore/temp' . $folder, ROOT, 1); // restore all files
 
             if ($iframe) {
-                $this->echonow(" OK<br/> ", 'green');
+                echonow(" OK<br/> ", 'green');
             }
 
             if (file_exists(ROOT . 'cms/saverestore/temp' . $folder . '/dump.sql')) {
                 // data restore
                 if ($iframe) {
-                    $this->echonow("Restoring database ... ");
+                    echonow("Restoring database ... ");
                 }
                 $this->restoredatabase(ROOT . 'cms/saverestore/temp' . $folder . '/dump.sql');
-                $this->echonow(" OK<br/> ", 'green');
+                echonow(" OK<br/> ", 'green');
             }
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
@@ -1345,7 +1330,7 @@ class saverestore extends module
 
 
             if ($iframe) {
-                $this->echonow(" DONE<br/> ", 'green');
+                echonow(" DONE<br/> ", 'green');
             }
 
 
@@ -1371,7 +1356,7 @@ class saverestore extends module
     {
 
         if ($iframe) {
-            $this->echonow("<b>Working on backup.</b><br/>");
+            echonow("<b>Working on backup.</b><br/>");
         }
 
 
@@ -1381,7 +1366,7 @@ class saverestore extends module
             if ($design) {
 
                 if ($iframe) {
-                    $this->echonow("Saving design ... ");
+                    echonow("Saving design ... ");
                 }
 
                 $tar_name .= 'design_';
@@ -1400,7 +1385,7 @@ class saverestore extends module
                 copyFiles(ROOT, ROOT . 'cms/saverestore/temp', 0, $pt);
 
                 if ($iframe) {
-                    $this->echonow(" OK<br/>", 'green');
+                    echonow(" OK<br/>", 'green');
                 }
 
 
@@ -1411,7 +1396,7 @@ class saverestore extends module
             if ($code) {
 
                 if ($iframe) {
-                    $this->echonow("Saving code ... ");
+                    echonow("Saving code ... ");
                 }
 
 
@@ -1435,7 +1420,7 @@ class saverestore extends module
                 }
 
                 if ($iframe) {
-                    $this->echonow(" OK<br/>", 'green');
+                    echonow(" OK<br/>", 'green');
                 }
 
 
@@ -1445,12 +1430,12 @@ class saverestore extends module
             global $data;
             if ($data) {
                 if ($iframe) {
-                    $this->echonow("Saving data ... ");
+                    echonow("Saving data ... ");
                 }
                 $tar_name .= 'data_';
                 $this->backupdatabase(ROOT . 'cms/saverestore/temp/dump.sql');
                 if ($iframe) {
-                    $this->echonow(" OK<br/>", 'green');
+                    echonow(" OK<br/>", 'green');
                 }
             }
 
@@ -1458,7 +1443,7 @@ class saverestore extends module
             global $save_files;
             if ($save_files) {
                 if ($iframe) {
-                    $this->echonow("Saving files ... ");
+                    echonow("Saving files ... ");
                 }
                 $tar_name .= 'files_';
 
@@ -1473,7 +1458,7 @@ class saverestore extends module
                     copyTree(ROOT . 'cms/' . $d, ROOT . 'cms/saverestore/temp/cms/' . $d);
                 }
                 if ($iframe) {
-                    $this->echonow(" OK<br/>", 'green');
+                    echonow(" OK<br/>", 'green');
                 }
             }
 
@@ -1486,7 +1471,7 @@ class saverestore extends module
                 $tar_name = 'backup_' . $tar_name;
 
             if ($iframe) {
-                $this->echonow("Packing $tar_name ... ");
+                echonow("Packing $tar_name ... ");
             }
 
 
@@ -1504,18 +1489,18 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                $this->echonow(" OK<br/>", 'green');
+                echonow(" OK<br/>", 'green');
             }
 
 
             if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && file_exists(ROOT . 'cms/saverestore/' . $tar_name)) {
                 if ($iframe) {
-                    $this->echonow("Copying to " . $dest . $tar_name . " ... ");
+                    echonow("Copying to " . $dest . $tar_name . " ... ");
                 }
                 $dest = SETTINGS_BACKUP_PATH;
                 @copy(ROOT . 'cms/saverestore/' . $tar_name, $dest . $tar_name);
                 if ($iframe) {
-                    $this->echonow(" OK<br/>", 'green');
+                    echonow(" OK<br/>", 'green');
                 }
             }
 
