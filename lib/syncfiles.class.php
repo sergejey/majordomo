@@ -237,6 +237,45 @@ function copyFile($src, $dst)
    touch($dst, filemtime($src));
 }
 
+function copyFiles($source, $destination, $over = 0, $patterns = 0)
+{
+    $res = 1;
+    if (!Is_Dir2($source)) {
+        return 0; // cannot create destination path
+    }
+
+    if (!Is_Dir($destination)) {
+        if (!mkdir($destination)) {
+            return 0; // cannot create destination path
+        }
+    }
+
+    if ($dir = @opendir($source)) {
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
+            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+                if (!is_array($patterns)) {
+                    $ok_to_copy = 1;
+                } else {
+                    $ok_to_copy = 0;
+                    $total = count($patterns);
+                    for ($i = 0; $i < $total; $i++) {
+                        if (preg_match('/' . $patterns[$i] . '/is', $file)) {
+                            $ok_to_copy = 1;
+                        }
+                    }
+                }
+                if ($ok_to_copy) {
+                    $res = copy($source . "/" . $file, $destination . "/" . $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+    return $res;
+}
+
 /**
  * walking directory
  * @param mixed $dir      Directory
@@ -394,38 +433,70 @@ function makeDir($dir, $sep = '/')
 }
 
 /**
- * Remove Tree
- * @param mixed $destination Destination
- * @return bool|int
- */
-function removeTree($destination)
+* removeTree
+* remove directory tree
+* @access public
+*/
+function removeTree($destination, $iframe = 0)
 {
-   $res = 1;
-
-   if (!Is_Dir2($destination))
-      return 0; // cannot create destination path
-
-   if ($dir = @opendir($destination))
-   {
-      while (($file = readdir($dir)) !== false)
-      {
-         if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..'))
-         {
-            $res = removeTree($destination . "/" . $file);
-         }
-         elseif (Is_File($destination . "/" . $file))
-         {
-            $res = unlink($destination . "/" . $file);
-         }
-      }
-      closedir($dir);
-
-      $res = rmdir($destination);
-   }
-
-   return $res;
+    $res = 1;
+    if (!Is_Dir2($destination)) {
+        return false; // cannot create destination path
+    }
+    if ($dir = @opendir($destination)) {
+        if ($iframe) {
+            $this->echonow("Removing dir $destination ... ");
+        }
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $res = $this->removeTree($destination . "/" . $file);
+            } elseif (Is_File($destination . "/" . $file)) {
+                $res = @unlink($destination . "/" . $file);
+            }
+        }
+        closedir($dir);
+        $res = @rmdir($destination);
+        if ($iframe) {
+            $this->echonow("OK<br/>", "green");
+        }
+    }
+    return $res;
 }
 
+
+/**
+ * Title
+ * Description
+ * @access public
+*/
+function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose)
+{
+    $res = array();
+    $destination = $dir;
+    if (!Is_Dir2($destination)) {
+        return $res; // cannot create destination path
+    }
+
+    if ($dir = @opendir($destination)) {
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $sub_ar = $this->getLocalFilesTree($destination . "/" . $file, $pattern, $ex_pattern, $log, $verbose);
+                $res = array_merge($res, $sub_ar);
+            } elseif (Is_File($destination . "/" . $file)) {
+                $fl = array();
+                $fl['FILENAME'] = str_replace('//', '/', $destination . "/" . $file);
+                $fl['FILENAME_SHORT'] = str_replace('//', '/', $file);
+                $fl['MTIME'] = filemtime($fl['FILENAME']);
+                $fl['SIZE'] = filesize($fl['FILENAME']);
+                if (preg_match('/' . $pattern . '/is', $fl['FILENAME_SHORT']) && ($ex_pattern == '' || !preg_match('/' . $ex_pattern . '/is', $fl['FILENAME_SHORT']))) {
+                    $res[] = $fl;
+                }
+            }
+        }
+        closedir($dir);
+    }
+    return $res;
+}
 
 // loading file
 
@@ -672,46 +743,51 @@ function UTF_Encode($str, $type)
 }
 
 /**
- * Summary of copyTree
- * @param mixed $source      Source
- * @param mixed $destination Destination
- * @param mixed $over        Over
- * @return mixed
- */
-function copyTree($source, $destination, $over = 0)
+* copyTree
+* Copy source directory tree to destination directory
+* @access public
+*/
+function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
-   $res = 1;
+    $res = 1;
+    //Remove last slash '/' in source and destination - slash was added when copy
+    $source = preg_replace("#/$#", "", $source);
+    $destination = preg_replace("#/$#", "", $destination);
+    if (!Is_Dir2($source)) {
+        return 0; // cannot create destination path
+    }
 
-   if (!Is_Dir($source))
-   {
-      return 0; // incorrect source path
-   }
+    if (!Is_Dir2($destination)) {
+        if (!mkdir($destination, 0777, true)) {
+            return 0; // cannot create destination path
+        }
+    }
 
-   if (!Is_Dir($destination))
-   {
-      if (!mkdir($destination, 0777,true))
-      {
-         return 0; // cannot create destination path
-      }
-   }
 
-   if ($dir = @opendir($source))
-   {
-      while (($file = readdir($dir)) !== false)
-      {
-         if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..'))
-         {
-            $res = copyTree($source . "/" . $file, $destination . "/" . $file, $over);
-         }
-         elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over))
-         {
-            $res = copy($source . "/" . $file, $destination . "/" . $file);
-         }
-      }
-      closedir($dir);
-   }
-
-   return $res;
+    if ($dir = @opendir($source)) {
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $res = $this->copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
+            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+                if (!is_array($patterns)) {
+                    $ok_to_copy = 1;
+                } else {
+                    $ok_to_copy = 0;
+                    $total = count($patterns);
+                    for ($i = 0; $i < $total; $i++) {
+                        if (preg_match('/' . $patterns[$i] . '/is', $file)) {
+                            $ok_to_copy = 1;
+                        }
+                    }
+                }
+                if ($ok_to_copy) {
+                    @$res = copy($source . "/" . $file, $destination . "/" . $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+    return $res;
 }
 
 function removeEmptySubFolders($path)
