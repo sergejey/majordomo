@@ -30,44 +30,7 @@ RewriteRule .* /nf.php
 
 </IfModule>
 
-<FILES config.php>
-order deny,allow
-# Denies all IP's
-Deny from all
 
-# This will allow the IP 192.168.0.0 - 192.168.255.255 
-allow from 192.168
-allow from 100.64
-allow from 172.16
-allow from 10
-allow from 127.0.0.1
-</FILES>
-
-<FILES debmes.txt>
-order deny,allow
-# Denies all IP's
-Deny from all
-
-# This will allow the IP 192.168.0.0 - 192.168.255.255 
-allow from 192.168
-allow from 100.64
-allow from 172.16
-allow from 10
-allow from 127.0.0.1
-</FILES>
-
-<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|sql|log|sh)$">
-# Denies all IP's
-Deny from all
-
-# This will allow the IP 192.168.0.0 - 192.168.255.255 
-allow from 192.168
-allow from 100.64
-allow from 172.16
-allow from 10
-allow from 127.0.0.1
- </FilesMatch>
- 
 <IfModule mod_expires.c>
   <FilesMatch \.(gif|png|jpg|jpeg|ogg|mp4|mkv|flv|swf|wmv|asf|asx|wma|wax|wmx|wm)$>
     ExpiresDefault "access plus 7 day"
