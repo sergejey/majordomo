@@ -1291,9 +1291,7 @@ class saverestore extends module
             }
             if (IsWindowsOS()) {
                 exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                                $this->echonow("Unpacking $file ... ");
-                exec(DOC_ROOT . '/tar -xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
-                                $this->echonow("Unpacking $file ... ");
+                exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
