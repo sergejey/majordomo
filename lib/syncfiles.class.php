@@ -445,11 +445,11 @@ function removeTree($destination, $iframe = 0)
     }
     if ($dir = @opendir($destination)) {
         if ($iframe) {
-            $this->echonow("Removing dir $destination ... ");
+            echonow("Removing dir $destination ... ");
         }
         while (($file = readdir($dir)) !== false) {
             if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
-                $res = $this->removeTree($destination . "/" . $file);
+                $res = removeTree($destination . "/" . $file);
             } elseif (Is_File($destination . "/" . $file)) {
                 $res = @unlink($destination . "/" . $file);
             }
@@ -457,7 +457,7 @@ function removeTree($destination, $iframe = 0)
         closedir($dir);
         $res = @rmdir($destination);
         if ($iframe) {
-            $this->echonow("OK<br/>", "green");
+            echonow("OK<br/>", "green");
         }
     }
     return $res;
@@ -767,7 +767,7 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
             if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-                $res = $this->copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
+                $res = copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
             } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
