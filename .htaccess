@@ -40,13 +40,9 @@ allow from 192.168
 allow from 100.64
 allow from 172.16
 allow from 10
+allow from 127.0.0.1
 </FILES>
 
-<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|sql|log|sh)$">
- Order Allow,Deny
- Deny from all
- </FilesMatch>
- 
 <FILES debmes.txt>
 order deny,allow
 # Denies all IP's
@@ -57,6 +53,7 @@ allow from 192.168
 allow from 100.64
 allow from 172.16
 allow from 10
+allow from 127.0.0.1
 </FILES>
 
 <FilesMatch ".(htaccess|htpasswd|ini|phps|fla|sql|log|sh)$">
@@ -68,6 +65,7 @@ allow from 192.168
 allow from 100.64
 allow from 172.16
 allow from 10
+allow from 127.0.0.1
  </FilesMatch>
  
 <IfModule mod_expires.c>
