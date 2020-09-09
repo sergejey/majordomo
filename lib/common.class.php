@@ -1194,3 +1194,18 @@ function ping($host)
 
     return $rval === 0 && preg_match('/ttl/is', join('', $res));
 }
+
+function echonow($msg, $color = '')
+{
+    DebMes(strip_tags($msg),'auto_update');
+    if ($color) {
+        echo '<font color="' . $color . '">';
+    }
+    echo $msg;
+    if ($color) {
+        echo '</font>';
+    }
+    echo str_repeat(' ', 16 * 1024);
+    flush();
+    ob_flush();
+}
