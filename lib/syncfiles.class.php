@@ -1025,10 +1025,10 @@ function SaveFile($filename, $data)
  */
 function clearCache($verbose = 0)
 {
-    if ($handle = opendir(ROOT . 'cms/cached')) {
+    if ($handle = opendir(DOC_ROOT . DIRECTORY_SEPARATOR. 'cms' . DIRECTORY_SEPARATOR . 'cached')) {
         while (false !== ($file = readdir($handle))) {
-            if (is_file(ROOT . 'cms/cached/' . $file)) {
-                @unlink(ROOT . 'cms/cached/' . $file);
+            if (is_file(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms'.DIRECTORY_SEPARATOR.'cached'.DIRECTORY_SEPARATOR. $file)) {
+                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms'.DIRECTORY_SEPARATOR.'cached'.DIRECTORY_SEPARATOR. $file);
 
                 if ($verbose) {
                     echo "File : " . $file . " <b>removed</b><br>\n";
