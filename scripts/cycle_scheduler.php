@@ -23,10 +23,11 @@ $cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 while (1) {
-   if ((time()-$checked_time)>5) {
+   if ((time()-$checked_time)>30) {
       $checked_time = time();
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
       // saveToCache("MJD:$cycleVarName", $checked_time);
+
    }
    runScheduledJobs();
    $sc->checkScheduledScripts();

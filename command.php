@@ -151,7 +151,7 @@ if ($qry != '') { // && $qry != $lastest_word
            processCommand($qrys[$i]);
            */
     }
-    SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 30 MINUTE)');
+    //SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 30 MINUTE)');
 
 }
 

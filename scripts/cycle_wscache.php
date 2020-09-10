@@ -74,7 +74,7 @@ while (1)
    {
       exit;
    }
-   sleep(1);
+   sleep(2);
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
