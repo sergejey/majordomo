@@ -427,14 +427,21 @@ function runScript($id, $params = '')
 }
 
 
-function runScriptSafe($id, $params = '')
+function runScriptSafe($id, $params = 0)
 {
+    startMeasure('runScriptSafe');
     $current_call = 'script.' . $id;
     $call_stack = array();
     if (is_array($params)) {
         if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
             $call_stack = $params['m_c_s'];
         }
+        if (isset($params['r_s_s']) && !empty($params['r_s_s'])) {
+            $run_SafeScript = $params['r_s_s'];
+        }
+        $raiseEvent = $params['raiseEvent'];
+        unset($params['raiseEvent']);
+        unset($params['r_s_m']);
         unset($params['m_c_s']);
         $current_call .= '.' . md5(json_encode($params));
     }
@@ -442,7 +449,9 @@ function runScriptSafe($id, $params = '')
         if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
-        if (in_array($current_call, $call_stack)) {
+        $raiseEvent = $_GET['raiseEvent'];
+        $run_SafeScript = $_GET['r_s_s'];
+        if (is_array($call_stack) && in_array($current_call, $call_stack)) {
             $call_stack[] = $current_call;
             DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
             return 0;
@@ -454,13 +463,17 @@ function runScriptSafe($id, $params = '')
     }
 
     $call_stack[] = $current_call;
-    $params['m_c_s'] = $call_stack;       
+    $params['raiseEvent'] = $raiseEvent;	 
+    $params['m_c_s'] = $call_stack;     
+    $params['r_s_s'] = $run_SafeScript;      
 
-    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && count($call_stack)>1) {
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeScript) {
         $result = runScript($id,$params);
     } else {
+        $params['r_s_s'] = 1;
         $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
     }  
+    endMeasure('runScriptSafe');
     return $result;
 }
 
