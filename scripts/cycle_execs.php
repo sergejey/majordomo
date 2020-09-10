@@ -16,11 +16,14 @@ $checked_time = 0;
 setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 $cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 SQLExec("DELETE FROM safe_execs");
 
 while (1) {
-    if (time() - $checked_time > 20) {
+    if (time() - $checked_time > 30) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
         // saveToCache("MJD:$cycleVarName", $checked_time);

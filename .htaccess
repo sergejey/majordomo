@@ -42,7 +42,7 @@ deny from all
  Order Allow,Deny
  Deny from all
  </FilesMatch>
- 
+
 <IfModule mod_expires.c>
   <FilesMatch \.(gif|png|jpg|jpeg|ogg|mp4|mkv|flv|swf|wmv|asf|asx|wma|wax|wmx|wm)$>
     ExpiresDefault "access plus 7 day"

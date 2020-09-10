@@ -28,13 +28,13 @@ if ($backup) {
     $res = $sv->dump($out, 1);
     if ($res) {
 
-        $sv->echonow("Removing temporary files ... ");
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
-        $sv->echonow(" OK<br/> ", 'green');
+        echonow("Removing temporary files ... ");
+        removeTree(ROOT . 'cms/saverestore/temp');
+        echonow(" OK<br/> ", 'green');
 
 
-        $sv->echonow("Redirecting to main page...");
-        $sv->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Backup complete!") . '";</script>');
+        echonow("Redirecting to main page...");
+        echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Backup complete!") . '";</script>');
     }
 
 } else {
@@ -53,21 +53,21 @@ if ($backup) {
         }
         $res = $sv->upload($out, 1);
         if ($res) {
-            $sv->echonow("Removing temporary files ... ");
-            $sv->removeTree(ROOT . 'cms/saverestore/temp');
+            echonow("Removing temporary files ... ");
+            removeTree(ROOT . 'cms/saverestore/temp');
             @unlink(ROOT . "cms/modules_installed/control_modules.installed");
-            $sv->echonow(" OK<br/> ", 'green');
-            $sv->echonow("<b>Main system updated!</b><br/>", 'green');
+            echonow(" OK<br/> ", 'green');
+            echonow("<b>Main system updated!</b><br/>", 'green');
             if ($with_extensions) {
-                $sv->echonow("Redirecting to extensions update...");
-                $sv->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?action=market&mode=iframe&mode2=update_all";</script>');
+                echonow("Redirecting to extensions update...");
+                echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?action=market&mode=iframe&mode2=update_all";</script>');
             } else {
-                $sv->echonow("Rebooting system ... ");
+                echonow("Rebooting system ... ");
                 @SaveFile(ROOT . 'reboot', 'updated');
-                $sv->echonow(" OK<br/> ", 'green');
+                echonow(" OK<br/> ", 'green');
 
-                $sv->echonow("Redirecting to main page...");
-                $sv->echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Updates Installed!") . '";</script>');
+                echonow("Redirecting to main page...");
+                echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Updates Installed!") . '";</script>');
             }
         }
     }
