@@ -475,7 +475,7 @@ class objects extends module
      */
     function raiseEvent($name, $params = 0, $parent = 0)
     {
-		if (!is_array($params)) {
+	if (!is_array($params)) {
             $params = array();
         }
 		$params['raiseEvent'] = '1';
@@ -495,8 +495,12 @@ class objects extends module
             if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
                 $call_stack = $params['m_c_s'];
             }
+            if (isset($params['r_s_m']) && !empty($params['r_s_m'])) {
+                $run_SafeMethod = $params['r_s_m'];
+            }
             $raiseEvent = $params['raiseEvent'];
             unset($params['raiseEvent']);
+            unset($params['r_s_m']);
             unset($params['m_c_s']);
             $current_call .= '.' . md5(json_encode($params));
         }
@@ -518,11 +522,12 @@ class objects extends module
 
         $call_stack[] = $current_call;
         $params['raiseEvent'] = $raiseEvent;	 
-        $params['m_c_s'] = $call_stack;       
-
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && count($call_stack)>1) {
+        $params['m_c_s'] = $call_stack;     
+        $params['r_s_m'] = $run_SafeMethod;
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
             $result = $this->callMethod($name, $params);
         } else {
+            $params['r_s_m'] = 1;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
