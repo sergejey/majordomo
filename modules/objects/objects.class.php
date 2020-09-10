@@ -475,7 +475,7 @@ class objects extends module
      */
     function raiseEvent($name, $params = 0, $parent = 0)
     {
-		if (!is_array($params)) {
+	if (!is_array($params)) {
             $params = array();
         }
 		$params['raiseEvent'] = '1';
@@ -495,8 +495,12 @@ class objects extends module
             if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
                 $call_stack = $params['m_c_s'];
             }
+            if (isset($params['r_s_m']) && !empty($params['r_s_m'])) {
+                $run_SafeMethod = $params['r_s_m'];
+            }
             $raiseEvent = $params['raiseEvent'];
             unset($params['raiseEvent']);
+            unset($params['r_s_m']);
             unset($params['m_c_s']);
             $current_call .= '.' . md5(json_encode($params));
         }
@@ -505,6 +509,7 @@ class objects extends module
                 $call_stack = $_GET['m_c_s'];
             }
             $raiseEvent = $_GET['raiseEvent'];
+            $run_SafeMethod = $_GET['r_s_m'];
             if (is_array($call_stack) && in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
                 DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
@@ -518,11 +523,12 @@ class objects extends module
 
         $call_stack[] = $current_call;
         $params['raiseEvent'] = $raiseEvent;	 
-        $params['m_c_s'] = $call_stack;       
-
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && count($call_stack)>1) {
+        $params['m_c_s'] = $call_stack;     
+        $params['r_s_m'] = $run_SafeMethod;
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
             $result = $this->callMethod($name, $params);
         } else {
+            $params['r_s_m'] = 1;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
@@ -584,6 +590,7 @@ class objects extends module
             }
             if ($params) {
                 $saved_params = $params;
+		unset($params['r_s_m']);
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
                 $method['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
@@ -708,10 +715,6 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
-    	    $cached_value = checkFromCache('MJD:' . $this->object_title . '.' . $property);
-            if ($cached_value !== false) {
-                return $cached_value;
-            }
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
                 startMeasure('getPropertyCached2');
@@ -720,9 +723,9 @@ class objects extends module
                 endMeasure('getProperty', 1);
                 return $value['VALUE'];
             }
-        //}
+        }
 
-        //if ($this->object_title) {
+        if ($this->object_title) {
             if ($property == 'object_title') {
                 return $this->object_title;
             } elseif ($property == 'object_description') {
@@ -766,31 +769,20 @@ class objects extends module
      *
      * @access public
      */
-    function setProperty($property, $value='', $no_linked = 0, $source = '')
+    function setProperty($property, $value, $no_linked = 0, $source = '')
     {
-        // chek value as array
-        if (is_array($value)) {
-            DebMes ('WARNING!!! Wrong property ' . $property .' is set  property '. serialize($value). ' cannot to be  array', 'property');
-            return ;
-        }
-        // chek property as NULL
-        if ($property === NULL) {
-            DebMes ('WARNING!!! Wrong property ' . $property . ' is set '. $value . ' cannot to be  NULL', 'property');
-            return ;
-        }
-        // chek value as NULL
-        if ($value === NULL) {
-            DebMes ('WARNING!!! Wrong property ' . $property . ' is set value '. $value . ' cannot to be  NULL', 'property');
-            return ;
-        } 
 
-        if (stripos($property, 'cycle_') === false) {
+        if (!preg_match('/cycle/is', $property) && function_exists('verbose_log')) {
             verbose_log('Property [' . $this->object_title . '.' . $property . '] set to \'' . $value . '\'');
         }
         startMeasure('setProperty');
         startMeasure('setProperty (' . $property . ')');
 
         $property = trim($property);
+
+        if (is_null($value)) {
+            $value = '';
+        }
 
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
@@ -800,10 +792,10 @@ class objects extends module
             $source = CALL_SOURCE;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = substr(urldecode($_SERVER['REQUEST_URI']), 0, 100);
+            $source = urldecode($_SERVER['REQUEST_URI']);
         }
-        if (strlen($source) > 100) {
-            $source = substr($source, 0, 100) . '...';
+        if (strlen($source) > 250) {
+            $source = substr($source, 0, 250) . '...';
         }
 
         if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES == 1) {
@@ -862,24 +854,27 @@ class objects extends module
         if ($id) {
             $prop = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $id . "'");
 
-     // proverki na validnost dannih - nothing to change
-            switch ($prop['VALIDATION_TYPE']) {
-                case 1:
-                    if (!is_numeric($value)) return false;
-                    if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) return false;
-                    if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) return false;
-                    break;
-                case 2:
-                    if ($value != '1' && $value != '0') return false;
-                    break;
-                case 3:
-                    $items = explode(',', $prop['VALIDATION_LIST']);
-                    if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
-                    break;
-                case 100:
-                    eval($prop['VALIDATION_CODE']);
-                    if (is_null($value)) return false;
-                    break;
+            if ($prop['VALIDATION_TYPE'] == 1) {
+                if (!is_numeric($value)) return false;
+                if ($prop['VALIDATION_NUM_MIN'] != '' && (float)$value < (float)$prop['VALIDATION_NUM_MIN']) {
+                    return false;
+                }
+                if ($prop['VALIDATION_NUM_MAX'] != '' && (float)$value > (float)$prop['VALIDATION_NUM_MAX']) {
+                    return false;
+                }
+            }
+            if ($prop['VALIDATION_TYPE'] == 2) {
+                if ($value != '1' && $value != '0') {
+                    return false;
+                }
+            }
+            if ($prop['VALIDATION_TYPE'] == 3) {
+                $items = explode(',', $prop['VALIDATION_LIST']);
+                if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
+            }
+            if ($prop['VALIDATION_TYPE'] == 100) {
+                eval($prop['VALIDATION_CODE']);
+                if (is_null($value)) return false;
             }
 
             $property = $prop['TITLE'];
@@ -957,40 +952,8 @@ class objects extends module
         }
         endMeasure('setproperty_update');
 
-	// esli staroe znachenie ravno novomu 
-        if ($old_value != $value) {
-            // zapishem v kesh
-            saveToCache($cached_name, $value);
-            //zapostim  v websockety
-            startMeasure('setproperty_postwebsocketqueue');
-            postToWebSocketQueue($this->object_title . '.' . $property, $value);
-            endMeasure('setproperty_postwebsocketqueue');
-            if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
-                global $property_linked_history;
-                if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
-                    $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
-                    $params = array();
-                    $params['PROPERTY'] = $property;
-                    $params['NEW_VALUE'] = (string)$value;
-                    $params['OLD_VALUE'] = (string)$old_value;
-                    $params['SOURCE'] = (string)$source;
-                    //$this->callMethod($prop['ONCHANGE'], $params);
-                    $this->callMethodSafe($prop['ONCHANGE'], $params);
-                    unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
-                }
-            }
-	    if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
-                $q_rec = array();
-                $q_rec['VALUE_ID'] = $v['ID'];
-                $q_rec['ADDED'] = date('Y-m-d H:i:s');
-                $q_rec['VALUE'] = $value . '';
-                $q_rec['SOURCE'] = $source . '';
-                $q_rec['OLD_VALUE'] = $old_value;
-                $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
-                SQLInsert('phistory_queue', $q_rec);
-            }
-	}
-        
+        saveToCache($cached_name, $value);
+
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             $this->device_id &&
@@ -1037,6 +1000,38 @@ class objects extends module
                 endMeasure('linkedModule' . $linked_module);
             }
             endMeasure('linkedModulesProcessing');
+        }
+
+        if (function_exists('postToWebSocketQueue')) {
+            startMeasure('setproperty_postwebsocketqueue');
+            postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            endMeasure('setproperty_postwebsocketqueue');
+        }
+
+        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+            $q_rec = array();
+            $q_rec['VALUE_ID'] = $v['ID'];
+            $q_rec['ADDED'] = date('Y-m-d H:i:s');
+            $q_rec['VALUE'] = $value . '';
+            $q_rec['SOURCE'] = $source . '';
+            $q_rec['OLD_VALUE'] = $old_value;
+            $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
+            SQLInsert('phistory_queue', $q_rec);
+        }
+
+        if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
+            global $property_linked_history;
+            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+                $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
+                $params = array();
+                $params['PROPERTY'] = $property;
+                $params['NEW_VALUE'] = (string)$value;
+                $params['OLD_VALUE'] = (string)$old_value;
+                $params['SOURCE'] = (string)$source;
+                //$this->callMethod($prop['ONCHANGE'], $params);
+                $this->callMethodSafe($prop['ONCHANGE'], $params);
+                unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+            }
         }
 
         endMeasure('setProperty (' . $property . ')', 1);
@@ -1231,3 +1226,4 @@ EOD;
 * TW9kdWxlIGNyZWF0ZWQgTWF5IDIyLCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
 *
 */
+
