@@ -589,6 +589,7 @@ class objects extends module
             }
             if ($params) {
                 $saved_params = $params;
+		unset($params['r_s_m']);
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
                 $method['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
