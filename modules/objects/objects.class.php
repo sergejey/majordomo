@@ -509,6 +509,7 @@ class objects extends module
                 $call_stack = $_GET['m_c_s'];
             }
             $raiseEvent = $_GET['raiseEvent'];
+            $run_SafeMethod = $_GET['r_s_m'];
             if (is_array($call_stack) && in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
                 DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
