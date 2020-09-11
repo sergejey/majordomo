@@ -1280,10 +1280,16 @@ class saverestore extends module
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
-            @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/config.php');
+            
+            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/config.php')) {
+                echonow("Unlink config.php ... ");
+                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/config.php');
+                echonow(" OK<br/> ", 'green');
+            }
+
 
             if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'scripts/cycle_db_save.php') && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php')) {
-                rename(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/scripts/cycle_db_save.php');
+                @rename(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php', DOC_ROOT . DIRECTORY_SEPARATOR  . '/scripts/cycle_db_save.php');
             }
 
             if ($iframe) {
