@@ -1278,7 +1278,7 @@ class saverestore extends module
                 //exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
                 //passthru(DOC_ROOT . '/tar -xvf ../' . str_replace('.tgz', '.tar', $file), $out);
                 exec(DOC_ROOT . '\gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
-                exec(DOC_ROOT . '\tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $output, $res);
+                passthru(DOC_ROOT . '\tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $res);
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
