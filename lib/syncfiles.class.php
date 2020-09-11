@@ -767,9 +767,11 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file) && ($file != '.') && ($file != '..')) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            } else if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
                 $res = copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
-            } elseif (file_exists($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
+            } else if (file_exists($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
                 } else {
