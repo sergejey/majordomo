@@ -784,7 +784,7 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
                     try {
                         copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
                     } catch (Exception $e) {
-                        DebMes('Поймано исключение: '.  $e->getMessage(), 'error';
+                        DebMes('Поймано исключение: '.  $e->getMessage(), 'error');
                     }
                 }
             }
