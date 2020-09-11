@@ -749,26 +749,29 @@ function UTF_Encode($str, $type)
 */
 function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
-    $res = 1;
     //Remove last slash '/' in source and destination - slash was added when copy
     $source = preg_replace("#/$#", "", $source);
     $destination = preg_replace("#/$#", "", $destination);
     if (!Is_Dir2($source)) {
-        return 0; // cannot create destination path
+        // cannot create destination path
+        return false; 
     }
 
     if (!Is_Dir2($destination)) {
         if (!mkdir($destination, 0777, true)) {
-            return 0; // cannot create destination path
+            // cannot create destination path
+            return false; 
         }
     }
 
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-                $res = copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
-            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            } else if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
+                $res = copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
+            } else if (file_exists($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
                 } else {
@@ -781,13 +784,17 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
                     }
                 }
                 if ($ok_to_copy) {
-                    @$res = copy($source . "/" . $file, $destination . "/" . $file);
+                    try {
+                        copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
+                    } catch (Exception $e) {
+                        DebMes('Не смог скопировать файл '. $source . DIRECTORY_SEPARATOR . $file . '. Причина ' . $e->getMessage(), 'error');
+                    }
                 }
             }
         }
         closedir($dir);
     }
-    return $res;
+    return true;
 }
 
 function removeEmptySubFolders($path)
