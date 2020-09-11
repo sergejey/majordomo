@@ -1275,10 +1275,8 @@ class saverestore extends module
                 echonow("Unpacking $file ... ");
             }
             if (IsWindowsOS()) {
-                //exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                //passthru(DOC_ROOT . '/tar -xvf ../' . str_replace('.tgz', '.tar', $file), $out);
-                exec(DOC_ROOT . '\gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
-                passthru(DOC_ROOT . '\tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $res);
+                exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
+                passthru(DOC_ROOT . DIRECTORY_SEPARATOR . 'tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $res);
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
