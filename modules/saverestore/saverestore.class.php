@@ -1334,7 +1334,7 @@ class saverestore extends module
             }
 
             // UPDATING FILES DIRECTLY Исправлено верно на док_руут - потому что функция копиТрее не воспринимает других слешей 
-            @copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder, DOC_ROOT , 1);
+            copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder, DOC_ROOT , 1);
 
             if ($iframe) {
                 echonow(" OK<br/> ", 'green');
