@@ -782,9 +782,9 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
                 }
                 if ($ok_to_copy) {
                     try {
-                        copy($source . "/" . $file, $destination . "/" . $file);
+                        copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
                     } catch (Exception $e) {
-                        echo 'Поймано исключение: ',  $e->getMessage(), "\n";
+                        DebMes('Поймано исключение: '.  $e->getMessage(), 'error';
                     }
                 }
             }
