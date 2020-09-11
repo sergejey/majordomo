@@ -1275,8 +1275,10 @@ class saverestore extends module
                 echonow("Unpacking $file ... ");
             }
             if (IsWindowsOS()) {
-                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                passthru(DOC_ROOT . '/tar -xvf ../' . str_replace('.tgz', '.tar', $file), $out);
+                //exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                //passthru(DOC_ROOT . '/tar -xvf ../' . str_replace('.tgz', '.tar', $file), $out);
+                exec(DOC_ROOT . '\gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
+                exec(DOC_ROOT . '\tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $output, $res);
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
@@ -1331,8 +1333,8 @@ class saverestore extends module
                 echonow("Updating files (".DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder." to " . DOC_ROOT . DIRECTORY_SEPARATOR .") ... ");
             }
 
-            // UPDATING FILES DIRECTLY
-            copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder, DOC_ROOT . DIRECTORY_SEPARATOR, 1); // restore all files
+            // UPDATING FILES DIRECTLY Исправлено верно на док_руут - потому что функция копиТрее не воспринимает других слешей 
+            copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder, DOC_ROOT , 1);
 
             if ($iframe) {
                 echonow(" OK<br/> ", 'green');
