@@ -754,21 +754,21 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
     $source = preg_replace("#/$#", "", $source);
     $destination = preg_replace("#/$#", "", $destination);
     if (!Is_Dir2($source)) {
-        return 0; // cannot create destination path
+        return false; // cannot create destination path
     }
 
     if (!Is_Dir2($destination)) {
         if (!mkdir($destination, 0777, true)) {
-            return 0; // cannot create destination path
+            return false; // cannot create destination path
         }
     }
 
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-                $res = copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
-            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+            if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file) && ($file != '.') && ($file != '..')) {
+                $res = copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
+            } elseif ((Is_File($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file)) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
                 } else {
@@ -781,13 +781,17 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
                     }
                 }
                 if ($ok_to_copy) {
-                    @$res = copy($source . "/" . $file, $destination . "/" . $file);
+                    try {
+                        copy($source . "/" . $file, $destination . "/" . $file);
+                    } catch (Exception $e) {
+                        echo 'Поймано исключение: ',  $e->getMessage(), "\n";
+                    }
                 }
             }
         }
         closedir($dir);
     }
-    return $res;
+    return true;
 }
 
 function removeEmptySubFolders($path)
