@@ -87,9 +87,9 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
         $params = $_GET;
     }
 
-    if (get_magic_quotes_gpc()) {
-        stripit($params);
-    }
+    //if (get_magic_quotes_gpc()) {
+    //    stripit($params);
+    //}
 
     foreach ($params as $k => $v) {
         ${$k} = $v;
