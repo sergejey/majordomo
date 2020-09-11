@@ -749,17 +749,18 @@ function UTF_Encode($str, $type)
 */
 function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
-    $res = 1;
     //Remove last slash '/' in source and destination - slash was added when copy
     $source = preg_replace("#/$#", "", $source);
     $destination = preg_replace("#/$#", "", $destination);
     if (!Is_Dir2($source)) {
-        return false; // cannot create destination path
+        // cannot create destination path
+        return false; 
     }
 
     if (!Is_Dir2($destination)) {
         if (!mkdir($destination, 0777, true)) {
-            return false; // cannot create destination path
+            // cannot create destination path
+            return false; 
         }
     }
 
