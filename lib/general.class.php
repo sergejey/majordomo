@@ -114,9 +114,6 @@ function gr($var_name, $type = 'trim')
 {
     if (isset($_REQUEST[$var_name])) {
         $value = $_REQUEST[$var_name];
-        if (get_magic_quotes_gpc()) {
-            stripit($value);
-        }
     } else {
         $value = '';
     }
