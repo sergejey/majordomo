@@ -69,7 +69,7 @@ $this->callMethodSafe('logicAction');
 
 //DebMes("LinkedDevices $ot",'openclose');
 startMeasure('statusUpdatedLinkedDevices');
-include_once(DIR_MODULES . 'devices/devices.class.php');
+include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
 endMeasure('statusUpdatedLinkedDevices');

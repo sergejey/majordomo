@@ -140,7 +140,11 @@ class scripts extends module
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
         if ($rec['ID']) {
             $rec['EXECUTED'] = date('Y-m-d H:i:s');
-            $source = urldecode($_SERVER['REQUEST_URI']);
+            if (defined('CALL_SOURCE')) {
+                $source = CALL_SOURCE;
+            } else {
+                $source = urldecode($_SERVER['REQUEST_URI']);
+            }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }

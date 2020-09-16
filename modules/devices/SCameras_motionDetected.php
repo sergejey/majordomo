@@ -1,2 +1,2 @@
 <?php
-require(DIR_MODULES.'devices/SMotions_motionDetected.php');
+require(dirname(__FILE__).'/SMotions_motionDetected.php');

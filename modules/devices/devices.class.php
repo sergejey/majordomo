@@ -86,8 +86,8 @@ class devices extends module
 
     function setDictionary()
     {
-        include_once(DIR_MODULES . 'devices/devices_structure.inc.php');
-        include_once(DIR_MODULES . 'devices/devices_structure_links.inc.php');
+        include_once(dirname(__FILE__) . '/devices_structure.inc.php');
+        include_once(dirname(__FILE__) . '/devices_structure_links.inc.php');
     }
 
     /**
@@ -404,9 +404,9 @@ class devices extends module
             if (is_array($v['METHODS'])) {
                 foreach ($v['METHODS'] as $mk => $mv) {
                     $method_id = addClassMethod($v['CLASS'], $mk, "require(DIR_MODULES.'devices/" . $v['CLASS'] . "_" . $mk . ".php');", 'SDevices');
-                    if (!file_exists(DIR_MODULES . "devices/" . $v['CLASS'] . "_" . $mk . ".php")) {
+                    if (!file_exists(dirname(__FILE__) .'/'. $v['CLASS'] . "_" . $mk . ".php")) {
                         $code = '<?php' . "\n\n";
-                        @SaveFile(DIR_MODULES . "devices/" . $v['CLASS'] . "_" . $mk . ".php", $code);
+                        @SaveFile(dirname(__FILE__) . "/" . $v['CLASS'] . "_" . $mk . ".php", $code);
                     }
                     if ($method_id) {
                         $method = SQLSelectOne("SELECT * FROM methods WHERE ID=" . $method_id);
@@ -427,9 +427,9 @@ class devices extends module
                     foreach ($methods as $mk => $mv) {
                         list($object, $method_name) = explode('.', $mk);
                         addClassObject($class_name, $object);
-                        if (!file_exists(DIR_MODULES . "devices/" . $mv . ".php")) {
+                        if (!file_exists(dirname(__FILE__) . "/" . $mv . ".php")) {
                             $code = '<?php' . "\n\n";
-                            @SaveFile(DIR_MODULES . "devices/" . $mv . ".php", $code);
+                            @SaveFile(dirname(__FILE__) . "/" . $mv . ".php", $code);
                         }
                         injectObjectMethodCode($mk, 'SDevices', "require(DIR_MODULES.'devices/" . $mv . ".php');");
                     }
@@ -461,7 +461,7 @@ class devices extends module
     {
         if ($event == 'COMMAND' && $details['member_id']) {
             //DebMes("Processing event $event",'simple_devices');
-            include_once(DIR_MODULES . 'devices/processCommand.inc.php');
+            include_once(dirname(__FILE__) . '/processCommand.inc.php');
             //DebMes("Processing event $event DONE",'simple_devices');
         }
         if ($event == 'MINUTELY') {
@@ -558,7 +558,7 @@ class devices extends module
     function homebridgeSync($device_id = 0, $force_refresh = 0)
     {
         if ($this->isHomeBridgeAvailable()) {
-            include_once(DIR_MODULES . 'devices/homebridgeSync.inc.php');
+            include_once(dirname(__FILE__) . '/homebridgeSync.inc.php');
         }
     }
 
@@ -626,7 +626,7 @@ class devices extends module
 
     function manage_groups(&$out)
     {
-        require(DIR_MODULES . $this->name . '/devices_manage_groups.inc.php');
+        require(dirname(__FILE__) . '/devices_manage_groups.inc.php');
     }
 
     /**
@@ -982,7 +982,7 @@ class devices extends module
      */
     function search_devices(&$out)
     {
-        require(DIR_MODULES . $this->name . '/devices_search.inc.php');
+        require(dirname(__FILE__) . '/devices_search.inc.php');
     }
 
     /**
@@ -992,12 +992,12 @@ class devices extends module
      */
     function edit_devices(&$out, $id)
     {
-        require(DIR_MODULES . $this->name . '/devices_edit.inc.php');
+        require(dirname(__FILE__) . '/devices_edit.inc.php');
     }
 
     function quick_edit(&$out)
     {
-        require(DIR_MODULES . $this->name . '/devices_quick_edit.inc.php');
+        require(dirname(__FILE__) . '/devices_quick_edit.inc.php');
     }
 
     /**
@@ -1418,7 +1418,7 @@ class devices extends module
             endMeasure('checkLinkedDevicesAction');
             return 0;
         }
-        include(DIR_MODULES . 'devices/devices_links_actions.inc.php');
+        include(dirname(__FILE__) . '/devices_links_actions.inc.php');
         endMeasure('checkLinkedDevicesAction');
         return 1;
     }

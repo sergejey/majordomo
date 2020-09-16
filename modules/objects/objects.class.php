@@ -475,7 +475,7 @@ class objects extends module
      */
     function raiseEvent($name, $params = 0, $parent = 0)
     {
-		if (!is_array($params)) {
+	if (!is_array($params)) {
             $params = array();
         }
 		$params['raiseEvent'] = '1';
@@ -495,8 +495,12 @@ class objects extends module
             if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
                 $call_stack = $params['m_c_s'];
             }
+            if (isset($params['r_s_m']) && !empty($params['r_s_m'])) {
+                $run_SafeMethod = $params['r_s_m'];
+            }
             $raiseEvent = $params['raiseEvent'];
             unset($params['raiseEvent']);
+            unset($params['r_s_m']);
             unset($params['m_c_s']);
             $current_call .= '.' . md5(json_encode($params));
         }
@@ -505,7 +509,8 @@ class objects extends module
                 $call_stack = $_GET['m_c_s'];
             }
             $raiseEvent = $_GET['raiseEvent'];
-            if (in_array($current_call, $call_stack)) {
+            $run_SafeMethod = $_GET['r_s_m'];
+            if (is_array($call_stack) && in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
                 DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
                 return 0;
@@ -518,11 +523,12 @@ class objects extends module
 
         $call_stack[] = $current_call;
         $params['raiseEvent'] = $raiseEvent;	 
-        $params['m_c_s'] = $call_stack;       
-
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && count($call_stack)>1) {
+        $params['m_c_s'] = $call_stack;     
+        $params['r_s_m'] = $run_SafeMethod;
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
             $result = $this->callMethod($name, $params);
         } else {
+            $params['r_s_m'] = 1;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
@@ -564,10 +570,12 @@ class objects extends module
         if ($id) {
 
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
-
             $method['EXECUTED'] = date('Y-m-d H:i:s');
-
-            $source = urldecode($_SERVER['REQUEST_URI']);
+            if (defined('CALL_SOURCE')) {
+                $source = CALL_SOURCE;
+            } else {
+                $source = urldecode($_SERVER['REQUEST_URI']);
+            }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
@@ -582,6 +590,7 @@ class objects extends module
             }
             if ($params) {
                 $saved_params = $params;
+		unset($params['r_s_m']);
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
                 $method['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
@@ -778,6 +787,9 @@ class objects extends module
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
             $no_linked = 0;
+        }
+        if (!$source && defined('CALL_SOURCE')) {
+            $source = CALL_SOURCE;
         }
         if (!$source && $_SERVER['REQUEST_URI']) {
             $source = urldecode($_SERVER['REQUEST_URI']);

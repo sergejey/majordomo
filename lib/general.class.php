@@ -17,12 +17,19 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
     $p = str_replace(' ', '|', $p);
 
     $remoteAddr = $_SERVER["REMOTE_ADDR"];
-    if ((($_SERVER["REMOTE_ADDR"] == '127.0.0.1') || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
+
+    if (defined('LOCAL_IP') && LOCAL_IP!='') {
+        $local_ip = LOCAL_IP;
+    } else {
+        $local_ip = '127.0.0.1';
+    }
+
+    if ((($_SERVER["REMOTE_ADDR"] == $local_ip) || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
         $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
     }
 
 
-    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != '127.0.0.1' && trim($remoteAddr) != '::1') {
+    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
         if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
             $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
             DebMes($data, 'auth');
@@ -80,9 +87,10 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
         $params = $_GET;
     }
 
-    if (get_magic_quotes_gpc()) {
-        stripit($params);
-    }
+    // function get_magic_quotes_gpc() is deprecated
+    //if (get_magic_quotes_gpc()) {
+    //    stripit($params);
+    //}
 
     foreach ($params as $k => $v) {
         ${$k} = $v;
@@ -106,9 +114,6 @@ function gr($var_name, $type = 'trim')
 {
     if (isset($_REQUEST[$var_name])) {
         $value = $_REQUEST[$var_name];
-        if (get_magic_quotes_gpc()) {
-            stripit($value);
-        }
     } else {
         $value = '';
     }
@@ -151,55 +156,6 @@ function redirect($url, $owner = "", $no_sid = 0)
         header($url);
         exit;
     }
-}
-
-/**
- * Summary of LoadFile
- *
- * @access public
- *
- * @param mixed $filename File name
- * @return string
- */
-function LoadFile($filename)
-{
-    // loading file
-    $f = fopen($filename, "r");
-    $data = "";
-    if ($f) {
-        $fsize = filesize($filename);
-        if ($fsize > 0) {
-            $data = fread($f, $fsize);
-        }
-        fclose($f);
-    }
-    return $data;
-}
-
-/**
- * Summary of SaveFile
- * @access public
- *
- * @param mixed $filename File name
- * @param mixed $data Content
- * @return int
- */
-function SaveFile($filename, $data)
-{
-    // saving file
-    $f = fopen("$filename", "w+");
-
-    if ($f) {
-        flock($f, 2);
-        fwrite($f, $data);
-        flock($f, 3);
-        fclose($f);
-        @chmod($filename, 0666);
-
-        return 1;
-    }
-
-    return 0;
 }
 
 /**
@@ -676,28 +632,6 @@ function colorizeArray(&$ar, $every = 2)
 }
 
 /**
- * Summary of clearCache
- * @param mixed $verbose Verbode (default 0)
- * @return void
- */
-function clearCache($verbose = 0)
-{
-    if ($handle = opendir(ROOT . 'cms/cached')) {
-        while (false !== ($file = readdir($handle))) {
-            if (is_file(ROOT . 'cms/cached/' . $file)) {
-                @unlink(ROOT . 'cms/cached/' . $file);
-
-                if ($verbose) {
-                    echo "File : " . $file . " <b>removed</b><br>\n";
-                }
-            }
-        }
-
-        closedir($handle);
-    }
-}
-
-/**
  * Summary of checkBadwords
  * @param mixed $s String
  * @param mixed $replace Replace (default 1)
@@ -742,23 +676,6 @@ function checkBadwords($s, $replace = 1)
     } else {
         return 0;
     }
-}
-
-/**
- * Ping host
- * @param mixed $host Host address
- * @return bool
- */
-function ping($host)
-{
-    if (IsWindowsOS())
-        exec(sprintf('ping -n 1 %s', escapeshellarg($host)), $res, $rval);
-    elseif (substr(php_uname(), 0, 7) === "FreeBSD")
-        exec(sprintf('ping -c 1 -t 5 %s', escapeshellarg($host)), $res, $rval);
-    else
-        exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
-
-    return $rval === 0 && preg_match('/ttl/is', join('', $res));
 }
 
 /**
