@@ -87,9 +87,10 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
         $params = $_GET;
     }
 
-    if (get_magic_quotes_gpc()) {
-        stripit($params);
-    }
+    // function get_magic_quotes_gpc() is deprecated
+    //if (get_magic_quotes_gpc()) {
+    //    stripit($params);
+    //}
 
     foreach ($params as $k => $v) {
         ${$k} = $v;
@@ -113,9 +114,6 @@ function gr($var_name, $type = 'trim')
 {
     if (isset($_REQUEST[$var_name])) {
         $value = $_REQUEST[$var_name];
-        if (get_magic_quotes_gpc()) {
-            stripit($value);
-        }
     } else {
         $value = '';
     }
