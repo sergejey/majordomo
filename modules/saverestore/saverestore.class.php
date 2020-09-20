@@ -127,7 +127,7 @@ class saverestore extends module
             $out['OK_MSG'] = $ok_msg;
         }
 
-        if (gr('mode')=='force_update') {
+        if (gr('mode') == 'force_update') {
             unset($_REQUEST['mode']);
             $this->autoUpdateSystem();
         }
@@ -158,7 +158,7 @@ class saverestore extends module
 
         $this->getConfig();
 
-        if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp')) {
+        if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp')) {
             $out['CLEAR_FIRST'] = 1;
         }
 
@@ -302,9 +302,10 @@ class saverestore extends module
 
         if ($this->mode == 'clear') {
             set_time_limit(0);
-            removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
-            @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . "cms/modules_installed/control_modules.installed");
-            global $with_extensions;
+            removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
+            @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . "cms/modules_installed/control_modules.installed");
+            $with_extensions=gr('with_extensions');
+            $with_backup=gr('with_backup');
             if ($with_extensions) {
                 $this->redirect("?(panel:{action=market})&md=market&mode=update_new");
             }
@@ -349,11 +350,11 @@ class saverestore extends module
 
         if ($this->mode == 'delete') {
             $file = gr('file');
-            if ($file!='') {
+            if ($file != '') {
                 if (is_dir($file)) { //s
                     removeTree($file);
-                } elseif (is_file(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $file)) {
-                    @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $file);
+                } elseif (is_file(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file)) {
+                    @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file);
                 }
             }
 
@@ -365,8 +366,12 @@ class saverestore extends module
         }
 
         if ($this->mode == 'getlatest_iframe') {
-            global $with_extensions;
+
+            $with_extensions=gr('with_extensions');
+            $with_backup=gr('with_backup');
+
             $out['WITH_EXTENSIONS'] = $with_extensions;
+            $out['WITH_BACKUP'] = $with_backup;
 
             global $backup;
             $out['BACKUP'] = $backup;
@@ -381,14 +386,14 @@ class saverestore extends module
         }
 
 
-        $source = DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore';
+        $source = DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore';
         $currentdir = getcwd();
         chdir($source);
         array_multisort(array_map('filemtime', ($files = glob("*.*"))), SORT_DESC, $files);
         if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
             $backups_dir = SETTINGS_BACKUP_PATH;
         } else {
-            $backups_dir = DOC_ROOT . DIRECTORY_SEPARATOR  . 'backup';
+            $backups_dir = DOC_ROOT . DIRECTORY_SEPARATOR . 'backup';
         }
         chdir($backups_dir);
         $backups = glob("*");
@@ -404,7 +409,7 @@ class saverestore extends module
             $tmp['FILENAME'] = $file;
             if (is_file($source . "/" . $file)) {
                 $tmp['FILESIZE'] = number_format((filesize($source . "/" . $file) / 1024 / 1024), 2);
-                $tmp['UPDATED'] = date('Y-m-d H:i:s',filemtime($source . "/" . $file));
+                $tmp['UPDATED'] = date('Y-m-d H:i:s', filemtime($source . "/" . $file));
                 $tmp['TITLE'] = basename($file);
             } else {
                 $tmp['TITLE'] = 'Backup ' . basename($file);
@@ -436,7 +441,7 @@ class saverestore extends module
      *
      * @access public
      */
-    function getLatest(&$out, $iframe = 0)
+    function getLatest(&$out, $iframe = 0, $with_backup = 1)
     {
 
 
@@ -445,15 +450,15 @@ class saverestore extends module
 
         set_time_limit(0);
 
-        if (!is_dir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore')) {
+        if (!is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore')) {
             @umask(0);
-            @mkdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore', 0777);
+            @mkdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore', 0777);
         }
 
-        $filename = DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/master.tgz';
+        $filename = DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/master.tgz';
 
-        @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/master.tgz');
-        @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/master.tar');
+        @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/master.tgz');
+        @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/master.tar');
 
         $f = fopen($filename, 'wb');
         if ($f == FALSE) {
@@ -483,25 +488,28 @@ class saverestore extends module
             }
 
 
-            global $code;
-            global $data;
-            global $design;
-            $code = 1;
-            $data = 1; //fix
-            $design = 1;
-            $out['BACKUP'] = 1;
-            $this->dump($out, $iframe);
-            removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', $iframe);
+            if ($with_backup) {
+                global $code;
+                global $data;
+                global $design;
+                $code = 1;
+                $data = 1; //fix
+                $design = 1;
+                $out['BACKUP'] = 1;
+                $this->dump($out, $iframe);
+            }
+            removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', $iframe);
 
             if (!$iframe) {
-                global $with_extensions;
+                $with_extensions=gr('with_extensions');
+                $with_backup=gr('with_backup');
                 $folder = 'majordomo-master';
                 $basename = basename($this->url);
                 if ($basename != 'master.tar.gz') {
                     $basename = str_replace('.tar.gz', '', $basename);
                     $folder = str_replace('master', $basename, $folder);
                 }
-                $this->redirect("?mode=upload&restore=" . urlencode('master.tgz') . "&folder=" . urlencode($folder) . "&with_extensions=" . $with_extensions);
+                $this->redirect("?mode=upload&restore=" . urlencode('master.tgz') . "&folder=" . urlencode($folder) . "&with_extensions=" . $with_extensions."&with_backup=".$with_backup);
             } else {
                 return 1;
             }
@@ -537,15 +545,15 @@ class saverestore extends module
 
         $copied_dirs = array();
 
-        if (mkdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0777)) {
+        if (mkdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0777)) {
             for ($i = 0; $i < $total; $i++) {
-                $this->copyFile(ROOT . $to_submit[$i], DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/' . $to_submit[$i]);
-                if (is_array($pack_folders) && in_array($to_submit[$i], $pack_folders) && !$copied_dirs[dirname(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/' . $to_submit[$i])]) {
-                    copyTree(dirname(ROOT . $to_submit[$i]), dirname(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/' . $to_submit[$i]));
-                    $copied_dirs[dirname(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/' . $to_submit[$i])] = 1;
+                $this->copyFile(ROOT . $to_submit[$i], DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/' . $to_submit[$i]);
+                if (is_array($pack_folders) && in_array($to_submit[$i], $pack_folders) && !$copied_dirs[dirname(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/' . $to_submit[$i])]) {
+                    copyTree(dirname(ROOT . $to_submit[$i]), dirname(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/' . $to_submit[$i]));
+                    $copied_dirs[dirname(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/' . $to_submit[$i])] = 1;
                 }
-                if (file_exists(dirname(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/' . $to_submit[$i]) . '/installed')) {
-                    @unlink(dirname(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/' . $to_submit[$i]) . '/installed');
+                if (file_exists(dirname(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/' . $to_submit[$i]) . '/installed')) {
+                    @unlink(dirname(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/' . $to_submit[$i]) . '/installed');
                 }
             }
         }
@@ -553,10 +561,10 @@ class saverestore extends module
         // packing into tar.gz
         $tar_name = 'submit_' . date('Y-m-d__H-i-s') . '.tgz';
 
-        chdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+        chdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
         exec('tar cvzf ../' . $tar_name . ' .');
         chdir('../../../');
-        removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+        removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
 
         // sending to remote server
 
@@ -588,7 +596,7 @@ class saverestore extends module
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 
         $post = array(
-            "file" => "@" . DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $tar_name,
+            "file" => "@" . DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name,
             "mode" => "upload_updates",
             "repository" => $repository_name,
             "host" => $_SERVER['HTTP_HOST'],
@@ -611,8 +619,9 @@ class saverestore extends module
 
 
         if ($result['STATUS'] == 'OK') {
-            global $with_extensions;
-            $this->redirect("?mode=clear&ok_msg=" . urlencode($ok_msg) . "&with_extensions=" . $with_extensions);
+            $with_extensions=gr('with_extensions');
+            $with_backup=gr('with_backup');
+            $this->redirect("?mode=clear&ok_msg=" . urlencode($ok_msg) . "&with_extensions=" . $with_extensions."&with_backup=".$with_backup);
         } else {
             $this->redirect("?mode=clear&err_msg=" . urlencode($ok_msg));
         }
@@ -734,7 +743,7 @@ class saverestore extends module
 
         if ($res['STATUS'] == 'OK' && $res['DOWNLOAD_FILE'] != '') {
             // downloading update
-            $filename = DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $res['DOWNLOAD_FILE'];
+            $filename = DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $res['DOWNLOAD_FILE'];
             $f = fopen($filename, 'wb');
             if ($f == FALSE) {
                 //print "File not opened<br>";
@@ -762,7 +771,7 @@ class saverestore extends module
                 $data = 1;
                 $out['BACKUP'] = 1;
                 $this->dump($out);
-                removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+                removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
                 // installing update
                 $this->redirect("?mode=upload&restore=" . urlencode($res['DOWNLOAD_FILE']));
             } else {
@@ -811,7 +820,7 @@ class saverestore extends module
 
         if ($res['STATUS'] == 'OK' && $res['DOWNLOAD_FILE'] != '') {
             // downloading update
-            $filename = DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $res['DOWNLOAD_FILE'];
+            $filename = DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $res['DOWNLOAD_FILE'];
             $f = fopen($filename, 'wb');
             if ($f == FALSE) {
                 //print "File not opened<br>";
@@ -839,7 +848,7 @@ class saverestore extends module
                 $data = 1;
                 $out['BACKUP'] = 1;
                 $this->dump($out);
-                removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+                removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
                 // installing update
                 $this->redirect("?mode=upload&restore=" . urlencode($res['DOWNLOAD_FILE']));
             } else {
@@ -945,7 +954,7 @@ class saverestore extends module
         $data = 1;
         $out['BACKUP'] = 1;
         $this->dump($out);
-        removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+        removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
 
         include_once DIR_MODULES . 'saverestore/phpsvnclient.php';
         $url = 'http://majordomo-sl.googlecode.com/svn/';
@@ -988,7 +997,7 @@ class saverestore extends module
         set_time_limit(0);
         //$phpsvnclient->createOrUpdateWorkingCopy('trunk/', ROOT.'cms/saverestore/temp', true);
 
-        $cached_name = DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/svn_tree.txt';
+        $cached_name = DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/svn_tree.txt';
         if (!file_exists($cached_name) || (time() - filemtime($cached_name) > 8 * 60 * 60)) {
             $directory_tree = $phpsvnclient->getDirectoryTree('/trunk/');
             SaveFile($cached_name, serialize($directory_tree));
@@ -1207,7 +1216,9 @@ class saverestore extends module
         global $file;
         global $file_name;
         global $folder;
-        global $with_extensions;
+
+        $with_extensions=gr('with_extensions');
+        $with_backup=gr('with_backup');
 
         if (!$folder)
             $folder = IsWindowsOS() ? '/.' : '/';
@@ -1219,7 +1230,7 @@ class saverestore extends module
             $file = $restore;
             $file_name = basename($file);
         } elseif ($file != '') {
-            move_uploaded_file($file, DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $file_name);
+            move_uploaded_file($file, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file_name);
             $file = $file_name;
         }
 
@@ -1228,12 +1239,12 @@ class saverestore extends module
             echonow("<b>Applying updates.</b><br/>");
         }
 
-        if ($file != '' && preg_match('/\.sql$/', $file_name) && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $file)) {
+        if ($file != '' && preg_match('/\.sql$/', $file_name) && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file)) {
             // restore database only
             if ($iframe) {
                 echonow("Restoring database from $file ... ");
             }
-            $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $file);
+            $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file);
             if ($iframe) {
                 echonow(" OK<br/> ", 'green');
             }
@@ -1244,7 +1255,7 @@ class saverestore extends module
             }
         } elseif ($file != '' && is_dir($file)) {
             if ($iframe) {
-                echonow("Updating files (from $file to ".ROOT.")... ");
+                echonow("Updating files (from $file to " . ROOT . ")... ");
             }
             copyTree($file, ROOT, 1); // restore all files
             if ($iframe) {
@@ -1269,8 +1280,8 @@ class saverestore extends module
             logAction('system_restore', $file);
             // unpack archive
             umask(0);
-            @mkdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0777);
-            chdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+            @mkdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0777);
+            chdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
             if ($iframe) {
                 echonow("Unpacking $file ... ");
             }
@@ -1280,32 +1291,32 @@ class saverestore extends module
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
-            
+
             if ($iframe) {
                 echonow(" OK<br/> ", 'green');
             }
-            
-            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/config.php')) {
+
+            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/config.php')) {
                 if ($iframe) {
                     echonow("Unlink config.php ... ");
                 }
-                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/config.php');
+                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/config.php');
                 if ($iframe) {
                     echonow(" OK<br/> ", 'green');
                 }
             }
 
-            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/config.php')) {
+            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/config.php')) {
                 if ($iframe) {
                     echonow("Update periodical_db_save.php ... ");
                 }
-                @rename(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php', DOC_ROOT . DIRECTORY_SEPARATOR  . '/scripts/cycle_db_save.php');
+                @rename(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php', DOC_ROOT . DIRECTORY_SEPARATOR . '/scripts/cycle_db_save.php');
                 if ($iframe) {
                     echonow(" OK<br/> ", 'green');
                 }
 
             }
-            
+
             if ($iframe) {
                 echonow(" Checking updated modules...");
             }
@@ -1315,11 +1326,11 @@ class saverestore extends module
             $total = count($ignores);
             for ($i = 0; $i < $total; $i++) {
                 $name = $ignores[$i]['NAME'];
-                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/modules/' . $name)) {
-                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/modules/' . $name);
+                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/modules/' . $name)) {
+                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/modules/' . $name);
                 }
-                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/templates/' . $name)) {
-                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/templates/' . $name);
+                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates/' . $name)) {
+                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates/' . $name);
                 }
             }
 
@@ -1328,22 +1339,22 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                echonow("Updating files (".DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder." to " . DOC_ROOT . DIRECTORY_SEPARATOR .") ... ");
+                echonow("Updating files (" . DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . " to " . DOC_ROOT . DIRECTORY_SEPARATOR . ") ... ");
             }
 
             // UPDATING FILES DIRECTLY Исправлено верно на док_руут - потому что функция копиТрее не воспринимает других слешей 
-            copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder, DOC_ROOT , 1);
+            copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder, DOC_ROOT, 1);
 
             if ($iframe) {
                 echonow(" OK<br/> ", 'green');
             }
 
-            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/dump.sql')) {
+            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/dump.sql')) {
                 // data restore
                 if ($iframe) {
                     echonow("Restoring database ... ");
                 }
-                $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp' . $folder . '/dump.sql');
+                $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/dump.sql');
                 echonow(" OK<br/> ", 'green');
             }
 
@@ -1362,7 +1373,7 @@ class saverestore extends module
                 return 1;
             } else {
                 setRebootRequired('updated');
-                $this->redirect("?mode=clear&ok_msg=" . urlencode("Updates Installed!") . "&with_extensions=" . $with_extensions);
+                $this->redirect("?mode=clear&ok_msg=" . urlencode("Updates Installed!") . "&with_extensions=" . $with_extensions."&with_backup=".$with_backup);
             }
 
         }
@@ -1384,7 +1395,7 @@ class saverestore extends module
         }
 
 
-        if (mkdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0777)) {
+        if (mkdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0777)) {
             // DESIGN
             global $design;
             if ($design) {
@@ -1394,19 +1405,19 @@ class saverestore extends module
                 }
 
                 $tar_name .= 'design_';
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/templates');
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'img', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/img');
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'js', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/js');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'img', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/img');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'js', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/js');
 
 
                 $pt = array('\.css');
-                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0, $pt);
+                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0, $pt);
 
                 $pt = array('\.swf');
-                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0, $pt);
+                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0, $pt);
 
                 $pt = array('\.htc');
-                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0, $pt);
+                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0, $pt);
 
                 if ($iframe) {
                     echonow(" OK<br/>", 'green');
@@ -1426,21 +1437,21 @@ class saverestore extends module
 
                 $tar_name .= 'code_';
 
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'lib', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/lib');
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'modules', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/modules');
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'scripts', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/scripts');
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'languages', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/languages');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'lib', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/lib');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'modules', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/modules');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'scripts', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/scripts');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'languages', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/languages');
 
                 $pt = array('\.php');
-                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp', 0, $pt);
-                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/config.php');
+                copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0, $pt);
+                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/config.php');
 
-                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'forum', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/forum');
-                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/forum/config.php');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'forum', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/forum');
+                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/forum/config.php');
 
                 if (!$design) {
-                    copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'js', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/js');
-                    copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/templates');
+                    copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'js', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/js');
+                    copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates');
                 }
 
                 if ($iframe) {
@@ -1457,7 +1468,7 @@ class saverestore extends module
                     echonow("Saving data ... ");
                 }
                 $tar_name .= 'data_';
-                $this->backupdatabase(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/dump.sql');
+                $this->backupdatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/dump.sql');
                 if ($iframe) {
                     echonow(" OK<br/>", 'green');
                 }
@@ -1471,7 +1482,7 @@ class saverestore extends module
                 }
                 $tar_name .= 'files_';
 
-                $cms_dirs = scandir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms');
+                $cms_dirs = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms');
                 foreach ($cms_dirs as $d) {
                     if ($d == '.' ||
                         $d == '..' ||
@@ -1479,7 +1490,7 @@ class saverestore extends module
                         $d == 'debmes' ||
                         $d == 'saverestore'
                     ) continue;
-                    copyTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/' . $d, DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp/cms/' . $d);
+                    copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/' . $d, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/cms/' . $d);
                 }
                 if ($iframe) {
                     echonow(" OK<br/>", 'green');
@@ -1507,7 +1518,7 @@ class saverestore extends module
                     $tar_name = $new_name;
                 }
             } else {
-                chdir(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp');
+                chdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
                 exec('tar cvzf ../' . $tar_name . ' .');
                 chdir('../../../');
             }
@@ -1517,12 +1528,12 @@ class saverestore extends module
             }
 
 
-            if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $tar_name)) {
+            if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name)) {
                 if ($iframe) {
                     echonow("Copying to " . $dest . $tar_name . " ... ");
                 }
                 $dest = SETTINGS_BACKUP_PATH;
-                @copy(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/' . $tar_name, $dest . $tar_name);
+                @copy(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name, $dest . $tar_name);
                 if ($iframe) {
                     echonow(" OK<br/>", 'green');
                 }
@@ -1595,7 +1606,7 @@ class saverestore extends module
         global $lset_dirs;
         $l_dir = dirname($local_file);
         if (!isSet($lset_dirs[$l_dir])) {
-        //  echo "zz";
+            //  echo "zz";
             if (!is_dir($l_dir)) {
                 $this->lmkdir($l_dir);
             }
@@ -1673,21 +1684,21 @@ class saverestore extends module
                     DebMes("Already updated to the latest version ($latest_id)", 'auto_update');
                     return 0;
                 } else {
-                    DebMes("Need to update to $latest_id on top of ".$this->config['LATEST_UPDATED_ID'], 'auto_update');
+                    DebMes("Need to update to $latest_id on top of " . $this->config['LATEST_UPDATED_ID'], 'auto_update');
                 }
-                $current_delay = round((time()-$latest_tm)/(24*60*60),2);
-                if ($latest_tm && $current_delay<$delay) {
+                $current_delay = round((time() - $latest_tm) / (24 * 60 * 60), 2);
+                if ($latest_tm && $current_delay < $delay) {
                     DebMes("Update is too fresh ($current_delay vs $delay)", 'auto_update');
                     return 0;
                 }
                 // ok, downloading update
                 set_time_limit(0);
                 // updating main system
-                logAction('system_update','Auto-update');
-                $out=array();
+                logAction('system_update', 'Auto-update');
+                $out = array();
                 $res = $this->admin($out);
-                DebMes("Getting latest version and making backup",'auto_update');
-                $res = $this->getLatest($out,1);
+                DebMes("Getting latest version and making backup", 'auto_update');
+                $res = $this->getLatest($out, 1);
                 global $restore;
                 global $folder;
                 $restore = 'master.tgz';
@@ -1697,28 +1708,28 @@ class saverestore extends module
                     $basename = str_replace('.tar.gz', '', $basename);
                     $folder = str_replace('master', $basename, $folder);
                 }
-                DebMes("Applying update $basename from $folder",'auto_update');
-                $res = $this->upload($out,1);
-                removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp',1);
+                DebMes("Applying update $basename from $folder", 'auto_update');
+                $res = $this->upload($out, 1);
+                removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 1);
                 // now downloading updates for modules
                 if ($this->config['UPDATE_AUTO_PLUGINS']) {
-                    DebMes("Getting updates for modules",'auto_update');
+                    DebMes("Getting updates for modules", 'auto_update');
                     global $mode;
                     $mode = '';
-                    $_GET['op']='iframe';
-                    $out=array();
+                    $_GET['op'] = 'iframe';
+                    $out = array();
                     include_once(DIR_MODULES . "market/market.class.php");
-                    $mkt=new market();
-                    $mkt->category_id='all';
+                    $mkt = new market();
+                    $mkt->category_id = 'all';
                     $mkt->admin($out);
-                    logAction('market_update','Auto-update');
-                    $res=$mkt->updateAll($mkt->can_be_updated_new,1);
+                    logAction('market_update', 'Auto-update');
+                    $res = $mkt->updateAll($mkt->can_be_updated_new, 1);
                     if ($res) {
-                        $mkt->removeTree(DOC_ROOT . DIRECTORY_SEPARATOR  . 'cms/saverestore/temp',1);
+                        $mkt->removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 1);
                     }
                 }
-                DebMes("Update installed, need to reboot",'auto_update');
-                @SaveFile(DOC_ROOT . DIRECTORY_SEPARATOR  . 'reboot', 'updated');
+                DebMes("Update installed, need to reboot", 'auto_update');
+                @SaveFile(DOC_ROOT . DIRECTORY_SEPARATOR . 'reboot', 'updated');
             }
         }
     }
@@ -1756,8 +1767,8 @@ class saverestore extends module
      */
     function install($parent_name = "")
     {
-        if (!Is_Dir(DOC_ROOT . DIRECTORY_SEPARATOR  . "cms/saverestore")) {
-            mkdir(DOC_ROOT . DIRECTORY_SEPARATOR  . "cms/saverestore", 0777);
+        if (!Is_Dir(DOC_ROOT . DIRECTORY_SEPARATOR . "cms/saverestore")) {
+            mkdir(DOC_ROOT . DIRECTORY_SEPARATOR . "cms/saverestore", 0777);
         }
         parent::install($parent_name);
     }

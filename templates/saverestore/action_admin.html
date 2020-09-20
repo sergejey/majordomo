@@ -6,7 +6,7 @@
 [#endif ERR_MSG#] [#if OK_MSG!=""#]
 <div class="alert alert-success">[#OK_MSG#]</div>
 [#endif OK_MSG#] [#if CLEAR_FIRST!="1"#] [#if MODE="getlatest_iframe"#]
-<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe> [#else MODE#]
+<iframe src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" height="400" frameborder=0></iframe> [#else MODE#]
 <div class="row">
     <div class="col-md-5">
         <h3>
@@ -127,10 +127,16 @@
                 <#LANG_LONG_OPERATION_WARNING#>
             </p>
 
-            <div>
-                <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-primary"> &nbsp;
-                <input type="checkbox" name="with_extensions" value="1">
-                <#LANG_UPDATE_ALL_EXTENSIONS#>
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="submit" name="submit" value="<#LANG_UPDATE_TO_THE_LATEST#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-primary"> &nbsp;
+                </div>
+                <div class="col-md-8">
+                    <input type="checkbox" name="with_extensions" value="1">
+                    <#LANG_UPDATE_ALL_EXTENSIONS#><br/>
+                        <input type="checkbox" name="with_backup" value="1" checked>
+                        <#LANG_CREATE_BACKUP#>
+                </div>
             </div>
 
             <input type="hidden" name="mode" value="getlatest_iframe">
