@@ -439,6 +439,7 @@ function makeDir($dir, $sep = '/')
 */
 function removeTree($destination, $iframe = 0)
 {
+	set_time_limit(0);
     $res = 1;
     if (!Is_Dir2($destination)) {
         return false; // cannot create destination path
