@@ -439,7 +439,6 @@ function makeDir($dir, $sep = '/')
 */
 function removeTree($destination, $iframe = 0)
 {
-	set_time_limit(0);
     $res = 1;
     if (!Is_Dir2($destination)) {
         return false; // cannot create destination path
@@ -750,7 +749,6 @@ function UTF_Encode($str, $type)
 */
 function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
-	set_time_limit(0);
     //Remove last slash '/' in source and destination - slash was added when copy
     $source = preg_replace("#/$#", "", $source);
     $destination = preg_replace("#/$#", "", $destination);
