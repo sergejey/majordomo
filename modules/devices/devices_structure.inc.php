@@ -241,6 +241,9 @@ $this->device_types=array(
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
             'blocked'=>array('DESCRIPTION'=>'Is blocked'),
+            'notify_msg_opening'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_OPENING,'_CONFIG_TYPE'=>'text'),
+            'notify_msg_closing'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_CLOSING,'_CONFIG_TYPE'=>'text'),
+            'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
@@ -253,6 +256,7 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SOpenable',
         'PROPERTIES'=>array(
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
             'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
