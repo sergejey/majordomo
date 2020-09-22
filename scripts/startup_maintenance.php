@@ -1,6 +1,15 @@
 <?php
 
 /*
+chdir('../');
+include_once("./config.php");
+include_once("./lib/loader.php");
+
+
+$db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
+include_once("./load_settings.php");
+*/
+/*
  * @version 0.1 (auto-set)
  */
 
@@ -9,12 +18,14 @@ DebMes("Running maintenance script");
 // BACKUP DATABASE AND FILES
 
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
-    $target_dir = SETTINGS_BACKUP_PATH;
+    $backups_dir = SETTINGS_BACKUP_PATH;
+    $target_dir = $backups_dir;
     if (substr($target_dir, -1) != '/' && substr($target_dir, -1) != '\\')
         $target_dir .= '/';
     $target_dir .= date('Ymd');
 } else {
-    $target_dir = DOC_ROOT . '/backup/' . date('Ymd');
+    $backups_dir = DOC_ROOT . '/backup';
+    $target_dir = $backups_dir . '/' . date('Ymd');
 }
 
 $full_backup = 0;
@@ -55,7 +66,7 @@ $dir = $path . "/";
 
 foreach (glob($dir . "*") as $file) {
     if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
-        DebMes("Removing log file " . $file);
+        DebMes("Removing log file " . $file,'backup');
         @unlink($file);
     }
 }
@@ -97,30 +108,41 @@ if ($full_backup) {
     exec($mysqlDumpPath . $mysqlDumpParam);
 
 
+
     echo "OK\n";
 }
 
 
-//removing old backups files
-$dir = $target_dir;
-foreach (glob($dir . "*") as $file) {
-    if (filemtime($file) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
-        DebMes("Removing backup file " . $file);
-        @unlink($file);
+// removing old files from cms/saverestore
+if (is_dir(ROOT.'cms/saverestore')) {
+    $files = scandir(ROOT.'cms/saverestore');
+    foreach($files as $file) {
+        $path = ROOT.'cms/saverestore/'.$file;
+        if (is_file($path)
+            && (preg_match('/\.tgz$/',$file) || preg_match('/\.tar\.gz$/',$file) || preg_match('/\.zip\.gz$/',$file))
+            && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
+            echonow("Removing $path");
+            DebMes("Removing $path.",'backup');
+            @unlink($path);
+        }
     }
+}
+// removing old backus
+if (is_dir($backups_dir)) {
+    $backups = scandir($backups_dir);
+    foreach ($backups as $file) {
+        $path = $backups_dir.'/'.$file;
+        if (is_dir($path) && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
+            echonow("Removing $path");
+            DebMes("Removing $path.",'backup');
+            removeTree($path);
+        }
+    }
+    echo "OK";
+} else {
+    echo $backups_dir." not found";
 }
 
-//removing old cached files
-/*
-$dir = ROOT . "cms/cached/";
-foreach (glob($dir . "*") as $file) {
-    if (filemtime($file) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
-        DebMes("Removing cached file " . $file);
-        @unlink($file);
-    }
-}
-*/
-umask($old_mask);
 
 // CHECK/REPAIR/OPTIMIZE TABLES
 $tables = SQLSelect("SHOW TABLES FROM `" . DB_NAME . "`");
@@ -162,7 +184,6 @@ $total = count($data);
 
 for ($i = 0; $i < $total; $i++) {
     $objectProperty = $data[$i]['OBJECT_TITLE'] . "." . $data[$i]['PROPERTY_TITLE'];
-
     if ($data[$i]['PROPERTY_NAME'])
         echo "Incorrect: " . $data[$i]['PROPERTY_NAME'] . " should be $objectProperty" . PHP_EOL;
     else

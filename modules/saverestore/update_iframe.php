@@ -6,6 +6,7 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
+Define('WAIT_FOR_MAIN_CYCLE',0);
 set_time_limit(0);
 
 include_once("./load_settings.php");
@@ -13,7 +14,8 @@ include_once(DIR_MODULES . "saverestore/saverestore.class.php");
 
 $sv = new saverestore();
 
-global $with_extensions;
+$with_extensions=gr('with_extensions');
+$with_backup=gr('with_backup');
 
 header('X-Accel-Buffering: no');
 echo "<html>";
@@ -27,12 +29,9 @@ if ($backup) {
     logAction('system_backup');
     $res = $sv->dump($out, 1);
     if ($res) {
-
         echonow("Removing temporary files ... ");
         removeTree(ROOT . 'cms/saverestore/temp');
         echonow(" OK<br/> ", 'green');
-
-
         echonow("Redirecting to main page...");
         echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Backup complete!") . '";</script>');
     }
@@ -40,7 +39,7 @@ if ($backup) {
 } else {
 
     $res = $sv->admin($out);
-    $res = $sv->getLatest($out, 1);
+    $res = $sv->getLatest($out, 1, $with_backup);
     if ($res) {
         logAction('system_update');
         global $restore;

@@ -784,10 +784,8 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
                     }
                 }
                 if ($ok_to_copy) {
-                    try {
-                        copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
-                    } catch (Exception $e) {
-                        DebMes('Не смог скопировать файл '. $source . DIRECTORY_SEPARATOR . $file . '. Причина ' . $e->getMessage(), 'error');
+                    if(!@copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file)) {
+                        DebMes('Не смог скопировать файл '. $source . DIRECTORY_SEPARATOR . $file, 'error' );
                     }
                 }
             }

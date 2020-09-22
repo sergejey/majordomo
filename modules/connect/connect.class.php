@@ -185,10 +185,11 @@ class connect extends module
         global $data;
         $data = 1;
         $out = array();
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
+        removeTree(ROOT . 'cms/saverestore/temp');
         $tar_name = $sv->dump($out);
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
+        removeTree(ROOT . 'cms/saverestore/temp');
+        removeTree(ROOT . 'cms/saverestore/temp');
+
         $dest_file = ROOT . 'cms/saverestore/' . $tar_name;
         if ($dest_file && file_exists($dest_file) && filesize($dest_file) > 0) {
             if (function_exists('curl_file_create')) { // php 5.6+
