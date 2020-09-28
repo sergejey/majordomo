@@ -42,13 +42,13 @@ while (!$connected) {
 echo "CONNECTED TO DB" . PHP_EOL;
 
 $old_mask = umask(0);
-if (is_dir(ROOT . 'cached')) {
-    DebMes("Removing cache from " . ROOT . 'cached');
-    removeTree(ROOT . 'cached');
+if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR .'cached')) {
+    DebMes("Removing cache from " . DOC_ROOT . DIRECTORY_SEPARATOR . 'cached');
+    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cached');
 }
-if (is_dir(ROOT . 'cms/cached')) {
-    DebMes("Removing cache from " . ROOT . 'cms/cached');
-    removeTree(ROOT . 'cms/cached');
+if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached')) {
+    DebMes("Removing cache from " . DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached');
+    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached');
 }
 
 // moving some folders to ./cms/
