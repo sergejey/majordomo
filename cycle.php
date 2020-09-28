@@ -45,10 +45,12 @@ $old_mask = umask(0);
 if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR .'cached')) {
     DebMes("Removing cache from " . DOC_ROOT . DIRECTORY_SEPARATOR . 'cached');
     removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cached');
+	echo ("Removing cache from " . DOC_ROOT . DIRECTORY_SEPARATOR . 'cached' . "\n");
 }
 if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached')) {
     DebMes("Removing cache from " . DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached');
     removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached');
+	echo ("Removing cache from " . DOC_ROOT . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'cached' . "\n");
 }
 
 // moving some folders to ./cms/
