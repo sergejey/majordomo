@@ -244,15 +244,15 @@ function copyFiles($source, $destination, $over = 0, $patterns = 0)
 	
     //Remove last slash '/' in source and destination - slash was added when copy
     if (substr($source, -1) == "/" ) {
-        $d = substr($source,0,-1); 
+        $source = substr($source,0,-1); 
     } else if (substr($source, -1) == DIRECTORY_SEPARATOR ) {
-        $d = substr($source,0,-1);
+        $source = substr($source,0,-1);
     }
 	
     if (substr($destination, -1) == "/" ) {
-        $d = substr($destination,0,-1); 
+        $destination = substr($destination,0,-1); 
     } else if (substr($destination, -1) == DIRECTORY_SEPARATOR ) {
-        $d = substr($destination,0,-1);
+        $destination = substr($destination,0,-1);
     }
 	
     if (!Is_Dir2($source)) {
