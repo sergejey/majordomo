@@ -31,18 +31,23 @@ function preparePathTime($s, $mtime)
  */
 function is_dir2($d)
 {
-   $d = str_replace('NET:', '//', $d);
+    if (substr($d, -1) == "/" ) {
+        $d = str_replace("/", '', $d);
+    }
+    if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
+        $d = str_replace(DIRECTORY_SEPARATOR, '', $d);
+    }
+    if ('NET:' == substr($d, 0, 4)) {
+        $d = str_replace('NET:', '//', $d);
+        if (is_dir($d)) return 1;
+        if ($node = @opendir($d)) {
+            closedir($node);
+            return true;
+        }
+        
+    } 
 
-   if (is_dir($d))
-      return 1;
-
-   if ($node = @opendir($d))
-   {
-      closedir($node);
-      return 1;
-   }
-
-   return 0;
+   return false;
 }
 
 /**
@@ -237,24 +242,38 @@ function copyFile($src, $dst)
    touch($dst, filemtime($src));
 }
 
+// function copy files from sourse directory to destination 
 function copyFiles($source, $destination, $over = 0, $patterns = 0)
 {
+set_time_limit(0);
     $res = 1;
+	
+    if (substr($d, -1) == "/" ) {
+        $d = substr($d,0,-1); 
+    }
+    
+    if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
+        $d = substr($d,0,-1);
+    }
+	
     if (!Is_Dir2($source)) {
-        return 0; // cannot create destination path
+        return false; // cannot create destination path
     }
 
-    if (!Is_Dir($destination)) {
-        if (!mkdir($destination)) {
-            return 0; // cannot create destination path
+    if (!Is_Dir2($destination)) {
+        if (!mkdir($destination, 0777, true)) {
+            // cannot create destination path
+            return false; 
         }
     }
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+
+            if (is_dir($source . DIRECTORY_SEPARATOR . $file) && ($file != '.') && ($file != '..')) {
                 //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
-            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+		continue;
+            } elseif (is_file($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
                 } else {
@@ -267,7 +286,7 @@ function copyFiles($source, $destination, $over = 0, $patterns = 0)
                     }
                 }
                 if ($ok_to_copy) {
-                    $res = copy($source . "/" . $file, $destination . "/" . $file);
+                    $res = copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
                 }
             }
         }
@@ -439,6 +458,7 @@ function makeDir($dir, $sep = '/')
 */
 function removeTree($destination, $iframe = 0)
 {
+	set_time_limit(0);
     $res = 1;
     if (!Is_Dir2($destination)) {
         return false; // cannot create destination path
@@ -448,7 +468,7 @@ function removeTree($destination, $iframe = 0)
             echonow("Removing dir $destination ... ");
         }
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+            if (Is_Dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
                 $res = removeTree($destination . "/" . $file);
             } elseif (Is_File($destination . "/" . $file)) {
                 $res = @unlink($destination . "/" . $file);
@@ -749,6 +769,8 @@ function UTF_Encode($str, $type)
 */
 function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
+	set_time_limit(0);
+
     //Remove last slash '/' in source and destination - slash was added when copy
     if (substr($d, -1) == "/" ) {
         $d = substr($d,0,-1); 
