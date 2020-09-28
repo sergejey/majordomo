@@ -456,4 +456,3 @@ while (false !== ($result = $threads->iteration())) {
 }
 
 resetRebootRequired();
-
