@@ -237,24 +237,37 @@ function copyFile($src, $dst)
    touch($dst, filemtime($src));
 }
 
+// function copy files from sourse directory to destination 
 function copyFiles($source, $destination, $over = 0, $patterns = 0)
 {
     $res = 1;
+	
+    if (substr($d, -1) == "/" ) {
+        $d = substr($d,0,-1); 
+    }
+    
+    if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
+        $d = substr($d,0,-1);
+    }
+	
     if (!Is_Dir2($source)) {
-        return 0; // cannot create destination path
+        return false; // cannot create destination path
     }
 
-    if (!Is_Dir($destination)) {
-        if (!mkdir($destination)) {
-            return 0; // cannot create destination path
+    if (!Is_Dir2($destination)) {
+        if (!mkdir($destination, 0777, true)) {
+            // cannot create destination path
+            return false; 
         }
     }
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+
+            if (is_dir($source . DIRECTORY_SEPARATOR . $file) && ($file != '.') && ($file != '..')) {
                 //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
-            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+                continue;
+            } elseif (is_file($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
                 } else {
@@ -267,7 +280,7 @@ function copyFiles($source, $destination, $over = 0, $patterns = 0)
                     }
                 }
                 if ($ok_to_copy) {
-                    $res = copy($source . "/" . $file, $destination . "/" . $file);
+                    $res = copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
                 }
             }
         }
