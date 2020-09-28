@@ -244,7 +244,7 @@ function copyFiles($source, $destination, $over = 0, $patterns = 0)
         return 0; // cannot create destination path
     }
 
-    if (!Is_Dir($destination)) {
+    if (!is_dir($destination)) {
         if (!mkdir($destination)) {
             return 0; // cannot create destination path
         }
@@ -252,7 +252,7 @@ function copyFiles($source, $destination, $over = 0, $patterns = 0)
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+            if (is_dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
                 //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
             } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
                 if (!is_array($patterns)) {
@@ -448,7 +448,7 @@ function removeTree($destination, $iframe = 0)
             echonow("Removing dir $destination ... ");
         }
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+            if (is_dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
                 $res = removeTree($destination . "/" . $file);
             } elseif (Is_File($destination . "/" . $file)) {
                 $res = @unlink($destination . "/" . $file);
@@ -752,7 +752,7 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
     //Remove last slash '/' in source and destination - slash was added when copy
     $source = preg_replace("#/$#", "", $source);
     $destination = preg_replace("#/$#", "", $destination);
-    if (!Is_Dir2($source)) {
+    if (!is_dir2($source)) {
         // cannot create destination path
         return false; 
     }
