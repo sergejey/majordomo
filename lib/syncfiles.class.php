@@ -757,7 +757,7 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
         return false; 
     }
 
-    if (!Is_Dir2($destination)) {
+    if (!is_dir($destination)) {
         if (!mkdir($destination, 0777, true)) {
             // cannot create destination path
             return false; 
@@ -769,7 +769,7 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
         while (($file = readdir($dir)) !== false) {
             if ($file == '.' || $file == '..') {
                 continue;
-            } else if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
+            } else if (is_dir($source . DIRECTORY_SEPARATOR . $file)) {
                 $res = copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
             } else if (file_exists($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
                 if (!is_array($patterns)) {
