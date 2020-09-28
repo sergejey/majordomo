@@ -777,7 +777,6 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
             if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
-                DebMes($source . DIRECTORY_SEPARATOR . $file);
                 copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
             }
         }
