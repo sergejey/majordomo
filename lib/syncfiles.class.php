@@ -32,11 +32,11 @@ function preparePathTime($s, $mtime)
 function is_dir2($d)
 {
     if (substr($d, -1) == "/" ) {
-        $d = str_replace("/", '', $d);
+        $d = substr($d,0,-1); 
     }
     
     if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
-        $d = str_replace(DIRECTORY_SEPARATOR, '', $d);
+        $d = substr($d,0,-1);
     }
     
     if ('NET:' == substr($d, 0, 4)) {
