@@ -34,8 +34,8 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
             $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
             DebMes($data, 'auth');
         } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
-            DebMes($data, 'auth');
+            //$data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
+            //DebMes($data, 'auth');
         } else {
             // header("Location:$PHP_SELF\n\n");
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
@@ -722,4 +722,35 @@ function CreateDir($dirPath)
 {
     if (!is_dir($dirPath))
         @mkdir($dirPath, 0777);
+}
+
+/**
+* Ping bluetooth host
+* @param mixed $host Host address
+* @return bool
+*/
+function pingbt($host)
+{
+    if (IsWindowsOS()) {
+        $answer      = '';
+        $connect     = shell_exec(ROOT . 'rc/bluetools/btdiscovery.exe -d%a%%c%');
+        $PCREpattern = '/\r\n|\r|\n/u';
+        $connected   = preg_replace($PCREpattern, '', $connect);
+        $pos         = stripos($connected, $host);
+        $answer      = substr($connected, $pos + 18, 3); // возвращает "Yes or No"
+        if ($answer == "Yes") {
+            $result = 1;
+        } else {
+            $result = 0;
+        }
+    } else {
+        //для Linux должны быть установленны все пакеты для работы с синим зубом
+        $data = exec('l2ping ' . $host . ' -c1 -f | awk \'/loss/ {print $3}\'');
+        if (intval($data) > 0) {
+            $result = 1;
+        } else {
+            $result = 0;
+        }
+    }
+    return $result;
 }
