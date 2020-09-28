@@ -25,7 +25,7 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 while (1)
 {
-   if (time() - $checked_time > 10)
+   if (time() - $checked_time > 30)
    {
       $checked_time = time();
       //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);

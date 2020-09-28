@@ -154,7 +154,7 @@ while (1) {
         }
     }
     else
-        sleep(1);
+        sleep(2);
 
     if (isRebootRequired() || IsSet($_GET['onetime'])) {
         exit;
