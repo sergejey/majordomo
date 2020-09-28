@@ -31,6 +31,16 @@ function preparePathTime($s, $mtime)
  */
 function is_dir2($d)
 {
+    // none directory
+    if (substr($d, -2) == DIRECTORY_SEPARATOR . "." || substr($d, -2) == "/.") {
+        return false; 
+    }
+    
+    // none directory
+    if (substr($d, -3) == DIRECTORY_SEPARATOR . ".." ||  substr($d, -3) == "/..") {
+        return false; 
+    }
+
     if (substr($d, -1) == "/" ) {
         $d = substr($d,0,-1); 
     }
