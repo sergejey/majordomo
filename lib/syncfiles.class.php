@@ -51,7 +51,7 @@ function is_dir2($d)
     }
     
     if ('NET:' == substr($d, 0, 4)) {
-        $d = '//' . substr($d, 0, 4);
+        $d = '//' . substr($d, 4);
     }
     
     if (is_dir($d)) return true;
