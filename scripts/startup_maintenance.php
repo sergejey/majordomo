@@ -131,6 +131,7 @@ if (is_dir(ROOT.'cms/saverestore')) {
 if (is_dir($backups_dir)) {
     $backups = scandir($backups_dir);
     foreach ($backups as $file) {
+        if ($file=='.' || $file=='..') continue;
         $path = $backups_dir.'/'.$file;
         if (is_dir($path) && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
             echonow("Removing $path");
