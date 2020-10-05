@@ -139,6 +139,19 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
         }
     }
 
+    if (!$data_sent && !IsSet($_SERVER['REQUEST_METHOD'])) {
+        //reconnect
+        $wsClient = new WebsocketClient;
+        if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
+            $data_sent = @$wsClient->sendData($payload);
+        } else {
+            if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
+                DebMes("Failed to reconnect to websocket");
+                echo date('Y-m-d H:i:s') . " Failed to reconnect to websocket\n";
+            }
+        }
+    }
+    
     if (!$data_sent) {
         postToWebSocketQueue($property, $value, $post_action);
         if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
@@ -150,7 +163,6 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
     return $data_sent;
 
 }
-
 
 function createHistoryTable($value_id)
 {
