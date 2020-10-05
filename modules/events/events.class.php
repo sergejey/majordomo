@@ -195,7 +195,7 @@ function usual(&$out) {
    $event['ADDED']=date('Y-m-d H:i:s');
    $event['EXPIRE']=date('Y-m-d H:i:s', time()+5*60); //5 minutes expire
    SQLInsert('events', $event);
-   postToWebSocketQueue('TERMINAL_EVENT', $event, 'PostEvent');
+   postToWebSocket('TERMINAL_EVENT', $event, 'PostEvent');
   }
 
    $terminals = getAllTerminals(-1, 'TITLE');
