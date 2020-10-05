@@ -391,7 +391,7 @@ class patterns extends module
                         $rec['DETAILS'] = $url;
                         $rec['ID'] = SQLInsert('events', $rec);
 
-                        postToWebSocketQueue('TERMINAL_EVENT', $rec, 'PostEvent');
+                        postToWebSocket('TERMINAL_EVENT', $rec, 'PostEvent');
 
                     }
                 }
