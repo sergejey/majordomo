@@ -140,7 +140,7 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
     }
 
     if (!$data_sent) {
-        postToWebSocketQueue($property, $value, $post_action = 'PostProperty');
+        postToWebSocketQueue($property, $value, $post_action);
         if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
             DebMes("Failed to send data to websocket try post to Queue");
             echo date('Y-m-d H:i:s') . " Failed to send data to websocket try post to Queue\n";
