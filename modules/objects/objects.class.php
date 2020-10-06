@@ -486,28 +486,55 @@ class objects extends module
     function callMethodSafe($name, $params = 0) {
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
+        $call_stack = array();
         if (is_array($params)) {
+            if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+                $call_stack = $params['m_c_s'];
+                unset($params['m_c_s']);
+            }
+            if (isset($params['r_s_m']) && !empty($params['r_s_m'])) {
+                $run_SafeMethod = $params['r_s_m'];
+                unset($params['r_s_m']);
+            }
+            if (isset($params['raiseEvent']) && !empty($params['raiseEvent'])) {
+                $raiseEvent = $params['raiseEvent'];
+                unset($params['raiseEvent']);
+            }
             $current_call .= '.' . md5(json_encode($params));
         }
-        $call_stack = array();
         if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
+                unset($params['m_c_s']);
             }
-            if (in_array($current_call, $call_stack)) {
-                $call_stack[] = $current_call;
-                DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
-                return 0;
+            if (isset($_GET['raiseEvent']) && !empty($_GET['raiseEvent'])) {
+                $raiseEvent = $_GET['raiseEvent'];
+                unset($params['raiseEvent']);
+            }
+            if (isset($_GET['r_s_m']) && !empty($_GET['r_s_m'])) {
+                $run_SafeMethod = $_GET['r_s_m'];
+                unset($params['r_s_m']);
             }
         }
-        $call_stack[] = $current_call;
+
+        if (is_array($call_stack) && in_array($current_call, $call_stack)) {
+            $call_stack[] = $current_call;
+            DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
+            return 0;
+        }
+
         if (!is_array($params)) {
             $params = array();
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+
+        $call_stack[] = $current_call;
+        $params['raiseEvent'] = $raiseEvent;
+        $params['m_c_s'] = $call_stack;    
+        $params['r_s_m'] = $run_SafeMethod;
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
             $result = $this->callMethod($name, $params);
         } else {
-            $params['m_c_s'] = $call_stack;
+            $params['r_s_m'] = 1;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
@@ -1000,7 +1027,8 @@ class objects extends module
                 $params['OLD_VALUE'] = (string)$old_value;
                 $params['SOURCE'] = (string)$source;
                 //$this->callMethod($prop['ONCHANGE'], $params);
-                $this->callMethodSafe($prop['ONCHANGE'], $params);
+                //$this->callMethodSafe($prop['ONCHANGE'], $params);
+                $this->raiseEvent($prop['ONCHANGE'], $params);
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }
