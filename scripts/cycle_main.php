@@ -14,6 +14,7 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
 
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+$cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 'Run';
 
 echo "Running startup maintenance" . PHP_EOL;
 $run_from_start = 1;
@@ -57,16 +58,17 @@ while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+//       saveToCache("MJD:$cycleVarName", $checked_time);
 
         $timestamp = time() - getGlobal('ThisComputer.started_time');
         setGlobal('ThisComputer.uptime', $timestamp);
 
         $years = floor($timestamp / 31536000);
-        $days = floor(($timestamp - ($years*31536000)) / 86400);
-        $hours = floor(($timestamp - ($years*31536000 + $days*86400)) / 3600);
-        $minutes = floor(($timestamp - ($years*31536000 + $days*86400 + $hours*3600)) / 60);
+        $days = floor(($timestamp - ($years * 31536000)) / 86400);
+        $hours = floor(($timestamp - ($years * 31536000 + $days * 86400)) / 3600);
+        $minutes = floor(($timestamp - ($years * 31536000 + $days * 86400 + $hours * 3600)) / 60);
         $timestring = '';
-        if ($years > 0){
+        if ($years > 0) {
             $timestring .= $years . 'y ';
         }
         if ($days > 0) {
@@ -98,8 +100,8 @@ while (1) {
 
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewMinute\n";
-            getObject($objects[$i]['TITLE'])->setProperty("time", date('Y-m-d H:i:s'));
-            getObject($objects[$i]['TITLE'])->raiseEvent("onNewMinute");
+            sg($objects[$i]['TITLE'] . '.time', date('Y-m-d H:i:s'));
+            callMethodSafe($objects[$i]['TITLE'] . '.onNewMinute');
         }
         $old_minute = $m;
     }
@@ -109,7 +111,7 @@ while (1) {
         processSubscriptionsSafe('HOURLY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewHour\n";
-            getObject($objects[$i]['TITLE'])->raiseEvent("onNewHour");
+            callMethodSafe($objects[$i]['TITLE'] . '.onNewHour');
         }
         $old_hour = $h;
     }
@@ -119,7 +121,7 @@ while (1) {
         processSubscriptionsSafe('DAILY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewDay\n";
-            getObject($objects[$i]['TITLE'])->raiseEvent("onNewDay");
+            callMethodSafe($objects[$i]['TITLE'] . '.onNewDay');
         }
         $old_date = $dt;
     }

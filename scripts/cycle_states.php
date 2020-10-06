@@ -15,6 +15,9 @@ $ctl = new control_modules();
 
 $checked_time = 0;
 
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+
 $objects = getObjectsByClass('systemStates');
 $total = count($objects);
 
@@ -25,7 +28,6 @@ if ($_GET['once'])
    if ((time() - $last_run) > 5 * 60)
    {
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-
       for ($i = 0; $i < $total; $i++)
       {
          callMethod($objects[$i]['TITLE'] . '.checkState');
@@ -40,10 +42,12 @@ else
 
    while (1)
    {
-      if (time() - $checked_time > 5)
+      if (time() - $checked_time > 10)
       {
          setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
          $checked_time = time();
+         // saveToCache("MJD:$cycleVarName", $checked_time);
+
          for ($i = 0; $i < $total; $i++)
          {
             callMethod($objects[$i]['TITLE'] . '.checkState');

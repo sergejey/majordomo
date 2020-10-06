@@ -2,6 +2,7 @@
 
 $ot=$this->object_title;
 
+$this->callMethodSafe('keepAlive');
 $this->callMethodSafe('statusUpdated');
 $this->callMethodSafe('logicAction');
 
@@ -86,6 +87,6 @@ SQLExec("DELETE FROM $table_name WHERE VALUE_ID=$value_id AND ADDED>=('".$time."
 $this->setProperty($history_value,$set_value);
 
 
-include_once(DIR_MODULES.'devices/devices.class.php');
+include_once(dirname(__FILE__).'/devices.class.php');
 $dv=new devices();
 $dv->checkLinkedDevicesAction($this->object_title, $new_value);

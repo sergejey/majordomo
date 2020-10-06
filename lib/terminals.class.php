@@ -124,6 +124,8 @@ function getLocalIp() {
 	global $local_ip_address_cached;
 	if (isset($local_ip_address_cached)) {
 		$local_ip_address=$local_ip_address_cached;
+        } else if ($_SERVER['SERVER_ADDR'] != '127.0.0.1') {
+                $local_ip_address = $_SERVER['SERVER_ADDR'];
 	} else {
 		$s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 		socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
@@ -218,29 +220,6 @@ function getPlayerStatus($host = 'localhost')
         // Если произошла ошибка, выводим ее описание
         return ($player->json['message']);
     }
-}
-
-function getMediaDurationSeconds($file)
-{
-    if (!defined('PATH_TO_FFMPEG')) {
-        if (IsWindowsOS()) {
-            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-        } else {
-            define("PATH_TO_FFMPEG", 'ffmpeg');
-        }
-    }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
-    if (preg_match("/: Invalid /", $dur)) {
-        return false;
-    }
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
-    if (!isset($duration[1])) {
-        return false;
-    }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3];
-    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
 }
 
 /**

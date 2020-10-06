@@ -240,7 +240,7 @@ for ($i = 0; $i < $total; $i++) {
     if ($location_id) {
         // ищем строгое соответствие по названию и местоположению
         foreach($devices as $key => $value) {
-          if(in_array($location_id, $value) && $devices[$key]['TITLE'] == $compare_title) {
+          if(in_array($location_id, $value) && strtolower($devices[$key]['TITLE']) == strtolower ($compare_title)) {
                $i = $key;
                $device_matched = 1;
                break ;
@@ -249,7 +249,7 @@ for ($i = 0; $i < $total; $i++) {
         if (!$device_matched ) {
             // ищем строгое соответствие по названию
             foreach($devices as $key => $value) {
-                if(in_array($compare_title, $value)) {
+                if(in_array(strtolower ($compare_title), strtolower ($value))) {
                     $i = $key;
                     $device_matched = 1;
                     break ;
@@ -332,6 +332,20 @@ for ($i = 0; $i < $total; $i++) {
                 $processed = 1;
                 //$reply_confirm = 1;
             }
+       } elseif ($device_type == 'openable') {
+            if (preg_match('/' . LANG_DEVICES_PATTERN_OPEN . '/uis', $command)) {
+                $reply_say = LANG_TURNING_OPEN . ' ' . $device_title . $add_phrase;
+                $run_code .= "callMethod('$linked_object.Open');";
+                $opposite_code .= "callMethod('$linked_object.Close');";
+                $processed = 1;
+                //$reply_confirm = 1;
+            } elseif (preg_match('/' . LANG_DEVICES_PATTERN_CLOSE . '/uis', $command)) {
+                $reply_say = LANG_TURNING_CLOSE . ' ' . $device_title . $add_phrase;
+                $run_code .= "callMethod('$linked_object.Close');";
+                $opposite_code .= "callMethod('$linked_object.Open');";
+                $processed = 1;
+                //$reply_confirm = 1;
+            }
         } elseif ($device_type == 'group') {
             $applies_to = explode(',', $devices[$i]['APPLY_TYPES']);
             if (is_array($devices[$i]['DEVICES'])) {
@@ -371,7 +385,7 @@ for ($i = 0; $i < $total; $i++) {
             }
         }
 
-        $addons_dir = DIR_MODULES . $this->name . '/addons';
+        $addons_dir = dirname(__FILE__) . '/addons';
         if (is_dir($addons_dir)) {
             $addon_files = scandir($addons_dir);
             foreach ($addon_files as $file) {

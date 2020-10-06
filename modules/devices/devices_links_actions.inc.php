@@ -234,7 +234,9 @@ for ($i = 0; $i < $total; $i++) {
             $action_string .= 'if (gg("DarknessMode.active")) {';
         }
         $action_string .= 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));';
-        $action_string .= 'setTimeout(\'' . $timer_name . '\',\'' . 'callMethod("' . $object . '.turnOff' . '",array("link_source"=>"'.$device1['LINKED_OBJECT'].'"));' . '\',' . (int)$settings['action_delay'] . ');';
+        if ((int)$settings['action_delay'] > 0) {
+            $action_string .= 'setTimeout(\'' . $timer_name . '\',\'' . 'callMethod("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));' . '\',' . (int)$settings['action_delay'] . ');';
+        }
         if ($settings['darktime']) {
             $action_string .= '}';
         }
@@ -288,7 +290,7 @@ for ($i = 0; $i < $total; $i++) {
         }
     }
 
-    $addons_dir = DIR_MODULES . $this->name . '/addons';
+    $addons_dir = dirname(__FILE__) . '/addons';
     if (is_dir($addons_dir)) {
         $addon_files = scandir($addons_dir);
         foreach ($addon_files as $file) {

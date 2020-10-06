@@ -10,12 +10,12 @@ if (!isset($params['statusUpdated'])) {
 //$this->callMethod('logicAction');
 
 $linked_room=$this->getProperty('linkedRoom');
-if ($linked_room) {
+if ($linked_room && $this->getProperty('isActivity')) {
   callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
 }
 
 /*
-include_once(DIR_MODULES . 'devices/devices.class.php');
+include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $this->getProperty('status'));
 */

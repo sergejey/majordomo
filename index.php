@@ -25,61 +25,24 @@ startMeasure('load_settings');
 include_once("./load_settings.php");
 endMeasure('load_settings');
 
-$use_caching   = 0;
-$cache_expire  = 60 * 60; // 60 minutes cache expiration time
-$cached_result = '';
-
-$req_url = $_SERVER['REQUEST_URI'];
-
-if ($req_url == '/')
-   $req_url = '/index.html';
-
-if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) && $_SERVER['REQUEST_METHOD'] != 'POST')
-{
-   $cache_filename = preg_replace('/\W/', '_', $matches[1]) . '.html';
-   
-   if (file_exists(ROOT . 'cms/cached/' . $cache_filename))
-   {
-      if ((time() - filemtime(ROOT . 'cms/cached/' . $cache_filename)) <= $cache_expire)
-      {
-         $cached_result = LoadFile(ROOT . 'cms/cached/' . $cache_filename);
-      }
-      else
-      {
-         unlink(ROOT . 'cms/cached/' . $cache_filename);
-      }
-   }
+if (!file_exists(ROOT . 'cms/modules_installed/control_modules.installed')) {
+    include_once(DIR_MODULES . "control_modules/control_modules.class.php");
+    $ctl = new control_modules();
 }
+
+$app = new application();
+
+if ($md != $app->name)
+    $app->restoreParams();
+else
+    $app->getParams();
+
+if ($app->action != '' && $app->action != 'docs') $fake_doc = '';
+
+$result = $app->run();
+$result = str_replace("nf.php", "index.php", $result);
 
 endMeasure('prepare');
-if ($cached_result == '')
-{
-   if (!file_exists(ROOT . 'cms/modules_installed/control_modules.installed'))
-   {
-      include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-      $ctl = new control_modules();
-   }
-
-   $app = new application();
-
-   if ($md != $app->name)
-      $app->restoreParams();
-   else
-      $app->getParams();
-
-   if ($app->action != '' && $app->action != 'docs')
-      $fake_doc = '';
-
-
-   $result = $app->run();
-   $result = str_replace("nf.php", "index.php", $result);
-}
-else
-{
-   // show cached result
-   $result = $cached_result;
-}
-
 require(ROOT.'lib/utils/postprocess_general.inc.php');
 require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
 require(ROOT.'lib/utils/postprocess_result.inc.php');

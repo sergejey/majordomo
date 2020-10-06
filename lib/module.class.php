@@ -543,7 +543,7 @@ class module
             $queryCnt = count($query) - 1;
 
             for ($i = 0; $i < $queryCnt; $i++) {
-                if ($query[$i]{0} != "#") {
+                if ($query[$i][0] != "#") {
                     SQLExec($query[$i]);
                     $mdf[] = "#" . $query[$i];
                 } else {

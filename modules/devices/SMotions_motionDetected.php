@@ -1,6 +1,9 @@
 <?php
 
 $ot = $this->object_title;
+
+$this->callMethodSafe('keepAlive');
+
 if (!isset($params['statusUpdated'])) {
     setTimeout($ot . '_motion_timer_status', '', 3);
 }
@@ -31,16 +34,16 @@ if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
     $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
 }
 
-$is_blocked=(int)$this->getProperty('blocked');
-if ($is_blocked) {
-    return;
-}
-
 $resetNobodysHome=$this->getProperty('resetNobodysHome');
 if ($nobodyhome_timeout && !$resetNobodysHome) {
     setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
 } elseif ($resetNobodysHome) {
     clearTimeout('nobodyHome');
+}
+
+$is_blocked=(int)$this->getProperty('blocked');
+if ($is_blocked) {
+    return;
 }
 
 $linked_room = $this->getProperty('linkedRoom');
@@ -51,7 +54,7 @@ if ($linked_room) {
 }
 
 /*
-include_once(DIR_MODULES.'devices/devices.class.php');
+include_once(dirname(__FILE__).'/devices.class.php');
 $dv=new devices();
 $dv->checkLinkedDevicesAction($this->object_title);
 */

@@ -69,7 +69,9 @@ class MajordomoApplication extends Application
         $this->_latestAlive = time();
         global $cycleName;
         if ($cycleName) {
-            setGlobal($cycleName, time(), 1);
+//            setGlobal($cycleName, time(), 1);
+            $checked_time = time();
+            saveToCache('MJD:ThisComputer.'.$cycleName, $checked_time);
             $ws_clients_total = count($this->_clients);
             $old_value = gg('WSClientsTotal');
             if ($ws_clients_total != $old_value) {

@@ -37,7 +37,14 @@
    $rec['COLOR']=gr('color');
    $rec['IS_ADMIN']=(int)gr('is_admin');
    $rec['IS_DEFAULT']=(int)gr('is_default');
-   $rec['PASSWORD']=hash('sha512', gr('password'));
+   if (gr('passwordnew') AND gr('passwordnew') == gr('passwordrepeat')) {
+       $rec['PASSWORD']=hash('sha512', gr('passwordnew'));
+   } else if (gr('passwordnew') AND gr('passwordnew') != gr('passwordrepeat')) {
+       $out['ERR_PASSWORD']=1;
+       $ok=0;
+   } else if (gr('passwordnew') =='' AND gr('passwordrepeat') == '') {
+       $rec['PASSWORD']=hash('sha512', '');
+   }
    $rec['LINKED_OBJECT']=trim(gr('linked_object'));
    $rec['HOST']=gr('host');
 

@@ -16,7 +16,7 @@ function inIframe () {
   var stuff=" URL: "+url+" - "+msg+"; line: "+linenumber;
   console.log('JAVASCRIPT ERROR: '+stuff);
   var tmp = new Image();
-  tmp.src = ROOTHTML+"/write_error.php?error="+encodeURIComponent(stuff);
+  tmp.src = ROOTHTML+"write_error.php?error="+encodeURIComponent(stuff);
   return true;
  }
 
@@ -307,7 +307,7 @@ function getCookie(Name) {
 
 
 function setCookie(name, value) {
- var expire = "0, 01-01-2020 00:00:00 GMT"
+ var expire = "0, 01-01-2099 00:00:00 GMT"; // fix it someday in 2099 :)
  document.cookie = name + "=" + escape(value) + "; expires=" + expire + "; path=/";
 }
 

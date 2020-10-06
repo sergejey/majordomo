@@ -475,6 +475,10 @@ class objects extends module
      */
     function raiseEvent($name, $params = 0, $parent = 0)
     {
+	if (!is_array($params)) {
+            $params = array();
+        }
+		$params['raiseEvent'] = '1';
         $this->callMethodSafe($name,$params);
     }
 
@@ -486,34 +490,51 @@ class objects extends module
     function callMethodSafe($name, $params = 0) {
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
+        $call_stack = array();
         if (is_array($params)) {
+            if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+                $call_stack = $params['m_c_s'];
+            }
+            if (isset($params['r_s_m']) && !empty($params['r_s_m'])) {
+                $run_SafeMethod = $params['r_s_m'];
+            }
+            $raiseEvent = $params['raiseEvent'];
+            unset($params['raiseEvent']);
+            unset($params['r_s_m']);
+            unset($params['m_c_s']);
             $current_call .= '.' . md5(json_encode($params));
         }
-        $call_stack = array();
         if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+            if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
             }
-            if (in_array($current_call, $call_stack)) {
+            $raiseEvent = $_GET['raiseEvent'];
+            $run_SafeMethod = $_GET['r_s_m'];
+            if (is_array($call_stack) && in_array($current_call, $call_stack)) {
                 $call_stack[] = $current_call;
                 DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
                 return 0;
             }
         }
-        $call_stack[] = $current_call;
+
         if (!is_array($params)) {
             $params = array();
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+
+        $call_stack[] = $current_call;
+        $params['raiseEvent'] = $raiseEvent;	 
+        $params['m_c_s'] = $call_stack;     
+        $params['r_s_m'] = $run_SafeMethod;
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
             $result = $this->callMethod($name, $params);
         } else {
-            $params['m_c_s'] = $call_stack;
+            $params['r_s_m'] = 1;
             $result = callAPI('/api/method/' . urlencode($this->object_title . '.' . $name), 'GET', $params);
         }
         endMeasure('callMethodSafe');
         return $result;
     }
-
+	
     /**
      * Title
      *
@@ -549,10 +570,12 @@ class objects extends module
         if ($id) {
 
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
-
             $method['EXECUTED'] = date('Y-m-d H:i:s');
-
-            $source = urldecode($_SERVER['REQUEST_URI']);
+            if (defined('CALL_SOURCE')) {
+                $source = CALL_SOURCE;
+            } else {
+                $source = urldecode($_SERVER['REQUEST_URI']);
+            }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
@@ -567,6 +590,7 @@ class objects extends module
             }
             if ($params) {
                 $saved_params = $params;
+		unset($params['r_s_m']);
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
                 $method['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
@@ -764,6 +788,9 @@ class objects extends module
             $source = $no_linked;
             $no_linked = 0;
         }
+        if (!$source && defined('CALL_SOURCE')) {
+            $source = CALL_SOURCE;
+        }
         if (!$source && $_SERVER['REQUEST_URI']) {
             $source = urldecode($_SERVER['REQUEST_URI']);
         }
@@ -937,6 +964,8 @@ class objects extends module
                 $p_lower == 'volume' ||
                 $p_lower == 'channel' ||
                 $p_lower == 'mode' ||
+                $p_lower == 'thermostatmode' ||
+                $p_lower == 'fanspeedmode' ||
                 $p_lower == 'currenttargetvalue') //
         ) {
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);
@@ -1046,6 +1075,19 @@ class objects extends module
     }
 
     /**
+     * objects subscription events
+     *
+     * @access public
+     */
+    function processSubscription($event, $details = '') {
+        if ($event == 'DAILY') {
+            // почистим кеш 
+            SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
+        }
+
+    }
+
+    /**
      * Install
      *
      * Module installation routine
@@ -1054,6 +1096,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
+        subscribeToEvent($this->name, 'DAILY');
         parent::install($parent_name);
     }
 
@@ -1066,6 +1109,7 @@ class objects extends module
      */
     function uninstall()
     {
+        unsubscribeFromEvent($this->name, 'DAILY');
         SQLDropTable('objects');
         parent::uninstall();
     }

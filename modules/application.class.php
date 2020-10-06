@@ -157,29 +157,28 @@ function getParams() {
    global $username;
    
    if ($username) {
-    $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
-    if (!$user['PASSWORD']) {
-     $session->data['SITE_USERNAME']=$user['USERNAME'];
-     $session->data['SITE_USER_ID']=$user['ID'];
-    } else {
-     if (!isset($_SERVER['PHP_AUTH_USER'])) {
-      header('WWW-Authenticate: Basic realm="MajorDoMo"');
-      header('HTTP/1.0 401 Unauthorized');
-      echo 'Password required!';
-      exit;
-     } else {
-      if ($_SERVER['PHP_AUTH_USER']==$user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) ==$user['PASSWORD']) {
-       $session->data['SITE_USERNAME']=$user['USERNAME'];
-       $session->data['SITE_USER_ID']=$user['ID'];
-      } else {
-       header('WWW-Authenticate: Basic realm="MajorDoMo"');
-       header('HTTP/1.0 401 Unauthorized');
-       echo 'Incorrect username/password!';
-       exit;
+       $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
+       if (hash('sha512', '') == $user['PASSWORD']) {
+           $session->data['SITE_USERNAME']=$user['USERNAME'];
+           $session->data['SITE_USER_ID']=$user['ID'];
+       } else {
+           if (!isset($_SERVER['PHP_AUTH_USER'])) {
+               header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
+               header('HTTP/1.0 401 Unauthorized');
+               echo 'Password required!';
+               exit;
+           } else {
+               if ($_SERVER['PHP_AUTH_USER']==$user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) ==$user['PASSWORD']) {
+                   $session->data['SITE_USERNAME']=$user['USERNAME'];
+                   $session->data['SITE_USER_ID']=$user['ID'];
+               } else {
+                   header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
+                   header('HTTP/1.0 401 Unauthorized');
+                   echo 'Incorrect username/password!';
+                   exit;
+               }
+          }    
       }
-     }    
-
-    }
    }
    global $terminal;
    if ($terminal) {

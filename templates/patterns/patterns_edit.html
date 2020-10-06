@@ -17,11 +17,36 @@
 
 <form action="?" method="post" enctype="multipart/form-data" class="form-horizontal" name="frmEdit" id="frmEdit">
 [#if OK#]
- <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+	<div class="alert alert-success" id="alert_msg"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+	<div class="alert alert-danger" id="alert_msg"><#LANG_FILLOUT_REQURED#></div> 
+	<script>
+	$(window).load(function() {
+		[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+			error_line = Number('[#ERR_LINE#]');
+			error_line_find = error_line;
+			if(error_line == 0) error_line = 1;
+			find = $('div pre.CodeMirror-line:eq('+error_line_find+')');
+			find.attr('id', 'errorline_'+error_line);
+		
+			var newElems = $("<div class='cm-error' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+			$('div pre.CodeMirror-line:eq('+error_line_find+')').append(newElems);
+		[#endif#]
+		
+		[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+			location.href='#errorline_'+error_line; 
+		[#endif#]
+	});
+			
+	</script>
 [#endif ERR#]
+<style>
+.CodeMirror {
+	border-radius: 5px;
+	border: 2px solid #f7f7f7;
+}
+</style>
 
 <div class="form-group ">
         <label class="control-label">ID:<#LANG_HCB#>id<#LANG_HCE#></label>
@@ -204,12 +229,26 @@
    <br>
    <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#] onClick="$('#code_option').show();"> <#LANG_CODE#>
  <div id="code_option"[#if SCRIPT_ID!="0"#] style="display:none"[#endif#]>
- [#if ERRORS!=""#]
- <font color='red'>[#ERRORS#]</font><br>
- [#endif ERRORS#]  
+
+[#if ERRORS#]
+	<div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+		<b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERR_FULL#]
+		<div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+	</div>
+	<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE#]</textarea>
+[#endif ERRORS#]
 
  [#module name="blockly_code" system_name="pattern<#ID#>" code_field="script" action=""#]
- <div id="script_area">
+ <div id="script_area" style="padding-top: 10px">
+ [#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
+	<div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-bottom: 10px;background: #fffdc7;">
+		<#LANG_CODEEDITOR_NOTY_TURNOFF#>
+	</div>
+[#endif SETTINGS_CODEEDITOR_TURNONSETTINGS#]
+
+<div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;margin-left: 5px;margin-bottom: 4px;">
+	<i class="glyphicon glyphicon-floppy-saved" style="vertical-align: top;"></i> <#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>. <#LANG_CODEEDITOR_AUTOSAVE_CODE_HELP#>
+</div>
   <textarea name="script" id="script" rows=20 cols=100 class="field span8">[#SCRIPT#]</textarea>
  </div>
 
@@ -350,9 +389,8 @@
 </div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+[#if EDIT_MODE#]<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">[#endif#]
 <input type="hidden" name="mode" value="update">
-
 
 [#if LOG!=""#]
 

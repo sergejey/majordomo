@@ -5,6 +5,7 @@
 
 
 global $filter_name;
+global $clear_codeeditor;
 
 if ($this->filter_name) {
     $out['FILTER_SET'] = $this->filter_name;
@@ -14,9 +15,13 @@ if ($filter_name) {
     $this->filter_name = $filter_name;
 }
 
+if ($clear_codeeditor) {
+    $this->clear_codeeditor = $clear_codeeditor;
+}
+
 
 $sections = array();
-$filters = array('', 'system', 'behavior', 'hook', 'backup', 'scenes', 'calendar');
+$filters = array('', 'system', 'behavior', 'hook', 'backup', 'scenes', 'calendar', 'codeeditor');
 $total = count($filters);
 for ($i = 0; $i < $total; $i++) {
     $rec = array();
@@ -189,6 +194,70 @@ if ($this->filter_name == 'hook' && !defined('SETTINGS_HOOK_BARCODE')) {
             $tmp['DEFAULTVALUE'] = '';
             $tmp['NOTES'] = '';
             $tmp['DATA'] = '';
+            SQLInsert('settings', $tmp);
+        }
+    }
+}
+
+if ($this->filter_name == 'codeeditor') {
+	
+	if(!defined('SETTINGS_CODEEDITOR_TURNONSETTINGS') || !defined('SETTINGS_CODEEDITOR_SHOWLINE') || 
+		!defined('SETTINGS_CODEEDITOR_MIXLINE') || !defined('SETTINGS_CODEEDITOR_UPTOLINE') || 
+		!defined('SETTINGS_CODEEDITOR_SHOWERROR') || !defined('SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES') || 
+		!defined('SETTINGS_CODEEDITOR_WRAPLINES') || !defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE') || 
+		!defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE_TYPE') || !defined('SETTINGS_CODEEDITOR_THEME') || !defined('SETTINGS_CODEEDITOR_AUTOSAVE')) {
+			
+			$cmd = "DELETE FROM `settings` WHERE `NAME` LIKE '%CODEEDITOR_%'";
+			SQLExec($cmd);
+	}
+	
+	$options = array(
+		'CODEEDITOR_TURNONSETTINGS' => LANG_CODEEDITOR_TURNONSETTINGS,
+        'CODEEDITOR_SHOWLINE' => LANG_CODEEDITOR_SHOWLINE,
+        'CODEEDITOR_MIXLINE' => LANG_CODEEDITOR_MIXLINE,
+        'CODEEDITOR_UPTOLINE' => LANG_CODEEDITOR_UPTOLINE,
+        'CODEEDITOR_SHOWERROR' => LANG_CODEEDITOR_SHOWERROR,
+        'CODEEDITOR_AUTOCLOSEQUOTES' => LANG_CODEEDITOR_AUTOCLOSEQUOTES,
+        'CODEEDITOR_WRAPLINES' => LANG_CODEEDITOR_WRAPLINES,
+        'CODEEDITOR_AUTOCOMPLETE' => LANG_CODEEDITOR_AUTOCOMPLETE,
+        'CODEEDITOR_AUTOCOMPLETE_TYPE' => LANG_CODEEDITOR_AUTOCOMPLETE_TYPE,
+		'CODEEDITOR_THEME' => LANG_CODEEDITOR_THEME,
+		'CODEEDITOR_AUTOSAVE' => LANG_CODEEDITOR_AUTOSAVE,
+    );
+	
+	
+    foreach ($options as $k => $v) {
+        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+        if (!$tmp['ID']) {
+            $tmp = array();
+            $tmp['NAME'] = $k;
+            $tmp['TITLE'] = $v;
+			$tmp['DATA'] = '';
+			$tmp['DEFAULTVALUE'] = '';
+			
+			if ($k == 'CODEEDITOR_SHOWLINE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = '10=10|35=35|45=45|100=100|500=500|1000=1000|99999='.LANG_CODEEDITOR_BYCODEHEIGHT;
+			} elseif ($k == 'CODEEDITOR_MIXLINE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = '5=5|10=10|25=25|40=40|1='.LANG_CODEEDITOR_BYCODEHEIGHT;
+			} elseif ($k == 'CODEEDITOR_AUTOSAVE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = '0='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS.'|5='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5.'|10='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10.'|15='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15.'|30='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30.'|60='.LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60;
+			} elseif ($k == 'CODEEDITOR_THEME') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = 'codemirror='.LANG_DEFAULT.'|smoke_theme=SmoKE xD Theme|ambiance=Ambiance|base16-light=base16-light|dracula=Dracula|icecoder=Icecoder|material=Material|moxer=Moxer|neat=Neat';
+				$tmp['DEFAULTVALUE'] = 'codemirror';
+			} elseif ($k == 'CODEEDITOR_AUTOCOMPLETE_TYPE') {
+				$tmp['TYPE'] = 'select';
+				$tmp['DATA'] = 'none='.LANG_DEFAULT.'|php='.LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP.'|phpmjdm='.LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM.'|mjdmuser='.LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER.'|user='.LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_USER.'|all='.LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER.'';
+				$tmp['DEFAULTVALUE'] = 'codemirror';
+			} else {
+				$tmp['TYPE'] = 'onoff';
+			}
+			
+			
+            $tmp['NOTES'] = '';
             SQLInsert('settings', $tmp);
         }
     }
@@ -435,4 +504,3 @@ if ($this->mode == 'update') {
     }
     $this->redirect("?updated=1&filter_name=" . $this->filter_name);
 }
-

@@ -3,6 +3,7 @@
 $ot = $this->object_title;
 
 $tm = time();
+$this->callMethodSafe('keepAlive');
 $this->setProperty('updated', $tm);
 $this->setProperty('updatedText', date('H:i', $tm));
 
@@ -25,6 +26,6 @@ if (isset($params['NEW_VALUE']) ) {
 
 $this->callMethodSafe('logicAction');
 
-include_once(DIR_MODULES . 'devices/devices.class.php');
+include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $this->getProperty('status'));

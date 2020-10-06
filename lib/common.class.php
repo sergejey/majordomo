@@ -1,5 +1,23 @@
 <?php
 
+function isRebootRequired() {
+    $path_to_flag = ROOT . 'reboot';
+    return file_exists($path_to_flag);
+}
+
+function setRebootRequired($reason = '') {
+    $path_to_flag = ROOT . 'reboot';
+    if (!$reason) $reason = time();
+    @SaveFile($path_to_flag,$reason);
+}
+
+function resetRebootRequired() {
+    $path_to_flag = ROOT . 'reboot';
+    if (file_exists($path_to_flag)) {
+        @unlink($path_to_flag);
+    }
+}
+
 function getSystemSerial($force_update = 0) {
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
@@ -22,197 +40,6 @@ function getSystemSerial($force_update = 0) {
         sg('Serial', $serial);
     }
     return $serial;
-}
-
-function sayReplySafe($ph, $level = 0, $replyto = '')
-{
-    $data = array(
-        'sayReply' => 1,
-        'ph' => $ph,
-        'level' => $level,
-        'replyto' => $replyto,
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
-    }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    $result = getURLBackground($url, 0);
-    return $result;
-}
-
-/**
- * Summary of sayReply
- * @param mixed $ph Phrase
- * @param mixed $level Level (default 0)
- * @param mixed $replyto Original request
- * @return void
- */
-function sayReply($ph, $level = 0, $replyto = '')
-{
-    $source = '';
-    if ($replyto) {
-        $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%" . DBSafe($replyto) . "%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-        $orig_msg = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
-        if ($orig_msg['ID']) {
-            $source = $orig_msg['SOURCE'];
-        }
-    } else {
-        $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST_TIME>=(NOW() - INTERVAL 5 SECOND) ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-    }
-    if (!$terminal_rec) {
-        $source = 'terminal_not_found';
-        say($ph, $level);
-    } else {
-        $source = 'terminal' . $terminal_rec['ID'];
-        $said_status = sayTo($ph, $level, $terminal_rec['NAME']);
-        if (!$said_status) {
-            say($ph, $level);
-        } else {
-            //$rec = array();
-            //$rec['MESSAGE']   = $ph;
-            //$rec['ADDED']     = date('Y-m-d H:i:s');
-            //$rec['ROOM_ID']   = 0;
-            //$rec['MEMBER_ID'] = 0;
-            //if ($level > 0) $rec['IMPORTANCE'] = $level;
-            //$rec['ID'] = SQLInsert('shouts', $rec);
-        }
-    }
-    processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
-}
-
-
-function sayToSafe($ph, $level = 0, $destination = '')
-{
-    $data = array(
-        'sayTo' => 1,
-        'ph' => $ph,
-        'level' => $level,
-        'destination' => $destination,
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
-    }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    $result = getURLBackground($url, 0);
-    return $result;
-}
-
-/**
- * Summary of sayTo
- * @param mixed $ph Phrase
- * @param mixed $level Level (default 0)
- * @param mixed $destination Destination terminal name
- * @return void
- */
-function sayTo($ph, $level = 0, $destination = '')
-{
-    if (!$destination) {
-        return 0;
-    }
-    // add message to chat
-    $rec = array();
-    $rec['MESSAGE'] = $ph;
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['ROOM_ID'] = 0;
-    $rec['MEMBER_ID'] = 0;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
-
-    $processed = processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
-    return 1;
-}
-
-function saySafe($ph, $level = 0, $member_id = 0, $source = '')
-{
-    $data = array(
-        'say' => 1,
-        'ph' => $ph,
-        'level' => $level,
-        'member_id' => $member_id,
-        'source' => $source,
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
-    }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    $result = getURLBackground($url, 0);
-    return $result;
-}
-
-/**
- * Summary of say
- * @param mixed $ph Phrase
- * @param mixed $level Level (default 0)
- * @param mixed $member_id Member ID (default 0)
- * @return void
- */
-function say($ph, $level = 0, $member_id = 0, $source = '')
-{
-
-    //dprint(date('Y-m-d H:i:s')." Say started",false);
-
-    verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
-    //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
-
-    $rec = array();
-    $rec['MESSAGE'] = $ph;
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['ROOM_ID'] = 0;
-    $rec['MEMBER_ID'] = $member_id;
-    $rec['SOURCE'] = $source;
-
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
-
-    if ($member_id) {
-        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
-        return;
-    }
-
-    if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
-        eval(SETTINGS_HOOK_BEFORE_SAY);
-    }
-
-
-    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
-        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
-            $passed = time() - (int)getGlobal('lastSayTime');
-            if ($passed > 20) {
-                playSound('dingdong', 1, $level);
-            }
-        }
-    }
-
-    setGlobal('lastSayTime', time());
-    setGlobal('lastSayMessage', $ph);
-
-    processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
-
-    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
-        eval(SETTINGS_HOOK_AFTER_SAY);
-    }
-    //dprint(date('Y-m-d H:i:s')." Say OK",false);
-
-}
-
-function ask($prompt, $target = '')
-{
-    processSubscriptionsSafe('ASK', array('prompt' => $prompt, 'message' => $prompt, 'target' => $target, 'destination' => $target));
 }
 
 /**
@@ -484,7 +311,7 @@ function runScheduledJobs()
         SQLUpdate('jobs', $jobs[$i]);
 
         if ($jobs[$i]['COMMANDS'] != '') {
-            $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+            $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'];
             $result = trim(getURL($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
@@ -547,69 +374,6 @@ function recognizeTime($text, &$newText)
     return $result;
 }
 
-
-/**
- * Summary of registerEvent
- * @param mixed $eventName Event name
- * @param mixed $details Details (default '')
- * @param mixed $expire_in Expire time (default 365)
- * @return mixed
- */
-function registerEvent($eventName, $details = '', $expire_in = 0)
-{
-    include_once(DIR_MODULES . 'events/events.class.php');
-    $events = new events();
-    return $events->registerEvent($eventName, $details, $expire_in);
-}
-
-/**
- * Summary of registeredEventTime
- * @param mixed $eventName Event name
- * @return mixed
- */
-function registeredEventTime($eventName)
-{
-    $sqlQuery = "SELECT ID, UNIX_TIMESTAMP(ADDED) AS TM
-                  FROM events
-                 WHERE EVENT_TYPE = 'system'
-                   AND EVENT_NAME = '" . DBSafe($eventName) . "'
-                 ORDER BY ADDED DESC
-                 LIMIT 1";
-
-    $rec = SQLSelectOne($sqlQuery);
-
-    if ($rec['ID']) {
-        return $rec['TM'];
-    } else {
-        return -1;
-    }
-}
-
-/**
- * Summary of getRandomLine
- * @param mixed $filename File name
- * @return mixed
- */
-function getRandomLine($filename)
-{
-    if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt')) {
-        $filename = ROOT . 'cms/texts/' . $filename . '.txt';
-    }
-
-    if (file_exists($filename)) {
-        $data = LoadFile($filename);
-        $data = str_replace("\r", '', $data);
-        $data = str_replace("\n\n", "\n", $data);
-        $lines = mb_split("\n", $data);
-        $total = count($lines);
-        $line = $lines[round(rand(0, $total - 1))];
-
-        if ($line != '') {
-            return $line;
-        }
-    }
-}
-
 /**
  * Summary of playSound
  * @param mixed $filename File name
@@ -662,36 +426,54 @@ function runScript($id, $params = '')
     return $sc->runScript($id, $params);
 }
 
-function runScriptSafe($id, $params = '')
+
+function runScriptSafe($id, $params = 0)
 {
+    startMeasure('runScriptSafe');
     $current_call = 'script.' . $id;
-    if (is_array($params)) {
-        $current_call.='.'.md5(json_encode($params));
-    }
     $call_stack = array();
+    if (is_array($params)) {
+        if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+            $call_stack = $params['m_c_s'];
+        }
+        if (isset($params['r_s_s']) && !empty($params['r_s_s'])) {
+            $run_SafeScript = $params['r_s_s'];
+        }
+        $raiseEvent = $params['raiseEvent'];
+        unset($params['raiseEvent']);
+        unset($params['r_s_m']);
+        unset($params['m_c_s']);
+        $current_call .= '.' . md5(json_encode($params));
+    }
     if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
-        if (in_array($current_call, $call_stack)) {
+        $raiseEvent = $_GET['raiseEvent'];
+        $run_SafeScript = $_GET['r_s_s'];
+        if (is_array($call_stack) && in_array($current_call, $call_stack)) {
             $call_stack[] = $current_call;
             DebMes("Warning: cross-linked call of " . $current_call . "\nlog:\n" . implode(" -> \n", $call_stack));
             return 0;
         }
     }
-    $call_stack[] = $current_call;
+  
     if (!is_array($params)) {
         $params = array();
     }
-    if (isSet($_SERVER['REQUEST_URI'])) {
+
+    $call_stack[] = $current_call;
+    $params['raiseEvent'] = $raiseEvent;	 
+    $params['m_c_s'] = $call_stack;     
+    $params['r_s_s'] = $run_SafeScript;      
+
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeScript) {
         $result = runScript($id,$params);
     } else {
-        $params['m_c_s'] = $call_stack;
-        if (session_id()) {
-            $params[session_name()] = session_id();
-        }
+        $params['r_s_s'] = 1;
         $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
-    }
+    }  
+    endMeasure('runScriptSafe');
     return $result;
 }
 
@@ -827,6 +609,129 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     return $result;
 }
 
+function postURLBackground($url, $query = array(), $cache = 0, $username = '', $password = '')
+{
+    //DebMes("URL: ".$url,'debug1');
+    postURL($url, $query , $cache, $username, $password, true);
+}
+
+/**
+ * Summary of postURL
+ * @param mixed $url Url
+ * @param mixed $query query
+ * @param mixed $cache Cache (default 0)
+ * @param mixed $username User name (default '')
+ * @param mixed $password Password (default '')
+ * @return mixed
+ */
+function postURL($url, $query = array(), $cache = 0, $username = '', $password = '', $background = false)
+{
+    startMeasure('postURL');
+    // DebMes($url,'urls');
+    $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
+    if (strlen($filename_part) > 200) {
+        $filename_part = substr($filename_part, 0, 200) . md5($filename_part);
+    }
+    $cache_file = ROOT . 'cms/cached/urls/' . $filename_part . '.html';
+
+    if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache)) {
+        try {
+
+            //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
+            startMeasure('curl_prepare');
+            $ch = curl_init();
+            @curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+            @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+            if ($background) {
+                curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 300);
+            }
+
+            if ($username != '' || $password != '') {
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+            }
+
+            $url_parsed = parse_url($url);
+            $host = $url_parsed['host'];
+
+            $use_proxy = false;
+            if (defined('USE_PROXY') && USE_PROXY != '') {
+                $use_proxy = true;
+            }
+
+            if ($host == '127.0.0.1' || $host == 'localhost') {
+                $use_proxy = false;
+            }
+
+            if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
+                $p = preg_quote(HOME_NETWORK);
+                $p = str_replace('\*', '\d+?', $p);
+                $p = str_replace(',', ' ', $p);
+                $p = str_replace('  ', ' ', $p);
+                $p = str_replace(' ', '|', $p);
+                if (preg_match('/' . $p . '/is', $host)) {
+                    $use_proxy = false;
+                }
+            }
+
+            if ($use_proxy) {
+                curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                }
+            }
+
+            $tmpfname = ROOT . 'cms/cached/cookie.txt';
+            curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
+
+            endMeasure('curl_prepare');
+            startMeasure('curl_exec');
+            $result = curl_exec($ch);
+            endMeasure('curl_exec');
+
+
+            startMeasure('curl_post');
+            if (!$background && curl_errno($ch)) {
+                $errorInfo = curl_error($ch);
+                $info = curl_getinfo($ch);
+                $backtrace = debug_backtrace();
+                $callSource = $backtrace[1]['function'];
+                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
+            }
+            curl_close($ch);
+            endMeasure('curl_post');
+
+
+        } catch (Exception $e) {
+            registerError('geturl', $url . ' ' . get_class($e) . ', ' . $e->getMessage());
+        }
+
+        if ($cache > 0) {
+            CreateDir(ROOT . 'cms/cached/urls');
+            SaveFile($cache_file, $result);
+        }
+    } else {
+        $result = LoadFile($cache_file);
+    }
+
+
+    endMeasure('postURL');
+
+    return $result;
+}
+
 /**
  * Summary of safe_exec
  * @param mixed $command Command
@@ -870,50 +775,13 @@ function execInBackground($cmd)
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
         }
     } else {
-        exec($cmd . " > /dev/null &");
-    }
-}
-
-/**
- * Summary of getFilesTree
- * @param mixed $destination Destination
- * @param mixed $sort Sort (default 'name')
- * @return array
- */
-function getFilesTree($destination, $sort = 'name')
-{
-    if (substr($destination, -1) == '/' || substr($destination, -1) == '\\') {
-        $destination = substr($destination, 0, strlen($destination) - 1);
-    }
-
-    $res = array();
-
-    if (!is_dir($destination))
-        return $res;
-
-    if ($dir = @opendir($destination)) {
-        while (($file = readdir($dir)) !== false) {
-            if (is_dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
-                $tmp = getFilesTree($destination . "/" . $file);
-                if (is_array($tmp)) {
-                    foreach ($tmp as $elem) {
-                        $res[] = $elem;
-                    }
-                }
-            } elseif (is_file($destination . "/" . $file)) {
-                $res[] = ($destination . "/" . $file);
-            }
+        try {
+            exec($cmd . " > /dev/null &");
+	} catch (Exception $e) {
+            DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
         }
-        closedir($dir);
     }
-
-    if ($sort == 'name') {
-        sort($res, SORT_STRING);
-    }
-
-    return $res;
 }
-
 
 /**
  * Summary of isOnline
@@ -1301,16 +1169,6 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-function remote_file_exists($url){
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_NOBODY, true);
-    curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if( $httpCode == 200 ){return true;}
-    return false;
-}
-
 function logAction($action_type,$details='') {
     global $session;
     $rec=array();
@@ -1333,213 +1191,34 @@ function logAction($action_type,$details='') {
 
 }
 
-function get_media_info($file)
-{
-    if (!defined('PATH_TO_FFMPEG')) {
-        if (IsWindowsOS()) {
-            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-        } else {
-            define("PATH_TO_FFMPEG", 'ffmpeg');
-        }
-    }
-    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
-    //DebMes ($data);
-    if (preg_match("/: Invalid /", $data)) {
-        return false;
-    }
-    //get duration
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
-
-    if (!isset($duration[1])) {
-        return false;
-    }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3]+1;
-	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
-	// get all info about codec
-	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
-    
-	if ($format) {
-		$out['Audio_format'] = $format[1];
-		$out['Audio_sample_rate'] = $format[2];
-		$out['Audio_type'] = $format[3];
-		$out['Audio_codec'] = $format[4];
-		$out['Audio_bitrate'] = $format[5];
-		if ($out['Audio_type'] == 'mono' ) {
-			$out['Audio_chanel'] = 1;
-		} else {
-			$out['Audio_chanel'] = 2;
-		}	
-	}
-    preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
-    if ($formatv) {
-		$out['Video_format'] = $formatv[1];
-	    $out['Video_size'] = $formatv[2];
-	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
-	    $out['Video_fps'] = $formatv[5];
-	}
-    return $out;
-}
-
-function get_remote_filesize($url)
-{
-    $head = array_change_key_case(get_headers($url, 1));
-    // content-length of download (in bytes), read from Content-Length: field
-    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
-
-    // cannot retrieve file size, return "-1"
-    if (!$clen) {
-        return '0';
-    }
-    return $clen; // return size in bytes
-}
-
 /**
- * Returns number spelling
+ * Ping host
+ * @param mixed $host Host address
+ * @return bool
  */
-function num2str($num) {
+function ping($host)
+{
+    if (IsWindowsOS())
+        exec(sprintf('ping -n 1 %s', escapeshellarg($host)), $res, $rval);
+    elseif (substr(php_uname(), 0, 7) === "FreeBSD")
+        exec(sprintf('ping -c 1 -t 5 %s', escapeshellarg($host)), $res, $rval);
+    else
+        exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($host)), $res, $rval);
 
-    if (!$num) return;
-
-    if (!defined('LANG_NUMBER_TO_STRING_UNIT')) return $num;
-
-    list($whole,$tenths) = explode('.',sprintf("%014.1f", floatval($num)));
-    $out = array();
-    if (intval($whole)>0) {
-        foreach(str_split($whole,3) as $uk=>$v) { // by 3 symbols
-            if (!intval($v)) continue;
-            $uk = sizeof(LANG_NUMBER_TO_STRING_UNIT)-$uk-1; // unit key
-            $gender = LANG_NUMBER_TO_STRING_UNIT[$uk][3];
-            list($i1,$i2,$i3) = array_map('intval',str_split($v,1));
-            // mega-logic
-            $out[] = LANG_NUMBER_TO_STRING_HUNDRED[$i1]; # 1xx-9xx
-            if ($tenths!=0) {
-                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 20-99
-                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[1][$i3]; # 10-19 | 1-9
-            } else {
-                if ($i2>1) $out[]= LANG_NUMBER_TO_STRING_TENS[$i2].' '.LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 20-99
-                else $out[]= $i2>0 ? LANG_NUMBER_TO_STRING_2TEN[$i3] : LANG_NUMBER_TO_STRING_1TEN[$gender][$i3]; # 10-19 | 1-9
-            }
-            // units without rub & kop
-            if ($uk>1) $out[]= num2straddon($v,LANG_NUMBER_TO_STRING_UNIT[$uk][0],LANG_NUMBER_TO_STRING_UNIT[$uk][1],LANG_NUMBER_TO_STRING_UNIT[$uk][2]);
-        } //foreach
-    }
-    else $out[] = LANG_NUMBER_TO_STRING_NULL;
-    if ($tenths!=0) {
-        $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][1],LANG_NUMBER_TO_STRING_UNIT[1][2],LANG_NUMBER_TO_STRING_UNIT[1][2]);
-        $out[] = LANG_NUMBER_TO_STRING_1TEN[1][$tenths].' '.num2straddon($tenths,LANG_NUMBER_TO_STRING_UNIT[0][0],LANG_NUMBER_TO_STRING_UNIT[0][1],LANG_NUMBER_TO_STRING_UNIT[0][1]);
-    } else {
-        $out[] = num2straddon(intval($whole), LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0],LANG_NUMBER_TO_STRING_UNIT[1][0]);
-    }
-    return trim(preg_replace('/ {2,}/', ' ', join(' ',$out)));
+    return $rval === 0 && preg_match('/ttl/is', join('', $res));
 }
 
-/**
- * Addition to num2str
- */
-function num2straddon($n, $f1, $f2, $f5) {
-    $n = abs(intval($n)) % 100;
-    if ($n>10 && $n<20) return $f5;
-    $n = $n % 10;
-    if ($n>1 && $n<5) return $f2;
-    if ($n==1) return $f1;
-    return $f5;
-}
-
-function date2str($date)
-    {
-        if (empty($date)) {
-            return '';
-        }
-        
-        $thousands = array(
-            1 => 'одна тысяча',
-            2 => 'две тысячи',
-        );
-        
-        $hundreds = array(
-            0 => '',
-            9 => 'девятьсот',
-        );
-        
-        $days = array(
-            1 => 'первое',
-            2 => 'второе',
-            3 => 'третье',
-            4 => 'четвертое',
-            5 => 'пятое',
-            6 => 'шестое',
-            7 => 'седьмое',
-            8 => 'восьмое',
-            9 => 'девятое',
-            10 => 'десятое',
-            11 => 'одиннадцатое',
-            12 => 'двенадцатое',
-            13 => 'тринадцатое',
-            14 => 'четырнадцатое',
-            15 => 'пятнадцатое',
-            16 => 'шестнадцатое',
-            17 => 'семнадцатое',
-            18 => 'восемнадцатое',
-            19 => 'девятнадцатое',
-            20 => 'двадцатое',
-            30 => 'тридцатое',
-            40 => 'сороковое',
-        );
-        
-        $tens = array(
-            20 => 'двадцать',
-            30 => 'тридцать',
-            40 => 'сорок',
-        ); 
-        
-        foreach ($tens as $d => $ten) {
-            for ($day = 1; $day < 10; $day++) {
-                $days[$d + $day] = $ten . ' ' . $days[$day];
-            }
-        }
-        
-        $months = array(
-            0 => 'нулября',
-            1 => 'января',
-            2 => 'февраля',
-            3 => 'марта',
-            4 => 'апреля',
-            5 => 'мая',
-            6 => 'июня',
-            7 => 'июля',
-            8 => 'августа',
-            9 => 'сентября',
-            10 => 'октября',
-            11 => 'ноября',
-            12 => 'декабря',
-        );
-        
-        list($year, $month, $day) = explode('-', $date);
-
-        $monthStr = $months[(int)$month];
-        $dayStr = $days[(int)$day];
-        
-        $yearPart = $days[(int)mb_substr($year, -2)];
-        $endYear = mb_substr($yearPart, -2);
-        
-        switch ($endYear) {
-            case 'ое':
-                $yearPart = mb_substr($yearPart, 0, -2) . 'ого';
-                break;
-            case 'ье':
-                $yearPart .= 'го';
-                break;
-        }
-        
-        $yearParts = array(
-            $thousands[(int)$year[0]],
-            $hundreds[(int)$year[1]],
-            $yearPart
-        );
-        
-        $yearStr = implode(' ', array_filter(array_map('trim', $yearParts)));
-        
-        return implode(' ', array($dayStr, $monthStr, $yearStr));
+function echonow($msg, $color = '')
+{
+    DebMes(strip_tags($msg),'auto_update');
+    if ($color) {
+        echo '<font color="' . $color . '">';
     }
+    echo $msg;
+    if ($color) {
+        echo '</font>';
+    }
+    echo str_repeat(' ', 16 * 1024);
+    flush();
+    ob_flush();
+}
