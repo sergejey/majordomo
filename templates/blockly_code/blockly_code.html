@@ -97,6 +97,8 @@ $(document).ready(function(){
 		tabSize: 4,
 		
 		[#if TYPE=="php"#]
+		enterMode: "indent",
+		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
 		scrollbarStyle: 'native',
 		autofocus: true,
