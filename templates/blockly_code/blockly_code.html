@@ -176,7 +176,9 @@ $(document).ready(function(){
 		CodeMirror.commands.autocomplete = function(mirror) {
 			mirror.showHint({ 
 				hint: CodeMirror.hint.ajax,
-				
+				completeSingle: false,
+				alignWithWord: false,
+				closeOnUnfocus: true,
 			});
 		};
 		
@@ -246,7 +248,7 @@ $(document).ready(function(){
 			var __Token = editor.getTokenAt(__Cursor);
 
 			if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
-				CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+				CodeMirror.commands.autocomplete(editor, null, null);
 			}
 		});
 		[#endif#]
