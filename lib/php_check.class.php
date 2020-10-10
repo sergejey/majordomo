@@ -32,14 +32,15 @@ function php_syntax_error($code)
 				$cmd = DOC_ROOT . '/../server/php/php -l ' . $filePath;
 			}
 		} else {
-			$cmd = 'php -l ' . $filePath.' 2>&1';
+			$cmd = 'php -d display_errors=1 -l ' . $filePath.' 2>&1';
 		}
 		exec($cmd, $out);
 		unlink($filePath);
 		$res = implode("\n", $out);
 		
 		if(preg_match("/\.php on line \b/i", $res)) 
-			
+			return trim($res) . "\n";
+		if(preg_match("/\Errors parsing\b/i", $res)) 
 			return trim($res) . "\n";
 		if (preg_match("/welldone\b/i", $res)) {
 			return false;
