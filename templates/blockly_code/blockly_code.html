@@ -176,7 +176,9 @@ $(document).ready(function(){
 		CodeMirror.commands.autocomplete = function(mirror) {
 			mirror.showHint({ 
 				hint: CodeMirror.hint.ajax,
-				
+				completeSingle: false,
+				alignWithWord: false,
+				closeOnUnfocus: true,
 			});
 		};
 		
@@ -238,7 +240,6 @@ $(document).ready(function(){
 			"191": "slash",
 			"192": "graveaccent",
 			"220": "backslash",
-			"222": "quote"
 		}
 
 		editor.on("keyup", function(editor, event) {
@@ -246,7 +247,7 @@ $(document).ready(function(){
 			var __Token = editor.getTokenAt(__Cursor);
 
 			if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
-				CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+				CodeMirror.commands.autocomplete(editor, null, null);
 			}
 		});
 		[#endif#]
@@ -364,10 +365,10 @@ function escapeHtml(text, type='scape') {
 			'!endline' : ";",
 			"!newline": '\n',
 			"!plus": '+',
-			"!minis": '-',
+			"!minus": '-',
 		};
 		
-		return text.replace(/!amp|!lt|!gt|!quot|!039|!lpar|!rpar|!bsol|!num|!endline|!newline|!plus|!minis/g, function(m) { return map[m]; });
+		return text.replace(/!amp|!lt|!gt|!quot|!039|!lpar|!rpar|!bsol|!num|!endline|!newline|!plus|!minus/g, function(m) { return map[m]; });
 	}
 }
 
@@ -458,8 +459,8 @@ function modalRestoreCode() {
 						</table>
 					</div>
 					
-					<div id="seeRestoreCodeDiv" style="display:none;"> 
-						<textarea id="seeRestoreCode" style="width: 100%;height: 400px;border: 1px solid #ddd;padding: 5px;border-radius: 5px;resize: none;">
+					<div id="seeRestoreCodeDiv" style="display:none;">
+						<textarea id="seeRestoreCode" style="width: 100%;height: 300px;border: 1px solid #ddd;padding: 5px;border-radius: 5px;resize: none;" readonly>
 							
 						</textarea>
 						<center>
