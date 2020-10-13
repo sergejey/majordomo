@@ -31,18 +31,37 @@ function preparePathTime($s, $mtime)
  */
 function is_dir2($d)
 {
-   $d = str_replace('NET:', '//', $d);
 
-   if (is_dir($d))
-      return 1;
+    // none directory
+    if (substr($d, -2) == DIRECTORY_SEPARATOR . "." || substr($d, -2) == "/.") {
+        return false; 
+    }
+    
+    // none directory
+    if (substr($d, -3) == DIRECTORY_SEPARATOR . ".." ||  substr($d, -3) == "/..") {
+        return false; 
+    }
 
-   if ($node = @opendir($d))
-   {
-      closedir($node);
-      return 1;
-   }
+    if (substr($d, -1) == "/" ) {
+        $d = substr($d,0,-1); 
+    }
+    
+    if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
+        $d = substr($d,0,-1);
+    }
+    
+    if ('NET:' == substr($d, 0, 4)) {
+        $d = '//' . substr($d, 4);
+    }
+    
+    if (is_dir($d)) return true;
+    
+    if ($node = @opendir($d)) {
+        closedir($node);
+        return true;
+    } 
 
-   return 0;
+   return false;
 }
 
 /**
