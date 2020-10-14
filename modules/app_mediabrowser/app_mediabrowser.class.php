@@ -386,7 +386,7 @@ function usual(&$out) {
 		   $file_ext = 'html';
 	   }
 //        $out['FULLFILE_URL']='http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($out['FULLFILE']);
-	   $out['FULLFILE_URL']= "http://" . $_SERVER['HTTP_HOST']. "/module/app_mediabrowser.html?play=" . urlsafebase64encode($out['FULLFILE']);
+	   $out['FULLFILE_URL']= "http://" . $_SERVER['HTTP_HOST']. "/module/app_mediabrowser.html?play=" . urlsafe_b64encode($out['FULLFILE']);
    }
    //dprint($out['FULLFILE_URL']);
 
