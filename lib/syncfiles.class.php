@@ -31,18 +31,37 @@ function preparePathTime($s, $mtime)
  */
 function is_dir2($d)
 {
-   $d = str_replace('NET:', '//', $d);
 
-   if (is_dir($d))
-      return 1;
+    // none directory
+    if (substr($d, -2) == DIRECTORY_SEPARATOR . "." || substr($d, -2) == "/.") {
+        return false; 
+    }
+    
+    // none directory
+    if (substr($d, -3) == DIRECTORY_SEPARATOR . ".." ||  substr($d, -3) == "/..") {
+        return false; 
+    }
 
-   if ($node = @opendir($d))
-   {
-      closedir($node);
-      return 1;
-   }
+    if (substr($d, -1) == "/" ) {
+        $d = substr($d,0,-1); 
+    }
+    
+    if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
+        $d = substr($d,0,-1);
+    }
+    
+    if ('NET:' == substr($d, 0, 4)) {
+        $d = '//' . substr($d, 4);
+    }
+    
+    if (is_dir($d)) return true;
+    
+    if ($node = @opendir($d)) {
+        closedir($node);
+        return true;
+    } 
 
-   return 0;
+   return false;
 }
 
 /**
@@ -237,24 +256,42 @@ function copyFile($src, $dst)
    touch($dst, filemtime($src));
 }
 
+// function copy files from sourse directory to destination 
 function copyFiles($source, $destination, $over = 0, $patterns = 0)
 {
     $res = 1;
+	
+    //Remove last slash '/' in source and destination - slash was added when copy
+    if (substr($source, -1) == "/" ) {
+        $source = substr($source,0,-1); 
+    } else if (substr($source, -1) == DIRECTORY_SEPARATOR ) {
+        $source = substr($source,0,-1);
+    }
+	
+    if (substr($destination, -1) == "/" ) {
+        $destination = substr($destination,0,-1); 
+    } else if (substr($destination, -1) == DIRECTORY_SEPARATOR ) {
+        $destination = substr($destination,0,-1);
+    }
+	
     if (!Is_Dir2($source)) {
-        return 0; // cannot create destination path
+        return false; // cannot create destination path
     }
 
-    if (!Is_Dir($destination)) {
-        if (!mkdir($destination)) {
-            return 0; // cannot create destination path
+    if (!Is_Dir2($destination)) {
+        if (!mkdir($destination, 0777, true)) {
+            // cannot create destination path
+            return false; 
         }
     }
 
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if (Is_Dir2($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+
+            if (is_dir($source . DIRECTORY_SEPARATOR . $file) && ($file != '.') && ($file != '..')) {
                 //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
-            } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
+                continue;
+            } elseif (is_file($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
                 if (!is_array($patterns)) {
                     $ok_to_copy = 1;
                 } else {
@@ -267,7 +304,7 @@ function copyFiles($source, $destination, $over = 0, $patterns = 0)
                     }
                 }
                 if ($ok_to_copy) {
-                    $res = copy($source . "/" . $file, $destination . "/" . $file);
+                    $res = copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
                 }
             }
         }
@@ -750,8 +787,18 @@ function UTF_Encode($str, $type)
 function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
     //Remove last slash '/' in source and destination - slash was added when copy
-    $source = preg_replace("#/$#", "", $source);
-    $destination = preg_replace("#/$#", "", $destination);
+    if (substr($source, -1) == "/" ) {
+        $source = substr($source,0,-1); 
+    } else if (substr($source, -1) == DIRECTORY_SEPARATOR ) {
+        $source = substr($source,0,-1);
+    }
+	
+    if (substr($destination, -1) == "/" ) {
+        $destination = substr($destination,0,-1); 
+    } else if (substr($destination, -1) == DIRECTORY_SEPARATOR ) {
+        $destination = substr($destination,0,-1);
+    }
+    
     if (!Is_Dir2($source)) {
         // cannot create destination path
         return false; 
@@ -764,32 +811,13 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
         }
     }
 
-
     if ($dir = @opendir($source)) {
         while (($file = readdir($dir)) !== false) {
-            if ($file == '.' || $file == '..') {
-                continue;
-            } else if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
-                $res = copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
-            } else if (file_exists($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
-                if (!is_array($patterns)) {
-                    $ok_to_copy = 1;
-                } else {
-                    $ok_to_copy = 0;
-                    $total = count($patterns);
-                    for ($i = 0; $i < $total; $i++) {
-                        if (preg_match('/' . $patterns[$i] . '/is', $file)) {
-                            $ok_to_copy = 1;
-                        }
-                    }
-                }
-                if ($ok_to_copy) {
-                    if(!@copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file)) {
-                        DebMes('Не смог скопировать файл '. $source . DIRECTORY_SEPARATOR . $file, 'error' );
-                    }
-                }
+            if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
+                copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
             }
         }
+        copyFiles($source, $destination, $over, $patterns);
         closedir($dir);
     }
     return true;

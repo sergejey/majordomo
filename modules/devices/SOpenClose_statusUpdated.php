@@ -43,7 +43,7 @@ if (!$description) {
 
 if ($this->getProperty('notify_status')) {
     if (isset($params['NEW_VALUE'])) {
-        if (($params['NEW_VALUE'] && $ncno == 'no') || (!$params['NEW_VALUE'] && $ncno == 'nc'))
+        if (($params['NEW_VALUE'] && $ncno == 'no') || (!$params['NEW_VALUE'] && $ncno == 'nc')){
             $msg = $this->getProperty('notify_msg_opening');
             if (!$msg) $msg = $description . ' ' . LANG_DEVICES_STATUS_OPEN;
             saySafe($msg, 2);
