@@ -21,6 +21,7 @@ def callAPI(api_url, method = "GET", params = {}):
     url = re.sub(r"^/api/", BASE_URL+ROOTHTML+'api.php/', api_url)
 
     data = urlencode(params).encode('utf-8')
+    data = str(data)
     if (method == "POST"):
         req = urllib2.Request(url, data)
         response = urllib2.urlopen(req)
