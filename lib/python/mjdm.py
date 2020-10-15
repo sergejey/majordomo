@@ -15,6 +15,7 @@ import datetime
 import time
 from typing import List, Any
 
+
 def getURL(url):
     response = urllib2.urlopen(url).read()
     return response
@@ -121,6 +122,8 @@ def getObjectsByClass(class_name):
         if con:
             con.close()
     return result
+
+
 def registerEvent(eventName, details, expire_in):
     # def registerEvent(eventName, expire_in):
     con = 0
@@ -262,6 +265,26 @@ def registerEvent(eventName, details, expire_in):
         if con:
             con.close()
     return 1
+
+
+def registeredEventTime(eventName):
+    con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+    cur = con.cursor()
+    cur.execute( "SELECT UNIX_TIMESTAMP(ADDED)  AS TM FROM events WHERE EVENT_TYPE = 'system'  AND EVENT_NAME = '" + eventName + "' ORDER BY ADDED DESC LIMIT 1 ")
+    eventtime = list(cur.fetchall())
+    eventtime = list(sum(eventtime, ()))
+    eventtime = eventtime[0]
+    eventtime = int(eventtime)
+
+    return eventtime
+
+
+def timeISO():
+    time_sec = time.time()
+    time_sec = str(time_sec)
+    time_sec = time_sec.split('.')
+    time_sec = int(time_sec[0])
+    return time_sec
 
 
 class mjdObject:
