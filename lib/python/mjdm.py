@@ -3,6 +3,7 @@ from mjd_constants import *
 
 try:
     import urllib.request as urllib2
+    from urllib.parse import quote
     from urllib.parse import urlencode
 except ImportError:
     import urllib2
@@ -16,15 +17,20 @@ import time
 from typing import List, Any
 
 
-def getURL(url):
-    response = urllib2.urlopen(url).read()
-    return response
+
+def getURL(url,params='local'):
+    if params !='local':
+        response = urllib2.urlopen(burl + url).read()
+        return response
+    else:
+        burl = BASE_URL
+        response = urllib2.urlopen(burl + url).read()
+        return response
 
 
 def callAPI(api_url, method="GET", params={}):
     params['no_session'] = 1
     url = re.sub(r"^/api/", BASE_URL + ROOTHTML + 'api.php/', api_url)
-
     data = urlencode(params).encode('utf-8')
 
     if (method == "POST"):
@@ -38,6 +44,17 @@ def callAPI(api_url, method="GET", params={}):
     the_page = response.read()
     # print the_page
     return the_page
+
+
+def saySafe(ph, level=0, member_id=0, source=1):
+    ph = {"ph": ph}
+    data = urlencode(ph).encode('utf-8')
+    data = str(data)
+    sum = len(data)
+    data = data[2:sum - 1]
+    getURL(
+        "/objects/?say=1&" + data + "&level=" + str(level) + "&member_id=" + str(member_id) + "&source=" + str(source))
+    return 1
 
 
 def runScript(script_name, params={}):
@@ -170,7 +187,6 @@ def registerEvent(eventName, details, expire_in):
 
         if eventName in get_event_list:
             cur.execute("SELECT ID  FROM events WHERE EVENT_NAME = '" + eventName + "'")
-            # id_eventname = cur.fetchall()
             id_eventname = list(cur.fetchall())
             id_eventname = list(sum(id_eventname, ()))
             id_eventname = id_eventname[0]
@@ -182,35 +198,35 @@ def registerEvent(eventName, details, expire_in):
             val = (today_added, TITLE, time_sec, id_eventname)
             cur.execute(sql, val)
             con.commit()
-            if type(details) is dict:
-                if 'rec' in details:
-                    if 'obj' and 'prop' in details:
-                        property = details['obj'] + '.' + details['prop']
-                        setGlobal(property, details['value'])
-                        obj = details['obj']
-                        prop = details['prop']
-                        sql = "UPDATE events_params SET LINKED_OBJECT=%s, LINKED_PROPERTY=%s WHERE EVENT_ID=%s "
-                        val = (obj, prop, id_eventname)
-                        cur.execute(sql, val)
-                        con.commit()
-                    elif 'obj' and 'meth' in details:
-                        method = details['obj'] + '.' + details['meth']
-                        callMethod(method, details['param'])
-                        obj = details['obj']
-                        meth = details['meth']
-                        sql = "UPDATE events_params SET LINKED_OBJECT=%s, LINKED_METHOD=%s WHERE EVENT_ID=%s "
-                        val = (obj, meth)
-                        cur.execute(sql, val)
-                        con.commit()
+            # if type(details) is dict:
+            #     if 'rec' in details:
+            #         if 'obj' and 'prop' in details:
+            #             property = details['obj'] + '.' + details['prop']
+            #             setGlobal(property, details['value'])
+            #             obj = details['obj']
+            #             prop = details['prop']
+            #             sql = "UPDATE events_params SET LINKED_OBJECT=%s, LINKED_PROPERTY=%s WHERE EVENT_ID=%s "
+            #             val = (obj, prop, id_eventname)
+            #             cur.execute(sql, val)
+            #             con.commit()
+            #         elif 'obj' and 'meth' in details:
+            #             method = details['obj'] + '.' + details['meth']
+            #             callMethod(method, details['param'])
+            #             obj = details['obj']
+            #             meth = details['meth']
+            #             sql = "UPDATE events_params SET LINKED_OBJECT=%s, LINKED_METHOD=%s WHERE EVENT_ID=%s "
+            #             val = (obj, meth)
+            #             cur.execute(sql, val)
+            #             con.commit()
 
-                else:
-                    if 'obj' and 'prop' in details:
-                        property = details['obj'] + '.' + details['prop']
-                        setGlobal(property, details['value'])
-
-                    elif 'LINKED_OBJECT' and 'LINKED_METHOD' in details:
-                        method = details['obj'] + '.' + details['meth']
-                        callMethod(method, details['param'])
+                # else:
+                #     if 'obj' and 'prop' in details:
+                #         property = details['obj'] + '.' + details['prop']
+                #         setGlobal(property, details['value'])
+                # 
+                #     elif 'LINKED_OBJECT' and 'LINKED_METHOD' in details:
+                #         method = details['obj'] + '.' + details['meth']
+                #         callMethod(method, details['param'])
 
 
         else:
@@ -220,7 +236,6 @@ def registerEvent(eventName, details, expire_in):
             cur.execute(sql, val)
             con.commit()
             cur.execute("SELECT ID  FROM events WHERE EVENT_NAME = '" + eventName + "'")
-            # id_eventname = cur.fetchall()
             id_eventname = list(cur.fetchall())
             id_eventname = list(sum(id_eventname, ()))
             id_eventname = id_eventname[0]
@@ -249,13 +264,13 @@ def registerEvent(eventName, details, expire_in):
             #             val = (obj, meth)
             #             cur.execute(sql, val)
             #             con.commit()
-            #
+            # 
             #     else:
             #         if 'obj' and 'prop' in details:
-            #
+            # 
             #             property = details['obj'] + '.' + details['prop']
             #             setGlobal(property, details['value'])
-            #
+            # 
             #         elif 'obj' and 'meth' in details:
             #             method = details['obj'] + '.' + details['meth']
             #             callMethod(method, details['param'])
@@ -270,13 +285,30 @@ def registerEvent(eventName, details, expire_in):
 def registeredEventTime(eventName):
     con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
     cur = con.cursor()
-    cur.execute( "SELECT UNIX_TIMESTAMP(ADDED)  AS TM FROM events WHERE EVENT_TYPE = 'system'  AND EVENT_NAME = '" + eventName + "' ORDER BY ADDED DESC LIMIT 1 ")
-    eventtime = list(cur.fetchall())
-    eventtime = list(sum(eventtime, ()))
-    eventtime = eventtime[0]
-    eventtime = int(eventtime)
+    cur.execute(
+        "SELECT UNIX_TIMESTAMP(ADDED)  AS TM FROM events WHERE EVENT_TYPE = 'system'  AND EVENT_NAME = '" + eventName + "' ORDER BY ADDED DESC LIMIT 1 ")
+    eventtime = cur.fetchone()
+    if eventtime == None:
+        return False
+    else:
+        eventtime = list(eventtime)
+        eventtime = list(sum(eventtime, ()))
+        eventtime = eventtime[0]
+        eventtime = int(eventtime)
+        return eventtime
 
-    return eventtime
+
+def registeredEventDetails(eventName):
+    con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+    cur = con.cursor()
+    cur.execute("SELECT DETAILS FROM events WHERE  EVENT_NAME = '" + eventName + "'")
+    details_record = cur.fetchone()
+    if details_record == None:
+        return False
+    else:
+        event_details = details_record[0]
+        event_details = event_details.split(',')
+        return event_details
 
 
 def timeISO():
@@ -285,6 +317,68 @@ def timeISO():
     time_sec = time_sec.split('.')
     time_sec = int(time_sec[0])
     return time_sec
+
+
+def timeConvert(tm):
+    tm = tm.split(':')
+    hour = int(tm[0])
+    min = int(tm[1])
+    y, m, d = str(datetime.date.today()).split('-')
+    return time.mktime((int(y), int(m), int(d), hour, min, 0, 0, 0, 0))
+
+
+def timeBetween(tm1, tm2):
+    trueTime1 = timeConvert(tm1)
+    trueTime2 = timeConvert(tm2)
+
+    if trueTime1 > trueTime2:
+        if trueTime2 < time.time():
+            trueTime2 += 24 * 60 * 60
+            print('trueTime2;', trueTime2)
+        else:
+            trueTime1 -= 24 * 60 * 60
+            print('trueTime1;', trueTime1)
+    if time.time() >= trueTime1 and time.time() <= trueTime2:
+        return True
+    else:
+        return False
+
+
+def clearScheduledJob(title):
+    con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+    cur = con.cursor()
+    cur.execute = ("DELETE FROM jobs WHERE TITLE LIKE '" + title + "'")
+    con.commit()
+    con.close()
+    return
+
+
+def clearTimeOut(title):
+    return clearScheduledJob(title)
+
+
+def addScheduledJob(title, commands, datetime, expire=1800):
+    clearScheduledJob(title)
+    datetime_fmt = '%Y-%d-%m %H:%M:%S'
+    expire = (DT.strptime(datetime, datetime_fmt) + timedelta(seconds=expire)).strftime(datetime_fmt)
+    con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+    cur = con.cursor()
+    sql = "INSERT INTO jobs (TITLE,COMMANDS, RUNTIME,EXPIRE)  VALUES (%s,%s,%s,%s)"
+    val = (title, commands, datetime, expire)
+    cur.execute(sql, val)
+    con.commit()
+    cur.execute("SELECT ID  FROM jobs WHERE TITLE = '" + title + "'")
+    jobID = list(cur.fetchall())
+    jobID = list(sum(jobID, ()))
+    jobID = jobID[0]
+    con.close()
+    return jobID
+
+
+def setTimeOut(title, commands, timeout):
+    clearTimeOut(title)
+    res = addScheduledJob(title, commands, time.time() + timeout)
+    return res
 
 
 class mjdObject:
