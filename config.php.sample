@@ -22,16 +22,6 @@ Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru");
 
 date_default_timezone_set('UTC');
 
-if (isset($_ENV["COMPUTERNAME"]) && $_ENV["COMPUTERNAME"])
-{
-   Define('COMPUTER_NAME', strtolower($_ENV["COMPUTERNAME"])); 
-} 
-else 
-{
-   // Your computer name (optional)
-   Define('COMPUTER_NAME', 'mycomp');                       
-}
-
  Define('DOC_ROOT', dirname(__FILE__));              // Your htdocs location (should be detected automatically)
 
  Define('SERVER_ROOT', '/var/www');
