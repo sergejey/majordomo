@@ -41,7 +41,6 @@ else
 
 Define('ROOT', DOC_ROOT."/");
 Define('ROOTHTML', "/");
-Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname("n"));
 
 // 1-wire OWFS server
 //Define('ONEWIRE_SERVER', 'tcp://localhost:8234');    
