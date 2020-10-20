@@ -83,7 +83,7 @@ FF;
             }
             echo $content;
         }
-        //sendmail("errors@" . PROJECT_DOMAIN, PROJECT_BUGTRACK, "Error reporting: $script", $description);
+        //sendmail("errors@" . PROJECT_TITLE, PROJECT_BUGTRACK, "Error reporting: $script", $description);
         if ($stop) exit;
     }
 
