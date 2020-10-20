@@ -47,13 +47,13 @@ if ($total)
 
    $result .= "<channel>";
    $result .= "    <title>" . PROJECT_TITLE . "</title>";
-   $result .= "    <link>http://" . PROJECT_DOMAIN . "/</link>";
+   $result .= "    <link>http://" . PROJECT_TITLE . "/</link>";
    $result .= "    <lastBuildDate>" . date('r') . "</lastBuildDate>";
    $result .= "    <description>" . PROJECT_TITLE . " RSS feed</description>";
 
    for ($i = 0; $i < $total; $i++)
    {
-      $res[$i]['LINK'] = 'http://' . PROJECT_DOMAIN . '/event' . $res[$i]['ID'];
+      $res[$i]['LINK'] = 'http://' . PROJECT_TITLE . '/event' . $res[$i]['ID'];
 
       $result .= " <item>";
       $rsult  .= "     <title>" . substr($res[$i]['MESSAGE'], 0, 500) . "</title>";
