@@ -26,12 +26,12 @@ def say(ph, level=0, member_id=0, source=1):
 
 
 def runScript(script_name, params={}):
-    gn.runScript(script_name, params={})
+    gn.runScript(script_name, params)
     return 1
 
 
 def callMethod(method_name, params={}):
-    gn.callMethod(method_name, params={})
+    gn.callMethod(method_name, params)
     return 1
 
 
