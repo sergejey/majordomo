@@ -30,7 +30,8 @@ def callAPI(api_url, method="GET", params={}):
         req = urllib2.Request(url, data)
         response = urllib2.urlopen(req)
     else:
-        data = str(data)
+        data=data.decode("utf-8")
+        #data = str(data)
         url += "?" + data
         response = urllib2.urlopen(url)
 
@@ -47,15 +48,16 @@ def say(ph, level=0, member_id=0, source=1):
     '''
     ph = {"ph": ph}
     data = urlencode(ph).encode('utf-8')
-    data = str(data)
-    sum = len(data)
-    data = data[2:sum - 1]
+    data=data.decode("utf-8")
+    #data = str(data)
+    #sum = len(data)
+    #data = data[2:sum - 1]
     getURL(BASE_URL + ROOTHTML + "objects/?say=1&" + data + "&level=" + str(level) + "&member_id=" + str(
         member_id) + "&source=" + str(source))
     return 1
 
 
-def runScript(script_name, params={}):
+def runScript(script_name, params):
     '''
     Принимает значения в следующем виде
     mjdm.runScript ('action',{"status":"0", 'brightness':"5",'color':'#fffff2' }),
@@ -68,7 +70,7 @@ def runScript(script_name, params={}):
     return 1
 
 
-def callMethod(method_name, params={}):
+def callMethod(method_name, params):
     '''
     Принимает значения в следующем виде
     mjdm.callMethod('XiRgbgt02.action',{"status":"0", 'brightness':"5",'color':'#fffff2' }),
