@@ -96,3 +96,4 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('ENABLE_FORK',1); // enables process fork (consumes more memory but speeds up some operations)
 //Define('PYTHON_PATH','python'); // path to python
 //Define('LOCAL_IP','127.0.0.1); // local IP
+//Define('BTRACED', 1);
