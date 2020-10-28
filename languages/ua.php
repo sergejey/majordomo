@@ -1352,6 +1352,7 @@ $dictionary = array (
     'STYLE_FADEOUT30' => 'Прозорість 30%',
     'STYLE_FADEOUT10' => 'Прозорість 10%',
     'SEE_ALSO' => 'Дивіться також',
+    'PLAN_COMPONENTS' => 'Компоненти',
 
     'CONNECT_LOGIN_FAILED' => 'Не вдалося під\'єднатися до сервісу CONNECT. Будь ласка, перевірте вказані ім\'я користувача та пароль',
     'CONNECT_ABOUT' => 'Cервіс CONNECT дозволяє Вам за допомогою Хмарної Синхронізації організувати простий доступ до домашньої системи через мережу Інтернет, а також забезпечити роботу інших хмарних сервісів (резервна копія, робота голосових помічників і т.п.). Детальна інформація про сервіс доступна <a href="https://connect.smartliving.ru/services/s2.html">за посиланням</a>',
@@ -1365,8 +1366,70 @@ $dictionary = array (
     'CONNECT_DISABLE_SECURE_CONNECTION' => 'Дозволити підключення без шифрування',
     'HOURS_ARRAY'=>'година,години,годин',
     'MINUTE_ARRAY'=>'хвилина,хвилини,хвилин',
+    
+    'FEATURES_SUPPORTED' => 'Можливості, які підтримуються',
+    'NO_FEATURES_WARNING' => 'Вибачте, можливості, які підтримуються, не знайдено',
+    'TTS_TYPE' => 'Тип TTS',
+    'NONE' => 'Ні',
+
+    'PREVIOUS' => 'Поперед.',
+    'NEXT' => 'Слід.',
+
+    'LOCATED_IN_ROOM' => 'знаходиться в кімнаті',
+
+    'BLOCK_SENSOR' => 'Блокувати датчик',
+    'UNBLOCK_SENSOR' => 'Розблокувати датчик',
+
+    'VALIDATION_TYPE' => 'Перевірка значень',
+    'VALIDATION_TYPE_NUMBER' => 'Число в діапазоні',
+    'VALIDATION_TYPE_BINARY' => 'Бінарне значення (1/0)',
+    'VALIDATION_TYPE_DICTIONARY' => 'По словарю',
+    'VALIDATION_TYPE_CUSTOM' => 'Розширений (кодом)',
+
+    'REMINDER_INTRO' => 'Нагадую, що',
 
     /* end module names */
+    
+    'ENABLE_AUTO_UPDATE' => 'Ввімкнути автоматичне оновлення',
+    'AUTO_UPDATE_DELAY' => 'Затримка автоматичного оновлення (днів)',
+    'AUTO_UPDATE_TIME' => 'Час перевірки та встановлення оновлень',
+    
+	'CODEEDITOR_NOTY_TURNOFF' => 'Розширте можливості редактора коду в налаштуваннях системи , <a href="/admin.php?pd=pz_&md=panel&inst=&action=settings&filter_name=codeeditor" target="_blank">перейти в настройки</a>',
+	'RUN_SCRIPT_BTN' => 'Виконати',
+	'SCRIPT_HOW_TO_RUN' => 'Як виконати ?',
+	'SCRIPT_RUN_IN_METHOD' => 'Через метод (PHP)',
+	
+	'CODEEDITOR_TURNONSETTINGS' => 'Ввімкнути ці налаштування',
+	'CODEEDITOR_SHOWLINE' => 'Показувати строки без скролу',
+	'CODEEDITOR_MIXLINE' => 'Мінімальна кількість ліній для відображення',
+	'CODEEDITOR_UPTOLINE' => '"Переходити" до помилки',
+	'CODEEDITOR_SHOWERROR' => 'Показувати помилку над строкою',
+	'CODEEDITOR_AUTOCLOSEQUOTES' => 'Автозакриття ()[]""',
+	'CODEEDITOR_WRAPLINES' => 'Перенос довгих строк',
+	'CODEEDITOR_THEME' => 'Тема для редактора',
+	'CODEEDITOR_BYCODEHEIGHT' => 'По висоті коду',
+	'CODEEDITOR_AUTOCOMPLETE' => 'Показывати вікно автозавершення',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE' => 'Тип підсказки автозавершення',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP' => 'Тільки PHP',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM' => 'PHP + MJDM Функції',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER' => 'MJDM Функции + Властивості/методи/скрипти користувача',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_USER' => 'Властивості/методи/скрипти користувача',
+	'CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER' => 'Все',
+	'CODEEDITOR_AUTOSAVE_CODE' => 'Код збережено автоматично',
+	'CODEEDITOR_AUTOSAVE_CODE_HELP' => 'Натисність <code>CTRL+R</code> для відновлення!',
+	'CODEEDITOR_ERROR_IN_CODE' => 'Помилка в коді',
+	'CODEEDITOR_ERROR_RESTORE_CODE' => 'Вы можете відновити попередній код, <a style="color: #ff574b;font-weight: bold;text-decoration: underline;" href="javascript://" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) (editor.setValue($(\'#error_old_code\').text(), $(\'#error_noty\').hide()));">восстановить?</a>',
+	'CODEEDITOR_CHECK_ON_ERROR_BTN' => 'Перевірити на помилки',
+	'CODEEDITOR_RESTORE' => 'Відновити',
+	'CODEEDITOR_CLOSE_BTN' => 'Закрити',
+	'CODEEDITOR_CREATE' => 'Створено',
+	'CODEEDITOR_AUTOSAVE' => 'Автозбереження коду',
+	'CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS' => 'Тільки самостійно (CTRL+O)',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5' => 'Через 5 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10' => 'Через 10 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15' => 'Через 15 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Через 30 секунд',
+	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Через 1 хвилину',
     
 );
 

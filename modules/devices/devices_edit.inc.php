@@ -324,11 +324,11 @@ if ($this->tab == '') {
 }
 
 if ($this->tab == 'links') {
-    include_once(DIR_MODULES . 'devices/devices_links.inc.php');
+    include_once(dirname(__FILE__) . '/devices_links.inc.php');
 }
 
 if ($this->tab == 'schedule') {
-    include_once(DIR_MODULES . 'devices/devices_schedule.inc.php');
+    include_once(dirname(__FILE__) . '/devices_schedule.inc.php');
 }
 
 if ($this->mode == 'update' && $this->tab == '') {

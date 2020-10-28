@@ -84,8 +84,12 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'
 
     $maincycleUpdate = (int)getGlobal('ThisComputer.cycle_mainRun');
     $maincycleTimeout = 60;
-    if ((time() - $maincycleUpdate) > $maincycleTimeout) { //main cycle is offline
-        echo "<html><head>
+    $maincycleTimePassed = time() - $maincycleUpdate;
+    if ($maincycleTimePassed > $maincycleTimeout) { //main cycle is offline
+        if ($_GET['system_call']) {
+            echo "Main cycle is down (timeout: $maincycleTimePassed)";
+        } else {
+            echo "<html><head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
  <meta http-equiv=\"refresh\" content=\"10\">
 <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">
@@ -93,14 +97,15 @@ if (($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'
 <script src=\"https://code.jquery.com/jquery-3.3.1.min.js\" type=\"text/javascript\"></script>
 <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js\" integrity=\"sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa\" crossorigin=\"anonymous\"></script>
 </head><body><div class=\"container\">";
-        echo "&nbsp;<div class='alert alert-danger'>".LANG_MAINCYCLEDOWN."</div>";
-        echo '<p>'.LANG_MAINCYCLEDOWN_DETAILS.'</p>';
-        echo "<div><a href='".ROOTHTML."diagnostic.php' target='_blank' class='btn btn-default'>" . LANG_SUBMIT_DIAGNOSTIC . "</a></div>&nbsp;";
-        echo "<div>".LANG_CONTROL_PANEL.": <a href='".ROOTHTML."panel/xray.html?view_mode=services' class='btn btn-default'>Services</a>&nbsp;";
-        echo "<a href='".ROOTHTML."panel/xray.html?view_mode=database' class='btn btn-default'>Database</a>&nbsp;";
-        echo "<a href='".ROOTHTML."admin.php?md=panel&action=saverestore' class='btn btn-default'>".LANG_SAVE_BACKUP." / ".LANG_RESTORE."</a>&nbsp;";
-        echo "</div>&nbsp;";
-        echo "</div></body></html>";
+            echo "&nbsp;<div class='alert alert-danger'>".LANG_MAINCYCLEDOWN."</div>";
+            echo '<p>'.LANG_MAINCYCLEDOWN_DETAILS.'<br/>(timeout: '.$maincycleTimePassed.')</p>';
+            echo "<div><a href='".ROOTHTML."diagnostic.php' target='_blank' class='btn btn-default'>" . LANG_SUBMIT_DIAGNOSTIC . "</a></div>&nbsp;";
+            echo "<div>".LANG_CONTROL_PANEL.": <a href='".ROOTHTML."panel/xray.html?view_mode=services' class='btn btn-default'>Services</a>&nbsp;";
+            echo "<a href='".ROOTHTML."panel/xray.html?view_mode=database' class='btn btn-default'>Database</a>&nbsp;";
+            echo "<a href='".ROOTHTML."admin.php?md=panel&action=saverestore' class='btn btn-default'>".LANG_SAVE_BACKUP." / ".LANG_RESTORE."</a>&nbsp;";
+            echo "</div>&nbsp;";
+            echo "</div></body></html>";
+        }
         exit;
     }
 }

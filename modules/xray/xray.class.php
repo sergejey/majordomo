@@ -420,7 +420,7 @@ class xray extends module
         global $ajax;
 
         $out['FILTER'] = gr('filter');
-        $out['LINES'] = gr('lines');
+        $out['LINES'] = gr('limit');
 
         if ($this->view_mode == 'services') {
             global $cmd;
