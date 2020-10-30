@@ -659,6 +659,19 @@ class devices extends module
                 $id=gr('id');
                 $res = $this->processDevice($id,$view);
             }
+            if ($op == 'get_devices') {
+                $ids=gr('ids');
+                $tmp=explode(',',$ids);
+                $res=array();
+                foreach($tmp as $id) {
+                    if (!$id) continue;
+                    $record = $this->processDevice($id);
+                    if (!$record['DEVICE_ID']) continue;
+                    $res['devices'][] = $record;
+                }
+
+                //$res = $this->processDevice($id,$view);
+            }
             if ($op == 'loadAllDevicesHTML') {
                 /*
                 if (gr('favorite')) {
