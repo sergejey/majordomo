@@ -494,20 +494,20 @@ function modalRestoreCode() {
     <table id="devices_table" cellpadding="5" cellspacing="5">
 
     </table>
-    <select name="add_device_id" id="add_device_id" onchange="addDevice();" style="width:300px">
-        <option value="0"><#LANG_DEVICE#></option>
-        [#begin DEVICES#]
-        <option value="[#ID#]" device-type="[#TYPE#]" device-object="[#LINKED_OBJECT#]">[#TITLE#]</option>
-        [#end DEVICES#]
-    </select>
-    <input type="button" name="add_device" class="btn btn-default btn-sm" value="<#LANG_ADD#>" onclick="return addDevice();">
-
+	
+	<!--- Временный костыль, дабы инициировать загрузку модуля  --->
+	<input type="button" class="btn btn-primary btn-sm" value="<#LANG_PERIOD_CUSTOM#> <#LANG_DEVICE#>" onclick="$('#add_device_id').select2();$(this).hide();$('#choice_device').show();">
+	<div id="choice_device" style="display: none;">
+		<select name="add_device_id" id="add_device_id" onchange="addDevice();" style="width:300px">
+			<option value="0"><#LANG_DEVICE#></option>
+			[#begin DEVICES#]
+			<option value="[#ID#]" device-type="[#TYPE#]" device-object="[#LINKED_OBJECT#]">[#TITLE#]</option>
+			[#end DEVICES#]
+		</select>
+		<input type="button" name="add_device" class="btn btn-default btn-sm" value="<#LANG_ADD#>" onclick="return addDevice();">
+	</div>
+	
     <script type="text/javascript">
-
-        $(function() {
-            $('#add_device_id').select2();
-        });
-
         var devices_data=[];
         var savedJson=$('#xml_code').val();
         if (savedJson!='') {
