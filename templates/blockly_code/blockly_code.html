@@ -122,7 +122,8 @@ $(document).ready(function(){
 			},
 			"Ctrl-S": function(instance) { 
 				[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
-				document.getElementById('[#CODE_FIELD#]').form.submit(); 
+				//alert('[#CODE_FIELD#]');
+				$('#subm').click(); 
 				return;
 			},
 			"Ctrl-E": function(cm) { 
@@ -166,9 +167,10 @@ $(document).ready(function(){
 			let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
 
 			callback({
-				list: words.filter(w => w.toLowerCase().indexOf(fragment) === 0),
+				list: words.filter(w => w.toLowerCase().indexOf(fragment) >= 0),
 				from: range.anchor,
 				to: range.head
+				
 			});
 		});
 		CodeMirror.hint.ajax.async = true;
@@ -203,16 +205,13 @@ $(document).ready(function(){
 			"40": "down",
 			"45": "insert",
 			"46": "delete",
-			"48": "0",
 			"49": "1",
 			"50": "2",
 			"51": "3",
-			"52": "4",
 			"53": "5",
 			"54": "6",
 			"55": "7",
 			"56": "8",
-			"57": "9",
 			"91": "left window key",
 			"92": "right window key",
 			"93": "select",
@@ -243,6 +242,7 @@ $(document).ready(function(){
 		}
 
 		editor.on("keyup", function(editor, event) {
+			$(".cm-error").removeAttr('class');
 			var __Cursor = editor.getDoc().getCursor();
 			var __Token = editor.getTokenAt(__Cursor);
 
@@ -252,7 +252,7 @@ $(document).ready(function(){
 		});
 		[#endif#]
 		
-		editor.on('update', editor => {
+		editor.on('update', editor => {			
 			anc = window.location.hash.replace("#","");
 			actualLineNumber = Number(anc.split('_')[1]);
 			
@@ -280,37 +280,38 @@ $(document).ready(function(){
 		});
 		
 		[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
-		editor.on('focus', editor => {
-			anc = window.location.hash.replace("#","");
-			actualLineNumber = Number(anc.split('_')[1]);
-			if(actualLineNumber) {
+		//editor.on('focus', editor => {
+		//	$('.cm-error').remoteAddr('class');
+		//	anc = window.location.hash.replace("#","");
+		//	actualLineNumber = Number(anc.split('_')[1]);
+		//	if(actualLineNumber) {
 				//Покажем ошибку
-				myEditor = $(".CodeMirror");
-				codeMirrorEditor = myEditor[0].CodeMirror;
-				codeMirrorEditor.addLineClass(actualLineNumber-1, null, 'line-error');
-				codeMirrorEditor.addLineClass(actualLineNumber, null, 'line-error');
-				codeMirrorEditor.addLineClass(actualLineNumber+1, null, 'line-error');
-			}
-		});
+		//		myEditor = $(".CodeMirror");
+		//		codeMirrorEditor = myEditor[0].CodeMirror;
+		//		codeMirrorEditor.addLineClass(actualLineNumber-1, null, 'line-error');
+		//		codeMirrorEditor.addLineClass(actualLineNumber, null, 'line-error');
+		//		codeMirrorEditor.addLineClass(actualLineNumber+1, null, 'line-error');
+		//	}
+		//});
 		//Обработчик событий чтобы удалить пометку строки
-		editor.on('cursorActivity', editor => {
+		//editor.on('cursorActivity', editor => {
 			//Найдем анкер
-			anc = window.location.hash.replace("#","");
+			//anc = window.location.hash.replace("#","");
 			//Сплит и получим номер строки
-			actualLineNumber = Number(anc.split('_')[1]);
+			//actualLineNumber = Number(anc.split('_')[1]);
 			//Найдем где курсор в редакторе
-			getCursorStart = editor.getCursor().line-1;
-			getCursorEnd = getCursorStart+2;
+			//getCursorStart = editor.getCursor().line-1;
+			//getCursorEnd = getCursorStart+2;
 			
-			if(getCursorStart <= actualLineNumber && getCursorEnd >= actualLineNumber) {
+			//if(getCursorStart <= actualLineNumber && getCursorEnd >= actualLineNumber) {
 				//Удалим класс
-				myEditor = $(".CodeMirror");
-				codeMirrorEditor = myEditor[0].CodeMirror;
-				codeMirrorEditor.removeLineClass(actualLineNumber-1, null, 'line-error');
-				codeMirrorEditor.removeLineClass(actualLineNumber, null, 'line-error');
-				codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
-			}
-		});
+			//	myEditor = $(".CodeMirror");
+			//	codeMirrorEditor = myEditor[0].CodeMirror;
+			//	codeMirrorEditor.removeLineClass(actualLineNumber-1, null, 'line-error');
+			//	codeMirrorEditor.removeLineClass(actualLineNumber, null, 'line-error');
+			//	codeMirrorEditor.removeLineClass(actualLineNumber+1, null, 'line-error');
+			//}
+		//});
 		editor.on('dblclick', editor => {
 			editor.setOption('highlightSelectionMatches', {showToken: false, wordsOnly: false, annotateScrollbar: false});
 		});
