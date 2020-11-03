@@ -1139,7 +1139,6 @@ class objects extends module
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
                 `DATAVALUE` CHAR(255) NOT NULL,
-                `EXPIRE`    DATETIME  NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
