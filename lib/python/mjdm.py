@@ -1,86 +1,119 @@
 # -*- coding: utf-8 -*-
 from mjd_constants import *
-
-try:
-    import urllib.request as urllib2
-    from urllib.parse import urlencode
-except ImportError:
-    import urllib2
-    from urllib import urlencode
 import re
-import MySQLdb as mdb
 import sys
+import six
+import events as ev
+import job
+import historys as hist
+import timers as tm
+import general as gn
+
 
 def getURL(url):
-    response = urllib2.urlopen(url).read()
-    return response
 
-def callAPI(api_url, method = "GET", params = {}):
+    return gn.getURL(url)
 
-    params['no_session']=1
-    url = re.sub(r"^/api/", BASE_URL+ROOTHTML+'api.php/', api_url)
 
-    data = urlencode(params).encode('utf-8')
-    if (method == "POST"):
-        req = urllib2.Request(url, data)
-        response = urllib2.urlopen(req)
-    else:
-        url += "?"+data
-        response = urllib2.urlopen(url)
+def callAPI(api_url, method="GET", params={}):
 
-    the_page = response.read()
-    #print the_page
-    return the_page
+    return gn.callAPI(api_url, method="GET", params={})
 
-def runScript(script_name, params = {}):
-    callAPI("/api/script/"+script_name,"GET",params)
+
+def say(ph, level=0, member_id=0, source=1):
+    gn.say(ph, level=0, member_id=0, source=1)
     return 1
 
-def callMethod(method_name, params = {}):
-    callAPI("/api/method/"+method_name,"GET",params)
+
+def runScript(script_name, params={}):
+    gn.runScript(script_name, params)
     return 1
+
+
+def callMethod(method_name, params={}):
+    gn.callMethod(method_name, params)
+    return 1
+
 
 def setGlobal(property, value):
-    callAPI("/api/data/"+property, "POST", data=value)
+    gn.setGlobal(property, value)
     return 1
 
+
 def sg(property, value):
-    result = setGlobal(property, value)
+    result = gn.setGlobal(property, value)
     return result
+
 
 def getGlobal(property):
-    con = 0
-    result = "";
-    try:
-        con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
-        cur = con.cursor()
-        cur.execute("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME='"+property+"'")
-        db_result = cur.fetchone()
-        if (db_result):
-            result = db_result[0]
-    finally:
-        if con:
-            con.close()
-    return result
+    return gn.getGlobal(property)
+
 
 def gg(property):
-    result = getGlobal(property)
+    result = gn.getGlobal(property)
     return result
+
+
+def getObjectsByClass(class_name):
+    return gn.getObjectsByClass(class_name)
+
+
+def registerEvent(eventName, details, expire_in):
+    ev.registerEvent(eventName, details, expire_in)
+    return 1
+
+
+def registeredEventTime(eventName):
+    return ev.registeredEventTime(eventName)
+
+
+
+def registeredEventDetails(eventName):
+    return ev.registeredEventDetails(eventName)
+
+
+def timeConvert(tm):
+    return tm.timeConvert(tm)
+
+
+def timeBetween(tm1, tm2):
+   return tm.timeBetween(tm1, tm2)
+
+
+def clearScheduledJob(title):
+    job.clearScheduledJob(title)
+    return
+
+
+def addScheduledJob(title, commands, datetime, expire=1800):
+    return job.addScheduledJob(title, commands, datetime, expire=1800)
+
+def setTimeOut(title, commands, timeout):
+    return job.setTimeOut(title, commands, timeout)
+
+
+def getHistory(obj_prop, n_value):
+    return  hist.getHistory(obj_prop, n_value)
+
+
+def getHistoryexec(obj_prop, n_value, param):
+    return hist.getHistoryexec(obj_prop, n_value, param)
 
 
 class mjdObject:
     object_name = ""
+
     def __init__(self, object_name):
         self.object_name = object_name
 
     def setProperty(self, property_name, value):
-        setGlobal(self.object_name+"."+property_name, value)
+        gn.setGlobal(self.object_name + "." + property_name, value)
         return 1
 
     def getProperty(self, property_name):
-        result =  getGlobal(self.object_name+"."+property_name)
+        result = gn.getGlobal(self.object_name + "." + property_name)
         return result
 
-    def callMethod(self, method_name, params = {}):
-        result =  callMethod(self.object_name+"."+method_name, params)
+    def callMethod(self, method_name, params={}):
+        result = gn.callMethod(self.object_name + "." + method_name, params)
         return result
