@@ -318,9 +318,9 @@
 					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
 					
 					if(data.DB.connection == 'OK') {
-						$('#dashInfoDBConn').append('<span style="background: #5cb85c;" class="badge">Подключено</span>');
+						$('#dashInfoDBConn').append('<span style="background: #5cb85c;" class="badge"><#LANG_NEWDASH_CONNECTED#></span>');
 					} else {
-						$('#dashInfoDBConn').append('<span style="background-color: lightcoral;" class="badge">Нет подключения</span>');
+						$('#dashInfoDBConn').append('<span style="background-color: lightcoral;" class="badge"><#LANG_NEWDASH_DISCONNECTED#></span>');
 					}
 					
 					branch = data.update_url.split('.')[1];
@@ -590,19 +590,19 @@
 				[#else HIDE_LEFT_PANEL#]
 				<!--- Не скрывать левую панель --->
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe"></i> Сервисы MJDM <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-						<li><a href="https://mjdm.ru/forum/" target=_blank><i class="glyphicon glyphicon-edit"></i> Форум</a></li>
+						<li><a href="https://mjdm.ru/forum/" target=_blank><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
 						<li><a href="https://connect.smartliving.ru/" target=_blank><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
 						[#if APP_TDWIKI_INSTALLED="1"#]
 						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
 						[#endif#]
 						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
 						<li class="divider"></li>
-						<li class="dropdown-header">Чаты Telegram</li>
-						<li><a href="https://t.me/MajorDoMoRu" target="_blank">Общий чат (RUS)</a></li>
-						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank">Курилка (RUS)</a></li>
+						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
+						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
+						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -614,7 +614,7 @@
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard"></i> Система <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard"></i> <#LANG_SECTION_SYSTEM#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
 						<li><a href="#console" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
@@ -639,8 +639,8 @@
 	<!--# .top  #-->
 	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
-			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;">Вы пытаетесь отправить пустую команду!</div>
-			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;">Похоже вы отправляете неверную команду, <a href="#">FAQ по консоли</a></div>
+			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_EMPTY#></div>
+			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_FAIL#></div>
 			
 			<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
 				<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
@@ -742,7 +742,7 @@
 							</li>
 							[#else#]
 							<li>
-								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем данные...</span>
+								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
 								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"><span class="label label-danger"><#LANG_ERRORS_SAVED#></span></a>
 								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
 								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-success"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
