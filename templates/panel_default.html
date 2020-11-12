@@ -1,15 +1,124 @@
-<ul class="nav nav-tabs">
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+    <div class="col-md-5">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Информация о системе</h3>
+			</div>
+			<div class="panel-body">
+				<ul class="list-group" id="">
+					<li class="list-group-item" id="dashInfoDBConn">
+						Подключение к БД
+					</li>
+					<li class="list-group-item">
+						<span class="badge" id="dashInfoBranch">
+						</span>
+						Текущая ветка
+					</li>
+					<li class="list-group-item">
+						<span class="badge" id="dashInfoLastUpdate">
+						</span>
+						Последнее обновление
+					</li>
+				</ul>
+				<div class="well well-lg" id="dashInfoOS"></div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading" style="cursor:pointer;" onclick="return toggleCategory('cycleInfoDivPanel');">
+				<h3 class="panel-title">Контроль циклов <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=services">X-Ray</a></h3>
+			</div>
+			<div class="panel-collapse collapse out" id="row_cycleInfoDivPanel">
+				<div class="panel-body">
+					<ul class="list-group" id="cycleInfo">
+						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем циклы...</center>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading" style="cursor:pointer;" onclick="return toggleCategory('scriptBlockDiv');">
+				<h3 class="panel-title">Последнее сценарии <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?pd=pz_&md=panel&inst=&action=scripts"><i>сценарии</i></a></h3>
+			</div>
+			<div class="panel-collapse collapse out" id="row_scriptBlockDiv">
+				<div class="panel-body">
+					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #a6e7bb, #0e6080);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>Здесь выводятся последние 6 запущеных сценария</div>
+					<ul class="list-group" id="scriptLast">
+						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем сценарии...</center>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="col-md-7">
+
+		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/new_design.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #4792d1);background-size: cover;background-repeat: no-repeat;">
+			<h2>Привет новый дизайн!</h2>
+			<p style="font-size: 11pt;">Мы тут затеяли обновление дизайна и нам нужна твоя помощь! Собирай баги, замечания и пожелания и пиши их на форум! Давай вместе сделаем MajorDomo красивым и удобным =)</p>
+			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button">На форум!</a></p>
+		</div>
+		<!---
+		<style>
+		.onHoverAlfa:hover {
+			color: white;
+		}
+		</style>
+		<div class="jumbotron onHoverAlfa" style="margin-bottom: 10px;background-image: url(https://ak.picdn.net/shutterstock/videos/113821/thumb/1.jpg?ip=x480);background-size: contain;;border-radius: 5px;">
+			<h2 class="onHoverAlfa">А может Alpha?</h2>
+			<p style="font-size: 11pt;" class="onHoverAlfa">У MajorDomo есть Alpha версия. Там много новых функций, закрытых дыр и новых впечатлений =) Обновляйте и помогай MajorDomo стать еще лучше.</p>
+			<p class="text-right"><a style="border-color: #ffffff;" class="btn btn-danger btn-md" role="button">ОК, я с вами!</a></p>
+		</div>
+		--->
+		
+		<div id="getConnect" class="jumbotron hidden-xs" style="display: none!important;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
+			<h2 id="titleConnect">Подключай Connect!</h2>
+			<p style="font-size: 11pt;" id="textConnect">MajorDomo - это OpenSource проект. Он разрабатывается, поддерживается и распростроняется абсолютно бесплатно. Подключая пакет услуг
+			Connect-Pack вы помогаете разработчику, а так же получаете дополнительные функции для работы с MajorDomo. <b>Всем новым пользователям 14 дней бесплатно!</b></p>
+			<p class="text-right">
+				<a style="border-color: #ffffff;" onclick="$('#btnConnect').hide();$('#titleConnect').text('Помочь разово');$('#textConnect').html('Классно, что вы хотите помочь MajorDomo! Вы можете сделать разовый перевод разработчику системы. Для этого, перейдите <a href=\'https://connect.smartliving.ru/members/finance.html\' target=\'_blank\'><b>по ссылке</b></a> и пополните баланс в системе Connect. Далее просто переведите деньги со своего баланса в <a href=\'https://connect.smartliving.ru/tasks/1.html\' target=\'_blank\'><b>эту задачу</b></a> нажав кнопку \'\'Поддержать разработку\'\'.');" class="btn btn-default btn-md" role="button">Хочу помочь разово</a>
+				<a style="border-color: #ffffff;" id="btnConnect" href="https://connect.smartliving.ru/services/s2.html" target="_blank" class="btn btn-success btn-md" role="button">Что входит и сколько стоит?</a>
+			</p>
+		</div>
+		
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Устройство</a>
+				<a href="?(panel:{action=scripts})&md=scripts&inst=adm&view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Сценарий</a>
+				<a href="?(panel:{action=objects})&md=objects&view_mode=edit_objects&id=" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Объект</a>
+				<a href="?(panel:{action=classes})&md=classes&inst=adm&view_mode=edit_classes" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Класс</a>
+			</div>
+		</div>
+		
+		<div id="didyouknow" class="alert alert-dismissable hidden-xs" style="background-color: #f5f5f5;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<div id="didyouknow_body" class="text-center">
+				<img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем подсказки...
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Новости и блоги MajorDomo  <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="https://connect.smartliving.ru/blog.html" target="_blank"><i>еще записи</i></a></h3>
+			</div>
+			<div class="panel-body">
+				<div id="news_body"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем новости...</center></div>
+			</div>
+		</div>
+		
+
+    </div>
+</div>
+
+<!--
+
+<ul class="nav nav-pills">
     <li [#if TAB=""#]class="active"[#endif TAB#]><a href="?"><#LANG_HOME#></a></li>
     <li [#if TAB="panel"#]class="active"[#endif TAB#]><a href="?tab=panel"><#LANG_SECTION_PANEL#></a></li>
     <li [#if TAB="apps"#]class="active"[#endif TAB#]><a href="?tab=apps"><#LANG_SECTION_APPLICATIONS#></a></li>
 </ul>
 
-[#if TAB=""#]
-&nbsp;<br/>
-
 <div class="row">
     <div class="col-md-5">
-        <!-- processSubscription panelHomeColumnLeft -->
         <div>
         <h3><#LANG_ROOMS#></h3>
         <a href="?action=locations" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> <#LANG_LIST#></a>
@@ -50,16 +159,14 @@
     </div>
 
     <div class="col-md-7">
+		<div id="didyouknow" class="alert alert-dismissable" style="background-color: #f5f5f5;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<div id="didyouknow_body" class="text-center">
+				<img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем подсказки...
+			</div>
+		</div>
 
-        <!-- processSubscription panelHomeColumnRight -->
-
-      <div id="didyouknow" style="display:none;background-color:lightyellow;padding:10px;border:1px solid yellow">
-          <h4><#LANG_DID_YOU_KNOW#> <a href="#" onclick="return checkDidYouKnow();"><i class="glyphicon glyphicon-refresh"></i></a></h4>
-          <div id="didyouknow_body"></div>
-      </div>
-
-        &nbsp;
-        <div id="news" style="display:none;">
+        <div id="news" style="display:none;max-height: 500px;overflow: auto;">
             <h4><#LANG_NEWS#></h4>
             <div id="news_body"></div>
         </div>
@@ -67,7 +174,7 @@
     </div>
 
 </div>
-
+--->
 <script type="text/javascript">
     $(document).ready(function() {
         checkUpdatesAvailable();

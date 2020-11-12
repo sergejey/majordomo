@@ -1477,6 +1477,37 @@ $dictionary = array(
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Через 30 секунд',
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Через 1 минуту',
 	
+	//Новый дашборд!
+	'NEWDASH_CONNECTED' => 'Подключено',
+	'NEWDASH_DISCONNECTED' => 'Нет подключения',
+	'NEWDASH_MJDM_RESOURCE' => 'Ресурсы MJDM',
+	'NEWDASH_FORUM' => 'Форум',
+	'NEWDASH_CHAT_TELEGRAM' => 'Чаты Telegram',
+	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'Общий чат (RUS)',
+	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Курилка (RUS)',
+	'NEWDASH_CONSOLE_ERROR_EMPTY' => 'Вы пытаетесь отправить пустую команду!',
+	'NEWDASH_CONSOLE_ERROR_FAIL' => 'Похоже вы отправляете неверную команду...',
+	'NEWDASH_LOADING' => 'Загружаем данные...',
+	'NEWDASH_SYSTEM_INFO' => 'Информация о системе',
+	'NEWDASH_SYSTEM_INFO_DB_STATUS' => 'Подключение к БД',
+	'NEWDASH_SYSTEM_INFO_BRABCH' => 'Текущая ветка',
+	'NEWDASH_SYSTEM_INFO_LAST_UPDATE' => 'Последнее обновление',
+	'NEWDASH_CYCLE_CONTROL' => 'Контроль циклов',
+	'NEWDASH_LAST_SCRIPTS' => 'Последнее сценарии',
+	'NEWDASH_LAST_SCRIPTS_GO' => 'сценарии',
+	'NEWDASH_HELLO_NEW' => 'Привет новый дизайн!',
+	'NEWDASH_HELLO_NEW_TEXT' => 'Мы тут затеяли обновление дизайна и нам нужна твоя помощь! Собирай баги, замечания и пожелания и пиши их на форум! Давай вместе сделаем MajorDomo красивым и удобным =)',
+	'NEWDASH_HELLO_NEW_BTN' => 'На форум!',
+	'NEWDASH_CONNECT_ADS' => 'Подключай Connect!',
+	'NEWDASH_CONNECT_ADS_BTN' => 'Что входит и сколько стоит?',
+	'NEWDASH_CONNECT_ADS_TEXT' => 'MajorDomo - это OpenSource проект. Он разрабатывается, поддерживается и распростроняется абсолютно бесплатно. Подключая пакет услуг Connect-Pack вы помогаете разработчику, а так же получаете дополнительные функции для работы с MajorDomo. <b>Всем новым пользователям 14 дней бесплатно!</b>',
+	'NEWDASH_CONNECT_ADS_DONATE' => 'Помочь разово',
+	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'Хочу помочь разово',
+	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Классно, что вы хотите помочь MajorDomo! Вы можете сделать разовый перевод разработчику системы. Для этого, перейдите <a href=\'https://connect.smartliving.ru/members/finance.html\' target=\'_blank\'><b>по ссылке</b></a> и пополните баланс в системе Connect. Далее просто переведите деньги со своего баланса в <a href=\'https://connect.smartliving.ru/tasks/1.html\' target=\'_blank\'><b>эту задачу</b></a> нажав кнопку \'\'Поддержать разработку\'\'.",
+	'NEWDASH_CLASS' => 'Класс',
+	'NEWDASH_NEWS' => 'Новости и блоги MajorDomo',
+	'NEWDASH_NEWS_MORE' => 'еще записи',
+	
 );
 
 foreach ($dictionary as $k => $v) {
