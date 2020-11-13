@@ -1504,7 +1504,7 @@ $dictionary = array(
 	'NEWDASH_CONNECT_ADS_TEXT' => 'MajorDomo is an OpenSource project. It is developed, maintained, and distributed completely free of charge. By connecting the Connect-Pack service package, you help the developer, and also get additional functions for working with MajorDomo. <b> Free 14 days for all new users! </b> ',
 	'NEWDASH_CONNECT_ADS_DONATE' => 'Donate one time',
 	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'I want to help one time',
-	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Great that you want to help MajorDomo! You can make a one-time translation to the system developer. To do this, go to <a href = \ 'https: //connect.smartliving.ru/members/finance.html \' target = \ '_ blank \'> <b> follow the link </b> </a> and top up your balance in the Connect system. Then just transfer money from your balance to <a href = \ 'https: //connect.smartliving.ru /tasks/1.html \ 'target = \' _ blank \ '> <b> this task </b> </a> by clicking the \' \ 'Donate \' \ 'button. ",
+	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Great that you want to help MajorDomo! You can make a one-time translation to the system developer. To do this, go to <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>follow the link</b></a> and top up your balance in the Connect system. Then just transfer money from your balance to <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>this task</b></a> by clicking the &quot;Donate&quot; button.",
 	'NEWDASH_CLASS' => 'Class',
 	'NEWDASH_NEWS' => 'MajorDomo News and Blogs',
 	'NEWDASH_NEWS_MORE' => 'more entries',

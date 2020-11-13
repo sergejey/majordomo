@@ -1503,7 +1503,7 @@ $dictionary = array(
 	'NEWDASH_CONNECT_ADS_TEXT' => 'MajorDomo - это OpenSource проект. Он разрабатывается, поддерживается и распростроняется абсолютно бесплатно. Подключая пакет услуг Connect-Pack вы помогаете разработчику, а так же получаете дополнительные функции для работы с MajorDomo. <b>Всем новым пользователям 14 дней бесплатно!</b>',
 	'NEWDASH_CONNECT_ADS_DONATE' => 'Помочь разово',
 	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'Хочу помочь разово',
-	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Классно, что вы хотите помочь MajorDomo! Вы можете сделать разовый перевод разработчику системы. Для этого, перейдите <a href=\'https://connect.smartliving.ru/members/finance.html\' target=\'_blank\'><b>по ссылке</b></a> и пополните баланс в системе Connect. Далее просто переведите деньги со своего баланса в <a href=\'https://connect.smartliving.ru/tasks/1.html\' target=\'_blank\'><b>эту задачу</b></a> нажав кнопку \'\'Поддержать разработку\'\'.",
+	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Классно, что вы хотите помочь MajorDomo! Вы можете сделать разовый перевод разработчику системы. Для этого, перейдите <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>по ссылке</b></a> и пополните баланс в системе Connect. Далее просто переведите деньги со своего баланса в <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>эту задачу</b></a> нажав кнопку &quot;Поддержать разработку&quot;.",
 	'NEWDASH_CLASS' => 'Класс',
 	'NEWDASH_NEWS' => 'Новости и блоги MajorDomo',
 	'NEWDASH_NEWS_MORE' => 'еще записи',
