@@ -1476,6 +1476,38 @@ $dictionary = array(
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15' => 'Every 15 seconds',
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Every 30 seconds',
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Every 60 seconds',
+	
+	
+	// New dashboard!
+	'NEWDASH_CONNECTED' => 'Connected',
+	'NEWDASH_DISCONNECTED' => 'No connection',
+	'NEWDASH_MJDM_RESOURCE' => 'MJDM Resources',
+	'NEWDASH_FORUM' => 'Forum',
+	'NEWDASH_CHAT_TELEGRAM' => 'Telegram chats',
+	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'General chat (RUS)',
+	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Smoking room (RUS)',
+	'NEWDASH_CONSOLE_ERROR_EMPTY' => 'You are trying to send an empty command!',
+	'NEWDASH_CONSOLE_ERROR_FAIL' => 'It looks like you are sending the wrong command ...',
+	'NEWDASH_LOADING' => 'Loading data ...',
+	'NEWDASH_SYSTEM_INFO' => 'System Information',
+	'NEWDASH_SYSTEM_INFO_DB_STATUS' => 'Connect to DB',
+	'NEWDASH_SYSTEM_INFO_BRABCH' => 'Current branch',
+	'NEWDASH_SYSTEM_INFO_LAST_UPDATE' => 'Last updated',
+	'NEWDASH_CYCLE_CONTROL' => 'Cycle control',
+	'NEWDASH_LAST_SCRIPTS' => 'Last scripts',
+	'NEWDASH_LAST_SCRIPTS_GO' => 'scripts',
+	'NEWDASH_HELLO_NEW' => 'Hello new design!',
+	'NEWDASH_HELLO_NEW_TEXT' => 'We ve started a design update here and we need your help! Collect bugs, comments and suggestions and post them to the forum! Lets make MajorDomo nice and comfortable together =) ',
+	'NEWDASH_HELLO_NEW_BTN' => 'To the forum!',
+	'NEWDASH_CONNECT_ADS' => 'Connect Connect!',
+	'NEWDASH_CONNECT_ADS_BTN' => 'Whats included and how much does it cost?',
+	'NEWDASH_CONNECT_ADS_TEXT' => 'MajorDomo is an OpenSource project. It is developed, maintained, and distributed completely free of charge. By connecting the Connect-Pack service package, you help the developer, and also get additional functions for working with MajorDomo. <b> Free 14 days for all new users! </b> ',
+	'NEWDASH_CONNECT_ADS_DONATE' => 'Donate one time',
+	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'I want to help one time',
+	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Great that you want to help MajorDomo! You can make a one-time translation to the system developer. To do this, go to <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>follow the link</b></a> and top up your balance in the Connect system. Then just transfer money from your balance to <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>this task</b></a> by clicking the &quot;Donate&quot; button.",
+	'NEWDASH_CLASS' => 'Class',
+	'NEWDASH_NEWS' => 'MajorDomo News and Blogs',
+	'NEWDASH_NEWS_MORE' => 'more entries',
 );
 
 foreach ($dictionary as $k => $v) {

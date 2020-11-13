@@ -273,6 +273,20 @@ if (isset($_POST['send'])) {
 
 $result=collectData();
 
+if($_GET['ajax'] == 1) {
+	//echo '<pre>';
+	//var_dump($result);
+	
+	foreach($result["cycles"] as $key => $value) {
+		$result["cycles"][$key]['run_time'] = date('d.m.Y H:i:s', $value['run']);
+	}
+	
+	//echo '<pre>';
+	//var_dump($result["cycles"]);
+	echo json_encode($result);
+	die();
+}
+
 ?>
 <html>
 <head>
