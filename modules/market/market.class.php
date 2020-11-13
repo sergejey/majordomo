@@ -249,8 +249,8 @@ class market extends module
 					
 					echo '<li class="list-group-item" style="margin-bottom: 5px;'.$bgColor.$actualNews.'">';
 					echo '<span class="badge">'.date('d.m.Y H:i:s', $data[$i]['ADDED_TM']).'</span>';
-					echo '<div onclick="$(\'.fullTextNewsClass\').hide(\'slow\');$(\'#news_title_'.$i.'\').toggle(\'slow\');" style="cursor:pointer;">'.$actualNews_Label.$postType.' '.htmlspecialchars($data[$i]['TITLE']).'</div>';
-					echo '<div class="fullTextNewsClass" id="news_title_'.$i.'" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;">'.$body.' '.$linkDetail.'</div>';
+					echo '<div onclick="$(\'.fullTextNewsClass\').hide(\'slow\');$(\'#news_title_'.$i.'\').toggle(\'slow\');" style="cursor:pointer;">'.$actualNews_Label.$postType.' '.htmlspecialchars($data[$i]['TITLE']).'</div>';			
+					echo '<div class="fullTextNewsClass" id="news_title_'.$i.'" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">'.$body.' '.$linkDetail.'</blockquote></div>';
 					echo '</li>';
 					
 					
@@ -427,9 +427,9 @@ class market extends module
 					if ($this->ajax && $_GET['op'] == 'check_updates') {
 						$total = count($this->have_updates);
 						if ($total > 0) {
-							echo "1";
+							echo json_encode(array('status' => '1', 'howUpdate' => $total));
 						} else {
-							echo "0";
+							echo json_encode(array('status' => '0'));
 						}
 						exit;
 					}

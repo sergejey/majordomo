@@ -1,5 +1,17 @@
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
     <div class="col-md-5">
+		<div id="hint_blockaddnewdev" style="display:none">
+			<div class="panel panel-default" style="margin-bottom: 0px;">
+				<div class="panel-body">
+					<a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_DEVICE#></a>
+					<a href="?(panel:{action=scripts})&md=scripts&inst=adm&view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_SCRIPT#></a>
+					<a href="?(panel:{action=objects})&md=objects&view_mode=edit_objects&id=" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_OBJECT#></a>
+					<a href="?(panel:{action=classes})&md=classes&inst=adm&view_mode=edit_classes" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_NEWDASH_CLASS#></a>
+				</div>
+			</div>
+			<div onclick="hideHintCookie('blockaddnewdev');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+		</div>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title"><#LANG_NEWDASH_SYSTEM_INFO#></h3>
@@ -10,17 +22,19 @@
 						<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
 					</li>
 					<li class="list-group-item">
-						<span class="badge" id="dashInfoBranch">
+						<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
+							load...
 						</span>
 						<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#>
 					</li>
 					<li class="list-group-item">
 						<span class="badge" id="dashInfoLastUpdate">
+							load...
 						</span>
 						<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#>
 					</li>
 				</ul>
-				<div class="well well-lg" id="dashInfoOS"></div>
+				<div class="well well-lg" id="dashInfoOS">load...</div>
 			</div>
 		</div>
 		<div class="panel panel-default">
@@ -79,20 +93,14 @@
 			</p>
 		</div>
 		
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_DEVICE#></a>
-				<a href="?(panel:{action=scripts})&md=scripts&inst=adm&view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_SCRIPT#></a>
-				<a href="?(panel:{action=objects})&md=objects&view_mode=edit_objects&id=" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_OBJECT#></a>
-				<a href="?(panel:{action=classes})&md=classes&inst=adm&view_mode=edit_classes" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_NEWDASH_CLASS#></a>
+		<div id="hint_blockdidyouknow" style="display:none;">
+			<div id="didyouknow" class="alert alert-dismissable hidden-xs" style="background-color: #f5f5f5;margin-bottom: 0px;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<div id="didyouknow_body" class="text-center">
+					<img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#>
+				</div>
 			</div>
-		</div>
-		
-		<div id="didyouknow" class="alert alert-dismissable hidden-xs" style="background-color: #f5f5f5;">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			<div id="didyouknow_body" class="text-center">
-				<img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#>
-			</div>
+			<div class="hidden-xs" onclick="hideHintCoocke('blockdidyouknow');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
 		</div>
 		
 		<div class="panel panel-default">

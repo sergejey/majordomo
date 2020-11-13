@@ -1374,8 +1374,8 @@ $dictionary = array(
     'CLOCK' => 'Clock',
 
     'UPDATES_SOURCE' => 'Core updates source',
-    'UPDATES_SOURCE_MASTER' => 'Master (stable release)',
-    'UPDATES_SOURCE_ALPHA' => 'Alpha (latest updates)',
+    'UPDATES_SOURCE_MASTER' => 'Stable release',
+    'UPDATES_SOURCE_ALPHA' => 'Alpha - version',
 
     'MAINCYCLEDOWN' => 'Main cycle is down',
     'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
@@ -1508,6 +1508,30 @@ $dictionary = array(
 	'NEWDASH_CLASS' => 'Class',
 	'NEWDASH_NEWS' => 'MajorDomo News and Blogs',
 	'NEWDASH_NEWS_MORE' => 'more entries',
+	'NEWDASH_DONTSHOW_THIS_BLOCK' => 'Don\'t show this block again',
+	'NEWDASH_HIDE_MENU_HINT' => 'This menu can be moved to the top, shall we try? <br> To return back press',
+	'NEWDASH_PRELOAD_HEADER' => 'Loading content ...',
+	'NEWDASH_PRELOAD_TEXT' => 'If the download is too long, there may be an error in the code or the script is performing the requested operation.',
+	'NEWDASH_PRELOAD_BTN' => 'Stop operation',
+	'NEWDASH_UPDATE_MODULE_HINT1' => 'Updates for',
+	'NEWDASH_UPDATE_MODULE_HINT2' => 'modules',
+
+	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
+	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',
+	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Update anyway',
+	'NEWSAVERESTORE_UPDATE_HEADER' => 'Update time!',
+	'NEWSAVERESTORE_UPDATE_TEXT' => 'Try to keep your system up to date to avoid bugs and security issues. Every day, the developers make changes to ensure you get the most out of MajorDoMo. ',
+	'NEWSAVERESTORE_UPDATE_BTN' => 'Update system',
+	'NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE' => 'Download archive',
+	'NEWSAVERESTORE_CONSOLE' => 'MajorDoMo Console',
+	'CLOSE' => 'Close',
+	'NEWSAVERESTORE_RESTORE_ARHIVE' => 'Backups',
+	'NEWSAVERESTORE_RESTORE_DOWNANDRESTORE' => 'Download and Restore',
+	'NEWSAVERESTORE_RESTORE_RESTOREINARHIVE' => 'Restore from system archive',
+	'NEWSAVERESTORE_RESTORE_CREATE_RESTORE' => 'Create backup copy',
+	'NEWSAVERESTORE_BACKUP_HINT' => 'Select system partitions to back up.',
+	'NEWSAVERESTORE_CHOUSE_FILE' => 'Select file',
+	'NEWSAVERESTORE_CHOUSES_FILES' => 'Selected files:',
 );
 
 foreach ($dictionary as $k => $v) {

@@ -62,11 +62,17 @@ class panel extends module
         }
 
         if (!$this->action && $action) {
-            $this->action = $action;
+            $this->action = constant('LANG_MODULE_'.strtoupper($this->action));
         }
 
         if ($this->action) {
-            $out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
+            //$out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
+            $out['TITLE'] = constant('LANG_MODULE_'.strtoupper($this->action)).' | '.LANG_CONTROL_PANEL;
+			$out['FULL_LANG_MODULE_NAME'] = constant('LANG_MODULE_'.strtoupper($this->action));
+			if(!$out['FULL_LANG_MODULE_NAME']) {
+				$out['FULL_LANG_MODULE_NAME'] = $this->action;
+				$out['TITLE']=$this->action.' | '.LANG_CONTROL_PANEL;
+			}
         }
 
         if (!$session->data['SITE_USERNAME']) {

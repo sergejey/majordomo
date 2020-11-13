@@ -1,5 +1,6 @@
 <?php
 
+
 chdir(dirname(__FILE__) . '/../../');
 
 include_once("./config.php");
@@ -19,8 +20,10 @@ $with_backup=gr('with_backup');
 
 header('X-Accel-Buffering: no');
 echo "<html>";
-echo "<body>";
-
+echo "<head>";
+echo '<link rel="stylesheet" href="/3rdparty/bootstrap/css/bootstrap.min.css" type="text/css"><script type="text/javascript" src="/3rdparty/bootstrap/js/bootstrap.min.js"></script>';
+echo "</head>";
+echo '<body style="height: auto;overflow: auto;padding: 10px;background: black;color: white;border-radius: 5px;">'; 
 
 $out = array();
 
@@ -29,10 +32,15 @@ if ($backup) {
     logAction('system_backup');
     $res = $sv->dump($out, 1);
     if ($res) {
-        echonow("Removing temporary files ... ");
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Удаляем временные файлы...</div>');
         removeTree(ROOT . 'cms/saverestore/temp');
-        echonow(" OK<br/> ", 'green');
-        echonow("Redirecting to main page...");
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> Готово!</div>');
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> Резервная копия готова!</div>');
+		sleep(1);
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> Консоль будет закрыта автоматически...</div>');
+		sleep(1);
+		echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Запрос редиректа...</div>');
+		sleep(2);
         echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Backup complete!") . '";</script>');
     }
 
@@ -52,20 +60,22 @@ if ($backup) {
         }
         $res = $sv->upload($out, 1);
         if ($res) {
-            echonow("Removing temporary files ... ");
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Удаляем временные файлы...</div>');
             removeTree(ROOT . 'cms/saverestore/temp');
             @unlink(ROOT . "cms/modules_installed/control_modules.installed");
-            echonow(" OK<br/> ", 'green');
-            echonow("<b>Main system updated!</b><br/>", 'green');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> Готово!</div>');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> Обновления установлены!</div>');
             if ($with_extensions) {
-                echonow("Redirecting to extensions update...");
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Запрос редиректа в маркет дополнений...</div>');
+				sleep(2);
                 echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?action=market&mode=iframe&mode2=update_all";</script>');
             } else {
-                echonow("Rebooting system ... ");
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Запрос перезагрузки MajorDoMo</div>');
                 @SaveFile(ROOT . 'reboot', 'updated');
-                echonow(" OK<br/> ", 'green');
-
-                echonow("Redirecting to main page...");
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> Система перезагружена!</div>');
+				sleep(2);
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Запрос редиректа...</div>');
+				sleep(2);
                 echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode("Updates Installed!") . '";</script>');
             }
         }
