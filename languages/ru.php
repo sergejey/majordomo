@@ -1373,8 +1373,8 @@ $dictionary = array(
     'CLOCK' => 'Часы',
 
     'UPDATES_SOURCE' => 'Источник обновлений ядра',
-    'UPDATES_SOURCE_MASTER' => 'Мастер (стабильная версия)',
-    'UPDATES_SOURCE_ALPHA' => 'Альфа (ранний доступ к обновлениям)',
+    'UPDATES_SOURCE_MASTER' => 'Стабильная версия',
+    'UPDATES_SOURCE_ALPHA' => 'Альфа - версия',
 
     'MAINCYCLEDOWN' => 'Остановлен главный цикл системы', //
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
@@ -1507,6 +1507,30 @@ $dictionary = array(
 	'NEWDASH_CLASS' => 'Класс',
 	'NEWDASH_NEWS' => 'Новости и блоги MajorDomo',
 	'NEWDASH_NEWS_MORE' => 'еще записи',
+	'NEWDASH_DONTSHOW_THIS_BLOCK' => 'Больше не показывать этот блок',
+	'NEWDASH_HIDE_MENU_HINT' => 'Это меню можно переместить наверх, попробуем?<br>Чтобы вернуть обратно нажмите',
+	'NEWDASH_PRELOAD_HEADER' => 'Загружаем содержимое...',
+	'NEWDASH_PRELOAD_TEXT' => 'Если загрузка слишком долгая, то возможно в коде есть ошибк или скрипт выполняет запрошенную операцию.',
+	'NEWDASH_PRELOAD_BTN' => 'Остановить операцию',
+	'NEWDASH_UPDATE_MODULE_HINT1' => 'Обновления для',
+	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулей',
+	
+	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
+	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',
+	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Все равно обновить',
+	'NEWSAVERESTORE_UPDATE_HEADER' => 'Пора обновиться!',
+	'NEWSAVERESTORE_UPDATE_TEXT' => 'Старайтесь регулярно обновлять систему, чтобы избежать ошибок и проблем с безопасностью. Каждый день разработчики вносят изменения, чтобы вы могли получить максимальное удовольствие при работе с MajorDoMo.',
+	'NEWSAVERESTORE_UPDATE_BTN' => 'Обновить систему',
+	'NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE' => 'Скачать архив',
+	'NEWSAVERESTORE_CONSOLE' => 'Консоль MajorDoMo',
+	'CLOSE' => 'Закрыть',
+	'NEWSAVERESTORE_RESTORE_ARHIVE' => 'Резервные копии',
+	'NEWSAVERESTORE_RESTORE_DOWNANDRESTORE' => 'Загрузить и восстановить',
+	'NEWSAVERESTORE_RESTORE_RESTOREINARHIVE' => 'Восстановить из архива системы',
+	'NEWSAVERESTORE_RESTORE_CREATE_RESTORE' => 'Создать резеврную копию',
+	'NEWSAVERESTORE_BACKUP_HINT' => 'Выберите разделы системы для создания резевной копии.',
+	'NEWSAVERESTORE_CHOUSE_FILE' => 'Выберите файл',
+	'NEWSAVERESTORE_CHOUSES_FILES' => 'Выбрано файлов:',
 	
 );
 

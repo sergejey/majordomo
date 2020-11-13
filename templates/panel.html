@@ -222,10 +222,13 @@
 
 		var loaderTimer;
 		function loadInProgress() {
-		 $('.sp-replacer').remove();
-		 $('.sp-container').remove();
-		 $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
-		 return false;
+			$('.sp-replacer').remove();
+			$('.sp-container').remove();
+			$('#preloader').show();
+			$('#partLoadContent').html('');
+			$('#stopLoadBtnPreloader').attr('src', urlInProgress);
+			//$('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
+			return false;
 		}
 
 
@@ -322,11 +325,7 @@
 					} else {
 						$('#dashInfoDBConn').append('<span style="background-color: lightcoral;" class="badge"><#LANG_NEWDASH_DISCONNECTED#></span>');
 					}
-					
-					branch = data.update_url.split('.')[1];
-					branch = branch.split('/')[4];
-					$('#dashInfoBranch').text(branch);
-					
+										
 					i = 0;
 					//Циклы
 					for (var cycle in data.cycles) {
@@ -460,16 +459,25 @@
 			$.ajax({
 				url: urlCheckUpdates
 			}).done(function(data) {
-				if (data == '1') $('#updates-check-system').show();
-				$('#loadUpdate').hide()
-				
+				data = JSON.parse(data);
+				if (data.needUpdate == '1') {
+					$('#updates-check-system').show();
+					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
+				}
+				$('#loadUpdate').hide();
+				$('#dashInfoBranch').html(data.currBranch.slice(0, -7));
 			});
 			
 			var urlCheckUpdatesMarket = '<#ROOTHTML#>ajax/market.html?op=check_updates';
 			$.ajax({
 				url: urlCheckUpdatesMarket
 			}).done(function(data) {
-				if (data == '1') $('#updates-check-market').show();
+				data = JSON.parse(data);
+				if (data.status == '1') {
+					$('#updates-check-market').show();
+					$('#updates-check-market-text').html('<#LANG_NEWDASH_UPDATE_MODULE_HINT1#> ' +data.howUpdate+ ' <#LANG_NEWDASH_UPDATE_MODULE_HINT2#>');
+					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
+				}
 				$('#loadUpdate').hide()
 			});
 			
@@ -477,7 +485,10 @@
 			$.ajax({
 				url: urlCheckUpdatesSystem
 			}).done(function(data) {
-				if (data == '1') $('#errors-saved').show();
+				if (data == '1') {
+					$('#errors-saved').show();
+					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
+				}
 				$('#loadUpdate').hide()
 			});
 			
@@ -541,56 +552,8 @@
 		<div class="navbar-collapse collapse" id="responsive-menu">
 			<ul class="nav navbar-nav navbar-left" >
 				[#if HIDE_LEFT_PANEL="1"#]
-					[#begin SUB_MODULES#]
-				[#if NEW_CATEGORY#]
-				<li>
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						[#CATEGORY#]
-							<span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						[#endif NEW_CATEGORY#]
-						[#if !DENIED#]
-							[#if LINKS#]
-							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
-							<ul class="dropdown-menu">
-							[#begin LINKS#]
-								<li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
-							[#end LINKS#]
-							</ul>
-							</li>
-							[#else LINKS#]
-							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
-							[#endif LINKS#]
-						[#endif DENIED#]
-						[#if LAST_IN_CATEGORY#]
-					</ul>
-				</li>
-				[#endif#]
-				[#end SUB_MODULES#]
-				<li>
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						<#LANG_MARKET_CATEGORY_INFORMATION#>
-						 <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
-						<li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
-						<li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
-						<li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
-						<li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-						[#if APP_TDWIKI_INSTALLED="1"#]
-						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
-						[#endif#]
-						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
-					</ul>
-				 </li>
-				[#else HIDE_LEFT_PANEL#]
-				<!--- Не скрывать левую панель --->
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
 						<li><a href="https://mjdm.ru/forum/" target=_blank><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
@@ -606,7 +569,62 @@
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list"></i> FrontEnd <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">FrontEnd <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+						<li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+						<li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+					</ul>
+				</li>
+				[#begin SUB_MODULES#]
+				[#if NEW_CATEGORY#]
+				<li>
+					<!---
+					<li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
+					--->
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">[#CATEGORY#] <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						[#endif NEW_CATEGORY#]
+						[#if !DENIED#]
+							[#if LINKS#]
+							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
+							<ul class="dropdown-menu">
+							[#begin LINKS#]
+								<li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
+							[#end LINKS#]
+							</ul>
+							</li>
+							[#else LINKS#]
+							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+							[#if NAME="xray"#]<li class="menu-item"><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>[#endif#]
+							[#endif LINKS#]
+						[#endif DENIED#]
+						[#if LAST_IN_CATEGORY#]
+					</ul>
+				</li>
+				[#endif#]
+				[#end SUB_MODULES#]
+
+				[#else HIDE_LEFT_PANEL#]
+				<!--- Не скрывать левую панель --->
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+						<li><a href="https://mjdm.ru/forum/" target=_blank><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
+						<li><a href="https://connect.smartliving.ru/" target=_blank><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
+						[#if APP_TDWIKI_INSTALLED="1"#]
+						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+						[#endif#]
+						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li class="divider"></li>
+						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
+						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
+						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> FrontEnd <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
 						<li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
@@ -614,7 +632,7 @@
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard"></i> <#LANG_SECTION_SYSTEM#> <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_SECTION_SYSTEM#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
 						<li><a href="#console" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
@@ -622,7 +640,7 @@
 				</li>
 				[#endif HIDE_LEFT_PANEL#]
 				<li>
-					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
+					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out" style="vertical-align: top;font-size: 11pt;"></i> [#endif#]<#LANG_LOGOFF#></a>
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
@@ -636,7 +654,7 @@
 			</ul>
 		</div>
 	</nav>
-	<!--# .top  #-->
+	
 	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
 			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_EMPTY#></div>
@@ -662,32 +680,56 @@
 	</div>
 	[#endif PRINT#]
 	
-	<!--main-->
+	<div class="row text-center" style="margin-top: 20px;display:none;" id="preloader">
+		<h4 style="font-weight: bold;"><#LANG_NEWDASH_PRELOAD_HEADER#></h4>
+		<img src="/img/system/loading.gif" style="max-width: 200px">
+		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
+		
+		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
+	</div>
+
+	
+	<script language="javascript">
+	function toggleCategory(id) {
+		var vl=getCookie('sub_'+id);
+		if (vl=='on') {
+			setCookie('sub_'+id, 'off');
+		} else {
+			setCookie('sub_'+id, 'on');
+		}
+		
+		$('#row_'+id).collapse("toggle");
+		
+		return false;
+	}
+	
+	function hideHintCookie(id, check = 0) {
+		var vl = getCookie('hint_'+id);
+		
+		if (check == 0 && vl != 'off') {
+			setCookie('hint_'+id, 'off');
+			$('#hint_'+id).hide("slow");
+		} else if (check == 1) {
+			if(vl != 'off') {
+				$('#hint_'+id).show("fast");
+			}
+		}
+		
+		return false;
+	}
+
+	function checkCategory(id) {
+			var vl = getCookie('sub_'+id);
+			if (vl == 'on') {
+				$('#row_'+id).collapse("show");
+			}
+		return false;
+	}
+	</script>
 	<div id="partLoadContent">
 		<div class="row" id="content">
 			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
 			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
-				<script language="javascript">
-				function toggleCategory(id) {
-					var vl=getCookie('sub_'+id);
-					if (vl=='on') {
-					setCookie('sub_'+id, 'off');
-					} else {
-					setCookie('sub_'+id, 'on');
-					}
-					$('#row_'+id).collapse("toggle");
-					return false;
-					}
-
-					function checkCategory(id) {
-						var vl = getCookie('sub_'+id);
-						if (vl == 'on') {
-							$('#row_'+id).collapse("show");
-						}
-					return false;
-				}
-				</script>
-
 				<div class="panel-group">
 					[#begin SUB_MODULES#]
 					[#if NEW_CATEGORY#]
@@ -711,6 +753,16 @@
 					</div>
 					[#endif#]
 					[#end SUB_MODULES#]
+					
+					<div id="hint_alert_hide_hint2" style="display:none;">
+						<div class="hidden-xs">
+							<div class="alert" id="hideMenuHint" onClick="return leftPanelToggle();" style="margin-bottom: 0px;cursor:pointer;font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;margin-top: 10px;">
+								<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
+								<#LANG_NEWDASH_HIDE_MENU_HINT#> <i class="glyphicon glyphicon-resize-horizontal"></i>
+							</div>
+							<div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+						</div>
+					</div>
 				</div>
 				[#begin SUB_MODULES#]
 				[#if NEW_CATEGORY#]
@@ -724,28 +776,33 @@
 			<div class="col-lg-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#] col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]9[#endif#] col-sm-[#if HIDE_LEFT_PANEL="1"#]12[#else#]8[#endif#] col-xs-12" id="main-content">
 				[#if PRINT!="1"#]
 				<div class="row">
-					<div class="col-md-8" style="padding-left: 0px;padding-right: 0px;">
-						<ol class="breadcrumb">
-							<li><a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"></a>
-							<a href="?"><#LANG_CONTROL_PANEL#></a></li>
-							[#if ACTION!=""#]<li><a href="?action=<#ACTION#>"><#ACTION#></a></li>[#endif#]
+					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">
+						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
+							<li>
+								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
+							</li>
+							<li><a href="?"><#LANG_CONTROL_PANEL#></a></li>
+							[#if ACTION!=""#]<li><a href="?action=<#ACTION#>">[#FULL_LANG_MODULE_NAME#]</a></li>[#endif#]
 						</ol>
 					</div>
-					<div class="col-md-4 text-right" style="padding-left: 0px;padding-right: 0px;">
-						<ol class="breadcrumb" style="background-color: transparent;[#if ACTION!=""#]padding-top: 3px;[#endif#]">
+					<div class="col-md-7 text-right" style="padding-left: 0px;padding-right: 0px;">
+						<ol class="breadcrumb" id="breadcrumb_update" style="">
 							[#if ACTION!=""#]
 							<li>
-								<div class="btn-group-sm">
-									<button type="button" onclick="window.open('https://connect.smartliving.ru/addons.html?redirect=<#ACTION#>', '_blank');" class="btn btn-default"><#LANG_MODULE_MARKET#></button>
-									<button type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
+								<!---
+								<div class="btn-group-xs">
+									<button style="vertical-align: super;" type="button" onclick="window.open('https://connect.smartliving.ru/addons.html?redirect=<#ACTION#>', '_blank');" class="btn btn-default"><#LANG_MODULE_MARKET#></button>
+									<button style="vertical-align: super;" type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
 								</div>
+								--->
+								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a>
 							</li>
 							[#else#]
 							<li>
 								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
 								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"><span class="label label-danger"><#LANG_ERRORS_SAVED#></span></a>
-								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
-								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-success"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
+								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
+								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
 							</li>
 							[#endif#]
 						</ol>
@@ -796,6 +853,21 @@
     }
 
  $(document).ready(function() {
+		[#if HIDE_LEFT_PANEL!="1"#]
+		$("#hideMenuHint").mouseover(function () {
+			$("#hideMenuIcon").css('color','red');
+			$("#hideMenuDiv").css('border','1px solid red');
+		});
+		$("#hideMenuHint").mouseout(function () {
+			$("#hideMenuIcon").css('color','#4792d1');
+			$("#hideMenuDiv").css('border','0px');
+		});
+		[#endif#]
+		//Проверяем скрыли ли подсказки
+		hideHintCookie('alert_hide_hint2', 1);
+		hideHintCookie('blockdidyouknow', 1);
+		hideHintCookie('blockaddnewdev', 1);
+ 
 		checkSystemInfo();
 		$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
         $(".wiki_hint").fancybox({
