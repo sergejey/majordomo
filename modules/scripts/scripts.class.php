@@ -246,21 +246,6 @@ class scripts extends module
             }
         }
 		
-		if($this->ajax && $_GET['op'] == 'last') {
-			$recently_updated = SQLSelect("SELECT ID, TITLE, UPDATED FROM scripts ORDER BY UPDATED DESC, ID DESC LIMIT 6");
-			if ($recently_updated[0]['ID']) {
-				$total = count($recently_updated);
-				for($i=0;$i<$total;$i++) {
-					if ($recently_updated[$i]['UPDATED']) {
-						$recently_updated[$i]['PASSED']=getPassedText(strtotime($recently_updated[$i]['UPDATED']));
-					} else {
-						$recently_updated[$i]['PASSED']='...';
-					}
-				}
-			}
-			echo json_encode($recently_updated);
-			exit;
-		}
     }
 
 

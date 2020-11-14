@@ -1389,6 +1389,18 @@
 	vertical-align:top;
 	border-top:1px solid #ddd
 }
+
+.tableXray thead>tr>th,.tableXray tbody>tr>th,.tableXray tfoot>tr>th,.tableXray thead>tr>td,.tableXray tbody>tr>td,.tableXray tfoot>tr>td
+{
+	vertical-align:middle;
+	border-bottom: 1px dotted #ddd;
+}
+
+.tableXray thead>tr:hover,.tableXray tbody>tr:hover,.tableXray tfoot>tr:hover,.tableXray thead>tr:hover,.tableXray tbody>tr:hover,.tableXray tfoot>tr:hover
+{
+	background: #aaceed3d;
+}
+
 .table thead>tr>th
 {
 	vertical-align:bottom;

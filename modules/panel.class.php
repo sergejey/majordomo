@@ -60,21 +60,21 @@ class panel extends module
          if (!$action) $action = 'saverestore';
          $this->print = 1;
         }
-
+		
         if (!$this->action && $action) {
-            $this->action = constant('LANG_MODULE_'.strtoupper($this->action));
+            $this->action = $action;
         }
 
         if ($this->action) {
             //$out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
-            $out['TITLE'] = constant('LANG_MODULE_'.strtoupper($this->action)).' | '.LANG_CONTROL_PANEL;
-			$out['FULL_LANG_MODULE_NAME'] = constant('LANG_MODULE_'.strtoupper($this->action));
+            $out['TITLE'] = @constant('LANG_MODULE_'.strtoupper($this->action)).' | '.LANG_CONTROL_PANEL;
+			$out['FULL_LANG_MODULE_NAME'] = @constant('LANG_MODULE_'.strtoupper($this->action));
 			if(!$out['FULL_LANG_MODULE_NAME']) {
 				$out['FULL_LANG_MODULE_NAME'] = $this->action;
 				$out['TITLE']=$this->action.' | '.LANG_CONTROL_PANEL;
 			}
         }
-
+		$out['SETTINGS_SITE_LANGUAGE'] = SETTINGS_SITE_LANGUAGE;
         if (!$session->data['SITE_USERNAME']) {
             $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
             $total = count($users);

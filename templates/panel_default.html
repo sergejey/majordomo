@@ -1,5 +1,13 @@
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
     <div class="col-md-5">
+		<!--- Чарты --->
+
+		<!-- Resources -->
+		<script src="<#ROOTHTML#>3rdparty/amcharts/core.js"></script>
+		<script src="<#ROOTHTML#>3rdparty/amcharts/charts.js"></script>
+		<script src="<#ROOTHTML#>3rdparty/amcharts/material.js"></script>
+		<script src="<#ROOTHTML#>3rdparty/amcharts/animated.js"></script>
+
 		<div id="hint_blockaddnewdev" style="display:none">
 			<div class="panel panel-default" style="margin-bottom: 0px;">
 				<div class="panel-body">
@@ -18,8 +26,9 @@
 			</div>
 			<div class="panel-body">
 				<ul class="list-group" id="">
-					<li class="list-group-item" id="dashInfoDBConn">
+					<li class="list-group-item">
 						<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
+						<span id="dashInfoDBConn"></span>
 					</li>
 					<li class="list-group-item">
 						<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
@@ -38,14 +47,62 @@
 			</div>
 		</div>
 		<div class="panel panel-default">
-			<div class="panel-heading" style="cursor:pointer;" onclick="return toggleCategory('cycleInfoDivPanel');">
+			<div class="panel-heading">
 				<h3 class="panel-title"><#LANG_NEWDASH_CYCLE_CONTROL#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=services">X-Ray</a></h3>
 			</div>
-			<div class="panel-collapse collapse out" id="row_cycleInfoDivPanel">
+			<div class="panel">
 				<div class="panel-body">
-					<ul class="list-group" id="cycleInfo">
-						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>
-					</ul>
+					<!-- Chart code -->
+					<script>
+					am4core.ready(function() {
+
+					// Themes begin
+					am4core.useTheme(am4themes_material);
+					am4core.useTheme(am4themes_animated);
+					// Themes end
+
+					var chart = am4core.create("chartdiv_cycle", am4charts.PieChart);
+					chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+					chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=services&ajax=1&op=getcontent&mode=chart";
+					chart.dataSource.parser = new am4core.JSONParser();
+					chart.dataSource.reloadFrequency = 5000;
+					
+					chart.radius = am4core.percent(60);
+					chart.innerRadius = am4core.percent(40);
+					chart.startAngle = 180;
+					chart.endAngle = 360;  
+
+					var series = chart.series.push(new am4charts.PieSeries());
+					series.dataFields.value = "cycle";
+					series.dataFields.category = "title";
+					series.dataFields.cyclename = "cyclename";
+					
+					series.slices.template.propertyFields.fill = "color";
+					series.slices.template.cornerRadius = 0;
+					series.slices.template.innerCornerRadius = 0;
+					series.slices.template.draggable = true;
+					series.slices.template.inert = true;
+					series.alignLabels = false;
+
+					series.hiddenState.properties.startAngle = 90;
+					series.hiddenState.properties.endAngle = 90;
+
+					chart.legend = new am4charts.Legend();
+					chart.legend.useDefaultMarker = true;
+					var marker = chart.legend.markers.template.children.getIndex(0);
+					marker.cornerRadius(12, 12, 12, 12);
+					marker.strokeWidth = 2;
+					marker.strokeOpacity = 1;
+					marker.stroke = am4core.color("#ccc");
+					chart.legend.labels.template.text = "[bold {color}]{cyclename}[/]";
+					
+					
+					}); // end am4core.ready()
+					</script>
+
+					<!-- HTML -->
+					<div id="chartdiv_cycle" style="width: 100%;height: 200px;"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 				</div>
 			</div>
 		</div>
@@ -55,7 +112,7 @@
 			</div>
 			<div class="panel-collapse collapse out" id="row_scriptBlockDiv">
 				<div class="panel-body">
-					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #a6e7bb, #0e6080);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>Здесь выводятся последние 6 запущеных сценария</div>
+					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #a6e7bb, #0e6080);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_SHOW_LAST_SCRIPTS#></div>
 					<ul class="list-group" id="scriptLast">
 						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>
 					</ul>
@@ -65,12 +122,91 @@
 		
 	</div>
 	<div class="col-md-7">
+		<script>
+		am4core.ready(function() {
 
+		// Themes begin
+		am4core.useTheme(am4themes_material);
+		am4core.useTheme(am4themes_animated);
+		// Themes end
+
+		var chart = am4core.create("structureDB_chart", am4charts.XYChart);
+
+		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
+		chart.dataSource.parser = new am4core.JSONParser();
+		chart.dataSource.reloadFrequency = 5000;
+
+		chart.padding(20, 20, 20, 20);
+
+		var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.renderer.grid.template.location = 0;
+		categoryAxis.dataFields.category = "NAME";
+		categoryAxis.renderer.minGridDistance = 60;
+		categoryAxis.renderer.inversed = false;
+		categoryAxis.renderer.grid.template.disabled = true;
+
+		var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+		valueAxis.min = 0;
+		valueAxis.extraMax = 0.1;
+		//valueAxis.rangeChangeEasing = am4core.ease.linear;
+		//valueAxis.rangeChangeDuration = 1500;
+
+		var series = chart.series.push(new am4charts.ColumnSeries());
+		series.dataFields.categoryX = "NAME";
+		series.dataFields.valueY = "ROWS";
+		series.tooltipText = "{valueY.value}"
+		series.columns.template.strokeOpacity = 0;
+		series.columns.template.column.cornerRadiusTopRight = 4;
+		series.columns.template.column.cornerRadiusTopLeft = 4;
+		//series.interpolationDuration = 1500;
+		//series.interpolationEasing = am4core.ease.linear;
+		var labelBullet = series.bullets.push(new am4charts.LabelBullet());
+		labelBullet.label.verticalCenter = "bottom";
+		labelBullet.label.dy = -10;
+		labelBullet.label.text = "{values.valueY.workingValue.formatNumber('#.')}";
+
+		chart.zoomOutButton.disabled = true;
+
+		// as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+		series.columns.template.adapter.add("fill", function (fill, target) {
+			return chart.colors.getIndex(target.dataItem.index);
+		});
+
+		setInterval(function () {
+			am4core.array.each(chart.data, function (item) {
+				item.visits += Math.round(Math.random() * 200 - 100);
+				item.visits = Math.abs(item.visits);
+			})
+			chart.invalidateRawData();
+		}, 20000)
+
+		categoryAxis.sortBySeries = series;
+
+		}); // end am4core.ready()
+		</script>
+		<!-- HTML -->
+		<div id="hint_howmaxdbsizehint" style="display:none;">
+			<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #be5959, #caa417);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_HINT_BIG_DATA_DB#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i> <a style="text-decoration: none;color: white;" href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=database">X-Ray</a></div>
+			<div class="hidden-xs" onclick="hideHintCookie('howmaxdbsizehint');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+		</div>
+		
+		<div id="structureDB_chart" style="width: 100%;height: 300px;margin-bottom:10px"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+		
+		[#if SETTINGS_SITE_LANGUAGE=="ua"#]
+		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background: linear-gradient(9180deg, rgb(0 87 184 / 1) 50%, rgb(255 216 0 / 1) 50%);;background-size: contain;background-repeat: no-repeat;background-position: right center;">
+			<h2 id="titleConnect" style="color: white;">Привет Украинцы!</h2>
+			<p style="font-size: 11pt;color: white" id="textConnect">Этот баннер видете только Вы! Меня зовут Саша, я из России и я переделываю дизайн MajorDomo. Хочу, чтобы всем в нем было уютно, но я не знаю вашего языка...
+			Часть текстов я перевел через Google переводчик, но я не уверен в его правильности =( Поэтому прошу помощи у Вас. Откройте файл <b>/languages/ua.php</b> и в самом низу вы увидите мой текст - проверьте его и отпишитесь на форум. Спасибо!
+			</p>
+			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
+		</div>
+		[#else#]
 		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/new_design.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #4792d1);background-size: cover;background-repeat: no-repeat;">
 			<h2><#LANG_NEWDASH_HELLO_NEW#></h2>
 			<p style="font-size: 11pt;"><#LANG_NEWDASH_HELLO_NEW_TEXT#></p>
 			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
 		</div>
+		[#endif#]
 		<!---
 		<style>
 		.onHoverAlfa:hover {
@@ -84,7 +220,7 @@
 		</div>
 		--->
 		
-		<div id="getConnect" class="jumbotron hidden-xs" style="display: none!important;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
+		<div id="getConnect" class="jumbotron hidden-xs" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
 			<h2 id="titleConnect"><#LANG_NEWDASH_CONNECT_ADS#></h2>
 			<p style="font-size: 11pt;" id="textConnect"><#LANG_NEWDASH_CONNECT_ADS_TEXT#></p>
 			<p class="text-right">
@@ -92,7 +228,6 @@
 				<a style="border-color: #ffffff;" id="btnConnect" href="https://connect.smartliving.ru/services/s2.html" target="_blank" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_BTN#></a>
 			</p>
 		</div>
-		
 		<div id="hint_blockdidyouknow" style="display:none;">
 			<div id="didyouknow" class="alert alert-dismissable hidden-xs" style="background-color: #f5f5f5;margin-bottom: 0px;">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -100,7 +235,7 @@
 					<img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#>
 				</div>
 			</div>
-			<div class="hidden-xs" onclick="hideHintCoocke('blockdidyouknow');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+			<div class="hidden-xs" onclick="hideHintCookie('blockdidyouknow');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
 		</div>
 		
 		<div class="panel panel-default">
@@ -116,86 +251,20 @@
     </div>
 </div>
 
-<!--
-
-<ul class="nav nav-pills">
-    <li [#if TAB=""#]class="active"[#endif TAB#]><a href="?"><#LANG_HOME#></a></li>
-    <li [#if TAB="panel"#]class="active"[#endif TAB#]><a href="?tab=panel"><#LANG_SECTION_PANEL#></a></li>
-    <li [#if TAB="apps"#]class="active"[#endif TAB#]><a href="?tab=apps"><#LANG_SECTION_APPLICATIONS#></a></li>
-</ul>
-
-<div class="row">
-    <div class="col-md-5">
-        <div>
-        <h3><#LANG_ROOMS#></h3>
-        <a href="?action=locations" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> <#LANG_LIST#></a>
-        <a href="?(panel:{action=locations})&md=locations&view_mode=edit_locations" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
-        </div>
-
-        <div>
-        <h3><#LANG_DEVICES#></h3>
-        <a href="?action=devices" class="btn btn-default"><i class="glyphicon glyphicon-hdd"></i> <#LANG_LIST#></a>
-        <a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
-        </div>
-        <div>
-        <h3><#LANG_APPEARANCE#></h3>
-            <a href="?action=commands" class="btn btn-default"><i class="glyphicon glyphicon-list"></i> <#LANG_MODULE_CONTROL_MENU#></a>
-            <a href="?action=scenes" class="btn btn-default"><i class="glyphicon glyphicon-th-large"></i> <#LANG_MODULE_SCENES#></a>
-            <a href="?action=layouts" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a>
-        </div>
-
-        <div>
-            <h3><#LANG_ACTIVITIES#></h3>
-            <a href="?action=scripts" class="btn btn-default"><i class="glyphicon glyphicon-flash"></i> <#LANG_MODULE_SCRIPTS#></a>
-            <a href="?action=patterns" class="btn btn-default"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_COMMANDS#></a>
-        </div>
-        <div>
-        <h3><#LANG_SECTION_SETTINGS#></h3>
-            <a href="?action=settings" class="btn btn-default"><i class="glyphicon glyphicon-wrench"></i> <#LANG_MODULE_SETTINGS#></a>
-            <a href="?action=market" class="btn btn-default"><i class="glyphicon glyphicon-shopping-cart"></i> <#LANG_MODULE_MARKET#></a>
-        </div>
-        <div>
-            <h3><#LANG_MAINTENANCE#></h3>
-            <a href="?action=saverestore" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i> <#LANG_MODULE_SAVERESTORE#></a>
-            [#if OPTIMIZER_INSTALLED="1"#]
-            <a href="?action=optimizer" class="btn btn-default"><i class="glyphicon glyphicon-briefcase"></i> <#LANG_DATA_OPTIMIZING#></a>
-            [#endif#]
-            <a href="/diagnostic.php" class="btn btn-default"><i class="glyphicon glyphicon-send"></i> <#LANG_SUBMIT_DIAGNOSTIC#></a>
-        </div>
-
-    </div>
-
-    <div class="col-md-7">
-		<div id="didyouknow" class="alert alert-dismissable" style="background-color: #f5f5f5;">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			<div id="didyouknow_body" class="text-center">
-				<img src="<#ROOTHTML#>img/ajax-loader.gif"/> Загружаем подсказки...
-			</div>
-		</div>
-
-        <div id="news" style="display:none;max-height: 500px;overflow: auto;">
-            <h4><#LANG_NEWS#></h4>
-            <div id="news_body"></div>
-        </div>
-
-    </div>
-
-</div>
---->
 <script type="text/javascript">
     $(document).ready(function() {
         checkUpdatesAvailable();
         checkDidYouKnow();
         checkNews();
+		//Проверяем скрыли ли подсказки
+		hideHintCookie('alert_hide_hint2', 1);
+		hideHintCookie('blockdidyouknow', 1);
+		hideHintCookie('blockaddnewdev', 1);
+		hideHintCookie('howmaxdbsizehint', 1);
+		setInterval(function() { checkSystemInfo(); }, 5000);
+		checkSystemInfo();
     });
 </script>
 
 [#endif#]
 
-[#if TAB="panel"#]
-<iframe src="<#ROOTHTML#>page/Panel.html?theme=light" width="100%" height="800" frameborder="0"></iframe>
-[#endif TAB#]
-
-[#if TAB="apps"#]
-<iframe src="<#ROOTHTML#>apps.html" width="100%" height="800" frameborder="0"></iframe>
-[#endif TAB#]
