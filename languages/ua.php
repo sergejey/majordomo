@@ -1430,7 +1430,6 @@ $dictionary = array (
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15' => 'Через 15 секунд',
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30' => 'Через 30 секунд',
 	'CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60' => 'Через 1 хвилину',
-    
 );
 
 foreach ($dictionary as $k => $v) {

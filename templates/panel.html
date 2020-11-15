@@ -186,24 +186,23 @@
 
 		var consoleDebugTimer;
 
-		function updateConsoleDebug() {
-		 //$('#console_debug').html('mmm');
-		 var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
-		 $.ajax({
-			 url: urlDebug,
-		 }).done(function(data) {
-			 $('#console_debug').html(data);
-		 });
-		 consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
-		}
+		//function updateConsoleDebug() {
+		// var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
+		// $.ajax({
+		//	 url: urlDebug,
+		// }).done(function(data) {
+		//	 $('#console_debug').html(data);
+		//});
+		//consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
+		//}
 
 		function consoleToggle() {
 		 $("#console").toggle();
-		 if ($('#console').is(":visible")) {
-			 updateConsoleDebug();
-		 } else {
-			 clearTimeout(consoleDebugTimer);
-		 }
+		 //if ($('#console').is(":visible")) {
+			//updateConsoleDebug();
+		 //} else {
+		//	 clearTimeout(consoleDebugTimer);
+		 //}
 		 return false;
 		}
 
@@ -271,9 +270,9 @@
 			 url: urlPartLoad,
 			 urlInProgress: urlInProgress
 		 }).done(function(data) {
-			 console.log('part content loaded');
+			 //console.log('part content loaded');
 			 if (seqNumber!=requestCounter) {
-				 console.log('Ignoring response');
+				 //console.log('Ignoring response');
 			 }
 			 clearTimeout(loaderTimer);
 			 try {
@@ -307,7 +306,7 @@
 		 });
 		 return false;
 		}
-	
+		[#if ACTION==""#]
 		function checkSystemInfo() {
 			$.ajax({
 				url: '<#ROOTHTML#>diagnostic.php?ajax=1',
@@ -321,31 +320,15 @@
 					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
 					
 					if(data.DB.connection == 'OK') {
-						$('#dashInfoDBConn').append('<span style="background: #5cb85c;" class="badge"><#LANG_NEWDASH_CONNECTED#></span>');
+						$('#dashInfoDBConn').html('<#LANG_NEWDASH_CONNECTED#>');
+						$('#dashInfoDBConn').attr('style', 'background: #5cb85c');
+						$('#dashInfoDBConn').attr('class', 'badge');
 					} else {
-						$('#dashInfoDBConn').append('<span style="background-color: lightcoral;" class="badge"><#LANG_NEWDASH_DISCONNECTED#></span>');
+						$('#dashInfoDBConn').html('<#LANG_NEWDASH_DISCONNECTED#>');
+						$('#dashInfoDBConn').attr('style', 'background: lightcoral');
+						$('#dashInfoDBConn').attr('class', 'badge');
 					}
-										
-					i = 0;
-					//Циклы
-					for (var cycle in data.cycles) {
-						if(data.cycles[cycle].status == 'running') {
-							statusColor = 'background-color: #5cb85c;';
-							statusBackColor = '';
-						} else {
-							statusColor = 'background-color: lightcoral;';
-							statusBackColor = 'background: linear-gradient(to right, #ffffff, lightcoral);';
-						}
-						(i != 0) ? cyclesBlock = $('#cycleInfo').html() : cyclesBlock = '';
-						$('#cycleInfo').html(cyclesBlock + '<li class="list-group-item" style="'+statusBackColor+'"><span class="badge" style="'+statusColor+'">'+data.cycles[cycle].run_time+'</span>'+cycle+'</li>')
-						
-						if(cycle == 'cycle_connect.php' && data.cycles[cycle].status != 'running') {
-							$('#getConnect').show();
-							continue;
-						}
-						i++;
-					}
-					checkCategory('cycleInfoDivPanel');
+					
 				},
 				error: function(data) {
 					console.log('error');
@@ -353,15 +336,17 @@
 			});
 			//Запрос последних скриптов
 			$.ajax({
-				url: '<#ROOTHTML#>ajax/scripts.html?op=last',
+				url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=scripts&ajax=1&op=getcontent',
 				success: function(data) {
 					data = JSON.parse(data);
-					console.log(data);
+					list = data.LIST.reverse();
 					i = 0;
-					for (var lastscript in data) {
+					while (i < 6) {
+						dataCurr = list[i];
+						
 						(i != 0) ? scriptLastBlock = $('#scriptLast').html() : scriptLastBlock = '';
-						dataCurr = data[i];
-						$('#scriptLast').html(scriptLastBlock + '<li class="list-group-item"><span class="badge">'+dataCurr.PASSED+'</span>'+dataCurr.TITLE+'</li>')
+						$('#scriptLast').html(scriptLastBlock + '<li class="list-group-item"><span class="badge">'+dataCurr.EXECUTED+'</span>'+dataCurr.SCRIPT+'</li>')
+						
 						i++;
 					}
 					
@@ -375,7 +360,7 @@
 			
 			return false;
 		}
-	
+		[#endif#]
 		function sendConsoleCommand() {
 			var cmd=$('#command').val();
 			if(cmd == '') {
@@ -421,7 +406,7 @@
 			});
 			return false;
 		}
-
+		[#if ACTION==""#]
 		function checkDidYouKnow() {
 			var urlDidyouknow = '<#ROOTHTML#>ajax/market.html?op=didyouknow';
 			$.ajax({
@@ -434,7 +419,7 @@
 			});
 			return false;
 		}
-
+	
 		function checkNews() {
 			var urlCheckNews = '<#ROOTHTML#>ajax/market.html?op=news';
 			$.ajax({
@@ -493,6 +478,7 @@
 			});
 			
 		}
+		[#endif#]
 	</script>
 
 	[#if PRINT!="1"#]
@@ -552,16 +538,18 @@
 		<div class="navbar-collapse collapse" id="responsive-menu">
 			<ul class="nav navbar-nav navbar-left" >
 				[#if HIDE_LEFT_PANEL="1"#]
+				<li><a href="<#ROOTHTML#>"><#LANG_FRONTEND#></a></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-						<li><a href="https://mjdm.ru/forum/" target=_blank><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
-						<li><a href="https://connect.smartliving.ru/" target=_blank><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
+						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target="_blank"><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
+						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
 						[#if APP_TDWIKI_INSTALLED="1"#]
 						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
 						[#endif#]
-						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
 						<li class="divider"></li>
 						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
 						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
@@ -571,9 +559,9 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">FrontEnd <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
-						<li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
-						<li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+						<li><a href="<#ROOTHTML#>menu.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
 					</ul>
 				</li>
 				[#begin SUB_MODULES#]
@@ -607,16 +595,18 @@
 
 				[#else HIDE_LEFT_PANEL#]
 				<!--- Не скрывать левую панель --->
+				<li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_FRONTEND#></a></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-						<li><a href="https://mjdm.ru/forum/" target=_blank><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
-						<li><a href="https://connect.smartliving.ru/" target=_blank><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
+						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target="_blank"><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
+						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
 						[#if APP_TDWIKI_INSTALLED="1"#]
 						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
 						[#endif#]
-						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
 						<li class="divider"></li>
 						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
 						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
@@ -626,9 +616,9 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> FrontEnd <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
-						<li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
-						<li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+						<li><a href="<#ROOTHTML#>menu.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -726,7 +716,7 @@
 		return false;
 	}
 	</script>
-	<div id="partLoadContent">
+	<div id="partLoadContent" style="margin-bottom: 50px;">
 		<div class="row" id="content">
 			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
 			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
@@ -863,12 +853,7 @@
 			$("#hideMenuDiv").css('border','0px');
 		});
 		[#endif#]
-		//Проверяем скрыли ли подсказки
-		hideHintCookie('alert_hide_hint2', 1);
-		hideHintCookie('blockdidyouknow', 1);
-		hideHintCookie('blockaddnewdev', 1);
- 
-		checkSystemInfo();
+
 		$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
         $(".wiki_hint").fancybox({
 			type            : 'iframe',
