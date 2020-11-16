@@ -1565,6 +1565,22 @@ $dictionary = array(
 	'XRAY_WORKING' => 'Works',
 	'XRAY_DO_WORKING' => 'Doesnt work',
 	'XRAY_WORKING_CYCLE' => 'cycles',
+	
+	'NEWSYSTEM_ERROR_FIND_ERROR' => 'Something went wrong ...',
+	'NEWSYSTEM_ERROR_FIND_ERROR_TEXT' => 'MajorDoMo is unstable. The system has detected several errors in the operation of the modules. They may not be critical, but we recommend paying attention to them. ',
+	'NEWSYSTEM_ERROR_CHECK_ALL_READ' => 'Mark all as viewed',
+	'NEWSYSTEM_ERROR_NOT_ERROR' => 'No errors!',
+	'NEWSYSTEM_ERROR_NOT_ERROR_TEXT' => 'Your MajorDoMo version is stable. At the moment, we have not found any new bugs that affect the work. ',
+	'NEWSYSTEM_ERROR_FULL_DESC' => 'This module allows you to "catch" errors in the entire system. Each module of the system has many conditions, when triggered, you will see an error in this module and on the main page. You can collect error statistics in your scripts / methods in one place - in this module and view them. ',
+	'NEWSYSTEM_ERROR_GET_ERROR' => 'Simulate error',
+	'NEWSYSTEM_ERROR_VIEW_ERROR' => 'View error',
+	'NEWSYSTEM_ERROR_READ_BTN' => 'Viewed',
+	'NEWSYSTEM_ERROR_ERROR_HINT' => 'Catch errors in your scripts / methods using the function:',
+	'NEWSYSTEM_ERROR_NAME' => 'bug_name',
+	'NEWSYSTEM_ERROR_DESC' => 'description',
+	'NEWSYSTEM_ERROR_SEE_BTN' => 'View',
+	'NEWSYSTEM_ERROR_NOT_FOUND' => 'No information about system or module errors found in the database!',
+
 );
 
 foreach ($dictionary as $k => $v) {

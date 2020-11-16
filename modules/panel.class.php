@@ -66,15 +66,18 @@ class panel extends module
         }
 
         if ($this->action) {
-            //$out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
-            $out['TITLE'] = @constant('LANG_MODULE_'.strtoupper($this->action)).' | '.LANG_CONTROL_PANEL;
-			$out['FULL_LANG_MODULE_NAME'] = @constant('LANG_MODULE_'.strtoupper($this->action));
-			if(!$out['FULL_LANG_MODULE_NAME']) {
-				$out['FULL_LANG_MODULE_NAME'] = $this->action;
-				$out['TITLE']=$this->action.' | '.LANG_CONTROL_PANEL;
+            $out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
+			//Узнаем название модуля
+			$result = SQLSelectOne("SELECT * FROM `project_modules` WHERE NAME = '".$this->action."'");
+			if($result) {
+				$out['NAV_MODULE_NAME'] = $result["TITLE"];
+				$out['NAV_MODULE_CAT'] = $result["CATEGORY"];
+				$out['TITLE'] = $result["TITLE"].' | '.$result["CATEGORY"].' | '.LANG_CONTROL_PANEL;
 			}
         }
+		
 		$out['SETTINGS_SITE_LANGUAGE'] = SETTINGS_SITE_LANGUAGE;
+		
         if (!$session->data['SITE_USERNAME']) {
             $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
             $total = count($users);
