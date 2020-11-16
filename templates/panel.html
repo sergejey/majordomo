@@ -322,11 +322,9 @@
 					if(data.DB.connection == 'OK') {
 						$('#dashInfoDBConn').html('<#LANG_NEWDASH_CONNECTED#>');
 						$('#dashInfoDBConn').attr('style', 'background: #5cb85c');
-						$('#dashInfoDBConn').attr('class', 'badge');
 					} else {
 						$('#dashInfoDBConn').html('<#LANG_NEWDASH_DISCONNECTED#>');
 						$('#dashInfoDBConn').attr('style', 'background: lightcoral');
-						$('#dashInfoDBConn').attr('class', 'badge');
 					}
 					
 				},
@@ -351,6 +349,44 @@
 					}
 					
 					checkCategory('scriptBlockDiv');
+				},
+				error: function(data) {
+					console.log('error');
+				}
+			});
+			//Запрос данных по работе БД
+			$.ajax({
+				url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=showdbload',
+				success: function(data) {
+					data = JSON.parse(data);
+					$('#dashInfoDBReqS').html(data.second);
+					$('#dashInfoDBReqM').html(data.minute);
+					$('#dashInfoDBReqH').html(data.hours);
+					
+					//Секунды
+					if(data.second <= 100) {
+						$('#dashInfoDBReqS').attr('style', 'background: #5cb85c');
+					} else if(data.second > 100 && data.second < 150) {
+						$('#dashInfoDBReqS').attr('style', 'background: #f0ad4e');
+					} else {
+						$('#dashInfoDBReqS').attr('style', 'background: #d9534f');
+					}
+					//Минуты
+					if(data.minute <= 6000) {
+						$('#dashInfoDBReqM').attr('style', 'background: #5cb85c');
+					} else if(data.second > 6000 && data.second < 9000) {
+						$('#dashInfoDBReqM').attr('style', 'background: #f0ad4e');
+					} else {
+						$('#dashInfoDBReqM').attr('style', 'background: #d9534f');
+					}
+					//Часы
+					if(data.minute <= 360000) {
+						$('#dashInfoDBReqH').attr('style', 'background: #5cb85c');
+					} else if(data.second > 360000 && data.second < 480000) {
+						$('#dashInfoDBReqH').attr('style', 'background: #f0ad4e');
+					} else {
+						$('#dashInfoDBReqH').attr('style', 'background: #d9534f');
+					}
 				},
 				error: function(data) {
 					console.log('error');
@@ -438,6 +474,17 @@
 			return false;
 		}
 		
+		function checkConnectStatus() {	
+			var urlCheckUpdates = '<#ROOTHTML#>ajax/connect.html?op=status';
+			$.ajax({
+				url: urlCheckUpdates
+			}).done(function(data) {
+				data = JSON.parse(data);
+				if (data.status == 0) {
+					$('#getConnect').show('fast');
+				}
+			});
+		}
 		
 		function checkUpdatesAvailable() {	
 			var urlCheckUpdates = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
@@ -470,7 +517,8 @@
 			$.ajax({
 				url: urlCheckUpdatesSystem
 			}).done(function(data) {
-				if (data == '1') {
+				if (data >= '1') {
+					$('#errors-saved').prepend('<span class="label label-danger"><#LANG_ERRORS_SAVED#>: '+data+'</span>');
 					$('#errors-saved').show();
 					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
 				}
@@ -772,7 +820,8 @@
 								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
 							</li>
 							<li><a href="?"><#LANG_CONTROL_PANEL#></a></li>
-							[#if ACTION!=""#]<li><a href="?action=<#ACTION#>">[#FULL_LANG_MODULE_NAME#]</a></li>[#endif#]
+							[#if NAV_MODULE_CAT!=""#]<li style="color: gray;">[#NAV_MODULE_CAT#]</li>[#endif#]
+							[#if NAV_MODULE_NAME!=""#]<li><a href="?action=<#ACTION#>">[#NAV_MODULE_NAME#]</a></li>[#endif#]
 						</ol>
 					</div>
 					<div class="col-md-7 text-right" style="padding-left: 0px;padding-right: 0px;">
@@ -790,7 +839,7 @@
 							[#else#]
 							<li>
 								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
-								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"><span class="label label-danger"><#LANG_ERRORS_SAVED#></span></a>
+								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"></a>
 								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
 								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
 							</li>

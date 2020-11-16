@@ -447,7 +447,6 @@ class market extends module
 
             if ($this->ajax) {
                 $p = new parser(DIR_TEMPLATES . $this->name . "/list.html", $out, $this);
-                //echo $params."<br/>";
                 echo $p->result;
                 exit;
 

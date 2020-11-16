@@ -1,20 +1,29 @@
 [#if CLEAR_FIRST!="1"#]
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
+	[#if ERR_MSG!=""#]
+		<div class="col-md-12"><div class="alert alert-danger">[#ERR_MSG#]</div></div>
+	[#endif ERR_MSG#]
+	[#if OK_MSG!=""#]
+		<div class="col-md-12"><div class="alert alert-success">[#OK_MSG#]</div></div>
+	[#endif OK_MSG#] 
+
 	<div class="col-md-6">
 		[#if NO_NEED_TO_UPDATE#]
 		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 100px 50px, #9efac3, #4792d1);">
-			<h2>Все хорошо!</h2>
-			<p style="font-size: 11pt;">Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.</p>
+			<h2><#LANG_NEWSAVERESTORE_NONE_UPDATE_HEADER#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWSAVERESTORE_NONE_UPDATE_TEXT#></p>
 			<p class="text-right">
-				<a style="border-color: #ffffff;" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" class="btn btn-warning btn-md" role="button">Все равно обновить</a>
+				<a class="link" href="[#UPDATE_URL#]" style="text-decoration: none;color: white;font-size: 10pt;margin-right: 20px;" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
+				<a style="border-color: #ffffff;" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" class="btn btn-warning btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
 			</p>
 		</div>
 		[#else#]
 		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;    background-image: radial-gradient(circle farthest-corner at 100px 50px, #fae29e, #d53972);">
-			<h2>Пора обновиться!</h2>
-			<p style="font-size: 11pt;">Старайтесь регулярно обновлять систему, чтобы избежать ошибок и проблем с безопасностью. Каждый день разработчики вносят изменения, чтобы вы могли получить максимальное удовольствие при работе с MajorDoMo.</p>
+			<h2><#LANG_NEWSAVERESTORE_UPDATE_HEADER#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWSAVERESTORE_UPDATE_TEXT#></p>
 			<p class="text-right">
-				<a style="border-color: #ffffff;" class="btn btn-success btn-md" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" role="button">Обновить систему</a>
+				<a class="link" href="[#UPDATE_URL#]" style="text-decoration: none;color: white;font-size: 10pt;margin-right: 20px;" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
+				<a style="border-color: #ffffff;" class="btn btn-success btn-md" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" role="button"><#LANG_NEWSAVERESTORE_UPDATE_BTN#></a>
 			</p>
 		</div>
 		[#endif#]
@@ -32,7 +41,7 @@
 					<form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title">Консоль MajorDoMo</h4>
+							<h4 class="modal-title"><#LANG_NEWSAVERESTORE_CONSOLE#></h4>
 						</div>
 						<div class="modal-body">
 							<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #e5c15b, #e94949);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
@@ -49,8 +58,8 @@
 						<div class="modal-footer">
 							<input type="hidden" name="mode" value="getlatest_iframe">
 							
-							<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-							<input style="border-color: #ffffff;" type="submit" name="submit" value="Обновить систему" onClick="" class="btn btn-danger btn-md">
+							<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+							<input style="border-color: #ffffff;" type="submit" name="submit" value="<#LANG_NEWSAVERESTORE_UPDATE_BTN#>" onClick="" class="btn btn-danger btn-md">
 						</div>
 						[#endif#]
 					</form>
@@ -60,7 +69,7 @@
 		[#if UPDATES#]
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Последние обновления</h3>
+				<h3 class="panel-title"><#LANG_LATEST_UPDATES#></h3>
 			</div>
 			<div class="panel-body">
 				<ul class="list-group">
@@ -79,15 +88,9 @@
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Настройки</h3>
+				<h3 class="panel-title"><#LANG_SECTION_SETTINGS#></h3>
 			</div>
 			<div class="panel-body">
-				[#if ERR_MSG!=""#]
-					<div class="alert alert-danger">[#ERR_MSG#]</div>
-				[#endif ERR_MSG#]
-				[#if OK_MSG!=""#]
-					<div class="alert alert-success">[#OK_MSG#]</div>
-				[#endif OK_MSG#] 
 				<form action="?" method="post" enctype="multipart/form-data" class="form">
 				<ul class="list-group" id="">
 					<li class="list-group-item">
@@ -102,67 +105,69 @@
 								[#endif#]
 							</select>
 						</span>
-						Текущая ветка
+						<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#>
 					</li>
 					<li class="list-group-item">
 						<span style="float: right;">
-							<select name="update_auto" style="border: 0px;">
+							<select name="update_auto" style="border: 0px;" onchange="if($(this).val() == 1) { $('#hideAutoUpdate').show('slow'); } else { $('#hideAutoUpdate').hide('slow'); }">
 								<option value="1"[#if UPDATE_AUTO="1"#] selected[#endif#]><#LANG_YES#></option>
 								<option value="0"[#if UPDATE_AUTO!="1"#] selected[#endif#]><#LANG_NO#></option>
 							</select>
 						</span>
 						<#LANG_ENABLE_AUTO_UPDATE#><#LANG_HCB#>system_auto_update<#LANG_HCE#>
 					</li>
-					<li class="list-group-item">
-						<span style="float: right;">
-							<select name="update_auto_delay" style="border: 0px;">
-								<option value="14"[#if UPDATE_AUTO_DELAY="14"#] selected[#endif#]>14 ... OK</option>
-								<option value="7"[#if UPDATE_AUTO_DELAY="7"#] selected[#endif#]>7 ... pretty risky</option>
-								<option value="3"[#if UPDATE_AUTO_DELAY="3"#] selected[#endif#]>3 ... dangerous!</option>
-							</select>
-						</span>
-						<#LANG_AUTO_UPDATE_DELAY#>
-					</li>
-					<li class="list-group-item">
-						<span style="float: right;">
-							<select name="update_auto_time" style="border: 0px;">
-								<option value="0">00:00</option>
-								<option value="1"[#if UPDATE_AUTO_TIME="1"#] selected[#endif#]>01:00</option>
-								<option value="2"[#if UPDATE_AUTO_TIME="2"#] selected[#endif#]>02:00</option>
-								<option value="3"[#if UPDATE_AUTO_TIME="3"#] selected[#endif#]>03:00</option>
-								<option value="4"[#if UPDATE_AUTO_TIME="4"#] selected[#endif#]>04:00</option>
-								<option value="5"[#if UPDATE_AUTO_TIME="5"#] selected[#endif#]>05:00</option>
-								<option value="6"[#if UPDATE_AUTO_TIME="6"#] selected[#endif#]>06:00</option>
-								<option value="7"[#if UPDATE_AUTO_TIME="7"#] selected[#endif#]>07:00</option>
-								<option value="8"[#if UPDATE_AUTO_TIME="8"#] selected[#endif#]>08:00</option>
-								<option value="9"[#if UPDATE_AUTO_TIME="9"#] selected[#endif#]>09:00</option>
-								<option value="10"[#if UPDATE_AUTO_TIME="10"#] selected[#endif#]>10:00</option>
-								<option value="11"[#if UPDATE_AUTO_TIME="11"#] selected[#endif#]>11:00</option>
-								<option value="12"[#if UPDATE_AUTO_TIME="12"#] selected[#endif#]>12:00</option>
-								<option value="13"[#if UPDATE_AUTO_TIME="13"#] selected[#endif#]>13:00</option>
-								<option value="14"[#if UPDATE_AUTO_TIME="14"#] selected[#endif#]>14:00</option>
-								<option value="15"[#if UPDATE_AUTO_TIME="15"#] selected[#endif#]>15:00</option>
-								<option value="16"[#if UPDATE_AUTO_TIME="16"#] selected[#endif#]>16:00</option>
-								<option value="17"[#if UPDATE_AUTO_TIME="17"#] selected[#endif#]>17:00</option>
-								<option value="18"[#if UPDATE_AUTO_TIME="18"#] selected[#endif#]>18:00</option>
-								<option value="19"[#if UPDATE_AUTO_TIME="19"#] selected[#endif#]>19:00</option>
-								<option value="20"[#if UPDATE_AUTO_TIME="20"#] selected[#endif#]>20:00</option>
-								<option value="21"[#if UPDATE_AUTO_TIME="21"#] selected[#endif#]>21:00</option>
-								<option value="22"[#if UPDATE_AUTO_TIME="22"#] selected[#endif#]>22:00</option>
-								<option value="23"[#if UPDATE_AUTO_TIME="23"#] selected[#endif#]>23:00</option>
-							</select>
-						</span>
-						<#LANG_AUTO_UPDATE_TIME#>
-					</li>
-					<li class="list-group-item">
-						<span style="float: right;">
-							<select name="update_auto_plugins" style="border: 0px;">
-								<option value="1"[#if UPDATE_AUTO_PLUGINS="1"#] selected[#endif#]><#LANG_YES#></option>
-								<option value="0"[#if UPDATE_AUTO_PLUGINS!="1"#] selected[#endif#]><#LANG_NO#></option>
-							</select>
-						</span>
-						<#LANG_UPDATE_ALL_EXTENSIONS#>
-					</li>
+					<div id="hideAutoUpdate" style="display:none;">
+						<li class="list-group-item">
+							<span style="float: right;">
+								<select name="update_auto_delay" style="border: 0px;">
+									<option value="14"[#if UPDATE_AUTO_DELAY="14"#] selected[#endif#]>14 ... OK</option>
+									<option value="7"[#if UPDATE_AUTO_DELAY="7"#] selected[#endif#]>7 ... pretty risky</option>
+									<option value="3"[#if UPDATE_AUTO_DELAY="3"#] selected[#endif#]>3 ... dangerous!</option>
+								</select>
+							</span>
+							<#LANG_AUTO_UPDATE_DELAY#>
+						</li>
+						<li class="list-group-item">
+							<span style="float: right;">
+								<select name="update_auto_time" style="border: 0px;">
+									<option value="0">00:00</option>
+									<option value="1"[#if UPDATE_AUTO_TIME="1"#] selected[#endif#]>01:00</option>
+									<option value="2"[#if UPDATE_AUTO_TIME="2"#] selected[#endif#]>02:00</option>
+									<option value="3"[#if UPDATE_AUTO_TIME="3"#] selected[#endif#]>03:00</option>
+									<option value="4"[#if UPDATE_AUTO_TIME="4"#] selected[#endif#]>04:00</option>
+									<option value="5"[#if UPDATE_AUTO_TIME="5"#] selected[#endif#]>05:00</option>
+									<option value="6"[#if UPDATE_AUTO_TIME="6"#] selected[#endif#]>06:00</option>
+									<option value="7"[#if UPDATE_AUTO_TIME="7"#] selected[#endif#]>07:00</option>
+									<option value="8"[#if UPDATE_AUTO_TIME="8"#] selected[#endif#]>08:00</option>
+									<option value="9"[#if UPDATE_AUTO_TIME="9"#] selected[#endif#]>09:00</option>
+									<option value="10"[#if UPDATE_AUTO_TIME="10"#] selected[#endif#]>10:00</option>
+									<option value="11"[#if UPDATE_AUTO_TIME="11"#] selected[#endif#]>11:00</option>
+									<option value="12"[#if UPDATE_AUTO_TIME="12"#] selected[#endif#]>12:00</option>
+									<option value="13"[#if UPDATE_AUTO_TIME="13"#] selected[#endif#]>13:00</option>
+									<option value="14"[#if UPDATE_AUTO_TIME="14"#] selected[#endif#]>14:00</option>
+									<option value="15"[#if UPDATE_AUTO_TIME="15"#] selected[#endif#]>15:00</option>
+									<option value="16"[#if UPDATE_AUTO_TIME="16"#] selected[#endif#]>16:00</option>
+									<option value="17"[#if UPDATE_AUTO_TIME="17"#] selected[#endif#]>17:00</option>
+									<option value="18"[#if UPDATE_AUTO_TIME="18"#] selected[#endif#]>18:00</option>
+									<option value="19"[#if UPDATE_AUTO_TIME="19"#] selected[#endif#]>19:00</option>
+									<option value="20"[#if UPDATE_AUTO_TIME="20"#] selected[#endif#]>20:00</option>
+									<option value="21"[#if UPDATE_AUTO_TIME="21"#] selected[#endif#]>21:00</option>
+									<option value="22"[#if UPDATE_AUTO_TIME="22"#] selected[#endif#]>22:00</option>
+									<option value="23"[#if UPDATE_AUTO_TIME="23"#] selected[#endif#]>23:00</option>
+								</select>
+							</span>
+							<#LANG_AUTO_UPDATE_TIME#>
+						</li>
+						<li class="list-group-item">
+							<span style="float: right;">
+								<select name="update_auto_plugins" style="border: 0px;">
+									<option value="1"[#if UPDATE_AUTO_PLUGINS="1"#] selected[#endif#]><#LANG_YES#></option>
+									<option value="0"[#if UPDATE_AUTO_PLUGINS!="1"#] selected[#endif#]><#LANG_NO#></option>
+								</select>
+							</span>
+							<#LANG_UPDATE_ALL_EXTENSIONS#>
+						</li>
+					</div>
 				</ul>
 				<center><input type="submit" name="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary"></center>
 				<input type="hidden" name="mode" value="auto_update_settings">
@@ -173,31 +178,31 @@
 	<div class="col-md-6">
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">Резервные копии</h3>
+				<h3 class="panel-title"><#LANG_NEWSAVERESTORE_RESTORE_ARHIVE#></h3>
 			</div>
 			<div class="panel-body">
 				<div class="row" style="margin-right: -15px;margin-left: -15px;">
 					<div class="col-md-4" onclick="$('.restoreMainBlock').show();$('.restoreBlock').hide();$('#uploadBackup').show('slow');">
-						<div class="thumbnail text-center">
+						<div class="thumbnail text-center" style="margin-bottom: 10px;">
 							<i style="font-size: 5rem;" class="glyphicon glyphicon-floppy-open"></i>
 							<div class="caption" style="padding: 0px;">
-								<h5>Загрузить и восстановить</h5>
+								<h5><#LANG_NEWSAVERESTORE_RESTORE_DOWNANDRESTORE#></h5>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4" onclick="$('.restoreMainBlock').show();$('.restoreBlock').hide();$('#restoreInServer').show('slow');">
-						<div class="thumbnail text-center">
+						<div class="thumbnail text-center" style="margin-bottom: 10px;">
 							<i style="font-size: 5rem;" class="glyphicon glyphicon-floppy-disk"></i>
 							<div class="caption" style="padding: 0px;">
-								<h5>Восстановить из архива системы</h5>
+								<h5><#LANG_NEWSAVERESTORE_RESTORE_RESTOREINARHIVE#></h5>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4" onclick="$('.restoreMainBlock').show();$('.restoreBlock').hide();$('#createBackup').show('slow');">
-						<div class="thumbnail text-center">
+						<div class="thumbnail text-center" style="margin-bottom: 10px;">
 							<i style="font-size: 5rem;" class="glyphicon glyphicon-floppy-saved"></i>
 							<div class="caption" style="padding: 0px;">
-								<h5>Создать резеврную копию</h5>
+								<h5><#LANG_NEWSAVERESTORE_RESTORE_CREATE_RESTORE#></h5>
 							</div>
 						</div>
 					</div>
@@ -206,9 +211,6 @@
 		</div>
 		
 		<div class="panel panel-default restoreMainBlock" style="display:none;">
-			<div class="panel-heading">
-				<h3 class="panel-title">Backup и восстановление</h3>
-			</div>
 			<div class="panel-body">
 				<div id="createBackup" class="restoreBlock" style="display: none;">
 					<script>
@@ -223,7 +225,7 @@
 					}
 					</script>
 					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;text-align: center;border: 0px;">
-						Выберите разделы системы для создания резевной копии.
+						<#LANG_NEWSAVERESTORE_BACKUP_HINT#>
 					</div>
 					<form action="?" method="post" enctype="multipart/form-data">
 						<div class="input-group" style="margin-bottom: 5px;">
@@ -325,7 +327,7 @@
 						   <input name="file" type="file" name="file" id="input__file" class="input input__file" multiple>
 						   <label for="input__file" class="input__file-button">
 							  <span class="input__file-icon-wrapper"><i style="font-size: 22pt;" class="glyphicon glyphicon-download-alt"></i></span>
-							  <span class="input__file-button-text">Выберите файл</span>
+							  <span class="input__file-button-text"><#LANG_NEWSAVERESTORE_CHOUSE_FILE#></span>
 						   </label>
 						</div>
 						
@@ -345,7 +347,7 @@
 							if (this.files && this.files.length >= 1)
 								countFiles = this.files.length;
 							if (countFiles)
-							  label.querySelector('.input__file-button-text').innerText = 'Выбрано файлов: ' + countFiles;
+							  label.querySelector('.input__file-button-text').innerText = '<#LANG_NEWSAVERESTORE_CHOUSES_FILES#> ' + countFiles;
 							else
 							  label.querySelector('.input__file-button-text').innerText = labelVal;
 						  });
