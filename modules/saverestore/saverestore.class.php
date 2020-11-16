@@ -211,10 +211,13 @@ class saverestore extends module
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
                     if ($this->ajax && $_GET['op'] == 'check_updates') {
+						$currBranch = $update_url;
+						$currBranch = explode("/", $update_url);
+							
                         if (!$out['NO_NEED_TO_UPDATE']) {
-                            echo "1";
+							echo json_encode(array('needUpdate' => '1', 'currBranch' => $currBranch[6]));
                         } else {
-                            echo "0";
+                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $currBranch[6]));
                         }
                         exit;
                     }
@@ -404,6 +407,7 @@ class saverestore extends module
         }
         chdir($currentdir);
         $out['FILES'] = array();
+		$i = 0;
         foreach ($files as $file) {
             $tmp = array();
             $tmp['FILENAME'] = $file;
@@ -414,7 +418,9 @@ class saverestore extends module
             } else {
                 $tmp['TITLE'] = 'Backup ' . basename($file);
             }
+			$tmp['ID'] = $i;
             $out['FILES'][] = $tmp;
+			$i++;
         }
 
 
@@ -466,7 +472,7 @@ class saverestore extends module
         }
 
         if ($iframe) {
-            echonow("Downloading $url ... ");
+			echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Скачиваем архив '.$url.'</div>');
         }
 
         $ch = curl_init();
@@ -484,7 +490,7 @@ class saverestore extends module
         if (file_exists($filename)) {
 
             if ($iframe) {
-                echonow(" OK<br/>", "green");
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
 
@@ -517,10 +523,10 @@ class saverestore extends module
         } else {
 
             if ($iframe) {
-                echonow("Cannot download file<br/>", "red");
+				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_ERROR_DOWNLOAD.'</div>', 'red');
                 exit;
             } else {
-                $this->redirect("?err_msg=" . urlencode("Cannot download " . $url));
+                $this->redirect("?err_msg=" . urlencode(LANG_UPDATEBACKUP_ERROR_DOWNLOAD.' '. $url));
             }
         }
     }
@@ -1236,45 +1242,45 @@ class saverestore extends module
 
 
         if ($iframe) {
-            echonow("<b>Applying updates.</b><br/>");
+			echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_APPLY_UPDATE.'</div>');
         }
 
         if ($file != '' && preg_match('/\.sql$/', $file_name) && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file)) {
             // restore database only
             if ($iframe) {
-                echonow("Restoring database from $file ... ");
+				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_RESTORE_DB_FOR.' '.$file.'</div>');
             }
             $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file);
             if ($iframe) {
-                echonow(" OK<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
             if ($iframe) {
                 return 1;
             } else {
-                $this->redirect("?mode=clear&ok_msg=" . urlencode("Database restored!"));
+                $this->redirect("?mode=clear&ok_msg=" . urlencode(LANG_UPDATEBACKUP_RESTORE_DB_DONE));
             }
         } elseif ($file != '' && is_dir($file)) {
             if ($iframe) {
-                echonow("Updating files (from $file to " . ROOT . ")... ");
+				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_UNPACKEGE_FROM_TO.' '.$file.' - '.ROOT.'</div>');
             }
             copyTree($file, ROOT, 1); // restore all files
             if ($iframe) {
-                echonow(" OK<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
             $db_filename = $file . '/' . DB_NAME . ".sql";
             if (file_exists($db_filename)) {
                 if ($iframe) {
-                    echonow("Restoring database from $db_filename ... ");
+					echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_RESTORE_DB_FOR.' '.$db_filename.'</div>');
                 }
                 $this->restoredatabase($db_filename);
                 if ($iframe) {
-                    echonow(" OK<br/> ", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
             }
             if ($iframe) {
                 return 1;
             } else {
-                $this->redirect("?mode=clear&ok_msg=" . urlencode("Database restored!"));
+                $this->redirect("?mode=clear&ok_msg=" . urlencode(LANG_UPDATEBACKUP_RESTORE_DB_DONE));
             }
         } elseif ($file != '') {
             logAction('system_restore', $file);
@@ -1283,7 +1289,7 @@ class saverestore extends module
             @mkdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0777);
             chdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
             if ($iframe) {
-                echonow("Unpacking $file ... ");
+				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_UNPACKEGE.' '.$file.'</div>');
             }
             if (IsWindowsOS()) {
                 exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
@@ -1293,32 +1299,32 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                echonow(" OK<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
             if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/config.php')) {
                 if ($iframe) {
-                    echonow("Unlink config.php ... ");
+					echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DISABLED.' config.php</div>');
                 }
                 @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/config.php');
                 if ($iframe) {
-                    echonow(" OK<br/> ", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
             }
 
             if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/config.php')) {
                 if ($iframe) {
-                    echonow("Update periodical_db_save.php ... ");
+					echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_PATCHING.' periodical_db_save.php...</div>');
                 }
                 @rename(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/scripts/periodical_db_save.php', DOC_ROOT . DIRECTORY_SEPARATOR . '/scripts/cycle_db_save.php');
                 if ($iframe) {
-                    echonow(" OK<br/> ", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
 
             }
 
             if ($iframe) {
-                echonow(" Checking updated modules...");
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_CHECK_MODULE_UPDATE.'</div>');
             }
 
             chdir('../../../');
@@ -1335,27 +1341,27 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                echonow(" OK<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
             if ($iframe) {
-                echonow("Updating files (" . DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . " to " . DOC_ROOT . DIRECTORY_SEPARATOR . ") ... ");
-            }
+				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_APPLY_CHANGES.' '.DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . " to " . DOC_ROOT . DIRECTORY_SEPARATOR.'</div>');
+			}
 
             // UPDATING FILES DIRECTLY Исправлено верно на док_руут - потому что функция копиТрее не воспринимает других слешей 
             copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder, DOC_ROOT, 1);
 
             if ($iframe) {
-                echonow(" OK<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
             if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/dump.sql')) {
                 // data restore
                 if ($iframe) {
-                    echonow("Restoring database ... ");
+					echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_RESTORE_DB.'</div>');
                 }
                 $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/dump.sql');
-                echonow(" OK<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
@@ -1365,7 +1371,7 @@ class saverestore extends module
 
 
             if ($iframe) {
-                echonow(" DONE<br/> ", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
 
@@ -1389,9 +1395,8 @@ class saverestore extends module
      */
     function dump(&$out, $iframe = 0)
     {
-
         if ($iframe) {
-            echonow("<b>Working on backup.</b><br/>");
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_REQUEST_BACKUP_CREATE.'</div>');
         }
 
 
@@ -1401,7 +1406,7 @@ class saverestore extends module
             if ($design) {
 
                 if ($iframe) {
-                    echonow("Saving design ... ");
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.UPDATEBACKUP_SAVE_DESIGN.'</div>');
                 }
 
                 $tar_name .= 'design_';
@@ -1420,7 +1425,7 @@ class saverestore extends module
                 copyFiles(ROOT, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 0, $pt);
 
                 if ($iframe) {
-                    echonow(" OK<br/>", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
 
 
@@ -1431,7 +1436,7 @@ class saverestore extends module
             if ($code) {
 
                 if ($iframe) {
-                    echonow("Saving code ... ");
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_CODE.'</div>');
                 }
 
 
@@ -1455,7 +1460,7 @@ class saverestore extends module
                 }
 
                 if ($iframe) {
-                    echonow(" OK<br/>", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
 
 
@@ -1465,12 +1470,12 @@ class saverestore extends module
             global $data;
             if ($data) {
                 if ($iframe) {
-                    echonow("Saving data ... ");
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_DATA.'</div>');
                 }
                 $tar_name .= 'data_';
                 $this->backupdatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/dump.sql');
                 if ($iframe) {
-                    echonow(" OK<br/>", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
             }
 
@@ -1478,7 +1483,7 @@ class saverestore extends module
             global $save_files;
             if ($save_files) {
                 if ($iframe) {
-                    echonow("Saving files ... ");
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_FILES.'</div>');
                 }
                 $tar_name .= 'files_';
 
@@ -1493,7 +1498,7 @@ class saverestore extends module
                     copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/' . $d, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/cms/' . $d);
                 }
                 if ($iframe) {
-                    echonow(" OK<br/>", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
             }
 
@@ -1506,7 +1511,7 @@ class saverestore extends module
                 $tar_name = 'backup_' . $tar_name;
 
             if ($iframe) {
-                echonow("Packing $tar_name ... ");
+				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_BACKUP_PACKEGE_TO.' <b>'.$tar_name.'</b></div>');
             }
 
 
@@ -1524,18 +1529,18 @@ class saverestore extends module
             }
 
             if ($iframe) {
-                echonow(" OK<br/>", 'green');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
 
             if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name)) {
                 if ($iframe) {
-                    echonow("Copying to " . $dest . $tar_name . " ... ");
+					echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_COPY_TO.' '.$dest.$tar_name.'</div>');
                 }
                 $dest = SETTINGS_BACKUP_PATH;
                 @copy(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name, $dest . $tar_name);
                 if ($iframe) {
-                    echonow(" OK<br/>", 'green');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
                 }
             }
 

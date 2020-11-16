@@ -245,7 +245,7 @@ class scripts extends module
                 $this->redirect("?data_source=" . $this->data_source);
             }
         }
-
+		
     }
 
 
