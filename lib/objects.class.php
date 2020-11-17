@@ -273,7 +273,7 @@ function removeClassProperty($class_name, $property_name)
     $class_id = addClass($class_name);
 
     if ($class_id) {
-		SQLExec("DELETE FROM properties WHERE TITLE = '" . DBSafe($property_name) . "' AND OBJECT_ID = 0 AND CLASS_ID  = '" . $class_id . "'")
+		SQLExec("DELETE * FROM properties WHERE TITLE = '" . DBSafe($property_name) . "' AND OBJECT_ID = 0 AND CLASS_ID  = '" . $class_id . "'");
    		return true;
     }
     return false;
