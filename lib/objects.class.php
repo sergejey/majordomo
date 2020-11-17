@@ -197,6 +197,22 @@ function addClassMethod($class_name, $method_name, $code = '', $key = '')
 }
 
 /**
+ * Summary of removeClassMethod
+ * @param mixed $class_name Class method
+ * @return mixed
+ */
+function removeClassMethod($class_name, $method_name)
+{
+    $class_id = addClass($class_name);
+
+    if ($class_id) {
+		SQLExec("DELETE * FROM methods WHERE CLASS_ID = '" . $class_id . "' AND TITLE = '" . DBSafe($method_name) . "' AND OBJECT_ID = 0");
+   		return true;
+    }
+    return false;
+}
+
+/**
  * Summary of addClassProperty
  * @param mixed $class_name Class name
  * @param mixed $property_name Property name
