@@ -111,7 +111,7 @@
      $out['EVENT_'.$k]=$v;
     }
    }
-   $history=SQLSelect("SELECT ID, ADDED, COMMENTS FROM system_errors_data WHERE ERROR_ID='".$rec['ID']."' ORDER BY ADDED DESC LIMIT 1000");
+   $history=SQLSelect("SELECT d. ID, d.ADDED, d.COMMENTS,e.CODE FROM system_errors_data d join system_errors e on d.ERROR_ID = e.ID WHERE d.ERROR_ID='".$rec['ID']."' ORDER BY d.ADDED DESC LIMIT 100");
    if ($history[0]['ID']) {
     $out['HISTORY']=$history;
    }

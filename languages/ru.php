@@ -1095,7 +1095,7 @@ $dictionary = array(
     'MARKET_CATEGORY_INTERACTION' => 'Взаимодействие',
     'MARKET_CATEGORY_SYSTEM' => 'Система',
     'MARKET_CATEGORY_CUSTOMIZING' => 'Модификации',
-    'MARKET_CONNECT_NOTE' => 'Доступ к приобретённым дополнениям открывается только при корректных настройках имени пользователя и пароля для сервиса <a href="/panel/connect.html">CONNECT</a>',
+    'MARKET_CONNECT_NOTE' => 'Доступ к приобретённым дополнениям открывается только при корректных настройках имени пользователя и пароля для сервиса <a style="color: white;font-weight: bold;" href="/panel/connect.html">CONNECT</a>',
 
     'SAVE_CHANGES' => 'Сохранить изменения',
     'ADD_PANE' => 'Добавить панель',
@@ -1566,6 +1566,22 @@ $dictionary = array(
 	'XRAY_WORKING' => 'Работает',
 	'XRAY_DO_WORKING' => 'Не работает',
 	'XRAY_WORKING_CYCLE' => 'циклов',
+	
+	'NEWSYSTEM_ERROR_FIND_ERROR' => 'Что-то пошло не так...',
+	'NEWSYSTEM_ERROR_FIND_ERROR_TEXT' => 'MajorDoMo работает нестабильно. Система обнаружила несколько ошибок в работе модулей. Возможно, он не критичные, однако рекомендуем обратить на них внимание.',
+	'NEWSYSTEM_ERROR_CHECK_ALL_READ' => 'Отметить все как просмотренные',
+	'NEWSYSTEM_ERROR_NOT_ERROR' => 'Ошибок нет!',
+	'NEWSYSTEM_ERROR_NOT_ERROR_TEXT' => 'Ваша версия MajorDoMo работает стабильно. На данный момент мы не нашли новых ошибок, которые влияют на работу.',
+	'NEWSYSTEM_ERROR_FULL_DESC' => 'Данный модуль позволяет "отлавливать" ошибки во всей системе. В каждом модуле системы есть множество условий, при срабатывании которых, в этом модуле и на главной странице вы увидите ошибку. Вы можете собирать статистику ошибок в своих скриптах/методах в одном месте - в этом модуле и просматривать ее.',
+	'NEWSYSTEM_ERROR_GET_ERROR' => 'Имитировать ошибку',
+	'NEWSYSTEM_ERROR_VIEW_ERROR' => 'Просмотр ошибки',
+	'NEWSYSTEM_ERROR_READ_BTN' => 'Просмотрено',
+	'NEWSYSTEM_ERROR_ERROR_HINT' => 'Ловите ошибки в своих скриптах/методах используя функцию:',
+	'NEWSYSTEM_ERROR_NAME' => 'название_ошибки',
+	'NEWSYSTEM_ERROR_DESC' => 'описание',
+	'NEWSYSTEM_ERROR_SEE_BTN' => 'Посмотреть',
+	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базе данные не найдено информации о ошибках системы или модулей!',
+	
 	
 );
 

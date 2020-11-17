@@ -28,22 +28,42 @@
 				<ul class="list-group" id="">
 					<li class="list-group-item">
 						<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
-						<span id="dashInfoDBConn"></span>
+						<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+					</li>
+					<li class="list-group-item">
+						Запросов к БД в секунду
+						<span id="dashInfoDBReqS" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+					</li>
+					<li class="list-group-item">
+						Запросов к БД в минуту
+						<span id="dashInfoDBReqM" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+					</li>
+					<li class="list-group-item">
+						Запросов к БД в час
+						<span id="dashInfoDBReqH" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+					</li>
+					
+					
+					<li class="list-group-item">
+						<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
+							<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
+						</span>
+						<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
 					</li>
 					<li class="list-group-item">
 						<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
-							load...
+							Beta 1.1.0
 						</span>
-						<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#>
+						Версия MajorDomoUI
 					</li>
 					<li class="list-group-item">
 						<span class="badge" id="dashInfoLastUpdate">
-							load...
+							<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
 						</span>
-						<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#>
+						<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
 					</li>
 				</ul>
-				<div class="well well-lg" id="dashInfoOS">load...</div>
+				<div class="well well-lg" id="dashInfoOS"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 			</div>
 		</div>
 		<div class="panel panel-default">
@@ -192,21 +212,11 @@
 		
 		<div id="structureDB_chart" style="width: 100%;height: 300px;margin-bottom:10px"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 		
-		[#if SETTINGS_SITE_LANGUAGE=="ua"#]
-		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background: linear-gradient(9180deg, rgb(0 87 184 / 1) 50%, rgb(255 216 0 / 1) 50%);;background-size: contain;background-repeat: no-repeat;background-position: right center;">
-			<h2 id="titleConnect" style="color: white;">Привет Украинцы!</h2>
-			<p style="font-size: 11pt;color: white" id="textConnect">Этот баннер видете только Вы! Меня зовут Саша, я из России и я переделываю дизайн MajorDomo. Хочу, чтобы всем в нем было уютно, но я не знаю вашего языка...
-			Часть текстов я перевел через Google переводчик, но я не уверен в его правильности =( Поэтому прошу помощи у Вас. Откройте файл <b>/languages/ua.php</b> и в самом низу вы увидите мой текст - проверьте его и отпишитесь на форум. Спасибо!
-			</p>
-			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
-		</div>
-		[#else#]
 		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/new_design.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #4792d1);background-size: cover;background-repeat: no-repeat;">
 			<h2><#LANG_NEWDASH_HELLO_NEW#></h2>
 			<p style="font-size: 11pt;"><#LANG_NEWDASH_HELLO_NEW_TEXT#></p>
 			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
 		</div>
-		[#endif#]
 		<!---
 		<style>
 		.onHoverAlfa:hover {
@@ -220,7 +230,7 @@
 		</div>
 		--->
 		
-		<div id="getConnect" class="jumbotron hidden-xs" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
+		<div id="getConnect" class="jumbotron hidden-xs" style="display:none!important;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
 			<h2 id="titleConnect"><#LANG_NEWDASH_CONNECT_ADS#></h2>
 			<p style="font-size: 11pt;" id="textConnect"><#LANG_NEWDASH_CONNECT_ADS_TEXT#></p>
 			<p class="text-right">
@@ -261,8 +271,9 @@
 		hideHintCookie('blockdidyouknow', 1);
 		hideHintCookie('blockaddnewdev', 1);
 		hideHintCookie('howmaxdbsizehint', 1);
-		setInterval(function() { checkSystemInfo(); }, 5000);
+		setInterval(function() { checkSystemInfo(); }, 10000);
 		checkSystemInfo();
+		checkConnectStatus();
     });
 </script>
 

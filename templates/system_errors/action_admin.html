@@ -1,36 +1,80 @@
+<div class="row" style="margin-right: -15px;margin-left: -15px;display: flex;flex-wrap: wrap;">
+	<div class="col-md-6" style="display: flex;flex-wrap: wrap;">
+		[#if ERRORS_FOUND!=0#]
+		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #ec1b2e);">
+			<h2><#LANG_NEWSYSTEM_ERROR_FIND_ERROR#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_FIND_ERROR_TEXT#></p>
+			<p class="text-right">
+				<a style="border-color: #ffffff;" onclick="location.href='?action=system_errors&md=system_errors&view_mode=readall'" class="btn btn-default btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
+			</p>
+		</div>
+		[#else#]
+		<div class="jumbotron" style="min-height: 230px;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 100px 50px, #9efac3, #4792d1);">
+			<h2><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>
+		</div>
+		[#endif#]
+	</div>
+	<div class="col-md-6" style="display: flex;flex-wrap: wrap;">
+		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background: #f5f5f5;">
+			<h2><#LANG_DESCRIPTION#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_FULL_DESC#></p>
+			<div class="text-right">
+				<div class="btn-group">
+					<button type="button" onclick="location.href='/diagnostic.php'" class="btn btn-success"><#LANG_SUBMIT_DIAGNOSTIC#></button>
+					<button type="button" onclick="location.href='?action=system_errors&md=system_errors&view_mode=addtesterror'" class="btn btn-warning"><#LANG_NEWSYSTEM_ERROR_GET_ERROR#></button>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+</div>
 
 
- <!-- action usual -->
+[#if TAB="history"#]
+<script>
+$(document).ready(function() {
+	$('#modalShowError').modal('show');
+});
+</script>
+<div class="modal fade" id="modalShowError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width: 80%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel"><#LANG_NEWSYSTEM_ERROR_VIEW_ERROR#></h4>
+			</div>
+			<div class="modal-body">
+				[#inc system_errors_edit_history.html#]
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CODEEDITOR_CLOSE_BTN#></button>
+				[#if ACTIVE!="0"#]
+					<a href="?data_source=<#DATA_SOURCE#>&view_mode=clear_system_errors&id=[#ID#]" class="btn btn-success" title=""><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
+				[#endif#]
+			</div>
+		</div>
+	</div>
+</div>
+[#endif#]
+
+[#inc system_errors_search_admin.html#]
+
+
+
+
+<!---
+
  [#if DATA_SOURCE="system_errors" || DATA_SOURCE=""#]
- <!-- table system_errors search -->
- [#if VIEW_MODE="search_system_errors" || VIEW_MODE=""#]
-  [#inc system_errors_search_admin.html#]
- [#endif VIEW_MODE#]
- <!-- / table system_errors search -->
- <!-- table system_errors edit -->
+
  [#if VIEW_MODE="edit_system_errors"#]
-   [#if ID!=""#]
-   <p><a href="?"><#LANG_BACK#></a></p>
-   [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
-<ul class="nav nav-tabs">
-  <li[#if TAB=""#] class="active"[#endif#]>
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
-  </li>
-  <li[#if TAB="history"#] class="active"[#endif#]>
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=history"><#LANG_HISTORY#></a>
-  </li>
-</ul>
- &nbsp;<br/>
-   [#endif ID#]
+
    [#if TAB=""#]
     [#inc system_errors_edit_default.html#]
    [#endif TAB#]
-   [#if TAB="history"#]
-    [#inc system_errors_edit_history.html#]
-   [#endif TAB#]
+   
  [#endif VIEW_MODE#]
- <!-- / table system_errors edit -->
- <!-- table system_errors view --> 
+
  [#if VIEW_MODE="view_system_errors"#]
    <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
    <tr>
@@ -45,16 +89,15 @@
     [#inc system_errors_view_history.html#]
    [#endif TAB#]
  [#endif VIEW_MODE#]
- <!-- / table system_errors view -->
+
  [#endif DATA_SOURCE#]
- <!-- action usual -->
+
  [#if DATA_SOURCE="system_errors_data"#]
- <!-- table system_errors_data search -->
+
  [#if VIEW_MODE="search_system_errors_data" || VIEW_MODE=""#]
   [#inc system_errors_data_search_admin.html#]
  [#endif VIEW_MODE#]
- <!-- / table system_errors_data search -->
- <!-- table system_errors_data edit -->
+
  [#if VIEW_MODE="edit_system_errors_data"#]
    [#if ID!=""#]
    [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
@@ -98,8 +141,7 @@
     [#inc system_errors_data_edit_debug.html#]
    [#endif TAB#]
  [#endif VIEW_MODE#]
- <!-- / table system_errors_data edit -->
- <!-- table system_errors_data view --> 
+
  [#if VIEW_MODE="view_system_errors_data"#]
    <table border=0 cellpadding=3 cellspacing=1 bgcolor="#000000" width="100%">
    <tr>
@@ -130,5 +172,6 @@
     [#inc system_errors_data_view_debug.html#]
    [#endif TAB#]
  [#endif VIEW_MODE#]
- <!-- / table system_errors_data view -->
+
  [#endif DATA_SOURCE#]
+ --->
