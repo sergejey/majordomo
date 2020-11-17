@@ -229,6 +229,25 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
 }
 
 /**
+ * Summary of getClassProperty
+ * @param mixed $class_name Class name
+ * @return mixed
+ */
+function getClassProperty($class_name)
+{
+    $class_id = addClass($class_name);
+
+    $sqlQuery = "SELECT *
+                  FROM properties
+                 WHERE OBJECT_ID = 0
+                   AND CLASS_ID  = '" . $class_id . "'";
+
+    $prop = SQLSelect($sqlQuery);
+
+    return $prop;
+}
+
+/**
  * Summary of addClassObject
  * @param mixed $class_name Class name
  * @param mixed $object_name Object name
