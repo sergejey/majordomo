@@ -229,22 +229,20 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
 }
 
 /**
- * Summary of getClassProperty
+ * Summary of getClassPropertys
  * @param mixed $class_name Class name
  * @return mixed
  */
-function getClassProperty($class_name)
+function getClassPropertys($class_name)
 {
     $class_id = addClass($class_name);
 
-    $sqlQuery = "SELECT *
-                  FROM properties
-                 WHERE OBJECT_ID = 0
-                   AND CLASS_ID  = '" . $class_id . "'";
+    if ($class_id) {
+        $prop = SQLSelect("SELECT ID, TITLE FROM properties WHERE OBJECT_ID = 0 AND CLASS_ID  = '" . $class_id . "'");
+		return $prop;
+	}
 
-    $prop = SQLSelect($sqlQuery);
-
-    return $prop;
+    return false;
 }
 
 /**
