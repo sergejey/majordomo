@@ -197,6 +197,21 @@ function addClassMethod($class_name, $method_name, $code = '', $key = '')
 }
 
 /**
+ * Summary of getClassMethods
+ * @param mixed $class_name 
+ * @return mixed
+ */
+function getClassMethods($class_name)
+{
+    $class_id = addClass($class_name);
+
+    if ($class_id) {
+        $method = SQLSelect("SELECT ID, TITLE FROM methods WHERE CLASS_ID = '" . $class_id . "' AND OBJECT_ID = 0");
+    }
+    return $method;
+}
+
+/**
  * Summary of addClassProperty
  * @param mixed $class_name Class name
  * @param mixed $property_name Property name
