@@ -4,10 +4,9 @@
  * Summary of saveToCache
  * @param mixed $key Key
  * @param mixed $value Value
- * @param mixed $ttl TTL (532800) seconds (7 days)
  * @return void
  */
-function saveToCache($key, $value, $ttl = 532800)
+function saveToCache($key, $value)
 {
     if (is_array($value) || strlen($value) > 255) {
         SQLExec("DELETE FROM cached_values WHERE KEYWORD='".$key."'");
@@ -19,11 +18,10 @@ function saveToCache($key, $value, $ttl = 532800)
         $memory_cache[$key] = $value;
     }
     
-	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value, 'EXPIRE' => date('Y-m-d H:i:s', time() + $ttl));
-    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE) " .
+	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
+    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE) " .
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
-        "'" . DbSafe1($rec['DATAVALUE']) . "'," .
-        "'" . $rec['EXPIRE'] . "')";
+        "'" . DbSafe1($rec['DATAVALUE']) . "')";
     SQLExec($sqlQuery);
 }
 

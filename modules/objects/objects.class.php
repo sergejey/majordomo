@@ -1086,19 +1086,6 @@ class objects extends module
     }
 
     /**
-     * objects subscription events
-     *
-     * @access public
-     */
-    function processSubscription($event, $details = '') {
-        if ($event == 'DAILY') {
-            // почистим кеш 
-            SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
-        }
-
-    }
-
-    /**
      * Install
      *
      * Module installation routine
@@ -1107,7 +1094,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
-        subscribeToEvent($this->name, 'DAILY');
+        unsubscribeFromEvent($this->name, 'DAILY');
         parent::install($parent_name);
     }
 
@@ -1139,7 +1126,6 @@ class objects extends module
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
                 `DATAVALUE` CHAR(255) NOT NULL,
-                `EXPIRE`    DATETIME  NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
