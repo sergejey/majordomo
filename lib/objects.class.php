@@ -263,6 +263,22 @@ function addClassObject($class_name, $object_name, $system = '')
 }
 
 /**
+ * Summary of removeClassProperty
+ * @param mixed $class_name Class name
+ * @param mixed $property_name Property name
+ * @return true|false
+ */
+function removeClassProperty($class_name, $property_name)
+{
+    $class_id = addClass($class_name);
+
+    if (SQLExec("DELETE FROM properties WHERE TITLE = '" . DBSafe($property_name) . "' AND OBJECT_ID = 0 AND CLASS_ID  = '" . $class_id . "'")) {
+   		return true;
+    }
+    return false;
+}
+
+/**
  * Summary of getValueIdByName
  * @param mixed $object_name Object name
  * @param mixed $property Property
