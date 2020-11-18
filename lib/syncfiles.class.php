@@ -1185,8 +1185,7 @@ function get_mime_type($filename) {
 }
 
 function getDirFiles($dir, &$results = array()){
-   $isdir = is_dir($dir);
-   if ($isdir) {
+   if (is_dir2($dir)) {
      $files = scandir($dir);
      foreach($files as $key => $value){
        $path = realpath($dir."/".$value);
