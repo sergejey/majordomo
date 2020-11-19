@@ -1406,7 +1406,7 @@ class saverestore extends module
             if ($design) {
 
                 if ($iframe) {
-                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.UPDATEBACKUP_SAVE_DESIGN.'</div>');
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_DESIGN.'</div>');
                 }
 
                 $tar_name .= 'design_';

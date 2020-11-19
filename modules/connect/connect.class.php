@@ -1020,9 +1020,9 @@ class connect extends module
         }
 		
 		if ($this->ajax && $_GET['op'] == 'status') {
-			$status = $this->getConnectStatus();
+			$status = gg('ThisComputer.cycle_connectRun');
 			
-            if (!empty($status)) {
+            if ($status == '') {
 				echo json_encode(array('status' => 0));
             } else {
 				echo json_encode(array('status' => 1));

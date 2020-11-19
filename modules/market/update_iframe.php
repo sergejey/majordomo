@@ -18,7 +18,10 @@ $_GET['op']='iframe';
 
 header('X-Accel-Buffering: no');
 echo "<html>";
-echo "<body>";
+echo "<head>";
+echo '<link rel="stylesheet" href="/3rdparty/bootstrap/css/bootstrap.min.css" type="text/css"><script type="text/javascript" src="/3rdparty/bootstrap/js/bootstrap.min.js"></script>';
+echo "</head>";
+echo '<body style="height: auto;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">'; 
 
 $out=array();
 

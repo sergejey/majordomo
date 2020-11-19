@@ -572,6 +572,7 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    if ($res[$i]['PARENT_ID']==$parent_id) {
     $res[$i]['LEVEL']=$level;
+    $res[$i]['LEVEL_PAD']=$level*2;
     $res[$i]['RESULT']=$this->buildTree_classes($res, $res[$i]['ID'], ($level+1));
     if (!is_array($res[$i]['RESULT'])) {
      unset($res[$i]['RESULT']);
@@ -584,6 +585,8 @@ function usual(&$out) {
   }
   $total2=count($res2);
   if ($total2) {
+	//echo '<pre>';
+	  //var_dump($res2);
    return $res2;
   }
  }

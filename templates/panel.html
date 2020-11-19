@@ -35,17 +35,17 @@
 		if (layer.style.display=='none') {
 		layer.style.display='block';
 		layer2.innerHTML='[-]';
-		setCookie('sub_'+id, 'on');
+		$.cookie('sub_'+id, 'on');
 		} else {
 		layer.style.display='none';
 		layer2.innerHTML='[+]';
-		setCookie('sub_'+id, 'off');
+		$.cookie('sub_'+id, 'off');
 		}
 		return false;
 		}
 
 		function checkLayer(id) {
-		var vl=getCookie('sub_'+id);
+		var vl=$.cookie('sub_'+id);
 		if (vl=='off') {
 		showHideLayer(id);
 		}
@@ -85,7 +85,7 @@
 			var sectionTitle='';
 			var elem;
 
-			setCookie('panelFilter', title);
+			$.cookie('panelFilter', title);
 
 			title=title.toLowerCase();
 
@@ -186,24 +186,30 @@
 
 		var consoleDebugTimer;
 
-		//function updateConsoleDebug() {
-		// var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
-		// $.ajax({
-		//	 url: urlDebug,
-		// }).done(function(data) {
-		//	 $('#console_debug').html(data);
-		//});
-		//consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
-		//}
+		function updateConsoleDebug() {
+			if ($('#console_debug').is(":hidden")) {
+				clearTimeout(consoleDebugTimer);
+			}
+			
+			var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
+			$.ajax({
+				url: urlDebug,
+			}).done(function(data) {
+				data = JSON.parse(data);
+				$('#console_debug').html(data.CONTENT);
+			});
+			consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
+		}
 
 		function consoleToggle() {
-		 $("#console").toggle();
-		 //if ($('#console').is(":visible")) {
-			//updateConsoleDebug();
-		 //} else {
-		//	 clearTimeout(consoleDebugTimer);
-		 //}
-		 return false;
+			$("#console").toggle();
+			return false;
+		}
+		
+		function consoleDebugToggle() {
+			$("#console_debug").toggle();
+			updateConsoleDebug();
+			return false;
 		}
 
 		var locationTimer;
@@ -347,8 +353,6 @@
 						
 						i++;
 					}
-					
-					checkCategory('scriptBlockDiv');
 				},
 				error: function(data) {
 					console.log('error');
@@ -364,28 +368,28 @@
 					$('#dashInfoDBReqH').html(data.hours);
 					
 					//Секунды
-					if(data.second <= 100) {
-						$('#dashInfoDBReqS').attr('style', 'background: #5cb85c');
-					} else if(data.second > 100 && data.second < 150) {
-						$('#dashInfoDBReqS').attr('style', 'background: #f0ad4e');
+					if(data.second <= 170) {
+						$('#dashInfoDBReqS').attr('style', 'cursor: help;background: #5cb85c');
+					} else if(data.second > 170 && data.second < 250) {
+						$('#dashInfoDBReqS').attr('style', 'cursor: help;background: #f0ad4e');
 					} else {
-						$('#dashInfoDBReqS').attr('style', 'background: #d9534f');
+						$('#dashInfoDBReqS').attr('style', 'cursor: help;background: #d9534f');
 					}
 					//Минуты
-					if(data.minute <= 6000) {
-						$('#dashInfoDBReqM').attr('style', 'background: #5cb85c');
-					} else if(data.second > 6000 && data.second < 9000) {
-						$('#dashInfoDBReqM').attr('style', 'background: #f0ad4e');
+					if(data.minute <= 10200) {
+						$('#dashInfoDBReqM').attr('style', 'cursor: help;background: #5cb85c');
+					} else if(data.second > 10200 && data.second < 15000) {
+						$('#dashInfoDBReqM').attr('style', 'cursor: help;background: #f0ad4e');
 					} else {
-						$('#dashInfoDBReqM').attr('style', 'background: #d9534f');
+						$('#dashInfoDBReqM').attr('style', 'cursor: help;background: #d9534f');
 					}
 					//Часы
-					if(data.minute <= 360000) {
-						$('#dashInfoDBReqH').attr('style', 'background: #5cb85c');
-					} else if(data.second > 360000 && data.second < 480000) {
-						$('#dashInfoDBReqH').attr('style', 'background: #f0ad4e');
+					if(data.minute <= 612000) {
+						$('#dashInfoDBReqH').attr('style', 'cursor: help;background: #5cb85c');
+					} else if(data.second > 612000 && data.second < 900000) {
+						$('#dashInfoDBReqH').attr('style', 'cursor: help;background: #f0ad4e');
 					} else {
-						$('#dashInfoDBReqH').attr('style', 'background: #d9534f');
+						$('#dashInfoDBReqH').attr('style', 'cursor: help;background: #d9534f');
 					}
 				},
 				error: function(data) {
@@ -420,8 +424,8 @@
 					if(!data) {
 						data = '<i>Completed the request</i>';
 					}
-					
-					$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: '+data+ '<br><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>: '+ cmd + '<br>' + old_data);
+					console.log(data);
+					$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: <span style="white-space: pre-wrap;">'+data+ '</span><br><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>: '+ cmd + '<br>' + old_data);
 					$('#loaderConsole').hide();
 					$('#dangerAlertConsole').hide();
 					$('#warningAlertConsole').hide();
@@ -468,6 +472,31 @@
 				},
 				error: function(data) {
 					$('#news_body').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - checkNews()</div>');
+				},
+			});
+			
+			return false;
+		}
+		
+		function myBlockOnDash() {
+			var urlCheckNews = '<#ROOTHTML#>objects/?script=dash_my_block';
+			$.ajax({
+				url: urlCheckNews,
+				success: function(data) {
+					if(data) data = JSON.parse(data);
+					if (data.status == 1) {
+						$('#myBlockOnDash').show();
+						$('#myBlockOnDash_title').text(data.name);
+						$('#myBlockOnDash_body').html(data.data.data);
+						if(data.reload == true) {
+							setTimeout(function() {
+								myBlockOnDash();
+							}, data.reload_time*1000);
+						}
+					} else {
+						$('#myBlockOnDash').hide();
+						$('#addMyBlockHint').show();
+					}
 				},
 			});
 			
@@ -710,11 +739,9 @@
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;padding: 10px;margin-top: 10px;">
 			<div id="loaderConsole" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
-			<div id="console_output" style="display: none;padding: 10px;background: black;color: white;border-radius: 5px;"></div>
+			<div id="console_output" style="display: none;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;"></div>
 		</div>
-		<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="padding-right: 0px;padding-left: 0px;">
-			<!--- Вывод от консоли --->
-		</div>
+		
 	</div>
 	[#endif PRINT#]
 	
@@ -729,11 +756,12 @@
 	
 	<script language="javascript">
 	function toggleCategory(id) {
-		var vl=getCookie('sub_'+id);
-		if (vl=='on') {
-			setCookie('sub_'+id, 'off');
+		var vl=$.cookie('sub_'+id);
+
+		if (vl == 'on') {
+			$.cookie('sub_'+id, 'off');
 		} else {
-			setCookie('sub_'+id, 'on');
+			$.cookie('sub_'+id, 'on');
 		}
 		
 		$('#row_'+id).collapse("toggle");
@@ -742,11 +770,11 @@
 	}
 	
 	function hideHintCookie(id, check = 0) {
-		var vl = getCookie('hint_'+id);
+		var vl = $.cookie('hint_'+id);
 		
 		if (check == 0 && vl != 'off') {
-			setCookie('hint_'+id, 'off');
-			$('#hint_'+id).hide("slow");
+			$.cookie('hint_'+id, 'off');
+			$('#hint_'+id).hide("fast");
 		} else if (check == 1) {
 			if(vl != 'off') {
 				$('#hint_'+id).show("fast");
@@ -757,10 +785,11 @@
 	}
 
 	function checkCategory(id) {
-			var vl = getCookie('sub_'+id);
-			if (vl == 'on') {
-				$('#row_'+id).collapse("show");
-			}
+		var vl = $.cookie('sub_'+id);
+		
+		if (vl == 'on' || vl == null) {
+			$('#row_'+id).collapse("show");
+		}
 		return false;
 	}
 	</script>
@@ -801,6 +830,7 @@
 							<div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
 						</div>
 					</div>
+					
 				</div>
 				[#begin SUB_MODULES#]
 				[#if NEW_CATEGORY#]
@@ -814,6 +844,10 @@
 			<div class="col-lg-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#] col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]9[#endif#] col-sm-[#if HIDE_LEFT_PANEL="1"#]12[#else#]8[#endif#] col-xs-12" id="main-content">
 				[#if PRINT!="1"#]
 				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
+						
+					</div>
+					
 					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
@@ -834,6 +868,7 @@
 									<button style="vertical-align: super;" type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
 								</div>
 								--->
+								<a href="javascript://" onclick="consoleDebugToggle();"><i class="glyphicon glyphicon-question-sign"></i> Debug	</a>
 								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a>
 							</li>
 							[#else#]
@@ -945,7 +980,7 @@
 		}
 
      /*
-     var vl=getCookie('adminLeftPanel');
+     var vl=$.cookie('adminLeftPanel');
      if (vl=='off') {
          $('#left_block').hide();
      }
