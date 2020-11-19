@@ -1521,9 +1521,21 @@ $dictionary = array (
 	'XRAY_DO_WORKING' => 'Не працює',
 	'XRAY_WORKING_CYCLE' => 'циклів',
 	
-  
-
-  
+	'NEWSYSTEM_ERROR_FIND_ERROR' => 'Щось пішло не так...',
+	'NEWSYSTEM_ERROR_FIND_ERROR_TEXT' => 'MajorDoMo працює нестабільно. Сиситема виявила деклька помилок в роботі модулів. Можливо вони не критичні, але бажано звернути на це увагу.',
+	'NEWSYSTEM_ERROR_CHECK_ALL_READ' => 'Відмітити все як прочитане',
+	'NEWSYSTEM_ERROR_NOT_ERROR' => 'Помилок немає!',
+	'NEWSYSTEM_ERROR_NOT_ERROR_TEXT' => 'Ваша версія MajorDoMo працює стабільно. На даний момент ми не знайшли помилок, що можуть вплинути нароботу.',
+	'NEWSYSTEM_ERROR_FULL_DESC' => 'Даний модуль дозволяє "виявляти" помилки у всій системі. В кожному модулі є багато умов, при роботі котрих, в цьому модулі і на головній сторінці ви побачите помилку. Ви можете збирати статистику помилок в своїх скриптах/методах в одному місці - в цьому модулі та переглядати їх.',
+	'NEWSYSTEM_ERROR_GET_ERROR' => 'Імітувати помилку',
+	'NEWSYSTEM_ERROR_VIEW_ERROR' => 'Перегляд помилки',
+	'NEWSYSTEM_ERROR_READ_BTN' => 'Переглянуто',
+	'NEWSYSTEM_ERROR_ERROR_HINT' => 'Ловіть помилки в своїх скриптах/методах використовуючи функцію:',
+	'NEWSYSTEM_ERROR_NAME' => 'назва_помилки',
+	'NEWSYSTEM_ERROR_DESC' => 'опис',
+	'NEWSYSTEM_ERROR_SEE_BTN' => 'Подивитись',
+	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базі не знайдено інформації про помилки системи або модулів!',
+   
 );
 
 foreach ($dictionary as $k => $v) {
