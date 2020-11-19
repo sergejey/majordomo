@@ -9,6 +9,7 @@
 		<table class="table table-bordered">
 			<thead>
 				<tr>
+					<th class="text-center">История</th>
 					<th class="text-center"><#LANG_CODE#></th>
 					<th class="text-center"><#LANG_TITLE#></th>
 					<th class="text-center"><#LANG_COUNTER#></th>
@@ -19,6 +20,17 @@
 			<tbody>
 				[#begin RESULT#]
 					<tr style="[#if ACTIVE!="0"#]background-color:#ffdddd;[#endif#]">
+						<td>
+						<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+							<input type="checkbox" onchange="this.form.submit()" name="keep_history" value="1"[#if KEEP_HISTORY="1"#] checked[#endif#]> <#LANG_KEEP_HISTORY#>
+							<input type="hidden" class="form-control" name="title" value=" ">
+							<input type="hidden" class="form-control" name="code" value="[#CODE#]">
+							
+							<input type="hidden" name="id" value="[#ID#]">
+							<input type="hidden" name="view_mode" value="edit_system_errors">
+							<input type="hidden" name="mode" value="update">
+						</form>
+						</td>
 						<td style="vertical-align: middle;">
 							[#CODE#]
 						</td>

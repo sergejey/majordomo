@@ -47,8 +47,10 @@
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
     $out['OK']=1;
+	$this->redirect("?action=system_errors");
    } else {
     $out['ERR']=1;
+	$this->redirect("?action=system_errors");
    }
   }
   // step: default

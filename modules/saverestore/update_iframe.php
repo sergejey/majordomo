@@ -23,7 +23,7 @@ echo "<html>";
 echo "<head>";
 echo '<link rel="stylesheet" href="/3rdparty/bootstrap/css/bootstrap.min.css" type="text/css"><script type="text/javascript" src="/3rdparty/bootstrap/js/bootstrap.min.js"></script>';
 echo "</head>";
-echo '<body style="height: auto;overflow: auto;padding: 10px;background: black;color: white;border-radius: 5px;">'; 
+echo '<body style="height: auto;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">'; 
 
 $out = array();
 
@@ -32,14 +32,14 @@ if ($backup) {
     logAction('system_backup');
     $res = $sv->dump($out, 1);
     if ($res) {
-        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>'.LANG_UPDATEBACKUP_DELETE_TEMP_FILES.'</div>');
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_DELETE_TEMP_FILES.'</div>');
         removeTree(ROOT . 'cms/saverestore/temp');
-        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>'.LANG_UPDATEBACKUP_DONE.'</div>');
-        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>'.LANG_UPDATEBACKUP_BACKUP_DONE.'</div>');
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_BACKUP_DONE.'</div>');
 		sleep(1);
-        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>'.LANG_UPDATEBACKUP_CLOSE_CONSOLE_AUTO.'</div>');
+        echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_CLOSE_CONSOLE_AUTO.'</div>');
 		sleep(1);
-		echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>'.LANG_UPDATEBACKUP_GET_REDIRECT.'</div>');
+		echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_GET_REDIRECT.'</div>');
 		sleep(2);
         echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode(LANG_UPDATEBACKUP_BACKUP_DONE) . '";</script>');
     }
@@ -60,21 +60,21 @@ if ($backup) {
         }
         $res = $sv->upload($out, 1);
         if ($res) {
-            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>'.LANG_UPDATEBACKUP_DELETE_TEMP_FILES.'</div>');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_DELETE_TEMP_FILES.'</div>');
             removeTree(ROOT . 'cms/saverestore/temp');
             @unlink(ROOT . "cms/modules_installed/control_modules.installed");
-            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>'.LANG_UPDATEBACKUP_DONE.'</div>');
-            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>'.LANG_UPDATEBACKUP_UPDATE_GET_DONE.'</div>');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_UPDATE_GET_DONE.'</div>');
             if ($with_extensions) {
-                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>'.LANG_UPDATEBACKUP_GET_REDIRECT_TO_MERKET.'</div>');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_GET_REDIRECT_TO_MERKET.'</div>');
 				sleep(2);
                 echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?action=market&mode=iframe&mode2=update_all";</script>');
             } else {
-                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>'.LANG_UPDATEBACKUP_REQUEST_REBOOT.'</div>');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_REQUEST_REBOOT.'</div>');
                 @SaveFile(ROOT . 'reboot', 'updated');
-                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>'.LANG_UPDATEBACKUP_REBOOT_WELL_DONE.'</div>');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_REBOOT_WELL_DONE.'</div>');
 				sleep(2);
-                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>'.LANG_UPDATEBACKUP_GET_REDIRECT.'</div>');
+                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEBACKUP_GET_REDIRECT.'</div>');
 				sleep(2);
                 echonow('<script language="javascript">window.top.location.href="' . ROOTHTML . 'admin.php?md=panel&action=saverestore&ok_msg=' . urlencode(LANG_UPDATEBACKUP_UPDATE_GET_DONE) . '";</script>');
             }

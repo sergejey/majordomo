@@ -1459,7 +1459,7 @@ $dictionary = array (
 	'NEWDASH_CONNECT_ADS_DONATE' => 'Допомогти разово',
 	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'Хочу разово допомогти',
 	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Це чудово, що вихочете допомогти MajorDomo! Ви можете зробити разовий перевод розробнику системи. Для цього перейдіть <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>по ссылке</b></a> і проповність баланс в  систмемі Connect. Після цього, просто переведіть кошти зі свого балансу на <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>цю задачу</b></a> натиснувши кнопку &quot;Підтримати розробника&quot;.",
-	'NEWDASH_CLASS' => 'Чудово',
+	'NEWDASH_CLASS' => 'Клас',
 	'NEWDASH_NEWS' => 'Новини та блоги MajorDomo',
 	'NEWDASH_NEWS_MORE' => 'іще записи',
 	'NEWDASH_DONTSHOW_THIS_BLOCK' => 'Більше не показувати цей блок',
@@ -1473,7 +1473,7 @@ $dictionary = array (
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 найбільших таблиць в вашій базі данних.',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все чудово!',
-	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',
+	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Це чудово, що ви вчасно оновлюєтесь. Наразі у вас остання версія системи. Але в випадку необхідності, ви можете перезавантажити файли з репозитарію GitHub.',
 	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Все одно оновити',
 	'NEWSAVERESTORE_UPDATE_HEADER' => 'Пора оновитися!',
 	'NEWSAVERESTORE_UPDATE_TEXT' => 'Намагайтесь регулярно оновлювати систему, для уникнення помилок та проблем з безпекою. Кожний день розробники вносять зміни, для того щоб ви могли отримати максимальне задоволення при роботі з MajorDoMo.',

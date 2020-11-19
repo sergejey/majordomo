@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	$('.select2').select2();
 	$("#files").select2({
-		placeholder: "Выберите файл лога..."
+		placeholder: "<#LANG_XRAY_CHOUSE_LOG_FILE#>"
 	});
 });
 </script>
@@ -14,17 +14,17 @@ $(document).ready(function() {
 	<div class="row" style="margin-right: -15px;margin-left: -15px;">
 		<div class="col-md-12">
 			<ul class="nav nav-tabs">
-				<li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?view_mode=">Debug</a></li>
-				<li [#if VIEW_MODE="properties"#]class="active"[#endif#]><a href="?view_mode=properties">Properties</a></li>
-				<li [#if VIEW_MODE="methods"#]class="active"[#endif#]><a href="?view_mode=methods">Methods</a></li>
-				<li [#if VIEW_MODE="scripts"#]class="active"[#endif#]><a href="?view_mode=scripts">Scripts</a></li>
-				<li [#if VIEW_MODE="timers"#]class="active"[#endif#]><a href="?view_mode=timers">Timers</a></li>
-				<li [#if VIEW_MODE="events"#]class="active"[#endif#]><a href="?view_mode=events">Events</a></li>
-				<li [#if VIEW_MODE="services"#]class="active"[#endif#]><a href="?view_mode=services">Services</a></li>
-				<li [#if VIEW_MODE="database"#]class="active"[#endif#]><a href="?view_mode=database">Database</a></li>
-				<li [#if VIEW_MODE="performance"#]class="active"[#endif#]><a href="?view_mode=performance">Performance</a></li>
-				<li [#if VIEW_MODE="dead"#]class="active"[#endif#]><a href="?view_mode=dead">Not alive</a></li>
-				<li><a href="print_all.php" target=_blank>Structure</a></li>
+				<li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?view_mode="><#LANG_LOG#></a></li>
+				<li [#if VIEW_MODE="properties"#]class="active"[#endif#]><a href="?view_mode=properties"><#LANG_PROPERTIES#></a></li>
+				<li [#if VIEW_MODE="methods"#]class="active"[#endif#]><a href="?view_mode=methods"><#LANG_METHODS#></a></li>
+				<li [#if VIEW_MODE="scripts"#]class="active"[#endif#]><a href="?view_mode=scripts"><#LANG_MODULE_SCRIPTS#></a></li>
+				<li [#if VIEW_MODE="timers"#]class="active"[#endif#]><a href="?view_mode=timers"><#LANG_XRAY_TIMERS#></a></li>
+				<li [#if VIEW_MODE="events"#]class="active"[#endif#]><a href="?view_mode=events"><#LANG_MODULE_EVENTS#></a></li>
+				<li [#if VIEW_MODE="services"#]class="active"[#endif#]><a href="?view_mode=services"><#LANG_LOOPS#></a></li>
+				<li [#if VIEW_MODE="database"#]class="active"[#endif#]><a href="?view_mode=database"><#LANG_XRAY_DB#></a></li>
+				<li [#if VIEW_MODE="performance"#]class="active"[#endif#]><a href="?view_mode=performance"><#LANG_XRAY_PERFORMANCE#></a></li>
+				<li [#if VIEW_MODE="dead"#]class="active"[#endif#]><a href="?view_mode=dead"><#LANG_XRAY_NOT_ALIVE#></a></li>
+				<li><a href="print_all.php" target=_blank><#LANG_XRAY_STRUCTURE#></a></li>
 			</ul>
 		</div>
 	</div>
@@ -47,7 +47,7 @@ $(document).ready(function() {
 				<div class="col-md-6" style="padding-left: 5px;padding-right: 5px;">
 					<div class="form-group" style="width: 100%;">
 						<select name="limit" id='limit' class="form-control" style="padding: 3px;">
-							<option value="">Показывать строк...</option>
+							<option value=""><#LANG_XRAY_SHOW_LINE_FILTER#></option>
 							<option value="50"[#if LINES="50"#] selected[#endif#]>50
 							<option value="100"[#if LINES="100"#] selected[#endif#]>100
 							<option value="200"[#if LINES="200"#] selected[#endif#]>200
@@ -61,10 +61,10 @@ $(document).ready(function() {
 			<div class="col-md-[#if VIEW_MODE=""#]6[#else#]12[#endif#]">
 				<div style="padding-left: 5px;padding-right: 5px;" class="text-center">
 					<div class="input-group">
-						<input type="text" name="filter" id="filter" value="<#FILTER#>" placeholder="Фильтр строк" style="padding: 3px;" class="form-control">
+						<input type="text" name="filter" id="filter" value="<#FILTER#>" placeholder="<#LANG_XRAY_LINE_FILTER#>" style="padding: 3px;" class="form-control">
 						<span class="input-group-btn">
 							<button type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-success" type="button"><#LANG_SUBMIT#></button>
-							<a href="#" class="btn btn-primary" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> Pause</a>
+							<a href="#" class="btn btn-primary" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> <#LANG_XRAY_PAUSE#></a>
 						</span>
 					</div>
 						
@@ -77,7 +77,12 @@ $(document).ready(function() {
 	[#endif VIEW_MODE#]
 	<div class="row" style="margin-right: -15px;margin-left: -15px;margin-top: 10px;">
 		<div class="col-md-12">
-			<div id="xrayContent" style="padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]background: black;color: white;border-radius: 5px;margin: 10px;[#endif#]">Loading...</div>
+			<div style="padding:0 10px">
+				<div class="progress" style="height:3px">
+					<div class="progress-bar progress-bar-success" id="reloadProgress" role="progressbar" data-now="0" style=""></div>
+				</div>
+			</div>
+			<div id="xrayContent" style="padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;margin: 10px;[#endif#]"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 		</div>
 	</div>
 	</div>
@@ -93,18 +98,33 @@ $(document).ready(function() {
 
 		function playPauseXRay() {
 			if (playingXray==1) {
-				$('#playpausebtn').html('<i class="glyphicon glyphicon-play"></i> Continue');
+				$('#reloadProgress').stop();
+				$('#reloadProgress').toggleClass('progress-bar-success progress-bar-warning');
+				$('#playpausebtn').html('<i class="glyphicon glyphicon-play"></i> <#LANG_XRAY_CONTINUE#>');
 				clearTimeout(checkTimer);
 				playingXray=0;
 			} else {
-				$('#playpausebtn').html('<i class="glyphicon glyphicon-pause"></i> Pause');
+				$('#reloadProgress').toggleClass('progress-bar-warning progress-bar-success');
+				$('#playpausebtn').html('<i class="glyphicon glyphicon-pause"></i> <#LANG_XRAY_PAUSE#>');
 				checkAllStates();
 			}
 			return false;
 		}
+		
+		function progressAmin() {
+			var $progressBar = $("#reloadProgress")
 
+			$progressBar.animate({
+				width: '100%'
+			}, {
+				duration: checkTimeout,
+				easing: 'linear'
+			});
+		}
+		
 		function checkAllStates() {
 			playingXray=1;
+			progressAmin();
 			clearTimeout(checkTimer);
 			//var url="?ajax=1&op=getcontent&view_mode=<#VIEW_MODE#>&filter="+encodeURIComponent($('#filter').val())+"&limit="+$('#limit').val()+"&file="+$('#file').val();
 			var url=window.location.href;
@@ -113,23 +133,23 @@ $(document).ready(function() {
 				url: url,
 			}).done(function(data) {
 				dataJSON = JSON.parse(data);
-				console.log(dataJSON);
+				//console.log(dataJSON);
 				if(dataJSON.MODE == 'properties') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 30%;">Название</th><th style="width: 20%;">Значение</th><th style="width: 15%;">Обновлено</th><th>Источник</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 30%;"><#LANG_TITLE#></th><th style="width: 20%;"><#LANG_VALUE#></th><th style="width: 15%;"><#LANG_UPDATED#></th><th><#LANG_XRAY_SOURCE#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].NAME+'<div style="font-size: 7pt;color: #b8b8b8;">'+dataJSON.LIST[i].DESC+'</div></td><td>'+dataJSON.LIST[i].VALUE+'</td><td>'+dataJSON.LIST[i].UPDATE+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].SOURCE+'</td></tr>');
 						i++;
 					}
 				} else if(dataJSON.MODE == 'methods') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;">METHOD</th><th style="width: 30%;">PARAMS</th><th style="width: 15%;">EXECUTED</th><th>SOURCE</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;"><#LANG_METHOD#></th><th style="width: 30%;"><#LANG_XRAY_PARAMS#></th><th style="width: 15%;"><#LANG_EXECUTED#></th><th><#LANG_XRAY_SOURCE#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].METHOD+'<div style="font-size: 7pt;color: #b8b8b8;">'+dataJSON.LIST[i].DESC+'</div></td><td>'+dataJSON.LIST[i].PARAMS+'</td><td>'+dataJSON.LIST[i].EXECUTED+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].SOURCE+'</td></tr>');
 						i++;
 					}
 				} else if(dataJSON.MODE == 'scripts') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;">SCRIPT</th><th style="width: 30%;">PARAMS</th><th style="width: 15%;">EXECUTED</th><th>SOURCE</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;"><#LANG_SCRIPT#></th><th style="width: 30%;"><#LANG_XRAY_PARAMS#></th><th style="width: 15%;"><#LANG_EXECUTED#></th><th><#LANG_XRAY_SOURCE#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].SCRIPT+'<div style="font-size: 7pt;color: #b8b8b8;">'+dataJSON.LIST[i].DESC+'</div></td><td>'+dataJSON.LIST[i].PARAMS+'</td><td>'+dataJSON.LIST[i].EXECUTED+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].SOURCE+'</td></tr>');
@@ -143,7 +163,7 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'timers') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table style="width: 100%;" class="tableXray table-condensed"><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].TITLE+'</td><td>'+dataJSON.LIST[i].COMMAND+'</td><td>'+dataJSON.LIST[i].SCHEDULED+'</td><td class="text-center"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].STOP_LINK+'\'" class="btn btn-xs btn-danger"><#LANG_CANCEL#></button></td></tr>');

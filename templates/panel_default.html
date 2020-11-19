@@ -19,58 +19,120 @@
 			</div>
 			<div onclick="hideHintCookie('blockaddnewdev');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
 		</div>
+		<!--- Генерация своего блока --->
+		<div class="panel panel-info" id="myBlockOnDash" style="display:none;">
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title" id="myBlockOnDash_title"></h3></div>
+				<div style="float: right"><i id="hideTogglemyBlock" style="cursor:pointer;" onclick="return toggleCategory('myBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse collapse out" id="row_myBlockDiv">
+				<div class="panel-body" id="myBlockOnDash_body">
+				</div>
+			</div>
+		</div>
+		
+		<div class="text-center" id="addMyBlockHint" style="display:none;margin-bottom: 20px;"><a style="color: lightgray;text-decoration: none;" href="javascript://" data-toggle="modal" data-target="#modalHowMyBlock">Добавить свой блок</a></div>
+		
+		<div class="modal fade" id="modalHowMyBlock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">Добавление своего блока</h4>
+					</div>
+					<div class="modal-body">
+						<ul class="list-group">
+							<li class="list-group-item">1. Создайте сценарий с именем: <code style="white-space: normal;">dash_my_block</code></li>
+							<li class="list-group-item">
+								2. Сценарий должен отдавать следующий JSON объект:<br>
+								<div style="white-space: normal;border-radius: 5px;padding: 10px;font-family: Consolas, Verdana;background-color: #000080;color: #c0c0c0;">
+									<div>$array = array(</div>
+									<div style="margin-left: 30px;">	'status' => 1, //Выводить блок?</div>
+									<div style="margin-left: 30px;">	'name' => 'Супер блок', //Шапка блока</div>
+									<div style="margin-left: 30px;">	'reload' => true, //Автообновление блока</div>
+									<div style="margin-left: 30px;">	'reload_time' => 5, //Время автообновления</div>
+									<div style="margin-left: 30px;">	'data' => array(</div>
+									<div style="margin-left: 60px;">		'data' => 'Привет! Тут любой html!' //Данные</div>
+									<div style="margin-left: 30px;">	),</div>
+									<div>);</div>
+
+
+									<div>echo json_encode($array);</div>
+								</div>
+							</li>
+							<li class="list-group-item">3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.</li>
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--- Генерация своего блока --->
+		
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title"><#LANG_NEWDASH_SYSTEM_INFO#></h3>
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_SYSTEM_INFO#></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('infoBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
 			</div>
-			<div class="panel-body">
-				<ul class="list-group" id="">
-					<li class="list-group-item">
-						<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
-						<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
-					</li>
-					<li class="list-group-item">
-						Запросов к БД в секунду
-						<span id="dashInfoDBReqS" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
-					</li>
-					<li class="list-group-item">
-						Запросов к БД в минуту
-						<span id="dashInfoDBReqM" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
-					</li>
-					<li class="list-group-item">
-						Запросов к БД в час
-						<span id="dashInfoDBReqH" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
-					</li>
-					
-					
-					<li class="list-group-item">
-						<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
-							<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
-						</span>
-						<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
-					</li>
-					<li class="list-group-item">
-						<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
-							Beta 1.1.0
-						</span>
-						Версия MajorDomoUI
-					</li>
-					<li class="list-group-item">
-						<span class="badge" id="dashInfoLastUpdate">
-							<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
-						</span>
-						<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
-					</li>
-				</ul>
-				<div class="well well-lg" id="dashInfoOS"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+			<div class="panel-collapse collapse out" id="row_infoBlockDiv">
+				<div class="panel-body">
+					<ul class="list-group" id="">
+						<li class="list-group-item">
+							<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
+							<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						
+						<li class="list-group-item">
+							Запросов к БД в секунду
+							<span id="dashInfoDBReqS" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item">
+							Запросов к БД в минуту
+							<span id="dashInfoDBReqM" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item">
+							Запросов к БД в час
+							<span id="dashInfoDBReqH" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item text-center" id="dbreqdiscus" style="display:none;background: radial-gradient(circle farthest-corner at 100px 50px, #daffe5, #d6ecff);">
+							<a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i>Обсуждение на форуме</a>
+						</li>
+						
+						<li class="list-group-item">
+							<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
+								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
+							</span>
+							<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
+						</li>
+						<li class="list-group-item">
+							<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
+								Beta 1.3.0
+							</span>
+							Версия MajorDomoUI
+						</li>
+						<li class="list-group-item">
+							<span class="badge" id="dashInfoLastUpdate">
+								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
+							</span>
+							<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
+						</li>
+					</ul>
+					<div class="well well-lg" id="dashInfoOS"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+				</div>
 			</div>
 		</div>
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title"><#LANG_NEWDASH_CYCLE_CONTROL#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=services">X-Ray</a></h3>
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_CYCLE_CONTROL#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=services">X-Ray</a></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('cycleBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
 			</div>
-			<div class="panel">
+			<div class="panel-collapse collapse out" id="row_cycleBlockDiv" style="margin-bottom: 0px;">
 				<div class="panel-body">
 					<!-- Chart code -->
 					<script>
@@ -83,7 +145,8 @@
 
 					var chart = am4core.create("chartdiv_cycle", am4charts.PieChart);
 					chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
+					chart.logo.disabled = true;
+					
 					chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=services&ajax=1&op=getcontent&mode=chart";
 					chart.dataSource.parser = new am4core.JSONParser();
 					chart.dataSource.reloadFrequency = 5000;
@@ -127,8 +190,10 @@
 			</div>
 		</div>
 		<div class="panel panel-default">
-			<div class="panel-heading" style="cursor:pointer;" onclick="return toggleCategory('scriptBlockDiv');">
-				<h3 class="panel-title"><#LANG_NEWDASH_LAST_SCRIPTS#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?pd=pz_&md=panel&inst=&action=scripts"><i><#LANG_NEWDASH_LAST_SCRIPTS_GO#></i></a></h3>
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_LAST_SCRIPTS#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?pd=pz_&md=panel&inst=&action=scripts"><i><#LANG_NEWDASH_LAST_SCRIPTS_GO#></i></a></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('scriptBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
 			</div>
 			<div class="panel-collapse collapse out" id="row_scriptBlockDiv">
 				<div class="panel-body">
@@ -151,7 +216,8 @@
 		// Themes end
 
 		var chart = am4core.create("structureDB_chart", am4charts.XYChart);
-
+		chart.logo.disabled = true;
+		
 		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
 		chart.dataSource.parser = new am4core.JSONParser();
 		chart.dataSource.reloadFrequency = 5000;
@@ -214,7 +280,7 @@
 		
 		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/new_design.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #4792d1);background-size: cover;background-repeat: no-repeat;">
 			<h2><#LANG_NEWDASH_HELLO_NEW#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWDASH_HELLO_NEW_TEXT#></p>
+			<p style="font-size: 11pt;text-shadow: white 0 0 6px;"><#LANG_NEWDASH_HELLO_NEW_TEXT#></p>
 			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
 		</div>
 		<!---
@@ -250,19 +316,28 @@
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title"><#LANG_NEWDASH_NEWS#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="https://connect.smartliving.ru/blog.html" target="_blank"><i><#LANG_NEWDASH_NEWS_MORE#></i></a></h3>
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_NEWS#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="https://connect.smartliving.ru/blog.html" target="_blank"><i><#LANG_NEWDASH_NEWS_MORE#></i></a></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('newsBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
 			</div>
-			<div class="panel-body">
-				<div id="news_body"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+			<div class="panel-collapse collapse out" id="row_newsBlockDiv">
+				<div class="panel-body">
+					<div id="news_body"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+				</div>
 			</div>
 		</div>
-		
-
     </div>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function() {
+		checkCategory('myBlockDiv');
+		checkCategory('infoBlockDiv');
+		checkCategory('cycleBlockDiv');
+		checkCategory('scriptBlockDiv');
+		checkCategory('newsBlockDiv');
+		
+		
         checkUpdatesAvailable();
         checkDidYouKnow();
         checkNews();
@@ -274,6 +349,8 @@
 		setInterval(function() { checkSystemInfo(); }, 10000);
 		checkSystemInfo();
 		checkConnectStatus();
+		
+		myBlockOnDash();
     });
 </script>
 

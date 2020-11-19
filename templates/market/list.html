@@ -3,9 +3,9 @@
 </div>
 [#if PLUGINS#]
     [#begin PLUGINS#]
-	<div class="media" style="border: 1px solid #ddd;padding: 10px;margin-bottom: 10px;border-radius: 5px;[#if EXISTS#][#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #6bce2c);[#endif#][#endif EXISTS#]">
+	<div class="media" style="border: 1px solid [#if PRICE = ""#]#ddd[#else#]#47a447[#endif#];padding: 10px;margin-bottom: 10px;border-radius: 5px;[#if EXISTS#][#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #d4ffb9);[#endif#][#endif EXISTS#]">
 		<a class="pull-left" href="#">
-			<img class="media-object" style="border-radius: 100px;border: 1px solid #ddd;" width="64" height="64" src='https://connect.smartliving.ru/cms/addons/[#ID#]_icon.png' onerror="this.src='<#ROOTHTML#>img/modules/default.png'">
+			<img class="media-object" style="border-radius: 5px;padding: 5px;border: 1px solid #ddd;" width="64" height="64" src='https://connect.smartliving.ru/cms/addons/[#ID#]_icon.png' onerror="this.src='<#ROOTHTML#>img/modules/default.png'">
 		</a>
 		<div class="media-body">
 			<div class="row" style="display: flex;flex-wrap: wrap;">
@@ -23,7 +23,7 @@
 			</h4>
 			[#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
 				[#if DESCRIPTION_RU!=""#]
-					<blockquote class="hidden-xs" style="border-left: 5px solid #4d96d3;margin-bottom: 0px;" id="row[#ID#]_description">
+					<blockquote class="hidden-xs" style="max-height: 100px;overflow: auto;font-size: 10pt;overflow-wrap: break-word;border-left: 5px solid #4d96d3;margin-bottom: 0px;" id="row[#ID#]_description">
 					[#DESCRIPTION_RU#]
 					[#if LATEST_VERSION!=""#]
 						<small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
@@ -32,7 +32,7 @@
 				[#endif#]
 			[#else#]
 				[#if DESCRIPTION_EN!=""#]
-					<blockquote style="border-left: 5px solid #4d96d3;margin-bottom: 0px;" id="row[#ID#]_description">
+					<blockquote style="max-height: 100px;overflow: auto;font-size: 10pt;overflow-wrap: break-word;border-left: 5px solid #4d96d3;margin-bottom: 0px;" id="row[#ID#]_description">
 					[#DESCRIPTION_EN#]
 					</blockquote>
 					[#DESCRIPTION_RU#]
@@ -45,7 +45,13 @@
 			<div class="col-md-4 text-right" style="margin: auto;">
 				[#if CAN_DOWNLOAD="1"#]
 				<a class="btn btn-[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]success[#else#]warning[#endif#]" style="border-color: #ffffff;" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> [#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<#LANG_UPDATE#>[#else#]Перекачать[#endif#][#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
-				[#endif CAN_DOWNLOAD#]
+				[#endif#]
+				
+				[#if PRICE != ""#]
+					[#if SUPPORT_URL !=""#]<a class="btn btn-default" style="border-color: #ffffff;" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> Обсуждение</a>[#endif#]
+					<a class="btn btn-info" style="border-color: #ffffff;" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-usd"></i> Купить за [#PRICE#]</a>
+				[#endif PRICE#]
+				
 				[#if EXISTS#]<a class="btn btn-danger" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>[#endif#]
 			</div>
 			</div>
