@@ -1459,7 +1459,7 @@ $dictionary = array (
 	'NEWDASH_CONNECT_ADS_DONATE' => 'Допомогти разово',
 	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'Хочу разово допомогти',
 	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Це чудово, що вихочете допомогти MajorDomo! Ви можете зробити разовий перевод розробнику системи. Для цього перейдіть <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>по ссылке</b></a> і проповність баланс в  систмемі Connect. Після цього, просто переведіть кошти зі свого балансу на <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>цю задачу</b></a> натиснувши кнопку &quot;Підтримати розробника&quot;.",
-	'NEWDASH_CLASS' => 'Чудово',
+	'NEWDASH_CLASS' => 'Клас',
 	'NEWDASH_NEWS' => 'Новини та блоги MajorDomo',
 	'NEWDASH_NEWS_MORE' => 'іще записи',
 	'NEWDASH_DONTSHOW_THIS_BLOCK' => 'Більше не показувати цей блок',
@@ -1473,7 +1473,7 @@ $dictionary = array (
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 найбільших таблиць в вашій базі данних.',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все чудово!',
-	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',
+	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Це чудово, що ви вчасно оновлюєтесь. Наразі у вас остання версія системи. Але в випадку необхідності, ви можете перезавантажити файли з репозитарію GitHub.',
 	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Все одно оновити',
 	'NEWSAVERESTORE_UPDATE_HEADER' => 'Пора оновитися!',
 	'NEWSAVERESTORE_UPDATE_TEXT' => 'Намагайтесь регулярно оновлювати систему, для уникнення помилок та проблем з безпекою. Кожний день розробники вносять зміни, для того щоб ви могли отримати максимальне задоволення при роботі з MajorDoMo.',
@@ -1521,9 +1521,21 @@ $dictionary = array (
 	'XRAY_DO_WORKING' => 'Не працює',
 	'XRAY_WORKING_CYCLE' => 'циклів',
 	
-  
-
-  
+	'NEWSYSTEM_ERROR_FIND_ERROR' => 'Щось пішло не так...',
+	'NEWSYSTEM_ERROR_FIND_ERROR_TEXT' => 'MajorDoMo працює нестабільно. Сиситема виявила деклька помилок в роботі модулів. Можливо вони не критичні, але бажано звернути на це увагу.',
+	'NEWSYSTEM_ERROR_CHECK_ALL_READ' => 'Відмітити все як прочитане',
+	'NEWSYSTEM_ERROR_NOT_ERROR' => 'Помилок немає!',
+	'NEWSYSTEM_ERROR_NOT_ERROR_TEXT' => 'Ваша версія MajorDoMo працює стабільно. На даний момент ми не знайшли помилок, що можуть вплинути нароботу.',
+	'NEWSYSTEM_ERROR_FULL_DESC' => 'Даний модуль дозволяє "виявляти" помилки у всій системі. В кожному модулі є багато умов, при роботі котрих, в цьому модулі і на головній сторінці ви побачите помилку. Ви можете збирати статистику помилок в своїх скриптах/методах в одному місці - в цьому модулі та переглядати їх.',
+	'NEWSYSTEM_ERROR_GET_ERROR' => 'Імітувати помилку',
+	'NEWSYSTEM_ERROR_VIEW_ERROR' => 'Перегляд помилки',
+	'NEWSYSTEM_ERROR_READ_BTN' => 'Переглянуто',
+	'NEWSYSTEM_ERROR_ERROR_HINT' => 'Ловіть помилки в своїх скриптах/методах використовуючи функцію:',
+	'NEWSYSTEM_ERROR_NAME' => 'назва_помилки',
+	'NEWSYSTEM_ERROR_DESC' => 'опис',
+	'NEWSYSTEM_ERROR_SEE_BTN' => 'Подивитись',
+	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базі не знайдено інформації про помилки системи або модулів!',
+   
 );
 
 foreach ($dictionary as $k => $v) {

@@ -1,64 +1,74 @@
-<div align="center">
-<div align="left" style="width:500px;padding-top:150px">
-<h1>Hello, world! :)</h1>
-&nbsp;<br>&nbsp;<br>
-<form action="?" method="get">
-Time zone:<br>
-<div class="form-group">
-<select name='timezone' id='timezone' style='width:350px' class="form-control">
-[#begin ZONELIST#]
- <option value="[#OFFSET#]"[#if TITLE="<#SETTINGS_SITE_TIMEZONE#>"#] selected[#endif#]>[#TITLE#] (GMT [#OFFSET_TEXT#])
-[#end ZONELIST#]
-</select>
-</div>
-<Br>&nbsp;
-<div class="row">
-Language:<Br>
-[#begin LANGUAGES#]
-<div class="col-md-4">
-    <label for="lang_[#TITLE#]">
-<input type="radio" name="language" id="lang_[#TITLE#]" value="[#TITLE#]"[#if TITLE="<#SETTINGS_SITE_LANGUAGE#>"#] checked[#endif#]>
-<img src="<#ROOTHTML#>img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" height="30" align="absmiddle"> [#CAPTION#]
-    </label>
-</div>
-[#end LANGUAGES#]
-</div>
-    &nbsp;
-<div>
-Color theme:
+<style>
+body, html { 
+    width: 100%;
+    height: 100%;
+}
 
-<input type="radio" name="theme" value="dark"[#if "<#SETTINGS_THEME#>"!="light"#] checked[#endif#]> Dark
-<input type="radio" name="theme" value="light"[#if "<#SETTINGS_THEME#>"=="light"#] checked[#endif#]> Light
+.full-size {
+    min-width: 100%;
+    min-height: 100%;
+    position: relative;
+	background-image: url(https://mjdm.ru/wp-content/uploads/2018/04/logo-md.png), linear-gradient(to top left, powderblue, pink);
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+</style>
 
-    </div>
-<br>
-<input type="submit" name="submit" value="Continue &gt;&gt;&gt;"  class="btn btn-default">
-<input type="hidden" name="timezone_title" id="timezone_title" value="">
-<input type="hidden" name="mode" value="update">
-<input type="hidden" name="action" value="<#ACTION#>">
+<div class="full-size">
+	<div class="col-md-6 col-md-offset-3" style="padding-left: 30px;">
+		<div align="left" style="width:500px;padding-top:150px">
+			<h1>Hello, world! :)</h1>
+			<p style="margin-bottom: 30px;">echo 'system has been started!';</p>
+			<form action="?" method="get">
+				Time zone:<br>
+				<div class="form-group">
+					<select name='timezone' id='timezone' style='width:350px' class="form-control">
+					[#begin ZONELIST#]
+						<option value="[#OFFSET#]"[#if TITLE="<#SETTINGS_SITE_TIMEZONE#>"#] selected[#endif#]>[#TITLE#] (GMT [#OFFSET_TEXT#])
+					[#end ZONELIST#]
+					</select>
+				</div>
+				
+				<div class="row" style="margin-right: 0px;margin-left: 0px;">
+				Language:<Br>
+					[#begin LANGUAGES#]
+					<div class="col-md-4">
+						<label for="lang_[#TITLE#]">
+						<input style="vertical-align: sub;" type="radio" name="language" id="lang_[#TITLE#]" value="[#TITLE#]"[#if TITLE="<#SETTINGS_SITE_LANGUAGE#>"#] checked[#endif#]>
+						<img style="margin-left: 10px;" src="<#ROOTHTML#>img/flags/[#TITLE#].png" alt="[#TITLE#]" border="0" height="30" align="absmiddle"> [#CAPTION#]
+						</label>
+					</div>
+				[#end LANGUAGES#]
+				</div>
+					
+				<div>
+				Color theme:
+				<input type="radio" name="theme" value="dark"[#if "<#SETTINGS_THEME#>"!="light"#] checked[#endif#]> Dark
+				<input type="radio" name="theme" value="light"[#if "<#SETTINGS_THEME#>"=="light"#] checked[#endif#]> Light
 
-</form>
+					</div>
+				<br>
+				<input type="submit" name="submit" value="Continue &gt;&gt;&gt;"  class="btn btn-default">
+				<input type="hidden" name="timezone_title" id="timezone_title" value="">
+				<input type="hidden" name="mode" value="update">
+				<input type="hidden" name="action" value="<#ACTION#>">
 
-<script language="javascript">
-[#if "<#SETTINGS_SITE_TIMEZONE#>"==""#]
-                $(document).ready(function(){   
-                  var d = new Date()
-                  var offset= -d.getTimezoneOffset()/60;
-                  $('#timezone').val(offset);
-                  $('#timezone_title').val($('#timezone :selected').html());
-                });     
-[#endif#]
+			</form>
 
-$('#timezone').change(function()
-{
-   $('#timezone_title').val($('#timezone :selected').html());
-});
+			<script language="javascript">
+			[#if "<#SETTINGS_SITE_TIMEZONE#>"==""#]
+			$(document).ready(function(){   
+				var d = new Date()
+				var offset= -d.getTimezoneOffset()/60;
+				$('#timezone').val(offset);
+				$('#timezone_title').val($('#timezone :selected').html());
+			});     
+			[#endif#]
 
- 
-</script>
-
-
-
-
-</div>
+			$('#timezone').change(function() {
+			   $('#timezone_title').val($('#timezone :selected').html());
+			});
+			</script>
+		</div>
+	</div>
 </div>

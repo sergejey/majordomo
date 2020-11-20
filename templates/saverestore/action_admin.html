@@ -14,7 +14,7 @@
 			<p style="font-size: 11pt;"><#LANG_NEWSAVERESTORE_NONE_UPDATE_TEXT#></p>
 			<p class="text-right">
 				<a class="link" href="[#UPDATE_URL#]" style="text-decoration: none;color: white;font-size: 10pt;margin-right: 20px;" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
-				<a style="border-color: #ffffff;" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" class="btn btn-warning btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
+				<a style="border-color: #ffffff;" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" class="btn btn-default btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
 			</p>
 		</div>
 		[#else#]
@@ -32,6 +32,10 @@
 			<script>
 				$(document).ready(function() {
 					$('#myModal').modal('show');
+					
+					$("#myModal").on("hidden.bs.modal", function () {
+						$('#myModal').modal('show');
+					});
 				});
 			</script>
 		[#endif#]
@@ -109,14 +113,14 @@
 					</li>
 					<li class="list-group-item">
 						<span style="float: right;">
-							<select name="update_auto" style="border: 0px;" onchange="if($(this).val() == 1) { $('#hideAutoUpdate').show('slow'); } else { $('#hideAutoUpdate').hide('slow'); }">
+							<select name="update_auto" style="border: 0px;" [#if UPDATE_AUTO!="1"#]onchange="if($(this).val() == 1) { $('#hideAutoUpdate').show('slow'); } else { $('#hideAutoUpdate').hide('slow'); }"[#endif#]>
 								<option value="1"[#if UPDATE_AUTO="1"#] selected[#endif#]><#LANG_YES#></option>
 								<option value="0"[#if UPDATE_AUTO!="1"#] selected[#endif#]><#LANG_NO#></option>
 							</select>
 						</span>
 						<#LANG_ENABLE_AUTO_UPDATE#><#LANG_HCB#>system_auto_update<#LANG_HCE#>
 					</li>
-					<div id="hideAutoUpdate" style="display:none;">
+					<div id="hideAutoUpdate" [#if UPDATE_AUTO!="1"#]style="display:none;"[#endif#]>
 						<li class="list-group-item">
 							<span style="float: right;">
 								<select name="update_auto_delay" style="border: 0px;">

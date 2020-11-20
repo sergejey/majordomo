@@ -1515,7 +1515,7 @@ $dictionary = array(
 	'NEWDASH_PRELOAD_BTN' => 'Остановить операцию',
 	'NEWDASH_UPDATE_MODULE_HINT1' => 'Обновления для',
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулей',
-	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся последние 6 запущенных сценария',
+	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценариев',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 самых больших таблиц в вашей базе данных.',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
@@ -1566,6 +1566,18 @@ $dictionary = array(
 	'XRAY_WORKING' => 'Работает',
 	'XRAY_DO_WORKING' => 'Не работает',
 	'XRAY_WORKING_CYCLE' => 'циклов',
+	'XRAY_CHOUSE_LOG_FILE' => 'Выберите файл лога...',
+	'XRAY_TIMERS' => 'Таймеры',
+	'XRAY_DB' => 'База данных',
+	'XRAY_PERFORMANCE' => 'Производительность',
+	'XRAY_NOT_ALIVE' => 'Нет ответа',
+	'XRAY_STRUCTURE' => 'Структура',
+	'XRAY_SHOW_LINE_FILTER' => 'Показывать строк...',
+	'XRAY_LINE_FILTER' => 'Фильтр строк',
+	'XRAY_PAUSE' => 'Пауза',
+	'XRAY_CONTINUE' => 'Возобновить',
+	'XRAY_SOURCE' => 'Источник',
+	'XRAY_PARAMS' => 'Параметры',
 	
 	'NEWSYSTEM_ERROR_FIND_ERROR' => 'Что-то пошло не так...',
 	'NEWSYSTEM_ERROR_FIND_ERROR_TEXT' => 'MajorDoMo работает нестабильно. Система обнаружила несколько ошибок в работе модулей. Возможно, он не критичные, однако рекомендуем обратить на них внимание.',
@@ -1580,7 +1592,7 @@ $dictionary = array(
 	'NEWSYSTEM_ERROR_NAME' => 'название_ошибки',
 	'NEWSYSTEM_ERROR_DESC' => 'описание',
 	'NEWSYSTEM_ERROR_SEE_BTN' => 'Посмотреть',
-	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базе данные не найдено информации о ошибках системы или модулей!',
+	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базе данных не найдено информации об ошибках системы или модулей.',
 	
 	
 );
