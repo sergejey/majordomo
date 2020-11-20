@@ -1,85 +1,126 @@
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
 [#if RESULT#]
-<div class="row">
-	<form action="?" method="post" name="frmList_classes" style="padding:0px">
-	<ul class="list-group">
-		<li class="list-group-item" style="background: beige;">
-			<span style="color: lightgray">Класс</span> <i style="color: lightgray" class="glyphicon glyphicon-arrow-right"></i> <a href="?view_mode=edit_classes" style="margin-left: 10px;color: #333;font-weight: bold;text-decoration: none;font-style: italic;margin-left: 10px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CLASS#></a>
-		</li>
-		<li class="list-group-item" style="background: beige;">
-			<img style="width: 18px;vertical-align: top;" src="/img/elements/class_arrow.svg"> <span style="color: lightgray">Объект</span> <i style="color: lightgray" class="glyphicon glyphicon-arrow-right"></i> <a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]" style="margin-left: 10px;color: #333;font-weight: bold;text-decoration: none;font-style: italic;margin-left: 10px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
-		</li>
-		[#begin RESULT#]
-		<li class="list-group-item [#if PARENT_ID != 0#]sub_object_[#PARENT_ID#][#endif#]" [#if PARENT_ID != 0#]style="display:none;"[#endif#]>
-			<div class="row" style="margin-right: -15px;margin-left: -15px;[#if LEVEL != 0#]padding-left: [#LEVEL_PAD#]0px;[#endif#]">
-				<div class="col-md-8" style="[#if LEVEL != 0#]dispaly:none;[#endif#]">
-					<!--- <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]">+</a> --->
-					<div style="display: flex;margin-bottom: 10px;cursor: pointer;" onclick="$('#object_[#ID#]').toggle();$('.sub_object_[#ID#]').toggle();">
-						<div style="margin-top: auto;margin-bottom: auto;"><span style="color: lightgray">[#if LEVEL != 0#]<img style="width: 18px;vertical-align: baseline;position: absolute;left: -6px;" src="/img/elements/class_arrow.svg"> Дочерний класс[#else#]Класс[#endif#]</span> <i style="color: lightgray" class="glyphicon glyphicon-arrow-right"></i></div>
-						
-						<div style="margin-left: 10px;">
-							<div><b>[#TITLE#]</b></div>
-							[#if DESCRIPTION!=""#]<div><blockquote style="padding: 0px;margin: 0px;border-left: 0px;"><small>[#DESCRIPTION#]</small></blockquote></div>[#endif DESCRIPTION#]
-						</div>
-					</div>
-					[#if OBJECTS#]
-						<div class="row" id="object_[#ID#]" style="display:none;margin-left: 5px;margin-right: -15px;margin-left: -15px;[#if LEVEL != 0#]padding-left: [#LEVEL_PAD#]0px;[#else#]padding-left: 20px;[#endif#]">
-							<div class="col-md-12" style="display:flex;">
-								<div><span style="color: lightgray"><img style="width: 18px;vertical-align: baseline;position: absolute;left: -6px;" src="/img/elements/class_arrow.svg">Объекты</span> <i style="color: lightgray" class="glyphicon glyphicon-arrow-right"></i></div>
-								<div style="margin-left: 10px;">
-									[#begin OBJECTS#]
-										<div style="[#if METHODS==""#]border: 1px solid lightgray;margin-bottom: 5px;border-radius: 5px;padding: 5px;[#else#]border-left: 1px solid lightgray;border-right: 1px solid lightgray;border-top: 1px solid lightgray;padding: 5px;border-radius: 5px 5px 0 0;[#endif METHODS#]">
-										<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>
-										[#if DESCRIPTION!=""#]<blockquote style="padding: 0px;margin: 0px;border-left: 0px;"><small>[#DESCRIPTION#] [#if KEY_DATA!=""#]<i>([#KEY_DATA#])</i>[#endif#]</small></blockquote>[#endif#]
-										</div>
-										[#if METHODS#]
-										<div class="row" style="[#if METHODS==""#]margin-right: -15px;margin-left: -15px;[#endif METHODS#][#if LEVEL != 0#]padding-left: [#LEVEL_PAD#]0px;[#else#]padding-left: 10px;[#endif#][#if METHODS#]padding-left: 10px;border-bottom: 1px solid lightgray;padding-bottom: 5px;margin-bottom: 5px;border-left: 1px solid lightgray;border-right: 1px solid lightgray;border-radius: 0 0 5px 5px;[#endif METHODS#]">
-											<div class="col-md-12" style="display:flex;">
-												<div><span style="color: #36b262;"><img style="width: 18px;vertical-align: baseline;position: absolute;left: -6px;" src="/img/elements/class_arrow.svg">Методы</span> <i style="color: #36b262;" class="glyphicon glyphicon-arrow-right"></i></div>
-												<div style="margin-left: 10px;">
-													[#begin METHODS#]
-													<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a>
-													<br>
-													[#end METHODS#]
-												</div>
-											</div>
-										</div>
-										[#endif METHODS#]
-									[#end OBJECTS#]
-								</div>
-							</div>
-						</div>
-					[#endif OBJECTS#]
-				</div>
-				<div class="col-md-4">
-					<a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
-					<a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
-					<a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
-					<a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
-					<a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
-					
 
-					[#if CAN_DELETE="1"#]
-						<a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
-					[#endif CAN_DELETE#]
-				</div>
-			</div>
-			
-			
-			<!--- Строение для дочерних классов --->
-			[#if RESULT#][#tree RESULT#][#endif RESULT#]
-		</li>
-		[#end RESULT#]
-	</ul>
-	<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-	<input type="hidden" name="view_mode" value="multiple_classes">
-	</form>
-</div>
+<script language="javascript">
+
+    $(function () {
+        $("a.show-hide-link").click(function () {
+            var id = $(this).data('id');//'#sub' +
+            //$(id).toggle();
+            if ($('.sublist' + id).is(":visible")) {
+                $('.sublist' + id).hide();
+                $('#link' + id).html('+');
+                $.cookie("classes_item" + id, null);
+            } else {
+                $.cookie("classes_item" + id, "1");
+                $('.sublist' + id).show();
+                $('#link' + id).html('-');
+            }
+            return false;
+        });
+    });
+
+
+</script>
+
+
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_classes" style="padding:0px">
+<table  class="table">
+[#begin RESULT#]
+<tr >
+ <td
+    valign="top">
+   <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]">+</a>
+   <b>[#TITLE#]</b>
+   [#if DESCRIPTION!=""#]<i>[#DESCRIPTION#]</i>[#endif DESCRIPTION#]
+ </td>
+ <td valign="top" align="right">
+
+
+    <a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
+    <a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
+    <a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
+    <a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
+    
+
+  [#if CAN_DELETE="1"#]
+    <a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
+  [#endif CAN_DELETE#]
+
+  </td>
+</tr>
+
+[#if OBJECTS#]
+<tr class="sublist[#ID#]" style="display:none">
+ <td valign="top" colspan="2">  
+  <div>
+   <table border=0>
+         [#begin OBJECTS#]
+         <tr>
+                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>
+                     [#if DESCRIPTION!=""#] [#DESCRIPTION#][#endif#]
+                     [#if KEY_DATA!=""#]<i>[#KEY_DATA#]</i>[#endif#]
+                 </td>
+                 <td>&nbsp;</td>
+        </tr>
+        [#if METHODS#]
+         <tr>
+                 <td>&nbsp;</td>
+                 <td>
+                        <small>
+                        
+                        [#begin METHODS#]
+                         <li><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></li>
+                        [#end METHODS#]
+                
+                        </td>
+        </tr>
+        [#endif METHODS#]
+         [#end OBJECTS#]
+  </table>
+  </div>
+ </td>
+</tr>
+  [#endif OBJECTS#]
+[#if RESULT#]
+ <tr class="sublist[#ID#]" style="display:none">
+ <td style="padding-left:40px" colspan=2>
+  <table  class="table">
+   [#tree RESULT#]
+  </table>
+ </td></tr>
+[#endif RESULT#]
+[#end RESULT#]
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_classes">
+</form>
+<!-- / search results (list) -->
+
+<script language="javascript">
+[#begin RESULT#]
+ if ($.cookie("classes_item[#ID#]")) {
+  $('.sublist[#ID#]').show();
+  $('#link[#ID#]').html('-');
+ }
+ [#if RESULT#]
+ [#tree RESULT#]
+ [#endif RESULT#]
+[#end RESULT#]
+</script>
+
+
 [#else RESULT#]
 <p align=center>
-	<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
 </p>
 [#endif RESULT#]
-
+<!-- / results -->
+</td></tr></table>
 
 &nbsp;
 <a href="#" onClick="$('#tools').toggle();return false;" class="btn btn-default"><#LANG_TOOLS#></a>
