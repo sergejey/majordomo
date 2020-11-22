@@ -90,11 +90,11 @@ function removeClassProperty($class_name, $property_name)
 }
 
 /**
- * Summary of getClassPropertys
+ * Summary of getClassProperties
  * @param mixed $class_name Class name
  * @return mixed
  */
-function getClassPropertys($class_name)
+function getClassProperties($class_name)
 {
     $class_id = getClass($class_name);
 
