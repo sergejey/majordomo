@@ -17,7 +17,9 @@ function addClass($class_name, $parent_class = '')
         $parent_class_id = 0;
     }
 
-    $sqlQuery = "SELECT ID FROM classes WHERE TITLE = '" . DBSafe($class_name) . "' AND PARENT_ID = '" . $parent_class_id . "'";
+    $sqlQuery = "SELECT ID
+                  FROM classes
+                 WHERE TITLE = '" . DBSafe($class_name) . "'";
 
     $class = SQLSelectOne($sqlQuery);
 
@@ -32,98 +34,6 @@ function addClass($class_name, $parent_class = '')
         return $class['ID'];
     }
 }
-
-/**
- * Summary of getClass
- * @param mixed $class_name Class name
- * @param mixed $parent_class Parent class (default '')
- * @return mixed
- */
-function getClass($class_name, $parent_class = '')
-{
-    if ($parent_class != '') {
-        $parent_class_id = getClass($parent_class);
-    } else {
-        $parent_class_id = 0;
-    }
-
-    $class = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = '" . DBSafe($class_name) . "' AND PARENT_ID = '" . $parent_class_id . "'");
-
-    if ($class['ID']) {
-        return $class['ID'];
-    } 
-    DebMes("Неверный вызов функции getClass - такой КЛАСС отсутствует, проверьте свой код вызова функции" , 'error');
-    return false;
-}
-
-/**
- * Summary of getClassMethods
- * @param mixed $class_name 
- * @return mixed
- */
-function getClassMethods($class_name)
-{
-    $class_id = getClass($class_name);
-
-    if ($class_id) {
-        $method = SQLSelect("SELECT ID, TITLE FROM methods WHERE CLASS_ID = '" . $class_id . "' AND OBJECT_ID = 0");
-        return $method;
-    }
-    return false;
-}
-
-/**
- * Summary of removeClassProperty
- * @param mixed $class_name Class name
- * @param mixed $property_name Property name
- * @return true|false
- */
-function removeClassProperty($class_name, $property_name)
-{
-    $class_id = getClass($class_name);
-
-    if ($class_id) {
-        SQLExec("DELETE * FROM properties WHERE TITLE = '" . DBSafe($property_name) . "' AND OBJECT_ID = 0 AND CLASS_ID  = '" . $class_id . "'");
-        return true;
-    }
-    return false;
-}
-
-/**
- * Summary of getClassPropertys
- * @param mixed $class_name Class name
- * @return mixed
- */
-function getClassPropertys($class_name)
-{
-    $class_id = getClass($class_name);
-
-    if ($class_id) {
-        $prop = SQLSelect("SELECT ID, TITLE FROM properties WHERE OBJECT_ID = 0 AND CLASS_ID  = '" . $class_id . "'");
-        return $prop;
-    }
-    return false;
-}
-
-
-/**
- * Summary of removeClassMethod
- * @param mixed $class_name Class method
- * @return mixed
- */
-function removeClassMethod($class_name, $method_name)
-{
-    $class_id = getClass($class_name);
-
-    if ($class_id) {
-        SQLExec("DELETE * FROM methods WHERE CLASS_ID = '" . $class_id . "' AND TITLE = '" . DBSafe($method_name) . "' AND OBJECT_ID = 0");
-        return true;
-    }
-    return false;
-}
-
-
-
 
 /**
  * Summary of getObjectClassTemplate
