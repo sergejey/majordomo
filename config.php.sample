@@ -97,3 +97,4 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('PYTHON_PATH','python'); // path to python
 //Define('LOCAL_IP','127.0.0.1); // local IP
 //Define('BTRACED', 1);
+//Define('LOWER_BACKGROUND_PROCESSES',1); // lower number of background processes created

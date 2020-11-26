@@ -4,7 +4,7 @@
 [#if SRC!=""#]
 
 [#if ENLARGE!="1"#]
-<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&live=[#LIVE#]&username=[#USERNAME#]&password=[#PASSWORD#]&transport=[#TRANSPORT#]" id="imgelem[#UNIQ#]">
+<img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&live=[#LIVE#]&username=[#USERNAME#]&password=[#PASSWORD#]&transport=[#TRANSPORT#]" id="imgelem[#UNIQ#]" loading="lazy">
 [#else#]
 <script type="text/javascript">
  function enlarge[#UNIQ#]() {
@@ -22,7 +22,7 @@
   wnd=window.open("<#ROOTHTML#>modules/thumb/enlarge.php?img=[#SRC_REAL#]&color=[#COLOR#]&close=[#CLOSE#]&bgcolor=[#BGCOLOR#]", "img[#UNIQ#]", settings);
  }
 </script>
-<a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&username=[#USERNAME#]&password=[#PASSWORD#]&live=[#LIVE#]&transport=[#TRANSPORT#]" id="imgelem[#UNIQ#]" border=0></a>
+<a href="#" onClick="enlarge[#UNIQ#]();return false;"><img src="<#ROOTHTML#>modules/thumb/thumb.php?img=[#SRC#]&w=[#WIDTH#]&h=[#HEIGHT#]&url=[#URL#]&username=[#USERNAME#]&password=[#PASSWORD#]&live=[#LIVE#]&transport=[#TRANSPORT#]" id="imgelem[#UNIQ#]" border=0 loading="lazy"></a>
 [#endif#]
 
 [#if SLIDESHOW="1"#]
