@@ -535,7 +535,7 @@ class objects extends module
         $params['raiseEvent'] = $raiseEvent;
         $params['m_c_s'] = $call_stack;    
         $params['r_s_m'] = $run_SafeMethod;
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES==1))) {
             $result = $this->callMethod($name, $params);
         } else {
             $params['r_s_m'] = 1;

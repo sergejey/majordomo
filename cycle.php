@@ -389,14 +389,17 @@ while (false !== ($result = $threads->iteration())) {
     }
 
     foreach ($to_stop as $title => $tm) {
+
+        $key = array_search($title, $auto_restarts);
+        if ($key !== false) {
+            unset($auto_restarts[$key]);
+            $auto_restarts = array_values($auto_restarts);
+        }
+
         if ($tm <= time()) {
             if (isset($is_running[$title])) {
                 $id = $is_running[$title];
                 DebMes("Force closing service " . $title . " (id: " . $id . ")", 'threads');
-                $key = array_search($title, $auto_restarts);
-                if ($key !== false) {
-                    unset($auto_restarts[$key]);
-                }
                 $threads->closeThread($id);
             }
             unset($to_stop[$title]);
@@ -432,9 +435,10 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Thread closed: " . $cycle_title, 'threads');
                     unset($to_stop[$cycle_title]);
                     setGlobal($cycle_title . 'Run', '');
-                    if (in_array($cycle_title, $auto_restarts)) {
-                        $index = array_search($cycle_title, $auto_restarts);
-                        array_splice($auto_restarts, $index, 1);
+                    $key = array_search($cycle_title, $auto_restarts);
+                    if ($key !== false) {
+                        unset($auto_restarts[$key]);
+                        $auto_restarts = array_values($auto_restarts);
                         $need_restart = 1;
                     } elseif ($to_start[$cycle_title]) {
                         $need_restart = 1;
