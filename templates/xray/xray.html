@@ -152,7 +152,7 @@ $(document).ready(function() {
 					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;"><#LANG_SCRIPT#></th><th style="width: 30%;"><#LANG_XRAY_PARAMS#></th><th style="width: 15%;"><#LANG_EXECUTED#></th><th><#LANG_XRAY_SOURCE#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
-						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].SCRIPT+'<div style="font-size: 7pt;color: #b8b8b8;">'+dataJSON.LIST[i].DESC+'</div></td><td>'+dataJSON.LIST[i].PARAMS+'</td><td>'+dataJSON.LIST[i].EXECUTED+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].SOURCE+'</td></tr>');
+						if(!!dataJSON.LIST[i]) $("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].SCRIPT+'<div style="font-size: 7pt;color: #b8b8b8;">'+dataJSON.LIST[i].DESC+'</div></td><td>'+dataJSON.LIST[i].PARAMS+'</td><td>'+dataJSON.LIST[i].EXECUTED+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].SOURCE+'</td></tr>');
 						i++;
 					}
 				} else if(dataJSON.MODE == 'performance') {

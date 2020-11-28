@@ -27,7 +27,12 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="panel-collapse collapse out" id="row_myBlockDiv">
-				<div class="panel-body" id="myBlockOnDash_body">
+				<div class="panel-body" id="myBlockOnDash_body"></div>
+				
+				<div class="panel-body" id="more_myBlockOnDash" style="display:none;">
+					<ul class="list-group" id="more_myBlockOnDash_body">
+						
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -87,15 +92,15 @@
 							<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						
-						<li class="list-group-item">
+						<li class="list-group-item" onclick="$('.reqPerMinHour').toggle('slow');" style="cursor:pointer">
 							Запросов к БД в секунду
 							<span id="dashInfoDBReqS" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						<li class="list-group-item">
+						<li class="list-group-item reqPerMinHour" style="display:none;">
 							Запросов к БД в минуту
 							<span id="dashInfoDBReqM" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						<li class="list-group-item">
+						<li class="list-group-item reqPerMinHour" style="display:none;">
 							Запросов к БД в час
 							<span id="dashInfoDBReqH" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
@@ -111,7 +116,7 @@
 						</li>
 						<li class="list-group-item">
 							<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
-								Beta 1.3.0
+								Beta 1.4.0
 							</span>
 							Версия MajorDomoUI
 						</li>
