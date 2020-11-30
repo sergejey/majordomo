@@ -285,7 +285,9 @@ if ($this->tab == 'methods') {
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
-        if ($my_meth['ID']) {
+        $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
+			 $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
+		if ($my_meth['ID']) {
             $methods[$i]['CUSTOMIZED'] = 1;
         }
     }
