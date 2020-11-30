@@ -1471,6 +1471,7 @@ $dictionary = array (
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулів',
 	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Тут виводяться останні 6 запущених сценаріїв',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 найбільших таблиць в вашій базі данних.',
+	'NEWDASH_WEB_PAGE' => 'Веб-сторінки',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все чудово!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Це чудово, що ви вчасно оновлюєтесь. Наразі у вас остання версія системи. Але в випадку необхідності, ви можете перезавантажити файли з репозитарію GitHub.',
@@ -1535,6 +1536,16 @@ $dictionary = array (
 	'NEWSYSTEM_ERROR_DESC' => 'опис',
 	'NEWSYSTEM_ERROR_SEE_BTN' => 'Подивитись',
 	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базі не знайдено інформації про помилки системи або модулів!',
+	'NEWMARKET_BANNER' => 'Це маркет!',
+	'NEWMARKET_BANNER_TEXT' => 'В маркеті доповнень MajorDoMo зібрано різні модулі доповнень, які дозволяють розширити функціонал системи. Вчасно оновлюйте доповнення — це дозволить уникнути помилок в роботі. Якщо ж ви не знайшли потрібного вам модуля - спробуйте звернутися на форум або написати модуль самостійно.',
+	'NEWMARKET_BANNER_BTN' => 'Для розробників',
+	'NEWMARKET_SERACH_BLOCK' => 'Пошук та опції',
+	'NEWMARKET_CLOSE_SEACRH' => 'Закрити пошук',
+	'NEWMARKET_SEARCH' => 'Пошук',
+	'NEWMARKET_SEARCH_INPUT_PLACEHOLDER' => 'Почніть вводити ключові слова...',
+	'NEWMARKET_UPDATE_ALAIL' => 'Доступно оновлення',
+	'NEWMARKET_MODULE_DISCUSS' => 'Дискуссія',
+	'NEWMARKET_BUY_FOR' => 'Купити за',
    
 );
 
