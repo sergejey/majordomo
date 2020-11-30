@@ -1,19 +1,18 @@
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
 	<div class="col-md-6">
 		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #6bce2c);">
-			<h2>Это маркет!</h2>
-			<p style="font-size: 11pt;">В маркете дополнений MajorDoMo собраны разнообразные модули дополнений позволяющие расширить функционал системы. Вовремя обновляйте дополнения — это позволит избежать ошибок в работе.
-			Если вы не нашли нужного вам модуля - попробуйте обратиться на форум или написать модуль самостоятельно.
+			<h2><#LANG_NEWMARKET_BANNER#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWMARKET_BANNER_TEXT#>
 			</p>
 			<p class="text-right">
-				<a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewforum.php?f=36" target="_blank" class="btn btn-warning btn-md" role="button">Для разработчиков</a>
+				<a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewforum.php?f=36" target="_blank" class="btn btn-warning btn-md" role="button"><#LANG_NEWMARKET_BANNER_BTN#></a>
 			</p>
 		</div>
 	</div>
 	<div class="col-md-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Поиск и опции</h3>
+				<h3 class="panel-title"><#LANG_NEWMARKET_SERACH_BLOCK#></h3>
 			</div>
 			<div class="panel-body">
 				<div style="margin-bottom: 10px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
@@ -30,9 +29,9 @@
 							$('#tab li').hide();
 							$('#li_search').remove();
 							//Вставляем вкладку
-							$('#tab').prepend('<li id="li_search_hint"><a data-toggle="tab" href="javascript://" onclick="$(\'#filter\').val(\'\');filterPlugins();">Закрыть поиск</a></li>');
+							$('#tab').prepend('<li id="li_search_hint"><a data-toggle="tab" href="javascript://" onclick="$(\'#filter\').val(\'\');filterPlugins();"><#LANG_NEWMARKET_CLOSE_SEACRH#></a></li>');
 							
-							$('#tab').prepend('<li id="li_search" class="active"><a data-toggle="tab" href="#panel_installed" id="panel_installed" onclick="refreshPluginsList(\'installed\',\'\');" class="active">Поиск</a></li>');
+							$('#tab').prepend('<li id="li_search" class="active"><a data-toggle="tab" href="#panel_installed" id="panel_installed" onclick="refreshPluginsList(\'installed\',\'\');" class="active"><#LANG_NEWMARKET_SEARCH#></a></li>');
 							
 							refreshPluginsList(0,str);
 							$('#filter').removeAttr('style');
@@ -52,7 +51,7 @@
 						upTimer=setTimeout('filterPlugins();',1000);
 					}
 					</script>
-					<input type="text" class="form-control" placeholder="Начните вводить ключевые слова..." id="filter" onInput="searchKeyUp();" autofocus>
+					<input type="text" class="form-control" placeholder="<#LANG_NEWMARKET_SEARCH_INPUT_PLACEHOLDER#>" id="filter" onInput="searchKeyUp();" autofocus>
 				</div>
 				<div >
 					[#if CLEAR_FIRST!="1"#]

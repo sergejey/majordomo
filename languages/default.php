@@ -1517,7 +1517,9 @@ $dictionary = array(
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'modules',
 	'NEWDASH_SHOW_LAST_SCRIPTS' => 'The last 6 running scripts are displayed here',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 largest tables in your database.',
-
+	'NEWDASH_WEB_PAGE' => 'Frontend',
+	
+	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',
 	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Update anyway',
@@ -1580,6 +1582,17 @@ $dictionary = array(
 	'NEWSYSTEM_ERROR_DESC' => 'description',
 	'NEWSYSTEM_ERROR_SEE_BTN' => 'View',
 	'NEWSYSTEM_ERROR_NOT_FOUND' => 'No information about system or module errors found in the database!',
+	
+	'NEWMARKET_BANNER' => 'This is a market!',
+	'NEWMARKET_BANNER_TEXT' => 'The MajorDoMo add-ons market contains a variety of add-on modules that allow you to expand the system\'s functionality. Update add-ons in time to avoid mistakes in work. If you didn’t find the module you need, try using the forum or write the module yourself. ',
+	'NEWMARKET_BANNER_BTN' => 'For Developers',
+	'NEWMARKET_SERACH_BLOCK' => 'Search and options',
+	'NEWMARKET_CLOSE_SEACRH' => 'Close search',
+	'NEWMARKET_SEARCH' => 'Search',
+	'NEWMARKET_SEARCH_INPUT_PLACEHOLDER' => 'Start typing keywords ...',
+	'NEWMARKET_UPDATE_ALAIL' => 'Update available',
+	'NEWMARKET_MODULE_DISCUSS' => 'Discussion',
+	'NEWMARKET_BUY_FOR' => 'Buy at',
 
 );
 
