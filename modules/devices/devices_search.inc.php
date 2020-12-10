@@ -56,7 +56,7 @@ $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices");
 $out['TOTAL'] = (int)$tmp['TOTAL'];
 
 $loc_title = '';
-$sortby_devices = "locations.PRIORITY DESC, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
+$sortby_devices = "locations.PRIORITY DESC, locations.TITLE, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
 $out['SORTBY'] = $sortby_devices;
 // SEARCH RESULTS
 $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY " . $sortby_devices);
