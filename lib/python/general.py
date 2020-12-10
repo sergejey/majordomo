@@ -224,4 +224,37 @@ def RoomDevices(room):
         if con:
             con.close()
     return result
+def getObjects(name,info):
+    '''
+    Принимает значения в следующем виде mjdm.getObjects('USERS','DESCRIPTION') либо mjdm.getObjects('USERS','DESCRIPTION, ID')
+    Все принимаемые значения строка STR "".
+    info может принимать следующие аргументы (id, title,CLASS_ID,DESCRIPTION,LOCATION_ID,KEEP_HISTORY,SYSTEM)
+    Возвращает значения info в виде строки если вызван один аргумет info, или списка если вызвано несколько аргументов
+    '''
+    con = 0
+    result = ""
+    subClass_tuple = ()
+    info=info.upper()
+    lenifo=len(info.split(','))
+
+    try:
+        # Подключаемся к БД
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, charset='utf8')
+        # Создаем курсор - это специальный объект который делает запросы и получает их результаты
+        cur = con.cursor()
+        # Делаем SELECT запрос к базе данных, используя обычный SQL-синтаксис и получаем все данные из стобцов ID,SUB_LIS табоицы classes
+        cur.execute("SELECT " + info + " FROM objects WHERE TITLE = '" + name + "'OR ID = '" + name + "'")
+        # Получаем данные в виде кортежа
+        class_record = cur.fetchall()
+        if int(lenifo) > 1:
+            class_record=list(sum(class_record, ()))
+            result=class_record
+        else:
+
+            class_record = list(sum(class_record, ()))
+            result = class_record[0]
+    finally:
+        if con:
+            con.close()
+    return str(result)
 
