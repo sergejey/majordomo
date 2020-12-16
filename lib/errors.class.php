@@ -114,7 +114,7 @@ function phpShutDownFunction() {
     $e = new \Exception;
     $backtrace = $e->getTraceAsString();
     if ($error['type'] === E_ERROR) {
-        DebMes("PHP shutdown error: ".$error['message']."\nBacktrace: ".$backtrace,'error');
+        DebMes($_SERVER['REQUEST_URI']."\nPHP shutdown error: ".$error['message']."\nBacktrace: ".$backtrace,'errors');
         $err = new custom_error($error['message']);
     }
 }
