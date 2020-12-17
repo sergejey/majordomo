@@ -208,6 +208,14 @@
 		
 		function consoleDebugToggle() {
 			$("#console_debug").toggle();
+			
+			//Запишем в куку, что консоль открыли
+			if ($('#console_debug').is(':visible')) {
+				$.cookie('debug', 'on', {expires: 1});
+			} else {
+				$.cookie('debug', 'off', {expires: 1});
+			}
+			
 			updateConsoleDebug();
 			return false;
 		}
@@ -229,7 +237,7 @@
 		function loadInProgress() {
 			$('.sp-replacer').remove();
 			$('.sp-container').remove();
-			$('#preloader').show();
+			$('#preloader').show('fast');
 			$('#partLoadContent').html('');
 			$('#stopLoadBtnPreloader').attr('src', urlInProgress);
 			//$('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
@@ -485,13 +493,28 @@
 				success: function(data) {
 					if(data) data = JSON.parse(data);
 					if (data.status == 1) {
-						$('#myBlockOnDash').show();
+						if($('#myBlockOnDash').is(":hidden") == true) $('#myBlockOnDash').show();
 						$('#myBlockOnDash_title').text(data.name);
 						$('#myBlockOnDash_body').html(data.data.data);
+						$('#myBlockOnDash').removeClass("panel-info").addClass('panel-'+data.type);
+
 						if(data.reload == true) {
 							setTimeout(function() {
 								myBlockOnDash();
 							}, data.reload_time*1000);
+						}
+						//Есть доп инфа для вывода
+						if(data.moreinfo) {
+							$('#more_myBlockOnDash').show();
+							i = 0;
+							for (var value in data.moreinfo) {
+								if(i == 0) $('#more_myBlockOnDash_body').html('');
+								color = data.moreinfo[value].split('|color:');
+								(color[1]) ? color_bg = color[1] : color_bg = '#999';
+								
+								$('#more_myBlockOnDash_body').prepend('<li class="list-group-item">'+value+'<span class="badge" style="background:'+color_bg+';">'+color[0]+'</span></li>');
+								i++;
+							}
 						}
 					} else {
 						$('#myBlockOnDash').hide();
@@ -691,7 +714,7 @@
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> FrontEnd <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_WEB_PAGE#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
 						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
@@ -758,10 +781,12 @@
 	function toggleCategory(id) {
 		var vl=$.cookie('sub_'+id);
 
-		if (vl == 'on') {
-			$.cookie('sub_'+id, 'off');
+		if (vl == 'off') {
+			$.cookie('sub_'+id, 'on', {expires: 180});
+			console.log('Запись куки');
 		} else {
-			$.cookie('sub_'+id, 'on');
+			$.cookie('sub_'+id, 'off', {expires: 180});
+			console.log('Запись куки');
 		}
 		
 		$('#row_'+id).collapse("toggle");
@@ -773,7 +798,7 @@
 		var vl = $.cookie('hint_'+id);
 		
 		if (check == 0 && vl != 'off') {
-			$.cookie('hint_'+id, 'off');
+			$.cookie('hint_'+id, 'off', {expires: 180});
 			$('#hint_'+id).hide("fast");
 		} else if (check == 1) {
 			if(vl != 'off') {
@@ -798,6 +823,16 @@
 			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
 			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
 				<div class="panel-group">
+					<div id="hint_alert_hide_hint2" style="display:none;">
+						<div class="hidden-xs">
+							<div class="alert" id="hideMenuHint" onClick="return leftPanelToggle();" style="margin-bottom: 0px;cursor:pointer;font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;">
+								<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
+								<#LANG_NEWDASH_HIDE_MENU_HINT#> <i class="glyphicon glyphicon-resize-horizontal"></i>
+							</div>
+							<div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;margin-bottom:20px"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+						</div>
+					</div>
+					
 					[#begin SUB_MODULES#]
 					[#if NEW_CATEGORY#]
 					<div class="panel panel-default">
@@ -820,17 +855,6 @@
 					</div>
 					[#endif#]
 					[#end SUB_MODULES#]
-					
-					<div id="hint_alert_hide_hint2" style="display:none;">
-						<div class="hidden-xs">
-							<div class="alert" id="hideMenuHint" onClick="return leftPanelToggle();" style="margin-bottom: 0px;cursor:pointer;font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;margin-top: 10px;">
-								<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
-								<#LANG_NEWDASH_HIDE_MENU_HINT#> <i class="glyphicon glyphicon-resize-horizontal"></i>
-							</div>
-							<div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
-						</div>
-					</div>
-					
 				</div>
 				[#begin SUB_MODULES#]
 				[#if NEW_CATEGORY#]
@@ -868,8 +892,8 @@
 									<button style="vertical-align: super;" type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
 								</div>
 								--->
-								<a href="javascript://" onclick="consoleDebugToggle();"><i class="glyphicon glyphicon-question-sign"></i> Debug	</a>
-								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a>
+								<a href="javascript://" onclick="consoleDebugToggle();" style="text-decoration: none;margin-right: 15px;color: #d74b4b;"><i class="glyphicon glyphicon-screenshot" style="vertical-align: top;"></i> Debug</a>
+								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign" style="vertical-align: top;"></i> <#LANG_KNOWLEDGE_BASE#></a>
 							</li>
 							[#else#]
 							<li>
@@ -902,7 +926,12 @@
 	<!--partloadend-->
 
 <script language="javascript">
-
+	//Показ консоли
+	if($.cookie('debug') == 'on' && $('#console_debug').is(':hidden')) {
+		consoleDebugToggle();
+	}
+	
+	
     var dynids='';
     var dynids_timer=0;
     function dynamicContentRefresh() {

@@ -3,15 +3,20 @@
 #-->
 
 [#if OVERWRITE=""#]
+	<style>
+	.hoverMethods:hover {
+		    background: #f5f5f5;
+	}
+	</style>
 	<table border="0" class="table table-bordered">
 		[#begin METHODS#]
-			<tr>
-				<td>[#CLASS_TITLE#]-&gt; <b>[#TITLE#]</b>
+			<tr class="hoverMethods">
+				<td style="vertical-align: middle;">[#CLASS_TITLE#] &rarr; <b>[#OBJECT_TITLE#].[#TITLE#]</b>
 				[#if CUSTOMIZED="1"#]<font color="red">*</font>[#endif#]
 				</td>
-				<td>
+				<td style="vertical-align: middle;text-align: center;">
 					<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&overwrite=1&method_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> <#LANG_SETUP#></a>
-					<a href="<#ROOTHTML#>objects/?object=[#CLASS_TITLE#]&op=m&m=[#TITLE#]" target="blank" class="btn btn-success btn-sm" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-play-circle"></i> <#LANG_RUN_SCRIPT_BTN#></a>
+					<a href="<#ROOTHTML#>objects/?object=[#OBJECT_TITLE#]&op=m&m=[#TITLE#]" target="blank" class="btn btn-success btn-sm" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-play-circle"></i> <#LANG_RUN_SCRIPT_BTN#></a>
 				</td>
 			</tr>
 		[#end METHODS#]

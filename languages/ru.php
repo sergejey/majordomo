@@ -1494,7 +1494,7 @@ $dictionary = array(
 	'NEWDASH_SYSTEM_INFO_BRABCH' => 'Текущая ветка',
 	'NEWDASH_SYSTEM_INFO_LAST_UPDATE' => 'Последнее обновление',
 	'NEWDASH_CYCLE_CONTROL' => 'Контроль циклов',
-	'NEWDASH_LAST_SCRIPTS' => 'Последнее сценарии',
+	'NEWDASH_LAST_SCRIPTS' => 'Последние сценарии',
 	'NEWDASH_LAST_SCRIPTS_GO' => 'сценарии',
 	'NEWDASH_HELLO_NEW' => 'Привет новый дизайн!',
 	'NEWDASH_HELLO_NEW_TEXT' => 'Мы тут затеяли обновление дизайна и нам нужна твоя помощь! Собирай баги, замечания и пожелания и пиши их на форум! Давай вместе сделаем MajorDomo красивым и удобным =)',
@@ -1515,8 +1515,9 @@ $dictionary = array(
 	'NEWDASH_PRELOAD_BTN' => 'Остановить операцию',
 	'NEWDASH_UPDATE_MODULE_HINT1' => 'Обновления для',
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулей',
-	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценариев',
+	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценария',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 самых больших таблиц в вашей базе данных.',
+	'NEWDASH_WEB_PAGE' => 'Веб-страницы',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',
@@ -1594,6 +1595,16 @@ $dictionary = array(
 	'NEWSYSTEM_ERROR_SEE_BTN' => 'Посмотреть',
 	'NEWSYSTEM_ERROR_NOT_FOUND' => 'В базе данных не найдено информации об ошибках системы или модулей.',
 	
+	'NEWMARKET_BANNER' => 'Это маркет!',
+	'NEWMARKET_BANNER_TEXT' => 'В маркете дополнений MajorDoMo собраны разнообразные модули дополнений позволяющие расширить функционал системы. Вовремя обновляйте дополнения — это позволит избежать ошибок в работе. Если вы не нашли нужного вам модуля - попробуйте обратиться на форум или написать модуль самостоятельно.',
+	'NEWMARKET_BANNER_BTN' => 'Для разработчиков',
+	'NEWMARKET_SERACH_BLOCK' => 'Поиск и опции',
+	'NEWMARKET_CLOSE_SEACRH' => 'Закрыть поиск',
+	'NEWMARKET_SEARCH' => 'Поиск',
+	'NEWMARKET_SEARCH_INPUT_PLACEHOLDER' => 'Начните вводить ключевые слова...',
+	'NEWMARKET_UPDATE_ALAIL' => 'Доступно обновление',
+	'NEWMARKET_MODULE_DISCUSS' => 'Обсуждение',
+	'NEWMARKET_BUY_FOR' => 'Купить за',
 	
 );
 

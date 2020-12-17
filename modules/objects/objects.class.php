@@ -968,6 +968,7 @@ class objects extends module
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             $this->device_id &&
             ($p_lower == 'value' ||
+                $p_lower == 'valuehumidity' ||
                 $p_lower == 'status' ||
                 $p_lower == 'disabled' ||
                 $p_lower == 'level' ||
