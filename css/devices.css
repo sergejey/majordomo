@@ -218,6 +218,11 @@
     background-image: url(../cms/scenes/styles/informer/i_humidity.png);
 }
 
+.device-icon.moisture {
+    background-image: url(../cms/scenes/styles/common/i_sad.png);
+}
+
+
 .device-icon.pressure {
     background-image: url(../cms/scenes/styles/informer/i_temp.png);
 }
