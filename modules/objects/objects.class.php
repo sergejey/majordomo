@@ -725,6 +725,16 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
+            if ($property == 'object_title') {
+                return $this->object_title;
+            } elseif ($property == 'object_description') {
+                return $this->description;
+            } elseif ($property == 'object_id') {
+                return $this->id;
+            } elseif ($property == 'class_title') {
+                return $this->class_title;
+            }
+        
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
                 startMeasure('getPropertyCached2');
@@ -735,17 +745,6 @@ class objects extends module
             }
         }
 
-        if ($this->object_title) {
-            if ($property == 'object_title') {
-                return $this->object_title;
-            } elseif ($property == 'object_description') {
-                return $this->description;
-            } elseif ($property == 'object_id') {
-                return $this->id;
-            } elseif ($property == 'class_title') {
-                return $this->class_title;
-            }
-        }
         if ($property == 'location_title') {
             return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=" . (int)$this->location_id));
         }
