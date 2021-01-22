@@ -379,6 +379,16 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SHumSensors'
     ),
+    'sensor_moisture'=>array(
+        'TITLE'=>LANG_DEVICES_MOISTURE_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SMoistureSensors'
+    ),
+    'sensor_radiation'=>array(
+        'TITLE'=>LANG_DEVICES_RADIATION_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SRadiationSensors'
+    ),
 	'sensor_state'=>array(
         'TITLE'=>LANG_DEVICES_STATE_SENSOR,
         'PARENT_CLASS'=>'SSensors',

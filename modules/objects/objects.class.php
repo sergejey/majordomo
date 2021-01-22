@@ -535,7 +535,7 @@ class objects extends module
         $params['raiseEvent'] = $raiseEvent;
         $params['m_c_s'] = $call_stack;    
         $params['r_s_m'] = $run_SafeMethod;
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeMethod ) {
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES==1))) {
             $result = $this->callMethod($name, $params);
         } else {
             $params['r_s_m'] = 1;
@@ -725,6 +725,16 @@ class objects extends module
         $property = trim($property);
 
         if ($this->object_title) {
+            if ($property == 'object_title') {
+                return $this->object_title;
+            } elseif ($property == 'object_description') {
+                return $this->description;
+            } elseif ($property == 'object_id') {
+                return $this->id;
+            } elseif ($property == 'class_title') {
+                return $this->class_title;
+            }
+        
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
                 startMeasure('getPropertyCached2');
@@ -735,17 +745,6 @@ class objects extends module
             }
         }
 
-        if ($this->object_title) {
-            if ($property == 'object_title') {
-                return $this->object_title;
-            } elseif ($property == 'object_description') {
-                return $this->description;
-            } elseif ($property == 'object_id') {
-                return $this->id;
-            } elseif ($property == 'class_title') {
-                return $this->class_title;
-            }
-        }
         if ($property == 'location_title') {
             return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=" . (int)$this->location_id));
         }
@@ -968,6 +967,7 @@ class objects extends module
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             $this->device_id &&
             ($p_lower == 'value' ||
+                $p_lower == 'valuehumidity' ||
                 $p_lower == 'status' ||
                 $p_lower == 'disabled' ||
                 $p_lower == 'level' ||
@@ -1086,19 +1086,6 @@ class objects extends module
     }
 
     /**
-     * objects subscription events
-     *
-     * @access public
-     */
-    function processSubscription($event, $details = '') {
-        if ($event == 'DAILY') {
-            // почистим кеш 
-            SQLExec("DELETE FROM cached_values WHERE EXPIRE < NOW()");
-        }
-
-    }
-
-    /**
      * Install
      *
      * Module installation routine
@@ -1107,7 +1094,7 @@ class objects extends module
      */
     function install($parent_name = "")
     {
-        subscribeToEvent($this->name, 'DAILY');
+        unsubscribeFromEvent($this->name, 'DAILY');
         parent::install($parent_name);
     }
 
@@ -1139,7 +1126,6 @@ class objects extends module
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
                 `DATAVALUE` CHAR(255) NOT NULL,
-                `EXPIRE`    DATETIME  NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);

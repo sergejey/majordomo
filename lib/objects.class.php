@@ -35,7 +35,6 @@ function addClass($class_name, $parent_class = '')
     }
 }
 
-
 /**
  * Summary of getObjectClassTemplate
  * @param mixed $object_name Object name

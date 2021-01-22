@@ -143,6 +143,7 @@ for ($i = 0; $i < $total; $i++) {
             break;
         case 'sensor_light':
             $payload['service'] = 'LightSensor';
+            $payload['CurrentAmbientLightLevel']['minValue'] = 0;
             sg('HomeBridge.to_add', json_encode($payload));
 
             $payload['characteristic'] = 'CurrentAmbientLightLevel';

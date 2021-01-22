@@ -659,6 +659,19 @@ class devices extends module
                 $id=gr('id');
                 $res = $this->processDevice($id,$view);
             }
+            if ($op == 'get_devices') {
+                $ids=gr('ids');
+                $tmp=explode(',',$ids);
+                $res=array();
+                foreach($tmp as $id) {
+                    if (!$id) continue;
+                    $record = $this->processDevice($id);
+                    if (!$record['DEVICE_ID']) continue;
+                    $res['devices'][] = $record;
+                }
+
+                //$res = $this->processDevice($id,$view);
+            }
             if ($op == 'loadAllDevicesHTML') {
                 /*
                 if (gr('favorite')) {
@@ -737,7 +750,7 @@ class devices extends module
                     $qry .= " AND devices.TYPE LIKE '" . DBSafe($type) . "'";
                     $out['TITLE'] = $this->device_types[$type]['TITLE'];
                 } else {
-                    $orderby = 'TYPE, locations.PRIORITY DESC, LOCATION_ID, TITLE';
+                    $orderby = 'TYPE, locations.PRIORITY DESC, locations.TITLE, LOCATION_ID, TITLE';
                 }
                 $out['TYPE'] = $type;
             }
@@ -770,7 +783,7 @@ class devices extends module
                 }
             }
         } else {
-            $orderby = 'locations.PRIORITY DESC, LOCATION_ID, TYPE, TITLE';
+            $orderby = 'locations.PRIORITY DESC, locations.TITLE, LOCATION_ID, TYPE, TITLE';
             //$qry=" devices.FAVORITE=1";
             $qry.= " AND SYSTEM_DEVICE=0";
             $out['ALL_DEVICES']=1;
@@ -795,7 +808,7 @@ class devices extends module
             }
         }
 
-        $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE+0");
+        $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY PRIORITY DESC, TITLE");
         $total_devices = count($devices);
         if ($total_devices) {
             $favorite_devices = array();

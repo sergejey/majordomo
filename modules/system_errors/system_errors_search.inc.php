@@ -55,7 +55,7 @@
 
  if ($this->ajax && $_GET['op']=='check') {
   if ($errors_found>0) {
-   echo "1";
+   echo $errors_found;
   } else {
    echo "0";
   }

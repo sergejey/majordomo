@@ -49,38 +49,25 @@
    }
   });
 
-
-
   function httpRefreshDevices<#UNIQ#>() {
+   if (!trackedDevices<#UNIQ#>.length) return;
    clearTimeout(httpRefreshTimer<#UNIQ#>);
-   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_device&view=<#VIEW#>&id=";
-   /*
-   for(var i=0;i<trackedDevices<#UNIQ#>.length;i++) {
-    alert(trackedDevices[i]);
-   }
-   */
+   var baseURL = "<#ROOTHTML#>ajax/devices.html?op=get_devices&view=<#VIEW#>&ids=";
    trackedDevices<#UNIQ#>.forEach(function(item, index) {
-    var url = baseURL + item;
-    $.ajax({
-     url: url
-    }).done(function(data) {
-     var obj=jQuery.parseJSON(data);
-     $('.device<#UNIQ#>_'+item).html(obj.HTML);
-    });
-    /*
-    ajaxManager.addReq({
-     type: 'GET',
-     url: url,
-     success: function(data){
-      var obj=jQuery.parseJSON(data);
-      $('.device_<#UNIQ#>'+item).html(obj.HTML);
-     }
-    });
-    */
+    baseURL+=item+','
    });
-   httpRefreshTimer<#UNIQ#> = setTimeout('httpRefreshDevices<#UNIQ#>();',5000);
+   $.ajax({
+    url: baseURL
+   }).done(function(data) {
+    httpRefreshTimer<#UNIQ#> = setTimeout('httpRefreshDevices<#UNIQ#>();',5000); //
+    var obj=jQuery.parseJSON(data);
+    if (Array.isArray(obj.devices)) {
+     for(var i=0;i<obj.devices.length;i++) {
+      $('.device<#UNIQ#>_'+obj.devices[i].DEVICE_ID).html(obj.devices[i].HTML);
+     }
+    }
+   });
   }
-
   var trackedDevices<#UNIQ#> = [];
   [#begin DEVICES#]
   trackedDevices<#UNIQ#>.push([#ID#]);

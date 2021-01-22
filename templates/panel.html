@@ -1,694 +1,940 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>{#TITLE#}</title>
-[#inc common_header.html#]
-<link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
-[#inc websockets.html#]
-</head>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>{#TITLE#}</title>
+		[#inc common_header.html#]
+		<link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
+		[#inc websockets.html#]
+	</head>
 
 <body>
-[#if AUTHORIZED#]
+	[#if AUTHORIZED#]
+	<script language="javascript">
+		function openFileBrowser(id){
+			/*
+			fileBrowserlink = "<#ROOTHTML#>3rdparty/pdw/index.php?editor=standalone&returnID=" + id;
+			window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
+			*/
+			window.KCFinder = {
+				callBack: function (url) {
+					window.KCFinder = null;
+					//alert(url);
+					$('#'+id).val(url);
+				}
+			};
+			window.open('<#ROOTHTML#>3rdparty/kcfinder/browse.php?dir=/',
+					'kcfinder_image', 'status=0, toolbar=0, location=0, menubar=0, ' +
+					'directories=0, resizable=1, scrollbars=0, width=800, height=600'
+			);
+		}
+
+		function showHideLayer(id) {
+		var layer=document.getElementById('sub_'+id);
+		var layer2=document.getElementById('plus_'+id);
+		if (layer.style.display=='none') {
+		layer.style.display='block';
+		layer2.innerHTML='[-]';
+		$.cookie('sub_'+id, 'on');
+		} else {
+		layer.style.display='none';
+		layer2.innerHTML='[+]';
+		$.cookie('sub_'+id, 'off');
+		}
+		return false;
+		}
+
+		function checkLayer(id) {
+		var vl=$.cookie('sub_'+id);
+		if (vl=='off') {
+		showHideLayer(id);
+		}
+		}
+
+		var filterTimer;
+
+		function filterSearch() {
+			var title = $('#filter_modules').val();
+			var urlFilter="?";
+			
+			urlFilter+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
+
+			$.ajax({
+				url: urlFilter,
+				success: function(data){
+					$('#filter_add').show();
+					$('#filter_add').html(data);
+				},
+				error: function(data){
+					$('#filter_add').show();
+					$('#filter_add').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - filterSearch()</div>');
+				},
+			});
+			return false;
+		}
+
+		function setFilter(value) {
+			$('#filter_modules').val(value);
+			filterSearch();
+			return false;
+		}
+
+		function filterModules() {
+			var title=document.frmFilterModules.filter_modules.value;
+			var moduleTitle='';
+			var sectionTitle='';
+			var elem;
+
+			$.cookie('panelFilter', title);
+
+			title=title.toLowerCase();
+
+			if (title!='') {
+				//$('#filter_add').html('...');
+				$('#filter_add').show();
+				clearTimeout(filterTimer);
+				filterTimer=setTimeout('filterSearch();', 1000);
+			} else {
+				$('#filter_add').hide();
+				clearTimeout(filterTimer);
+			}
+
+			var found=0;
+			var i=0;
+
+			[#begin SUB_MODULES#]
+
+			[#if !DENIED#]
+				moduleTitle="[#TITLE#]";
+				moduleTitle=moduleTitle.toLowerCase();
+				sectionTitle="[#CATEGORY#]";
+				sectionTitle=sectionTitle.toLowerCase();
+				elem=document.getElementById('module_[#NAME#]_link');
+				if (title=='' || moduleTitle.indexOf(title)!=-1 || sectionTitle.indexOf(title)!=-1) {
+					elem.style.display='block';
+					found++;
+				} else {
+					elem.style.display='none';
+				}
+				i++;
+			[#endif DENIED#]
+
+		[#if LAST_IN_CATEGORY#]
+		//alert('z');
+		elem=document.getElementById('row_[#CATEGORY#]');
+		if (found>0) {
+		elem.style.display='block';
+		} else {
+		elem.style.display='none';
+		}
+		//alert(elem.id+': '+elem.style.display);
+		found=0;
+		[#endif LAST_IN_CATEGORY#]
+
+		[#end SUB_MODULES#]
+		}
+
+		jQuery.fn.center = function () {
+		this.css("position","absolute");
+		this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+		this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+		return this;
+		}
+		// ----------------------------------------------------------------------
+		function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
+		 /*
+		var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
+		jWindowObj.show();
+		jWindowObj.update();
+		$('#usersWindow').center();
+		*/
+		parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
+		return false;
+		}
+
+
+		function openModalTWindow(winId, winTitle, pageURL, wdth, hdth) {
+		 /*
+		var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, minimiseButton:false, maximiseButton:false, draggable:false, resizeable:false, modal: true });
+		jWindowObj.show();
+		jWindowObj.update();
+		$('#usersWindow').center();
+		*/
+		parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
+		return false;
+		}
+
+		function leftPanelToggle() {
+		 var url=window.location.href;
+		 var dURL = url.replace(/#$/, '');
+		 if (dURL.indexOf('?') !== -1) {
+			 dURL+='&toggleLeftPanel=1';
+		 } else {
+			 dURL+='?toggleLeftPanel=1';
+		 }
+		 window.location.href=dURL;
+		 //$('#left_block').toggle();
+		 //checkLeftPanelStatus();
+		 return false;
+		}
+
+		var cmd='';
+
+		var hrefLocation = window.location.href;
+		hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+		var urlInProgress = '';
+
+		var consoleDebugTimer;
+
+		function updateConsoleDebug() {
+			if ($('#console_debug').is(":hidden")) {
+				clearTimeout(consoleDebugTimer);
+			}
+			
+			var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
+			$.ajax({
+				url: urlDebug,
+			}).done(function(data) {
+				data = JSON.parse(data);
+				$('#console_debug').html(data.CONTENT);
+			});
+			consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
+		}
+
+		function consoleToggle() {
+			$("#console").toggle();
+			return false;
+		}
+		
+		function consoleDebugToggle() {
+			$("#console_debug").toggle();
+			
+			//Запишем в куку, что консоль открыли
+			if ($('#console_debug').is(':visible')) {
+				$.cookie('debug', 'on', {expires: 1});
+			} else {
+				$.cookie('debug', 'off', {expires: 1});
+			}
+			
+			updateConsoleDebug();
+			return false;
+		}
+
+		var locationTimer;
+		function checkLocationHref() {
+		 clearTimeout(locationTimer);
+		 /*
+		  var currentHref;
+		  currentHref = window.location.href;
+		  currentHref = currentHref.replace(/^.*\/\/[^\/]+/, '');
+		  if (currentHref.localeCompare(hrefLocation)!=0) {
+		  }
+		  locationTimer = setTimeout('checkLocationHref();',1000);
+		  */
+		}
+
+		var loaderTimer;
+		function loadInProgress() {
+			$('.sp-replacer').remove();
+			$('.sp-container').remove();
+			$('#preloader').show('fast');
+			$('#partLoadContent').html('');
+			$('#stopLoadBtnPreloader').attr('src', urlInProgress);
+			//$('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
+			return false;
+		}
+
+
+
+		var requestCounter = 0;
+
+		function partLoad(link) {
+
+		 [#if PRINT=="1"#]return true;[#endif#]
+		 if (typeof link == 'undefined') return;
+
+
+		 var maxId=setTimeout(function(){}, 0);
+		 for(var i=0;i<maxId;i+=1) {
+			 clearTimeout(i);
+		 }
+
+		 ajaxManager.stop();
+		 requestCounter++;
+		 var seqNumber=requestCounter;
+		 var urlPartLoad=link;
+		 urlInProgress = link;
+		 hrefLocation = link;
+		 hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+		 clearTimeout(locationTimer);
+		 locationTimer = setTimeout('checkLocationHref();',1000);
+		 urlPartLoad+='&part_load=1';
+
+		 var cachedKey = simple_hash(urlPartLoad);
+		 var cachedContent = localStorage.getItem(cachedKey);
+		 if (typeof cachedContent == 'string') {
+			 window.history.pushState('', window.title, link);
+			 $('#partLoadContent').html(cachedContent);
+		 } else {
+			 cachedContent = '';
+			 loaderTimer=setTimeout(loadInProgress, 1000);
+		 }
+
+		 $.ajax({
+			 url: urlPartLoad,
+			 urlInProgress: urlInProgress
+		 }).done(function(data) {
+			 //console.log('part content loaded');
+			 if (seqNumber!=requestCounter) {
+				 //console.log('Ignoring response');
+			 }
+			 clearTimeout(loaderTimer);
+			 try {
+				 JSON.parse(data);
+			 } catch (e) {
+				 window.location.href=this.urlInProgress;
+				 return false;
+			 }
+			 var obj=jQuery.parseJSON(data);
+			 if ("undefined" !== typeof obj.REDIRECT) {
+				 link = obj.REDIRECT;
+			 }
+
+			 if (obj.NEED_RELOAD!=0) {
+				 window.location.href=link;
+			 } else {
+				 window.history.pushState('', window.title, link);
+				 if (cachedContent!=obj.CONTENT) {
+					 $('#partLoadContent').html(obj.CONTENT);
+					 localStorage.setItem(cachedKey,obj.CONTENT);
+				 }
+				 if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
+					 window.document.title = obj.TITLE;
+				 }
+
+				 $('input[name=filter_modules]').keyup(function() {
+					 filterModules();
+				 });
+
+			 }
+		 });
+		 return false;
+		}
+		[#if ACTION==""#]
+		function checkSystemInfo() {
+			$.ajax({
+				url: '<#ROOTHTML#>diagnostic.php?ajax=1',
+				success: function(data) {
+					data = JSON.parse(data);
+					//console.log(data);
+					$('#dashInfoIPCl').text();
+					$('#dashInfoIPSer').text();
+					$('#dashInfoOS').text(data.OS);
+					$('#dashInfoErrors').text(data.active_errors);
+					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
+					
+					if(data.DB.connection == 'OK') {
+						$('#dashInfoDBConn').html('<#LANG_NEWDASH_CONNECTED#>');
+						$('#dashInfoDBConn').attr('style', 'background: #5cb85c');
+					} else {
+						$('#dashInfoDBConn').html('<#LANG_NEWDASH_DISCONNECTED#>');
+						$('#dashInfoDBConn').attr('style', 'background: lightcoral');
+					}
+					
+				},
+				error: function(data) {
+					console.log('error');
+				}
+			});
+			//Запрос последних скриптов
+			$.ajax({
+				url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=scripts&ajax=1&op=getcontent',
+				success: function(data) {
+					data = JSON.parse(data);
+					list = data.LIST.reverse();
+					i = 0;
+					while (i < 6) {
+						dataCurr = list[i];
+						
+						(i != 0) ? scriptLastBlock = $('#scriptLast').html() : scriptLastBlock = '';
+						$('#scriptLast').html(scriptLastBlock + '<li class="list-group-item"><span class="badge">'+dataCurr.EXECUTED+'</span>'+dataCurr.SCRIPT+'</li>')
+						
+						i++;
+					}
+				},
+				error: function(data) {
+					console.log('error');
+				}
+			});
+			//Запрос данных по работе БД
+			$.ajax({
+				url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=showdbload',
+				success: function(data) {
+					data = JSON.parse(data);
+					$('#dashInfoDBReqS').html(data.second);
+					$('#dashInfoDBReqM').html(data.minute);
+					$('#dashInfoDBReqH').html(data.hours);
+					
+					//Секунды
+					if(data.second <= 170) {
+						$('#dashInfoDBReqS').attr('style', 'cursor: help;background: #5cb85c');
+					} else if(data.second > 170 && data.second < 250) {
+						$('#dashInfoDBReqS').attr('style', 'cursor: help;background: #f0ad4e');
+					} else {
+						$('#dashInfoDBReqS').attr('style', 'cursor: help;background: #d9534f');
+					}
+					//Минуты
+					if(data.minute <= 10200) {
+						$('#dashInfoDBReqM').attr('style', 'cursor: help;background: #5cb85c');
+					} else if(data.second > 10200 && data.second < 15000) {
+						$('#dashInfoDBReqM').attr('style', 'cursor: help;background: #f0ad4e');
+					} else {
+						$('#dashInfoDBReqM').attr('style', 'cursor: help;background: #d9534f');
+					}
+					//Часы
+					if(data.minute <= 612000) {
+						$('#dashInfoDBReqH').attr('style', 'cursor: help;background: #5cb85c');
+					} else if(data.second > 612000 && data.second < 900000) {
+						$('#dashInfoDBReqH').attr('style', 'cursor: help;background: #f0ad4e');
+					} else {
+						$('#dashInfoDBReqH').attr('style', 'cursor: help;background: #d9534f');
+					}
+				},
+				error: function(data) {
+					console.log('error');
+				}
+			});
+			
+			
+			return false;
+		}
+		[#endif#]
+		function sendConsoleCommand() {
+			var cmd=$('#command').val();
+			if(cmd == '') {
+				$('#dangerAlertConsole').show();
+				$('#warningAlertConsole').hide();
+				return false;
+			}
+			var urlCommand="?";
+			
+			$('#loaderConsole').show();
+			
+			urlCommand+='ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+			$.ajax({
+				//url: urlCommand
+				type: "POST",
+				url: "/admin.php",
+				data: urlCommand,
+				success: function(data) {
+					old_data = $('#console_output').html();
+					
+					if(!data) {
+						data = '<i>Completed the request</i>';
+					}
+					console.log(data);
+					$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: <span style="white-space: pre-wrap;">'+data+ '</span><br><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>: '+ cmd + '<br>' + old_data);
+					$('#loaderConsole').hide();
+					$('#dangerAlertConsole').hide();
+					$('#warningAlertConsole').hide();
+					$('#console_output').show();
+					
+					if(cmd == data) {
+						$('#warningAlertConsole').show();
+					}
+				},
+				error: function(data){
+					$('#dangerAlertConsole').hide();
+					$('#warningAlertConsole').hide();
+					$('#loaderConsole').hide();
+					
+					$('#console_output').show();
+					$('#console_output').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - sendConsoleCommand()</div>');
+				},
+			});
+			return false;
+		}
+		[#if ACTION==""#]
+		function checkDidYouKnow() {
+			var urlDidyouknow = '<#ROOTHTML#>ajax/market.html?op=didyouknow';
+			$.ajax({
+				url: urlDidyouknow
+			}).done(function(data) {
+				if (data!='') {
+					$('#didyouknow_body').html(data);
+					$('#didyouknow').show();
+				}
+			});
+			return false;
+		}
+	
+		function checkNews() {
+			var urlCheckNews = '<#ROOTHTML#>ajax/market.html?op=news';
+			$.ajax({
+				url: urlCheckNews,
+				success: function(data) {
+					if (data!='') {
+						$('#news').show();
+						$('#news_body').html(data);
+					}
+				},
+				error: function(data) {
+					$('#news_body').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - checkNews()</div>');
+				},
+			});
+			
+			return false;
+		}
+		
+		function myBlockOnDash() {
+			var urlCheckNews = '<#ROOTHTML#>objects/?script=dash_my_block';
+			$.ajax({
+				url: urlCheckNews,
+				success: function(data) {
+					if(data) data = JSON.parse(data);
+					if (data.status == 1) {
+						if($('#myBlockOnDash').is(":hidden") == true) $('#myBlockOnDash').show();
+						$('#myBlockOnDash_title').text(data.name);
+						$('#myBlockOnDash_body').html(data.data.data);
+						$('#myBlockOnDash').removeClass("panel-info").addClass('panel-'+data.type);
+
+						if(data.reload == true) {
+							setTimeout(function() {
+								myBlockOnDash();
+							}, data.reload_time*1000);
+						}
+						//Есть доп инфа для вывода
+						if(data.moreinfo) {
+							$('#more_myBlockOnDash').show();
+							i = 0;
+							for (var value in data.moreinfo) {
+								if(i == 0) $('#more_myBlockOnDash_body').html('');
+								color = data.moreinfo[value].split('|color:');
+								(color[1]) ? color_bg = color[1] : color_bg = '#999';
+								
+								$('#more_myBlockOnDash_body').prepend('<li class="list-group-item">'+value+'<span class="badge" style="background:'+color_bg+';">'+color[0]+'</span></li>');
+								i++;
+							}
+						}
+					} else {
+						$('#myBlockOnDash').hide();
+						$('#addMyBlockHint').show();
+					}
+				},
+			});
+			
+			return false;
+		}
+		
+		function checkConnectStatus() {	
+			var urlCheckUpdates = '<#ROOTHTML#>ajax/connect.html?op=status';
+			$.ajax({
+				url: urlCheckUpdates
+			}).done(function(data) {
+				data = JSON.parse(data);
+				if (data.status == 0) {
+					$('#getConnect').show('fast');
+				}
+			});
+		}
+		
+		function checkUpdatesAvailable() {	
+			var urlCheckUpdates = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
+			$.ajax({
+				url: urlCheckUpdates
+			}).done(function(data) {
+				data = JSON.parse(data);
+				if (data.needUpdate == '1') {
+					$('#updates-check-system').show();
+					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
+				}
+				$('#loadUpdate').hide();
+				$('#dashInfoBranch').html(data.currBranch.slice(0, -7));
+			});
+			
+			var urlCheckUpdatesMarket = '<#ROOTHTML#>ajax/market.html?op=check_updates';
+			$.ajax({
+				url: urlCheckUpdatesMarket
+			}).done(function(data) {
+				data = JSON.parse(data);
+				if (data.status == '1') {
+					$('#updates-check-market').show();
+					$('#updates-check-market-text').html('<#LANG_NEWDASH_UPDATE_MODULE_HINT1#> ' +data.howUpdate+ ' <#LANG_NEWDASH_UPDATE_MODULE_HINT2#>');
+					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
+				}
+				$('#loadUpdate').hide()
+			});
+			
+			var urlCheckUpdatesSystem = '<#ROOTHTML#>ajax/system_errors.html?op=check';
+			$.ajax({
+				url: urlCheckUpdatesSystem
+			}).done(function(data) {
+				if (data >= '1') {
+					$('#errors-saved').prepend('<span class="label label-danger"><#LANG_ERRORS_SAVED#>: '+data+'</span>');
+					$('#errors-saved').show();
+					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #000000);[#endif#]');
+				}
+				$('#loadUpdate').hide()
+			});
+			
+		}
+		[#endif#]
+	</script>
+
+	[#if PRINT!="1"#]
+	<style>
+		.dropdown-submenu {
+			position:relative;
+		}
+		.dropdown-submenu>.dropdown-menu {
+			top:0;
+			left:100%;
+			margin-top:-6px;
+			margin-left:-1px;
+			-webkit-border-radius:0 6px 6px 6px;
+			-moz-border-radius:0 6px 6px 6px;
+			border-radius:0 6px 6px 6px;
+		}
+		.dropdown-submenu:hover>.dropdown-menu {
+			display:block;
+		}
+		.dropdown-submenu>a:after {
+			display:block;
+			content:" ";
+			float:right;
+			width:0;
+			height:0;
+			border-color:transparent;
+			border-style:solid;
+			border-width:5px 0 5px 5px;
+			border-left-color:#cccccc;
+			margin-top:5px;
+			margin-right:-10px;
+		}
+		.dropdown-submenu:hover>a:after {
+			border-left-color:#ffffff;
+		}
+		.dropdown-submenu.pull-left {
+			float:none;
+		}
+		.dropdown-submenu.pull-left>.dropdown-menu {
+			left:-100%;
+			margin-left:10px;
+			-webkit-border-radius:6px 0 6px 6px;
+			-moz-border-radius:6px 0 6px 6px;
+			border-radius:6px 0 6px 6px;
+		}
+	</style>
+	<nav class="navbar navbar-default" role="navigation" style="z-index:1;margin-bottom: 10px;">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" style="margin-right: 20px;" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo_small.png" height="25"></a>
+		</div>
+		
+		<div class="navbar-collapse collapse" id="responsive-menu">
+			<ul class="nav navbar-nav navbar-left" >
+				[#if HIDE_LEFT_PANEL="1"#]
+				[#begin SUB_MODULES#]
+				[#if NEW_CATEGORY#]
+				<li>
+					<!---
+					<li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
+					--->
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">[#CATEGORY#] <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						[#endif NEW_CATEGORY#]
+						[#if !DENIED#]
+							[#if LINKS#]
+							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
+							<ul class="dropdown-menu">
+							[#begin LINKS#]
+								<li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
+							[#end LINKS#]
+							</ul>
+							</li>
+							[#else LINKS#]
+							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+							[#if NAME="xray"#]<li class="menu-item"><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>[#endif#]
+							[#endif LINKS#]
+						[#endif DENIED#]
+						[#if LAST_IN_CATEGORY#]
+					</ul>
+				</li>
+				[#endif#]
+				[#end SUB_MODULES#]
+
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target="_blank"><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
+						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
+						[#if APP_TDWIKI_INSTALLED="1"#]
+						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+						[#endif#]
+						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
+						<li class="divider"></li>
+						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
+						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
+						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><#LANG_FRONTEND#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#ROOTHTML#>" target="_blank"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
+						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+						<li><a href="<#ROOTHTML#>devices.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_DEVICES#></a></li>
+						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+						<li><a href="<#ROOTHTML#>menu.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+					</ul>
+				</li>
+
+				[#else HIDE_LEFT_PANEL#]
+				<!--- Не скрывать левую панель --->
+				<li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_FRONTEND#></a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target="_blank"><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
+						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
+						[#if APP_TDWIKI_INSTALLED="1"#]
+						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+						[#endif#]
+						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
+						<li class="divider"></li>
+						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
+						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
+						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_WEB_PAGE#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+						<li><a href="<#ROOTHTML#>menu.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+						<li><a href="<#ROOTHTML#>devices.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_DEVICES#></a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_SECTION_SYSTEM#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
+						<li><a href="#console" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
+					</ul>
+				</li>
+				[#endif HIDE_LEFT_PANEL#]
+				<li>
+					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out" style="vertical-align: top;font-size: 11pt;"></i> [#endif#]<#LANG_LOGOFF#></a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="mdmSearch">
+					<form style="padding: 10px;" class="" name="frmFilterModules">
+						<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+						<div id="filter_add" style="max-width: 500px;box-shadow: -3px 5px 13px 0px rgba(0,0,0,0.5);display:none;white-space: nowrap;position: absolute!important;background-color: white;border: 1px solid #ddd;padding: 5px;z-index: 1000;right: 0px;max-height: 200px;overflow: auto;margin-right: 25px;border-radius: 5px;">
+						</div>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	
+	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
+		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
+			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_EMPTY#></div>
+			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_FAIL#></div>
+			
+			<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
+				<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
+					<input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-12 text-center" style="padding-right: 0px;padding-left: 0px;">
+					<input type="submit" name="submit" style="margin-top: 10px;" value="<#LANG_SEND#>" class="btn btn-success ">
+					<input type="button" name="submit" onclick="$('#console').hide();" style="margin-top: 10px;" value="<#LANG_CANCEL#>" class="btn btn-warning ">
+				</div>
+			</form>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;padding: 10px;margin-top: 10px;">
+			<div id="loaderConsole" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
+			<div id="console_output" style="display: none;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;"></div>
+		</div>
+		
+	</div>
+	[#endif PRINT#]
+	
+	<div class="row text-center" style="margin-top: 20px;display:none;" id="preloader">
+		<h4 style="font-weight: bold;"><#LANG_NEWDASH_PRELOAD_HEADER#></h4>
+		<img src="/img/system/loading.gif" style="max-width: 200px">
+		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
+		
+		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
+	</div>
+
+	
+	<script language="javascript">
+	function toggleCategory(id) {
+		var vl=$.cookie('sub_'+id);
+
+		if (vl == 'off') {
+			$.cookie('sub_'+id, 'on', {expires: 180});
+			console.log('Запись куки');
+		} else {
+			$.cookie('sub_'+id, 'off', {expires: 180});
+			console.log('Запись куки');
+		}
+		
+		$('#row_'+id).collapse("toggle");
+		
+		return false;
+	}
+	
+	function hideHintCookie(id, check = 0) {
+		var vl = $.cookie('hint_'+id);
+		
+		if (check == 0 && vl != 'off') {
+			$.cookie('hint_'+id, 'off', {expires: 180});
+			$('#hint_'+id).hide("fast");
+		} else if (check == 1) {
+			if(vl != 'off') {
+				$('#hint_'+id).show("fast");
+			}
+		}
+		
+		return false;
+	}
+
+	function checkCategory(id) {
+		var vl = $.cookie('sub_'+id);
+		
+		if (vl == 'on' || vl == null) {
+			$('#row_'+id).collapse("show");
+		}
+		return false;
+	}
+	</script>
+	<div id="partLoadContent" style="margin-bottom: 50px;">
+		<div class="row" id="content">
+			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
+			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
+				<div class="panel-group">
+					<div id="hint_alert_hide_hint2" style="display:none;">
+						<div class="hidden-xs">
+							<div class="alert" id="hideMenuHint" onClick="return leftPanelToggle();" style="margin-bottom: 0px;cursor:pointer;font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;">
+								<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
+								<#LANG_NEWDASH_HIDE_MENU_HINT#> <i class="glyphicon glyphicon-resize-horizontal"></i>
+							</div>
+							<div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;margin-bottom:20px"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+						</div>
+					</div>
+					
+					[#begin SUB_MODULES#]
+					[#if NEW_CATEGORY#]
+					<div class="panel panel-default">
+						<div class="panel-heading" onClick="return toggleCategory('[#CATEGORY_ID#]');" style="cursor: pointer;">
+							<h4 class="panel-title">
+								[#CATEGORY#]
+							</h4>
+						</div>
+						<div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
+							<div class="panel-body" style="padding-left:5px;padding-right:5px">
+								<ul class="nav nav-list">
+									[#endif NEW_CATEGORY#]
+									[#if !DENIED#]
+										<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#]</a></li>
+									[#endif DENIED#]
+									[#if LAST_IN_CATEGORY#]
+								</ul>
+							</div>
+						</div>
+					</div>
+					[#endif#]
+					[#end SUB_MODULES#]
+				</div>
+				[#begin SUB_MODULES#]
+				[#if NEW_CATEGORY#]
+				<script language='javascript'>
+				checkCategory('[#CATEGORY_ID#]');
+				</script>
+				[#endif NEW_CATEGORY#]
+				[#end SUB_MODULES#]
+			</div>
+			[#endif PRINT#]
+			<div class="col-lg-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#] col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]9[#endif#] col-sm-[#if HIDE_LEFT_PANEL="1"#]12[#else#]8[#endif#] col-xs-12" id="main-content">
+				[#if PRINT!="1"#]
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
+						
+					</div>
+					
+					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">
+						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
+							<li>
+								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
+							</li>
+							<li><a href="?"><#LANG_CONTROL_PANEL#></a></li>
+							[#if NAV_MODULE_CAT!=""#]<li style="color: gray;">[#NAV_MODULE_CAT#]</li>[#endif#]
+							[#if NAV_MODULE_NAME!=""#]<li><a href="?action=<#ACTION#>">[#NAV_MODULE_NAME#]</a></li>[#endif#]
+						</ol>
+					</div>
+					<div class="col-md-7 text-right" style="padding-left: 0px;padding-right: 0px;">
+						<ol class="breadcrumb" id="breadcrumb_update" style="">
+							[#if ACTION!=""#]
+							<li>
+								<!---
+								<div class="btn-group-xs">
+									<button style="vertical-align: super;" type="button" onclick="window.open('https://connect.smartliving.ru/addons.html?redirect=<#ACTION#>', '_blank');" class="btn btn-default"><#LANG_MODULE_MARKET#></button>
+									<button style="vertical-align: super;" type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
+								</div>
+								--->
+								<a href="javascript://" onclick="consoleDebugToggle();" style="text-decoration: none;margin-right: 15px;color: #d74b4b;"><i class="glyphicon glyphicon-screenshot" style="vertical-align: top;"></i> Debug</a>
+								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign" style="vertical-align: top;"></i> <#LANG_KNOWLEDGE_BASE#></a>
+							</li>
+							[#else#]
+							<li>
+								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
+								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"></a>
+								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
+								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
+							</li>
+							[#endif#]
+						</ol>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				
+				
+				
+				[#endif PRINT#]
+				<!--right_main-->
+				[#if ACTION!=""#]
+						[#module name="<#ACTION#>" action="admin" instance="adm"#]
+				[#else ACTION#]
+					[#inc panel_default.html#]
+				[#endif ACTION#]
+			</div>
+		</div>
+		[#else AUTHORIZED#]
+			[#module name="control_access" action="enter" instance="auth"#]
+		[#endif AUTHORIZED#]
+	</div>
+	<!--partloadend-->
+
 <script language="javascript">
-
-    function openFileBrowser(id){
-        /*
-        fileBrowserlink = "<#ROOTHTML#>3rdparty/pdw/index.php?editor=standalone&returnID=" + id;
-        window.open(fileBrowserlink,'pdwfilebrowser', 'width=1000,height=650,scrollbars=no,toolbar=no,location=no');
-        */
-        window.KCFinder = {
-            callBack: function (url) {
-                window.KCFinder = null;
-                //alert(url);
-                $('#'+id).val(url);
-            }
-        };
-        window.open('<#ROOTHTML#>3rdparty/kcfinder/browse.php?dir=/',
-                'kcfinder_image', 'status=0, toolbar=0, location=0, menubar=0, ' +
-                'directories=0, resizable=1, scrollbars=0, width=800, height=600'
-        );
-    }
-
-
-         function showHideLayer(id) {
-          var layer=document.getElementById('sub_'+id);
-          var layer2=document.getElementById('plus_'+id);
-          if (layer.style.display=='none') {
-           layer.style.display='block';
-           layer2.innerHTML='[-]';
-           setCookie('sub_'+id, 'on');
-          } else {
-           layer.style.display='none';
-           layer2.innerHTML='[+]';
-           setCookie('sub_'+id, 'off');
-          }
-          return false;
-         }
-
-         function checkLayer(id) {
-          var vl=getCookie('sub_'+id);
-          if (vl=='off') {
-           showHideLayer(id);
-          }
-         }
-
- var filterTimer;
-
-
- function filterSearch() {
-  var title=document.frmFilterModules.filter_modules.value;
-  //$('#filter_add').html(title);
- var urlFilter="?";
- urlFilter+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
-
- $.ajax({
-   url: urlFilter
-  }).done(function(data) { 
-   $('#filter_add').html(data);
-  });
-
-
-  return false;
- }
-
- function setFilter(value) {
-  $('#filter_modules').val(value);
-  filterSearch();
-  return false;
- }
-
- function filterModules() {
-  var title=document.frmFilterModules.filter_modules.value;
-  var moduleTitle='';
-  var sectionTitle='';
-  var elem;
-
-  setCookie('panelFilter', title);
-
-  title=title.toLowerCase();
-
-  if (title!='') {
-   $('#filter_add').html('...');
-   $('#filter_add').show();
-   clearTimeout(filterTimer);
-   filterTimer=setTimeout('filterSearch();', 1000);
-  } else {
-   $('#filter_add').hide();
-   clearTimeout(filterTimer);
-  }
-
-  var found=0;
-  var i=0;
-
-  [#begin SUB_MODULES#]
-
-  [#if !DENIED#]
-   moduleTitle="[#TITLE#]";
-   moduleTitle=moduleTitle.toLowerCase();
-   sectionTitle="[#CATEGORY#]";
-   sectionTitle=sectionTitle.toLowerCase();
-   elem=document.getElementById('module_[#NAME#]_link');
-   if (title=='' || moduleTitle.indexOf(title)!=-1 || sectionTitle.indexOf(title)!=-1) {
-    elem.style.display='block';
-    found++;
-   } else {
-    elem.style.display='none';
-   }
-   i++;
-  [#endif DENIED#]
-
-  [#if LAST_IN_CATEGORY#]
-   //alert('z');
-   elem=document.getElementById('row_[#CATEGORY#]');
-   if (found>0) {
-    elem.style.display='block';
-   } else {
-    elem.style.display='none';
-   }
-   //alert(elem.id+': '+elem.style.display);
-   found=0;
-  [#endif LAST_IN_CATEGORY#]
-
-  [#end SUB_MODULES#]
- }
-
-jQuery.fn.center = function () {
-    this.css("position","absolute");
-    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
-    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
-    return this;
-}
-
- // ----------------------------------------------------------------------
- function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
-     /*
-  var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, modal: false });
-  jWindowObj.show();
-  jWindowObj.update();
-  $('#usersWindow').center();
-  */
-  parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
-  return false;
- }
-
-
- function openModalTWindow(winId, winTitle, pageURL, wdth, hdth) {
-     /*
-  var jWindowObj = $.jWindow({ id: winId, title: winTitle, posx: 200, posy: 100, width: wdth, height: hdth, type: 'iframe', url: pageURL, minimiseButton:false, maximiseButton:false, draggable:false, resizeable:false, modal: true });
-   jWindowObj.show();
-   jWindowObj.update();
-   $('#usersWindow').center();
-   */
-   parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
-   return false;
- }
-
-    /*
-    function checkLeftPanelStatus() {
-        if ( $("#left_block").is(":visible") ) {
-            $('#main-content').removeClass();
-            $('#main-content').addClass('col-md-10');
-            $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-contract-icon.png");
-            setCookie('adminLeftPanel', '');
-        } else {
-            $('#main-content').removeClass();
-            $('#main-content').addClass('col-md-12');
-            $("#leftPanelToggleIcon").attr("src","<#ROOTHTML#>img/icons/application-side-expand-icon.png");
-            setCookie('adminLeftPanel', 'off');
-        }
-    }
-    */
-
-
-         function leftPanelToggle() {
-             var url=window.location.href;
-             var dURL = url.replace(/#$/, '');
-             if (dURL.indexOf('?') !== -1) {
-                 dURL+='&toggleLeftPanel=1';
-             } else {
-                 dURL+='?toggleLeftPanel=1';
-             }
-             window.location.href=dURL;
-             //$('#left_block').toggle();
-             //checkLeftPanelStatus();
-             return false;
-         }
-
-         var cmd='';
-
-         var hrefLocation = window.location.href;
-         hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
-         var urlInProgress = '';
-
-         var consoleDebugTimer;
-
-         function updateConsoleDebug() {
-             //$('#console_debug').html('mmm');
-             var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
-             $.ajax({
-                 url: urlDebug,
-             }).done(function(data) {
-                 $('#console_debug').html(data);
-             });
-             consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
-         }
-
-         function consoleToggle() {
-             $("#console").toggle();
-             if ($('#console').is(":visible")) {
-                 updateConsoleDebug();
-             } else {
-                 clearTimeout(consoleDebugTimer);
-             }
-             return false;
-         }
-
-         var locationTimer;
-         function checkLocationHref() {
-             clearTimeout(locationTimer);
-             /*
-              var currentHref;
-              currentHref = window.location.href;
-              currentHref = currentHref.replace(/^.*\/\/[^\/]+/, '');
-              if (currentHref.localeCompare(hrefLocation)!=0) {
-              }
-              locationTimer = setTimeout('checkLocationHref();',1000);
-              */
-         }
-
-         var loaderTimer;
-         function loadInProgress() {
-             $('.sp-replacer').remove();
-             $('.sp-container').remove();
-             $('#partLoadContent').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_STILL_WORKING#> <a href="'+urlInProgress+'"><#LANG_CLICK_HERE#></a><#LANG_TAKES_TOO_LONG#>');
-             return false;
-         }
-
-
-
-         var requestCounter = 0;
-
-         function partLoad(link) {
-
-             [#if PRINT=="1"#]return true;[#endif#]
-             if (typeof link == 'undefined') return;
-
-
-             var maxId=setTimeout(function(){}, 0);
-             for(var i=0;i<maxId;i+=1) {
-                 clearTimeout(i);
-             }
-
-             ajaxManager.stop();
-             requestCounter++;
-             var seqNumber=requestCounter;
-             var urlPartLoad=link;
-             urlInProgress = link;
-             hrefLocation = link;
-             hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
-             clearTimeout(locationTimer);
-             locationTimer = setTimeout('checkLocationHref();',1000);
-             urlPartLoad+='&part_load=1';
-
-             var cachedKey = simple_hash(urlPartLoad);
-             var cachedContent = localStorage.getItem(cachedKey);
-             if (typeof cachedContent == 'string') {
-                 window.history.pushState('', window.title, link);
-                 $('#partLoadContent').html(cachedContent);
-             } else {
-                 cachedContent = '';
-                 loaderTimer=setTimeout(loadInProgress, 1000);
-             }
-
-             $.ajax({
-                 url: urlPartLoad,
-                 urlInProgress: urlInProgress
-             }).done(function(data) {
-                 console.log('part content loaded');
-                 if (seqNumber!=requestCounter) {
-                     console.log('Ignoring response');
-                 }
-                 clearTimeout(loaderTimer);
-                 try {
-                     JSON.parse(data);
-                 } catch (e) {
-                     window.location.href=this.urlInProgress;
-                     return false;
-                 }
-                 var obj=jQuery.parseJSON(data);
-                 if ("undefined" !== typeof obj.REDIRECT) {
-                     link = obj.REDIRECT;
-                 }
-
-                 if (obj.NEED_RELOAD!=0) {
-                     window.location.href=link;
-                 } else {
-                     window.history.pushState('', window.title, link);
-                     if (cachedContent!=obj.CONTENT) {
-                         $('#partLoadContent').html(obj.CONTENT);
-                         localStorage.setItem(cachedKey,obj.CONTENT);
-                     }
-                     if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
-                         window.document.title = obj.TITLE;
-                     }
-
-                     $('input[name=filter_modules]').keyup(function() {
-                         filterModules();
-                     });
-
-                 }
-             });
-             return false;
-         }
-
-         function sendConsoleCommand() {
-             var cmd=$('#command').val();
-
-             var urlCommand="?";
-             urlCommand+='ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
-             $('#console_output').html('&nbsp;<br/><img src="<#ROOTHTML#>img/ajax-loader.gif"/>');
-             $.ajax({
-                 //url: urlCommand
-				 type: "POST",
-				 url: "/admin.php",
-				 data: urlCommand,
-             }).done(function(data) {
-                 //$('#console_output').html('<pre>Command: <b>'+cmd+'</b> <a href="#" onClick="$(\'#command\').val(\''+cmd+'\');sendConsoleCommand();"><#LANG_CONSOLE_RETRY#></a><br/>Result:<br/>'+data+'</pre>');
-                 $('#console_output').html('&nbsp;<br/><pre>'+data+'</pre>');
-             });
-
-
-             return false;
-         }
-
-         function checkDidYouKnow() {
-             $('#didyouknow').hide();
-             var urlDidyouknow = '<#ROOTHTML#>ajax/market.html?op=didyouknow';
-             $.ajax({
-                 url: urlDidyouknow
-             }).done(function(data) {
-                 if (data!='') {
-                     $('#didyouknow_body').html(data);
-                     $('#didyouknow').show();
-                 }
-             });
-             return false;
-         }
-
-    function checkNews() {
-        var urlCheckNews = '<#ROOTHTML#>ajax/market.html?op=news';
-        $.ajax({
-            url: urlCheckNews
-        }).done(function(data) {
-            if (data!='') {
-                $('#news').show();
-                $('#news_body').html(data);
-            }
-        });
-        return false;
-    }
-
-         function checkUpdatesAvailable() {
-             var urlCheckUpdates = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
-             $.ajax({
-                 url: urlCheckUpdates
-             }).done(function(data) {
-                 if (data == '1') {
-                     $('#updates-check-system').show();
-                 }
-             });
-             urlCheckUpdates = '<#ROOTHTML#>ajax/market.html?op=check_updates';
-             $.ajax({
-                 url: urlCheckUpdates
-             }).done(function(data) {
-                 if (data == '1') {
-                     $('#updates-check-market').show();
-                 }
-             });
-             urlCheckUpdates = '<#ROOTHTML#>ajax/system_errors.html?op=check';
-             $.ajax({
-                 url: urlCheckUpdates
-             }).done(function(data) {
-                 if (data == '1') {
-                     $('#errors-saved').show();
-                 }
-             });
-         }
-
-</script>
-
-[#if PRINT!="1"#]
-<!--# top  #-->
-
-<!--# top  #-->
-<nav class="navbar navbar-default" role="navigation" style="z-index:1;"><!--navbar-default navbar-static-top-->
-   <div class="navbar-header">
-    <button type=button class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    </button>
-  <a class="navbar-brand" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo_small.png" height="25"></a>
-      <form class="navbar-form navbar-left" name="frmFilterModules">
-          <div class="form-group">
-              <input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
-              <div id='filter_add' style='display:none;text-overflow:hidden;white-space:nowrap;position:absolute;background-color:white;border:1px solid black;padding:5px;z-index:1000;'>...</div>
-          </div>
-      </form>
-  </div>
-    <style>
-        .dropdown-submenu {
-            position:relative;
-        }
-        .dropdown-submenu>.dropdown-menu {
-            top:0;
-            left:100%;
-            margin-top:-6px;
-            margin-left:-1px;
-            -webkit-border-radius:0 6px 6px 6px;
-            -moz-border-radius:0 6px 6px 6px;
-            border-radius:0 6px 6px 6px;
-        }
-        .dropdown-submenu:hover>.dropdown-menu {
-            display:block;
-        }
-        .dropdown-submenu>a:after {
-            display:block;
-            content:" ";
-            float:right;
-            width:0;
-            height:0;
-            border-color:transparent;
-            border-style:solid;
-            border-width:5px 0 5px 5px;
-            border-left-color:#cccccc;
-            margin-top:5px;
-            margin-right:-10px;
-        }
-        .dropdown-submenu:hover>a:after {
-            border-left-color:#ffffff;
-        }
-        .dropdown-submenu.pull-left {
-            float:none;
-        }
-        .dropdown-submenu.pull-left>.dropdown-menu {
-            left:-100%;
-            margin-left:10px;
-            -webkit-border-radius:6px 0 6px 6px;
-            -moz-border-radius:6px 0 6px 6px;
-            border-radius:6px 0 6px 6px;
-        }
-    </style>
-    <div class="collapse navbar-collapse" id="responsive-menu">
-    <ul class="nav navbar-nav navbar-left" >
-
-        [#if HIDE_LEFT_PANEL="1"#]
-        [#begin SUB_MODULES#]
-        [#if NEW_CATEGORY#]
-        <li>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                [#CATEGORY#]
-                    <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                        [#endif NEW_CATEGORY#]
-                        [#if !DENIED#]
-
-                            [#if LINKS#]
-                            <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
-                            <ul class="dropdown-menu">
-                            [#begin LINKS#]
-                                <li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
-                            [#end LINKS#]
-                            </ul>
-                            </li>
-                            [#else LINKS#]
-                            <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
-                            [#endif LINKS#]
-                        [#endif DENIED#]
-                        [#if LAST_IN_CATEGORY#]
-            </ul>
-        </li>
-        [#endif#]
-        [#end SUB_MODULES#]
-          <li>
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  <#LANG_MARKET_CATEGORY_INFORMATION#>
-                      <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                  <li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
-                  <li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
-                  <li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
-                  <li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
-                  <li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-                  [#if APP_TDWIKI_INSTALLED="1"#]
-                  <li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
-                  [#endif#]
-                  <li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
-              </ul>
-          </li>
-        [#else HIDE_LEFT_PANEL#]
-          <li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
-          <li><a href="<#ROOTHTML#>pages.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
-          <li><a href="<#ROOTHTML#>apps.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
-          <li><a href="<#ROOTHTML#>menu.html" target=_blank><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
-          <li><a href="?action=xray"><i class="glyphicon glyphicon-dashboard"></i> X-Ray</a></li>
-          <li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
-          <li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target=_blank><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-          [#if APP_TDWIKI_INSTALLED="1"#]
-          <li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
-          [#endif#]
-        [#endif HIDE_LEFT_PANEL#]
-      <li>
-        <a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out"></i> [#endif#]<#LANG_LOGOFF#></a>
-      </li>
-   </ul>
-  </div>
-</nav>
-
-<!--# .top  #-->
-<div id='console' style='display:none'>
-
-    <div class="row">
-<div class="col-md-5">
-<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
-  <div class="form-group col-md-10">
-    <input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
-  </div>
-    <div class="form-group col-md-2">
- <input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-default">
-        </div>
-</form>
-<div id='console_output' style="margin-left:15px">&nbsp;</div>
-    </div>
-        <div class="col-md-7" id="console_debug">...</div>
-        </div>
-</div>
-
-<div id="partLoadContent">
-
-    <!--#
- <ul class="breadcrumb">
-   <li>
-    </li>
-    [#if ACTION!=""#]
-    <li class="active"><#ACTION#></li>
-    <div class="float-right">
-        <a href="<#LANG_WIKI_URL#>Main/module_<#ACTION#>" target=_blank><i class="glyphicon glyphicon-question-sign"></i> <#LANG_MODULE_DESCRIPTION#></a>
-    </div>
-    [#endif#]
-
-  </ul>
-  #-->
-[#endif PRINT#]
-
-<!--main-->
-<div class="row" id="content">
-
-[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
-<div class="col-md-2 well well-sm " id="left_block">
-<script language="javascript">
-function toggleCategory(id) {
-var vl=getCookie('sub_'+id);
-if (vl=='on') {
-setCookie('sub_'+id, 'off');
-} else {
-setCookie('sub_'+id, 'on');
-}
-$('#row_'+id).collapse("toggle");
-return false;
-}
-
-function checkCategory(id) {
-var vl=getCookie('sub_'+id);
-if (vl=='on') {
-$('#row_'+id).collapse("show");
-}
-return false;
-}
-</script>
-
-
-<div class="panel-group">
-[#begin SUB_MODULES#]
-[#if NEW_CATEGORY#]
-<div class="panel panel-default">
-<div class="panel-heading">
-    <h4 class="panel-title">
-        <a href="#" onClick="return toggleCategory('[#CATEGORY_ID#]');">[#CATEGORY#]</a>
-    </h4>
-</div>
-<div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
-<div class="panel-body" style="padding-left:5px;padding-right:5px">
-    <ul class="nav nav-list">
-
-[#endif NEW_CATEGORY#]
-
-[#if !DENIED#]
-    <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href="?action=[#NAME#]"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
-[#endif DENIED#]
-
-[#if LAST_IN_CATEGORY#]
-    </ul>
-</div>
-</div>
-</div>
-[#endif#]
-[#end SUB_MODULES#]
-</div>
-[#begin SUB_MODULES#]
-[#if NEW_CATEGORY#]
-<script language='javascript'>
-checkCategory('[#CATEGORY_ID#]');
-</script>
-[#endif NEW_CATEGORY#]
-[#end SUB_MODULES#]
-    </div>
-[#endif PRINT#]
-<div class="col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#]" id="main-content">
-    [#if PRINT!="1"#]
-    <div>
-
-            <a href="#" onClick="return leftPanelToggle();"><img id="leftPanelToggleIcon" src="<#ROOTHTML#>img/icons/application-side-contract-icon.png"></a>
-            <a href="?"><#LANG_CONTROL_PANEL#></a>
-                [#if ACTION!=""#]/ <a href="?action=<#ACTION#>"><#ACTION#></a>[#endif#]
-        <div class="float-right" style="padding-right:30px">
-            [#if ACTION!=""#]
-            <i class="glyphicon glyphicon-question-sign"></i>
-            <a href="https://connect.smartliving.ru/addons.html?redirect=<#ACTION#>" target=_blank><#LANG_MODULE_DESCRIPTION#></a>
-            /
-            <a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
-            [#else#]
-            <a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target=_blank><#LANG_KNOWLEDGE_BASE#></a>
-            [#endif#]
-            <!--#
-
-            #-->
-        </div>
-
-                    <div id="updates-check-market" class="float-right" style="padding-right:20px; display:none">
-                        <span style="font-weight:bold;color:green"><#LANG_MODULES_UPDATES_AVAILABLE#>:</span>
-                        <a href="?action=market"><#LANG_DETAILS#></a>
-                    </div>
-                    <div id="updates-check-system" class="float-right" style="padding-right:20px; display:none">
-                        <span style="font-weight:bold;color:green"><#LANG_SYSTEM_UPDATES_AVAILABLE#>:</span>
-                        <a href="?action=saverestore"><#LANG_DETAILS#></a>
-                    </div>
-                    <div id="errors-saved" class="float-right" style="padding-right:20px; display:none">
-                        <span style="font-weight:bold;color:red"><#LANG_ERRORS_SAVED#>:</span>
-                        <a href="?action=system_errors"><#LANG_DETAILS#></a>
-                    </div>
-
-    </div>
-    &nbsp;
-    [#endif PRINT#]
-
-            <!--right_main-->
-
-                        [#if ACTION!=""#]
-                                [#module name="<#ACTION#>" action="admin" instance="adm"#]
-                        [#else ACTION#]
-    [#inc panel_default.html#]
-
-                        [#endif ACTION#]
-
-
-
-        </div>
-</div>
-[#else AUTHORIZED#]
-        [#module name="control_access" action="enter" instance="auth"#]
-[#endif AUTHORIZED#]
-<br><br>
-</div><!--partloadend-->
-
-
-<script language="javascript">
-
+	//Показ консоли
+	if($.cookie('debug') == 'on' && $('#console_debug').is(':hidden')) {
+		consoleDebugToggle();
+	}
+	
+	
     var dynids='';
     var dynids_timer=0;
     function dynamicContentRefresh() {
@@ -713,51 +959,60 @@ checkCategory('[#CATEGORY_ID#]');
     }
 
  $(document).ready(function() {
+		[#if HIDE_LEFT_PANEL!="1"#]
+		$("#hideMenuHint").mouseover(function () {
+			$("#hideMenuIcon").css('color','red');
+			$("#hideMenuDiv").css('border','1px solid red');
+		});
+		$("#hideMenuHint").mouseout(function () {
+			$("#hideMenuIcon").css('color','#4792d1');
+			$("#hideMenuDiv").css('border','0px');
+		});
+		[#endif#]
 
-     $('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
-
+		$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
         $(".wiki_hint").fancybox({
-                type            : 'iframe',
-                maxWidth        : 800,
-                maxHeight       : 600,
-                fitToView       : false,
-                width           : '70%',
-                height          : '70%',
-                autoSize        : false,
-                closeClick      : false,
-                openEffect      : 'none',
-                closeEffect     : 'none'
+			type            : 'iframe',
+			maxWidth        : 800,
+			maxHeight       : 600,
+			fitToView       : false,
+			width           : '70%',
+			height          : '70%',
+			autoSize        : false,
+			closeClick      : false,
+			openEffect      : 'none',
+			closeEffect     : 'none'
         });
 
         $(".popup").fancybox({
-                maxWidth        : 800,
-                maxHeight       : 600,
-                fitToView       : false,
-                width           : '70%',
-                height          : '70%',
-                autoSize        : false,
-                closeClick      : false,
-                openEffect      : 'none',
-                closeEffect     : 'none'
+			maxWidth        : 800,
+			maxHeight       : 600,
+			fitToView       : false,
+			width           : '70%',
+			height          : '70%',
+			autoSize        : false,
+			closeClick      : false,
+			openEffect      : 'none',
+			closeEffect     : 'none'
         });
-     checkLocationHref();
+		checkLocationHref();
 
-     $('input[name=filter_modules]').keyup(function() {
-         filterModules();
-     });
+		$('input[name=filter_modules]').on('input', function() {
+			filterSearch();
+		});
 
-     $('.dynamic_content').each(function() {
-         if ($(this).attr('id')) {
-             var dyn_id = $(this).attr('id');
-             dynids+='&dynids[]='+dyn_id;
-         }
-     });
-     if (dynids!='') {
-         dynamicContentRefresh();
-     }
+		$('.dynamic_content').each(function() {
+			if ($(this).attr('id')) {
+				var dyn_id = $(this).attr('id');
+				dynids+='&dynids[]='+dyn_id;
+			}
+		});
+		if (dynids!='') {
+			dynamicContentRefresh();
+		}
 
      /*
-     var vl=getCookie('adminLeftPanel');
+     var vl=$.cookie('adminLeftPanel');
      if (vl=='off') {
          $('#left_block').hide();
      }

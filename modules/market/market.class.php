@@ -211,27 +211,65 @@ class market extends module
             //echo json_encode($data);
             if (is_array($data)) {
                 $total = count($data);
-                for ($i = 0; $i < $total; $i++) {
-                    echo "<div>";
-                    echo "<b>" . (htmlspecialchars($data[$i]['ADDED'] . ' ' . $data[$i]['TITLE'])) . "</b>";
-                    $body = nl2br(htmlspecialchars($data[$i]['BODY']));
-                    $body = str_replace('&amp;', '&', $body);
-                    $body = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $body);
-                    echo "<p>" . $body;
-                    if ($data[$i]['LINK'] != '') {
+				echo '<ul class="list-group">';
+                for ($i = 0; $i < 7; $i++) {
+					if($i%2 == 0) {
+						$bgColor = 'background-color: #f5f5f5;';
+					} else {
+						$bgColor = '';
+					}
+					
+					if(substr($data[$i]['LINK'], 0, 39) == 'https://connect.smartliving.ru/profile/') {
+						$postType = '<i>Блог</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
+					} else {
+						$postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
+					}
+					
+					if(time()-950400 <= $data[$i]['ADDED_TM']) {
+						$actualNews = 'background-color: #dff0d8;';
+						$actualNews_Label = '<span class="label label-success" style="margin-right: 10px;">New</span>';
+						$bgColor = '';
+					} else {
+						$actualNews = '';
+						$actualNews_Label = '';
+					}
+					
+					if ($data[$i]['LINK'] != '') {
+                        $linkDetail = "<a href='" . $data[$i]['LINK'] . "' target='_blank'>Читать полностью...</a>";
+                    }  else {
+						$linkDetail = '';
+					}
+					
+					$addLinks = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $data[$i]['BODY']);
+					if($addLinks) {
+						$body = $addLinks;
+					} else {
+						$body = htmlspecialchars($data[$i]['BODY']);
+					}
+					
+					echo '<li class="list-group-item" style="margin-bottom: 5px;'.$bgColor.$actualNews.'">';
+					echo '<span class="badge">'.date('d.m.Y H:i:s', $data[$i]['ADDED_TM']).'</span>';
+					echo '<div onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" style="cursor:pointer;">'.$actualNews_Label.$postType.' '.htmlspecialchars($data[$i]['TITLE']).'</div>';			
+					echo '<div class="fullTextNewsClass" id="news_title_'.$i.'" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">'.$body.' '.$linkDetail.'</blockquote></div>';
+					echo '</li>';
+					
+					
+					//echo '<a href="javascript://" onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" class="list-group-item" style="padding-top: 10px;padding-bottom: 5px;">';
+					//echo '<h5 id="news_head_'.$i.'" class="list-group-item-heading">'.(htmlspecialchars($data[$i]['TITLE'])).'</h5>';
+					//$body = nl2br(htmlspecialchars($data[$i]['BODY']));
+                    //$body = str_replace('&amp;', '&', $body);
+                    //$body = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $body);
+					
+					//echo '<p id="news_title_'.$i.'" style="display: none;" class="list-group-item-text">'.(htmlspecialchars($data[$i]['BODY'])).'</p>';
+					//echo '</a>';
+					
+					
+					/* if ($data[$i]['LINK'] != '') {
                         echo "<br/><a href='" . $data[$i]['LINK'] . "' target='_blank'>" . LANG_DETAILS . "</a>";
-                    }
-                    echo "</p></div>&nbsp;";
+                    } */
                 }
+				echo '</ul>';
             }
-            /*
-            if ($data['BODY']) {
-                echo nl2br(htmlspecialchars($data['BODY']));
-                if ($data['LINK']!='') {
-                    echo "<br/><a href='".$data['LINK']."' target='_blank'>".LANG_DETAILS."</a>";
-                }
-            }
-            */
             exit;
         }
 
@@ -382,8 +420,19 @@ class market extends module
                         } elseif ($category_id=='updates') {
                             continue;
                         }
+						
                         $plugins[] = $rec;
                     }
+					
+					if ($this->ajax && $_GET['op'] == 'check_updates') {
+						$total = count($this->have_updates);
+						if ($total > 0) {
+							echo json_encode(array('status' => '1', 'howUpdate' => $total));
+						} else {
+							echo json_encode(array('status' => '0'));
+						}
+						exit;
+					}
                 }
 
 
@@ -398,7 +447,6 @@ class market extends module
 
             if ($this->ajax) {
                 $p = new parser(DIR_TEMPLATES . $this->name . "/list.html", $out, $this);
-                //echo $params."<br/>";
                 echo $p->result;
                 exit;
 
@@ -518,15 +566,7 @@ class market extends module
         }
         $out['CATEGORY'] = $cat;
 
-        if ($this->ajax && $_GET['op'] == 'check_updates') {
-            $total = count($this->have_updates);
-            if ($total > 0) {
-                echo "1";
-            } else {
-                echo "0";
-            }
-            exit;
-        }
+        
 
 
         if ($this->mode == 'install_multiple') {

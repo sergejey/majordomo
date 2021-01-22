@@ -1,64 +1,15 @@
-
-<!-- Table 'system_errors' edit -->
-&nbsp;
-<!-- HISTORY (module) -->
-
 [#if HISTORY#]
-
-[#if EVENT_ID!=""#]
-
-<p>
-<a href="?id=<#ID#>&tab=history&view_mode=<#VIEW_MODE#>"><#LANG_BACK#></a>
-</p>
-
-<table width="100%" border="0">
- <tr>
-  <td valign="top">[#EVENT_ADDED#]</td>
- </tr>
- <tr>
-  <td valign="top"><pre>[#EVENT_COMMENTS#]</pre></td>
- </tr>
- <tr>
-  <td valign="top"><a href="#" onClick='$("#event_properties").toggle();return false;'>Properties</a>
-  <div id='event_properties' style="display:none">[#EVENT_PROPERTIES_DATA#]</div></td>
- </tr>
- <tr>
-  <td valign="top"><a href="#" onClick='$("#event_methods").toggle();return false;'>Methods</a>
-  <div id='event_methods' style="display:none">[#EVENT_METHODS_DATA#]</div></td>
- </tr>
- <tr>
-  <td valign="top"><a href="#" onClick='$("#event_scripts").toggle();return false;'>Scripts</a>
-  <div id='event_scripts' style="display:none">[#EVENT_SCRIPTS_DATA#]</div></td>
- </tr>
- <tr>
-  <td valign="top"><a href="#" onClick='$("#event_timers").toggle();return false;'>Timers</a>
-  <div id='event_timers' style="display:none">[#EVENT_TIMERS_DATA#]</div></td>
- </tr>
- <tr>
-  <td valign="top"><a href="#" onClick='$("#event_events").toggle();return false;'>Events</a>
-  <div id='event_events' style="display:none">[#EVENT_EVENTS_DATA#]</div></td>
- </tr>
- <tr>
-  <td valign="top"><a href="#" onClick='$("#event_debug").toggle();return false;'>Debug</a>
-  <div id='event_debug' style="display:none">[#EVENT_DEBUG_DATA#]</div></td>
- </tr>
-
-
-</table>
-
-[#else EVENT_ID#]
-
-<p><a href="?id=<#ID#>&tab=history&view_mode=<#VIEW_MODE#>&op=clear" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_CLEAR_ALL#></a></p>
-
-<table width="100%" border="0">
- [#begin HISTORY#]
- <tr>
-  <td valign="top"><a href="?id=<#ID#>&tab=history&view_mode=<#VIEW_MODE#>&event_id=[#ID#]">[#ADDED#]</a></td>
-  <td valign="top" width=90%><pre>[#COMMENTS#]</pre></td>
- </tr>
+[#begin HISTORY#]
+<div class="panel panel-danger">
+	<div class="panel-heading">
+		<h3 class="panel-title">[#ADDED#] <i class="glyphicon glyphicon-arrow-right"></i> [#CODE#]</h3>
+	</div>
+	<div class="panel-body">
+		<pre>[#COMMENTS#]</pre>
+	</div>
+</div>
  [#end HISTORY#]
-</table>
-[#endif EVENT_ID#]
+
 
 [#else HISTORY#]
 No data
