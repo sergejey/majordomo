@@ -1277,6 +1277,8 @@ $dictionary = array(
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
     'DEVICES_PASSED_MINUTES_AGO' => 'мин. назад',
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
+    'DEVICES_PASSED_DAYS_AGO' => 'д. назад',
+    'DEVICES_PASSED_NEWER' => 'Не исполь.',
     'DEVICES_CHOOSE_EXISTING' => '... или выберите уже добавленное устройство',
 
     'DEVICES_CAMERA' =>'Камера (IP)',
