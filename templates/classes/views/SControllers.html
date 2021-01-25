@@ -41,18 +41,18 @@ function workTimer() {
 		state = " <#LANG_OFF#> "
 	}
 	if (days > 0  ) {
-		setInterval(workTimer, 1000*60*60); 
+		setTimeout(workTimer, 1000*60*60); 
 		$("#worktimer%.object_id%").html(state + days + " <#LANG_DEVICES_PASSED_DAYS_AGO#>"); 
 	} else 	if (hours > 0 ) {
-		setInterval(workTimer, 1000*60*60);
+		setTimeout(workTimer, 1000*60*60);
 		$("#worktimer%.object_id%").html(state + hours + " <#LANG_DEVICES_PASSED_HOURS_AGO#>"); 
 	} else 	if (minutes > 0 ) {
-		setInterval(workTimer, 1000*60);
+		setTimeout(workTimer, 1000*60);
 		$("#worktimer%.object_id%").html(state + minutes + " <#LANG_DEVICES_PASSED_MINUTES_AGO#>"); 
 	} else 	if (seconds => 0) {
-		setInterval(workTimer, 1000);
+		setTimeout(workTimer, 1000);
 		$("#worktimer%.object_id%").html(state + seconds + " <#LANG_DEVICES_PASSED_SECONDS_AGO#>"); 
 	}
 }
-setInterval(workTimer, 10);
+setTimeout(workTimer(), 10);
 </script>
