@@ -1,8 +1,58 @@
-<div class="device-widget controller loadtype_%.loadType%"
-     onClick='$(".icon%.object_id%_light").addClass("pressed");
-     setTimeout("$(\".icon%.object_id%_light\").removeClass(\"pressed\");",300);
-     callMethod("%.object_title%.switch");
-     $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
-<div class="device-icon %.status|"off;on"% icon%.object_id%_light" id="icon%.object_id%_light" style='%.icon|"background-image:url(%.icon%)"%'></div>
-<div class="device-header">%.object_description%</div>
+<div id="%.object_title%" 
+	time-value="%.updated%"
+	state-value="%.status%"
+    class="device-widget controller loadtype_%.loadType%"
+    onClick='$(".icon%.object_id%_light").addClass("pressed");
+    setTimeout("$(\".icon%.object_id%_light\").removeClass(\"pressed\");",300);
+    callMethod("%.object_title%.switch");
+    $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
+    <div class="device-icon %.status|"off;on"% icon%.object_id%_light" id="icon%.object_id%_light" style='%.icon|"background-image:url(%.icon%)"%'></div>
+    <div class="device-header">%.object_description%</div>
+	<div id="worktimer%.object_id%" class="device-details" ></div>
 </div>
+
+<script type="text/javascript">
+function workTimer() {
+	var endDate = document.getElementById('%.object_title%').getAttribute('time-value'); 
+	var devicestate = document.getElementById('%.object_title%').getAttribute('state-value'); 
+	if (endDate == 0) {
+		$("#worktimer%.object_id%").html(" <#LANG_DEVICES_PASSED_NEWER#>"); 
+		return;
+	}
+	var currentDate = new Date(); // получаем текущую дату
+	var seconds = (currentDate/1000-endDate); // определяем количество секунд до истечения таймера
+	seconds = Math.floor(seconds); // целое количество 
+	var minutes = seconds/60; // определяем количество минут до истечения таймера
+	var hours = minutes/60; // определяем количество часов до истечения таймера
+	var day = hours/24; // определяем количество часов до истечения таймера
+	day = Math.floor(day); // целое количество 
+	days = day;
+	hours = (hours - days*24);
+	hours = Math.floor(hours); // целое количество 
+	minutes = (minutes - days*24*60 - hours*60);
+	minutes = Math.floor(minutes); // целое количество 
+	seconds = (seconds - days*24*60*60 - hours*60*60 - minutes*60);
+	seconds = Math.floor(seconds); // целое количество
+	
+	// обновляем значения таймера на странице
+	if (devicestate == '1' ) {
+		state = " <#LANG_ON#> " 
+	} else {
+		state = " <#LANG_OFF#> "
+	}
+	if (days > 0  ) {
+		setInterval(workTimer, 1000*60*60); 
+		$("#worktimer%.object_id%").html(state + days + " <#LANG_DEVICES_PASSED_DAYS_AGO#>"); 
+	} else 	if (hours > 0 ) {
+		setInterval(workTimer, 1000*60*60);
+		$("#worktimer%.object_id%").html(state + hours + " <#LANG_DEVICES_PASSED_HOURS_AGO#>"); 
+	} else 	if (minutes > 0 ) {
+		setInterval(workTimer, 1000*60);
+		$("#worktimer%.object_id%").html(state + minutes + " <#LANG_DEVICES_PASSED_MINUTES_AGO#>"); 
+	} else 	if (seconds => 0) {
+		setInterval(workTimer, 1000);
+		$("#worktimer%.object_id%").html(state + seconds + " <#LANG_DEVICES_PASSED_SECONDS_AGO#>"); 
+	}
+}
+setInterval(workTimer, 10);
+</script>
