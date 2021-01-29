@@ -200,7 +200,6 @@ for ($i = 0; $i < $total; $i++) {
             //DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
             $payload['service'] = 'Lightbulb';
             $payload['Brightness'] = 'default';
-            $payload['Saturation'] = 'default';
             $payload['Hue'] = 'default';
             sg('HomeBridge.to_add', json_encode($payload));
 
