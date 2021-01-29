@@ -192,6 +192,21 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 $payload['value'] = gg($device['LINKED_OBJECT'] . '.brightness');
             }
             break;
+        case 'ledlamp':
+            $payload['service'] = 'Lightbulb';
+            if ($data['characteristic'] == 'On') {
+                $payload['characteristic'] = 'On';
+                if (gg($device['LINKED_OBJECT'] . '.status')) {
+                    $payload['value'] = true;
+                } else {
+                    $payload['value'] = false;
+                }
+            } elseif ($data['characteristic'] == 'Brightness') {
+                $payload['characteristic'] = 'Brightness';
+                $payload['value'] = gg($device['LINKED_OBJECT'] . '.brightness');
+            }
+            break;
+
         /*
         case 'sensor_battery':
            $payload['service'] = 'BatteryService';
@@ -293,6 +308,26 @@ if ($params['PROPERTY'] == 'from_set' && $device['ID']) {
             }
         }
     }
+    if (in_array($device['TYPE'], array('ledlamp'))) {
+        if ($data['characteristic'] == 'On') {
+            if ($data['value']) {
+                if (gg($device['LINKED_OBJECT'] . '.status') == 0) callMethodSafe($device['LINKED_OBJECT'] . '.turnOn');
+            } else {
+                if (gg($device['LINKED_OBJECT'] . '.status') == 1) callMethodSafe($device['LINKED_OBJECT'] . '.turnOff');
+            }
+        }
+        $colorChange = false;
+        if ($data['characteristic'] == 'Brightness') {
+            if ($data['value']) {
+                sg($device['LINKED_OBJECT'] . '.brightness', $data['value']);
+                callMethodSafe($device['LINKED_OBJECT'] . '.turnOn');
+            } else {
+                sg($device['LINKED_OBJECT'] . '.brightness', 0);
+                callMethodSafe($device['LINKED_OBJECT'] . '.turnOff');
+            }
+        }
+    }
+
     if ($device['TYPE'] == 'button') {
         if ($data['characteristic'] == 'ProgrammableSwitchEvent' || $data['characteristic'] == 'On') {
             callMethodSafe($device['LINKED_OBJECT'] . '.pressed');
