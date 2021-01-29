@@ -152,6 +152,25 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
             sg('HomeBridge.to_set', json_encode($payload));
             unset($payload['service']);
             break;
+        case 'ledlamp':
+            $payload['service'] = 'Lightbulb';
+            sg('HomeBridge.to_add', json_encode($payload));
+
+            $payload['characteristic'] = 'On';
+            if (gg($device1['LINKED_OBJECT'] . '.status')) {
+                $payload['value'] = true;
+            } else {
+                $payload['value'] = false;
+            }
+            sg('HomeBridge.to_set', json_encode($payload));
+
+
+            $payload['characteristic'] = 'Brightness';
+            $payload['value'] = gg($device1['LINKED_OBJECT'] . '.brightness');
+            sg('HomeBridge.to_set', json_encode($payload));
+            unset($payload['service']);
+            break;
+            
         case 'thermostat':
             $payload['characteristic'] = 'CurrentTemperature';
             $payload['value']=gg($device1['LINKED_OBJECT'].'.value');
