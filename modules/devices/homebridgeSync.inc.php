@@ -199,8 +199,10 @@ for ($i = 0; $i < $total; $i++) {
         case 'rgb':
             //DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
             $payload['service'] = 'Lightbulb';
-            $payload['Brightness'] = 'default';
             $payload['Hue'] = 'default';
+            $payload['Saturation'] = 'default';
+            $payload['Brightness'] = 'default';
+
             sg('HomeBridge.to_add', json_encode($payload));
 
             $payload['characteristic'] = 'On';
