@@ -18,13 +18,14 @@
 
 /**
  * Getting micro-time
- * @return double|int
+ *
+ * @deprecated use native microtime(true) instead
+ *
+ * @return float
  */
 function getmicrotime()
 {
-    list($usec, $sec) = explode(" ", microtime());
-
-    return ((float)$usec + (float)$sec);
+    return microtime(true);
 }
 
 /**
