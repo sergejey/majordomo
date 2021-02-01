@@ -1136,7 +1136,7 @@ $dictionary = array (
     // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'Торр',
+    'M_PRESSURE' => 'мм рт.ст.',
     'M_WATT' => 'Вт',
 
     // ----
@@ -1157,15 +1157,18 @@ $dictionary = array (
     'DEVICES_NORMAL_VALUE' => 'Значення в нормальних межах',
     'DEVICES_DIRECTION_TIMEOUT' => 'Інтервал часу розрахунку зміни напрямків (сек)',
     'DEVICES_NOTIFY_STATUS' => 'Повідомляти при зміні статусу',
+	'DEVICES_NOTIFY_ELIMINATED' => 'Повідомляти кожну хвилину до відновлення статусу',
+    'DEVICES_SENSOR_ALERT' => 'Увага! Сигнал тривоги від датчика',
     'DEVICES_NOTIFY_OUTOFRANGE' => 'Значення датчика вийшло за поріг',
     'DEVICES_NOTIFY_BACKTONORMAL' => 'Значення датчика повернулося до норми',
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Нагадувати про відкритий стан',
     'DEVICES_MOTION_IGNORE' => 'Ігнорувати події від пристрою, коли нікого немає вдома',
+	'DEVICES_MOTION_RESET' => 'Скидання статусу "нікого немає вдома" без таймера установки',
     'DEVICES_MOTION_TIMEOUT' => 'Час активності (секунд)',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимий час відсутності даних (годин)',
     'DEVICES_MAIN_SENSOR' => 'Основний сенсор приміщення',
     'DEVICES_NOT_UPDATING' => 'не оновлюється',
-
+	
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрито',
 
@@ -1180,6 +1183,7 @@ $dictionary = array (
     'DEVICES_GROUP_ECO_ON' => 'Вмикати при виході з режиму економії',
     'DEVICES_GROUP_SUNRISE' => 'Вимикати на світанку',
     'DEVICES_GROUP_SUNSET' => 'Вмикати при заході сонця',
+	'DEVICES_GROUP_NIGHT' => 'Вимикати при вході в нічний режим ',
     'DEVICES_IS_ACTIVITY' => 'Зміна означає активність в приміщенні',
     'DEVICES_NCNO' => 'Тип пристрою/сенсора',
     'DEVICES_LOADTYPE' => 'Тип пристрою',
@@ -1190,6 +1194,13 @@ $dictionary = array (
     'DEVICES_LOADTYPE_LIGHT' => 'Освітлення',
     'DEVICES_LOADTYPE_LIGHT_ALT' => 'Світло',
     'DEVICES_LOADTYPE_POWER' => 'Різне',
+	
+	'DEVICES_OPENTYPE' => 'Тип пристрою',
+    'DEVICES_OPENTYPE_CURTAINS' => 'Штори',
+    'DEVICES_OPENTYPE_SHUTTERS' => 'Віконниці',
+    'DEVICES_OPENTYPE_GATES' => 'Ворота',
+    'DEVICES_OPENTYPE_WINDOW' => 'Вікно',
+    'DEVICES_OPENTYPE_DOOR' => 'Двері',
 
     'DEVICES_ADD_MENU' => 'Додати пристрій в Меню',
     'DEVICES_ADD_SCENE' => 'Додати пристрій на Сцену',
@@ -1230,7 +1241,7 @@ $dictionary = array (
 
     'DEVICES_LINK_THERMOSTAT_SWITCH' => 'Керування пристроєм',
     'DEVICES_LINK_THERMOSTAT_SWITCH_DESCRIPTION' => 'Керування інших пристроїв в залежності від статусу термостата',
-    'DEVICES_LINK_THERMOSTAT_INVERT' => 'інвертоване встановлення статусу',
+    'DEVICES_LINK_THERMOSTAT_INVERT' => 'Інвертоване встановлення статусу',
 
 
     'DEVICES_UPDATE_CLASSSES' => 'Оновити класи',
@@ -1247,8 +1258,8 @@ $dictionary = array (
     'DEVICES_COMMAND_CONFIRMATION' => 'Готово|Зроблено|Як побажаєте',
 
     'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
-    'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є.',
-    'DEVICES_ROOMS_ACTIVITY' => 'Активність:',
+    'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є',
+    'DEVICES_ROOMS_ACTIVITY' => 'Активність',
 
     'DEVICES_PASSED_NOW' => 'щойно',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
@@ -1440,7 +1451,7 @@ $dictionary = array (
 	'NEWDASH_FORUM' => 'Форум',
 	'NEWDASH_CHAT_TELEGRAM' => 'Чати Telegram',
 	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'Загальний чат (RUS)',
-	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Курілка (RUS)',
+	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Курилка (RUS)',
 	'NEWDASH_CONSOLE_ERROR_EMPTY' => 'Ви намагаєтесь надіслати пусту команду!',
 	'NEWDASH_CONSOLE_ERROR_FAIL' => 'Схоже, що ви відправили невірну команду...',
 	'NEWDASH_LOADING' => 'Завантажуємо данні...',
@@ -1532,8 +1543,8 @@ $dictionary = array (
 	'XRAY_LINE_FILTER' => 'Фільтр рядків',
 	'XRAY_PAUSE' => 'Пауза',
 	'XRAY_CONTINUE' => 'Відновити',
-	'XRAY_SOURCE' => 'Источник',
-	'XRAY_PARAMS' => 'Параметрі',
+	'XRAY_SOURCE' => 'Джерело',
+	'XRAY_PARAMS' => 'Параметри',
 	
 	'NEWSYSTEM_ERROR_FIND_ERROR' => 'Щось пішло не так...',
 	'NEWSYSTEM_ERROR_FIND_ERROR_TEXT' => 'MajorDoMo працює нестабільно. Сиситема виявила деклька помилок в роботі модулів. Можливо вони не критичні, але бажано звернути на це увагу.',

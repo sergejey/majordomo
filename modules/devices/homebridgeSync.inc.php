@@ -113,6 +113,29 @@ for ($i = 0; $i < $total; $i++) {
             $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
             sg('HomeBridge.to_set', json_encode($payload));
             break;
+        case 'sensor_temphum':
+            // Temp
+            $payload['service'] = 'TemperatureSensor';
+            $payload['CurrentTemperature']['minValue'] = -40;
+            sg('HomeBridge.to_add', json_encode($payload));
+
+            $payload['characteristic'] = 'CurrentTemperature';
+            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
+            sg('HomeBridge.to_set', json_encode($payload));
+
+            // Hum
+            $payload['name'] .= '_Hum';
+            $payload['service_name'] .= '_Hum';
+            $payload['service'] = 'HumiditySensor';
+            unset($payload['CurrentTemperature']['minValue']);
+            sg('HomeBridge.to_add', json_encode($payload));
+
+            $payload['characteristic'] = 'CurrentRelativeHumidity';
+            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.valueHumidity');
+            sg('HomeBridge.to_set', json_encode($payload));
+
+            break;
+
         case 'motion':
             $payload['service'] = 'MotionSensor';
             sg('HomeBridge.to_add', json_encode($payload));
@@ -160,6 +183,7 @@ for ($i = 0; $i < $total; $i++) {
             break;
         case 'dimmer':
             $payload['service'] = 'Lightbulb';
+            $payload['Brightness'] = 'default';
             sg('HomeBridge.to_add', json_encode($payload));
             $payload['characteristic'] = 'On';
             if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
@@ -175,6 +199,10 @@ for ($i = 0; $i < $total; $i++) {
         case 'rgb':
             //DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
             $payload['service'] = 'Lightbulb';
+            $payload['Hue'] = 'default';
+            $payload['Saturation'] = 'default';
+            $payload['Brightness'] = 'default';
+
             sg('HomeBridge.to_add', json_encode($payload));
 
             $payload['characteristic'] = 'On';
@@ -197,6 +225,26 @@ for ($i = 0; $i < $total; $i++) {
             $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.brightness');
             sg('HomeBridge.to_set', json_encode($payload));
             break;
+        case 'ledlamp':
+            //DebMes('Sync '.$devices[$i]['TITLE'].' from MJD');
+            $payload['service'] = 'Lightbulb';
+            $payload['Brightness'] = 'default';
+            sg('HomeBridge.to_add', json_encode($payload));
+
+            $payload['characteristic'] = 'On';
+            if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
+                $payload['value'] = true;
+            } else {
+                $payload['value'] = false;
+            }
+            sg('HomeBridge.to_set', json_encode($payload));
+            $payload['characteristic'] = 'Brightness';
+            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.brightness');
+
+            sg('HomeBridge.to_set', json_encode($payload));
+
+            break;
+
         case 'thermostat':
             $payload['service'] = 'Thermostat';
             sg('HomeBridge.to_add', json_encode($payload));
