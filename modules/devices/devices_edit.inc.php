@@ -513,11 +513,11 @@ $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0"
 if ($rec['LOCATION_ID']) {
     $location_rec = SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=" . $rec['LOCATION_ID']);
     $out['LOCATION_TITLE'] = processTitle($location_rec['TITLE']);
-    $other_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID']);
+    $other_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID']." ORDER BY TITLE");
     $out['OTHER_DEVICES'] = $other_devices;
 }
 
 if ($rec['TYPE']) {
-    $other_devices_type = SQLSelect("SELECT ID, TITLE FROM devices WHERE TYPE='" . $rec['TYPE'] . "'");
+    $other_devices_type = SQLSelect("SELECT ID, TITLE FROM devices WHERE TYPE='" . $rec['TYPE'] . "' ORDER BY TITLE");
     $out['OTHER_DEVICES_TYPE'] = $other_devices_type;
 }

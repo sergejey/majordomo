@@ -316,9 +316,12 @@ $this->device_types=array(
             'valueUpdated'=>array('DESCRIPTION'=>'Data Value updated event'),
             'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event'),
             'refreshStats'=>array('DESCRIPTION'=>'Refreshes daily/monthly stats','_CONFIG_SHOW'=>1),
+            'pulseDetected'=>array('DESCRIPTION'=>'Meter pulse detection'),
         ),
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            'price'=>array('DESCRIPTION'=>'Price','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCounterPrice'),
+            'pulseAmount'=>array('DESCRIPTION'=>'Pulse amount (optional)','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdPulseAmount'),
             'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
             'valueWork'=>array('DESCRIPTION'=>'Work Value','ONCHANGE'=>'valueWorkUpdated','KEEP_HISTORY'=>0),
             'valueHour'=>array('DESCRIPTION'=>'Hour Value','KEEP_HISTORY'=>365),
@@ -383,6 +386,11 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_MOISTURE_SENSOR,
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SMoistureSensors'
+    ),
+    'sensor_co2'=>array(
+        'TITLE'=>LANG_DEVICES_CO2_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SCO2Sensors'
     ),
     'sensor_radiation'=>array(
         'TITLE'=>LANG_DEVICES_RADIATION_SENSOR,
