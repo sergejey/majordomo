@@ -559,6 +559,7 @@ function usual(&$out) {
   }
   SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
   $this->updateTree_classes();
+  clearCacheData();
   return 1;
  }
 /**
