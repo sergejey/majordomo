@@ -437,7 +437,7 @@ function admin(&$out) {
 * @access public
 */
  function getParentProperties($id, $def='', $include_self=0) {
-  $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".(int)$id."'");
+  $class=SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID='".(int)$id."'");
 
   $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$id."' AND OBJECT_ID=0");
 
@@ -473,7 +473,7 @@ function admin(&$out) {
  }
 
  function getParentMethods($id, $def='', $include_self=0) {
-  $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".(int)$id."'");
+  $class=SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID='".(int)$id."'");
 
   $methods=SQLSelect("SELECT methods.*, classes.TITLE as CLASS_TITLE FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID WHERE CLASS_ID='".$id."' AND OBJECT_ID=0");
 

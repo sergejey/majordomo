@@ -139,7 +139,8 @@ class scripts extends module
 
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
         if ($rec['ID']) {
-            $rec['EXECUTED'] = date('Y-m-d H:i:s');
+            $update_rec = array('ID'=>$rec['ID']);
+            $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
             } else {
@@ -148,11 +149,11 @@ class scripts extends module
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
-            $rec['EXECUTED_SRC'] = $source;
+            $update_rec['EXECUTED_SRC'] = $source;
             if ($params) {
-                $rec['EXECUTED_PARAMS'] = serialize($params);
+                $update_rec['EXECUTED_PARAMS'] = serialize($params);
             }
-            SQLUpdate('scripts', $rec);
+            SQLUpdate('scripts', $update_rec);
 
             if (isItPythonCode($rec['CODE'])) {
                 python_run_code($rec['CODE'], $params);

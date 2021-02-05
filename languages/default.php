@@ -1131,6 +1131,7 @@ $dictionary = array(
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
     'DEVICES_MOISTURE_SENSOR' => 'Moisture sensor',
+    'DEVICES_CO2_SENSOR' => 'CO2 sensor',
     'DEVICES_RADIATION_SENSOR' => 'Radiation sensor',
     'DEVICES_STATE_SENSOR' => 'State sensor',
     'DEVICES_PERCENTAGE_SENSOR' => 'Percentage value sensor',

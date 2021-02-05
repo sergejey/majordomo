@@ -388,6 +388,9 @@ function removeLinkedProperty($object, $property, $module)
  */
 function getObject($name)
 {
+
+    if (trim($name)=='') return 0;
+
     if (preg_match('/^(.+?)\.(.+?)$/', $name, $m)) {
         $class_name = $m[1];
         $object_name = $m[2];

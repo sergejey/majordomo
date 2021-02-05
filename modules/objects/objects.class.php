@@ -353,7 +353,7 @@ class objects extends module
     function getParentProperties($id, $def = '', $include_self = 0)
     {
         startMeasure('getParentProperties');
-        $class = SQLSelectOne("SELECT * FROM classes WHERE ID='" . (int)$id . "'");
+        $class = SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID='" . (int)$id . "'");
 
         global $class_properties_cached;
         if (isset($class_properties_cached[$id])) {
@@ -397,7 +397,7 @@ class objects extends module
 
     function getParentMethods($id, $def = '', $include_self = 0)
     {
-        $class = SQLSelectOne("SELECT * FROM classes WHERE ID='" . (int)$id . "'");
+        $class = SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID='" . (int)$id . "'");
 
         $methods = SQLSelect("SELECT methods.*, classes.TITLE AS CLASS_TITLE FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID WHERE CLASS_ID='" . $id . "' AND OBJECT_ID=0");
 
@@ -475,11 +475,11 @@ class objects extends module
      */
     function raiseEvent($name, $params = 0, $parent = 0)
     {
-	if (!is_array($params)) {
+        if (!is_array($params)) {
             $params = array();
         }
-		$params['raiseEvent'] = '1';
-        $this->callMethodSafe($name,$params);
+        $params['raiseEvent'] = '1';
+        $this->callMethodSafe($name, $params);
     }
 
     function callClassMethod($name, $params = 0)
@@ -487,7 +487,8 @@ class objects extends module
         $this->callMethod($name, $params, 1);
     }
 
-    function callMethodSafe($name, $params = 0) {
+    function callMethodSafe($name, $params = 0)
+    {
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
         $call_stack = array();
@@ -533,9 +534,9 @@ class objects extends module
 
         $call_stack[] = $current_call;
         $params['raiseEvent'] = $raiseEvent;
-        $params['m_c_s'] = $call_stack;    
+        $params['m_c_s'] = $call_stack;
         $params['r_s_m'] = $run_SafeMethod;
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES==1))) {
+        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES == 1))) {
             $result = $this->callMethod($name, $params);
         } else {
             $params['r_s_m'] = 1;
@@ -544,7 +545,7 @@ class objects extends module
         endMeasure('callMethodSafe');
         return $result;
     }
-	
+
     /**
      * Title
      *
@@ -580,7 +581,8 @@ class objects extends module
         if ($id) {
 
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
-            $method['EXECUTED'] = date('Y-m-d H:i:s');
+            $update_rec = array('ID' => $method['ID']);
+            $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
             } else {
@@ -589,7 +591,7 @@ class objects extends module
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
-            $method['EXECUTED_SRC'] = $source;
+            $update_rec['EXECUTED_SRC'] = $source;
 
 
             if (!$method['OBJECT_ID']) {
@@ -598,17 +600,18 @@ class objects extends module
                 }
                 $params['ORIGINAL_OBJECT_TITLE'] = $this->object_title;
             }
+
             if ($params) {
                 $saved_params = $params;
-		unset($params['r_s_m']);
+                unset($params['r_s_m']);
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
-                $method['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
-                if (strlen($method['EXECUTED_PARAMS']) > 250) {
-                    $method['EXECUTED_PARAMS'] = substr($method['EXECUTED_PARAMS'], 0, 250);
+                $update_rec['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
+                if (strlen($update_rec['EXECUTED_PARAMS']) > 250) {
+                    $update_rec['EXECUTED_PARAMS'] = substr($update_rec['EXECUTED_PARAMS'], 0, 250);
                 }
             }
-            SQLUpdate('methods', $method);
+            SQLUpdate('methods', $update_rec);
 
             if ($method['OBJECT_ID'] && $method['CALL_PARENT'] == 1) {
                 // call class method
@@ -734,7 +737,7 @@ class objects extends module
             } elseif ($property == 'class_title') {
                 return $this->class_title;
             }
-        
+
             $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
             if (isset($value['VALUE'])) {
                 startMeasure('getPropertyCached2');
@@ -1040,7 +1043,7 @@ class objects extends module
                 $params['SOURCE'] = (string)$source;
                 //$this->callMethod($prop['ONCHANGE'], $params);
                 //$this->callMethodSafe($prop['ONCHANGE'], $params);
-		$this->raiseEvent($prop['ONCHANGE'], $params);
+                $this->raiseEvent($prop['ONCHANGE'], $params);
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }

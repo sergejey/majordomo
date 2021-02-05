@@ -1127,6 +1127,7 @@ $dictionary = array(
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности воздуха',
     'DEVICES_MOISTURE_SENSOR' => 'Датчик влажности почвы',
+    'DEVICES_CO2_SENSOR' => 'Датчик CO2',
     'DEVICES_RADIATION_SENSOR' => 'Датчик радиоактивного излучения',
     'DEVICES_STATE_SENSOR' => 'Датчик состояния',
     'DEVICES_PERCENTAGE_SENSOR' => 'Датчик процентное значение',
@@ -1148,7 +1149,7 @@ $dictionary = array(
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'мм рт.ст.',
+    'M_PRESSURE' => 'торр',
     'M_WATT' => 'Вт',
 
 //----
@@ -1517,7 +1518,7 @@ $dictionary = array(
 	'NEWDASH_PRELOAD_BTN' => 'Остановить операцию',
 	'NEWDASH_UPDATE_MODULE_HINT1' => 'Обновления для',
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулей',
-	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценариев',
+	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценария',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 самых больших таблиц в вашей базе данных.',
 	'NEWDASH_WEB_PAGE' => 'Веб-страницы',
 	

@@ -29,8 +29,10 @@ $saved_devices_data = array();
 
 const CONNECT_HOST = 'connect.smartliving.ru';
 
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+$cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 'Run';
+
+$simple_devices_queue_checked = 0;
 
 while (1) {
     $connect = new connect();
@@ -69,14 +71,14 @@ while (1) {
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name, $ca_file);
 
     echo date('H:i:s') . " Connecting to $host:$port\n";
-    DebMes("Connecting to $host:$port",'connect');
+    DebMes("Connecting to $host:$port", 'connect');
     if ($mqtt_client->connect(true, NULL, $username, $password)) {
 
         $query_list = explode(',', $query);
         $total = count($query_list);
         echo date('H:i:s') . " Topics to watch: $query (Total: $total)\n";
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        DebMes("CONNECTED.",'connect');
+        DebMes("CONNECTED.", 'connect');
         $topics = array();
         for ($i = 0; $i < $total; $i++) {
             $path = trim($query_list[$i]);
@@ -85,7 +87,7 @@ while (1) {
         }
         foreach ($topics as $k => $v) {
             echo date('H:i:s') . " Subscribing to: $k\n";
-            DebMes("Subscribing to $k",'connect');
+            DebMes("Subscribing to $k", 'connect');
         }
         $mqtt_client->subscribe($topics, 0);
         $ping_timestamp = 0;
@@ -93,7 +95,7 @@ while (1) {
             $currentMillis = round(microtime(true) * 10000);
             if ($currentMillis - $previousMillis > 10000) {
                 $previousMillis = $currentMillis;
-                $checked_time=time();
+                $checked_time = time();
                 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
                 // saveToCache("MJD:$cycleVarName", $checked_time);
                 if (isRebootRequired() || IsSet($_GET['onetime'])) {
@@ -102,8 +104,8 @@ while (1) {
             }
 
 
-            if (!defined('DISABLE_SIMPLE_DEVICES')) {
-                //$saved_devices_data
+            if (!defined('DISABLE_SIMPLE_DEVICES') && ($simple_devices_queue_checked != time())) {
+                $simple_devices_queue_checked = time();
                 $devices_data = checkOperationsQueue('connect_device_data');
                 foreach ($devices_data as $property_data) {
                     if (!isset($saved_devices_data[$property_data['DATANAME']]) || $saved_devices_data[$property_data['DATANAME']] != $property_data['DATAVALUE']) {
@@ -129,7 +131,7 @@ while (1) {
             }
             */
             if ((time() - $started_time) > $max_run_time) {
-                DebMes("Running too long, exit.",'connect');
+                DebMes("Running too long, exit.", 'connect');
                 echo "Exit cycle CONNECT... (reconnecting)";
                 $mqtt_client->close();
                 exit;
@@ -143,13 +145,13 @@ while (1) {
                 //DebMes("Sending PING OK",'connect');
             }
         }
-        DebMes("Closing MQTT connection",'connect');
+        DebMes("Closing MQTT connection", 'connect');
         $mqtt_client->close();
 
     } else {
         echo date('Y-m-d H:i:s') . " Failed to connect ...\n";
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        DebMes("Failed to connect to MQTT",'connect');
+        DebMes("Failed to connect to MQTT", 'connect');
         sleep(10);
         continue;
     }
