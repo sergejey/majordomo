@@ -608,12 +608,9 @@ function getGlobal($varname)
     if ($cached_value !== false) {
         return $cached_value;
     }
-
     $obj = getObject($object_name);
-
     if ($obj) {
         $value = $obj->getProperty($varname);
-        saveToCache($cached_name, $value);
         return $value;
     } else {
         return 0;

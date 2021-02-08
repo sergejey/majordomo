@@ -693,25 +693,27 @@ class objects extends module
      */
     function getPropertyByName($name, $class_id, $object_id)
     {
-        $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
-        if ($rec['ID']) {
-            return $rec['ID'];
+
+        $cached_name = 'P:' . $class_id . '.' . $object_id . '.' . $name;
+        $cached_value = checkFromCache($cached_name);
+        if ($cached_value !== false) {
+            return $cached_value;
         }
 
-        //include_once(DIR_MODULES.'classes/classes.class.php');
-        //$cl=new classes();
-        //$props=$cl->getParentProperties($class_id, '', 1);
+        $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
+        if ($rec['ID']) {
+            saveToCache($cached_name,$rec['ID']);
+            return $rec['ID'];
+        }
         $props = $this->getParentProperties($class_id, '', 1);
-
         $total = count($props);
         for ($i = 0; $i < $total; $i++) {
             if (strtolower($props[$i]['TITLE']) == strtolower($name)) {
+                saveToCache($cached_name,$props[$i]['ID']);
                 return $props[$i]['ID'];
             }
         }
-
         return false;
-
     }
 
 
@@ -722,34 +724,45 @@ class objects extends module
      *
      * @access public
      */
-    function getProperty($property)
+    function getProperty($property, $cache_checked = false)
     {
+        if (!$this->object_title) return false;
 
         $property = trim($property);
+        $cached_name = 'MJD:' . $this->object_title . '.' . $property;
 
-        if ($this->object_title) {
-            if ($property == 'object_title') {
-                return $this->object_title;
-            } elseif ($property == 'object_description') {
-                return $this->description;
-            } elseif ($property == 'object_id') {
-                return $this->id;
-            } elseif ($property == 'class_title') {
-                return $this->class_title;
-            }
+        if ($property == 'object_title') {
+            return $this->object_title;
+        } elseif ($property == 'object_description') {
+            return $this->description;
+        } elseif ($property == 'object_id') {
+            return $this->id;
+        } elseif ($property == 'class_title') {
+            return $this->class_title;
+        }
 
-            $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
-            if (isset($value['VALUE'])) {
-                startMeasure('getPropertyCached2');
-                endMeasure('getPropertyCached2', 1);
-                endMeasure('getProperty (' . $property . ')', 1);
-                endMeasure('getProperty', 1);
-                return $value['VALUE'];
+        if (!$cache_checked) {
+            $cached_value = checkFromCache($cached_name);
+            if ($cached_value !== false) {
+                return $cached_value;
             }
         }
 
+        $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
+        if (isset($value['VALUE'])) {
+            startMeasure('getPropertyCached2');
+            endMeasure('getPropertyCached2', 1);
+            endMeasure('getProperty (' . $property . ')', 1);
+            endMeasure('getProperty', 1);
+            saveToCache($cached_name, $value['VALUE']);
+            return $value['VALUE'];
+        }
+
+
         if ($property == 'location_title') {
-            return current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=" . (int)$this->location_id));
+            $value = current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=" . (int)$this->location_id));
+            saveToCache($cached_name, $value);
+            return $value;
         }
 
 
@@ -771,6 +784,7 @@ class objects extends module
         if (!isset($value['VALUE'])) {
             $value['VALUE'] = false;
         }
+        saveToCache($cached_name, $value['VALUE']);
         return $value['VALUE'];
     }
 

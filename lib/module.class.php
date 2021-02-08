@@ -312,15 +312,13 @@ class module
         if (!file_exists($flag_filename)) {
             $this->install();
         } else {
-            $sqlQuery = "SELECT *
-                        FROM project_modules
-                       WHERE NAME = '" . $this->name . "'";
-
+            /*
+            $sqlQuery = "SELECT ID FROM project_modules WHERE NAME = '" . $this->name . "'";
             $rec = SQLSelectOne($sqlQuery);
             if (!isset($rec["ID"])) {
                 $this->install();
             }
-
+            */
         }
     }
 
@@ -543,7 +541,7 @@ class module
             $queryCnt = count($query) - 1;
 
             for ($i = 0; $i < $queryCnt; $i++) {
-                if ($query[$i][0] != "#") {
+                if ($query[$i]{0} != "#") {
                     SQLExec($query[$i]);
                     $mdf[] = "#" . $query[$i];
                 } else {
