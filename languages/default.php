@@ -1130,6 +1130,8 @@ $dictionary = array(
     'DEVICES_GENERAL_SENSOR' => 'General sensor',
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
+    'DEVICES_MOISTURE_SENSOR' => 'Moisture sensor',
+    'DEVICES_RADIATION_SENSOR' => 'Radiation sensor',
     'DEVICES_STATE_SENSOR' => 'State sensor',
     'DEVICES_PERCENTAGE_SENSOR' => 'Percentage value sensor',
     'DEVICES_PRESSURE_SENSOR' => 'Atmospheric pressure sensor',
@@ -1275,6 +1277,14 @@ $dictionary = array(
     'DEVICES_ROOMS_ACTIVITY' => 'Latest activity',
 
     'DEVICES_PASSED_NOW' => 'Now',
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Incorrect time',
+    'DEVICES_PASSED_AGO' => 'ago',
+	'DEVICES_PASSED_TODAY_IN' => 'Today at',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Yesterday at',
+	'DEVICES_PASSED_NEW_SECONDS_AGO' => 'sec.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'min.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'hours',
+
     'DEVICES_PASSED_SECONDS_AGO' => 'seconds ago',
     'DEVICES_PASSED_MINUTES_AGO' => 'minutes ago',
     'DEVICES_PASSED_HOURS_AGO' => 'hours ago',
