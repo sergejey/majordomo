@@ -176,8 +176,8 @@ function usual(&$out) {
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$values[$i]['ID']."'");
    SQLExec("DELETE FROM pvalues WHERE ID='".$values[$i]['ID']."'");
   }
-
   SQLExec("DELETE FROM properties WHERE ID='".$rec['ID']."'");
+  clearCacheData();
  }
 /**
 * Install

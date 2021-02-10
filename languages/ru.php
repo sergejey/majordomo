@@ -1127,6 +1127,7 @@ $dictionary = array(
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности воздуха',
     'DEVICES_MOISTURE_SENSOR' => 'Датчик влажности почвы',
+    'DEVICES_CO2_SENSOR' => 'Датчик CO2',
     'DEVICES_RADIATION_SENSOR' => 'Датчик радиоактивного излучения',
     'DEVICES_STATE_SENSOR' => 'Датчик состояния',
     'DEVICES_PERCENTAGE_SENSOR' => 'Датчик процентное значение',

@@ -1581,7 +1581,7 @@ class saverestore extends module
         else
             $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
 
-        $cmd = $pathToMysqlDump . " -h " . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
+        $cmd = $pathToMysqlDump . " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\" --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
         exec($cmd);
     }
 

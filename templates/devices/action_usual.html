@@ -59,6 +59,7 @@
    $.ajax({
     url: baseURL
    }).done(function(data) {
+    httpRefreshTimer<#UNIQ#> = setTimeout('httpRefreshDevices<#UNIQ#>();',5000); //
     var obj=jQuery.parseJSON(data);
     if (Array.isArray(obj.devices)) {
      for(var i=0;i<obj.devices.length;i++) {
@@ -66,7 +67,6 @@
      }
     }
    });
-   httpRefreshTimer<#UNIQ#> = setTimeout('httpRefreshDevices<#UNIQ#>();',5000);
   }
   var trackedDevices<#UNIQ#> = [];
   [#begin DEVICES#]

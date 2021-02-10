@@ -2,7 +2,8 @@
 
 $ot = $this->object_title;
 
-$this->setProperty('updated', time());
+$tm = time();
+$this->setProperty('updated', $tm);
 $this->setProperty('updatedText', date('H:i', $tm));
 
 $this->callMethod('keepAlive');
