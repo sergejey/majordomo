@@ -4,7 +4,6 @@ $ot = $this->object_title;
 $ncno = $this->getProperty('ncno');
 
 $this->setProperty('updated', time());
-$this->callMethodSafe('setUpdatedText');
 
 $this->callMethod('keepAlive');
 
