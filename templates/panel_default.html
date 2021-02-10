@@ -1,87 +1,363 @@
-<ul class="nav nav-tabs">
-    <li [#if TAB=""#]class="active"[#endif TAB#]><a href="?"><#LANG_HOME#></a></li>
-    <li [#if TAB="panel"#]class="active"[#endif TAB#]><a href="?tab=panel"><#LANG_SECTION_PANEL#></a></li>
-    <li [#if TAB="apps"#]class="active"[#endif TAB#]><a href="?tab=apps"><#LANG_SECTION_APPLICATIONS#></a></li>
-</ul>
-
-[#if TAB=""#]
-&nbsp;<br/>
-
-<div class="row">
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
     <div class="col-md-5">
-        <!-- processSubscription panelHomeColumnLeft -->
-        <div>
-        <h3><#LANG_ROOMS#></h3>
-        <a href="?action=locations" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> <#LANG_LIST#></a>
-        <a href="?(panel:{action=locations})&md=locations&view_mode=edit_locations" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
-        </div>
+		<!--- Чарты --->
 
-        <div>
-        <h3><#LANG_DEVICES#></h3>
-        <a href="?action=devices" class="btn btn-default"><i class="glyphicon glyphicon-hdd"></i> <#LANG_LIST#></a>
-        <a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
-        </div>
-        <div>
-        <h3><#LANG_APPEARANCE#></h3>
-            <a href="?action=commands" class="btn btn-default"><i class="glyphicon glyphicon-list"></i> <#LANG_MODULE_CONTROL_MENU#></a>
-            <a href="?action=scenes" class="btn btn-default"><i class="glyphicon glyphicon-th-large"></i> <#LANG_MODULE_SCENES#></a>
-            <a href="?action=layouts" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a>
-        </div>
+		<!-- Resources -->
+		<script src="<#ROOTHTML#>3rdparty/amcharts/core.js"></script>
+		<script src="<#ROOTHTML#>3rdparty/amcharts/charts.js"></script>
+		<script src="<#ROOTHTML#>3rdparty/amcharts/material.js"></script>
+		<script src="<#ROOTHTML#>3rdparty/amcharts/animated.js"></script>
 
-        <div>
-            <h3><#LANG_ACTIVITIES#></h3>
-            <a href="?action=scripts" class="btn btn-default"><i class="glyphicon glyphicon-flash"></i> <#LANG_MODULE_SCRIPTS#></a>
-            <a href="?action=patterns" class="btn btn-default"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_COMMANDS#></a>
-        </div>
-        <div>
-        <h3><#LANG_SECTION_SETTINGS#></h3>
-            <a href="?action=settings" class="btn btn-default"><i class="glyphicon glyphicon-wrench"></i> <#LANG_MODULE_SETTINGS#></a>
-            <a href="?action=market" class="btn btn-default"><i class="glyphicon glyphicon-shopping-cart"></i> <#LANG_MODULE_MARKET#></a>
-        </div>
-        <div>
-            <h3><#LANG_MAINTENANCE#></h3>
-            <a href="?action=saverestore" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i> <#LANG_MODULE_SAVERESTORE#></a>
-            [#if OPTIMIZER_INSTALLED="1"#]
-            <a href="?action=optimizer" class="btn btn-default"><i class="glyphicon glyphicon-briefcase"></i> <#LANG_DATA_OPTIMIZING#></a>
-            [#endif#]
-            <a href="/diagnostic.php" class="btn btn-default"><i class="glyphicon glyphicon-send"></i> <#LANG_SUBMIT_DIAGNOSTIC#></a>
-        </div>
+		<div id="hint_blockaddnewdev" style="display:none">
+			<div class="panel panel-default" style="margin-bottom: 0px;">
+				<div class="panel-body">
+					<a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_DEVICE#></a>
+					<a href="?(panel:{action=scripts})&md=scripts&inst=adm&view_mode=edit_scripts" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_SCRIPT#></a>
+					<a href="?(panel:{action=objects})&md=objects&view_mode=edit_objects&id=" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_OBJECT#></a>
+					<a href="?(panel:{action=classes})&md=classes&inst=adm&view_mode=edit_classes" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_NEWDASH_CLASS#></a>
+				</div>
+			</div>
+			<div onclick="hideHintCookie('blockaddnewdev');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+		</div>
+		<!--- Генерация своего блока --->
+		<div class="panel panel-info" id="myBlockOnDash" style="display:none;">
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title" id="myBlockOnDash_title"></h3></div>
+				<div style="float: right"><i id="hideTogglemyBlock" style="cursor:pointer;" onclick="return toggleCategory('myBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse collapse out" id="row_myBlockDiv">
+				<div class="panel-body" id="myBlockOnDash_body"></div>
+				
+				<div class="panel-body" id="more_myBlockOnDash" style="display:none;">
+					<ul class="list-group" id="more_myBlockOnDash_body">
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="text-center" id="addMyBlockHint" style="display:none;margin-bottom: 20px;"><a style="color: lightgray;text-decoration: none;" href="javascript://" data-toggle="modal" data-target="#modalHowMyBlock">Добавить свой блок</a></div>
+		
+		<div class="modal fade" id="modalHowMyBlock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">Добавление своего блока</h4>
+					</div>
+					<div class="modal-body">
+						<ul class="list-group">
+							<li class="list-group-item">1. Создайте сценарий с именем: <code style="white-space: normal;">dash_my_block</code></li>
+							<li class="list-group-item">
+								2. Сценарий должен отдавать следующий JSON объект:<br>
+								<div style="white-space: normal;border-radius: 5px;padding: 10px;font-family: Consolas, Verdana;background-color: #000080;color: #c0c0c0;">
+									<div>$array = array(</div>
+									<div style="margin-left: 30px;">	'status' => 1, //Выводить блок?</div>
+									<div style="margin-left: 30px;">	'name' => 'Супер блок', //Шапка блока</div>
+									<div style="margin-left: 30px;">	'reload' => true, //Автообновление блока</div>
+									<div style="margin-left: 30px;">	'reload_time' => 5, //Время автообновления</div>
+									<div style="margin-left: 30px;">	'data' => array(</div>
+									<div style="margin-left: 60px;">		'data' => 'Привет! Тут любой html!' //Данные</div>
+									<div style="margin-left: 30px;">	),</div>
+									<div>);</div>
 
+
+									<div>echo json_encode($array);</div>
+								</div>
+							</li>
+							<li class="list-group-item">3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.</li>
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--- Генерация своего блока --->
+		
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_SYSTEM_INFO#></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('infoBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse collapse out" id="row_infoBlockDiv">
+				<div class="panel-body">
+					<ul class="list-group" id="">
+						<li class="list-group-item">
+							<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
+							<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						
+						<li class="list-group-item" onclick="$('.reqPerMinHour').toggle('slow');" style="cursor:pointer">
+							Запросов к БД в секунду
+							<span id="dashInfoDBReqS" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item reqPerMinHour" style="display:none;">
+							Запросов к БД в минуту
+							<span id="dashInfoDBReqM" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item reqPerMinHour" style="display:none;">
+							Запросов к БД в час
+							<span id="dashInfoDBReqH" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item text-center" id="dbreqdiscus" style="display:none;background: radial-gradient(circle farthest-corner at 100px 50px, #daffe5, #d6ecff);">
+							<a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i>Обсуждение на форуме</a>
+						</li>
+						
+						<li class="list-group-item">
+							<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
+								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
+							</span>
+							<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
+						</li>
+						<li class="list-group-item">
+							<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
+								Beta 1.4.0
+							</span>
+							Версия MajorDomoUI
+						</li>
+						<li class="list-group-item">
+							<span class="badge" id="dashInfoLastUpdate">
+								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
+							</span>
+							<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
+						</li>
+					</ul>
+					<div class="well well-lg" id="dashInfoOS"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_CYCLE_CONTROL#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=services">X-Ray</a></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('cycleBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse collapse out" id="row_cycleBlockDiv" style="margin-bottom: 0px;">
+				<div class="panel-body">
+					<!-- Chart code -->
+					<script>
+					am4core.ready(function() {
+
+					// Themes begin
+					am4core.useTheme(am4themes_material);
+					am4core.useTheme(am4themes_animated);
+					// Themes end
+
+					var chart = am4core.create("chartdiv_cycle", am4charts.PieChart);
+					chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+					chart.logo.disabled = true;
+					
+					chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=services&ajax=1&op=getcontent&mode=chart";
+					chart.dataSource.parser = new am4core.JSONParser();
+					chart.dataSource.reloadFrequency = 5000;
+					
+					chart.radius = am4core.percent(60);
+					chart.innerRadius = am4core.percent(40);
+					chart.startAngle = 180;
+					chart.endAngle = 360;  
+
+					var series = chart.series.push(new am4charts.PieSeries());
+					series.dataFields.value = "cycle";
+					series.dataFields.category = "title";
+					series.dataFields.cyclename = "cyclename";
+					
+					series.slices.template.propertyFields.fill = "color";
+					series.slices.template.cornerRadius = 0;
+					series.slices.template.innerCornerRadius = 0;
+					series.slices.template.draggable = true;
+					series.slices.template.inert = true;
+					series.alignLabels = false;
+
+					series.hiddenState.properties.startAngle = 90;
+					series.hiddenState.properties.endAngle = 90;
+
+					chart.legend = new am4charts.Legend();
+					chart.legend.useDefaultMarker = true;
+					var marker = chart.legend.markers.template.children.getIndex(0);
+					marker.cornerRadius(12, 12, 12, 12);
+					marker.strokeWidth = 2;
+					marker.strokeOpacity = 1;
+					marker.stroke = am4core.color("#ccc");
+					chart.legend.labels.template.text = "[bold {color}]{cyclename}[/]";
+					
+					
+					}); // end am4core.ready()
+					</script>
+
+					<!-- HTML -->
+					<div id="chartdiv_cycle" style="width: 100%;height: 200px;"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_LAST_SCRIPTS#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?pd=pz_&md=panel&inst=&action=scripts"><i><#LANG_NEWDASH_LAST_SCRIPTS_GO#></i></a></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('scriptBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse collapse out" id="row_scriptBlockDiv">
+				<div class="panel-body">
+					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #a6e7bb, #0e6080);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_SHOW_LAST_SCRIPTS#></div>
+					<ul class="list-group" id="scriptLast">
+						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="col-md-7">
+		<script>
+		am4core.ready(function() {
+
+		// Themes begin
+		am4core.useTheme(am4themes_material);
+		am4core.useTheme(am4themes_animated);
+		// Themes end
+
+		var chart = am4core.create("structureDB_chart", am4charts.XYChart);
+		chart.logo.disabled = true;
+		
+		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
+		chart.dataSource.parser = new am4core.JSONParser();
+		chart.dataSource.reloadFrequency = 5000;
+
+		chart.padding(20, 20, 20, 20);
+
+		var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.renderer.grid.template.location = 0;
+		categoryAxis.dataFields.category = "NAME";
+		categoryAxis.renderer.minGridDistance = 60;
+		categoryAxis.renderer.inversed = false;
+		categoryAxis.renderer.grid.template.disabled = true;
+
+		var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+		valueAxis.min = 0;
+		valueAxis.extraMax = 0.1;
+		//valueAxis.rangeChangeEasing = am4core.ease.linear;
+		//valueAxis.rangeChangeDuration = 1500;
+
+		var series = chart.series.push(new am4charts.ColumnSeries());
+		series.dataFields.categoryX = "NAME";
+		series.dataFields.valueY = "ROWS";
+		series.tooltipText = "{valueY.value}"
+		series.columns.template.strokeOpacity = 0;
+		series.columns.template.column.cornerRadiusTopRight = 4;
+		series.columns.template.column.cornerRadiusTopLeft = 4;
+		//series.interpolationDuration = 1500;
+		//series.interpolationEasing = am4core.ease.linear;
+		var labelBullet = series.bullets.push(new am4charts.LabelBullet());
+		labelBullet.label.verticalCenter = "bottom";
+		labelBullet.label.dy = -10;
+		labelBullet.label.text = "{values.valueY.workingValue.formatNumber('#.')}";
+
+		chart.zoomOutButton.disabled = true;
+
+		// as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+		series.columns.template.adapter.add("fill", function (fill, target) {
+			return chart.colors.getIndex(target.dataItem.index);
+		});
+
+		setInterval(function () {
+			am4core.array.each(chart.data, function (item) {
+				item.visits += Math.round(Math.random() * 200 - 100);
+				item.visits = Math.abs(item.visits);
+			})
+			chart.invalidateRawData();
+		}, 20000)
+
+		categoryAxis.sortBySeries = series;
+
+		}); // end am4core.ready()
+		</script>
+		<!-- HTML -->
+		<div id="hint_howmaxdbsizehint" style="display:none;">
+			<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #be5959, #caa417);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_HINT_BIG_DATA_DB#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i> <a style="text-decoration: none;color: white;" href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=database">X-Ray</a></div>
+			<div class="hidden-xs" onclick="hideHintCookie('howmaxdbsizehint');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+		</div>
+		
+		<div id="structureDB_chart" style="width: 100%;height: 300px;margin-bottom:10px"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+		
+		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/new_design.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #4792d1);background-size: cover;background-repeat: no-repeat;">
+			<h2><#LANG_NEWDASH_HELLO_NEW#></h2>
+			<p style="font-size: 11pt;text-shadow: white 0 0 6px;"><#LANG_NEWDASH_HELLO_NEW_TEXT#></p>
+			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
+		</div>
+		<!---
+		<style>
+		.onHoverAlfa:hover {
+			color: white;
+		}
+		</style>
+		<div class="jumbotron onHoverAlfa" style="margin-bottom: 10px;background-image: url(https://ak.picdn.net/shutterstock/videos/113821/thumb/1.jpg?ip=x480);background-size: contain;;border-radius: 5px;">
+			<h2 class="onHoverAlfa">А может Alpha?</h2>
+			<p style="font-size: 11pt;" class="onHoverAlfa">У MajorDomo есть Alpha версия. Там много новых функций, закрытых дыр и новых впечатлений =) Обновляйте и помогай MajorDomo стать еще лучше.</p>
+			<p class="text-right"><a style="border-color: #ffffff;" class="btn btn-danger btn-md" role="button">ОК, я с вами!</a></p>
+		</div>
+		--->
+		
+		<div id="getConnect" class="jumbotron hidden-xs" style="display:none!important;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
+			<h2 id="titleConnect"><#LANG_NEWDASH_CONNECT_ADS#></h2>
+			<p style="font-size: 11pt;" id="textConnect"><#LANG_NEWDASH_CONNECT_ADS_TEXT#></p>
+			<p class="text-right">
+				<a style="border-color: #ffffff;" onclick="$('#btnConnect').hide();$('#titleConnect').text('<#LANG_NEWDASH_CONNECT_ADS_DONATE#>');$('#textConnect').html('<#LANG_NEWDASH_CONNECT_ADS_DONATE_TEXT#>');" class="btn btn-default btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_DONATE_BTN#></a>
+				<a style="border-color: #ffffff;" id="btnConnect" href="https://connect.smartliving.ru/services/s2.html" target="_blank" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_BTN#></a>
+			</p>
+		</div>
+		<div id="hint_blockdidyouknow" style="display:none;">
+			<div id="didyouknow" class="alert alert-dismissable hidden-xs" style="background-color: #f5f5f5;margin-bottom: 0px;">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<div id="didyouknow_body" class="text-center">
+					<img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#>
+				</div>
+			</div>
+			<div class="hidden-xs" onclick="hideHintCookie('blockdidyouknow');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+		</div>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_NEWS#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="https://connect.smartliving.ru/blog.html" target="_blank"><i><#LANG_NEWDASH_NEWS_MORE#></i></a></h3></div>
+				<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('newsBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse collapse out" id="row_newsBlockDiv">
+				<div class="panel-body">
+					<div id="news_body"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+				</div>
+			</div>
+		</div>
     </div>
-
-    <div class="col-md-7">
-
-        <!-- processSubscription panelHomeColumnRight -->
-
-      <div id="didyouknow" style="display:none;background-color:lightyellow;padding:10px;border:1px solid yellow">
-          <h4><#LANG_DID_YOU_KNOW#> <a href="#" onclick="return checkDidYouKnow();"><i class="glyphicon glyphicon-refresh"></i></a></h4>
-          <div id="didyouknow_body"></div>
-      </div>
-
-        &nbsp;
-        <div id="news" style="display:none;">
-            <h4><#LANG_NEWS#></h4>
-            <div id="news_body"></div>
-        </div>
-
-    </div>
-
 </div>
 
 <script type="text/javascript">
     $(document).ready(function() {
+		checkCategory('myBlockDiv');
+		checkCategory('infoBlockDiv');
+		checkCategory('cycleBlockDiv');
+		checkCategory('scriptBlockDiv');
+		checkCategory('newsBlockDiv');
+		
+		
         checkUpdatesAvailable();
         checkDidYouKnow();
         checkNews();
+		//Проверяем скрыли ли подсказки
+		hideHintCookie('alert_hide_hint2', 1);
+		hideHintCookie('blockdidyouknow', 1);
+		hideHintCookie('blockaddnewdev', 1);
+		hideHintCookie('howmaxdbsizehint', 1);
+		setInterval(function() { checkSystemInfo(); }, 10000);
+		checkSystemInfo();
+		checkConnectStatus();
+		
+		myBlockOnDash();
     });
 </script>
 
 [#endif#]
 
-[#if TAB="panel"#]
-<iframe src="<#ROOTHTML#>page/Panel.html?theme=light" width="100%" height="800" frameborder="0"></iframe>
-[#endif TAB#]
-
-[#if TAB="apps"#]
-<iframe src="<#ROOTHTML#>apps.html" width="100%" height="800" frameborder="0"></iframe>
-[#endif TAB#]

@@ -132,10 +132,20 @@ function admin(&$out) {
  if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
- if ($this->data_source=='system_errors' || $this->data_source=='') {
-  if ($this->view_mode=='' || $this->view_mode=='search_system_errors') {
-   $this->search_system_errors($out);
+	$res=SQLSelectOne("SELECT max(ACTIVE) IS_ERROR FROM system_errors");
+	$out['ERRORS_FOUND'] = $res['IS_ERROR'];
+	$this->search_system_errors($out);
+	
+  if ($this->view_mode == 'addtesterror') {
+	registerError('testing_error_#'.rand(1000, 9999), 'Тестовая ошибка');
+	$this->redirect("?data_source=system_errors");
   }
+  if ($this->view_mode == 'readall') {
+	SQLExec("UPDATE system_errors SET ACTIVE=0");
+	$this->redirect("?data_source=system_errors");
+  }
+ 
+ if ($this->data_source=='system_errors' || $this->data_source=='') {
   if ($this->view_mode=='edit_system_errors') {
    $this->edit_system_errors($out, $this->id);
   }

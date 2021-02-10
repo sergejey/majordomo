@@ -12,8 +12,14 @@ if (!$directionTimeout) {
 }
 
 $value = (float)$this->getProperty('value');
-$minValue = (float)$this->getProperty('minValue');
-$maxValue = (float)$this->getProperty('maxValue');
+$minValue = $this->getProperty('minValue');
+if (is_numeric($minValue)) {
+  $minValue = (float)$minValue;
+}
+$maxValue = $this->getProperty('maxValue');
+if (is_numeric($maxValue)) {
+  $maxValue = (float)$maxValue;
+}
 $is_normal = (int)$this->getProperty('normalValue');
 
 $data1 = getHistoryValue($this->object_title . '.value', time() - $directionTimeout);
@@ -33,15 +39,15 @@ if ($is_blocked) {
 }
 
 $alert_timer_title = $ot.'_alert';
-if ($maxValue == 0 && $minValue == 0 && !$is_normal) {
+if (!is_float($maxValue) && !is_float($minValue) && !$is_normal) {
   $this->setProperty('normalValue', 1);
-} elseif (($value > $maxValue || $value < $minValue) && $is_normal) {
+} elseif (((is_float($maxValue) && ($value > $maxValue)) || (is_float($minValue) && ($value < $minValue))) && $is_normal) {
   $this->setProperty('normalValue', 0);
   if ($this->getProperty('notify')) {
     //out of range notify
     $this->callMethod('alert');
   }
-} elseif (($value <= $maxValue && $value >= $minValue) && !$is_normal) {
+} elseif (((($value <= $maxValue) || !is_float($maxValue)) && (($value >= $minValue) || !is_float($minValue))) && !$is_normal) {
   $this->setProperty('normalValue', 1);
   clearTimeOut($alert_timer_title);
   if ($this->getProperty('notify')) {
@@ -64,7 +70,7 @@ if ($linked_room && $this->getProperty('mainSensor')) {
 $this->callMethodSafe('keepAlive');
 $this->callMethod('statusUpdated');
 /*
-include_once(DIR_MODULES.'devices/devices.class.php');
+include_once(dirname(__FILE__).'/devices.class.php');
 $dv=new devices();
 $dv->checkLinkedDevicesAction($this->object_title, $value);
 */

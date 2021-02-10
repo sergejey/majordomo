@@ -437,7 +437,7 @@ function admin(&$out) {
 * @access public
 */
  function getParentProperties($id, $def='', $include_self=0) {
-  $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".(int)$id."'");
+  $class=SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID='".(int)$id."'");
 
   $properties=SQLSelect("SELECT properties.*, classes.TITLE as CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='".$id."' AND OBJECT_ID=0");
 
@@ -473,7 +473,7 @@ function admin(&$out) {
  }
 
  function getParentMethods($id, $def='', $include_self=0) {
-  $class=SQLSelectOne("SELECT * FROM classes WHERE ID='".(int)$id."'");
+  $class=SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID='".(int)$id."'");
 
   $methods=SQLSelect("SELECT methods.*, classes.TITLE as CLASS_TITLE FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID WHERE CLASS_ID='".$id."' AND OBJECT_ID=0");
 
@@ -559,6 +559,7 @@ function usual(&$out) {
   }
   SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
   $this->updateTree_classes();
+  clearCacheData();
   return 1;
  }
 /**
@@ -572,6 +573,7 @@ function usual(&$out) {
   for($i=0;$i<$total;$i++) {
    if ($res[$i]['PARENT_ID']==$parent_id) {
     $res[$i]['LEVEL']=$level;
+    $res[$i]['LEVEL_PAD']=$level*2;
     $res[$i]['RESULT']=$this->buildTree_classes($res, $res[$i]['ID'], ($level+1));
     if (!is_array($res[$i]['RESULT'])) {
      unset($res[$i]['RESULT']);
@@ -584,6 +586,8 @@ function usual(&$out) {
   }
   $total2=count($res2);
   if ($total2) {
+	//echo '<pre>';
+	  //var_dump($res2);
    return $res2;
   }
  }

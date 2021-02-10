@@ -1,7 +1,12 @@
 <!--#
  @version 0.3 (auto-set)
 #-->
-
+<style>
+.CodeMirror {
+	border-radius: 5px;
+	border: 2px solid #f7f7f7;
+}
+</style>
 &nbsp;<br>
 
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
@@ -14,7 +19,7 @@
 
 <div class="form-group ">
         <label class="col-lg-4 control-label">Template:<#LANG_HCB#>classtemplate<#LANG_HCE#></label>
-        <div class="col-lg-4"><textarea name="template" id="template" rows="10" class="form-control">[#TEMPLATE#]</textarea>
+        <div class="col-lg-8"><textarea name="template" id="template" rows="10" class="form-control">[#TEMPLATE#]</textarea>
             [#module name="blockly_code" code_field="template" action="" type="html"#]
         </div>
 </div>
@@ -26,11 +31,8 @@
 #-->
 
 <div class="form-group">
-
      <label class="col-lg-4 control-label">&nbsp;</label>
-
-     <div class="col-lg-4">
-        
+     <div class="col-lg-8">
          [#if ID!=""#]
                  <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
                  [#else ID#]
@@ -38,8 +40,6 @@
                  [#endif ID#]
                  &nbsp;
                  <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
-
-
     </div>
 </div>
 

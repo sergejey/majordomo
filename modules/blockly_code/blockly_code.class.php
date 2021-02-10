@@ -192,6 +192,7 @@ class blockly_code extends module
 				foreach($objMethProp as $value) {
 					$words .= "'setGlobal(\"".$value['title']."\", val);', ";
 					$words .= "'getGlobal(\"".$value['title']."\")', ";
+					$words .= "'".$value['title']."', ";
 				}
 				
 				$objThisObj = SQLExec("SELECT distinct m.title title FROM properties m order by 1");

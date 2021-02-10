@@ -8,6 +8,23 @@ $this->callMethodSafe('setUpdatedText');
 
 $this->callMethod('keepAlive');
 
+if ($this->getProperty('isActivity')) {
+    $linked_room = $this->getProperty('linkedRoom');
+    if (getGlobal('NobodyHomeMode.active')) {
+        callMethodSafe('NobodyHomeMode.deactivate', array('sensor' => $ot, 'room' => $linked_room));
+    }
+    $nobodyhome_timeout = 1 * 60 * 60;
+    if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
+        $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
+    }
+    if ($nobodyhome_timeout) {
+        setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
+    }
+    if ($linked_room) {
+        callMethodSafe($linked_room . '.onActivity', array('sensor' => $ot));
+    }
+}
+
 $description = $this->description;
 if (!$description) {
     $description = $ot;
@@ -52,7 +69,7 @@ DebMes("Calling logicAction for $ot",'openable');
 $this->callMethodSafe('logicAction');
 
 startMeasure('statusUpdatedLinkedDevices');
-include_once(DIR_MODULES . 'devices/devices.class.php');
+include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
 endMeasure('statusUpdatedLinkedDevices');

@@ -141,7 +141,11 @@ if ($this->tab == 'settings') {
                 if ($this->mode == 'update') {
                     global ${$k . '_value'};
                     if (isset(${$k . '_value'})) {
-                        setGlobal($rec['LINKED_OBJECT'] . '.' . $k, trim(${$k . '_value'}));
+                        if (is_array(${$k . '_value'})) {
+                            setGlobal($rec['LINKED_OBJECT'] . '.' . $k, implode(',',${$k . '_value'}));
+                        } else {
+                            setGlobal($rec['LINKED_OBJECT'] . '.' . $k, trim(${$k . '_value'}));
+                        }
                     }
                     $out['OK'] = 1;
                     if ($v['ONCHANGE'] != '') {
@@ -152,7 +156,8 @@ if ($this->tab == 'settings') {
                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP'] = $v['_CONFIG_HELP'];
                 $v['CONFIG_TYPE'] = $v['_CONFIG_TYPE'];
                 $v['VALUE'] = getGlobal($rec['LINKED_OBJECT'] . '.' . $k);
-                if ($v['CONFIG_TYPE'] == 'select') {
+                if ($v['CONFIG_TYPE'] == 'select' || $v['CONFIG_TYPE'] == 'multi_select') {
+                    $selected_options = explode(',',gg($rec['LINKED_OBJECT'] . '.' . $k));
                     $tmp = explode(',', $v['_CONFIG_OPTIONS']);
                     $total = count($tmp);
                     for ($i = 0; $i < $total; $i++) {
@@ -163,7 +168,9 @@ if ($this->tab == 'settings') {
                         } else {
                             $title = $value;
                         }
-                        $v['OPTIONS'][] = array('VALUE' => $value, 'TITLE' => $title);
+                        $option = array('VALUE' => $value, 'TITLE' => $title);
+                        if (in_array($value,$selected_options)) $option['SELECTED']=1;
+                        $v['OPTIONS'][] = $option;
                     }
                 } elseif ($v['CONFIG_TYPE'] == 'style_image') {
                     include_once(DIR_MODULES . 'scenes/scenes.class.php');
@@ -317,11 +324,11 @@ if ($this->tab == '') {
 }
 
 if ($this->tab == 'links') {
-    include_once(DIR_MODULES . 'devices/devices_links.inc.php');
+    include_once(dirname(__FILE__) . '/devices_links.inc.php');
 }
 
 if ($this->tab == 'schedule') {
-    include_once(DIR_MODULES . 'devices/devices_schedule.inc.php');
+    include_once(dirname(__FILE__) . '/devices_schedule.inc.php');
 }
 
 if ($this->mode == 'update' && $this->tab == '') {
@@ -428,6 +435,14 @@ if ($this->mode == 'update' && $this->tab == '') {
             setGlobal($object_rec['TITLE'] . '.linkedRoom', $location_title);
         }
 
+        if ($added && is_array($type_details['PROPERTIES'])) {
+            foreach($type_details['PROPERTIES'] as $property=>$details) {
+                if (IsSet($details['_CONFIG_DEFAULT'])) {
+                    setGlobal($object_rec['TITLE'] . '.'.$property, $details['_CONFIG_DEFAULT']);
+                }
+            }
+        }
+
         if ($added && $rec['TYPE'] == 'sensor_temp') {
             setGlobal($object_rec['TITLE'] . '.minValue', 16);
             setGlobal($object_rec['TITLE'] . '.maxValue', 25);
@@ -437,7 +452,7 @@ if ($this->mode == 'update' && $this->tab == '') {
             setGlobal($object_rec['TITLE'] . '.maxValue', 60);
         }
 
-        SQLTruncateTable('cached_values');
+        clearCacheData();
         addToOperationsQueue('connect_sync_devices', 'required');
 
         if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
@@ -498,11 +513,11 @@ $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0"
 if ($rec['LOCATION_ID']) {
     $location_rec = SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=" . $rec['LOCATION_ID']);
     $out['LOCATION_TITLE'] = processTitle($location_rec['TITLE']);
-    $other_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID']);
+    $other_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID']." ORDER BY TITLE");
     $out['OTHER_DEVICES'] = $other_devices;
 }
 
 if ($rec['TYPE']) {
-    $other_devices_type = SQLSelect("SELECT ID, TITLE FROM devices WHERE TYPE='" . $rec['TYPE'] . "'");
+    $other_devices_type = SQLSelect("SELECT ID, TITLE FROM devices WHERE TYPE='" . $rec['TYPE'] . "' ORDER BY TITLE");
     $out['OTHER_DEVICES_TYPE'] = $other_devices_type;
 }

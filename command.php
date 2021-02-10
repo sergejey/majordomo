@@ -167,18 +167,27 @@ if (!headers_sent()) {
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="<?php echo ROOTHTML;?>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body class="container">
 <script type="text/javascript">
     function startSearch(event) {
         event.target.form.submit();
     }
 </script>
 
-<form action="?" method="get" name="frmSearch">
+<h1>Command</h1>
+
+<form action="?" method="get" name="frmSearch" class="form-inline">
+    <div class="form-group">
     <input type="text" name="qry" value="<?php echo $qry; ?>" speech required x-webkit-speech
-           onspeechchange="startSearch"/><input type="submit" name="Submit" value="Say"/>
+           onspeechchange="startSearch" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <input type="submit" name="Submit" value="Say" class="btn btn-default btn-primary"/>
+    </div>
 </form>
 
 <?php

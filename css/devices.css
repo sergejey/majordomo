@@ -73,7 +73,7 @@
 }
 
 .controller .device-header {
-    height:40px;
+    /*height:40px;*/
     position: relative;
     padding-top:10px;
 }
@@ -118,6 +118,10 @@
     font-weight:bold;
 }
 
+.device-icon.ac {
+    background-image: url(../cms/scenes/styles/common/i_condition_on_cool.png);
+}
+
 .device-icon.camera {
     background-image: url(../cms/scenes/styles/common/i_camera_on.png);
 }
@@ -139,6 +143,10 @@
 }
 
 .device-icon.button.on {
+    background-color:yellow;
+}
+
+.device-icon.ac.on {
     background-color:yellow;
 }
 
@@ -209,6 +217,11 @@
 .device-icon.humidity {
     background-image: url(../cms/scenes/styles/informer/i_humidity.png);
 }
+
+.device-icon.moisture {
+    background-image: url(../cms/scenes/styles/common/i_sad.png);
+}
+
 
 .device-icon.pressure {
     background-image: url(../cms/scenes/styles/informer/i_temp.png);

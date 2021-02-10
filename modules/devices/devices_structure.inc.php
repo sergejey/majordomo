@@ -98,9 +98,9 @@ $this->device_types=array(
         'PROPERTIES'=>array(
             'relay_status'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_RELAY_STATUS,'KEEP_HISTORY'=>365,'DATA_KEY'=>1),
             'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
-            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1),
-            'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
-            'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
+            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'_CONFIG_DEFAULT'=>22),
+            'normalTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_NORMAL_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat','_CONFIG_DEFAULT'=>22),
+            'ecoTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_ECO_TEMP,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat','_CONFIG_DEFAULT'=>18),
             'threshold'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_THRESHOLD,'_CONFIG_TYPE'=>'text','ONCHANGE'=>'valueUpdated','_CONFIG_HELP'=>'SdThermostat'),
             'ncno'=>array('DESCRIPTION'=>LANG_DEVICES_NCNO,'_CONFIG_TYPE'=>'select','_CONFIG_OPTIONS'=>'nc=Normal Close,no=Normal Open','_CONFIG_HELP'=>'SdThermostat'),
             'disabled' =>array('DESCRIPTION'=>'Disabled'),
@@ -116,6 +116,38 @@ $this->device_types=array(
             'disable'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_MODE.': '.LANG_DEVICES_THERMOSTAT_MODE_OFF,'_CONFIG_SHOW'=>1),
             'turnOn'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_MODE.': '.LANG_DEVICES_THERMOSTAT_MODE_NORMAL,'_CONFIG_SHOW'=>1),
             'turnOff'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_MODE.': '.LANG_DEVICES_THERMOSTAT_MODE_ECO,'_CONFIG_SHOW'=>1),
+        )
+    ),
+    'ac' => array(
+        'TITLE'=>LANG_DEVICES_AC,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SAirConditioners',
+        'PROPERTIES'=>array(
+            'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'_CONFIG_DEFAULT'=>22),
+            'tempStep'=>array('DESCRIPTION'=>LANG_DEVICES_AC_TEMP_STEP,'_CONFIG_TYPE'=>'text'),
+            'fanSpeed'=>array('DESCRIPTION'=>'Fan Speed','_CONFIG_DEFAULT'=>'auto','ONCHANGE'=>'fanSpeedUpdated'),
+            'fanSpeedModes'=>array('DESCRIPTION'=>LANG_DEVICES_AC_FAN_SPEED,
+                '_CONFIG_TYPE'=>'multi_select',
+                '_CONFIG_OPTIONS'=>'high='.LANG_DEVICES_AC_FAN_SPEED_HIGH.',medium='.LANG_DEVICES_AC_FAN_SPEED_MEDIUM.',low='.LANG_DEVICES_AC_FAN_SPEED_LOW.',auto='.LANG_DEVICES_AC_FAN_SPEED_AUTO,
+                '_CONFIG_DEFAULT'=>'high,medium,low,auto','ONCHANGE'=>'configUpdated','ONCHANGE'=>'fanSpeedUpdated'),
+            'fanSpeedModesHTML'=>array('DESCRIPTION'=>'FanSpeedModes HTML'),
+            'thermostat'=>array('DESCRIPTION'=>'Thermostat','_CONFIG_DEFAULT'=>'auto','ONCHANGE'=>'thermostatUpdated'),
+            'thermostatModes'=>array('DESCRIPTION'=>LANG_DEVICES_AC_THERMOSTAT,
+                '_CONFIG_TYPE'=>'multi_select',
+                '_CONFIG_OPTIONS'=>'fan_only='.LANG_DEVICES_AC_THERMOSTAT_FAN_ONLY.',heat='.LANG_DEVICES_AC_THERMOSTAT_HEAT.',cool='.LANG_DEVICES_AC_THERMOSTAT_COOL.',dry='.LANG_DEVICES_AC_THERMOSTAT_DRY.',auto='.LANG_DEVICES_AC_THERMOSTAT_AUTO,
+                '_CONFIG_DEFAULT'=>'fan_only,heat,cool,dry,auto','ONCHANGE'=>'configUpdated'),
+            'thermostatModesHTML'=>array('DESCRIPTION'=>'ThermostatModes HTML'),
+        ),
+        'METHODS'=>array(
+            'setTargetTemperature'=>array('DESCRIPTION'=>'Set target temperature'),
+            'setThermostatMode'=>array('DESCRIPTION'=>'Set thermostat mode'),
+            'setFanSpeedMode'=>array('DESCRIPTION'=>'Set fan speed mode'),
+            'configUpdated'=>array('DESCRIPTION'=>'Config updated'),
+            'fanSpeedUpdated'=>array('DESCRIPTION'=>'Fan Speed updated'),
+            'thermostatUpdated'=>array('DESCRIPTION'=>'Thermostat updated'),
+            'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
+            'tempDown'=>array('DESCRIPTION'=>'Descrease target temperature'),
         )
     ),
     'dimmer'=>array(
@@ -209,6 +241,9 @@ $this->device_types=array(
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
             'blocked'=>array('DESCRIPTION'=>'Is blocked'),
+            'notify_msg_opening'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_OPENING,'_CONFIG_TYPE'=>'text'),
+            'notify_msg_closing'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_CLOSING,'_CONFIG_TYPE'=>'text'),
+            'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
@@ -221,6 +256,7 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SDevices',
         'CLASS'=>'SOpenable',
         'PROPERTIES'=>array(
+            'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
             'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
@@ -280,9 +316,12 @@ $this->device_types=array(
             'valueUpdated'=>array('DESCRIPTION'=>'Data Value updated event'),
             'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event'),
             'refreshStats'=>array('DESCRIPTION'=>'Refreshes daily/monthly stats','_CONFIG_SHOW'=>1),
+            'pulseDetected'=>array('DESCRIPTION'=>'Meter pulse detection'),
         ),
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            'price'=>array('DESCRIPTION'=>'Price','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCounterPrice'),
+            'pulseAmount'=>array('DESCRIPTION'=>'Pulse amount (optional)','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdPulseAmount'),
             'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
             'valueWork'=>array('DESCRIPTION'=>'Work Value','ONCHANGE'=>'valueWorkUpdated','KEEP_HISTORY'=>0),
             'valueHour'=>array('DESCRIPTION'=>'Hour Value','KEEP_HISTORY'=>365),
@@ -343,6 +382,21 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SHumSensors'
     ),
+    'sensor_moisture'=>array(
+        'TITLE'=>LANG_DEVICES_MOISTURE_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SMoistureSensors'
+    ),
+    'sensor_co2'=>array(
+        'TITLE'=>LANG_DEVICES_CO2_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SCO2Sensors'
+    ),
+    'sensor_radiation'=>array(
+        'TITLE'=>LANG_DEVICES_RADIATION_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SRadiationSensors'
+    ),
 	'sensor_state'=>array(
         'TITLE'=>LANG_DEVICES_STATE_SENSOR,
         'PARENT_CLASS'=>'SSensors',
@@ -390,7 +444,7 @@ $this->device_types=array(
     ),
 );
 
-$addons_dir=DIR_MODULES.$this->name.'/addons';
+$addons_dir=dirname(__FILE__).'/addons';
 if (is_dir($addons_dir)) {
     $addon_files=scandir($addons_dir);
     foreach($addon_files as $file) {

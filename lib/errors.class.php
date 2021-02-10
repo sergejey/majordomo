@@ -111,8 +111,10 @@ function simplisticErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 
 function phpShutDownFunction() {
     $error = error_get_last();
+    $e = new \Exception;
+    $backtrace = $e->getTraceAsString();
     if ($error['type'] === E_ERROR) {
-        DebMes("PHP shutdown error: ".$error['message'],'error');
+        DebMes($_SERVER['REQUEST_URI']."\nPHP shutdown error: ".$error['message']."\nBacktrace: ".$backtrace,'errors');
         $err = new custom_error($error['message']);
     }
 }

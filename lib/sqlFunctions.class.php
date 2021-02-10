@@ -14,7 +14,7 @@
 if (!function_exists('SQLExec')) {
 function SQLExec($query,$ignore_errors = false)
    {
-      if (($query{0} == "#") || ($query == "")) return;
+      if (($query[0] == "#") || ($query == "")) return;
       if (preg_match('/^ALTER TABLE/',$query)) {
          global $alter_executed;
          if ($alter_executed[$query]) return false;

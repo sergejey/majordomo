@@ -312,15 +312,13 @@ class module
         if (!file_exists($flag_filename)) {
             $this->install();
         } else {
-            $sqlQuery = "SELECT *
-                        FROM project_modules
-                       WHERE NAME = '" . $this->name . "'";
-
+            /*
+            $sqlQuery = "SELECT ID FROM project_modules WHERE NAME = '" . $this->name . "'";
             $rec = SQLSelectOne($sqlQuery);
             if (!isset($rec["ID"])) {
                 $this->install();
             }
-
+            */
         }
     }
 

@@ -3,52 +3,6 @@
  * @version 0.1 (auto-set)
  */
 
-
-/*
-Установка переменных, которые можно использовать в коммандах
-
-SET PROJECTS_DIR=D:/jey/projects
-
-Игнорирование папок и файлов, которые включают указанное слово
-
-IGNORE project_files
-
-Синхронизация (добавление новых и измененных файлов)
-
-LOCAL_DIR/wiki => PROJECTS_DIR/jeywork/wiki
-LOCAL_DIR/wiki <= PROJECTS_DIR/jeywork/wiki
-
-Перемещение всех файлов из одной папки в другую
-
-f:/video/daily <- /video_daily
-/video_daily -> f:/video/daily
-
-Добавление только файлов, определенной давности (более ранние файлы игнорируются)
-
-/music/podcasts <+ D:/jey/handled/music/Podcasts 2 DAYS OLD
-
-Удаление файлов старше определенного "возраста"
-
-CLEAR D:/jey/handled/music/Podcasts 2 DAYS OLD
-
-Синхронизация с полным зеркалирование, т.е. на месте назначения будут удаляться файлы и папки, которых нет на источнике
-
-SOURCE/dir !> DESTINATION/dir
-SOURCE/dir <! DESTINATION/dir
-
-Типы путей
-
-D:/jey/handled/music/Podcasts
-/jey/sync
-NET:pas/work
-
-В путях можно использовать обозначения даты как в команде PHP date(), но с символами % или $
-например:
-d:/jey/foto => d:/jey/foto2/%Y/%m-%F (файлы из первой папки будут разбросаны по годам и месяцам во второй)
-при этом если используется %, то в качестве времени берется время модификации файла, а если $, то текущее время
-
- */
-
 /**
  * Summary of preparePathTime
  * @param mixed $s     String
@@ -77,18 +31,37 @@ function preparePathTime($s, $mtime)
  */
 function is_dir2($d)
 {
-   $d = str_replace('NET:', '//', $d);
 
-   if (is_dir($d))
-      return 1;
+    // none directory
+    if (substr($d, -2) == DIRECTORY_SEPARATOR . "." || substr($d, -2) == "/.") {
+        return false; 
+    }
+    
+    // none directory
+    if (substr($d, -3) == DIRECTORY_SEPARATOR . ".." ||  substr($d, -3) == "/..") {
+        return false; 
+    }
 
-   if ($node = @opendir($d))
-   {
-      closedir($node);
-      return 1;
-   }
+    if (substr($d, -1) == "/" ) {
+        $d = substr($d,0,-1); 
+    }
+    
+    if (substr($d, -1) == DIRECTORY_SEPARATOR ) {
+        $d = substr($d,0,-1);
+    }
+    
+    if ('NET:' == substr($d, 0, 4)) {
+        $d = '//' . substr($d, 4);
+    }
+    
+    if (is_dir($d)) return true;
+    
+    if ($node = @opendir($d)) {
+        closedir($node);
+        return true;
+    } 
 
-   return 0;
+   return false;
 }
 
 /**
@@ -283,6 +256,63 @@ function copyFile($src, $dst)
    touch($dst, filemtime($src));
 }
 
+// function copy files from sourse directory to destination 
+function copyFiles($source, $destination, $over = 0, $patterns = 0)
+{
+    $res = 1;
+	
+    //Remove last slash '/' in source and destination - slash was added when copy
+    if (substr($source, -1) == "/" ) {
+        $source = substr($source,0,-1); 
+    } else if (substr($source, -1) == DIRECTORY_SEPARATOR ) {
+        $source = substr($source,0,-1);
+    }
+	
+    if (substr($destination, -1) == "/" ) {
+        $destination = substr($destination,0,-1); 
+    } else if (substr($destination, -1) == DIRECTORY_SEPARATOR ) {
+        $destination = substr($destination,0,-1);
+    }
+	
+    if (!Is_Dir2($source)) {
+        return false; // cannot create destination path
+    }
+
+    if (!Is_Dir2($destination)) {
+        if (!mkdir($destination, 0777, true)) {
+            // cannot create destination path
+            return false; 
+        }
+    }
+
+    if ($dir = @opendir($source)) {
+        while (($file = readdir($dir)) !== false) {
+
+            if (is_dir($source . DIRECTORY_SEPARATOR . $file) && ($file != '.') && ($file != '..')) {
+                //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
+                continue;
+            } elseif (is_file($source . DIRECTORY_SEPARATOR . $file) && (!file_exists($destination . DIRECTORY_SEPARATOR . $file) || $over)) {
+                if (!is_array($patterns)) {
+                    $ok_to_copy = 1;
+                } else {
+                    $ok_to_copy = 0;
+                    $total = count($patterns);
+                    for ($i = 0; $i < $total; $i++) {
+                        if (preg_match('/' . $patterns[$i] . '/is', $file)) {
+                            $ok_to_copy = 1;
+                        }
+                    }
+                }
+                if ($ok_to_copy) {
+                    $res = copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+    return $res;
+}
+
 /**
  * walking directory
  * @param mixed $dir      Directory
@@ -440,38 +470,70 @@ function makeDir($dir, $sep = '/')
 }
 
 /**
- * Remove Tree
- * @param mixed $destination Destination
- * @return bool|int
- */
-function removeTree($destination)
+* removeTree
+* remove directory tree
+* @access public
+*/
+function removeTree($destination, $iframe = 0)
 {
-   $res = 1;
-
-   if (!Is_Dir2($destination))
-      return 0; // cannot create destination path
-
-   if ($dir = @opendir($destination))
-   {
-      while (($file = readdir($dir)) !== false)
-      {
-         if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..'))
-         {
-            $res = removeTree($destination . "/" . $file);
-         }
-         elseif (Is_File($destination . "/" . $file))
-         {
-            $res = unlink($destination . "/" . $file);
-         }
-      }
-      closedir($dir);
-
-      $res = rmdir($destination);
-   }
-
-   return $res;
+    $res = 1;
+    if (!Is_Dir2($destination)) {
+        return false; // cannot create destination path
+    }
+    if ($dir = @opendir($destination)) {
+        if ($iframe) {
+            echonow("Removing dir $destination ... ");
+        }
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $res = removeTree($destination . "/" . $file);
+            } elseif (Is_File($destination . "/" . $file)) {
+                $res = @unlink($destination . "/" . $file);
+            }
+        }
+        closedir($dir);
+        $res = @rmdir($destination);
+        if ($iframe) {
+            echonow("OK<br/>", "green");
+        }
+    }
+    return $res;
 }
 
+
+/**
+ * Title
+ * Description
+ * @access public
+*/
+function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose)
+{
+    $res = array();
+    $destination = $dir;
+    if (!Is_Dir2($destination)) {
+        return $res; // cannot create destination path
+    }
+
+    if ($dir = @opendir($destination)) {
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $sub_ar = $this->getLocalFilesTree($destination . "/" . $file, $pattern, $ex_pattern, $log, $verbose);
+                $res = array_merge($res, $sub_ar);
+            } elseif (Is_File($destination . "/" . $file)) {
+                $fl = array();
+                $fl['FILENAME'] = str_replace('//', '/', $destination . "/" . $file);
+                $fl['FILENAME_SHORT'] = str_replace('//', '/', $file);
+                $fl['MTIME'] = filemtime($fl['FILENAME']);
+                $fl['SIZE'] = filesize($fl['FILENAME']);
+                if (preg_match('/' . $pattern . '/is', $fl['FILENAME_SHORT']) && ($ex_pattern == '' || !preg_match('/' . $ex_pattern . '/is', $fl['FILENAME_SHORT']))) {
+                    $res[] = $fl;
+                }
+            }
+        }
+        closedir($dir);
+    }
+    return $res;
+}
 
 // loading file
 
@@ -718,46 +780,47 @@ function UTF_Encode($str, $type)
 }
 
 /**
- * Summary of copyTree
- * @param mixed $source      Source
- * @param mixed $destination Destination
- * @param mixed $over        Over
- * @return mixed
- */
-function copyTree($source, $destination, $over = 0)
+* copyTree
+* Copy source directory tree to destination directory
+* @access public
+*/
+function copyTree($source, $destination, $over = 0, $patterns = 0)
 {
-   $res = 1;
+    //Remove last slash '/' in source and destination - slash was added when copy
+    if (substr($source, -1) == "/" ) {
+        $source = substr($source,0,-1); 
+    } else if (substr($source, -1) == DIRECTORY_SEPARATOR ) {
+        $source = substr($source,0,-1);
+    }
+	
+    if (substr($destination, -1) == "/" ) {
+        $destination = substr($destination,0,-1); 
+    } else if (substr($destination, -1) == DIRECTORY_SEPARATOR ) {
+        $destination = substr($destination,0,-1);
+    }
+    
+    if (!Is_Dir2($source)) {
+        // cannot create destination path
+        return false; 
+    }
 
-   if (!Is_Dir($source))
-   {
-      return 0; // incorrect source path
-   }
+    if (!Is_Dir2($destination)) {
+        if (!mkdir($destination, 0777, true)) {
+            // cannot create destination path
+            return false; 
+        }
+    }
 
-   if (!Is_Dir($destination))
-   {
-      if (!mkdir($destination, 0777,true))
-      {
-         return 0; // cannot create destination path
-      }
-   }
-
-   if ($dir = @opendir($source))
-   {
-      while (($file = readdir($dir)) !== false)
-      {
-         if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..'))
-         {
-            $res = copyTree($source . "/" . $file, $destination . "/" . $file, $over);
-         }
-         elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over))
-         {
-            $res = copy($source . "/" . $file, $destination . "/" . $file);
-         }
-      }
-      closedir($dir);
-   }
-
-   return $res;
+    if ($dir = @opendir($source)) {
+        while (($file = readdir($dir)) !== false) {
+            if (Is_Dir2($source . DIRECTORY_SEPARATOR . $file)) {
+                copyTree($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file, $over, $patterns);
+            }
+        }
+        copyFiles($source, $destination, $over, $patterns);
+        closedir($dir);
+    }
+    return true;
 }
 
 function removeEmptySubFolders($path)
@@ -819,3 +882,317 @@ function keepLatestLimitedBySize($path, $max_size, $removeEmptyFolders = true) {
    }
 }
 
+/**
+ * Summary of getRandomLine
+ * @param mixed $filename File name
+ * @return mixed
+ */
+function getRandomLine($filename)
+{
+    if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt')) {
+        $filename = ROOT . 'cms/texts/' . $filename . '.txt';
+    }
+
+    if (file_exists($filename)) {
+        $data = LoadFile($filename);
+        $data = str_replace("\r", '', $data);
+        $data = str_replace("\n\n", "\n", $data);
+        $lines = mb_split("\n", $data);
+        $total = count($lines);
+        $line = $lines[round(rand(0, $total - 1))];
+
+        if ($line != '') {
+            return $line;
+        }
+    }
+}
+
+function remote_file_exists($url){
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode == 200 ){return true;}
+    return false;
+}
+
+function getMediaDurationSeconds($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    if (preg_match("/: Invalid /", $dur)) {
+        return false;
+    }
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3];
+    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
+}
+
+function get_media_info($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+
+    if (preg_match("/: Invalid /", $data)) {
+        return false;
+    }
+    //get duration
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
+
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3]+1;
+	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+	// get all info about codec
+	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
+    
+	if ($format) {
+		$out['Audio_format'] = $format[1];
+		$out['Audio_sample_rate'] = $format[2];
+		$out['Audio_type'] = $format[3];
+		$out['Audio_codec'] = $format[4];
+		$out['Audio_bitrate'] = $format[5];
+		if ($out['Audio_type'] == 'mono' ) {
+			$out['Audio_chanel'] = 1;
+		} else {
+			$out['Audio_chanel'] = 2;
+		}	
+	}
+    preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
+    if ($formatv) {
+		$out['Video_format'] = $formatv[1];
+	    $out['Video_size'] = $formatv[2];
+	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
+	    $out['Video_fps'] = $formatv[5];
+	}
+    return $out;
+}
+
+function get_remote_filesize($url)
+{
+    $head = array_change_key_case(get_headers($url, 1));
+    // content-length of download (in bytes), read from Content-Length: field
+    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+    // cannot retrieve file size, return "-1"
+    if (!$clen) {
+        return '0';
+    }
+    return $clen; // return size in bytes
+}
+
+/**
+ * Summary of LoadFile
+ *
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @return string
+ */
+function LoadFile($filename)
+{
+    // loading file
+    $f = fopen($filename, "r");
+    $data = "";
+    if ($f) {
+        $fsize = filesize($filename);
+        if ($fsize > 0) {
+            $data = fread($f, $fsize);
+        }
+        fclose($f);
+    }
+    return $data;
+}
+
+/**
+ * Summary of SaveFile
+ * @access public
+ *
+ * @param mixed $filename File name
+ * @param mixed $data Content
+ * @return int
+ */
+function SaveFile($filename, $data)
+{
+    // saving file
+    $f = fopen("$filename", "w+");
+
+    if ($f) {
+        flock($f, 2);
+        fwrite($f, $data);
+        flock($f, 3);
+        fclose($f);
+        @chmod($filename, 0666);
+
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Summary of clearCache
+ * @param mixed $verbose Verbode (default 0)
+ * @return void
+ */
+function clearCache($verbose = 0)
+{
+    if ($handle = opendir(DOC_ROOT . DIRECTORY_SEPARATOR. 'cms' . DIRECTORY_SEPARATOR . 'cached')) {
+        while (false !== ($file = readdir($handle))) {
+            if (is_file(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms'.DIRECTORY_SEPARATOR.'cached'.DIRECTORY_SEPARATOR. $file)) {
+                @unlink(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms'.DIRECTORY_SEPARATOR.'cached'.DIRECTORY_SEPARATOR. $file);
+
+                if ($verbose) {
+                    echo "File : " . $file . " <b>removed</b><br>\n";
+                }
+            }
+        }
+
+        closedir($handle);
+    }
+}
+
+/**
+ * Summary of getFilesTree
+ * @param mixed $destination Destination
+ * @param mixed $sort Sort (default 'name')
+ * @return array
+ */
+function getFilesTree($destination, $sort = 'name')
+{
+    if (substr($destination, -1) == '/' || substr($destination, -1) == '\\') {
+        $destination = substr($destination, 0, strlen($destination) - 1);
+    }
+
+    $res = array();
+
+    if (!is_dir($destination))
+        return $res;
+
+    if ($dir = @opendir($destination)) {
+        while (($file = readdir($dir)) !== false) {
+            if (is_dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
+                $tmp = getFilesTree($destination . "/" . $file);
+                if (is_array($tmp)) {
+                    foreach ($tmp as $elem) {
+                        $res[] = $elem;
+                    }
+                }
+            } elseif (is_file($destination . "/" . $file)) {
+                $res[] = ($destination . "/" . $file);
+            }
+        }
+        closedir($dir);
+    }
+
+    if ($sort == 'name') {
+        sort($res, SORT_STRING);
+    }
+
+    return $res;
+}
+
+function get_mime_type($filename) {
+    $idx = explode( '.', $filename );
+    $count_explode = count($idx);
+    $idx = strtolower($idx[$count_explode-1]);
+
+    $mimet = array(
+        'txt' => 'text/plain',
+        'htm' => 'text/html',
+        'html' => 'text/html',
+        'php' => 'text/html',
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'swf' => 'application/x-shockwave-flash',
+        'flv' => 'video/x-flv',
+
+        // images
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'ico' => 'image/vnd.microsoft.icon',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+
+        // archives
+        'zip' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        'exe' => 'application/x-msdownload',
+        'msi' => 'application/x-msdownload',
+        'cab' => 'application/vnd.ms-cab-compressed',
+
+        // audio/video
+        'mp3' => 'audio/mpeg',
+        'qt' => 'video/quicktime',
+        'mov' => 'video/quicktime',
+
+        // adobe
+        'pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+
+        // ms office
+        'doc' => 'application/msword',
+        'rtf' => 'application/rtf',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'docx' => 'application/msword',
+        'xlsx' => 'application/vnd.ms-excel',
+        'pptx' => 'application/vnd.ms-powerpoint',
+
+
+        // open office
+        'odt' => 'application/vnd.oasis.opendocument.text',
+        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+    );
+
+    if (isset( $mimet[$idx] )) {
+        return $mimet[$idx];
+    } else {
+        return 'application/octet-stream';
+    }
+}
+
+function getDirFiles($dir, &$results = array()){
+   if (is_dir2($dir)) {
+     $files = scandir($dir);
+     foreach($files as $key => $value){
+       $path = realpath($dir."/".$value);
+       if(!is_dir($path) && $value != ".htaccess" && $value != "." && $value != "..") {
+         $results[] = array('NAME'=>$value, 'FILENAME'=>$path,'DT'=>date('Y-m-d H:i:s',filemtime($path)),'TM'=>filemtime($path),'SIZE'=>filesize($path));
+       } 
+     }
+   }
+   return $results;
+}

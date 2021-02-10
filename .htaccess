@@ -38,6 +38,11 @@ deny from all
 deny from all
 </FILES>
 
+<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|sql|log|sh|py)$">
+ Order Allow,Deny
+ Deny from all
+ </FilesMatch>
+ 
 <IfModule mod_expires.c>
   <FilesMatch \.(gif|png|jpg|jpeg|ogg|mp4|mkv|flv|swf|wmv|asf|asx|wma|wax|wmx|wm)$>
     ExpiresDefault "access plus 7 day"

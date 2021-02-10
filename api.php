@@ -80,6 +80,7 @@ if (!isset($request[0])) {
         $device['object']=$devices[$i]['LINKED_OBJECT'];
         $device['type']=$devices[$i]['TYPE'];
         $device['favorite']=$devices[$i]['FAVORITE'];
+	$device['system_device']=$devices[$i]['SYSTEM_DEVICE'];
         $obj = getObject($device['object']);
         if (!isset($cached_properties[$obj->class_id])) {
             $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
@@ -105,6 +106,7 @@ if (!isset($request[0])) {
         $device['object']=$devices[$i]['LINKED_OBJECT'];
         $device['type']=$devices[$i]['TYPE'];
         $device['favorite']=$devices[$i]['FAVORITE'];
+	$device['system_device']=$devices[$i]['SYSTEM_DEVICE'];
         $obj = getObject($device['object']);
         if (!isset($cached_properties[$obj->class_id])) {
             $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);
@@ -194,6 +196,7 @@ if (!isset($request[0])) {
             $device['title']=$devices[$i]['TITLE'];
             $device['object']=$devices[$i]['LINKED_OBJECT'];
             $device['type']=$devices[$i]['TYPE'];
+	    $device['system_device']=$devices[$i]['SYSTEM_DEVICE'];
             $obj = getObject($device['object']);
             if (!isset($cached_properties[$obj->class_id])) {
                 $cached_properties[$obj->class_id]=getClassProperties($obj->class_id);

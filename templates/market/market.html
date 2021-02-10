@@ -1,129 +1,170 @@
-[#if ERR_MSG!=""#]
-<div class="alert alert-danger">[#ERR_MSG#]</div>
-[#endif ERR_MSG#]
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-6">
+		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #6bce2c);">
+			<h2><#LANG_NEWMARKET_BANNER#></h2>
+			<p style="font-size: 11pt;"><#LANG_NEWMARKET_BANNER_TEXT#>
+			</p>
+			<p class="text-right">
+				<a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewforum.php?f=36" target="_blank" class="btn btn-warning btn-md" role="button"><#LANG_NEWMARKET_BANNER_BTN#></a>
+			</p>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><#LANG_NEWMARKET_SERACH_BLOCK#></h3>
+			</div>
+			<div class="panel-body">
+				<div style="margin-bottom: 10px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
+					<script type="text/javascript">
+					var upTimer=0;
+					function filterPlugins() {
+						var str=$('#filter').val();
+						str = str.toLowerCase();
 
-[#if OK_MSG!=""#]
-<div class="alert alert-success">[#OK_MSG#]</div>
-[#endif OK_MSG#]
+						if (str!='') {
+							//Добавляем вкладку поиск
+							//Удаляем класс актив
+							$('#tab li').removeClass();
+							$('#tab li').hide();
+							$('#li_search').remove();
+							//Вставляем вкладку
+							$('#tab').prepend('<li id="li_search_hint"><a data-toggle="tab" href="javascript://" onclick="$(\'#filter\').val(\'\');filterPlugins();"><#LANG_NEWMARKET_CLOSE_SEACRH#></a></li>');
+							
+							$('#tab').prepend('<li id="li_search" class="active"><a data-toggle="tab" href="#panel_installed" id="panel_installed" onclick="refreshPluginsList(\'installed\',\'\');" class="active"><#LANG_NEWMARKET_SEARCH#></a></li>');
+							
+							refreshPluginsList(0,str);
+							$('#filter').removeAttr('style');
+						} else {
+							//Удаляем поиск
+							$('#li_search').remove();
+							$('#li_search_hint').remove();
+							$('#filter').removeAttr('style');
+							$('#tab li').show();
+							$('#panel_installed').click();
+						}
+					}
+					
+					function searchKeyUp() {
+						$('#filter').attr('style', 'background-image: url(<#ROOTHTML#>img/ajax-loader.gif);background-repeat: no-repeat;background-position: 10px;padding-left: 40px;');
+						clearTimeout(upTimer);
+						upTimer=setTimeout('filterPlugins();',1000);
+					}
+					</script>
+					<input type="text" class="form-control" placeholder="<#LANG_NEWMARKET_SEARCH_INPUT_PLACEHOLDER#>" id="filter" onInput="searchKeyUp();" autofocus>
+				</div>
+				<div >
+					[#if CLEAR_FIRST!="1"#]
+					<a href="?mode=iframe&mode2=update_new" style="margin-bottom: 10px;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-success"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_NEW_EXTENSIONS#></a>
+					<a href="?mode=iframe&mode2=update_all" style="margin-bottom: 10px;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-danger"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_ALL_EXTENSIONS#></a>
+					<a href="#manualUpload" style="margin-bottom: 10px;" class="btn btn-default popup"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_UPDATE_MANUALLY#></a>
+					<div style="display:none" id="manualUpload">
+						<h2><#LANG_ADD_UPDATE_MANUALLY#></h2>
+						<form class="form" method="post" enctype="multipart/form-data">
+							<div class="form-group">
+							<label for="module_file"><#LANG_ADDON_FILE#> (.tgz, .tar.gz):</label>
+							<input type="file" name="file" id="module_file" class="form-control">
+							</div>
+							<div class="form-group">
+								<input type="hidden" name="mode" value="upload">
+								<input type="submit" class="btn btn-default" value="<#LANG_UPLOAD_AND_INSTALL#>">
+							</div>
+						 </form>
+					</div>
+					[#else CLEAR_FIRST#]
+					<form action="?" method="post" enctype="multipart/form-data">
+						<input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
+						<input type="hidden" name="mode" value="clear">
+					</form>
+					[#endif CLEAR_FIRST#]
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12">
+		[#if ERR_MSG!=""#]
+		<div class="alert alert-danger">[#ERR_MSG#]</div>
+		[#endif ERR_MSG#]
+
+		[#if OK_MSG!=""#]
+		<div class="alert alert-success">[#OK_MSG#]</div>
+		[#endif OK_MSG#]
+
+		[#if MODE=""#]
+			[#if CATEGORIES#]
+				<script type="text/javascript">
+					function refreshPluginsList(category_id,search_text) {
+						$('#search_result').html('<div class="text-center" style="margin-top: 20px;margin-bottom: 20px;"><img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_NEWDASH_LOADING#></div>');
+						if(!search_text) $('#li_search').remove();
+							
+						var url="<#ROOTHTML#>ajax/market.html?op=list&category_id="+category_id+"&search="+encodeURIComponent(search_text);
+						
+						$.ajax({
+							url: url
+						}).done(function(data) {
+							$('#search_result').html(data);
+							if (category_id=='owned') {
+								$('#connect_sync_note').show();
+							} else {
+								$('#connect_sync_note').hide();
+							}
+						});
+						return false;
+					}
+					$(document).ready(function() {
+						$('#panel_installed').click();
+					});
+				</script>
+				<form action="?" method="post">
+					<ul id="tab" class="nav nav-tabs">
+						[#begin CATEGORIES#]
+							<li><a data-toggle="tab" href="#panel_[#ID#]" id="panel_[#ID#]" onclick="refreshPluginsList('[#ID#]','');">[#TITLE#]</a></li>
+						[#end CATEGORIES#]
+					</ul>
+					<div class="tab-content" id="search_result" style="border-left: 1px solid #ddd;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;padding: 10px;">
+						
+					</div>
+				</form>
+				<script type="text/javascript">
+					$('#tab a:first').tab('show');
+				</script>
+			[#endif CATEGORIES#]
+		[#endif MODE#]
+	</div>
+</div>
+
+
+
 
 [#if MODE="iframe"#]
-<iframe src="<#ROOTHTML#>modules/market/update_iframe.php?mode2=<#MODE2#>&name=[#NAME#]&names=[#NAMES#]" width="100%" height="400" frameborder=0></iframe>
+<script>
+	$(document).ready(function() {
+		$('#myModal').modal('show');
+		
+		$("#myModal").on("hidden.bs.modal", function () {
+			$('#myModal').modal('show');
+		});
+	});
+</script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><#LANG_NEWSAVERESTORE_CONSOLE#></h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #e5c15b, #e94949);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
+						<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/market/update_iframe.php?mode2=<#MODE2#>&name=[#NAME#]&names=[#NAMES#]" width="100%" frameborder="0"></iframe>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 [#endif MODE#]
 
-[#if MODE=""#]
 
-[#if CLEAR_FIRST!="1"#]
-<div class="row">
- <div class="col-md-8" style="padding-left:0px">
-  <a href="?mode=iframe&mode2=update_new" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_NEW_EXTENSIONS#></a>
-  <a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_ALL_EXTENSIONS#></a>
-	 <a href="#manualUpload" class="btn btn-default popup"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_UPDATE_MANUALLY#></a>
-	 <div style="display:none" id="manualUpload">
-		 <h2><#LANG_ADD_UPDATE_MANUALLY#></h2>
-			 <form class="form" method="post" enctype="multipart/form-data">
-				 <div class="form-group">
-				 <label for="module_file"><#LANG_ADDON_FILE#> (.tgz, .tar.gz):</label>
-				 <input type="file" name="file" id="module_file" class="form-control">
-				 </div>
-				 <div class="form-group">
-				 <input type="hidden" name="mode" value="upload">
-				 <input type="submit" class="btn btn-default" value="<#LANG_UPLOAD_AND_INSTALL#>">
-					 </div>
-			 </form>
-		 </div>
-
- </div>
-
- <div class="col-md-4">
-  <script type="text/javascript">
-   var upTimer=0;
-   function filterPlugins() {
-    var str=$('#filter').val();
-    str = str.toLowerCase();
-    if (str!='') {
-        refreshPluginsList(0,str);
-        /*
-     $('.pluginRow').each(function(i, obj) {
-      var text='';
-      text+=$('#'+obj.id+'_title').html();
-      text+=' ' + $('#'+obj.id+'_description').html();
-      text = text.toLowerCase();
-      if (text.indexOf(str) !== -1) {
-       $('#'+obj.id).show();
-      } else {
-       $('#'+obj.id).hide();
-      }
-     });
-    } else {
-     $('.pluginRow').show();
-         */
-    } else {
-        $('#panel_installed').click();
-    }
-   }
-   function searchKeyUp() {
-    clearTimeout(upTimer);
-    upTimer=setTimeout('filterPlugins();',1000);
-   }
-  </script>
-  <input type="text" class="form-control" placeholder="<#LANG_SEARCH#>" id="filter" onkeyup="searchKeyUp();">
- </div>
-</div>
-&nbsp;
-[#else CLEAR_FIRST#]
-   <br>&nbsp;
-   <form action="?" method="post" enctype="multipart/form-data">
-   <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>">
-   <input type="hidden" name="mode" value="clear">
-   </form>
-[#endif CLEAR_FIRST#]
-
-
-[#if CATEGORIES#]
-<script type="text/javascript">
-
-    function refreshPluginsList(category_id,search_text) {
-        if (category_id=='owned') {
-            $('#connect_sync_note').show();
-        } else {
-            $('#connect_sync_note').hide();
-        }
-        $('#search_result').html('<img src="<#ROOTHTML#>img/ajax-loader.gif" border="0">');
-        var url="<#ROOTHTML#>ajax/market.html?op=list&category_id="+category_id+"&search="+encodeURIComponent(search_text);
-        $.ajax({
-            url: url
-        }).done(function(data) {
-            $('#search_result').html(data);
-        });
-        return false;
-    }
-    $(document).ready(function() {
-        $('#panel_installed').click();
-    });
-</script>
-<form action="?" method="post">
-<ul id="tab" class="nav nav-tabs">
-	[#begin CATEGORIES#]
-		<li><a data-toggle="tab" href="#panel_[#ID#]" id="panel_[#ID#]" onclick="refreshPluginsList('[#ID#]','');">[#TITLE#]</a></li>
-	[#end CATEGORIES#]
-</ul>
-	&nbsp;
-<div id="connect_sync_note" class="alert alert-info" style="display:none">
-    <#LANG_MARKET_CONNECT_NOTE#>
-</div>
-<div class="tab-content" id="search_result">
-
-</div>
-    <!--#
-&nbsp;<br/>
-
-<input type="submit" name="submit" value="<#LANG_ADD#> / <#LANG_UPDATE#>" class="btn btn-default">
-<input type="hidden" name="mode" value="iframe">
-<input type="hidden" name="mode2" value="install_multiple">
-#-->
-</form>
-<script type="text/javascript">
-$('#tab a:first').tab('show');
-</script>
-[#endif CATEGORIES#]
-[#endif MODE#]

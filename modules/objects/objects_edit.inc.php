@@ -78,6 +78,7 @@ if ($this->mode == 'update') {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
         }
+        clearCacheData();
         $out['OK'] = 1;
     } else {
         $out['ERR'] = 1;
@@ -122,9 +123,11 @@ if ($this->tab == 'properties') {
                 SQLExec("DELETE FROM properties WHERE ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             }
         }
+        clearCacheData();
     }
 
     if ($this->mode == 'update') {
+        clearCacheData();
         $new_property = gr('new_property','trim');
         $new_property = str_replace(' ','',$new_property);
         $new_value = gr('new_value');
@@ -285,7 +288,9 @@ if ($this->tab == 'methods') {
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
-        if ($my_meth['ID']) {
+        $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
+			 $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
+		if ($my_meth['ID']) {
             $methods[$i]['CUSTOMIZED'] = 1;
         }
     }

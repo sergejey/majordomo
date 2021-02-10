@@ -1,0 +1,84 @@
+<div class="device-widget ac %.alive|"offline;online"%" id='deviceid_%.object_title%'>
+<div class="device-icon ac %.status|"off;on"% icon%.object_id%_thermostat"></div>
+<div class="device-header">%.object_description%</div>
+<div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP#>:<br/>
+    <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+                                                        callMethod("%.object_title%.tempDown");
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        return false;'>-</a>
+    %.currentTargetValue%
+    <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+                                                        callMethod("%.object_title%.tempUp");
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        return false;'>+</a>
+
+    <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+                                                        callMethod("%.object_title%.turnOff");
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        return false;'><#LANG_OFF#></a>
+    <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+                                                        callMethod("%.object_title%.turnOn");
+                                                        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+                                                        return false;'><#LANG_ON#></a>
+
+</div>
+<div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TEMP#>: %.value% [<a href="#"  onclick="var url=('<#ROOTHTML#>pChart/?p[]=%.object_title%'+'.value&p[]=%.object_title%'+'.relay_status&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;"><#LANG_HISTORY#></a>]</div>
+<div class="device-details">
+    <#LANG_DEVICES_AC_FAN_SPEED#>:
+        <span id="acFanSpeed%.object_id%_content" style="display:none">%.fanSpeed%</span>
+        <select  id="acFanSpeed%.object_id%" onchange="acFanSpeedSet%.object_id%(this.value);" style="color:black">
+            <option value=""></option>
+            %.fanSpeedModesHTML%
+        </select>
+    <#LANG_DEVICES_AC_THERMOSTAT#>:
+
+        <span id="acThermostat%.object_id%_content" style="display:none">%.thermostat%</span>
+        <select  id="acThermostat%.object_id%" onchange="acThermostatSet%.object_id%(this.value);" style="color:black">
+            <option value=""></option>
+            %.thermostatModesHTML%
+        </select>
+</div>
+</div>
+<script type="text/javascript">
+    function acStatusSet%.object_id%(value) {
+        $(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+        if (value==1) {
+            callMethod("%.object_title%.turnOn");
+        } else {
+            callMethod("%.object_title%.turnOff");
+        }
+        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+    }
+    function acFanSpeedSet%.object_id%(value) {
+        $(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+        setGlobal("%.object_title%.fanSpeed",value);
+        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+    }
+    function acThermostatSet%.object_id%(value) {
+        $(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
+        setGlobal("%.object_title%.thermostat",value);
+        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+    }
+    /*
+    var oldFanSpeed%.object_id%='%.fanSpeed%';
+    var oldThermostat%.object_id%='%.thermostat%';
+    $('#acFanSpeed%.object_id%').val('%.fanSpeed%');
+    $('#acThermostat%.object_id%').val('%.thermostat%');
+    */
+
+
+    function acCheckCurrentValues%.object_id%() {
+        var fanSpeed = $('#acFanSpeed%.object_id%_content').html();
+        if ($('#acFanSpeed%.object_id%').val()!=fanSpeed) {
+            $('#acFanSpeed%.object_id%').val(fanSpeed);
+        }
+        var thermostat = $('#acThermostat%.object_id%_content').html();
+        if ($('#acThermostat%.object_id%').val()!=thermostat) {
+            $('#acThermostat%.object_id%').val(thermostat);
+        }
+    }
+    //acCheckCurrentValues%.object_id%();
+    var acCheckInterval = setInterval(acCheckCurrentValues%.object_id%,1000);
+
+
+</script>

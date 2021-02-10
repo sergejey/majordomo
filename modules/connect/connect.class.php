@@ -185,10 +185,11 @@ class connect extends module
         global $data;
         $data = 1;
         $out = array();
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
+        removeTree(ROOT . 'cms/saverestore/temp');
         $tar_name = $sv->dump($out);
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
-        $sv->removeTree(ROOT . 'cms/saverestore/temp');
+        removeTree(ROOT . 'cms/saverestore/temp');
+        removeTree(ROOT . 'cms/saverestore/temp');
+
         $dest_file = ROOT . 'cms/saverestore/' . $tar_name;
         if ($dest_file && file_exists($dest_file) && filesize($dest_file) > 0) {
             if (function_exists('curl_file_create')) { // php 5.6+
@@ -249,8 +250,6 @@ class connect extends module
      */
     function admin(&$out)
     {
-
-
         if (gr('ok_msg')) {
             $out['OK_MSG'] = gr('ok_msg');
         }
@@ -1018,6 +1017,18 @@ class connect extends module
             if ($op == 'reverse_request_full') {
                 $this->requestReverseFull($msg);
             }
+        }
+		
+		if ($this->ajax && $_GET['op'] == 'status') {
+			$status = gg('ThisComputer.cycle_connectRun');
+			
+            if ($status == '') {
+				echo json_encode(array('status' => 0));
+            } else {
+				echo json_encode(array('status' => 1));
+			}
+            
+			exit;
         }
     }
 

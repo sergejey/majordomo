@@ -1,80 +1,63 @@
+<div class="alert" style="color: #398439;text-align: center;border: 1px solid #398439;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
+	<#LANG_NEWSYSTEM_ERROR_ERROR_HINT#> <code style="white-space: normal;">registerError('<#LANG_NEWSYSTEM_ERROR_NAME#>', '<#LANG_NEWSYSTEM_ERROR_DESC#>');</code>
+</div>
 
-<!-- table system_errors search -->
-<p>
-<a href="/diagnostic.php" class="btn btn-success"><#LANG_SUBMIT_DIAGNOSTIC#></a>
-<a href="?view_mode=edit_system_errors&data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_ADD_NEW_RECORD#></a>
-</p>
-<table width=100% border=0><tr>
-<td valign=top>
-<!-- results -->
+
 [#if RESULT#]
-<!-- search results (list) -->
 <form action="?" method="post" name="frmList_system_errors" style="padding:0px" class="form">
-<table  align=center class="table">
-<thead>
-<tr>
- <th>
- <#LANG_CODE#>
- </th>
- <th>
- <#LANG_TITLE#>
- </th>
- <th>
- <#LANG_COUNTER#>
- </th>
- <th>
- <#LANG_UPDATED#>
- </th>
-<td>&nbsp;</td>
-</tr>
-</thead>
-<tbody>
-[#begin RESULT#]
-<tr style="height:52px;[#if ACTIVE!="0"#]background-color:#ffdddd;[#endif#]" class="hover_btn2">
- <td style="vertical-align:middle"
-   >
-   [#CODE#]
- </td>
- <td style="vertical-align:middle">
-  <b><a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]&tab=history">
-   [#TITLE#]
-  </a></b>
- </td>
- <td style="vertical-align:middle">[#ACTIVE#]</td>
- <td style="vertical-align:middle"
-   >
-  [#if LATEST_UPDATE!=""#]
-   [#LATEST_UPDATE#]
-  [#else#]
-   &nbsp;
-  [#endif#]
- </td>
- <td style="vertical-align:middle" width="1%" nowrap>
-  <div style="width:180px">
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]&tab=history" class="btn btn-default" title="View"><i class="glyphicon glyphicon-eye-open"></i></a>
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_system_errors&id=[#ID#]" onClick="return confirm('Are you sure?')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
-   [#if ACTIVE!="0"#]
-   <a href="?data_source=<#DATA_SOURCE#>&view_mode=clear_system_errors&id=[#ID#]" class="btn btn-default" title="Clear"><i class="glyphicon glyphicon-ok"></i></a>
-   [#endif#]
-
-  </div>
- </td>
-</tr>
-[#end RESULT#]
-</tbody>
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_system_errors">
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th class="text-center">История</th>
+					<th class="text-center"><#LANG_CODE#></th>
+					<th class="text-center"><#LANG_TITLE#></th>
+					<th class="text-center"><#LANG_COUNTER#></th>
+					<th class="text-center"><#LANG_UPDATED#></th>
+					<th class="text-center"><#LANG_ACTIONS#></th>
+				</tr>
+			</thead>
+			<tbody>
+				[#begin RESULT#]
+					<tr style="[#if ACTIVE!="0"#]background-color:#ffdddd;[#endif#]">
+						<td>
+						<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+							<input type="checkbox" onchange="this.form.submit()" name="keep_history" value="1"[#if KEEP_HISTORY="1"#] checked[#endif#]> <#LANG_KEEP_HISTORY#>
+							<input type="hidden" class="form-control" name="title" value=" ">
+							<input type="hidden" class="form-control" name="code" value="[#CODE#]">
+							
+							<input type="hidden" name="id" value="[#ID#]">
+							<input type="hidden" name="view_mode" value="edit_system_errors">
+							<input type="hidden" name="mode" value="update">
+						</form>
+						</td>
+						<td style="vertical-align: middle;">
+							[#CODE#]
+						</td>
+						<td style="vertical-align: middle;">
+							[#TITLE#]
+						</td>
+						<td style="vertical-align: middle;" class="text-center">[#ACTIVE#]</td>
+						<td style="vertical-align: middle;" class="text-center">
+							[#if LATEST_UPDATE!=""#]
+								[#LATEST_UPDATE#]
+							[#else#]
+								<#LANG_UNKNOWN#>
+							[#endif#]
+						</td>
+						<td style="vertical-align: middle;" class="text-right">
+							<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]&tab=history" class="btn btn btn-sm btn-info" title="View"><i class="glyphicon glyphicon-eye-open"></i> <#LANG_NEWSYSTEM_ERROR_SEE_BTN#></a>
+							<a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_system_errors&id=[#ID#]" onClick="return confirm('Are you sure?')" class="btn btn btn-sm btn-danger" title="Delete"><i class="glyphicon glyphicon-remove"></i> <#LANG_STRING_DELETE#></a>
+							[#if ACTIVE!="0"#]
+								<a href="?data_source=<#DATA_SOURCE#>&view_mode=clear_system_errors&id=[#ID#]" class="btn btn btn-sm btn-success" title="Clear"><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
+							[#endif#]
+						</td>
+					</tr>
+					[#end RESULT#]
+			</tbody>
+		</table>
+	</div>
 </form>
-<!-- / search results (list) -->
-[#else RESULT#]
-<p>
-<font color="red">No records found.</font>
-</p>
+[#else#]
+<div class="alert alert-success text-center"><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_NOT_FOUND#></div>
 [#endif RESULT#]
-<!-- / results -->
-</td></tr></table>
-
-<p><#LANG_CODE#>:</p>
-<pre>registerError('error_code', 'optional details');</pre>

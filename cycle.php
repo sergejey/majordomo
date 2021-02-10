@@ -9,13 +9,11 @@
 
 chdir(dirname(__FILE__));
 
-if (file_exists('./reboot'))
-    unlink('./reboot');
-
-
 include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
+
+resetRebootRequired();
 
 set_time_limit(0);
 
@@ -30,6 +28,7 @@ while (!$connected) {
     if (!$connected) {
         if (file_exists($db_filename) && !IsWindowsOS() && $total_restarts < 3) {
             echo "Restarting mysql service..." . PHP_EOL;
+            DebMes('Restarting mysql service...');
             exec("sudo service mysql restart"); // trying to restart mysql
             $total_restarts++;
             sleep(10);
@@ -164,8 +163,7 @@ $ctl = new control_modules();
 
 //removing cached data
 echo "Clearing the cache.\n";
-SQLTruncateTable('cached_values');
-
+clearCacheData();
 
 if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
     // split data into multiple tables
@@ -366,7 +364,7 @@ while (false !== ($result = $threads->iteration())) {
                 $cycle_updated_timestamp = getGlobal($title . 'Run');
 
                 if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
-                    DebMes("Looks like $title is dead. Need to recovery", 'threads');
+                    DebMes("Looks like $title is dead (updated: ".date('Y-m-d H:i:s',$cycle_updated_timestamp)."). Need to recovery", 'threads');
                     registerError('cycle_hang', $title);
                     setGlobal($title . 'Control', 'restart');
                 }
@@ -374,7 +372,7 @@ while (false !== ($result = $threads->iteration())) {
         }
     }
 
-    if (file_exists(ROOT . 'reboot')) {
+    if (isRebootRequired()) {
         if (!$reboot_timer) {
             $reboot_timer = time();
         } elseif ((time() - $reboot_timer) > 10) {
@@ -390,14 +388,17 @@ while (false !== ($result = $threads->iteration())) {
     }
 
     foreach ($to_stop as $title => $tm) {
+
+        $key = array_search($title, $auto_restarts);
+        if ($key !== false) {
+            unset($auto_restarts[$key]);
+            $auto_restarts = array_values($auto_restarts);
+        }
+
         if ($tm <= time()) {
             if (isset($is_running[$title])) {
                 $id = $is_running[$title];
                 DebMes("Force closing service " . $title . " (id: " . $id . ")", 'threads');
-                $key = array_search($title, $auto_restarts);
-                if ($key !== false) {
-                    unset($auto_restarts[$key]);
-                }
                 $threads->closeThread($id);
             }
             unset($to_stop[$title]);
@@ -422,7 +423,7 @@ while (false !== ($result = $threads->iteration())) {
 
     if (!empty($result)) {
         $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
-        if (preg_match_all($closePattern, $result, $matches) && !file_exists('./reboot')) {
+        if (preg_match_all($closePattern, $result, $matches) && !isRebootRequired()) {
             $total_m = count($matches[1]);
             for ($im = 0; $im < $total_m; $im++) {
                 $closed_thread = $matches[1][$im];
@@ -433,9 +434,10 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Thread closed: " . $cycle_title, 'threads');
                     unset($to_stop[$cycle_title]);
                     setGlobal($cycle_title . 'Run', '');
-                    if (in_array($cycle_title, $auto_restarts)) {
-                        $index = array_search($cycle_title, $auto_restarts);
-                        array_splice($auto_restarts, $index, 1);
+                    $key = array_search($cycle_title, $auto_restarts);
+                    if ($key !== false) {
+                        unset($auto_restarts[$key]);
+                        $auto_restarts = array_values($auto_restarts);
                         $need_restart = 1;
                     } elseif ($to_start[$cycle_title]) {
                         $need_restart = 1;
@@ -456,5 +458,5 @@ while (false !== ($result = $threads->iteration())) {
     }
 }
 
-unlink('./reboot');
+resetRebootRequired();
 
