@@ -10,13 +10,13 @@ $(function() {
 	var diff = currentTime-sDATA;
 
 	if(diff <= -21) {
-		beautyText = 'Неверное время';
+		beautyText = '<#LANG_DEVICES_PASSED_INCORRECT_TIME#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 	} else if(diff >= -20 && diff <= 0) {
-		beautyText = 'Только что';
+		beautyText = '<#LANG_DEVICES_PASSED_NOW#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 	} else if(diff > 0 && diff < 3598) {
-		beautyText = secondsToHms(diff) + ' назад';
+		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 		
 		window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {
@@ -25,11 +25,11 @@ $(function() {
 			var sDATA = '%.updated%';
 			var diff = currentTime-sDATA;
 
-			beautyText = secondsToHms(diff) + ' назад';
+			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
 			$('.motion-updatedText-JS-' + sID).text(beautyText);
 		}, 1000);
 	} else if(diff >= 3598 && diff < 86400) {
-		beautyText = secondsToHms(diff);
+		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>');
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 			
 		window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {	
@@ -39,7 +39,7 @@ $(function() {
 			var diff = currentTime-sDATA;
 			
 			//Считаем и делаем красиво
-			beautyText = secondsToHms(diff);
+			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>');
 			$('.motion-updatedText-JS-' + sID).text(beautyText);
 		}, 61000);
 	} else {
@@ -59,7 +59,7 @@ $(function() {
 		sec = a.getSeconds();
 
 		if((currentTime.getDate() - date) == 1) {
-			beautyText = 'Вчера, в ' + twoDigits(hour) + ':' + twoDigits(min) + ':' + twoDigits(sec);
+			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min) + ':' + twoDigits(sec);
 		} else {
 			beautyText = twoDigits(date) + '.' + twoDigits(month) + '.' + year + ' ' + twoDigits(hour) + ':' + twoDigits(min) + ':' + twoDigits(sec);
 		}

@@ -14,9 +14,9 @@ $(function() {
 	sec = a.getSeconds();
 
 	if((currentTime.getDate() - date) == 0) {
-		beautyText = 'Сегодня, в ' + twoDigits(hour) + ':' + twoDigits(min);
+		beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min);
 	} else if((currentTime.getDate() - date) == 1) {
-		beautyText = 'Вчера, в ' + twoDigits(hour) + ':' + twoDigits(min);
+		beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min);
 	} else {
 		beautyText = twoDigits(date) + '.' + twoDigits(month) + '.' + year + ' ' + twoDigits(hour) + ':' + twoDigits(min);
 	}
