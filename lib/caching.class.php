@@ -1,29 +1,60 @@
 <?php
 
+function clearCacheData() {
+    /*
+    $apcu_available = function_exists('apcu_enabled') && apcu_enabled();
+    if ($apcu_available) {
+        apcu_clear_cache();
+    }
+    */
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        $redisConnection->flushDB();
+        return;
+    }
+    SQLTruncateTable('cached_values');
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+        global $memory_cache;
+        $memory_cache = array();
+    }
+}
+
 /**
  * Summary of saveToCache
  * @param mixed $key Key
  * @param mixed $value Value
- * @param mixed $ttl TTL (532800) seconds (7 days)
  * @return void
  */
-function saveToCache($key, $value, $ttl = 532800)
+function saveToCache($key, $value)
 {
+
     if (is_array($value) || strlen($value) > 255) {
-        SQLExec("DELETE FROM cached_values WHERE KEYWORD='".$key."'");
         return;
     }
-    
+
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        $redisConnection->set($key, $value);
+        return;
+    }
+
     if (isset($_SERVER['REQUEST_METHOD'])) {
         global $memory_cache;
         $memory_cache[$key] = $value;
     }
     
-	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value, 'EXPIRE' => date('Y-m-d H:i:s', time() + $ttl));
-    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE) " .
+	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
+    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE) " .
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
-        "'" . DbSafe1($rec['DATAVALUE']) . "'," .
-        "'" . $rec['EXPIRE'] . "')";
+        "'" . DbSafe1($rec['DATAVALUE']) . "')";
     SQLExec($sqlQuery);
 }
 
@@ -34,6 +65,21 @@ function saveToCache($key, $value, $ttl = 532800)
  */
 function checkFromCache($key)
 {
+
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        if ($redisConnection->exists($key)) {
+            $value = $redisConnection->get($key);
+            return $value;
+        } else {
+            return false;
+        }
+    }
+
     if (isset($_SERVER['REQUEST_METHOD'])) {
 	    global $memory_cache;
 		if (is_array($memory_cache) && isset($memory_cache[$key])) {

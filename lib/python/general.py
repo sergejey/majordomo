@@ -31,12 +31,12 @@ def callAPI(api_url, method="GET", params={}):
         response = urllib2.urlopen(req)
     else:
         data=data.decode("utf-8")
-        #data = str(data)
+        
         url += "?" + data
         response = urllib2.urlopen(url)
 
     the_page = response.read()
-    # print the_page
+    
     return the_page
 
 
@@ -49,9 +49,7 @@ def say(ph, level=0, member_id=0, source=1):
     ph = {"ph": ph}
     data = urlencode(ph).encode('utf-8')
     data=data.decode("utf-8")
-    #data = str(data)
-    #sum = len(data)
-    #data = data[2:sum - 1]
+
     getURL(BASE_URL + ROOTHTML + "objects/?say=1&" + data + "&level=" + str(level) + "&member_id=" + str(
         member_id) + "&source=" + str(source))
     return 1
@@ -194,5 +192,69 @@ def getObjectsByClass(class_name):
         if con:
             con.close()
     return result
+def RoomDevices(room):
+    '''
+    Принимает значения в следующем виде mjdm.RoomDevices('Hall')
+    Все принимаемые значения строка STR "".
+    Возвращает значения в виде списка [ "XiOpenclose01 ", "Notebook " и так далее], все значние в типе строка STR
+    '''
+    con = 0
+    result = ""
+    subClass_tuple = ()
+    try:
+        # Подключаемся к БД
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, charset='utf8')
+        # Создаем курсор - это специальный объект который делает запросы и получает их результаты
+        cur = con.cursor()
+        cur.execute("SELECT LOCATION_ID FROM objects WHERE TITLE = '" + room + "'OR ID = '" + room + "'")
+        # Получаем данные в виде кортежа
+        class_record = cur.fetchone()
+        # Берем вторую позицию в кортеже
+        subClass = str(class_record[0])
+        # Циклом FOR в бд перебираем все ID  из полученного ранее списка
+        for i in subClass:
+            cur.execute(("SELECT TITLE  FROM objects WHERE LOCATION_ID = '" + i + "'"))
+            # Получаем данные в виде кортежа
+            sub_classes = cur.fetchall()
+            # Полученные данные из кортежа вставляем в ранее созданый нами кортеж subClass_tuple
+            subClass_tuple += (sub_classes)
+            # Выводим результат распаковывая встроеные кортежи из картежа в список
+        result = list(sum(subClass_tuple, ()))
+    finally:
+        if con:
+            con.close()
+    return result
+def getObjects(name,info):
+    '''
+    Принимает значения в следующем виде mjdm.getObjects('USERS','DESCRIPTION') либо mjdm.getObjects('USERS','DESCRIPTION, ID')
+    Все принимаемые значения строка STR "".
+    info может принимать следующие аргументы (id, title,CLASS_ID,DESCRIPTION,LOCATION_ID,KEEP_HISTORY,SYSTEM)
+    Возвращает значения info в виде строки если вызван один аргумет info, или списка если вызвано несколько аргументов
+    '''
+    con = 0
+    result = ""
+    subClass_tuple = ()
+    info=info.upper()
+    lenifo=len(info.split(','))
 
+    try:
+        # Подключаемся к БД
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, charset='utf8')
+        # Создаем курсор - это специальный объект который делает запросы и получает их результаты
+        cur = con.cursor()
+        # Делаем SELECT запрос к базе данных, используя обычный SQL-синтаксис и получаем все данные из стобцов ID,SUB_LIS табоицы classes
+        cur.execute("SELECT " + info + " FROM objects WHERE TITLE = '" + name + "'OR ID = '" + name + "'")
+        # Получаем данные в виде кортежа
+        class_record = cur.fetchall()
+        if int(lenifo) > 1:
+            class_record=list(sum(class_record, ()))
+            result=class_record
+        else:
+
+            class_record = list(sum(class_record, ()))
+            result = class_record[0]
+    finally:
+        if con:
+            con.close()
+    return str(result)
 

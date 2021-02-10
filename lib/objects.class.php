@@ -35,7 +35,6 @@ function addClass($class_name, $parent_class = '')
     }
 }
 
-
 /**
  * Summary of getObjectClassTemplate
  * @param mixed $object_name Object name
@@ -389,6 +388,9 @@ function removeLinkedProperty($object, $property, $module)
  */
 function getObject($name)
 {
+
+    if (trim($name)=='') return 0;
+
     if (preg_match('/^(.+?)\.(.+?)$/', $name, $m)) {
         $class_name = $m[1];
         $object_name = $m[2];
@@ -606,12 +608,9 @@ function getGlobal($varname)
     if ($cached_value !== false) {
         return $cached_value;
     }
-
     $obj = getObject($object_name);
-
     if ($obj) {
         $value = $obj->getProperty($varname);
-        saveToCache($cached_name, $value);
         return $value;
     } else {
         return 0;
