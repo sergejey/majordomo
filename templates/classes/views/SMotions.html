@@ -1,5 +1,5 @@
 <script>
-$(function() {
+function setInsertData_%.object_id%() {
 	if(window.intervalUpdateDateMotion_%.object_id%) {
 		window.clearInterval(intervalUpdateDateMotion_%.object_id%);
 	}
@@ -12,60 +12,84 @@ $(function() {
 	if(diff <= -21) {
 		beautyText = '<#LANG_DEVICES_PASSED_INCORRECT_TIME#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
-	} else if(diff >= -20 && diff <= 0) {
+	} else if(diff >= -20 && diff <= 10) {
+		//Только что
 		beautyText = '<#LANG_DEVICES_PASSED_NOW#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
-	} else if(diff > 0 && diff < 3598) {
-		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
+		
+		window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {
+			setInsertData_%.object_id%();
+		}, 1000);
+	} else if(diff > 10 && diff <= 600) {
+		beautyText = secondsToHms(diff, '', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 		
 		window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {
 			var currentTime = parseInt(new Date().getTime()/1000);
-			var sID = '%.object_id%';
-			var sDATA = '%.updated%';
 			var diff = currentTime-sDATA;
 
-			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
+			beautyText = secondsToHms(diff, '', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
 			$('.motion-updatedText-JS-' + sID).text(beautyText);
+			
+			setInsertData_%.object_id%();
 		}, 1000);
-	} else if(diff >= 3598 && diff < 86400) {
-		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>');
+	} else if(diff > 600 && diff <= 7200) {
+		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
+		$('.motion-updatedText-JS-' + sID).text(beautyText);
+		
+		window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {
+			var currentTime = parseInt(new Date().getTime()/1000);
+			var diff = currentTime-sDATA;
+
+			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
+			$('.motion-updatedText-JS-' + sID).text(beautyText);
+			
+			setInsertData_%.object_id%();
+		}, 61000);
+	} else if(diff > 7200 && diff < 25200) {
+		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 			
 		window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {	
 			var currentTime = parseInt(new Date().getTime()/1000);
-			var sID = '%.object_id%';
-			var sDATA = '%.updated%';
 			var diff = currentTime-sDATA;
 			
 			//Считаем и делаем красиво
-			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>');
+			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
 			$('.motion-updatedText-JS-' + sID).text(beautyText);
-		}, 61000);
+			
+			setInsertData_%.object_id%();
+		}, 1800000);
 	} else {
 		//Дропаем интервал
 		if(window.intervalUpdateDateMotion_%.object_id%) {
 			window.clearInterval(intervalUpdateDateMotion_%.object_id%);
 		}
 		
-		a = new Date(sDATA * 1000);
+		timeConvertVar = timeConvert(sDATA);
 		currentTime = new Date();
-		
-		year = a.getFullYear();
-		month = a.getMonth();
-		date = a.getDate();
-		hour = a.getHours();
-		min = a.getMinutes();
-		sec = a.getSeconds();
 
-		if((currentTime.getDate() - date) == 1) {
-			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min) + ':' + twoDigits(sec);
+		if((currentTime.getDate() - timeConvertVar[0]) == 0) {
+			beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
+		} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
+			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
 		} else {
-			beautyText = twoDigits(date) + '.' + twoDigits(month) + '.' + year + ' ' + twoDigits(hour) + ':' + twoDigits(min) + ':' + twoDigits(sec);
+			beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
 		}
 		
 		$('.motion-updatedText-JS-' + sID).text(beautyText);
 	}
+}
+
+$(function() {
+	if(window.intervalUpdateDateMotion_%.object_id%) {
+		window.clearInterval(intervalUpdateDateMotion_%.object_id%);
+	}
+	
+	setInsertData_%.object_id%();
+	window.intervalUpdateDateMotion_%.object_id% = setInterval(function() {	
+		setInsertData_%.object_id%();
+	}, 1000);
 }); 
 
 </script>

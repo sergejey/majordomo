@@ -1,10 +1,26 @@
 //Конвектор времени
 function twoDigits(num) {
-	if(num == 0) num = 1; 
 	return ('0' + num).slice(-2);
 }
 
-function secondsToHms(d, lang_h, lang_m, lang_s) {
+function timeConvert(unixtime) {
+	unixtime = unixtime*1000;
+	
+	date = new Date(unixtime);
+	
+	returnArr = [
+		twoDigits(date.getDate()),
+		twoDigits((date.getMonth()+1)),
+		date.getFullYear(),
+		twoDigits(date.getHours()),
+		twoDigits(date.getMinutes()),
+		twoDigits(date.getSeconds()),
+	];
+	
+	return returnArr;	
+}
+
+function secondsToHms(d, lang_h = '', lang_m = '', lang_s = '') {
 	d = Number(d);
 	var h = Math.floor(d / 3600);
 	var m = Math.floor(d % 3600 / 60);
@@ -13,7 +29,21 @@ function secondsToHms(d, lang_h, lang_m, lang_s) {
 	var hDisplay = h > 0 ? h + " " + lang_h + " " : "";
 	var mDisplay = m > 0 ? m + " " + lang_m + " " : "";
 	var sDisplay = !h ? (s > 0 ? s + " " + lang_s + " " : "") : "";
-	return hDisplay + mDisplay + sDisplay; 
+	
+	//Собираем строку
+	genString = '';
+	
+	if(lang_h) {
+		genString = genString + hDisplay;
+	}
+	if(lang_m) {
+		genString = genString + mDisplay;
+	}
+	if(lang_s) {
+		genString = genString + sDisplay;
+	}
+	
+	return genString; 
 }
 	
 function simple_hash(s) {
