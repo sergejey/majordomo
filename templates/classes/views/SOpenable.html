@@ -1,26 +1,19 @@
 <script>
 $(function() {
-	var sID = '%.object_id%';
-	var sDATA = '%.updated%';
+	sID = '%.object_id%';
+	sDATA = '%.updated%';
 	
-	a = new Date(sDATA * 1000);
+	timeConvertVar = timeConvert(sDATA);
 	currentTime = new Date();
-	
-	year = a.getFullYear();
-	month = a.getMonth();
-	date = a.getDate();
-	hour = a.getHours();
-	min = a.getMinutes();
-	sec = a.getSeconds();
 
-	if((currentTime.getDate() - date) == 0) {
-		beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min);
-	} else if((currentTime.getDate() - date) == 1) {
-		beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min);
+	if((currentTime.getDate() - timeConvertVar[0]) == 0) {
+		beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
+	} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
+		beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
 	} else {
-		beautyText = twoDigits(date) + '.' + twoDigits(month) + '.' + year + ' ' + twoDigits(hour) + ':' + twoDigits(min);
+		beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
 	}
-	
+
 	$('.updatedText-JS-' + sID).text(beautyText);
 }); 
 
