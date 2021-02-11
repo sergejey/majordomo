@@ -1273,6 +1273,14 @@ $dictionary = array (
     'DEVICES_ROOMS_NOBODYHOME' => 'Нікого немає.',
     'DEVICES_ROOMS_SOMEBODYHOME' => 'Хтось є',
     'DEVICES_ROOMS_ACTIVITY' => 'Активність',
+    
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Невірний час',
+    'DEVICES_PASSED_AGO' => 'назад',
+    'DEVICES_PASSED_TODAY_IN' => 'Сьогодні, в',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Вчора, в',
+    'DEVICES_PASSED_NEW_SECONDS_AGO' => 'сек.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'хв.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'год.',
 
     'DEVICES_PASSED_NOW' => 'щойно',
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
