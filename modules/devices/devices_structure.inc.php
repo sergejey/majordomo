@@ -25,11 +25,9 @@ $this->device_types=array(
             'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdAliveTimeout'),
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
-            'updatedText'=>array('DESCRIPTION'=>'Updated Time (text)'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
-            'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
             'keepAlive'=>array('DESCRIPTION'=>'Alive update'),
         ),

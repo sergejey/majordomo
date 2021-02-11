@@ -1278,6 +1278,14 @@ $dictionary = array(
     'DEVICES_ROOMS_ACTIVITY' => 'Latest activity',
 
     'DEVICES_PASSED_NOW' => 'Now',
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Incorrect time',
+    'DEVICES_PASSED_AGO' => 'ago',
+	'DEVICES_PASSED_TODAY_IN' => 'Today at',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Yesterday at',
+	'DEVICES_PASSED_NEW_SECONDS_AGO' => 'sec.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'min.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'hours',
+
     'DEVICES_PASSED_SECONDS_AGO' => 'seconds ago',
     'DEVICES_PASSED_MINUTES_AGO' => 'minutes ago',
     'DEVICES_PASSED_HOURS_AGO' => 'hours ago',
@@ -1331,7 +1339,6 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Min level (work)',
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
-    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Use level to switch',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
 
     'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',

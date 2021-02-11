@@ -191,7 +191,7 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'services') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="table table-condensed"><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						if(dataJSON.LIST[i].ALIVE == 1) {

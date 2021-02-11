@@ -73,7 +73,7 @@
 }
 
 .controller .device-header {
-    height:40px;
+    /*height:40px;*/
     position: relative;
     padding-top:10px;
 }

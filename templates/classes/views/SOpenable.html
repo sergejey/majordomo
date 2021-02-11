@@ -1,9 +1,38 @@
+<script>
+$(function() {
+	var sID = '%.object_id%';
+	var sDATA = '%.updated%';
+	
+	a = new Date(sDATA * 1000);
+	currentTime = new Date();
+	
+	year = a.getFullYear();
+	month = a.getMonth();
+	date = a.getDate();
+	hour = a.getHours();
+	min = a.getMinutes();
+	sec = a.getSeconds();
+
+	if((currentTime.getDate() - date) == 0) {
+		beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min);
+	} else if((currentTime.getDate() - date) == 1) {
+		beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + twoDigits(hour) + ':' + twoDigits(min);
+	} else {
+		beautyText = twoDigits(date) + '.' + twoDigits(month) + '.' + year + ' ' + twoDigits(hour) + ':' + twoDigits(min);
+	}
+	
+	$('.updatedText-JS-' + sID).text(beautyText);
+}); 
+
+</script>
+
 <div class="device-widget openable %.alive|"offline;online"% opentype_%.openType%"
-onClick='$(".icon%.object_id%_openable").addClass("pressed");
-setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);
-callMethod("%.object_title%.switch");
-$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
-<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable""></div>
-<div class="device-header">%.object_description%</div>
-<div class="device-details">%.updatedText%</div>
+	onClick='$(".icon%.object_id%_openable").addClass("pressed");
+	setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);
+	callMethod("%.object_title%.switch");
+	$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
+	<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable""></div>
+	<div class="device-header">%.object_description%</div>
+	<!---<div class="device-details">%.updatedText%</div>--->
+	<div class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
 </div>

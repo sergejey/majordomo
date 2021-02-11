@@ -1149,7 +1149,7 @@ $dictionary = array(
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'торр',
+    'M_PRESSURE' => 'мм рт.ст.',
     'M_WATT' => 'Вт',
 
 //----
@@ -1275,6 +1275,14 @@ $dictionary = array(
     'DEVICES_ROOMS_ACTIVITY' => 'Активность',
 
     'DEVICES_PASSED_NOW' => 'только что',
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Неверное время',
+    'DEVICES_PASSED_AGO' => 'назад',
+    'DEVICES_PASSED_TODAY_IN' => 'Сегодня, в',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Вчера, в',
+	'DEVICES_PASSED_NEW_SECONDS_AGO' => 'сек.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'мин.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'час.',
+
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
     'DEVICES_PASSED_MINUTES_AGO' => 'мин. назад',
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
@@ -1330,7 +1338,6 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
-    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Использование уровня для переключения',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
     'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
@@ -1518,7 +1525,7 @@ $dictionary = array(
 	'NEWDASH_PRELOAD_BTN' => 'Остановить операцию',
 	'NEWDASH_UPDATE_MODULE_HINT1' => 'Обновления для',
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулей',
-	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценария',
+	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценариев',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 самых больших таблиц в вашей базе данных.',
 	'NEWDASH_WEB_PAGE' => 'Веб-страницы',
 	
