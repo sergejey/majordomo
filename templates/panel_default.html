@@ -91,6 +91,11 @@
 							<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
 							<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
+						<li class="list-group-item">
+							Статус WebSocket
+							<span id="wsStatus" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						
 						
 						<li class="list-group-item" onclick="$('.reqPerMinHour').toggle('slow');" style="cursor:pointer">
 							Запросов к БД в секунду
@@ -113,12 +118,6 @@
 								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
 							</span>
 							<#LANG_NEWDASH_SYSTEM_INFO_BRABCH#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
-						</li>
-						<li class="list-group-item">
-							<span class="badge" id="dashInfoBranch" style="text-transform: uppercase;">
-								Beta 1.4.0
-							</span>
-							Версия MajorDomoUI
 						</li>
 						<li class="list-group-item">
 							<span class="badge" id="dashInfoLastUpdate">
@@ -154,7 +153,7 @@
 					
 					chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=services&ajax=1&op=getcontent&mode=chart";
 					chart.dataSource.parser = new am4core.JSONParser();
-					chart.dataSource.reloadFrequency = 5000;
+					chart.dataSource.reloadFrequency = 30000;
 					
 					chart.radius = am4core.percent(60);
 					chart.innerRadius = am4core.percent(40);
@@ -225,7 +224,7 @@
 		
 		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
 		chart.dataSource.parser = new am4core.JSONParser();
-		chart.dataSource.reloadFrequency = 5000;
+		chart.dataSource.reloadFrequency = 180000;
 
 		chart.padding(20, 20, 20, 20);
 
@@ -352,7 +351,7 @@
 		hideHintCookie('blockdidyouknow', 1);
 		hideHintCookie('blockaddnewdev', 1);
 		hideHintCookie('howmaxdbsizehint', 1);
-		setInterval(function() { checkSystemInfo(); }, 10000);
+		setInterval(function() { checkSystemInfo(); }, 300000);
 		checkSystemInfo();
 		checkConnectStatus();
 		

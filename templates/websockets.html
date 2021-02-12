@@ -16,7 +16,10 @@
 		}
 		serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo';
 		try {
-			console.log('... Подключение к серверу '+serverUrl);
+			console.log('%c%s', 'color: gray;', '... Подключение к серверу '+serverUrl);
+			
+			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');
+			$('#wsStatus').attr('style', 'background: lightcoral');
 		if (window.MozWebSocket) {
 		   wsSocket = new MozWebSocket(serverUrl);
 		} else if (window.WebSocket) {
@@ -24,15 +27,18 @@
 		}
 
 		} catch (e) {
-			console.log('❌ Ошибка подключения к серверу '+serverUrl);
+			console.error('%c%s', 'color: red;', '❌ Ошибка подключения к серверу '+serverUrl);
 			return false;
 		}
 		wsSocket.binaryType = 'blob';
 		wsSocket.onopen = function(msg) {
-			console.log('✓ Подключен к серверу');
+			console.log('%c%s', 'color: green;', '✓ Подключен к серверу');
 			startedWebSockets=1;
 			clearTimeout(wsTimer);
 			$.publish('wsConnected');
+			
+			$('#wsStatus').html('<#LANG_NEWDASH_CONNECTED#>');
+			$('#wsStatus').attr('style', 'background: #5cb85c');
 		};
 		wsSocket.onmessage = function(msg) {
 			var response;
@@ -40,8 +46,8 @@
 			//console.log('Action: '+response.action+'; Data: '+response.data);
 			//Групировка лога для вывода в консоль
 			wsRespArr = [response.data];
-			console.log ('⟶ Получены данные: ' + response.action + ' %O:', wsRespArr );
-
+			console.log('%c%s', 'color: blue;', '⟶ Получены данные: ' + response.action + ' ', wsRespArr );
+			
 			$.publish('wsData', response);
 			return;
 		};
@@ -50,13 +56,18 @@
 			startedWebSockets=0;
 			wsTimer=setTimeout('startWebSockets();', 5*1000);
 			$.publish('wsDisconnected', []);
-			console.log('❌ Отключен от сервера, повтор подключения через 5 секунд...');
+			console.error('%c%s', 'color: red;', '❌ Отключен от сервера, повтор подключения через 5 секунд...');
+			
+			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');
+			$('#wsStatus').attr('style', 'background: lightcoral');
+			
 			return;
 		};
 	}
 	
 	$(document).ready(function(){
 		[#if "<#DISABLE_WEBSOCKETS#>"!="1"#]
+		console.clear();
 		startWebSockets();
 		[#endif#]
 	});
