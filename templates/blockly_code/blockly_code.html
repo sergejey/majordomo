@@ -118,7 +118,14 @@ $(document).ready(function(){
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		extraKeys: {
 			"F11": function(cm) {
+				if (cm.getOption("fullScreen") != true) {
+					$('nav').hide();
+				} else {
+					$('nav').show();
+				}
+				
 				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+				
 			},
 			"Ctrl-S": function(instance) { 
 				[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
@@ -148,7 +155,10 @@ $(document).ready(function(){
 			},
 			"Ctrl-F": "findPersistent",
 			"Esc": function(cm) {
-				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+				if (cm.getOption("fullScreen")) {
+					cm.setOption("fullScreen", false);
+					$('nav').show();
+				}
 			},
 			[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
 			"Ctrl-Space": "autocomplete",
