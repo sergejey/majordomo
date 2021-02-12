@@ -131,7 +131,7 @@ $(window).load(function() {
 
 		<div class="form-group " style="margin-bottom: 5px;">
 			<div class="col-lg-8 col-lg-offset-2">
-				<label><input type="checkbox" name="edit_run" id="chkRun" value="1"> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#></label>
+				<label><input type="checkbox" name="edit_run" id="chkRun" value="1" [#if EDIT_RUN#]checked[#endif#]> <#LANG_EXECUTE_SCRIPT_AFTER_UPDATE#></label>
 			</div>
 		</div>
 		
