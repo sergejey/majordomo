@@ -1,57 +1,49 @@
-<!--#
- @version 0.4 (auto-set)
-#-->
+<script>
+$(window).load(function() {
+	//Вставляем данные в бредкрумбс
+	[#if ID!=""#]
+		$('.breadcrumb:eq(0)').append('<li style="color: gray;"><#LANG_EDIT_RECORD#></li>');
+	[#else#]
+		$('.breadcrumb:eq(0)').append('<li style="color: gray;"><#LANG_NEW_RECORD#></li>');
+	[#endif#]
+	
+	setTimeout(
+		function () {
+			$('#alert_msg').hide('slow');
+		}, 5000);
+});
+</script>
 
-<!-- Table 'scripts' edit -->
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit" class="form-horizontal">
+		[#if OK#]
+			<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+		[#endif OK#]
+		[#if ERR#]
+			<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+		[#endif ERR#]
 
-<ul class="breadcrumb">
-<li> 
-<a href="?data_source=<#DATA_SOURCE#>"><#LANG_HOME#></a>
-</li>
-<span class="divider">/</span>
-<li class="active">
-[#if ID=""#]
-<#LANG_NEW_RECORD#>
-[#else#]
-<#LANG_EDIT_RECORD#>
-[#endif#]
-</li>
-</ul>
+		<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
+			<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
+			<div class="col-lg-10 col-md-8"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+		</div>
 
+		<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
+			<div class="col-lg-offset-1 col-lg-5">
+			[#if ID!=""#]
+			<input class="btn btn-default btn-success" type="submit" name="subm" value="<#LANG_SUBMIT#>">
+			[#else ID#]
+			<input class="btn btn-default btn-success" type="submit" name="subm" value="<#LANG_ADD#>">
+			[#endif ID#]
 
+			<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-warning"><#LANG_CANCEL#></a>
+			</div>
+		</div>
 
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit" class="form-horizontal">
-
-[#if OK#]
-    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
-[#if ERR#]
-  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+		<input type="hidden" name="id" value="<#ID#>">
+		<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+		<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+		<input type="hidden" name="mode" value="update">
+		<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+	</form>
 </div>
-
-<div class="form-group">
-     <div class="col-lg-offset-1 col-lg-5">
-        
-         [#if ID!=""#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
-                 [#else ID#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
-                 [#endif ID#]
-                 &nbsp;
-                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
-
-    </div>
-</div>
-
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-</form>
-

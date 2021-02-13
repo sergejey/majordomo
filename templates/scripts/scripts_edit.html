@@ -1,8 +1,12 @@
 <script>
 $(window).load(function() {
 	//Вставляем данные в бредкрумбс
-	$('.breadcrumb:eq(0)').append('<li><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]">[#TITLE#]</a></li>');
-
+	[#if TITLE#]
+		$('.breadcrumb:eq(0)').append('<li><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]">[#TITLE#]</a></li>');
+	[#else#]
+		$('.breadcrumb:eq(0)').append('<li style="color: gray;"><#LANG_NEW_SCRIPT#></li>');
+	[#endif#]
+	
 	setTimeout(
 		function () {
 			$('#alert_msg').hide('slow');
