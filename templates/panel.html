@@ -54,6 +54,9 @@
 		var filterTimer;
 
 		function filterSearch() {
+			$('#filter_add').html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
+			$('.searchNoty').hide();
+			
 			var title = $('#filter_modules').val();
 			var urlFilter="?";
 			
@@ -63,7 +66,14 @@
 				url: urlFilter,
 				success: function(data){
 					$('#filter_add').show();
-					$('#filter_add').html(data);
+					
+					if(data) {
+						$('#filter_add').html(data);
+					} else {
+						$('#filter_add').html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Ничего не найдено :(</div>');
+					}
+					
+					
 				},
 				error: function(data){
 					$('#filter_add').show();
@@ -736,17 +746,38 @@
 					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out" style="vertical-align: top;font-size: 11pt;"></i> [#endif#]<#LANG_LOGOFF#></a>
 				</li>
 			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="mdmSearch">
-					<form style="padding: 10px;" class="" name="frmFilterModules">
-						<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
-						<div id="filter_add" style="max-width: 500px;box-shadow: -3px 5px 13px 0px rgba(0,0,0,0.5);display:none;white-space: nowrap;position: absolute!important;background-color: white;border: 1px solid #ddd;padding: 5px;z-index: 1000;right: 0px;max-height: 200px;overflow: auto;margin-right: 25px;border-radius: 5px;">
-						</div>
-					</form>
-				</li>
-			</ul>
+			<div class="hidden-xs">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="mdmSearch">
+						<form style="padding: 10px;" class="" name="frmFilterModules">
+							<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" placeholder="<#LANG_SEARCH#>">
+						</form>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</nav>
+
+	<div class="modal fade" id="mdmGlobalSearchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="alert searchNoty" style="background: radial-gradient(circle farthest-corner at 450px 10px, #5994be, #17b9ca);color: white;text-align: center;border: 0px;">
+						<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
+						Глобальный поиск по всей системе. Начните вводить...
+					</div>
+					
+					<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+					
+					<div id="filter_add" style="display:none;overflow-x: hidden;white-space: nowrap;border: 1px solid #ddd;padding: 5px;max-height: 300px;overflow-y: auto;border-radius: 5px;margin-top: 5px;">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
@@ -821,7 +852,17 @@
 		return false;
 	}
 	</script>
+	
+	
+	
 	<div id="partLoadContent" style="margin-bottom: 50px;">
+		<div class="visible-xs">
+			<div class="row" style="margin: 0 15px;">
+				<div class="col-12" style="margin-bottom: 10px;">
+					<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" placeholder="<#LANG_SEARCH#>">
+				</div>
+			</div>
+		</div>
 		<div class="row" id="content">
 			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
 			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
@@ -973,6 +1014,10 @@
 			$("nav").removeAttr('style');
 		}
 	});
+	
+	$('#mdmGlobalSearchModal').on('shown.bs.modal', function() {
+		$('input#filter_modules').focus();
+	})
 
 	[#if HIDE_LEFT_PANEL!="1"#]
 	$("#hideMenuHint").mouseover(function () {
