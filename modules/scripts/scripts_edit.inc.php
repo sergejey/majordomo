@@ -137,6 +137,7 @@ if ($this->mode == 'update') {
         global $edit_run;
         if ($edit_run) {
             $this->runScript($rec['ID']);
+			$rec['EDIT_RUN'] = $edit_run;
         }
 
 
