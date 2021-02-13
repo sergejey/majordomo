@@ -1,0 +1,8 @@
+<div class="device-widget mini openable %.alive|"offline;online"% opentype_%.openType%"
+	title="%.object_description%">
+	<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable""
+onClick='$(".icon%.object_id%_openable").addClass("pressed");
+setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);
+callMethod("%.object_title%.switch");
+$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'></div>
+</div>
