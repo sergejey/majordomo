@@ -66,7 +66,14 @@
 				url: urlFilter,
 				success: function(data){
 					$('#filter_add').show();
-					$('#filter_add').html(data);
+					
+					if(data) {
+						$('#filter_add').html(data);
+					} else {
+						$('#filter_add').html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Ничего не найдено :(</div>');
+					}
+					
+					
 				},
 				error: function(data){
 					$('#filter_add').show();
