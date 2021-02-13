@@ -625,7 +625,7 @@
 			border-radius:6px 0 6px 6px;
 		}
 	</style>
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index:999;margin-bottom: 10px;">
+	<nav class="navbar navbar-default" role="navigation" style="">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
 				<span class="icon-bar"></span>
@@ -747,7 +747,6 @@
 			</ul>
 		</div>
 	</nav>
-	<div style="margin-top:70px;"></div>
 	
 	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
@@ -876,7 +875,7 @@
 						
 					</div>
 					
-					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">
+					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
 								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
@@ -886,7 +885,7 @@
 							[#if NAV_MODULE_NAME!=""#]<li><a href="?action=<#ACTION#>">[#NAV_MODULE_NAME#]</a></li>[#endif#]
 						</ol>
 					</div>
-					<div class="col-md-7 text-right" style="padding-left: 0px;padding-right: 0px;">
+					<div class="col-md-[#if ACTION!=""#]4[#else#]7[#endif#] text-right" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="breadcrumb_update" style="">
 							[#if ACTION!=""#]
 							<li>
@@ -903,7 +902,7 @@
 							<li>
 								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
 								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"></a>
-								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
+								<a id="updates-check-market" style="display:none" href="?action=market#panel_updates" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
 								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
 							</li>
 							[#endif#]
@@ -960,69 +959,75 @@
     }
 
  $(document).ready(function() {
-		[#if HIDE_LEFT_PANEL!="1"#]
-		$("#hideMenuHint").mouseover(function () {
-			$("#hideMenuIcon").css('color','red');
-			$("#hideMenuDiv").css('border','1px solid red');
-		});
-		$("#hideMenuHint").mouseout(function () {
-			$("#hideMenuIcon").css('color','#4792d1');
-			$("#hideMenuDiv").css('border','0px');
-		});
-		[#endif#]
-
-		$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
-        $(".wiki_hint").fancybox({
-			type            : 'iframe',
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-        });
-
-        $(".popup").fancybox({
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-        });
-		checkLocationHref();
-
-		$('input[name=filter_modules]').on('input', function() {
-			filterSearch();
-		});
-
-		$('.dynamic_content').each(function() {
-			if ($(this).attr('id')) {
-				var dyn_id = $(this).attr('id');
-				dynids+='&dynids[]='+dyn_id;
-			}
-		});
-		if (dynids!='') {
-			dynamicContentRefresh();
+	if ($(window).scrollTop() > 1) {
+		$("nav").addClass("navbar-fixed-top");
+		$("nav").attr('style', 'box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index: 999;');
+	}
+		
+	$(window).on("scroll", function(e) {
+		if ($(window).scrollTop() > 1) {
+			$("nav").addClass("navbar-fixed-top");
+			$("nav").attr('style', 'box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index: 999;');
+		} else {
+			$("nav").removeClass("navbar-fixed-top");
+			$("nav").removeAttr('style');
 		}
+	});
 
-     /*
-     var vl=$.cookie('adminLeftPanel');
-     if (vl=='off') {
-         $('#left_block').hide();
-     }
-     checkLeftPanelStatus();
-     */
+	[#if HIDE_LEFT_PANEL!="1"#]
+	$("#hideMenuHint").mouseover(function () {
+		$("#hideMenuIcon").css('color','red');
+		$("#hideMenuDiv").css('border','1px solid red');
+	});
+	$("#hideMenuHint").mouseout(function () {
+		$("#hideMenuIcon").css('color','#4792d1');
+		$("#hideMenuDiv").css('border','0px');
+	});
+	[#endif#]
 
-     localStorage.clear();
-     ajaxManager.run();
+	$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
+	$(".wiki_hint").fancybox({
+		type            : 'iframe',
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
 
+	$(".popup").fancybox({
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
+	checkLocationHref();
+
+	$('input[name=filter_modules]').on('input', function() {
+		filterSearch();
+	});
+
+	$('.dynamic_content').each(function() {
+		if ($(this).attr('id')) {
+			var dyn_id = $(this).attr('id');
+			dynids+='&dynids[]='+dyn_id;
+		}
+	});
+	if (dynids!='') {
+		dynamicContentRefresh();
+	}
+
+    localStorage.clear();
+    ajaxManager.run();
 });
 </script>
 

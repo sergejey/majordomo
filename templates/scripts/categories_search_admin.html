@@ -1,48 +1,45 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
+<style>
+.hoverScripts:hover {
+	background: #aaceed3d;
+}
+</style>
 
-<!-- table scripts search -->
-&nbsp;
-<p>
-<b>
-<a href="?view_mode=edit_categories&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CATEGORY#></a>
-</b>
-</p>
-<!-- results -->
-[#if RESULT#]
-<!-- search results (list) -->
-<form action="?" method="post" name="frmList_scripts" style="padding:0px">
-<table class="table table-striped">
-[#begin RESULT#]
-<tr  class="hover_btn2">
- <td
-  >
-  <b>
-  [#if TITLE!=""#]
-   [#TITLE#]
-  [#else#]
-   &nbsp;
-  [#endif#]
-  </a></b>
- </td>
- <td width="100">
-  [#if "<#ACTION#>"=="admin"#]
-    <b><a href="?view_mode=edit_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" title="<#LANG_EDIT#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a></b>
-    <a href="?view_mode=delete_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif ACTION#]
- </td>
-</tr>
-[#end RESULT#]
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_scripts">
-</form>
-<!-- / search results (list) -->
-[#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
-[#endif RESULT#]
-<!-- / results -->
-
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12 text-right">
+			<a href="?view_mode=edit_scripts" class="btn btn-success" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_SCRIPT#></a>
+			<a href="?view_mode=edit_categories&data_source=categories" class="btn btn-primary" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CATEGORY#></a>
+		</div>
+	</div>
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			<ul class="list-group" id="">
+				[#if RESULT#]
+					<form action="?" method="post" name="frmList_scripts" style="padding:0px">
+					[#begin RESULT#]
+					<li class="list-group-item hoverScripts">
+						<div class="row" style="display: flex;align-items: center;">
+							<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+								[#TITLE#]
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-right">
+								[#if "<#ACTION#>"=="admin"#]
+								<a href="?view_mode=edit_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" title="<#LANG_EDIT#>" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-pencil"></i> Изменить</a>
+								<a href="?view_mode=delete_categories&id=[#ID#]&data_source=<#DATA_SOURCE#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i> Удалить</a>
+							  [#endif ACTION#]
+							</div>
+						</div>
+					</li>
+					[#end RESULT#]
+					<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+					<input type="hidden" name="view_mode" value="multiple_scripts">
+					</form>
+				[#else RESULT#]
+				<p align=center>
+				<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
+				</p>
+				[#endif RESULT#]
+			</ul>
+		</div>
+	</div>
+</div>
