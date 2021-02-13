@@ -876,7 +876,7 @@
 						
 					</div>
 					
-					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">
+					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
 								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
@@ -886,7 +886,7 @@
 							[#if NAV_MODULE_NAME!=""#]<li><a href="?action=<#ACTION#>">[#NAV_MODULE_NAME#]</a></li>[#endif#]
 						</ol>
 					</div>
-					<div class="col-md-7 text-right" style="padding-left: 0px;padding-right: 0px;">
+					<div class="col-md-[#if ACTION!=""#]4[#else#]7[#endif#] text-right" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="breadcrumb_update" style="">
 							[#if ACTION!=""#]
 							<li>
