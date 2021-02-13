@@ -625,7 +625,7 @@
 			border-radius:6px 0 6px 6px;
 		}
 	</style>
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index:999;margin-bottom: 10px;">
+	<nav class="navbar navbar-default" role="navigation" style="">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
 				<span class="icon-bar"></span>
@@ -747,7 +747,6 @@
 			</ul>
 		</div>
 	</nav>
-	<div style="margin-top:70px;"></div>
 	
 	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
@@ -960,69 +959,75 @@
     }
 
  $(document).ready(function() {
-		[#if HIDE_LEFT_PANEL!="1"#]
-		$("#hideMenuHint").mouseover(function () {
-			$("#hideMenuIcon").css('color','red');
-			$("#hideMenuDiv").css('border','1px solid red');
-		});
-		$("#hideMenuHint").mouseout(function () {
-			$("#hideMenuIcon").css('color','#4792d1');
-			$("#hideMenuDiv").css('border','0px');
-		});
-		[#endif#]
-
-		$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
-        $(".wiki_hint").fancybox({
-			type            : 'iframe',
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-        });
-
-        $(".popup").fancybox({
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-        });
-		checkLocationHref();
-
-		$('input[name=filter_modules]').on('input', function() {
-			filterSearch();
-		});
-
-		$('.dynamic_content').each(function() {
-			if ($(this).attr('id')) {
-				var dyn_id = $(this).attr('id');
-				dynids+='&dynids[]='+dyn_id;
-			}
-		});
-		if (dynids!='') {
-			dynamicContentRefresh();
+	if ($(window).scrollTop() > 1) {
+		$("nav").addClass("navbar-fixed-top");
+		$("nav").attr('style', 'box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index: 999;');
+	}
+		
+	$(window).on("scroll", function(e) {
+		if ($(window).scrollTop() > 1) {
+			$("nav").addClass("navbar-fixed-top");
+			$("nav").attr('style', 'box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index: 999;');
+		} else {
+			$("nav").removeClass("navbar-fixed-top");
+			$("nav").removeAttr('style');
 		}
+	});
 
-     /*
-     var vl=$.cookie('adminLeftPanel');
-     if (vl=='off') {
-         $('#left_block').hide();
-     }
-     checkLeftPanelStatus();
-     */
+	[#if HIDE_LEFT_PANEL!="1"#]
+	$("#hideMenuHint").mouseover(function () {
+		$("#hideMenuIcon").css('color','red');
+		$("#hideMenuDiv").css('border','1px solid red');
+	});
+	$("#hideMenuHint").mouseout(function () {
+		$("#hideMenuIcon").css('color','#4792d1');
+		$("#hideMenuDiv").css('border','0px');
+	});
+	[#endif#]
 
-     localStorage.clear();
-     ajaxManager.run();
+	$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
+	$(".wiki_hint").fancybox({
+		type            : 'iframe',
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
 
+	$(".popup").fancybox({
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
+	checkLocationHref();
+
+	$('input[name=filter_modules]').on('input', function() {
+		filterSearch();
+	});
+
+	$('.dynamic_content').each(function() {
+		if ($(this).attr('id')) {
+			var dyn_id = $(this).attr('id');
+			dynids+='&dynids[]='+dyn_id;
+		}
+	});
+	if (dynids!='') {
+		dynamicContentRefresh();
+	}
+
+    localStorage.clear();
+    ajaxManager.run();
 });
 </script>
 
