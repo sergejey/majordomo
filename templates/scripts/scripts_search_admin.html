@@ -75,8 +75,10 @@ function exportScriptsCount() {
 									<li class="hoverScripts" style="padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;">
 										<div class="row" style="display: flex;align-items: center;">
 											<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+												<i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+												
 												<a href="?view_mode=edit_scripts&id=[#ID#]">[#TITLE#]</a> [#if EXECUTED_PASSED != ''#]<span style="color: gray;font-size: 8pt;">⟶ [#EXECUTED_PASSED#]</span>[#endif#]
-												<p style="font-size: 8pt;color: gray;">
+												<p style="font-size: 8pt;color: #c8c8c8;">
 												[#if DESCRIPTION != ''#][#DESCRIPTION#]<br>[#endif#]
 												</p>
 											</div>
