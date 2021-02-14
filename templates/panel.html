@@ -206,7 +206,12 @@
 				url: urlDebug,
 			}).done(function(data) {
 				data = JSON.parse(data);
-				$('#console_debug').html(data.CONTENT);
+				
+				if(data.CONTENT) {
+					$('#console_debug').html(data.CONTENT);
+				} else {
+					$('#console_debug').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> Console is empty... Wait new data...');
+				}
 			});
 			consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
 		}
@@ -750,7 +755,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li class="mdmSearch">
 						<form style="padding: 10px;" class="" name="frmFilterModules">
-							<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" placeholder="<#LANG_SEARCH#>">
+							<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" placeholder="<#LANG_SEARCH#>">
 						</form>
 					</li>
 				</ul>
@@ -912,10 +917,11 @@
 			<div class="col-lg-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#] col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]9[#endif#] col-sm-[#if HIDE_LEFT_PANEL="1"#]12[#else#]8[#endif#] col-xs-12" id="main-content">
 				[#if PRINT!="1"#]
 				<div class="row">
+					[#if ACTION!="" AND ACTION!='xray'#]
 					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
 						
 					</div>
-					
+					[#endif#]
 					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
