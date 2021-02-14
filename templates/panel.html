@@ -428,7 +428,7 @@
 			var cmd=$('#command').val();
 			if(cmd == '') {
 				$('#dangerAlertConsole').show();
-				$('#warningAlertConsole').hide();
+				//$('#warningAlertConsole').hide();
 				return false;
 			}
 			var urlCommand="?";
@@ -443,28 +443,30 @@
 				data: urlCommand,
 				success: function(data) {
 					old_data = $('#console_output').html();
-					
+
 					if(!data) {
 						data = '<i>Completed the request</i>';
 					}
-					console.log(data);
+					
 					$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: <span style="white-space: pre-wrap;">'+data+ '</span><br><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>: '+ cmd + '<br>' + old_data);
+					$('#console_output_hintResize').show();
 					$('#loaderConsole').hide();
 					$('#dangerAlertConsole').hide();
-					$('#warningAlertConsole').hide();
+					//$('#warningAlertConsole').hide();
 					$('#console_output').show();
 					
-					if(cmd == data) {
-						$('#warningAlertConsole').show();
-					}
+					//if(cmd == data) {
+					//	$('#warningAlertConsole').show();
+					//}
 				},
 				error: function(data){
 					$('#dangerAlertConsole').hide();
-					$('#warningAlertConsole').hide();
+					//$('#warningAlertConsole').hide();
 					$('#loaderConsole').hide();
+					$('#console_output_hintResize').hide();
 					
 					$('#console_output').show();
-					$('#console_output').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - sendConsoleCommand()</div>');
+					$('#console_output').html('<div style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;">Error sending request - sendConsoleCommand()</div>');
 				},
 			});
 			return false;
@@ -788,20 +790,26 @@
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
 			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_EMPTY#></div>
 			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_FAIL#></div>
-			
-			<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
-				<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
-					<input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
-				</div>
-				<div class="col-xs-12 col-sm-12 col-md-12 text-center" style="padding-right: 0px;padding-left: 0px;">
-					<input type="submit" name="submit" style="margin-top: 10px;" value="<#LANG_SEND#>" class="btn btn-success ">
-					<input type="button" name="submit" onclick="$('#console').hide();" style="margin-top: 10px;" value="<#LANG_CANCEL#>" class="btn btn-warning ">
-				</div>
-			</form>
 		</div>
+		
+		<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<div class="input-group">
+					<input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
+					<span class="input-group-btn">
+						<input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-success ">
+						<input type="button" name="submit" onclick="$('#console').hide();" value="<#LANG_CANCEL#>" class="btn btn-warning ">
+					</span>
+				</div>
+			</div>
+		</form>
+		
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;padding: 10px;margin-top: 10px;">
 			<div id="loaderConsole" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
-			<div id="console_output" style="display: none;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;"></div>
+			<div id="console_output" style="display: none;height: 150px;min-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: rgb(0, 0, 128);color: rgb(192, 192, 192);border-radius: 5px;resize: vertical;"></div>
+			<div id="console_output_hintResize" style="display: none;text-align: right;">
+				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="/img/arrow_hint.png">
+			</div>
 		</div>
 		
 	</div>
@@ -891,7 +899,7 @@
 							</h4>
 						</div>
 						<div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
-							<div class="panel-body" style="padding-left:5px;padding-right:5px">
+							<div class="panel-body" style="padding: 5px;">
 								<ul class="nav nav-list">
 									[#endif NEW_CATEGORY#]
 									[#if !DENIED#]
