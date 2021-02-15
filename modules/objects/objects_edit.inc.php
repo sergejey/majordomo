@@ -174,7 +174,14 @@ if ($this->tab == 'properties') {
         $props[$i]['VALUE'] = $value['VALUE'];
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
         $props[$i]['SOURCE'] = $value['SOURCE'];
-        $props[$i]['LINKED_MODULES'] = $value['LINKED_MODULES'];
+		
+		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
+		if(is_array($value['LINKED_MODULES'])) {
+			foreach($value['LINKED_MODULES'] as $prop_link) {
+				if(!$prop_link) break; 
+				$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'">'.$prop_link.'</a></span>';
+			}
+		}
     }
     if ($this->mode == 'update') {
         $this->redirect("?view_mode=" . $this->view_mode . "&id=" . $rec['ID'] . "&tab=" . $this->tab);
