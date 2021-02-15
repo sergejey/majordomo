@@ -1528,6 +1528,19 @@ $dictionary = array(
 	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценариев',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 самых больших таблиц в вашей базе данных.',
 	'NEWDASH_WEB_PAGE' => 'Веб-страницы',
+	'NEWDASH_DB_REQ_SEC' => 'Запросов к БД в секунду',
+	'NEWDASH_DB_REQ_MIN' => 'Запросов к БД в минуту',
+	'NEWDASH_DB_REQ_HOUR' => 'Запросов к БД в час',
+	
+	'NEWDASH_DMB_TITLE' => 'Добавить свой блок',
+	'NEWDASH_DMB_TITLE_MODAL' => 'Добавление своего блока',
+	'NEWDASH_DMB_TITLE_MODAL_HINT' => 'Описание функционала и подробное описание доступно на нашем форуме:',
+	'NEWDASH_DMB_TITLE_MODAL_HINT_FORUM' => 'перейти на форум',
+	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Создайте сценарий с именем:',
+	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. Сценарий должен отдавать следующий JSON объект:',
+	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.',
+	
+	'NEWDASH_RESULT' => 'Результат',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',

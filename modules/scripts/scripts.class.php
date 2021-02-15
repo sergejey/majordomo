@@ -161,11 +161,7 @@ class scripts extends module
                 try {
                     $code = trim($rec['CODE']);
                     if ($code!='') {
-						echo '<div style="margin: 90px 15px -50px 15px;border: 1px solid #dddddd;padding: 10px;border-left: 10px solid #4d96d3;max-height: 300px;overflow: auto;">
-						<h3 style="margin: 0px;border-bottom: 1px solid #dddddd;padding-bottom: 5px;margin-bottom: 10px;">Вывод:</h3>
-						';
                         $success = eval($code);
-						echo '</div>';
                     } else {
                         $success = true;
                     }

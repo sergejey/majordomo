@@ -68,6 +68,7 @@
      $old_category=$res[$i]['CATEGORY'];
      $res[$i]['NEW_CATEGORY']=1;
     }
+	
     if ($i==$total-1) {
      $res[$i]['LAST']=1;
     }

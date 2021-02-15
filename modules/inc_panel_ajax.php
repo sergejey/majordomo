@@ -7,15 +7,36 @@ if (!headers_sent()) {
     header('Content-Type: text/html; charset=utf-8');
 }
 
+function evalConsole($code, $print = 1) {
+	if($print == 1) {
+		return eval('print_r('.$code.');');
+	} else {
+		return eval($code.';');
+	}
+}
+
 if ($op == 'console') {
+	ini_set('display_errors', 0);
+	ini_set('display_startup_errors', 0);
+	error_reporting(E_ALL);
+
     global $command;
-    if (preg_match('/^\w+\.\w+$/', $command)) {
-        echo callMethod($command);
-    } elseif (preg_match('/;/', $command)) {
-        eval($command);
-    } else {
-        eval('echo ' . $command . ';');
-    }
+	$code = explode(';', $command);
+	foreach($code as $value) {
+		if (preg_match('/echo /', $command)) {
+			evalConsole($value, 0);
+		} else {
+			evalConsole($value);
+		}
+	}
+		
+    //if (preg_match('/^\w+\.\w+$/', $command)) {
+    //    echo callMethod($command);
+    //} elseif (preg_match('/;/', $command)) {
+	//var_dump(getRandomLine('wefwe'));
+    //} else {
+    //    eval('echo ' . $command . ';');
+    //}
 }
 
 if ($op == 'filter') {

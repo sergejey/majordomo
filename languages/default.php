@@ -1529,7 +1529,19 @@ $dictionary = array(
 	'NEWDASH_SHOW_LAST_SCRIPTS' => 'The last 6 running scripts are displayed here',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 largest tables in your database.',
 	'NEWDASH_WEB_PAGE' => 'Frontend',
+	'NEWDASH_DB_REQ_SEC' => 'Database requests per second',
+	'NEWDASH_DB_REQ_MIN' => 'Database requests per minute',
+	'NEWDASH_DB_REQ_HOUR' => 'Database requests per hour',
+
+	'NEWDASH_DMB_TITLE' => 'Add your own block',
+	'NEWDASH_DMB_TITLE_MODAL' => 'Add your own block',
+	'NEWDASH_DMB_TITLE_MODAL_HINT' => 'Functional description and detailed description is available on our forum:',
+	'NEWDASH_DMB_TITLE_MODAL_HINT_FORUM' => 'go to forum',
+	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Create a script named: ',
+	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. The script should return the following JSON object: ',
+	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. That\'s all. The control panel will pick up the script by itself and display the content on the main page. ',
 	
+	'NEWDASH_RESULT' => 'Result',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',

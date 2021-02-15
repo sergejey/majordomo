@@ -114,7 +114,11 @@
 						return false;
 					}
 					$(document).ready(function() {
-						$('#panel_installed').click();
+						if(window.location.hash.replace("#","") == 'panel_updates') {
+							$('#panel_updates').click();
+						} else {
+							$('#panel_installed').click();
+						}
 					});
 				</script>
 				<form action="?" method="post">

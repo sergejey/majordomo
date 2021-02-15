@@ -54,6 +54,9 @@
 		var filterTimer;
 
 		function filterSearch() {
+			$('#filter_add').html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
+			$('.searchNoty').hide();
+			
 			var title = $('#filter_modules').val();
 			var urlFilter="?";
 			
@@ -63,7 +66,14 @@
 				url: urlFilter,
 				success: function(data){
 					$('#filter_add').show();
-					$('#filter_add').html(data);
+					
+					if(data) {
+						$('#filter_add').html(data);
+					} else {
+						$('#filter_add').html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Ничего не найдено :(</div>');
+					}
+					
+					
 				},
 				error: function(data){
 					$('#filter_add').show();
@@ -196,7 +206,12 @@
 				url: urlDebug,
 			}).done(function(data) {
 				data = JSON.parse(data);
-				$('#console_debug').html(data.CONTENT);
+				
+				if(data.CONTENT) {
+					$('#console_debug').html(data.CONTENT);
+				} else {
+					$('#console_debug').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> Console is empty... Wait new data...');
+				}
 			});
 			consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
 		}
@@ -413,7 +428,7 @@
 			var cmd=$('#command').val();
 			if(cmd == '') {
 				$('#dangerAlertConsole').show();
-				$('#warningAlertConsole').hide();
+				//$('#warningAlertConsole').hide();
 				return false;
 			}
 			var urlCommand="?";
@@ -428,28 +443,30 @@
 				data: urlCommand,
 				success: function(data) {
 					old_data = $('#console_output').html();
-					
+
 					if(!data) {
 						data = '<i>Completed the request</i>';
 					}
-					console.log(data);
+					
 					$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: <span style="white-space: pre-wrap;">'+data+ '</span><br><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>: '+ cmd + '<br>' + old_data);
+					$('#console_output_hintResize').show();
 					$('#loaderConsole').hide();
 					$('#dangerAlertConsole').hide();
-					$('#warningAlertConsole').hide();
+					//$('#warningAlertConsole').hide();
 					$('#console_output').show();
 					
-					if(cmd == data) {
-						$('#warningAlertConsole').show();
-					}
+					//if(cmd == data) {
+					//	$('#warningAlertConsole').show();
+					//}
 				},
 				error: function(data){
 					$('#dangerAlertConsole').hide();
-					$('#warningAlertConsole').hide();
+					//$('#warningAlertConsole').hide();
 					$('#loaderConsole').hide();
+					$('#console_output_hintResize').hide();
 					
 					$('#console_output').show();
-					$('#console_output').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - sendConsoleCommand()</div>');
+					$('#console_output').html('<div style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;">Error sending request - sendConsoleCommand()</div>');
 				},
 			});
 			return false;
@@ -625,7 +642,7 @@
 			border-radius:6px 0 6px 6px;
 		}
 	</style>
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="box-shadow: 0px 3px 20px rgb(0 0 0 / 50%);z-index:999;margin-bottom: 10px;">
+	<nav class="navbar navbar-default" role="navigation" style="">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
 				<span class="icon-bar"></span>
@@ -736,37 +753,63 @@
 					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out" style="vertical-align: top;font-size: 11pt;"></i> [#endif#]<#LANG_LOGOFF#></a>
 				</li>
 			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="mdmSearch">
-					<form style="padding: 10px;" class="" name="frmFilterModules">
-						<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
-						<div id="filter_add" style="max-width: 500px;box-shadow: -3px 5px 13px 0px rgba(0,0,0,0.5);display:none;white-space: nowrap;position: absolute!important;background-color: white;border: 1px solid #ddd;padding: 5px;z-index: 1000;right: 0px;max-height: 200px;overflow: auto;margin-right: 25px;border-radius: 5px;">
-						</div>
-					</form>
-				</li>
-			</ul>
+			<div class="hidden-xs">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="mdmSearch">
+						<form style="padding: 10px;" class="" name="frmFilterModules">
+							<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" placeholder="<#LANG_SEARCH#>">
+						</form>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</nav>
-	<div style="margin-top:70px;"></div>
+
+	<div class="modal fade" id="mdmGlobalSearchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="alert searchNoty" style="background: radial-gradient(circle farthest-corner at 450px 10px, #5994be, #17b9ca);color: white;text-align: center;border: 0px;">
+						<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
+						Глобальный поиск по всей системе. Начните вводить...
+					</div>
+					
+					<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+					
+					<div id="filter_add" style="display:none;overflow-x: hidden;white-space: nowrap;border: 1px solid #ddd;padding: 5px;max-height: 300px;overflow-y: auto;border-radius: 5px;margin-top: 5px;">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
 			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_EMPTY#></div>
 			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_FAIL#></div>
-			
-			<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
-				<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
-					<input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
-				</div>
-				<div class="col-xs-12 col-sm-12 col-md-12 text-center" style="padding-right: 0px;padding-left: 0px;">
-					<input type="submit" name="submit" style="margin-top: 10px;" value="<#LANG_SEND#>" class="btn btn-success ">
-					<input type="button" name="submit" onclick="$('#console').hide();" style="margin-top: 10px;" value="<#LANG_CANCEL#>" class="btn btn-warning ">
-				</div>
-			</form>
 		</div>
+		
+		<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<div class="input-group">
+					<input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
+					<span class="input-group-btn">
+						<input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-success ">
+						<input type="button" name="submit" onclick="$('#console').hide();" value="<#LANG_CANCEL#>" class="btn btn-warning ">
+					</span>
+				</div>
+			</div>
+		</form>
+		
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;padding: 10px;margin-top: 10px;">
 			<div id="loaderConsole" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
-			<div id="console_output" style="display: none;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;"></div>
+			<div id="console_output" style="display: none;height: 150px;min-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: rgb(0, 0, 128);color: rgb(192, 192, 192);border-radius: 5px;resize: vertical;"></div>
+			<div id="console_output_hintResize" style="display: none;text-align: right;">
+				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="/img/arrow_hint.png">
+			</div>
 		</div>
 		
 	</div>
@@ -822,7 +865,17 @@
 		return false;
 	}
 	</script>
+	
+	
+	
 	<div id="partLoadContent" style="margin-bottom: 50px;">
+		<div class="visible-xs">
+			<div class="row" style="margin: 0 15px;">
+				<div class="col-12" style="margin-bottom: 10px;">
+					<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" placeholder="<#LANG_SEARCH#>">
+				</div>
+			</div>
+		</div>
 		<div class="row" id="content">
 			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
 			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
@@ -846,7 +899,7 @@
 							</h4>
 						</div>
 						<div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
-							<div class="panel-body" style="padding-left:5px;padding-right:5px">
+							<div class="panel-body" style="padding: 5px;">
 								<ul class="nav nav-list">
 									[#endif NEW_CATEGORY#]
 									[#if !DENIED#]
@@ -872,11 +925,12 @@
 			<div class="col-lg-[#if HIDE_LEFT_PANEL="1"#]12[#else#]10[#endif#] col-md-[#if HIDE_LEFT_PANEL="1"#]12[#else#]9[#endif#] col-sm-[#if HIDE_LEFT_PANEL="1"#]12[#else#]8[#endif#] col-xs-12" id="main-content">
 				[#if PRINT!="1"#]
 				<div class="row">
+					[#if ACTION!="" AND ACTION!='xray'#]
 					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
 						
 					</div>
-					
-					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">
+					[#endif#]
+					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
 								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
@@ -886,7 +940,7 @@
 							[#if NAV_MODULE_NAME!=""#]<li><a href="?action=<#ACTION#>">[#NAV_MODULE_NAME#]</a></li>[#endif#]
 						</ol>
 					</div>
-					<div class="col-md-7 text-right" style="padding-left: 0px;padding-right: 0px;">
+					<div class="col-md-[#if ACTION!=""#]4[#else#]7[#endif#] text-right" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="breadcrumb_update" style="">
 							[#if ACTION!=""#]
 							<li>
@@ -903,7 +957,7 @@
 							<li>
 								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
 								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"></a>
-								<a id="updates-check-market" style="display:none" href="?action=market" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
+								<a id="updates-check-market" style="display:none" href="?action=market#panel_updates" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
 								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
 							</li>
 							[#endif#]
@@ -960,69 +1014,79 @@
     }
 
  $(document).ready(function() {
-		[#if HIDE_LEFT_PANEL!="1"#]
-		$("#hideMenuHint").mouseover(function () {
-			$("#hideMenuIcon").css('color','red');
-			$("#hideMenuDiv").css('border','1px solid red');
-		});
-		$("#hideMenuHint").mouseout(function () {
-			$("#hideMenuIcon").css('color','#4792d1');
-			$("#hideMenuDiv").css('border','0px');
-		});
-		[#endif#]
-
-		$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
-        $(".wiki_hint").fancybox({
-			type            : 'iframe',
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-        });
-
-        $(".popup").fancybox({
-			maxWidth        : 800,
-			maxHeight       : 600,
-			fitToView       : false,
-			width           : '70%',
-			height          : '70%',
-			autoSize        : false,
-			closeClick      : false,
-			openEffect      : 'none',
-			closeEffect     : 'none'
-        });
-		checkLocationHref();
-
-		$('input[name=filter_modules]').on('input', function() {
-			filterSearch();
-		});
-
-		$('.dynamic_content').each(function() {
-			if ($(this).attr('id')) {
-				var dyn_id = $(this).attr('id');
-				dynids+='&dynids[]='+dyn_id;
-			}
-		});
-		if (dynids!='') {
-			dynamicContentRefresh();
+	if ($(window).scrollTop() > 1 && (document.documentElement.scrollHeight - window.innerHeight) >= 100) {
+		$("nav").addClass("navbar-fixed-top");
+		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;');
+	}
+		
+	$(window).on("scroll", function(e) {
+		if ($(window).scrollTop() > 1 && (document.documentElement.scrollHeight - window.innerHeight) >= 100) {
+			$("nav").addClass("navbar-fixed-top");
+			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;');
+		} else {
+			$("nav").removeClass("navbar-fixed-top");
+			$("nav").removeAttr('style');
 		}
+	});
+	
+	$('#mdmGlobalSearchModal').on('shown.bs.modal', function() {
+		$('input#filter_modules').focus();
+	})
 
-     /*
-     var vl=$.cookie('adminLeftPanel');
-     if (vl=='off') {
-         $('#left_block').hide();
-     }
-     checkLeftPanelStatus();
-     */
+	[#if HIDE_LEFT_PANEL!="1"#]
+	$("#hideMenuHint").mouseover(function () {
+		$("#hideMenuIcon").css('color','red');
+		$("#hideMenuDiv").css('border','1px solid red');
+	});
+	$("#hideMenuHint").mouseout(function () {
+		$("#hideMenuIcon").css('color','#4792d1');
+		$("#hideMenuDiv").css('border','0px');
+	});
+	[#endif#]
 
-     localStorage.clear();
-     ajaxManager.run();
+	$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
+	$(".wiki_hint").fancybox({
+		type            : 'iframe',
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
 
+	$(".popup").fancybox({
+		maxWidth        : 800,
+		maxHeight       : 600,
+		fitToView       : false,
+		width           : '70%',
+		height          : '70%',
+		autoSize        : false,
+		closeClick      : false,
+		openEffect      : 'none',
+		closeEffect     : 'none'
+	});
+	checkLocationHref();
+
+	$('input[name=filter_modules]').on('input', function() {
+		filterSearch();
+	});
+
+	$('.dynamic_content').each(function() {
+		if ($(this).attr('id')) {
+			var dyn_id = $(this).attr('id');
+			dynids+='&dynids[]='+dyn_id;
+		}
+	});
+	if (dynids!='') {
+		dynamicContentRefresh();
+	}
+
+    localStorage.clear();
+    ajaxManager.run();
 });
 </script>
 

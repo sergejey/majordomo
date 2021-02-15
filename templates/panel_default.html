@@ -37,28 +37,32 @@
 			</div>
 		</div>
 		
-		<div class="text-center" id="addMyBlockHint" style="display:none;margin-bottom: 20px;"><a style="color: lightgray;text-decoration: none;" href="javascript://" data-toggle="modal" data-target="#modalHowMyBlock">Добавить свой блок</a></div>
+		<div class="text-center" id="addMyBlockHint" style="display:none;margin-bottom: 20px;"><a style="color: lightgray;text-decoration: none;" href="javascript://" data-toggle="modal" data-target="#modalHowMyBlock"><#LANG_NEWDASH_DMB_TITLE#></a></div>
 		
 		<div class="modal fade" id="modalHowMyBlock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">Добавление своего блока</h4>
+						<h4 class="modal-title" id="myModalLabel"><#LANG_NEWDASH_DMB_TITLE_MODAL#></h4>
 					</div>
 					<div class="modal-body">
+						<div class="alert" style="font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;">
+							<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
+							<#LANG_NEWDASH_DMB_TITLE_MODAL_HINT#> <a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7303#p124597" style="color: white" target="_blank"><#LANG_NEWDASH_DMB_TITLE_MODAL_HINT_FORUM#></a>
+						</div>
 						<ul class="list-group">
-							<li class="list-group-item">1. Создайте сценарий с именем: <code style="white-space: normal;">dash_my_block</code></li>
+							<li class="list-group-item"><#LANG_NEWDASH_DMB_TITLE_MODAL_STEP1#> <code style="white-space: normal;">dash_my_block</code></li>
 							<li class="list-group-item">
-								2. Сценарий должен отдавать следующий JSON объект:<br>
+								<#LANG_NEWDASH_DMB_TITLE_MODAL_STEP2#><br>
 								<div style="white-space: normal;border-radius: 5px;padding: 10px;font-family: Consolas, Verdana;background-color: #000080;color: #c0c0c0;">
 									<div>$array = array(</div>
-									<div style="margin-left: 30px;">	'status' => 1, //Выводить блок?</div>
-									<div style="margin-left: 30px;">	'name' => 'Супер блок', //Шапка блока</div>
-									<div style="margin-left: 30px;">	'reload' => true, //Автообновление блока</div>
-									<div style="margin-left: 30px;">	'reload_time' => 5, //Время автообновления</div>
+									<div style="margin-left: 30px;">	'status' => 1,</div>
+									<div style="margin-left: 30px;">	'name' => 'Супер блок',</div>
+									<div style="margin-left: 30px;">	'reload' => true,</div>
+									<div style="margin-left: 30px;">	'reload_time' => 5,</div>
 									<div style="margin-left: 30px;">	'data' => array(</div>
-									<div style="margin-left: 60px;">		'data' => 'Привет! Тут любой html!' //Данные</div>
+									<div style="margin-left: 60px;">		'data' => 'Привет! Тут любой html!'</div>
 									<div style="margin-left: 30px;">	),</div>
 									<div>);</div>
 
@@ -66,7 +70,7 @@
 									<div>echo json_encode($array);</div>
 								</div>
 							</li>
-							<li class="list-group-item">3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.</li>
+							<li class="list-group-item"><#LANG_NEWDASH_DMB_TITLE_MODAL_STEP3#></li>
 						</ul>
 					</div>
 					<div class="modal-footer">
@@ -92,21 +96,21 @@
 							<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						<li class="list-group-item">
-							Статус WebSocket
+							<#LANG_DEVICES_STATUS#> WebSocket
 							<span id="wsStatus" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						
 						
 						<li class="list-group-item" onclick="$('.reqPerMinHour').toggle('slow');" style="cursor:pointer">
-							Запросов к БД в секунду
+							<#LANG_NEWDASH_DB_REQ_SEC#>
 							<span id="dashInfoDBReqS" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						<li class="list-group-item reqPerMinHour" style="display:none;">
-							Запросов к БД в минуту
+							<#LANG_NEWDASH_DB_REQ_MIN#>
 							<span id="dashInfoDBReqM" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						<li class="list-group-item reqPerMinHour" style="display:none;">
-							Запросов к БД в час
+							<#LANG_NEWDASH_DB_REQ_HOUR#>
 							<span id="dashInfoDBReqH" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						<li class="list-group-item text-center" id="dbreqdiscus" style="display:none;background: radial-gradient(circle farthest-corner at 100px 50px, #daffe5, #d6ecff);">
@@ -282,13 +286,16 @@
 		
 		<div id="structureDB_chart" style="width: 100%;height: 300px;margin-bottom:10px"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 		
-		<!---
-		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/new_design.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #4792d1);background-size: cover;background-repeat: no-repeat;">
-			<h2><#LANG_NEWDASH_HELLO_NEW#></h2>
-			<p style="font-size: 11pt;text-shadow: white 0 0 6px;"><#LANG_NEWDASH_HELLO_NEW_TEXT#></p>
+		
+		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/main_img/scenario.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #69d147);background-size: contain;background-repeat: no-repeat;background-position: right center;">
+			<h2>Новые сценарии!</h2>
+			<p style="font-size: 11pt;text-shadow: white 0 0 6px;background: rgb(255 255 255 / 73%);padding: 5px;">
+				Обновили модуль сценарии! Зацените как удобно стало. Анимации, мобильный вид - все в лучших традициях =)
+			</p>
 			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
 		</div>
-
+		
+		<!---
 		<style>
 		.onHoverAlfa:hover {
 			color: white;
