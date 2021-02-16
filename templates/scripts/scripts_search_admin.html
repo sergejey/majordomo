@@ -144,9 +144,15 @@ function exportScriptsCount() {
 			
 		
 <script language="javascript">
-[#begin RESULT#]
-if ($.cookie("script_categories_item[#CATEGORY_ID#]") || (<#TOTAL_CATEGORIES#>==1)) {
+[#if TITLE != ''#]
+	[#begin RESULT#]
 	$('#sub[#CATEGORY_ID#]').collapse('show');
-}
-[#end RESULT#]
+	[#end RESULT#]
+[#else#]
+	[#begin RESULT#]
+	if ($.cookie("script_categories_item[#CATEGORY_ID#]") || (<#TOTAL_CATEGORIES#>==1)) {
+		$('#sub[#CATEGORY_ID#]').collapse('show');
+	}
+	[#end RESULT#]
+[#endif#]
 </script>

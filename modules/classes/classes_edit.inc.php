@@ -105,6 +105,9 @@ if ($out['TITLE']) {
   }
 
   if ($rec['ID']) {
-   $out['SUB_CLASSES']=SQLSelect("SELECT ID, TITLE FROM classes WHERE PARENT_ID=".$rec['ID']." ORDER BY TITLE");
+	$subClasses=SQLSelect("SELECT ID, TITLE FROM classes WHERE PARENT_ID=".$rec['ID']." ORDER BY TITLE");
+	if($subClasses && is_array($subClasses)) {
+		$out['SUB_CLASSES'] = $subClasses;
+	}
   }
 

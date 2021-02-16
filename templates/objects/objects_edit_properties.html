@@ -7,7 +7,38 @@
 	[#endif ERR#]
 	
 	<div class="row" style="margin-right: -15px;margin-left: -15px;">
-		<div class="col-md-12 text-right">
+		<div class="col-md-6">
+			<script>
+			function filterProp() {
+				term = $('#filterProp').val().toLowerCase();
+				if(term.length <= 2) {
+					$('ul#proplist>li').removeAttr('style');
+					$('ul#proplist>li').removeAttr('id');
+					return;
+				}
+				$('ul#proplist>li').each(function(index) {
+					textForSearch = $(this).children().children().text().trim();
+					searchResult = textForSearch.toLowerCase().indexOf(term);
+					
+					if(searchResult >= 0) {
+						$(this).attr('style', 'color: red;background: #fff2f2;');
+						$($(this).prev()).attr('id', 'foundSearch');
+					} else {
+						$(this).removeAttr('style');
+						$(this).removeAttr('id');
+					}
+				});
+				
+				if($('#foundSearch').length == 1) {
+					$('html, body').stop().animate({ 
+						scrollTop: $('#foundSearch').offset().top 
+					}, 1000);
+				}
+			 }
+			</script>
+			<input type="text" class="form-control" id="filterProp" oninput="filterProp();" placeholder="Поиск. Начните вводить...">
+		</div>
+		<div class="col-md-6 text-right">
 			<a href="javascript://" onclick="$('#addnewprop').show('slow');$('#proplist>li').css('opacity', '0.2');$('#addnewprop>li').css('opacity', '1');" class="btn btn-success" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
 		</div>
 	</div>
@@ -16,13 +47,16 @@
 	<ul class="list-group" id="proplist">
 		<form action="?" method="post" id="addnewprop" style="display:none;">
 			<li class="list-group-item">
-				<div class="row" style="display: flex;margin-right: -15px;margin-left: -15px;">
+				<div class="row" style="margin-right: -15px;margin-left: -15px;">
 					<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 						<input type="text" name="new_property" placeholder="Имя для нового свойства" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">
 					</div>
 					<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 						<textarea placeholder="Значение свойства" name="new_value" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE#]</textarea>
-						
+					</div>
+				</div>
+				<div class="row" style="margin-right: -15px;margin-left: -15px;">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
 						<input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-success">
 						<input type="button" value="<#LANG_CANCEL#>" class="btn btn-warning" onclick="$('#addnewprop').hide('slow');$('#proplist>li').css('opacity', '1');">
 						
@@ -37,7 +71,7 @@
 		[#begin PROPERTIES#]
 		<li class="list-group-item">
 			<div class="row" style="margin-right: -15px;margin-left: -15px;">
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"> 
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="margin-bottom: 5px;"> 
 					<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('<#TITLE#>.[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
 					
 					[#if CLASS_ID!="0"#]<b>[#endif#]
@@ -51,23 +85,25 @@
 					[#if DESCRIPTION!=""#]<p style="font-size: 1rem;color: gray;margin: 0px;">[#DESCRIPTION#]</p>[#endif#]
 					[#if LINKED_MODULES!=""#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ [#LINKED_MODULES#]</p>[#endif#]
 					
-					
+					[#if KEEP_HISTORY != 0#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-warning">История: [#KEEP_HISTORY#] дней</span></p>[#endif#]
+					[#if VALIDATION_TYPE != 0#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-info">Валидация</span></p>[#endif#]
+					[#if ONCHANGE != ''#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary">Запуск метода: [#ONCHANGE#]</span></p>[#endif#]
 				</div>
 				<div class="col-lg-[#if CLASS_ID="0"#]7[#else#]8[#endif#] col-md-[#if CLASS_ID="0"#]7[#else#]8[#endif#] col-sm-12 col-xs-12">
-					<div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide('fast');$('#prop[#ID#]_edit').show('fast');$('#prop[#ID#]_edit>form>textarea').focus();">
+					<div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide('fast');$('#prop[#ID#]_edit').show('fast');$('#prop[#ID#]_edit>form>textarea').focus();$('textarea[name=value[#ID#]]').height(document.getElementsByName('value[#ID#]')[0].scrollHeight-20);">
 						[#if DATA_TYPE="5"#]
 							[#if VALUE!=""#]
 							<img src="<#ROOTHTML#>cms/images/[#VALUE#]" height="200"><br/>
 							<a href="<#ROOTHTML#>cms/images/[#VALUE#]" target="_blank">[full size]</a>
 							[#endif#]
 						[#endif#]
-						[#if DATA_TYPE="0"#]<pre style="[#if VALUE == ''#]color: #f6f6f6;background: white;[#endif#]cursor:text;">[#if VALUE == ''#]Property is empty[#else#][#VALUE#][#endif#]</pre>[#endif#]
-						[#if SOURCE!="" && VALUE != ''#]<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;">Source → [#SOURCE#]</p>[#endif#]
+						[#if DATA_TYPE="0"#]<pre style="[#if VALUE == ''#]color: #f6f6f6;background: white;[#endif#]cursor:text;">[#if VALUE == ''#]Property is empty[#else#][#VALUE_HTML#][#endif#]</pre>[#endif#]
+						<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;">[#if SOURCE!="" && VALUE != ''#]Source → [#SOURCE#][#endif#][#if VALUE !=''#] → [#UPDATED#]</p>[#else#]</p>[#endif#]
 					</div>
 
 					<div id="prop[#ID#]_edit" style="display:none">
 						<form action="?" method="post">
-							<textarea name="value[#ID#]" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE_HTML#]</textarea>
+							<textarea name="value[#ID#]" rows=2 cols="50" class="span5" style="overflow:auto;width: 100%;resize: vertical;min-height: 40px;max-height: 300px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE_HTML#]</textarea>
 							<br/>
 							<input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-success">
 							<a href="#" class="btn btn-danger" onclick="$('#prop[#ID#]_edit').hide();$('#prop[#ID#]_current').show();return false;"><#LANG_CANCEL#></a>
