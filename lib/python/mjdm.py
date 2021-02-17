@@ -102,6 +102,8 @@ def getHistoryexec(obj_prop, n_value, param):
 def RoomDevices(room):
     return gn.RoomDevices(room)
 
+def getObjects(name,info):
+    return gn.getObjects(name,info)
 
 class mjdObject:
     object_name = ""

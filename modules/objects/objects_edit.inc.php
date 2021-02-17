@@ -174,6 +174,7 @@ if ($this->tab == 'properties') {
         $props[$i]['VALUE'] = $value['VALUE'];
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
         $props[$i]['SOURCE'] = $value['SOURCE'];
+        $props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
 		
 		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
 		if(is_array($value['LINKED_MODULES'])) {
@@ -186,9 +187,8 @@ if ($this->tab == 'properties') {
     if ($this->mode == 'update') {
         $this->redirect("?view_mode=" . $this->view_mode . "&id=" . $rec['ID'] . "&tab=" . $this->tab);
     }
-
+	
     $out['PROPERTIES'] = $props;
-
 }
 // step: methods
 if ($this->tab == 'methods') {

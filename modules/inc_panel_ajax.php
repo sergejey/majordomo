@@ -21,12 +21,12 @@ if ($op == 'console') {
 	error_reporting(E_ALL);
 
     global $command;
-	$code = explode(';', $command);
+	$code = explode('PHP_EOL', $command);
 	foreach($code as $value) {
 		if (preg_match('/echo /', $command)) {
-			evalConsole($value, 0);
+			evalConsole(trim($value), 0);
 		} else {
-			evalConsole($value);
+			evalConsole(trim($value));
 		}
 	}
 		
