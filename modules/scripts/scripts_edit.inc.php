@@ -136,7 +136,7 @@ if ($this->mode == 'update') {
 
         global $edit_run;
         if ($edit_run) {
-			echo '<div style="margin: 30px 0px;border: 1px solid #dddddd;padding: 10px;border-left: 10px solid #4d96d3;max-height: 300px;overflow: auto;">
+			echo '<div style="margin: 30px 0px;border: 1px solid #dddddd;padding: 10px;border-left: 10px solid #4d96d3;resize: vertical;height: 400px;min-height: 100px;overflow: auto;">
 			<h3 style="margin: 0px;border-bottom: 1px solid #dddddd;padding-bottom: 5px;margin-bottom: 10px;">'.LANG_NEWDASH_RESULT.':</h3>
 			<pre>';
 			$this->runScript($rec['ID']);
