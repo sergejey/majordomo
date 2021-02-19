@@ -23,7 +23,7 @@
 					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_ONCHANGE_METHOD#>:<#LANG_HCB#>onchangemethod<#LANG_HCE#></label>
 					<div class="col-lg-10 col-md-8">
 						<select name="onchange" class="form-control">
-							<option value="" disabled selected>Выберите связанный метод</option>
+							<option value="" selected>Выберите связанный метод</option>
 							[#begin METHODS#]
 							<option value="[#TITLE#]"[#if TITLE="<#ONCHANGE#>"#] selected[#endif#]>[#TITLE#]</option>
 							[#end METHODS#]

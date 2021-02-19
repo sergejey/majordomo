@@ -3,7 +3,6 @@
 [#endif VIEW_MODE#]
 
 [#if VIEW_MODE="edit_objects"#]
-	<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
 	[#if ID!=""#]
 		<script>
 		$(window).load(function() {
@@ -35,7 +34,6 @@
 	[#if TAB="history"#]
 		[#inc objects_edit_history.html#]
 	[#endif TAB#]
-	</div>
 [#endif VIEW_MODE#]
 
 [#if VIEW_MODE="view_objects"#]
