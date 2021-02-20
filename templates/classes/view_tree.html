@@ -1,5 +1,5 @@
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
-	<div class="col-md-6">
+	<div class="col-lg-6 col-md-5 col-sm-12 col-xs-12">
 		<script>
 		function filterProp() {
 			term = $('#filterProp').val().toLowerCase();
@@ -53,8 +53,10 @@
 		</script>
 		<input type="text" class="form-control" id="filterProp" oninput="filterProp();" placeholder="Поиск. Начните вводить...">
 	</div>
-	<div class="col-md-6 text-right" style="margin-bottom: 15px;">
+	<div class="col-lg-6 col-md-7 col-sm-12 col-xs-12 text-right" style="margin-bottom: 15px;">
+		<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
 		<a href="?view_mode=edit_classes" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CLASS#></a>
+		<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
 		<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]" class="btn btn-success" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
 	</div>
 </div>
@@ -73,16 +75,19 @@
 			<div class="panel panel-[#if TITLE == 'SDevices'#]primary[#else#][#if TITLE == 'Computer' OR TITLE == 'systemStates' OR TITLE == 'OperationalModes' OR TITLE == 'Timer'#]danger[#else#]default[#endif#][#endif#]" style="margin-bottom: 5px;[#if RESULT AND LEVEL_PAD!=0#]margin:10px;[#endif#][#if CAN_DELETE="1"#]opacity: 0.3;[#endif#]">
 				<div class="panel-heading">
 					<div class="row">
-						<div class="col-md-7" onclick="toggleClass('[#if SUB_LIST != ID#][#ID#],[#endif#][#SUB_LIST#]');" style="cursor: pointer;">
-							<h3 class="panel-title"><i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> [#TITLE#] <span class="badge">[#DESCRIPTION#]</span></h3>
+						<div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('[#if SUB_LIST != ID#][#ID#],[#endif#][#SUB_LIST#]');" style="cursor: pointer;">
+							<h3 class="panel-title">
+								<i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> [#TITLE#] 
+							</h3>
+							[#if DESCRIPTION != ''#]<div style="font-size: 1rem;padding-left: 30px;">[#DESCRIPTION#]</div>[#endif#]
 						</div>
-						<div class="col-md-5 text-right">
+						<div class="col-lg-4 col-md-4 col-sm-5 col-xs-3 text-right">
 							<div class="btn-group btn-group-xs">
 							<a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-success btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
 							<a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
-							<a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
-							<a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
-							<a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
+							<a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm hidden-xs" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
+							<a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm hidden-xs" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
+							<a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm hidden-xs" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
 
 
 							[#if CAN_DELETE="1"#]
