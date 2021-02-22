@@ -104,7 +104,7 @@
 						<li style="padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;">
 							<div class="row">
 								<div class="col-md-12">
-									<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>
+									<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a> [#if DESCRIPTION != ''#]<span style="font-size: 1rem;color: gray;vertical-align: middle;">→ [#DESCRIPTION#]</span>[#endif#]
 									[#if KEY_DATA!=""#] → <i>[#KEY_DATA#]</i>[#endif#]
 									
 									[#if METHODS#]
