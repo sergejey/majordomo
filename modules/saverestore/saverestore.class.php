@@ -133,11 +133,15 @@ class saverestore extends module
         }
 
         if (gr('mode') == 'auto_update_settings') {
+			$this->getConfig();
+			
             $this->config['MASTER_UPDATE_URL'] = gr('set_update_url');
             $this->config['UPDATE_AUTO'] = gr('update_auto');
             $this->config['UPDATE_AUTO_DELAY'] = gr('update_auto_delay');
             $this->config['UPDATE_AUTO_TIME'] = gr('update_auto_time');
             $this->config['UPDATE_AUTO_PLUGINS'] = gr('update_auto_plugins');
+			$this->config['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
+			
             if ($this->config['UPDATE_AUTO']) {
                 subscribeToEvent($this->name, 'HOURLY');
             } else {
@@ -179,7 +183,7 @@ class saverestore extends module
             $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
             $out['ADITIONAL_GIT_URLS'][] = $tmp;
         }
-
+		
         $github_feed_url = $update_url;
         $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
         $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
@@ -189,23 +193,34 @@ class saverestore extends module
             @$tmp = GetXMLTree($github_feed);
             @$data = XMLTreeToArray($tmp);
             @$items = $data['feed']['entry'];
+			
             if (is_array($items)) {
                 $total = count($items);
                 if ($total) {
-                    if ($total > 5) {
-                        $total = 5;
-                    }
-                    for ($i = 0; $i < $total; $i++) {
-                        $itm = array();
-                        $itm['ID'] = trim($items[$i]['id']['textvalue']);
+					$iteration = 0;
+					
+					foreach($items as $key => $value) {
+						$itm = array();
+						
+						if($value['author']['name']['textvalue'] != 'sergejey') continue;
+						
+                        $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
-                        $itm['TITLE'] = trim($items[$i]['title']['textvalue']);
-                        $itm['AUTHOR'] = $items[$i]['author']['name']['textvalue'];
-                        $itm['LINK'] = $items[$i]['link']['href'];
-                        $itm['UPDATED'] = strtotime($items[$i]['updated']['textvalue']);
-                        $itm['UPDATE_TEXT'] = date('m/d/Y H:i', $itm['UPDATED']);
+						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
+                        $itm['TITLE'] = trim($value['title']['textvalue']);
+                        $itm['AUTHOR'] = $value['author']['name']['textvalue'];
+                        $itm['LINK'] = $value['link']['href'];
+                        $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
+                        $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
+						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $out['UPDATES'][] = $itm;
-                    }
+						$iteration++;
+						
+						if($itm['ID'] == $this->config['LATEST_UPDATED_ID'] || $iteration >= 15) {
+							break;
+						}
+					}
+					
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
                     if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $this->config['LATEST_UPDATED_ID']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
@@ -215,9 +230,9 @@ class saverestore extends module
 						$currBranch = explode("/", $update_url);
 							
                         if (!$out['NO_NEED_TO_UPDATE']) {
-							echo json_encode(array('needUpdate' => '1', 'currBranch' => $currBranch[6]));
+							echo json_encode(array('needUpdate' => '1', 'currBranch' => $currBranch[6], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {
-                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $currBranch[6]));
+                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $currBranch[6], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         }
                         exit;
                     }
@@ -427,9 +442,9 @@ class saverestore extends module
     }
 
 
-    function getUpdateURL()
-    {
+    function getUpdateURL() {
         $this->getConfig();
+		
         if ($this->config['MASTER_UPDATE_URL'] != '') {
             $update_url = $this->config['MASTER_UPDATE_URL'];
         } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '') {
@@ -449,8 +464,6 @@ class saverestore extends module
      */
     function getLatest(&$out, $iframe = 0, $with_backup = 1)
     {
-
-
         $url = $this->getUpdateURL();
         $this->url = $url;
 
@@ -1364,7 +1377,7 @@ class saverestore extends module
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
 
-            $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
+            //$this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
             $this->saveConfig();
             setGlobal('LatestUpdateId', $out['LATEST_ID']);
             setGlobal('LatestUpdateTimestamp', date('Y-m-d H:i:s'));

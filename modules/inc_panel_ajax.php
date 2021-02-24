@@ -7,11 +7,14 @@ if (!headers_sent()) {
     header('Content-Type: text/html; charset=utf-8');
 }
 
-function evalConsole($code, $print = 1) {
+function evalConsole($code, $print = 0) {
 	if($print == 1) {
+		if(mb_substr($code, -1) == ';') {
+			$code = mb_substr($code, 0, -1);
+		}
 		return eval('print_r('.$code.');');
 	} else {
-		return eval($code.';');
+		return eval($code);
 	}
 }
 
@@ -22,21 +25,16 @@ if ($op == 'console') {
 
     global $command;
 	$code = explode('PHP_EOL', $command);
+	
 	foreach($code as $value) {
-		if (preg_match('/echo /', $command)) {
-			evalConsole(trim($value), 0);
-		} else {
+		$value = trim($value);
+		if (substr(mb_strtolower($value), 0, 4) == 'echo' || $value[0] == '$' || preg_match('/include/', $value)) {
 			evalConsole(trim($value));
+		} else {
+			evalConsole(trim($value), 1);
 		}
 	}
-		
-    //if (preg_match('/^\w+\.\w+$/', $command)) {
-    //    echo callMethod($command);
-    //} elseif (preg_match('/;/', $command)) {
-	//var_dump(getRandomLine('wefwe'));
-    //} else {
-    //    eval('echo ' . $command . ';');
-    //}
+
 }
 
 if ($op == 'filter') {
