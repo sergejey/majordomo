@@ -234,9 +234,9 @@ class saverestore extends module
                     }
                     if ($this->ajax && $_GET['op'] == 'check_updates') {
                         if (!$out['NO_NEED_TO_UPDATE']) {
-							echo json_encode(array('needUpdate' => '1', 'currBranch' => $this->config['LATEST_UPDATED_ID'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
+							echo json_encode(array('needUpdate' => '1', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {
-                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $this->config['LATEST_UPDATED_ID'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
+                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         }
                         exit;
                     }
