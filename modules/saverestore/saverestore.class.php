@@ -198,7 +198,9 @@ class saverestore extends module
                 $total = count($items);
                 if ($total) {
 					$iteration = 0;
-					
+					// echo '<pre>';
+					// var_dump($items);
+					// die();
 					foreach($items as $key => $value) {
 						$itm = array();
 						
@@ -212,6 +214,7 @@ class saverestore extends module
                         $itm['LINK'] = $value['link']['href'];
                         $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
                         $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
+                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3]);
 						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $out['UPDATES'][] = $itm;
 						$iteration++;
