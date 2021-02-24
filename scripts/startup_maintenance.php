@@ -208,7 +208,7 @@ if (IsWindowsOS()) {
     
 } else {
     $serial_data=trim(exec("cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2"));
-    $serial_data=ltrim($data,'0');
+    $serial_data=ltrim($serial_data,'0');
 }
 
 if ($serial_data!='') {
