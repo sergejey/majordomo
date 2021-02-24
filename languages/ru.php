@@ -1554,8 +1554,8 @@ $dictionary = array(
 	'NEWSAVERESTORE_RESTORE_ARHIVE' => 'Резервные копии',
 	'NEWSAVERESTORE_RESTORE_DOWNANDRESTORE' => 'Загрузить и восстановить',
 	'NEWSAVERESTORE_RESTORE_RESTOREINARHIVE' => 'Восстановить из архива системы',
-	'NEWSAVERESTORE_RESTORE_CREATE_RESTORE' => 'Создать резеврную копию',
-	'NEWSAVERESTORE_BACKUP_HINT' => 'Выберите разделы системы для создания резевной копии.',
+	'NEWSAVERESTORE_RESTORE_CREATE_RESTORE' => 'Создать резервную копию',
+	'NEWSAVERESTORE_BACKUP_HINT' => 'Выберите разделы системы для создания резервной копии.',
 	'NEWSAVERESTORE_CHOUSE_FILE' => 'Выберите файл',
 	'NEWSAVERESTORE_CHOUSES_FILES' => 'Выбрано файлов:',
 	
