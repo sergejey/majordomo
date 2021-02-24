@@ -36,9 +36,11 @@
 				</ul>
 			</form>
 			[#else RESULT#]
-			<p>
-			<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-			</p>
+			<div class="row" style="margin-right: -15px;margin-left: -15px;">
+				<div class="col-md-12 text-center" style="margin-bottom: 15px;">
+					<div class="alert alert-warning"><#LANG_NO_RECORDS_FOUND#></div>
+				</div>
+			</div>
 			[#endif RESULT#]
 		</div>
 	</div>

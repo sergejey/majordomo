@@ -53,9 +53,18 @@
 	</div>
 </div>
 [#else#]
-<p align=center>
-<font color="red"><#LANG_NO_OBJECTS_DEFINED#></font>
-</p>
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12 text-right" style="margin-bottom: 15px;">
+		<a href="?view_mode=edit_objects" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
+	</div>
+</div>
+
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12 text-center" style="margin-bottom: 15px;">
+		<div class="alert alert-warning"><#LANG_NO_OBJECTS_DEFINED#></div>
+	</div>
+</div>
+
 [#endif RESULT#]
 
 

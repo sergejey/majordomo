@@ -69,9 +69,9 @@ function setInsertData_%.object_id%() {
 		timeConvertVar = timeConvert(sDATA);
 		currentTime = new Date();
 
-		if((currentTime.getDate() - timeConvertVar[0]) == 0) {
+		if(twoDigits(currentTime.getMonth()+1) == timeConvertVar[1] && (currentTime.getDate() - timeConvertVar[0]) == 0) {
 			beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
-		} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
+		} else if(twoDigits(currentTime.getMonth()+1) == timeConvertVar[1] && (currentTime.getDate() - timeConvertVar[0]) == 1) {
 			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
 		} else {
 			beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
