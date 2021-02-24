@@ -225,11 +225,11 @@ class saverestore extends module
 					
                     $out['LATEST_CURR_BRANCH'] = $this->config['LATEST_CURR_BRANCH'];
                     $out['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
-                    
+              
 					$currBranch = explode("/", $update_url);
 					$out['UPDATE_CURR_BRANCH'] = mb_strtoupper(explode('.', $currBranch[6])[0]);
 			
-                    if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_CURR_BRANCH'] && $currBranch[6] == $out['LATEST_UPDATED_ID']) {
+                    if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_UPDATED_ID'] && $out['LATEST_CURR_BRANCH'] == $out['UPDATE_CURR_BRANCH']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
                     if ($this->ajax && $_GET['op'] == 'check_updates') {
