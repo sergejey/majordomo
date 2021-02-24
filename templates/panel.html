@@ -639,7 +639,7 @@
 				}
 				$('#loadUpdate').hide();
 				//$('#dashInfoBranch').html(data.currBranch.slice(0, -7));
-				$('#dashInfoVersion').html('<a style="color: white;text-decoration: none;" href="https://github.com/sergejey/majordomo/commit/'+data.current_version+'" target="_blank">'+data.currBranch.slice(0, -7) + '_' + data.current_version.slice(0, -33)+'</a>');
+				$('#dashInfoVersion').html('<a style="color: white;text-decoration: none;" href="https://github.com/sergejey/majordomo/commit/'+data.current_version+'" target="_blank">'+data.currBranch + '_' + data.current_version.slice(0, -33)+'</a>');
 			});
 			
 			var urlCheckUpdatesMarket = '<#ROOTHTML#>ajax/market.html?op=check_updates';
