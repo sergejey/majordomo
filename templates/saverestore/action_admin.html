@@ -78,10 +78,10 @@
 			<div class="panel-body">
 				<ul class="list-group">
 					[#begin UPDATES#]
-					<li class="list-group-item">
+					<li class="list-group-item [#if MYVERSION == 1#]panel-success[#endif#]" [#if MYVERSION == 1#]style="background: #d6e9c6;"[#endif#]>
 						<span class="badge">[#UPDATE_TEXT#]</span>
 						<div style="cursor:pointer;">
-							<i>[#AUTHOR#]</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="[#LINK#]" target="_blank">[#TITLE#]</a>
+							[#if MYVERSION == 1#]<span class="label label-success">Моя версия</span> [#endif#]<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
 						</div>
 					</li>
 					[#end UPDATES#]
@@ -214,7 +214,7 @@
 			</div>
 		</div>
 		
-		<div class="panel panel-default restoreMainBlock" style="display:none;">
+		<div class="panel panel-default restoreMainBlock" style="">
 			<div class="panel-body">
 				<div id="createBackup" class="restoreBlock" style="display: none;">
 					<script>
@@ -359,7 +359,7 @@
 					</script>
 				</div>
 				[#if FILES#]
-				<div id="restoreInServer" class="restoreBlock" style="display: none;">
+				<div id="restoreInServer" class="restoreBlock" style="">
 					<ul class="list-group">
 						[#begin FILES#]
 						<li class="list-group-item">
