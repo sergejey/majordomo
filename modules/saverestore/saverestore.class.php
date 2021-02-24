@@ -216,24 +216,27 @@ class saverestore extends module
                         $out['UPDATES'][] = $itm;
 						$iteration++;
 						
-						if($itm['ID'] == $this->config['LATEST_UPDATED_ID'] || $iteration >= 15) {
+						if($iteration >= 10) {
 							break;
 						}
 					}
 					
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
+					
+                    $out['LATEST_CURR_BRANCH'] = $this->config['LATEST_CURR_BRANCH'];
+                    $out['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
                     
 					$currBranch = explode("/", $update_url);
-					$out['UPDATE_CURR_BRANCH'] = $currBranch[6];
-					
-                    if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $this->config['LATEST_UPDATED_ID'] && $currBranch[6] == $this->config['LATEST_CURR_BRANCH']) {
+					$out['UPDATE_CURR_BRANCH'] = mb_strtoupper(explode('.', $currBranch[6])[0]);
+			
+                    if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_CURR_BRANCH'] && $currBranch[6] == $out['LATEST_UPDATED_ID']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
                     if ($this->ajax && $_GET['op'] == 'check_updates') {
                         if (!$out['NO_NEED_TO_UPDATE']) {
-							echo json_encode(array('needUpdate' => '1', 'currBranch' => $currBranch[6], 'current_version' => $this->config['LATEST_UPDATED_ID']));
+							echo json_encode(array('needUpdate' => '1', 'currBranch' => $this->config['LATEST_UPDATED_ID'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {
-                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $currBranch[6], 'current_version' => $this->config['LATEST_UPDATED_ID']));
+                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $this->config['LATEST_UPDATED_ID'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         }
                         exit;
                     }
