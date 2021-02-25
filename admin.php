@@ -25,10 +25,12 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $cl  = new control_modules();
 $app = new panel();
 
-if ($md != $app->name)
-   $app->restoreParams();
-else
-   $app->getParams();
+//if ($md != $app->name)
+//   $app->restoreParams();
+//else
+//   $app->getParams();
+// change - unknown $md variable
+$app->getParams();
 
 startMeasure('apprun');
 $result = $app->run();
