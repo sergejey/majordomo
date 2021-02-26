@@ -72,10 +72,10 @@
 				}
 			});
 			</script>
-			<div class="panel panel-[#if TITLE == 'SDevices'#]primary[#else#][#if TITLE == 'Computer' OR TITLE == 'systemStates' OR TITLE == 'OperationalModes' OR TITLE == 'Timer'#]danger[#else#]default[#endif#][#endif#]" style="margin-bottom: 5px;[#if RESULT AND LEVEL_PAD!=0#]margin:10px;[#endif#][#if CAN_DELETE="1"#]opacity: 0.3;[#endif#]">
+			<div class="panel panel-[#if TITLE == 'SDevices'#]primary[#else#][#if TITLE == 'Computer' OR TITLE == 'systemStates' OR TITLE == 'OperationalModes' OR TITLE == 'Timer'#]danger[#else#]default[#endif#][#endif#]" style="margin-bottom: 5px;[#if RESULT AND LEVEL_PAD!=0#]margin:10px;[#endif#]">
 				<div class="panel-heading">
 					<div class="row">
-						<div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('[#if SUB_LIST != ID#][#ID#],[#endif#][#SUB_LIST#]');" style="cursor: pointer;">
+						<div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('[#if SUB_LIST != ID#][#ID#],[#endif#][#SUB_LIST#]');" style="cursor: pointer;[#if CAN_DELETE="1"#]opacity: 0.3;[#endif#]">
 							<h3 class="panel-title">
 								<i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> [#TITLE#] 
 							</h3>
@@ -84,14 +84,14 @@
 						<div class="col-lg-4 col-md-4 col-sm-5 col-xs-3 text-right">
 							<div class="btn-group btn-group-xs">
 							<a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-success btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+							
 							<a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
 							<a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm hidden-xs" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
 							<a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm hidden-xs" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
 							<a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm hidden-xs" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
 
-
 							[#if CAN_DELETE="1"#]
-							<a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
+							<a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-danger btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
 							[#endif CAN_DELETE#]
 							</div>
 						</div>
@@ -110,7 +110,7 @@
 									[#if METHODS#]
 										<div style="padding-left: 10px">
 										[#begin METHODS#]
-											<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary">Методы: <a style="color: white;text-decoration: none;" href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></span></p>
+											<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary" style="margin-bottom: 5px;">Методы: <a style="color: white;text-decoration: none;" href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></span></p>
 										[#end METHODS#]
 										</div>
 									[#endif METHODS#]
