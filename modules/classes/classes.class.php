@@ -121,7 +121,7 @@ function admin(&$out) {
   $out['SET_DATASOURCE']=1;
  }
  $this->getConfig();
- 
+
  if ($this->data_source=='classes' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_classes') {
    $this->search_classes($out);
