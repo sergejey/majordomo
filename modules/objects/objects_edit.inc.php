@@ -78,7 +78,6 @@ if ($this->mode == 'update') {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
         }
-        clearCacheData();
         $out['OK'] = 1;
     } else {
         $out['ERR'] = 1;
@@ -123,11 +122,9 @@ if ($this->tab == 'properties') {
                 SQLExec("DELETE FROM properties WHERE ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             }
         }
-        clearCacheData();
     }
 
     if ($this->mode == 'update') {
-        clearCacheData();
         $new_property = gr('new_property','trim');
         $new_property = str_replace(' ','',$new_property);
         $new_value = gr('new_value');
