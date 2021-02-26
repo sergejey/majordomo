@@ -121,22 +121,11 @@ function admin(&$out) {
   $out['SET_DATASOURCE']=1;
  }
  $this->getConfig();
+ 
  if ($this->data_source=='classes' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_classes') {
-   if ($this->mode=='switch') {
-    global $view;
-    $this->config['DEFAULT_VIEW']=$view;
-    $this->saveConfig();
-   }
-   $out['DEFAULT_VIEW']=$this->config['DEFAULT_VIEW'];
-
-   if ($this->config['DEFAULT_VIEW']=='list') {
-    $this->list_view($out);
-   } else {
-    $this->search_classes($out);
-   }
-
-  }
+   $this->search_classes($out);
+  } 
   if ($this->view_mode=='export_classes') {
    $this->export_classes($out, $this->id);
   }
