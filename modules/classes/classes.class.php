@@ -121,6 +121,9 @@ function admin(&$out) {
   $out['SET_DATASOURCE']=1;
  }
  $this->getConfig();
+ $this->config['DEFAULT_VIEW'] = '';
+ $this->saveConfig();
+	
  if ($this->data_source=='classes' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_classes') {
    if ($this->mode=='switch') {
