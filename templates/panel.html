@@ -218,6 +218,13 @@
 
 		function consoleToggle() {
 			$("#console").toggle();
+			
+			if($("#console").is(':visible')) {
+				$('#partLoadContent').css('opacity', '0.3');
+			} else {
+				$('#partLoadContent').css('opacity', '1');
+			}
+			
 			return false;
 		}
 		
@@ -424,11 +431,52 @@
 			return false;
 		}
 		[#endif#]
-		function sendConsoleCommand() {
-			var cmd=$('#command').val();
+		function insertModuleInConsole(module) {
+			if(module == 0) {
+				$('#module_add').val('');
+				$('#methodsModule').hide();
+				
+				$('#console>div:eq(1)').removeClass('col-md-8');
+				$('#console>div:eq(1)').addClass('col-md-12');
+			
+				return;
+			}
+			
+			moduleStrCommand = "include(DIR_MODULES.'"+module+"/"+module+".class.php');PHP_EOL$"+module+" = new "+module+"();";
+			
+			$('#console>div:eq(1)').removeClass('col-md-12');
+			$('#console>div:eq(1)').addClass('col-md-8');
+			
+			$('#module_add').val(moduleStrCommand);
+			$('#methodsModule').show();
+			
+			sendConsoleCommand(moduleStrCommand + "PHP_EOLjson_encode(get_class_methods('"+module+"'));");
+			
+			//Отправляем в консоль
+			//$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: '+moduleStrCommand.replace(/PHP_EOL/g, '<br> &nbsp&nbsp '));
+		}
+		
+		function sendConsoleCommand(cmdCustom = '') {
+			if(cmdCustom != '') {
+				var cmd = cmdCustom;
+				$('#loaderConsoleModule').show();
+			} else {
+				var cmd = $('#command').val();
+			}
+			
+			if(cmdCustom == '' && $('#module_add').val()) {
+				parentModule = $('#module_add').val();
+				cmd = parentModule+cmd;
+			}
+
+			if(cmd.toLowerCase() == 'clear' || cmd.toLowerCase() == 'clear;') {
+				data = '<i style="color: gray;">Console clear!</i>';
+				$('#console_output').html(data);
+				return false;
+			}
+			
 			if(cmd == '') {
 				$('#dangerAlertConsole').show();
-				//$('#warningAlertConsole').hide();
 				return false;
 			}
 			var urlCommand="?";
@@ -442,6 +490,28 @@
 				url: "/admin.php",
 				data: urlCommand,
 				success: function(data) {
+					if(cmdCustom) {
+						$('#loaderConsole').hide();
+						$('#dangerAlertConsole').hide();
+						$('#error_console_request').remove();
+						$('#loaderConsoleModule').hide();
+						
+						data = JSON.parse(data);
+						
+						currModuleName = $('#currModuleName').val();
+						
+						$('#methodsModule>ul').html('');
+						
+						$('#methodsModule>ul').append('<li class="list-group-item"><a href="javascript://" onclick="$(\'input#command\').val($(\'input#command\').val() + $(this).text());">print_r($'+currModuleName+'->getConfig());</a></li>');
+						data.forEach(function(item, i) {
+							$('#methodsModule>ul').append('<li class="list-group-item"><a href="javascript://" onclick="$(\'input#command\').val($(\'input#command\').val() + $(this).text());">$'+currModuleName+'->'+item+'();</a></li>');
+						});
+						$('input#command').val('');
+						data = '<i style="color: gray;">Console clear!</i>';
+						$('#console_output').html(data);
+						return;
+					}
+					
 					old_data = $('#console_output').html();
 
 					if(!data) {
@@ -453,20 +523,22 @@
 					$('#loaderConsole').hide();
 					$('#dangerAlertConsole').hide();
 					//$('#warningAlertConsole').hide();
-					$('#console_output').show();
+					//$('#console_output').show();
 					
-					//if(cmd == data) {
-					//	$('#warningAlertConsole').show();
-					//}
+					$('#error_console_request').remove();
 				},
 				error: function(data){
+					if(cmdCustom) {
+						return data;
+					}
+					
 					$('#dangerAlertConsole').hide();
 					//$('#warningAlertConsole').hide();
 					$('#loaderConsole').hide();
 					$('#console_output_hintResize').hide();
 					
-					$('#console_output').show();
-					$('#console_output').html('<div style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;">Error sending request - sendConsoleCommand()</div>');
+					//$('#console_output').show();
+					$('#console_output').html('<div id="error_console_request" style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;">Error sending request - sendConsoleCommand()</div>');
 				},
 			});
 			return false;
@@ -566,7 +638,8 @@
 					$('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);[#endif#]');
 				}
 				$('#loadUpdate').hide();
-				$('#dashInfoBranch').html(data.currBranch.slice(0, -7));
+				//$('#dashInfoBranch').html(data.currBranch.slice(0, -7));
+				$('#dashInfoVersion').html('<a style="color: white;text-decoration: none;" href="https://github.com/sergejey/majordomo/commit/'+data.current_version+'" target="_blank">'+data.currBranch + '_' + data.current_version.slice(0, -33)+'</a>');
 			});
 			
 			var urlCheckUpdatesMarket = '<#ROOTHTML#>ajax/market.html?op=check_updates';
@@ -649,7 +722,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" style="margin-right: 20px;padding:0px" href="<#ROOTHTML#>admin.php"><img src="img/logo-md.png" style="height: 54px;"></a>
+			<a class="navbar-brand" style="margin-right: 20px;padding:0px" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo-md.png" style="height: 54px;"></a>
 		</div>
 		
 		<div class="navbar-collapse collapse" id="responsive-menu">
@@ -760,7 +833,7 @@
 		</div>
 	</div>
 	
-	<div class="row" id="console" style="display:none;border: 1px solid #e1e1e1;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;">
+	<div class="row" id="console" style="display: none;padding: 10px;margin: 15px;border-radius: 5px;background: whitesmoke;box-shadow: 0px 1px 10px #4792d169;border: 2px solid #4792d1;">
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;">
 			<div class="alert alert-danger text-center" id="dangerAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_EMPTY#></div>
 			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_FAIL#></div>
@@ -770,20 +843,41 @@
 			<div class="col-xs-12 col-sm-12 col-md-12">
 				<div class="input-group">
 					<input type="text" name="command" value="" id="command" class="form-control" placeholder="Code, method, expression...">
+					
 					<span class="input-group-btn">
 						<input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-success ">
-						<input type="button" name="submit" onclick="$('#console').hide();" value="<#LANG_CANCEL#>" class="btn btn-warning ">
+						<input type="button" value="Подключить модуль" onclick="$('#currModuleName').toggle();" class="btn btn-info ">
+						<input type="button" onclick="consoleToggle();" value="<#LANG_CLOSE#>" class="btn btn-warning ">
 					</span>
 				</div>
+				<select class="form-control" id="currModuleName" style="display:none;margin-top: 10px;" onchange="insertModuleInConsole($(this).val());">
+					<option value="0">Выберите модуль...</option>
+					
+					[#begin SUB_MODULES#]
+						[#if NAME#]<option value="[#NAME#]">[#TITLE#]</option>[#endif#]
+					[#end SUB_MODULES#]
+				</select>
 			</div>
+			
+			<input type="hidden" id="module_add" name="module_add" value="">
 		</form>
 		
 		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;padding: 10px;margin-top: 10px;">
 			<div id="loaderConsole" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
-			<div id="console_output" style="display: none;height: 150px;min-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: rgb(0, 0, 128);color: rgb(192, 192, 192);border-radius: 5px;resize: vertical;"></div>
+			<div id="console_output" style="height: 150px;min-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: rgb(0, 0, 128);color: rgb(192, 192, 192);border-radius: 5px;resize: vertical;">
+				<div style="color: gray;font-style: italic;"><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: Wait command...</div>
+			</div>
 			<div id="console_output_hintResize" style="display: none;text-align: right;">
 				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="/img/arrow_hint.png">
 			</div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-12 col-md-4" id="methodsModule" style="display:none;padding: 10px;margin-top: 10px;height: 150px;min-height: 160px;overflow: auto;resize: vertical;">
+			<div id="loaderConsoleModule" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
+			
+			<ul class="list-group" style="">
+				
+			</ul>
 		</div>
 		
 	</div>
@@ -804,10 +898,8 @@
 
 		if (vl == 'off') {
 			$.cookie('sub_'+id, 'on', {expires: 180});
-			console.log('Запись куки');
 		} else {
 			$.cookie('sub_'+id, 'off', {expires: 180});
-			console.log('Запись куки');
 		}
 		
 		$('#row_'+id).collapse("toggle");

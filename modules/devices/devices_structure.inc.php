@@ -321,7 +321,7 @@ $this->device_types=array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
             'price'=>array('DESCRIPTION'=>'Price','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCounterPrice'),
             'pulseAmount'=>array('DESCRIPTION'=>'Pulse amount (optional)','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdPulseAmount'),
-            'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','DATA_KEY'=>1),
             'valueWork'=>array('DESCRIPTION'=>'Work Value','ONCHANGE'=>'valueWorkUpdated','KEEP_HISTORY'=>0),
             'valueHour'=>array('DESCRIPTION'=>'Hour Value','KEEP_HISTORY'=>365),
             'valueDay'=>array('DESCRIPTION'=>'Day Value','KEEP_HISTORY'=>5*365),
