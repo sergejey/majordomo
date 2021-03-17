@@ -96,6 +96,16 @@
   if ($this->action!='admin') {
    $res=$this->getDynamicElements($qry);
   } else {
+
+   $go_linked_object=gr('go_linked_object');
+   $go_linked_property=gr('go_linked_property');
+   if ($go_linked_object && $go_linked_property) {
+    $tmp = SQLSelectOne("SELECT ID FROM commands WHERE LINKED_OBJECT = '".DBSafe($go_linked_object)."' AND LINKED_PROPERTY='".DBSafe($go_linked_property)."'");
+    if ($tmp['ID']) {
+     $this->redirect("?id=".$tmp['ID']."&view_mode=edit_commands");
+    }
+   }
+
    $res=SQLSelect("SELECT * FROM commands WHERE $qry ORDER BY PRIORITY DESC, TITLE");
   }
 
@@ -109,7 +119,3 @@
     //$out['RESULT_HTML']=$this->buildHTML($out['RESULT']);
    }
 
-
-   
-   
-?>
