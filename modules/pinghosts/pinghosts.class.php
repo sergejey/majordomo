@@ -8,7 +8,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.2 (wizard, 00:01:48 [Jan 06, 2011])
 */
-Define('DEF_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)'); // options for 'HOST TYPE'
+Define('DEF_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=PING (HOST:PORT)'); // options for 'HOST TYPE'
 //
 //
 class pinghosts extends module {
@@ -209,11 +209,11 @@ function usual(&$out) {
 
    $online=0;
    // checking
-   if (!$host['TYPE']) {
+   if ($host['TYPE']==0) {
     //ping host
 
     $online=ping(processTitle($host['HOSTNAME']));
-   } else {
+   } elseif ($host['TYPE']==1) {
     //web host
     $online=getURL(processTitle($host['HOSTNAME']), 0);
     SaveFile("./cms/cached/host_".$host['ID'].'.html', $online);
@@ -223,6 +223,15 @@ function usual(&$out) {
     if ($online) {
      $online=1;
     }
+   } elseif ($host['TYPE']==2) {
+     $hostport = explode(":",$host['HOSTNAME']);
+	 $connection = @fsockopen($hostport[0],$hostport[1],$errno,$errstr,1);
+     if (is_resource($connection)) {
+         $online=1;
+         fclose($connection);
+     } else {
+         $online=0;
+     }
    }
 
    if ($online) {
