@@ -769,7 +769,6 @@
 				</li>
 
 				[#endif HIDE_LEFT_PANEL#]
-
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
@@ -797,18 +796,17 @@
 						<li><a href="<#ROOTHTML#>devices.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_DEVICES#></a></li>
 					</ul>
 				</li>
-
-
+        
+       <!---
 				<li>
 					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out" style="vertical-align: top;font-size: 11pt;"></i> [#endif#]<#LANG_LOGOFF#></a>
 				</li>
+				--->
 			</ul>
-			<div class="hidden-xs">
+			<div class="hidden-xs hidden-sm">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="mdmSearch">
-						<form style="padding: 10px;" class="" name="frmFilterModules">
-							<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" placeholder="<#LANG_SEARCH#>">
-						</form>
+					<li>
+						<a href="javascript://" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static"><span style="border: 1px solid;border-radius: 4px;background: #f0ad4e;color: white;padding: 1rem 2rem;"><i class="glyphicon glyphicon-search"></i> <#LANG_SEARCH#></span></a>
 					</li>
 				</ul>
 			</div>
