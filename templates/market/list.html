@@ -1,3 +1,8 @@
+<script>
+if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
+	$('#tab>li.active>a').append('<span class="badge" style="margin-left: 5px;color: #fff;background-color: #47a447;border-color: #398439;vertical-align: text-top;">'+$('#market_application>.media').length+'</span>')
+}
+</script>
 <div id="connect_sync_note" class="alert" style="display:none;background: radial-gradient(circle farthest-corner at 450px 10px, #a6e7bb, #0e6080);color: white;text-align: center;border: 0px;">
 	<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i> <#LANG_MARKET_CONNECT_NOTE#>
 </div>

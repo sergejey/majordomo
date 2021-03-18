@@ -1,11 +1,11 @@
 [#if RESULT#]
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
 	[#if PAGES#]
-	<div class="col-md-6 text-right" style="margin-bottom: 15px;">
-		<ul class="pagination">
-			[#begin PREVPAGE#]<li><a href="#">&laquo;</a></li>[#end PREVPAGE#]
+	<div class="col-md-6" style="margin-bottom: 15px;">
+		<ul class="pagination" style="margin: 0px;">
+			[#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
 			[#begin PAGES#]
-			<li [#if !SELECTED#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
+			<li [#if SELECTED =='1'#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
 			[#end PAGES#]
 			[#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
 		</ul>

@@ -11,7 +11,7 @@
  }
 </script>
 
-<div style="margin-top: 3px;">
+<div style="margin-top: 3px;" id="blockyTypeForCoding">
 	<#LANG_CODE_TYPE#>:
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
@@ -101,7 +101,7 @@ $(document).ready(function(){
 		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
 		scrollbarStyle: 'native',
-		autofocus: true,
+		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
 		[#endif#]
 		
