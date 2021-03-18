@@ -1543,6 +1543,9 @@ $dictionary = array(
 	
 	'NEWDASH_RESULT' => 'Result',
 	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',
+	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',
 	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Update anyway',
