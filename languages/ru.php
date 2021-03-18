@@ -1123,7 +1123,6 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
-    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности воздуха',
@@ -1146,7 +1145,10 @@ $dictionary = array(
     'DEVICES_MSG_OPENING'=>'Сообщение при открытии',
     'DEVICES_MSG_CLOSING'=>'Сообщение при закрытии',
     'DEVICES_MSG_REMINDER'=>'Сообщение при напоминании',
-    
+
+    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
+    'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Поддержка уровня открытия',
+
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',

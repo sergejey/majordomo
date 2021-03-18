@@ -1178,7 +1178,7 @@ function processTitle($title, $object = 0)
                     $totald = count($tmp);
                     $hsh = array();
                     if ($totald == 1) {
-                        if ($data != '') {
+                        if ($data != 0) {
                             $hsh[$data] = $descr;
                         } else {
                             $hsh[$data] = '';
@@ -1188,9 +1188,6 @@ function processTitle($title, $object = 0)
                             $item = trim($tmp[$id]);
                             if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
-                                if ($search_value=='') {
-                                    $search_value='<empty>';
-                                }
                                 $search_replace = $md[2];
                             } else {
                                 $search_value = $id;
@@ -1198,7 +1195,7 @@ function processTitle($title, $object = 0)
                             }
                             $hsh[$search_value] = $search_replace;
                         }
-                        if ($data == '') $data='<empty>';
+                        if ($data == '') $data='0';
                     }
                     $title = str_replace($m[0][$i], $hsh[$data], $title);
                 }

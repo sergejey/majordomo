@@ -206,28 +206,30 @@ $thisCompObject = getObject('ThisComputer');
 $cycles_records = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
-    //DebMes("Removing property ThisComputer.$property",'threads');
+    DebMes("Removing property ThisComputer.$property (object ".$thisCompObject->id.")",'threads');
     echo "Removing ThisComputer.$property (object " . $thisCompObject->id . ")";
     $property = $cycles_records[$i]['TITLE'];
     $property_id = $thisCompObject->getPropertyByName($property, $thisCompObject->class_id, $thisCompObject->id);
     //DebMes("Property id: $property_id",'threads');
     if ($property_id) {
-        $sqlQuery = "SELECT ID
-                        FROM pvalues
-                       WHERE PROPERTY_ID = " . (int)$property_id . "
-                         AND OBJECT_ID   = " . (int)$thisCompObject->id;
+        $sqlQuery = "SELECT ID FROM pvalues WHERE PROPERTY_ID = " . (int)$property_id;
         $pvalue = SQLSelectOne($sqlQuery);
         if ($pvalue['ID']) {
-            //DebMes("Pvalue: ".$pvalue['ID'],'threads');
+            DebMes("Deleting Pvalue: ".$pvalue['ID'],'threads');
             SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $pvalue['ID']);
             SQLExec("DELETE FROM pvalues WHERE ID=" . $pvalue['ID']);
+        } else {
+            DebMes("NO Pvalue for ".$property_id,'threads');
         }
         SQLExec("DELETE FROM properties WHERE ID=" . $property_id);
+        DebMes("REMOVED $property_id",'threads');
         echo " REMOVED $property_id\n";
     } else {
+        DebMes("No property record found for $property",'threads');
         echo " FAILED\n";
     }
 }
+clearCacheData();
 
 // getting list of /scripts/cycle_*.php files to run each in separate thread
 $cycles = array();
