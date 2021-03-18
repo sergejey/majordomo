@@ -258,6 +258,7 @@ $this->device_types=array(
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
+            'support_level'=>array('DESCRIPTION'=>LANG_DEVICES_OPENABLE_SUPPORT_LEVEL,'_CONFIG_TYPE'=>'yesno'),
             'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
                 '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdOpenType',
                 '_CONFIG_OPTIONS'=>
@@ -269,9 +270,13 @@ $this->device_types=array(
             'notify_msg_opening'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_OPENING,'_CONFIG_TYPE'=>'text'),
             'notify_msg_closing'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_CLOSING,'_CONFIG_TYPE'=>'text'),
             'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
+            'level'=>array('DESCRIPTION'=>'Current level', 'ONCHANGE'=>'levelUpdated'),
+            'levelSaved'=>array('DESCRIPTION'=>'Latest level saved'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'setLevel'=>array('DESCRIPTION'=>'Set open level'),
+            'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'switch'=>array('DESCRIPTION'=>'Switch'),
             'open'=>array('DESCRIPTION'=>'Open','_CONFIG_SHOW'=>1),
             'close'=>array('DESCRIPTION'=>'Close','_CONFIG_SHOW'=>1),
