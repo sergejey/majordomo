@@ -1544,6 +1544,9 @@ $dictionary = array(
 	
 	'NEWDASH_RESULT' => 'Результат',
 	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',
+	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',
 	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Все равно обновить',

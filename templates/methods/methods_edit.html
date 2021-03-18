@@ -106,7 +106,9 @@
 						[#else ID#]
 							<button class="btn btn-default btn-success" type="submit" name="subm" value="<#LANG_ADD#>"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_ADD#></button>
 						[#endif ID#]
+						[#if ID!=""#]
 						<a href="javascript://" onclick="ajaxAutosave('checkcode');" id="checkCodeBtn" class="btn btn-info"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> <#LANG_CODEEDITOR_CHECK_ON_ERROR_BTN#></a>
+						[#endif#]
 						<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-warning"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> <#LANG_CANCEL#></a>
 					</div>
 				</div>
