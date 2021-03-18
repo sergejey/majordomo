@@ -30,7 +30,7 @@ $(window).load(function() {
 					find = $('div pre.CodeMirror-line:eq('+error_line_find+')');
 					find.attr('id', 'errorline_'+error_line);
 				
-					var newElems = $("<div class='cm-error' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+					var newElems = $("<div class='cm-error' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'><#LANG_STRING_ERROR#> -> [#ERRORS#]</div>");
 					$('div pre.CodeMirror-line:eq('+error_line_find+')').append(newElems);
 				[#endif#]
 				

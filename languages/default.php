@@ -380,6 +380,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'On-change Method',
     'METHOD' => 'Method',
     'ONCHANGE_SCRIPT' => 'Script',
+	'ONCHANGE_SCRIPT_EV' => 'scripts',
     'ONCHANGE_CODE' => 'Code',
 
 

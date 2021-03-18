@@ -375,6 +375,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'Запускать метод при изменении',
     'METHOD' => 'Метод',
     'ONCHANGE_SCRIPT' => 'Сценарий',
+    'ONCHANGE_SCRIPT_EV' => 'сценариев',
     'ONCHANGE_CODE' => 'Код',
 
 
