@@ -3758,7 +3758,7 @@
 {
 	overflow-y:auto
 }
-	@media(min-width:768px)
+	@media(min-width:1231px)
 {
 .navbar-collapse
 {
@@ -3902,7 +3902,7 @@
 	padding-bottom:10px;
 	line-height:20px
 }
-	@media(max-width:767px)
+@media(max-width: 1230px)
 {
 .navbar-nav .open .dropdown-menu
 {
