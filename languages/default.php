@@ -1153,6 +1153,10 @@ $dictionary = array(
     'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Support level of open',
 
+	'DEVICES_VACUUM' =>'Vacuum cleaner',
+	'DEVICES_MEDIA' =>'Media player',
+	'DEVICES_TV' =>'TV',
+
 // Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',

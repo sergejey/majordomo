@@ -1149,6 +1149,10 @@ $dictionary = array(
     'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Поддержка уровня открытия',
 
+    'DEVICES_VACUUM' =>'Пылесос',
+    'DEVICES_MEDIA' =>'Медиа-проигрыватель',
+    'DEVICES_TV' =>'Телевизор',
+
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
