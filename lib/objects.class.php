@@ -1170,7 +1170,6 @@ function processTitle($title, $object = 0)
                 for ($i = 0; $i < $total; $i++) {
                     $property_name = $m[1][$i] . '.' . $m[2][$i];
                     $data = getGlobal($property_name);
-                    if ($data == '') $data = 0;
                     $descr = $m[3][$i];
                     $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
                     $descr = preg_replace('#\\\;#', ";", $descr); 
@@ -1178,7 +1177,7 @@ function processTitle($title, $object = 0)
                     $totald = count($tmp);
                     $hsh = array();
                     if ($totald == 1) {
-                        if ($data != 0) {
+                        if ($data != '') {
                             $hsh[$data] = $descr;
                         } else {
                             $hsh[$data] = '';
@@ -1188,14 +1187,19 @@ function processTitle($title, $object = 0)
                             $item = trim($tmp[$id]);
                             if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
+                                if ($search_value=='') $search_value='<empty>';
                                 $search_replace = $md[2];
                             } else {
-                                $search_value = $id;
+                                $search_value = $id.'';
                                 $search_replace = $item;
                             }
                             $hsh[$search_value] = $search_replace;
                         }
-                        if ($data == '') $data='0';
+                        if ($data == '' && isset($hsh['<empty>'])) {
+                            $data = '<empty>';
+                        } elseif ($data == '') {
+                            $data = '0';
+                        }
                     }
                     $title = str_replace($m[0][$i], $hsh[$data], $title);
                 }
