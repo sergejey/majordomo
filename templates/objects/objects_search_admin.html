@@ -1,102 +1,70 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
-&nbsp;<br>
-<a href="?view_mode=edit_objects" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
-<br>&nbsp;
-
-<!-- results -->
 [#if RESULT#]
-<!-- paging -->
-[#if PAGES#]
-<table border=0>
-<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
-[#begin PAGES#]
-<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
-[#end PAGES#]
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
-[#endif PAGES#]
-<!-- / paging -->
-<!-- search results (list) -->
-<form action="?" method="post" name="frmList_objects" style="padding:0px">
-<table class="table table-bordered">
-<tr>
- <td align=center>
- <b><#LANG_TITLE#></b>
- </td>
- <td align=center>
- <b><#LANG_CLASS#></b>
- </td>
- <td align=center>
- <b><#LANG_DESCRIPTION#></b>
- </td>
- <td align=center>
- <b><#LANG_LOCATION#></b>
- </td>
-<td>&nbsp;</td>
-</tr>
-[#begin RESULT#]
-<tr >
- <td
-   >
-  <b>
-   [#TITLE#]
-  </a></b>
- </td>
- <td
-   align=center
-   >
-   <a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=methods">[#CLASS_TITLE#]</a>
- </td>
- <td
-   >
-  [#if DESCRIPTION!=""#]
-   <div>[#DESCRIPTION#]</div>
-  [#endif#]
-  [#if ADD_DESCRIPTION!=""#]
-  <div><i>[#ADD_DESCRIPTION#]</i></div>
-  [#endif ADD_DESCRIPTION#]
- </td>
- <td
-   align=center
-   >
-  [#if LOCATION_ID!=""#]
-   [#LOCATION_TITLE#]
-  [#else#]
-   &nbsp;
-  [#endif#]
- </td>
- <td >
-    <a href="?view_mode=edit_objects&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a href="?view_mode=edit_objects&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
-    <a href="?view_mode=edit_objects&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
-    <a href="?view_mode=delete_objects&id=[#ID#]" onClick="return confirm('Delete record?')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
- </td>
-</tr>
-[#end RESULT#]
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_objects">
-</form>
-<!-- / search results (list) -->
-<!-- paging -->
-[#if PAGES#]
-<table border=0>
-<td align=right><b><#LANG_PAGES#>:</b>&nbsp;</td>
-[#begin PREVPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a></td>[#end PREVPAGE#]
-[#begin PAGES#]
-<td>[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]</td>
-[#end PAGES#]
-[#begin NEXTPAGE#]<td><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a></td>[#end NEXTPAGE#]
-</table>
-[#endif PAGES#]
-<!-- / paging -->
-[#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_OBJECTS_DEFINED#></font>
-</p>
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	[#if PAGES#]
+	<div class="col-md-6" style="margin-bottom: 15px;">
+		<ul class="pagination" style="margin: 0px;">
+			[#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
+			[#begin PAGES#]
+			<li [#if SELECTED =='1'#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
+			[#end PAGES#]
+			[#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
+		</ul>
+	</div>
+	[#endif PAGES#]
+	
+	<div class="col-md-[#if PAGES#]6[#else#]12[#endif PAGES#] text-right" style="margin-bottom: 15px;">
+		<a href="?view_mode=edit_objects" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
+	</div>
+</div>
+
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12">
+		<form action="?" method="post" name="frmList_objects" style="padding:0px">
+			<ul class="list-group" id="proplist">
+				[#begin RESULT#]
+				<li class="list-group-item">
+					<div class="row" style="margin-right: -15px;margin-left: -15px;">
+						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="margin-top: 5px;"> 
+							<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+							<a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=methods">[#CLASS_TITLE#]</a> → <a href="?view_mode=edit_objects&id=[#ID#]&tab=properties" title="<#LANG_EDIT#>"><b>[#TITLE#]</b></a>
+							
+							[#if ADD_DESCRIPTION != ''#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-default">[#ADD_DESCRIPTION#]</span></p>[#endif#]
+						</div>
+						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="margin-top: 5px;">
+							<pre style="margin: 0px;[#if DESCRIPTION==""#]color: #cacaca;[#endif#]">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]Description is empty[#endif#]</pre>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="margin-top: 5px;">
+							<pre style="margin: 0px;[#if LOCATION_ID==0#]color: #cacaca;[#endif#]">[#if LOCATION_ID == 0#]Room not selected[#else#][#LOCATION_TITLE#][#endif#]</pre> 
+						</div>
+						<div class="col-lg-2 col-md-2 text-center" style="margin-top: 5px;">
+							<a href="?view_mode=edit_objects&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+							<a href="?view_mode=edit_objects&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
+							<a href="?view_mode=edit_objects&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
+							<a href="?view_mode=delete_objects&id=[#ID#]" onClick="return confirm('Delete record?')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
+							
+							<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+							<input type="hidden" name="view_mode" value="multiple_objects">
+						</div>
+					</div>
+				</li>
+				[#end RESULT#]
+			</ul>
+		</form>
+	</div>
+</div>
+[#else#]
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12 text-right" style="margin-bottom: 15px;">
+		<a href="?view_mode=edit_objects" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
+	</div>
+</div>
+
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12 text-center" style="margin-bottom: 15px;">
+		<div class="alert alert-warning"><#LANG_NO_OBJECTS_DEFINED#></div>
+	</div>
+</div>
+
 [#endif RESULT#]
-<!-- / results -->
+
 

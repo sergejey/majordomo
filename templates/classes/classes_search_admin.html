@@ -2,20 +2,5 @@
  @version 0.2 (auto-set)
 #-->
 
-<ul class="nav nav-tabs">
- <li [#if DEFAULT_VIEW=""#]class="active"[#endif#]><a href="?mode=switch&view="><#LANG_TREE_VIEW#></a></li>
- <li [#if DEFAULT_VIEW="list"#]class="active"[#endif#]><a href="?mode=switch&view=list"><#LANG_LIST_VIEW#></a></li>
-</ul>
 
-&nbsp;<br>
-<a href="?view_mode=edit_classes" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CLASS#></a>
-<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]" class="btn btn-default" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
-<br>&nbsp;
-
-<!-- table classes search -->
-
-[#if DEFAULT_VIEW="list"#]
-[#inc view_list.html#]
-[#else#]
 [#inc view_tree.html#]
-[#endif#]

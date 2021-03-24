@@ -388,6 +388,9 @@ function removeLinkedProperty($object, $property, $module)
  */
 function getObject($name)
 {
+
+    if (trim($name)=='') return 0;
+
     if (preg_match('/^(.+?)\.(.+?)$/', $name, $m)) {
         $class_name = $m[1];
         $object_name = $m[2];
@@ -605,12 +608,9 @@ function getGlobal($varname)
     if ($cached_value !== false) {
         return $cached_value;
     }
-
     $obj = getObject($object_name);
-
     if ($obj) {
         $value = $obj->getProperty($varname);
-        saveToCache($cached_name, $value);
         return $value;
     } else {
         return 0;
@@ -1170,7 +1170,6 @@ function processTitle($title, $object = 0)
                 for ($i = 0; $i < $total; $i++) {
                     $property_name = $m[1][$i] . '.' . $m[2][$i];
                     $data = getGlobal($property_name);
-                    if ($data == '') $data = 0;
                     $descr = $m[3][$i];
                     $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
                     $descr = preg_replace('#\\\;#', ";", $descr); 
@@ -1188,17 +1187,19 @@ function processTitle($title, $object = 0)
                             $item = trim($tmp[$id]);
                             if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
-                                if ($search_value=='') {
-                                    $search_value='<empty>';
-                                }
+                                if ($search_value=='') $search_value='<empty>';
                                 $search_replace = $md[2];
                             } else {
-                                $search_value = $id;
+                                $search_value = $id.'';
                                 $search_replace = $item;
                             }
                             $hsh[$search_value] = $search_replace;
                         }
-                        if ($data == '') $data='<empty>';
+                        if ($data == '' && isset($hsh['<empty>'])) {
+                            $data = '<empty>';
+                        } elseif ($data == '') {
+                            $data = '0';
+                        }
                     }
                     $title = str_replace($m[0][$i], $hsh[$data], $title);
                 }

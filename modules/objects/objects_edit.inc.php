@@ -78,6 +78,7 @@ if ($this->mode == 'update') {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
         }
+        clearCacheData();
         $out['OK'] = 1;
     } else {
         $out['ERR'] = 1;
@@ -122,9 +123,11 @@ if ($this->tab == 'properties') {
                 SQLExec("DELETE FROM properties WHERE ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             }
         }
+        clearCacheData();
     }
 
     if ($this->mode == 'update') {
+        clearCacheData();
         $new_property = gr('new_property','trim');
         $new_property = str_replace(' ','',$new_property);
         $new_value = gr('new_value');
@@ -171,14 +174,21 @@ if ($this->tab == 'properties') {
         $props[$i]['VALUE'] = $value['VALUE'];
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
         $props[$i]['SOURCE'] = $value['SOURCE'];
-        $props[$i]['LINKED_MODULES'] = $value['LINKED_MODULES'];
+        $props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
+		
+		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
+		if(is_array($value['LINKED_MODULES'])) {
+			foreach($value['LINKED_MODULES'] as $prop_link) {
+				if(!$prop_link) break; 
+				$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
+			}
+		}
     }
     if ($this->mode == 'update') {
         $this->redirect("?view_mode=" . $this->view_mode . "&id=" . $rec['ID'] . "&tab=" . $this->tab);
     }
-
+	
     $out['PROPERTIES'] = $props;
-
 }
 // step: methods
 if ($this->tab == 'methods') {

@@ -75,17 +75,26 @@
 			<div class="panel-heading">
 				<h3 class="panel-title"><#LANG_LATEST_UPDATES#></h3>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" id="changelogUpdate">
 				<ul class="list-group">
 					[#begin UPDATES#]
-					<li class="list-group-item">
+					<li class="list-group-item [#if MYVERSION == 1#]panel-success[#endif#]" [#if MYVERSION == 1#]style="background: #d6e9c6;"[#endif#]>
 						<span class="badge">[#UPDATE_TEXT#]</span>
-						<div style="cursor:pointer;">
-							<i>[#AUTHOR#]</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="[#LINK#]" target="_blank">[#TITLE#]</a>
+						<div>
+							[#if MYVERSION == 1#]<span class="label label-success" id="mysystemversion">Моя версия</span> [#endif#]<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
+							<div>↳ <span class="label label-default">[#DESC_UPDATE#]</span></div>
+							
 						</div>
 					</li>
 					[#end UPDATES#]
 				</ul>
+				<script>
+				$(document).ready(function() {
+					if($('#mysystemversion').length == 0) {
+						$('#changelogUpdate').append('<div class="alert alert-danger">Ваша система сильно устарела! Текущая версия: [#LATEST_UPDATED_BRANCH#]_[#LATEST_UPDATED_ID#]</div>');
+					}
+				});
+				</script>
 			</div>
 		</div>
 		[#endif UPDATES#]
@@ -214,7 +223,7 @@
 			</div>
 		</div>
 		
-		<div class="panel panel-default restoreMainBlock" style="display:none;">
+		<div class="panel panel-default restoreMainBlock" style="">
 			<div class="panel-body">
 				<div id="createBackup" class="restoreBlock" style="display: none;">
 					<script>
@@ -359,7 +368,7 @@
 					</script>
 				</div>
 				[#if FILES#]
-				<div id="restoreInServer" class="restoreBlock" style="display: none;">
+				<div id="restoreInServer" class="restoreBlock" style="">
 					<ul class="list-group">
 						[#begin FILES#]
 						<li class="list-group-item">

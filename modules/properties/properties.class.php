@@ -102,6 +102,8 @@ function run() {
   $out['MODE']=$this->mode;
   $out['ACTION']=$this->action;
   $out['TAB']=$this->tab;
+  $out['CLASS_ID']=$this->class_id;
+  
   if (IsSet($this->class_id)) {
    $out['IS_SET_CLASS_ID']=1;
   }
@@ -176,8 +178,8 @@ function usual(&$out) {
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$values[$i]['ID']."'");
    SQLExec("DELETE FROM pvalues WHERE ID='".$values[$i]['ID']."'");
   }
-
   SQLExec("DELETE FROM properties WHERE ID='".$rec['ID']."'");
+  clearCacheData();
  }
 /**
 * Install

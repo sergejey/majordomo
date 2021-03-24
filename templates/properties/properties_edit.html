@@ -1,160 +1,143 @@
-<!--#
- @version 0.2 (auto-set)
-#-->
-&nbsp;
-<!-- Table 'properties' edit -->
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+				[#if OK#]
+					<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+				[#endif OK#]
+				[#if ERR#]
+					<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+				[#endif ERR#]
+				
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8"><input type="input" class="form-control [#if ERR_TITLE#]alert-danger[#endif#]" placeholder="<#LANG_TITLE#>" name="title" value="[#TITLE#]" required="true"></div>
+				</div>
 
-[#if OK#]
-    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
-[#if ERR#]
-  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_DESCRIPTION#>:<#LANG_HCB#>description<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8"><textarea name="description" rows="3" class="form-control" style="width: 100%;min-height: 100px;resize: vertical;max-height: 500px;">[#DESCRIPTION#]</textarea></div>
+				</div>
+				
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_ONCHANGE_METHOD#>:<#LANG_HCB#>onchangemethod<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<select name="onchange" class="form-control">
+							<option value="" selected>Выберите связанный метод</option>
+							[#begin METHODS#]
+							<option value="[#TITLE#]"[#if TITLE="<#ONCHANGE#>"#] selected[#endif#]>[#TITLE#]</option>
+							[#end METHODS#]
+						</select>
+						<!--#<input type="text"  class="form-control"  name="onchange" value="[#ONCHANGE#]">#-->
+					</div>
+				</div>
 
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
-        <div class="col-lg-4"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_KEEP_HISTORY_DAYS#>:<#LANG_HCB#>keep_history<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<input type="number" name="keep_history" value="[#KEEP_HISTORY#]" size="10" placeholder="0 = <#LANG_DO_NOT_KEEP#>" class="form-control"> 
+					</div>
+				</div>
+				
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_DATA_TYPE#>:<#LANG_HCB#>datatype<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<select name="data_type" class="form-control">
+							<option value="0"[#if DATA_TYPE="0"#] selected[#endif#]><#LANG_DATA_TYPE_GENERAL#>
+							<option value="5"[#if DATA_TYPE="5"#] selected[#endif#]><#LANG_DATA_TYPE_IMAGE#></option>
+						</select>
+					</div>
+				</div>
+				
+				<script type="text/javascript">
+				function validationTypeUpdated() {
+					var vType=$('#validation_type').val();
+					$('#validation_min_max').hide();
+					$('#validation_dictionary').hide();
+					$('#validation_code').hide();
+					if (vType=='1') {
+						$('#validation_min_max').show();
+					}
+					if (vType=='3') {
+						$('#validation_dictionary').show();
+					}
+					if (vType=='100') {
+						$('#validation_code').show();
+					}
+					//validation_min_max
+					//validation_dictionary
+					//validation_code
+				}
+				</script>
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_VALIDATION_TYPE#>:<#LANG_HCB#>validationtype<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<select name="validation_type" id="validation_type" class="form-control" onchange="validationTypeUpdated();">
+							<option value="0"[#if VALIDATION_TYPE="0"#] selected[#endif#]><#LANG_NO#></option>
+							<option value="1"[#if VALIDATION_TYPE="1"#] selected[#endif#]><#LANG_VALIDATION_TYPE_NUMBER#></option>
+							<option value="2"[#if VALIDATION_TYPE="2"#] selected[#endif#]><#LANG_VALIDATION_TYPE_BINARY#></option>
+							<option value="3"[#if VALIDATION_TYPE="3"#] selected[#endif#]><#LANG_VALIDATION_TYPE_DICTIONARY#></option>
+							<option value="100"[#if VALIDATION_TYPE="100"#] selected[#endif#]><#LANG_VALIDATION_TYPE_CUSTOM#></option>
+						</select>
+					</div>
+				</div>
+				
+				<div id="validation_min_max"[#if VALIDATION_TYPE!="1"#] style="display:none"[#endif#]>
+					<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+						<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_MIN_VALUE#>:</label>
+						<div class="col-lg-10 col-md-8">
+							 <input type="input" name="validation_num_min" value="[#VALIDATION_NUM_MIN#]" class="form-control">
+						</div>
+					</div>
+					<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+						<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_MAX_VALUE#>:</label>
+						<div class="col-lg-10 col-md-8">
+							<input type="input" name="validation_num_max" value="[#VALIDATION_NUM_MAX#]" class="form-control">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group[#if ERR_VALIDATION_LIST="1"#] has-error[#endif#]" id="validation_dictionary"[#if VALIDATION_TYPE!="3"#] style="display:none;margin-right: 0px;margin-left: 0px;"[#endif#]>
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_VALIDATION_TYPE_DICTIONARY#>:</label>
+					<div class="col-lg-10 col-md-8">
+						<input type="input" name="validation_list" value="[#VALIDATION_LIST#]" class="form-control">
+					</div>
+				</div>
+
+				<div class="form-group[#if ERR_VALIDATION_CODE!=""#] has-error[#endif#]" id="validation_code"[#if VALIDATION_TYPE!="100"#] style="display:none;margin-right: 0px;margin-left: 0px;"[#endif#]>
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_CODE#>:</label>
+					<div class="col-lg-10 col-md-8">
+						[#if ERR_VALIDATION_CODE!=""#]<div>[#ERR_VALIDATION_CODE#]</div>[#endif#]
+						<textarea name="validation_code" rows="4" class="form-control" placeholder="$value" style="width: 100%;min-height: 100px;resize: vertical;max-height: 500px;">[#VALIDATION_CODE#]</textarea>
+					</div>
+				</div>
+
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_DATA_KEY#>:<#LANG_HCB#>datakey<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+					<input type="radio" name="data_key" value="1"[#if DATA_KEY="1"#] checked[#endif#]> <#LANG_YES#>
+					 <input type="radio" name="data_key" value="0"[#if DATA_KEY!="1"#] checked[#endif#]> <#LANG_NO#>
+					</div>
+				</div>
+				
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					 <div class="col-md-12 text-center">
+						[#if ID!=""#]
+						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_SUBMIT#></button>
+						[#else ID#]
+						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_ADD#></button>
+						[#endif ID#]
+						&nbsp;
+						<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-warning"><i class="glyphicon glyphicon-floppy-remove"></i> <#LANG_CANCEL#></a>
+					</div>
+				</div>
+				<input type="hidden" name="id" value="<#ID#>">
+				<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+				<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+				<input type="hidden" name="mode" value="update">
+
+			</form>
+		</div>
+	</div>
 </div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#>:<#LANG_HCB#>description<#LANG_HCE#></label>
-        <div class="col-lg-4"><textarea name="description" rows="3" class="form-control">[#DESCRIPTION#]</textarea></div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_ONCHANGE_METHOD#> (<#LANG_OPTIONAL#>):<#LANG_HCB#>onchangemethod<#LANG_HCE#></label>
-        <div class="col-lg-4">
-        <select name="onchange" class="form-control">
-         <option value="">
-         [#begin METHODS#]
-         <option value="[#TITLE#]"[#if TITLE="<#ONCHANGE#>"#] selected[#endif#]>[#TITLE#]
-         [#end METHODS#]
-        </select>
-        <!--#<input type="text"  class="form-control"  name="onchange" value="[#ONCHANGE#]">#-->
-        </div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_KEEP_HISTORY_DAYS#>:<#LANG_HCB#>keep_history<#LANG_HCE#></label>
-
-
-   <div class="col-lg-4">
-     <div class="form-inline">
-      <div class="form-group col-lg-6">
-       <input type="text" name="keep_history" value="[#KEEP_HISTORY#]" size="10" class="form-control"> 
-      </div>
-      <div class="form-group col-lg-6">
-       <p class="form-control-static">
-        &nbsp;(0 = <#LANG_DO_NOT_KEEP#>)
-        </p>
-      </div>
-     </div>
-    </div>
-</div>
-
-    <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_DATA_TYPE#>:<#LANG_HCB#>datatype<#LANG_HCE#></label>
-        <div class="col-lg-4">
-            <select name="data_type" class="form-control">
-                <option value="0"[#if DATA_TYPE="0"#] selected[#endif#]><#LANG_DATA_TYPE_GENERAL#>
-                <option value="5"[#if DATA_TYPE="5"#] selected[#endif#]><#LANG_DATA_TYPE_IMAGE#></option>
-            </select>
-        </div>
-    </div>
-
-    <script type="text/javascript">
-        function validationTypeUpdated() {
-            var vType=$('#validation_type').val();
-            $('#validation_min_max').hide();
-            $('#validation_dictionary').hide();
-            $('#validation_code').hide();
-            if (vType=='1') {
-                $('#validation_min_max').show();
-            }
-            if (vType=='3') {
-                $('#validation_dictionary').show();
-            }
-            if (vType=='100') {
-                $('#validation_code').show();
-            }
-            //validation_min_max
-            //validation_dictionary
-            //validation_code
-        }
-    </script>
-    <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_VALIDATION_TYPE#>:<#LANG_HCB#>validationtype<#LANG_HCE#></label>
-        <div class="col-lg-4">
-            <select name="validation_type" id="validation_type" class="form-control" onchange="validationTypeUpdated();">
-                <option value="0"[#if VALIDATION_TYPE="0"#] selected[#endif#]><#LANG_NO#>
-                <option value="1"[#if VALIDATION_TYPE="1"#] selected[#endif#]><#LANG_VALIDATION_TYPE_NUMBER#></option>
-                <option value="2"[#if VALIDATION_TYPE="2"#] selected[#endif#]><#LANG_VALIDATION_TYPE_BINARY#></option>
-                <option value="3"[#if VALIDATION_TYPE="3"#] selected[#endif#]><#LANG_VALIDATION_TYPE_DICTIONARY#></option>
-                <option value="100"[#if VALIDATION_TYPE="100"#] selected[#endif#]><#LANG_VALIDATION_TYPE_CUSTOM#></option>
-            </select>
-        </div>
-    </div>
-
-    <div id="validation_min_max"[#if VALIDATION_TYPE!="1"#] style="display:none"[#endif#]>
-    <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_MIN_VALUE#>:</label>
-        <div class="col-lg-4">
-             <input type="text" name="validation_num_min" value="[#VALIDATION_NUM_MIN#]" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_MAX_VALUE#>:</label>
-        <div class="col-lg-4">
-            <input type="text" name="validation_num_max" value="[#VALIDATION_NUM_MAX#]" class="form-control">
-        </div>
-    </div>
-    </div>
-
-    <div class="form-group[#if ERR_VALIDATION_LIST="1"#] has-error[#endif#]" id="validation_dictionary"[#if VALIDATION_TYPE!="3"#] style="display:none"[#endif#]>
-        <label class="col-lg-4 control-label"><#LANG_VALIDATION_TYPE_DICTIONARY#>:</label>
-        <div class="col-lg-4">
-            <input type="text" name="validation_list" value="[#VALIDATION_LIST#]" class="form-control">
-        </div>
-    </div>
-
-    <div class="form-group[#if ERR_VALIDATION_CODE!=""#] has-error[#endif#]" id="validation_code"[#if VALIDATION_TYPE!="100"#] style="display:none"[#endif#]>
-        <label class="col-lg-4 control-label"><#LANG_CODE#>:</label>
-        <div class="col-lg-4">
-            [#if ERR_VALIDATION_CODE!=""#]<div>[#ERR_VALIDATION_CODE#]</div>[#endif#]
-            <textarea name="validation_code" rows="4" class="form-control" placeholder="$value">[#VALIDATION_CODE#]</textarea>
-        </div>
-    </div>
-
-    <div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_DATA_KEY#>:<#LANG_HCB#>datakey<#LANG_HCE#></label>
-        <div class="col-lg-4">
-        <input type="radio" name="data_key" value="1"[#if DATA_KEY="1"#] checked[#endif#]> <#LANG_YES#>
-         <input type="radio" name="data_key" value="0"[#if DATA_KEY!="1"#] checked[#endif#]> <#LANG_NO#>
-        </div>
-    </div>
-
-
-<div class="form-group">
-     <div class="col-lg-offset-1 col-lg-5">
-        
-         [#if ID!=""#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
-                 [#else ID#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
-                 [#endif ID#]
-                 &nbsp;
-                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
-
-
-    </div>
-</div>
-
-
-
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
-</form>
 

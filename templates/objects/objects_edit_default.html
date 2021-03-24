@@ -1,90 +1,69 @@
-&nbsp;<br/>
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
+[#if ID#]<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">[#else#]<br>[#endif#]
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			[#if OK#]
+				<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+			[#endif OK#]
+			[#if ERR#]
+				<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+			[#endif ERR#]
+			
+			
+			<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TITLE#>:<font color="red">*</font> <#LANG_HCB#>title<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+				</div>
 
-[#if OK#]
-    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
-[#if ERR#]
-  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_CLASS#>:<font color="red">*</font> <#LANG_HCB#>object_class<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<select name="class_id" class="form-control [#if ERR_TITLE#]alert-danger[#endif#]" required="true">
+							<option value="">select
+							[#begin CLASS_ID_OPTIONS#]
+								<option value="[#ID#]"[#if ID="<#CLASS_ID#>"#] selected[#endif#]>[#TITLE#]
+							[#end CLASS_ID_OPTIONS#]
+						</select>
+					</div>
+				</div>
+				
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_DESCRIPTION#>: <#LANG_HCB#>description<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8"><textarea name="description" rows="3" class="form-control" style="width: 100%;min-height: 100px;resize: vertical;max-height: 500px;">[#DESCRIPTION#]</textarea></div>
+				</div>
+				
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<select name="location_id" class="form-control">
+							<option value="">-
+							[#begin LOCATION_ID_OPTIONS#]
+							<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
+							[#end LOCATION_ID_OPTIONS#]
+						</select>
+					</div>
+				</div>
+				<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
+					<div class="col-lg-12 col-lg-12 col-md-12 col-xs-12 text-center">
+					[#if ID!=""#]
+						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_SUBMIT#></button>
+					[#else ID#]
+						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_ADD#></button>
+					[#endif ID#]
+					<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-danger"><i class="glyphicon glyphicon-floppy-remove"></i> <#LANG_CANCEL#></a>
 
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font> <#LANG_HCB#>title<#LANG_HCE#></label>
-        <div class="col-lg-4"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_CLASS#>:<font color="red">*</font> <#LANG_HCB#>object_class<#LANG_HCE#></label>
-        <div class="col-lg-4">
- <select name="class_id" class="form-control [#if ERR_TITLE#]alert-danger[#endif#]" required="true">
-  <option value="">select
-  [#begin CLASS_ID_OPTIONS#]<option value="[#ID#]"[#if ID="<#CLASS_ID#>"#] selected[#endif#]>[#TITLE#]
-  [#end CLASS_ID_OPTIONS#]
- </select>
-        </div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#>: <#LANG_HCB#>description<#LANG_HCE#></label>
-        <div class="col-lg-4"><textarea name="description" rows="3" class="form-control">[#DESCRIPTION#]</textarea></div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
-        <div class="col-lg-4"><select name="location_id" class="form-control">
-  <option value="">-
-  [#begin LOCATION_ID_OPTIONS#]<option value="[#ID#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
-  [#end LOCATION_ID_OPTIONS#]
- </select></div>
-</div>
-
-<!--#
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_KEEP_HISTORY_DAYS#>: <#LANG_HCB#>keep_history<#LANG_HCE#></label>
-
-
-   <div class="col-lg-4">
-     <div class="form-inline">
-      <div class="form-group col-lg-6">
-       <input type="text" name="keep_history" value="[#KEEP_HISTORY#]" size="10" class="form-control"> 
-      </div>
-      <div class="form-group col-lg-6">
-       <p class="form-control-static">
-        &nbsp;(0 = <#LANG_USE_CLASS_SETTINGS#>)
-        </p>
-      </div>
-     </div>
-    </div>
-</div>
-#-->
-
-
-<div class="form-group">
-     <div class="col-lg-offset-1 col-lg-5">
-        
-         [#if ID!=""#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
-                 [#else ID#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
-                 [#endif ID#]
-                 &nbsp;
-                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
-
- [#if ID!=""#]
- <a class="btn btn-default" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
- [#endif#]
-
-
-
-    </div>
-</div>
-
-
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
-<input type="hidden" name="tab" value="<#TAB#>">
-</form>
+					[#if ID!=""#]
+					<a class="btn btn-info" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-folder-open"></i> <#LANG_MAKE_COPY#></a>
+					[#endif#]
+					</div>
+				</div>
+				<input type="hidden" name="id" value="<#ID#>">
+				<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+				<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+				<input type="hidden" name="mode" value="update">
+				<input type="hidden" name="tab" value="<#TAB#>">
+			
+			</form>
+		</div>
+	</div>
+[#if ID#]</div>[#endif#]

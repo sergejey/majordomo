@@ -26,7 +26,13 @@
     width:75px;
 }
 
-.device-widget.mini.motion {
+.device-widget.mini.sensor {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
+}
+
+.device-widget.mini.openable {
     min-width:75px;
     max-width:75px;
     width:75px;
@@ -73,7 +79,7 @@
 }
 
 .controller .device-header {
-    height:40px;
+    /*height:40px;*/
     position: relative;
     padding-top:10px;
 }
@@ -317,4 +323,16 @@
 
 .noselect {
 
+}
+
+.device-icon.tv {
+    background-image: url(../cms/scenes/styles/common/i_tv_on.png);
+}
+
+.device-icon.vacuum {
+    background-image: url(../cms/scenes/styles/common/i_dimmer_on.png);
+}
+
+.device-icon.media {
+    background-image: url(../cms/scenes/styles/common/i_videoplayer_on.png);
 }

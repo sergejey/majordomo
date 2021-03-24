@@ -11,7 +11,7 @@
  }
 </script>
 
-<div style="margin-top: 3px;">
+<div style="margin-top: 3px;" id="blockyTypeForCoding">
 	<#LANG_CODE_TYPE#>:
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
@@ -101,7 +101,7 @@ $(document).ready(function(){
 		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
 		scrollbarStyle: 'native',
-		autofocus: true,
+		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
 		[#endif#]
 		
@@ -118,7 +118,14 @@ $(document).ready(function(){
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		extraKeys: {
 			"F11": function(cm) {
+				if (cm.getOption("fullScreen") != true) {
+					$('nav').hide();
+				} else {
+					$('nav').show();
+				}
+				
 				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+				
 			},
 			"Ctrl-S": function(instance) { 
 				[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
@@ -148,7 +155,10 @@ $(document).ready(function(){
 			},
 			"Ctrl-F": "findPersistent",
 			"Esc": function(cm) {
-				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+				if (cm.getOption("fullScreen")) {
+					cm.setOption("fullScreen", false);
+					$('nav').show();
+				}
 			},
 			[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
 			"Ctrl-Space": "autocomplete",
@@ -160,96 +170,99 @@ $(document).ready(function(){
 	
 	[#if TYPE=="php"#]
 		[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
-		CodeMirror.registerHelper('hint', 'ajax', (mirror, callback) => {
-			let words = [[#CODEEDITOR_AUTOCOMPLETE_WORDS#]];
-			let cur = mirror.getCursor();
-			let range = mirror.findWordAt(cur);
-			let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
+		if($('#mobileIndicator').is(':hidden')) {
+			CodeMirror.registerHelper('hint', 'ajax', (mirror, callback) => {
+				let words = [[#CODEEDITOR_AUTOCOMPLETE_WORDS#]];
+				let cur = mirror.getCursor();
+				let range = mirror.findWordAt(cur);
+				let fragment = mirror.getRange(range.anchor, range.head).toLowerCase();
 
-			callback({
-				list: words.filter(w => w.toLowerCase().indexOf(fragment) >= 0),
-				from: range.anchor,
-				to: range.head
-				
+				callback({
+					list: words.filter(w => w.toLowerCase().indexOf(fragment) >= 0),
+					from: range.anchor,
+					to: range.head
+					
+				});
 			});
-		});
-		CodeMirror.hint.ajax.async = true;
-
-		CodeMirror.commands.autocomplete = function(mirror) {
-			mirror.showHint({ 
-				hint: CodeMirror.hint.ajax,
-				completeSingle: false,
-				alignWithWord: false,
-				closeOnUnfocus: true,
-			});
-		};
-		
-		var ExcludedIntelliSenseTriggerKeys =
-		{
-			"8": "backspace",
-			"9": "tab",
-			"13": "enter",
-			"16": "shift",
-			"17": "ctrl",
-			"18": "alt",
-			"19": "pause",
-			"20": "capslock",
-			"27": "escape",
-			"33": "pageup",
-			"34": "pagedown",
-			"35": "end",
-			"36": "home",
-			"37": "left",
-			"38": "up",
-			"39": "right",
-			"40": "down",
-			"45": "insert",
-			"46": "delete",
-			"49": "1",
-			"50": "2",
-			"51": "3",
-			"53": "5",
-			"54": "6",
-			"55": "7",
-			"56": "8",
-			"91": "left window key",
-			"92": "right window key",
-			"93": "select",
-			"107": "add",
-			"109": "subtract",
-			"110": "decimal point",
-			"111": "divide",
-			"112": "f1",
-			"113": "f2",
-			"114": "f3",
-			"115": "f4",
-			"116": "f5",
-			"117": "f6",
-			"118": "f7",
-			"119": "f8",
-			"120": "f9",
-			"121": "f10",
-			"122": "f11",
-			"123": "f12",
-			"144": "numlock",
-			"145": "scrolllock",
-			"186": "semicolon",
-			"187": "equalsign",
-			"188": "comma",
-			"191": "slash",
-			"192": "graveaccent",
-			"220": "backslash",
-		}
-
-		editor.on("keyup", function(editor, event) {
-			$(".cm-error").removeAttr('class');
-			var __Cursor = editor.getDoc().getCursor();
-			var __Token = editor.getTokenAt(__Cursor);
-
-			if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
-				CodeMirror.commands.autocomplete(editor, null, null);
+			CodeMirror.hint.ajax.async = true;
+			
+			
+			CodeMirror.commands.autocomplete = function(mirror) {
+				mirror.showHint({ 
+					hint: CodeMirror.hint.ajax,
+					completeSingle: true,
+					alignWithWord: true,
+					closeOnUnfocus: true,
+				});
+			};
+			
+			var ExcludedIntelliSenseTriggerKeys =
+			{
+				"8": "backspace",
+				"9": "tab",
+				"13": "enter",
+				"16": "shift",
+				"17": "ctrl",
+				"18": "alt",
+				"19": "pause",
+				"20": "capslock",
+				"27": "escape",
+				"33": "pageup",
+				"34": "pagedown",
+				"35": "end",
+				"36": "home",
+				"37": "left",
+				"38": "up",
+				"39": "right",
+				"40": "down",
+				"45": "insert",
+				"46": "delete",
+				"49": "1",
+				"50": "2",
+				"51": "3",
+				"53": "5",
+				"54": "6",
+				"55": "7",
+				"56": "8",
+				"91": "left window key",
+				"92": "right window key",
+				"93": "select",
+				"107": "add",
+				"109": "subtract",
+				"110": "decimal point",
+				"111": "divide",
+				"112": "f1",
+				"113": "f2",
+				"114": "f3",
+				"115": "f4",
+				"116": "f5",
+				"117": "f6",
+				"118": "f7",
+				"119": "f8",
+				"120": "f9",
+				"121": "f10",
+				"122": "f11",
+				"123": "f12",
+				"144": "numlock",
+				"145": "scrolllock",
+				"186": "semicolon",
+				"187": "equalsign",
+				"188": "comma",
+				"191": "slash",
+				"192": "graveaccent",
+				"220": "backslash",
 			}
-		});
+
+			editor.on("keyup", function(editor, event) {
+				$(".cm-error").removeAttr('class');
+				var __Cursor = editor.getDoc().getCursor();
+				var __Token = editor.getTokenAt(__Cursor);
+
+				if (!editor.state.completionActive && !ExcludedIntelliSenseTriggerKeys[(event.keyCode || event.which).toString()]) {
+					CodeMirror.commands.autocomplete(editor, null, null);
+				}
+			});
+		}
 		[#endif#]
 		
 		editor.on('update', editor => {			

@@ -8,7 +8,6 @@ $ncno = $this->getProperty('ncno');
 //DebMes("Updated $ot - ".$ncno . " new value: ".$params['NEW_VALUE'],'openclose');
 
 $this->setProperty('updated', time());
-$this->callMethodSafe('setUpdatedText');
 
 $this->callMethod('keepAlive');
 

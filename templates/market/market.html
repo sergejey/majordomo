@@ -114,7 +114,11 @@
 						return false;
 					}
 					$(document).ready(function() {
-						$('#panel_installed').click();
+						if(window.location.hash.replace("#","") == 'panel_updates') {
+							$('#panel_updates').click();
+						} else {
+							$('#panel_installed').click();
+						}
 					});
 				</script>
 				<form action="?" method="post">
@@ -135,25 +139,21 @@
 	</div>
 </div>
 
-
-
-
 [#if MODE="iframe"#]
 <script>
 	$(document).ready(function() {
 		$('#myModal').modal('show');
 		
-		$("#myModal").on("hidden.bs.modal", function () {
-			$('#myModal').modal('show');
-		});
 	});
+	window.onbeforeunload = function() {
+		return true;
+	};
 </script>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form action="?" method="post" enctype="multipart/form-data" class="form-horizontal">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title"><#LANG_NEWSAVERESTORE_CONSOLE#></h4>
 				</div>
 				<div class="modal-body">

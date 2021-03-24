@@ -3758,7 +3758,7 @@
 {
 	overflow-y:auto
 }
-	@media(min-width:768px)
+	@media(min-width:1231px)
 {
 .navbar-collapse
 {
@@ -3902,7 +3902,7 @@
 	padding-bottom:10px;
 	line-height:20px
 }
-	@media(max-width:767px)
+@media(max-width: 1230px)
 {
 .navbar-nav .open .dropdown-menu
 {
@@ -6544,7 +6544,7 @@
 .nav-list>li>a
 {
 	color: #333;
-	padding:3px 15px;
+	padding: 5px 5px;
 	border-radius: 5px;
 }
 .nav-list>.active>a,.nav-list>.active>a:hover
@@ -6558,7 +6558,7 @@
 	text-decoration: none;
     background-color: #4792d1;
     color: white;
-    padding: 5px 15px;
+    padding: 5px 5px;
 }
 .nav-list [class^="icon-"]
 {

@@ -5,7 +5,6 @@ $linked_room = $this->getProperty('linkedRoom');
 
 if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
     $this->setProperty('updated', time());
-    $this->callMethodSafe('setUpdatedText');
 }
 
 

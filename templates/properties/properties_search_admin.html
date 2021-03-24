@@ -1,82 +1,77 @@
-&nbsp;<br>
-<a href="?view_mode=edit_properties" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
-<br>&nbsp;
-
-
-<!-- results -->
-[#if RESULT#]
-<!-- search results (list) -->
-<form action="?" method="post" name="frmList_properties" style="padding:0px">
-
-<table class="table">
-<tr>
-[#if !IS_SET_CLASS_ID#]
- <td>
- <b><#LANG_CLASS#></b>
- </td>
-[#endif IS_SET_CLASS_ID#]
- <td>
- <b><#LANG_TITLE#></b>
- </td>
- <td>
- <b><#LANG_DESCRIPTION#></b>
- </td>
-<td>&nbsp;</td>
-</tr>
-[#begin RESULT#]
-<tr >
-[#if "<#IS_SET_CLASS_ID#>"!="1"#]
- <td
-   align=center
-  >
-   [#CLASS_ID#]
- </td>
-[#endif IS_SET_CLASS_ID#]
- <td
-  >
-  <b>
-   [#TITLE#]
-  </a></b>
- </td>
- <td
-  >
-  [#if DESCRIPTION!=""#]
-   [#DESCRIPTION#]
-  [#else#]
-   &nbsp;
-  [#endif#]
-  [#if DATA_KEY="1"#](<#LANG_DATA_KEY#>)[#endif DATA_KEY#]
- </td>
- <td width="200">
-    <a href="?view_mode=edit_properties&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a href="?view_mode=delete_properties&id=[#ID#]" onClick="return confirm('<#ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
- </td>
-</tr>
-[#end RESULT#]
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_properties">
-</form>
-<!-- / search results (list) -->
-[#else RESULT#]
-<p>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
-[#endif RESULT#]
-<!-- / results -->
-
-
-[#if PARENT_PROPERTIES#]
-<big><#LANG_PARENT_PROPERTIES#>:</big><br>&nbsp;
-<table border="0" class="table">
- [#begin PARENT_PROPERTIES#]
- <tr>
-  <td valign="top"><b><a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=properties">[#CLASS_TITLE#]</a>.[#TITLE#]</b></td>
-  <td valign="top">[#DESCRIPTION#]</td>
-  <!--#
-  <td valign="top"><a href="?view_mode=edit_properties&overwrite=[#ID#]" class="btn btn-default btn-sm"><#LANG_OVERWRITE#></a></td>
-  #-->
- </tr>
- [#end PARENT_PROPERTIES#]
-</table>
-[#endif#]
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12 text-right" style="margin-bottom: 15px;">
+			<a href="?view_mode=edit_properties" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
+		</div>
+	</div>
+	
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			[#if RESULT#]
+			<form action="?" method="post" name="frmList_properties" style="padding:0px">
+				<ul class="list-group" id="proplist">
+					[#begin RESULT#]
+					<li class="list-group-item">
+						<div class="row" style="margin-right: -15px;margin-left: -15px;">
+							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="margin-bottom: 5px;"> 
+								<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+								[#if "<#IS_SET_CLASS_ID#>"!="1"#][#CLASS_ID#] - [#endif IS_SET_CLASS_ID#]<b>[#TITLE#]</b>
+								
+								[#if KEEP_HISTORY != 0#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-warning">История: [#KEEP_HISTORY#] дней</span></p>[#endif#]
+								[#if VALIDATION_TYPE != 0#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-info">Валидация</span></p>[#endif#]
+								[#if ONCHANGE != ''#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary">Запуск метода: [#ONCHANGE#]</span></p>[#endif#]
+							</div>
+							<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+								<pre style="margin: 0px;[#if DESCRIPTION==""#]color: #cacaca;[#endif#]">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]Description is empty[#endif#]</pre>
+							</div>
+							<div class="col-lg-2 col-md-2 text-center"  style="margin-top: 5px;">
+								<a href="?view_mode=edit_properties&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-pencil"></i></a> 
+								<a href="?view_mode=delete_properties&id=[#ID#]" onClick="return confirm('<#ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
+								<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+								<input type="hidden" name="view_mode" value="multiple_properties">
+							</div>
+						</div>
+					</li>
+					[#end RESULT#]
+				</ul>
+			</form>
+			[#else RESULT#]
+			<div class="row" style="margin-right: -15px;margin-left: -15px;">
+				<div class="col-md-12 text-center" style="margin-bottom: 15px;">
+					<div class="alert alert-warning"><#LANG_NO_RECORDS_FOUND#></div>
+				</div>
+			</div>
+			[#endif RESULT#]
+		</div>
+	</div>
+	[#if PARENT_PROPERTIES#]
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				<div class="panel-heading" onClick="$($(this).parent().children()[1]).toggle('slow');" style="cursor: pointer;">
+					<h3 class="panel-title"><#LANG_PARENT_PROPERTIES#></h3>
+				</div>
+				<div class="panel-collapse out in" style="height: auto;">
+					<div class="panel-body">
+						<ul class="list-group" id="">
+							[#begin PARENT_PROPERTIES#]
+							<li class="list-group-item">
+								<div class="row" style="margin-right: -15px;margin-left: -15px;">
+									<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"> 
+										<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+										<a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=properties">[#CLASS_TITLE#]</a>.[#TITLE#]
+									</div>
+									<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+										<pre style="margin: 0px;">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]Description is empty[#endif#]</pre>
+									</div>
+								</div>
+							</li>
+							[#end PARENT_PROPERTIES#]
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	[#endif#]
+</div>

@@ -25,11 +25,9 @@ $this->device_types=array(
             'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdAliveTimeout'),
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
-            'updatedText'=>array('DESCRIPTION'=>'Updated Time (text)'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
-            'setUpdatedText'=>array('DESCRIPTION'=>'Change updated text'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
             'keepAlive'=>array('DESCRIPTION'=>'Alive update'),
         ),
@@ -90,6 +88,46 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_RELAY,
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SRelays'
+    ),
+    'vacuum'=>array(
+        'TITLE'=>LANG_DEVICES_VACUUM,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SVacuums',
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+        )
+    ),
+    'media'=>array(
+        'TITLE'=>LANG_DEVICES_MEDIA,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SMedias',
+        'PROPERTIES'=>array(
+            'volume'=>array('DESCRIPTION'=>'Volume'),
+            'source_num'=>array('DESCRIPTION'=>'Source number'),
+            'channel_num'=>array('DESCRIPTION'=>'Channel number'),
+        ),
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+            'setSource'=>array('DESCRIPTION'=>'Set source'),
+            'setChannel'=>array('DESCRIPTION'=>'Set channel'),
+            'setVolume'=>array('DESCRIPTION'=>'Set volume'),
+        )
+    ),
+    'tv'=>array(
+        'TITLE'=>LANG_DEVICES_TV,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'STVs',
+        'PROPERTIES'=>array(
+            'volume'=>array('DESCRIPTION'=>'Volume'),
+            'source_num'=>array('DESCRIPTION'=>'Source number'),
+            'channel_num'=>array('DESCRIPTION'=>'Channel number'),
+        ),
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+            'setSource'=>array('DESCRIPTION'=>'Set source'),
+            'setChannel'=>array('DESCRIPTION'=>'Set channel'),
+            'setVolume'=>array('DESCRIPTION'=>'Set volume'),
+        )
     ),
     'thermostat'=>array(
         'TITLE'=>LANG_DEVICES_THERMOSTAT,
@@ -259,6 +297,7 @@ $this->device_types=array(
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
+            'support_level'=>array('DESCRIPTION'=>LANG_DEVICES_OPENABLE_SUPPORT_LEVEL,'_CONFIG_TYPE'=>'yesno'),
             'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
                 '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdOpenType',
                 '_CONFIG_OPTIONS'=>
@@ -270,9 +309,13 @@ $this->device_types=array(
             'notify_msg_opening'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_OPENING,'_CONFIG_TYPE'=>'text'),
             'notify_msg_closing'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_CLOSING,'_CONFIG_TYPE'=>'text'),
             'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
+            'level'=>array('DESCRIPTION'=>'Current level', 'ONCHANGE'=>'levelUpdated'),
+            'levelSaved'=>array('DESCRIPTION'=>'Latest level saved'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'setLevel'=>array('DESCRIPTION'=>'Set open level'),
+            'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'switch'=>array('DESCRIPTION'=>'Switch'),
             'open'=>array('DESCRIPTION'=>'Open','_CONFIG_SHOW'=>1),
             'close'=>array('DESCRIPTION'=>'Close','_CONFIG_SHOW'=>1),
@@ -316,10 +359,13 @@ $this->device_types=array(
             'valueUpdated'=>array('DESCRIPTION'=>'Data Value updated event'),
             'valueWorkUpdated'=>array('DESCRIPTION'=>'Work Value updated event'),
             'refreshStats'=>array('DESCRIPTION'=>'Refreshes daily/monthly stats','_CONFIG_SHOW'=>1),
+            'pulseDetected'=>array('DESCRIPTION'=>'Meter pulse detection'),
         ),
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
-            'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+            'price'=>array('DESCRIPTION'=>'Price','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdCounterPrice'),
+            'pulseAmount'=>array('DESCRIPTION'=>'Pulse amount (optional)','_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdPulseAmount'),
+            'value'=>array('DESCRIPTION'=>'Data Value','ONCHANGE'=>'valueUpdated','DATA_KEY'=>1),
             'valueWork'=>array('DESCRIPTION'=>'Work Value','ONCHANGE'=>'valueWorkUpdated','KEEP_HISTORY'=>0),
             'valueHour'=>array('DESCRIPTION'=>'Hour Value','KEEP_HISTORY'=>365),
             'valueDay'=>array('DESCRIPTION'=>'Day Value','KEEP_HISTORY'=>5*365),
@@ -383,6 +429,11 @@ $this->device_types=array(
         'TITLE'=>LANG_DEVICES_MOISTURE_SENSOR,
         'PARENT_CLASS'=>'SSensors',
         'CLASS'=>'SMoistureSensors'
+    ),
+    'sensor_co2'=>array(
+        'TITLE'=>LANG_DEVICES_CO2_SENSOR,
+        'PARENT_CLASS'=>'SSensors',
+        'CLASS'=>'SCO2Sensors'
     ),
     'sensor_radiation'=>array(
         'TITLE'=>LANG_DEVICES_RADIATION_SENSOR,

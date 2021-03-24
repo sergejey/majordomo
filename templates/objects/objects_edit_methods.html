@@ -1,26 +1,24 @@
-<!--#
- @version 0.4 (auto-set)
-#-->
-
 [#if OVERWRITE=""#]
 	<style>
 	.hoverMethods:hover {
 		    background: #f5f5f5;
 	}
 	</style>
-	<table border="0" class="table table-bordered">
-		[#begin METHODS#]
-			<tr class="hoverMethods">
-				<td style="vertical-align: middle;">[#CLASS_TITLE#] &rarr; <b>[#OBJECT_TITLE#].[#TITLE#]</b>
-				[#if CUSTOMIZED="1"#]<font color="red">*</font>[#endif#]
-				</td>
-				<td style="vertical-align: middle;text-align: center;">
-					<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&overwrite=1&method_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> <#LANG_SETUP#></a>
-					<a href="<#ROOTHTML#>objects/?object=[#OBJECT_TITLE#]&op=m&m=[#TITLE#]" target="blank" class="btn btn-success btn-sm" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-play-circle"></i> <#LANG_RUN_SCRIPT_BTN#></a>
-				</td>
-			</tr>
-		[#end METHODS#]
-	</table>
+	<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+		<table border="0" class="table table-bordered">
+			[#begin METHODS#]
+				<tr class="hoverMethods">
+					<td style="vertical-align: middle;">[#CLASS_TITLE#] &rarr; <b>[#OBJECT_TITLE#].[#TITLE#]</b>
+					[#if CUSTOMIZED="1"#]<font color="red">*</font>[#endif#]
+					</td>
+					<td style="vertical-align: middle;text-align: center;">
+						<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&overwrite=1&method_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i> <#LANG_SETUP#></a>
+						<a href="<#ROOTHTML#>objects/?object=[#OBJECT_TITLE#]&op=m&m=[#TITLE#]" target="blank" class="btn btn-success btn-sm" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-play-circle"></i> <#LANG_RUN_SCRIPT_BTN#></a>
+					</td>
+				</tr>
+			[#end METHODS#]
+		</table>
+	</div>
 [#else OVERWRITE#]
 
 <style>
@@ -44,7 +42,7 @@
 					find = $('div pre.CodeMirror-line:eq([#ERR_LINE#])');
 					find.attr('id', 'errorline_[#ERR_LINE#]');
 				
-					var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+					var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'><#LANG_STRING_ERROR#> -> [#ERRORS#]</div>");
 					$('div pre.CodeMirror-line:eq([#ERR_LINE#])').append(newElems);
 				[#endif#]
 				
@@ -66,6 +64,7 @@
 					[#end SCRIPTS#]
 				</select>
 			</div>
+			<div class="visible-xs visible-sm" id="mobileIndicator"></div>
 		    <div id="code_option" style="margin-top: 10px; margin-bottom: 10px;[#if SCRIPT_ID!="0"#]display:none;[#endif#]">
 				[#module name="blockly_code" system_name="object<#ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
 				[#if ERRORS#]
@@ -107,7 +106,7 @@
 		<hr>
 	</div>
 	
-	<div class="col-lg-6">
+	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 		<h4><#LANG_SCRIPT_HOW_TO_RUN#></h4>
 		<table class="table">
 			<tr>
@@ -124,7 +123,7 @@
 			</tr>
 		</table>
 	</div>
-	<div class="col-lg-6">
+	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 		[#if ID!=""#]
 		 [#module name="xray" action="context" type="method" keyword="<#OBJECT_TITLE#>.<#METHOD_TITLE#>" code_id="mCode"#]
 		[#endif ID#]

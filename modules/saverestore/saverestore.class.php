@@ -133,11 +133,15 @@ class saverestore extends module
         }
 
         if (gr('mode') == 'auto_update_settings') {
+			$this->getConfig();
+			
             $this->config['MASTER_UPDATE_URL'] = gr('set_update_url');
             $this->config['UPDATE_AUTO'] = gr('update_auto');
             $this->config['UPDATE_AUTO_DELAY'] = gr('update_auto_delay');
             $this->config['UPDATE_AUTO_TIME'] = gr('update_auto_time');
             $this->config['UPDATE_AUTO_PLUGINS'] = gr('update_auto_plugins');
+			$this->config['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
+			
             if ($this->config['UPDATE_AUTO']) {
                 subscribeToEvent($this->name, 'HOURLY');
             } else {
@@ -179,7 +183,7 @@ class saverestore extends module
             $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
             $out['ADITIONAL_GIT_URLS'][] = $tmp;
         }
-
+		
         $github_feed_url = $update_url;
         $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
         $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
@@ -189,35 +193,53 @@ class saverestore extends module
             @$tmp = GetXMLTree($github_feed);
             @$data = XMLTreeToArray($tmp);
             @$items = $data['feed']['entry'];
+			
             if (is_array($items)) {
                 $total = count($items);
                 if ($total) {
-                    if ($total > 5) {
-                        $total = 5;
-                    }
-                    for ($i = 0; $i < $total; $i++) {
-                        $itm = array();
-                        $itm['ID'] = trim($items[$i]['id']['textvalue']);
+					$iteration = 0;
+					// echo '<pre>';
+					// var_dump($items);
+					// die();
+					foreach($items as $key => $value) {
+						$itm = array();
+						
+						if($value['author']['name']['textvalue'] != 'sergejey') continue;
+						
+                        $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
-                        $itm['TITLE'] = trim($items[$i]['title']['textvalue']);
-                        $itm['AUTHOR'] = $items[$i]['author']['name']['textvalue'];
-                        $itm['LINK'] = $items[$i]['link']['href'];
-                        $itm['UPDATED'] = strtotime($items[$i]['updated']['textvalue']);
-                        $itm['UPDATE_TEXT'] = date('m/d/Y H:i', $itm['UPDATED']);
+						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
+                        $itm['TITLE'] = trim($value['title']['textvalue']);
+                        $itm['AUTHOR'] = $value['author']['name']['textvalue'];
+                        $itm['LINK'] = $value['link']['href'];
+                        $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
+                        $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
+                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3]);
+						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $out['UPDATES'][] = $itm;
-                    }
+						$iteration++;
+						
+						if($iteration >= 10) {
+							break;
+						}
+					}
+					
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
-                    if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $this->config['LATEST_UPDATED_ID']) {
+					
+                    $out['LATEST_CURR_BRANCH'] = $this->config['LATEST_CURR_BRANCH'];
+                    $out['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
+              
+					$currBranch = explode("/", $update_url);
+					$out['UPDATE_CURR_BRANCH'] = mb_strtoupper(explode('.', $currBranch[6])[0]);
+			
+                    if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_UPDATED_ID'] && $out['LATEST_CURR_BRANCH'] == $out['UPDATE_CURR_BRANCH']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
                     if ($this->ajax && $_GET['op'] == 'check_updates') {
-						$currBranch = $update_url;
-						$currBranch = explode("/", $update_url);
-							
                         if (!$out['NO_NEED_TO_UPDATE']) {
-							echo json_encode(array('needUpdate' => '1', 'currBranch' => $currBranch[6]));
+							echo json_encode(array('needUpdate' => '1', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {
-                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $currBranch[6]));
+                           echo json_encode(array('needUpdate' => '0', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         }
                         exit;
                     }
@@ -427,9 +449,9 @@ class saverestore extends module
     }
 
 
-    function getUpdateURL()
-    {
+    function getUpdateURL() {
         $this->getConfig();
+		
         if ($this->config['MASTER_UPDATE_URL'] != '') {
             $update_url = $this->config['MASTER_UPDATE_URL'];
         } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '') {
@@ -449,8 +471,6 @@ class saverestore extends module
      */
     function getLatest(&$out, $iframe = 0, $with_backup = 1)
     {
-
-
         $url = $this->getUpdateURL();
         $this->url = $url;
 
@@ -1365,9 +1385,12 @@ class saverestore extends module
             }
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
+			$this->config['LATEST_CURR_BRANCH'] = $out['UPDATE_CURR_BRANCH'];
+			
             $this->saveConfig();
             setGlobal('LatestUpdateId', $out['LATEST_ID']);
-            setGlobal('LatestUpdateTimestamp', date('Y-m-d H:i:s'));
+            setGlobal('LatestUpdateBranch', $out['UPDATE_CURR_BRANCH']);
+            setGlobal('LatestUpdateTimestamp', date('d.m.Y H:i:s'));
 
 
             if ($iframe) {
@@ -1581,7 +1604,7 @@ class saverestore extends module
         else
             $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
 
-        $cmd = $pathToMysqlDump . " -h " . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
+        $cmd = $pathToMysqlDump . " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\" --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
         exec($cmd);
     }
 

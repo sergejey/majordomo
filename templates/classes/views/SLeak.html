@@ -1,5 +1,27 @@
+<script>
+$(function() {
+	sID = '%.object_id%';
+	sDATA = '%.updated%';
+	
+	timeConvertVar = timeConvert(sDATA);
+	currentTime = new Date();
+
+	if((currentTime.getDate() - timeConvertVar[0]) == 0) {
+		beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
+	} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
+		beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+	} else {
+		beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+	}
+
+	$('.updatedText-JS-' + sID).text(beautyText);
+}); 
+
+</script>
+
 <div class="device-widget %.alive|"offline;online"%">
-<div class="device-icon leak %.status|"off;on"%"></div>
-<div class="device-header">%.object_description%</div>
-<div class="device-details">%.updatedText%</div>
+	<div class="device-icon leak %.status|"off;on"%"></div>
+	<div class="device-header">%.object_description%</div>
+	<!---<div class="device-details">%.updatedText%</div>--->
+	<div class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
 </div>

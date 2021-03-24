@@ -1,9 +1,63 @@
-<div class="device-widget openable %.alive|"offline;online"% opentype_%.openType%"
+<script type="text/javascript">
+	$(document).ready(function(){
+		var sID_%.object_id% = '%.object_id%';
+		var sDATA_%.object_id% = '%.updated%';
+		var beautyText_%.object_id% = '';
+		if (sDATA_%.object_id%!='') {
+			var timeConvertVar = timeConvert(sDATA_%.object_id%);
+			var currentTime = new Date();
+			if((currentTime.getDate() - timeConvertVar[0]) == 0) {
+				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
+			} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
+				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+			} else {
+				beautyText_%.object_id% = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+			}
+		}
+		$('.updatedText-JS-' + sID_%.object_id%).text(beautyText_%.object_id%);
+	});
+
+var openable%.object_id%Level=parseInt('%.level%');
+var openable%.object_id%Timer=0;
+function sendNewLevel%.object_id%() {
+	setGlobal("%.object_title%.level",openable%.object_id%Level);
+}
+function openableSet%.object_id%(val) {
+	openable%.object_id%Level=val;
+	$('#openable%.object_id%_level').html(openable%.object_id%Level);
+	sendNewLevel%.object_id%();
+	$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+}
+</script>
+
+<div class="device-widget openable %.alive|"offline;online"% opentype_%.openType%">
+	<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable"
 onClick='$(".icon%.object_id%_openable").addClass("pressed");
 setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);
 callMethod("%.object_title%.switch");
-$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'>
-<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable""></div>
-<div class="device-header">%.object_description%</div>
-<div class="device-details">%.updatedText%</div>
+$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'></div>
+	<div class="device-header">%.object_description%</div>
+	<div class="device-details" style="display:%.support_level|"none;block"%">
+		<span id="openable%.object_id%_level">%.level%</span>%
+		&nbsp;
+		<!--#
+        <a href="#" onclick="return dimmerChange%.object_id%('-');" style="font-weight:bold;text-decoration:none">[-]</a>
+        #-->
+		<select id="openableSelect%.object_id%" onchange="openableSet%.object_id%(this.value);" style="color:black">
+			<option value=""><#LANG_SET#></option>
+			<option value="0">0%</option>
+			<option value="10">10%</option>
+			<option value="20">20%</option>
+			<option value="30">30%</option>
+			<option value="40">40%</option>
+			<option value="50">50%</option>
+			<option value="60">60%</option>
+			<option value="70">70%</option>
+			<option value="80">80%</option>
+			<option value="90">90%</option>
+			<option value="100">100%</option>
+		</select>
+	</div>
+	<div class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
 </div>
+	<!--support_level-->

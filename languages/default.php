@@ -380,6 +380,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'On-change Method',
     'METHOD' => 'Method',
     'ONCHANGE_SCRIPT' => 'Script',
+	'ONCHANGE_SCRIPT_EV' => 'scripts',
     'ONCHANGE_CODE' => 'Code',
 
 
@@ -1126,11 +1127,11 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Button',
     'DEVICES_SWITCH' => 'Switch',
     'DEVICES_OPENCLOSE' => 'Open/Close sensor',
-    'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_GENERAL_SENSOR' => 'General sensor',
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
     'DEVICES_MOISTURE_SENSOR' => 'Moisture sensor',
+    'DEVICES_CO2_SENSOR' => 'CO2 sensor',
     'DEVICES_RADIATION_SENSOR' => 'Radiation sensor',
     'DEVICES_STATE_SENSOR' => 'State sensor',
     'DEVICES_PERCENTAGE_SENSOR' => 'Percentage value sensor',
@@ -1148,6 +1149,13 @@ $dictionary = array(
     'DEVICES_MSG_OPENING'=>'Opening message text',
     'DEVICES_MSG_CLOSING'=>'Closing message text',
     'DEVICES_MSG_REMINDER'=>'Reminder message text',
+
+    'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
+    'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Support level of open',
+
+	'DEVICES_VACUUM' =>'Vacuum cleaner',
+	'DEVICES_MEDIA' =>'Media player',
+	'DEVICES_TV' =>'TV',
 
 // Measure
     'M_VOLTAGE' => 'V',
@@ -1277,6 +1285,14 @@ $dictionary = array(
     'DEVICES_ROOMS_ACTIVITY' => 'Latest activity',
 
     'DEVICES_PASSED_NOW' => 'Now',
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Incorrect time',
+    'DEVICES_PASSED_AGO' => 'ago',
+	'DEVICES_PASSED_TODAY_IN' => 'Today at',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Yesterday at',
+	'DEVICES_PASSED_NEW_SECONDS_AGO' => 'sec.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'min.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'hours',
+
     'DEVICES_PASSED_SECONDS_AGO' => 'seconds ago',
     'DEVICES_PASSED_MINUTES_AGO' => 'minutes ago',
     'DEVICES_PASSED_HOURS_AGO' => 'hours ago',
@@ -1520,7 +1536,22 @@ $dictionary = array(
 	'NEWDASH_SHOW_LAST_SCRIPTS' => 'The last 6 running scripts are displayed here',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 largest tables in your database.',
 	'NEWDASH_WEB_PAGE' => 'Frontend',
+	'NEWDASH_DB_REQ_SEC' => 'Database requests per second',
+	'NEWDASH_DB_REQ_MIN' => 'Database requests per minute',
+	'NEWDASH_DB_REQ_HOUR' => 'Database requests per hour',
+
+	'NEWDASH_DMB_TITLE' => 'Add your own block',
+	'NEWDASH_DMB_TITLE_MODAL' => 'Add your own block',
+	'NEWDASH_DMB_TITLE_MODAL_HINT' => 'Functional description and detailed description is available on our forum:',
+	'NEWDASH_DMB_TITLE_MODAL_HINT_FORUM' => 'go to forum',
+	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Create a script named: ',
+	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. The script should return the following JSON object: ',
+	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. That\'s all. The control panel will pick up the script by itself and display the content on the main page. ',
 	
+	'NEWDASH_RESULT' => 'Result',
+	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',

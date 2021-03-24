@@ -7,7 +7,7 @@ $this->callMethodSafe('keepAlive');
 $this->setProperty('updated', $tm);
 $this->setProperty('updatedText', date('H:i', $tm));
 
-$this->callMethod('keepAlive');
+
 
 $is_blocked=(int)$this->getProperty('blocked');
 if ($is_blocked) {

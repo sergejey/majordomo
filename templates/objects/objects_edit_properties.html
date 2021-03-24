@@ -1,85 +1,127 @@
-<!--#
- @version 0.4 (auto-set)
-#-->
-<br>&nbsp;
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	[#if OK#]
+		<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+	[#endif OK#]
+	[#if ERR#]
+		<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+	[#endif ERR#]
+	
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-6">
+			<script>
+			function filterProp() {
+				term = $('#filterProp').val().toLowerCase();
+				if(term.length <= 2) {
+					$('ul#proplist>li').removeAttr('style');
+					$('ul#proplist>li').removeAttr('id');
+					return;
+				}
+				$('ul#proplist>li').each(function(index) {
+					textForSearch = $(this).children().children().text().trim();
+					searchResult = textForSearch.toLowerCase().indexOf(term);
+					
+					if(searchResult >= 0) {
+						$(this).attr('style', 'color: red;background: #fff2f2;');
+						$($(this).prev()).attr('id', 'foundSearch');
+					} else {
+						$(this).removeAttr('style');
+						$(this).removeAttr('id');
+					}
+				});
+				
+				if($('#foundSearch').length == 1) {
+					$('html, body').stop().animate({ 
+						scrollTop: $('#foundSearch').offset().top 
+					}, 1000);
+				}
+			 }
+			</script>
+			<input type="text" class="form-control" id="filterProp" oninput="filterProp();" placeholder="<#LANG_NEWMARKET_SEARCH_INPUT_PLACEHOLDER#>">
+		</div>
+		<div class="col-md-6 text-right">
+			<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
+			<a href="javascript://" onclick="$('#addnewprop').show('slow');$('#proplist>li').css('opacity', '0.2');$('#addnewprop>li').css('opacity', '1');" class="btn btn-success" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
+		</div>
+	</div>
 
-[#if OK#]
-    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
-[#if ERR#]
-  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
 
+	<ul class="list-group" id="proplist">
+		<form action="?" method="post" id="addnewprop" style="display:none;">
+			<li class="list-group-item">
+				<div class="row" style="margin-right: -15px;margin-left: -15px;">
+					<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+						<input type="text" name="new_property" placeholder="<#LANG_NEWDASH_OBJ_ADD_NEW_PROP_NAME#>" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">
+					</div>
+					<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+						<textarea placeholder="<#LANG_NEWDASH_OBJ_ADD_NEW_PROP_VALUE#>" name="new_value" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE#]</textarea>
+					</div>
+				</div>
+				<div class="row" style="margin-right: -15px;margin-left: -15px;">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+						<input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-success">
+						<input type="button" value="<#LANG_CANCEL#>" class="btn btn-warning" onclick="$('#addnewprop').hide('slow');$('#proplist>li').css('opacity', '1');">
+						
+						<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+						<input type="hidden" name="id" value="<#ID#>">
+						<input type="hidden" name="tab" value="<#TAB#>">
+						<input type="hidden" name="mode" value="update">
+					</div>
+				</div>
+			</li>
+		</form>
+		[#begin PROPERTIES#]
+		<li class="list-group-item">
+			<div class="row" style="margin-right: -15px;margin-left: -15px;">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="margin-bottom: 5px;"> 
+					<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('<#TITLE#>.[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+					
+					[#if CLASS_ID!="0"#]<b>[#endif#]
+					<#TITLE#>.[#TITLE#]
+					[#if CLASS_ID!="0"#]</b>[#endif#]
+					[#if CLASS_ID!="0"#]
+						[#if KEEP_HISTORY!="0"#]
+							 → <i class="glyphicon glyphicon-stats" style="cursor: pointer;color: green;" onClick="return openModalTWindow('propHistory<#TITLE#>.[#TITLE#]', '<#TITLE#>.[#TITLE#]', '<#ROOTHTML#>pChart/?p=<#TITLE#>.[#TITLE#]&op=log&type=7d', 600, 600)"></i>
+						[#endif#]
+					[#endif#]
+					[#if DESCRIPTION!=""#]<p style="font-size: 1rem;color: gray;margin: 0px;">[#DESCRIPTION#]</p>[#endif#]
+					[#if LINKED_MODULES!=""#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ [#LINKED_MODULES#]</p>[#endif#]
+					
+					[#if KEEP_HISTORY != 0#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-warning">История: [#KEEP_HISTORY#] дней</span></p>[#endif#]
+					[#if VALIDATION_TYPE != 0#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-info">Валидация</span></p>[#endif#]
+					[#if ONCHANGE != ''#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary">Запуск метода: [#ONCHANGE#]</span></p>[#endif#]
+				</div>
+				<div class="col-lg-[#if CLASS_ID="0"#]7[#else#]8[#endif#] col-md-[#if CLASS_ID="0"#]7[#else#]8[#endif#] col-sm-12 col-xs-12">
+					<div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide('fast');$('#prop[#ID#]_edit').show('fast');$('#prop[#ID#]_edit>form>textarea').focus();$('textarea[name=value[#ID#]]').height(document.getElementsByName('value[#ID#]')[0].scrollHeight-20);">
+						[#if DATA_TYPE="5"#]
+							[#if VALUE!=""#]
+							<img src="<#ROOTHTML#>cms/images/[#VALUE#]" height="200"><br/>
+							<a href="<#ROOTHTML#>cms/images/[#VALUE#]" target="_blank">[full size]</a>
+							[#endif#]
+						[#endif#]
+						[#if DATA_TYPE="0"#]<pre style="[#if VALUE == ''#]color: #f6f6f6;background: white;[#endif#]cursor:text;">[#if VALUE == ''#]Property is empty[#else#][#VALUE_HTML#][#endif#]</pre>[#endif#]
+						<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;">[#if SOURCE!="" && VALUE != ''#]Source → [#SOURCE#][#endif#][#if VALUE !=''#] → [#UPDATED#]</p>[#else#]</p>[#endif#]
+					</div>
 
-<table border="0" class="table table-bordered">
- [#begin PROPERTIES#]
- <tr>
-  <td valign="top" width="30%">[#if CLASS_ID!="0"#]<b>[#endif#]<#TITLE#>.[#TITLE#]</b>
-  [#if CLASS_ID!="0"#]
-  [#if KEEP_HISTORY!="0"#]
-  (<a href="#" onClick="return openModalTWindow('propHistory<#TITLE#>.[#TITLE#]', '<#TITLE#>.[#TITLE#]', '<#ROOTHTML#>pChart/?p=<#TITLE#>.[#TITLE#]&op=log&type=7d', 600, 600)">H</a>)
-  [#endif#]
-  [#endif#]
-
-  [#if DESCRIPTION!=""#]<br/><i>[#DESCRIPTION#]</i>[#endif#]
-
-  </td>
-  <td valign="top" width="70%">
-   <div id="prop[#ID#]_current" onClick="$('#prop[#ID#]_current').hide();$('#prop[#ID#]_edit').show();">
-    [#if DATA_TYPE="5"#]
-    [#if VALUE!=""#]
-     <img src="<#ROOTHTML#>cms/images/[#VALUE#]" height="200"><br/>
-     <a href="<#ROOTHTML#>cms/images/[#VALUE#]" target="_blank">[full size]</a>
-     [#endif#]
-    [#endif#]
-    [#if DATA_TYPE="0"#]<pre>[#VALUE#][#if SOURCE!=""#] (src: [#SOURCE#])[#endif#]</pre>[#endif#]
-   </div>
-
-   <div id="prop[#ID#]_edit" style="display:none">
- <form action="?" method="post">
- <textarea name="value[#ID#]" rows=2 cols="50" class="span5">[#VALUE_HTML#]</textarea>
- <br/>
- <input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-primary">
- <a href="#" class="btn btn-default" onclick="$('#prop[#ID#]_edit').hide();$('#prop[#ID#]_current').show();return false;"><#LANG_CANCEL#></a>
- <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
- <input type="hidden" name="id" value="<#ID#>">
- <input type="hidden" name="tab" value="<#TAB#>">
- <input type="hidden" name="mode" value="update">
- </form>
-
-   </div>
-
-  [#if LINKED_MODULES!=""#]<br>(linked to: [#LINKED_MODULES#])[#endif#]
-  </td>
-  <td valign="top">
-        [#if CLASS_ID="0"#]
-   <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_prop=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
-        [#else#]
-        &nbsp;
-        [#endif#]
-  </td>
- </tr>
- [#end PROPERTIES#]
- <tr>
-  <td valign="top" colspan="4">
-  <#LANG_ADD_NEW_PROPERTY#>:
-  </td>
- </tr>
- <tr>
-  <td valign="top" colspan="4">
- <form action="?" method="post">
- <#LANG_PROPERTY#>:<br/>
- <input type="text" name="new_property"><br/>
- <#LANG_VALUE#>:<br/>
- <textarea name="new_value" rows=2 cols="50" class="span5">[#VALUE#]</textarea>
- <br/>
- <input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-primary">
- <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
- <input type="hidden" name="id" value="<#ID#>">
- <input type="hidden" name="tab" value="<#TAB#>">
- <input type="hidden" name="mode" value="update">
- </form>
-
-  </td>
- </tr>
-</table>
+					<div id="prop[#ID#]_edit" style="display:none">
+						<form action="?" method="post">
+							<textarea name="value[#ID#]" rows=2 cols="50" class="span5" style="overflow:auto;width: 100%;resize: vertical;min-height: 40px;max-height: 300px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE_HTML#]</textarea>
+							<br/>
+							<input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-success">
+							<a href="#" class="btn btn-danger" onclick="$('#prop[#ID#]_edit').hide();$('#prop[#ID#]_current').show();return false;"><#LANG_CANCEL#></a>
+							<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+							<input type="hidden" name="id" value="<#ID#>">
+							<input type="hidden" name="tab" value="<#TAB#>">
+							<input type="hidden" name="mode" value="update">
+						</form>
+					</div>
+				</div>
+				[#if CLASS_ID="0"#]
+				<div class="col-md-1" style="display: flex;align-items: center;justify-content: center;">
+				   <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_prop=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
+				</div>
+				[#endif#]
+			</div>
+		</li>
+		[#end PROPERTIES#]
+	</ul>
+</div>

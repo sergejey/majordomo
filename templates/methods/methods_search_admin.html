@@ -1,71 +1,81 @@
-<!--#
- @version 0.2 (auto-set)
-#-->
-<!-- table methods search -->
-
-&nbsp;
-<div><a href="?view_mode=edit_methods" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_METHOD#></a></div>
-&nbsp;
-
-<table width=100% border=0><tr>
-<td valign=top>
-<!-- results -->
-[#if RESULT#]
-<!-- search results (list) -->
-<form action="?" method="post" name="frmList_methods">
-<table class="table table-bordered">
-<tr>
- <td>
- <b><#LANG_TITLE#></b>
- </td>
- <td>
- <b><#LANG_DESCRIPTION#></b>
- </td>
-<td>&nbsp;</td>
-</tr>
-[#begin RESULT#]
-<tr >
-
- <td>
-
-   <a href="?view_mode=edit_methods&id=[#ID#]" title="<#LANG_EDIT#>">[#TITLE#]</a>
- </td>
- <td
-   >
-  [#if DESCRIPTION!=""#]
-   [#DESCRIPTION#]
-  [#else#]
-   &nbsp;
-  [#endif#]
- </td>
- <td >
-    <a href="?view_mode=edit_methods&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a href="?view_mode=delete_methods&id=[#ID#]" onClick="return confirm('Delete record?')" title="<#LANG_DELETE#>" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
- </td>
-</tr>
-[#end RESULT#]
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_methods">
-</form>
-<!-- / search results (list) -->
-[#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
-[#endif RESULT#]
-<!-- / results -->
-</td></tr></table>
-[#if PARENT_METHODS#]
-<big><#LANG_PARENT_METHODS#>:</big>
-<table class="table table-bordered">
- [#begin PARENT_METHODS#]
- <tr>
-  <td valign="top"><b><a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=methods">[#CLASS_TITLE#]</a>.
-        <a href="?(panel:{action=classes}classes:{view_mode=edit_classes,id=[#CLASS_ID#]})&md=methods&view_mode=edit_methods&id=[#ID#]&tab=methods">[#TITLE#]</a></b></td>
-  <td valign="top">[#DESCRIPTION#]</td>
-  <td valign="top">[ <a href="?view_mode=edit_methods&overwrite=[#ID#]"><#LANG_OVERWRITE#></a> ]</td>
- </tr>
- [#end PARENT_METHODS#]
-</table>
-[#endif#]
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12 text-right" style="margin-bottom: 15px;">
+			<a href="?view_mode=edit_methods" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_METHOD#></a>
+		</div>
+	</div>
+	
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			[#if RESULT#]
+			<form action="?" method="post" name="frmList_properties" style="padding:0px">
+				<ul class="list-group" id="proplist">
+					[#begin RESULT#]
+					<li class="list-group-item">
+						<div class="row" style="margin-right: -15px;margin-left: -15px;">
+							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="margin-bottom: 5px;"> 
+								<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+								[#if "<#IS_SET_CLASS_ID#>"!="1"#][#CLASS_ID#] - [#endif IS_SET_CLASS_ID#]<b>[#TITLE#]</b>
+							
+							</div>
+							<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+								<pre style="margin: 0px;[#if DESCRIPTION==""#]color: #cacaca;[#endif#]">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]Description is empty[#endif#]</pre>
+							</div>
+							<div class="col-lg-2 col-md-2 text-center" style="margin-top: 5px;">
+								<a href="?view_mode=edit_methods&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
+								<a href="?view_mode=delete_methods&id=[#ID#]" onClick="return confirm('Delete record?')" title="<#LANG_DELETE#>" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
+								
+								
+								<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+								<input type="hidden" name="view_mode" value="multiple_methods">
+							</div>
+						</div>
+					</li>
+					[#end RESULT#]
+				</ul>
+			</form>
+			[#else RESULT#]
+			<div class="row" style="margin-right: -15px;margin-left: -15px;">
+				<div class="col-md-12 text-center" style="margin-bottom: 15px;">
+					<div class="alert alert-warning"><#LANG_NO_RECORDS_FOUND#></div>
+				</div>
+			</div>
+			[#endif RESULT#]
+		</div>
+	</div>
+	
+	[#if PARENT_METHODS#]
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				<div class="panel-heading" onClick="$($(this).parent().children()[1]).toggle('slow');" style="cursor: pointer;">
+					<h3 class="panel-title"><#LANG_PARENT_METHODS#></h3>
+				</div>
+				<div class="panel-collapse out in" style="height: auto;">
+					<div class="panel-body">
+						<ul class="list-group" id="">
+							[#begin PARENT_METHODS#]
+							<li class="list-group-item">
+								<div class="row" style="margin-right: -15px;margin-left: -15px;">
+									<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"> 
+										<i class="glyphicon glyphicon-search" style="color: silver;margin-right: 10px;vertical-align: top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i>
+										<a href="?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=[#CLASS_ID#]&tab=properties">[#CLASS_TITLE#]</a>.[#TITLE#]
+									</div>
+									<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+										<pre style="margin: 0px;">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]Description is empty[#endif#]</pre>
+									</div>
+									<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 text-center" style="margin-top: 5px;">
+										<a href="?view_mode=edit_methods&overwrite=[#ID#]" title="<#LANG_OVERWRITE#>" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-pencil"></i> <#LANG_OVERWRITE#></a>
+									</div>
+								</div>
+							</li>
+							[#end PARENT_METHODS#]
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	[#endif#]
+	
+</div>
