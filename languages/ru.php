@@ -1234,6 +1234,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Действие',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Включить',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Выключить',
+    'DEVICES_LINK_TYPE_OPEN' => 'Открыть',
+    'DEVICES_LINK_TYPE_CLOSE' => 'Закрыть',
     'DEVICES_LINK_TYPE_SWITCH' => 'Переключить',
 
     'DEVICES_LINK_SWITCH_IT' => 'Включить/Выключить',
