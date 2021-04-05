@@ -42,7 +42,7 @@
 					find = $('div pre.CodeMirror-line:eq([#ERR_LINE#])');
 					find.attr('id', 'errorline_[#ERR_LINE#]');
 				
-					var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+					var newElems = $("<div class='hintError' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'><#LANG_STRING_ERROR#> -> [#ERRORS#]</div>");
 					$('div pre.CodeMirror-line:eq([#ERR_LINE#])').append(newElems);
 				[#endif#]
 				

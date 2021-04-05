@@ -1,26 +1,23 @@
-<script>
-$(function() {
-	sID = '%.object_id%';
-	sDATA = '%.updated%';
-
-	if (sData!='') {
-		timeConvertVar = timeConvert(sDATA);
-		currentTime = new Date();
-		if((currentTime.getDate() - timeConvertVar[0]) == 0) {
-			beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
-		} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
-			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
-		} else {
-			beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+<script type="text/javascript">
+	$(document).ready(function(){
+		var sID_%.object_id% = '%.object_id%';
+		var sDATA_%.object_id% = '%.updated%';
+		var beautyText_%.object_id% = '';
+		if (sDATA_%.object_id%!='') {
+			var timeConvertVar = timeConvert(sDATA_%.object_id%);
+			var currentTime = new Date();
+			if((currentTime.getDate() - timeConvertVar[0]) == 0) {
+				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
+			} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
+				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+			} else {
+				beautyText_%.object_id% = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+			}
 		}
-	} else {
-		beautyText = '';
-	}
+		$('.updatedText-JS-' + sID_%.object_id%).text(beautyText_%.object_id%);
+	});
 
-	$('.updatedText-JS-' + sID).text(beautyText);
-});
-
-var openable%.object_id%Level=%.level%;
+var openable%.object_id%Level=parseInt('%.level%');
 var openable%.object_id%Timer=0;
 function sendNewLevel%.object_id%() {
 	setGlobal("%.object_title%.level",openable%.object_id%Level);
@@ -31,12 +28,10 @@ function openableSet%.object_id%(val) {
 	sendNewLevel%.object_id%();
 	$.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
 }
-
-
 </script>
 
 <div class="device-widget openable %.alive|"offline;online"% opentype_%.openType%">
-	<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable""
+	<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable"
 onClick='$(".icon%.object_id%_openable").addClass("pressed");
 setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);
 callMethod("%.object_title%.switch");

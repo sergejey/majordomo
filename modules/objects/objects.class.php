@@ -1031,7 +1031,9 @@ class objects extends module
 
         if (function_exists('postToWebSocketQueue')) {
             startMeasure('setproperty_postwebsocketqueue');
-            postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            if ($old_value !== $value) {
+                postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            }
             endMeasure('setproperty_postwebsocketqueue');
         }
 

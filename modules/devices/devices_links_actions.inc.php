@@ -242,6 +242,10 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         } elseif ($settings['action_type'] == 'switch') {
             $action_string = 'callMethodSafe("' . $object . '.switch' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'close') {
+            $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'open') {
+            $action_string = 'callMethodSafe("' . $object . '.open' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
         if ($settings['action_delay'] != '') {
             $settings['action_delay'] = (int)processTitle($settings['action_delay']);
@@ -280,6 +284,10 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         } elseif ($settings['action_type'] == 'turnon' && !gg($object . '.status')) {
             $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'open' && gg($object . '.status')) {
+            $action_string = 'callMethodSafe("' . $object . '.open' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'close' && !gg($object . '.status')) {
+            $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
         if ($settings['condition_type'] == 'above' && $value >= (float)$settings['condition_value']) {
             //do the action

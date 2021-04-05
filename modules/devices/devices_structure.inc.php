@@ -89,6 +89,46 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SRelays'
     ),
+    'vacuum'=>array(
+        'TITLE'=>LANG_DEVICES_VACUUM,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SVacuums',
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+        )
+    ),
+    'media'=>array(
+        'TITLE'=>LANG_DEVICES_MEDIA,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SMedias',
+        'PROPERTIES'=>array(
+            'volume'=>array('DESCRIPTION'=>'Volume'),
+            'source_num'=>array('DESCRIPTION'=>'Source number'),
+            'channel_num'=>array('DESCRIPTION'=>'Channel number'),
+        ),
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+            'setSource'=>array('DESCRIPTION'=>'Set source'),
+            'setChannel'=>array('DESCRIPTION'=>'Set channel'),
+            'setVolume'=>array('DESCRIPTION'=>'Set volume'),
+        )
+    ),
+    'tv'=>array(
+        'TITLE'=>LANG_DEVICES_TV,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'STVs',
+        'PROPERTIES'=>array(
+            'volume'=>array('DESCRIPTION'=>'Volume'),
+            'source_num'=>array('DESCRIPTION'=>'Source number'),
+            'channel_num'=>array('DESCRIPTION'=>'Channel number'),
+        ),
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+            'setSource'=>array('DESCRIPTION'=>'Set source'),
+            'setChannel'=>array('DESCRIPTION'=>'Set channel'),
+            'setVolume'=>array('DESCRIPTION'=>'Set volume'),
+        )
+    ),
     'thermostat'=>array(
         'TITLE'=>LANG_DEVICES_THERMOSTAT,
         'PARENT_CLASS'=>'SControllers',

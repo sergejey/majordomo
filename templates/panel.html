@@ -727,7 +727,34 @@
 		
 		<div class="navbar-collapse collapse" id="responsive-menu">
 			<ul class="nav navbar-nav navbar-left" >
-
+				<li><a href="<#ROOTHTML#>"><i class="glyphicon glyphicon-home" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_FRONTEND#></a></li>
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target="_blank"><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
+						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
+						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
+						[#if APP_TDWIKI_INSTALLED="1"#]
+						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+						[#endif#]
+						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
+						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
+						<li class="divider"></li>
+						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
+						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
+						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_WEB_PAGE#> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
+						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
+						<li><a href="<#ROOTHTML#>menu.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
+						<li><a href="<#ROOTHTML#>devices.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_DEVICES#></a></li>
+					</ul>
+				</li>
 				[#if HIDE_LEFT_PANEL="1"#]
 				[#begin SUB_MODULES#]
 				[#if NEW_CATEGORY#]
@@ -769,46 +796,16 @@
 				</li>
 
 				[#endif HIDE_LEFT_PANEL#]
-
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-globe" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_MJDM_RESOURCE#> <b class="caret"></b></a>
-					<ul class="dropdown-menu">
-						<li><a href="<#LANG_WIKI_URL#>?utm_source=SetupFile&utm_medium=link&utm_campaign=mainlink" target="_blank"><i class="glyphicon glyphicon-globe"></i> MajorDoMo Project</a></li>
-						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
-						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
-						[#if APP_TDWIKI_INSTALLED="1"#]
-						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
-						[#endif#]
-						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
-						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
-						<li class="divider"></li>
-						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
-						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
-						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th-list" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_NEWDASH_WEB_PAGE#> <b class="caret"></b></a>
-					<ul class="dropdown-menu">
-						<li><a href="<#ROOTHTML#>" target="_blank"><i class="glyphicon glyphicon-home"></i> <#LANG_FRONTEND#></a></li>
-						<li><a href="<#ROOTHTML#>pages.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_MODULE_LAYOUTS#></a></li>
-						<li><a href="<#ROOTHTML#>apps.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_SECTION_APPLICATIONS#></a></li>
-						<li><a href="<#ROOTHTML#>menu.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_CONTROL_MENU#></a></li>
-						<li><a href="<#ROOTHTML#>devices.html" target="_blank"><i class="glyphicon glyphicon-th-list"></i> <#LANG_DEVICES#></a></li>
-					</ul>
-				</li>
-
-
+				<!---
 				<li>
 					<a href="?action=control_access&mode=logoff">[#if HIDE_LEFT_PANEL!="1"#]<i class="glyphicon glyphicon-log-out" style="vertical-align: top;font-size: 11pt;"></i> [#endif#]<#LANG_LOGOFF#></a>
 				</li>
+				--->
 			</ul>
-			<div class="hidden-xs">
+			<div id="searchbtnhide">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="mdmSearch">
-						<form style="padding: 10px;" class="" name="frmFilterModules">
-							<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" placeholder="<#LANG_SEARCH#>">
-						</form>
+					<li>
+						<a href="javascript://" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static"><span style="border: 1px solid;border-radius: 4px;background: #f0ad4e;color: white;padding: 1rem 2rem;"><i class="glyphicon glyphicon-search"></i> <#LANG_SEARCH#></span></a>
 					</li>
 				</ul>
 			</div>
@@ -871,7 +868,7 @@
 				<div style="color: gray;font-style: italic;"><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: Wait command...</div>
 			</div>
 			<div id="console_output_hintResize" style="display: none;text-align: right;">
-				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="/img/arrow_hint.png">
+				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="<#ROOTHTML#>img/arrow_hint.png">
 			</div>
 		</div>
 		
@@ -888,7 +885,7 @@
 	
 	<div class="row text-center" style="margin-top: 20px;display:none;" id="preloader">
 		<h4 style="font-weight: bold;"><#LANG_NEWDASH_PRELOAD_HEADER#></h4>
-		<img src="/img/system/loading.gif" style="max-width: 200px">
+		<img src="<#ROOTHTML#>img/system/loading.gif" style="max-width: 200px">
 		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
 		
 		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>

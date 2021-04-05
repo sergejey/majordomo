@@ -380,6 +380,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'On-change Method',
     'METHOD' => 'Method',
     'ONCHANGE_SCRIPT' => 'Script',
+	'ONCHANGE_SCRIPT_EV' => 'scripts',
     'ONCHANGE_CODE' => 'Code',
 
 
@@ -1152,6 +1153,10 @@ $dictionary = array(
     'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Support level of open',
 
+	'DEVICES_VACUUM' =>'Vacuum cleaner',
+	'DEVICES_MEDIA' =>'Media player',
+	'DEVICES_TV' =>'TV',
+
 // Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',
@@ -1233,6 +1238,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Action type',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Turn On',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Turn Off',
+	'DEVICES_LINK_TYPE_OPEN' => 'Open',
+	'DEVICES_LINK_TYPE_CLOSE' => 'Close',
     'DEVICES_LINK_TYPE_SWITCH' => 'Switch',
 
     'DEVICES_LINK_SWITCH_IT' => 'Switch it',
@@ -1545,6 +1552,9 @@ $dictionary = array(
 	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. That\'s all. The control panel will pick up the script by itself and display the content on the main page. ',
 	
 	'NEWDASH_RESULT' => 'Result',
+	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',

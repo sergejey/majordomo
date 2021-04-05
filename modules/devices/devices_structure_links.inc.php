@@ -28,7 +28,7 @@ $this->device_links=array(
             'LINK_NAME'=>'switch_it',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT,
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SWITCH_IT_DESCRIPTION,
-            'TARGET_CLASS'=>'SControllers',
+            'TARGET_CLASS'=>'SControllers,SOpenable',
             'PARAMS'=>array(
                 array(
                     'PARAM_NAME'=>'action_type',
@@ -37,7 +37,9 @@ $this->device_links=array(
                     'PARAM_OPTIONS'=>array(
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_ON,'VALUE'=>'turnon'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff'),
-                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SWITCH,'VALUE'=>'switch')
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SWITCH,'VALUE'=>'switch'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_OPEN,'VALUE'=>'open'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_CLOSE,'VALUE'=>'close'),
                         )
                 ),
                 array(
@@ -90,7 +92,7 @@ $this->device_links=array(
             'LINK_NAME'=>'sensor_switch',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_SWITCH,
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION,
-            'TARGET_CLASS'=>'SControllers',
+            'TARGET_CLASS'=>'SControllers,SOpenable',
             'PARAMS'=>array(
                 array(
                     'PARAM_NAME'=>'condition_type',
@@ -112,7 +114,9 @@ $this->device_links=array(
                     'PARAM_TYPE'=>'select',
                     'PARAM_OPTIONS'=>array(
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_ON,'VALUE'=>'turnon'),
-                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff')
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_OPEN,'VALUE'=>'open'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_CLOSE,'VALUE'=>'close'),
                     )
                 )
             )

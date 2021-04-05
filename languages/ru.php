@@ -375,6 +375,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'Запускать метод при изменении',
     'METHOD' => 'Метод',
     'ONCHANGE_SCRIPT' => 'Сценарий',
+    'ONCHANGE_SCRIPT_EV' => 'сценариев',
     'ONCHANGE_CODE' => 'Код',
 
 
@@ -1148,6 +1149,10 @@ $dictionary = array(
     'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Поддержка уровня открытия',
 
+    'DEVICES_VACUUM' =>'Пылесос',
+    'DEVICES_MEDIA' =>'Медиа-проигрыватель',
+    'DEVICES_TV' =>'Телевизор',
+
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
@@ -1229,6 +1234,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Действие',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Включить',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Выключить',
+    'DEVICES_LINK_TYPE_OPEN' => 'Открыть',
+    'DEVICES_LINK_TYPE_CLOSE' => 'Закрыть',
     'DEVICES_LINK_TYPE_SWITCH' => 'Переключить',
 
     'DEVICES_LINK_SWITCH_IT' => 'Включить/Выключить',
@@ -1544,6 +1551,9 @@ $dictionary = array(
 	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.',
 	
 	'NEWDASH_RESULT' => 'Результат',
+	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',

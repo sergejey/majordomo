@@ -16,7 +16,7 @@ function exportScriptsCount() {
 		if($(this).is(':checked')) total++;
 	});
 	
-	$('input[name=export]').val('<#LANG_EXPORT#> ' + total + ' сценариев');
+	$('input[name=export]').val('<#LANG_EXPORT#> ' + total + ' <#LANG_ONCHANGE_SCRIPT_EV#>');
 	$('input[name=export]').show();
 	
 	if(total == 0) $('input[name=export]').hide();

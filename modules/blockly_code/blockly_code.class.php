@@ -128,8 +128,6 @@ class blockly_code extends module
      */
     function admin(&$out)
     {
-
-
         if (!$this->code_field) {
             $this->code_field = 'code';
         }
@@ -138,6 +136,10 @@ class blockly_code extends module
             $out['TYPE'] = $this->type;
         } else {
             $out['TYPE'] = 'php';
+        }
+		
+		if ($this->autofocus) {
+			$out['AUTOFOCUS'] = $this->autofocus;
         }
 
         $out['CODE_FIELD'] = $this->code_field;

@@ -324,3 +324,15 @@
 .noselect {
 
 }
+
+.device-icon.tv {
+    background-image: url(../cms/scenes/styles/common/i_tv_on.png);
+}
+
+.device-icon.vacuum {
+    background-image: url(../cms/scenes/styles/common/i_dimmer_on.png);
+}
+
+.device-icon.media {
+    background-image: url(../cms/scenes/styles/common/i_videoplayer_on.png);
+}
