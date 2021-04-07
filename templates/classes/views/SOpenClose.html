@@ -94,7 +94,7 @@ $(function() {
 
 </script>
 
-<div class="device-widget %.alive|"offline;online"%">
+<div class="device-widget %.alive|"offline;online"%" onclick="var url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.status&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;">
 	<div style='display:%.ncno|"nc=block;no=none"%'><div class="device-icon openclose %.status|"on;off"%"></div></div>
 	<div style='display:%.ncno|"nc=none;no=block;=none"%'><div class="device-icon openclose %.status|"off;on"%"></div></div>
 	<div class="device-header">%.object_description%</div>
