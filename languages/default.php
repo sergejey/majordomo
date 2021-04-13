@@ -727,6 +727,7 @@ $dictionary = array(
 
     'LINKED_OBJECT' => 'Linked object',
     'LINKED_PROPERTY' => 'Linked property',
+    'LINKED_METHOD' => 'Run method',
     'SET' => 'set',
 
 
@@ -1153,6 +1154,10 @@ $dictionary = array(
     'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Support level of open',
 
+	'DEVICES_VACUUM' =>'Vacuum cleaner',
+	'DEVICES_MEDIA' =>'Media player',
+	'DEVICES_TV' =>'TV',
+
 // Measure
     'M_VOLTAGE' => 'V',
     'M_CURRENT' => 'I',
@@ -1234,6 +1239,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Action type',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Turn On',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Turn Off',
+	'DEVICES_LINK_TYPE_OPEN' => 'Open',
+	'DEVICES_LINK_TYPE_CLOSE' => 'Close',
     'DEVICES_LINK_TYPE_SWITCH' => 'Switch',
 
     'DEVICES_LINK_SWITCH_IT' => 'Switch it',
