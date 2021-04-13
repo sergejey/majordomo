@@ -722,6 +722,7 @@ $dictionary = array(
 
     'LINKED_OBJECT' => 'Связанный объект',
     'LINKED_PROPERTY' => 'Связанное св-во',
+	'LINKED_METHOD' => 'Запускать метод',
     'SET' => 'установить',
 
 

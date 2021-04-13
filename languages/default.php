@@ -727,6 +727,7 @@ $dictionary = array(
 
     'LINKED_OBJECT' => 'Linked object',
     'LINKED_PROPERTY' => 'Linked property',
+    'LINKED_METHOD' => 'Run method',
     'SET' => 'set',
 
 
