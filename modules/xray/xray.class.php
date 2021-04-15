@@ -967,61 +967,69 @@ class xray extends module
 							$arrayDB = array_slice(array_reverse($responce['LIST']), 0, 7);
 							echo json_encode($arrayDB);
 						} else if($this->mode == 'showdbload') {
-							// $select = SQLSelect("SHOW GLOBAL STATUS");
-							// $array_sum = [
-								// 1 => 'Com_select',
-								// 2 => 'Com_replace',
-								// 3 => 'Com_update',
-								// 4 => 'Com_delete',
-								// 5 => 'Com_set_option',
-								// 6 => 'Com_insert',
-								// 7 => 'Com_truncate',
-								// 8 => 'Com_show_table_status',
-								// 9 => 'Com_show_fields',
-								// 10 => 'Com_create_table',
-								// 11 => 'Com_change_db',
-								// 12 => 'Com_show_create_table',
-								// 13 => 'Com_show_triggers',
-								// 14 => 'Com_check',
-								// 15 => 'Com_show_keys',
-								// 16 => 'Com_show_variables',
-								// 17 => 'Com_show_tables',
-								// 18 => 'Com_alter_table',
-								// 19 => 'Com_show_master_status',
-								// 20 => 'Com_show_slave_status',
-								// 21 => 'Com_show_status',
-								// 22 => 'Com_flush',
-								// 23 => 'Com_unlock_tables',
-								// 24 => 'Com_lock_tables',
-								// 25 => 'Com_optimize',
-								// 26 => 'Com_show_grants',
-								// 27 => 'Com_show_binlogs',
-								// 28 => 'Com_drop_table',
-							// ];
-
-							// $totalSum = 0;
-							// $uptime = 0;
-
-							// foreach($select as $key => $value) {
-								// foreach($array_sum as $comName) {
-									// if($value['Variable_name'] == $comName) {
-										// $totalSum = $totalSum + $value['Value'];
-										// continue;
-									// }
-									// if($value['Variable_name'] == 'Uptime') {
-										// $uptime = $value['Value'];
-									// }
-								// }
-							// }
-							
 							$DBstat = $GLOBALS['db']->dbh->stat;
 							$DBstat = explode('  ', $DBstat);
 							$DBstat_PerSec = preg_replace('/[^0-9.]/', '', $DBstat[7]);
+							$DBstat_PerSecType = 'main';
+							
+							if(round($DBstat_PerSec) == 0) {
+								$select = SQLSelect("SHOW GLOBAL STATUS");
+								$array_sum = [
+									1 => 'Com_select',
+									2 => 'Com_replace',
+									3 => 'Com_update',
+									4 => 'Com_delete',
+									5 => 'Com_set_option',
+									6 => 'Com_insert',
+									7 => 'Com_truncate',
+									8 => 'Com_show_table_status',
+									9 => 'Com_show_fields',
+									10 => 'Com_create_table',
+									11 => 'Com_change_db',
+									12 => 'Com_show_create_table',
+									13 => 'Com_show_triggers',
+									14 => 'Com_check',
+									15 => 'Com_show_keys',
+									16 => 'Com_show_variables',
+									17 => 'Com_show_tables',
+									18 => 'Com_alter_table',
+									19 => 'Com_show_master_status',
+									20 => 'Com_show_slave_status',
+									21 => 'Com_show_status',
+									22 => 'Com_flush',
+									23 => 'Com_unlock_tables',
+									24 => 'Com_lock_tables',
+									25 => 'Com_optimize',
+									26 => 'Com_show_grants',
+									27 => 'Com_show_binlogs',
+									28 => 'Com_drop_table',
+								];
+
+								$totalSum = 0;
+								$uptime = 0;
+
+								foreach($select as $key => $value) {
+									foreach($array_sum as $comName) {
+										if($value['Variable_name'] == $comName) {
+											$totalSum = $totalSum + $value['Value'];
+											continue;
+										}
+										if($value['Variable_name'] == 'Uptime') {
+											$uptime = $value['Value'];
+										}
+									}
+								}
+								
+								$DBstat_PerSec = $totalSum/$uptime;
+								
+								$DBstat_PerSecType = 'rezerv';
+							}
 							
 							echo json_encode(array(
 								'second' => round($DBstat_PerSec), 
 								'minute' => round($DBstat_PerSec*60), 
 								'hours' => round($DBstat_PerSec*60*60),
+								'type' => $DBstat_PerSecType,
 							));
 						} else {
 							echo json_encode($responce);
