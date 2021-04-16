@@ -335,7 +335,6 @@ class objects extends module
             if (preg_match('/^sdevice(.+?)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
-            //$this->keep_history=$rec['KEEP_HISTORY'];
         } else {
             return false;
         }
@@ -1168,6 +1167,8 @@ class objects extends module
 
         // Если вы дошли до этой записи, при проявлении ошибки, то данная ошибка проявляется на MariDB
         $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
+        SQLExec($sqlQuery, true);
+        $sqlQuery = "ALTER TABLE objects DROP COLUMN `KEEP_HISTORY`;";
         SQLExec($sqlQuery, true);
 
 
