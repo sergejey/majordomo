@@ -120,11 +120,12 @@ class linkedobject extends module
         }
 
         if ($this->width) {
-			$ifPX = explode('px', $this->width);
-			if(count($ifPX) == 1) $this->width = $this->width.'px';
+			$ifPX = substr($this->width, -1);
+			if($ifPX != 'x' && $ifPX != '%') $this->width = $this->width.'px';
+			
             $out['WIDTH'] = $this->width;
         } else {
-            $out['WIDTH'] = '100%';
+            $out['WIDTH'] = '90%';
         }
 
         if ($uniq) {
