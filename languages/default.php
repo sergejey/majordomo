@@ -727,6 +727,7 @@ $dictionary = array(
 
     'LINKED_OBJECT' => 'Linked object',
     'LINKED_PROPERTY' => 'Linked property',
+    'LINKED_METHOD' => 'Run method',
     'SET' => 'set',
 
 
@@ -1552,6 +1553,7 @@ $dictionary = array(
 	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. That\'s all. The control panel will pick up the script by itself and display the content on the main page. ',
 	
 	'NEWDASH_RESULT' => 'Result',
+	'NEWDASH_MJDM_VERSION' => 'Current MJDM version',
 	
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',

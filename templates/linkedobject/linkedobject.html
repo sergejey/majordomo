@@ -1,238 +1,236 @@
 [#if FIRST_RUN="1"#]
-<link href="<#ROOTHTML#>3rdparty/select2/css/select2.min.css" rel="stylesheet" />
-<script src="<#ROOTHTML#>3rdparty/select2/js/select2.min.js"></script>
+	<link href="<#ROOTHTML#>3rdparty/select2/css/select2.min.css?reload=1" rel="stylesheet" />
+	<script src="<#ROOTHTML#>3rdparty/select2/js/select2.min.js"></script>
 [#endif#]
 
 [#if OBJECT_FIELD#]
-<span id='linked_object_replace<#UNIQ#>'>
-<nobr>
-<select name="[#OBJECT_FIELD#]" id='linked_object_copy<#UNIQ#>' style="width:<#WIDTH#>px" onChange="linked_object_chaged<#UNIQ#>();">
- <option value="">
- <option value="[add]">[ <#LANG_ADD#> ]
- [#begin OBJECTS#]
- <option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]
- [#end OBJECTS#]
-</select>
-<a href="#" id="linked_object_link<#UNIQ#>" style='display:none'>#</a>
-</nobr>
-</span>
+	<span id="linked_object_replace<#UNIQ#>">
+		<nobr>
+			<select name="[#OBJECT_FIELD#]" id='linked_object_copy<#UNIQ#>' style="width:<#WIDTH#>" onChange="linked_object_chaged<#UNIQ#>();">
+				<option value="">
+				<option value="[add]">[ <#LANG_ADD#> ]
+				[#begin OBJECTS#]
+					[#if NEW_GROUP_START == 1 AND NEW_GROUP_END == 0#]
+					<optgroup label="[#CLASS_NAME#]">
+					[#endif#]
+					[#if NEW_GROUP_START == 1 AND NEW_GROUP_END == 1#]
+					<optgroup label="[#CLASS_NAME#]">
+					[#endif#]
+					<option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]</option>
+					[#if NEW_GROUP_START == 0 AND NEW_GROUP_END == 1#]
+					</optgroup>
+					[#endif#]
+					[#if NEW_GROUP_START == 1 AND NEW_GROUP_END == 1#]
+					</optgroup>
+					[#endif#]
+				[#end OBJECTS#]
+				</select>
+				<a href="#" id="linked_object_link<#UNIQ#>" target="_blank" style='display:none'><i class="glyphicon glyphicon-export"></i></a>
+		</nobr>
+	</span>
 [#endif#]
 
 [#if PROPERTY_FIELD#]
-<span id='linked_property_replace<#UNIQ#>'>
-<nobr><select name="[#PROPERTY_FIELD#]" id="linked_property_copy<#UNIQ#>" style="width:<#WIDTH#>px" onChange="linked_property_chaged<#UNIQ#>();">
- <option value="">
-</select>
-<a href="#" id="linked_property_link<#UNIQ#>" style='display:none'>#</a>
-</nobr>
-</span>
+	<span id='linked_property_replace<#UNIQ#>'>
+		<nobr>
+			<select name="[#PROPERTY_FIELD#]" id="linked_property_copy<#UNIQ#>" style="width:<#WIDTH#>;background-color: #fff;border-radius: 4px;padding: 4px;" onChange="linked_property_chaged<#UNIQ#>();" disabled>
+				<option value="" ></option>
+			</select>
+			<a href="#" id="linked_property_link<#UNIQ#>" target="_blank" style='display:none'><i class="glyphicon glyphicon-export"></i></a>
+		</nobr>
+	</span>
 [#endif PROPERTY_FIELD#]
 
 [#if METHOD_FIELD#]
-<span id='linked_method_replace<#UNIQ#>'>
-<nobr><select name="[#METHOD_FIELD#]" id="linked_method_copy<#UNIQ#>" style="width:<#WIDTH#>px" onChange="linked_method_chaged<#UNIQ#>();">
- <option value="">
-</select>
-<a href="#" id="linked_method_link<#UNIQ#>" style="display:none">#</a>
-</nobr>
-</span>
+	<span id='linked_method_replace<#UNIQ#>'>
+		<nobr>
+			<select name="[#METHOD_FIELD#]" id="linked_method_copy<#UNIQ#>" style="width:<#WIDTH#>;background-color: #fff;border-radius: 4px;padding: 4px;" onChange="linked_method_chaged<#UNIQ#>();" disabled>
+				<option value=""></option>
+			</select>
+			<a href="#" id="linked_method_link<#UNIQ#>" target="_blank" style="display:none"><i class="glyphicon glyphicon-export"></i></a>
+		</nobr>
+	</span>
 [#endif METHOD_FIELD#]
 
 
 <script language="javascript">
- var selected_object<#UNIQ#>;
- var selected_method<#UNIQ#>;
- var selected_property<#UNIQ#>;
- var skip_property<#UNIQ#>=0;
- var skip_method<#UNIQ#>=0;
- var skip_object<#UNIQ#>=0;
+var selected_object<#UNIQ#>;
+var selected_method<#UNIQ#>;
+var selected_property<#UNIQ#>;
+var skip_property<#UNIQ#>=0;
+var skip_method<#UNIQ#>=0;
+var skip_object<#UNIQ#>=0;
 
- function linked_property_chaged<#UNIQ#>() {
-  if (selected_object<#UNIQ#>!='') {
-   $('#linked_property_link<#UNIQ#>').show();
-   $('#linked_property_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=properties");
-  } else {
-   $('#linked_property_link<#UNIQ#>').hide();
-  }
- }
+function linked_property_chaged<#UNIQ#>() {
+	if (selected_object<#UNIQ#>!='') {
+		$('#linked_property_link<#UNIQ#>').show();
+		$('#linked_property_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=properties");
+	} else {
+		$('#linked_property_link<#UNIQ#>').hide();
+	}
+}
 
- function linked_method_chaged<#UNIQ#>() {
-  if (selected_object<#UNIQ#>!='') {
-   $('#linked_method_link<#UNIQ#>').show();
-   $('#linked_method_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=methods");
-  } else {
-   $('#linked_method_link<#UNIQ#>').hide();
-  }
- }
+function linked_method_chaged<#UNIQ#>() {
+	if (selected_object<#UNIQ#>!='') {
+		$('#linked_method_link<#UNIQ#>').show();
+		$('#linked_method_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>+"&sub=methods");
+	} else {
+		$('#linked_method_link<#UNIQ#>').hide();
+	}
+}
 
- function linked_object_chaged<#UNIQ#>() {
-  selected_object<#UNIQ#>=$("#linked_object_copy<#UNIQ#>").val();
+function linked_object_chaged<#UNIQ#>() {
+	selected_object<#UNIQ#>=$("#linked_object_copy<#UNIQ#>").val();
 
-  if (selected_object<#UNIQ#>=='[add]') {
-   var window_url='<#ROOTHTML#>admin.php?&md=panel&action=classes&print=1';
-         $.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() {
-             var url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=objects";
-             $.get( url, function( obj )
-             {
-                 //var obj=jQuery.parseJSON(data);
-                 $('#linked_object_copy<#UNIQ#>').empty();
-                 var objPropertyCnt = obj.OBJECTS.length;
-                 if (objPropertyCnt > 0)
-                 {
-                     var optionsAsString = "<option value=''></option><option value='[add]'>[ <#LANG_ADD#> ]</option>";
-                     $('#linked_object_copy<#UNIQ#>' ).append( optionsAsString );
-                     optionsAsString='';
+	if (selected_object<#UNIQ#>=='[add]') {
+		var window_url='<#ROOTHTML#>admin.php?&md=panel&action=classes&print=1';
+		$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() {
+			var url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=objects";
+			$.get( url, function( obj ) {
+				//var obj=jQuery.parseJSON(data);
+				$('#linked_object_copy<#UNIQ#>').empty();
+				var objPropertyCnt = obj.OBJECTS.length;
+				if (objPropertyCnt > 0) {
+					var optionsAsString = "<option value=''></option><option value='[add]'>[ <#LANG_ADD#> ]</option>";
+					$('#linked_object_copy<#UNIQ#>' ).append( optionsAsString );
+					optionsAsString='';
 
-                     for(var i = 0; i < objPropertyCnt; i++)
-                     {
-                         if (obj.OBJECTS[i].DESCRIPTION)
-                         {
-                             optionsAsString += "<option value='" + obj.OBJECTS[i].TITLE + "'>" + obj.OBJECTS[i].TITLE + ' - ' + obj.OBJECTS[i].DESCRIPTION + "</option>";
-                         }
-                         else
-                         {
-                             optionsAsString += "<option value='" + obj.OBJECTS[i].TITLE + "'>" + obj.OBJECTS[i].TITLE + "</option>";
-                         }
-                     }
+					for(var i = 0; i < objPropertyCnt; i++) {
+						if (obj.OBJECTS[i].DESCRIPTION) {
+							optionsAsString += "<option value='" + obj.OBJECTS[i].TITLE + "'>" + obj.OBJECTS[i].TITLE + ' - ' + obj.OBJECTS[i].DESCRIPTION + "</option>";
+						} else {
+							optionsAsString += "<option value='" + obj.OBJECTS[i].TITLE + "'>" + obj.OBJECTS[i].TITLE + "</option>";
+						}
+					}
 
-                     $('#linked_object_copy<#UNIQ#>' ).append( optionsAsString );
+					$('#linked_object_copy<#UNIQ#>' ).append( optionsAsString );
 
-                     if (obj.LATEST_OBJECT!='')
-                     {
-                         $('#linked_object_copy<#UNIQ#>').val(obj.LATEST_OBJECT).trigger("change");;
-                     }
-                 }
-             });
-         }});
-   return;
-  }
+					if (obj.LATEST_OBJECT!='') {
+						$('#linked_object_copy<#UNIQ#>').val(obj.LATEST_OBJECT).trigger("change");;
+					}
+				}
+			});
+		}});
+		return;
+	}
 
-  $('#linked_object_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
-  $('#linked_object_link<#UNIQ#>').show();
-  [#if PROPERTY_FIELD!=""#]
-  if (skip_property<#UNIQ#>!=1) {
-  url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=properties";
-  url+='&object='+selected_object<#UNIQ#>;
+	$('#linked_object_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
+	$('#linked_object_link<#UNIQ#>').show();
   
-  $.get( url, function( obj )
-  {
-      //var obj=jQuery.parseJSON(data);
-      $('#linked_property_copy<#UNIQ#>').empty();
-      var objPropertyCnt = obj.PROPERTIES.length;
+	[#if PROPERTY_FIELD!=""#]
+	if (skip_property<#UNIQ#>!=1) {
+		url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=properties";
+		url+='&object='+selected_object<#UNIQ#>;
+  
+		$.get(url, function(obj) {
+			//var obj=jQuery.parseJSON(data);
+			$('#linked_property_copy<#UNIQ#>').empty();
+			var objPropertyCnt = obj.PROPERTIES.length;
 
-      if (objPropertyCnt > 0)
-      {
-         var optionsAsString = "<option value=''>";
-   
-         for(var i = 0; i < objPropertyCnt; i++)
-         {
-            if (obj.PROPERTIES[i].DESCRIPTION)
-            {
-               optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + ' - ' + obj.PROPERTIES[i].DESCRIPTION + "</option>";
-            }
-            else
-            {
-               optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + "</option>";
-            }
-         }
-   
-         $('#linked_property_copy<#UNIQ#>' ).append( optionsAsString );
-   
-         if (selected_property<#UNIQ#>!='')
-         {
-            $('#linked_property_copy<#UNIQ#>').val(selected_property<#UNIQ#>);
-            linked_property_chaged<#UNIQ#>();
-         }
-      }
-  });
-  }
-  [#endif#]
+			if (objPropertyCnt > 0) {
+				var optionsAsString = "<option value=''>";
 
-  [#if METHOD_FIELD!=""#]
-  if (skip_method<#UNIQ#>!=1) {
-  url="<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=methods&uniq=<#UNIQ#>";
-  url+='&object='+selected_object<#UNIQ#>;
-  $.get( url, function( obj ) {
-  //var obj=jQuery.parseJSON(data);
-  $('#linked_method_copy<#UNIQ#>').empty();
-  var objMethodsCnt = obj.METHODS.length;
-  if (objMethodsCnt > 0) {
-     var optionsAsString = "<option value=''>";
+				for (var i = 0; i < objPropertyCnt; i++) {
+					if (obj.PROPERTIES[i].DESCRIPTION) {
+						optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + ' - ' + obj.PROPERTIES[i].DESCRIPTION + "</option>";
+					} else {
+						optionsAsString += "<option value='" + obj.PROPERTIES[i].TITLE + "'>" + obj.PROPERTIES[i].TITLE + "</option>";
+					}
+				}
 
-     for(var i = 0; i < objMethodsCnt; i++) {
-    if (obj.METHODS[i].DESCRIPTION) {
-     optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + ' - ' + obj.METHODS[i].DESCRIPTION + "</option>";
-    } else {
-     optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + "</option>";
-    }
-   }
-   $('#linked_method_copy<#UNIQ#>' ).append( optionsAsString );
-   if (selected_method<#UNIQ#>!='') {
-    $('#linked_method_copy<#UNIQ#>').val(selected_method<#UNIQ#>);
-    linked_method_chaged<#UNIQ#>();
-   }
-  }
-  });
-  }
-  [#endif#]
+				$('#linked_property_copy<#UNIQ#>').append(optionsAsString);
+				$('#linked_property_copy<#UNIQ#>').prop("disabled", false);
 
-  return true;
- }
+				if (selected_property<#UNIQ#>!= '') {
+					$('#linked_property_copy<#UNIQ#>').val(selected_property<#UNIQ#>);
+					linked_property_chaged<#UNIQ#>();
+				}
+			}
+		});
+	}
+	[#endif#]
 
- $(document).ready(function() { 
+	[#if METHOD_FIELD!=""#]
+	if (skip_method<#UNIQ#> != 1) {
+		url = "<#ROOTHTML#>panel/linkedobject.html?ajax=1&op=methods&uniq=<#UNIQ#>";
+		url += '&object=' + selected_object<#UNIQ#>;
+		$.get(url, function(obj) {
+			//var obj=jQuery.parseJSON(data);
+			$('#linked_method_copy<#UNIQ#>').empty();
+			var objMethodsCnt = obj.METHODS.length;
+			if (objMethodsCnt > 0) {
+				var optionsAsString = "<option value=''>";
 
-  [#if PROPERTY_FIELD!=""#]
-  if ($('#[#PROPERTY_FIELD#]').length) {
-   selected_property<#UNIQ#>=$("#[#PROPERTY_FIELD#]").val();
-  } else {
-   skip_property<#UNIQ#>=1;
-   $('#linked_property_copy<#UNIQ#>').remove();
-  }
-  [#endif#]
+				for (var i = 0; i < objMethodsCnt; i++) {
+					if (obj.METHODS[i].DESCRIPTION) {
+						optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + ' - ' + obj.METHODS[i].DESCRIPTION + "</option>";
+					} else {
+						optionsAsString += "<option value='" + obj.METHODS[i].TITLE + "'>" + obj.METHODS[i].TITLE + "</option>";
+					}
+				}
+				$('#linked_method_copy<#UNIQ#>').append(optionsAsString);
+				$('#linked_method_copy<#UNIQ#>').prop("disabled", false);
 
-  [#if METHOD_FIELD!=""#]
-  if ($('#[#METHOD_FIELD#]').length) {
-   selected_method<#UNIQ#>=$("#[#METHOD_FIELD#]").val();
-  } else {
-   skip_method<#UNIQ#>=1;
-   $('#linked_method_copy<#UNIQ#>').remove();
-  }
-  [#endif#]
+				if (selected_method<#UNIQ#>!= '') {
+					$('#linked_method_copy<#UNIQ#>').val(selected_method<#UNIQ#>);
+					linked_method_chaged<#UNIQ#> ();
+				}
+			}
+		});
+	}
+	[#endif#]
+	return true;
+}
+
+$(document).ready(function() { 
+	[#if PROPERTY_FIELD!=""#]
+		if ($('#[#PROPERTY_FIELD#]').length) {
+			selected_property<#UNIQ#>=$("#[#PROPERTY_FIELD#]").val();
+		} else {
+			skip_property<#UNIQ#>=1;
+			$('#linked_property_copy<#UNIQ#>').remove();
+		}
+	[#endif#]
+
+	[#if METHOD_FIELD!=""#]
+		if ($('#[#METHOD_FIELD#]').length) {
+			selected_method<#UNIQ#>=$("#[#METHOD_FIELD#]").val();
+		} else {
+			skip_method<#UNIQ#>=1;
+			$('#linked_method_copy<#UNIQ#>').remove();
+		}
+	[#endif#]
 
 
-  [#if OBJECT_FIELD!=""#]
-  if ($('#[#OBJECT_FIELD#]').length) {
-   selected_object<#UNIQ#>=$("#[#OBJECT_FIELD#]").val();
-   if (selected_object<#UNIQ#>!='') {
-    $('#linked_object_copy<#UNIQ#>').val(selected_object<#UNIQ#>);
-    linked_object_chaged<#UNIQ#>();
-   }
-   //
-   //$("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_copy<#UNIQ#>'));
-   $("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_replace<#UNIQ#>'));
-   $("#linked_object_copy<#UNIQ#>").select2({placeholder: "<#LANG_LINKED_OBJECT#>",allowClear: true});
-  } else {
-   skip_object<#UNIQ#>=1;
-   $("#linked_object_copy<#UNIQ#>").remove();
-  }
-  [#endif OBJECT_FIELD#]
+	[#if OBJECT_FIELD!=""#]
+		if ($('#[#OBJECT_FIELD#]').length) {
+			selected_object<#UNIQ#>=$("#[#OBJECT_FIELD#]").val();
+			if (selected_object<#UNIQ#>!='') {
+				$('#linked_object_copy<#UNIQ#>').val(selected_object<#UNIQ#>);
+				linked_object_chaged<#UNIQ#>();
+			}
+			$("#[#OBJECT_FIELD#]").replaceWith($('#linked_object_replace<#UNIQ#>'));
+			$("#linked_object_copy<#UNIQ#>").select2({placeholder: "<#LANG_LINKED_OBJECT#>",allowClear: true});
+		} else {
+			skip_object<#UNIQ#>=1;
+			$("#linked_object_copy<#UNIQ#>").remove();
+		}
+	[#endif OBJECT_FIELD#]
 
   [#if PROPERTY_FIELD!=""#]
-  if (skip_property<#UNIQ#>==0) {
-  //$("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy<#UNIQ#>'));
-   $("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_replace<#UNIQ#>'));
-  }
+		if (skip_property<#UNIQ#>==0) {
+			//$("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_copy<#UNIQ#>'));
+			$("#[#PROPERTY_FIELD#]").replaceWith($('#linked_property_replace<#UNIQ#>'));
+			$("#linked_property_copy<#UNIQ#>").select2({placeholder: "<#LANG_LINKED_PROPERTY#>",allowClear: true});
+		}
   [#endif#]
 
-  [#if METHOD_FIELD!=""#]
-  if (skip_method<#UNIQ#>==0) {
-  //$("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy<#UNIQ#>'));
-   $("#[#METHOD_FIELD#]").replaceWith($('#linked_method_replace<#UNIQ#>'));
-  }
-  [#endif#]
-
-
-
-
+	[#if METHOD_FIELD!=""#]
+		if (skip_method<#UNIQ#>==0) {
+			//$("#[#METHOD_FIELD#]").replaceWith($('#linked_method_copy<#UNIQ#>'));
+			$("#[#METHOD_FIELD#]").replaceWith($('#linked_method_replace<#UNIQ#>'));
+			$("#linked_method_copy<#UNIQ#>").select2({placeholder: "<#LANG_LINKED_METHOD#>",allowClear: true});
+		}  
+	[#endif#]
  });
 </script>
