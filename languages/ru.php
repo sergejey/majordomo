@@ -1551,6 +1551,7 @@ $dictionary = array(
 	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.',
 	
 	'NEWDASH_RESULT' => 'Результат',
+	'NEWDASH_MJDM_VERSION' => 'Текущая версия MJDM',
 	
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',

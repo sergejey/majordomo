@@ -353,16 +353,7 @@
 					$('#dashInfoIPSer').text();
 					$('#dashInfoOS').text(data.OS);
 					$('#dashInfoErrors').text(data.active_errors);
-					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
-					
-					if(data.DB.connection == 'OK') {
-						$('#dashInfoDBConn').html('<#LANG_NEWDASH_CONNECTED#>');
-						$('#dashInfoDBConn').attr('style', 'background: #5cb85c');
-					} else {
-						$('#dashInfoDBConn').html('<#LANG_NEWDASH_DISCONNECTED#>');
-						$('#dashInfoDBConn').attr('style', 'background: lightcoral');
-					}
-					
+					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);				
 				},
 				error: function(data) {
 					console.log('error');
