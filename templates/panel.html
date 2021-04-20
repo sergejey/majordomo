@@ -611,6 +611,13 @@
 			$.ajax({
 				url: urlCheckUpdates
 			}).done(function(data) {
+				try {
+					JSON.parse(data);
+				} catch (e) {
+					$('#problemLinkToConnect').show();
+					return false;
+				}
+				
 				data = JSON.parse(data);
 				if (data.status == 0) {
 					$('#getConnect').show('fast');
@@ -637,6 +644,13 @@
 			$.ajax({
 				url: urlCheckUpdatesMarket
 			}).done(function(data) {
+				try {
+					JSON.parse(data);
+				} catch (e) {
+					$('#problemLinkToConnect').show();
+					return false;
+				}
+				
 				data = JSON.parse(data);
 				if (data.status == '1') {
 					$('#updates-check-market').show();
@@ -802,7 +816,7 @@
 			</div>
 		</div>
 	</nav>
-
+	
 	<div class="modal fade" id="mdmGlobalSearchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -987,6 +1001,13 @@
 						
 					</div>
 					[#endif#]
+					<div class="col-xs-12 col-sm-12 col-md-12" id="problemLinkToConnect" style="display:none;padding-left: 0px;padding-right: 0px;">
+						<div class="alert alert-danger" style="background-image: url(<#ROOTHTML#>img/icons/highAlertIcon.gif);background-repeat: no-repeat;background-size: contain;background-position: right center;">
+							<b>Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции будут недоступны.</b>
+							<p style="font-size: 1rem;">Обычно, ситуация налаживаться спустя несколько минут.</p>
+						</div>
+					</div> 
+					
 					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>

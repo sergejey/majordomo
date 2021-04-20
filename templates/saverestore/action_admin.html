@@ -46,7 +46,7 @@
 						<div class="modal-header">
 							<h4 class="modal-title"><#LANG_NEWSAVERESTORE_CONSOLE#></h4>
 						</div>
-						<div class="modal-body" style="background-image: url(<#ROOTHTML#>img/system/loading.gif);background-repeat: no-repeat;background-position: center center;">
+						<div class="modal-body">
 							<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #e5c15b, #e94949);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
 							[#if MODE="getlatest_iframe"#]
 								<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" frameborder="0"></iframe>
