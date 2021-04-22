@@ -98,20 +98,32 @@
 					function refreshPluginsList(category_id,search_text) {
 						$('#search_result').html('<div class="text-center" style="margin-top: 20px;margin-bottom: 20px;"><img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_NEWDASH_LOADING#></div>');
 						if(!search_text) $('#li_search').remove();
-							
-						var url="<#ROOTHTML#>ajax/market.html?op=list&category_id="+category_id+"&search="+encodeURIComponent(search_text);
 						
+						
+						var urlCheckUpdatesMarket = '<#ROOTHTML#>ajax/market.html?op=check_updates';
 						$.ajax({
-							url: url
+							url: urlCheckUpdatesMarket
 						}).done(function(data) {
-							$('#search_result').html(data);
-							if (category_id=='owned') {
-								$('#connect_sync_note').show();
-							} else {
-								$('#connect_sync_note').hide();
+							try {
+								JSON.parse(data);
+							} catch (e) {
+								$('#problemLinkToConnect').show();
+								return false;
 							}
+							
+							var url="<#ROOTHTML#>ajax/market.html?op=list&category_id="+category_id+"&search="+encodeURIComponent(search_text);
+							$.ajax({
+								url: url
+							}).done(function(data) {
+								$('#search_result').html(data);
+								if (category_id=='owned') {
+									$('#connect_sync_note').show();
+								} else {
+									$('#connect_sync_note').hide();
+								}
+							});
+							return false;
 						});
-						return false;
 					}
 					$(document).ready(function() {
 						if(window.location.hash.replace("#","") == 'panel_updates') {
