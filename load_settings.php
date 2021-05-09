@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
+error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_WARNING | E_DEPRECATED));
 mb_internal_encoding("UTF-8");
 
 
