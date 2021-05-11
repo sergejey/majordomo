@@ -108,7 +108,7 @@
 								JSON.parse(data);
 							} catch (e) {
 								$('#problemLinkToConnect').show();
-								return false;
+								//return false;
 							}
 							
 							var url="<#ROOTHTML#>ajax/market.html?op=list&category_id="+category_id+"&search="+encodeURIComponent(search_text);
