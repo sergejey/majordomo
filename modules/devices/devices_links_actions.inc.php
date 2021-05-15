@@ -6,7 +6,7 @@ $debug_sync = 0;
 
 //DebMes("homebridgesync for ".$device1['TITLE'],'homebridge');
 
-if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
+if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
     $payload = array();
     $payload['name'] = $device1['LINKED_OBJECT'];

@@ -2,7 +2,7 @@
 
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
 
-$devices=SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices ORDER BY TYPE, TITLE");
+$devices=SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices WHERE devices.ARCHIVED!=1 ORDER BY TYPE, TITLE");
 $total = count($devices);
 for($idv=0;$idv<$total;$idv++) {
     if (($devices[$idv]['TYPE'] == 'motion' ||

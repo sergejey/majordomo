@@ -1361,6 +1361,7 @@ $dictionary = array(
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
     'SYSTEM_DEVICE' => 'System device',
+	'ARCHIVED_DEVICE' => 'Archived device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',

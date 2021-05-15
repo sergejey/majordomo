@@ -22,7 +22,7 @@ for ($i = 0; $i < $total; $i++) {
     $payload['name'] = $devices[$i]['LINKED_OBJECT'];
 
 
-    if ($devices[$i]['SYSTEM_DEVICE']) {
+    if ($devices[$i]['SYSTEM_DEVICE'] || $devices[$i]['ARCHIVED']) {
         if ($debug_sync) {
             DebMes("HomeBridge.to_remove: ".json_encode($payload),'homebridge');
         }

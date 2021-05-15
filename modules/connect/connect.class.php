@@ -628,12 +628,13 @@ class connect extends module
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
         list($object_name, $property_name) = explode('.', $property);
-        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE, SYSTEM_DEVICE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0");
-        if (!$device_rec['ID'] || $device_rec['SYSTEM_DEVICE']) return;
+        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE, SYSTEM_DEVICE, ARCHIVED FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0 AND ARCHIVED=0");
+        if (!$device_rec['ID'] || $device_rec['SYSTEM_DEVICE'] || $device_rec['ARCHIVED']) return;
         $fields['object'] = $object_name;
         $fields['property'] = $property_name;
         $fields['value'] = $value;
         unset($device_rec['SYSTEM_DEVICE']);
+        unset($device_rec['ARCHIVED']);
         if ($device_rec['TITLE']) {
             $fields['device_data'] = json_encode($device_rec);
         }

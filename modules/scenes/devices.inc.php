@@ -77,6 +77,8 @@ if ($location_id) {
     $out['LOCATION_ID'] = $location_id;
 }
 
+$qry.=" AND devices.ARCHIVED!=1";
+
 $other_devices = SQLSelect("SELECT ID,TITLE FROM devices WHERE ID NOT IN (" . implode(',', $added_ids) . ") AND $qry ORDER BY TITLE");
 $out['OTHER_DEVICES'] = $other_devices;
 
