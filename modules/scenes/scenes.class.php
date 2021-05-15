@@ -1167,14 +1167,16 @@ class scenes extends module
             } elseif ($elements[$ie]['TYPE'] == 'device') {
                 $device_rec = SQLSelectOne("SELECT * FROM devices WHERE ID=" . (int)$elements[$ie]['DEVICE_ID']);
                 $state = array();
+                $state['ID'] = 'element_' . ($elements[$ie]['ID']);
+                $state['ELEMENT_ID'] = $elements[$ie]['ID'];
+                $state['MENU_ITEM_ID'] = 0;
+                $state['HOMEPAGE_ID'] = 0;
+                $state['OPEN_SCENE_ID'] = 0;
+                $state['TYPE'] = $elements[$ie]['TYPE'];
                 if (!$device_rec['ARCHIVED']) {
-                    $state['ID'] = 'element_' . ($elements[$ie]['ID']);
-                    $state['ELEMENT_ID'] = $elements[$ie]['ID'];
                     $state['HTML'] = getObjectClassTemplate($device_rec['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
-                    $state['TYPE'] = $elements[$ie]['TYPE'];
-                    $state['MENU_ITEM_ID'] = 0;
-                    $state['HOMEPAGE_ID'] = 0;
-                    $state['OPEN_SCENE_ID'] = 0;
+                } else {
+                    $state['HTML']='';
                 }
                 $states = array($state);
             } else {
