@@ -8,6 +8,9 @@ mb_internal_encoding("UTF-8");
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
 $total = count($settings);
 
+for ($i = 0; $i < $total; $i++)
+    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
+
 if (IsSet($_GET['theme'])) {
     Define('SETTINGS_THEME', $_GET['theme']);
 }
@@ -22,10 +25,6 @@ if ($_GET['lang']) {
 } elseif ($_SESSION['lang']) {
     Define("SETTINGS_SITE_LANGUAGE", $_SESSION['lang']);
 }
-
-
-for ($i = 0; $i < $total; $i++)
-    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 
 if (!defined('SETTINGS_SITE_LANGUAGE')) {
     Define('SETTINGS_SITE_LANGUAGE', 'en');
@@ -46,10 +45,8 @@ include_once(ROOT . 'languages/default.php');
 
 if (LANG_SETTINGS_SITE_LANGUAGE_CODE) {
     Define ('SETTINGS_SITE_LANGUAGE_CODE', LANG_SETTINGS_SITE_LANGUAGE_CODE);
-} elseif (SETTINGS_SITE_LANGUAGE=='en') {
-    Define ('SETTINGS_SITE_LANGUAGE_CODE', 'en_GB');
 } else {
-    Define ('SETTINGS_SITE_LANGUAGE_CODE', '');
+    Define ('SETTINGS_SITE_LANGUAGE_CODE', 'en_GB');
 }
 
 if (!defined('SETTINGS_SITE_TIMEZONE')) {
