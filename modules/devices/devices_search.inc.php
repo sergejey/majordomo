@@ -26,6 +26,10 @@ if ($location_id == 'manage_locations') {
 $group_name = gr('group_name');
 if ($group_name == 'manage_groups') {
     $this->redirect("?view_mode=manage_groups");
+} elseif ($group_name == 'is:archived') {
+    $qry.=" AND devices.ARCHIVED=1";
+} elseif ($group_name == 'is:system') {
+    $qry.=" AND devices.SYSTEM_DEVICE=1";
 } elseif ($group_name) {
     $object_names = getObjectsByProperty('group' . $group_name, 1);
     if (!is_array($object_names)) {
@@ -40,7 +44,11 @@ if ($group_name == 'manage_groups') {
     } else {
         $qry .= " AND 0";
     }
-    $out['GROUP_NAME'] = $group_name;
+}
+$out['GROUP_NAME'] = $group_name;
+
+if ($group_name!='is:archived') {
+    $qry.=" AND devices.ARCHIVED=0";
 }
 
 // QUERY READY
@@ -76,6 +84,26 @@ if ($res[0]['ID']) {
                 $processed = $this->processDevice($res[$i]['ID']);
             }
             $res[$i]['HTML'] = $processed['HTML'];
+            // get object properties
+            $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='".$res[$i]['LINKED_OBJECT']."'");
+            if ($object_rec['ID']) {
+                $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=".$object_rec['ID']." AND pvalues.LINKED_MODULES!='' ORDER BY UPDATED");
+                $totalp=count($properties);
+                if ($totalp>0) {
+                    $linked_modules=array();
+                    for($ip=0;$ip<$totalp;$ip++) {
+                        $tmp=explode(',',$properties[$ip]['LINKED_MODULES']);
+                        $tmp=array_map('trim',$tmp);
+                        foreach($tmp as $linked_module) {
+                            $linked_modules[$linked_module]=array('OBJECT'=>$res[$i]['LINKED_OBJECT'],'PROPERTY'=>$properties[$ip]['PROPERTY']);
+                        }
+                    }
+                    foreach($linked_modules as $k=>$v) {
+                        $v['MODULE']=$k;
+                        $res[$i]['LINKED_MODULES'][]=$v;
+                    }
+                }
+            }
         }
         $res[$i]['TYPE_TITLE'] = $this->device_types[$res[$i]['TYPE']]['TITLE'];
         $linked = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices_linked WHERE (DEVICE1_ID=" . $res[$i]['ID'] . " OR DEVICE2_ID=" . $res[$i]['ID'] . ")");

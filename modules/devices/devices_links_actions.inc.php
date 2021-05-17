@@ -6,11 +6,15 @@ $debug_sync = 0;
 
 //DebMes("homebridgesync for ".$device1['TITLE'],'homebridge');
 
-if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
+if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
     $payload = array();
     $payload['name'] = $device1['LINKED_OBJECT'];
     $payload['service_name'] = $device1['TITLE'];
+
+    $payload2 = array();
+    $payload2['name'] = $device1['LINKED_OBJECT'];
+    $payload2['service_name'] = $device1['TITLE'];
 
     //DebMes("Homebridge Update ".$device1['LINKED_OBJECT']." (".$device1['TYPE']."): ".gg($device1['LINKED_OBJECT'] . '.status')." / ".gg($device1['LINKED_OBJECT'] . '.value'),'homebridge');
 
@@ -32,6 +36,23 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
             $payload['service'] = 'TemperatureSensor';
             $payload['characteristic'] = 'CurrentTemperature';
             $payload['value'] = gg($device1['LINKED_OBJECT'] . '.value');
+            break;
+        case 'sensor_co2':
+            $payload['service'] = 'CarbonDioxideSensor';
+            $payload['characteristic'] = 'CarbonDioxideLevel';
+            $payload['value'] = gg($device1['LINKED_OBJECT'] . '.value');
+
+            $max_level=gg($device1['LINKED_OBJECT'] . '.maxValue');
+            if (!$max_level) {
+                $max_level=1200;
+            }
+            $payload2['service'] = 'CarbonDioxideSensor';
+            $payload2['characteristic'] = 'CarbonDioxideDetected';
+            if ($payload['value']>=$max_level) {
+                $payload2['value'] = "1";
+            } else {
+                $payload2['value'] = "0";
+            }
             break;
         case 'sensor_humidity':
             $payload['service'] = 'HumiditySensor';
@@ -217,6 +238,12 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
             DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
         }
         sg('HomeBridge.to_set', json_encode($payload));
+    }
+    if (isset($payload2['service'])) {
+        if ($debug_sync) {
+            DebMes("MQTT to_set : " . json_encode($payload2), 'homebridge');
+        }
+        sg('HomeBridge.to_set', json_encode($payload2));
     }
 }
 endMeasure('homebridge_update');

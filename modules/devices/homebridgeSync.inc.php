@@ -22,7 +22,7 @@ for ($i = 0; $i < $total; $i++) {
     $payload['name'] = $devices[$i]['LINKED_OBJECT'];
 
 
-    if ($devices[$i]['SYSTEM_DEVICE']) {
+    if ($devices[$i]['SYSTEM_DEVICE'] || $devices[$i]['ARCHIVED']) {
         if ($debug_sync) {
             DebMes("HomeBridge.to_remove: ".json_encode($payload),'homebridge');
         }
@@ -134,6 +134,40 @@ for ($i = 0; $i < $total; $i++) {
             $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.valueHumidity');
             sg('HomeBridge.to_set', json_encode($payload));
 
+            break;
+
+        case 'sensor_co2':
+            $payload['service'] = 'CarbonDioxideSensor';
+            sg('HomeBridge.to_add', json_encode($payload));
+
+            $payload['characteristic'] = 'CarbonDioxideLevel';
+            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
+            sg('HomeBridge.to_set', json_encode($payload));
+
+            $payload['characteristic'] = 'CarbonDioxideDetected';
+            $payload['value'] = "0";
+            sg('HomeBridge.to_set', json_encode($payload));
+
+            break;
+
+        case 'sensor_moisture':
+            //todo
+            break;
+
+        case 'sensor_radiation':
+            //todo
+            break;
+
+        case 'vacuum':
+            //todo
+            break;
+
+        case 'media':
+            //todo
+            break;
+
+        case 'tv':
+            //todo
             break;
 
         case 'motion':
