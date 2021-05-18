@@ -19,7 +19,8 @@ include_once("./lib/loader.php");
 startMeasure('prepare');
 include_once(DIR_MODULES . "application.class.php");
 
-$session = new session("prj");
+// loader.php строка 16 уже создает сессию через инклуд файла session.class.php
+//$session = new session("prj");
 
 startMeasure('load_settings');
 include_once("./load_settings.php");
