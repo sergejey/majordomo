@@ -11,7 +11,7 @@ if ($minWork != $maxWork) {
         $new_level=0;
     }
     if ($new_level != $level) {
-        DebMes("Setting new level to " . $new_level, 'dimming');
+        //DebMes("Setting new level to " . $new_level, 'dimming');
         $this->setProperty('level', $new_level);
     }
 }
