@@ -1,6 +1,11 @@
 <?php
-
-function clearCacheData() {
+/**
+ * Summary of clearCacheData
+ * @param mixed $prefix prefix
+ * @return void
+ */
+function clearCacheData($prefix='') {
+		$prefix=strtolower($prefix);
     /*
     $apcu_available = function_exists('apcu_enabled') && apcu_enabled();
     if ($apcu_available) {
@@ -24,6 +29,30 @@ function clearCacheData() {
 }
 
 /**
+ * Summary of getAllCache
+ * @param mixed $prefix prefix
+ * @return array
+ */
+function getAllCache($prefix)
+{
+	$prefix=strtolower($prefix);
+	$out=array();
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        $list=$redisConnection->getKeys($prefix."*");
+		    foreach($list as $key1) 
+    			$out[$key1]=$redisConnection->get($key1);
+    }
+    else $out=SQLExec("select * from cached_values where KEYWORD like '$prefix%'");
+    return $out;
+}
+
+
+/**
  * Summary of saveToCache
  * @param mixed $key Key
  * @param mixed $value Value
@@ -31,7 +60,7 @@ function clearCacheData() {
  */
 function saveToCache($key, $value)
 {
-
+		$key=strtolower($key);
     if (is_array($value) || strlen($value) > 255) {
         return;
     }
@@ -65,7 +94,7 @@ function saveToCache($key, $value)
  */
 function checkFromCache($key)
 {
-
+		$key=strtolower($key);
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
