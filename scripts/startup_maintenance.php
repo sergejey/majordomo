@@ -263,6 +263,11 @@ for ($i = 0; $i < $total; $i++) {
 
 clearCacheData();
 
+// removing old errors
+if (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY>0) {
+    SQLExec("DELETE FROM system_errors_data WHERE ADDED<'".date('Y-m-d H:i:s',time()-SETTINGS_ERRORS_KEEP_HISTORY*24*60*60)."'");
+}
+
 // SET SERIAL
 $serial_data = '';
 $current_serial = gg('ThisComputer.Serial');
