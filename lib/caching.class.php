@@ -62,6 +62,7 @@ function saveToCache($key, $value)
 {
 		$key=strtolower($key);
     if (is_array($value) || strlen($value) > 255) {
+	    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
         return;
     }
 
