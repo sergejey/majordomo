@@ -1348,6 +1348,7 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
+    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Не изменять уровень при переключении',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
     'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
