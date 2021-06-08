@@ -18,10 +18,17 @@ function clearCacheData($prefix='') {
             $redisConnection = new Redis();
             $redisConnection->pconnect(USE_REDIS);
         }
-        $redisConnection->flushDB();
+        if(!prefix)$redisConnection->flushDB();
+        else
+        {
+        		$list=$redisConnection->getKeys($prefix."*");
+		    		foreach($list as $key1) 
+		    			$redisConnection->del($key1);
+        }        
         return;
     }
-    SQLTruncateTable('cached_values');
+  	if(!prefix)SQLTruncateTable('cached_values');
+    else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");    
     if (isset($_SERVER['REQUEST_METHOD'])) {
         global $memory_cache;
         $memory_cache = array();
@@ -29,11 +36,12 @@ function clearCacheData($prefix='') {
 }
 
 /**
+ *  Return all Cache Data from prefix
  * Summary of getAllCache
- * @param mixed $prefix prefix
+ * @param mixed $prefix 
  * @return array
  */
-function getAllCache($prefix)
+function getAllCache($prefix='')
 {
 	$prefix=strtolower($prefix);
 	$out=array();
@@ -62,6 +70,7 @@ function saveToCache($key, $value)
 {
 		$key=strtolower($key);
     if (is_array($value) || strlen($value) > 255) {
+	    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
         return;
     }
 
