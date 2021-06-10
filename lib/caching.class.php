@@ -29,10 +29,6 @@ function clearCacheData($prefix='') {
     }
   	if(!prefix)SQLTruncateTable('cached_values');
     else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");    
-    if (isset($_SERVER['REQUEST_METHOD'])) {
-        global $memory_cache;
-        $memory_cache = array();
-    }
 }
 
 /**
@@ -84,15 +80,10 @@ function saveToCache($key, $value)
         return;
     }
 
-    if (isset($_SERVER['REQUEST_METHOD'])) {
-        global $memory_cache;
-        $memory_cache[$key] = $value;
-    }
-    
 	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
-    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE) " .
+    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE) " .
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
-        "'" . DbSafe1($rec['DATAVALUE']) . "')";
+        "'" . DbSafe1($rec['DATAVALUE']) . "', '".date('Y-m-d H:i:s',time()+24*60*60)."')";
     SQLExec($sqlQuery);
 }
 
@@ -118,13 +109,7 @@ function checkFromCache($key)
         }
     }
 
-    if (isset($_SERVER['REQUEST_METHOD'])) {
-	    global $memory_cache;
-		if (is_array($memory_cache) && isset($memory_cache[$key])) {
-		    return $memory_cache[$key];
-		}
-	}		
-	
+
 	$rec = SQLSelectOne("SELECT * FROM cached_values WHERE KEYWORD = '" . DBSafe($key) . "'");
 
     if ($rec['KEYWORD']) {

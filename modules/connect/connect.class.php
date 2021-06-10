@@ -564,7 +564,7 @@ class connect extends module
 // POST TO SERVER
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
-        $devices = SQLSelect("SELECT devices.ID, devices.TITLE, devices.ALT_TITLES, devices.TYPE, devices.SUBTYPE, devices.LINKED_OBJECT, locations.TITLE AS ROOM_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE devices.SYSTEM_DEVICE=0");
+        $devices = SQLSelect("SELECT devices.ID, devices.TITLE, devices.ALT_TITLES, devices.FAVORITE, devices.TYPE, devices.SUBTYPE, devices.LINKED_OBJECT, locations.TITLE AS ROOM_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE devices.SYSTEM_DEVICE=0 AND devices.ARCHIVED=0");
         include_once(DIR_MODULES . 'classes/classes.class.php');
         $cl = new classes();
 
