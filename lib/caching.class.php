@@ -81,9 +81,9 @@ function saveToCache($key, $value)
     }
 
 	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
-    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE, EXPIRE) " .
+    $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE) " .
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
-        "'" . DbSafe1($rec['DATAVALUE']) . "', '".date('Y-m-d H:i:s',time()+24*60*60)."')";
+        "'" . DbSafe1($rec['DATAVALUE']) . "')";
     SQLExec($sqlQuery);
 }
 
