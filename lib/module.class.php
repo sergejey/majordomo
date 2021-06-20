@@ -524,7 +524,7 @@ class module
             }
         }
 
-        if ($to_optimize[0]) {
+        if (isset($to_optimize[0])) {
             foreach ($to_optimize as $table) {
                 SQLExec("OPTIMIZE TABLE " . $table . ";");
             }
