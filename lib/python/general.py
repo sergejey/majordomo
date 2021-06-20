@@ -23,7 +23,7 @@ def getURL(url):
 
 def callAPI(api_url, method="GET", params={}):
     params['no_session'] = 1
-    url = re.sub(r"^/api/", BASE_URL + ROOTHTML + 'api.php/', api_url)
+    url = re.sub(r"^/api/", 'http://' + BASE_URL + ROOTHTML + 'api.php/', api_url)
     data = urlencode(params).encode('utf-8')
 
     if (method == "POST"):
