@@ -250,7 +250,8 @@ if ($this->tab == 'methods') {
 
             if ($run_type == 'code' && $my_meth['CODE'] != '') {
                 //echo $content;
-                if (!isItPythonCode($my_meth['CODE'])) {
+                if (!defined('PYTHON_PATH') and !isItPythonCode($my_meth['CODE'])) {
+
            
                     $errors = php_syntax_error($my_meth['CODE']);
 			
@@ -266,9 +267,9 @@ if ($this->tab == 'methods') {
                         $out['OK'] = $ok;
                         $out['ERR_OLD_CODE'] = $old_code;
                     }
-				} else {
-					// chek python code
-				}					
+                } else {
+                    // chek python code
+                }					
                 $out['CODE'] = $my_meth['CODE'];
             }
 
