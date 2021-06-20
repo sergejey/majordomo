@@ -112,7 +112,7 @@ function checkFromCache($key)
 
 	$rec = SQLSelectOne("SELECT * FROM cached_values WHERE KEYWORD = '" . DBSafe($key) . "'");
 
-    if ($rec['KEYWORD']) {
+    if (isset($rec['KEYWORD'])) {
         return $rec['DATAVALUE'];
     } else {
         return false;
