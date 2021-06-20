@@ -87,7 +87,7 @@ function python_make_full_code($code, $object = '') {
         }
 
         $class_code.=<<<CL
-class mjdThisObject(mjdm.mjdObject):
+class mjdThisObject(mjdObject):
     def thisMethod(self, params):
 $method_code
         return 1;
@@ -105,11 +105,32 @@ import os
 import sys
 import re
 import json
+import six
+import importlib
+import MySQLdb as mdb
+import datetime
+import time
+from typing import List, Any
+from datetime import datetime as DT, timedelta
 from mjd_constants import *
+try:
+    import urllib.request as urllib2
+    from urllib.parse import quote
+    from urllib.parse import urlencode
+except ImportError:
+    import urllib2
+    from urllib import urlencode
+	
 sys.path.append(os.path.abspath("$lib_path"))
-import mjdm
 
-if (sys.argv[1]):
+from events import *
+from general import *
+from historys import *
+from job import *
+from mjdm import *
+from timer import *
+
+if (sys.argv[1:]):
     params=json.loads(sys.argv[1])
 else:
     params = {}
