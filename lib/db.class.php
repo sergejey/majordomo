@@ -27,7 +27,7 @@ class DB {
         
     }
 
-    private function __sleep() {
+    public function __sleep() {
         
     }
 
