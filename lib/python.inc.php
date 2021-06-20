@@ -2,11 +2,11 @@
 
 function python_run_code($code, $params = '', $object = '') {
     //DebMes("Running python code: ".$code,'python');
-    $python_path = '';
     if (defined('PYTHON_PATH')) {
         $python_path = PYTHON_PATH;
-    } elseif (substr(php_uname(), 0, 7) != "Windows") {
-        $python_path = 'python';
+    } else {
+        DebMes("Chek config.php file for define path to php ");
+        return false;
     }
     if ($python_path!='') {
         $result_code = python_make_full_code($code, $object);
