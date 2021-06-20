@@ -326,16 +326,12 @@ class objects extends module
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
-            if ($this->class_id) {
-                $class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $this->class_id);
-                $this->class_title = $class_rec['TITLE'];
-            }
-            $this->description = $rec['DESCRIPTION'];
+			$this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
             if (preg_match('/^sdevice(.+?)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
-            //$this->keep_history=$rec['KEEP_HISTORY'];
+			return true;
         } else {
             return false;
         }
@@ -639,7 +635,8 @@ class objects extends module
 
 
             if ($code != '') {
-                if (defined('PYTHON_PATH') and isItPythonCode($code)) {
+               if (defined('PYTHON_PATH') and isItPythonCode($code)) {
+					echo ($code);
                     python_run_code($code, $params, $this->object_title);
                 } else {
                     try {
@@ -701,7 +698,7 @@ class objects extends module
         }
 
         $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
-        if ($rec['ID']) {
+        if (isset($rec['ID'])) {
             saveToCache($cached_name,$rec['ID']);
             return $rec['ID'];
         }
@@ -817,7 +814,7 @@ class objects extends module
         if (!$source && defined('CALL_SOURCE')) {
             $source = CALL_SOURCE;
         }
-        if (!$source && $_SERVER['REQUEST_URI']) {
+        if (!$source && isset($_SERVER['REQUEST_URI'])) {
             $source = urldecode($_SERVER['REQUEST_URI']);
         }
         if (strlen($source) > 250) {
@@ -982,7 +979,7 @@ class objects extends module
 
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
-            $this->device_id &&
+            isset($this->device_id) &&
             ($p_lower == 'value' ||
                 $p_lower == 'valuehumidity' ||
                 $p_lower == 'status' ||
@@ -1181,7 +1178,6 @@ class objects extends module
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
- objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 
  properties: ID int(10) unsigned NOT NULL auto_increment
  properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
