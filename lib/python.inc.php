@@ -131,9 +131,9 @@ from mjdm import *
 from timer import *
 
 if (sys.argv[1:]):
-    params=json.loads(sys.argv[1])
+    params=sys.argv[1:]
 else:
-    params = {}
+    params = []
 
 $code
 FF;
