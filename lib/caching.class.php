@@ -27,7 +27,7 @@ function clearCacheData($prefix='') {
         }        
         return;
     }
-  	if(!prefix)SQLTruncateTable('cached_values');
+  	if(!$prefix)SQLTruncateTable('cached_values');
     else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");    
 }
 
