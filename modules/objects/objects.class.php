@@ -639,7 +639,7 @@ class objects extends module
 
 
             if ($code != '') {
-                if (isItPythonCode($code)) {
+                if (defined('PYTHON_PATH') and isItPythonCode($code)) {
                     python_run_code($code, $params, $this->object_title);
                 } else {
                     try {
