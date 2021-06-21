@@ -93,7 +93,7 @@ class jTemplate
          $res .= "<!-- begin of file $template -->";
       }
 
-      if ($this->owner->ajax)
+      if (isset($this->owner->ajax))
       {
          $this->ajax   = 1;
          $this->div_id = $this->owner->name;
@@ -116,7 +116,7 @@ class jTemplate
          $res = $this->parse($res, $this->data, $root);
       }
 
-      if ($this->ajax)
+      if (isset($this->ajax))
       {
          $res .= "<!-- end_data [" . $this->div_id . "] --></div>"; // dyn
       }
@@ -169,7 +169,7 @@ class jTemplate
       }
 
       // DYN LINKS
-      if ($this->ajax && (is_integer(strpos($res, 'dnlnk') || is_integer(strpos($res, 'dnfrm')))))
+      if (isset($this->ajax) && (is_integer(strpos($res, 'dnlnk') || is_integer(strpos($res, 'dnfrm')))))
       {
          $this->parseDynLinks($res);
       }
