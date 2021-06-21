@@ -27,7 +27,7 @@ function clearCacheData($prefix='') {
         }        
         return;
     }
-  	if(!prefix)SQLTruncateTable('cached_values');
+  	if(!$prefix)SQLTruncateTable('cached_values');
     else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");    
 }
 
@@ -112,7 +112,7 @@ function checkFromCache($key)
 
 	$rec = SQLSelectOne("SELECT * FROM cached_values WHERE KEYWORD = '" . DBSafe($key) . "'");
 
-    if ($rec['KEYWORD']) {
+    if (isset($rec['KEYWORD'])) {
         return $rec['DATAVALUE'];
     } else {
         return false;

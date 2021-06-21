@@ -43,8 +43,8 @@ def callAPI(api_url, method="GET", params={}):
 def say(ph, level=0, member_id=0, source=1):
     '''
     Работает аналогично функции saySafe на пхп, принимает значения в следующем виде
-    mjdm.say("Привет мажордомо от Питона",0)
-    mjdm.say(Тип параметра строка STR "", Тип параметра целое число INT, Тип параметра целое число INT)
+    say("Привет мажордомо от Питона",0)
+    say(Тип параметра строка STR "", Тип параметра целое число INT, Тип параметра целое число INT)
     '''
     ph = {"ph": ph}
     data = urlencode(ph).encode('utf-8')
@@ -58,11 +58,11 @@ def say(ph, level=0, member_id=0, source=1):
 def runScript(script_name, params):
     '''
     Принимает значения в следующем виде
-    mjdm.runScript ('action',{"status":"0", 'brightness':"5",'color':'#fffff2' }),
+    runScript ('action',{"status":"0", 'brightness':"5",'color':'#fffff2' }),
     либо
-    mjdm.runScript ('action')
+    runScript ('action')
 
-    mjdm.runScript (Имя скрипта строка STR "", Тип значения Словарь все значения внутри словаря заполняются как строки STR ""{Праметр1:Значение 1, праметр2:значение2, и т.д)
+    runScript (Имя скрипта строка STR "", Тип значения Словарь все значения внутри словаря заполняются как строки STR ""{Праметр1:Значение 1, праметр2:значение2, и т.д)
     '''
     callAPI("/api/script/" + script_name, "GET", params)
     return 1
@@ -71,11 +71,11 @@ def runScript(script_name, params):
 def callMethod(method_name, params):
     '''
     Принимает значения в следующем виде
-    mjdm.callMethod('XiRgbgt02.action',{"status":"0", 'brightness':"5",'color':'#fffff2' }),
+    callMethod('XiRgbgt02.action',{"status":"0", 'brightness':"5",'color':'#fffff2' }),
     либо
-    mjdm.callMethod('XiRelay10.turnOff')
+    callMethod('XiRelay10.turnOff')
 
-    mjdm.callMethod (Имя метода строка STR "", Тип параметра Словарь все значения внутри словаря заполняются как строки STR ""{Праметр1:Значение 1, праметр2:значение2, и т.д)
+    callMethod (Имя метода строка STR "", Тип параметра Словарь все значения внутри словаря заполняются как строки STR ""{Праметр1:Значение 1, праметр2:значение2, и т.д)
     '''
     callAPI("/api/method/" + method_name, "GET", params)
     return 1
