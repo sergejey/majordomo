@@ -35,14 +35,13 @@ $result = $app->run();
 endMeasure('apprun');
 
 startMeasure('part2');
-/* dont used block
+
 if ($filterblock != '')
 {
    $blockPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($blockPattern, $result, $match);
    $result = $match[1];
 }
-*/
 
 startMeasure('languageConstants');
 if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
