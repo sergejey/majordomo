@@ -35,13 +35,14 @@ $result = $app->run();
 endMeasure('apprun');
 
 startMeasure('part2');
-
+/* dont used block
 if ($filterblock != '')
 {
    $blockPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($blockPattern, $result, $match);
    $result = $match[1];
 }
+*/
 
 startMeasure('languageConstants');
 if (preg_match_all('/&\#060\#LANG_(.+?)\#&\#062/is', $result, $matches))
@@ -77,7 +78,7 @@ endMeasure('accelerationProcess');
 endMeasure('part2');
 
 
-if ($_GET['part_load']) {
+if (isset($_GET['part_load'])) {
 
    $res=array();
    $res['TITLE']='';
@@ -125,7 +126,7 @@ if ($_GET['part_load']) {
 startMeasure('echoall');
 
 
-if (is_array($_GET['dynids'])) {
+if (isset($_GET['dynids']) and is_array($_GET['dynids'])) {
 
    $data = array();
    foreach ($_GET['dynids'] as $data_id) {
