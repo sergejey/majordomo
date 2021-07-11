@@ -26,6 +26,12 @@ class market extends module
         $this->title = "<#LANG_MODULE_MARKET#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
+        $this->mode = null;
+        $this->ajax = null;
+        $this->view_mode = null;
+        $this->edit_mode = null;
+        $this->tab = null;
+        $this->single_rec = null;
     }
 
     /**
