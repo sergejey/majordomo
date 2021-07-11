@@ -16,6 +16,7 @@ class panel extends module
     function __construct()
     {
         $this->name = "panel";
+        $this->print = null;
     }
 
 // --------------------------------------------------------------------
