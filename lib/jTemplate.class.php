@@ -116,7 +116,7 @@ class jTemplate
          $res = $this->parse($res, $this->data, $root);
       }
 
-      if ($this->ajax)
+      if (isset($this->ajax) && $this->ajax)
       {
          $res .= "<!-- end_data [" . $this->div_id . "] --></div>"; // dyn
       }
@@ -169,7 +169,7 @@ class jTemplate
       }
 
       // DYN LINKS
-      if ($this->ajax && (is_integer(strpos($res, 'dnlnk') || is_integer(strpos($res, 'dnfrm')))))
+      if (isset($this->ajax) && $this->ajax && (is_integer(strpos($res, 'dnlnk') || is_integer(strpos($res, 'dnfrm')))))
       {
          $this->parseDynLinks($res);
       }

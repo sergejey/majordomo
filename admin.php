@@ -36,7 +36,7 @@ endMeasure('apprun');
 
 startMeasure('part2');
 
-if ($filterblock != '')
+if (isset($filterblock) and $filterblock != '')
 {
    $blockPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($blockPattern, $result, $match);
