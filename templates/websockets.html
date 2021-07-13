@@ -66,10 +66,10 @@
 	}
 	
 	$(document).ready(function(){
-		[#if "<#DISABLE_WEBSOCKETS#>"!="1"#]
+		[#if DISABLE_WEBSOCKETS!=1#]
 		console.clear();
 		startWebSockets();
-		[#endif#]
+		[#endif DISABLE_WEBSOCKETS#]
 	});
 
 </script>
