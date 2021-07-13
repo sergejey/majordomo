@@ -164,6 +164,8 @@ class saverestore extends module
 
         if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp')) {
             $out['CLEAR_FIRST'] = 1;
+        } else {
+            $out['CLEAR_FIRST'] = 0;
         }
 
         $update_url = $this->getUpdateURL();
