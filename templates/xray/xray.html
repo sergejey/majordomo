@@ -236,7 +236,7 @@ $(document).ready(function() {
 	  var bodyText='';
 	  [#if CODE_ID!=""#]bodyText=$('#[#CODE_ID#]').val();[#endif CODE_ID#]
 	  $.post(url, 
-	  { action:"context", ajax: "1", op: "process", keyword: "<#KEYWORD#>", type: "<#TYPE#>", body: bodyText},
+	  { action:"context", ajax: "1", op: "process", [#if KEYWORD!=""#] keyword: "[#KEYWORD#]" [#endif KEYWORD#], [#if TYPE!=""#] type: "[#TYPE#]" [#endif TYPE#], body: bodyText},
 	   function(data) {
 		$('#contextBody').html(data);
 	   }
