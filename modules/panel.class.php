@@ -59,7 +59,9 @@ class panel extends module
         if (defined('NO_DATABASE_CONNECTION')) {
          if (!$action) $action = 'saverestore';
          $this->print = 1;
-        }
+        } else {
+			$this->print = null;
+		}
 		
         if (!$this->action && $action) {
             $this->action = $action;
@@ -126,7 +128,7 @@ class panel extends module
             include_once(DIR_MODULES . 'inc_panel_ajax.php');
         }
 
-        if ($this->print || $_GET['print']) {
+        if ($this->print || (isset($_GET['print']) && $_GET['print'])) {
             $this->print = 1;
             $out['PRINT'] = 1;
         }
