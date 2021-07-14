@@ -4,54 +4,47 @@
  * @param mixed $prefix prefix
  * @return void
  */
-function clearCacheData($prefix='') {
-		$prefix=strtolower($prefix);
-    /*
-    $apcu_available = function_exists('apcu_enabled') && apcu_enabled();
-    if ($apcu_available) {
-        apcu_clear_cache();
-    }
-    */
+function clearCacheData($prefix = '')
+{
+    $prefix = strtolower($prefix);
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
             $redisConnection = new Redis();
             $redisConnection->pconnect(USE_REDIS);
         }
-        if(!prefix)$redisConnection->flushDB();
-        else
-        {
-        		$list=$redisConnection->getKeys($prefix."*");
-		    		foreach($list as $key1) 
-		    			$redisConnection->del($key1);
-        }        
+        if (!$prefix) $redisConnection->flushDB();
+        else {
+            $list = $redisConnection->getKeys($prefix . "*");
+            foreach ($list as $key1)
+                $redisConnection->del($key1);
+        }
         return;
     }
-  	if(!$prefix)SQLTruncateTable('cached_values');
-    else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");    
+    if (!$prefix) SQLTruncateTable('cached_values');
+    else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");
 }
 
 /**
  *  Return all Cache Data from prefix
  * Summary of getAllCache
- * @param mixed $prefix 
+ * @param mixed $prefix
  * @return array
  */
-function getAllCache($prefix='')
+function getAllCache($prefix = '')
 {
-	$prefix=strtolower($prefix);
-	$out=array();
+    $prefix = strtolower($prefix);
+    $out = array();
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
             $redisConnection = new Redis();
             $redisConnection->pconnect(USE_REDIS);
         }
-        $list=$redisConnection->getKeys($prefix."*");
-		    foreach($list as $key1) 
-    			$out[$key1]=$redisConnection->get($key1);
-    }
-    else $out=SQLExec("select * from cached_values where KEYWORD like '$prefix%'");
+        $list = $redisConnection->getKeys($prefix . "*");
+        foreach ($list as $key1)
+            $out[$key1] = $redisConnection->get($key1);
+    } else $out = SQLExec("select * from cached_values where KEYWORD like '$prefix%'");
     return $out;
 }
 
@@ -64,9 +57,9 @@ function getAllCache($prefix='')
  */
 function saveToCache($key, $value)
 {
-		$key=strtolower($key);
+    $key = strtolower($key);
     if (is_array($value) || strlen($value) > 255) {
-	    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
+        SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
         return;
     }
 
@@ -80,7 +73,7 @@ function saveToCache($key, $value)
         return;
     }
 
-	$rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
+    $rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
     $sqlQuery = "REPLACE INTO cached_values (KEYWORD, DATAVALUE) " .
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
         "'" . DbSafe1($rec['DATAVALUE']) . "')";
@@ -94,7 +87,7 @@ function saveToCache($key, $value)
  */
 function checkFromCache($key)
 {
-		$key=strtolower($key);
+    $key = strtolower($key);
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
@@ -110,7 +103,7 @@ function checkFromCache($key)
     }
 
 
-	$rec = SQLSelectOne("SELECT * FROM cached_values WHERE KEYWORD = '" . DBSafe($key) . "'");
+    $rec = SQLSelectOne("SELECT * FROM cached_values WHERE KEYWORD = '" . DBSafe($key) . "'");
 
     if (isset($rec['KEYWORD'])) {
         return $rec['DATAVALUE'];
@@ -177,7 +170,7 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
         }
     }
 
-    if (!Is_Object($wsClient) && IsSet($_SERVER['REQUEST_METHOD'])) {
+    if (!Is_Object($wsClient) && isset($_SERVER['REQUEST_METHOD'])) {
         return false;
     }
 
@@ -208,7 +201,7 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
         }
     }
 
-    if (!$data_sent && !IsSet($_SERVER['REQUEST_METHOD'])) {
+    if (!$data_sent && !isset($_SERVER['REQUEST_METHOD'])) {
         //reconnect
         $wsClient = new WebsocketClient;
         if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
