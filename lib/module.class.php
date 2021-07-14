@@ -203,7 +203,7 @@ class module
 
                     // setting params for current module
                     // module has instance in params
-                    if ($cr['instance'] != '') {
+                    if (isset($cr['instance']) && $cr['instance'] != '') {
                         $instance_params[$module_name][$cr['instance']] = $cr;
                     } else {
                         // module has no instance
