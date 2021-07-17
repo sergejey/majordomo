@@ -332,7 +332,7 @@ class jTemplate
                 if (defined($matches[1][$i])) {
                     $res = str_replace($matches[0][$i], constant($matches[1][$i]), $res);
                 } else {
-                    if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]='';
+                    if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]=null;
                     $res = str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
                 }
             }
@@ -355,7 +355,7 @@ class jTemplate
             $count_matches_0 = count($matches[0]);
 
             for ($i = 0; $i < $count_matches_0; $i++) {
-                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]='';
+                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]=null;
                 $var = $hash[$matches[1][$i]];
                 $line1 = $matches[2][$i];
                 $res1 = "";
@@ -456,7 +456,7 @@ class jTemplate
         if (preg_match_all('/<#(\w+?)\.(\w+?)#>/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_1 = count($matches[1]);
             for ($i = 0; $i < $count_matches_1; $i++) {
-                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]]='';
+                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]]=null;
                 $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]][$matches[2][$i]]), $res);
             }
         }
