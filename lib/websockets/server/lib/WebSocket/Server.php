@@ -46,7 +46,9 @@ class Server extends Socket
                 while(true)
                 {
                         $changed_sockets = $this->allsockets;
-                        @stream_select($changed_sockets, $write = null, $except = null, 0, 5000);                       
+                        $write = null;
+                        $except = null;
+                        @stream_select($changed_sockets, $write, $except, 0, 5000);                       
                         foreach($changed_sockets as $socket)
                         {
                                 if($socket == $this->master)
