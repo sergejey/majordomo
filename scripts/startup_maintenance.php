@@ -37,9 +37,6 @@ if (!is_dir($target_dir)) {
     $full_backup = 1;
 }
 
-if (!defined('BACKUP_FILES_EXPIRE')) {
-    define('BACKUP_FILES_EXPIRE', 10);
-}
 if (!defined('CACHED_FILES_EXPIRE')) {
     define('CACHED_FILES_EXPIRE', 30);
 }
