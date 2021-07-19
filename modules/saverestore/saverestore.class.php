@@ -308,10 +308,10 @@ class saverestore extends module
         }
 
         if ($this->mode != 'savedetails') {
-            $out['FTP_HOST'] = $this->config['FTP_HOST'];
-            $out['FTP_USERNAME'] = $this->config['FTP_USERNAME'];
-            $out['FTP_PASSWORD'] = $this->config['FTP_PASSWORD'];
-            $out['FTP_FOLDER'] = $this->config['FTP_FOLDER'];
+            if (isset($this->config['FTP_HOST'])) $out['FTP_HOST'] = $this->config['FTP_HOST'];
+            if (isset($this->config['FTP_USERNAME'])) $out['FTP_USERNAME'] = $this->config['FTP_USERNAME'];
+            if (isset($this->config['FTP_PASSWORD'])) $out['FTP_PASSWORD'] = $this->config['FTP_PASSWORD'];
+            if (isset($this->config['FTP_FOLDER'])) $out['FTP_FOLDER'] = $this->config['FTP_FOLDER'];
         }
 
 // if ($this->mode=='' || $this->mode=='upload' || $this->mode=='savedetails') {
