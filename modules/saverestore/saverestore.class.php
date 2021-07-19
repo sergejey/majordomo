@@ -61,6 +61,8 @@ class saverestore extends module
         }
         if (isset($mode)) {
             $this->mode = $mode;
+        } else {
+            $this->mode = false;
         }
         if (isset($view_mode)) {
             $this->view_mode = $view_mode;
