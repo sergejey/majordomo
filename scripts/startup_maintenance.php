@@ -37,10 +37,6 @@ if (!is_dir($target_dir)) {
     $full_backup = 1;
 }
 
-
-if (!defined('LOG_FILES_EXPIRE')) {
-    define('LOG_FILES_EXPIRE', 5);
-}
 if (!defined('BACKUP_FILES_EXPIRE')) {
     define('BACKUP_FILES_EXPIRE', 10);
 }
@@ -53,24 +49,6 @@ echo "Target: " . $target_dir . PHP_EOL;
 echo "Full backup: " . $full_backup . PHP_EOL;
 
 sleep(5);
-
-//removing old log files
-if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
-    $path = SETTINGS_SYSTEM_DEBMES_PATH;
-} elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
-    $path = LOG_DIRECTORY;
-} else {
-    $path = ROOT . 'cms/debmes';
-}
-
-$dir = $path . "/";
-
-foreach (glob($dir . "*") as $file) {
-    if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
-        DebMes("Removing log file " . $file, 'backup');
-        @unlink($file);
-    }
-}
 
 if ($full_backup) {
     DebMes("Backing up files...", 'backup');
