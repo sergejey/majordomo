@@ -120,6 +120,20 @@ foreach ($dirs_to_check as $d) {
     }
 }
 
+//removing old log files
+if (!defined('LOG_FILES_EXPIRE')) {
+    define('LOG_FILES_EXPIRE', 5);
+}
+$dir = $path . "/";
+
+foreach (glob($dir . "*") as $file) {
+    if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
+        DebMes("Removing log file " . $file, 'backup');
+		echo "Removing log file " . $file  ;
+        @unlink($file);
+        echo "OK" . "\n";
+    }
+}
 
 //restoring database backup (if was saving periodically)
 if (file_exists($db_filename)) {
