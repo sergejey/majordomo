@@ -100,3 +100,5 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('LOWER_BACKGROUND_PROCESSES',1); // lower number of background processes created
 //define('USE_REDIS','127.0.0.1'); // use Redis for caching
 //define('LOG_FILES_EXPIRE', 5); // for delete log files
+//define('BACKUP_FILES_EXPIRE', 10); // for delete backup files
+//define('CACHED_FILES_EXPIRE', 30); // for delete cached files
