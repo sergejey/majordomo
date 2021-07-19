@@ -135,6 +135,26 @@ foreach (glob($dir . "*") as $file) {
     }
 }
 
+// removing old files from cms/saverestore
+if (!defined('BACKUP_FILES_EXPIRE')) {
+    define('BACKUP_FILES_EXPIRE', 10);
+}
+if (is_dir(ROOT . 'cms/saverestore')) {
+    $files = scandir(ROOT . 'cms/saverestore');
+    foreach ($files as $file) {
+        $path = ROOT . 'cms/saverestore/' . $file;
+        if (is_file($path)
+            && (preg_match('/\.tgz$/', $file) || preg_match('/\.tar\.gz$/', $file) || preg_match('/\.zip\.gz$/', $file))
+            && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60
+        ) {
+            echo("Removing $path");
+            DebMes("Removing $path.", 'backup');
+            @unlink($path);
+			echo "OK" . "\n";
+        }
+    }
+}
+
 //restoring database backup (if was saving periodically)
 if (file_exists($db_filename)) {
     echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
