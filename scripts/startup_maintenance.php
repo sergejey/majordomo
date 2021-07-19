@@ -90,22 +90,6 @@ if ($full_backup) {
     echo "OK\n";
 }
 
-
-// removing old files from cms/saverestore
-if (is_dir(ROOT . 'cms/saverestore')) {
-    $files = scandir(ROOT . 'cms/saverestore');
-    foreach ($files as $file) {
-        $path = ROOT . 'cms/saverestore/' . $file;
-        if (is_file($path)
-            && (preg_match('/\.tgz$/', $file) || preg_match('/\.tar\.gz$/', $file) || preg_match('/\.zip\.gz$/', $file))
-            && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60
-        ) {
-            echonow("Removing $path");
-            DebMes("Removing $path.", 'backup');
-            @unlink($path);
-        }
-    }
-}
 // removing old backus
 if (is_dir($backups_dir)) {
     $backups = scandir($backups_dir);
