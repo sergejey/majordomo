@@ -99,8 +99,10 @@ class saverestore extends module
         $out['EDIT_MODE'] = $this->edit_mode;
         $out['MODE'] = $this->mode;
         $out['ACTION'] = $this->action;
-        if ($this->single_rec) {
-            $out['SINGLE_REC'] = 1;
+        if (isset ($this->single_rec) && $this->single_rec) {
+            $out['SINGLE_REC'] = true;
+        } else {
+            $out['SINGLE_REC'] = false;
         }
         $this->data = $out;
         $p = new parser(DIR_TEMPLATES . $this->name . "/" . $this->name . ".html", $this->data, $this);
