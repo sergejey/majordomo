@@ -28,4 +28,4 @@ jobs:
        uses: ryanvade/enforce-pr-description-length-action@v1
        with:
         # Specific minimum length the descrption must be.
-        minLength: 5# optional
+        minLength: 5
