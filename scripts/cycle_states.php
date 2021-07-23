@@ -19,10 +19,19 @@ setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 $cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 $objects = getObjectsByClass('systemStates');
-$total = count($objects);
+if (is_array($objects) || $objects instanceof Countable) {
+	$total = count($objects);
+	echo $total . " objects by class systemStates." . "\n";
+} else {
+	$total = 0;
+	echo "No systemStates objects found....". "\n";
+	exit;
+}
 
 if ($_GET['once'])
 {
+	
+   echo "Runing once.......";
    $last_run = getGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run');
 
    if ((time() - $last_run) > 5 * 60)
@@ -34,7 +43,8 @@ if ($_GET['once'])
       }
    }
 
-   echo "OK";
+   echo "OK" . "\n";
+   exit;
 }
 else
 {
@@ -54,9 +64,8 @@ else
          }
       }
 
-      if (file_exists('./reboot') || IsSet($_GET['onetime']))
-      {
-         exit;
+	  if (isRebootRequired() || IsSet($_GET['onetime'])) {
+        exit;
       }
 
       sleep(1);
