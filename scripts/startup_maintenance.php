@@ -66,14 +66,14 @@ $dir = $path . "/";
 
 foreach (glob($dir . "*") as $file) {
     if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
-		echo "Removing log file ....." . $file;
+        echo "Removing log file ....." . $file;
         if (@unlink($file)) {
-			DebMes("Removing log file " . $file . ' OK', 'backup');
-			echo "OK" . "\n";
-		} else {
-			DebMes("Removing log file " . $file . ' ERROR', 'backup');
-			echo " ERROR" . "\n";
-		}
+            DebMes("Removing log file " . $file . ' OK', 'backup');
+            echo "OK" . "\n";
+        } else {
+            DebMes("Removing log file " . $file . ' ERROR', 'backup');
+            echo " ERROR" . "\n";
+        }
     }
 }
 
@@ -93,14 +93,14 @@ if ($full_backup) {
             $d == 'saverestore'
         ) continue;
         DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'backup');
-		echo "Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d . ' ..... ';
-        if (copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1)) {
-			DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'backup');
-			echo "OK" . "\n";
-		} else {
-			DebMes("Error Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d . ' Wrong path or wrong rights to files...', 'backup');
-			echo "ERROR, Wrong path or wrong rights to files..." . "\n";
-		}
+        echo "Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d . ' ..... ';
+        if (@copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1)) {
+             DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'backup');
+             echo "OK" . "\n";
+        } else {
+             DebMes("Error Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d . ' Wrong path or wrong rights to files...', 'backup');
+             echo "ERROR, Wrong path or wrong rights to files..." . "\n";
+        }
     }
 	
 
