@@ -41,7 +41,7 @@ if ($timerClass['SUB_LIST'] != '') {
 
 $old_minute = date('i');
 $old_hour = date('h');
-if ($_GET['onetime']) {
+if (isset($_GET['onetime']) && $_GET['onetime']) {
     $old_minute = -1;
     if (date('i') == '00') {
         $old_hour = -1;
