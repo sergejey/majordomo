@@ -224,6 +224,7 @@
 		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
 		chart.dataSource.parser = new am4core.JSONParser();
 		chart.dataSource.reloadFrequency = 180000;
+		
 
 		chart.padding(20, 20, 20, 20);
 
@@ -235,10 +236,17 @@
 		categoryAxis.renderer.grid.template.disabled = true;
 
 		var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+		valueAxis.calculateTotals = true;
 		valueAxis.min = 0;
-		valueAxis.extraMax = 0.1;
-		//valueAxis.rangeChangeEasing = am4core.ease.linear;
-		//valueAxis.rangeChangeDuration = 1500;
+		valueAxis.max = 150000;
+		valueAxis.strictMinMax = true;
+		
+		chart.cursor = new am4charts.XYCursor();
+		chart.scrollbarY = new am4core.Scrollbar();
+		chart.scrollbarY.parent = chart.leftAxesContainer;
+
+		chart.cursor.behavior = "none";
 
 		var series = chart.series.push(new am4charts.ColumnSeries());
 		series.dataFields.categoryX = "NAME";
@@ -247,8 +255,6 @@
 		series.columns.template.strokeOpacity = 0;
 		series.columns.template.column.cornerRadiusTopRight = 4;
 		series.columns.template.column.cornerRadiusTopLeft = 4;
-		//series.interpolationDuration = 1500;
-		//series.interpolationEasing = am4core.ease.linear;
 		var labelBullet = series.bullets.push(new am4charts.LabelBullet());
 		labelBullet.label.verticalCenter = "bottom";
 		labelBullet.label.dy = -10;
@@ -256,7 +262,6 @@
 
 		chart.zoomOutButton.disabled = true;
 
-		// as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
 		series.columns.template.adapter.add("fill", function (fill, target) {
 			return chart.colors.getIndex(target.dataItem.index);
 		});
@@ -271,7 +276,7 @@
 
 		categoryAxis.sortBySeries = series;
 
-		}); // end am4core.ready()
+		});
 		</script>
 		<!-- HTML -->
 		<div id="hint_howmaxdbsizehint" style="display:none;">
