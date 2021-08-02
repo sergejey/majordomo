@@ -1349,6 +1349,7 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Min level (work)',
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
+    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Do not change level on switch',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
 
     'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',
@@ -1361,6 +1362,7 @@ $dictionary = array(
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
     'SYSTEM_DEVICE' => 'System device',
+	'ARCHIVED_DEVICE' => 'Archived device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',
@@ -1551,6 +1553,12 @@ $dictionary = array(
 	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. The script should return the following JSON object: ',
 	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. That\'s all. The control panel will pick up the script by itself and display the content on the main page. ',
 	
+	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Select a module ...',
+	'NEWDASH_CONSOLE_SIZE_HINT' => 'This console can be resized',
+	'NEWDASH_SEARCH_HINT' => 'System-wide global search. Start typing ... ',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Your copy of MajorDoMo cannot contact the Connect server. Due to this, the market and some other functions will be unavailable. ',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Usually the situation will improve after a few minutes.',
+
 	'NEWDASH_RESULT' => 'Result',
 	'NEWDASH_MJDM_VERSION' => 'Current MJDM version',
 	

@@ -1348,6 +1348,7 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
+    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Не изменять уровень при переключении',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
     'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
@@ -1357,6 +1358,7 @@ $dictionary = array(
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
+	'ARCHIVED_DEVICE' => 'Архивное утройство',
 
     'ROOMS' => 'Комнаты',
     'APPEARANCE' => 'Внешний вид',
@@ -1549,6 +1551,12 @@ $dictionary = array(
 	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Создайте сценарий с именем:',
 	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. Сценарий должен отдавать следующий JSON объект:',
 	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.',
+	
+	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Выберите модуль...',
+	'NEWDASH_CONSOLE_SIZE_HINT' => 'Размер консоли можно изменить',
+	'NEWDASH_SEARCH_HINT' => 'Глобальный поиск по всей системе. Начните вводить...',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции будут недоступны.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Обычно, ситуация налаживаться спустя несколько минут.',
 	
 	'NEWDASH_RESULT' => 'Результат',
 	'NEWDASH_MJDM_VERSION' => 'Текущая версия MJDM',

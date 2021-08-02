@@ -823,7 +823,7 @@
 				<div class="modal-body">
 					<div class="alert searchNoty" style="background: radial-gradient(circle farthest-corner at 450px 10px, #5994be, #17b9ca);color: white;text-align: center;border: 0px;">
 						<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
-						Глобальный поиск по всей системе. Начните вводить...
+						<#LANG_NEWDASH_SEARCH_HINT#>
 					</div>
 					
 					<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
@@ -856,7 +856,7 @@
 					</span>
 				</div>
 				<select class="form-control" id="currModuleName" style="display:none;margin-top: 10px;" onchange="insertModuleInConsole($(this).val());">
-					<option value="0">Выберите модуль...</option>
+					<option value="0"><#LANG_NEWDASH_CONSOLE_CHOOSE_MODULE#></option>
 					
 					[#begin SUB_MODULES#]
 						[#if NAME#]<option value="[#NAME#]">[#TITLE#]</option>[#endif#]
@@ -873,7 +873,7 @@
 				<div style="color: gray;font-style: italic;"><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: Wait command...</div>
 			</div>
 			<div id="console_output_hintResize" style="display: none;text-align: right;">
-				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="<#ROOTHTML#>img/arrow_hint.png">
+				<span style="vertical-align: sub;color: gray;font-size: 1rem;"><#LANG_NEWDASH_CONSOLE_SIZE_HINT#></span> <img style="width: 40px;" src="<#ROOTHTML#>img/arrow_hint.png">
 			</div>
 		</div>
 		
@@ -1003,8 +1003,8 @@
 					[#endif#]
 					<div class="col-xs-12 col-sm-12 col-md-12" id="problemLinkToConnect" style="display:none;padding-left: 0px;padding-right: 0px;">
 						<div class="alert alert-danger" style="background-image: url(<#ROOTHTML#>img/icons/highAlertIcon.gif);background-repeat: no-repeat;background-size: contain;background-position: right center;">
-							<b>Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции будут недоступны.</b>
-							<p style="font-size: 1rem;">Обычно, ситуация налаживаться спустя несколько минут.</p>
+							<b><#NEWDASH_CONNECT_CONNECT_ERROR_1#></b>
+							<p style="font-size: 1rem;"><#NEWDASH_CONNECT_CONNECT_ERROR_2#></p>
 						</div>
 					</div> 
 					
