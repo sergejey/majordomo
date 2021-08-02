@@ -54,11 +54,16 @@
 		var filterTimer;
 
 		function filterSearch() {
-			$('#filter_add').html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
+			$('#filter_add').show().html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
 			$('.searchNoty').hide();
 			
 			var title = $('#filter_modules').val();
 			var urlFilter="?";
+
+			if(title.length <= 2) {
+				$('#filter_add').show().html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Введите более 2-х символов для поиска...</div>');
+				return;
+			}
 			
 			urlFilter+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
 
@@ -675,7 +680,12 @@
 		}
 		[#endif#]
 	</script>
-
+	
+	<style>
+	.modal-lg {
+		width: 80%;
+	}
+	</style>
 	[#if PRINT!="1"#]
 	<style>
 		.dropdown-submenu {
@@ -818,7 +828,7 @@
 	</nav>
 	
 	<div class="modal fade" id="mdmGlobalSearchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-body">
 					<div class="alert searchNoty" style="background: radial-gradient(circle farthest-corner at 450px 10px, #5994be, #17b9ca);color: white;text-align: center;border: 0px;">
@@ -826,13 +836,16 @@
 						<#LANG_NEWDASH_SEARCH_HINT#>
 					</div>
 					
-					<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+					<div class="input-group input-group-lg">
+						<span class="input-group-addon">Ищем:</span>
+						<input type="text" class="form-control input-group-lg" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+					</div>
 					
 					<div id="filter_add" style="display:none;overflow-x: hidden;white-space: nowrap;border: 1px solid #ddd;padding: 5px;max-height: 300px;overflow-y: auto;border-radius: 5px;margin-top: 5px;">
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+					<button type="button" onclick="$('#filter_modules').val('');filterSearch();" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
 				</div>
 			</div>
 		</div>
@@ -1001,6 +1014,7 @@
 						
 					</div>
 					[#endif#]
+					
 					<div class="col-xs-12 col-sm-12 col-md-12" id="problemLinkToConnect" style="display:none;padding-left: 0px;padding-right: 0px;">
 						<div class="alert alert-danger" style="background-image: url(<#ROOTHTML#>img/icons/highAlertIcon.gif);background-repeat: no-repeat;background-size: contain;background-position: right center;">
 							<b><#NEWDASH_CONNECT_CONNECT_ERROR_1#></b>
