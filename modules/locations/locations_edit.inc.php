@@ -34,6 +34,7 @@
    } else {
     $out['ERR']=1;
    }
+   $this->redirect("?");
   }
   if (is_array($rec)) {
    foreach($rec as $k=>$v) {
@@ -43,4 +44,5 @@
    }
   }
   outHash($rec, $out);
+  
 ?>
