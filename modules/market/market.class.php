@@ -147,7 +147,7 @@ class market extends module
         if (!$this->mode && $mode) {
             $this->mode = $mode;
         }
-
+		
         $this->can_be_updated = array();
         $this->can_be_updated_new = array();
         $this->have_updates = array();
@@ -183,6 +183,7 @@ class market extends module
             global $mode2;
             global $name;
             global $names;
+            global $value;
 
             if (is_array($names)) {
                 $out['NAMES'] = urlencode(implode(',', $names));
@@ -190,6 +191,14 @@ class market extends module
             $out['NAME'] = urlencode($name);
 
             $out['MODE2'] = $mode2;
+			
+			if($mode2 == 'dontupdate' && $name) {
+				if(!$value) {
+					$this->redirect(SERVER_URL."/panel/market.html");
+				}
+				$this->dontupdate($name, $value);
+			}
+			
             return;
         }
 
@@ -409,6 +418,8 @@ class market extends module
                         if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
                             $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                         }
+						
+						//var_dump($rec["LATEST_VERSION"]);
                         /*
                         if (in_array($rec['MODULE_NAME'], $names)) {
                             $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
@@ -856,7 +867,13 @@ class market extends module
      *
      * @access public
      */
-    function uninstallPlugin($name, $frame = 0)
+    function dontupdate($name, $value) {
+		SQLExec("UPDATE plugins SET CURRENT_VERSION = '".DBSafe($value)."' WHERE MODULE_NAME = '".DBSafe($name)."' LIMIT 1");
+		debmes(DBSafe($name));
+		$this->redirect(SERVER_URL."/panel/market.html");
+	}
+	
+	function uninstallPlugin($name, $frame = 0)
     {
         if ($frame) {
             $this->echonow("Removing module '$name' from database ... ");
