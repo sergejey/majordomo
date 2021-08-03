@@ -232,6 +232,8 @@ class saverestore extends module
 					
                     $out['LATEST_CURR_BRANCH'] = $this->config['LATEST_CURR_BRANCH'];
                     $out['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
+                    $out['LATEST_UPDATED_ID_SLICE'] = mb_strtoupper(substr($this->config['LATEST_UPDATED_ID'], 0, 7));
+                    $out['LATEST_UPDATED_TIME'] = gg('LatestUpdateTimestamp');
               
 					$currBranch = explode("/", $update_url);
 					$out['UPDATE_CURR_BRANCH'] = mb_strtoupper(explode('.', $currBranch[6])[0]);

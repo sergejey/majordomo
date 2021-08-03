@@ -48,17 +48,20 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 			[#endif#]
 			</div>
 			<div class="col-md-4 text-right" style="margin: auto;">
+				<div class="btn-group">
 				[#if CAN_DOWNLOAD="1"#]
-					[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" style="border-color: #ffffff;" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
-					<a class="btn btn-[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]success[#else#]warning[#endif#]" style="border-color: #ffffff;" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> [#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<#LANG_UPDATE#>[#else#]Перекачать[#endif#][#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+					[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
+					<a class="btn btn-[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]success[#else#]warning[#endif#]" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> [#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<#LANG_UPDATE#>[#else#]Перекачать[#endif#][#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+					[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<a class="btn btn-danger" style="background: #aa22a6;border-color: #8d0789;"  onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=dontupdate&name=[#MODULE_NAME#]&value=[#LATEST_VERSION#]"><i class="glyphicon glyphicon-minus-sign"></i> Не обновлять</a>[#endif#]
 				[#else#]
 					[#if PRICE != ""#]
-						[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" style="border-color: #ffffff;" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
-						<a class="btn btn-info" style="border-color: #ffffff;" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-usd"></i> <#LANG_NEWMARKET_BUY_FOR#> [#PRICE#]</a>
+						[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
+						<a class="btn btn-info" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-usd"></i> <#LANG_NEWMARKET_BUY_FOR#> [#PRICE#]</a>
 					[#endif PRICE#]
 				[#endif#]
 				
 				[#if EXISTS#]<a class="btn btn-danger" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>[#endif#]
+				</div>
 			</div>
 			</div>
 		</div>
