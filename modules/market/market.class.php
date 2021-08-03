@@ -869,7 +869,6 @@ class market extends module
      */
     function dontupdate($name, $value) {
 		SQLExec("UPDATE plugins SET CURRENT_VERSION = '".DBSafe($value)."' WHERE MODULE_NAME = '".DBSafe($name)."' LIMIT 1");
-		debmes(DBSafe($name));
 		$this->redirect(SERVER_URL."/panel/market.html");
 	}
 	
