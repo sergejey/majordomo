@@ -52,7 +52,7 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 				[#if CAN_DOWNLOAD="1"#]
 					[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
 					<a class="btn btn-[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]success[#else#]warning[#endif#]" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> [#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<#LANG_UPDATE#>[#else#]Перекачать[#endif#][#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
-					[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<a class="btn btn-danger" style="background: #aa22a6;border-color: #8d0789;"  onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=dontupdate&name=[#MODULE_NAME#]&value=[#LATEST_VERSION#]"><i class="glyphicon glyphicon-minus-sign"></i> Не обновлять</a>[#endif#]
+					[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>" AND INSTALLED_VERSION != ''#]<a class="btn btn-danger" style="background: #aa22a6;border-color: #8d0789;"  onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=dontupdate&name=[#MODULE_NAME#]&value=[#LATEST_VERSION#]"><i class="glyphicon glyphicon-minus-sign"></i> Не обновлять</a>[#endif#]
 				[#else#]
 					[#if PRICE != ""#]
 						[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
