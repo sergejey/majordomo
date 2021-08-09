@@ -228,7 +228,7 @@ class market extends module
 				echo '<ul class="list-group">';
                 for ($i = 0; $i < 7; $i++) {
 					if($i%2 == 0) {
-						$bgColor = 'background-color: #f5f5f5;';
+						$bgColor = 'strip';
 					} else {
 						$bgColor = '';
 					}
@@ -261,7 +261,7 @@ class market extends module
 						$body = htmlspecialchars($data[$i]['BODY']);
 					}
 					
-					echo '<li class="list-group-item" style="margin-bottom: 5px;'.$bgColor.$actualNews.'">';
+					echo '<li class="list-group-item '.$bgColor.'" style="margin-bottom: 5px;'.$actualNews.'">';
 					echo '<span class="badge">'.date('d.m.Y H:i:s', $data[$i]['ADDED_TM']).'</span>';
 					echo '<div onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" style="cursor:pointer;">'.$actualNews_Label.$postType.' '.htmlspecialchars($data[$i]['TITLE']).'</div>';			
 					echo '<div class="fullTextNewsClass" id="news_title_'.$i.'" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">'.$body.' '.$linkDetail.'</blockquote></div>';

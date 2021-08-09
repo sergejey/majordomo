@@ -1220,6 +1220,13 @@ $(document).ready(function() {
 		//$(this).popover('hide');
 	});
 	
+	//Применяем тему
+	if($.cookie('theme') == 'dark') {
+		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');
+	} else if($.cookie('theme') == 'light') {
+		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');
+	} 
+	
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 		$("nav").addClass("navbar-fixed-top");
