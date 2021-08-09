@@ -841,16 +841,18 @@ class module
 		$rec["READ"] = 0;
 		
 		if(!$rec["PLUGINS_ID"]) return json_encode(array('status' => false, 'error' => 'Only extension plugins allowed! Not system plugins!'));
-		
+
 		if(SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `plugins_noty` WHERE `PLUGINS_ID` = '".$rec["PLUGINS_ID"]."' AND `READ` = '0'")['TOTAL_UNREAD'] > 10) {
-			return json_encode(array('status' => false, 'error' => 'No more than 3 notifications until the user reads them.'));
+			return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
+		}
+		
+		$ifExest = SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `MESSAGE` = '".$str."' AND `READ` = '0'")['ID'];
+		if($ifExest['ID']) {
+			return json_encode(array('status' => false, 'error' => 'Such a record already exists. ID - '.$ifExest['ID'], 'id' => $ifExest['ID']));
 		}
 		
 		$rec["ID"] = SQLInsert("plugins_noty", $rec);
-		
-		//Почистим старое
-		
-		
+
 		return json_encode(array('status' => true, 'id' => $rec["ID"]));
 
     }
