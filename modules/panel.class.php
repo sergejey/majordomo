@@ -176,7 +176,25 @@ class panel extends module
                 } else {
                     $last_allow = $i;
                 }
-
+				
+				if(preg_match('|<#(.*?)#>|si', $modules[$i]['TITLE'], $arr)) {
+					$titleSearchNoty = constant($arr[1]);
+				} else {
+					$titleSearchNoty = $modules[$i]['NAME'];
+				}
+			
+				$getNOTY = SQLSelect("SELECT * FROM `plugins_noty` WHERE `PLUGINS_ID` = (SELECT ID FROM `plugins` WHERE `MODULE_NAME` = '".$titleSearchNoty."') AND `READ` = 0 ORDER BY `ADD` DESC LIMIT 10");
+				
+				if(!empty($getNOTY)) {
+					$modules[$i]['PLUGINS_NOTY_COUNT'] = count($getNOTY);
+					$modules[$i]['PLUGINS_NOTY_COLOR'] = $getNOTY[0]['TYPE'];
+					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'];
+					$modules[$i]['PLUGINS_NOTY'] = $getNOTY;
+				} else {
+					$modules[$i]['PLUGINS_NOTY_COUNT'] = 0;
+					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'];
+				}
+				
                 if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {

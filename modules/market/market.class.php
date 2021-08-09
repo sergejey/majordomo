@@ -213,6 +213,11 @@ class market extends module
             }
             exit;
         }
+		
+		if ($this->ajax && $_GET['op'] == 'readNoty' && !empty($this->id)) {
+            echo $this->readnotification($this->id);
+            exit;
+        }
 
         if ($this->ajax && $_GET['op'] == 'news') {
             $result = $this->marketRequest('op=news', 15*60); //15*60
