@@ -180,9 +180,9 @@ class panel extends module
 				if(preg_match('|<#(.*?)#>|si', $modules[$i]['TITLE'], $arr)) {
 					$titleSearchNoty = constant($arr[1]);
 				} else {
-					$titleSearchNoty = $modules[$i]['TITLE'];
+					$titleSearchNoty = $modules[$i]['NAME'];
 				}
-				
+			
 				$getNOTY = SQLSelect("SELECT * FROM `plugins_noty` WHERE `PLUGINS_ID` = (SELECT ID FROM `plugins` WHERE `MODULE_NAME` = '".$titleSearchNoty."') AND `READ` = 0 ORDER BY `ADD` DESC LIMIT 10");
 				
 				if(!empty($getNOTY)) {
@@ -192,6 +192,7 @@ class panel extends module
 					$modules[$i]['PLUGINS_NOTY'] = $getNOTY;
 				} else {
 					$modules[$i]['PLUGINS_NOTY_COUNT'] = 0;
+					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'];
 				}
 				
                 if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
@@ -213,7 +214,6 @@ class panel extends module
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
             $out["SUB_MODULES"] = $modules;
-			
         }
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {
