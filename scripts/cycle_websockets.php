@@ -40,6 +40,32 @@ $objects_module = new objects();
 $websockets_script_started=time();
 
 $cycleName=str_replace('.php', '', basename(__FILE__)) . 'Run';
-setGlobal($cycleName, time(), 1);
+setGlobal(str_replace('.php', '', basename(__FILE__)) . 'Run', time(), 1);
 
-require_once('./lib/websockets/server/server.php');
+if (!defined('WEBSOCKETS_PORT')) define('WEBSOCKETS_PORT',8001);
+
+require_once('./lib/WS/Connection.php');
+require_once('./lib/WS/Socket.php');
+require_once('./lib/WS/Server.php');
+require_once('./lib/WS/Timer.php');
+require_once('./lib/WS/TimerCollection.php');
+require_once('./lib/WS/Application/ApplicationInterface.php');
+require_once('./lib/WS/Application/Application.php');
+require_once('./lib/WS/Application/MajordomoApplication.php');
+require_once('./lib/WS/Application/StatusApplication.php');
+
+
+$server = new \Bloatless\WebSocket\Server('0.0.0.0', WEBSOCKETS_PORT);
+
+// server settings:
+$server->setMaxClients(100);
+$server->setCheckOrigin(false);
+//$server->setAllowedOrigin('foo.lh');
+$server->setMaxConnectionsPerIp(100);
+$server->setMaxRequestsPerMinute(2000);
+
+// Hint: Status application should not be removed as it displays usefull server informations:
+$server->registerApplication('status', \Bloatless\WebSocket\Application\StatusApplication::getInstance());
+$server->registerApplication('majordomo', \Bloatless\WebSocket\Application\MajordomoApplication::getInstance());
+
+$server->run();
