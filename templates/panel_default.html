@@ -124,6 +124,19 @@
 							</span>
 							<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
 						</li>
+						<li class="list-group-item">
+							Тема оформления
+							<span class="badge" style="background:transparent;">
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> Темно
+									</label>
+									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #939191;border: 0px;">
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> Светло
+									</label>
+								</div>
+							</span>
+						</li>
 					</ul>
 					<div class="well well-lg" id="dashInfoOS"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 				</div>
@@ -290,7 +303,9 @@
 			<div class="hidden-xs" onclick="hideHintCookie('howmaxdbsizehint');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
 		</div>
 		
-		<div id="structureDB_chart" style="border: 1px solid #e9e9e9;border-radius: 6px;width: 100%;height: 300px;margin-bottom:10px"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+		<div id="structureDB_chart" style="border: 1px solid #ddd;border-radius: 4px;width: 100%;height: 300px;margin-bottom:10px">
+			<center style="display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/ style="width: 20px;height: 20px;margin-right: 10px;"> <#LANG_NEWDASH_LOADING#></center>
+		</div>
 		
 		<!---
 		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/main_img/scenario.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #69d147);background-size: contain;background-repeat: no-repeat;background-position: right center;">
