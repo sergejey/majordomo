@@ -873,8 +873,6 @@ class objects extends module
         endMeasure('getPropertyByName');
         $old_value = '';
 
-        $cached_name = 'MJD:' . $this->object_title . '.' . $property;
-
         startMeasure('setproperty_update');
         if ($id) {
             $prop = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $id . "'");
@@ -977,8 +975,6 @@ class objects extends module
         }
         endMeasure('setproperty_update');
 
-        saveToCache($cached_name, $value);
-
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             isset($this->device_id) &&
@@ -1032,7 +1028,9 @@ class objects extends module
             startMeasure('setproperty_postwebsocketqueue');
             if ($old_value !== $value) {
                 postToWebSocketQueue($this->object_title . '.' . $property, $value);
-            }
+                $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+                saveToCache($cached_name, $value);
+	    }
             endMeasure('setproperty_postwebsocketqueue');
         }
 
