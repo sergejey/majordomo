@@ -444,8 +444,6 @@ function DebMes($errorMessage, $logLevel = "debug")
 
     if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
         $path = SETTINGS_SYSTEM_DEBMES_PATH;
-    } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
-        $path = LOG_DIRECTORY;
     } else {
         $path = ROOT . 'cms/debmes';
     }
