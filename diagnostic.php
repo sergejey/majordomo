@@ -172,8 +172,6 @@ if (isset($_POST['send'])) {
       $log_expire=24*60*60;
       if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
          $log_path = SETTINGS_SYSTEM_DEBMES_PATH;
-      } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
-         $log_path = LOG_DIRECTORY;
       } else {
          $log_path = ROOT . 'cms/debmes';
       }
