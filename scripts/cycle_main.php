@@ -41,7 +41,7 @@ if ($timerClass['SUB_LIST'] != '') {
 
 $old_minute = date('i');
 $old_hour = date('h');
-if ($_GET['onetime']) {
+if (isset($_GET['onetime']) && $_GET['onetime']) {
     $old_minute = -1;
     if (date('i') == '00') {
         $old_hour = -1;
@@ -101,7 +101,7 @@ while (1) {
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewMinute\n";
             sg($objects[$i]['TITLE'] . '.time', date('Y-m-d H:i:s'));
-            callMethodSafe($objects[$i]['TITLE'] . '.onNewMinute');
+            raiseEvent($objects[$i]['TITLE'] . '.onNewMinute');
         }
         $old_minute = $m;
     }
@@ -111,7 +111,7 @@ while (1) {
         processSubscriptionsSafe('HOURLY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewHour\n";
-            callMethodSafe($objects[$i]['TITLE'] . '.onNewHour');
+            raiseEvent($objects[$i]['TITLE'] . '.onNewHour');
         }
         $old_hour = $h;
     }
@@ -121,7 +121,7 @@ while (1) {
         processSubscriptionsSafe('DAILY');
         for ($i = 0; $i < $total; $i++) {
             echo date('H:i:s') . ' ' . $objects[$i]['TITLE'] . "->onNewDay\n";
-            callMethodSafe($objects[$i]['TITLE'] . '.onNewDay');
+            raiseEvent($objects[$i]['TITLE'] . '.onNewDay');
         }
         $old_date = $dt;
     }
