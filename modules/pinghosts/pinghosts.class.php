@@ -18,7 +18,7 @@ class pinghosts extends module {
 *
 * @access private
 */
-function pinghosts() {
+function __construct() {
   $this->name="pinghosts";
   $this->title="<#LANG_MODULE_PINGHOSTS#>";
   $this->module_category="<#LANG_SECTION_DEVICES#>";
