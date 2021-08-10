@@ -773,7 +773,7 @@
 				[#if HIDE_LEFT_PANEL="1"#]
 				[#begin SUB_MODULES#]
 				[#if NEW_CATEGORY#]
-				<li>
+				<li class="dropdown">
 					<!---
 					<li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
 					--->
@@ -794,6 +794,17 @@
 							<a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]
 							[#if PLUGINS_NOTY_COUNT != 0#]
 							<div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-html="true" data-content="
+							<script>
+							function showNotyDate(id) {
+								$('#notyAddtimeBlock_'+id).show();
+								$('#notyMsgBlock_'+id).hide();
+							}
+							function hideNotyDate(id) {
+								$('#notyMsgBlock_'+id).show();
+								$('#notyAddtimeBlock_'+id).hide();
+							}
+							</script>
+							
 							<div style='min-width: 25rem;'>
 							<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
 							<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
@@ -804,11 +815,14 @@
 							<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
 							[#begin PLUGINS_NOTY#]
 							<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
-								<i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]
+								<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
+								
+								<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
+								<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
+								<div class='clearfix'></div>
 							</div>
 							[#end PLUGINS_NOTY#]
 							<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
-							
 							</div>
 							" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
 							[#endif PLUGINS_NOTY#]
@@ -1014,6 +1028,17 @@
 											<a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#] 
 											[#if PLUGINS_NOTY_COUNT != 0#]
 											<div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="right" data-html="true" data-content="
+											<script>
+											function showNotyDate(id) {
+												$('#notyAddtimeBlock_'+id).show();
+												$('#notyMsgBlock_'+id).hide();
+											}
+											function hideNotyDate(id) {
+												$('#notyMsgBlock_'+id).show();
+												$('#notyAddtimeBlock_'+id).hide();
+											}
+											</script>
+											
 											<div style='min-width: 25rem;'>
 											<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
 											<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
@@ -1024,11 +1049,14 @@
 											<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
 											[#begin PLUGINS_NOTY#]
 											<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
-												<i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]
+												<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
+												
+												<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
+												<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
+												<div class='clearfix'></div>
 											</div>
 											[#end PLUGINS_NOTY#]
 											<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
-											
 											</div>
 											" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
 											[#endif PLUGINS_NOTY#]
@@ -1191,6 +1219,13 @@ $(document).ready(function() {
 	}, function() {
 		//$(this).popover('hide');
 	});
+	
+	//Применяем тему
+	if($.cookie('theme') == 'dark') {
+		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');
+	} else if($.cookie('theme') == 'light') {
+		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');
+	} 
 	
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {

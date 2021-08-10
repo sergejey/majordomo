@@ -189,6 +189,11 @@ class panel extends module
 					$modules[$i]['PLUGINS_NOTY_COUNT'] = count($getNOTY);
 					$modules[$i]['PLUGINS_NOTY_COLOR'] = $getNOTY[0]['TYPE'];
 					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'];
+					
+					foreach($getNOTY as $keyNoty => $noty) {
+						$getNOTY[$keyNoty]['ADD_HUMAN'] = date('d.m.Y H:i', $noty['ADD']);
+					}
+					
 					$modules[$i]['PLUGINS_NOTY'] = $getNOTY;
 				} else {
 					$modules[$i]['PLUGINS_NOTY_COUNT'] = 0;
