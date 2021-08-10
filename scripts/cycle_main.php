@@ -126,7 +126,7 @@ while (1) {
         $old_date = $dt;
     }
 
-    if (file_exists('./reboot') || isset($_GET['onetime'])) {
+    if (isRebootRequired() || IsSet($_GET['onetime'])) {
         exit;
     }
 
