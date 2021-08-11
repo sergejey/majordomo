@@ -30,8 +30,6 @@ if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETT
     $target_dir = $backups_dir . '/' . date('Ymd');
 }
 
-$full_backup = 0;
-
 if (is_dir($target_dir)) {
     $full_backup = 0;
 } else {
