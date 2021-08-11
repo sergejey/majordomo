@@ -1024,14 +1024,16 @@ class objects extends module
             endMeasure('linkedModulesProcessing');
         }
 
-        if (function_exists('postToWebSocketQueue')) {
+        if ($old_value !== $value) {
             startMeasure('setproperty_postwebsocketqueue');
-            if ($old_value !== $value) {
-                postToWebSocketQueue($this->object_title . '.' . $property, $value);
-                $cached_name = 'MJD:' . $this->object_title . '.' . $property;
-                saveToCache($cached_name, $value);
-	    }
+            postToWebSocketQueue($this->object_title . '.' . $property, $value);
             endMeasure('setproperty_postwebsocketqueue');
+            
+            startMeasure('save_to_cache');
+            $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+            saveToCache($cached_name, $value);
+            endMeasure('save_to_cache');
+
         }
 
         if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
