@@ -15,8 +15,7 @@ $ctl = new control_modules();
 
 $checked_time = 0;
 
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
 
 $objects = getObjectsByClass('systemStates');
 if (is_array($objects) || $objects instanceof Countable) {
@@ -36,7 +35,7 @@ if ($_GET['once'])
 
    if ((time() - $last_run) > 5 * 60)
    {
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+      echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
       for ($i = 0; $i < $total; $i++)
       {
          callMethod($objects[$i]['TITLE'] . '.checkState');
@@ -48,13 +47,14 @@ if ($_GET['once'])
 }
 else
 {
-   echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
+  echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
 
    while (1)
    {
-      if (time() - $checked_time > 10)
+      if (time() - $checked_time > 30)
       {
-         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+         //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+	 echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
          $checked_time = time();
          // saveToCache("MJD:$cycleVarName", $checked_time);
 
