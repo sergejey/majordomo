@@ -1,6 +1,6 @@
 <?php
 /*
- * @version 0.1 (auto-set)
+ * @version 0.1 (auto-set) переработать -есть вопросы с правами а бакап должен делатся сто процентов
  */
 
 echo "Running maintenance script....". "\n";
