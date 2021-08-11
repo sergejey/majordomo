@@ -970,7 +970,7 @@ class xray extends module
 							$DBstat_PerSec = preg_replace('/[^0-9.]/', '', $DBstat[7]);
 							$DBstat_PerSecType = 'main';
 							
-							if(round($DBstat_PerSec) == 0) {
+							if(round((int)$DBstat_PerSec) == 0) {
 								$select = SQLSelect("SHOW GLOBAL STATUS");
 								$array_sum = [
 									1 => 'Com_select',
