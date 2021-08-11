@@ -13,7 +13,7 @@ include_once("./load_settings.php");
  * @version 0.1 (auto-set)
  */
 
-echo "Running maintenance script";
+echo "Running maintenance script....". "\n";
 
 DebMes("Running maintenance script");
 
@@ -50,13 +50,13 @@ if (!defined('CACHED_FILES_EXPIRE')) {
 }
 
 
-echo "Target: " . $target_dir . PHP_EOL;
-echo "Full backup: " . $full_backup . PHP_EOL;
+echo "Target: " . $target_dir . "\n";
+echo "Full backup: " . $full_backup . "\n";
 
 sleep(5);
 
 //removing old log files
-if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') { // путь для логов указываем только в одном месте в панели МДМ - SETTINGS_SYSTEM_DEBMES_PATH
+if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') { 
     $path = SETTINGS_SYSTEM_DEBMES_PATH;
 } else {
     $path = DOC_ROOT . '/cms/debmes';
