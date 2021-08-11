@@ -990,6 +990,30 @@ function callMethodSafe($method_name, $params = 0)
     }
 }
 
+function raiseEvent($method_name, $params = 0)
+{
+    $tmp = explode('.', $method_name);
+    if (IsSet($tmp[2])) {
+        $object_name = $tmp[0] . '.' . $tmp[1];
+        $varname = $tmp[2];
+    } elseif (IsSet($tmp[1])) {
+        $object_name = $tmp[0];
+        $method_name = $tmp[1];
+    } else {
+        $object_name = 'ThisComputer';
+    }
+    if ($object_name == 'AllScripts') {
+        return runScriptSafe($method_name,$params);
+    }
+    $obj = getObject($object_name);
+
+    if ($obj) {
+        return $obj->raiseEvent($method_name, $params);
+    } else {
+        return 0;
+    }
+}
+
 function callAPI($api_url, $method = 'GET', $params = 0)
 {
     $is_child = false;
