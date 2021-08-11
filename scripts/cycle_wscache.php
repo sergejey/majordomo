@@ -15,10 +15,9 @@ if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS==1) {
 }
 
 SQLTruncateTable('cached_ws');
-echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
+echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
 
 $latest_sent=time();
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
 
 while (1)
 {
@@ -65,9 +64,10 @@ while (1)
 
    }
             SQLTruncateTable('cached_ws');
-		if (time() - $checked_time > 10) {
+		if (time() - $checked_time > 30) {
 			  $checked_time = time();
-			  setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', $checked_time, 1);
+			  //setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', $checked_time, 1);
+			echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
         }
    if (isRebootRequired() || IsSet($_GET['onetime']))
    {
