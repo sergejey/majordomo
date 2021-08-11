@@ -33,7 +33,7 @@ if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETT
 $full_backup = 0;
 
 if (is_dir($target_dir)) {
-    $full_backup = 1;
+    $full_backup = 0;
 } else {
 	if (@mkdir($target_dir, 0777)) $full_backup = 1;
 }
