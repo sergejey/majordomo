@@ -6,12 +6,9 @@
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 1.4
  */
-
 chdir(dirname(__FILE__));
-
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 include_once("./load_settings.php");
 
 resetRebootRequired();
@@ -20,9 +17,9 @@ set_time_limit(0);
 
 $db_filename = ROOT . 'database_backup/db.sql';
 $db_history_filename = ROOT . 'database_backup/db_history.sql';
-
 $connected = false;
 $total_restarts = 0;
+
 while (!$connected) {
     echo "Connecting to database..." . PHP_EOL;
     $connected = $db->Connect();
@@ -38,26 +35,16 @@ while (!$connected) {
         }
     }
 }
-
-
 echo "CONNECTED TO DB" . PHP_EOL;
-
 $old_mask = umask(0);
-if (is_dir(ROOT . 'cached')) {
-    DebMes("Removing cache from " . ROOT . 'cached');
-    removeTree(ROOT . 'chached');
-}
-if (is_dir(ROOT . 'cms/cached')) {
-    DebMes("Removing cache from " . ROOT . 'cms/cached');
-    removeTree(ROOT . 'cms/chached');
-}
 
 // moving some folders to ./cms/
 $move_folders = array(
     'debmes',
     'saverestore',
     'sounds',
-    'texts');
+    'texts'
+);
 foreach ($move_folders as $folder) {
     if (is_dir(ROOT . $folder)) {
         echo "Moving " . ROOT . $folder . ' to ' . ROOT . 'cms/' . $folder . "\n";
@@ -66,7 +53,6 @@ foreach ($move_folders as $folder) {
         removeTree(ROOT . $folder);
     }
 }
-
 // removing some 3rd-party directories
 $check_folders = array(
     'blockly' => '3rdparty/blockly',
@@ -77,7 +63,7 @@ $check_folders = array(
     'jpgraph' => '3rdparty/jpgraph',
     'js/threejs' => '3rdparty/threejs',
     'pdw' => '3rdparty',
-    '3rdparty/pdw' => '3rdparty',
+    '3rdparty/pdw' => '3rdparty'
 );
 foreach ($check_folders as $k => $v) {
     if (is_dir(ROOT . $v) && is_dir(ROOT . $k)) {
@@ -86,8 +72,6 @@ foreach ($check_folders as $k => $v) {
         removeTree(ROOT . $k);
     }
 }
-
-
 // check/recreate folders
 $dirs_to_check = array(
     ROOT . 'backup',
@@ -95,21 +79,17 @@ $dirs_to_check = array(
     ROOT . 'cms/cached',
     ROOT . 'cms/cached/voice',
     ROOT . 'cms/cached/urls',
-    ROOT . 'cms/cached/templates_c',
+    ROOT . 'cms/cached/templates_c'
 );
-
 if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
     $path = SETTINGS_SYSTEM_DEBMES_PATH;
 } else {
     $path = ROOT . 'cms/debmes';
 }
 $dirs_to_check[] = $path;
-
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
     $dirs_to_check[] = SETTINGS_BACKUP_PATH;
 }
-
-
 foreach ($dirs_to_check as $d) {
     if (!is_dir($d)) {
         mkdir($d, 0777);
@@ -118,32 +98,28 @@ foreach ($dirs_to_check as $d) {
     }
 }
 
-
 //restoring database backup (if was saving periodically)
 if (file_exists($db_filename)) {
     echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
     DebMes("Running: mysql main db restore from file: " . $db_filename);
     $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
     $mysqlParam = " -u " . DB_USER;
-    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+    if (DB_PASSWORD != '')
+        $mysqlParam .= " -p" . DB_PASSWORD;
     $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
     exec($mysql_path . $mysqlParam);
-
     if (file_exists($db_history_filename)) {
         echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
         DebMes("Running: mysql history db restore from file: " . $db_history_filename);
         $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
         $mysqlParam = " -u " . DB_USER;
-        if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+        if (DB_PASSWORD != '')
+            $mysqlParam .= " -p" . DB_PASSWORD;
         $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
         exec($mysql_path . $mysqlParam);
     }
 }
-
-include_once("./load_settings.php"); //
-
 echo "Checking modules.\n";
-
 //force check installed data
 $source = ROOT . 'modules';
 if ($dir = @opendir($source)) {
@@ -159,9 +135,9 @@ if ($dir = @opendir($source)) {
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
 
-
 //removing cached data
 echo "Clearing the cache.\n";
+
 clearCacheData();
 
 if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
@@ -200,264 +176,255 @@ if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
 }
 
 // Removing cycles properties
-$qry = "1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control' OR TITLE LIKE 'cycle%Disabled' OR TITLE LIKE 'cycle%AutoRestart')";
+$qry = "TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control' OR TITLE LIKE 'cycle%Disabled' OR TITLE LIKE 'cycle%AutoRestart'";
 $thisCompObject = getObject('ThisComputer');
 $cycles_records = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
-    DebMes("Removing property ThisComputer.$property (object ".$thisCompObject->id.")",'threads');
-    echo "Removing ThisComputer.$property (object " . $thisCompObject->id . ")";
     $property = $cycles_records[$i]['TITLE'];
     $property_id = $thisCompObject->getPropertyByName($property, $thisCompObject->class_id, $thisCompObject->id);
+    DebMes("Removing property ThisComputer.$property (object " . $thisCompObject->id . ")", 'threads');
+    echo "Removing ThisComputer.$property (object " . $thisCompObject->id . ")";
     //DebMes("Property id: $property_id",'threads');
     if ($property_id) {
-        $sqlQuery = "SELECT ID FROM pvalues WHERE PROPERTY_ID = " . (int)$property_id;
+        $sqlQuery = "SELECT ID FROM pvalues WHERE PROPERTY_ID = " . (int) $property_id;
         $pvalue = SQLSelectOne($sqlQuery);
         if ($pvalue['ID']) {
-            DebMes("Deleting Pvalue: ".$pvalue['ID'],'threads');
+            DebMes("Deleting Pvalue: " . $pvalue['ID'], 'threads');
             SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $pvalue['ID']);
             SQLExec("DELETE FROM pvalues WHERE ID=" . $pvalue['ID']);
         } else {
-            DebMes("NO Pvalue for ".$property_id,'threads');
+            DebMes("NO Pvalue for " . $property_id, 'threads');
         }
         SQLExec("DELETE FROM properties WHERE ID=" . $property_id);
-        DebMes("REMOVED $property_id",'threads');
+        DebMes("REMOVED $property_id", 'threads');
         echo " REMOVED $property_id\n";
     } else {
-        DebMes("No property record found for $property",'threads');
+        DebMes("No property record found for $property", 'threads');
         echo " FAILED\n";
     }
 }
+
 clearCacheData();
 
-// getting list of /scripts/cycle_*.php files to run each in separate thread
 $cycles = array();
-$reboot_timer = 0;
 
-if (is_dir("./scripts")) {
-    if ($lib_dir = opendir("./scripts")) {
+if (is_dir(DOC_ROOT . "/scripts/")) {
+    if ($lib_dir = opendir(DOC_ROOT . "/scripts/")) {
+        $i = 0;
         while (($lib_file = readdir($lib_dir)) !== false) {
-            if ((preg_match("/^cycle_.+?\.php$/", $lib_file)))
-                $cycles[] = './scripts/' . $lib_file;
+            if ((preg_match('/^(cycle_.+?)\.php/is', $lib_file, $m))) {
+                $cycle_name = $m[1];
+                // запускаем цикл - результат запуска сам позже отобразится
+                newThread(DOC_ROOT . '/scripts/' . $lib_file, $cycle_name);
+            }
         }
         closedir($lib_dir);
     }
 }
 
-$threads = new Threads;
+echo "ALL CYCLES STARTED" . "\n";
 
-if (defined('PATH_TO_PHP'))
-    $threads->phpPath = PATH_TO_PHP;
-else
-    $threads->phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
-
-foreach ($cycles as $path) {
-
-    if (file_exists($path)) {
-
-        if (preg_match('/(cycle_.+?)\.php/is', $path, $m)) {
-            $title = $m[1];
-            if (getGlobal($title . 'Disabled')) {
-                DebMes("Cycle " . $title . " disabled. Skipping.");
-                continue;
-            }
-            if (getGlobal($title . 'Control') != '') {
-                setGlobal($title . 'Control', '');
-            }
-        }
-
-
-        DebMes("Starting " . $path . " ... ", 'threads');
-        echo "Starting " . $path . " ... \n";
-
-        if ((preg_match("/_X/", $path))) {
-            if (!IsWindowsOS()) {
-                $display = '101';
-                if ((preg_match("/_X(.+)_/", $path, $displays))) {
-                    if (count($displays) > 1) {
-                        $display = $displays[1];
-                    }
-                }
-                $pipe_id = $threads->newXThread($path, $display);
-            }
-        } else {
-            $pipe_id = $threads->newThread($path);
-        }
-        $pipes[$pipe_id] = $path;
-        echo "OK" . PHP_EOL;
-    }
-}
-
-echo "ALL CYCLES STARTED" . PHP_EOL;
-
-/*
-if (!is_array($restart_threads))
-{
-   $restart_threads = array(
-                         'cycle_execs.php',
-                         'cycle_main.php',
-                         'cycle_ping.php',
-                         'cycle_scheduler.php',
-                         'cycle_states.php',
-                         'cycle_webvars.php');
-
-}
-
- if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) {
-  $restart_threads[]='cycle_websockets.php';
- }
-*/
-
-$last_restart = array();
-
+$last_cycles_control_cycle = time();
+$last_cycles_control_hung = time();
 $last_cycles_control_check = time();
+$cycles_control_restart = time();
 
-$auto_restarts = array();
-$to_start = array();
-$to_stop = array();
-$started_when = array();
+// циклы которые надо рестартовать каждый 1 час
+// убраны из файла конфиг.пхп
+$restart_threads=array('cycle_connect', 'cycle_states',);
+$restart_threads=array();
 
-$thisComputerObject = getObject('Computer.ThisComputer');
-
-while (false !== ($result = $threads->iteration())) {
-
-    if ((time() - $last_cycles_control_check) >= 5 || !empty($result)) {
-
+while (True) {
+    // chek the cycles and set status if hung каждые 5 минут
+    if ((time() - $last_cycles_control_cycle) >= 300) {
+        $last_cycles_control_cycle = time();
+        foreach ($cycles as $cycle) {
+            // проверяем все запущенные циклы
+            if ($cycle['state'] == 'Run') {
+                // если цикл не отвечает закрываем его и задаем статус hung (повис)
+                if (False == ($result = iterationThread($cycle['pipe'], $cycle['name']))) {
+                    closeThread($cycle['process'], $cycle['name']);
+                }
+                // необходима задержка после проверки -
+                // ибо на следующей проверке не успевает переключится на другой пайп да и на всякий случай
+                usleep(200000);
+            }
+        }
+    }
+	//  перезапуск циклов которые необходимо рестортовать автоматически находятся в массиве $restart_threads
+    if ((time() - $cycles_control_restart) >= 360 * 60) {
+        $cycles_control_restart = time();
+        foreach ($cycles as $cycle) {
+            if (in_array($cycle['name'], $restart_threads) && $cycle['state'] == 'Exit') {
+                newThread($cycle['path'], $cycle['name']);
+            }
+        }
+    }
+	
+    //  перезапуск всех циклов со статусом hung (повис) каждые 10 минут
+    if ((time() - $last_cycles_control_hung) >= 10 * 60) {
+        $last_cycles_control_hung = time();
+        foreach ($cycles as $cycle) {
+            if ($cycle['state'] == 'Hung') {
+                newThread($cycle['path'], $cycle['name']);
+            }
+        }
+    }
+    // управляем циклами с вебморды
+    if ((time() - $last_cycles_control_check) >= 30) {
         $last_cycles_control_check = time();
-
-        $qry = "OBJECT_ID=" . $thisComputerObject->id . " AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
-        $cycles = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
-
-        $total = count($cycles);
-        $seen = array();
-        for ($i = 0; $i < $total; $i++) {
-            $title = $cycles[$i]['TITLE'];
-            $title = preg_replace('/Run$/', '', $title);
-            $title = preg_replace('/Control$/', '', $title);
-            if (isset($seen[$title])) {
-                continue;
+        foreach ($cycles as $cycle) {
+            $control = getGlobal($cycle['name'] . 'Control');
+            // если дали команду старт то запустим цикл
+            if ($control == 'start') {
+                newThread($cycle['path'], $cycle['name']);
             }
-            $seen[$title] = 1;
-            $control = getGlobal($title . 'Control');
-            if ($control != '') {
-                DebMes("Got control command '$control' for " . $title, 'threads');
-                if ($control == 'stop') {
-                    $to_stop[$title] = time();
-                } elseif ($control == 'restart' || $control == 'start') {
-                    $to_stop[$title] = time();
-                    $to_start[$title] = time() + 30;
-                }
-                setGlobal($title . 'Control', '');
+            // если дали команду рестарт то остановим весь цикл и по-новой запустим
+            if ($control == 'restart') {
+                closeThread($cycle['process'], $cycle['name']);
+                newThread($cycle['path'], $cycle['name']);
             }
-
-        }
-
-        $is_running = array();
-        foreach ($threads->commandLines as $id => $cmd) {
-            if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
-                $title = $m[1];
-                $is_running[$title] = $id;
-                if (!isset($started_when[$title])) $started_when[$title] = time();
-                if ((time() - $started_when[$title]) > 30 && !in_array($title, $auto_restarts)) {
-                    DebMes("Adding $title to auto-recovery list", 'threads');
-                    $auto_restarts[] = $title;
-                }
-                $cycle_updated_timestamp = getGlobal($title . 'Run');
-
-                if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
-                    DebMes("Looks like $title is dead (updated: ".date('Y-m-d H:i:s',$cycle_updated_timestamp)."). Need to recovery", 'threads');
-                    registerError('cycle_hang', $title);
-                    setGlobal($title . 'Control', 'restart');
-                }
+            // если дали команду стоп  - то остановим весь цикл
+            if ($control == 'stop' and ($cycle['state'] == 'Run' or $cycle['state'] == 'Hung')) {
+                closeThread($cycle['process'], $cycle['name']);
             }
         }
     }
 
-    if (isRebootRequired()) {
-        if (!$reboot_timer) {
-            $reboot_timer = time();
-        } elseif ((time() - $reboot_timer) > 10) {
-            $reboot_timer = 0;
-            //force close all running threads
-            DebMes("Force closing all running services.", 'threads');
-            $to_start = array();
-            $restart_threads = array();
-            foreach ($is_running as $k => $v) {
-                $to_stop[$k] = time();
-            }
-        }
+    sleep(1);
+	
+	if (isRebootRequired() || IsSet($_GET['onetime'])) {
+        exit;
     }
-
-    foreach ($to_stop as $title => $tm) {
-
-        $key = array_search($title, $auto_restarts);
-        if ($key !== false) {
-            unset($auto_restarts[$key]);
-            $auto_restarts = array_values($auto_restarts);
-        }
-
-        if ($tm <= time()) {
-            if (isset($is_running[$title])) {
-                $id = $is_running[$title];
-                DebMes("Force closing service " . $title . " (id: " . $id . ")", 'threads');
-                $threads->closeThread($id);
-            }
-            unset($to_stop[$title]);
-        }
-    }
-
-    foreach ($to_start as $title => $tm) {
-        if ($tm <= time()) {
-            if (!isset($is_running[$title])) {
-                $cmd = './scripts/' . $title . '.php';
-                DebMes("Starting service " . $title . ' (' . $cmd . ')', 'threads');
-                $pipe_id = $threads->newThread($cmd);
-                $is_running[$title] = $pipe_id;
-                $started_when[$title] = time();
-            } else {
-                DebMes("Got to_start command for " . $title . ' but looks like it is already running', 'threads');
-            }
-            unset($to_stop[$title]);
-            unset($to_start[$title]);
-        }
-    }
-
-    if (!empty($result)) {
-        $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
-        if (preg_match_all($closePattern, $result, $matches) && !isRebootRequired()) {
-            $total_m = count($matches[1]);
-            for ($im = 0; $im < $total_m; $im++) {
-                $closed_thread = $matches[1][$im];
-                $cycle_title = '';
-                $need_restart = 0;
-                if (preg_match('/(cycle_.+?)\.php/is', $closed_thread, $m)) {
-                    $cycle_title = $m[1];
-                    DebMes("Thread closed: " . $cycle_title, 'threads');
-                    unset($to_stop[$cycle_title]);
-                    setGlobal($cycle_title . 'Run', '');
-                    $key = array_search($cycle_title, $auto_restarts);
-                    if ($key !== false) {
-                        unset($auto_restarts[$key]);
-                        $auto_restarts = array_values($auto_restarts);
-                        $need_restart = 1;
-                    } elseif ($to_start[$cycle_title]) {
-                        $need_restart = 1;
-                    }
-                }
-                if ($need_restart && $cycle_title) {
-                    if (!$to_start[$cycle_title]) {
-                        DebMes("AUTO-RECOVERY: " . $closed_thread, 'threads');
-                        if (!preg_match('/websockets/is', $closed_thread) && !preg_match('/connect/is', $closed_thread)) {
-                            registerError('cycle_stop', $closed_thread . "\n" . $result);
-                        }
-                        $to_start[$cycle_title] = time() + 2;
-                    }
-                    $started_when[$cycle_title] = $to_start[$cycle_title];
-                }
-            }
-        }
-    }
+	
 }
 
 resetRebootRequired();
 
+function newThread($filename, $cycle_name) {
+    global $cycles;
+    echo date('H:i:s') . " Starting " . $cycle_name . " ... ";
+    if (!file_exists($filename)) {
+        echo " Error cannot find file   ... " . "\n";
+        DebMes(" Error. Cannot find cycle  ... " . $cycle_name . ' ... ', 'threads');
+        return False;
+    }
+    $descriptorspec = array(
+        0 => array(
+            'pipe',
+            'r'
+        ),
+        1 => array(
+            'pipe',
+            'w'
+        )
+    );
+    $command = PATH_TO_PHP . ' -q ' . $filename;
+    $process = proc_open($command, $descriptorspec, $pipes);
+    // SET CYCLES ARRAY DATA
+    $cycles[$cycle_name]['name'] = $cycle_name;
+    $cycles[$cycle_name]['started'] = time();
+    $cycles[$cycle_name]['updated'] = $cycles[$cycle_name]['started'];
+    $cycles[$cycle_name]['path'] = $filename;
+    $cycles[$cycle_name]['process'] = $process;
+    $cycles[$cycle_name]['pipe'] = $pipes[1];
+    $cycles[$cycle_name]['cycle_output'] = '';
+    stream_set_timeout($cycles[$cycle_name]['pipe'], 5);
+    stream_set_blocking($cycles[$cycle_name]['pipe'], False);
+    if ($process) {
+        $cycles[$cycle_name]['state'] = 'Run';
+        DebMes('Cycle ' . $cycle_name . " is STARTING ... ", 'threads');
+        echo "OK" . "\n";
+        // set cycle is run
+        setGlobal($cycle_name . 'Run', time());
+        setGlobal($cycle_name . 'Control', '');
+    } else {
+        $cycles[$cycle_name]['state'] = 'Bad';
+        DebMes('Cycle ' . $cycle_name . " is NOT STARTING have error in code ... ", 'threads');
+        echo " have ERROR in code ...  " . "\n";
+        // set cycle is stop
+        setGlobal($cycle_name . 'Run', '');
+        setGlobal($cycle_name . 'Control', '');
+    }
+    return True;
+}
+
+function iterationThread($pipe = null, $cycle_name = '') {
+    global $cycles;
+    if (IsWindowsOS()) {
+        $stat = fstat($pipe);
+        //echo $cycle_name . ' - name stat - '  ;
+        //echo serialize($stat) . "\n";
+        if ($stat === False) {
+            return False;
+        } else {
+            $size = $stat['size'];
+        }
+    } else {
+        $size = 10240;
+    }
+    if ($size > 0) {
+        if ($result = fread($pipe, $size)) {
+            $cycles[$cycle_name]['updated']=time();
+            // если есть названия цикла в ответе из STDOUT то цикл работает
+            if (stristr($result, $cycle_name)) {
+                // запишем ответ в файл
+                $cycles[$cycle_name]['cycle_output'] = $result;
+                //echo "Result " .  serialize($result) . "  ... ";
+                //echo "OK" . "\n";
+                return True;
+            }
+        }
+    }
+    // chek old variant
+    if (time() - getGlobal($cycle_name . 'Run') < 60) {
+        $cycles[$cycle_name]['updated']=time();
+        return True;
+    }
+    return False;
+}
+
+function closeThread($process = null, $cycle_name = '') {
+    global $cycles;
+    $pstatus = proc_get_status($process);
+    $pid = $pstatus['pid'];
+    $exit_code = $pstatus['exitcode'];
+    // SET CYCLE STOP 
+    setGlobal($cycle_name . 'Run', '');
+    // clear CYCLE  state
+    setGlobal($cycle_name . 'Control', '');
+    // если получил статус код выхода из цикла - значит он заверешен сам по себе - тогда его надо просто остановить
+    // -1 это код работающего цикла - но не отвечающего на запросы
+    if ($exit_code != -1) {
+        $cycles[$cycle_name]['state'] = 'Exit';
+        // запишем выданные данные цикла в файл - файл по имени цикла 
+        // будет содержать вывод есно из соответствующего цикла
+        echo date('H:i:s') . " Thread $cycle_name with have are 'exit' command and stopped " . " ... ";
+        DebMes('Cycle ' . $cycle_name . " with have are 'exit' command and stopped.", 'threads');
+        DebMes($cycles[$cycle_name]['cycle_output'], $cycle_name);
+        echo "OK" . "\n";
+        return True;
+    } else {
+        // указываем что цикл завис - и есть возможность его рестартовать
+        $cycles[$cycle_name]['state'] = 'Hung';
+        registerError('cycle_hang ', $cycle_name);
+        // запишем выданные данные цикла в файл - файл по имени цикла 
+        // будет содержать вывод есно из соответствующего цикла
+        echo date('H:i:s') . " Thread $cycle_name is hung. Close with pid N $pid" . " ... ";
+        DebMes('Cycle ' . $cycle_name . " is hung. Close with pid N $pid.", 'threads');
+        DebMes($cycles[$cycle_name]['cycle_output'], $cycle_name);
+        
+		// останавливаем все процессы - для того чтобы полностью остановить цикл
+        DebMes('Killing ' . $cycle_name . " with pid N $pid.", 'threads');
+        if (IsWindowsOS()) {
+            $exec_str = "taskkill /F /T /PID $pid";
+        } else {
+            $exec_str = "kill -9 $pid";
+        }
+        $output = array();
+        $result = exec($exec_str, $output);
+        echo "OK" . "\n";
+        return True;
+    }
+}
