@@ -4,19 +4,15 @@ chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 
 set_time_limit(0);
 
 include_once("./load_settings.php");
-include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-
-$ctl = new control_modules();
 $checked_time = 0;
 SQLExec("DELETE FROM safe_execs");
 
 while (1) {
-    if (time() - $checked_time > 30) {
+    if (time() - $checked_time > 10) {
         $checked_time = time();
         echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
     }
