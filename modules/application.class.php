@@ -12,6 +12,11 @@
 
   var $action;
   var $member_id;
+  var $app_action;
+  var $doc_name;
+  var $doc;
+  var $doc_id;
+  var $popup;
 
 // --------------------------------------------------------------------
   function __construct() {
