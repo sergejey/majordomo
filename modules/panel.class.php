@@ -11,6 +11,8 @@ class panel extends module
 {
 
     var $action;
+    var $print;
+    var $ajax;
 
 // --------------------------------------------------------------------
     function __construct()
