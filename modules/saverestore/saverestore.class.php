@@ -15,8 +15,8 @@ class saverestore extends module
         $this->title = "<#LANG_MODULE_SAVERESTORE#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
-        $this->mode = null;
-        $this->view_mode = null;
+		$this->mode = null;
+		$this->view_mode = null;
 		$this->edit_mode = null;
 		$this->ajax = null;
     }
@@ -212,7 +212,7 @@ class saverestore extends module
 					foreach($items as $key => $value) {
 						$itm = array();
 						
-						if($value['author']['name']['textvalue'] != 'sergejey') continue;
+						//if($value['author']['name']['textvalue'] != 'sergejey') continue; //Смоук залочил на Сергея гит - РАЗЛОЧИВАЕМ
 						
                         $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
@@ -222,7 +222,7 @@ class saverestore extends module
                         $itm['LINK'] = $value['link']['href'];
                         $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
                         $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
-                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3]);
+                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3] ?? '');
 						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $out['UPDATES'][] = $itm;
 						$iteration++;
