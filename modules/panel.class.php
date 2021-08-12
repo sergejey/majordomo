@@ -197,7 +197,7 @@ class panel extends module
 					$modules[$i]['PLUGINS_NOTY'] = $getNOTY;
 				} else {
 					$modules[$i]['PLUGINS_NOTY_COUNT'] = 0;
-					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'];
+					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'] ?? null;
 				}
 				
                 if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
