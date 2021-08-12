@@ -111,9 +111,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD'] == 'GET' ||
 }
 
 
-if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
-    Define('SERVER_ADDR', $_SERVER['SERVER_ADDR']);
-} 
+// не нашел применения , может туплю ?
+//if (IsSet($_SERVER['SERVER_ADDR']) && IsSet($_SERVER['SERVER_PORT'])) {
+//    Define('SERVER_ADDR', $_SERVER['SERVER_ADDR']);
+//}
+
 
 if (!defined('WEBSOCKETS_PORT'))
     Define('WEBSOCKETS_PORT', 8001);
