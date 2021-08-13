@@ -128,7 +128,7 @@ class panel extends module
             include_once(DIR_MODULES . 'inc_panel_ajax.php');
         }
 
-        if ($this->print || (isset($_GET['print']) && $_GET['print']) {
+        if ($this->print || (isset($_GET['print']) && $_GET['print'])) {
             $this->print = 1;
             $out['PRINT'] = 1;
         }
