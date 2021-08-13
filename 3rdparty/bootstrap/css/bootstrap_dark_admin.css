@@ -1,3 +1,22 @@
+div#didyouknow {
+	background-color: #464545!important;
+}
+
+pre {
+	background: #464545!important;
+	color: #f6f6f6!important;
+}
+
+textarea {
+	background: #464545!important;
+    color: white!important;
+}
+
+input {
+	background: #464545!important;
+    color: white!important;
+}
+
 .notyBody::-webkit-scrollbar {
 	width: 7px;
 	height: 10px;
