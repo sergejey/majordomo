@@ -13,6 +13,13 @@
 //
 class market extends module
 {
+	 var $action;
+	 var $mode;
+	 var $tab;
+	 var $ajax;
+	 var $single_rec;
+	 var $edit_mode;
+	 var $view_mode;
     /**
      * market
      *
