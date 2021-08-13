@@ -15,10 +15,7 @@ class saverestore extends module
         $this->title = "<#LANG_MODULE_SAVERESTORE#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
-		$this->mode = null;
-		$this->view_mode = null;
-		$this->edit_mode = null;
-		$this->ajax = null;
+
     }
 
     /**
