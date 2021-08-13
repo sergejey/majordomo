@@ -585,8 +585,10 @@ class objects extends module
             $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
-            } else {
+            } else if (isset($_SERVER['REQUEST_URI'])){
                 $source = urldecode($_SERVER['REQUEST_URI']);
+            } else {
+                $source = 'unknown';
             }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
