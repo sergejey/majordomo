@@ -22,7 +22,7 @@ $latest_sent=time();
 while (1)
 {
       $queue=SQLSelect("SELECT * FROM cached_ws");
-      if ($queue[0]['PROPERTY']) {
+      if ($queue && $queue[0]['PROPERTY']) {
          $total=count($queue);
          $properties=array();
          $values=array();
