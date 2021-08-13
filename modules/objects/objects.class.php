@@ -1036,33 +1036,34 @@ class objects extends module
             saveToCache($cached_name, $value);
             endMeasure('save_to_cache');
 
-        }
-
-        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
-            $q_rec = array();
-            $q_rec['VALUE_ID'] = $v['ID'];
-            $q_rec['ADDED'] = date('Y-m-d H:i:s');
-            $q_rec['VALUE'] = $value . '';
-            $q_rec['SOURCE'] = $source . '';
-            $q_rec['OLD_VALUE'] = $old_value;
-            $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
-            SQLInsert('phistory_queue', $q_rec);
-        }
-
-        if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
-            global $property_linked_history;
-            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
-                $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
-                $params = array();
-                $params['PROPERTY'] = $property;
-                $params['NEW_VALUE'] = (string)$value;
-                $params['OLD_VALUE'] = (string)$old_value;
-                $params['SOURCE'] = (string)$source;
-                //$this->callMethod($prop['ONCHANGE'], $params);
-                //$this->callMethodSafe($prop['ONCHANGE'], $params);
-                $this->raiseEvent($prop['ONCHANGE'], $params);
-                unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+            startMeasure('save_to_phistory');
+            if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+                $q_rec = array();
+                $q_rec['VALUE_ID'] = $v['ID'];
+                $q_rec['ADDED'] = date('Y-m-d H:i:s');
+                $q_rec['VALUE'] = $value . '';
+                $q_rec['SOURCE'] = $source . '';
+                $q_rec['OLD_VALUE'] = $old_value;
+                $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
+                SQLInsert('phistory_queue', $q_rec);
             }
+            endMeasure('save_to_phistory');
+            
+            startMeasure('Call_method_safe');
+            if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
+                global $property_linked_history;
+                if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+                    $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
+                    $params = array();
+                    $params['PROPERTY'] = $property;
+                    $params['NEW_VALUE'] = (string)$value;
+                    $params['OLD_VALUE'] = (string)$old_value;
+                    $params['SOURCE'] = (string)$source;
+                    $this->raiseEvent($prop['ONCHANGE'], $params);
+                    unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+                }
+            }
+            endMeasure('Call_method_safe');
         }
 
         endMeasure('setProperty (' . $property . ')', 1);
