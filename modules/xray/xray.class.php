@@ -13,6 +13,11 @@
 //
 class xray extends module
 {
+	var $view_mode;
+	var $edit_mode;
+	var $mode;
+	var $single_rec;
+	var $ajax;
     /**
      * blank
      *
