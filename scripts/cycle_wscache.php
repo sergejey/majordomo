@@ -3,7 +3,6 @@ chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 
 set_time_limit(0);
 
