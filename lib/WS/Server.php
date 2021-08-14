@@ -95,12 +95,14 @@ class Server extends Socket
      */
     public function run(): void
     {
+        $checked_time = time();
         while (true) {
 			
-			// my addon chek the cycle 
+          // my addon chek the cycle 
             if (time() - $checked_time > 10) {
                 $checked_time = time();
-                setGlobal('cycle_websocketsRun', time());
+                echo date("H:i:s") . ' Cycle cycle_websockets is running ';
+                //setGlobal('cycle_websocketsRun', time());
             }
     
             if (isRebootRequired() || IsSet($_GET['onetime']))
