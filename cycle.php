@@ -232,7 +232,7 @@ $cycles_control_restart = time();
 
 // циклы которые надо рестартовать каждый 1 час
 // убраны из файла конфиг.пхп
-$restart_threads=array('cycle_connect', 'cycle_states',);
+//$restart_threads=array('cycle_connect', 'cycle_states',);
 $restart_threads=array();
 
 while (True) {
