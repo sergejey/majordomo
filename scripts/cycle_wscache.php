@@ -17,6 +17,7 @@ SQLTruncateTable('cached_ws');
 echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
 
 $latest_sent=time();
+$checked_time = time();
 
 while (1)
 {
