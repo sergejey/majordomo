@@ -236,8 +236,8 @@ $restart_threads=array('cycle_connect', 'cycle_states',);
 $restart_threads=array();
 
 while (True) {
-    // chek the cycles and set status if hung каждые 5 минут
-    if ((time() - $last_cycles_control_cycle) >= 300) {
+    // chek the cycles and set status if hung каждые 2 минут
+    if ((time() - $last_cycles_control_cycle) >= 120) {
         $last_cycles_control_cycle = time();
         foreach ($cycles as $cycle) {
             // проверяем все запущенные циклы
@@ -263,7 +263,7 @@ while (True) {
     }
 	
     //  перезапуск всех циклов со статусом hung (повис) каждые 10 минут
-    if ((time() - $last_cycles_control_hung) >= 10 * 60) {
+    if ((time() - $last_cycles_control_hung) >= 5 * 60) {
         $last_cycles_control_hung = time();
         foreach ($cycles as $cycle) {
             if ($cycle['state'] == 'Hung') {
@@ -294,8 +294,11 @@ while (True) {
 
     sleep(1);
 	
-	if (isRebootRequired() || IsSet($_GET['onetime'])) {
-        exit;
+    if (isRebootRequired()) {
+        foreach ($cycles as $cycle) {
+            closeThread($cycle['process'], $cycle['name']);
+            newThread($cycle['path'], $cycle['name']);
+        }
     }
 	
 }
