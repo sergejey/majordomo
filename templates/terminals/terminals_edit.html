@@ -1,263 +1,575 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
+<!--# @version 0.3 (auto-set) #-->
 <!-- Table 'terminals' edit -->
-
 <ul class="breadcrumb">
-<li> 
-<a href="?"><#LANG_HOME#></a>
-</li>
-
-<span class="divider">/</span>
-<li class="active">
-[#if ID!=""#]
-<#LANG_EDIT_RECORD#>
-[#else ID#]
-<#LANG_NEW_RECORD#>
-[#endif#]
-</li>
+  <li> 
+    <a href="?"><#LANG_HOME#></a>
+  </li>
+  <span class="divider">/</span>
+  <li class="active">
+    [#if ID!=""#]
+    <#LANG_EDIT_RECORD#>
+    [#else ID#]
+    <#LANG_NEW_RECORD#>
+    [#endif#]
+  </li>
 </ul>
-
-
 <form action="?" method="post" enctype="multipart/form-data" class="form-horizontal" name="frmEdit">
-[#if OK#]
-<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
-[#if ERR#]
-<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
-
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SYSTEM_NAME#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_NAME#]alert-danger[#endif#]"  name="name" value="[#NAME#]"></div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]"></div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOSTNAME#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
-</div>
-
-
-
-<div class="form-group">
-  <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object_terminal<#LANG_HCE#></label>
-   <div class="col-lg-5">
-     <div class="form-inline">
-      <div class="form-group col-lg-5">
-       <input type="text" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]"  class="form-control">
-      </div>
-     </div>
-    </div>
-</div>
-    [#module name="linkedobject" object_field="linked_object"#]
-
-<div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_LOCATION#> терминала: <#LANG_HCB#>location<#LANG_HCE#></label>
-  <div class="col-lg-4"><select name="location" class="form-control">
-   <option value="">Выберите местоположение терминала
-    [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
-   [#end LOCATIONS#]
-  </select></div>
-</div>
-
-    <!--#
-        <script language="javascript">
-            function majordroidChanged() {
-                if ($('#majordroid_api').is(':checked')) {
-                    $('#majordroidDetails').show();
-                } else {
-                    $('#majordroidDetails').hide();
-                }
-                return false;
-            }
-        </script>
-
-    <div class="form-group">
-            <div class="col-lg-offset-2 col-lg-5 ">
-                    <div class="checkbox">
-                            <label>
-                                    <input type="checkbox" value="1" id='majordroid_api' onClick='majordroidChanged();' name="majordroid_api" [#if MAJORDROID_API="1"#] checked[#endif#]> MajorDroid API
-                            </label>
-                    </div>
-            </div>
-    </div>
-
-    <div id='majordroidDetails'[#if MAJORDROID_API!="1"#] style="display:none"[#endif#]>
-
-
-
-    <div class="form-group">
-      <label class="control-label"><#LANG_PROPERTY#>:<#LANG_HCB#>linked_property_terminal<#LANG_HCE#></label>
-       <div class="col-lg-5">
-         <div class="form-inline">
-          <div class="form-group col-lg-5">
-           <input type="text" name="level_linked_property" id="level_linked_property" value="[#LEVEL_LINKED_PROPERTY#]"  class="form-control">
-          </div>
-         </div>
+  [#if OK#]
+  <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+  [#endif OK#]
+  [#if ERR#]
+  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+  [#endif ERR#]
+  <!-- Acces mode for terminal -->
+  <div class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SYSTEM_NAME#>:<font color="red">*</font></label>
+    <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_NAME#]alert-danger[#endif#]"  name="name" value="[#NAME#]"></div>
+  </div>
+  <div class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+    <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]"></div>
+  </div>
+  <div class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOSTNAME#>:<font color="red">*</font></label>
+    <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOST#]alert-danger[#endif#]"  name="host" value="[#HOST#]"></div>
+  </div>
+  <div class="form-group">
+    <label class="control-label"><#LANG_LINKED_OBJECT#>:<#LANG_HCB#>linked_object_terminal<#LANG_HCE#></label>
+    <div class="col-lg-5">
+      <div class="form-inline">
+        <div class="form-group col-lg-5">
+          <input type="text" name="linked_object" id="linked_object" value="[#LINKED_OBJECT#]"  class="form-control">
         </div>
+      </div>
     </div>
-
-
-
+  </div>
+  [#module name="linkedobject" object_field="linked_object"#]
+  <div class="form-group ">
+    <label class="col-lg-4 control-label"><#LANG_LOCATION#> терминала: <#LANG_HCB#>location<#LANG_HCE#></label>
+    <div class="col-lg-4">
+      <select name="location" class="form-control">
+        <option value="">Выберите местоположение терминала
+          [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
+          [#end LOCATIONS#]
+      </select>
     </div>
-    #-->
-
-<script language="javascript">
- function canPlayChanged() {
-  if ($('#canplay').is(':checked')) {
-   $('#playerDetails').show();
-  } else {
-   $('#playerDetails').hide();
-  }
-  return false;
- }
- function canTTSChanged() {
-     if ($('#cantts').is(':checked')) {
-         $('#ttsDetails').show();
+  </div>
+  <div class="form-group ">
+    <label class="col-lg-4 control-label">Постоянный пользователь данного устройства: <#LANG_HCB#>user<#LANG_HCE#></label>
+    <div class="col-lg-4">
+      <select name="user" class="form-control">
+        <option value="">Выберите пользователя данного терминала
+          [#begin USER#]<option value="[#USERNAME#]"[#if USERNAME="<#USER_NAME#>"#] selected[#endif#]>[#USERNAME#]
+          [#end USER#]
+      </select>
+    </div>
+  </div>
+  
+  <script language="javascript">
+    function canPlayChanged() {
+     if ($('#canplay').is(':checked')) {
+      $('#playerDetails').show();
      } else {
-         $('#ttsDetails').hide();
+      $('#playerDetails').hide();
      }
      return false;
- }
-</script>
+    }
+    function canTTSChanged() {
+        if ($('#cantts').is(':checked')) {
+            $('#ttsDetails').show();
+        } else {
+            $('#ttsDetails').hide();
+        }
+        return false;
+    }
+     function MMLChanged() {
+        if ($('#systemMML').is(':checked')) {
+            $('#MMLDetails').hide();
+        } else {
+            $('#MMLDetails').show();
+        }
+    }
+    	function DisplayTurnOn() {
+           if ($('#tts_display_turnonf').is(':checked')) {
+              $('#tts_display_brightness_level').show();
+           } else {
+              $('#tts_display_brightness_level').hide();
+           }
+        }
+     function canRecognizeChanged() {
+        if ($('#canrecognize').is(':checked')) {
+            $('#CANRECOGNIZEDetails').show();
+        } else {
+            $('#CANRECOGNIZEDetails').hide();
+        }
+    }
+     
+  </script>
+  <div class="form-group">
+    <div class="col-lg-offset-3 ">
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" align="center" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
+  <div class="form-group">
+    <div class="col-lg-offset-2">
+      <label align="center" for="min_msg_level"><font color="red" >Раздел настроек связанный с системными сообщениями на этот терминал</font></label>
+    </div>
+  </div>
+  <div class="form-group ">
+    <label class="col-lg-4 control-label" for="min_msg_level">Использовать СИСТЕМНЫЙ уровень важности сообщений:</label>
+    <div class="col-lg-5" style="width:30px;">
+      <input type="checkbox" value="1" onClick='MMLChanged();' id='systemMML' name="systemMML" [#if USE_SYSTEM_MML="1"#] checked[#endif#]>
+    </div>
+    <div id="MMLDetails" [#if USE_SYSTEM_MML="1"#] style="display:none" [#endif#] class="form-group ">
+    <label class="col-lg-4 control-label" style="text-align: center;" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#> для терминала:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level" style="width:100px;" name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
+  </div>
+  </div>
+  <div class="form-group">
+    <label class="col-lg-4 control-label" for="tts_type">Тип плеера TTS:</label>
+    <div class="col-lg-5">
+      <select id="tts_type" name="tts_type" class="form-control" onchange="return tts_type_select($(this).val());">
+        <option value="">Выберите тип TTS</option>
+        [#begin TTS_ADDONS#]
+        <option value="[#NAME#]"[#if NAME="<#TTS_TYPE#>"#] selected[#endif#]>[#TITLE#]</option>
+        [#end TTS_ADDONS#]
+      </select>
+      [#begin TTS_ADDONS#]
+      <small id="[#NAME#]_description" class="addon-descriptiontts form-text text-muted hidden">[#DESCRIPTION#]</small>
+      [#end TTS_ADDONS#]
+      <style type="text/css">
+        .addon-descriptiontts { display: block; margin-top: 10px; }
+      </style>
+      <script type="text/javascript">
+        function tts_type_select(type) {
+        $('small.addon-descriptiontts').addClass('hidden');
+        $('small#'+type+'_description').removeClass('hidden');
+            if (type == 'mainterminal') {
+                        $('#tts_volume').hide();
+                        $('#tts_port').hide();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'airplay_tts') {
+                        $('#tts_volume').hide();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'majordroid_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();		
+                        $('#tts_dingdong_file').hide();
+            } else if (type == 'alicevox') {
+                        $('#tts_volume').hide();
+                        $('#tts_port').show();
+                        $('#tts_name').show();
+                        $('#tts_password').show();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+           } else if (type == 'vlcweb_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').show();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'iobroker_tts') {
+                        $('#tts_volume').hide();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').show();	
+                        $('#tts_dingdong_file').hide();
+            }else if (type == 'googlehomenotifier') {
+                        $('#tts_volume').hide();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').hide();
+            } else if (type == 'chromecast_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'lms_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').show();
+                        $('#tts_password').show();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'dnla_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').hide();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').show();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'sounddevice_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').hide();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').show();
+                        $('#tts_display_turnon').hide();		
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'mjdmterminal_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').show();
+                        $('#tts_dingdong_file').hide();
+            } else if (type == 'mpd_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').hide();
+                        $('#tts_password').show();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();
+                        $('#tts_dingdong_file').show();
+            } else if (type == 'mdmpiterminal_tts') {
+                        $('#tts_volume').show();
+                        $('#tts_port').show();
+                        $('#tts_name').show();
+                        $('#tts_password').show();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').hide();
+            } else {
+                        $('#tts_port').hide();
+                        $('#tts_volume').hide();
+                        $('#tts_name').hide();
+                        $('#tts_password').hide();
+                        $('#tts_control_address').hide();
+                        $('#tts_sound_device').hide();
+                        $('#tts_display_turnon').hide();	
+                        $('#tts_dingdong_file').hide();
+                    }
+                return true;
+            }
+            $(document).ready(function() {
+                tts_type_select('[#TTS_TYPE#]');
+            });
+	    $(document).ready(function() {
+                tts_sound_device('[#TTS_SOUND_DEVICE#]');
+            });
+            $(document).ready(function() {
+                tts_dingdong_file('[#TTS_DINGDONG_FILE#]');
+            });
+      </script>
+    </div>
+  </div>
+  <div id='tts_volume'class="form-group ">
+    <label class="col-lg-4 control-label" for="tts_volume">Уровень громкости сообщений:</label>
+    <div class="col-lg-5">
+      <input type="range" name="message_volume_level" id="message_volume_level" value="[#MESSAGE_VOLUME_LEVEL#]" min="0" max="100" style="width:90%; height: 20px;" oninput='message_volume_level_cypher.value = message_volume_level.value; callMethod("[#LINKED_OBJECT#].volumeOnChangeMessage", "volume="+message_volume_level.value);'> 
+      <output name="message_volume_level_cypher" id="message_volume_level_cypher"><#MESSAGE_VOLUME_LEVEL#></output>
+    </div>
+  </div>
+  
+  <!-- addon for list sound device -->
+  [#begin TTS_SOUND_DEVICES#]
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $('option:selected', document.getElementById("tts_sound_device_id")).hide().siblings().show(); 
+        var tts_sound_device_id = document.getElementById("tts_sound_device_id");
+        var opt = document.createElement("option");
+        opt.value = '[#NAME#]';
+        opt.text = '[#NAME#]';
+        tts_sound_device_id.add(opt, null);
+    });
+  </script>
+  [#end TTS_SOUND_DEVICES#]
 
+  <!-- addon for list ding dong files -->
+  [#begin TTS_DINGDONG_FILES#]
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $('option:selected', document.getElementById("tts_dingdong_file_id")).hide().siblings().show(); 
+        var tts_dingdong_file_id = document.getElementById("tts_dingdong_file_id");
+		var opt = document.createElement("option");
+		opt.value = '[#NAME#]';
+		opt.text = '[#NAME#]';
+		tts_dingdong_file_id.add(opt, null);
+    });
+  </script>
+  [#end TTS_DINGDONG_FILES#]  
+  
+  [#begin TTS#]
+  <div id='tts_display_turnon' class="form-group ">
+    <label class="col-lg-4 control-label" for="tts_display_turnon">Включать экран на терминале перед воспроизведением сообщения:</label>
+    <div class="col-lg-5" style="width:30px;" >
+      <input type="checkbox" value="1" id='tts_display_turnonf' name="tts_display_turnonf" [#if TTS_USE_DISPLAY="1"#] checked[#endif#] onClick='DisplayTurnOn();'>
+    </div>
+    <div id='tts_display_brightness_level' [#if TTS_USE_DISPLAY=""#] style="display:none" [#endif TTS_USE_DISPLAY#]  class="form-group ">
+    <label class="col-lg-4 control-label" style="text-align: center;" for="tts_display_brightness">Яркость дисплея при воспроизведении сообщения:</label>
+    <div class="col-lg-5">
+      <input type="range" name="tts_display_brightness_level" id="tts_display_brightness_level" value="[#TTS_BRIGHTNESS_DISPLAY#]" min="0" max="100" style="width:350px; height: 20px;" oninput="tts_display_brightness_cypher.value = tts_display_brightness_level.value">
+      <output name="tts_display_brightness_cypher" id="tts_display_brightness_cypher"><#TTS_BRIGHTNESS_DISPLAY#></output>
+    </div>
+  </div>
+  </div>
+  <div id='tts_port' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle">Порт доступа TTS:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_port" value="[#TTS_PORT#]"></div>
+  </div>
+  <div id='tts_name' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle">Имя пользователя TTS:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_username" value="[#TTS_USERNAME#]"></div>
+  </div>
+  <div id='tts_password' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle">Пароль пользователя TTS:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_password" value="[#TTS_PASSWORD#]"></div>
+  </div>
+  <div id='tts_control_address' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle">Адрес управления ДЛНА устройства TTS:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_control_address" value="[#TTS_CONTROL_ADDRESS#]"></div>
+  </div>
+  <div id="tts_sound_device" class="form-group">
+    <label class="col-lg-4 control-label" for="tts_type">Номер аудиоустройства TTS:</label>
+    <div class="col-lg-5">
+      <select id="tts_sound_device_id" name="tts_sound_device"  class="form-control" onchange="return tts_sound_device($(this).val());">
+        <option value="">Выберите аудиоустройство для TTS</option>
+        [#if TTS_SOUND_DEVICE !="" #] <option value="[#TTS_SOUND_DEVICE#]" selected[#endif#] >[#TTS_SOUND_DEVICE#]</option>  [#endif TTS_SOUND_DEVICE#]
+        <!-- see addon for list sound device -->
+      </select>
+    </div>
+  </div>
+  <div id="tts_dingdong_file" class="form-group">
+    <label class="col-lg-4 control-label" for="tts_type">Использование файла Динг Донг</label>
+    <div class="col-lg-5">
+      <select id="tts_dingdong_file_id" name="tts_dingdong_file"  class="form-control"  onchange="return tts_dingdong_file($(this).val());">
+        <option value="">Выберите файл ДингДонг</option>
+        [#if TTS_DINGDONG_FILE !="" #] <option value="[#TTS_DINGDONG_FILE#]" selected[#endif#] >[#TTS_DINGDONG_FILE#]</option>  [#endif TTS_DINGDONG_FILE#]
+        <!-- see addon for list ding dong files -->
+      </select>
+    </div>
+  </div>
+  </div>
+  [#end TTS#]
+  
+  
+  <div class="form-group">
+    <div class="col-lg-offset-3 ">
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" align="center" value="1" id='canplay' onClick='canPlayChanged();' name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
+  <div class="form-group">
+    <div class="col-lg-offset-2 ">
+      <label align="center" for="min_msg_level"><font color="red" >Раздел настроек связанный с воспроизведением медиа на этот терминал</font></label>
+    </div>
+  </div>
+  <div class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
+    </label>
+    <div class="col-lg-5">
+      <select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">
+        <option value="">Выберите тип плеера</option>
+        [#begin PLAYER_ADDONS#]
+        <option value="[#VALUE#]"[#if VALUE="<#PLAYER_TYPE#>"#] selected[#endif#]>[#TITLE#]
+        [#end PLAYER_ADDONS#]
+      </select>
+      [#begin PLAYER_ADDONS#]
+      <small id="[#VALUE#]_description" class="addon-description form-text text-muted hidden">[#DESCRIPTION#]</small>
+      [#end PLAYER_ADDONS#]
+      <style type="text/css">
+        .addon-description { display: block; margin-top: 10px; }
+      </style>
+      <script type="text/javascript">
+        function player_type_select(type) {
+            $('small.addon-description').addClass('hidden');
+            $('small#'+type+'_description').removeClass('hidden');
+                if (type == 'dnla') {
+                    $('#device_control_address').show();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').hide();
+                    $('#player_volume').show();
+                } else if (type == 'chromecast') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'foobar') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'ghn') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').hide();
+                } else if (type == 'majordroid') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'mpd') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').show();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'kodi') {
+                    $('#device_control_address').hide();
+                    $('#player_name').show();
+                    $('#player_password').show();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'lms') {
+                    $('#device_control_address').hide();
+                    $('#player_name').show();
+                    $('#player_password').show();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'vlcweb') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').show();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'iobroker') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'mjdm') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else if (type == 'volumio') {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').show();
+                    $('#player_volume').show();
+                } else {
+                    $('#device_control_address').hide();
+                    $('#player_name').hide();
+                    $('#player_password').hide();
+                    $('#player_port').hide();
+                    $('#player_volume').hide();
+                }
+            return true;
+        }
+        $(document).ready(function() {
+            player_type_select('[#PLAYER_TYPE#]');
+        });
+      </script>
+    </div>
+  </div>
+  <div id='player_volume' class="form-group ">
+    <label class="col-lg-4 control-label" for="tts_type">Уровень громкости плеера:</label>
+    <div class="col-lg-5">
+      <input type="range" name="terminal_volume_level" id="terminal_volume_level" value="[#TERMINAL_VOLUME_LEVEL#]" min="0" max="100" style="width:90%; height: 20px;" oninput="terminal_volume_level_cypher.value = terminal_volume_level.value">
+      <output name="terminal_volume_level_cypher" id="terminal_volume_level_cypher"><#TERMINAL_VOLUME_LEVEL#></output>
+    </div>
+  </div>
+  <div id='player_port' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
+  </div>
+  <div id='player_name' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
+  </div>
+  <div id='player_password' class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
+  </div>
+  <div id='device_control_address' style="display:none" class="form-group ">
+    <label class="col-lg-4 control-label" for="inputTitle">Control address:</label>
+    <div class="col-lg-5"><input type="text"  class="form-control"  name="player_control_address" value="[#PLAYER_CONTROL_ADDRESS#]"></div>
+  </div>
+  </div>
+  
     <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-5 ">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
-                </label>
-            </div>
-        </div>
+    <div class="col-lg-offset-3 ">
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" align="center" value="1" id='canrecognize' name="canrecognize" onClick='canRecognizeChanged();' [#if CANRECOGNIZE="1"#] checked[#endif#]> Может распознавать голосовые команды</input>
+        </label>
+      </div>
     </div>
-
-
-    <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
-        <div class="form-group">
-            <label class="col-lg-4 control-label" for="tts_type"><#LANG_TTS_TYPE#>:</label>
-            <div class="col-lg-5">
-                <select id="tts_type" name="tts_type" class="form-control">
-                    <option value=""><#LANG_NONE#></option>
-                    [#begin TTS_ADDONS#]
-                    <option value="[#NAME#]"[#if NAME="<#TTS_TYPE#>"#] selected[#endif#]>[#NAME#]</option>
-                    [#end TTS_ADDONS#]
-                </select>
-            </div>
-        </div>
-        <div class="form-group ">
-            <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#>:</label>
-            <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
-        </div>
     </div>
-
-
-<div class="form-group">
-        <div class="col-lg-offset-2 col-lg-5 ">
-                <div class="checkbox">
-                        <label>
-                                <input type="checkbox" value="1" id='canplay' onClick='canPlayChanged();' name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
-                        </label>
-                </div>
-        </div>
+<div id="CANRECOGNIZEDetails"[#if CANRECOGNIZE!="1"#] style="display:none"[#endif#]>
+  <div class="form-group">
+    <div class="col-lg-offset-2">
+      <label align="center"><font color="red" >Раздел настроек связанный с передачей голосовых команд с этого терминала</font></label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-lg-4 control-label">Тип устройства STT:</label>
+    <div class="col-lg-5">
+      <select id="recognize_type" name="recognize_type" class="form-control" onchange="return recognize_type_select($(this).val());">
+        <option value="">Выберите тип STT</option>
+        [#begin STT_ADDONS#]
+        <option value="[#NAME#]"[#if NAME="<#RECOGNIZE_TYPE#>"#] selected[#endif#]>[#TITLE#]</option>
+        [#end STT_ADDONS#]
+      </select>
+      [#begin STT_ADDONS#]
+      <small id="[#NAME#]_description" class="addon-descriptiontts form-text text-muted hidden">[#DESCRIPTION#]</small>
+      [#end STT_ADDONS#]
+      <style type="text/css">
+        .addon-descriptiontts { display: block; margin-top: 10px; }
+      </style>
+    </div>
+  </div>
 </div>
 
-<div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
-	<div class="form-group ">
-		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
-		</label>
-		<div class="col-lg-5">
-			<select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">
-				<option value=""><#LANG_DEFAULT#>
-				[#begin PLAYER_ADDONS#]
-				<option value="[#VALUE#]"[#if VALUE="<#PLAYER_TYPE#>"#] selected[#endif#]>[#TITLE#]
-				[#end PLAYER_ADDONS#]
-			</select>
-			[#begin PLAYER_ADDONS#]
-			<small id="[#VALUE#]_description" class="addon-description form-text text-muted hidden">[#DESCRIPTION#]</small>
-			[#end PLAYER_ADDONS#]
-			<style type="text/css">
-				.addon-description { display: block; margin-top: 10px; }
-			</style>
-			<script type="text/javascript">
-				function player_type_select(type) {
-					$('small.addon-description').addClass('hidden');
-					$('small#'+type+'_description').removeClass('hidden');
-                        if (type == 'dnla') {
-                            $('#device_control_address').show();
-                            $('#player_name').hide();
-							$('#player_password').hide();
-                            $('#player_port').hide();
-						} else if (type == 'chromecast') {
-                            $('#device_control_address').hide();
-    						$('#player_name').hide();
-							$('#player_password').hide();
-                            $('#player_port').show();
-						} else if (type == 'foobar') {
-                            $('#device_control_address').hide();
-    						$('#player_name').hide();
-							$('#player_password').hide();
-                            $('#player_port').show();
-						} else if (type == 'ghn') {
-                            $('#device_control_address').hide();
-    						$('#player_name').hide();
-							$('#player_password').hide();
-                            $('#player_port').show();
-						} else if (type == 'majordroid') {
-                            $('#device_control_address').hide();
-							$('#player_name').hide();
-							$('#player_password').hide();
-                            $('#player_port').show();
-						} else if (type == 'mpd') {
-                            $('#device_control_address').hide();
-							$('#player_name').hide();
-							$('#player_password').show();
-                            $('#player_port').show();
-						} else if (type == 'mpd') {
-                            $('#device_control_address').hide();
-							$('#player_name').hide();
-							$('#player_password').show();
-                            $('#player_port').show();
-						} else {
-                            $('#device_control_address').hide();
-                            $('#player_name').show();
-							$('#player_password').show();
-							$('#player_port').show();
-                        }
-					return true;
-				}
-				$(document).ready(function() {
-					player_type_select('[#PLAYER_TYPE#]');
-				});
-			</script>
-		</div>
-	</div>
-	<div id='player_port' class="form-group ">
-		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
-		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
-	</div>
-	<div id='player_name' class="form-group ">
-		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_USERNAME#>:</label>
-		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_username" value="[#PLAYER_USERNAME#]"></div>
-	</div>
-	<div id='player_password' class="form-group ">
-		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PASSWORD#>:</label>
-		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_password" value="[#PLAYER_PASSWORD#]"></div>
-	</div>
-
-	<div id='device_control_address' style="display:none" class="form-group ">
-		<label class="col-lg-4 control-label" for="inputTitle">Control address:</label>
-		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_control_address" value="[#PLAYER_CONTROL_ADDRESS#]"></div>
-	</div>
-        
-</div>
-<!-- разграничение прав доступа к терминалам -->		
 [#if ID!=""#]
     <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
@@ -266,21 +578,19 @@
         </div>
     </div>
 [#endif ID#]
-<!-- разграничение прав доступа к терминалам -->
-<div class="form-group">
-     <div class="col-lg-offset-2 col-lg-5">
- [#if ID!=""#]
- <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
- [#else ID#]
- <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
- [#endif ID#]
- &nbsp;
- <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
- </div>
-</div>
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-5">
+      [#if ID!=""#]
+      <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
+      [#else ID#]
+      <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
+      [#endif ID#]
+      &nbsp;
+      <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+    </div>
+  </div>
+  <input type="hidden" name="id" value="<#ID#>">
+  <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+  <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+  <input type="hidden" name="mode" value="update">
 </form>
-
