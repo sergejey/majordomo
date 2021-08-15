@@ -33,13 +33,28 @@ function pingurl($host) {
 
 function pingbt($host) {
     if (!$host) return false;
-    $data = exec('l2ping '.$host.' -c1 -f | awk \'/loss/ {print $3}\'');
-    if (intval($data) > 0) {
-        $result = 1;
+    if (IsWindowsOS()){
+        $answer='';
+        $connect = shell_exec(ROOT . '/rc/blutoothscan/btdiscovery -d%a%%c%');
+        $PCREpattern = '/\r\n|\r|\n/u';
+        $connected = preg_replace($PCREpattern, '', $connect);
+        $pos = stripos($connected, $host);
+        $answer = substr($connected, $pos+18,3); // возвращает "Yes or No"
+        if ($answer == "Yes") {
+            $result=1;
+        } else {
+            $result=0;
+        }
     } else {
-        $result = 0;
+        $data = exec('l2ping '.$host.' -c1 -f | awk \'/loss/ {print $3}\'');
+        if (intval($data) > 0) {
+            $result = 1;
+        } else {
+            $result = 0;
+        }
     }
-    return $result;
+
+        return $result;
 }
 
 function pinghostport($host) {
