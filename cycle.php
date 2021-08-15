@@ -236,8 +236,8 @@ $cycles_control_restart = time();
 $restart_threads=array();
 
 while (True) {
-    // chek the cycles and set status if hung каждые 2 минут
-    if ((time() - $last_cycles_control_cycle) >= 120) {
+    // chek the cycles and set status if hung каждые 20 минут
+    if ((time() - $last_cycles_control_cycle) >= 20*60) {
         $last_cycles_control_cycle = time();
         foreach ($cycles as $cycle) {
             // проверяем все запущенные циклы
@@ -253,7 +253,7 @@ while (True) {
         }
     }
     //  перезапуск циклов которые необходимо рестортовать автоматически находятся в массиве $restart_threads
-    if ((time() - $cycles_control_restart) >= 10 * 60) {
+    if ((time() - $cycles_control_restart) >= 120 * 60) {
         $cycles_control_restart = time();
         foreach ($cycles as $cycle) {
             if (in_array($cycle['name'], $restart_threads) && $cycle['state'] == 'Exit') {
@@ -262,7 +262,7 @@ while (True) {
         }
     }
 	
-    //  перезапуск всех циклов со статусом hung (повис) каждые 10 минут
+    //  перезапуск всех циклов со статусом hung (повис) каждые 30 минут
     if ((time() - $last_cycles_control_hung) >= 30 * 60) {
         $last_cycles_control_hung = time();
         foreach ($cycles as $cycle) {
