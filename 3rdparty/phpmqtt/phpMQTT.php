@@ -515,12 +515,16 @@ class phpMQTT
 		}
 
 		$byte = $this->read(1, true);
+		$rank = 0;
+		while ($loop === true) {
+			if ((string)$byte === '') break;
+			if ($rank>10) $loop = false;
+			usleep(100000);
+			$byte = $this->read(1, true);
+			$rank++;
+		}
 
-		if ((string)$byte === '') {
-			if ($loop === true) {
-				usleep(100000);
-			}
-		} else {
+		if ((string)$byte !== '') {
 			$cmd = (int)(ord($byte) / 16);
 			$this->_debugMessage(
 				sprintf(
