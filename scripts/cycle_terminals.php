@@ -2,7 +2,6 @@
 chdir(dirname(__FILE__) . '/../');
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "terminals/terminals.class.php");
 
@@ -64,7 +63,7 @@ while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 20) {
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $checked_time, 1);
+        echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
     }
     
     // проверяем наличие следующего сообщения для запуска генерации речи
