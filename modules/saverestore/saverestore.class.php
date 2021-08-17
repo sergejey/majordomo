@@ -9,6 +9,10 @@ class saverestore extends module
      *
      * @access private
      */
+	var $mode;
+	var $view_mode;
+	var $edit_mode;
+	var $ajax;
     function __construct()
     {
         $this->name = "saverestore";
