@@ -17,6 +17,18 @@ input {
     color: white!important;
 }
 
+select {
+	color: #222222!important;
+}
+
+.col-md-7.text-right .breadcrumb {
+	background-image: radial-gradient(circle farthest-corner at 0px 10px, #464545, #4792d1)!important;
+}
+
+.jumbotron{
+	color: #222222!important;
+}
+
 .notyBody::-webkit-scrollbar {
 	width: 7px;
 	height: 10px;
