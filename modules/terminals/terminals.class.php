@@ -557,14 +557,14 @@ setMessageVolume($terminal_name, $params["volume"]);
  terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100'
  terminals: CANTTS int(1) NOT NULL DEFAULT '0'
  terminals: TTS_TYPE char(20) NOT NULL DEFAULT ''
- terminals: TTS_SETING longtext NOT NULL DEFAULT ''
+ terminals: TTS_SETING longtext NOT NULL 
  terminals: TTS_IS_ONLINE int(1) NOT NULL DEFAULT '0'
  terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
  terminals: USE_SYSTEM_MML int(1) NOT NULL DEFAULT '1'
  terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100'
  terminals: CANRECOGNIZE int(1) NOT NULL DEFAULT '0'
  terminals: RECOGNIZE_TYPE char(20) NOT NULL DEFAULT ''
- terminals: RECOGNIZE_SETING longtext NOT NULL DEFAULT ''
+ terminals: RECOGNIZE_SETING longtext NOT NULL 
  terminals: RECOGNIZE_IS_ONLINE int(1) NOT NULL DEFAULT '0'
  terminals: LATEST_REQUEST varchar(255) NOT NULL DEFAULT ''
  terminals: LATEST_REQUEST_TIME datetime
