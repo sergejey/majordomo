@@ -240,14 +240,14 @@ class phpMQTT
 
 		$string = $this->read(4);
 
-		if (ord($string[0]) >> 4 === 2 && $string[3] === chr(0)) {
+		if (ord($string{0}) >> 4 === 2 && $string{3} === chr(0)) {
 			$this->_debugMessage('Connected to Broker');
 		} else {
 			$this->_errorMessage(
 				sprintf(
 					"Connection failed! (Error: 0x%02x 0x%02x)\n",
-					ord($string[0]),
-					ord($string[3])
+					ord($string{0}),
+					ord($string{3})
 				)
 			);
 			return false;
@@ -366,8 +366,8 @@ class phpMQTT
 	public function disconnect()
 	{
 		$head = ' ';
-	    $head[0] = chr(0xe0);
-		$head[1] = chr(0x00);
+		$head{0} = chr(0xe0);
+		$head{1} = chr(0x00);
 		fwrite($this->socket, $head, 2);
 	}
 
@@ -415,7 +415,7 @@ class phpMQTT
 			++$cmd;
 		}
 
-		$head[0] = chr($cmd);
+		$head{0} = chr($cmd);
 		$head .= $this->setmsglength($i);
 
 		fwrite($this->socket, $head, strlen($head));
@@ -450,7 +450,7 @@ class phpMQTT
 	 */
 	public function message($msg)
 	{
-		$tlen = (ord($msg[0]) << 8) + ord($msg[1]);
+		$tlen = (ord($msg{0}) << 8) + ord($msg{1});
 		$topic = substr($msg, 2, $tlen);
 		$msg = substr($msg, ($tlen + 2));
 		$found = false;
@@ -515,16 +515,12 @@ class phpMQTT
 		}
 
 		$byte = $this->read(1, true);
-		$rank = 0;
-		while ($loop === true) {
-			if ((string)$byte === '') break;
-			if ($rank>10) $loop = false;
-			usleep(100000);
-			$byte = $this->read(1, true);
-			$rank++;
-		}
 
-		if ((string)$byte !== '') {
+		if ((string)$byte === '') {
+			if ($loop === true) {
+				usleep(100000);
+			}
+		} else {
 			$cmd = (int)(ord($byte) / 16);
 			$this->_debugMessage(
 				sprintf(
@@ -588,7 +584,7 @@ class phpMQTT
 		$multiplier = 1;
 		$value = 0;
 		do {
-			$digit = ord($msg[$i]);
+			$digit = ord($msg{$i});
 			$value += ($digit & 127) * $multiplier;
 			$multiplier *= 128;
 			$i++;
@@ -644,9 +640,9 @@ class phpMQTT
 	{
 		$strlen = strlen($string);
 		for ($j = 0; $j < $strlen; $j++) {
-			$num = ord($string[$j]);
+			$num = ord($string{$j});
 			if ($num > 31) {
-				$chr = $string[$j];
+				$chr = $string{$j};
 			} else {
 				$chr = ' ';
 			}
