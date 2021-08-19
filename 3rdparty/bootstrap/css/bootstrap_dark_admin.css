@@ -17,18 +17,6 @@ input {
     color: white!important;
 }
 
-select {
-	color: #222222!important;
-}
-
-.col-md-7.text-right .breadcrumb {
-	background-image: radial-gradient(circle farthest-corner at 0px 10px, #464545, #4792d1)!important;
-}
-
-.jumbotron{
-	color: #222222!important;
-}
-
 .notyBody::-webkit-scrollbar {
 	width: 7px;
 	height: 10px;
@@ -1535,7 +1523,7 @@ img {
 
 hr {
 	margin-top: 21px;
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	border: 0;
 	border-top: 1px solid #464545
 }
@@ -1697,7 +1685,7 @@ p {
 }
 
 .lead {
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	font-size: 17px;
 	font-weight: 300;
 	line-height: 1.4
@@ -1983,7 +1971,7 @@ blockquote.pull-right .small:after {
 }
 
 address {
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	font-style: normal;
 	line-height: 1.42857143
 }
@@ -3324,7 +3312,7 @@ legend {
 	display: block;
 	width: 100%;
 	padding: 0;
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	font-size: 22.5px;
 	line-height: inherit;
 	color: #ffffff;
@@ -5006,9 +4994,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .nav>li>a {
 	position: relative;
     display: block;
-    color: white;
-    padding: 5px 5px;
-    border-radius: 5px;
+    padding: 10px 15px;
 }
 
 .nav>li>a:hover,
@@ -5232,9 +5218,42 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 
 .navbar {
 	position: relative;
-	min-height: 60px;
-	margin-bottom: 21px;
-	border: 1px solid transparent
+    z-index: 1000;
+    min-height: 50px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+
+@media(min-width:1231px) {
+	.navbar-collapse {
+		width: auto;
+		border-top: 0;
+		box-shadow: none
+	}
+	
+	.navbar-collapse.collapse {
+		display: block !important;
+		height: auto !important;
+		padding-bottom: 0;
+		overflow: visible !important
+	}
+	
+	.navbar-collapse.in {
+		overflow-y: visible
+	}
+	
+	.navbar-collapse .navbar-nav.navbar-left:first-child {
+		margin-left: -15px
+	}
+	
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right: 0px
+	}
+	
+	.navbar-collapse .navbar-text:last-child {
+		margin-right: 0
+	}
+	
 }
 
 @media (min-width:768px) {
@@ -5250,12 +5269,13 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 }
 
 .navbar-collapse {
-	padding-right: 15px;
-	padding-left: 15px;
-	overflow-x: visible;
-	border-top: 1px solid transparent;
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-	-webkit-overflow-scrolling: touch
+	max-height: 340px;
+    padding-right: 15px;
+    padding-left: 15px;
+    overflow-x: visible;
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%);
+    -webkit-overflow-scrolling: touch;
 }
 
 .navbar-collapse.in {
@@ -5360,10 +5380,9 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 
 .navbar-brand {
 	float: left;
-	height: 60px;
-	padding: 19.5px 15px;
-	font-size: 19px;
-	line-height: 21px
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
 }
 
 .navbar-brand:hover,
@@ -5385,15 +5404,14 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 
 .navbar-toggle {
 	position: relative;
-	float: right;
-	padding: 9px 10px;
-	margin-right: 15px;
-	margin-top: 13px;
-	margin-bottom: 13px;
-	background-color: transparent;
-	background-image: none;
-	border: 1px solid transparent;
-	border-radius: 4px
+    float: right;
+    padding: 9px 10px;
+    margin-top: 8px;
+    margin-right: 15px;
+    margin-bottom: 8px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .navbar-toggle:focus {
@@ -5424,7 +5442,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 .navbar-nav>li>a {
 	padding-top: 10px;
 	padding-bottom: 10px;
-	line-height: 21px
+	line-height: 20px
 }
 
 @media (max-width:767px) {
@@ -5453,7 +5471,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 	}
 }
 
-@media (min-width:768px) {
+@media(min-width:768px) {
 	.navbar-nav {
 		float: left;
 		margin: 0
@@ -5464,9 +5482,10 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 	}
 	
 	.navbar-nav>li>a {
-		padding-top: 19.5px;
-		padding-bottom: 19.5px
+		padding-top: 15px;
+		padding-bottom: 15px
 	}
+	
 }
 
 .navbar-form {
@@ -5870,7 +5889,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 
 .breadcrumb {
 	padding: 8px 15px;
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	list-style: none;
 	background-color: #464545;
 	border-radius: 4px
@@ -6227,7 +6246,7 @@ a.badge:focus {
 .thumbnail {
 	display: block;
 	padding: 2px;
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	line-height: 1.42857143;
 	background-color: #222222;
 	border: 1px solid #464545;
@@ -6254,7 +6273,7 @@ a.thumbnail.active {
 
 .alert {
 	padding: 15px;
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	border: 1px solid transparent;
 	border-radius: 4px
 }
@@ -6368,7 +6387,7 @@ a.thumbnail.active {
 
 .progress {
 	height: 21px;
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	overflow: hidden;
 	background-color: #ebebeb;
 	border-radius: 4px;
@@ -6736,7 +6755,7 @@ button.list-group-item-danger.active:focus {
 }
 
 .panel {
-	margin-bottom: 21px;
+	margin-bottom: 20px;
 	background-color: #303030;
 	border: 1px solid transparent;
 	border-radius: 4px;
@@ -8286,9 +8305,6 @@ button.close {
 	border-color: white
 }
 
-.btn {
-	border-width: 2px
-}
 
 .btn:active {
 	box-shadow: none
