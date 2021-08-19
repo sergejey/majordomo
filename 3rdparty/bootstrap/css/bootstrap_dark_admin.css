@@ -377,14 +377,13 @@ th {
 
 .glyphicon {
 	position: relative;
-	top: 1px;
-	display: inline-block;
-	font-family: "Glyphicons Halflings";
-	font-style: normal;
-	font-weight: 400;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
 }
 
 .glyphicon-asterisk:before {
@@ -1451,9 +1450,9 @@ html {
 }
 
 body {
-	font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 15px;
-	line-height: 1.42857143;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.428571429;
 	color: #ffffff;
 	background-color: #222222
 }
@@ -1565,10 +1564,9 @@ h6,
 .h4,
 .h5,
 .h6 {
-	font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-weight: 400;
-	line-height: 1.1;
-	color: inherit
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
 }
 
 h1 small,
@@ -1607,7 +1605,7 @@ h2,
 h3,
 .h3 {
 	margin-top: 21px;
-	margin-bottom: 10.5px
+	margin-bottom: 10px;
 }
 
 h1 small,
@@ -1632,7 +1630,7 @@ h5,
 h6,
 .h6 {
 	margin-top: 10.5px;
-	margin-bottom: 10.5px
+	margin-bottom: 10px;
 }
 
 h4 small,
@@ -1686,7 +1684,7 @@ p {
 
 .lead {
 	margin-bottom: 20px;
-	font-size: 17px;
+	font-size: 16px;
 	font-weight: 300;
 	line-height: 1.4
 }
@@ -1844,7 +1842,7 @@ a.bg-danger:focus {
 ul,
 ol {
 	margin-top: 0;
-	margin-bottom: 10.5px
+	margin-bottom: 10px;
 }
 
 ul ul,
@@ -2620,7 +2618,7 @@ pre code {
 	}
 	
 	.col-md-7 {
-		width: 58.33333333%
+		width: 58.333333333333336%
 	}
 	
 	.col-md-6 {
@@ -2830,7 +2828,7 @@ pre code {
 	}
 	
 	.col-lg-10 {
-		width: 83.33333333%
+		width: 83.33333333333334%
 	}
 	
 	.col-lg-9 {
@@ -2862,7 +2860,7 @@ pre code {
 	}
 	
 	.col-lg-2 {
-		width: 16.66666667%
+		width: 16.666666666666664%
 	}
 	
 	.col-lg-1 {
@@ -4438,7 +4436,6 @@ tbody.collapse.in {
 	border-left: 4px solid transparent
 }
 
-.dropup,
 .dropdown {
 	position: relative
 }
@@ -5225,19 +5222,6 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 }
 
 @media(min-width:1231px) {
-	.navbar-collapse {
-		width: auto;
-		border-top: 0;
-		box-shadow: none
-	}
-	
-	.navbar-collapse.collapse {
-		display: block !important;
-		height: auto !important;
-		padding-bottom: 0;
-		overflow: visible !important
-	}
-	
 	.navbar-collapse.in {
 		overflow-y: visible
 	}
@@ -5282,7 +5266,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 	overflow-y: auto
 }
 
-@media (min-width:768px) {
+@media (min-width:1231px) {
 	.navbar-collapse {
 		width: auto;
 		border-top: 0;
@@ -6066,15 +6050,15 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 
 .label {
 	display: inline;
-	padding: .2em .6em .3em;
-	font-size: 75%;
-	font-weight: 700;
-	line-height: 1;
-	color: #ffffff;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: baseline;
-	border-radius: .25em
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
 }
 
 a.label:hover,
@@ -6149,17 +6133,17 @@ a.label:focus {
 
 .badge {
 	display: inline-block;
-	min-width: 10px;
-	padding: 3px 7px;
-	font-size: 13px;
-	font-weight: bold;
-	line-height: 1;
-	color: #ffffff;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: middle;
-	background-color: #464545;
-	border-radius: 10px
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    background-color: #464545;
+    border-radius: 10px;
 }
 
 .badge:empty {
@@ -6780,7 +6764,7 @@ button.list-group-item-danger.active:focus {
 .panel-title {
 	margin-top: 0;
 	margin-bottom: 0;
-	font-size: 17px;
+	font-size: 16px;
 	color: inherit
 }
 
@@ -7414,6 +7398,22 @@ button.close {
 .tooltip.in {
 	filter: alpha(opacity=90);
 	opacity: 0.9
+}
+.nav-list {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-bottom: 0;
+}
+
+.nav-list>li>a {
+    color: #fff;
+    padding: 5px 5px;
+    border-radius: 5px;
+}
+
+.nav-list>li>a, .nav-list .nav-header {
+    margin-right: -15px;
+    margin-left: -15px;
 }
 
 .nav-list>.active>.leftmenutab,
