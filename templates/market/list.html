@@ -8,7 +8,7 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 </div>
 [#if PLUGINS#]
     [#begin PLUGINS#]
-	<div class="media" style="border: 1px solid [#if PRICE = ""#]#ddd[#else#]#47a447[#endif#];padding: 10px;margin-bottom: 10px;border-radius: 5px;[#if EXISTS#][#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #d4ffb9);[#endif#][#endif EXISTS#]">
+	<div class="media" style="border: 1px solid [#if PRICE = ""#]#ddd[#else#]#47a447[#endif#];padding: 10px;margin-bottom: 10px;border-radius: 5px;">
 		<a class="pull-left" href="#">
 			<img class="media-object" style="border-radius: 5px;padding: 5px;border: 1px solid #ddd;" width="64" height="64" src='https://connect.smartliving.ru/cms/addons/[#ID#]_icon.png' onerror="this.src='<#ROOTHTML#>img/modules/default.png'">
 		</a>
