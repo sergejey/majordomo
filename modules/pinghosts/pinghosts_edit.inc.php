@@ -1,7 +1,11 @@
 <?php
-/*
-* @version 0.2 (wizard)
-*/
+if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+}
+
+
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
@@ -60,13 +64,22 @@
 
 
    if ($rec['CODE_ONLINE']!='' && $run_type_online=='code') {
-    //echo $content;
-    $errors=php_syntax_error($code_online);
-    if ($errors) {
-     $out['ERR_CODE_ONLINE']=1;
-     $out['ERRORS_ONLINE']=nl2br($errors);
-     $ok=0;
-    }
+
+	$errors = php_syntax_error($code_online);
+	if ($errors) {
+		$out['ERR_LINE_ONLINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+		$out['ERR_CODE_ONLINE'] = 1;
+		$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+		$errorStr = explode('Errors parsing', $errorStr[1]);
+		$errorStr = explode(' in ', $errorStr[0]);
+		//var_dump($errorStr);
+		$out['ERRORS_ONLINE'] = $errorStr[0];
+		$out['ERR_FULL_ONLINE'] = $errorStr[0].' '.$errorStr[1];
+		$out['ERR_OLD_CODE_ONLINE'] = $old_code;
+		$out['ERR_CODE_ONLINE']=1;
+		$out['ERRORS_ONLINE']=nl2br($errors);
+		$ok=0;
+	}
    }
 
 
@@ -81,13 +94,23 @@
 
 
    if ($rec['CODE_OFFLINE']!='' && $run_type_offline=='code') {
-    //echo $content;
-    $errors=php_syntax_error($code_offline);
-    if ($errors) {
-     $out['ERR_CODE_OFFLINE']=1;
-     $out['ERRORS_OFFLINE']=nl2br($errors);
-     $ok=0;
-    }
+	$errors = php_syntax_error($code_offline);
+	if ($errors) {
+		$out['ERR_LINE_OFFLINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+		$out['ERR_CODE_OFFLINE'] = 1;
+		$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+		$errorStr = explode('Errors parsing', $errorStr[1]);
+		$errorStr = explode(' in ', $errorStr[0]);
+		//var_dump($errorStr);
+		$out['ERRORS_OFFLINE'] = $errorStr[0];
+		$out['ERR_FULL_OFFLINE'] = $errorStr[0].' '.$errorStr[1];
+		$out['ERR_OLD_CODE_OFFLINE'] = $old_code;
+		$out['ERR_CODE_OFFLINE']=1;
+		$out['ERRORS_OFFLINE']=nl2br($errors);
+		$ok=0;
+	}
+	
+	
    }
 
 
