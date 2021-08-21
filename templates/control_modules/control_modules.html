@@ -112,7 +112,7 @@ $(window).load(function() {
 <div class="row" style="margin-right: -15px;margin-left: -15px;" id="moduleList">
 	[#begin MODULES#]
 	<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 text-right" style="margin-bottom: 15px;">
-        <div class="panel panel-default" [#if DAT=""#]style="opacity: 0.5;"[#endif DAT#]>
+        <div class="panel panel-default" [#if HIDDEN=="1"#]style="opacity: 0.2;"[#endif DAT#]>
 			<div class="panel-heading">
 				<div style="float: left"><h3 class="panel-title"><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#TITLE#]</a></h3></div>
 				<div style="float: right">
