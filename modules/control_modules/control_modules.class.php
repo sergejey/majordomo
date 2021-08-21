@@ -184,7 +184,7 @@ class control_modules extends module
         $lstCnt = count($lst);
 
         for ($i = 0; $i < $lstCnt; $i++) {
-            $rec = SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%M %d, %Y (%H:%i)') AS DAT FROM project_modules WHERE NAME='" . $lst[$i]['FILENAME'] . "'");
+            $rec = SQLSelectOne("SELECT *, DATE_FORMAT(ADDED, '%d.%m.%Y %H:%i') AS DAT FROM project_modules WHERE NAME='" . $lst[$i]['FILENAME'] . "'");
             if (IsSet($rec['ID'])) {
                 outHash($rec, $lst[$i]);
             }
