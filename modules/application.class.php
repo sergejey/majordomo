@@ -17,6 +17,7 @@
   var $doc;
   var $doc_id;
   var $popup;
+  var $ajax;
 
 // --------------------------------------------------------------------
   function __construct() {
