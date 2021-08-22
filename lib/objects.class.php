@@ -1154,7 +1154,7 @@ function processTitle($title, $object = 0)
     //startMeasure('processTitle ['.$in_title.']');
 
     if ($in_title != '') {
-        if (IsSet($_SERVER['REQUEST_METHOD'])) {
+        if (IsSet($_SERVER['REQUEST_METHOD']) and isset($title_memory_cache[$key])) {
             if ($title_memory_cache[$key]) {
                 return $title_memory_cache[$key];
             }
