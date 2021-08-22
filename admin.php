@@ -25,7 +25,7 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $cl  = new control_modules();
 $app = new panel();
 
-if ($md == $app->name)
+if (isset($md) and $md == $app->name)
    $app->getParams();
 else
    $app->restoreParams();
