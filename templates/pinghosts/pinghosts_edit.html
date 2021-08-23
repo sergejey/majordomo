@@ -1,187 +1,271 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
+<script>
+$(window).load(function() {
+	//Вставляем данные в бредкрумбс
+	$('.breadcrumb:eq(0)').append('<li style="color: gray;">[#if ID=""#]<#LANG_NEW_RECORD#>[#else#]<#LANG_EDIT_RECORD#>[#endif#]</li>');
+});
+</script>
+<style>
+.CodeMirror {
+	border-radius: 5px;
+	border: 2px solid #f7f7f7;
+}
+</style>
+		
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		 [#if OK#]
+		<div class="alert alert-success">
+			<#LANG_DATA_SAVED#>
+		</div>
+		[#endif OK#]
+		[#if ERR#]
+		<div class="alert alert-danger">
+			<#LANG_FILLOUT_REQURED#>
+		</div>
+		<script>
+		$(window).load(function() {
+			[#if ERR_LINE_ONLINE#]
+				[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+					error_line = Number('[#ERR_LINE_ONLINE#]');
+					error_line_find = error_line;
+					if(error_line == 0) error_line = 1;
+					find = $('div pre.CodeMirror-line:eq('+error_line_find+')');
+					find.attr('id', 'errorline_'+error_line);
+				
+					var newElems = $("<div class='cm-error' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'><#LANG_STRING_ERROR#> -> [#ERRORS_ONLINE#]</div>");
+					$('div pre.CodeMirror-line:eq('+error_line_find+')').append(newElems);
+				[#endif#]
+				
+				[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+					location.href='#errorline_'+error_line; 
+				[#endif#]
+			[#endif#]
+			[#if ERR_LINE_OFFLINE#]
+				[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+					error_line = Number('[#ERR_LINE_OFFLINE#]');
+					error_line_find = error_line;
+					if(error_line == 0) error_line = 1;
+					find = $('div pre.CodeMirror-line:eq('+error_line_find+')');
+					find.attr('id', 'errorline_'+error_line);
+				
+					var newElems = $("<div class='cm-error' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'><#LANG_STRING_ERROR#> -> [#ERRORS_OFFLINE#]</div>");
+					$('div pre.CodeMirror-line:eq('+error_line_find+')').append(newElems);
+				[#endif#]
+				
+				[#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+					location.href='#errorline_'+error_line; 
+				[#endif#]
+			[#endif#]
+		});
+				
+		</script>
+		[#endif ERR#]
+			
+        <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal" style="border: 1px solid #f2f2f2;padding: 10px;border-radius: 5px;">
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TITLE#>: <font color="red">*</font></label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true">
+				</div>
+			</div>
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_HOSTNAME#>: <font color="red">*</font></label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true">
+				</div>
+			</div>
+			<script>
+			function changeType(val) {
+				if(val == 1) {
+					$('#typeDiv').show('slow');
+					$('#typeDiv input').attr('name', 'search_word');
+				} else {
+					$('#typeDiv').hide('slow');
+					$('#typeDiv input').attr('name', '');
+				}
+			}
+			</script>
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TYPE#>: <font color="red">*</font></label>
+				<div class="col-lg-10 col-md-8">
+					<select name="type" class="form-control [#if ERR_TYPE#]alert-danger[#endif#]" onchange="changeType($(this).val())">
+						[#begin TYPE_OPTIONS#]
+							<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]</option>
+						[#end TYPE_OPTIONS#]
+					</select>
+				</div>
+			</div>
+			<div class="form-group " id="typeDiv" style="margin-right: 0px;margin-left: 0px;[#if TYPE!="1"#]display:none;[#endif TYPE#]">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_SEARCH_WORD#>: <font color="red">*</font></label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text"  class="form-control [#if ERR_SEARCH_WORD#]alert-danger[#endif#]" [#if TYPE="1"#]name="search_word"[#endif TYPE#] value="[#SEARCH_WORD#]">
+				</div>
+			</div>
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_LINKED_OBJECT#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text"  class="form-control "  name="linked_object" id="linked_object"  value="[#LINKED_OBJECT#]" >
+				</div>
+			</div>
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_LINKED_PROPERTY#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text"  class="form-control "  name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]" >
+				</div>
+			</div>
+			[#module name="linkedobject" object_field="linked_object" property_field="linked_property" width="100%"#]
+			
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_ONLINE_ACTION#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<label style="font-weight: normal;vertical-align: sub;margin-right: 15px;">
+						<input type="radio" onchange="$('#online_code').hide();$('#online_script').show();" name="run_type_online" value="script"[#if SCRIPT_ID_ONLINE!="0"#] checked[#endif#]>
+						<#LANG_SCRIPT#>
+					</label>
+					<label style="font-weight: normal;vertical-align: sub;">
+						<input type="radio" onchange="$('#online_script').hide();$('#online_code').show();" name="run_type_online" value="code"[#if SCRIPT_ID_ONLINE="0"#] checked[#endif#]>
+						<#LANG_CODE#>
+					</label>
+					
+					<select name="script_id_online" id="online_script" class="form-control" [#if SCRIPT_ID_ONLINE="0"#]style="display:none;"[#endif#]>
+						<option value="0">Select...</option>
+						[#begin SCRIPTS#]
+							<option value="[#ID#]"[#if ID="<#SCRIPT_ID_ONLINE#>"#] selected[#endif#]>[#TITLE#]</option>
+						[#end SCRIPTS#]
+					</select> 
+				   
+					<div id="online_code" [#if SCRIPT_ID_ONLINE!="0"#]style="display:none;"[#endif#]>	
+						[#module name="blockly_code" system_name="ph_code_online<#ID#>" onlycode="1" code_field="code_online" action=""#]
+						[#if ERRORS_ONLINE#]
+							<div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+								<b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERR_FULL_ONLINE#]
+								<div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+							</div>
+							<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE_ONLINE#]</textarea>
+						[#endif ERRORS_ONLINE#]
+						<div class="visible-xs visible-sm" id="mobileIndicator"></div>
+						<div id="code_area" style="margin-top: 10px;">
+							[#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
+								<div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-top: 10px;margin-bottom: 10px;background: #fffdc7;">
+									<#LANG_CODEEDITOR_NOTY_TURNOFF#>
+								</div>
+							[#endif SETTINGS_CODEEDITOR_TURNONSETTINGS#]
+							
+							<div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;margin-left: 5px;margin-bottom: 4px;">
+								<i class="glyphicon glyphicon-floppy-saved" style="vertical-align: top;"></i> <#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>. <#LANG_CODEEDITOR_AUTOSAVE_CODE_HELP#>
+							</div>
+							<textarea name="code_online" id="code_online" rows=12 cols=100 class="form-control">[#CODE_ONLINE#]</textarea>
 
-<!-- Table 'pinghosts' edit -->
-<ul class="breadcrumb">
-<li> 
-<a href="?"><#LANG_HOME#></a>
-</li>
-<span class="divider">/</span>
-<li class="active">
-[#if ID=""#]
-<#LANG_NEW_RECORD#>
-[#else#]
-<#LANG_EDIT_RECORD#>
-[#endif#]
-</li>
-</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_OFFLINE_ACTION#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<label style="font-weight: normal;vertical-align: sub;margin-right: 15px;">
+						<input type="radio" onchange="$('#offline_code').hide();$('#offline_script').show();" name="run_type_offline" value="script"[#if SCRIPT_ID_OFFLINE!="0"#] checked[#endif#]>
+						<#LANG_SCRIPT#>
+					</label>
+					<label style="font-weight: normal;vertical-align: sub;">
+						<input type="radio" onchange="$('#offline_script').hide();$('#offline_code').show();" name="run_type_offline" value="code"[#if SCRIPT_ID_OFFLINE="0"#] checked[#endif#]>
+						<#LANG_CODE#>
+					</label>
+					
+					<select name="script_id_offline" id="offline_script" class="form-control" [#if SCRIPT_ID_OFFLINE="0"#]style="display:none;"[#endif#]>
+						<option value="0">Select...</option>
+						[#begin SCRIPTS#]
+							<option value="[#ID#]"[#if ID="<#SCRIPT_ID_OFFLINE#>"#] selected[#endif#]>[#TITLE#]</option>
+						[#end SCRIPTS#]
+					</select> 
+					
+					<div id="offline_code" [#if SCRIPT_ID_OFFLINE!="0"#]style="display:none;"[#endif#]>
+						[#module name="blockly_code" system_name="ph_code_offline<#ID#>" onlycode="1" code_field="code_offline" action=""#]
+						[#if ERRORS_OFFLINE#]
+							<div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+								<b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERR_FULL_OFFLINE#]
+								<div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+							</div>
+							<textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE_OFFLINE#]</textarea>
+						[#endif ERRORS_OFFLINE#]
+						<div class="visible-xs visible-sm" id="mobileIndicator"></div>
+						<div id="code_area" style="margin-top: 10px;">
+							[#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
+								<div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-top: 10px;margin-bottom: 10px;background: #fffdc7;">
+									<#LANG_CODEEDITOR_NOTY_TURNOFF#>
+								</div>
+							[#endif SETTINGS_CODEEDITOR_TURNONSETTINGS#]
+							
+							<div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;margin-left: 5px;margin-bottom: 4px;">
+								<i class="glyphicon glyphicon-floppy-saved" style="vertical-align: top;"></i> <#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>. <#LANG_CODEEDITOR_AUTOSAVE_CODE_HELP#>
+							</div>
+							<textarea name="code_offline" id="code_offline" rows=12 cols=100 class="form-control">[#CODE_OFFLINE#]</textarea>
 
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
-[#if OK#]
- <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_ONLINE_CHECK_INTERVAL#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<input type="number" name="online_interval" class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  value="[#ONLINE_INTERVAL#]" size="10">
+					<p style="color: gray;font-size: 1rem;"><#LANG_SECONDS#> (0 to use default)</p>
+				</div>
+			</div>
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_OFFLINE_CHECK_INTERVAL#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text" name="offline_interval" class="form-control [#if ERR_OFFLINE_INTERVAL#]alert-danger[#endif#]" value="[#OFFLINE_INTERVAL#]" size="10" class="span1">
+					<p style="color: gray;font-size: 1rem;"><#LANG_SECONDS#> (0 to use online interval)</p>
+				</div>
+			</div>
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_COUNTER_REQUIRED#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<input type="text" name="counter_required" class="form-control" value="[#COUNTER_REQUIRED#]" size="10" class="span1">
+					<p style="color: gray;font-size: 1rem;">Only for switching from Online to Offline. <#LANG_COUNTER_REQUIRED_COMMENT#> (the interval between these attempts will be 20 sec if the set value is greater)</p>
+				</div>
+			</div>
+			[#if LOG!=''#]
+			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_LOG#>: </label>
+				<div class="col-lg-10 col-md-8">
+					<div id='eventsLog' style="margin-bottom: 20px; max-height: 80px; overflow: auto; padding: 10px; font-family: Consolas, Verdana; background: rgb(0, 0, 128); color: rgb(192, 192, 192); border-radius: 5px;">
+					  [#LOG#]
+					</div>
+				</div>
+			</div>
+			[#endif#]
+			
+			<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
+				<div class="col-md-12 text-center">
+					[#if ID!=""#]
+					<button type="submit" class="btn btn-default btn-success" name="subm">
+						<i class="glyphicon glyphicon-floppy-saved"></i>
+						<#LANG_SUBMIT#>
+                    </button>
+					[#else ID#]
+					<button type="submit" class="btn btn-default btn-success" name="subm">
+						<i class="glyphicon glyphicon-floppy-saved"></i>
+                        <#LANG_ADD#>
+                    </button>
+					[#endif ID#]
+					&nbsp;
+					<a href="?" class="btn btn-warning">
+						<i class="glyphicon glyphicon-floppy-remove"></i>
+                        <#LANG_CANCEL#>
+                    </a>
 
-[#endif OK#]
-[#if ERR#]
-<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+                    <input type="hidden" name="id" value="<#ID#>">
+                    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+                    <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+                    <input type="hidden" name="mode" value="update">
+				</div>
+			</div>
+        </form>
+    </div>
 </div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_HOSTNAME#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true"></div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TYPE#>:<font color="red">*</font></label>
-        <div class="col-lg-5">
-                <select name="type" class="form-control [#if ERR_TYPE#]alert-danger[#endif#]">
-  [#begin TYPE_OPTIONS#]<option value="[#VALUE#]"[#if SELECTED#] selected[#endif#]>[#TITLE#]
-  [#end TYPE_OPTIONS#]
- </select>
-                </div>
-</div>
-
-
-
-
-[#if TYPE="1"#]
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_SEARCH_WORD#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_SEARCH_WORD#]alert-danger[#endif#]"  name="search_word" value="[#SEARCH_WORD#]" required="true"></div>
-</div>
-[#endif TYPE#]
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_OBJECT#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_object" id="linked_object"  value="[#LINKED_OBJECT#]" ></div>
-</div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LINKED_PROPERTY#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control "  name="linked_property" id="linked_property" value="[#LINKED_PROPERTY#]" ></div>
-</div>
-
-[#module name="linkedobject" object_field="linked_object" property_field="linked_property"#]
-
-<!-- SCRIPT_ID_ONLINE (int) -->
-<div class="form-group ">
- <label class="col-lg-4 control-label" for="inputTitle">
- <#LANG_ONLINE_ACTION#>:
- </label>
- <div class="col-lg-5  [#if ERR_SCRIPT_ID_ONLINE#]alert-danger[#endif#]">
-
- <input type="radio" name="run_type_online" value="script"[#if SCRIPT_ID_ONLINE!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
-   <select name="script_id_online" class="form-control">
-    <option value="0">
-    [#begin SCRIPTS#]
-        <option value="[#ID#]"[#if ID="<#SCRIPT_ID_ONLINE#>"#] selected[#endif#]>[#TITLE#]
-        [#end SCRIPTS#]
-   </select>    
-   <br>
-   <input type="radio" name="run_type_online" value="code"[#if SCRIPT_ID_ONLINE="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
- [#if ERRORS_ONLINE!=""#]
- <font color='red'>[#ERRORS#]</font><br>
- [#endif ERRORS_ONLINE#]   
- <textarea name="code_online" rows=12 cols=100 class="form-control">[#CODE_ONLINE#]</textarea>
-
- </div>
-</div>
-
-<!-- SCRIPT_ID_OFFLINE (int) -->
-<div class="form-group ">
- <label class="col-lg-4 control-label" for="inputTitle">
- 
- <#LANG_OFFLINE_ACTION#>:
- </label>
- <div class="col-lg-5 [#if ERR_SCRIPT_ID_OFFLINE#]alert-danger[#endif#]">
-
- <input type="radio" name="run_type_offline" value="script"[#if SCRIPT_ID_OFFLINE!="0"#] checked[#endif#]> <#LANG_SCRIPT#>:
-   <select name="script_id_offline" class="form-control">
-    <option value="0">
-    [#begin SCRIPTS#]
-        <option value="[#ID#]"[#if ID="<#SCRIPT_ID_OFFLINE#>"#] selected[#endif#]>[#TITLE#]
-        [#end SCRIPTS#]
-   </select>    
-   <br>
-   <input type="radio" name="run_type_offline" value="code"[#if SCRIPT_ID_OFFLINE="0"#] checked[#endif#]> <#LANG_CODE#>:<br>
- [#if ERRORS_OFFLINE!=""#]
- <font color='red'>[#ERRORS_OFFLINE#]</font><br>
- [#endif ERRORS_OFFLINE#]   
- <textarea  name="code_offline" rows=12 cols=100 class="form-control">[#CODE_OFFLINE#]</textarea>
-
- </div>
-</div>
-
-
-<!-- ONLINE_INTERVAL (int) -->
-<div class="form-group ">
-<label class="col-lg-4 control-label" for="inputTitle">
- <#LANG_ONLINE_CHECK_INTERVAL#>:
- </label>
- <div class="col-lg-5  ">
-  <input type="text" name="online_interval" class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  value="[#ONLINE_INTERVAL#]" size="10" class="span1"> <#LANG_SECONDS#> (0 to use default)
- </div>
-</div>
-
-<!-- OFFLINE_INTERVAL (int) -->
-<div class="form-group ">
-<label class="col-lg-4 control-label" for="inputTitle">
- <#LANG_OFFLINE_CHECK_INTERVAL#>:
- </label>
- <div class="col-lg-5 ">
-  <input type="text" name="offline_interval" class="form-control [#if ERR_OFFLINE_INTERVAL#]alert-danger[#endif#]" value="[#OFFLINE_INTERVAL#]" size="10" class="span1"> <#LANG_SECONDS#> (0 to use online interval)
- </div>
-</div>
-
-<div class="form-group ">
-<label class="col-lg-4 control-label" for="inputTitle">
- <#LANG_COUNTER_REQUIRED#> (only for switching from Online to Offline):
- </label>
-<div class="col-lg-5">
-  <input type="text" name="counter_required" class="form-control" value="[#COUNTER_REQUIRED#]" size="10" class="span1"> <#LANG_COUNTER_REQUIRED_COMMENT#> (the interval between these attempts will be 20 sec if the set value is greater)
- </div>
-</div>
-
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle">
-&nbsp;
- </label>
- <div class="col-lg-5">
- [#if ID!=""#]
- <input type="submit" class="btn btn-default btn-primary" name="subm" value="<#LANG_SUBMIT#>">
- [#else ID#]
- <input type="submit" class="btn btn-default btn-primary" name="subm" value="<#LANG_ADD#>">
- [#endif ID#]
- &nbsp;
- <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
- </div>
-</div>
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
-
-
-<div class="form-group ">
- <label class="col-lg-4 control-label" for="inputTitle">
-  <#LANG_LOG#>:
- </label>
- <div class="col-lg-5">
- <a href="#" class="btn btn-default" onClick="$('#eventsLog').toggle();return false;"><#LANG_SHOWHIDE#></a>
- <div id='eventsLog' style="display:none">
-  [#LOG#]
- </div>
- </div>
-</div>
-</form>
 
