@@ -988,8 +988,12 @@
 	</script>
 	
 	
-	
-	<div id="partLoadContent" style="margin-bottom: 50px;">
+	<style>
+		#partLoadContent {
+			margin-bottom: 50px;
+		}
+	</style>
+	<div id="partLoadContent">
 		<div class="visible-xs">
 			<div class="row" style="margin: 0 15px;">
 				<div class="col-12" style="margin-bottom: 10px;">
@@ -1146,8 +1150,7 @@
 		[#else AUTHORIZED#]
 			[#module name="control_access" action="enter" instance="auth"#]
 		[#endif AUTHORIZED#]
-	</div>
-	<!--partloadend-->
+	</div><!--partloadend-->
 
 <script language="javascript">
 	//Показ консоли

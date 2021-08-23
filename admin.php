@@ -15,11 +15,20 @@ startMeasure('loader');
 include_once("./lib/loader.php");
 endMeasure('loader');
 
-include_once(DIR_MODULES . "panel.class.php");
-
-$session = new session("prj");
 
 include_once("./load_settings.php");
+
+if (isset($_GET['part_load']) && checkFromCache('reload:'.md5($_SERVER['REQUEST_URI']))) {
+    $res = array();
+    $res['TITLE'] = '';
+    $res['CONTENT'] = '';
+    $res['NEED_RELOAD'] = 1;
+    echo json_encode($res);
+    exit;
+}
+
+include_once(DIR_MODULES . "panel.class.php");
+$session = new session("prj");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $cl  = new control_modules();
@@ -113,6 +122,10 @@ if (isset($_GET['part_load'])) {
              $res['CONTENT']='';
              $res['NEED_RELOAD']=1;
              $result=json_encode($res);
+      }
+
+      if ($res['NEED_RELOAD']) {
+          saveToCache('reload:'.md5($_SERVER['REQUEST_URI']),1);
       }
 
       header("HTTP/1.0: 200 OK\n");

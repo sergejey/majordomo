@@ -755,8 +755,8 @@ class jTemplate
         // [#VARIABLE#] - general variables
         if (preg_match_all('/\[#(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_1 = count($matches[1]);
-
             for ($i = 0; $i < $count_matches_1; $i++) {
+                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]='';
                 $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]]), $res);
             }
         }
@@ -764,8 +764,8 @@ class jTemplate
         // [#VARIABLE.VALUE#] - hash variables
         if (preg_match_all('/\[#(\w+?)\.(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_1 = count($matches[1]);
-
             for ($i = 0; $i < $count_matches_1; $i++) {
+                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]]='';
                 $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]][$matches[2][$i]]), $res);
             }
         }
