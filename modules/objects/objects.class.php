@@ -446,7 +446,7 @@ class objects extends module
 
         if ($id) {
             $meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . (int)$id . "' AND TITLE = '" . DBSafe($name) . "'");
-            if ($meth['ID']) {
+            if ($meth) {
                 return $meth['ID'];
             }
         }
