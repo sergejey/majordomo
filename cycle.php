@@ -236,8 +236,8 @@ $cycles_control_restart = time();
 $restart_threads=array();
 
 while (True) {
-    // chek the cycles and set status if hung каждые 20 минут
-    if ((time() - $last_cycles_control_cycle) >= 20*60) {
+    // chek the cycles and set status if hung каждые 5 минут
+    if ((time() - $last_cycles_control_cycle) >= 5*60) {
         $last_cycles_control_cycle = time();
         foreach ($cycles as $cycle) {
             // проверяем все запущенные циклы
@@ -252,8 +252,8 @@ while (True) {
             }
         }
     }
-    //  перезапуск всех циклов со статусом hung (повис) каждые 30 минут
-    if ((time() - $last_cycles_control_hung) >= 30 * 60) {
+    //  перезапуск всех циклов со статусом hung (повис) каждые 10 минут
+    if ((time() - $last_cycles_control_hung) >= 10 * 60) {
         $last_cycles_control_hung = time();
         foreach ($cycles as $cycle) {
             if ($cycle['state'] == 'Hung') {
@@ -379,7 +379,7 @@ function iterationThread($pipe = null, $cycle_name = '') {
             $size = $stat['size'];
         }
     } else {
-        $size = 404800;
+        $size = 10240;
         
     }
     if ($size > 0) {
@@ -428,7 +428,8 @@ function closeThread($process = null, $cycle_name = '') {
     // пишем отчет в логи
     DebMes($cycles[$cycle_name]['cycle_output'], $cycle_name);
     echo "OK" . "\n";
-	// останавливаем все процессы - для того чтобы полностью остановить цикл
+	
+    // останавливаем все процессы - для того чтобы полностью остановить цикл
     DebMes('Killing ' . $cycle_name . " with pid N $pid.", 'threads');
     if (IsWindowsOS()) {
         $exec_str = "taskkill /F /T /PID $pid";
