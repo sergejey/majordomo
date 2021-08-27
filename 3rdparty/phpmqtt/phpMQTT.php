@@ -655,7 +655,7 @@ class phpMQTT
 	protected function _debugMessage(string $message)
 	{
 		if ($this->debug === true) {
-			echo date('r: ') . $message . PHP_EOL;
+			DebMes( date('r: ') . $message );
 		}
 	}
 
@@ -664,6 +664,6 @@ class phpMQTT
 	 */
 	protected function _errorMessage(string $message)
 	{
-		error_log('Error:' . $message);
+		DebMes('Error:' . $message);
 	}
 }
