@@ -517,9 +517,8 @@ class phpMQTT
 		$byte = $this->read(1, true);
 
 		if ((string)$byte === '') {
-			if ($loop === true) {
-				usleep(100000);
-			}
+		    usleep(250000);
+		    return true;
 		} else {
 			$cmd = (int)(ord($byte) / 16);
 			$this->_debugMessage(
