@@ -294,7 +294,7 @@ class market extends module
             exit;
         }
 
-        if ($_GET['op']=='') {
+        if (!isset($_GET['op']) or $_GET['op']=='') {
             $result = $this->marketRequest('op=categories',120);
             $data = json_decode($result,true);
             if (SETTINGS_SITE_LANGUAGE=='ru') {
@@ -370,7 +370,7 @@ class market extends module
                 foreach($modules_list as $module) {
                     if ($module=='control_modules') continue;
                     if ($module=='control_access') continue;
-                    if (!$seen[$module]) {
+                    if (!isset($seen[$module])) {
                         $params.='&m[]='.urlencode($module);
                     }
                     $seen[$module]=1;
@@ -392,21 +392,23 @@ class market extends module
                     for ($i = 0; $i < $total; $i++) {
                         $rec = (array)$data->PLUGINS[$i];
                         $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                        if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec['ID']) {
+                        if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec) {
                             $rec['EXISTS'] = 1;
                             if ($plugin_rec['ID']) {
                                 $rec['INSTALLED_VERSION'] = $plugin_rec['CURRENT_VERSION'];
                             }
                             $ignore_rec = SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                            if ($ignore_rec['ID']) {
+                            if ($ignore_rec) {
                                 $rec['IGNORE_UPDATE'] = 1;
-                            }
-                        }
+                            } else {
+								$rec['IGNORE_UPDATE'] = 0;
+							}
+                        } 
 
                         //if ($rec['MODULE_NAME']==$name) {
                         //unset($rec['LATEST_VERSION']);
                         if (!isset($rec['LATEST_VERSION_URL'])) {
-                            if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
+                            if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && (isset($rec['EXISTS']) || $rec['MODULE_NAME'] == $name)) {
                                 $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
                                 $github_feed = getURL($git_url, 5 * 60);
                                 @$tmp = GetXMLTree($github_feed);
@@ -427,7 +429,7 @@ class market extends module
                             $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                             $this->version = $rec['LATEST_VERSION'];
                         }
-                        if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
+                        if ((isset($rec['EXISTS']) && !$rec['IGNORE_UPDATE']) || isset($missing[$rec['MODULE_NAME']])) {
                             $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                         }
 						
@@ -437,7 +439,7 @@ class market extends module
                             $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                         }
                         */
-                        if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION']!='') {
+                        if (isset($rec['EXISTS']) && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION']!='') {
                             $this->have_updates[] = $rec['MODULE_NAME'];
                             $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                         } elseif ($category_id=='updates') {
