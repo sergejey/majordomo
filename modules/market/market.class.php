@@ -347,7 +347,7 @@ class market extends module
                 foreach($modules_list as $module) {
                     if ($module=='control_modules') continue;
                     if ($module=='control_access') continue;
-                    if (!$seen[$module]) {
+                    if (!isset($seen[$module])) {
                         $params.='&c[]='.urlencode($module);
                     }
                     $seen[$module]=1;
