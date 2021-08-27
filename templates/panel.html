@@ -204,6 +204,7 @@
 		function updateConsoleDebug() {
 			if ($('#console_debug').is(":hidden")) {
 				clearTimeout(consoleDebugTimer);
+				return;
 			}
 			
 			var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
