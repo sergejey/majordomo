@@ -11,7 +11,7 @@
 class control_modules extends module
 {
     var $modules; // all modules list
-    var $ajaz; 
+    var $ajax; 
 
 // --------------------------------------------------------------------
     function __construct()
