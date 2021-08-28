@@ -298,7 +298,7 @@ while (True) {
         foreach ($cycles as $cycle) {
             closeThread($cycle['process'], $cycle['name']);
         }
-
+	unset($cycles);
         $cycles = array();
         if (is_dir(DOC_ROOT . "/scripts/")) {
             if ($lib_dir = opendir(DOC_ROOT . "/scripts/")) {
