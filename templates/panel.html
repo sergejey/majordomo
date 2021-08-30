@@ -204,6 +204,7 @@
 		function updateConsoleDebug() {
 			if ($('#console_debug').is(":hidden")) {
 				clearTimeout(consoleDebugTimer);
+				return;
 			}
 			
 			var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
@@ -1088,7 +1089,7 @@
 				[#if PRINT!="1"#]
 				<div class="row">
 					[#if ACTION!="" AND ACTION!='xray'#]
-					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
+					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;overflow-wrap: anywhere;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
 						
 					</div>
 					[#endif#]
