@@ -202,7 +202,7 @@ class linkedobject extends module
                 do {
                     if (!$object) break;
                     if ($object=='AllScripts') {
-                        $properties=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
+                        $properties=SQLSelect("SELECT TITLE FROM scripts ORDER BY TITLE");
                         break;
                     }
                     $obj = getObject($object);

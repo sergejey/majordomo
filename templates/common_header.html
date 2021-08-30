@@ -9,7 +9,7 @@
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
-[#if '<#SETTINGS_THEME#>' != 'dark'#]
+[#if "<#SETTINGS_THEME#>"!="dark" || PANEL_THEME=="light"#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 [#else#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css" type="text/css">

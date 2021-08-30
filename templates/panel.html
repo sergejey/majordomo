@@ -305,7 +305,7 @@
 			 $('#partLoadContent').html(cachedContent);
 		 } else {
 			 cachedContent = '';
-			 loaderTimer=setTimeout(loadInProgress, 1000);
+			 loaderTimer=setTimeout(loadInProgress, 2000);
 		 }
 
 		 $.ajax({
@@ -313,6 +313,7 @@
 			 urlInProgress: urlInProgress
 		 }).done(function(data) {
 			 //console.log('part content loaded');
+			 $('#preloader').hide('fast');
 			 if (seqNumber!=requestCounter) {
 				 //console.log('Ignoring response');
 			 }
@@ -1225,11 +1226,12 @@ $(document).ready(function() {
 	});
 	
 	//Применяем тему
+	/*
 	if($.cookie('theme') == 'dark') {
 		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');
 	} else if($.cookie('theme') == 'light') {
 		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');
-	} 
+	} */
 	
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
