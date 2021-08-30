@@ -11,9 +11,16 @@ class kodi extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Kodi (XBMC)';
-		$this->description = 'Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.';
+		$this->description = '<b>Описание:</b>&nbsp; Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.<br>';
+		$this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
+		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Не применимо (нет такого TTS плеера). Для TTS на KODI используте тип плеера TTS = Alicevox<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping ("пингование" проводится проверкой состояния сервиса).<br>';
+        	$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать управление по HTTP в настройках KODI (Настройки -> Сервисные настройки -> Управление -> Разрешить удаленное управление по HTTP) и установить "порт", "имя пользователя" и "пароль".';
+		
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Curl
@@ -151,60 +158,57 @@ class kodi extends app_player_addon {
 		return $this->success;
 	}
 
-	// Get player status
-	function status() {
-		// Kodi: Player ID
-		if($this->kodi_player_id()) {
-			// Defaults
-			$track_id	= -1;
-			$length		= 0;
-			$time		= 0;
-			$state		= 'unknown';
-			$volume		= 0;
-			$random		= FALSE;
-			$loop		= FALSE;
-			$repeat		= FALSE;
-			// Player ID
-			$player_id = $this->data;
-			if($player_id == -1) {
-				$state = 'stopped';
-			}
-			// Track ID, Length
-			if($this->kodi_request('Player.GetItem', array('playerid'=>$player_id, 'properties'=>array('duration')))) {
-				if(!is_null($this->data->result->item->id)) {
-					$track_id = $this->data->result->item->id;
-				}
-				$length = $this->data->result->item->duration;
-			}
-			// Volume
-			if($this->kodi_request('Application.GetProperties', array('properties'=>array('volume')))) {
-				$volume = $this->data->result->volume;
-			}
-			// State: playing/paused, Time, Random, Loop, Repeat
-			if($this->kodi_request('Player.GetProperties', array('playerid'=>$player_id, 'properties'=>array('speed', 'time', 'shuffled', 'repeat')))) {
-				$state = ($this->data->result->speed?'playing':'paused');
-				$time = ($this->data->result->time->hours*60*60) + ($this->data->result->time->minutes*60) + ($this->data->result->time->seconds) + round($this->data->result->time->milliseconds/1000);
-				$random = $this->data->result->shuffled;
-				$loop = ($this->data->result->repeat == 'all'?TRUE:FALSE);
-				$repeat = ($this->data->result->repeat == 'one'?TRUE:FALSE);
-			}
-			// Results
-			$this->reset_properties();
-			$this->success = TRUE;
-			$this->message = 'OK';
-			$this->data = array(
-				'track_id'		=> (int)$track_id,
-				'length'		=> (int)$length,
-				'time'			=> (int)$time,
-				'state'			=> (string)$state,
-				'volume'		=> (int)$volume,
-				'random'		=> (boolean)$random,
-				'loop'			=> (boolean)$loop,
-				'repeat'		=> (boolean)$repeat,
-			);
+    // Get player status
+    function status()
+    {
+        $this->reset_properties();
+        // Defaults
+		$playlist_id = -1;
+		$playlist_content = array();
+        $track_id = -1;
+		$name     = -1;
+		$file     = -1;
+        $length   = -1;
+        $time     = -1;
+        $state    = -1;
+        $volume   = -1;
+		$muted    = -1;
+        $random   = -1;
+        $loop     = -1;
+        $repeat   = -1;
+        $crossfade= -1;
+		$speed = -1;
+		
+        $this->data = array(
+                'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
+                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
+				'track_id' => (int) track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+			    'name' => (string) $name, //Current speed for playing media. float.
+				'file' => (string) $file, //Current link for media in device. String.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => (int) $random, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'random' => (int) $random, // Random mode. Boolean. 
+                'loop' => (int) $loop, // Loop mode. Boolean.
+                'repeat' => (int) $repeat, //Repeat mode. Boolean.
+                'crossfade' => (int) $crossfade, // crossfade
+                'speed' => (int) $speed, // crossfade
+            );
+		// удаляем из массива пустые данные
+		foreach ($this->data as $key => $value) {
+			if ($value == '-1' or !$value) unset($this->data[$key]);
 		}
-		return $this->success;
-	}
+				        
+        $this->success = TRUE;
+        $this->message = 'OK';
+        return $this->success;
+    }
 	
 	// Play
 	function play($input) {
@@ -451,7 +455,7 @@ class kodi extends app_player_addon {
 	}
 
 	// Playlist: Random
-	function pl_random() {
+	function set_random($data=0) {
 		if($this->kodi_player_id()) {
 			$player_id = $this->data;
 			if($player_id != -1) {
@@ -468,7 +472,7 @@ class kodi extends app_player_addon {
 	}
 	
 	// Playlist: Loop
-	function pl_loop() {
+	function set_loop($data=0) {
 		if($this->kodi_player_id()) {
 			$player_id = $this->data;
 			if($player_id != -1) {
@@ -492,7 +496,7 @@ class kodi extends app_player_addon {
 	}
 	
 	// Playlist: Repeat
-	function pl_repeat() {
+	function set_repeat($data=0) {
 		if($this->kodi_player_id()) {
 			$player_id = $this->data;
 			if($player_id != -1) {
@@ -523,6 +527,61 @@ class kodi extends app_player_addon {
 		if($this->kodi_request($command, $json)) {
 			$this->success = TRUE;
 			$this->message = 'OK';
+		}
+		return $this->success;
+	}
+	
+    // Get player status
+	function statusold() {
+		// Kodi: Player ID
+		if($this->kodi_player_id()) {
+			// Defaults
+			$track_id	= -1;
+			$length		= 0;
+			$time		= 0;
+			$state		= 'unknown';
+			$volume		= 0;
+			$random		= FALSE;
+			$loop		= FALSE;
+			$repeat		= FALSE;
+			// Player ID
+			$player_id = $this->data;
+			if($player_id == -1) {
+				$state = 'stopped';
+			}
+			// Track ID, Length
+			if($this->kodi_request('Player.GetItem', array('playerid'=>$player_id, 'properties'=>array('duration')))) {
+				if(!is_null($this->data->result->item->id)) {
+					$track_id = $this->data->result->item->id;
+				}
+				$length = $this->data->result->item->duration;
+			}
+			// Volume
+			if($this->kodi_request('Application.GetProperties', array('properties'=>array('volume')))) {
+				$volume = $this->data->result->volume;
+			}
+			// State: playing/paused, Time, Random, Loop, Repeat
+			if($this->kodi_request('Player.GetProperties', array('playerid'=>$player_id, 'properties'=>array('speed', 'time', 'shuffled', 'repeat')))) {
+				$state = ($this->data->result->speed?'playing':'paused');
+				$time = ($this->data->result->time->hours*60*60) + ($this->data->result->time->minutes*60) + ($this->data->result->time->seconds) + round($this->data->result->time->milliseconds/1000);
+				$random = $this->data->result->shuffled;
+				$loop = ($this->data->result->repeat == 'all'?TRUE:FALSE);
+				$repeat = ($this->data->result->repeat == 'one'?TRUE:FALSE);
+			}
+			// Results
+			$this->reset_properties();
+			$this->success = TRUE;
+			$this->message = 'OK';
+			$this->data = array(
+				'track_id'		=> (int)$track_id,
+				'length'		=> (int)$length,
+				'time'			=> (int)$time,
+				'state'			=> (string)$state,
+				'volume'		=> (int)$volume,
+				'random'		=> (boolean)$random,
+				'loop'			=> (boolean)$loop,
+				'repeat'		=> (boolean)$repeat,
+			);
 		}
 		return $this->success;
 	}

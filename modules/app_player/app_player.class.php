@@ -322,9 +322,13 @@ class app_player extends module {
 				
 				// Set media volume level
 				if($command == 'set_volume' && strlen($param)) {
-					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
+					if(strtolower($terminal['NAME'] == 'MAIN')) {
 						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
 						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
+					} else {
+						$rec['ID'] = $terminal['ID'];
+						$rec['TERMINAL_VOLUME_LEVEL'] = (int)$param;
+						SQLUpdate('terminals', $rec);
 					}
 				}
 				
@@ -350,13 +354,14 @@ class app_player extends module {
 			$session_terminals = array($session->data['PLAY_TERMINAL']);
 		}
 		$terminals = getTerminalsCanPlay(-1, 'TITLE', 'ASC');
-		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
+		//array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
 		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
 		$total = count($terminals);
 		for($i = 0 ; $i < $total ; $i++) {
 			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
 				$terminals[$i]['SELECTED'] = 1;
 				$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
+                                $out['TERMINAL_VOLUME'] = $terminals[$i]['TERMINAL_VOLUME_LEVEL'];
 			}
 		}
 		$out['TERMINALS_TOTAL'] = count($terminals);

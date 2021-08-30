@@ -12,6 +12,12 @@
 
   var $action;
   var $member_id;
+  var $app_action;
+  var $doc_name;
+  var $doc;
+  var $doc_id;
+  var $popup;
+  var $ajax;
 
 // --------------------------------------------------------------------
   function __construct() {
@@ -325,10 +331,10 @@ function getParams() {
    if ($this->doc) $this->doc_id=$this->doc;
    $out["DOC_ID"]=$this->doc_id;
 
-   if ($session->data['MY_MEMBER']) {
+   if (isset($session->data['MY_MEMBER']) and $session->data['MY_MEMBER']) {
     $out['MY_MEMBER']=$session->data['MY_MEMBER'];
     $tmp=SQLSelectOne("SELECT ID FROM users WHERE ID='".(int)$out['MY_MEMBER']."' AND ACTIVE_CONTEXT_ID!=0 AND TIMESTAMPDIFF(SECOND, ACTIVE_CONTEXT_UPDATED, NOW())>600");
-    if ($tmp['ID']) {
+    if ($tmp) {
      SQLExec("UPDATE users SET ACTIVE_CONTEXT_ID=0, ACTIVE_CONTEXT_EXTERNAL=0 WHERE ID='".$tmp['ID']."'");
     }
    }

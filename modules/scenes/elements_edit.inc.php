@@ -80,7 +80,7 @@
   }
   $out['SCENE_ID_OPTIONS']=$tmp;
   //options for 'TYPE' (select)
-  $tmp=explode('|', DEF_TYPE_OPTIONS);
+  $tmp=explode('|', SCENES_TYPE_OPTIONS);
   foreach($tmp as $v) {
    if (preg_match('/(.+)=(.+)/', $v, $matches)) {
     $value=$matches[1];

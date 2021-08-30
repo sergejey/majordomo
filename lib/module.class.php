@@ -588,7 +588,7 @@ class module
 
         $session->save();
 
-        if ($_GET['part_load']) {
+        if (isset ($_GET['part_load']) and $_GET['part_load']) {
             $res = array();
             $res['CONTENT'] = '';
             $res['NEED_RELOAD'] = 1;

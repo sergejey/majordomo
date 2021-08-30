@@ -140,7 +140,6 @@ if ($object != '') {
    $job = SQLSelectOne("SELECT * FROM jobs WHERE ID='" . (int)$job . "'");
    
    if ($job['ID']) {
-      define('CALL_SOURCE','Job: '.$job['TITLE']);
       try {
          verbose_log("Scheduled job [".$job['TITLE']."]");
          $code = $job['COMMANDS'];
@@ -172,6 +171,12 @@ if ($object != '') {
   say(gr('ph'),gr('level'),gr('member_id'),gr('source'));
 } elseif (gr('sayTo')) {
    sayTo(gr('ph'),gr('level'),gr('destination'));
+} elseif (gr('pingTerminal')) {
+    pingTerminal(gr('terminal'), json_decode(gr('params'),true), gr('service'));
+} elseif (gr('send_message')) {
+    send_message( gr('terminalname'), json_decode(gr('message'), true), json_decode(gr('terminal'), true));
+} elseif (gr('restore_terminal_state')) {
+    restore_terminal_state( gr('terminalname'), json_decode(gr('terminal'), true));
 } elseif (gr('processSubscriptions')) {
    processSubscriptions(gr('event'), json_decode(gr('params'),true));
 } elseif (gr('processSubscriptionsOutput')) {

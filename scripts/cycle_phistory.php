@@ -4,14 +4,12 @@ chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 
 set_time_limit(0);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
-setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
 //SQLTruncateTable('phistory_queue');
 
@@ -25,18 +23,14 @@ if (!$limit) {
 }
 
 $checked_time = 0;
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
-
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
 $processed = array();
 
 while (1) {
-    if (time() - $checked_time > 5) {
+    if (time() - $checked_time > 30) {
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        // saveToCache("MJD:$cycleVarName", $checked_time);
+        echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
     }
 
 
@@ -65,7 +59,7 @@ while (1) {
     $count_queue = (int)$tmp['TOTAL'];
 
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT ". $limit);
-    if ($queue[0]['ID']) {
+    if ($queue && $queue[0]['ID']) {
         if ($count_queue>$limit && !$queue_error_status) {
                 sg('phistory_queue_problem',1);
                 $txt = 'Properties history queue is too long ('.$count_queue.')';

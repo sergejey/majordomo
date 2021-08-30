@@ -72,10 +72,8 @@ Define('GIT_URL', 'https://github.com/sergejey/majordomo/');
 Define('MASTER_UPDATE_URL', GIT_URL.'archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
 
 $aditional_git_urls = array(
-   //'https://github.com/AKEB/majordomo/archive/alpha.tar.gz' => 'AKEB/alpha',
-   //'https://github.com/AKEB/majordomo/archive/master.tar.gz' => 'AKEB/master',
+   'https://https://github.com/tarasfrompir/MajordomoHome/archive/alpha.tar.gz' => 'Moя Версия Мажордомо/alpha',
 );
-
 
 //Define('WAIT_FOR_MAIN_CYCLE', 1);
 //Define('TRACK_DATA_CHANGES', 1);                                   // TRACK EVENTS
@@ -84,7 +82,7 @@ $aditional_git_urls = array(
 Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getURL function warning
 
 //Define('SEPARATE_HISTORY_STORAGE',1);                 // STORE HISTORY DATA IN DIFFERENT TABLES
-//Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS
+//Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS - DONT NEED путь для логов указываем только в одном месте в панели МДМ - SETTINGS_SYSTEM_DEBMES_PATH
 //Define('LOG_MAX_SIZE', 2);                 // MAXIMUM LOG FILE SIZE, MB
 //Define('LOG_CYCLES',1);             // Save working cycle log (or send to /dev/null if not defined)
 //Define('PATH_TO_FFMPEG','avconv');

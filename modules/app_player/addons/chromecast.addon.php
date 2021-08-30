@@ -10,128 +10,94 @@ class chromecast extends app_player_addon
     // Constructor
     function __construct($terminal)
     {
+        $this->reset_properties();
         $this->title       = 'Google Chromecast';
-        $this->description = 'Описание: Цифровой медиаплеер от компании Google.';
+        $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на устройствах поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
+        $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
+        $this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Да (если ТТС такого же типа, что и плеер).<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping ("пингование" проводится проверкой состояния сервиса).<br>';
+        $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).<br>';
         $this->terminal = $terminal;
-        $this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
+        $this->port     = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
+        
+        if (!$this->terminal['HOST'])
+            return false;
 
-        $this->reset_properties();        
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
+        $this->Gcc = new GChromecast($this->terminal['HOST'], $this->port);
     }
+
     // Get player status
     function status()
     {
         $this->reset_properties();
         // Defaults
-        $track_id = -1;
-        $length   = 0;
-        $time     = 0;
-        $state    = 'unknown';
-        $volume   = 0;
-        $random   = FALSE;
-        $loop     = FALSE;
-        $repeat   = FALSE;
+        $playlist_id      = -1;
+        $playlist_content = array();
+        $track_id         = -1;
+        $name             = -1;
+        $file             = -1;
+        $length           = -1;
+        $time             = -1;
+        $state            = -1;
+        $volume           = -1;
+        $muted            = -1;
+        $random           = -1;
+        $loop             = -1;
+        $repeat           = -1;
+        $crossfade        = -1;
+        $speed            = -1;
         
-        $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-        $cc->requestId = time();
-        $status = $cc->getStatus();
-        $cc->requestId = time();
-        $result = $cc->getMediaSession();
-        //DebMes($result);
-        if ($result) {
-            $this->reset_properties();
-            $this->success = TRUE;
-            $this->message = 'OK';
-            $this->data    = array(
-                'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
-                'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
-                'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($status['status']['volume']['level']*100), // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (boolean) $random, // Random mode. Boolean. 
-                'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $result['status'][0]['repeatMode'] //Repeat mode. Boolean.
-            );
+        $this->Gcc->requestId = time();
+        $status              = $this->Gcc->getStatus();
+        $this->Gcc->requestId = time();
+        $result              = $this->Gcc->getMediaSession();
+        
+        $this->data = array(
+            'playlist_id' => (int) $playlist_id, // номер или имя плейлиста 
+            'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+            // обязательно $playlist_content[$i]['pos'] - номер трека
+            // обязательно $playlist_content[$i]['file'] - адрес трека
+            // возможно $playlist_content[$i]['Artist'] - артист
+            // возможно $playlist_content[$i]['Title'] - название трека
+            'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+            'name' => (string) $name, //Current speed for playing media. float.
+            'file' => (string) $result['status'][0]['media']['contentId'], //Current link for media in device. String.
+            'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
+            'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
+            'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
+            'volume' => (int) ($status['status']['volume']['level'] * 100), // Volume level in percent. Integer. Some players may have values greater than 100.
+            'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
+            'random' => (int) $random, // Random mode. Boolean. 
+            'loop' => (int) $loop, // Loop mode. Boolean.
+            'repeat' => (string) $result['status'][0]['repeatMode'], //Repeat mode. Boolean.
+            'crossfade' => (int) $crossfade, // crossfade
+            'speed' => (int) $speed // crossfade
+        );
+        // удаляем из массива пустые данные
+        foreach ($this->data as $key => $value) {
+            if ($value == '-1' or !$value)
+                unset($this->data[$key]);
         }
+        $this->success = TRUE;
+        $this->message = 'OK';
         return $this->success;
     }
     
     
-    // Playlist: Get
-    function pl_get()
-    {
-        $this->success = FALSE;
-        $this->message = 'Command execution error!';
-        $track_id      = -1;
-        $name          = 'unknow';
-        $curren_url    = '';
-        
-        $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-        $cc->requestId = time();
-        $result        = $cc->getMediaSession();
-        
-        if ($result) {
-            // Results
-            $this->reset_properties();
-            $this->success = TRUE;
-            $this->message = 'OK';
-            $this->data    = array(
-                'id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => (string) $name, //Current speed for playing media. float.
-                'file' => (string) $result['status'][0]['media']['contentId'] //Current link for media in device. String.
-            );
-        }
-        return $this->success;
-    }
-
-    // Say
+    // Play
     function play($input) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();
-		if (strlen($input)) {
+        if (strlen($input)) {
             try {
-                $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-                $cc->requestId = time();
-                $cc->load($input, 0);
-                $cc->play();
-				$this->success = TRUE;
-                $this->message = 'Ok!';
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-                $this->message = $e->getMessage();
-            }
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Input is missing!';
-        }
-        return $this->success;
-    }
-    
-	// Say
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
-    {
-        $this->reset_properties();
-		// берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $message['FILE_LINK'], $m)) {
-            $server_ip = getLocalIp();
-            if (!$server_ip) {
-                DebMes("Server IP not found", 'terminals');
-                return false;
-            } else {
-                $filelink = 'http://' . $server_ip . $m[0];
-            }
-        }
-        if (strlen($filelink)) {
-            try {
-                $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-                $cc->load($filelink, 0);
-                $cc->play();
-                sleep ($message['TIME_MESSAGE']);
+                $this->Gcc->requestId = time();
+                $this->Gcc->load($input, 0);
+                $this->Gcc->requestId = time();
+                $this->Gcc->play();
                 $this->success = TRUE;
-                $this->message = 'OK';
+                $this->message = 'Ok!';
             }
             catch (Exception $e) {
                 $this->success = FALSE;
@@ -149,9 +115,8 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         try {
-            $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-            $cc->requestId = time();
-            $cc->pause();
+            $this->Gcc->requestId = time();
+            $this->Gcc->pause();
             $this->success = TRUE;
             $this->message = 'OK';
         }
@@ -167,9 +132,8 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         try {
-            $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-            $cc->requestId = time();
-            $cc->stop();
+            $this->Gcc->requestId = time();
+            $this->Gcc->stop();
             $this->success = TRUE;
             $this->message = 'OK';
         }
@@ -186,10 +150,9 @@ class chromecast extends app_player_addon
         $this->reset_properties();
         if (strlen($level)) {
             try {
-                $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-                $cc->requestId = time();
-                $level         = round($level / 100, 1);
-                $cc->SetVolume($level);
+                $this->Gcc->requestId = time();
+                $level               = $level / 100;
+                $this->Gcc->SetVolume($level);
                 $this->success = TRUE;
                 $this->message = 'OK';
             }
@@ -204,6 +167,42 @@ class chromecast extends app_player_addon
         return $this->success;
     }
     
+    // Restore player data from terminals
+    function restore_media($input, $position = 0)
+    {
+        $this->reset_properties();
+        $this->Gcc->requestId = time();
+        $this->Gcc->load($input, 0);
+        $this->Gcc->requestId = time();
+        //$this->Gcc->seek($position);
+        $this->Gcc->requestId = time();
+        $response = $this->Gcc->play();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Play files';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // ping mediaservise
+    public function ping_mediaservice($host)
+    {
+        if (ping($host)) {
+            $this->Gcc->requestId = time();
+            $status = $this->Gcc->getStatus();
+            if (is_array($status)) {
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
 }
 
 ?>
