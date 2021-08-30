@@ -42,6 +42,7 @@ class panel extends module
         global $session;
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+        $out['PANEL_THEME']=$_COOKIE['theme'];
 
         if (gr('toggleLeftPanel')) {
             if (gg('HideLeftPanelAdmin')) {
@@ -158,7 +159,9 @@ class panel extends module
             $modules = SQLSelect($sqlQuery);
             $old_cat = 'some_never_should_be_category_name';
             $modulesCnt = count($modules);
-
+			
+			$getNOTY = SQLSelect("select pln.*, pl.MODULE_NAME from plugins_noty pln join plugins pl on pln.PLUGINS_ID=pl.id WHERE pln.READ = '0'");
+			
             for ($i = 0; $i < $modulesCnt; $i++) {
                 if ($modules[$i]['NAME'] == $this->action) {
                     $modules[$i]['SELECTED'] = 1;
@@ -179,30 +182,28 @@ class panel extends module
                     $last_allow = $i;
                 }
 				
-				if(preg_match('|<#(.*?)#>|si', $modules[$i]['TITLE'], $arr)) {
-					$titleSearchNoty = constant($arr[1]);
-				} else {
-					$titleSearchNoty = $modules[$i]['NAME'];
-				}
-			
-				$getNOTY = SQLSelect("SELECT * FROM `plugins_noty` WHERE `PLUGINS_ID` = (SELECT ID FROM `plugins` WHERE `MODULE_NAME` = '".$titleSearchNoty."') AND `READ` = 0 ORDER BY `ADD` DESC LIMIT 10");
+				foreach($getNOTY as $keyNoty => $notyValue) {
+					if($notyValue['MODULE_NAME'] == $modules[$i]["NAME"]) {
 				
-				if(!empty($getNOTY)) {
-					$modules[$i]['PLUGINS_NOTY_COUNT'] = count($getNOTY);
-					$modules[$i]['PLUGINS_NOTY_COLOR'] = $getNOTY[0]['TYPE'];
-					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'];
+						if(preg_match('|<#(.*?)#>|si', $notyValue['MODULE_NAME'], $arr)) {
+							$titleSearchNoty = constant($arr[1]);
+						} else {
+							$titleSearchNoty = $notyValue['MODULE_NAME'];
+						}
 					
-					foreach($getNOTY as $keyNoty => $noty) {
-						$getNOTY[$keyNoty]['ADD_HUMAN'] = date('d.m.Y H:i', $noty['ADD']);
+						$modules[$i]['PLUGINS_NOTY_COUNT'] = $modules[$i]['PLUGINS_NOTY_COUNT']+1;
+						$modules[$i]['PLUGINS_NOTY_COLOR'] = $notyValue['TYPE'];
+						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'];
+						
+						$getNOTY[$keyNoty]['ADD_HUMAN'] = date('d.m.Y H:i', $notyValue['ADD']);
+						
+						$modules[$i]['PLUGINS_NOTY'][] = $getNOTY[$keyNoty];
+
+						unset($getNOTY[$keyNoty]);
+					} else {
+						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'] ?? null;
 					}
-					
-					$modules[$i]['PLUGINS_NOTY'] = $getNOTY;
-				} else {
-					$modules[$i]['PLUGINS_NOTY_COUNT'] = 0;
-					$modules[$i]['PLUGINS_ID'] = $getNOTY[0]['PLUGINS_ID'] ?? null;
-				}
-				
-                if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
+                        if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';

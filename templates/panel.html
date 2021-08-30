@@ -204,6 +204,7 @@
 		function updateConsoleDebug() {
 			if ($('#console_debug').is(":hidden")) {
 				clearTimeout(consoleDebugTimer);
+				return;
 			}
 			
 			var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
@@ -304,7 +305,7 @@
 			 $('#partLoadContent').html(cachedContent);
 		 } else {
 			 cachedContent = '';
-			 loaderTimer=setTimeout(loadInProgress, 1000);
+			 loaderTimer=setTimeout(loadInProgress, 2000);
 		 }
 
 		 $.ajax({
@@ -312,6 +313,7 @@
 			 urlInProgress: urlInProgress
 		 }).done(function(data) {
 			 //console.log('part content loaded');
+			 $('#preloader').hide('fast');
 			 if (seqNumber!=requestCounter) {
 				 //console.log('Ignoring response');
 			 }
@@ -1088,7 +1090,7 @@
 				[#if PRINT!="1"#]
 				<div class="row">
 					[#if ACTION!="" AND ACTION!='xray'#]
-					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
+					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;overflow-wrap: anywhere;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
 						
 					</div>
 					[#endif#]
@@ -1224,11 +1226,12 @@ $(document).ready(function() {
 	});
 	
 	//Применяем тему
+	/*
 	if($.cookie('theme') == 'dark') {
 		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');
 	} else if($.cookie('theme') == 'light') {
 		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');
-	} 
+	} */
 	
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
