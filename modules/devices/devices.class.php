@@ -623,7 +623,7 @@ class devices extends module
     {
         //return true; // temporary
         $tmp = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='HomeBridge'");
-        if ($tmp['ID']) {
+        if ($tmp) {
             return true;
         } else {
             return false;
