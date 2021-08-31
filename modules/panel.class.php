@@ -203,7 +203,9 @@ class panel extends module
 					} else {
 						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'] ?? null;
 					}
-                        if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
+				}
+	
+                if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
@@ -232,7 +234,7 @@ class panel extends module
         }
 
         $out["ACTION"] = $this->action;
-        if (!$out['TITLE']) {
+        if (!isset($out['TITLE'])) {
             $out['TITLE'] = LANG_CONTROL_PANEL;
         }
         $this->data = $out;
