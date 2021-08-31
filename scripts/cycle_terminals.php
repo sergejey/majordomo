@@ -139,7 +139,10 @@ while (1) {
 
         // если пустой терминал пропускаем
         if (!$terminal['ID']) {
-            DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted.", 'terminals');
+            DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted. .... Обьект удален ...", 'terminals');
+            $del_object = getObject($terminals);
+            //DebMes($del_object->id);
+            deleteObject($del_object->id);
             continue;
         }
 
