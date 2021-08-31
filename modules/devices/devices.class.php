@@ -16,6 +16,7 @@ class devices extends module
 	var $ajax;
 	var $tab;
 	var $data_source;
+	var $xml;
 	
     /**
      * devices
