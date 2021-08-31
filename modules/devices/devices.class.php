@@ -10,6 +10,13 @@
 //
 class devices extends module
 {
+	var $view_mode;
+	var $edit_mode;
+	var $mode;
+	var $ajax;
+	var $tab;
+	var $data_source;
+	
     /**
      * devices
      *
