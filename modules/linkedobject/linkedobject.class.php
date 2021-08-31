@@ -13,6 +13,17 @@
 //
 class linkedobject extends module
 {
+	
+	var $ajax;
+	var $property_field;
+	var $method_field;
+	var $view_mode;
+	var $edit_mode;
+	var $mode;
+	var $action;
+	var $single_rec;
+	var $width;
+	
     /**
      * linkedobject
      *
