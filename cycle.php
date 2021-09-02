@@ -298,6 +298,7 @@ while (True) {
         foreach ($cycles as $cycle) {
             closeThread($cycle['process'], $cycle['name']);
         }
+	resetRebootRequired()
 	unset($cycles);
         $cycles = array();
         if (is_dir(DOC_ROOT . "/scripts/")) {
@@ -316,8 +317,6 @@ while (True) {
     }
 	
 }
-
-resetRebootRequired();
 
 function newThread($filename, $cycle_name) {
     global $cycles;
