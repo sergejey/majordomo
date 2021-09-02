@@ -29,12 +29,7 @@ Define('PATH_TO_PHP', 'php');
 Define('PATH_TO_MYSQLDUMP', "mysqldump");
 
 
-if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"]) {
-    Define('BASE_URL', $_ENV["S2G_BASE_URL"]);
-} else {
-    // Your base URL:port (!!!)
-    Define('BASE_URL', 'http://127.0.0.1:80');
-}
+Define('BASE_URL', 'http://127.0.0.1:80');
 
 Define('ROOT', DOC_ROOT . "/");
 Define('ROOTHTML', "/");
@@ -51,15 +46,6 @@ Define('EXT_ACCESS_PASSWORD', 'password');
 
 /// (Optional)
 //Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  
-
-$restart_threads = array(
-    'cycle_execs.php',
-    'cycle_main.php',
-    'cycle_ping.php',
-    'cycle_scheduler.php',
-    'cycle_states.php',
-    'cycle_webvars.php'
-);
 
 //Define('USE_PROXY', '127.0.0.1:8888');               //PROXY SERVER DETAILS (optional)
 //Define('USE_PROXY_AUTH', 'user:password');           //PROXY SERVER AUTH (optional)
