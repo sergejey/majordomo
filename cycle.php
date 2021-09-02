@@ -298,7 +298,7 @@ while (True) {
         foreach ($cycles as $cycle) {
             closeThread($cycle['process'], $cycle['name']);
         }
-	resetRebootRequired()
+	resetRebootRequired();
 	unset($cycles);
         $cycles = array();
         if (is_dir(DOC_ROOT . "/scripts/")) {
