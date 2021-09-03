@@ -11,6 +11,12 @@
 //
 //
 class commands extends module {
+  var $single_rec;
+  var $tab;
+  var $mode;
+  var $edit_mode;
+  var $view_mode;
+  
 /**
 * commands
 *
