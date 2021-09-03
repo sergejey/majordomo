@@ -10,6 +10,7 @@
 
  class application extends module {
 
+  var $room_id;
   var $action;
   var $member_id;
   var $app_action;
