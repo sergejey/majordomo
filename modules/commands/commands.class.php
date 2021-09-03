@@ -16,6 +16,8 @@ class commands extends module {
   var $mode;
   var $edit_mode;
   var $view_mode;
+  var $ajax;
+  var $room_id;
   
 /**
 * commands
