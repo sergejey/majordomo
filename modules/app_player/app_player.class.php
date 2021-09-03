@@ -364,26 +364,29 @@ class app_player extends module {
 		}
 		$terminals = getTerminalsCanPlay(-1, 'TITLE', 'ASC');
 		//array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
-		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
-		$total = count($terminals);
-		for($i = 0 ; $i < $total ; $i++) {
-			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
-				$terminals[$i]['SELECTED'] = 1;
-				$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
-                                $out['TERMINAL_VOLUME'] = $terminals[$i]['TERMINAL_VOLUME_LEVEL'];
+		//array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
+		if ($terminals) {
+			$total = count($terminals);
+			for($i = 0 ; $i < $total ; $i++) {
+				if(in_array($terminals[$i]['NAME'], $session_terminals)) {
+					$terminals[$i]['SELECTED'] = 1;
+					$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
+									$out['TERMINAL_VOLUME'] = $terminals[$i]['TERMINAL_VOLUME_LEVEL'];
+				}
 			}
-		}
-		$out['TERMINALS_TOTAL'] = count($terminals);
-		if($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
-			$terminals[0]['SELECTED'] = 1;
-		}
-		foreach ($terminals as $temp_terminal) {
-			if (!checkAccess('terminal', $temp_terminal['ID'])) {
-				continue;// some action for every record if required
+			$out['TERMINALS_TOTAL'] = count($terminals);
+			if($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
+				$terminals[0]['SELECTED'] = 1;
 			}
-			$out['TERMINALS'][] = $temp_terminal;
+			foreach ($terminals as $temp_terminal) {
+				if (!checkAccess('terminal', $temp_terminal['ID'])) {
+					continue;// some action for every record if required
+				}
+				$out['TERMINALS'][] = $temp_terminal;
+			}
+		} else {
+			$out['TERMINALS'] = array();
 		}
-		//$out['TERMINALS'] = $terminals;
 		
 		// Unique ID
 		$out['APP_PLAYER_ID'] = uniqid('app_player_');
