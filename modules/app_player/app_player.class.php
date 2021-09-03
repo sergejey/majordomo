@@ -19,7 +19,6 @@ class app_player extends module {
 	var $ajax;
 	var $view_mode;
 	var $edit_mode;
-	var $action;
 	var $single_rec;
 	
 	/**
