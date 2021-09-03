@@ -17,7 +17,9 @@ class shoutbox extends module {
   var $mobile;
   var $ajax;
   var $action;
-  
+  var $tab;
+  var $single_rec;
+  var $edit_mode;
   
 /**
 * shoutbox
