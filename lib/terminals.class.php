@@ -14,7 +14,7 @@ function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 
 // Get terminal by id
 function getTerminalByID($id) {
-    $sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = ' . abs(intval($id))
+    $sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = ' . abs(intval($id));
     if (!$terminal = SQLSelectOne($sqlQuery)) {
         return false;
     }
@@ -57,7 +57,7 @@ function getTerminalsCanPlay($limit = -1, $order = 'ID', $sort = 'ASC') {
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $return false;
+        return false;
     }
     return $terminals;
 }
