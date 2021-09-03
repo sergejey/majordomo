@@ -11,6 +11,11 @@
 //
 //
 class shoutbox extends module {
+  var $mode;
+  var $data_source;
+  var $view_mode;
+  var $mobile;
+  
 /**
 * shoutbox
 *
