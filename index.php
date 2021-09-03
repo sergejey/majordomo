@@ -78,10 +78,11 @@ echobig($result);
 
 endMeasure('final_echo', 1);
 
-if ($cache_filename != '' && $cached_result == '')
-{
-   SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
-}
+// отключаем сохранение в кеш мдм - все равно все быстро меняется в нем
+//if ($cache_filename != '' && $cached_result == '')
+//{
+//   SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
+//}
 
 $session->save();
 
