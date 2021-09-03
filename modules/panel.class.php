@@ -234,7 +234,7 @@ class panel extends module
         }
 
         $out["ACTION"] = $this->action;
-        if (!isset($out['TITLE'])) {
+        if (!$out['TITLE']) {
             $out['TITLE'] = LANG_CONTROL_PANEL;
         }
         $this->data = $out;
