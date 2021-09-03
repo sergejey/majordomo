@@ -285,7 +285,7 @@ if ($this->tab == 'interface') {
     $total = count($menu_items);
     for ($i = 0; $i < $total; $i++) {
         $sub = SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID=" . $menu_items[$i]['ID']);
-        if ($sub['ID']) {
+        if ($sub) {
             $res_items[] = $menu_items[$i];
         }
     }
@@ -508,7 +508,7 @@ outHash($rec, $out);
 
 $types = array();
 foreach ($this->device_types as $k => $v) {
-    if ($v['TITLE']) {
+    if (isset($v['TITLE']) && $v['TITLE']) {
         $types[] = array('NAME' => $k, 'TITLE' => $v['TITLE']);
     }
     if ($k==$rec['TYPE'] && $rec['TYPE']!='') {

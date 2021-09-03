@@ -1,11 +1,11 @@
 <?php
 /**
-* Project Config
-*
-* @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
-* @version 1.1
-*/
+ * Project Config
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 1.1
+ */
 
 Define('DB_HOST', 'localhost');
 Define('DB_NAME', 'db_terminal');
@@ -22,24 +22,16 @@ Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru");
 
 date_default_timezone_set('UTC');
 
- Define('DOC_ROOT', dirname(__FILE__));              // Your htdocs location (should be detected automatically)
+Define('DOC_ROOT', dirname(__FILE__)); // Your htdocs location (should be detected automatically)
 
- Define('SERVER_ROOT', '/var/www');
- Define('PATH_TO_PHP', 'php');
- Define('PATH_TO_MYSQLDUMP', "mysqldump");
+Define('SERVER_ROOT', '/var/www');
+Define('PATH_TO_PHP', 'php');
+Define('PATH_TO_MYSQLDUMP', "mysqldump");
 
- 
-if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"])
-{
-   Define('BASE_URL', $_ENV["S2G_BASE_URL"]);
-}
-else 
-{
-   // Your base URL:port (!!!)
-   Define('BASE_URL', 'http://127.0.0.1:80');              
-}
 
-Define('ROOT', DOC_ROOT."/");
+Define('BASE_URL', 'http://127.0.0.1:80');
+
+Define('ROOT', DOC_ROOT . "/");
 Define('ROOTHTML', "/");
 Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname("n"));
 
@@ -47,44 +39,34 @@ Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'
 //Define('ONEWIRE_SERVER', 'tcp://localhost:8234');    
 
 /*
-   Define('HOME_NETWORK', '192.168.0.*');                  // home network (optional)
-   Define('EXT_ACCESS_USERNAME', 'user');                  // access details for external network (internet)
-   Define('EXT_ACCESS_PASSWORD', 'password');
+Define('HOME_NETWORK', '192.168.0.*');                  // home network (optional)
+Define('EXT_ACCESS_USERNAME', 'user');                  // access details for external network (internet)
+Define('EXT_ACCESS_PASSWORD', 'password');
 */
 
 /// (Optional)
 //Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  
 
- $restart_threads=array(
-                       'cycle_execs.php', 
-                       'cycle_main.php', 
-                       'cycle_ping.php', 
-                       'cycle_scheduler.php', 
-                       'cycle_states.php', 
-                       'cycle_webvars.php');
+//Define('USE_PROXY', '127.0.0.1:8888');               //PROXY SERVER DETAILS (optional)
+//Define('USE_PROXY_AUTH', 'user:password');           //PROXY SERVER AUTH (optional)
 
- //Define('USE_PROXY', '127.0.0.1:8888');               //PROXY SERVER DETAILS (optional)
- //Define('USE_PROXY_AUTH', 'user:password');           //PROXY SERVER AUTH (optional)
-
- //Define('HISTORY_NO_OPTIMIZE', 1);
+//Define('HISTORY_NO_OPTIMIZE', 1);
 
 Define('GIT_URL', 'https://github.com/sergejey/majordomo/');
-Define('MASTER_UPDATE_URL', GIT_URL.'archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
+Define('MASTER_UPDATE_URL', GIT_URL . 'archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
 
 $aditional_git_urls = array(
-   //'https://github.com/AKEB/majordomo/archive/alpha.tar.gz' => 'AKEB/alpha',
-   //'https://github.com/AKEB/majordomo/archive/master.tar.gz' => 'AKEB/master',
+    'https://https://github.com/tarasfrompir/MajordomoHome/archive/alpha.tar.gz' => 'Moя Версия Мажордомо/alpha'
 );
-
 
 //Define('WAIT_FOR_MAIN_CYCLE', 1);
 //Define('TRACK_DATA_CHANGES', 1);                                   // TRACK EVENTS
 //Define('TRACK_DATA_CHANGES_IGNORE', 'cycle_, clockchime, uptime, WSClientsTotal'); // IGNORE
 
-Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getURL function warning
+Define('GETURL_WARNING_TIMEOUT', 5); // TIMEOUT LIMIT FOR getURL function warning
 
 //Define('SEPARATE_HISTORY_STORAGE',1);                 // STORE HISTORY DATA IN DIFFERENT TABLES
-//Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS
+//Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS - DONT NEED путь для логов указываем только в одном месте в панели МДМ - SETTINGS_SYSTEM_DEBMES_PATH
 //Define('LOG_MAX_SIZE', 2);                 // MAXIMUM LOG FILE SIZE, MB
 //Define('LOG_CYCLES',1);             // Save working cycle log (or send to /dev/null if not defined)
 //Define('PATH_TO_FFMPEG','avconv');

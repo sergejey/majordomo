@@ -196,9 +196,9 @@ $(document).ready(function() {
 					while (i < dataJSON.TOTAL) {
 						if(dataJSON.LIST[i].ALIVE == 1) {
 							if(dataJSON.LIST[i].WAIT == 0) {
-								cycleUpdate = '<span class="label label-success">Работает '+dataJSON.LIST[i].UPDATE+'</span>';
+								cycleUpdate = '<span class="label label-success">Старый цикл. Работает '+dataJSON.LIST[i].UPDATE+'</span>';
 							} else {
-								cycleUpdate = '<span class="label label-info">Не отвечает с '+dataJSON.LIST[i].UPDATE+'</span>';
+								cycleUpdate = '<span class="label label-success">Новый цикл. Запущен '+dataJSON.LIST[i].UPDATE+'</span>';
 							}
 							tr_style = '';
 							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_RESTART+'\'" class="btn btn-info">Рестарт</button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_STOP+'\'" class="btn btn-danger">Остановить</button></div>';

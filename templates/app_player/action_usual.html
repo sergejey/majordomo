@@ -64,7 +64,7 @@
 			<div class="column button volume" title="<#LANG_APP_PLAYER_VOLUME_LEVEL#>">
 				<img src="<#ROOTHTML#>img/icons/volume.png" width="24" height="24" onClick="$('#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel').slideToggle();" />
 				<div class="slide_panel">
-					<input type="range" name="volume_control" value="%ThisComputer.volumeMediaLevel%" title="%ThisComputer.volumeMediaLevel%" min="0" max="100" orient="vertical" data-highlight="true" />
+					<input type="range" name="volume_control" value="[#TERMINAL_VOLUME#]" title="[#TERMINAL_VOLUME#]%" min="0" max="100" orient="vertical" data-highlight="true" />
 				</div>
 			</div>
 			[#if MODE="menu"#]</div><div class="line_container">[#endif#]

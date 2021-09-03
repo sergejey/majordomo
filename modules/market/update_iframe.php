@@ -4,7 +4,6 @@ chdir(dirname(__FILE__) . '/../../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 
 Define('WAIT_FOR_MAIN_CYCLE',0);
 set_time_limit(0);

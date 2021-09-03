@@ -1,19 +1,9 @@
 <?php
-
 /*
-chdir('../');
-include_once("./config.php");
-include_once("./lib/loader.php");
-
-
-$db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
-include_once("./load_settings.php");
-*/
-/*
- * @version 0.1 (auto-set)
+ * @version 0.1 (auto-set) переработать -есть вопросы с правами а бакап должен делатся сто процентов
  */
 
-echo "<pre>\n";
+echo "Running maintenance script....". "\n";
 
 DebMes("Running maintenance script");
 
@@ -30,11 +20,10 @@ if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETT
     $target_dir = $backups_dir . '/' . date('Ymd');
 }
 
-$full_backup = 0;
-
-if (!is_dir($target_dir)) {
-    mkdir($target_dir, 0777);
-    $full_backup = 1;
+if (is_dir($target_dir)) {
+    $full_backup = 0;
+} else {
+	if (@mkdir($target_dir, 0777)) $full_backup = 1;
 }
 
 
@@ -49,32 +38,36 @@ if (!defined('CACHED_FILES_EXPIRE')) {
 }
 
 
-echo "Target: " . $target_dir . PHP_EOL;
-echo "Full backup: " . $full_backup . PHP_EOL;
+echo "Target: " . $target_dir . "\n";
+echo "Full backup: " . $full_backup . "\n";
 
 sleep(5);
 
 //removing old log files
-if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
+if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') { 
     $path = SETTINGS_SYSTEM_DEBMES_PATH;
-} elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
-    $path = LOG_DIRECTORY;
 } else {
-    $path = ROOT . 'cms/debmes';
+    $path = DOC_ROOT . '/cms/debmes';
 }
 
 $dir = $path . "/";
 
 foreach (glob($dir . "*") as $file) {
     if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
-        DebMes("Removing log file " . $file, 'backup');
-        @unlink($file);
+        echo "Removing log file ....." . $file;
+        if (@unlink($file)) {
+            DebMes("Removing log file " . $file . ' OK', 'backup');
+            echo "OK" . "\n";
+        } else {
+            DebMes("Removing log file " . $file . ' ERROR', 'backup');
+            echo " ERROR" . "\n";
+        }
     }
 }
 
 if ($full_backup) {
     DebMes("Backing up files...", 'backup');
-    echo "Backing up files...";
+    echo "Backing up files...". "\n";
 
     if (!is_dir($target_dir . '/cms')) {
         mkdir($target_dir . '/cms', 0777);
@@ -88,28 +81,39 @@ if ($full_backup) {
             $d == 'saverestore'
         ) continue;
         DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'backup');
-        copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1);
+        echo "Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d . ' ..... ';
+        if (@copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1)) {
+             DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'backup');
+             echo "OK" . "\n";
+        } else {
+             DebMes("Error Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d . ' Wrong path or wrong rights to files...', 'backup');
+             echo "ERROR, Wrong path or wrong rights to files..." . "\n";
+        }
     }
+	
 
-    if (defined('PATH_TO_MYSQLDUMP'))
+
+    if (defined('PATH_TO_MYSQLDUMP')) {
         $mysqlDumpPath = PATH_TO_MYSQLDUMP;
-
-    if ($mysqlDumpPath == '') {
-        if (substr(php_uname(), 0, 7) == "Windows")
-            $mysqlDumpPath = SERVER_ROOT . "/server/mysql/bin/mysqldump";
-        else
-            $mysqlDumpPath = "/usr/bin/mysqldump";
+	} else if (substr(php_uname(), 0, 7) == "Windows") {
+        $mysqlDumpPath = SERVER_ROOT . "/server/mysql/bin/mysqldump";
+    } else {
+        $mysqlDumpPath = "/usr/bin/mysqldump";
     }
 
     $mysqlDumpParam = " -h " . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD;
     $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
     $mysqlDumpParam .= " > " . $target_dir . "/" . DB_NAME . ".sql";
 
-    DebMes("Backing up database " . DB_NAME . ' to ' . $target_dir . "/" . DB_NAME . ".sql", 'backup');
-    exec($mysqlDumpPath . $mysqlDumpParam);
+	echo("Backing up database " . DB_NAME . ' to ' . $target_dir . "/" . DB_NAME . ".sql");
+    if (@exec($mysqlDumpPath . $mysqlDumpParam)) {
+		DebMes("Backing up database " . DB_NAME . ' to ' . $target_dir . "/" . DB_NAME . ".sql", 'backup');
+		echo "OK" . "\n";
+	} else {
+		DebMes("Error backing up database " . DB_NAME . ' to ' . $target_dir . "/" . DB_NAME . ".sql  See file config.php, section Define('PATH_TO_MYSQLDUMP', path mysqldump file);", 'backup');
+		echo "ERROR, Wrong path or wrong rights to files..." . "\n";
+	}
 
-
-    echo "OK\n";
 }
 
 
@@ -122,7 +126,7 @@ if (is_dir(ROOT . 'cms/saverestore')) {
             && (preg_match('/\.tgz$/', $file) || preg_match('/\.tar\.gz$/', $file) || preg_match('/\.zip\.gz$/', $file))
             && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60
         ) {
-            echonow("Removing $path");
+            echo "Removing $path" ;
             DebMes("Removing $path.", 'backup');
             @unlink($path);
         }
@@ -135,14 +139,14 @@ if (is_dir($backups_dir)) {
         if ($file == '.' || $file == '..') continue;
         $path = $backups_dir . '/' . $file;
         if (is_dir($path) && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
-            echonow("Removing $path");
+            echo "Removing $path.......";
             DebMes("Removing $path.", 'backup');
             removeTree($path);
         }
     }
-    echo "OK";
+    echo "OK" . "\n";
 } else {
-    echo $backups_dir . " not found";
+    echo $backups_dir . " not found". "\n";
 }
 
 
@@ -156,15 +160,14 @@ for ($i = 0; $i < $total; $i++) {
     echo 'Checking table [' . $table . '] ...';
 
     if ($result = SQLExec("CHECK TABLE " . $table . ";")) {
-        echo "OK\n";
+        echo "OK" . "\n";
     } else {
         echo " broken ... repair ...";
         SQLExec("REPAIR TABLE " . $table . ";");
-        echo "OK\n";
+        echo "OK" . "\n";
     }
 }
 
-setGlobal('ThisComputer.started_time', time());
 if (time() >= getGlobal('ThisComputer.started_time')) {
     SQLExec("DELETE FROM events WHERE ADDED > NOW()");
     SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
@@ -234,20 +237,10 @@ for ($i = 0; $i < $total; $i++) {
                 $class_property = $class_prop;
             }
         }
-        if ($class_property['ID']) {
+        if (isset($class_property['ID']) && $class_property['ID']) {
             $object_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $properties[$i]['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
             $class_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $class_property['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
-            /*
-            echo $object_rec['TITLE'].'.'.$properties[$i]['TITLE']."<br/>";
-            echo "OBJECT PROPERTY:";
-            dprint($properties[$i],false);
-            echo "VALUE:";
-            dprint($object_pvalue,false);
-            echo "CLASS PROPERTY:";
-            dprint($class_property,false);
-            echo "VALUE:";
-            dprint($class_pvalue,false);
-            */
+
             if (!$class_pvalue['ID']) {
                 $object_pvalue['PROPERTY_ID'] = $class_property['ID'];
                 SQLUpdate('pvalues', $object_pvalue);
@@ -266,18 +259,4 @@ clearCacheData();
 // removing old errors
 if (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY>0) {
     SQLExec("DELETE FROM system_errors_data WHERE ADDED<'".date('Y-m-d H:i:s',time()-SETTINGS_ERRORS_KEEP_HISTORY*24*60*60)."'");
-}
-
-// SET SERIAL
-$serial_data = '';
-$current_serial = gg('ThisComputer.Serial');
-if (IsWindowsOS()) {
-
-} else {
-    $serial_data = trim(exec("cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2"));
-    $serial_data = ltrim($serial_data, '0');
-}
-
-if ($serial_data != '') {
-    sg('ThisComputer.Serial', $serial_data);
 }

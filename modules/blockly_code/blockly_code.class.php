@@ -13,6 +13,17 @@
 //
 class blockly_code extends module
 {
+	var $type;
+	var $autofocus;
+	var $onlycode;
+	var $data_source;
+	var $view_mode;
+	var $edit_mode;
+	var $mode;
+	var $tab;
+	var $single_rec;
+	var $ajax;
+	
     /**
      * blockly_code
      *
@@ -211,7 +222,7 @@ class blockly_code extends module
 		
         $rec = SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME LIKE '" . DBSafe($this->system_name) . "'");
         $out['CODE_TYPE'] = (int)$rec['CODE_TYPE'];
-        if (!$rec['ID'] && $this->owner->xml) {
+        if (!$rec && $this->owner->xml) {
             $rec['XML'] = $this->owner->xml;
         }
         if (preg_match_all('/<block type="(.+?)\_turnoff"(.+?)>/uis',$rec['XML'],$m)) {
@@ -249,7 +260,7 @@ class blockly_code extends module
             }
         }
 
-        if (!$rec['ID'] && !$this->type) {
+        if (!$rec && !$this->type) {
             $rec['CODE_TYPE'] = 0;
             $rec['CODE_TYPE_UNKNOWN'] = 1;
         }
