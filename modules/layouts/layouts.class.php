@@ -19,7 +19,6 @@ class layouts extends module {
   var $tab;
   var $single_rec;
   var $mobile;
-  var $ajax;
   
 /**
 * layouts
