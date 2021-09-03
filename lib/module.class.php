@@ -223,7 +223,7 @@ class module
             }
         } elseif (!isset($this->instance)) {
             // module has no instances at all
-            $module_data = $global_params[$this->name];
+            if (isset($global_params[$this->name])) $module_data = $global_params[$this->name];
         }
 
         // setting module data
