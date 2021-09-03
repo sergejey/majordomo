@@ -11,6 +11,16 @@
 //
 
 class app_player extends module {
+	var $action;
+	var $play;
+	var $play_terminal;
+	var $terminal_id;
+	var $session_terminal;
+	var $ajax;
+	var $view_mode;
+	var $edit_mode;
+	var $action;
+	var $single_rec;
 	
 	/**
 	* player
