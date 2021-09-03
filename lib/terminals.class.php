@@ -7,15 +7,17 @@ function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        return false;
     }
     return $terminals;
 }
 
 // Get terminal by id
 function getTerminalByID($id) {
-    $sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = ' . abs(intval($id));
-    $terminal = SQLSelectOne($sqlQuery);
+    $sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = ' . abs(intval($id))
+    if (!$terminal = SQLSelectOne($sqlQuery)) {
+        return false;
+    }
     return $terminal;
 }
 
@@ -26,7 +28,7 @@ function getTerminalsByName($name, $limit = -1, $order = 'ID', $sort = 'ASC') {
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        return false;
     }
     return $terminals;
 }
@@ -43,7 +45,7 @@ function getTerminalsByHost($host, $limit = -1, $order = 'ID', $sort = 'ASC') {
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        return false;
     }
     return $terminals;
 }
@@ -55,7 +57,7 @@ function getTerminalsCanPlay($limit = -1, $order = 'ID', $sort = 'ASC') {
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        $return false;
     }
     return $terminals;
 }
@@ -67,7 +69,7 @@ function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC'
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        return false;
     }
     return $terminals;
 }
@@ -75,7 +77,9 @@ function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC'
 // Get main terminal
 function getMainTerminal() {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = 'MAIN'";
-    $terminal = SQLSelectOne($sqlQuery);
+    if (!$terminal = SQLSelectOne($sqlQuery)) {
+        return false;
+    }
     return $terminal;
 }
 
@@ -86,7 +90,7 @@ function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
         $sqlQuery.= ' LIMIT ' . intval($limit);
     }
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        return false;
     }
     return $terminals;
 }
@@ -95,7 +99,7 @@ function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
 function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '" . DBSafe('1') . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
     if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
+        return false;
     }
     return $terminals;
 }
@@ -136,7 +140,7 @@ function seekPlayerPosition($host = 'localhost', $time = 0) {
         $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
-        return;
+        return false;
     }
     include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
@@ -172,7 +176,7 @@ function getPlayerStatus($host = 'localhost') {
         $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
-        return;
+        return false;
     }
     include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
@@ -230,7 +234,7 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE) {
         $terminal = getAllTerminals(1) [0];
     }
     if (!$terminal['ID']) {
-        return 0;
+        return false;
     }
     include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
@@ -265,7 +269,7 @@ function stopMedia($host = 'localhost') {
         $terminal = getAllTerminals(1) [0];
     }
     if (!$terminal['ID']) {
-        return 0;
+        return false;
     }
     include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
@@ -289,7 +293,7 @@ function setPlayerVolume($host = 'localhost', $level = 0) {
         $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
-        return;
+        return false;
     }
     include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
@@ -315,7 +319,7 @@ function setMessageVolume($host = 'localhost', $level = 0) {
         $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
-        return;
+        return false;
     }
     $terminal['MESSAGE_VOLUME_LEVEL'] = $level;
     SQLUpdate('terminals', $terminal);
@@ -356,7 +360,7 @@ function setTerminalMML($host = 'localhost', $mml = 0) {
         $terminal = getAllTerminals(1) [0];
     }
     if (!$terminal['ID']) {
-        return 0;
+        return false;
     }
     $terminal['MIN_MSG_LEVEL'] = $mml;
     SQLUpdate('terminals', $terminal);
@@ -486,7 +490,7 @@ function pingTerminalSafe($terminalname, $details = '', $service = '') {
     }
     $url = BASE_URL . '/objects/?' ;
     postURLBackground($url, $data);
-    return 1;   
+    return true;   
 }
 
 function send_message($terminalname, $message, $terminal) {
@@ -988,6 +992,9 @@ function getTerminalsByLocation($location = '') {
         $terminal = SQLSelectOne("SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".linkedRoom", "", $p['PROPERTY_NAME']) . "'");
         $terminals[] = $terminal;
     }
+    if (!$terminals) {
+        return false;
+    }
     return $terminals;
 }
 
@@ -1004,6 +1011,9 @@ function getTerminalsByUser($user = '') {
         $terminal = SQLSelectOne("SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".username", "", $p['PROPERTY_NAME']) . "'");
         $terminals[] = $terminal;
     }
+    if (!$terminals) {
+        return false;
+    }
     return $terminals;
 }
 
@@ -1016,7 +1026,7 @@ function getMessageVolume($host = 'localhost') {
         $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
-        return;
+        return false;
     }
     return $terminal['MESSAGE_VOLUME_LEVEL'];
 }
