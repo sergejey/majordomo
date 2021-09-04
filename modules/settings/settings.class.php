@@ -12,7 +12,6 @@
 //
 class settings extends module {
  var $data_source;
- var $view_mode;
  var $filter_name;
  var $filter_exname;
  var $section_title;
