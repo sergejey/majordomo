@@ -12,6 +12,14 @@
 //
 //
 class security_rules extends module {
+	var $view_mode;
+	var $data_source;
+	var $single_rec;
+	var $edit_mode;
+	var $mode;
+	var $tab;
+	var $ajax;
+	
 /**
 * security_rules
 *
@@ -19,7 +27,7 @@ class security_rules extends module {
 *
 * @access private
 */
-function security_rules() {
+function __construct() {
   $this->name="security_rules";
   $this->title="<#LANG_MODULE_SECURITY_RULES#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
