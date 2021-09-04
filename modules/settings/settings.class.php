@@ -20,6 +20,7 @@ class settings extends module {
  var $tab;
  var $single_rec;
  var $ajax;
+ var $edit_mode;
  
 /**
 * settings
