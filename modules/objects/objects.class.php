@@ -1179,7 +1179,6 @@ class objects extends module
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
- objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 
  properties: ID int(10) unsigned NOT NULL auto_increment
  properties: CLASS_ID int(10) NOT NULL DEFAULT '0'
