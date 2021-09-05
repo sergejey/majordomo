@@ -2,6 +2,10 @@
 
 class saverestore extends module
 {
+	var $mode;
+	var $view_mode;
+	var $edit_mode;
+	var $ajax;
     /**
      * saverestore
      *
@@ -9,17 +13,12 @@ class saverestore extends module
      *
      * @access private
      */
-	var $mode;
-	var $view_mode;
-	var $edit_mode;
-	var $ajax;
     function __construct()
     {
         $this->name = "saverestore";
         $this->title = "<#LANG_MODULE_SAVERESTORE#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
-
     }
 
     /**
@@ -213,7 +212,7 @@ class saverestore extends module
 					foreach($items as $key => $value) {
 						$itm = array();
 						
-						//if($value['author']['name']['textvalue'] != 'sergejey') continue; //Смоук залочил на Сергея гит - РАЗЛОЧИВАЕМ
+						if($value['author']['name']['textvalue'] != 'sergejey') continue;
 						
                         $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
@@ -223,7 +222,7 @@ class saverestore extends module
                         $itm['LINK'] = $value['link']['href'];
                         $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
                         $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
-                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3] ?? '');
+                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3]);
 						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $out['UPDATES'][] = $itm;
 						$iteration++;
@@ -1443,11 +1442,7 @@ class saverestore extends module
                     echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_DESIGN.'</div>');
                 }
 
-                if (!isset($tar_name)) {
-					$tar_name = 'design_';
-				} else {
-					$tar_name .= 'design_';
-				}
+                $tar_name .= 'design_';
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'img', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/img');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'js', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/js');
