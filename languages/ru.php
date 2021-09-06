@@ -364,6 +364,7 @@ $dictionary = array(
 
 
     'AUTO_UPDATE_PERIOD' => 'Период автообновления',
+	'UPDATEARHIVE_DONE' => 'Скачиваем архив',
     'POLLING_PERIOD' => 'Период опроса',
 
 
