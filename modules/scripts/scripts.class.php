@@ -12,7 +12,7 @@
 //
 class scripts extends module
 {
-	var $mode;
+  var $mode;
   var $data_source;
   var $view_mode;
   var $edit_mode;
