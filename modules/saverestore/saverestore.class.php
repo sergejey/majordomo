@@ -2,6 +2,11 @@
 
 class saverestore extends module
 {
+    var $mode;
+    var $view_mode;
+    var $edit_mode;
+    var $ajax;
+	
     /**
      * saverestore
      *
@@ -498,7 +503,7 @@ class saverestore extends module
         }
 
         if ($iframe) {
-			echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Скачиваем архив '.$url.'</div>');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEARHIVE_DONE . ' '. $url.'</div>');
         }
 
         $ch = curl_init();
@@ -1324,6 +1329,9 @@ class saverestore extends module
                 exec('tar xzvf ../' . $file, $output, $res);
             }
 
+            $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp',1);
+            $folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];
+		
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
