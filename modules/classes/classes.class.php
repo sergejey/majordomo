@@ -11,7 +11,8 @@
 //
 //
 class classes extends module {
-	var $view_mode;
+  var $data_source;
+  var $view_mode;
   var $edit_mode;
   var $mode;
   var $tab;
