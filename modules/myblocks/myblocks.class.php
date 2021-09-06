@@ -19,7 +19,7 @@ class myblocks extends module {
 *
 * @access private
 */
-function myblocks() {
+function __construct() {
   $this->name="myblocks";
   $this->title="<#LANG_MODULE_MYBLOCKS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";
