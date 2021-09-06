@@ -16,7 +16,6 @@ class scripts extends module
   var $data_source;
   var $view_mode;
   var $edit_mode;
-  var $mode;
   var $tab;
   var $single_rec;
   var $ajax;
