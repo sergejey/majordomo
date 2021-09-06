@@ -230,7 +230,7 @@ class saverestore extends module
 						if($iteration >= 10) {
 							break;
 						}
-					}
+					} 
 					
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
 					
@@ -502,7 +502,7 @@ class saverestore extends module
         }
 
         if ($iframe) {
-			echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Скачиваем архив '.$url.'</div>');
+			echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEARHIVE_DONE . ' '. $url.'</div>');
         }
 
         $ch = curl_init();
@@ -1251,15 +1251,15 @@ class saverestore extends module
         global $restore;
         global $file;
         global $file_name;
-        global $folder;
+        //global $folder;
 
         $with_extensions=gr('with_extensions');
         $with_backup=gr('with_backup');
 
-        if (!$folder)
-            $folder = IsWindowsOS() ? '/.' : '/';
-        else
-            $folder = '/' . $folder;
+        //if (!$folder)
+        //    $folder = IsWindowsOS() ? '/.' : '/';
+        //else
+        //    $folder = '/' . $folder;
 
         if ($restore != '') {
             //$file=ROOT.'cms/saverestore/'.$restore;
@@ -1327,7 +1327,8 @@ class saverestore extends module
             } else {
                 exec('tar xzvf ../' . $file, $output, $res);
             }
-
+			$UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp',1);
+			$folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }
@@ -1442,7 +1443,11 @@ class saverestore extends module
                     echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_DESIGN.'</div>');
                 }
 
-                $tar_name .= 'design_';
+                if (!isset($tar_name)) {
+					$tar_name = 'backup_design_';
+				} else {
+					$tar_name .= 'design_';
+				}
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'img', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/img');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'js', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/js');
