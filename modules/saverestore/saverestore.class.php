@@ -212,7 +212,7 @@ class saverestore extends module
 					foreach($items as $key => $value) {
 						$itm = array();
 						
-						if($value['author']['name']['textvalue'] != 'sergejey') continue;
+						//if($value['author']['name']['textvalue'] != 'sergejey') continue;
 						
                         $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
