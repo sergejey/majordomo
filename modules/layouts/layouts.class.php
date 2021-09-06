@@ -12,6 +12,14 @@ Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL|dashboard=Das
 //
 //
 class layouts extends module {
+  var $ajax;
+  var $data_source;
+  var $edit_mode;
+  var $mode;
+  var $tab;
+  var $single_rec;
+  var $mobile;
+  
 /**
 * layouts
 *

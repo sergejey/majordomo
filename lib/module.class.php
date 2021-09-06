@@ -223,7 +223,7 @@ class module
             }
         } elseif (!isset($this->instance)) {
             // module has no instances at all
-            $module_data = $global_params[$this->name];
+            if (isset($global_params[$this->name])) $module_data = $global_params[$this->name];
         }
 
         // setting module data
@@ -588,7 +588,7 @@ class module
 
         $session->save();
 
-        if ($_GET['part_load']) {
+        if (isset ($_GET['part_load']) and $_GET['part_load']) {
             $res = array();
             $res['CONTENT'] = '';
             $res['NEED_RELOAD'] = 1;

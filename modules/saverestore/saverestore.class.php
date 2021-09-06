@@ -213,7 +213,7 @@ class saverestore extends module
 					foreach($items as $key => $value) {
 						$itm = array();
 						
-						if($value['author']['name']['textvalue'] != 'sergejey') continue;
+						//if($value['author']['name']['textvalue'] != 'sergejey') continue;
 						
                         $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
@@ -231,7 +231,7 @@ class saverestore extends module
 						if($iteration >= 10) {
 							break;
 						}
-					}
+					} 
 					
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
 					
@@ -1252,15 +1252,15 @@ class saverestore extends module
         global $restore;
         global $file;
         global $file_name;
-        global $folder;
+        //global $folder;
 
         $with_extensions=gr('with_extensions');
         $with_backup=gr('with_backup');
 
-        if (!$folder)
-            $folder = IsWindowsOS() ? '/.' : '/';
-        else
-            $folder = '/' . $folder;
+        //if (!$folder)
+        //    $folder = IsWindowsOS() ? '/.' : '/';
+        //else
+        //    $folder = '/' . $folder;
 
         if ($restore != '') {
             //$file=ROOT.'cms/saverestore/'.$restore;
@@ -1446,7 +1446,11 @@ class saverestore extends module
                     echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_SAVE_DESIGN.'</div>');
                 }
 
-                $tar_name .= 'design_';
+                if (!isset($tar_name)) {
+					$tar_name = 'backup_design_';
+				} else {
+					$tar_name .= 'design_';
+				}
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'img', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/img');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'js', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/js');

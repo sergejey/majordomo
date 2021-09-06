@@ -19,9 +19,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby;
-  if (!$sortby) {
+  if (!$sortby and isset($session->data['locations_sort'])) {
    $sortby=$session->data['locations_sort'];
-  } else {
+  } else if (isset($session->data['locations_sort'])) {
    if ($session->data['locations_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
@@ -30,8 +30,11 @@
     }
    }
    $session->data['locations_sort']=$sortby;
+  } 
+  if (!$sortby) {
+	  $sortby="TITLE";
+	  $session->data['locations_sort']=$sortby;
   }
-  if (!$sortby) $sortby="TITLE";
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM locations WHERE $qry ORDER BY PRIORITY DESC, TITLE");

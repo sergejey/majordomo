@@ -12,6 +12,15 @@
 //
 class events extends module
 {
+    var $mode;
+    var $data_source;
+    var $view_mode;
+    var $edit_mode;
+    var $tab;
+    var $single_rec;
+    var $ajax;
+	var $action;
+    
     /**
      * events
      *

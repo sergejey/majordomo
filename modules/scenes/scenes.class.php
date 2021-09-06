@@ -9,12 +9,18 @@
  * @copyright http://www.atmatic.eu/ (c)
  * @version 0.1 (wizard, 10:05:38 [May 24, 2012])
  */
-Define('DEF_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
-Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
+Define('SCENES_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
+Define('SCENES_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
 //
 //
 class scenes extends module
 {
+	var $edit_mode;
+	var $mode;
+	var $tab;
+	var $single_rec;
+	var $ajax;
+	
     /**
      * scenes
      *

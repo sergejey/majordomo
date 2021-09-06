@@ -13,6 +13,14 @@
 //
 class system_errors extends module
 {
+    var $ajax ;
+    var $view_mode;
+    var $data_source;
+    var $mode;
+    var $edit_mode;
+    var $tab;
+    var $single_rec;
+    var $action ;
     /**
      * system_errors
      *

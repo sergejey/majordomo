@@ -240,14 +240,14 @@ class phpMQTT
 
 		$string = $this->read(4);
 
-		if (ord($string{0}) >> 4 === 2 && $string{3} === chr(0)) {
+		if (ord($string[0]) >> 4 === 2 && $string[3] === chr(0)) {
 			$this->_debugMessage('Connected to Broker');
 		} else {
 			$this->_errorMessage(
 				sprintf(
 					"Connection failed! (Error: 0x%02x 0x%02x)\n",
-					ord($string{0}),
-					ord($string{3})
+					ord($string[0]),
+					ord($string[3])
 				)
 			);
 			return false;
@@ -292,7 +292,7 @@ class phpMQTT
 	 *
 	 * @return string
 	 */
-	public function subscribeAndWaitForMessage($topic, $qos)
+	public function subscribeAndWaitForMessage($topic='#', $qos=0)
 	{
 		$this->subscribe(
 			[
@@ -358,7 +358,9 @@ class phpMQTT
 		fwrite($this->socket, $head, 2);
 		$this->timesinceping = time();
 		$this->_debugMessage('ping sent');
+		return true;   
 	}
+	
 
 	/**
 	 *  sends a proper disconnect cmd
@@ -366,8 +368,8 @@ class phpMQTT
 	public function disconnect()
 	{
 		$head = ' ';
-		$head{0} = chr(0xe0);
-		$head{1} = chr(0x00);
+		$head[0] = chr(0xe0);
+		$head[1] = chr(0x00);
 		fwrite($this->socket, $head, 2);
 	}
 
@@ -415,7 +417,7 @@ class phpMQTT
 			++$cmd;
 		}
 
-		$head{0} = chr($cmd);
+		$head[0] = chr($cmd);
 		$head .= $this->setmsglength($i);
 
 		fwrite($this->socket, $head, strlen($head));
@@ -450,7 +452,7 @@ class phpMQTT
 	 */
 	public function message($msg)
 	{
-		$tlen = (ord($msg{0}) << 8) + ord($msg{1});
+		$tlen = (ord($msg[0]) << 8) + ord($msg[1]);
 		$topic = substr($msg, 2, $tlen);
 		$msg = substr($msg, ($tlen + 2));
 		$found = false;
@@ -478,17 +480,17 @@ class phpMQTT
 				if ($top['function'] === '__direct_return_message__') {
 					return $msg;
 				}
-
+				//  записываем свойство из топика
 				if (is_callable($top['function'])) {
 					call_user_func($top['function'], $topic, $msg);
 				} else {
-					$this->_errorMessage('Message received on topic ' . $topic. ' but function is not callable.');
+					$this->_errorMessage('Message received on topic ' . $topic. ' but function is not callable.' . $msg . ' in topic '. $topic);
 				}
 			}
 		}
 
 		if ($found === false) {
-			$this->_debugMessage('msg received but no match in subscriptions');
+			$this->_debugMessage('msg received but no match in subscriptions '. $msg . ' in topic '. $topic);
 		}
 
 		return $found;
@@ -517,13 +519,12 @@ class phpMQTT
 		$byte = $this->read(1, true);
 
 		if ((string)$byte === '') {
-			if ($loop === true) {
-				usleep(100000);
-			}
+		    usleep(250000);
+			return true;
 		} else {
 			$cmd = (int)(ord($byte) / 16);
 			$this->_debugMessage(
-				sprintf(
+			    sprintf(
 					'Received CMD: %d (%s)',
 					$cmd,
 					isset(static::$known_commands[$cmd]) === true ? static::$known_commands[$cmd] : 'Unknown'
@@ -584,7 +585,7 @@ class phpMQTT
 		$multiplier = 1;
 		$value = 0;
 		do {
-			$digit = ord($msg{$i});
+			$digit = ord($msg[$i]);
 			$value += ($digit & 127) * $multiplier;
 			$multiplier *= 128;
 			$i++;
@@ -640,9 +641,9 @@ class phpMQTT
 	{
 		$strlen = strlen($string);
 		for ($j = 0; $j < $strlen; $j++) {
-			$num = ord($string{$j});
+			$num = ord($string[$j]);
 			if ($num > 31) {
-				$chr = $string{$j};
+				$chr = $string[$j];
 			} else {
 				$chr = ' ';
 			}
@@ -656,7 +657,7 @@ class phpMQTT
 	protected function _debugMessage(string $message)
 	{
 		if ($this->debug === true) {
-			echo date('r: ') . $message . PHP_EOL;
+			DebMes( date('H:i:s') . ' ' . $message . "\n", 'mqtt');
 		}
 	}
 
@@ -665,6 +666,7 @@ class phpMQTT
 	 */
 	protected function _errorMessage(string $message)
 	{
-		error_log('Error:' . $message);
+		DebMes( date('H:i:s') . ' Error: ' .  $message . "\n", 'mqtt');
 	}
+	
 }
