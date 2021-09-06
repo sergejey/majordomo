@@ -369,7 +369,7 @@ $dictionary = array(
 
 
     'AUTO_UPDATE_PERIOD' => 'Auto update period',
-	'UPDATEARHIVE_DONE' => 'Downloading archive',
+    'UPDATEARHIVE_DONE' => 'Downloading archive',
     'POLLING_PERIOD' => 'Polling period',
 
 
