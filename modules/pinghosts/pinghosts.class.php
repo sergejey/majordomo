@@ -19,6 +19,7 @@ class pinghosts extends module {
   var $tab;
   var $single_rec;
   var $ajax;
+  var $xml;
   
 /**
 * pinghosts
