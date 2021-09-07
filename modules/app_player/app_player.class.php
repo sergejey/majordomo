@@ -20,6 +20,7 @@ class app_player extends module {
 	var $view_mode;
 	var $edit_mode;
 	var $single_rec;
+	var $mode;
 	
 	/**
 	* player
