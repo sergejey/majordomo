@@ -10,6 +10,7 @@
 //
 class actions_log extends module
 {
+    var $data_source;
     var $view_mode;
     var $edit_mode;
     var $mode;
