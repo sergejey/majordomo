@@ -149,7 +149,7 @@ if ($this->tab == 'properties') {
     $props = $cl->getParentProperties($rec['CLASS_ID'], '', 1);
 
     $my_props = SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "'");
-    if ($my_props[0]['ID']) {
+    if ($my_props) {
         foreach ($my_props as $p) {
             $props[] = $p;
         }
@@ -158,7 +158,7 @@ if ($this->tab == 'properties') {
     $total = count($props);
     //print_R($props);exit;
     for ($i = 0; $i < $total; $i++) {
-        if (!$props[$i]['KEEP_HISTORY'] && $rec['KEEP_HISTORY'] > 0) {
+        if (!isset($props[$i]['KEEP_HISTORY']) && $rec['KEEP_HISTORY'] > 0) {
             $props[$i]['KEEP_HISTORY'] = $rec['KEEP_HISTORY'];
         }
         $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $props[$i]['ID'] . "' AND OBJECT_ID='" . $rec['ID'] . "'");
@@ -301,7 +301,7 @@ if ($this->tab == 'methods') {
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
         $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
 			 $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
-		if ($my_meth['ID']) {
+		if ($my_meth) {
             $methods[$i]['CUSTOMIZED'] = 1;
         }
     }
