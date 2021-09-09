@@ -17,6 +17,7 @@ class objects extends module
 	var $edit_mode;
 	var $single_rec;
 	var $ajax;
+	var $tab;
 
     /**
      * objects
