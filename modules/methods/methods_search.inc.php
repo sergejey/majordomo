@@ -22,7 +22,7 @@
    include_once(DIR_MODULES.'classes/classes.class.php');
    $cl=new classes();
    $out['PARENT_METHODS']=$cl->getParentMethods($this->class_id);
-   if (!$out['PARENT_METHODS'][0]['ID']) {
+   if (!isset($out['PARENT_METHODS'][0]['ID']) or !$out['PARENT_METHODS'][0]['ID']) {
     unset($out['PARENT_METHODS']);
    }
 
