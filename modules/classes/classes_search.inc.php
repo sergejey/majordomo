@@ -19,9 +19,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby;
-  if (!$sortby) {
+  if (!$sortby and isset($session->data['classes_sort'])) {
    $sortby=$session->data['classes_sort'];
-  } else {
+  } else if (isset($session->data['classes_sort'])) {
    if ($session->data['classes_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
@@ -31,7 +31,12 @@
    }
    $session->data['classes_sort']=$sortby;
   }
-  if (!$sortby) $sortby="TITLE";
+  if (!$sortby) {
+	  $sortby="TITLE";
+	  $session->data['classes_sort']=$sortby;
+  }
+  
+  
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
 
@@ -46,7 +51,7 @@
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
     $objects=SQLSelect("SELECT ID, TITLE, CLASS_ID, DESCRIPTION FROM objects WHERE CLASS_ID='".$res[$i]['ID']."' ORDER BY objects.TITLE");
-    if ($objects[0]['ID']) {
+    if ($objects) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
       $objects[$o]['KEY_DATA']=getKeyData($objects[$o]['ID']);
@@ -61,18 +66,18 @@
       }
 
       $parent_methods_titles=array();
-      if ($parent_methods[0]['ID']) {
+      if ($parent_methods) {
        foreach($parent_methods as $k=>$v) {
         $parent_methods_titles[$v['TITLE']]=$v['ID'];
        }
       }
-      if ($methods[0]['ID']) {
+      if ($methods) {
        $total_m=count($methods);
        for($im=0;$im<$total_m;$im++) {
 
-        if ($methods[$im]['ID']==272) {
-         //print_r($parent_methods);exit;
-        }
+       //if ($methods[$im]['ID']==272) { // нахуа ???
+       //print_r($parent_methods);exit;
+        //}
 
         if ($parent_methods_titles[$methods[$im]['TITLE']]) {
          $methods[$im]['ID']=$parent_methods_titles[$methods[$im]['TITLE']];
