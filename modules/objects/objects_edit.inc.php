@@ -11,7 +11,7 @@ $table_name = 'objects';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
 $device_rec=SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT='".$rec['TITLE']."'");
-if ($device_rec['ID']) {
+if ($device_rec) {
     $out['DEVICE_ID']=$device_rec['ID'];
     $out['DEVICE_TITLE']=$device_rec['TITLE'];
 }
@@ -67,7 +67,7 @@ if ($this->mode == 'update') {
     }
     //UPDATING RECORD
     if ($ok) {
-        if ($rec['ID']) {
+        if ($rec) {
             SQLUpdate($table_name, $rec); // update
 
             if ($class_changed_from) {
