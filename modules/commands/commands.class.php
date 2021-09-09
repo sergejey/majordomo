@@ -687,7 +687,7 @@ function usual(&$out) {
      $dynamic_item=0;
     }
 
-    if ($res[$i+1]['INLINE']) {
+    if (isset($res[$i+1]['INLINE'])) {
      $res[$i]['INLINE']=1;
     }
 
