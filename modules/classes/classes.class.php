@@ -575,7 +575,7 @@ function usual(&$out) {
     if (!is_array($res[$i]['RESULT'])) {
      unset($res[$i]['RESULT']);
     }
-    if (!$res[$i]['RESULT'] && !$res[$i]['OBJECTS']) {
+    if (!isset($res[$i]['RESULT']) && !isset($res[$i]['OBJECTS'])) {
      $res[$i]['CAN_DELETE']=1;
     }
     $res2[]=$res[$i];
