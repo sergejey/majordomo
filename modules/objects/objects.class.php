@@ -12,6 +12,11 @@
 //
 class objects extends module
 {
+	var $data_source;
+	var $mode;
+	var $edit_mode;
+	var $single_rec;
+	var $ajax;
 
     /**
      * objects
