@@ -250,7 +250,7 @@ class linkedobject extends module
             $objects = SQLSelect("SELECT * FROM objects ORDER BY CLASS_ID, TITLE");
 			
 			foreach($objects as $key => $object) {
-				$className = SQLSelectOne("SELECT TITLE FROM classes WHERE ID = '".$object['CLASS_ID']."'");
+				//$className = SQLSelectOne("SELECT TITLE FROM classes WHERE ID = '".$object['CLASS_ID']."'"); // имя класса находится в обьекте
 				if($object['CLASS_ID'] != $objects[$key-1]['CLASS_ID']) {
 					$objects[$key]['NEW_GROUP_START'] = 1; 
 				} else {
@@ -262,7 +262,7 @@ class linkedobject extends module
 					$objects[$key]['NEW_GROUP_END'] = 0; 
 				}
 				
-				$objects[$key]['CLASS_NAME'] = $className['TITLE'];
+				$objects[$key]['CLASS_NAME'] = $objects['CLASS_TITLE'];
 				
 			}
 			
