@@ -328,19 +328,24 @@ class objects extends module
     function loadObject($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
-        if (IsSet($rec['ID'])) {
+        if ($rec) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
-            if ($this->class_id) {
+			if ($rec['CLASS_TITLE']) {
+				$this->class_title = $rec['CLASS_TITLE'];
+			} else {
                 $class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $this->class_id);
                 $this->class_title = $class_rec['TITLE'];
+				$rec['CLASS_TITLE'] = $class_rec['TITLE'];
+				SQLUpdate('objects', $rec);
             }
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
             if (preg_match('/^sdevice(.+?)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
+            return true;
             //$this->keep_history=$rec['KEEP_HISTORY'];
         } else {
             return false;
