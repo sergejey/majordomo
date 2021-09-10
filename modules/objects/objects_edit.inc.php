@@ -43,7 +43,10 @@ if ($this->mode == 'update') {
         if (!$rec['CLASS_ID']) {
             $out['ERR_CLASS_ID'] = 1;
             $ok = 0;
-        }
+        } else {
+			$class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $rec['CLASS_ID']);
+			$rec['CLASS_TITLE'] = $class_rec['TITLE'];
+		}
         //updating 'Description' (text)
         global $description;
         $rec['DESCRIPTION'] = $description;
@@ -51,8 +54,8 @@ if ($this->mode == 'update') {
         global $location_id;
         $rec['LOCATION_ID'] = (int)$location_id;
 
-        global $keep_history;
-        $rec['KEEP_HISTORY'] = (int)$keep_history;
+        //global $keep_history;
+        //$rec['KEEP_HISTORY'] = (int)$keep_history;
 
 
     }
@@ -67,7 +70,9 @@ if ($this->mode == 'update') {
     }
     //UPDATING RECORD
     if ($ok) {
-        if ($rec) {
+        if ($rec['ID']) { // только так надро оставить и ни как не иначе - не сохраняются тогда новые обьекты
+			DebMes('zapis sdelana' );
+			DebMes($rec);
             SQLUpdate($table_name, $rec); // update
 
             if ($class_changed_from) {
