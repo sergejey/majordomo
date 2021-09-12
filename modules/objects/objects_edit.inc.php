@@ -176,16 +176,19 @@ if ($this->tab == 'properties') {
                 $this->setProperty($props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }
-        $props[$i]['VALUE'] = $value['VALUE'];
-        $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
-        $props[$i]['SOURCE'] = $value['SOURCE'];
-        $props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
-		
-		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
-		if(is_array($value['LINKED_MODULES'])) {
-			foreach($value['LINKED_MODULES'] as $prop_link) {
-				if(!$prop_link) break; 
-				$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
+		if (isset($value['VALUE'])) {
+			$props[$i]['VALUE'] = $value['VALUE'];
+			$props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
+			$props[$i]['SOURCE'] = $value['SOURCE'];
+			$props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
+			if (isset($value['LINKED_MODULES'])) {
+				$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
+				if(is_array($value['LINKED_MODULES'])) {
+					foreach($value['LINKED_MODULES'] as $prop_link) {
+						if(!$prop_link) break; 
+						$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
+					}
+				}
 			}
 		}
     }
