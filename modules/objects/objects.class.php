@@ -13,6 +13,7 @@
 class objects extends module
 {
 	var $data_source;
+	var $view_mode;
 	var $mode;
 	var $edit_mode;
 	var $single_rec;
