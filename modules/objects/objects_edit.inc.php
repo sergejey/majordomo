@@ -291,7 +291,7 @@ if ($this->tab == 'methods') {
 
             }
         }
-        if (!$my_meth['ID']) {
+        if (!isset($my_meth['ID']) or !$my_meth['ID']) {
             $out['CALL_PARENT'] = 1;
         } else {
             $out['CODE'] = htmlspecialchars($my_meth['CODE']);
