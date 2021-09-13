@@ -12,6 +12,7 @@
 //
 class objects extends module
 {
+	var $xml;
 	var $data_source;
 	var $view_mode;
 	var $mode;
