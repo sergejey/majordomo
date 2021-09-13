@@ -54,7 +54,7 @@ while (1) {
         echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
 
         $timestamp = time() - getGlobal('ThisComputer.started_time');
-        setGlobal('ThisComputer.uptime', $timestamp);
+        //setGlobal('ThisComputer.uptime', $timestamp);
 
         $years = floor($timestamp / 31536000);
         $days = floor(($timestamp - ($years * 31536000)) / 86400);
@@ -73,7 +73,7 @@ while (1) {
         if ($minutes > 0) {
             $timestring .= $minutes . 'm ';
         }
-        setGlobal('ThisComputer.uptimeText', trim($timestring));
+        //setGlobal('ThisComputer.uptimeText', trim($timestring));
 
     }
 
