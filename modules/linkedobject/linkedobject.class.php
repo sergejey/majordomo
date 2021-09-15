@@ -236,10 +236,9 @@ class linkedobject extends module
         }
 
         if ($this->object_field) {
-            $objects = SQLSelect("SELECT * FROM objects ORDER BY CLASS_ID, TITLE");
-			
+            $objects = SQLSelect("SELECT objects.*, classes.TITLE AS CLASS_NAME FROM objects JOIN classes WHERE CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
+
 			foreach($objects as $key => $object) {
-				$className = SQLSelectOne("SELECT TITLE FROM classes WHERE ID = '".$object['CLASS_ID']."'");
 				if($object['CLASS_ID'] != $objects[$key-1]['CLASS_ID']) {
 					$objects[$key]['NEW_GROUP_START'] = 1; 
 				} else {
@@ -250,9 +249,6 @@ class linkedobject extends module
 				} else {
 					$objects[$key]['NEW_GROUP_END'] = 0; 
 				}
-				
-				$objects[$key]['CLASS_NAME'] = $className['TITLE'];
-				
 			}
 			
             $objects[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
