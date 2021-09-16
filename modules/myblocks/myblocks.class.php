@@ -12,6 +12,14 @@
 //
 //
 class myblocks extends module {
+  var $data_source;
+  var $view_mode;
+  var $edit_mode;
+  var $mode;
+  var $tab;
+  var $single_rec;
+  var $ajax;
+  
 /**
 * myblocks
 *
@@ -19,7 +27,7 @@ class myblocks extends module {
 *
 * @access private
 */
-function myblocks() {
+function __construct() {
   $this->name="myblocks";
   $this->title="<#LANG_MODULE_MYBLOCKS#>";
   $this->module_category="<#LANG_SECTION_SETTINGS#>";

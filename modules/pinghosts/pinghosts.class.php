@@ -11,6 +11,16 @@
 Define('PING_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=PING (HOST:PORT)|3=BLUETOOTH (MAC)|4=BLE (Only LINUX) (MAC)');
 //
 class pinghosts extends module {
+  var $mobile;
+  var $data_source;
+  var $view_mode;
+  var $edit_mode ;
+  var $mode;
+  var $tab;
+  var $single_rec;
+  var $ajax;
+  var $xml;
+  
 /**
 * pinghosts
 *

@@ -24,9 +24,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby_system_errors;
-  if (!$sortby_system_errors) {
+  if (!$sortby_system_errors and isset($session->data['system_errors_sort'])) {
    $sortby_system_errors=$session->data['system_errors_sort'];
-  } else {
+  } else if (isset($session->data['system_errors_sort'])) {
    if ($session->data['system_errors_sort']==$sortby_system_errors) {
     if (Is_Integer(strpos($sortby_system_errors, ' DESC'))) {
      $sortby_system_errors=str_replace(' DESC', '', $sortby_system_errors);
@@ -36,7 +36,11 @@
    }
    $session->data['system_errors_sort']=$sortby_system_errors;
   }
-  $sortby_system_errors="ACTIVE DESC, LATEST_UPDATE DESC, CODE";
+  if (!$sortby_system_errors) {
+	  $sortby_system_errors="ACTIVE DESC, LATEST_UPDATE DESC, CODE";
+	  $session->data['system_errors_sort']=$sortby_system_errors;
+  }
+ 
   $out['SORTBY']=$sortby_system_errors;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM system_errors WHERE $qry ORDER BY ".$sortby_system_errors);

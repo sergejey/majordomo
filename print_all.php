@@ -41,7 +41,8 @@ if ($tmp['TOTAL'])
 
    $res   = SQLSelect($sqlQuery);
    $total = count($res);
-
+   $old_category = null;
+   $out['TOTAL_CATEGORIES']=0;
    for ($i = 0; $i < $total; $i++)
    {
       if (!$res[$i]['CATEGORY'])
@@ -99,7 +100,7 @@ if ($tmp['TOTAL'])
 
       $properties = SQLSelect($sqlQuery);
     
-      if ($properties[0]['ID'])
+      if ($properties)
          $classes[$i]['PROPERTIES'] = $properties;
 
       $sqlQuery = "SELECT *
@@ -110,7 +111,7 @@ if ($tmp['TOTAL'])
       
       $methods = SQLSelect($sqlQuery);
     
-      if ($methods[0]['ID'])
+      if ($methods)
       {
          $totalm = count($methods);
        
@@ -127,7 +128,7 @@ if ($tmp['TOTAL'])
 
       $objects = SQLSelect($sqlQuery);
     
-      if ($objects[0]['ID'])
+      if ($objects)
       {
          $totalo = count($objects);
 
@@ -140,7 +141,7 @@ if ($tmp['TOTAL'])
             
             $methods = SQLSelect($sqlQuery);
 
-            if ($methods[0]['ID'])
+            if ($methods)
             {
                $totalm = count($methods);
        
@@ -245,7 +246,7 @@ function buildTree_classes($res, $parentID = 0, $level = 0)
          if (!is_array($res[$i]['CLASSES']))
             unset($res[$i]['CLASSES']);
 
-         if (!$res[$i]['CLASSES'] && !$res[$i]['OBJECTS'])
+         if (!isset($res[$i]['CLASSES']) && !isset($res[$i]['OBJECTS']))
             $res[$i]['CAN_DELETE'] = 1;
     
          $res2[] = $res[$i];

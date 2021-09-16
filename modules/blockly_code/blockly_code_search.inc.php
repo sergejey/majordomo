@@ -18,9 +18,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby_blockly_code;
-  if (!$sortby_blockly_code) {
+  if (!$sortby_blockly_code and isset($session->data['blockly_code_sort'])) {
    $sortby_blockly_code=$session->data['blockly_code_sort'];
-  } else {
+  } else if (isset($session->data['blockly_code_sort'])) {
    if ($session->data['blockly_code_sort']==$sortby_blockly_code) {
     if (Is_Integer(strpos($sortby_blockly_code, ' DESC'))) {
      $sortby_blockly_code=str_replace(' DESC', '', $sortby_blockly_code);
@@ -30,7 +30,10 @@
    }
    $session->data['blockly_code_sort']=$sortby_blockly_code;
   }
-  if (!$sortby_blockly_code) $sortby_blockly_code="ID DESC";
+    if (!$sortby_blockly_code) {
+	  $sortby_blockly_code="ID DESC";
+	  $session->data['blockly_code_sort']=$sortby_blockly_code;
+  }
   $out['SORTBY']=$sortby_blockly_code;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM blockly_code WHERE $qry ORDER BY ".$sortby_blockly_code);

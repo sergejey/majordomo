@@ -29,9 +29,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby;
-  if (!$sortby) {
+  if (!$sortby and isset($session->data['objects_sort'])) {
    $sortby=$session->data['objects_sort'];
-  } else {
+  } else if (isset($session->data['objects_sort'])) {
    if ($session->data['objects_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
@@ -41,7 +41,11 @@
    }
    $session->data['objects_sort']=$sortby;
   }
-  if (!$sortby) $sortby="TITLE";
+  if (!$sortby) {
+	  $sortby="TITLE";
+	  $session->data['objects_sort']=$sortby;
+  }
+  
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT objects.*, classes.TITLE as CLASS_TITLE, locations.TITLE as LOCATION_TITLE FROM objects LEFT JOIN locations ON locations.ID=objects.LOCATION_ID LEFT JOIN classes ON classes.ID=objects.CLASS_ID WHERE $qry ORDER BY objects.TITLE");

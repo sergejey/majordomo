@@ -72,10 +72,10 @@
 				}
 			});
 			</script>
-			<div class="panel panel-[#if TITLE == 'SDevices'#]primary[#else#][#if TITLE == 'Computer' OR TITLE == 'systemStates' OR TITLE == 'OperationalModes' OR TITLE == 'Timer'#]danger[#else#]default[#endif#][#endif#]" style="margin-bottom: 5px;[#if RESULT AND LEVEL_PAD!=0#]margin:10px;[#endif#]">
+			<div class="panel panel-[#if TITLE == 'SDevices'#]primary[#else#][#if TITLE == 'Computer' OR TITLE == 'systemStates' OR TITLE == 'OperationalModes' OR TITLE == 'Timer'#]danger[#else#]default[#endif#][#endif#]" style="margin-bottom: 5px;[#if LEVEL_PAD!=0#]margin:10px;[#endif#]">
 				<div class="panel-heading">
 					<div class="row">
-						<div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('[#if SUB_LIST != ID#][#ID#],[#endif#][#SUB_LIST#]');" style="cursor: pointer;[#if CAN_DELETE="1"#]opacity: 0.3;[#endif#]">
+						<div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('[#ID#],[#SUB_LIST#]');" style="cursor: pointer;[#if CAN_DELETE="1"#]opacity: 0.3;[#endif#]">
 							<h3 class="panel-title">
 								<i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> [#TITLE#] 
 							</h3>

@@ -114,7 +114,7 @@
     }
    }
    $history=SQLSelect("SELECT d. ID, d.ADDED, d.COMMENTS,e.CODE FROM system_errors_data d join system_errors e on d.ERROR_ID = e.ID WHERE d.ERROR_ID='".$rec['ID']."' ORDER BY d.ADDED DESC LIMIT 100");
-   if ($history[0]['ID']) {
+   if ($history) {
     $out['HISTORY']=$history;
    }
   }
