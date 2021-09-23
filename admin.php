@@ -15,11 +15,20 @@ startMeasure('loader');
 include_once("./lib/loader.php");
 endMeasure('loader');
 
-include_once(DIR_MODULES . "panel.class.php");
-
-$session = new session("prj");
 
 include_once("./load_settings.php");
+
+if (isset($_GET['part_load']) && checkFromCache('reload:'.md5($_SERVER['REQUEST_URI']))) {
+    $res = array();
+    $res['TITLE'] = '';
+    $res['CONTENT'] = '';
+    $res['NEED_RELOAD'] = 1;
+    echo json_encode($res);
+    exit;
+}
+
+include_once(DIR_MODULES . "panel.class.php");
+$session = new session("prj");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
 $cl  = new control_modules();
@@ -36,7 +45,7 @@ endMeasure('apprun');
 
 startMeasure('part2');
 
-if ($filterblock != '')
+if (isset($filterblock) and $filterblock != '')
 {
    $blockPattern = '/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is';
    preg_match($blockPattern, $result, $match);
@@ -77,7 +86,7 @@ endMeasure('accelerationProcess');
 endMeasure('part2');
 
 
-if ($_GET['part_load']) {
+if (isset($_GET['part_load'])) {
 
    $res=array();
    $res['TITLE']='';
@@ -115,6 +124,10 @@ if ($_GET['part_load']) {
              $result=json_encode($res);
       }
 
+      if ($res['NEED_RELOAD']) {
+          saveToCache('reload:'.md5($_SERVER['REQUEST_URI']),1);
+      }
+
       header("HTTP/1.0: 200 OK\n");
       header('Content-Type: text/html; charset=utf-8');
       echo $result;exit;
@@ -125,7 +138,7 @@ if ($_GET['part_load']) {
 startMeasure('echoall');
 
 
-if (is_array($_GET['dynids'])) {
+if (isset($_GET['dynids']) and is_array($_GET['dynids'])) {
 
    $data = array();
    foreach ($_GET['dynids'] as $data_id) {

@@ -16,10 +16,10 @@ if (IsSet($_GET['disable_websockets'])) {
     Define('DISABLE_WEBSOCKETS', 1);
 }
 
-if ($_GET['lang']) {
+if (isset($_GET['lang'])) {
     Define("SETTINGS_SITE_LANGUAGE", $_GET['lang']);
     $_SESSION['lang'] = SETTINGS_SITE_LANGUAGE;
-} elseif ($_SESSION['lang']) {
+} elseif (isset($_SESSION['lang'])) {
     Define("SETTINGS_SITE_LANGUAGE", $_SESSION['lang']);
 }
 

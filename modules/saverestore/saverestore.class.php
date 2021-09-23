@@ -2,6 +2,11 @@
 
 class saverestore extends module
 {
+    var $mode;
+    var $view_mode;
+    var $edit_mode;
+    var $ajax;
+	
     /**
      * saverestore
      *
@@ -99,8 +104,10 @@ class saverestore extends module
         $out['EDIT_MODE'] = $this->edit_mode;
         $out['MODE'] = $this->mode;
         $out['ACTION'] = $this->action;
-        if ($this->single_rec) {
-            $out['SINGLE_REC'] = 1;
+        if (isset ($this->single_rec) && $this->single_rec) {
+            $out['SINGLE_REC'] = true;
+        } else {
+            $out['SINGLE_REC'] = false;
         }
         $this->data = $out;
         $p = new parser(DIR_TEMPLATES . $this->name . "/" . $this->name . ".html", $this->data, $this);
@@ -164,6 +171,8 @@ class saverestore extends module
 
         if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp')) {
             $out['CLEAR_FIRST'] = 1;
+        } else {
+            $out['CLEAR_FIRST'] = 0;
         }
 
         $update_url = $this->getUpdateURL();
@@ -228,6 +237,8 @@ class saverestore extends module
 					
                     $out['LATEST_CURR_BRANCH'] = $this->config['LATEST_CURR_BRANCH'];
                     $out['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
+                    $out['LATEST_UPDATED_ID_SLICE'] = mb_strtoupper(substr($this->config['LATEST_UPDATED_ID'], 0, 7));
+                    $out['LATEST_UPDATED_TIME'] = gg('LatestUpdateTimestamp');
               
 					$currBranch = explode("/", $update_url);
 					$out['UPDATE_CURR_BRANCH'] = mb_strtoupper(explode('.', $currBranch[6])[0]);
@@ -306,10 +317,10 @@ class saverestore extends module
         }
 
         if ($this->mode != 'savedetails') {
-            $out['FTP_HOST'] = $this->config['FTP_HOST'];
-            $out['FTP_USERNAME'] = $this->config['FTP_USERNAME'];
-            $out['FTP_PASSWORD'] = $this->config['FTP_PASSWORD'];
-            $out['FTP_FOLDER'] = $this->config['FTP_FOLDER'];
+            if (isset($this->config['FTP_HOST'])) $out['FTP_HOST'] = $this->config['FTP_HOST'];
+            if (isset($this->config['FTP_USERNAME'])) $out['FTP_USERNAME'] = $this->config['FTP_USERNAME'];
+            if (isset($this->config['FTP_PASSWORD'])) $out['FTP_PASSWORD'] = $this->config['FTP_PASSWORD'];
+            if (isset($this->config['FTP_FOLDER'])) $out['FTP_FOLDER'] = $this->config['FTP_FOLDER'];
         }
 
 // if ($this->mode=='' || $this->mode=='upload' || $this->mode=='savedetails') {
@@ -492,7 +503,7 @@ class saverestore extends module
         }
 
         if ($iframe) {
-			echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> Скачиваем архив '.$url.'</div>');
+            echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i> '.LANG_UPDATEARHIVE_DONE . ' '. $url.'</div>');
         }
 
         $ch = curl_init();
@@ -1318,6 +1329,9 @@ class saverestore extends module
                 exec('tar xzvf ../' . $file, $output, $res);
             }
 
+            $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp',1);
+            $folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];
+		
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_DONE.'</div>');
             }

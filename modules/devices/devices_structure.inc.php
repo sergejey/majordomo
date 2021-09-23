@@ -162,7 +162,7 @@ $this->device_types=array(
         'CLASS'=>'SAirConditioners',
         'PROPERTIES'=>array(
             'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
-            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'_CONFIG_DEFAULT'=>22),
+            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'KEEP_HISTORY'=>365,'_CONFIG_DEFAULT'=>22),
             'tempStep'=>array('DESCRIPTION'=>LANG_DEVICES_AC_TEMP_STEP,'_CONFIG_TYPE'=>'text'),
             'fanSpeed'=>array('DESCRIPTION'=>'Fan Speed','_CONFIG_DEFAULT'=>'auto','ONCHANGE'=>'fanSpeedUpdated'),
             'fanSpeedModes'=>array('DESCRIPTION'=>LANG_DEVICES_AC_FAN_SPEED,
@@ -198,6 +198,7 @@ $this->device_types=array(
             'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
             'minWork'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_MIN_WORK,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
             'maxWork'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_MAX_WORK,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'switchLevel'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SWITCH_LEVEL,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSwitchLevel'),
             'setMaxTurnOn'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SET_MAX,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSetMax'),
             ),
         'METHODS'=>array(

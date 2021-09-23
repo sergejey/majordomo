@@ -19,6 +19,12 @@
  [#if NO_NAV!="1"#]
  <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
  [#endif NO_NAV#]
+
+ [#if ARCHIVED="1"#]
+ <div class="alert alert-info"><#LANG_ARCHIVED_DEVICE#></div>
+ [#endif#]
+
+
  <div class="row">
      <div [#if NO_NAV!="1"#]class="col-md-8"[#endif#]>
          <!--#
@@ -64,6 +70,7 @@
 <div class="alert alert-danger">[#ERR_MSG#]</div>
 [#endif ERR_MSG#]
 
+
  [#if TAB=""#]
    [#inc devices_edit.html#]
  [#endif TAB#]
@@ -102,13 +109,29 @@
          [#inc preview.html#]
          [#endif LINKED_OBJECT#]
 
+         [#if LINKED_PROPERTIES#]
+         &nbsp;
+         <div>
+         <b><#LANG_PROPERTIES#></b>:
+         [#begin LINKED_PROPERTIES#]
+         <br/>[#PROPERTY#]:
+             [#VALUE#]
+         [#begin LINKED_MODULES#]
+          <a href="?(panel:{action=[#MODULE#]})&md=[#MODULE#]&go_linked_object=[#OBJECT#]&go_linked_property=[#PROPERTY#]" class="label label-success">[#MODULE#]</a>
+         [#end LINKED_MODULES#]
+         [#end LINKED_PROPERTIES#]
+         </div>
+         [#endif LINKED_PROPERTIES#]
+
          [#if SHOW_METHODS#]
-         <hr>
+         &nbsp;
+         <div>
          <b><#LANG_METHODS#></b>:
          [#begin SHOW_METHODS#]
          <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);return false;">[#NAME#] &mdash; [#DESCRIPTION#]</a>
              </div>
          [#end SHOW_METHODS#]
+         </div>
          [#endif SHOW_METHODS#]
 
 
@@ -116,7 +139,10 @@
          <hr>
          <h4><#LANG_LOCATION#>: [#LOCATION_TITLE#]</h4>
          [#begin OTHER_DEVICES#]
-         <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
+         <div>
+             [#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a>
+             [#if ARCHIVED="1"#]<span class="label label-info"><#LANG_ARCHIVED_DEVICE#></span>[#endif#]
+         </div>
          [#end OTHER_DEVICES#]
          [#if ID!=""#]
          &nbsp;<div>
@@ -129,7 +155,10 @@
          <hr>
          <h4><#LANG_TYPE#>: [#TYPE_TITLE#]</h4>
          [#begin OTHER_DEVICES_TYPE#]
-         <div>[#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a></div>
+         <div>
+             [#if ID!="<#ID#>"#]<a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#else#]<b>[#endif#][#TITLE#]</b></a>
+             [#if ARCHIVED="1"#]<span class="label label-info"><#LANG_ARCHIVED_DEVICE#></span>[#endif#]
+         </div>
          [#end OTHER_DEVICES_TYPE#]
          [#endif#]
 

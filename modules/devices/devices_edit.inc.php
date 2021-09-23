@@ -14,6 +14,25 @@ if ($this->owner->print == 1) {
     $out['NO_NAV'] = 1;
 }
 
+if ($rec['LINKED_OBJECT']!='') {
+    $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='".$rec['LINKED_OBJECT']."'");
+    if ($object_rec['ID']) {
+        $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=".$object_rec['ID']." AND pvalues.LINKED_MODULES!='' ORDER BY UPDATED DESC");
+        $total = count($properties);
+        if ($total>0) {
+            for($i=0;$i<$total;$i++) {
+                $linked_modules=explode(',',$properties[$i]['LINKED_MODULES']);
+                $properties[$i]['VALUE']=htmlspecialchars($properties[$i]['VALUE']);
+                $properties[$i]['LINKED_MODULES']=array();
+                foreach($linked_modules as $module) {
+                    $properties[$i]['LINKED_MODULES'][]=array('MODULE'=>$module,'PROPERTY'=>$properties[$i]['PROPERTY'],'OBJECT'=>$rec['LINKED_OBJECT']);
+                }
+                $out['LINKED_PROPERTIES']=$properties;
+            }
+        }
+    }
+}
+
 $show_methods = array();
 if ($rec['TYPE'] != '') {
     $methods = $this->getAllMethods($rec['TYPE']);
@@ -357,6 +376,7 @@ if ($this->mode == 'update' && $this->tab == '') {
     }
 
     $rec['SYSTEM_DEVICE'] = gr('system_device', 'int');
+    $rec['ARCHIVED'] = gr('archived', 'int');
 
 
     $rec['LINKED_OBJECT'] = $linked_object;
@@ -513,11 +533,11 @@ $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0"
 if ($rec['LOCATION_ID']) {
     $location_rec = SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=" . $rec['LOCATION_ID']);
     $out['LOCATION_TITLE'] = processTitle($location_rec['TITLE']);
-    $other_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID']." ORDER BY TITLE");
+    $other_devices = SQLSelect("SELECT ID, TITLE, ARCHIVED FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID']." ORDER BY TITLE");
     $out['OTHER_DEVICES'] = $other_devices;
 }
 
 if ($rec['TYPE']) {
-    $other_devices_type = SQLSelect("SELECT ID, TITLE FROM devices WHERE TYPE='" . $rec['TYPE'] . "' ORDER BY TITLE");
+    $other_devices_type = SQLSelect("SELECT ID, TITLE, ARCHIVED FROM devices WHERE TYPE='" . $rec['TYPE'] . "' ORDER BY TITLE");
     $out['OTHER_DEVICES_TYPE'] = $other_devices_type;
 }

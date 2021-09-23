@@ -92,14 +92,9 @@
 				<div class="panel-body">
 					<ul class="list-group" id="">
 						<li class="list-group-item">
-							<#LANG_NEWDASH_SYSTEM_INFO_DB_STATUS#>
-							<span id="dashInfoDBConn" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
-						</li>
-						<li class="list-group-item">
 							<#LANG_DEVICES_STATUS#> WebSocket
 							<span id="wsStatus" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						
 						
 						<li class="list-group-item" onclick="$('.reqPerMinHour').toggle('slow');" style="cursor:pointer">
 							<#LANG_NEWDASH_DB_REQ_SEC#>
@@ -121,13 +116,26 @@
 							<span class="badge" id="dashInfoVersion" style="text-transform: uppercase;">
 								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
 							</span>
-							Текущая версия MJDM: <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
+							<#LANG_NEWDASH_MJDM_VERSION#>: <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
 						</li>
 						<li class="list-group-item">
 							<span class="badge" id="dashInfoLastUpdate">
 								<img src="<#ROOTHTML#>img/ajax-loader.gif"/>
 							</span>
 							<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
+						</li>
+						<li class="list-group-item">
+							Тема оформления
+							<span class="badge" style="background:transparent;">
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> Темно
+									</label>
+									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #939191;border: 0px;">
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> Светло
+									</label>
+								</div>
+							</span>
 						</li>
 					</ul>
 					<div class="well well-lg" id="dashInfoOS"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
@@ -229,21 +237,37 @@
 		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
 		chart.dataSource.parser = new am4core.JSONParser();
 		chart.dataSource.reloadFrequency = 180000;
+		
 
 		chart.padding(20, 20, 20, 20);
 
 		var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 		categoryAxis.renderer.grid.template.location = 0;
 		categoryAxis.dataFields.category = "NAME";
-		categoryAxis.renderer.minGridDistance = 60;
+		categoryAxis.renderer.minGridDistance = 10;
 		categoryAxis.renderer.inversed = false;
 		categoryAxis.renderer.grid.template.disabled = true;
+		categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+		  if (target.dataItem && target.dataItem.index & 2 == 2) {
+			return dy + 25;
+		  }
+		  return dy;
+		});
 
 		var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+		valueAxis.calculateTotals = true;
+		/*
 		valueAxis.min = 0;
-		valueAxis.extraMax = 0.1;
-		//valueAxis.rangeChangeEasing = am4core.ease.linear;
-		//valueAxis.rangeChangeDuration = 1500;
+		valueAxis.max = 150000;
+		valueAxis.strictMinMax = true;
+		 */
+		
+		chart.cursor = new am4charts.XYCursor();
+		chart.scrollbarY = new am4core.Scrollbar();
+		chart.scrollbarY.parent = chart.leftAxesContainer;
+
+		chart.cursor.behavior = "none";
 
 		var series = chart.series.push(new am4charts.ColumnSeries());
 		series.dataFields.categoryX = "NAME";
@@ -252,8 +276,6 @@
 		series.columns.template.strokeOpacity = 0;
 		series.columns.template.column.cornerRadiusTopRight = 4;
 		series.columns.template.column.cornerRadiusTopLeft = 4;
-		//series.interpolationDuration = 1500;
-		//series.interpolationEasing = am4core.ease.linear;
 		var labelBullet = series.bullets.push(new am4charts.LabelBullet());
 		labelBullet.label.verticalCenter = "bottom";
 		labelBullet.label.dy = -10;
@@ -261,7 +283,6 @@
 
 		chart.zoomOutButton.disabled = true;
 
-		// as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
 		series.columns.template.adapter.add("fill", function (fill, target) {
 			return chart.colors.getIndex(target.dataItem.index);
 		});
@@ -276,7 +297,7 @@
 
 		categoryAxis.sortBySeries = series;
 
-		}); // end am4core.ready()
+		});
 		</script>
 		<!-- HTML -->
 		<div id="hint_howmaxdbsizehint" style="display:none;">
@@ -284,9 +305,11 @@
 			<div class="hidden-xs" onclick="hideHintCookie('howmaxdbsizehint');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
 		</div>
 		
-		<div id="structureDB_chart" style="width: 100%;height: 300px;margin-bottom:10px"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+		<div id="structureDB_chart" style="border: 1px solid #ddd;border-radius: 4px;width: 100%;height: 300px;margin-bottom:10px">
+			<center style="display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/ style="width: 20px;height: 20px;margin-right: 10px;"> <#LANG_NEWDASH_LOADING#></center>
+		</div>
 		
-		
+		<!---
 		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/main_img/scenario.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #69d147);background-size: contain;background-repeat: no-repeat;background-position: right center;">
 			<h2>Новые сценарии!</h2>
 			<p style="font-size: 11pt;text-shadow: white 0 0 6px;background: rgb(255 255 255 / 73%);padding: 5px;">
@@ -294,8 +317,7 @@
 			</p>
 			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
 		</div>
-		
-		<!---
+	
 		<style>
 		.onHoverAlfa:hover {
 			color: white;

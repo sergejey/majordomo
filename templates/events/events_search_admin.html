@@ -1,10 +1,50 @@
-<h2><#LANG_MODULE_EVENTS#></h2>
-<pre>
+[#if OK_MSG!=""#]
+<div class="alert alert-success"><#OK_MSG#></div>
+[#endif#]
+
+<div class="row">
+ <div class="col-md-6">
+  <pre>
 Code example:
 registerEvent('path/to/event'[,array('param1'=>'value1')]);
 API example:
 /api/events/path/to/event?param1=value1
 </pre>
+
+ </div>
+ <div class="col-md-6">
+  <a href="#" id="settings_button" class="btn btn-default" onclick="$('#settings_form').show();$('#settings_button').hide();return false;"><#LANG_SECTION_SETTINGS#></a>
+  <form action="?" method="post" class="form form-horizontal" id="settings_form" style="display:none">
+   <div class="form-group">
+    <label for="clean_up" class="col-lg-5">Keep events for latest days (0 for all):</label>
+    <div class="col-lg-4">
+    <input id="clean_up" type="text" name="keep_history" value="<#SETTINGS_EVENTS_KEEP_HISTORY#>" placeholder="0" class="form-control">
+    </div>
+   </div>
+   <div class="form-group">
+    <label class="col-lg-5">Forward events to MQTT:</label>
+    <div class="col-lg-4">
+     <input type="radio" value="1" name="mqtt_forward"[#if "<#SETTINGS_EVENTS_MQTT_FORWARD#>"=="1"#] checked[#endif#]> <#LANG_YES#>
+     <input type="radio" value="0" name="mqtt_forward"[#if "<#SETTINGS_EVENTS_MQTT_FORWARD#>"!="1"#] checked[#endif#]> <#LANG_NO#>
+    </div>
+   </div>
+   <div class="form-group">
+    <label for="mqtt_root" class="col-lg-5">MQTT root path:</label>
+    <div class="col-lg-4">
+     <input id="mqtt_root" type="text" name="mqtt_root" value="<#SETTINGS_EVENTS_MQTT_ROOT#>" placeholder="/events/" class="form-control">
+    </div>
+   </div>
+   <div class="form-group">
+    <div class="col-lg-5">&nbsp;</div>
+    <div class="col-lg-4">
+     <input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+     <a href="#" class="btn btn-default" onclick="$('#settings_form').hide();$('#settings_button').show();return false;"><#LANG_CANCEL#></a>
+    </div>
+   </div>
+   <input type="hidden" name="mode" value="update_settings">
+  </form>
+ </div>
+</div>
 
 <script type="text/javascript">
  var updateTimer = 0;

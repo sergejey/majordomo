@@ -8,7 +8,7 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.2 (wizard, 00:01:48 [Jan 06, 2011])
 */
-Define('DEF_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=PING (HOST:PORT)'); // options for 'HOST TYPE'
+Define('PING_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=PING (HOST:PORT)'); // options for 'HOST TYPE'
 //
 //
 class pinghosts extends module {

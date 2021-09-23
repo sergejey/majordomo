@@ -54,11 +54,16 @@
 		var filterTimer;
 
 		function filterSearch() {
-			$('#filter_add').html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
+			$('#filter_add').show().html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
 			$('.searchNoty').hide();
 			
 			var title = $('#filter_modules').val();
 			var urlFilter="?";
+
+			if(title.length <= 2) {
+				$('#filter_add').show().html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Введите более 2-х символов для поиска...</div>');
+				return;
+			}
 			
 			urlFilter+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
 
@@ -199,6 +204,7 @@
 		function updateConsoleDebug() {
 			if ($('#console_debug').is(":hidden")) {
 				clearTimeout(consoleDebugTimer);
+				return;
 			}
 			
 			var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
@@ -299,7 +305,7 @@
 			 $('#partLoadContent').html(cachedContent);
 		 } else {
 			 cachedContent = '';
-			 loaderTimer=setTimeout(loadInProgress, 1000);
+			 loaderTimer=setTimeout(loadInProgress, 2000);
 		 }
 
 		 $.ajax({
@@ -307,6 +313,7 @@
 			 urlInProgress: urlInProgress
 		 }).done(function(data) {
 			 //console.log('part content loaded');
+			 $('#preloader').hide('fast');
 			 if (seqNumber!=requestCounter) {
 				 //console.log('Ignoring response');
 			 }
@@ -353,16 +360,7 @@
 					$('#dashInfoIPSer').text();
 					$('#dashInfoOS').text(data.OS);
 					$('#dashInfoErrors').text(data.active_errors);
-					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
-					
-					if(data.DB.connection == 'OK') {
-						$('#dashInfoDBConn').html('<#LANG_NEWDASH_CONNECTED#>');
-						$('#dashInfoDBConn').attr('style', 'background: #5cb85c');
-					} else {
-						$('#dashInfoDBConn').html('<#LANG_NEWDASH_DISCONNECTED#>');
-						$('#dashInfoDBConn').attr('style', 'background: lightcoral');
-					}
-					
+					$('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);				
 				},
 				error: function(data) {
 					console.log('error');
@@ -620,6 +618,13 @@
 			$.ajax({
 				url: urlCheckUpdates
 			}).done(function(data) {
+				try {
+					JSON.parse(data);
+				} catch (e) {
+					$('#problemLinkToConnect').show();
+					return false;
+				}
+				
 				data = JSON.parse(data);
 				if (data.status == 0) {
 					$('#getConnect').show('fast');
@@ -646,6 +651,13 @@
 			$.ajax({
 				url: urlCheckUpdatesMarket
 			}).done(function(data) {
+				try {
+					JSON.parse(data);
+				} catch (e) {
+					$('#problemLinkToConnect').show();
+					return false;
+				}
+				
 				data = JSON.parse(data);
 				if (data.status == '1') {
 					$('#updates-check-market').show();
@@ -670,7 +682,12 @@
 		}
 		[#endif#]
 	</script>
-
+	
+	<style>
+	.modal-lg {
+		width: 80%;
+	}
+	</style>
 	[#if PRINT!="1"#]
 	<style>
 		.dropdown-submenu {
@@ -758,7 +775,7 @@
 				[#if HIDE_LEFT_PANEL="1"#]
 				[#begin SUB_MODULES#]
 				[#if NEW_CATEGORY#]
-				<li>
+				<li class="dropdown">
 					<!---
 					<li><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>
 					--->
@@ -775,7 +792,44 @@
 							</ul>
 							</li>
 							[#else LINKS#]
-							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a></li>
+							<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
+							<a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]
+							[#if PLUGINS_NOTY_COUNT != 0#]
+							<div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-html="true" data-content="
+							<script>
+							function showNotyDate(id) {
+								$('#notyAddtimeBlock_'+id).show();
+								$('#notyMsgBlock_'+id).hide();
+							}
+							function hideNotyDate(id) {
+								$('#notyMsgBlock_'+id).show();
+								$('#notyAddtimeBlock_'+id).hide();
+							}
+							</script>
+							
+							<div style='min-width: 25rem;'>
+							<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
+							<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
+							<div class='clearfix'></div>
+							<hr style='margin: 0px 0px 5px 0px;'>
+							</div>
+							
+							<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
+							[#begin PLUGINS_NOTY#]
+							<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
+								<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
+								
+								<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
+								<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
+								<div class='clearfix'></div>
+							</div>
+							[#end PLUGINS_NOTY#]
+							<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
+							</div>
+							" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
+							[#endif PLUGINS_NOTY#]
+							</a>
+							</li>
 							[#if NAME="xray"#]<li class="menu-item"><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>[#endif#]
 							[#endif LINKS#]
 						[#endif DENIED#]
@@ -811,23 +865,26 @@
 			</div>
 		</div>
 	</nav>
-
+	
 	<div class="modal fade" id="mdmGlobalSearchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-body">
 					<div class="alert searchNoty" style="background: radial-gradient(circle farthest-corner at 450px 10px, #5994be, #17b9ca);color: white;text-align: center;border: 0px;">
 						<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
-						Глобальный поиск по всей системе. Начните вводить...
+						<#LANG_NEWDASH_SEARCH_HINT#>
 					</div>
 					
-					<input type="text" class="form-control" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+					<div class="input-group input-group-lg">
+						<span class="input-group-addon">Ищем:</span>
+						<input type="text" class="form-control input-group-lg" name="filter_modules" id="filter_modules" placeholder="<#LANG_SEARCH#>">
+					</div>
 					
 					<div id="filter_add" style="display:none;overflow-x: hidden;white-space: nowrap;border: 1px solid #ddd;padding: 5px;max-height: 300px;overflow-y: auto;border-radius: 5px;margin-top: 5px;">
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+					<button type="button" onclick="$('#filter_modules').val('');filterSearch();" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
 				</div>
 			</div>
 		</div>
@@ -851,7 +908,7 @@
 					</span>
 				</div>
 				<select class="form-control" id="currModuleName" style="display:none;margin-top: 10px;" onchange="insertModuleInConsole($(this).val());">
-					<option value="0">Выберите модуль...</option>
+					<option value="0"><#LANG_NEWDASH_CONSOLE_CHOOSE_MODULE#></option>
 					
 					[#begin SUB_MODULES#]
 						[#if NAME#]<option value="[#NAME#]">[#TITLE#]</option>[#endif#]
@@ -868,7 +925,7 @@
 				<div style="color: gray;font-style: italic;"><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: Wait command...</div>
 			</div>
 			<div id="console_output_hintResize" style="display: none;text-align: right;">
-				<span style="vertical-align: sub;color: gray;font-size: 1rem;">Размер консоли можно изменить</span> <img style="width: 40px;" src="/img/arrow_hint.png">
+				<span style="vertical-align: sub;color: gray;font-size: 1rem;"><#LANG_NEWDASH_CONSOLE_SIZE_HINT#></span> <img style="width: 40px;" src="<#ROOTHTML#>img/arrow_hint.png">
 			</div>
 		</div>
 		
@@ -885,7 +942,7 @@
 	
 	<div class="row text-center" style="margin-top: 20px;display:none;" id="preloader">
 		<h4 style="font-weight: bold;"><#LANG_NEWDASH_PRELOAD_HEADER#></h4>
-		<img src="/img/system/loading.gif" style="max-width: 200px">
+		<img src="<#ROOTHTML#>img/system/loading.gif" style="max-width: 200px">
 		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
 		
 		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
@@ -933,8 +990,12 @@
 	</script>
 	
 	
-	
-	<div id="partLoadContent" style="margin-bottom: 50px;">
+	<style>
+		#partLoadContent {
+			margin-bottom: 50px;
+		}
+	</style>
+	<div id="partLoadContent">
 		<div class="visible-xs">
 			<div class="row" style="margin: 0 15px;">
 				<div class="col-12" style="margin-bottom: 10px;">
@@ -969,7 +1030,44 @@
 								<ul class="nav nav-list">
 									[#endif NEW_CATEGORY#]
 									[#if !DENIED#]
-										<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link"><a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#]</a></li>
+										<li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
+											<a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#] 
+											[#if PLUGINS_NOTY_COUNT != 0#]
+											<div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="right" data-html="true" data-content="
+											<script>
+											function showNotyDate(id) {
+												$('#notyAddtimeBlock_'+id).show();
+												$('#notyMsgBlock_'+id).hide();
+											}
+											function hideNotyDate(id) {
+												$('#notyMsgBlock_'+id).show();
+												$('#notyAddtimeBlock_'+id).hide();
+											}
+											</script>
+											
+											<div style='min-width: 25rem;'>
+											<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
+											<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
+											<div class='clearfix'></div>
+											<hr style='margin: 0px 0px 5px 0px;'>
+											</div>
+											
+											<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
+											[#begin PLUGINS_NOTY#]
+											<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
+												<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
+												
+												<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
+												<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
+												<div class='clearfix'></div>
+											</div>
+											[#end PLUGINS_NOTY#]
+											<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
+											</div>
+											" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
+											[#endif PLUGINS_NOTY#]
+											</a>
+										</li>
 									[#endif DENIED#]
 									[#if LAST_IN_CATEGORY#]
 								</ul>
@@ -992,10 +1090,18 @@
 				[#if PRINT!="1"#]
 				<div class="row">
 					[#if ACTION!="" AND ACTION!='xray'#]
-					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
+					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;overflow-wrap: anywhere;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
 						
 					</div>
 					[#endif#]
+					
+					<div class="col-xs-12 col-sm-12 col-md-12" id="problemLinkToConnect" style="display:none;padding-left: 0px;padding-right: 0px;">
+						<div class="alert alert-danger" style="box-shadow: 0px 8px 0px 0px rgb(168 10 10);background-image: url(<#ROOTHTML#>img/icons/highAlertIcon.gif);background-repeat: no-repeat;background-size: contain;background-position: right center;">
+							<b><#LANG_NEWDASH_CONNECT_CONNECT_ERROR_1#></b>
+							<p style="font-size: 1rem;"><#LANG_NEWDASH_CONNECT_CONNECT_ERROR_2#></p>
+						</div>
+					</div> 
+					
 					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
@@ -1046,8 +1152,7 @@
 		[#else AUTHORIZED#]
 			[#module name="control_access" action="enter" instance="auth"#]
 		[#endif AUTHORIZED#]
-	</div>
-	<!--partloadend-->
+	</div><!--partloadend-->
 
 <script language="javascript">
 	//Показ консоли
@@ -1079,17 +1184,66 @@
         });
     }
 
- $(document).ready(function() {
+function readNoty(id, plugins_id) {
+	//Отправляем AJAX на прочтение
+	$.ajax({
+		url: '/ajax/market.html?op=readNoty&id='+id
+	}).done(function(data) {
+		data = JSON.parse(data);
+		if(data.status == true) {
+			countToEnd = Number($('#plugNotyBtn_'+plugins_id).text())-1;
+			
+			$('#plugNotyBtn_'+plugins_id).text(countToEnd);
+			$('#notyAlert_'+id).hide('slow');
+	
+			if(countToEnd == 0) {
+				$('#plugNotyBtn_'+plugins_id).popover('hide');
+				$('#plugNotyBtn_'+plugins_id).remove();
+			}
+		} else {
+			alert('Error processing messages from modules.');
+		}
+	});
+}
+function closePopover(id) {
+	$('#plugNotyBtn_'+id).popover('hide');
+}
+
+$(document).ready(function() {
+	//Прячем поповер при клике за пределами
+	$('body').on('click', function (e) {
+		$('[data-toggle=popover]').each(function () {
+			if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+				$(this).popover('hide');
+			}
+		});
+	});
+	//Ноти
+	$("div.plugNotyBtn").hover(function() {
+		$(this).popover('show');
+	}, function() {
+		//$(this).popover('hide');
+	});
+	
+	//Применяем тему
+	/*
+	if($.cookie('theme') == 'dark') {
+		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');
+	} else if($.cookie('theme') == 'light') {
+		$('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');
+	} */
+	
+	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 		$("nav").addClass("navbar-fixed-top");
-		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 	}
 		
 	$(window).on("scroll", function(e) {
 		if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 			$("nav").addClass("navbar-fixed-top");
 			$("body").css('padding-top', '54px');
-			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 		} else {
 			$("nav").removeClass("navbar-fixed-top");
 			$("nav").removeAttr('style');

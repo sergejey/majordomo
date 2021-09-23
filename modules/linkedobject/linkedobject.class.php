@@ -120,9 +120,12 @@ class linkedobject extends module
         }
 
         if ($this->width) {
+			$ifPX = substr($this->width, -1);
+			if($ifPX != 'x' && $ifPX != '%') $this->width = $this->width.'px';
+			
             $out['WIDTH'] = $this->width;
         } else {
-            $out['WIDTH'] = 300;
+            $out['WIDTH'] = '90%';
         }
 
         if ($uniq) {
@@ -199,7 +202,7 @@ class linkedobject extends module
                 do {
                     if (!$object) break;
                     if ($object=='AllScripts') {
-                        $properties=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
+                        $properties=SQLSelect("SELECT TITLE FROM scripts ORDER BY TITLE");
                         break;
                     }
                     $obj = getObject($object);
@@ -233,8 +236,25 @@ class linkedobject extends module
         }
 
         if ($this->object_field) {
-            $objects = SQLSelect("SELECT * FROM objects ORDER BY CLASS_ID, TITLE");
+            $objects = SQLSelect("SELECT objects.*, classes.TITLE AS CLASS_NAME FROM objects JOIN classes WHERE CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
+
+			foreach($objects as $key => $object) {
+				if($object['CLASS_ID'] != $objects[$key-1]['CLASS_ID']) {
+					$objects[$key]['NEW_GROUP_START'] = 1; 
+				} else {
+					$objects[$key]['NEW_GROUP_START'] = 0; 
+				}
+				if($object['CLASS_ID'] != $objects[$key+1]['CLASS_ID']) {
+					$objects[$key]['NEW_GROUP_END'] = 1; 
+				} else {
+					$objects[$key]['NEW_GROUP_END'] = 0; 
+				}
+			}
+			
             $objects[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
+			//echo '<pre>';
+			//var_dump($objects);
+			//die();
             $out['OBJECTS'] = $objects;
             $out['OBJECT_FIELD'] = $this->object_field;
         }
