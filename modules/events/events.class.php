@@ -376,7 +376,7 @@ class events extends module
         $event_ids=array(0);
         for($i=0;$i<$total;$i++) {
             SQLExec("DELETE FROM events_params WHERE ID=".$expired[$i]['ID']);
-            $event_ids[]=$expired['EVENT_ID'];
+            $event_ids[]=$expired[$i]['EVENT_ID'];
         }
         $events=SQLSelect("SELECT events.ID, events_params.ID as PARAM_ID FROM events LEFT JOIN events_params ON events.ID=events_params.EVENT_ID WHERE events.DESCRIPTION='' AND events.ID IN (".implode(',',$event_ids).") AND IsNull(events_params.ID)");
         $total = count($events);
