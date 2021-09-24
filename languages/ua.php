@@ -1147,6 +1147,13 @@ $dictionary = array (
     'DEVICES_MSG_CLOSING'=>'Повідомлення при закритті',
     'DEVICES_MSG_REMINDER'=>'Повідомлення при нагадуванні',
 
+    'DEVICES_OPENABLE' => 'Що відкривається (Ворота/Двері/Штори/и т.і.)',
+    'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Підтримка рівня відкриття',
+
+    'DEVICES_VACUUM' =>'Пилосмог',
+    'DEVICES_MEDIA' =>'Медіа-програвач',
+    'DEVICES_TV' =>'Телевізор',
+	
     // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
