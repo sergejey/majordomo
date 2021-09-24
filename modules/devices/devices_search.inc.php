@@ -68,7 +68,7 @@ $sortby_devices = "locations.PRIORITY DESC, locations.TITLE, devices.LOCATION_ID
 $out['SORTBY'] = $sortby_devices;
 // SEARCH RESULTS
 $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY " . $sortby_devices);
-if ($res[0]['ID']) {
+if ($res) {
     //paging($res, 100, $out); // search result paging
     $total = count($res);
     for ($i = 0; $i < $total; $i++) {
@@ -116,7 +116,7 @@ if ($res[0]['ID']) {
 
 $types = array();
 foreach ($this->device_types as $k => $v) {
-    if ($v['TITLE']) {
+    if (isset($v['TITLE']) and $v['TITLE']) {
         $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
         $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE TYPE='" . $k . "'");
         $type_rec['TOTAL'] = (int)$tmp['TOTAL'];

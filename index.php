@@ -32,10 +32,10 @@ if (!file_exists(ROOT . 'cms/modules_installed/control_modules.installed')) {
 
 $app = new application();
 
-if ($md != $app->name)
-    $app->restoreParams();
-else
+if (isset($md) && $md == $app->name)
     $app->getParams();
+else
+    $app->restoreParams();
 
 if ($app->action != '' && $app->action != 'docs') $fake_doc = '';
 
@@ -78,10 +78,11 @@ echobig($result);
 
 endMeasure('final_echo', 1);
 
-if ($cache_filename != '' && $cached_result == '')
-{
-   SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
-}
+// отключаем сохранение в кеш мдм - все равно все быстро меняется в нем
+//if ($cache_filename != '' && $cached_result == '')
+//{
+//   SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
+//}
 
 $session->save();
 

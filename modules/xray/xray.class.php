@@ -13,6 +13,11 @@
 //
 class xray extends module
 {
+	var $view_mode;
+	var $edit_mode;
+	var $mode;
+	var $single_rec;
+	var $ajax;
     /**
      * blank
      *
@@ -488,8 +493,6 @@ class xray extends module
         if ($this->view_mode == '') {
             if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
                 $path = SETTINGS_SYSTEM_DEBMES_PATH;
-            } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY!='') {
-                $path = LOG_DIRECTORY;
             } else {
                 $path = ROOT . 'cms/debmes';
             }
@@ -972,7 +975,7 @@ class xray extends module
 							$DBstat_PerSec = preg_replace('/[^0-9.]/', '', $DBstat[7]);
 							$DBstat_PerSecType = 'main';
 							
-							if(round($DBstat_PerSec) == 0) {
+							if(round((int)$DBstat_PerSec) == 0) {
 								$select = SQLSelect("SHOW GLOBAL STATUS");
 								$array_sum = [
 									1 => 'Com_select',

@@ -10,6 +10,13 @@
 //
 class actions_log extends module
 {
+    var $data_source;
+    var $view_mode;
+    var $edit_mode;
+    var $mode;
+    var $tab;
+    var $ajax;
+    
     /**
      * actions_log
      *

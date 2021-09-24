@@ -25,9 +25,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby;
-  if (!$sortby) {
+  if (!$sortby and isset($session->data['pinghosts_sort'])) {
    $sortby=$session->data['pinghosts_sort'];
-  } else {
+  } else if (isset($session->data['pinghosts_sort'])) {
    if ($session->data['pinghosts_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
@@ -37,7 +37,10 @@
    }
    $session->data['pinghosts_sort']=$sortby;
   }
-  $sortby="pinghosts.TITLE";
+  if (!$sortby) {
+	  $sortby="pinghosts.TITLE";
+	  $session->data['pinghosts_sort']=$sortby;
+  }
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM pinghosts WHERE $qry ORDER BY $sortby");

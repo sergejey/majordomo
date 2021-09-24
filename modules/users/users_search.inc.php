@@ -19,9 +19,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby;
-  if (!$sortby) {
+  if (!$sortby and isset($session->data['users_sort'])) {
    $sortby=$session->data['users_sort'];
-  } else {
+  } else if (isset($session->data['users_sort'])) {
    if ($session->data['users_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
@@ -31,7 +31,10 @@
    }
    $session->data['users_sort']=$sortby;
   }
-  if (!$sortby) $sortby="NAME";
+  if (!$sortby) {
+	  $sortby="NAME";
+	  $session->data['users_sort']=$sortby;
+  }
   $out['SORTBY']=$sortby;
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM users WHERE $qry ORDER BY $sortby");

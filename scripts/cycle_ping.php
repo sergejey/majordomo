@@ -4,7 +4,6 @@ chdir(dirname(__FILE__) . '/../');
 
 include_once './config.php';
 include_once './lib/loader.php';
-include_once './lib/threads.php';
 
 set_time_limit(0);
 
@@ -18,18 +17,15 @@ include_once(DIR_MODULES . 'pinghosts/pinghosts.class.php');
 $pinghosts = new pinghosts();
 
 $checked_time = 0;
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
-echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
+echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
 
 while (1)
 {
-   if (time() - $checked_time > 10)
+   if (time() - $checked_time > 30)
    {
       $checked_time = time();
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-      // saveToCache("MJD:$cycleVarName", $checked_time);
+      echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
       // checking all hosts
       $pinghosts->checkAllHosts();
    }

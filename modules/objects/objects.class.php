@@ -12,6 +12,14 @@
 //
 class objects extends module
 {
+	var $xml;
+	var $data_source;
+	var $view_mode;
+	var $mode;
+	var $edit_mode;
+	var $single_rec;
+	var $ajax;
+	var $tab;
 
     /**
      * objects
@@ -322,19 +330,24 @@ class objects extends module
     function loadObject($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
-        if (IsSet($rec['ID'])) {
+        if ($rec) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
-            if ($this->class_id) {
+			if ($rec['CLASS_TITLE']) {
+				$this->class_title = $rec['CLASS_TITLE'];
+			} else {
                 $class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $this->class_id);
                 $this->class_title = $class_rec['TITLE'];
+				$rec['CLASS_TITLE'] = $class_rec['TITLE'];
+				SQLUpdate('objects', $rec);
             }
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
             if (preg_match('/^sdevice(.+?)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
+            return true;
             //$this->keep_history=$rec['KEEP_HISTORY'];
         } else {
             return false;
@@ -446,7 +459,7 @@ class objects extends module
 
         if ($id) {
             $meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . (int)$id . "' AND TITLE = '" . DBSafe($name) . "'");
-            if ($meth['ID']) {
+            if ($meth) {
                 return $meth['ID'];
             }
         }
@@ -533,9 +546,9 @@ class objects extends module
         }
 
         $call_stack[] = $current_call;
-        $params['raiseEvent'] = $raiseEvent;
-        $params['m_c_s'] = $call_stack;
-        $params['r_s_m'] = $run_SafeMethod;
+        $params['raiseEvent'] = $raiseEvent ?? false;
+        $params['m_c_s'] = $call_stack ?? false;
+        $params['r_s_m'] = $run_SafeMethod ?? false;
         if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES == 1))) {
             $result = $this->callMethod($name, $params);
         } else {
@@ -585,8 +598,10 @@ class objects extends module
             $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
-            } else {
+            } else if (isset($_SERVER['REQUEST_URI'])){
                 $source = urldecode($_SERVER['REQUEST_URI']);
+            } else {
+                $source = 'unknown';
             }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
@@ -853,8 +868,6 @@ class objects extends module
 
                 if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
                     $path = SETTINGS_SYSTEM_DEBMES_PATH;
-                } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
-                    $path = LOG_DIRECTORY;
                 } else {
                     $path = ROOT . 'cms/debmes';
                 }
@@ -874,8 +887,6 @@ class objects extends module
         $id = $this->getPropertyByName($property, $this->class_id, $this->id);
         endMeasure('getPropertyByName');
         $old_value = '';
-
-        $cached_name = 'MJD:' . $this->object_title . '.' . $property;
 
         startMeasure('setproperty_update');
         if ($id) {
@@ -979,8 +990,6 @@ class objects extends module
         }
         endMeasure('setproperty_update');
 
-        saveToCache($cached_name, $value);
-
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
             isset($this->device_id) &&
@@ -1030,39 +1039,44 @@ class objects extends module
             endMeasure('linkedModulesProcessing');
         }
 
-        if (function_exists('postToWebSocketQueue')) {
+        if ($old_value !== $value) {
             startMeasure('setproperty_postwebsocketqueue');
-            if ($old_value !== $value) {
-                postToWebSocketQueue($this->object_title . '.' . $property, $value);
-            }
+            postToWebSocketQueue($this->object_title . '.' . $property, $value);
             endMeasure('setproperty_postwebsocketqueue');
-        }
+            
+            startMeasure('save_to_cache');
+            $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+            saveToCache($cached_name, $value);
+            endMeasure('save_to_cache');
 
-        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
-            $q_rec = array();
-            $q_rec['VALUE_ID'] = $v['ID'];
-            $q_rec['ADDED'] = date('Y-m-d H:i:s');
-            $q_rec['VALUE'] = $value . '';
-            $q_rec['SOURCE'] = $source . '';
-            $q_rec['OLD_VALUE'] = $old_value;
-            $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
-            SQLInsert('phistory_queue', $q_rec);
-        }
-
-        if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
-            global $property_linked_history;
-            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
-                $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
-                $params = array();
-                $params['PROPERTY'] = $property;
-                $params['NEW_VALUE'] = (string)$value;
-                $params['OLD_VALUE'] = (string)$old_value;
-                $params['SOURCE'] = (string)$source;
-                //$this->callMethod($prop['ONCHANGE'], $params);
-                //$this->callMethodSafe($prop['ONCHANGE'], $params);
-                $this->raiseEvent($prop['ONCHANGE'], $params);
-                unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+            startMeasure('save_to_phistory');
+            if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+                $q_rec = array();
+                $q_rec['VALUE_ID'] = $v['ID'];
+                $q_rec['ADDED'] = date('Y-m-d H:i:s');
+                $q_rec['VALUE'] = $value . '';
+                $q_rec['SOURCE'] = $source . '';
+                $q_rec['OLD_VALUE'] = $old_value;
+                $q_rec['KEEP_HISTORY'] = $prop['KEEP_HISTORY'];
+                SQLInsert('phistory_queue', $q_rec);
             }
+            endMeasure('save_to_phistory');
+            
+            startMeasure('Call_method_safe');
+            if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
+                global $property_linked_history;
+                if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+                    $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
+                    $params = array();
+                    $params['PROPERTY'] = $property;
+                    $params['NEW_VALUE'] = (string)$value;
+                    $params['OLD_VALUE'] = (string)$old_value;
+                    $params['SOURCE'] = (string)$source;
+                    $this->raiseEvent($prop['ONCHANGE'], $params);
+                    unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
+                }
+            }
+            endMeasure('Call_method_safe');
         }
 
         endMeasure('setProperty (' . $property . ')', 1);
@@ -1180,8 +1194,10 @@ class objects extends module
  objects: SYSTEM varchar(255) NOT NULL DEFAULT ''
  objects: TITLE varchar(255) NOT NULL DEFAULT ''
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
+ objects: CLASS_TITLE varchar(255) NOT NULL DEFAULT ''
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
+ 
 
  properties: ID int(10) unsigned NOT NULL auto_increment
  properties: CLASS_ID int(10) NOT NULL DEFAULT '0'

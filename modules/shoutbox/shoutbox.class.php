@@ -11,6 +11,16 @@
 //
 //
 class shoutbox extends module {
+  var $mode;
+  var $data_source;
+  var $view_mode;
+  var $mobile;
+  var $ajax;
+  var $action;
+  var $tab;
+  var $single_rec;
+  var $edit_mode;
+  
 /**
 * shoutbox
 *
@@ -125,7 +135,7 @@ function admin(&$out) {
 
  global $delete_room;
  if ($delete_room!='' && LOGGED_USER) {
-  $room=SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='".(int)$delete_room."' AND ADDED_BY=".(int)$session->data['SITE_USER_ID']);
+  $room=SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='".(int)$delete_room."' AND ADDED_BY=".(int)$session->data['logged_user']);
   if ($room['ID']) {
    SQLExec("DELETE FROM shouts WHERE ROOM_ID=".$room['ID']);
    SQLExec("DELETE FROM shoutrooms WHERE ID='".$room['ID']."'");
@@ -146,12 +156,12 @@ function admin(&$out) {
         $this->redirect("/chat/room".$room['ID'].'.html');
  }
  
- if ($this->mode=='newroom' && $session->data['LOGGED_USER_ID']) {
+ if ($this->mode=='newroom' && $session->data['logged_user']) {
   $rec=array();
   global $room_title;
   global $make_public;
   $rec['TITLE']=htmlspecialchars($room_title);
-  $rec['ADDED_BY']=$session->data['LOGGED_USER_ID'];
+  $rec['ADDED_BY']=$session->data['logged_user'];
   $rec['ADDED']=date('Y-m-d H:i:s');
   $rec['IS_PUBLIC']=(int)$make_public;
   if ($rec['TITLE']) {
@@ -232,16 +242,25 @@ function usual(&$out) {
 /*
 shouts - Shoutbox
 */
+
+ //SQLExec("ALTER TABLE `shouts` DROP INDEX MESSAGE");
   $data = <<<EOD
- shouts: ID int(10) unsigned NOT NULL auto_increment
+ shouts: ID int(3) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
  shouts: MEMBER_ID int(10) NOT NULL DEFAULT '0'
- shouts: MESSAGE varchar(255) NOT NULL DEFAULT ''
+ shouts: MESSAGE varchar(4096) NOT NULL DEFAULT ''
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
+ shouts: CACHED_FILENAME varchar(255) NOT NULL DEFAULT ''
+ shouts: EVENT varchar(255) NOT NULL DEFAULT ''
+ shouts: MESSAGE_DURATION int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
+
+  // modify base
+  SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
+  SQLExec("ALTER TABLE `shouts` CHANGE `MESSAGE` `MESSAGE` varchar(4096) NOT NULL DEFAULT ''");
  }
 // --------------------------------------------------------------------
 }

@@ -11,7 +11,7 @@ $table_name = 'objects';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
 $device_rec=SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT='".$rec['TITLE']."'");
-if ($device_rec['ID']) {
+if ($device_rec) {
     $out['DEVICE_ID']=$device_rec['ID'];
     $out['DEVICE_TITLE']=$device_rec['TITLE'];
 }
@@ -43,7 +43,10 @@ if ($this->mode == 'update') {
         if (!$rec['CLASS_ID']) {
             $out['ERR_CLASS_ID'] = 1;
             $ok = 0;
-        }
+        } else {
+			$class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $rec['CLASS_ID']);
+			$rec['CLASS_TITLE'] = $class_rec['TITLE'];
+		}
         //updating 'Description' (text)
         global $description;
         $rec['DESCRIPTION'] = $description;
@@ -51,8 +54,8 @@ if ($this->mode == 'update') {
         global $location_id;
         $rec['LOCATION_ID'] = (int)$location_id;
 
-        global $keep_history;
-        $rec['KEEP_HISTORY'] = (int)$keep_history;
+        //global $keep_history;
+        //$rec['KEEP_HISTORY'] = (int)$keep_history;
 
 
     }
@@ -67,7 +70,9 @@ if ($this->mode == 'update') {
     }
     //UPDATING RECORD
     if ($ok) {
-        if ($rec['ID']) {
+        if ($rec['ID']) { // только так надро оставить и ни как не иначе - не сохраняются тогда новые обьекты
+			DebMes('zapis sdelana' );
+			DebMes($rec);
             SQLUpdate($table_name, $rec); // update
 
             if ($class_changed_from) {
@@ -149,7 +154,7 @@ if ($this->tab == 'properties') {
     $props = $cl->getParentProperties($rec['CLASS_ID'], '', 1);
 
     $my_props = SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "'");
-    if ($my_props[0]['ID']) {
+    if ($my_props) {
         foreach ($my_props as $p) {
             $props[] = $p;
         }
@@ -158,7 +163,7 @@ if ($this->tab == 'properties') {
     $total = count($props);
     //print_R($props);exit;
     for ($i = 0; $i < $total; $i++) {
-        if (!$props[$i]['KEEP_HISTORY'] && $rec['KEEP_HISTORY'] > 0) {
+        if (!isset($props[$i]['KEEP_HISTORY']) && $rec['KEEP_HISTORY'] > 0) {
             $props[$i]['KEEP_HISTORY'] = $rec['KEEP_HISTORY'];
         }
         $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $props[$i]['ID'] . "' AND OBJECT_ID='" . $rec['ID'] . "'");
@@ -171,16 +176,19 @@ if ($this->tab == 'properties') {
                 $this->setProperty($props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }
-        $props[$i]['VALUE'] = $value['VALUE'];
-        $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
-        $props[$i]['SOURCE'] = $value['SOURCE'];
-        $props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
-		
-		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
-		if(is_array($value['LINKED_MODULES'])) {
-			foreach($value['LINKED_MODULES'] as $prop_link) {
-				if(!$prop_link) break; 
-				$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
+		if (isset($value['VALUE'])) {
+			$props[$i]['VALUE'] = $value['VALUE'];
+			$props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
+			$props[$i]['SOURCE'] = $value['SOURCE'];
+			$props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
+			if (isset($value['LINKED_MODULES'])) {
+				$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
+				if(is_array($value['LINKED_MODULES'])) {
+					foreach($value['LINKED_MODULES'] as $prop_link) {
+						if(!$prop_link) break; 
+						$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
+					}
+				}
 			}
 		}
     }
@@ -283,7 +291,7 @@ if ($this->tab == 'methods') {
 
             }
         }
-        if (!$my_meth['ID']) {
+        if (!isset($my_meth['ID']) or !$my_meth['ID']) {
             $out['CALL_PARENT'] = 1;
         } else {
             $out['CODE'] = htmlspecialchars($my_meth['CODE']);
@@ -301,7 +309,7 @@ if ($this->tab == 'methods') {
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
         $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
 			 $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
-		if ($my_meth['ID']) {
+		if ($my_meth) {
             $methods[$i]['CUSTOMIZED'] = 1;
         }
     }

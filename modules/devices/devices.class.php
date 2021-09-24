@@ -10,6 +10,14 @@
 //
 class devices extends module
 {
+	var $view_mode;
+	var $edit_mode;
+	var $mode;
+	var $ajax;
+	var $tab;
+	var $data_source;
+	var $xml;
+	
     /**
      * devices
      *
@@ -216,41 +224,45 @@ class devices extends module
 
     function getAllProperties($type)
     {
-        $properties = $this->device_types[$type]['PROPERTIES'];
-        $parent_class = $this->device_types[$type]['PARENT_CLASS'];
-        if ($parent_class != '') {
-            foreach ($this->device_types as $k => $v) {
-                if ($v['CLASS'] == $parent_class) {
-                    $parent_properties = $this->getAllProperties($k);
-                    foreach ($parent_properties as $pk => $pv) {
-                        if (!isset($properties[$pk])) {
-                            $properties[$pk] = $pv;
-                        }
-                    }
-                }
-            }
-        }
-        return $properties;
+		if (isset($this->device_types[$type]['PROPERTIES'])) {
+			$properties = $this->device_types[$type]['PROPERTIES'];
+			$parent_class = $this->device_types[$type]['PARENT_CLASS'];
+			if ($parent_class != '') {
+				foreach ($this->device_types as $k => $v) {
+					if ($v['CLASS'] == $parent_class) {
+						$parent_properties = $this->getAllProperties($k);
+						foreach ($parent_properties as $pk => $pv) {
+							if (!isset($properties[$pk])) {
+								$properties[$pk] = $pv;
+							}
+						}
+					}
+				}
+			}
+			return $properties;
+		}
     }
 
     function getAllMethods($type)
     {
-        $methods = $this->device_types[$type]['METHODS'];
-        $parent_class = $this->device_types[$type]['PARENT_CLASS'];
-        if ($parent_class != '') {
-            foreach ($this->device_types as $k => $v) {
-                if ($v['CLASS'] == $parent_class) {
-                    $parent_methods = $this->getAllMethods($k);
-                    foreach ($parent_methods as $pk => $pv) {
-                        if (!isset($methods[$pk])) {
-                            $methods[$pk] = $pv;
-                        }
-                    }
-                }
-            }
-        }
-        return $methods;
-    }
+        if (isset($this->device_types[$type]['METHODS'])) {
+			$methods = $this->device_types[$type]['METHODS'];
+			$parent_class = $this->device_types[$type]['PARENT_CLASS'];
+			if ($parent_class != '') {
+				foreach ($this->device_types as $k => $v) {
+					if ($v['CLASS'] == $parent_class) {
+						$parent_methods = $this->getAllMethods($k);
+						foreach ($parent_methods as $pk => $pv) {
+							if (!isset($methods[$pk])) {
+								$methods[$pk] = $pv;
+							}
+						}
+					}
+				}
+			}
+			return $methods;
+		}
+	}
 
     function getNewObjectIndex($class, $prefix = '')
     {
@@ -616,7 +628,7 @@ class devices extends module
     {
         //return true; // temporary
         $tmp = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='HomeBridge'");
-        if ($tmp['ID']) {
+        if ($tmp) {
             return true;
         } else {
             return false;

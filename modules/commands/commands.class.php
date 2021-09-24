@@ -11,6 +11,14 @@
 //
 //
 class commands extends module {
+  var $single_rec;
+  var $tab;
+  var $mode;
+  var $edit_mode;
+  var $view_mode;
+  var $ajax;
+  var $room_id;
+  
 /**
 * commands
 *
@@ -679,7 +687,7 @@ function usual(&$out) {
      $dynamic_item=0;
     }
 
-    if ($res[$i+1]['INLINE']) {
+    if (isset($res[$i+1]['INLINE'])) {
      $res[$i]['INLINE']=1;
     }
 

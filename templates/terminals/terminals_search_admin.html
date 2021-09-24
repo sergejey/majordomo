@@ -5,11 +5,73 @@
 
 <p>
 <b>
-
-
-<a href="?view_mode=edit_terminals" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>
+ <a class="btn btn-default" href="#api_settings" data-toggle="collapse"><i class="glyphicon glyphicon-cog"></i> Общие настройки модуля терминалы</a>
+ <a href="?view_mode=edit_terminals" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>
 </b>
 </p>
+
+<div class="collapse" id='api_settings'>
+    <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+        <fieldset>
+            <div class="form-group">
+                <label class="col-lg-4 control-label">Запись действий  в лог:</label>
+                <div class="col-lg-6">
+                    <input type="radio" name="log_enabled" value="1" [#if LOG_ENABLED=="1"#] checked[#endif#]><#LANG_ON#>
+                    <input type="radio" name="log_enabled" value="0" [#if LOG_ENABLED!="1"#] checked[#endif#]><#LANG_OFF#>
+                </div>
+                <div class="col-lg-6">
+	    			<p style="display: block; font-size: 80%;" >При включенном состоянии запись всех действий в модуле Терминалы производится в файл "terminals".</p>
+                </div>
+            </div>
+	        <div class="form-group">
+		        <label class="col-lg-4 control-label">Время жизни сообщений(минут):</label>
+		        <div class="col-lg-6">
+			        <input class="form-control" type="text" name="terminals_timeout" value="<#TERMINALS_TIMEOUT#>" class="input">
+			    </div>
+                <div class="col-lg-6">
+	    			<p style="display: block; font-size: 80%;" >Время жизни сообщений в системе в минутах - рекомендовано 5-30 минут (НО больше 240 минут выставлять не рекомендуется, хотя это не критично - может повлечь за собой увеличение нагрузки на систему)</p>
+                </div>
+	        </div>
+	        <div class="form-group">
+		        <label class="col-lg-4 control-label">Период проверки на доступность сервисов терминалов, которые находятся в offline (минут):</label>
+		        <div class="col-lg-6">
+			        <input class="form-control" type="text" name="terminals_ping_offline" value="<#TERMINALS_PING_OFFLINE#>" class="input">
+			    </div>
+                <div class="col-lg-6">
+	    			<p style="display: block; font-size: 80%;" >Рекомендовано 10-60 минут. Малые значение могут нагружать систему, большие значение могут повлечь за собой отсуствие сообщений на терминалах (на производительных системах 1 минута тоже вполне приемлема). С данными настройками проверяются ТОЛЬКО сервисы, которые находятся в статусе OFFLINE.</p>
+                </div>
+	        </div>
+	        <div class="form-group">
+		        <label class="col-lg-4 control-label">Период проверки на доступность сервисов терминалов, которые находятся в online (минут):</label>
+		        <div class="col-lg-6">
+			        <input class="form-control" type="text" name="terminals_ping_online" value="<#TERMINALS_PING_ONLINE#>" class="input">
+			    </div>
+                <div class="col-lg-6">
+	    			<p style="display: block; font-size: 80%;" >Рекомендовано 10-60 минут. Малые значение могут нагружать систему, большие значение могут повлечь за собой отсуствие сообщений на терминалах (на производительных системах 1 минута тоже вполне приемлема). С данными настройками проверяются ТОЛЬКО сервисы, которые находятся в статусе ONLINE.</p>
+                </div>
+	        </div>
+	        <div class="form-group">
+		        <label class="col-lg-4 control-label">Время использования кеш файлов(дни):</label>
+		        <div class="col-lg-6">
+			        <input class="form-control" type="text" name="terminals_cash_clear" value="<#TERMINALS_CASH_CLEAR#>" class="input">
+			    </div>
+                <div class="col-lg-6">
+	    			<p style="display: block; font-size: 80%;" >Время последнего обращения к кеш-файлу - рекомендовано 7 суток. Все файлы к которым не обращались больше этого времени удаляются</p>
+                </div>
+	        </div>
+            <div class="form-actions">
+                <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
+                <input type="hidden" name="view_mode" value="update_settings">
+                <input type="hidden" name="mode" value="update">
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+
+
+
 <table width=100% border=0><tr>
 <td valign=top>
 <!-- results -->
@@ -41,6 +103,9 @@
  <b><#LANG_TITLE#></b>
  </th>
  <th>
+ <b>Службы терминала</b>
+ </th>
+ <th>
  <b>Latest activity</b>
  </th>
 <th></th>
@@ -64,22 +129,47 @@
   [#if CANTTS="1"#](+notifications [#TTS_TYPE#][#if MIN_MSG_LEVEL!=""#], min level: [#MIN_MSG_LEVEL#][#endif#])[#endif#]
   [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
  </td>
+ <td valign="top">
+ <a href="?view_mode=change_terminals_tts&id=[#ID#]" style="text-decoration: none;"> 
+     <img  src="cms/terminals/cantts.png" alt="CANTTS" 
+     [#if CANTTS = "1" && TTS_IS_ONLINE = "1"#] style="vertical-align:top/middle/bottom; border:3px solid white;"[#endif#] 
+     [#if CANTTS = "1" && TTS_IS_ONLINE != "1"#] style="vertical-align:top/middle/bottom; border:3px solid red;"[#endif#] 
+     [#if CANTTS != "1" && TTS_IS_ONLINE = "1"#] style="vertical-align:top/middle/bottom; opacity: 0.3; border:3px solid white;"[#endif#] 
+     [#if CANTTS != "1" && TTS_IS_ONLINE != "1"#] style="vertical-align:top/middle/bottom; opacity: 0.3; border:3px solid red;"[#endif#] 
+	 ></img>
+ </a>
+ <a href="?view_mode=change_terminals_play&id=[#ID#]" style="text-decoration: none;"> 
+     <img src="cms/terminals/canplay.png" alt="CANPLAY" 
+     [#if CANPLAY = "1" && PLAYER_IS_ONLINE = "1"#] style="vertical-align: middle; border:3px solid white;"[#endif#] 
+     [#if CANPLAY = "1" && PLAYER_IS_ONLINE != "1"#] style="vertical-align: middle; border:3px solid red;"[#endif#] 
+     [#if CANPLAY != "1" && PLAYER_IS_ONLINE = "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid white;"[#endif#] 
+     [#if CANPLAY != "1" && PLAYER_IS_ONLINE != "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid red;"[#endif#] 
+	 ></img>
+ </a>
+ <a href="?view_mode=change_terminals_recognition&id=[#ID#]" style="text-decoration: none;"> 
+     <img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" 
+     [#if CANRECOGNIZE = "1" && RECOGNIZE_IS_ONLINE = "1"#] style="vertical-align: middle; border:3px solid white;"[#endif#] 
+     [#if CANRECOGNIZE = "1" && RECOGNIZE_IS_ONLINE != "1"#] style="vertical-align: middle; border:3px solid red;"[#endif#] 
+     [#if CANRECOGNIZE != "1" && RECOGNIZE_IS_ONLINE = "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid white;"[#endif#] 
+     [#if CANRECOGNIZE != "1" && RECOGNIZE_IS_ONLINE != "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid red;"[#endif#] 
+	 ></img>
+ </a>
+
+ </td>
+ 
  <td valign="top">[#LATEST_ACTIVITY#]
  [#if IS_ONLINE="1"#]
-  <font color="green">Online</font>
+  <font color="green">Device is Online</font>
  [#else#]
-  <font color="red">Offline</font>
+  <font color="red">Device is Offline</font>
  [#endif#]
+ 
  </td>
- <td width="100">
+ <td>
  
   [#if "<#ACTION#>"=="admin"#]
-  
     <a class="btn btn-default btn-sm" href="?view_mode=edit_terminals&id=[#ID#]" ><i class="glyphicon glyphicon-pencil"></i></a>
-  
-  
     <a class="btn btn-default btn-sm" href="?view_mode=delete_terminals&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i></a>
-  
   [#endif ACTION#]
   
  </td>

@@ -41,7 +41,7 @@ if ($op == 'filter') {
     global $title;
 	
 	//if(!$title) die();
-	
+	$res='';
     $object_title = '';
     $property_title = '';
 
@@ -176,6 +176,8 @@ if ($op == 'filter') {
     for ($i = 0; $i < $total; $i++) {
         $res .= '<div class="searchHover"><span class="label label-success">Свойство</span> '; //<a href="/panel/object/'.'">
         if ($properties[$i]['OBJECT']) {
+			if (!isset($methods[$i]['OBJECT'])) $methods[$i]['OBJECT']='';
+			if (!isset($properties[$i]['OBJECT_CLASS_ID'])) $properties[$i]['OBJECT_CLASS_ID']='';
             $res .= '<a target="_blank" href="/panel/class/' . $properties[$i]['OBJECT_CLASS_ID'] . '/object/' . $properties[$i]['OBJECT_ID'] . '/properties.html">' . $methods[$i]['OBJECT'];
             $res .= $properties[$i]['OBJECT'];
         } else {
@@ -264,7 +266,7 @@ if ($op == 'filter') {
 	//echo '<pre>';
 	//var_dump($arraySlice);
 	
-	if($res) { 
+	if(isset($res)) { 
 		echo '
 		<style>
 		a {

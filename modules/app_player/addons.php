@@ -40,30 +40,113 @@ class app_player_addon {
 		*/
 	}
 	
-	/*
-		Playback methods
-	*/
+	// Ping mediaplayer service
+    public function ping_mediaservice($host) {
+        return ping($host);
+    }
 	
 	// Get player status
 	public function status() {
 		/*
-			$this->data format (array):
-			
-			'track_id'	 -	ID of currently playing track (in playlist).
-							Integer. If unknown (playback stopped or playlist is empty) = -1.
-			'length'	 -	Track length in seconds. Integer. If unknown = 0.
-			'time'		 -	Current playback progress (in seconds). If unknown = 0.
-			'state'		 -	Playback status. String: stopped/playing/paused/unknown
-			'volume'	 -	Volume level in percent. Integer. Some players may have values greater than 100.
-			'random'	 -	Random mode. Boolean.
-			'loop'		 -	Loop mode. Boolean.
-			'repeat'	 -	Repeat mode. Boolean.
+          $this->data = array(
+            'playlist_id' => (int) $result['playlist'], // номер или имя плейлиста 
+            'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+            							  // обязательно $playlist_content[$i]['pos'] - номер трека
+           							  // обязательно $playlist_content[$i]['file'] - адрес трека
+							          // возможно $playlist_content[$i]['Artist'] - артист
+            							  // возможно $playlist_content[$i]['Title'] - название трека
+            'track_id' => (int) $result['song'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+            'name' => (string) $name, //Current speed for playing media. float.
+            'file' => (string) $file, //Current link for media in device. String.
+            'length' => (int) $result['duration'], //Track length in seconds. Integer. If unknown = 0. 
+            'time' => (int) $result['time'], //Current playback progress (in seconds). If unknown = 0. 
+            'state' => (string) strtolower($result['state']), //Playback status. String: stopped/playing/paused/unknown 
+            'volume' => (int) $result['volume'], // Volume level in percent. Integer. Some players may have values greater than 100.
+            'muted' => (int) $result['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
+            'random' => (int) $result['random'], // Random mode. Boolean. 
+            'loop' => (int) $result['loop'], // Loop mode. Boolean.
+            'repeat' => (int) $result['repeat'], //Repeat mode. Boolean.
+            'crossfade' => (int) $result['xfade'], // crossfade
+            'speed' => (int) $speed // crossfade
+        );
 		*/
 		return $this->not_supported();
 	}
 
 	// Play the specified file
 	public function play($input) {
+		/*
+			$input - The path to the file for playback. String.
+			
+			$this->data format (integer): ID of currently playing track (in playlist). If unknown = -1.
+		*/
+		return $this->not_supported();
+	}
+
+	// Playlist(file): Repeat on/off
+	public function set_repeat($repeat=0) {
+		/*
+			$this->data format (boolean): repeat status (on = true, off = false).
+		*/
+		return $this->not_supported();
+	}
+	
+	// Playlist(file): Random on/off
+	public function set_random($random=0) {
+		/*
+			$this->data format (boolean): repeat status (on = true, off = false).
+		*/
+		return $this->not_supported();
+	}
+	
+    // Crossfade player
+	public function set_crossfade($crossfade=0) {
+		/*
+			$this->data format (boolean): repeat status (on = true, off = false).
+		*/
+		return $this->not_supported();
+	}
+	
+    // Muted player
+	public function set_muted($muted=0) {
+		/*
+			$this->data format (boolean): repeat status (on = true, off = false).
+		*/
+		return $this->not_supported();
+	}
+	
+    // Playlist (file): Loop on/off
+	public function set_loop($loop=0) {
+		/*
+			$input - The path to the file for playback. String.
+			
+			$this->data format (integer): ID of currently playing track (in playlist). If unknown = -1.
+		*/
+		return $this->not_supported();
+	}
+	
+    // Play the specified file
+	public function set_speed($speed=1) {
+		/*
+			$input - The path to the file for playback. String.
+			
+			$this->data format (integer): ID of currently playing track (in playlist). If unknown = -1.
+		*/
+		return $this->not_supported();
+	}
+
+    // Restore playing the specified file
+	public function restore_media($input, $position=0) {
+		/*
+			$input - The path to the file for playback. String.
+			
+			$this->data format (integer): ID of currently playing track (in playlist). If unknown = -1.
+		*/
+		return $this->not_supported();
+	}
+	
+    // Restore the specified playlist
+	public function restore_playlist($playlist_id, $playlist_content=array(), $track_id = -1, $time = 0, $state = 'stopped') {
 		/*
 			$input - The path to the file for playback. String.
 			
@@ -133,27 +216,14 @@ class app_player_addon {
 		/*
 			$this->data format (integer): Current volume level in percent.
 		*/
-		if($this->status()) {
-			$volume = $this->data['volume'];
-			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
-			$this->data = $volume;
-		} elseif(strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1' || $this->terminal['NAME'] == 'MAIN') {
-			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
-			$this->data = (int)getGlobal('ThisComputer.volumeMediaLevel');
-		} else {
-			$this->not_supported();
-		}
-		return $this->success;
+		return $this->not_supported();
 	}
 	
 	// Playlist: Get
 	public function pl_get() {
 		/*
 			$this->data format (array):
-			
-			'id'	- track ID;
-			'name'	- title;
-			'file'	- file path.
+			See status() function
 		*/
 		return $this->not_supported();
 	}
@@ -192,30 +262,6 @@ class app_player_addon {
 			$id - The position of the playback track. Integer. See status() function (track_id).
 			
 			$this->data format: NULL.
-		*/
-		return $this->not_supported();
-	}
-
-	// Playlist: Random on/off
-	public function pl_random() {
-		/*
-			$this->data format (boolean): random status (on = true, off = false).
-		*/
-		return $this->not_supported();
-	}
-
-	// Playlist: Loop on/off
-	public function pl_loop() {
-		/*
-			$this->data format (boolean): loop status (on = true, off = false).
-		*/
-		return $this->not_supported();
-	}
-
-	// Playlist: Repeat on/off
-	public function pl_repeat() {
-		/*
-			$this->data format (boolean): repeat status (on = true, off = false).
 		*/
 		return $this->not_supported();
 	}

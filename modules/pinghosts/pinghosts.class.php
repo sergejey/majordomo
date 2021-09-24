@@ -8,10 +8,19 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.2 (wizard, 00:01:48 [Jan 06, 2011])
 */
-Define('PING_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=PING (HOST:PORT)'); // options for 'HOST TYPE'
-//
+Define('PING_TYPE_OPTIONS', '0=PING (HOST)|1=WEB PAGE (URL)|2=PING (HOST:PORT)|3=BLUETOOTH (MAC)|4=BLE (Only LINUX) (MAC)');
 //
 class pinghosts extends module {
+  var $mobile;
+  var $data_source;
+  var $view_mode;
+  var $edit_mode ;
+  var $mode;
+  var $tab;
+  var $single_rec;
+  var $ajax;
+  var $xml;
+  
 /**
 * pinghosts
 *
@@ -19,7 +28,7 @@ class pinghosts extends module {
 *
 * @access private
 */
-function pinghosts() {
+function __construct() {
   $this->name="pinghosts";
   $this->title="<#LANG_MODULE_PINGHOSTS#>";
   $this->module_category="<#LANG_SECTION_DEVICES#>";
@@ -206,34 +215,22 @@ function usual(&$out) {
     $host['CHECK_NEXT']=date('Y-m-d H:i:s', time()+$offline_interval);
    }
    SQLUpdate('pinghosts', $host);
-
-   $online=0;
-   // checking
-   if ($host['TYPE']==0) {
-    //ping host
-
-    $online=ping(processTitle($host['HOSTNAME']));
-   } elseif ($host['TYPE']==1) {
-    //web host
-    $online=getURL(processTitle($host['HOSTNAME']), 0);
-    SaveFile("./cms/cached/host_".$host['ID'].'.html', $online);
-    if ($host['SEARCH_WORD']!='' && !is_integer(strpos($online, $host['SEARCH_WORD']))) {
-     $online=0;
+    $online = 0;
+    // вставил свою функцию
+    // checking
+    if ($host['TYPE'] == 0) {
+        $online = pingip(processTitle($host['HOSTNAME']));
+    } elseif ($host['TYPE'] == 1) {
+        $online = pingurl(processTitle($host['HOSTNAME']));
+    } elseif ($host['TYPE'] == 2) {
+        $online = pinghostport(processTitle($host['HOSTNAME']));
+    } elseif ($host['TYPE'] == 3) {
+        $online = pingbt(processTitle($host['HOSTNAME']));
+    } elseif ($host['TYPE'] == 4) {
+        $online = pingble(processTitle($host['HOSTNAME']));
     }
-    if ($online) {
-     $online=1;
-    }
-   } elseif ($host['TYPE']==2) {
-     $hostport = explode(":",$host['HOSTNAME']);
-	 $connection = @fsockopen($hostport[0],$hostport[1],$errno,$errstr,1);
-     if (is_resource($connection)) {
-         $online=1;
-         fclose($connection);
-     } else {
-         $online=0;
-     }
-   }
 
+            // конец поменяного блока
    if ($online) {
     $new_status=1;
    } else {

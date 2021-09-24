@@ -79,9 +79,9 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby;
-  if (!$sortby) {
+  if (!$sortby and isset($session->data['shouts_sort'])) {
    $sortby=$session->data['shouts_sort'];
-  } else {
+  } else if (isset($session->data['shouts_sort'])) {
    if ($session->data['shouts_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
@@ -91,8 +91,13 @@
    }
    $session->data['shouts_sort']=$sortby;
   }
-  if (!$sortby) $sortby="shouts.ADDED DESC";
+  if (!$sortby) {
+	  $sortby="shouts.ADDED DESC";
+	  $session->data['shouts_sort']=$sortby;
+  }
+
   $out['SORTBY']=$sortby;
+  
   // SEARCH RESULTS
   if ($this->action!='admin') {
    $limit="LIMIT 50";
@@ -174,7 +179,7 @@ if (defined('SETTINGS_GENERAL_ALICE_NAME') && SETTINGS_GENERAL_ALICE_NAME!='') {
   }
 
   $rooms=SQLSelect("SELECT * FROM shoutrooms WHERE (IS_PUBLIC=1) OR (IS_PUBLIC=0 AND ADDED_BY=".(int)$session->data['logged_user'].") OR (IS_PUBLIC=0 AND ID=".(int)$session->data['SHOUT_ROOM_ID'].") ORDER BY PRIORITY DESC, TITLE");
-  if ($rooms[0]['ID']) {
+  if ($rooms) {
    $rooms[0]['FIRST']=1;
    $out['ROOMS']=$rooms;
    if ($session->data['SHOUT_ROOM_ID']) {

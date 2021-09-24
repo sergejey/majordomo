@@ -11,6 +11,16 @@
 //
 
 class app_player extends module {
+	var $action;
+	var $play;
+	var $play_terminal;
+	var $terminal_id;
+	var $session_terminal;
+	var $ajax;
+	var $view_mode;
+	var $edit_mode;
+	var $single_rec;
+	var $mode;
 	
 	/**
 	* player
@@ -149,7 +159,7 @@ class app_player extends module {
 		if($this->play) {
 			$play = $this->play;
 		}
-		if(!$play && $session->data['LAST_PLAY']) {
+		if(!$play && isset($session->data['LAST_PLAY'])) {
 			$play = $session->data['LAST_PLAY'];
 			$out['LAST_PLAY'] = 1;
 		} elseif($play) {
@@ -169,14 +179,15 @@ class app_player extends module {
 			$terminal = getTerminalByID($terminal_id);
 		} elseif($session->data['TERMINAL'] != '') { // session -> data -> terminal
 			$terminal = getTerminalsByName($session->data['TERMINAL'], 1, 'LATEST_ACTIVITY', 'DESC')[0];
-		} else { // default
-			if(!$terminal = getTerminalsByHost($_SERVER['REMOTE_ADDR'], 1, 'LATEST_ACTIVITY', 'DESC')[0]) {
-				if(!$terminal = getMainTerminal()) {
-					$terminal = getAllTerminals(1, 'LATEST_ACTIVITY', 'DESC')[0];
-				}
-			}
 		}
-		$session->data['PLAY_TERMINAL'] = $terminal['NAME'];
+		//} else { // default
+		//	if(!$terminal = getTerminalsByHost($_SERVER['REMOTE_ADDR'], 1, 'LATEST_ACTIVITY', 'DESC')[0]) {
+		//		if(!$terminal = getMainTerminal()) {
+		//			$terminal = getAllTerminals(1, 'LATEST_ACTIVITY', 'DESC')[0];
+		//		}
+		//	}
+		//}
+		if (isset($terminal)) $session->data['PLAY_TERMINAL'] = $terminal['NAME'];
 		
 		// Session terminal
 		$session_terminal = ($this->session_terminal?$this->session_terminal:gr('session_terminal'));
@@ -187,18 +198,18 @@ class app_player extends module {
 		}
 		
 		// Terminal defaults
-		if(!$terminal['HOST']) {
-			$terminal['HOST'] = 'localhost';
-		}
-		if(!$terminal['CANPLAY']) {
-			$terminal = getMainTerminal();
-		}
-		if(!$terminal['CANPLAY']) {
-			$terminal = getTerminalsCanPlay(1, 'LATEST_ACTIVITY', 'DESC')[0];
-		}
-		if(!$terminal['PLAYER_TYPE']) {
-			$terminal['PLAYER_TYPE'] = 'vlc';
-		}
+		//if(!$terminal['HOST']) {
+		//	$terminal['HOST'] = 'localhost';
+		//}
+		//if(!$terminal['CANPLAY']) {
+		//	$terminal = getMainTerminal();
+		//}
+		//if(!$terminal['CANPLAY']) {
+		//	$terminal = getTerminalsCanPlay(1, 'LATEST_ACTIVITY', 'DESC')[0];
+		//}
+		//if(!$terminal['PLAYER_TYPE']) {
+		//	$terminal['PLAYER_TYPE'] = 'vlc';
+		//}
 
 		// AJAX
 		if($this->ajax) {
@@ -322,9 +333,13 @@ class app_player extends module {
 				
 				// Set media volume level
 				if($command == 'set_volume' && strlen($param)) {
-					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
+					if(strtolower($terminal['NAME'] == 'MAIN')) {
 						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
 						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
+					} else {
+						$rec['ID'] = $terminal['ID'];
+						$rec['TERMINAL_VOLUME_LEVEL'] = (int)$param;
+						SQLUpdate('terminals', $rec);
 					}
 				}
 				
@@ -350,26 +365,30 @@ class app_player extends module {
 			$session_terminals = array($session->data['PLAY_TERMINAL']);
 		}
 		$terminals = getTerminalsCanPlay(-1, 'TITLE', 'ASC');
-		array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
-		array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
-		$total = count($terminals);
-		for($i = 0 ; $i < $total ; $i++) {
-			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
-				$terminals[$i]['SELECTED'] = 1;
-				$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
+		//array_unshift($terminals, array('NAME'=>'html5', 'TITLE'=>'<#LANG_APP_PLAYER_WEB_BROWSER#>'));
+		//array_unshift($terminals, array('NAME'=>'system_volume', 'TITLE'=>'<#LANG_APP_PLAYER_SYSTEM_VOLUME#>'));
+		if ($terminals) {
+			$total = count($terminals);
+			for($i = 0 ; $i < $total ; $i++) {
+				if(in_array($terminals[$i]['NAME'], $session_terminals)) {
+					$terminals[$i]['SELECTED'] = 1;
+					$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
+									$out['TERMINAL_VOLUME'] = $terminals[$i]['TERMINAL_VOLUME_LEVEL'];
+				}
 			}
-		}
-		$out['TERMINALS_TOTAL'] = count($terminals);
-		if($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
-			$terminals[0]['SELECTED'] = 1;
-		}
-		foreach ($terminals as $temp_terminal) {
-			if (!checkAccess('terminal', $temp_terminal['ID'])) {
-				continue;// some action for every record if required
+			$out['TERMINALS_TOTAL'] = count($terminals);
+			if($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
+				$terminals[0]['SELECTED'] = 1;
 			}
-			$out['TERMINALS'][] = $temp_terminal;
+			foreach ($terminals as $temp_terminal) {
+				if (!checkAccess('terminal', $temp_terminal['ID'])) {
+					continue;// some action for every record if required
+				}
+				$out['TERMINALS'][] = $temp_terminal;
+			}
+		} else {
+			$out['TERMINALS'] = array();
 		}
-		//$out['TERMINALS'] = $terminals;
 		
 		// Unique ID
 		$out['APP_PLAYER_ID'] = uniqid('app_player_');

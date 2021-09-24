@@ -15,10 +15,16 @@ class lms extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Logitech Media Server';
-		$this->description = 'Logitech Media Server - это потоковый аудиосервер,разработанный, в частности, для поддержки цифровых аудиоприемников Squeezebox.<br>';
-		$this->description .= 'В поле <i>Имя пользователя</i> необходимо указать IP или MAC адрес плеера.';
+		$this->description = '<b>Описание:</b>&nbsp; Бесплатный кроссплатформенный потоковый аудиосервер, разработанный, в частности, для поддержки цифровых аудиоприемников Squeezebox.<br>';
+		$this->description .= 'В качестве программного LMS клиента (плеера) может быть использован, например &nbsp;<a href="https://en.wikipedia.org/wiki/Squeezelite">Squeezelite</a>.<br>';
+		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Не применимо (нет такого TTS плеера).<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 9000 (если по умолчанию, можно не указывать).<br>';
+		$this->description .= 'В поле <i>Имя пользователя</i> необходимо указать IP или MAC адрес LMS клиента (плеера), например squeezebox.';
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Curl
@@ -42,6 +48,7 @@ class lms extends app_player_addon {
 				$data,
 			)
 		);
+		DebMes($jsonrpc);
 		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_POST, TRUE);
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/jsonrpc.js');
@@ -100,34 +107,59 @@ class lms extends app_player_addon {
 		return $this->success;
 	}
 
-	// Get player status
-	function status() {
-		if($this->lms_jsonrpc_request(array('status', '-', 1, 'tags:i'))) {
-			$json = $this->data;
-			// State
-			switch($json->mode) {
-				case 'play':	$state = 'playing'; break;
-				case 'pause':	$state = 'paused'; break;
-				case 'stop':	$state = 'stopped'; break;
-				default:		$state = 'unknown';
-			}
-			// Results
-			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
-			$this->data = array(
-				'track_id'		=> (int)(($state == 'stopped' || $state == 'unknown')?-1:(($json->playlist_loop)?reset($json->playlist_loop)->id:-1)),
-				'length'		=> (int)(($state == 'stopped' || $state == 'unknown')?0:round($json->duration)),
-				'time'			=> (int)(($state == 'stopped' || $state == 'unknown')?0:round($json->time)),
-				'state'			=> (string)$state,
-				'volume'		=> (int)$json->{'mixer volume'},
-				'random'		=> (boolean)(($json->{'playlist shuffle'} == 0)?FALSE:TRUE),
-				'loop'			=> (boolean)(($json->{'playlist repeat'} == 2)?TRUE:FALSE),
-				'repeat'		=> (boolean)(($json->{'playlist repeat'} == 1)?TRUE:FALSE),
-			);
+    // Get player status
+    function status()
+    {
+        $this->reset_properties();
+        // Defaults
+		$playlist_id = -1;
+		$playlist_content = array();
+        $track_id = -1;
+		$name     = -1;
+		$file     = -1;
+        $length   = -1;
+        $time     = -1;
+        $state    = -1;
+        $volume   = -1;
+		$muted    = -1;
+        $random   = -1;
+        $loop     = -1;
+        $repeat   = -1;
+        $crossfade= -1;
+		$speed = -1;
+		
+        $this->data = array(
+                'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
+                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
+				'track_id' => (int) track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+			    'name' => (string) $name, //Current speed for playing media. float.
+				'file' => (string) $file, //Current link for media in device. String.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => (int) $random, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'random' => (int) $random, // Random mode. Boolean. 
+                'loop' => (int) $loop, // Loop mode. Boolean.
+                'repeat' => (int) $repeat, //Repeat mode. Boolean.
+                'crossfade' => (int) $crossfade, // crossfade
+                'speed' => (int) $speed, // crossfade
+            );
+		// удаляем из массива пустые данные
+		foreach ($this->data as $key => $value) {
+			if ($value == '-1' or !$value) unset($this->data[$key]);
 		}
-		return $this->success;
-	}
+				        
+        $this->success = TRUE;
+        $this->message = 'OK';
+        return $this->success;
+    }
 
-	// Play
+    // Play
 	function play($input) {
 		$this->reset_properties();
 		if(strlen($input)) {
@@ -305,7 +337,7 @@ class lms extends app_player_addon {
 	}
 
 	// Playlist: Random
-	function pl_random() {
+	function set_random($data=0) {
 		if($this->status()) {
 			$random = ($this->data['random']?0:1);
 		} else {
@@ -319,7 +351,7 @@ class lms extends app_player_addon {
 	}
 	
 	// Playlist: Loop
-	function pl_loop() {
+	function set_loop($data=0) {
 		if($this->status()) {
 			$loop = ($this->data['loop']?0:2);
 		} else {
@@ -333,7 +365,7 @@ class lms extends app_player_addon {
 	}
 	
 	// Playlist: Repeat
-	function pl_repeat() {
+	function set_repeat($data=0) {
 		if($this->status()) {
 			$repeat = ($this->data['repeat']?0:1);
 		} else {
@@ -352,6 +384,32 @@ class lms extends app_player_addon {
 		return $this->lms_jsonrpc_request($data);
 	}
 	
+		// Get player status
+	function statusold() {
+		if($this->lms_jsonrpc_request(array('status', '-', 1, 'tags:i'))) {
+			$json = $this->data;
+			// State
+			switch($json->mode) {
+				case 'play':	$state = 'playing'; break;
+				case 'pause':	$state = 'paused'; break;
+				case 'stop':	$state = 'stopped'; break;
+				default:		$state = 'unknown';
+			}
+			// Results
+			$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
+			$this->data = array(
+				'track_id'		=> (int)(($state == 'stopped' || $state == 'unknown')?-1:(($json->playlist_loop)?reset($json->playlist_loop)->id:-1)),
+				'length'		=> (int)(($state == 'stopped' || $state == 'unknown')?0:round($json->duration)),
+				'time'			=> (int)(($state == 'stopped' || $state == 'unknown')?0:round($json->time)),
+				'state'			=> (string)$state,
+				'volume'		=> (int)$json->{'mixer volume'},
+				'random'		=> (boolean)(($json->{'playlist shuffle'} == 0)?FALSE:TRUE),
+				'loop'			=> (boolean)(($json->{'playlist repeat'} == 2)?TRUE:FALSE),
+				'repeat'		=> (boolean)(($json->{'playlist repeat'} == 1)?TRUE:FALSE),
+			);
+		}
+		return $this->success;
+	}
 }
 
 ?>

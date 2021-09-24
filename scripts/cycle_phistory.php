@@ -4,14 +4,12 @@ chdir(dirname(__FILE__) . '/../');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
-include_once("./lib/threads.php");
 
 set_time_limit(0);
 
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
-setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
 //SQLTruncateTable('phistory_queue');
 
@@ -25,54 +23,30 @@ if (!$limit) {
 }
 
 $checked_time = 0;
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
-
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
 $processed = array();
 
+$queue_error_status=0;
+
 while (1) {
-    if (time() - $checked_time > 5) {
+    if (time() - $checked_time > 30) {
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        // saveToCache("MJD:$cycleVarName", $checked_time);
+        echo date("H:i:s") . " Cycle " . basename(__FILE__) . ' is running ';
     }
-
-
-    /*
-    $keep = SQLSelect("SELECT DISTINCT VALUE_ID, KEEP_HISTORY FROM phistory_queue");
-    if ($keep[0]['VALUE_ID']) {
-        $total = count($keep);
-        for ($i = 0; $i < $total; $i++) {
-            $keep_rec = $keep[$i];
-            if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
-                $table_name = createHistoryTable($keep_rec['VALUE_ID']);
-            } else {
-                $table_name = 'phistory';
-            }
-            if ($keep_rec['KEEP_HISTORY'] == 0) continue;
-            $start_tm = date('Y-m-d H:i:s',(time()-(int)$keep_rec['KEEP_HISTORY']*24*60*60));
-            echo date('Y-m-d H:i:s').' '.("DELETE FROM $table_name WHERE VALUE_ID='" . $keep_rec['VALUE_ID'] . "' AND ADDED<('$start_tm')\n");
-            SQLExec("DELETE FROM $table_name WHERE VALUE_ID='" . $keep_rec['VALUE_ID'] . "' AND ADDED<('$start_tm')");
-            echo date('Y-m-d H:i:s ')." Done \n";
-        }
-    }
-    */
-    $queue_error_status=gg('phistory_queue_problem');
-
-    $tmp=SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory_queue;");
-    $count_queue = (int)$tmp['TOTAL'];
 
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT ". $limit);
-    if ($queue[0]['ID']) {
+	$count_queue = count($queue);
+    if ($queue) {
         if ($count_queue>$limit && !$queue_error_status) {
                 sg('phistory_queue_problem',1);
+				$queue_error_status = 1;
                 $txt = 'Properties history queue is too long ('.$count_queue.')';
                 echo date("H:i:s") . " " . $txt . "\n";
                 registerError('phistory_queue',$txt);
         } elseif ($count_queue<=$limit && $queue_error_status) {
             sg('phistory_queue_problem',0);
+			$queue_error_status = 0;
         }
 
         $total = count($queue);

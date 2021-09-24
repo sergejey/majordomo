@@ -11,6 +11,7 @@
 class control_modules extends module
 {
     var $modules; // all modules list
+    var $ajax; 
 
 // --------------------------------------------------------------------
     function __construct()
@@ -188,10 +189,12 @@ class control_modules extends module
             if (IsSet($rec['ID'])) {
                 outHash($rec, $lst[$i]);
             }
-            $ignored = SQLSelectOne("SELECT ID FROM ignore_updates WHERE NAME LIKE '" . DBSafe($lst[$i]['NAME']) . "'");
-            if ($ignored['ID']) {
+            $ignored = SQLSelectOne("SELECT ID FROM ignore_updates WHERE NAME LIKE '" . DBSafe($lst[$i]['NAME']??'') . "'");
+            if ($ignored) {
                 $lst[$i]['IGNORED'] = 1;
-            }
+            } else {
+                $lst[$i]['IGNORED'] = 0;
+	    }
         }
 
         $out["MODULES"] = $lst;
