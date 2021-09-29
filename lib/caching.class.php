@@ -1,4 +1,44 @@
 <?php
+
+function saveCycleToCache($key, $value)
+{
+        $key = strtolower($key);
+
+    if (is_array($value) || strlen($value) > 255) {
+        SQLExec("DELETE FROM cyclesRun WHERE KEYWORD='".$key."'");
+        return;
+    }
+
+
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+        global $memory_cycle_cache;
+        $memory_cycle_cache[$key] = $value;
+    }
+        $rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
+    $sqlQuery = "REPLACE INTO cyclesRun (KEYWORD, DATAVALUE) " .
+        " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
+        "'" . DbSafe1($rec['DATAVALUE']) . "')";
+    SQLExec($sqlQuery);
+}
+
+function checkCycleFromCache($key)
+{
+$key = strtolower($key);
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+            global $memory_cycle_cache;
+                if (is_array($memory_cycle_cache) && isset($memory_cycle_cache[$key])) {
+                    return $memory_cycle_cache[$key];
+                }
+        }
+        $rec = SQLSelectOne("SELECT * FROM cyclesRun WHERE KEYWORD = '" . DBSafe($key) . "'");
+    if ($rec['KEYWORD']) {
+        return $rec['DATAVALUE'];
+    } else {
+        return false;
+    }
+}
+
+
 /**
  * Summary of clearCacheData
  * @param mixed $prefix prefix
