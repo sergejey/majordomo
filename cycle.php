@@ -42,6 +42,9 @@ while (!$connected) {
 
 echo "CONNECTED TO DB" . PHP_EOL;
 
+// создаем табличку cyclesRun, если её нет
+SQLExec('CREATE TABLE IF NOT EXISTS `cyclesRun` (`KEYWORD` char(100) NOT NULL,`DATAVALUE` char(255) NOT NULL,PRIMARY KEY (`KEYWORD`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
+
 $old_mask = umask(0);
 if (is_dir(ROOT . 'cached')) {
     DebMes("Removing cache from " . ROOT . 'cached');
@@ -355,6 +358,9 @@ while (false !== ($result = $threads->iteration())) {
         }
 
         $is_running = array();
+        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cyclesRun;");
+        foreach ($tmpcyclesTimestamps as $k => $v) $cyclesTimestamps[$v['KEYWORD']] = $v['DATAVALUE'];
+        
         foreach ($threads->commandLines as $id => $cmd) {
             if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
                 $title = $m[1];
@@ -365,7 +371,8 @@ while (false !== ($result = $threads->iteration())) {
                     $auto_restarts[] = $title;
                 }
 
-                $cycle_updated_timestamp = getGlobal($title . 'Run');
+                //$cycle_updated_timestamp = getGlobal($title . 'Run');
+                $cycle_updated_timestamp=$cyclesTimestamps[strtolower('MJD:ThisComputer.'.$title.'Run')];
                 if (!isset($to_start[$title]) &&
                     $cycle_updated_timestamp &&
                     in_array($title, $auto_restarts) &&
