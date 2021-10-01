@@ -1369,6 +1369,7 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'А знаете ли вы что...',
     'NEWS' => 'Новости MajorDoMo',
     'KNOWLEDGE_BASE' => 'База знаний',
+    'MODULE_SUPPORT' => 'Сайт модуля',
     'ACTIVITIES' => 'Поведение',
     'COMMANDS' => 'Команды',
     'ADDON_FILE' => 'Файл дополнения',

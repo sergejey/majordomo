@@ -1373,6 +1373,7 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'Did you know that...',
     'NEWS' => 'MajorDoMo News',
     'KNOWLEDGE_BASE' => 'Knowledge Base',
+    'MODULE_SUPPORT' => 'Support for',
     'ACTIVITIES' => 'Activities',
     'COMMANDS' => 'Commands',
     'ADDON_FILE' => 'Addon package',
