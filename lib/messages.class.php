@@ -176,7 +176,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
         if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
             if ($level >= (int)getGlobal('minMsgLevel') && !$member_id) { // && !$ignoreVoice
-                $passed = time() - (int)getGlobal('lastSayTime');
+                $passed = time() - $last_say_time;
                 if ($passed > 20) {
                     playSound('dingdong', 1, $level);
                 }
@@ -198,5 +198,3 @@ function ask($prompt, $target = '')
 {
     processSubscriptionsSafe('ASK', array('prompt' => $prompt, 'message' => $prompt, 'target' => $target, 'destination' => $target));
 }
-
-
