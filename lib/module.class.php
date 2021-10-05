@@ -846,8 +846,9 @@ class module
 			return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
 		}
 		
-		$ifExest = SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `MESSAGE` = '".$str."' AND `READ` = '0'")['ID'];
-		if($ifExest['ID']) {
+		$ifExest = SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `MESSAGE` = '".$str."' AND `READ` = '0'");
+		
+		if(!empty($ifExest) && is_array($ifExest)) {
 			return json_encode(array('status' => false, 'error' => 'Such a record already exists. ID - '.$ifExest['ID'], 'id' => $ifExest['ID']));
 		}
 		
