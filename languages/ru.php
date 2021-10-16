@@ -1557,8 +1557,8 @@ $dictionary = array(
 	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Выберите модуль...',
 	'NEWDASH_CONSOLE_SIZE_HINT' => 'Размер консоли можно изменить',
 	'NEWDASH_SEARCH_HINT' => 'Глобальный поиск по всей системе. Начните вводить...',
-	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции будут недоступны.',
-	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Обычно, ситуация налаживаться спустя несколько минут.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции могут быть недоступны.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Обычно, ситуация налаживается спустя несколько минут.',
 	
 	'NEWDASH_RESULT' => 'Результат',
 	'NEWDASH_MJDM_VERSION' => 'Текущая версия MJDM',
