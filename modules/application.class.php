@@ -50,8 +50,6 @@ function getParams() {
   function run() {
   global $session;
 
-   Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
-
    $theme = SETTINGS_THEME;
    if ($this->action=='layouts' && $this->id) {
     $layout_rec=SQLSelectOne("SELECT * FROM layouts WHERE ID=".(int)$this->id);

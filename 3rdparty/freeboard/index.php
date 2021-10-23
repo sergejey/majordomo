@@ -94,7 +94,10 @@ if ($_GET['theme']) {
 
     <?php
     $out['REQUEST_URI']=$_SERVER['REQUEST_URI'];
-    $template_file=DIR_TEMPLATES.'websockets.html';
+    $template_file = DIR_TEMPLATES . 'websockets.html';
+    if (defined('ALTERNATIVE_TEMPLATES') && file_exists(ALTERNATIVE_TEMPLATES . 'websockets.html')) {
+        $template_file = ALTERNATIVE_TEMPLATES . 'websockets.html';
+    }
     $p=new parser($template_file, $out);
     echo $p->result;
     ?>
