@@ -13,6 +13,7 @@ Define('DB_USER', 'root');
 Define('DB_PASSWORD', '');
 
 Define('DIR_TEMPLATES', "./templates/");
+Define('ALTERNATIVE_TEMPLATES', "/templates_alt/");
 Define('DIR_MODULES', "./modules/");
 Define('DEBUG_MODE', 1);
 Define('UPDATES_REPOSITORY_NAME', 'smarthome');

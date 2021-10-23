@@ -40,7 +40,6 @@ class panel extends module
     function run()
     {
         global $session;
-        Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
         if (isset($_COOKIE['theme'])) $out['PANEL_THEME']=$_COOKIE['theme'];
 
