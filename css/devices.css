@@ -14,7 +14,7 @@
 
 .device-widget.mini {
     padding:5px;
-    min-width:150px; //
+    min-width:150px;
     max-width:150px;
     width:150px;
     border:none;
@@ -28,8 +28,8 @@
 
 .device-widget.mini.sensor {
     min-width:75px;
-    max-width:75px;
-    width:75px;
+    /* max-width:75px;
+    width:75px; */
 }
 
 .device-widget.mini.openable {

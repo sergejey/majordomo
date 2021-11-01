@@ -72,10 +72,15 @@ endMeasure('languageConstants');
 
 $result = str_replace("nf.php", "admin.php", $result);
 
+startMeasure('postProcessGeneral');
 require(ROOT.'lib/utils/postprocess_general.inc.php');
+endMeasure('postProcessGeneral');
+
+startMeasure('postProcessSubscriptions');
 require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
 //require(ROOT.'lib/utils/postprocess_result.inc.php');
-
+endMeasure('postProcessSubscriptions');
+endMeasure('part2');
 
 startMeasure('accelerationProcess');
 if ((!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1)) {
@@ -83,7 +88,7 @@ if ((!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1)) {
 }
 endMeasure('accelerationProcess');
 
-endMeasure('part2');
+
 
 
 if (isset($_GET['part_load'])) {
@@ -169,4 +174,4 @@ $session->save();
 endMeasure('TOTAL');
 
 // print performance report
-performanceReport();
+performanceReport($_GET['debug']);

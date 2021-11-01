@@ -1,0 +1,681 @@
+<script language="javascript">
+
+    function toggleCategory(id) {
+        var vl=$.cookie('sub_'+id);
+
+        if (vl == 'off') {
+            $.cookie('sub_'+id, 'on', {expires: 180});
+        } else {
+            $.cookie('sub_'+id, 'off', {expires: 180});
+        }
+
+        $('#row_'+id).collapse("toggle");
+
+        return false;
+    }
+
+    function hideHintCookie(id, check = 0) {
+        var vl = $.cookie('hint_'+id);
+
+        if (check == 0 && vl != 'off') {
+            $.cookie('hint_'+id, 'off', {expires: 180});
+            $('#hint_'+id).hide("fast");
+        } else if (check == 1) {
+            if(vl != 'off') {
+                $('#hint_'+id).show("fast");
+            }
+        }
+
+        return false;
+    }
+
+    function checkCategory(id) {
+        var vl = $.cookie('sub_'+id);
+
+        if (vl == 'on' || vl == null) {
+            $('#row_'+id).collapse("show");
+        }
+        return false;
+    }
+
+    function openFileBrowser(id){
+        window.KCFinder = {
+            callBack: function (url) {
+                window.KCFinder = null;
+                //alert(url);
+                $('#'+id).val(url);
+            }
+        };
+        window.open('<#ROOTHTML#>3rdparty/kcfinder/browse.php?dir=/',
+            'kcfinder_image', 'status=0, toolbar=0, location=0, menubar=0, ' +
+            'directories=0, resizable=1, scrollbars=0, width=800, height=600'
+        );
+    }
+
+    function showHideLayer(id) {
+        var layer=document.getElementById('sub_'+id);
+        var layer2=document.getElementById('plus_'+id);
+        if (layer.style.display=='none') {
+            layer.style.display='block';
+            layer2.innerHTML='[-]';
+            $.cookie('sub_'+id, 'on');
+        } else {
+            layer.style.display='none';
+            layer2.innerHTML='[+]';
+            $.cookie('sub_'+id, 'off');
+        }
+        return false;
+    }
+
+    function checkLayer(id) {
+        var vl=$.cookie('sub_'+id);
+        if (vl=='off') {
+            showHideLayer(id);
+        }
+    }
+
+    var filterTimer;
+
+    function filterSearch() {
+        $('#filter_add').show().html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
+        $('.searchNoty').hide();
+
+        var title = $('#filter_modules').val();
+        var urlFilter="?";
+
+        if(title.length <= 2) {
+            $('#filter_add').show().html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Введите более 2-х символов для поиска...</div>');
+            return;
+        }
+
+        urlFilter+='&ajax_panel=1&op=filter&title='+encodeURIComponent(title);
+
+        $.ajax({
+            url: urlFilter,
+            success: function(data){
+                $('#filter_add').show();
+
+                if(data) {
+                    $('#filter_add').html(data);
+                } else {
+                    $('#filter_add').html('<div style="padding: 15px;text-align: center;"><i class="glyphicon glyphicon-info-sign"></i> Ничего не найдено :(</div>');
+                }
+
+
+            },
+            error: function(data){
+                $('#filter_add').show();
+                $('#filter_add').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - filterSearch()</div>');
+            },
+        });
+        return false;
+    }
+
+    function setFilter(value) {
+        $('#filter_modules').val(value);
+        filterSearch();
+        return false;
+    }
+
+    function filterModules() {
+        var title=document.frmFilterModules.filter_modules.value;
+        var moduleTitle='';
+        var sectionTitle='';
+        var elem;
+
+        $.cookie('panelFilter', title);
+
+        title=title.toLowerCase();
+
+        if (title!='') {
+            //$('#filter_add').html('...');
+            $('#filter_add').show();
+            clearTimeout(filterTimer);
+            filterTimer=setTimeout('filterSearch();', 1000);
+        } else {
+            $('#filter_add').hide();
+            clearTimeout(filterTimer);
+        }
+
+        var found=0;
+        var i=0;
+
+        [#begin SUB_MODULES#]
+            [#if !DENIED#]
+        moduleTitle="[#TITLE#]";
+        moduleTitle=moduleTitle.toLowerCase();
+        sectionTitle="[#CATEGORY#]";
+        sectionTitle=sectionTitle.toLowerCase();
+        elem=document.getElementById('module_[#NAME#]_link');
+        if (title=='' || moduleTitle.indexOf(title)!=-1 || sectionTitle.indexOf(title)!=-1) {
+            elem.style.display='block';
+            found++;
+        } else {
+            elem.style.display='none';
+        }
+        i++;
+        [#endif DENIED#]
+
+            [#if LAST_IN_CATEGORY#]
+        elem=document.getElementById('row_[#CATEGORY#]');
+        if (found>0) {
+            elem.style.display='block';
+        } else {
+            elem.style.display='none';
+        }
+        found=0;
+        [#endif LAST_IN_CATEGORY#]
+
+            [#end SUB_MODULES#]
+    }
+
+    jQuery.fn.center = function () {
+        this.css("position","absolute");
+        this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+        this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+        return this;
+    }
+    // ----------------------------------------------------------------------
+    function openTWindow(winId, winTitle, pageURL, wdth, hdth) {
+        parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
+        return false;
+    }
+
+
+    function openModalTWindow(winId, winTitle, pageURL, wdth, hdth) {
+        parent.$.fancybox.open({ src: pageURL, type: 'iframe',iframe:{preload:false}});
+        return false;
+    }
+
+    function leftPanelToggle() {
+        var url=window.location.href;
+        var dURL = url.replace(/#$/, '');
+        if (dURL.indexOf('?') !== -1) {
+            dURL+='&toggleLeftPanel=1';
+        } else {
+            dURL+='?toggleLeftPanel=1';
+        }
+        window.location.href=dURL;
+        //$('#left_block').toggle();
+        //checkLeftPanelStatus();
+        return false;
+    }
+
+    var cmd='';
+
+    var hrefLocation = window.location.href;
+    hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+    var urlInProgress = '';
+
+    var consoleDebugTimer;
+
+    function updateConsoleDebug() {
+        if ($('#console_debug').is(":hidden")) {
+            clearTimeout(consoleDebugTimer);
+            return;
+        }
+
+        var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
+        $.ajax({
+            url: urlDebug,
+        }).done(function(data) {
+            data = JSON.parse(data);
+
+            if(data.CONTENT) {
+                $('#console_debug').html(data.CONTENT);
+            } else {
+                $('#console_debug').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> Console is empty... Wait new data...');
+            }
+        });
+        consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
+    }
+
+    function consoleToggle() {
+        $("#console").toggle();
+
+        if($("#console").is(':visible')) {
+            $('#partLoadContent').css('opacity', '0.3');
+        } else {
+            $('#partLoadContent').css('opacity', '1');
+        }
+
+        return false;
+    }
+
+    function consoleDebugToggle() {
+        $("#console_debug").toggle();
+        if ($('#console_debug').is(':visible')) {
+            $.cookie('debug', 'on', {expires: 1});
+        } else {
+            $.cookie('debug', 'off', {expires: 1});
+        }
+
+        updateConsoleDebug();
+        return false;
+    }
+
+    var locationTimer;
+    function checkLocationHref() {
+        clearTimeout(locationTimer);
+    }
+
+    var loaderTimer;
+    function loadInProgress() {
+        $('.sp-replacer').remove();
+        $('.sp-container').remove();
+        $('#preloader').show('fast');
+        $('#partLoadContent').html('');
+        $('#stopLoadBtnPreloader').attr('src', urlInProgress);
+        return false;
+    }
+
+
+
+    var requestCounter = 0;
+
+    function partLoad(link) {
+
+        [#if PRINT=="1"#]return true;[#endif#]
+        if (typeof link == 'undefined') return;
+
+
+        var maxId=setTimeout(function(){}, 0);
+        for(var i=0;i<maxId;i+=1) {
+            clearTimeout(i);
+        }
+
+        ajaxManager.stop();
+        requestCounter++;
+        var seqNumber=requestCounter;
+        var urlPartLoad=link;
+        urlInProgress = link;
+        hrefLocation = link;
+        hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
+        clearTimeout(locationTimer);
+        locationTimer = setTimeout('checkLocationHref();',1000);
+        urlPartLoad+='&part_load=1';
+
+        var cachedKey = simple_hash(urlPartLoad);
+        var cachedContent = localStorage.getItem(cachedKey);
+        if (typeof cachedContent == 'string') {
+            window.history.pushState('', window.title, link);
+            $('#partLoadContent').html(cachedContent);
+        } else {
+            cachedContent = '';
+            loaderTimer=setTimeout(loadInProgress, 2000);
+        }
+
+        $.ajax({
+            url: urlPartLoad,
+            urlInProgress: urlInProgress
+        }).done(function(data) {
+            //console.log('part content loaded');
+            $('#preloader').hide('fast');
+            if (seqNumber!=requestCounter) {
+                //console.log('Ignoring response');
+            }
+            clearTimeout(loaderTimer);
+            try {
+                JSON.parse(data);
+            } catch (e) {
+                window.location.href=this.urlInProgress;
+                return false;
+            }
+            var obj=jQuery.parseJSON(data);
+            if ("undefined" !== typeof obj.REDIRECT) {
+                link = obj.REDIRECT;
+            }
+
+            if (obj.NEED_RELOAD!=0) {
+                window.location.href=link;
+            } else {
+                window.history.pushState('', window.title, link);
+                if (cachedContent!=obj.CONTENT) {
+                    $('#partLoadContent').html(obj.CONTENT);
+                    localStorage.setItem(cachedKey,obj.CONTENT);
+                }
+                if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
+                    window.document.title = obj.TITLE;
+                }
+
+                $('input[name=filter_modules]').keyup(function() {
+                    filterModules();
+                });
+
+            }
+        });
+        return false;
+    }
+    [#if ACTION==""#]
+    function checkSystemInfo() {
+        $.ajax({
+            url: '<#ROOTHTML#>diagnostic.php?ajax=1',
+            success: function(data) {
+                data = JSON.parse(data);
+                //console.log(data);
+                $('#dashInfoIPCl').text();
+                $('#dashInfoIPSer').text();
+                $('#dashInfoOS').text(data.OS);
+                $('#dashInfoErrors').text(data.active_errors);
+                $('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
+            },
+            error: function(data) {
+                console.log('error');
+            }
+        });
+        //Запрос последних скриптов
+        $.ajax({
+            url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=scripts&ajax=1&op=getcontent',
+            success: function(data) {
+                data = JSON.parse(data);
+                list = data.LIST.reverse();
+                i = 0;
+                while (i < 6) {
+                    dataCurr = list[i];
+
+                    (i != 0) ? scriptLastBlock = $('#scriptLast').html() : scriptLastBlock = '';
+                    $('#scriptLast').html(scriptLastBlock + '<li class="list-group-item"><span class="badge">'+dataCurr.EXECUTED+'</span>'+dataCurr.SCRIPT+'</li>')
+
+                    i++;
+                }
+            },
+            error: function(data) {
+                console.log('error');
+            }
+        });
+        //Запрос данных по работе БД
+        $.ajax({
+            url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=showdbload',
+            success: function(data) {
+                data = JSON.parse(data);
+                $('#dashInfoDBReqS').html(data.second);
+                $('#dashInfoDBReqM').html(data.minute);
+                $('#dashInfoDBReqH').html(data.hours);
+
+                //Секунды
+                if(data.second <= 170) {
+                    $('#dashInfoDBReqS').attr('style', 'cursor: help;background: #5cb85c');
+                } else if(data.second > 170 && data.second < 250) {
+                    $('#dashInfoDBReqS').attr('style', 'cursor: help;background: #f0ad4e');
+                } else {
+                    $('#dashInfoDBReqS').attr('style', 'cursor: help;background: #d9534f');
+                }
+                //Минуты
+                if(data.minute <= 10200) {
+                    $('#dashInfoDBReqM').attr('style', 'cursor: help;background: #5cb85c');
+                } else if(data.second > 10200 && data.second < 15000) {
+                    $('#dashInfoDBReqM').attr('style', 'cursor: help;background: #f0ad4e');
+                } else {
+                    $('#dashInfoDBReqM').attr('style', 'cursor: help;background: #d9534f');
+                }
+                //Часы
+                if(data.minute <= 612000) {
+                    $('#dashInfoDBReqH').attr('style', 'cursor: help;background: #5cb85c');
+                } else if(data.second > 612000 && data.second < 900000) {
+                    $('#dashInfoDBReqH').attr('style', 'cursor: help;background: #f0ad4e');
+                } else {
+                    $('#dashInfoDBReqH').attr('style', 'cursor: help;background: #d9534f');
+                }
+            },
+            error: function(data) {
+                console.log('error');
+            }
+        });
+
+
+        return false;
+    }
+    [#endif#]
+    function insertModuleInConsole(module) {
+        if(module == 0) {
+            $('#module_add').val('');
+            $('#methodsModule').hide();
+
+            $('#console>div:eq(1)').removeClass('col-md-8');
+            $('#console>div:eq(1)').addClass('col-md-12');
+
+            return;
+        }
+
+        moduleStrCommand = "include(DIR_MODULES.'"+module+"/"+module+".class.php');PHP_EOL$"+module+" = new "+module+"();";
+
+        $('#console>div:eq(1)').removeClass('col-md-12');
+        $('#console>div:eq(1)').addClass('col-md-8');
+
+        $('#module_add').val(moduleStrCommand);
+        $('#methodsModule').show();
+
+        sendConsoleCommand(moduleStrCommand + "PHP_EOLjson_encode(get_class_methods('"+module+"'));");
+
+        //Отправляем в консоль
+        //$('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: '+moduleStrCommand.replace(/PHP_EOL/g, '<br> &nbsp&nbsp '));
+    }
+
+    function sendConsoleCommand(cmdCustom = '') {
+        if(cmdCustom != '') {
+            var cmd = cmdCustom;
+            $('#loaderConsoleModule').show();
+        } else {
+            var cmd = $('#command').val();
+        }
+
+        if(cmdCustom == '' && $('#module_add').val()) {
+            parentModule = $('#module_add').val();
+            cmd = parentModule+cmd;
+        }
+
+        if(cmd.toLowerCase() == 'clear' || cmd.toLowerCase() == 'clear;') {
+            data = '<i style="color: gray;">Console clear!</i>';
+            $('#console_output').html(data);
+            return false;
+        }
+
+        if(cmd == '') {
+            $('#dangerAlertConsole').show();
+            return false;
+        }
+        var urlCommand="?";
+
+        $('#loaderConsole').show();
+
+        urlCommand+='ajax_panel=1&op=console&command='+encodeURIComponent(cmd);
+        $.ajax({
+            //url: urlCommand
+            type: "POST",
+            url: "/admin.php",
+            data: urlCommand,
+            success: function(data) {
+                if(cmdCustom) {
+                    $('#loaderConsole').hide();
+                    $('#dangerAlertConsole').hide();
+                    $('#error_console_request').remove();
+                    $('#loaderConsoleModule').hide();
+
+                    data = JSON.parse(data);
+
+                    currModuleName = $('#currModuleName').val();
+
+                    $('#methodsModule>ul').html('');
+
+                    $('#methodsModule>ul').append('<li class="list-group-item"><a href="javascript://" onclick="$(\'input#command\').val($(\'input#command\').val() + $(this).text());">print_r($'+currModuleName+'->getConfig());</a></li>');
+                    data.forEach(function(item, i) {
+                        $('#methodsModule>ul').append('<li class="list-group-item"><a href="javascript://" onclick="$(\'input#command\').val($(\'input#command\').val() + $(this).text());">$'+currModuleName+'->'+item+'();</a></li>');
+                    });
+                    $('input#command').val('');
+                    data = '<i style="color: gray;">Console clear!</i>';
+                    $('#console_output').html(data);
+                    return;
+                }
+
+                old_data = $('#console_output').html();
+
+                if(!data) {
+                    data = '<i>Completed the request</i>';
+                }
+
+                $('#console_output').html('<i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: <span style="white-space: pre-wrap;">'+data+ '</span><br><i style="font-size: 7pt;" class="glyphicon glyphicon-chevron-right"></i>: '+ cmd.replace(/PHP_EOL/g, '<br> &nbsp&nbsp ') + '<br>' + old_data);
+                $('#console_output_hintResize').show();
+                $('#loaderConsole').hide();
+                $('#dangerAlertConsole').hide();
+                //$('#warningAlertConsole').hide();
+                //$('#console_output').show();
+
+                $('#error_console_request').remove();
+            },
+            error: function(data){
+                if(cmdCustom) {
+                    return data;
+                }
+
+                $('#dangerAlertConsole').hide();
+                //$('#warningAlertConsole').hide();
+                $('#loaderConsole').hide();
+                $('#console_output_hintResize').hide();
+
+                //$('#console_output').show();
+                $('#console_output').html('<div id="error_console_request" style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;">Error sending request - sendConsoleCommand()</div>');
+            },
+        });
+        return false;
+    }
+    [#if ACTION==""#]
+    function checkDidYouKnow() {
+        var urlDidyouknow = '<#ROOTHTML#>ajax/market.html?op=didyouknow';
+        $.ajax({
+            url: urlDidyouknow
+        }).done(function(data) {
+            if (data!='') {
+                $('#didyouknow_body').html(data);
+                $('#didyouknow').show();
+            }
+        });
+        return false;
+    }
+
+    function checkNews() {
+        var urlCheckNews = '<#ROOTHTML#>ajax/market.html?op=news';
+        $.ajax({
+            url: urlCheckNews,
+            success: function(data) {
+                if (data!='') {
+                    $('#news').show();
+                    $('#news_body').html(data);
+                }
+            },
+            error: function(data) {
+                $('#news_body').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - checkNews()</div>');
+            },
+        });
+
+        return false;
+    }
+
+    function myBlockOnDash() {
+        var urlCheckNews = '<#ROOTHTML#>objects/?script=dash_my_block';
+        $.ajax({
+            url: urlCheckNews,
+            success: function(data) {
+                if(data) data = JSON.parse(data);
+                if (data.status == 1) {
+                    if($('#myBlockOnDash').is(":hidden") == true) $('#myBlockOnDash').show();
+                    $('#myBlockOnDash_title').text(data.name);
+                    $('#myBlockOnDash_body').html(data.data.data);
+                    $('#myBlockOnDash').removeClass("panel-info").addClass('panel-'+data.type);
+
+                    if(data.reload == true) {
+                        setTimeout(function() {
+                            myBlockOnDash();
+                        }, data.reload_time*1000);
+                    }
+                    //Есть доп инфа для вывода
+                    if(data.moreinfo) {
+                        $('#more_myBlockOnDash').show();
+                        i = 0;
+                        for (var value in data.moreinfo) {
+                            if(i == 0) $('#more_myBlockOnDash_body').html('');
+                            color = data.moreinfo[value].split('|color:');
+                            (color[1]) ? color_bg = color[1] : color_bg = '#999';
+
+                            $('#more_myBlockOnDash_body').prepend('<li class="list-group-item">'+value+'<span class="badge" style="background:'+color_bg+';">'+color[0]+'</span></li>');
+                            i++;
+                        }
+                    }
+                } else {
+                    $('#myBlockOnDash').hide();
+                    $('#addMyBlockHint').show();
+                }
+            },
+        });
+
+        return false;
+    }
+
+    function checkConnectStatus() {
+        var urlCheckUpdates = '<#ROOTHTML#>ajax/connect.html?op=status';
+        $.ajax({
+            url: urlCheckUpdates
+        }).done(function(data) {
+            try {
+                JSON.parse(data);
+            } catch (e) {
+                $('#problemLinkToConnect').show();
+                return false;
+            }
+
+            data = JSON.parse(data);
+            if (data.status == 0) {
+                $('#getConnect').show('fast');
+            }
+        });
+    }
+
+    function checkUpdatesAvailable() {
+        var urlCheckUpdates = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
+        $.ajax({
+            url: urlCheckUpdates
+        }).done(function(data) {
+            data = JSON.parse(data);
+            if (data.needUpdate == '1') {
+                $('#updates-check-system').show();
+                $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);[#endif#]');
+            }
+            $('#loadUpdate').hide();
+            //$('#dashInfoBranch').html(data.currBranch.slice(0, -7));
+            $('#dashInfoVersion').html('<a style="color: white;text-decoration: none;" href="https://github.com/sergejey/majordomo/commit/'+data.current_version+'" target="_blank">'+data.currBranch + '_' + data.current_version.slice(0, -33)+'</a>');
+        });
+
+        var urlCheckUpdatesMarket = '<#ROOTHTML#>ajax/market.html?op=check_updates';
+        $.ajax({
+            url: urlCheckUpdatesMarket
+        }).done(function(data) {
+            try {
+                JSON.parse(data);
+            } catch (e) {
+                $('#problemLinkToConnect').show();
+                return false;
+            }
+
+            data = JSON.parse(data);
+            if (data.status == '1') {
+                $('#updates-check-market').show();
+                $('#updates-check-market-text').html('<#LANG_NEWDASH_UPDATE_MODULE_HINT1#> ' +data.howUpdate+ ' <#LANG_NEWDASH_UPDATE_MODULE_HINT2#>');
+                $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);[#endif#]');
+            }
+            $('#loadUpdate').hide()
+        });
+
+        var urlCheckUpdatesSystem = '<#ROOTHTML#>ajax/system_errors.html?op=check';
+        $.ajax({
+            url: urlCheckUpdatesSystem
+        }).done(function(data) {
+            if (data >= '1') {
+                $('#errors-saved').prepend('<span class="label label-danger"><#LANG_ERRORS_SAVED#>: '+data+'</span>');
+                $('#errors-saved').show();
+                $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);[#endif#]');
+            }
+            $('#loadUpdate').hide()
+        });
+
+    }
+    [#endif#]
+</script>
