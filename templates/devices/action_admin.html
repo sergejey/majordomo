@@ -114,7 +114,7 @@
          <div>
          <b><#LANG_PROPERTIES#></b>:
          [#begin LINKED_PROPERTIES#]
-         <br/>[#PROPERTY#]:
+         <br/><a href="<#ROOTHTML#>panel/linkedobject.html?op=redirect&object=<#LINKED_OBJECT#>&sub=properties">[#PROPERTY#]</a>:
              [#VALUE#]
          [#begin LINKED_MODULES#]
           <a href="?(panel:{action=[#MODULE#]})&md=[#MODULE#]&go_linked_object=[#OBJECT#]&go_linked_property=[#PROPERTY#]" class="label label-success">[#MODULE#]</a>

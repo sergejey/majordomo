@@ -1120,6 +1120,7 @@ $dictionary = array(
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Simple Devices',
 
+    'DEVICES_COPY_SETTINGS' => 'Copy settings',
     'DEVICES_LINKED_WARNING' => 'Please note that when linking to existing object, it will be assigned to the new class.',
 
     'DEVICES_RELAY' => 'Relay/Switch',

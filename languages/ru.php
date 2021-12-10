@@ -1117,6 +1117,7 @@ $dictionary = array(
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
+    'DEVICES_COPY_SETTINGS' => 'Копировать настройки',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
     'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
     'DEVICES_DIMMER' => 'Освещение (Диммер)',
