@@ -1,7 +1,7 @@
 <?php
 
 $this->device_links=array(
-    'SMotions,SButtons,SOpenClose,SCameras'=>array(
+    'SMotions,SButtons,SOpenClose,SCameras,SCO2Sensors'=>array(
         array(
             'LINK_NAME'=>'switch_timer',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER,
