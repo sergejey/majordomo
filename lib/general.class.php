@@ -9,7 +9,7 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '')) {
+if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/^\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/btraced\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/rss\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '')) {
     $p = preg_quote(HOME_NETWORK);
     $p = str_replace('\*', '\d+?', $p);
     $p = str_replace(',', ' ', $p);
