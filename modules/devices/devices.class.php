@@ -481,13 +481,13 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60) {
                     continue;
                 }
-                //DebMes("Checking point: ".json_encode($rec,JSON_PRETTY_PRINT),'devices_schedule');
                 $tmlr = strtotime($rec['LATEST_RUN']);
                 $diff_run = time() - $tmlr;
                 if ($diff_run <= 20*60) {
-                    //DebMes("Skipping point (diff_run: $diff_run): ".json_encode($rec,JSON_PRETTY_PRINT),'devices_schedule');
                     continue;
                 }
+
+                if (!checkAccess('spoint', $rec['ID'])) continue;
 
                 $linked_object = $rec['LINKED_OBJECT'];
                 unset($rec['LINKED_OBJECT']);
@@ -592,6 +592,10 @@ class devices extends module
                 $this->manage_groups($out);
             }
 
+            if ($this->view_mode == 'schedule') {
+                $this->manage_schedule($out);
+            }
+
             if ($this->view_mode == 'edit_devices') {
                 $this->edit_devices($out, $this->id);
             }
@@ -627,6 +631,11 @@ class devices extends module
     function manage_groups(&$out)
     {
         require(dirname(__FILE__) . '/devices_manage_groups.inc.php');
+    }
+
+    function manage_schedule(&$out)
+    {
+        require(dirname(__FILE__) . '/devices_manage_schedule.inc.php');
     }
 
     /**

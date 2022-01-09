@@ -1,3 +1,12 @@
+[#if VIEW_MODE!="edit_devices"#]
+<ul class="nav nav-tabs">
+    <li [#if VIEW_MODE=""#]class="active"[#endif VIEW_MODE#]><a href="?"><#LANG_DEVICES#></a></li>
+    <li [#if VIEW_MODE="schedule"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=schedule"><#LANG_DEVICES_SCHEDULE#></a></li>
+    <li [#if VIEW_MODE="manage_rooms"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=manage_rooms"><#LANG_ROOMS#></a></li>
+    <li [#if VIEW_MODE="manage_groups"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=manage_groups"><#LANG_GROUPS#></a></li>
+</ul>
+<div>&nbsp;</div>
+[#endif VIEW_MODE#]
 
  <!-- action usual -->
  <!-- table devices search -->
@@ -8,6 +17,14 @@
  [#if VIEW_MODE="manage_groups"#]
  [#inc devices_mange_groups.html#]
  [#endif VIEW_MODE#]
+
+[#if VIEW_MODE="schedule"#]
+[#inc devices_schedule.html#]
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="manage_rooms"#]
+[#module name="locations" action="admin"#]
+[#endif VIEW_MODE#]
 
  [#if VIEW_MODE="quick_edit"#]
  [#inc devices_quick_edit.html#]

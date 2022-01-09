@@ -42,7 +42,11 @@ class panel extends module
         global $session;
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
-        if (isset($_COOKIE['theme'])) $out['PANEL_THEME']=$_COOKIE['theme'];
+        if (isset($_COOKIE['theme'])) {
+            $out['PANEL_THEME']=$_COOKIE['theme'];
+        } else {
+            $out['PANEL_THEME']='light';
+        }
 
         if (gr('toggleLeftPanel')) {
             if (gg('HideLeftPanelAdmin')) {

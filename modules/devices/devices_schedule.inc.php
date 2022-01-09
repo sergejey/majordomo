@@ -71,6 +71,10 @@ if ($points[0]['ID']) {
             }
         }
         $point_item['SET_DAYS']=implode(', ',$point_days_title);
+        $rule=SQLSelectOne("SELECT ID FROM security_rules WHERE OBJECT_TYPE='spoint' AND OBJECT_ID=".$point_item['ID']);
+        if ($rule['ID']) {
+            $point_item['HAS_RULE']=1;
+        }
     }
     $out['POINTS']=$points;
 }

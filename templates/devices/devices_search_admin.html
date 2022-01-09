@@ -32,7 +32,7 @@
 
  <div class="form-group ">
   <select name="location_id" class="form-control" onchange="this.form.submit();">
-   <option value=""><#LANG_LOCATION#>
+   <option value=""><#LANG_ROOMS#>
     [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])
    [#end LOCATIONS#]
    <option value="manage_locations">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
