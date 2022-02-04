@@ -328,6 +328,7 @@ $this->device_types=array(
         'CLASS'=>'SLeak',
         'PROPERTIES'=>array(
             'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
+            'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
             'blocked'=>array('DESCRIPTION'=>'Is blocked'),
         ),
         'METHODS'=>array(
@@ -484,7 +485,13 @@ $this->device_types=array(
         'CLASS'=>'SLightSensors',
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            'periodMinValue'=>array('DESCRIPTION'=>'Minimum value for period','ONCHANGE'=>'periodMinValueUpdated','KEEP_HISTORY'=>365),
+            'periodTime'=>array('DESCRIPTION'=>'Period to calculate minimum value (seconds)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorPeriodTime'),
             ),
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'periodMinValueUpdated'=>array('DESCRIPTION'=>'Period Min value updated'),
+        ),
     ),
 );
 
