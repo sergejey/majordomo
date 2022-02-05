@@ -34,7 +34,11 @@
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
  [#if NO_NAV!="1"#]
- <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
+ <p>
+    <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a> |
+    <a href="?location_id=[#LOCATION_ID#]"><#LANG_LOCATION#></a> |
+     <a href="?type=[#TYPE#]"><#LANG_TYPE#></a>
+ </p>
  [#endif NO_NAV#]
 
  [#if ARCHIVED="1"#]
@@ -145,7 +149,22 @@
          <div>
          <b><#LANG_METHODS#></b>:
          [#begin SHOW_METHODS#]
-         <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);return false;">[#NAME#] &mdash; [#DESCRIPTION#]</a>
+             <script type="text/javascript">
+                 function runMethod_[#NAME#]() {
+                     if ('[#_CONFIG_REQ_VALUE#]'!='') {
+                         let val = prompt('<#LANG_VALUE#>:');
+                         if (val != null && val!='') {
+                             callMethod('<#LINKED_OBJECT#>.[#NAME#]','value='+encodeURIComponent(val));
+                         }
+                     } else {
+                         callMethod('<#LINKED_OBJECT#>.[#NAME#]');
+                     }
+                     $('#method_[#NAME#]').addClass('btn-success');
+                     setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);
+                     return false;
+                 }
+             </script>
+         <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="return runMethod_[#NAME#]();">[#NAME#] &mdash; [#DESCRIPTION#]</a>
              </div>
          [#end SHOW_METHODS#]
          </div>

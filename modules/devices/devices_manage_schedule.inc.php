@@ -15,10 +15,17 @@ $days=array(
 //$point=SQLSelectOne("SELECT * FROM devices_scheduler_points WHERE ID=".(int)$point_id);
 //$devices = SQLSelect("SELECT devices.* FROM devices")
 $tmp = array_map('current',SQLSelect("SELECT DEVICE_ID FROM devices_scheduler_points GROUP BY DEVICE_ID"));
+
+$type_methods=array();
+
 if (is_array($tmp)) {
     $devices = SQLSelect("SELECT * FROM devices WHERE ID IN (".implode(',',$tmp).") ORDER BY devices.TITLE");
     $total = count($devices);
     for($i=0;$i<$total;$i++) {
+        if (!isset($type_methods[$devices[$i]['TYPE']])) {
+            $all_methods = $this->getAllMethods($devices[$i]['TYPE']);
+            $type_methods[$devices[$i]['TYPE']] = $all_methods;
+        }
         $points=SQLSelect("SELECT * FROM devices_scheduler_points WHERE DEVICE_ID=".(int)$devices[$i]['ID']);
         foreach($points as &$point_item) {
             $point_days=explode(',',$point_item['SET_DAYS']);
@@ -31,6 +38,9 @@ if (is_array($tmp)) {
             $rule=SQLSelectOne("SELECT ID FROM security_rules WHERE OBJECT_TYPE='spoint' AND OBJECT_ID=".$point_item['ID']);
             if ($rule['ID']) {
                 $point_item['HAS_RULE']=1;
+            }
+            if (isset($type_methods[$devices[$i]['TYPE']][$point_item['LINKED_METHOD']]['DESCRIPTION'])) {
+                $point_item['LINKED_METHOD']=$type_methods[$devices[$i]['TYPE']][$point_item['LINKED_METHOD']]['DESCRIPTION'];
             }
             /*
             foreach($out['SHOW_METHODS'] as $method) {

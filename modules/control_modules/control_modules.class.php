@@ -139,18 +139,21 @@ class control_modules extends module
 			//Получим конфиг модуля
 			
 			include_once(DIR_MODULES . $name . '/' . $name . '.class.php');
-			$module = $name;
-			$module = new ${module}();
-			
+			$module = new $name();
+
 			$genConfig = [];
 			$iter = 0;
-			
-			foreach($module->getConfig() as $key => $value) {
-				$genConfig[$iter]['KEY'] = $key;
-				$genConfig[$iter]['VALUE'] = $value;
-				$iter++;
-			}
-			
+
+			$config = $this->getConfig();
+			if (is_array($config)) {
+                foreach($config as $key => $value) {
+                    $genConfig[$iter]['KEY'] = $key;
+                    $genConfig[$iter]['VALUE'] = $value;
+                    $iter++;
+                }
+
+            }
+
 			$out['MODULE_CONFIG'] = $genConfig;
 			
 			//Выгружаем инфо из коннекта

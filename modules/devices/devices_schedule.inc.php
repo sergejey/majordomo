@@ -3,7 +3,6 @@
 
 $point_id=gr('point_id');
 
-
 if ($point_id) {
     $point=SQLSelectOne("SELECT * FROM devices_scheduler_points WHERE ID=".(int)$point_id);
     if ($this->mode=='update') {
@@ -14,6 +13,7 @@ if ($point_id) {
             $out['ERR_LINKED_METHOD']=1;
             $ok=0;
         }
+        $point['VALUE']=gr('value','trim');
         $set_time=gr('hour').':'.gr('minute');
         $set_days=gr('set_days');
         if (!isset($set_days[0])) {

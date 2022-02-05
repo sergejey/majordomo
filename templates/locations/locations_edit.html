@@ -1,22 +1,9 @@
 <!--#
  @version 0.3 (auto-set)
 #-->
-﻿<!-- Table 'locations' edit -->
-<ul class="breadcrumb">
-<li> 
-<a href="?"><#LANG_HOME#></a>
-</li>
-<span class="divider">/</span>
-<li class="active">
-[#if ID=""#]
-<#LANG_NEW_RECORD#>
-[#else#]
-<#LANG_EDIT_RECORD#>
-[#endif#]
-</li>
-</ul>
+<!-- Table 'locations' edit -->
 
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form">
 [#if OK#]
     <div class="alert alert-success"><#LANG_DATA_SAVED#></font></div>
 [#endif OK#]
@@ -25,18 +12,104 @@
 [#endif ERR#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
-        <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+        <label class="control-label" for="inputTitle"><#LANG_TITLE#>:<font color="red">*</font></label>
+        <input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true">
 </div>
 
     <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputPriority"><#LANG_PRIORITY#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="priority" value="[#PRIORITY#]"></div>
+        <label class="control-label" for="inputPriority"><#LANG_PRIORITY#>:</label>
+        <input type="text"  class="form-control"  name="priority" value="[#PRIORITY#]">
     </div>
 
+    [#begin PROPERTIES#]
+    <div class="form-group">
+        <label>
+            [#DESCRIPTION#]:
+            [#if CONFIG_HELP!=""#]<#LANG_HCB#>[#CONFIG_HELP#]<#LANG_HCE#>[#endif#]
+        </label>
+        <div>
+            [#if CONFIG_TYPE="readonly"#]
+            [#VALUE#]
+            [#endif#]
+            [#if CONFIG_TYPE="rgb"#]
+            <script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
+            <link rel='stylesheet' href='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.css' />
+            <input type="text" value="[#VALUE#]" name="[#NAME#]_value" id="[#NAME#]_value" class="form-control colorpicker">
+            <script>
+                $("#[#NAME#]_value").spectrum({
+                    preferredFormat: "hex",
+                    showInput: true,
+                    chooseText: "OK",
+                    cancelText: "<#LANG_CANCEL#>"
+                });
+            </script>
+            [#endif#]
+            [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]
+            <input type="text" value="[#VALUE#]" name="[#NAME#]_value" class="form-control">
+            [#endif#]
+            [#if CONFIG_TYPE="yesno"#]
+            <input type="radio" value="1" name="[#NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
+            <input type="radio" value="0" name="[#NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+            [#endif#]
+
+            [#if CONFIG_TYPE="html"#]
+            <textarea name="[#NAME#]_value" id="data" rows="5" cols="50" class="form-control">[#VALUE#]</textarea>
+            [#module name="blockly_code" code_field="data" action="" type="html"#]
+
+            [#endif#]
+
+            [#if CONFIG_TYPE="select"#]
+            <select name="[#NAME#]_value" class="form-control">
+                <option value=""></option>
+                [#begin OPTIONS#]
+                <option value="[#VALUE#]"[#if VALUE="<#PROPERTIES.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
+                [#end OPTIONS#]
+            </select>
+            [#endif#]
+
+            [#if CONFIG_TYPE="multi_select"#]
+            [#begin OPTIONS#]
+            <input type="checkbox" name="<#PROPERTIES.NAME#>_value[]" value="[#VALUE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]<br/>
+            [#end OPTIONS#]
+            </select>
+            [#endif#]
+
+            [#if CONFIG_TYPE="style_image"#]
+            <div id="style_image_set_[#NAME#]">
+                [#if VALUE!=""#]
+                <img src="[#VALUE#]" id="style_image_preview">
+                <a href="#" onclick="return setStyleImage_[#NAME#]('');"><i class="glyphicon glyphicon-remove"></i></a>
+                [#endif#]
+            </div>
+            <input type="hidden" name="[#NAME#]_value" id="[#NAME#]_value" value="[#VALUE#]">
+            <script type="text/javascript">
+                function setStyleImage_[#NAME#](url) {
+                    $('#[#NAME#]_value').val(url);
+                    if (url!='') {
+                        $('#style_image_set_[#NAME#]').html('<img src="'+url+'"/>');
+                    } else {
+                        $('#style_image_set_[#NAME#]').html('');
+                    }
+                    return false;
+                }
+            </script>
+            [#begin FOLDERS#]
+            <a href="#" onclick="$('.style_images').hide();$('#style_[#TITLE#]').show();return false;">[#TITLE#]</a>
+            [#end FOLDERS#]
+            [#begin FOLDERS#]
+            <div id="style_[#TITLE#]" class="style_images" style="display:none">
+                [#begin STYLES#]
+                <a href="#" onclick="return setStyleImage_<#PROPERTIES.NAME#>('<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]');"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]"></a>
+                [#end STYLES#]
+            </div>
+            [#end FOLDERS#]
+            [#endif#]
+        </div>
+
+    </div>
+    [#end PROPERTIES#]
 
 <div class="form-group">
-     <div class="col-lg-offset-3 col-lg-5">
  [#if ID!=""#]
  <input type="submit" name="subm" class="btn btn-default btn-primary"  value="<#LANG_UPDATE#>">
  [#else ID#]
@@ -44,7 +117,7 @@
  [#endif ID#]
  &nbsp;
  <a href="?" class="btn btn-default" ><#LANG_CANCEL#></a>
- </div>
+
 </div>
 <input type="hidden" name="id" value="<#ID#>">
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">

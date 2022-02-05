@@ -8,7 +8,8 @@ $this->device_types=array(
             'temperature'=>array('DESCRIPTION'=>'Temperature'),
             'humidity'=>array('DESCRIPTION'=>'Humidity'),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
-            'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
+            'IdleDelay'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdRoomIdleDelay'),
+            'turnOffLightsOnIdle'=>array('DESCRIPTION'=>LANG_DEVICES_TURNOFF_LIGHTS_ON_IDLE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdRoomIdleTurnoffLights'),
         ),
         'METHODS'=>array(
             'onActivity'=>array('DESCRIPTION'=>'Rooms Activity'),
@@ -144,7 +145,7 @@ $this->device_types=array(
             'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
-            'setTargetTemperature'=>array('DESCRIPTION'=>'Set target temperature'),
+            'setTargetTemperature'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE,'_CONFIG_SHOW'=>1,'_CONFIG_REQ_VALUE'=>1),
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),

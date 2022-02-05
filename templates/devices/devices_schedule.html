@@ -25,14 +25,19 @@
                 [#begin POINTS#]
                 <tr>
                     <td>
-                        <a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&point_id=[#ID#]">[#SET_TIME#]</a>
+                        <b><a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&point_id=[#ID#]">[#SET_TIME#]</a></b>
                         [#if HAS_RULE#]
                         <i class="glyphicon glyphicon-lock"></i>
                         [#endif#]
                     </td>
+
                     <td>[#SET_DAYS#]</td>
-                    <td>[#LINKED_METHOD#]</td>
-                    <td>
+                    <td><b>[#LINKED_METHOD#]
+                        [#if VALUE!=""#]([#VALUE#])[#endif#]
+                    </b>
+                    </td>
+
+                    <td class="text-right">
                         <a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&point_id=[#ID#]" class="btn btn-default btn-sm"><#LANG_EDIT#></a>
                         <a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&delete_id=[#ID#]" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');" class="btn btn-default btn-sm"><#LANG_DELETE#></a>
                     </td>
