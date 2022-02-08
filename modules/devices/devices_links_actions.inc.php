@@ -6,11 +6,15 @@ $debug_sync = 0;
 
 //DebMes("homebridgesync for ".$device1['TITLE'],'homebridge');
 
-if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
+if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
     $payload = array();
     $payload['name'] = $device1['LINKED_OBJECT'];
     $payload['service_name'] = $device1['TITLE'];
+
+    $payload2 = array();
+    $payload2['name'] = $device1['LINKED_OBJECT'];
+    $payload2['service_name'] = $device1['TITLE'];
 
     //DebMes("Homebridge Update ".$device1['LINKED_OBJECT']." (".$device1['TYPE']."): ".gg($device1['LINKED_OBJECT'] . '.status')." / ".gg($device1['LINKED_OBJECT'] . '.value'),'homebridge');
 
@@ -32,6 +36,23 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
             $payload['service'] = 'TemperatureSensor';
             $payload['characteristic'] = 'CurrentTemperature';
             $payload['value'] = gg($device1['LINKED_OBJECT'] . '.value');
+            break;
+        case 'sensor_co2':
+            $payload['service'] = 'CarbonDioxideSensor';
+            $payload['characteristic'] = 'CarbonDioxideLevel';
+            $payload['value'] = gg($device1['LINKED_OBJECT'] . '.value');
+
+            $max_level=gg($device1['LINKED_OBJECT'] . '.maxValue');
+            if (!$max_level) {
+                $max_level=1200;
+            }
+            $payload2['service'] = 'CarbonDioxideSensor';
+            $payload2['characteristic'] = 'CarbonDioxideDetected';
+            if ($payload['value']>=$max_level) {
+                $payload2['value'] = "1";
+            } else {
+                $payload2['value'] = "0";
+            }
             break;
         case 'sensor_humidity':
             $payload['service'] = 'HumiditySensor';
@@ -218,6 +239,12 @@ if (!$device1['SYSTEM_DEVICE'] && $this->isHomeBridgeAvailable()) {
         }
         sg('HomeBridge.to_set', json_encode($payload));
     }
+    if (isset($payload2['service'])) {
+        if ($debug_sync) {
+            DebMes("MQTT to_set : " . json_encode($payload2), 'homebridge');
+        }
+        sg('HomeBridge.to_set', json_encode($payload2));
+    }
 }
 endMeasure('homebridge_update');
 
@@ -242,6 +269,10 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         } elseif ($settings['action_type'] == 'switch') {
             $action_string = 'callMethodSafe("' . $object . '.switch' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'close') {
+            $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'open') {
+            $action_string = 'callMethodSafe("' . $object . '.open' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
         if ($settings['action_delay'] != '') {
             $settings['action_delay'] = (int)processTitle($settings['action_delay']);
@@ -280,6 +311,10 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         } elseif ($settings['action_type'] == 'turnon' && !gg($object . '.status')) {
             $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'open' && gg($object . '.status')) {
+            $action_string = 'callMethodSafe("' . $object . '.open' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'close' && !gg($object . '.status')) {
+            $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
         if ($settings['condition_type'] == 'above' && $value >= (float)$settings['condition_value']) {
             //do the action

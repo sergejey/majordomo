@@ -133,13 +133,14 @@
     }
    }
   }
+
   outHash($rec, $out);
 
-  if ($rec['CLASS_ID']) {
+  if ($this->class_id) {
    //echo "zz";exit;
     include_once(DIR_MODULES.'objects/objects.class.php');
     $obj=new objects();
-    $methods=$obj->getParentMethods($rec['CLASS_ID'], '', 1);
+    $methods=$obj->getParentMethods($this->class_id, '', 1);
     $out['METHODS']=$methods;
 
   }

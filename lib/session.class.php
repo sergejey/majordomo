@@ -73,8 +73,10 @@ class session
 
          $this->started = 1;
          
-         Define("SESSION_ID", session_name() . "=" . session_id());
-         Define("SID", session_name() . "=" . session_id());
+         if (!defined('SID')) {
+		       Define("SESSION_ID", session_name() . "=" . session_id());
+             Define("SID", session_name() . "=" . session_id());
+		   }
       }
    }
 

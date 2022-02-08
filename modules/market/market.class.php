@@ -147,7 +147,7 @@ class market extends module
         if (!$this->mode && $mode) {
             $this->mode = $mode;
         }
-
+		
         $this->can_be_updated = array();
         $this->can_be_updated_new = array();
         $this->have_updates = array();
@@ -183,6 +183,7 @@ class market extends module
             global $mode2;
             global $name;
             global $names;
+            global $value;
 
             if (is_array($names)) {
                 $out['NAMES'] = urlencode(implode(',', $names));
@@ -190,6 +191,14 @@ class market extends module
             $out['NAME'] = urlencode($name);
 
             $out['MODE2'] = $mode2;
+			
+			if($mode2 == 'dontupdate' && $name) {
+				if(!$value) {
+					$this->redirect(SERVER_URL."/panel/market.html");
+				}
+				$this->dontupdate($name, $value);
+			}
+			
             return;
         }
 
@@ -204,6 +213,11 @@ class market extends module
             }
             exit;
         }
+		
+		if ($this->ajax && $_GET['op'] == 'readNoty' && !empty($this->id)) {
+            echo $this->readnotification($this->id);
+            exit;
+        }
 
         if ($this->ajax && $_GET['op'] == 'news') {
             $result = $this->marketRequest('op=news', 15*60); //15*60
@@ -214,7 +228,7 @@ class market extends module
 				echo '<ul class="list-group">';
                 for ($i = 0; $i < 7; $i++) {
 					if($i%2 == 0) {
-						$bgColor = 'background-color: #f5f5f5;';
+						$bgColor = 'strip';
 					} else {
 						$bgColor = '';
 					}
@@ -247,7 +261,7 @@ class market extends module
 						$body = htmlspecialchars($data[$i]['BODY']);
 					}
 					
-					echo '<li class="list-group-item" style="margin-bottom: 5px;'.$bgColor.$actualNews.'">';
+					echo '<li class="list-group-item '.$bgColor.'" style="margin-bottom: 5px;'.$actualNews.'">';
 					echo '<span class="badge">'.date('d.m.Y H:i:s', $data[$i]['ADDED_TM']).'</span>';
 					echo '<div onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" style="cursor:pointer;">'.$actualNews_Label.$postType.' '.htmlspecialchars($data[$i]['TITLE']).'</div>';			
 					echo '<div class="fullTextNewsClass" id="news_title_'.$i.'" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">'.$body.' '.$linkDetail.'</blockquote></div>';
@@ -409,6 +423,8 @@ class market extends module
                         if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
                             $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                         }
+						
+						//var_dump($rec["LATEST_VERSION"]);
                         /*
                         if (in_array($rec['MODULE_NAME'], $names)) {
                             $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
@@ -856,7 +872,12 @@ class market extends module
      *
      * @access public
      */
-    function uninstallPlugin($name, $frame = 0)
+    function dontupdate($name, $value) {
+		SQLExec("UPDATE plugins SET CURRENT_VERSION = '".DBSafe($value)."' WHERE MODULE_NAME = '".DBSafe($name)."' LIMIT 1");
+		$this->redirect(SERVER_URL."/panel/market.html");
+	}
+	
+	function uninstallPlugin($name, $frame = 0)
     {
         if ($frame) {
             $this->echonow("Removing module '$name' from database ... ");

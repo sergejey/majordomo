@@ -82,7 +82,7 @@ $(document).ready(function() {
 					<div class="progress-bar progress-bar-success" id="reloadProgress" role="progressbar" data-now="0" style=""></div>
 				</div>
 			</div>
-			<div id="xrayContent" style="padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;margin: 10px;[#endif#]"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+			<div id="xrayContent" style="overflow-wrap: anywhere;padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;margin: 10px;[#endif#]"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 		</div>
 	</div>
 	</div>
@@ -156,7 +156,7 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'performance') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 30%;">OPERATION</th><th style="width: 20%;">COUNTER</th><th style="width: 15%;">TIME</th><th>AV.TIME</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tr><th style="width: 30%;">OPERATION</th><th style="width: 20%;">COUNTER</th><th style="width: 15%;">TIME</th><th>AV.TIME</th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].OPERATION+'</td><td>'+dataJSON.LIST[i].COUNTER+'</td><td>'+dataJSON.LIST[i].TIME+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].AVTIME+'</td></tr>');
@@ -170,7 +170,7 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'dead') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;">TITLE</th><th style="width: 40%;">DESCRIPTION</th><th style="width: 15%;">UPDATED</th><th>LOCATION</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tr><th style="width: 20%;">TITLE</th><th style="width: 40%;">DESCRIPTION</th><th style="width: 15%;">UPDATED</th><th>LOCATION</th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].TITLE+'</td><td>'+dataJSON.LIST[i].DESCRIPTION+'</td><td>'+dataJSON.LIST[i].UPDATED+'</td><td>'+dataJSON.LIST[i].LOCATIONTITLE+'</td></tr>');
@@ -191,7 +191,7 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'services') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="table table-condensed"><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						if(dataJSON.LIST[i].ALIVE == 1) {
@@ -213,7 +213,7 @@ $(document).ready(function() {
 					}
 				} else if(dataJSON.MODE == 'logs') {
 					if(!dataJSON.CONTENT) {
-						$('#xrayContent').html('Нет данных для отображения!');
+						$('#xrayContent').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> Console is empty... Wait new data...');
 					} else {
 						$('#xrayContent').html(dataJSON.CONTENT);
 					}

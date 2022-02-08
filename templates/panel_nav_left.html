@@ -1,0 +1,79 @@
+<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
+    <div class="panel-group">
+        <div id="hint_alert_hide_hint2" style="display:none;">
+            <div class="hidden-xs">
+                <div class="alert" id="hideMenuHint" onClick="return leftPanelToggle();" style="margin-bottom: 0px;cursor:pointer;font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;">
+                    <i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
+                    <#LANG_NEWDASH_HIDE_MENU_HINT#> <i class="glyphicon glyphicon-resize-horizontal"></i>
+                </div>
+                <div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;margin-bottom:20px"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+            </div>
+        </div>
+        [#begin SUB_MODULES#]
+        [#if NEW_CATEGORY#]
+        <div class="panel panel-default">
+            <div class="panel-heading" onClick="return toggleCategory('[#CATEGORY_ID#]');" style="cursor: pointer;">
+                <h4 class="panel-title">
+                    [#CATEGORY#]
+                </h4>
+            </div>
+            <div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
+                <div class="panel-body" style="padding: 5px;">
+                    <ul class="nav nav-list">
+                        [#endif NEW_CATEGORY#]
+                        [#if !DENIED#]
+                        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
+                            <a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#]
+                                [#if PLUGINS_NOTY_COUNT != 0#]
+                                <div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="right" data-html="true" data-content="
+											<script>
+											function showNotyDate(id) {
+												$('#notyAddtimeBlock_'+id).show();
+												$('#notyMsgBlock_'+id).hide();
+											}
+											function hideNotyDate(id) {
+												$('#notyMsgBlock_'+id).show();
+												$('#notyAddtimeBlock_'+id).hide();
+											}
+											</script>
+
+											<div style='min-width: 25rem;'>
+											<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
+											<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
+											<div class='clearfix'></div>
+											<hr style='margin: 0px 0px 5px 0px;'>
+											</div>
+
+											<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
+											[#begin PLUGINS_NOTY#]
+											<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
+												<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
+
+												<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
+												<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
+												<div class='clearfix'></div>
+											</div>
+											[#end PLUGINS_NOTY#]
+											<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
+											</div>
+											" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
+                                [#endif PLUGINS_NOTY#]
+                            </a>
+                        </li>
+                        [#endif DENIED#]
+                        [#if LAST_IN_CATEGORY#]
+                    </ul>
+                </div>
+            </div>
+        </div>
+        [#endif#]
+        [#end SUB_MODULES#]
+    </div>
+    [#begin SUB_MODULES#]
+    [#if NEW_CATEGORY#]
+    <script language='javascript'>
+        checkCategory('[#CATEGORY_ID#]');
+    </script>
+    [#endif NEW_CATEGORY#]
+    [#end SUB_MODULES#]
+</div>

@@ -274,6 +274,9 @@ class plans extends module
     function getPreview($id) {
         $out = array();
         $rec=SQLSelectOne("SELECT * FROM plans WHERE ID=".(int)$id);
+
+        if (!$rec['ID']) return "Plan ID=$id not found.";
+
         $states = SQLSelect("SELECT * FROM plan_states WHERE PLAN_ID=".(int)$rec['ID']);
         foreach($states as &$state) {
             $this->processState($state);

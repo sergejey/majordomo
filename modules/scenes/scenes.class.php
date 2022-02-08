@@ -1169,11 +1169,15 @@ class scenes extends module
                 $state = array();
                 $state['ID'] = 'element_' . ($elements[$ie]['ID']);
                 $state['ELEMENT_ID'] = $elements[$ie]['ID'];
-                $state['HTML'] = getObjectClassTemplate($device_rec['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
-                $state['TYPE'] = $elements[$ie]['TYPE'];
                 $state['MENU_ITEM_ID'] = 0;
                 $state['HOMEPAGE_ID'] = 0;
                 $state['OPEN_SCENE_ID'] = 0;
+                $state['TYPE'] = $elements[$ie]['TYPE'];
+                if (!$device_rec['ARCHIVED']) {
+                    $state['HTML'] = getObjectClassTemplate($device_rec['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
+                } else {
+                    $state['HTML']='';
+                }
                 $states = array($state);
             } else {
                 $states = SQLSelect("SELECT elm_states.*,elements.TYPE  FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND ELEMENT_ID='" . $elements[$ie]['ID'] . "' ORDER BY elm_states.PRIORITY DESC, elm_states.TITLE");
@@ -1255,6 +1259,7 @@ class scenes extends module
         $totale = count($elements);
 
         for ($ie = 0; $ie < $totale; $ie++) {
+
             if ($elements[$ie]['CSS_STYLE']) {
                 $this->all_styles[$elements[$ie]['CSS_STYLE']] = 1;
                 if (!is_array($options) || $options['ignore_css_image'] != 1) {

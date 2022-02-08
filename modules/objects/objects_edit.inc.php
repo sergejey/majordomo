@@ -174,14 +174,21 @@ if ($this->tab == 'properties') {
         $props[$i]['VALUE'] = $value['VALUE'];
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
         $props[$i]['SOURCE'] = $value['SOURCE'];
-        $props[$i]['LINKED_MODULES'] = $value['LINKED_MODULES'];
+        $props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
+		
+		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
+		if(is_array($value['LINKED_MODULES'])) {
+			foreach($value['LINKED_MODULES'] as $prop_link) {
+				if(!$prop_link) break; 
+				$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
+			}
+		}
     }
     if ($this->mode == 'update') {
         $this->redirect("?view_mode=" . $this->view_mode . "&id=" . $rec['ID'] . "&tab=" . $this->tab);
     }
-
+	
     $out['PROPERTIES'] = $props;
-
 }
 // step: methods
 if ($this->tab == 'methods') {
@@ -243,22 +250,26 @@ if ($this->tab == 'methods') {
 
             if ($run_type == 'code' && $my_meth['CODE'] != '') {
                 //echo $content;
-                
-				$errors = php_syntax_error($my_meth['CODE']);
-		
-				if ($errors) {
-					$out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
-					$out['ERR_CODE'] = 1;
-					$errorStr = explode('Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
-					$errorStr = explode('Errors parsing', $errorStr[1]);
-					$errorStr = explode(' in ', $errorStr[0]);
-					//var_dump($errorStr);
-					$out['ERRORS'] = $errorStr[0];
-					$ok = 0;
-					$out['OK'] = $ok;
-					$out['ERR_OLD_CODE'] = $old_code;
-				}
-				
+                if (!defined('PYTHON_PATH') and !isItPythonCode($my_meth['CODE'])) {
+
+           
+                    $errors = php_syntax_error($my_meth['CODE']);
+			
+                    if ($errors) {
+                        $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+                        $out['ERR_CODE'] = 1;
+                        $errorStr = explode('Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
+                        $errorStr = explode('Errors parsing', $errorStr[1]);
+                        $errorStr = explode(' in ', $errorStr[0]);
+                        //var_dump($errorStr);
+                        $out['ERRORS'] = $errorStr[0];
+                        $ok = 0;
+                        $out['OK'] = $ok;
+                        $out['ERR_OLD_CODE'] = $old_code;
+                    }
+                } else {
+                    // chek python code
+                }					
                 $out['CODE'] = $my_meth['CODE'];
             }
 

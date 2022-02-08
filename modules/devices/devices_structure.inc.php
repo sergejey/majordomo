@@ -8,7 +8,8 @@ $this->device_types=array(
             'temperature'=>array('DESCRIPTION'=>'Temperature'),
             'humidity'=>array('DESCRIPTION'=>'Humidity'),
             'SomebodyHere'=>array('DESCRIPTION'=>'Somebody in the room'),
-            'IdleDelay'=>array('DESCRIPTION'=>'Nobody here idle delay'),
+            'IdleDelay'=>array('DESCRIPTION'=>LANG_DEVICES_MOTION_TIMEOUT,'_CONFIG_TYPE'=>'text','_CONFIG_HELP'=>'SdRoomIdleDelay'),
+            'turnOffLightsOnIdle'=>array('DESCRIPTION'=>LANG_DEVICES_TURNOFF_LIGHTS_ON_IDLE,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdRoomIdleTurnoffLights'),
         ),
         'METHODS'=>array(
             'onActivity'=>array('DESCRIPTION'=>'Rooms Activity'),
@@ -89,6 +90,46 @@ $this->device_types=array(
         'PARENT_CLASS'=>'SControllers',
         'CLASS'=>'SRelays'
     ),
+    'vacuum'=>array(
+        'TITLE'=>LANG_DEVICES_VACUUM,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SVacuums',
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+        )
+    ),
+    'media'=>array(
+        'TITLE'=>LANG_DEVICES_MEDIA,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'SMedias',
+        'PROPERTIES'=>array(
+            'volume'=>array('DESCRIPTION'=>'Volume'),
+            'source_num'=>array('DESCRIPTION'=>'Source number'),
+            'channel_num'=>array('DESCRIPTION'=>'Channel number'),
+        ),
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+            'setSource'=>array('DESCRIPTION'=>'Set source'),
+            'setChannel'=>array('DESCRIPTION'=>'Set channel'),
+            'setVolume'=>array('DESCRIPTION'=>'Set volume'),
+        )
+    ),
+    'tv'=>array(
+        'TITLE'=>LANG_DEVICES_TV,
+        'PARENT_CLASS'=>'SControllers',
+        'CLASS'=>'STVs',
+        'PROPERTIES'=>array(
+            'volume'=>array('DESCRIPTION'=>'Volume'),
+            'source_num'=>array('DESCRIPTION'=>'Source number'),
+            'channel_num'=>array('DESCRIPTION'=>'Channel number'),
+        ),
+        'METHODS'=>array(
+            'pause'=>array('DESCRIPTION'=>'Pause','_CONFIG_SHOW'=>1),
+            'setSource'=>array('DESCRIPTION'=>'Set source'),
+            'setChannel'=>array('DESCRIPTION'=>'Set channel'),
+            'setVolume'=>array('DESCRIPTION'=>'Set volume'),
+        )
+    ),
     'thermostat'=>array(
         'TITLE'=>LANG_DEVICES_THERMOSTAT,
         'PARENT_CLASS'=>'SControllers',
@@ -104,7 +145,7 @@ $this->device_types=array(
             'disabled' =>array('DESCRIPTION'=>'Disabled'),
         ),
         'METHODS'=>array(
-            'setTargetTemperature'=>array('DESCRIPTION'=>'Set target temperature'),
+            'setTargetTemperature'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE,'_CONFIG_SHOW'=>1,'_CONFIG_REQ_VALUE'=>1),
             'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
             'statusUpdated'=>array('DESCRIPTION'=>'Status Updated'),
             'tempUp'=>array('DESCRIPTION'=>'Increase target temperature'),
@@ -122,7 +163,7 @@ $this->device_types=array(
         'CLASS'=>'SAirConditioners',
         'PROPERTIES'=>array(
             'value'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TEMP,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
-            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'_CONFIG_DEFAULT'=>22),
+            'currentTargetValue'=>array('DESCRIPTION'=>LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP,'DATA_KEY'=>1,'KEEP_HISTORY'=>365,'_CONFIG_DEFAULT'=>22),
             'tempStep'=>array('DESCRIPTION'=>LANG_DEVICES_AC_TEMP_STEP,'_CONFIG_TYPE'=>'text'),
             'fanSpeed'=>array('DESCRIPTION'=>'Fan Speed','_CONFIG_DEFAULT'=>'auto','ONCHANGE'=>'fanSpeedUpdated'),
             'fanSpeedModes'=>array('DESCRIPTION'=>LANG_DEVICES_AC_FAN_SPEED,
@@ -158,6 +199,7 @@ $this->device_types=array(
             'levelWork'=>array('DESCRIPTION'=>'Brightness level (work)','ONCHANGE'=>'levelWorkUpdated'),
             'minWork'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_MIN_WORK,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
             'maxWork'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_MAX_WORK,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdDimmerMinMax'),
+            'switchLevel'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SWITCH_LEVEL,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSwitchLevel'),
             'setMaxTurnOn'=>array('DESCRIPTION'=>LANG_DEVICES_DIMMER_SET_MAX,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdDimmerSetMax'),
             ),
         'METHODS'=>array(
@@ -257,6 +299,7 @@ $this->device_types=array(
             'isActivity'=>array('DESCRIPTION'=>LANG_DEVICES_IS_ACTIVITY,'_CONFIG_TYPE'=>'yesno','_CONFIG_HELP'=>'SdIsActivity'),
             'notify_status'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_STATUS,'_CONFIG_TYPE'=>'yesno'),
             'notify_nc'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_NOT_CLOSED,'_CONFIG_TYPE'=>'yesno'),
+            'support_level'=>array('DESCRIPTION'=>LANG_DEVICES_OPENABLE_SUPPORT_LEVEL,'_CONFIG_TYPE'=>'yesno'),
             'openType'=>array('DESCRIPTION'=>LANG_DEVICES_OPENTYPE,
                 '_CONFIG_TYPE'=>'select','_CONFIG_HELP'=>'SdOpenType',
                 '_CONFIG_OPTIONS'=>
@@ -268,9 +311,13 @@ $this->device_types=array(
             'notify_msg_opening'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_OPENING,'_CONFIG_TYPE'=>'text'),
             'notify_msg_closing'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_CLOSING,'_CONFIG_TYPE'=>'text'),
             'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
+            'level'=>array('DESCRIPTION'=>'Current level', 'ONCHANGE'=>'levelUpdated'),
+            'levelSaved'=>array('DESCRIPTION'=>'Latest level saved'),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
+            'setLevel'=>array('DESCRIPTION'=>'Set open level'),
+            'levelUpdated'=>array('DESCRIPTION'=>'Level Updated'),
             'switch'=>array('DESCRIPTION'=>'Switch'),
             'open'=>array('DESCRIPTION'=>'Open','_CONFIG_SHOW'=>1),
             'close'=>array('DESCRIPTION'=>'Close','_CONFIG_SHOW'=>1),
@@ -282,6 +329,7 @@ $this->device_types=array(
         'CLASS'=>'SLeak',
         'PROPERTIES'=>array(
             'notify_eliminated'=>array('DESCRIPTION'=>LANG_DEVICES_NOTIFY_ELIMINATED,'_CONFIG_TYPE'=>'yesno'),
+            'notify_msg_reminder'=>array('DESCRIPTION'=>LANG_DEVICES_MSG_REMINDER,'_CONFIG_TYPE'=>'text'),
             'blocked'=>array('DESCRIPTION'=>'Is blocked'),
         ),
         'METHODS'=>array(
@@ -438,7 +486,13 @@ $this->device_types=array(
         'CLASS'=>'SLightSensors',
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
+            'periodMinValue'=>array('DESCRIPTION'=>'Minimum value for period','ONCHANGE'=>'periodMinValueUpdated','KEEP_HISTORY'=>365),
+            'periodTime'=>array('DESCRIPTION'=>'Period to calculate minimum value (seconds)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorPeriodTime'),
             ),
+        'METHODS'=>array(
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'periodMinValueUpdated'=>array('DESCRIPTION'=>'Period Min value updated'),
+        ),
     ),
 );
 

@@ -1,126 +1,138 @@
-<table width=100% border=0><tr>
-<td valign=top>
-<!-- results -->
-[#if RESULT#]
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-lg-6 col-md-5 col-sm-12 col-xs-12">
+		<script>
+		function filterProp() {
+			term = $('#filterProp').val().toLowerCase();
+			if(term.length <= 2) {
+				$('ul.classSearch>li').attr('style', 'padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;');
+				$('ul.classSearch>li').removeAttr('id');
+				return;
+			}
+			$('ul.classSearch>li').each(function(index) {
+				textForSearch = $(this).children().children().text().trim();
+				searchResult = textForSearch.toLowerCase().indexOf(term);
+				
+				if(searchResult >= 0) {
+					$(this).attr('style', 'padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;color: red;background: #fff2f2;');
+					$($(this).prev()).attr('id', 'foundSearch');
+				} else {
+					$(this).attr('style', 'padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;');
+					$(this).removeAttr('id');
+				}
+			});
+			
+			if($('#foundSearch').length == 1) {
+				$('html, body').stop().animate({ 
+					scrollTop: $('#foundSearch').offset().top 
+				}, 1000);
+			}
+		 }
+		 
+		function toggleClass(sub_id) {
+			splitSub = sub_id.split(',');
+			splitSubLength = splitSub.length-1;
+			
+			$('#sub_'+splitSub[0]).collapse('toggle');
+			
+			if($('#sub_'+splitSub[0]).attr('style') == 'height: 0px;') {
+				console.log('vis');
+				$.cookie("sub_classes_"+splitSub[0], '0');
+			} else {
+				console.log('hid');
+				$.cookie("sub_classes_"+splitSub[0], '1');
+			}
+			
+			if(splitSubLength != 1) {
+				$.each(splitSub,function(index,value){
+					if($('#sub_'+splitSub[0]).is(':hidden')) {
+						$('#sub_'+value).collapse('hide');
+					}		
+				});
+			}
+		}
+		</script>
+		<input type="text" class="form-control" id="filterProp" oninput="filterProp();" placeholder="<#LANG_NEWMARKET_SEARCH_INPUT_PLACEHOLDER#>">
+	</div>
+	<div class="col-lg-6 col-md-7 col-sm-12 col-xs-12 text-right" style="margin-bottom: 15px;">
+		<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
+		<a href="?view_mode=edit_classes" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_CLASS#></a>
+		<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
+		<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#OBJECTS.CLASS_ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]" class="btn btn-success" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_OBJECT#></a>
+	</div>
+</div>
 
-<script language="javascript">
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-md-12" style="margin-bottom: 15px;">
+		<form action="?" method="post" name="frmList_classes" style="padding:0px">
+			[#begin RESULT#]
+			<script language="javascript">
+			$(function() {
+				if ($.cookie("sub_classes_[#ID#]") == '1') {
+					$('#sub_[#ID#]').collapse('show');
+				}
+			});
+			</script>
+			<div class="panel panel-[#if TITLE == 'SDevices'#]primary[#else#][#if TITLE == 'Computer' OR TITLE == 'systemStates' OR TITLE == 'OperationalModes' OR TITLE == 'Timer'#]danger[#else#]default[#endif#][#endif#]" style="margin-bottom: 5px;[#if RESULT AND LEVEL_PAD!=0#]margin:10px;[#endif#]">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('[#if SUB_LIST != ID#][#ID#],[#endif#][#SUB_LIST#]');" style="cursor: pointer;[#if CAN_DELETE="1"#]opacity: 0.3;[#endif#]">
+							<h3 class="panel-title">
+								<i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('[#TITLE#]');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> [#TITLE#] 
+							</h3>
+							[#if DESCRIPTION != ''#]<div style="font-size: 1rem;padding-left: 30px;">[#DESCRIPTION#]</div>[#endif#]
+						</div>
+						<div class="col-lg-4 col-md-4 col-sm-5 col-xs-3 text-right">
+							<div class="btn-group btn-group-xs">
+							<a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-success btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+							
+							<a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
+							<a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm hidden-xs" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
+							<a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm hidden-xs" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
+							<a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm hidden-xs" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
 
-    $(function () {
-        $("a.show-hide-link").click(function () {
-            var id = $(this).data('id');//'#sub' +
-            //$(id).toggle();
-            if ($('.sublist' + id).is(":visible")) {
-                $('.sublist' + id).hide();
-                $('#link' + id).html('+');
-                $.cookie("classes_item" + id, null);
-            } else {
-                $.cookie("classes_item" + id, "1");
-                $('.sublist' + id).show();
-                $('#link' + id).html('-');
-            }
-            return false;
-        });
-    });
-
-
-</script>
-
-
-<!-- search results (list) -->
-<form action="?" method="post" name="frmList_classes" style="padding:0px">
-<table  class="table">
-[#begin RESULT#]
-<tr >
- <td
-    valign="top">
-   <a href="#" id="link[#ID#]" class="show-hide-link btn btn-default btn-sm expand" data-id="[#ID#]">+</a>
-   <b>[#TITLE#]</b>
-   [#if DESCRIPTION!=""#]<i>[#DESCRIPTION#]</i>[#endif DESCRIPTION#]
- </td>
- <td valign="top" align="right">
-
-
-    <a href="?view_mode=edit_classes&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a href="?view_mode=edit_classes&id=[#ID#]&tab=properties" class="btn btn-default btn-sm" title="<#LANG_PROPERTIES#>"><i class="glyphicon glyphicon-th"></i></a>
-    <a href="?view_mode=edit_classes&id=[#ID#]&tab=methods" class="btn btn-default btn-sm" title="<#LANG_METHODS#>"><i class="glyphicon glyphicon-th-list"></i></a>
-    <a href="?view_mode=edit_classes&id=[#ID#]&tab=objects" class="btn btn-default btn-sm" title="<#LANG_OBJECTS#>"><i class="glyphicon glyphicon-th-large"></i></a>
-    <a href="?view_mode=edit_classes&parent_id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EXPAND#>"><i class=""></i><#LANG_EXPAND#></a>
-    
-
-  [#if CAN_DELETE="1"#]
-    <a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif CAN_DELETE#]
-
-  </td>
-</tr>
-
-[#if OBJECTS#]
-<tr class="sublist[#ID#]" style="display:none">
- <td valign="top" colspan="2">  
-  <div>
-   <table border=0>
-         [#begin OBJECTS#]
-         <tr>
-                 <td><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a>
-                     [#if DESCRIPTION!=""#] [#DESCRIPTION#][#endif#]
-                     [#if KEY_DATA!=""#]<i>[#KEY_DATA#]</i>[#endif#]
-                 </td>
-                 <td>&nbsp;</td>
-        </tr>
-        [#if METHODS#]
-         <tr>
-                 <td>&nbsp;</td>
-                 <td>
-                        <small>
-                        
-                        [#begin METHODS#]
-                         <li><a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></li>
-                        [#end METHODS#]
-                
-                        </td>
-        </tr>
-        [#endif METHODS#]
-         [#end OBJECTS#]
-  </table>
-  </div>
- </td>
-</tr>
-  [#endif OBJECTS#]
-[#if RESULT#]
- <tr class="sublist[#ID#]" style="display:none">
- <td style="padding-left:40px" colspan=2>
-  <table  class="table">
-   [#tree RESULT#]
-  </table>
- </td></tr>
-[#endif RESULT#]
-[#end RESULT#]
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_classes">
-</form>
-<!-- / search results (list) -->
-
-<script language="javascript">
-[#begin RESULT#]
- if ($.cookie("classes_item[#ID#]")) {
-  $('.sublist[#ID#]').show();
-  $('#link[#ID#]').html('-');
- }
- [#if RESULT#]
- [#tree RESULT#]
- [#endif RESULT#]
-[#end RESULT#]
-</script>
+							[#if CAN_DELETE="1"#]
+							<a href="?view_mode=delete_classes&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-danger btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
+							[#endif CAN_DELETE#]
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-collapse collapse out" id="sub_[#ID#]">
+					[#if OBJECTS#]
+					<ul class="list-group classSearch">
+						[#begin OBJECTS#]
+						<li style="padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=[#ID#]">[#TITLE#]</a> [#if DESCRIPTION != ''#]<span style="font-size: 1rem;color: gray;vertical-align: middle;">→ [#DESCRIPTION#]</span>[#endif#]
+									[#if KEY_DATA!=""#] → <i>[#KEY_DATA#]</i>[#endif#]
+									
+									[#if METHODS#]
+										<div style="padding-left: 10px">
+										[#begin METHODS#]
+											<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary" style="margin-bottom: 5px;">Методы: <a style="color: white;text-decoration: none;" href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></span></p>
+										[#end METHODS#]
+										</div>
+									[#endif METHODS#]
+								</div>
+							</div>
+						</li>
+						[#end OBJECTS#]
+					</ul>
+					[#endif#]
+					[#tree RESULT#]
+				</div>
+			</div>
+			[#end RESULT#]
+			<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+			<input type="hidden" name="view_mode" value="multiple_classes">
+		</form>
+	</div>
+</div>
 
 
-[#else RESULT#]
-<p align=center>
-<font color="red"><#LANG_NO_RECORDS_FOUND#></font>
-</p>
-[#endif RESULT#]
-<!-- / results -->
-</td></tr></table>
+
+
 
 &nbsp;
 <a href="#" onClick="$('#tools').toggle();return false;" class="btn btn-default"><#LANG_TOOLS#></a>

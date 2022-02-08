@@ -369,6 +369,7 @@ $dictionary = array(
 
 
     'AUTO_UPDATE_PERIOD' => 'Auto update period',
+    'UPDATEARHIVE_DONE' => 'Downloading archive',
     'POLLING_PERIOD' => 'Polling period',
 
 
@@ -380,6 +381,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'On-change Method',
     'METHOD' => 'Method',
     'ONCHANGE_SCRIPT' => 'Script',
+	'ONCHANGE_SCRIPT_EV' => 'scripts',
     'ONCHANGE_CODE' => 'Code',
 
 
@@ -726,6 +728,7 @@ $dictionary = array(
 
     'LINKED_OBJECT' => 'Linked object',
     'LINKED_PROPERTY' => 'Linked property',
+    'LINKED_METHOD' => 'Run method',
     'SET' => 'set',
 
 
@@ -1117,6 +1120,7 @@ $dictionary = array(
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Simple Devices',
 
+    'DEVICES_COPY_SETTINGS' => 'Copy settings',
     'DEVICES_LINKED_WARNING' => 'Please note that when linking to existing object, it will be assigned to the new class.',
 
     'DEVICES_RELAY' => 'Relay/Switch',
@@ -1126,7 +1130,6 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Button',
     'DEVICES_SWITCH' => 'Switch',
     'DEVICES_OPENCLOSE' => 'Open/Close sensor',
-    'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_GENERAL_SENSOR' => 'General sensor',
     'DEVICES_TEMP_SENSOR' => 'Temperature sensor',
     'DEVICES_HUM_SENSOR' => 'Humidity sensor',
@@ -1149,6 +1152,13 @@ $dictionary = array(
     'DEVICES_MSG_OPENING'=>'Opening message text',
     'DEVICES_MSG_CLOSING'=>'Closing message text',
     'DEVICES_MSG_REMINDER'=>'Reminder message text',
+
+    'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
+    'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Support level of open',
+
+	'DEVICES_VACUUM' =>'Vacuum cleaner',
+	'DEVICES_MEDIA' =>'Media player',
+	'DEVICES_TV' =>'TV',
 
 // Measure
     'M_VOLTAGE' => 'V',
@@ -1182,6 +1192,7 @@ $dictionary = array(
     'DEVICES_MOTION_IGNORE' => 'Ignore device events when nobody\'s home',
     'DEVICES_MOTION_RESET' => 'Reset "nobody home" status w/o setting timer',
     'DEVICES_MOTION_TIMEOUT' => 'Activity timeout (sec)',
+    'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Turn off lights in the room on idle',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
     'DEVICES_MAIN_SENSOR' => 'Main sensor for the room',
 
@@ -1231,6 +1242,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Action type',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Turn On',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Turn Off',
+	'DEVICES_LINK_TYPE_OPEN' => 'Open',
+	'DEVICES_LINK_TYPE_CLOSE' => 'Close',
     'DEVICES_LINK_TYPE_SWITCH' => 'Switch',
 
     'DEVICES_LINK_SWITCH_IT' => 'Switch it',
@@ -1278,6 +1291,14 @@ $dictionary = array(
     'DEVICES_ROOMS_ACTIVITY' => 'Latest activity',
 
     'DEVICES_PASSED_NOW' => 'Now',
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Incorrect time',
+    'DEVICES_PASSED_AGO' => 'ago',
+	'DEVICES_PASSED_TODAY_IN' => 'Today at',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Yesterday at',
+	'DEVICES_PASSED_NEW_SECONDS_AGO' => 'sec.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'min.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'hours',
+
     'DEVICES_PASSED_SECONDS_AGO' => 'seconds ago',
     'DEVICES_PASSED_MINUTES_AGO' => 'minutes ago',
     'DEVICES_PASSED_HOURS_AGO' => 'hours ago',
@@ -1311,6 +1332,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Current target temperature',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Temperature threshold (0.25 by default)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
+    'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Set target temperature',
     'DEVICES_ALL_BY_TYPE' => 'List all by types',
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
     'DEVICES_LOAD_TIMEOUT' => 'Load status timeout',
@@ -1331,6 +1353,7 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Min level (work)',
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
+    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Do not change level on switch',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
 
     'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',
@@ -1343,6 +1366,7 @@ $dictionary = array(
     'AUTO_LINK' => 'Execute script automatically',
     'FAVORITE_DEVICE' => 'Favorite device',
     'SYSTEM_DEVICE' => 'System device',
+	'ARCHIVED_DEVICE' => 'Archived device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',
@@ -1352,6 +1376,7 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'Did you know that...',
     'NEWS' => 'MajorDoMo News',
     'KNOWLEDGE_BASE' => 'Knowledge Base',
+    'MODULE_SUPPORT' => 'Support for',
     'ACTIVITIES' => 'Activities',
     'COMMANDS' => 'Commands',
     'ADDON_FILE' => 'Addon package',
@@ -1521,7 +1546,29 @@ $dictionary = array(
 	'NEWDASH_SHOW_LAST_SCRIPTS' => 'The last 6 running scripts are displayed here',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 largest tables in your database.',
 	'NEWDASH_WEB_PAGE' => 'Frontend',
+	'NEWDASH_DB_REQ_SEC' => 'Database requests per second',
+	'NEWDASH_DB_REQ_MIN' => 'Database requests per minute',
+	'NEWDASH_DB_REQ_HOUR' => 'Database requests per hour',
+
+	'NEWDASH_DMB_TITLE' => 'Add your own block',
+	'NEWDASH_DMB_TITLE_MODAL' => 'Add your own block',
+	'NEWDASH_DMB_TITLE_MODAL_HINT' => 'Functional description and detailed description is available on our forum:',
+	'NEWDASH_DMB_TITLE_MODAL_HINT_FORUM' => 'go to forum',
+	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Create a script named: ',
+	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. The script should return the following JSON object: ',
+	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. That\'s all. The control panel will pick up the script by itself and display the content on the main page. ',
 	
+	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Select a module ...',
+	'NEWDASH_CONSOLE_SIZE_HINT' => 'This console can be resized',
+	'NEWDASH_SEARCH_HINT' => 'System-wide global search. Start typing ... ',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Your copy of MajorDoMo cannot contact the Connect server. Due to this, the market and some other functions will be unavailable. ',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Usually the situation will improve after a few minutes.',
+
+	'NEWDASH_RESULT' => 'Result',
+	'NEWDASH_MJDM_VERSION' => 'Current MJDM version',
+	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',

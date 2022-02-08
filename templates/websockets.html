@@ -1,61 +1,76 @@
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.tiny-pubsub.js"></script>
 <script language="javascript">
- var wsTimer=0;
- var startedWebSockets=0;
+	var wsTimer=0;
+	var startedWebSockets=0;
+	
+	window.onbeforeunload = function() {
+		wsSocket.close();
+	};
+	function startWebSockets() {
+		var loc = window.location, new_uri;
+		var serverUrl='';
+		if (loc.protocol === "https:") {
+				serverUrl = "wss:";
+		} else {
+				serverUrl = "ws:";
+		}
+		serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo';
+		try {
+			console.log('%c%s', 'color: gray;', '... Подключение к серверу '+serverUrl);
+			
+			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');
+			$('#wsStatus').attr('style', 'background: lightcoral');
+		if (window.MozWebSocket) {
+		   wsSocket = new MozWebSocket(serverUrl);
+		} else if (window.WebSocket) {
+		   wsSocket = new WebSocket(serverUrl);
+		}
 
-        function startWebSockets() {
-            var loc = window.location, new_uri;
-            var serverUrl='';
-            if (loc.protocol === "https:") {
-                    serverUrl = "wss:";
-            } else {
-                    serverUrl = "ws:";
-            }
-            serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo';
-            try {
-                console.log('Conneting to '+serverUrl);
-             if (window.MozWebSocket) {
-               wsSocket = new MozWebSocket(serverUrl);
-             } else if (window.WebSocket) {
-               wsSocket = new WebSocket(serverUrl);
-             }
+		} catch (e) {
+			console.error('%c%s', 'color: red;', '❌ Ошибка подключения к серверу '+serverUrl);
+			return false;
+		}
+		wsSocket.binaryType = 'blob';
+		wsSocket.onopen = function(msg) {
+			console.log('%c%s', 'color: green;', '✓ Подключен к серверу');
+			startedWebSockets=1;
+			clearTimeout(wsTimer);
+			$.publish('wsConnected');
+			
+			$('#wsStatus').html('<#LANG_NEWDASH_CONNECTED#>');
+			$('#wsStatus').attr('style', 'background: #5cb85c');
+		};
+		wsSocket.onmessage = function(msg) {
+			var response;
+			response = JSON.parse(msg.data);
+			//console.log('Action: '+response.action+'; Data: '+response.data);
+			//Групировка лога для вывода в консоль
+			wsRespArr = [response.data];
+			console.log('%c%s', 'color: blue;', '⟶ Получены данные: ' + response.action + ' ', wsRespArr );
+			
+			$.publish('wsData', response);
+			return;
+		};
+		wsSocket.onclose = function(msg) {
+			//disconnected
+			startedWebSockets=0;
+			wsTimer=setTimeout('startWebSockets();', 5*1000);
+			$.publish('wsDisconnected', []);
+			console.error('%c%s', 'color: red;', '❌ Отключен от сервера, повтор подключения через 5 секунд...');
+			
+			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');
+			$('#wsStatus').attr('style', 'background: lightcoral');
+			
+			return;
+		};
+	}
+	
+	$(document).ready(function(){
+		[#if "<#DISABLE_WEBSOCKETS#>"!="1"#]
+		console.clear();
+		startWebSockets();
+		[#endif#]
+	});
 
-            } catch (e) {
-                console.log('Failed connecting to '+serverUrl);
-                 return false;
-            }
-            wsSocket.binaryType = 'blob';
-            wsSocket.onopen = function(msg) {
-             ///connected
-              console.log('WS connected (<#REQUEST_URI#>)');
-              startedWebSockets=1;
-              clearTimeout(wsTimer);
-              $.publish('wsConnected');
-            };
-            wsSocket.onmessage = function(msg) {
-              console.log('WS data (<#REQUEST_URI#>)');
-              var response;
-              response = JSON.parse(msg.data);
-              console.log('Action: '+response.action+'; Data: '+response.data);
-              $.publish('wsData', response);
-              return;
-            };
-            wsSocket.onclose = function(msg) {
-              //disconnected
-              startedWebSockets=0;
-              wsTimer=setTimeout('startWebSockets();', 5*1000);
-              $.publish('wsDisconnected', []);
-              console.log('WS disconnected (<#REQUEST_URI#>)');
-              return;
-            };
-        }
-
- $(document).ready(function(){
-  [#if "<#DISABLE_WEBSOCKETS#>"!="1"#]
-   startWebSockets();
-  [#endif#]
- });
-
-         
 </script>
 

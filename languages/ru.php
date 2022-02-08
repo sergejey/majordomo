@@ -364,6 +364,7 @@ $dictionary = array(
 
 
     'AUTO_UPDATE_PERIOD' => 'Период автообновления',
+    'UPDATEARHIVE_DONE' => 'Скачиваем архив',
     'POLLING_PERIOD' => 'Период опроса',
 
 
@@ -375,6 +376,7 @@ $dictionary = array(
     'ONCHANGE_METHOD' => 'Запускать метод при изменении',
     'METHOD' => 'Метод',
     'ONCHANGE_SCRIPT' => 'Сценарий',
+    'ONCHANGE_SCRIPT_EV' => 'сценариев',
     'ONCHANGE_CODE' => 'Код',
 
 
@@ -721,6 +723,7 @@ $dictionary = array(
 
     'LINKED_OBJECT' => 'Связанный объект',
     'LINKED_PROPERTY' => 'Связанное св-во',
+	'LINKED_METHOD' => 'Запускать метод',
     'SET' => 'установить',
 
 
@@ -1114,6 +1117,7 @@ $dictionary = array(
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
+    'DEVICES_COPY_SETTINGS' => 'Копировать настройки',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
     'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
     'DEVICES_DIMMER' => 'Освещение (Диммер)',
@@ -1122,7 +1126,6 @@ $dictionary = array(
     'DEVICES_BUTTON' => 'Клавиша (запуск действий)',
     'DEVICES_SWITCH' => 'Выключатель',
     'DEVICES_OPENCLOSE' => 'Датчик открытия/закрытия',
-    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_GENERAL_SENSOR' => 'Датчик (общий)',
     'DEVICES_TEMP_SENSOR' => 'Датчик температуры',
     'DEVICES_HUM_SENSOR' => 'Датчик влажности воздуха',
@@ -1145,11 +1148,18 @@ $dictionary = array(
     'DEVICES_MSG_OPENING'=>'Сообщение при открытии',
     'DEVICES_MSG_CLOSING'=>'Сообщение при закрытии',
     'DEVICES_MSG_REMINDER'=>'Сообщение при напоминании',
-    
+
+    'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
+    'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Поддержка уровня открытия',
+
+    'DEVICES_VACUUM' =>'Пылесос',
+    'DEVICES_MEDIA' =>'Медиа-проигрыватель',
+    'DEVICES_TV' =>'Телевизор',
+
 // Measure
     'M_VOLTAGE' => 'В',
     'M_CURRENT' => 'А',
-    'M_PRESSURE' => 'торр',
+    'M_PRESSURE' => 'мм рт.ст.',
     'M_WATT' => 'Вт',
 
 //----
@@ -1178,6 +1188,7 @@ $dictionary = array(
     'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',
     'DEVICES_MOTION_RESET' => 'Сброс статуса "никого нет дома" без таймера установки',
     'DEVICES_MOTION_TIMEOUT' => 'Время активности (секунд)',
+    'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Выключать освещение в комнате по истечение периода активности',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
     'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
     'DEVICES_NOT_UPDATING' => 'не обновляется',
@@ -1227,6 +1238,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Действие',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Включить',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Выключить',
+    'DEVICES_LINK_TYPE_OPEN' => 'Открыть',
+    'DEVICES_LINK_TYPE_CLOSE' => 'Закрыть',
     'DEVICES_LINK_TYPE_SWITCH' => 'Переключить',
 
     'DEVICES_LINK_SWITCH_IT' => 'Включить/Выключить',
@@ -1275,6 +1288,14 @@ $dictionary = array(
     'DEVICES_ROOMS_ACTIVITY' => 'Активность',
 
     'DEVICES_PASSED_NOW' => 'только что',
+    'DEVICES_PASSED_INCORRECT_TIME' => 'Неверное время',
+    'DEVICES_PASSED_AGO' => 'назад',
+    'DEVICES_PASSED_TODAY_IN' => 'Сегодня, в',
+    'DEVICES_PASSED_YESTERDAY_IN' => 'Вчера, в',
+	'DEVICES_PASSED_NEW_SECONDS_AGO' => 'сек.',
+    'DEVICES_PASSED_NEW_MINUTES_AGO' => 'мин.',
+    'DEVICES_PASSED_NEW_HOURS_AGO' => 'час.',
+
     'DEVICES_PASSED_SECONDS_AGO' => 'сек. назад',
     'DEVICES_PASSED_MINUTES_AGO' => 'мин. назад',
     'DEVICES_PASSED_HOURS_AGO' => 'ч. назад',
@@ -1308,6 +1329,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Целевая температура',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
+    'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Установить желаемую температуру',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
     'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',
@@ -1330,6 +1352,7 @@ $dictionary = array(
 
     'DEVICES_DIMMER_MIN_WORK' => 'Мин. уровень (рабочий)',
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
+    'DEVICES_DIMMER_SWITCH_LEVEL' => 'Не изменять уровень при переключении',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
 
     'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
@@ -1339,6 +1362,7 @@ $dictionary = array(
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
+	'ARCHIVED_DEVICE' => 'Архивное утройство',
 
     'ROOMS' => 'Комнаты',
     'APPEARANCE' => 'Внешний вид',
@@ -1348,6 +1372,7 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'А знаете ли вы что...',
     'NEWS' => 'Новости MajorDoMo',
     'KNOWLEDGE_BASE' => 'База знаний',
+    'MODULE_SUPPORT' => 'Сайт модуля',
     'ACTIVITIES' => 'Поведение',
     'COMMANDS' => 'Команды',
     'ADDON_FILE' => 'Файл дополнения',
@@ -1517,9 +1542,32 @@ $dictionary = array(
 	'NEWDASH_PRELOAD_BTN' => 'Остановить операцию',
 	'NEWDASH_UPDATE_MODULE_HINT1' => 'Обновления для',
 	'NEWDASH_UPDATE_MODULE_HINT2' => 'модулей',
-	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценария',
+	'NEWDASH_SHOW_LAST_SCRIPTS' => 'Здесь выводятся 6 последних запущенных сценариев',
 	'NEWDASH_HINT_BIG_DATA_DB' => '7 самых больших таблиц в вашей базе данных.',
 	'NEWDASH_WEB_PAGE' => 'Веб-страницы',
+	'NEWDASH_DB_REQ_SEC' => 'Запросов к БД в секунду',
+	'NEWDASH_DB_REQ_MIN' => 'Запросов к БД в минуту',
+	'NEWDASH_DB_REQ_HOUR' => 'Запросов к БД в час',
+	
+	'NEWDASH_DMB_TITLE' => 'Добавить свой блок',
+	'NEWDASH_DMB_TITLE_MODAL' => 'Добавление своего блока',
+	'NEWDASH_DMB_TITLE_MODAL_HINT' => 'Описание функционала и подробное описание доступно на нашем форуме:',
+	'NEWDASH_DMB_TITLE_MODAL_HINT_FORUM' => 'перейти на форум',
+	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Создайте сценарий с именем:',
+	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. Сценарий должен отдавать следующий JSON объект:',
+	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. На этом все. Панель управления сама подхватит скрипт и выведет содержимое на главную страницу.',
+	
+	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Выберите модуль...',
+	'NEWDASH_CONSOLE_SIZE_HINT' => 'Размер консоли можно изменить',
+	'NEWDASH_SEARCH_HINT' => 'Глобальный поиск по всей системе. Начните вводить...',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции могут быть недоступны.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Обычно, ситуация налаживается спустя несколько минут.',
+	
+	'NEWDASH_RESULT' => 'Результат',
+	'NEWDASH_MJDM_VERSION' => 'Текущая версия MJDM',
+	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',
@@ -1533,8 +1581,8 @@ $dictionary = array(
 	'NEWSAVERESTORE_RESTORE_ARHIVE' => 'Резервные копии',
 	'NEWSAVERESTORE_RESTORE_DOWNANDRESTORE' => 'Загрузить и восстановить',
 	'NEWSAVERESTORE_RESTORE_RESTOREINARHIVE' => 'Восстановить из архива системы',
-	'NEWSAVERESTORE_RESTORE_CREATE_RESTORE' => 'Создать резеврную копию',
-	'NEWSAVERESTORE_BACKUP_HINT' => 'Выберите разделы системы для создания резевной копии.',
+	'NEWSAVERESTORE_RESTORE_CREATE_RESTORE' => 'Создать резервную копию',
+	'NEWSAVERESTORE_BACKUP_HINT' => 'Выберите разделы системы для создания резервной копии.',
 	'NEWSAVERESTORE_CHOUSE_FILE' => 'Выберите файл',
 	'NEWSAVERESTORE_CHOUSES_FILES' => 'Выбрано файлов:',
 	

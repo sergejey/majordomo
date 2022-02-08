@@ -125,8 +125,7 @@ INSERT INTO `blockly_code` (`ID`, `SYSTEM_NAME`, `CODE_TYPE`, `CODE`, `XML`, `UP
 
 CREATE TABLE `cached_values` (
   `KEYWORD` char(100) NOT NULL,
-  `DATAVALUE` char(255) NOT NULL,
-  `EXPIRE` datetime NOT NULL
+  `DATAVALUE` char(255) NOT NULL
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 

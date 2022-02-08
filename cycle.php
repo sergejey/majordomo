@@ -12,6 +12,7 @@ chdir(dirname(__FILE__));
 include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
+include_once("./load_settings.php");
 
 resetRebootRequired();
 
@@ -40,6 +41,9 @@ while (!$connected) {
 
 
 echo "CONNECTED TO DB" . PHP_EOL;
+
+// создаем табличку cyclesRun, если её нет
+SQLExec('CREATE TABLE IF NOT EXISTS `cyclesRun` (`KEYWORD` char(100) NOT NULL,`DATAVALUE` char(255) NOT NULL,PRIMARY KEY (`KEYWORD`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
 
 $old_mask = umask(0);
 if (is_dir(ROOT . 'cached')) {
@@ -206,28 +210,30 @@ $thisCompObject = getObject('ThisComputer');
 $cycles_records = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
-    //DebMes("Removing property ThisComputer.$property",'threads');
+    DebMes("Removing property ThisComputer.$property (object ".$thisCompObject->id.")",'threads');
     echo "Removing ThisComputer.$property (object " . $thisCompObject->id . ")";
     $property = $cycles_records[$i]['TITLE'];
     $property_id = $thisCompObject->getPropertyByName($property, $thisCompObject->class_id, $thisCompObject->id);
     //DebMes("Property id: $property_id",'threads');
     if ($property_id) {
-        $sqlQuery = "SELECT ID
-                        FROM pvalues
-                       WHERE PROPERTY_ID = " . (int)$property_id . "
-                         AND OBJECT_ID   = " . (int)$thisCompObject->id;
+        $sqlQuery = "SELECT ID FROM pvalues WHERE PROPERTY_ID = " . (int)$property_id;
         $pvalue = SQLSelectOne($sqlQuery);
         if ($pvalue['ID']) {
-            //DebMes("Pvalue: ".$pvalue['ID'],'threads');
+            DebMes("Deleting Pvalue: ".$pvalue['ID'],'threads');
             SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $pvalue['ID']);
             SQLExec("DELETE FROM pvalues WHERE ID=" . $pvalue['ID']);
+        } else {
+            DebMes("NO Pvalue for ".$property_id,'threads');
         }
         SQLExec("DELETE FROM properties WHERE ID=" . $property_id);
+        DebMes("REMOVED $property_id",'threads');
         echo " REMOVED $property_id\n";
     } else {
+        DebMes("No property record found for $property",'threads');
         echo " FAILED\n";
     }
 }
+clearCacheData();
 
 // getting list of /scripts/cycle_*.php files to run each in separate thread
 $cycles = array();
@@ -352,6 +358,9 @@ while (false !== ($result = $threads->iteration())) {
         }
 
         $is_running = array();
+        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cyclesRun;");
+        foreach ($tmpcyclesTimestamps as $k => $v) $cyclesTimestamps[$v['KEYWORD']] = $v['DATAVALUE'];
+        
         foreach ($threads->commandLines as $id => $cmd) {
             if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
                 $title = $m[1];
@@ -361,9 +370,14 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Adding $title to auto-recovery list", 'threads');
                     $auto_restarts[] = $title;
                 }
-                $cycle_updated_timestamp = getGlobal($title . 'Run');
 
-                if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
+                //$cycle_updated_timestamp = getGlobal($title . 'Run');
+                $cycle_updated_timestamp=$cyclesTimestamps[strtolower('MJD:ThisComputer.'.$title.'Run')];
+                if (!isset($to_start[$title]) &&
+                    $cycle_updated_timestamp &&
+                    in_array($title, $auto_restarts) &&
+                    ((time() - $cycle_updated_timestamp) > 30 * 60)
+                ) { //
                     DebMes("Looks like $title is dead (updated: ".date('Y-m-d H:i:s',$cycle_updated_timestamp)."). Need to recovery", 'threads');
                     registerError('cycle_hang', $title);
                     setGlobal($title . 'Control', 'restart');
@@ -439,12 +453,12 @@ while (false !== ($result = $threads->iteration())) {
                         unset($auto_restarts[$key]);
                         $auto_restarts = array_values($auto_restarts);
                         $need_restart = 1;
-                    } elseif ($to_start[$cycle_title]) {
+                    } elseif (isset($to_start[$cycle_title])) {
                         $need_restart = 1;
                     }
                 }
                 if ($need_restart && $cycle_title) {
-                    if (!$to_start[$cycle_title]) {
+                    if (!isset($to_start[$cycle_title])) {
                         DebMes("AUTO-RECOVERY: " . $closed_thread, 'threads');
                         if (!preg_match('/websockets/is', $closed_thread) && !preg_match('/connect/is', $closed_thread)) {
                             registerError('cycle_stop', $closed_thread . "\n" . $result);

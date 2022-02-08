@@ -66,19 +66,23 @@ if ($this->mode == 'update') {
     }
 
     global $run_periodically;
-    $rec['RUN_PERIODICALLY'] = (int)$run_periodically;
-
     global $run_days;
-    $rec['RUN_DAYS'] = @implode(',', $run_days);
-    if (is_null($rec['RUN_DAYS'])) {
-        $rec['RUN_DAYS'] = '';
-    }
-
-
     global $run_minutes;
-    global $run_hours;
-    $rec['RUN_TIME'] = $run_hours . ':' . $run_minutes;
-
+    global $run_hours;	
+ 
+    if ($run_periodically && isset($run_days)) {
+        $rec['RUN_PERIODICALLY'] = (int)$run_periodically;
+        $rec['RUN_DAYS'] = @implode(',', $run_days);
+        if (is_null($rec['RUN_DAYS'])) {
+            $rec['RUN_DAYS'] = '';
+        }
+        $rec['RUN_TIME'] = $run_hours . ':' . $run_minutes;
+    } else {
+        $rec['RUN_PERIODICALLY'] = 0;
+        $rec['RUN_DAYS'] = false;
+        $rec['RUN_TIME'] = false;
+	}
+	
     //$rec['EXECUTED']='0000-00-00 00:00:00';
     unset($rec['EXECUTED']);
 
@@ -136,7 +140,13 @@ if ($this->mode == 'update') {
 
         global $edit_run;
         if ($edit_run) {
-            $this->runScript($rec['ID']);
+			echo '<div style="margin: 30px 0px;border: 1px solid #dddddd;padding: 10px;border-left: 10px solid #4d96d3;resize: vertical;height: 400px;min-height: 100px;overflow: auto;">
+			<h3 style="margin: 0px;border-bottom: 1px solid #dddddd;padding-bottom: 5px;margin-bottom: 10px;">'.LANG_NEWDASH_RESULT.':</h3>
+			<pre>';
+			$this->runScript($rec['ID']);
+			echo '</pre></div>';
+           
+			$rec['EDIT_RUN'] = $edit_run;
         }
 
 

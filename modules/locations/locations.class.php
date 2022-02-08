@@ -122,6 +122,9 @@ function admin(&$out) {
  }
  if ($this->data_source=='locations' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_locations') {
+      if (gr('location_id')) {
+          $this->redirect("?view_mode=edit_locations&id=".gr('location_id'));
+      }
    $this->search_locations($out);
   }
 

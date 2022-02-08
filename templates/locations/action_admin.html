@@ -10,7 +10,44 @@
  <!-- / table locations search -->
  <!-- table locations edit -->
  [#if VIEW_MODE="edit_locations"#]
+
+<ul class="breadcrumb">
+    <li>
+        <a href="?"><#LANG_HOME#></a>
+    </li>
+    <span class="divider">/</span>
+    <li class="active">
+        [#if ID=""#]
+        <#LANG_NEW_RECORD#>
+        [#else#]
+        <#LANG_EDIT_RECORD#>
+        [#endif#]
+    </li>
+</ul>
+
+[#if ID!=""#]
+
+<h3>[#TITLE#] (<#LANG_OBJECT#>: [#LINKED_OBJECT#])</h3>
+
+<ul class="nav nav-tabs">
+    <li[#if TAB=""#] class="active"[#endif#]>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
+    </li>
+    <li[#if TAB="logic"#] class="active"[#endif#]>
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=logic"><#LANG_DEVICES_LOGIC_ACTION#></a>
+    </li>
+</ul>
+&nbsp;
+[#endif ID#]
+
+   [#if TAB=""#]
    [#inc locations_edit.html#]
+   [#endif TAB#]
+
+[#if TAB="logic"#]
+[#inc locations_logic.html#]
+[#endif TAB#]
+
  [#endif VIEW_MODE#]
  <!-- / table locations edit -->
  <!-- table locations view --> 

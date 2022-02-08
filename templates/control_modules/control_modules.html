@@ -1,13 +1,9 @@
-<!--#
- @version 0.2 (auto-set)
-#-->
-&nbsp;
-
+<!---
 [#if MODE="repository_uninstall"#]
 <br><br>
 <iframe src="http://installer<#REP_EXT#>/installer.php?host=<#HOST#>&doc_root=<#DOCUMENT_ROOT#>&mode=uninstall&module=[#MODULE#]" width=600 height=300 align=center></iframe>
 <p align=center>
-<a href="?">Back</a>
+    <a href="?">Back</a>
 </p>
 [#endif MODE#]
 
@@ -31,94 +27,170 @@
 <br><br>
 <iframe src="http://installer<#REP_EXT#>/installer.php?host=<#HOST#>&doc_root=<#DOCUMENT_ROOT#>" width=100% height=450 align=center></iframe>
 <p align=center>
-<a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+    <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
 </p>
 [#endif MODE#]
+--->
+
 
 [#if MODE="edit"#]
-<table width=70% border=1 align=center>
- <tr>
-  <td align=center colspan=2>
-   <b>[#if TITLE!=""#][#TITLE#][#else TITLE#][#NAME#][#endif TITLE#]</b>
-  </td>
- </tr>
- [#if TITLE!=""#]
- <form action="?" method="post" name="frmModule">
- <tr>
-  <td>
-  <#LANG_TITLE#>:
-  </td>
-  <td>
-  <input type="text" name="title" value="[#TITLE#]">
-  </td>
- </tr>
- <tr>
-  <td>
-  <#LANG_CATEGORY#>:
-  </td>
-  <td>
-  <input type="text" name="category" value="[#CATEGORY#]">
-  </td>
- </tr>
- <input type="hidden" name="mode" value="[#MODE#]">
- <input type="hidden" name="mode2" value="update">
- <input type="hidden" name="name" value="[#NAME#]">
- </form>
- [#endif TITLE#]
- <tr>
-  <td align=center colspan=2>
-   [#if TITLE!=""#]
-   <a href="javascript:document.frmModule.submit()">Submit changes</a>
-   |
-   <a href="?mode=<#MODE#>&mode2=install&name=[#NAME#]" onClick="return confirm('Module settings could will be lost. Continue with reinstall?')">Reinstall module</a>
-   |
-   <a href="?mode=<#MODE#>&mode2=uninstall&name=[#NAME#]" onClick="return confirm('Continue with uninstall?')">Uninstall module</a>
-   |
-   [#else TITLE#]
-   <a href="?mode=<#MODE#>&mode2=install&name=[#NAME#]">Install Module</a>
-   |
-   [#endif TITLE#]
-   <a href="?"><#LANG_CANCEL#></a>
-  </td>
- </tr>
-</table>
+<script>
+$(window).load(function() {
+	//Вставляем данные в бредкрумбс
+	$('.breadcrumb:eq(0)').append('<li style="color: gray;">[#TITLE#] ([#NAME#])</li>');
+});
+</script>
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+		<div class="panel panel-default" style="margin-bottom: 0px;">
+			<div class="panel-body">
+				<span class="label label-primary" style="position: absolute;right: 25px;top: 10px;">[#CATEGORY#]</span>
+				<center><img class="media-object" onError="this.src='<#ROOTHTML#>img/logo.png'" style="width: 100px;height: 100px;margin: 50px 0;" src="<#ROOTHTML#>img/modules/[#NAME#].png"></center>
+			</div>
+		</div>
+		<center>
+		<div class="btn-group" style="margin-top: 15px;margin-bottom: 15px;">
+			<a class="btn btn-warning" href="?mode=<#MODE#>&mode2=install&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">Переустановить</a>
+			<a class="btn btn-danger" href="?mode=<#MODE#>&mode2=uninstall&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')">Удалить</a>
+		</div>
+		</center>
+	</div>
+	<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+		<div class="panel panel-default">
+			<div class="panel-heading"><b>[#TITLE#] ([#NAME#])</b></div>
+			<div class="panel-body">
+				<p>[#MARKET_DESCRIPTION_RU#]</p>
+				[#if MARKET_ID == ''#]
+					<p>Нет информации из Connect о этом модуле =(</p>
+				[#endif#]
+				
+			</div>
+			[#if MARKET_ID != ''#]
+			<ul class="list-group">
+				<li class="list-group-item">
+					<span class="badge">[#MARKET_AUTHOR#]</span>
+					Автор
+				</li>
+				<li class="list-group-item">
+					<span class="badge">[#MARKET_LATEST_VERSION#]</span>
+					Последняя версия
+				</li>
+				<li class="list-group-item">
+					<span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_LATEST_VERSION_URL#]" class="btn btn-info btn-xs" target="_blank">Открыть</a></span>
+					Ссылка на обновление
+				</li>
+				<li class="list-group-item">
+					<span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_SUPPORT_URL#]" class="btn btn-info btn-xs" target="_blank">Открыть</a></span>
+					Поддержка
+				</li>
+				<li class="list-group-item">
+					<span class="badge">[#if MARKET_PRICE#]free[#else#][#MARKET_PRICE#][#endif#]</span>
+					Стоимость
+				</li>
+			</ul>
+			[#endif#]
+		</div>
+		[#if MODULE_CONFIG != ''#]
+		<div class="panel panel-default">
+			<div class="panel-heading"><b>Что хранит модуль?</b></div>
+			<ul class="list-group">
+				[#begin MODULE_CONFIG#]
+				<li class="list-group-item">
+					<span class="badge label-danger" style="border-radius: 3px;padding: 5px 15px;margin: 0;">[#VALUE#]</span>
+					[#KEY#]
+				</li>
+				[#end MODULE_CONFIG#]
+			</ul>
+		</div>
+		[#endif#]
+	</div>
+</div>
+
 [#endif MODE#]
 
 [#if MODE=""#]
+<div class="row" style="margin-right: -15px;margin-left: -15px;" id="moduleList">
+	[#begin MODULES#]
+	<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 text-right" style="margin-bottom: 15px;">
+        <div class="panel panel-default" [#if HIDDEN=="1"#]style="opacity: 0.2;"[#endif DAT#]>
+			<div class="panel-heading">
+				<div style="float: left"><h3 class="panel-title"><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#TITLE#]</a></h3></div>
+				<div style="float: right">
+					<a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-success btn-xs" onclick="return partLoad(this.href);"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a href="?mode=edit&mode2=show&name=[#FILENAME#]" class="btn btn-[#if HIDDEN!="1"#]danger[#else#]warning[#endif#] btn-xs" onclick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-eye-close"></i> [#if HIDDEN="1"#]<#LANG_SHOW#>[#else#]<#LANG_HIDE#>[#endif#]</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-collapse out in" style="height: auto;">
+				<div class="panel-body">
+					<div class="media">
+						<a class="pull-left" href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">
+							<img class="media-object" onError="this.src='<#ROOTHTML#>img/logo.png'" style="width: 48px;height: 48px;" src="<#ROOTHTML#>img/modules/[#FILENAME#].png">
+						</a>
+						<div class="media-body">
+							<p class="media-heading" style="margin: 0px;">[#FILENAME#]</p>
+							<p style="margin: 0px;">[#CATEGORY#]</p>
+							<p style="margin: 0px;font-size: 1.2rem;color: gray;">[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+	[#end MODULES#]
+</div>
+
+<!---
 
 <table class="table">
- <thead>
-<tr>
- <th><b>File</th>
- <th><b><#LANG_TITLE#></th>
- <th><b><#LANG_CATEGORY#></th>
- <th><b>Installed</th>
- <th>&nbsp;</th>
- <th>&nbsp;</th>
-</tr>
- </thead>
-[#begin MODULES#]
-[#if (FILENAME!="control_access") && (FILENAME!="control_modules")#]
-<tr>
- <td><b><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#FILENAME#]</a></b>
- </td>
- <td>[#TITLE#]
- [#if "<#LOCAL_PROJECT#>"=="1"#]
- [<a href="http://au.local/wiki/index.php/Doc/mdl[#FILENAME#]" target=_blank>details</a>]
- [#endif#]
+    <thead>
+        <tr>
+            <th><b>File</th>
+            <th><b>
+                    <#LANG_TITLE#>
+            </th>
+            <th><b>
+                    <#LANG_CATEGORY#>
+            </th>
+            <th><b>Installed</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    [#begin MODULES#]
+    [#if (FILENAME!="control_access") && (FILENAME!="control_modules")#]
+    <tr>
+        <td><b><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#FILENAME#]</a></b>
+        </td>
+        <td>[#TITLE#]
+            [#if "<#LOCAL_PROJECT#>"=="1"#]
+                [<a href="http://au.local/wiki/index.php/Doc/mdl[#FILENAME#]" target=_blank>details</a>]
+                [#endif#]
 
- </td>
- <td>[#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]Unfiled[#endif CATEGORY#]</td>
- <td>[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</td>
- <td>
-  <a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-default"><#LANG_EDIT#></a>
-  <a href="?mode=edit&mode2=show&name=[#FILENAME#]" class="btn btn-default">[#if HIDDEN="1"#]<font color='red'><#LANG_SHOW#></font>[#else#]<#LANG_HIDE#>[#endif#]</a></td>
- <td>[#if IGNORED="1"#]<a href="?mode=edit&mode2=unignore&name=[#FILENAME#]"><font color='red'><#LANG_NOT_UPDATING#></font></a>[#else#]
- <a href="?mode=edit&mode2=ignore&name=[#FILENAME#]"><#LANG_UPDATING#></a>[#endif#]</td>
-</tr>
-[#endif#]
-[#end MODULES#]
+        </td>
+        <td>[#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]Unfiled[#endif CATEGORY#]</td>
+        <td>[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</td>
+        <td>
+            <a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-default">
+                <#LANG_EDIT#>
+            </a>
+            <a href="?mode=edit&mode2=show&name=[#FILENAME#]" class="btn btn-default">[#if HIDDEN="1"#]<font color='red'>
+                    <#LANG_SHOW#>
+                </font>[#else#]<#LANG_HIDE#>[#endif#]</a>
+        </td>
+        <td>[#if IGNORED="1"#]<a href="?mode=edit&mode2=unignore&name=[#FILENAME#]">
+                <font color='red'>
+                    <#LANG_NOT_UPDATING#>
+                </font>
+            </a>[#else#]
+            <a href="?mode=edit&mode2=ignore&name=[#FILENAME#]">
+                <#LANG_UPDATING#>
+            </a>[#endif#]
+        </td>
+    </tr>
+    [#endif#]
+    [#end MODULES#]
 </table>
-
+--->
 
 [#endif MODE#]

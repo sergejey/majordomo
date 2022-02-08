@@ -24,6 +24,8 @@ if (function_exists('mysqli_connect')) {
 
 include_once('./lib/perfmonitor.class.php');
 $ignore_libs[] = 'perfmonitor.class.php';
+$ignore_libs[] = 'loader.php';
+$ignore_libs[] = 'threads.php';
 
 
 // liblary modules loader
@@ -31,7 +33,7 @@ if ($lib_dir = @opendir("./lib")) {
     $files_loaded = array();
     while (($lib_file = readdir($lib_dir)) !== false) {
         //if ($lib_file=='perfmonitor.class.php' && function_exists('startMeasure')) continue;
-        if ((preg_match("/\.php$/", $lib_file)) && ($lib_file != "loader.php") && !in_array($lib_file, $ignore_libs)) {
+        if ((preg_match("/\.php$/", $lib_file))  && !in_array($lib_file, $ignore_libs)) {
             include_once("./lib/$lib_file");
             $files_loaded[] = "./lib/$lib_file";
         }

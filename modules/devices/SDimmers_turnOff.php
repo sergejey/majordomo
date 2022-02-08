@@ -1,4 +1,6 @@
 <?php
 
 $this->setProperty('status', 0);
-$this->setProperty('level', 0);
+$switchLevel=$this->getProperty('switchLevel');
+if (!$switchLevel)
+    $this->setProperty('level', 0);

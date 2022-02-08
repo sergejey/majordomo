@@ -1,54 +1,44 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
- <!-- action usual -->
- <!-- table objects search -->
- [#if VIEW_MODE="search_objects" || VIEW_MODE=""#]
-  [#inc objects_search_admin.html#]
- [#endif VIEW_MODE#]
- <!-- / table objects search -->
- <!-- table objects edit -->
- [#if VIEW_MODE="edit_objects"#]
-   [#if ID!=""#]
+[#if VIEW_MODE="search_objects" || VIEW_MODE=""#]
+	[#inc objects_search_admin.html#]
+[#endif VIEW_MODE#]
 
-   &nbsp;
-<ol class="breadcrumb">
-  <li class="active"><#LANG_OBJECT#>:
-      <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>">[#TITLE#]</a>
-      [#if DEVICE_ID!=""#]
-      / <#LANG_DEVICE#>:
-      <a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=[#DEVICE_ID#]">[#DEVICE_TITLE#]</a>
-      [#endif DEVICE_ID#]
-  </li>
-</ol>
+[#if VIEW_MODE="edit_objects"#]
+	[#if ID!=""#]
+		<script>
+		$(window).load(function() {
+		//Вставляем данные в бредкрумбс
+		$('.breadcrumb:eq(0)>li').last().append(' → <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>">[#TITLE#]</a>');
 
-<ul class="nav nav-tabs">
- <li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a></li>
- <li [#if TAB="properties"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></li>
- <li [#if TAB="methods"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></li>
-</ul>
+		[#if DEVICE_ID!=""#]
+			$('.breadcrumb:eq(0)>li').last().append(' <a href="?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=[#DEVICE_ID#]">([#DEVICE_TITLE#])</a>');
+		[#endif DEVICE_ID#]
+		});
+		</script>
 
-&nbsp;
 
-   [#endif ID#]
-   [#if TAB=""#]
-    [#inc objects_edit_default.html#]
-   [#endif TAB#]
-   [#if TAB="properties"#]
-    [#inc objects_edit_properties.html#]
-   [#endif TAB#]
-   [#if TAB="methods"#]
-    [#inc objects_edit_methods.html#]
-   [#endif TAB#]
-   [#if TAB="history"#]
-    [#inc objects_edit_history.html#]
-   [#endif TAB#]
- [#endif VIEW_MODE#]
- <!-- / table objects edit -->
- <!-- table objects view --> 
- [#if VIEW_MODE="view_objects"#]
-   [#if TAB=""#]
-    [#inc objects_view_default.html#]
-   [#endif TAB#]
- [#endif VIEW_MODE#]
- <!-- / table objects view -->
+		<ul class="nav nav-tabs">
+		<li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_DETAILS#></a></li>
+		<li [#if TAB="properties"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=properties"><#LANG_PROPERTIES#></a></li>
+		<li [#if TAB="methods"#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=methods"><#LANG_METHODS#></a></li>
+		</ul>
+	[#endif ID#]
+	[#if TAB=""#]
+		[#inc objects_edit_default.html#]
+	[#endif TAB#]
+	[#if TAB="properties"#]
+		[#inc objects_edit_properties.html#]
+	[#endif TAB#]
+	[#if TAB="methods"#]
+		[#inc objects_edit_methods.html#]
+	[#endif TAB#]
+	[#if TAB="history"#]
+		[#inc objects_edit_history.html#]
+	[#endif TAB#]
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="view_objects"#]
+	[#if TAB=""#]
+		[#inc objects_view_default.html#]
+	[#endif TAB#]
+[#endif VIEW_MODE#]
+

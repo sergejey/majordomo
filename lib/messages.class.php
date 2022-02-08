@@ -160,27 +160,35 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         return;
     }
 
-    if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
-        eval(SETTINGS_HOOK_BEFORE_SAY);
-    }
-
-
-    if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
-        if ($level >= (int)getGlobal('minMsgLevel') && !$member_id) { // && !$ignoreVoice
-            $passed = time() - (int)getGlobal('lastSayTime');
-            if ($passed > 20) {
-                playSound('dingdong', 1, $level);
-            }
-        }
-    }
+    $last_say_time=getGlobal('lastSayTime');
+    $last_say_message=getGlobal('lastSayMessage');
 
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
 
-    processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
 
-    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
-        eval(SETTINGS_HOOK_AFTER_SAY);
+    if ($last_say_time!=time() || $last_say_message!=$ph) {
+
+        if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
+            eval(SETTINGS_HOOK_BEFORE_SAY);
+        }
+
+
+        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
+            if ($level >= (int)getGlobal('minMsgLevel') && !$member_id) { // && !$ignoreVoice
+                $passed = time() - $last_say_time;
+                if ($passed > 20) {
+                    playSound('dingdong', 1, $level);
+                }
+            }
+        }
+
+
+        processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
+
+        if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
+            eval(SETTINGS_HOOK_AFTER_SAY);
+        }
     }
     //dprint(date('Y-m-d H:i:s')." Say OK",false);
 
@@ -190,5 +198,3 @@ function ask($prompt, $target = '')
 {
     processSubscriptionsSafe('ASK', array('prompt' => $prompt, 'message' => $prompt, 'target' => $target, 'destination' => $target));
 }
-
-

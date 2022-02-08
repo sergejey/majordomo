@@ -1,6 +1,103 @@
-<div class="device-widget %.alive|"offline;online"%">
-<div style='display:%.ncno|"nc=block;no=none"%'><div class="device-icon openclose %.status|"on;off"%"></div></div>
-<div style='display:%.ncno|"nc=none;no=block;=none"%'><div class="device-icon openclose %.status|"off;on"%"></div></div>
-<div class="device-header">%.object_description%</div>
-<div class="device-details">%.updatedText%</div>
+<script>
+function setInsertData_%.object_id%() {
+	if(window.intervalUpdateDateOpenclose_%.object_id%) {
+		window.clearInterval(intervalUpdateDateOpenclose_%.object_id%);
+	}
+	
+	var currentTime = parseInt(new Date().getTime()/1000);
+	var sID = '%.object_id%';
+	var sDATA = '%.updated%';
+	var diff = currentTime-sDATA;
+
+	if(diff <= -21) {
+		beautyText = '<#LANG_DEVICES_PASSED_INCORRECT_TIME#>';
+		$('.openclose-updatedText-JS-' + sID).text(beautyText);
+	} else if(diff >= -20 && diff <= 10) {
+		//Только что
+		beautyText = '<#LANG_DEVICES_PASSED_NOW#>';
+		$('.openclose-updatedText-JS-' + sID).text(beautyText);
+		
+		window.intervalUpdateDateOpenclose_%.object_id% = setInterval(function() {
+			setInsertData_%.object_id%();
+		}, 1000);
+	} else if(diff > 10 && diff <= 600) {
+		beautyText = secondsToHms(diff, '', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
+		$('.openclose-updatedText-JS-' + sID).text(beautyText);
+		
+		window.intervalUpdateDateOpenclose_%.object_id% = setInterval(function() {
+			var currentTime = parseInt(new Date().getTime()/1000);
+			var diff = currentTime-sDATA;
+
+			beautyText = secondsToHms(diff, '', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '<#LANG_DEVICES_PASSED_NEW_SECONDS_AGO#>') + ' <#LANG_DEVICES_PASSED_AGO#>';
+			$('.openclose-updatedText-JS-' + sID).text(beautyText);
+			
+			setInsertData_%.object_id%();
+		}, 1000);
+	} else if(diff > 600 && diff <= 7200) {
+		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
+		$('.openclose-updatedText-JS-' + sID).text(beautyText);
+		
+		window.intervalUpdateDateOpenclose_%.object_id% = setInterval(function() {
+			var currentTime = parseInt(new Date().getTime()/1000);
+			var diff = currentTime-sDATA;
+
+			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '<#LANG_DEVICES_PASSED_NEW_MINUTES_AGO#>', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
+			$('.openclose-updatedText-JS-' + sID).text(beautyText);
+			
+			setInsertData_%.object_id%();
+		}, 61000);
+	} else if(diff > 7200 && diff < 25200) {
+		beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
+		$('.openclose-updatedText-JS-' + sID).text(beautyText);
+			
+		window.intervalUpdateDateOpenclose_%.object_id% = setInterval(function() {	
+			var currentTime = parseInt(new Date().getTime()/1000);
+			var diff = currentTime-sDATA;
+			
+			//Считаем и делаем красиво
+			beautyText = secondsToHms(diff, '<#LANG_DEVICES_PASSED_NEW_HOURS_AGO#>', '', '') + ' <#LANG_DEVICES_PASSED_AGO#>';
+			$('.openclose-updatedText-JS-' + sID).text(beautyText);
+			
+			setInsertData_%.object_id%();
+		}, 1800000);
+	} else {
+		//Дропаем интервал
+		if(window.intervalUpdateDateOpenclose_%.object_id%) {
+			window.clearInterval(intervalUpdateDateOpenclose_%.object_id%);
+		}
+		
+		timeConvertVar = timeConvert(sDATA);
+		currentTime = new Date();
+
+		if(twoDigits(currentTime.getMonth()+1) == timeConvertVar[1] && (currentTime.getDate() - timeConvertVar[0]) == 0) {
+			beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
+		} else if(twoDigits(currentTime.getMonth()+1) == timeConvertVar[1] && (currentTime.getDate() - timeConvertVar[0]) == 1) {
+			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+		} else {
+			beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+		}
+		
+		$('.openclose-updatedText-JS-' + sID).text(beautyText);
+	}
+}
+
+$(function() {
+	if(window.intervalUpdateDateOpenclose_%.object_id%) {
+		window.clearInterval(intervalUpdateDateOpenclose_%.object_id%);
+	}
+	
+	setInsertData_%.object_id%();
+	window.intervalUpdateDateOpenclose_%.object_id% = setInterval(function() {	
+		setInsertData_%.object_id%();
+	}, 1000);
+}); 
+
+</script>
+
+<div class="device-widget %.alive|"offline;online"%" onclick="var url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.status&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;">
+	<div style='display:%.ncno|"nc=block;no=none"%'><div class="device-icon openclose %.status|"on;off"%"></div></div>
+	<div style='display:%.ncno|"nc=none;no=block;=none"%'><div class="device-icon openclose %.status|"off;on"%"></div></div>
+	<div class="device-header">%.object_description%</div>
+	<!---<div class="device-details">%.updatedText%</div>--->
+	<div class="openclose-updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
 </div>

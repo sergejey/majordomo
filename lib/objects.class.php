@@ -603,12 +603,17 @@ function getGlobal($varname)
         $object_name = 'ThisComputer';
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
-    $cached_value = checkFromCache($cached_name);
-
+    if (strpos($varname,'cycle_') == 0 && strpos($varname,'Run') !== FALSE) {
+        $cached_value = checkCycleFromCache($cached_name);
+    } else {
+        $cached_value = checkFromCache($cached_name);
+    }
     if ($cached_value !== false) {
         return $cached_value;
     }
+
     $obj = getObject($object_name);
+
     if ($obj) {
         $value = $obj->getProperty($varname);
         return $value;
@@ -912,6 +917,10 @@ function getHistoryValue($varname, $time, $nerest = false)
  */
 function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
+    if (strpos($varname,'cycle_') == 0 && strpos($varname,'Run') !== FALSE) {
+        saveCycleToCache('MJD:ThisComputer.'.$varname,$value);
+        return;
+    }
 
     $tmp = explode('.', $varname);
 
@@ -1170,7 +1179,6 @@ function processTitle($title, $object = 0)
                 for ($i = 0; $i < $total; $i++) {
                     $property_name = $m[1][$i] . '.' . $m[2][$i];
                     $data = getGlobal($property_name);
-                    if ($data == '') $data = 0;
                     $descr = $m[3][$i];
                     $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
                     $descr = preg_replace('#\\\;#', ";", $descr); 
@@ -1188,17 +1196,19 @@ function processTitle($title, $object = 0)
                             $item = trim($tmp[$id]);
                             if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
-                                if ($search_value=='') {
-                                    $search_value='<empty>';
-                                }
+                                if ($search_value=='') $search_value='<empty>';
                                 $search_replace = $md[2];
                             } else {
-                                $search_value = $id;
+                                $search_value = $id.'';
                                 $search_replace = $item;
                             }
                             $hsh[$search_value] = $search_replace;
                         }
-                        if ($data == '') $data='<empty>';
+                        if ($data == '' && isset($hsh['<empty>'])) {
+                            $data = '<empty>';
+                        } elseif ($data == '') {
+                            $data = '0';
+                        }
                     }
                     $title = str_replace($m[0][$i], $hsh[$data], $title);
                 }

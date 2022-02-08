@@ -1,4 +1,51 @@
+//Конвектор времени
+function twoDigits(num) {
+	return ('0' + num).slice(-2);
+}
 
+function timeConvert(unixtime) {
+	unixtime = unixtime*1000;
+	
+	date = new Date(unixtime);
+	
+	returnArr = [
+		twoDigits(date.getDate()),
+		twoDigits((date.getMonth()+1)),
+		date.getFullYear(),
+		twoDigits(date.getHours()),
+		twoDigits(date.getMinutes()),
+		twoDigits(date.getSeconds()),
+	];
+	
+	return returnArr;	
+}
+
+function secondsToHms(d, lang_h = '', lang_m = '', lang_s = '') {
+	d = Number(d);
+	var h = Math.floor(d / 3600);
+	var m = Math.floor(d % 3600 / 60);
+	var s = Math.floor(d % 3600 % 60);
+
+	var hDisplay = h > 0 ? h + " " + lang_h + " " : "";
+	var mDisplay = m > 0 ? m + " " + lang_m + " " : "";
+	var sDisplay = !h ? (s > 0 ? s + " " + lang_s + " " : "") : "";
+	
+	//Собираем строку
+	genString = '';
+	
+	if(lang_h) {
+		genString = genString + hDisplay;
+	}
+	if(lang_m) {
+		genString = genString + mDisplay;
+	}
+	if(lang_s) {
+		genString = genString + sDisplay;
+	}
+	
+	return genString; 
+}
+	
 function simple_hash(s) {
  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
 }

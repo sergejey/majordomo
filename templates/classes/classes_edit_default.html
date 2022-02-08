@@ -1,93 +1,83 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
+<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			[#if OK#]
+				<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+			[#endif OK#]
+			[#if ERR#]
+			  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+			[#endif ERR#]
+			
+			<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_PARENT_CLASS#>:<#LANG_HCB#>parent_class<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<select name="parent_id" class="form-control">
+							<option value="0">- no -
+							[#begin PARENTS#]
+							<option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
+							[#end PARENTS#]
+						</select>
+					</div>
+				</div>
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
+				</div>
 
-&nbsp;<br>
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_DESCRIPTION#>:<#LANG_HCB#>description<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8"><textarea name="description" rows="3" class="form-control" style="width: 100%;min-height: 100px;resize: vertical;max-height: 500px;">[#DESCRIPTION#]</textarea></div>
+				</div>
+				<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
+					<div class="col-md-12 text-center">
+						[#if ID!=""#]
+						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_SUBMIT#></button>
+						[#else ID#]
+						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_ADD#></button>
+						[#endif ID#]
+						&nbsp;
+						<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-warning"><i class="glyphicon glyphicon-floppy-remove"></i> <#LANG_CANCEL#></a>
+					</div>
+				</div>
+				[#if ID!=""#]
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<div class="col-md-12 text-center">
+						<a href="?view_mode=export_classes&id=[#ID#]" class="btn btn-default" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i> <#LANG_EXPORT_CLASS_FULL#></a>
+						<a href="?view_mode=export_classes&id=[#ID#]&skip_objects=1" class="btn btn-default" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i> <#LANG_EXPORT_CLASS_NO_OBJECTS#></a>
+					</div>
+				</div>
+				[#endif ID#]
 
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit"  class="form-horizontal">
-[#if OK#]
-    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
-[#if ERR#]
-  <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
-[#endif ERR#]
 
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_PARENT_CLASS#>:<#LANG_HCB#>parent_class<#LANG_HCE#></label>
-        <div class="col-lg-4">
-
-<select name="parent_id" class="form-control">
- <option value="0">- no -
- [#begin PARENTS#]
- <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
- [#end PARENTS#]
- </select>
-
-        </div>
+				<input type="hidden" name="id" value="<#ID#>">
+				<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+				<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+				<input type="hidden" name="mode" value="update">
+				<input type="hidden" name="tab" value="<#TAB#>">
+			</form>
+		</div>
+	</div>
+	[#if SUB_CLASSES#]
+	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+		<div class="col-md-12">
+			<div class="panel panel-info">
+				<div class="panel-heading" onClick="$($(this).parent().children()[1]).toggle('slow');" style="cursor: pointer;">
+					<h3 class="panel-title">Дочерние классы</h3>
+				</div>
+				<div class="panel-collapse out in" style="height: auto;">
+					<div class="panel-body">
+						<ul class="list-group" id="">
+							[#begin SUB_CLASSES#]
+							<li class="list-group-item">
+								<a href="?id=[#ID#]&view_mode=<#VIEW_MODE#>">[#TITLE#]</a>
+							</li>
+							[#end SUB_CLASSES#]
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	[#endif#]
 </div>
-
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_TITLE#>:<font color="red">*</font><#LANG_HCB#>title<#LANG_HCE#></label>
-        <div class="col-lg-4"><input type="text"  class="form-control [#if ERR_TITLE#]alert-danger[#endif#]"  name="title" value="[#TITLE#]" required="true"></div>
-</div>
-
-<div class="form-group ">
-        <label class="col-lg-4 control-label"><#LANG_DESCRIPTION#>:<#LANG_HCB#>description<#LANG_HCE#></label>
-        <div class="col-lg-4"><textarea name="description" rows="3" class="form-control">[#DESCRIPTION#]</textarea></div>
-</div>
-
-<!--#
-<div class="form-group ">
-        <div class="col-lg-4 col-lg-offset-2"><input type="checkbox" name="nolog" value="1"[#if NOLOG="1"#] checked[#endif#]> <#LANG_DO_NOT_SAVE_CLASS_ACTIVITY#></div>
-</div>
-#-->
-
-<div class="form-group">
-     <div class="col-lg-offset-1 col-lg-5">
-        
-         [#if ID!=""#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
-                 [#else ID#]
-                 <input class="btn btn-default btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
-                 [#endif ID#]
-                 &nbsp;
-                 <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
-
-
-    </div>
-</div>
-
-[#if ID!=""#]
-&nbsp;
-<div class="form-group">
-     <div class="col-lg-offset-1 col-lg-5">
-
-<a href="?view_mode=export_classes&id=[#ID#]" class="btn btn-default" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i> <#LANG_EXPORT_CLASS_FULL#></a>
-<#LANG_HCB#>export_class<#LANG_HCE#>
-<br/><br/>
-<a href="?view_mode=export_classes&id=[#ID#]&skip_objects=1" class="btn btn-default" title="<#LANG_EXPORT#>"><i class="glyphicon glyphicon-export"></i> <#LANG_EXPORT_CLASS_NO_OBJECTS#></a>
-
-    </div>
-</div>
-[#endif ID#]
-
-
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
-<input type="hidden" name="tab" value="<#TAB#>">
-
-
-</form>
-
-
-[#if SUB_CLASSES#]
-<br>
-<ul>
- [#begin SUB_CLASSES#]
-  <li><a href="?id=[#ID#]&view_mode=<#VIEW_MODE#>">[#TITLE#]</a></li>
- [#end SUB_CLASSES#]
-</ul>
-[#endif#]

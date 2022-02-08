@@ -22,10 +22,10 @@ if ($level > 0) {
         $this->setProperty('status', 1, false);
     }
     if ($minWork != $maxWork) {
-        DebMes("Level updated to " . $level ." ".$_SERVER['REQUEST_URI'], 'dimming');
+        //DebMes("Level updated to " . $level ." ".$_SERVER['REQUEST_URI'], 'dimming');
         $levelWork = round($minWork + round(($maxWork - $minWork) * $level / 100));
         if ($this->getProperty('levelWork') != $levelWork) {
-            DebMes("Setting new levelWork to " . (int)$levelWork, 'dimming');
+            //DebMes("Setting new levelWork to " . (int)$levelWork, 'dimming');
             $this->setProperty('levelWork', (int)$levelWork);
         }
     }

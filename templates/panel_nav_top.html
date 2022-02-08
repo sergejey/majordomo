@@ -1,0 +1,59 @@
+<script type="text/javascript">
+    function showNotyDate(id) {
+        $('#notyAddtimeBlock_'+id).show();
+        $('#notyMsgBlock_'+id).hide();
+    }
+    function hideNotyDate(id) {
+        $('#notyMsgBlock_'+id).show();
+        $('#notyAddtimeBlock_'+id).hide();
+    }
+</script>
+[#begin SUB_MODULES#]
+[#if NEW_CATEGORY#]
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">[#CATEGORY#] <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        [#endif NEW_CATEGORY#]
+        [#if !DENIED#]
+        [#if LINKS#]
+        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
+            <ul class="dropdown-menu">
+                [#begin LINKS#]
+                <li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
+                [#end LINKS#]
+            </ul>
+        </li>
+        [#else LINKS#]
+        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
+            <a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]
+                [#if PLUGINS_NOTY_COUNT != 0#]
+                <div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-html="true" data-content="
+							<div style='min-width: 25rem;'>
+							<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
+							<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
+							<div class='clearfix'></div>
+							<hr style='margin: 0px 0px 5px 0px;'>
+							</div>
+							<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
+							[#begin PLUGINS_NOTY#]
+							<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
+								<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
+								<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
+								<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
+								<div class='clearfix'></div>
+							</div>
+							[#end PLUGINS_NOTY#]
+							<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
+							</div>
+							" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
+                [#endif PLUGINS_NOTY#]
+            </a>
+        </li>
+        [#if NAME="xray"#]<li class="menu-item"><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>[#endif#]
+        [#endif LINKS#]
+        [#endif DENIED#]
+        [#if LAST_IN_CATEGORY#]
+    </ul>
+</li>
+[#endif#]
+[#end SUB_MODULES#]

@@ -1,7 +1,3 @@
-<!--#
- @version 0.3 (auto-set)
-#-->
- <!-- table classes search -->
  [#if VIEW_MODE="search_classes" || VIEW_MODE=""#]
   [#inc classes_search_admin.html#]
  [#endif VIEW_MODE#]
@@ -10,13 +6,16 @@
  [#if VIEW_MODE="edit_classes"#]
    [#if ID!=""#]
 
-<ol class="breadcrumb">
-  <li><a href="?"><#LANG_HOME#></a></li>
-  [#begin HISTORY_LIST#]
-  <li class="active"><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#TITLE#]</a></li>
-  [#end HISTORY_LIST#]
-  <li class="active">[#TITLE#]</li>
-</ol>
+<script>
+$(window).load(function() {
+	//Вставляем данные в бредкрумбс
+	[#begin HISTORY_LIST#]
+		$('.breadcrumb:eq(0)').append('<li><a href="?view_mode=<#VIEW_MODE#>&id=[#ID#]&tab=<#TAB#>">[#TITLE#]</a></li>');
+	[#end HISTORY_LIST#]
+	
+	$('.breadcrumb:eq(0)').append('<li><a href="?md=classes&action=classes&inst=adm&data_source=&view_mode=edit_classes&id=[#ID#]&tab=objects">[#TITLE#]</a></li>');
+});
+</script>
 
 <ul class="nav nav-tabs">
  <li [#if TAB=""#]class="active"[#endif#]><a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_MAIN#></a></li>
@@ -44,7 +43,9 @@
     [#inc classes_edit_methods.html#]
    [#endif TAB#]
    [#if TAB="objects"#]
+	<div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
     [#module name="objects" action="admin" class_id="<#ID#>"#]
+	</div>
    [#endif TAB#]
 
  [#endif VIEW_MODE#]
