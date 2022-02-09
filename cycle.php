@@ -42,6 +42,111 @@ while (!$connected) {
 
 echo "CONNECTED TO DB" . PHP_EOL;
 
+//если есть "поломанные" таблицы, попытаться их "вылечить"
+echo "CHECK/REPAIR TABLES\n";
+$tables = SQLSelect("select TABLE_NAME Tbl from information_schema.tables where TABLE_SCHEMA='".DB_NAME."' AND ENGINE !='MEMORY';");
+$total = count($tables);
+$checked = 0;
+$broken = 0;
+$repaired = 0;
+$fatal = 0;
+for ($i = 0; $i < $total; $i++) {
+    $table = $tables[$i]['Tbl'];
+
+    //echo 'Checking table [' . $table . '] ...';
+    $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+    if ($result['Msg_text'] == 'OK') {
+        //echo "OK\n";
+        $checked = $checked + 1;
+    } else {
+        echo "Checking table [" . $table . "]... broken ... try to repair ...";
+        $broken = $broken + 1;
+        SQLExec("REPAIR TABLE " . $table . ";");
+        sleep(10);
+        $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+      if ($result['Msg_text'] == 'OK') {
+          echo "OK\n";
+            $repaired = $repaired + 1;
+      } else {
+          echo "try to repair extended...";
+          SQLExec("REPAIR TABLE " . $table . " EXTENDED;");
+          sleep(10);
+            $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+        if ($result['Msg_text'] == 'OK') {
+            echo "OK\n";
+                $repaired = $repaired + 1;
+        } else {
+            echo "try to repair use_frm...";
+            SQLExec("REPAIR TABLE " . $table . " USE_FRM;");
+            sleep(10);
+                $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+          if ($result['Msg_text'] == 'OK') {
+              echo "OK\n";
+                    $repaired = $repaired + 1;
+          } else {
+              echo "NO RESULT(...try restore from backup\n";
+                    $fatal = $fatal + 1;
+          }
+        }
+      }
+    }
+}
+echo "CHECK/REPAIR TABLES. Total: ".$total." checked Ok: ".$checked." broken: ".$broken." repaired: ".$repaired." FATAL Errors : ".$fatal; 
+DebMes("CHECK/REPAIR TABLES  done. Total: ".$total." checked Ok: ".$checked." broken: ".$broken." repaired: ".$repaired." FATAL Errors : ".$fatal);
+echo "\n";echo('<pre>');
+echo "CHECK/REPAIR TABLES\n";
+$tables = SQLSelect("select TABLE_NAME Tbl from information_schema.tables where TABLE_SCHEMA='".DB_NAME."' AND ENGINE !='MEMORY';");
+$total = count($tables);
+$checked = 0;
+$broken = 0;
+$repaired = 0;
+$fatal = 0;
+for ($i = 0; $i < $total; $i++) {
+    $table = $tables[$i]['Tbl'];
+
+    //echo 'Checking table [' . $table . '] ...';
+    $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+    if ($result['Msg_text'] == 'OK') {
+        //echo "OK\n";
+        $checked = $checked + 1;
+    } else {
+        echo "Checking table [" . $table . "]... broken ... try to repair ...";
+        $broken = $broken + 1;
+        SQLExec("REPAIR TABLE " . $table . ";");
+        sleep(10);
+        $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+      if ($result['Msg_text'] == 'OK') {
+          echo "OK\n";
+            $repaired = $repaired + 1;
+      } else {
+          echo "try to repair extended...";
+          SQLExec("REPAIR TABLE " . $table . " EXTENDED;");
+          sleep(10);
+            $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+        if ($result['Msg_text'] == 'OK') {
+            echo "OK\n";
+                $repaired = $repaired + 1;
+        } else {
+            echo "try to repair use_frm...";
+            SQLExec("REPAIR TABLE " . $table . " USE_FRM;");
+            sleep(10);
+                $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+          if ($result['Msg_text'] == 'OK') {
+              echo "OK\n";
+                    $repaired = $repaired + 1;
+          } else {
+              echo "NO RESULT(...try restore from backup\n";
+                    $fatal = $fatal + 1;
+          }
+        }
+      }
+    }
+}
+echo "CHECK/REPAIR TABLES. Total: ".$total." checked Ok: ".$checked." broken: ".$broken." repaired: ".$repaired." FATAL Errors : ".$fatal; 
+DebMes("CHECK/REPAIR TABLES  done. Total: ".$total." checked Ok: ".$checked." broken: ".$broken." repaired: ".$repaired." FATAL Errors : ".$fatal);
+echo "\n";
+
+
 // создаем табличку cyclesRun, если её нет
 SQLExec('CREATE TABLE IF NOT EXISTS `cyclesRun` (`KEYWORD` char(100) NOT NULL,`DATAVALUE` char(255) NOT NULL,PRIMARY KEY (`KEYWORD`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
 
