@@ -2,41 +2,38 @@
 
 function saveCycleToCache($key, $value)
 {
-        $key = strtolower($key);
-
     if (is_array($value) || strlen($value) > 255) {
-        SQLExec("DELETE FROM cyclesRun WHERE KEYWORD='".$key."'");
+        SQLExec("DELETE FROM cached_cycles WHERE TITLE='".$key."'");
         return;
     }
-
 
     if (isset($_SERVER['REQUEST_METHOD'])) {
         global $memory_cycle_cache;
         $memory_cycle_cache[$key] = $value;
     }
-        $rec = array('KEYWORD' => $key, 'DATAVALUE' => $value);
-    $sqlQuery = "REPLACE INTO cyclesRun (KEYWORD, DATAVALUE) " .
-        " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
-        "'" . DbSafe1($rec['DATAVALUE']) . "')";
+        $rec = array('TITLE' => $key, 'VALUE' => $value);
+    $sqlQuery = "REPLACE INTO cached_cycles (TITLE, VALUE) " .
+        " VALUES ('" . DbSafe1($rec['TITLE']) . "', " .
+        "'" . DbSafe1($rec['VALUE']) . "')";
     SQLExec($sqlQuery);
 }
 
 function checkCycleFromCache($key)
 {
-$key = strtolower($key);
     if (isset($_SERVER['REQUEST_METHOD'])) {
             global $memory_cycle_cache;
                 if (is_array($memory_cycle_cache) && isset($memory_cycle_cache[$key])) {
                     return $memory_cycle_cache[$key];
                 }
         }
-        $rec = SQLSelectOne("SELECT * FROM cyclesRun WHERE KEYWORD = '" . DBSafe($key) . "'");
-    if ($rec['KEYWORD']) {
-        return $rec['DATAVALUE'];
+        $rec = SQLSelectOne("SELECT * FROM cached_cycles WHERE TITLE = '" . DBSafe($key) . "'");
+    if ($rec['TITLE']) {
+        return $rec['VALUE'];
     } else {
         return false;
     }
 }
+
 
 
 /**
