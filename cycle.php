@@ -99,16 +99,16 @@ $dirs_to_check = [
     ROOT . 'cms/cached/templates_c',
 ];
 
-if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
+if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && !empty(SETTINGS_SYSTEM_DEBMES_PATH)) {
     $path = SETTINGS_SYSTEM_DEBMES_PATH;
-} elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
+} elseif (defined('LOG_DIRECTORY') && !empty(LOG_DIRECTORY)) {
     $path = LOG_DIRECTORY;
 } else {
     $path = ROOT . 'cms/debmes';
 }
 $dirs_to_check[] = $path;
 
-if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
+if (defined('SETTINGS_BACKUP_PATH') && !empty(SETTINGS_BACKUP_PATH)) {
     $dirs_to_check[] = SETTINGS_BACKUP_PATH;
 }
 
@@ -268,7 +268,7 @@ foreach ($cycles as $path) {
                 DebMes('Cycle ' . $title . ' disabled. Skipping.');
                 continue;
             }
-            if (getGlobal($title . 'Control') != '') {
+            if (!empty(getGlobal($title . 'Control'))) {
                 setGlobal($title . 'Control', '');
             }
         }
@@ -326,7 +326,7 @@ while (false !== ($result = $threads->iteration())) {
             }
             $seen[$title] = 1;
             $control = getGlobal($title . 'Control');
-            if ($control != '') {
+            if (!empty($control)) {
                 DebMes('Got control command "'.$control.'" for ' . $title, 'threads');
                 if ($control == 'stop') {
                     $to_stop[$title] = time();
