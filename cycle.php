@@ -43,7 +43,9 @@ while (!$connected) {
 echo "CONNECTED TO DB" . PHP_EOL;
 
 // создаем табличку cyclesRun, если её нет
-SQLExec('CREATE TABLE IF NOT EXISTS `cyclesRun` (`KEYWORD` char(100) NOT NULL,`DATAVALUE` char(255) NOT NULL,PRIMARY KEY (`KEYWORD`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
+SQLExec('CREATE TABLE IF NOT EXISTS `cached_cycles` (`TITLE` char(100) NOT NULL,`VALUE` char(255) NOT NULL,PRIMARY KEY (`TITLE`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
+SQLExec('DROP TABLE IF EXISTS cyclesRun;');
+
 
 $old_mask = umask(0);
 if (is_dir(ROOT . 'cached')) {
@@ -208,6 +210,8 @@ if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
 $qry = "1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control' OR TITLE LIKE 'cycle%Disabled' OR TITLE LIKE 'cycle%AutoRestart')";
 $thisCompObject = getObject('ThisComputer');
 $cycles_records = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+SQLExec("DELETE FROM cached_cycles");
+
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
     DebMes("Removing property ThisComputer.$property (object ".$thisCompObject->id.")",'threads');
@@ -330,13 +334,12 @@ while (false !== ($result = $threads->iteration())) {
 
         $last_cycles_control_check = time();
 
-        $qry = "OBJECT_ID=" . $thisComputerObject->id . " AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
-        $cycles = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cached_cycles;");
 
-        $total = count($cycles);
+        $total = count($tmpcyclesTimestamps);
         $seen = array();
         for ($i = 0; $i < $total; $i++) {
-            $title = $cycles[$i]['TITLE'];
+            $title = $tmpcyclesTimestamps[$i]['TITLE'];
             $title = preg_replace('/Run$/', '', $title);
             $title = preg_replace('/Control$/', '', $title);
             if (isset($seen[$title])) {
@@ -358,8 +361,12 @@ while (false !== ($result = $threads->iteration())) {
         }
 
         $is_running = array();
-        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cyclesRun;");
-        foreach ($tmpcyclesTimestamps as $k => $v) $cyclesTimestamps[$v['KEYWORD']] = $v['DATAVALUE'];
+        foreach ($tmpcyclesTimestamps as $k => $v) {
+                if (strpos($varname,'Run') !== FALSE) {
+                        $cyclesTimestamps[$v['TITLE']] = $v['VALUE'];
+                }
+        }
+
         
         foreach ($threads->commandLines as $id => $cmd) {
             if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
@@ -372,7 +379,7 @@ while (false !== ($result = $threads->iteration())) {
                 }
 
                 //$cycle_updated_timestamp = getGlobal($title . 'Run');
-                $cycle_updated_timestamp=$cyclesTimestamps[strtolower('MJD:ThisComputer.'.$title.'Run')];
+                $cycle_updated_timestamp=$cyclesTimestamps[$title.'Run'];
                 if (!isset($to_start[$title]) &&
                     $cycle_updated_timestamp &&
                     in_array($title, $auto_restarts) &&
