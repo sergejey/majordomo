@@ -53,12 +53,12 @@ if (is_dir(ROOT . 'cms/cached')) {
 }
 
 // moving some folders to ./cms/
-$move_folders = [
+$move_folders = array(
     'debmes',
     'saverestore',
     'sounds',
     'texts'
-];
+);
 foreach ($move_folders as $folder) {
     if (is_dir(ROOT . $folder)) {
         echo 'Moving ' . ROOT . $folder . ' to ' . ROOT . 'cms/' . $folder . PHP_EOL;
@@ -69,7 +69,7 @@ foreach ($move_folders as $folder) {
 }
 
 // removing some 3rd-party directories
-$check_folders = [
+$check_folders = array(
     'blockly' => '3rdparty/blockly',
     'bootstrap' => '3rdparty/bootstrap',
     'js/codemirror' => '3rdparty/codemirror',
@@ -79,7 +79,7 @@ $check_folders = [
     'js/threejs' => '3rdparty/threejs',
     'pdw' => '3rdparty',
     '3rdparty/pdw' => '3rdparty',
-];
+);
 foreach ($check_folders as $k => $v) {
     if (is_dir(ROOT . $v) && is_dir(ROOT . $k)) {
         echo 'Removing ' . ROOT . $k . PHP_EOL;
@@ -90,14 +90,14 @@ foreach ($check_folders as $k => $v) {
 
 
 // check/recreate folders
-$dirs_to_check = [
+$dirs_to_check = array(
     ROOT . 'backup',
     ROOT . 'cms/debmes',
     ROOT . 'cms/cached',
     ROOT . 'cms/cached/voice',
     ROOT . 'cms/cached/urls',
     ROOT . 'cms/cached/templates_c',
-];
+);
 
 if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && !empty(SETTINGS_SYSTEM_DEBMES_PATH)) {
     $path = SETTINGS_SYSTEM_DEBMES_PATH;
@@ -188,7 +188,7 @@ if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
 } else {
     //combine data into single table
     $data = SQLSelect('SHOW TABLES;');
-    $tables = [];
+    $tables = array();
     foreach ($data as $v) {
         foreach ($v as $k => $v2) {
             $tables[] = $v2;
@@ -238,7 +238,7 @@ for ($i = 0; $i < $total; $i++) {
 clearCacheData();
 
 // getting list of /scripts/cycle_*.php files to run each in separate thread
-$cycles = [];
+$cycles = array();
 $reboot_timer = 0;
 
 if (is_dir('./scripts')) {
@@ -297,12 +297,8 @@ foreach ($cycles as $path) {
 
 echo 'ALL CYCLES STARTED' . PHP_EOL;
 
-$last_restart = [];
+$last_restart = $auto_restarts = $to_start = $to_stop = $started_when = array();
 $last_cycles_control_check = time();
-$auto_restarts = [];
-$to_start = [];
-$to_stop = [];
-$started_when = [];
 
 $thisComputerObject = getObject('Computer.ThisComputer');
 
@@ -316,7 +312,7 @@ while (false !== ($result = $threads->iteration())) {
         $cycles = SQLSelect('SELECT properties.* FROM properties WHERE ' . $qry . ' ORDER BY TITLE');
 
         $total = count($cycles);
-        $seen = [];
+        $seen = array();
         for ($i = 0; $i < $total; $i++) {
             $title = $cycles[$i]['TITLE'];
             $title = preg_replace('/Run$/', '', $title);
@@ -339,7 +335,7 @@ while (false !== ($result = $threads->iteration())) {
 
         }
 
-        $is_running = [];
+        $is_running = array();
         foreach ($threads->commandLines as $id => $cmd) {
             if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
                 $title = $m[1];
@@ -367,8 +363,7 @@ while (false !== ($result = $threads->iteration())) {
             $reboot_timer = 0;
             //force close all running threads
             DebMes('Force closing all running services.', 'threads');
-            $to_start = [];
-            $restart_threads = [];
+            $to_start = $restart_threads = array();
             foreach ($is_running as $k => $v) {
                 $to_stop[$k] = time();
             }
