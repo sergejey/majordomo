@@ -95,7 +95,9 @@ echo "CHECK/REPAIR TABLES RESULT -> Total: ".$total.", checked Ok: ".$checked.",
 echo "\n";
 
 // создаем табличку cyclesRun, если её нет
-SQLExec('CREATE TABLE IF NOT EXISTS `cyclesRun` (`KEYWORD` char(100) NOT NULL,`DATAVALUE` char(255) NOT NULL,PRIMARY KEY (`KEYWORD`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
+SQLExec('CREATE TABLE IF NOT EXISTS `cached_cycles` (`TITLE` char(100) NOT NULL,`VALUE` char(255) NOT NULL,PRIMARY KEY (`TITLE`)) ENGINE=MEMORY DEFAULT CHARSET=utf8;');
+SQLExec('DROP TABLE IF EXISTS cyclesRun;');
+
 
 $old_mask = umask(0);
 if (is_dir(ROOT . 'cached')) {
@@ -260,6 +262,8 @@ if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
 $qry = "1 AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control' OR TITLE LIKE 'cycle%Disabled' OR TITLE LIKE 'cycle%AutoRestart')";
 $thisCompObject = getObject('ThisComputer');
 $cycles_records = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+SQLExec("DELETE FROM cached_cycles");
+
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
     DebMes("Removing property ThisComputer.$property (object ".$thisCompObject->id.")",'threads');
@@ -381,21 +385,30 @@ while (false !== ($result = $threads->iteration())) {
     if ((time() - $last_cycles_control_check) >= 5 || !empty($result)) {
 
         $last_cycles_control_check = time();
+        $cyclesControls=$cyclesTimestamps=array();
+        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cached_cycles;");
 
-        $qry = "OBJECT_ID=" . $thisComputerObject->id . " AND (TITLE LIKE 'cycle%Run' OR TITLE LIKE 'cycle%Control')";
-        $cycles = SQLSelect("SELECT properties.* FROM properties WHERE $qry ORDER BY TITLE");
+        $total = count($tmpcyclesTimestamps);
+        foreach ($tmpcyclesTimestamps as $k => $v) {
+                if (strpos($v['TITLE'],'Run') !== FALSE) {
+                        $cyclesTimestamps[$v['TITLE']] = $v['VALUE'];
+                } else if (strpos($v['TITLE'],'Control') !== FALSE) {
+                        $cyclesControls[$v['TITLE']] = $v['VALUE'];
+                }
+        }
 
-        $total = count($cycles);
         $seen = array();
         for ($i = 0; $i < $total; $i++) {
-            $title = $cycles[$i]['TITLE'];
+            $title = $tmpcyclesTimestamps[$i]['TITLE'];
             $title = preg_replace('/Run$/', '', $title);
             $title = preg_replace('/Control$/', '', $title);
             if (isset($seen[$title])) {
                 continue;
             }
             $seen[$title] = 1;
-            $control = getGlobal($title . 'Control');
+            $control='';
+
+            if (isset($cyclesControls[$title . 'Control'])) $control = $cyclesControls[$title . 'Control'];
             if ($control != '') {
                 DebMes("Got control command '$control' for " . $title, 'threads');
                 if ($control == 'stop') {
@@ -410,9 +423,7 @@ while (false !== ($result = $threads->iteration())) {
         }
 
         $is_running = array();
-        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cyclesRun;");
-        foreach ($tmpcyclesTimestamps as $k => $v) $cyclesTimestamps[$v['KEYWORD']] = $v['DATAVALUE'];
-        
+
         foreach ($threads->commandLines as $id => $cmd) {
             if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
                 $title = $m[1];
@@ -422,14 +433,9 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Adding $title to auto-recovery list", 'threads');
                     $auto_restarts[] = $title;
                 }
+                $cycle_updated_timestamp=$cyclesTimestamps[$title.'Run'];
 
-                //$cycle_updated_timestamp = getGlobal($title . 'Run');
-                $cycle_updated_timestamp=$cyclesTimestamps[strtolower('MJD:ThisComputer.'.$title.'Run')];
-                if (!isset($to_start[$title]) &&
-                    $cycle_updated_timestamp &&
-                    in_array($title, $auto_restarts) &&
-                    ((time() - $cycle_updated_timestamp) > 30 * 60)
-                ) { //
+                if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
                     DebMes("Looks like $title is dead (updated: ".date('Y-m-d H:i:s',$cycle_updated_timestamp)."). Need to recovery", 'threads');
                     registerError('cycle_hang', $title);
                     setGlobal($title . 'Control', 'restart');
@@ -437,6 +443,7 @@ while (false !== ($result = $threads->iteration())) {
             }
         }
     }
+
 
     if (isRebootRequired()) {
         if (!$reboot_timer) {
