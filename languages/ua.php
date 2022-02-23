@@ -1179,6 +1179,7 @@ $dictionary = array (
     'DEVICES_MOTION_IGNORE' => 'Ігнорувати події від пристрою, коли нікого немає вдома',
     'DEVICES_MOTION_RESET' => 'Скидання статусу "нікого немає вдома" без таймера установки',
     'DEVICES_MOTION_TIMEOUT' => 'Час активності (секунд)',
+    'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Вимикати освітлення в кімнаті по закінченню періода активності',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимий час відсутності даних (годин)',
     'DEVICES_MAIN_SENSOR' => 'Основний сенсор приміщення',
     'DEVICES_NOT_UPDATING' => 'не оновлюється',
