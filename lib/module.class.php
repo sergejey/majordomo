@@ -830,6 +830,11 @@ class module
 	
 	public function sendnotification($str, $type = 'default')
     {
+
+        if (!SQLTableExists('plugins_noty')) {
+            return json_encode(array('status'=>false));
+        }
+
 		if($type != 'info' && $type != 'danger' && $type != 'warning' && $type != 'success' && $type != 'default') {
 			$type = 'default';
 		}
@@ -860,6 +865,11 @@ class module
 	
 	public function readnotification($noty_id)
     {
+
+        if (!SQLTableExists('plugins_noty')) {
+            return json_encode(array('status'=>false));
+        }
+
 		$rec["ID"] = $noty_id;
 		$rec["READ"] = 1;
 		
