@@ -284,6 +284,21 @@
 				[#endif PRINT#]
 				<!--right_main-->
 				[#if ACTION!=""#]
+
+
+	[#if MODULE_NOTIFICATIONS#]
+	[#begin MODULE_NOTIFICATIONS#]
+	<div class="alert alert-[#TYPE#]" id="notification[#ID#]">
+		<div class="row">
+			<div class="col-md-1">[#ADDED#]</div>
+			<div class="col-md-10">
+				[#MESSAGE#]</div>
+			<div class="col-md-1"><a href="#" class="btn btn-default" onclick="return dismissNotification([#ID#]);">OK</a></div>
+  	    </div>
+	</div>
+	[#end MODULE_NOTIFICATIONS#]
+	[#endif MODULE_NOTIFICATIONS#]
+
 						[#module name="<#ACTION#>" action="admin" instance="adm"#]
 				[#else ACTION#]
 					[#inc panel_default.html#]

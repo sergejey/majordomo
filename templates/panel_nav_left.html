@@ -24,41 +24,9 @@
                         [#if !DENIED#]
                         <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
                             <a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#]
-                                [#if PLUGINS_NOTY_COUNT != 0#]
-                                <div id="plugNotyBtn_[#PLUGINS_ID#]" class="plugNotyBtn badge pull-right alert-[#PLUGINS_NOTY_COLOR#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="right" data-html="true" data-content="
-											<script>
-											function showNotyDate(id) {
-												$('#notyAddtimeBlock_'+id).show();
-												$('#notyMsgBlock_'+id).hide();
-											}
-											function hideNotyDate(id) {
-												$('#notyMsgBlock_'+id).show();
-												$('#notyAddtimeBlock_'+id).hide();
-											}
-											</script>
-
-											<div style='min-width: 25rem;'>
-											<div style='font-size: 1rem;float:left'>Уведомление от модуля <b>[#TITLE#]</b></div>
-											<div style='font-size: 1rem;float:right;cursor: pointer;color: red;' onclick='closePopover([#PLUGINS_ID#]);'><i class='glyphicon glyphicon-remove-circle'></i></div>
-											<div class='clearfix'></div>
-											<hr style='margin: 0px 0px 5px 0px;'>
-											</div>
-
-											<div class='notyBody' id='notyBody_[#PLUGINS_ID#]' style='max-height: 200px;overflow-y: auto;overflow-x: hidden;'>
-											[#begin PLUGINS_NOTY#]
-											<div id='notyAlert_[#ID#]' class='plugNotyAlert alert alert-[#TYPE#]' onclick='readNoty([#ID#], [#PLUGINS_ID#])' style='padding: 5px 7px;margin: 0px 10px 5px 0px;font-size: 1.2rem;cursor:pointer;'>
-												<div style='float:left;display:none;' id='notyAddtimeBlock_[#ID#]'><i class='glyphicon glyphicon-time'></i> Создан [#ADD_HUMAN#]</div>
-
-												<div style='float:left' id='notyMsgBlock_[#ID#]'><i class='glyphicon glyphicon-bullhorn'></i> [#MESSAGE#]</div>
-												<div style='float:right;cursor: pointer;' onmouseover='showNotyDate([#ID#]);' onmouseout='hideNotyDate([#ID#]);'><i class='glyphicon glyphicon-info-sign'></i></div>
-												<div class='clearfix'></div>
-											</div>
-											[#end PLUGINS_NOTY#]
-											<div style='text-align: center;font-size: 1.2rem;margin-top: 10px;'><a href='https://mjdm.ru/forum/viewtopic.php?f=7&p=128996#p128996' target= '_blank'>Что это?</a></div>
-											</div>
-											" data-original-title="">[#PLUGINS_NOTY_COUNT#]</div>
-                                [#endif PLUGINS_NOTY#]
-                            </a>
+                                [#if NOTIFICATIONS_COUNT != 0#]
+                                <span class="badge pull-right alert-[#NOTIFICATIONS_TYPE#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-html="true" >[#NOTIFICATIONS_COUNT#]</span>
+                                [#endif NOTIFICATIONS_COUNT#]</a>
                         </li>
                         [#endif DENIED#]
                         [#if LAST_IN_CATEGORY#]

@@ -540,6 +540,23 @@
         });
         return false;
     }
+
+    function dismissNotification(id) {
+
+        var url = '?ajax_panel=1&op=dismiss_notification&id='+id;
+        $.ajax({
+            url: url,
+            success: function(data) {
+                if (data=='OK') {
+                    $('#notification'+id).fadeOut();
+                }
+            }
+        });
+
+
+        return false;
+    }
+
     [#if ACTION==""#]
     function checkDidYouKnow() {
         var urlDidyouknow = '<#ROOTHTML#>ajax/market.html?op=didyouknow';

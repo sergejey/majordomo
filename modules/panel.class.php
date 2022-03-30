@@ -158,16 +158,19 @@ class panel extends module
                  WHERE (`HIDDEN`='0' OR NAME='control_modules')
                  ORDER BY FIELD(CATEGORY, '<#LANG_SECTION_OBJECTS#>', '<#LANG_SECTION_DEVICES#>', '<#LANG_SECTION_APPLICATIONS#>',
                                 '<#LANG_SECTION_SETTINGS#>', '<#LANG_SECTION_SYSTEM#>'),
+                          FIELD(`NAME`,'classes','devices','settings','system_errors','xray','connect','saverestore','market') DESC,
                           `PRIORITY`, `TITLE`";
 
             $modules = SQLSelect($sqlQuery);
             $old_cat = 'some_never_should_be_category_name';
             $modulesCnt = count($modules);
 
-            if (SQLTableExists('plugins_noty')) {
-                $getNOTY = SQLSelect("select pln.*, pl.MODULE_NAME from plugins_noty pln join plugins pl on pln.PLUGINS_ID=pl.id WHERE pln.READ = '0'");
-            } else {
-                $getNOTY = array();
+            $notifications = array();
+            if (SQLTableExists('module_notifications')) {
+                $getNotifications = SQLSelect("select * from module_notifications WHERE IS_READ = 0 ORDER BY ADDED DESC");
+                foreach($getNotifications as $notification) {
+                    $notifications[$notification['MODULE_NAME']][]=$notification;
+                }
             }
 
             for ($i = 0; $i < $modulesCnt; $i++) {
@@ -189,30 +192,15 @@ class panel extends module
                 } else {
                     $last_allow = $i;
                 }
-				
-				foreach($getNOTY as $keyNoty => $notyValue) {
-					if($notyValue['MODULE_NAME'] == $modules[$i]["NAME"]) {
-				
-						if(preg_match('|<#(.*?)#>|si', $notyValue['MODULE_NAME'], $arr)) {
-							$titleSearchNoty = constant($arr[1]);
-						} else {
-							$titleSearchNoty = $notyValue['MODULE_NAME'];
-						}
-					
-						$modules[$i]['PLUGINS_NOTY_COUNT'] = $modules[$i]['PLUGINS_NOTY_COUNT']+1;
-						$modules[$i]['PLUGINS_NOTY_COLOR'] = $notyValue['TYPE'];
-						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'];
-						
-						$getNOTY[$keyNoty]['ADD_HUMAN'] = date('d.m.Y H:i', $notyValue['ADD']);
-						
-						$modules[$i]['PLUGINS_NOTY'][] = $getNOTY[$keyNoty];
 
-						unset($getNOTY[$keyNoty]);
-					} else {
-						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'] ?? null;
-					}
-				}
-	
+                if (isset($notifications[$modules[$i]["NAME"]])) {
+                    $modules[$i]["NOTIFICATIONS"]=$notifications[$modules[$i]["NAME"]];
+                    $modules[$i]["NOTIFICATIONS_COUNT"]=count($modules[$i]["NOTIFICATIONS"]);
+                    $modules[$i]["NOTIFICATIONS_TYPE"]=$modules[$i]["NOTIFICATIONS"][0]['TYPE'];
+                } else {
+                    $modules[$i]["NOTIFICATIONS_COUNT"]=0;
+                }
+
                 if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
@@ -232,6 +220,18 @@ class panel extends module
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
             $out["SUB_MODULES"] = $modules;
+        }
+
+        if ($this->action && isset($notifications[$this->action])) {
+            $total = count($notifications[$this->action]);
+            for($i=0;$i<$total;$i++) {
+                $notifications[$this->action][$i]['ADDED']=date('d.m.Y H:i:s',strtotime($notifications[$this->action][$i]['ADDED']));
+                if ($notifications[$this->action][$i]['TYPE']=='default') {
+                    $notifications[$this->action][$i]['TYPE']='info';
+                }
+
+            }
+            $out['MODULE_NOTIFICATIONS']=$notifications[$this->action];
         }
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {

@@ -18,6 +18,13 @@ function evalConsole($code, $print = 0) {
 	}
 }
 
+if ($op == 'dismiss_notification') {
+    $id = gr('id','int');
+    SQLExec("UPDATE module_notifications SET IS_READ=1 WHERE ID=".$id);
+    echo "OK";
+    exit;
+}
+
 if ($op == 'console') {
 	ini_set('display_errors', 0);
 	ini_set('display_startup_errors', 0);
