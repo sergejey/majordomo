@@ -506,7 +506,6 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
 {
     startMeasure('getURL');
-    // DebMes($url,'urls');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part) > 200) {
         $filename_part = substr($filename_part, 0, 200) . md5($filename_part);
@@ -535,7 +534,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
@@ -575,9 +574,12 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
-            $result = curl_exec($ch);
-            endMeasure('curl_exec');
 
+            //curl_setopt($ch, CURLOPT_HEADER, 1);
+            $result = curl_exec($ch);
+
+            //dprint($result,false);
+            endMeasure('curl_exec');
 
             startMeasure('curl_post');
             if (!$background && curl_errno($ch)) {

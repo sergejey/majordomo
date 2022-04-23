@@ -4,6 +4,7 @@ function saveCycleToCache($key, $value)
 {
     if (is_array($value) || strlen($value) > 255) {
         SQLExec("DELETE FROM cached_cycles WHERE TITLE='".$key."'");
+        deleteFromCache($key);
         return;
     }
 
@@ -96,7 +97,7 @@ function saveToCache($key, $value)
 {
     $key = strtolower($key);
     if (is_array($value) || strlen($value) > 255) {
-        SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
+        deleteFromCache($key);
         return;
     }
 
@@ -115,6 +116,20 @@ function saveToCache($key, $value)
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
         "'" . DbSafe1($rec['DATAVALUE']) . "')";
     SQLExec($sqlQuery);
+}
+
+function deleteFromCache($key) {
+    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        if ($redisConnection->exists($key)) {
+            $redisConnection->del($key);
+        }
+    }
 }
 
 /**

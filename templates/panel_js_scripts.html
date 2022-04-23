@@ -38,15 +38,13 @@
         return false;
     }
 
+    var fileBrowseElementId="";
+    function openFileBrowserCallback(url) {
+        $('#'+fileBrowseElementId).val(url);
+    }
     function openFileBrowser(id){
-        window.KCFinder = {
-            callBack: function (url) {
-                window.KCFinder = null;
-                //alert(url);
-                $('#'+id).val(url);
-            }
-        };
-        window.open('<#ROOTHTML#>3rdparty/kcfinder/browse.php?dir=/',
+        fileBrowseElementId=id;
+        window.open('<#ROOTHTML#>3rdparty/elFinder/elfinder.html',
             'kcfinder_image', 'status=0, toolbar=0, location=0, menubar=0, ' +
             'directories=0, resizable=1, scrollbars=0, width=800, height=600'
         );
