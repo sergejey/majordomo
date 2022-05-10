@@ -267,7 +267,7 @@ $this->device_types=array(
         'METHODS'=>array(
             'motionDetected'=>array('DESCRIPTION'=>'Motion Detected'),
             'updatePreview'=>array('DESCRIPTION'=>'Update preview code'),
-            'takeSnapshot'=>array('DESCRIPTION'=>'Takes snapshot'),
+            'takeSnapshot'=>array('DESCRIPTION'=>'Take snapshot','_CONFIG_SHOW'=>1),
             'takeSeries'=>array('DESCRIPTION'=>'Takes image series'),
         )
     ),

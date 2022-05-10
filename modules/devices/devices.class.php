@@ -479,7 +479,12 @@ class devices extends module
                 }
                 $tm = strtotime(date('Y-m-d') . ' ' . $rec['SET_TIME']);
                 $diff = time() - $tm;
-                if ($diff < 0 || $diff >= 10 * 60) {
+
+                $latestRun = strtotime($rec['LATEST_RUN']);
+                $diff2 = time() - $latestRun;
+
+
+                if ($diff < 0 || $diff >= 10 * 60 || $diff2<=10*60) {
                     continue;
                 }
                 /*

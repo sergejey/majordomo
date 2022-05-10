@@ -52,7 +52,8 @@ if (!is_float($maxValue) && !is_float($minValue) && !$is_normal) {
   clearTimeOut($alert_timer_title);
   if ($this->getProperty('notify')) {
     //back to normal notify
-    say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);
+    //say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);
+    say($value.' '.$description.' - '.LANG_DEVICES_NOTIFY_BACKTONORMAL, 2);
   }
 }
 
