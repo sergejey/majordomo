@@ -254,6 +254,23 @@ if ($op == 'filter') {
             $res .= '<div class="searchHover"><span class="label" style="background-color: #af81ff;">GPS</span> <a href="/panel/app_gpstrack/action_' . $devices[$i]['ID'] . '.html">' . $devices[$i]['TITLE'] . ' - ' . $devices[$i]['NAME'] . '</a></div>';
         }
     }
+	
+    // find in modules
+    $items = SQLSelect("SELECT * FROM project_modules");
+    foreach($items as $item) {
+        $module_name = $item['NAME'];
+        $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
+        if (file_exists($module_file)) {
+            include_once($module_file);
+            $module = new $module_name;
+            if (method_exists($module,'findData')) {
+                $result = $module->findData($title);
+                foreach($result as $data) {
+                    $res .= '<div class="searchHover"><span class="label" style="background-color: #5cb85c;">&nbsp;'.$item['TITLE'].'</span>'.$data.'</div>';
+                }
+            }
+        }
+    }
 
     //todo: webvars
     //todo: patterns
