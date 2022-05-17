@@ -267,18 +267,11 @@ class mysql
      */
     public function Update($table, $data, $ndx = "ID")
     {
-        $limit_fields = false;
-        $fields = array();
-        if (is_array($ndx)) {
-            $fields = $ndx;
-            $ndx = 'ID';
-            $limit_fields = true;
-        }
+        if (is_array($ndx)) $ndx='ID';
         $qry = "UPDATE `$table` SET ";
         $qry_fields = array();
         foreach ($data as $field => $value) {
-            if (is_Numeric($field)) continue;
-            if ($limit_fields && !in_array($field, $fields)) continue;
+            if (is_Numeric($field) || $field == $ndx) continue;
             if (!is_null($value)) {
                 $qry_fields[] = "`$field`='" . $this->DBSafe1($value) . "'";
             } else {

@@ -311,7 +311,8 @@ function runScheduledJobs()
         $jobs[$i]['PROCESSED'] = 1;
         $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
 
-        SQLUpdate('jobs', $jobs[$i], array('PROCESSED', 'STARTED'));
+        //SQLUpdate('jobs', $jobs[$i], array('PROCESSED', 'STARTED'));
+        SQLExec("UPDATE jobs SET PROCESSED=" . $jobs[$i]['PROCESSED'] . ", STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . $jobs[$i]['ID']);
 
         if ($jobs[$i]['COMMANDS'] != '') {
             $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'];
@@ -507,7 +508,7 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
  * @param mixed $password Password (default '')
  * @return mixed
  */
-function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
+function getURL($url, $cache = 0, $username = '', $password = '', $background = false, $curl_options = 0)
 {
     startMeasure('getURL');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
@@ -538,7 +539,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
@@ -579,10 +580,13 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
 
-            //curl_setopt($ch, CURLOPT_HEADER, 1);
+            if (is_array($curl_options)) {
+                foreach ($curl_options as $k => $v) {
+                    curl_setopt($ch, $k, $v);
+                }
+            }
             $result = curl_exec($ch);
 
-            //dprint($result,false);
             endMeasure('curl_exec');
 
             startMeasure('curl_post');

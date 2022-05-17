@@ -38,16 +38,16 @@ class market extends module
     function saveParams($data = 0)
     {
         $p = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $p["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $p["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $p["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $p["tab"] = $this->tab;
         }
         return parent::saveParams($p);
@@ -100,10 +100,10 @@ class market extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['VIEW_MODE'] = $this->view_mode;
@@ -147,7 +147,7 @@ class market extends module
         if (!$this->mode && $mode) {
             $this->mode = $mode;
         }
-		
+
         $this->can_be_updated = array();
         $this->can_be_updated_new = array();
         $this->have_updates = array();
@@ -191,14 +191,14 @@ class market extends module
             $out['NAME'] = urlencode($name);
 
             $out['MODE2'] = $mode2;
-			
-			if($mode2 == 'dontupdate' && $name) {
-				if(!$value) {
-					$this->redirect(SERVER_URL."/panel/market.html");
-				}
-				$this->dontupdate($name, $value);
-			}
-			
+
+            if ($mode2 == 'dontupdate' && $name) {
+                if (!$value) {
+                    $this->redirect(SERVER_URL . "/panel/market.html");
+                }
+                $this->dontupdate($name, $value);
+            }
+
             return;
         }
 
@@ -213,260 +213,258 @@ class market extends module
             }
             exit;
         }
-		
-		if ($this->ajax && $_GET['op'] == 'readNoty' && !empty($this->id)) {
+
+        if ($this->ajax && $_GET['op'] == 'readNoty' && !empty($this->id)) {
             echo $this->readnotification($this->id);
             exit;
         }
 
         if ($this->ajax && $_GET['op'] == 'news') {
-            $result = $this->marketRequest('op=news', 15*60); //15*60
+            $result = $this->marketRequest('op=news', 15 * 60); //15*60
             $data = json_decode($result, true);
             //echo json_encode($data);
             if (is_array($data)) {
                 $total = count($data);
-				echo '<ul class="list-group">';
+                echo '<ul class="list-group">';
                 for ($i = 0; $i < 7; $i++) {
-					if($i%2 == 0) {
-						$bgColor = 'strip';
-					} else {
-						$bgColor = '';
-					}
-					
-					if(substr($data[$i]['LINK'], 0, 39) == 'https://connect.smartliving.ru/profile/') {
-						$postType = '<i>Блог</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
-					} else {
-						$postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
-					}
-					
-					if(time()-950400 <= $data[$i]['ADDED_TM']) {
-						$actualNews = 'background-color: #dff0d8;';
-						$actualNews_Label = '<span class="label label-success" style="margin-right: 10px;">New</span>';
-						$bgColor = '';
-					} else {
-						$actualNews = '';
-						$actualNews_Label = '';
-					}
-					
-					if ($data[$i]['LINK'] != '') {
+                    if ($i % 2 == 0) {
+                        $bgColor = 'strip';
+                    } else {
+                        $bgColor = '';
+                    }
+
+                    if (substr($data[$i]['LINK'], 0, 39) == 'https://connect.smartliving.ru/profile/') {
+                        $postType = '<i>Блог</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
+                    } else {
+                        $postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
+                    }
+
+                    if (time() - 950400 <= $data[$i]['ADDED_TM']) {
+                        $actualNews = 'background-color: #dff0d8;';
+                        $actualNews_Label = '<span class="label label-success" style="margin-right: 10px;">New</span>';
+                        $bgColor = '';
+                    } else {
+                        $actualNews = '';
+                        $actualNews_Label = '';
+                    }
+
+                    if ($data[$i]['LINK'] != '') {
                         $linkDetail = "<a href='" . $data[$i]['LINK'] . "' target='_blank'>Читать полностью...</a>";
-                    }  else {
-						$linkDetail = '';
-					}
-					
-					$addLinks = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $data[$i]['BODY']);
-					if($addLinks) {
-						$body = $addLinks;
-					} else {
-						$body = htmlspecialchars($data[$i]['BODY']);
-					}
-					
-					echo '<li class="list-group-item '.$bgColor.'" style="margin-bottom: 5px;'.$actualNews.'">';
-					echo '<span class="badge">'.date('d.m.Y H:i:s', $data[$i]['ADDED_TM']).'</span>';
-					echo '<div onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" style="cursor:pointer;">'.$actualNews_Label.$postType.' '.htmlspecialchars($data[$i]['TITLE']).'</div>';			
-					echo '<div class="fullTextNewsClass" id="news_title_'.$i.'" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">'.$body.' '.$linkDetail.'</blockquote></div>';
-					echo '</li>';
-					
-					
-					//echo '<a href="javascript://" onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" class="list-group-item" style="padding-top: 10px;padding-bottom: 5px;">';
-					//echo '<h5 id="news_head_'.$i.'" class="list-group-item-heading">'.(htmlspecialchars($data[$i]['TITLE'])).'</h5>';
-					//$body = nl2br(htmlspecialchars($data[$i]['BODY']));
+                    } else {
+                        $linkDetail = '';
+                    }
+
+                    $addLinks = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $data[$i]['BODY']);
+                    if ($addLinks) {
+                        $body = $addLinks;
+                    } else {
+                        $body = htmlspecialchars($data[$i]['BODY']);
+                    }
+
+                    echo '<li class="list-group-item ' . $bgColor . '" style="margin-bottom: 5px;' . $actualNews . '">';
+                    echo '<span class="badge">' . date('d.m.Y H:i:s', $data[$i]['ADDED_TM']) . '</span>';
+                    echo '<div onclick="$(\'#news_title_' . $i . '\').toggle(\'slow\');" style="cursor:pointer;">' . $actualNews_Label . $postType . ' ' . htmlspecialchars($data[$i]['TITLE']) . '</div>';
+                    echo '<div class="fullTextNewsClass" id="news_title_' . $i . '" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">' . $body . ' ' . $linkDetail . '</blockquote></div>';
+                    echo '</li>';
+
+
+                    //echo '<a href="javascript://" onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" class="list-group-item" style="padding-top: 10px;padding-bottom: 5px;">';
+                    //echo '<h5 id="news_head_'.$i.'" class="list-group-item-heading">'.(htmlspecialchars($data[$i]['TITLE'])).'</h5>';
+                    //$body = nl2br(htmlspecialchars($data[$i]['BODY']));
                     //$body = str_replace('&amp;', '&', $body);
                     //$body = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $body);
-					
-					//echo '<p id="news_title_'.$i.'" style="display: none;" class="list-group-item-text">'.(htmlspecialchars($data[$i]['BODY'])).'</p>';
-					//echo '</a>';
-					
-					
-					/* if ($data[$i]['LINK'] != '') {
+
+                    //echo '<p id="news_title_'.$i.'" style="display: none;" class="list-group-item-text">'.(htmlspecialchars($data[$i]['BODY'])).'</p>';
+                    //echo '</a>';
+
+
+                    /* if ($data[$i]['LINK'] != '') {
                         echo "<br/><a href='" . $data[$i]['LINK'] . "' target='_blank'>" . LANG_DETAILS . "</a>";
                     } */
                 }
-				echo '</ul>';
+                echo '</ul>';
             }
             exit;
         }
 
-        if ($_GET['op']=='') {
-            $result = $this->marketRequest('op=categories',120);
-            $data = json_decode($result,true);
-            if (SETTINGS_SITE_LANGUAGE=='ru') {
-                $title_field='CATEGORY_RU';
+        if ($_GET['op'] == '') {
+            $result = $this->marketRequest('op=categories', 120);
+            $data = json_decode($result, true);
+            if (SETTINGS_SITE_LANGUAGE == 'ru') {
+                $title_field = 'CATEGORY_RU';
             } else {
-                $title_field='CATEGORY_EN';
+                $title_field = 'CATEGORY_EN';
             }
             if (is_array($data[0])) {
-                foreach($data as $item) {
-                    if (defined('LANG_MARKET_CATEGORY_'.strtoupper($item['CATEGORY_SYSTEM_NAME']))) {
-                        $category_title=constant('LANG_MARKET_CATEGORY_'.strtoupper($item['CATEGORY_SYSTEM_NAME']));
+                foreach ($data as $item) {
+                    if (defined('LANG_MARKET_CATEGORY_' . strtoupper($item['CATEGORY_SYSTEM_NAME']))) {
+                        $category_title = constant('LANG_MARKET_CATEGORY_' . strtoupper($item['CATEGORY_SYSTEM_NAME']));
                     } else {
-                        $category_title=$item[$title_field];
+                        $category_title = $item[$title_field];
                     }
-                    $out['CATEGORIES'][]=array('ID'=>$item['ID'],'TITLE'=>$category_title);
+                    $out['CATEGORIES'][] = array('ID' => $item['ID'], 'TITLE' => $category_title);
                 }
             } else {
-                $out['CATEGORIES']=array();
+                $out['CATEGORIES'] = array();
             }
-            array_unshift($out['CATEGORIES'],array('ID'=>'owned','TITLE'=>LANG_MARKET_CATEGORY_OWNED));
-            array_unshift($out['CATEGORIES'],array('ID'=>'updates','TITLE'=>LANG_MARKET_CATEGORY_HAVE_UPDATES));
-            array_unshift($out['CATEGORIES'],array('ID'=>'installed','TITLE'=>LANG_MARKET_CATEGORY_INSTALLED));
-            $out['CATEGORIES'][]=array('ID'=>'custom','TITLE'=>'Custom');
+            array_unshift($out['CATEGORIES'], array('ID' => 'owned', 'TITLE' => LANG_MARKET_CATEGORY_OWNED));
+            array_unshift($out['CATEGORIES'], array('ID' => 'updates', 'TITLE' => LANG_MARKET_CATEGORY_HAVE_UPDATES));
+            array_unshift($out['CATEGORIES'], array('ID' => 'installed', 'TITLE' => LANG_MARKET_CATEGORY_INSTALLED));
+            $out['CATEGORIES'][] = array('ID' => 'custom', 'TITLE' => 'Custom');
             return;
         }
 
         if (isset($this->category_id)) {
-            $category_id=$this->category_id;
+            $category_id = $this->category_id;
         } else {
-            $category_id=gr('category_id');
+            $category_id = gr('category_id');
         }
-            $search=gr('search');
+        $search = gr('search');
 
-            $plugins=array();
-            $params='';
-            $missing=array();
+        $plugins = array();
+        $params = '';
+        $missing = array();
 
-        $data= new stdClass();
+        $data = new stdClass();
 
-            if ($category_id=='owned') {
-                $params='own=1';
-            } elseif ($category_id == 'all') {
-                $params='all=1';
-            } elseif ($category_id == 'custom') {
-                $data->PLUGINS=array();
-                $added_plugins = SQLSelect("SELECT MODULE_NAME FROM plugins");
-                $modules_list=array_map('current',$added_plugins);
-                $seen=array();
-                $params='';
-                foreach($modules_list as $module) {
-                    if ($module=='control_modules') continue;
-                    if ($module=='control_access') continue;
-                    if (!$seen[$module]) {
-                        $params.='&c[]='.urlencode($module);
-                    }
-                    $seen[$module]=1;
+        if ($category_id == 'owned') {
+            $params = 'own=1';
+        } elseif ($category_id == 'all') {
+            $params = 'all=1';
+        } elseif ($category_id == 'custom') {
+            $data->PLUGINS = array();
+            $added_plugins = SQLSelect("SELECT MODULE_NAME FROM plugins");
+            $modules_list = array_map('current', $added_plugins);
+            $seen = array();
+            $params = '';
+            foreach ($modules_list as $module) {
+                if ($module == 'control_modules') continue;
+                if ($module == 'control_access') continue;
+                if (!$seen[$module]) {
+                    $params .= '&c[]=' . urlencode($module);
                 }
-            } elseif ($search) {
-                $params='search='.urlencode($search);
-            } elseif (is_numeric($category_id)) {
-                $params='category_id='.$category_id;
-            } else {
-                //installed
-                $modules_in_db=SQLSelect("SELECT NAME FROM project_modules");
-                foreach($modules_in_db as $module_in_db) {
-                    if (!is_dir(DIR_MODULES.$module_in_db['NAME'])) {
-                        $missing[$module_in_db['NAME']]=1;
+                $seen[$module] = 1;
+            }
+        } elseif ($search) {
+            $params = 'search=' . urlencode($search);
+        } elseif (is_numeric($category_id)) {
+            $params = 'category_id=' . $category_id;
+        } else {
+            //installed
+            $modules_in_db = SQLSelect("SELECT NAME FROM project_modules");
+            foreach ($modules_in_db as $module_in_db) {
+                if (!is_dir(DIR_MODULES . $module_in_db['NAME'])) {
+                    $missing[$module_in_db['NAME']] = 1;
+                }
+            }
+            $modules_list = array_map('current', $modules_in_db);
+            $seen = array();
+            $params = '';
+            foreach ($modules_list as $module) {
+                if ($module == 'control_modules') continue;
+                if ($module == 'control_access') continue;
+                if (!$seen[$module]) {
+                    $params .= '&m[]=' . urlencode($module);
+                }
+                $seen[$module] = 1;
+            }
+            //dprint($modules_in_db);
+        }
+
+        if ($params) {
+            $result = $this->marketRequest($params);
+            $data = json_decode($result);
+        }
+
+        if (!$data->PLUGINS) {
+            $out['ERR'] = 1;
+        } else {
+            $this->can_be_updated = array();
+            $this->can_be_updated_new = array();
+            $total = count($data->PLUGINS);
+            for ($i = 0; $i < $total; $i++) {
+                $rec = (array)$data->PLUGINS[$i];
+                $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
+                if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec['ID']) {
+                    $rec['EXISTS'] = 1;
+                    if ($plugin_rec['ID']) {
+                        $rec['INSTALLED_VERSION'] = $plugin_rec['CURRENT_VERSION'];
+                    }
+                    $ignore_rec = SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
+                    if ($ignore_rec['ID']) {
+                        $rec['IGNORE_UPDATE'] = 1;
                     }
                 }
-                $modules_list=array_map('current',$modules_in_db);
-                $seen=array();
-                $params='';
-                foreach($modules_list as $module) {
-                    if ($module=='control_modules') continue;
-                    if ($module=='control_access') continue;
-                    if (!$seen[$module]) {
-                        $params.='&m[]='.urlencode($module);
+
+                //if ($rec['MODULE_NAME']==$name) {
+                //unset($rec['LATEST_VERSION']);
+                if (!isset($rec['LATEST_VERSION_URL'])) {
+                    if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
+                        $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
+                        $github_feed = getURL($git_url, 5 * 60);
+                        @$tmp = GetXMLTree($github_feed);
+                        @$items_data = XMLTreeToArray($tmp);
+                        @$items = $items_data['feed']['entry'];
+                        if (is_array($items)) {
+                            $latest_item = $items[0];
+                            //print_r($latest_item);exit;
+                            $updated = strtotime($latest_item['updated']['textvalue']);
+                            $rec['LATEST_VERSION'] = date('Y-m-d H:i:s', $updated);
+                            $rec['LATEST_VERSION_COMMENT'] = $latest_item['title']['textvalue'];
+                            $rec['LATEST_VERSION_URL'] = $latest_item['link']['href'];
+                        }
                     }
-                    $seen[$module]=1;
                 }
-                //dprint($modules_in_db);
+                if ($rec['MODULE_NAME'] == $name) {
+                    //$this->url=$rec['REPOSITORY_URL'];
+                    $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                    $this->version = $rec['LATEST_VERSION'];
+                }
+                if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
+                    $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
+                }
+
+                //var_dump($rec["LATEST_VERSION"]);
+                /*
+                if (in_array($rec['MODULE_NAME'], $names)) {
+                    $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
+                }
+                */
+                if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION'] != '') {
+                    $this->have_updates[] = $rec['MODULE_NAME'];
+                    $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
+                } elseif ($category_id == 'updates') {
+                    continue;
+                }
+
+                $plugins[] = $rec;
             }
 
-            if ($params) {
-                $result = $this->marketRequest($params);
-                $data = json_decode($result);
-            }
-
-                if (!$data->PLUGINS) {
-                    $out['ERR'] = 1;
+            if ($this->ajax && $_GET['op'] == 'check_updates') {
+                $total = count($this->have_updates);
+                if ($total > 0) {
+                    echo json_encode(array('status' => '1', 'howUpdate' => $total));
                 } else {
-                    $this->can_be_updated=array();
-                    $this->can_be_updated_new=array();
-                    $total = count($data->PLUGINS);
-                    for ($i = 0; $i < $total; $i++) {
-                        $rec = (array)$data->PLUGINS[$i];
-                        $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                        if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec['ID']) {
-                            $rec['EXISTS'] = 1;
-                            if ($plugin_rec['ID']) {
-                                $rec['INSTALLED_VERSION'] = $plugin_rec['CURRENT_VERSION'];
-                            }
-                            $ignore_rec = SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                            if ($ignore_rec['ID']) {
-                                $rec['IGNORE_UPDATE'] = 1;
-                            }
-                        }
-
-                        //if ($rec['MODULE_NAME']==$name) {
-                        //unset($rec['LATEST_VERSION']);
-                        if (!isset($rec['LATEST_VERSION_URL'])) {
-                            if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
-                                $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
-                                $github_feed = getURL($git_url, 5 * 60);
-                                @$tmp = GetXMLTree($github_feed);
-                                @$items_data = XMLTreeToArray($tmp);
-                                @$items = $items_data['feed']['entry'];
-                                if (is_array($items)) {
-                                    $latest_item = $items[0];
-                                    //print_r($latest_item);exit;
-                                    $updated = strtotime($latest_item['updated']['textvalue']);
-                                    $rec['LATEST_VERSION'] = date('Y-m-d H:i:s', $updated);
-                                    $rec['LATEST_VERSION_COMMENT'] = $latest_item['title']['textvalue'];
-                                    $rec['LATEST_VERSION_URL'] = $latest_item['link']['href'];
-                                }
-                            }
-                        }
-                        if ($rec['MODULE_NAME'] == $name) {
-                            //$this->url=$rec['REPOSITORY_URL'];
-                            $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
-                            $this->version = $rec['LATEST_VERSION'];
-                        }
-                        if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
-                            $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-                        }
-						
-						//var_dump($rec["LATEST_VERSION"]);
-                        /*
-                        if (in_array($rec['MODULE_NAME'], $names)) {
-                            $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-                        }
-                        */
-                        if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION']!='') {
-                            $this->have_updates[] = $rec['MODULE_NAME'];
-                            $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-                        } elseif ($category_id=='updates') {
-                            continue;
-                        }
-						
-                        $plugins[] = $rec;
-                    }
-					
-					if ($this->ajax && $_GET['op'] == 'check_updates') {
-						$total = count($this->have_updates);
-						if ($total > 0) {
-							echo json_encode(array('status' => '1', 'howUpdate' => $total));
-						} else {
-							echo json_encode(array('status' => '0'));
-						}
-						exit;
-					}
+                    echo json_encode(array('status' => '0'));
                 }
-
-
-
-
-            if (count($plugins)>0) {
-                usort($plugins, function($a,$b) {
-                    return strcmp($a['TITLE'],$b['TITLE']);
-                });
-                $out['PLUGINS']=$plugins;
-            }
-
-            if ($this->ajax) {
-                $p = new parser(DIR_TEMPLATES . $this->name . "/list.html", $out, $this);
-                echo $p->result;
                 exit;
-
             }
+        }
+
+
+        if (count($plugins) > 0) {
+            usort($plugins, function ($a, $b) {
+                return strcmp($a['TITLE'], $b['TITLE']);
+            });
+            $out['PLUGINS'] = $plugins;
+        }
+
+        if ($this->ajax) {
+            $p = new parser(DIR_TEMPLATES . $this->name . "/list.html", $out, $this);
+            echo $p->result;
+            exit;
+
+        }
 
         return;
 
@@ -492,11 +490,11 @@ class market extends module
         $cat_id = -1;
 
 
-        $modules_in_db=SQLSelect("SELECT * FROM project_modules");
-        $missing=array();
-        foreach($modules_in_db as $module_in_db) {
-            if (!is_dir(DIR_MODULES.$module_in_db['NAME'])) {
-                $missing[$module_in_db['NAME']]=1;
+        $modules_in_db = SQLSelect("SELECT * FROM project_modules");
+        $missing = array();
+        foreach ($modules_in_db as $module_in_db) {
+            if (!is_dir(DIR_MODULES . $module_in_db['NAME'])) {
+                $missing[$module_in_db['NAME']] = 1;
             }
         }
 
@@ -582,8 +580,6 @@ class market extends module
         }
         $out['CATEGORY'] = $cat;
 
-        
-
 
         if ($this->mode == 'install_multiple') {
             $this->updateAll($this->selected_plugins);
@@ -593,7 +589,7 @@ class market extends module
         if ($this->mode == 'update_all') {
             $this->updateAll($this->can_be_updated);
         }
-        
+
         if ($this->mode == 'update_new') {
             $this->updateAll($this->can_be_updated_new);
         }
@@ -635,23 +631,21 @@ class market extends module
         $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
-        $username='';
-        $password='';
+        $username = '';
+        $password = '';
         include_once(DIR_MODULES . 'connect/connect.class.php');
         $connect = new connect();
         $connect->getConfig();
         $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
         $connect_password = $connect->config['CONNECT_PASSWORD'];
-        if ($connect_username!='' && $connect_password!='') {
-            $username=$connect_username;
-            $password=$connect_password;
+        if ($connect_username != '' && $connect_password != '') {
+            $username = $connect_username;
+            $password = $connect_password;
         }
-        $result = getURL($data_url, $cache_timeout,$username,$password);
-        return $result;
-
+        return getURL($data_url, $cache_timeout, $username, $password);
     }
-    
-    
+
+
     /**
      * Title
      *
@@ -837,7 +831,7 @@ class market extends module
                     foreach ($files_to_import as $file) {
                         $filename = $folder . '/import/scenes/' . $file;
                         if (is_file($filename)) {
-                            $scenes_module->import_scene($filename, $plugin_name.'_'.strtolower($file));
+                            $scenes_module->import_scene($filename, $plugin_name . '_' . strtolower($file));
                         }
                     }
                 }
@@ -872,12 +866,13 @@ class market extends module
      *
      * @access public
      */
-    function dontupdate($name, $value) {
-		SQLExec("UPDATE plugins SET CURRENT_VERSION = '".DBSafe($value)."' WHERE MODULE_NAME = '".DBSafe($name)."' LIMIT 1");
-		$this->redirect(SERVER_URL."/panel/market.html");
-	}
-	
-	function uninstallPlugin($name, $frame = 0)
+    function dontupdate($name, $value)
+    {
+        SQLExec("UPDATE plugins SET CURRENT_VERSION = '" . DBSafe($value) . "' WHERE MODULE_NAME = '" . DBSafe($name) . "' LIMIT 1");
+        $this->redirect(SERVER_URL . "/panel/market.html");
+    }
+
+    function uninstallPlugin($name, $frame = 0)
     {
         if ($frame) {
             $this->echonow("Removing module '$name' from database ... ");
@@ -958,7 +953,7 @@ class market extends module
         $connect->getConfig();
         $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
         $connect_password = $connect->config['CONNECT_PASSWORD'];
-        if ($connect_username!='' && $connect_password!='') {
+        if ($connect_username != '' && $connect_password != '') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
         }
@@ -1291,7 +1286,7 @@ class market extends module
 
     function echonow($msg, $color = '')
     {
-        DebMes(strip_tags($msg),'auto_update');
+        DebMes(strip_tags($msg), 'auto_update');
         if ($color) {
             echo '<font color="' . $color . '">';
         }
@@ -1315,7 +1310,7 @@ class market extends module
      */
     function uninstall()
     {
-      SQLDropTable('plugins');
+        SQLDropTable('plugins');
         parent::uninstall();
     }
 

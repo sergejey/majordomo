@@ -140,7 +140,7 @@ if (IsSet($url) && $url != '') {
 
         if (!$result) {
             $url = preg_replace('/\/\/(.+?)@/','//',$url);
-            $result = getURL($url, 0, $username, $password);
+            $result = getURL($url, 0, $username, $password, false, array(CURLOPT_HTTPAUTH => CURLAUTH_ANY));
         }
 
 
