@@ -1190,6 +1190,7 @@ $dictionary = array (
 
     'DEVICES_PRESS' => 'Натиснути',
     'DEVICES_TURN_ON' => 'Ввімкнути',
+    'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Вимкнути освітлення в кімнаті по закінченню строку активності',
     'DEVICES_TURN_OFF' => 'Вимкнути',
     'DEVICES_SET_COLOR' => 'Встановити колір',
 
