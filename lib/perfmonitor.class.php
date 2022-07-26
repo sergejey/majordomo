@@ -32,7 +32,7 @@ function getmicrotime()
  * @param mixed $mpoint Monitoring block name
  * @return void
  */
-function StartMeasure($mpoint)
+function startMeasure($mpoint)
 {
     global $perf_data;
 
@@ -43,11 +43,13 @@ function StartMeasure($mpoint)
         $perf_data[$mpoint]['START'] = getmicrotime();
     }
 
-    if ((isset($perf_data[$mpoint]['MEMORY_START']) && !$perf_data[$mpoint]['MEMORY_START'])
-        || !isset($perf_data[$mpoint]['MEMORY_START'])
-        && function_exists('memory_get_usage')
-    ) {
-        $perf_data[$mpoint]['MEMORY_START'] = memory_get_usage();
+    if (defined('TRACK_MEMORY_USAGE')) {
+        if ((isset($perf_data[$mpoint]['MEMORY_START']) && !$perf_data[$mpoint]['MEMORY_START'])
+            || !isset($perf_data[$mpoint]['MEMORY_START'])
+            && function_exists('memory_get_usage')
+        ) {
+            $perf_data[$mpoint]['MEMORY_START'] = memory_get_usage();
+        }
     }
 }
 
@@ -57,7 +59,7 @@ function StartMeasure($mpoint)
  * @param mixed $save_to_db Save to DB (Default 0) Currently not used
  * @return void
  */
-function EndMeasure($mpoint)
+function endMeasure($mpoint)
 {
     global $perf_data;
 
@@ -67,8 +69,10 @@ function EndMeasure($mpoint)
 
     $perf_data[$mpoint]['END'] = getmicrotime();
 
-    if (!isset($perf_data[$mpoint]['MEMORY_END']) && function_exists('memory_get_usage')) {
-        $perf_data[$mpoint]['MEMORY_END'] = memory_get_usage();
+    if (defined('TRACK_MEMORY_USAGE')) {
+        if (!isset($perf_data[$mpoint]['MEMORY_END']) && function_exists('memory_get_usage')) {
+            $perf_data[$mpoint]['MEMORY_END'] = memory_get_usage();
+        }
     }
 
     if (!isset($perf_data[$mpoint]['TIME'])) {
@@ -109,12 +113,14 @@ function EndMeasure($mpoint)
  * @param mixed $hidden n/a (default 1)
  * @return void
  */
-function PerformanceReport($hidden = 0)
+function PerformanceReport($visible = 0)
 {
     global $perf_data;
 
-    if (!$hidden) {
+    if (!$visible) {
         echo "<!-- BEGIN PERFORMANCE REPORT\n";
+    } else {
+        echo "<div style='position:absolute;top:60px;left:710px;width:800px;height:300px;'><pre>";
     }
 
     foreach ($perf_data as $k => $v) {
@@ -130,11 +136,11 @@ function PerformanceReport($hidden = 0)
 
         $rs = "$k (" . $v['NUM'] . "): " . round($v['TIME'], 4) . " " . round($v['PROC'], 2) . "%";
 
-        if ($v['MEMORY_START']) {
+        if (isset($v['MEMORY_START'])) {
             $rs .= ' M (s): ' . $v['MEMORY_START'] . 'b';
         }
 
-        if ($v['MEMORY_END']) {
+        if (isset($v['MEMORY_END'])) {
             $rs .= ' M (e): ' . $v['MEMORY_END'] . 'b';
         }
 
@@ -145,9 +151,12 @@ function PerformanceReport($hidden = 0)
         $tmp[] = $rs;
     }
 
-    if (!$hidden) {
-        echo implode("\n", $tmp);
+    echo implode("\n", $tmp);
+
+    if (!$visible) {
         echo "\n END PERFORMANCE REPORT -->";
+    } else {
+        echo "</pre></div>";
     }
     return $tmp;
 }

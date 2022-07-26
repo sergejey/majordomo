@@ -1,4 +1,42 @@
 <?php
+
+function saveCycleToCache($key, $value)
+{
+    if (is_array($value) || strlen($value) > 255) {
+        SQLExec("DELETE FROM cached_cycles WHERE TITLE='".$key."'");
+        deleteFromCache($key);
+        return;
+    }
+
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+        global $memory_cycle_cache;
+        $memory_cycle_cache[$key] = $value;
+    }
+        $rec = array('TITLE' => $key, 'VALUE' => $value);
+    $sqlQuery = "REPLACE INTO cached_cycles (TITLE, VALUE) " .
+        " VALUES ('" . DbSafe1($rec['TITLE']) . "', " .
+        "'" . DbSafe1($rec['VALUE']) . "')";
+    SQLExec($sqlQuery);
+}
+
+function checkCycleFromCache($key)
+{
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+            global $memory_cycle_cache;
+                if (is_array($memory_cycle_cache) && isset($memory_cycle_cache[$key])) {
+                    return $memory_cycle_cache[$key];
+                }
+        }
+        $rec = SQLSelectOne("SELECT * FROM cached_cycles WHERE TITLE = '" . DBSafe($key) . "'");
+    if ($rec['TITLE']) {
+        return $rec['VALUE'];
+    } else {
+        return false;
+    }
+}
+
+
+
 /**
  * Summary of clearCacheData
  * @param mixed $prefix prefix
@@ -59,7 +97,7 @@ function saveToCache($key, $value)
 {
     $key = strtolower($key);
     if (is_array($value) || strlen($value) > 255) {
-        SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
+        deleteFromCache($key);
         return;
     }
 
@@ -78,6 +116,20 @@ function saveToCache($key, $value)
         " VALUES ('" . DbSafe1($rec['KEYWORD']) . "', " .
         "'" . DbSafe1($rec['DATAVALUE']) . "')";
     SQLExec($sqlQuery);
+}
+
+function deleteFromCache($key) {
+    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        if ($redisConnection->exists($key)) {
+            $redisConnection->del($key);
+        }
+    }
 }
 
 /**

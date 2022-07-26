@@ -236,8 +236,38 @@ class linkedobject extends module
         }
 
         if ($this->object_field) {
-            $objects = SQLSelect("SELECT objects.*, classes.TITLE AS CLASS_NAME FROM objects JOIN classes WHERE CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
+            $objects = SQLSelect("SELECT objects.CLASS_ID, objects.TITLE, objects.DESCRIPTION, classes.TITLE AS CLASS_NAME FROM objects JOIN classes WHERE CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
 
+            $objects[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
+
+            $total = count($objects);
+            $old_class_id=0;
+
+            $list_result='';
+
+            if ($total) {
+                $objects[0]['FIRST']=1;
+                $objects[$total-1]['LAST']=1;
+                for($i=0;$i<$total;$i++) {
+                    if ($objects[$i]['CLASS_ID']!=$old_class_id) {
+                        $objects[$i]['NEW_GROUP']=1;
+                        $old_class_id=$objects[$i]['CLASS_ID'];
+                        if ($i>0) {
+                            $list_result.='</optgroup>';
+                        }
+                        $list_result.='<optgroup label="'.$objects[$i]['CLASS_NAME'].'">';
+                    }
+                    $list_result.='<option value="'.$objects[$i]['TITLE'].'">'.$objects[$i]['TITLE'];
+                    if ($objects[$i]['DESCRIPTION']!='') {
+                        $list_result.=' - '.$objects[$i]['DESCRIPTION'];
+                    }
+                    $list_result.='</option>';
+                }
+                $list_result.='</optgroup>';
+            }
+            $out['OBJECTS_LIST_RESULT']=$list_result;
+
+            /*
 			foreach($objects as $key => $object) {
 				if($object['CLASS_ID'] != $objects[$key-1]['CLASS_ID']) {
 					$objects[$key]['NEW_GROUP_START'] = 1; 
@@ -250,11 +280,15 @@ class linkedobject extends module
 					$objects[$key]['NEW_GROUP_END'] = 0; 
 				}
 			}
+            */
 			
-            $objects[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
+
 			//echo '<pre>';
 			//var_dump($objects);
 			//die();
+
+
+
             $out['OBJECTS'] = $objects;
             $out['OBJECT_FIELD'] = $this->object_field;
         }

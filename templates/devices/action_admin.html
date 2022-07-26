@@ -1,3 +1,12 @@
+[#if VIEW_MODE!="edit_devices"#]
+<ul class="nav nav-tabs">
+    <li [#if VIEW_MODE=""#]class="active"[#endif VIEW_MODE#]><a href="?"><#LANG_DEVICES#></a></li>
+    <li [#if VIEW_MODE="schedule"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=schedule"><#LANG_DEVICES_SCHEDULE#></a></li>
+    <li [#if VIEW_MODE="manage_rooms"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=manage_rooms"><#LANG_ROOMS#></a></li>
+    <li [#if VIEW_MODE="manage_groups"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=manage_groups"><#LANG_GROUPS#></a></li>
+</ul>
+<div>&nbsp;</div>
+[#endif VIEW_MODE#]
 
  <!-- action usual -->
  <!-- table devices search -->
@@ -9,6 +18,14 @@
  [#inc devices_mange_groups.html#]
  [#endif VIEW_MODE#]
 
+[#if VIEW_MODE="schedule"#]
+[#inc devices_schedule.html#]
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="manage_rooms"#]
+[#module name="locations" action="admin"#]
+[#endif VIEW_MODE#]
+
  [#if VIEW_MODE="quick_edit"#]
  [#inc devices_quick_edit.html#]
  [#endif VIEW_MODE#]
@@ -17,7 +34,11 @@
  <!-- table devices edit -->
  [#if VIEW_MODE="edit_devices"#]
  [#if NO_NAV!="1"#]
- <p><a href="?">&lt;&lt;&lt; <#LANG_BACK#></a></p>
+ <p>
+    <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a> |
+    <a href="?location_id=[#LOCATION_ID#]"><#LANG_LOCATION#></a> |
+     <a href="?type=[#TYPE#]"><#LANG_TYPE#></a>
+ </p>
  [#endif NO_NAV#]
 
  [#if ARCHIVED="1"#]
@@ -114,7 +135,7 @@
          <div>
          <b><#LANG_PROPERTIES#></b>:
          [#begin LINKED_PROPERTIES#]
-         <br/>[#PROPERTY#]:
+         <br/><a href="<#ROOTHTML#>panel/linkedobject.html?op=redirect&object=<#LINKED_OBJECT#>&sub=properties">[#PROPERTY#]</a>:
              [#VALUE#]
          [#begin LINKED_MODULES#]
           <a href="?(panel:{action=[#MODULE#]})&md=[#MODULE#]&go_linked_object=[#OBJECT#]&go_linked_property=[#PROPERTY#]" class="label label-success">[#MODULE#]</a>
@@ -128,7 +149,22 @@
          <div>
          <b><#LANG_METHODS#></b>:
          [#begin SHOW_METHODS#]
-         <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="callMethod('<#LINKED_OBJECT#>.[#NAME#]');$('#method_[#NAME#]').addClass('btn-success');setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);return false;">[#NAME#] &mdash; [#DESCRIPTION#]</a>
+             <script type="text/javascript">
+                 function runMethod_[#NAME#]() {
+                     if ('[#_CONFIG_REQ_VALUE#]'!='') {
+                         let val = prompt('<#LANG_VALUE#>:');
+                         if (val != null && val!='') {
+                             callMethod('<#LINKED_OBJECT#>.[#NAME#]','value='+encodeURIComponent(val));
+                         }
+                     } else {
+                         callMethod('<#LINKED_OBJECT#>.[#NAME#]');
+                     }
+                     $('#method_[#NAME#]').addClass('btn-success');
+                     setTimeout('$(\'#method_[#NAME#]\').removeClass(\'btn-success\');',1000);
+                     return false;
+                 }
+             </script>
+         <div style="padding-top:3px"><a href="#" class="btn btn-default" title="[#DESCRIPTION#]" id="method_[#NAME#]" onclick="return runMethod_[#NAME#]();">[#NAME#] &mdash; [#DESCRIPTION#]</a>
              </div>
          [#end SHOW_METHODS#]
          </div>

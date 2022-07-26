@@ -157,9 +157,6 @@ class settings extends module {
 * @access private
 */
  function install($parent_name="") {
-  if (!Is_Dir(ROOT."./settings")) {
-   mkdir(ROOT."./settings", 0777);
-  }
   parent::install($parent_name);
  }
 /**

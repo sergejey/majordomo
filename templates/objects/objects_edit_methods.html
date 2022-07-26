@@ -88,7 +88,7 @@
 			<label><input type="radio" name="call_parent" value="2"[#if CALL_PARENT="2"#] checked[#endif#]> <#LANG_AFTER_CODE_EXECUTION#></label>
 			<label><input type="radio" name="call_parent" value="0"[#if CALL_PARENT="0"#] checked[#endif#]> <#LANG_NEVER#></label>
 			<br><br>
-			<button type="submit" name="ok" value="<#LANG_UPDATE#>" class="btn btn-success"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_SUBMIT#></button>
+			<button type="submit" name="subm" value="<#LANG_UPDATE#>" class="btn btn-success"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_SUBMIT#></button>
 			<a href="javascript://" onclick="ajaxAutosave('checkcode');" id="checkCodeBtn" class="btn btn-info"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> <#LANG_CODEEDITOR_CHECK_ON_ERROR_BTN#></a>
 			<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>" class="btn btn-default"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> <#LANG_CANCEL#></a>
 			<a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_meth=<#METHOD_ID#>" class="btn btn-danger" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> <#LANG_DELETE#></a>

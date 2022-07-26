@@ -139,18 +139,21 @@ class control_modules extends module
 			//Получим конфиг модуля
 			
 			include_once(DIR_MODULES . $name . '/' . $name . '.class.php');
-			$module = $name;
-			$module = new ${module}();
-			
+			$module = new $name();
+
 			$genConfig = [];
 			$iter = 0;
-			
-			foreach($module->getConfig() as $key => $value) {
-				$genConfig[$iter]['KEY'] = $key;
-				$genConfig[$iter]['VALUE'] = $value;
-				$iter++;
-			}
-			
+
+			$config = $this->getConfig();
+			if (is_array($config)) {
+                foreach($config as $key => $value) {
+                    $genConfig[$iter]['KEY'] = $key;
+                    $genConfig[$iter]['VALUE'] = $value;
+                    $iter++;
+                }
+
+            }
+
 			$out['MODULE_CONFIG'] = $genConfig;
 			
 			//Выгружаем инфо из коннекта
@@ -297,6 +300,12 @@ class control_modules extends module
    ignore_updates: ID tinyint(3) unsigned NOT NULL auto_increment
    ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL
 
+   module_notifications: ID int(10) unsigned NOT NULL auto_increment
+   module_notifications: MODULE_NAME char(50) NOT NULL DEFAULT ''
+   module_notifications: MESSAGE varchar(255) NOT NULL DEFAULT ''
+   module_notifications: TYPE char(20) NOT NULL DEFAULT 'info'
+   module_notifications: IS_READ int(3) NOT NULL DEFAULT 0
+   module_notifications: ADDED datetime 
 
 EOD;
         parent::dbInstall($data);

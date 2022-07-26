@@ -139,7 +139,8 @@ if (IsSet($url) && $url != '') {
         $result = @mjpeg_grab_frame($url);
 
         if (!$result) {
-            $result = getURL($url, 0, $username, $password);
+            $url = preg_replace('/\/\/(.+?)@/','//',$url);
+            $result = getURL($url, 0, $username, $password, false, array(CURLOPT_HTTPAUTH => CURLAUTH_ANY));
         }
 
 

@@ -9,21 +9,7 @@
 			<select name="[#OBJECT_FIELD#]" id='linked_object_copy<#UNIQ#>' style="width:<#WIDTH#>" onChange="linked_object_chaged<#UNIQ#>();">
 				<option value="">
 				<option value="[add]">[ <#LANG_ADD#> ]
-				[#begin OBJECTS#]
-					[#if NEW_GROUP_START == 1 AND NEW_GROUP_END == 0#]
-					<optgroup label="[#CLASS_NAME#]">
-					[#endif#]
-					[#if NEW_GROUP_START == 1 AND NEW_GROUP_END == 1#]
-					<optgroup label="[#CLASS_NAME#]">
-					[#endif#]
-					<option value="[#TITLE#]">[#TITLE#][#if DESCRIPTION!=""#] - [#DESCRIPTION#][#endif#]</option>
-					[#if NEW_GROUP_START == 0 AND NEW_GROUP_END == 1#]
-					</optgroup>
-					[#endif#]
-					[#if NEW_GROUP_START == 1 AND NEW_GROUP_END == 1#]
-					</optgroup>
-					[#endif#]
-				[#end OBJECTS#]
+				[#OBJECTS_LIST_RESULT#]
 				</select>
 				<a href="#" id="linked_object_link<#UNIQ#>" target="_blank" style='display:none'><i class="glyphicon glyphicon-export"></i></a>
 		</nobr>

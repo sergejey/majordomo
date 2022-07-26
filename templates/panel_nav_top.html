@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    function showNotyDate(id) {
+        $('#notyAddtimeBlock_'+id).show();
+        $('#notyMsgBlock_'+id).hide();
+    }
+    function hideNotyDate(id) {
+        $('#notyMsgBlock_'+id).show();
+        $('#notyAddtimeBlock_'+id).hide();
+    }
+</script>
+[#begin SUB_MODULES#]
+[#if NEW_CATEGORY#]
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">[#CATEGORY#] <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        [#endif NEW_CATEGORY#]
+        [#if !DENIED#]
+        [#if LINKS#]
+        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#] menu-item dropdown dropdown-submenu" id="module_[#NAME#]_link"><a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu dropdown-toggle"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]</a>
+            <ul class="dropdown-menu">
+                [#begin LINKS#]
+                <li class="menu-item"><a href="[#LINK#]">[#TITLE#]</a></li>
+                [#end LINKS#]
+            </ul>
+        </li>
+        [#else LINKS#]
+        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
+            <a href='<#ROOTHTML#>admin.php?action=[#NAME#]' class="top-menu"><img src="[#ICON_SM#]" width="24" height="24">&nbsp;[#TITLE#]
+                [#if NOTIFICATIONS_COUNT != 0#]
+                <span class="badge pull-right alert-[#NOTIFICATIONS_TYPE#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-html="true" >[#NOTIFICATIONS_COUNT#]</span>
+                [#endif NOTIFICATIONS_COUNT#]</a>
+        </li>
+        [#if NAME="xray"#]<li class="menu-item"><a href="#" onClick='return consoleToggle();'><i class="glyphicon glyphicon-flash"></i> <#LANG_CONSOLE#></a></li>[#endif#]
+        [#endif LINKS#]
+        [#endif DENIED#]
+        [#if LAST_IN_CATEGORY#]
+    </ul>
+</li>
+[#endif#]
+[#end SUB_MODULES#]

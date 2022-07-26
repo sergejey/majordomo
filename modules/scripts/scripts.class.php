@@ -542,13 +542,6 @@ class scripts extends module
  safe_execs: PRIORITY int(10) NOT NULL DEFAULT 0
  safe_execs: ADDED datetime
  
- plugins_noty: ID int(15) unsigned NOT NULL auto_increment
- plugins_noty: PLUGINS_ID int(15) NOT NULL DEFAULT 0
- plugins_noty: MESSAGE varchar(80) NOT NULL DEFAULT ''
- plugins_noty: TYPE varchar(50) NOT NULL DEFAULT 'info'
- plugins_noty: READ int(2) NOT NULL DEFAULT 0
- plugins_noty: ADD int(15) NOT NULL DEFAULT 0
-
 EOD;
         parent::dbInstall($data);
 

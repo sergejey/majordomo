@@ -603,12 +603,18 @@ function getGlobal($varname)
         $object_name = 'ThisComputer';
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
-    $cached_value = checkFromCache($cached_name);
 
+    if (strpos($varname,'cycle_') === 0) {
+        $cached_value = checkCycleFromCache($varname);
+    } else {
+        $cached_value = checkFromCache($cached_name);
+    }
     if ($cached_value !== false) {
         return $cached_value;
     }
+
     $obj = getObject($object_name);
+
     if ($obj) {
         $value = $obj->getProperty($varname);
         return $value;
@@ -616,6 +622,7 @@ function getGlobal($varname)
         return 0;
     }
 }
+
 
 /**
  * getHistoryValueId
@@ -912,6 +919,10 @@ function getHistoryValue($varname, $time, $nerest = false)
  */
 function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
+    if (strpos($varname,'cycle_') === 0) {
+        saveCycleToCache($varname,$value);
+        return;
+    }
 
     $tmp = explode('.', $varname);
 
@@ -933,6 +944,7 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
         return 0;
     }
 }
+
 
 /**
  * Summary of callMethod

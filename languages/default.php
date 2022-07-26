@@ -1120,6 +1120,7 @@ $dictionary = array(
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Simple Devices',
 
+    'DEVICES_COPY_SETTINGS' => 'Copy settings',
     'DEVICES_LINKED_WARNING' => 'Please note that when linking to existing object, it will be assigned to the new class.',
 
     'DEVICES_RELAY' => 'Relay/Switch',
@@ -1191,6 +1192,7 @@ $dictionary = array(
     'DEVICES_MOTION_IGNORE' => 'Ignore device events when nobody\'s home',
     'DEVICES_MOTION_RESET' => 'Reset "nobody home" status w/o setting timer',
     'DEVICES_MOTION_TIMEOUT' => 'Activity timeout (sec)',
+    'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Turn off lights in the room on idle',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
     'DEVICES_MAIN_SENSOR' => 'Main sensor for the room',
 
@@ -1330,6 +1332,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Current target temperature',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Temperature threshold (0.25 by default)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
+    'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Set target temperature',
     'DEVICES_ALL_BY_TYPE' => 'List all by types',
     'DEVICES_ALL_BY_ROOM' => 'List all by rooms',
     'DEVICES_LOAD_TIMEOUT' => 'Load status timeout',
@@ -1373,6 +1376,7 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'Did you know that...',
     'NEWS' => 'MajorDoMo News',
     'KNOWLEDGE_BASE' => 'Knowledge Base',
+    'MODULE_SUPPORT' => 'Support for',
     'ACTIVITIES' => 'Activities',
     'COMMANDS' => 'Commands',
     'ADDON_FILE' => 'Addon package',

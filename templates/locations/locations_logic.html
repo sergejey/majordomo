@@ -1,0 +1,104 @@
+<script>
+    $(window).load(function() {
+        setTimeout(
+            function () {
+                $('#alert_msg').hide('slow');
+            }, 5000);
+    });
+</script>
+
+[#if OK#]
+<div class="alert alert-success" id="alert_msg"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-danger" id="alert_msg"><#LANG_FILLOUT_REQURED#></div>
+<script>
+    $(window).load(function() {
+        [#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+        error_line = Number('[#ERR_LINE#]');
+        error_line_find = error_line;
+        if(error_line == 0) error_line = 1;
+        find = $('div pre.CodeMirror-line:eq('+error_line_find+')');
+        find.attr('id', 'errorline_'+error_line);
+
+        var newElems = $("<div class='cm-error' style='border-top: 1px solid red;font-weight: bold;font-style: italic;'>Ошибка компилятора -> [#ERRORS#]</div>");
+        $('div pre.CodeMirror-line:eq('+error_line_find+')').append(newElems);
+        [#endif#]
+
+            [#if SETTINGS_CODEEDITOR_UPTOLINE == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
+        location.href='#errorline_'+error_line;
+        [#endif#]
+    });
+
+</script>
+[#endif ERR#]
+<style>
+    .CodeMirror {
+        border-radius: 5px;
+        border: 2px solid #f7f7f7;
+    }
+</style>
+
+<form action="?" method="get" class="form">
+    <select name="method" onchange="this.form.submit();" class="form-control">
+        [#begin METHODS#]
+        <option value="[#TITLE#]" [#if SELECTED="1"#] selected[#endif#]><#LANG_METHOD#>: [#DESCRIPTION#]</option>
+        [#end METHODS#]
+    </select>
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+</form>
+
+
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" id="frmEdit" class="form">
+    <fieldset>
+        <div class="form-group">
+            <div>
+                [#if ERRORS#]
+                <div id="error_noty" style="margin-top: 10px;color: #ff574b;border: 1px solid;border-radius: 5px;padding: 5px;background: #ffffff;width: 100%;">
+                    <b><#LANG_CODEEDITOR_ERROR_IN_CODE#> -></b> [#ERR_FULL#]
+                    <div><#LANG_CODEEDITOR_ERROR_RESTORE_CODE#></div>
+                </div>
+                <textarea id="error_old_code" style="display:none;">[#ERR_OLD_CODE#]</textarea>
+                [#endif ERRORS#]
+
+                [#module name="blockly_code" system_name="object<#OBJECT_ID#>_method<#METHOD_ID#>" code_field="code" action=""#]
+                <div id="code_area" style="padding-top: 10px">
+                    [#if SETTINGS_CODEEDITOR_TURNONSETTINGS != 1#]
+                    <div style="border: 1px solid #dddddd;border-radius: 5px;padding: 5px;margin-top: 10px;margin-bottom: 10px;background: #fffdc7;">
+                        <#LANG_CODEEDITOR_NOTY_TURNOFF#>
+                    </div>
+                    [#endif SETTINGS_CODEEDITOR_TURNONSETTINGS#]
+
+                    <div id="autosave_code_in_time_div" style="color: gray;font-style: italic;font-size: 1rem;display:none;margin-left: 5px;margin-bottom: 4px;">
+                        <i class="glyphicon glyphicon-floppy-saved" style="vertical-align: top;"></i> <#LANG_CODEEDITOR_AUTOSAVE_CODE#> <span id="autosave_code_in_time"></span>. <#LANG_CODEEDITOR_AUTOSAVE_CODE_HELP#>
+                    </div>
+                    <textarea name="code" id="code" rows=30 cols=100 class="form-control">[#CODE#]</textarea>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label">
+                &nbsp;
+            </label>
+            <div>
+                [#if ID!=""#]
+                <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+                [#else ID#]
+                <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+                [#endif ID#]
+                <a href="?" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
+                <input type="hidden" name="id" value="<#ID#>">
+                <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+                <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+                <input type="hidden" name="mode" value="update">
+                <input type="hidden" name="tab" value="<#TAB#>">
+                <input type="hidden" name="method" value="<#METHOD#>">
+            </div>
+        </div>
+    </fieldset>
+</form>

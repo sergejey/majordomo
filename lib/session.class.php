@@ -60,11 +60,6 @@ class session
 
          $_SESSION['expire'] = time() + $expiretime;
 
-         $_SESSION['KCFINDER'] = array(
-             'disabled' => false,
-             'uploadURL' => "/cms",
-             'uploadDir' => ROOT."cms/",
-         );
 
          $this->data = array();
 

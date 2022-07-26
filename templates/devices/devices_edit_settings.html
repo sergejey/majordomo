@@ -114,11 +114,30 @@
  </div>
  [#endif GROUPS#]
 
+ [#if OTHER_DEVICES_TYPE#]
+ <div class="form-group">
+  <div class="col-md-5 text-right">
+   &nbsp;
+  </div>
+  <div class="col-md-7">
+   <input type="checkbox" name="copy_settings" id="copy_settings" value="1"
+          onclick="if ($('#copy_settings').is(':checked')) $('#apply_others_div').show(); else  $('#apply_others_div').hide();"> <#LANG_DEVICES_COPY_SETTINGS#>
+   <div id="apply_others_div" style="display: none">
+   [#begin OTHER_DEVICES_TYPE#]
+   [#if ID!="<#ID#>"#]
+   <input type="checkbox" name="apply_others[]" value="[#LINKED_OBJECT#]"> [#TITLE#]<br/>
+   [#endif ID#]
+   [#end OTHER_DEVICES_TYPE#]
+   </div>
+  </div>
+ </div>
+ [#endif#]
+
 <div class="form-group">
- <label class="col-md-8 control-label">
-  &nbsp;
- </label>
-        <div class="col-md-4">
+ <div class="col-md-5">
+  &nbsp;&nbsp;
+ </div>
+        <div class="col-md-7">
  [#if ID!=""#]
  <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
  [#else ID#]

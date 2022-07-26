@@ -32,7 +32,7 @@
 
  <div class="form-group ">
   <select name="location_id" class="form-control" onchange="this.form.submit();">
-   <option value=""><#LANG_LOCATION#>
+   <option value=""><#LANG_ROOMS#> (<#LANG_ALL#>)
     [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])
    [#end LOCATIONS#]
    <option value="manage_locations">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
@@ -41,7 +41,7 @@
 
  <div class="form-group">
   <select name="group_name" class="form-control"  onchange="this.form.submit();">
-   <option value=""><#LANG_GROUPS#></option>
+   <option value=""><#LANG_GROUPS#> (<#LANG_ALL#>)</option>
    [#begin GROUPS#]
    <option value="[#SYS_NAME#]"[#if SYS_NAME="<#GROUP_NAME#>"#] selected[#endif#]>[#TITLE#]</option>
    [#end GROUPS#]
@@ -146,7 +146,7 @@
 [#begin RESULT#]
 [#if NEW_LOCATION#]
 <div class="row">
- <h3>[#LOCATION_TITLE#]</h3>
+ <h3><a href="?view_mode=manage_rooms&location_id=[#LOCATION_ID#]">[#LOCATION_TITLE#]</a></h3>
 </div>
 [#endif#]
 <div class="row">
