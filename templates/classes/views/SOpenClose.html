@@ -72,9 +72,9 @@ function setInsertData_%.object_id%() {
 		if(twoDigits(currentTime.getMonth()+1) == timeConvertVar[1] && (currentTime.getDate() - timeConvertVar[0]) == 0) {
 			beautyText = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
 		} else if(twoDigits(currentTime.getMonth()+1) == timeConvertVar[1] && (currentTime.getDate() - timeConvertVar[0]) == 1) {
-			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+			beautyText = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4]; // + ':' + timeConvertVar[5]
 		} else {
-			beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+			beautyText = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4]; // + ':' + timeConvertVar[5]
 		}
 		
 		$('.openclose-updatedText-JS-' + sID).text(beautyText);
@@ -98,6 +98,9 @@ $(function() {
 	<div style='display:%.ncno|"nc=block;no=none"%'><div class="device-icon openclose %.status|"on;off"%"></div></div>
 	<div style='display:%.ncno|"nc=none;no=block;=none"%'><div class="device-icon openclose %.status|"off;on"%"></div></div>
 	<div class="device-header">%.object_description%</div>
-	<!---<div class="device-details">%.updatedText%</div>--->
-	<div class="openclose-updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
+    <div class="device-details">
+	<span class="openclose-updatedText-JS-%.object_id%" style="font-size: 11px;">...</span>
+		<span style="display:%.batteryOperated|"none;inline"%;
+		%.batteryWarning|"0=color:green;1=color:red;2=color:lightsalmon"%;"><i class="glyphicon glyphicon-flash"></i>%.batteryLevel%%</span>
+		</div>
 </div>

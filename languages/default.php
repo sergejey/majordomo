@@ -1195,6 +1195,10 @@ $dictionary = array(
     'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Turn off lights in the room on idle',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
     'DEVICES_MAIN_SENSOR' => 'Main sensor for the room',
+    'DEVICES_BATTERY_OPERATED' => 'Device is battery operated',
+    'DEVICES_BATTERY_LEVEL' => 'Battery level',
+    'DEVICES_BATTERY_WARNING' => 'Low battery warning',
+    'DEVICES_LOW_BATTERY' => 'low battery level',
 
     'DEVICES_IS_ON' => 'is ON',
     'DEVICES_IS_CLOSED' => 'is Closed',

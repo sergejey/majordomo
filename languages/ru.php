@@ -1192,6 +1192,10 @@ $dictionary = array(
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
     'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
     'DEVICES_NOT_UPDATING' => 'не обновляется',
+    'DEVICES_BATTERY_OPERATED' => 'Устройство работает от батареи',
+    'DEVICES_BATTERY_LEVEL' => 'Уровень заряда батареи',
+    'DEVICES_BATTERY_WARNING' => 'Предупреждение о низком заряде батареи',
+    'DEVICES_LOW_BATTERY' => 'низкий уровень заряда',
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрыто',
