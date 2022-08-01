@@ -1514,6 +1514,7 @@ $dictionary = array(
 	'NEWDASH_DISCONNECTED' => 'Нет подключения',
 	'NEWDASH_MJDM_RESOURCE' => 'Ресурсы MJDM',
 	'NEWDASH_FORUM' => 'Форум',
+    'NEWDASH_FORUM_DISCUSSION' => 'Обсуждение на форуме',
 	'NEWDASH_CHAT_TELEGRAM' => 'Чаты Telegram',
 	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'Общий чат (RUS)',
 	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Курилка (RUS)',

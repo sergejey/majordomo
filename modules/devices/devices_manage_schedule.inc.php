@@ -18,7 +18,7 @@ $tmp = array_map('current',SQLSelect("SELECT DEVICE_ID FROM devices_scheduler_po
 
 $type_methods=array();
 
-if (is_array($tmp)) {
+if (is_array($tmp) && count($tmp)) {
     $devices = SQLSelect("SELECT * FROM devices WHERE ID IN (".implode(',',$tmp).") ORDER BY devices.TITLE");
     $total = count($devices);
     for($i=0;$i<$total;$i++) {
