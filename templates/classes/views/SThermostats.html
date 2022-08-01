@@ -1,6 +1,9 @@
 <div class="device-widget thermostat %.alive|"offline;online"%" id='deviceid_%.object_title%'>
 <div class="device-icon thermostat %.relay_status|"off;on"% icon%.object_id%_thermostat"></div>
-<div class="device-header">%.object_description%</div>
+<div class="device-details">%.object_description%
+        <span style="display:%.batteryOperated|"none;inline"%;
+        %.batteryWarning|"0=color:green;1=color:red;2=color:lightsalmon"%;"><i class="glyphicon glyphicon-flash"></i>%.batteryLevel%%</span>
+</div>
 <div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP#>:<br/>
     <a href="#" class="btn btn-default btn-sm" onClick='$(".icon%.object_id%_thermostat").addClass("pressed");setTimeout("$(\".icon%.object_id%_thermostat\").removeClass(\"pressed\");",300);
                                                         callMethod("%.object_title%.tempDown");
