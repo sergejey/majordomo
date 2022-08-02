@@ -166,6 +166,9 @@ if (defined('SETTINGS_GENERAL_ALICE_NAME') && SETTINGS_GENERAL_ALICE_NAME!='') {
      $stl=' style="color:'.$res[$i]['COLOR'].'"';
     }
     $txtdata.="<span$stl>".$res[$i]['DAT']." <b>".$res[$i]['NAME']."</b>: ".nl2br($res[$i]['MESSAGE'])."</span><br>";
+    if ($res[$i]['IMAGE']!='' && file_exists($res[$i]['IMAGE'])) {
+        $txtdata.="<div class='thumbnail' style='max-width: 600px'><img src='".$res[$i]['IMAGE']."' alt=''/></div>";
+    }
    }
    $out['RESULT']=$res;
    $out['TXT_DATA']=$txtdata;
