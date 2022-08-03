@@ -256,6 +256,8 @@ $links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
     if (!checkAccess('sdevice', $links[$i]['ID'])) continue;
+    if ($device1['TYPE']=='motion' && !$status) continue;
+    if ($device1['TYPE']=='button' && !$status) continue;
     $link_type = $links[$i]['LINK_TYPE'];
     $object = $links[$i]['LINKED_OBJECT'];
     $settings = unserialize($links[$i]['LINK_SETTINGS']);

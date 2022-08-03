@@ -38,9 +38,11 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
     }
 }
 
+/*
 if ($this->class_title == 'SMotions' && isset($params['NEW_VALUE']) && !$params['NEW_VALUE']) {
     return;
 }
+*/
 
 $this->callMethod('logicAction');
 include_once(dirname(__FILE__) . '/devices.class.php');

@@ -9,9 +9,9 @@
 			if((currentTime.getDate() - timeConvertVar[0]) == 0) {
 				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_TODAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4];
 			} else if((currentTime.getDate() - timeConvertVar[0]) == 1) {
-				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+				beautyText_%.object_id% = '<#LANG_DEVICES_PASSED_YESTERDAY_IN#> ' + timeConvertVar[3] + ':' + timeConvertVar[4]; // + ':' + timeConvertVar[5]
 			} else {
-				beautyText_%.object_id% = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4] + ':' + timeConvertVar[5];
+				beautyText_%.object_id% = timeConvertVar[0] + '.' + timeConvertVar[1] + '.' + timeConvertVar[2] + ' ' + timeConvertVar[3] + ':' + timeConvertVar[4]; // + ':' + timeConvertVar[5]
 			}
 		}
 		$('.updatedText-JS-' + sID_%.object_id%).text(beautyText_%.object_id%);
@@ -58,6 +58,10 @@ $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.o
 			<option value="100">100%</option>
 		</select>
 	</div>
-	<div class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
+<div class="device-details">
+	<span class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</span>
+<span style="display:%.batteryOperated|"none;inline"%;
+%.batteryWarning|"0=color:green;1=color:red;2=color:lightsalmon"%;"><i class="glyphicon glyphicon-flash"></i>%.batteryLevel%%</span>
+	</div>
 </div>
 	<!--support_level-->

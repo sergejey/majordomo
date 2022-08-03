@@ -30,6 +30,34 @@ if ($group_name == 'manage_groups') {
     $qry .= " AND devices.ARCHIVED=1";
 } elseif ($group_name == 'is:system') {
     $qry .= " AND devices.SYSTEM_DEVICE=1";
+} elseif ($group_name == 'is:battery') {
+    $object_names = getObjectsByProperty('batteryOperated', 1);
+    if (!is_array($object_names)) {
+        $object_names = array(0);
+    }
+    $total = count($object_names);
+    if ($total > 0) {
+        for ($i = 0; $i < $total; $i++) {
+            $object_names[$i] = "'" . $object_names[$i] . "'";
+        }
+        $qry .= " AND devices.LINKED_OBJECT IN (" . implode(',', $object_names) . ")";
+    } else {
+        $qry .= " AND 0";
+    }
+} elseif ($group_name == 'is:battery_low') {
+    $object_names = getObjectsByProperty('batteryWarning', 1);
+    if (!is_array($object_names)) {
+        $object_names = array(0);
+    }
+    $total = count($object_names);
+    if ($total > 0) {
+        for ($i = 0; $i < $total; $i++) {
+            $object_names[$i] = "'" . $object_names[$i] . "'";
+        }
+        $qry .= " AND devices.LINKED_OBJECT IN (" . implode(',', $object_names) . ")";
+    } else {
+        $qry .= " AND 0";
+    }
 } elseif ($group_name) {
     $object_names = getObjectsByProperty('group' . $group_name, 1);
     if (!is_array($object_names)) {
@@ -60,7 +88,7 @@ if ($save_qry) {
 }
 if (!$qry) $qry = "1";
 
-$tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices");
+$tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE devices.ARCHIVED!=1");
 $out['TOTAL'] = (int)$tmp['TOTAL'];
 
 $loc_title = '';
@@ -71,6 +99,7 @@ $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devic
 if ($res[0]['ID']) {
     //paging($res, 100, $out); // search result paging
     $total = count($res);
+    $out['TOTAL_FOUND']=$total;
     for ($i = 0; $i < $total; $i++) {
         // some action for every record if required
         if ($res[$i]['LOCATION_TITLE'] != $loc_title) {
@@ -78,8 +107,7 @@ if ($res[0]['ID']) {
             $loc_title = $res[$i]['LOCATION_TITLE'];
         }
         if ($res[$i]['LINKED_OBJECT']) {
-            if ($res[$i]['TYPE'] == 'camera') {
-                //$processed = $this->processDevice($res[$i]['ID'],'mini');
+            if ($res[$i]['TYPE'] == 'camera' || $res[$i]['TYPE'] == 'mark') {
                 $processed = $this->processDevice($res[$i]['ID'], 'list');
             } else {
                 $processed = $this->processDevice($res[$i]['ID']);
@@ -119,7 +147,7 @@ $types = array();
 foreach ($this->device_types as $k => $v) {
     if ($v['TITLE']) {
         $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
-        $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE TYPE='" . $k . "'");
+        $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE TYPE='" . $k . "' AND ARCHIVED!=1");
         $type_rec['TOTAL'] = (int)$tmp['TOTAL'];
         if ($type_rec['TOTAL'] > 0) {
             $types[] = $type_rec;

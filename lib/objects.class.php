@@ -57,6 +57,7 @@ function getClassTemplate($class_id,$view='')
     if (!$class['ID']) {
         return '';
     }
+
     if ($view!='' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html')) {
         $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html';
         $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_'.$view.'.html';

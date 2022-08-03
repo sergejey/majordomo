@@ -144,27 +144,37 @@ if (IsSet($url) && $url != '') {
         }
 
 
+
         if ($result) {
 
             if ($live) {
-
                 $boundary = "my_mjpeg";
+                header('Accept-Range: bytes');
                 header("Cache-Control: no-cache");
                 header("Cache-Control: private");
                 header("Pragma: no-cache");
                 header("Content-type: multipart/x-mixed-replace; boundary=$boundary");
-                print "--$boundary\n";
                 set_time_limit(0);
-                @apache_setenv('no-gzip', 1);
+                if (function_exists('apache_setenv')) {
+                    @apache_setenv('no-gzip', 1);
+                }
                 @ini_set('zlib.output_compression', 0);
                 @ini_set('implicit_flush', 1);
                 for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
                 ob_implicit_flush(1);
+                ob_end_flush();
+                $counter=0;
+                print "Content-type: image/jpeg\n\n";
                 while (true) {
-                    print "Content-type: image/jpeg\n\n";
+                    $counter++;
                     $result = getURL($url, 0, $username, $password);
-                    print $result;
-                    print "--$boundary\n";
+                    if ($result) {
+                        $newimg = imagecreatefromstring($result);
+                        imagejpeg($newimg);
+                        print "--$boundary\n\n";
+                    }
+                    flush();
+                    ob_flush();
                     sleep(1);
                 }
 

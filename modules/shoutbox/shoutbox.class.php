@@ -240,6 +240,7 @@ shouts - Shoutbox
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
+ shouts: IMAGE varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

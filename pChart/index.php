@@ -299,9 +299,11 @@ FF;
                     $code = '<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&width=500&"/>';
                 }
                 echo $code;
+                /*
                 if (!$_GET['minimal']) {
                     echo "<br/>" . htmlspecialchars($code);
                 }
+                */
                 exit;
             }
         }

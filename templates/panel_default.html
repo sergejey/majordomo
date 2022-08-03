@@ -109,7 +109,7 @@
 							<span id="dashInfoDBReqH" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						<li class="list-group-item text-center" id="dbreqdiscus" style="display:none;background: radial-gradient(circle farthest-corner at 100px 50px, #daffe5, #d6ecff);">
-							<a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i>Обсуждение на форуме</a>
+							<a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i><#LANG_NEWDASH_FORUM_DISCUSSION#></a>
 						</li>
 						
 						<li class="list-group-item">
@@ -125,14 +125,14 @@
 							<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
 						</li>
 						<li class="list-group-item">
-							Тема оформления
+							<#LANG_THEME#>
 							<span class="badge" style="background:transparent;">
 								<div class="btn-group" data-toggle="buttons">
 									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
-										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> Темно
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> <#LANG_THEME_DARK#>
 									</label>
 									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #939191;border: 0px;">
-										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> Светло
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> <#LANG_THEME_LIGHT#>
 									</label>
 								</div>
 							</span>

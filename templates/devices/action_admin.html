@@ -1,6 +1,6 @@
 [#if VIEW_MODE!="edit_devices"#]
 <ul class="nav nav-tabs">
-    <li [#if VIEW_MODE=""#]class="active"[#endif VIEW_MODE#]><a href="?"><#LANG_DEVICES#></a></li>
+    <li [#if VIEW_MODE=""#]class="active"[#endif VIEW_MODE#]><a href="?"><#LANG_DEVICES#>[#if TOTAL_FOUND!=""#] ([#TOTAL_FOUND#])[#endif#]</a></li>
     <li [#if VIEW_MODE="schedule"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=schedule"><#LANG_DEVICES_SCHEDULE#></a></li>
     <li [#if VIEW_MODE="manage_rooms"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=manage_rooms"><#LANG_ROOMS#></a></li>
     <li [#if VIEW_MODE="manage_groups"#]class="active"[#endif VIEW_MODE#]><a href="?view_mode=manage_groups"><#LANG_GROUPS#></a></li>

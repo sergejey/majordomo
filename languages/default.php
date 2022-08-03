@@ -1115,7 +1115,7 @@ $dictionary = array(
 
     'MODULES_UPDATES_AVAILABLE' => 'Modules updates available',
     'SYSTEM_UPDATES_AVAILABLE' => 'System updates available',
-    'ERRORS_SAVED' => 'Errors saved',
+    'ERRORS_SAVED' => 'Errors detected',
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Simple Devices',
@@ -1195,6 +1195,10 @@ $dictionary = array(
     'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Turn off lights in the room on idle',
     'DEVICES_ALIVE_TIMEOUT' => 'Possible inactivity timeout (hours)',
     'DEVICES_MAIN_SENSOR' => 'Main sensor for the room',
+    'DEVICES_BATTERY_OPERATED' => 'Device is battery operated',
+    'DEVICES_BATTERY_LEVEL' => 'Battery level',
+    'DEVICES_BATTERY_WARNING' => 'Low battery warning',
+    'DEVICES_LOW_BATTERY' => 'low battery level',
 
     'DEVICES_IS_ON' => 'is ON',
     'DEVICES_IS_CLOSED' => 'is Closed',
@@ -1511,6 +1515,7 @@ $dictionary = array(
 	'NEWDASH_DISCONNECTED' => 'No connection',
 	'NEWDASH_MJDM_RESOURCE' => 'MJDM Resources',
 	'NEWDASH_FORUM' => 'Forum',
+    'NEWDASH_FORUM_DISCUSSION' => 'Discuss on forum',
 	'NEWDASH_CHAT_TELEGRAM' => 'Telegram chats',
 	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'General chat (RUS)',
 	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Smoking room (RUS)',
@@ -1536,7 +1541,7 @@ $dictionary = array(
 	'NEWDASH_CLASS' => 'Class',
 	'NEWDASH_NEWS' => 'MajorDomo News and Blogs',
 	'NEWDASH_NEWS_MORE' => 'more entries',
-	'NEWDASH_DONTSHOW_THIS_BLOCK' => 'Don\'t show this block again',
+	'NEWDASH_DONTSHOW_THIS_BLOCK' => 'Hide this block',
 	'NEWDASH_HIDE_MENU_HINT' => 'This menu can be moved to the top, shall we try? <br> To return back press',
 	'NEWDASH_PRELOAD_HEADER' => 'Loading content ...',
 	'NEWDASH_PRELOAD_TEXT' => 'If the download is too long, there may be an error in the code or the script is performing the requested operation.',
@@ -1570,8 +1575,8 @@ $dictionary = array(
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',
 	
-	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s okay!',
-	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. You now have the latest available version of the system. But if necessary, you can download files from the GitHub repository. ',
+	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s OK!',
+	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. Now you have the latest available version installed. You can download files from the GitHub repository in case you need it :) ',
 	'NEWSAVERESTORE_NONE_UPDATE_BTN' => 'Update anyway',
 	'NEWSAVERESTORE_UPDATE_HEADER' => 'Update time!',
 	'NEWSAVERESTORE_UPDATE_TEXT' => 'Try to keep your system up to date to avoid bugs and security issues. Every day, the developers make changes to ensure you get the most out of MajorDoMo. ',

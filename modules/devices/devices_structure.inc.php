@@ -26,11 +26,15 @@ $this->device_types=array(
             'aliveTimeout'=>array('DESCRIPTION'=>LANG_DEVICES_ALIVE_TIMEOUT,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdAliveTimeout'),
             'linkedRoom'=>array('DESCRIPTION'=>'LinkedRoom'),
             'updated'=>array('DESCRIPTION'=>'Updated Timestamp'),
+            'batteryOperated'=>array('DESCRIPTION'=>LANG_DEVICES_BATTERY_OPERATED,'_CONFIG_TYPE'=>'yesno', 'ONCHANGE'=>'batteryLevelUpdated'),
+            'batteryLevel'=>array('DESCRIPTION'=>LANG_DEVICES_BATTERY_LEVEL, 'ONCHANGE'=>'batteryLevelUpdated'),
+            'batteryWarning'=>array('DESCRIPTION'=>LANG_DEVICES_BATTERY_WARNING),
         ),
         'METHODS'=>array(
             'statusUpdated'=>array('DESCRIPTION'=>'Status updated event'),
             'logicAction'=>array('DESCRIPTION'=>'Logic Action'),
             'keepAlive'=>array('DESCRIPTION'=>'Alive update'),
+            'batteryLevelUpdated'=>array('DESCRIPTION'=>'Battery level updated'),
         ),
         'INJECTS'=>array(
             'OperationalModes'=>array(
