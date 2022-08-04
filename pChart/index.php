@@ -284,19 +284,27 @@ FF;
                         $height = 500;
                     }
 
-
                     if (!is_array($_GET['p'])) {
-                        $code = '<iframe allowfullscreen="true" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . '&property=' . urlencode($_GET['p']) . '&height=' . $height . '&theme=grid-light" width=100% height=' . ($height) . ' frameBorder=0></iframe>';
+                        $properties=array($_GET['p']);
                     } else {
-                        $p_url = '';
-                        foreach ($_GET['p'] as $p) {
-                            $p_url .= '&properties[]=' . urlencode($p);
-                        }
+                        $properties = $_GET['p'];
                         $p_url .= '&height=' . $height;
-                        $code = '<iframe allowfullscreen="true" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" width=100% height=' . $height . '></iframe>';
                     }
+                    $p_url = '';
+                    foreach ($properties as $p) {
+                        $p_url .= '&properties[]=' . urlencode($p);
+                        if (preg_match('/^(\w+)\.(\w+)$/',$p,$m)) {
+                            $object = getObject($m[1]);
+                            if ($object->description) {
+                                $p_url .= '&legend[]=' . urlencode($object->description.' ('.$m[2].')');
+                            } else {
+                                $p_url .= '&legend[]=' . urlencode($p);
+                            }
+                        }
+                    }
+                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" width=100% height=' . $height . '></iframe>';
                 } else {
-                    $code = '<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&width=500&"/>';
+                    $code = '&nbsp;<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&width=500&"/>';
                 }
                 echo $code;
                 /*
