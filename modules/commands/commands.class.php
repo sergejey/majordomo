@@ -1039,12 +1039,10 @@ class commands extends module
             }
             $data = processTitle($data, $this);
 
-            /*
-            if (preg_match('/#[\w\d]{6}/is', $data, $m)) {
+            if (preg_match('/#[\w\d]{6}$/is', $data, $m)) {
              $color=$m[0];
              $data=trim(str_replace($m[0], '<style>#item'.$item['ID'].' .ui-btn-active {background-color:'.$color.';border-color:'.$color.'}</style>', $data));
             }
-            */
 
             $item['LABEL'] = $data;
 
