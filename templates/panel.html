@@ -101,7 +101,7 @@
 					</ul>
 				</li>
 				[#if HIDE_LEFT_PANEL="1"#]
-				[#inc panel_nav_top.html#]
+				[#inc panel_nav_top.tpl#]
 				[#else#]
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_SECTION_SYSTEM#> <b class="caret"></b></a>
@@ -231,17 +231,16 @@
 				<div class="row">
 					[#if ACTION!="" AND ACTION!='xray'#]
 					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;overflow-wrap: anywhere;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
-						
 					</div>
 					[#endif#]
-					
+
 					<div class="col-xs-12 col-sm-12 col-md-12" id="problemLinkToConnect" style="display:none;padding-left: 0px;padding-right: 0px;">
 						<div class="alert alert-danger" style="box-shadow: 0px 8px 0px 0px rgb(168 10 10);background-image: url(<#ROOTHTML#>img/icons/highAlertIcon.gif);background-repeat: no-repeat;background-size: contain;background-position: right center;">
 							<b><#LANG_NEWDASH_CONNECT_CONNECT_ERROR_1#></b>
 							<p style="font-size: 1rem;"><#LANG_NEWDASH_CONNECT_CONNECT_ERROR_2#></p>
 						</div>
-					</div> 
-					
+					</div>
+
 					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>

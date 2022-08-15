@@ -24,50 +24,36 @@ if ($this->mode == 'update') {
         $rec['PARENT_ID'] = (int)$parent_id;
     }
     //updating 'TITLE' (varchar, required)
-    global $title;
-    $rec['TITLE'] = $title;
+    $rec['TITLE'] = gr('title');
     if ($rec['TITLE'] == '') {
         $out['ERR_TITLE'] = 1;
         $ok = 0;
     }
 
-    global $priority;
-    $rec['PRIORITY'] = $priority;
-
-    global $smart_repeat;
-    $rec['SMART_REPEAT'] = (int)$smart_repeat;
-
+    $rec['PRIORITY'] = gr('priority','int');
+    $rec['SMART_REPEAT'] = gr('smart_repeat','int');
     $rec['READ_ONLY']=gr('read_only','int');
-
-
-    global $type;
-    $rec['TYPE'] = $type . '';
-
-    global $ext_id;
-    $rec['EXT_ID'] = (int)$ext_id;
-
-    global $inline;
-    $rec['INLINE'] = (int)$inline;
-
-    global $visible_delay;
-    $rec['VISIBLE_DELAY'] = (int)$visible_delay;
+    $rec['TYPE'] = gr('type');
+    $rec['EXT_ID'] = gr('ext_id','int');
+    $rec['INLINE'] = gr('inline','int');
+    $rec['VISIBLE_DELAY'] = gr('visible_delay','int');
 
     if ($rec['TYPE'] == 'plusminus' || $rec['TYPE'] == 'sliderbox') {
-        global $min_value;
+        $min_value = gr('min_value');
         if ($min_value != '') {
             $rec['MIN_VALUE'] = $min_value;
         } else {
             $rec['MIN_VALUE'] = 0;
         }
 
-        global $max_value;
+        $max_value=gr('max_value');
         if ($max_value != '') {
             $rec['MAX_VALUE'] = $max_value;
         } else {
             $rec['MAX_VALUE'] = 0;
         }
 
-        global $step_value;
+        $step_value=gr('step_value');
         if ($step_value != '') {
             $rec['STEP_VALUE'] = $step_value;
         } else {
@@ -75,7 +61,7 @@ if ($this->mode == 'update') {
         }
     }
 
-    global $delete_icon;
+    $delete_icon=gr('delete_icon');
     if ($delete_icon) {
         if ($rec['ICON'] != '') {
             @unlink(ROOT . 'cms/icons/' . $rec['ICON']);
@@ -95,10 +81,8 @@ if ($this->mode == 'update') {
 
 
     if ($rec['TYPE'] == 'selectbox' || $rec['TYPE'] == 'custom' || $rec['TYPE'] == 'switch' || $rec['TYPE'] == 'radiobox') {
-        global $data;
-        $rec['DATA'] = $data;
+        $rec['DATA'] = gr('data');
     }
-
     if ($rec['TYPE'] == 'plusminus'
         || $rec['TYPE'] == 'sliderbox'
         || $rec['TYPE'] == 'selectbox'
@@ -112,7 +96,7 @@ if ($this->mode == 'update') {
         || $rec['TYPE'] == 'color'
         || $rec['TYPE'] == 'object'
     ) {
-        global $cur_value;
+        $cur_value=gr('cur_value');
         if ($cur_value != '') {
             $rec['CUR_VALUE'] = $cur_value;
         }
@@ -120,9 +104,9 @@ if ($this->mode == 'update') {
         $old_linked_object = $rec['LINKED_OBJECT'];
         $old_linked_property = $rec['LINKED_PROPERTY'];
 
-        global $linked_object;
+        $linked_object=gr('linked_object');
         $rec['LINKED_OBJECT'] = trim($linked_object);
-        global $linked_property;
+        $linked_property=gr('linked_property');
         $rec['LINKED_PROPERTY'] = trim($linked_property);
 
         /*
@@ -130,14 +114,11 @@ if ($this->mode == 'update') {
         $rec['ONCHANGE_OBJECT']=trim($onchange_object);
         */
 
-        global $onchange_method;
+        $onchange_method=gr('onchange_method');
         $rec['ONCHANGE_METHOD'] = trim($onchange_method);
 
-        global $script_id;
-        $rec['SCRIPT_ID'] = (int)$script_id;
-
-        global $code;
-        $rec['CODE'] = $code . '';
+        $rec['SCRIPT_ID'] = gr('script_id','int');
+        $rec['CODE'] = gr('code');
         if ($rec['CODE'] != '') {
             //echo $content;
             $errors = php_syntax_error($rec['CODE']);
@@ -150,32 +131,14 @@ if ($this->mode == 'update') {
 
     }
 
-    //updating 'COMMAND' (varchar)
-    global $command;
-    $rec['COMMAND'] = $command . '';
-
-    global $window;
-    $rec['WINDOW'] = $window . '';
-
-    global $sub_preload;
-    $rec['SUB_PRELOAD'] = (int)$sub_preload;
-
-
-    //updating 'URL' (varchar)
-    global $url;
-    $rec['URL'] = $url . '';
-    //updating 'WIDTH' (int)
-    global $width;
-    $rec['WIDTH'] = (int)$width;
-    //updating 'HEIGHT' (int)
-    global $height;
-    $rec['HEIGHT'] = (int)$height;
-
-    global $autostart;
-    $rec['AUTOSTART'] = (int)$autostart;
-
-    global $auto_update;
-    $rec['AUTO_UPDATE'] = (int)$auto_update;
+    $rec['COMMAND'] = gr('command');
+    $rec['WINDOW'] = gr('window');
+    $rec['SUB_PRELOAD'] = gr('sub_preload','int');
+    $rec['URL'] = gr('url');
+    $rec['WIDTH'] = gr('width','int');
+    $rec['HEIGHT'] = gr('height','int');
+    $rec['AUTOSTART'] = gr('autostart','int');
+    $rec['AUTO_UPDATE'] = gr('auto_update','int');
 
     //UPDATING RECORD
     if ($ok) {
@@ -249,4 +212,3 @@ if ($out['ID']) {
 
 }
 
-?>

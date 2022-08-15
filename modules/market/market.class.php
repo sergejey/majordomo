@@ -765,7 +765,10 @@ class market extends module
                         $this->echonow("Updating files ...");
                     }
 
-                    $this->installUnpacketPlugin(ROOT . 'cms/saverestore/temp' . $folder, $name);
+                    $files_list = $this->installUnpacketPlugin(ROOT . 'cms/saverestore/temp' . $folder, $name);
+                    if ($files_list != '') {
+                        SaveFile(ROOT . 'cms/modules_installed/' . $name . '.files', $files_list);
+                    }
 
                     if ($frame) {
                         $this->echonow("OK<br/>", 'green');
@@ -855,8 +858,9 @@ class market extends module
             require($folder . '/install.php');
             @unlink($folder . '/install.php');
         }
-        $this->copyTree($folder, ROOT, 1); // restore all files
+        $files = $this->copyTree($folder, ROOT, 1); // restore all files
         $this->removeTree($folder);
+        return $files;
     }
 
     /**
@@ -897,6 +901,20 @@ class market extends module
                 @unlink($cycle_name);
             }
             removeMissingSubscribers();
+        }
+
+        $files_list_filename = ROOT . 'cms/modules_installed/' . $name . '.files';
+        if (file_exists($files_list_filename)) {
+            $files_list = LoadFile($files_list_filename);
+            $files = explode("\n", $files_list);
+            $total = count($files);
+            for ($i = 0; $i < $total; $i++) {
+                $filename = trim($files[$i]);
+                if ($filename != '' && file_exists($filename)) {
+                    @unlink($filename);
+                }
+            }
+            @unlink($files_list_filename);
         }
         $ok_msg = 'Uninstalled';
         if ($frame) {
@@ -1064,7 +1082,11 @@ class market extends module
             if ($frame) {
                 $this->echonow("Updating files ... ");
             }
-            $this->installUnpacketPlugin(ROOT . 'cms/saverestore/temp' . $folder, $name);
+            $files_list = $this->installUnpacketPlugin(ROOT . 'cms/saverestore/temp' . $folder, $name);
+            if ($files_list != '') {
+                SaveFile(ROOT . 'cms/modules_installed/' . $name . '.files', $files_list);
+            }
+
             $source = ROOT . 'modules';
             if ($dir = @opendir($source)) {
                 while (($file = readdir($dir)) !== false) {
@@ -1181,19 +1203,18 @@ class market extends module
     {
 
 
-        $res = 1;
+        $files_list = '';
 
-        //Remove last slash '/' in source and destination - slash was added when copy
         $source = preg_replace("#/$#", "", $source);
         $destination = preg_replace("#/$#", "", $destination);
 
         if (!Is_Dir($source)) {
-            return 0; // cannot create destination path
+            return ''; // cannot create destination path
         }
 
         if (!Is_Dir($destination)) {
             if (!mkdir($destination, 0777, true)) {
-                return 0; // cannot create destination path
+                return ''; // cannot create destination path
             }
         }
 
@@ -1201,7 +1222,7 @@ class market extends module
         if ($dir = @opendir($source)) {
             while (($file = readdir($dir)) !== false) {
                 if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-                    $res = $this->copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
+                    $files_list .= $this->copyTree($source . "/" . $file, $destination . "/" . $file, $over, $patterns);
                 } elseif (Is_File($source . "/" . $file) && (!file_exists($destination . "/" . $file) || $over)) {
                     if (!is_array($patterns)) {
                         $ok_to_copy = 1;
@@ -1215,14 +1236,15 @@ class market extends module
                         }
                     }
                     if ($ok_to_copy) {
-                        @$res = copy($source . "/" . $file, $destination . "/" . $file);
+                        if (copy($source . "/" . $file, $destination . "/" . $file)) {
+                            $files_list .= $destination . "/" . $file . "\n";
+                        }
                     }
                 }
             }
             closedir($dir);
         }
-        return $res;
-
+        return $files_list;
     }
 
     function copyFile($source, $destination)
