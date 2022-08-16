@@ -183,8 +183,9 @@ if (file_exists($db_filename)) {
     echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
     DebMes("Running: mysql main db restore from file: " . $db_filename);
     $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
-    $mysqlParam = " -u " . DB_USER;
-    if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+    $mysqlParam = " -h " . DB_HOST;
+    $mysqlParam .= " -u " . DB_USER;
+    if (DB_PASSWORD != '') $mysqlParam .= " -p'" . DB_PASSWORD."'";
     $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
     exec($mysql_path . $mysqlParam);
 
@@ -192,12 +193,14 @@ if (file_exists($db_filename)) {
         echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
         DebMes("Running: mysql history db restore from file: " . $db_history_filename);
         $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
-        $mysqlParam = " -u " . DB_USER;
-        if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+        $mysqlParam = " -h " . DB_HOST;
+        $mysqlParam .= " -u " . DB_USER;
+        if (DB_PASSWORD != '') $mysqlParam .= " -p'" . DB_PASSWORD."'";
         $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
         exec($mysql_path . $mysqlParam);
     }
 }
+
 
 include_once("./load_settings.php"); //
 
