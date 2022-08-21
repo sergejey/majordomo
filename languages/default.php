@@ -1574,6 +1574,7 @@ $dictionary = array(
 	
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Name for new propertie',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Property value',
+    'NEWDASH_RESET_VISIBILITY' => 'Reset blocks visibility settings',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'It\'s OK!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'It\'s great that you update on time. Now you have the latest available version installed. You can download files from the GitHub repository in case you need it :) ',

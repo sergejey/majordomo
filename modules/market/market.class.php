@@ -769,12 +769,9 @@ class market extends module
                     if ($files_list != '') {
                         SaveFile(ROOT . 'cms/modules_installed/' . $name . '.files', $files_list);
                     }
-
                     if ($frame) {
                         $this->echonow("OK<br/>", 'green');
                     }
-
-
                     $rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($name) . "'");
                     $rec['MODULE_NAME'] = $name;
                     $rec['CURRENT_VERSION'] = $version;
@@ -785,6 +782,7 @@ class market extends module
                     } else {
                         SQLInsert('plugins', $rec);
                     }
+                    $this->checkIfCycleRestartRequired($name);
 
                 }
             }
@@ -1096,6 +1094,7 @@ class market extends module
                 }
             }
             @unlink(ROOT . "cms/modules_installed/control_modules.installed");
+            $this->checkIfCycleRestartRequired($name);
 
             if ($frame) {
                 $this->echonow(" OK <br/>", 'green');
@@ -1124,6 +1123,22 @@ class market extends module
         }
 
 
+    }
+
+    function checkIfCycleRestartRequired($plugin_name) {
+        $files_list_filename = ROOT . 'cms/modules_installed/' . $plugin_name . '.files';
+        if (!file_exists($files_list_filename)) return;
+        $files_list = LoadFile($files_list_filename);
+        $files = explode("\n", $files_list);
+        $total = count($files);
+        for ($i = 0; $i < $total; $i++) {
+            $filename = trim($files[$i]);
+            if (preg_match('/cycle_(.+?)\.php$/',$filename, $m)) {
+                $service='cycle_'.$m[1];
+                sg($service . 'Run', '');
+                sg($service . 'Control', 'restart');
+            }
+        }
     }
 
     /**

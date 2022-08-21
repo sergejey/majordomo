@@ -98,7 +98,7 @@ $(document).ready(function(){
 		indentUnit: 0,
 		tabSize: 4,
 		
-		[#if TYPE=="php"#]
+		[#if TYPE=="php" || TYPE=="html" || TYPE=="javascript"#]
 		enterMode: "indent",
 		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
