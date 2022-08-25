@@ -86,8 +86,8 @@ class devices extends module
 
     function setDictionary()
     {
-        include_once(dirname(__FILE__) . '/devices_structure.inc.php');
-        include_once(dirname(__FILE__) . '/devices_structure_links.inc.php');
+        include(dirname(__FILE__) . '/devices_structure.inc.php');
+        include(dirname(__FILE__) . '/devices_structure_links.inc.php');
     }
 
     /**
@@ -393,6 +393,7 @@ class devices extends module
                         if (is_array($pv)) {
                             foreach ($pv as $ppk => $ppv) {
                                 if (substr($ppk, 0, 1) == '_') continue;
+                                if ($ppk == 'KEEP_HISTORY' && $property[$ppk]) continue;
                                 $property[$ppk] = $ppv;
                             }
                             SQLUpdate('properties', $property);

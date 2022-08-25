@@ -207,13 +207,33 @@ class panel extends module
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
                 }
                 if ($modules[$i]['NAME']=='devices') {
+                    $links=array();
                     $devices = SQLSelect("SELECT devices.LOCATION_ID, locations.TITLE, COUNT(devices.ID) as TOTAL FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE locations.ID>0 GROUP BY devices.LOCATION_ID ORDER BY locations.TITLE");
                     if (is_array($devices)) {
-                        $links=array();
                         $links[]=array('TITLE'=>LANG_ALL,'LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME']);
                         foreach($devices as $device) {
                             $links[]=array('TITLE'=>processTitle($device['TITLE']).' ('.$device['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&location_id='.$device['LOCATION_ID']);
                         }
+                    }
+
+                    $devices = SQLSelect("SELECT devices.TYPE, COUNT(devices.ID) as TOTAL FROM devices GROUP BY devices.TYPE ORDER BY devices.TYPE");
+                    $totall = count($devices);
+                    if ($totall) {
+                        $links[]=array('DIVIDER'=>1);
+                        require DIR_MODULES.'devices/devices_structure.inc.php';
+
+                        foreach($devices as &$device) {
+                            $device['TITLE']=processTitle($this->device_types[$device['TYPE']]['TITLE']);
+                        }
+                        usort($devices, function ($a, $b) {
+                            return strcmp($a["TITLE"], $b["TITLE"]);
+                        });
+
+                        for($il=0;$il<$totall;$il++) {
+                            $links[]=array('TITLE'=>$devices[$il]['TITLE'].' ('.$devices[$il]['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&type='.$devices[$il]['TYPE']);
+                        }
+                    }
+                    if (isset($links[0])) {
                         $modules[$i]['LINKS']=$links;
                     }
                 }

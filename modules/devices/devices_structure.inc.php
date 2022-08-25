@@ -494,7 +494,7 @@ $this->device_types=array(
             'periodTime'=>array('DESCRIPTION'=>'Period to calculate minimum value (seconds)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorPeriodTime'),
             ),
         'METHODS'=>array(
-            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated'),
+            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated','CALL_PARENT'=>1),
             'periodMinValueUpdated'=>array('DESCRIPTION'=>'Period Min value updated'),
         ),
     ),

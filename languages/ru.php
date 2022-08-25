@@ -1573,6 +1573,7 @@ $dictionary = array(
 	
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',
+    'NEWDASH_RESET_VISIBILITY' => 'Сбросить настройки видимости блоков',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',

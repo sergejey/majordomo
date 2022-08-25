@@ -1,5 +1,8 @@
 <?php
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+
+$this->setProperty('active', 1);
+
 //groupNight
 $objects = getObjectsByProperty('groupNight', '=', 1);
 $total = count($objects);
