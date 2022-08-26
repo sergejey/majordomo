@@ -252,7 +252,7 @@ class MajordomoApplication extends Application
                 }
             }
 
-            $send_data = array();
+            $send_data = $data;
             $encodedData = $this->_encodeData('subscribed', json_encode($send_data));
             $this->_clients[$client_id]->send($encodedData);
         }
