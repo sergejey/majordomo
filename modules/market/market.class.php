@@ -715,12 +715,15 @@ class market extends module
 
 
                     if (IsWindowsOS()) {
-                        //DebMes("Running ".DOC_ROOT.'/gunzip ../'.$file);
-                        exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                        //DebMes("Running ".DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file));
-                        exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                        $result = exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                        $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
                     } else {
-                        exec('tar xzvf ../' . $file, $output, $res);
+                        $result = exec('tar xzvf ../' . $file, $output, $res);
+                    }
+
+                    if (!$result) {
+                        $this->echonow("Unpack failed!", 'red');
+                        return false;
                     }
 
                     $x = 0;
@@ -1045,12 +1048,18 @@ class market extends module
             }
             if (IsWindowsOS()) {
                 // for windows only
-                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                $result = exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
                 @unlink('../' . str_replace('.tgz', '.tar', $file));
             } else {
-                exec('tar xzvf ../' . $file, $output, $res);
+                $result = exec('tar xzvf ../' . $file, $output, $res);
             }
+
+            if (!$result) {
+                $this->echonow("Unpack failed!", 'red');
+                return false;
+            }
+
             if ($frame) {
                 $this->echonow(" OK <br/>", 'green');
             }
