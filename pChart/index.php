@@ -302,7 +302,7 @@ FF;
                             }
                         }
                     }
-                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" width=100% height=' . $height . '></iframe>';
+                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" style="height:80% !important" width=100% ></iframe>';//height=' . $height . '
                 } else {
                     $code = '&nbsp;<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&width=500&"/>';
                 }
