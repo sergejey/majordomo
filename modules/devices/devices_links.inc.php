@@ -90,9 +90,14 @@ if ($links[0]['ID']) {
             $settings=unserialize($links[$i]['LINK_SETTINGS']);
             $new_settings='';
             foreach($settings as $k=>$v) {
+                if ($v=='' || $v=='0') continue;
                 $new_settings.=$k.': <i>'.$v.'</i>; ';
             }
             $links[$i]['LINK_SETTINGS']=$new_settings;
+        }
+        $rule=SQLSelectOne("SELECT ID FROM security_rules WHERE OBJECT_TYPE='sdevice' AND OBJECT_ID=". $links[$i]['ID']);
+        if ($rule['ID']) {
+            $links[$i]['HAS_RULE']=1;
         }
     }
     $out['LINKS']=$links;

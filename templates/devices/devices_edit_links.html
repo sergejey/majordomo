@@ -12,6 +12,9 @@
         <td>
             [#if COMMENT!=""#][#COMMENT#]<br/>[#endif#]
             [#LINK_TYPE#] ([#LINK_SETTINGS#])
+            [#if HAS_RULE#]
+            <i class="glyphicon glyphicon-lock"></i>
+            [#endif#]
         </td>
         <td>
             <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=edit_link&link_id=[#ID#]&link_name=[#LINK_TYPE#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -109,7 +112,10 @@
         <div class="form-group">
             <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
             <div class="col-lg-5">
-                <a href="?(panel:{action=security_rules})&object_type=sdevice&object_id=<#LINK_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+                [#if HAS_RULE#]
+                <i class="glyphicon glyphicon-lock"></i>
+                [#endif#]
+                <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" href="?(panel:{action=security_rules})&object_type=sdevice&object_id=<#LINK_ID#>&print=1" target=_blank><#LANG_SET#></a>
             </div>
         </div>
         [#endif#]

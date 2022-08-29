@@ -53,13 +53,13 @@
                     [#endif#]
                     <td align="center">
                         [#if USER_AVATAR!=""#]
-                        <a href="#"
-                           onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
+                        <a onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
+                                href="#"
                            title="[#USER_TITLE#]"><img src="<#ROOTHTML#>cms/avatars/[#USER_AVATAR#]" border="0"
                                                        height="50" alt="[#USER_TITLE#]"></a>
                         [#else#]
-                        <a href="#"
-                           onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
+                        <a onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
+                           href="#"
                            title="[#USER_TITLE#]"><img src="<#ROOTHTML#>img/icons/user.png" border="0"
                                                        alt="[#USER_TITLE#]"></a>
                         [#endif#]

@@ -96,7 +96,8 @@
     <div class="form-group">
         <label class="control-label col-sm-2"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="col-sm-4">
-            <a href="?(panel:{action=security_rules})&object_type=spoint&object_id=<#POINT_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+            <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+               href="?(panel:{action=security_rules})&object_type=spoint&object_id=<#POINT_ID#>&print=1" target=_blank><#LANG_SET#></a>
         </div>
     </div>
     [#endif POINT_ID#]
