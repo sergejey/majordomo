@@ -2,8 +2,6 @@
 
 if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
 
-$this->setProperty('active', 1);
-
 //groupEco
 $objects = getObjectsByProperty('groupEco', '=', 1);
 $total = count($objects);
