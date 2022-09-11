@@ -96,6 +96,12 @@
    [#end FOLDERS#]
    [#endif#]
 
+   [#if _CONFIG_RESTRICTIONS="1"#]
+   <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+      class="btn btn-default btn-sm [#if _CONFIG_RESTRICTIONS_SET="1"#] btn-success[#endif#]"
+      href="?(panel:{action=security_rules})&object_type=prop_[#NAME#]&object_id=<#ID#>&print=1&types[]=hours&types[]=conditions" target=_blank><i class="glyphicon glyphicon-cog"></i></a>
+   [#endif#]
+
   </div>
  </div>
  [#end PROPERTIES#]

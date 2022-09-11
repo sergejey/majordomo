@@ -11,6 +11,25 @@ if (!$out['NO_CANCEL']) {
     $out['NO_CANCEL'] = $no_cancel;
 }
 
+$types=gr('types');
+if (is_array($types)) {
+    if (!in_array('terminals',$types)) {
+        $out['DISABLE_TERMINALS']=1;
+    }
+    if (!in_array('users',$types)) {
+        $out['DISABLE_USERS']=1;
+    }
+    if (!in_array('hours',$types)) {
+        $out['DISABLE_HOURS']=1;
+    }
+    if (!in_array('conditions',$types)) {
+        $out['DISABLE_CONDITIONS']=1;
+    }
+    foreach($types as $type) {
+        $out['TYPES']=array('TITLE'=>$type);
+    }
+}
+
 $table_name = 'security_rules';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 if ($this->mode == 'update') {

@@ -107,7 +107,7 @@ function saveToCache($key, $value)
             $redisConnection = new Redis();
             $redisConnection->pconnect(USE_REDIS);
         }
-        $redisConnection->set($key, $value);
+        $redisConnection->set($key, (string)$value);
         return;
     }
 

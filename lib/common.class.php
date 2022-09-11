@@ -315,7 +315,7 @@ function runScheduledJobs()
         SQLExec("UPDATE jobs SET PROCESSED=" . $jobs[$i]['PROCESSED'] . ", STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . $jobs[$i]['ID']);
 
         if ($jobs[$i]['COMMANDS'] != '') {
-            $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'];
+            $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'] . '&title=' . urlencode($jobs[$i]['TITLE']);
             $result = trim(getURL($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
@@ -843,6 +843,24 @@ function checkAccess($object_type, $object_id)
     $result = $sc->checkAccess($object_type, $object_id);
     endMeasure('checkAccess');
     return $result;
+}
+
+function checkAccessDefined($object_type, $object_id)
+{
+    $rec = SQLSelectOne("SELECT ID FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$object_id);
+    if ($rec['ID']) return true;
+    return false;
+}
+
+function checkAccessCopy($object_type, $src_id, $dst_id)
+{
+    $rec = SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$src_id);
+    if ($rec['ID']) {
+        SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='".DBSafe($object_type)."' AND OBJECT_ID=".(int)$dst_id);
+        unset($rec['ID']);
+        $rec['OBJECT_ID']=(int)$dst_id;
+        SQLInsert('security_rules',$rec);
+    }
 }
 
 /**

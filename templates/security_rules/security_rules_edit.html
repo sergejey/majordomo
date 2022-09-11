@@ -15,6 +15,7 @@
 <input type="hidden" name="object_id" value="[#OBJECT_ID#]">
 
 
+[#if DISABLE_TERMINALS!="1"#]
 <div class="form-group">
  <label class="control-label"[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_SECURITY_TERMINALS#>:
@@ -36,7 +37,9 @@
   });
  </script>
 </div>
+[#endif DISABLE_TERMINALS#]
 
+[#if DISABLE_USERS!="1"#]
 <!-- USERS (varchar) -->
 <div class="form-group">
  <label class="control-label"[#if ERR_USERS#] style="color:red;font-weight:bold"[#endif#]>
@@ -58,6 +61,7 @@
   });
  </script>
 </div>
+[#endif DISABLE_USERS#]
 
 <!-- TIMES (varchar) -->
 <div class="form-group">
@@ -157,8 +161,20 @@
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
+    [#if TYPES#]
+     [#begin TYPES#]
+    <input name="types[]" type="hidden" value="[#TITLE#]">
+     [#end TYPES#]
+    [#endif TYPES#]
 </div>
 
 </form>
+[#if OBJECT_ID!="" && OBJECT_TYPE!=""#]
+    <hr/>
+    <div>
+        Code example:
+<pre>if (!checkAccess('[#OBJECT_TYPE#]',[#OBJECT_ID#])) return;</pre>
+    </div>
+[#endif ID#]
 </div>
 </div>
