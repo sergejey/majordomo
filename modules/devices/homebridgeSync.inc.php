@@ -85,13 +85,15 @@ for ($i = 0; $i < $total; $i++) {
                 } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains'  || $open_type == 'shutters') {
                     $payload['characteristic'] = 'CurrentPosition';
                     if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
-                        $payload['value'] = "100";
+                        $payload['value'] = "0"; // открыто на 0% (закрыто)
                     } else {
-                        $payload['value'] = "0";
+                        $payload['value'] = "100"; // открыто на 100% (открыто)
                     }
                     sg('HomeBridge.to_set', json_encode($payload));
                     $payload['characteristic'] = 'TargetPosition';
-                    $payload['value'] = "100";
+                    sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'PositionState';
+                    $payload['value'] = "2"; //0 - "Закрывается" 1 - "Открывается" 2 - нет отображения
                     sg('HomeBridge.to_set', json_encode($payload));
                 }
             }
