@@ -142,8 +142,8 @@ if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAv
                         DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
                     }
                     sg('HomeBridge.to_set', json_encode($payload));
-                    //$payload['characteristic'] = 'TargetPosition';
-                    //sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'TargetPosition';
+                    sg('HomeBridge.to_set', json_encode($payload));
                     unset($payload['service']);
                 }
             }
