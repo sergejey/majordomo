@@ -134,9 +134,9 @@ if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAv
                 } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains' || $open_type == 'shutters') {
                     $payload['characteristic'] = 'CurrentPosition';
                     if (gg($device1['LINKED_OBJECT'] . '.status')) {
-                        $payload['value'] = "100";
-                    } else {
                         $payload['value'] = "0";
+                    } else {
+                        $payload['value'] = "100";
                     }
                     if ($debug_sync) {
                         DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
