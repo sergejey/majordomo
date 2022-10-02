@@ -89,9 +89,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 if ($data['characteristic']=='CurrentPosition') {
                     $currentStatus = (int)gg($device['LINKED_OBJECT'] . '.status');
                     if ($currentStatus) {
-                        $payload['value'] = 100;
-                    } else {
                         $payload['value'] = 0;
+                    } else {
+                        $payload['value'] = 100;
                     }
                 }
             } elseif ($open_type == 'window') {
@@ -99,9 +99,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 if ($data['characteristic']=='CurrentPosition') {
                     $currentStatus = (int)gg($device['LINKED_OBJECT'] . '.status');
                     if ($currentStatus) {
-                        $payload['value'] = 100;
-                    } else {
                         $payload['value'] = 0;
+                    } else {
+                        $payload['value'] = 100;
                     }
                 }
             } elseif ($open_type == 'curtains' || $open_type == 'shutters') {
@@ -109,9 +109,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 if ($data['characteristic']=='CurrentPosition') {
                     $currentStatus = (int)gg($device['LINKED_OBJECT'] . '.status');
                     if ($currentStatus) {
-                        $payload['value'] = 100;
-                    } else {
                         $payload['value'] = 0;
+                    } else {
+                        $payload['value'] = 100;
                     }
                 }
             }
