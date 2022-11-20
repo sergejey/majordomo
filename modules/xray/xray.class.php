@@ -666,6 +666,7 @@ class xray extends module
 					$responce = [];
 					$responce['MODE'] = 'performance';
 					$responce['TOTAL'] = $total;
+					$responce['LIST'] = [];
 					
 					for ($i = 0; $i < $total; $i++) {
 						$responce['LIST'][$i]['OPERATION'] = htmlspecialchars($res[$i]['OPERATION']);
