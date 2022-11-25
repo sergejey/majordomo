@@ -32,9 +32,11 @@
                             </td>
                         </table>
                     </td>
+                    [#if SHOW_PLAYER=="1"#]
                     <td align="right">
                         [#module name="app_player" mode="header"#]
                     </td>
+                    [#endif#]
                     <td align="center">
                         <a href="<#ROOTHTML#>admin.php" class="btn btn-default btn-sm"><#LANG_CONTROL_PANEL#></a>
                     </td>
