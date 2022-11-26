@@ -6,65 +6,65 @@
 
 <div class="shout_box">  <!-- begin shout_box -->
 
-   <!-- search results (list) -->
-   <div id="shoutboxContent" class="shout_content">
-   [#if TXT_DATA!=""#][#TXT_DATA#][#else#]<#LANG_LOADING#>...[#endif#]
-   </div>
-   <!-- / search results (list) -->
-   <!-- / results -->
-   
-   [#if NOT_LOGGED#]
-   [#if MOBILE!="1"#]
-   <p>
-   <#LANG_PLEASE_LOGIN#>
-   </p>
-   [#endif MOBILE#]
-   [#else#]
-   <div class="shout_form">
-   <form action="?" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit='return false;'>
-   <input type="text" name="message" class="shout_input" placeholder="<#LANG_COMMAND#>"><input type="submit" name="submit" value="<#LANG_SEND#>" onClick="return sendShoutMessage();"  class="shout_button">
-   </form>
-   </div>
-   [#endif#]
-   </div> <!-- end shout_box -->
-   <script type="text/javascript">
-   
-   var shoutTimer;
-   
-    function updateShoutContent() {
-     clearTimeout(shoutTimer);
-   
-      var url="<#ROOTHTML#>popup/shoutbox.html?";
-      url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#][#if IMPORTANCE!=""#]&importance=<#IMPORTANCE#>[#endif#]';
-      $.ajax({
-       url: url,
-       }).done(function(data) { 
-        if (data!='') {
-         old_data=$('#shoutboxContent').html();
-         if (old_data!=data) {
-          $('#shoutboxContent').html(data);
-         }
-        }
-        shoutTimer=setTimeout("updateShoutContent();", 3000);
-       });
-    }
-   
-    function sendShoutMessage() {
-     if (document.frmShoutBoxMsg.message.value == '') return false; 
-     var msg=URLencode(document.frmShoutBoxMsg.message.value);
-     document.frmShoutBoxMsg.message.value='';
-     var url="<#ROOTHTML#>popup/shoutbox.html?";
-     url=url+'&limit=<#LIMIT#>&msg='+msg;
-     $.ajax({
+<!-- search results (list) -->
+<div id="shoutboxContent" class="shout_content">
+[#if TXT_DATA!=""#][#TXT_DATA#][#else#]<#LANG_LOADING#>...[#endif#]
+</div>
+<!-- / search results (list) -->
+<!-- / results -->
+
+[#if NOT_LOGGED#]
+[#if MOBILE!="1"#]
+<p>
+<#LANG_PLEASE_LOGIN#>
+</p>
+[#endif MOBILE#]
+[#else#]
+<div class="shout_form">
+<form action="?" name="frmShoutBoxMsg" method="get" style="margin:0px" onSubmit='return false;'>
+<input type="text" name="message" class="shout_input" placeholder="<#LANG_COMMAND#>"><input type="submit" name="submit" value="<#LANG_SEND#>" onClick="return sendShoutMessage();"  class="shout_button">
+</form>
+</div>
+[#endif#]
+</div> <!-- end shout_box -->
+<script type="text/javascript">
+
+var shoutTimer;
+
+   function updateShoutContent() {
+   clearTimeout(shoutTimer);
+
+   var url="<#ROOTHTML#>popup/shoutbox.html?";
+   url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#][#if IMPORTANCE!=""#]&importance=<#IMPORTANCE#>[#endif#]';
+   $.ajax({
       url: url,
-      }).done(function(data) {
-       updateShoutContent();
+      }).done(function(data) { 
+      if (data!='') {
+      old_data=$('#shoutboxContent').html();
+      if (old_data!=data) {
+         $('#shoutboxContent').html(data);
+      }
+      }
+      shoutTimer=setTimeout("updateShoutContent();", 3000);
       });
-     return false;
-    }
-   </script>
-   
-   
-   <script language="javascript">
-    shoutTimer=setTimeout("updateShoutContent();", 3000);
-   </script>
+   }
+
+   function sendShoutMessage() {
+   if (document.frmShoutBoxMsg.message.value == '') return false; 
+   var msg=URLencode(document.frmShoutBoxMsg.message.value);
+   document.frmShoutBoxMsg.message.value='';
+   var url="<#ROOTHTML#>popup/shoutbox.html?";
+   url=url+'&limit=<#LIMIT#>&msg='+msg;
+   $.ajax({
+   url: url,
+   }).done(function(data) {
+      updateShoutContent();
+   });
+   return false;
+   }
+</script>
+
+
+<script language="javascript">
+   shoutTimer=setTimeout("updateShoutContent();", 3000);
+</script>
