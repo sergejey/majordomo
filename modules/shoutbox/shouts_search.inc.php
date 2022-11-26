@@ -119,9 +119,7 @@ if ($this->limit) {
 $limit = str_replace('LIMIT LIMIT', 'LIMIT', $limit);
 
 $out['LIMIT'] = $this->limit;
-
 $out['IMPORTANCE'] = $this->importance;
-
 
 $res = SQLSelect("SELECT shouts.*, DATE_FORMAT(shouts.ADDED, '%H:%i') as DAT, TO_DAYS(shouts.ADDED) as DT, users.NAME, users.COLOR FROM shouts LEFT JOIN users ON shouts.MEMBER_ID=users.ID WHERE $qry ORDER BY shouts.ADDED DESC, ID DESC $limit");
 
