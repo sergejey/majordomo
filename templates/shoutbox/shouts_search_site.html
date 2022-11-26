@@ -31,37 +31,37 @@
 
 var shoutTimer;
 
-   function updateShoutContent() {
-   clearTimeout(shoutTimer);
+function updateShoutContent() {
+clearTimeout(shoutTimer);
 
-   var url="<#ROOTHTML#>popup/shoutbox.html?";
-   url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#][#if IMPORTANCE!=""#]&importance=<#IMPORTANCE#>[#endif#]';
-   $.ajax({
-      url: url,
-      }).done(function(data) { 
-      if (data!='') {
-      old_data=$('#shoutboxContent').html();
-      if (old_data!=data) {
-         $('#shoutboxContent').html(data);
-      }
-      }
-      shoutTimer=setTimeout("updateShoutContent();", 3000);
-      });
-   }
-
-   function sendShoutMessage() {
-   if (document.frmShoutBoxMsg.message.value == '') return false; 
-   var msg=URLencode(document.frmShoutBoxMsg.message.value);
-   document.frmShoutBoxMsg.message.value='';
-   var url="<#ROOTHTML#>popup/shoutbox.html?";
-   url=url+'&limit=<#LIMIT#>&msg='+msg;
-   $.ajax({
+var url="<#ROOTHTML#>popup/shoutbox.html?";
+url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#][#if IMPORTANCE!=""#]&importance=<#IMPORTANCE#>[#endif#]';
+$.ajax({
    url: url,
-   }).done(function(data) {
-      updateShoutContent();
-   });
-   return false;
+   }).done(function(data) { 
+   if (data!='') {
+   old_data=$('#shoutboxContent').html();
+   if (old_data!=data) {
+      $('#shoutboxContent').html(data);
    }
+   }
+   shoutTimer=setTimeout("updateShoutContent();", 3000);
+   });
+}
+
+function sendShoutMessage() {
+if (document.frmShoutBoxMsg.message.value == '') return false; 
+var msg=URLencode(document.frmShoutBoxMsg.message.value);
+document.frmShoutBoxMsg.message.value='';
+var url="<#ROOTHTML#>popup/shoutbox.html?";
+url=url+'&limit=<#LIMIT#>&msg='+msg;
+$.ajax({
+url: url,
+}).done(function(data) {
+   updateShoutContent();
+});
+return false;
+}
 </script>
 
 
