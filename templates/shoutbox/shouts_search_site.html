@@ -35,7 +35,7 @@ var shoutTimer;
   clearTimeout(shoutTimer);
 
    var url="<#ROOTHTML#>popup/shoutbox.html?";
-   url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#]';
+   url=url+'&limit=<#LIMIT#>&getdata=1[#if REVERSE="1"#]&reverse=1[#endif#][#if IMPORTANCE!=""#]&importance=<#IMPORTANCE#>[#endif#]';
    $.ajax({
     url: url,
     }).done(function(data) { 
