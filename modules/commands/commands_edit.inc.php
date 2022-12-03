@@ -140,6 +140,10 @@ if ($this->mode == 'update') {
     $rec['AUTOSTART'] = gr('autostart','int');
     $rec['AUTO_UPDATE'] = gr('auto_update','int');
 
+    unset($rec['RENDER_TITLE']);
+    unset($rec['RENDER_DATA']);
+    unset($rec['RENDER_UPDATED']);
+
     //UPDATING RECORD
     if ($ok) {
         if ($rec['ID']) {

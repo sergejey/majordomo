@@ -732,6 +732,11 @@ if (is_array($rec)) {
     }
 }
 outHash($rec, $out);
+
+if (preg_match('/\.mp4$/',$out['WALLPAPER'])) {
+    $out['VIDEO_WALLPAPER']=$out['WALLPAPER'];
+}
+
 $this->owner->data['TITLE'] = $rec['TITLE'];
 if ($out['ELEMENT_TITLE']) {
     $this->owner->data['TITLE'] .= ' - ' . $out['ELEMENT_TITLE'];

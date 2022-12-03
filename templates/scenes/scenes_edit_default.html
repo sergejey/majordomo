@@ -101,11 +101,14 @@
 <table width="100%" border="0">
  <tr>
   <td valign="top">
+      [#if VIDEO_WALLPAPER!=""#]
+      <video autoplay muted loop id="myVideo" style="width:300px">
+          <source src="[#VIDEO_WALLPAPER#]" type="video/mp4">
+      </video>
+      [#else VIDEO_WALLPAPER#]
 <a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><img src="[#WALLPAPER#]" width="300"></a>
+      [#endif#]
 </td>
- <td valign="top" width=90%>
-  &nbsp;
- </td>
  </tr>
 </table>
 </div>

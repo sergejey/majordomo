@@ -29,9 +29,6 @@ $saved_devices_data = array();
 
 const CONNECT_HOST = 'connect.smartliving.ru';
 
-setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-$cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 'Run';
-
 $simple_devices_queue_checked = 0;
 
 while (1) {
@@ -97,7 +94,6 @@ while (1) {
                 $previousMillis = $currentMillis;
                 $checked_time = time();
                 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-                // saveToCache("MJD:$cycleVarName", $checked_time);
                 if (isRebootRequired() || IsSet($_GET['onetime'])) {
                     exit;
                 }
