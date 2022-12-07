@@ -392,14 +392,14 @@ $(document).ready(function() {
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 		$("nav").addClass("navbar-fixed-top");
-		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 	}
 		
 	$(window).on("scroll", function(e) {
 		if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 			$("nav").addClass("navbar-fixed-top");
 			$("body").css('padding-top', '54px');
-			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 		} else {
 			$("nav").removeClass("navbar-fixed-top");
 			$("nav").removeAttr('style');
