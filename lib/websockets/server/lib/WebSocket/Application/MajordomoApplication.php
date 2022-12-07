@@ -15,6 +15,11 @@ class MajordomoApplication extends Application
     private $_filename = '';
     private $_latestAlive = 0;
     private $_scenesDynamicElements = array();
+    private $_started;
+    
+    public function __construct() {
+        $this->_started = date("Y-m-d H:i:s");
+    }
 
     public function onConnect($client)
     {
@@ -89,18 +94,27 @@ class MajordomoApplication extends Application
         $this->cycleAlive();
         $status = [];
         $clients = [];
+        $status["YOUR_ID"] = $client_id;
+        $status["STARTED"] = $this->_started;
+        $status["COUNT_CLIENTS"] = count($this->_clients);
         foreach ($this->_clients as $client) {
             $data = [];
             $data['ID'] = $client->getClientId();
             $data['IP'] = $client->getClientIp();
+            $data['CONNECTED'] = $client->connected;
+            $traffic = [];
+            $traffic['IN_PACKET'] = $client->inPacket;
+            $traffic['OUT_PACKET'] = $client->outPacket;
+            $traffic['IN_BYTES'] = $client->inBytes;
+            $traffic['OUT_BYTES'] = $client->outBytes;
+            $data['TRAFFIC'] = $traffic;
             $data['SUBCRIBED_TO'] = $client->subscribedTo;
             $data['WATCHED_PROPERTIES'] = $client->watchedProperties;
             $clients[] = $data;
         }
         $status["CLIENTS"] = $clients;
-        $status["COUNT_CLIENTS"] = count($this->_clients);
         $status["COUNT_CACHED"] = count($this->_cachedProperties);
-        $status["YOUR_ID"] = $client_id;
+        $status["CACHED"] = $this->_cachedProperties;
         $encodedData = $this->_encodeData('status', json_encode($status));
         $this->_clients[$client_id]->send($encodedData);
     }
