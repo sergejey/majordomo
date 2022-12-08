@@ -82,6 +82,11 @@ class MajordomoApplication extends Application
             if ($ws_clients_total != $old_value) {
                 setGlobal('WSClientsTotal', $ws_clients_total, 1);
             }
+            // send ping
+            foreach ($this->_clients as $client){
+                if ($client->getClientIp() != "127.0.0.1")
+                    $client->send('ping', 'ping', false);
+            }
         }
         global $websockets_script_started;
         if ($websockets_script_started > 0 && (time() - $websockets_script_started) > 6 * 60 * 60) {
