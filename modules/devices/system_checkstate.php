@@ -19,8 +19,10 @@ for($idv=0;$idv<$total;$idv++) {
     }
     $batteryWarning = gg($devices[$idv]['LINKED_OBJECT'] . '.batteryWarning');
     if ($batteryWarning==1) {
-        $yellow_state=1;
-        $details[]=$devices[$idv]['TITLE'].' '.LANG_DEVICES_LOW_BATTERY;
+        if (timeBetween(getGlobal('NightModeEnd'),getGlobal('NightModeStart'))){
+            $yellow_state=1;
+            $details[]=$devices[$idv]['TITLE'].' '.LANG_DEVICES_LOW_BATTERY;
+        }
     }
 }
 
