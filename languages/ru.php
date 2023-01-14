@@ -1259,6 +1259,13 @@ $dictionary = array(
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Цвет',
 
+    'DEVICES_LINK_SENSOR_VALUE_TYPE' => 'Исходное значение',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_CURRENT' => 'Текущее значение сенсора',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MIN' => 'Минимальное значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_AVG' => 'Среднее значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MAX' => 'Максимальное значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_FOR_PERIOD' => 'Использовать период',
+
     'DEVICES_LINK_SENSOR_SWITCH' => 'Условное управление',
     'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Управление другим устройством по показаниям датчика',
     'DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION' => 'Тип условия',

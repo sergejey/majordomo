@@ -71,14 +71,55 @@
                 </select>
              </div>
            </div>
+        <script type="text/javascript">
+            function checkVisibleConditions() {
+                var checkValue;
+                var checkValueElement;
+                var paramVisible;
+                [#begin LINK_DETAILS_PARAMS#]
+                 paramVisible=true;
+                 [#if PARAM_VISIBLE_CONDITION#]
+                   [#begin PARAM_VISIBLE_CONDITION#]
+                    checkValueElement = $('[name="[#CHECK_PARAM_NAME#]_value"');
+                    if (checkValueElement.length) {
+                        paramVisible = false;
+                        if (checkValueElement.length == 1) {
+                            checkValue = checkValueElement.val();
+                        } else {
+                            checkValue = $('input[name="[#CHECK_PARAM_NAME#]_value"]:checked').val();
+                        }
+                        [#if CHECK_PARAM_CONDITION=='==' || CHECK_PARAM_CONDITION=='!='#]
+                            if (checkValue [#CHECK_PARAM_CONDITION#] "[#CHECK_PARAM_VALUE#]") {
+                             paramVisible = true;
+                            }
+                        [#endif#]
+                        [#if CHECK_PARAM_CONDITION=='>' || CHECK_PARAM_CONDITION=='<' || CHECK_PARAM_CONDITION=='<=' || CHECK_PARAM_CONDITION=='>='#]
+                        if (parseFloat(checkValue) [#CHECK_PARAM_CONDITION#] parseFloat([#CHECK_PARAM_VALUE#])) {
+                            paramVisible = true;
+                        }
+                        [#endif#]
+                    }
+                   [#end PARAM_VISIBLE_CONDITION#]
+                 [#endif#]
+                 if (paramVisible) {
+                     $('#[#PARAM_NAME#]_block').show();
+                 } else {
+                     $('#[#PARAM_NAME#]_block').hide();
+                 }
+                [#end LINK_DETAILS_PARAMS#]
+            }
+        </script>
         [#begin LINK_DETAILS_PARAMS#]
-        <div class="form-group">
+        <div class="form-group" id="[#PARAM_NAME#]_block">
             <label class="col-md-4 control-label">
                 [#PARAM_TITLE#]
             </label>
             <div class="col-md-8">
                 [#if PARAM_TYPE="num" || PARAM_TYPE="text"#]
-                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control">
+                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
+                [#endif#]
+                [#if PARAM_TYPE="duration"#]
+                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control html-duration-picker" data-duration-min="00:00:05" onchange="checkVisibleConditions();">
                 [#endif#]
                 [#if PARAM_TYPE="color"#]
                 <script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
@@ -94,11 +135,11 @@
                 </script>
                 [#endif#]
                 [#if PARAM_TYPE="yesno"#]
-                <input type="radio" value="1" name="[#PARAM_NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
-                <input type="radio" value="0" name="[#PARAM_NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+                <input type="radio" value="1" name="[#PARAM_NAME#]_value" [#if VALUE="1"#] checked[#endif#] onclick="checkVisibleConditions();"> <#LANG_YES#>
+                <input type="radio" value="0" name="[#PARAM_NAME#]_value" [#if VALUE!="1"#] checked[#endif#] onclick="checkVisibleConditions();"> <#LANG_NO#>
                 [#endif#]
                 [#if PARAM_TYPE="select"#]
-                 <select name="[#PARAM_NAME#]_value" class="form-control">
+                 <select name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
                      [#begin PARAM_OPTIONS#]
                      <option value="[#VALUE#]"[#if VALUE=="<#LINK_DETAILS_PARAMS.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
                      [#end PARAM_OPTIONS#]
@@ -107,6 +148,11 @@
             </div>
         </div>
         [#end LINK_DETAILS_PARAMS#]
+        <script type="text/javascript">
+            $(document).ready(function() {
+               checkVisibleConditions();
+            });
+        </script>
 
         [#if LINK_ID!=""#]
         <div class="form-group">

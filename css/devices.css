@@ -44,6 +44,12 @@
     width:75px;
 }
 
+.device-widget.mini.motion {
+    min-width:75px;
+    max-width:75px;
+    width:75px;
+}
+
 .device-widget.offline {
     background-color:#aaaaaa;
 }

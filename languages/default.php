@@ -1263,6 +1263,12 @@ $dictionary = array(
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Change color when action triggered',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Color',
 
+    'DEVICES_LINK_SENSOR_VALUE_TYPE' => 'Source value',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_CURRENT' => 'Current sensor value',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MIN' => 'Minimum sensor value for period',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_AVG' => 'Average sensor value for period',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MAX' => 'Maximum sensor value for period',
+    'DEVICES_LINK_SENSOR_VALUE_FOR_PERIOD' => 'For period',
 
     'DEVICES_LINK_SENSOR_SWITCH' => 'Sensor control',
     'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Control another devices based on sensor\'s value',
