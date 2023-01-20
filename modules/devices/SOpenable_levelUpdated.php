@@ -3,7 +3,7 @@
 $level = $this->getProperty('level');
 $status = $this->getProperty('status');
 
-if ($level>1 && $level!=100) {
+if ($level>1) {
     $this->setProperty('levelSaved',$level);
 }
 

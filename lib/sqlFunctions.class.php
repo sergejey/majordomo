@@ -212,6 +212,16 @@ if (!function_exists('SQLDropTable')) {
       return SQLExec("DROP TABLE IF EXISTS `".$table."`");
    }
 }
+
+
+if (!function_exists('SQLTableExists')) {
+    function SQLTableExists($table) {
+        $data = SQLSelect("SHOW TABLES LIKE '".DBSafe($table)."'");
+        if (isset($data[0])) return true;
+        return false;
+    }
+}
+
 /**
 * Title
 *

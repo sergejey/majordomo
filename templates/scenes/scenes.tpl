@@ -660,7 +660,16 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
         {/if}
     </style>
 {if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
- <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
+ {if $SCENE.VIDEO_WALLPAPER!=""}
+     <video autoplay muted loop id="myVideo" style="position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;">
+         <source src="{$SCENE.VIDEO_WALLPAPER}" type="video/mp4">
+     </video>
+ {/if}
+ <div id="scene_wallpaper_{$SCENE.ID}"style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
 

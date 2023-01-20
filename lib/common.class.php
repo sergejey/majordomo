@@ -1,24 +1,28 @@
 <?php
 
-function isRebootRequired() {
+function isRebootRequired()
+{
     $path_to_flag = ROOT . 'reboot';
     return file_exists($path_to_flag);
 }
 
-function setRebootRequired($reason = '') {
+function setRebootRequired($reason = '')
+{
     $path_to_flag = ROOT . 'reboot';
     if (!$reason) $reason = time();
-    @SaveFile($path_to_flag,$reason);
+    @SaveFile($path_to_flag, $reason);
 }
 
-function resetRebootRequired() {
+function resetRebootRequired()
+{
     $path_to_flag = ROOT . 'reboot';
     if (file_exists($path_to_flag)) {
         @unlink($path_to_flag);
     }
 }
 
-function getSystemSerial($force_update = 0) {
+function getSystemSerial($force_update = 0)
+{
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
         $serial = '';
@@ -307,15 +311,16 @@ function runScheduledJobs()
         $jobs[$i]['PROCESSED'] = 1;
         $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
 
-        SQLUpdate('jobs', $jobs[$i]);
+        //SQLUpdate('jobs', $jobs[$i], array('PROCESSED', 'STARTED'));
+        SQLExec("UPDATE jobs SET PROCESSED=" . $jobs[$i]['PROCESSED'] . ", STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . $jobs[$i]['ID']);
 
         if ($jobs[$i]['COMMANDS'] != '') {
-            $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'];
+            $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'] . '&title=' . urlencode($jobs[$i]['TITLE']);
             $result = trim(getURL($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
                 //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
-                DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')','errors');
+                DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')', 'errors');
             }
         }
     }
@@ -345,21 +350,21 @@ function recognizeTime($text, &$newText = '')
     $found = 0;
     $new_time = time();
     #$text = ($text); #???
-	$text = trim($text);
+    $text = trim($text);
 
-    if (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+) '.LANG_PATTERN_SECOND.'.?/isu', $text, $m)) {
+    if (preg_match('/' . LANG_PATTERN_DO_AFTER . ' (\d+) ' . LANG_PATTERN_SECOND . '.?/isu', $text, $m)) {
         $new_time = time() + $m[1];
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+) '.LANG_PATTERN_MINUTE.'.?/isu', $text, $m)) {
+    } elseif (preg_match('/' . LANG_PATTERN_DO_AFTER . ' (\d+) ' . LANG_PATTERN_MINUTE . '.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60;
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/'.LANG_PATTERN_DO_AFTER.' (\d+) '.LANG_PATTERN_HOUR.'.?/isu', $text, $m)) {
+    } elseif (preg_match('/' . LANG_PATTERN_DO_AFTER . ' (\d+) ' . LANG_PATTERN_HOUR . '.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60 * 60;
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
-    } elseif (preg_match('/'.LANG_PATTERN_DO_FOR.' (\d+):(\d+)/isu', $text, $m)) {
+    } elseif (preg_match('/' . LANG_PATTERN_DO_FOR . ' (\d+):(\d+)/isu', $text, $m)) {
         $new_time = mktime($m[1], $m[2], 0, (int)date('m'), (int)date('d'), (int)date('Y'));
         $newText = trim(str_replace($m[0], '', $text));
         $found = 1;
@@ -398,12 +403,12 @@ function playSound($filename, $exclusive = 0, $priority = 0)
             if (IsWindowsOS())
                 safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
             else {
-                if (defined('AUDIO_PLAYER') && AUDIO_PLAYER!='') {
+                if (defined('AUDIO_PLAYER') && AUDIO_PLAYER != '') {
                     $audio_player = AUDIO_PLAYER;
                 } else {
                     $audio_player = 'mplayer';
                 }
-                safe_exec($audio_player.' ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
+                safe_exec($audio_player . ' ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
             }
 
         }
@@ -445,7 +450,7 @@ function runScriptSafe($id, $params = 0)
         unset($params['m_c_s']);
         $current_call .= '.' . md5(json_encode($params));
     }
-    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+    if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
         if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
@@ -457,22 +462,22 @@ function runScriptSafe($id, $params = 0)
             return 0;
         }
     }
-  
+
     if (!is_array($params)) {
         $params = array();
     }
 
     $call_stack[] = $current_call;
-    $params['raiseEvent'] = $raiseEvent;	 
-    $params['m_c_s'] = $call_stack;     
-    $params['r_s_s'] = $run_SafeScript;      
+    $params['raiseEvent'] = $raiseEvent;
+    $params['m_c_s'] = $call_stack;
+    $params['r_s_s'] = $run_SafeScript;
 
-    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeScript) {
-        $result = runScript($id,$params);
+    if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && !$raiseEvent && $run_SafeScript) {
+        $result = runScript($id, $params);
     } else {
         $params['r_s_s'] = 1;
         $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
-    }  
+    }
     endMeasure('runScriptSafe');
     return $result;
 }
@@ -503,10 +508,9 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
  * @param mixed $password Password (default '')
  * @return mixed
  */
-function getURL($url, $cache = 0, $username = '', $password = '', $background = false)
+function getURL($url, $cache = 0, $username = '', $password = '', $background = false, $curl_options = 0)
 {
     startMeasure('getURL');
-    // DebMes($url,'urls');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part) > 200) {
         $filename_part = substr($filename_part, 0, 200) . md5($filename_part);
@@ -575,9 +579,15 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
-            $result = curl_exec($ch);
-            endMeasure('curl_exec');
 
+            if (is_array($curl_options)) {
+                foreach ($curl_options as $k => $v) {
+                    curl_setopt($ch, $k, $v);
+                }
+            }
+            $result = curl_exec($ch);
+
+            endMeasure('curl_exec');
 
             startMeasure('curl_post');
             if (!$background && curl_errno($ch)) {
@@ -585,7 +595,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
                 $callSource = $backtrace[1]['function'];
-                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
+                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
             curl_close($ch);
             endMeasure('curl_post');
@@ -612,7 +622,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 function postURLBackground($url, $query = array(), $cache = 0, $username = '', $password = '')
 {
     //DebMes("URL: ".$url,'debug1');
-    postURL($url, $query , $cache, $username, $password, true);
+    postURL($url, $query, $cache, $username, $password, true);
 }
 
 /**
@@ -708,7 +718,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
                 $callSource = $backtrace[1]['function'];
-                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
+                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
             curl_close($ch);
             endMeasure('curl_post');
@@ -777,7 +787,7 @@ function execInBackground($cmd)
     } else {
         try {
             exec($cmd . " > /dev/null &");
-	} catch (Exception $e) {
+        } catch (Exception $e) {
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
         }
     }
@@ -817,13 +827,13 @@ function checkAccess($object_type, $object_id)
     startMeasure('checkAccess');
 
     if (!isset($access_rules_cached)) {
-        $all_rules=SQLSelect("SELECT OBJECT_TYPE, OBJECT_ID FROM security_rules");
-        foreach($all_rules as $rule) {
-            $access_rules_cached[$rule['OBJECT_TYPE'].$rule['OBJECT_ID']]=1;
+        $all_rules = SQLSelect("SELECT OBJECT_TYPE, OBJECT_ID FROM security_rules");
+        foreach ($all_rules as $rule) {
+            $access_rules_cached[$rule['OBJECT_TYPE'] . $rule['OBJECT_ID']] = 1;
         }
     }
 
-    if (!isset($access_rules_cached[$object_type.$object_id])) {
+    if (!isset($access_rules_cached[$object_type . $object_id])) {
         endMeasure('checkAccess');
         return true;
     }
@@ -833,6 +843,24 @@ function checkAccess($object_type, $object_id)
     $result = $sc->checkAccess($object_type, $object_id);
     endMeasure('checkAccess');
     return $result;
+}
+
+function checkAccessDefined($object_type, $object_id)
+{
+    $rec = SQLSelectOne("SELECT ID FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$object_id);
+    if ($rec['ID']) return true;
+    return false;
+}
+
+function checkAccessCopy($object_type, $src_id, $dst_id)
+{
+    $rec = SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$src_id);
+    if ($rec['ID']) {
+        SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='".DBSafe($object_type)."' AND OBJECT_ID=".(int)$dst_id);
+        unset($rec['ID']);
+        $rec['OBJECT_ID']=(int)$dst_id;
+        SQLInsert('security_rules',$rec);
+    }
 }
 
 /**
@@ -885,8 +913,8 @@ function registerError($code = 'custom', $details = '')
 
     if (!$error_rec['KEEP_HISTORY']) {
         SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=" . (int)$error_rec['ID'] . " AND ID != '" . $history_rec['ID'] . "'");
-    } elseif (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY>0) {
-        SQLExec("DELETE FROM system_errors_data WHERE ADDED<'".date('Y-m-d H:i:s',time()-SETTINGS_ERRORS_KEEP_HISTORY*24*60*60)."'");
+    } elseif (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY > 0) {
+        SQLExec("DELETE FROM system_errors_data WHERE ADDED<'" . date('Y-m-d H:i:s', time() - SETTINGS_ERRORS_KEEP_HISTORY * 24 * 60 * 60) . "'");
     } else {
         $tmp = SQLSelect("SELECT ID FROM system_errors_data WHERE ERROR_ID=" . (int)$error_rec['ID'] . " ORDER BY ID DESC LIMIT 50");
         if ($tmp[0]['ID'] && count($tmp) == 50) {
@@ -1171,25 +1199,26 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-function logAction($action_type,$details='') {
+function logAction($action_type, $details = '')
+{
     global $session;
-    $rec=array();
-    $rec['ADDED']=date('Y-m-d H:i:s');
+    $rec = array();
+    $rec['ADDED'] = date('Y-m-d H:i:s');
     if ($session->data['SITE_USERNAME']) {
-        $rec['USER']=$session->data['SITE_USERNAME'];
-    } elseif (preg_match('/^\/admin\.php/',$_SERVER['REQUEST_URI'])) {
-        $rec['USER']='Control Panel';
+        $rec['USER'] = $session->data['SITE_USERNAME'];
+    } elseif (preg_match('/^\/admin\.php/', $_SERVER['REQUEST_URI'])) {
+        $rec['USER'] = 'Control Panel';
     }
     if ($session->data['TERMINAL']) {
-        $rec['TERMINAL']=$session->data['TERMINAL'];
+        $rec['TERMINAL'] = $session->data['TERMINAL'];
     } else {
-        $rec['TERMINAL']='';
+        $rec['TERMINAL'] = '';
     }
-    $rec['ACTION_TYPE']=$action_type;
-    $rec['TITLE']=$details;
-    $rec['TITLE']=mb_substr($rec['TITLE'],0,250,'utf-8');
-    $rec['IP']=$_SERVER['REMOTE_ADDR'];
-    SQLInsert('actions_log',$rec);
+    $rec['ACTION_TYPE'] = $action_type;
+    $rec['TITLE'] = $details;
+    $rec['TITLE'] = mb_substr($rec['TITLE'], 0, 250, 'utf-8');
+    $rec['IP'] = $_SERVER['REMOTE_ADDR'];
+    SQLInsert('actions_log', $rec);
 
 }
 
@@ -1212,7 +1241,7 @@ function ping($host)
 
 function echonow($msg, $color = '')
 {
-    DebMes(strip_tags($msg),'auto_update');
+    DebMes(strip_tags($msg), 'auto_update');
     if ($color) {
         echo '<font color="' . $color . '">';
     }

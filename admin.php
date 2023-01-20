@@ -84,7 +84,8 @@ endMeasure('part2');
 
 startMeasure('accelerationProcess');
 if ((!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION!=1)) {
- $result = preg_replace('/href="(\/admin\.php.+?)">/is','href="\1" onclick="return partLoad(this.href);">',$result);
+ //$result = preg_replace('/href="(\/admin\.php.+?)">/is','href="\1" onclick="return partLoad(this.href);">',$result);
+ $result = str_replace(' href="/admin.php?',' onclick="return partLoad(this.href);" href="/admin.php?',$result);
 }
 endMeasure('accelerationProcess');
 

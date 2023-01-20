@@ -1323,11 +1323,16 @@ class saverestore extends module
 				echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> '.LANG_UPDATEBACKUP_UNPACKEGE.' '.$file.'</div>');
             }
             if (IsWindowsOS()) {
-                exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
-                passthru(DOC_ROOT . DIRECTORY_SEPARATOR . 'tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $res);
+                $result = exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
+                $result = exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $output, $res);
             } else {
-                exec('tar xzvf ../' . $file, $output, $res);
+                $result = exec('tar xzvf ../' . $file, $output, $res);
             }
+            if (!$result) {
+                echonow("Unpack failed",'red');
+                return false;
+            }
+
 
             $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp',1);
             $folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];

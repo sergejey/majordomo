@@ -57,6 +57,7 @@ function getClassTemplate($class_id,$view='')
     if (!$class['ID']) {
         return '';
     }
+
     if ($view!='' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html')) {
         $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html';
         $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_'.$view.'.html';
@@ -603,8 +604,9 @@ function getGlobal($varname)
         $object_name = 'ThisComputer';
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
-    if (strpos($varname,'cycle_') == 0 && strpos($varname,'Run') !== FALSE) {
-        $cached_value = checkCycleFromCache($cached_name);
+
+    if (strpos($varname,'cycle_') === 0) {
+        $cached_value = checkCycleFromCache($varname);
     } else {
         $cached_value = checkFromCache($cached_name);
     }
@@ -621,6 +623,7 @@ function getGlobal($varname)
         return 0;
     }
 }
+
 
 /**
  * getHistoryValueId
@@ -917,8 +920,8 @@ function getHistoryValue($varname, $time, $nerest = false)
  */
 function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
-    if (strpos($varname,'cycle_') == 0 && strpos($varname,'Run') !== FALSE) {
-        saveCycleToCache('MJD:ThisComputer.'.$varname,$value);
+    if (strpos($varname,'cycle_') === 0) {
+        saveCycleToCache($varname,$value);
         return;
     }
 
@@ -942,6 +945,7 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
         return 0;
     }
 }
+
 
 /**
  * Summary of callMethod

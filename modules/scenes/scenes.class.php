@@ -1194,30 +1194,31 @@ class scenes extends module
                 if ($linked_object) {
                     $obj = getObject($linked_object);
                     $objects = getObjectsByClass($obj->class_id);
-                    $total_o = count($objects);
-                    for ($io = 0; $io < $total_o; $io++) {
-                        $rec = $elements[$ie];
-                        $rec['ID'] = $elements[$ie] . '_' . $objects[$io]['ID'];
-                        $new_states = array();
-                        $total_s = count($states);
-                        for ($is = 0; $is < $total_s; $is++) {
-                            $state_rec = $states[$is];
-                            if ($state_rec['LINKED_OBJECT']) {
-                                $state_rec['LINKED_OBJECT'] = $objects[$io]['TITLE'];
+                    if (is_array($objects)) {
+                        $total_o = count($objects);
+                        for ($io = 0; $io < $total_o; $io++) {
+                            $rec = $elements[$ie];
+                            $rec['ID'] = $elements[$ie] . '_' . $objects[$io]['ID'];
+                            $new_states = array();
+                            $total_s = count($states);
+                            for ($is = 0; $is < $total_s; $is++) {
+                                $state_rec = $states[$is];
+                                if ($state_rec['LINKED_OBJECT']) {
+                                    $state_rec['LINKED_OBJECT'] = $objects[$io]['TITLE'];
+                                }
+                                if ($state_rec['ACTION_OBJECT']) {
+                                    $state_rec['ACTION_OBJECT'] = $objects[$io]['TITLE'];
+                                }
+                                if ($state_rec['HTML']) {
+                                    $state_rec['HTML'] = str_replace('%' . $linked_object . '.', '%' . $objects[$io]['TITLE'] . '.', $state_rec['HTML']);
+                                }
+                                $state_rec['ID'] = $state_rec['ID'] . '_' . $objects[$io]['ID'];
+                                $new_states[] = $state_rec;
                             }
-                            if ($state_rec['ACTION_OBJECT']) {
-                                $state_rec['ACTION_OBJECT'] = $objects[$io]['TITLE'];
-                            }
-                            if ($state_rec['HTML']) {
-                                $state_rec['HTML'] = str_replace('%' . $linked_object . '.', '%' . $objects[$io]['TITLE'] . '.', $state_rec['HTML']);
-                            }
-                            $state_rec['ID'] = $state_rec['ID'] . '_' . $objects[$io]['ID'];
-                            $new_states[] = $state_rec;
+                            $rec['STATES'] = $new_states;
+                            $res2[] = $rec;
                         }
-                        $rec['STATES'] = $new_states;
-                        $res2[] = $rec;
                     }
-
                 } else {
                     $elements[$ie]['STATES'] = $states;
                     $elements[$ie]['SMART_REPEAT'] = 0;

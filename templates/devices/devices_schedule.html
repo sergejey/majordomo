@@ -27,7 +27,10 @@
                     <td>
                         <b><a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&point_id=[#ID#]">[#SET_TIME#]</a></b>
                         [#if HAS_RULE#]
-                        <i class="glyphicon glyphicon-lock"></i>
+                        <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+                           class="btn-sm btn-success"
+                           href="?(panel:{action=security_rules})&object_type=spoint&object_id=[#ID#]&print=1&types[]=times&types[]=conditions" target=_blank>
+                            <i class="glyphicon glyphicon-cog"></i></a>
                         [#endif#]
                     </td>
 

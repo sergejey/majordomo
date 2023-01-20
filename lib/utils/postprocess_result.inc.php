@@ -41,8 +41,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/isu', $result, $m))
 
 if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
 {
-
-  if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0) 
+  if (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS==0)
   {
    $tracked_properties=array();
    $total = count($m[0]);
@@ -67,6 +66,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
          payload.data = new Object();
          payload.data.TYPE='properties';
          payload.data.PROPERTIES='".implode(',', $tracked_properties)."';
+         console.log('Subscription to properties sent.');
          wsSocket.send(JSON.stringify(payload));
         });\n";
    $js.="function processPropertiesUpdate(data) {
@@ -85,8 +85,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
           });"; 
    $js.='</script>';
 
-
-  $result=str_replace('</body>', $js.'</body>', $result);
+  $result=str_replace('<body', $js.'<body', $result);
 
   } else {
 

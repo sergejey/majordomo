@@ -86,8 +86,8 @@ class devices extends module
 
     function setDictionary()
     {
-        include_once(dirname(__FILE__) . '/devices_structure.inc.php');
-        include_once(dirname(__FILE__) . '/devices_structure_links.inc.php');
+        include(dirname(__FILE__) . '/devices_structure.inc.php');
+        include(dirname(__FILE__) . '/devices_structure_links.inc.php');
     }
 
     /**
@@ -393,6 +393,7 @@ class devices extends module
                         if (is_array($pv)) {
                             foreach ($pv as $ppk => $ppv) {
                                 if (substr($ppk, 0, 1) == '_') continue;
+                                if ($ppk == 'KEEP_HISTORY' && $property[$ppk]) continue;
                                 $property[$ppk] = $ppv;
                             }
                             SQLUpdate('properties', $property);
@@ -479,7 +480,12 @@ class devices extends module
                 }
                 $tm = strtotime(date('Y-m-d') . ' ' . $rec['SET_TIME']);
                 $diff = time() - $tm;
-                if ($diff < 0 || $diff >= 10 * 60) {
+
+                $latestRun = strtotime($rec['LATEST_RUN']);
+                $diff2 = time() - $latestRun;
+
+
+                if ($diff < 0 || $diff >= 10 * 60 || $diff2<=10*60) {
                     continue;
                 }
                 /*
@@ -654,11 +660,14 @@ class devices extends module
      */
     function usual(&$out)
     {
+
+        $view = gr('view');
+        if ($view) $this->view=$view;
+
         if ($this->ajax) {
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
             $op = gr('op');
-            $view = gr('view');
             $res = array();
             if ($op == 'clicked') {
                 $object = gr('object');
@@ -681,7 +690,7 @@ class devices extends module
                 $res = array();
                 foreach ($tmp as $id) {
                     if (!$id) continue;
-                    $record = $this->processDevice($id);
+                    $record = $this->processDevice($id,$view);
                     if (!$record['DEVICE_ID']) continue;
                     $res['devices'][] = $record;
                 }

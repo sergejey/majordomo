@@ -73,6 +73,11 @@
       endMeasure('scene'.$res[$i]['ID'].'_get all elements');
       $res[$i]['NUM']=$i;
       $res[$i]['NUMP']=$i+1;
+
+       if (preg_match('/\.mp4$/',$res[$i]['WALLPAPER'])) {
+           $res[$i]['VIDEO_WALLPAPER']=$res[$i]['WALLPAPER'];
+       }
+
    }
    if ($total==1) {
     foreach($res[0] as $k=>$v) {
@@ -92,4 +97,3 @@
 
   }
 
-?>

@@ -1,13 +1,11 @@
+<script src="<#ROOTHTML#>3rdparty/amcharts/core.js"></script>
+<script src="<#ROOTHTML#>3rdparty/amcharts/charts.js"></script>
+<script src="<#ROOTHTML#>3rdparty/amcharts/material.js"></script>
+<script src="<#ROOTHTML#>3rdparty/amcharts/animated.js"></script>
+
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
     <div class="col-md-5">
-		<!--- Чарты --->
-
-		<!-- Resources -->
-		<script src="<#ROOTHTML#>3rdparty/amcharts/core.js"></script>
-		<script src="<#ROOTHTML#>3rdparty/amcharts/charts.js"></script>
-		<script src="<#ROOTHTML#>3rdparty/amcharts/material.js"></script>
-		<script src="<#ROOTHTML#>3rdparty/amcharts/animated.js"></script>
-
+		<!--processSubscription panelBlockLeft-->
 		<div id="hint_blockaddnewdev" style="display:none">
 			<div class="panel panel-default" style="margin-bottom: 0px;">
 				<div class="panel-body">
@@ -36,8 +34,13 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="text-center" id="addMyBlockHint" style="display:none;margin-bottom: 20px;"><a style="color: lightgray;text-decoration: none;" href="javascript://" data-toggle="modal" data-target="#modalHowMyBlock"><#LANG_NEWDASH_DMB_TITLE#></a></div>
+
+		<div id="hint_addMyBlockHint" style="display:none">
+		<div class="text-center" id="addMyBlockHint" style="display:none;margin-bottom: 20px;">
+			<a style="color: lightgray;text-decoration: none;" href="javascript://" data-toggle="modal" data-target="#modalHowMyBlock"><#LANG_NEWDASH_DMB_TITLE#></a>
+			<div onclick="hideHintCookie('addMyBlockHint');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+		</div>
+		</div>
 		
 		<div class="modal fade" id="modalHowMyBlock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -109,7 +112,7 @@
 							<span id="dashInfoDBReqH" onmouseover="$('#dbreqdiscus').show('slow');" class="badge" style="background:transparent;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						<li class="list-group-item text-center" id="dbreqdiscus" style="display:none;background: radial-gradient(circle farthest-corner at 100px 50px, #daffe5, #d6ecff);">
-							<a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i>Обсуждение на форуме</a>
+							<a href="https://mjdm.ru/forum/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i><#LANG_NEWDASH_FORUM_DISCUSSION#></a>
 						</li>
 						
 						<li class="list-group-item">
@@ -125,14 +128,14 @@
 							<#LANG_NEWDASH_SYSTEM_INFO_LAST_UPDATE#> <a href="?pd=pz_&md=panel&inst=&action=saverestore"><i class="glyphicon glyphicon-cloud-download" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i></a>
 						</li>
 						<li class="list-group-item">
-							Тема оформления
+							<#LANG_THEME#>
 							<span class="badge" style="background:transparent;">
 								<div class="btn-group" data-toggle="buttons">
 									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
-										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> Темно
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> <#LANG_THEME_DARK#>
 									</label>
 									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #939191;border: 0px;">
-										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> Светло
+										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> <#LANG_THEME_LIGHT#>
 									</label>
 								</div>
 							</span>
@@ -223,22 +226,18 @@
 		
 	</div>
 	<div class="col-md-7">
-		<script>
+		<!--processSubscription panelBlockRight-->
+		<script type="text/javascript">
 		am4core.ready(function() {
-
 		// Themes begin
 		am4core.useTheme(am4themes_material);
 		am4core.useTheme(am4themes_animated);
 		// Themes end
-
-		var chart = am4core.create("structureDB_chart", am4charts.XYChart);
+		var chart = am4core.create("tablesChart", am4charts.XYChart);
 		chart.logo.disabled = true;
-		
 		chart.dataSource.url = "?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=chart";
 		chart.dataSource.parser = new am4core.JSONParser();
 		chart.dataSource.reloadFrequency = 180000;
-		
-
 		chart.padding(20, 20, 20, 20);
 
 		var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
@@ -255,18 +254,10 @@
 		});
 
 		var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
 		valueAxis.calculateTotals = true;
-		/*
-		valueAxis.min = 0;
-		valueAxis.max = 150000;
-		valueAxis.strictMinMax = true;
-		 */
-		
 		chart.cursor = new am4charts.XYCursor();
 		chart.scrollbarY = new am4core.Scrollbar();
 		chart.scrollbarY.parent = chart.leftAxesContainer;
-
 		chart.cursor.behavior = "none";
 
 		var series = chart.series.push(new am4charts.ColumnSeries());
@@ -276,6 +267,7 @@
 		series.columns.template.strokeOpacity = 0;
 		series.columns.template.column.cornerRadiusTopRight = 4;
 		series.columns.template.column.cornerRadiusTopLeft = 4;
+
 		var labelBullet = series.bullets.push(new am4charts.LabelBullet());
 		labelBullet.label.verticalCenter = "bottom";
 		labelBullet.label.dy = -10;
@@ -293,42 +285,25 @@
 				item.visits = Math.abs(item.visits);
 			})
 			chart.invalidateRawData();
-		}, 20000)
+		}, 60*1000)
 
 		categoryAxis.sortBySeries = series;
 
 		});
 		</script>
-		<!-- HTML -->
-		<div id="hint_howmaxdbsizehint" style="display:none;">
-			<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #be5959, #caa417);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_HINT_BIG_DATA_DB#> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;vertical-align: text-top;"></i> <a style="text-decoration: none;color: white;" href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=database">X-Ray</a></div>
-			<div class="hidden-xs" onclick="hideHintCookie('howmaxdbsizehint');" style="margin-bottom: 20px;cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+
+		<div class="panel panel-default">
+		<div class="panel-heading">
+			<div style="float: left"><h3 class="panel-title"><#LANG_NEWDASH_HINT_BIG_DATA_DB#>  <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i> <a href="?(panel:{action=xray})&md=xray&inst=adm&view_mode=database">X-Ray</a></h3></div>
+			<div style="float: right"><i style="cursor:pointer;" onclick="return toggleCategory('tablesBlockDiv');" class="glyphicon glyphicon-eye-close"></i></div>
+			<div class="clearfix"></div>
 		</div>
-		
-		<div id="structureDB_chart" style="border: 1px solid #ddd;border-radius: 4px;width: 100%;height: 300px;margin-bottom:10px">
-			<center style="display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/ style="width: 20px;height: 20px;margin-right: 10px;"> <#LANG_NEWDASH_LOADING#></center>
+		<div id="row_tablesBlockDiv" class="panel-collapse collapse out">
+			<div id="tablesChart" style="height: 300px;">
+			 <center style="display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;"><img src="<#ROOTHTML#>img/ajax-loader.gif"/ style="width: 20px;height: 20px;margin-right: 10px;"> <#LANG_NEWDASH_LOADING#></center>
+			</div>
 		</div>
-		
-		<!---
-		<div class="jumbotron" style="margin-bottom: 10px;border-radius: 5px;background-image: url(/img/main_img/scenario.png),radial-gradient(circle farthest-corner at 100px 50px, #ebfbf0, #69d147);background-size: contain;background-repeat: no-repeat;background-position: right center;">
-			<h2>Новые сценарии!</h2>
-			<p style="font-size: 11pt;text-shadow: white 0 0 6px;background: rgb(255 255 255 / 73%);padding: 5px;">
-				Обновили модуль сценарии! Зацените как удобно стало. Анимации, мобильный вид - все в лучших традициях =)
-			</p>
-			<p class="text-right"><a style="border-color: #ffffff;" href="https://mjdm.ru/forum/viewtopic.php?f=7&t=7294" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_HELLO_NEW_BTN#></a></p>
 		</div>
-	
-		<style>
-		.onHoverAlfa:hover {
-			color: white;
-		}
-		</style>
-		<div class="jumbotron onHoverAlfa" style="margin-bottom: 10px;background-image: url(https://ak.picdn.net/shutterstock/videos/113821/thumb/1.jpg?ip=x480);background-size: contain;;border-radius: 5px;">
-			<h2 class="onHoverAlfa">А может Alpha?</h2>
-			<p style="font-size: 11pt;" class="onHoverAlfa">У MajorDomo есть Alpha версия. Там много новых функций, закрытых дыр и новых впечатлений =) Обновляйте и помогай MajorDomo стать еще лучше.</p>
-			<p class="text-right"><a style="border-color: #ffffff;" class="btn btn-danger btn-md" role="button">ОК, я с вами!</a></p>
-		</div>
-		--->
 		
 		<div id="getConnect" class="jumbotron hidden-xs" style="display:none!important;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
 			<h2 id="titleConnect"><#LANG_NEWDASH_CONNECT_ADS#></h2>
@@ -360,6 +335,13 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-body text-right">
+				<a href="#" onclick="return resetHintCookies()" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-eye-open"></i> <#LANG_NEWDASH_RESET_VISIBILITY#></a>
+			</div>
+		</div>
+
     </div>
 </div>
 
@@ -369,8 +351,9 @@
 		checkCategory('infoBlockDiv');
 		checkCategory('cycleBlockDiv');
 		checkCategory('scriptBlockDiv');
+		checkCategory('tablesBlockDiv');
 		checkCategory('newsBlockDiv');
-		
+
 		
         checkUpdatesAvailable();
         checkDidYouKnow();
@@ -379,7 +362,8 @@
 		hideHintCookie('alert_hide_hint2', 1);
 		hideHintCookie('blockdidyouknow', 1);
 		hideHintCookie('blockaddnewdev', 1);
-		hideHintCookie('howmaxdbsizehint', 1);
+		//hideHintCookie('howmaxdbsizehint', 1);
+		hideHintCookie('addMyBlockHint', 1);
 		setInterval(function() { checkSystemInfo(); }, 300000);
 		checkSystemInfo();
 		checkConnectStatus();

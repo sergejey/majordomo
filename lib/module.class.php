@@ -828,46 +828,52 @@ class module
         return $res_str;
     }
 	
-	public function sendnotification($str, $type = 'default')
+	public function sendNotification($str, $type = 'default')
     {
+
+        if (!SQLTableExists('module_notifications')) {
+            return json_encode(array('status'=>false));
+        }
+
 		if($type != 'info' && $type != 'danger' && $type != 'warning' && $type != 'success' && $type != 'default') {
 			$type = 'default';
 		}
 		
-		$rec["ADD"] = time();
+		$rec["ADDED"] = date('Y-m-d H:i:s');
 		$rec["TYPE"] = $type;
-		$rec["PLUGINS_ID"] = SQLSelectOne("SELECT `ID` FROM `plugins` WHERE `MODULE_NAME` = '".$this->name."'")['ID'];
+		$rec["MODULE_NAME"] = $this->name;
 		$rec["MESSAGE"] = htmlspecialchars(strip_tags($str));
-		$rec["READ"] = 0;
-		
-		if(!$rec["PLUGINS_ID"]) return json_encode(array('status' => false, 'error' => 'Only extension plugins allowed! Not system plugins!'));
 
-		if(SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `plugins_noty` WHERE `PLUGINS_ID` = '".$rec["PLUGINS_ID"]."' AND `READ` = '0'")['TOTAL_UNREAD'] > 10) {
+		if(SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `module_notifications` WHERE `MODULE_NAME` = '".$rec["MODULE_NAME"]."' AND `IS_READ` = '0'")['TOTAL_UNREAD'] > 10) {
 			return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
 		}
 		
-		$ifExest = SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `MESSAGE` = '".$str."' AND `READ` = '0'");
-		
-		if(!empty($ifExest) && is_array($ifExest)) {
-			return json_encode(array('status' => false, 'error' => 'Such a record already exists. ID - '.$ifExest['ID'], 'id' => $ifExest['ID']));
+		$ifExist = SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `MESSAGE` = '".DBSafe($rec['MESSAGE'])."' AND TYPE='".DBSafe($rec['TYPE'])."' AND `IS_READ` = '0'");
+		if(!empty($ifExist) && is_array($ifExist)) {
+			return json_encode(array('status' => false, 'error' => 'Notification already exists. ID: '.$ifExist['ID'], 'id' => $ifExist['ID']));
 		}
 		
-		$rec["ID"] = SQLInsert("plugins_noty", $rec);
+		$rec["ID"] = SQLInsert("module_notifications", $rec);
 
 		return json_encode(array('status' => true, 'id' => $rec["ID"]));
 
     }
 	
-	public function readnotification($noty_id)
+	public function readNotification($notification_id)
     {
-		$rec["ID"] = $noty_id;
-		$rec["READ"] = 1;
+
+        if (!SQLTableExists('module_notifications')) {
+            return json_encode(array('status'=>false));
+        }
+
+		$rec["ID"] = $notification_id;
+		$rec["IS_READ"] = 1;
 		
-		if(empty(SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `ID` = '".$rec["ID"]."' AND `READ` = '0'")['ID'])) {
+		if(empty(SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `ID` = '".$rec["ID"]."' AND `IS_READ` = '0'")['ID'])) {
 			return json_encode(array('status' => false, 'error' => 'No such noty found'));
 		}
 		
-		SQLUpdate("plugins_noty", $rec);
+		SQLUpdate("module_notifications", $rec);
 		
 		return json_encode(array('status' => true));
 

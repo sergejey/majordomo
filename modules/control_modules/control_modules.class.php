@@ -300,6 +300,12 @@ class control_modules extends module
    ignore_updates: ID tinyint(3) unsigned NOT NULL auto_increment
    ignore_updates: NAME varchar(50)  DEFAULT '' NOT NULL
 
+   module_notifications: ID int(10) unsigned NOT NULL auto_increment
+   module_notifications: MODULE_NAME char(50) NOT NULL DEFAULT ''
+   module_notifications: MESSAGE varchar(255) NOT NULL DEFAULT ''
+   module_notifications: TYPE char(20) NOT NULL DEFAULT 'info'
+   module_notifications: IS_READ int(3) NOT NULL DEFAULT 0
+   module_notifications: ADDED datetime 
 
 EOD;
         parent::dbInstall($data);

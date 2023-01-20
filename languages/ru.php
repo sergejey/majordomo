@@ -1192,6 +1192,10 @@ $dictionary = array(
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
     'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
     'DEVICES_NOT_UPDATING' => 'не обновляется',
+    'DEVICES_BATTERY_OPERATED' => 'Устройство работает от батареи',
+    'DEVICES_BATTERY_LEVEL' => 'Уровень заряда батареи',
+    'DEVICES_BATTERY_WARNING' => 'Предупреждение о низком заряде батареи',
+    'DEVICES_LOW_BATTERY' => 'низкий уровень заряда',
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрыто',
@@ -1254,6 +1258,13 @@ $dictionary = array(
     'DEVICES_LINK_SET_COLOR' => 'Установить цвет',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Цвет',
+
+    'DEVICES_LINK_SENSOR_VALUE_TYPE' => 'Исходное значение',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_CURRENT' => 'Текущее значение сенсора',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MIN' => 'Минимальное значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_AVG' => 'Среднее значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MAX' => 'Максимальное значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_FOR_PERIOD' => 'Использовать период',
 
     'DEVICES_LINK_SENSOR_SWITCH' => 'Условное управление',
     'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Управление другим устройством по показаниям датчика',
@@ -1510,6 +1521,7 @@ $dictionary = array(
 	'NEWDASH_DISCONNECTED' => 'Нет подключения',
 	'NEWDASH_MJDM_RESOURCE' => 'Ресурсы MJDM',
 	'NEWDASH_FORUM' => 'Форум',
+    'NEWDASH_FORUM_DISCUSSION' => 'Обсуждение на форуме',
 	'NEWDASH_CHAT_TELEGRAM' => 'Чаты Telegram',
 	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'Общий чат (RUS)',
 	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Курилка (RUS)',
@@ -1568,6 +1580,7 @@ $dictionary = array(
 	
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',
+    'NEWDASH_RESET_VISIBILITY' => 'Сбросить настройки видимости блоков',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',

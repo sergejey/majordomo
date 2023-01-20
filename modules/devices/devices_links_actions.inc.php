@@ -134,16 +134,16 @@ if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAv
                 } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains' || $open_type == 'shutters') {
                     $payload['characteristic'] = 'CurrentPosition';
                     if (gg($device1['LINKED_OBJECT'] . '.status')) {
-                        $payload['value'] = "100";
-                    } else {
                         $payload['value'] = "0";
+                    } else {
+                        $payload['value'] = "100";
                     }
                     if ($debug_sync) {
                         DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
                     }
                     sg('HomeBridge.to_set', json_encode($payload));
-                    //$payload['characteristic'] = 'TargetPosition';
-                    //sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'TargetPosition';
+                    sg('HomeBridge.to_set', json_encode($payload));
                     unset($payload['service']);
                 }
             }
@@ -256,6 +256,8 @@ $links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
     if (!checkAccess('sdevice', $links[$i]['ID'])) continue;
+    if ($device1['TYPE']=='motion' && !$status) continue;
+    if ($device1['TYPE']=='button' && !$status) continue;
     $link_type = $links[$i]['LINK_TYPE'];
     $object = $links[$i]['LINKED_OBJECT'];
     $settings = unserialize($links[$i]['LINK_SETTINGS']);
@@ -316,6 +318,19 @@ for ($i = 0; $i < $total; $i++) {
         } elseif ($settings['action_type'] == 'close' && !gg($object . '.status')) {
             $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
+
+        if ($settings['source_value_type']!='') {
+            $period = (int)$settings['source_value_time'];
+            if ($period<1) $period=1;
+            if ($settings['source_value_type'] == 'avg') {
+                $value = getHistoryAvg($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+            } elseif ($settings['source_value_type'] == 'min') {
+                $value = getHistoryMin($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+            } elseif ($settings['source_value_type'] == 'max') {
+                $value = getHistoryMax($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+            }
+        }
+
         if ($settings['condition_type'] == 'above' && $value >= (float)$settings['condition_value']) {
             //do the action
         } elseif ($settings['condition_type'] == 'below' && $value < (float)$settings['condition_value']) {

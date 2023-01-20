@@ -104,7 +104,7 @@ function sayTo($ph, $level = 0, $destination = '')
     if ($level > 0) $rec['IMPORTANCE'] = $level;
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    $processed = processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+    $processed = processSubscriptionsSafe('SAYTO', array('id'=>$rec['ID'], 'level' => $level, 'message' => $ph, 'destination' => $destination));
     return 1;
 }
 
@@ -145,8 +145,18 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
+    $image = '';
+    if (preg_match('/image:([\w\d\_\/\-\.]+)/is',$ph,$m)) {
+        if (file_exists($m[1])) {
+            $image=$m[1];
+        }
+        $ph = str_replace($m[0],'',$ph);
+        $ph = preg_replace('/\n+$/','',$ph);
+    }
+
     $rec = array();
     $rec['MESSAGE'] = $ph;
+    $rec['IMAGE'] = $image;
     $rec['ADDED'] = date('Y-m-d H:i:s');
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = $member_id;
@@ -156,7 +166,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
     if ($member_id) {
-        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
+        $processed = processSubscriptionsSafe('COMMAND', array('id'=>$rec['ID'], 'level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source, 'image' => $image));
         return;
     }
 
@@ -184,7 +194,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         }
 
 
-        processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
+        processSubscriptionsSafe('SAY', array('id'=>$rec['ID'], 'level' => $level, 'message' => $ph, 'member_id' => $member_id, 'image' => $image)); //, 'ignoreVoice'=>$ignoreVoice
 
         if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
             eval(SETTINGS_HOOK_AFTER_SAY);

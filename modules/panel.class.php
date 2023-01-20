@@ -158,14 +158,21 @@ class panel extends module
                  WHERE (`HIDDEN`='0' OR NAME='control_modules')
                  ORDER BY FIELD(CATEGORY, '<#LANG_SECTION_OBJECTS#>', '<#LANG_SECTION_DEVICES#>', '<#LANG_SECTION_APPLICATIONS#>',
                                 '<#LANG_SECTION_SETTINGS#>', '<#LANG_SECTION_SYSTEM#>'),
+                          FIELD(`NAME`,'classes','devices','settings','system_errors','xray','connect','saverestore','market') DESC,
                           `PRIORITY`, `TITLE`";
 
             $modules = SQLSelect($sqlQuery);
             $old_cat = 'some_never_should_be_category_name';
             $modulesCnt = count($modules);
-			
-			$getNOTY = SQLSelect("select pln.*, pl.MODULE_NAME from plugins_noty pln join plugins pl on pln.PLUGINS_ID=pl.id WHERE pln.READ = '0'");
-			
+
+            $notifications = array();
+            if (SQLTableExists('module_notifications')) {
+                $getNotifications = SQLSelect("select * from module_notifications WHERE IS_READ = 0 ORDER BY ADDED DESC");
+                foreach($getNotifications as $notification) {
+                    $notifications[$notification['MODULE_NAME']][]=$notification;
+                }
+            }
+
             for ($i = 0; $i < $modulesCnt; $i++) {
                 if ($modules[$i]['NAME'] == $this->action) {
                     $modules[$i]['SELECTED'] = 1;
@@ -185,49 +192,66 @@ class panel extends module
                 } else {
                     $last_allow = $i;
                 }
-				
-				foreach($getNOTY as $keyNoty => $notyValue) {
-					if($notyValue['MODULE_NAME'] == $modules[$i]["NAME"]) {
-				
-						if(preg_match('|<#(.*?)#>|si', $notyValue['MODULE_NAME'], $arr)) {
-							$titleSearchNoty = constant($arr[1]);
-						} else {
-							$titleSearchNoty = $notyValue['MODULE_NAME'];
-						}
-					
-						$modules[$i]['PLUGINS_NOTY_COUNT'] = $modules[$i]['PLUGINS_NOTY_COUNT']+1;
-						$modules[$i]['PLUGINS_NOTY_COLOR'] = $notyValue['TYPE'];
-						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'];
-						
-						$getNOTY[$keyNoty]['ADD_HUMAN'] = date('d.m.Y H:i', $notyValue['ADD']);
-						
-						$modules[$i]['PLUGINS_NOTY'][] = $getNOTY[$keyNoty];
 
-						unset($getNOTY[$keyNoty]);
-					} else {
-						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'] ?? null;
-					}
-				}
-	
+                if (isset($notifications[$modules[$i]["NAME"]])) {
+                    $modules[$i]["NOTIFICATIONS"]=$notifications[$modules[$i]["NAME"]];
+                    $modules[$i]["NOTIFICATIONS_COUNT"]=count($modules[$i]["NOTIFICATIONS"]);
+                    $modules[$i]["NOTIFICATIONS_TYPE"]=$modules[$i]["NOTIFICATIONS"][0]['TYPE'];
+                } else {
+                    $modules[$i]["NOTIFICATIONS_COUNT"]=0;
+                }
+
                 if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
                 }
                 if ($modules[$i]['NAME']=='devices') {
+                    $links=array();
                     $devices = SQLSelect("SELECT devices.LOCATION_ID, locations.TITLE, COUNT(devices.ID) as TOTAL FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE locations.ID>0 GROUP BY devices.LOCATION_ID ORDER BY locations.TITLE");
                     if (is_array($devices)) {
-                        $links=array();
                         $links[]=array('TITLE'=>LANG_ALL,'LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME']);
                         foreach($devices as $device) {
                             $links[]=array('TITLE'=>processTitle($device['TITLE']).' ('.$device['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&location_id='.$device['LOCATION_ID']);
                         }
+                    }
+
+                    $devices = SQLSelect("SELECT devices.TYPE, COUNT(devices.ID) as TOTAL FROM devices GROUP BY devices.TYPE ORDER BY devices.TYPE");
+                    $totall = count($devices);
+                    if ($totall) {
+                        $links[]=array('DIVIDER'=>1);
+                        require DIR_MODULES.'devices/devices_structure.inc.php';
+
+                        foreach($devices as &$device) {
+                            $device['TITLE']=processTitle($this->device_types[$device['TYPE']]['TITLE']);
+                        }
+                        usort($devices, function ($a, $b) {
+                            return strcmp($a["TITLE"], $b["TITLE"]);
+                        });
+
+                        for($il=0;$il<$totall;$il++) {
+                            $links[]=array('TITLE'=>$devices[$il]['TITLE'].' ('.$devices[$il]['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&type='.$devices[$il]['TYPE']);
+                        }
+                    }
+                    if (isset($links[0])) {
                         $modules[$i]['LINKS']=$links;
                     }
                 }
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
             $out["SUB_MODULES"] = $modules;
+        }
+
+        if ($this->action && isset($notifications[$this->action])) {
+            $total = count($notifications[$this->action]);
+            for($i=0;$i<$total;$i++) {
+                $notifications[$this->action][$i]['ADDED']=date('d.m.Y H:i:s',strtotime($notifications[$this->action][$i]['ADDED']));
+                if ($notifications[$this->action][$i]['TYPE']=='default') {
+                    $notifications[$this->action][$i]['TYPE']='info';
+                }
+
+            }
+            $out['MODULE_NOTIFICATIONS']=$notifications[$this->action];
         }
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {

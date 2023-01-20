@@ -17,6 +17,11 @@ for($idv=0;$idv<$total;$idv++) {
         $yellow_state=1;
         $details[]=$devices[$idv]['TITLE'].' '.LANG_DEVICES_NOT_UPDATING;
     }
+    $batteryWarning = gg($devices[$idv]['LINKED_OBJECT'] . '.batteryWarning');
+    if ($batteryWarning==1) {
+        $yellow_state=1;
+        $details[]=$devices[$idv]['TITLE'].' '.LANG_DEVICES_LOW_BATTERY;
+    }
 }
 
 /*

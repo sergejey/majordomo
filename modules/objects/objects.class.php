@@ -332,10 +332,9 @@ class objects extends module
             }
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
-            if (preg_match('/^sdevice(.+?)/', $rec['SYSTEM'], $m)) {
+            if (preg_match('/^sdevice(\d+)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
-            //$this->keep_history=$rec['KEEP_HISTORY'];
         } else {
             return false;
         }
@@ -1060,7 +1059,11 @@ class objects extends module
                 $params['SOURCE'] = (string)$source;
                 //$this->callMethod($prop['ONCHANGE'], $params);
                 //$this->callMethodSafe($prop['ONCHANGE'], $params);
-                $this->raiseEvent($prop['ONCHANGE'], $params);
+                if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+                    $this->callMethod($prop['ONCHANGE'], $params);
+                } else {
+                    $this->raiseEvent($prop['ONCHANGE'], $params);
+                }
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }

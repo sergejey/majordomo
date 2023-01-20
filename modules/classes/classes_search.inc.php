@@ -69,21 +69,9 @@
       if ($methods[0]['ID']) {
        $total_m=count($methods);
        for($im=0;$im<$total_m;$im++) {
-
-        if ($methods[$im]['ID']==272) {
-         //print_r($parent_methods);exit;
-        }
-
         if ($parent_methods_titles[$methods[$im]['TITLE']]) {
          $methods[$im]['ID']=$parent_methods_titles[$methods[$im]['TITLE']];
         }
-
-        /*
-        $parent_method=SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID=0 AND CLASS_ID='".$objects[$o]['CLASS_ID']."' AND TITLE='".DBSafe($methods[$im]['TITLE'])."'");
-        if ($parent_method['ID']) {
-         $methods[$im]['ID']=$parent_method['ID'];
-        }
-        */
        }
        $objects[$o]['METHODS']=$methods;
       }
@@ -100,4 +88,3 @@
    endMeasure('classesBuildTree');
    $out['RESULT']=$res;
   }
-?>

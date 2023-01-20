@@ -81,14 +81,14 @@
 						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
 						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
 						[#if APP_TDWIKI_INSTALLED="1"#]
-						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+						<li><a  onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)" href="#"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
 						[#endif#]
 						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
 						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
 						<li class="divider"></li>
 						<li class="dropdown-header"><#LANG_NEWDASH_CHAT_TELEGRAM#></li>
 						<li><a href="https://t.me/MajorDoMoRu" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_MAIN#></a></li>
-						<li><a href="https://t.me/MajorDoMoKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
+						<li><a href="https://t.me/MajorDoMoRuKurilka" target="_blank"><#LANG_NEWDASH_CHAT_TELEGRAM_SMOKE#></a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -101,7 +101,7 @@
 					</ul>
 				</li>
 				[#if HIDE_LEFT_PANEL="1"#]
-				[#inc panel_nav_top.html#]
+				[#inc panel_nav_top.tpl#]
 				[#else#]
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-dashboard" style="vertical-align: top;font-size: 11pt;"></i> <#LANG_SECTION_SYSTEM#> <b class="caret"></b></a>
@@ -205,7 +205,7 @@
 		<img src="<#ROOTHTML#>img/system/loading.gif" style="max-width: 200px">
 		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
 		
-		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
+		<a id="stopLoadBtnPreloader" onclick="$('#preloader').hide();" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
 	</div>
 
 	
@@ -231,17 +231,16 @@
 				<div class="row">
 					[#if ACTION!="" AND ACTION!='xray'#]
 					<div class="col-xs-12 col-sm-12 col-md-12" id="console_debug" style="display:none;overflow-wrap: anywhere;margin-bottom:20px;max-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">
-						
 					</div>
 					[#endif#]
-					
+
 					<div class="col-xs-12 col-sm-12 col-md-12" id="problemLinkToConnect" style="display:none;padding-left: 0px;padding-right: 0px;">
 						<div class="alert alert-danger" style="box-shadow: 0px 8px 0px 0px rgb(168 10 10);background-image: url(<#ROOTHTML#>img/icons/highAlertIcon.gif);background-repeat: no-repeat;background-size: contain;background-position: right center;">
 							<b><#LANG_NEWDASH_CONNECT_CONNECT_ERROR_1#></b>
 							<p style="font-size: 1rem;"><#LANG_NEWDASH_CONNECT_CONNECT_ERROR_2#></p>
 						</div>
-					</div> 
-					
+					</div>
+
 					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
@@ -284,6 +283,21 @@
 				[#endif PRINT#]
 				<!--right_main-->
 				[#if ACTION!=""#]
+
+
+	[#if MODULE_NOTIFICATIONS#]
+	[#begin MODULE_NOTIFICATIONS#]
+	<div class="alert alert-[#TYPE#]" id="notification[#ID#]">
+		<div class="row">
+			<div class="col-md-1">[#ADDED#]</div>
+			<div class="col-md-10">
+				[#MESSAGE#]</div>
+			<div class="col-md-1"><a href="#" class="btn btn-default" onclick="return dismissNotification([#ID#]);">OK</a></div>
+  	    </div>
+	</div>
+	[#end MODULE_NOTIFICATIONS#]
+	[#endif MODULE_NOTIFICATIONS#]
+
 						[#module name="<#ACTION#>" action="admin" instance="adm"#]
 				[#else ACTION#]
 					[#inc panel_default.html#]
@@ -378,14 +392,14 @@ $(document).ready(function() {
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 		$("nav").addClass("navbar-fixed-top");
-		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 	}
 		
 	$(window).on("scroll", function(e) {
 		if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 			$("nav").addClass("navbar-fixed-top");
 			$("body").css('padding-top', '54px');
-			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 		} else {
 			$("nav").removeClass("navbar-fixed-top");
 			$("nav").removeAttr('style');
@@ -415,12 +429,13 @@ $(document).ready(function() {
 	$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
 	$(".wiki_hint").fancybox({
 		type            : 'iframe',
+		iframe			: {preload: false},
 		maxWidth        : 800,
 		maxHeight       : 600,
 		fitToView       : false,
 		width           : '70%',
 		height          : '70%',
-		autoSize        : false,
+		autoSize        : true,
 		closeClick      : false,
 		openEffect      : 'none',
 		closeEffect     : 'none'
@@ -434,6 +449,7 @@ $(document).ready(function() {
 		height          : '70%',
 		autoSize        : false,
 		closeClick      : false,
+		preload			: false,
 		openEffect      : 'none',
 		closeEffect     : 'none'
 	});

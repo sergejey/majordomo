@@ -99,9 +99,11 @@ class jTemplate
 
         if (strpos($res, '{#')) {
             //second pass
+            startMeasure('secondpass');
             $res = str_replace('{#', '[#', $res);
             $res = str_replace('#}', '#]', $res);
             $res = $this->parse($res, $this->data, $root);
+            endMeasure('secondpass');
         }
 
         if (isset($this->ajax) && $this->ajax) {
@@ -158,7 +160,9 @@ class jTemplate
 
         // ARRAYS
         if (is_integer(strpos($res, '[#begin '))) {
+            //startMeasure('parsingArrays'.$this->template);
             $this->parseArrays($res, $hash, $dir);
+            //endMeasure('parsingArrays'.$this->template);
         }
 
         // HASHES
@@ -166,22 +170,30 @@ class jTemplate
 
         // CONDITIONS
         if (is_integer(strpos($res, '[#if '))) {
+            //startMeasure('parsingIfs'.$this->template);
             $this->parseIf($res, $hash);
+            //endMeasure('parsingIfs'.$this->template);
         }
 
         // MODULES
         if (is_integer(strpos($res, '[#module '))) {
+            //startMeasure('parsingModules'.$this->template);
             $this->parseModules($res, $hash, $dir);
+            //endMeasure('parsingModules'.$this->template);
         }
 
         // INCLUDE FILES
         if (is_integer(strpos($res, '[#inc '))) {
+            //startMeasure('parsingIncludes'.$this->template);
             $this->parseIncludes($res, $hash, $dir);
+            //endMeasure('parsingIncludes'.$this->template);
         }
 
         // VARIABLES
         if (is_integer(strpos($res, '[#'))) {
+            //startMeasure('parsingVariables'.$this->template);
             $this->parseVariables($res, $hash);
+            //endMeasure('parsingVariables'.$this->template);
         }
 
         return $res;
@@ -332,7 +344,7 @@ class jTemplate
                 if (defined($matches[1][$i])) {
                     $res = str_replace($matches[0][$i], constant($matches[1][$i]), $res);
                 } else {
-                    if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]=null;
+                    if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]] = null;
                     $res = str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
                 }
             }
@@ -355,7 +367,7 @@ class jTemplate
             $count_matches_0 = count($matches[0]);
 
             for ($i = 0; $i < $count_matches_0; $i++) {
-                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]=null;
+                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]] = null;
                 $var = $hash[$matches[1][$i]];
                 $line1 = $matches[2][$i];
                 $res1 = "";
@@ -456,7 +468,7 @@ class jTemplate
         if (preg_match_all('/<#(\w+?)\.(\w+?)#>/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_1 = count($matches[1]);
             for ($i = 0; $i < $count_matches_1; $i++) {
-                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]]=null;
+                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]] = null;
                 $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]][$matches[2][$i]]), $res);
             }
         }
@@ -724,19 +736,43 @@ class jTemplate
                 if (!file_exists($file_name)) {
                     $res = str_replace($matches[0][$i], "<!-- Cannot find file $file_name -->", $res);
                 } else {
+                    startMeasure('including '.$file_name);
+                    $old_template = $this->template;
+                    $this->template = $file_name;
+
                     if ((defined("DEBUG_MODE")) && !is_integer(strpos($file_name, ".js"))) {
                         $id = "block" . (int)rand(0, 100000);
-
                         /*
                         $replaceStr  = "<!-- begin of file $file_name -->";
                         $replaceStr .= $this->parse($this->loadfile($file_name) . "<!-- end of file $file_name -->", $new_hash, $new_root);
                         $res = str_replace($matches[0][$i], $replaceStr, $res);
                         */
-
-                        $res = str_replace($matches[0][$i], "" . $this->parse($this->loadfile($file_name) . "", $new_hash, $new_root), $res);
+                        if (preg_match('/\.tpl$/', $file_name)) {
+                            require_once ROOT . 'lib/smarty/Smarty.class.php';
+                            $smarty = new Smarty;
+                            $smarty->setCacheDir(ROOT . 'cms/cached/template_c');
+                            $smarty->setTemplateDir(ROOT . './templates')
+                                ->setCompileDir(ROOT . './cms/cached/templates_c')
+                                ->setCacheDir(ROOT . './cms/cached');
+                            $smarty->debugging = false;
+                            $smarty->caching = true;
+                            $smarty->setCaching(120);
+                            foreach ($new_hash as $k => $v) {
+                                $smarty->assign($k, $v);
+                            }
+                            $res = str_replace($matches[0][$i], "" . $smarty->fetch($file_name), $res);
+                        } else {
+                            $res = str_replace($matches[0][$i], "" . $this->parse($this->loadfile($file_name) . "", $new_hash, $new_root), $res);
+                        }
                     } else {
-                        $res = str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
+                        if (preg_match('/\.tpl$/', $file_name)) {
+                            dprint($new_hash);
+                        } else {
+                            $res = str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
+                        }
                     }
+                    $this->template = $old_template;
+                    endMeasure('including '.$file_name);
                 }
             }
         }
@@ -756,7 +792,7 @@ class jTemplate
         if (preg_match_all('/\[#(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_1 = count($matches[1]);
             for ($i = 0; $i < $count_matches_1; $i++) {
-                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]]='';
+                if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]] = '';
                 $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]]), $res);
             }
         }
@@ -765,7 +801,7 @@ class jTemplate
         if (preg_match_all('/\[#(\w+?)\.(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_1 = count($matches[1]);
             for ($i = 0; $i < $count_matches_1; $i++) {
-                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]]='';
+                if (!isset($hash[$matches[1][$i]][$matches[2][$i]])) $hash[$matches[1][$i]][$matches[2][$i]] = '';
                 $res = str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]][$matches[2][$i]]), $res);
             }
         }
@@ -788,7 +824,6 @@ class jTemplate
         $res = str_replace('#}', '#&#125', $res);
         $res = str_replace('<#', '&#060#', $res);
         $res = str_replace('#>', '#&#062', $res);
-
         return $res;
     }
 
