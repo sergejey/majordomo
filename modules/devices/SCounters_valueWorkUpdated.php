@@ -42,7 +42,7 @@ if ($conversion > 0) {
 }
 
 $value = (float)$this->getProperty('value');
-$data_value = round(($value + $diff), 2);
+$data_value = round(($value + $diff), 3);
 
 if ($value != $data_value) {
     $this->setProperty('value', $data_value);
