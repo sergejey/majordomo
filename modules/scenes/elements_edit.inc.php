@@ -8,7 +8,6 @@
   $table_name='elements';
   $rec=SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
-
   if ($this->mode=='update') {
    $ok=1;
   //updating 'SCENE_ID' (select)

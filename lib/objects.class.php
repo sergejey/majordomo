@@ -40,7 +40,7 @@ function addClass($class_name, $parent_class = '')
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getClassTemplate($class_id,$view='')
+function getClassTemplate($class_id, $view = '')
 {
 
     $can_cache = false;
@@ -49,8 +49,8 @@ function getClassTemplate($class_id,$view='')
         global $class_templates_cached;
     }
 
-    if ($can_cache && isset($class_templates_cached[$class_id.'_'.$view])) {
-        return $class_templates_cached[$class_id.'_'.$view];
+    if ($can_cache && isset($class_templates_cached[$class_id . '_' . $view])) {
+        return $class_templates_cached[$class_id . '_' . $view];
     }
 
     $class = SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=" . $class_id);
@@ -58,9 +58,9 @@ function getClassTemplate($class_id,$view='')
         return '';
     }
 
-    if ($view!='' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html')) {
-        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html';
-        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_'.$view.'.html';
+    if ($view != '' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_' . $view . '.html')) {
+        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_' . $view . '.html';
+        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_' . $view . '.html';
     } else {
         $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '.html';
         $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '.html';
@@ -72,12 +72,12 @@ function getClassTemplate($class_id,$view='')
     } elseif (file_exists($class_file_path)) {
         $data = LoadFile($class_file_path);
     } elseif ($class['PARENT_ID']) {
-        $data = getClassTemplate($class['PARENT_ID'],$view);
+        $data = getClassTemplate($class['PARENT_ID'], $view);
     } else {
         //$data='Template for ['.$class['TITLE'].'] not found';
         $data = '<b>%.object_title%</b>';
         $props = SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=" . $class['ID'] . " AND DATA_KEY=1 ORDER BY TITLE");
-        if (!IsSet($props[0])) {
+        if (!isset($props[0])) {
             $props = SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=" . $class['ID'] . " ORDER BY TITLE");
         }
         if (is_array($props)) {
@@ -88,7 +88,7 @@ function getClassTemplate($class_id,$view='')
     }
 
     if ($can_cache) {
-        $class_templates_cached[$class_id.'_'.$view] = $data;
+        $class_templates_cached[$class_id . '_' . $view] = $data;
     }
 
     return $data;
@@ -99,7 +99,7 @@ function getClassTemplate($class_id,$view='')
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getObjectClassTemplate($object_name,$view='')
+function getObjectClassTemplate($object_name, $view = '')
 {
     startMeasure('getObjectClassTemplate');
     startMeasure('getObject');
@@ -128,7 +128,7 @@ function getObjectClassTemplate($object_name,$view='')
     $object->description = $rec['DESCRIPTION'];
     endMeasure('getObject');
     startMeasure('getClassTemplate');
-    $data = getClassTemplate((int)$object->class_id,$view);
+    $data = getClassTemplate((int)$object->class_id, $view);
     endMeasure('getClassTemplate');
     $data = preg_replace('/<#ROOTHTML#>/uis', ROOTHTML, $data);
     $data = preg_replace('/%\.object_title%/uis', $object_name, $data);
@@ -319,7 +319,7 @@ function addLinkedProperty($object, $property, $module)
 
     $value = SQLSelectOne($sqlQuery);
 
-    if (IsSet($value['ID'])) {
+    if (isset($value['ID'])) {
         if (!$value['LINKED_MODULES']) {
             $tmp = array();
         } else {
@@ -390,7 +390,7 @@ function removeLinkedProperty($object, $property, $module)
 function getObject($name)
 {
 
-    if (trim($name)=='') return 0;
+    if (trim($name) == '') return 0;
 
     if (preg_match('/^(.+?)\.(.+?)$/', $name, $m)) {
         $class_name = $m[1];
@@ -506,13 +506,13 @@ function getObjectsByClass($class_name)
 
     $sub_classes = SQLSelect($sqlQuery);
 
-    if (IsSet($sub_classes[0]['ID'])) {
+    if (isset($sub_classes[0]['ID'])) {
         $total = count($sub_classes);
 
         for ($i = 0; $i < $total; $i++) {
             $sub_objects = getObjectsByClass($sub_classes[$i]['TITLE']);
 
-            if (IsSet($sub_objects[0]['ID'])) {
+            if (isset($sub_objects[0]['ID'])) {
                 foreach ($sub_objects as $obj) {
                     $objects[] = $obj;
                 }
@@ -605,7 +605,7 @@ function getGlobal($varname)
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
 
-    if (strpos($varname,'cycle_') === 0) {
+    if (strpos($varname, 'cycle_') === 0) {
         $cached_value = checkCycleFromCache($varname);
     } else {
         $cached_value = checkFromCache($cached_name);
@@ -714,7 +714,12 @@ function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
  */
 function getHistoryMin($varname, $start_time, $stop_time = 0)
 {
-    if ($start_time <= 0) $start_time = (time() + $start_time);
+    if ($start_time <= 0) {
+        $start_time = (time() + $start_time);
+        $latest_data = true;
+    } else {
+        $latest_data = false;
+    }
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
     // Get hist val id
@@ -730,8 +735,8 @@ function getHistoryMin($varname, $start_time, $stop_time = 0)
     $data = SQLSelectOne("SELECT MIN(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
 
-    if (!$data['VALUE'])
-        return false;
+    if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
+    if (!isset($data['VALUE'])) return false;
 
     return $data['VALUE'];
 }
@@ -745,7 +750,12 @@ function getHistoryMin($varname, $start_time, $stop_time = 0)
  */
 function getHistoryMax($varname, $start_time, $stop_time = 0)
 {
-    if ($start_time <= 0) $start_time = (time() + $start_time);
+    if ($start_time <= 0) {
+        $start_time = (time() + $start_time);
+        $latest_data = true;
+    } else {
+        $latest_data = false;
+    }
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
     // Get hist val id
@@ -758,8 +768,9 @@ function getHistoryMax($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT MAX(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND  VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    if (!$data['VALUE'])
-        return false;
+
+    if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
+    if (!isset($data['VALUE'])) return false;
 
     return $data['VALUE'];
 }
@@ -786,7 +797,8 @@ function getHistoryCount($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT COUNT(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    if (!$data['VALUE'])
+
+    if (!isset($data['VALUE']))
         return false;
 
     return $data['VALUE'];
@@ -814,7 +826,8 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT SUM(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    if (!$data['VALUE'])
+
+    if (!isset($data['VALUE']))
         return false;
 
     return $data['VALUE'];
@@ -829,7 +842,12 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
  */
 function getHistoryAvg($varname, $start_time, $stop_time = 0)
 {
-    if ($start_time <= 0) $start_time = (time() + $start_time);
+    if ($start_time <= 0) {
+        $start_time = (time() + $start_time);
+        $latest_data = true;
+    } else {
+        $latest_data = false;
+    }
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
     // Get hist val id
@@ -844,14 +862,13 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
     $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
 
-    if (!$data['VALUE']) {
+    if (!isset($data['VALUE'])) {
         $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name " .
             "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
     }
 
-
-    if (!$data['VALUE'])
-        return false;
+    if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
+    if (!isset($data['VALUE'])) return false;
 
     return $data['VALUE'];
 }
@@ -885,15 +902,15 @@ function getHistoryValue($varname, $time, $nerest = false)
     $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $time) . "') ORDER BY ADDED LIMIT 1");
 
     // Not found values
-    if ((!$val1['VALUE']) && (!$val2['VALUE']))
+    if ((!isset($val1['VALUE'])) && (!isset($val2['VALUE'])))
         return false;
 
     // Only before
-    if (($val1['VALUE']) && (!$val2['VALUE']))
+    if (isset($val1['VALUE']) && (!isset($val2['VALUE'])))
         return $val1['VALUE'];
 
     // Only after
-    if ((!$val1['VALUE']) && ($val2['VALUE']))
+    if (!isset($val1['VALUE']) && isset($val2['VALUE']))
         return $val2['VALUE'];
 
     // Nerest
@@ -920,8 +937,8 @@ function getHistoryValue($varname, $time, $nerest = false)
  */
 function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
-    if (strpos($varname,'cycle_') === 0) {
-        saveCycleToCache($varname,$value);
+    if (strpos($varname, 'cycle_') === 0) {
+        saveCycleToCache($varname, $value);
         return;
     }
 
@@ -956,10 +973,10 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
 function callMethod($method_name, $params = 0)
 {
     $tmp = explode('.', $method_name);
-    if (IsSet($tmp[2])) {
+    if (isset($tmp[2])) {
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
-    } elseif (IsSet($tmp[1])) {
+    } elseif (isset($tmp[1])) {
         $object_name = $tmp[0];
         $method_name = $tmp[1];
     } else {
@@ -967,7 +984,7 @@ function callMethod($method_name, $params = 0)
     }
 
     if ($object_name == 'AllScripts') {
-        return runScript($method_name,$params);
+        return runScript($method_name, $params);
     }
 
     $obj = getObject($object_name);
@@ -982,17 +999,17 @@ function callMethod($method_name, $params = 0)
 function callMethodSafe($method_name, $params = 0)
 {
     $tmp = explode('.', $method_name);
-    if (IsSet($tmp[2])) {
+    if (isset($tmp[2])) {
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
-    } elseif (IsSet($tmp[1])) {
+    } elseif (isset($tmp[1])) {
         $object_name = $tmp[0];
         $method_name = $tmp[1];
     } else {
         $object_name = 'ThisComputer';
     }
     if ($object_name == 'AllScripts') {
-        return runScriptSafe($method_name,$params);
+        return runScriptSafe($method_name, $params);
     }
     $obj = getObject($object_name);
 
@@ -1033,13 +1050,13 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     if (!is_array($params)) {
         $params = array();
     }
-    $params['no_session']=1;
+    $params['no_session'] = 1;
 
 
-    $url = preg_replace('/^\/api\//', BASE_URL.'/api.php/', $api_url);
-    $url = preg_replace('/([^:])\/\//','\1/',$url);
+    $url = preg_replace('/^\/api\//', BASE_URL . '/api.php/', $api_url);
+    $url = preg_replace('/([^:])\/\//', '\1/', $url);
 
-    $method=strtoupper($method);
+    $method = strtoupper($method);
     global $api_ch;
     if (!isset($api_ch)) {
         $api_ch = curl_init();
@@ -1078,10 +1095,10 @@ function callAPI($api_url, $method = 'GET', $params = 0)
 function injectObjectMethodCode($method_name, $key, $code)
 {
     $tmp = explode('.', $method_name);
-    if (IsSet($tmp[2])) {
+    if (isset($tmp[2])) {
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
-    } elseif (IsSet($tmp[1])) {
+    } elseif (isset($tmp[1])) {
         $object_name = $tmp[0];
         $method_name = $tmp[1];
     } else {
@@ -1143,7 +1160,7 @@ function processTitle($title, $object = 0)
     //startMeasure('processTitle ['.$in_title.']');
 
     if ($in_title != '') {
-        if (IsSet($_SERVER['REQUEST_METHOD'])) {
+        if (isset($_SERVER['REQUEST_METHOD'])) {
             if ($title_memory_cache[$key]) {
                 return $title_memory_cache[$key];
             }
@@ -1184,8 +1201,8 @@ function processTitle($title, $object = 0)
                     $property_name = $m[1][$i] . '.' . $m[2][$i];
                     $data = getGlobal($property_name);
                     $descr = $m[3][$i];
-                    $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
-                    $descr = preg_replace('#\\\;#', ";", $descr); 
+                    $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr);
+                    $descr = preg_replace('#\\\;#', ";", $descr);
                     $tmp = explode(';-;;-;', $descr);
                     $totald = count($tmp);
                     $hsh = array();
@@ -1200,10 +1217,10 @@ function processTitle($title, $object = 0)
                             $item = trim($tmp[$id]);
                             if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
-                                if ($search_value=='') $search_value='<empty>';
+                                if ($search_value == '') $search_value = '<empty>';
                                 $search_replace = $md[2];
                             } else {
-                                $search_value = $id.'';
+                                $search_value = $id . '';
                                 $search_replace = $item;
                             }
                             $hsh[$search_value] = $search_replace;
@@ -1263,7 +1280,7 @@ function processTitle($title, $object = 0)
     }
 
     //endMeasure('processTitle ['.$in_title.']', 1);
-    if (IsSet($_SERVER['REQUEST_METHOD'])) {
+    if (isset($_SERVER['REQUEST_METHOD'])) {
         $title_memory_cache[$key] = $title;
     }
 

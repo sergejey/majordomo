@@ -17,7 +17,7 @@ $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 global $open;
 if ($open != '') {
     if ($open == 'new') {
-        $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab . "&view_mode2=edit_elements&element_id=&top=" . $_GET['top'] . "&left=" . $_GET['left']);
+        $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=elements" . "&view_mode2=edit_elements&element_id=&top=" . $_GET['top'] . "&left=" . $_GET['left']);
     }
     $element_id = 0;
     if (preg_match('/state_(\d+)/', $open, $m)) {
@@ -29,7 +29,7 @@ if ($open != '') {
         $element_id = (int)$m[1];
     }
     if ($element_id) {
-        $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab . "&view_mode2=edit_elements&element_id=" . $element_id);
+        $this->redirect(ROOTHTML.'panel/scene/'.$rec['ID'].'/elements/'.$element_id.'.html?print='.gr('print'));
     }
 }
 
@@ -37,6 +37,10 @@ global $state_id;
 
 if ($this->tab == 'devices') {
     include DIR_MODULES . 'scenes/devices.inc.php';
+}
+
+if ($this->tab == 'widgets') {
+    include DIR_MODULES . 'scenes/widgets.inc.php';
 }
 
 
@@ -156,6 +160,12 @@ if ($view_mode2 == 'down_elements') {
 if ($view_mode2 == 'edit_elements') {
     global $element_id;
     $element = SQLSelectOne("SELECT * FROM elements WHERE ID='" . (int)$element_id . "'");
+
+    if ($element['TYPE']=='widget') {
+        $this->redirect("?id=".$element['SCENE_ID']."&view_mode=".$this->view_mode."&tab=widgets&mode=edit_widget&element_id=".$element['ID']);
+    }
+
+
     $states = SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='" . $element['ID'] . "'");
 
     if (!$element['SCENE_ID']) {

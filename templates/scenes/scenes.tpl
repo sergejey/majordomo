@@ -2,6 +2,14 @@
     <link rel="stylesheet" href="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.contextMenu.min.css">
     <script type="text/javascript" src="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.contextMenu.min.js"></script>
     <script type="text/javascript" src="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.ui.position.min.js"></script>
+    <style>
+        .draggable {
+            border:1px solid blue !important;
+        }
+        div.draggable span {
+            pointer-events:none;
+        }
+    </style>
     <!--
     <div id='contextMenuDiv' style="display:none;width:100px;height:20px;background-color:white;position:absolute;border: 1px solid black;z-index:10000;top:200px;left:300px;padding:10px;text-align:center"><a href="#" onClick="stateClickedEdit('new');return false;">{$smarty.const.LANG_ADD}</a></div>
     -->
@@ -174,18 +182,27 @@ $.fn.customContextMenu = function(callBack){
 
 
         function stateClickedEdit(id) {
-          var window_url=window.parent.location.href;
-          window_url=window_url.replace('tab=preview', 'tab=elements')+'&open='+id+'&print=1';
+          var window_url = '{$smarty.const.ROOTHTML}panel/scene/{$SCENE_ID}.html?open='+id+'&print=1'
           if (id=='new') {
            window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
           }
-          parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload(); }});
+          if ( window.location !== window.parent.location ) {
+              parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.parent.location.reload(); }});
+          } else {
+              parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload();}});
+          }
           return false;
         }
 
+            function addWidgetClicked(id) {
+                var window_url = '{$smarty.const.ROOTHTML}panel/scene/{$SCENE_ID}.html?tab=widgets&print=1'
+                window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
+                parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload(); }});
+                return false;
+            }
+
             function addDeviceClicked(id) {
-                var window_url=window.parent.location.href;
-                window_url=window_url.replace('tab=preview', 'tab=devices')+'&open='+id+'&print=1';
+                var window_url = '{$smarty.const.ROOTHTML}panel/scene/{$SCENE_ID}.html?tab=devices&open='+id+'&print=1'
                 window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
                 parent.$.fancybox.open({ src: window_url, type: 'iframe','beforeClose': function() { window.location.reload(); }});
                 return false;
@@ -348,7 +365,8 @@ $.fn.customContextMenu = function(callBack){
              for(var i=0;i<objCnt;i++) {
               var elem=$('#state_'+obj[i].ID);
               if ((typeof obj[i].HTML!= 'undefined') && (obj[i].TYPE!='container') && (obj[i].HTML!=null) && (!codeHash.hasOwnProperty('code'+obj[i].ID) || codeHash['code'+obj[i].ID]!=obj[i].HTML)) {
-               elem.html('<span>'+obj[i].HTML+'</span>');
+               var subElement = $('#state_'+obj[i].ID+' > span');
+               subElement.html(obj[i].HTML);
                codeHash['code'+obj[i].ID]=obj[i].HTML;
               }
               if (obj[i].STATE=='1' && !elem.is(':visible')) {
@@ -444,7 +462,9 @@ $.fn.customContextMenu = function(callBack){
           }
          }
 
+
          var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=checkAllStates{if $SCENE_ID!=""}&scene_id={$SCENE_ID}{/if}{$PARAMS}";
+
          $.ajax({
           url: url,
           }).done(function(data) { 
@@ -511,12 +531,16 @@ $.fn.customContextMenu = function(callBack){
                             if (key == 'adddevice') {
                                 addDeviceClicked();
                             }
+                            if (key == 'addwidget') {
+                                addWidgetClicked();
+                            }
                             //var m = "clicked: " + key;
                             //window.console && console.log(m) || alert(m);
                         },
                         items: {
                             {literal}"add": {name:{/literal}"{$smarty.const.LANG_ADD_NEW_ELEMENT}", icon: "add"},
                             {literal}"adddevice": {name:{/literal}"{$smarty.const.LANG_DEVICES_ADD_SCENE}", icon: "add"},
+                            {literal}"addwidget": {name:{/literal}"{$smarty.const.LANG_ADD_WIDGET}", icon: "add"},
                         }
                 });
 
@@ -543,29 +567,32 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                           });
                           {/literal}
                         }
-                   }).resizable({literal}{grid: 5, {/literal}
-                           stop: function(e, ui) {
-                               var dwidth=ui.size.width;
-                               var dheight=ui.size.height;
-
-                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id");
-                               url+='&dwidth='+encodeURIComponent(dwidth);
-                               url+='&dheight='+encodeURIComponent(dheight);
-
-                           {literal}
-                            $.ajax({
-                             url: url,
-                             }).done(function(data) { 
-                             //alert(data);
-                             });
-                            {/literal}
-                           }}).click(function(){
-            if ( $(this).is('.ui-draggable-dragging') ) {
+                   }).click(function(){
+            if ( $(this).is('.ui-draggable-dragging')) {
                   return;
             }
             // click action here
-            stateClickedEdit($(this).attr("id"));
+            return stateClickedEdit($(this).attr("id"));
       });
+
+     $(".resizable" ).resizable({literal}{grid: 5, {/literal}
+                        stop: function(e, ui) {
+                            var dwidth=ui.size.width;
+                            var dheight=ui.size.height;
+
+                            var url="{$smarty.const.ROOTHTML}ajax/scenes.html?op=resized&element="+$(this).attr("id");
+                            url+='&dwidth='+encodeURIComponent(dwidth);
+                            url+='&dheight='+encodeURIComponent(dheight);
+
+                            {literal}
+                            $.ajax({
+                                url: url,
+                            }).done(function(data) {
+                                //alert(data);
+                            });
+                            {/literal}
+                        }});
+
 
       {foreach $RESULT as $SCENE}
                     /*
@@ -581,8 +608,9 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
       {/foreach}
  
                  {/if}
+
                  {if $SCENE_WALLPAPER!=""}
-                 if (inIframe) {
+                 if (inIframe()) {
                   if (typeof window.parent.setBackgroundStyle!=='undefined') {
                     if ($('#scene_wallpaper_{$SCENE_ID}').css('background-image')!='') {
                      $('body').css('background-color', 'transparent');
@@ -811,7 +839,7 @@ function onDocumentMouseDown( event ) {
 
  {foreach $ELEMENT.STATES as $STATE}
   <div 
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if $DRAGGABLE=="1" && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}" 
+   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if $DRAGGABLE=="1" && $ELEMENT.POSITION_TYPE=="0"} draggable {if $ELEMENT.RESIZABLE=="1"} resizable {$ELEMENT.RESIZABLE}{/if}{/if}"
    id="state_{$STATE.ID}"
    {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""} 
    {if $DRAGGABLE!="1"}
@@ -819,7 +847,6 @@ function onDocumentMouseDown( event ) {
    {/if}
    {/if} 
    style="
-   {if $DRAGGABLE=="1"}border:1px solid blue;{/if}
    {if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
    {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}

@@ -80,7 +80,7 @@
 
    }
    if ($total==1) {
-    foreach($res[0] as $k=>$v) {
+       foreach($res[0] as $k=>$v) {
      $out['SCENE_'.$k]=$v;
     }
    }
