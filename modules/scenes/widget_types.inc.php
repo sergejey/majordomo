@@ -2,11 +2,13 @@
 
 $this->widget_types = array(
     'text' => array(
-        'TITLE' => 'Text block',
-        'DESCRIPTION' => 'This widget allows you to add text block',
+        'TITLE' => LANG_WIDGET_TEXT_BLOCK,
+        'DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_DESCRIPTION,
         'PROPERTIES' => array(
-            'text_value' => array('DESCRIPTION' => 'Text block', 'DEFAULT_VALUE' => 'Hello, world!', '_CONFIG_TYPE' => 'textarea'),
-            'text_size' => array('DESCRIPTION' => 'Text size (pt)',
+            'text_value' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_VALUE,
+                'DEFAULT_VALUE' => LANG_WIDGET_TEXT_BLOCK_DEFAULT_VALUE,
+                '_CONFIG_TYPE' => 'textarea'),
+            'text_size' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_SIZE,
                 'DEFAULT_VALUE' => '10',
                 '_CONFIG_TYPE' => 'select',
                 '_CONFIG_OPTIONS' => array(
@@ -24,18 +26,20 @@ $this->widget_types = array(
                     array('VALUE' => '65'),
                 )
             ),
-            'text_align' => array('DESCRIPTION' => 'Text alignment',
+            'text_align' => array('DESCRIPTION' => LANG_WIDGET_TEXT_ALIGNMENT,
                 'DEFAULT_VALUE' => 'left',
                 '_CONFIG_TYPE' => 'select',
                 '_CONFIG_OPTIONS' => array(
-                    array('VALUE' => 'left'),
-                    array('VALUE' => 'center'),
-                    array('VALUE' => 'right')
+                    array('VALUE' => 'left', 'TITLE'=>LANG_WIDGET_TEXT_ALIGNMENT_LEFT),
+                    array('VALUE' => 'center', 'TITLE'=>LANG_WIDGET_TEXT_ALIGNMENT_CENTER),
+                    array('VALUE' => 'right', 'TITLE'=>LANG_WIDGET_TEXT_ALIGNMENT_RIGHT)
                 )
             ),
-            'text_color' => array('DESCRIPTION' => 'Text color', 'DEFAULT_VALUE' => '#ffffff', '_CONFIG_TYPE' => 'color'),
-            'text_background' => array('DESCRIPTION' => 'Background color', 'DEFAULT_VALUE' => '#000000', '_CONFIG_TYPE' => 'color'),
-            'background_opacity' => array('DESCRIPTION' => 'Background opacity, %',
+            'text_color' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_COLOR,
+                'DEFAULT_VALUE' => '#ffffff', '_CONFIG_TYPE' => 'color'),
+            'text_background' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_BACKGROUND_COLOR,
+                'DEFAULT_VALUE' => '#000000', '_CONFIG_TYPE' => 'color'),
+            'background_opacity' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_BACKGROUND_OPACITY,
                 'DEFAULT_VALUE' => '0.5',
                 '_CONFIG_TYPE' => 'select',
                 '_CONFIG_OPTIONS' => array(
@@ -52,9 +56,9 @@ $this->widget_types = array(
                     array('VALUE' => '1', 'TITLE' => '100')
                 )
             ),
-            'text_background_rgba' => array('FUNCTION'=> function($data) {
+            'text_background_rgba' => array('FUNCTION' => function ($data) {
                 list($r, $g, $b) = sscanf($data['text_background'], "#%02x%02x%02x");
-                return "$r, $g, $b, ".$data['background_opacity'];
+                return "$r, $g, $b, " . $data['background_opacity'];
             })
         ),
         'RESIZABLE' => 1,
@@ -62,12 +66,14 @@ $this->widget_types = array(
         'DEFAULT_HEIGHT' => 200,
         'TEMPLATE' => 'file:text_block.html'
     ),
-    'image'=> array(
-        'TITLE' => 'Image block',
-        'DESCRIPTION' => 'This widget allows you to add image by URL',
+    'image' => array(
+        'TITLE' => LANG_WIDGET_IMAGE_BLOCK,
+        'DESCRIPTION' => LANG_WIDGET_IMAGE_BLOCK_DESCRIPTION,
         'PROPERTIES' => array(
-            'image_url' => array('DESCRIPTION' => 'Image URL', 'DEFAULT_VALUE' => '', '_CONFIG_TYPE' => 'text'),
-            'refresh_interval' => array('DESCRIPTION' => 'Refresh interval, seconds', 'DEFAULT_VALUE' => '0', '_CONFIG_TYPE' => 'text'),
+            'image_url' => array('DESCRIPTION' => LANG_WIDGET_IMAGE_URL,
+                'DEFAULT_VALUE' => '', '_CONFIG_TYPE' => 'text'),
+            'refresh_interval' => array('DESCRIPTION' => LANG_WIDGET_IMAGE_REFRESH_INTERVAL,
+                'DEFAULT_VALUE' => '0', '_CONFIG_TYPE' => 'text'),
         ),
         'RESIZABLE' => 1,
         'DEFAULT_WIDTH' => 200,
@@ -76,12 +82,12 @@ $this->widget_types = array(
     )
 );
 
-$addons_dir=dirname(__FILE__).'/addons';
+$addons_dir = dirname(__FILE__) . '/addons';
 if (is_dir($addons_dir)) {
-    $addon_files=scandir($addons_dir);
-    foreach($addon_files as $file) {
-        if (preg_match('/\.php$/',$file)) {
-            require($addons_dir.'/'.$file);
+    $addon_files = scandir($addons_dir);
+    foreach ($addon_files as $file) {
+        if (preg_match('/\.php$/', $file)) {
+            require($addons_dir . '/' . $file);
         }
     }
 }

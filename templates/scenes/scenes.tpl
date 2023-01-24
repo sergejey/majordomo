@@ -182,6 +182,7 @@ $.fn.customContextMenu = function(callBack){
 
 
         function stateClickedEdit(id) {
+          if (ignoreClick==1) return false;
           var window_url = '{$smarty.const.ROOTHTML}panel/scene/{$SCENE_ID}.html?open='+id+'&print=1'
           if (id=='new') {
            window_url=window_url+'&top='+contextTop+'&left='+contextLeft;
@@ -522,9 +523,13 @@ $.fn.customContextMenu = function(callBack){
                     $.contextMenu({
                         selector: '.context-menu-one',
                         zIndex: 1000,
+                        events: {
+                          show: function(options) {
+                              contextLeft=event.pageX;
+                              contextTop=event.pageY;
+                          }
+                        },
                         callback: function(key, options) {
-                            contextLeft=event.pageX;
-                            contextTop=event.pageY;
                             if (key == 'add') {
                                 stateClickedEdit('new');
                             }
@@ -576,7 +581,13 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
       });
 
      $(".resizable" ).resizable({literal}{grid: 5, {/literal}
+                        start: function(e, ui) {
+                            ignoreClick=1;
+                        },
                         stop: function(e, ui) {
+
+                            setTimeout('ignoreClick=0;',500);
+
                             var dwidth=ui.size.width;
                             var dheight=ui.size.height;
 
@@ -591,6 +602,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                                 //alert(data);
                             });
                             {/literal}
+
                         }});
 
 

@@ -1370,6 +1370,28 @@ $dictionary = array(
     'DEVICES_COLLECTION_IS_OPEN' => 'Сейчас открыто',
     'DEVICES_COLLECTION_IS_HEATING' => 'Сейчас греет',
 
+    'WIDGET' => 'Виджет',
+    'WIDGETS' => 'Виджеты',
+    'ADD_WIDGET' => 'Добавить виджет',
+
+    'WIDGET_TEXT_BLOCK' => 'Текстовый блок',
+    'WIDGET_TEXT_BLOCK_DESCRIPTION' => 'Виджет позволяет добавить блок текста',
+    'WIDGET_TEXT_BLOCK_VALUE' => 'Текст',
+    'WIDGET_TEXT_BLOCK_DEFAULT_VALUE' => 'Привет, мир!',
+    'WIDGET_TEXT_BLOCK_SIZE' => 'Размер текста (pt)',
+    'WIDGET_TEXT_ALIGNMENT' => 'Выравнивание текста',
+    'WIDGET_TEXT_ALIGNMENT_LEFT' => 'По левому краю',
+    'WIDGET_TEXT_ALIGNMENT_CENTER' => 'По центру',
+    'WIDGET_TEXT_ALIGNMENT_RIGHT' => 'По правому краю',
+    'WIDGET_TEXT_BLOCK_COLOR' => 'Цвет текста',
+    'WIDGET_TEXT_BLOCK_BACKGROUND_COLOR' => 'Цвет фона',
+    'WIDGET_TEXT_BLOCK_BACKGROUND_OPACITY' => 'Степень прозрачности фона, %',
+
+    'WIDGET_IMAGE_BLOCK' => 'Изображение',
+    'WIDGET_IMAGE_BLOCK_DESCRIPTION' => 'Виджет позволяет добавить изображение',
+    'WIDGET_IMAGE_URL' => 'Ссылка на изображение (URL)',
+    'WIDGET_IMAGE_REFRESH_INTERVAL' => 'Период обновления, секунд',
+
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
@@ -1405,7 +1427,7 @@ $dictionary = array(
     'THEME_LIGHT' => 'Светлая',
 
     'DATA_SOURCE' => 'Источник данных',
-    'WIDGET' => 'Виджет',
+
     'PANE' => 'Панель',
     'COLUMNS' => 'Колонки',
     'SIZE' => 'Размер',
