@@ -10,9 +10,6 @@
             pointer-events:none;
         }
     </style>
-    <!--
-    <div id='contextMenuDiv' style="display:none;width:100px;height:20px;background-color:white;position:absolute;border: 1px solid black;z-index:10000;top:200px;left:300px;padding:10px;text-align:center"><a href="#" onClick="stateClickedEdit('new');return false;">{$smarty.const.LANG_ADD}</a></div>
-    -->
 {/if}
 
 <style>
@@ -519,7 +516,6 @@ $.fn.customContextMenu = function(callBack){
 
                  {if $DRAGGABLE=="1"}
 
-
                     $.contextMenu({
                         selector: '.context-menu-one',
                         zIndex: 1000,
@@ -709,7 +705,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
          <source src="{$SCENE.VIDEO_WALLPAPER}" type="video/mp4">
      </video>
  {/if}
- <div id="scene_wallpaper_{$SCENE.ID}"style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
+ <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
 

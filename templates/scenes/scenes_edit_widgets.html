@@ -16,6 +16,10 @@
         [#if _CONFIG_TYPE=="textarea"#]
         <textarea name="property_[#NAME#]" class="form-control">[#VALUE#]</textarea>
         [#endif#]
+        [#if _CONFIG_TYPE=="htmlarea"#]
+        <textarea name="property_[#NAME#]" id="property_[#NAME#]" class="form-control">[#VALUE#]</textarea>
+        [#module name="blockly_code" code_field="property_<#PROPERTIES.NAME#>" action="" type="html"#]
+        [#endif#]
         [#if _CONFIG_TYPE=="yesno"#]
         <input type="radio" name="property_[#NAME#]" value="1"[#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
         <input type="radio" name="property_[#NAME#]" value="0"[#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>

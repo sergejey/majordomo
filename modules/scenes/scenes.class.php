@@ -1019,15 +1019,19 @@ class scenes extends module
     }
 
 
-    function loadWidgetTypes() {
-        include DIR_MODULES . 'scenes/widget_types.inc.php';
+    function loadWidgetTypes()
+    {
+        if (!isset($this->widget_types['text'])) {
+            include DIR_MODULES . 'scenes/widget_types.inc.php';
+        }
     }
 
-    function getWidgetData($element_id) {
+    function getWidgetData($element_id)
+    {
 
         $widgetData = array();
 
-        $element = SQLSelectOne("SELECT * FROM elements WHERE ID=".(int)$element_id);
+        $element = SQLSelectOne("SELECT * FROM elements WHERE ID=" . (int)$element_id);
         if (!$element['ID']) return '';
 
         $data = json_decode($element['WIZARD_DATA'], true);
@@ -1035,24 +1039,24 @@ class scenes extends module
             $widget_type = $this->widget_types[$data['WIDGET_TYPE']];
             $widgetData['TYPE'] = $data['WIDGET_TYPE'];
             $widgetData['TYPE_DETAILS'] = $widget_type;
-            if (preg_match('/file:(.+)/',$widget_type['TEMPLATE'],$m)) {
-                $filename = DIR_TEMPLATES.'scenes/widgets/'.$m[1];
+            if (preg_match('/file:(.+)/', $widget_type['TEMPLATE'], $m)) {
+                $filename = DIR_TEMPLATES . 'scenes/widgets/' . $m[1];
                 if (file_exists($filename)) {
                     $template = LoadFile($filename);
                 } else {
-                    $template = 'File not found: '.$filename;
+                    $template = 'File not found: ' . $filename;
                 }
             } else {
                 $template = $widget_type['TEMPLATE'];
             }
             $data['element_id'] = $element_id;
-            foreach($data as $k=>$v) {
-                $template = str_replace('%'.$k.'%',$v,$template);
+            foreach ($data as $k => $v) {
+                $template = str_replace('%' . $k . '%', $v, $template);
             }
             $html = $template;
 
         } else {
-            $html = 'Incorrect widget type: '.$data['WIDGET_TYPE'];
+            $html = 'Incorrect widget type: ' . $data['WIDGET_TYPE'];
         }
 
         $widgetData['HTML'] = $html;
@@ -1193,6 +1197,7 @@ class scenes extends module
     function getDynamicElements($qry = '1')
     {
 
+        $this->loadWidgetTypes();
         $elements = SQLSelect("SELECT elements.* FROM elements, scenes WHERE elements.SCENE_ID=scenes.ID AND $qry ORDER BY PRIORITY DESC, TITLE");
 
         $totale = count($elements);
@@ -1301,7 +1306,6 @@ class scenes extends module
             if (!isset($elements[$ie]['RESIZABLE']) && $elements[$ie]['TYPE'] != 'device') {
                 $elements[$ie]['RESIZABLE'] = 1;
             }
-
 
 
         }
@@ -1640,11 +1644,9 @@ class scenes extends module
     function getWatchedProperties($scenes)
     {
 
-        //DebMes("Getting watched properties for ".serialize($scenes));
         $this->loadWidgetTypes();
 
         $qry = '1';
-
         if (!isset($scenes['all'])) {
             $qry .= " AND (0 ";
             foreach ($scenes as $k => $v) {
@@ -1655,8 +1657,6 @@ class scenes extends module
             }
             $qry .= ")";
         }
-
-        //DebMes("qry: ".$qry);
 
         $states = array();
         $elements = $this->getDynamicElements($qry);
