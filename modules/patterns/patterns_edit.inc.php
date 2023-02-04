@@ -172,6 +172,8 @@
 
     global $condition;
     $rec['CONDITION']=$condition;
+	   
+    if (strlen($rec['CONDITION']) == 0) $rec['CONDITION']=0;
 
     global $condition_value;
     $rec['CONDITION_VALUE']=$condition_value;
