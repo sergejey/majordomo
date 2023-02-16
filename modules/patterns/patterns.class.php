@@ -519,7 +519,11 @@ class patterns extends module
         if ($script_exit) {
             try {
                 $code = $script_exit;
-                $success = eval($code);
+                if ($code != '') {
+                    $success = eval($code);
+                } else {
+                    $success = true;
+                }
                 if ($success === false) {
                     DebMes("Error in pattern exit code: " . $code, 'patterns');
                     registerError('patterns', "Error in pattern exit code: " . $code);
@@ -769,6 +773,9 @@ class patterns extends module
             }
 
             $rec['LOG'] = date('Y-m-d H:i:s') . ' Pattern matched' . "\n" . $rec['LOG'];
+            if (strlen($rec['LOG'])>65000) {
+                $rec['LOG'] = substr($rec['LOG'],0,65000);
+            }
             $rec['EXECUTED'] = time();
             SQLUpdate('patterns', $rec);
             $pattern_matched = 1;

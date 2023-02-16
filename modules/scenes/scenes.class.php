@@ -1161,7 +1161,11 @@ class scenes extends module
 
             try {
                 $code = $rec['CONDITION_ADVANCED'];
-                $success = eval($code);
+                if ($code!='') {
+                    $success = eval($code);
+                } else {
+                    $success = true;
+                }
                 if ($success === false) {
                     DebMes("Error in scene code: " . $code);
                     registerError('scenes', "Error in scene code: " . $code);

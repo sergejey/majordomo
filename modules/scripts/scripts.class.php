@@ -37,16 +37,16 @@ class scripts extends module
     function saveParams($data = 1)
     {
         $data = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $data["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $data["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $data["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $data["tab"] = $this->tab;
         }
         return parent::saveParams($data);
@@ -105,10 +105,10 @@ class scripts extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['DATA_SOURCE'] = $this->data_source;
@@ -139,7 +139,7 @@ class scripts extends module
 
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
         if ($rec['ID']) {
-            $update_rec = array('ID'=>$rec['ID']);
+            $update_rec = array('ID' => $rec['ID']);
             $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
@@ -151,7 +151,10 @@ class scripts extends module
             }
             $update_rec['EXECUTED_SRC'] = $source;
             if ($params) {
-                $update_rec['EXECUTED_PARAMS'] = serialize($params);
+                $update_rec['EXECUTED_PARAMS'] = json_encode($params, JSON_UNESCAPED_UNICODE);
+                if (strlen($update_rec['EXECUTED_PARAMS']) > 250) {
+                    $update_rec['EXECUTED_PARAMS'] = substr($update_rec['EXECUTED_PARAMS'], 0, 250);
+                }
             }
             SQLUpdate('scripts', $update_rec);
 
@@ -160,7 +163,7 @@ class scripts extends module
             } else {
                 try {
                     $code = trim($rec['CODE']);
-                    if ($code!='') {
+                    if ($code != '') {
                         $success = eval($code);
                     } else {
                         $success = true;
@@ -189,7 +192,7 @@ class scripts extends module
     function admin(&$out)
     {
 
-        if ($this->mode=='scheduled') {
+        if ($this->mode == 'scheduled') {
             $this->checkScheduledScripts();
         }
 
@@ -204,7 +207,7 @@ class scripts extends module
 
             if ($this->view_mode == 'import') {
                 global $file;
-                $this->import($out,$file);
+                $this->import($out, $file);
                 $this->redirect("?");
             }
 
@@ -246,93 +249,95 @@ class scripts extends module
                 $this->redirect("?data_source=" . $this->data_source);
             }
         }
-		
+
     }
 
 
-    function export(&$out) {
-        $ids=gr('ids');
+    function export(&$out)
+    {
+        $ids = gr('ids');
         if (is_array($ids)) {
-            $ids[]=0;
+            $ids[] = 0;
         } else {
-            $ids=array(0);
+            $ids = array(0);
         }
-        $fields=implode(',',array(
-            'scripts.ID','scripts.TITLE','scripts.DESCRIPTION','CODE','RUN_PERIODICALLY','RUN_DAYS','RUN_TIME',
-            'AUTO_LINK','LINKED_OBJECT','LINKED_PROPERTY','script_categories.TITLE as CATEGORY_TITLE'
+        $fields = implode(',', array(
+            'scripts.ID', 'scripts.TITLE', 'scripts.DESCRIPTION', 'CODE', 'RUN_PERIODICALLY', 'RUN_DAYS', 'RUN_TIME',
+            'AUTO_LINK', 'LINKED_OBJECT', 'LINKED_PROPERTY', 'script_categories.TITLE as CATEGORY_TITLE'
         ));
-        $scripts = SQLSelect("SELECT $fields FROM scripts LEFT JOIN script_categories ON scripts.CATEGORY_ID=script_categories.ID WHERE scripts.ID IN (".implode(',',$ids).")");
+        $scripts = SQLSelect("SELECT $fields FROM scripts LEFT JOIN script_categories ON scripts.CATEGORY_ID=script_categories.ID WHERE scripts.ID IN (" . implode(',', $ids) . ")");
         $total = count($scripts);
         $result = array();
-        for($i=0;$i<$total;$i++) {
-            $rec=$scripts[$i];
-            $blockly_sysname='script'.$scripts[$i]['ID'];
-            $blockly_rec=SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME='".$blockly_sysname."'");
-            if ($blockly_rec['ID'] && $blockly_rec['CODE_TYPE']==1) {
-                $rec['BLOCKLY_CODE_TYPE']=$blockly_rec['CODE_TYPE'];
-                $rec['BLOCKLY_CODE']=$blockly_rec['CODE'];
-                $rec['BLOCKLY_XML']=$blockly_rec['XML'];
+        for ($i = 0; $i < $total; $i++) {
+            $rec = $scripts[$i];
+            $blockly_sysname = 'script' . $scripts[$i]['ID'];
+            $blockly_rec = SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME='" . $blockly_sysname . "'");
+            if ($blockly_rec['ID'] && $blockly_rec['CODE_TYPE'] == 1) {
+                $rec['BLOCKLY_CODE_TYPE'] = $blockly_rec['CODE_TYPE'];
+                $rec['BLOCKLY_CODE'] = $blockly_rec['CODE'];
+                $rec['BLOCKLY_XML'] = $blockly_rec['XML'];
             }
             unset($rec['ID']);
-            $result['SCRIPTS'][]=$rec;
+            $result['SCRIPTS'][] = $rec;
         }
 
         if ($total == 1) {
-            $filename='script_'.$result['SCRIPTS'][0]['TITLE'].'_'.date('Y_m_d__H_i').'.json';
+            $filename = 'script_' . $result['SCRIPTS'][0]['TITLE'] . '_' . date('Y_m_d__H_i') . '.json';
         } else {
-            $filename='scripts_'.date('Y_m_d__H_i').'.json';
+            $filename = 'scripts_' . date('Y_m_d__H_i') . '.json';
         }
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="'.($filename).'"');
+        header('Content-Disposition: attachment; filename="' . ($filename) . '"');
         echo json_encode($result);
         exit;
     }
 
-    function import(&$out,$file) {
+    function import(&$out, $file)
+    {
         if (file_exists($file)) {
-            $data=json_decode(LoadFile($file),true);
+            $data = json_decode(LoadFile($file), true);
             if (is_array($data['SCRIPTS'])) {
                 $scripts = $data['SCRIPTS'];
                 $total = count($scripts);
-                for($i=0;$i<$total;$i++) {
-                    $script_rec=SQLSelectOne("SELECT * FROM scripts WHERE TITLE LIKE '".DBSafe($scripts[$i]['TITLE'])."'");
+                for ($i = 0; $i < $total; $i++) {
+                    $script_rec = SQLSelectOne("SELECT * FROM scripts WHERE TITLE LIKE '" . DBSafe($scripts[$i]['TITLE']) . "'");
                     if (!$script_rec['ID']) {
-                        $script_rec=array('TITLE'=>$scripts[$i]['TITLE']);
-                        $script_rec['ID']=SQLInsert('scripts',$script_rec);
+                        $script_rec = array('TITLE' => $scripts[$i]['TITLE']);
+                        $script_rec['ID'] = SQLInsert('scripts', $script_rec);
                         if ($scripts[$i]['CATEGORY_TITLE']) {
-                            $category_rec=SQLSelectOne("SELECT * FROM script_categories WHERE TITLE LIKE '".DBSafe($scripts[$i]['CATEGORY_TITLE'])."'");
+                            $category_rec = SQLSelectOne("SELECT * FROM script_categories WHERE TITLE LIKE '" . DBSafe($scripts[$i]['CATEGORY_TITLE']) . "'");
                             if (!$category_rec['ID']) {
-                                $category_rec=array('TITLE'=>$scripts[$i]['CATEGORY_TITLE']);
-                                $category_rec['ID']=SQLInsert('script_categories',$category_rec);
+                                $category_rec = array('TITLE' => $scripts[$i]['CATEGORY_TITLE']);
+                                $category_rec['ID'] = SQLInsert('script_categories', $category_rec);
                             }
                         }
-                        if ($script_rec['CATEGORY_ID']!=$category_rec['ID']) {
-                            $script_rec['CATEGORY_ID']=$category_rec['ID'];
-                            SQLUpdate('scripts',$script_rec);
+                        if ($script_rec['CATEGORY_ID'] != $category_rec['ID']) {
+                            $script_rec['CATEGORY_ID'] = $category_rec['ID'];
+                            SQLUpdate('scripts', $script_rec);
                         }
                     }
-                    $script_rec['CODE']=$scripts[$i]['CODE'];
-                    $script_rec['DESCRIPTION']=$scripts[$i]['DESCRIPTION'];
-                    $script_rec['UPDATED']=date('Y-m-d H:i:s');
-                    $script_rec['RUN_PERIODICALLY']=$scripts[$i]['RUN_PERIODICALLY'];
-                    $script_rec['RUN_DAYS']=$scripts[$i]['RUN_DAYS'];
-                    $script_rec['RUN_TIME']=$scripts[$i]['RUN_TIME'];
+                    $script_rec['CODE'] = $scripts[$i]['CODE'];
+                    $script_rec['DESCRIPTION'] = $scripts[$i]['DESCRIPTION'];
+                    $script_rec['UPDATED'] = date('Y-m-d H:i:s');
+                    $script_rec['RUN_PERIODICALLY'] = $scripts[$i]['RUN_PERIODICALLY'];
+                    $script_rec['RUN_DAYS'] = $scripts[$i]['RUN_DAYS'];
+                    $script_rec['RUN_TIME'] = $scripts[$i]['RUN_TIME'];
                     if ($scripts[$i]['AUTO_LINK']) {
-                        $script_rec['AUTO_LINK']=1;
-                        $script_rec['LINKED_OBJECT']=$scripts[$i]['LINKED_OBJECT'];
-                        $script_rec['LINKED_PROPERTY']=$scripts[$i]['LINKED_PROPERTY'];
+                        $script_rec['AUTO_LINK'] = 1;
+                        $script_rec['LINKED_OBJECT'] = $scripts[$i]['LINKED_OBJECT'];
+                        $script_rec['LINKED_PROPERTY'] = $scripts[$i]['LINKED_PROPERTY'];
                     }
-                    SQLUpdate('scripts',$script_rec);
+                    SQLUpdate('scripts', $script_rec);
 
-                    $blockly_sysname='script'.$script_rec['ID'];
-                    SQLExec("DELETE FROM blockly_code WHERE SYSTEM_NAME LIKE '".$blockly_sysname."'");
+                    $blockly_sysname = 'script' . $script_rec['ID'];
+                    SQLExec("DELETE FROM blockly_code WHERE SYSTEM_NAME LIKE '" . $blockly_sysname . "'");
                     if ($scripts[$i]['BLOCKLY_CODE_TYPE']) {
-                        $blockly_rec=array();
-                        $blockly_rec['SYSTEM_NAME']=$blockly_sysname;
+                        $blockly_rec = array();
+                        $blockly_rec['SYSTEM_NAME'] = $blockly_sysname;
                         $blockly_rec['CODE_TYPE'] = $scripts[$i]['BLOCKLY_CODE_TYPE'];
                         $blockly_rec['CODE'] = $scripts[$i]['BLOCKLY_CODE'];
                         $blockly_rec['XML'] = $scripts[$i]['BLOCKLY_XML'];
-                        SQLInsert('blockly_code',$blockly_rec);
+                        SQLInsert('blockly_code', $blockly_rec);
                     }
 
                 }
@@ -416,7 +421,8 @@ class scripts extends module
      *
      * @access public
      */
-    function checkScheduledScripts() {
+    function checkScheduledScripts()
+    {
         $scripts = SQLSelect("SELECT ID, TITLE, RUN_DAYS, RUN_TIME FROM scripts WHERE RUN_PERIODICALLY=1 AND ((UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(EXECUTED))>60 OR IsNull(EXECUTED))");
 
         $total = count($scripts);
@@ -426,16 +432,16 @@ class scripts extends module
                 continue;
             }
             $run_days = explode(',', $rec['RUN_DAYS']);
-            $today=date('w');
+            $today = date('w');
             if (!in_array($today, $run_days)) {
                 continue;
             }
-            $tm = strtotime(date('Y-m-d') . ' ' . $rec['RUN_TIME']. ':00');
+            $tm = strtotime(date('Y-m-d') . ' ' . $rec['RUN_TIME'] . ':00');
             $diff = time() - $tm;
             if ($diff < 0 || $diff > 60) {
                 continue;
             }
-            DebMes("Running scheduled script ".$rec['TITLE'],'scripts');
+            DebMes("Running scheduled script " . $rec['TITLE'], 'scripts');
             runScriptSafe($rec['TITLE']);
             $rec['DIFF'] = $diff;
         }
@@ -456,7 +462,7 @@ class scripts extends module
     {
         if ($event == 'COMMAND' && $details['member_id']) {
             $command = $details['message'];
-            $script = SQLSelectOne("SELECT ID FROM scripts WHERE TITLE LIKE '".DBSafe($command)."'");
+            $script = SQLSelectOne("SELECT ID FROM scripts WHERE TITLE LIKE '" . DBSafe($command) . "'");
             if ($script['ID']) {
                 $this->runScript($script['ID']);
                 $details['PROCESSED'] = 1;
@@ -495,7 +501,7 @@ class scripts extends module
      */
     function uninstall()
     {
-      SQLDropTable('scripts');
+        SQLDropTable('scripts');
         parent::uninstall();
     }
 
@@ -547,9 +553,9 @@ EOD;
 
         $scripts = SQLSelect("SELECT * FROM scripts");
         $total = count($scripts);
-        for($i=0;$i<$total;$i++) {
-            if ($scripts[$i]['EXECUTED']=='0000-00-00 00:00:00') {
-                SQLExec("UPDATE scripts SET EXECUTED=NOW() WHERE ID=".$scripts[$i]['ID']);
+        for ($i = 0; $i < $total; $i++) {
+            if ($scripts[$i]['EXECUTED'] == '0000-00-00 00:00:00') {
+                SQLExec("UPDATE scripts SET EXECUTED=NOW() WHERE ID=" . $scripts[$i]['ID']);
             }
         }
 

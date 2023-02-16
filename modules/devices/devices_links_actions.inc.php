@@ -234,16 +234,28 @@ if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAv
         */
     }
     if (isset($payload['service'])) {
-        if ($debug_sync) {
-            DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
+        $hmName = 'hmb:'.$payload['name'];
+        $payload_encoded = json_encode($payload);
+        $hmValue = md5($payload_encoded);
+        if (checkFromCache($hmName)!=$hmValue) {
+            saveToCache($hmName, $hmValue);
+            if ($debug_sync) {
+                DebMes("MQTT to_set : " . $payload_encoded, 'homebridge');
+            }
+            sg('HomeBridge.to_set', $payload_encoded);
         }
-        sg('HomeBridge.to_set', json_encode($payload));
     }
     if (isset($payload2['service'])) {
-        if ($debug_sync) {
-            DebMes("MQTT to_set : " . json_encode($payload2), 'homebridge');
+        $hmName = 'hmb:'.$payload2['name'];
+        $payload2_encoded = json_encode($payload2);
+        $hmValue = md5($payload2_encoded);
+        if (checkFromCache($hmName)!=$hmValue) {
+            saveToCache($hmName, $hmValue);
+            if ($debug_sync) {
+                DebMes("MQTT to_set : " . $payload2_encoded, 'homebridge');
+            }
+            sg('HomeBridge.to_set', $payload2_encoded);
         }
-        sg('HomeBridge.to_set', json_encode($payload2));
     }
 }
 endMeasure('homebridge_update');

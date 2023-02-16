@@ -138,7 +138,7 @@ if ($this->mode == 'update') {
     $linked_property_new = gr('linked_property_new');
     $condition_new = gr('condition_new');
     $condition_value_new = gr('condition_value_new');
-    $condition_advanced_new = gr('$condition_advanced_new');
+    $condition_advanced_new = gr('condition_advanced_new');
     $switch_scene_new = gr('switch_scene_new');
     $state_id = gr('state_id', 'int');
     $state_delete = gr('state_delete');
