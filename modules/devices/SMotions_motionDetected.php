@@ -14,7 +14,7 @@ if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdate
 }
 
 $motion_timeout = $this->getProperty('timeout'); // seconds timeout
-if (!$motion_timeout== "") {
+if ($motion_timeout == "") {
     $motion_timeout = 20; // timeout by default
 }
 if ($motion_timeout) {
@@ -37,14 +37,14 @@ if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
     $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
 }
 
-$resetNobodysHome=$this->getProperty('resetNobodysHome');
+$resetNobodysHome = $this->getProperty('resetNobodysHome');
 if ($nobodyhome_timeout && !$resetNobodysHome) {
     setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
 } elseif ($resetNobodysHome) {
     clearTimeout('nobodyHome');
 }
 
-$is_blocked=(int)$this->getProperty('blocked');
+$is_blocked = (int)$this->getProperty('blocked');
 if ($is_blocked) {
     return;
 }
